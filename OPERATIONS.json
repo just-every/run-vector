@@ -1,0 +1,173 @@
+{
+  "version": 2,
+  "project": "just-every/vector-projects",
+  "runtime": {
+    "requirements": [
+      {
+        "name": "node",
+        "version": ">=22.12.0"
+      },
+      {
+        "name": "pnpm",
+        "version": "8.15.6"
+      },
+      {
+        "name": "Cloudflare Worker / D1 / R2",
+        "version": "compatibility 2026-09-08; local and disposable workers.dev deployment"
+      }
+    ]
+  },
+  "requiredEnvironment": [],
+  "documentation": {
+    "document": "OPERATIONS.md"
+  },
+  "acceptance": {
+    "document": "ACCEPTANCE.md"
+  },
+  "commands": {
+    "dev": {
+      "argv": [
+        "pnpm",
+        "run",
+        "dev"
+      ],
+      "inputs": [
+        "package.json",
+        "vite.config.ts",
+        "wrangler.jsonc"
+      ],
+      "effects": "Applies local synthetic D1 migrations and serves the Vite Worker/UI on loopback port 15928. Writes .wrangler/vector-dev; no providers or deployment."
+    },
+    "build": {
+      "argv": [
+        "pnpm",
+        "run",
+        "build"
+      ],
+      "inputs": [
+        "package.json",
+        "vite.config.ts",
+        "wrangler.jsonc"
+      ],
+      "effects": "Typechecks and builds the local client/server artifacts. No deployment or remote binding access."
+    },
+    "verify": {
+      "argv": [
+        "pnpm",
+        "run",
+        "verify"
+      ],
+      "inputs": [
+        "package.json",
+        "vitest.config.ts",
+        "tests/e2e/core-runtime.mjs"
+      ],
+      "effects": "Runs local Node, safe Markdown and D1/R2 Worker tests, builds, then runs emitted Worker and Chromium acceptance with isolated synthetic state on 15924\u201315925. Includes the genuine scheduled cleanup handler via local Wrangler test scheduling. No external provider writes."
+    },
+    "setup-local": {
+      "argv": [
+        "pnpm",
+        "run",
+        "db:local:migrate"
+      ],
+      "inputs": [
+        "package.json",
+        "wrangler.jsonc"
+      ],
+      "effects": "Applies immutable D1 migrations to .wrangler/vector-dev only. Does not create Cloudflare resources."
+    },
+    "review-serve": {
+      "argv": [
+        "pnpm",
+        "run",
+        "review:serve"
+      ],
+      "inputs": [
+        "package.json",
+        "wrangler.jsonc"
+      ],
+      "effects": "Serves the previously built production artifact on loopback 15920\u201315921 with .wrangler/vector-review state. Requires review migrations first."
+    },
+    "review-signin": {
+      "argv": [
+        "pnpm",
+        "run",
+        "review:signin",
+        "sarah@vector.test"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/local-review.mjs",
+        "wrangler.jsonc"
+      ],
+      "effects": "Requests one synthetic native magic link from the local review server and reads its explicit local outbox. No real email."
+    },
+    "test-foundation": {
+      "argv": [
+        "pnpm",
+        "run",
+        "test:foundation"
+      ],
+      "inputs": [
+        "package.json",
+        "tests/e2e/foundation-runtime.mjs",
+        "wrangler.jsonc"
+      ],
+      "effects": "Runs the emitted no-sample Worker on loopback 41866 with isolated synthetic first-owner inputs and local outbox. Verifies native sign-in, settings, first-owner guard and persistence across restart; closes the Worker and browser. Requires build first; no provider or deployment effects."
+    },
+    "prepare": {
+      "argv": [
+        "pnpm",
+        "deploy:prepare"
+      ],
+      "inputs": [
+        "package.json",
+        "DEPLOY.md",
+        "scripts/deployment/controller.mjs",
+        "scripts/deployment/plan.mjs"
+      ],
+      "effects": "Credential-free frozen install/build and inert artifact packaging. Requires explicit source/run identity and new output/private-home paths outside checkout; no remote effects."
+    },
+    "setup": {
+      "argv": [
+        "pnpm",
+        "run",
+        "setup"
+      ],
+      "inputs": [
+        "package.json",
+        "DEPLOY.md",
+        "scripts/deployment/controller.mjs",
+        "scripts/deployment/plan.mjs"
+      ],
+      "effects": "With reviewed declarative plan and explicit controller credentials, finds or creates deterministic Worker/D1/R2, applies new immutable hashed migrations, uploads built artifact, reconciles minute Cron and checks exact deployed health. Existing data and opaque secrets retained."
+    },
+    "deploy": {
+      "argv": [
+        "pnpm",
+        "run",
+        "deploy"
+      ],
+      "inputs": [
+        "package.json",
+        "DEPLOY.md",
+        "scripts/deployment/controller.mjs",
+        "scripts/deployment/plan.mjs"
+      ],
+      "effects": "Reconciles the reviewed installation through Base deploy-kit. Identical artifact/plan/receipt performs no provider mutation and preserves receipt bytes; drift fails."
+    },
+    "health": {
+      "argv": [
+        "pnpm",
+        "deploy:health"
+      ],
+      "inputs": [
+        "package.json",
+        "DEPLOY.md",
+        "scripts/deployment/controller.mjs",
+        "scripts/deployment/plan.mjs"
+      ],
+      "effects": "Reads authenticated provider identities, resources, migration history, secret presence, Cron and public Worker health without modifying resources."
+    }
+  }
+}

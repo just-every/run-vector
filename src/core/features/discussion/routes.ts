@@ -1,0 +1,271 @@
+import { fileSettlementDatabase } from "../auth/mutation-database";
+import { requestFileRemoval } from "../file-removal/service";
+import { readRequestJson } from "../../app/input";
+import type { Hono } from "hono";
+import { z } from "zod";
+import { createUlid } from "../../shared/ids";
+import type { AppEnvironment } from "../../app/bindings";
+import {
+  addComment,
+  addFile,
+  failFile,
+  finalizeFile,
+  changeComment,
+  discussion,
+  findFile,
+  findIssue,
+} from "./repository";
+const commentSchema = z
+  .object({ body: z.string().trim().min(1).max(100000) })
+  .strict();
+const mimeTypes = new Set([
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "image/gif",
+  "application/pdf",
+  "text/plain",
+  "text/csv",
+  "application/json",
+  "application/zip",
+]);
+export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
+  app.use("/issues/:identifier/*", async (c, next) => {
+    if (!/^[A-Z]{2,10}-[1-9][0-9]*$/.test(c.req.param("identifier") ?? ""))
+      return c.json({ error: "invalid_request" }, 400);
+    const itemId = c.req.param("itemId");
+    if (itemId && !/^[0-9A-HJKMNP-TV-Z]{26}$/.test(itemId))
+      return c.json({ error: "invalid_request" }, 400);
+    await next();
+  });
+  for (const path of [
+    "/issues/:identifier/comments/:itemId",
+    "/issues/:identifier/files/:itemId",
+  ])
+    app.use(path, async (c, next) => {
+      if (!/^[0-9A-HJKMNP-TV-Z]{26}$/.test(c.req.param("itemId") ?? ""))
+        return c.json({ error: "invalid_request" }, 400);
+      await next();
+    });
+  app.get("/issues/:identifier/discussion", async (c) => {
+    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+    return issue
+      ? c.json(await discussion(c.env.DB, issue.id))
+      : c.json({ error: "not_found" }, 404);
+  });
+  app.post("/issues/:identifier/comments", async (c) => {
+    const input = commentSchema.safeParse(await readRequestJson(c.req.raw));
+    if (!input.success)
+      return c.json(
+        { error: "invalid_request", issues: input.error.issues },
+        400,
+      );
+    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+    if (!issue) return c.json({ error: "not_found" }, 404);
+    const id = await addComment(
+      c.env.DB,
+      issue.id,
+      c.get("operatorId"),
+      input.data.body,
+    );
+    return c.json({ id }, 201);
+  });
+  for (const method of ["PATCH", "DELETE"] as const)
+    app.on(method, "/issues/:identifier/comments/:itemId", async (c) => {
+      const input =
+        method === "DELETE"
+          ? { success: true as const, data: { body: null } }
+          : commentSchema.safeParse(await readRequestJson(c.req.raw));
+      if (!input.success) return c.json({ error: "invalid_request" }, 400);
+      const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+      if (!issue) return c.json({ error: "not_found" }, 404);
+      return (await changeComment(
+        c.env.DB,
+        issue,
+        c.req.param("itemId"),
+        c.get("operatorId"),
+        input.data.body,
+      ))
+        ? c.json({ updated: true })
+        : c.json({ error: "not_found" }, 404);
+    });
+  app.post("/issues/:identifier/files", async (c) => {
+    const type = c.req.header("content-type") ?? "";
+    let name = c.req.header("x-file-name") ?? "";
+    const encoding = c.req.header("x-file-name-encoding");
+    if (encoding && encoding !== "uri")
+      return c.json(
+        { error: "invalid_upload", message: "Unknown filename encoding." },
+        400,
+      );
+    if (encoding === "uri") {
+      try {
+        name = decodeURIComponent(name);
+      } catch {
+        return c.json(
+          { error: "invalid_upload", message: "Invalid filename encoding." },
+          400,
+        );
+      }
+    }
+    if (
+      !mimeTypes.has(type) ||
+      !name ||
+      name.length > 255 ||
+      /[\x00-\x1f\x7f]/.test(name)
+    )
+      return c.json(
+        {
+          error: "invalid_upload",
+          message: "A supported content type and file name are required.",
+        },
+        400,
+      );
+    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+    if (!issue) return c.json({ error: "not_found" }, 404);
+    const reader = c.req.raw.body?.getReader();
+    if (!reader) return c.json({ error: "invalid_upload" }, 400);
+    const chunks: Uint8Array[] = [];
+    let size = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > 26214400) {
+        await reader.cancel();
+        return c.json({ error: "upload_too_large" }, 413);
+      }
+      chunks.push(value);
+    }
+    if (size === 0) return c.json({ error: "invalid_upload" }, 400);
+    const data = new Uint8Array(size);
+    let offset = 0;
+    for (const chunk of chunks) {
+      data.set(chunk, offset);
+      offset += chunk.length;
+    }
+    const id = createUlid(new Date()),
+      key = `issues/${issue.id}/${id}`;
+    const sha256 = Array.from(
+      new Uint8Array(await crypto.subtle.digest("SHA-256", data)),
+    )
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("");
+    if (
+      !(await addFile(c.env.DB, issue, c.get("operatorId"), {
+        id,
+        name,
+        contentType: type,
+        bytes: size,
+        key,
+        sha256,
+      }))
+    )
+      return c.json({ error: "storage_limit" }, 413);
+    // addFile committed the authorized reservation. Settle that exact receipt
+    // even after sign-out; successful operator removal waits for this writer.
+    const settlement = { ...c.env, DB: fileSettlementDatabase(c.env.DB) };
+    let putCompleted = false;
+    try {
+      await c.env.FILES.put(key, data, {
+        httpMetadata: { contentType: type },
+        customMetadata: { operationId: id, sha256 },
+      });
+      putCompleted = true;
+      const ready = await finalizeFile(
+        settlement.DB,
+        issue.id,
+        id,
+        c.get("operatorId"),
+      );
+      if (!ready) {
+        const cleanup = await requestFileRemoval(
+          settlement,
+          issue,
+          id,
+          c.get("operatorId"),
+        );
+        return c.json(
+          {
+            error: "upload_cancelled",
+            message:
+              cleanup === "removed"
+                ? "Upload was cancelled and removed."
+                : "Removal is pending. Retry removal shortly.",
+          },
+          cleanup === "removed" ? 409 : 503,
+        );
+      }
+    } catch {
+      await failFile(settlement.DB, id, putCompleted);
+      const file = await findFile(settlement.DB, issue.id, id);
+      if (file?.removal_requested_at)
+        await requestFileRemoval(settlement, issue, id, c.get("operatorId"));
+      return c.json(
+        {
+          error: "file_upload_failed",
+          message:
+            "Upload did not complete. Remove the incomplete file and upload again.",
+        },
+        503,
+      );
+    }
+    return c.json({ id, name, contentType: type, bytes: size }, 201);
+  });
+  app.get("/issues/:identifier/files/:itemId", async (c) => {
+    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+    if (!issue) return c.json({ error: "not_found" }, 404);
+    const file = await findFile(c.env.DB, issue.id, c.req.param("itemId"));
+    if (!file) return c.json({ error: "not_found" }, 404);
+    if (file.deleted_at || file.removal_requested_at)
+      return c.json({ error: "not_found" }, 404);
+    if (file.state !== "ready")
+      return c.json(
+        {
+          error: "file_unavailable",
+          message: "This upload has not completed. Remove it and upload again.",
+        },
+        503,
+      );
+    const blob = await c.env.FILES.get(file.blob_key);
+    if (!blob) return c.json({ error: "file_unavailable" }, 503);
+    return new Response(blob.body, {
+      headers: {
+        "Content-Type": file.content_type,
+        "Content-Disposition": `attachment; filename*=UTF-8''${encodeURIComponent(file.name).replace(/['()*]/g, (c) => "%" + c.charCodeAt(0).toString(16).toUpperCase())}`,
+        "Cache-Control": "private, no-store",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
+  });
+  app.delete("/issues/:identifier/files/:itemId", async (c) => {
+    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+    if (!issue) return c.json({ error: "not_found" }, 404);
+    const file = await findFile(c.env.DB, issue.id, c.req.param("itemId"));
+    if (!file) return c.json({ error: "not_found" }, 404);
+    const result = await requestFileRemoval(
+      c.env,
+      issue,
+      file.id,
+      c.get("operatorId"),
+    );
+    return result === "removed"
+      ? c.json({ removed: true })
+      : result === "pending"
+        ? c.json(
+            {
+              removed: false,
+              pending: true,
+              message: "Removal is pending while the upload settles.",
+            },
+            202,
+          )
+        : c.json(
+            {
+              error: "file_removal_failed",
+              message: "Removal could not finish. Retry removal.",
+            },
+            503,
+          );
+  });
+}

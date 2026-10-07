@@ -1,0 +1,73 @@
+{
+  "name": "vector",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "type": "module",
+  "packageManager": "pnpm@8.15.6",
+  "scripts": {
+    "dev": "pnpm db:local:migrate && vite --host 127.0.0.1 --port 15928 --strictPort",
+    "db:local:migrate": "wrangler d1 migrations apply vector-local --local --config wrangler.jsonc --persist-to .wrangler/vector-dev",
+    "build": "pnpm typecheck && vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 15920 --strictPort",
+    "typecheck": "tsc -b",
+    "test": "pnpm test:node && pnpm test:markdown && pnpm test:worker",
+    "test:node": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:worker": "vitest run --config vitest.config.ts",
+    "test:markdown": "vitest run --config vitest.markdown.config.ts",
+    "smoke": "node --experimental-strip-types --test tests/smoke.test.ts",
+    "verify": "node scripts/verify.mjs",
+    "typegen": "wrangler types src/worker-bindings.d.ts --env-interface VectorBindings --include-runtime=false --strict-vars=false",
+    "test:runtime": "node tests/e2e/core-runtime.mjs",
+    "test:dev": "node tests/e2e/dev-runtime.mjs",
+    "report:contract": "node scripts/contract-report.mjs",
+    "review:signin": "node scripts/local-review.mjs",
+    "review:serve": "wrangler dev --config dist/server/wrangler.json --local --ip 127.0.0.1 --port 15920 --inspector-port 15921 --persist-to .wrangler/vector-review",
+    "test:foundation": "node tests/e2e/foundation-runtime.mjs",
+    "sources:check": "node scripts/edition-authoring/cli.mjs check",
+    "sources:lock": "node scripts/edition-authoring/cli.mjs lock",
+    "setup": "node scripts/setup.mjs",
+    "deploy": "node scripts/deploy.mjs",
+    "deploy:prepare": "node scripts/deployment/prepare.mjs",
+    "deploy:health": "node scripts/deployment/controller.mjs health",
+    "test:deployment": "node --test scripts/deployment/tests/*.test.mjs vendor/base/deploy-kit/tests/deploy.test.mjs vendor/base/deploy-kit/tests/build-contract.test.mjs vendor/base/deploy-kit/tests/cron-contract.test.mjs",
+    "test:removal": "node tests/e2e/removal-runtime.mjs",
+    "test:base-auth": "node tests/e2e/base-auth-runtime.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "1.170.33",
+    "@tanstack/react-start": "1.168.50",
+    "drizzle-orm": "0.45.2",
+    "hono": "4.13.7",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "react-markdown": "10.1.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.54.5",
+    "@cloudflare/vitest-plugin": "1.1.2",
+    "@cloudflare/workers-types": "5.20260908.1",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "6.1.1",
+    "prettier": "3.9.9",
+    "tailwindcss": "^4.3.3",
+    "typescript": "5.9.3",
+    "vite": "8.2.2",
+    "vitest": "^4.1.11",
+    "wrangler": "4.129.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "@cloudflare/vitest-plugin>miniflare": "5.20260907.0-alpha"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/just-every/vector-projects"
+  }
+}

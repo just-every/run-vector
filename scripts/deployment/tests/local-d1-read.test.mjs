@@ -1,0 +1,20 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mkdtempSync,mkdirSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
+import {readLocalD1} from '../../../tests/e2e/local-d1-read.mjs';
+test('local D1 inspection reads the native application database and refuses writes or ambiguous stores',t=>{
+  const state=mkdtempSync(join(tmpdir(),'vector-d1-read-'));
+  t.after(()=>rmSync(state,{recursive:true,force:true}));
+  const directory=join(state,'v3/d1/miniflare-D1DatabaseObject');mkdirSync(directory,{recursive:true});
+  const path=join(directory,'a'.repeat(64)+'.sqlite'),db=new DatabaseSync(path);
+  db.exec('CREATE TABLE records(id INTEGER PRIMARY KEY); INSERT INTO records VALUES(1),(2)');db.close();
+  new DatabaseSync(join(directory,'metadata.sqlite')).close();
+  assert.equal(readLocalD1(state,'SELECT count(*) n FROM records')[0].n,2);
+  assert.throws(()=>readLocalD1(state,'DELETE FROM records'),/readonly/i);
+  assert.equal(readLocalD1(state,'SELECT count(*) n FROM records')[0].n,2);
+  new DatabaseSync(join(directory,'b'.repeat(64)+'.sqlite')).close();
+  assert.throws(()=>readLocalD1(state,'SELECT count(*) n FROM records'),/exactly one/);
+});

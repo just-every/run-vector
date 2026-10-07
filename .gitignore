@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.DS_Store
+*.log
+*.tsbuildinfo
+.seed/deployment/
+wrangler.toml
+.wrangler/
+
+.tanstack/
+.dev.vars*
+evidence/
+verification/
+
+.artifacts/

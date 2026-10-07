@@ -1,0 +1,514 @@
+.issue-inspector {
+  display: grid;
+  align-content: start;
+  gap: 1.3rem;
+  padding: 1.6rem clamp(1rem, 3vw, 2.5rem) 3rem;
+}
+.issue-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 9%);
+  padding-bottom: 1.35rem;
+}
+.issue-header h1 {
+  max-width: 48rem;
+  margin: 0;
+  color: #f4eff1;
+  font-size: clamp(1.55rem, 2.4vw, 2.45rem);
+  font-weight: 560;
+  line-height: 1.06;
+  letter-spacing: -0.055em;
+}
+.issue-status {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+.issue-status > span:first-child {
+  display: inline-flex;
+  min-height: 1.35rem;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.16rem 0.5rem;
+  color: #afcdbf;
+  background: rgb(95 208 161 / 10%);
+  font-size: 0.65rem;
+}
+.detail-back {
+  min-height: 2.75rem;
+  margin: -0.35rem 0 0.85rem;
+  border: 0;
+  padding: 0;
+  color: #c4b3ff;
+  background: transparent;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.issue-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 0.65rem;
+  background: rgb(255 255 255 / 8%);
+}
+.issue-facts > div {
+  flex: 1 1 calc(33.333% - 1px);
+  min-width: 0;
+  padding: 0.75rem 0.8rem;
+  background: #171823;
+}
+.issue-facts dt,
+.evidence-metrics dt {
+  color: #898392;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.issue-facts dd,
+.evidence-metrics dd {
+  overflow: hidden;
+  margin: 0.25rem 0 0;
+  color: #e4dfe7;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.detail-section {
+  border-top: 1px solid rgb(255 255 255 / 8%);
+  padding-top: 1.15rem;
+}
+.detail-section h2,
+.evidence-inspector h2,
+.decision-heading h2 {
+  margin: 0;
+  color: #ede8ef;
+  font-size: 0.91rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.detail-section p,
+.evidence-inspector > p {
+  max-width: 56rem;
+  margin: 0.55rem 0 0;
+  color: #aaa4b2;
+  font-size: 0.88rem;
+  line-height: 1.58;
+  white-space: pre-wrap;
+}
+.detail-section--two {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.evidence-inspector {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
+  border-radius: 0.75rem;
+  padding: 1.05rem;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 9%, #151622),
+    #151620 64%
+  );
+}
+.evidence-heading,
+.decision-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.evidence-heading > span {
+  color: #aaa3b5;
+  font-size: 0.7rem;
+}
+.evidence-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+}
+.evidence-metrics > div {
+  min-width: 0;
+  border-radius: 0.5rem;
+  padding: 0.65rem 0.7rem;
+  background: rgb(5 6 11 / 36%);
+}
+.evidence-metrics dd {
+  color: #faf5f3;
+  font-size: 1rem;
+  font-weight: 630;
+}
+.assertion-list {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+.assertion-list > div {
+  border-left: 2px solid
+    color-mix(in srgb, var(--color-accent) 68%, transparent);
+  padding: 0.1rem 0.75rem 0.25rem;
+}
+.assertion-list span {
+  color: #b6a5ef;
+  font-size: 0.62rem;
+  font-weight: 720;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.assertion-list strong {
+  display: block;
+  margin-top: 0.25rem;
+  color: #eae4ef;
+  font-size: 0.78rem;
+}
+.assertion-list p {
+  margin: 0.22rem 0 0;
+  color: #aaa3b2;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+.decision-panel {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 31%, transparent);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: #171724;
+}
+.version-badge {
+  color: #cbbdff;
+}
+.decision-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin: 1rem 0;
+}
+.decision-tabs button {
+  min-height: 2.7rem;
+  border: 1px solid rgb(255 255 255 / 11%);
+  border-radius: 0.45rem;
+  color: #aca7b4;
+  background: rgb(255 255 255 / 3%);
+  font-size: 0.76rem;
+  font-weight: 650;
+}
+.decision-tabs button.is-active {
+  border-color: color-mix(in srgb, var(--color-accent) 60%, transparent);
+  color: #eee9fb;
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+}
+.decision-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.decision-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: #aaa4b1;
+  font-size: 0.69rem;
+  font-weight: 660;
+}
+.decision-form label > span {
+  color: #7f7988;
+  font-weight: 500;
+}
+.decision-form select,
+.decision-form input,
+.decision-form textarea {
+  width: 100%;
+  color-scheme: dark;
+  font-size: 0.8rem;
+}
+.decision-form textarea {
+  min-height: 4rem;
+  resize: vertical;
+}
+.decision-form__wide {
+  grid-column: 1 / -1;
+}
+.decision-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.2rem;
+}
+.decision-actions > span {
+  color: #86808f;
+  font-size: 0.68rem;
+}
+.decision-submit {
+  min-height: 2.8rem;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.8rem;
+  color: #fbf9ff;
+  font-size: 0.78rem;
+  font-weight: 720;
+  background: linear-gradient(135deg, #7652df, #6041ba);
+}
+.decision-submit--decline {
+  background: linear-gradient(135deg, #b74d62, #863040);
+}
+.decision-submit:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+.form-message {
+  margin: 0.8rem 0 0;
+  color: #cbbef3;
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+.form-message--error {
+  color: #ffadb4;
+}
+.dependency-list,
+.activity-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.dependency-list li,
+.activity-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  color: #aaa5b1;
+  font-size: 0.78rem;
+}
+.dependency-list span {
+  color: #c4b2ff;
+}
+.dependency-list strong,
+.activity-list strong {
+  color: #e4dfe7;
+}
+.activity-list span {
+  color: #8d8796;
+}
+.direct-issue-page {
+  max-width: 68rem;
+  margin: 0 auto;
+}
+
+@media (max-width: 46rem) {
+  .issue-inspector {
+    gap: 1.1rem;
+    padding: 1rem 1rem 2.2rem;
+  }
+  .issue-header {
+    display: block;
+  }
+  .issue-status {
+    justify-content: flex-start;
+    margin-top: 0.8rem;
+  }
+  .issue-facts > div {
+    flex-basis: calc(50% - 1px);
+  }
+  .detail-section--two,
+  .decision-form {
+    grid-template-columns: 1fr;
+  }
+  .decision-actions {
+    display: grid;
+    align-items: stretch;
+  }
+  .evidence-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.issue-mutation-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.issue-mutation-form label,
+.comment-entry label {
+  display: grid;
+  gap: 6px;
+}
+.issue-mutation-form input,
+.issue-mutation-form textarea,
+.issue-mutation-form select,
+.comment-entry textarea {
+  width: 100%;
+  padding: 9px;
+  color: inherit;
+  background: #111722;
+  border: 1px solid #303848;
+  border-radius: 6px;
+}
+.issue-mutation-form textarea {
+  min-height: 96px;
+}
+.comment-entry {
+  padding: 16px 0;
+  border-bottom: 1px solid #293040;
+}
+.comment-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.file-entry {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+.file-entry a {
+  overflow-wrap: anywhere;
+}
+.safe-markdown {
+  white-space: normal;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.safe-markdown > :first-child {
+  margin-top: 0;
+}
+.safe-markdown > :last-child {
+  margin-bottom: 0;
+}
+.safe-markdown pre {
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre;
+}
+.safe-markdown pre,
+.safe-markdown code {
+  font-size: 0.9em;
+}
+.safe-markdown blockquote {
+  margin-inline: 0;
+  padding-inline-start: 0.8rem;
+  border-inline-start: 2px solid rgb(255 255 255 / 18%);
+}
+.safe-markdown h1,
+.safe-markdown h2,
+.safe-markdown h3 {
+  font-size: 1em;
+}
+.markdown-image {
+  display: inline-flex;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.markdown-image img {
+  max-width: 100%;
+  height: auto;
+}
+.named-links {
+  margin-block: 0.7rem;
+}
+.named-links h3 {
+  color: #ede8ef;
+  font-size: 0.8rem;
+}
+.named-links summary {
+  cursor: pointer;
+  color: #c4b3ff;
+  font-size: 0.78rem;
+}
+
+.issue-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.issue-labels li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  color: #aaa4b2;
+  font-size: 0.72rem;
+}
+.issue-labels i {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+}
+.issue-history > summary {
+  cursor: pointer;
+  color: #aaa4b2;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.issue-history[open] > summary {
+  margin-bottom: 1rem;
+}
+.issue-history h2:not(:first-of-type) {
+  margin-top: 1.25rem;
+}
+.comment-composer textarea {
+  min-height: 4.5rem;
+}
+.comment-composer > button {
+  justify-self: end;
+  min-height: 2.5rem;
+  padding: 0.4rem 0.7rem;
+}
+.named-links > details > summary {
+  cursor: pointer;
+  min-height: 2.5rem;
+  padding-block: 0.65rem;
+  color: #c4b3ff;
+  font-size: 0.8rem;
+}
+
+.decision-controls {
+  display: contents;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+.discussion-file-picker {
+  min-height: 2.5rem;
+  border: 0;
+  padding: 0.65rem 0;
+  color: #c4b3ff;
+  background: transparent;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.issue-refresh-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgb(255 173 180 / 22%);
+  color: #ffadb4;
+  font-size: 0.8rem;
+}
+.issue-refresh-error button {
+  margin-left: auto;
+  min-height: 2.75rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  color: #eee8f1;
+  background: transparent;
+}

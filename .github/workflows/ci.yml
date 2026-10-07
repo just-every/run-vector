@@ -1,0 +1,54 @@
+name: Vector verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: vector-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 8.15.6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.8.1
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm verify
+      - name: Real development runtime and hydration
+        shell: bash
+        run: |
+          set -euo pipefail
+          setsid pnpm dev > "$RUNNER_TEMP/vector-dev.log" 2>&1 &
+          runtime_pid=$!
+          trap 'kill -- -"$runtime_pid" 2>/dev/null || true; wait "$runtime_pid" 2>/dev/null || true' EXIT
+          ready=false
+          for attempt in {1..240}; do
+            if curl --fail --silent http://127.0.0.1:15928/health > /dev/null; then
+              ready=true
+              break
+            fi
+            kill -0 "$runtime_pid"
+            sleep 1
+          done
+          if [ "$ready" != true ]; then cat "$RUNNER_TEMP/vector-dev.log"; exit 1; fi
+          pnpm test:dev
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vector-local-verification
+          path: |
+            .artifacts/verification
+            .wrangler/vector-e2e
+          if-no-files-found: ignore

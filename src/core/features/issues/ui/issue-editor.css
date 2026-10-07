@@ -1,0 +1,85 @@
+.issue-editor-controls {
+  display: contents;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.issue-editor-hint {
+  color: #928c9a;
+  font-size: 0.72rem;
+  font-weight: 400;
+}
+.issue-editor-context {
+  min-width: 0;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.7rem;
+  padding: 0.55rem 1rem;
+  background: #171823;
+}
+.issue-editor-context > summary {
+  min-height: 2.65rem;
+  align-content: center;
+  color: #d8d2e1;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.issue-editor-context > summary span {
+  margin-left: 0.35rem;
+}
+.issue-editor-context > summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+.issue-editor-context-fields {
+  display: grid;
+  gap: 1rem;
+  padding-block: 0.4rem 0.5rem;
+}
+.issue-editor-labels {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.7rem;
+  padding: 0.8rem 1rem 1rem;
+  background: #171823;
+}
+.issue-editor-labels legend {
+  padding: 0 0.2rem;
+  color: #bbb5c2;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.issue-editor-labels legend span {
+  color: #928c9a;
+  font-weight: 400;
+}
+.issue-editor-labels > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.issue-mutation-form .issue-editor-labels label {
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgb(255 255 255 / 11%);
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  color: #c9c2d2;
+  font-size: 0.73rem;
+  font-weight: 550;
+}
+.issue-mutation-form .issue-editor-labels input {
+  width: 1rem;
+  min-height: 1rem;
+  padding: 0;
+  accent-color: var(--color-accent);
+}
+.issue-editor-labels i {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+}

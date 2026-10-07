@@ -1,0 +1,51 @@
+.dependency-editor > details > summary {
+  min-height: 2.75rem;
+  cursor: pointer;
+  color: #c4b3ff;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.dependency-editor > details > summary[aria-disabled="true"] {
+  cursor: wait;
+}
+.dependency-editor > details > summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.dependency-controls {
+  display: contents;
+  min-width: 0;
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+.dependency-editor .dependency-list li {
+  align-items: center;
+}
+.dependency-editor .dependency-list a {
+  flex: 1 1 14rem;
+  min-width: 0;
+  color: #c4b3ff;
+  overflow-wrap: anywhere;
+}
+.dependency-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+.dependency-editor .dependency-list button,
+.dependency-actions > button[type="button"],
+.dependency-editor [role="alert"] button {
+  min-height: 2.75rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  color: #e6dff1;
+  background: #252134;
+  font-size: 0.8rem;
+  font-weight: 650;
+}
+.dependency-editor button:disabled {
+  opacity: 0.6;
+}

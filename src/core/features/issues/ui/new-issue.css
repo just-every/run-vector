@@ -1,0 +1,297 @@
+.new-issue-page {
+  min-height: 100svh;
+  padding: 1.5rem clamp(1rem, 4vw, 4rem) 3rem;
+  background: #12131d;
+}
+.new-issue-form {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+.new-issue-controls {
+  display: contents;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.new-issue-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 9%);
+  padding-bottom: 1.25rem;
+}
+.new-issue-header h1 {
+  margin: 0;
+  color: #f4eff1;
+  font-size: clamp(1.7rem, 2.7vw, 2.55rem);
+  font-weight: 560;
+  letter-spacing: -0.055em;
+}
+.new-issue-message {
+  margin: 0 0 0.8rem;
+  color: #c9b9ff;
+  font-size: 0.78rem;
+}
+.new-issue-message--error,
+.new-issue-state--error {
+  color: #ffadb4;
+}
+.new-issue-section,
+.new-issue-fields,
+.new-issue-more {
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.7rem;
+  padding: 1rem;
+  background: #171823;
+}
+.new-issue-section {
+  display: grid;
+  gap: 0.95rem;
+}
+.new-issue-form label {
+  display: grid;
+  gap: 0.35rem;
+  color: #bbb5c2;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.new-issue-form label > span {
+  color: #88818f;
+  font-weight: 500;
+}
+.new-issue-form input,
+.new-issue-form select,
+.new-issue-form textarea {
+  width: 100%;
+  min-height: 2.65rem;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 0.45rem;
+  padding: 0.5rem 0.6rem;
+  color: #e8e2ed;
+  color-scheme: dark;
+  background: #11121b;
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+.new-issue-form textarea {
+  min-height: 7rem;
+  resize: vertical;
+  line-height: 1.45;
+}
+.new-issue-title-field input {
+  font-size: 1rem;
+}
+.new-issue-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+.new-issue-labels {
+  margin: 1rem 0;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.7rem;
+  padding: 0.8rem 1rem 1rem;
+  background: #171823;
+}
+.new-issue-labels legend {
+  padding: 0 0.2rem;
+  color: #bbb5c2;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.new-issue-labels > span {
+  color: #8e8897;
+  font-size: 0.78rem;
+}
+.new-issue-labels > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+}
+.new-issue-labels label {
+  display: inline-flex;
+  min-height: 2.65rem;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgb(255 255 255 / 11%);
+  border-radius: 999px;
+  padding: 0.35rem 0.65rem;
+  color: #c9c2d2;
+  font-size: 0.73rem;
+  font-weight: 550;
+}
+.new-issue-labels input {
+  width: 1rem;
+  min-height: 1rem;
+  accent-color: var(--color-accent);
+}
+.new-issue-labels i {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-radius: 50%;
+}
+.new-issue-more {
+  margin-top: 1rem;
+}
+.new-issue-more summary {
+  min-height: 2rem;
+  color: #d8d2e1;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.new-issue-more > div {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.6rem;
+}
+.new-issue-more textarea {
+  min-height: 5.5rem;
+}
+.new-issue-submit {
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  color: #fff;
+  background: linear-gradient(135deg, #7652df, #6041ba);
+  font-size: 0.8rem;
+  font-weight: 740;
+}
+.new-issue-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.new-issue-state {
+  display: grid;
+  min-height: 100svh;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: #aaa4b1;
+}
+.new-issue-state button {
+  min-height: 2.75rem;
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  color: #f1ecf3;
+  background: transparent;
+}
+@media (max-width: 46rem) {
+  .new-issue-page {
+    min-height: calc(100svh - 4.8rem);
+    padding: 1rem 0.85rem calc(5.5rem + env(safe-area-inset-bottom));
+  }
+  .new-issue-fields,
+  .new-issue-more > div {
+    grid-template-columns: 1fr;
+  }
+  .new-issue-submit {
+    min-height: 2.9rem;
+  }
+}
+
+.new-issue-mode {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.5rem;
+  margin: 1rem 0;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.7rem;
+  padding: 0.65rem 1rem 0.85rem;
+  background: #171823;
+}
+.new-issue-mode legend,
+.new-intake-row legend {
+  padding: 0 0.2rem;
+  color: #bbb5c2;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.new-issue-mode label {
+  display: inline-flex;
+  min-height: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+}
+.new-issue-mode input {
+  width: 1rem;
+  min-height: 1rem;
+  accent-color: var(--color-accent);
+}
+.new-issue-mode label > span {
+  font-size: 0.7rem;
+}
+.new-intake-evidence {
+  margin-top: 1rem;
+}
+.new-intake-more > .new-intake-rows {
+  grid-template-columns: 1fr;
+}
+.new-intake-row {
+  display: grid;
+  min-width: 0;
+  gap: 0.8rem;
+  margin: 0;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 0.5rem;
+  padding: 0.8rem;
+}
+.new-intake-measurement-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr) minmax(0, 1fr);
+  gap: 0.8rem;
+}
+.new-intake-row-action {
+  justify-self: start;
+  min-height: 2.65rem;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  color: #c9b9ff;
+  background: transparent;
+  font-size: 0.75rem;
+}
+.new-intake-row-action:disabled {
+  opacity: 0.5;
+}
+@media (max-width: 46rem) {
+  .new-intake-measurement-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.new-issue-fields--single,
+.new-issue-context > div {
+  grid-template-columns: 1fr;
+}
+.new-issue-context .new-issue-fields {
+  margin-top: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+.new-issue-context .new-issue-labels {
+  margin: 0;
+}
+.new-issue-outcome-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+.new-issue-header + .new-issue-message {
+  margin-top: 1rem;
+}
+@media (max-width: 46rem) {
+  .new-issue-outcome-fields {
+    grid-template-columns: 1fr;
+  }
+}

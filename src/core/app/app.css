@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+@import './public/public.css';
+@import './ui/app-shell.css';
+@import '../features/streams/ui/streams.css';
+@import '../features/issues/ui/issues.css';
+@import '../features/issues/ui/new-issue.css';
+@import '../features/projects/ui/projects.css';
+@import '../features/search/ui/command-palette.css';
+
+:root {
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  color: #f3ede8;
+  background: #0a0d14;
+  font-synthesis: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+select,
+input,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button:not(:disabled),
+a {
+  cursor: pointer;
+}
+a {
+  color: inherit;
+}
+.app-root {
+  min-height: 100vh;
+  color: var(--color-foreground);
+  background: var(--color-background);
+}
+:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "projectId": "just-every/vector-projects",
+  "name": "Vector",
+  "sourceRepository": "https://github.com/just-every/vector-projects",
+  "license": "MIT",
+  "deployment": {
+    "target": "cloudflare-workers",
+    "artifactFile": "rer-worker-artifact.json"
+  },
+  "operations": {
+    "build": "pnpm build",
+    "verify": "pnpm verify",
+    "recovery": "Retain prior source and D1/R2 backups before migration. Restore data into isolated resources and validate references and private files before switching traffic. Application export/restore commands are not implemented."
+  }
+}

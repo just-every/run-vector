@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "id": "just-every/vector-projects",
+  "toolchain": {
+    "id": "runeditrun/edition-authoring",
+    "version": "1.1.0"
+  },
+  "parent": null,
+  "components": [
+    {
+      "id": "just-every/vector-projects",
+      "role": "edition",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "src",
+          "migrations",
+          "tests",
+          "sample-data",
+          "package.json",
+          "pnpm-lock.yaml"
+        ]
+      }
+    },
+    {
+      "id": "runeditrun/operator-auth",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/operator-auth"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "8556679074cf47fed64648235bda4447ee16e2fb",
+          "path": "modules/operator-auth",
+          "paths": [
+            "admin.mjs",
+            "config.mjs",
+            "crypto.mjs",
+            "errors.mjs",
+            "http.mjs",
+            "identity.mjs",
+            "index.d.mts",
+            "index.mjs",
+            "input.mjs",
+            "oidc/config.mjs",
+            "oidc/crypto.mjs",
+            "oidc/errors.mjs",
+            "oidc/index.d.mts",
+            "oidc/index.mjs",
+            "oidc/jwt.mjs",
+            "oidc/network.mjs",
+            "oidc/schema/oidc.sql",
+            "oidc/store.mjs",
+            "policy.mjs",
+            "routes.mjs",
+            "schema/operator-auth.sql",
+            "service.mjs",
+            "store.mjs"
+          ]
+        }
+      }
+    },
+    {
+      "id": "runeditrun/mail",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/mail"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "8556679074cf47fed64648235bda4447ee16e2fb",
+          "path": "modules/mail",
+          "paths": [
+            ".gitignore",
+            "LICENSE",
+            "doctor.mjs",
+            "index.mjs",
+            "package.json",
+            "pnpm-lock.yaml",
+            "src/adapters/cloudflare/headers.mjs",
+            "src/adapters/cloudflare/index.mjs",
+            "src/adapters/cloudflare/response.mjs",
+            "src/adapters/resend/index.mjs",
+            "src/adapters/resend/response.mjs",
+            "src/adapters/resend/serialize.mjs",
+            "src/adapters/resend/size.mjs",
+            "src/adapters/sendgrid/index.mjs",
+            "src/adapters/sendgrid/serialize.mjs",
+            "src/core/errors.mjs",
+            "src/core/transport.mjs",
+            "src/core/validation.mjs",
+            "src/development/index.mjs",
+            "src/doctor/common.mjs",
+            "src/doctor/dns.mjs",
+            "src/doctor/index.mjs",
+            "src/doctor/probe.mjs",
+            "src/doctor/receive.mjs",
+            "src/doctor/records.mjs",
+            "src/events/index.mjs",
+            "src/events/intake.mjs",
+            "src/events/storage.mjs",
+            "src/events/verify.mjs",
+            "src/inbound/bytes.mjs",
+            "src/inbound/headers.mjs",
+            "src/inbound/index.mjs",
+            "src/inbound/mime.mjs",
+            "src/inbound/multipart.mjs",
+            "src/inbound/resend-attachment.mjs",
+            "src/inbound/resend.mjs",
+            "src/inbound/sendgrid.mjs",
+            "src/unsubscribe/index.mjs"
+          ]
+        }
+      }
+    },
+    {
+      "id": "runeditrun/deploy-kit",
+      "role": "foundation",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/deploy-kit"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "8556679074cf47fed64648235bda4447ee16e2fb",
+          "path": "modules/deploy-kit",
+          "paths": [
+            "artifact.mjs",
+            "build-modules.mjs",
+            "cli.mjs",
+            "default-stage.mjs",
+            "deploy.mjs",
+            "health.mjs",
+            "index.mjs",
+            "migrations.mjs",
+            "prepare.mjs",
+            "provider.mjs",
+            "render.mjs",
+            "resources.mjs",
+            "templates.mjs",
+            "validation.mjs",
+            "worker.mjs"
+          ]
+        }
+      }
+    },
+    {
+      "id": "runeditrun/operations",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/operations"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "8556679074cf47fed64648235bda4447ee16e2fb",
+          "path": "operations",
+          "paths": [
+            "operations.mjs",
+            "project-operations.mjs"
+          ]
+        }
+      }
+    },
+    {
+      "id": "runeditrun/edition-authoring",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/edition-authoring"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "8556679074cf47fed64648235bda4447ee16e2fb",
+          "path": "edition-authoring",
+          "paths": [
+            "cli.mjs",
+            "files.mjs",
+            "manifest.mjs",
+            "release.mjs",
+            "sources.mjs",
+            "updates.mjs"
+          ]
+        }
+      }
+    },
+    {
+      "id": "runeditrun/edition-authoring-distribution",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "scripts/edition-authoring"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "35241a1a6d9408fbea89d266ec04806e9071a1b8",
+          "path": "edition-authoring",
+          "paths": [
+            "cli.mjs",
+            "files.mjs",
+            "manifest.mjs",
+            "release.mjs",
+            "sources.mjs",
+            "updates.mjs"
+          ]
+        }
+      }
+    }
+  ]
+}

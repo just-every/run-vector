@@ -1,0 +1,177 @@
+.app-shell {
+  display: grid;
+  min-height: 100svh;
+  grid-template-columns: 14.5rem minmax(0, 1fr);
+  background: #10111a;
+}
+.app-sidebar {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  border-right: 1px solid rgb(255 255 255 / 7%);
+  padding: 1.15rem 0.7rem;
+  background: #0d0e15;
+}
+.app-brand {
+  display: block;
+  padding: 0.2rem 0.45rem 1.55rem;
+  text-decoration: none;
+}
+.app-brand .vector-mark {
+  font-size: 1.15rem;
+}
+.app-brand .vector-mark svg {
+  width: 1.35rem;
+  height: 1.3rem;
+}
+.app-nav {
+  display: grid;
+  gap: 0.25rem;
+}
+.app-nav-link {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.48rem;
+  padding: 0.55rem 0.7rem;
+  color: #9e9aa9;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.app-nav-link:hover {
+  color: var(--color-foreground);
+  background: rgb(255 255 255 / 5%);
+}
+.app-nav-link.is-active {
+  color: var(--color-foreground);
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  box-shadow: inset 2px 0 var(--color-accent);
+}
+.app-nav-link > span:first-child {
+  width: 1.1rem;
+  color: #c4b3ff;
+  font-size: 1.05rem;
+  text-align: center;
+}
+.app-sidebar-foot {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: auto;
+  padding: 0.65rem 0.7rem;
+  color: #888491;
+  font-size: 0.75rem;
+}
+.app-nav-actions {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1rem;
+}
+.app-search-trigger,
+.app-new-issue-link {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 0.48rem;
+  padding: 0.5rem 0.7rem;
+  color: #c4bfcc;
+  background: rgb(255 255 255 / 3%);
+  font-size: 0.78rem;
+  text-align: left;
+  text-decoration: none;
+}
+.app-search-trigger:hover {
+  border-color: rgb(255 255 255 / 18%);
+  color: #eee8f1;
+}
+.app-search-trigger > span:first-child {
+  color: #c5b2ff;
+  font-size: 1rem;
+}
+.app-search-trigger kbd {
+  margin-left: auto;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 0.26rem;
+  padding: 0.12rem 0.28rem;
+  color: #8f8998;
+  font-family: inherit;
+  font-size: 0.59rem;
+}
+.app-new-issue-link {
+  justify-content: center;
+  border-color: color-mix(in srgb, var(--color-accent) 52%, transparent);
+  color: #f5f1ff;
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  font-weight: 700;
+}
+.app-new-issue-link:hover {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+.app-avatar {
+  display: grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  place-items: center;
+  border-radius: 50%;
+  color: #1e172f;
+  background: #c8b5ff;
+  font-size: 0.56rem;
+  font-weight: 800;
+}
+.app-stage {
+  min-width: 0;
+  min-height: 100svh;
+  background: #12131d;
+}
+.app-mobile-nav {
+  display: none;
+}
+
+@media (max-width: 46rem) {
+  .app-shell {
+    display: block;
+    padding-bottom: 4.8rem;
+  }
+  .app-sidebar {
+    display: none;
+  }
+  .app-stage {
+    min-height: calc(100svh - 4.8rem);
+  }
+  .app-mobile-nav {
+    position: fixed;
+    z-index: 20;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-top: 1px solid rgb(255 255 255 / 10%);
+    padding: 0.4rem max(0.4rem, env(safe-area-inset-right))
+      calc(0.4rem + env(safe-area-inset-bottom))
+      max(0.4rem, env(safe-area-inset-left));
+    background: rgb(13 14 21 / 95%);
+    backdrop-filter: blur(18px);
+  }
+  .app-mobile-nav .app-nav-link {
+    min-height: 3.65rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.12rem;
+    border: 0;
+    padding: 0.25rem;
+    color: #9e9aa9;
+    background: transparent;
+    font-size: 0.61rem;
+  }
+  .app-mobile-nav .app-nav-link > span:first-child {
+    height: 1.2rem;
+  }
+}
+
+.app-settings-mobile { display: none; }
+@media (max-width: 700px) { .app-settings-mobile { display: block; padding: .8rem 1rem; text-align: right; color: #c8b8ea; } }

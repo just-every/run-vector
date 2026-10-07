@@ -1,0 +1,377 @@
+{
+  "id": "vector",
+  "name": "Vector",
+  "version": "0.1.0",
+  "maturity": "First public foundation release candidate; broader contract and capacity obligations remain as documented.",
+  "category": "projects",
+  "spine": {
+    "id": "projects",
+    "record": "issue or task in a container"
+  },
+  "replaces": [
+    {
+      "name": "Linear",
+      "edition": null
+    },
+    {
+      "name": "Asana",
+      "edition": null
+    }
+  ],
+  "description": "A self-hosted, decision-centred issue tracker for one business, with evidence-backed intake, a unified Current stream, personal work queues, and explainable project risk.",
+  "capabilities": [
+    {
+      "id": "owner-landing",
+      "clauses": [
+        "HOME-001"
+      ]
+    },
+    {
+      "id": "operators-and-teams",
+      "clauses": [
+        "OPS-001",
+        "OPS-002",
+        "OPS-003",
+        "OPS-004",
+        "TEAM-001",
+        "TEAM-002",
+        "TEAM-003",
+        "TEAM-004"
+      ]
+    },
+    {
+      "id": "issue-tracking",
+      "clauses": [
+        "ISSUE-001",
+        "ISSUE-002",
+        "ISSUE-003",
+        "ISSUE-004",
+        "ISSUE-005",
+        "ISSUE-006",
+        "ISSUE-007",
+        "ISSUE-008",
+        "ISSUE-009",
+        "ISSUE-010",
+        "ISSUE-011",
+        "ISSUE-012",
+        "ISSUE-013",
+        "ISSUE-014",
+        "ISSUE-015",
+        "REL-001",
+        "REL-002",
+        "REL-003",
+        "REL-004",
+        "REL-005",
+        "REL-006"
+      ]
+    },
+    {
+      "id": "evidence-backed-intake",
+      "clauses": [
+        "INTAKE-001",
+        "INTAKE-002",
+        "INTAKE-003",
+        "INTAKE-004",
+        "INTAKE-005",
+        "INTAKE-006",
+        "INTAKE-007",
+        "INTAKE-008",
+        "INTAKE-009",
+        "INTAKE-010",
+        "INTAKE-011"
+      ]
+    },
+    {
+      "id": "current-stream",
+      "clauses": [
+        "CURR-001",
+        "CURR-002",
+        "CURR-003",
+        "CURR-004",
+        "CURR-005",
+        "CURR-006",
+        "CURR-007",
+        "CURR-008",
+        "CURR-009"
+      ]
+    },
+    {
+      "id": "personal-work",
+      "clauses": [
+        "WORK-001",
+        "WORK-002",
+        "WORK-003"
+      ]
+    },
+    {
+      "id": "projects-and-cycles",
+      "clauses": [
+        "PROJ-001",
+        "PROJ-002",
+        "PROJ-003",
+        "PROJ-004",
+        "PROJ-005",
+        "PROJ-006",
+        "PROJ-007",
+        "PROJ-008",
+        "PROJ-009",
+        "CYCLE-001",
+        "CYCLE-002",
+        "CYCLE-003",
+        "CYCLE-004",
+        "CYCLE-005",
+        "CYCLE-006"
+      ]
+    },
+    {
+      "id": "search-and-views",
+      "clauses": [
+        "SEARCH-001",
+        "SEARCH-002",
+        "SEARCH-003",
+        "VIEW-001",
+        "VIEW-002",
+        "VIEW-003",
+        "VIEW-004",
+        "CMD-001",
+        "CMD-002",
+        "CMD-003"
+      ]
+    },
+    {
+      "id": "notifications",
+      "clauses": [
+        "NOTIFY-001",
+        "NOTIFY-002",
+        "NOTIFY-003",
+        "NOTIFY-004",
+        "NOTIFY-005"
+      ]
+    },
+    {
+      "id": "portable-data",
+      "clauses": [
+        "DATA-001",
+        "DATA-002",
+        "DATA-003",
+        "DATA-004",
+        "DATA-005"
+      ]
+    }
+  ],
+  "nonGoals": [
+    "Multiple workspaces, tenants, or organisations",
+    "Roles, per-team visibility, and granular permissions",
+    "External customer accounts, portals, forms, or public roadmaps",
+    "Source-specific Sentry, Slack, GitHub, GitLab, Jira, or email integrations in core",
+    "AI triage, deduplication, ranking, or project-health inference",
+    "Custom workflow categories",
+    "Manually drag-ranked backlogs; every order in Vector is derived and explainable",
+    "Initiatives, roadmaps, Gantt charts, critical-path planning, time tracking, or resource management",
+    "Per-issue checklists",
+    "Multiple assignees",
+    "Notification delivery by email, chat, or push; notifications are in-app only",
+    "Native mobile applications",
+    "Real-time collaborative text editing"
+  ],
+  "externals": [
+    {
+      "id": "transactional-email",
+      "required": true,
+      "why": "BASE-ACCESS-001 requires delivery of single-use magic links; Cloudflare D1, R2, and Queues do not deliver internet email. It is the only outbound channel: NOTIFY-001 keeps every product notification in-app.",
+      "data": [
+        "operator email address",
+        "single-use sign-in URL"
+      ],
+      "adapters": [
+        "mail.sender.v1"
+      ]
+    }
+  ],
+  "env": [
+    {
+      "name": "APP_ORIGIN",
+      "required": true,
+      "secret": false,
+      "why": "Canonical HTTPS origin used in redirects and magic links."
+    },
+    {
+      "name": "MAIL_MODE",
+      "required": true,
+      "secret": false,
+      "why": "sendgrid for configured remote Base delivery; local-outbox is restricted to explicit loopback development."
+    },
+    {
+      "name": "FIRST_OWNER_EMAIL",
+      "required": false,
+      "secret": false,
+      "why": "Configured installation owner; never inferred from a request. Required with the other first-run fields when initializing an empty installation."
+    },
+    {
+      "name": "FIRST_OWNER_NAME",
+      "required": false,
+      "secret": false,
+      "why": "Display name of the explicitly configured first operator."
+    },
+    {
+      "name": "WORKSPACE_NAME",
+      "required": false,
+      "secret": false,
+      "why": "Name for the empty workspace at first run."
+    },
+    {
+      "name": "WORKSPACE_TIMEZONE",
+      "required": false,
+      "secret": false,
+      "why": "Named IANA timezone for initial calendar rules."
+    },
+    {
+      "name": "DEFAULT_TEAM_NAME",
+      "required": false,
+      "secret": false,
+      "why": "Name of the first team, created with seven workflow categories."
+    },
+    {
+      "name": "DEFAULT_TEAM_PREFIX",
+      "required": false,
+      "secret": false,
+      "why": "Two to ten uppercase letters for the first team issue identifiers."
+    },
+    {
+      "name": "SESSION_SECRET",
+      "required": false,
+      "secret": true,
+      "why": "At least 32 characters for Base domain-separated session/link credential hashing. Required for the remote installation."
+    },
+    {
+      "name": "MAIL_PROVIDER",
+      "required": false,
+      "secret": false,
+      "why": "Explicit Base mail provider; remote deployment selects sendgrid. Required for the remote installation."
+    },
+    {
+      "name": "MAIL_API_KEY",
+      "required": false,
+      "secret": true,
+      "why": "SendGrid API key supplied only as a Worker secret binding. Required for the remote installation."
+    },
+    {
+      "name": "MAIL_FROM",
+      "required": false,
+      "secret": false,
+      "why": "Verified sender address for Base sign-in and invitation mail. Required for the remote installation."
+    }
+  ],
+  "deploy": {
+    "healthPath": "/health",
+    "operatorPath": "/app",
+    "apiPath": "/api",
+    "publicPaths": [
+      "/",
+      "/signin",
+      "/health",
+      "/assets/",
+      "/favicon.svg",
+      "/auth/request",
+      "/auth/consume",
+      "/auth/signout"
+    ]
+  },
+  "customFields": [
+    "issue",
+    "project"
+  ],
+  "extensionPoints": {
+    "contributions": [
+      "app.page.v1",
+      "app.navigation.v1",
+      "settings.section.v1",
+      "api.route.v1",
+      "job.consumer.v1",
+      "schedule.cron.v1"
+    ],
+    "policies": [
+      "operator.management.v1",
+      "issue.defaults.v1",
+      "issue.can-delete.v1",
+      "intake.recommendation.v1",
+      "current.ranking.v1",
+      "project.health.v1",
+      "cycle.rollover.v1"
+    ],
+    "events": [
+      "issue.created.v1",
+      "issue.updated.v1",
+      "issue.completed.v1",
+      "comment.created.v1",
+      "intake.received.v1",
+      "intake.decided.v1",
+      "project.updated.v1",
+      "cycle.closed.v1",
+      "notification.created.v1",
+      "import.completed.v1"
+    ],
+    "slots": [
+      "navigation.after.v1",
+      "current.header.after.v1",
+      "current.item.actions.v1",
+      "my-work.header.after.v1",
+      "issue.header.after.v1",
+      "issue.sidebar.after.v1",
+      "issue.detail.tabs.v1",
+      "project.row.actions.v1",
+      "project.detail.tabs.v1",
+      "settings.sections.after.v1"
+    ],
+    "adapters": [
+      "mail.sender.v1",
+      "signal.source.v1"
+    ]
+  },
+  "limits": {
+    "status": "estimated-not-load-tested",
+    "operators": 100,
+    "concurrentOperators": 50,
+    "teams": 50,
+    "issues": 250000,
+    "projects": 2000,
+    "cyclesPerTeam": 500,
+    "commentsPerIssue": 1000,
+    "evidenceRevisionsPerIssue": 500,
+    "savedViewsPerOperator": 100,
+    "labels": 500,
+    "labelsPerIssue": 20,
+    "dependencyLinksPerIssue": 50,
+    "signalSources": 50,
+    "bulkEditIssuesPerOperation": 250,
+    "importRecordsPerRun": 5000,
+    "attachmentBytesPerFile": 26214400,
+    "attachmentBytesTotal": 10737418240,
+    "attachmentMimeTypes": [
+      "image/png",
+      "image/jpeg",
+      "image/webp",
+      "image/gif",
+      "application/pdf",
+      "text/plain",
+      "text/csv",
+      "application/json",
+      "application/zip"
+    ],
+    "requestBodyBytes": 1048576,
+    "authenticatedRequestsPerMinutePerOperator": 600,
+    "publicRequestsPerMinutePerIp": 120,
+    "magicLinkRequestsPer15MinutesPerIp": 5,
+    "signalSourceRequestsPerMinutePerSource": 300,
+    "signalSourceRequestsPerMinutePerIp": 600
+  },
+  "accessibility": {
+    "level": "WCAG 2.2 AA",
+    "status": "target; automated level AA, not yet verified on the prototype"
+  },
+  "operatingCost": {
+    "status": "estimate",
+    "monthlyUsd": "0-15",
+    "assumptions": "Up to 20 active operators, 100000 issues, 5 GB attachments, and moderate queue traffic on Cloudflare; transactional email is billed separately by the selected provider."
+  }
+}

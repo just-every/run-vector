@@ -1,0 +1,53 @@
+{
+  "contractChanges": {
+    "BASE-ACCESS-002": {
+      "change": "changed",
+      "summary": "Otherwise-admissible protected API requests return 401 at session validation, while native documents and generated RPC preserve their identifiable session-denial protocols with no private product payload or requested mutation.",
+      "was": "A session expires after at most 30 days of inactivity; sign-out revokes that session. Every operator endpoint requires a valid session and returns 401 without one.",
+      "now": "A session expires after at most 30 days of inactivity; sign-out revokes that session. A valid session is required before an operator request reads private product data or performs its requested action. A protected operator document and each private generated server-function handler validate the session independently; a document gate does not authorize a function call. For an otherwise-admissible request that reaches session validation, a protected operator HTTP API returns 401 when the session is missing, expired, or revoked; a protected document returns its native sign-in response; and a generated transport may encode an identifiable session denial or sign-in redirect in its framework protocol, including a 200 serialized redirect. No such denial response exposes private product data or performs the requested mutation. Declared public exceptions remain governed by BASE-ACCESS-003, and host, method, Origin/CSRF, input, and runtime guards retain their normal order."
+    }
+  },
+  "version": "0.1.0",
+  "date": "2026-10-07",
+  "extensionPointChanges": [],
+  "migrations": [
+    {
+      "id": "0003_native_access.sql",
+      "buyerSteps": "Apply after existing immutable migrations. Removes implicit local/header admission; request a native magic link. Local outbox is restricted to loopback development."
+    },
+    {
+      "id": "0004_discussion_files.sql",
+      "buyerSteps": "Apply in order; add the declared R2 FILES binding before using issue files. Existing records remain intact."
+    },
+    {
+      "id": "0005_file_lifecycle.sql",
+      "buyerSteps": "Expand existing file metadata with ready state; new uploads first reserve pending metadata and expose failures. Existing ready files are unchanged. Recover interrupted uploads by removing their retained record/blob and re-uploading."
+    },
+    {
+      "id": "0006_named_links.sql",
+      "buyerSteps": "Apply in order; adds issue/comment-owned named HTTPS links. Comment deletion erases attached link content atomically."
+    },
+    {
+      "id": "0007_file_removal_intents.sql",
+      "buyerSteps": "Apply in order; persist removal intent before R2, retain unresolved reservations and reconcile old tombstone keys without replacing history. Enable declared genuine cleanup Cron only when deploying a reviewed target. No remote scheduling has been verified."
+    },
+    {
+      "id": "0008_operator_evidence.sql",
+      "buyerSteps": "Apply in order; existing source evidence defaults to source origin with no changed assertions; native operator reports add attributed evidence, optional HTTPS references and customer reports."
+    },
+    {
+      "id": "0009_activity_actor_name.sql",
+      "buyerSteps": "Apply in order; records named automation on new deferral-return activity without rewriting earlier actors or decisions. Declared local Cron performs bounded returns; remote latency/capacity remains unverified."
+    },
+    {
+      "id": "0010_workspace_foundation.sql",
+      "buyerSteps": "Apply immutable additive foundation migration after 0009; supply explicit first-owner/workspace/team inputs for a no-sample install. Preserve existing setup marker and stored product data."
+    },
+    {
+      "id": "0011_base_operator_auth.sql",
+      "buyerSteps": "Apply additive Base auth schema and explicit existing operator identity mapping; prior native migration/history remain intact. Production sign-in uses Base confirmation POST and new host-only Base session cookie. Configure SESSION_SECRET and Base SendGrid settings; legacy native cookies do not admit remote access."
+    }
+  ],
+  "breaking": true,
+  "agentUpdateInstructions": "Preserve applied migrations and product customizations. Configure explicit first-owner and Base auth/mail inputs; use credential-free artifact preparation and the trusted deploy controller, retaining identity receipts. Re-run full verification and affected development/foundation/removal journeys. Portable export/restore and wider contract requirements remain incomplete."
+}

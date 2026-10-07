@@ -1,0 +1,96 @@
+.settings-page {
+  max-width: 58rem;
+  padding: 2rem;
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+}
+.settings-page h1 {
+  font-size: 1.65rem;
+  font-weight: 650;
+}
+.settings-page h2 {
+  font-size: 1.1rem;
+  font-weight: 650;
+  margin-bottom: 0.65rem;
+}
+.settings-page p {
+  color: #b8b3c3;
+  margin-block: 0.7rem;
+  line-height: 1.6;
+}
+.settings-page .settings-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+}
+.settings-page section {
+  margin-top: 1.5rem;
+  padding: 1.4rem;
+  border: 1px solid #34313e;
+  background: #16151e;
+  border-radius: 0.7rem;
+}
+.settings-page form {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+.settings-page input {
+  width: min(100%, 28rem);
+  padding: 0.7rem;
+  min-height: 44px;
+  border: 1px solid #635e70;
+  border-radius: 0.35rem;
+  background: #22202c;
+  color: #f3ede8;
+}
+.settings-page button {
+  border: 1px solid #635e70;
+  border-radius: 0.35rem;
+  padding: 0.55rem 0.8rem;
+  min-height: 44px;
+  background: #282432;
+  color: #f3ede8;
+}
+.settings-page button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.settings-page ul {
+  list-style: none;
+  padding: 0;
+}
+.settings-page li {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 1rem;
+  border-bottom: 1px solid #34313e;
+}
+.settings-page li span {
+  display: block;
+  font-size: 0.85rem;
+  color: #b8b3c3;
+}
+.settings-confirm {
+  padding: 1rem;
+  border: 1px solid #8a6f60;
+  border-radius: 0.35rem;
+  margin-top: 1rem;
+}
+.settings-confirm button + button {
+  margin-left: 0.6rem;
+}
+@media (max-width: 700px) {
+  .settings-page {
+    padding: 1rem 1rem 7rem;
+  }
+  .settings-page section {
+    padding: 1rem;
+  }
+  .settings-page li {
+    flex-direction: column;
+    align-items: start;
+  }
+}

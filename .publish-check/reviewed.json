@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "findings": [
+    {
+      "rule": "secret.url-credentials",
+      "path": "tests/markdown-rendering.test.tsx",
+      "blob": "70d978f9e77e741ebcbb8cfffc5a98c657a25364",
+      "reason": "Deterministic test or conformance inputs in tests/markdown-rendering.test.tsx exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.url-credentials",
+      "path": "tests/worker/links.test.ts",
+      "blob": "cab0834e817a0dc58132b3e0422bd7aaca5565e4",
+      "reason": "Deterministic test or conformance inputs in tests/worker/links.test.ts exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/deploy-kit/tests/cron-contract.test.mjs",
+      "blob": "9f8921fe91f2e6093d8adeb53159af569a26956c",
+      "reason": "Deterministic test or conformance inputs in vendor/base/deploy-kit/tests/cron-contract.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/deploy-kit/tests/deploy.test.mjs",
+      "blob": "e99257490718b0af3c8d4f6dadeb4963f7cf2398",
+      "reason": "Deterministic test or conformance inputs in vendor/base/deploy-kit/tests/deploy.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.url-credentials",
+      "path": "vendor/base/mail/tests/cloudflare/request.test.mjs",
+      "blob": "1b640951f2281059f096a16010fb9e05f2339469",
+      "reason": "Deterministic test or conformance inputs in vendor/base/mail/tests/cloudflare/request.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.url-credentials",
+      "path": "vendor/base/mail/tests/core/validation.test.mjs",
+      "blob": "d205360b75e461b20b0ea35bec68fc79a5254dad",
+      "reason": "Deterministic test or conformance inputs in vendor/base/mail/tests/core/validation.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/mail/tests/doctor/cli.test.mjs",
+      "blob": "e09411025b832391bc7177ba8bdb0c9f616e8804",
+      "reason": "Deterministic test or conformance inputs in vendor/base/mail/tests/doctor/cli.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.provider-token",
+      "path": "vendor/base/mail/tests/events/verify.test.mjs",
+      "blob": "1513d2e4f871ead7f6ff4886c6248576a514a3ee",
+      "reason": "Fixed local Svix/Resend webhook-signature interoperability vector with a known payload, timestamp and expected MAC; its test bytes and signature assertions are unchanged. This inbound-verification key is not a provider API credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07",
+      "fixtureValuesSha256": [
+        "ce5db258282b9663fd2657d169f02e0f1efea3868e65bc3ea9bd78b4da414f07"
+      ]
+    },
+    {
+      "rule": "secret.url-credentials",
+      "path": "vendor/base/mail/tests/unsubscribe/unsubscribe.test.mjs",
+      "blob": "27e7e7e7cfec5e7f6e14f93ff2e8e57c6c5050ed",
+      "reason": "Deterministic test or conformance inputs in vendor/base/mail/tests/unsubscribe/unsubscribe.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/conformance/index.mjs",
+      "blob": "3ef7b10e41d440f3fa1c10a109256c5e5a415481",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/conformance/index.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/binding-runtime.mjs",
+      "blob": "c26c6c6ce5c4300ca7892586c1bd182eb174f505",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/binding-runtime.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/binding-worker.mjs",
+      "blob": "994215071ffc95fed726549b3a05d3c44e8058c5",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/binding-worker.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/binding.test.mjs",
+      "blob": "e8946bea3d6cbd58860dcc89dc5bcee1ec7c704f",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/binding.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/runtime.mjs",
+      "blob": "22eefaf1e44af3de9954d558501dcfec525ff7af",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/runtime.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/types.check.mts",
+      "blob": "2164a48794a10e25b0fc3192aaf478c18b92f601",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/types.check.mts exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/worker.mjs",
+      "blob": "05c98c289e9f52b25c19ef38a4d1f426eca2c97a",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/worker.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/oidc/tests/workerd.test.mjs",
+      "blob": "f6bc304f3c699d3028e14c5ce0bb31d08d5696d0",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/oidc/tests/workerd.test.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/tests/identity-types.check.mts",
+      "blob": "d1c5d2b1c93cb09ee7ef3f1b7196ffc76bf56365",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/tests/identity-types.check.mts exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "secret.assignment",
+      "path": "vendor/base/operator-auth/tests/regression-runtime.mjs",
+      "blob": "ae0cd8040ba7238f23dc02e170bf21925058ebe5",
+      "reason": "Deterministic test or conformance inputs in vendor/base/operator-auth/tests/regression-runtime.mjs exercise authentication, signature validation or hostile URLs; no live service credential.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "hygiene.email",
+      "path": "vendor/base/mail/tests/inbound/hydration.test.mjs",
+      "blob": "99243c0e7d59c024466dee65c8e5343492295a2e",
+      "reason": "The fixed HTTPS URL with userinfo on the real allowed provider CDN is a hostile input. The test requires rejection before fetching; it is not an email address or credential. Changing the host would test host rejection instead of userinfo rejection.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    },
+    {
+      "rule": "hygiene.email",
+      "path": "scripts/deployment/tests/input-boundaries.test.mjs",
+      "blob": "b5e91d0d728e9e9b025d7effe2f39238a271fe90",
+      "reason": "These exact malformed mailbox fixtures exercise one-character and numeric-only top-level domain rejection before any provider write. Replacing them with valid reserved domains would remove the boundary cases. All values are synthetic test inputs.",
+      "reviewer": "Vector source release review",
+      "date": "2026-10-07"
+    }
+  ]
+}
