@@ -14,15 +14,15 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   await page.getByLabel('Description', { exact: true }).fill(fields[1][1]);
   await page.getByLabel(/^Team/).selectOption(teamId);
   await page.getByText('Optional context', { exact: true }).click();
-  await page.getByLabel('Assignee', { exact: true }).selectOption(operatorId);
-  await page.getByLabel('Priority', { exact: true }).selectOption('high');
+  await page.getByLabel(/^Assignee/).selectOption(operatorId);
+  await page.getByLabel(/^Priority/).selectOption('high');
   for (const [name, value] of fields.slice(2)) await page.getByLabel(name).fill(value);
   await beforePrivateNavigation(page, page.url());
   await page.reload();
   await page.getByRole('textbox', { name: /^Title/ }).waitFor();
   await page.getByText('Optional context', { exact: true }).click();
   for (const [name, value] of fields) assert.equal(await page.getByLabel(name).inputValue(), value);
-  for (const [name, value] of [[/^Team/, teamId], ['Assignee', operatorId], ['Priority', 'high']])
+  for (const [name, value] of [[/^Team/, teamId], [/^Assignee/, operatorId], [/^Priority/, 'high']])
     assert.equal(await page.getByLabel(name).inputValue(), value);
   for (const path of ['/api/search?q=' + encodeURIComponent(title), '/api/issues?q=' + encodeURIComponent(title)]) {
     const response = await context.request.get(base + path);
@@ -32,7 +32,7 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   }
   // Clear through the real form so the subsequent creation journey starts clean.
   for (const [name] of fields) await page.getByLabel(name).fill('');
-  await page.getByLabel('Assignee', { exact: true }).selectOption('');
-  await page.getByLabel('Priority', { exact: true }).selectOption('none');
+  await page.getByLabel(/^Assignee/).selectOption('');
+  await page.getByLabel(/^Priority/).selectOption('none');
   record('ISSUE-015', 'Typed unique unsent title, multiline description, team, assignee, priority, estimate, date, outcome and impact survive reload in the same context; authenticated search/list contain no created record.');
 }
