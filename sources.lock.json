@@ -3299,7 +3299,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-events.mjs": {
-      "sha256": "cd6fd21a2eee3fd6146c940fb5d21990eb8038718c2f6a0a4d7461285409c89b",
+      "sha256": "0ee762f1667484af34b73482e17adbbbdea1684c8e87d425a7c4bede8d87cdca",
       "executable": false
     },
     "tests/e2e/collaboration-issue.mjs": {
