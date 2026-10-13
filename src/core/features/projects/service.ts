@@ -488,8 +488,7 @@ function capacityRisk(
     const cycle = snapshot.cycles.find((item) => item.id === cycleId)
     if (
       !cycle ||
-      cycle.capacity === null ||
-      cycleIssues.some((issue) => issue.estimate === null)
+      cycle.capacity === null
     ) {
       return []
     }
@@ -500,11 +499,14 @@ function capacityRisk(
     if (points <= cycle.capacity) {
       return []
     }
+    const unestimated = cycleIssues.filter((issue) => issue.estimate === null).length
     return [
       {
         kind: 'capacity' as const,
         issueIdentifiers: cycleIssues.map((issue) => issue.identifier),
-        message: `${cycle.name} has ${points} remaining points against a capacity of ${cycle.capacity}.`,
+        message: unestimated > 0
+          ? `${cycle.name} has at least ${points} remaining estimated points and ${unestimated} unestimated issues against a capacity of ${cycle.capacity}.`
+          : `${cycle.name} has ${points} remaining points against a capacity of ${cycle.capacity}.`,
       },
     ]
   })

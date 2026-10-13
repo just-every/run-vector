@@ -288,7 +288,8 @@ export function createApiApp() {
       query.data.includeArchived === "true",
     );
     const counts = projects.reduce<Record<string, number>>((total, project) => {
-      total[project.health] = (total[project.health] ?? 0) + 1;
+      if (project.health !== "none")
+        total[project.health] = (total[project.health] ?? 0) + 1;
       total[project.lifecycle] = (total[project.lifecycle] ?? 0) + 1;
       return total;
     }, {});
