@@ -644,7 +644,7 @@ try {
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
   await currentJourney(page, context, base, ids.flow, evidence, record);
-  await keyboardJourney(page, base, record);
+  await keyboardJourney(page, context, base, record);
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
