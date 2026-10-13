@@ -1,10 +1,10 @@
-import { loadInstallerSeed } from '../../scripts/base-onboarding/setup-manifest.mjs';
-import {createState} from '../../scripts/base-onboarding/state.mjs';
+import { loadInstallerSeed } from '@runeditrun/rer/setup-manifest';
+import {createState} from '@runeditrun/rer/state';
 import {createSeed} from '../../scripts/installer/seed.mjs';
 import {commandEnvironment} from '../../scripts/installer-env.mjs';
-import {readSettings} from '../../scripts/base-onboarding/adapter-settings.mjs';
+import {readSettings} from '@runeditrun/rer/adapter-settings';
 import {settings} from '../../scripts/installer/definition.mjs';
-import {readOwnedGroup} from '../../scripts/base-onboarding/local/process-table.mjs';
+import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
 import assert from 'node:assert/strict';
 import {developmentGroups,assertDevelopmentGone} from './owned-dev-processes.mjs';
 import {waitForPortRelease} from '../../scripts/installer/teardown.mjs';

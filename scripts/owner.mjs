@@ -1,12 +1,12 @@
-import { loadInstallerSeed } from './base-onboarding/setup-manifest.mjs';
+import { loadInstallerSeed } from '@runeditrun/rer/setup-manifest';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { createState } from './base-onboarding/state.mjs';
+import { createState } from '@runeditrun/rer/state';
 import { isolatedStore } from './installer-env.mjs';
 import { prepareHosting, hostingDeclaration } from './installer/hosting.mjs';
 import { createSeed } from './installer/seed.mjs';
-import { installationFailure } from './base-onboarding/failures.mjs';
+import { installationFailure } from '@runeditrun/rer/failures';
 export async function ownerCommand(command,env=process.env,root=fileURLToPath(new URL('../',import.meta.url))) {
  const store=isolatedStore(await createState(root,await loadInstallerSeed(process.cwd(),createSeed())));
  const controller=new AbortController(),cancel=()=>controller.abort();store.setCommandSignal(controller.signal);

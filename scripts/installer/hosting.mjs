@@ -1,8 +1,8 @@
 import {validatePublicConfiguration,validateSuppliedSecrets} from '../deployment/input-validation.mjs';
 import declaration from '../../deploy.json' with {type:'json'};
-import { ownerAccountHosting } from '../base-onboarding/adapter-hosting.mjs';
-import { prepareSettings, readSettings } from '../base-onboarding/adapter-settings.mjs';
-import { writePrivateFile, privateDirectory } from '../base-onboarding/private-files.mjs';
+import { ownerAccountHosting } from '@runeditrun/rer/adapter-hosting';
+import { prepareSettings, readSettings } from '@runeditrun/rer/adapter-settings';
+import { writePrivateFile, privateDirectory } from '@runeditrun/rer/private-files';
 import { publicNames } from './definition.mjs';
 import { join } from 'node:path';
 export const hostingDeclaration = '.rer/deploy/declaration.json';
@@ -33,7 +33,7 @@ export async function hosting(context) {
 
 // Public deploy uses the same owner declaration and secret custody as the installer.
 export async function deploy(context) {
- const { ownerDeploy } = await import('../base-cli/cli/deploy.mjs');
+ const { ownerDeploy } = await import('@runeditrun/rer/deploy');
  const { adapter } = await import('./local.mjs');
  if (context.options.dryRun) return ownerDeploy('deploy.json', adapter)(context);
  const prepared = await prepareHosting({ ...context, fail: () => Error('Deployment inputs missing') }, process.env);

@@ -1,7 +1,7 @@
-import { createPortabilityHandler, PortabilityError, MAX_LINE_BYTES, canonicalJson, type Staged } from '../../../../scripts/base-cli/modules/portability/index.mjs';
+import { createPortabilityHandler, PortabilityError, MAX_LINE_BYTES, canonicalJson, type Staged } from '@runeditrun/rer/modules/portability';
 // Base's bounded transport reader; no private restore internals are changed.
 // @ts-expect-error The native ESM transport helper has no declarations.
-import { boundedJson } from '../../../../scripts/base-cli/modules/portability/http.mjs';
+import { boundedJson } from '@runeditrun/rer/modules/portability/http';
 import inventory from './archive-inventory.json';
 import { portabilityPolicy } from './archive-policy.mjs';
 import { requireOperator, clearSessionCookie } from '../auth/service';

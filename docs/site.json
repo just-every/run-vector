@@ -129,6 +129,10 @@
       "reason": "Implemented scope and limitations, for maintainers"
     },
     {
+      "source": "HOMEPAGE-VARIANTS.md",
+      "reason": "Base Lobby and run-site adoption instructions for maintainers"
+    },
+    {
       "source": "OPERATIONS.md",
       "reason": "Operations declarations for the command tooling"
     },
@@ -229,132 +233,8 @@
       "reason": "Operator removal internals, for maintainers"
     },
     {
-      "source": "scripts/base-cli/cli/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/ai/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/container/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/dependencies/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/deploy-kit/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/erasure/CONTRACT.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/erasure/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/integrations/core/CONTRACT.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/integrations/core/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/job-queue/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/live-proof/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/adapters/cloudflare/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/adapters/messaging/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/adapters/resend/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/adapters/sendgrid/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/doctor/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/events/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/mail/src/inbound/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/conformance/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/docs/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/docs/native-accounts.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/docs/tanstack-start.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/docs/vite-spa.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/operator-auth/identity/oidc/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/owner-claim/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/portability/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/modules/release/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/operations/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-cli/scripts/publish-check/README.md",
-      "reason": "Command tooling documentation, kept with its source"
-    },
-    {
-      "source": "scripts/base-onboarding/README.md",
-      "reason": "Command tooling documentation, kept with its source"
+      "source": "src/base/hydration/README.md",
+      "reason": "Shared runtime hydration convention for maintainers"
     },
     {
       "source": "tests/fixtures/import/linear/README.md",

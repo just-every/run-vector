@@ -1,7 +1,7 @@
 import {spawn,execFileSync} from 'node:child_process';
 import {resolve} from 'node:path';
 import {mkdir,writeFile,rm} from 'node:fs/promises';
-import {readOwnedGroup} from '../../scripts/base-onboarding/local/process-table.mjs';
+import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
 
 export async function waveBWorker(origin,config,evidence) {
   const state=resolve('.wrangler','wave-b-'+process.pid),file=resolve(state,'wrangler.json');

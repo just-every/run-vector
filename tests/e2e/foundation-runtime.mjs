@@ -1,4 +1,4 @@
-import { freePort } from '../../scripts/base-onboarding/adapter-settings.mjs';
+import { freePort } from '@runeditrun/rer/adapter-settings';
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";

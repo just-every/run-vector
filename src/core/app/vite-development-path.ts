@@ -2,6 +2,11 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  // Start's custom client entry and its reviewed hydration modules.
+  '/src/client.tsx',
+  '/src/base/hydration/report.ts',
+  '/src/base/hydration/intro-guard.ts',
+  '/src/base/hydration/unit.tsx',
   '/src/core/features/cycle-closure/schema.ts',
   '/src/core/features/cycles/ui/closure-snapshot.tsx',
   '/src/core/features/cycles/ui/closure-snapshot.css',

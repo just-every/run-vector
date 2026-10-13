@@ -1,4 +1,4 @@
-import { main } from '../base-cli/modules/portability/cli.mjs';
+import { main } from '@runeditrun/rer/modules/portability/cli';
 import { lstat } from 'node:fs/promises';
 export async function remoteTransfer(context,direction){
  if(!context.origin||!context.sessionFile)throw Error('An authenticated origin and owner-only session file are required.');
