@@ -3,7 +3,7 @@ import { applyD1Migrations } from 'cloudflare:test';
 import { beforeAll, expect, inject, it } from 'vitest';
 import { createWebhookProtocol } from '../../vendor/base/integrations';
 import { erasedSourceIdentity } from '../../src/core/features/integrations/source-identity';
-import { readArchive } from '../../scripts/base-cli/modules/portability/index.mjs';
+import { readArchive } from '@runeditrun/rer/modules/portability';
 import { createVectorArchive } from '../../src/core/features/data/archive-service.mjs';
 import { actor, bindings, invite, request } from './base-auth-fixture';
 import { closureFixture } from './cycle-closure-fixture';

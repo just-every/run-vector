@@ -4,11 +4,11 @@ import {join,resolve} from 'node:path';
 import {execFileSync} from 'node:child_process';
 import {parseEnv} from 'node:util';
 import {prepareSampleInstallation} from './data-sample-installation.mjs';
-import {createState} from '../../scripts/base-onboarding/state.mjs';
-import {loadInstallerSeed} from '../../scripts/base-onboarding/setup-manifest.mjs';
+import {createState} from '@runeditrun/rer/state';
+import {loadInstallerSeed} from '@runeditrun/rer/setup-manifest';
 import {createSeed} from '../../scripts/installer/seed.mjs';
 import {commandEnvironment} from '../../scripts/installer-env.mjs';
-import {freePort} from '../../scripts/base-onboarding/adapter-settings.mjs';
+import {freePort} from '@runeditrun/rer/adapter-settings';
 import {confirmLink,readDevelopmentLink} from './outbox-session.mjs';
 import {readCheckoutKey} from './dev-gate.mjs';
 import {readLocalD1} from './local-d1-read.mjs';
@@ -37,7 +37,7 @@ export async function dataInstallation(work,name){
   return new Response([204,205,304].includes(response.status)?null:bytes,{status:response.status,statusText:response.statusText,headers:response.headers});
  };
  const start=async()=>{
-  child=store.spawn('Native archive development',process.execPath,[join(root,'scripts/rer.mjs'),'dev'],{cwd:root,env:environment});
+  child=store.spawn('Native archive development',process.execPath,[join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),'dev'],{cwd:root,env:environment});
   cron={completed:0,failure:null};
   for(const stream of [child.stdout,child.stderr]){
    let pending='';

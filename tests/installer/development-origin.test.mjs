@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,rm,readFile,stat} from 'node:fs/promises';
 import {join} from 'node:path';
 import {tmpdir} from 'node:os';
-import {prepareSettings} from '../../scripts/base-onboarding/adapter-settings.mjs';
+import {prepareSettings} from '@runeditrun/rer/adapter-settings';
 import {settings} from '../../scripts/installer/definition.mjs';
 import {recordDevelopmentOrigin,developmentOrigin} from '../../scripts/development-origin.mjs';
 test('development test reads the saved nonstandard origin through private kit custody without touching watched settings',async t=>{
