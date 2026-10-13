@@ -455,11 +455,11 @@
       "executable": false
     },
     ".publish-check/reviewed.json": {
-      "sha256": "421a0724ae896c6779879adb244c450456b4798f282b2126bbc019491ca48d1f",
+      "sha256": "20bd0318f2bbd41cec5e7fbcf6693f3af358d0d59ee7a71693553b79ed326b56",
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "b734a24f852a64cbe574fa4f37280de1765642dcaa49e8626d3443323294804b",
+      "sha256": "b968e6cfca6553963c64e41c88699ea28630e4bbc2b6fa51e3216f27f8e9ef6b",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -479,7 +479,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "4ddb8936ce8c284e6e0575e35f69944560fc3b7f1b46dbb1f04bda22e7ac674a",
+      "sha256": "1239303d5dee21d2236af6ff45edd99f137a12ec9376ef80fa5e7604aea1bcf8",
       "executable": false
     },
     "CLAUDE.md": {
@@ -487,7 +487,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "cbf7cbf51d651c0223359b0cf65ae0043b5ab654ae1bb20fd35904f90032a99e",
+      "sha256": "e5e11cfb92f1180acfee1fd4975ec4205970e8405c30579d6eedf991e981e57a",
       "executable": false
     },
     "deploy-site.json": {
@@ -587,7 +587,7 @@
       "executable": false
     },
     "docs/IMPORT-EVIDENCE.md": {
-      "sha256": "28100e63c654e9c48070dc2ca1d661d0473b86d6f6ec33cf556d3c05950f9d67",
+      "sha256": "62c251357e51458cd6ca2973f43f592aa9a86511b2ad7613d862140498c56e9d",
       "executable": false
     },
     "docs/INSTALLER.md": {
@@ -599,7 +599,7 @@
       "executable": false
     },
     "docs/JIRA-CSV.md": {
-      "sha256": "fae9fd1147efe3461a73defc5bcfda996489506f90b3d3b61b1c2830ee8fe3f6",
+      "sha256": "13c8e85a9d049684ca3f30b8bbcc81017ec433743fa04b28ede687a887712063",
       "executable": false
     },
     "docs/LINEAR-API-FILE.md": {
@@ -615,11 +615,11 @@
       "executable": false
     },
     "docs/MOVE-IN-CHECKLIST.md": {
-      "sha256": "bae926260e083248130053c3bc3f4489eb801a4b3953ddd4e5b4fb7e7a9d26fa",
+      "sha256": "5073847dbc2955ad8213e1e917677c7ff8a69f1ff086849c14bde4ae56f64d3b",
       "executable": false
     },
     "docs/MOVE-IN.md": {
-      "sha256": "f7df155c1a1edc829bbdb9f31b211ad6ab1096b07fa7baf4b29ed53504b8004e",
+      "sha256": "2ea7e6b261d97864e3318dac7eac7204fcf71b80a9690c92b87f825bd9bbebb4",
       "executable": false
     },
     "docs/NOTIFICATIONS.md": {
@@ -631,7 +631,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "a8207acaa0f6ab18180dff0a645857fab6c51adaceb4d712b199fec074638d0d",
+      "sha256": "37298891b5f5b06df00a92d4fa577667e99f711e2a389826183468dec6a072e4",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -643,7 +643,7 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "bdc930ed9675fcd3cfd0cd41981076c5859fc5c74c4f5e57da65313100ee5b83",
+      "sha256": "31a965389c1314d5b1882bd09e608cf100e51bea2cfc96f27339310ea938719b",
       "executable": false
     },
     "HOMEPAGE-VARIANTS.md": {
@@ -651,7 +651,7 @@
       "executable": false
     },
     "importers.json": {
-      "sha256": "058415e43cb4c56db1524896e059e204cafe5401a003f510795dea2ab274bb97",
+      "sha256": "33233c7ac9b46290141c29e3c9cab83e846e40f482ed2de57b8586508629b8f1",
       "executable": false
     },
     "LICENSE": {
@@ -911,7 +911,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "c12f26ac841192fe63886dc54d701cbc74721c1815e2a37b6127d0b4cfc9c29f",
+      "sha256": "7f1dfde72e6534d6bda6355c111e092563fff467bd67401ca8211d3444ebf692",
       "executable": false
     },
     "rer-project.json": {
@@ -1319,7 +1319,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "60e943e5765c061e6e6ef52e397d1536004e077ac4497a24d62bd61afddccdf4",
+      "sha256": "c6e93926bd83218511a3881e629e9368d6ba5f7236b608c89dcf81c9cab8b2f3",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -1679,7 +1679,7 @@
       "executable": false
     },
     "src/core/app/vite-development-path.ts": {
-      "sha256": "1d346963b4e21479643a01c0fa986efb2982beb9708bfc0f7a735fb80c595490",
+      "sha256": "9f34ceb56769e49f22bef6c53b434defbe5c1de1f6a9fe98a60d57de49343faa",
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
@@ -1891,7 +1891,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/imported.ts": {
-      "sha256": "1a94dda08d1ab6e76456fc51927c957a0e7b6635e378bac1316f8eafde1041d9",
+      "sha256": "ac6e9fa326687e47ded0997062148ce2b1608b71f6619e1eb874e09195741423",
       "executable": false
     },
     "src/core/features/data/erasure/routes.ts": {
@@ -1930,6 +1930,10 @@
       "sha256": "69091250a12af74eee1f0bb3e94342b229e99f467385bd8593dc5e86a6cef83c",
       "executable": false
     },
+    "src/core/features/data/import/effect-report.ts": {
+      "sha256": "24dbe49f8179c969880adc3ad0700af79597816ddd1e0402e112d75c2a13539b",
+      "executable": false
+    },
     "src/core/features/data/import/failure.ts": {
       "sha256": "c16fab11db0d7458d3ad561d7a23fb337cfe7cbbf8b4f074fd6df3fc8932aebb",
       "executable": false
@@ -1939,27 +1943,47 @@
       "executable": false
     },
     "src/core/features/data/import/input.ts": {
-      "sha256": "b7b1c502d3da2b6f778167e8b5162b3c5c936559dba27add074aa9131176cdc2",
+      "sha256": "6011ca41a9844a71dfa7e7c2af2c3a645c1638da4a1f2de7a2cc3ff3d7c1ecfa",
       "executable": false
     },
     "src/core/features/data/import/issue-source.ts": {
-      "sha256": "5dcce3eeca939738cee7faecadbc13cba1d70b8e9ac1b82fed100d44760963f6",
+      "sha256": "efcc2b39a291e994053442a0693fe7f1c67e06dfa375a5d25e90c1fce581b6d9",
       "executable": false
     },
     "src/core/features/data/import/jira-dates.ts": {
-      "sha256": "d21b203ddf6ed937485c69cc5805aca0e70d1a7ab7aa78ff844f9700e3fc07db",
+      "sha256": "880a0ae9943f2fb32825f6487f6e2478ad43537df3ed851364f1fe59ce1646f7",
+      "executable": false
+    },
+    "src/core/features/data/import/jira-effects.ts": {
+      "sha256": "b51cdacb763c8cd3c712fa046d776fa68183e5ff1f7c52598ee46fb6f8b5efc9",
+      "executable": false
+    },
+    "src/core/features/data/import/jira-reused-review.ts": {
+      "sha256": "664db8871ddf6c625b429a1c2d77569b23b6fe4154eff9ea3851da06065f0c5c",
+      "executable": false
+    },
+    "src/core/features/data/import/jira-review-diagnostics.ts": {
+      "sha256": "c02ed7454588f4515f0898761e0a6807b3b57091e87bb36f54968b057d0c18eb",
+      "executable": false
+    },
+    "src/core/features/data/import/jira-review.ts": {
+      "sha256": "1c803ac79b23f2a86e620596a43e02a8e979c7faae94ae6a62a0d63932519c4a",
       "executable": false
     },
     "src/core/features/data/import/jira.ts": {
-      "sha256": "b6aa4aad0c5879a91229254d8488d618bbfbb774ce3079668246961b744b40fa",
+      "sha256": "b414c52afeb2c6ef9dd4abee3c6aa48fc6e8acf4da211433d13683ec427807f6",
       "executable": false
     },
     "src/core/features/data/import/linear.ts": {
       "sha256": "cc1cdaea0bea4ccf50cbca1ac9c21d14c1d40c62ece84f683abfc60b85e2d9b4",
       "executable": false
     },
+    "src/core/features/data/import/lookup.ts": {
+      "sha256": "ef708d09a38108784ecb9ebe9947f47bad5a769af0745ee1fbd715438f0f0fca",
+      "executable": false
+    },
     "src/core/features/data/import/mapper.ts": {
-      "sha256": "4ac0728785ce13811eaa2c3e7711f35e6461f7e7919a3dfc6da79131427dbe55",
+      "sha256": "b153671b6e58f4364e4b3b710c18c234332f7220cda6dea502a33aaf6a318501",
       "executable": false
     },
     "src/core/features/data/import/native-snapshot.ts": {
@@ -1967,15 +1991,15 @@
       "executable": false
     },
     "src/core/features/data/import/native-targets.ts": {
-      "sha256": "a520c2fbd28c37b93847d224aa1299de97ea3ea42e388e3b40a9b0addadb2e82",
+      "sha256": "4bdadb0a9b7905b3f18d2fe0d4b5111b9de993be5b8f17e5ab2be661577157e3",
       "executable": false
     },
     "src/core/features/data/import/references.ts": {
-      "sha256": "368f9b24f234cfa05aca05e07f68749a7b1ff0f37d41d25c7a997f22e3dc6930",
+      "sha256": "67f50a21db90ba0ebbc9c708b0e17e447db5ea8e66fc7de78fe4d61105bab4c5",
       "executable": false
     },
     "src/core/features/data/import/report.ts": {
-      "sha256": "592076ad673bea6ce0167be6a79df90727b4c6289e1137a09bc64ea5de5306ee",
+      "sha256": "37f58d2b62fe1959bef73691b896b812561cc1e81640f93e755a1044725a0fe1",
       "executable": false
     },
     "src/core/features/data/import/rollback.ts": {
@@ -1987,7 +2011,7 @@
       "executable": false
     },
     "src/core/features/data/import/row-values.ts": {
-      "sha256": "7316aa76ff4118db42065d4f2130455014d9d5eeca8293819d27977a0c52658d",
+      "sha256": "6943f08a33e6105c7d93b4a16c7460b1ccc6af082a039e2d4ede6cc1daf04207",
       "executable": false
     },
     "src/core/features/data/import/runs.ts": {
@@ -1995,7 +2019,7 @@
       "executable": false
     },
     "src/core/features/data/import/service.ts": {
-      "sha256": "cfb17f39344ec68e610c9b2254bf02c9e63072306b55160eeb01c802240bc319",
+      "sha256": "d1be0dd6f24a1d6c15a45a026ba6cf76cd3875c88c4b4a2ac78cbd64cca7ca5b",
       "executable": false
     },
     "src/core/features/data/import/source.ts": {
@@ -2003,7 +2027,7 @@
       "executable": false
     },
     "src/core/features/data/import/types.ts": {
-      "sha256": "1010954627b788dbfe1bea0a1ff653e7d34bdb2ac6067eb61ef333d67ce8f655",
+      "sha256": "10492b2e3697724642848bd922c1183cbd2185910ae080d88fedaa5581ebc12b",
       "executable": false
     },
     "src/core/features/data/restore-authority.ts": {
@@ -2019,23 +2043,23 @@
       "executable": false
     },
     "src/core/features/data/ui/data-panel.tsx": {
-      "sha256": "3392f26cda9044a55dbd83e50e7a6eaf00831a469396ce6bc53727e44be31316",
+      "sha256": "5944cfe0415ad3d33944bbe11b9bda4bb22eccb2f20f25076e3e73ca3d0840fd",
       "executable": false
     },
     "src/core/features/data/ui/data.css": {
-      "sha256": "5ef3878d66806c6d80163ad9cf703d5509428580579b25de6279569a08819823",
+      "sha256": "83389b5b362319608d1cbe26a1415f9e310a6ccbe361917027f117f0521ba4af",
       "executable": false
     },
     "src/core/features/data/ui/import-client.ts": {
-      "sha256": "1b022c482a15377482ef443e46cb4d0b4d74fdb226a71dad303b58fef391f455",
+      "sha256": "a0df81e376151bac3494d64feeed0f445a1660b1795ced8ee6d7d4bf20abb152",
       "executable": false
     },
     "src/core/features/data/ui/import-mapping.tsx": {
-      "sha256": "bad0a80ddf7a2032f6704c3bb31357bc6ac4c933097eb18a63ea4652a73798d9",
+      "sha256": "66a6dc1c56c3bc0c5dae5d914edd953dbb44c29cb0ee469b6f5885f5700ab6d6",
       "executable": false
     },
     "src/core/features/data/ui/import-report.tsx": {
-      "sha256": "871177642f0a70f1826f4f8a9cadf66d0bb02d472f6768bf7b5e9cf00801c639",
+      "sha256": "fc8b2dd1705dda166727a752da54093a402aa328c100ccf63c0f9965730c8799",
       "executable": false
     },
     "src/core/features/data/ui/import-runs.tsx": {
@@ -2043,7 +2067,15 @@
       "executable": false
     },
     "src/core/features/data/ui/jira-configuration.tsx": {
-      "sha256": "e9f34ec23c81659006bf207fb8ca692fc10a83cf3862ccb428b2e5289e66b964",
+      "sha256": "136c859c0d84986a77e774fc9d7e975dde97af9a2a421dddf94b25ae931df6a7",
+      "executable": false
+    },
+    "src/core/features/data/ui/jira-loss-review.tsx": {
+      "sha256": "85407fc551502f00d13dc5013fed762a0b1f9a6d0dc0efefe1e312586122b111",
+      "executable": false
+    },
+    "src/core/features/data/ui/jira-review-schema.ts": {
+      "sha256": "fb661564bf559282151e0a462d4b29f74405a00fba1324c81d5e211ef0a34116",
       "executable": false
     },
     "src/core/features/dependencies/errors.ts": {
@@ -2387,7 +2419,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/data.ts": {
-      "sha256": "2d15dfaac71ac0aef07c66b3a2c6bfe129341a3b7d141caa08c0eeb04a406cfe",
+      "sha256": "5a8cceb76c09979ab9842bf7dd2ae94b9d229e73ecf6fe663342c46de06641aa",
       "executable": false
     },
     "src/core/features/issues/ui/decision-confirmation.tsx": {
@@ -2427,7 +2459,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "469bb1a2e1a6558d97dce020e2f0ba72c5f2ff2fb005f134f3d226a25786556a",
+      "sha256": "dc34da1691ee89f81aa62899ed153a0ed67b512fea2f245a24e9e606b359f3d6",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -2727,7 +2759,7 @@
       "executable": false
     },
     "src/core/features/search/service.ts": {
-      "sha256": "667174f6e96edd2422a74ed098d45385ebfc0768b96f28afaa1a2e2de97462fe",
+      "sha256": "d54a46a2d13bc6b2b3f3817087fa66076b1a28062543edead85bb132dae3541e",
       "executable": false
     },
     "src/core/features/search/ui/command-helpers.ts": {
@@ -3271,7 +3303,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-events.mjs": {
-      "sha256": "cd6fd21a2eee3fd6146c940fb5d21990eb8038718c2f6a0a4d7461285409c89b",
+      "sha256": "0ee762f1667484af34b73482e17adbbbdea1684c8e87d425a7c4bede8d87cdca",
       "executable": false
     },
     "tests/e2e/collaboration-issue.mjs": {
@@ -3355,7 +3387,7 @@
       "executable": false
     },
     "tests/e2e/data-ui-installation.mjs": {
-      "sha256": "20eb4f0b8aa1fd086ae58e8afcd6390d3f6f03f1eda780166a2856562f3490ef",
+      "sha256": "ffdaf7fa057f7e7f9eca42461362db6a7443b39228641f9597367dc48afe1ff2",
       "executable": false
     },
     "tests/e2e/data-ui-journey.mjs": {
@@ -3508,6 +3540,38 @@
     },
     "tests/e2e/issue-paging-fixture.mjs": {
       "sha256": "70365f43e769a32f68d44d6a3692725186535f9acd78520422d876082432144c",
+      "executable": false
+    },
+    "tests/e2e/jira-capture-support.mjs": {
+      "sha256": "715f535b53595c4ac7a8dde12bc5cccdef1d76ecdfaf887fe2a50e33bc1f4b2f",
+      "executable": false
+    },
+    "tests/e2e/jira-captures.mjs": {
+      "sha256": "ef0f44bc038f6f4b10fee66849924874f4bd6727a29b8cfa4aaba6aa7a5ee3d4",
+      "executable": false
+    },
+    "tests/e2e/jira-cli-installation.mjs": {
+      "sha256": "c0cd06bd70cc46530b6d97ad9d1440c50c134ccba4691e50ffd69ef39b7b101e",
+      "executable": false
+    },
+    "tests/e2e/jira-cli-runtime.mjs": {
+      "sha256": "904c4c29df929f3b4fb8442950c56f7e4da9c28cd2b827cba8033a21d3638305",
+      "executable": false
+    },
+    "tests/e2e/jira-native-setup.mjs": {
+      "sha256": "2cb76e7405ea99f5a8872fe80ff5db6a15e3290226087b04caf849debaf0111e",
+      "executable": false
+    },
+    "tests/e2e/jira-public-journey.mjs": {
+      "sha256": "381589e69526a1f62e9f8d8d296bfec3021986ca46074769ba143d16f2c46060",
+      "executable": false
+    },
+    "tests/e2e/jira-review-checks.mjs": {
+      "sha256": "04732fb0d6520b8bd13a47ef944617f73ede3448c10659920f949e76ea6288b0",
+      "executable": false
+    },
+    "tests/e2e/jira-status-controls.mjs": {
+      "sha256": "5b43710137473fbb08772e35a0755eaa0af4bed08168c974d4306f861d73ffac",
       "executable": false
     },
     "tests/e2e/local-d1-read.mjs": {
@@ -3744,6 +3808,30 @@
     },
     "tests/fixtures/held-request-server.mjs": {
       "sha256": "c2dba07f131ededa267c09e74d836624b4e5b84cfa8f3edfd88f628168e9729f",
+      "executable": false
+    },
+    "tests/fixtures/import/jira/data.mjs": {
+      "sha256": "68703384d305f1fa10895b997b39a0f3f15e131deff3061ee50c57850e3069b0",
+      "executable": false
+    },
+    "tests/fixtures/import/jira/expected.mjs": {
+      "sha256": "4059c529246ac7154cb2a2d72e0c0a8f70fe2bff8d077ff55ba30f877f4237f5",
+      "executable": false
+    },
+    "tests/fixtures/import/jira/generate.mjs": {
+      "sha256": "fe438514a72dbcc9f3bda5440eb49c16af425adfd34a812a9d755d072cebbf47",
+      "executable": false
+    },
+    "tests/fixtures/import/jira/README.md": {
+      "sha256": "e1cb84180cccad4ac9b574d434104874aa9a64766fa5555cb982503f56600ea9",
+      "executable": false
+    },
+    "tests/fixtures/import/jira/rows.mjs": {
+      "sha256": "a0c18d9d2b078b28758724473f81888bfcc48a583bff838f431ff6d269855e62",
+      "executable": false
+    },
+    "tests/fixtures/import/jira/serialization.mjs": {
+      "sha256": "caca823cc7212d14a621b23f8bd7552390305f2f9327787fabcdc4773602a0e7",
       "executable": false
     },
     "tests/fixtures/import/linear/generate.mjs": {
@@ -4434,8 +4522,20 @@
       "sha256": "efd88a4e9857d0b69e113ae800722ee75e9ab8b91f6596093065444128e9e5d7",
       "executable": false
     },
+    "tests/worker/jira-apply-fixture.ts": {
+      "sha256": "5f4cb64d1f861f728730abf2824aa1ffcec5661340901bb6ec26917fb2d103ea",
+      "executable": false
+    },
+    "tests/worker/jira-apply.test.ts": {
+      "sha256": "773e7884b023baa1f7536c04ee005f8c77d054626a512b92afc994a5572350d5",
+      "executable": false
+    },
     "tests/worker/jira-import.test.ts": {
-      "sha256": "ae61606a3cd52b770aa87121dbcbe7059f2cb27ac6d1348f6bd42f379dab6f92",
+      "sha256": "3c9e2f37894d82827f86cf86d8dcad6bc279b1fbd3d10051842757876db2e008",
+      "executable": false
+    },
+    "tests/worker/jira-loss-review-fixture.ts": {
+      "sha256": "22ebe9a4f948271cad058383f5c43e4d8ba77319723005569e475059ef708fbf",
       "executable": false
     },
     "tests/worker/linear-api-import.test.ts": {
@@ -6448,6 +6548,174 @@
     },
     "visual/08-current-mobile.jpg": {
       "sha256": "b7952420f49cd18bf631788a37ca2f968b1414f88a035418bf532fd78e09a22f",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-1440-focus.png": {
+      "sha256": "680b7ac1faa058e793973336f0ebb1287dd0d4d5cd3b6130001a4f537ae752ac",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-1440-panel.png": {
+      "sha256": "d03bd7219673d73c4081743d2191c3d1a57ecc7dbaa1131db18988a181b38a4e",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-1440-viewport.png": {
+      "sha256": "6afb71c08fd01db978dea70d133f226b7e5ca1739e20471f237e4c8ddeea1e6f",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-390-concepts-far-columns.png": {
+      "sha256": "c67793862210e66edcb713fd58fa66db335ef40048dab4b105a97e22ebde13cd",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-390-focus.png": {
+      "sha256": "80dcd41d61202e77520867818a08ff78873a1e35336f034987da1a2225d92a3e",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-390-panel.png": {
+      "sha256": "003167d46f7ae0d4dbce72289fc61ac7ac018430288e6c2de95172696fe628d6",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-390-priorities-far-columns.png": {
+      "sha256": "71392e7fa29809c1ea68f650c4d8b0dccd6ea6216f482163869dadd7e72a0c0e",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-390-statuses-far-columns.png": {
+      "sha256": "d34ea9231e929f425aabb8c36fdab76ec2a2abd669badb3c843bf82fac5a48f4",
+      "executable": false
+    },
+    "visual/jira/ambiguous-date-refusal-390-viewport.png": {
+      "sha256": "ec82e4962b9f7a50140a33d20962ae8be06fac369aa3c98c0418d061809a2b4d",
+      "executable": false
+    },
+    "visual/jira/captures.json": {
+      "sha256": "8050b24687881d7f7b874228892079c4f0eea589804e156dba27acd3e50d1cb4",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-1440-focus.png": {
+      "sha256": "c05ff68d1b0797be7e18ee65ac8161c94646b38e74aaca2ffbdd53a2727725d5",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-1440-panel.png": {
+      "sha256": "12527756a9b8cd33e3f9c54b760aca871a9e7eb5ee76988dd0a535ef01f252e8",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-1440-viewport.png": {
+      "sha256": "bde9f83e1e1de1064266920311a74586e52e7231066b353f21111a430cdf119d",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-390-concepts-far-columns.png": {
+      "sha256": "f7730c239c865483cdabb90051dcbaae5dbb472b10b01403288f2b2356615b5a",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-390-focus.png": {
+      "sha256": "2a8b9579fd5afe28ee8bde5996b39cce8b2034caa4d71029230f4877f86f569d",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-390-panel.png": {
+      "sha256": "90f4918cf69c69b9526756ea961fa02e484a03b7150eab924e014e5b6a960ba7",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-390-priorities-far-columns.png": {
+      "sha256": "e943d7bdac7dee27f14048e211c9ca3d8f8a547c2c6c6bf65dd19fe179e65e03",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-390-statuses-far-columns.png": {
+      "sha256": "2eb92df71659024a8686b789fe1e652537c200731d6bec1912a343f93bc452c5",
+      "executable": false
+    },
+    "visual/jira/completed-reconciliation-390-viewport.png": {
+      "sha256": "d818878b410625af35905ed7483cee4e88cdb4bb502d0065ca494da582261e88",
+      "executable": false
+    },
+    "visual/jira/jira-choice-1440-panel.png": {
+      "sha256": "2dfdf9aa03d34f41099b52331f7cc6c28ea611899df931852657283a4f77ef1a",
+      "executable": false
+    },
+    "visual/jira/jira-choice-1440-viewport.png": {
+      "sha256": "e83c56ad4262d2a3786de56f81ce986d0aa8342b34d2eb8174ed5fffbe57f392",
+      "executable": false
+    },
+    "visual/jira/jira-choice-390-panel.png": {
+      "sha256": "6ef6270ae10c515d3ff9cc89f9bdff3f598574faad41f7deebdb546eb42f0e1c",
+      "executable": false
+    },
+    "visual/jira/jira-choice-390-viewport.png": {
+      "sha256": "fe50db14c7571d669419af1aa27adf0a7cbd2ca84817786ab6869b7be8b28313",
+      "executable": false
+    },
+    "visual/jira/loss-review-1440-focus.png": {
+      "sha256": "120138e211053287f6316c744d54831206b5d31f72048f648a8203de81029795",
+      "executable": false
+    },
+    "visual/jira/loss-review-1440-panel.png": {
+      "sha256": "f806b8e0ab7eeffe67746ae4f25c76db8223504d441b14a7ca7e75be3ad3277e",
+      "executable": false
+    },
+    "visual/jira/loss-review-1440-viewport.png": {
+      "sha256": "7a640b6f16a24541f365d01d5e75538e595fcdd4c011c337f8ba4063c0a0d342",
+      "executable": false
+    },
+    "visual/jira/loss-review-390-concepts-far-columns.png": {
+      "sha256": "c67793862210e66edcb713fd58fa66db335ef40048dab4b105a97e22ebde13cd",
+      "executable": false
+    },
+    "visual/jira/loss-review-390-focus.png": {
+      "sha256": "9d934508371c83d3c1c3b100d16732a38d631a6cbe325dc0a2117acf3d814d27",
+      "executable": false
+    },
+    "visual/jira/loss-review-390-panel.png": {
+      "sha256": "ba28938ee586355e9bfff9ff5166220657ac5b15c1eb9e50e04715bf0d35fee1",
+      "executable": false
+    },
+    "visual/jira/loss-review-390-priorities-far-columns.png": {
+      "sha256": "71392e7fa29809c1ea68f650c4d8b0dccd6ea6216f482163869dadd7e72a0c0e",
+      "executable": false
+    },
+    "visual/jira/loss-review-390-statuses-far-columns.png": {
+      "sha256": "d34ea9231e929f425aabb8c36fdab76ec2a2abd669badb3c843bf82fac5a48f4",
+      "executable": false
+    },
+    "visual/jira/loss-review-390-viewport.png": {
+      "sha256": "9981a907755c036f98ca7e4dbba8e76a315e778ae4268cd9096e1b11f619b246",
+      "executable": false
+    },
+    "visual/jira/README.md": {
+      "sha256": "ca097805aea844dcda674a40a988a8f2aaa5b9d4d45fe2f793861ab2d6f2c4cd",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-1440-focus.png": {
+      "sha256": "f2ad57d141df96afab338bd498b90c351dc5bc93859929eec9e4846493904b03",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-1440-panel.png": {
+      "sha256": "847ae799ecd4821020b3f8c48e31ef1aacde5db64d4a8f308753a1a95faa7e96",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-1440-viewport.png": {
+      "sha256": "3160f4a3a76914d1cb0f4d376651d28692f8ae3ef160887c25ddaabed9bc3050",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-390-concepts-far-columns.png": {
+      "sha256": "431b623d047376c8c9debcebccc36208e8c677618bc11197ebb2b213c65c785f",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-390-focus.png": {
+      "sha256": "062f46307a9a4ed17e0d01a8f20c6d65924693f72d3152f85ef4e00c0876b300",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-390-panel.png": {
+      "sha256": "2dc9b379da0b503c448ff376b91a128321e7b7a15b4fb71710eaa7a158e0c965",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-390-priorities-far-columns.png": {
+      "sha256": "71392e7fa29809c1ea68f650c4d8b0dccd6ea6216f482163869dadd7e72a0c0e",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-390-statuses-far-columns.png": {
+      "sha256": "7a75e8edea71a4ccb3204784b8bf66f167339f9539a4d8aac32c6e4dbc0116bf",
+      "executable": false
+    },
+    "visual/jira/unknown-status-refusal-390-viewport.png": {
+      "sha256": "b3f4c6385e17665c79bda6adfb0c2b21d0790fff0c2968645ba23c4c20ed66d0",
       "executable": false
     },
     "vite.config.ts": {

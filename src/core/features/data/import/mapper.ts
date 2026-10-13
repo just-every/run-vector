@@ -2,8 +2,10 @@ import { canonicalJson,sha256 } from '../../../../../vendor/base/import-kit/src/
 import { sourceIdentity } from '../../../../../vendor/base/import-kit/src/provenance/identity';
 import type { MappingResult,SourceBundle,TargetEffect } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { readNativeIssues } from './native-targets';
+import { readJiraReviewedOmissions } from './jira-reused-review';
+import { jiraHeader,jiraRelations } from './jira';
 import { isLinear } from './linear';
-import { loadImportReferences,importField } from './references';
+import { loadImportReferences,importField,referenceAlias } from './references';
 import { mapImportRow,rowOmissions,stableImportId,type MappedRow } from './row-values';
 import type { ImportActor } from './authority';
 import { importFields,type ImportDiagnostic,type ImportInput } from './types';
@@ -19,6 +21,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   const seen=new Map<string,{hash:string;row:number}>(),inRun=new Set(source.records.map(record=>record.sourceId));let reused=0;
   const identities=[...new Set(source.records.map(record=>sourceIdentity(actor.workspace,input.source,'issue',record.sourceId)))];
   const {erased,priors,natives}=await retainedSources(db,actor.workspace,identities);
+  const reviewed=input.format==='jira-csv'?await readJiraReviewedOmissions(db,[...priors.values()].filter(prior=>!erased.has(prior.identity)).map(prior=>prior.job_id)):undefined;
   for(const record of source.records) {
     // Jira refuses repeated IDs in its reader and reviews every physical row.
     if(input.format!=='jira-csv' && seen.has(record.sourceId)) {
@@ -42,7 +45,9 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
       if(!current || current.revision!==provenance.appliedRevision || sha256(canonicalJson(current.value))!==provenance.valueHash) {
         refuse({row:record.location.row!,code:'native_edit_conflict',message:'This imported issue was edited or removed. Re-import will not overwrite it.'});continue;
       }
-      const unmapped=rowOmissions(record,input);omissions.push(...unmapped);
+      const retained=reviewed?.get(prior.job_id)?.get(record.sourceId);
+      if(input.format==='jira-csv'&&!retained){refuse({row:record.location.row!,code:'jira_review_unavailable',message:'The original reviewed omissions for this Jira source are unavailable. Its retained issue cannot be reviewed as a new import.'});continue;}
+      const unmapped=retained?retained.map(item=>({...item,row:record.location.row!})):rowOmissions(record,input);omissions.push(...unmapped);
       effects.set(record.sourceId,{effects:[{targetKind:'issue',targetId:prior.target_id,value:current.value}],unmapped:unmapped.map(item=>({field:item.field,reason:item.message}))});
       reusedRanks.set(prior.target_id,prior.ordinal);reused++;continue;
     }
@@ -50,7 +55,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     if(record.payload && typeof record.payload==='object' && !Array.isArray(record.payload)) {
       const raw=importField(input,record.payload,'team');
       const teamValue=typeof raw==='string'?raw:'';
-      const selected=input.references?.team?.[teamValue]??teamValue;
+      const selected=referenceAlias(input,'team',teamValue)??teamValue;
       const teams=refs.teams.filter(team=>team.id===selected || team.name===selected);
       if(teams.length===1) {
         const team=teams[0],prefix=String(team.identifier_prefix);
@@ -67,9 +72,19 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     const mapped=mapImportRow(record,input,refs,actor,effectiveAt,sequence,inRun);
     rows.push(mapped);errors.push(...mapped.errors);omissions.push(...mapped.omissions);
   }
-  // "X blocks Y" from the API file makes X a blocker of Y, both in this run.
+  // "X blocks Y" belongs to Y's snapshot. Reusing Y cannot change a prior
+  // run's snapshot or take ownership of it just to add X's dependency.
   const rowBySource=new Map(rows.map(row=>[row.record.sourceId,row]));
-  for(const row of rows)for(const blocked of row.blocks){const target=rowBySource.get(blocked);if(target && !target.dependencies.includes('source:'+row.record.sourceId))target.dependencies.push('source:'+row.record.sourceId);}
+  for(const row of rows)for(const blocked of row.blocks) {
+    const target=rowBySource.get(blocked);
+    if(input.format==='jira-csv'&&!target?.value) {
+      const retained=effects.has(blocked),problem={row:row.record.location.row!,code:retained?'retained_blocks_target':'invalid_issue_reference',message:retained?'This Blocks target is retained from a prior import run. Adding a blocker would change that run’s issue; this relationship cannot be imported.':'The Blocks target cannot be imported from this file. Resolve its row errors before applying.'};
+      for(const relation of jiraRelations(row.record).filter(item=>jiraHeader(item.header)==='outward issue link (blocks)'&&item.target===blocked))
+        errors.push({...problem,field:`${relation.header} [column ${relation.column}]`,column:relation.column,value:relation.value});
+      continue;
+    }
+    if(target&&!target.dependencies.includes('source:'+row.record.sourceId))target.dependencies.push('source:'+row.record.sourceId);
+  }
   const referenceValues=rows.flatMap(row=>[row.parent,...row.dependencies,row.duplicateOf]).filter(Boolean).map(value=>value.replace(/^native:/,''));
   const existing=(await db.prepare(`SELECT i.id,i.identifier,t.archived_at FROM issues i JOIN teams t ON t.id=i.team_id
     WHERE t.workspace_id=? AND (i.id IN (SELECT value FROM json_each(?)) OR i.identifier IN (SELECT value FROM json_each(?)))`).bind(actor.workspace,JSON.stringify(referenceValues),JSON.stringify(referenceValues)).all<{id:string;identifier:string;archived_at:string|null}>()).results;
@@ -81,7 +96,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   // A Linear file names related issues by Linear ID (ENG-123), which can equal an
   // unrelated Vector identifier; there a plain reference means a source record.
   const selected=(value:string)=>{
-    const nativeOnly=value.startsWith('native:'),sourceOnly=value.startsWith('source:') || (isLinear(input.format) && !nativeOnly),text=value.replace(/^(?:native|source):/,'');
+    const nativeOnly=value.startsWith('native:'),sourceOnly=value.startsWith('source:') || ((isLinear(input.format)||input.format==='jira-csv') && !nativeOnly),text=value.replace(/^(?:native|source):/,'');
     const candidates=[...(!nativeOnly && bySource.has(text)?[bySource.get(text)!]:[]),...(!sourceOnly?existing.filter(row=>row.id===text || row.identifier===text):[])];
     const unique=[...new Map(candidates.map(row=>[row.id,row])).values()];
     if(unique.length!==1)throw Error(unique.length?'Reference is ambiguous; use source: or native: explicitly.':'Issue reference was not found in this file or workspace.');
@@ -134,10 +149,10 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     const ai=effects.get(a.sourceId)?.effects[0]?.targetId,bi=effects.get(b.sourceId)?.effects[0]?.targetId;
     return (ranked.get(ai??'')??reusedRanks.get(ai??'')??-1)-(ranked.get(bi??'')??reusedRanks.get(bi??'')??-1);
   });
-  return {source:{...source,records},effects,errors,omissions,reused};
+  return {source:{...source,records},effects,errors,omissions,reused,references:refs};
 }
 
-type Prior={identity:string;source_hash:string;mapping_version:string;target_id:string;record_json:string;ordinal:number};
+type Prior={job_id:string;identity:string;source_hash:string;mapping_version:string;target_id:string;record_json:string;ordinal:number};
 /** Set reads: a preview of thousands of rows stays within D1's per-invocation
  * query limit. Identities are hashes, so each chunk binds a bounded value. */
 async function retainedSources(db:D1Database,destination:string,identities:string[]) {
@@ -145,7 +160,7 @@ async function retainedSources(db:D1Database,destination:string,identities:strin
   for(let start=0;start<identities.length;start+=1000) {
     const chunk=JSON.stringify(identities.slice(start,start+1000));
     for(const row of (await db.prepare('SELECT identity FROM ik_d1_erased_sources WHERE destination=? AND identity IN (SELECT value FROM json_each(?))').bind(destination,chunk).all<{identity:string}>()).results)erased.add(row.identity);
-    for(const row of (await db.prepare(`SELECT s.identity,s.source_hash,s.mapping_version,p.target_id,p.record_json,p.ordinal FROM ik_sources s
+    for(const row of (await db.prepare(`SELECT p.job_id,s.identity,s.source_hash,s.mapping_version,p.target_id,p.record_json,p.ordinal FROM ik_sources s
       JOIN ik_provenance p ON p.source_identity=s.identity AND p.job_id=s.job_id AND p.reversed=0 WHERE s.identity IN (SELECT value FROM json_each(?))`).bind(chunk).all<Prior>()).results)priors.set(row.identity,row);
   }
   return {erased,priors,natives:await readNativeIssues(db,destination,[...new Set([...priors.values()].map(row=>row.target_id))])};

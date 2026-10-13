@@ -1,5 +1,7 @@
 # Importer evidence and claims
 
+## Linear
+
 Linear: **documented format and API file, tested at 2,000 issues with a
 generator; no owner export supplied.**
 
@@ -49,3 +51,61 @@ with generated files, up to 4,000 issues per reviewed run, with a reconciliation
 report and whole-run undo; no owner export supplied." Do not describe Vector or
 its importers as replacing Linear. The homepage says only "100% free, open source
 alternative to Linear, Jira and Asana", with no comparative claim.
+
+## Jira Cloud CSV
+
+Jira: **documented format, synthetic-only; real export not supplied.**
+This applies to the supported Jira Cloud All Fields CSV profile in
+[JIRA-CSV.md](JIRA-CSV.md). Public export documentation does not specify every
+native header or plugin encoding. The documented profile is supported; a real
+Jira Cloud export, Server/Data Center variants, attachment bytes, hosted
+acceptance and live Atlassian behavior remain unproven. No Jira account,
+provider API or attachment URL is contacted by the importer.
+
+The generated repository fixture contains 300 issues and 41 positional columns:
+176 Sprint values on 151 rows, 172 Labels on 161 rows, 102 Comments on 95 rows
+and 38 Attachments on 37 rows. The native public-route tests check write-free
+preflight, exact occurrence counts, ambiguous dates and missing required
+columns, explicit mappings and omission acknowledgement. Apply writes 173 label
+assignments including `epic`, five parent links, two directed Blocks dependencies,
+two canonical Duplicate links and 102 comments. Status totals are 100 each;
+125 issues have cycle commitments. Every comment preserves its full body,
+original author and normalized timestamp. Source IDs and old Jira keys are
+verified in detail and search. Files remain zero; optional attachment links add
+38 named HTTPS links to a separately reviewed run.
+
+`tests/worker/jira-import.test.ts` (DATA-009) and
+`tests/worker/jira-apply.test.ts` (DATA-010) exercise the real import routes and
+D1 records. The latter compares report dimensions and effects with native SQL,
+repeats apply without duplicates, refuses rollback after exactly two native
+edits with all table contents unchanged, and removes an untouched run while
+accounting for retained custody, identifier reservations and cycle history.
+Signed-out, API-token and removed-operator import requests receive 401;
+cross-origin mutations receive 403. Existing generic/Linear staged and imported
+person erasure tests run alongside them. The erasure clause is DATA-011;
+Jira's optional detailed review is withdrawn when erased person metadata occurs.
+Public rollback behavior is preserved; no newer detached-survivor presentation
+is implied.
+
+An earlier public terminal proof, recorded against its exact source head in the
+external public-port REPORT, used `tests/e2e/jira-cli-runtime.mjs` to preview,
+apply, repeat, read status, resume, reconcile and roll back the same 300-issue
+fixture. It compared all application table counts around preview and recorded
+before/apply/rollback counts. That run checked 170 tables, excluding request
+rate counters and SQLite/D1 infrastructure, and returned the native issue count
+from 300 to zero. These counts apply only to that recorded source head. The
+external public-port REPORT records each CLI command, result and exact source
+head, with labels distinguishing this earlier copied-CLI run from the
+`@runeditrun/rer` CLI run. Earlier private npm snapshots are not public
+acceptance evidence.
+
+Browser captures at 1440 and 390, a separate held-out fixture, final full
+verification and exact-head CI evidence are recorded in the external
+public-port REPORT. The repository and held-out fixture totals must never be
+interchanged.
+
+No migration, Base refresh or pin change is needed. Trial a real team's export
+using [MOVE-IN-CHECKLIST.md](MOVE-IN-CHECKLIST.md) before broadening the claim.
+Default: an Epic is an ordinary parent issue with the existing `epic` label;
+Status Category supplies suggestions which the operator must confirm against
+actual workflow statuses. Release, tag and deployment wait for owner review.

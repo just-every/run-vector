@@ -383,6 +383,14 @@
     {
       "source": "vendor/base/owner-claim/README.md",
       "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "tests/fixtures/import/jira/README.md",
+      "reason": "Describes the synthetic Jira import fixture"
+    },
+    {
+      "source": "visual/jira/README.md",
+      "reason": "Instructions for the Jira move-in visual journey, for maintainers"
     }
   ]
 }

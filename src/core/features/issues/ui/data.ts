@@ -73,7 +73,7 @@ export const issueDetailSchema = z.object({
   children: z.array(issueBriefSchema),
   canonical: z.object({identifier:z.string(),title:z.string()}).nullable(),
   duplicates: z.array(z.object({identifier:z.string(),title:z.string()})),
-  importedFrom: z.object({source:z.string(),sourceId:z.string(),runId:z.string(),unfinished:z.boolean()}).nullable().optional(),
+  importedFrom: z.object({source:z.string(),sourceId:z.string(),sourceKey:z.string().optional(),runId:z.string(),unfinished:z.boolean()}).nullable().optional(),
   evidence: z.array(evidenceSchema),
   decisions: z.array(
     z.object({

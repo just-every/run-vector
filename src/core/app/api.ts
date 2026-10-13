@@ -70,7 +70,7 @@ const booleanQuerySchema = timeQuerySchema.extend({
   includeArchived: z.enum(["true", "false"]).optional(),
 });
 const issueParamSchema = z.object({
-  identifier: z.string().regex(/^[A-Z]{2,10}-[1-9][0-9]*$/),
+  identifier: z.string().max(128).regex(/^(?:[A-Z][A-Z0-9_]{0,99}-[1-9][0-9]*|[0-9]+)$/i),
 });
 const projectParamSchema = z.object({ projectId: z.string().length(26) });
 
