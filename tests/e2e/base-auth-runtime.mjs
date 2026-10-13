@@ -102,18 +102,25 @@ try {
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);
   await page.screenshot({path:resolve(evidence,'base-invite-settings-390.jpg'),type:'jpeg',quality:85,fullPage:true});
   await page.getByRole('button',{name:'Remove Invited peer',exact:true}).click();
+  const removed=page.waitForResponse(response=>response.url().startsWith(origin+'/api/settings/operators/')&&response.request().method()==='DELETE');
   await page.getByRole('button',{name:'Confirm removal',exact:true}).click();
-  await page.getByText('Operator removed. Their sessions are revoked.',{exact:true}).waitFor();
+  assert.equal((await removed).status(),200);
+  await page.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor({state:'detached'});
+  await page.getByRole('group',{name:'Confirm operator removal',exact:true}).waitFor({state:'detached'});
+  assert.ok((await page.locator('main.settings-page > [role="status"]').innerText()).trim());
   assert.equal((await peer.request.get(origin+'/api/session')).status(),401);
   assert.equal((await fetch(equalLink)).status,400);
-  await peerContext.close();
+  // Unload app documents while preserving both native cookie jars across restart.
+  await Promise.all(browser.contexts().flatMap(context=>context.pages()).map(page=>page.goto('about:blank')));
   await stop(); await start();
-  await page.reload();
+  assert.equal((await peerContext.request.get(origin+'/api/session')).status(),401);
+  await page.goto(origin+'/app/settings');
   await page.getByRole('heading',{name:'Settings',exact:true}).waitFor();
+  await peerContext.close();
   assert.equal(sql('SELECT count(*) n FROM operators WHERE removed_at IS NULL')[0].n,1);
   assert.equal(sql('SELECT count(*) n FROM workflow_statuses')[0].n,7);
   assert.deepEqual(errors,[]);
-  await writeFile(resolve(evidence,'report.json'),JSON.stringify({status:'passed',checks:['rendered sign-in uses Base','GET confirmation does not admit','POST confirmation sets Base cookie','Settings invitation delivered to explicit outbox','invited equal operator can invite','setup owner protection','responsive settings','removal revokes session and issued invite','restart preserves owner Base session'],scope:'local emitted Worker and headless browser; no remote delivery claimed'},null,2)+'\n');
+  await writeFile(resolve(evidence,'report.json'),JSON.stringify({status:'passed',checks:['rendered sign-in uses Base','GET confirmation does not admit','POST confirmation sets Base cookie','Settings invitation delivered to explicit outbox','invited equal operator can invite','setup owner protection','responsive settings','removal revokes session and issued invite','restart preserves peer revocation and owner Base session'],scope:'local emitted Worker and headless browser; no remote delivery claimed'},null,2)+'\n');
   console.log('Base authentication runtime: 9 checks passed; '+evidence);
 } finally {
   await browser?.close(); await stop();

@@ -1,6 +1,5 @@
 import {validatePublicConfiguration,validateSuppliedSecrets} from '../deployment/input-validation.mjs';
 import declaration from '../../deploy.json' with {type:'json'};
-import { ownerAccountHosting } from '@runeditrun/rer/adapter-hosting';
 import { prepareSettings, readSettings } from '@runeditrun/rer/adapter-settings';
 import { writePrivateFile, privateDirectory } from '@runeditrun/rer/private-files';
 import { publicNames } from './definition.mjs';
@@ -22,16 +21,7 @@ export async function prepareHosting(context, env) {
  context.store.report?.(`Owner secrets are kept in ${hostingSecrets}; preserve this file and .rer/deploy state.`);
  return secretContext.vars;
 }
-const installHosting = ownerAccountHosting({cli:'vendor/base/deploy-kit/owner-cli.mjs',declaration:hostingDeclaration,secrets:context=>context.hostSecrets});
-export async function hosting(context) {
- if (context.input.target === 'remote') {
-  if (context.input.MAIL_MODE !== 'sendgrid') throw context.fail('deploy');
-  context.hostSecrets = await prepareHosting(context,{...context.vars,...context.input});
- }
- return installHosting(context);
-}
-
-// Public deploy uses the same owner declaration and secret custody as the installer.
+// Public deploy owns the owner declaration and private deployment secrets.
 export async function deploy(context) {
  const { ownerDeploy } = await import('@runeditrun/rer/deploy');
  const { adapter } = await import('./local.mjs');

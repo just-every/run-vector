@@ -5,11 +5,13 @@ import { importLimits,type ImportDiagnostic,type ImportInput } from '../import/t
 const diagnostic=z.object({row:z.number(),field:z.string().optional(),code:z.string(),message:z.string()});
 export const previewSchema=z.object({ready:z.boolean(),fingerprint:z.string().optional(),effectiveAt:z.string(),headers:z.array(z.string()),errors:z.array(diagnostic),omissions:z.array(diagnostic),count:z.number(),measured:z.record(z.string(),z.number())});
 export type Review=z.infer<typeof previewSchema>;
-const progressSchema=z.object({batchSize:z.number(),batchesApplied:z.number(),batchesTotal:z.number(),unfinished:z.boolean(),issuesRemaining:z.number(),lastError:z.string().nullable(),lastErrorAt:z.string().nullable()});
-export const runSchema=z.object({id:z.string(),state:z.string(),checkpoint:z.number(),total:z.number(),progress:progressSchema});
+const progressSchema=z.object({batchSize:z.number(),batchesApplied:z.number(),batchesTotal:z.number(),unfinished:z.boolean(),issuesRemaining:z.number(),detachedIssues:z.number(),detachedIdentifiers:z.array(z.string()),lastError:z.string().nullable(),lastErrorAt:z.string().nullable()});
+export const runSchema=z.object({id:z.string(),namespace:z.string(),error:z.string().nullable(),state:z.string(),checkpoint:z.number(),total:z.number(),progress:progressSchema});
 export type Run=z.infer<typeof runSchema>;
-export const runsSchema=z.object({runs:z.array(z.object({id:z.string(),namespace:z.string(),state:z.string(),checkpoint:z.number(),total:z.number(),error:z.string().nullable(),batchSize:z.number().nullable(),batchesApplied:z.number(),lastError:z.string().nullable()}))});
+export const runsSchema=z.object({runs:z.array(z.object({id:z.string(),namespace:z.string(),state:z.string(),checkpoint:z.number(),total:z.number(),error:z.string().nullable(),batchSize:z.number().nullable(),batchesApplied:z.number(),lastError:z.string().nullable(),detachedIssues:z.number(),detachedIdentifiers:z.array(z.string())}))});
 export type Runs=z.infer<typeof runsSchema>['runs'];
+/** One durable receipt supplies both the retained row and progress. */
+export const receiptRow=(run:Run):Runs[number]=>({...run,batchSize:run.progress.batchSize,batchesApplied:run.progress.batchesApplied,lastError:run.progress.lastError,detachedIssues:run.progress.detachedIssues,detachedIdentifiers:run.progress.detachedIdentifiers});
 export const post=<S extends z.ZodType>(path:string,schema:S,body:unknown)=>fetchJson(path,schema,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 /** Publishes the remaining batches one request at a time, reporting each. */
 export async function continueRun(run:Run,onProgress:(run:Run)=>void):Promise<Run> {
@@ -17,9 +19,10 @@ export async function continueRun(run:Run,onProgress:(run:Run)=>void):Promise<Ru
  while(current.progress.unfinished){current=await post('/api/data/import/runs/'+current.id+'/resume',runSchema,{});onProgress(current);}
  return current;
 }
-export const runProgressText=(run:{state:string;checkpoint:number;total:number;progress:Run['progress']})=>['rolling_back','rolled_back'].includes(run.state)?`Rolling back: ${run.progress.issuesRemaining} imported issues remain`:`Applied ${run.progress.batchesApplied} of ${run.progress.batchesTotal} batches (${run.checkpoint} of ${run.total} source records)`;
-const conflictSchema=z.object({identifier:z.string(),sourceId:z.string(),reasons:z.array(z.string())});
-export const rollbackPreviewSchema=z.object({runId:z.string(),state:z.string(),issues:z.number(),rows:z.record(z.string(),z.number()),conflicts:z.array(conflictSchema)});
+export const runProgressText=(run:{state:string;checkpoint:number;total:number;progress:Run['progress']})=>['rolling_back','rolled_back'].includes(run.state)?`${run.state==='rolled_back'?'Rolled back':'Rolling back'}: ${run.progress.issuesRemaining} reversible imported issues remain${detachedText(run.progress)}`:`Applied ${run.progress.batchesApplied} of ${run.progress.batchesTotal} batches (${run.checkpoint} of ${run.total} source records)`;
+export const detachedText=(run:{detachedIssues:number;detachedIdentifiers:string[]})=>run.detachedIssues?`; ${run.detachedIssues} erasure-detached issues retained: ${run.detachedIdentifiers.join(', ')}`:'';
+const conflictSchema=z.object({identifier:z.string(),sourceId:z.string(),reasons:z.array(z.string()),detachedIdentifiers:z.array(z.string()).optional()});
+export const rollbackPreviewSchema=z.object({runId:z.string(),state:z.string(),issues:z.number(),rows:z.record(z.string(),z.number()),conflicts:z.array(conflictSchema),detachedIssues:z.number(),detachedIdentifiers:z.array(z.string())});
 export type RollbackPreview=z.infer<typeof rollbackPreviewSchema>;
 /** One line per field and reason, with its count and the first rows. */
 export function groupDiagnostics(items:ImportDiagnostic[]) {

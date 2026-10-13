@@ -139,12 +139,15 @@ would remove (issues and, per table, their labels, activity, parents,
 dependencies, comments and links) and every imported issue that a person has
 since edited, commented on or linked, by its Vector identifier and source ID.
 While any such issue exists, rollback is refused and nothing is removed; later
-work is never overwritten and there is no partial undo. Otherwise the whole run
-is removed in batches, and every issue it created goes. Identifier numbers stay
-reserved, the original file stays retained byte for byte, and the cycle history
+work is never overwritten. Otherwise the reversible part of the run
+is removed in batches. Except for the DATA-009 erasure case below, every issue
+it created goes. Identifier numbers stay reserved; originals not withdrawn by
+erasure stay retained byte for byte, and the cycle history
 records each removed issue leaving its cycle, as any deletion does. In the
 terminal, `rollback --run RUN_ID` shows the same preview and `--yes` removes the
 run.
+
+Under DATA-009, personal-data erasure removes affected import custody while keeping already published normalized issues. Rollback preview and receipts list the count and identifiers of these **erasure-detached issues** separately from reversible issues remaining. A completed rollback can therefore retain the explicitly listed detached issues. If one still points to a parent, blocker or canonical issue being removed, rollback refuses with `erasure_detached`; unlink or delete that retained issue in Vector, then review rollback again. Removing a dependency records native work on both endpoints, so its imported endpoint may also need explicit deletion before rollback. Deleting the detached issue directly avoids that dependency edit. Native edits and links still refuse independently. See [personal-data erasure](ERASURE.md).
 
 ## Reconciliation report
 

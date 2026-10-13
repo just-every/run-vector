@@ -5,6 +5,7 @@ import {
 } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
 import { poll } from "./admin-runtime-support.mjs";
+import { saveWorkspaceTime } from "./admin-workspace-time-journey.mjs";
 import {
   openDisclosures,
   openAdministrationForm,
@@ -96,12 +97,8 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
   await assertSettingsSections(page, "empty workspace Settings");
   await clause(
     "OPS-003",
-    "workspace timezone and responsive signed operator settings access",
+    "responsive signed operator settings access",
     async () => {
-      assert.equal(
-        await page.getByLabel("IANA timezone", { exact: true }).inputValue(),
-        "Australia/Brisbane",
-      );
       await page
         .getByRole("link", { name: "Settings", exact: true })
         .filter({ visible: true })
@@ -119,6 +116,7 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
     },
   );
   await capture("empty-settings-six-sections");
+  await saveWorkspaceTime({ page, runtime, capture, clause });
 }
 export async function inviteProjectLead({
   page,

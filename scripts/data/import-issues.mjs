@@ -6,19 +6,19 @@ const fileBytes=4194304,reviewBytes=16777216;
 const commands=['preview','apply','status','resume','rollback','report'];
 const args=process.argv.slice(2);if(args[0]==='--')args.shift();
 const command=args.shift(),selected={};
-const summary=run=>({id:run.id,state:run.state,checkpoint:run.checkpoint,total:run.total,batchesApplied:run.progress?.batchesApplied,batchesTotal:run.progress?.batchesTotal});
+const summary=run=>({id:run.id,state:run.state,checkpoint:run.checkpoint,total:run.total,batchesApplied:run.progress?.batchesApplied,batchesTotal:run.progress?.batchesTotal,issuesRemaining:run.progress?.issuesRemaining,detachedIssues:run.progress?.detachedIssues,detachedIdentifiers:run.progress?.detachedIdentifiers});
 let last;
 async function main(){
  if(!commands.includes(command))throw Error('command');
  while(args.length){const key=args.shift();if(key==='--yes'){if(selected.yes)throw Error('options');selected.yes=true;continue;}if(!['--origin','--session-file','--file','--format','--source','--mapping','--review','--run','--csv','--api-file'].includes(key)||selected[key.slice(2)]!==undefined||!args.length)throw Error('options');selected[key.slice(2)]=args.shift();}
  const session=selected['session-file'];if(!isAbsolute(session??''))throw Error('session');const info=await lstat(session);if(!info.isFile()||(info.mode&0o077))throw Error('session');
  const checked=transportOptions(['export','--origin',selected.origin,'--session-file',session,'--out',resolve('unused-import-output')]),cookie=await cookieFile(session);
- const request=async(path,body)=>{let response;try{response=await fetch(checked.origin+'/api/data/import/'+path,{method:body===undefined?'GET':'POST',redirect:'error',headers:{Cookie:cookie,Origin:checked.origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});}catch{throw Error('transport');}if(!response.ok){await response.body?.cancel();throw Error('HTTP '+response.status);}return response.json();};
+ const request=async(path,body)=>{let response;try{response=await fetch(checked.origin+'/api/data/import/'+path,{method:body===undefined?'GET':'POST',redirect:'error',headers:{Cookie:cookie,Origin:checked.origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});}catch{throw Error('transport');}if(!response.ok){const detail=await response.json().catch(()=>null);if(detail?.error==='import_rollback_conflict'){console.error(JSON.stringify({error:detail.error,message:detail.message,conflicts:detail.conflicts,detachedIssues:detail.detachedIssues,detachedIdentifiers:detail.detachedIdentifiers}));}throw Error('HTTP '+response.status);}return response.json();};
  const readPrivate=async path=>{if(!isAbsolute(path??''))throw Error('review');const stat=await lstat(path);if(!stat.isFile()||(stat.mode&0o077)||stat.size>reviewBytes)throw Error('review');return JSON.parse(await readFile(path,'utf8'));};
  // Each request publishes one batch; progress goes to stderr, the result to stdout.
  const publish=async run=>{
   last=run;
-  while(run.progress?.unfinished){console.error(run.state==='rolling_back'?`rolling back: ${run.progress.issuesRemaining} imported issues remain`:`applied ${run.progress.batchesApplied} of ${run.progress.batchesTotal} batches (${run.checkpoint} of ${run.total} source records)`);run=await request('runs/'+run.id+'/resume',{});last=run;}
+  while(run.progress?.unfinished){console.error(run.state==='rolling_back'?`rolling back: ${run.progress.issuesRemaining} reversible imported issues remain; ${run.progress.detachedIssues} erasure-detached issues retained: ${run.progress.detachedIdentifiers.join(', ')}`:`applied ${run.progress.batchesApplied} of ${run.progress.batchesTotal} batches (${run.checkpoint} of ${run.total} source records)`);run=await request('runs/'+run.id+'/resume',{});last=run;}
   return run;
  };
  if(command==='preview'){
@@ -51,7 +51,7 @@ async function main(){
  }else{
   if(!/^[a-f0-9-]{36}$/.test(selected.run??''))throw Error('run');
   // Without --yes, rollback only shows what it would remove and what blocks it.
-  if(command==='rollback'&&!selected.yes){const preview=await request('runs/'+selected.run+'/rollback');console.log(JSON.stringify(preview));console.error(preview.conflicts.length?'Later work blocks this rollback; nothing was removed.':'Rerun with --yes to remove this whole run.');return;}
+  if(command==='rollback'&&!selected.yes){const preview=await request('runs/'+selected.run+'/rollback');console.log(JSON.stringify(preview));if(preview.conflicts.length){if(preview.conflicts.some(row=>row.reasons.includes('erasure_detached')))console.error('Personal-data erasure detached issues whose links block rollback. Unlink or delete the listed detached issues, then review again.');if(preview.conflicts.some(row=>row.reasons.some(reason=>reason!=='erasure_detached')))console.error('Later native work blocks rollback; resolve that work before rollback.');console.error('Nothing was removed.');}else console.error('Rerun with --yes to remove reversible imported issues; listed erasure-detached issues stay.');return;}
   result=await request('runs/'+selected.run+(command==='status'?'':'/'+command),command==='status'?undefined:command==='rollback'?{confirmed:true}:{});
   if(command==='resume'||command==='rollback')result=await publish(result);
  }
