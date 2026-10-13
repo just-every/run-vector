@@ -650,12 +650,16 @@ try {
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');
+  await page.waitForLoadState('networkidle');
+  await settleReads(page);
   const timeOrigin = await page.evaluate(() => performance.timeOrigin);
   await page
     .getByRole("link", { name: "My work", exact: true })
     .first()
     .click();
   await page.getByRole("heading", { name: "My work", exact: true }).waitFor();
+  await page.waitForLoadState("networkidle");
+  await settleReads(page);
   assert.equal(await page.evaluate(() => performance.timeOrigin), timeOrigin);
   await page
     .getByRole("link", { name: "Projects", exact: true })
