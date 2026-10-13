@@ -9,19 +9,14 @@
     "record": "issue or task in a container"
   },
   "replaces": [
-    {
-      "name": "Linear",
-      "edition": null
-    },
-    {
-      "name": "Asana",
-      "edition": null
-    }
+    "Linear",
+    "Jira",
+    "Asana"
   ],
   "description": "A self-hosted, decision-centred issue tracker for one business, with evidence-backed intake, a unified Current stream, personal work queues, and explainable project risk.",
   "capabilities": [
     {
-      "id": "owner-landing",
+      "id": "public-homepage",
       "clauses": [
         "HOME-001"
       ]
@@ -133,6 +128,7 @@
         "VIEW-002",
         "VIEW-003",
         "VIEW-004",
+        "VIEW-005",
         "CMD-001",
         "CMD-002",
         "CMD-003"
@@ -145,17 +141,8 @@
         "NOTIFY-002",
         "NOTIFY-003",
         "NOTIFY-004",
-        "NOTIFY-005"
-      ]
-    },
-    {
-      "id": "portable-data",
-      "clauses": [
-        "DATA-001",
-        "DATA-002",
-        "DATA-003",
-        "DATA-004",
-        "DATA-005"
+        "NOTIFY-005",
+        "NOTIFY-006"
       ]
     }
   ],
@@ -163,14 +150,14 @@
     "Multiple workspaces, tenants, or organisations",
     "Roles, per-team visibility, and granular permissions",
     "External customer accounts, portals, forms, or public roadmaps",
-    "Source-specific Sentry, Slack, GitHub, GitLab, Jira, or email integrations in core",
+    "Source-specific Sentry, Slack, GitLab, Jira, or email integrations in core",
     "AI triage, deduplication, ranking, or project-health inference",
     "Custom workflow categories",
     "Manually drag-ranked backlogs; every order in Vector is derived and explainable",
     "Initiatives, roadmaps, Gantt charts, critical-path planning, time tracking, or resource management",
     "Per-issue checklists",
     "Multiple assignees",
-    "Notification delivery by email, chat, or push; notifications are in-app only",
+    "Notification email beyond assignments and direct mentions; chat or push notification channels",
     "Native mobile applications",
     "Real-time collaborative text editing"
   ],
@@ -178,10 +165,14 @@
     {
       "id": "transactional-email",
       "required": true,
-      "why": "BASE-ACCESS-001 requires delivery of single-use magic links; Cloudflare D1, R2, and Queues do not deliver internet email. It is the only outbound channel: NOTIFY-001 keeps every product notification in-app.",
+      "why": "BASE-ACCESS-001 requires authentication and invitation mail; NOTIFY-006 additionally permits minimal assignment and direct-mention email through the same declared transactional provider.",
       "data": [
         "operator email address",
-        "single-use sign-in URL"
+        "single-use sign-in URL",
+        "issue title",
+        "issue identifier",
+        "actor display value",
+        "authenticated canonical app link"
       ],
       "adapters": [
         "mail.sender.v1"
@@ -260,6 +251,12 @@
       "required": false,
       "secret": false,
       "why": "Verified sender address for Base sign-in and invitation mail. Required for the remote installation."
+    },
+    {
+      "name": "NOTIFICATION_EMAIL_ENABLED",
+      "required": false,
+      "secret": false,
+      "why": "Set false to disable assignment and direct-mention email. Defaults enabled only with configured mail capability; each operator can independently opt out."
     }
   ],
   "deploy": {
@@ -308,8 +305,7 @@
       "intake.decided.v1",
       "project.updated.v1",
       "cycle.closed.v1",
-      "notification.created.v1",
-      "import.completed.v1"
+      "notification.created.v1"
     ],
     "slots": [
       "navigation.after.v1",
@@ -344,7 +340,6 @@
     "dependencyLinksPerIssue": 50,
     "signalSources": 50,
     "bulkEditIssuesPerOperation": 250,
-    "importRecordsPerRun": 5000,
     "attachmentBytesPerFile": 26214400,
     "attachmentBytesTotal": 10737418240,
     "attachmentMimeTypes": [
@@ -363,7 +358,11 @@
     "publicRequestsPerMinutePerIp": 120,
     "magicLinkRequestsPer15MinutesPerIp": 5,
     "signalSourceRequestsPerMinutePerSource": 300,
-    "signalSourceRequestsPerMinutePerIp": 600
+    "signalSourceRequestsPerMinutePerIp": 600,
+    "issueImportRowsPerBatch": 20,
+    "issueImportBytesPerBatch": 262144,
+    "issueImportNativeSqlBytesPerBatch": 1500000,
+    "issueImportNativeStatementsPerBatch": 500
   },
   "accessibility": {
     "level": "WCAG 2.2 AA",

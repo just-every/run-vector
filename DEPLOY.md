@@ -1,31 +1,20 @@
 # Deploying Vector
 
-The seed-owned adapters use Base deploy-kit at
-`8556679074cf47fed64648235bda4447ee16e2fb`, copied under
-`vendor/base/deploy-kit` with one focused migration-validator correction recorded
-in `scripts/deployment/provenance.json` alongside companion operations/authoring
-sources. `migrations.mjs` delegates SQL control validation to `migration-sql.mjs`:
-tokenized CREATE TRIGGER bodies admit their BEGIN/END delimiters and nested CASE
-expressions while top-level transactions (including END/RELEASE), ledger access,
-ATTACH/DETACH/VACUUM and unterminated tokens remain refused. Quotes and comments
-cannot mask appended control statements. SQL migrations 0001–0011 and Base
-operator-auth/mail bytes are unchanged by this correction. The seed-owned provider
-adapter uses the
-[documented R2 start_after pagination](https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/list/)
-with explicit sorted pages because the provider omits optional result_info on
-terminal pages. An example installation target is:
-`vector-demo`, D1 `vector-demo-db`, R2
-`vector-demo-files`, binding names DB/FILES and a one-minute Cron.
-workers.dev is explicitly enabled in the controller plan; disabling it or
-custom domains requires another reviewed integration.
+Use Node 22.20.0 and pnpm 10.12.4. Exact Base copies are pinned at `679bb1a0eeb9c57d4ca08ce18e5c8a3935963862`; see [Base adoption](docs/BASE-ADOPTION.md).
 
-Use Node 26.8.1 and pnpm 8.15.6. `pnpm run setup` is the first complete
-provision/migrate/upload/health operation; `pnpm run deploy` performs the same
-reconciliation. These commands use provider API credentials only, never ambient
-Wrangler login or `.env`. They do not provision mail domains or authorize inboxes.
-Existing opaque secrets are inherited, never rotated implicitly. Preserve the
-receipt when health fails: it records deployment identity before the final probe
-and allows an explicit subsequent repeat without uploading again.
+## Owner account
+
+`pnpm build` completes in a credential-free command environment with `.dev.vars` excluded. Commit source before the provider operation. Supply explicit `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`, public `FIRST_OWNER_EMAIL`, `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME`, `DEFAULT_TEAM_PREFIX`, and a verified sender `MAIL_FROM`. Supply `SENDGRID_API_KEY` for the first installation. No ambient Wrangler login is used.
+
+`pnpm run setup` and `pnpm run deploy` both call Base owner-cli's real deploy verb. `pnpm deploy:health` uses its health verb on the same durable declaration/state. `deploy.json` declares DB, FILES, minute Cron and APP_ORIGIN. Names derive from Vector's public identity and environment: `vector-projects-production`, its `-db` database and `-files` bucket. APP_ORIGIN is resolved from the explicit account's workers.dev subdomain; offline operations checks use the intended HTTPS origin, then runtime health verifies the actual deployment origin. Unrelated named resources are refused, never adopted or deleted.
+
+The product materializes public values in private `.rer/deploy/declaration.json`. `.rer/deploy/secrets.env` is 0600, generates SESSION_SECRET once and stores the supplied mail credential. Existing values win on rerun; neither secret is implicitly rotated. The owner input SENDGRID_API_KEY maps to the established Worker binding MAIL_API_KEY, with no deployed binding rename. Retain `.rer/deploy/production.json` and the secret file. Only the explicit provider command receives these credentials; dependency/build commands never inherit them. Missing public/mail inputs refuse before resource writes. These commands do not provision a mail domain or verify mailbox arrival.
+
+The installer uses the same ownerAccountHosting hook and definitions. Local setup is `pnpm run setup -- --owner-email EMAIL` and uses `.dev.vars` plus `/__dev/outbox` without a provider credential. Follow README.md to approve installation and confirm a captured sign-in message. Estimated infrastructure cost is USD 0–15 per month under seed.json assumptions, plus transactional email; this is not capacity or live-provider acceptance.
+
+## Artifact controller
+
+Credential-free preparation and the reviewed artifact controller remain separate: `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy`, `pnpm artifact:health`. Their source/run/hash/receipt identities, strict plan, resource collision/drift refusal and byte-identical repeat remain enforced. The artifact mail input is MAIL_API_KEY directly; it does not use the owner-account input mapping.
 
 ## Build/controller separation
 
@@ -118,9 +107,9 @@ These checks establish syntax only, not verified sender ownership or delivery.
 Run the reviewed controller with its explicit environment:
 
 ```sh
-node scripts/setup.mjs
-node scripts/deploy.mjs
-node scripts/deployment/controller.mjs health
+pnpm artifact:setup
+pnpm artifact:deploy
+pnpm artifact:health
 ```
 
 Use the same artifact, plan, run identity and receipt for the repeated deployment.
@@ -138,14 +127,16 @@ not automatic replay. The controller never deletes resources or owner data.
 ```sh
 node --test scripts/deployment/tests/*.test.mjs vendor/base/deploy-kit/tests/deploy.test.mjs vendor/base/deploy-kit/tests/build-contract.test.mjs vendor/base/deploy-kit/tests/cron-contract.test.mjs
 pnpm verify
-# In another terminal, start pnpm dev, wait for /health, then:
+# In a disposable checkout, prepare the hydration fixture first:
+pnpm test:dev:setup
+# Start pnpm dev in another terminal, wait for /health, then:
 pnpm test:dev
 ```
 
 New tests use provider fixtures and real SQLite only in test code. They check
 Vector plan restrictions, credential rejection, emitted module selection and
 zero-write repeat with retained D1/R2 data. Migration regressions also validate and
-apply all eleven actual SQL files through the controller to real SQLite, enforce
+apply the complete actual SQL history through the controller to real SQLite, enforce
 last-owner triggers and prove zero-write migration repeat. These local checks do
 not prove hosted
 provider behavior, Cron delivery or email arrival. Hosted smoke must retain exact
@@ -153,7 +144,25 @@ source SHA, provider version/deployment IDs, resource IDs, hashed receipt, publi
 health identity, repeated-deploy API audit and real controlled-inbox sign-in,
 invite/revocation and empty-installation journeys. Keep live validation and any disposable-resource cleanup explicitly scoped to the installation.
 
-`.github/workflows/ci.yml` runs on main pushes and pull requests with Node 26.8.1,
+`.github/workflows/ci.yml` runs on main pushes and pull requests with Node 22.20.0,
 frozen install, headless Chromium, deployment tests, full `pnpm verify`, and an
-actual `pnpm dev` readiness check plus `pnpm test:dev`. The process group is cleaned
+actual `pnpm dev` readiness check plus bare `pnpm test:dev` through `pnpm test:dev:ci`. The saved installation origin is read from the private `.seed/development.json` launch receipt without an extra environment variable. The process group is cleaned
 up even after readiness or journey failure. It has no deployment secret inputs.
+
+## Upgrade custody
+
+Preserve 0001–0019 bytes and modes. Apply exact Base development schema 0020 and product guards/obsolete local capture retirement 0021. Native auth, source and terminal delivery histories remain; request new local sign-in messages after upgrade. Keep additive schema and ledgers on compatible-source rollback, and restore matching source plus D1/R2 backups into isolated resources for recovery. No destructive down migration or uncertain-send replay is permitted. Application archives and their destination admission requirements are described in docs/ARCHIVES.md. Safe CI artifacts exclude runtime databases, settings, mail bodies and credentials.
+
+
+Wave B source preparation: see [managed source and recovery](docs/MANAGED-SOURCE.md). The generated private-source descriptor/workflow, Base delivery producer, signed native owner claim and owner-gated editor are source adoption; hosted installation/service acceptance, live accounts and public publishing remain owner work. Apply 0024 additively and retain permanent admission ledgers. Native/browser verification status is recorded in the current task evidence, not inferred from packaging.
+
+
+## Mapped imports and local archives
+
+Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the same reviewed native Base import-kit path in Settings and the terminal. See docs/MOVE-IN.md, docs/IMPORT-EVIDENCE.md and docs/ARCHIVES.md for limits, exact originals, command spelling and the authenticated HTTP restore admission and recovery requirements. Replacement claims remain empty; no owner export or hosted acceptance is asserted.
+
+Apply 0025/0026 additively after 0024. Retain original bytes, import journals/provenance, revisions, identifier reservations and authorization guards on compatible-source rollback. Archive export excludes credentials, delivery claims and import lease capabilities. Stop local runtimes before archive commands; restore into empty D1/FILES, configure fresh destination authority, and review access/effects. Never replay historical deliveries. Automatic cycle closure and immutable snapshots, Inbox-only due reminders with durable delivery/suppression history, native duplicate decisions and confirmed issue deletion have local transactional proof. Apply 0031–0033 in order and retain frozen history, feature audits, reminder settings, expanded live/erased source keys, deletion receipts and unresolved file custody on compatible-source rollback. Hosted Cron delivery, provider effects and physical erasure timing require separate acceptance evidence.
+
+## Native integrations
+
+Settings manages scoped Base tokens with safe usage, signed sources, outbound destinations and GitHub PR webhook configuration. See docs/API.md and docs/INTEGRATIONS.md. Apply 0027/0028 additively after 0026; retain source/deletion and replay identities, attempts and terminal results on compatible-source rollback. Restore excludes credentials and transient claims, quarantines historical mail/webhook events, and requires fresh access/effect review and signing-key re-entry. Outbound delivery stays visibly unconfigured until a deployment-owned enforcing DNS/pinned-TLS RPC exists; there is no fetch fallback. Local native and loopback-TLS evidence does not establish hosted egress, a live source/account, stage installation or public publication.

@@ -10,6 +10,8 @@ export const bindings: WorkerBindings = {
   MAIL_FROM: 'Vector <signin@vector.test>', FIRST_OWNER_EMAIL: 'owner@base.test',
   FIRST_OWNER_NAME: 'Owner', WORKSPACE_NAME: 'Base integration', WORKSPACE_TIMEZONE: 'UTC',
   DEFAULT_TEAM_NAME: 'Delivery', DEFAULT_TEAM_PREFIX: 'BASE',
+  // The local key gate: the outbox answers only a request that holds it.
+  RER_DEV_KEY: 'vector-test-dev-key-abcdefghijklmnopqrstuvwxyz0123456789',
 }
 const app = createServerApp()
 export function request(path: string, method = 'GET', body?: unknown, cookie = '', overrides: Partial<WorkerBindings> = {}) {
@@ -20,10 +22,11 @@ export function request(path: string, method = 'GET', body?: unknown, cookie = '
   }, body: body === undefined ? undefined : JSON.stringify(body) }, current)
 }
 export async function mailToken(email: string) {
-  const row = await env.DB.prepare('SELECT sign_in_url FROM local_mail_outbox WHERE recipient=? ORDER BY created_at DESC,rowid DESC LIMIT 1').bind(email).first<{ sign_in_url: string }>()
+  const row = await env.DB.prepare("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')=? ORDER BY created_at DESC,sequence DESC LIMIT 1").bind(email).first<{ text: string }>()
   expect(row).not.toBeNull()
-  expect(new URL(row!.sign_in_url).pathname).toBe('/auth/confirm')
-  return new URL(row!.sign_in_url).searchParams.get('token')!
+  const url = row!.text.match(/https?:\/\/[^\s]+/)![0]
+  expect(new URL(url).pathname).toBe('/auth/confirm')
+  return new URL(url).searchParams.get('token')!
 }
 export async function confirm(token: string) {
   const response = await request('/auth/confirm', 'POST', { token })

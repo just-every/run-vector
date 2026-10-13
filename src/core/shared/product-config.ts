@@ -7,8 +7,6 @@ export type ProductTheme = {
 }
 
 export type ProductConfig = {
-  ownerName: string
-  ownerStatement: string
   productName: string
   showPoweredByCredit: boolean
   theme: ProductTheme

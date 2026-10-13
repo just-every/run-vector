@@ -1,8 +1,9 @@
+import { checkConfirmation, checkMail } from './presentation.mjs';
 const BASE_CONFIG = Object.freeze({
   origin: 'https://auth.conformance.test',
   OWNER_EMAIL: 'owner@example.test',
-  SESSION_SECRET: 'conformance-only-session-secret-with-32-bytes',
-  SETUP_TOKEN: 'conformance-only-owner-setup-token-with-32-bytes',
+  SESSION_SECRET: 'example-conformance-session-secret-with-32-bytes',
+  SETUP_TOKEN: 'example-conformance-owner-setup-token-with-32-bytes',
   MAIL_FROM: 'Operator Auth <auth@example.test>',
 });
 
@@ -78,6 +79,15 @@ export function registerOperatorAuthConformance({ test, adapter }) {
   if (adapter.oidcIssuer !== undefined && (typeof adapter.oidcIssuer !== 'string' || !adapter.oidcIssuer.startsWith('https://'))) {
     throw new TypeError('oidcIssuer must be the exact HTTPS issuer configured by the test adapter.');
   }
+  if (adapter.confirmationFonts !== undefined && typeof adapter.confirmationFonts !== 'boolean') {
+    throw new TypeError('confirmationFonts must be boolean.');
+  }
+  const { branding = {} } = adapter;
+  if (typeof branding !== 'object' || Object.keys(branding).some(key => !['productName', 'theme'].includes(key))
+    || (branding.productName !== undefined && typeof branding.productName !== 'string')
+    || (branding.theme !== undefined && !/^\/(?!\/)[A-Za-z0-9._~/-]+\.css$/.test(branding.theme))) {
+    throw new TypeError('branding declares only the consumer\'s productName and same-origin theme stylesheet.');
+  }
 
   async function scenario(name, options, run) {
     test(name, async () => {
@@ -93,7 +103,7 @@ export function registerOperatorAuthConformance({ test, adapter }) {
   }
 
   scenario('bootstrap claims one owner without mail or product seed data', { noMail: true }, async (runtime, config) => {
-    assertStatus(await runtime.call('/auth/bootstrap', post({ token: 'wrong-conformance-setup-token', displayName: 'Wrong Owner' })), 403);
+    assertStatus(await runtime.call('/auth/bootstrap', post({ token: 'example-wrong-conformance-setup-token', displayName: 'Wrong Owner' })), 403);
     assertStatus(await runtime.privateRequest(), 401);
     if ((await runtime.mails()).length !== 0) throw new Error('Bootstrap must not invoke mail.');
 
@@ -131,6 +141,31 @@ export function registerOperatorAuthConformance({ test, adapter }) {
     assertStatus(await runtime.privateRequest(confirmedCookie), 200);
     assertStatus(await runtime.privateRequest('operator_session_missing=invalid'), 401);
     if (!ownerCookie.startsWith('__Host-operator_session=')) throw new Error('Production auth cookie must use the frozen __Host name.');
+  });
+
+  scenario('confirmation and multipart mail share the consumer\'s public branding', {}, async (runtime, config) => {
+      const owner = await bootstrap(runtime, config);
+      const productName = branding.productName ?? 'your workspace';
+      for (const kind of ['magic', 'invite']) {
+        const response = await runtime.call(kind === 'magic' ? '/auth/magic-link' : '/auth/invite', post(kind === 'magic'
+          ? { email: config.OWNER_EMAIL } : { email: 'presentation@example.test', displayName: 'Presentation' }, owner));
+        assertStatus(response, 202);
+        const link = await capturedLink(runtime);
+        const token = link.searchParams.get('token');
+        checkMail((await runtime.mails()).at(-1), { kind, productName, token });
+        const path = `${link.pathname}${link.search}`;
+        const preview = await runtime.call(path);
+        const headers = [...preview.headers];
+        await checkConfirmation(preview, { kind, productName, token, confirmationFonts: adapter.confirmationFonts === true, theme: branding.theme });
+        const head = await runtime.call(path, { method: 'HEAD' });
+        assertStatus(head, 200);
+        equal(await head.text(), '', 'HEAD has no body');
+        for (const name of ['content-security-policy', 'referrer-policy', 'content-type', 'cache-control']) {
+          equal(head.headers.get(name), headers.find(([key]) => key === name)?.[1], 'HEAD presentation headers');
+        }
+        assertStatus(await runtime.call('/auth/confirm', post({ token })), 303);
+        await checkConfirmation(await runtime.call(path), { productName, confirmationFonts: adapter.confirmationFonts === true, theme: branding.theme });
+      }
   });
 
   scenario('default roles constrain administration and revoke sessions on role change and explicit revoke', {}, async (runtime, config) => {
@@ -198,7 +233,7 @@ export function registerOperatorAuthConformance({ test, adapter }) {
     assertStatus(issued, 303);
     equal(issued.headers.get('location'), '/app/review', 'review session safe returnTo');
     const reviewCookie = cookie(issued);
-    if (!reviewCookie.startsWith('operator_session_local=')) throw new Error('Local review must use the local-only cookie name.');
+    if (!reviewCookie.startsWith(`operator_session_local_${new URL(config.origin).port}=`)) throw new Error('Local review must use the local-only cookie name for its own port.');
     const reviewSession = await json(await runtime.call('/auth/session', { cookie: reviewCookie }));
     equal(reviewSession.kind, 'review', 'review session kind');
     assertStatus(await runtime.privateRequest(reviewCookie), 200);
@@ -235,7 +270,8 @@ export function registerOperatorAuthConformance({ test, adapter }) {
       if (typeof runtime.admitVerifiedIdentity !== 'function') {
         throw new TypeError('An adapter with oidcIssuer must implement test-only admitVerifiedIdentity().');
       }
-      await bootstrap(runtime, config);
+      const ownerCookie = await bootstrap(runtime, config);
+      assertStatus(await runtime.call('/auth/settings/identity', post({ idpSignIn: true }, ownerCookie)), 200);
       const completed = await runtime.admitVerifiedIdentity({
         issuer: adapter.oidcIssuer,
         subject: 'conformance-subject',

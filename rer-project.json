@@ -2,15 +2,57 @@
   "schema": 1,
   "projectId": "just-every/vector-projects",
   "name": "Vector",
-  "sourceRepository": "https://github.com/just-every/vector-projects",
+  "sourceRepository": "https://github.com/just-every/run-vector",
   "license": "MIT",
   "deployment": {
     "target": "cloudflare-workers",
     "artifactFile": "rer-worker-artifact.json"
   },
   "operations": {
-    "build": "pnpm build",
-    "verify": "pnpm verify",
-    "recovery": "Retain prior source and D1/R2 backups before migration. Restore data into isolated resources and validate references and private files before switching traffic. Application export/restore commands are not implemented."
+    "setup": "bash scripts/delivery/setup-build.sh",
+    "build": "export PATH=\"$PWD/.rer-tools/node_modules/.bin:$PATH\" && pnpm run build",
+    "verify": "export PATH=\"$PWD/.rer-tools/node_modules/.bin:$PATH\" && pnpm run verify",
+    "artifact": "export PATH=\"$PWD/.rer-tools/node_modules/.bin:$PATH\" && node scripts/build-delivery-artifact.mjs",
+    "recovery": "Preserve private deployment receipts and the D1 migration ledger. Restore into an empty database and FILES bucket; re-enter secrets, review operator access and release the installation effect hold. Never replay historical mail or webhooks."
+  },
+  "verification": {
+    "sensitivePaths": [
+      "src/core/features/auth/**",
+      "src/core/features/data/**",
+      "src/core/features/bootstrap/**",
+      "src/core/editor/**",
+      "vendor/base/operator-auth/**",
+      "vendor/base/owner-claim/**",
+      "vendor/base/editor/**",
+      "vendor/base/portability/**",
+      "scripts/installer/**",
+      "scripts/base-onboarding/**",
+      "scripts/base-cli/**",
+      "scripts/delivery/**",
+      "scripts/rer.mjs",
+      "rer-setup.json",
+      ".github/workflows/rer-managed.yml",
+      "src/core/features/integrations/**",
+      "vendor/base/integrations/**",
+      "vendor/base/import-kit/**"
+    ],
+    "migrationDirectories": [
+      "migrations/core"
+    ],
+    "guidanceFiles": [
+      "AGENTS.md",
+      "CONTRACT.md",
+      "OPERATIONS.md"
+    ],
+    "testPatterns": [
+      "tests/**/*.test.ts",
+      "tests/**/*.test.mjs",
+      "tests/e2e/*.mjs",
+      "scripts/deployment/tests/*.test.mjs"
+    ]
+  },
+  "setup": {
+    "path": "rer-setup.json",
+    "sha256": "ceb5b4189f4ad51ad7897926766743caa013b7d68c44c2488c3276bd6a909886"
   }
 }

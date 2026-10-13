@@ -1,0 +1,119 @@
+{
+  "schema": 1,
+  "project": {
+    "schema": 1,
+    "projectId": "just-every/vector-projects",
+    "name": "Vector",
+    "sourceRepository": "https://github.com/just-every/run-vector",
+    "license": "MIT",
+    "deployment": {
+      "target": "cloudflare-workers",
+      "artifactFile": "rer-worker-artifact.json"
+    },
+    "operations": {
+      "setup": "bash scripts/delivery/setup-build.sh",
+      "build": "export PATH=\"$PWD/.rer-tools/node_modules/.bin:$PATH\" && pnpm run build",
+      "verify": "export PATH=\"$PWD/.rer-tools/node_modules/.bin:$PATH\" && pnpm run verify",
+      "artifact": "export PATH=\"$PWD/.rer-tools/node_modules/.bin:$PATH\" && node scripts/build-delivery-artifact.mjs",
+      "recovery": "Preserve private deployment receipts and the D1 migration ledger. Restore into an empty database and FILES bucket; re-enter secrets, review operator access and release the installation effect hold. Never replay historical mail or webhooks."
+    },
+    "verification": {
+      "sensitivePaths": [
+        "src/core/features/auth/**",
+        "src/core/features/data/**",
+        "src/core/features/bootstrap/**",
+        "src/core/editor/**",
+        "vendor/base/operator-auth/**",
+        "vendor/base/owner-claim/**",
+        "vendor/base/editor/**",
+        "vendor/base/portability/**",
+        "scripts/installer/**",
+        "scripts/base-onboarding/**",
+        "scripts/base-cli/**",
+        "scripts/delivery/**",
+        "scripts/rer.mjs",
+        "rer-setup.json",
+        ".github/workflows/rer-managed.yml",
+        "src/core/features/integrations/**",
+        "vendor/base/integrations/**",
+        "vendor/base/import-kit/**"
+      ],
+      "migrationDirectories": [
+        "migrations/core"
+      ],
+      "guidanceFiles": [
+        "AGENTS.md",
+        "CONTRACT.md",
+        "OPERATIONS.md"
+      ],
+      "testPatterns": [
+        "tests/**/*.test.ts",
+        "tests/**/*.test.mjs",
+        "tests/e2e/*.mjs",
+        "scripts/deployment/tests/*.test.mjs"
+      ]
+    }
+  },
+  "managed": {
+    "workflowRef": "runeditrun/delivery/.github/workflows/trusted-build.yml@bf7a25abb44bec1457a7bc738ff63921d90fb52e",
+    "artifactFile": "rer-worker-artifact.json",
+    "buildProfile": "project",
+    "verificationProfiles": [
+      "full"
+    ],
+    "pnpmVersion": "10.12.4"
+  },
+  "setup": {
+    "manifestFile": "rer-setup.json"
+  },
+  "artifact": {
+    "specInputs": {
+      "publicVariableNames": [
+        "APP_ORIGIN",
+        "FIRST_OWNER_EMAIL",
+        "FIRST_OWNER_NAME",
+        "WORKSPACE_NAME",
+        "WORKSPACE_TIMEZONE",
+        "DEFAULT_TEAM_NAME",
+        "DEFAULT_TEAM_PREFIX",
+        "MAIL_MODE",
+        "MAIL_PROVIDER",
+        "MAIL_FROM",
+        "NOTIFICATION_EMAIL_ENABLED",
+        "SEED_SAMPLE_DATA",
+        "RER_MANAGEMENT_ORIGIN",
+        "RER_INSTALLATION_ID",
+        "RER_OWNER_CLAIM_ISSUER",
+        "RER_OWNER_CLAIM_INSTALLATION_ID",
+        "RER_OWNER_CLAIM_APP_ORIGIN",
+        "RER_OWNER_CLAIM_PUBLIC_KEYS",
+        "INTEGRATION_EGRESS_POLICY"
+      ],
+      "secretNames": [
+        "SESSION_SECRET",
+        "SETUP_TOKEN"
+      ],
+      "optionalSecretNames": [
+        "MAIL_API_KEY"
+      ],
+      "providerEffects": [
+        "outbound-mail"
+      ],
+      "surfaces": {
+        "app": {
+          "path": "/",
+          "originVariable": "APP_ORIGIN",
+          "readiness": [
+            {
+              "path": "/health",
+              "statuses": [
+                200
+              ]
+            }
+          ]
+        }
+      },
+      "recovery": "Preserve private deployment receipts and the D1 migration ledger. Restore into an empty database and FILES bucket; re-enter secrets, review operator access and release the installation effect hold. Never replay historical mail or webhooks. Integration credentials require re-entry; historical source identities, PR states and webhook attempts remain held."
+    }
+  }
+}

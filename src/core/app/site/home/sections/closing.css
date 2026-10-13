@@ -1,0 +1,10 @@
+/* 7. The closing call to action, centred, over the same dimension line the hero numbers its steps on. */
+.vx-closing { padding-block: clamp(56px, 6vw, 96px) clamp(96px, 10vw, 150px); text-align: center; }
+.vx-closing-title { font-size: clamp(42px, 5.2vw, 76px); letter-spacing: -0.034em; }
+.vx-closing-line { display: block; width: min(320px, 70%); height: 14px; margin: clamp(22px, 2vw, 30px) auto 0; fill: none; stroke: var(--vx-outline); stroke-width: 1.2; stroke-linecap: round; stroke-linejoin: round; }
+.vx-closing-actions { justify-content: center; }
+
+@media (max-width: 600px) {
+  .vx-closing { padding-block: 88px 80px; }
+  .vx-closing-title { font-size: clamp(38px, 10.4vw, 46px); }
+}

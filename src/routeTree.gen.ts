@@ -11,21 +11,33 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/app'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppBoardRouteImport } from './routes/app.board'
 import { Route as AppCurrentRouteImport } from './routes/app.current'
+import { Route as AppInboxRouteImport } from './routes/app.inbox'
 import { Route as AppIssuesRouteImport } from './routes/app.issues'
 import { Route as AppMyWorkRouteImport } from './routes/app.my-work'
+import { Route as AppNewRouteImport } from './routes/app.new'
 import { Route as AppNewIssueRouteImport } from './routes/app.new-issue'
+import { Route as AppSearchRouteImport } from './routes/app.search'
 import { Route as AppSettingsRouteImport } from './routes/app.settings'
+import { Route as DocsIndexRouteImport } from './routes/docs.index'
+import { Route as DocsSlugRouteImport } from './routes/docs.$slug'
+import { Route as AppBoardIdentifierRouteImport } from './routes/app.board.$identifier'
 import { Route as AppCurrentIndexRouteImport } from './routes/app.current.index'
 import { Route as AppCurrentIdentifierRouteImport } from './routes/app.current.$identifier'
+import { Route as AppCyclesIndexRouteImport } from './routes/app.cycles.index'
+import { Route as AppCyclesCycleIdRouteImport } from './routes/app.cycles.$cycleId'
 import { Route as AppIssuesIndexRouteImport } from './routes/app.issues.index'
 import { Route as AppIssuesIdentifierRouteImport } from './routes/app.issues.$identifier'
 import { Route as AppMyWorkIndexRouteImport } from './routes/app.my-work.index'
 import { Route as AppMyWorkIdentifierRouteImport } from './routes/app.my-work.$identifier'
 import { Route as AppProjectsIndexRouteImport } from './routes/app.projects.index'
 import { Route as AppProjectsProjectIdRouteImport } from './routes/app.projects.$projectId'
+import { Route as AppViewsViewIdRouteImport } from './routes/app.views.$viewId'
+import { Route as AppViewsViewIdIdentifierRouteImport } from './routes/app.views.$viewId.$identifier'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -35,6 +47,11 @@ const IndexRoute = IndexRouteImport.update({
 const AppRoute = AppRouteImport.update({
   id: '/app',
   path: '/app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SigninRoute = SigninRouteImport.update({
@@ -47,9 +64,19 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppBoardRoute = AppBoardRouteImport.update({
+  id: '/board',
+  path: '/board',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppCurrentRoute = AppCurrentRouteImport.update({
   id: '/current',
   path: '/current',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInboxRoute = AppInboxRouteImport.update({
+  id: '/inbox',
+  path: '/inbox',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIssuesRoute = AppIssuesRouteImport.update({
@@ -62,15 +89,40 @@ const AppMyWorkRoute = AppMyWorkRouteImport.update({
   path: '/my-work',
   getParentRoute: () => AppRoute,
 } as any)
+const AppNewRoute = AppNewRouteImport.update({
+  id: '/new',
+  path: '/new',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppNewIssueRoute = AppNewIssueRouteImport.update({
   id: '/new-issue',
   path: '/new-issue',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSearchRoute = AppSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
   getParentRoute: () => AppRoute,
+} as any)
+const DocsIndexRoute = DocsIndexRouteImport.update({
+  id: '/docs/',
+  path: '/docs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSlugRoute = DocsSlugRouteImport.update({
+  id: '/docs/$slug',
+  path: '/docs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppBoardIdentifierRoute = AppBoardIdentifierRouteImport.update({
+  id: '/$identifier',
+  path: '/$identifier',
+  getParentRoute: () => AppBoardRoute,
 } as any)
 const AppCurrentIndexRoute = AppCurrentIndexRouteImport.update({
   id: '/',
@@ -81,6 +133,16 @@ const AppCurrentIdentifierRoute = AppCurrentIdentifierRouteImport.update({
   id: '/$identifier',
   path: '/$identifier',
   getParentRoute: () => AppCurrentRoute,
+} as any)
+const AppCyclesIndexRoute = AppCyclesIndexRouteImport.update({
+  id: '/cycles/',
+  path: '/cycles/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCyclesCycleIdRoute = AppCyclesCycleIdRouteImport.update({
+  id: '/cycles/$cycleId',
+  path: '/cycles/$cycleId',
+  getParentRoute: () => AppRoute,
 } as any)
 const AppIssuesIndexRoute = AppIssuesIndexRouteImport.update({
   id: '/',
@@ -112,121 +174,207 @@ const AppProjectsProjectIdRoute = AppProjectsProjectIdRouteImport.update({
   path: '/projects/$projectId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppViewsViewIdRoute = AppViewsViewIdRouteImport.update({
+  id: '/views/$viewId',
+  path: '/views/$viewId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppViewsViewIdIdentifierRoute =
+  AppViewsViewIdIdentifierRouteImport.update({
+    id: '/$identifier',
+    path: '/$identifier',
+    getParentRoute: () => AppViewsViewIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/setup': typeof SetupRoute
   '/signin': typeof SigninRoute
+  '/app/board': typeof AppBoardRouteWithChildren
   '/app/current': typeof AppCurrentRouteWithChildren
+  '/app/inbox': typeof AppInboxRoute
   '/app/issues': typeof AppIssuesRouteWithChildren
   '/app/my-work': typeof AppMyWorkRouteWithChildren
+  '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
+  '/app/search': typeof AppSearchRoute
   '/app/settings': typeof AppSettingsRoute
+  '/docs/$slug': typeof DocsSlugRoute
   '/app/': typeof AppIndexRoute
+  '/docs/': typeof DocsIndexRoute
+  '/app/board/$identifier': typeof AppBoardIdentifierRoute
   '/app/current/$identifier': typeof AppCurrentIdentifierRoute
+  '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
+  '/app/cycles/': typeof AppCyclesIndexRoute
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/setup': typeof SetupRoute
   '/signin': typeof SigninRoute
+  '/app/board': typeof AppBoardRouteWithChildren
+  '/app/inbox': typeof AppInboxRoute
+  '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
+  '/app/search': typeof AppSearchRoute
   '/app/settings': typeof AppSettingsRoute
+  '/docs/$slug': typeof DocsSlugRoute
   '/app': typeof AppIndexRoute
+  '/docs': typeof DocsIndexRoute
+  '/app/board/$identifier': typeof AppBoardIdentifierRoute
   '/app/current/$identifier': typeof AppCurrentIdentifierRoute
+  '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current': typeof AppCurrentIndexRoute
+  '/app/cycles': typeof AppCyclesIndexRoute
   '/app/issues': typeof AppIssuesIndexRoute
   '/app/my-work': typeof AppMyWorkIndexRoute
   '/app/projects': typeof AppProjectsIndexRoute
+  '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
+  '/setup': typeof SetupRoute
   '/signin': typeof SigninRoute
+  '/app/board': typeof AppBoardRouteWithChildren
   '/app/current': typeof AppCurrentRouteWithChildren
+  '/app/inbox': typeof AppInboxRoute
   '/app/issues': typeof AppIssuesRouteWithChildren
   '/app/my-work': typeof AppMyWorkRouteWithChildren
+  '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
+  '/app/search': typeof AppSearchRoute
   '/app/settings': typeof AppSettingsRoute
+  '/docs/$slug': typeof DocsSlugRoute
   '/app/': typeof AppIndexRoute
+  '/docs/': typeof DocsIndexRoute
+  '/app/board/$identifier': typeof AppBoardIdentifierRoute
   '/app/current/$identifier': typeof AppCurrentIdentifierRoute
+  '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
+  '/app/cycles/': typeof AppCyclesIndexRoute
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/app'
+    | '/setup'
     | '/signin'
+    | '/app/board'
     | '/app/current'
+    | '/app/inbox'
     | '/app/issues'
     | '/app/my-work'
+    | '/app/new'
     | '/app/new-issue'
+    | '/app/search'
     | '/app/settings'
+    | '/docs/$slug'
     | '/app/'
+    | '/docs/'
+    | '/app/board/$identifier'
     | '/app/current/$identifier'
+    | '/app/cycles/$cycleId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
     | '/app/projects/$projectId'
+    | '/app/views/$viewId'
     | '/app/current/'
+    | '/app/cycles/'
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
+    | '/app/views/$viewId/$identifier'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/setup'
     | '/signin'
+    | '/app/board'
+    | '/app/inbox'
+    | '/app/new'
     | '/app/new-issue'
+    | '/app/search'
     | '/app/settings'
+    | '/docs/$slug'
     | '/app'
+    | '/docs'
+    | '/app/board/$identifier'
     | '/app/current/$identifier'
+    | '/app/cycles/$cycleId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
     | '/app/projects/$projectId'
+    | '/app/views/$viewId'
     | '/app/current'
+    | '/app/cycles'
     | '/app/issues'
     | '/app/my-work'
     | '/app/projects'
+    | '/app/views/$viewId/$identifier'
   id:
     | '__root__'
     | '/'
     | '/app'
+    | '/setup'
     | '/signin'
+    | '/app/board'
     | '/app/current'
+    | '/app/inbox'
     | '/app/issues'
     | '/app/my-work'
+    | '/app/new'
     | '/app/new-issue'
+    | '/app/search'
     | '/app/settings'
+    | '/docs/$slug'
     | '/app/'
+    | '/docs/'
+    | '/app/board/$identifier'
     | '/app/current/$identifier'
+    | '/app/cycles/$cycleId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
     | '/app/projects/$projectId'
+    | '/app/views/$viewId'
     | '/app/current/'
+    | '/app/cycles/'
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
+    | '/app/views/$viewId/$identifier'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
+  SetupRoute: typeof SetupRoute
   SigninRoute: typeof SigninRoute
+  DocsSlugRoute: typeof DocsSlugRoute
+  DocsIndexRoute: typeof DocsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,6 +393,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/signin': {
       id: '/signin'
       path: '/signin'
@@ -259,11 +414,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/board': {
+      id: '/app/board'
+      path: '/board'
+      fullPath: '/app/board'
+      preLoaderRoute: typeof AppBoardRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/current': {
       id: '/app/current'
       path: '/current'
       fullPath: '/app/current'
       preLoaderRoute: typeof AppCurrentRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/inbox': {
+      id: '/app/inbox'
+      path: '/inbox'
+      fullPath: '/app/inbox'
+      preLoaderRoute: typeof AppInboxRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/issues': {
@@ -280,11 +449,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMyWorkRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/new': {
+      id: '/app/new'
+      path: '/new'
+      fullPath: '/app/new'
+      preLoaderRoute: typeof AppNewRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/new-issue': {
       id: '/app/new-issue'
       path: '/new-issue'
       fullPath: '/app/new-issue'
       preLoaderRoute: typeof AppNewIssueRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/search': {
+      id: '/app/search'
+      path: '/search'
+      fullPath: '/app/search'
+      preLoaderRoute: typeof AppSearchRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/settings': {
@@ -293,6 +476,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/settings'
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/docs/': {
+      id: '/docs/'
+      path: '/docs'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof DocsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/$slug': {
+      id: '/docs/$slug'
+      path: '/docs/$slug'
+      fullPath: '/docs/$slug'
+      preLoaderRoute: typeof DocsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/board/$identifier': {
+      id: '/app/board/$identifier'
+      path: '/$identifier'
+      fullPath: '/app/board/$identifier'
+      preLoaderRoute: typeof AppBoardIdentifierRouteImport
+      parentRoute: typeof AppBoardRoute
     }
     '/app/current/': {
       id: '/app/current/'
@@ -307,6 +511,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/current/$identifier'
       preLoaderRoute: typeof AppCurrentIdentifierRouteImport
       parentRoute: typeof AppCurrentRoute
+    }
+    '/app/cycles/': {
+      id: '/app/cycles/'
+      path: '/cycles'
+      fullPath: '/app/cycles/'
+      preLoaderRoute: typeof AppCyclesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/cycles/$cycleId': {
+      id: '/app/cycles/$cycleId'
+      path: '/cycles/$cycleId'
+      fullPath: '/app/cycles/$cycleId'
+      preLoaderRoute: typeof AppCyclesCycleIdRouteImport
+      parentRoute: typeof AppRoute
     }
     '/app/issues/': {
       id: '/app/issues/'
@@ -350,8 +568,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/views/$viewId': {
+      id: '/app/views/$viewId'
+      path: '/views/$viewId'
+      fullPath: '/app/views/$viewId'
+      preLoaderRoute: typeof AppViewsViewIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/views/$viewId/$identifier': {
+      id: '/app/views/$viewId/$identifier'
+      path: '/$identifier'
+      fullPath: '/app/views/$viewId/$identifier'
+      preLoaderRoute: typeof AppViewsViewIdIdentifierRouteImport
+      parentRoute: typeof AppViewsViewIdRoute
+    }
   }
 }
+
+interface AppBoardRouteChildren {
+  AppBoardIdentifierRoute: typeof AppBoardIdentifierRoute
+}
+
+const AppBoardRouteChildren: AppBoardRouteChildren = {
+  AppBoardIdentifierRoute: AppBoardIdentifierRoute,
+}
+
+const AppBoardRouteWithChildren = AppBoardRoute._addFileChildren(
+  AppBoardRouteChildren,
+)
 
 interface AppCurrentRouteChildren {
   AppCurrentIdentifierRoute: typeof AppCurrentIdentifierRoute
@@ -395,25 +639,51 @@ const AppMyWorkRouteWithChildren = AppMyWorkRoute._addFileChildren(
   AppMyWorkRouteChildren,
 )
 
+interface AppViewsViewIdRouteChildren {
+  AppViewsViewIdIdentifierRoute: typeof AppViewsViewIdIdentifierRoute
+}
+
+const AppViewsViewIdRouteChildren: AppViewsViewIdRouteChildren = {
+  AppViewsViewIdIdentifierRoute: AppViewsViewIdIdentifierRoute,
+}
+
+const AppViewsViewIdRouteWithChildren = AppViewsViewIdRoute._addFileChildren(
+  AppViewsViewIdRouteChildren,
+)
+
 interface AppRouteChildren {
+  AppBoardRoute: typeof AppBoardRouteWithChildren
   AppCurrentRoute: typeof AppCurrentRouteWithChildren
+  AppInboxRoute: typeof AppInboxRoute
   AppIssuesRoute: typeof AppIssuesRouteWithChildren
   AppMyWorkRoute: typeof AppMyWorkRouteWithChildren
+  AppNewRoute: typeof AppNewRoute
   AppNewIssueRoute: typeof AppNewIssueRoute
+  AppSearchRoute: typeof AppSearchRoute
   AppSettingsRoute: typeof AppSettingsRoute
   AppIndexRoute: typeof AppIndexRoute
+  AppCyclesCycleIdRoute: typeof AppCyclesCycleIdRoute
   AppProjectsProjectIdRoute: typeof AppProjectsProjectIdRoute
+  AppViewsViewIdRoute: typeof AppViewsViewIdRouteWithChildren
+  AppCyclesIndexRoute: typeof AppCyclesIndexRoute
   AppProjectsIndexRoute: typeof AppProjectsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppBoardRoute: AppBoardRouteWithChildren,
   AppCurrentRoute: AppCurrentRouteWithChildren,
+  AppInboxRoute: AppInboxRoute,
   AppIssuesRoute: AppIssuesRouteWithChildren,
   AppMyWorkRoute: AppMyWorkRouteWithChildren,
+  AppNewRoute: AppNewRoute,
   AppNewIssueRoute: AppNewIssueRoute,
+  AppSearchRoute: AppSearchRoute,
   AppSettingsRoute: AppSettingsRoute,
   AppIndexRoute: AppIndexRoute,
+  AppCyclesCycleIdRoute: AppCyclesCycleIdRoute,
   AppProjectsProjectIdRoute: AppProjectsProjectIdRoute,
+  AppViewsViewIdRoute: AppViewsViewIdRouteWithChildren,
+  AppCyclesIndexRoute: AppCyclesIndexRoute,
   AppProjectsIndexRoute: AppProjectsIndexRoute,
 }
 
@@ -422,7 +692,10 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
+  SetupRoute: SetupRoute,
   SigninRoute: SigninRoute,
+  DocsSlugRoute: DocsSlugRoute,
+  DocsIndexRoute: DocsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

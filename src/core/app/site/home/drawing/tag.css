@@ -1,0 +1,13 @@
+/* Tags and leaders (tag.tsx): ink pentagons with a number, and 1px ink lines that start on a dot or end in an open arrowhead. */
+.vx-tag { position: relative; display: inline-block; flex: none; width: 34px; height: 24px; vertical-align: middle; }
+.vx-tag svg { display: block; width: 100%; height: 100%; fill: var(--vx-card); stroke: var(--vx-outline); stroke-width: 1.3; stroke-linejoin: miter; overflow: visible; }
+.vx-tag-n { position: absolute; inset: 0 0 0 8px; display: grid; place-items: center; color: var(--vx-ink); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1; }
+
+.vx-leader { position: relative; display: block; flex: none; }
+.vx-leader--h { height: 0; border-top: 1px solid var(--vx-outline); }
+.vx-leader--v { width: 0; border-left: 1px solid var(--vx-outline); }
+.vx-leader--dot::after { content: ""; position: absolute; width: 5px; height: 5px; border-radius: 50%; background: var(--vx-outline); }
+.vx-leader--h.vx-leader--dot::after { left: -2px; top: -3px; }
+.vx-leader--v.vx-leader--dot::after { left: -3px; top: -2px; }
+.vx-leader--arrow::after { content: ""; position: absolute; width: 8px; height: 8px; border: solid var(--vx-outline); border-width: 0 1.3px 1.3px 0; }
+.vx-leader--v.vx-leader--arrow::after { left: -4.5px; bottom: 0; transform: rotate(45deg); transform-origin: 70% 70%; }

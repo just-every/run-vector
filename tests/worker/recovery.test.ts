@@ -10,7 +10,7 @@ import { updateIssueRecord } from "../../src/core/features/issue-edit/repository
 import { createUlid } from "../../src/core/shared/ids";
 const app = createServerApp(),
   origin = "https://vector.test";
-const bindings = { ...env, APP_ORIGIN: origin, MAIL_MODE: "local-outbox" };
+const bindings = { ...env, APP_ORIGIN: origin, MAIL_MODE: "production" };
 beforeAll(async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   await ensureSampleData(env.DB, new Date());

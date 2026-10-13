@@ -1,0 +1,24 @@
+{
+  "$schema": "./schema/importers.schema.json",
+  "schemaVersion": 1,
+  "importers": [
+    {
+      "incumbent": "Linear",
+      "product": "Vector",
+      "status": "documented format",
+      "inputs": [
+        "workspace issue CSV",
+        "owner-produced Linear API file (docs/LINEAR-API-FILE.md)"
+      ],
+      "testedScale": {
+        "issues": 2000,
+        "method": "deterministic generator"
+      },
+      "evidence": {
+        "link": "docs/IMPORT-EVIDENCE.md",
+        "validation": "synthetic-only",
+        "realExport": "not-supplied"
+      }
+    }
+  ]
+}

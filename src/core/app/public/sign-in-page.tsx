@@ -1,8 +1,13 @@
-import { Link, useSearch } from "@tanstack/react-router";
+import { useSearch } from "@tanstack/react-router";
 import { z } from "zod";
 import { useEffect, useState } from "react";
-import { PublicFrame } from "./public-frame";
-export function SignInPage() {
+import { productConfig } from "../config";
+import { Door } from "../site/door/door";
+import { SignInDrawing } from "../site/door/door-drawings";
+import { links } from "../site/shell/links";
+
+/** /signin: one email field that asks for a single-use sign-in link. `localOutbox` adds the local development note. */
+export function SignInPage({ localOutbox }: { localOutbox: boolean }) {
   const search = useSearch({ strict: false }) as { returnTo?: string };
   const [email, setEmail] = useState(""),
     [message, setMessage] = useState(""),
@@ -21,14 +26,20 @@ export function SignInPage() {
         body: JSON.stringify({ email, returnTo: search.returnTo }),
       });
       const body = z
-        .object({ message: z.string().optional(), error: z.string().optional() })
+        .object({
+          message: z.string().optional(),
+          error: z.string().optional(),
+        })
         .parse(await response.json());
       if (!response.ok)
         throw new Error(
-          body.message ?? body.error ??
+          body.message ??
+            body.error ??
             `Sign-in could not be requested (${response.status}).`,
         );
-      setMessage(body.message ?? "Check your email.");
+      setMessage(
+        "Check your inbox for your single-use sign-in link. It may take a moment to arrive; check your spam folder too.",
+      );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Sign-in failed.");
     } finally {
@@ -36,15 +47,14 @@ export function SignInPage() {
     }
   }
   return (
-    <PublicFrame variant="mail-unavailable">
+    <Door drawing={<SignInDrawing productName={productConfig.productName} />}>
       <div aria-labelledby="sign-in-heading">
-        <p className="public-kicker">Operator access</p>
         <h1 id="sign-in-heading">Sign in to your workspace</h1>
-        <p className="owner-statement">
+        <p className="vx-door-lead">
           Use your invited email address to receive a single-use sign-in link.
         </p>
-        <form onSubmit={submit}>
-          <label>
+        <form className="vx-door-form" onSubmit={submit}>
+          <label className="vx-door-field">
             Email
             <input
               type="email"
@@ -55,21 +65,23 @@ export function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
-          <button
-            className="primary-action"
-            disabled={!ready || busy}
-            type="submit"
-          >
+          <button className="vx-pill" disabled={!ready || busy} type="submit">
             {busy ? "Sending…" : "Send sign-in link"}
           </button>
         </form>
         {message ? (
-          <p className="public-notice" role="status">
+          <p className="vx-door-notice" role="status">
             {message}
           </p>
         ) : null}
-        <Link to="/">← Return to welcome</Link>
+        {localOutbox ? (
+          <p className="vx-door-note">
+            Running {productConfig.productName} on this computer? Open the <a href="/__dev/outbox">development outbox</a> for
+            your sign-in message, then press Confirm.
+          </p>
+        ) : null}
+        <p className="vx-door-back"><a href={links.home}>← Return to welcome</a></p>
       </div>
-    </PublicFrame>
+    </Door>
   );
 }

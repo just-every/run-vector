@@ -1,3 +1,7 @@
+import { requireIssueAccess } from './access'
+import { followStatements, assignmentStatements, mentionStatements, blockerStatements, finalizeEvent } from '../notifications/events'
+import seed from '../../../../seed.json'
+import { creationGuard, creationError, allocateIssueSequence } from './create-guard'
 import { commitWithAssignee } from "./assignment-commit";
 import { mutationDatabase } from "../auth/mutation-database";
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
@@ -12,7 +16,6 @@ import {
   labels,
   operators,
   projects,
-  teamIssueSequences,
   teams,
   workflowStatuses,
 } from '../../platform/db/schema'
@@ -57,13 +60,14 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
   }
   await validateIssueOptions(db, team.workspaceId, team.id, request.input)
 
-  const sequenceNumber = await allocateSequence(db, team.id, now)
-  const identifier = `${team.identifierPrefix}-${sequenceNumber}`
+  const allocation = await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)
+  const sequenceNumber = allocation.sequence
+  const identifier = `${allocation.prefix}-${sequenceNumber}`
   const issueId = createUlid(request.now)
   const issueWrite = db.insert(issues).values({
     id: issueId,
     identifier,
-    originPrefix: team.identifierPrefix,
+    originPrefix: allocation.prefix,
     sequenceNumber,
     teamId: team.id,
     title: request.input.title,
@@ -85,7 +89,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
     createdAt: now,
     updatedAt: now,
   })
-  const activityWrite = db.insert(issueActivity).values(activityRow({
+  const creationActivity = activityRow({
     issueId,
     actorOperatorId: request.actorOperatorId,
     kind: 'issue.created',
@@ -108,15 +112,17 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
       customFields: request.input.customFields,
     },
     now,
-  }))
+  })
+  const activityWrite = db.insert(issueActivity).values(creationActivity)
+  const event = { id: creationActivity.id, issueId, actor: request.actorOperatorId, at: now }
   const labelWrites = request.input.labelIds.length === 0
     ? []
     : [db.insert(issueLabels).values(request.input.labelIds.map((labelId) => ({ issueId, labelId, createdAt: now })))]
-  await commitWithAssignee(binding, request.input.assigneeOperatorId, team.workspaceId,
-    [issueWrite, ...labelWrites, activityWrite].map(query => {
+  try { await commitWithAssignee(binding, request.input.assigneeOperatorId, team.workspaceId,
+    [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
-    }))
+    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...finalizeEvent(binding,event)]) } catch (error) { return creationError(binding, team.id, error) }
   return { identifier }
 }
 
@@ -124,6 +130,7 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
   binding = mutationDatabase(binding, request.actorOperatorId)
   const db = drizzle(binding)
   const now = request.now.toISOString()
+  await requireIssueAccess(binding,request.identifier,request.actorOperatorId)
   const issue = await requireIssue(db, request.identifier)
   if (issue.version !== request.expectedVersion) return { outcome: 'stale', identifier: issue.identifier }
 
@@ -134,23 +141,37 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
   }
 
   const next = await nextDecisionState(db, team, issue, request)
-  const decisionWrite = db.insert(intakeDecisions).select(decisionSelection(db, issue.identifier, request, next, now))
-  const activityWrite = db.insert(issueActivity).select(activitySelection(db, issue.identifier, request, next, now))
+  const decisionId = createUlid(request.now), activityId = createUlid(request.now)
+  const event = { id: activityId, issueId: issue.id, actor: request.actorOperatorId, at: now }
+  const decisionWrite = db.insert(intakeDecisions).select(decisionSelection(db, issue.identifier, request, next, now, decisionId))
+  const activityWrite = db.insert(issueActivity).select(activitySelection(db, issue.identifier, request, next, now, activityId))
   const issueWrite = db.update(issues).set({ ...next.issueValues, version: issue.version + 1, updatedAt: now })
     .where(and(eq(issues.identifier, issue.identifier), eq(issues.version, request.expectedVersion)))
-  const writes = await commitWithAssignee(binding, request.kind === 'accepted' ? (request.input as AcceptIssueInput).assigneeOperatorId : null, team.workspaceId,
-    [decisionWrite, activityWrite, issueWrite].map(query => {
+    .returning({ id: issues.id })
+  const statements = [binding.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('intake access denied') END`).bind(issue.id,request.actorOperatorId), ...[decisionWrite, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
-    }))
-  return writes[2].meta.changes === 1
+    })].concat([
+      ...blockerStatements(binding,event),
+      ...(request.kind === 'accepted' && (request.input as AcceptIssueInput).assigneeOperatorId !== issue.assigneeOperatorId ? assignmentStatements(binding,event,(request.input as AcceptIssueInput).assigneeOperatorId) : []),
+      binding.prepare(`DELETE FROM issue_deferral_origins WHERE issue_id=? AND EXISTS(SELECT 1 FROM intake_decisions WHERE id=?)`).bind(issue.id,decisionId),
+      ...(request.kind === 'deferred' ? [binding.prepare(`INSERT INTO issue_deferral_origins(issue_id,decision_id) SELECT issue_id,id FROM intake_decisions WHERE id=?`).bind(decisionId)] : []),
+      (() => { const { sql, params } = issueWrite.toSQL(); return binding.prepare(sql).bind(...params) })(),
+    ])
+  const issueWriteIndex = statements.length - 1
+  statements.push(...finalizeEvent(binding,event))
+  const writes = await commitWithAssignee(binding, request.kind === 'accepted' ? (request.input as AcceptIssueInput).assigneeOperatorId : null, team.workspaceId, statements)
+  // The browsing revision trigger writes too. Only the guarded issue's native
+  // RETURNING row identifies whether this decision actually committed.
+  const rows = writes[issueWriteIndex].results as { id: string }[]
+  return rows.length === 1 && rows[0].id === issue.id
     ? { outcome: 'written', identifier: issue.identifier }
     : { outcome: 'stale', identifier: issue.identifier }
 }
 
-function decisionSelection(db: Database, identifier: string, request: IntakeDecisionRecordInput, next: DecisionState, now: string) {
+function decisionSelection(db: Database, identifier: string, request: IntakeDecisionRecordInput, next: DecisionState, now: string, decisionId: string) {
   return db.select({
-    id: sql<string>`${createUlid(request.now)}`.as('id'),
+    id: sql<string>`${decisionId}`.as('id'),
     issueId: issues.id,
     actorOperatorId: sql<string>`${request.actorOperatorId}`.as('actor_operator_id'),
     kind: sql<string>`${request.kind}`.as('kind'),
@@ -161,7 +182,7 @@ function decisionSelection(db: Database, identifier: string, request: IntakeDeci
   }).from(issues).where(and(eq(issues.identifier, identifier), eq(issues.version, request.expectedVersion)))
 }
 
-function activitySelection(db: Database, identifier: string, request: IntakeDecisionRecordInput, next: DecisionState, now: string) {
+function activitySelection(db: Database, identifier: string, request: IntakeDecisionRecordInput, next: DecisionState, now: string, activityId: string) {
   const activity = activityRow({
     issueId: '',
     actorOperatorId: request.actorOperatorId,
@@ -171,7 +192,7 @@ function activitySelection(db: Database, identifier: string, request: IntakeDeci
     now,
   })
   return db.select({
-    id: sql<string>`${activity.id}`.as('id'),
+    id: sql<string>`${activityId}`.as('id'),
     issueId: issues.id,
     actorOperatorId: sql<string>`${activity.actorOperatorId}`.as('actor_operator_id'),
     kind: sql<string>`${activity.kind}`.as('kind'),
@@ -241,15 +262,6 @@ function decisionState(issue: typeof issues.$inferSelect) {
   }
 }
 
-export async function allocateSequence(db: Database, teamId: string, now: string): Promise<number> {
-  const [allocation] = await db.insert(teamIssueSequences).values({ teamId, lastSequence: 1, updatedAt: now }).onConflictDoUpdate({
-    target: teamIssueSequences.teamId,
-    set: { lastSequence: sql`${teamIssueSequences.lastSequence} + 1`, updatedAt: now },
-  }).returning({ lastSequence: teamIssueSequences.lastSequence })
-  if (!allocation) throw new Error(`Could not allocate an issue sequence for team ${teamId}.`)
-  return allocation.lastSequence
-}
-
 export async function requireActiveTeam(db: Database, teamId: string) {
   const [team] = await db.select().from(teams).where(eq(teams.id, teamId)).limit(1)
   if (!team) throw new IssueMutationError('invalid_option', `Team ${teamId} does not exist.`)
@@ -307,6 +319,7 @@ export async function validateCycle(db: Database, cycleId: string | null, teamId
 }
 
 export async function validateLabels(db: Database, labelIds: string[], workspaceId: string) {
+  if (labelIds.length > seed.limits.labelsPerIssue || new Set(labelIds).size !== labelIds.length) throw new IssueMutationError('invalid_option', `Choose at most ${seed.limits.labelsPerIssue} distinct labels.`)
   if (labelIds.length === 0) return
   const found = await db.select({ id: labels.id, workspaceId: labels.workspaceId }).from(labels).where(inArray(labels.id, labelIds))
   if (found.length !== labelIds.length || found.some((label) => label.workspaceId !== workspaceId)) {

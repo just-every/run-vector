@@ -18,25 +18,39 @@ function mailAddress(value, code, sender = false) {
   if (sender) assert(!/[^\x00-\x7f]/.test(email), code);
 }
 
+const name = key => value => assert(typeof value === 'string' && value.trim().length > 0 && value.trim().length <= 200, `invalid-plan-${key}`);
+export const publicValidators = {
+  FIRST_OWNER_NAME: name('FIRST_OWNER_NAME'),
+  WORKSPACE_NAME: name('WORKSPACE_NAME'),
+  DEFAULT_TEAM_NAME: name('DEFAULT_TEAM_NAME'),
+  FIRST_OWNER_EMAIL(value) {
+    assert(typeof value === 'string' && value.length <= 254 && bootstrapEmail.test(value), 'invalid-owner-email');
+    mailAddress(value, 'invalid-owner-email');
+  },
+  MAIL_FROM(value) { assert(typeof value === 'string', 'invalid-mail-from'); mailAddress(value, 'invalid-mail-from', true); },
+  DEFAULT_TEAM_PREFIX(value) { assert(typeof value === 'string' && /^[A-Z]{2,10}$/.test(value), 'invalid-team-prefix'); },
+  WORKSPACE_TIMEZONE(value) {
+    assert(typeof value === 'string' && value.trim() && value.trim().length <= 100 && !/^[+-]/.test(value.trim()), 'invalid-workspace-timezone');
+    try { new Intl.DateTimeFormat('en', { timeZone: value.trim() }); } catch { throw new Error('invalid-workspace-timezone'); }
+  },
+};
+export const secretValidators = {
+  SESSION_SECRET(value) { assert(typeof value === 'string' && value.trim() && value.length >= 32 && value.length <= 1024, 'invalid-secret-SESSION_SECRET'); },
+  MAIL_API_KEY(value) { assert(typeof value === 'string' && value.length > 0 && value.length <= 4096 && !/[\s\x00-\x1f\x7f]/.test(value), 'invalid-secret-MAIL_API_KEY'); },
+};
 export function validatePublicConfiguration(configuration) {
-  for (const key of ['FIRST_OWNER_NAME', 'WORKSPACE_NAME', 'DEFAULT_TEAM_NAME'])
-    assert(configuration[key].trim().length <= 200, `invalid-plan-${key}`);
-  assert(configuration.FIRST_OWNER_EMAIL.length <= 254 && bootstrapEmail.test(configuration.FIRST_OWNER_EMAIL), 'invalid-owner-email');
-  // The configured owner must also be a deliverable sign-in recipient.
-  mailAddress(configuration.FIRST_OWNER_EMAIL, 'invalid-owner-email');
-  mailAddress(configuration.MAIL_FROM, 'invalid-mail-from', true);
-  assert(/^[A-Z]{2,10}$/.test(configuration.DEFAULT_TEAM_PREFIX), 'invalid-team-prefix');
-  const timezone = configuration.WORKSPACE_TIMEZONE.trim();
-  assert(timezone.length <= 100 && !/^[+-]/.test(timezone), 'invalid-workspace-timezone');
-  try { new Intl.DateTimeFormat('en', { timeZone: timezone }); } catch { throw new Error('invalid-workspace-timezone'); }
+  for (const [key, validate] of Object.entries(publicValidators)) validate(configuration[key]);
 }
-
-// Base operator-auth/config.mjs and mail/src/core/validation.mjs constraints.
 // Omitted secrets may be inherited; the deploy kit requires missing bindings
 // before resource writes. Never expose values or write them into plan/receipt.
 export function validateSuppliedSecrets(env) {
-  if (env.SESSION_SECRET !== undefined)
-    assert(typeof env.SESSION_SECRET === 'string' && env.SESSION_SECRET.trim() && env.SESSION_SECRET.length >= 32 && env.SESSION_SECRET.length <= 1024, 'invalid-secret-SESSION_SECRET');
-  if (env.MAIL_API_KEY !== undefined)
-    assert(typeof env.MAIL_API_KEY === 'string' && env.MAIL_API_KEY.length > 0 && env.MAIL_API_KEY.length <= 4096 && !/[\s\x00-\x1f\x7f]/.test(env.MAIL_API_KEY), 'invalid-secret-MAIL_API_KEY');
+  for (const [key, validate] of Object.entries(secretValidators)) if (env[key] !== undefined) validate(env[key]);
+}
+// The operations inspector applies exactly the same per-field validators while
+// collecting every invalid name instead of stopping at the first failure.
+export function invalidConfigurationNames(env, validators) {
+  return Object.entries(validators).filter(([key, validate]) => {
+    if (typeof env[key] !== 'string' || !env[key].trim()) return false;
+    try { validate(env[key]); return false; } catch { return true; }
+  }).map(([key]) => key);
 }

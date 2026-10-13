@@ -112,10 +112,9 @@ node --check modules/mail/src/adapters/resend/size.mjs
 ```
 
 Fixtures live only in `modules/mail/tests/resend`; they inspect real Web Request
-bytes and Response streams. The Resend glob also discovers `size-workerd.test.mjs`,
-which runs both the real facade and direct adapter at the size boundaries in an
-isolated workerd runtime. These checks establish local protocol behavior, not
-live-provider delivery. `tests/assembly/workerd.test.mjs` runs the real facade
-and doctor sender chain in workerd.
+bytes and Response streams. Size boundaries run in the adapter unit suite;
+`tests/runtime/workerd.test.mjs` checks a binary attachment through the facade
+and adapters, and `tests/assembly/workerd.test.mjs` checks the doctor sender chain.
+These checks establish local protocol behavior, not live-provider delivery.
 No provider credentials or live mail are used by these unit tests. Official
 references were inspected on 6 October 2026.

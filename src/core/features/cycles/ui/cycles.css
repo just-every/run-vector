@@ -1,0 +1,27 @@
+.administration-panel .admin-record > a {
+  color: var(--app-cobalt-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.administration-panel .admin-record label {
+  margin-top: 0.6rem;
+}
+.commit-issue-choices {
+  display: grid;
+  gap: 0.35rem;
+  max-height: 16rem;
+  overflow-y: auto;
+  min-width: 0;
+}
+.commit-issue-choices button {
+  display: grid;
+  gap: 0.2rem;
+  text-align: left;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.commit-issue-choices button[aria-selected="true"],
+.commit-issue-choices button:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  background: var(--app-field);
+}

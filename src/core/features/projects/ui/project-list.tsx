@@ -1,6 +1,10 @@
 import { Link } from '@tanstack/react-router'
 import type { PortfolioFilters } from './helpers'
 import {
+  ListPreferenceControls,
+  type ListPreferenceControlsProps,
+} from '../../views/ui/list-preference-controls'
+import {
   activeHealthLabel,
   lifecycleLabel,
   projectProgressLabel,
@@ -9,16 +13,20 @@ import type { ProjectSummaryData } from './data'
 
 type ProjectListProps = {
   projects: ProjectSummaryData[]
+  hasProjects: boolean
   filters: PortfolioFilters
   lifecycleOptions: string[]
   onFiltersChange: (filters: PortfolioFilters) => void
+  preferenceControls: ListPreferenceControlsProps
 }
 
 export function ProjectList({
   projects,
+  hasProjects,
   filters,
   lifecycleOptions,
   onFiltersChange,
+  preferenceControls,
 }: ProjectListProps) {
   return (
     <>
@@ -26,6 +34,7 @@ export function ProjectList({
         <label>
           Lifecycle
           <select
+            aria-label="Lifecycle"
             value={filters.lifecycle}
             onChange={(event) =>
               onFiltersChange({ ...filters, lifecycle: event.target.value })
@@ -42,6 +51,7 @@ export function ProjectList({
         <label>
           Health
           <select
+            aria-label="Health"
             value={filters.health}
             onChange={(event) =>
               onFiltersChange({
@@ -57,6 +67,7 @@ export function ProjectList({
             <option value="unknown">Unknown</option>
           </select>
         </label>
+        <ListPreferenceControls {...preferenceControls} />
       </div>
       <section className="project-list" aria-label="Projects">
         <div className="project-list-heading" aria-hidden="true">
@@ -65,7 +76,12 @@ export function ProjectList({
           <span>Progress</span>
           <span>Health</span>
         </div>
-        {projects.length === 0 ? (
+        {!hasProjects ? (
+          <div className="projects-empty">
+            <h2>Create your first project</h2>
+            <p>Choose New project to start planning your work.</p>
+          </div>
+        ) : projects.length === 0 ? (
           <p className="projects-empty">No projects match these filters.</p>
         ) : (
           projects.map((project) => (

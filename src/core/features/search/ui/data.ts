@@ -12,7 +12,7 @@ export const workspaceSearchSchema = z.object({
 
 export type PaletteEntry = {
   id: string
-  group: 'Issues' | 'Projects' | 'Commands'
+  group: 'Issues' | 'Projects' | 'Saved views' | 'Commands'
   title: string
   detail: string
   destination:
@@ -20,12 +20,29 @@ export type PaletteEntry = {
     | '/app/my-work'
     | '/app/projects'
     | '/app/new-issue'
+    | '/app/search'
+    | '/app/board'
     | '/app/issues/$identifier'
     | '/app/projects/$projectId'
-  params?: { identifier: string } | { projectId: string }
+    | '/app/views/$viewId'
+  params?: { identifier: string } | { projectId: string } | { viewId: string }
 }
 
 const commands: PaletteEntry[] = [
+  {
+    id: 'command:search',
+    group: 'Commands',
+    title: 'Open Search',
+    detail: 'Issues, projects and saved views, including archived records',
+    destination: '/app/search',
+  },
+  {
+    id: 'command:board',
+    group: 'Commands',
+    title: 'Open Board',
+    detail: 'Browse a team workflow',
+    destination: '/app/board',
+  },
   {
     id: 'command:new-issue',
     group: 'Commands',

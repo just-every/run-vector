@@ -19,9 +19,8 @@ beforeAll(async () => {
   await ensureSampleData(env.DB, now);
 });
 
-// No cycle administration exists yet. These explicit D1 fixtures add only live
-// cycles and terminal/Intake memberships needed to verify the read calculation;
-// they are not evidence of cycle administration, closure, or Duplicate authoring.
+// Explicit D1 fixtures exercise live progress calculation; scheduled closure
+// and authored commitment flows have their own public-door coverage.
 async function cycle(capacity: number | null) {
   const id = createUlid(now);
   await env.DB.prepare(
@@ -226,8 +225,8 @@ it("[WORK-003][CYCLE-003] excluded assigned scope keeps an empty row and zero ca
 });
 
 it("[WORK-003] future, ended, closed, removed and unassigned cycles stay ineligible; actual team moves remove cycle context", async () => {
-  const id = await cycle(10);
-  const issue = await committed(id, 5);
+  let id = await cycle(10);
+  let issue = await committed(id, 5);
   const absent = async () =>
     assert.equal(
       (await getMyWorkStream(env.DB, ids.sarah, now)).cycles.some(
@@ -249,10 +248,18 @@ it("[WORK-003] future, ended, closed, removed and unassigned cycles stay ineligi
     .bind(now.toISOString(), "2026-10-01T12:00:00.000Z", now.toISOString(), id)
     .run();
   await absent();
-  await env.DB.prepare("UPDATE cycles SET closed_at=NULL WHERE id=?")
-    .bind(id)
+  await assert.rejects(
+    env.DB.prepare("UPDATE cycles SET closed_at=NULL WHERE id=?")
+      .bind(id)
+      .run(),
+    /CYCLE_CLOSED/,
+  );
+  id = await cycle(10);
+  issue = await committed(id, 5);
+  await env.DB.prepare("UPDATE cycles SET starts_at=? WHERE id=?")
+    .bind(now.toISOString(), id)
     .run();
-  assert.ok(await row(id)); // Start is inclusive; the preceding end was exclusive.
+  assert.ok(await row(id)); // A fresh cycle starts inclusively; closed cycles never reopen.
   await env.DB.prepare(
     "UPDATE issues SET assignee_operator_id=NULL WHERE identifier=?",
   )

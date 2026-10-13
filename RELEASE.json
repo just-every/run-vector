@@ -2,14 +2,291 @@
   "contractChanges": {
     "BASE-ACCESS-002": {
       "change": "changed",
-      "summary": "Otherwise-admissible protected API requests return 401 at session validation, while native documents and generated RPC preserve their identifiable session-denial protocols with no private product payload or requested mutation.",
+      "summary": "Otherwise-admissible protected API requests return 401 at session validation, while native documents and generated RPC preserve their identifiable session-denial protocols with no private product payload or requested mutation. Sign-out pauses coordinated private API GETs and drains admitted reads before revocation; a bounded drain failure reports an error and resumes reads for retry. Independent server admission remains required.",
       "was": "A session expires after at most 30 days of inactivity; sign-out revokes that session. Every operator endpoint requires a valid session and returns 401 without one.",
       "now": "A session expires after at most 30 days of inactivity; sign-out revokes that session. A valid session is required before an operator request reads private product data or performs its requested action. A protected operator document and each private generated server-function handler validate the session independently; a document gate does not authorize a function call. For an otherwise-admissible request that reaches session validation, a protected operator HTTP API returns 401 when the session is missing, expired, or revoked; a protected document returns its native sign-in response; and a generated transport may encode an identifiable session denial or sign-in redirect in its framework protocol, including a 200 serialized redirect. No such denial response exposes private product data or performs the requested mutation. Declared public exceptions remain governed by BASE-ACCESS-003, and host, method, Origin/CSRF, input, and runtime guards retain their normal order."
+    },
+    "BASE-OPS-002": {
+      "change": "changed",
+      "summary": "Adopt pinned Base source with an additive 0011-to-0012 admission-state upgrade; preserve every prior migration and local data. No product cancellation route or policy is enabled. Add the populated 0012-to-0013 administration transition and recovery proof.",
+      "was": "The existing BASE-OPS-002 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Adopt pinned Base source with an additive 0011-to-0012 admission-state upgrade; preserve every prior migration and local data. No product cancellation route or policy is enabled. Add the populated 0012-to-0013 administration transition and recovery proof."
+    },
+    "TEAM-001": {
+      "change": "changed",
+      "summary": "Authored team identity, unique uppercase ASCII prefixes, seven initial categories and permanent prefix freeze after an actual issue or incoming membership. Failed first reservations permit prefix editing; legacy allocation history remains conservatively frozen.",
+      "was": "The existing TEAM-001 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Authored team identity, unique uppercase ASCII prefixes, seven initial categories and permanent prefix freeze after an actual issue or incoming membership. Failed first reservations permit prefix editing; legacy allocation history remains conservatively frozen."
+    },
+    "ISSUE-002": {
+      "change": "changed",
+      "summary": "Durable workspace/prefix allocation history preserves consumed numbers when an unused team changes prefix or another team claims a released prefix. Issue and intake persistence atomically reject an allocation whose captured prefix has changed.",
+      "was": "The existing ISSUE-002 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Durable workspace/prefix allocation history preserves consumed numbers when an unused team changes prefix or another team claims a released prefix. Issue and intake persistence atomically reject an allocation whose captured prefix has changed."
+    },
+    "TEAM-003": {
+      "change": "changed",
+      "summary": "Native archive and unarchive preserve team work and reject new authoring targets. Signed signal-source intake remains deferred.",
+      "was": "The existing TEAM-003 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Native archive and unarchive preserve team work and reject new authoring targets. Signed signal-source intake remains deferred."
+    },
+    "CYCLE-001": {
+      "change": "changed",
+      "summary": "Manual non-overlapping team cycles resolve workspace local times uniquely; DST gaps and ambiguous minutes are rejected. Automatic closure, rollover and snapshots are delivered by additive 0031; provider Cron timing remains unproved.",
+      "was": "The existing CYCLE-001 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Manual non-overlapping team cycles resolve workspace local times uniquely; DST gaps and ambiguous minutes are rejected. Automatic closure, rollover and snapshots are delivered by additive 0031; provider Cron timing remains unproved."
+    },
+    "NOTIFY-001": {
+      "change": "changed",
+      "summary": "Owner-authorized assignment and direct-mention email supersedes NOTIFY-001's in-app-only channel prohibition.",
+      "was": "Vector delivers notifications on no other channel; the only mail it sends is the sign-in link `BASE-ACCESS-001` requires.",
+      "now": "Assignment and direct-mention events may also send the minimal transactional email defined by NOTIFY-006; all other product notification events remain in-app."
+    },
+    "NOTIFY-006": {
+      "change": "added",
+      "summary": "Atomic minimal assignment/direct-mention email intent, immediate Base submission, bounded definite-rejection retries and non-replaying uncertainty; recipient preferences, mutes and erasure apply."
+    },
+    "REL-006": {
+      "change": "changed",
+      "summary": "Expose parent authoring from issue details and root/child browsing filters while retaining workspace boundaries, cycle refusal, version checks and existing child detachment behavior.",
+      "was": "An issue has at most one parent. Vector rejects self-parenting and ancestry cycles; changing a parent never changes status, team, project, cycle, or assignee, and deleting a parent makes each direct child a root issue.",
+      "now": "An issue has at most one parent. An operator can set, replace, or clear it from issue details. Vector rejects self-parenting and ancestry cycles; changing a parent never changes status, team, project, cycle, or assignee, and deleting a parent makes each direct child a root issue. Issue lists can filter to roots or to children of one exact parent (VIEW-001)."
+    },
+    "SEARCH-001": {
+      "change": "changed",
+      "summary": "Global full-text search also indexes saved-view names; searchable issue text, project names and label names remain included, with archived issue/project visibility controlled by the operator.",
+      "was": "Search covers issue identifiers, titles, descriptions, expected outcomes, customer impact, comments, evidence summaries, project names, and label names, and returns within 500ms. Issues of archived teams and projects are excluded unless the operator asks for them.",
+      "now": "Search covers issue identifiers, titles, descriptions, expected outcomes, customer impact, comments, evidence summaries, project names, label names, and saved-view names visible to the operator, and returns within 500ms. Issues of archived teams and projects are excluded unless the operator asks for them."
+    },
+    "SEARCH-002": {
+      "change": "changed",
+      "summary": "Exact primary identifiers rank first alongside bounded full-text issue/project/accessible-view results; failed index reads retain only a newly admitted primary result. Forward migration 0018 stores stable source TEXT IDs in FTS and joins by ID, preserving identity across source rowid changes and index rebuilds.",
+      "was": "An exact issue identifier lookup reads the primary record and returns it even while full-text indexing is delayed or failed.",
+      "now": "An exact issue identifier lookup reads the primary record and returns it even while full-text indexing is delayed or unavailable, subject to the archive choice in SEARCH-001. On a successful full-text read, that exact issue ranks first, without duplicating it or dropping other matching issues, projects or accessible saved views; results remain bounded. Primary identity, archive choice and operator/session/workspace admission are rechecked before returning results, including after an index failure."
+    },
+    "SEARCH-003": {
+      "change": "changed",
+      "summary": "Source-transaction triggers retain immediate atomic indexing while migration 0018 replaces rowid mappings with stable source TEXT IDs. FTS read failure retains the admitted exact primary exception under SEARCH-002; other failures remain visibly unavailable.",
+      "was": "Created or changed searchable text appears in full-text results within 10 seconds. A failed indexing job is visible to operators with its last successful index time; Vector never presents known-stale results as complete.",
+      "now": "Created or changed searchable text appears in full-text results within 10 seconds. Database triggers maintain the full-text entries in the same transaction as searchable source changes, so a committed source change cannot leave its corresponding entry behind. If an index query fails, the exact primary-record lookup remains available under SEARCH-002; other searches are reported unavailable with the last successful index time; Vector never presents a known index failure as a complete empty result."
+    },
+    "VIEW-001": {
+      "change": "changed",
+      "summary": "Parent filters remain; grouped SQL paging orders by group key, selected sort and stable identifier. Page-visible groups retain full-result counts and allGroups preserves the complete aggregate metadata.",
+      "was": "Issue lists can filter by status, status category, priority, assignee, team, project, cycle, label, due date, and blocked state; sort by newest, oldest, Urgent-to-No-priority, workflow status order, due date, or last update; and group by none, status, assignee, priority, project, cycle, or team. Completed issues are hidden by default outside Current.",
+      "now": "Issue lists can filter by status, status category, priority, assignee, team, project, cycle, label, due date, blocked state, and parent (all issues, root issues, or children of one exact parent identifier); sort by newest, oldest, Urgent-to-No-priority, workflow status order, due date, or last update; and group by none, status, assignee, priority, project, cycle, or team. Completed issues are hidden by default outside Current. Grouped pages order by the group key before the selected sort and stable identifier. Only groups with rows on the page are rendered, with counts for the complete filtered result; a group may continue onto another page. The issue-list HTTP response exposes page-present `groups` with full filtered counts and `allGroups` with the complete filtered grouping aggregate."
+    },
+    "VIEW-002": {
+      "change": "changed",
+      "summary": "Saved queries now include a persisted list or board layout in addition to filters, sort and grouping; the private/shared ownership rules remain unchanged. Successful rename/control receipts update the heading and navigation immediately, invalidate older reads, and still yield to subsequent authorized reads or access denial.",
+      "was": "An operator can save a named combination of filters, sort, and grouping as private or shared, then update, duplicate, or delete it. A private view is visible and editable only by its owner; any operator can open or duplicate a shared view, but only its owner can update or delete it, and ownership changes only under OPS-004. Deleting a view never changes an issue.",
+      "now": "An operator can save a named combination of filters, sort, grouping, and list or board layout as private or shared, then update, duplicate, or delete it. A private view is visible and editable only by its owner; any operator can open or duplicate a shared view, but only its owner can update or delete it, and ownership changes only under OPS-004. Deleting a view never changes an issue."
+    },
+    "VIEW-003": {
+      "change": "changed",
+      "summary": "Operator preferences cover the board as well as the issue list; each saved view owns its layout and opening it leaves the source surface preferences alone.",
+      "was": "The filters, sort, and grouping an operator last applied to Current, My work, the Projects portfolio, and each issue list are stored for that operator and restored on their next visit from any browser, and one visible control resets them to the defaults. Opening a saved view never changes the stored controls of the list it was opened from.",
+      "now": "The filters, sort, and grouping an operator last applied to Current, My work, the Projects portfolio, the issue list, and the board are stored for that operator and restored on their next visit from any browser, and one visible control resets them to the defaults. A saved view's layout belongs to that view. Opening a saved view never changes the stored controls of the list or board it was opened from."
+    },
+    "VIEW-004": {
+      "change": "changed",
+      "summary": "Atomic multi-issue editing applies status, assignee, priority, project, cycle or labels up to the seeded batch limit, reporting every failing issue and writing nothing when any selected issue is rejected.",
+      "was": "The existing VIEW-004 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Atomic multi-issue editing applies status, assignee, priority, project, cycle or labels up to the seeded batch limit, reporting every failing issue and writing nothing when any selected issue is rejected."
+    },
+    "VIEW-005": {
+      "change": "added",
+      "summary": "Explicitly selected team workflow board retains keyboard status changes and stale/intake/duplicate refusal. Board URL/API pages explicitly request bounded pageSize 100 and grouping status while ordinary lists default to 50; SQL status totals use the full card predicate.",
+      "was": "The board shows one explicitly selected team's workflow at a time; it never guesses a team in a multi-team workspace. It displays every configured status as a column in that team's workflow order and places the matching issues from the current filtered page in those columns, ordered by the selected derived sort. Each card has a labelled, keyboard-operable status selector. A status change uses the existing version-checked issue mutation (ISSUE-004, ISSUE-006); intake and duplicate decision rules cannot be bypassed, and a stale conflict shows the current server issue and refreshes the board without applying the rejected move. At 390px, a labelled column selector lets the operator choose which status column to view.",
+      "now": "The board shows one explicitly selected team's workflow at a time; it never guesses a team in a multi-team workspace. It displays every configured status as a column in that team's workflow order and places the matching issues from the current filtered page in those columns, ordered by the selected derived sort. Each card has a labelled, keyboard-operable status selector. A status change uses the existing version-checked issue mutation (ISSUE-004, ISSUE-006); intake and duplicate decision rules cannot be bypassed, and a stale conflict shows the current server issue and refreshes the board without applying the rejected move. At 390px, a labelled column selector lets the operator choose which status column to view. Board pages explicitly request `pageSize=100` and `grouping=status` through the same issue-list URL and API; ordinary list requests default to 50 and the accepted page sizes are bounded to 50 or 100. Status counts use the same SQL filters as cards across the complete result, with page counts distinguished from totals. Paging reaches cards beyond the first page; completed work remains hidden until explicitly requested."
+    },
+    "ISSUE-006": {
+      "change": "changed",
+      "summary": "The title/description editor retains successful mutation and validated reload receipts by issue identity, uses the newest version when reopening before refresh, and never lets an older response downgrade the receipt. Genuine stale conflicts preserve drafts and still require explicit reload.",
+      "was": "The existing ISSUE-006 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "The title/description editor retains successful mutation and validated reload receipts by issue identity, uses the newest version when reopening before refresh, and never lets an older response downgrade the receipt. Genuine stale conflicts preserve drafts and still require explicit reload."
+    },
+    "CMD-001": {
+      "change": "changed",
+      "summary": "Accessible saved views are direct palette entries alongside issues, projects and commands, with a saved-view route and keyboard activation; server-enforced private/shared view boundaries remain.",
+      "was": "The existing CMD-001 requirement was declared; complete native implementation and adoption proof were not recorded in this release metadata.",
+      "now": "Accessible saved views are direct palette entries alongside issues, projects and commands, with a saved-view route and keyboard activation; server-enforced private/shared view boundaries remain."
+    },
+    "BASE-ACCESS-001": {
+      "change": "changed",
+      "summary": "Local and hosted sign-in share Base confirmation and session authority.",
+      "was": "Local development admitted legacy native cookies and consumed local magic links on GET.",
+      "now": "Explicit loopback local installation captures Base mail in the shared development outbox. GET previews and POST confirms; every private response rechecks the captured Base session, actor and workspace."
+    },
+    "OWNER-CLAIM-001": {
+      "change": "added",
+      "summary": "Five-minute signed owner confirmation uses Base native bootstrap with trusted deployment configuration, permanent admission ledger and a refused second claim. Local configured-owner setup remains available without RER configuration."
+    },
+    "EDITOR-001": {
+      "change": "added",
+      "summary": "The recorded installation owner under current native Base authority receives a non-secret expiring editor configuration grant. The copied same-origin editor is revoked on native sign-out/auth loss and validates the exact management origin; document CSP restricts both framing directions."
+    },
+    "API-001": {
+      "change": "added",
+      "summary": "Scoped Base-token routes reuse native issue/list/update/comment/metadata rules without document or file admission.",
+      "now": "Scoped Base-token routes reuse native issue/list/update/comment/metadata rules without document or file admission."
+    },
+    "API-002": {
+      "change": "added",
+      "summary": "Transactional issuance, native publication and safe usage retain current issuer/workspace authority; removal revokes tokens.",
+      "now": "Transactional issuance, native publication and safe usage retain current issuer/workspace authority; removal revokes tokens."
+    },
+    "WEBHOOK-001": {
+      "change": "added",
+      "summary": "Durable minimal native issue events use Base delivery state, explicit uncertainty and deployment-owned enforcing RPC; no fetch fallback or live delivery claim.",
+      "now": "Durable minimal native issue events use Base delivery state, explicit uncertainty and deployment-owned enforcing RPC; no fetch fallback or live delivery claim."
+    },
+    "GITHUB-001": {
+      "change": "added",
+      "summary": "Exact raw-byte GitHub HMAC deliveries link explicit identifiers to safe PR URLs/state without a GitHub token or changing issue decisions.",
+      "now": "Exact raw-byte GitHub HMAC deliveries link explicit identifiers to safe PR URLs/state without a GitHub token or changing issue decisions."
+    },
+    "GITHUB-002": {
+      "change": "added",
+      "summary": "Durable replay/current-state/configuration fences prevent duplicate/conflicting/older PR regression and preserve safe portable histories.",
+      "now": "Durable replay/current-state/configuration fences prevent duplicate/conflicting/older PR regression and preserve safe portable histories."
+    },
+    "INTAKE-001": {
+      "change": "changed",
+      "summary": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation.",
+      "was": "Registered source path was declared without the native receiver/configuration implementation.",
+      "now": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation."
+    },
+    "INTAKE-002": {
+      "change": "changed",
+      "summary": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation.",
+      "was": "Registered source path was declared without the native receiver/configuration implementation.",
+      "now": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation."
+    },
+    "INTAKE-003": {
+      "change": "changed",
+      "summary": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation.",
+      "was": "Registered source path was declared without the native receiver/configuration implementation.",
+      "now": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation."
+    },
+    "INTAKE-008": {
+      "change": "changed",
+      "summary": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation.",
+      "was": "Registered source path was declared without the native receiver/configuration implementation.",
+      "now": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation."
+    },
+    "INTAKE-009": {
+      "change": "changed",
+      "summary": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation.",
+      "was": "Registered source path was declared without the native receiver/configuration implementation.",
+      "now": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation."
+    },
+    "INTAKE-011": {
+      "change": "changed",
+      "summary": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation.",
+      "was": "Registered source path was declared without the native receiver/configuration implementation.",
+      "now": "Registered signed sources publish native immutable evidence and replay identity atomically with current key/team/config fences, exact repeat, observed/receipt ordering, field changes and terminal-decision preservation."
+    },
+    "DATA-001": {
+      "change": "changed",
+      "summary": "Classified native archive contents and original FILES bytes, excluding credentials and transient claims; stable TEXT-ID FTS rebuild and destination access/effect review.",
+      "was": "Declared data obligation without a complete mapped native file path.",
+      "now": "Classified native archive contents and original FILES bytes, excluding credentials and transient claims; stable TEXT-ID FTS rebuild and destination access/effect review."
+    },
+    "DATA-002": {
+      "change": "changed",
+      "summary": "CSV/JSON and documented Linear file preflight reports every row error, omitted field, existing native reference and measured bound before publication.",
+      "was": "Declared data obligation without a complete mapped native file path.",
+      "now": "CSV/JSON and documented Linear file preflight reports every row error, omitted field, existing native reference and measured bound before publication."
+    },
+    "DATA-003": {
+      "change": "changed",
+      "summary": "A reviewed run publishes in staged batches; each batch publishes all its native effects atomically with current-session and exact native-value fences, and a failed batch writes nothing while earlier batches stay for resume.",
+      "was": "Declared data obligation without a complete mapped native file path.",
+      "now": "A reviewed run publishes in staged batches; each batch publishes all its native effects atomically with current-session and exact native-value fences, and a failed batch writes nothing while earlier batches stay for resume."
+    },
+    "DATA-004": {
+      "change": "changed",
+      "summary": "Exact original files, source attribution and durable jobs govern repeat, resume and guarded rollback; no notifications or outbound effects.",
+      "was": "Declared data obligation without a complete mapped native file path.",
+      "now": "Exact original files, source attribution and durable jobs govern repeat, resume and guarded rollback; no notifications or outbound effects."
+    },
+    "DATA-005": {
+      "change": "changed",
+      "summary": "Public local export/import/export uses one Base engine and exact canonical native records and files. Authenticated restore into a pristine destination bootstrap is locally proven through native Worker HTTP, with atomic session/link retirement, fresh historical-owner sign-in, serialized R2 settlement and unchanged historical-effect quarantine. Hosted HTTPS acceptance remains separate.",
+      "was": "Declared data obligation without a complete mapped native file path.",
+      "now": "Public local export/import/export uses one Base engine and exact canonical native records and files. Authenticated restore into a pristine destination bootstrap is locally proven through native Worker HTTP, with atomic session/link retirement, fresh historical-owner sign-in, serialized R2 settlement and unchanged historical-effect quarantine. Hosted HTTPS acceptance remains separate."
+    },
+    "CYCLE-004": {
+      "change": "changed",
+      "summary": "Atomic scheduled closure freezes cycle facts and identifier-only project history; missing-next rollover records one visible failure. Hosted Cron remains unproved.",
+      "was": "Contract target; automatic cycle closure and frozen snapshots were not implemented.",
+      "now": "Ended cycles close once through a conditional D1 batch; frozen scope and project-at-close survive later issue edits/deletion. Unfinished work rolls over or uncommits with one missing-next failure. Closed cycle metadata and snapshots cannot change."
+    },
+    "CYCLE-005": {
+      "change": "changed",
+      "summary": "Atomic scheduled closure freezes cycle facts and identifier-only project history; missing-next rollover records one visible failure. Hosted Cron remains unproved.",
+      "was": "Contract target; automatic cycle closure and frozen snapshots were not implemented.",
+      "now": "Ended cycles close once through a conditional D1 batch; frozen scope and project-at-close survive later issue edits/deletion. Unfinished work rolls over or uncommits with one missing-next failure. Closed cycle metadata and snapshots cannot change."
+    },
+    "CYCLE-006": {
+      "change": "changed",
+      "summary": "Atomic scheduled closure freezes cycle facts and identifier-only project history; missing-next rollover records one visible failure. Hosted Cron remains unproved.",
+      "was": "Contract target; automatic cycle closure and frozen snapshots were not implemented.",
+      "now": "Ended cycles close once through a conditional D1 batch; frozen scope and project-at-close survive later issue edits/deletion. Unfinished work rolls over or uncommits with one missing-next failure. Closed cycle metadata and snapshots cannot change."
+    },
+    "PROJ-008": {
+      "change": "changed",
+      "summary": "Atomic scheduled closure freezes cycle facts and identifier-only project history; missing-next rollover records one visible failure. Hosted Cron remains unproved.",
+      "was": "Contract target; automatic cycle closure and frozen snapshots were not implemented.",
+      "now": "Ended cycles close once through a conditional D1 batch; frozen scope and project-at-close survive later issue edits/deletion. Unfinished work rolls over or uncommits with one missing-next failure. Closed cycle metadata and snapshots cannot change."
+    },
+    "ISSUE-010": {
+      "change": "changed",
+      "summary": "Confirmed versioned native issue deletion removes the affected graph and settles attachment custody while retaining identifier-only history and replay fences. Canonicals with duplicates refuse deletion; children become roots. Scoped token API has no deletion route.",
+      "was": "Public issue deletion was a baseline product gap.",
+      "now": "Any active operator can confirm deletion through the native session route. Complete affected native/import custody is guarded atomically; files use durable removal intents, erased sources return 410 and identifiers are never reused."
+    },
+    "NOTIFY-005": {
+      "change": "changed",
+      "summary": "Scheduled due and first-overdue reminders deliver once to the active assignee\u2019s Inbox using workspace timezone and daily reminder time. Delivered occurrences and per-operator suppressions remain durable.",
+      "was": "Due reminders remained a baseline product gap.",
+      "now": "Reminder time defaults to 09:00 and is editable beside timezone. Mutes and active-recipient rules apply. No reminder mail, development outbox or integration delivery is produced; hosted Cron delivery remains unproved."
+    },
+    "DATA-006": {
+      "change": "added",
+      "summary": "One reviewed run of up to the measured limits (tested at 2,000 generated Linear issues) previews once, publishes in staged batches with exact \"applied N of M batches\" status, resumes after a stopped client or failed batch with each record landing once, and sends no notification, mail or webhook.",
+      "was": "A reviewed batch held at most 20 source rows and 256 KiB.",
+      "now": "One reviewed run of up to the measured limits (tested at 2,000 generated Linear issues) previews once, publishes in staged batches with exact \"applied N of M batches\" status, resumes after a stopped client or failed batch with each record landing once, and sends no notification, mail or webhook."
+    },
+    "DATA-007": {
+      "change": "added",
+      "summary": "After a finished or partial run, Settings and the terminal give one report and one CSV comparing source rows read with Vector issues written by team, status, project, cycle and assignee, every omitted field with its count, every unresolved reference with its row, what the file never held, and each source ID's Vector identifier; old source IDs find their issues by search and lookup.",
+      "was": "No reconciliation report; an imported issue did not show its source ID.",
+      "now": "After a finished or partial run, Settings and the terminal give one report and one CSV comparing source rows read with Vector issues written by team, status, project, cycle and assignee, every omitted field with its count, every unresolved reference with its row, what the file never held, and each source ID's Vector identifier; old source IDs find their issues by search and lookup."
+    },
+    "DATA-008": {
+      "change": "added",
+      "summary": "A Linear API file the owner produces (docs/LINEAR-API-FILE.md) merges with a Linear CSV run: comments with original times and read-only author names, HTTPS links never fetched, and blocks/duplicate relations inside the run; anything outside the run is reported, and a malformed file is refused with row-level reasons and nothing written.",
+      "was": "The Linear importer carried only the CSV: no comments, links or relations beyond the parent.",
+      "now": "A Linear API file the owner produces (docs/LINEAR-API-FILE.md) merges with a Linear CSV run: comments with original times and read-only author names, HTTPS links never fetched, and blocks/duplicate relations inside the run; anything outside the run is reported, and a malformed file is refused with row-level reasons and nothing written."
+    },
+    "DATA-009": {
+      "change": "added",
+      "summary": "An operator can erase a person that imports carried (exact email and/or display names) after a counts-only preview and typed confirmation: every applied or pending import run, Vector's imported copies, reports and development mail lose them in one D1 batch; issues already written stay, pending runs still finish, and an archive made before the erasure is refused on restore when a later journal is supplied.",
+      "was": "Person erasure was not available; docs/ERASURE.md listed it as blocked on Base.",
+      "now": "Erasure of an imported person or a removed operator through /api/data/erasure (docs/ERASURE.md); current members are refused until OPS-004 removal."
     }
   },
   "version": "0.1.0",
   "date": "2026-10-07",
-  "extensionPointChanges": [],
+  "extensionPointChanges": [
+    {
+      "id": "import.completed.v1",
+      "change": "removed",
+      "summary": "Remove an unsupported seed declaration: no mapped importer or import-completion emission exists. This does not remove a shipped emitter."
+    }
+  ],
   "migrations": [
     {
       "id": "0003_native_access.sql",
@@ -46,8 +323,140 @@
     {
       "id": "0011_base_operator_auth.sql",
       "buyerSteps": "Apply additive Base auth schema and explicit existing operator identity mapping; prior native migration/history remain intact. Production sign-in uses Base confirmation POST and new host-only Base session cookie. Configure SESSION_SECRET and Base SendGrid settings; legacy native cookies do not admit remote access."
+    },
+    {
+      "id": "0012_invitation_cancellation.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130011, including on fresh installations. Adds a durable cancellation ledger and admission guards; preserves operators, mappings, credentials, outbox and product data without inferring historical cancellation. Back up D1/R2 and validate recovery first. Keep the additive schema and ledger when rolling back application code; never prune or drop the cancellation ledger."
+    },
+    {
+      "id": "0013_workspace_administration.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130012. Adds separate administration audit details, durable team issue history and a workspace/prefix reservation ledger, preserving prior product rows, identifiers, counters and closed snapshots. Existing reservations and issue origins backfill the ledger; legacy team history remains conservatively frozen. New reservations survive failed writes and released prefixes keep their consumed numbers. Back up D1/R2 first; validate the populated previous-head transition on a disposable copy. On application rollback retain the additive audit details, team history, prefix ledger and all synchronization and identity triggers; never prune either history or the reservation ledger. The retained team counters mirror the currently selected prefix for compatible prior application SQL. Restore a previous database backup only in isolated recovery validation before any traffic change."
+    },
+    {
+      "id": "0014_collaboration.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130013. Back up D1/R2 and validate populated previous-head preservation. Adds collaboration, mention sets, exact deferral identity and durable mail state. Backfills only recoverable historical follows, never mail or Inbox history. Keep all additive tables, claims, attempts and accepted/uncertain states on application rollback; never replay ambiguous claims or development captures. Older code remains SQL-compatible but does not produce collaboration events."
+    },
+    {
+      "id": "0015_issue_parents.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130014. Adds the issue_parents relation table (one parent per issue) and its index, with database guards against self-parenting, ancestry cycles and cross-workspace links; existing issue rows are not rewritten and every existing issue remains a root. Back up D1/R2 and validate on an isolated copy. On application-code rollback, retain the table, index and guards; do not reverse the migration."
+    },
+    {
+      "id": "0016_indexed_search.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130015. Backfills full-text indexes for issue text, comments, evidence summaries, project names, labels and saved-view names, then maintains them with source-transaction triggers. A failed index write aborts its source mutation. Validate populated migration and rollback behavior on an isolated copy. On application rollback retain the FTS tables, state row, indexes, views and triggers; do not reverse the migration."
+    },
+    {
+      "id": "0017_browsing_views.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130016. Adds the saved-view layout column, defaulting existing views to list, and indexes for derived issue browsing. Back up D1/R2 and validate populated previous-head preservation on an isolated copy. On application-code rollback retain the additive column and indexes; do not reverse the migration."
+    },
+    {
+      "id": "0018_stable_search_ids.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130017. Back up D1/R2 and validate populated migration and isolated recovery first. Replaces only derived FTS tables, search document view and synchronization triggers with stable source TEXT IDs; source records and the index-state record are retained. Deploy a stable-ID-compatible search reader with this schema: pre-0018 rowid-based readers are incompatible. Retain applied migration, FTS schema, ID-based triggers, state and all earlier product/identity/mail ledgers on application-code rollback; use only compatible code. Never reverse 0018 or deploy an older rowid reader against it. Validate any prior full D1/R2 backup with its matching source in isolated resources before switching traffic. FTS5 virtual tables may require special provider export handling; test the chosen backup and restoration tool. No application export/restore command is added."
+    },
+    {
+      "id": "0019_browse_revision_file_custody.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130018. Adds conservative issue-list revisions and independent file-removal custody without rewriting source rows. Back up D1/R2 and validate populated transition. Retain schema and triggers on code rollback; only code that includes detached cleanup discovery, writer settlement and quota accounting is compatible after custody transfers. Never roll back to an older cleanup/quota reader or drop unresolved reservations. See docs/BROWSING-RECOVERY.md."
+    },
+    {
+      "id": "0020_development_outbox.sql",
+      "buyerSteps": "Apply after 0019. Adds the exact Base development outbox schema."
+    },
+    {
+      "id": "0021_development_mail_custody.sql",
+      "buyerSteps": "Apply after 0020. Expires obsolete development-only mail captures and retires their tables; preserves all delivery, auth, removal and migration ledgers. Deploy only outbox-compatible source. Retain new schema on code rollback; validate isolated recovery from backups with matching source."
+    },
+    {
+      "id": "0022_portability.sql",
+      "buyerSteps": "Apply the shared portability schema forward. Stop local runtime before archive operations; retain provider backups and migration history."
+    },
+    {
+      "id": "0023_restore_safety.sql",
+      "buyerSteps": "Apply destination access/effect review additively. Restore into empty resources, re-enter secrets, sign in as the archived installation owner and review other access/effects explicitly. Never replay historical pending, accepted or uncertain deliveries."
+    },
+    {
+      "id": "0024_owner_claim.sql",
+      "buyerSteps": "Apply the Base owner-claim ledger additively after 0023. Preserve existing owners, sessions and every prior table. Existing installations cannot be claimed again. Retain the permanent admission ledger and migrations when rolling compatible source back; never prune it. Re-enter trusted RER configuration and secret setup token only for a fresh signed installation."
+    },
+    {
+      "id": "0025_import_kit.sql",
+      "buyerSteps": "Apply the Base D1 import-kit schema after 0024. Preserve all prior data and migration history. Keep originals, provenance, job and reversal journals on compatible-source rollback."
+    },
+    {
+      "id": "0026_mapped_imports.sql",
+      "buyerSteps": "Apply native import revision and publication guards after 0025. Preserve every previous column/value, session, identifier, file and search document. Retain current-session authorization and native-value fences; never reverse applied SQL or reclaim consumed identifiers."
+    },
+    {
+      "id": "0027_integrations.sql",
+      "buyerSteps": "Apply the actual Base core token/delivery schema after 0026. Preserve prior data, sessions and migration history; retain all attempts and terminal outcomes on compatible-source rollback."
+    },
+    {
+      "id": "0028_native_integrations.sql",
+      "buyerSteps": "Apply native configuration, encrypted signing values, source/replay/PR/event ledgers and authority/restore guards after 0027. Preserve old records and source versions; retain additive columns and all processed/deletion identities. Restore must exclude credentials/claims and permanently quarantine historical sends. Never reverse the SQL or drop the authority guard."
+    },
+    {
+      "id": "0029_first_run_setup.sql",
+      "buyerSteps": "Apply additively. Existing configured workspaces retain completion; the first owner of a fresh workspace reviews it at /setup before entering the app. Retain this state during rollback and restore."
+    },
+    {
+      "id": "0030_dev_sessions.sql",
+      "buyerSteps": "Apply additively after 0029. It rebuilds oa_sessions to admit the dev session kind, keeping every row, column, index and constraint, adds the dev credential table and recreates the operator-removal trigger unchanged. Retain it during rollback and restore."
+    },
+    {
+      "id": "0031_cycle_closure.sql",
+      "buyerSteps": "Apply additively after unchanged 0001\u20130030. Preserve prior schema and rows. Retain cycle snapshots, identifier-only membership events, failure entries, indexes and immutable/closed-commit guards on compatible-source rollback. Validate populated upgrade and isolated matching-source D1/R2 recovery before traffic changes. Provider Cron timing remains unproved."
+    },
+    {
+      "id": "0032_due_reminders.sql",
+      "buyerSteps": "Apply after unchanged 0001\u20130031. Adds workspace reminder_time default 09:00 and due_reminders delivered ledger plus due_reminder_suppressions per-operator history; expands the notification_type_mutes CHECK while preserving historical preferences. Validate populated prior-main upgrade and isolated matching-source D1/R2 recovery. Retain delivered identities, per-operator suppressions, identifier-only durable reminder feature audits, settings and all earlier schema on compatible-source rollback and archive restoration. Review restored effects before new scheduled work. Inbox only; no mail or integration producer. Hosted Cron timing remains unproved."
+    },
+    {
+      "id": "0033_issue_deletion.sql",
+      "buyerSteps": "Apply additively after the existing baseline migrations. Use create/copy/swap to expand source record/receipt primary keys with an erased discriminator defaulting to zero, preserving old column values and all unrelated indexes/triggers. Live raw IDs and anonymous erased digests have disjoint uniqueness domains. Retain expanded keys on compatible-source rollback; older code ignoring erased is not compatible. Confirmed deletion hashes external record/revision identifiers. Keep duplicate relations, identifier-only deletion receipts, webhook erasure fences, import erasure hashes, source identities and detached file custody on compatible-source rollback. Use only code respecting erasure fences. Validate populated migration and isolated matching source/D1/R2 recovery before traffic changes. Local confirmed erasure does not recall provider side effects already invoked."
+    },
+    {
+      "id": "0034_http_bootstrap_restore.sql",
+      "buyerSteps": "Apply forward after prior migrations. Retain destination pristine-bootstrap/admission ledgers, eligibility views and commit guards, and provision the declared RESTORE_COORDINATOR SQLite Durable Object through the existing deployment plan. Only newly bootstrapped, unedited installations with one ordinary owner session and its exact consumed source link are admitted; upgrades never bless prior state. Commit requires fresh historical-owner sign-in afterward. Preserve permanent Base claims and historical mail/webhook holds. Never clear uncertain R2 custody while work may be active; use stopped inspected recovery. Retain schema and coordinator custody with compatible source on rollback. Validate populated upgrade and isolated matching-source D1/R2 recovery; local Worker HTTP proof is not hosted HTTPS acceptance."
+    },
+    {
+      "id": "0035_staged_imports.sql",
+      "buyerSteps": "Apply in order. Adds the import run's batch size and last failure, and replaces the one-batch import triggers with an exact batch-boundary rule. Existing runs and their originals are unchanged; a run created before this migration still publishes whole."
+    },
+    {
+      "id": "0036_import_reports.sql",
+      "buyerSteps": "Apply in order. Adds the table holding what each reviewed import run read from its file, for its reconciliation report. Earlier rows, indexes and triggers are unchanged; runs created before it have no report."
+    },
+    {
+      "id": "0037_imported_comment_authors.sql",
+      "buyerSteps": "Apply in order. Adds a nullable read-only author name to comments for comments imported from Linear. Existing comments keep a null value and are unchanged; keep the column on application rollback."
+    },
+    {
+      "id": "0038_identity_providers.sql",
+      "buyerSteps": "Apply in order before switching to this runtime: Base operator-auth's OpenID Connect provider and transaction ledgers. Additive; existing operators, sessions and tokens are unchanged."
+    },
+    {
+      "id": "0039_domain_rules_step_up.sql",
+      "buyerSteps": "Apply in order: Base operator-auth domain rules and step-up proofs. Additive."
+    },
+    {
+      "id": "0040_provider_control.sql",
+      "buyerSteps": "Apply in order: Base operator-auth provider settings, audit, provider sessions, logout events and credentials (an absent setting means off). Additive."
+    },
+    {
+      "id": "0041_provider_pins.sql",
+      "buyerSteps": "Apply in order: Base operator-auth session provenance for provider pins. Additive (IF NOT EXISTS after 0040)."
+    },
+    {
+      "id": "0042_dependency_setup.sql",
+      "buyerSteps": "Apply in order: Base operator-auth ephemeral setup links, which a native owner claim closes. Additive; never exported."
+    },
+    {
+      "id": "0043_import_retirement.sql",
+      "buyerSteps": "Apply in order: Base import-kit d1RetirementSchema verbatim (append-only erasure journal and custody retirements; replaces the stream revision update trigger with one that admits retirement). Keep the journal and retirements on rollback and in archives."
+    },
+    {
+      "id": "0044_import_reversal_fence.sql",
+      "buyerSteps": "Apply in order: Base import-kit d1ReversalFenceSchema verbatim (indexed reversal fences and lookup indexes). Additive."
     }
   ],
   "breaking": true,
-  "agentUpdateInstructions": "Preserve applied migrations and product customizations. Configure explicit first-owner and Base auth/mail inputs; use credential-free artifact preparation and the trusted deploy controller, retaining identity receipts. Re-run full verification and affected development/foundation/removal journeys. Portable export/restore and wider contract requirements remain incomplete."
+  "agentUpdateInstructions": "Use Node 22.20.0 and pnpm 10.12.4 with shared rer commands. Base copies use 479094f0b26a639a1868fa521004581ec8dbcb63; applied migrations keep their bytes. Apply additive migrations through 0044 in order, preserving originals/provenance, owner/access/effect, source/deletion/replay and delivery/attempt ledgers. Use compatible-source rollback and isolated D1/FILES recovery; re-enter credentials and review future effects without replaying historical sends. Validate native security, atomic file imports, independent archive commands, signed source/PR persistence, token authority and real enforcing loopback TLS composition. No fetch fallback. Authenticated HTTP restore uses Vector 0034 pristine-bootstrap admission and the declared SQLite coordinator; preserve native final authority checks and stopped recovery of uncertain custody. Local Worker HTTP proof does not establish hosted HTTPS acceptance. Linear is fixture-tested, with replacements empty. Hosted installation, egress, live accounts and public publishing remain owner work. Apply additive owner review migration 0029 and additive dev-session migration 0030; fresh owners finish /setup and existing configured installations retain completion. Apply additive 0031 for automatic cycle closure and retain immutable cycle history and guards on compatible-source rollback. Apply 0032 for Inbox-only due reminders and retain reminder settings, expanded mute preferences and global delivered issue-date-kind identities, per-operator suppression history and durable feature/time audits. Apply additive 0033 for native duplicate decisions and issue deletion. Fence the complete affected native graph and its absence/anonymization through Base public erasure. Preserve expanded live/erased source keys, durable erasure and unresolved attachment custody; never resurrect deleted source/import identities or replay erased webhook payloads. Apply 0035-0037 for staged import runs, reconciliation reports and imported comment authors. Apply Base's sign-in ledgers 0038-0042 before switching to this runtime, and 0043-0044 for import custody retirement and reversal fences; keep the erasure journal on rollback."
 }

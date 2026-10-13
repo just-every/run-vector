@@ -1,4 +1,12 @@
-import { verificationDirectory } from '../../scripts/verification-paths.mjs';
+import { localAuthArguments,localAuthSecret } from './outbox-session.mjs';
+import { confirmLink } from './outbox-session.mjs';
+// Settle native polling before replacing an authorized private document.
+import {
+  beforePrivateNavigation,
+  settleReads,
+  trackRequests,
+} from "./collaboration-navigation.mjs";
+import { verificationDirectory } from "../../scripts/verification-paths.mjs";
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
@@ -29,7 +37,10 @@ function command(args) {
   return execFileSync("pnpm", ["exec", "wrangler", ...args], {
     cwd: root,
     encoding: "utf8",
-    env: { ...process.env, WRANGLER_LOG_PATH: resolve(verificationDirectory, "wrangler-logs") },
+    env: {
+      ...process.env,
+      WRANGLER_LOG_PATH: resolve(verificationDirectory, "wrangler-logs"),
+    },
     maxBuffer: 16 * 1024 * 1024,
   });
 }
@@ -66,8 +77,7 @@ function start(origin = base) {
   worker = spawn(
     process.execPath,
     [
-      resolve("node_modules/wrangler/bin/wrangler.js"),
-      "dev",
+      resolve("tests/e2e/worker-serve.mjs"),
       "--config",
       "dist/server/wrangler.json",
       "--local",
@@ -77,11 +87,12 @@ function start(origin = base) {
       "--port",
       "15924",
       "--inspector-port",
-      "15925",
+      "0",
       "--persist-to",
       state,
       "--var",
       "APP_ORIGIN:" + origin,
+      ...localAuthArguments,
     ],
     {
       cwd: root,
@@ -148,7 +159,9 @@ try {
   assert.equal(home.status, 200);
   const homeHtml = await home.text();
   assert.match(homeHtml, /<!DOCTYPE html>/i);
-  assert.match(homeHtml, /<title>Vector<\/title>/);
+  assert.match(homeHtml, /<title>Vector[^<]*<\/title>/);
+  assert.match(homeHtml, /<h1[^>]*>/);
+  assert.match(homeHtml, /href="\/signin"/);
   const landingLink = homeHtml.match(/href="(\/assets\/[^" ]+\.js)"/)[1];
   assert.equal((await req(landingLink)).status, 200);
   for (const path of [
@@ -180,7 +193,7 @@ try {
   await ready();
   record(
     "HOME-001",
-    "Owner landing retains identity; meaningful SSR, metadata and assets verified.",
+    "Public homepage server-renders its hero and sign-in link; metadata and assets verified.",
   );
   record(
     "RENDER-404",
@@ -197,14 +210,14 @@ try {
   });
   assert.equal(auth.status, 202);
   const link = sql(
-    "SELECT sign_in_url FROM local_mail_outbox ORDER BY created_at DESC LIMIT 1",
-  )[0].sign_in_url;
-  const signed = await fetch(link, { redirect: "manual" });
-  assert.equal(signed.status, 302);
+    "SELECT json_extract(message,'$.text') AS sign_in_url FROM rer_mail_development_outbox ORDER BY created_at DESC LIMIT 1",
+  )[0].sign_in_url.match(/https?:\/\/[^\s]+/)[0];
+  const signed = await confirmLink(link);
+  assert.equal(signed.status, 303);
   assert.equal(signed.headers.get("location"), "/app/my-work");
   const cookie = signed.headers.get("set-cookie").split(";")[0];
   assert.match(signed.headers.get("set-cookie"), /HttpOnly/);
-  assert.equal((await fetch(link, { redirect: "manual" })).status, 400);
+  assert.equal((await confirmLink(link)).status, 400);
   const validHeaders = {
     Cookie: cookie,
     Origin: base,
@@ -264,32 +277,20 @@ try {
   assert.deepEqual(decoded.result, {
     id: ids.sarah,
     name: "Sarah Runtime SSR",
+    editorConfigured: false,
   });
   assert.equal(decoded.error, undefined);
   const token = cookie.split("=")[1];
-  const expired = "a".repeat(64),
-    revoked = "b".repeat(64);
-  async function hash(t) {
-    return Array.from(
-      new Uint8Array(
-        await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t)),
-      ),
-      (x) => x.toString(16).padStart(2, "0"),
-    ).join("");
-  }
-  const now = new Date().toISOString();
-  for (const [i, t, expires, revoke] of [
-    [1, expired, new Date(Date.now() - 1000).toISOString(), null],
-    [2, revoked, new Date(Date.now() + 86400000).toISOString(), now],
-  ])
-    sql(
-      `INSERT OR REPLACE INTO operator_sessions(id,operator_id,token_hash,expires_at,revoked_at,created_at,updated_at) VALUES('e2e-session-${i}','${ids.sarah}','${await hash(t)}','${expires}',${revoke ? "'" + revoke + "'" : "NULL"},'${now}','${now}')`,
-    );
+  const {opaqueToken,hashToken} = await import('../../vendor/base/operator-auth/crypto.mjs');
+  const expired = opaqueToken(), revoked = opaqueToken();
+  const now = Date.now();
+  for (const [i,t,expires,revoke] of [[1,expired,now-1000,null],[2,revoked,now+86400000,now]])
+    sql(`INSERT INTO oa_sessions(id,operator_id,operator_version,kind,token_hash,expires_at,revoked_at,created_at) SELECT 'e2e-session-${i}',id,version,'native','${await hashToken(localAuthSecret,'session',t)}',${expires},${revoke??'NULL'},${now} FROM oa_operators WHERE id='${ids.sarah}'`);
   const matrix = [];
   for (const [stateName, value] of [
     ["missing", ""],
-    ["expired", "vector_session=" + expired],
-    ["revoked", "vector_session=" + revoked],
+    ["expired", "operator_session_local_" + new URL(base).port + "=" + expired],
+    ["revoked", "operator_session_local_" + new URL(base).port + "=" + revoked],
   ]) {
     for (const path of [
       "/api",
@@ -610,9 +611,10 @@ try {
   page.on("requestfailed", (r) =>
     failed.push(r.url() + ":" + r.failure()?.errorText),
   );
+  trackRequests(page);
   page.on("request", (r) => {
     if (r.isNavigationRequest() && r.frame() === page.mainFrame())
-      documents.push(r.url());
+      documents.push(new URL(r.url()).pathname);
   });
   await page.goto(base + "/signin");
   await page.getByRole("textbox", { name: "Email", exact: true }).fill(email);
@@ -626,13 +628,16 @@ try {
     .click();
   assert.equal((await browserAuthRequest).status(), 202);
   const browserSignInLink = sql(
-    "SELECT sign_in_url FROM local_mail_outbox WHERE recipient='sarah@vector.test' ORDER BY created_at DESC LIMIT 1",
-  )[0].sign_in_url;
+    "SELECT json_extract(message,'$.text') AS sign_in_url FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='sarah@vector.test' ORDER BY created_at DESC LIMIT 1",
+  )[0].sign_in_url.match(/https?:\/\/[^\s]+/)[0];
   await page.goto(browserSignInLink);
+  await page.getByRole("button", {name:"Confirm",exact:true}).click();
   await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
   await page
     .getByRole("heading", { name: "Why this needs attention", exact: true })
     .waitFor();
+  // Leaving Current unmounts the inspector; let its reads finish first.
+  await settleReads(page);
   const timeOrigin = await page.evaluate(() => performance.timeOrigin);
   await page
     .getByRole("link", { name: "My work", exact: true })
@@ -646,10 +651,12 @@ try {
     .click();
   await page.getByRole("heading", { name: "Projects", exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), timeOrigin);
+  await beforePrivateNavigation(page, base + "/app/issues/" + issue.identifier);
   await page.goto(base + "/app/issues/" + issue.identifier);
   await page
     .getByRole("heading", { name: "Persisted across restart", exact: true })
     .waitFor();
+  // Edit issue covers title and description only; other fields use inline pickers.
   await page.getByRole("button", { name: "Edit issue", exact: true }).click();
   await page
     .getByLabel("Title", { exact: true })
@@ -663,6 +670,13 @@ try {
     .fill(
       "**Browser evidence**\n\n<script>window.injection=1</script>\n\n[Unsafe](javascript:alert(1)) [Reference](https://vector-link.invalid/evidence)\n\n![Diagram](https://vector-image.invalid/pixel.png)",
     );
+  assert.equal(
+    await page
+      .getByRole("textbox", { name: "Add a comment", exact: true })
+      .count(),
+    1,
+    "comment composer keeps its accessible name after entering a draft",
+  );
   await page.getByRole("button", { name: "Add comment", exact: true }).click();
   await page
     .locator(".comment-entry .safe-markdown strong")
@@ -723,6 +737,13 @@ try {
     .fill(
       "**Edited browser evidence**\n\n![Replacement](https://vector-image.invalid/replacement.png)",
     );
+  assert.equal(
+    await page
+      .getByRole("textbox", { name: "Edit comment", exact: true })
+      .count(),
+    1,
+    "comment editor keeps its accessible name after entering a draft",
+  );
   await page.getByRole("button", { name: "Save comment", exact: true }).click();
   await page
     .locator(".safe-markdown strong")
@@ -873,9 +894,19 @@ try {
   );
 
   const editBefore = await readBrowserJson(`/api/issues/${issue.identifier}`);
+  // Edit issue covers title and description only; other fields use inline pickers.
   await page.getByRole("button", { name: "Edit issue", exact: true }).click();
   const titleInput = page.getByLabel("Title", { exact: true });
   await titleInput.fill("Unsaved local operator draft");
+  const descriptionInput = page.getByLabel("Description", { exact: true });
+  await descriptionInput.fill("Unsaved local description draft");
+  assert.equal(
+    await page
+      .getByRole("textbox", { name: "Description", exact: true })
+      .count(),
+    1,
+    "issue description keeps its accessible name after entering a draft",
+  );
   const concurrent = await req(`/api/issues/${issue.identifier}`, {
     method: "PATCH",
     headers: validHeaders,
@@ -895,6 +926,10 @@ try {
     .getByRole("heading", { name: concurrentIssue.title, exact: true })
     .waitFor();
   assert.equal(await titleInput.inputValue(), "Unsaved local operator draft");
+  assert.equal(
+    await descriptionInput.inputValue(),
+    "Unsaved local description draft",
+  );
   await page
     .getByRole("alert")
     .filter({ hasText: "Your unsaved edit has been kept" })
@@ -918,11 +953,21 @@ try {
     .filter({ hasText: "Reload before applying your edit" })
     .waitFor();
   assert.equal(await titleInput.inputValue(), "Unsaved local operator draft");
+  assert.equal(
+    await descriptionInput.inputValue(),
+    "Unsaved local description draft",
+  );
   const afterConflict = await readBrowserJson(
     `/api/issues/${issue.identifier}`,
   );
   assert.equal(afterConflict.title, concurrentIssue.title);
   assert.equal(afterConflict.version, concurrentIssue.version);
+  assert.equal(afterConflict.description, concurrentIssue.description);
+  assert.deepEqual(conflictResponse.request().postDataJSON(), {
+    expectedVersion: editBefore.version,
+    title: "Unsaved local operator draft",
+    description: "Unsaved local description draft",
+  });
   await page.evaluate(
     () =>
       new Promise((resolve) =>
@@ -936,6 +981,10 @@ try {
     concurrentIssue.title,
     { timeout: 15_000 },
   );
+  assert.equal(
+    await descriptionInput.inputValue(),
+    concurrentIssue.description,
+  );
   await page.getByRole("button", { name: "Cancel edit", exact: true }).click();
   await removeBrowserLink(issueLinks, refreshLink);
   record(
@@ -943,11 +992,19 @@ try {
     "Open editor keeps its draft and original expectedVersion through a parent refresh; concurrent API write causes PATCH409 without overwrite, and explicit validated reload replaces the draft.",
   );
 
+  await beforePrivateNavigation(page, base + "/app/new-issue");
   await page.goto(base + "/app/new-issue");
   await page.getByRole("heading", { name: "New issue", exact: true }).waitFor();
   const browserCreatedTitle = "Browser created work " + Date.now();
   await page.getByRole("textbox", { name: /^Title/ }).fill(browserCreatedTitle);
   await page.getByLabel(/^Description/).fill("**Native browser creation**");
+  assert.equal(
+    await page
+      .getByRole("textbox", { name: "Description", exact: true })
+      .count(),
+    1,
+    "new issue description has a stable accessible name independent of its draft and Markdown hint",
+  );
   await page.getByLabel(/^Team/).selectOption(ids.flow);
   const createResponsePromise = page.waitForResponse(
     (response) =>
@@ -983,6 +1040,7 @@ try {
     "ISSUE-001",
     "Native browser New Issue submits persisted Backlog work and navigates to the returned stable identifier without a document reload.",
   );
+  await beforePrivateNavigation(page, base + "/app/new-issue");
   await page.goto(base + "/app/new-issue");
   await page.getByRole("radio", { name: /Intake/ }).check();
   await page
@@ -1024,6 +1082,7 @@ try {
     .getByRole("link", { name: "← Current", exact: true })
     .click();
   await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
+  await beforePrivateNavigation(page, base + "/app/new-issue");
   await page.goto(base + "/app/new-issue");
   await page
     .getByRole("heading", { name: "New intake", exact: true })
@@ -1306,6 +1365,7 @@ try {
       2,
     ),
   );
+  await beforePrivateNavigation(page, base + "/app/issues/" + issue.identifier);
   await page.goto(base + "/app/issues/" + issue.identifier);
   await page
     .getByRole("heading", { name: concurrentIssue.title, exact: true })
@@ -1405,6 +1465,7 @@ try {
   const originalSignout = await req("/auth/signout", {
     method: "POST",
     headers: validHeaders,
+    body: "{}",
   });
   assert.equal(originalSignout.status, 200);
   await originalSignout.arrayBuffer();

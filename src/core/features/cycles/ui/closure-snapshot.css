@@ -1,0 +1,37 @@
+.closure-snapshot {
+  margin-block: 1.5rem;
+}
+.closure-snapshot__table {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.closure-snapshot table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  text-align: left;
+}
+.closure-snapshot th,
+.closure-snapshot td {
+  padding: 0.65rem;
+  border-bottom: 1px solid var(--border, var(--app-ink));
+  overflow-wrap: normal;
+}
+.closure-snapshot th,
+.closure-snapshot td:not(:last-child) {
+  white-space: nowrap;
+}
+.closure-snapshot td:last-child {
+  overflow-wrap: anywhere;
+}
+.closure-snapshot caption {
+  text-align: left;
+  margin-block: 0.5rem;
+  font-weight: 600;
+}
+.cycle-closure-failure {
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--app-warn) 45%, transparent);
+  border-radius: 0.5rem;
+}

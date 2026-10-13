@@ -8,6 +8,9 @@ export class MutationAccessError extends Error {
     super("The operator session is no longer active. Sign in again.");
   }
 }
+export class RestoreReservationError extends Error {
+  constructor() { super('The workspace is reserved for an archive restore. Finish or abort that restore first.'); }
+}
 export function isMutationAccessError(error: unknown): boolean {
   return (
     error instanceof MutationAccessError ||
@@ -18,7 +21,8 @@ export function isMutationAccessError(error: unknown): boolean {
 }
 
 type BaseFence = { sessionId: string; operatorVersion: number };
-type Identity = { actor: string; sessionHash?: string | BaseFence };
+export type NativeAccessFence = { sql: string; values: (string|number|null)[] };
+type Identity = { actor: string; sessionHash?: BaseFence; accessFence?: NativeAccessFence };
 const scopes = new WeakMap<
   D1Database,
   { source: D1Database; identity: Identity }
@@ -33,26 +37,28 @@ export function fileSettlementDatabase(db: D1Database): D1Database {
 export function mutationDatabase(
   source: D1Database,
   actor: string,
-  sessionHash?: string | BaseFence,
+  sessionHash?: BaseFence,
+  accessFence?: NativeAccessFence,
 ): D1Database {
   const existing = scopes.get(source);
   if (existing) {
     if (existing.identity.actor !== actor) throw new MutationAccessError();
     return source; // Keep the stronger native-session fence on repository calls.
   }
-  const identity = { actor, sessionHash };
-  const base = typeof sessionHash === 'object' ? sessionHash : undefined;
+  const identity = { actor, sessionHash, accessFence };
+  const base = sessionHash;
   const sessionClause = base
     ? ` AND EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_sessions s ON s.operator_id=m.auth_id JOIN oa_operators a ON a.id=m.auth_id
       WHERE m.operator_id=o.id AND s.id=? AND s.operator_version=? AND a.version=s.operator_version
       AND a.status='active' AND s.revoked_at IS NULL AND s.expires_at>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER))`
-    : sessionHash ? ` AND EXISTS(SELECT 1 FROM operator_sessions s WHERE s.operator_id=o.id AND s.token_hash=? AND s.revoked_at IS NULL AND julianday(s.expires_at)>julianday('now'))` : '';
-  const eligible = `EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.removed_at IS NULL${sessionClause})`;
-  const values = base ? [actor, base.sessionId, base.operatorVersion] : sessionHash ? [actor, sessionHash] : [actor];
+    : '';
+  const identityEligible = `EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.removed_at IS NULL${sessionClause})${accessFence ? " AND ("+accessFence.sql+")" : ""}`;
+  const eligible = `${identityEligible} AND NOT EXISTS(SELECT 1 FROM vector_http_restore)`;
+  const values = [...(base ? [actor, base.sessionId, base.operatorVersion] : [actor]),...(accessFence?.values??[])];
   const statements = new WeakMap<D1PreparedStatement, D1PreparedStatement>();
   const active = () =>
     source
-      .prepare(`SELECT ${eligible} AS active`)
+      .prepare(`SELECT ${identityEligible} AS active`)
       .bind(...values)
       .first<number>("active");
   async function batch<T>(
@@ -62,7 +68,7 @@ export function mutationDatabase(
     // D1 batch on denial; no schema change or persistent guard row is needed.
     const guard = source
       .prepare(
-        `SELECT CASE WHEN ${eligible} THEN 1 ELSE json('native mutation denied') END`,
+        accessFence ? `UPDATE vector_integration_authority_guard SET admitted=CASE WHEN ${eligible} THEN 1 ELSE 0 END WHERE id=1` : `SELECT CASE WHEN ${eligible} THEN 1 ELSE json('native mutation denied') END`,
       )
       .bind(...values);
     try {
@@ -70,10 +76,12 @@ export function mutationDatabase(
         await source.batch<T>([
           guard,
           ...items.map((item) => statements.get(item) ?? item),
+          ...(accessFence ? [guard] : []),
         ])
-      ).slice(1);
+      ).slice(1,accessFence ? -1 : undefined);
     } catch (error) {
-      if (!(await active())) throw new MutationAccessError();
+      if ((accessFence && String(error).includes('vector_integration_authority')) || !(await active())) throw new MutationAccessError();
+      if (await source.prepare('SELECT 1 FROM vector_http_restore').first()) throw new RestoreReservationError();
       throw error;
     }
   }

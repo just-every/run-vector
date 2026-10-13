@@ -1,3 +1,5 @@
+import { IssueAccessError } from '../issues/access';
+import { requireIssueProjection } from '../issues/projection-access';
 import type { Context } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -34,6 +36,7 @@ export async function returnIntakeRoute(context: Context<AppEnvironment>) {
       now,
     );
     const issue = await getIssueDetail(context.env.DB, identifier, now);
+    await requireIssueProjection(context,identifier);
     if (!issue) return context.json({ error: "not_found" }, 404);
     return outcome === "stale"
       ? context.json(
@@ -42,6 +45,7 @@ export async function returnIntakeRoute(context: Context<AppEnvironment>) {
         )
       : context.json(issue, 200);
   } catch (error) {
+    if (error instanceof IssueAccessError) return context.json({error:error.code,message:error.message},error.status);
     if (!(error instanceof IssueMutationError)) throw error;
     return context.json(
       {

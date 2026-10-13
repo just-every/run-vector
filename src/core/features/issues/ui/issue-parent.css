@@ -1,0 +1,214 @@
+.issue-parent {
+  min-width: 0;
+}
+.issue-parent__top,
+.issue-parent__current,
+.issue-parent__link {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+}
+.issue-parent__top { gap: 0.45rem; }
+.issue-parent__current {
+  flex: 1 1 auto;
+  gap: 0.35rem;
+  overflow: hidden;
+  color: var(--app-muted);
+  font-size: 0.75rem;
+}
+.issue-parent__label,
+.issue-parent__link strong { flex: 0 0 auto; }
+.issue-parent__label,
+.issue-parent__status { color: var(--app-muted); }
+.issue-parent__link {
+  gap: 0.35rem;
+  color: var(--app-cobalt-ink);
+  text-decoration: none;
+}
+.issue-parent__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.issue-parent__status { flex: 0 0 auto; font-size: .75rem; }
+.issue-parent__empty,
+.issue-parent__hint { color: var(--app-muted); }
+.issue-parent__edit,
+.issue-parent__children > summary,
+.issue-parent__actions > button:not(.decision-submit),
+.issue-parent__search > button,
+.issue-parent__message button,
+.issue-parent__message a {
+  min-height: 2.75rem;
+  border: 1px solid rgb(23 26 32 / 24%);
+  border-radius: 0.45rem;
+  padding: 0.35rem 0.55rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+  font-size: .75rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+.issue-parent__children { flex: 0 0 auto; }
+/* The row matches the other inline property edit buttons, keeping phone issues short. */
+.issue-parent__edit,
+.issue-parent__children > summary { min-height: 2rem; padding-block: 0.25rem; white-space: nowrap; }
+.issue-parent__children > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  list-style-position: inside;
+  white-space: nowrap;
+}
+.issue-parent__children summary span,
+.issue-parent__matches strong { color: var(--app-cobalt-ink); }
+.issue-parent__children ul,
+.issue-parent__matches {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0.45rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.issue-parent__children li {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.6rem;
+  font-size: 0.78rem;
+}
+.issue-parent__children li a {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 14rem;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  color: var(--app-cobalt-ink);
+  overflow-wrap: anywhere;
+}
+.issue-parent__children li strong { color: var(--app-ink); }
+.issue-parent__editor { display: grid; gap: 0.45rem; margin-top: 0.55rem; }
+.issue-parent__search {
+  display: flex;
+  min-width: 0;
+  align-items: end;
+  gap: 0.5rem;
+}
+.issue-parent__search label {
+  display: grid;
+  min-width: 0;
+  flex: 1 1 auto;
+  gap: 0.25rem;
+  color: var(--app-muted);
+  font-size: .75rem;
+  font-weight: 650;
+}
+.issue-parent__search input {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  color: inherit;
+  background: var(--app-card);
+}
+.issue-parent__matches { max-height: 14rem; margin-top: 0; overflow-y: auto; }
+.issue-parent__matches li { min-width: 0; }
+.issue-parent__matches button {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  border: 1px solid rgb(23 26 32 / 18%);
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.55rem;
+  color: var(--app-ink);
+  background: var(--app-card);
+  text-align: left;
+}
+.issue-parent__matches button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--color-accent) 65%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 14%, var(--app-card));
+}
+.issue-parent__matches button > span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.issue-parent__matches small { color: var(--app-muted); font-size: .75rem; }
+.issue-parent__children > p,
+.issue-parent__hint,
+.issue-parent__selected,
+.issue-parent__message {
+  margin: 0.4rem 0 0;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.issue-parent__selected,
+.issue-parent__message { color: var(--app-cobalt-ink); }
+.issue-parent__actions,
+.issue-parent__message--error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+.issue-parent__message--error { color: var(--app-danger); }
+.issue-parent button:disabled { cursor: not-allowed; opacity: 0.58; }
+.issue-parent :focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+@media (max-width: 46rem) {
+  .issue-parent__top,
+  .issue-parent__current,
+  .issue-parent__link { gap: 0.25rem; }
+  .issue-parent__current { font-size: .75rem; }
+  .issue-parent__link .issue-parent__status,
+  .issue-parent__matches small { display: none; }
+  .issue-parent__edit,
+  .issue-parent__children > summary { padding-inline: 0.4rem; font-size: .75rem; }
+  .issue-parent__matches button { grid-template-columns: auto minmax(0, 1fr); }
+}
+/* Labels and hierarchy share one wrapping row; an open editor or a set
+   parent takes the full width. */
+.issue-relations {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  min-width: 0;
+}
+.issue-relations > * {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.issue-relations > .issue-label-control {
+  margin-bottom: 0;
+}
+.issue-relations > :has(form),
+.issue-relations > .issue-parent:has(.issue-parent__current),
+.issue-relations > .issue-parent:has(.issue-parent__editor),
+.issue-relations > .issue-parent:has(details[open]) {
+  flex-basis: 100%;
+}
+/* An open children list drops below the hierarchy controls. */
+.issue-parent__top:has(details[open]) {
+  flex-wrap: wrap;
+}
+.issue-parent__children[open] {
+  flex: 1 0 100%;
+}
+.issue-parent__children[open] > summary {
+  width: fit-content;
+}
+.issue-parent--compact {
+  display: inline-flex;
+}

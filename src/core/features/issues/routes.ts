@@ -1,3 +1,5 @@
+import { requireIssueProjection } from "./projection-access"
+import { IssueAccessError } from "./access"
 import { readRequestJson } from '../../app/input'
 import type { Context } from 'hono'
 import {
@@ -73,7 +75,7 @@ async function decide<T>(
   },
   mutate: (
     input: T,
-  ) => Promise<{ issue: { version: number }; outcome: 'written' | 'stale' }>,
+  ) => Promise<{ issue: { version: number; identifier: string }; outcome: 'written' | 'stale' }>,
 ) {
   const identifier = context.req.param('identifier') ?? ''
   if (!issueParamPattern.test(identifier))
@@ -86,13 +88,14 @@ async function decide<T>(
 async function respondToMutation(
   context: Context<AppEnvironment>,
   mutate: () => Promise<{
-    issue: { version: number }
+    issue: { version: number; identifier: string }
     outcome: 'written' | 'stale'
   }>,
   writtenStatus: 200 | 201,
 ) {
   try {
     const result = await mutate()
+    await requireIssueProjection(context, result.issue.identifier)
     return result.outcome === 'stale'
       ? context.json(
           {
@@ -104,6 +107,7 @@ async function respondToMutation(
         )
       : context.json(result.issue, writtenStatus)
   } catch (error) {
+    if (error instanceof IssueAccessError) return context.json({error:error.code,message:error.message},error.status)
     if (!(error instanceof IssueMutationError)) throw error
     if (error.code === 'issue_not_found')
       return context.json({ error: 'not_found', message: error.message }, 404)

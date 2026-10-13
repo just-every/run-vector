@@ -20,9 +20,10 @@ import { env } from 'cloudflare:workers'
 import { createMailSender } from '../modules/mail/index.mjs'
 import { createOperatorAuth, createAuthHandler, type Session } from '../modules/operator-auth/index.mjs'
 
-const [SESSION_SECRET, SETUP_TOKEN, apiKey] = [env.SESSION_SECRET, env.SETUP_TOKEN, env.MAIL_API_KEY]
 const origin = 'https://app.example.com'
-const mailSender = env.MAIL_PROVIDER && env.MAIL_API_KEY && env.MAIL_FROM
+// Secrets are Worker secret bindings, never source text.
+const { SESSION_SECRET, SETUP_TOKEN, MAIL_API_KEY: apiKey } = env
+const mailSender = env.MAIL_PROVIDER && apiKey && env.MAIL_FROM
   ? createMailSender({
       provider: env.MAIL_PROVIDER,
       mode: 'production',
@@ -122,7 +123,7 @@ the server's authorization decision.
 
 ## Real sender outcomes and OIDC
 
-Pass the actual `createMailSender` result directly to the auth core. A Base mail
+Pass the actual `createMailSender` result directly to the auth core. An
 `accepted` result records provider submission only. `rejected`, `rate_limited`,
 `uncertain`, and production `development` results revoke the new link and become
 `503 mail_unavailable`; there is no fallback or automatic retry. Resolve an

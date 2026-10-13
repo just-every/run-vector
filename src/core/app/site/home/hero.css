@@ -1,0 +1,39 @@
+/* The first view: copy on the left, the drawn path of one report on the right, both centred in the space under the
+   header. The copy column is as wide as its headline; the drawing takes the rest, centred in it and centred on the
+   copy's height, so the cards sit level with the headline and the buttons (the drawing sizes itself to leave clear paper
+   either side, flow.css). At phone width the copy comes first and the drawing stacks under it. */
+.vx-hero { --vx-hero-h: clamp(640px, calc(100svh - var(--vx-header-h)), 860px); display: flex; align-items: center; min-height: var(--vx-hero-h); padding: clamp(40px, 6vh, 72px) 0 clamp(48px, 7vh, 80px); }
+.vx-hero-grid { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.vx-hero-copy { position: relative; z-index: 2; }
+
+.vx-hero h1 { margin: 0; color: var(--vx-ink); font-size: clamp(46px, 5.6vw, 84px); font-weight: 640; letter-spacing: -0.034em; line-height: 0.98; white-space: nowrap; }
+.vx-hero h1 span { display: block; }
+.vx-hero-sub { max-width: 22em; margin: clamp(20px, 1.9vw, 28px) 0 0; color: var(--vx-body); font-size: clamp(19px, 1.5vw, 22px); line-height: 1.5; text-wrap: pretty; }
+.vx-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 36px; margin-top: clamp(28px, 2.6vw, 38px); }
+.vx-fine { margin: clamp(20px, 1.8vw, 26px) 0 0; color: var(--vx-body); font-size: 15.5px; }
+.vx-hero-alt { margin-top: clamp(12px, 1.1vw, 16px); text-wrap: balance; }
+.vx-hero-alt strong { color: var(--vx-ink); font-weight: 620; }
+
+@media (max-width: 1080px) {
+  .vx-hero { min-height: 0; }
+  .vx-hero-grid { grid-template-columns: minmax(0, 1fr); gap: 56px; }
+  .vx-hero-copy { max-width: 40rem; }
+}
+@media (max-width: 560px) {
+  .vx-hero { padding: 36px 0 80px; }
+  .vx-hero h1 { font-size: clamp(40px, 12.2vw, 52px); letter-spacing: -0.03em; }
+  .vx-hero-sub { font-size: 18.5px; text-wrap: balance; }
+  .vx-actions { gap: 14px 28px; }
+  .vx-pill--large { min-height: 56px; padding: 0 28px; font-size: 18px; }
+  .vx-link--large { font-size: 18px; }
+  .vx-fine { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .vx-hero-copy > * { animation: vx-rise 0.8s var(--vx-ease-out) backwards; }
+  .vx-hero-copy > :nth-child(2) { animation-delay: 0.06s; }
+  .vx-hero-copy > :nth-child(3) { animation-delay: 0.12s; }
+  .vx-hero-copy > :nth-child(4) { animation-delay: 0.18s; }
+}
+@keyframes vx-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes vx-fade { from { opacity: 0; } to { opacity: 1; } }

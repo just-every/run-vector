@@ -1,0 +1,69 @@
+/* The hero drawing (flow.tsx): two product cards in a row, drawn with the shared plate (drawing/drawing.css). Each card
+   is as tall as what it holds and sits centred on the arrow line, so the decided card carries no empty band. The figure
+   is the hero's drawing column and a size container: the cards are today's size (240px) where the column allows it and
+   shrink so that --vx-clear of paper is left on each side. The board is as wide as the painted drawing (the cards, the
+   gap and the construction's extension lines either side) and starts at the top of the construction circle, so the hero
+   can centre it against the copy. */
+.vx-flow { --vx-gap: clamp(44px, calc(9.6vw - 75px), 64px); --vx-card-h: 218px; --vx-flow-over: 40px; --vx-clear: clamp(36px, calc((100vw - 1100px) * 0.222 + 36px), 76px); container-type: inline-size; margin: 0; }
+.vx-board { --vx-card-w: min(240px, calc((100cqw - 2 * var(--vx-clear) - 2 * var(--vx-flow-over) - var(--vx-gap)) / 2)); position: relative; box-sizing: content-box; width: calc(2 * var(--vx-card-w) + var(--vx-gap)); max-width: 100%; margin: 0 auto; --vx-pt: calc(var(--vx-card-w) * 0.63 - var(--vx-card-h) / 2); padding: var(--vx-pt) var(--vx-flow-over) 0; }
+.vx-steps { position: relative; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--vx-gap); margin: 0; padding: 0; list-style: none; }
+.vx-step { position: relative; min-width: 0; }
+.vx-step-art { position: relative; display: flex; align-items: center; height: var(--vx-card-h); }
+.vx-step-art > .vx-plate { width: 100%; --vx-circle: 126%; --vx-over: var(--vx-flow-over); }
+.vx-flow .vx-plate--askew { --vx-askew: -5deg; }
+.vx-flow .vx-plate--askew > .vx-card { transform: translate(-6px, 6px) rotate(var(--vx-askew)); }
+.vx-card--report .vx-reason { margin-top: 18px; }
+
+/* The cobalt arrow between the cards, and the dimension line under them that numbers the steps. */
+.vx-flow .vx-arrow { position: absolute; z-index: 2; top: 50%; left: calc(100% + 4px); width: calc(var(--vx-gap) - 12px); height: 24px; transform: translateY(-50%); transform-origin: left center; }
+.vx-caption { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; margin: 58px 0 0; text-align: center; }
+.vx-num { display: grid; place-items: center; width: 34px; height: 34px; border: 1.4px solid var(--vx-outline); border-radius: 50%; background: var(--vx-paper); font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vx-caption-text { color: var(--vx-ink); font-size: 17px; font-weight: 500; line-height: 1.3; text-wrap: balance; }
+.vx-dimension, .vx-dimension-head { position: absolute; top: calc(var(--vx-pt) + var(--vx-card-h) + 58px + 17px - 7px); height: 14px; fill: none; stroke: var(--vx-outline); stroke-width: 1.2; }
+.vx-dimension { left: var(--vx-flow-over); right: calc(var(--vx-flow-over) + 1px); width: calc(100% - 2 * var(--vx-flow-over) - 1px); }
+.vx-dimension-head { right: var(--vx-flow-over); width: 12px; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (max-width: 1360px) and (min-width: 1081px) {
+  .vx-flow .vx-card { --vx-pad: 15px; }
+  .vx-flow .vx-card-title { font-size: 16px; }
+  .vx-flow .vx-id { font-size: 14.5px; }
+  .vx-flow .vx-choice { font-size: 14px; }
+  .vx-flow .vx-saved { font-size: 14.5px; }
+  .vx-caption-text { font-size: 16px; }
+}
+
+/* Phones and portrait tablets: the cards stack, each with its number and words above it, and arrows point down. The words
+   sit on a patch of paper so the construction circle passes behind them, never through them. */
+@media (max-width: 900px) {
+  .vx-board { width: auto; padding: 8px 0 0; }
+  .vx-steps { display: flex; flex-direction: column; align-items: center; gap: 84px; }
+  .vx-step { display: flex; flex-direction: column; width: min(calc(100% - 36px), 330px); }
+  .vx-step-art { height: auto; }
+  .vx-flow .vx-plate { --vx-circle: 104%; --vx-over: 24px; }
+  .vx-flow .vx-plate--askew { --vx-askew: -3deg; }
+  .vx-flow .vx-plate--askew > .vx-card { transform: rotate(var(--vx-askew)); }
+  .vx-caption { order: -1; flex-direction: row; justify-content: flex-start; gap: 12px; margin: 0 0 34px; text-align: left; }
+  .vx-caption-text { padding: 2px 6px 2px 2px; border-radius: 4px; background: var(--vx-paper); font-size: 16.5px; }
+  .vx-num { width: 30px; height: 30px; font-size: 14px; }
+  .vx-flow .vx-arrow { top: calc(100% + 26px); left: 50%; width: 40px; transform: translateX(-50%) rotate(90deg); transform-origin: center; }
+  .vx-dimension, .vx-dimension-head { display: none; }
+}
+
+/* With motion allowed the plan is drawn once on load: construction first, then the report arrives askew, the arrow carries
+   it and the call is made. Only opacity and transforms move; without motion it is simply finished. */
+@media (prefers-reduced-motion: no-preference) {
+  .vx-flow .vx-construction { animation: vx-fade 0.9s ease-out calc(0.1s + var(--i) * 0.12s) backwards; }
+  .vx-card--report { animation: vx-arrive 0.95s var(--vx-ease-out) 0.3s backwards; }
+  .vx-flow .vx-arrow { animation: vx-draw 0.5s var(--vx-ease-out) 1s backwards; }
+  .vx-card--decision { animation: vx-rise 0.7s var(--vx-ease-out) 1.2s backwards; }
+  .vx-card--decision .vx-choice.is-chosen { animation: vx-choose 0.45s ease-out 1.6s backwards; }
+  .vx-card--decision .vx-saved { animation: vx-rise 0.5s var(--vx-ease-out) 1.75s backwards; }
+  .vx-caption { animation: vx-fade 0.6s ease-out calc(0.6s + var(--i) * 0.9s) backwards; }
+  .vx-dimension, .vx-dimension-head { animation: vx-fade 1s ease-out 0.4s backwards; }
+}
+@media (prefers-reduced-motion: no-preference) and (max-width: 900px) {
+  .vx-flow .vx-arrow { animation-name: vx-fade; }
+}
+@keyframes vx-arrive { from { opacity: 0; transform: translate(-30px, -22px) rotate(-12deg); } }
+@keyframes vx-draw { from { opacity: 0; transform: translateY(-50%) scaleX(0); } }
+@keyframes vx-choose { from { color: var(--vx-ink); background: transparent; } }

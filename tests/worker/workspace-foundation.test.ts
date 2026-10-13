@@ -15,7 +15,7 @@ const config = {
   DEFAULT_TEAM_NAME: "Engineering",
   DEFAULT_TEAM_PREFIX: "ENG",
 };
-const origin = "https://vector.test",
+const origin = "https://127.0.0.1:15920",
   app = createServerApp();
 const bindings = {
   ...env,
@@ -52,6 +52,7 @@ async function request(
       method,
       headers: {
         cookie: session,
+        host: new URL(origin).host,
         origin: requestOrigin,
         "content-type": "application/json",
       },
@@ -108,7 +109,7 @@ it("[TEAM-002 OPS-002] bootstraps exactly one owner, team and seven ordered cate
     "cycles",
     "labels",
     "evidence_revisions",
-    "local_mail_outbox",
+    "rer_mail_development_outbox",
   ])
     expect(
       (await env.DB.prepare(`SELECT count(*) AS n FROM ${table}`).first())?.n,
@@ -120,7 +121,7 @@ it("[TEAM-002 OPS-002] bootstraps exactly one owner, team and seven ordered cate
   expect(issue.status).toBe(201);
   expect(((await issue.json()) as any).identifier).toBe("ENG-1");
 });
-it("[OPS-003 BASE-ACCESS-002] settings require session and origin; timezone validation preserves stored instants", async () => {
+it("[OPS-003 NOTIFY-005 BASE-ACCESS-002] settings require session and origin; timezone validation preserves stored instants", async () => {
   expect((await request("/settings", "GET", undefined, "")).status).toBe(401);
   expect(
     (
@@ -137,22 +138,32 @@ it("[OPS-003 BASE-ACCESS-002] settings require session and origin; timezone vali
     expect((await request("/settings", "PATCH", { timezone })).status).toBe(
       400,
     );
+  for (const reminderTime of ["9:00", "24:00", "12:60", "09:00:00", ""])
+    expect(
+      (await request("/settings", "PATCH", { timezone: "UTC", reminderTime }))
+        .status,
+    ).toBe(400);
   const before = await env.DB.prepare(
     "SELECT * FROM operators ORDER BY id",
   ).all();
   const updated = await request("/settings", "PATCH", {
     timezone: "Europe/London",
+    reminderTime: "14:35",
   });
   expect(updated.status).toBe(200);
-  expect(((await updated.json()) as any).workspace.timezone).toBe(
-    "Europe/London",
-  );
+  expect(((await updated.json()) as any).workspace).toMatchObject({
+    timezone: "Europe/London",
+    reminderTime: "14:35",
+  });
   expect(
     (await env.DB.prepare("SELECT * FROM operators ORDER BY id").all()).results,
   ).toEqual(before.results);
   expect(
     ((await (await request("/settings")).json()) as any).workspace.timezone,
   ).toBe("Europe/London");
+  expect(
+    ((await (await request("/settings")).json()) as any).workspace.reminderTime,
+  ).toBe("14:35");
 });
 it("[OPS-002 OPS-004] protects setup owner and last operator without revoking their sessions", async () => {
   const last = await request("/settings/operators/" + owner, "DELETE");
@@ -220,7 +231,11 @@ it("[OPS-004] removal revokes sessions and links, unassigns active work once and
     origin + "/auth/request",
     {
       method: "POST",
-      headers: { origin, "content-type": "application/json" },
+      headers: {
+        origin,
+        host: new URL(origin).host,
+        "content-type": "application/json",
+      },
       body: JSON.stringify({ email: target + "@foundation.test" }),
     },
     bindings,
@@ -229,13 +244,20 @@ it("[OPS-004] removal revokes sessions and links, unassigns active work once and
   expect(
     (
       await env.DB.prepare(
-        "SELECT count(*) AS n FROM magic_links WHERE operator_id=?",
+        "SELECT count(*) AS n FROM oa_tokens WHERE operator_id=? AND revoked_at IS NULL AND consumed_at IS NULL",
       )
         .bind(target)
         .first()
     )?.n,
   ).toBe(1);
   const result = await request("/settings/operators/" + target, "DELETE");
+  expect(
+    await env.DB.prepare(
+      "SELECT count(*) n FROM oa_tokens WHERE operator_id=? AND revoked_at IS NOT NULL",
+    )
+      .bind(target)
+      .first("n"),
+  ).toBe(1);
   expect(result.status).toBe(200);
   expect(
     await env.DB.prepare("SELECT * FROM issues WHERE id=?")
@@ -245,7 +267,7 @@ it("[OPS-004] removal revokes sessions and links, unassigns active work once and
   expect(
     (
       await env.DB.prepare(
-        "SELECT count(*) AS n FROM magic_links WHERE operator_id=?",
+        "SELECT count(*) AS n FROM oa_tokens WHERE operator_id=? AND revoked_at IS NULL AND consumed_at IS NULL",
       )
         .bind(target)
         .first()
@@ -254,7 +276,7 @@ it("[OPS-004] removal revokes sessions and links, unassigns active work once and
   expect(
     (
       await env.DB.prepare(
-        "SELECT count(*) AS n FROM local_mail_outbox WHERE recipient=?",
+        "SELECT count(*) AS n FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')=?",
       )
         .bind(target + "@foundation.test")
         .first()

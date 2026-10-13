@@ -1,0 +1,27 @@
+import { env } from 'cloudflare:workers';
+import { expect,it } from 'vitest';
+import { Buffer } from 'node:buffer';
+import csv from '../fixtures/import/linear/workspace.csv?raw';
+import { setupImport } from './data-import-fixture';
+it('[DATA-002 DATA-004] documented-format Linear CSV imports through reviewed native mapping, retains originals and restarts without duplicates or effects',async()=>{
+ const f=await setupImport();
+ await f.mutate('/settings/teams','POST',{name:'Other team',identifierPrefix:'OTH'});
+ await f.mutate('/settings/labels','POST',{name:'Customer',color:'#234567'});
+ await f.mutate('/settings/projects','POST',{name:'Migration',leadOperatorId:f.owner});
+ await f.mutate('/settings/cycles','POST',{teamId:f.team.id,name:'Import cycle',startsLocal:'2026-10-10T09:00',endsLocal:'2026-10-20T09:00',capacity:20});
+ const state=await f.state();const label=state.labels.find(row=>row.name==='Customer')!,project=state.projects.find(row=>row.name==='Migration')!,cycle=state.cycles.find(row=>row.name==='Import cycle')!;
+ const other=state.teams.find(row=>row.name==='Other team')!;
+ const before=await f.effects(),input={format:'linear-csv' as const,source:'linear-export-one',name:'workspace.csv',base64:Buffer.from(csv).toString('base64'),mapping:{},references:{status:{'In progress':other.statuses.find(row=>row.category==='started')!.id}}};
+ const preview=await f.preview(input);expect(preview.errors).toEqual([]);expect(preview.ready).toBe(true);expect(preview.omissions.some(row=>row.code==='unsupported_archive_state')).toBe(true);expect(preview.omissions.some(row=>row.field==='Creator')).toBe(true);
+ const unacknowledged=await f.call('/data/import/apply','POST',{input:{...input,effectiveAt:preview.effectiveAt},reviewedFingerprint:preview.fingerprint,operationKey:'linear-file',acknowledgeOmissions:false});expect(unacknowledged.status).toBe(400);
+ const job=await f.publish(input);
+ const rows=(await env.DB.prepare('SELECT * FROM issues ORDER BY title').all()).results;expect(rows.length).toBe(3);
+ const parent=rows.find(row=>row.title==='Parent exported work')!,child=rows.find(row=>row.title==='Child exported work')!,archived=rows.find(row=>row.title==='Archived source record')!;
+ expect(parent.priority).toBe('none');expect(parent.assignee_operator_id).toBe(f.owner);expect(parent.project_id).toBe(project.id);expect(parent.cycle_id).toBe(cycle.id);expect(parent.estimate).toBe(3);expect(parent.due_date).toBe('2026-10-20');expect(parent.description).toBe('Quoted "evidence", café\nSecond line');
+ expect(child.priority).toBe('high');expect(child.assignee_operator_id).toBeNull();expect(archived.priority).toBe('low');
+ expect((await env.DB.prepare('SELECT label_id FROM issue_labels WHERE issue_id=?').bind(parent.id).first())?.label_id).toBe(label.id);
+ expect((await env.DB.prepare('SELECT parent_issue_id FROM issue_parents WHERE issue_id=?').bind(child.id).first())?.parent_issue_id).toBe(parent.id);
+ const originals=await (await f.call('/data/import/runs/'+job.id+'/originals')).json() as {name:string;original:{base64:string}}[];expect(originals.find(row=>row.name==='workspace.csv')?.original.base64).toBe(input.base64);
+ const repeated=await f.publish(input);expect(repeated.id).toBe(job.id);expect((await env.DB.prepare('SELECT * FROM issues ORDER BY title').all()).results).toEqual(rows);expect(await f.effects()).toEqual(before);
+ const ambiguous={...input,source:'linear-bad',base64:Buffer.from(csv.replace('owner@base.test','uninvited@example.test')).toString('base64')};const unassigned=await f.preview(ambiguous);expect(unassigned.errors).toEqual([]);expect(unassigned.omissions.some(row=>row.row===2&&row.field==='assignee'&&row.code==='unresolved_assignee')).toBe(true);
+},180_000);

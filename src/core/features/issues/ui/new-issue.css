@@ -1,7 +1,7 @@
 .new-issue-page {
   min-height: 100svh;
   padding: 1.5rem clamp(1rem, 4vw, 4rem) 3rem;
-  background: #12131d;
+  background: var(--app-paper);
 }
 .new-issue-form {
   max-width: 56rem;
@@ -18,32 +18,32 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid rgb(255 255 255 / 9%);
+  border-bottom: 1px solid rgb(23 26 32 / 14%);
   padding-bottom: 1.25rem;
 }
 .new-issue-header h1 {
   margin: 0;
-  color: #f4eff1;
+  color: var(--app-ink);
   font-size: clamp(1.7rem, 2.7vw, 2.55rem);
-  font-weight: 560;
-  letter-spacing: -0.055em;
+  font-weight: 620;
+  letter-spacing: -.03em;
 }
 .new-issue-message {
   margin: 0 0 0.8rem;
-  color: #c9b9ff;
+  color: var(--app-cobalt-ink);
   font-size: 0.78rem;
 }
 .new-issue-message--error,
 .new-issue-state--error {
-  color: #ffadb4;
+  color: var(--app-danger);
 }
 .new-issue-section,
 .new-issue-fields,
 .new-issue-more {
-  border: 1px solid rgb(255 255 255 / 9%);
+  border: 1px solid rgb(23 26 32 / 14%);
   border-radius: 0.7rem;
   padding: 1rem;
-  background: #171823;
+  background: var(--app-card);
 }
 .new-issue-section {
   display: grid;
@@ -52,12 +52,12 @@
 .new-issue-form label {
   display: grid;
   gap: 0.35rem;
-  color: #bbb5c2;
-  font-size: 0.7rem;
+  color: var(--app-body);
+  font-size: .75rem;
   font-weight: 700;
 }
 .new-issue-form label > span {
-  color: #88818f;
+  color: var(--app-muted);
   font-weight: 500;
 }
 .new-issue-form input,
@@ -65,12 +65,12 @@
 .new-issue-form textarea {
   width: 100%;
   min-height: 2.65rem;
-  border: 1px solid rgb(255 255 255 / 12%);
+  border: 1px solid rgb(23 26 32 / 18%);
   border-radius: 0.45rem;
   padding: 0.5rem 0.6rem;
-  color: #e8e2ed;
-  color-scheme: dark;
-  background: #11121b;
+  color: var(--app-ink);
+  color-scheme: light;
+  background: var(--app-paper);
   font-size: 0.82rem;
   font-weight: 400;
 }
@@ -90,19 +90,19 @@
 }
 .new-issue-labels {
   margin: 1rem 0;
-  border: 1px solid rgb(255 255 255 / 9%);
+  border: 1px solid rgb(23 26 32 / 14%);
   border-radius: 0.7rem;
   padding: 0.8rem 1rem 1rem;
-  background: #171823;
+  background: var(--app-card);
 }
 .new-issue-labels legend {
   padding: 0 0.2rem;
-  color: #bbb5c2;
-  font-size: 0.7rem;
+  color: var(--app-body);
+  font-size: .75rem;
   font-weight: 700;
 }
 .new-issue-labels > span {
-  color: #8e8897;
+  color: var(--app-muted);
   font-size: 0.78rem;
 }
 .new-issue-labels > div {
@@ -116,11 +116,11 @@
   min-height: 2.65rem;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid rgb(255 255 255 / 11%);
+  border: 1px solid rgb(23 26 32 / 16%);
   border-radius: 999px;
   padding: 0.35rem 0.65rem;
-  color: #c9c2d2;
-  font-size: 0.73rem;
+  color: var(--app-body);
+  font-size: .75rem;
   font-weight: 550;
 }
 .new-issue-labels input {
@@ -138,7 +138,7 @@
 }
 .new-issue-more summary {
   min-height: 2rem;
-  color: #d8d2e1;
+  color: var(--app-ink);
   cursor: pointer;
   font-size: 0.8rem;
   font-weight: 700;
@@ -155,10 +155,10 @@
 .new-issue-submit {
   min-height: 2.75rem;
   border: 0;
-  border-radius: 0.5rem;
+  border-radius: 999px;
   padding: 0.55rem 0.9rem;
-  color: #fff;
-  background: linear-gradient(135deg, #7652df, #6041ba);
+  color: var(--app-on-ink);
+  background: var(--app-ink);
   font-size: 0.8rem;
   font-weight: 740;
 }
@@ -173,14 +173,14 @@
   justify-items: center;
   gap: 0.75rem;
   padding: 2rem;
-  color: #aaa4b1;
+  color: var(--app-muted);
 }
 .new-issue-state button {
   min-height: 2.75rem;
-  border: 1px solid rgb(255 255 255 / 18%);
+  border: 1px solid rgb(23 26 32 / 27%);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
-  color: #f1ecf3;
+  color: var(--app-ink);
   background: transparent;
 }
 @media (max-width: 46rem) {
@@ -202,16 +202,16 @@
   flex-wrap: wrap;
   gap: 0.7rem 1.5rem;
   margin: 1rem 0;
-  border: 1px solid rgb(255 255 255 / 9%);
+  border: 1px solid rgb(23 26 32 / 14%);
   border-radius: 0.7rem;
   padding: 0.65rem 1rem 0.85rem;
-  background: #171823;
+  background: var(--app-card);
 }
 .new-issue-mode legend,
 .new-intake-row legend {
   padding: 0 0.2rem;
-  color: #bbb5c2;
-  font-size: 0.7rem;
+  color: var(--app-body);
+  font-size: .75rem;
   font-weight: 700;
 }
 .new-issue-mode label {
@@ -228,7 +228,7 @@
   accent-color: var(--color-accent);
 }
 .new-issue-mode label > span {
-  font-size: 0.7rem;
+  font-size: .75rem;
 }
 .new-intake-evidence {
   margin-top: 1rem;
@@ -241,7 +241,7 @@
   min-width: 0;
   gap: 0.8rem;
   margin: 0;
-  border: 1px solid rgb(255 255 255 / 9%);
+  border: 1px solid rgb(23 26 32 / 14%);
   border-radius: 0.5rem;
   padding: 0.8rem;
 }
@@ -253,10 +253,10 @@
 .new-intake-row-action {
   justify-self: start;
   min-height: 2.65rem;
-  border: 1px solid rgb(255 255 255 / 14%);
+  border: 1px solid rgb(23 26 32 / 21%);
   border-radius: 0.45rem;
   padding: 0.4rem 0.7rem;
-  color: #c9b9ff;
+  color: var(--app-cobalt-ink);
   background: transparent;
   font-size: 0.75rem;
 }

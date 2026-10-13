@@ -4,82 +4,99 @@
   border: 0;
   padding: 0;
 }
-.issue-editor-hint {
-  color: #928c9a;
-  font-size: 0.72rem;
-  font-weight: 400;
-}
-.issue-editor-context {
+
+.issue-header > div {
+  width: 100%;
   min-width: 0;
-  border: 1px solid rgb(255 255 255 / 9%);
-  border-radius: 0.7rem;
-  padding: 0.55rem 1rem;
-  background: #171823;
 }
-.issue-editor-context > summary {
-  min-height: 2.65rem;
-  align-content: center;
-  color: #d8d2e1;
-  cursor: pointer;
-  font-size: 0.8rem;
-  font-weight: 700;
-}
-.issue-editor-context > summary span {
-  margin-left: 0.35rem;
-}
-.issue-editor-context > summary:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
-  border-radius: 0.25rem;
-}
-.issue-editor-context-fields {
-  display: grid;
-  gap: 1rem;
-  padding-block: 0.4rem 0.5rem;
-}
-.issue-editor-labels {
-  min-width: 0;
-  margin: 0;
-  border: 1px solid rgb(255 255 255 / 9%);
-  border-radius: 0.7rem;
-  padding: 0.8rem 1rem 1rem;
-  background: #171823;
-}
-.issue-editor-labels legend {
-  padding: 0 0.2rem;
-  color: #bbb5c2;
-  font-size: 0.7rem;
-  font-weight: 700;
-}
-.issue-editor-labels legend span {
-  color: #928c9a;
-  font-weight: 400;
-}
-.issue-editor-labels > div {
+.issue-header-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.45rem;
-}
-.issue-mutation-form .issue-editor-labels label {
-  display: inline-flex;
-  min-height: 2.65rem;
   align-items: center;
-  gap: 0.4rem;
-  border: 1px solid rgb(255 255 255 / 11%);
-  border-radius: 999px;
-  padding: 0.35rem 0.65rem;
-  color: #c9c2d2;
-  font-size: 0.73rem;
-  font-weight: 550;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
-.issue-mutation-form .issue-editor-labels input {
-  width: 1rem;
-  min-height: 1rem;
-  padding: 0;
-  accent-color: var(--color-accent);
+.issue-header-actions .issue-subscription {
+  margin: 0;
 }
-.issue-editor-labels i {
-  width: 0.48rem;
-  height: 0.48rem;
-  border-radius: 50%;
+.issue-writing-editor.is-editing {
+  flex: 1 1 100%;
+}
+.issue-header-actions button,
+.issue-field-editor button,
+.issue-editor-actions button {
+  min-height: 2rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.35rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+}
+.issue-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.issue-field-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+.issue-field-heading > span {
+  color: var(--app-muted);
+  font-size: 0.8rem;
+}
+.issue-field-heading button {
+  flex: none;
+}
+.issue-planning-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+.issue-planning-fields:has(form) {
+  grid-template-columns: minmax(0, 1fr);
+}
+.issue-field-editor {
+  min-width: 0;
+}
+.issue-field-editor--text p {
+  overflow-wrap: anywhere;
+}
+.issue-field-editor .issue-mutation-form {
+  margin-block: 0.5rem;
+}
+@media (max-width: 46rem) {
+  .issue-planning-fields {
+    gap: 0.35rem;
+  }
+  .issue-field-heading {
+    gap: 0.25rem;
+  }
+  .issue-field-heading > span {
+    font-size: .75rem;
+  }
+  .issue-field-heading button {
+    padding-inline: 0.35rem;
+  }
+  .issue-field-editor--text h2 {
+    font-size: 0.8rem;
+  }
+  .issue-field-editor--text:not(:has(form)) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 0.5rem;
+  }
+  .issue-field-editor--text:not(:has(form)) .issue-field-heading {
+    display: contents;
+  }
+  .issue-field-editor--text:not(:has(form)) .issue-field-heading button {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: start;
+  }
+  .issue-field-editor--text:not(:has(form)) > p {
+    grid-column: 1;
+  }
 }

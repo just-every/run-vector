@@ -1,3 +1,4 @@
+import { historicalCycleSchema } from '../../cycle-closure/schema';
 import { z } from 'zod'
 
 const healthSchema = z.enum([
@@ -44,6 +45,7 @@ export const projectPortfolioSchema = z.object({
 })
 
 export const projectDetailSchema = projectSummarySchema.extend({
+  cycleHistory: z.array(historicalCycleSchema),
   teams: z.array(personSchema),
   cycles: z.array(
     z.object({

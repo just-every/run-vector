@@ -1,3 +1,4 @@
+import { notificationRemovalStatements } from '../notifications/removal';
 import { anonymizeActivityStatements } from "./removal-history";
 import { pendingOperatorFiles } from "./removal-files";
 import { assertRemovalAllowed, removalId, SettingsError } from "./repository";
@@ -42,7 +43,7 @@ export async function removeOperator(
       .bind(target, id),
     db
       .prepare(
-        `DELETE FROM local_mail_outbox WHERE lower(recipient)=(SELECT lower(email) FROM operators WHERE id=?) AND ${receipt}`,
+        `DELETE FROM rer_mail_development_outbox WHERE lower(json_extract(message,'$.to[0]'))=(SELECT lower(email) FROM operators WHERE id=?) AND ${receipt}`,
       )
       .bind(target, id),
     db
@@ -106,7 +107,7 @@ export async function removeOperator(
       )
       .bind(target, id),
   ];
-  statements.push(...anonymizeActivityStatements(db, target, id));
+  statements.push(...anonymizeActivityStatements(db, target, id), ...notificationRemovalStatements(db,target,id));
   statements.push(
     // Non-null legacy comment/decision/file foreign keys retain an anonymous tombstone.
     db

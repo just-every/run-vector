@@ -1,3 +1,6 @@
+import { requireIssueProjection } from "../issues/projection-access";
+import { IssueAccessError } from '../issues/access'
+import seed from '../../../../seed.json'
 import { readRequestJson } from "../../app/input";
 import { z } from "zod";
 import type { Context } from "hono";
@@ -5,7 +8,7 @@ import type { AppEnvironment } from "../../app/bindings";
 import { getIssueDetail } from "../issues/service";
 import { IssueMutationError } from "../issues/errors";
 import { updateIssueRecord } from "./repository";
-const schema = z
+export const updateIssueSchema = z
   .object({
     expectedVersion: z.number().int().positive(),
     title: z.string().trim().min(1).max(500).optional(),
@@ -19,7 +22,7 @@ const schema = z
     dueDate: z.string().date().nullable().optional(),
     labelIds: z
       .array(z.string().length(26))
-      .max(20)
+      .max(seed.limits.labelsPerIssue)
       .refine(
         (ids) => new Set(ids).size === ids.length,
         "Label IDs must be unique.",
@@ -43,12 +46,12 @@ const schema = z
   })
   .strict()
   .refine((v) => Object.keys(v).length > 1, "At least one change is required.");
-export type UpdateIssueInput = z.infer<typeof schema>;
+export type UpdateIssueInput = z.infer<typeof updateIssueSchema>;
 export async function updateIssueRoute(c: Context<AppEnvironment>) {
   const identifier = c.req.param("identifier") ?? "";
   if (!/^[A-Z]{2,10}-[1-9][0-9]*$/.test(identifier))
     return c.json({ error: "invalid_request" }, 400);
-  const parsed = schema.safeParse(await readRequestJson(c.req.raw));
+  const parsed = updateIssueSchema.safeParse(await readRequestJson(c.req.raw));
   if (!parsed.success)
     return c.json(
       { error: "invalid_request", issues: parsed.error.issues },
@@ -62,10 +65,12 @@ export async function updateIssueRoute(c: Context<AppEnvironment>) {
       parsed.data,
     );
     const issue = await getIssueDetail(c.env.DB, identifier, new Date());
+    await requireIssueProjection(c,identifier);
     return outcome === "stale"
       ? c.json({ error: "stale_version", issue, version: issue?.version }, 409)
       : c.json(issue);
   } catch (error) {
+    if (error instanceof IssueAccessError) return c.json({error:error.code,message:error.message},error.status);
     if (!(error instanceof IssueMutationError)) throw error;
     return c.json(
       { error: error.code, message: error.message },

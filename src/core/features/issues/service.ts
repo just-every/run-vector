@@ -1,3 +1,7 @@
+import { duplicateRelations } from '../duplicates/repository';
+import { importedFrom } from '../data/import/issue-source';
+import { evidenceChanges,type EvidenceChange } from '../integrations/evidence-changes';
+import { parentRelations } from "../parents/projection";
 import { evidenceMetadata } from "../operator-intake/repository";
 import { categoryByStatus, projectHealthForIssue } from "../projects";
 import { loadWorkspaceSnapshot, type WorkspaceSnapshot } from "../streams";
@@ -22,6 +26,7 @@ export async function getIssueDetail(
     return {
       ...row,
       originKind: meta.origin_kind,
+      sourceId:meta.source_id,sourceRecordId:meta.source_record_id,sourceRevisionId:meta.source_revision_id,
       actor: meta.actor,
       link: meta.link,
       customerReports: parsePersistedJson(
@@ -30,6 +35,8 @@ export async function getIssueDetail(
       ) as Array<{ customer?: string; summary: string; link: string | null }>,
     };
   });
+  const previous=new Map<string,typeof detail.evidence[number]>();
+  for(const evidence of detail.evidence){if(evidence.sourceId&&evidence.sourceRecordId){const key=evidence.sourceId+':'+evidence.sourceRecordId;evidence.changes=evidenceChanges(evidence,previous.get(key));previous.set(key,evidence);}}
   const actors = new Map(
     (
       await binding
@@ -44,7 +51,7 @@ export async function getIssueDetail(
     ...row,
     actor: actors.get(row.id) ?? row.actor,
   }));
-  return detail;
+  return { ...detail, ...(await parentRelations(binding, detail.id)), ...(await duplicateRelations(binding, detail.id)), importedFrom: await importedFrom(binding, detail.id) };
 }
 
 export function buildIssueDetail(
@@ -96,11 +103,12 @@ export function buildIssueDetail(
     .sort(
       (left, right) =>
         left.observedAt.localeCompare(right.observedAt) ||
-        left.receivedAt.localeCompare(right.receivedAt),
+        left.receivedAt.localeCompare(right.receivedAt) || left.id.localeCompare(right.id),
     )
     .map((item) => ({
       id: item.id,
       sourceName: item.sourceName,
+      sourceId:null as string|null,sourceRecordId:null as string|null,sourceRevisionId:null as string|null,changes:[] as EvidenceChange[],
       originKind: "source" as "source" | "operator",
       actor: null as string | null,
       link: null as string | null,

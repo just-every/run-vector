@@ -18,7 +18,7 @@ satisfaction. Preserve the IDs and their assertions when editing requirements.
 
 INTAKE-009 and INTAKE-011 require signed source requests and source registration.
 The current native intake endpoint accepts an authenticated operator session;
-source signature validation and idempotency remain unimplemented requirements.
+registered source signature validation, native publication and durable idempotency are implemented; no live source is connected.
 `seed.json → deploy.publicPaths` declares no signal-source endpoint.
 
 BASE-ACCESS-004 requires server-side session and ownership checks for mutations.
@@ -33,21 +33,25 @@ CYCLE-004, NOTIFY-005 and INTAKE-006 each require the relevant scheduled action
 within five minutes. BASE-OPS-003 requires idempotency and BASE-OPS-004 requires
 visible failures; neither supplies a general scheduling tolerance.
 
-The implemented deferral-return path performs bounded work through the scheduled
-handler and native Current reads. Local checks exercise that behavior, while
-provider Cron delivery and five-minute capacity remain unverified. Cycle closure
-and notifications remain broader requirements. Retain each product timing bound
-until a deliberate requirement change supplies and verifies its replacement.
+The deferral-return path performs bounded work through the scheduled handler and
+native Current reads. Automatic cycle closure uses that every-minute scheduled
+handler and one atomic batch per ended open cycle; local checks exercise the first
+run one minute after the end and repeated/concurrent runs. Provider Cron delivery
+and five-minute capacity remain unverified. Due reminders use the same minute Cron with durable Inbox-only claims; delayed runs catch up at the first eligible local clock time. Hosted timing remains unproved. Retain each product timing bound until a deliberate requirement change
+supplies and verifies its replacement.
 
 ## Retention and source idempotency
 
 ISSUE-010 and INTAKE-002 require retaining source identities after issue deletion
-so a re-delivery returns 410 without recreating the issue. These are requirements
-for the future signed-source path, not a claim that it is already implemented.
+so a re-delivery returns 410 without recreating the issue. The native signed-source path retains these identities and returns 410 after native deletion.
 BASE-DATA-002 permits expiry only for sessions and rate-limit state; it supplies
 no expiry permission for source deduplication records or deletion tombstones.
 Any future retention policy must preserve the no-resurrection guarantee and
 explicitly reconcile deletion, anonymization and expiry with the baseline.
+Closed-cycle snapshots and membership/failure history retain issue identifiers,
+project-at-close IDs and frozen metrics, never issue titles or bodies. They
+survive later issue edits and deletion and remain in local archives. Retain the
+0031 history and immutable guards on compatible-source rollback.
 
 ## Measurement status
 
@@ -64,3 +68,53 @@ It does not establish that every extension point is implemented. AGENTS.md
 contains no numerical policy or slot budget; actual source and HANDOVER.md govern
 implementation claims. Keep a configurable value as a setting when that meets
 the requirement, and expose a policy when owners need to replace a decision.
+
+## Shared installation and source custody (9 October 2026)
+
+Use Node 22.20.0 and pnpm 10.12.4. The shared `node scripts/rer.mjs setup --owner-email EMAIL` paths preserve configured FIRST_OWNER bootstrap, private `.dev.vars` and saved origin/owner/data; `pnpm dev` hydrates that installation. `/__dev/outbox` uses Base mail with explicit exact loopback admission and ordinary Base native sessions. Confirmation GET is inert; POST signs in. Owner-account setup/deploy/health uses explicit account inputs and SENDGRID_API_KEY mapped to MAIL_API_KEY. The reviewed artifact controller has separate artifact:setup/deploy/health commands.
+
+Exact Base copy/schema/source checks, installer/settings/outbox/hosting tests, populated previous-head migrations and native 1440/390 journeys form local acceptance. CI slow startup and literal README clone/own-frozen-install proof retain only safe receipts and captures. These do not establish hosted acceptance. Preserve 0001–0021, apply 0022/0023, keep additive schema and terminal delivery/migration ledgers on compatible-source rollback, and validate isolated recovery with matching source and D1/R2 backups. See docs/BASE-ADOPTION.md. Local archives preserve native records and FILES bytes with destination access/effect review. Mapped imports and native integrations are described below; authenticated HTTP restore into a pristine bootstrap is locally proven with fresh native authority after commit. Hosted HTTPS acceptance remains separate.
+
+
+Wave B source preparation: see [managed source and recovery](docs/MANAGED-SOURCE.md). The generated private-source descriptor/workflow, Base delivery producer, signed native owner claim and owner-gated editor are source adoption; hosted installation/service acceptance, live accounts and public publishing remain owner work. Apply 0024 additively and retain permanent admission ledgers. Native/browser verification status is recorded in the current task evidence, not inferred from packaging.
+
+
+## Mapped imports and local archives
+
+Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the same reviewed native Base import-kit path in Settings and the terminal. See docs/MOVE-IN.md, docs/IMPORT-EVIDENCE.md and docs/ARCHIVES.md for limits, exact originals, command spelling and the authenticated HTTP restore admission and recovery requirements. Replacement claims remain empty; no owner export or hosted acceptance is asserted.
+
+Apply 0025/0026 additively after 0024. Retain original bytes, import journals/provenance, revisions, identifier reservations and authorization guards on compatible-source rollback. Archive export excludes credentials, delivery claims and import lease capabilities. Stop local runtimes before archive commands; restore into empty D1/FILES, configure fresh destination authority, and review access/effects. Never replay historical deliveries. Native cycle history is retained. Automatic closure and frozen snapshots are described below; due reminders and native deletion are described below.
+
+## Native integrations
+
+Settings manages scoped Base tokens with safe usage, signed sources, outbound destinations and GitHub PR webhook configuration. See docs/API.md and docs/INTEGRATIONS.md. Apply 0027/0028 additively after 0026; retain source/deletion and replay identities, attempts and terminal results on compatible-source rollback. Restore excludes credentials and transient claims, quarantines historical mail/webhook events, and requires fresh access/effect review and signing-key re-entry. Outbound delivery stays visibly unconfigured until a deployment-owned enforcing DNS/pinned-TLS RPC exists; there is no fetch fallback. Local native and loopback-TLS evidence does not establish hosted egress, a live source/account, stage installation or public publication.
+
+## Automatic cycle closure
+
+Migration 0031 adds cycle snapshots, identifier-only membership events and missing-next failure entries without rewriting prior tables or rows. The every-minute scheduled Worker closes ended open cycles in one conditional D1 batch each. It freezes scope, project-at-close, estimates, progress and timezone before `cycle.rollover.v1` moves Unstarted/Started work to the earliest same-team cycle beginning at or after the end. All other statuses uncommit. Missing-next closure uncommits unfinished work and records one visible failure in cycle detail; later cycle creation does not move it. Database guards freeze closed cycles and snapshots. A durable `cycle.closed` audit record names the feature and close time and survives issue deletion. Cycle detail and project history read frozen facts even after later issue edits or deletion.
+
+Retain all 0031 tables, indexes and guards on compatible-source rollback. Validate populated upgrades and matching source/D1/R2 recovery in isolated resources; never reverse applied SQL. Local scheduled/public-route tests establish transactional behavior, not provider Cron delivery or the hosted five-minute obligation. Executed local proof is recorded in the task report; browser and hosted evidence are separate acceptance steps.
+
+## Due reminders
+
+Settings persists a daily reminder time beside the IANA workspace timezone, defaulting to 09:00. Every-minute Cron creates an Inbox reminder for an active assignee's incomplete issue on its due day at the first observed local time at or after that setting; a late Cron still catches up that day. The first run on a later local day creates one overdue reminder. Completed, canceled, duplicate and unassigned work and removed or native-inactive recipients are excluded. A skipped DST clock minute runs at the next observed eligible time, and repeated minutes cannot duplicate reminders.
+
+The delivered ledger is keyed by issue, due date and internal due-today/overdue kind. Changing dates enables a new key; returning to an already delivered date, changing timezone or changing reminder time never resets one. Issue and due-reminder type mutes retain a separate suppression for that operator and occurrence, preventing their own backfill after unmuting while allowing another unmuted assignee to receive it. Each operator's suppression survives repeated reassignments; a delivered occurrence never repeats for any assignee. SQL rechecks observed settings, date, status, active recipient and mutes at commit. The receipt, Inbox row and identifier-only `due_reminder.delivered` feature/time audit commit atomically. The audit survives issue deletion; suppressed occurrences create no user-reaching audit. No activity, mail intent, development outbox or integration event is produced, including when transactional mail is enabled.
+
+Apply forward migration `0032_due_reminders.sql` after 0031. It adds the workspace clock, delivered reminder ledger and recipient suppression history, and expands only the mute-kind CHECK while retaining existing preferences. Keep the setting, delivered identities, per-operator suppressions, feature audits and all prior schema on compatible-source rollback. Archives classify every column and retain reminder history; restored effects stay held until reviewed. Validate a populated upgrade and isolated matching-source D1/R2 recovery before traffic changes. Local scheduled tests establish behavior and normal minute-tick timing; hosted Cron delivery and capacity remain separate acceptance.
+
+### Authenticated bootstrap restore
+
+Vector migration 0034 adds excluded destination bootstrap/admission ledgers, read-only eligibility views and triggers on excluded Base portability bookkeeping. The HTTP policy alone permits the eight pristine bootstrap tables to be replaced. Its final native D1 transaction checks current session/version and the exact bootstrap graph, removes only the restoring session and consumed non-invite token, and retains Base claim ledgers. An actual SQLite Durable Object serializes R2 work and retains uncertain custody across restart; D1 leases cannot fence an outstanding R2 write. Ordinary mutations remain atomically fenced, and raw settlement is limited to Base's owned-object ledger. Base copies, pin, generic authorization and excluded-dependent guards are unchanged. See docs/ARCHIVES.md for admission, stopped recovery and rollback limits.
+
+## Native issue deletion and duplicates
+
+Any active workspace operator may use the version-checked native cookie `DELETE /api/issues/:identifier` with `{expectedVersion, confirmed:true}`. The issue's Delete action asks for confirmation and retains stale intent for review. Bearer tokens do not admit this native command; `/api/v1` still has no deletion route. Canonical issues with duplicates refuse deletion and identify those duplicates. Duplicate decisions select a live canonical issue, atomically repoint incoming duplicates, preserve discussion/history and support undo to the latest nonterminal team status (otherwise default Backlog).
+
+One D1 transaction fences session, workspace, version and canonical relations; erases dependent discussion, links, evidence, relations, notification intents/attempts/captures and search; makes direct children roots; and transfers unresolved files to the existing durable detached removal ledger. There is one deletion service, replacing the former internal parent helper. Public deletion also uses Base's `eraseD1ImportTarget` with an erasure-specific full-state adapter: affected imported originals are withdrawn in full, surviving normalized issues remain, unrelated original files remain unchanged, and hashed erasure identities prevent import replay. Retained source identities return 410 for same/new revisions after deletion; conflicting reused content retains 409 precedence.
+
+`GET /api/issues/:identifier/deletion` requires current native workspace authority and returns only identifier, attachment counts and complete/pending/failed cleanup. DELETE returns 200 only after byte removal is confirmed, otherwise 202 with the receipt URL. Cleanup confirms DELETE followed by GET, HEAD and exact-key LIST absence, with writer-settlement checks. An absent object with an unsettled PUT remains pending; age alone never proves completion. The scheduled Worker recovers failed cleanup using durable keys. Restored effects remain held until reviewed.
+
+Webhook event bodies, delivery envelopes and retained receiver replay envelopes are redacted in that transaction; permanent erasure fences block stale enqueue, replay publication, claims and transport while preserving fingerprints, attempts and terminal outcomes. Native protocol outcomes discard provider response bodies. Operator-entered reconciliation evidence codes are replaced by a fixed deletion code, including decisions published after erasure. Local erasure cannot recall an already invoked external provider operation. Closed cycle history, identifier high-water reservations and minimal audit/source identity remain. Migration 0033 copies the source tables into expanded schemas, preserving every old value while adding `erased=0` and extending the primary keys to `(source_id,record_id,erased)` and `(source_id,record_id,revision_id,erased)`. The live/erased discriminator is part of uniqueness, so any valid raw identifier, including another identifier’s digest, remains independent. Only confirmed deletion hashes record/revision IDs; secret rotation and archive credential exclusion do not change those hashes. Applied SQL stays unchanged; retain duplicate relations, identifier-only receipts and webhook erasure fences on compatible-source rollback. No Base copy, applied migration or pin changes are involved. Local proof is recorded in the task evidence; hosted provider timing and external erasure are separate acceptance.
+
+The erasure adapter snapshots full rows for incoming and outgoing edges, direct children, discussion and search, notifications/events/mail deliveries/attempts/development captures, GitHub issue links, reminder/import revisions, live and detached file custody, source receipts, and local webhook envelopes/history. The final transaction compares that complete preimage and an explicit postcondition. Captured dependent keys remain selected after their parent rows disappear, so orphaned copies cannot satisfy absence. Incoming child creation, Inbox changes and public webhook reconciliation abort prepared deletion with 409; unrelated issue work remains admissible. Request-only snapshots are never persisted or logged. The postcondition permits only the identifier-only deletion receipt and audit append, detached file cleanup custody, anonymous source hashes, payload-free webhook terminal ledgers, and children made roots with their new activity/version. Identifier-only frozen cycle history and audits, shared independent PR records, and allocation high-water marks remain unchanged.

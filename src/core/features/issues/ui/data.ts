@@ -1,9 +1,17 @@
 import { z } from "zod";
 
 const personSchema = z.object({ id: z.string(), name: z.string() });
+const issueBriefSchema = z.object({
+  id: z.string(),
+  identifier: z.string(),
+  title: z.string(),
+  status: z.object({ id: z.string(), name: z.string(), category: z.string() }),
+});
 const evidenceSchema = z.object({
   id: z.string(),
   sourceName: z.string(),
+  sourceId:z.string().nullable(),sourceRecordId:z.string().nullable(),sourceRevisionId:z.string().nullable(),
+  changes:z.array(z.object({field:z.string(),previous:z.unknown(),current:z.unknown()})),
   originKind: z.enum(["source", "operator"]),
   actor: z.string().nullable(),
   link: z.string().nullable(),
@@ -61,6 +69,11 @@ export const issueDetailSchema = z.object({
       title: z.string(),
     }),
   ),
+  parent: issueBriefSchema.nullable(),
+  children: z.array(issueBriefSchema),
+  canonical: z.object({identifier:z.string(),title:z.string()}).nullable(),
+  duplicates: z.array(z.object({identifier:z.string(),title:z.string()})),
+  importedFrom: z.object({source:z.string(),sourceId:z.string(),runId:z.string(),unfinished:z.boolean()}).nullable().optional(),
   evidence: z.array(evidenceSchema),
   decisions: z.array(
     z.object({

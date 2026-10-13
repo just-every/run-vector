@@ -1,0 +1,140 @@
+import { useRef, useState, type FormEvent } from "react";
+import type { Administration } from "../../administration/schema";
+import { LabelChip } from "../../../app/ui/label-chip";
+import { useAdministrationAction } from "./administration-action";
+import { AdministrationFeedback } from "./administration-feedback";
+export function LabelsPanel({
+  labels,
+  onChanged,
+}: {
+  labels: Administration["labels"];
+  onChanged: () => void;
+}) {
+  const action = useAdministrationAction(onChanged);
+  async function create(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const fields = new FormData(form);
+    if (
+      await action.run("/api/settings/labels", "POST", {
+        name: fields.get("name"),
+        color: fields.get("color"),
+      })
+    )
+      form.reset();
+  }
+  return (
+    <section
+      id="labels"
+      className="administration-panel"
+      aria-labelledby="labels-heading"
+    >
+      <h2 id="labels-heading">Labels</h2>
+      <form aria-label="Create label" onSubmit={create}>
+        <fieldset disabled={action.pending}>
+          <label>
+            Label name
+            <input name="name" required maxLength={120} />
+          </label>
+          <label>
+            Label colour
+            <input name="color" type="color" defaultValue="#8fa3f0" />
+          </label>
+          <button>Create label</button>
+        </fieldset>
+      </form>
+      <AdministrationFeedback action={action} />
+      {labels.map((label) => (
+        <LabelEditor key={label.id} label={label} onChanged={onChanged} />
+      ))}
+    </section>
+  );
+}
+function LabelEditor({
+  label,
+  onChanged,
+}: {
+  label: Administration["labels"][number];
+  onChanged: () => void;
+}) {
+  const action = useAdministrationAction(onChanged);
+  const [color, setColor] = useState(label.color);
+  const [confirm, setConfirm] = useState(false);
+  const deleteTrigger = useRef<HTMLButtonElement>(null);
+  async function save(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    await action.run(`/api/settings/labels/${label.id}`, "PATCH", {
+      name: new FormData(event.currentTarget).get("name"),
+      color,
+    });
+  }
+  return (
+    <details>
+      <summary>
+        <LabelChip name={label.name} color={label.color} />
+      </summary>
+      <form aria-label={`Edit label ${label.name}`} onSubmit={save}>
+        <fieldset disabled={action.pending}>
+          <label>
+            Label name
+            <input
+              name="name"
+              required
+              maxLength={120}
+              defaultValue={label.name}
+            />
+          </label>
+          <label>
+            Label colour
+            <input
+              type="color"
+              value={color}
+              onChange={(event) => setColor(event.target.value)}
+            />
+          </label>
+          <LabelChip name={label.name} color={color} />
+          <button>Save label</button>
+          <button
+            ref={deleteTrigger}
+            type="button"
+            onClick={() => setConfirm(true)}
+          >
+            Delete label
+          </button>
+        </fieldset>
+      </form>
+      {confirm && (
+        <div role="group" aria-label="Confirm label deletion">
+          <p id={`delete-label-${label.id}`}>
+            Delete {label.name}? It will be removed from issues and saved-view
+            filters.
+          </p>
+          <div className="admin-actions">
+            <button
+              disabled={action.pending}
+              type="button"
+              autoFocus
+              aria-describedby={`delete-label-${label.id}`}
+              onClick={() =>
+                void action.run(`/api/settings/labels/${label.id}`, "DELETE")
+              }
+            >
+              Confirm delete label
+            </button>
+            <button
+              disabled={action.pending}
+              type="button"
+              onClick={() => {
+                setConfirm(false);
+                deleteTrigger.current?.focus();
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+      <AdministrationFeedback action={action} />
+    </details>
+  );
+}

@@ -1,3 +1,4 @@
+import { reminderTimeSchema } from "./schema";
 import { hasPendingOperatorFiles } from "./removal-files";
 import { createUlid } from "../../shared/ids";
 import { timezoneSchema } from "../bootstrap/config";
@@ -33,7 +34,7 @@ export async function readSettings(db: D1Database, actor: string) {
   const access = await settingsActor(db, actor);
   const workspace = await db
     .prepare(
-      "SELECT w.id,w.name,w.timezone,i.setup_operator_id AS setupOperatorId FROM workspace_settings w LEFT JOIN workspace_installation i ON i.workspace_id=w.id WHERE w.id=?",
+      "SELECT w.id,w.name,w.timezone,w.reminder_time AS reminderTime,i.setup_operator_id AS setupOperatorId FROM workspace_settings w LEFT JOIN workspace_installation i ON i.workspace_id=w.id WHERE w.id=?",
     )
     .bind(access.workspace_id)
     .first();
@@ -48,10 +49,11 @@ export async function readSettings(db: D1Database, actor: string) {
   return { workspace, operators: operators.results, operatorId: actor };
 }
 
-export async function updateTimezone(
+export async function updateWorkspaceTime(
   db: D1Database,
   actor: string,
   timezone: string,
+  reminderTime?: string,
 ) {
   if (!timezoneSchema.safeParse(timezone).success)
     throw new SettingsError(
@@ -59,15 +61,26 @@ export async function updateTimezone(
       "Choose a valid IANA timezone.",
       400,
     );
+  if (
+    reminderTime !== undefined &&
+    !reminderTimeSchema.safeParse(reminderTime).success
+  )
+    throw new SettingsError(
+      "invalid_reminder_time",
+      "Choose a 24-hour reminder time.",
+      400,
+    );
   const at = new Date().toISOString();
   const result = await db
     .prepare(
-      `UPDATE workspace_settings SET timezone=?,updated_at=?
-    WHERE id=(SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL)`,
+      `UPDATE workspace_settings SET timezone=?,reminder_time=COALESCE(?,reminder_time),updated_at=?
+    WHERE id=(SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL)
+    RETURNING id`,
     )
-    .bind(timezone, at, actor)
-    .run();
-  if (result.meta.changes !== 1)
+    .bind(timezone, reminderTime ?? null, at, actor)
+    .run<{ id: string }>();
+  // Count direct workspace rows, excluding writes made by revision triggers.
+  if (result.results.length !== 1)
     throw new SettingsError(
       "unauthenticated",
       "Sign in again to manage settings.",

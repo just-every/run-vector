@@ -1,0 +1,32 @@
+/* 2. Current: one tall card whose four sections are tagged on ink leaders, and the key that repeats the tags in the copy. */
+.vx-key-list { display: flex; flex-direction: column; gap: 16px; margin: clamp(26px, 2.4vw, 34px) 0 0; padding: 0; list-style: none; }
+.vx-key-list li { display: flex; align-items: flex-start; gap: 16px; }
+.vx-key-list .vx-tag { margin-top: 2px; }
+.vx-key-list p { margin: 0; color: var(--vx-body); font-size: clamp(17px, 1.3vw, 19px); line-height: 1.45; text-wrap: pretty; }
+.vx-key-list strong { color: var(--vx-ink); font-weight: 620; }
+
+.vx-cur { --vx-tags: 82px; width: calc(420px + var(--vx-tags)); max-width: 100%; padding-right: var(--vx-tags); box-sizing: border-box; }
+.vx-cur-card { --vx-pad: 18px; width: 420px; max-width: 100%; padding-bottom: 14px; }
+.vx-cur-card .vx-card-head { margin-bottom: 0; }
+.vx-cur-sec { margin: 0 calc(-1 * var(--vx-pad)); padding: 0 var(--vx-pad) 8px; }
+.vx-cur-sec + .vx-cur-sec { border-top: 1px solid rgba(35, 38, 44, 0.28); }
+.vx-cur-title { position: relative; display: flex; align-items: center; height: 40px; margin: 0; font-size: 15.5px; font-weight: 620; letter-spacing: 0; }
+.vx-cur-mark { position: absolute; left: calc(100% + var(--vx-pad) + 0.7px); top: 50%; display: flex; align-items: center; transform: translateY(-50%); }
+.vx-cur-mark .vx-leader { width: 47px; }
+.vx-cur-empty { margin: 0; padding: 2px 0 8px; color: var(--vx-muted); font-size: 15.5px; }
+.vx-cur-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; min-height: 46px; }
+.vx-cur-row .vx-id { min-width: 5.2em; }
+.vx-cur-row .vx-reason { align-self: center; }
+
+@media (max-width: 900px) {
+  .vx-cur { --vx-tags: 44px; width: 420px; }
+  .vx-cur-card { width: 100%; }
+  .vx-cur-mark .vx-leader { width: 12px; }
+  .vx-cur .vx-tag { width: 30px; height: 22px; }
+  .vx-cur .vx-tag-n { inset: 0 0 0 7px; font-size: 14px; }
+}
+@media (max-width: 460px) {
+  .vx-cur-row { gap: 6px 10px; }
+  .vx-cur-row .vx-id { min-width: 4.6em; }
+  .vx-cur-row .vx-reason--context { margin-bottom: 6px; }
+}

@@ -1,23 +1,59 @@
-import { Link } from '@tanstack/react-router'
-import { useState } from 'react'
-import { useApiResource } from '../../../app/api-client'
-import { projectPortfolioSchema } from './data'
+import { useRef, useState } from "react";
+import { useApiResource } from "../../../app/api-client";
+import type { ListPreferenceControlsProps } from "../../views/ui/list-preference-controls";
+import { useListPreferences } from "../../views/ui/use-list-preferences";
+import { projectPortfolioSchema } from "./data";
 import {
   defaultPortfolioFilters,
   filterProjects,
   portfolioMetrics,
-} from './helpers'
-import { ProjectList } from './project-list'
+} from "./helpers";
+import { administrationSchema } from "../../administration/schema";
+import { ProjectCreate } from "./project-administration";
+import { ProjectList } from "./project-list";
 
 export function ProjectsWorkspace() {
-  const portfolio = useApiResource('/api/projects', projectPortfolioSchema)
-  const [filters, setFilters] = useState(defaultPortfolioFilters)
+  const [creating, setCreating] = useState(false);
+  const createTrigger = useRef<HTMLButtonElement>(null);
+  const closeCreate = () => {
+    setCreating(false);
+    createTrigger.current?.focus();
+  };
+  const preferences = useListPreferences("projects", {
+    filters: defaultPortfolioFilters,
+    sort: "newest",
+    grouping: "none",
+  });
+  const filters = preferences.filters;
+  const includeArchived = filters.includeArchived;
+  const preferenceControls: ListPreferenceControlsProps = {
+    ready: preferences.ready,
+    loading: preferences.loading,
+    saving: preferences.saving,
+    loadError: preferences.loadError,
+    saveError: preferences.saveError,
+    onRetryLoad: preferences.retryLoad,
+    onRetrySave: preferences.retrySave,
+    onReset: preferences.reset,
+  };
+  const administration = useApiResource(
+    "/api/settings/administration",
+    administrationSchema,
+  );
+  const portfolio = useApiResource(
+    `/api/projects${includeArchived ? "?includeArchived=true" : ""}`,
+    projectPortfolioSchema,
+  );
+  const changed = () => {
+    administration.reload();
+    portfolio.reload();
+  };
   if (portfolio.loading && portfolio.data === null)
     return (
       <main className="projects-state" aria-live="polite">
         Loading Projects…
       </main>
-    )
+    );
   if (portfolio.error || portfolio.data === null)
     return (
       <main className="projects-state projects-state--error" role="alert">
@@ -27,12 +63,32 @@ export function ProjectsWorkspace() {
           Try again
         </button>
       </main>
-    )
-  const projects = filterProjects(portfolio.data.projects, filters)
-  const metrics = portfolioMetrics(projects)
+    );
+  if (
+    administration.loading &&
+    administration.data === null &&
+    !administration.error
+  )
+    return (
+      <main className="projects-state" aria-live="polite">
+        Loading Projects…
+      </main>
+    );
+  if (administration.error || administration.data === null)
+    return (
+      <main className="projects-state projects-state--error" role="alert">
+        <strong>Unable to load project information.</strong>
+        <span>{administration.error?.message}</span>
+        <button type="button" onClick={administration.reload}>
+          Retry administration
+        </button>
+      </main>
+    );
+  const projects = filterProjects(portfolio.data.projects, filters);
+  const metrics = portfolioMetrics(projects);
   const lifecycleOptions = [
     ...new Set(portfolio.data.projects.map((project) => project.lifecycle)),
-  ].sort()
+  ].sort();
   return (
     <main className="projects-workspace" aria-labelledby="projects-title">
       <header className="projects-header">
@@ -44,10 +100,46 @@ export function ProjectsWorkspace() {
             and cycle capacity.
           </p>
         </div>
-        <Link className="projects-new-issue" to="/app/new-issue">
-          New issue
-        </Link>
+        <button
+          ref={createTrigger}
+          className="projects-new-project"
+          type="button"
+          aria-expanded={creating}
+          aria-controls="project-create-panel"
+          onClick={() => setCreating(true)}
+        >
+          New project
+        </button>
       </header>
+      {creating && (
+        <section
+          id="project-create-panel"
+          className="administration-panel project-detail__section"
+          aria-label="Project administration"
+        >
+          <h2>Create project</h2>
+          <ProjectCreate
+            operators={administration.data.operators}
+            onChanged={() => {
+              changed();
+              closeCreate();
+            }}
+            onCancel={closeCreate}
+          />
+        </section>
+      )}
+      <label className="projects-archived-filter">
+        <input
+          type="checkbox"
+          checked={includeArchived}
+          onChange={(event) =>
+            preferences.update({
+              filters: { ...filters, includeArchived: event.target.checked },
+            })
+          }
+        />{" "}
+        Include archived projects
+      </label>
       <section className="project-metrics" aria-label="Portfolio metrics">
         <Metric label="Projects" value={metrics.total} />
         <Metric label="Blocked" value={metrics.blocked} tone="blocked" />
@@ -57,12 +149,14 @@ export function ProjectsWorkspace() {
       </section>
       <ProjectList
         projects={projects}
+        hasProjects={administration.data.projects.length > 0}
         filters={filters}
         lifecycleOptions={lifecycleOptions}
-        onFiltersChange={setFilters}
+        onFiltersChange={(next) => preferences.update({ filters: next })}
+        preferenceControls={preferenceControls}
       />
     </main>
-  )
+  );
 }
 
 function Metric({
@@ -70,14 +164,14 @@ function Metric({
   value,
   tone,
 }: {
-  label: string
-  value: number
-  tone?: string
+  label: string;
+  value: number;
+  tone?: string;
 }) {
   return (
-    <div className={`project-metric${tone ? ` project-metric--${tone}` : ''}`}>
+    <div className={`project-metric${tone ? ` project-metric--${tone}` : ""}`}>
       <span>{label}</span>
       <strong>{value}</strong>
     </div>
-  )
+  );
 }

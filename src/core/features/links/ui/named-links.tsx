@@ -74,28 +74,31 @@ export function NamedLinks({
       >
         {commentId ? "Comment links" : "Links"}
       </h3>
-      {links?.map((link) => (
-        <div className="file-entry" key={link.id}>
-          <a
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            referrerPolicy="no-referrer"
-          >
-            {link.name}
-          </a>
-          <small>{link.actor}</small>
-          <button
-            type="button"
-            disabled={busy}
-            onClick={() => void mutate("DELETE", link.id)}
-          >
-            Remove link
-          </button>
-        </div>
-      ))}
       <details>
-        <summary>Attach link</summary>
+        <summary>
+          {commentId ? "Attach link to this comment" : "Attach link"}
+          {links.length ? ` · ${links.length} links` : ""}
+        </summary>
+        {links?.map((link) => (
+          <div className="file-entry" key={link.id}>
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              referrerPolicy="no-referrer"
+            >
+              {link.name}
+            </a>
+            <small>{link.actor}</small>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void mutate("DELETE", link.id)}
+            >
+              Remove link
+            </button>
+          </div>
+        ))}
         <form
           className="issue-mutation-form"
           onSubmit={(event) => {

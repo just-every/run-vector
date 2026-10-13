@@ -3,16 +3,18 @@ import type { ProjectHealthData, ProjectSummaryData } from './data'
 export type PortfolioFilters = {
   lifecycle: string
   health: 'all' | Exclude<ProjectHealthData, 'none'>
+  includeArchived: boolean
 }
 
 export const defaultPortfolioFilters: PortfolioFilters = {
   lifecycle: 'all',
   health: 'all',
+  includeArchived: false,
 }
 
 export function filterProjects(
   projects: ProjectSummaryData[],
-  filters: PortfolioFilters,
+  filters: Pick<PortfolioFilters, 'lifecycle' | 'health'>,
 ) {
   return projects.filter(
     (project) =>

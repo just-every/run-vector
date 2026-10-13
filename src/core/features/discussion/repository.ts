@@ -1,9 +1,24 @@
-import { mutationDatabase } from "../auth/mutation-database";
+import { commentStatements, mentionStatements, finalizeEvent } from '../notifications/events';
+import { IssueAccessError, requireIssueAccess } from '../issues/access';
+import { MutationAccessError, mutationDatabase } from "../auth/mutation-database";
 import { createUlid } from "../../shared/ids";
 import {
   commentLinkErasureStatements,
   listNamedLinks,
 } from "../links/repository";
+
+async function requireDiscussionMutationAccess(db: D1Database, identifier: string, actor: string) {
+  try {
+    await requireIssueAccess(db, identifier, actor);
+  } catch (error) {
+    // A preflight removal and a transaction-fence denial share the same public
+    // mutation contract. An active actor outside the workspace remains a 404.
+    if (error instanceof IssueAccessError && error.code === "unauthenticated")
+      throw new MutationAccessError();
+    throw error;
+  }
+}
+
 export async function findIssue(db: D1Database, identifier: string) {
   return db
     .prepare("SELECT id,identifier FROM issues WHERE identifier=?")
@@ -14,7 +29,7 @@ export async function discussion(db: D1Database, issueId: string) {
   const [comments, files, links] = await Promise.all([
     db
       .prepare(
-        "SELECT c.id,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,o.name AS actor FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id WHERE c.issue_id=? ORDER BY c.created_at,c.id",
+        "SELECT c.id,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id WHERE c.issue_id=? ORDER BY c.created_at,c.id",
       )
       .bind(issueId)
       .all(),
@@ -35,13 +50,14 @@ function activity(
   issueId: string,
   id: string,
   now: string,
+  activityId = createUlid(new Date(now)),
 ) {
   return db
     .prepare(
       "INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) VALUES(?,?,?,?,NULL,?,?,?)",
     )
     .bind(
-      createUlid(new Date(now)),
+      activityId,
       issueId,
       actor,
       kind,
@@ -59,13 +75,20 @@ export async function addComment(
   db = mutationDatabase(db, actor);
   const id = createUlid(new Date()),
     now = new Date().toISOString();
+  const activityId = createUlid(new Date());
+  const event = { id: activityId, issueId, actor, at: now };
+  const issue = await db.prepare('SELECT identifier FROM issues WHERE id=?').bind(issueId).first<{identifier:string}>();
+  if (!issue) throw new Error('Issue is unavailable.');
+  await requireDiscussionMutationAccess(db,issue.identifier,actor);
   await db.batch([
+    db.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('discussion access denied') END`).bind(issueId,actor),
     db
       .prepare(
         "INSERT INTO issue_comments(id,issue_id,actor_operator_id,body,created_at,updated_at) VALUES(?,?,?,?,?,?)",
       )
       .bind(id, issueId, actor, body, now, now),
-    activity(db, actor, "comment.created", issueId, id, now),
+    activity(db, actor, "comment.created", issueId, id, now, activityId),
+    ...commentStatements(db,event), ...mentionStatements(db,event,body,id), ...finalizeEvent(db,event),
   ]);
   return id;
 }
@@ -77,7 +100,10 @@ export async function changeComment(
   body: string | null,
 ) {
   db = mutationDatabase(db, actor);
+  await requireDiscussionMutationAccess(db,issue.identifier,actor);
   const now = new Date().toISOString();
+  const activityId = createUlid(new Date());
+  const event = { id: activityId, issueId: issue.id, actor, at: now };
   const row = await db
     .prepare(
       "SELECT id FROM issue_comments WHERE id=? AND issue_id=? AND deleted_at IS NULL",
@@ -89,21 +115,22 @@ export async function changeComment(
     body === null
       ? db
           .prepare(
-            "UPDATE issue_comments SET body=NULL,deleted_at=?,updated_at=? WHERE id=? AND issue_id=? AND deleted_at IS NULL",
+            "UPDATE issue_comments SET body=NULL,deleted_at=?,updated_at=? WHERE id=? AND issue_id=? AND deleted_at IS NULL RETURNING id",
           )
           .bind(now, now, id, issue.id)
       : db
           .prepare(
-            "UPDATE issue_comments SET body=?,edited_at=?,updated_at=? WHERE id=? AND issue_id=? AND deleted_at IS NULL",
+            "UPDATE issue_comments SET body=?,edited_at=?,updated_at=? WHERE id=? AND issue_id=? AND deleted_at IS NULL RETURNING id",
           )
           .bind(body, now, now, id, issue.id);
-  await db.batch([
+  const statements = [
+    db.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('discussion access denied') END`).bind(issue.id,actor),
     db
       .prepare(
         `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at) SELECT ?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM issue_comments WHERE id=? AND issue_id=? AND deleted_at IS NULL)`,
       )
       .bind(
-        createUlid(new Date()),
+        activityId,
         issue.id,
         actor,
         body === null ? "comment.deleted" : "comment.edited",
@@ -131,9 +158,16 @@ export async function changeComment(
     ...(body === null
       ? commentLinkErasureStatements(db, issue, id, actor, now)
       : []),
-    mutation,
+    ...mentionStatements(db,event,body,id),
+  ];
+  const mutationIndex = statements.length;
+  const receipts = await db.batch<{ id: string }>([
+    ...statements, mutation, ...finalizeEvent(db,event),
   ]);
-  return true;
+  // Index triggers add writes to D1 meta.changes; only RETURNING identifies
+  // whether this live comment survived the transaction guard.
+  const rows = receipts[mutationIndex].results;
+  return rows.length === 1 && rows[0].id === id;
 }
 export async function addFile(
   db: D1Database,
@@ -149,11 +183,12 @@ export async function addFile(
   },
 ) {
   db = mutationDatabase(db, actor);
+  await requireDiscussionMutationAccess(db, issue.identifier, actor);
   const now = new Date().toISOString();
   const result = await db
     .prepare(
       `INSERT INTO issue_files(id,issue_id,actor_operator_id,name,content_type,bytes,blob_key,state,writer_settled,content_sha256,created_at,updated_at)
- SELECT ?,?,?,?,?,?,?,'pending',0,?,?,? WHERE COALESCE((SELECT SUM(bytes) FROM issue_files WHERE removal_confirmed_at IS NULL),0)+?<=10737418240`,
+ SELECT ?,?,?,?,?,?,?,'pending',0,?,?,? WHERE EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) AND COALESCE((SELECT SUM(bytes) FROM issue_files WHERE removal_confirmed_at IS NULL),0)+COALESCE((SELECT SUM(bytes) FROM detached_file_removals WHERE removal_confirmed_at IS NULL),0)+?<=10737418240`,
     )
     .bind(
       file.id,
@@ -166,9 +201,13 @@ export async function addFile(
       file.sha256,
       now,
       now,
+      issue.id,
+      actor,
       file.bytes,
     )
     .run();
+  if (result.meta.changes !== 1)
+    await requireDiscussionMutationAccess(db, issue.identifier, actor);
   return result.meta.changes === 1;
 }
 export async function finalizeFile(
@@ -198,6 +237,7 @@ export async function finalizeFile(
       )
       .bind(now, id),
     db.prepare("UPDATE issue_files SET writer_settled=1 WHERE id=?").bind(id),
+    db.prepare("UPDATE detached_file_removals SET writer_settled=1 WHERE id=? AND issue_id=?").bind(id, issueId),
   ]);
   return result[1].meta.changes === 1;
 }
@@ -206,12 +246,13 @@ export async function failFile(
   id: string,
   writerSettled = false,
 ) {
-  await db
+  await db.batch([db
     .prepare(
       "UPDATE issue_files SET state='failed',writer_settled=?,updated_at=? WHERE id=? AND state='pending' AND deleted_at IS NULL",
     )
-    .bind(writerSettled ? 1 : 0, new Date().toISOString(), id)
-    .run();
+    .bind(writerSettled ? 1 : 0, new Date().toISOString(), id),
+    db.prepare("UPDATE detached_file_removals SET writer_settled=MAX(writer_settled,?),updated_at=? WHERE id=? AND removal_confirmed_at IS NULL").bind(writerSettled ? 1 : 0, new Date().toISOString(), id),
+  ]);
 }
 export async function findFile(db: D1Database, issueId: string, id: string) {
   return db

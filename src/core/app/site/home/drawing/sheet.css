@@ -1,0 +1,21 @@
+/* The engineering sheet (sheet.tsx): square, double-bordered, with zone ticks, a square hatched shadow and a title block. */
+.vx-sheet { position: relative; isolation: isolate; padding: 8px; border: 1.4px solid var(--vx-outline); border-radius: 0; color: var(--vx-ink); text-align: left; }
+.vx-sheet::before { content: ""; position: absolute; z-index: -1; inset: 7px -7px -7px 7px; background: repeating-linear-gradient(-45deg, var(--vx-hatch) 0 1px, transparent 1px 4.5px); }
+.vx-sheet::after { content: ""; position: absolute; z-index: -1; inset: 0; background: var(--vx-card); }
+.vx-sheet-frame { position: relative; border: 1px solid var(--vx-outline); padding: 36px 36px 0; }
+
+.vx-tick { position: absolute; background: var(--vx-outline); }
+.vx-tick--top, .vx-tick--bottom { left: calc(var(--p) - 0.5px); width: 1px; height: 8px; }
+.vx-tick--top { top: 0; }
+.vx-tick--bottom { bottom: 0; }
+.vx-tick--left, .vx-tick--right { top: calc(var(--p) - 0.5px); height: 1px; width: 8px; }
+.vx-tick--left { left: 0; }
+.vx-tick--right { right: 0; }
+
+.vx-titleblock { display: grid; grid-template-columns: minmax(0, 1fr) auto; width: min(100%, 440px); margin: 28px -36px 0 auto; border-top: 1.4px solid var(--vx-outline); border-left: 1.4px solid var(--vx-outline); }
+.vx-titleblock-cell { margin: 0; padding: 10px 14px; font-size: 15px; line-height: 1.4; }
+.vx-titleblock-cell:nth-child(even) { border-left: 1px solid var(--vx-outline); }
+.vx-titleblock-cell:nth-child(n + 3) { border-top: 1px solid var(--vx-outline); }
+.vx-titleblock-cell--name { font-size: 20px; font-weight: 620; letter-spacing: -0.01em; }
+.vx-titleblock-cell--file, .vx-titleblock-cell--path { font-family: var(--vx-mono); }
+.vx-titleblock-cell--file { font-size: 15.5px; }

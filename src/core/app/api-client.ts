@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
+import { privateReads } from "./read-lifecycle.ts";
 
 export class ApiError extends Error {
   readonly status: number;
@@ -16,10 +17,17 @@ export async function fetchJson<S extends z.ZodType>(
   schema: S,
   init?: RequestInit,
 ): Promise<z.output<S>> {
-  const response = await fetch(url, init);
-  const body: unknown = await response.json().catch(() => null);
-  if (!response.ok) throw new ApiError(response.status, body);
-  return schema.parse(body);
+  const load = async () => {
+    const response = await fetch(url, init);
+    const body: unknown = await response.json().catch(() => null);
+    if(response.status===401&&typeof window!=='undefined')window.dispatchEvent(new Event('vector:auth-lost'));
+    if (!response.ok) throw new ApiError(response.status, body);
+    return schema.parse(body);
+  };
+  return (init?.method ?? "GET").toUpperCase() === "GET" &&
+    new URL(url, "http://vector.invalid").pathname.startsWith("/api/")
+    ? privateReads.read(url, load)
+    : load();
 }
 
 export type ResourceState<T> = {
@@ -58,17 +66,37 @@ export function createApiResourceController<T>(
     active = true,
     sequence = 0;
   let pending: AbortController | null = null;
+  const reads = new Set<Promise<void>>();
+  let mutationPending = false;
+  let mutationRefresh: Promise<void> | null = null;
+  let cancelResume: (() => void) | null = null;
   const write = (next: ResourceState<T>) => {
     current = next;
     publish(next);
   };
-  return {
-    async refresh({ skipIfPending = false }: { skipIfPending?: boolean } = {}) {
-      if (!active || (skipIfPending && pending !== null)) return;
+  const resource = {
+    async refresh({
+      skipIfPending = false,
+    }: { skipIfPending?: boolean } = {}): Promise<void> {
+      if (!active) return;
+      if (privateReads.paused) {
+        // A newly mounted non-polling resource also needs its skipped read
+        // after a failed sign-out. Keep one retry and release it on disposal.
+        cancelResume ??= privateReads.onResume(() => {
+          cancelResume?.();
+          cancelResume = null;
+          void resource.refresh({ skipIfPending: true });
+        });
+        return;
+      }
+      if (skipIfPending && pending !== null) return;
       const request = ++sequence;
       pending?.abort();
       const controller = new AbortController();
       pending = controller;
+      let settled!: () => void;
+      const finished = new Promise<void>((resolve) => { settled = resolve; });
+      reads.add(finished);
       // Keep the last failure visible until a successful receipt. A retry may
       // still fail, and starting it must not briefly restore a healthy UI.
       write({ ...current, loading: current.data === null });
@@ -87,16 +115,47 @@ export function createApiResourceController<T>(
           });
         }
       } finally {
-        if (request === sequence) pending = null;
+        if (pending === controller) pending = null;
+        reads.delete(finished);
+        settled();
       }
+    },
+    refreshAfterMutation(): Promise<void> {
+      if (!active) return Promise.resolve();
+      // A committed update invalidates an older receipt, but does not cancel
+      // its admitted read. Coalesce commits while that read drains, then read
+      // again; a commit during the new read queues one more current snapshot.
+      ++sequence;
+      mutationPending = true;
+      mutationRefresh ??= (async () => {
+        try {
+          while (active && mutationPending) {
+            // An explicit reload may admit another read while this snapshot
+            // drains. Recheck admission before taking over the next refresh.
+            do { await Promise.all([...reads]); } while (active && reads.size);
+            if (!active) break;
+            mutationPending = false;
+            await resource.refresh();
+          }
+        } finally {
+          // Release ownership in the same turn as the final pending check.
+          // A later commit must start a new drain, never join a settled one.
+          mutationRefresh = null;
+        }
+      })();
+      return mutationRefresh;
     },
     dispose() {
       active = false;
+      mutationPending = false;
       ++sequence;
+      cancelResume?.();
+      cancelResume = null;
       pending?.abort();
       pending = null;
     },
   };
+  return resource;
 }
 
 export function useApiResource<S extends z.ZodType>(
@@ -113,8 +172,9 @@ export function useApiResource<S extends z.ZodType>(
   });
   const latestSnapshot = useRef(snapshot);
   latestSnapshot.current = snapshot;
-  const [revision, setRevision] = useState(0);
-  const reload = useCallback(() => setRevision((current) => current + 1), []);
+  const currentController = useRef<ReturnType<typeof createApiResourceController<z.output<S>>> | null>(null);
+  const reload = useCallback(() => { void currentController.current?.refresh(); }, []);
+  const refreshAfterMutation = useCallback(() => { void currentController.current?.refreshAfterMutation(); }, []);
 
   useEffect(() => {
     const controller = createApiResourceController(
@@ -126,10 +186,15 @@ export function useApiResource<S extends z.ZodType>(
       },
       resourceStateForIdentity(latestSnapshot.current, url, schema),
     );
+    currentController.current = controller;
+    const dispose = () => {
+      if (currentController.current === controller) currentController.current = null;
+      controller.dispose();
+    };
     // Let an immediately discarded mount dispose before starting network work.
-    // The controller still aborts real in-flight reads on navigation/refresh.
+    // Explicit reload and identity disposal still abort superseded reads.
     queueMicrotask(() => void controller.refresh());
-    if (!pollMs) return () => controller.dispose();
+    if (!pollMs) return dispose;
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible")
         void controller.refresh({ skipIfPending: true });
@@ -140,13 +205,13 @@ export function useApiResource<S extends z.ZodType>(
     };
     document.addEventListener("visibilitychange", visible);
     return () => {
-      controller.dispose();
+      dispose();
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", visible);
     };
-  }, [url, schema, revision, pollMs]);
+  }, [url, schema, pollMs]);
 
-  return { ...resourceStateForIdentity(snapshot, url, schema), reload };
+  return { ...resourceStateForIdentity(snapshot, url, schema), reload, refreshAfterMutation };
 }
 
 function messageForBody(body: unknown, status: number) {

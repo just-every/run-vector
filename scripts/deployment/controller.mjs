@@ -8,15 +8,16 @@ import { verifyHealth } from '../../vendor/base/deploy-kit/health.mjs';
 import { assert, hash } from '../../vendor/base/deploy-kit/validation.mjs';
 import { vectorPlan } from './plan.mjs';
 import { validateSuppliedSecrets } from './input-validation.mjs';
+import { controllerRequired, validateControllerInputs } from './controller-inputs.mjs';
 
 export async function main(args = process.argv.slice(2), env = process.env, dependencies = {}) {
   assert(args.length === 1 && ['setup', 'deploy', 'health'].includes(args[0]), 'usage-setup-deploy-health');
   assert(!env.NODE_OPTIONS && !env.NODE_PATH && !env.EVIDENCE_WRITE_TOKEN, 'unsafe-controller-environment');
-  const required = ['RER_DEPLOY_ARTIFACT', 'RER_DEPLOY_ARTIFACT_SHA256', 'RER_DEPLOY_SOURCE_SHA', 'RER_DEPLOY_RUN_ID', 'RER_DEPLOY_RUN_ATTEMPT', 'RER_DEPLOY_RECEIPT', 'RER_DEPLOY_PLAN', 'CF_THROWAWAY_ACCOUNT_ID', 'CF_THROWAWAY_API_TOKEN'];
+  const required = controllerRequired;
   const missing = required.filter(key => typeof env[key] !== 'string' || !env[key].trim());
   if (missing.length) { const error = new Error('missing-input'); error.inputs = missing; throw error; }
   validateSuppliedSecrets(env);
-  for (const key of ['RER_DEPLOY_ARTIFACT', 'RER_DEPLOY_RECEIPT', 'RER_DEPLOY_PLAN']) assert(env[key] === resolve(env[key]), 'input-path-must-be-absolute');
+  validateControllerInputs(env);
   const expected = { sha256: env.RER_DEPLOY_ARTIFACT_SHA256, sourceSha: env.RER_DEPLOY_SOURCE_SHA, runId: env.RER_DEPLOY_RUN_ID, runAttempt: env.RER_DEPLOY_RUN_ATTEMPT };
   const artifact = await readArtifact(env.RER_DEPLOY_ARTIFACT, expected);
   const configuration = JSON.parse(await regularBytes(env.RER_DEPLOY_PLAN, 16384));

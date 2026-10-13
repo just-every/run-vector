@@ -1,3 +1,4 @@
+import { mutationDatabase } from '../auth/mutation-database';
 import { activityRow } from "../issues/repository";
 import { TeamMoveError } from "./errors";
 import type { MoveIssueTeamInput } from "./input";
@@ -48,6 +49,7 @@ export async function moveIssueTeamRecord(
   input: MoveIssueTeamInput,
   now = new Date(),
 ): Promise<"written" | "stale"> {
+  binding = mutationDatabase(binding,actor);
   const issue = await requireTeamMoveIssue(binding, identifier, actor);
   if (issue.version !== input.expectedVersion) return "stale";
   if (input.teamId === issue.team_id && input.statusId !== issue.status_id)
@@ -105,13 +107,13 @@ export async function moveIssueTeamRecord(
     issue.category,
     issue.category,
   ];
-  let changed: number;
+  let rows: { id: string }[];
   if (input.teamId === issue.team_id) {
     const receipt = await binding
-      .prepare(`UPDATE issues SET version=version WHERE ${where}`)
+      .prepare(`UPDATE issues SET version=version WHERE ${where} RETURNING id`)
       .bind(...params)
-      .run();
-    changed = receipt.meta.changes;
+      .all<{ id: string }>();
+    rows = receipt.results;
   } else {
     const timestamp = now.toISOString();
     const activity = activityRow({
@@ -132,7 +134,7 @@ export async function moveIssueTeamRecord(
     });
     // Eligibility and the original version guard both writes in one transaction;
     // identifiers, terminal/deferral timestamps and all graph rows are untouched.
-    const receipts = await binding.batch([
+    const receipts = await binding.batch<{ id: string }>([
       binding
         .prepare(
           `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
@@ -149,13 +151,14 @@ export async function moveIssueTeamRecord(
         ),
       binding
         .prepare(
-          `UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,version=version+1,updated_at=? WHERE ${where}`,
+          `UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,version=version+1,updated_at=? WHERE ${where} RETURNING id`,
         )
         .bind(input.teamId, input.statusId, timestamp, ...params),
     ]);
-    changed = receipts[1].meta.changes;
+    rows = receipts[1].results;
   }
-  if (changed === 1) return "written";
+  // Search/history triggers contribute to total changes, not direct rows.
+  if (rows.length === 1 && rows[0].id === issue.id) return "written";
   // Permission/identity is rechecked before exposing a conflict or option error.
   const current = await requireTeamMoveIssue(binding, identifier, actor);
   if (current.version !== input.expectedVersion) return "stale";

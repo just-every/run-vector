@@ -1,7 +1,0 @@
-{
-  "repository": "https://github.com/runeditrun/base.git",
-  "revision": "35241a1a6d9408fbea89d266ec04806e9071a1b8",
-  "path": "edition-authoring",
-  "version": "1.1.0",
-  "selection": "All .mjs files copied unchanged under the documented distribution contract."
-}

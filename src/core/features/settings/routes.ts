@@ -1,24 +1,44 @@
-import { AuthError } from '../../../../vendor/base/operator-auth/index.mjs';
-import { baseAuth } from '../auth/base.server';
+import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
+import { baseAuth } from "../auth/base.server";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
 import { readRequestJson } from "../../app/input";
 import { clearSessionCookie } from "../auth/service";
 import { timezoneSchema } from "../bootstrap/config";
-import { readSettings, SettingsError, updateTimezone } from "./repository";
+import { readSettings, SettingsError, updateWorkspaceTime } from "./repository";
+import { reminderTimeSchema } from "./schema";
 import { removeOperator } from "./removal";
 
 export function addSettingsRoutes(app: Hono<AppEnvironment>) {
-  app.post('/settings/operators/invite', async c => {
-    const parsed = z.object({ email: z.email().max(254), displayName: z.string().trim().min(1).max(120) }).strict()
+  app.post("/settings/operators/invite", async (c) => {
+    const parsed = z
+      .object({
+        email: z.email().max(254),
+        displayName: z.string().trim().min(1).max(120),
+      })
+      .strict()
       .safeParse(await readRequestJson(c.req.raw));
-    if (!parsed.success) return c.json({ error: 'invalid_request' }, 400);
+    if (!parsed.success) return c.json({ error: "invalid_request" }, 400);
     try {
-      const result = await baseAuth(c.env).invite(c.req.raw, { ...parsed.data, role: 'owner', returnTo: '/app' });
+      const result = await baseAuth(c.env).invite(c.req.raw, {
+        ...parsed.data,
+        role: "owner",
+        returnTo: "/app",
+      });
       return c.json(result, 202);
     } catch (error) {
-      if (error instanceof AuthError) return Response.json({ error: error.code, message: error.code === 'mail_unavailable' ? 'Email delivery failed. Request a new invitation after the mail service is available.' : error.code }, { status: error.status });
+      if (error instanceof AuthError)
+        return Response.json(
+          {
+            error: error.code,
+            message:
+              error.code === "mail_unavailable"
+                ? "Email delivery failed. Request a new invitation after the mail service is available."
+                : error.code,
+          },
+          { status: error.status },
+        );
       throw error;
     }
   });
@@ -36,7 +56,10 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   });
   app.patch("/settings", async (c) => {
     const parsed = z
-      .object({ timezone: timezoneSchema })
+      .object({
+        timezone: timezoneSchema,
+        reminderTime: reminderTimeSchema.optional(),
+      })
       .strict()
       .safeParse(await readRequestJson(c.req.raw));
     if (!parsed.success)
@@ -45,7 +68,12 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         400,
       );
     try {
-      await updateTimezone(c.env.DB, c.get("operatorId"), parsed.data.timezone);
+      await updateWorkspaceTime(
+        c.env.DB,
+        c.get("operatorId"),
+        parsed.data.timezone,
+        parsed.data.reminderTime,
+      );
       return c.json(await readSettings(c.env.DB, c.get("operatorId")));
     } catch (error) {
       if (error instanceof SettingsError)

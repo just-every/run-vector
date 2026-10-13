@@ -3,3 +3,4 @@ type ContractTest = () => void | Promise<void>
 export function contract(id: string, name: string, run: ContractTest) {
   return test(`[${id}] ${name}`, run)
 }
+export { contractTitle, contractWith } from './contract-tags.ts'

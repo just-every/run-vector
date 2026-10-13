@@ -1,12 +1,15 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { fetchJson } from "../../../app/api-client";
+import { searchErrorMessage } from "./search-error";
 import { movePaletteHighlight } from "./command-helpers";
 import {
   paletteEntries,
   workspaceSearchSchema,
   type PaletteEntry,
 } from "./data";
+
+import { savedViewPaletteEntries } from "./saved-view-entries";
 
 type CommandPaletteProps = { onDismiss: () => void };
 
@@ -18,9 +21,17 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   const [search, setSearch] = useState<ReturnType<
     typeof workspaceSearchSchema.parse
   > | null>(null);
+  const [resultTerm, setResultTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const entries = useMemo(() => paletteEntries(search, query), [query, search]);
+  const currentSearch = resultTerm === query.trim() ? search : null;
+  const entries = useMemo(
+    () => [
+      ...paletteEntries(currentSearch, query),
+      ...savedViewPaletteEntries(currentSearch, query),
+    ],
+    [query, currentSearch],
+  );
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
@@ -40,6 +51,7 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
       return;
     }
     const controller = new AbortController();
+    setSearch(null);
     setLoading(true);
     setError(null);
     void fetchJson(
@@ -48,15 +60,13 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
       { signal: controller.signal },
     )
       .then((result) => {
-        if (!controller.signal.aborted) setSearch(result);
+        if (!controller.signal.aborted) {
+          setResultTerm(term);
+          setSearch(result);
+        }
       })
       .catch((reason: unknown) => {
-        if (!controller.signal.aborted)
-          setError(
-            reason instanceof Error
-              ? reason.message
-              : "Unable to search the workspace.",
-          );
+        if (!controller.signal.aborted) setError(searchErrorMessage(reason));
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false);
@@ -76,6 +86,12 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
       entry.destination === "/app/projects/$projectId" &&
       entry.params &&
       "projectId" in entry.params
+    )
+      navigate({ to: entry.destination, params: entry.params });
+    else if (
+      entry.destination === "/app/views/$viewId" &&
+      entry.params &&
+      "viewId" in entry.params
     )
       navigate({ to: entry.destination, params: entry.params });
     else navigate({ to: entry.destination });
@@ -134,9 +150,11 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
             </span>
             <input
               ref={inputRef}
+              maxLength={200}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search issues, projects, commands…"
+              placeholder="Search issues, projects, saved views, commands…"
+              aria-describedby="command-palette-description"
               aria-controls="command-palette-results"
               aria-activedescendant={
                 entries[activeIndex]
@@ -147,14 +165,18 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
           </label>
           <kbd>Esc</kbd>
         </div>
+        <p id="command-palette-description" className="visually-hidden">
+          Search issues, projects, saved views, and available commands.
+        </p>
         <h2 id="command-palette-title" className="visually-hidden">
           Command palette
         </h2>
         <div
           id="command-palette-results"
           className="command-palette__results"
-          role="listbox"
-          aria-label="Command palette results"
+          // An empty listbox is invalid; the container holds only the message then.
+          role={entries.length ? "listbox" : undefined}
+          aria-label={entries.length ? "Command palette results" : undefined}
           aria-busy={loading}
         >
           {error ? (
@@ -168,8 +190,17 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
             </p>
           ) : null}
           {grouped.map(([group, groupEntries]) => (
-            <section key={group} aria-labelledby={`palette-group-${group}`}>
-              <h3 id={`palette-group-${group}`}>{group}</h3>
+            <section
+              key={group}
+              role="group"
+              aria-labelledby={`palette-group-${group.replaceAll(" ", "-")}`}
+            >
+              <h3
+                id={`palette-group-${group.replaceAll(" ", "-")}`}
+                aria-hidden="true"
+              >
+                {group}
+              </h3>
               {groupEntries.map(({ entry, index }) => (
                 <button
                   id={`palette-${entry.id}`}

@@ -1,0 +1,82 @@
+/* 5. The rest of your tracker: heading and body, then one sheet divided by hairlines into four panels, each drawn with its
+   own instrument: a leader (Projects), a protractor (Cycles), a ruled table (History) and keycaps (Search). */
+.vx-panels { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); margin-top: clamp(40px, 3.6vw, 52px); border-top: 1px solid var(--vx-rule); }
+.vx-panel { display: flex; flex-direction: column; min-width: 0; padding: 40px; }
+.vx-panel--projects { grid-column: span 7; padding-left: 0; }
+.vx-panel--cycles { grid-column: span 5; padding-right: 0; border-left: 1px solid var(--vx-rule); }
+.vx-panel--history { grid-column: span 5; padding-left: 0; border-top: 1px solid var(--vx-rule); }
+.vx-panel--search { grid-column: span 7; padding-right: 0; border-top: 1px solid var(--vx-rule); border-left: 1px solid var(--vx-rule); }
+.vx-panel-art { display: flex; align-items: center; flex: 1; min-height: 240px; margin: 0 0 28px; }
+.vx-panel > h3 { margin: 0; font-size: 19px; font-weight: 620; letter-spacing: -0.01em; }
+.vx-panel > p { margin: 6px 0 0; max-width: 30em; color: var(--vx-body); font-size: 16px; line-height: 1.45; text-wrap: pretty; }
+
+/* Projects: the project card upper left, the issue card lower right, and an elbowed leader from the pill to the issue. */
+.vx-proj { --vx-run-y: 116px; --vx-run-x: 112px; --vx-drop: 88.2%; position: relative; display: grid; grid-template-columns: minmax(0, 25fr) minmax(0, 4fr) minmax(0, 26fr); grid-template-rows: auto 40px auto; width: min(100%, 560px); }
+.vx-proj-project { grid-column: 1; grid-row: 1; min-height: 152px; --vx-pad: 18px; }
+.vx-proj-issue { grid-column: 3; grid-row: 3; --vx-pad: 18px; }
+.vx-proj-project .vx-card-head { margin-bottom: 14px; }
+.vx-proj-name { display: block; margin-bottom: 10px; font-size: 16.5px; font-weight: 620; }
+.vx-proj-meta { margin: 10px 0 0; color: var(--vx-body); font-size: 15.5px; }
+.vx-proj-link { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.vx-proj-run { position: absolute; left: var(--vx-run-x); top: var(--vx-run-y); width: calc(var(--vx-drop) - var(--vx-run-x)); }
+.vx-proj-drop { position: absolute; left: var(--vx-drop); top: var(--vx-run-y); height: 76px; }
+.vx-proj-cause { position: absolute; right: calc(100% - var(--vx-drop) + 16px); top: var(--vx-run-y); margin: 0; padding: 0 8px; transform: translateY(-50%); color: var(--vx-body); background: var(--vx-paper-deep); font-size: 15px; white-space: nowrap; }
+
+/* Cycles: the protractor stands on the paper; its words are under it. */
+.vx-cycle { display: flex; flex-direction: column; align-items: flex-start; }
+.vx-cycle-name { margin-top: 14px; font-size: 16.5px; font-weight: 620; }
+.vx-cycle-points { margin-top: 2px; font-size: 16px; }
+.vx-cycle-capacity { margin-top: 2px; color: var(--vx-cobalt-ink); font-size: 15px; font-weight: 560; }
+
+/* History: a card holding a ruled table; rules between columns and rows, no cell boxes. */
+.vx-ledger-card { width: min(100%, 420px); --vx-pad: 18px; padding-bottom: 6px; }
+.vx-ledger-card .vx-card-head { margin-bottom: 4px; }
+.vx-ledger { width: 100%; border-collapse: collapse; font-size: 15.5px; }
+.vx-ledger td { padding: 11px 14px; white-space: nowrap; }
+.vx-ledger td:first-child { padding-left: 0; }
+.vx-ledger td:last-child { padding-right: 0; color: var(--vx-body); }
+.vx-ledger td:nth-child(2) { width: 100%; }
+.vx-ledger td + td { border-left: 1px solid rgba(35, 38, 44, 0.28); }
+.vx-ledger tr + tr td { border-top: 1px solid rgba(35, 38, 44, 0.28); }
+.vx-ledger td:first-child .vx-dot { display: inline-block; width: 10px; height: 10px; margin-right: 10px; vertical-align: -0.5px; }
+.vx-ledger strong { font-weight: 620; }
+
+/* Search: the ⌘ and K keycaps, and the palette they open. */
+.vx-search { display: flex; align-items: flex-start; gap: 28px; width: 100%; }
+.vx-search-keys { display: flex; gap: 8px; flex: none; }
+.vx-palette { flex: 1 1 auto; min-width: 0; max-width: 420px; --vx-pad: 18px; padding-bottom: 12px; }
+.vx-palette-query { height: 52px; margin-bottom: 0; }
+.vx-palette-glyph { color: var(--vx-muted); font-size: 20px; line-height: 1; }
+.vx-palette-text { flex: 1; font-size: 16px; }
+.vx-palette-group { margin: 12px 0 4px; color: var(--vx-muted); font-size: 15px; font-weight: 600; }
+.vx-palette .vx-palette-row { display: flex; align-items: baseline; gap: 4px 10px; margin: 0 -10px; padding: 8px 10px; border-radius: 6px; color: var(--vx-ink); font-size: 15.5px; font-weight: 560; line-height: 1.35; }
+.vx-palette-row.is-selected { background: var(--vx-cobalt-soft); }
+.vx-palette-title { flex: 1; min-width: 0; }
+.vx-palette-kind { color: var(--vx-muted); font-size: 15px; font-weight: 400; }
+.vx-palette-enter { color: var(--vx-cobalt-ink); font-size: 15px; }
+
+@media (max-width: 1180px) {
+  .vx-panels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .vx-panel--projects, .vx-panel--cycles, .vx-panel--history, .vx-panel--search { grid-column: auto; }
+  .vx-panel--projects { padding-right: 32px; }
+  .vx-panel--cycles { padding-left: 32px; }
+  .vx-panel--history { padding-right: 32px; }
+  .vx-panel--search { padding-left: 32px; }
+  /* Projects stacks its cards and the leader drops straight down. */
+  .vx-proj { display: flex; flex-direction: column; width: min(100%, 420px); }
+  .vx-proj-project { min-height: 0; }
+  .vx-proj-link { position: relative; inset: auto; display: block; height: 44px; margin-left: 28px; }
+  .vx-proj-run { display: none; }
+  .vx-proj-drop { left: 0; top: 0; height: 44px; }
+  .vx-proj-cause { left: 12px; right: auto; top: 50%; }
+  .vx-search { flex-direction: column; gap: 20px; }
+}
+
+@media (max-width: 900px) {
+  .vx-panels { grid-template-columns: minmax(0, 1fr); }
+  .vx-panel, .vx-panel--projects, .vx-panel--cycles, .vx-panel--history, .vx-panel--search { padding: 36px 0; border-left: 0; border-top: 1px solid var(--vx-rule); }
+  .vx-panel--projects { border-top: 0; }
+  .vx-panel-art { min-height: 0; }
+  .vx-proj, .vx-ledger-card { width: 100%; }
+  .vx-palette { max-width: none; width: 100%; }
+}

@@ -1,17 +1,40 @@
+import { DeletionNotice } from '../../features/issue-deletion/receipt-notice'
 import type { ReactNode } from 'react'
-import { Link, useLocation, useNavigate, useRouteContext } from '@tanstack/react-router'
-import { useEffect, useRef, useState } from 'react'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useRouteContext,
+} from '@tanstack/react-router'
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { productConfig } from '../config'
 import { CommandPalette } from '../../features/search/ui/command-palette'
 import {
   globalShortcut,
   isEditableTarget,
 } from '../../features/search/ui/command-helpers'
+import {
+  NotificationProvider,
+  InboxCount,
+} from '../../features/notifications/ui/notification-context'
+import { SavedViewNavigation } from '../../features/views/ui/saved-views'
+import { SavedViewReceiptProvider } from '../../features/views/ui/saved-view-resource'
 import { VectorMark } from './vector-mark'
+import { documentReads, privateReads } from '../read-lifecycle'
 
 type AppShellProps = { children: ReactNode }
+const subscribeDocumentReads = (notify: () => void) =>
+  documentReads!.subscribe(notify)
+const documentNavigationPending = () => documentReads!.pending
+const noDocumentNavigation = () => false
 type NavigationItem = {
-  to: '/app' | '/app/my-work' | '/app/projects' | '/app/issues'
+  to:
+    | '/app'
+    | '/app/my-work'
+    | '/app/projects'
+    | '/app/issues'
+    | '/app/inbox'
+    | '/app/board'
   label: string
   icon: string
 }
@@ -21,13 +44,58 @@ const navigation: NavigationItem[] = [
   { to: '/app/my-work', label: 'My work', icon: '◒' },
   { to: '/app/projects', label: 'Projects', icon: '◇' },
   { to: '/app/issues', label: 'Issues', icon: '▤' },
+  { to: '/app/board', label: 'Board', icon: '▥' },
+  { to: '/app/inbox', label: 'Inbox', icon: '▣' },
 ]
 
 export function AppShell({ children }: AppShellProps) {
   const { operator } = useRouteContext({ from: '/app' })
+  return (
+    <SavedViewReceiptProvider key={operator.id}>
+      <NotificationProvider>
+        <AppShellContent>{children}</AppShellContent>
+      </NotificationProvider>
+    </SavedViewReceiptProvider>
+  )
+}
+
+function AppShellContent({ children }: AppShellProps) {
+  const { operator } = useRouteContext({ from: '/app' })
   const location = useLocation()
   const navigate = useNavigate()
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [signingOut, setSigningOut] = useState(false)
+  const [accountError, setAccountError] = useState('')
+  const navigationPending = useSyncExternalStore(
+    subscribeDocumentReads,
+    documentNavigationPending,
+    noDocumentNavigation,
+  )
+  async function signOut() {
+    if (privateReads.manuallyPaused) return
+    window.dispatchEvent(new Event('vector:auth-lost'))
+    privateReads.pause()
+    setSigningOut(true)
+    setAccountError('')
+    try {
+      await privateReads.settle()
+      const response = await fetch('/auth/signout', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({}),
+      })
+      // Finish the revocation receipt before replacing this document.
+      await response.text()
+      if (!response.ok) throw new Error('Sign out failed. Try again.')
+      window.location.assign('/signin')
+    } catch (cause) {
+      privateReads.resume()
+      setAccountError(
+        cause instanceof Error ? cause.message : 'Sign out failed.',
+      )
+      setSigningOut(false)
+    }
+  }
   const paletteTrigger = useRef<HTMLElement | null>(null)
   const awaitingGo = useRef(false)
   const goTimer = useRef<number | null>(null)
@@ -56,6 +124,7 @@ export function AppShell({ children }: AppShellProps) {
       goTimer.current = window.setTimeout(clearGo, 900)
     }
     const onKeyDown = (event: KeyboardEvent) => {
+      if (privateReads.paused) return
       if (paletteOpen && event.key === 'Escape') {
         event.preventDefault()
         event.stopPropagation()
@@ -97,7 +166,7 @@ export function AppShell({ children }: AppShellProps) {
   }, [navigate, paletteOpen])
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" inert={signingOut}>
       <aside className="app-sidebar">
         <Link
           className="app-brand"
@@ -111,8 +180,18 @@ export function AppShell({ children }: AppShellProps) {
             <NavLink key={item.to} item={item} pathname={location.pathname} />
           ))}
         </nav>
+        <SavedViewNavigation />
         <div className="app-nav-actions">
-          <Link className="app-nav-link" to="/app/settings"><span aria-hidden="true">⚙</span><span>Settings</span></Link>
+          <Link
+            className={`app-nav-link${location.pathname === '/app/settings' ? ' is-active' : ''}`}
+            to="/app/settings"
+            aria-current={
+              location.pathname === '/app/settings' ? 'page' : undefined
+            }
+          >
+            <span aria-hidden="true">⚙</span>
+            <span>Settings</span>
+          </Link>
           <button
             type="button"
             className="app-search-trigger"
@@ -130,16 +209,83 @@ export function AppShell({ children }: AppShellProps) {
         </div>
         <div className="app-sidebar-foot">
           <span className="app-avatar" aria-hidden="true">
-            {operator.name.split(' ').map(part => part[0]).join('').slice(0,2)}
+            {operator.name
+              .split(' ')
+              .map((part) => part[0])
+              .join('')
+              .slice(0, 2)}
           </span>
-          <span>{operator.name}</span><button type="button" onClick={async () => { const response = await fetch('/auth/signout', { method: 'POST' }); if(response.ok) window.location.assign('/signin') }}>Sign out</button>
+          <span>{operator.name}</span>
+          <button
+            type="button"
+            disabled={signingOut}
+            onClick={() => void signOut()}
+          >
+            {signingOut ? 'Signing out…' : 'Sign out'}
+          </button>
         </div>
       </aside>
-      <div className="app-stage"><Link className="app-settings-mobile" to="/app/settings">Settings</Link>{children}</div>
+      <div className="app-stage">
+        <div className="app-settings-mobile">
+          <span title={operator.name}>{operator.name}</span>
+          <Link to="/app/search">Search</Link>
+          <Link
+            to="/app/settings"
+            aria-current={
+              location.pathname === '/app/settings' ? 'page' : undefined
+            }
+          >
+            Settings
+          </Link>
+          <button
+            type="button"
+            disabled={signingOut}
+            onClick={() => void signOut()}
+          >
+            {signingOut ? 'Signing out…' : 'Sign out'}
+          </button>
+        </div>
+        {accountError && (
+          <p className="app-account-error" role="alert">
+            {accountError}
+          </p>
+        )}
+        {navigationPending && !signingOut && (
+          <div className="app-navigation-pending" role="status">
+            <span>
+              Opening another page… If you cancelled navigation, reload to
+              resume updates.
+            </span>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => documentReads!.reload()}
+            >
+              Reload this page
+            </button>
+          </div>
+        )}
+        {/* Phone browsing pages carry the board and saved views; issue pages stay short. */}
+        {/^\/app\/(?:issues|board)$|^\/app\/views\/[^/]+$/.test(
+          location.pathname,
+        ) ? (
+          <details className="app-mobile-views">
+            <summary>Board and saved views</summary>
+            <Link className="app-nav-link" to="/app/board">
+              Board
+            </Link>
+            <SavedViewNavigation />
+          </details>
+        ) : null}
+        <DeletionNotice />
+        {children}
+      </div>
       <nav className="app-mobile-nav" aria-label="Workspace">
-        {navigation.map((item) => (
-          <NavLink key={item.to} item={item} pathname={location.pathname} />
-        ))}
+        {navigation
+          .filter((item) => item.to !== '/app/board')
+          .map((item) => (
+            <NavLink key={item.to} item={item} pathname={location.pathname} />
+          ))}
         <button
           type="button"
           className="app-nav-link"
@@ -172,8 +318,7 @@ function NavLink({
 }) {
   const active =
     item.to === '/app'
-      ? pathname === '/app' ||
-        pathname.startsWith('/app/current')
+      ? pathname === '/app' || pathname.startsWith('/app/current')
       : pathname.startsWith(item.to)
   return (
     <Link
@@ -183,6 +328,7 @@ function NavLink({
     >
       <span aria-hidden="true">{item.icon}</span>
       <span>{item.label}</span>
+      {item.to === '/app/inbox' && <InboxCount />}
     </Link>
   )
 }

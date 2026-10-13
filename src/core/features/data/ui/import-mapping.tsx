@@ -1,0 +1,24 @@
+import { useState } from 'react';
+import { z } from 'zod';
+import { useApiResource } from '../../../app/api-client';
+import { importFields,type ImportField,type ImportInput } from '../import/types';
+const row=z.object({id:z.string(),name:z.string().optional(),email:z.string().optional(),team_id:z.string().optional(),archived_at:z.string().nullable().optional(),removed_at:z.string().nullable().optional(),closed_at:z.string().nullable().optional()});
+const options=z.object({references:z.object({teams:z.array(row),statuses:z.array(row),operators:z.array(row),projects:z.array(row),cycles:z.array(row),labels:z.array(row)})});
+const names:Record<ImportField,string>={sourceId:'Source record ID',title:'Title',description:'Description',team:'Team',status:'Status',priority:'Priority',assignee:'Assignee',project:'Project',cycle:'Cycle',labels:'Labels',estimate:'Estimate',dueDate:'Due date',expectedOutcome:'Expected outcome',customerImpact:'Customer impact',createdAt:'Created at',updatedAt:'Updated at',parent:'Parent',dependencies:'Dependencies',duplicateOf:'Duplicate of',archivedAt:'Archived at'};
+const categories={team:'teams',status:'statuses',assignee:'operators',project:'projects',cycle:'cycles',labels:'labels'} as const;
+type Values=Pick<ImportInput,'mapping'|'defaults'|'references'>;
+export function ImportMapping({headers,linear,value,onChange,busy}:{headers:string[];linear:boolean;value:Values;onChange:(value:Values)=>void;busy:boolean}) {
+ const choices=useApiResource('/api/data/import/options',options);
+ const [aliasField,setAliasField]=useState<keyof typeof categories>('status'),[alias,setAlias]=useState(''),[native,setNative]=useState('');
+ const rows=(field:keyof typeof categories)=>(choices.data?.references[categories[field]]??[]).filter(row=>!row.archived_at&&!row.removed_at&&!row.closed_at);
+ const label=(item:z.infer<typeof row>)=>{const team=item.team_id?choices.data?.references.teams.find(team=>team.id===item.team_id)?.name:null;return (item.name??item.email??item.id)+(team?' · '+team:'');};
+ return <fieldset disabled={busy}><legend>Mapping and references</legend>
+ {!linear&&<div className="import-mapping">{importFields.map(field=><label key={field}>{names[field]} column<select aria-label={names[field]+" column"} value={value.mapping[field]??''} onChange={event=>{const mapping={...value.mapping};if(event.target.value)mapping[field]=event.target.value;else delete mapping[field];onChange({...value,mapping});}}><option value="">Unmapped</option>{headers.map(header=><option key={header}>{header}</option>)}</select></label>)}</div>}
+ <p>Names must match an existing record exactly. Choose defaults for empty values, or map a source name to its native record. Status and cycle must belong to the row’s team.</p>
+ {choices.error&&<p role="alert">{choices.error.message}</p>}
+ <div className="import-mapping">{(['team','status','assignee','project','cycle'] as const).map(field=><label key={field}>Default {names[field].toLowerCase()}<select aria-label={"Default "+names[field].toLowerCase()} value={value.defaults?.[field]??''} onChange={event=>{const defaults={...value.defaults};if(event.target.value)defaults[field]=event.target.value;else delete defaults[field];onChange({...value,defaults});}}><option value="">No default</option>{rows(field).map(item=><option key={item.id} value={item.id}>{label(item)}</option>)}</select></label>)}</div>
+ <div className="import-mapping"><label>Reference kind<select aria-label="Reference kind" value={aliasField} onChange={event=>{setAliasField(event.target.value as keyof typeof categories);setNative('');}}>{Object.keys(categories).map(field=><option key={field} value={field}>{names[field as ImportField]}</option>)}</select></label><label>Source name<input value={alias} maxLength={200} onChange={event=>setAlias(event.target.value)}/></label><label>Native record<select aria-label="Native record" value={native} onChange={event=>setNative(event.target.value)}><option value="">Choose a record</option>{rows(aliasField).map(item=><option key={item.id} value={item.id}>{label(item)}</option>)}</select></label></div>
+ <button type="button" disabled={!alias||!native} onClick={()=>{onChange({...value,references:{...value.references,[aliasField]:{...value.references?.[aliasField],[alias]:native}}});setAlias('');setNative('');}}>Add reference mapping</button>
+ {Object.entries(value.references??{}).flatMap(([field,aliases])=>Object.entries(aliases??{}).map(([source,id])=><p key={field+source}>{names[field as ImportField]}: {source} → {label(rows(field as keyof typeof categories).find(item=>item.id===id)??{id})} <button type="button" onClick={()=>{const references={...value.references},remaining={...references[field as ImportField]};delete remaining[source];references[field as ImportField]=remaining;onChange({...value,references});}}>Remove mapping</button></p>))}
+ </fieldset>;
+}

@@ -1,0 +1,4 @@
+/* Base's sign-in confirmation links this file: Vector's theme tokens, then the family's ink pill for its one button.
+   The theme file itself may hold only tokens, and its one radius also rounds the card, so the pill lives here. */
+@import url("/rer-theme.css");
+html.rer-themed button, html.rer-themed .action { border-radius: 999px; }

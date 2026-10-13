@@ -1,7 +1,11 @@
-import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { ApiError, useApiResource } from "../../../app/api-client";
 import { IssueDetail } from "../../issues/ui/issue-detail";
+import {
+  ListPreferenceControls,
+  type ListPreferenceControlsProps,
+} from "../../views/ui/list-preference-controls";
+import { useListPreferences } from "../../views/ui/use-list-preferences";
 import {
   currentStreamSchema,
   myWorkSchema,
@@ -10,6 +14,7 @@ import {
   type CycleContextData,
 } from "./data";
 import { filterItems, type StreamFilters } from "./helpers";
+import { issueListSchema } from "../../issues/list-schema";
 import { StreamList } from "./stream-list";
 
 type StreamWorkspaceProps = {
@@ -130,7 +135,12 @@ function WorkspaceContent({
 }) {
   const navigate = useNavigate();
   const options = useApiResource("/api/options", optionsSchema);
-  const [filters, setFilters] = useState(defaultFilters);
+  const preferences = useListPreferences(surface, {
+    filters: defaultFilters,
+    sort: "priority",
+    grouping: "none",
+  });
+  const filters = preferences.filters;
   const filteredGroups = groups.map((group) => ({
     ...group,
     items: filterItems(group.items, filters),
@@ -178,9 +188,19 @@ function WorkspaceContent({
           <FilterBar
             personal={surface === "my-work"}
             filters={filters}
-            onChange={setFilters}
+            onChange={(next) => preferences.update({ filters: next })}
             options={options.data}
             loading={options.loading}
+            preferenceControls={{
+              ready: preferences.ready,
+              loading: preferences.loading,
+              saving: preferences.saving,
+              loadError: preferences.loadError,
+              saveError: preferences.saveError,
+              onRetryLoad: preferences.retryLoad,
+              onRetrySave: preferences.retrySave,
+              onReset: preferences.reset,
+            }}
           />
           <StreamList
             hideAssignee={surface === "my-work"}
@@ -190,7 +210,7 @@ function WorkspaceContent({
           />
         </div>
         <section
-          className={`stream-detail${selectedIdentifier ? "" : " stream-detail--default"}`}
+          className={`stream-detail${selectedIdentifier || !allItems.length ? "" : " stream-detail--default"}`}
           aria-label="Issue detail"
         >
           {detailIdentifier ? (
@@ -200,7 +220,10 @@ function WorkspaceContent({
               onChanged={onRefresh}
             />
           ) : (
-            <EmptyState surface={surface} />
+            <EmptyState
+              surface={surface}
+              filtered={Object.values(filters).some((value) => value !== "all")}
+            />
           )}
         </section>
       </div>
@@ -214,6 +237,7 @@ function FilterBar({
   options,
   loading,
   personal,
+  preferenceControls,
 }: {
   personal: boolean;
   filters: StreamFilters;
@@ -223,14 +247,17 @@ function FilterBar({
     operators: Array<{ id: string; name: string }>;
   } | null;
   loading: boolean;
+  preferenceControls: ListPreferenceControlsProps;
 }) {
+  const controlsDisabled = !preferenceControls.ready || loading || options === null;
   return (
     <div className="stream-filters" aria-label="Filter stream">
       <label>
         Team
         <select
+          aria-label="Team"
           value={filters.teamId}
-          disabled={loading || options === null}
+          disabled={controlsDisabled}
           onChange={(event) =>
             onChange({ ...filters, teamId: event.target.value })
           }
@@ -247,8 +274,9 @@ function FilterBar({
         <label>
           Assignee
           <select
+            aria-label="Assignee"
             value={filters.assigneeId}
-            disabled={loading || options === null}
+            disabled={controlsDisabled}
             onChange={(event) =>
               onChange({ ...filters, assigneeId: event.target.value })
             }
@@ -266,7 +294,9 @@ function FilterBar({
       <label>
         Priority
         <select
+          aria-label="Priority"
           value={filters.priority}
+          disabled={!preferenceControls.ready}
           onChange={(event) =>
             onChange({ ...filters, priority: event.target.value })
           }
@@ -279,6 +309,7 @@ function FilterBar({
           <option value="none">No priority</option>
         </select>
       </label>
+      <ListPreferenceControls {...preferenceControls} />
     </div>
   );
 }
@@ -386,19 +417,40 @@ function ErrorState({
     </main>
   );
 }
-function EmptyState({ surface }: { surface: "current" | "my-work" }) {
+function EmptyState({
+  surface,
+  filtered,
+}: {
+  surface: "current" | "my-work";
+  filtered: boolean;
+}) {
+  const existing = useApiResource("/api/issues", issueListSchema);
+  const completed = useApiResource(
+    "/api/issues?category=completed",
+    issueListSchema,
+  );
+  const first = existing.data?.total === 0 && completed.data?.total === 0;
   return (
     <div className="stream-empty-detail">
       <h2>
         {surface === "my-work"
           ? "You're all caught up"
-          : "No issues match these filters"}
+          : filtered
+            ? "No issues match these filters"
+            : first
+              ? "Create your first issue"
+              : "No work needs attention"}
       </h2>
       <p>
         {surface === "my-work"
           ? "Nothing assigned to you needs attention right now."
-          : "Adjust a filter to see the rest of the stream."}
+          : filtered
+            ? "Adjust a filter to see the rest of the stream."
+            : "Start with an issue or bring evidence into intake to decide what happens next."}
       </p>
+      <a href="/app/new-issue">Create issue →</a>
+      <a href="/app/issues">Browse all issues →</a>
+      {surface === "my-work" ? <a href="/app">Open Current →</a> : null}
     </div>
   );
 }

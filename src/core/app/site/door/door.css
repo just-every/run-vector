@@ -1,0 +1,59 @@
+/* The doors into the app (sign-in, first-run setup, page not found), drawn from the 12ui picks (evidence brand-vector-s3
+   12ui/pick-signin-A.png and pick-setup-C.png): the hero's copy column on the left, one drawing on its construction on the
+   right. Phones stack the copy first and the drawing under it. */
+/* The page fills the window so the footer rests at the bottom. */
+.vx-door-page { display: flex; flex-direction: column; }
+.vx-door-page > main { flex: 1; }
+.vx-door { padding: clamp(56px, 9vh, 112px) 0 clamp(72px, 11vh, 128px); }
+.vx-door-grid { display: grid; grid-template-columns: minmax(0, 38rem) minmax(0, 1fr); align-items: center; gap: clamp(40px, 6vw, 104px); }
+.vx-door--plain .vx-door-grid { grid-template-columns: minmax(0, 40rem); }
+.vx-door-kicker { margin: 0 0 18px; color: var(--vx-muted); font-size: 17px; font-weight: 560; }
+.vx-door h1 { margin: 0; color: var(--vx-ink); font-size: clamp(40px, 3.9vw, 56px); font-weight: 640; letter-spacing: -0.034em; line-height: 1; text-wrap: balance; }
+.vx-door-lead { max-width: 25em; margin: 24px 0 0; color: var(--vx-body); font-size: 20px; line-height: 1.5; text-wrap: pretty; }
+
+.vx-door-form { display: grid; gap: 22px; max-width: 26rem; margin: 36px 0 0; }
+.vx-door-field { display: grid; gap: 9px; color: var(--vx-ink); font-size: 16px; font-weight: 560; }
+.vx-door-field input { width: 100%; min-width: 0; height: 52px; padding: 0 16px; border: 1.3px solid var(--vx-outline); border-radius: var(--vx-radius-card); color: var(--vx-ink); background: var(--vx-card); font: inherit; font-size: 17px; font-weight: 400; }
+.vx-door-field input:disabled { opacity: 0.7; }
+.vx-door button.vx-pill { justify-self: start; border: 0; font-family: inherit; font-size: 17px; font-weight: 560; cursor: pointer; }
+.vx-door button.vx-pill--large { font-size: 20px; }
+.vx-door button.vx-pill:disabled { cursor: wait; opacity: 0.65; }
+.vx-door-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 32px; margin-top: 36px; }
+.vx-door-back { margin: 28px 0 0; font-size: 17px; }
+/* The plain return links are bare anchors, underlined like the homepage's text links. */
+.vx-door-back a, .vx-door-actions a:not(.vx-pill) { color: var(--vx-ink); font-weight: 520; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 7px; transition: text-underline-offset 0.16s; }
+.vx-door-back a:hover, .vx-door-actions a:not(.vx-pill):hover { text-underline-offset: 4px; }
+.vx-door-actions a:not(.vx-pill) { font-size: 20px; }
+
+.vx-door-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 14px 44px; margin: 36px 0; font-size: 19px; }
+.vx-door-facts dt { color: var(--vx-muted); }
+.vx-door-facts dd { margin: 0; color: var(--vx-ink); font-weight: 540; overflow-wrap: anywhere; }
+
+.vx-door-notice { max-width: 26rem; margin: 24px 0 0; padding: 14px 16px; border: 1.2px solid var(--vx-outline); border-radius: var(--vx-radius-card); color: var(--vx-ink); background: var(--vx-card); font-size: 16px; line-height: 1.5; }
+.vx-door-note { max-width: 30em; margin: 28px 0 0; color: var(--vx-body); font-size: 16px; line-height: 1.55; }
+.vx-door-note a { color: var(--vx-ink); text-underline-offset: 4px; }
+
+.vx-door-art { display: flex; justify-content: center; }
+.vx-door-figure { width: min(100%, 360px); margin: 0; }
+.vx-door-plate { --vx-circle: 128%; --vx-askew: -5deg; }
+.vx-door-card .vx-card-title { font-size: 19px; font-weight: 560; }
+.vx-door-card .vx-card-label { font-size: 16.5px; }
+.vx-door-card .vx-row-meta { margin: 8px 0 0; }
+.vx-door-confirm { display: inline-flex; align-self: flex-start; align-items: center; height: 40px; margin-top: 18px; padding: 0 22px; border-radius: 999px; color: var(--vx-on-cobalt); background: var(--vx-cobalt); font-size: 16px; font-weight: 560; }
+
+.vx-door-credit { padding-bottom: 28px; color: var(--vx-muted); font-size: 15px; }
+.vx-door-credit a { color: var(--vx-ink); }
+
+@media (max-width: 900px) {
+  .vx-door-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  /* Room for the construction circle above and below the card, clear of the copy and the credit. */
+  .vx-door-art { padding: 112px 0 96px; }
+  .vx-door-figure { width: min(100%, 320px); }
+}
+@media (max-width: 560px) {
+  .vx-door { padding: 40px 0 72px; }
+  .vx-door h1 { font-size: clamp(38px, 11vw, 48px); }
+  .vx-door-lead { font-size: 18.5px; }
+  .vx-door-facts { gap: 12px 28px; font-size: 18px; }
+  .vx-door-plate { --vx-circle: 104%; --vx-over: 16px; --vx-askew: -3deg; }
+}

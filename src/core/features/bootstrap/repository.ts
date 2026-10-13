@@ -135,5 +135,8 @@ export async function bootstrapWorkspace(
           workspaceId,
         ),
     ),
+    db.prepare(`INSERT INTO vector_http_bootstrap(id,snapshot)
+      SELECT 1,snapshot FROM vector_http_bootstrap_current WHERE ${ownClaim}
+      ON CONFLICT(id) DO NOTHING`).bind(workspaceId),
   ]);
 }

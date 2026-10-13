@@ -1,0 +1,28 @@
+import { env } from 'cloudflare:workers';
+import { applyD1Migrations } from 'cloudflare:test';
+import { expect,inject,it } from 'vitest';
+import { bindings,request,signIn,invite } from './base-auth-fixture';
+import { editorDocument } from '../../src/core/editor/config.server';
+
+it('[EDITOR-001] only current native owners receive short non-secret grants; configuration and revocation fail closed',async()=>{
+  await applyD1Migrations(env.DB,inject('migrations'));
+  const config={RER_MANAGEMENT_ORIGIN:'https://management.example.test',RER_INSTALLATION_ID:'vector-test'};
+  expect((await request('/api/editor/config','GET',undefined,'',config)).status).toBe(403);
+  const cookie=await signIn();
+  expect((await request('/api/editor/config','GET',undefined,cookie)).status).toBe(503);
+  const peer=await invite('peer@editor.test',cookie);expect((await request('/api/editor/config','GET',undefined,peer,config)).status).toBe(403);
+  const response=await request('/api/editor/config','GET',undefined,cookie,config),grant=await response.json() as any;
+  expect(response.status).toBe(200);expect(response.headers.get('cache-control')).toContain('no-store');
+  expect(grant.config.enabled).toBe(true);expect(grant.config.managementOrigin).toBe(config.RER_MANAGEMENT_ORIGIN);expect(grant.config.installationId).toBe(config.RER_INSTALLATION_ID);
+  expect(grant.expiresAt).toBeGreaterThan(Date.now());
+  expect(JSON.stringify(grant).includes(bindings.SESSION_SECRET!)).toBe(false);
+  expect((await request('/api/editor/config','POST',{},cookie,config)).status).toBe(405);
+  expect((await request('/api/editor/config','GET',undefined,cookie,{...config,RER_MANAGEMENT_ORIGIN:'https://management.example.test/foreign'})).status).toBe(503);
+  const native=new Response('<h1>Vector</h1>',{headers:{'content-security-policy':"default-src 'self'; script-src 'self' 'nonce-existing'; object-src 'none'"}});
+  const policy=editorDocument(native,{...bindings,...config}).headers.get('content-security-policy')!;
+  expect(policy).toContain("script-src 'self' 'nonce-existing'");expect(policy).toContain("default-src 'self'");
+  expect(policy).toContain("frame-ancestors 'self' https://management.example.test");
+  expect(policy).toContain("frame-src 'self' https://management.example.test");
+  expect((await request('/auth/signout','POST',{},cookie)).status).toBe(200);
+  expect((await request('/api/editor/config','GET',undefined,cookie,config)).status).toBe(403);
+});

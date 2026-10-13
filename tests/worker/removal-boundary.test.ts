@@ -2,7 +2,7 @@ import { env } from "cloudflare:workers";
 import { applyD1Migrations } from "cloudflare:test";
 import { beforeAll, expect, inject, it } from "vitest";
 import { bindings, fixture, retainedData } from "./removal-fixture";
-import { digest } from "../../src/core/features/auth/repository";
+import { testSessionHash as digest, testSessionFence } from "./native-fixture";
 import { createIssueInputSchema } from "../../src/core/features/issues/input";
 import { createIssueRecord } from "../../src/core/features/issues/repository";
 import { updateIssueRecord } from "../../src/core/features/issue-edit/repository";
@@ -22,10 +22,10 @@ for (const mode of ["remove", "signout", "expire"] as const)
           const hash = await digest(f.memberCookie.split("=")[1]);
           await env.DB.prepare(
             mode === "signout"
-              ? "UPDATE operator_sessions SET revoked_at=? WHERE token_hash=?"
-              : "UPDATE operator_sessions SET expires_at=? WHERE token_hash=?",
+              ? "UPDATE oa_sessions SET revoked_at=? WHERE token_hash=?"
+              : "UPDATE oa_sessions SET expires_at=? WHERE token_hash=?",
           )
-            .bind("2020-01-01T00:00:00.000Z", hash)
+            .bind(Date.parse("2020-01-01T00:00:00.000Z"), hash)
             .run();
         }
         before = await retainedData();

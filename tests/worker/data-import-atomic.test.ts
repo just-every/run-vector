@@ -1,0 +1,24 @@
+import { env } from 'cloudflare:workers';
+import { expect,it } from 'vitest';
+import { setupImport } from './data-import-fixture';
+it('[DATA-003 DATA-004] late native SQL failure and commit-time session loss publish nothing; restart resumes and rollback preserves reservations',async()=>{
+ const f=await setupImport(),value=f.input([f.row('first'),f.row('last')]),review=await f.preview(value);
+ await env.DB.prepare("CREATE TRIGGER imported_issue_fault BEFORE INSERT ON issues WHEN NEW.title='Imported last' BEGIN SELECT RAISE(ABORT,'late native failure'); END").run();
+ const created=await f.apply(value,review);expect(created.status).toBe(200);
+ expect((await f.call('/data/import/runs/'+(await created.json() as {id:string}).id+'/resume','POST',{})).status).toBe(503);
+ for(const table of ['issues','issue_activity','vector_import_revisions','ik_sources','ik_provenance'])expect((await env.DB.prepare('SELECT count(*) n FROM '+table).first())?.n).toBe(0);
+ const run=await env.DB.prepare("SELECT id,state,checkpoint,total FROM ik_jobs WHERE namespace='vector-import:reviewed-fixture'").first<{id:string;state:string;checkpoint:number;total:number}>();expect(run?.checkpoint).toBe(0);expect(run?.total).toBe(2);
+ await env.DB.prepare('DROP TRIGGER imported_issue_fault').run();
+ const restarted=await f.call('/data/import/runs/'+run!.id+'/resume','POST',{});expect(restarted.status).toBe(200);expect((await restarted.json() as {state:string}).state).toBe('completed');
+ const counter=await env.DB.prepare('SELECT last_sequence FROM issue_prefix_sequences LIMIT 1').first<number>('last_sequence');
+ expect((await f.call('/data/import/runs/'+run!.id+'/rollback','POST',{})).status).toBe(400);
+ const reversed=await f.call('/data/import/runs/'+run!.id+'/rollback','POST',{confirmed:true});expect(reversed.status).toBe(200);expect((await reversed.json() as {state:string}).state).toBe('rolled_back');
+ expect((await env.DB.prepare('SELECT count(*) n FROM issues').first())?.n).toBe(0);expect(await env.DB.prepare('SELECT last_sequence FROM issue_prefix_sequences LIMIT 1').first<number>('last_sequence')).toBe(counter);
+ const authority=f.input([f.row('authority')],'authority-race'),authorityReview=await f.preview(authority);
+ const pending=await f.apply(authority,authorityReview);expect(pending.status).toBe(200);const pendingRun=await pending.json() as {id:string};
+ await env.DB.prepare("CREATE TRIGGER imported_issue_revokes_session AFTER INSERT ON issues BEGIN UPDATE oa_sessions SET revoked_at=1 WHERE revoked_at IS NULL; END").run();
+ expect((await f.call('/data/import/runs/'+pendingRun.id+'/resume','POST',{})).status).toBe(503);expect((await env.DB.prepare('SELECT count(*) n FROM issues').first())?.n).toBe(0);
+ await env.DB.prepare('DROP TRIGGER imported_issue_revokes_session').run();
+ const succeeded=await f.call('/data/import/runs/'+pendingRun.id+'/resume','POST',{});expect(succeeded.status).toBe(200);expect((await succeeded.json() as {state:string}).state).toBe('completed');
+ expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+},180_000);

@@ -1,3 +1,5 @@
+import { restoredEffectsHeld } from '../data/restore-authority';
+import { IssueAccessError } from "../issues/access";
 import { fileSettlementDatabase, isMutationAccessError } from "../auth/mutation-database";
 import {
   confirmRemoval,
@@ -53,6 +55,17 @@ async function completeRemoval(
       await removalAttempt(env.DB, row, retryError);
       return "failed";
     }
+    const readable = await env.FILES.get(row.blob_key);
+    if (readable) {
+      await readable.body.cancel();
+      await removalAttempt(env.DB, row, retryError);
+      return "failed";
+    }
+    const listed = await env.FILES.list({prefix:row.blob_key,limit:1});
+    if (listed.objects.some(object=>object.key===row.blob_key)) {
+      await removalAttempt(env.DB, row, retryError);
+      return "failed";
+    }
     if (await confirmRemoval(env.DB, row)) return "removed";
     const current = await removalRow(env.DB, row.issue_id, row.id);
     return current?.removal_confirmed_at ? "removed" : "pending";
@@ -71,12 +84,15 @@ export async function requestFileRemoval(
   issue: { id: string; identifier: string },
   fileId: string,
   actor: string,
+  operatorIssue?: { identifier: string },
 ): Promise<FileRemovalResult> {
   try {
-    const row = await requestRemovalIntent(env.DB, issue.id, fileId, actor);
+    // Only the operator route supplies current workspace admission. Existing
+    // durable reservations and background cleanup keep their settlement path.
+    const row = await requestRemovalIntent(env.DB, issue.id, fileId, actor, operatorIssue);
     return row ? completeRemoval({ ...env, DB: fileSettlementDatabase(env.DB) }, row) : "failed";
   } catch (error) {
-    if (isMutationAccessError(error)) throw error;
+    if (isMutationAccessError(error) || error instanceof IssueAccessError) throw error;
     return "failed";
   }
 }
@@ -84,10 +100,19 @@ export async function requestFileRemoval(
 /** Called by the real scheduled Worker handler and explicit local verification. */
 export async function processFileRemovals(env: FileRemovalEnvironment) {
   const results = { processed: 0, removed: 0, pending: 0, failed: 0 };
+  if (await restoredEffectsHeld(env.DB)) return results;
   for (const row of await pendingRemovals(env.DB)) {
     const result = await completeRemoval(env, row);
     results.processed++;
     results[result]++;
   }
   return results;
+}
+
+/** Bounded postcommit recovery for just the newly deleted issue. */
+export async function processDeletedIssueFiles(env:FileRemovalEnvironment,issueId:string){
+ const settlement={...env,DB:fileSettlementDatabase(env.DB)};
+ if(await restoredEffectsHeld(settlement.DB))return;
+ const rows=(await settlement.DB.prepare('SELECT *,1 detached FROM detached_file_removals WHERE issue_id=? AND removal_confirmed_at IS NULL AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1) ORDER BY updated_at,id LIMIT 50').bind(issueId).all<FileRemovalRow>()).results;
+ for(const row of rows)await completeRemoval(settlement,row);
 }

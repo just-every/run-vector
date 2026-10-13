@@ -1,3 +1,4 @@
+import { blockerStatements, finalizeEvent } from '../notifications/events';
 import { activityRow } from "../issues/repository";
 import { DependencyError } from "./errors";
 import type { DependencyInput } from "./input";
@@ -174,6 +175,7 @@ export async function mutateDependencyRecord(
   // D1 batch is one transaction. Only its first INSERT checks graph/permissions/
   // versions. Its unique activity ID authorizes all subsequent writes, so adding
   // the edge or incrementing one endpoint cannot invalidate the other guard.
+  const event = { id: primary.id, issueId: issue.id, actor, at: timestamp };
   const writes = await binding.batch([
     binding
       .prepare(
@@ -196,6 +198,7 @@ export async function mutateDependencyRecord(
         actor,
         ...guardParams,
       ),
+    ...(operation === "remove" ? blockerStatements(binding,event,blocked) : []),
     operation === "add"
       ? binding
           .prepare(
@@ -234,6 +237,7 @@ export async function mutateDependencyRecord(
         `UPDATE issues SET version=version+1,updated_at=? WHERE id=? AND ${receipt}`,
       )
       .bind(timestamp, relatedIssue.id, ...receiptParams),
+    ...finalizeEvent(binding,event),
   ]);
   if (writes[0].meta.changes === 1) return "written";
   const current = await requireDependencyPair(

@@ -7,7 +7,7 @@ export async function check(root, env = {}) {
   return inspectOperations(root,env);
 }
 export async function mailPlan(options, dependencies) {
-  // The portable mail interface. Imported only for an explicitly requested offline doctor plan.
+  // The mail module's portable interface. Imported only for an explicitly requested offline doctor plan.
   const { mailDoctor } = await import('../mail/index.mjs');
   return mailDoctor({...options,live:false},dependencies);
 }

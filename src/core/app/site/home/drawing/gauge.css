@@ -1,0 +1,7 @@
+/* The protractor (gauge.tsx): 240px wide, ink on the paper, one cobalt dot where the work has got to. */
+.vx-gauge { display: block; width: 240px; height: 132px; overflow: visible; }
+.vx-gauge path { fill: none; stroke: var(--vx-outline); stroke-linecap: butt; }
+.vx-gauge-outer { stroke-width: 1.4; }
+.vx-gauge-base, .vx-gauge-ticks { stroke-width: 1.2; }
+.vx-gauge-done { stroke-width: 5; }
+.vx-gauge-now { fill: var(--vx-cobalt); stroke: var(--vx-paper-deep); stroke-width: 2; }

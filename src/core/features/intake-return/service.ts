@@ -1,3 +1,5 @@
+import { restoredEffectsHeld } from '../data/restore-authority';
+import { requireIssueAccess } from '../issues/access';
 import { mutationDatabase } from "../auth/mutation-database";
 import { IssueMutationError } from "../issues/errors";
 import {
@@ -13,6 +15,7 @@ export async function returnDueIntake(
 ) {
   const at = now.toISOString();
   const result = { processed: 0, returned: 0, skipped: 0 };
+  if (await restoredEffectsHeld(env.DB)) return result;
   for (const issue of await dueIntake(env.DB, at)) {
     const changed = await clearDeferral(
       env.DB,
@@ -53,6 +56,7 @@ export async function endIntakeDeferral(
       "issue_not_found",
       `Issue ${identifier} was not found.`,
     );
+  await requireIssueAccess(db,identifier,actor);
   if (issue.version !== expectedVersion) return "stale";
   if (issue.category !== "intake")
     throw new IssueMutationError(

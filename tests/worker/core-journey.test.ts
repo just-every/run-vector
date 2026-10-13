@@ -7,16 +7,15 @@ import { ensureSampleData } from '../../src/core/features/sample-data/service'
 import { vectorSampleIds as ids } from '../../sample-data/vector'
 import { testCookie } from './native-fixture'
 import { safeReturnTo } from '../../src/core/features/auth/service'
-import { digest, randomToken } from '../../src/core/features/auth/repository'
 const app = createServerApp(),
-  origin = 'https://vector.test'
+  origin = 'https://127.0.0.1:15920'
 const bindings = { ...env, APP_ORIGIN: origin, MAIL_MODE: 'local-outbox' }
 beforeAll(async () => {
   await applyD1Migrations(env.DB, inject('migrations'))
   await ensureSampleData(env.DB, new Date())
 })
 function raw(path: string, init?: RequestInit) {
-  return app.request(origin + path, init, bindings)
+  return app.request(origin + path, {...init,headers:{host:new URL(origin).host,...Object.fromEntries(new Headers(init?.headers))}}, bindings)
 }
 async function request(
   path: string,
@@ -65,7 +64,7 @@ it('[BASE-ACCESS-002] known and unknown protected Hono routes deny missing, expi
 })
 it('[BASE-ACCESS-001][BASE-ACCESS-004] signs in only an allow-listed operator with one single-use expiring native link', async () => {
   const before = await env.DB.prepare(
-    'SELECT COUNT(*) n FROM local_mail_outbox',
+    'SELECT COUNT(*) n FROM rer_mail_development_outbox',
   ).first<{ n: number }>()
   const unknown = await raw('/auth/request', {
     method: 'POST',
@@ -75,7 +74,7 @@ it('[BASE-ACCESS-001][BASE-ACCESS-004] signs in only an allow-listed operator wi
   assert.equal(unknown.status, 202)
   assert.equal(
     (
-      await env.DB.prepare('SELECT COUNT(*) n FROM local_mail_outbox').first<{
+      await env.DB.prepare('SELECT COUNT(*) n FROM rer_mail_development_outbox').first<{
         n: number
       }>()
     )?.n,
@@ -94,17 +93,24 @@ it('[BASE-ACCESS-001][BASE-ACCESS-004] signs in only an allow-listed operator wi
   assert.equal(response.status, 202)
   assert.ok(!(await response.text()).includes('token='))
   const mail = await env.DB.prepare(
-    'SELECT sign_in_url FROM local_mail_outbox ORDER BY created_at DESC LIMIT 1',
-  ).first<{ sign_in_url: string }>()
+    "SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox ORDER BY created_at DESC,sequence DESC LIMIT 1",
+  ).first<{ text: string }>()
+  const url=mail!.text.match(/https?:\/\/[^\s]+/)![0]
+  const landing=await raw(new URL(url).pathname+new URL(url).search)
+  assert.equal(landing.status,200)
+  assert.equal(landing.headers.get('set-cookie'),null)
   const callback = await raw(
-    new URL(mail!.sign_in_url).pathname + new URL(mail!.sign_in_url).search,
+    '/auth/confirm', {method:'POST',headers:{origin,'Content-Type':'application/json'},body:JSON.stringify({token:new URL(url).searchParams.get('token')})},
   )
-  assert.equal(callback.status, 302)
-  assert.equal(callback.headers.get('location'), '/app')
+  assert.equal(callback.status, 303)
+  assert.equal(callback.headers.get('location'), '/setup')
   const setCookie = callback.headers.get('set-cookie')!
   assert.match(setCookie, /HttpOnly/)
   assert.match(setCookie, /SameSite=Lax/)
   assert.match(setCookie, /Secure/)
+  const setup=await request('/api/setup/complete','POST',{confirmed:true},setCookie.split(';')[0])
+  assert.equal(setup.status,200)
+  assert.deepEqual(await setup.json(),{completed:true})
   assert.equal(
     (
       await raw('/api/session', {
@@ -116,7 +122,7 @@ it('[BASE-ACCESS-001][BASE-ACCESS-004] signs in only an allow-listed operator wi
   assert.equal(
     (
       await raw(
-        new URL(mail!.sign_in_url).pathname + new URL(mail!.sign_in_url).search,
+        new URL(url).pathname + new URL(url).search,
       )
     ).status,
     400,
@@ -125,7 +131,8 @@ it('[BASE-ACCESS-001][BASE-ACCESS-004] signs in only an allow-listed operator wi
     (
       await raw('/auth/signout', {
         method: 'POST',
-        headers: { origin, cookie: setCookie.split(';')[0] },
+        headers: { origin, cookie: setCookie.split(';')[0], 'Content-Type':'application/json' },
+        body: JSON.stringify({}),
       })
     ).status,
     200,
@@ -138,22 +145,11 @@ it('[BASE-ACCESS-001][BASE-ACCESS-004] signs in only an allow-listed operator wi
     ).status,
     401,
   )
-  const token = randomToken(),
-    now = new Date().toISOString()
-  await env.DB.prepare(
-    'INSERT INTO magic_links(id,operator_id,token_hash,return_to,expires_at,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',
-  )
-    .bind(
-      'expired-link',
-      ids.sarah,
-      await digest(token),
-      '/app',
-      new Date(Date.now() - 1000).toISOString(),
-      now,
-      now,
-    )
-    .run()
-  assert.equal((await raw('/auth/consume?token=' + token)).status, 400)
+  const token = (await import('../../vendor/base/operator-auth/crypto.mjs')).opaqueToken(), now=Date.now()
+  const {hashToken}=await import('../../vendor/base/operator-auth/crypto.mjs')
+  await env.DB.prepare("INSERT INTO oa_tokens(id,operator_id,operator_version,kind,token_hash,return_to,expires_at,created_at) VALUES(?,?,1,'magic',?,?,?,?)")
+    .bind('expired-link',ids.sarah,await hashToken(bindings.SESSION_SECRET,'link',token),'/app',now-1000,now).run()
+  assert.equal((await raw('/auth/confirm?token='+token)).status,400)
   assert.equal(safeReturnTo('/app\\evil'), '/app')
   assert.equal(safeReturnTo('/app/my-work'), '/app/my-work')
 })
@@ -356,6 +352,10 @@ it('[BASE-ACCESS-003] rejects malformed auth requests and enforces the declared 
     ).status,
     400,
   )
+  // Local requests now share an unspoofable loopback bucket. Isolate this limit
+  // assertion from earlier sign-in requests; keep the exact five-then-429 guard.
+  await env.DB.prepare('DELETE FROM access_rate_limits').run()
+  await env.DB.prepare('DELETE FROM oa_limits').run()
   const statuses = []
   for (let n = 0; n < 6; n++)
     statuses.push(

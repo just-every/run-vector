@@ -1,0 +1,140 @@
+{
+  "schema": 1,
+  "title": "Vector",
+  "groups": [
+    {
+      "id": "workspace",
+      "label": "Your workspace"
+    },
+    {
+      "id": "mail",
+      "label": "Email delivery"
+    }
+  ],
+  "fields": [
+    {
+      "name": "FIRST_OWNER_EMAIL",
+      "label": "Owner email",
+      "kind": "email",
+      "required": true,
+      "group": "workspace",
+      "prefill": "account-email"
+    },
+    {
+      "name": "FIRST_OWNER_NAME",
+      "label": "Owner name",
+      "kind": "text",
+      "required": true,
+      "group": "workspace",
+      "default": "Owner"
+    },
+    {
+      "name": "WORKSPACE_NAME",
+      "label": "Workspace name",
+      "kind": "text",
+      "required": true,
+      "group": "workspace",
+      "default": "My workspace"
+    },
+    {
+      "name": "WORKSPACE_TIMEZONE",
+      "label": "Workspace timezone",
+      "kind": "timezone",
+      "required": true,
+      "group": "workspace",
+      "default": "UTC"
+    },
+    {
+      "name": "DEFAULT_TEAM_NAME",
+      "label": "Team name",
+      "kind": "text",
+      "required": true,
+      "group": "workspace",
+      "default": "Delivery"
+    },
+    {
+      "name": "DEFAULT_TEAM_PREFIX",
+      "label": "Team prefix",
+      "kind": "text",
+      "required": true,
+      "group": "workspace",
+      "default": "VEC"
+    },
+    {
+      "name": "SESSION_SECRET",
+      "label": "Session secret",
+      "kind": "secret",
+      "required": true,
+      "ownerVisible": false,
+      "input": "managed",
+      "generate": "hex",
+      "group": "workspace"
+    },
+    {
+      "name": "SETUP_TOKEN",
+      "label": "Setup token",
+      "kind": "secret",
+      "required": true,
+      "ownerVisible": false,
+      "generate": "hex",
+      "group": "workspace",
+      "input": "managed"
+    },
+    {
+      "name": "MAIL_MODE",
+      "label": "Email delivery",
+      "kind": "select",
+      "default": "local-outbox",
+      "options": [
+        {
+          "value": "local-outbox",
+          "label": "Development outbox"
+        },
+        {
+          "value": "sendgrid",
+          "label": "SendGrid"
+        }
+      ],
+      "group": "mail"
+    },
+    {
+      "name": "MAIL_FROM",
+      "label": "Sender email",
+      "kind": "email",
+      "default": "signin@localhost.test",
+      "required": true,
+      "group": "mail"
+    },
+    {
+      "name": "SENDGRID_API_KEY",
+      "label": "SendGrid API key",
+      "kind": "secret",
+      "required": false,
+      "ownerVisible": true,
+      "input": "entered",
+      "when": {
+        "field": "MAIL_MODE",
+        "equals": "sendgrid"
+      },
+      "presentations": [
+        {
+          "when": {
+            "field": "MAIL_MODE",
+            "equals": "sendgrid"
+          },
+          "required": true
+        }
+      ],
+      "group": "mail"
+    }
+  ],
+  "steps": [
+    {
+      "type": "owner-claim",
+      "mode": "signed",
+      "emailField": "FIRST_OWNER_EMAIL",
+      "tokenField": "SETUP_TOKEN",
+      "path": "/auth/owner-claim"
+    }
+  ]
+}

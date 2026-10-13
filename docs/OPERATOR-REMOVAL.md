@@ -112,3 +112,9 @@ remain in force. Every admitted operator uses the same internal Base owner
 role, so the last-owner trigger cannot privilege one product operator. Base's
 standalone status/role endpoints are not exposed. See
 [authentication and migration details](AUTHENTICATION.md).
+
+## Issue deletion custody
+
+Issue deletion uses the same detached-file ledger, writer settlement, quota accounting and scheduled recovery as operator removal. It copies every unresolved ready, failed, pending or soft-deleted reservation before deleting attachment metadata. The native command needs a current operator session and an explicit issue version/confirmation; it does not use the narrower persisted-file settlement authority to authorize deletion. A receipt exposes only identifier and file counts/status to active operators in the original workspace. Failed physical cleanup is visible and remains recoverable. Unsettled writers remain pending even when a key is currently absent; no age timeout manufactures completion. Postcommit loss of operator authority conceals the response while preserving committed custody.
+
+Prepared issue deletion fences the complete native graph, including incoming children/dependencies, notification transport copies, source state, webhook history and detached file reservations, through Base’s public atomic erasure API. It checks absence/anonymization after all native and import writes and aborts the whole transaction on a concurrent dependent change. R2 is touched only after commit. Cleanup is complete only after settled writers and successful DELETE, HEAD, GET and exact-key LIST absence; failed or outstanding work stays visible as 202 and the every-minute scheduled handler can drain it.

@@ -1,24 +1,13 @@
 {
-  "repository": "https://github.com/runeditrun/base",
-  "commit": "8556679074cf47fed64648235bda4447ee16e2fb",
+  "revision": "8652fba6c98349e4b5ee7e7477cde506d9b93b4a",
+  "source": "Base",
   "copies": {
     "vendor/base/deploy-kit": "modules/deploy-kit",
-    "vendor/base/operations": "operations",
-    "vendor/base/edition-authoring": "edition-authoring"
+    "vendor/operations": "operations",
+    "scripts/edition-authoring": "edition-authoring"
   },
-  "policy": "Copied ESM implementations from the recorded Base commit, with the listed trigger-aware migration validation correction. Public documentation and a mail-interface comment omit historical development coordination notes. Project-specific adapters live in scripts/deployment. Runtime source snapshots select the unmodified upstream files recorded in edition.json; local effective source is covered by sources.lock.json.",
-  "adaptations": [
-    {
-      "path": "vendor/base/deploy-kit/migrations.mjs",
-      "addedHelper": "vendor/base/deploy-kit/migration-sql.mjs",
-      "baseCommit": "8556679074cf47fed64648235bda4447ee16e2fb",
-      "reason": "Replace raw transaction-keyword matching with bounded SQL token/control-state validation so legitimate CREATE TRIGGER BEGIN/END bodies and CASE expressions in immutable migrations are admitted. Preserve controller-ledger denial, reject transaction controls (including END and RELEASE), ATTACH/DETACH/VACUUM, and unterminated tokens or NUL that could swallow the appended ledger update. No SQL migration bytes change.",
-      "verification": "scripts/deployment/tests/migrations.test.mjs exercises all eleven actual Vector migrations through the controller against real SQLite, zero-write repeat, trigger enforcement and appended/hidden unsafe controls. Existing Base security and deployment tests remain unchanged."
-    },
-    {
-      "path": "scripts/deployment/provider.mjs",
-      "reason": "R2 documented explicit per_page=100, order=name/direction=asc and start_after pagination permits optional result_info without fabricating metadata. Short pages with continuation and nonincreasing names fail.",
-      "reference": "https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/list/"
-    }
+  "customizations": [],
+  "notes": [
+    "Deploy and owner runtime use exact copied modules. Product adapters own bindings and policy. Operations sits at the original deploy-kit relative import path. Base template authoring helpers are not a Vector command; scripts/edition-authoring is the sole authoring implementation."
   ]
 }

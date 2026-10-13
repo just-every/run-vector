@@ -1,3 +1,9 @@
+import { createIntegrationReceivers } from '../features/integrations/receiver-routes';
+import { createIntegrationApi } from '../features/integrations/api';
+import { editorConfigResponse } from '../editor/config.server';
+import { signedOwnerClaimConfigured,ownerClaimResponse } from '../features/auth/owner-claim.server';
+import { developmentOutboxResponse } from '../features/auth/development.server';
+import { establishRestoredOwner } from '../features/data/restore-authority';
 import { BootstrapConfigurationError } from "../features/bootstrap/config";
 import { bootstrapWorkspace } from "../features/bootstrap/repository";
 import { RequestBodyError } from "./input";
@@ -30,6 +36,7 @@ export function createServerApp() {
         { error: "configuration_missing", message: "APP_ORIGIN is required." },
         503,
       );
+    if(context.req.path==='/auth/owner-claim')return ownerClaimResponse(context.env,context.req.raw);
     if (context.env.SEED_SAMPLE_DATA === "true") {
       if (!isLocalOrigin(context.env.APP_ORIGIN))
         return context.json(
@@ -44,10 +51,13 @@ export function createServerApp() {
     }
     if (
       context.env.SEED_SAMPLE_DATA !== "true" &&
-      context.env.FIRST_OWNER_EMAIL
+      context.env.FIRST_OWNER_EMAIL &&
+      (!signedOwnerClaimConfigured(context.env)||await context.env.DB.prepare("SELECT 1 FROM oa_operators LIMIT 1").first())
     ) {
       try {
         await bootstrapWorkspace(context.env.DB, context.env);
+        if (context.req.path === '/health')
+          await establishRestoredOwner(context.env.DB, context.env.FIRST_OWNER_EMAIL);
       } catch (error) {
         if (
           error instanceof BootstrapConfigurationError ||
@@ -83,7 +93,11 @@ export function createServerApp() {
           503,
         );
   });
+  app.all("/__dev/outbox", async c => await developmentOutboxResponse(c.env, c.req.raw) ?? c.notFound());
   app.route("/auth", createAuthApp());
+  app.all("/api/editor/config",async c=>editorConfigResponse(c.env,c.req.raw));
+  app.route("/api/integrations",createIntegrationReceivers());
+  app.route("/api/v1",createIntegrationApi());
   app.route("/api", createApiApp());
 
   return app;

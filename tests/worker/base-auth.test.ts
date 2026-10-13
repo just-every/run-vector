@@ -1,8 +1,8 @@
+import {legacyCookie} from './historical-auth-fixture'
 import { env } from 'cloudflare:workers'
 import { applyD1Migrations } from 'cloudflare:test'
 import { beforeAll, expect, inject, it, vi } from 'vitest'
 import { actor, bindings, invite, mailToken, request, signIn } from './base-auth-fixture'
-import { testCookie } from './native-fixture'
 import { beforeCommit } from './removal-interleaving'
 
 beforeAll(async () => applyD1Migrations(env.DB, inject('migrations')))
@@ -17,7 +17,7 @@ it('[OPS-001 OPS-002 TEAM-002] configured bootstrap atomically maps one equal Ba
   expect((await env.DB.prepare('SELECT role,status FROM oa_operators').first())).toEqual({ role: 'owner', status: 'active' })
   expect((await request('/auth/bootstrap', 'POST', { token: 'not-enabled' })).status).toBe(404)
 })
-it('[BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once with the stored return path', async () => {
+it('[BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once and unfinished owner review takes precedence', async () => {
   expect((await request('/auth/magic-link','POST',{email: bindings.FIRST_OWNER_EMAIL,returnTo:'/app/settings'})).status).toBe(202)
   const token = await mailToken(bindings.FIRST_OWNER_EMAIL!)
   for (const method of ['GET','HEAD']) {
@@ -28,10 +28,12 @@ it('[BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-f
   expect((await env.DB.prepare('SELECT count(*) n FROM oa_sessions').first())?.n).toBe(0)
   const response = await request('/auth/confirm','POST',{token})
   expect(response.status).toBe(303)
-  expect(response.headers.get('location')).toBe('/app/settings')
+  expect(response.headers.get('location')).toBe('/setup')
   ownerCookie = response.headers.get('set-cookie')!.split(';')[0]
-  expect(ownerCookie.startsWith('operator_session_local=')).toBe(true)
+  expect(ownerCookie.startsWith('operator_session_local_15920=')).toBe(true)
   ownerId = await actor(ownerCookie)
+  expect((await request('/api/setup/complete','POST',{confirmed:true},ownerCookie)).status).toBe(200)
+
   expect((await request('/auth/confirm','POST',{token})).status).toBe(400)
   expect((await request('/auth/confirm?token='+token)).status).toBe(400)
 })
@@ -49,7 +51,7 @@ it('[OPS-001 OPS-002 BASE-ACCESS-002] unauthorized invites make no records; equa
 it('[BASE-ACCESS-001] remote configuration fails visibly and legacy local credentials cannot authenticate a remote deployment', async () => {
   const remote = { APP_ORIGIN: 'https://vector.example.test', MAIL_MODE: 'sendgrid', MAIL_PROVIDER:'sendgrid', MAIL_API_KEY:'synthetic-test-key' }
   expect((await request('/auth/request','POST',{email:bindings.FIRST_OWNER_EMAIL},'',{...remote,SESSION_SECRET:undefined})).status).toBe(503)
-  expect((await request('/api/session','GET',undefined,await testCookie(env.DB,ownerId),remote)).status).toBe(401)
+  expect((await request('/api/session','GET',undefined,await legacyCookie(ownerId),remote)).status).toBe(401)
   expect((await request('/auth/consume?token='+'a'.repeat(64),'GET',undefined,'',remote)).status).toBe(404)
 })
 it('[BASE-ACCESS-001] real Base SendGrid serialization and rejected/uncertain delivery revoke links without retry or local fallback', async () => {
@@ -133,7 +135,7 @@ it('[OPS-002 OPS-004] setup owner self-removal preserves the equal successor and
   const successorId = await actor(successor)
   const removed = await request('/api/settings/operators/'+ownerId,'DELETE',undefined,ownerCookie)
   expect(removed.status).toBe(200)
-  expect(removed.headers.get('set-cookie')).toContain('operator_session_local=;')
+  expect(removed.headers.get('set-cookie')).toContain('operator_session_local_15920=;')
   expect((await request('/api/session','GET',undefined,ownerCookie)).status).toBe(401)
   expect((await request('/api/settings/operators/'+successorId,'DELETE',undefined,successor)).status).toBe(409)
   expect((await env.DB.prepare("SELECT count(*) n FROM oa_operators WHERE status='active' AND role='owner'").first())?.n).toBe(1)

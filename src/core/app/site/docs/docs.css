@@ -1,0 +1,94 @@
+/* The docs site, drawn from the 12ui pick (evidence brand-vector-s3 12ui/pick-docs-A.png): the homepage's header and
+   footer, the page list on the left with a cobalt rule on the current page, a reading column, "On this page" on the
+   right. Code sits on a drawn card (ink outline, hatched shadow) like the homepage's product cards. */
+.vx-docs-grid { display: grid; grid-template-columns: 230px minmax(0, 1fr) 220px; gap: 0 clamp(32px, 4vw, 64px); padding-bottom: 96px; }
+.vx-docs-sidebar { position: sticky; top: 0; align-self: start; max-height: 100vh; overflow-y: auto; padding: 48px 0 40px; }
+.vx-docs-menu { display: none; }
+.vx-docs-nav { font-size: 16px; }
+.vx-docs-nav-home { display: inline-block; margin: 0 0 26px; color: var(--vx-body); text-decoration: none; }
+.vx-docs-nav-home:hover, .vx-docs-nav-home[aria-current="page"] { color: var(--vx-ink); text-decoration: underline; text-underline-offset: 5px; }
+.vx-docs-nav-section + .vx-docs-nav-section { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--vx-rule); }
+.vx-docs-nav-section p { margin: 0 0 10px; color: var(--vx-muted); font-size: 13px; font-weight: 620; letter-spacing: 0.12em; text-transform: uppercase; }
+.vx-docs-nav ul { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.vx-docs-nav li a { display: block; padding: 6px 0 6px 14px; border-left: 2px solid transparent; color: var(--vx-ink); line-height: 1.35; text-decoration: none; }
+.vx-docs-nav li a:hover { border-left-color: var(--vx-rule); }
+.vx-docs-nav li a[aria-current="page"] { border-left-color: var(--vx-cobalt); color: var(--vx-cobalt-ink); font-weight: 560; }
+
+.vx-docs-main { min-width: 0; padding-top: 48px; }
+.vx-docs-article { max-width: 700px; }
+.vx-docs-eyebrow { margin: 0 0 12px; color: var(--vx-muted); font-size: 14px; font-weight: 620; letter-spacing: 0.14em; text-transform: uppercase; }
+.vx-docs-article h1 { margin: 0; font-size: clamp(38px, 4vw, 56px); font-weight: 640; line-height: 1.04; letter-spacing: -0.034em; text-wrap: balance; }
+.vx-docs-summary { margin: 20px 0 0; color: var(--vx-body); font-size: 20px; line-height: 1.5; text-wrap: pretty; }
+
+.vx-docs-body { font-size: 17.5px; line-height: 1.65; color: var(--vx-ink); }
+.vx-docs-body > * { margin: 0; }
+.vx-docs-body p, .vx-docs-body ul, .vx-docs-body ol, .vx-docs-body .vx-docs-code, .vx-docs-body .vx-docs-table { margin-top: 18px; }
+.vx-docs-body > p:first-child { margin-top: 20px; color: var(--vx-body); font-size: 20px; line-height: 1.5; }
+.vx-docs-body :is(h2, h3) { text-wrap: balance; }
+.vx-docs-body h2 { margin-top: 56px; font-size: 30px; font-weight: 640; line-height: 1.18; letter-spacing: -0.028em; scroll-margin-top: 24px; }
+.vx-docs-body h3 { margin-top: 34px; font-size: 21px; font-weight: 620; line-height: 1.3; letter-spacing: -0.015em; scroll-margin-top: 24px; }
+.vx-docs-body h2 + p, .vx-docs-body h3 + p { margin-top: 12px; }
+.vx-docs-body p, .vx-docs-body li { text-wrap: pretty; }
+.vx-docs-body a { color: var(--vx-ink); font-weight: 560; text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; overflow-wrap: anywhere; }
+.vx-docs-body a:hover { text-decoration-color: var(--vx-cobalt); }
+.vx-docs-body strong { font-weight: 640; }
+.vx-docs-body ul { padding-left: 22px; }
+.vx-docs-body li + li { margin-top: 8px; }
+.vx-docs-body ol { padding: 0; list-style: none; counter-reset: vx-step; }
+.vx-docs-body ol > li { position: relative; padding-left: 46px; counter-increment: vx-step; }
+.vx-docs-body ol > li::before { content: counter(vx-step); position: absolute; left: 0; top: 0.05em; display: grid; place-items: center; width: 30px; height: 30px; border: 1.3px solid var(--vx-outline); border-radius: 50%; background: var(--vx-card); font-size: 15px; font-weight: 600; }
+.vx-docs-body code { padding: 1px 6px; border-radius: 6px; background: var(--vx-paper-deep); font-family: var(--vx-mono); font-size: 0.84em; }
+.vx-docs-body code > span { white-space: nowrap; }
+.vx-docs-code { position: relative; z-index: 0; border: 1.4px solid var(--vx-outline); border-radius: var(--vx-radius-card); background: var(--vx-card); }
+.vx-docs-code::before { content: ""; position: absolute; z-index: -1; inset: 6px -7px -7px 6px; border-radius: var(--vx-radius-card); background: repeating-linear-gradient(-45deg, var(--vx-hatch) 0 1px, transparent 1px 4.5px); }
+.vx-docs-code::after { content: ""; position: absolute; z-index: -1; inset: 0; border-radius: inherit; background: var(--vx-card); }
+.vx-docs-code-head { padding: 10px 18px 9px; border-bottom: 1px solid rgba(35, 38, 44, 0.22); color: var(--vx-muted); font-size: 13px; font-weight: 600; }
+.vx-docs-code pre { margin: 0; padding: 14px 18px 16px; overflow-x: auto; }
+.vx-docs-code pre code { padding: 0; background: none; font-size: 15px; line-height: 1.7; overflow-wrap: normal; }
+.vx-docs-table { overflow-x: auto; }
+.vx-docs-table table { border-collapse: collapse; font-size: 16px; }
+.vx-docs-table th, .vx-docs-table td { padding: 8px 12px; border-bottom: 1px solid var(--vx-rule); text-align: left; vertical-align: top; }
+.vx-docs-table th { font-weight: 620; }
+
+.vx-docs-pager { display: flex; justify-content: space-between; gap: 16px; max-width: 700px; margin-top: 64px; padding-top: 28px; border-top: 1px solid var(--vx-rule); }
+.vx-docs-pager a { display: grid; gap: 4px; max-width: 48%; padding: 16px 22px; border: 1.4px solid var(--vx-outline); border-radius: var(--vx-radius-card); background: var(--vx-card); color: var(--vx-ink); font-size: 18px; font-weight: 600; line-height: 1.3; text-decoration: none; transition: transform 0.16s var(--vx-ease-out); }
+.vx-docs-pager a:hover { transform: translateY(-1px); }
+.vx-docs-pager small { color: var(--vx-muted); font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+.vx-docs-pager-next { margin-left: auto; text-align: right; }
+.vx-docs-pager-next span { color: var(--vx-cobalt-ink); }
+.vx-docs-pager-next span::after { content: " →"; }
+.vx-docs-source { max-width: 700px; margin: 28px 0 0; font-size: 15px; }
+.vx-docs-source .vx-link { color: var(--vx-body); font-weight: 500; text-underline-offset: 5px; }
+
+.vx-docs-aside { padding-top: 52px; }
+.vx-docs-toc { position: sticky; top: 24px; }
+.vx-docs-toc p { margin: 0 0 12px; color: var(--vx-muted); font-size: 13px; font-weight: 620; letter-spacing: 0.12em; text-transform: uppercase; }
+.vx-docs-toc ul { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; font-size: 15px; line-height: 1.35; }
+.vx-docs-toc a { color: var(--vx-body); text-decoration: none; }
+.vx-docs-toc a:hover { color: var(--vx-ink); text-decoration: underline; text-underline-offset: 4px; }
+
+.vx-docs-index-section { margin-top: 48px; }
+.vx-docs-index-section h2 { margin: 0 0 14px; color: var(--vx-muted); font-size: 14px; font-weight: 620; letter-spacing: 0.14em; text-transform: uppercase; }
+.vx-docs-index-list { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.vx-docs-index-list a { display: grid; gap: 4px; padding: 16px 20px; border: 1.4px solid var(--vx-outline); border-radius: var(--vx-radius-card); background: var(--vx-card); color: var(--vx-ink); text-decoration: none; transition: transform 0.16s var(--vx-ease-out); }
+.vx-docs-index-list a:hover { transform: translateY(-1px); }
+.vx-docs-index-list b { font-size: 19px; font-weight: 620; }
+.vx-docs-index-list span { color: var(--vx-body); font-size: 16px; line-height: 1.5; text-wrap: pretty; }
+
+@media (max-width: 1180px) {
+  .vx-docs-grid { grid-template-columns: 210px minmax(0, 1fr); }
+  .vx-docs-aside { display: none; }
+}
+@media (max-width: 820px) {
+  .vx-docs-grid { grid-template-columns: minmax(0, 1fr); }
+  .vx-docs-sidebar { display: none; }
+  .vx-docs-menu { display: block; margin-top: 20px; border: 1.3px solid var(--vx-outline); border-radius: var(--vx-radius-card); background: var(--vx-card); }
+  .vx-docs-menu summary { min-height: 48px; padding: 12px 16px; font-size: 16px; font-weight: 560; cursor: pointer; }
+  .vx-docs-menu .vx-docs-nav { padding: 4px 16px 18px; }
+  .vx-docs-main { padding-top: 32px; }
+  .vx-docs-body { font-size: 17px; }
+  .vx-docs-body > p:first-child, .vx-docs-summary { font-size: 18.5px; }
+  .vx-docs-body h2 { margin-top: 44px; font-size: 26px; }
+  .vx-docs-pager { flex-direction: column; }
+  .vx-docs-pager a { max-width: none; }
+}

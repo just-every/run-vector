@@ -1,0 +1,38 @@
+import {env} from 'cloudflare:workers';
+import {applyD1Migrations} from 'cloudflare:test';
+import {beforeAll,expect,inject,it} from 'vitest';
+import {bindings,invite,mailToken,request,signIn} from './base-auth-fixture';
+import {beforeCommit} from './removal-interleaving';
+beforeAll(async()=>applyD1Migrations(env.DB,inject('migrations')));
+it('[SETUP-001] first-run review belongs to the recorded owner, survives restart and refuses revoked-session completion atomically',async()=>{
+ const prior=(env as unknown as {ARCHIVE_TARGET_DB:D1Database}).ARCHIVE_TARGET_DB;
+ const migrations=inject('migrations');
+ await applyD1Migrations(prior,migrations.filter(m=>m.name!=='0029_first_run_setup.sql'));
+ expect((await request('/health','GET',undefined,'',{DB:prior})).status).toBe(200);
+ const before=await prior.prepare('SELECT workspace_id,setup_operator_id FROM workspace_installation').first();
+ await applyD1Migrations(prior,migrations);
+ expect(await prior.prepare('SELECT workspace_id,setup_operator_id FROM workspace_installation').first()).toEqual(before);
+ expect((await prior.prepare('SELECT setup_completed_at FROM workspace_installation').first())?.setup_completed_at).not.toBeNull();
+ expect((await request('/api/setup')).status).toBe(401);
+ const owner=await signIn();
+ expect(await (await request('/api/setup','GET',undefined,owner)).json()).toMatchObject({owner:true,completed:false,workspace:bindings.WORKSPACE_NAME});
+ const peer=await invite('peer@setup.test',owner);
+ expect((await request('/api/setup/complete','POST',{confirmed:true},peer)).status).toBe(403);
+ expect((await request('/api/setup/complete','POST',{confirmed:false},owner)).status).toBe(400);
+ await request('/auth/request','POST',{email:bindings.FIRST_OWNER_EMAIL,returnTo:'/app/settings'});
+ const redirect=await request('/auth/confirm','POST',{token:await mailToken(bindings.FIRST_OWNER_EMAIL!)});
+ expect(redirect.headers.get('location')).toBe('/setup');
+ const db=beforeCommit(sql=>sql.includes('UPDATE workspace_installation'),async()=>{
+  await env.DB.prepare('UPDATE oa_sessions SET revoked_at=? WHERE token_hash IN(SELECT token_hash FROM oa_sessions WHERE operator_id IN(SELECT auth_id FROM vector_auth_operators WHERE operator_id=(SELECT setup_operator_id FROM workspace_installation)))').bind(Date.now()).run();
+ });
+ expect((await request('/api/setup/complete','POST',{confirmed:true},owner,{DB:db})).status).toBe(401);
+ expect((await env.DB.prepare('SELECT setup_completed_at FROM workspace_installation').first())?.setup_completed_at).toBeNull();
+ const renewed=await signIn();
+ expect(await (await request('/api/setup/complete','POST',{confirmed:true},renewed)).json()).toEqual({completed:true});
+ expect(await (await request('/api/setup','GET',undefined,await signIn())).json()).toMatchObject({owner:true,completed:true});
+ expect((await request('/api/setup/complete','POST',{confirmed:true},renewed)).status).toBe(200);
+ expect((await request('/auth/request','POST',{email:bindings.FIRST_OWNER_EMAIL,returnTo:'/app/settings'})).status).toBe(202);
+ const completedToken=await mailToken(bindings.FIRST_OWNER_EMAIL!);
+ expect((await request('/auth/confirm','POST',{token:completedToken})).headers.get('location')).toBe('/app/settings');
+ expect((await request('/auth/confirm','POST',{token:completedToken})).status).toBe(400);
+});

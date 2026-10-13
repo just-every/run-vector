@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useMentionOperators } from "../../notifications/ui/mention-operators";
+import { remarkMentions } from "../../notifications/mention-markdown";
 import Markdown, { type Components } from "react-markdown";
 
 // User text cannot introduce a scheme, a network-path reference, or an encoded
@@ -123,10 +125,22 @@ const components: Components = {
 };
 
 /** CommonMark text with no raw HTML and no automatic remote image requests. */
-export function SafeMarkdown({ children }: { children: string }) {
+export function SafeMarkdown({
+  children,
+  activeOperatorIds,
+}: {
+  children: string;
+  activeOperatorIds?: readonly string[];
+}) {
+  const operators = useMentionOperators();
+  const operatorIds =
+    activeOperatorIds ??
+    operators?.data?.operators.map((operator) => operator.id) ??
+    [];
   return (
     <div className="safe-markdown">
       <Markdown
+        remarkPlugins={[[remarkMentions, { operatorIds }]]}
         skipHtml
         components={components}
         urlTransform={(url, key) => safeUrl(url, key === "src")}

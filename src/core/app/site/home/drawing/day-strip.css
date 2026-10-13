@@ -1,0 +1,17 @@
+/* The calendar strip (day-strip.tsx): seven square cells, a cobalt return arc above them and the return time under the
+   last. --vx-cell and --vx-day-gap are set by the deferral section. */
+.vx-days { --vx-cell: 60px; --vx-day-gap: 8px; --vx-arc-h: 52px; position: relative; width: calc(7 * var(--vx-cell) + 6 * var(--vx-day-gap)); padding: var(--vx-arc-h) 0 46px; }
+.vx-days-cells { display: grid; grid-template-columns: repeat(7, var(--vx-cell)); gap: var(--vx-day-gap); margin: 0; padding: 0; list-style: none; }
+.vx-day { position: relative; aspect-ratio: 1; box-sizing: border-box; border: 1.2px solid var(--vx-outline); border-radius: 0; background: var(--vx-card); }
+.vx-day-n { position: absolute; left: 8px; top: 6px; padding: 0 3px 0 0; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.3; background: var(--vx-card); }
+.vx-day--from::after { content: ""; position: absolute; left: 50%; bottom: 10px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: var(--vx-outline); }
+.vx-day--away { background: repeating-linear-gradient(-45deg, var(--vx-hatch) 0 1px, transparent 1px 5px), var(--vx-card); }
+.vx-day--back { border: 1.6px solid var(--vx-cobalt); background: var(--vx-cobalt-soft); color: var(--vx-cobalt-ink); }
+.vx-day--back .vx-day-n { background: var(--vx-cobalt-soft); }
+
+.vx-days-arc { position: absolute; left: calc(var(--vx-cell) / 2); top: 0; width: calc(100% - var(--vx-cell)); height: var(--vx-arc-h); overflow: visible; }
+.vx-days-arc path { fill: none; stroke: var(--vx-cobalt); stroke-width: 4; stroke-linecap: round; }
+.vx-days-head { position: absolute; top: calc(var(--vx-arc-h) - 12px); left: calc(6 * (var(--vx-cell) + var(--vx-day-gap)) + var(--vx-cell) / 2 - 6px); width: 12px; height: 12px; fill: var(--vx-cobalt); }
+.vx-days-time { position: absolute; bottom: 0; left: calc(6 * (var(--vx-cell) + var(--vx-day-gap)) + var(--vx-cell) / 2); display: flex; flex-direction: column; align-items: center; transform: translateX(-50%); }
+.vx-days-time .vx-leader { height: 16px; }
+.vx-days-time span:last-child { margin-top: 4px; font-family: var(--vx-mono); font-size: 15px; line-height: 1.4; white-space: nowrap; }

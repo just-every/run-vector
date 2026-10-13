@@ -1,3 +1,5 @@
+import {nativeSessionAdmission} from "../auth/projection-admission";
+import { requireOperator } from "../auth/service";
 import type { Context } from "hono";
 import type { AppEnvironment } from "../../app/bindings";
 import { readRequestJson } from "../../app/input";
@@ -9,6 +11,57 @@ import {
   requireDependencyPair,
   type DependencyOperation,
 } from "./repository";
+
+async function requireDependencyProjection(
+  context: Context<AppEnvironment>,
+  identifier: string,
+  relatedIdentifier: string,
+  actor: string,
+) {
+  const operator = await requireOperator(context.env, context.req.raw);
+  if (!operator || operator.id !== actor)
+    throw new DependencyError(
+      "unauthenticated",
+      "Sign in again to continue.",
+      401,
+    );
+  // One statement admits both endpoints against the same current actor after
+  // native session reauthorization. No asynchronous primary-only guard follows.
+  const sessionAdmission = nativeSessionAdmission(operator.fence);
+  const pair = await context.env.DB.prepare(
+    `SELECT actor.removed_at,
+      EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id
+        WHERE i.identifier=? AND t.workspace_id=actor.workspace_id) AS issue_admitted,
+      EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id
+        WHERE i.identifier=? AND t.workspace_id=actor.workspace_id) AS related_admitted,
+      ${sessionAdmission.sql} AS session_admitted
+     FROM operators actor WHERE actor.id=?`,
+  )
+    .bind(
+      identifier,
+      relatedIdentifier,
+      ...sessionAdmission.values,
+      actor,
+    )
+    .first<{
+      removed_at: string | null;
+      issue_admitted: number;
+      related_admitted: number;
+      session_admitted: number;
+    }>();
+  if (!pair || pair.removed_at !== null || !pair.session_admitted)
+    throw new DependencyError(
+      "unauthenticated",
+      "An active native operator is required.",
+      401,
+    );
+  if (!pair.issue_admitted || !pair.related_admitted)
+    throw new DependencyError(
+      "issue_not_found",
+      "An issue is unavailable.",
+      404,
+    );
+}
 
 async function dependencyRoute(
   context: Context<AppEnvironment>,
@@ -47,8 +100,8 @@ async function dependencyRoute(
     ]);
     // Private conflict DTOs and successful reads are reauthorized after async
     // projection work, including a mid-request removal/workspace change.
-    await requireDependencyPair(
-      context.env.DB,
+    await requireDependencyProjection(
+      context,
       identifier,
       parsed.data.relatedIdentifier,
       actor,

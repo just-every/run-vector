@@ -2,15 +2,15 @@
   display: grid;
   min-height: 100svh;
   grid-template-columns: 14.5rem minmax(0, 1fr);
-  background: #10111a;
+  background: var(--app-paper);
 }
 .app-sidebar {
   display: flex;
   min-height: 100%;
   flex-direction: column;
-  border-right: 1px solid rgb(255 255 255 / 7%);
+  border-right: 1px solid rgb(23 26 32 / 11%);
   padding: 1.15rem 0.7rem;
-  background: #0d0e15;
+  background: var(--app-paper);
 }
 .app-brand {
   display: block;
@@ -18,11 +18,20 @@
   text-decoration: none;
 }
 .app-brand .vector-mark {
-  font-size: 1.15rem;
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--app-ink);
+  font-size: 1.45rem;
+  font-weight: 620;
+  letter-spacing: -0.025em;
+  line-height: 1;
 }
 .app-brand .vector-mark svg {
-  width: 1.35rem;
-  height: 1.3rem;
+  width: 0.811em;
+  height: 0.73em;
+  flex: none;
 }
 .app-nav {
   display: grid;
@@ -35,22 +44,23 @@
   gap: 0.75rem;
   border-radius: 0.48rem;
   padding: 0.55rem 0.7rem;
-  color: #9e9aa9;
-  font-size: 0.9rem;
+  color: var(--app-ink);
+  font-size: 0.95rem;
   text-decoration: none;
 }
 .app-nav-link:hover {
   color: var(--color-foreground);
-  background: rgb(255 255 255 / 5%);
+  background: rgb(23 26 32 / 8%);
 }
 .app-nav-link.is-active {
   color: var(--color-foreground);
-  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
-  box-shadow: inset 2px 0 var(--color-accent);
+  background: var(--app-cobalt-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  font-weight: 560;
 }
 .app-nav-link > span:first-child {
   width: 1.1rem;
-  color: #c4b3ff;
+  color: var(--app-ink);
   font-size: 1.05rem;
   text-align: center;
 }
@@ -61,7 +71,7 @@
   gap: 0.65rem;
   margin-top: auto;
   padding: 0.65rem 0.7rem;
-  color: #888491;
+  color: var(--app-muted);
   font-size: 0.75rem;
 }
 .app-nav-actions {
@@ -75,72 +85,78 @@
   min-height: 2.75rem;
   align-items: center;
   gap: 0.6rem;
-  border: 1px solid rgb(255 255 255 / 10%);
+  border: 1px solid rgb(23 26 32 / 15%);
   border-radius: 0.48rem;
   padding: 0.5rem 0.7rem;
-  color: #c4bfcc;
-  background: rgb(255 255 255 / 3%);
+  color: var(--app-body);
+  background: rgb(23 26 32 / 4%);
   font-size: 0.78rem;
   text-align: left;
   text-decoration: none;
 }
 .app-search-trigger:hover {
-  border-color: rgb(255 255 255 / 18%);
-  color: #eee8f1;
+  border-color: rgb(23 26 32 / 27%);
+  color: var(--app-ink);
 }
 .app-search-trigger > span:first-child {
-  color: #c5b2ff;
+  color: var(--app-muted);
   font-size: 1rem;
 }
 .app-search-trigger kbd {
   margin-left: auto;
-  border: 1px solid rgb(255 255 255 / 10%);
+  border: 1px solid var(--app-line-strong);
   border-radius: 0.26rem;
-  padding: 0.12rem 0.28rem;
-  color: #8f8998;
+  padding: 0.12rem 0.32rem;
+  color: var(--app-muted);
   font-family: inherit;
-  font-size: 0.59rem;
+  font-size: 0.75rem;
 }
 .app-new-issue-link {
   justify-content: center;
-  border-color: color-mix(in srgb, var(--color-accent) 52%, transparent);
-  color: #f5f1ff;
-  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
-  font-weight: 700;
+  border-color: var(--app-ink);
+  border-radius: 999px;
+  color: var(--app-on-ink);
+  background: var(--app-ink);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 .app-new-issue-link:hover {
-  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  box-shadow: 0 10px 22px -14px rgb(23 26 32 / 70%);
 }
 .app-avatar {
   display: grid;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.9rem;
+  height: 1.9rem;
   place-items: center;
+  border: 1.4px solid var(--app-ink);
   border-radius: 50%;
-  color: #1e172f;
-  background: #c8b5ff;
-  font-size: 0.56rem;
-  font-weight: 800;
+  color: var(--app-ink);
+  background: var(--app-field);
+  font-size: .75rem;
+  font-weight: 650;
 }
 .app-stage {
   min-width: 0;
   min-height: 100svh;
-  background: #12131d;
+  background: var(--app-paper);
 }
 .app-mobile-nav {
   display: none;
 }
 
 @media (max-width: 46rem) {
+  :root {
+    --mobile-navigation-height: calc(3.85rem + env(safe-area-inset-bottom));
+  }
   .app-shell {
     display: block;
-    padding-bottom: 4.8rem;
+    padding-bottom: var(--mobile-navigation-height);
   }
   .app-sidebar {
     display: none;
   }
   .app-stage {
-    min-height: calc(100svh - 4.8rem);
+    min-height: calc(100svh - var(--mobile-navigation-height));
   }
   .app-mobile-nav {
     position: fixed;
@@ -149,29 +165,207 @@
     bottom: 0;
     left: 0;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
-    border-top: 1px solid rgb(255 255 255 / 10%);
-    padding: 0.4rem max(0.4rem, env(safe-area-inset-right))
-      calc(0.4rem + env(safe-area-inset-bottom))
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    border-top: 1px solid rgb(23 26 32 / 15%);
+    padding: 0.35rem max(0.4rem, env(safe-area-inset-right))
+      calc(0.35rem + env(safe-area-inset-bottom))
       max(0.4rem, env(safe-area-inset-left));
-    background: rgb(13 14 21 / 95%);
+    background: rgb(244 240 230 / 95%);
     backdrop-filter: blur(18px);
   }
   .app-mobile-nav .app-nav-link {
-    min-height: 3.65rem;
+    min-height: 3rem;
     flex-direction: column;
     justify-content: center;
     gap: 0.12rem;
     border: 0;
     padding: 0.25rem;
-    color: #9e9aa9;
+    color: var(--app-muted);
     background: transparent;
-    font-size: 0.61rem;
+    font-size: .75rem;
   }
   .app-mobile-nav .app-nav-link > span:first-child {
     height: 1.2rem;
   }
 }
 
-.app-settings-mobile { display: none; }
-@media (max-width: 700px) { .app-settings-mobile { display: block; padding: .8rem 1rem; text-align: right; color: #c8b8ea; } }
+.app-settings-mobile {
+  display: none;
+}
+@media (max-width: 46rem) {
+  .app-settings-mobile {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 44px;
+    padding: 0 1rem;
+    color: var(--app-cobalt-ink);
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 46rem) {
+  .app-mobile-nav button.app-nav-link {
+    border: 1px solid var(--app-line-strong);
+    border-radius: 0.45rem;
+    background: var(--app-field);
+  }
+}
+
+.app-settings-mobile > span {
+  margin-right: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.app-settings-mobile a,
+.app-settings-mobile button,
+.app-sidebar-foot button {
+  min-height: 36px;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.35rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+  text-decoration: none;
+}
+.app-settings-mobile a[aria-current="page"] {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  background: var(--app-field);
+}
+.app-navigation-pending {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--app-line-strong);
+  background: var(--app-field);
+  color: var(--app-ink);
+}
+.app-navigation-pending button {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.app-account-error {
+  margin: 0.5rem 1rem;
+  padding: 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--app-danger) 45%, transparent);
+  border-radius: 0.35rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+}
+
+@media (max-width: 46rem) {
+  .app-mobile-nav .app-nav-link {
+    font-size: .75rem;
+    padding-inline: 0.1rem;
+  }
+  .app-mobile-nav .app-nav-link.is-active {
+    color: var(--app-ink);
+    background: var(--app-paper-deep);
+    outline: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  }
+}
+@media (max-width: 46rem) {
+  .app-mobile-nav {
+    gap: 0;
+  }
+  .app-mobile-nav .app-nav-link > span:nth-child(2) {
+    white-space: nowrap;
+  }
+}
+.saved-view-navigation {
+  margin-top: 1rem;
+  border-top: 1px solid var(--app-line-strong);
+  padding-top: 0.7rem;
+}
+.saved-view-navigation h2 {
+  color: var(--app-muted);
+  font-size: 0.75rem;
+  margin: 0.25rem 0.7rem;
+}
+.saved-view-navigation a {
+  min-height: 44px;
+  box-sizing: border-box;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem;
+  color: var(--app-body);
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.saved-view-navigation a:hover {
+  background: var(--app-field);
+}
+.saved-view-navigation small {
+  color: var(--app-muted);
+}
+.saved-view-navigation p {
+  color: var(--app-muted);
+  font-size: 0.75rem;
+  margin: 0.5rem 0.7rem;
+}
+.app-mobile-views {
+  display: none;
+}
+@media (max-width: 46rem) {
+  .app-mobile-views {
+    display: block;
+    margin: 0.5rem 1rem;
+    color: var(--app-body);
+    border: 1px solid var(--app-line-strong);
+    border-radius: 0.4rem;
+  }
+  .app-mobile-views summary {
+    min-height: 44px;
+    padding: 0.7rem;
+    cursor: pointer;
+  }
+  .app-mobile-views .saved-view-navigation {
+    margin: 0;
+    padding: 0.5rem;
+  }
+}
+.saved-view-navigation button {
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.35rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+}
+.saved-view-navigation a.is-active {
+  color: var(--app-ink);
+  background: var(--app-paper-deep);
+  outline: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+}
+.saved-view-navigation a.is-active small {
+  color: var(--app-body);
+}
+
+/* Labels keep their user colour as a tint and an edge, so they sit under the one accent rather than outshout it. */
+.label-chip {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--label) 60%, var(--app-card));
+  border-radius: 0.4rem;
+  background: color-mix(in srgb, var(--label) 18%, var(--app-card));
+  color: var(--app-ink);
+  font-size: 0.8rem;
+  line-height: 1.35;
+}

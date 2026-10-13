@@ -13,7 +13,7 @@ export function vectorPlan(artifact, configuration, origin) {
   assert(artifact.migrations.every(item => item.binding === 'DB'), 'unexpected-migration-binding');
   return validatePlan({ version: 1, worker, compatibilityDate: '2026-09-08', compatibilityFlags: ['nodejs_compat'],
     d1: [{ binding: 'DB', name: `${worker}-db`, migrations: artifact.migrations.map(({ binding, ...rest }) => rest) }],
-    r2: [{ binding: 'FILES', name: `${worker}-files` }], queues: [], durableObjects: [], crons: ['* * * * *'],
+    r2: [{ binding: 'FILES', name: `${worker}-files` }], queues: [], durableObjects: [{binding:'RESTORE_COORDINATOR',className:'VectorRestoreCoordinator',storage:'sqlite'}], crons: ['* * * * *'],
     secrets: [{ binding: 'SESSION_SECRET', environment: 'SESSION_SECRET' }, { binding: 'MAIL_API_KEY', environment: 'MAIL_API_KEY' }],
     vars: { ...Object.fromEntries(fields.map(key => [key, configuration[key]])), APP_ORIGIN: origin, SEED_SAMPLE_DATA: 'false', MAIL_PROVIDER: 'sendgrid', MAIL_MODE: 'sendgrid' } });
 }

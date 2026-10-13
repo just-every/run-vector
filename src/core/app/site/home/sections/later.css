@@ -1,0 +1,32 @@
+/* 4. Deferral: one row across the full width, the Defer card, the week as a calendar strip with its return arc, the arrow
+   and the returned card. The leader runs from the field to the first day, so the strip sits at the field's height. */
+.vx-later { --vx-field-y: 168px; display: flex; align-items: flex-start; justify-content: space-between; gap: 0; }
+.vx-later-card { width: 300px; flex: none; --vx-pad: 18px; }
+.vx-later-card .vx-row .vx-reason { margin-top: 12px; }
+.vx-later-leader--across { flex: 1 1 24px; min-width: 24px; margin-top: var(--vx-field-y); }
+.vx-later-leader--down { display: none; }
+.vx-later .vx-days { margin-top: calc(var(--vx-field-y) - var(--vx-arc-h) - var(--vx-cell) / 2); }
+.vx-later-arrow { flex: none; align-self: center; margin: 0 0 0 clamp(20px, 3vw, 44px); }
+.vx-later-returned { align-self: center; margin-left: clamp(16px, 2.4vw, 36px); --vx-askew: -5deg; }
+
+@media (max-width: 1360px) and (min-width: 1101px) {
+  .vx-later-card { width: 270px; }
+  .vx-later .vx-days { --vx-cell: clamp(44px, 4.4vw, 60px); }
+}
+
+/* Phones and tablets: a vertical stack, the strip at the card's width, the arrow pointing down. */
+@media (max-width: 1100px) {
+  .vx-later { flex-direction: column; align-items: stretch; width: min(100%, 340px); margin-inline: auto; }
+  .vx-later-card { width: 100%; }
+  .vx-later-leader--across { display: none; }
+  /* The leader runs from the card's border, through the arc band, to the top of the first day, left of where the arc leaves it. */
+  .vx-later-leader--down, .vx-later .vx-days { --vx-arc-h: 40px; }
+  .vx-later-leader--down { display: block; height: calc(20px + var(--vx-arc-h)); margin: 0 0 calc(-1 * var(--vx-arc-h)) 14px; }
+  .vx-later .vx-days { --vx-cell: calc((100% - 30px) / 7); --vx-day-gap: 5px; width: 100%; margin-top: 0; padding-bottom: 36px; }
+  .vx-later .vx-day-n { left: 5px; top: 3px; font-size: 14px; }
+  .vx-later .vx-days-time { left: calc(6 * (var(--vx-cell) + var(--vx-day-gap))); width: var(--vx-cell); align-items: flex-end; transform: none; }
+  .vx-later .vx-days-time .vx-leader { align-self: center; }
+  .vx-later .vx-days-time span:last-child { margin-top: 2px; }
+  .vx-later-arrow { align-self: center; margin: 0; width: 40px; transform: rotate(90deg); }
+  .vx-later-returned { align-self: stretch; margin: 26px 0 0; --vx-askew: -3deg; }
+}

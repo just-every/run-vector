@@ -4,35 +4,64 @@
   "version": "0.1.0",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@8.15.6",
+  "packageManager": "pnpm@10.12.4",
   "scripts": {
-    "dev": "pnpm db:local:migrate && vite --host 127.0.0.1 --port 15928 --strictPort",
-    "db:local:migrate": "wrangler d1 migrations apply vector-local --local --config wrangler.jsonc --persist-to .wrangler/vector-dev",
-    "build": "pnpm typecheck && vite build",
-    "preview": "vite preview --host 127.0.0.1 --port 15920 --strictPort",
+    "dev": "node scripts/rer.mjs dev",
+    "build": "node scripts/rer.mjs build",
+    "preview": "node scripts/rer.mjs preview",
     "typecheck": "tsc -b",
     "test": "pnpm test:node && pnpm test:markdown && pnpm test:worker",
-    "test:node": "node --experimental-strip-types --test tests/*.test.ts",
+    "test:node": "node --experimental-strip-types --test --test-concurrency=2 tests/*.test.ts",
     "test:worker": "vitest run --config vitest.config.ts",
     "test:markdown": "vitest run --config vitest.markdown.config.ts",
     "smoke": "node --experimental-strip-types --test tests/smoke.test.ts",
-    "verify": "node scripts/verify.mjs",
+    "verify": "node scripts/rer.mjs verify",
     "typegen": "wrangler types src/worker-bindings.d.ts --env-interface VectorBindings --include-runtime=false --strict-vars=false",
     "test:runtime": "node tests/e2e/core-runtime.mjs",
     "test:dev": "node tests/e2e/dev-runtime.mjs",
     "report:contract": "node scripts/contract-report.mjs",
-    "review:signin": "node scripts/local-review.mjs",
-    "review:serve": "wrangler dev --config dist/server/wrangler.json --local --ip 127.0.0.1 --port 15920 --inspector-port 15921 --persist-to .wrangler/vector-review",
     "test:foundation": "node tests/e2e/foundation-runtime.mjs",
     "sources:check": "node scripts/edition-authoring/cli.mjs check",
     "sources:lock": "node scripts/edition-authoring/cli.mjs lock",
-    "setup": "node scripts/setup.mjs",
-    "deploy": "node scripts/deploy.mjs",
+    "setup": "node scripts/rer.mjs setup",
+    "deploy": "node scripts/rer.mjs deploy",
     "deploy:prepare": "node scripts/deployment/prepare.mjs",
-    "deploy:health": "node scripts/deployment/controller.mjs health",
-    "test:deployment": "node --test scripts/deployment/tests/*.test.mjs vendor/base/deploy-kit/tests/deploy.test.mjs vendor/base/deploy-kit/tests/build-contract.test.mjs vendor/base/deploy-kit/tests/cron-contract.test.mjs",
+    "deploy:health": "node scripts/owner.mjs health",
+    "test:deployment": "node --test --test-concurrency=2 scripts/deployment/tests/*.test.mjs",
     "test:removal": "node tests/e2e/removal-runtime.mjs",
-    "test:base-auth": "node tests/e2e/base-auth-runtime.mjs"
+    "test:base-auth": "node tests/e2e/base-auth-runtime.mjs",
+    "test:admin": "node --experimental-strip-types tests/e2e/admin-runtime.mjs",
+    "test:collaboration": "node --experimental-strip-types tests/e2e/collaboration-runtime.mjs",
+    "test:browse-review": "node tests/e2e/browse-review-runtime.mjs",
+    "build:source": "pnpm typecheck && vite build",
+    "artifact:setup": "node scripts/deployment/controller.mjs setup",
+    "artifact:deploy": "node scripts/deployment/controller.mjs deploy",
+    "artifact:health": "node scripts/deployment/controller.mjs health",
+    "test:installer": "node --test --test-concurrency=2 tests/installer/adapter.test.mjs tests/installer/local-setup.test.mjs tests/installer/hosting.test.mjs tests/installer/teardown.test.mjs tests/installer/development-origin.test.mjs tests/operations-validation.test.mjs",
+    "test:installer:native": "node tests/installer/native-proof.mjs",
+    "test:installer:slow": "node tests/installer/native-proof.mjs --slow",
+    "test:readme": "node --test --test-concurrency=2 tests/installer/readme.test.mjs",
+    "test:dev:setup": "node tests/e2e/dev-setup.mjs",
+    "test:dev:ci": "node tests/e2e/dev-ci.mjs",
+    "sources:verify-base": "node scripts/edition-authoring/cli.mjs verify-base --offline",
+    "test:access": "node tests/e2e/access-matrix.mjs",
+    "test:mutation-refresh": "node tests/e2e/mutation-refresh-runtime.mjs",
+    "reset": "node scripts/rer.mjs reset",
+    "export": "node scripts/rer.mjs export",
+    "import": "node scripts/rer.mjs import",
+    "release": "node scripts/rer.mjs release",
+    "outbox": "node scripts/rer.mjs outbox",
+    "doctor": "node scripts/rer.mjs doctor",
+    "describe": "node scripts/rer.mjs describe",
+    "check": "node scripts/rer.mjs check",
+    "deps": "node scripts/rer.mjs install",
+    "rer": "node scripts/rer.mjs",
+    "verify:app": "node scripts/verify.mjs",
+    "test:wave-b": "node tests/e2e/wave-b-runtime.mjs",
+    "artifact:delivery": "node scripts/build-delivery-artifact.mjs",
+    "import:issues": "node scripts/data/import-issues.mjs",
+    "test:integrations": "node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/integration-runtime.mjs && node tests/e2e/integrations/outbound-loopback.mjs",
+    "test:data": "node tests/e2e/data-runtime.mjs && node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/data-roundtrip.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.33",
@@ -42,7 +71,9 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-markdown": "10.1.0",
-    "zod": "^4.1.5"
+    "zod": "^4.1.5",
+    "mdast-util-from-markdown": "2.0.3",
+    "micromark-util-decode-string": "2.0.1"
   },
   "devDependencies": {
     "@cloudflare/vite-plugin": "1.54.5",
@@ -54,6 +85,8 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "6.1.1",
+    "axe-core": "4.13.0",
+    "marked": "18.0.14",
     "prettier": "3.9.9",
     "tailwindcss": "^4.3.3",
     "typescript": "5.9.3",
@@ -64,10 +97,18 @@
   "pnpm": {
     "overrides": {
       "@cloudflare/vitest-plugin>miniflare": "5.20260907.0-alpha"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "workerd"
+    ]
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/just-every/vector-projects"
+    "url": "https://github.com/just-every/run-vector"
+  },
+  "engines": {
+    "node": "22.20.0",
+    "pnpm": "10.12.4"
   }
 }

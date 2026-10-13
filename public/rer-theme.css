@@ -1,0 +1,25 @@
+/* Vector's declared theme (docs/BRAND.md) for Base's frames: the installer, sign-in confirmation and the development
+   outbox read these --rer-* tokens. Ink on warm paper, an ink button, cobalt only for focus; the app serves this file and
+   its fonts. The mark is drawn bare, never in a tile. */
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/brand/instrument-sans-latin-wght-normal.woff2") format("woff2");
+}
+:root {
+  --rer-font-body: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --rer-font-heading: "Instrument Sans", "Helvetica Neue", Arial, sans-serif;
+  --rer-page: #f4f0e6;
+  --rer-surface: #fbf9f3;
+  --rer-text: #171a20;
+  --rer-muted: #4f535b;
+  --rer-border: #23262c;
+  --rer-focus: #2446dc;
+  --rer-accent: #171a20;
+  --rer-accent-text: #fbf9f3;
+  --rer-link: #171a20;
+  --rer-radius: 10px;
+  --rer-logo: url("/brand/mark.svg");
+}

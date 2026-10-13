@@ -1,3 +1,4 @@
+import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
@@ -165,6 +166,8 @@ export function NewIssueForm() {
       </main>
     );
 
+  const labelsPerIssue = options.data.labelsPerIssue;
+
   return (
     <main className="new-issue-page" aria-labelledby="new-issue-title">
       <form
@@ -281,10 +284,11 @@ export function NewIssueForm() {
             </label>
             <label className="new-issue-description">
               Description <span>Markdown supported</span>
-              <textarea
+              <MentionTextarea
+                aria-label="Description"
                 value={values.description}
-                onChange={(event) =>
-                  setValues({ ...values, description: event.target.value })
+                onValueChange={(description) =>
+                  setValues({ ...values, description })
                 }
                 maxLength={100_000}
               />
@@ -467,7 +471,7 @@ export function NewIssueForm() {
                   </label>
                 </section>
                 <fieldset className="new-issue-labels">
-                  <legend>Labels</legend>
+                  <legend>Labels · maximum {labelsPerIssue}</legend>
                   {options.data.labels.length === 0 ? (
                     <span>No labels are available.</span>
                   ) : (
@@ -477,6 +481,10 @@ export function NewIssueForm() {
                           <input
                             type="checkbox"
                             checked={values.labelIds.includes(label.id)}
+                            disabled={
+                              !values.labelIds.includes(label.id) &&
+                              values.labelIds.length >= labelsPerIssue
+                            }
                             onChange={() => toggleLabel(label.id)}
                           />
                           <i

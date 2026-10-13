@@ -7,9 +7,11 @@ import { cloudflare } from './provider.mjs';
 import { defaultStagePlan } from './default-stage.mjs';
 import { deploy } from './deploy.mjs';
 import { verifyHealth } from './health.mjs';
+import { verifyTeardown } from './teardown.mjs';
+import { writeHealthReceipt } from './receipt.mjs';
 
 export async function main(args=process.argv.slice(2),env=process.env) {
-  assert(args.length === 1 && ['deploy','health'].includes(args[0]),'usage-deploy-or-health');
+  assert(args.length === 1 && ['deploy','health','verify-teardown'].includes(args[0]),'usage-deploy-health-or-verify-teardown');
   assert(!env.NODE_OPTIONS && !env.NODE_PATH && !env.EVIDENCE_WRITE_TOKEN,'unsafe-deploy-environment');
   const required = ['RER_DEPLOY_ARTIFACT','RER_DEPLOY_ARTIFACT_SHA256','RER_DEPLOY_SOURCE_SHA','RER_DEPLOY_RUN_ID','RER_DEPLOY_RUN_ATTEMPT','RER_DEPLOY_RECEIPT','CF_THROWAWAY_ACCOUNT_ID','CF_THROWAWAY_API_TOKEN'];
   const missing = required.filter(key => typeof env[key] !== 'string' || !env[key].trim());
@@ -25,11 +27,17 @@ export async function main(args=process.argv.slice(2),env=process.env) {
     previousReceipt = JSON.parse(await regularBytes(env.RER_DEPLOY_RECEIPT,1024*1024));
     assert(previousReceipt.run?.id === artifact.run.id && previousReceipt.run?.attempt === artifact.run.attempt && previousReceipt.source?.sha === artifact.source.sha && previousReceipt.artifactSha256 === expected.sha256,'receipt-custody-mismatch');
   } catch (error) { if (error.code !== 'ENOENT') throw error; }
+  if (args[0] === 'verify-teardown') {
+    const result = await verifyTeardown({api,plan,receipt:previousReceipt});
+    console.log(JSON.stringify(result));
+    return result;
+  }
   if (args[0] === 'health') {
     assert(previousReceipt && hash(previousReceipt.config) === previousReceipt.configSha256,'missing-or-invalid-receipt');
-    await verifyHealth({api,plan,receipt:previousReceipt});
+    await verifyHealth({api,plan,receipt:previousReceipt,readiness:{single:true,totalMs:30000}});
   } else {
     const receipt = await deploy({api,plan,artifact,artifactSha256:expected.sha256,previousReceipt,repeatOnly:Boolean(previousReceipt),
+      onHealth: async candidate => { if (!previousReceipt) await writeHealthReceipt(env.RER_DEPLOY_RECEIPT,candidate); },
       onReceipt: async candidate => {
         if (!previousReceipt) await writeFile(env.RER_DEPLOY_RECEIPT,JSON.stringify(candidate,null,2)+'\n',{flag:'wx',mode:0o600});
       }});
@@ -38,5 +46,5 @@ export async function main(args=process.argv.slice(2),env=process.env) {
   }
 }
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  try { await main(); } catch (error) { console.error(JSON.stringify(error.message === 'missing-input' ? {ok:false,code:'missing-input',inputs:error.inputs} : {ok:false,code:'deploy-kit-command-failed'})); process.exitCode=1; }
+  try { await main(); } catch (error) { console.error(JSON.stringify(error.message === 'missing-input' ? {ok:false,code:'missing-input',inputs:error.inputs} : {ok:false,code:/^(health-|malformed-response|response-too-large|teardown-)/.test(error.message) ? error.message : 'deploy-kit-command-failed',...(error.attempts ? {attempts:error.attempts} : {}),...(error.remaining ? {remaining:error.remaining} : {})})); process.exitCode=1; }
 }

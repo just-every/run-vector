@@ -1,0 +1,28 @@
+/* Vector's brand tokens for the public site, defined once and scoped under .vx-site so nothing reaches the operator app.
+   Near-black ink on warm drafting paper. Cobalt is the one accent and lives only inside drawings: the arrows that carry
+   work to its place, the chosen decision and the reason it is there. Construction lines are a warm grey. */
+.vx-site {
+  --vx-paper: #f4f0e6;
+  --vx-paper-deep: #ebe5d7;
+  --vx-card: #fbf9f3;
+  --vx-ink: #171a20;
+  --vx-body: #41454d;
+  --vx-muted: #676a71;
+  --vx-rule: #d8d1c1;
+  --vx-outline: #23262c;
+  --vx-guide: #a49e90;
+  --vx-hatch: rgba(23, 26, 32, 0.32);
+  --vx-cobalt: #2446dc;
+  --vx-cobalt-ink: #1c38b4;
+  --vx-cobalt-soft: #e2e7fa;
+  --vx-on-cobalt: #ffffff;
+
+  --vx-sans: "Instrument Sans", "Instrument Sans Fallback", "Helvetica Neue", Arial, sans-serif;
+  --vx-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --vx-max: 1296px;
+  --vx-gutter: clamp(16px, 5vw, 72px);
+  --vx-header-h: clamp(72px, 7vw, 100px);
+  --vx-radius-card: 10px;
+  --vx-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}

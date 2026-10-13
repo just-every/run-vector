@@ -112,8 +112,8 @@ try {
   const context = await browser.newContext();
   await context.addCookies([
     {
-      name: "vector_session",
-      value: ownerCookie.slice("vector_session=".length),
+      name: ownerCookie.split("=")[0],
+      value: ownerCookie.split("=")[1],
       url: origin,
       httpOnly: true,
       sameSite: "Lax",

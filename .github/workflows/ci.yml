@@ -11,44 +11,58 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    env:
+      TZ: UTC
+      PLAYWRIGHT_SKIP_BROWSER_GC: 1
+      VITEST_MAX_WORKERS: 1
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: pnpm/action-setup@v4
         with:
-          version: 8.15.6
+          version: 10.12.4
       - uses: actions/setup-node@v4
         with:
-          node-version: 26.8.1
+          node-version: 22.20.0
           cache: pnpm
+      - name: Reclaim unused runner SDKs for native disk guard
+        run: |
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm verify
-      - name: Real development runtime and hydration
-        shell: bash
-        run: |
-          set -euo pipefail
-          setsid pnpm dev > "$RUNNER_TEMP/vector-dev.log" 2>&1 &
-          runtime_pid=$!
-          trap 'kill -- -"$runtime_pid" 2>/dev/null || true; wait "$runtime_pid" 2>/dev/null || true' EXIT
-          ready=false
-          for attempt in {1..240}; do
-            if curl --fail --silent http://127.0.0.1:15928/health > /dev/null; then
-              ready=true
-              break
-            fi
-            kill -0 "$runtime_pid"
-            sleep 1
-          done
-          if [ "$ready" != true ]; then cat "$RUNNER_TEMP/vector-dev.log"; exit 1; fi
-          pnpm test:dev
+      - name: Actual shared local setup and existing development hydration
+        run: pnpm test:dev:ci
+      - name: Native installer with startup exceeding two minutes
+        run: pnpm test:installer:slow
+        env:
+          VECTOR_INSTALLER_EVIDENCE: evidence/installer/slow
+      - name: README literal clone and independent frozen installation
+        run: pnpm test:readme
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: vector-local-verification
           path: |
-            .artifacts/verification
-            .wrangler/vector-e2e
+            evidence/installer/proof.json
+            evidence/installer/*.png
+            evidence/installer/slow/proof.json
+            evidence/installer/slow/*.png
+            evidence/access/proof.json
+            evidence/mutation-refresh/proof.json
+            evidence/readme/proof.json
+            evidence/readme/*.png
+            .artifacts/verification/ui-runtime-failure.png
+            .artifacts/verification/ui-runtime-failure-safe.json
+            .artifacts/verification/issue-controls/manifest.json
+            .artifacts/verification/check-results.json
+            .artifacts/verification/dev-runtime-results.json
+            .artifacts/verification/dev-runtime-failure-safe.json
+            .artifacts/verification/dev-failure.png
+            .artifacts/verification/admin-browser/admin-failure-safe.json
+            .artifacts/verification/collaboration-browser/collaboration-failure-safe.json
           if-no-files-found: ignore

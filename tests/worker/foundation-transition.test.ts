@@ -23,26 +23,31 @@ it("[BASE-OPS-002 OPS-002] expands the previous release without rewriting stored
     "projects",
     "cycles",
   ];
-  const before = await Promise.all(
-    tables.map((table) => env.DB.prepare(`SELECT * FROM ${table}`).all()),
-  );
+  const columns = await Promise.all(tables.map(async (table) =>
+    (await env.DB.prepare(`PRAGMA table_info("${table}")`).all<{ name: string }>())
+      .results.map(({ name }) => `"${name}"`).join(","),
+  ));
+  // Compare every pre-existing column; additive migrations may introduce new ones.
+  const readOriginalData = () => Promise.all(tables.map((table, index) =>
+    env.DB.prepare(`SELECT ${columns[index]} FROM "${table}" ORDER BY ${columns[index]}`)
+      .all().then(({ results }) => results),
+  ));
+  const before = await readOriginalData();
   const workspaceBefore = await env.DB.prepare(
-    "SELECT * FROM workspace_settings",
-  ).first();
+    "SELECT * FROM workspace_settings ORDER BY id",
+  ).all().then(({ results }) => results);
   await applyD1Migrations(env.DB, migrations.slice(9));
-  expect(
-    await Promise.all(
-      tables.map((table) =>
-        env.DB.prepare(`SELECT * FROM ${table}`)
-          .all()
-          .then((r) => r.results),
-      ),
-    ),
-  ).toEqual(before.map((r) => r.results));
+  expect(await readOriginalData()).toEqual(before);
+  expect((await env.DB.prepare(
+    "SELECT count(*) AS n FROM evidence_revisions WHERE source_id IS NOT NULL OR source_record_id IS NOT NULL OR source_revision_id IS NOT NULL",
+  ).first())?.n).toBe(0);
   const workspaceAfter = await env.DB.prepare(
-    "SELECT * FROM workspace_settings",
-  ).first();
-  expect(workspaceAfter).toEqual(workspaceBefore);
+    "SELECT * FROM workspace_settings ORDER BY id",
+  ).all().then(({ results }) => results);
+  expect(workspaceAfter.map(({ reminder_time, ...original }) => {
+    expect(reminder_time).toMatch(/^(?:[01]\d|2[0-3]):[0-5]\d$/);
+    return original;
+  })).toEqual(workspaceBefore);
   expect(
     (
       await env.DB.prepare(
@@ -62,8 +67,9 @@ it("[BASE-OPS-002 OPS-002] expands the previous release without rewriting stored
     DEFAULT_TEAM_PREFIX: "ZZ",
   });
   expect(
-    await env.DB.prepare("SELECT * FROM workspace_settings").first(),
-  ).toEqual(workspaceBefore);
+    await env.DB.prepare("SELECT * FROM workspace_settings ORDER BY id")
+      .all().then(({ results }) => results),
+  ).toEqual(workspaceAfter);
   expect(
     (
       await env.DB.prepare(
@@ -71,13 +77,5 @@ it("[BASE-OPS-002 OPS-002] expands the previous release without rewriting stored
       ).first()
     )?.setup_operator_id,
   ).toBe(ids.sarah);
-  expect(
-    await Promise.all(
-      tables.map((table) =>
-        env.DB.prepare(`SELECT * FROM ${table}`)
-          .all()
-          .then((r) => r.results),
-      ),
-    ),
-  ).toEqual(before.map((r) => r.results));
+  expect(await readOriginalData()).toEqual(before);
 });

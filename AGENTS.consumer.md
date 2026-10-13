@@ -1,6 +1,8 @@
 # Working on this edition
 
-This repository contains the editable source of the owner's product. Read `CONTRACT.md`, `BASELINE.md`, `seed.json`, `HANDOVER.md`, actual package
+This repository contains the editable source of the owner's product. Vector's
+public, MIT-licensed source is
+[just-every/run-vector](https://github.com/just-every/run-vector). Read `CONTRACT.md`, `BASELINE.md`, `seed.json`, `HANDOVER.md`, actual package
 scripts and existing customisations before changing behaviour. Use `README.md`
 where present; distinguish product requirements from implemented scope and
 verification coverage.

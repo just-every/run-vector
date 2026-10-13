@@ -7,25 +7,34 @@ import { ensureSampleData } from "../../src/core/features/sample-data/service";
 import { createOperatorIntake } from "../../src/core/features/operator-intake/repository";
 import { operatorIntakeInputSchema } from "../../src/core/features/operator-intake/input";
 import { vectorSampleIds as ids } from "../../sample-data/vector";
-import { testCookie } from "./native-fixture";
+import {
+  sampleOwner,
+  samplePeer,
+  sampleSession,
+  sampleBindings,
+  origin,
+} from "./sample-auth-fixture";
 const app = createServerApp();
+let ownerCookie: string;
 beforeAll(async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   await ensureSampleData(env.DB, new Date("2026-08-31T12:00:00Z"));
+  ownerCookie = await sampleOwner();
 });
 async function request(path: string, body?: unknown, cookie?: string) {
   return app.request(
-    "https://vector.test" + path,
+    origin + path,
     {
       method: body === undefined ? "GET" : "POST",
       headers: {
-        origin: "https://vector.test",
+        host: new URL(origin).host,
+        origin,
         "content-type": "application/json",
-        cookie: cookie ?? (await testCookie(env.DB, ids.sarah)),
+        cookie: cookie ?? ownerCookie,
       },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     },
-    { ...env, APP_ORIGIN: "https://vector.test" },
+    sampleBindings,
   );
 }
 it("[INTAKE-001 ISSUE-002] native operator intake commits issue, attributed evidence and activity together; defaults descriptive fields and appears in Needs decision", async () => {
@@ -68,6 +77,10 @@ it("[INTAKE-001 ISSUE-002] native operator intake commits issue, attributed evid
     summary: "Repeated queue delay",
     measurements: { delaySeconds: 45, affected: true },
     assertions: {},
+    sourceId: null,
+    sourceRecordId: null,
+    sourceRevisionId: null,
+    changes: [],
   });
   assert.equal(issue.activity.length, 1);
   assert.equal(issue.activity[0].actor, "Sarah Chen");
@@ -164,17 +177,18 @@ it("[BASE-ACCESS-002 INTAKE-001] denies missing native session, spoofed identiti
     "SELECT count(*) AS n FROM issues",
   ).first();
   const noSession = await app.request(
-    "https://vector.test/api/intake",
+    origin + "/api/intake",
     {
       method: "POST",
       headers: {
-        origin: "https://vector.test",
+        host: new URL(origin).host,
+        origin,
         "content-type": "application/json",
         "x-vector-operator-id": ids.sarah,
       },
       body: JSON.stringify({ title: "Spoof", teamId: ids.flow }),
     },
-    { ...env, APP_ORIGIN: "https://vector.test" },
+    sampleBindings,
   );
   assert.equal(noSession.status, 401);
   for (const extra of [
@@ -272,13 +286,14 @@ it("[INTAKE-001] mutation-time eligibility guard prevents issue/evidence after t
   await env.DB.prepare("UPDATE teams SET archived_at=NULL WHERE id=?")
     .bind(ids.flow)
     .run();
+  const peer = await samplePeer(ownerCookie);
   await env.DB.prepare("UPDATE operators SET removed_at=? WHERE id=?")
-    .bind(new Date().toISOString(), ids.sarah)
+    .bind(new Date().toISOString(), peer.id)
     .run();
   await assert.rejects(
     createOperatorIntake(
       env.DB,
-      ids.sarah,
+      peer.id,
       operatorIntakeInputSchema.parse({
         title: "Removed actor report",
         teamId: ids.flow,
@@ -293,17 +308,20 @@ it("[INTAKE-001] mutation-time eligibility guard prevents issue/evidence after t
     null,
   );
   await env.DB.prepare("UPDATE operators SET removed_at=NULL WHERE id=?")
-    .bind(ids.sarah)
+    .bind(peer.id)
     .run();
+  await sampleSession(peer.cookie, 401);
+  await sampleSession(ownerCookie);
 });
 
 it("[INTAKE-006 CURR-002] as-of reads do not end future deferrals or truncate a blocking dependency graph", async () => {
-  const created: any = await (
-    await request("/api/intake", {
-      title: "Future deferred blocker",
-      teamId: ids.flow,
-    })
-  ).json();
+  await sampleSession(ownerCookie);
+  const responseCreated = await request("/api/intake", {
+    title: "Future deferred blocker",
+    teamId: ids.flow,
+  });
+  assert.equal(responseCreated.status, 201);
+  const created: any = await responseCreated.json();
   const future = new Date(Date.now() + 3600000).toISOString();
   assert.equal(
     (

@@ -13,3 +13,13 @@ evidence/
 verification/
 
 .artifacts/
+
+.seed/installer/
+.rer/deploy/
+
+.rer/local/
+.cache/
+
+.rer-tools/
+delivery-artifact/
+rer-package/

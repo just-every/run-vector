@@ -1,0 +1,66 @@
+/* Vector's own body font stack, the brand's Instrument Sans for the app as well as the public site. It is linked once from
+   the root head and not provided by Base. */
+:root {
+  --font-body: "Instrument Sans", "Instrument Sans Fallback", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-body);
+}
+
+/* The public site's brand faces, self-hosted from /fonts/brand/ with their OFL licences beside the files, so the site makes
+   no third-party request. A face downloads only on a page that uses it. Instrument Sans (SIL OFL 1.1), variable wght. */
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/brand/instrument-sans-latin-wght-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/brand/instrument-sans-latin-ext-wght-normal.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* What the browser paints until Instrument Sans arrives: Arial scaled to its advance widths and given its vertical metrics
+   (ascent 0.97, descent 0.25 of the em, no line gap), measured per weight against the hero's own sentences, so nothing
+   reflows on swap. Each override is divided by size-adjust because the browser scales it again; 600 and up use Arial Bold. */
+@font-face {
+  font-family: "Instrument Sans Fallback";
+  font-weight: 100 450;
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans");
+  size-adjust: 101.64%;
+  ascent-override: 95.44%;
+  descent-override: 24.6%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Instrument Sans Fallback";
+  font-weight: 451 549;
+  src: local("Arial"), local("ArialMT"), local("Liberation Sans"), local("LiberationSans");
+  size-adjust: 103.12%;
+  ascent-override: 94.06%;
+  descent-override: 24.24%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Instrument Sans Fallback";
+  font-weight: 550 900;
+  src: local("Arial Bold"), local("Arial-BoldMT"), local("Liberation Sans Bold"), local("LiberationSans-Bold");
+  size-adjust: 98.59%;
+  ascent-override: 98.39%;
+  descent-override: 25.36%;
+  line-gap-override: 0%;
+}
+
+/* IBM Plex Mono 500 (SIL OFL 1.1), for issue identifiers in the drawings. */
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/brand/ibm-plex-mono-latin-500-normal.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

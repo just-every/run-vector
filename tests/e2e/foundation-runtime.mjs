@@ -1,10 +1,13 @@
+import { freePort } from '../../scripts/base-onboarding/adapter-settings.mjs';
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
+import { settingsSchema } from "../../src/core/features/settings/schema.ts";
 
-const origin = "http://127.0.0.1:41866";
+// A free port, never a fixed one: CI's ephemeral range can hand a fixed port to another socket.
+const port = await freePort(), origin = `http://127.0.0.1:${port}`;
 const state = `.wrangler/foundation-${process.pid}`;
 const evidence = resolve(
   process.env.VECTOR_FOUNDATION_EVIDENCE ?? ".wrangler/foundation-evidence",
@@ -19,6 +22,8 @@ const config = {
   APP_ORIGIN: origin,
   SEED_SAMPLE_DATA: "false",
   MAIL_MODE: "local-outbox",
+  SESSION_SECRET:"fixture-native-runtime-secret-with-at-least-32-characters",
+  MAIL_FROM:"Vector <signin@vector.test>",
   FIRST_OWNER_EMAIL: "owner@foundation.test",
   FIRST_OWNER_NAME: "Workspace owner",
   WORKSPACE_NAME: "Foundation workspace",
@@ -50,19 +55,40 @@ const sql = (query) =>
   )[0].results;
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 let worker, browser;
+const settingsActionBudgetMs = 30_000;
+const remainingSettingsActionMs = (deadline) => {
+  const remaining = deadline - Date.now();
+  if (remaining <= 0) throw new Error("Workspace time action exceeded its original 30-second budget.");
+  return remaining;
+};
+const responseJsonWithinSettingsBudget = async (response, deadline) => {
+  let timer;
+  try {
+    return await Promise.race([
+      response.json(),
+      new Promise((_, reject) => {
+        timer = setTimeout(
+          () => reject(new Error("Settings response body exceeded the original action budget.")),
+          remainingSettingsActionMs(deadline),
+        );
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+};
 async function start() {
   worker = spawn(
     process.execPath,
     [
-      wrangler,
-      "dev",
+      resolve("tests/e2e/worker-serve.mjs"),
       "--config",
       "dist/server/wrangler.json",
       "--local",
       "--ip",
       "127.0.0.1",
       "--port",
-      "41866",
+      String(port),
       "--inspector-port",
       "0",
       "--persist-to",
@@ -130,8 +156,8 @@ try {
   });
   assert.equal(sent.status, 202);
   const link = sql(
-    "SELECT sign_in_url FROM local_mail_outbox ORDER BY created_at DESC LIMIT 1",
-  )[0].sign_in_url;
+    "SELECT json_extract(message,'$.text') AS sign_in_url FROM rer_mail_development_outbox ORDER BY created_at DESC LIMIT 1",
+  )[0].sign_in_url.match(/https?:\/\/[^\s]+/)[0];
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({
     viewport: { width: 1440, height: 1000 },
@@ -139,15 +165,87 @@ try {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto(link);
+  await page.getByRole("button", {name:"Confirm",exact:true}).click();
   await page.getByRole("heading", { name: "Settings", exact: true }).waitFor();
-  await page.getByLabel("IANA timezone").fill("Europe/London");
-  await page
-    .getByRole("button", { name: "Save timezone", exact: true })
-    .click();
-  await page.getByText("Workspace timezone saved.", { exact: true }).waitFor();
+  const initialSettings = await page.evaluate(async () => {
+    const response = await fetch("/api/settings");
+    return { status: response.status, body: await response.json() };
+  });
+  assert.equal(initialSettings.status, 200);
+  const initialWorkspace = settingsSchema.parse(initialSettings.body).workspace;
+  assert.equal(typeof initialWorkspace.timezone, "string");
+  assert.match(initialWorkspace.reminderTime, /^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/);
+  const timezone = page.getByLabel("IANA timezone", { exact: true });
+  const reminderTime = page.getByLabel("Daily due reminder time", { exact: true });
+  assert.equal(await timezone.inputValue(), initialWorkspace.timezone);
+  assert.equal(await reminderTime.inputValue(), initialWorkspace.reminderTime);
+  const savedTimezone = initialWorkspace.timezone === "Europe/London" ? "UTC" : "Europe/London";
+  assert.notEqual(savedTimezone, initialWorkspace.timezone);
+  await timezone.fill(savedTimezone);
+  const workspaceTimeForm = page.locator("#workspace-time form");
+  const saveWorkspaceTime = workspaceTimeForm.getByRole("button", {
+    name: "Save workspace time",
+    exact: true,
+  });
+  const settingsActionDeadline = Date.now() + settingsActionBudgetMs;
+  const settingsSave = page
+    .waitForResponse(
+      (response) =>
+        new URL(response.url()).pathname === "/api/settings" &&
+        response.request().method() === "PATCH",
+      { timeout: remainingSettingsActionMs(settingsActionDeadline) },
+    )
+    .then(async (response) => {
+      const receivedBody = await responseJsonWithinSettingsBudget(
+        response,
+        settingsActionDeadline,
+      );
+      return {
+        response,
+        body: response.ok() ? settingsSchema.parse(receivedBody) : receivedBody,
+      };
+    });
+  const settingsSaveClick = Promise.resolve().then(() =>
+    saveWorkspaceTime.click({
+      timeout: remainingSettingsActionMs(settingsActionDeadline),
+    }),
+  );
+  const [clickOutcome, saveOutcome] = await Promise.allSettled([
+    settingsSaveClick,
+    settingsSave,
+  ]);
+  if (clickOutcome.status === "rejected" || saveOutcome.status === "rejected")
+    throw new AggregateError(
+      [clickOutcome, saveOutcome]
+        .filter((outcome) => outcome.status === "rejected")
+        .map((outcome) => outcome.reason),
+      "Workspace time submission did not settle successfully.",
+    );
+  const saveReceipt = saveOutcome.value;
+  assert.equal(saveReceipt.response.status(), 200);
+  assert.equal(saveReceipt.body.workspace.timezone, savedTimezone);
+  assert.equal(saveReceipt.body.workspace.reminderTime, initialWorkspace.reminderTime);
+  await workspaceTimeForm
+    .locator('button[type="submit"]:enabled')
+    .waitFor({ timeout: remainingSettingsActionMs(settingsActionDeadline) });
+  const settingsFeedback = page
+    .locator("main.settings-page > p[role='status']")
+    .filter({ hasNotText: /^Loading/ });
+  await settingsFeedback
+    .last()
+    .waitFor({ timeout: remainingSettingsActionMs(settingsActionDeadline) });
+  assert.ok((await settingsFeedback.last().innerText()).trim());
+  const persistedSettings = await page.evaluate(async () => {
+    const response = await fetch("/api/settings");
+    return { status: response.status, body: await response.json() };
+  });
+  assert.equal(persistedSettings.status, 200);
+  const persistedWorkspace = settingsSchema.parse(persistedSettings.body).workspace;
+  assert.equal(persistedWorkspace.timezone, savedTimezone);
+  assert.equal(persistedWorkspace.reminderTime, initialWorkspace.reminderTime);
   assert.equal(
     sql("SELECT timezone FROM workspace_settings")[0].timezone,
-    "Europe/London",
+    savedTimezone,
   );
   assert.equal(
     await page
@@ -181,7 +279,11 @@ try {
   await page.getByLabel("IANA timezone").waitFor();
   assert.equal(
     await page.getByLabel("IANA timezone").inputValue(),
-    "Europe/London",
+    savedTimezone,
+  );
+  assert.equal(
+    await page.getByLabel("Daily due reminder time").inputValue(),
+    initialWorkspace.reminderTime,
   );
   assert.deepEqual(sql("SELECT * FROM workspace_settings"), before);
   assert.equal(sql("SELECT count(*) n FROM operators")[0].n, 1);

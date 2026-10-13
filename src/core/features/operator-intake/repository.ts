@@ -1,27 +1,36 @@
+import { followStatements, mentionStatements, finalizeEvent } from '../notifications/events';
+import { mutationDatabase, isMutationAccessError } from '../auth/mutation-database'
+import { creationGuard, creationError, allocateIssueSequence } from '../issues/create-guard'
 import { drizzle } from "drizzle-orm/d1";
 import { createUlid } from "../../shared/ids";
 import {
-  allocateSequence,
   defaultStatus,
   requireActiveTeam,
 } from "../issues/repository";
 import { IssueMutationError } from "../issues/errors";
 import type { OperatorIntakeInput } from "./input";
 
-/** Allocate identifiers independently so failed writes never reuse a number. The
- * issue, first evidence and creation activity commit as one guarded D1 batch. */
+/** Identifier reservations survive failed persistence. Issue, evidence and
+ * activity share one guarded batch and never target an archived team. */
 export async function createOperatorIntake(
   db: D1Database,
   actor: string,
   input: OperatorIntakeInput,
   now = new Date(),
 ) {
+  db = mutationDatabase(db, actor);
   const orm = drizzle(db);
-  const team = await requireActiveTeam(orm, input.teamId);
+  let team;
+  try { team = await requireActiveTeam(orm, input.teamId); } catch(error) { return creationError(db,input.teamId,error,true); }
   const status = await defaultStatus(orm, team.id, "intake");
   const at = now.toISOString();
-  const sequence = await allocateSequence(orm, team.id, at);
-  const identifier = `${team.identifierPrefix}-${sequence}`;
+  let allocation:{sequence:number;prefix:string};
+  try { allocation = await allocateIssueSequence(db,actor,team.workspaceId,team.id,at); } catch(error) {
+    if (isMutationAccessError(error)) throw new Error("The team or operator is no longer available for intake.", { cause: error });
+    return creationError(db,team.id,error,true);
+  }
+  const identifier = `${allocation.prefix}-${allocation.sequence}`;
+
   const issueId = createUlid(now);
   const evidenceId = createUlid(now);
   const activityId = createUlid(now);
@@ -38,13 +47,13 @@ export async function createOperatorIntake(
     FROM teams t JOIN workflow_statuses s ON s.team_id=t.id
     JOIN operators o ON o.workspace_id=t.workspace_id
     WHERE t.id=? AND t.archived_at IS NULL AND s.id=? AND s.category='intake'
-    AND o.id=? AND o.removed_at IS NULL`,
+    AND o.id=? AND o.removed_at IS NULL RETURNING id`,
     )
     .bind(
       issueId,
       identifier,
-      team.identifierPrefix,
-      sequence,
+      allocation.prefix,
+      allocation.sequence,
       team.id,
       input.title,
       input.description,
@@ -98,8 +107,12 @@ export async function createOperatorIntake(
       at,
       issueId,
     );
-  const result = await db.batch([issue, evidence, activity]);
-  if (result[0].meta.changes !== 1)
+  const event = { id: activityId, issueId, actor, at };
+  let result;
+  try { result = await db.batch<{ id: string }>([creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[]},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...finalizeEvent(db,event)]); }
+  catch (error) { return creationError(db,team.id,error,true); }
+  // The indexed issue insert returns its own identity independently of trigger writes.
+  if (result[1].results.length !== 1 || result[1].results[0].id !== issueId)
     throw new IssueMutationError(
       "invalid_option",
       "The team or operator is no longer available for intake.",
@@ -114,12 +127,13 @@ export type EvidenceMetadata = {
   actor: string | null;
   link: string | null;
   customer_reports_json: string;
+  source_id:string|null;source_record_id:string|null;source_revision_id:string|null;
 };
 export async function evidenceMetadata(db: D1Database, issueId: string) {
   return (
     await db
       .prepare(
-        `SELECT e.id,e.origin_kind,e.actor_operator_id,o.name AS actor,e.link,e.customer_reports_json
+        `SELECT e.id,e.origin_kind,e.actor_operator_id,o.name AS actor,e.link,e.customer_reports_json,e.source_id,e.source_record_id,e.source_revision_id
     FROM evidence_revisions e LEFT JOIN operators o ON o.id=e.actor_operator_id WHERE e.issue_id=?`,
       )
       .bind(issueId)

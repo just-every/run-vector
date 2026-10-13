@@ -4,6 +4,7 @@ import { env } from "cloudflare:workers";
 export function beforeCommit(
   predicate: (sql: string) => boolean,
   action: () => Promise<void>,
+  once = true,
 ) {
   const queries = new WeakMap<object, string>();
   let used = false;
@@ -29,7 +30,7 @@ export function beforeCommit(
       if (key === "batch")
         return async (items: D1PreparedStatement[]) => {
           if (
-            !used &&
+            (!once || !used) &&
             items.some((item) => predicate(queries.get(item) ?? ""))
           ) {
             used = true;

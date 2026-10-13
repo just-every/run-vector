@@ -1,0 +1,303 @@
+import assert from "node:assert/strict";
+import {
+  createAdminRequestDiagnostics,
+  writeAdminFailureReceipt,
+} from "./admin-request-diagnostics.mjs";
+import { mkdir, rm, writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { chromium } from "@playwright/test";
+import { contract } from "../contract.ts";
+import { verificationDirectory } from "../../scripts/verification-paths.mjs";
+import {
+  createAdminRuntime,
+  bootstrapOwner,
+} from "./admin-runtime-support.mjs";
+import { createCapture, sourceBinding, exportData } from "./admin-capture.mjs";
+import {
+  auditEmptyWorkspace,
+  inviteProjectLead,
+  assertSignOut,
+} from "./admin-access-journey.mjs";
+import { createTeamWorkflow, removeUsedStatus } from "./admin-team-journey.mjs";
+import { authorLabel, deleteAppliedLabel } from "./admin-label-journey.mjs";
+import {
+  authorProject,
+  authorCycles,
+  archiveProject,
+} from "./admin-project-cycle-journey.mjs";
+import {
+  createAdministrationIssue,
+  exerciseCycleCommitments,
+} from "./admin-issue-journey.mjs";
+import { exerciseCycleList } from "./admin-cycle-list-journey.mjs";
+import { archiveRestoreTeam } from "./admin-archive-team-journey.mjs";
+import { assertSignOutReadLifecycle } from "./signout-read-lifecycle.mjs";
+import { assertDocumentReadRecovery } from "./document-read-app-journey.mjs";
+
+const evidence = resolve(verificationDirectory, "admin-browser");
+await mkdir(evidence, { recursive: true });
+await rm(resolve(evidence, "admin-failure-safe.json"), { force: true });
+const temporary = resolve(evidence, "temporary");
+await mkdir(temporary, { recursive: true });
+process.env.TMPDIR = temporary;
+const binding = await sourceBinding();
+const requestDiagnostics = createAdminRequestDiagnostics();
+const results = [],
+  checks = [],
+  databases = [],
+  browserDiagnostics = [];
+let browser, page, runtime;
+await contract(
+  "OPS-003",
+  "empty workspace administration through real desktop and mobile browsers",
+  async () => {
+    try {
+      browser = await chromium.launch({ headless: true });
+      for (const viewport of [
+        { width: 1440, height: 1000 },
+        { width: 390, height: 844 },
+      ]) {
+        requestDiagnostics.phase("bootstrap");
+        runtime = createAdminRuntime(viewport.width, [
+          ...Object.keys(binding.sourceInputHashes),
+          ...Object.keys(binding.builtWorkerHashes),
+        ]);
+        runtime.initialize();
+        await runtime.start();
+        const context = await browser.newContext({ viewport });
+        page = await context.newPage();
+        requestDiagnostics.observe(page, viewport.width);
+        const errors = [],
+          consoleErrors = [],
+          failed = [],
+          badResponses = [];
+        page.on("pageerror", (error) => errors.push(error.message));
+        page.on("console", (message) => {
+          if (message.type() === "error")
+            consoleErrors.push({
+              message: message.text(),
+              location: message.location(),
+            });
+        });
+        page.on("requestfailed", (request) =>
+          failed.push({ url: request.url(), failure: request.failure() }),
+        );
+        page.on("response", (response) => {
+          if (
+            response.status() >= 400 &&
+            response.request().resourceType() === "script"
+          )
+            badResponses.push({
+              url: response.url(),
+              status: response.status(),
+            });
+        });
+        const capture = createCapture(page, evidence, binding, results);
+        const scopedCapture = (name) => capture(`${viewport.width}-${name}`);
+        async function clause(id, name, run) {
+          requestDiagnostics.phase(name);
+          let failure;
+          await contract(id, `${viewport.width}: ${name}`, async () => {
+            try {
+              await run();
+              checks.push({ id, name, width: viewport.width, passed: true });
+            } catch (error) {
+              failure = error;
+              checks.push({
+                id,
+                name,
+                width: viewport.width,
+                passed: false,
+                message: error.message,
+              });
+              throw error;
+            }
+          });
+          if (failure) throw failure;
+        }
+        const shared = {
+          page,
+          browser,
+          runtime,
+          capture: scopedCapture,
+          clause,
+        };
+        await bootstrapOwner(page, runtime);
+        await auditEmptyWorkspace(shared);
+        const team = await createTeamWorkflow(shared);
+        const label = await authorLabel(shared);
+        const project = await authorProject(shared);
+        await inviteProjectLead({ ...shared, project });
+        const cycles = await authorCycles({ ...shared, team });
+        const issue = await createAdministrationIssue({
+          ...shared,
+          team,
+          label,
+          project,
+        });
+        const immutableCycleReceipts = await exerciseCycleCommitments({
+          ...shared,
+          issue,
+          cycles,
+        });
+        await exerciseCycleList({ ...shared, issue, cycles });
+        await removeUsedStatus({ ...shared, team, issue });
+        await deleteAppliedLabel({ ...shared, label, issue });
+        await archiveProject({ ...shared, project, issue });
+        await archiveRestoreTeam({ ...shared, team, issue });
+        for (const receipt of immutableCycleReceipts)
+          assert.deepEqual(
+            runtime.sql(
+              `SELECT * FROM issue_activity WHERE id='${receipt.id}'`,
+            )[0],
+            receipt,
+            "cycle receipts remain immutable after all administration operations",
+          );
+        databases.push(await exportData(runtime, evidence, viewport.width));
+        await assertDocumentReadRecovery({
+          ...shared,
+          capturePage: (actualPage) => {
+            const capture = createCapture(
+              actualPage,
+              evidence,
+              binding,
+              results,
+            );
+            return async (name) => {
+              await capture(`${viewport.width}-${name}`);
+              return results.at(-1);
+            };
+          },
+        });
+        requestDiagnostics.phase("ordinary sign-out");
+        await assertSignOut(shared);
+        await assertSignOutReadLifecycle({
+          ...shared,
+          capturePage: (actualPage) => {
+            assert.notEqual(
+              actualPage,
+              page,
+              "lifecycle capture owns the fresh private page",
+            );
+            const capture = createCapture(
+              actualPage,
+              evidence,
+              binding,
+              results,
+            );
+            return async (name) => {
+              await capture(`${viewport.width}-${name}`);
+              return results.at(-1);
+            };
+          },
+        });
+        const expectedHttpErrors = consoleErrors.filter(
+          (row) =>
+            /^Failed to load resource:/.test(row.message) &&
+            ((row.location.url === runtime.base + "/api/settings/cycles" &&
+              /400/.test(row.message)) ||
+              (row.location.url === runtime.base + "/api/intake" &&
+                /409/.test(row.message))),
+        );
+        assert.deepEqual(errors, [], "browser page errors");
+        assert.deepEqual(
+          consoleErrors.filter((row) => !expectedHttpErrors.includes(row)),
+          [],
+          "unexpected browser console errors",
+        );
+        browserDiagnostics.push({
+          width: viewport.width,
+          pageErrors: errors,
+          consoleErrors,
+          expectedHttpErrors,
+          failed,
+          badResponses,
+        });
+        assert.deepEqual(failed, [], "browser failed requests");
+        assert.deepEqual(badResponses, [], "browser failed modules");
+        await context.close();
+        page = null;
+        await runtime.stop();
+        runtime = null;
+      }
+      const finalBinding = await sourceBinding();
+      assert.equal(
+        finalBinding.sourceInputDigest,
+        binding.sourceInputDigest,
+        "source inputs remained immutable during browser proof",
+      );
+      assert.deepEqual(
+        finalBinding.builtWorkerHashes,
+        binding.builtWorkerHashes,
+        "emitted Worker remained immutable during browser proof",
+      );
+      assert.deepEqual(
+        finalBinding.builtClientHashes,
+        binding.builtClientHashes,
+        "emitted client assets remained immutable during browser proof",
+      );
+      await writeFile(
+        resolve(evidence, "admin-runtime-results.json"),
+        JSON.stringify(
+          {
+            passed: true,
+            checks,
+            results,
+            databases,
+            browserDiagnostics,
+            ...binding,
+            scope:
+              "Emitted local Worker, native D1 and first-owner Base confirmation; empty runtime sample data disabled.",
+          },
+          null,
+          2,
+        ) + "\n",
+      );
+      console.log(
+        `Administration browser: ${checks.length} clause journeys, ${results.length} captured audited states passed.`,
+      );
+    } catch (error) {
+      await writeAdminFailureReceipt(
+        resolve(evidence, "admin-failure-safe.json"),
+        {
+          error,
+          binding,
+          requests: requestDiagnostics.snapshot(),
+          workerExceptions: runtime?.workerExceptions() ?? [],
+          checks,
+        },
+      );
+      if (page && !page.isClosed())
+        await writeFile(
+          resolve(evidence, "failure.html"),
+          await page.content(),
+        );
+      if (page && !page.isClosed())
+        await page
+          .screenshot({
+            path: resolve(evidence, "failure.png"),
+            fullPage: true,
+          })
+          .catch(() => {});
+      await writeFile(
+        resolve(evidence, "failure.json"),
+        JSON.stringify(
+          {
+            passed: false,
+            message: error.stack,
+            checks,
+            results,
+            log: runtime?.log,
+            ...binding,
+          },
+          null,
+          2,
+        ) + "\n",
+      );
+      throw error;
+    } finally {
+      await browser?.close();
+      await runtime?.stop();
+    }
+  },
+);

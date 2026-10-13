@@ -1,3 +1,4 @@
+import { openCycleFixture } from "./open-cycle-fixture";
 import { env } from "cloudflare:workers";
 import { applyD1Migrations } from "cloudflare:test";
 import { Hono } from "hono";
@@ -7,12 +8,18 @@ import { createApiApp } from "../../src/core/app/api";
 import { ensureSampleData } from "../../src/core/features/sample-data/service";
 import { vectorSampleIds as ids } from "../../sample-data/vector";
 import { createUlid } from "../../src/core/shared/ids";
-import { testCookie } from "./native-fixture";
+import {
+  sampleOwner,
+  samplePeer,
+  sampleSession,
+  sampleBindings,
+  origin,
+} from "./sample-auth-fixture";
+import { beforeCommit } from "./removal-interleaving";
 
 // Use the real API admission/error middleware and registered native team route.
 const api = createApiApp();
-const app = new Hono().route("/api", api),
-  origin = "https://vector.test";
+const app = new Hono().route("/api", api);
 let cookie: string,
   sequence = 300000;
 const timestamp = "2026-10-02T12:00:00.000Z";
@@ -28,7 +35,7 @@ const statuses = [
 beforeAll(async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   await ensureSampleData(env.DB, new Date(timestamp));
-  cookie = await testCookie(env.DB, ids.sarah);
+  cookie = await sampleOwner();
 });
 async function fixture(
   status: string = ids.flowBacklog,
@@ -74,6 +81,7 @@ async function request(
     {
       method: "POST",
       headers: {
+        host: new URL(origin).host,
         origin,
         cookie,
         "content-type": "application/json",
@@ -81,7 +89,7 @@ async function request(
       },
       body: raw ?? JSON.stringify(values),
     },
-    { ...env, DB: db, APP_ORIGIN: origin },
+    { ...sampleBindings, DB: db },
   );
 }
 function move(
@@ -111,21 +119,10 @@ async function receipt(id: string) {
   };
 }
 function beforeBatch(action: () => Promise<void>) {
-  let used = false;
-  return new Proxy(env.DB, {
-    get(target, property) {
-      if (property === "batch")
-        return async (writes: D1PreparedStatement[]) => {
-          if (!used) {
-            used = true;
-            await action();
-          }
-          return target.batch(writes);
-        };
-      const value = Reflect.get(target, property);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
+  return beforeCommit(
+    (sql) => sql.includes("UPDATE issues SET team_id="),
+    action,
+  );
 }
 
 it("[ISSUE-012 ISSUE-002 ISSUE-006 ISSUE-007] native move preserves every workflow category including deferred Intake and terminal timestamps with one immutable actor entry", async () => {
@@ -267,7 +264,7 @@ it("[ISSUE-012 OPS-001] foreign issues are concealed before stale/option respons
     team = createUlid(new Date()),
     status = createUlid(new Date()),
     now = new Date().toISOString();
-  await env.DB.prepare("INSERT INTO workspace_settings VALUES(?,?,?,?,?)")
+  await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
     .bind(workspace, "Foreign workspace", "UTC", now, now)
     .run();
   await env.DB.prepare(
@@ -280,35 +277,58 @@ it("[ISSUE-012 OPS-001] foreign issues are concealed before stale/option respons
     .run();
   const foreign = await fixture(status, team),
     foreignBefore = await receipt(foreign.id);
-  const concealed = await move(
-    { ...foreign, version: 99 },
-    ids.platform,
-    ids.platformBacklog,
-  );
-  assert.equal(concealed.status, 404);
-  const hidden = await concealed.text();
-  assert.equal(hidden.includes(foreign.identifier), false);
-  assert.equal(hidden.includes("Misrouted"), false);
-  assert.deepEqual(await receipt(foreign.id), foreignBefore);
-  const issue = await fixture(),
-    before = await receipt(issue.id);
-  assert.equal((await move(issue, team, status)).status, 400);
-  assert.equal((await move(issue, "0".repeat(26))).status, 400);
-  assert.equal((await move(issue, ids.platform, ids.flowBacklog)).status, 400);
-  assert.equal(
-    (await move(issue, ids.platform, ids.platformStarted)).status,
-    400,
-  );
-  await env.DB.prepare("UPDATE teams SET archived_at=? WHERE id=?")
-    .bind(now, ids.platform)
-    .run();
   try {
-    assert.equal((await move(issue)).status, 400);
-    assert.deepEqual(await receipt(issue.id), before);
-  } finally {
-    await env.DB.prepare("UPDATE teams SET archived_at=NULL WHERE id=?")
-      .bind(ids.platform)
+    const concealed = await move(
+      { ...foreign, version: 99 },
+      ids.platform,
+      ids.platformBacklog,
+    );
+    assert.equal(concealed.status, 404);
+    const hidden = await concealed.text();
+    assert.equal(hidden.includes(foreign.identifier), false);
+    assert.equal(hidden.includes("Misrouted"), false);
+    assert.deepEqual(await receipt(foreign.id), foreignBefore);
+    const issue = await fixture(),
+      before = await receipt(issue.id);
+    assert.equal((await move(issue, team, status)).status, 400);
+    assert.equal((await move(issue, "0".repeat(26))).status, 400);
+    assert.equal(
+      (await move(issue, ids.platform, ids.flowBacklog)).status,
+      400,
+    );
+    assert.equal(
+      (await move(issue, ids.platform, ids.platformStarted)).status,
+      400,
+    );
+    await env.DB.prepare("UPDATE teams SET archived_at=? WHERE id=?")
+      .bind(now, ids.platform)
       .run();
+    try {
+      assert.equal((await move(issue)).status, 400);
+      assert.deepEqual(await receipt(issue.id), before);
+    } finally {
+      await env.DB.prepare("UPDATE teams SET archived_at=NULL WHERE id=?")
+        .bind(ids.platform)
+        .run();
+    }
+  } finally {
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM issues WHERE id=?").bind(foreign.id),
+      env.DB.prepare("DELETE FROM workflow_statuses WHERE id=?").bind(status),
+      env.DB.prepare("DELETE FROM team_issue_history WHERE team_id=?").bind(
+        team,
+      ),
+      env.DB.prepare("DELETE FROM team_issue_sequences WHERE team_id=?").bind(
+        team,
+      ),
+      env.DB.prepare("DELETE FROM teams WHERE id=?").bind(team),
+      env.DB.prepare(
+        "DELETE FROM issue_prefix_sequences WHERE workspace_id=?",
+      ).bind(workspace),
+      env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(
+        workspace,
+      ),
+    ]);
   }
 });
 
@@ -323,6 +343,7 @@ it("[ISSUE-012 ISSUE-007] graph/evidence/assertions/history/original file bytes 
     link = createUlid(new Date()),
     file = createUlid(new Date()),
     key = "team-move/" + file;
+  const closedCycle = await openCycleFixture(env.DB, ids.flowCycle);
   await env.FILES.put(key, "Original private bytes");
   await env.DB.batch([
     env.DB.prepare("INSERT INTO issue_labels VALUES(?,?,?)").bind(
@@ -405,9 +426,13 @@ it("[ISSUE-012 ISSUE-007] graph/evidence/assertions/history/original file bytes 
       timestamp,
       timestamp,
     ),
+    env.DB.prepare("UPDATE issues SET cycle_id=? WHERE id=?").bind(
+      closedCycle,
+      issue.id,
+    ),
     env.DB.prepare("UPDATE cycles SET closed_at=? WHERE id=?").bind(
       timestamp,
-      ids.flowCycle,
+      closedCycle,
     ),
   ]);
   const tables = [
@@ -454,9 +479,6 @@ it("[ISSUE-012 ISSUE-007] graph/evidence/assertions/history/original file bytes 
       "Original private bytes",
     );
   } finally {
-    await env.DB.prepare("UPDATE cycles SET closed_at=NULL WHERE id=?")
-      .bind(ids.flowCycle)
-      .run();
     await env.FILES.delete(key);
   }
 });
@@ -469,9 +491,16 @@ it("[ISSUE-012 ISSUE-006 OPS-004] real target/status/actor races reject at commi
     "actor_workspace",
     "version",
   ] as const) {
+    const ownerCookie = cookie;
+    const peer = await samplePeer(ownerCookie);
+    cookie = peer.cookie;
+    await sampleSession(cookie);
+    const workspace = createUlid(new Date());
+    let fired = 0;
     const issue = await fixture(),
       before = await receipt(issue.id);
     const db = beforeBatch(async () => {
+      fired++;
       if (race === "archive")
         await env.DB.prepare("UPDATE teams SET archived_at=? WHERE id=?")
           .bind(timestamp, ids.platform)
@@ -484,11 +513,10 @@ it("[ISSUE-012 ISSUE-006 OPS-004] real target/status/actor races reject at commi
           .run();
       if (race === "actor_removed")
         await env.DB.prepare("UPDATE operators SET removed_at=? WHERE id=?")
-          .bind(timestamp, ids.sarah)
+          .bind(timestamp, peer.id)
           .run();
       if (race === "actor_workspace") {
-        const workspace = createUlid(new Date());
-        await env.DB.prepare("INSERT INTO workspace_settings VALUES(?,?,?,?,?)")
+        await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
           .bind(
             workspace,
             "Actor moved " + workspace,
@@ -498,7 +526,7 @@ it("[ISSUE-012 ISSUE-006 OPS-004] real target/status/actor races reject at commi
           )
           .run();
         await env.DB.prepare("UPDATE operators SET workspace_id=? WHERE id=?")
-          .bind(workspace, ids.sarah)
+          .bind(workspace, peer.id)
           .run();
       }
       if (race === "version")
@@ -521,6 +549,7 @@ it("[ISSUE-012 ISSUE-006 OPS-004] real target/status/actor races reject at commi
               : 400,
         race,
       );
+      assert.equal(fired, 1);
       const result: any = await response.json(),
         after = await receipt(issue.id);
       assert.deepEqual(after.activity, before.activity);
@@ -541,8 +570,15 @@ it("[ISSUE-012 ISSUE-006 OPS-004] real target/status/actor races reject at commi
         ).bind(ids.platformBacklog),
         env.DB.prepare(
           "UPDATE operators SET removed_at=NULL,workspace_id=? WHERE id=?",
-        ).bind(ids.workspace, ids.sarah),
+        ).bind(ids.workspace, peer.id),
       ]);
+      if (race === "actor_workspace")
+        await env.DB.prepare("DELETE FROM workspace_settings WHERE id=?")
+          .bind(workspace)
+          .run();
+      if (race === "actor_removed") await sampleSession(cookie, 401);
+      cookie = ownerCookie;
+      await sampleSession(cookie);
     }
   }
 });

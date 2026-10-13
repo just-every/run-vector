@@ -7,17 +7,23 @@ import { createApiApp } from "../../src/core/app/api";
 import { ensureSampleData } from "../../src/core/features/sample-data/service";
 import { vectorSampleIds as ids } from "../../sample-data/vector";
 import { createUlid } from "../../src/core/shared/ids";
-import { testCookie } from "./native-fixture";
+import {
+  sampleOwner,
+  samplePeer,
+  sampleSession,
+  sampleBindings,
+  origin,
+} from "./sample-auth-fixture";
+import { beforeCommit } from "./removal-interleaving";
 
-const origin = "https://vector.test",
-  app = new Hono().route("/api", createApiApp());
+const app = new Hono().route("/api", createApiApp());
 let cookie: string;
 type Issue = { id: string; identifier: string; version: number };
 const timestamp = "2026-10-02T12:00:00.000Z";
 beforeAll(async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   await ensureSampleData(env.DB, new Date(timestamp));
-  cookie = await testCookie(env.DB, ids.sarah);
+  cookie = await sampleOwner();
 });
 
 async function http(
@@ -33,6 +39,7 @@ async function http(
     {
       method,
       headers: {
+        host: new URL(origin).host,
         cookie,
         origin,
         "content-type": "application/json",
@@ -42,7 +49,7 @@ async function http(
         ? {}
         : { body: raw ?? JSON.stringify(body) }),
     },
-    { ...env, DB: db, APP_ORIGIN: origin, SEED_SAMPLE_DATA: "false" },
+    { ...sampleBindings, DB: db },
   );
 }
 async function fixture(teamId: string = ids.flow): Promise<Issue> {
@@ -122,21 +129,12 @@ async function before(a: Issue, b: Issue) {
   return [await receipt(a), await receipt(b)];
 }
 function beforeBatch(action: () => Promise<void>) {
-  let used = false;
-  return new Proxy(env.DB, {
-    get(target, property) {
-      if (property === "batch")
-        return async (writes: D1PreparedStatement[]) => {
-          if (!used) {
-            used = true;
-            await action();
-          }
-          return target.batch(writes);
-        };
-      const value = Reflect.get(target, property);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
+  return beforeCommit(
+    (sql) =>
+      sql.includes("INTO issue_dependencies") ||
+      sql.includes("DELETE FROM issue_dependencies"),
+    action,
+  );
 }
 async function rawEdge(blocker: Issue, blocked: Issue) {
   await env.DB.prepare(
@@ -401,7 +399,7 @@ it("[REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclos
     status = createUlid(new Date());
   // Foreign-workspace boundary is an explicit D1 fixture in this single-workspace product.
   await env.DB.batch([
-    env.DB.prepare("INSERT INTO workspace_settings VALUES(?,?,?,?,?)").bind(
+    env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)").bind(
       workspace,
       "Private fixture workspace",
       "UTC",
@@ -431,44 +429,82 @@ it("[REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclos
       "UPDATE issues SET team_id=?,status_id=?,title='Private foreign title' WHERE id=?",
     ).bind(team, status, b.id),
   ]);
-  const foreignBefore = await before(a, b);
-  const authorizedRead = await http(`/api/issues/${a.identifier}`);
-  assert.equal(authorizedRead.status, 200);
-  assert.equal(((await authorizedRead.json()) as any).identifier, a.identifier);
-  const foreignRead = await http(`/api/issues/${b.identifier}`);
-  assert.equal(foreignRead.status, 404);
-  const foreignText = await foreignRead.text();
-  assert.ok(!foreignText.includes("Private foreign title"));
-  assert.ok(!foreignText.includes(b.identifier));
-  for (const [primary, related] of [
-    [a, b],
-    [b, a],
-  ]) {
-    const response = await http(
-      `/api/issues/${primary.identifier}/dependencies`,
-      "POST",
-      { ...input(primary, related), expectedVersion: 99, relatedVersion: 99 },
+  try {
+    const foreignBefore = await before(a, b);
+    const authorizedRead = await http(`/api/issues/${a.identifier}`);
+    assert.equal(authorizedRead.status, 200);
+    assert.equal(
+      ((await authorizedRead.json()) as any).identifier,
+      a.identifier,
     );
-    assert.equal(response.status, 404);
-    const text = await response.text();
-    assert.ok(!text.includes("Private foreign title"));
-    assert.ok(!text.includes("relatedIssue"));
+    const foreignRead = await http(`/api/issues/${b.identifier}`);
+    assert.equal(foreignRead.status, 404);
+    const foreignText = await foreignRead.text();
+    assert.ok(!foreignText.includes("Private foreign title"));
+    assert.ok(!foreignText.includes(b.identifier));
+    for (const [primary, related] of [
+      [a, b],
+      [b, a],
+    ]) {
+      const response = await http(
+        `/api/issues/${primary.identifier}/dependencies`,
+        "POST",
+        { ...input(primary, related), expectedVersion: 99, relatedVersion: 99 },
+      );
+      assert.equal(response.status, 404);
+      const text = await response.text();
+      assert.ok(!text.includes("Private foreign title"));
+      assert.ok(!text.includes("relatedIssue"));
+    }
+    assert.deepEqual(await before(a, b), foreignBefore);
+    assert.deepEqual((await receipt(a)).activity, original[0].activity);
+  } finally {
+    await env.DB.batch([
+      env.DB.prepare(
+        "UPDATE issues SET team_id=?,status_id=?,title=? WHERE id=?",
+      ).bind(
+        original[1].issue.team_id,
+        original[1].issue.status_id,
+        original[1].issue.title,
+        b.id,
+      ),
+      env.DB.prepare("DELETE FROM workflow_statuses WHERE team_id=?").bind(
+        team,
+      ),
+      env.DB.prepare("DELETE FROM team_issue_history WHERE team_id=?").bind(
+        team,
+      ),
+      env.DB.prepare("DELETE FROM team_issue_sequences WHERE team_id=?").bind(
+        team,
+      ),
+      env.DB.prepare("DELETE FROM teams WHERE id=?").bind(team),
+      env.DB.prepare(
+        "DELETE FROM issue_prefix_sequences WHERE workspace_id=?",
+      ).bind(workspace),
+      env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(
+        workspace,
+      ),
+    ]);
   }
-  assert.deepEqual(await before(a, b), foreignBefore);
-  assert.deepEqual((await receipt(a)).activity, original[0].activity);
 });
 
 it("[REL-001 BASE-ACCESS-001] native related-issue lookup and stale conflict DTOs reauthorize after projection without leaking a removed actor's or foreign issue's data", async () => {
   const a = await fixture(),
     b = await fixture();
+  const revoked: string[] = [];
   for (const race of [
     "removed_actor",
     "issue_workspace",
     "stale_removed_actor",
   ] as const) {
+    const ownerCookie = cookie;
+    const peer = await samplePeer(ownerCookie);
+    cookie = peer.cookie;
+    await sampleSession(cookie);
+    for (const previous of revoked) await sampleSession(previous, 401);
     const workspace = createUlid(new Date());
     if (race === "issue_workspace")
-      await env.DB.prepare("INSERT INTO workspace_settings VALUES(?,?,?,?,?)")
+      await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
         .bind(
           workspace,
           "Foreign during projection",
@@ -498,7 +534,7 @@ it("[REL-001 BASE-ACCESS-001] native related-issue lookup and stale conflict DTO
                   await env.DB.prepare(
                     "UPDATE operators SET removed_at=? WHERE id=?",
                   )
-                    .bind(timestamp, ids.sarah)
+                    .bind(timestamp, peer.id)
                     .run();
               }
               return result;
@@ -541,13 +577,23 @@ it("[REL-001 BASE-ACCESS-001] native related-issue lookup and stale conflict DTO
     } finally {
       await env.DB.batch([
         env.DB.prepare("UPDATE operators SET removed_at=NULL WHERE id=?").bind(
-          ids.sarah,
+          peer.id,
         ),
         env.DB.prepare("UPDATE teams SET workspace_id=? WHERE id=?").bind(
           ids.workspace,
           ids.flow,
         ),
       ]);
+      if (race === "issue_workspace")
+        await env.DB.prepare("DELETE FROM workspace_settings WHERE id=?")
+          .bind(workspace)
+          .run();
+      else {
+        await sampleSession(cookie, 401);
+        revoked.push(cookie);
+      }
+      cookie = ownerCookie;
+      await sampleSession(cookie);
     }
   }
 });
@@ -596,6 +642,12 @@ it.each([
 ] as const)(
   "[REL-001 REL-002 ISSUE-006 BASE-ACCESS-001] %s is rechecked at the actual dependency batch boundary",
   async (race) => {
+    const ownerCookie = cookie;
+    const peer = await samplePeer(ownerCookie);
+    cookie = peer.cookie;
+    await sampleSession(cookie);
+    const workspace = createUlid(new Date());
+    let fired = 0;
     const a = await fixture(),
       b = await fixture(),
       c = await fixture();
@@ -603,6 +655,7 @@ it.each([
     const original = await before(a, b);
     let raced: any;
     const db = beforeBatch(async () => {
+      fired++;
       if (race === "reverse") await rawEdge(b, a);
       if (race === "cycle") {
         await rawEdge(b, c);
@@ -616,11 +669,10 @@ it.each([
           .run();
       if (race === "removed_actor")
         await env.DB.prepare("UPDATE operators SET removed_at=? WHERE id=?")
-          .bind(timestamp, ids.sarah)
+          .bind(timestamp, peer.id)
           .run();
       if (race === "actor_workspace" || race === "issue_workspace") {
-        const workspace = createUlid(new Date());
-        await env.DB.prepare("INSERT INTO workspace_settings VALUES(?,?,?,?,?)")
+        await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
           .bind(
             workspace,
             "Concurrent foreign workspace",
@@ -631,7 +683,7 @@ it.each([
           .run();
         if (race === "actor_workspace")
           await env.DB.prepare("UPDATE operators SET workspace_id=? WHERE id=?")
-            .bind(workspace, ids.sarah)
+            .bind(workspace, peer.id)
             .run();
         else
           await env.DB.prepare("UPDATE teams SET workspace_id=? WHERE id=?")
@@ -663,6 +715,7 @@ it.each([
             : 409,
         race,
       );
+      assert.equal(fired, 1, "exactly one feature commit boundary");
       const body: any = await response.json();
       if (race === "primary_version" || race === "related_version") {
         assert.equal(body.error, "stale_version");
@@ -684,12 +737,19 @@ it.each([
       await env.DB.batch([
         env.DB.prepare(
           "UPDATE operators SET removed_at=NULL,workspace_id=? WHERE id=?",
-        ).bind(ids.workspace, ids.sarah),
+        ).bind(ids.workspace, peer.id),
         env.DB.prepare("UPDATE teams SET workspace_id=? WHERE id=?").bind(
           ids.workspace,
           ids.flow,
         ),
       ]);
+      if (race === "actor_workspace" || race === "issue_workspace")
+        await env.DB.prepare("DELETE FROM workspace_settings WHERE id=?")
+          .bind(workspace)
+          .run();
+      if (race === "removed_actor") await sampleSession(cookie, 401);
+      cookie = ownerCookie;
+      await sampleSession(cookie);
     }
   },
 );
@@ -706,23 +766,38 @@ it("[REL-002] concurrent reverse edges and disjoint endpoint writes cannot compl
   const gate = new Promise<void>((resolve) => {
     release = resolve;
   });
-  const db = new Proxy(env.DB, {
-    get(target, property) {
-      if (property === "batch")
-        return async (writes: D1PreparedStatement[]) => {
-          entered++;
-          if (entered === 2) release();
-          await gate;
-          return target.batch(writes);
-        };
-      const value = Reflect.get(target, property);
-      return typeof value === "function" ? value.bind(target) : value;
+  const db = beforeCommit(
+    (sql) => sql.includes("INTO issue_dependencies"),
+    async () => {
+      entered++;
+      if (entered === 2) release();
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      try {
+        await Promise.race([
+          gate,
+          new Promise<never>((_, reject) => {
+            timer = setTimeout(
+              () =>
+                reject(
+                  new Error(
+                    `Dependency feature rendezvous: ${entered} of 2 commits reached`,
+                  ),
+                ),
+              5000,
+            );
+          }),
+        ]);
+      } finally {
+        clearTimeout(timer);
+      }
     },
-  });
+    false,
+  );
   const responses = await Promise.all([
     link(a, b, "blocks", "POST", db),
     link(c, d, "blocks", "POST", db),
   ]);
+  assert.equal(entered, 2);
   assert.deepEqual(responses.map((r) => r.status).sort(), [200, 409]);
   assert.equal(
     ((await responses.find((r) => r.status === 409)!.json()) as any).error,

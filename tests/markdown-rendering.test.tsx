@@ -132,3 +132,52 @@ describe("ISSUE-001 ISSUE-008 BASE-INPUT-002 safe CommonMark display", () => {
     expect(html).not.toMatch(/<img\b|src=|<button\b|<link\b/);
   });
 });
+
+describe("ISSUE-013 safe readable canonical mentions", () => {
+  const renderMention = (text: string) =>
+    renderToStaticMarkup(
+      <SafeMarkdown activeOperatorIds={["01ARZ3NDEKTSV4RRFFQ69G5FAV"]}>
+        {text}
+      </SafeMarkdown>,
+    );
+  const token = "@{01ARZ3NDEKTSV4RRFFQ69G5FAV|Alice%20%3Cscript%3E}";
+  it("renders selected names as escaped text after Markdown parsing", () => {
+    const html = renderMention(`Hello ${token}.`);
+    expect(html).toContain("@Alice &lt;script&gt;");
+    expect(html).not.toContain("01ARZ3NDEKTSV4RRFFQ69G5FAV");
+    expect(html).not.toContain("<script>");
+  });
+  it("does not reinterpret code, link text, HTML, escapes, or email adjacency", () => {
+    for (const body of [
+      `\`${token}\``,
+      `[${token}](https://example.test)`,
+      `\\${token}`,
+      `email${token}`,
+      `<span>${token}</span>`,
+    ]) {
+      expect(renderMention(body)).not.toContain("@Alice &lt;script&gt;");
+    }
+    expect(renderMention(`\`\`\`\n${token}\n\`\`\``)).toContain(
+      "01ARZ3NDEKTSV4RRFFQ69G5FAV",
+    );
+  });
+  it("keeps an identical escaped or entity-created token literal before a selected token", () => {
+    for (const literal of [`\\${token}`, token.replace("@", "&#64;")]) {
+      const html = renderMention(`${literal} then ${token}`);
+      expect(html.match(/01ARZ3NDEKTSV4RRFFQ69G5FAV/g)).toHaveLength(1);
+      expect(html.match(/@Alice &lt;script&gt;/g)).toHaveLength(1);
+    }
+  });
+  it("keeps image loading explicit when mentions occur nearby", () => {
+    const html = renderMention(
+      `${token}\n\n![Evidence](https://example.test/pixel.png)`,
+    );
+    expect(html).toContain("Load image: Evidence");
+    expect(html).not.toContain("<img");
+  });
+});
+
+it("ISSUE-013 unknown canonical identities stay visible as exact source", () => {
+  const token = "@{01ARZ3NDEKTSV4RRFFQ69G5FAV|Alice%20Smith}";
+  expect(render(token)).toContain(token);
+});

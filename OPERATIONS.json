@@ -5,11 +5,11 @@
     "requirements": [
       {
         "name": "node",
-        "version": ">=22.12.0"
+        "version": "22.20.0"
       },
       {
         "name": "pnpm",
-        "version": "8.15.6"
+        "version": "10.12.4"
       },
       {
         "name": "Cloudflare Worker / D1 / R2",
@@ -17,7 +17,30 @@
       }
     ]
   },
-  "requiredEnvironment": [],
+  "requiredEnvironment": [
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_API_TOKEN",
+    "APP_ORIGIN",
+    "SESSION_SECRET",
+    "SENDGRID_API_KEY",
+    "FIRST_OWNER_EMAIL",
+    "FIRST_OWNER_NAME",
+    "WORKSPACE_NAME",
+    "WORKSPACE_TIMEZONE",
+    "DEFAULT_TEAM_NAME",
+    "DEFAULT_TEAM_PREFIX",
+    "MAIL_FROM",
+    "CF_THROWAWAY_ACCOUNT_ID",
+    "CF_THROWAWAY_API_TOKEN",
+    "RER_DEPLOY_ARTIFACT",
+    "RER_DEPLOY_ARTIFACT_SHA256",
+    "RER_DEPLOY_SOURCE_SHA",
+    "RER_DEPLOY_RUN_ID",
+    "RER_DEPLOY_RUN_ATTEMPT",
+    "RER_DEPLOY_RECEIPT",
+    "RER_DEPLOY_PLAN",
+    "MAIL_API_KEY"
+  ],
   "documentation": {
     "document": "OPERATIONS.md"
   },
@@ -25,149 +48,316 @@
     "document": "ACCEPTANCE.md"
   },
   "commands": {
+    "install": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "install"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Installs frozen dependencies only."
+    },
     "dev": {
       "argv": [
-        "pnpm",
-        "run",
+        "node",
+        "scripts/rer.mjs",
         "dev"
       ],
       "inputs": [
         "package.json",
-        "vite.config.ts",
-        "wrangler.jsonc"
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
       ],
-      "effects": "Applies local synthetic D1 migrations and serves the Vite Worker/UI on loopback port 15928. Writes .wrangler/vector-dev; no providers or deployment."
+      "effects": "Serves the local application with HMR and development outbox."
     },
     "build": {
       "argv": [
-        "pnpm",
-        "run",
+        "node",
+        "scripts/rer.mjs",
         "build"
       ],
       "inputs": [
         "package.json",
-        "vite.config.ts",
-        "wrangler.jsonc"
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
       ],
-      "effects": "Typechecks and builds the local client/server artifacts. No deployment or remote binding access."
-    },
-    "verify": {
-      "argv": [
-        "pnpm",
-        "run",
-        "verify"
-      ],
-      "inputs": [
-        "package.json",
-        "vitest.config.ts",
-        "tests/e2e/core-runtime.mjs"
-      ],
-      "effects": "Runs local Node, safe Markdown and D1/R2 Worker tests, builds, then runs emitted Worker and Chromium acceptance with isolated synthetic state on 15924\u201315925. Includes the genuine scheduled cleanup handler via local Wrangler test scheduling. No external provider writes."
-    },
-    "setup-local": {
-      "argv": [
-        "pnpm",
-        "run",
-        "db:local:migrate"
-      ],
-      "inputs": [
-        "package.json",
-        "wrangler.jsonc"
-      ],
-      "effects": "Applies immutable D1 migrations to .wrangler/vector-dev only. Does not create Cloudflare resources."
-    },
-    "review-serve": {
-      "argv": [
-        "pnpm",
-        "run",
-        "review:serve"
-      ],
-      "inputs": [
-        "package.json",
-        "wrangler.jsonc"
-      ],
-      "effects": "Serves the previously built production artifact on loopback 15920\u201315921 with .wrangler/vector-review state. Requires review migrations first."
-    },
-    "review-signin": {
-      "argv": [
-        "pnpm",
-        "run",
-        "review:signin",
-        "sarah@vector.test"
-      ],
-      "inputs": [
-        "package.json",
-        "scripts/local-review.mjs",
-        "wrangler.jsonc"
-      ],
-      "effects": "Requests one synthetic native magic link from the local review server and reads its explicit local outbox. No real email."
-    },
-    "test-foundation": {
-      "argv": [
-        "pnpm",
-        "run",
-        "test:foundation"
-      ],
-      "inputs": [
-        "package.json",
-        "tests/e2e/foundation-runtime.mjs",
-        "wrangler.jsonc"
-      ],
-      "effects": "Runs the emitted no-sample Worker on loopback 41866 with isolated synthetic first-owner inputs and local outbox. Verifies native sign-in, settings, first-owner guard and persistence across restart; closes the Worker and browser. Requires build first; no provider or deployment effects."
-    },
-    "prepare": {
-      "argv": [
-        "pnpm",
-        "deploy:prepare"
-      ],
-      "inputs": [
-        "package.json",
-        "DEPLOY.md",
-        "scripts/deployment/controller.mjs",
-        "scripts/deployment/plan.mjs"
-      ],
-      "effects": "Credential-free frozen install/build and inert artifact packaging. Requires explicit source/run identity and new output/private-home paths outside checkout; no remote effects."
+      "effects": "Runs the shared build command; see SEED-COMMAND-CONTRACT.md."
     },
     "setup": {
       "argv": [
-        "pnpm",
-        "run",
+        "node",
+        "scripts/rer.mjs",
         "setup"
       ],
       "inputs": [
         "package.json",
-        "DEPLOY.md",
-        "scripts/deployment/controller.mjs",
-        "scripts/deployment/plan.mjs"
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
       ],
-      "effects": "With reviewed declarative plan and explicit controller credentials, finds or creates deterministic Worker/D1/R2, applies new immutable hashed migrations, uploads built artifact, reconciles minute Cron and checks exact deployed health. Existing data and opaque secrets retained."
+      "effects": "Prepares the local owner, private settings and data; stops its temporary app."
     },
     "deploy": {
       "argv": [
-        "pnpm",
-        "run",
+        "node",
+        "scripts/rer.mjs",
         "deploy"
       ],
       "inputs": [
         "package.json",
-        "DEPLOY.md",
-        "scripts/deployment/controller.mjs",
-        "scripts/deployment/plan.mjs"
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
       ],
-      "effects": "Reconciles the reviewed installation through Base deploy-kit. Identical artifact/plan/receipt performs no provider mutation and preserves receipt bytes; drift fails."
+      "effects": "Builds and deploys to the explicit owner account; dry run sends no provider request."
     },
     "health": {
       "argv": [
         "pnpm",
+        "run",
         "deploy:health"
       ],
       "inputs": [
         "package.json",
-        "DEPLOY.md",
-        "scripts/deployment/controller.mjs",
-        "scripts/deployment/plan.mjs"
+        "scripts/owner.mjs",
+        "deploy.json"
       ],
-      "effects": "Reads authenticated provider identities, resources, migration history, secret presence, Cron and public Worker health without modifying resources."
+      "effects": "Checks the same durable owner deployment."
+    },
+    "artifact-prepare": {
+      "argv": [
+        "pnpm",
+        "run",
+        "deploy:prepare"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/deployment/prepare.mjs"
+      ],
+      "effects": "Prepares an inert build artifact in credential-free isolation."
+    },
+    "artifact-setup": {
+      "argv": [
+        "pnpm",
+        "run",
+        "artifact:setup"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/deployment/controller.mjs"
+      ],
+      "effects": "Provisions from a reviewed isolated artifact plan."
+    },
+    "artifact-deploy": {
+      "argv": [
+        "pnpm",
+        "run",
+        "artifact:deploy"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/deployment/controller.mjs"
+      ],
+      "effects": "Reconciles a reviewed isolated artifact plan."
+    },
+    "artifact-health": {
+      "argv": [
+        "pnpm",
+        "run",
+        "artifact:health"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/deployment/controller.mjs"
+      ],
+      "effects": "Checks the isolated artifact deployment."
+    },
+    "verify": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "verify"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared verify command; see SEED-COMMAND-CONTRACT.md."
+    },
+    "preview": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "preview"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared preview command; see SEED-COMMAND-CONTRACT.md."
+    },
+    "reset": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "reset"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Removes only confirmed inventoried local data and settings."
+    },
+    "export": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "export"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Writes an owner-only supported local archive."
+    },
+    "import": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "import"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Validates and atomically restores an archive into empty local storage."
+    },
+    "release": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "release"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared release command; see SEED-COMMAND-CONTRACT.md."
+    },
+    "outbox": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "outbox"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared outbox command; see SEED-COMMAND-CONTRACT.md."
+    },
+    "doctor": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "doctor"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared doctor command; see SEED-COMMAND-CONTRACT.md."
+    },
+    "describe": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "describe"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared describe command; see SEED-COMMAND-CONTRACT.md."
+    },
+    "check": {
+      "argv": [
+        "node",
+        "scripts/rer.mjs",
+        "check"
+      ],
+      "inputs": [
+        "package.json",
+        "scripts/rer.mjs",
+        "scripts/installer/local.mjs",
+        "rer-setup.json"
+      ],
+      "effects": "Runs the shared check command; see SEED-COMMAND-CONTRACT.md."
     }
+  },
+  "configuration": {
+    "module": "scripts/operations-config.mjs"
+  },
+  "environmentSources": {
+    "CLOUDFLARE_ACCOUNT_ID": "See DEPLOY.md",
+    "CLOUDFLARE_API_TOKEN": "See DEPLOY.md",
+    "APP_ORIGIN": "See DEPLOY.md",
+    "SESSION_SECRET": "See DEPLOY.md",
+    "SENDGRID_API_KEY": "See DEPLOY.md",
+    "FIRST_OWNER_EMAIL": "See DEPLOY.md",
+    "FIRST_OWNER_NAME": "See DEPLOY.md",
+    "WORKSPACE_NAME": "See DEPLOY.md",
+    "WORKSPACE_TIMEZONE": "See DEPLOY.md",
+    "DEFAULT_TEAM_NAME": "See DEPLOY.md",
+    "DEFAULT_TEAM_PREFIX": "See DEPLOY.md",
+    "MAIL_FROM": "See DEPLOY.md",
+    "CF_THROWAWAY_ACCOUNT_ID": "See DEPLOY.md",
+    "CF_THROWAWAY_API_TOKEN": "See DEPLOY.md",
+    "RER_DEPLOY_ARTIFACT": "See DEPLOY.md",
+    "RER_DEPLOY_ARTIFACT_SHA256": "See DEPLOY.md",
+    "RER_DEPLOY_SOURCE_SHA": "See DEPLOY.md",
+    "RER_DEPLOY_RUN_ID": "See DEPLOY.md",
+    "RER_DEPLOY_RUN_ATTEMPT": "See DEPLOY.md",
+    "RER_DEPLOY_RECEIPT": "See DEPLOY.md",
+    "RER_DEPLOY_PLAN": "See DEPLOY.md",
+    "MAIL_API_KEY": "See DEPLOY.md"
+  },
+  "loops": [
+    {
+      "id": "worker",
+      "type": "worker",
+      "enabled": true,
+      "required": true
+    }
+  ],
+  "seedContract": {
+    "version": 1,
+    "profile": "first-party",
+    "adapter": "scripts/installer/local.mjs"
   }
 }

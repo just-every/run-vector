@@ -1,0 +1,27 @@
+/* 6. Try it without switching: three numbered steps, and a patch of grid paper holding a terminal that a first-run card overlaps. */
+.vx-try-steps { display: flex; flex-direction: column; gap: 18px; margin: clamp(28px, 2.6vw, 36px) 0 0; padding: 0; list-style: none; }
+.vx-try-steps li { display: flex; align-items: center; gap: 16px; }
+.vx-try-steps .vx-num { flex: none; }
+.vx-try-steps p { margin: 0; color: var(--vx-body); font-size: clamp(17px, 1.3vw, 19px); line-height: 1.45; text-wrap: pretty; }
+.vx-try-steps strong { color: var(--vx-ink); font-weight: 620; }
+
+/* Grid paper: hard-stop 1px rules every 24px, no heavier lines. */
+.vx-grid-paper { position: relative; width: min(100%, 640px); height: 376px; background-color: var(--vx-paper); background-image: linear-gradient(var(--vx-rule) 1px, transparent 1px), linear-gradient(90deg, var(--vx-rule) 1px, transparent 1px); background-size: 24px 24px; }
+.vx-terminal { position: absolute; left: 36px; top: 36px; width: 544px; max-width: calc(100% - 36px); --vx-pad: 18px; }
+.vx-terminal .vx-card-head { margin-bottom: 14px; }
+.vx-terminal-body { font-family: var(--vx-mono); font-size: 15px; line-height: 1.7; }
+.vx-terminal-line { margin: 0; padding-left: 2ch; text-indent: -2ch; white-space: pre-wrap; overflow-wrap: normal; }
+.vx-terminal-word { white-space: nowrap; }
+.vx-prompt { color: var(--vx-muted); }
+.vx-first-run { position: absolute; z-index: 2; right: 20px; bottom: 48px; width: 300px; --vx-pad: 20px; padding-top: 18px; }
+.vx-first-kicker { margin: 0 0 6px; color: var(--vx-muted); font-size: 15px; font-weight: 600; }
+.vx-first-title { margin: 0 0 16px; font-size: 20px; font-weight: 620; line-height: 1.25; letter-spacing: -0.01em; }
+.vx-first-button { min-height: 40px; padding: 0 20px; font-size: 15px; box-shadow: none; }
+
+/* Below 1100px the terminal's lines wrap tall enough to meet a pinned card, so the card follows the terminal instead. */
+@media (max-width: 1100px) {
+  .vx-grid-paper { height: auto; padding: 16px 16px 24px; background-size: 20px 20px; }
+  .vx-terminal { position: relative; left: auto; top: auto; width: auto; max-width: none; padding-bottom: 48px; }
+  .vx-terminal-body { font-size: 14px; }
+  .vx-first-run { position: relative; right: auto; bottom: auto; width: 86%; margin: -28px 0 0 auto; }
+}

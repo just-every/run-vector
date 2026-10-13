@@ -1,113 +1,144 @@
-import { IssueAccessError } from "./access";
+import { PaginationInvalidated, resultRevision } from "./list-revision";
 import type { IssueListQuery, IssueListData } from "./list-schema";
+import { browseActor, workspaceDate } from "./browse-access";
+import { blockedSql, browseGroup, browseSort, browseWhere } from "./browse-sql";
 
-async function workspaceForActor(db: D1Database, actor: string) {
-  const row = await db
-    .prepare(
-      "SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL",
-    )
-    .bind(actor)
-    .first<{ workspace_id: string }>();
-  if (!row)
-    throw new IssueAccessError(
-      "unauthenticated",
-      "An active native operator is required.",
-      401,
-    );
-  return row.workspace_id;
+type Row = {
+  id: string;
+  identifier: string;
+  title: string;
+  version: number;
+  cycleId: string | null;
+  priority: IssueListData["issues"][number]["priority"];
+  createdAt: string;
+  updatedAt: string;
+  dueDate: string | null;
+  statusId: string;
+  statusName: string;
+  category: string;
+  teamId: string;
+  teamName: string;
+  assigneeId: string | null;
+  assigneeName: string | null;
+  projectId: string | null;
+  projectName: string | null;
+  cycleName: string | null;
+  parentIdentifier: string | null;
+  parentTitle: string | null;
+  labels: string;
+  blocked: number;
+  groupKey: string;
+};
+/** REST renders only groups on this page while retaining global SQL counts. */
+export function issueListResponse(data: IssueListData): IssueListData {
+  const present = new Set(data.issues.map((issue) => issue.groupKey));
+  return {
+    ...data,
+    allGroups: data.groups,
+    groups: data.groups.filter((group) => present.has(group.key)),
+  };
 }
-
-/** Ordinary browsing never changes Current membership, admission, or issue data. */
+/** Counts scan SQL predicates; only one bounded page of issue rows leaves D1. */
 export async function listIssues(
   db: D1Database,
   actor: string,
   query: IssueListQuery,
+  now = new Date(),
 ): Promise<IssueListData> {
-  const workspace = await workspaceForActor(db, actor);
-  const conditions = ["t.workspace_id=?"];
-  const values: string[] = [workspace];
-  if (query.category === "all") conditions.push("s.category <> 'completed'");
-  else {
-    conditions.push("s.category=?");
-    values.push(query.category);
-  }
-  if (query.q) {
-    conditions.push(
-      "(instr(lower(i.identifier),lower(?))>0 OR instr(lower(i.title),lower(?))>0)",
-    );
-    values.push(query.q, query.q);
-  }
-  if (query.assignee === "unassigned")
-    conditions.push("i.assignee_operator_id IS NULL");
-  else if (query.assignee !== "all") {
-    conditions.push("i.assignee_operator_id=?");
-    values.push(query.assignee);
-  }
-  const relation = `FROM issues i JOIN teams t ON t.id=i.team_id
-    JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=t.id
-    WHERE ${conditions.join(" AND ")}`;
-  // One read batch supplies count, rows and workspace-owned operator choices.
-  const [count, rows, assignees] = await db.batch([
-    db.prepare(`SELECT COUNT(*) AS total ${relation}`).bind(...values),
-    db
-      .prepare(
-        `SELECT i.id,i.identifier,i.title,i.priority,i.updated_at AS updatedAt,
-      s.id AS statusId,s.name AS statusName,s.category AS category,
-      t.id AS teamId,t.name AS teamName,
-      (SELECT a.id FROM operators a WHERE a.id=i.assignee_operator_id AND a.workspace_id=t.workspace_id AND a.removed_at IS NULL) AS assigneeId,
-      (SELECT a.name FROM operators a WHERE a.id=i.assignee_operator_id AND a.workspace_id=t.workspace_id AND a.removed_at IS NULL) AS assigneeName
-      ${relation} ORDER BY i.updated_at DESC,i.identifier ASC LIMIT 50 OFFSET ?`,
-      )
-      .bind(...values, query.offset),
-    db
-      .prepare(
-        "SELECT id,name FROM operators WHERE workspace_id=? AND removed_at IS NULL ORDER BY name,id",
-      )
-      .bind(workspace),
-  ]);
-  if ((await workspaceForActor(db, actor)) !== workspace)
-    throw new IssueAccessError(
-      "unauthenticated",
-      "The operator workspace changed. Sign in again.",
-      401,
-    );
+  const access = await browseActor(db, actor);
+  const today = workspaceDate(now, access.timezone);
+  const { relation, values } = browseWhere(query, access.workspace_id, today);
+  const group = browseGroup[query.grouping];
+  const order = [group.rowOrder, browseSort[query.sort], "i.identifier ASC"]
+    .filter(Boolean)
+    .join(",");
+  const [identity, count, rows, assignees, groups, statusCounts] =
+    await db.batch([
+      db.prepare(
+        "SELECT CAST(revision AS TEXT) revision FROM issue_list_revision WHERE id=1",
+      ),
+      db.prepare(`SELECT COUNT(*) total ${relation}`).bind(...values),
+      db
+        .prepare(
+          `SELECT i.id,i.identifier,i.title,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.due_date dueDate,
+ s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,p.id projectId,p.name projectName,c.name cycleName,
+ parent.identifier parentIdentifier,parent.title parentTitle,${blockedSql} blocked,${group.key} groupKey,
+ (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (SELECT l.id,l.name,l.color FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id ORDER BY l.name,l.id)) labels
+ ${relation} ORDER BY ${order} LIMIT ${query.pageSize} OFFSET ?`,
+        )
+        .bind(...values, query.offset),
+      db
+        .prepare(
+          "SELECT id,name FROM operators WHERE workspace_id=? AND removed_at IS NULL ORDER BY name,id",
+        )
+        .bind(access.workspace_id),
+      db
+        .prepare(
+          `SELECT ${group.key} key,${group.name} name,COUNT(*) count ${relation} GROUP BY ${group.key},${group.name} ORDER BY ${group.order}`,
+        )
+        .bind(...values),
+      ...(query.pageSize === 100
+        ? [
+            db
+              .prepare(
+                `SELECT s.id key,COUNT(*) count ${relation} GROUP BY s.id ORDER BY MIN(s.position),s.id`,
+              )
+              .bind(...values),
+          ]
+        : []),
+    ]);
+  await browseActor(db, actor, access.workspace_id);
+  const revision = await resultRevision(
+    query,
+    access.workspace_id,
+    today,
+    (identity.results[0] as { revision: string }).revision,
+  );
+  if (query.offset > 0 && query.revision !== revision)
+    throw new PaginationInvalidated();
   return {
+    revision,
     total: Number((count.results[0] as { total: number }).total),
     offset: query.offset,
-    pageSize: 50,
+    pageSize: query.pageSize,
     assignees: assignees.results as IssueListData["assignees"],
-    issues: rows.results.map((raw) => {
-      const row = raw as {
-        id: string;
-        identifier: string;
-        title: string;
-        priority: IssueListData["issues"][number]["priority"];
-        updatedAt: string;
-        statusId: string;
-        statusName: string;
-        category: string;
-        teamId: string;
-        teamName: string;
-        assigneeId: string | null;
-        assigneeName: string | null;
-      };
-      return {
-        id: row.id,
-        identifier: row.identifier,
-        title: row.title,
-        priority: row.priority,
-        updatedAt: row.updatedAt,
-        status: {
-          id: row.statusId,
-          name: row.statusName,
-          category: row.category,
-        },
-        team: { id: row.teamId, name: row.teamName },
-        assignee:
-          row.assigneeId && row.assigneeName
-            ? { id: row.assigneeId, name: row.assigneeName }
-            : null,
-      };
-    }),
+    groups: groups.results as IssueListData["groups"],
+    ...(statusCounts
+      ? {
+          statusCounts: statusCounts.results as NonNullable<
+            IssueListData["statusCounts"]
+          >,
+        }
+      : {}),
+    issues: (rows.results as Row[]).map((row) => ({
+      id: row.id,
+      identifier: row.identifier,
+      title: row.title,
+      version: row.version,
+      priority: row.priority,
+      cycleId: row.cycleId,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
+      dueDate: row.dueDate,
+      status: {
+        id: row.statusId,
+        name: row.statusName,
+        category: row.category,
+      },
+      team: { id: row.teamId, name: row.teamName },
+      assignee: row.assigneeId
+        ? { id: row.assigneeId, name: row.assigneeName! }
+        : null,
+      project: row.projectId
+        ? { id: row.projectId, name: row.projectName! }
+        : null,
+      cycle: row.cycleId ? { id: row.cycleId, name: row.cycleName! } : null,
+      parent: row.parentIdentifier
+        ? { identifier: row.parentIdentifier, title: row.parentTitle! }
+        : null,
+      labels: JSON.parse(row.labels),
+      blocked: row.blocked === 1,
+      groupKey: row.groupKey,
+    })),
   };
 }

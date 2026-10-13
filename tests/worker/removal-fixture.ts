@@ -19,7 +19,7 @@ export const bindings = {
   ...config,
   APP_ORIGIN: origin,
   SEED_SAMPLE_DATA: "false",
-  MAIL_MODE: "local-outbox",
+  MAIL_MODE: "production",
 };
 export const app = createServerApp();
 export async function fixture() {

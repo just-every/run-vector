@@ -46,6 +46,7 @@ test("[VIEW-001] filters reset pagination, page changes preserve filters and det
 });
 test("[VIEW-001 BASE-ACCESS-001] late filtered receipts and late denial never overwrite the newer list; denial clears all private rows and choices", async () => {
   const blank: IssueListData = {
+    revision: "fixture-revision",
     issues: [],
     assignees: [],
     total: 0,

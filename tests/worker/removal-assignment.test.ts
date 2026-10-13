@@ -3,7 +3,8 @@ import { applyD1Migrations } from "cloudflare:test";
 import { beforeAll, expect, inject, it } from "vitest";
 import { bindings, fixture, retainedData } from "./removal-fixture";
 import { beforeCommit } from "./removal-interleaving";
-import { requestMagicLink } from "../../src/core/features/auth/repository";
+import { baseAuth } from "../../src/core/features/auth/base.server";
+import { afterNativeStatement } from "./notification-session-fixture";
 beforeAll(async () => applyD1Migrations(env.DB, inject("migrations")));
 for (const kind of ["create", "accept", "edit"] as const)
   it(`[OPS-004 ISSUE-005] ${kind} cannot assign a member removed after option validation`, async () => {
@@ -50,18 +51,13 @@ for (const kind of ["create", "accept", "edit"] as const)
   }, 20000);
 it("[OPS-004 BASE-ACCESS-001] a link request validated before removal cannot recreate credentials or mail after it", async () => {
   const f = await fixture();
-  const db = beforeCommit(
-    (sql) => sql.includes("INSERT INTO magic_links"),
-    async () => {
-      expect((await f.remove()).status).toBe(200);
-    },
-  );
-  await requestMagicLink(
-    db,
-    f.member + "@removal.test",
-    "https://vector.test",
-    "/app",
-  );
+  let fired=false;
+  const db=afterNativeStatement(async sql=>{if(!fired&&sql.includes('FROM oa_operators WHERE email=?')) {fired=true;expect((await f.remove()).status).toBe(200)}});
+  const origin='http://127.0.0.1:15920';
+  const auth=baseAuth({...bindings,DB:db,APP_ORIGIN:origin,MAIL_MODE:'local-outbox'});
+  await auth.requestMagicLink(new Request(origin+'/auth/magic-link',{method:'POST',headers:{origin,host:new URL(origin).host,'Content-Type':'application/json'}}),{email:f.member+'@removal.test',returnTo:'/app'});
+  expect(fired).toBe(true);
+  expect(await env.DB.prepare('SELECT count(*) n FROM oa_tokens WHERE operator_id=?').bind(f.member).first('n')).toBe(0);
   expect(
     (await env.DB.prepare(
       "SELECT count(*) AS n FROM magic_links WHERE operator_id=?",
@@ -71,7 +67,7 @@ it("[OPS-004 BASE-ACCESS-001] a link request validated before removal cannot rec
   ).toBe(0);
   expect(
     (await env.DB.prepare(
-      "SELECT count(*) AS n FROM local_mail_outbox WHERE recipient=?",
+      "SELECT count(*) AS n FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')=?",
     )
       .bind(f.member + "@removal.test")
       .first())!.n,

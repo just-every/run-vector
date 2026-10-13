@@ -1,3 +1,4 @@
+import { confirmLink } from './outbox-session.mjs';
 import { verificationDirectory } from '../../scripts/verification-paths.mjs';
 import assert from "node:assert/strict";
 import { verifyDependencyRuntime } from "./dependency-api-checks.mjs";
@@ -181,8 +182,7 @@ function start() {
   worker = spawn(
     process.execPath,
     [
-      resolve("node_modules/wrangler/bin/wrangler.js"),
-      "dev",
+      resolve("tests/e2e/worker-serve.mjs"),
       "--config",
       "dist/server/wrangler.json",
       "--local",
@@ -1057,14 +1057,11 @@ try {
   assert.equal(signIn.status, 202);
   assert.ok(!signIn.text.includes("token="));
   const link = sql(
-    "SELECT sign_in_url FROM local_mail_outbox WHERE recipient='sarah@vector.test' ORDER BY created_at DESC,id DESC LIMIT 1",
-  )[0].sign_in_url;
+    "SELECT json_extract(message,'$.text') AS sign_in_url FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='sarah@vector.test' ORDER BY created_at DESC,id DESC LIMIT 1",
+  )[0].sign_in_url.match(/https?:\/\/[^\s]+/)[0];
   assert.equal(new URL(link).origin, base);
-  const callback = await fetch(link, {
-    redirect: "manual",
-    headers: { Connection: "close" },
-  });
-  assert.equal(callback.status, 302);
+  const callback = await confirmLink(link);
+  assert.equal(callback.status, 303);
   assert.equal(callback.headers.get("location"), "/app/current");
   assert.match(callback.headers.get("set-cookie"), /HttpOnly/);
   assert.match(callback.headers.get("set-cookie"), /SameSite=Lax/);
@@ -1080,7 +1077,7 @@ try {
   );
   evidence.nativeAuth = {
     requestStatus: 202,
-    consumeStatus: 302,
+    consumeStatus: 303,
     returnTo: "/app/current",
     singleUseReplayStatus: 400,
     cookie: "Native opaque HttpOnly SameSite=Lax; raw value not recorded",

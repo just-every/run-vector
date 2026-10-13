@@ -14,7 +14,7 @@ The human output names MX, SPF, DKIM, DMARC and next actions. To print actual
 record values, pass `--config` with the four DNS arrays copied from provider
 setup. No provider-specific record values can be inferred from a sample domain.
 
-The installation owner must supply an owner test sending domain, verified sender, Resend sending
+The owner must supply a test sending domain, verified sender, Resend sending
 key, configured receiving mailbox and readback credential; throwaway Cloudflare
 resources/credentials where required, and the evidence-store token. SendGrid
 verified sender/Inbound Parse details remain prerequisites for that separate
@@ -68,7 +68,7 @@ This module installs no shared workflow; integrate the reviewed runner into the
 qualified workflow line before any live run.
 Required invocation contract:
 
-1. Owner supplies/approves test inputs for the installation. Configure secrets only in
+1. The owner supplies and approves the test inputs. Configure secrets only in
    `live-proof` with its integration-line/release-tag branch policy. Do not make
    secrets available to task branches or untrusted PR code.
 2. The workflow checks out the intended exact 40-hex SHA, confirms its reachability
@@ -91,7 +91,7 @@ Required invocation contract:
    reachability; environment variables alone do not establish either. Upload
    only the receipt using the protected evidence-store mechanism and scoped
    `EVIDENCE_WRITE_TOKEN`; never upload config, env, raw mail or logs with secrets.
-   Destination: `mail-validation/<sha>/<run-id>-<attempt>/mail-receipt.json`.
+   Destination: `mail/live/<sha>/<run-id>-<attempt>/mail-receipt.json`.
    The runner performs no GitHub/evidence-store API operations itself.
 5. Retain workflow run ID, attempt, UTC times, exact SHA and immutable store path.
    A fresh gate reads the receipt and actual protected run. Only a receipt with

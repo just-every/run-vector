@@ -1,117 +1,21 @@
 # Vector operations
 
-Vector runs one TanStack Start/Hono Cloudflare Worker with D1 and R2.
-OPERATIONS.json records the actual local commands and effects. Its optional v2
-inspector is copied from Base operations; this is neither an admission contract
-nor a claim of hosted acceptance. `node scripts/operations.mjs describe` and
-`check` inspect the local description without executing commands or contacting
-providers. The reviewed disposable setup/deploy controller is documented in DEPLOY.md; full portable export/restore remains unavailable.
+Use Node 22.20.0 and pnpm 10.12.4. All public commands use `node scripts/rer.mjs VERB`; package aliases are `pnpm run VERB -- FLAGS`. Run `node scripts/rer.mjs describe` for capabilities and `node scripts/rer.mjs check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
 
-Install with Node 26.8.1 and `pnpm install --frozen-lockfile`. `pnpm dev` migrates
-and serves `.wrangler/vector-dev` at http://127.0.0.1:15928. `pnpm build` creates
-the emitted artifact. `pnpm verify` executes the documented local verification.
-Wrangler and Chromium need local listener permissions. The pinned test plugin's
-Miniflare override matches Wrangler 4.129.1's 5.20260907.0-alpha runtime; it avoids
-changing production compatibility to suit an older test binary.
+Run `install`, then `setup --owner-email EMAIL --non-interactive`, then `dev`. Setup consumes rer-setup.json, saves private .dev.vars, builds with secrets excluded, applies forward migrations, bootstraps the configured first owner and stops its temporary Worker. A repeated setup preserves settings, owner and data. Use a private `--answers` JSON file for declared workspace, team and timezone choices.
 
-`pnpm verify` runs Node, safe Markdown and Worker suites, typecheck/build, then the emitted
-Worker/Chromium journey on 15924–15925 with fresh `.wrangler/vector-e2e/runs`
-state for each run and a restart within that same state and the clause reporter. Its check journal
-and registered baseline matrix are retained under `.artifacts/verification`.
-Run `pnpm test:dev` separately while `pnpm dev` serves 15928; this captures the
-development scripts/styles and verifies hydration, native sessions, navigation
-and responsive layout. The production build never admits development modules.
-The development asset predicate lists observed module paths exactly; dependency
-or client-module changes must refresh that reviewed list from the browser capture.
+Dev reuses the saved installation and prints its health-gated address and development outbox. Open the newest sign-in message and confirm it; GET does not sign in. First sign-in returns the owner to /setup for workspace review; app routes enforce completion. Existing installations keep their completion through migration 0029. No email is sent in local mode. `outbox --owner-email EMAIL` requests another ordinary link. Stop with Ctrl-C or `dev --stop` before data movement. State is under .wrangler/state; read docs/LOCAL-RECOVERY.md before relocating existing state.
 
-For review, after building:
+`build` excludes private settings and restores them after the build. `verify` runs the full source, command, installer, Node, Markdown, Worker, deployment, type/build and browser checks. CI also runs actual development hydration, slow installer startup and the README fresh-clone journey. Local iteration runs only touched tests and typecheck. Diagnostics and captures must exclude secrets, mail bodies, tokens and cookies. Close every owned process.
 
-```sh
-pnpm exec wrangler d1 migrations apply vector-local --local --config wrangler.jsonc --persist-to .wrangler/vector-review
-pnpm review:serve
-pnpm review:signin sarah@vector.test
-```
+`export --output exports/vector.jsonl` uses Base D1/R2 portability. Stop the app before a confirmed `import --input exports/vector.jsonl --yes` into an empty destination. Archives include owned records and files, with documented exclusions and restored-effect review; see docs/DATA-OWNERSHIP.md. `reset --yes` removes only inventoried local state/settings/drafts and preserves source, archives and deployment receipts. Inspect the inventory first and retain backups.
 
-The last command prints a local single-use link valid for 15 minutes. Operators
-Sarah, Maya and Alex are synthetic `@vector.test` records. `LOCAL_OPERATOR_ID`
-and `x-vector-operator-id` grant no access. The local-outbox adapter is admitted
-only for loopback/test origins and never returns a link in the public HTTP response.
-Production installation requires the maintained Base auth/mail environment contract in DEPLOY.md. Local-outbox review does not prove hosted email delivery.
+`deploy --environment production` uses explicit owner-account inputs and durable .rer/deploy state; its normal completion checks health. SENDGRID_API_KEY maps to MAIL_API_KEY. See DEPLOY.md for the separate credential-free source artifact preparation and reviewed artifact controller. Hosting, real provider delivery and complete authenticated HTTPS restore require their own evidence.
 
-The application uses APP_ORIGIN from the local Wrangler config. Vite's serve-only
-customizer chooses 15928; `VECTOR_DEV_ORIGIN` can explicitly select another local
-origin when the developer also changes Vite's port. Build does not use this
-customizer. Review and e2e pass their explicit origin to the emitted runtime.
-Vite preview uses the built origin on port 15920 and must not race review:serve.
+Preserve applied migration files and apply later migrations in order. Keep additive schema, histories, reservations, authentication mappings and accepted/uncertain delivery results on compatible-source rollback. Back up D1/R2 and validate isolated recovery before changing a deployed installation. Private-file deletion retains quota and cleanup intent until the writer is settled and byte absence confirmed; time or absence alone cannot prove an in-flight upload stopped. Scheduled cleanup and deferral-return work are bounded. Source acceptance is separate from provider Cron, mail arrival, physical erasure time and capacity qualification.
 
-Preserve 0001/0002 unchanged. Apply 0003 native access, 0004 comments/files/audit,
-0005 file-state expansion, 0006 named links, and 0007 durable file-removal intents
-in order. Existing file rows remain ready. New uploads reserve metadata/quota before
-R2 and retain incomplete/failed states. Removal records its intent before storage
-work; downloads immediately deny that file. Only a settled writer and confirmed
-blob absence allow a tombstone, identifying-metadata erasure and one audit record.
-A pending removal returns 202 and remains visible; use Retry removal on the same
-file. Storage/metadata failures return 503 and retain retryable intent. The genuine
-Worker scheduled handler sweeps at most 50 intents per minute; local Wrangler
-`--test-scheduled` verification invokes it through the installed runtime
-`/cdn-cgi/local/scheduled` trigger without contacting providers. That local runtime
-surface is not a product endpoint and production requests do not admit it.
+Managed source uses the vendored Base delivery producer and the declared setup manifest/digest. Its pinned workflow is manual. Signed native owner claim refuses a second claim; editor configuration belongs to the recorded installation owner and uses the configured frame-ancestors policy. Apply 0024 additively and retain claim ledgers. See docs/MANAGED-SOURCE.md; hosted installation and accounts remain owner work.
 
-A successful PUT receipt, or an exact immutable-key/size/checksum object receipt,
-settles a writer. No-object absence or age alone cannot fence an in-flight upload.
-A crash before PUT or ambiguous failed PUT without a stored receipt therefore
-retains visible pending cleanup and quota; this version does not claim bounded
-physical-erasure time for that case or complete baseline/provider acceptance. Old
-tombstones are reconciled without rewriting their timestamps or duplicate history.
-Named links are never fetched by the server; deleting their comment erases their
-content in the same D1 transaction. Remote Markdown images require an explicit
-per-URL load action and send no referrer. Back up D1/R2 before changing
-a deployed installation; full portable restore remains an unmet release obligation.
-The local build alone is not hosted acceptance; DEPLOY.md describes the separate reviewed disposable deployment proof.
+Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the reviewed native Base import-kit path in Settings and the terminal. Review mapping, errors and omissions, then apply a run of up to 4,000 rows in staged batches; durable IDs support status, repeat, resume, a reconciliation report and whole-run rollback. See docs/MOVE-IN.md and docs/IMPORT-EVIDENCE.md. Local and authenticated HTTP archives use Base portability. HTTP restore requires the 0034 pristine-bootstrap admission and real coordinator binding; ordinary owner sign-in precedes setup or edits, and fresh historical-owner sign-in follows commit. Stopped, confirmed local restore into empty resources remains supported; hosted HTTPS acceptance is separate. See docs/ARCHIVES.md. Replacements remain empty; no owner export or hosted acceptance is claimed.
 
-
-### Local operator intake and deferral return
-
-Apply migrations0008 and0009 after the immutable earlier history. Native
-`POST /api/intake` commits an Intake issue, attributed evidence and creation
-activity together; optional summary/observed time default to title/receipt time.
-Only the native session supplies actor identity. Evidence contains submitted
-measurements and customer reports; core invents no source/policy assertions.
-Failure returns503 without a partial issue/evidence/activity batch; an already
-allocated identifier stays consumed. An ambiguous response can require checking
-Current before retrying; operator creation does not claim source idempotency.
-
-`POST /api/issues/:identifier/return` ends a deferral with the last-read version.
-The real scheduled export and native Current read run bounded due-return work
-(max50 per pass), using actual server time for real reads. Its atomic CAS clears
-the deferral, increments version and records `Deferral return automation` once,
-keeping prior decisions. An as-of Current query never changes scheduling time.
-Current exposes only durably cleared Intake. D1 failures propagate and cannot
-acknowledge a successful scheduled return. Local event/browser verification
-does not establish provider Cron delivery, five-minute capacity or new-source
-evidence return, which remain full contract obligations.
-
-`node tests/e2e/intake-api-runtime.mjs` checks native HTTP/Cron/restart behavior with isolated local state, without launching a browser. Full verification and development checks also exercise the browser journeys.
-
-## Local first-owner foundation
-
-`pnpm build && pnpm test:foundation` runs a separate empty-installation journey
-on loopback 41866, using synthetic installation inputs and the native local
-outbox. It checks owner/team/seven-category bootstrap, timezone save, last-owner
-removal guard, responsive Settings at 1440 and 390 and persistence after restart.
-It owns and closes its Worker and browser. Its default local receipts are under
-`.wrangler/foundation-evidence`; `VECTOR_FOUNDATION_EVIDENCE` selects another
-local output directory. This is separate from a deployed smoke or real email.
-
-See [the installation guide](docs/FOUNDATION-STAGE.md) for bootstrap inputs, prior-installation owner mapping and operator lifecycle. Preserve all applied migrations.
-
-`pnpm sources:check` verifies the effective source lock. Stage intentional source edits, run `pnpm sources:lock`, then commit the generated lock. Fresh reports are written to ignored output directories and never rewrite tracked source.
-
-## Disposable setup and deployment
-
-See [DEPLOY.md](DEPLOY.md) for credential-free artifact preparation, the reviewed
-controller plan, exact D1/R2 names, SendGrid/session bindings, repeated no-write
-deployment and independent health. `pnpm run setup` performs the first complete
-provision/migrate/upload/health operation and `pnpm run deploy` repeats reconciliation.
-The existing local Wrangler config remains local. Provider credentials and mail
-keys belong only in the trusted controller job; never in the build checkout.
+Scoped API tokens use native Base authority and existing issue/comment mutations. Signed source ingest commits issue/evidence/replay together; signed GitHub pull-request events persist links without a provider token or API call. Outbound webhooks retain accepted, rejected and uncertain states with finite retries and require an enforcing INTEGRATION_EGRESS service binding. Source adoption does not provision hosted egress. Restore excludes credentials and quarantines historical effects; re-enter secrets and review future effects. See docs/API.md and docs/INTEGRATIONS.md. Apply 0027/0028 additively and retain every replay and terminal-delivery ledger.

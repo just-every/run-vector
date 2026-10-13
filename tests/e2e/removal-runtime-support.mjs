@@ -1,14 +1,20 @@
+import { confirmLink } from './outbox-session.mjs';
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { request as httpRequest } from "node:http";
 import { resolve } from "node:path";
-export const origin = "http://127.0.0.1:41920";
+import { freePort } from '../../scripts/base-onboarding/adapter-settings.mjs';
+// A free port, never a fixed one: CI's ephemeral range can hand a fixed port to another socket.
+const port = await freePort();
+export const origin = `http://127.0.0.1:${port}`;
 export const state = `.wrangler/removal-${process.pid}`;
 const wrangler = resolve("node_modules/wrangler/bin/wrangler.js");
 const config = {
   APP_ORIGIN: origin,
   SEED_SAMPLE_DATA: "false",
   MAIL_MODE: "local-outbox",
+  SESSION_SECRET:"fixture-native-runtime-secret-with-at-least-32-characters",
+  MAIL_FROM:"Vector <signin@vector.test>",
   FIRST_OWNER_EMAIL: "owner@removal.test",
   FIRST_OWNER_NAME: "Workspace owner",
   WORKSPACE_NAME: "Removal verification",
@@ -62,17 +68,16 @@ export async function start() {
   worker = spawn(
     process.execPath,
     [
-      wrangler,
-      "dev",
+      resolve("tests/e2e/worker-serve.mjs"),
       "--config",
       "dist/server/wrangler.json",
       "--local",
       "--ip",
       "127.0.0.1",
       "--port",
-      "41920",
+      String(port),
       "--inspector-port",
-      "41921",
+      "0",
       "--persist-to",
       state,
       ...Object.entries(config).flatMap(([k, v]) => ["--var", k + ":" + v]),
@@ -106,29 +111,36 @@ export async function stop() {
     }
   }
 }
-// These are distinct synthetic operators/clients. Keep the real five-requests
-// per-IP mail admission limit in force without making the journey depend on
-// which side of a fifteen-minute clock boundary its six clients happen to run.
-const clientAddresses = new Map();
+// These independent synthetic personas now share an unspoofable local bucket.
+// Reset only the mail fixture bucket between journeys; operator request limits
+// and the separately asserted five-requests-then-429 auth policy stay intact.
 export async function signIn(email) {
-  if (!clientAddresses.has(email))
-    clientAddresses.set(email, `192.0.2.${clientAddresses.size + 1}`);
+  sql("DELETE FROM access_rate_limits WHERE key LIKE 'base-magic:loopback:%'");
   const sent = await fetch(origin + "/auth/request", {
     method: "POST",
     headers: {
       origin,
       "content-type": "application/json",
-      "cf-connecting-ip": clientAddresses.get(email),
     },
     body: JSON.stringify({ email, returnTo: "/app/settings" }),
   });
   assert.equal(sent.status, 202);
   const link = sql(
-    `SELECT sign_in_url FROM local_mail_outbox WHERE recipient='${email}' ORDER BY created_at DESC LIMIT 1`,
-  )[0].sign_in_url;
-  const consumed = await fetch(link, { redirect: "manual" });
-  assert.equal(consumed.status, 302);
-  return consumed.headers.get("set-cookie").split(";")[0];
+    `SELECT json_extract(message,'$.text') AS sign_in_url FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='${email}' ORDER BY created_at DESC LIMIT 1`,
+  )[0].sign_in_url.match(/https?:\/\/[^\s]+/)[0];
+  const consumed = await confirmLink(link);
+  assert.equal(consumed.status, 303);
+  const cookie = consumed.headers.get("set-cookie").split(";")[0];
+  assert.equal((await api(cookie, "/session")).status, 200);
+  const review = await api(cookie, "/setup");
+  assert.equal(review.status, 200);
+  const setup = await review.json();
+  if (setup.owner && !setup.completed) {
+    const completed = await api(cookie, "/setup/complete", "POST", { confirmed: true });
+    assert.equal(completed.status, 200);
+    assert.equal((await completed.json()).completed, true);
+  }
+  return cookie;
 }
 export const api = (cookie, path, method = "GET", body) =>
   fetch(origin + "/api" + path, {
@@ -136,16 +148,20 @@ export const api = (cookie, path, method = "GET", body) =>
     headers: { cookie, origin, "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-export function heldRequest(cookie, path, method, prefix) {
+export function heldRequest(cookie, path, method, prefix, base = origin) {
   let request;
   const response = new Promise((resolve, reject) => {
     request = httpRequest(
-      origin + "/api" + path,
+      base + "/api" + path,
       {
         method,
+        // Synchronous D1 snapshots can outlast an idle pooled socket while
+        // delaying its close event. Each deliberately held stream owns a fresh
+        // connection, so the admission barrier measures the Worker request.
+        agent: false,
         headers: {
           cookie,
-          origin,
+          origin: base,
           "content-type": "application/json",
           "transfer-encoding": "chunked",
         },

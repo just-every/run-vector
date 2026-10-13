@@ -1,9 +1,11 @@
+import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useRef, useState } from "react";
 import { z } from "zod";
 import { useApiResource } from "../../../app/api-client";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { NamedLinks } from "../../links/ui/named-links";
 import { namedLinksSchema } from "../../links/schema";
+import { relativeTime } from "../../streams/ui/helpers";
 const schema = z.object({
   links: namedLinksSchema.shape.links,
   comments: z.array(
@@ -11,6 +13,7 @@ const schema = z.object({
       id: z.string(),
       body: z.string().nullable(),
       actor: z.string(),
+      imported: z.union([z.boolean(), z.number()]).transform(Boolean).optional(),
       editedAt: z.string().nullable(),
       deletedAt: z.string().nullable(),
       createdAt: z.string(),
@@ -29,6 +32,27 @@ const schema = z.object({
     }),
   ),
 });
+
+export function CommentTimestamp({
+  createdAt,
+  editedAt,
+}: {
+  createdAt: string;
+  editedAt: string | null;
+}) {
+  return (
+    <small className="comment-timestamp">
+      <time dateTime={createdAt}>{relativeTime(createdAt)}</time>
+      {editedAt ? (
+        <>
+          {" · edited "}
+          <time dateTime={editedAt}>{relativeTime(editedAt)}</time>
+        </>
+      ) : null}
+    </small>
+  );
+}
+
 export function Discussion({
   identifier,
   onRefresh,
@@ -41,6 +65,7 @@ export function Discussion({
       `/api/issues/${identifier}/discussion`,
       schema,
     ),
+    [filesOpen, setFilesOpen] = useState(false),
     [body, setBody] = useState(""),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
@@ -63,7 +88,7 @@ export function Discussion({
       }
       await response.arrayBuffer();
       onSuccess?.();
-      resource.reload();
+      resource.refreshAfterMutation();
       onRefresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Action failed.");
@@ -88,8 +113,8 @@ export function Discussion({
       ) : null}
       {resource.data?.comments.map((c) => (
         <article className="comment-entry" key={c.id}>
-          <strong>{c.actor}</strong>
-          <small>{c.editedAt ? " · edited" : ""}</small>
+          <strong>{c.actor}</strong>{c.imported ? <span> (imported)</span> : null}
+          <CommentTimestamp createdAt={c.createdAt} editedAt={c.editedAt} />
           {c.deletedAt ? (
             <p>Comment deleted</p>
           ) : edit === c.id ? (
@@ -105,11 +130,12 @@ export function Discussion({
             >
               <label>
                 Edit comment
-                <textarea
+                <MentionTextarea
+                  aria-label="Edit comment"
                   required
                   disabled={busy}
                   value={editBody}
-                  onChange={(e) => setEditBody(e.target.value)}
+                  onValueChange={setEditBody}
                 />
               </label>
               <button disabled={busy}>Save comment</button>
@@ -131,7 +157,7 @@ export function Discussion({
                 commentId={c.id}
                 links={resource.data?.links ?? []}
                 onRefresh={() => {
-                  resource.reload();
+                  resource.refreshAfterMutation();
                   onRefresh();
                 }}
               />
@@ -165,13 +191,14 @@ export function Discussion({
       >
         <label>
           <span className="visually-hidden">Add a comment</span>
-          <textarea
+          <MentionTextarea
+            aria-label="Add a comment"
             placeholder="Write a comment…"
             required
             maxLength={100000}
             disabled={busy}
             value={body}
-            onChange={(e) => setBody(e.target.value)}
+            onValueChange={setBody}
           />
         </label>
         <button disabled={busy} type="submit">
@@ -182,71 +209,78 @@ export function Discussion({
         identifier={identifier}
         links={resource.data?.links ?? []}
         onRefresh={() => {
-          resource.reload();
+          resource.refreshAfterMutation();
           onRefresh();
         }}
       />
-      {resource.data && resource.data.files.length > 0 ? <h3>Files</h3> : null}
-      {resource.data?.files.map((f) => (
-        <div className="file-entry" key={f.id}>
-          {f.state === "ready" && !f.removalPending ? (
-            <a href={`/api/issues/${identifier}/files/${f.id}`}>{f.name}</a>
-          ) : (
-            <span>
-              {f.name} ·{" "}
-              {f.removalPending
-                ? f.cleanupError
-                  ? "Removal needs retry"
-                  : "Removal pending"
-                : f.state === "failed"
-                  ? "Upload failed"
-                  : "Upload incomplete"}
-            </span>
-          )}
-          <span>{Math.ceil(f.bytes / 1024)} KB</span>
-          <button
-            disabled={busy}
-            onClick={() => void mutate(`files/${f.id}`, { method: "DELETE" })}
-          >
-            {f.removalPending ? "Retry removal" : "Remove file"}
-          </button>
-        </div>
-      ))}
-      <input
-        aria-label="Attach a file"
-        hidden
-        ref={fileInput}
-        tabIndex={-1}
-        type="file"
-        disabled={busy}
-        accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.csv,.json,.zip"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
-          if (file.size > 26214400) {
-            setError("Files must be 25 MB or smaller.");
-            return;
-          }
-          void mutate("files", {
-            method: "POST",
-            headers: {
-              "Content-Type": file.type,
-              "X-File-Name": encodeURIComponent(file.name),
-              "X-File-Name-Encoding": "uri",
-            },
-            body: file,
-          });
-          e.target.value = "";
-        }}
-      />
-      <button
-        type="button"
-        className="discussion-file-picker"
-        disabled={busy}
-        onClick={() => fileInput.current?.click()}
+      <details
+        className="issue-files"
+        open={filesOpen}
+        onToggle={(event) => setFilesOpen(event.currentTarget.open)}
       >
-        Attach file
-      </button>
+        <summary>Files · {resource.data?.files.length ?? 0}</summary>
+        {resource.data?.files.map((f) => (
+          <div className="file-entry" key={f.id}>
+            {f.state === "ready" && !f.removalPending ? (
+              <a href={`/api/issues/${identifier}/files/${f.id}`}>{f.name}</a>
+            ) : (
+              <span>
+                {f.name} ·{" "}
+                {f.removalPending
+                  ? f.cleanupError
+                    ? "Removal needs retry"
+                    : "Removal pending"
+                  : f.state === "failed"
+                    ? "Upload failed"
+                    : "Upload incomplete"}
+              </span>
+            )}
+            <span>{Math.ceil(f.bytes / 1024)} KB</span>
+            <button
+              disabled={busy}
+              onClick={() => void mutate(`files/${f.id}`, { method: "DELETE" })}
+            >
+              {f.removalPending ? "Retry removal" : "Remove file"}
+            </button>
+          </div>
+        ))}
+        <input
+          aria-label="Attach a file"
+          hidden
+          ref={fileInput}
+          tabIndex={-1}
+          type="file"
+          disabled={busy}
+          accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.csv,.json,.zip"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            if (file.size > 26214400) {
+              setError("Files must be 25 MB or smaller.");
+              return;
+            }
+            setFilesOpen(true);
+            void mutate("files", {
+              method: "POST",
+              headers: {
+                "Content-Type": file.type,
+                "X-File-Name": encodeURIComponent(file.name),
+                "X-File-Name-Encoding": "uri",
+              },
+              body: file,
+            });
+            e.target.value = "";
+          }}
+        />
+        <button
+          type="button"
+          className="discussion-file-picker"
+          disabled={busy}
+          onClick={() => fileInput.current?.click()}
+        >
+          Attach file
+        </button>
+      </details>
       {error ? <p role="alert">{error}</p> : null}
     </section>
   );

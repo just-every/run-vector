@@ -1,0 +1,65 @@
+/* The drawing language every section of the homepage shares (plate.tsx): ink line-art cards of the real product on a
+   draughtsman's construction. Outlines are ink, construction lines a warm grey, and cobalt appears only inside a drawing:
+   on arrows that carry work, the chosen option, reasons and the saved check. */
+
+/* A plate is one card and its construction. The construction hugs the card: a dashed circle a good way wider than it, so
+   it shows above and below, extension lines running well past each edge, and a registration cross where they meet. */
+.vx-plate { --vx-circle: 130%; --vx-off: 12px; --vx-over: 40px; position: relative; }
+.vx-construction { position: absolute; inset: 0; pointer-events: none; }
+.vx-circle { position: absolute; left: 50%; top: 50%; width: var(--vx-circle); aspect-ratio: 1; border: 1.1px dashed var(--vx-guide); border-radius: 50%; transform: translate(-50%, -50%); }
+.vx-ext { position: absolute; border: 0 dashed var(--vx-guide); }
+.vx-ext--top, .vx-ext--bottom { left: calc(-1 * var(--vx-over)); right: calc(-1 * var(--vx-over)); border-top-width: 1px; }
+.vx-ext--top { top: calc(-1 * var(--vx-off)); }
+.vx-ext--bottom { bottom: calc(-1 * var(--vx-off)); }
+.vx-ext--left, .vx-ext--right { top: calc(-1 * var(--vx-over)); bottom: calc(-1 * var(--vx-over)); border-left-width: 1px; }
+.vx-ext--left { left: calc(-1 * var(--vx-off)); }
+.vx-ext--right { right: calc(-1 * var(--vx-off)); }
+.vx-cross { position: absolute; width: 15px; height: 15px; margin: -7.5px 0 0 -7.5px; background: linear-gradient(var(--vx-outline), var(--vx-outline)) center / 100% 1px no-repeat, linear-gradient(var(--vx-outline), var(--vx-outline)) center / 1px 100% no-repeat; opacity: 0.75; }
+.vx-cross--tl { left: calc(-1 * var(--vx-off)); top: calc(-1 * var(--vx-off)); }
+.vx-cross--tr { left: calc(100% + var(--vx-off)); top: calc(-1 * var(--vx-off)); }
+.vx-cross--bl { left: calc(-1 * var(--vx-off)); top: calc(100% + var(--vx-off)); }
+.vx-cross--br { left: calc(100% + var(--vx-off)); top: calc(100% + var(--vx-off)); }
+
+/* The cards: paper a shade lighter than the page, an ink outline and a hatched shadow, as on a drawing. Each card is as
+   tall as what it holds. */
+.vx-card { position: relative; z-index: 1; display: flex; flex-direction: column; --vx-pad: 18px; padding: 0 var(--vx-pad) var(--vx-pad); border: 1.4px solid var(--vx-outline); border-radius: var(--vx-radius-card); background: var(--vx-card); color: var(--vx-ink); text-align: left; }
+.vx-card::before { content: ""; position: absolute; z-index: -1; inset: 6px -7px -7px 6px; border-radius: var(--vx-radius-card); background: repeating-linear-gradient(-45deg, var(--vx-hatch) 0 1px, transparent 1px 4.5px); }
+.vx-card::after { content: ""; position: absolute; z-index: -1; inset: 0; border-radius: inherit; background: var(--vx-card); }
+.vx-plate--askew > .vx-card, .vx-card--askew { transform: rotate(var(--vx-askew, -4deg)); }
+.vx-card-head { display: flex; align-items: center; gap: 9px; height: 50px; margin: 0 calc(-1 * var(--vx-pad)) 16px; padding: 0 var(--vx-pad); border-bottom: 1px solid rgba(35, 38, 44, 0.28); }
+.vx-icon { width: 20px; height: 20px; flex: none; color: var(--vx-ink); }
+.vx-id { font-family: var(--vx-mono); font-size: 15.5px; font-weight: 500; letter-spacing: 0.01em; }
+.vx-card-label { font-size: 17.5px; font-weight: 620; }
+.vx-card-title { margin: 0; font-size: 17.5px; font-weight: 520; line-height: 1.32; letter-spacing: -0.005em; text-wrap: balance; }
+
+.vx-reason { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; height: 32px; padding: 0 13px; border: 1.2px solid var(--vx-cobalt); border-radius: 999px; color: var(--vx-cobalt-ink); background: var(--vx-cobalt-soft); font-size: 15px; font-weight: 560; white-space: nowrap; }
+.vx-reason--waiting { background: transparent; }
+.vx-reason--context { background: transparent; }
+.vx-reason--waiting::before { content: ""; width: 9px; height: 9px; border: 1.6px solid currentColor; border-radius: 50%; }
+
+.vx-choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1.3px solid var(--vx-outline); border-radius: 8px; overflow: hidden; }
+.vx-choice { display: grid; place-items: center; height: 40px; font-size: 15.5px; font-weight: 540; }
+.vx-choice + .vx-choice { border-left: 1.3px solid var(--vx-outline); }
+.vx-choice.is-chosen { color: var(--vx-on-cobalt); background: var(--vx-cobalt); }
+.vx-saved { display: flex; align-items: center; gap: 8px; margin: 16px calc(-1 * var(--vx-pad)) 0; padding: 15px var(--vx-pad) 0; border-top: 1px solid rgba(35, 38, 44, 0.28); font-size: 16px; }
+.vx-saved strong { font-weight: 620; }
+.vx-saved .vx-actor { white-space: nowrap; }
+.vx-icon--saved { width: 20px; height: 20px; }
+
+.vx-row { display: flex; flex-direction: column; gap: 6px; }
+.vx-row-id { display: flex; align-items: center; gap: 9px; }
+.vx-dot { width: 11px; height: 11px; flex: none; border-radius: 50%; background: var(--vx-cobalt); }
+.vx-row-meta { color: var(--vx-body); font-size: 16px; }
+.vx-row .vx-reason { margin-top: 10px; }
+
+.vx-arrow { display: block; width: 52px; height: 24px; }
+
+/* Parts of a drawn card that more than one section uses: a field with its label, an open dot (undecided) and a small title. */
+.vx-field-label { margin: 16px 0 6px; color: var(--vx-body); font-size: 15px; font-weight: 560; }
+.vx-field { display: flex; align-items: center; height: 40px; margin: 0; padding: 0 12px; border: 1.3px solid var(--vx-outline); border-radius: 8px; font-size: 15.5px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.vx-dot--open { background: transparent; border: 1.6px solid var(--vx-ink); box-sizing: border-box; }
+.vx-card-title--small { font-size: 16.5px; }
+
+@media (max-width: 900px) {
+  .vx-plate { --vx-circle: 104%; --vx-over: 18px; }
+}

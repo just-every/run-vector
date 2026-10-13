@@ -8,7 +8,7 @@ import { assert } from '../../vendor/base/deploy-kit/validation.mjs';
 export function cloudflare(options) {
   const api = baseCloudflare(options);
   return { ...api, async list(path, settings = {}) {
-    if (path !== '/r2/buckets') return api.list(path, settings);
+    if (path !== '/r2/buckets' || settings.pagination === 'r2-bounded') return api.list(path, settings);
     assert(settings.field === 'buckets' && settings.pagination === 'cursor', 'invalid-r2-list-selection');
     const result = [];
     let after = '';

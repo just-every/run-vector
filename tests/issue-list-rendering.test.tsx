@@ -5,12 +5,24 @@ import { IssueListView } from "../src/core/features/issues/ui/issues-browser";
 import { defaultIssueListQuery } from "../src/core/features/issues/ui/issue-list-controls";
 import type { IssueListData } from "../src/core/features/issues/list-schema";
 const data: IssueListData = {
+    revision: "fixture-revision",
   total: 1,
   offset: 0,
   pageSize: 50,
   assignees: [{ id: "private-actor", name: "Private operator" }],
+  groups: [{ key: "all", name: "Issues", count: 1 }],
   issues: [
     {
+      version: 1,
+      cycleId: null,
+      project: null,
+      cycle: null,
+      parent: null,
+      labels: [],
+      blocked: false,
+      dueDate: null,
+      createdAt: "2026-10-02",
+      groupKey: "all",
       id: "1",
       identifier: "VT-101",
       title: "Browse ordinary backlog",

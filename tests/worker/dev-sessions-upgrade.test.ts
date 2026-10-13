@@ -1,0 +1,27 @@
+import {env} from 'cloudflare:workers';
+import {applyD1Migrations} from 'cloudflare:test';
+import {expect,inject,it} from 'vitest';
+import {ensureSampleData} from '../../src/core/features/sample-data/service';
+it('[BASE-ACCESS-002 OPS-004] the dev-session migration keeps every populated session and the operator-removal revocation still fires',async()=>{
+ const migrations=inject('migrations'),at=migrations.findIndex(row=>row.name==='0030_dev_sessions.sql');
+ await applyD1Migrations(env.DB,migrations.slice(0,2));
+ await ensureSampleData(env.DB,new Date('2026-10-01T00:00:00Z'));
+ await applyD1Migrations(env.DB,migrations.slice(2,at));
+ const people=(await env.DB.prepare('SELECT m.auth_id AS auth,m.operator_id AS op,a.version FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id ORDER BY m.operator_id').all<{auth:string;op:string;version:number}>()).results;
+ expect(people.length).toBeGreaterThan(1);
+ const [leaving,staying]=people;
+ const session=(id:string,who:typeof leaving,revoked:number|null)=>env.DB.prepare('INSERT INTO oa_sessions(id,token_hash,operator_id,operator_version,kind,created_at,expires_at,revoked_at) VALUES(?,?,?,?,?,?,?,?)').bind(id,'hash-'+id,who.auth,who.version,'native',1,4_000_000_000_000,revoked);
+ await env.DB.batch([session('s-live',leaving,null),session('s-old',leaving,5),session('s-other',staying,null)]);
+ const read=async()=>(await env.DB.prepare('SELECT * FROM oa_sessions ORDER BY id').all()).results;
+ const before=await read();
+ await applyD1Migrations(env.DB,migrations.slice(at));
+ expect(await read()).toEqual(before);
+ expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+ await env.DB.prepare('INSERT INTO oa_sessions(id,token_hash,operator_id,operator_version,kind,created_at,expires_at) VALUES(?,?,?,?,?,?,?)').bind('s-dev','hash-dev',staying.auth,staying.version,'dev',1,4_000_000_000_000).run();
+ await expect(env.DB.prepare('INSERT INTO oa_sessions(id,token_hash,operator_id,operator_version,kind,created_at,expires_at) VALUES(?,?,?,?,?,?,?)').bind('s-bad','hash-bad',staying.auth,staying.version,'bogus',1,4_000_000_000_000).run()).rejects.toThrow();
+ await env.DB.prepare('UPDATE operators SET removed_at=? WHERE id=?').bind('2026-10-02T00:00:00.000Z',leaving.op).run();
+ const revoked=(await env.DB.prepare('SELECT id,revoked_at FROM oa_sessions ORDER BY id').all<{id:string;revoked_at:number|null}>()).results;
+ expect(revoked.find(row=>row.id==='s-live')!.revoked_at).not.toBeNull();
+ expect(revoked.find(row=>row.id==='s-old')!.revoked_at).not.toBeNull();
+ expect(revoked.find(row=>row.id==='s-other')!.revoked_at).toBeNull();
+});

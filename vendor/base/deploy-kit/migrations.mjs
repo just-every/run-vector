@@ -1,5 +1,6 @@
 import { assert, hash } from './validation.mjs';
-import { assertMigrationSql } from './migration-sql.mjs';
+import { assertMigrationSqlSafe } from './sql-safety.mjs';
+import { sqlTokens } from './sql-tokens.mjs';
 const ledger = '_rer_deploy_migrations';
 const literal = value => `'${value.replaceAll("'","''")}'`;
 export function validateMigrations(migrations) {
@@ -7,8 +8,8 @@ export function validateMigrations(migrations) {
   for (const migration of migrations) {
     assert(/^[0-9]+_[a-zA-Z0-9_-]+\.sql$/.test(migration.name) && migration.name > previous, 'migration-order-or-name'); previous = migration.name;
     assert(typeof migration.sql === 'string' && migration.sql.trim() && hash(migration.sql) === migration.sha256 && migration.sql.length <= 512000, 'invalid-migration-bytes');
-    // The ledger is controller-owned. Transaction control must not break a provider batch.
-    assertMigrationSql(migration.sql);
+    assertMigrationSqlSafe(migration.sql);
+    assert(sqlTokens(migration.sql).length > 0, 'invalid-migration-bytes');
   }
 }
 export async function query(api, id, sql) {
@@ -33,7 +34,11 @@ export async function migrate(api, id, migrations, { apply = true } = {}) {
   for (const migration of pending) {
     // Claim before execution. A lost response/partial provider failure is never automatically replayed.
     await query(api,id,`INSERT INTO ${ledger}(name,sha256,state) VALUES (${literal(migration.name)},${literal(migration.sha256)},'applying')`);
-    await query(api,id,`${migration.sql}\n; UPDATE ${ledger} SET state='applied' WHERE name=${literal(migration.name)} AND sha256=${literal(migration.sha256)};`);
+    const last = sqlTokens(migration.sql).at(-1);
+    // A second terminator after trailing comments creates an empty D1 statement.
+    // Keep the newline even when terminated: a final line comment must end.
+    const separator = last?.kind === 'symbol' && last.value === ';' ? '' : '; ';
+    await query(api,id,`${migration.sql}\n${separator}UPDATE ${ledger} SET state='applied' WHERE name=${literal(migration.name)} AND sha256=${literal(migration.sha256)};`);
   }
   if (pending.length) {
     const final = (await query(api,id,`SELECT name, sha256, state FROM ${ledger} ORDER BY name`))[0].results;

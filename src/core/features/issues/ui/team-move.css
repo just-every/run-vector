@@ -1,7 +1,7 @@
 .team-move > details > summary {
   min-height: 2.75rem;
   cursor: pointer;
-  color: #c4b3ff;
+  color: var(--app-cobalt-ink);
   font-size: 0.8rem;
   font-weight: 650;
 }
@@ -30,11 +30,11 @@
 .team-move-actions > button[type="button"],
 .team-move [role="alert"] button {
   min-height: 2.75rem;
-  border: 1px solid rgb(255 255 255 / 18%);
+  border: 1px solid rgb(23 26 32 / 27%);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
-  color: #e6dff1;
-  background: #252134;
+  color: var(--app-ink);
+  background: var(--app-field);
   font-size: 0.8rem;
   font-weight: 650;
 }

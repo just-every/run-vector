@@ -7,7 +7,7 @@ import { bootstrapConfig } from '../../../src/core/features/bootstrap/config.ts'
 import { configure } from '../../../vendor/base/operator-auth/config.mjs';
 import { validateConfig } from '../../../vendor/base/mail/src/core/validation.mjs';
 import { serializeSendGridMessage } from '../../../vendor/base/mail/src/adapters/sendgrid/serialize.mjs';
-import { providerFixture } from '../../../vendor/base/deploy-kit/tests/provider-fixture.mjs';
+import { providerFixture } from './cloudflare-edge/index.mjs';
 import { hash } from '../../../vendor/base/deploy-kit/validation.mjs';
 import { vectorPlan } from '../plan.mjs';
 import { validateSuppliedSecrets } from '../input-validation.mjs';

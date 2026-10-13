@@ -1,3 +1,4 @@
+import seed from '../../../../seed.json'
 import { z } from 'zod'
 
 const id = z.string().length(26)
@@ -13,7 +14,7 @@ export const createIssueInputSchema = z.object({
   projectId: nullableId.optional().default(null),
   cycleId: nullableId.optional().default(null),
   priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']).optional().default('none'),
-  labelIds: z.array(id).max(20).default([]).refine((values) => new Set(values).size === values.length, 'Label IDs must be unique.'),
+  labelIds: z.array(id).max(seed.limits.labelsPerIssue).default([]).refine((values) => new Set(values).size === values.length, 'Label IDs must be unique.'),
   estimate: z.number().int().min(1).max(100).nullable().optional().default(null),
   dueDate: z.string().date().nullable().optional().default(null),
   expectedOutcome: optionalText.default(null),

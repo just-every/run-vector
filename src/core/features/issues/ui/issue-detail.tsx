@@ -1,14 +1,24 @@
+import { useNavigate } from '@tanstack/react-router';
+import { DeleteIssue,type DeletionReceipt } from '../../issue-deletion/ui';
+import { IssueDuplicates } from '../../duplicates/ui';
+import { GithubLinks } from '../../integrations/ui/github-links';
 import { isEditableTarget } from "../../search/ui/command-helpers";
+import { IssueSubscriptionControls } from "../../notifications/ui/issue-subscription";
+import { IssueLabels } from "./issue-labels";
+import { IssueProperties } from "./issue-properties";
+import { IssueParent, hierarchyIsEmpty, type HierarchyState } from "./issue-parent";
+import { DecisionConfirmation } from "./decision-confirmation";
 import { IssueEditor } from "./issue-editor";
+import { IssueFieldEditor } from "./issue-field-editor";
 import { TeamMove } from "./team-move";
 import { Dependencies } from "./dependencies";
 import { Discussion } from "./discussion";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { isSafeHttpsUrl } from "../../links/schema";
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ApiError, useApiResource } from "../../../app/api-client";
 import { optionsSchema, type StreamOptions } from "../../streams/ui/data";
-import { relativeTime, shortDate } from "../../streams/ui/helpers";
+import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
 import { issueDetailSchema, type IssueDetailData } from "./data";
 
@@ -25,6 +35,7 @@ export function IssueDetail({
 }: IssueDetailProps) {
   const detail = useApiResource(`/api/issues/${identifier}`, issueDetailSchema);
   const options = useApiResource("/api/options", optionsSchema);
+  const navigate=useNavigate();
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (
@@ -71,7 +82,7 @@ export function IssueDetail({
       </div>
     );
   const refresh = () => {
-    detail.reload();
+    detail.refreshAfterMutation();
     onChanged?.();
   };
   return (
@@ -92,6 +103,7 @@ export function IssueDetail({
         onBack={onBack}
         onRefresh={refresh}
         options={options.data}
+        onDeleted={receipt=>{onChanged?.();window.dispatchEvent(new Event("vector:issues-changed"));window.dispatchEvent(new CustomEvent("vector:issue-deleted",{detail:receipt}));if(onBack)onBack();else void navigate({to:"/app/issues"});}}
         optionsError={options.error}
       />
     </>
@@ -104,181 +116,246 @@ function IssueInspector({
   onRefresh,
   options,
   optionsError,
+  onDeleted,
 }: {
   issue: IssueDetailData;
+  onDeleted:(receipt:DeletionReceipt)=>void;
   onBack?: () => void;
   onRefresh: () => void;
   options: StreamOptions | null;
   optionsError: Error | null;
 }) {
+  const [hierarchy, setHierarchy] = useState<HierarchyState & { id: string }>({
+    id: issue.identifier,
+    editing: false,
+    message: "",
+  });
+  const hierarchyState =
+    hierarchy.id === issue.identifier
+      ? hierarchy
+      : { id: issue.identifier, editing: false, message: "" };
+  const parentTrigger = useRef<HTMLButtonElement>(null);
+  const restoreParentFocus = useRef(false);
+  const onHierarchy = (next: HierarchyState) => {
+    if (hierarchyState.editing && !next.editing) restoreParentFocus.current = true;
+    setHierarchy({ ...next, id: issue.identifier });
+  };
+  useLayoutEffect(() => {
+    if (restoreParentFocus.current && !hierarchyState.editing && parentTrigger.current) {
+      parentTrigger.current.focus();
+      restoreParentFocus.current = false;
+    }
+  });
+  const compactHierarchy = hierarchyIsEmpty(issue, hierarchyState);
   return (
-    <article className="issue-inspector" aria-labelledby="issue-title">
+    <article
+      className={`issue-inspector${issue.status.category === "intake" ? " issue-inspector--intake" : ""}`}
+      aria-labelledby="issue-title"
+    >
       <header className="issue-header">
         <div>
-          {onBack ? (
-            <button
-              type="button"
-              className="detail-back"
-              onClick={() => {
-                onBack();
-                window.setTimeout(
-                  () =>
-                    document
-                      .getElementById(`issue-row-${issue.identifier}`)
-                      ?.focus(),
-                  0,
-                );
-              }}
-            >
-              ← Back to list
-            </button>
-          ) : null}
-          <p className="detail-kicker">
-            {issue.identifier} · updated {relativeTime(issue.updatedAt)}
-          </p>
+          <div className="issue-header-context">
+            {onBack ? (
+              <button
+                type="button"
+                className="detail-back"
+                onClick={() => {
+                  onBack();
+                  window.setTimeout(
+                    () =>
+                      document
+                        .getElementById(`issue-row-${issue.identifier}`)
+                        ?.focus(),
+                    0,
+                  );
+                }}
+              >
+                ← Back to list
+              </button>
+            ) : null}
+            <p className="detail-kicker">
+              {issue.identifier} · {issue.team.name} · updated{" "}
+              {relativeTime(issue.updatedAt)}
+            </p>
+            {issue.importedFrom ? (
+              <p className="detail-kicker">
+                Imported from {issue.importedFrom.sourceId} ({issue.importedFrom.source})
+                {issue.importedFrom.unfinished ? " · part of an unfinished import run" : ""}
+              </p>
+            ) : null}
+          </div>
           <h1 id="issue-title">{issue.title}</h1>
-        </div>
-        <div className="issue-status">
-          <span>{issue.status.name}</span>
-          <span className={`priority priority--${issue.priority}`}>
-            {issue.priority === "none" ? "No priority" : issue.priority}
-          </span>
+          <div className="issue-header-actions">
+            <IssueEditor
+              key={`issue-editor:${issue.identifier}`}
+              issue={issue}
+              onRefresh={onRefresh}
+            />
+            <IssueSubscriptionControls
+              key={`issue-subscription:${issue.identifier}`}
+              identifier={issue.identifier}
+            />
+            {/* With no parent or children, Set parent sits with the issue actions. */}
+            {compactHierarchy ? (
+              <IssueParent
+                key={issue.identifier + ":parent"}
+                issue={issue}
+                onRefresh={onRefresh}
+                triggerRef={parentTrigger}
+                state={hierarchyState}
+                onState={onHierarchy}
+                compact
+              />
+            ) : null}
+          </div>
         </div>
       </header>
-      <dl className="issue-facts">
-        <Fact label="Team" value={issue.team.name} />
-        <Fact label="Assignee" value={issue.assignee?.name ?? "Unassigned"} />
-        {issue.project ? (
-          <Fact label="Project" value={issue.project.name} />
+      <DecisionConfirmation
+        key={issue.identifier + ":confirmation"}
+        issue={issue}
+        operatorId={options?.operator.id}
+      />
+      <IssueProperties
+        key={issue.identifier}
+        issue={issue}
+        options={options}
+        onRefresh={onRefresh}
+      />
+      <div className="issue-body">
+        <div className="issue-planning-fields">
+          <IssueFieldEditor
+            key={issue.identifier + ":estimate"}
+            issue={issue}
+            field="estimate"
+            onRefresh={onRefresh}
+          />
+          <IssueFieldEditor
+            key={issue.identifier + ":due-date"}
+            issue={issue}
+            field="dueDate"
+            onRefresh={onRefresh}
+          />
+        </div>
+        {/* Labels and hierarchy share a wrapping row so short ones sit side by side. */}
+        <div className="issue-relations">
+          <IssueLabels
+            key={issue.identifier + ":labels"}
+            issue={issue}
+            options={options}
+            onRefresh={onRefresh}
+          />
+          {compactHierarchy ? null : (
+            <IssueParent
+              key={issue.identifier + ":parent"}
+              issue={issue}
+              onRefresh={onRefresh}
+              triggerRef={parentTrigger}
+              state={hierarchyState}
+              onState={onHierarchy}
+            />
+          )}
+        </div>
+        {issue.description ? (
+          <details className="detail-section issue-description" open>
+            <summary>Description</summary>
+            <SafeMarkdown>{issue.description}</SafeMarkdown>
+          </details>
         ) : null}
-        {issue.cycle ? <Fact label="Cycle" value={issue.cycle.name} /> : null}
-        {issue.dueDate ? (
-          <Fact label="Due" value={shortDate(issue.dueDate)} />
-        ) : null}
-        {issue.estimate !== null ? (
-          <Fact label="Estimate" value={`${issue.estimate} points`} />
-        ) : null}
-      </dl>
-      {issue.labels.length > 0 ? (
-        <ul className="issue-labels" aria-label="Labels">
-          {issue.labels.map((label) => (
-            <li key={label.id}>
-              <i style={{ backgroundColor: label.color }} aria-hidden="true" />
-              {label.name}
-            </li>
-          ))}
-        </ul>
-      ) : null}
-      {issue.description ? (
-        <section className="detail-section">
-          <h2>Description</h2>
-          <SafeMarkdown>{issue.description}</SafeMarkdown>
-        </section>
-      ) : null}
-      {issue.evidence.map((evidence) => (
-        <EvidenceInspector
-          key={evidence.id}
-          evidence={evidence}
-          operators={options?.operators ?? []}
+        {issue.evidence.map((evidence) => (
+          <EvidenceInspector
+            key={evidence.id}
+            evidence={evidence}
+            operators={options?.operators ?? []}
+          />
+        ))}
+        <details className="detail-section issue-outcome" open>
+          <summary>Outcome and customer impact</summary>
+          <section className="detail-section detail-section--two">
+            <IssueFieldEditor
+              key={issue.identifier + ":outcome"}
+              issue={issue}
+              field="expectedOutcome"
+              onRefresh={onRefresh}
+            />
+            <IssueFieldEditor
+              key={issue.identifier + ":impact"}
+              issue={issue}
+              field="customerImpact"
+              onRefresh={onRefresh}
+            />
+          </section>
+        </details>
+        <details className="secondary-section">
+          <summary>Dependencies · {issue.dependencies.length}</summary>
+          <Dependencies
+            key={issue.identifier + ":dependencies"}
+            issue={issue}
+            onRefresh={onRefresh}
+          />
+        </details>
+        <IssueDuplicates issue={issue} onRefresh={onRefresh}/>
+        <TeamMove
+          key={issue.identifier + ":team-move"}
+          issue={issue}
+          options={options}
+          optionsError={optionsError}
+          onRefresh={onRefresh}
         />
-      ))}
-      {issue.expectedOutcome || issue.customerImpact ? (
-        <section className="detail-section detail-section--two">
-          <div>
-            {issue.expectedOutcome ? (
+        <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>
+        <GithubLinks identifier={issue.identifier}/><Discussion
+          key={issue.identifier + ":discussion"}
+          identifier={issue.identifier}
+          onRefresh={onRefresh}
+        />
+        {issue.activity.length > 0 || issue.decisions.length > 0 ? (
+          <details className="detail-section issue-history">
+            <summary>History</summary>
+            {issue.activity.length > 0 ? (
               <>
-                <h2>Expected outcome</h2>
-                <p>{issue.expectedOutcome}</p>
+                <h2>Activity</h2>
+                <ol className="activity-list">
+                  {issue.activity.map((activity) => (
+                    <li key={activity.id}>
+                      <strong>{activity.kind.replaceAll(".", " ")}</strong>
+                      <span>
+                        {activity.actor ?? "System"} ·{" "}
+                        {relativeTime(activity.at)}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
               </>
             ) : null}
-          </div>
-          <div>
-            {issue.customerImpact ? (
+            {issue.decisions.length > 0 ? (
               <>
-                <h2>Customer impact</h2>
-                <p>{issue.customerImpact}</p>
+                <h2>Decision history</h2>
+                <ol className="activity-list">
+                  {issue.decisions.map((decision) => (
+                    <li key={decision.id}>
+                      <strong>{decision.kind}</strong>
+                      <span>
+                        {decision.actor ?? "System"} ·{" "}
+                        {relativeTime(decision.at)}
+                        {decision.reason ? ` · ${decision.reason}` : ""}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
               </>
             ) : null}
-          </div>
-        </section>
-      ) : null}
+          </details>
+        ) : null}
+      </div>
       {issue.status.category === "intake" ? (
         <DecisionPanel
+          key={issue.identifier + ":decision"}
           issue={issue}
           options={options}
           optionsError={optionsError}
           onRefresh={onRefresh}
         />
       ) : null}
-      <Dependencies
-        key={issue.identifier + ":dependencies"}
-        issue={issue}
-        onRefresh={onRefresh}
-      />
-      <IssueEditor
-        key={issue.identifier}
-        issue={issue}
-        options={options}
-        onRefresh={onRefresh}
-      />
-      <TeamMove
-        key={issue.identifier + ":team-move"}
-        issue={issue}
-        options={options}
-        optionsError={optionsError}
-        onRefresh={onRefresh}
-      />
-      <Discussion
-        key={issue.identifier + ":discussion"}
-        identifier={issue.identifier}
-        onRefresh={onRefresh}
-      />
-      {issue.activity.length > 0 || issue.decisions.length > 0 ? (
-        <details className="detail-section issue-history">
-          <summary>History</summary>
-          {issue.activity.length > 0 ? (
-            <>
-              <h2>Activity</h2>
-              <ol className="activity-list">
-                {issue.activity.map((activity) => (
-                  <li key={activity.id}>
-                    <strong>{activity.kind.replaceAll(".", " ")}</strong>
-                    <span>
-                      {activity.actor ?? "System"} · {relativeTime(activity.at)}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </>
-          ) : null}
-          {issue.decisions.length > 0 ? (
-            <>
-              <h2>Decision history</h2>
-              <ol className="activity-list">
-                {issue.decisions.map((decision) => (
-                  <li key={decision.id}>
-                    <strong>{decision.kind}</strong>
-                    <span>
-                      {decision.actor ?? "System"} · {relativeTime(decision.at)}
-                      {decision.reason ? ` · ${decision.reason}` : ""}
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            </>
-          ) : null}
-        </details>
-      ) : null}
     </article>
-  );
-}
-
-function Fact({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt>{label}</dt>
-      <dd>{value}</dd>
-    </div>
   );
 }
 
@@ -311,6 +388,8 @@ function EvidenceInspector({
         <span>{relativeTime(evidence.observedAt)}</span>
       </div>
       <p>{evidence.summary}</p>
+      {evidence.sourceId&&<p>Source {evidence.sourceId} · record {evidence.sourceRecordId} · revision {evidence.sourceRevisionId}</p>}
+      {evidence.changes.length>0&&<details className="evidence-context"><summary>Changes from the preceding observed revision</summary><dl className="evidence-metrics">{evidence.changes.map(change=><div key={change.field}><dt>{humanize(change.field)}</dt><dd>{renderValue(change.previous)} → {renderValue(change.current)}</dd></div>)}</dl></details>}
       {evidence.link && isSafeHttpsUrl(evidence.link) ? (
         <p>
           <a
@@ -323,54 +402,57 @@ function EvidenceInspector({
           </a>
         </p>
       ) : null}
-      {measurementEntries.length > 0 ? (
-        <dl className="evidence-metrics">
-          {measurementEntries.map(([key, value]) => (
-            <div key={key}>
-              <dt>{humanize(key)}</dt>
-              <dd>{renderValue(value)}</dd>
-            </div>
-          ))}
-        </dl>
-      ) : null}
-      {assertions.length > 0 ? (
-        <div className="assertion-list">
-          {assertions.map((assertion) => (
-            <div key={assertion.key}>
-              <span>
-                {assertion.source === "policy"
-                  ? "Policy recommendation"
-                  : operatorReport
-                    ? "Operator assertion"
-                    : "Source assertion"}
-              </span>
-              <strong>{humanize(assertion.key)}</strong>
-              <p>{assertion.value}</p>
-            </div>
-          ))}
-        </div>
-      ) : null}
-      {evidence.customerReports.length > 0 ? (
-        <div className="assertion-list" aria-label="Customer reports">
-          {evidence.customerReports.map((report, index) => (
-            <div key={index}>
-              <span>Customer report {index + 1}</span>
-              {report.customer ? <strong>{report.customer}</strong> : null}
-              <p>{report.summary}</p>
-              {report.link && isSafeHttpsUrl(report.link) ? (
-                <a
-                  href={report.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  referrerPolicy="no-referrer"
-                >
-                  Open report link ↗
-                </a>
-              ) : null}
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <details className="evidence-context">
+        <summary>Measurements and assessment</summary>
+        {measurementEntries.length > 0 ? (
+          <dl className="evidence-metrics">
+            {measurementEntries.map(([key, value]) => (
+              <div key={key}>
+                <dt>{humanize(key)}</dt>
+                <dd>{renderValue(value)}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+        {assertions.length > 0 ? (
+          <div className="assertion-list">
+            {assertions.map((assertion) => (
+              <div key={assertion.key}>
+                <span>
+                  {assertion.source === "policy"
+                    ? "Policy recommendation"
+                    : operatorReport
+                      ? "Operator assertion"
+                      : "Source assertion"}
+                </span>
+                <strong>{humanize(assertion.key)}</strong>
+                <p>{assertion.value}</p>
+              </div>
+            ))}
+          </div>
+        ) : null}
+        {evidence.customerReports.length > 0 ? (
+          <div className="assertion-list" aria-label="Customer reports">
+            {evidence.customerReports.map((report, index) => (
+              <div key={index}>
+                <span>Customer report {index + 1}</span>
+                {report.customer ? <strong>{report.customer}</strong> : null}
+                <p>{report.summary}</p>
+                {report.link && isSafeHttpsUrl(report.link) ? (
+                  <a
+                    href={report.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    referrerPolicy="no-referrer"
+                  >
+                    Open report link ↗
+                  </a>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        ) : null}
+      </details>
     </section>
   );
 }
@@ -396,7 +478,9 @@ function toAssertion(
   operators: Array<{ id: string; name: string }>,
 ) {
   if (!isRecord(value)) return [];
-  const source = typeof value.source === "string" ? value.source : "recorded";
+  const source = typeof value.source === "string" ? value.source : value.attribution === "source" ? "source" : "recorded";
+  if (source === "source" && (value.value === null || typeof value.value === "number" || typeof value.value === "boolean"))
+    return [{ key, value: String(value.value), source }];
   if (typeof value.value === "string")
     return [{ key, value: value.value, source }];
   if (source !== "policy") return [];

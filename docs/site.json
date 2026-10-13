@@ -1,0 +1,500 @@
+{
+  "sections": [
+    {
+      "title": "Start here",
+      "pages": [
+        {
+          "slug": "overview",
+          "title": "Overview",
+          "source": "docs/guide/overview.md",
+          "summary": "What Vector keeps, how Current, triage and the rest fit together, and where to start."
+        },
+        {
+          "slug": "install",
+          "title": "Run it on your computer",
+          "source": "docs/guide/install.md",
+          "summary": "Install Vector, sign in as the owner, finish setup, and stop, start or reset it."
+        },
+        {
+          "slug": "team",
+          "title": "Your team and settings",
+          "source": "docs/guide/team.md",
+          "summary": "Invite people, set workspace time, and look after teams, workflows and labels."
+        }
+      ]
+    },
+    {
+      "title": "Use it",
+      "pages": [
+        {
+          "slug": "triage",
+          "title": "Decide what comes in",
+          "source": "docs/guide/triage.md",
+          "summary": "Accept, defer or decline each report in Needs decision, and what each choice does."
+        },
+        {
+          "slug": "work",
+          "title": "Plan and track the work",
+          "source": "docs/guide/work.md",
+          "summary": "Issues, the Board, saved views, projects, cycles, search and keyboard shortcuts."
+        },
+        {
+          "slug": "move-in",
+          "title": "Move your issues in",
+          "source": "docs/guide/move-in.md",
+          "summary": "Bring issues from a CSV or JSON file or a Linear export, review the mapping, then apply or roll back."
+        },
+        {
+          "slug": "notifications",
+          "title": "Notifications and email",
+          "source": "docs/guide/notifications.md",
+          "summary": "What reaches your Inbox, what is also emailed, and how follows, mutes and preferences work."
+        }
+      ]
+    },
+    {
+      "title": "Connect it",
+      "pages": [
+        {
+          "slug": "api",
+          "title": "API and tokens",
+          "source": "docs/guide/api.md",
+          "summary": "Make a token for a script or tool, choose what it may do, and the requests it can send."
+        },
+        {
+          "slug": "integrations",
+          "title": "Integrations",
+          "source": "docs/guide/integrations.md",
+          "summary": "Let trusted tools send reports into Needs decision, tell other services when issues change, and link GitHub pull requests."
+        }
+      ]
+    },
+    {
+      "title": "Your data",
+      "pages": [
+        {
+          "slug": "data",
+          "title": "Export and restore",
+          "source": "docs/guide/data.md",
+          "summary": "Take a complete copy of your workspace and restore it into a new installation."
+        },
+        {
+          "slug": "archives",
+          "title": "Installation archives",
+          "source": "docs/guide/archives.md",
+          "summary": "What an archive keeps and leaves out, how to restore one, and letting your team back in afterwards."
+        }
+      ]
+    }
+  ],
+  "githubOnly": [
+    {
+      "source": "ACCEPTANCE.md",
+      "reason": "Evidence gates for the contract clauses"
+    },
+    {
+      "source": "AGENTS.consumer.md",
+      "reason": "Rules for coding agents working in a copy of this repository"
+    },
+    {
+      "source": "AGENTS.md",
+      "reason": "Contributor and coding-agent rules for working in this repository"
+    },
+    {
+      "source": "BASELINE.md",
+      "reason": "Requirements baseline for maintainers"
+    },
+    {
+      "source": "CHANGELOG.md",
+      "reason": "Release notes for maintainers"
+    },
+    {
+      "source": "CLAUDE.md",
+      "reason": "Contributor and coding-agent rules for working in this repository"
+    },
+    {
+      "source": "CONTRACT.md",
+      "reason": "The product contract, clause by clause, for maintainers and reviewers"
+    },
+    {
+      "source": "DEPLOY.md",
+      "reason": "Owner-account deployment runbook with its credential boundary; linked from the install page"
+    },
+    {
+      "source": "DIVERGENCE.md",
+      "reason": "Recorded differences from the seed baseline, for maintainers"
+    },
+    {
+      "source": "HANDOVER.md",
+      "reason": "Implemented scope and limitations, for maintainers"
+    },
+    {
+      "source": "OPERATIONS.md",
+      "reason": "Operations declarations for the command tooling"
+    },
+    {
+      "source": "PROOF.md",
+      "reason": "Review-correction receipts and how to reproduce them"
+    },
+    {
+      "source": "README.md",
+      "reason": "The repository front page; the docs site's overview and install pages cover it for owners"
+    },
+    {
+      "source": "RUN-LOCALLY.md",
+      "reason": "Full local command reference; the install page covers the owner path"
+    },
+    {
+      "source": "SEED-COMMAND-CONTRACT.md",
+      "reason": "Command flags, exit codes and state custody; linked from the install page"
+    },
+    {
+      "source": "TARGET.md",
+      "reason": "Build target notes for maintainers"
+    },
+    {
+      "source": "docs/API.md",
+      "reason": "API token authority, error codes and test coverage, for maintainers; the API page covers the owner path"
+    },
+    {
+      "source": "docs/ARCHIVES.md",
+      "reason": "Archive engine details and the HTTP restore limitation, for maintainers; linked from the data pages"
+    },
+    {
+      "source": "docs/AUTHENTICATION.md",
+      "reason": "Authentication and mail internals for maintainers"
+    },
+    {
+      "source": "docs/BASE-ADOPTION.md",
+      "reason": "Base copy custody and pins, for maintainers"
+    },
+    {
+      "source": "docs/BRAND.md",
+      "reason": "Brand rules for whoever changes the public pages"
+    },
+    {
+      "source": "docs/BROWSING-RECOVERY.md",
+      "reason": "Paging and internal deletion internals, for maintainers"
+    },
+    {
+      "source": "docs/DATA-OWNERSHIP.md",
+      "reason": "Archive contents, exclusions and restore authority in detail, for maintainers; the archives page covers the owner path"
+    },
+    {
+      "source": "docs/ERASURE.md",
+      "reason": "Why person erasure is not available yet and what it waits on, for maintainers"
+    },
+    {
+      "source": "docs/FOUNDATION-STAGE.md",
+      "reason": "Installation and operator foundation notes, for maintainers"
+    },
+    {
+      "source": "docs/IMPORT-EVIDENCE.md",
+      "reason": "Importer evidence and claims, for reviewers"
+    },
+    {
+      "source": "docs/INSTALLER.md",
+      "reason": "Installer internals; the install page covers the owner path and links here"
+    },
+    {
+      "source": "docs/INTEGRATIONS.md",
+      "reason": "Signed-source wire format, delivery states, encryption and upgrade notes, for maintainers and tool builders; linked from the integrations page"
+    },
+    {
+      "source": "docs/LINEAR-API-FILE.md",
+      "reason": "Script and file format for the optional Linear API file a move-in merges with the CSV; the move-in page covers the owner path"
+    },
+    {
+      "source": "docs/LOCAL-RECOVERY.md",
+      "reason": "One-time migration for installations made before the command contract"
+    },
+    {
+      "source": "docs/MANAGED-SOURCE.md",
+      "reason": "Managed source preparation, for maintainers"
+    },
+    {
+      "source": "docs/MOVE-IN-CHECKLIST.md",
+      "reason": "One-team Linear trial checklist with the measured move-in claim, for evaluators; the move-in page covers the owner path"
+    },
+    {
+      "source": "docs/MOVE-IN.md",
+      "reason": "Importer limits, identity rules and the terminal import command, for maintainers; the move-in page covers the owner path"
+    },
+    {
+      "source": "docs/NOTIFICATIONS.md",
+      "reason": "Notification delivery, mail privacy, recovery and upgrade internals, for maintainers; the notifications page covers the owner path"
+    },
+    {
+      "source": "docs/OPERATOR-REMOVAL.md",
+      "reason": "Operator removal internals, for maintainers"
+    },
+    {
+      "source": "scripts/base-cli/cli/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/ai/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/container/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/dependencies/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/deploy-kit/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/erasure/CONTRACT.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/erasure/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/integrations/core/CONTRACT.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/integrations/core/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/job-queue/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/live-proof/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/adapters/cloudflare/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/adapters/messaging/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/adapters/resend/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/adapters/sendgrid/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/doctor/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/events/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/mail/src/inbound/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/conformance/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/docs/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/docs/native-accounts.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/docs/tanstack-start.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/docs/vite-spa.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/operator-auth/identity/oidc/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/owner-claim/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/portability/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/modules/release/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/operations/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-cli/scripts/publish-check/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "scripts/base-onboarding/README.md",
+      "reason": "Command tooling documentation, kept with its source"
+    },
+    {
+      "source": "tests/fixtures/import/linear/README.md",
+      "reason": "Describes a test fixture"
+    },
+    {
+      "source": "vendor/base/dependencies/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/deploy-kit/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/egress-service/ADOPTION.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/egress-service/DESIGN.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/egress-service/OWNER-STEPS.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/egress-service/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/egress-service/tls/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/import-kit/CONTRACT.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/import-kit/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/import-kit/src/d1/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/import-kit/src/readers/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/integrations/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/integrations/core/CONTRACT.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/integrations/core/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/integrations/egress/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/integrations/receiver.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/integrations/slack/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/live-proof/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/adapters/cloudflare/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/adapters/messaging/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/adapters/resend/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/adapters/sendgrid/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/doctor/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/events/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/mail/src/inbound/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/conformance/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/docs/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/docs/native-accounts.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/docs/tanstack-start.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/docs/vite-spa.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/operator-auth/identity/oidc/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/base/owner-claim/README.md",
+      "reason": "Vendored Base library documentation, kept with its source"
+    }
+  ]
+}

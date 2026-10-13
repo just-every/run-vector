@@ -1,0 +1,1314 @@
+{
+  "access_rate_limits": [
+    "key",
+    "count",
+    "expires_at"
+  ],
+  "administration_audit_details": [
+    "audit_id",
+    "previous_value_json",
+    "next_value_json"
+  ],
+  "audit_records": [
+    "id",
+    "actor_operator_id",
+    "action",
+    "subject_identifier",
+    "subject_id",
+    "created_at",
+    "updated_at"
+  ],
+  "cycle_closure_failures": [
+    "cycle_id",
+    "identifiers_json",
+    "created_at"
+  ],
+  "cycle_membership_events": [
+    "id",
+    "cycle_id",
+    "identifier",
+    "direction",
+    "occurred_at"
+  ],
+  "cycle_snapshots": [
+    "cycle_id",
+    "close_token",
+    "closed_at",
+    "next_cycle_id",
+    "body_json"
+  ],
+  "cycles": [
+    "id",
+    "team_id",
+    "name",
+    "starts_at",
+    "ends_at",
+    "capacity",
+    "closed_at",
+    "created_at",
+    "updated_at"
+  ],
+  "detached_file_removals": [
+    "id",
+    "issue_id",
+    "identifier",
+    "actor_operator_id",
+    "blob_key",
+    "bytes",
+    "writer_settled",
+    "content_sha256",
+    "removal_requested_at",
+    "removal_actor_operator_id",
+    "removal_confirmed_at",
+    "deleted_at",
+    "cleanup_error",
+    "updated_at"
+  ],
+  "due_reminder_suppressions": [
+    "issue_id",
+    "due_date",
+    "kind",
+    "operator_id",
+    "created_at"
+  ],
+  "due_reminders": [
+    "issue_id",
+    "due_date",
+    "kind",
+    "claim_id",
+    "created_at"
+  ],
+  "evidence_revisions": [
+    "id",
+    "issue_id",
+    "source_name",
+    "observed_at",
+    "received_at",
+    "summary",
+    "measurements_json",
+    "assertions_json",
+    "created_at",
+    "updated_at",
+    "origin_kind",
+    "actor_operator_id",
+    "link",
+    "customer_reports_json",
+    "source_id",
+    "source_record_id",
+    "source_revision_id"
+  ],
+  "ik_batches": [
+    "job_id",
+    "action",
+    "position",
+    "end_position",
+    "fence"
+  ],
+  "ik_d1_assertions": [
+    "ok"
+  ],
+  "ik_d1_creation_plans": [
+    "job_id",
+    "ordinal",
+    "body",
+    "released"
+  ],
+  "ik_d1_custody_revisions": [
+    "job_id",
+    "revision",
+    "seal"
+  ],
+  "ik_d1_custody_states": [
+    "job_id",
+    "revision"
+  ],
+  "ik_d1_entries": [
+    "job_id",
+    "ordinal",
+    "source_identity",
+    "owner_job_id",
+    "effects_hash"
+  ],
+  "ik_d1_erased_sources": [
+    "destination",
+    "identity"
+  ],
+  "ik_d1_erased_targets": [
+    "destination",
+    "identity"
+  ],
+  "ik_d1_history": [
+    "id",
+    "job_id",
+    "ordinal",
+    "effect_ordinal",
+    "source_identity",
+    "destination",
+    "target_kind",
+    "target_id",
+    "reversed",
+    "record_json",
+    "successor_id"
+  ],
+  "ik_d1_indexed_jobs": [
+    "job_id",
+    "fingerprint"
+  ],
+  "ik_d1_native_staging": [
+    "id",
+    "generation",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "job_id",
+    "fingerprint",
+    "job_fence",
+    "action",
+    "values_count",
+    "chunks_count",
+    "identities",
+    "revision",
+    "registered_revision",
+    "sealed_revision"
+  ],
+  "ik_d1_native_staging_index": [
+    "stage_id",
+    "ordinal",
+    "source_identity",
+    "target_identity"
+  ],
+  "ik_d1_native_staging_values": [
+    "stage_id",
+    "value_ordinal",
+    "ordinal",
+    "body",
+    "body_hash",
+    "body_size",
+    "value_chunks"
+  ],
+  "ik_d1_original_chunks": [
+    "job_id",
+    "kind",
+    "original_key",
+    "ordinal",
+    "bytes"
+  ],
+  "ik_d1_plan_chunks": [
+    "job_id",
+    "ordinal",
+    "body"
+  ],
+  "ik_d1_plan_index": [
+    "job_id",
+    "ordinal",
+    "source_identity",
+    "target_identity"
+  ],
+  "ik_d1_preparation_receipts": [
+    "stage_id",
+    "generation",
+    "codec_id",
+    "header_hash",
+    "header_size",
+    "header_chunks"
+  ],
+  "ik_d1_publication_fences": [
+    "stream_id",
+    "job_id"
+  ],
+  "ik_d1_reversal_reports": [
+    "job_id",
+    "effect_id",
+    "position",
+    "record_json"
+  ],
+  "ik_d1_staging": [
+    "id",
+    "generation",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "fingerprint",
+    "operation_key",
+    "total",
+    "pages",
+    "layout_hash",
+    "reversal_policy",
+    "revision",
+    "registered_revision",
+    "sealed_revision"
+  ],
+  "ik_d1_staging_chunks": [
+    "stage_id",
+    "page_ordinal",
+    "ordinal",
+    "body",
+    "body_hash",
+    "body_size"
+  ],
+  "ik_d1_staging_headers": [
+    "stage_id",
+    "ordinal",
+    "body",
+    "body_hash",
+    "body_size"
+  ],
+  "ik_d1_staging_index": [
+    "stage_id",
+    "page_ordinal",
+    "ordinal",
+    "source_identity",
+    "target_identity"
+  ],
+  "ik_d1_staging_originals": [
+    "stage_id",
+    "original_key",
+    "name",
+    "sha256",
+    "size"
+  ],
+  "ik_d1_staging_pages": [
+    "stage_id",
+    "ordinal",
+    "job_id",
+    "total",
+    "fingerprint",
+    "plan_json",
+    "body_hash",
+    "body_size",
+    "chunks",
+    "identities",
+    "index_hash",
+    "policy_hash",
+    "inline_plan"
+  ],
+  "ik_d1_stream_origins": [
+    "job_id",
+    "stream_id",
+    "ordinal",
+    "page_total",
+    "job_operation_key",
+    "parent_destination",
+    "parent_namespace",
+    "parent_mapping_version",
+    "parent_principal_id",
+    "parent_fingerprint",
+    "parent_operation_key",
+    "parent_total",
+    "parent_layout_hash"
+  ],
+  "ik_d1_stream_pages": [
+    "stream_id",
+    "ordinal",
+    "job_id",
+    "total",
+    "erased_records"
+  ],
+  "ik_d1_stream_revisions": [
+    "stream_id",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "fingerprint",
+    "operation_key",
+    "total",
+    "layout_hash",
+    "layout_revision",
+    "progress_revision"
+  ],
+  "ik_d1_streams": [
+    "id",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "fingerprint",
+    "operation_key",
+    "total",
+    "layout_hash",
+    "state"
+  ],
+  "ik_jobs": [
+    "id",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "fingerprint",
+    "operation_key",
+    "plan_json",
+    "state",
+    "checkpoint",
+    "total",
+    "fence",
+    "lease_token",
+    "lease_expires",
+    "error",
+    "reversal_policy",
+    "reversal_policy_hash",
+    "reversal_cursor",
+    "reversal_hash"
+  ],
+  "ik_original_sets": [
+    "job_id",
+    "version"
+  ],
+  "ik_originals": [
+    "job_id",
+    "kind",
+    "original_key",
+    "name",
+    "sha256",
+    "size",
+    "bytes"
+  ],
+  "ik_provenance": [
+    "id",
+    "job_id",
+    "ordinal",
+    "effect_ordinal",
+    "source_identity",
+    "destination",
+    "target_kind",
+    "target_id",
+    "reversed",
+    "record_json"
+  ],
+  "ik_sources": [
+    "identity",
+    "source_hash",
+    "mapping_version",
+    "effects_hash",
+    "job_id"
+  ],
+  "ik_stages": [
+    "job_id",
+    "fence",
+    "effect_id",
+    "sha256",
+    "bytes"
+  ],
+  "ik_targets": [
+    "destination",
+    "kind",
+    "id",
+    "revision",
+    "value_json",
+    "attachment_json"
+  ],
+  "intake_decisions": [
+    "id",
+    "issue_id",
+    "actor_operator_id",
+    "kind",
+    "reason",
+    "return_at",
+    "created_at",
+    "updated_at"
+  ],
+  "integration_attempts": [
+    "namespace",
+    "id",
+    "delivery_id",
+    "number",
+    "started_at",
+    "finished_at",
+    "outcome"
+  ],
+  "integration_deliveries": [
+    "namespace",
+    "id",
+    "fingerprint",
+    "destination_hash",
+    "envelope",
+    "state",
+    "attempts",
+    "created_at",
+    "next_at",
+    "claim",
+    "claim_until",
+    "max_attempts",
+    "retry_delays"
+  ],
+  "integration_replays": [
+    "namespace",
+    "id",
+    "fingerprint",
+    "envelope",
+    "received_at"
+  ],
+  "integration_resolutions": [
+    "namespace",
+    "id",
+    "delivery_id",
+    "at",
+    "outcome"
+  ],
+  "integration_token_events": [
+    "namespace",
+    "id",
+    "token_id",
+    "at",
+    "action",
+    "feature"
+  ],
+  "integration_token_usage": [
+    "namespace",
+    "id",
+    "token_id",
+    "at",
+    "required_scopes",
+    "allowed",
+    "request_id",
+    "resource"
+  ],
+  "integration_tokens": [
+    "namespace",
+    "id",
+    "token_hash",
+    "name",
+    "scopes",
+    "created_at",
+    "expires_at",
+    "revoked_at"
+  ],
+  "issue_activity": [
+    "id",
+    "issue_id",
+    "actor_operator_id",
+    "kind",
+    "previous_value_json",
+    "next_value_json",
+    "created_at",
+    "updated_at",
+    "actor_name"
+  ],
+  "issue_comments": [
+    "id",
+    "issue_id",
+    "actor_operator_id",
+    "body",
+    "edited_at",
+    "deleted_at",
+    "created_at",
+    "updated_at",
+    "imported_author_name"
+  ],
+  "issue_deferral_origins": [
+    "issue_id",
+    "decision_id"
+  ],
+  "issue_dependencies": [
+    "blocked_issue_id",
+    "blocking_issue_id",
+    "created_at"
+  ],
+  "issue_files": [
+    "id",
+    "issue_id",
+    "actor_operator_id",
+    "name",
+    "content_type",
+    "bytes",
+    "blob_key",
+    "deleted_at",
+    "created_at",
+    "updated_at",
+    "state",
+    "writer_settled",
+    "removal_requested_at",
+    "removal_actor_operator_id",
+    "removal_confirmed_at",
+    "cleanup_error",
+    "content_sha256"
+  ],
+  "issue_followers": [
+    "issue_id",
+    "operator_id",
+    "created_at"
+  ],
+  "issue_labels": [
+    "issue_id",
+    "label_id",
+    "created_at"
+  ],
+  "issue_links": [
+    "id",
+    "issue_id",
+    "comment_id",
+    "actor_operator_id",
+    "name",
+    "url",
+    "deleted_at",
+    "created_at",
+    "updated_at"
+  ],
+  "issue_list_revision": [
+    "id",
+    "revision"
+  ],
+  "issue_mentions": [
+    "issue_id",
+    "body_key",
+    "comment_id",
+    "operator_id"
+  ],
+  "issue_notification_mutes": [
+    "issue_id",
+    "operator_id"
+  ],
+  "issue_parents": [
+    "issue_id",
+    "parent_issue_id",
+    "created_at"
+  ],
+  "issue_prefix_sequences": [
+    "workspace_id",
+    "identifier_prefix",
+    "last_sequence",
+    "updated_at"
+  ],
+  "issues": [
+    "id",
+    "identifier",
+    "origin_prefix",
+    "sequence_number",
+    "team_id",
+    "title",
+    "description",
+    "status_id",
+    "priority",
+    "assignee_operator_id",
+    "project_id",
+    "cycle_id",
+    "due_date",
+    "estimate",
+    "expected_outcome",
+    "customer_impact",
+    "custom_fields_json",
+    "deferred_until",
+    "version",
+    "completed_at",
+    "canceled_at",
+    "created_at",
+    "updated_at"
+  ],
+  "labels": [
+    "id",
+    "workspace_id",
+    "name",
+    "color",
+    "created_at",
+    "updated_at"
+  ],
+  "list_preferences": [
+    "id",
+    "operator_id",
+    "surface",
+    "filters_json",
+    "sort",
+    "grouping",
+    "created_at",
+    "updated_at"
+  ],
+  "magic_links": [
+    "id",
+    "operator_id",
+    "token_hash",
+    "return_to",
+    "expires_at",
+    "consumed_at",
+    "created_at",
+    "updated_at"
+  ],
+  "notification_candidates": [
+    "event_id",
+    "issue_id",
+    "recipient_id",
+    "kind",
+    "actor_id",
+    "actor_name",
+    "created_at"
+  ],
+  "notification_deliveries": [
+    "id",
+    "notification_id",
+    "recipient_id",
+    "actor_id",
+    "actor_name",
+    "identifier",
+    "title",
+    "app_link",
+    "status",
+    "attempts",
+    "claim_token",
+    "claimed_at",
+    "next_attempt_at",
+    "reason",
+    "created_at",
+    "updated_at"
+  ],
+  "notification_delivery_attempts": [
+    "id",
+    "delivery_id",
+    "number",
+    "status",
+    "reason",
+    "started_at",
+    "settled_at"
+  ],
+  "notification_events": [
+    "event_id",
+    "created_at"
+  ],
+  "notification_mail_audit": [
+    "id",
+    "feature",
+    "subject_identifier",
+    "outcome",
+    "created_at"
+  ],
+  "notification_preferences": [
+    "operator_id",
+    "email_enabled"
+  ],
+  "notification_type_mutes": [
+    "operator_id",
+    "kind"
+  ],
+  "notifications": [
+    "id",
+    "event_id",
+    "issue_id",
+    "recipient_id",
+    "actor_id",
+    "actor_name",
+    "causes_json",
+    "created_at",
+    "read_at"
+  ],
+  "oa_bootstrap": [
+    "singleton",
+    "claim_id",
+    "claimed_at"
+  ],
+  "oa_dev_credentials": [
+    "credential",
+    "id",
+    "created_at"
+  ],
+  "oa_external_identities": [
+    "issuer",
+    "subject",
+    "operator_id"
+  ],
+  "oa_invitation_cancellations": [
+    "operator_id",
+    "operator_version"
+  ],
+  "oa_limits": [
+    "key",
+    "window",
+    "count"
+  ],
+  "oa_operators": [
+    "id",
+    "email",
+    "display_name",
+    "role",
+    "status",
+    "version",
+    "created_at"
+  ],
+  "oa_sessions": [
+    "id",
+    "token_hash",
+    "operator_id",
+    "operator_version",
+    "kind",
+    "source_token_id",
+    "created_at",
+    "expires_at",
+    "revoked_at"
+  ],
+  "oa_tokens": [
+    "id",
+    "token_hash",
+    "kind",
+    "operator_id",
+    "operator_version",
+    "issuer_id",
+    "issuer_version",
+    "return_to",
+    "created_at",
+    "expires_at",
+    "consumed_at",
+    "revoked_at"
+  ],
+  "oc_owner_claims": [
+    "singleton",
+    "jti",
+    "installation_id",
+    "email",
+    "issued_at",
+    "expires_at",
+    "consumed_at",
+    "operator_id",
+    "session_id",
+    "completed"
+  ],
+  "operator_removals": [
+    "id",
+    "operator_id",
+    "workspace_id",
+    "actor_operator_id",
+    "successor_operator_id",
+    "created_at"
+  ],
+  "operator_sessions": [
+    "id",
+    "operator_id",
+    "token_hash",
+    "expires_at",
+    "revoked_at",
+    "created_at",
+    "updated_at"
+  ],
+  "operators": [
+    "id",
+    "workspace_id",
+    "name",
+    "email",
+    "removed_at",
+    "created_at",
+    "updated_at"
+  ],
+  "project_activity": [
+    "id",
+    "project_id",
+    "actor_operator_id",
+    "kind",
+    "previous_value_json",
+    "next_value_json",
+    "created_at",
+    "updated_at"
+  ],
+  "projects": [
+    "id",
+    "workspace_id",
+    "name",
+    "description",
+    "lead_operator_id",
+    "target_date",
+    "lifecycle",
+    "color",
+    "icon",
+    "archived_at",
+    "created_at",
+    "updated_at"
+  ],
+  "rer_mail_development_outbox": [
+    "sequence",
+    "id",
+    "created_at",
+    "message"
+  ],
+  "rer_portability_epochs": [
+    "source",
+    "epoch"
+  ],
+  "rer_portability_guard": [
+    "value"
+  ],
+  "rer_portability_jobs": [
+    "id",
+    "kind",
+    "actor",
+    "phase",
+    "completed",
+    "metadata"
+  ],
+  "rer_portability_journal": [
+    "source",
+    "tombstone"
+  ],
+  "rer_portability_owned": [
+    "job",
+    "bucket",
+    "key"
+  ],
+  "rer_portability_parts": [
+    "job",
+    "idx",
+    "sha256"
+  ],
+  "rer_portability_segments": [
+    "job",
+    "part",
+    "segment",
+    "data"
+  ],
+  "rer_portability_state": [
+    "id",
+    "source_identity",
+    "epoch",
+    "import_job",
+    "applying"
+  ],
+  "saved_views": [
+    "id",
+    "workspace_id",
+    "owner_operator_id",
+    "name",
+    "surface",
+    "is_shared",
+    "filters_json",
+    "sort",
+    "grouping",
+    "created_at",
+    "updated_at",
+    "layout"
+  ],
+  "search_index_state": [
+    "id",
+    "last_successful_index_at"
+  ],
+  "search_issues": [
+    "id",
+    "text",
+    "search_issues",
+    "rank"
+  ],
+  "search_issues_config": [
+    "k",
+    "v"
+  ],
+  "search_issues_content": [
+    "id",
+    "c0",
+    "c1"
+  ],
+  "search_issues_data": [
+    "id",
+    "block"
+  ],
+  "search_issues_docsize": [
+    "id",
+    "sz"
+  ],
+  "search_issues_idx": [
+    "segid",
+    "term",
+    "pgno"
+  ],
+  "search_projects": [
+    "id",
+    "name",
+    "search_projects",
+    "rank"
+  ],
+  "search_projects_config": [
+    "k",
+    "v"
+  ],
+  "search_projects_content": [
+    "id",
+    "c0",
+    "c1"
+  ],
+  "search_projects_data": [
+    "id",
+    "block"
+  ],
+  "search_projects_docsize": [
+    "id",
+    "sz"
+  ],
+  "search_projects_idx": [
+    "segid",
+    "term",
+    "pgno"
+  ],
+  "search_views": [
+    "id",
+    "name",
+    "search_views",
+    "rank"
+  ],
+  "search_views_config": [
+    "k",
+    "v"
+  ],
+  "search_views_content": [
+    "id",
+    "c0",
+    "c1"
+  ],
+  "search_views_data": [
+    "id",
+    "block"
+  ],
+  "search_views_docsize": [
+    "id",
+    "sz"
+  ],
+  "search_views_idx": [
+    "segid",
+    "term",
+    "pgno"
+  ],
+  "team_issue_history": [
+    "team_id",
+    "first_issue_at"
+  ],
+  "team_issue_sequences": [
+    "team_id",
+    "last_sequence",
+    "updated_at"
+  ],
+  "teams": [
+    "id",
+    "workspace_id",
+    "name",
+    "identifier_prefix",
+    "archived_at",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_auth_operators": [
+    "auth_id",
+    "operator_id"
+  ],
+  "vector_github_deliveries": [
+    "repository_id",
+    "delivery_id",
+    "payload_hash",
+    "received_at",
+    "diagnostic"
+  ],
+  "vector_github_issue_links": [
+    "repository_id",
+    "number",
+    "issue_id",
+    "created_at"
+  ],
+  "vector_github_pull_requests": [
+    "repository_id",
+    "number",
+    "title",
+    "url",
+    "state",
+    "updated_at",
+    "received_at"
+  ],
+  "vector_github_repositories": [
+    "id",
+    "workspace_id",
+    "repository",
+    "name",
+    "enabled",
+    "revoked_at",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_http_bootstrap": [
+    "id",
+    "snapshot"
+  ],
+  "vector_http_restore": [
+    "id",
+    "import_id",
+    "actor_id",
+    "auth_id",
+    "session_id",
+    "source_token_id",
+    "operator_version"
+  ],
+  "vector_import_revisions": [
+    "issue_id",
+    "revision"
+  ],
+  "vector_import_reports": [
+    "job_id",
+    "report_json",
+    "created_at"
+  ],
+  "vector_import_runs": [
+    "job_id",
+    "batch_size",
+    "last_error",
+    "last_error_at",
+    "created_at"
+  ],
+  "vector_integration_authority_guard": [
+    "id",
+    "admitted"
+  ],
+  "vector_integration_secret_keys": [
+    "identity",
+    "slot",
+    "encrypted",
+    "valid_until"
+  ],
+  "vector_integration_sources": [
+    "id",
+    "workspace_id",
+    "source_id",
+    "name",
+    "team_id",
+    "version",
+    "enabled",
+    "revoked_at",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_integration_tokens": [
+    "namespace",
+    "token_id",
+    "workspace_id",
+    "operator_id",
+    "name",
+    "scopes",
+    "created_at",
+    "expires_at",
+    "revoked_at"
+  ],
+  "vector_restore_mail_holds": [
+    "delivery_id"
+  ],
+  "vector_restore_operator_grants": [
+    "auth_id",
+    "approved_at"
+  ],
+  "vector_restore_status": [
+    "id",
+    "import_id",
+    "effects_held",
+    "reviewed_at"
+  ],
+  "vector_source_receipts": [
+    "source_id",
+    "record_id",
+    "revision_id",
+    "payload_hash",
+    "issue_id",
+    "evidence_id",
+    "received_at",
+    "erased"
+  ],
+  "vector_source_records": [
+    "source_id",
+    "record_id",
+    "issue_id",
+    "created_at",
+    "erased"
+  ],
+  "vector_webhook_destinations": [
+    "id",
+    "workspace_id",
+    "name",
+    "url",
+    "enabled",
+    "revoked_at",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_webhook_events": [
+    "id",
+    "workspace_id",
+    "destination_id",
+    "event",
+    "body",
+    "created_at",
+    "enqueued_at"
+  ],
+  "vector_webhook_restore_holds": [
+    "namespace",
+    "id"
+  ],
+  "workflow_statuses": [
+    "id",
+    "team_id",
+    "name",
+    "category",
+    "position",
+    "created_at",
+    "updated_at"
+  ],
+  "workspace_bootstrap": [
+    "id",
+    "workspace_id",
+    "created_at"
+  ],
+  "workspace_installation": [
+    "workspace_id",
+    "setup_operator_id",
+    "created_at",
+    "updated_at",
+    "setup_completed_at"
+  ],
+  "workspace_settings": [
+    "id",
+    "name",
+    "timezone",
+    "created_at",
+    "updated_at",
+    "reminder_time"
+  ],
+  "issue_duplicates": [
+    "issue_id",
+    "canonical_issue_id",
+    "created_at"
+  ],
+  "issue_deletions": [
+    "issue_id",
+    "identifier",
+    "workspace_id",
+    "requested_at"
+  ],
+  "vector_webhook_erasures": [
+    "namespace",
+    "id",
+    "identifier",
+    "erased_at"
+  ],
+  "oa_auth_audit": [
+    "id",
+    "actor_id",
+    "action",
+    "value",
+    "created_at"
+  ],
+  "oa_auth_settings": [
+    "singleton",
+    "idp_sign_in",
+    "generation",
+    "first_setup"
+  ],
+  "oa_credentials": [
+    "id",
+    "token_hash",
+    "operator_id",
+    "operator_version",
+    "kind",
+    "expires_at",
+    "revoked_at"
+  ],
+  "oa_domain_rules": [
+    "domain",
+    "provider_id",
+    "created_by",
+    "created_at"
+  ],
+  "oa_identity_provider_health": [
+    "provider_id",
+    "failing_since",
+    "hard_failure_at",
+    "checked_at"
+  ],
+  "oa_identity_providers": [
+    "provider_id",
+    "preset",
+    "status",
+    "issuer",
+    "client_id",
+    "jwks_uri",
+    "authorization_endpoint",
+    "token_endpoint",
+    "algorithms",
+    "token_auth_method",
+    "response_iss",
+    "interface_version",
+    "linked_at",
+    "pending_issuer",
+    "pending_client_id",
+    "pending_preset",
+    "pending_at",
+    "jwks",
+    "jwks_fetched_at"
+  ],
+  "oa_logout_events": [
+    "issuer",
+    "jti",
+    "consumed_at"
+  ],
+  "oa_oidc_limits": [
+    "bucket",
+    "count",
+    "expires_at"
+  ],
+  "oa_oidc_transactions": [
+    "state_hash",
+    "binding_hash",
+    "config_hash",
+    "payload",
+    "expires_at"
+  ],
+  "oa_provider_session_pins": [
+    "session_id",
+    "provider_id",
+    "issuer",
+    "client_id",
+    "linked_at"
+  ],
+  "oa_provider_sessions": [
+    "session_id",
+    "issuer",
+    "subject",
+    "sid",
+    "generation"
+  ],
+  "oa_setup_links": [
+    "interface",
+    "attempt_id",
+    "expires_at",
+    "owner_id",
+    "owner_version",
+    "session_id",
+    "completed"
+  ],
+  "oa_step_up_challenges": [
+    "id",
+    "token_hash",
+    "session_id",
+    "operator_id",
+    "operator_version",
+    "action",
+    "return_to",
+    "created_at",
+    "expires_at",
+    "consumed_at"
+  ],
+  "ik_d1_erasure_journal": [
+    "id",
+    "destination",
+    "recorded_at",
+    "records_erased",
+    "jobs_retired",
+    "streams_retired",
+    "stores_json"
+  ],
+  "ik_d1_erasure_tally": [
+    "receipt_id",
+    "store",
+    "image"
+  ],
+  "ik_d1_retirements": [
+    "id",
+    "kind",
+    "destination",
+    "receipt_id",
+    "retired_at"
+  ],
+  "ik_d1_reversal_fences": [
+    "job_id",
+    "action",
+    "fence",
+    "state_revision",
+    "erased_records",
+    "reused"
+  ]
+}

@@ -1,0 +1,40 @@
+/* The homepage after the hero: shared section rules. Each section's own drawing and rules are in current.css, free.css,
+   later.css, product/product.css, try-it.css and closing.css. A split section puts its copy and drawing side by side
+   (reversed on alternate sections), a stack section runs its drawing across the width, and a band sits on deeper paper.
+   On phones everything stacks, copy first. */
+.vx-section { padding-block: clamp(84px, 9.4vw, 140px); }
+.vx-h2 { margin: 0; color: var(--vx-ink); font-size: clamp(36px, 4.1vw, 60px); font-weight: 640; letter-spacing: -0.032em; line-height: 1.02; text-wrap: balance; }
+.vx-section-body { max-width: 28em; margin: clamp(18px, 1.7vw, 26px) 0 0; color: var(--vx-body); font-size: clamp(18px, 1.4vw, 20.5px); line-height: 1.55; text-wrap: pretty; }
+.vx-section-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 36px; margin-top: clamp(30px, 2.8vw, 40px); }
+.vx-band { background: var(--vx-paper-deep); }
+
+.vx-split-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: center; gap: clamp(40px, 5.4vw, 96px); }
+.vx-split-art { display: flex; justify-content: center; margin: 0; padding: 40px 0; }
+.vx-split--reverse .vx-split-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.vx-split--reverse .vx-split-art { order: -1; }
+
+.vx-stack-head { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: end; gap: clamp(24px, 5.4vw, 96px); }
+.vx-stack-head .vx-section-body { margin: 0; padding-bottom: 4px; }
+.vx-stack-art { margin: clamp(48px, 4.4vw, 64px) 0 0; }
+
+/* The ruled line under the hero, ending in a registration cross at each side. */
+.vx-sheet-rule { position: relative; height: 1px; background: var(--vx-rule); }
+.vx-sheet-rule::before, .vx-sheet-rule::after { content: ""; position: absolute; top: -7px; width: 15px; height: 15px; background: linear-gradient(var(--vx-outline), var(--vx-outline)) center / 100% 1px no-repeat, linear-gradient(var(--vx-outline), var(--vx-outline)) center / 1px 100% no-repeat; opacity: 0.55; }
+.vx-sheet-rule::before { left: -7px; }
+.vx-sheet-rule::after { right: -7px; }
+
+@media (max-width: 1100px) {
+  .vx-stack-head { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .vx-stack-head .vx-section-body { margin-top: 20px; }
+}
+
+@media (max-width: 900px) {
+  .vx-split-grid, .vx-split--reverse .vx-split-grid { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .vx-split--reverse .vx-split-art { order: 0; }
+  .vx-split-art { padding: 48px 0 24px; }
+}
+@media (max-width: 600px) {
+  .vx-section { padding-block: 72px; }
+  .vx-h2 { font-size: clamp(34px, 9.4vw, 42px); }
+  .vx-section-body { font-size: 18px; }
+}

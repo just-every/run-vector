@@ -1,24 +1,33 @@
-import { Link } from '@tanstack/react-router'
-import { useApiResource } from '../../../app/api-client'
+import { ProjectCycleHistory } from './cycle-history';
+import { SafeMarkdown } from "../../markdown/ui/markdown";
+import { administrationSchema } from "../../administration/schema";
+import { ProjectAdministration } from "./project-administration";
+import type { ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { useApiResource } from "../../../app/api-client";
 import {
   activeHealthLabel,
   lifecycleLabel,
   projectProgressLabel,
   shortProjectDate,
-} from './helpers'
-import { projectDetailSchema, type ProjectDetailData } from './data'
+} from "./helpers";
+import { projectDetailSchema, type ProjectDetailData } from "./data";
 
 export function ProjectDetail({ projectId }: { projectId: string }) {
+  const administration = useApiResource(
+    "/api/settings/administration",
+    administrationSchema,
+  );
   const project = useApiResource(
     `/api/projects/${projectId}`,
     projectDetailSchema,
-  )
+  );
   if (project.loading && project.data === null)
     return (
       <main className="projects-state" aria-live="polite">
         Loading project…
       </main>
-    )
+    );
   if (project.error || project.data === null)
     return (
       <main className="projects-state projects-state--error" role="alert">
@@ -28,12 +37,53 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
           Try again
         </button>
       </main>
-    )
-  return <ProjectDetailContent project={project.data} />
+    );
+  const record = administration.data?.projects.find(
+    (item) => item.id === projectId,
+  );
+  return (
+    <ProjectDetailContent
+      project={project.data}
+      management={
+        <section
+          className="administration-panel project-management"
+          aria-label="Project administration"
+        >
+          {administration.loading && (
+            <p role="status">Loading project management…</p>
+          )}
+          {administration.error && (
+            <p role="alert">
+              {administration.error.message}{" "}
+              <button type="button" onClick={administration.reload}>
+                Retry administration
+              </button>
+            </p>
+          )}
+          {record && administration.data && (
+            <ProjectAdministration
+              project={record}
+              operators={administration.data.operators}
+              onChanged={() => {
+                administration.reload();
+                project.reload();
+              }}
+            />
+          )}
+        </section>
+      }
+    />
+  );
 }
 
-function ProjectDetailContent({ project }: { project: ProjectDetailData }) {
-  const health = activeHealthLabel(project.health)
+function ProjectDetailContent({
+  project,
+  management,
+}: {
+  project: ProjectDetailData;
+  management: ReactNode;
+}) {
+  const health = activeHealthLabel(project.health);
   return (
     <main className="project-detail" aria-labelledby="project-title">
       <header className="project-detail__header">
@@ -45,7 +95,9 @@ function ProjectDetailContent({ project }: { project: ProjectDetailData }) {
             {lifecycleLabel(project.lifecycle)} project
           </p>
           <h1 id="project-title">{project.name}</h1>
-          <p>{project.description || 'No description has been recorded.'}</p>
+          <SafeMarkdown>
+            {project.description || "No description has been recorded."}
+          </SafeMarkdown>
         </div>
         <div className="project-detail__badges">
           <span className="project-lifecycle">
@@ -60,6 +112,7 @@ function ProjectDetailContent({ project }: { project: ProjectDetailData }) {
           ) : null}
         </div>
       </header>
+      {management}
       <dl className="project-facts">
         <Fact label="Lead" value={project.lead.name} />
         <Fact
@@ -70,15 +123,16 @@ function ProjectDetailContent({ project }: { project: ProjectDetailData }) {
           label="Teams"
           value={
             project.teams.length
-              ? project.teams.map((team) => team.name).join(', ')
-              : 'No project issues yet'
+              ? project.teams.map((team) => team.name).join(", ")
+              : "No project issues yet"
           }
         />
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
-      {project.health === 'blocked' || project.health === 'at-risk' ? (
+      {project.health === "blocked" || project.health === "at-risk" ? (
         <RiskEvidence project={project} />
       ) : null}
+      <ProjectCycleHistory history={project.cycleHistory}/>
       <div className="project-detail__grid">
         <section className="project-detail__section">
           <h2>Issues</h2>
@@ -90,7 +144,7 @@ function ProjectDetailContent({ project }: { project: ProjectDetailData }) {
         </aside>
       </div>
     </main>
-  )
+  );
 }
 
 function Fact({ label, value }: { label: string; value: string }) {
@@ -99,7 +153,7 @@ function Fact({ label, value }: { label: string; value: string }) {
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
-  )
+  );
 }
 
 function RiskEvidence({ project }: { project: ProjectDetailData }) {
@@ -108,7 +162,7 @@ function RiskEvidence({ project }: { project: ProjectDetailData }) {
       <div>
         <p className="stream-overline">Explainable health</p>
         <h2 id="project-risk-heading">
-          Why this project is{' '}
+          Why this project is{" "}
           {activeHealthLabel(project.health)?.toLocaleLowerCase()}
         </h2>
       </div>
@@ -133,12 +187,12 @@ function RiskEvidence({ project }: { project: ProjectDetailData }) {
         ))}
       </ul>
     </section>
-  )
+  );
 }
 
-function ProjectIssues({ issues }: { issues: ProjectDetailData['issues'] }) {
+function ProjectIssues({ issues }: { issues: ProjectDetailData["issues"] }) {
   if (issues.length === 0)
-    return <p className="projects-empty">No issues belong to this project.</p>
+    return <p className="projects-empty">No issues belong to this project.</p>;
   return (
     <ul className="project-issues">
       {issues.map((issue) => (
@@ -153,14 +207,14 @@ function ProjectIssues({ issues }: { issues: ProjectDetailData['issues'] }) {
             </span>
             <small>
               {issue.team.name} · {issue.status.name}
-              {issue.assignee ? ` · ${issue.assignee.name}` : ' · Unassigned'}
+              {issue.assignee ? ` · ${issue.assignee.name}` : " · Unassigned"}
             </small>
             {issue.cycle ? (
               <em>
                 {issue.cycle.name}
                 {issue.estimate !== null
                   ? ` · ${issue.estimate} pts`
-                  : ' · Unestimated'}
+                  : " · Unestimated"}
               </em>
             ) : null}
             {issue.blockedBy
@@ -177,7 +231,7 @@ function ProjectIssues({ issues }: { issues: ProjectDetailData['issues'] }) {
         </li>
       ))}
     </ul>
-  )
+  );
 }
 
 function CycleFacts({ project }: { project: ProjectDetailData }) {
@@ -194,25 +248,25 @@ function CycleFacts({ project }: { project: ProjectDetailData }) {
                 {cycle.team.name} · {cycle.name}
               </strong>
               <span>
-                {cycle.issueCount} project issues ·{' '}
+                {cycle.issueCount} project issues ·{" "}
                 {cycle.remainingEstimatedPoints} remaining estimated points
                 {cycle.unestimatedIssueCount
                   ? ` · ${cycle.unestimatedIssueCount} unestimated`
-                  : ''}
+                  : ""}
               </span>
               <small>
                 {cycle.capacity === null
-                  ? 'Capacity is not recorded.'
-                  : `${cycle.capacity} point capacity`}{' '}
-                ·{' '}
+                  ? "Capacity is not recorded."
+                  : `${cycle.capacity} point capacity`}{" "}
+                ·{" "}
                 {new Intl.DateTimeFormat(undefined, {
-                  month: 'short',
-                  day: 'numeric',
+                  month: "short",
+                  day: "numeric",
                 }).format(new Date(cycle.startsAt))}
                 –
                 {new Intl.DateTimeFormat(undefined, {
-                  month: 'short',
-                  day: 'numeric',
+                  month: "short",
+                  day: "numeric",
                 }).format(new Date(cycle.endsAt))}
               </small>
             </li>
@@ -220,7 +274,7 @@ function CycleFacts({ project }: { project: ProjectDetailData }) {
         </ul>
       )}
     </section>
-  )
+  );
 }
 
 function DependencyFacts({ project }: { project: ProjectDetailData }) {
@@ -241,8 +295,8 @@ function DependencyFacts({ project }: { project: ProjectDetailData }) {
                   params={{ identifier: dependency.blockedIssue.identifier }}
                 >
                   {dependency.blockedIssue.identifier}
-                </Link>{' '}
-                depends on{' '}
+                </Link>{" "}
+                depends on{" "}
                 <Link
                   to="/app/issues/$identifier"
                   params={{ identifier: dependency.blockingIssue.identifier }}
@@ -260,5 +314,5 @@ function DependencyFacts({ project }: { project: ProjectDetailData }) {
         </ul>
       )}
     </section>
-  )
+  );
 }

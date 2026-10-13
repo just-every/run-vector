@@ -1,7 +1,9 @@
+import { editorLeaf } from '../core/editor/leaf';
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { IssueDetail } from "../core/features/issues/ui/issue-detail";
+import { focusIssueRow } from "../core/features/issues/ui/issue-browser-pane";
 export const Route = createFileRoute("/app/issues/$identifier")({
-  component: Page,
+  component: editorLeaf(Page),
 });
 
 function Page() {
@@ -12,7 +14,10 @@ function Page() {
     <main className="direct-issue-page">
       <IssueDetail
         identifier={identifier}
-        onBack={() => navigate({ to: "/app/issues", search })}
+        onBack={async () => {
+          await navigate({ to: "/app/issues", search });
+          focusIssueRow(identifier);
+        }}
       />
     </main>
   );

@@ -1,4 +1,7 @@
 import { fileSettlementDatabase } from "../auth/mutation-database";
+import { IssueAccessError } from "../issues/access";
+import { requireIssueProjection } from "../issues/projection-access";
+import { discussionAccess } from "./access";
 import { requestFileRemoval } from "../file-removal/service";
 import { readRequestJson } from "../../app/input";
 import type { Hono } from "hono";
@@ -47,12 +50,13 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         return c.json({ error: "invalid_request" }, 400);
       await next();
     });
-  app.get("/issues/:identifier/discussion", async (c) => {
-    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
-    return issue
-      ? c.json(await discussion(c.env.DB, issue.id))
-      : c.json({ error: "not_found" }, 404);
-  });
+  app.get("/issues/:identifier/discussion", discussionAccess(async (c) => {
+    c.set("concealWorkspaceChange", true);
+    const issue = await requireIssueProjection(c, c.req.param().identifier);
+    const projection = await discussion(c.env.DB, issue.id);
+    await requireIssueProjection(c, issue.identifier);
+    return c.json(projection);
+  }));
   app.post("/issues/:identifier/comments", async (c) => {
     const input = commentSchema.safeParse(await readRequestJson(c.req.raw));
     if (!input.success)
@@ -62,13 +66,18 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
       );
     const issue = await findIssue(c.env.DB, c.req.param("identifier"));
     if (!issue) return c.json({ error: "not_found" }, 404);
-    const id = await addComment(
-      c.env.DB,
-      issue.id,
-      c.get("operatorId"),
-      input.data.body,
-    );
-    return c.json({ id }, 201);
+    try {
+      const id = await addComment(
+        c.env.DB,
+        issue.id,
+        c.get("operatorId"),
+        input.data.body,
+      );
+      return c.json({ id }, 201);
+    } catch (error) {
+      if (!(error instanceof IssueAccessError)) throw error;
+      return c.json({ error: error.code, message: error.message }, error.status);
+    }
   });
   for (const method of ["PATCH", "DELETE"] as const)
     app.on(method, "/issues/:identifier/comments/:itemId", async (c) => {
@@ -79,17 +88,22 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
       if (!input.success) return c.json({ error: "invalid_request" }, 400);
       const issue = await findIssue(c.env.DB, c.req.param("identifier"));
       if (!issue) return c.json({ error: "not_found" }, 404);
-      return (await changeComment(
-        c.env.DB,
-        issue,
-        c.req.param("itemId"),
-        c.get("operatorId"),
-        input.data.body,
-      ))
-        ? c.json({ updated: true })
-        : c.json({ error: "not_found" }, 404);
+      try {
+        return (await changeComment(
+          c.env.DB,
+          issue,
+          c.req.param("itemId"),
+          c.get("operatorId"),
+          input.data.body,
+        ))
+          ? c.json({ updated: true })
+          : c.json({ error: "not_found" }, 404);
+      } catch (error) {
+        if (!(error instanceof IssueAccessError)) throw error;
+        return c.json({ error: error.code, message: error.message }, error.status);
+      }
     });
-  app.post("/issues/:identifier/files", async (c) => {
+  app.post("/issues/:identifier/files", discussionAccess(async (c) => {
     const type = c.req.header("content-type") ?? "";
     let name = c.req.header("x-file-name") ?? "";
     const encoding = c.req.header("x-file-name-encoding");
@@ -121,8 +135,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         },
         400,
       );
-    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
-    if (!issue) return c.json({ error: "not_found" }, 404);
+    const issue = await requireIssueProjection(c, c.req.param().identifier);
     const reader = c.req.raw.body?.getReader();
     if (!reader) return c.json({ error: "invalid_upload" }, 400);
     const chunks: Uint8Array[] = [];
@@ -211,11 +224,11 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
       );
     }
     return c.json({ id, name, contentType: type, bytes: size }, 201);
-  });
-  app.get("/issues/:identifier/files/:itemId", async (c) => {
-    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
-    if (!issue) return c.json({ error: "not_found" }, 404);
-    const file = await findFile(c.env.DB, issue.id, c.req.param("itemId"));
+  }));
+  app.get("/issues/:identifier/files/:itemId", discussionAccess(async (c) => {
+    c.set("concealWorkspaceChange", true);
+    const issue = await requireIssueProjection(c, c.req.param().identifier);
+    const file = await findFile(c.env.DB, issue.id, c.req.param().itemId);
     if (!file) return c.json({ error: "not_found" }, 404);
     if (file.deleted_at || file.removal_requested_at)
       return c.json({ error: "not_found" }, 404);
@@ -228,6 +241,12 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         503,
       );
     const blob = await c.env.FILES.get(file.blob_key);
+    try {
+      await requireIssueProjection(c, issue.identifier);
+    } catch (error) {
+      await blob?.body.cancel();
+      throw error;
+    }
     if (!blob) return c.json({ error: "file_unavailable" }, 503);
     return new Response(blob.body, {
       headers: {
@@ -237,17 +256,17 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         "X-Content-Type-Options": "nosniff",
       },
     });
-  });
-  app.delete("/issues/:identifier/files/:itemId", async (c) => {
-    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
-    if (!issue) return c.json({ error: "not_found" }, 404);
-    const file = await findFile(c.env.DB, issue.id, c.req.param("itemId"));
+  }));
+  app.delete("/issues/:identifier/files/:itemId", discussionAccess(async (c) => {
+    const issue = await requireIssueProjection(c, c.req.param().identifier);
+    const file = await findFile(c.env.DB, issue.id, c.req.param().itemId);
     if (!file) return c.json({ error: "not_found" }, 404);
     const result = await requestFileRemoval(
       c.env,
       issue,
       file.id,
       c.get("operatorId"),
+      issue,
     );
     return result === "removed"
       ? c.json({ removed: true })
@@ -267,5 +286,5 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
             },
             503,
           );
-  });
+  }));
 }

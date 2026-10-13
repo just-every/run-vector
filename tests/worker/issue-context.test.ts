@@ -1,20 +1,28 @@
+import { openCycleFixture } from "./open-cycle-fixture";
 import { env } from "cloudflare:workers";
 import { applyD1Migrations } from "cloudflare:test";
 import assert from "node:assert/strict";
 import { beforeAll, inject, it } from "vitest";
-import { createServerApp } from "../../src/core/app/server";
+import { Hono } from "hono";
+import { createApiApp } from "../../src/core/app/api";
 import { ensureSampleData } from "../../src/core/features/sample-data/service";
 import { vectorSampleIds as ids } from "../../sample-data/vector";
 import { createUlid } from "../../src/core/shared/ids";
-import { testCookie } from "./native-fixture";
+import {
+  sampleOwner,
+  samplePeer,
+  sampleSession,
+  sampleBindings,
+  origin,
+} from "./sample-auth-fixture";
+import { beforeCommit } from "./removal-interleaving";
 
-const app = createServerApp(),
-  origin = "https://vector.test";
+const app = new Hono().route("/api", createApiApp());
 let cookie: string;
 beforeAll(async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   await ensureSampleData(env.DB, new Date("2026-09-30T00:00:00Z"));
-  cookie = await testCookie(env.DB, ids.sarah);
+  cookie = await sampleOwner();
 });
 async function request(
   path: string,
@@ -26,10 +34,15 @@ async function request(
     origin + path,
     {
       method: body === undefined ? "GET" : method,
-      headers: { origin, "content-type": "application/json", cookie },
+      headers: {
+        host: new URL(origin).host,
+        origin,
+        "content-type": "application/json",
+        cookie,
+      },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     },
-    { ...env, DB: db, APP_ORIGIN: origin },
+    { ...sampleBindings, DB: db },
   );
 }
 async function create(extra: Record<string, unknown> = {}) {
@@ -71,21 +84,7 @@ async function receipt(id: string) {
   };
 }
 function beforeBatch(action: () => Promise<void>) {
-  let used = false;
-  return new Proxy(env.DB, {
-    get(target, property) {
-      if (property === "batch")
-        return async (writes: D1PreparedStatement[]) => {
-          if (!used) {
-            used = true;
-            await action();
-          }
-          return target.batch(writes);
-        };
-      const value = Reflect.get(target, property);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
+  return beforeCommit((sql) => sql.includes("UPDATE issues SET"), action);
 }
 
 it("[ISSUE-002 ISSUE-006 ISSUE-007] native contextual PATCH atomically persists all fields, labels and actor history; clears nullable context", async () => {
@@ -221,7 +220,7 @@ it("[ISSUE-002] strict contextual API rejects malformed/unknown/foreign/closed/t
     archived = createUlid(new Date()),
     operator = createUlid(new Date());
   const now = new Date().toISOString();
-  await env.DB.prepare("INSERT INTO workspace_settings VALUES(?,?,?,?,?)")
+  await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
     .bind(foreign, "Other", "UTC", now, now)
     .run();
   await env.DB.prepare(
@@ -251,63 +250,77 @@ it("[ISSUE-002] strict contextual API rejects malformed/unknown/foreign/closed/t
       now,
     )
     .run();
-  const invalid = [
-    { estimate: 0 },
-    { estimate: 101 },
-    { estimate: 1.5 },
-    { dueDate: "2027-02-29" },
-    { projectId: "short" },
-    { projectId: "0".repeat(26) },
-    { projectId: archived },
-    { projectId: project },
-    { assigneeOperatorId: operator },
-    { cycleId: ids.platformCycle },
-    { labelIds: [label] },
-    { labelIds: [ids.customerLabel, ids.customerLabel] },
-    {
-      labelIds: Array.from({ length: 21 }, (_, n) =>
-        String(n).padStart(26, "0"),
-      ),
-    },
-    { expectedOutcome: "x".repeat(20001) },
-    { customerImpact: "x".repeat(20001) },
-    { customFields: [] },
-    { unknown: true },
-    { cycleId: ids.flowCycle, statusId: ids.flowCompleted },
-    { cycleId: ids.flowCycle, statusId: ids.flowCanceled },
-  ];
-  for (const fields of invalid) {
-    const result = await patch(issue, fields);
-    assert.equal(result.status, 400, JSON.stringify(fields).slice(0, 120));
-    assert.deepEqual(await receipt(issue.id), before);
-  }
-  await env.DB.prepare("UPDATE cycles SET closed_at=? WHERE id=?")
-    .bind(now, ids.flowCycle)
-    .run();
   try {
+    const invalid = [
+      { estimate: 0 },
+      { estimate: 101 },
+      { estimate: 1.5 },
+      { dueDate: "2027-02-29" },
+      { projectId: "short" },
+      { projectId: "0".repeat(26) },
+      { projectId: archived },
+      { projectId: project },
+      { assigneeOperatorId: operator },
+      { cycleId: ids.platformCycle },
+      { labelIds: [label] },
+      { labelIds: [ids.customerLabel, ids.customerLabel] },
+      {
+        labelIds: Array.from({ length: 21 }, (_, n) =>
+          String(n).padStart(26, "0"),
+        ),
+      },
+      { expectedOutcome: "x".repeat(20001) },
+      { customerImpact: "x".repeat(20001) },
+      { customFields: [] },
+      { unknown: true },
+      { cycleId: ids.flowCycle, statusId: ids.flowCompleted },
+      { cycleId: ids.flowCycle, statusId: ids.flowCanceled },
+    ];
+    for (const fields of invalid) {
+      const result = await patch(issue, fields);
+      assert.equal(result.status, 400, JSON.stringify(fields).slice(0, 120));
+      assert.deepEqual(await receipt(issue.id), before);
+    }
+    const closedCycle = await openCycleFixture(env.DB, ids.flowCycle);
+    await env.DB.prepare("UPDATE cycles SET closed_at=? WHERE id=?")
+      .bind(now, closedCycle)
+      .run();
     assert.equal(
-      (await patch(issue, { cycleId: ids.flowCycle, title: "must not write" }))
+      (await patch(issue, { cycleId: closedCycle, title: "must not write" }))
         .status,
       400,
     );
     assert.deepEqual(await receipt(issue.id), before);
+    const oversized = await patch(issue, {
+      customFields: { large: "x".repeat(1048576) },
+    });
+    assert.equal(oversized.status, 413);
+    assert.deepEqual(await receipt(issue.id), before);
   } finally {
-    await env.DB.prepare("UPDATE cycles SET closed_at=NULL WHERE id=?")
-      .bind(ids.flowCycle)
-      .run();
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM labels WHERE id=?").bind(label),
+      env.DB.prepare("DELETE FROM projects WHERE id IN (?,?)").bind(
+        project,
+        archived,
+      ),
+      env.DB.prepare(
+        "DELETE FROM vector_auth_operators WHERE operator_id=?",
+      ).bind(operator),
+      env.DB.prepare("DELETE FROM oa_operators WHERE id=?").bind(operator),
+      env.DB.prepare("DELETE FROM operators WHERE id=?").bind(operator),
+      env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(foreign),
+    ]);
+    await sampleSession(cookie);
   }
-  const oversized = await patch(issue, {
-    customFields: { large: "x".repeat(1048576) },
-  });
-  assert.equal(oversized.status, 413);
-  assert.deepEqual(await receipt(issue.id), before);
 });
 
 it("[ISSUE-006] unchanged unavailable selections remain during unrelated edits; terminal cycle retention and uncommit are permitted", async () => {
+  const peer = await samplePeer(cookie);
+  const closedCycle = await openCycleFixture(env.DB, ids.flowCycle);
   const issue = await create({
     projectId: ids.reliability,
-    cycleId: ids.flowCycle,
-    assigneeOperatorId: ids.maya,
+    cycleId: closedCycle,
+    assigneeOperatorId: peer.id,
     labelIds: [ids.customerLabel],
   });
   const now = new Date().toISOString();
@@ -318,25 +331,31 @@ it("[ISSUE-006] unchanged unavailable selections remain during unrelated edits; 
     ),
     env.DB.prepare("UPDATE cycles SET closed_at=? WHERE id=?").bind(
       now,
-      ids.flowCycle,
+      closedCycle,
     ),
     env.DB.prepare("UPDATE operators SET removed_at=? WHERE id=?").bind(
       now,
-      ids.maya,
+      peer.id,
     ),
   ]);
   try {
     const result = await patch(issue, {
       title: "Historical context retained",
       projectId: ids.reliability,
-      cycleId: ids.flowCycle,
-      assigneeOperatorId: ids.maya,
+      cycleId: closedCycle,
+      assigneeOperatorId: peer.id,
       labelIds: [ids.customerLabel],
       statusId: ids.flowCompleted,
     });
     assert.equal(result.status, 200);
     const terminal: any = await result.json();
-    assert.equal(terminal.cycle.id, ids.flowCycle);
+    assert.equal(terminal.cycle.id, closedCycle);
+    assert.equal(terminal.project.id, ids.reliability);
+    assert.equal(terminal.assignee.id, peer.id);
+    const stored: any = (await receipt(issue.id)).issue;
+    assert.equal(stored.cycle_id, closedCycle);
+    assert.equal(stored.project_id, ids.reliability);
+    assert.equal(stored.assignee_operator_id, peer.id);
     assert.equal(terminal.version, 2);
     assert.equal((await patch(terminal, { cycleId: null })).status, 200);
   } finally {
@@ -344,17 +363,17 @@ it("[ISSUE-006] unchanged unavailable selections remain during unrelated edits; 
       env.DB.prepare("UPDATE projects SET archived_at=NULL WHERE id=?").bind(
         ids.reliability,
       ),
-      env.DB.prepare("UPDATE cycles SET closed_at=NULL WHERE id=?").bind(
-        ids.flowCycle,
-      ),
       env.DB.prepare("UPDATE operators SET removed_at=NULL WHERE id=?").bind(
-        ids.maya,
+        peer.id,
       ),
     ]);
+    await sampleSession(peer.cookie, 401);
+    await sampleSession(cookie);
   }
 });
 
 it("[ISSUE-006 ISSUE-007] option archive/removal/closure between validation and actual D1 batch prevents every field/label/activity write", async () => {
+  const closedCycle = await openCycleFixture(env.DB, ids.flowCycle);
   const cases = [
     {
       fields: { projectId: ids.reliability },
@@ -363,10 +382,10 @@ it("[ISSUE-006 ISSUE-007] option archive/removal/closure between validation and 
       restore: "UPDATE projects SET archived_at=NULL WHERE id=?",
     },
     {
-      fields: { cycleId: ids.flowCycle },
+      fields: { cycleId: closedCycle },
       sql: "UPDATE cycles SET closed_at=? WHERE id=?",
-      id: ids.flowCycle,
-      restore: "UPDATE cycles SET closed_at=NULL WHERE id=?",
+      id: closedCycle,
+      restore: null,
     },
     {
       fields: { assigneeOperatorId: ids.maya },
@@ -378,6 +397,7 @@ it("[ISSUE-006 ISSUE-007] option archive/removal/closure between validation and 
   for (const entry of cases) {
     const issue = await create({ labelIds: [ids.customerLabel] }),
       before = await receipt(issue.id);
+    let fired = 0;
     try {
       const result = await patch(
         issue,
@@ -387,16 +407,19 @@ it("[ISSUE-006 ISSUE-007] option archive/removal/closure between validation and 
           labelIds: [ids.reliabilityLabel],
         },
         beforeBatch(async () => {
+          fired++;
           await env.DB.prepare(entry.sql)
             .bind(new Date().toISOString(), entry.id)
             .run();
         }),
       );
+      assert.equal(fired, 1);
       assert.equal(result.status, 400);
       assert.equal(((await result.json()) as any).error, "invalid_option");
       assert.deepEqual(await receipt(issue.id), before);
     } finally {
-      await env.DB.prepare(entry.restore).bind(entry.id).run();
+      if (entry.restore)
+        await env.DB.prepare(entry.restore).bind(entry.id).run();
     }
   }
   const issue = await create({ labelIds: [ids.customerLabel] }),
@@ -406,19 +429,24 @@ it("[ISSUE-006 ISSUE-007] option archive/removal/closure between validation and 
   await env.DB.prepare("INSERT INTO labels VALUES(?,?,?,?,?,?)")
     .bind(label, ids.workspace, "Race label", "#000", now, now)
     .run();
+  let labelRace = 0;
   const result = await patch(
     issue,
     { title: "No deleted label", labelIds: [label] },
     beforeBatch(async () => {
+      labelRace++;
       await env.DB.prepare("DELETE FROM labels WHERE id=?").bind(label).run();
     }),
   );
+  assert.equal(labelRace, 1);
   assert.equal(result.status, 400);
   assert.deepEqual(await receipt(issue.id), before);
+  let versionRace = 0;
   const stale = await patch(
     issue,
     { title: "No overwrite", labelIds: [] },
     beforeBatch(async () => {
+      versionRace++;
       await env.DB.prepare(
         "UPDATE issues SET version=version+1,title=? WHERE id=?",
       )
@@ -426,6 +454,7 @@ it("[ISSUE-006 ISSUE-007] option archive/removal/closure between validation and 
         .run();
     }),
   );
+  assert.equal(versionRace, 1);
   assert.equal(stale.status, 409);
   const current: any = await stale.json();
   assert.equal(current.error, "stale_version");

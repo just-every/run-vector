@@ -30,17 +30,18 @@ they are never invented or treated as published records.
 For explicit live operation add:
 
 ```js
-const credentials = (apiKey) => ({ apiKey });
-const options = {
+{
   live: true,
-  send: {
-    config: {provider: 'resend', mode: 'production', ...credentials(sendingCredential)},
-    from: verifiedSender, to: ownerTestInbox
-  },
-  receive: {provider: 'resend', ...credentials(receivingReadbackCredential)},
+  send: {config: senderConfig, from: verifiedSender, to: ownerTestInbox},
+  receive: readbackConfig,
   timeoutMs: 60000, pollIntervalMs: 2000
 }
 ```
+
+`senderConfig` is an ordinary mail sender configuration, for example
+`{provider: 'resend', mode: 'production', apiKey}` with the sending credential
+as `apiKey`. `readbackConfig` is `{provider: 'resend', apiKey}` with a separate
+readback credential as `apiKey`. Both credentials come from the environment.
 
 Sender provider must agree with `options.provider`; sending domain must match
 `domain`. SendGrid and Cloudflare senders use the same facade (Cloudflare also

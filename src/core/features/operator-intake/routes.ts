@@ -1,3 +1,5 @@
+import { requireIssueProjection } from "../issues/projection-access";
+import { IssueAccessError } from "../issues/access";
 import { isMutationAccessError } from "../auth/mutation-database";
 import type { Context } from "hono";
 import type { AppEnvironment } from "../../app/bindings";
@@ -30,13 +32,15 @@ export async function createOperatorIntakeRoute(
       new Date(),
     );
     if (!issue) throw new Error("Committed intake could not be read.");
+    await requireIssueProjection(context, result.identifier);
     return context.json(issue, 201);
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
+    if (error instanceof IssueAccessError) return context.json({error:error.code,message:error.message},error.status);
     if (error instanceof IssueMutationError)
       return context.json(
         { error: "invalid_request", message: error.message },
-        400,
+        error.code === "invalid_transition" ? 409 : 400,
       );
     console.error("Operator intake persistence failed", error);
     return context.json(
