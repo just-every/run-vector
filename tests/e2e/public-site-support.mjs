@@ -26,18 +26,28 @@ export async function serveSite(directory) {
 
 export async function inspectHome(page) {
   const content = await page.locator('main').evaluate(main => {
-    const sections = [...main.querySelectorAll('section')].filter(section => section.querySelector('h1,h2'));
+    const sections = [...main.querySelectorAll('section')].filter(section => section.querySelector('h2'));
+    const narrative = main.cloneNode(true);
+    // Product figures legitimately contain example counts, dates and percentages.
+    narrative.querySelectorAll('figure,svg').forEach(node => node.remove());
     return {
       headline: main.querySelector('h1')?.textContent.trim(),
+      support: main.querySelector('h1')?.closest('section')?.querySelector('p')?.textContent.trim(),
+      narrative: narrative.textContent,
       sections: sections.map(section => ({
-        heading: section.querySelector('h1,h2').textContent.trim(),
+        id: section.id,
+        heading: section.querySelector('h2').textContent.trim(),
         paragraphs: [...section.querySelectorAll('p')].map(p => p.textContent.trim()).filter(Boolean),
       })),
       links: [...main.querySelectorAll('a[href]')].map(a => ({ href: a.getAttribute('href'), label: a.textContent.trim() })),
     };
   });
   assert.ok(content.headline, 'raw homepage has a headline');
+  assert.ok(content.support, 'raw homepage has a supporting sentence');
   assert.ok(content.sections.length >= 6, 'raw homepage has at least six substantive sections');
+  for (const topic of ['current', 'free', 'later', 'product', 'try', 'get-started']) {
+    assert.ok(content.sections.some(section => section.id === topic), `homepage explains the ${topic} topic`);
+  }
   for (const section of content.sections) {
     assert.ok(section.heading && section.paragraphs.length, 'each section has a heading and supporting prose');
     assert.ok(section.paragraphs.some(p => p !== section.heading), 'support adds to its heading');
@@ -46,6 +56,9 @@ export async function inspectHome(page) {
     assert.ok(content.links.some(link => link.href === destination && link.label), `homepage exposes the ${destination} action`);
   }
   assert.ok(await page.locator('header nav a[href^="https://github.com/"]').count(), 'navigation exposes public source');
+  assert.doesNotMatch(content.narrative, /(?:[$€£]\s*\d|\b(?:USD|EUR|GBP)\s*\d|\d\s*(?:dollars|per seat|per month|per year)\b)/i, 'homepage has no pricing or hosting-cost offers');
+  assert.doesNotMatch(content.narrative, /(?:\b(?:trusted|used|loved) by\s+[\d,]+|[\d,.]+\s*(?:%|x|times)\s*(?:faster|uptime|more productive)|[\d,.]+\s*(?:customers|companies|businesses|teams)\b)/i, 'homepage has no unsupported adoption or performance metrics');
+  assert.equal(await page.locator('main blockquote, main [itemtype*="Review"], main [itemtype*="AggregateRating"]').count(), 0, 'homepage has no customer testimonial or rating widgets');
   return content;
 }
 
