@@ -1,3 +1,4 @@
+import { ImportError } from './types';
 import { detachedIssues } from './detached-issues';
 import type { ImportJob } from '../../../../../vendor/base/import-kit/src/d1/index';
 
@@ -19,9 +20,9 @@ export async function runProgress(db:D1Database,job:ImportJob):Promise<RunProgre
   return {detachedIssues:detached.length,detachedIdentifiers:detached.map(row=>row.identifier),batchSize,batchesApplied:applied,batchesTotal:applied+Math.ceil((job.total-job.checkpoint)/batchSize),
     unfinished:['queued','applying','failed','rolling_back','undoing'].includes(job.state),issuesRemaining:row?.remaining??0,lastError:row?.last_error??null,lastErrorAt:row?.last_error_at??null};
 }
-/** Keeps only a code, never driver text or private SQL values. */
+/** Keep product diagnostics or a code, never raw driver text or SQL values. */
 export async function recordRunFailure(db:D1Database,id:string,error:unknown) {
-  const code=error instanceof Error && /^[A-Z_]{3,64}$/.test(error.message)?error.message:'IMPORT_BATCH_FAILED';
+  const code=error instanceof ImportError?`${error.code}: ${error.message}`:error instanceof Error && /^[A-Z_]{3,64}$/.test(error.message)?error.message:'IMPORT_BATCH_FAILED';
   await db.prepare(`UPDATE vector_import_runs SET last_error=?,last_error_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE job_id=?`).bind(code,id).run();
 }
 export async function clearRunFailure(db:D1Database,id:string) {

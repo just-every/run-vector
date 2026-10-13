@@ -80,7 +80,7 @@ export async function buildReport(db:D1Database,job:{id:string;namespace:string;
     mapping:input.rows.map(row=>({row:row[0],sourceId:row[1],identifier:bySource.get(row[1])?.identifier??null})),
   };
 }
-const cell=(value:string|number|null)=>{const text=value===null?'':String(value);return /[",\r\n]/.test(text)?'"'+text.replaceAll('"','""')+'"':text;};
+const cell=(value:string|number|null)=>{const raw=value===null?'':String(value),text=/^[=+@\-\t\r]/.test(raw)?"'"+raw:raw;return /[",\r\n]/.test(text)?'"'+text.replaceAll('"','""')+'"':text;};
 /** One row per source record: the mapping file, with what each row became. */
 export function reportCsv(report:ImportReport,input:ReportInput) {
   const omitted=new Map<number,string[]>();

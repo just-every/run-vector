@@ -230,3 +230,24 @@ them, make the Linear API file described in [LINEAR-API-FILE.md](LINEAR-API-FILE
 and use `--format linear-api-json --file /absolute/linear.csv --api-file /absolute/linear-api.json`,
 or "Linear CSV with API file" in Settings. Attachment file bytes are not in
 either file and the report says so.
+
+A newly applied run reserves its whole reviewed issue-number range atomically
+with its retained plan. Queued and paused runs can therefore finish while other
+imports and ordinary native creation continue in the same team. Concurrent
+reviews may become stale: if another allocation wins during apply, nothing from
+that apply is created; preview again. Rollback keeps the high-water mark, so
+reserved identifiers are never recycled, including numbers for unpublished rows.
+
+If a native option disappears after review, the failed batch publishes nothing.
+The error and retained run status identify the changed option. Use the existing
+rollback review and confirm rollback when there is no later native work, then
+preview again against current options. A replacement label with the same name
+has a different identity and cannot repair an old plan. Later edits, comments and
+relationships continue to block rollback. The upgrade reserves outstanding ranges of older runs before native creation
+continues. Older runs whose ranges already collided before the upgrade report a
+number conflict; the same reviewed rollback and fresh
+preview route recovers them without overwriting native work.
+
+The reconciliation CSV prefixes spreadsheet-active cells (`=`, `+`, `-`, `@`,
+tab or carriage return) with an apostrophe before normal CSV quoting. The JSON
+report and downloaded originals retain their exact source values.

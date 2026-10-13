@@ -42,8 +42,8 @@ export const nativeTargets: D1TargetAdapter = {
     const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string};
     const statements=[
       guard(`EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND identifier_prefix=? COLLATE BINARY AND archived_at IS NULL)
-        AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)
-        AND COALESCE((SELECT last_sequence FROM issue_prefix_sequences WHERE workspace_id=? AND identifier_prefix=?),0)<?`,issue.team_id,row.destination,issue.origin_prefix,issue.status_id,issue.team_id,imported.statusCategory,row.destination,issue.origin_prefix,issue.sequence_number),
+        AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)`,issue.team_id,row.destination,issue.origin_prefix,issue.status_id,issue.team_id,imported.statusCategory),
+      guard('COALESCE((SELECT last_sequence FROM issue_prefix_sequences WHERE workspace_id=? AND identifier_prefix=?),0)<?',row.destination,issue.origin_prefix,issue.sequence_number),
     ];
     if (issue.assignee_operator_id) statements.push(guard(`EXISTS(SELECT 1 FROM operators o WHERE id=? AND workspace_id=? AND removed_at IS NULL${imported.format==='jira-csv'?" AND EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id WHERE m.operator_id=o.id AND a.status='active')":''})`,issue.assignee_operator_id,row.destination));
     if (issue.project_id) statements.push(guard('EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND archived_at IS NULL)',issue.project_id,row.destination));
@@ -86,3 +86,18 @@ export const nativeTargets: D1TargetAdapter = {
   },
   matchesCount(count,destination) { return {sql:'(SELECT count(*) FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE t.workspace_id=?)=?',params:[destination,count]}; },
 };
+
+/** A reservation belongs to this exact job and workspace. Pre-upgrade jobs
+ * without reservations retain the strict floor guard; collision is diagnosed
+ * with an explicit rollback/review route instead of overwriting native work. */
+export function nativeTargetsForRun(jobId:string):D1TargetAdapter {
+ return {...nativeTargets,write(row){
+  const statements=nativeTargets.write(row),issue=(row.value as unknown as NativeIssueValue).issue;
+  statements[1]=guard(`EXISTS(SELECT 1 FROM vector_import_allocations a JOIN ik_jobs j ON j.id=a.job_id
+    WHERE a.job_id=? AND a.workspace_id=? AND j.destination=a.workspace_id AND a.identifier_prefix=?
+    AND ? BETWEEN a.first_sequence AND a.last_sequence)
+    OR (NOT EXISTS(SELECT 1 FROM vector_import_allocations WHERE job_id=? AND identifier_prefix=?)
+    AND COALESCE((SELECT last_sequence FROM issue_prefix_sequences WHERE workspace_id=? AND identifier_prefix=?),0)<?)`,jobId,row.destination,issue.origin_prefix,issue.sequence_number,jobId,issue.origin_prefix,row.destination,issue.origin_prefix,issue.sequence_number);
+  return statements;
+ }};
+}

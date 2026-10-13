@@ -1340,5 +1340,12 @@
     "approved_version",
     "callbacks",
     "attempt_id"
+  ],
+  "vector_import_allocations": [
+    "job_id",
+    "workspace_id",
+    "identifier_prefix",
+    "first_sequence",
+    "last_sequence"
   ]
 }

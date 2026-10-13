@@ -1,6 +1,7 @@
 import { env } from 'cloudflare:workers';
 import { expect,it } from 'vitest';
 import { setupImport } from './data-import-fixture';
+import { checkQueuedReservations } from './import-recovery-checks';
 it('[DATA-003 DATA-004] late native SQL failure and commit-time session loss publish nothing; restart resumes and rollback preserves reservations',async()=>{
  const f=await setupImport(),value=f.input([f.row('first'),f.row('last')]),review=await f.preview(value);
  await env.DB.prepare("CREATE TRIGGER imported_issue_fault BEFORE INSERT ON issues WHEN NEW.title='Imported last' BEGIN SELECT RAISE(ABORT,'late native failure'); END").run();
@@ -20,5 +21,6 @@ it('[DATA-003 DATA-004] late native SQL failure and commit-time session loss pub
  expect((await f.call('/data/import/runs/'+pendingRun.id+'/resume','POST',{})).status).toBe(503);expect((await env.DB.prepare('SELECT count(*) n FROM issues').first())?.n).toBe(0);
  await env.DB.prepare('DROP TRIGGER imported_issue_revokes_session').run();
  const succeeded=await f.call('/data/import/runs/'+pendingRun.id+'/resume','POST',{});expect(succeeded.status).toBe(200);expect((await succeeded.json() as {state:string}).state).toBe('completed');
+ await checkQueuedReservations(f);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180_000);

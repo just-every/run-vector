@@ -1,5 +1,5 @@
 import { Buffer } from 'node:buffer';
-import { planD1Import,preflightD1ImportJob,createD1ImportJob,readD1ImportJob,readD1ImportOriginals,resumeD1Import,rollbackD1Import,canonicalJson,sha256 } from '../../../../../vendor/base/import-kit/src/d1/index';
+import { planD1Import,readD1ImportJob,readD1ImportOriginals,resumeD1Import,rollbackD1Import,canonicalJson,sha256 } from '../../../../../vendor/base/import-kit/src/d1/index';
 import type { ImportJob,ImportPlan } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { checkSql,valueBytes } from '../../../../../vendor/base/import-kit/src/d1/budget';
 import { parseImport } from './source';
@@ -9,7 +9,9 @@ import { buildJiraReview } from './jira-review';
 import { jiraInput } from './jira';
 import { linearInput } from './linear';
 import { importContext,type ImportActor } from './authority';
-import { nativeTargets } from './native-targets';
+import { nativeTargets,nativeTargetsForRun } from './native-targets';
+import { createReservedImport,preflightReservedImport,importRunMetadata } from './reservations';
+import { explainResumeFailure } from './recovery';
 import { runProgress,recordRunFailure,clearRunFailure,type RunProgress } from './runs';
 import { rollbackPreview,refuseRollbackConflicts } from './rollback';
 import { reportInput,buildReport,reportCsv,type ReportInput } from './report';
@@ -60,7 +62,7 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
       entryStatements=Math.max(entryStatements,statementsHere);entryBytes=Math.max(entryBytes,bytesHere);
     }
     const batchSize=Math.max(1,Math.min(1000,Math.floor(importLimits.batchStatements/entryStatements),Math.floor(importLimits.batchBytes/entryBytes),Math.floor(batchExecutions/(entryStatements+entryOverhead))));
-    const creation=preflightD1ImportJob(plan,{...context,reviewedFingerprint:plan.fingerprint});
+    const creation=await preflightReservedImport(plan,{...context,reviewedFingerprint:plan.fingerprint},id=>importRunMetadata(id,batchSize,reportJson));
     Object.assign(preview.measured,{nativeBytes,nativeStatements,maxParameters,entryStatements,entryBytes,batchSize,batches:Math.ceil(plan.entries.length/batchSize),creationStatements:creation.mutationStatements,creationExecutions:creation.totalExecutions,creationMaxBoundBytes:creation.maxBoundBytes,planBytes:Buffer.byteLength(canonicalJson(plan))});
     if(entryStatements+entryOverhead>batchExecutions || entryBytes>importLimits.batchBytes)throw new ImportError(413,'import_native_limit');
     preview.batchSize=batchSize;
@@ -100,11 +102,7 @@ export async function applyImport(db:D1Database,actor:ImportActor,input:ImportIn
   // under it conflicts instead of racing the retained run for the same records.
   const unfinished=await db.prepare(`SELECT id FROM ik_jobs WHERE destination=? AND namespace=? AND fingerprint<>? AND state IN ('queued','applying','failed','rolling_back','undoing') LIMIT 1`).bind(actor.workspace,plan.namespace,plan.fingerprint).first();
   if(unfinished)throw new ImportError(409,'import_run_unfinished','A run for this source name is unfinished. Resume or roll it back before applying a different file.');
-  const job=await createD1ImportJob(plan,importContext(db,actor,plan.namespace,plan.mappingVersion,reviewedFingerprint,operationKey));
-  await db.batch([
-    db.prepare(`INSERT INTO vector_import_runs(job_id,batch_size,created_at) VALUES(?,?,strftime('%Y-%m-%dT%H:%M:%fZ','now')) ON CONFLICT(job_id) DO NOTHING`).bind(job.id,preview.batchSize),
-    db.prepare(`INSERT INTO vector_import_reports(job_id,report_json,created_at) VALUES(?,?,strftime('%Y-%m-%dT%H:%M:%fZ','now')) ON CONFLICT(job_id) DO NOTHING`).bind(job.id,JSON.stringify(preview.report)),
-  ]);
+  const job=await createReservedImport(plan,importContext(db,actor,plan.namespace,plan.mappingVersion,reviewedFingerprint,operationKey),id=>importRunMetadata(id,preview.batchSize!,JSON.stringify(preview.report)));
   return withProgress(db,job);
 }
 async function withProgress(db:D1Database,job:ImportJob):Promise<ImportRun> {
@@ -114,7 +112,7 @@ async function runContext(db:D1Database,actor:ImportActor,id:string,batchSize=10
   if(!/^[a-f0-9-]{36}$/.test(id))throw new ImportError(400,'invalid_import_run');
   const row=await db.prepare('SELECT j.namespace,j.mapping_version,r.batch_size FROM ik_jobs j LEFT JOIN vector_import_runs r ON r.job_id=j.id WHERE j.id=? AND j.destination=? AND j.principal_id=?').bind(id,actor.workspace,actor.id).first<{namespace:string;mapping_version:string;batch_size:number|null}>();
   if(!row || !row.namespace.startsWith('vector-import:'))throw new ImportError(409,'import_run_unavailable');
-  return {...importContext(db,actor,row.namespace,row.mapping_version),batchSize:row.batch_size??batchSize,maxBatches:1};
+  return {...importContext(db,actor,row.namespace,row.mapping_version),storage:{database:db,targets:nativeTargetsForRun(id)},batchSize:row.batch_size??batchSize,maxBatches:1};
 }
 export async function importStatus(db:D1Database,actor:ImportActor,id:string) {
   return withProgress(db,await readD1ImportJob(id,await runContext(db,actor,id)));
@@ -128,7 +126,7 @@ export async function resumeImport(db:D1Database,actor:ImportActor,id:string) {
   const context=await runContext(db,actor,id);
   let job:ImportJob;
   try { job=await resumeD1Import(id,context); }
-  catch(error) { await recordRunFailure(db,id,error);throw error; }
+  catch(error) { const failure=await explainResumeFailure(id,context,error);await recordRunFailure(db,id,failure);throw failure; }
   await clearRunFailure(db,id);
   return withProgress(db,job);
 }
