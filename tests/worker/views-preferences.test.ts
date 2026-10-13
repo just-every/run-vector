@@ -104,6 +104,7 @@ it("[VIEW-003] each surface validates its actual controls and supports persisten
   }
   for (const [surface, body] of [
     ["issues", { filters: { offset: 50 } }],
+    ["issues", { filters: { revision: "ephemeral" } }],
     ["issues", { filters: { priority: "impossible" } }],
     ["issues", { filters: { dueFrom: "2026-10-03", dueTo: "2026-10-01" } }],
     ["projects", { filters: { health: "none" } }],
