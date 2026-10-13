@@ -1,6 +1,11 @@
 import { expect } from "vitest";
+import { env } from "cloudflare:workers";
 import { setupAdministration } from "./administration-fixture";
 import type { ProjectDetail, ProjectSummary } from "../../src/core/features/projects/service";
+import { issueDetailSchema } from "../../src/core/features/issues/ui/data";
+import { createServerApp } from "../../src/core/app/server";
+import { createUlid } from "../../src/core/shared/ids";
+import { bindings, request } from "./base-auth-fixture";
 
 export const at = "2030-06-04T12:00:00.000Z";
 export const future = "2030-06-20";
@@ -19,10 +24,7 @@ export async function projectRulesFixture() {
     projects: ProjectSummary[]; counts: Record<string, number>;
   }>(`/projects?at=${at}&includeArchived=${archived}`);
   const detail = (id: string) => json<ProjectDetail>(`/projects/${id}?at=${at}`);
-  const issue = (identifier: string) => json<{
-    id: string; identifier: string; title: string; version: number;
-    project: { id: string } | null;
-  }>(`/issues/${identifier}`);
+  const issue = async (identifier: string) => issueDetailSchema.parse(await json(`/issues/${identifier}`));
   async function patch(identifier: string, body: Record<string, unknown>) {
     const current = await issue(identifier);
     return json(`/issues/${identifier}`, "PATCH", { expectedVersion: current.version, ...body });
@@ -73,5 +75,28 @@ export async function projectRulesFixture() {
     }
     return f.create(extra);
   }
-  return { ...f, create, json, portfolio, detail, issue, patch, project, cycle, block, status };
+  async function deniedDeletion(projectId: string) {
+    const path = `/api/settings/projects/${projectId}`;
+    expect((await request(path, "DELETE")).status).toBe(401);
+    const crossOrigin = await createServerApp().request(bindings.APP_ORIGIN + path, {
+      method: "DELETE", headers: { host: new URL(bindings.APP_ORIGIN).host, origin: "https://foreign.test", cookie: f.cookie },
+    }, bindings);
+    expect(crossOrigin.status).toBe(403);
+    const workspace = createUlid(new Date()), owner = createUlid(new Date()), foreign = createUlid(new Date());
+    const now = new Date().toISOString();
+    // A second tenant is synthetic fixture state; the attempted deletion uses native authority.
+    await env.DB.batch([
+      env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,'Foreign','UTC',?,?)").bind(workspace, now, now),
+      env.DB.prepare("INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at) VALUES(?,?,'Foreign owner','foreign-project-owner@example.test',?,?)").bind(owner, workspace, now, now),
+      env.DB.prepare("INSERT INTO projects(id,workspace_id,name,lead_operator_id,lifecycle,created_at,updated_at) VALUES(?,?,'Foreign project',?,'planned',?,?)").bind(foreign, workspace, owner, now, now),
+    ]);
+    expect((await f.call(`/settings/projects/${foreign}`, "DELETE")).status).toBe(404);
+    expect(await env.DB.prepare("SELECT id FROM projects WHERE id=?").bind(foreign).first()).toEqual({ id: foreign });
+    await env.DB.batch([
+      env.DB.prepare("DELETE FROM projects WHERE id=?").bind(foreign),
+      env.DB.prepare("DELETE FROM operators WHERE id=?").bind(owner),
+      env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(workspace),
+    ]);
+  }
+  return { ...f, create, json, portfolio, detail, issue, patch, project, cycle, block, status, deniedDeletion };
 }

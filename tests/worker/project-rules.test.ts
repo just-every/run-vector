@@ -2,6 +2,7 @@ import { expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
 import { projectRulesFixture, future, past } from "./project-rules-fixture";
 import type { ProjectDetail, ProjectHealth } from "../../src/core/features/projects/service";
+import { httpExport } from "./http-archive-fixture";
 
 contractWith(it, "PROJ-003", "project attachment, movement, detachment, archive and deletion preserve every issue", async () => {
   const f = await projectRulesFixture();
@@ -28,13 +29,29 @@ contractWith(it, "PROJ-003", "project attachment, movement, detachment, archive 
   }
   const outside = await f.create({ projectId: untouched.id });
   await f.mutate(`/settings/projects/${project.id}`, "PATCH", { archived: true });
+  const before = await Promise.all(members.map((member) => f.issue(member.identifier)));
+  await f.deniedDeletion(project.id);
+  for (const member of before) expect(await f.issue(member.identifier)).toEqual(member);
   await f.mutate(`/settings/projects/${project.id}`, "DELETE");
   expect((await f.call(`/projects/${project.id}`)).status).toBe(404);
   expect((await f.portfolio(true)).projects.map((p) => p.id)).not.toContain(project.id);
-  for (const member of members) {
-    expect(await f.issue(member.identifier)).toMatchObject({ id: member.id, identifier: member.identifier, project: null });
+  const activityIds: string[] = [];
+  for (const member of before) {
+    const retained = await f.issue(member.identifier);
+    expect(retained).toMatchObject({ id: member.id, identifier: member.identifier, title: member.title, status: member.status, project: null, version: member.version + 1 });
+    expect(retained.activity).toEqual(expect.arrayContaining(member.activity));
+    const activity = retained.activity.find((entry) => entry.kind === "project.removed")!;
+    expect(activity).toMatchObject({ previousValue: { projectId: project.id }, nextValue: { projectId: null }, actor: f.initial.operators.find((o) => o.id === f.owner)!.name });
+    activityIds.push(activity.id);
   }
+  expect((await f.call(`/issues/${before[0].identifier}`, "PATCH", { expectedVersion: before[0].version, title: "Stale edit" })).status).toBe(409);
+  expect((await f.call(`/issues/${before[0].identifier}`)).headers.get("cache-control")).toContain("no-store");
   expect(await f.issue(outside.identifier)).toMatchObject({ id: outside.id, project: { id: untouched.id } });
+  const archive = await httpExport(f.call);
+  const rows = archive.flatMap((part) => part.kind === "part" ? part.items : []).filter((item) => item.kind === "row");
+  expect(rows.filter((item) => item.table === "projects").map((item) => item.row.id)).not.toContain(project.id);
+  for (const id of activityIds) expect(rows).toContainEqual(expect.objectContaining({ table: "issue_activity", row: expect.objectContaining({ id, kind: "project.removed" }) }));
+  expect(rows).toContainEqual(expect.objectContaining({ table: "audit_records", row: expect.objectContaining({ action: "project.removed", subject_id: project.id, actor_operator_id: f.owner }) }));
 });
 
 contractWith(it, "PROJ-004", "project progress counts completed issues and excludes canceled and duplicate issues, including an empty denominator", async () => {
@@ -155,4 +172,9 @@ contractWith(it, "PROJ-005 PROJ-006", "project health matrix applies precedence,
   // Pin the evidence values, not prose: the user can identify the cycle, scope and limit.
   expect(capacityRisk.message.match(/\b\d+\b/g)?.map(Number)).toEqual(expect.arrayContaining([9, cycle.capacity!]));
   expect(details.get(exposed.id)!.cycles).toContainEqual(expect.objectContaining({ id: cycle.id, remainingEstimatedPoints: 9, capacity: 8 }));
+  await f.patch(blocker.identifier, { statusId: f.status("completed") });
+  expect((await f.detail(all.id)).health).toBe("on-track");
+  const released = await f.detail(urgent.id);
+  expect(released.health).toBe("at-risk");
+  expect(released.dependencies.every((edge) => !edge.unresolved)).toBe(true);
 });
