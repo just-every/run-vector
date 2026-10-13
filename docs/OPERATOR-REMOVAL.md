@@ -87,12 +87,15 @@ or discarded; they still require an explicit data repair.
 Local Worker regressions cover held request bodies, removal/sign-out/expiry at
 commit, the reachable mutation matrix, rollback, assignee races, credential
 recreation, original JSON/key corruption, real R2 effects and retained history.
-`node tests/e2e/removal-runtime.mjs` exercises the emitted Worker on 41920/41921,
-real streamed HTTP, synthetic local-outbox native sessions, responsive 1440/390
-views and restart persistence. `VECTOR_REMOVAL_EVIDENCE` chooses its output path.
-Those historical native-fixture checks do not prove real mail or the Base browser
-flow. The separate Base runtime journey described below covers local Base
-integration; neither establishes deployed mail delivery.
+`pnpm test:worker` includes `removal-stream.test.ts` for body-delayed comment/edit
+revocation and `removal-history.test.ts` for retained arbitrary JSON and native
+issue reads. `pnpm test:base-auth` exercises actual Settings removal and revoked
+Base sessions; `pnpm test:collaboration` checks desktop/mobile removal while
+Inbox pages are loaded. The verification wall also audits responsive issue and
+Settings documents and discussion controls. These gated journeys replace the
+former standalone removal runtime; its shared support remains in use by the
+mutation-refresh and transport checks. See [VERIFICATION.md](VERIFICATION.md).
+Local outbox and browser proof establish neither real mail nor deployed delivery.
 
 ## Base session integration
 

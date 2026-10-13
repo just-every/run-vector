@@ -4,4 +4,6 @@ Use Node 22.20.0 and pnpm 10.12.4. Run `pnpm exec rer install`, then `pnpm exec 
 
 Run `pnpm exec rer dev` and open the `RER_OPEN` link it prints: you land signed in as the owner (`--as teammate` starts as the second dev operator; `--login` turns dev identity off and prints the key-gated development outbox, where you follow the newest sign-in message and press Confirm; opening that link alone is inert). Your first sign-in returns to /setup: review the prepared workspace and choose Open my workspace. Later /setup visits enter the app. Local setup needs no provider credential and sends no email. Stop the app with Ctrl-C or `pnpm exec rer dev --stop`.
 
+The browser installer offers local installation only and rejects hosted-target answers. Deploy separately with `pnpm exec rer deploy --environment production` (or `pnpm run deploy -- --environment production`), using the owner-account inputs in DEPLOY.md.
+
 README.md gives the fresh-clone steps. SEED-COMMAND-CONTRACT.md lists flags, exits, reset inventory and state custody. DEPLOY.md describes owner-account deployment and its separate credential boundary. Local setup is not hosted deployment or mailbox delivery evidence.
