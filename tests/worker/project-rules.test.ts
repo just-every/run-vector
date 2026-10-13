@@ -132,13 +132,14 @@ contractWith(it, "PROJ-005 PROJ-006", "project health matrix applies precedence,
   for (const row of cases) {
     const detail = await f.detail(row.id);
     details.set(row.id, detail);
-    expect(detail.health, detail.name).toBe(row.health);
-    expect(portfolio.projects.find((p) => p.id === row.id)?.health, detail.name).toBe(row.health);
+    expect.soft(detail.health, detail.name).toBe(row.health);
+    expect.soft(portfolio.projects.find((p) => p.id === row.id)?.health, detail.name).toBe(row.health);
     if (["none", "unknown", "on-track"].includes(row.health)) expect(detail.risks).toEqual([]);
   }
   for (const health of ["blocked", "at-risk", "on-track", "unknown"]) {
-    expect(portfolio.counts[health]).toBe(cases.filter((p) => p.health === health).length);
+    expect.soft(portfolio.counts[health]).toBe(cases.filter((p) => p.health === health).length);
   }
+  expect.soft(portfolio.counts.none).toBeUndefined();
   for (const [p, issues] of [[urgent, [urgentIssue]], [all, blockedIssues]] as const) {
     const detail = details.get(p.id)!;
     const risk = detail.risks.find((r) => r.kind === "unresolved-dependency")!;
