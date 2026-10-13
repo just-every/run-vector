@@ -4,6 +4,7 @@ import type { ImportJob,ImportPlan } from '../../../../../vendor/base/import-kit
 import { checkSql,valueBytes } from '../../../../../vendor/base/import-kit/src/d1/budget';
 import { parseImport } from './source';
 import { mapImport } from './mapper';
+import { jiraInput } from './jira';
 import { linearInput } from './linear';
 import { importContext,type ImportActor } from './authority';
 import { nativeTargets } from './native-targets';
@@ -18,11 +19,11 @@ import { ImportError,importLimits,type ImportInput,type ImportPreview } from './
 const entryOverhead = 12, batchExecutions = 800;
 
 function normalized(input:ImportInput):ImportInput {
-  const selected=linearInput(input);
+  const selected=linearInput(jiraInput(input));
   return {...selected,source:'vector-import:'+selected.source};
 }
 function mappingVersion(input:ImportInput) {
-  return 'vector-issues-v1:'+sha256(canonicalJson({format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{}}));
+  return 'vector-issues-v1:'+sha256(canonicalJson({format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
 }
 type PlannedPreview = ImportPreview & { plan?: ImportPlan; batchSize?: number; report?: ReportInput };
 async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<PlannedPreview> {
@@ -32,7 +33,7 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
   const mapped=await mapImport(db,actor,input,parsed.source,effectiveAt,version,origin);
   const errors=[...parsed.errors,...mapped.errors];
   if(!parsed.source.records.length)errors.push({row:0,code:'empty_import',message:'The file contains no issue rows.'});
-  const preview:PlannedPreview={ready:false,effectiveAt,headers:parsed.headers,errors,omissions:mapped.omissions,count:parsed.source.records.length,bounds:importLimits,measured:{fileBytes:Buffer.from(input.base64,'base64').byteLength,rows:parsed.source.records.length,reused:mapped.reused}};
+  const preview:PlannedPreview={ready:false,effectiveAt,...(parsed.jiraDates?{jiraDates:parsed.jiraDates}:{}),headers:parsed.headers,errors,omissions:mapped.omissions,count:parsed.source.records.length,bounds:importLimits,measured:{fileBytes:Buffer.from(input.base64,'base64').byteLength,rows:parsed.source.records.length,reused:mapped.reused}};
   if(errors.length)return preview;
   const context=importContext(db,actor,input.source,version);
   const plan=await planD1Import(mapped.source,{version,map:record=>mapped.effects.get(record.sourceId)!},context);

@@ -27,10 +27,10 @@ async function main(){
   const mapping=selected.mapping?JSON.parse(await readFile(selected.mapping,'utf8')):{};
   // linear-api-json: the Linear CSV (--file) and the owner's API file (--api-file), one run.
   let api;if(selected['api-file']!==undefined){if(!isAbsolute(selected['api-file']))throw Error('paths');const apiStat=await lstat(selected['api-file']);if(!apiStat.isFile()||apiStat.size>fileBytes)throw Error('file');api={name:basename(selected['api-file']),base64:(await readFile(selected['api-file'])).toString('base64')};}
-  const input={format:selected.format,source:selected.source,name:basename(selected.file),base64:(await readFile(selected.file)).toString('base64'),...(api?{api}:{}),mapping:mapping.mapping??{},...(mapping.defaults?{defaults:mapping.defaults}:{}),...(mapping.references?{references:mapping.references}:{})};
+  const input={format:selected.format,source:selected.source,name:basename(selected.file),base64:(await readFile(selected.file)).toString('base64'),...(api?{api}:{}),mapping:mapping.mapping??{},...(mapping.defaults?{defaults:mapping.defaults}:{}),...(mapping.references?{references:mapping.references}:{}),...(mapping.jira?{jira:mapping.jira}:{})};
   const preview=await request('preview',input);const file=await privateFile(selected.review);
   try{await file.writeFile(JSON.stringify({input:{...input,effectiveAt:preview.effectiveAt},preview})+'\n');await file.sync();}finally{await file.close();}
-  console.log(JSON.stringify({ready:preview.ready,rows:preview.count,batches:preview.measured.batches,errors:preview.errors.map(row=>({row:row.row,field:row.field,code:row.code})),omissions:preview.omissions.map(row=>({row:row.row,field:row.field,code:row.code})),review:selected.review}));return;
+  console.log(JSON.stringify({ready:preview.ready,...(preview.jiraDates?{jiraDates:preview.jiraDates}:{}),rows:preview.count,batches:preview.measured.batches,errors:preview.errors.map(row=>({row:row.row,field:row.field,code:row.code})),omissions:preview.omissions.map(row=>({row:row.row,field:row.field,code:row.code})),review:selected.review}));return;
  }
  if(command==='report'){
   // The page as JSON on stdout; with --csv, the per-row mapping file written privately.

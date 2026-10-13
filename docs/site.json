@@ -205,6 +205,10 @@
       "reason": "Signed-source wire format, delivery states, encryption and upgrade notes, for maintainers and tool builders; linked from the integrations page"
     },
     {
+      "source": "docs/JIRA-CSV.md",
+      "reason": "Supported Jira Cloud CSV profile and its evidence boundary, for maintainers and evaluators; linked from the move-in documentation"
+    },
+    {
       "source": "docs/LINEAR-API-FILE.md",
       "reason": "Script and file format for the optional Linear API file a move-in merges with the CSV; the move-in page covers the owner path"
     },
