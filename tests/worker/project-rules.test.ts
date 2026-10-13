@@ -3,7 +3,7 @@ import { contractWith } from "../contract-tags";
 import { projectRulesFixture, future, past } from "./project-rules-fixture";
 import type { ProjectDetail, ProjectHealth } from "../../src/core/features/projects/service";
 
-contractWith(it, "PROJ-003", "project attachment, movement, detachment and archive preserve the issue", async () => {
+contractWith(it, "PROJ-003", "project attachment, movement, detachment, archive and deletion preserve every issue", async () => {
   const f = await projectRulesFixture();
   const first = await f.project("First membership"), second = await f.project("Second membership");
   const issue = await f.create({ title: "Membership survives" });
@@ -21,10 +21,6 @@ contractWith(it, "PROJ-003", "project attachment, movement, detachment and archi
   expect((await f.portfolio(true)).projects.find((p) => p.id === second.id)?.archived).toBe(true);
   expect((await f.detail(second.id)).issues.map((i) => i.id)).toEqual([issue.id]);
   expect(await f.issue(issue.identifier)).toMatchObject({ id: issue.id, project: { id: second.id } });
-});
-
-contractWith(it, "PROJ-003", "deleting a project through settings detaches every member and preserves every issue", async () => {
-  const f = await projectRulesFixture();
   const project = await f.project("Disposable project"), untouched = await f.project("Unrelated project");
   const members = [];
   for (const category of ["intake", "backlog", "unstarted", "started", "completed", "canceled", "duplicate"]) {
