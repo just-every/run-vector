@@ -1,7 +1,8 @@
 import { finishFirstRun } from '../e2e/first-run-fixture.mjs';
+import { runtimeStartDelay } from './runtime-start-delay.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { chmod,mkdir,mkdtemp,readFile,stat,writeFile,rename,rm,symlink } from 'node:fs/promises';
+import { chmod,mkdir,mkdtemp,readFile,stat,writeFile,rm,symlink } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { join,resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -38,20 +39,14 @@ const failing=await shim('failure','if [ "$1" = "install" ]; then echo "forced d
 process.env.PATH=basePath;
 execFileSync(realPnpm,['install','--frozen-lockfile'],{cwd:root,stdio:['ignore','pipe','pipe']});
 check('fresh clone provisions its own frozen installer dependencies');
-// Setup's temporary app is the production runtime (node, not pnpm), so a slow start is made in this disposable clone's copy of it.
-const runtimeFile=join(root,'node_modules/@runeditrun/rer/onboarding/production-runtime.mjs');
-// Only the first start is slow: setup's temporary app, which the installer waits for. Preview then
-// restarts the app under rer's own two-minute readiness cap for previews.
-// Replace the directory entry, never write through a pnpm store hardlink.
-const fixtureFile=runtimeFile+'.native-proof';
-await writeFile(fixtureFile,`import {writeFileSync,existsSync} from 'node:fs';\nconst first=!existsSync(${JSON.stringify(timing)});\nwriteFileSync(${JSON.stringify(timing)},String(Math.floor(Date.now()/1000)));\nawait new Promise(resolve=>setTimeout(resolve,first&&${slow}?130000:1000));\n`+await readFile(runtimeFile,'utf8'),{flag:'wx',mode:(await stat(runtimeFile)).mode});
-await rename(fixtureFile,runtimeFile);
+// Delay only setup's first real production runtime; preview retains its own readiness cap.
+const withRuntimeDelay=await runtimeStartDelay(root,timing,slow);
 ({startInstaller}=await import(pathToFileURL(join(root,'node_modules/@runeditrun/rer/onboarding/server.mjs'))));
 ({createSeed}=await import(pathToFileURL(join(root,'scripts/installer/seed.mjs'))));
 ({readOwnedGroup}=await import(pathToFileURL(join(root,'node_modules/@runeditrun/rer/onboarding/local/process-table.mjs'))));
 browser=await chromium.launch({headless:true});
 async function open(resume){
- const seed=createSeed(),install=seed.install;seed.install=(root,input,store,onApp,signal)=>install(root,input,store,child=>{groups.add(child.pid);onApp(child)},signal);
+ const seed=createSeed(),install=seed.install;seed.install=(root,input,store,onApp,signal)=>install(root,input,withRuntimeDelay(store),child=>{groups.add(child.pid);onApp(child)},signal);
  installer=await startInstaller(root,{seed,...(resume?{resume:true}:{noPrefill:true})});ports.add(Number(new URL(installer.origin).port));
  page=await browser.newPage({bypassCSP:true});page.on('request',request=>{const value=request.headers()['x-installer-token'];if(value)token=value});
  await page.goto(installer.origin);await page.waitForFunction(()=>!document.querySelector('#form').hidden);
@@ -63,8 +58,8 @@ async function capture(name){await page.getByRole('heading',{name:name==='failur
  const failed=await until();assert.equal(failed.phase,'failed');assert.match(failed.error,/installing dependencies/);await capture('failure');await close();check('forced failure drains and stops its command');
  phase='resumed-install';process.env.PATH=basePath;await open(true);const resumed=(await api('/api/state')).body.draft;for(const [key,value] of Object.entries(answers))assert.equal(resumed[key],value);const manifest=JSON.parse(await readFile(join(root,'rer-setup.json'),'utf8'));for(const field of manifest.fields.filter(field=>field.kind==='secret'))assert.equal(Object.hasOwn(resumed,field.name),false);assert.equal((await api('/api/start',answers)).status,202);
  let delayed=false;
- const complete=await until(async state=>{if(!slow||delayed)return;let at;try{at=Number(await readFile(timing,'utf8'))*1000}catch{return}if(Date.now()-at>121000){assert.equal(state.phase,'running');assert.match(state.logs.join('\n'),/Still starting/);delayed=true;await capture('slow-start')}});
- assert.equal(complete.phase,'complete','Native installation failed; inspect the local private installation diagnostic');if(slow)assert(delayed);check('saved-answer resume reaches the real Worker'+(slow?' after more than 120 seconds':''));
+ const complete=await until(async state=>{if(!slow||delayed)return;let at;try{at=Number(await readFile(timing,'utf8'))}catch{return}const elapsed=Date.now()-at;if(elapsed>121000){assert.equal(state.phase,'running');assert.match(state.logs.join('\n'),/Still starting/);report.slowStart={delayMs:130000,observedMs:elapsed,phase:state.phase,progressLogged:true};delayed=true;await capture('slow-start')}});
+ assert.equal(complete.phase,'complete','Native installation failed; inspect the local private installation diagnostic');if(slow)assert(delayed,'130-second production runtime delay observed before completion');check('saved-answer resume reaches the real Worker'+(slow?' after more than 120 seconds':''));
  const origin=new URL(complete.appUrl).origin;ports.add(Number(new URL(origin).port));assert.equal((await fetch(origin+'/health')).status,200);
  const sql=query=>readLocalD1(join(root,'.wrangler/state'),query);
  assert.deepEqual([sql('SELECT count(*) n FROM workspace_settings')[0].n,sql('SELECT count(*) n FROM operators')[0].n,sql('SELECT count(*) n FROM teams')[0].n,sql('SELECT count(*) n FROM workflow_statuses')[0].n],[1,1,1,7]);

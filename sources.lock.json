@@ -3759,7 +3759,7 @@
       "executable": false
     },
     "tests/installer/native-proof.mjs": {
-      "sha256": "92f07a4d9af0ffacc09d542fa79f96a18116abb019b8b2601786e8174de65d71",
+      "sha256": "489af424037b19f7b6d5a83f87d40364e1969b53a3f7290d4cc7fd146de017f3",
       "executable": false
     },
     "tests/installer/outbox.test.ts": {
@@ -3772,6 +3772,10 @@
     },
     "tests/installer/readme.test.mjs": {
       "sha256": "aba247087ff5f8a88332f14317cd062c1834ed97d4457d770ca765cb51e4fae2",
+      "executable": false
+    },
+    "tests/installer/runtime-start-delay.mjs": {
+      "sha256": "e08adebfd159c9949164f9a8e78436fdde83dd995e9d592fb7c1f55eb27e8d87",
       "executable": false
     },
     "tests/installer/teardown.test.mjs": {
