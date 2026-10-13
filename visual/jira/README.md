@@ -78,8 +78,25 @@ proves zero external browser requests in this journey; it does not certify
 hosted provider egress. Root owns source commits and runtime authorization.
 This harness is a standalone evidence command and is not added to full verify.
 
-This source checkpoint contains the executable capture journey only. Capture
-images and `captures.json` must be generated against a committed public source
-head; prior private-checkpoint images and measurements are not included.
-The manifest records the actual source commit used. Root owns the final image
-commit, visual inspection, full verification and exact-head CI evidence.
+The retained public-source run passed on 13 October 2026 against
+`6874eae15b398962aa88a486a674594340c3e3d4`. Both the copied CLI build and
+`node tests/e2e/jira-captures.mjs` exited 0. The 40 PNGs and 10 state/width
+records cover Jira selection, unknown-status refusal, the loss review, completed
+reconciliation and ambiguous-date refusal at 1440 and 390 pixels.
+
+All seven previews preserved all 174 application table row counts. Every one of
+the 37 present concepts matched its physical CSV cells and UI table counts.
+The browser applied 300 issues in nine durable batches; reconciliation matched
+173 label assignments, five parents, two Blocks dependencies, two Duplicate
+links, 102 imported comments, 125 cycle commitments, and 100 issues per status.
+All 12 mobile table keyboard/far-column checks passed and returned to the source
+columns. All 10 captures passed the control audit, reported zero serious/critical
+axe violations and no document/body horizontal overflow. The browser observed
+zero external requests. The browser, development processes and temporary
+installation were closed and removed. No capture harness or product change was
+needed for this public-source run.
+
+These are newly generated public-source captures. Their source SHA identifies
+the executable checkout before this evidence and README were added. Root owns
+the final image commit, independent visual inspection, full verification and
+exact-head CI evidence; this capture receipt does not claim those later checks.
