@@ -10,21 +10,21 @@ import { SheetRule } from './sections/section'
 import { TryIt } from './sections/try-it'
 
 /** The public homepage at `/`. It reads no installation data, loads only same-origin files and sets no cookies. */
-export function HomePage() {
+export function HomePage({ site = false }: { site?: boolean }) {
   return (
     <div className="vx-site">
-      <SiteHeader />
+      <SiteHeader signIn={!site} />
       <main id="main">
-        <Hero />
+        <Hero site={site} />
         <SheetRule />
         <Current />
-        <Free />
+        <Free site={site} />
         <Later />
         <Product />
         <TryIt />
-        <Closing />
+        <Closing site={site} />
       </main>
-      <SiteFooter />
+      <SiteFooter signIn={!site} />
     </div>
   )
 }

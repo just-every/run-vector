@@ -40,6 +40,6 @@ export function editorDocument(response:Response,env:WorkerBindings) {
   if(!directives.has('object-src'))directives.set('object-src',["'none'"]);
   if(!directives.has('base-uri'))directives.set('base-uri',["'self'"]);
   headers.set('content-security-policy',[...directives].map(([name,values])=>[name,...values].join(' ')).join('; '));
-  headers.set('cache-control','no-store, private');headers.append('vary','Cookie');
+  headers.set('cache-control','no-store, private, no-transform');headers.append('vary','Cookie');
   return new Response(response.body,{status:response.status,statusText:response.statusText,headers});
 }

@@ -10,6 +10,7 @@ import { productConfig } from "../core/app/config";
 import { themeStyle } from "../core/app/theme";
 import "../core/app/app.css";
 import { fontLinks } from "../core/app/fonts";
+import { introCss, introGuardScript } from "../base/hydration/intro-guard";
 export const Route = createRootRoute({
   head: () => ({
     links: [
@@ -49,6 +50,8 @@ function Root() {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: introGuardScript }} />
+        <style>{introCss}</style>
         {fontLinks.map((link) => (
           <link key={link.href} {...link} />
         ))}

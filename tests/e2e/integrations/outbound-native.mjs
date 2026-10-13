@@ -11,7 +11,7 @@ import {nodeLoopbackSockets} from '../../../vendor/base/egress-service/testing/n
 import {testTls} from '../../../vendor/base/egress-service/testing/wasm-tls.mjs';
 import {dispatchWebhooks,outboundService} from '../../../src/core/features/integrations/outbound.ts';
 import {waveBWorker} from '../wave-b-worker.mjs';
-import {freePort} from '../../../scripts/base-onboarding/adapter-settings.mjs';
+import {freePort} from '@runeditrun/rer/adapter-settings';
 const work=await mkdtemp(join(tmpdir(),'vector-egress-'));let proxy,receiver,worker;const origin='http://127.0.0.1:'+await freePort();
 const proof={passed:false,nativeQueue:false,enforcingTransport:'Base egress-service EgressTransport (createDevEgress)',networkEdge:'synthetic DNS answers and loopback sockets; real WASM rustls TLS to a test CA; no external connection',hmacVerified:false,replaySafe:false,uncertain:false,restarted:false,retryBounded:false,privateDnsRefused:false,redirectNotFollowed:false};
 try{

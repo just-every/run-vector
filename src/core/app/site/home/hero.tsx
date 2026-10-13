@@ -9,7 +9,7 @@ function Alternative() {
 }
 
 /** The first view: the headline, the alternative line and the two actions on the left, the drawn path of one report on the right. */
-export function Hero() {
+export function Hero({ site = false }: { site?: boolean }) {
   return (
     <section className="vx-hero" aria-labelledby="hero-title">
       <div className="vx-wrap vx-hero-grid">
@@ -18,7 +18,7 @@ export function Hero() {
           <p className="vx-hero-sub">{c.sub}</p>
           <p className="vx-fine vx-hero-alt"><Alternative /></p>
           <div className="vx-actions">
-            <a className="vx-pill vx-pill--large" href={links.source}>{c.primary}</a>
+            <a className="vx-pill vx-pill--large" href={site ? "/run" : links.source}>{site ? "Run Vector" : c.primary}</a>
             <a className="vx-link vx-link--large" href={links.docs}>{c.secondary}</a>
           </div>
         </div>

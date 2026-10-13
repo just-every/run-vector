@@ -1,3 +1,4 @@
+import { HydrationUnit } from '../../../../base/hydration/unit'
 import type { ReactNode } from 'react'
 import { productConfig } from '../../config'
 import { SitePage } from '../shell/site-page'
@@ -17,16 +18,20 @@ type DoorProps = {
 export function Door({ children, drawing, signIn = false }: DoorProps) {
   return (
     <SitePage signIn={signIn} className="vx-door-page">
-      <section className={`vx-door${drawing ? '' : ' vx-door--plain'}`}>
-        <div className="vx-wrap vx-door-grid">
-          <div className="vx-door-copy">{children}</div>
-          {drawing ? <div className="vx-door-art">{drawing}</div> : null}
-        </div>
-      </section>
+      <HydrationUnit>
+        <section className={`vx-door${drawing ? '' : ' vx-door--plain'}`}>
+          <div className="vx-wrap vx-door-grid">
+            <div className="vx-door-copy">{children}</div>
+            {drawing ? <div className="vx-door-art">{drawing}</div> : null}
+          </div>
+        </section>
+      </HydrationUnit>
       {productConfig.showPoweredByCredit ? (
-        <p className="vx-wrap vx-door-credit">
-          Powered by {productConfig.productName} · <a href="https://runeditrun.com">runeditrun.com</a>
-        </p>
+        <HydrationUnit>
+          <p className="vx-wrap vx-door-credit">
+            Powered by {productConfig.productName} · <a href="https://runeditrun.com">runeditrun.com</a>
+          </p>
+        </HydrationUnit>
       ) : null}
     </SitePage>
   )

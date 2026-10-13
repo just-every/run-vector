@@ -1,5 +1,5 @@
 import {join,resolve} from 'node:path';
-import {freePort} from '../../scripts/base-onboarding/adapter-settings.mjs';
+import {freePort} from '@runeditrun/rer/adapter-settings';
 /** Synthetic rows enter the real native Worker before ordinary setup records
  * the installation owner, as in the existing development fixture journey. */
 export async function prepareSampleInstallation(root,store,environment,signal){

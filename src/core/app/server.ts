@@ -13,6 +13,11 @@ import { createAuthApp } from "../features/auth/routes";
 import { Hono } from "hono";
 import { createApiApp, healthResponse } from "./api";
 import type { AppEnvironment } from "./bindings";
+import { lobbyResponse } from '../../base/lobby';
+import { claimedWhen, setupStateResponse } from '../../base/setup-state';
+import { identity } from './identity';
+
+const claimed = claimedWhen('SELECT 1 FROM workspace_installation WHERE setup_completed_at IS NOT NULL LIMIT 1');
 
 export type { WorkerBindings } from "./bindings";
 
@@ -36,6 +41,21 @@ export function createServerApp() {
         { error: "configuration_missing", message: "APP_ORIGIN is required." },
         503,
       );
+    const lobbyBindings = { DB: context.env.DB, AUTH_ORIGIN: context.env.APP_ORIGIN };
+    const state = await setupStateResponse(context.req.raw, lobbyBindings, claimed);
+    if (state) return state;
+    if (context.req.path === '/') {
+      let isClaimed: boolean;
+      try { isClaimed = await claimed(context.env.DB); }
+      catch { return context.json({ error: 'setup_unavailable' }, 503, { 'Cache-Control': 'no-store' }); }
+      const workspaceName = context.env.WORKSPACE_NAME?.trim();
+      if (isClaimed && !workspaceName) return context.json({ error: 'configuration_missing', message: 'WORKSPACE_NAME is required.' }, 503, { 'Cache-Control': 'no-store' });
+      // Before claim the Lobby renders only the product, never a deployment.
+      // Use the same persisted snapshot for admission and rendering: a concurrent
+      // claim must not render a fabricated installation name.
+      const lobby = await lobbyResponse(context.req.raw, lobbyBindings, { ...identity, deployment: workspaceName || identity.product }, async () => isClaimed);
+      if (lobby) return lobby;
+    }
     if(context.req.path==='/auth/owner-claim')return ownerClaimResponse(context.env,context.req.raw);
     if (context.env.SEED_SAMPLE_DATA === "true") {
       if (!isLocalOrigin(context.env.APP_ORIGIN))

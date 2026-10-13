@@ -1,8 +1,8 @@
 import {expect,it} from 'vitest';
 import {setupAdministration} from './administration-fixture';
 import {destination,freshTarget,targetCall,targetSignIn,httpExport,stageArchive,finalHash,finalBody} from './http-archive-fixture';
-import {makePart,type Part,type Manifest,type Closing} from '../../scripts/base-cli/modules/portability/index.mjs';
-import {ContentVerifier,ArchiveVerifier} from '../../scripts/base-cli/modules/portability/format.mjs';
+import {makePart,type Part,type Manifest,type Closing} from '@runeditrun/rer/modules/portability';
+import {ContentVerifier,ArchiveVerifier} from '@runeditrun/rer/modules/portability/format';
 
 it('[DATA-001 DATA-005 BASE-DATA-001] matching restored native identity and authority version never revive the consumed bootstrap session',async()=>{
  const f=await setupAdministration();await f.create();

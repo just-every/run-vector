@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
 import { request as httpRequest } from "node:http";
 import { resolve } from "node:path";
-import { freePort } from '../../scripts/base-onboarding/adapter-settings.mjs';
+import { freePort } from '@runeditrun/rer/adapter-settings';
 // A free port, never a fixed one: CI's ephemeral range can hand a fixed port to another socket.
 const port = await freePort();
 export const origin = `http://127.0.0.1:${port}`;

@@ -1,8 +1,8 @@
 import {expect,it} from 'vitest';
 import {populatedHttpSource} from './http-archive-source';
 import {destination,freshTarget,targetCall,targetSignIn,targetSnapshot,httpExport,stageArchive,finalHash,finalBody} from './http-archive-fixture';
-import {makePart,type Part} from '../../scripts/base-cli/modules/portability/index.mjs';
-import {ContentVerifier,ArchiveVerifier} from '../../scripts/base-cli/modules/portability/format.mjs';
+import {makePart,type Part} from '@runeditrun/rer/modules/portability';
+import {ContentVerifier,ArchiveVerifier} from '@runeditrun/rer/modules/portability/format';
 
 it('[DATA-001 DATA-005 BASE-DATA-001] HTTP admission refuses extra authority or edited bootstrap; abort, corrupt content and late D1 failure retain authority and files',async()=>{
  const f=await populatedHttpSource(),records=await httpExport(f.call),cookie=await freshTarget(),db=destination.ARCHIVE_TARGET_DB;
@@ -49,7 +49,7 @@ it('[DATA-001 DATA-005 BASE-DATA-001] HTTP admission refuses extra authority or 
  expect(await targetSnapshot()).toEqual(original);
  expect((await targetCall('/api/portability/imports/'+checksumJob+'/abort','POST',{},cookie)).status).toBe(200);
  expect((await targetCall('/api/session','GET',undefined,cookie)).status).toBe(200);
- const broken=structuredClone(records),verifier=new ContentVerifier(broken[0] as import('../../scripts/base-cli/modules/portability/index.mjs').Manifest),archive=new ArchiveVerifier(broken[0] as import('../../scripts/base-cli/modules/portability/index.mjs').Manifest);
+ const broken=structuredClone(records),verifier=new ContentVerifier(broken[0] as import('@runeditrun/rer/modules/portability').Manifest),archive=new ArchiveVerifier(broken[0] as import('@runeditrun/rer/modules/portability').Manifest);
  for(let i=0;i<broken.length;i++)if(broken[i].kind==='part') {
   const part=broken[i] as Part;
   for(const item of part.items)if(item.kind==='row'&&item.table==='issue_files')item.row.actor_operator_id='absent-native-operator';

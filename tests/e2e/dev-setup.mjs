@@ -1,9 +1,9 @@
-import { loadInstallerSeed } from '../../scripts/base-onboarding/setup-manifest.mjs';
-import {writePrivateFile} from '../../scripts/base-onboarding/private-files.mjs';
+import { loadInstallerSeed } from '@runeditrun/rer/setup-manifest';
+import {writePrivateFile} from '@runeditrun/rer/private-files';
 import {join} from 'node:path';
-import {createState} from '../../scripts/base-onboarding/state.mjs';
+import {createState} from '@runeditrun/rer/state';
 import {createSeed} from '../../scripts/installer/seed.mjs';
-import {freePort} from '../../scripts/base-onboarding/adapter-settings.mjs';
+import {freePort} from '@runeditrun/rer/adapter-settings';
 import {commandEnvironment} from '../../scripts/installer-env.mjs';
 process.env.RER_SERVER_JOURNEY = '1';
 const root=process.cwd(),store=await createState(root,await loadInstallerSeed(process.cwd(),createSeed())),controller=new AbortController();store.setCommandSignal(controller.signal);
@@ -17,6 +17,6 @@ try {
  // Real test-only sample rows preserve the existing hydration journey assertions.
  // The shared setup still runs with explicit answers and preserves existing data.
  await writePrivateFile(join(root,'.seed','dev-answers.json'),JSON.stringify({FIRST_OWNER_EMAIL:'sarah@vector.test',FIRST_OWNER_NAME:'Sarah',WORKSPACE_NAME:'Vector',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Flow',DEFAULT_TEAM_PREFIX:'FLW'}));
- await store.run('Actual shared local setup',process.execPath,['scripts/rer.mjs','setup','--answers','.seed/dev-answers.json','--port',String(await freePort()),'--non-interactive'],{cwd:root,env:commandEnvironment({RER_SERVER_JOURNEY:'1'})});
+ await store.run('Actual shared local setup',process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs','setup','--answers','.seed/dev-answers.json','--port',String(await freePort()),'--non-interactive'],{cwd:root,env:commandEnvironment({RER_SERVER_JOURNEY:'1'})});
  console.log('Development fixture and real shared setup completed.');
 } finally {controller.abort();await store.closeCommands();process.removeListener('SIGINT',abort);process.removeListener('SIGTERM',abort);}

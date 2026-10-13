@@ -2,7 +2,7 @@ import {expect,it} from 'vitest';
 import {populatedHttpSource} from './http-archive-source';
 import {freshTarget,targetCall,httpExport,destination,type ArchiveRecords} from './http-archive-fixture';
 import {interruptAt} from './http-archive-interrupt';
-import type {Part} from '../../scripts/base-cli/modules/portability/index.mjs';
+import type {Part} from '@runeditrun/rer/modules/portability';
 
 it('[DATA-001 DATA-005 BASE-DATA-001] an HTTP restore interrupted before any R2 settlement resumes or aborts, and frees the workspace',async()=>{
  const f=await populatedHttpSource(),records:ArchiveRecords=await httpExport(f.call),cookie=await freshTarget();
