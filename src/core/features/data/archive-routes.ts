@@ -1,6 +1,6 @@
 import type { Hono } from 'hono';
 import type { AppEnvironment } from '../../app/bindings';
-import { createPortabilityHandler } from '../../../../scripts/base-cli/modules/portability/index.mjs';
+import { createPortabilityHandler } from '@runeditrun/rer/modules/portability';
 import { portabilityPolicy } from './archive-policy.mjs';
 import { validateArchiveInventory,validateArchiveAttachments } from './archive-inventory.mjs';
 import { requireOperator } from '../auth/service';

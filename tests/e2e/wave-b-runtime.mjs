@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {chromium} from '@playwright/test';
-import {freePort} from '../../scripts/base-onboarding/adapter-settings.mjs';
+import {freePort} from '@runeditrun/rer/adapter-settings';
 import {waveBProvider} from './wave-b-provider.mjs';
 import {waveBWorker} from './wave-b-worker.mjs';
 import {readLocalD1} from './local-d1-read.mjs';
@@ -62,11 +62,18 @@ try {
   assert(policy.includes("frame-ancestors 'self' "+provider.origin));assert(policy.includes("frame-src 'self' "+provider.origin));
   const framed=await context.newPage();await framed.goto(provider.origin+'/embed');
   await framed.frameLocator('iframe').getByRole('heading',{level:1}).waitFor();
-  untrusted=await waveBProvider(origin,email);const denied=await context.newPage();
-  const blocked=denied.waitForEvent('framenavigated',{predicate:frame=>frame.parentFrame()!==null&&frame.url()!=='about:blank'});
-  await denied.goto(untrusted.origin+'/embed');const blockedFrame=await blocked;
-  assert(!blockedFrame.url().startsWith(origin+'/'));await framed.close();await denied.close();
-  report.framingAllowed=true;report.untrustedFramingDenied=true;
+  assert.equal(framed.frames()[1].url(),origin+'/app');await framed.close();
+  // The installed Lobby has its own deny-all policy, even for the management peer.
+  const lobby=await claim.request.get(origin+'/');assert.equal(lobby.status(),200);
+  assert(lobby.headers()['content-security-policy'].includes("frame-ancestors 'none'"));
+  untrusted=await waveBProvider(origin,email);
+  for(const probe of [untrusted.origin+'/embed',provider.origin+'/embed-lobby']) {
+    const denied=await context.newPage();
+    const blocked=denied.waitForEvent('framenavigated',{predicate:frame=>frame.parentFrame()!==null&&frame.url()!=='about:blank'});
+    await denied.goto(probe);const blockedFrame=await blocked;
+    assert(!blockedFrame.url().startsWith(origin+'/'));await denied.close();
+  }
+  report.framingAllowed=true;report.untrustedFramingDenied=true;report.lobbyFramingDenied=true;
   await claim.getByRole('button',{name:'Sign out',exact:true}).first().click();
   await claim.waitForURL(origin+'/signin');assert.equal(await claim.locator('[data-rer-editor]').count(),0);
   assert.equal((await claim.request.get(origin+'/api/editor/config')).status(),403);

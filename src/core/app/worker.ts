@@ -7,6 +7,7 @@ import { requireOperator, safeReturnTo } from "../features/auth/service";
 import start from "@tanstack/react-start/server-entry";
 import { createServerApp, type WorkerBindings } from "./server";
 import { isViteDevelopmentAsset } from "./vite-development-path";
+import { staticAssetResponse } from '../../base/static-assets';
 const app = createServerApp();
 export async function handleRequest(
   request: Request,
@@ -15,6 +16,8 @@ export async function handleRequest(
   const url = new URL(request.url);
   if (env.APP_ORIGIN && url.host !== new URL(env.APP_ORIGIN).host)
     return new Response("Not found", { status: 404 });
+  const asset = await staticAssetResponse(request, env);
+  if (asset) return asset;
   if (url.pathname === '/__dev/outbox' || url.pathname === '/__dev/key') return await developmentOutboxResponse(env, request) ?? new Response('Not found', {status:404});
   if (
     url.pathname.startsWith("/assets/") ||
@@ -26,6 +29,8 @@ export async function handleRequest(
   )
     return env.ASSETS.fetch(request);
   if (
+    url.pathname === "/" ||
+    url.pathname === "/setup/state" ||
     url.pathname === "/health" ||
     url.pathname === "/api" ||
     url.pathname.startsWith("/api/") ||

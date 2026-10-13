@@ -159,11 +159,12 @@ try {
   assert.equal(home.status, 200);
   const homeHtml = await home.text();
   assert.match(homeHtml, /<!DOCTYPE html>/i);
-  assert.match(homeHtml, /<title>Vector[^<]*<\/title>/);
+  assert.match(homeHtml, /<title>[^<]+<\/title>/);
   assert.match(homeHtml, /<h1[^>]*>/);
-  assert.match(homeHtml, /href="\/signin"/);
-  const landingLink = homeHtml.match(/href="(\/assets\/[^" ]+\.js)"/)[1];
-  assert.equal((await req(landingLink)).status, 200);
+  assert.equal((await (await req("/setup/state")).json()).state, "unclaimed");
+  assert.match(homeHtml, /href="\/setup"/);
+  for (const path of ["/rer-theme.css", "/brand/mark.svg", "/brand/band.svg", "/fonts/fonts.css"])
+    assert.equal((await req(path)).status, 200);
   for (const path of [
     "/not-a-route",
     "/assets/not-real.js",
@@ -193,7 +194,7 @@ try {
   await ready();
   record(
     "HOME-001",
-    "Public homepage server-renders its hero and sign-in link; metadata and assets verified.",
+    "Installed Lobby server-renders its heading and setup action; metadata, unclaimed state and assets verified.",
   );
   record(
     "RENDER-404",

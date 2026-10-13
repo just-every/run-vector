@@ -1,6 +1,6 @@
 import {join} from 'node:path';
-import {readSettings} from './base-onboarding/adapter-settings.mjs';
-import {privateDirectory,writePrivateFile} from './base-onboarding/private-files.mjs';
+import {readSettings} from '@runeditrun/rer/adapter-settings';
+import {privateDirectory,writePrivateFile} from '@runeditrun/rer/private-files';
 const receipt={file:'.seed/development.json',format:'json'};
 // This is a launch receipt, not another configuration generator. pnpm dev
 // records only the origin it read from installation settings before Vite starts.

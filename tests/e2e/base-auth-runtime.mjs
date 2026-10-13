@@ -7,7 +7,7 @@ import { chromium } from '@playwright/test';
 import { readLocalD1 } from './local-d1-read.mjs';
 import { devKey, keyHeader } from './dev-gate.mjs';
 import { readDevelopmentLink } from './outbox-session.mjs';
-import { freePort } from '../../scripts/base-onboarding/adapter-settings.mjs';
+import { freePort } from '@runeditrun/rer/adapter-settings';
 
 // A fixed port inside the ephemeral range can already be held by another
 // socket on a shared runner. One free port serves both starts of this run.

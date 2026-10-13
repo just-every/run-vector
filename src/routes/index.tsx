@@ -1,13 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { HomePage } from '../core/app/site/home/home-page'
-import { hero, meta } from '../core/app/site/home/copy/hero'
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-  head: () => ({
-    meta: [
-      { title: `Vector — ${hero.title}` },
-      { name: 'description', content: meta.description },
-    ],
-  }),
-  component: HomePage,
+  // The native Lobby owns this document, including client-side navigation home.
+  beforeLoad: () => { throw redirect({ href: '/', reloadDocument: true }) },
 })
