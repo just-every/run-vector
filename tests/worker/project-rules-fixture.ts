@@ -97,6 +97,8 @@ export async function projectRulesFixture() {
     } finally {
       await env.DB.batch([
         env.DB.prepare("DELETE FROM projects WHERE id=?").bind(foreign),
+        env.DB.prepare("DELETE FROM vector_auth_operators WHERE operator_id=?").bind(owner),
+        env.DB.prepare("DELETE FROM oa_operators WHERE id=?").bind(owner),
         env.DB.prepare("DELETE FROM operators WHERE id=?").bind(owner),
         env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(workspace),
       ]);
