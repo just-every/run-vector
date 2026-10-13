@@ -3,7 +3,7 @@ import { fetchJson } from '../../../app/api-client';
 import { parseCsv } from '../import/csv';
 import { importLimits,type ImportDiagnostic,type ImportInput } from '../import/types';
 const diagnostic=z.object({row:z.number(),field:z.string().optional(),code:z.string(),message:z.string()});
-export const previewSchema=z.object({ready:z.boolean(),fingerprint:z.string().optional(),effectiveAt:z.string(),headers:z.array(z.string()),errors:z.array(diagnostic),omissions:z.array(diagnostic),count:z.number(),measured:z.record(z.string(),z.number())});
+export const previewSchema=z.object({jiraDates:z.object({pattern:z.string(),sample:z.string(),shortYearCentury:z.number().nullable(),sourceOffset:z.string(),policy:z.string(),cells:z.number()}).optional(),ready:z.boolean(),fingerprint:z.string().optional(),effectiveAt:z.string(),headers:z.array(z.string()),errors:z.array(diagnostic),omissions:z.array(diagnostic),count:z.number(),measured:z.record(z.string(),z.number())});
 export type Review=z.infer<typeof previewSchema>;
 const progressSchema=z.object({batchSize:z.number(),batchesApplied:z.number(),batchesTotal:z.number(),unfinished:z.boolean(),issuesRemaining:z.number(),detachedIssues:z.number(),detachedIdentifiers:z.array(z.string()),lastError:z.string().nullable(),lastErrorAt:z.string().nullable()});
 export const runSchema=z.object({id:z.string(),namespace:z.string(),error:z.string().nullable(),state:z.string(),checkpoint:z.number(),total:z.number(),progress:progressSchema});
@@ -39,7 +39,7 @@ export async function readImportFile(file:File,format:ImportInput['format'],rows
   const value:unknown=JSON.parse(text.replace(/^﻿/,''));
   if(rows&&!Array.isArray(value))throw Error('JSON must contain an array of objects.');
   headers=!Array.isArray(value)?[]:[...new Set(value.flatMap(row=>row && typeof row==='object' && !Array.isArray(row)?Object.keys(row):[]))];
- }else headers=parseCsv(text).headers;
+ }else headers=parseCsv(text,{repeatedHeaders:format==='jira-csv'}).headers;
  let binary='';for(let start=0;start<bytes.length;start+=32768)binary+=String.fromCharCode(...bytes.subarray(start,start+32768));
  return {name:file.name,base64:btoa(binary),headers};
 }

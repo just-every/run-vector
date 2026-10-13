@@ -11,7 +11,7 @@ import type { ImportInput } from '../../src/core/features/data/import/types';
 const STRANGER = 'Quentin Erasewell', NEEDLES = ['quentin erasewell', 'maya chen', 'maya@base.test'];
 const count = async (sql: string, ...params: unknown[]) => (await env.DB.prepare(sql).bind(...params).first<number>('n')) ?? 0;
 
-it('[DATA-004 DATA-009 BASE-DATA-003] person erasure preserves rollback survivors, clears applied and pending custody, and fences older archives', async () => {
+it('[DATA-004 DATA-011 BASE-DATA-003] person erasure preserves rollback survivors, clears applied and pending custody, and fences older archives', async () => {
   const f = await setupLinearWorkspace(10);
   const teams = [{ key: 'ENG', name: 'Engineering', cycles: ['Cycle 41', 'Cycle 42'] }, { key: 'OPS', name: 'Operations', cycles: [] }];
   const pair = (issues: number, seed: number, source: string): ImportInput => {

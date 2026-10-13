@@ -21,8 +21,17 @@ export async function loadImportReferences(db:D1Database,workspace:string): Prom
 }
 /** An explicit mapping wins: `Team/Name` for a team's own status or cycle, then
  * the bare name. Otherwise an exact name, then one case-insensitive name match. */
-export function resolveReference(rows:ReferenceRow[],value:string,field:ImportField,input:ImportInput,team?:string): ReferenceRow {
-  const mapped=input.references?.[field],selected=(team!==undefined?mapped?.[team+'/'+value]:undefined) ?? mapped?.[value] ?? value;
+export function resolveReference(rows:ReferenceRow[],value:string,field:ImportField,input:ImportInput,team?:string,defaultSelected=false): ReferenceRow {
+  const mapped=input.references?.[field];
+  if(input.format==='jira-csv'&&['status','assignee','cycle'].includes(field)) {
+    const id=(team!==undefined?mapped?.[team+'/'+value]:undefined)??mapped?.[value]??(field==='status'&&defaultSelected&&input.defaults?.status===value?value:undefined);
+    if(!id)throw Error('Reference was not found; confirm an explicit Jira mapping to an active native record.');
+    const row=rows.find(row=>row.id===id);
+    if(!row||row.archived_at||row.removed_at||row.closed_at)throw Error('The explicitly mapped native record is missing, archived, removed or closed.');
+    if(field==='cycle'&&row.name!==value)throw Error('Jira sprint mapping requires the exact native cycle name.');
+    return row;
+  }
+  const selected=(team!==undefined?mapped?.[team+'/'+value]:undefined) ?? mapped?.[value] ?? value;
   let matches=rows.filter(row=>row.id===selected || row.name===selected || (field==='assignee' && row.email===selected));
   if(!matches.length)matches=rows.filter(row=>typeof row.name==='string' && row.name.toLowerCase()===selected.toLowerCase());
   if(matches.length!==1) throw Error(matches.length?'Reference is ambiguous; map it to a native ID.':'Reference was not found; choose an existing native record.');

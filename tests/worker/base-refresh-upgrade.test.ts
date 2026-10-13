@@ -2,7 +2,7 @@ import {it} from 'vitest';
 import {provePopulatedUpgrade} from './populated-upgrade';
 // 0038-0042 are Base operator-auth's sign-in ledgers; 0043 and 0044 are import-kit's
 // retirement journal and indexed reversal fences, which replace one stream trigger.
-it('[BASE-ACCESS-002 DATA-009] a populated store keeps every row, index and trigger when Base sign-in ledgers, import retirement and reversal fences are added, and the owner signs in after',async()=>provePopulatedUpgrade('0038_identity_providers.sql',{
+it('[BASE-ACCESS-002 DATA-011] a populated store keeps every row, index and trigger when Base sign-in ledgers, import retirement and reversal fences are added, and the owner signs in after',async()=>provePopulatedUpgrade('0038_identity_providers.sql',{
  added:[
   'table oa_auth_audit','table oa_auth_settings','table oa_credentials','table oa_domain_rules','table oa_identity_provider_health','table oa_identity_providers',
   'table oa_logout_events','table oa_oidc_limits','table oa_oidc_transactions','table oa_provider_session_pins','table oa_provider_sessions','table oa_setup_links','table oa_step_up_challenges',

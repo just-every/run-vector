@@ -2,7 +2,7 @@ import { ImportError } from './types';
 
 /** RFC 4180 fields, including quoted newlines. The location is the physical
  * one-based starting line, so an error still points into the original file. */
-export function parseCsv(text: string): { headers: string[]; rows: { row: number; values: string[] }[] } {
+export function parseCsv(text: string, options: { repeatedHeaders?: boolean } = {}): { headers: string[]; rows: { row: number; values: string[] }[] } {
   if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
   const rows: { row: number; values: string[] }[] = [];
   let values: string[] = [], value = '', quoted = false, closed = false, line = 1, start = 1;
@@ -29,7 +29,7 @@ export function parseCsv(text: string): { headers: string[]; rows: { row: number
   if (quoted) throw new ImportError(400,'invalid_csv',`Unclosed quoted field starting at line ${start}.`);
   if (value || values.length || closed) record();
   const header = rows.shift();
-  if (!header || header.values.some(name => !name.trim()) || new Set(header.values).size !== header.values.length)
+  if (!header || header.values.some(name => !name.trim()) || (!options.repeatedHeaders && new Set(header.values).size !== header.values.length))
     throw new ImportError(400,'invalid_headers','CSV needs nonempty, distinct headers.');
   return { headers: header.values, rows };
 }

@@ -271,7 +271,7 @@
       "was": "The Linear importer carried only the CSV: no comments, links or relations beyond the parent.",
       "now": "A Linear API file the owner produces (docs/LINEAR-API-FILE.md) merges with a Linear CSV run: comments with original times and read-only author names, HTTPS links never fetched, and blocks/duplicate relations inside the run; anything outside the run is reported, and a malformed file is refused with row-level reasons and nothing written."
     },
-    "DATA-009": {
+    "DATA-011": {
       "change": "added",
       "summary": "An operator can erase a person that imports carried (exact email and/or display names) after a counts-only preview and typed confirmation: every applied or pending import run, Vector's imported copies, reports and development mail lose them in one D1 batch; issues already written stay, pending runs still finish, and an archive made before the erasure is refused on restore when a later journal is supplied.",
       "was": "Person erasure was not available; docs/ERASURE.md listed it as blocked on Base.",
