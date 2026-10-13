@@ -183,11 +183,13 @@ it("[VIEW-001 OPS-004] removed terminal assignees browse as unassigned", async (
     .bind(operator, ids.workspace, operator + "@removed.invalid")
     .run();
   const target = await env.DB.prepare(
-    "SELECT i.id FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE s.category='canceled' LIMIT 1",
+    "SELECT id FROM issues WHERE title='Synthetic ordinary backlog item'",
   ).first<{ id: string }>();
   expect(target).not.toBeNull();
-  await env.DB.prepare("UPDATE issues SET assignee_operator_id=? WHERE id=?")
-    .bind(operator, target!.id)
+  await env.DB.prepare(
+    "UPDATE issues SET assignee_operator_id=?,status_id=?,canceled_at=? WHERE id=?",
+  )
+    .bind(operator, ids.flowCanceled, new Date().toISOString(), target!.id)
     .run();
   const response = await read(
     "?category=canceled&assignee=unassigned&grouping=assignee",

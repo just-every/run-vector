@@ -20,48 +20,57 @@ afterEach(async () => {
 });
 
 for (const method of ["POST", "DELETE"] as const)
-  for (const mode of ["remove", "signout", "expire"] as const)
-    contractWith(
-      it,
-      "BASE-ACCESS-002 BASE-ACCESS-004 OPS-004 ISSUE-009",
-      `native ${mode} before ${method} file intent denies every record and R2 effect`,
-      async () => {
-        const f = await privateFixture();
-        let before: Awaited<ReturnType<typeof privateState>> | undefined;
-        const db = beforeCommit(
-          (query) =>
-            query.includes(
-              method === "POST"
-                ? "INSERT INTO issue_files"
-                : "UPDATE issue_files SET",
-            ),
-          async () => {
-            await f.change(mode);
-            before = await privateState();
-          },
-        );
-        const observed = observedBucket();
-        const objects = (await env.FILES.list()).objects;
-        const response = await callPrivate(
-          `/issues/${f.issue.identifier}/files${method === "DELETE" ? `/${f.file.id}` : ""}`,
-          f.bobCookie,
-          {
-            method,
-            headers: {
-              "content-type": "text/plain",
-              "x-file-name": "Rejected.txt",
+  contractWith(
+    it,
+    "BASE-ACCESS-002 BASE-ACCESS-004 OPS-004 ISSUE-009",
+    `native invalidation before ${method} file intent denies every record and R2 effect`,
+    async () => {
+      for (const mode of ["remove", "signout", "expire"] as const) {
+        try {
+          const f = await privateFixture();
+          let before: Awaited<ReturnType<typeof privateState>> | undefined;
+          const db = beforeCommit(
+            (query) =>
+              query.includes(
+                method === "POST"
+                  ? "INSERT INTO issue_files"
+                  : "UPDATE issue_files SET",
+              ),
+            async () => {
+              await f.change(mode);
+              before = await privateState();
             },
-            ...(method === "POST" ? { body: "Rejected bytes" } : {}),
-          },
-          { DB: db, FILES: observed.bucket },
-        );
-        expect(before).toBeDefined();
-        expectPrivateDenial(response, await response.text(), 401);
-        expect(await privateState()).toEqual(before);
-        expect(observed.calls).toEqual({ get: 0, put: 0, delete: 0 });
-        expect((await env.FILES.list()).objects).toEqual(objects);
-      },
-    );
+          );
+          const observed = observedBucket();
+          const objects = (await env.FILES.list()).objects;
+          const response = await callPrivate(
+            `/issues/${f.issue.identifier}/files${method === "DELETE" ? `/${f.file.id}` : ""}`,
+            f.bobCookie,
+            {
+              method,
+              headers: {
+                "content-type": "text/plain",
+                "x-file-name": "Rejected.txt",
+              },
+              ...(method === "POST" ? { body: "Rejected bytes" } : {}),
+            },
+            { DB: db, FILES: observed.bucket },
+          );
+          expect(before).toBeDefined();
+          expectPrivateDenial(response, await response.text(), 401);
+          expect(await privateState()).toEqual(before);
+          expect(observed.calls).toEqual({ get: 0, put: 0, delete: 0 });
+          expect((await env.FILES.list()).objects).toEqual(objects);
+        } finally {
+          await cleanupPrivateFixtures();
+          await env.DB.batch([
+            env.DB.prepare("DELETE FROM access_rate_limits"),
+            env.DB.prepare("DELETE FROM oa_limits"),
+          ]);
+        }
+      }
+    },
+  );
 
 for (const method of ["POST", "DELETE"] as const)
   contractWith(

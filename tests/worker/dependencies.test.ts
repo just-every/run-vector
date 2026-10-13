@@ -399,13 +399,9 @@ it("[REL-001 ISSUE-006] both endpoint versions must match, and conflicts disclos
     status = createUlid(new Date());
   // Foreign-workspace boundary is an explicit D1 fixture in this single-workspace product.
   await env.DB.batch([
-    env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)").bind(
-      workspace,
-      "Private fixture workspace",
-      "UTC",
-      timestamp,
-      timestamp,
-    ),
+    env.DB.prepare(
+      "INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)",
+    ).bind(workspace, "Private fixture workspace", "UTC", timestamp, timestamp),
     env.DB.prepare(
       "INSERT INTO teams(id,workspace_id,name,identifier_prefix,created_at,updated_at) VALUES(?,?,?,?,?,?)",
     ).bind(
@@ -504,7 +500,9 @@ it("[REL-001 BASE-ACCESS-001] native related-issue lookup and stale conflict DTO
     for (const previous of revoked) await sampleSession(previous, 401);
     const workspace = createUlid(new Date());
     if (race === "issue_workspace")
-      await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
+      await env.DB.prepare(
+        "INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)",
+      )
         .bind(
           workspace,
           "Foreign during projection",
@@ -630,18 +628,17 @@ it("[REL-001 REL-002] self, existing/reverse edges, longer directed cycles and m
   assert.deepEqual(await before(c, a), original);
 });
 
-it.each([
-  "reverse",
-  "cycle",
-  "remove",
-  "removed_actor",
-  "actor_workspace",
-  "issue_workspace",
-  "primary_version",
-  "related_version",
-] as const)(
-  "[REL-001 REL-002 ISSUE-006 BASE-ACCESS-001] %s is rechecked at the actual dependency batch boundary",
-  async (race) => {
+it("[REL-001 REL-002 ISSUE-006 BASE-ACCESS-001] dependency commits recheck graph, endpoint versions and admission at the actual batch boundary", async () => {
+  for (const race of [
+    "reverse",
+    "cycle",
+    "remove",
+    "removed_actor",
+    "actor_workspace",
+    "issue_workspace",
+    "primary_version",
+    "related_version",
+  ] as const) {
     const ownerCookie = cookie;
     const peer = await samplePeer(ownerCookie);
     cookie = peer.cookie;
@@ -672,7 +669,9 @@ it.each([
           .bind(timestamp, peer.id)
           .run();
       if (race === "actor_workspace" || race === "issue_workspace") {
-        await env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)")
+        await env.DB.prepare(
+          "INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)",
+        )
           .bind(
             workspace,
             "Concurrent foreign workspace",
@@ -751,8 +750,8 @@ it.each([
       cookie = ownerCookie;
       await sampleSession(cookie);
     }
-  },
-);
+  }
+});
 
 it("[REL-002] concurrent reverse edges and disjoint endpoint writes cannot complete a directed cycle after both validations", async () => {
   const a = await fixture(),
