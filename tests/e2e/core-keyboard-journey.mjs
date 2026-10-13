@@ -4,6 +4,7 @@ import { settleReads } from './collaboration-navigation.mjs';
 export async function keyboardJourney(page, base, record) {
   const origin = await page.evaluate(() => performance.timeOrigin);
   for (const modifier of ['Control', 'Meta']) {
+    await settleReads(page);
     await page.locator('h1').click();
     await page.keyboard.press(`${modifier}+k`);
     const palette = page.getByRole('dialog', { name: 'Command palette', exact: true });
@@ -11,6 +12,7 @@ export async function keyboardJourney(page, base, record) {
     const search = palette.getByRole('textbox');
     await search.fill('Open Projects');
     await palette.getByRole('option', { name: /Open Projects/ }).waitFor();
+    await settleReads(page);
     await page.keyboard.press('Enter');
     await page.waitForURL(base + '/app/projects');
     await palette.waitFor({ state: 'detached' });
@@ -20,6 +22,7 @@ export async function keyboardJourney(page, base, record) {
     await page.keyboard.press('Escape');
     await palette.waitFor({ state: 'detached' });
   }
+  await settleReads(page);
   await page.locator('h1').click();
   await page.keyboard.press('c');
   await page.waitForURL(base + '/app/new-issue');
