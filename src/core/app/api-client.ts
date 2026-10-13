@@ -145,6 +145,14 @@ export function createApiResourceController<T>(
       })();
       return mutationRefresh;
     },
+    publishReceipt(update: (data: T | null) => T) {
+      if (!active || privateReads.paused || isUnavailableResourceError(current.error)) return;
+      // A committed mutation receipt supersedes every earlier list read.
+      ++sequence;
+      pending?.abort();
+      pending = null;
+      write({ data: update(current.data), error: null, loading: false });
+    },
     dispose() {
       active = false;
       mutationPending = false;
@@ -173,6 +181,7 @@ export function useApiResource<S extends z.ZodType>(
   const latestSnapshot = useRef(snapshot);
   latestSnapshot.current = snapshot;
   const currentController = useRef<ReturnType<typeof createApiResourceController<z.output<S>>> | null>(null);
+  const publishReceipt = useCallback((update: (data: z.output<S> | null) => z.output<S>) => { currentController.current?.publishReceipt(update); }, []);
   const reload = useCallback(() => { void currentController.current?.refresh(); }, []);
   const refreshAfterMutation = useCallback(() => { void currentController.current?.refreshAfterMutation(); }, []);
 
@@ -211,7 +220,7 @@ export function useApiResource<S extends z.ZodType>(
     };
   }, [url, schema, pollMs]);
 
-  return { ...resourceStateForIdentity(snapshot, url, schema), reload, refreshAfterMutation };
+  return { ...resourceStateForIdentity(snapshot, url, schema), reload, refreshAfterMutation, publishReceipt };
 }
 
 function messageForBody(body: unknown, status: number) {

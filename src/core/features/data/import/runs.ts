@@ -1,10 +1,11 @@
+import { detachedIssues } from './detached-issues';
 import type { ImportJob } from '../../../../../vendor/base/import-kit/src/d1/index';
 
 export type RunProgress = {
   batchSize: number; batchesApplied: number; batchesTotal: number;
   /** Published records are visible while the run is still applying; a started
    * rollback is also unfinished until every imported issue is removed. */
-  unfinished: boolean; issuesRemaining: number; lastError: string|null; lastErrorAt: string|null;
+  unfinished: boolean; issuesRemaining: number; detachedIssues: number; detachedIdentifiers: string[]; lastError: string|null; lastErrorAt: string|null;
 };
 /** Batches are counted from Base's own publication journal, never estimated:
  * every staged batch advanced the checkpoint by exactly the run's batch size. */
@@ -14,7 +15,8 @@ export async function runProgress(db:D1Database,job:ImportJob):Promise<RunProgre
     (SELECT count(*) FROM ik_provenance p WHERE p.job_id=j.id AND p.reversed=0) AS remaining
     FROM ik_jobs j LEFT JOIN vector_import_runs r ON r.job_id=j.id WHERE j.id=?`).bind(job.id).first<{batch_size:number|null;last_error:string|null;last_error_at:string|null;applied:number;remaining:number}>();
   const batchSize=row?.batch_size??Math.max(job.total,1),applied=row?.applied??0;
-  return {batchSize,batchesApplied:applied,batchesTotal:applied+Math.ceil((job.total-job.checkpoint)/batchSize),
+  const detached=await detachedIssues(db,job.destination,[job.id]);
+  return {detachedIssues:detached.length,detachedIdentifiers:detached.map(row=>row.identifier),batchSize,batchesApplied:applied,batchesTotal:applied+Math.ceil((job.total-job.checkpoint)/batchSize),
     unfinished:['queued','applying','failed','rolling_back','undoing'].includes(job.state),issuesRemaining:row?.remaining??0,lastError:row?.last_error??null,lastErrorAt:row?.last_error_at??null};
 }
 /** Keeps only a code, never driver text or private SQL values. */

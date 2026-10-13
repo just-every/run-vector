@@ -8,7 +8,7 @@ import { portability } from '../data/local.mjs';
 import { settings, migrate } from './definition.mjs';
 import { features } from './ui/seed.mjs';
 import { isolatedStore } from '../installer-env.mjs';
-import { hosting, deploy } from './hosting.mjs';
+import { deploy } from './hosting.mjs';
 import { guardLocalState } from './state.mjs';
 import { recordDevelopmentOrigin } from '../development-origin.mjs';
 export const hooks = {
@@ -20,17 +20,15 @@ export const hooks = {
  // so its outbox answers the sign-in request this flow makes.
  prepare: async context => { context.devKey ??= await ensureDevKey(context.root); context.store.addSecrets?.([context.devKey]); },
  owner: async ({ store }) => { await store.step('Configured first owner and workspace are ready'); },
- signIn: { emailKey: 'FIRST_OWNER_EMAIL', returnTo: '/setup' }, hosting,
+ signIn: { emailKey: 'FIRST_OWNER_EMAIL', returnTo: '/setup' },
 };
 const shared = localInstaller(hooks);
 export const adapter = { ...shared, run: (root, input, store, onApp, signal, options) => shared.run(root, input, isolatedStore(store), onApp, signal, options) };
 export const install = async (root, input, store, onApp, signal) => {
  // A local workspace installs through the public commands, as Base's operator installer does (rer install,
  // rer setup --answers, rer preview), so its runtime only ever answers behind rer's traffic proxy.
- if (input.target !== 'remote') return installOperator(root, input, isolatedStore(store), onApp, signal, hooks);
- await shared.install(root, input, isolatedStore(store), onApp, signal);
- // A dev-identity seed's outbox needs the key exchange: the installer page offers it through /api/open-app once this is set.
- if (store.state.phase === 'complete' && !store.state.hostedUrl) store.state.devOpen = true;
+ if (input.target && input.target !== 'local') throw Error('The browser installer supports this computer only. Use pnpm exec rer deploy for owner-account deployment.');
+ return installOperator(root, input, isolatedStore(store), onApp, signal, hooks);
 };
 export const commandAdapter = createCommandAdapter(adapter, {
  dev: async context => { await recordDevelopmentOrigin(context.root, context.origin); return developmentTarget(context); },
@@ -44,6 +42,5 @@ export const commandAdapter = createCommandAdapter(adapter, {
  devIdentity: { entry: 'src/core/app/worker.dev.ts', output: ['dist'], emailLinkTest: 'tests/e2e/base-auth-runtime.mjs' },
  localOnlyKeys: ['RER_DEV_ORIGIN', 'RER_DEV_IDENTITY'],
  setup: { manifestFile: 'rer-setup.json' }, browserModule: 'scripts/installer/ui/seed.mjs', product: 'Vector',
- // CLI setup runs locally by default; explicit installer answers retain the hosting choice.
- input: { names: { email: 'FIRST_OWNER_EMAIL', name: 'FIRST_OWNER_NAME' }, defaults: async () => ({ target: 'local' }) },
+ input: { names: { email: 'FIRST_OWNER_EMAIL', name: 'FIRST_OWNER_NAME' } },
 });

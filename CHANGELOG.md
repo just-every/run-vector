@@ -7,6 +7,11 @@ Add a persisted daily reminder clock in Settings (09:00 in workspace time by def
 
 ## Unreleased
 
+- Remove the redundant foundation/removal browser harnesses; the CI admin journey now saves workspace time and checks it after restart. Manual package tools are listed in docs/VERIFICATION.md.
+- Publish each import receipt to the Data progress line and retained run row together, preventing a stale list read from showing an earlier batch.
+- Remove remote installation from the browser installer. Owner-account deployment remains available through `rer deploy`; setup configures the local workspace.
+- Explain rollback conflicts caused by issues detached through personal-data erasure, with explicit unlink/delete advice, and report detached issues that remain after rollback. Base's erasure behavior is unchanged.
+
 - Erase an imported person (DATA-011, docs/ERASURE.md): after a counts-only preview and typed confirmation, one D1 batch removes a person that imports carried, or a removed operator, from every applied or pending import run, Vector's imported comments and reports, and development mail. Issues already written stay; a pending run still finishes. An archive made before the erasure is refused on restore when a later journal is supplied. Base copies refreshed to 479094f (applied migration copies kept); migrations 0038-0042 (Base sign-in ledgers) and 0043-0044 (Base import-kit retirement journal and reversal fences, verbatim).
 - Base local-port closure round 3: the build refuses output that holds an installation archive (Base `archiveOutputGuard`), and the refreshed rer CLI keeps the dev key, installer state, export archives and the local explorer off the public port.
 - Outbound webhooks are proven through Base's egress service transport (test double); a private-address or redirecting destination is refused. Vector still declares no egress binding: outbound stays off until the owner deploys and binds the egress Worker.

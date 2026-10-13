@@ -12,13 +12,13 @@ import {createState} from '@runeditrun/rer/state';
 import {createSeed} from '../../scripts/installer/seed.mjs';
 import {commandEnvironment} from '../../scripts/installer-env.mjs';
 import {freePort} from '@runeditrun/rer/adapter-settings';
-import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
+import {publicDevelopment} from '../e2e/public-development.mjs';
 import {openGate,readCheckoutKey} from '../e2e/dev-gate.mjs';
 process.env.RER_SERVER_JOURNEY = '1';
 const markdown=await readFile('README.md','utf8');
 const literal=name=>{const match=markdown.match(new RegExp('<!-- vector-'+name+' -->\\s*```sh\\n([\\s\\S]*?)```'));assert(match,'README literal '+name);return match[1].trim();};
 test('README literal clone, own frozen install, setup and dev reach a real outbox-confirmed owner', {timeout:2700000},async()=>{
- const work=await mkdtemp(join(tmpdir(),'vector-readme-')),evidence=resolve('evidence/readme');await mkdir(evidence,{recursive:true});let store,browser,child;const controller=new AbortController();
+ const work=await mkdtemp(join(tmpdir(),'vector-readme-')),evidence=resolve('evidence/readme');await mkdir(evidence,{recursive:true});let store,browser,development;const controller=new AbortController();
  const result={status:'running',source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),commands:['README clone','README frozen install/check/setup/dev','setup repeat','confirmed reset'],publicMirrorProof:false};
  try {
   store=await createState(work,await loadInstallerSeed(process.cwd(),createSeed()));store.setCommandSignal(controller.signal);
@@ -31,8 +31,8 @@ test('README literal clone, own frozen install, setup and dev reach a real outbo
   assert.equal((await stat(join(root,'.dev.vars'))).mode&0o777,0o600);
   result.setupPreserved=true;
   const settings=parseEnv(await readFile(join(root,'.dev.vars'),'utf8'));store.addSecrets([settings.SESSION_SECRET]);
-  child=store.spawn('README development','/bin/sh',['-eu','-c',commands.at(-1)],{cwd:root,env:commandEnvironment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
-  await store.waitForReady('README health',child,async signal=>{try{return {ready:(await fetch(settings.APP_ORIGIN+'/health',{signal})).ok}}catch{return {ready:false}}},{signal:controller.signal});
+  development=publicDevelopment(store,root,commandEnvironment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'}),settings.APP_ORIGIN);
+  await development.start('README development','/bin/sh',['-eu','-c',commands.at(-1)]);
   browser=await chromium.launch({headless:true});const page=await browser.newPage();
   result.developmentAssetFailures=[];result.browserErrorTypes=[];
   page.on('pageerror',error=>result.browserErrorTypes.push(error.name));
@@ -59,8 +59,7 @@ test('README literal clone, own frozen install, setup and dev reach a real outbo
   for(const width of [1440,390]) {await page.setViewportSize({width,height:1000});await page.addScriptTag({content:axe});const serious=await page.evaluate(async()=>{const r=await axe.run();return r.violations.filter(v=>['serious','critical'].includes(v.impact)).map(v=>v.id)});assert.deepEqual(serious,[]);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await page.screenshot({path:join(evidence,'workspace-'+width+'.png'),fullPage:true});}
   const denied=await page.request.post(settings.APP_ORIGIN+'/auth/confirm',{headers:{Origin:'https://foreign.example.test'},data:{token:'not-a-token'}});assert.notEqual(denied.status(),200);
   const identifier=await populateArchive(page,settings.APP_ORIGIN);
-  await store.run('Stop README development',process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs','dev','--stop'],{cwd:root,env:commandEnvironment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
-  await store.stop(child);
+  await development.stop('Stop README development');
   const run=async (label,...args)=>store.run(label,process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs',...args],{cwd:root,env:commandEnvironment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
   await run('Export through the public command','export','--target','local','--output','exports/retained-export.jsonl','--non-interactive');
   assert.equal((await stat(join(root,'exports/retained-export.jsonl'))).mode&0o777,0o600);
@@ -73,19 +72,19 @@ test('README literal clone, own frozen install, setup and dev reach a real outbo
   await run('Export the restored installation','export','--target','local','--output','exports/restored-export.jsonl','--non-interactive');
   result.archive=await compareArchives(root,'exports/retained-export.jsonl','exports/restored-export.jsonl');
   await run('Configure fresh destination authority','setup','--owner-email',settings.FIRST_OWNER_EMAIL,'--port',String(port),'--non-interactive');
-  child=store.spawn('Restored development',process.execPath,['node_modules/@runeditrun/rer/bin/rer.mjs','dev'],{cwd:root,env:commandEnvironment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
-  await store.waitForReady('Restored health',child,async signal=>{try{return {ready:(await fetch(settings.APP_ORIGIN+'/health',{signal})).ok}}catch{return {ready:false}}},{signal:controller.signal});
+  await development.start('Restored development');
   const restoredPage=await browser.newPage();
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/session')).status(),401);
   assert.equal((await restoredPage.request.post(settings.APP_ORIGIN+'/auth/request',{headers:{Origin:settings.APP_ORIGIN},data:{email:settings.FIRST_OWNER_EMAIL}})).status(),202);
   await openGate(restoredPage.context(),settings.APP_ORIGIN,await readCheckoutKey(root));await restoredPage.goto(settings.APP_ORIGIN+'/__dev/outbox');await restoredPage.getByRole('link',{name:'Read message',exact:true}).first().click();await restoredPage.getByRole('link',{name:'Open this link',exact:true}).click();await restoredPage.getByRole('button',{name:'Confirm',exact:true}).click();await restoredPage.waitForURL(settings.APP_ORIGIN+'/app');
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/issues/'+identifier)).status(),200);
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/data/restore')).status(),200);
-  await run('Stop restored development','dev','--stop');await store.stop(child);
+  await development.stop('Stop restored development');
   result.resetPreservedSourceExportsDeploy=true;
   result.status='passed';result.axeSerious=0;result.overflow=false;result.ownFrozenInstall=true;
  } finally {
-  controller.abort();await browser?.close();await store?.closeCommands();if(child){result.processGroupGone=(await readOwnedGroup(child.pid)).length===0;assert(result.processGroupGone)}
+  try {await development?.stop('Stop README development during teardown');result.processGroupGone=true;}
+  finally {controller.abort();await browser?.close();await store?.closeCommands();}
   await writeFile(join(evidence,'proof.json'),JSON.stringify(result,null,2)+'\n');await rm(work,{recursive:true,force:true});
  }
 });
