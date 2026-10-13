@@ -613,9 +613,10 @@ try {
       });
     } else errors.push(m.text());
   });
-  page.on("requestfailed", (r) =>
-    failed.push(r.url() + ":" + r.failure()?.errorText),
-  );
+  page.on("requestfailed", (r) => {
+    failed.push(r.url() + ":" + r.failure()?.errorText);
+    console.info("[Failed browser request] " + JSON.stringify({ url: r.url(), page: page.url(), at: Date.now(), error: r.failure()?.errorText }));
+  });
   trackRequests(page);
   page.on("request", (r) => {
     if (r.isNavigationRequest() && r.frame() === page.mainFrame())
