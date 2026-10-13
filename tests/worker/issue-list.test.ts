@@ -57,6 +57,12 @@ it("[VIEW-001 OPS-001] ordinary browsing requires a native session and validates
     "?offset=1.5",
     "?assignee=not-an-id",
     "?q=" + "x".repeat(201),
+    "?dueFrom=2026-02-30",
+    "?dueFrom=2026-10-02&dueTo=2026-10-01",
+    "?parent=bad",
+    "?status=bad",
+    "?grouping=bad",
+    "?sort=bad",
   ])
     expect((await read(query)).status).toBe(400);
 });

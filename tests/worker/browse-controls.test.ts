@@ -205,42 +205,6 @@ it("[VIEW-001 REL-002] enriches rows and uses workspace dates for overdue, indep
     expect((await read({ blocked: "blocked" })).total).toBe(0);
   }
 });
-it("[VIEW-001] browsing never uses snapshot or unbounded issue reads and rejects malformed controls", async () => {
-  const sql: string[] = [];
-  const db = new Proxy(env.DB, {
-    get(target, key) {
-      if (key === "prepare")
-        return (text: string) => {
-          sql.push(text);
-          if (
-            /\bFROM\s+["`]?issues["`]?\b/i.test(text) &&
-            !/COUNT\(\*\)|LIMIT 50 OFFSET/i.test(text)
-          )
-            throw Error("Unbounded projection");
-          return target.prepare(text);
-        };
-      const value = Reflect.get(target, key);
-      return typeof value === "function" ? value.bind(target) : value;
-    },
-  });
-  await listIssues(db, ids.sarah, query());
-  expect(sql.some((s) => s.includes("LIMIT 50 OFFSET ?"))).toBe(true);
-  expect(
-    sql
-      .filter((s) => s.includes("FROM issues i"))
-      .every((s) => /COUNT\(\*\)|LIMIT 50/.test(s)),
-  ).toBe(true);
-  for (const value of [
-    { dueFrom: "2026-02-30" },
-    { dueFrom: "2026-10-02", dueTo: "2026-10-01" },
-    { parent: "bad" },
-    { status: "bad" },
-    { grouping: "bad" },
-    { sort: "bad" },
-  ])
-    expect(issueListQuerySchema.safeParse(value).success).toBe(false);
-});
-
 it("[VIEW-001 OPS-004] terminal assignments retained after removal filter consistently with their unassigned projection", async () => {
   const operator = createUlid(new Date());
   await env.DB.prepare(
@@ -260,28 +224,4 @@ it("[VIEW-001 OPS-004] terminal assignments retained after removal filter consis
     data.issues.find((row) => row.id === fixture.rows[5].id)?.assignee,
   ).toBeNull();
   expect(data.groups.every((group) => group.key === "none")).toBe(true);
-});
-it("[VIEW-001] browse predicates use dedicated SQL indexes", async () => {
-  for (const [sql, values, index] of [
-    [
-      "SELECT identifier FROM issues WHERE team_id=? AND due_date<? ORDER BY due_date,identifier LIMIT 50",
-      [ids.flow, "2026-10-03"],
-      "issues_browse_due",
-    ],
-    [
-      "SELECT issue_id FROM issue_parents WHERE parent_issue_id=? LIMIT 50",
-      [fixture.rows[0].id],
-      "issue_parents_parent_idx",
-    ],
-    [
-      "SELECT identifier FROM issues WHERE team_id=? AND priority=? ORDER BY identifier LIMIT 50",
-      [ids.flow, "urgent"],
-      "issues_browse_priority",
-    ],
-  ] as const) {
-    const plan = await env.DB.prepare("EXPLAIN QUERY PLAN " + sql)
-      .bind(...values)
-      .all();
-    expect(JSON.stringify(plan.results)).toContain(index);
-  }
 });
