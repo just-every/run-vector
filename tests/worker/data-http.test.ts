@@ -4,7 +4,7 @@ import {populatedHttpSource} from './http-archive-source';
 import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
 import {drainNotificationMail} from '../../src/core/features/notifications/mail';
 import {request,bindings} from './base-auth-fixture';
-import {readArchive} from '../../scripts/base-cli/modules/portability/index.mjs';
+import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{

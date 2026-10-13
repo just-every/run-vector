@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {readArchive,canonicalJson} from '../../scripts/base-cli/modules/portability/index.mjs';
+import {readArchive,canonicalJson} from '@runeditrun/rer/modules/portability';
 
 export async function populateArchive(page,origin) {
  const admin=await page.request.get(origin+'/api/settings/administration');assert.equal(admin.status(),200);

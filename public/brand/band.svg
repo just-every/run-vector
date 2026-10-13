@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMax slice">
+  <defs>
+    <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#ebe5d7"/><stop offset="1" stop-color="#d8d1c1"/></linearGradient>
+    <linearGradient id="ink" x2="0" y2="1"><stop stop-color="#41454d"/><stop offset="1" stop-color="#171a20"/></linearGradient>
+  </defs>
+  <path fill="url(#paper)" d="M0 122C208 57 375 226 620 188S1071 8 1440 102V300H0Z"/>
+  <path fill="#fbf9f3" fill-opacity=".65" d="M0 151C218 84 388 251 628 212S1099 45 1440 133V300H0Z"/>
+  <path fill="none" stroke="#2446dc" stroke-width="2" d="M0 159C218 92 388 259 628 220S1099 53 1440 141"/>
+  <path fill="url(#ink)" d="M0 201C219 129 402 291 653 254S1118 97 1440 187V300H0Z"/>
+  <path fill="none" stroke="#a49e90" stroke-width="1" d="M0 254C226 181 406 333 663 294S1126 149 1440 237"/>
+</svg>

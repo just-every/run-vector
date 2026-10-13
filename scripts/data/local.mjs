@@ -1,5 +1,5 @@
 import { remoteTransfer } from './remote.mjs';
-import { localPortability } from '../base-cli/cli/portability.mjs';
+import { localPortability } from '@runeditrun/rer/portability';
 import { portabilityPolicy } from '../../src/core/features/data/archive-policy.mjs';
 import { guardLocalState } from '../installer/state.mjs';
 const transport=localPortability({database:'vector-local',buckets:{FILES:'FILES'},policy:portabilityPolicy,transient:['sessions and sign-in links','development outbox','private settings','destination restore access and effect review']});

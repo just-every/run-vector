@@ -23,29 +23,6 @@
       }
     },
     {
-      "id": "runeditrun/onboarding",
-      "role": "module",
-      "source": {
-        "kind": "local",
-        "paths": [
-          "scripts/base-onboarding"
-        ],
-        "origin": {
-          "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8b8fec168544108f3cc977bd9dcb46d68b11ca31",
-          "paths": [
-            "onboarding"
-          ]
-        },
-        "mappings": [
-          {
-            "path": "scripts/base-onboarding",
-            "originPath": "onboarding"
-          }
-        ]
-      }
-    },
-    {
       "id": "runeditrun/operator-auth",
       "role": "module",
       "source": {
@@ -192,101 +169,6 @@
           {
             "path": "vendor/base/schema",
             "originPath": "schema"
-          }
-        ]
-      }
-    },
-    {
-      "id": "runeditrun/seed-cli",
-      "role": "module",
-      "source": {
-        "kind": "local",
-        "paths": [
-          "scripts/base-cli/bin/rer.mjs",
-          "scripts/base-cli/cli",
-          "scripts/base-cli/modules/job-queue",
-          "scripts/base-cli/modules/release",
-          "scripts/base-cli/modules/deploy-kit",
-          "scripts/base-cli/modules/mail",
-          "scripts/base-cli/modules/portability",
-          "scripts/base-cli/operations",
-          "scripts/base-cli/scripts/publish-check",
-          "scripts/base-cli/scripts/publish-check.mjs",
-          "scripts/base-cli/composition/git-source.mjs",
-          "scripts/base-cli/edition-authoring/manifest.mjs",
-          "scripts/base-cli/edition-authoring/files.mjs"
-        ],
-        "origin": {
-          "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8b8fec168544108f3cc977bd9dcb46d68b11ca31",
-          "paths": [
-            "bin/rer.mjs",
-            "cli",
-            "modules/job-queue",
-            "modules/release",
-            "modules/deploy-kit",
-            "modules/mail",
-            "modules/portability",
-            "operations",
-            "scripts/publish-check",
-            "scripts/publish-check.mjs",
-            "composition/git-source.mjs",
-            "edition-authoring/manifest.mjs",
-            "edition-authoring/files.mjs"
-          ]
-        },
-        "mappings": [
-          {
-            "path": "scripts/base-cli/bin/rer.mjs",
-            "originPath": "bin/rer.mjs"
-          },
-          {
-            "path": "scripts/base-cli/cli",
-            "originPath": "cli"
-          },
-          {
-            "path": "scripts/base-cli/modules/job-queue",
-            "originPath": "modules/job-queue"
-          },
-          {
-            "path": "scripts/base-cli/modules/release",
-            "originPath": "modules/release"
-          },
-          {
-            "path": "scripts/base-cli/modules/deploy-kit",
-            "originPath": "modules/deploy-kit"
-          },
-          {
-            "path": "scripts/base-cli/modules/mail",
-            "originPath": "modules/mail"
-          },
-          {
-            "path": "scripts/base-cli/modules/portability",
-            "originPath": "modules/portability"
-          },
-          {
-            "path": "scripts/base-cli/operations",
-            "originPath": "operations"
-          },
-          {
-            "path": "scripts/base-cli/scripts/publish-check",
-            "originPath": "scripts/publish-check"
-          },
-          {
-            "path": "scripts/base-cli/scripts/publish-check.mjs",
-            "originPath": "scripts/publish-check.mjs"
-          },
-          {
-            "path": "scripts/base-cli/composition/git-source.mjs",
-            "originPath": "composition/git-source.mjs"
-          },
-          {
-            "path": "scripts/base-cli/edition-authoring/manifest.mjs",
-            "originPath": "edition-authoring/manifest.mjs"
-          },
-          {
-            "path": "scripts/base-cli/edition-authoring/files.mjs",
-            "originPath": "edition-authoring/files.mjs"
           }
         ]
       }

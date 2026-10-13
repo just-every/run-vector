@@ -1,8 +1,9 @@
-import { localInstaller } from '../base-onboarding/adapter.mjs';
-import { installOperator } from '../base-onboarding/operator-install.mjs';
-import { ensureDevKey } from '../base-cli/cli/dev-identity.mjs';
-import { commandAdapter as createCommandAdapter } from '../base-cli/cli/adapter.mjs';
-import { developmentTarget, previewTarget } from '../base-onboarding/operator-installer.mjs';
+import docs from '../../docs/site.json' with { type: 'json' };
+import { localInstaller } from '@runeditrun/rer/local-installer';
+import { installOperator } from '@runeditrun/rer/operator-install';
+import { ensureDevKey } from '@runeditrun/rer/dev-identity';
+import { commandAdapter as createCommandAdapter } from '@runeditrun/rer/adapter';
+import { developmentTarget, previewTarget } from '@runeditrun/rer/operator-installer';
 import { portability } from '../data/local.mjs';
 import { settings, migrate } from './definition.mjs';
 import { features } from './ui/seed.mjs';
@@ -37,9 +38,11 @@ export const commandAdapter = createCommandAdapter(adapter, {
  portability,
  // The production build rewrites the router's generated tree; preview must not read that as a source edit.
  generatedOutputs: ['src/routeTree.gen.ts'],
+ publicPages: ['/', '/signin', '/docs', ...docs.sections.flatMap(section => section.pages.map(page => '/docs/' + page.slug))],
+ site: { entry: 'src/site/pages.tsx', output: 'dist/site', declaration: 'deploy-site.json', config: 'vite.site.config.ts' },
  // Local dev identity: the local-only Worker entry, the build output rer build scans for the dev layer, and the kept end-to-end email-link test.
  devIdentity: { entry: 'src/core/app/worker.dev.ts', output: ['dist'], emailLinkTest: 'tests/e2e/base-auth-runtime.mjs' },
  localOnlyKeys: ['RER_DEV_ORIGIN', 'RER_DEV_IDENTITY'],
  setup: { manifestFile: 'rer-setup.json' }, browserModule: 'scripts/installer/ui/seed.mjs', product: 'Vector',
- input: { names: { email: 'FIRST_OWNER_EMAIL', name: 'FIRST_OWNER_NAME' }, defaults: async () => ({ target: 'local' }) },
+ input: { names: { email: 'FIRST_OWNER_EMAIL', name: 'FIRST_OWNER_NAME' } },
 });
