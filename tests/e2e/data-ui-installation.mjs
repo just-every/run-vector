@@ -18,6 +18,6 @@ export async function startDataUiInstallation(){
    const bytes=await response.arrayBuffer();
    return new Response([204,205,304].includes(response.status)?null:bytes,{status:response.status,statusText:response.statusText,headers:response.headers});
   };
-  return {cookie,close,runtime:{base,req,sql:installation.sql,writeFixture:installation.fixture}};
+  return {cookie,close,runtime:{base,req,sql:installation.sql,writeFixture:installation.fixture,scheduledRun:installation.scheduledRun}};
  }catch(error){await close();throw error;}
 }

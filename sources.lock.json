@@ -749,7 +749,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "3094c19f7a5ac7d06b46273f7a87658a1c9b0ef0f120312e481968ef03ae2291",
+      "sha256": "02c6064db0d091e5037132556b81115b90e6a5ee66fd6bd8600d23c05527dd61",
       "executable": false
     },
     "edition.json": {
@@ -5377,7 +5377,7 @@
       "executable": false
     },
     "tests/e2e/data-ui-installation.mjs": {
-      "sha256": "20eb4f0b8aa1fd086ae58e8afcd6390d3f6f03f1eda780166a2856562f3490ef",
+      "sha256": "ffdaf7fa057f7e7f9eca42461362db6a7443b39228641f9597367dc48afe1ff2",
       "executable": false
     },
     "tests/e2e/data-ui-journey.mjs": {
@@ -5536,12 +5536,36 @@
       "sha256": "70365f43e769a32f68d44d6a3692725186535f9acd78520422d876082432144c",
       "executable": false
     },
+    "tests/e2e/jira-capture-support.mjs": {
+      "sha256": "715f535b53595c4ac7a8dde12bc5cccdef1d76ecdfaf887fe2a50e33bc1f4b2f",
+      "executable": false
+    },
+    "tests/e2e/jira-captures.mjs": {
+      "sha256": "ef0f44bc038f6f4b10fee66849924874f4bd6727a29b8cfa4aaba6aa7a5ee3d4",
+      "executable": false
+    },
     "tests/e2e/jira-cli-installation.mjs": {
       "sha256": "ca3f99968c24781ef763c84e382157a368376e3f38e5d719f31d1c2c592ac680",
       "executable": false
     },
     "tests/e2e/jira-cli-runtime.mjs": {
       "sha256": "904c4c29df929f3b4fb8442950c56f7e4da9c28cd2b827cba8033a21d3638305",
+      "executable": false
+    },
+    "tests/e2e/jira-native-setup.mjs": {
+      "sha256": "2cb76e7405ea99f5a8872fe80ff5db6a15e3290226087b04caf849debaf0111e",
+      "executable": false
+    },
+    "tests/e2e/jira-public-journey.mjs": {
+      "sha256": "381589e69526a1f62e9f8d8d296bfec3021986ca46074769ba143d16f2c46060",
+      "executable": false
+    },
+    "tests/e2e/jira-review-checks.mjs": {
+      "sha256": "04732fb0d6520b8bd13a47ef944617f73ede3448c10659920f949e76ea6288b0",
+      "executable": false
+    },
+    "tests/e2e/jira-status-controls.mjs": {
+      "sha256": "5b43710137473fbb08772e35a0755eaa0af4bed08168c974d4306f861d73ffac",
       "executable": false
     },
     "tests/e2e/local-d1-read.mjs": {
@@ -8506,6 +8530,10 @@
     },
     "visual/08-current-mobile.jpg": {
       "sha256": "b7952420f49cd18bf631788a37ca2f968b1414f88a035418bf532fd78e09a22f",
+      "executable": false
+    },
+    "visual/jira/README.md": {
+      "sha256": "4051d0566be186a5a5a5161d715342ce2f35922f2e2e7e4b583df296e184bb91",
       "executable": false
     },
     "vite.config.ts": {
