@@ -44,5 +44,6 @@ export const commandAdapter = createCommandAdapter(adapter, {
  devIdentity: { entry: 'src/core/app/worker.dev.ts', output: ['dist'], emailLinkTest: 'tests/e2e/base-auth-runtime.mjs' },
  localOnlyKeys: ['RER_DEV_ORIGIN', 'RER_DEV_IDENTITY'],
  setup: { manifestFile: 'rer-setup.json' }, browserModule: 'scripts/installer/ui/seed.mjs', product: 'Vector',
- input: { names: { email: 'FIRST_OWNER_EMAIL', name: 'FIRST_OWNER_NAME' } },
+ // CLI setup runs locally by default; explicit installer answers retain the hosting choice.
+ input: { names: { email: 'FIRST_OWNER_EMAIL', name: 'FIRST_OWNER_NAME' }, defaults: async () => ({ target: 'local' }) },
 });
