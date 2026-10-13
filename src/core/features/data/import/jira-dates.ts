@@ -1,6 +1,6 @@
 import type { ImportDiagnostic,JiraDateReview } from './types';
 
-export type JiraDateCell = { row:number; column:number; field:string; value:string };
+export type JiraDateCell = { row:number; column:number; field:string; value:string; rawValue:string };
 type Parts = { year:number; first:number; second:number; family:'ISO'|'numeric'|'month'; hour:number; minute:number; secondOfMinute:number; offset:string; timed:boolean; shortYear:boolean };
 const months=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 function parts(value:string,century?:number):Parts|null {
@@ -25,7 +25,7 @@ function calendar(p:Parts,order:'DMY'|'MDY') {
  * precisions are allowed; calendar families and numeric order must agree. */
 export function readJiraDates(cells:JiraDateCell[],sourceOffset?:string,shortYearCentury?:number) {
   const errors:ImportDiagnostic[]=[],values=new Map<string,string>();
-  const fail=(cell:JiraDateCell,code:string,message:string)=>errors.push({row:cell.row,field:cell.field,code,message});
+  const fail=(cell:JiraDateCell,code:string,message:string)=>errors.push({row:cell.row,column:cell.column+1,field:`${cell.field} [column ${cell.column+1}]`,value:cell.rawValue,code,message});
   const parsed=cells.map(cell=>({cell,parts:parts(cell.value,shortYearCentury)}));
   for(const {cell,parts:p} of parsed)if(!p)fail(cell,'jira_invalid_date','Unsupported or impossible date. Use a documented numeric, English month-name or ISO calendar with a valid 24-hour or AM/PM time. See docs/JIRA-CSV.md.');
   for(const {cell,parts:p} of parsed)if(p?.shortYear&&shortYearCentury===undefined)fail(cell,'jira_short_year_century_required','Two-digit years require an explicit short-year century, for example 2000 for 2000–2099. No century is guessed.');
@@ -44,13 +44,13 @@ export function readJiraDates(cells:JiraDateCell[],sourceOffset?:string,shortYea
     const date=calendar(p,order);
     if(!date){fail(cell,'jira_invalid_date','The date is not a possible calendar day.');continue;}
     // Due dates alone are calendar days. Every other field represents an instant.
-    if(cell.field.toLowerCase()==='due date'&&!p.timed){values.set(cell.row+':'+cell.column,date);continue;}
+    if(cell.field.trim().toLowerCase()==='due date'&&!p.timed){values.set(cell.row+':'+cell.column,date);continue;}
     const offset=p.offset||sourceOffset;
     if(!offset){fail(cell,'jira_source_offset_required','This timestamp has no offset. Supply the exporting user’s source offset explicitly; Vector never guesses UTC or the machine timezone.');continue;}
     if(!validOffset(offset)){fail(cell,'jira_invalid_offset','Supply Z or an explicit offset between -14:00 and +14:00.');continue;}
     const time=[p.hour,p.minute,p.secondOfMinute].map(value=>String(value).padStart(2,'0')).join(':');
     const instant=new Date(date+'T'+time+offset).toISOString();
-    values.set(cell.row+':'+cell.column,cell.field.toLowerCase()==='due date'?date:instant);
+    values.set(cell.row+':'+cell.column,cell.field.trim().toLowerCase()==='due date'?date:instant);
   }
   const family=valid[0]?.parts.family,pattern=family==='ISO'?'YYYY-MM-DD':family==='month'?'D/Mon/YYYY':numeric.length?(dmy!==mdy?(order==='DMY'?'D/M/YYYY':'M/D/YYYY'):'undetermined numeric order'):'no dates';
   const review:JiraDateReview={pattern:valid[0]?.parts.shortYear?pattern.replace('YYYY','YY'):pattern,shortYearCentury:shortYearCentury??null,sample:cells[0]?.value??'',sourceOffset:sourceOffset??'none supplied',policy:'Explicit cell offsets take precedence. Offsetless instants require the supplied fixed offset; due dates remain calendar days. No timezone or DST inference.',cells:cells.length};

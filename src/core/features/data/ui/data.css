@@ -4,3 +4,22 @@
 .import-rollback{flex-basis:100%}.import-rollback ul{margin:6px 0}
 .import-report-table{overflow-x:auto;max-width:100%}.import-report table{border-collapse:collapse;margin:10px 0;min-width:min(100%,420px)}.import-report caption{text-align:left;font-weight:600;padding:4px 0}.import-report th,.import-report td{border-bottom:1px solid var(--border);padding:4px 8px;text-align:left}
 .import-runs>li{flex-wrap:wrap}.import-report,.import-rollback{grid-column:1/-1;flex-basis:100%;width:100%;min-width:0;box-sizing:border-box}
+
+.jira-loss-review-scroll{container-type:inline-size;width:100%;min-width:0;max-width:100%;margin:10px 0;box-sizing:border-box;overflow-x:auto;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+table.jira-loss-review-table{width:100%;min-width:730px;margin:0;border-collapse:collapse}
+table.jira-loss-review-concept-table{min-width:860px}
+.jira-loss-review-table caption{text-align:left;font-weight:600;padding:4px 0}
+.jira-loss-review-table th,.jira-loss-review-table td{border-bottom:1px solid var(--border);padding:4px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.jira-loss-review-confirmation-table th:nth-child(1),.jira-loss-review-confirmation-table td:nth-child(1){min-width:140px}
+.jira-loss-review-confirmation-table th:nth-child(2),.jira-loss-review-confirmation-table td:nth-child(2){min-width:72px;white-space:nowrap}
+.jira-loss-review-confirmation-table th:nth-child(3),.jira-loss-review-confirmation-table td:nth-child(3){min-width:130px}
+.jira-loss-review-confirmation-table th:nth-child(4),.jira-loss-review-confirmation-table td:nth-child(4){min-width:155px}
+.jira-loss-review-confirmation-table th:nth-child(5),.jira-loss-review-confirmation-table td:nth-child(5){min-width:185px}
+.jira-loss-review-concept-table th:nth-child(1),.jira-loss-review-concept-table td:nth-child(1){min-width:165px}
+.jira-loss-review-concept-table th:nth-child(2),.jira-loss-review-concept-table td:nth-child(2){min-width:220px}
+.jira-loss-review-concept-table th:nth-child(3),.jira-loss-review-concept-table td:nth-child(3),.jira-loss-review-concept-table th:nth-child(4),.jira-loss-review-concept-table td:nth-child(4){min-width:72px;white-space:nowrap}
+.jira-loss-review-concept-table th:nth-child(5),.jira-loss-review-concept-table td:nth-child(5){min-width:260px}
+
+/* Keep the disclosure focus box inside its scroller, including nested reports. */
+.jira-loss-review-concept-table details{width:260px;max-width:100%}
+.jira-loss-review-concept-table details>summary{max-width:min(100%,calc(100cqi - 16px));overflow-wrap:anywhere}

@@ -45,6 +45,13 @@ export async function collaborationEvents({
       .getByText(`${expected} unread`, { exact: true })
       .first()
       .waitFor({ timeout: Math.max(1, 5000 - (performance.now() - start)) });
+    // The unread counter and inbox list refresh independently.
+    await peer.waitForFunction(
+      (expected) =>
+        document.querySelectorAll(".inbox-row.is-unread").length === expected,
+      expected,
+      { timeout: Math.max(1, 5000 - (performance.now() - start)) },
+    );
     const elapsedMs = performance.now() - start;
     assert.ok(
       elapsedMs <= 5000,

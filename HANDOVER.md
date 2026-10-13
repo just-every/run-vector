@@ -36,6 +36,25 @@ Managed source uses the vendored Base delivery producer and the declared setup m
 
 Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the reviewed native Base import-kit path in Settings and the terminal. Review mapping, errors and omissions, then apply a run of up to 4,000 rows in staged batches; durable IDs support status, repeat, resume, a reconciliation report and whole-run rollback. See docs/MOVE-IN.md and docs/IMPORT-EVIDENCE.md. Local and authenticated HTTP archives use Base portability. HTTP restore requires the 0034 pristine-bootstrap admission and real coordinator binding; ordinary owner sign-in precedes setup or edits, and fresh historical-owner sign-in follows commit. Stopped, confirmed local restore into empty resources remains supported. See docs/ARCHIVES.md. Replacements remain empty; no owner export or hosted acceptance is claimed.
 
+The Jira Cloud All Fields CSV supported profile uses the same reviewed staged
+file importer. Its claim remains **documented format, synthetic-only; real
+export not supplied**. The repository's generated 300-issue fixture exercises
+preflight and apply through native routes. The earlier copied-CLI run also
+covered repeat, status, resume, reconciliation and whole-run rollback on its
+recorded source head. The external public-port REPORT records exact source
+heads, commands and results, distinguishing that run from the `@runeditrun/rer`
+CLI run. Use `pnpm exec rer dev --login` to start a local CLI session, then
+`pnpm exec rer build` to build; the Jira importer still runs through
+`pnpm run import:issues` with `--format jira-csv`. Jira reuses the existing
+import storage, imported-comment schema and source identities; it adds no
+migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and
+[IMPORT-EVIDENCE.md](docs/IMPORT-EVIDENCE.md) for the measured public-route
+checks, exact-head CLI evidence and limits. Browser capture, held-out proof,
+full verification and exact-head CI evidence
+belong to the external public-port REPORT; earlier private checkpoint results
+are not acceptance evidence for this public source. A real team's export and
+release publication remain owner review steps.
+
 Scoped API tokens use native Base authority and existing issue/comment mutations. Signed source ingest commits issue/evidence/replay together; signed GitHub pull-request events persist links without a provider token or API call. Outbound webhooks retain accepted, rejected and uncertain states with finite retries and require an enforcing INTEGRATION_EGRESS service binding. Source adoption does not provision hosted egress. Restore excludes credentials and quarantines historical effects; re-enter secrets and review future effects. See docs/API.md and docs/INTEGRATIONS.md. Apply 0027/0028 additively and retain every replay and terminal-delivery ledger.
 
 ## Cycle closure and historical truth

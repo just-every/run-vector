@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {mkdir,writeFile,readFile,stat} from 'node:fs/promises';
+import {join,resolve} from 'node:path';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
+const execute=promisify(execFile);
+import {generateJiraFixture} from '../fixtures/import/jira/generate.mjs';
+import {startJiraCliInstallation} from './jira-cli-installation.mjs';
+const evidence=resolve(process.env.JIRA_EVIDENCE_DIR??'evidence/jira-cli'),proof={passed:false,commands:[]};let installation;
+try{
+ installation=await startJiraCliInstallation();const {request,sql,scratch,origin,cookie,environment}=installation,fixture=generateJiraFixture();
+ const checked=async(path,method='GET',body)=>{const response=await request(path,method,body);assert.equal(response.status,200,await response.clone().text());return response.json();};
+ const initial=await checked('/api/settings/administration'),team=initial.teams[0];
+ for(const name of fixture.expected.nativeSetup.labels)await checked('/api/settings/labels','POST',{name,color:'#345678'});
+ for(const [index,name] of fixture.expected.nativeSetup.cycles.entries())await checked('/api/settings/cycles','POST',{teamId:team.id,name,startsLocal:`2027-0${index+1}-01T09:00`,endsLocal:`2027-0${index+1}-20T09:00`,capacity:100});
+ const state=await checked('/api/settings/administration'),session=await checked('/api/session');
+ const sessionFile=join(scratch,'session'),file=join(scratch,'300.csv'),mapping=join(scratch,'mapping.json'),review=join(scratch,'review.json');
+ await writeFile(sessionFile,cookie,{mode:0o600});await writeFile(file,fixture.csv,{mode:0o600});
+ await writeFile(mapping,JSON.stringify({mapping:{},defaults:{team:team.id},references:{status:Object.fromEntries([['To Do','unstarted'],['In Progress','started'],['Done','completed']].map(([name,category])=>[name,team.statuses.find(status=>status.category===category).id])),assignee:{[fixture.expected.nativeSetup.assigneeTokens[0].token]:session.operatorId},cycle:Object.fromEntries(state.cycles.map(cycle=>[cycle.name,cycle.id]))},jira:{priorities:fixture.expected.priorities.explicitVectorMapping,originalEstimateSecondsPerUnit:3600}}),{mode:0o600});
+ const command=async(verb,...args)=>{
+  const {stdout}=await execute('pnpm',['--silent','run','import:issues','--',verb,'--origin',origin,'--session-file',sessionFile,...args],{cwd:installation.root,encoding:'utf8',env:environment,maxBuffer:8*1024*1024,stdio:['ignore','pipe','pipe']});
+  assert(!stdout.includes(cookie));proof.commands.push(verb);return JSON.parse(stdout.trim());
+ };
+ const tables=sql("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits') ORDER BY name").map(row=>row.name);
+ const counts=()=>Object.fromEntries(tables.map(table=>[table,sql('SELECT count(*) n FROM "'+table+'"')[0].n]));
+ proof.before=counts();const preview=await command('preview','--file',file,'--format','jira-csv','--source','jira-cli-300','--mapping',mapping,'--review',review);assert.equal(preview.ready,true);assert.equal(preview.rows,300);assert.deepEqual(counts(),proof.before);assert.equal((await stat(review)).mode&0o777,0o600);
+ const privateReview=JSON.parse(await readFile(review,'utf8'));
+ const applied=await command('apply','--review',review,'--yes');assert.equal(applied.state,'completed');assert.equal(applied.checkpoint,300);assert.deepEqual(await command('apply','--review',review,'--yes'),applied);
+ assert.equal((await command('status','--run',applied.id)).state,'completed');assert.equal((await command('resume','--run',applied.id)).state,'completed');
+ const report=await command('report','--run',applied.id);assert.equal(report.totals.issuesWritten,300);assert.deepEqual(report.jiraReview,privateReview.preview.jiraReview);
+ const expected={labels:173,parents:5,dependencies:2,duplicates:2,comments:102,links:2,files:0};
+ for(const [name,n] of Object.entries(expected))assert.deepEqual(report.effects.counts[name],{planned:n,written:n});
+ proof.report={totals:report.totals,dimensions:report.dimensions,effects:report.effects};proof.afterApply=counts();
+ assert.equal(proof.afterApply.issues-proof.before.issues,300);assert.equal(proof.afterApply.issue_comments-proof.before.issue_comments,102);assert.equal(proof.afterApply.issue_parents-proof.before.issue_parents,5);assert.equal(proof.afterApply.issue_dependencies-proof.before.issue_dependencies,2);assert.equal(proof.afterApply.issue_links-proof.before.issue_links,2);assert.equal(proof.afterApply.issue_labels-proof.before.issue_labels,173);
+ for(const table of ['notifications','notification_deliveries','notification_candidates','vector_webhook_events','integration_deliveries','rer_mail_development_outbox','operators','oa_operators'])assert.equal(proof.afterApply[table],proof.before[table],table);
+ const lookup=await checked('/api/issues/VJ-1');assert.equal(lookup.importedFrom.sourceId,'710001');assert.equal(lookup.importedFrom.sourceKey,'VJ-1');
+ assert((await checked('/api/search?q=VJ-1')).issues.some(issue=>issue.id===lookup.id));
+ const removable=await command('rollback','--run',applied.id);assert.equal(removable.conflicts.length,0);assert.equal(removable.issues,300);
+ assert.equal((await command('rollback','--run',applied.id,'--yes')).state,'rolled_back');proof.afterRollback=counts();
+ for(const [table,n] of Object.entries(removable.rows))assert.equal(proof.afterApply[table]-proof.afterRollback[table],n,table);
+ for(const table of tables.filter(table=>table==='issues'||table.startsWith('issue_')&&table!=='issue_prefix_sequences'))assert.equal(proof.afterRollback[table],proof.before[table],table);
+ proof.removable=removable.rows;proof.passed=true;
+}finally{await installation?.close();proof.processesClosed=true;await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'cli-proof.json'),JSON.stringify(proof,null,2)+'\n');}
+console.log('Jira CLI preview/apply/replay/status/resume/report/whole rollback passed for 300 issues; development closed.');
