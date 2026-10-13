@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://justevery.com/#vol-vector">
+  <a href="https://run-vector.com">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.webp">
       <source media="(prefers-color-scheme: light)" srcset=".github/assets/banner-light.webp">
@@ -8,7 +8,26 @@
   </a>
 </p>
 
-<p align="center"><a href="https://justevery.com">Part of Just Every</a> · <a href="LICENSE">MIT licensed</a></p>
+<p align="center"><a href="https://run-vector.com">run-vector.com</a> · <a href="https://justevery.com">Part of Just Every</a> · <a href="LICENSE">MIT licensed</a></p>
+
+<p align="center">
+  <a href="https://justevery.com/#vol-vector"><img src=".github/assets/media/preview.gif" width="800" alt="Vector: the triage call on FLW-7, a reason typed, Accept and route work, and the issue appearing in Now"></a>
+</p>
+<p align="center"><a href="https://justevery.com/#vol-vector"><b>Watch the full demo</b></a> · 45 seconds</p>
+
+<p align="center">
+  <img src=".github/assets/media/flow.webp" width="800" alt="FLW-7 awaiting decision, the triage call accepted with a reason, and the issue started in Maya's Now">
+</p>
+
+<p align="center">
+  <img src=".github/assets/media/screen-1.webp" width="800" alt="Vector's Current page: FLW-7 awaiting decision with its operator report, and the Make the triage call panel with assignee, priority, start status, cycle and a reason"><br>
+  <sub>Every report gets a triage call: accept, defer or decline, with a reason.</sub>
+</p>
+
+<p align="center">
+  <img src=".github/assets/media/screen-2.webp" width="800" alt="Maya Ortiz's My work page: FLW-7 now in progress, accepted by Sarah Chen with the reason Customers first"><br>
+  <sub>The decision and its reason travel with the issue.</sub>
+</p>
 
 # Vector
 
