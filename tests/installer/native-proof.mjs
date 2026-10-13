@@ -1,5 +1,5 @@
 import { finishFirstRun } from '../e2e/first-run-fixture.mjs';
-import { runtimeStartDelay } from './runtime-start-delay.mjs';
+import { prepareStartupFixture } from './startup-fixture.mjs';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { chmod,mkdir,mkdtemp,readFile,stat,writeFile,rm,symlink } from 'node:fs/promises';
@@ -16,7 +16,7 @@ const axeSource=await readFile(new URL('../../node_modules/axe-core/axe.min.js',
 const source=process.cwd(), slow=process.argv.includes('--slow'), evidence=resolve(process.env.VECTOR_INSTALLER_EVIDENCE??'evidence/installer');
 const report={source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),slow,checks:[],captures:[],teardown:[]};
 const check=name=>{report.checks.push(name);console.log('Installer proof: '+name)};
-const answers={FIRST_OWNER_NAME:'Installation owner',FIRST_OWNER_EMAIL:'owner@installer.test',WORKSPACE_NAME:'Installation workspace',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Delivery',DEFAULT_TEAM_PREFIX:'VEC',target:'local',MAIL_MODE:'local-outbox'};
+const answers={FIRST_OWNER_NAME:'Installation owner',FIRST_OWNER_EMAIL:'owner@installer.test',WORKSPACE_NAME:'Installation workspace',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Delivery',DEFAULT_TEAM_PREFIX:'VEC',MAIL_MODE:'local-outbox'};
 await mkdir(evidence,{recursive:true});
 const realPnpm=execFileSync('/bin/sh',['-c','command -v pnpm'],{encoding:'utf8'}).trim();
 const work=await mkdtemp(join(tmpdir(),'vector-native-installer-')), root=join(work,'source');
@@ -39,27 +39,28 @@ const failing=await shim('failure','if [ "$1" = "install" ]; then echo "forced d
 process.env.PATH=basePath;
 execFileSync(realPnpm,['install','--frozen-lockfile'],{cwd:root,stdio:['ignore','pipe','pipe']});
 check('fresh clone provisions its own frozen installer dependencies');
-// Delay only setup's first real production runtime; preview retains its own readiness cap.
-const withRuntimeDelay=await runtimeStartDelay(root,timing,slow);
+// rer install may recreate node_modules (as it does on the Linux CI runner).
+// Place the disposable delay only after each successful real dependency install.
+await prepareStartupFixture({root,work,timing,slow,pnpm:realPnpm,shim:join(basePath,'pnpm')});
 ({startInstaller}=await import(pathToFileURL(join(root,'node_modules/@runeditrun/rer/onboarding/server.mjs'))));
 ({createSeed}=await import(pathToFileURL(join(root,'scripts/installer/seed.mjs'))));
 ({readOwnedGroup}=await import(pathToFileURL(join(root,'node_modules/@runeditrun/rer/onboarding/local/process-table.mjs'))));
 browser=await chromium.launch({headless:true});
 async function open(resume){
- const seed=createSeed(),install=seed.install;seed.install=(root,input,store,onApp,signal)=>install(root,input,withRuntimeDelay(store),child=>{groups.add(child.pid);onApp(child)},signal);
+ const seed=createSeed(),install=seed.install;seed.install=(root,input,store,onApp,signal)=>install(root,input,store,child=>{groups.add(child.pid);onApp(child)},signal);
  installer=await startInstaller(root,{seed,...(resume?{resume:true}:{noPrefill:true})});ports.add(Number(new URL(installer.origin).port));
  page=await browser.newPage({bypassCSP:true});page.on('request',request=>{const value=request.headers()['x-installer-token'];if(value)token=value});
  await page.goto(installer.origin);await page.waitForFunction(()=>!document.querySelector('#form').hidden);
 }
 const api=(path,body)=>page.evaluate(async({path,body,token})=>{const response=await fetch(path,{...(body?{method:'POST',body:JSON.stringify(body)}:{}),headers:{'Content-Type':'application/json','X-Installer-Token':token}});return {status:response.status,body:await response.json()}},{path,body,token});
 async function until(observe){for(let i=0;i<3600;i++){const {body}=await api('/api/state');await observe?.(body);if(['failed','complete'].includes(body.phase))return body;await new Promise(resolve=>setTimeout(resolve,500));}throw Error('Installer operational deadline exceeded.');}
-async function capture(name){await page.getByRole('heading',{name:name==='failure'?'Installation needs attention':name==='complete'?'Your workspace is ready':'Making a home for your team',exact:true}).waitFor();for(const width of [1440,390]){await page.setViewportSize({width,height:width===390?844:1000});const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert.equal(overflow,false);await page.addScriptTag({content:axeSource});const violations=await page.evaluate(async()=>{const result=await axe.run();return result.violations.filter(row=>['serious','critical'].includes(row.impact)).map(row=>row.id)});assert.deepEqual(violations,[]);report.axeSerious=0;report.overflow=false;const file=`${name}-${width}.png`;await page.screenshot({path:join(evidence,file),fullPage:true});report.captures.push(file);}}
- phase='forced-failure';process.env.PATH=failing+':'+basePath;await open(false);assert.equal((await api('/api/draft',answers)).status,200);await page.reload();assert.equal((await api('/api/start',answers)).status,202);
+async function capture(name){if(name==='setup'){await page.locator('#form').waitFor({state:'visible'});}else await page.getByRole('heading',{name:name==='failure'?'Installation needs attention':name==='complete'?'Your workspace is ready':'Making a home for your team',exact:true}).waitFor();for(const width of [1440,390]){await page.setViewportSize({width,height:width===390?844:1000});const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth);assert.equal(overflow,false);await page.addScriptTag({content:axeSource});const violations=await page.evaluate(async()=>{const result=await axe.run();return result.violations.filter(row=>['serious','critical'].includes(row.impact)).map(row=>row.id)});assert.deepEqual(violations,[]);report.axeSerious=0;report.overflow=false;const file=`${name}-${width}.png`;await page.screenshot({path:join(evidence,file),fullPage:true});report.captures.push(file);}}
+ phase='forced-failure';process.env.PATH=failing+':'+basePath;await open(false);assert.equal((await api('/api/start',{...answers,target:'remote'})).status,400);assert.equal((await api('/api/state')).body.phase,'ready');check('unsupported browser target refuses before installation');assert.equal((await api('/api/draft',answers)).status,200);await page.reload();await capture('setup');assert.equal((await api('/api/start',answers)).status,202);
  const failed=await until();assert.equal(failed.phase,'failed');assert.match(failed.error,/installing dependencies/);await capture('failure');await close();check('forced failure drains and stops its command');
  phase='resumed-install';process.env.PATH=basePath;await open(true);const resumed=(await api('/api/state')).body.draft;for(const [key,value] of Object.entries(answers))assert.equal(resumed[key],value);const manifest=JSON.parse(await readFile(join(root,'rer-setup.json'),'utf8'));for(const field of manifest.fields.filter(field=>field.kind==='secret'))assert.equal(Object.hasOwn(resumed,field.name),false);assert.equal((await api('/api/start',answers)).status,202);
  let delayed=false;
- const complete=await until(async state=>{if(!slow||delayed)return;let at;try{at=Number(await readFile(timing,'utf8'))}catch{return}const elapsed=Date.now()-at;if(elapsed>121000){assert.equal(state.phase,'running');assert.match(state.logs.join('\n'),/Still starting/);report.slowStart={delayMs:130000,observedMs:elapsed,phase:state.phase,progressLogged:true};delayed=true;await capture('slow-start')}});
- assert.equal(complete.phase,'complete','Native installation failed; inspect the local private installation diagnostic');if(slow)assert(delayed,'130-second production runtime delay observed before completion');check('saved-answer resume reaches the real Worker'+(slow?' after more than 120 seconds':''));
+ const complete=await until(async state=>{if(!slow||delayed)return;let at;try{at=Number(await readFile(timing,'utf8'))}catch{return}if(Date.now()-at>121000){assert.equal(state.phase,'running');assert.match(state.logs.join('\n'),/Still starting/);delayed=true;report.slowStartupObservedMs=Date.now()-at;await capture('slow-start')}});
+ assert.equal(complete.phase,'complete','Native installation failed; inspect the local private installation diagnostic');if(slow)assert(delayed);check('saved-answer resume reaches the real Worker'+(slow?' after more than 120 seconds':''));
  const origin=new URL(complete.appUrl).origin;ports.add(Number(new URL(origin).port));assert.equal((await fetch(origin+'/health')).status,200);
  const sql=query=>readLocalD1(join(root,'.wrangler/state'),query);
  assert.deepEqual([sql('SELECT count(*) n FROM workspace_settings')[0].n,sql('SELECT count(*) n FROM operators')[0].n,sql('SELECT count(*) n FROM teams')[0].n,sql('SELECT count(*) n FROM workflow_statuses')[0].n],[1,1,1,7]);

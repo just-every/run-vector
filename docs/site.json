@@ -237,6 +237,10 @@
       "reason": "Operator removal internals, for maintainers"
     },
     {
+      "source": "docs/VERIFICATION.md",
+      "reason": "Maintainer verification and manual command reference"
+    },
+    {
       "source": "src/base/hydration/README.md",
       "reason": "Shared runtime hydration convention for maintainers"
     },

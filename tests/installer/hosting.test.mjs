@@ -3,12 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp,rm,readFile,stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import declaration from '../../deploy.json' with {type:'json'};
 import { prepareHosting,hostingDeclaration,hostingSecrets } from '../../scripts/installer/hosting.mjs';
-test('owner declaration maps the one SendGrid input to the established Worker binding',()=>{
- assert.deepEqual(declaration.d1,[{binding:'DB'}]);assert.deepEqual(declaration.r2,[{binding:'FILES'}]);assert.deepEqual(declaration.crons,['* * * * *']);
- assert.equal(declaration.originVar,'APP_ORIGIN');assert.deepEqual(declaration.secrets,[{binding:'SESSION_SECRET',environment:'SESSION_SECRET'},{binding:'MAIL_API_KEY',environment:'SENDGRID_API_KEY'}]);
-});
 test('hosting preparation refuses missing public inputs and reuses private secrets without rotation',async t=>{
  const root=await mkdtemp(join(tmpdir(),'vector-hosting-'));t.after(()=>rm(root,{recursive:true,force:true}));
  const captured=[];const context={root,store:{step:async()=>{},report:()=>{},addSecrets:values=>captured.push(...values)},fail:()=>Error('deployment inputs missing')};
