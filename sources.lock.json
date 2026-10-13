@@ -3539,7 +3539,7 @@
       "executable": false
     },
     "tests/e2e/jira-cli-installation.mjs": {
-      "sha256": "05c87d18eade4074f71aba4a7924f5ffedb367effd6f108cd01413859e93ab35",
+      "sha256": "c0cd06bd70cc46530b6d97ad9d1440c50c134ccba4691e50ffd69ef39b7b101e",
       "executable": false
     },
     "tests/e2e/jira-cli-runtime.mjs": {
