@@ -5,7 +5,7 @@ export async function keyboardJourney(page, base, record) {
   const origin = await page.evaluate(() => performance.timeOrigin);
   for (const modifier of ['Control', 'Meta']) {
     await settleReads(page);
-    await page.locator('h1').click();
+    await page.locator('h1').first().click();
     await page.keyboard.press(`${modifier}+k`);
     const palette = page.getByRole('dialog', { name: 'Command palette', exact: true });
     await palette.waitFor();
@@ -16,14 +16,14 @@ export async function keyboardJourney(page, base, record) {
     await page.keyboard.press('Enter');
     await page.waitForURL(base + '/app/projects');
     await palette.waitFor({ state: 'detached' });
-    await page.locator('h1').click();
+    await page.locator('h1').first().click();
     await page.keyboard.press(`${modifier}+k`);
     await palette.waitFor();
     await page.keyboard.press('Escape');
     await palette.waitFor({ state: 'detached' });
   }
   await settleReads(page);
-  await page.locator('h1').click();
+  await page.locator('h1').first().click();
   await page.keyboard.press('c');
   await page.waitForURL(base + '/app/new-issue');
   const title = page.getByRole('textbox', { name: /^Title/ });
@@ -37,7 +37,7 @@ export async function keyboardJourney(page, base, record) {
   await page.getByLabel('Description', { exact: true }).fill('');
   for (const [key, path, heading] of [['m', '/app/my-work', 'My work'], ['c', '/app', 'Current'], ['p', '/app/projects', 'Projects']]) {
     await settleReads(page);
-    await page.locator('h1').click();
+    await page.locator('h1').first().click();
     await page.keyboard.press('g');
     await page.keyboard.press(key);
     await page.waitForURL(base + path);
