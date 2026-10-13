@@ -171,6 +171,14 @@
       "reason": "These exact malformed mailbox fixtures exercise one-character and numeric-only top-level domain rejection before any provider write. Replacing them with valid reserved domains would remove the boundary cases. All values are synthetic test inputs.",
       "reviewer": "Vector source release review",
       "date": "2026-10-07"
+    },
+    {
+      "rule": "hygiene.email",
+      "path": "visual/jira/completed-reconciliation-390-viewport.png",
+      "blob": "d18fb01e161adc63b5c4f61cc7dee8ba855fec80",
+      "reason": "Verified PNG compressed-data false positive: one six-byte match at file offset 39208 lies wholly in an IDAT payload. All chunk CRCs and the complete zlib raster stream validate. The bytes are absent from inflated scanlines and non-IDAT payloads; the image has no textual metadata chunks. Original browser-capture pixels and bytes are retained.",
+      "reviewer": "Codex root, independent byte and visual review",
+      "date": "2026-10-13"
     }
   ]
 }

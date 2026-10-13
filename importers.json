@@ -19,6 +19,23 @@
         "validation": "synthetic-only",
         "realExport": "not-supplied"
       }
+    },
+    {
+      "incumbent": "Jira",
+      "product": "Vector",
+      "status": "documented format",
+      "inputs": [
+        "Jira Cloud All Fields CSV (supported profile)"
+      ],
+      "testedScale": {
+        "issues": 300,
+        "method": "deterministic generator"
+      },
+      "evidence": {
+        "link": "docs/IMPORT-EVIDENCE.md",
+        "validation": "synthetic-only",
+        "realExport": "not-supplied"
+      }
     }
   ]
 }

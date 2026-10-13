@@ -1,8 +1,9 @@
 # Move issues into Vector
 
-Settings → Data / Move in accepts mapped CSV, a JSON array of objects, or
-Linear's workspace issue CSV. One reviewed run reads a whole file: up to
-4,000 source rows in a file of up to 4 MiB. Preview reads it once and
+Settings → Data / Move in accepts mapped CSV, a JSON array of objects, Linear's
+workspace issue CSV, or the supported Jira Cloud All Fields CSV profile. One
+reviewed run reads a whole file: up to 4,000 source rows in a file of up to 4 MiB.
+Preview reads it once and
 reports every error and omission; apply then publishes the run in staged
 batches. Each batch publishes all its issues and relationships or none.
 
@@ -114,6 +115,9 @@ the omissions retained in that review, then publishes batch by batch; stopping
 it (Ctrl-C) leaves the run resumable with `resume`, and `status` reports the
 batches applied and the last failure. JSON uses `--format json`; Linear uses
 `--format linear-csv` with its built-in columns and any explicit reference mappings.
+Jira uses `--format jira-csv`; see [Jira CSV file importer](JIRA-CSV.md) for its
+source namespace, date policy, mappings, relation effects and evidence
+boundary.
 
 ## Linear CSV file importer (documented format, tested with a generator)
 
@@ -131,6 +135,56 @@ create operators from assignee names, call Linear, or offer an Asana importer.
 A deterministic generator (`tests/fixtures/import/linear/generate.mjs`) that
 follows the documented columns produces the 2,000-issue file the tests move in.
 No owner export has been supplied; this is not a verified real-export claim.
+
+## Jira Cloud All Fields CSV (supported profile, synthetic-only)
+
+The Jira file importer accepts a supported profile based on Jira Cloud's
+documented All Fields CSV and compatible documented import encodings. Its claim
+is **documented format, synthetic-only; real export not supplied**. It is not a
+Jira integration: no Atlassian request is made and attachment URLs are never
+fetched. Jira Server and Data Center variants, a team's native header variants,
+and attachment bytes are unverified. The shared 4,000-row/4-MiB service limit
+does not mean Jira scale was measured at that limit; the Jira generator evidence
+covers the generated 300-issue fixture. See [IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md)
+for native route evidence and CLI results. The external public-port REPORT
+records exact source heads, commands and results, with labels distinguishing
+the earlier copied-CLI run from the `@runeditrun/rer` CLI run. Browser captures,
+held-out proof, full verification and exact-head CI evidence are recorded there
+as well.
+
+Use Jira's **All Fields** export and keep the UTF-8 file unchanged. Settings
+offers **Jira All Fields CSV (supported profile)**; the importer command remains
+`pnpm run import:issues` with `--format jira-csv`. For a local CLI session, start
+with `pnpm exec rer dev --login`; build with `pnpm exec rer build`. The default
+is preview only.
+Review the whole-file date result, explicit status/priority/account/cycle
+mappings, references and the complete omission report before acknowledging it
+and applying. A source namespace scopes opaque numeric Issue IDs; select the
+existing team by its
+native ID for the proven mapping path. Mutable Issue keys are separately
+retained and remain visible/searchable as old identifiers. Epic rows use the
+existing exact `epic` label. Parents, outward Blocks links and duplicate-to-
+canonical links are resolved inside the same run. A new Blocks edge targeting
+a retained reused issue is a positional preflight error; it cannot silently
+change that retained issue. Imported comments carry their
+source time and read-only author name. Optional named HTTPS links from
+Attachment metadata require explicit opt-in; the importer never fetches them or
+imports file bytes inline. Unsupported custom/plugin fields remain in the exact
+original and appear in the report.
+
+The profile selects only the last nonempty repeated Sprint occurrence for an
+explicit exact-name existing open cycle mapping; earlier occurrences remain
+visible as rolled-over source values. This is a Vector policy, not proof that a
+native Jira export orders repeated Sprint values chronologically. Ambiguous
+numeric dates and offsetless instants without an explicit source offset are
+refused. Story points take precedence over Original estimate; seconds convert
+only with a reviewed exact unit policy and exact integer result. No mapping is
+guessed. See [JIRA-CSV.md](JIRA-CSV.md) for the full field/date contract and
+[IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md) for native route evidence and CLI
+results by exact source head.
+Jira needs no new migration: the existing staged storage, source identities and
+imported-comment schema are reused. The owner must trial a real export before
+changing the support claim.
 
 ## Undo a whole run
 
@@ -159,7 +213,8 @@ not imported but kept in the original file (every omitted nonempty field with
 its count and rows), which references were not resolved (for example an
 assignee who is not an operator, row by row), and what the file never held at
 all (for Linear's CSV: comments, attachment files and links, history,
-memberships and relations other than the parent). It breaks rows read and issues
+memberships and relations other than the parent). Jira CSV does not carry
+attachment bytes. It breaks rows read and issues
 written down by team, status, project, cycle and assignee, showing what each
 source value became in Vector. The CSV is the mapping file: one line per source
 row with its source ID, its Vector identifier and the fields not imported.

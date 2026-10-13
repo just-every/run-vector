@@ -4,6 +4,8 @@ import type { ImportJob,ImportPlan } from '../../../../../vendor/base/import-kit
 import { checkSql,valueBytes } from '../../../../../vendor/base/import-kit/src/d1/budget';
 import { parseImport } from './source';
 import { mapImport } from './mapper';
+import { effectPlan } from './effect-report';
+import { buildJiraReview } from './jira-review';
 import { jiraInput } from './jira';
 import { linearInput } from './linear';
 import { importContext,type ImportActor } from './authority';
@@ -23,7 +25,7 @@ function normalized(input:ImportInput):ImportInput {
   return {...selected,source:'vector-import:'+selected.source};
 }
 function mappingVersion(input:ImportInput) {
-  return 'vector-issues-v1:'+sha256(canonicalJson({format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
+  return 'vector-issues-v1:'+sha256(canonicalJson({...(input.format==='jira-csv'?{jiraEffectsVersion:3}:{}),format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
 }
 type PlannedPreview = ImportPreview & { plan?: ImportPlan; batchSize?: number; report?: ReportInput };
 async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<PlannedPreview> {
@@ -33,12 +35,18 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
   const mapped=await mapImport(db,actor,input,parsed.source,effectiveAt,version,origin);
   const errors=[...parsed.errors,...mapped.errors];
   if(!parsed.source.records.length)errors.push({row:0,code:'empty_import',message:'The file contains no issue rows.'});
-  const preview:PlannedPreview={ready:false,effectiveAt,...(parsed.jiraDates?{jiraDates:parsed.jiraDates}:{}),headers:parsed.headers,errors,omissions:mapped.omissions,count:parsed.source.records.length,bounds:importLimits,measured:{fileBytes:Buffer.from(input.base64,'base64').byteLength,rows:parsed.source.records.length,reused:mapped.reused}};
+  const jiraReview=input.format==='jira-csv'?buildJiraReview(parsed.source.records,input,errors,mapped.omissions,mapped.references):undefined;
+  const preview:PlannedPreview={ready:false,effectiveAt,...(jiraReview?{jiraReview}:{}),...(parsed.jiraDates?{jiraDates:parsed.jiraDates}:{}),headers:parsed.headers,errors,omissions:mapped.omissions,count:parsed.source.records.length,bounds:importLimits,measured:{fileBytes:Buffer.from(input.base64,'base64').byteLength,rows:parsed.source.records.length,reused:mapped.reused}};
   if(errors.length)return preview;
   const context=importContext(db,actor,input.source,version);
   const plan=await planD1Import(mapped.source,{version,map:record=>mapped.effects.get(record.sourceId)!},context);
   let nativeBytes=0,nativeStatements=0,maxParameters=0,entryStatements=1,entryBytes=1;
   try {
+    preview.report=reportInput(input,parsed.headers,parsed.source.records,mapped.omissions,jiraReview);
+    preview.report.effects=effectPlan(mapped.effects,mapped.references.labels,actor.workspace,input.source);
+    const reportJson=JSON.stringify(preview.report);
+    checkSql({sql:'INSERT INTO vector_import_reports(job_id,report_json) VALUES(?,?)',params:['0'.repeat(36),reportJson]});
+    preview.measured.reportBytes=Buffer.byteLength(reportJson);
     for(const entry of plan.entries) {
       let statementsHere=0,bytesHere=0;
       for(const effect of entry.effects) {
@@ -64,7 +72,6 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
   // reads. Planning repeats the current SQL admission after those awaits.
   await planD1Import(mapped.source,{version,map:record=>mapped.effects.get(record.sourceId)!},context);
   preview.ready=true;preview.fingerprint=plan.fingerprint;preview.plan=plan;
-  preview.report=reportInput(input,parsed.headers,parsed.source.records,mapped.omissions);
   return preview;
 }
 export async function previewImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<ImportPreview> {

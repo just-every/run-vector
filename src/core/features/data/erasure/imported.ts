@@ -1,4 +1,5 @@
 import type { D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
+import type { JiraReview } from '../import/jira-review';
 import { scrubJson } from './subject';
 
 export type ImportedCounts = { comments: number; reports: number; reportRows: number; outbox: number };
@@ -22,7 +23,15 @@ export async function importedStatements(db: D1Database, values: string[], at: s
     const report = JSON.parse(row.report_json) as { rows: Json[][]; erasedRows?: number[] } & Record<string, Json>;
     const erased = new Set(report.erasedRows ?? []);
     for (const cells of report.rows) if (cells.slice(2).some(cell => typeof cell === 'string' && wanted.has(cell.trim().toLowerCase()))) erased.add(Number(cells[0]));
-    const scrubbed = scrubJson(report as unknown as Json, wanted);
+    // Positional Jira cells also contain author tokens inside semicolon metadata.
+    // Dropping the optional detailed review avoids leaving the same token in its
+    // raw occurrence/value summaries after the structured author was erased.
+    const jira=report.jiraReview as unknown as JiraReview|undefined;
+    const jiraRows=jira?.concepts.flatMap(concept=>concept.occurrences.filter(item=>wanted.has(item.value.trim().toLowerCase())||Boolean(item.metadata&&wanted.has(item.metadata.author.trim().toLowerCase()))).map(item=>item.row))??[];
+    const retained={...report};
+    if(jiraRows.length){delete retained.jiraReview;for(const number of jiraRows)erased.add(number);}
+    const scrubbed = scrubJson(retained as unknown as Json, wanted);
+    if(jiraRows.length)scrubbed.changed=true;
     if (!scrubbed.changed) continue;
     reports++; reportRows += erased.size - (report.erasedRows?.length ?? 0);
     const next = { ...(scrubbed.value as Record<string, Json>), erasedRows: [...erased].sort((a, b) => a - b) };

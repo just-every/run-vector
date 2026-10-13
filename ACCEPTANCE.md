@@ -20,6 +20,25 @@ Wave B source preparation: see [managed source and recovery](docs/MANAGED-SOURCE
 
 Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the same reviewed native Base import-kit path in Settings and the terminal. See docs/MOVE-IN.md, docs/IMPORT-EVIDENCE.md and docs/ARCHIVES.md for limits, exact originals, command spelling and the authenticated HTTP restore admission and recovery requirements. Replacement claims remain empty; no owner export or hosted acceptance is asserted. Erasure of an imported person or a removed operator (DATA-011) is locally proven through Vector's routes across applied and pending runs, with older archives refused on restore; current members are removed first, and other people's free text is not rewritten. See docs/ERASURE.md.
 
+The Jira Cloud All Fields CSV supported profile uses the same reviewed staged
+file importer. Its claim remains **documented format, synthetic-only; real
+export not supplied**. The repository's generated 300-issue fixture exercises
+preflight and apply through native routes. The earlier copied-CLI run also
+covered repeat, status, resume, reconciliation and whole-run rollback on its
+recorded source head. The external public-port REPORT records exact source
+heads, commands and results, distinguishing that run from the `@runeditrun/rer`
+CLI run. The current commands are `pnpm exec rer dev --login` for a local session and
+`pnpm exec rer build` for a build; Jira imports still use `pnpm run import:issues`
+with `--format jira-csv`.
+Jira reuses the existing import storage, imported-comment schema and source
+identities; it adds no migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and
+[IMPORT-EVIDENCE.md](docs/IMPORT-EVIDENCE.md) for the measured public-route
+checks, exact-head CLI evidence and limits. Browser capture, held-out proof,
+full verification and exact-head CI evidence belong to the external
+public-port REPORT; earlier private checkpoint results are not acceptance
+evidence for this public source. A real team's export and release publication
+remain owner review steps.
+
 Apply 0025/0026 additively after 0024, and 0035–0037 (staged import runs, reconciliation reports, imported comment authors) in order; 0035 replaces the one-batch import triggers with a batch-boundary rule, and populated previous-head proofs state every changed object. Retain original bytes, import journals/provenance, revisions, identifier reservations and authorization guards on compatible-source rollback. Archive export excludes credentials, delivery claims and import lease capabilities. Stop local runtimes before archive commands; restore into empty D1/FILES, configure fresh destination authority, and review access/effects. Never replay historical deliveries. Native cycle history is retained. Automatic closure and frozen snapshots are described below; due reminders and native deletion are described below.
 
 ## Native integrations

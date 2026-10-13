@@ -179,7 +179,7 @@ function IssueInspector({
             </p>
             {issue.importedFrom ? (
               <p className="detail-kicker">
-                Imported from {issue.importedFrom.sourceId} ({issue.importedFrom.source})
+                Imported from {issue.importedFrom.sourceKey??issue.importedFrom.sourceId}{issue.importedFrom.sourceKey?` · source ID ${issue.importedFrom.sourceId}`:''} ({issue.importedFrom.source})
                 {issue.importedFrom.unfinished ? " · part of an unfinished import run" : ""}
               </p>
             ) : null}
