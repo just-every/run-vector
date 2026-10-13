@@ -66,6 +66,11 @@ export async function projectRulesFixture() {
       });
       return created;
     }
+    if (fields.cycleId && [status("completed"), status("canceled")].includes(statusId as string)) {
+      const created = await f.create({ ...fields, statusId: status("unstarted") });
+      await patch(created.identifier, { statusId });
+      return created;
+    }
     return f.create(extra);
   }
   return { ...f, create, json, portfolio, detail, issue, patch, project, cycle, block, status };
