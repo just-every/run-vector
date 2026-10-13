@@ -581,7 +581,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "9fbb2519c97431f0f12a2eb236a32690b7a79f25db8c5787c86fe2e7dec4669e",
+      "sha256": "5f4f754d945754778e8f41930c930e4c44607ad30a99c5acd36dd0df17226396",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -601,7 +601,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "10a435f57e431d7c555f80c9278861ae3a2a25776194df3fe415579ca3cbcf4b",
+      "sha256": "482d4c42f9f54b1724b3b42334b58f30751808c7f4117becff1bb237920cb99b",
       "executable": false
     },
     "CLAUDE.md": {
@@ -705,7 +705,7 @@
       "executable": false
     },
     "docs/IMPORT-EVIDENCE.md": {
-      "sha256": "28100e63c654e9c48070dc2ca1d661d0473b86d6f6ec33cf556d3c05950f9d67",
+      "sha256": "7cad611d4111d0f1025a51d1dc34df6f4b155668ff0bf60b847b13974c924da0",
       "executable": false
     },
     "docs/INSTALLER.md": {
@@ -733,11 +733,11 @@
       "executable": false
     },
     "docs/MOVE-IN-CHECKLIST.md": {
-      "sha256": "bae926260e083248130053c3bc3f4489eb801a4b3953ddd4e5b4fb7e7a9d26fa",
+      "sha256": "13899db89e17c577184a1f4d4d9c4747eb5662c9fc9b9f987677ab765cf0bbdd",
       "executable": false
     },
     "docs/MOVE-IN.md": {
-      "sha256": "5a12f2ab35649119979aba9e50527b7d21d8da3078652b5a82b41879368ba017",
+      "sha256": "a4130dc649f93c6a7dd29e2e5067d8fb2f0ab5373f6e4ba4cb9c3f52fef581b7",
       "executable": false
     },
     "docs/NOTIFICATIONS.md": {
@@ -757,11 +757,11 @@
       "executable": false
     },
     "HANDOVER.md": {
-      "sha256": "b8c33c52bc3ced6060d2e7452395916b5cf1ca1abc52cbf6f1ccac85c64a2314",
+      "sha256": "981f54470880957e68b1e91b26f3d90382cd79884962f6c0171089d40e14ac23",
       "executable": false
     },
     "importers.json": {
-      "sha256": "058415e43cb4c56db1524896e059e204cafe5401a003f510795dea2ab274bb97",
+      "sha256": "33233c7ac9b46290141c29e3c9cab83e846e40f482ed2de57b8586508629b8f1",
       "executable": false
     },
     "LICENSE": {
@@ -1017,7 +1017,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "c12f26ac841192fe63886dc54d701cbc74721c1815e2a37b6127d0b4cfc9c29f",
+      "sha256": "7f1dfde72e6534d6bda6355c111e092563fff467bd67401ca8211d3444ebf692",
       "executable": false
     },
     "rer-project.json": {
