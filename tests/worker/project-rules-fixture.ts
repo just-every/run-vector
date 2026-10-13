@@ -46,5 +46,27 @@ export async function projectRulesFixture() {
       relatedIdentifier: blocker, direction: "blocked-by",
     });
   }
-  return { ...f, json, portfolio, detail, issue, patch, project, cycle, block, status };
+  async function create(extra: Record<string, unknown> = {}) {
+    const { statusId, ...fields } = extra;
+    if (statusId === status("intake")) {
+      const response = await f.call("/intake", "POST", {
+        title: fields.title ?? "Intake project member", teamId: fields.teamId ?? team.id,
+      });
+      expect(response.status, await response.clone().text()).toBe(201);
+      const created = await response.json() as Awaited<ReturnType<typeof f.create>>;
+      const { teamId: _teamId, title: _title, ...properties } = fields;
+      if (Object.keys(properties).length) await patch(created.identifier, properties);
+      return created;
+    }
+    if (statusId === status("duplicate")) {
+      const canonical = await f.create({ title: "Independent canonical issue" });
+      const created = await f.create(fields);
+      await json(`/issues/${created.identifier}/duplicate`, "POST", {
+        expectedVersion: created.version, canonicalIdentifier: canonical.identifier,
+      });
+      return created;
+    }
+    return f.create(extra);
+  }
+  return { ...f, create, json, portfolio, detail, issue, patch, project, cycle, block, status };
 }

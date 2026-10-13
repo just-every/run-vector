@@ -59,7 +59,7 @@ contractWith(it, "PROJ-004", "project progress counts completed issues and exclu
   }
   await f.create({ projectId: project.id, statusId: f.status("completed"), estimate: 1 });
   await read(1, 5, 20);
-  await f.patch(remaining[0].identifier, { statusId: f.status("completed") });
+  await f.patch(remaining[2].identifier, { statusId: f.status("completed") });
   await read(2, 5, 40);
   await f.patch(remaining[1].identifier, { statusId: f.status("canceled") });
   await read(2, 4, 50);
