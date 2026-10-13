@@ -8,10 +8,16 @@ export async function currentJourney(page, context, base, teamId, evidence, reco
   });
   assert.equal(created.status(), 201);
   const issue = await created.json();
-  await beforePrivateNavigation(page, base + '/app');
-  await page.goto(base + '/app');
+  // Keep the native inspector explicitly selected when its Current row leaves.
+  // The list's automatic first-row selection would dispose that issue's reads.
+  const currentUrl = base + `/app/current/${issue.identifier}`;
+  await beforePrivateNavigation(page, currentUrl);
+  await page.goto(currentUrl);
   const row = page.locator(`#issue-row-${issue.identifier}`);
   await row.waitFor();
+  await page.getByRole('heading', { name: issue.title, exact: true }).waitFor();
+  const subscriptionOwner = await page.getByRole('group', { name: 'Your issue notifications', exact: true }).elementHandle();
+  assert.ok(subscriptionOwner);
   const currentDocument = await page.evaluate(() => performance.timeOrigin);
   const successfulPoll = await page.waitForResponse(response => response.url() === base + '/api/current' && response.status() === 200);
   await successfulPoll.finished();
@@ -25,6 +31,9 @@ export async function currentJourney(page, context, base, teamId, evidence, reco
   assert.equal(response.status(), 200);
   await row.waitFor({ state: 'detached', timeout: 6500 });
   const visibleAt = Date.now();
+  assert.equal(page.url(), currentUrl);
+  assert.ok(await subscriptionOwner.evaluate(node => node.isConnected), 'Selected inspector retains its subscription owner after its Current row leaves');
+  await page.getByRole('heading', { name: issue.title, exact: true }).waitFor();
   const proof = { identifier: issue.identifier, pollCompletedAt, requestStartedAt, decisionRespondedAt, visibleAt,
     fromDecisionResponseMs: visibleAt - decisionRespondedAt, fromRequestStartMs: visibleAt - requestStartedAt,
     alignmentMs: requestStartedAt - pollCompletedAt, documentUnchanged: currentDocument === await page.evaluate(() => performance.timeOrigin) };
