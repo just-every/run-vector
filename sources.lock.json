@@ -3375,7 +3375,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip.mjs": {
-      "sha256": "d93224537ee0defa1d3ffde8c462d42c68570030dd61bc1e961007296f0f4709",
+      "sha256": "3f8f84825b1f8cc4174f1a6bdd658ed1b8d07434300016c50e6fd749bbea6d48",
       "executable": false
     },
     "tests/e2e/data-runtime.mjs": {
@@ -3523,7 +3523,7 @@
       "executable": false
     },
     "tests/e2e/restore-ui-journey.mjs": {
-      "sha256": "918a0cdcb8326f150dbd7e65ff852c3c22b8a710365d604b851691db06e283de",
+      "sha256": "c7c571d624b8e0d9a2c4cc38fdb5d7b6d3d5d46c0bc32c349b247fce79e02ae6",
       "executable": false
     },
     "tests/e2e/route-fetch.mjs": {
