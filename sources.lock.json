@@ -1379,7 +1379,7 @@
       "executable": false
     },
     "src/core/app/public/sign-in-loader.ts": {
-      "sha256": "4c49bd868ea832efae0cc94770008a3906c647354e0c9cb039f0c25e30c957bd",
+      "sha256": "bad1522ad45adf0ad067dfc981781a8839074b67213c731b5fb52da09fd86f4e",
       "executable": false
     },
     "src/core/app/public/sign-in-page.tsx": {
@@ -1784,6 +1784,10 @@
     },
     "src/core/features/auth/projection-admission.ts": {
       "sha256": "5326a39857fb283011f4a29cbd35c1f1f9b747063e5e5b2172eb5cc4b49fcbfc",
+      "executable": false
+    },
+    "src/core/features/auth/providers.server.ts": {
+      "sha256": "dbd095876b59bcf8a5ec2adfc8382580c09690d8f42f8113ee34707af8cd5048",
       "executable": false
     },
     "src/core/features/auth/repository.ts": {
