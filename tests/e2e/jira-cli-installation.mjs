@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {cp,mkdir,mkdtemp,readFile,rm,symlink,writeFile} from 'node:fs/promises';
+import {cp,mkdir,mkdtemp,readFile,rm,symlink} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
@@ -26,9 +26,8 @@ export async function startJiraCliInstallation(){
   const logDirectory=join(scratch,'private');await mkdir(logDirectory,{mode:0o700});
   const commandState={logs:[]};commands=await createCommands(logDirectory,commandState,{terminal:()=>{}});
   const environment=commandEnvironment({CI:'true',RER_SERVER_JOURNEY:'1',RER_LOCAL_OPERATION:undefined});
-  const rer=join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),answers='jira-cli-setup-answers.json';
-  await writeFile(join(root,answers),JSON.stringify({target:'local'}),{mode:0o600});
-  const port=await freePort();await commands.run('Configure Jira CLI installation',process.execPath,[rer,'setup','--answers',answers,'--owner-email','jira-cli@example.test','--port',String(port),'--non-interactive'],{cwd:root,env:environment});
+  const rer=join(root,'node_modules/@runeditrun/rer/bin/rer.mjs');
+  const port=await freePort();await commands.run('Configure Jira CLI installation',process.execPath,[rer,'setup','--owner-email','jira-cli@example.test','--port',String(port),'--non-interactive'],{cwd:root,env:environment});
   const settings=parseEnv(await readFile(join(root,'.dev.vars'),'utf8')),origin=settings.APP_ORIGIN;
   commands.addSecrets([settings.SESSION_SECRET,settings.SETUP_TOKEN]);
   child=commands.spawn('Jira CLI development',process.execPath,[rer,'dev','--login'],{cwd:root,env:environment});
