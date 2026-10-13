@@ -107,13 +107,14 @@ it("[VIEW-001 ISSUE-005] lists backlog independently of Current with exact statu
   );
   expect(wildcards.total).toBe(0);
 });
-it("[VIEW-001] pages a bounded synthetic list without missing or repeating records", async () => {
+it("[VIEW-001 VIEW-005] list and board traverse every filtered row with complete counts and page-present groups", async () => {
   const template = await env.DB.prepare(
-    "SELECT i.id FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE s.category='backlog' LIMIT 1",
-  ).first<{ id: string }>();
+    "SELECT i.id, i.team_id FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE s.category='backlog' LIMIT 1",
+  ).first<{ id: string; team_id: string }>();
   expect(template).not.toBeNull();
+  const identifiers = Array.from({ length: 101 }, (_, i) => "PGD-" + (i + 1));
   await env.DB.batch(
-    Array.from({ length: 51 }, (_, index) =>
+    identifiers.map((identifier, index) =>
       env.DB.prepare(
         `
     INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,custom_fields_json,version,created_at,updated_at)
@@ -121,28 +122,81 @@ it("[VIEW-001] pages a bounded synthetic list without missing or repeating recor
   `,
       ).bind(
         createUlid(new Date()),
-        "PGD-" + (index + 1),
+        identifier,
         index + 1,
         "Paged synthetic issue " + index,
         template!.id,
       ),
     ),
   );
-  const first = issueListSchema.parse(
-    await (await read("?q=Paged%20synthetic")).json(),
+  for (const query of [
+    "?q=Paged%20synthetic&grouping=priority&sort=oldest",
+    `?q=Paged%20synthetic&team=${template!.team_id}&grouping=status&pageSize=100&sort=newest`,
+  ]) {
+    const first = issueListSchema.parse(await (await read(query)).json());
+    const pages = [first];
+    for (
+      let offset = first.pageSize;
+      offset < first.total;
+      offset += first.pageSize
+    )
+      pages.push(
+        issueListSchema.parse(
+          await (
+            await read(`${query}&offset=${offset}&revision=${first.revision}`)
+          ).json(),
+        ),
+      );
+    expect(pages.length).toBeGreaterThan(1);
+    const rows = pages.flatMap((page) => page.issues);
+    expect(rows.map((row) => row.identifier).sort()).toEqual(
+      [...identifiers].sort(),
+    );
+    expect(new Set(rows.map((row) => row.id)).size).toBe(identifiers.length);
+    for (const page of pages) {
+      expect(page.total).toBe(identifiers.length);
+      expect(page.issues.length).toBeLessThanOrEqual(page.pageSize);
+      expect(page.allGroups).toEqual(first.allGroups);
+      expect(page.allGroups!.reduce((sum, group) => sum + group.count, 0)).toBe(
+        identifiers.length,
+      );
+      expect(
+        page.groups.every((group) =>
+          page.issues.some((row) => row.groupKey === group.key),
+        ),
+      ).toBe(true);
+      expect(page.statusCounts).toEqual(first.statusCounts);
+      if (page.statusCounts)
+        expect(
+          page.statusCounts.reduce((sum, group) => sum + group.count, 0),
+        ).toBe(identifiers.length);
+    }
+  }
+  expect((await read("?pageSize=101")).status).toBe(400);
+});
+
+it("[VIEW-001 OPS-004] removed terminal assignees browse as unassigned", async () => {
+  const operator = createUlid(new Date());
+  await env.DB.prepare(
+    "INSERT INTO operators(id,workspace_id,name,email,removed_at,created_at,updated_at) VALUES(?,?,'Removed operator',?,'now','now','now')",
+  )
+    .bind(operator, ids.workspace, operator + "@removed.invalid")
+    .run();
+  const target = await env.DB.prepare(
+    "SELECT i.id FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE s.category='canceled' LIMIT 1",
+  ).first<{ id: string }>();
+  expect(target).not.toBeNull();
+  await env.DB.prepare("UPDATE issues SET assignee_operator_id=? WHERE id=?")
+    .bind(operator, target!.id)
+    .run();
+  const response = await read(
+    "?category=canceled&assignee=unassigned&grouping=assignee",
   );
-  const second = issueListSchema.parse(
-    await (
-      await read(`?q=Paged%20synthetic&offset=50&revision=${first.revision}`)
-    ).json(),
-  );
-  expect(first.total).toBe(51);
-  expect(second.total).toBe(51);
-  expect(first.issues).toHaveLength(50);
-  expect(second.issues).toHaveLength(1);
-  expect(
-    new Set([...first.issues, ...second.issues].map((item) => item.id)).size,
-  ).toBe(51);
+  expect(response.status).toBe(200);
+  const data = issueListSchema.parse(await response.json());
+  expect(data.issues.some((row) => row.id === target!.id)).toBe(true);
+  expect(data.issues.find((row) => row.id === target!.id)?.assignee).toBeNull();
+  expect(data.groups.every((group) => group.key === "none")).toBe(true);
 });
 
 it("[BASE-ACCESS-001 OPS-001] foreign issue, status, team and operator metadata never enters the list or count", async () => {
@@ -152,13 +206,9 @@ it("[BASE-ACCESS-001 OPS-001] foreign issue, status, team and operator metadata 
     status = createUlid(new Date()),
     operator = createUlid(new Date());
   await env.DB.batch([
-    env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)").bind(
-      workspace,
-      "Foreign private workspace",
-      "UTC",
-      now,
-      now,
-    ),
+    env.DB.prepare(
+      "INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES(?,?,?,?,?)",
+    ).bind(workspace, "Foreign private workspace", "UTC", now, now),
     env.DB.prepare(
       "INSERT INTO teams(id,workspace_id,name,identifier_prefix,created_at,updated_at) VALUES(?,?,?,?,?,?)",
     ).bind(team, workspace, "Foreign private team", "FRN", now, now),

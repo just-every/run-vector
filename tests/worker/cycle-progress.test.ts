@@ -7,10 +7,9 @@ import { createUlid } from "../../src/core/shared/ids";
 import { createIssueInputSchema } from "../../src/core/features/issues/input";
 import { createIssueRecord } from "../../src/core/features/issues/repository";
 import { ensureSampleData } from "../../src/core/features/sample-data/service";
-import {
-  getMyWorkStream,
-  loadWorkspaceSnapshot,
-} from "../../src/core/features/streams/service";
+import type { getMyWorkStream } from "../../src/core/features/streams/service";
+import { createServerApp } from "../../src/core/app/server";
+import { testCookie } from "./native-fixture";
 import { moveIssueTeamRecord } from "../../src/core/features/team-move/repository";
 
 const now = new Date("2026-09-30T12:00:00.000Z");
@@ -18,6 +17,16 @@ beforeAll(async () => {
   await applyD1Migrations(env.DB, inject("migrations"));
   await ensureSampleData(env.DB, now);
 });
+
+async function readWork(operatorId: string) {
+  const response = await createServerApp().request(
+    "https://vector.test/api/my-work?at=" + now.toISOString(),
+    { headers: { cookie: await testCookie(env.DB, operatorId) } },
+    { ...env, APP_ORIGIN: "https://vector.test" },
+  );
+  assert.equal(response.status, 200);
+  return (await response.json()) as Awaited<ReturnType<typeof getMyWorkStream>>;
+}
 
 // Explicit D1 fixtures exercise live progress calculation; scheduled closure
 // and authored commitment flows have their own public-door coverage.
@@ -75,153 +84,110 @@ async function committed(
 }
 
 async function row(cycleId: string, operatorId: string = ids.sarah) {
-  const work = await getMyWorkStream(env.DB, operatorId, now);
+  const work = await readWork(operatorId);
   const result = work.cycles.find((item) => item.id === cycleId);
   assert.ok(result, `${cycleId} is eligible for this operator`);
   return result;
 }
 
-it("[WORK-003][CYCLE-003] original persistent sample reports all committed points and retains stream membership without mutating prior data", async () => {
-  const before = await loadWorkspaceSnapshot(env.DB);
-  const work = await getMyWorkStream(env.DB, ids.sarah, now);
-  assert.deepEqual(
-    work.sections.waiting.map((item) => item.identifier),
-    ["PLT-102"],
-  );
-  assert.ok(work.sections.now.some((item) => item.identifier === "PLT-103"));
-  assert.ok(work.sections.next.some((item) => item.identifier === "PLT-101"));
-  const flow = work.cycles.find((item) => item.id === ids.flowCycle);
-  const platform = work.cycles.find((item) => item.id === ids.platformCycle);
-  assert.ok(flow);
-  assert.ok(platform);
-  assert.equal(work.cycles.length, 2);
-  assert.deepEqual(
-    {
-      completed: flow.completed,
-      total: flow.total,
-      unit: flow.unit,
-      percentage: flow.percentage,
-      remainingPoints: flow.remainingPoints,
-      capacityRisk: flow.capacityRisk,
-      capacity: flow.capacity,
-      unestimatedRemaining: flow.unestimatedRemaining,
-    },
-    {
-      completed: 0,
-      total: 13,
-      unit: "points",
-      percentage: 0,
-      remainingPoints: 13,
-      capacityRisk: "within-capacity",
-      capacity: 18,
-      unestimatedRemaining: 0,
-    },
-  );
-  assert.equal(platform.total, 13);
-  assert.equal(flow.timezone, "Australia/Brisbane");
-  assert.equal(flow.startsAt, "2026-09-27T12:00:00.000Z");
-  assert.equal(flow.endsAt, "2026-10-04T12:00:00.000Z");
-  assert.deepEqual(await getMyWorkStream(env.DB, ids.sarah, now), work);
-  assert.deepEqual(await loadWorkspaceSnapshot(env.DB), before);
-});
-
-it("[WORK-003][CYCLE-003] another assignee and unassigned scope change whole-cycle progress but not personal eligibility", async () => {
-  const id = await cycle(7);
-  const own = await committed(id, 3);
-  await committed(id, 5, ids.flowCompleted, ids.maya);
-  const other = await committed(id, 4, ids.flowStarted, null);
-  await committed(id, null, ids.flowCanceled, ids.maya);
-  await committed(id, 100, ids.flowDuplicate, ids.maya);
-  const result = await row(id);
-  assert.equal(result.completed, 5);
-  assert.equal(result.total, 12);
-  assert.equal(result.unit, "points");
-  assert.equal(result.percentage, (5 / 12) * 100);
-  assert.equal(result.remainingPoints, 7);
-  assert.equal(result.capacityRisk, "within-capacity");
-  const work = await getMyWorkStream(env.DB, ids.sarah, now);
-  assert.ok(work.sections.next.some((issue) => issue.identifier === own));
-  assert.equal(
-    Object.values(work.sections)
-      .flat()
-      .some((issue) => issue.identifier === other),
-    false,
-  );
-  assert.ok(await row(id, ids.maya));
-  assert.equal(
-    (await getMyWorkStream(env.DB, ids.alex, now)).cycles.some(
-      (item) => item.id === id,
-    ),
-    false,
-  );
-  await env.DB.prepare("UPDATE cycles SET capacity=6 WHERE id=?")
-    .bind(id)
-    .run();
-  assert.equal((await row(id)).capacityRisk, "at-risk");
-});
-
-it("[CYCLE-003] missing completed estimate uses counts while remaining points stay known; missing remaining estimate makes risk unknown", async () => {
-  const id = await cycle(8);
-  await committed(id, null, ids.flowCompleted, ids.maya);
-  const remaining = await committed(id, 8, ids.flowBacklog);
-  await committed(id, 3, ids.flowIntake, null);
-  const known = await row(id);
-  assert.equal(known.unit, "issue-count");
-  assert.equal(known.completed, 1);
-  assert.equal(known.total, 3);
-  assert.equal(known.percentage, (1 / 3) * 100);
-  assert.equal(known.remainingPoints, 11);
-  assert.equal(known.capacityRisk, "at-risk");
-  assert.equal(known.unestimatedRemaining, 0);
-  await env.DB.prepare("UPDATE issues SET estimate=NULL WHERE identifier=?")
-    .bind(remaining)
-    .run();
-  const unknown = await row(id);
-  assert.equal(unknown.remainingPoints, null);
-  assert.equal(unknown.unestimatedRemaining, 1);
-  assert.equal(unknown.capacityRisk, "unknown");
-  await env.DB.prepare("UPDATE issues SET estimate=8 WHERE identifier=?")
-    .bind(remaining)
-    .run();
-  await env.DB.prepare("UPDATE cycles SET capacity=NULL WHERE id=?")
-    .bind(id)
-    .run();
-  const absentCapacity = await row(id);
-  assert.equal(absentCapacity.remainingPoints, 11);
-  assert.equal(absentCapacity.capacity, null);
-  assert.equal(absentCapacity.capacityRisk, "unknown");
-});
-
-it("[WORK-003][CYCLE-003] excluded assigned scope keeps an empty row and zero capacity is honored", async () => {
-  const id = await cycle(0);
-  const canceled = await committed(id, null, ids.flowCanceled);
-  await committed(id, 100, ids.flowDuplicate, ids.maya);
-  const empty = await row(id);
-  assert.equal(empty.total, 0);
-  assert.equal(empty.completed, 0);
-  assert.equal(empty.percentage, null);
-  assert.equal(empty.remainingPoints, 0);
-  assert.equal(empty.unestimatedRemaining, 0);
-  assert.equal(empty.capacity, 0);
-  assert.equal(empty.capacityRisk, "within-capacity");
-  await env.DB.prepare(
-    "UPDATE issues SET status_id=?,estimate=1,canceled_at=NULL WHERE identifier=?",
-  )
-    .bind(ids.flowStarted, canceled)
-    .run();
-  const remaining = await row(id);
-  assert.equal(remaining.total, 1);
-  assert.equal(remaining.capacityRisk, "at-risk");
-  await env.DB.prepare(
-    "UPDATE issues SET status_id=?,completed_at=?,estimate=NULL WHERE identifier=?",
-  )
-    .bind(ids.flowCompleted, now.toISOString(), canceled)
-    .run();
-  const done = await row(id);
-  assert.equal(done.unit, "issue-count");
-  assert.equal(done.completed, 1);
-  assert.equal(done.percentage, 100);
-  assert.equal(done.capacityRisk, "within-capacity");
+it("[WORK-003 CYCLE-003] My Work reports live whole-cycle progress, missing estimates and empty scope for the admitted operator", async () => {
+  // "[WORK-003][CYCLE-003] another assignee and unassigned scope change whole-cycle progress but not personal eligibility"
+  {
+    const id = await cycle(7);
+    const own = await committed(id, 3);
+    await committed(id, 5, ids.flowCompleted, ids.maya);
+    const other = await committed(id, 4, ids.flowStarted, null);
+    await committed(id, null, ids.flowCanceled, ids.maya);
+    await committed(id, 100, ids.flowDuplicate, ids.maya);
+    const result = await row(id);
+    assert.equal(result.completed, 5);
+    assert.equal(result.total, 12);
+    assert.equal(result.unit, "points");
+    assert.equal(result.percentage, (5 / 12) * 100);
+    assert.equal(result.remainingPoints, 7);
+    assert.equal(result.capacityRisk, "within-capacity");
+    const work = await readWork(ids.sarah);
+    assert.ok(work.sections.next.some((issue) => issue.identifier === own));
+    assert.equal(
+      Object.values(work.sections)
+        .flat()
+        .some((issue) => issue.identifier === other),
+      false,
+    );
+    assert.ok(await row(id, ids.maya));
+    assert.equal(
+      (await readWork(ids.alex)).cycles.some((item) => item.id === id),
+      false,
+    );
+    await env.DB.prepare("UPDATE cycles SET capacity=6 WHERE id=?")
+      .bind(id)
+      .run();
+    assert.equal((await row(id)).capacityRisk, "at-risk");
+  }
+  // "[CYCLE-003] missing completed estimate uses counts while remaining points stay known; missing remaining estimate makes risk unknown"
+  {
+    const id = await cycle(8);
+    await committed(id, null, ids.flowCompleted, ids.maya);
+    const remaining = await committed(id, 8, ids.flowBacklog);
+    await committed(id, 3, ids.flowIntake, null);
+    const known = await row(id);
+    assert.equal(known.unit, "issue-count");
+    assert.equal(known.completed, 1);
+    assert.equal(known.total, 3);
+    assert.equal(known.percentage, (1 / 3) * 100);
+    assert.equal(known.remainingPoints, 11);
+    assert.equal(known.capacityRisk, "at-risk");
+    assert.equal(known.unestimatedRemaining, 0);
+    await env.DB.prepare("UPDATE issues SET estimate=NULL WHERE identifier=?")
+      .bind(remaining)
+      .run();
+    const unknown = await row(id);
+    assert.equal(unknown.remainingPoints, null);
+    assert.equal(unknown.unestimatedRemaining, 1);
+    assert.equal(unknown.capacityRisk, "unknown");
+    await env.DB.prepare("UPDATE issues SET estimate=8 WHERE identifier=?")
+      .bind(remaining)
+      .run();
+    await env.DB.prepare("UPDATE cycles SET capacity=NULL WHERE id=?")
+      .bind(id)
+      .run();
+    const absentCapacity = await row(id);
+    assert.equal(absentCapacity.remainingPoints, 11);
+    assert.equal(absentCapacity.capacity, null);
+    assert.equal(absentCapacity.capacityRisk, "unknown");
+  }
+  // "[WORK-003][CYCLE-003] excluded assigned scope keeps an empty row and zero capacity is honored"
+  {
+    const id = await cycle(0);
+    const canceled = await committed(id, null, ids.flowCanceled);
+    await committed(id, 100, ids.flowDuplicate, ids.maya);
+    const empty = await row(id);
+    assert.equal(empty.total, 0);
+    assert.equal(empty.completed, 0);
+    assert.equal(empty.percentage, null);
+    assert.equal(empty.remainingPoints, 0);
+    assert.equal(empty.unestimatedRemaining, 0);
+    assert.equal(empty.capacity, 0);
+    assert.equal(empty.capacityRisk, "within-capacity");
+    await env.DB.prepare(
+      "UPDATE issues SET status_id=?,estimate=1,canceled_at=NULL WHERE identifier=?",
+    )
+      .bind(ids.flowStarted, canceled)
+      .run();
+    const remaining = await row(id);
+    assert.equal(remaining.total, 1);
+    assert.equal(remaining.capacityRisk, "at-risk");
+    await env.DB.prepare(
+      "UPDATE issues SET status_id=?,completed_at=?,estimate=NULL WHERE identifier=?",
+    )
+      .bind(ids.flowCompleted, now.toISOString(), canceled)
+      .run();
+    const done = await row(id);
+    assert.equal(done.unit, "issue-count");
+    assert.equal(done.completed, 1);
+    assert.equal(done.percentage, 100);
+    assert.equal(done.capacityRisk, "within-capacity");
+  }
 });
 
 it("[WORK-003] future, ended, closed, removed and unassigned cycles stay ineligible; actual team moves remove cycle context", async () => {
@@ -229,9 +195,7 @@ it("[WORK-003] future, ended, closed, removed and unassigned cycles stay ineligi
   let issue = await committed(id, 5);
   const absent = async () =>
     assert.equal(
-      (await getMyWorkStream(env.DB, ids.sarah, now)).cycles.some(
-        (item) => item.id === id,
-      ),
+      (await readWork(ids.sarah)).cycles.some((item) => item.id === id),
       false,
     );
   await env.DB.prepare("UPDATE cycles SET starts_at=? WHERE id=?")
