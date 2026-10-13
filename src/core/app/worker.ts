@@ -1,3 +1,4 @@
+import { isDependencyPath } from '../features/auth/dependencies.server';
 import { scheduled } from './scheduled';
 export { VectorRestoreCoordinator } from '../features/data/restore-coordinator';
 import { editorDocument } from '../editor/config.server';
@@ -29,6 +30,7 @@ export async function handleRequest(
   )
     return env.ASSETS.fetch(request);
   if (
+    isDependencyPath(url.pathname) ||
     url.pathname === "/" ||
     url.pathname === "/setup/state" ||
     url.pathname === "/health" ||

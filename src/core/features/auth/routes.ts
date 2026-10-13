@@ -13,12 +13,13 @@ import { AuthError, createAuthHandler, securityHeaders } from '../../../../vendo
 import { baseAuth, productOperator } from './base.server'
 import type { AppEnvironment } from '../../app/bindings'
 
-const enabled = new Set(['/auth/request', '/auth/magic-link', '/auth/confirm', '/auth/session', '/auth/signout'])
+const enabled = new Set(['/auth/request', '/auth/magic-link', '/auth/confirm', '/auth/session', '/auth/signout', '/auth/setup-complete', '/auth/settings/identity'])
 export function createAuthApp() {
   const app = new Hono<AppEnvironment>()
   app.all('*', async c => {
     const path = new URL(c.req.url).pathname
-    if (!enabled.has(path)) return c.json({ error: 'not_found' }, 404)
+    if (path === '/auth/settings/identity' && c.req.method !== 'POST') return c.json({ error: 'not_found' }, 404)
+    if (!enabled.has(path) && !path.startsWith('/auth/oidc/')) return c.json({ error: 'not_found' }, 404)
     try {
       const auth = baseAuth(c.env)
       if (c.req.method === 'POST' && ['/auth/request', '/auth/magic-link'].includes(path)) {

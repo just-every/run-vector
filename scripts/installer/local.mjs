@@ -1,3 +1,4 @@
+import { approveDependencies } from './dependencies.mjs';
 import docs from '../../docs/site.json' with { type: 'json' };
 import { localInstaller } from '@runeditrun/rer/local-installer';
 import { installOperator } from '@runeditrun/rer/operator-install';
@@ -19,7 +20,7 @@ export const hooks = {
  // The installer page takes the same route as rer setup: the checkout's dev key exists before the temporary app starts,
  // so its outbox answers the sign-in request this flow makes.
  prepare: async context => { context.devKey ??= await ensureDevKey(context.root); context.store.addSecrets?.([context.devKey]); },
- owner: async ({ store }) => { await store.step('Configured first owner and workspace are ready'); },
+ owner: async context => { await approveDependencies(context); await context.store.step('Configured first owner and workspace are ready'); },
  signIn: { emailKey: 'FIRST_OWNER_EMAIL', returnTo: '/setup' },
 };
 const shared = localInstaller(hooks);

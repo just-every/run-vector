@@ -1,6 +1,6 @@
 import {publicValidators,secretValidators} from '../deployment/input-validation.mjs';
 export const settings = { file: '.dev.vars', originKey:'APP_ORIGIN', keepExisting:true, values: ({input,origin}) => ({
- APP_ORIGIN:origin, MAIL_MODE:'local-outbox', MAIL_FROM:'Vector <signin@localhost.test>', SEED_SAMPLE_DATA:'false',
+ IDENTITY_PROVIDER:input.IDENTITY_PROVIDER, APP_ORIGIN:origin, MAIL_MODE:'local-outbox', MAIL_FROM:'Vector <signin@localhost.test>', SEED_SAMPLE_DATA:'false',
  FIRST_OWNER_EMAIL:input.FIRST_OWNER_EMAIL, FIRST_OWNER_NAME:input.FIRST_OWNER_NAME, WORKSPACE_NAME:input.WORKSPACE_NAME,
  WORKSPACE_TIMEZONE:input.WORKSPACE_TIMEZONE, DEFAULT_TEAM_NAME:input.DEFAULT_TEAM_NAME, DEFAULT_TEAM_PREFIX:input.DEFAULT_TEAM_PREFIX,
 }) };

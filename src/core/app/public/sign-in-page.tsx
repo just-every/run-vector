@@ -7,7 +7,7 @@ import { SignInDrawing } from "../site/door/door-drawings";
 import { links } from "../site/shell/links";
 
 /** /signin: one email field that asks for a single-use sign-in link. `localOutbox` adds the local development note. */
-export function SignInPage({ localOutbox }: { localOutbox: boolean }) {
+export function SignInPage({ localOutbox, providerLinks = [] }: { localOutbox: boolean; providerLinks?: {id: string; label: string; startPath: string}[] }) {
   const search = useSearch({ strict: false }) as { returnTo?: string };
   const [email, setEmail] = useState(""),
     [message, setMessage] = useState(""),
@@ -69,6 +69,10 @@ export function SignInPage({ localOutbox }: { localOutbox: boolean }) {
             {busy ? "Sending…" : "Send sign-in link"}
           </button>
         </form>
+        {providerLinks.map(link => <form key={link.id} method="post" action={link.startPath}>
+          <input type="hidden" name="returnTo" value={search.returnTo ?? "/app"} />
+          <button className="vx-pill" type="submit">Continue with {link.label}</button>
+        </form>)}
         {message ? (
           <p className="vx-door-notice" role="status">
             {message}

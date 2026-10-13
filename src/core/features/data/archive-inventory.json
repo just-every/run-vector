@@ -1310,5 +1310,35 @@
     "state_revision",
     "erased_records",
     "reused"
+  ],
+  "rer_dependency_codes": [
+    "digest",
+    "created_at"
+  ],
+  "rer_dependency_installation": [
+    "singleton",
+    "sector_id"
+  ],
+  "rer_dependency_keys": [
+    "interface",
+    "private_key"
+  ],
+  "rer_dependency_link": [
+    "interface",
+    "issuer",
+    "client_id",
+    "metadata",
+    "needs_relink",
+    "linked_at"
+  ],
+  "rer_dependency_pending": [
+    "interface",
+    "issuer",
+    "approved_by",
+    "expires_at",
+    "approved_session",
+    "approved_version",
+    "callbacks",
+    "attempt_id"
   ]
 }

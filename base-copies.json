@@ -2374,6 +2374,28 @@
         "vendor/operations/operations.mjs": "100644",
         "vendor/operations/project-operations.mjs": "100644"
       }
+    },
+    {
+      "path": "migrations/core/0045_identity_dependency.sql",
+      "originPath": "modules/dependencies/schema/dependencies.sql",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "migrations/core/0045_identity_dependency.sql": "3481d8aef870a9eda153a1617e99bb71a408e61a25dea92bb132efa7dd1c2526"
+      },
+      "modes": {
+        "migrations/core/0045_identity_dependency.sql": "100644"
+      }
+    },
+    {
+      "path": "migrations/core/0046_identity_dependency_approval.sql",
+      "originPath": "modules/dependencies/schema/approval-attempt.sql",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "migrations/core/0046_identity_dependency_approval.sql": "7d3742369189b69ea28bdc000097f150f83221c6474f7e177c7b5590691b67e9"
+      },
+      "modes": {
+        "migrations/core/0046_identity_dependency_approval.sql": "100644"
+      }
     }
   ]
 }

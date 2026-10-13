@@ -7,6 +7,7 @@ export type WorkerBindings = Pick<VectorBindings, 'DB' | 'FILES' | 'APP_ORIGIN'>
   }
   INTEGRATION_EGRESS?: import("../../../vendor/base/integrations").TrustedTransport
   INTEGRATION_EGRESS_POLICY?: string
+  IDENTITY_PROVIDER?: string
   SETUP_TOKEN?: string
   RER_MANAGEMENT_ORIGIN?: string
   RER_INSTALLATION_ID?: string

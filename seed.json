@@ -271,7 +271,12 @@
       "/favicon.svg",
       "/auth/request",
       "/auth/consume",
-      "/auth/signout"
+      "/auth/signout",
+      "/auth/setup-complete",
+      "/auth/oidc/auth/callback",
+      "/auth/oidc/auth/logout",
+      "/.well-known/rer-dependencies",
+      "/.well-known/rer-link/"
     ]
   },
   "customFields": [

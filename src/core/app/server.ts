@@ -1,3 +1,4 @@
+import { dependencyResponse, isDependencyPath } from '../features/auth/dependencies.server';
 import { createIntegrationReceivers } from '../features/integrations/receiver-routes';
 import { createIntegrationApi } from '../features/integrations/api';
 import { editorConfigResponse } from '../editor/config.server';
@@ -56,6 +57,7 @@ export function createServerApp() {
       const lobby = await lobbyResponse(context.req.raw, lobbyBindings, { ...identity, deployment: workspaceName || identity.product }, async () => isClaimed);
       if (lobby) return lobby;
     }
+    if (isDependencyPath(context.req.path)) return await dependencyResponse(context.env, context.req.raw) ?? context.notFound();
     if(context.req.path==='/auth/owner-claim')return ownerClaimResponse(context.env,context.req.raw);
     if (context.env.SEED_SAMPLE_DATA === "true") {
       if (!isLocalOrigin(context.env.APP_ORIGIN))
