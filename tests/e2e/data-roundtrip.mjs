@@ -8,7 +8,7 @@ import {populateRoundtrip,verifyRoundtripCategories} from './data-roundtrip-fixt
 import {readArchive,canonicalJson} from '@runeditrun/rer/modules/portability';
 import {chromium,expect} from '@playwright/test';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
-import {restoreAccessJourney} from './restore-ui-journey.mjs';
+import {createRestoreReviewPerson,restoreAccessJourney} from './restore-ui-journey.mjs';
 const work=await mkdtemp(join(tmpdir(),'vector-roundtrip-')),evidence=resolve(process.env.RESTORE_EVIDENCE_DIR??'evidence/data');let source,destination,browser;
 const proof={passed:false,independentInstallations:true,commands:[],categories:[],rows:0,objects:0,equality:false,heldAfterCron:false,privateViews:false};
 const records=async path=>{const result=[];for await(const row of readArchive(new Response(await readFile(path)).body))result.push(row);return result;};
@@ -20,7 +20,7 @@ try{
  await expect(ordinaryPanel).toBeVisible();await expect(ordinaryPanel.getByRole('status')).toHaveCount(0);await expect(ordinaryPanel.getByRole('button')).toHaveCount(0);await expect(ordinaryPanel.getByRole('list')).toHaveCount(0);
  for(const width of [1440,390]){await ordinary.setViewportSize({width,height:1000});await ordinaryPanel.scrollIntoViewIfNeeded();await ordinary.screenshot({path:join(evidence,'settings-ordinary-'+width+'.png')});}
  await ordinary.context().close();
- const fixture=await populateRoundtrip(source,cookie);const integrations=await populateIntegrationHistory(source,cookie,fixture.identifier);await source.stop();
+ const fixture=await populateRoundtrip(source,cookie),reviewPerson=await createRestoreReviewPerson(source,cookie);const integrations=await populateIntegrationHistory(source,cookie,fixture.identifier);await source.stop();
  // rer keeps archives in the unserved exports/ folder.
  const first=join(source.root,'exports/first.jsonl'),repeat=join(source.root,'exports/repeat.jsonl'),input=join(destination.root,'input.jsonl'),second=join(destination.root,'exports/second.jsonl');
  await source.run('Export source archive',['export','--','--target','local','--output','exports/first.jsonl','--non-interactive']);proof.commands.push('pnpm run export -- --target local');
@@ -38,7 +38,7 @@ try{
  const exact=await destination.req('/api/search?q='+encodeURIComponent(fixture.identifier),'GET',undefined,restored);assert.equal(exact.status,200);assert((await exact.json()).issues.some(row=>row.identifier===fixture.identifier),'Restored immutable identifiers remain searchable');
  assert.equal((await destination.req('/auth/request','POST',{email:'maya@vector.test'})).status,409);
  const page=await openAuthenticatedPage(browser,restored,destination.origin);
- const reviewEffects=await restoreAccessJourney({page,installation:destination,cookie:restored,peer:fixture.peer,evidence});const peer=await destination.signIn('maya@vector.test');
+ const reviewEffects=await restoreAccessJourney({page,installation:destination,cookie:restored,peer:fixture.peer,reviewPerson,evidence});const peer=await destination.signIn('maya@vector.test');
  assert.equal((await destination.req('/api/views/'+fixture.privateView,'GET',undefined,peer)).status,404);assert.equal((await destination.req('/api/views/'+fixture.sharedView,'GET',undefined,peer)).status,200);proof.privateViews=true;
  assert.equal((await destination.req('/cdn-cgi/local/scheduled')).status,404);
  const runCron=()=>destination.scheduledRun();

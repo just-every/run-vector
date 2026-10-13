@@ -1,6 +1,17 @@
 import assert from 'node:assert/strict';
 import {expect} from '@playwright/test';
 import {join} from 'node:path';
+import {confirmLink,readDevelopmentLink} from './outbox-session.mjs';
+import {readCheckoutKey} from './dev-gate.mjs';
+
+export async function createRestoreReviewPerson(installation,cookie) {
+ const email='review@vector.test';
+ assert.equal((await installation.req('/api/settings/operators/invite','POST',{email,displayName:'Jordan Review'},cookie)).status,202);
+ const link=await readDevelopmentLink(installation.origin,installation.req,email,await readCheckoutKey(installation.root));
+ const confirmed=await confirmLink(link);assert.equal(confirmed.status,303);
+ const session=await installation.req('/api/session','GET',undefined,confirmed.headers.get('set-cookie').split(';')[0]);assert.equal(session.status,200);
+ return (await session.json()).operatorId;
+}
 
 // Delay real network requests to observe loading and pending UI; every response
 // comes from the installation's public Worker routes.
@@ -11,7 +22,7 @@ function holdRequest(page, pattern) {
  const handler=route=>{const continued=released.then(()=>route.continue());requests.add(continued);observed();return continued.finally(()=>requests.delete(continued));};
  return {async start(){await page.route(pattern,handler);},seen,async finish(){release();await Promise.all([...requests]);await page.unroute(pattern,handler);}};
 }
-export async function restoreAccessJourney({page,installation,cookie,peer,evidence}) {
+export async function restoreAccessJourney({page,installation,cookie,peer,reviewPerson,evidence}) {
  const endpoint=installation.origin+'/api/data/restore',panel=page.getByRole('region',{name:'After a restore'});
  const capture=async name=>{await panel.scrollIntoViewIfNeeded();await page.screenshot({path:join(evidence,name+'.png'),fullPage:false});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Settings fits the viewport');};
  const loading=holdRequest(page,endpoint);await loading.start();
@@ -25,10 +36,14 @@ export async function restoreAccessJourney({page,installation,cookie,peer,eviden
  for(const width of [1440,390]) {await page.setViewportSize({width,height:1000});await capture('restore-review-'+width);}
  const grant=panel.getByRole('button',{name:`Allow ${person.name} to sign in`,exact:true});
  const grantUrl=endpoint+'/operators/'+peer;
- // A real server refusal must remain visible and must not invent admission.
- await page.route(grantUrl,route=>route.continue({headers:{...route.request().headers(),origin:'https://untrusted.example'}}));
- const refused=page.waitForResponse(response=>response.url()===grantUrl&&response.status()===403);await grant.click();await refused;
- await expect(panel.getByRole('alert')).toBeVisible();await expect(grant).toBeDisabled();await capture('restore-refused-390');await page.unroute(grantUrl);
+ // Another operator can remove someone while their access review is pending.
+ // Exercise the real conflict, then finish the remaining person's admission.
+ const candidate=status.operators.find(row=>row.id===reviewPerson);assert(candidate&&!candidate.approved&&candidate.eligible);
+ const staleUrl=endpoint+'/operators/'+reviewPerson,stale=holdRequest(page,staleUrl);await stale.start();
+ await panel.getByRole('button',{name:`Allow ${candidate.name} to sign in`,exact:true}).click();await stale.seen;
+ assert.equal((await installation.req('/api/settings/operators/'+reviewPerson,'DELETE',undefined,cookie)).status,200);
+ const refused=page.waitForResponse(response=>response.url()===staleUrl);await stale.finish();assert.equal((await refused).status(),409);
+ await expect(panel.getByRole('alert')).toBeVisible();await expect(grant).toBeDisabled();await expect(people.getByRole('listitem').filter({hasText:candidate.email})).toHaveCount(0);await capture('restore-refused-390');
  await panel.getByRole('button',{name:'Refresh restore status'}).click();await expect(grant).toBeEnabled();
  const pending=holdRequest(page,grantUrl);await pending.start();await grant.click();await pending.seen;
  await expect(panel).toHaveAttribute('aria-busy','true');await expect(panel.getByRole('button',{name:'Granting access…'})).toBeDisabled();await capture('restore-grant-pending-390');await pending.finish();
