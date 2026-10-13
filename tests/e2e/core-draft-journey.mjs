@@ -17,13 +17,14 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   await page.getByLabel('Assignee', { exact: true }).selectOption(operatorId);
   await page.getByLabel('Priority', { exact: true }).selectOption('high');
   for (const [name, value] of fields.slice(2)) await page.getByLabel(name).fill(value);
+  await beforePrivateNavigation(page, page.url());
   await page.reload();
   await page.getByRole('textbox', { name: /^Title/ }).waitFor();
   await page.getByText('Optional context', { exact: true }).click();
   for (const [name, value] of fields) assert.equal(await page.getByLabel(name).inputValue(), value);
   for (const [name, value] of [[/^Team/, teamId], ['Assignee', operatorId], ['Priority', 'high']])
     assert.equal(await page.getByLabel(name).inputValue(), value);
-  for (const path of ['/api/search?q=' + encodeURIComponent(title), '/api/issues?search=' + encodeURIComponent(title)]) {
+  for (const path of ['/api/search?q=' + encodeURIComponent(title), '/api/issues?q=' + encodeURIComponent(title)]) {
     const response = await context.request.get(base + path);
     assert.equal(response.status(), 200);
     const body = await response.json();
