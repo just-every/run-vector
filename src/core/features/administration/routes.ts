@@ -14,7 +14,7 @@ import {
   removeStatus,
 } from "./teams";
 import { createLabel, updateLabel, removeLabel } from "./labels";
-import { createProject, updateProject } from "./projects";
+import { createProject, updateProject, removeProject } from "./projects";
 import { createCycle } from "./cycles";
 
 export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
@@ -144,6 +144,13 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
     mutation(schema.projectUpdateSchema, (c, b) =>
       updateProject(c.env.DB, c.get("operatorId"), c.req.param("id")!, b),
     ),
+  );
+  app.delete(
+    "/settings/projects/:id",
+    handle(async (c) => {
+      await removeProject(c.env.DB, c.get("operatorId"), c.req.param("id")!);
+      return read(c);
+    }),
   );
   app.post(
     "/settings/cycles",
