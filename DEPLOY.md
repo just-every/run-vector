@@ -10,7 +10,7 @@ Use Node 22.20.0 and pnpm 10.12.4. Exact Base copies are pinned at `679bb1a0eeb9
 
 The product materializes public values in private `.rer/deploy/declaration.json`. `.rer/deploy/secrets.env` is 0600, generates SESSION_SECRET once and stores the supplied mail credential. Existing values win on rerun; neither secret is implicitly rotated. The owner input SENDGRID_API_KEY maps to the established Worker binding MAIL_API_KEY, with no deployed binding rename. Retain `.rer/deploy/production.json` and the secret file. Only the explicit provider command receives these credentials; dependency/build commands never inherit them. Missing public/mail inputs refuse before resource writes. These commands do not provision a mail domain or verify mailbox arrival.
 
-The installer uses the same ownerAccountHosting hook and definitions. Local setup is `pnpm run setup -- --owner-email EMAIL` and uses `.dev.vars` plus `/__dev/outbox` without a provider credential. Follow README.md to approve installation and confirm a captured sign-in message. Estimated infrastructure cost is USD 0–15 per month under seed.json assumptions, plus transactional email; this is not capacity or live-provider acceptance.
+The browser installer supports local installation only. Owner-account deployment runs separately through `rer deploy`; setup does not deploy. Local setup is `pnpm run setup -- --owner-email EMAIL` and uses `.dev.vars` plus `/__dev/outbox` without a provider credential. Follow README.md to approve installation and confirm a captured sign-in message. Estimated infrastructure cost is USD 0–15 per month under seed.json assumptions, plus transactional email; this is not capacity or live-provider acceptance.
 
 ## Artifact controller
 

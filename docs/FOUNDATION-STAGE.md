@@ -18,4 +18,4 @@ Future notifications and closed-cycle snapshots must integrate with removal when
 
 ## Validation
 
-After building, `pnpm test:foundation` checks empty-installation bootstrap, sign-in, settings, last-owner protection, responsive layout and persistence after restart using local synthetic data. `pnpm test:base-auth` checks Base sign-in and invitation behavior. A hosted deployment additionally needs actual received-email journeys and exact deployment/resource identities; local outbox tests cannot establish real delivery.
+After building, `pnpm test:admin` checks the empty installation and real desktop/mobile Settings journey, including workspace-time submission, reminder preservation and readback after restart. `pnpm test:base-auth` checks Base sign-in, invitation, removal and session persistence. `pnpm test:worker` covers bootstrap, settings validation and last-operator protection through native routes. All three belong to the verification wall; see [VERIFICATION.md](VERIFICATION.md). A hosted deployment additionally needs actual received-email journeys and exact deployment/resource identities; local outbox tests cannot establish real delivery.

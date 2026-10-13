@@ -8,6 +8,7 @@ import { loadImportReferences } from './references';
 import { ImportError,importLimits } from './types';
 import type { ImportActor } from './authority';
 import { z } from 'zod';
+import { detachedIssues } from './detached-issues';
 import { importOperation } from './failure';
 const parse=<T>(schema:z.ZodType<T>,value:unknown):T=>{
   const result=schema.safeParse(value);
@@ -41,7 +42,8 @@ export function addImportRoutes(app:Hono<AppEnvironment>) {
     const owner=await actor(c),rows=(await c.env.DB.prepare(`SELECT j.id,j.namespace,j.state,j.total,j.checkpoint,j.error,r.batch_size AS batchSize,r.last_error AS lastError,
       (SELECT count(*) FROM ik_batches b WHERE b.job_id=j.id AND b.action='apply') AS batchesApplied FROM ik_jobs j LEFT JOIN vector_import_runs r ON r.job_id=j.id
       WHERE j.destination=? AND j.principal_id=? AND j.namespace LIKE 'vector-import:%' ORDER BY j.rowid DESC LIMIT 50`).bind(owner.workspace,owner.id).all()).results;
-    return c.json({runs:rows});
+    const detached=await detachedIssues(c.env.DB,owner.workspace,rows.map(row=>String(row.id)));
+    return c.json({runs:rows.map(row=>{const identifiers=detached.filter(issue=>issue.runId===row.id).map(issue=>issue.identifier);return {...row,detachedIssues:identifiers.length,detachedIdentifiers:identifiers};})});
   });
   app.get('/data/import/runs/:id',async c=>c.json(await importOperation(async()=>importStatus(c.env.DB,await actor(c),c.req.param('id')))));
   app.get('/data/import/runs/:id/originals',async c=>c.json(await importOperation(async()=>importOriginals(c.env.DB,await actor(c),c.req.param('id')))));
