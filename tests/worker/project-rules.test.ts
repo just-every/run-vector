@@ -80,6 +80,7 @@ contractWith(it, "PROJ-004", "project progress counts completed issues and exclu
 
 contractWith(it, "PROJ-005 PROJ-006", "project health matrix applies precedence, exact capacity boundaries and concrete risk explanations", async () => {
   const f = await projectRulesFixture();
+  const priorCounts = (await f.portfolio()).counts;
   const cycle = await f.cycle("Delivery window", 8);
   const state = await f.mutate("/settings/teams", "POST", { name: "Other delivery", identifierPrefix: "OTH" });
   const otherTeam = state.teams.find((t) => t.identifierPrefix === "OTH")!;
@@ -150,7 +151,7 @@ contractWith(it, "PROJ-005 PROJ-006", "project health matrix applies precedence,
     if (["none", "unknown", "on-track"].includes(row.health)) expect(detail.risks).toEqual([]);
   }
   for (const health of ["blocked", "at-risk", "on-track", "unknown"]) {
-    expect.soft(portfolio.counts[health]).toBe(cases.filter((p) => p.health === health).length);
+    expect.soft(portfolio.counts[health]).toBe((priorCounts[health] ?? 0) + cases.filter((p) => p.health === health).length);
   }
   expect.soft(portfolio.counts.none).toBeUndefined();
   for (const [p, issues] of [[urgent, [urgentIssue]], [all, blockedIssues]] as const) {

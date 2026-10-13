@@ -90,13 +90,17 @@ export async function projectRulesFixture() {
       env.DB.prepare("INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at) VALUES(?,?,'Foreign owner','foreign-project-owner@example.test',?,?)").bind(owner, workspace, now, now),
       env.DB.prepare("INSERT INTO projects(id,workspace_id,name,lead_operator_id,lifecycle,created_at,updated_at) VALUES(?,?,'Foreign project',?,'planned',?,?)").bind(foreign, workspace, owner, now, now),
     ]);
-    expect((await f.call(`/settings/projects/${foreign}`, "DELETE")).status).toBe(404);
-    expect(await env.DB.prepare("SELECT id FROM projects WHERE id=?").bind(foreign).first()).toEqual({ id: foreign });
-    await env.DB.batch([
-      env.DB.prepare("DELETE FROM projects WHERE id=?").bind(foreign),
-      env.DB.prepare("DELETE FROM operators WHERE id=?").bind(owner),
-      env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(workspace),
-    ]);
+    try {
+      // Vector refuses unsupported multi-workspace state at bootstrap, before any mutation.
+      expect((await f.call(`/settings/projects/${foreign}`, "DELETE")).status).toBe(503);
+      expect(await env.DB.prepare("SELECT id FROM projects WHERE id=?").bind(foreign).first()).toEqual({ id: foreign });
+    } finally {
+      await env.DB.batch([
+        env.DB.prepare("DELETE FROM projects WHERE id=?").bind(foreign),
+        env.DB.prepare("DELETE FROM operators WHERE id=?").bind(owner),
+        env.DB.prepare("DELETE FROM workspace_settings WHERE id=?").bind(workspace),
+      ]);
+    }
   }
   return { ...f, create, json, portfolio, detail, issue, patch, project, cycle, block, status, deniedDeletion };
 }
