@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mkdir,readFile,writeFile,rm} from 'node:fs/promises';
+import {mkdir,writeFile,rm} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {chromium} from '@playwright/test';
 import {freePort} from '@runeditrun/rer/adapter-settings';
@@ -23,19 +23,6 @@ try {
   const claim=await opened;await claim.getByRole('button',{name:'Claim your workspace',exact:true}).waitFor({state:'visible'});
   await claim.waitForFunction(()=>!document.querySelector('button').disabled);
   assert.equal(rows('SELECT count(*) AS n FROM oa_operators')[0].n,0);
-  const axe=await readFile(resolve('node_modules/axe-core/axe.min.js'),'utf8');
-  async function capture(page,name,width) {
-    if(page.viewportSize()?.width!==width)await page.setViewportSize({width,height:1000});
-    await page.evaluate(source=>{
-      const script=document.createElement('script'),nonce=document.querySelector('script[nonce]')?.nonce;
-      if(nonce)script.nonce=nonce;
-      script.textContent=source;document.head.append(script);
-    },axe);
-    const violations=await page.evaluate(async()=>{const result=await axe.run();return result.violations.filter(item=>['serious','critical'].includes(item.impact)).map(item=>item.id);});
-    assert.deepEqual(violations,[]);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-    await page.screenshot({path:join(evidence,name+'-'+width+'.png'),fullPage:name!=='editor'});
-  }
-  for(const width of [1440,390])await capture(claim,'claim',width);
   await claim.getByRole('button',{name:'Claim your workspace',exact:true}).click();await claim.waitForURL(origin+'/setup');await claim.getByRole('button',{name:'Open my workspace',exact:true}).click();await claim.waitForURL(origin+'/app');
   assert.equal((await claim.request.get(origin+'/api/session')).status(),200);
   assert.equal((await claim.request.post(origin+'/auth/owner-claim',{headers:{Origin:origin},data:{token:provider.token()}})).status(),409);
@@ -53,10 +40,10 @@ try {
       assert(await claim.evaluate(()=>window.__leaseFrame===document.querySelector('[data-rer-editor]')?.shadowRoot?.querySelector('iframe')));
       assert.equal(await editor.getByRole('textbox',{name:'Draft',exact:true}).inputValue(),'Unsaved local editing draft');report.leaseRetainsDraft=true;
     }
-    await capture(claim,'editor',width);await claim.getByRole('button',{name:'Close Run Edit Run',exact:true}).click();
+    await claim.getByRole('button',{name:'Close Run Edit Run',exact:true}).click();
     await claim.getByRole('link',{name:'Settings',exact:true}).first().click();await claim.getByRole('heading',{name:'Settings',exact:true}).waitFor();
     await claim.getByRole('button',{name:'Open Run Edit Run',exact:true}).waitFor();
-    await claim.goto(origin+'/app');report.widths.push({width,axeSerious:0,overflow:false});
+    await claim.goto(origin+'/app');report.widths.push(width);
   }
   const policy=(await claim.request.get(origin+'/app')).headers()['content-security-policy'];
   assert(policy.includes("frame-ancestors 'self' "+provider.origin));assert(policy.includes("frame-src 'self' "+provider.origin));

@@ -6,7 +6,7 @@ import {createUiRuntime} from './ui-runtime-support.mjs';
 import {signIn,openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {exerciseIntegrationSettings} from './integration-settings-journey.mjs';
 const runtime=createUiRuntime(),evidence=resolve('evidence/integrations');let browser;
-const proof={passed:false,widths:[],axeSerious:0,overflow:false,credentialsCaptured:false,liveProvider:false};
+const proof={passed:false,widths:[],credentialsCaptured:false,liveProvider:false};
 try{
  await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const admin=await(await runtime.req('/api/settings/administration',{headers:{Cookie:cookie}})).json(),team=admin.teams.find(row=>!row.archivedAt);

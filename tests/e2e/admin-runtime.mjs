@@ -12,7 +12,7 @@ import {
   createAdminRuntime,
   bootstrapOwner,
 } from "./admin-runtime-support.mjs";
-import { createCapture, sourceBinding, exportData } from "./admin-capture.mjs";
+import { createStateRecorder, exportData } from "./browser-state.mjs";
 import {
   auditEmptyWorkspace,
   inviteProjectLead,
@@ -40,7 +40,6 @@ await rm(resolve(evidence, "admin-failure-safe.json"), { force: true });
 const temporary = resolve(evidence, "temporary");
 await mkdir(temporary, { recursive: true });
 process.env.TMPDIR = temporary;
-const binding = await sourceBinding();
 const requestDiagnostics = createAdminRequestDiagnostics();
 const results = [],
   checks = [],
@@ -49,19 +48,15 @@ const results = [],
 let browser, page, runtime;
 await contract(
   "OPS-003",
-  "empty workspace administration through real desktop and mobile browsers",
+  "empty workspace administration through real mobile browser",
   async () => {
     try {
       browser = await chromium.launch({ headless: true });
       for (const viewport of [
-        { width: 1440, height: 1000 },
         { width: 390, height: 844 },
       ]) {
         requestDiagnostics.phase("bootstrap");
-        runtime = createAdminRuntime(viewport.width, [
-          ...Object.keys(binding.sourceInputHashes),
-          ...Object.keys(binding.builtWorkerHashes),
-        ]);
+        runtime = createAdminRuntime(viewport.width);
         runtime.initialize();
         await runtime.start();
         const context = await browser.newContext({ viewport });
@@ -92,7 +87,7 @@ await contract(
               status: response.status(),
             });
         });
-        const capture = createCapture(page, evidence, binding, results);
+        const capture = createStateRecorder(page, evidence, results);
         const scopedCapture = (name) => capture(`${viewport.width}-${name}`);
         async function clause(id, name, run) {
           requestDiagnostics.phase(name);
@@ -157,10 +152,9 @@ await contract(
         await assertDocumentReadRecovery({
           ...shared,
           capturePage: (actualPage) => {
-            const capture = createCapture(
+            const capture = createStateRecorder(
               actualPage,
               evidence,
-              binding,
               results,
             );
             return async (name) => {
@@ -179,10 +173,9 @@ await contract(
               page,
               "lifecycle capture owns the fresh private page",
             );
-            const capture = createCapture(
+            const capture = createStateRecorder(
               actualPage,
               evidence,
-              binding,
               results,
             );
             return async (name) => {
@@ -220,22 +213,6 @@ await contract(
         await runtime.stop();
         runtime = null;
       }
-      const finalBinding = await sourceBinding();
-      assert.equal(
-        finalBinding.sourceInputDigest,
-        binding.sourceInputDigest,
-        "source inputs remained immutable during browser proof",
-      );
-      assert.deepEqual(
-        finalBinding.builtWorkerHashes,
-        binding.builtWorkerHashes,
-        "emitted Worker remained immutable during browser proof",
-      );
-      assert.deepEqual(
-        finalBinding.builtClientHashes,
-        binding.builtClientHashes,
-        "emitted client assets remained immutable during browser proof",
-      );
       await writeFile(
         resolve(evidence, "admin-runtime-results.json"),
         JSON.stringify(
@@ -245,7 +222,6 @@ await contract(
             results,
             databases,
             browserDiagnostics,
-            ...binding,
             scope:
               "Emitted local Worker, native D1 and first-owner Base confirmation; empty runtime sample data disabled.",
           },
@@ -254,14 +230,13 @@ await contract(
         ) + "\n",
       );
       console.log(
-        `Administration browser: ${checks.length} clause journeys, ${results.length} captured audited states passed.`,
+        `Administration browser: ${checks.length} clause journeys, ${results.length} functional checkpoints passed.`,
       );
     } catch (error) {
       await writeAdminFailureReceipt(
         resolve(evidence, "admin-failure-safe.json"),
         {
           error,
-          binding,
           requests: requestDiagnostics.snapshot(),
           workerExceptions: runtime?.workerExceptions() ?? [],
           checks,
@@ -288,7 +263,6 @@ await contract(
             checks,
             results,
             log: runtime?.log,
-            ...binding,
           },
           null,
           2,

@@ -6,13 +6,12 @@ HANDOVER.md records implemented scope and remaining gaps. The notes below explai
 how those requirements relate to the current source. They do not amend a clause
 or authorize a baseline supersession.
 
-## Contract format and reporting
+## Contract format
 
 CONTRACT.md and BASELINE.md group clauses under area headings and use a bullet
-with a bold stable ID for each clause. `scripts/contract-report.mjs` recognizes
-those bold IDs and registers evidence after the local verification completes.
-Test tags alone indicate partial evidence; they do not establish full clause
-satisfaction. Preserve the IDs and their assertions when editing requirements.
+with a bold stable ID for each clause. Test tags identify the requirement a
+behavioral check exercises; they do not establish full clause satisfaction.
+Preserve the IDs when editing requirements.
 
 ## Signed signal sources remain a requirement
 

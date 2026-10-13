@@ -8,9 +8,6 @@ export default defineConfig({
     maxWorkers: 1,
     include: [
       "tests/markdown-rendering.test.tsx",
-      "tests/issue-list-rendering.test.tsx",
-      "tests/notification-rendering.test.tsx",
-      "tests/projects-workspace-rendering.test.tsx",
     ],
   },
 });

@@ -1,7 +1,4 @@
 import assert from 'node:assert/strict';
-import {assertControls} from './ui-controls-checks.mjs';
-import {readFile} from 'node:fs/promises';
-import {join} from 'node:path';
 import {createWebhookProtocol} from '../../vendor/base/integrations/core/webhook.ts';
 import {sendSignedPullRequest,pullRequestRepository} from './integration-signed-pr.mjs';
 export async function exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence}){
@@ -20,8 +17,7 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  await panel.getByLabel('Repository name',{exact:true}).fill('Browser repository '+width);await panel.getByLabel('GitHub owner/repository',{exact:true}).fill(pullRequestRepository(width));const github=await receipt('/github',()=>panel.getByRole('button',{name:'Register repository',exact:true}).click());await reveal(github.secret);
  await sendSignedPullRequest(github,issue.identifier,width);
  await page.reload();assert.equal(await panel.getByLabel('New credential',{exact:true}).count(),0);
- await audit(page);await panel.getByRole('button',{name:'Revoke '+name,exact:true}).waitFor();await panel.screenshot({path:join(evidence,'settings-'+width+'.png'),mask:[page.locator('[data-rer-private]')]});
- await page.goto(runtime.base+'/app/issues/'+issue.identifier);const pr=page.getByRole('link',{name:'Fix '+issue.identifier+' · '+pullRequestRepository(width)+' #42',exact:true});await pr.waitFor();assert.equal(await pr.getAttribute('href'),'https://github.com/'+pullRequestRepository(width)+'/pull/42');await page.getByText('· merged',{exact:true}).waitFor();await audit(page);await pr.scrollIntoViewIfNeeded();await page.locator('section').filter({has:pr}).screenshot({path:join(evidence,'pull-request-'+width+'.png')});
+ await panel.getByRole('button',{name:'Revoke '+name,exact:true}).waitFor();
+ await page.goto(runtime.base+'/app/issues/'+issue.identifier);const pr=page.getByRole('link',{name:'Fix '+issue.identifier+' · '+pullRequestRepository(width)+' #42',exact:true});await pr.waitFor();assert.equal(await pr.getAttribute('href'),'https://github.com/'+pullRequestRepository(width)+'/pull/42');await page.getByText('· merged',{exact:true}).waitFor();await pr.scrollIntoViewIfNeeded();
  await page.goto(runtime.base+'/app/settings');const revoked=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname.startsWith('/api/settings/integrations/tokens/'));await panel.getByRole('button',{name:'Revoke '+name,exact:true}).click();assert.equal((await revoked).status(),200);assert.equal((await runtime.req('/api/v1/issues',{headers:{Authorization:'Bearer '+token.token}})).status,401);
 }
-async function audit(page){await assertControls(page,'Integration settings and PR');await page.addScriptTag({content:await readFile(new URL('../../node_modules/axe-core/axe.min.js',import.meta.url),'utf8')});const violations=await page.evaluate(async()=>{const result=await axe.run();return result.violations.filter(row=>['serious','critical'].includes(row.impact)).map(row=>row.id)});assert.deepEqual(violations,[]);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));}

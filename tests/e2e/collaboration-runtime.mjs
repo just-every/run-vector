@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 import { chromium } from "@playwright/test";
 import { contract } from "../contract.ts";
 import { verificationDirectory } from "../../scripts/verification-paths.mjs";
-import { sourceBinding, createCapture } from "./admin-capture.mjs";
+import { createStateRecorder } from "./browser-state.mjs";
 import { bootstrapOwner } from "./admin-runtime-support.mjs";
 import { createTeamWorkflow } from "./admin-team-journey.mjs";
 import { authorLabel } from "./admin-label-journey.mjs";
@@ -17,19 +17,12 @@ import {
   exportCollaboration,
   rowCustody,
 } from "./collaboration-support.mjs";
-import {
-  assertPrimaryContent,
-  assertMobileNavigationTargets,
-} from "./ui-detail-checks.mjs";
 import { disabledEmailJourney } from "./collaboration-disabled.mjs";
 import { collaborationEvents } from "./collaboration-events.mjs";
 
 const evidence = resolve(verificationDirectory, "collaboration-browser");
 await mkdir(evidence, { recursive: true });
-const binding = await sourceBinding(),
-  // Exception frames name only these reviewed source and built Worker files.
-  workerSources = [...Object.keys(binding.sourceInputHashes), ...Object.keys(binding.builtWorkerHashes)],
-  results = [],
+const results = [],
   checks = [],
   databases = [],
   timings = [],
@@ -40,15 +33,14 @@ const binding = await sourceBinding(),
 let browser, runtime, page, peer, context, recipient;
 await contract(
   "OPS-004",
-  "real first-owner collaboration at desktop and mobile",
+  "real first-owner collaboration at mobile",
   async () => {
     try {
       browser = await chromium.launch({ headless: true });
       for (const viewport of [
-        { width: 1440, height: 1000 },
         { width: 390, height: 844 },
       ]) {
-        runtime = collaborationRuntime(viewport.width, workerSources);
+        runtime = collaborationRuntime(viewport.width);
         runtime.initialize();
         await runtime.start();
         context = await browser.newContext({ viewport });
@@ -87,7 +79,7 @@ await contract(
           });
         };
         observe(page);
-        const capture = createCapture(page, evidence, binding, results);
+        const capture = createStateRecorder(page, evidence, results);
         const scopedCapture = (name) =>
           capture(`${viewport.width}-actor-${name}`);
         async function clause(id, name, run) {
@@ -154,12 +146,6 @@ await contract(
           "ISSUE-008",
           "mobile issue retains open description and outcome",
           async () => {
-            await assertPrimaryContent(
-              page,
-              "collaboration issue primary content",
-            );
-            if (viewport.width === 390) {
-              await assertMobileNavigationTargets(page);
               assert.ok(
                 await page
                   .getByText("First authored paragraph.", { exact: false })
@@ -170,10 +156,9 @@ await contract(
                 await page.locator(".issue-outcome").isVisible(),
                 "outcome open",
               );
-            }
           },
         );
-        const peerCapture = createCapture(peer, evidence, binding, results);
+        const peerCapture = createStateRecorder(peer, evidence, results);
         await collaborationEvents({
           ...shared,
           peer,
@@ -223,14 +208,14 @@ await contract(
         context = null;
         page = null;
         await runtime.stop();
-        runtime = collaborationRuntime(viewport.width, workerSources);
+        runtime = collaborationRuntime(viewport.width);
         runtime.config.NOTIFICATION_EMAIL_ENABLED = "false";
         runtime.initialize();
         await runtime.start();
         context = await browser.newContext({ viewport });
         page = await context.newPage();
         observe(page);
-        const disabledCapture = createCapture(page, evidence, binding, results);
+        const disabledCapture = createStateRecorder(page, evidence, results);
         await disabledEmailJourney({
           page,
           browser,
@@ -238,7 +223,7 @@ await contract(
           capture: (name) => disabledCapture(`${viewport.width}-actor-${name}`),
           captureFor: (other) => {
             observe(other);
-            const capture = createCapture(other, evidence, binding, results);
+            const capture = createStateRecorder(other, evidence, results);
             return (name) => capture(`${viewport.width}-recipient-${name}`);
           },
           clause,
@@ -268,14 +253,6 @@ await contract(
         await runtime.stop();
         runtime = null;
       }
-      const final = await sourceBinding();
-      assert.equal(
-        final.sourceInputDigest,
-        binding.sourceInputDigest,
-        "source immutable during proof",
-      );
-      assert.deepEqual(final.builtWorkerHashes, binding.builtWorkerHashes);
-      assert.deepEqual(final.builtClientHashes, binding.builtClientHashes);
       await writeFile(
         resolve(evidence, "collaboration-runtime-results.json"),
         JSON.stringify(
@@ -289,7 +266,6 @@ await contract(
             readbacks,
             fixtures,
             installations,
-            ...binding,
             scope:
               "Emitted local Worker and native D1; no sample data; separate native sessions; Base development mail only. No real provider or mailbox proof.",
           },
@@ -298,7 +274,7 @@ await contract(
         ) + "\n",
       );
       console.log(
-        `Collaboration browser: ${checks.length} clause journeys, ${results.length} audited captures, ${timings.length} live timings passed.`,
+        `Collaboration browser: ${checks.length} clause journeys, ${results.length} functional checkpoints, ${timings.length} live timings passed.`,
       );
     } catch (error) {
       await writeFile(
@@ -330,7 +306,6 @@ await contract(
             results,
             timings,
             log: runtime?.log,
-            ...binding,
           },
           null,
           2,

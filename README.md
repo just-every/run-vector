@@ -92,7 +92,7 @@ Local installation archives use the public `pnpm run export -- --output FILE` an
 
 Settings supports reviewed mapped CSV/JSON and Linear imports (documented CSV format and owner-made API file, tested at 2,000 issues with a generator; no owner export supplied), scoped API tokens, signed source receivers and GitHub PR webhook links. See [Move in](docs/MOVE-IN.md), [API](docs/API.md) and [Integrations](docs/INTEGRATIONS.md). Outbound delivery stays unconfigured until the owner provides an enforcing transport. No replacement-product claim is added. Preserve provider backups, private settings and compatible source before upgrades. Apply new migrations forward, keep additive schema and durable histories on code rollback, and validate recovery in isolated resources. Source before migration 0018 cannot read the current stable-ID search schema.
 
-See [PROOF.md](PROOF.md) for review-correction receipts, their exact scope and the artifacts used to reproduce them. Each report carries its own source and output binding; merge-bound verification, development and CI results are reported from their own runs.
+Browser verification covers the core product journey and a representative accessibility and overflow pass. Release visual review covers the remaining layouts.
 
 Stage intentional source edits, run `pnpm sources:lock`, then `pnpm sources:check` and `pnpm verify`. See [HANDOVER.md](HANDOVER.md) for implemented scope and limitations, [CHANGELOG.md](CHANGELOG.md) for release changes, and [CONTRACT.md](CONTRACT.md) / [BASELINE.md](BASELINE.md) for requirements. Passing local checks does not establish every wider product, capacity or hosted-delivery guarantee.
 
