@@ -48,13 +48,16 @@ All of it commits in one D1 batch, or none of it does.
 
 ## Proof
 
-`tests/worker/imported-person-erasure.test.ts` imports two generated Linear
-workspaces with API files: one run applied whole, one stopped after its first
-batches. It erases a stranger by name, then a removed operator by email and
+`tests/worker/imported-person-erasure.test.ts` imports generated Linear
+workspaces with API files, including a run applied whole and one stopped after
+its first batches. It erases a stranger by name, then a removed operator by email and
 name. It checks that the pending run finishes, that a scan of every column of
 every table (shadow tables included, BLOBs and hex/base64 decoded) and every R2
-object finds neither person, that the journal has two entries, and that the
-older archive is refused while the newer one restores clean.
+object finds neither person, that each person erasure appends its returned
+receipt without losing prior journal entries, and that the older archive is
+refused while the newer one restores clean. The same test checks rollback
+refusals, public relationship cleanup and the actual detached issues left after
+rollback.
 
 ## Not covered
 
@@ -66,3 +69,5 @@ older archive is refused while the newer one restores clean.
 - A Settings screen. Erasure is available through the routes above.
 - Hosted timing. The proof is local; hosted D1 and R2 behaviour is not
   established.
+
+Personal-data erasure also removes the affected records from rollback custody. Already published normalized issues stay as erasure-detached issues: rollback preview, status and results name their count and Vector identifiers separately from reversible issues remaining. If a retained issue points to a parent, blocker or canonical issue rollback would remove, the preview explains `erasure_detached` and refuses removal. Unlink or delete that retained issue, then review rollback again. Removing a dependency records native work on both endpoints, so its imported endpoint may also need explicit deletion before rollback. Deleting the detached issue directly avoids that dependency edit. A successful rollback can retain the listed detached issues. See [Move in: undo](MOVE-IN.md#undo-a-whole-run).
