@@ -7,11 +7,14 @@ import { httpExport } from "./http-archive-fixture";
 contractWith(it, "PROJ-003", "project attachment, movement, detachment, archive and deletion preserve every issue", async () => {
   const f = await projectRulesFixture();
   const first = await f.project("First membership"), second = await f.project("Second membership");
+  expect(await f.detail(first.id)).toMatchObject({ lifecycle: "active", targetDate: future, description: first.description });
   const issue = await f.create({ title: "Membership survives" });
   await f.patch(issue.identifier, { projectId: first.id });
   expect((await f.detail(first.id)).issues.map((i) => i.id)).toEqual([issue.id]);
   await f.patch(issue.identifier, { projectId: second.id });
   expect((await f.detail(first.id)).issues).toEqual([]);
+  await f.mutate(`/settings/projects/${first.id}`, "PATCH", { targetDate: null, description: "" });
+  expect(await f.detail(first.id)).toMatchObject({ targetDate: null, description: "", lifecycle: "active" });
   expect((await f.detail(second.id)).issues.map((i) => i.id)).toEqual([issue.id]);
   await f.patch(issue.identifier, { projectId: null });
   expect((await f.detail(second.id)).issues).toEqual([]);
@@ -22,6 +25,7 @@ contractWith(it, "PROJ-003", "project attachment, movement, detachment, archive 
   expect((await f.portfolio(true)).projects.find((p) => p.id === second.id)?.archived).toBe(true);
   expect((await f.detail(second.id)).issues.map((i) => i.id)).toEqual([issue.id]);
   expect(await f.issue(issue.identifier)).toMatchObject({ id: issue.id, project: { id: second.id } });
+  expect(await f.detail(second.id)).toMatchObject({ targetDate: future, description: second.description });
   const project = await f.project("Disposable project"), untouched = await f.project("Unrelated project");
   const members = [];
   for (const category of ["intake", "backlog", "unstarted", "started", "completed", "canceled", "duplicate"]) {

@@ -30,7 +30,7 @@ export async function projectRulesFixture() {
     return json(`/issues/${identifier}`, "PATCH", { expectedVersion: current.version, ...body });
   }
   async function project(name: string, targetDate: string | null = future, lifecycle = "active") {
-    const state = await f.mutate("/settings/projects", "POST", { name, leadOperatorId: f.owner, targetDate });
+    const state = await f.mutate("/settings/projects", "POST", { name, description: `Description for ${name}`, leadOperatorId: f.owner, targetDate });
     const created = state.projects.find((p) => p.name === name)!;
     if (lifecycle !== "planned") await f.mutate(`/settings/projects/${created.id}`, "PATCH", { lifecycle });
     return created;
