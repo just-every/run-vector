@@ -1,3 +1,15 @@
+<p align="center">
+  <a href="https://justevery.com/#vol-vector">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset=".github/assets/banner-dark.webp">
+      <source media="(prefers-color-scheme: light)" srcset=".github/assets/banner-light.webp">
+      <img src=".github/assets/banner-light.webp" width="100%" alt="Vector: Know what happens next. 100% free, open source alternative to Linear, Jira and Asana.">
+    </picture>
+  </a>
+</p>
+
+<p align="center"><a href="https://justevery.com">Part of Just Every</a> · <a href="LICENSE">MIT licensed</a></p>
+
 # Vector
 
 Vector is a deployable, self-hosted issue tracker for one business. Evidence-led intake supports explicit accept, defer and decline decisions. Current explains what needs attention; My work, projects, dependencies and a personal Inbox organize execution. Issues include inline editing for labels, estimate, due date, expected outcome and customer impact, plus comments, safe Markdown, named links, private files and an immutable activity history. Each inline property change uses the existing version-checked issue PATCH; title and description remain in the writing editor. That editor retains the newest successful save or validated reload receipt for the same issue, so reopening before a background refresh uses its current version while genuine conflicts keep unsaved drafts.

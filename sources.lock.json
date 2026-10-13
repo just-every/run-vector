@@ -434,6 +434,14 @@
     }
   ],
   "files": {
+    ".github/assets/banner-dark.webp": {
+      "sha256": "eeed54e2151de08de414aad5c205b12816b7a989c80a802acae6b481d870f04e",
+      "executable": false
+    },
+    ".github/assets/banner-light.webp": {
+      "sha256": "4ac7e21eeae4ef3bd5842863138cd3abb2d0033c07c8e3c2095f78e1ce47c109",
+      "executable": false
+    },
     ".github/workflows/ci.yml": {
       "sha256": "4555020710663f0dc29e1283c2f63877a933390cde7508530938fe51be54ee89",
       "executable": false
@@ -899,7 +907,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "68a65806a759ce13fa73c02699950535cc37dc385a4c639125bc40769491f148",
+      "sha256": "3e30af5c6638df39c4f697b8dfbd8f27fe0fe29a9d35644a79ecc3267cebce37",
       "executable": false
     },
     "RELEASE.json": {
