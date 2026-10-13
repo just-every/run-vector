@@ -32,8 +32,9 @@ profile](JIRA-CSV.md).
    assignees explicitly to existing active operators. The importer does not
    create operators.
 4. **Preview.** Settings → Data / Move in → **Jira All Fields CSV (supported
-   profile)**, or the terminal with `--format jira-csv`. Choose a stable source
-   namespace, configure the source offset/century where needed, and confirm
+   profile)**, or use the [Terminal command](MOVE-IN.md#terminal) with
+   `--format jira-csv`. Choose a stable source namespace, configure the source
+   offset/century where needed, and confirm
    status, priority, account, cycle and estimate mappings. Parent and relation
    references resolve only when their targets are in the run. A new Blocks edge
    targeting a retained reused issue refuses in preflight; review the exact
@@ -65,9 +66,11 @@ profile](JIRA-CSV.md).
    report; allocated Vector identifiers remain reserved.
 
 The repository acceptance fixture has 300 issues and 41 columns. See
-[IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md) for native route/CLI checks. Browser
-captures, separate held-out proof, full verification and exact-head CI results
-are recorded in the external public-port REPORT when executed.
+[IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md) for native route evidence and exact-head
+CLI results. The external public-port REPORT records commands, results and exact
+source heads, distinguishing the earlier copied-CLI run from the
+`@runeditrun/rer` CLI run. Browser captures, separate held-out proof, full
+verification and exact-head CI evidence are recorded there as well.
 These fixtures do not establish fidelity for a real Jira export. Public
 documentation does not publish the full native export grammar, repeated Sprint
 chronology, or all custom/plugin columns. Jira Server and Data Center variants,

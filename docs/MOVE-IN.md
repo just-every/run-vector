@@ -146,16 +146,21 @@ fetched. Jira Server and Data Center variants, a team's native header variants,
 and attachment bytes are unverified. The shared 4,000-row/4-MiB service limit
 does not mean Jira scale was measured at that limit; the Jira generator evidence
 covers the generated 300-issue fixture. See [IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md)
-for executed native route/CLI checks. Public-source browser captures, held-out
-proof, full verification and exact-head CI results are recorded separately in
-the external public-port REPORT when executed.
+for native route evidence and CLI results. The external public-port REPORT
+records exact source heads, commands and results, with labels distinguishing
+the earlier copied-CLI run from the `@runeditrun/rer` CLI run. Browser captures,
+held-out proof, full verification and exact-head CI evidence are recorded there
+as well.
 
 Use Jira's **All Fields** export and keep the UTF-8 file unchanged. Settings
-offers **Jira All Fields CSV (supported profile)**; the terminal uses
-`--format jira-csv`. The default is preview only. Review the whole-file date
-result, explicit status/priority/account/cycle mappings, references and the
-complete omission report before acknowledging it and applying. A source
-namespace scopes opaque numeric Issue IDs; select the existing team by its
+offers **Jira All Fields CSV (supported profile)**; the importer command remains
+`pnpm run import:issues` with `--format jira-csv`. For a local CLI session, start
+with `pnpm exec rer dev --login`; build with `pnpm exec rer build`. The default
+is preview only.
+Review the whole-file date result, explicit status/priority/account/cycle
+mappings, references and the complete omission report before acknowledging it
+and applying. A source namespace scopes opaque numeric Issue IDs; select the
+existing team by its
 native ID for the proven mapping path. Mutable Issue keys are separately
 retained and remain visible/searchable as old identifiers. Epic rows use the
 existing exact `epic` label. Parents, outward Blocks links and duplicate-to-
@@ -175,7 +180,8 @@ numeric dates and offsetless instants without an explicit source offset are
 refused. Story points take precedence over Original estimate; seconds convert
 only with a reviewed exact unit policy and exact integer result. No mapping is
 guessed. See [JIRA-CSV.md](JIRA-CSV.md) for the full field/date contract and
-[IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md) for executed native route/CLI evidence.
+[IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md) for native route evidence and CLI
+results by exact source head.
 Jira needs no new migration: the existing staged storage, source identities and
 imported-comment schema are reused. The owner must trial a real export before
 changing the support claim.
