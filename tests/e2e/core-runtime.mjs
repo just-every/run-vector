@@ -1,3 +1,7 @@
+import { keyboardJourney } from './core-keyboard-journey.mjs';
+import { draftJourney } from './core-draft-journey.mjs';
+import { currentJourney } from './core-current-journey.mjs';
+import { pageAudit } from './core-page-audit.mjs';
 import { localAuthArguments,localAuthSecret } from './outbox-session.mjs';
 import { confirmLink } from './outbox-session.mjs';
 // Settle native polling before replacing an authorized private document.
@@ -609,9 +613,10 @@ try {
       });
     } else errors.push(m.text());
   });
-  page.on("requestfailed", (r) =>
-    failed.push(r.url() + ":" + r.failure()?.errorText),
-  );
+  page.on("requestfailed", (r) => {
+    failed.push(r.url() + ":" + r.failure()?.errorText);
+    console.info("[Failed browser request] " + JSON.stringify({ url: r.url(), page: page.url(), at: Date.now(), error: r.failure()?.errorText }));
+  });
   trackRequests(page);
   page.on("request", (r) => {
     if (r.isNavigationRequest() && r.frame() === page.mainFrame())
@@ -639,12 +644,22 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
+  await currentJourney(page, context, base, ids.flow, evidence, record);
+  await keyboardJourney(page, context, base, record);
+  await draftJourney(page, context, base, ids.flow, ids.sarah, record);
+  await pageAudit(page, base, issue.identifier, evidence, record);
+  await beforePrivateNavigation(page, base + '/app');
+  await page.goto(base + '/app');
+  await page.waitForLoadState('networkidle');
+  await settleReads(page);
   const timeOrigin = await page.evaluate(() => performance.timeOrigin);
   await page
     .getByRole("link", { name: "My work", exact: true })
     .first()
     .click();
   await page.getByRole("heading", { name: "My work", exact: true }).waitFor();
+  await page.waitForLoadState("networkidle");
+  await settleReads(page);
   assert.equal(await page.evaluate(() => performance.timeOrigin), timeOrigin);
   await page
     .getByRole("link", { name: "Projects", exact: true })
@@ -652,6 +667,27 @@ try {
     .click();
   await page.getByRole("heading", { name: "Projects", exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), timeOrigin);
+  const portfolioResponse = await context.request.get(base + "/api/projects");
+  assert.equal(portfolioResponse.status(), 200);
+  const portfolio = await portfolioResponse.json();
+  assert.ok(portfolio.projects.length > 0, "Seeded portfolio supplies real progress rows");
+  const progressEvidence = [];
+  for (const project of portfolio.projects) {
+    const progress = page.locator(`a.project-row[href="/app/projects/${project.id}"] .project-row__progress`);
+    await progress.waitFor();
+    const text = await progress.innerText();
+    if (project.progress.percentage === null) {
+      assert.ok(!/\d+(?:\.\d+)?%/.test(text), "Zero denominator never invents a percentage");
+    } else {
+      const counts = text.match(/(\d+)\s*\/\s*(\d+)/);
+      const percent = text.match(/(\d+(?:\.\d+)?)%/);
+      assert.ok(counts && percent, "Progress exposes completed/total counts beside percentage");
+      assert.deepEqual([Number(counts[1]), Number(counts[2]), Number(percent[1])], [project.progress.completed, project.progress.total, project.progress.percentage]);
+    }
+    progressEvidence.push({ id: project.id, progress: project.progress, rendered: text });
+  }
+  await writeFile(evidence + "/project-progress-browser.json", JSON.stringify(progressEvidence, null, 2));
+  record("PROJ-004", "Real portfolio rows expose API completed/total counts beside their percentage; null progress has no invented percentage.");
   await beforePrivateNavigation(page, base + "/app/issues/" + issue.identifier);
   await page.goto(base + "/app/issues/" + issue.identifier);
   await page

@@ -25,6 +25,7 @@ for (const command of [
   "test:markdown",
   "test:worker",
   "test:deployment",
+  "test:public-site",
   "build",
   "test:runtime",
   "artifact:delivery",
@@ -36,7 +37,6 @@ for (const command of [
   "test:mutation-refresh",
   "test:admin",
   "test:collaboration",
-  "test:browse-review",
   "test:installer:native",
 ]) {
   const startedAt = new Date().toISOString();
@@ -54,20 +54,6 @@ for (const command of [
   if (command === "artifact:delivery")
     await rm("delivery-artifact", { recursive: true });
 }
-const uiRuntime = spawnSync(process.execPath, ["tests/e2e/ui-runtime.mjs"], {
-  stdio: "inherit",
-});
-report.checks.push({
-  command: "ui-runtime",
-  completedAt: new Date().toISOString(),
-  passed: uiRuntime.status === 0,
-});
-await save();
-if (uiRuntime.status !== 0) process.exit(uiRuntime.status ?? 1);
 report.passed = true;
 report.completedAt = new Date().toISOString();
 await save();
-const registration = spawnSync("pnpm", ["run", "report:contract"], {
-  stdio: "inherit",
-});
-if (registration.status !== 0) process.exit(registration.status ?? 1);

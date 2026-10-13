@@ -19,7 +19,6 @@
     "typegen": "wrangler types src/worker-bindings.d.ts --env-interface VectorBindings --include-runtime=false --strict-vars=false",
     "test:runtime": "node tests/e2e/core-runtime.mjs",
     "test:dev": "node tests/e2e/dev-runtime.mjs",
-    "report:contract": "node scripts/contract-report.mjs",
     "sources:check": "node scripts/edition-authoring/cli.mjs check",
     "sources:lock": "node scripts/edition-authoring/cli.mjs lock",
     "setup": "rer setup",
@@ -30,7 +29,6 @@
     "test:base-auth": "node tests/e2e/base-auth-runtime.mjs",
     "test:admin": "node --experimental-strip-types tests/e2e/admin-runtime.mjs",
     "test:collaboration": "node --experimental-strip-types tests/e2e/collaboration-runtime.mjs",
-    "test:browse-review": "node tests/e2e/browse-review-runtime.mjs",
     "build:source": "pnpm typecheck && vite build",
     "artifact:setup": "node scripts/deployment/controller.mjs setup",
     "artifact:deploy": "node scripts/deployment/controller.mjs deploy",
@@ -59,7 +57,8 @@
     "artifact:delivery": "node scripts/build-delivery-artifact.mjs",
     "import:issues": "node scripts/data/import-issues.mjs",
     "test:integrations": "node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/integration-runtime.mjs && node tests/e2e/integrations/outbound-loopback.mjs",
-    "test:data": "node tests/e2e/data-runtime.mjs && node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/data-roundtrip.mjs"
+    "test:data": "node tests/e2e/data-runtime.mjs && node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/data-roundtrip.mjs",
+    "test:public-site": "pnpm exec rer build --site && node tests/e2e/public-site-runtime.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.33",

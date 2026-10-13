@@ -55,26 +55,13 @@ export function createAdminRequestDiagnostics() {
 
 export async function writeAdminFailureReceipt(
   path,
-  { error, binding, requests, workerExceptions, checks },
+  { error, requests, workerExceptions, checks },
 ) {
-  const {
-    sourceCommit,
-    sourceTree,
-    sourceInputDigest,
-    builtWorkerHashes,
-    builtClientHashes,
-    sourceInputHashes,
-  } = binding;
   const receipt = {
     passed: false,
-    sourceCommit,
-    sourceTree,
-    sourceInputDigest,
-    builtWorkerHashes,
-    builtClientHashes,
     checksCompleted: checks.length,
     checksFailed: checks.filter((check) => !check.passed).length,
-    failure: exceptionClassification(error, Object.keys(sourceInputHashes)),
+    failure: exceptionClassification(error, []),
     requests,
     workerExceptions,
   };

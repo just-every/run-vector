@@ -6,10 +6,13 @@ import { vectorSampleIds as ids } from "../../sample-data/vector";
 import { ensureSampleData } from "../../src/core/features/sample-data/service";
 import { createIssueInputSchema } from "../../src/core/features/issues/input";
 import { createIssueRecord } from "../../src/core/features/issues/repository";
-import {
+import type {
   getCurrentStream,
   getMyWorkStream,
 } from "../../src/core/features/streams/service";
+
+import { createServerApp } from "../../src/core/app/server";
+import { testCookie } from "./native-fixture";
 
 const now = new Date("2026-09-30T12:00:00.000Z");
 beforeAll(async () => {
@@ -55,7 +58,18 @@ it("[WORK-001][WORK-002][CURRENT-006] persisted assigned and blocked issues carr
   )
     .bind(blocked.id, backlog.id, now.toISOString())
     .run();
-  const work = await getMyWorkStream(env.DB, ids.sarah, now);
+  const read = async (path: string) => {
+    const response = await createServerApp().request(
+      "https://vector.test/api/" + path + "?at=" + now.toISOString(),
+      { headers: { cookie: await testCookie(env.DB, ids.sarah) } },
+      { ...env, APP_ORIGIN: "https://vector.test" },
+    );
+    assert.equal(response.status, 200);
+    return response.json();
+  };
+  const work = (await read("my-work")) as Awaited<
+    ReturnType<typeof getMyWorkStream>
+  >;
   const find = (section: "waiting" | "now" | "next", identifier: string) => {
     const entry = work.sections[section].find(
       (item) => item.identifier === identifier,
@@ -89,7 +103,9 @@ it("[WORK-001][WORK-002][CURRENT-006] persisted assigned and blocked issues carr
   const waiting = find("waiting", blocked.identifier);
   assert.equal(waiting.primaryReason, "unresolved-dependency");
   assert.equal(waiting.contextReasons.includes("unresolved-dependency"), false);
-  const current = await getCurrentStream(env.DB, now);
+  const current = (await read("current")) as Awaited<
+    ReturnType<typeof getCurrentStream>
+  >;
   assert.ok(
     current.sections.now.some(
       (item) =>

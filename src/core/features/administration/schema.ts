@@ -74,6 +74,8 @@ export const projectCreateSchema = z
 export const projectUpdateSchema = projectCreateSchema
   .partial()
   .extend({
+    description: projectCreateSchema.shape.description.removeDefault().optional(),
+    targetDate: projectCreateSchema.shape.targetDate.removeDefault().optional(),
     lifecycle: z
       .enum(["planned", "active", "completed", "canceled"])
       .optional(),

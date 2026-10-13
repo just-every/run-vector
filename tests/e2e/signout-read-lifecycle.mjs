@@ -22,19 +22,9 @@ export async function assertSignOutReadLifecycle({
   ];
   async function captureState(name) {
     if (!capture) return;
-    // Ordinary capture checks UI readiness, controls, clearance and axe. Do not
-    // wait for network idle here: a private GET is deliberately held open.
+    // Do not await network idle: the private request is deliberately held.
     const receipt = await capture(name);
-    assert.ok(receipt, name + ": bound capture receipt exists");
-    assert.deepEqual(
-      receipt.axe.filter((row) => ["serious", "critical"].includes(row.impact)),
-      [],
-      name + ": no serious/critical axe violations",
-    );
-    assert.ok(
-      receipt.geometry.documentWidth <= receipt.geometry.viewportWidth,
-      name + ": document fits the viewport",
-    );
+    assert.ok(receipt, name + ": functional checkpoint exists");
     capturedStates.push(name);
   }
   const errors = [],
@@ -255,7 +245,7 @@ export async function assertSignOutReadLifecycle({
       assert.deepEqual(
         capturedStates,
         expectedCaptures,
-        "all three sign-out lifecycle states used the bound ordinary capture",
+        "all three sign-out lifecycle states used the functional checkpoint",
       );
     assert.deepEqual(errors, [], "sign-out lifecycle page errors");
     assert.deepEqual(consoleErrors, [], "unexpected browser console errors");

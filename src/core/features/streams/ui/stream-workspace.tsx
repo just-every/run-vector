@@ -44,7 +44,8 @@ function CurrentWorkspace({
 }: {
   selectedIdentifier?: string;
 }) {
-  const stream = useApiResource("/api/current", currentStreamSchema, 5000);
+  // Leave room for request and render latency within Current's five-second freshness budget.
+  const stream = useApiResource("/api/current", currentStreamSchema, 2000);
   if (stream.loading && stream.data === null)
     return <LoadingState label="Loading Current" />;
   if (stream.data === null)

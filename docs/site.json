@@ -137,10 +137,6 @@
       "reason": "Operations declarations for the command tooling"
     },
     {
-      "source": "PROOF.md",
-      "reason": "Review-correction receipts and how to reproduce them"
-    },
-    {
       "source": "README.md",
       "reason": "The repository front page; the docs site's overview and install pages cover it for owners"
     },

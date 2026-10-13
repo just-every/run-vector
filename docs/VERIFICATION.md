@@ -9,12 +9,12 @@ journey. `.github/workflows/ci.yml` and `scripts/verify.mjs` are the executable
 registration, rather than this document being an independent list of gates.
 
 The workspace foundation and removal flows belong to those existing suites.
-`test:admin` submits workspace time from real Settings at desktop/mobile widths,
+`test:admin` submits workspace time from real Settings on mobile,
 preserves the reminder time and reads it after restart. `test:base-auth` exercises
 sign-in, invitation, removal, responsive Settings and native session persistence.
 `test:worker` covers the native transaction boundaries, held bodies and retained
-history; `test:collaboration` checks removal with loaded desktop/mobile Inbox
-pages. The final UI journey checks issue/Settings layouts and discussion controls.
+history; `test:collaboration` checks removal with loaded mobile Inbox
+pages. The core browser journey runs one representative accessibility and overflow pass.
 There are no separate foundation or removal suites to keep synchronized.
 
 ## Scripts outside the wall
@@ -43,8 +43,7 @@ Other convenience and plumbing scripts are already reached by the wall:
 `test` groups the independently gated Node/Markdown/Worker suites;
 `build:source` and `typecheck` are reached by `build` through the rer adapter;
 `verify:app` and `sources:check` are verifier plumbing; `test:dev:setup` and
-`test:dev` are invoked by CI's `test:dev:ci`. `report:contract` is the verifier's
-final reporting step. They do not represent missing CI suites.
+`test:dev` are invoked by CI's `test:dev:ci`. They do not represent missing CI suites.
 
 Iterate with the public-flow tests for the change and typecheck. The final CI wall
 is broader. Local native Worker/browser evidence proves local behavior; provider

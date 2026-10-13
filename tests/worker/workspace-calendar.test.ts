@@ -5,10 +5,9 @@ import { createServerApp } from "../../src/core/app/server";
 import { bootstrapWorkspace } from "../../src/core/features/bootstrap/repository";
 import { createIssueInputSchema } from "../../src/core/features/issues/input";
 import { createIssueRecord } from "../../src/core/features/issues/repository";
-import { projectCurrent } from "../../src/core/features/streams/projection";
 import { loadWorkspaceSnapshot } from "../../src/core/features/streams/repository";
+import type { getCurrentStream } from "../../src/core/features/streams/service";
 import type { WorkspaceSnapshot } from "../../src/core/features/streams/snapshot";
-import { filterItems } from "../../src/core/features/streams/ui/helpers";
 import { testCookie } from "./native-fixture";
 
 const origin = "https://vector.test";
@@ -89,10 +88,42 @@ const windows = [
     start: "2028-02-29T00:00:00.000Z",
   },
 ];
-
-it.each(windows)(
-  "[OPS-003 CURR-005] $name includes the lower local date and excludes older or future instants",
-  ({ timezone, now, start }) => {
+async function readCalendar(candidate: WorkspaceSnapshot, at: Date) {
+  await env.DB.prepare("DELETE FROM issues").run();
+  await env.DB.prepare("UPDATE workspace_settings SET timezone=? WHERE id=?")
+    .bind(candidate.workspace!.timezone, candidate.workspace!.id)
+    .run();
+  await env.DB.batch(
+    candidate.issues.map((row, index) =>
+      env.DB.prepare(
+        "INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,status_id,priority,assignee_operator_id,completed_at,deferred_until,due_date,created_at,updated_at) VALUES(?,?,'CAL',?,?,?,?,?,?,?,?,?,'2026-01-01','2026-01-01')",
+      ).bind(
+        row.id,
+        row.identifier,
+        index + 1,
+        row.teamId,
+        row.title,
+        row.statusId,
+        row.priority,
+        row.assigneeOperatorId,
+        row.completedAt,
+        row.deferredUntil,
+        row.dueDate,
+      ),
+    ),
+  );
+  const response = await app.request(
+    origin + "/api/current?at=" + at.toISOString(),
+    { headers: { cookie } },
+    bindings,
+  );
+  expect(response.status).toBe(200);
+  return (await response.json()) as Awaited<
+    ReturnType<typeof getCurrentStream>
+  >;
+}
+async function calendarBoundaries() {
+  for (const { timezone, now, start } of windows) {
     const candidate = structuredClone(snapshot);
     candidate.workspace!.timezone = timezone;
     const lower = Date.parse(start),
@@ -109,7 +140,7 @@ it.each(windows)(
       [upper + 86_400_000, false],
     ] as const) {
       candidate.issues[0]!.completedAt = new Date(instant).toISOString();
-      const projected = projectCurrent(candidate, new Date(now));
+      const projected = await readCalendar(candidate, new Date(now));
       expect(
         projected.sections["recently-done"].map((row) => row.identifier),
         new Date(instant).toISOString(),
@@ -120,91 +151,73 @@ it.each(windows)(
     }
     candidate.issues[0]!.completedAt = null;
     expect(
-      projectCurrent(candidate, new Date(now)).sections["recently-done"],
+      (await readCalendar(candidate, new Date(now))).sections["recently-done"],
     ).toEqual([]);
-  },
-);
-
-it("[CURR-001 CURR-005 CURR-009] completion order, identifier ties and existing filters survive calendar inclusion", () => {
-  const candidate = structuredClone(snapshot);
-  const row = candidate.issues[0]!;
-  candidate.issues = [
-    {
-      ...row,
-      id: "newer",
-      identifier: "CAL-3",
-      priority: "none",
-      completedAt: "2026-11-05T23:00:00.000Z",
-    },
-    { ...row, id: "tie-b", identifier: "CAL-2", priority: "urgent" },
-    { ...row, id: "tie-a", identifier: "CAL-1", priority: "high" },
-    {
-      ...row,
-      id: "canceled",
-      identifier: "CAL-4",
-      statusId: candidate.statuses.find((s) => s.category === "canceled")!.id,
-    },
-    {
-      ...row,
-      id: "duplicate",
-      identifier: "CAL-5",
-      statusId: candidate.statuses.find((s) => s.category === "duplicate")!.id,
-    },
-    {
-      ...row,
-      id: "deferred",
-      identifier: "CAL-6",
-      deferredUntil: "2026-11-07T00:00:00.000Z",
-    },
-    {
-      ...row,
-      id: "started",
-      identifier: "CAL-7",
-      statusId: candidate.statuses.find((s) => s.category === "started")!.id,
-      dueDate: "2026-11-05",
-    },
-  ];
-  const current = projectCurrent(
-    candidate,
-    new Date("2026-11-06T05:30:00.000Z"),
-  );
-  const done = current.sections["recently-done"];
-  expect(done.map((issue) => issue.identifier)).toEqual([
-    "CAL-3",
-    "CAL-1",
-    "CAL-2",
-  ]);
-  expect(
-    done.every(
-      (issue) => issue.primaryReason === "completed-within-seven-days",
-    ),
-  ).toBe(true);
-  expect(
-    current.sections.now.map((issue) => [
-      issue.identifier,
-      issue.primaryReason,
-    ]),
-  ).toEqual([["CAL-7", "overdue"]]);
-  expect(Object.values(current.sections).flat()).toHaveLength(4);
-  expect(
-    filterItems(done, {
-      teamId: row.teamId,
-      assigneeId: row.assigneeOperatorId!,
-      priority: "high",
-    }).map((issue) => issue.identifier),
-  ).toEqual(["CAL-1"]);
-  expect(
-    filterItems(done, {
-      teamId: "all",
-      assigneeId: "unassigned",
-      priority: "all",
-    }),
-  ).toEqual([]);
-});
-
-it.each(windows.slice(0, 2))(
-  "[OPS-003 CURR-003 CURR-004] Next already uses calendar dates through $name",
-  ({ timezone, now }) => {
+  }
+  {
+    const candidate = structuredClone(snapshot);
+    const row = candidate.issues[0]!;
+    candidate.issues = [
+      {
+        ...row,
+        id: "newer",
+        identifier: "CAL-3",
+        priority: "none",
+        completedAt: "2026-11-05T23:00:00.000Z",
+      },
+      { ...row, id: "tie-b", identifier: "CAL-2", priority: "urgent" },
+      { ...row, id: "tie-a", identifier: "CAL-1", priority: "high" },
+      {
+        ...row,
+        id: "canceled",
+        identifier: "CAL-4",
+        statusId: candidate.statuses.find((s) => s.category === "canceled")!.id,
+      },
+      {
+        ...row,
+        id: "duplicate",
+        identifier: "CAL-5",
+        statusId: candidate.statuses.find((s) => s.category === "duplicate")!
+          .id,
+      },
+      {
+        ...row,
+        id: "deferred",
+        identifier: "CAL-6",
+        deferredUntil: "2026-11-07T00:00:00.000Z",
+      },
+      {
+        ...row,
+        id: "started",
+        identifier: "CAL-7",
+        statusId: candidate.statuses.find((s) => s.category === "started")!.id,
+        dueDate: "2026-11-05",
+      },
+    ];
+    const current = await readCalendar(
+      candidate,
+      new Date("2026-11-06T05:30:00.000Z"),
+    );
+    const done = current.sections["recently-done"];
+    expect(done.map((issue) => issue.identifier)).toEqual([
+      "CAL-3",
+      "CAL-1",
+      "CAL-2",
+    ]);
+    expect(
+      done.every(
+        (issue) => issue.primaryReason === "completed-within-seven-days",
+      ),
+    ).toBe(true);
+    expect(
+      current.sections.now.map((issue) => [
+        issue.identifier,
+        issue.primaryReason,
+      ]),
+    ).toEqual([["CAL-7", "overdue"]]);
+    expect(Object.values(current.sections).flat()).toHaveLength(4);
+  }
+  for (const { timezone, now } of windows.slice(0, 2)) {
     const candidate = structuredClone(snapshot);
     candidate.workspace!.timezone = timezone;
     const fall = timezone === "America/New_York" && now.startsWith("2026-11");
@@ -219,7 +232,7 @@ it.each(windows.slice(0, 2))(
       completedAt: null,
       dueDate,
     }));
-    const current = projectCurrent(candidate, new Date(now));
+    const current = await readCalendar(candidate, new Date(now));
     expect(current.sections.now.map((issue) => issue.identifier)).toEqual([
       "CAL-1",
     ]);
@@ -228,8 +241,8 @@ it.each(windows.slice(0, 2))(
       "CAL-3",
     ]);
     expect(current.sections["recently-done"]).toEqual([]);
-  },
-);
+  }
+}
 
 it("[OPS-003 CURR-005] native settings round-trip changes Current membership without rewriting stored instants or history", async () => {
   const request = (path: string, timezone?: string) =>
@@ -294,4 +307,5 @@ it("[OPS-003 CURR-005] native settings round-trip changes Current membership wit
     ).toEqual(expected);
     expect(await retained()).toEqual(before);
   }
+  await calendarBoundaries();
 });

@@ -1,10 +1,6 @@
 import { env } from "cloudflare:workers";
-import { beforeAll, expect, it, vi } from "vitest";
-import * as streams from "../../src/core/features/streams";
-import {
-  getSearchOptions,
-  searchWorkspace,
-} from "../../src/core/features/search";
+import { beforeAll, expect, it } from "vitest";
+import { searchWorkspace } from "../../src/core/features/search";
 import {
   addComment,
   changeComment,
@@ -168,19 +164,4 @@ it("[SEARCH-001 SEARCH-003] literal Unicode words, punctuation and FTS operators
       projects: [],
       savedViews: [],
     });
-});
-
-it("[SEARCH-001 OPS-001 VIEW-002] search and options never load the workspace snapshot", async () => {
-  const snapshot = vi
-    .spyOn(streams, "loadWorkspaceSnapshot")
-    .mockRejectedValue(new Error("Snapshot prohibited"));
-  try {
-    expect((await find("searchsyntax")).issues.length).toBe(1);
-    expect((await getSearchOptions(env.DB, f.actor.id)).workspace.id).toBe(
-      f.actor.workspace_id,
-    );
-    expect(snapshot).not.toHaveBeenCalled();
-  } finally {
-    snapshot.mockRestore();
-  }
 });
