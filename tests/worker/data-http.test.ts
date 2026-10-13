@@ -9,6 +9,9 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ expect(await (await f.call('/data/restore')).json()).toMatchObject({restored:false,status:null});
+ expect((await f.call('/data/restore/operators/'+f.peer,'POST',{})).status).toBe(409);
+ expect((await f.call('/data/restore/review-effects','POST',{})).status).toBe(409);
  expect((await request('/api/portability/exports','POST',{})).status).toBe(401);
  const wrongOrigin=await createServerApp().request(bindings.APP_ORIGIN+'/api/portability/exports',{method:'POST',headers:{Origin:'https://untrusted.example',cookie:f.cookie,'content-type':'application/json'},body:'{}'},bindings);expect(wrongOrigin.status).toBe(403);
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
@@ -34,6 +37,14 @@ it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin 
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_tokens').first())?.n).toBe(0);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ const restoreStatus=async()=>await (await targetCall('/api/data/restore','GET',undefined,historical)).json() as {operators:{id:string;approved:number;eligible:number}[];status:{effectsHeld:number;reviewedAt:string|null}};
+ expect((await restoreStatus()).operators.find(row=>row.id===f.peer)).toMatchObject({approved:0,eligible:1});
+ for(const path of ['/api/data/restore/operators/'+f.peer,'/api/data/restore/review-effects']) {
+  expect((await targetCall(path,'POST',{})).status).toBe(401);
+  const refused=await createServerApp().request(targetBindings.APP_ORIGIN+path,{method:'POST',headers:{Origin:'https://untrusted.example',cookie:historical}},targetBindings);
+  expect(refused.status).toBe(403);
+ }
+ expect((await restoreStatus()).status.effectsHeld).toBe(1);
  const again=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,historical));
  expect(finalHash(again)).toBe(finalHash(records));
  expect(await (await targetCall('/api/issues/'+f.erased.identifier+'/deletion','GET',undefined,historical)).json()).toEqual(f.deletionReceipt);
@@ -59,8 +70,15 @@ it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin 
  expect((await recovered.json() as {status:unknown}).status).toMatchObject({importId:job,phase:'complete',contentHash:finalHash(records),effectsHeld:0});
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]},historical)).status).toBe(409);
  expect((await targetCall('/api/data/restore/operators/'+f.peer,'POST',{},historical)).status).toBe(200);
+ expect((await restoreStatus()).operators.find(row=>row.id===f.peer)).toMatchObject({approved:1,eligible:1});
+ expect((await restoreStatus()).status.reviewedAt).toEqual(expect.any(String));
+ expect((await targetCall('/api/data/restore/operators/'+f.peer,'POST',{},historical)).status).toBe(409);
+ expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(409);
  const admittedPeer=await targetSignIn('peer@http-archive.test');
  expect((await targetCall('/api/portability/imports/'+job,'GET',undefined,admittedPeer)).status).toBe(404);
+ expect((await targetCall('/api/settings/operators/'+f.peer,'DELETE',undefined,historical)).status).toBe(200);
+ expect((await targetCall('/api/data/restore/operators/'+f.peer,'POST',{},historical)).status).toBe(409);
+ expect((await restoreStatus()).operators.some(row=>row.id===f.peer)).toBe(false);
  const manifest=records[0];if(manifest.kind!=='manifest')throw Error('Archive manifest missing');
  console.info('http-restore-proof',JSON.stringify({tables:manifest.tables.length,rows:manifest.tables.reduce((n,table)=>n+table.count,0),objects:manifest.objects.length,frozenCommitted:f.closed.snapshot?.committed.length,canonicalRelations:1,deletionReceipts:1,unsettledFileCustody:1,contentHashEqual:true,originalFileBytes:true,bootstrapAuthorityRetired:true,freshOwner:true,historicalSendCalls:sent}));
 },180000);

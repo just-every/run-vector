@@ -12,6 +12,7 @@ import { CyclesPanel } from "../../cycles/ui/cycles-panel";
 import { NotificationsPanel } from "../../notifications/ui/notifications-panel";
 import { DataPanel } from "../../data/ui/data-panel";
 import { InviteOperator } from "./invite-operator";
+import { RestorePanel } from "../../data/ui/restore-panel";
 
 export function SettingsPage() {
   const administration = useApiResource(
@@ -101,6 +102,7 @@ export function SettingsPage() {
           <a href="#integrations">Integrations</a>
           <a href="#notifications">Notifications</a>
           <a href="#data">Data / Move in</a>
+          <a href="#after-restore">After a restore</a>
         </nav>
       )}
       {resource.loading && <p role="status">Loading settings…</p>}
@@ -285,6 +287,7 @@ export function SettingsPage() {
             </>
           )}
           <DataPanel />
+          <RestorePanel />
           <div id="notifications">
             <IntegrationsPanel teams={administration.data?.teams ?? []} />
             <NotificationsPanel />

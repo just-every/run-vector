@@ -6,8 +6,9 @@ export function addRestoreRoutes(app:Hono<AppEnvironment>) {
    j.phase,json_extract(j.metadata,'$.contentHash') AS contentHash
    FROM vector_restore_status s JOIN rer_portability_jobs j ON j.id=s.import_id WHERE s.id=1`).first();
   const operators=(await c.env.DB.prepare(`SELECT o.id,o.name,o.email,
-   EXISTS(SELECT 1 FROM vector_restore_operator_grants g WHERE g.auth_id=m.auth_id) AS approved
-   FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id JOIN operators actor ON actor.workspace_id=o.workspace_id
+   EXISTS(SELECT 1 FROM vector_restore_operator_grants g WHERE g.auth_id=m.auth_id) AS approved,
+   auth.status='active' AS eligible
+   FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators auth ON auth.id=m.auth_id JOIN operators actor ON actor.workspace_id=o.workspace_id
    WHERE actor.id=? AND o.removed_at IS NULL ORDER BY o.name,o.id`).bind(c.get('operatorId')).all()).results;
   return c.json({restored:Boolean(status),status,operators});
  });

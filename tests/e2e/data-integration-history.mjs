@@ -45,7 +45,7 @@ export function verifyIntegrationCategories(records){
  const items=JSON.stringify(records.filter(row=>row.kind==='part').flatMap(row=>row.items));
  assert(!items.includes('token_hash'));assert(!items.includes('encrypted'));return names;
 }
-export async function verifyRestoredIntegrations(installation,cookie,fixture,identifier){
+export async function verifyRestoredIntegrations(installation,cookie,fixture,identifier,reviewEffects){
  assert.equal(installation.sql('SELECT count(*) AS n FROM integration_tokens')[0].n,0);assert.equal(installation.sql('SELECT count(*) AS n FROM vector_integration_secret_keys')[0].n,0);
  const config=await(await installation.req('/api/settings/integrations','GET',undefined,cookie)).json();
  for(const kind of ['sources','destinations','github','tokens'])assert(config[kind].every(row=>row.requiresReentry===1));
@@ -53,7 +53,7 @@ export async function verifyRestoredIntegrations(installation,cookie,fixture,ide
  assert.equal((await signedSource(installation,fixture.source,fixture.input)).status,401);assert.equal((await signedGithub(installation,fixture.github,fixture.pr,fixture.delivery)).status,401);
  const history=installation.sql('SELECT * FROM integration_deliveries ORDER BY namespace,id'),attempts=installation.sql('SELECT * FROM integration_attempts ORDER BY namespace,id'),events=installation.sql('SELECT * FROM vector_webhook_events ORDER BY id');
  for(const phase of ['before review','after review']){
-  if(phase==='after review')assert.equal((await installation.req('/api/data/restore/review-effects','POST',{},cookie)).status,200);
+  if(phase==='after review')await reviewEffects();
   await installation.scheduledRun();
   assert.deepEqual(installation.sql('SELECT * FROM integration_deliveries ORDER BY namespace,id'),history);assert.deepEqual(installation.sql('SELECT * FROM integration_attempts ORDER BY namespace,id'),attempts);assert.deepEqual(installation.sql('SELECT * FROM vector_webhook_events ORDER BY id'),events);
  }
