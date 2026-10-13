@@ -28,15 +28,14 @@
         "vendor/base/editor/**",
         "vendor/base/portability/**",
         "scripts/installer/**",
-        "scripts/base-onboarding/**",
-        "scripts/base-cli/**",
         "scripts/delivery/**",
-        "scripts/rer.mjs",
         "rer-setup.json",
         ".github/workflows/rer-managed.yml",
         "src/core/features/integrations/**",
         "vendor/base/integrations/**",
-        "vendor/base/import-kit/**"
+        "vendor/base/import-kit/**",
+        "package.json",
+        "pnpm-lock.yaml"
       ],
       "migrationDirectories": [
         "migrations/core"

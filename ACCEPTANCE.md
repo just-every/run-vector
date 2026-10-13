@@ -8,7 +8,7 @@ For a hosted installation, separately validate the exact source and deployment i
 
 ## Shared installation and source custody (9 October 2026)
 
-Use Node 22.20.0 and pnpm 10.12.4. The shared `node scripts/rer.mjs setup --owner-email EMAIL` paths preserve configured FIRST_OWNER bootstrap, private `.dev.vars` and saved origin/owner/data; `pnpm dev` hydrates that installation. `/__dev/outbox` uses Base mail with explicit exact loopback admission and ordinary Base native sessions. Confirmation GET is inert; POST signs in. Owner-account setup/deploy/health uses explicit account inputs and SENDGRID_API_KEY mapped to MAIL_API_KEY. The reviewed artifact controller has separate artifact:setup/deploy/health commands.
+Use Node 22.20.0 and pnpm 10.12.4. The shared `pnpm exec rer setup --owner-email EMAIL` paths preserve configured FIRST_OWNER bootstrap, private `.dev.vars` and saved origin/owner/data; `pnpm dev` hydrates that installation. `/__dev/outbox` uses Base mail with explicit exact loopback admission and ordinary Base native sessions. Confirmation GET is inert; POST signs in. Owner-account setup/deploy/health uses explicit account inputs and SENDGRID_API_KEY mapped to MAIL_API_KEY. The reviewed artifact controller has separate artifact:setup/deploy/health commands.
 
 Exact Base copy/schema/source checks, installer/settings/outbox/hosting tests, populated previous-head migrations and native 1440/390 journeys form local acceptance. CI slow startup and literal README clone/own-frozen-install proof retain only safe receipts and captures. These do not establish hosted acceptance. Preserve 0001–0021, apply 0022/0023, keep additive schema and terminal delivery/migration ledgers on compatible-source rollback, and validate isolated recovery with matching source and D1/R2 backups. See docs/BASE-ADOPTION.md. Local archives preserve native records and FILES bytes with destination access/effect review. Mapped imports and native integrations are described below; authenticated HTTP restore into a pristine bootstrap is locally proven with fresh native authority after commit. Hosted HTTPS acceptance remains separate.
 
@@ -23,15 +23,21 @@ Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and
 The Jira Cloud All Fields CSV supported profile uses the same reviewed staged
 file importer. Its claim remains **documented format, synthetic-only; real
 export not supplied**. The repository's generated 300-issue fixture exercises
-preflight, apply, repeat, status, resume, reconciliation and whole-run rollback
-through native routes and the authenticated terminal command. Jira reuses the
-existing import storage, imported-comment schema and source identities; it adds
-no migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and
-[IMPORT-EVIDENCE.md](docs/IMPORT-EVIDENCE.md) for the measured public-source
-checks and their limits. Browser capture, held-out proof, full verification and
-exact-head CI results belong to the external public-port REPORT; earlier private
-checkpoint results are not acceptance evidence for this public source. A real
-team's export and release publication remain owner review steps.
+preflight and apply through native routes. The earlier copied-CLI run also
+covered repeat, status, resume, reconciliation and whole-run rollback on its
+recorded source head. The external public-port REPORT records exact source
+heads, commands and results, distinguishing that run from the `@runeditrun/rer`
+CLI run. The current commands are `pnpm exec rer dev --login` for a local session and
+`pnpm exec rer build` for a build; Jira imports still use `pnpm run import:issues`
+with `--format jira-csv`.
+Jira reuses the existing import storage, imported-comment schema and source
+identities; it adds no migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and
+[IMPORT-EVIDENCE.md](docs/IMPORT-EVIDENCE.md) for the measured public-route
+checks, exact-head CLI evidence and limits. Browser capture, held-out proof,
+full verification and exact-head CI evidence belong to the external
+public-port REPORT; earlier private checkpoint results are not acceptance
+evidence for this public source. A real team's export and release publication
+remain owner review steps.
 
 Apply 0025/0026 additively after 0024, and 0035–0037 (staged import runs, reconciliation reports, imported comment authors) in order; 0035 replaces the one-batch import triggers with a batch-boundary rule, and populated previous-head proofs state every changed object. Retain original bytes, import journals/provenance, revisions, identifier reservations and authorization guards on compatible-source rollback. Archive export excludes credentials, delivery claims and import lease capabilities. Stop local runtimes before archive commands; restore into empty D1/FILES, configure fresh destination authority, and review access/effects. Never replay historical deliveries. Native cycle history is retained. Automatic closure and frozen snapshots are described below; due reminders and native deletion are described below.
 

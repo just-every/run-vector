@@ -1,7 +1,7 @@
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import assert from 'node:assert/strict';
-import {readOwnedGroup} from '../../scripts/base-onboarding/local/process-table.mjs';
+import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
 const execute=promisify(execFile);
 
 // Read numeric ancestry only, never process arguments or environment. This is

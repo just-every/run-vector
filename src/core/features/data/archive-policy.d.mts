@@ -1,2 +1,2 @@
-import type {ArchivePolicy} from '../../../../scripts/base-cli/modules/portability/index.mjs';
+import type {ArchivePolicy} from '@runeditrun/rer/modules/portability';
 export const portabilityPolicy:ArchivePolicy;

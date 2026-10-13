@@ -1,6 +1,6 @@
 import { readFile,lstat } from 'node:fs/promises';
 import { resolve,basename,isAbsolute } from 'node:path';
-import { options as transportOptions,cookieFile,privateFile } from '../base-cli/modules/portability/cli-options.mjs';
+import { options as transportOptions,cookieFile,privateFile } from '@runeditrun/rer/modules/portability/cli-options';
 // The server enforces the measured run limits (docs/MOVE-IN.md); these bound local reads.
 const fileBytes=4194304,reviewBytes=16777216;
 const commands=['preview','apply','status','resume','rollback','report'];

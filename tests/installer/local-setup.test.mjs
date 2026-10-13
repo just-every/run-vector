@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { mkdtemp,readFile,stat,rm,writeFile,mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { prepareSettings, readSettings } from '../../scripts/base-onboarding/adapter-settings.mjs';
+import { prepareSettings, readSettings } from '@runeditrun/rer/adapter-settings';
 import { settings,validateSettings } from '../../scripts/installer/definition.mjs';
-import { withoutLocalVariables } from '../../scripts/base-onboarding/local/build.mjs';
+import { withoutLocalVariables } from '@runeditrun/rer/local/build';
 const input={FIRST_OWNER_EMAIL:'owner@installation.test',FIRST_OWNER_NAME:'Owner',WORKSPACE_NAME:'Workspace',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Work',DEFAULT_TEAM_PREFIX:'VEC'};
 export async function localFixture(t) {
  const root=await mkdtemp(join(tmpdir(),'vector-settings-'));t.after(()=>rm(root,{recursive:true,force:true}));

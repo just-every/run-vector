@@ -36,7 +36,10 @@ export async function waveBProvider(appOrigin,email) {
         });addEventListener('resize',surface);wire('ready');
       </script></body></html>`);return;
     }
-    if(path==='/embed'){response.end(`<!doctype html><html lang="en"><title>Framing probe</title><body><iframe title="Vector framing probe" src="${appOrigin}/"></iframe></body></html>`);return;}
+    if(path==='/embed'||path==='/embed-lobby'){
+      const target=path==='/embed'?'/app':'/';
+      response.end(`<!doctype html><html lang="en"><title>Framing probe</title><body><iframe title="Vector framing probe" src="${appOrigin}${target}"></iframe></body></html>`);return;
+    }
     response.statusCode=404;response.end('Not found');
   });
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));origin='http://127.0.0.1:'+server.address().port;

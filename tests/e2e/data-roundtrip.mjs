@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {populateIntegrationHistory,verifyIntegrationCategories,verifyRestoredIntegrations} from './data-integration-history.mjs';
 import {dataInstallation} from './data-installation.mjs';
 import {populateRoundtrip,verifyRoundtripCategories} from './data-roundtrip-fixture.mjs';
-import {readArchive,canonicalJson} from '../../scripts/base-cli/modules/portability/index.mjs';
+import {readArchive,canonicalJson} from '@runeditrun/rer/modules/portability';
 const work=await mkdtemp(join(tmpdir(),'vector-roundtrip-')),evidence=resolve('evidence/data');let source,destination;
 const proof={passed:false,independentInstallations:true,commands:[],categories:[],rows:0,objects:0,equality:false,heldAfterCron:false,privateViews:false};
 const records=async path=>{const result=[];for await(const row of readArchive(new Response(await readFile(path)).body))result.push(row);return result;};

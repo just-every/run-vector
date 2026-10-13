@@ -7,7 +7,7 @@ import { SplitSection } from './section'
 const proofIcons = [<NoSeatsIcon key="seats" />, <NoPlansIcon key="plans" />, <NoFeesIcon key="fees" />]
 
 /** 3. Free: 100% free and open source, said plainly, beside the licence itself drawn as a sheet. */
-export function Free() {
+export function Free({ site = false }: { site?: boolean }) {
   return (
     <SplitSection id="free" title={c.title} art={<LicenceSheet />} artLabel={c.licence.label} band>
       <p className="vx-section-body">{c.body}</p>
@@ -15,7 +15,7 @@ export function Free() {
         {c.proof.map((item, i) => <li key={item}>{proofIcons[i]}<span>{item}</span></li>)}
       </ul>
       <div className="vx-section-actions">
-        <a className="vx-pill vx-pill--large" href={links.source}>{c.action}</a>
+        <a className="vx-pill vx-pill--large" href={site ? "/run" : links.source}>{site ? "Run Vector" : c.action}</a>
       </div>
     </SplitSection>
   )

@@ -87,21 +87,22 @@ Jira's optional detailed review is withdrawn when erased person metadata occurs.
 Public rollback behavior is preserved; no newer detached-survivor presentation
 is implied.
 
-The public copied CLI is exercised by `node tests/e2e/jira-cli-runtime.mjs`:
-setup and `dev --login` use `node scripts/rer.mjs`, sign-in uses the local
-outbox, and the terminal previews, applies, repeats, reads status, resumes,
-reconciles and rolls back the same 300-issue fixture. It compares all application
-table counts around preview and records before/apply/rollback counts. The public
-CLI run checked 170 tables, excluding request rate counters and SQLite/D1
-infrastructure, and returned the native issue count from 300 to zero. Owned
-processes and the temporary installation are closed after the command.
+An earlier public terminal proof, recorded against its exact source head in the
+external public-port REPORT, used `tests/e2e/jira-cli-runtime.mjs` to preview,
+apply, repeat, read status, resume, reconcile and roll back the same 300-issue
+fixture. It compared all application table counts around preview and recorded
+before/apply/rollback counts. That run checked 170 tables, excluding request
+rate counters and SQLite/D1 infrastructure, and returned the native issue count
+from 300 to zero. These counts apply only to that recorded source head. The
+external public-port REPORT records each CLI command, result and exact source
+head, with labels distinguishing this earlier copied-CLI run from the
+`@runeditrun/rer` CLI run. Earlier private npm snapshots are not public
+acceptance evidence.
 
-The public-port checkpoint record contains the exact source heads, commands,
-exit codes and log paths for these checks. Browser captures at 1440 and 390,
-a separate held-out fixture, final full verification and exact-head CI results
-are recorded separately in the external public-port REPORT when executed.
-Their earlier private-checkpoint measurements are not public-source evidence.
-The repository and held-out fixture totals must never be interchanged.
+Browser captures at 1440 and 390, a separate held-out fixture, final full
+verification and exact-head CI evidence are recorded in the external
+public-port REPORT. The repository and held-out fixture totals must never be
+interchanged.
 
 No migration, Base refresh or pin change is needed. Trial a real team's export
 using [MOVE-IN-CHECKLIST.md](MOVE-IN-CHECKLIST.md) before broadening the claim.
