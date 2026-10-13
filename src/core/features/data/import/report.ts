@@ -1,4 +1,5 @@
 import type { Json,SourceRecord } from '../../../../../vendor/base/import-kit/src/d1/index';
+import { effectReport,type EffectPlan,type EffectReport } from './effect-report';
 import type { JiraReview } from './jira-review';
 import { importField } from './references';
 import type { ImportDiagnostic,ImportInput } from './types';
@@ -9,6 +10,7 @@ type ReportField = typeof reportFields[number];
 /** Omissions that name a reference Vector did not resolve, row by row. */
 const referenceCodes = new Set(['unresolved_assignee','terminal_cycle_omitted']);
 export type ReportInput = {
+  effects?: EffectPlan;
   jiraReview?: JiraReview;
   format: ImportInput['format']; fileName: string; headers: string[];
   /** [row, sourceId, team, status, project, cycle, assignee] as read from the file. */
@@ -37,6 +39,7 @@ export function reportInput(input:ImportInput,headers:string[],records:SourceRec
 }
 type Written = { source_id:string; identifier:string; team:string; status:string; project:string|null; cycle:string|null; assignee:string|null };
 export type ImportReport = {
+  effects?: EffectReport;
   jiraReview?: JiraReview;
   run: { id:string; source:string; fileName:string; format:string; state:string };
   totals: { rowsRead:number; issuesWritten:number; rowsNotWritten:number; omittedValues:number; unresolvedReferences:number };
@@ -69,6 +72,7 @@ export async function buildReport(db:D1Database,job:{id:string;namespace:string;
     return {row:number,sourceId:row?.[1]??'',field:group.field,value:index>=0?String(row?.[2+index]??''):'',code:group.code,message:group.message};
   }));
   return {
+    ...(input.effects?{effects:await effectReport(db,job.id,input.effects)}:{}),
     ...(input.jiraReview?{jiraReview:input.jiraReview}:{}),
     run:{id:job.id,source:job.namespace.replace(/^vector-import:/,''),fileName:input.fileName,format:input.format,state:job.state},
     totals:{rowsRead:input.rows.length,issuesWritten:written.length,rowsNotWritten:input.rows.filter(row=>!bySource.has(row[1])).length,omittedValues:input.omissions.reduce((sum,group)=>sum+group.rows.length,0),unresolvedReferences:references.length},

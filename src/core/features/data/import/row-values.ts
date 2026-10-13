@@ -2,7 +2,8 @@ import type { Json,SourceRecord } from '../../../../../vendor/base/import-kit/sr
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { stableImportId } from './ids';
 import { apiRowEffects } from './api-rows';
-import { jiraOmissions } from './jira';
+import { jiraOmissions,jiraValue } from './jira';
+import { jiraRowEffects,jiraCompletedAt } from './jira-effects';
 import { apiPayloadKey } from './api-file';
 export { stableImportId };
 import { createIssueInputSchema } from '../../issues/input';
@@ -78,7 +79,8 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   result.dependencies=take('dependencies',()=>listField(importField(input,payload,'dependencies'),'dependencies'))||[];
   result.duplicateOf=take('duplicateOf',()=>text('duplicateOf',128))||'';
   take('archivedAt',()=>text('archivedAt'));
-  const api=apiRowEffects(payload,record.sourceId,row,input,actor,effectiveAt,inRun,errors,omissions);
+  const api=input.format==='jira-csv'?jiraRowEffects(record,input,actor,effectiveAt,errors):apiRowEffects(payload,record.sourceId,row,input,actor,effectiveAt,inRun,errors,omissions);
+  const completedAt=input.format==='jira-csv'?jiraCompletedAt(payload,input,String(status?.category),createdAt,updatedAt,effectiveAt,row,errors,omissions):status?.category==='completed'?updatedAt:null;
   if(api){result.parent||=api.parent;result.duplicateOf||=api.duplicateOf;result.blocks=api.blocks;}
   if(status?.category==='intake')errors.push({row,field:'status',code:'intake_requires_evidence',message:'File imports cannot create signal Intake without its evidence. Choose an ordinary native workflow status explicitly.'});
   if(status?.category==='duplicate' && !result.duplicateOf)errors.push({row,field:'duplicateOf',code:'duplicate_reference_required',message:'A Duplicate status needs an explicit duplicate-of reference.'});
@@ -89,9 +91,9 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   if(!validation.success)for(const issue of validation.error.issues)errors.push({row,field:String(issue.path[0]),code:'invalid_native_field',message:issue.message});
   if(errors.length || !validation.success || !team || !status || !createdAt || !updatedAt)return result;
   const data=validation.data,id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
-  const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:status.category==='completed'?updatedAt:null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
+  const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
   value.labels=data.labelIds.sort().map(label_id=>({issue_id:id,label_id,created_at:createdAt}));
-  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(input.format==='jira-csv'?{format:input.format}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
+  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(input.format==='jira-csv'?{format:input.format,sourceKey:jiraValue(record,'issue key').trim()}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
   // Snapshot order: native relations are read back ordered by id.
   value.comments=(api?.comments??[]).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
   value.links=(api?.links??[]).sort((a,b)=>String(a.id).localeCompare(String(b.id)));

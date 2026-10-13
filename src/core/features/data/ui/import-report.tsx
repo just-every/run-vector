@@ -13,6 +13,7 @@ export function ImportReport({report,onDownload,onClose}:{report:ImportReportDat
    <li><strong>Not resolved:</strong> {totals.unresolvedReferences} references, listed below with their rows.</li>
    <li><strong>Not in this file at all:</strong> {report.notInFile.join('; ')}.</li>
   </ul>
+  {report.effects&&<><table><caption>Planned effects and current native rows</caption><thead><tr><th>Effect</th><th>Planned</th><th>Written</th></tr></thead><tbody>{Object.entries(report.effects.counts).map(([name,count])=><tr key={name}><td>{name}</td><td>{count.planned}</td><td>{count.written}</td></tr>)}</tbody></table><table><caption>Label assignments</caption><thead><tr><th>Label</th><th>Planned</th><th>Written</th></tr></thead><tbody>{report.effects.labels.map(label=><tr key={label.name}><td>{label.name}</td><td>{label.planned}</td><td>{label.written}</td></tr>)}</tbody></table></>}
   {report.jiraReview&&<JiraLossReview review={report.jiraReview}/>}
   <button type="button" onClick={onDownload}>Download report CSV (source ID to Vector identifier)</button><button type="button" onClick={onClose}>Close report</button>
   {(Object.keys(names) as (keyof typeof names)[]).map(field=><div key={field} className="import-report-table"><table><caption>{names[field]}: read and written</caption><thead><tr><th scope="col">In the file</th><th scope="col">Read</th><th scope="col">Written</th><th scope="col">In Vector</th></tr></thead>

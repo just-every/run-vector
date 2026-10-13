@@ -45,10 +45,12 @@ export async function checkJiraLossReview(f:Awaited<ReturnType<typeof setupImpor
  expect(loss.unresolved.filter(item=>item.code==='unresolved_sprint')).toEqual([expect.objectContaining({row:81,sourceId:'710078',sourceKey:'VJ-78',value:expected.nativeSetup.unmappedSprints[0]})]);
  expect(loss.unresolved.filter(item=>item.code==='terminal_cycle_omitted')).toHaveLength(25);
  expect(loss.unresolved.filter(item=>item.code==='jira_reference_outside_file')).toEqual([expect.objectContaining({row:14,sourceId:'710011',sourceKey:'VJ-11',value:'OUTSIDE-9001'})]);
- for(const name of ['comment','attachment'])for(const occurrence of concept(name).occurrences){const [time,author,...parts]=occurrence.value.split(';');expect(occurrence.action).toBe('not_imported');expect(occurrence.metadata).toEqual(name==='comment'?{time,author,body:parts.join(';')}:{time,author,filename:parts[0],url:parts.slice(1).join(';')});}
+ for(const name of ['comment','attachment'])for(const occurrence of concept(name).occurrences){const [time,author,...parts]=occurrence.value.split(';');expect(occurrence.action).toBe(name==='comment'?'planned':'not_imported');expect(occurrence.metadata).toEqual(name==='comment'?{time,author,body:parts.join(';')}:{time,author,filename:parts[0],url:parts.slice(1).join(';')});}
  expect(concept('original estimate').occurrences.filter(item=>item.action==='not_imported')).toHaveLength(60);
  expect(concept('issue type').occurrences.filter(item=>item.action==='planned').map(item=>item.row)).toEqual([2]);
- for(const name of ['parent','outward issue link (blocks)','outward issue link (duplicate)','outward issue link (relates)','issue key'])expect(concept(name).occurrences.every(item=>item.action==='not_imported')).toBe(true);
+ for(const name of ['parent','outward issue link (duplicate)','issue key'])expect(concept(name).occurrences.every(item=>item.action==='planned')).toBe(true);
+ expect(concept('outward issue link (blocks)').occurrences.map(item=>item.action)).toEqual(['planned','planned','not_imported']);
+ expect(concept('outward issue link (relates)').occurrences.every(item=>item.action==='not_imported')).toBe(true);
  expect(loss.statuses.map(item=>[item.source,item.suggestion,item.rows.length])).toEqual([['To Do','unstarted',100],['In Progress','started',100],['Done','completed',100]]);
  expect(loss.priorities.map(item=>[item.source,item.suggestion,item.rows.length])).toEqual([['Highest','urgent',60],['High','high',60],['Medium','medium',60],['Low','low',60],['Lowest','low',60]]);
  expect(await counts()).toEqual(before);
@@ -87,7 +89,8 @@ export async function checkJiraLossReview(f:Awaited<ReturnType<typeof setupImpor
  const applied=await f.apply(one,oneReview);expect(applied.status,await applied.clone().text()).toBe(200);const run=await f.finish(await applied.json());
  const native=await env.DB.prepare('SELECT id,estimate,assignee_operator_id,cycle_id FROM issues WHERE title=?').bind(fixture.rows[0][2]).first();expect(native).toMatchObject({estimate:1,assignee_operator_id:f.owner,cycle_id:state.cycles.find(cycle=>cycle.name===expected.nativeSetup.cycles[1])!.id});
  expect((await env.DB.prepare('SELECT l.name FROM issue_labels il JOIN labels l ON l.id=il.label_id WHERE il.issue_id=?').bind(native!.id).all()).results).toEqual([{name:'epic'}]);
- for(const table of ['issue_comments','issue_links','issue_parents','issue_dependencies','issue_duplicates'])expect((await counts())[table]).toBe(before[table]);
+ expect((await counts()).issue_comments).toBe(before.issue_comments!+1);
+ for(const table of ['issue_links','issue_parents','issue_dependencies','issue_duplicates'])expect((await counts())[table]).toBe(before[table]);
  const afterApply=await counts();
  const report=await (await f.call('/data/import/runs/'+run.id+'/report')).json() as {jiraReview:unknown};expect(report.jiraReview).toEqual(oneReview.jiraReview);
  const rolled=await f.call('/data/import/runs/'+run.id+'/rollback','POST',{confirmed:true});expect(rolled.status).toBe(200);await f.finish(await rolled.json());

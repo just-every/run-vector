@@ -3,6 +3,7 @@ import { sourceIdentity } from '../../../../../vendor/base/import-kit/src/proven
 import type { MappingResult,SourceBundle,TargetEffect } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { readNativeIssues } from './native-targets';
 import { readJiraReviewedOmissions } from './jira-reused-review';
+import { jiraHeader,jiraRelations } from './jira';
 import { isLinear } from './linear';
 import { loadImportReferences,importField,referenceAlias } from './references';
 import { mapImportRow,rowOmissions,stableImportId,type MappedRow } from './row-values';
@@ -71,9 +72,19 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     const mapped=mapImportRow(record,input,refs,actor,effectiveAt,sequence,inRun);
     rows.push(mapped);errors.push(...mapped.errors);omissions.push(...mapped.omissions);
   }
-  // "X blocks Y" from the API file makes X a blocker of Y, both in this run.
+  // "X blocks Y" belongs to Y's snapshot. Reusing Y cannot change a prior
+  // run's snapshot or take ownership of it just to add X's dependency.
   const rowBySource=new Map(rows.map(row=>[row.record.sourceId,row]));
-  for(const row of rows)for(const blocked of row.blocks){const target=rowBySource.get(blocked);if(target && !target.dependencies.includes('source:'+row.record.sourceId))target.dependencies.push('source:'+row.record.sourceId);}
+  for(const row of rows)for(const blocked of row.blocks) {
+    const target=rowBySource.get(blocked);
+    if(input.format==='jira-csv'&&!target?.value) {
+      const retained=effects.has(blocked),problem={row:row.record.location.row!,code:retained?'retained_blocks_target':'invalid_issue_reference',message:retained?'This Blocks target is retained from a prior import run. Adding a blocker would change that run’s issue; this relationship cannot be imported.':'The Blocks target cannot be imported from this file. Resolve its row errors before applying.'};
+      for(const relation of jiraRelations(row.record).filter(item=>jiraHeader(item.header)==='outward issue link (blocks)'&&item.target===blocked))
+        errors.push({...problem,field:`${relation.header} [column ${relation.column}]`,column:relation.column,value:relation.value});
+      continue;
+    }
+    if(target&&!target.dependencies.includes('source:'+row.record.sourceId))target.dependencies.push('source:'+row.record.sourceId);
+  }
   const referenceValues=rows.flatMap(row=>[row.parent,...row.dependencies,row.duplicateOf]).filter(Boolean).map(value=>value.replace(/^native:/,''));
   const existing=(await db.prepare(`SELECT i.id,i.identifier,t.archived_at FROM issues i JOIN teams t ON t.id=i.team_id
     WHERE t.workspace_id=? AND (i.id IN (SELECT value FROM json_each(?)) OR i.identifier IN (SELECT value FROM json_each(?)))`).bind(actor.workspace,JSON.stringify(referenceValues),JSON.stringify(referenceValues)).all<{id:string;identifier:string;archived_at:string|null}>()).results;

@@ -77,14 +77,14 @@ export async function searchWorkspace(
         JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
         WHERE s.destination=actor.workspace_id AND s.target_kind='issue' AND s.reversed=0
-          AND json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE AND i.identifier<>? COLLATE NOCASE AND ${archiveIssue}
+          AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)) AND i.identifier<>? COLLATE NOCASE AND ${archiveIssue}
         UNION ALL
         SELECT i.id,i.identifier,i.title,2 AS placement,f.rank AS score FROM search_issues f
         JOIN issues i ON i.id=f.id
         JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
         WHERE search_issues MATCH ? AND i.identifier<>? COLLATE NOCASE AND ${archiveIssue}
-          AND NOT EXISTS(SELECT 1 FROM ik_provenance s WHERE s.target_id=i.id AND s.target_kind='issue' AND s.reversed=0 AND json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE)
+          AND NOT EXISTS(SELECT 1 FROM ik_provenance s WHERE s.target_id=i.id AND s.target_kind='issue' AND s.reversed=0 AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)))
         ORDER BY placement,score,identifier LIMIT ${SEARCH_RESULT_LIMIT}
       )) AS issues,
       (SELECT json_group_array(json_object('id',id,'name',name)) FROM (
@@ -105,13 +105,15 @@ export async function searchWorkspace(
         exact?.id ?? null,
         term,
         Number(includeArchived),
-        // Imported issues are found by their source ID (for example ENG-123).
+        // Stable source ID and retained Jira key both resolve.
+        term,
         term,
         term,
         Number(includeArchived),
         expression,
         term,
         Number(includeArchived),
+        term,
         term,
         expression,
         Number(includeArchived),

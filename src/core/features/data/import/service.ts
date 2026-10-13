@@ -4,6 +4,7 @@ import type { ImportJob,ImportPlan } from '../../../../../vendor/base/import-kit
 import { checkSql,valueBytes } from '../../../../../vendor/base/import-kit/src/d1/budget';
 import { parseImport } from './source';
 import { mapImport } from './mapper';
+import { effectPlan } from './effect-report';
 import { buildJiraReview } from './jira-review';
 import { jiraInput } from './jira';
 import { linearInput } from './linear';
@@ -24,7 +25,7 @@ function normalized(input:ImportInput):ImportInput {
   return {...selected,source:'vector-import:'+selected.source};
 }
 function mappingVersion(input:ImportInput) {
-  return 'vector-issues-v1:'+sha256(canonicalJson({format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
+  return 'vector-issues-v1:'+sha256(canonicalJson({...(input.format==='jira-csv'?{jiraEffectsVersion:3}:{}),format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
 }
 type PlannedPreview = ImportPreview & { plan?: ImportPlan; batchSize?: number; report?: ReportInput };
 async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<PlannedPreview> {
@@ -42,6 +43,7 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
   let nativeBytes=0,nativeStatements=0,maxParameters=0,entryStatements=1,entryBytes=1;
   try {
     preview.report=reportInput(input,parsed.headers,parsed.source.records,mapped.omissions,jiraReview);
+    preview.report.effects=effectPlan(mapped.effects,mapped.references.labels,actor.workspace,input.source);
     const reportJson=JSON.stringify(preview.report);
     checkSql({sql:'INSERT INTO vector_import_reports(job_id,report_json) VALUES(?,?)',params:['0'.repeat(36),reportJson]});
     preview.measured.reportBytes=Buffer.byteLength(reportJson);

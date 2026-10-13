@@ -12,7 +12,7 @@ export type ImportInput = {
   format: 'csv'|'json'|'linear-csv'|'linear-api-json'|'jira-csv'; name: string; base64: string; source: string;
   /** With linear-api-json: the owner's Linear API file (docs/LINEAR-API-FILE.md). */
   api?: { name: string; base64: string };
-  jira?: { sourceOffset?: string; shortYearCentury?: number; originalEstimateSecondsPerUnit?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };
+  jira?: { attachmentLinks?: boolean; completedAtFallback?: 'updated'|'created'|'effective'; sourceOffset?: string; shortYearCentury?: number; originalEstimateSecondsPerUnit?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };
   mapping: ImportMapping; defaults?: Partial<Record<ImportField,string>>;
   references?: Partial<Record<ImportField,Record<string,string>>>;
   /** Returned by preview; reusing it binds default timestamps to the review. */

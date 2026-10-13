@@ -20,7 +20,7 @@ export function readJiraCsv(csv:{headers:string[];rows:{row:number;values:string
   const errors:ImportDiagnostic[]=[],headers=csv.headers.map(jiraHeader),dates:JiraDateCell[]=[];
   for(const name of ['issue id','issue key','summary'])if(!headers.includes(name))errors.push({row:1,field:name,code:'jira_required_column',message:`Required Jira column is absent: ${name}.`});
   // A repeated scalar cannot be selected without silently losing another value.
-  for(const name of new Set(headers))if((scalarField(name)||['issue key','original estimate','issue type','status category'].includes(name))&&headers.filter(header=>header===name).length>1)errors.push({row:1,field:name,code:'jira_repeated_scalar',message:'This scalar column occurs more than once. Retain only the intended scalar column; multivalue columns retain every position.'});
+  for(const name of new Set(headers))if((scalarField(name)||['issue key','original estimate','issue type','status category','resolved'].includes(name))&&headers.filter(header=>header===name).length>1)errors.push({row:1,field:name,code:'jira_repeated_scalar',message:'This scalar column occurs more than once. Retain only the intended scalar column; multivalue columns retain every position.'});
   for(const row of csv.rows)for(let column=0;column<headers.length;column++) {
     const field=headers[column],rawValue=row.values[column]??'',value=rawValue.trim();if(!value)continue;
     if(['created','updated','due date','resolved'].includes(field))dates.push({row:row.row,column,field:csv.headers[column],value,rawValue});
@@ -41,7 +41,13 @@ export function readJiraCsv(csv:{headers:string[];rows:{row:number;values:string
     const values=(name:string)=>headers.flatMap((header,index)=>header===name&&row.values[index]?.trim()?[row.values[index].trim()]:[]);
     payload.labels=[...new Set([...values('labels'),...(values('issue type').some(value=>value.toLowerCase()==='epic')?['epic']:[])])];
     payload.cycle=values('sprint').at(-1)??'';
-    payload.$jiraMetadata=csv.headers.flatMap((header,index)=>['comment','attachment'].includes(jiraHeader(header))&&row.values[index]?.trim()?[{column:index+1,author:row.values[index].split(';')[1]?.trim()??''}]:[]);
+    payload.$jiraMetadata=csv.headers.flatMap((header,index)=>{
+      const kind=jiraHeader(header),raw=row.values[index]??'';
+      if(!['comment','attachment'].includes(kind)||!raw.trim())return [];
+      const [date,author,...parts]=raw.split(';');
+      return [{column:index+1,kind,time:detected.values.get(row.row+':'+index)??'',sourceTime:date,author:author?.trim()??'',...(kind==='comment'?{body:parts.join(';')}:{filename:parts[0]?.trim()??'',url:parts.slice(1).join(';').trim()})}];
+    });
+    payload.$jiraResolved=detected.values.get(row.row+':'+headers.indexOf('resolved'))??'';
     if(!String(payload.estimate).trim()&&values('original estimate').length&&input.jira?.originalEstimateSecondsPerUnit) {
       const seconds=values('original estimate')[0],units=Number(seconds)/input.jira.originalEstimateSecondsPerUnit;
       payload.estimate=/^\d+$/.test(seconds)&&Number.isSafeInteger(Number(seconds))?String(units):'invalid seconds';
@@ -57,6 +63,15 @@ export function readJiraCsv(csv:{headers:string[];rows:{row:number;values:string
       }
     }
     payloads.set(row.row,payload);
+  }
+  // Resolve only against this file. A mutable key is an alias for the stable ID,
+  // never permission to select a same-named native issue.
+  const aliases=new Map([...keys].filter(([,value])=>value.ids.size===1).map(([key,value])=>[key,[...value.ids][0]]));
+  for(const payload of payloads.values()) {
+    payload.$jiraRelations=(payload[jiraPayloadKey] as JiraColumn[]).filter(column=>['parent','parent id','outward issue link (blocks)','outward issue link (duplicate)','outward issue link (relates)'].includes(jiraHeader(column.header))&&column.value.trim()).map(column=>{
+      const value=column.value.trim(),byId=ids.has(value)?value:undefined,byKey=aliases.get(value.toUpperCase());
+      return {...column,target:byId??byKey??'',ambiguous:!!byId&&!!byKey&&byId!==byKey};
+    });
   }
   for(const rows of ids.values())if(rows.length>1)for(const row of rows)errors.push({row,field:'issue id',code:'jira_duplicate_source_id',message:'This Jira issue ID appears more than once in the file. Keep one row per issue ID, even when the contents are identical.'});
   for(const identity of keys.values())if(identity.ids.size>1)for(const row of identity.rows)errors.push({row,field:'issue key',code:'jira_ambiguous_issue_key',message:'This Jira issue key belongs to multiple issue IDs in this file. Resolve the conflicting identities before applying.'});
@@ -76,12 +91,19 @@ export function jiraOmissions(record:SourceRecord,input:ImportInput):ImportDiagn
       if(jiraValue(record,'story point estimate').trim())message='Story points take precedence. Original estimate seconds are retained without conversion.';
       else if(!input.jira?.originalEstimateSecondsPerUnit)message='Original estimate is seconds. No seconds-per-native-unit conversion policy was confirmed; retained without conversion.';
     }
-    else if(name==='issue key')message='Old issue key retained in originals; visible/searchable old-key effect is not imported in this milestone (Part 3).';
-    else if(name==='comment')message='Comment author, timestamp and body retained; native imported comments are not imported in this milestone (Part 3).';
-    else if(name==='attachment')message='Attachment timestamp, author, filename and URL retained. Bytes are absent; URLs are never fetched. Named HTTPS-link opt-in is deferred to Part 3; no link is created.';
-    else if(name==='parent'||name==='parent id'||name.startsWith('outward issue link'))message='Source relationship retained; parent, block, duplicate and related effects are not imported in this milestone (Part 3).';
-    else if(name==='resolved')message='Resolved timestamp retained. Native completion time currently follows Updated; the source resolution time is not imported.';
-    else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate'].includes(name))message='No native field for this source column; every occurrence is retained in the original and not imported.';
-    return message?[{row:record.location.row!,field:`${column.header} [column ${column.column}]`,code:name==='sprint'?'jira_sprint_rollover':'jira_not_imported',message,sourceId:record.sourceId,sourceKey:jiraValue(record,'issue key'),value:column.value}]:[];
+
+    else if(name==='attachment')message=input.jira?.attachmentLinks?'Named HTTPS link planned; attachment bytes are absent and never fetched. Source timestamp and author remain metadata.':'Attachment timestamp, author, filename and URL retained. Bytes are absent and never fetched; no named-link opt-in was confirmed.';
+    else if(['parent','parent id','outward issue link (blocks)','outward issue link (duplicate)'].includes(name)) {
+      const relation=jiraRelations(record).find(item=>item.column===column.column);
+      if(!relation?.target)message='Source reference is outside this file. It cannot bind any native issue with the same name or identifier; retained only.';
+    }
+    else if(name.startsWith('outward issue link'))message='This relationship kind has no native mapping; retained in the original without a link.';
+    else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate','issue key','comment','resolved'].includes(name))message='No native field for this source column; every occurrence is retained in the original and not imported.';
+    return message?[{row:record.location.row!,field:`${column.header} [column ${column.column}]`,code:name==='sprint'?'jira_sprint_rollover':message.startsWith('Source reference is outside')?'jira_reference_outside_file':name==='attachment'&&input.jira?.attachmentLinks?'jira_attachment_bytes_absent':'jira_not_imported',message,sourceId:record.sourceId,sourceKey:jiraValue(record,'issue key'),value:column.value}]:[];
   });
 }
+
+export type JiraRelation=JiraColumn&{target:string;ambiguous:boolean};
+export const jiraRelations=(record:SourceRecord)=>(record.payload as Record<string,Json>).$jiraRelations as JiraRelation[];
+export type JiraMetadata={column:number;kind:string;time:string;sourceTime:string;author:string;body?:string;filename?:string;url?:string};
+export const jiraMetadata=(record:SourceRecord)=>(record.payload as Record<string,Json>).$jiraMetadata as JiraMetadata[];

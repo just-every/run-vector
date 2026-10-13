@@ -24,13 +24,14 @@ it(contractTitle('DATA-009','Jira loss review counts every source concept and re
  for(const name of customColumns)expect(review.jiraReview?.concepts.find(item=>item.name===name.toLowerCase())?.occurrences).toEqual([expect.objectContaining({column:headers.indexOf(name)+1,value:row[headers.indexOf(name)],action:'not_imported'})]);
  expect(review.headers.filter(header=>header==='Comment')).toHaveLength(2);
  expect(review.jiraDates).toMatchObject({pattern:'D/M/YYYY',sample:'01/02/2026 09:30',sourceOffset:'+10:00',cells:7});
- for(const name of ['Comment','Attachment'])expect(review.omissions.filter(item=>item.field?.startsWith(name+' [column '))).toHaveLength(2);
+ expect(review.omissions.filter(item=>item.field?.startsWith('Attachment [column '))).toHaveLength(2);
+ expect(review.omissions.filter(item=>item.field?.startsWith('Comment [column '))).toHaveLength(0);
  expect(review.omissions.filter(item=>item.code==='jira_sprint_rollover')).toHaveLength(1);
  expect(review.omissions.filter(item=>item.code==='unresolved_sprint')).toHaveLength(1);
  expect(review.jiraReview?.concepts.find(item=>item.name==='labels')).toMatchObject({rowCount:1,valueCount:2});
  expect(review.jiraReview?.concepts.find(item=>item.name==='resolved')).toMatchObject({rowCount:0,valueCount:0});
  expect(review.omissions.some(item=>item.field?.startsWith('Original estimate'))).toBe(true);
- expect(review.omissions.some(item=>item.field?.startsWith('Issue key'))).toBe(true);
+ expect(review.omissions.some(item=>item.field?.startsWith('Issue key'))).toBe(false);
  expect(review.omissions.some(item=>item.code==='unresolved_assignee')).toBe(true); // An existing email must still be explicitly mapped.
  expect(await counts()).toEqual(before);
  // The quoted multiline description puts the next record at physical row 4.
@@ -96,14 +97,15 @@ it(contractTitle('DATA-009','Jira loss review counts every source concept and re
  const changedInput={...input,base64:encode([headers,changed,changed])},changedReview=await f.preview(changedInput);
  expect(changedReview.ready).toBe(false);
  expect(changedReview.errors.filter(item=>item.code==='source_content_conflict').map(item=>item.row)).toEqual([2,4]);
- const unsupported=review.omissions.filter(item=>item.code==='jira_not_imported'||item.code==='jira_sprint_rollover').map(({row:_row,sourceId:_id,sourceKey:_key,...item})=>item);
+ const unsupported=review.omissions.filter(item=>item.code==='jira_not_imported'||item.code==='jira_sprint_rollover'||item.code==='jira_reference_outside_file').map(({row:_row,sourceId:_id,sourceKey:_key,...item})=>item);
  for(const physicalRow of [2,4])expect(changedReview.omissions.filter(item=>item.row===physicalRow).map(({row:_row,sourceId:_id,sourceKey:_key,...item})=>item)).toEqual(unsupported);
  expect((await f.apply(changedInput,{...changedReview,fingerprint:review.fingerprint},'jira-retained-conflict')).status).toBe(409);
  expect(await counts()).toEqual(publishedCounts);
  expect((await f.apply(input,review)).status).toBe(200);expect((await counts()).issues).toBe(1);
  const status=await f.call('/data/import/runs/'+run.id);expect(status.status).toBe(200);
  const report=await (await f.call('/data/import/runs/'+run.id+'/report')).json() as {totals:{issuesWritten:number};omitted:{field:string;count:number}[];jiraReview:unknown};
- expect(report.totals.issuesWritten).toBe(1);expect(report.omitted.filter(item=>item.field?.startsWith('Comment [column '))).toHaveLength(2);
+ expect(report.totals.issuesWritten).toBe(1);expect(report.omitted.filter(item=>item.field?.startsWith('Comment [column '))).toHaveLength(0);
+ expect(await env.DB.prepare('SELECT count(*) n FROM issue_comments').first<number>('n')).toBe(2);
  expect(report.jiraReview).toEqual(review.jiraReview);
  const rollback=await f.call('/data/import/runs/'+run.id+'/rollback','POST',{confirmed:true});expect(rollback.status).toBe(200);await f.finish(await rollback.json());
  // Identifier reservations changed during the first run; review the second run again.
