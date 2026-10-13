@@ -442,6 +442,22 @@
       "sha256": "4ac7e21eeae4ef3bd5842863138cd3abb2d0033c07c8e3c2095f78e1ce47c109",
       "executable": false
     },
+    ".github/assets/media/flow.webp": {
+      "sha256": "16abc77cc4e1f0d654529c2b3516936bac835a852ec037821ad06e9afde18313",
+      "executable": false
+    },
+    ".github/assets/media/preview.gif": {
+      "sha256": "5c8374bceb7c811f13d9514140a6632a5ee71fc4ae2a2cc31322a532997209e2",
+      "executable": false
+    },
+    ".github/assets/media/screen-1.webp": {
+      "sha256": "ac85b82e6c99b3c20f671dce753cd6123f80e2a7506f0c8efc64cb245e77442c",
+      "executable": false
+    },
+    ".github/assets/media/screen-2.webp": {
+      "sha256": "368733ea8d714c0e787e932effc97c8ad1a7012bc0ae018053c8eb270eb9338e",
+      "executable": false
+    },
     ".github/workflows/ci.yml": {
       "sha256": "4555020710663f0dc29e1283c2f63877a933390cde7508530938fe51be54ee89",
       "executable": false
