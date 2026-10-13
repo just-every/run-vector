@@ -2,12 +2,13 @@ import { Buffer } from 'node:buffer';
 import { readFileSource } from '../../../../../vendor/base/import-kit/src/readers/index';
 import { canonicalJson, sha256 } from '../../../../../vendor/base/import-kit/src/d1/index';
 import type { Json, SourceRecord, SourceBundle } from '../../../../../vendor/base/import-kit/src/d1/index';
+import { readJiraCsv } from './jira';
 import { parseCsv } from './csv';
 import { readApiFile,apiPayloadKey } from './api-file';
 import { ImportError, importLimits, type ImportInput, type ParsedImport } from './types';
 
 export async function parseImport(input: ImportInput): Promise<ParsedImport> {
-  if (!['csv','json','linear-csv','linear-api-json'].includes(input.format)) throw new ImportError(400,'invalid_format');
+  if (!['csv','json','linear-csv','linear-api-json','jira-csv'].includes(input.format)) throw new ImportError(400,'invalid_format');
   if ((input.format==='linear-api-json')!==Boolean(input.api)) throw new ImportError(400,'invalid_format','The Linear API file goes with the linear-api-json format, and that format needs it.');
   if (typeof input.name !== 'string' || !/^[^/\\\x00-\x1f]{1,160}$/.test(input.name)) throw new ImportError(400,'invalid_file_name');
   if (typeof input.source !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/.test(input.source)) throw new ImportError(400,'invalid_source');
@@ -48,14 +49,16 @@ export async function parseImport(input: ImportInput): Promise<ParsedImport> {
   let text: string;
   try { text = new TextDecoder('utf-8',{fatal:true}).decode(bytes); }
   catch { throw new ImportError(400,'invalid_utf8'); }
-  const csv = parseCsv(text);
+  const csv = parseCsv(text,{repeatedHeaders:input.format==='jira-csv'});
+  const jira=input.format==='jira-csv'?readJiraCsv(csv,input):null;
+  if(jira)errors.push(...jira.errors);
   if (csv.rows.length > importLimits.rows) throw new ImportError(413,'import_row_limit');
   const hash=sha256(bytes),records:SourceRecord[]=[];
   const api=input.api?readApiFile(input.api.base64):null,joined=new Set<string>();
   if(api)errors.push(...api.errors);
   for (const row of csv.rows) {
     if (row.values.length !== csv.headers.length) errors.push({row:row.row,code:'column_count',message:`Expected ${csv.headers.length} fields; received ${row.values.length}.`});
-    const payload=Object.fromEntries(csv.headers.map((header,index)=>[header,row.values[index]??''])) as Record<string,Json>;
+    const payload=jira?.payloads.get(row.row)??Object.fromEntries(csv.headers.map((header,index)=>[header,row.values[index]??''])) as Record<string,Json>;
     // The API file's issue joins its CSV row by Linear ID before hashing.
     const id=input.mapping.sourceId?payload[input.mapping.sourceId]:undefined,node=typeof id==='string'?api?.issues.get(id):undefined;
     if(node){payload[apiPayloadKey]=node as unknown as Json;joined.add(id as string);}
@@ -68,5 +71,5 @@ export async function parseImport(input: ImportInput): Promise<ParsedImport> {
     const apiBytes=Buffer.from(input.api.base64,'base64');
     artifacts.push({name:input.api.name,sha256:sha256(apiBytes),size:apiBytes.byteLength,original:{status:'available',base64:input.api.base64}});
   }
-  return {headers:csv.headers,errors,source:{records,artifacts,diagnostics:[]}};
+  return {headers:csv.headers,errors,...(jira?{jiraDates:jira.review}:{}),source:{records,artifacts,diagnostics:[]}};
 }

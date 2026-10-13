@@ -1,4 +1,4 @@
-# Erasing an imported person (DATA-009, part of BASE-DATA-003)
+# Erasing an imported person (DATA-011, part of BASE-DATA-003)
 
 Vector erases a person that imports carried: someone named in a Linear or
 mapped CSV/JSON file, or in a Linear API file, who may never have had an

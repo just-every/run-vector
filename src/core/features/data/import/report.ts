@@ -16,6 +16,7 @@ export type ReportInput = {
   notInFile: string[];
 };
 const notInFile: Record<ImportInput['format'],string[]> = {
+  'jira-csv': ['attachment file bytes','complete workflow transition history, permissions and complete plugin state are not established by this CSV'],
   'linear-csv': ['comments','attachment files and links','issue history','team and project memberships','relations other than the parent issue (blocks, related, duplicate)'],
   'linear-api-json': ['attachment file bytes (the API file lists attachment links only)','issue history','team and project memberships'],
   csv: ['comments, attachments, history and memberships: a mapped file carries only its columns'],

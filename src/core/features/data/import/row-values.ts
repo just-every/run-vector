@@ -2,6 +2,7 @@ import type { Json,SourceRecord } from '../../../../../vendor/base/import-kit/sr
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { stableImportId } from './ids';
 import { apiRowEffects } from './api-rows';
+import { jiraOmissions } from './jira';
 import { apiPayloadKey } from './api-file';
 export { stableImportId };
 import { createIssueInputSchema } from '../../issues/input';
@@ -17,6 +18,7 @@ const instant=(value:string,label:string)=>{
 };
 export type MappedRow = {record:SourceRecord;value?:NativeIssueValue;parent:string;dependencies:string[];duplicateOf:string;blocks:string[];errors:ImportDiagnostic[];omissions:ImportDiagnostic[]};
 export function rowOmissions(record:SourceRecord,input:ImportInput):ImportDiagnostic[] {
+  if(input.format==='jira-csv')return jiraOmissions(record);
   if(!record.payload || typeof record.payload!=='object' || Array.isArray(record.payload))return [];
   const payload=record.payload as Record<string,Json>,row=record.location.row!,result:ImportDiagnostic[]=[];
   const archived=importField(input,payload,'archivedAt');
@@ -36,7 +38,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   };
   const text=(field:ImportField,max?:number)=>stringField(importField(input,payload,field),field,max);
   const team=take('team',()=>resolveReference(refs.teams,text('team'), 'team',input));
-  const status=team?take('status',()=>resolveReference(refs.statuses.filter(status=>status.team_id===team.id),text('status'),'status',input,String(team.name))):undefined;
+  const status=team?take('status',()=>resolveReference(refs.statuses.filter(status=>status.team_id===team.id),text('status'),'status',input,String(team.name),input.format==='jira-csv'&&!payload.status)):undefined;
   // A person who is not an active operator (someone who left, say) does not
   // block the run: the issue lands unassigned and the report names them.
   const assignee=take('assignee',()=>{
@@ -50,7 +52,9 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const title=take('title',()=>text('title',500).trim());
   const description=take('description',()=>text('description',100000));
   const priority=take('priority',()=>{
-    const raw=text('priority')||'none',value=isLinear(input.format)?linearPriority(raw):raw.toLowerCase();
+    const raw=text('priority')||'none';
+    if(input.format==='jira-csv'&&text('priority')){const table=input.jira?.priorities,mapped=table&&Object.hasOwn(table,raw)?table[raw]:undefined;if(!mapped)throw Error('Confirm an explicit Jira priority mapping; priority names never resolve automatically.');return mapped;}
+    const value=isLinear(input.format)?linearPriority(raw):raw.toLowerCase();
     if(!['none','low','medium','high','urgent'].includes(value))throw Error('Priority must be none, low, medium, high or urgent.');
     return value;
   });

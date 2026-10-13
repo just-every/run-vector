@@ -20,22 +20,27 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   const identities=[...new Set(source.records.map(record=>sourceIdentity(actor.workspace,input.source,'issue',record.sourceId)))];
   const {erased,priors,natives}=await retainedSources(db,actor.workspace,identities);
   for(const record of source.records) {
-    if(seen.has(record.sourceId)) {
+    // Jira refuses repeated IDs in its reader and reviews every physical row.
+    if(input.format!=='jira-csv' && seen.has(record.sourceId)) {
       if(seen.get(record.sourceId)!.hash!==record.payloadHash)for(const row of [seen.get(record.sourceId)!.row,record.location.row!])errors.push({row,field:'sourceId',code:'duplicate_source_conflict',message:'This source ID has different contents in the same file.'});
       continue;
     }
     seen.set(record.sourceId,{hash:record.payloadHash,row:record.location.row!});
+    const refuse=(diagnostic:ImportDiagnostic)=>{
+      errors.push(diagnostic);
+      if(input.format==='jira-csv')omissions.push(...rowOmissions(record,input));
+    };
     const identity=sourceIdentity(actor.workspace,input.source,'issue',record.sourceId);
-    if(erased.has(identity)){errors.push({row:record.location.row!,code:'source_erased',message:'This source record was erased. It cannot recreate its deleted issue.'});continue;}
+    if(erased.has(identity)){refuse({row:record.location.row!,code:'source_erased',message:'This source record was erased. It cannot recreate its deleted issue.'});continue;}
     const prior=priors.get(identity);
     if(prior) {
       const current=natives.get(prior.target_id);
       const provenance=JSON.parse(prior.record_json) as {valueHash:string;appliedRevision:string};
       if(prior.source_hash!==record.payloadHash || prior.mapping_version!==mappingVersion) {
-        errors.push({row:record.location.row!,code:'source_content_conflict',message:'A retained source identity already has different contents or mapping. It cannot be overwritten.'});continue;
+        refuse({row:record.location.row!,code:'source_content_conflict',message:'A retained source identity already has different contents or mapping. It cannot be overwritten.'});continue;
       }
       if(!current || current.revision!==provenance.appliedRevision || sha256(canonicalJson(current.value))!==provenance.valueHash) {
-        errors.push({row:record.location.row!,code:'native_edit_conflict',message:'This imported issue was edited or removed. Re-import will not overwrite it.'});continue;
+        refuse({row:record.location.row!,code:'native_edit_conflict',message:'This imported issue was edited or removed. Re-import will not overwrite it.'});continue;
       }
       const unmapped=rowOmissions(record,input);omissions.push(...unmapped);
       effects.set(record.sourceId,{effects:[{targetKind:'issue',targetId:prior.target_id,value:current.value}],unmapped:unmapped.map(item=>({field:item.field,reason:item.message}))});
@@ -55,7 +60,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
           floors.set(prefix,last??0);
         }
         sequence=counters.get(prefix)!+1;
-        if(!Number.isSafeInteger(sequence)) { errors.push({row:record.location.row!,code:'sequence_limit',message:'The team identifier sequence exceeds the safe integer bound.'});continue; }
+        if(!Number.isSafeInteger(sequence)) { refuse({row:record.location.row!,code:'sequence_limit',message:'The team identifier sequence exceeds the safe integer bound.'});continue; }
         counters.set(prefix,sequence);
       }
     }
