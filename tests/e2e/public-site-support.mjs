@@ -9,7 +9,7 @@ export async function serveSite(directory) {
   const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.png': 'image/png' };
   const server = createServer(async (request, response) => {
     const pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
-    const file = resolve(root, '.' + pathname + (extname(pathname) ? '' : '/index.html'));
+    const file = resolve(root, pathname === '/' ? 'index.html' : '.' + pathname + (extname(pathname) ? '' : '.html'));
     if (!file.startsWith(root + sep)) { response.writeHead(403).end(); return; }
     try {
       const bytes = await readFile(file);
