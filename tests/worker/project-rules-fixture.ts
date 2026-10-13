@@ -35,9 +35,15 @@ export async function projectRulesFixture() {
     if (lifecycle !== "planned") await f.mutate(`/settings/projects/${created.id}`, "PATCH", { lifecycle });
     return created;
   }
-  async function cycle(name: string, capacity: number | null, teamId = team.id) {
+  async function cycle(
+    name: string,
+    capacity: number | null,
+    teamId = team.id,
+    startsLocal = "2030-06-01T00:00",
+    endsLocal = "2030-06-15T00:00",
+  ) {
     const state = await f.mutate("/settings/cycles", "POST", {
-      name, teamId, capacity, startsLocal: "2030-06-01T00:00", endsLocal: "2030-06-15T00:00",
+      name, teamId, capacity, startsLocal, endsLocal,
     });
     return state.cycles.find((c) => c.name === name)!;
   }

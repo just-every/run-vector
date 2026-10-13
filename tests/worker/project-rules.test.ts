@@ -85,7 +85,10 @@ contractWith(it, "PROJ-004", "project progress counts completed issues and exclu
 contractWith(it, "PROJ-005 PROJ-006", "project health matrix applies precedence, exact capacity boundaries and concrete risk explanations", async () => {
   const f = await projectRulesFixture();
   const priorCounts = (await f.portfolio()).counts;
+  const teamId = f.initial.teams[0].id;
+  const pastCycle = await f.cycle("Past capacity window", 1, teamId, "2030-05-01T00:00", "2030-05-15T00:00");
   const cycle = await f.cycle("Delivery window", 8);
+  const futureCycle = await f.cycle("Future capacity window", 1, teamId, "2030-07-01T00:00", "2030-07-15T00:00");
   const state = await f.mutate("/settings/teams", "POST", { name: "Other delivery", identifierPrefix: "OTH" });
   const otherTeam = state.teams.find((t) => t.identifierPrefix === "OTH")!;
   const unknownCycle = await f.cycle("Unknown capacity window", null, otherTeam.id);
@@ -131,6 +134,11 @@ contractWith(it, "PROJ-005 PROJ-006", "project health matrix applies precedence,
   for (const category of ["completed", "canceled", "duplicate"]) {
     const terminal = await create(equal.id, { statusId: f.status(category), priority: "urgent", assigneeOperatorId: null, cycleId: cycle.id, estimate: 100 });
     await f.block(terminal.identifier, blocker.identifier);
+  }
+  const inactiveCycleWork = await project("Inactive cycle work leaves active project on track", "on-track");
+  for (const inactiveCycle of [pastCycle, futureCycle]) {
+    await create(inactiveCycleWork.id, { cycleId: inactiveCycle.id, estimate: 2 });
+    await create(inactiveCycleWork.id, { cycleId: inactiveCycle.id, estimate: null });
   }
   await project("No target", "unknown", null);
   await project("Target today is not future", "unknown", "2030-06-04");
