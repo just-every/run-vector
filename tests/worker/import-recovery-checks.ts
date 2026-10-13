@@ -2,6 +2,7 @@ import { env } from 'cloudflare:workers';
 import { expect } from 'vitest';
 import type { setupImport } from './data-import-fixture';
 import type { ImportJob } from '../../vendor/base/import-kit/src/d1/index';
+import { request } from './base-auth-fixture';
 
 /** Multiple queued plans and native issue creation share the durable namespace. */
 export async function checkQueuedReservations(f:Awaited<ReturnType<typeof setupImport>>) {
@@ -55,5 +56,45 @@ export async function checkQueuedReservations(f:Awaited<ReturnType<typeof setupI
  expect((await env.DB.prepare('SELECT * FROM issue_prefix_sequences ORDER BY workspace_id,identifier_prefix').all()).results).toEqual(beforeFloor);
  await env.DB.prepare('DROP TRIGGER reservation_revokes_session').run();
  const admitted=await f.apply(fenced,fencedReview);expect(admitted.status).toBe(200);await f.finish(await admitted.json() as ImportJob);
-
+ // A native blocker deleted between batches names the affected source and
+ // remains recoverable without republishing any part of the failed batch.
+ const blocker=await f.create({title:'Required native blocker'}),sourceId='dependent-99';
+ const dependent=f.input(Array.from({length:100},(_,i)=>f.row('dependent-'+i,{dependencies:i===99?'native:'+blocker.identifier:''})),'missing-native-blocker');
+ const dependentReview=await f.preview(dependent);expect(dependentReview.ready).toBe(true);
+ const queuedDependent=await f.apply(dependent,dependentReview);expect(queuedDependent.status).toBe(200);
+ const dependentRun=await queuedDependent.json() as ImportJob,path='/data/import/runs/'+dependentRun.id;
+ expect((await f.call(path+'/resume','POST',{})).status).toBe(200);
+ expect((await f.call('/issues/'+blocker.identifier,'DELETE',{confirmed:true,expectedVersion:1})).status).toBe(200);
+ let failure:Response|undefined;
+ for(let attempt=0;attempt<10;attempt++){
+  const beforeBatch=(await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results;
+  const response=await f.call(path+'/resume','POST',{});
+  if(response.status!==200){failure=response;expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(beforeBatch);break;}
+ }
+ expect(failure?.status).toBe(409);
+ const detail=await failure!.json() as {error:string;message:string;runId:string;sourceId:string;field:string};
+ expect(detail).toMatchObject({error:'import_option_changed',runId:dependentRun.id,sourceId,field:'dependencies'});
+ expect(detail.message).toContain(blocker.identifier);expect(detail.message).toContain(sourceId);
+ const progress=await (await f.call(path)).json() as ImportJob & {progress:{lastError:string}};
+ expect(progress.checkpoint).toBeGreaterThan(0);expect(progress.checkpoint).toBeLessThan(dependentRun.total);
+ expect(progress.progress.lastError).toBe(detail.error+': '+detail.message);
+ const retained=(await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results;
+ expect((await f.call(path+'/resume','POST',{})).status).toBe(409);
+ expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(retained);
+ expect((await (await f.call(path)).json() as ImportJob).checkpoint).toBe(progress.checkpoint);
+ expect((await request('/api'+path)).status).toBe(401);
+ await env.DB.prepare('UPDATE ik_jobs SET destination=? WHERE id=?').bind('other-workspace',dependentRun.id).run();
+ for(const [suffix,method] of [['','GET'],['/resume','POST']]){
+  const denied=await f.call(path+suffix,method,method==='POST'?{}:undefined);expect(denied.status).toBe(409);
+  expect(await denied.text()).not.toContain(blocker.identifier);
+ }
+ await env.DB.prepare('UPDATE ik_jobs SET destination=? WHERE id=?').bind(dependentRun.destination,dependentRun.id).run();
+ expect((await f.call(path+'/rollback','POST',{})).status).toBe(400);
+ const rollback=await f.call(path+'/rollback','POST',{confirmed:true});expect(rollback.status).toBe(200);
+ expect((await f.finish(await rollback.json() as ImportJob)).state).toBe('rolled_back');
+ expect((await request('/auth/signout','POST',{},f.cookie)).status).toBe(200);
+ for(const [suffix,method] of [['','GET'],['/resume','POST']]){
+  const denied=await f.call(path+suffix,method,method==='POST'?{}:undefined);expect(denied.status).toBe(401);
+  expect(await denied.text()).not.toContain(blocker.identifier);
+ }
 }

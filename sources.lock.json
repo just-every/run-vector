@@ -863,11 +863,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "ab542d4f7a1615af52dc52da06839bf5c1e58e91b9a70d35caf9cb2e9a6d3875",
+      "sha256": "18f684417dde9616da42a23974fc186e55340aba403d112bd446f965381a8c8e",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "6d25fe12173caa94c238b68bb31646f2d3812874938936eb9cf706e20a074282",
+      "sha256": "d08ce1d4acbfd39b5070c979f105cf0b251d52d3b7a14f125cacd7ea4f4b5fd2",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -2019,7 +2019,7 @@
       "executable": false
     },
     "src/core/features/data/import/recovery.ts": {
-      "sha256": "716af2b58f8f558d10768137699ef841fe15cd4b0feaf9fa280d51bd83320a2d",
+      "sha256": "2cee6b99109b833e233081e89c9a0d6f95f11feffdd0114647a45be4c3469235",
       "executable": false
     },
     "src/core/features/data/import/references.ts": {
@@ -4123,7 +4123,7 @@
       "executable": false
     },
     "tests/worker/import-recovery-checks.ts": {
-      "sha256": "0f5bea48741f57d45104a0c58c5640442f1f47bcea2e0cc038507dddc2649eed",
+      "sha256": "3018d89d609edc74add7867a9c1777b49d860c1e939f7fa5260493e5fef8718c",
       "executable": false
     },
     "tests/worker/imported-person-erasure.test.ts": {

@@ -94,7 +94,9 @@
   },
   "pnpm": {
     "overrides": {
-      "@cloudflare/vitest-plugin>miniflare": "5.20260907.0-alpha"
+      "@cloudflare/vitest-plugin>miniflare": "5.20260907.0-alpha",
+      "miniflare>sharp": "0.35.5",
+      "miniflare>undici": "7.29.1"
     },
     "onlyBuiltDependencies": [
       "esbuild",

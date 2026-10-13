@@ -29,6 +29,16 @@ export async function explainResumeFailure(id:string,context:D1ImportContext,err
   if(issue.project_id&&!refs.projects.some(row=>row.id===issue.project_id&&!row.archived_at))return changed('project','The selected project is no longer available');
   if(issue.cycle_id&&!refs.cycles.some(row=>row.id===issue.cycle_id&&row.team_id===issue.team_id&&!row.closed_at))return changed('cycle','The selected cycle is no longer available');
   if(issue.assignee_operator_id&&!refs.operators.some(row=>row.id===issue.assignee_operator_id&&!row.removed_at&&(activity.format!=='jira-csv'||row.identity_active)))return changed('assignee','The selected assignee is no longer available');
+  for(const dependency of value.dependencies){
+   // A deletion receipt distinguishes a lost blocker from an unpublished
+   // dependency in this batch (including a relation severed by erasure).
+   const deleted=await db.prepare(`SELECT identifier FROM issue_deletions WHERE issue_id=? AND workspace_id=?
+    AND NOT EXISTS(SELECT 1 FROM issues WHERE id=issue_deletions.issue_id)`).bind(dependency.blocking_issue_id,job.destination).first<{identifier:string}>();
+   if(deleted){
+    await readD1ImportJob(id,context);
+    return changed('dependencies',`The required dependency ${deleted.identifier} for source row ${entry.source.location.row} was deleted`);
+   }
+  }
   if(!await db.prepare('SELECT job_id FROM vector_import_allocations WHERE job_id=? AND identifier_prefix=?').bind(id,issue.origin_prefix).first()){
    const floor=await db.prepare('SELECT last_sequence FROM issue_prefix_sequences WHERE workspace_id=? AND identifier_prefix=?').bind(job.destination,issue.origin_prefix).first<{last_sequence:number}>();
    if(floor&&floor.last_sequence>=Number(issue.sequence_number)&&!await db.prepare('SELECT id FROM issues WHERE id=?').bind(effect.targetId).first())
