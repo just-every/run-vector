@@ -6551,7 +6551,7 @@
       "executable": false
     },
     "visual/jira/ambiguous-date-refusal-1440-panel.png": {
-      "sha256": "8ad1118ac37f80c6594dc9245ede1fb9a672d225ed4036e04f7652105fbba286",
+      "sha256": "d03bd7219673d73c4081743d2191c3d1a57ecc7dbaa1131db18988a181b38a4e",
       "executable": false
     },
     "visual/jira/ambiguous-date-refusal-1440-viewport.png": {
@@ -6567,7 +6567,7 @@
       "executable": false
     },
     "visual/jira/ambiguous-date-refusal-390-panel.png": {
-      "sha256": "e020f39e44c9ee70ecf414fce1532bd62d723127cbc66abea8afa3b4610fbcee",
+      "sha256": "003167d46f7ae0d4dbce72289fc61ac7ac018430288e6c2de95172696fe628d6",
       "executable": false
     },
     "visual/jira/ambiguous-date-refusal-390-priorities-far-columns.png": {
@@ -6583,7 +6583,7 @@
       "executable": false
     },
     "visual/jira/captures.json": {
-      "sha256": "4ab19478d35440b80bdd302ed937bd65557b328922ea6a4cf8873c0339ac3abd",
+      "sha256": "8050b24687881d7f7b874228892079c4f0eea589804e156dba27acd3e50d1cb4",
       "executable": false
     },
     "visual/jira/completed-reconciliation-1440-focus.png": {
@@ -6591,11 +6591,11 @@
       "executable": false
     },
     "visual/jira/completed-reconciliation-1440-panel.png": {
-      "sha256": "6e37bd520c63f7b83730924aa9bf9d6fab73394dbfea85d463309a57005fa5ee",
+      "sha256": "12527756a9b8cd33e3f9c54b760aca871a9e7eb5ee76988dd0a535ef01f252e8",
       "executable": false
     },
     "visual/jira/completed-reconciliation-1440-viewport.png": {
-      "sha256": "a1573b438c4d31da589563a05af93d1dd6c9b9fd235dc8faa1287aa3d35c37a1",
+      "sha256": "bde9f83e1e1de1064266920311a74586e52e7231066b353f21111a430cdf119d",
       "executable": false
     },
     "visual/jira/completed-reconciliation-390-concepts-far-columns.png": {
@@ -6607,7 +6607,7 @@
       "executable": false
     },
     "visual/jira/completed-reconciliation-390-panel.png": {
-      "sha256": "f0b576ee000d56cab6411d2dc2b1a55048d81ad642939710b0973fa1391be7be",
+      "sha256": "90f4918cf69c69b9526756ea961fa02e484a03b7150eab924e014e5b6a960ba7",
       "executable": false
     },
     "visual/jira/completed-reconciliation-390-priorities-far-columns.png": {
@@ -6627,7 +6627,7 @@
       "executable": false
     },
     "visual/jira/jira-choice-1440-viewport.png": {
-      "sha256": "eb41897151ce9cf3761971d4d12796390e70e0f64c133f4a4723aad1d55c2ded",
+      "sha256": "e83c56ad4262d2a3786de56f81ce986d0aa8342b34d2eb8174ed5fffbe57f392",
       "executable": false
     },
     "visual/jira/jira-choice-390-panel.png": {
@@ -6675,7 +6675,7 @@
       "executable": false
     },
     "visual/jira/README.md": {
-      "sha256": "3c008023e62860432aab97e12f253438b43529b1b9611637a4aeb3e87b6e5b97",
+      "sha256": "ca097805aea844dcda674a40a988a8f2aaa5b9d4d45fe2f793861ab2d6f2c4cd",
       "executable": false
     },
     "visual/jira/unknown-status-refusal-1440-focus.png": {

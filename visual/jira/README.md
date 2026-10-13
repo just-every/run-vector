@@ -10,7 +10,7 @@ node tests/e2e/jira-captures.mjs
 
 The command creates a genuine cloned installation through
 `startDataUiInstallation`, configures sample data and the owner, launches
-`node scripts/rer.mjs dev` through the public copied CLI, signs in through the development mail outbox, and
+`pnpm exec rer dev` through the installed public CLI, signs in through the development mail outbox, and
 opens an authenticated Playwright page. It stops its browser and installation
 and removes the private installation even after failure. No provider keys or
 external service calls are needed. The generated CSV is synthetic; this is not
@@ -73,13 +73,13 @@ receipt with capture names, table totals and report dimensions.
 
 Local evidence runs use the pinned Node 22.20.0 and pnpm 10.12.4, `nice -n 15`,
 one allocated heavy lane, a one-minute load at most 36 and at least 15 GiB free.
-Build with `node scripts/rer.mjs build` before running this command. The browser request counter
+Build with `pnpm exec rer build` before running this command. The browser request counter
 proves zero external browser requests in this journey; it does not certify
 hosted provider egress. Root owns source commits and runtime authorization.
 This harness is a standalone evidence command and is not added to full verify.
 
 The retained public-source run passed on 13 October 2026 against
-`6874eae15b398962aa88a486a674594340c3e3d4`. Both the copied CLI build and
+`ce82c717e780e22d130b15b5b74d38680d2a35ca`. Both `pnpm exec rer build` and
 `node tests/e2e/jira-captures.mjs` exited 0. The 40 PNGs and 10 state/width
 records cover Jira selection, unknown-status refusal, the loss review, completed
 reconciliation and ambiguous-date refusal at 1440 and 390 pixels.
@@ -96,7 +96,9 @@ zero external requests. The browser, development processes and temporary
 installation were closed and removed. No capture harness or product change was
 needed for this public-source run.
 
-These are newly generated public-source captures. Their source SHA identifies
+These captures were regenerated after adopting current public main and its npm
+CLI. The earlier `6874eae` captures are prior-source evidence only; the retained
+manifest and images come from the source SHA above. Their source SHA identifies
 the executable checkout before this evidence and README were added. Root owns
 the final image commit, independent visual inspection, full verification and
 exact-head CI evidence; this capture receipt does not claim those later checks.

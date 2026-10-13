@@ -1,6 +1,6 @@
 {
   "passed": true,
-  "sourceCommit": "6874eae15b398962aa88a486a674594340c3e3d4",
+  "sourceCommit": "ce82c717e780e22d130b15b5b74d38680d2a35ca",
   "authentication": "development outbox",
   "previews": [
     {
@@ -447,10 +447,10 @@
         "To Do": "01J00000000000000000000024",
         "Platform/To Do": "01J00000000000000000000032"
       },
-      "requestStartedAt": "2026-10-13T08:25:05.741Z",
-      "requestMinute": 29864665,
-      "requestSecond": 5.741,
-      "elapsedMs": 850,
+      "requestStartedAt": "2026-10-13T09:12:03.890Z",
+      "requestMinute": 29864712,
+      "requestSecond": 3.89,
+      "elapsedMs": 599,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
@@ -2177,10 +2177,10 @@
         "To Do": "01J00000000000000000000024",
         "Platform/To Do": "01J00000000000000000000032"
       },
-      "requestStartedAt": "2026-10-13T08:25:15.199Z",
-      "requestMinute": 29864665,
-      "requestSecond": 15.199,
-      "elapsedMs": 282,
+      "requestStartedAt": "2026-10-13T09:12:10.480Z",
+      "requestMinute": 29864712,
+      "requestSecond": 10.48,
+      "elapsedMs": 141,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
@@ -3905,10 +3905,10 @@
         "Flow/Done": "01J00000000000000000000024",
         "Platform/To Do": "01J00000000000000000000032"
       },
-      "requestStartedAt": "2026-10-13T08:25:23.202Z",
-      "requestMinute": 29864665,
-      "requestSecond": 23.202,
-      "elapsedMs": 243,
+      "requestStartedAt": "2026-10-13T09:12:16.230Z",
+      "requestMinute": 29864712,
+      "requestSecond": 16.23,
+      "elapsedMs": 170,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
@@ -4706,10 +4706,10 @@
         "Platform/To Do": "01J00000000000000000000032",
         "To Do": "01J00000000000000000000022"
       },
-      "requestStartedAt": "2026-10-13T08:25:30.702Z",
-      "requestMinute": 29864665,
-      "requestSecond": 30.702,
-      "elapsedMs": 654,
+      "requestStartedAt": "2026-10-13T09:12:22.024Z",
+      "requestMinute": 29864712,
+      "requestSecond": 22.024,
+      "elapsedMs": 559,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
@@ -5517,10 +5517,10 @@
         "Platform/To Do": "01J00000000000000000000032",
         "To Do": "01J00000000000000000000022"
       },
-      "requestStartedAt": "2026-10-13T08:25:37.642Z",
-      "requestMinute": 29864665,
-      "requestSecond": 37.642,
-      "elapsedMs": 154,
+      "requestStartedAt": "2026-10-13T09:12:28.146Z",
+      "requestMinute": 29864712,
+      "requestSecond": 28.146,
+      "elapsedMs": 151,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
@@ -6318,14 +6318,14 @@
         "Platform/To Do": "01J00000000000000000000032",
         "To Do": "01J00000000000000000000022"
       },
-      "requestStartedAt": "2026-10-13T08:26:00.327Z",
-      "requestMinute": 29864666,
-      "requestSecond": 0.327,
-      "elapsedMs": 880,
+      "requestStartedAt": "2026-10-13T09:12:43.522Z",
+      "requestMinute": 29864712,
+      "requestSecond": 43.522,
+      "elapsedMs": 578,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
-        "access_rate_limits": 4,
+        "access_rate_limits": 3,
         "administration_audit_details": 10,
         "audit_records": 11,
         "cycle_closure_failures": 0,
@@ -6501,7 +6501,7 @@
       },
       "after": {
         "_cf_METADATA": 1,
-        "access_rate_limits": 4,
+        "access_rate_limits": 3,
         "administration_audit_details": 10,
         "audit_records": 11,
         "cycle_closure_failures": 0,
@@ -7125,10 +7125,10 @@
         "Platform/To Do": "01J00000000000000000000032",
         "To Do": "01J00000000000000000000022"
       },
-      "requestStartedAt": "2026-10-13T08:26:39.874Z",
-      "requestMinute": 29864666,
-      "requestSecond": 39.874,
-      "elapsedMs": 130,
+      "requestStartedAt": "2026-10-13T09:13:21.239Z",
+      "requestMinute": 29864713,
+      "requestSecond": 21.239,
+      "elapsedMs": 135,
       "tableCount": 174,
       "before": {
         "_cf_METADATA": 1,
@@ -8146,7 +8146,7 @@
     "reminderReceipts": [
       {
         "action": "due_reminder.delivered",
-        "created_at": "2026-10-13T08:25:00.258Z",
+        "created_at": "2026-10-13T09:12:00.254Z",
         "kind": "overdue",
         "causes_json": "[\"due_reminder\"]"
       }
@@ -8178,14 +8178,14 @@
     }
   },
   "run": {
-    "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
+    "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
     "snapshots": [
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "queued",
         "checkpoint": 0,
@@ -8194,6 +8194,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 0,
           "batchesTotal": 9,
@@ -8204,11 +8206,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 34,
@@ -8217,6 +8219,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 1,
           "batchesTotal": 9,
@@ -8227,11 +8231,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 68,
@@ -8240,6 +8244,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 2,
           "batchesTotal": 9,
@@ -8250,11 +8256,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 102,
@@ -8263,6 +8269,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 3,
           "batchesTotal": 9,
@@ -8273,11 +8281,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 136,
@@ -8286,6 +8294,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 4,
           "batchesTotal": 9,
@@ -8296,11 +8306,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 170,
@@ -8309,6 +8319,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 5,
           "batchesTotal": 9,
@@ -8319,11 +8331,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 204,
@@ -8332,6 +8344,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 6,
           "batchesTotal": 9,
@@ -8342,11 +8356,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 238,
@@ -8355,6 +8369,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 7,
           "batchesTotal": 9,
@@ -8365,11 +8381,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "applying",
         "checkpoint": 272,
@@ -8378,6 +8394,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 8,
           "batchesTotal": 9,
@@ -8388,11 +8406,11 @@
         }
       },
       {
-        "id": "44b99c93-b143-48dc-ae40-00fcf2e9791b",
-        "fingerprint": "f92ed2c314ae9ef85b0dabe5537fa6019e4a6633f3cea59953eb435f420460b0",
+        "id": "fd9183d0-5b21-46cb-853f-008c4d1f97db",
+        "fingerprint": "551b6a285166a458ea547adbc1c256c6764878c9e8098e7c5a547967223eaa89",
         "destination": "01J00000000000000000000001",
         "namespace": "vector-import:jira-public-300",
-        "mappingVersion": "vector-issues-v1:9ca0dcc118834e08ed2bb86c17737d035593d3e846b6f9914e1752412df1b5a6",
+        "mappingVersion": "vector-issues-v1:58696059b0e4c6e76a0b8396235c9362a62178057c473a54b335e3afe6e19706",
         "principalId": "01J00000000000000000000002",
         "state": "completed",
         "checkpoint": 300,
@@ -8401,6 +8419,8 @@
         "error": null,
         "erasedRecords": 0,
         "progress": {
+          "detachedIssues": 0,
+          "detachedIdentifiers": [],
           "batchSize": 34,
           "batchesApplied": 9,
           "batchesTotal": 9,
