@@ -12,17 +12,18 @@ export type ImportInput = {
   format: 'csv'|'json'|'linear-csv'|'linear-api-json'|'jira-csv'; name: string; base64: string; source: string;
   /** With linear-api-json: the owner's Linear API file (docs/LINEAR-API-FILE.md). */
   api?: { name: string; base64: string };
-  jira?: { sourceOffset?: string; shortYearCentury?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };
+  jira?: { sourceOffset?: string; shortYearCentury?: number; originalEstimateSecondsPerUnit?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };
   mapping: ImportMapping; defaults?: Partial<Record<ImportField,string>>;
   references?: Partial<Record<ImportField,Record<string,string>>>;
   /** Returned by preview; reusing it binds default timestamps to the review. */
   effectiveAt?: string;
 };
-export type ImportDiagnostic = { row: number; field?: string; code: string; message: string };
+export type ImportDiagnostic = { row: number; column?: number; field?: string; code: string; message: string; sourceId?: string; sourceKey?: string; value?: string };
 export type JiraDateReview = { pattern: string; sample: string; shortYearCentury: number|null; sourceOffset: string; policy: string; cells: number };
 export type ParsedImport = { source: SourceBundle; headers: string[]; errors: ImportDiagnostic[]; jiraDates?: JiraDateReview };
 export type ImportPreview = {
   jiraDates?: JiraDateReview;
+  jiraReview?: import('./jira-review').JiraReview;
   ready: boolean; fingerprint?: string; effectiveAt: string;
   headers: string[]; errors: ImportDiagnostic[]; omissions: ImportDiagnostic[];
   count: number; bounds: typeof importLimits; measured: Record<string,number>;

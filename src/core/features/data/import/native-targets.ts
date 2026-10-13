@@ -39,13 +39,13 @@ export const nativeTargets: D1TargetAdapter = {
   write(row:TargetRow) {
     if (row.targetKind !== 'issue') throw Error('unsupported_import_target');
     const value=row.value as unknown as NativeIssueValue,issue=value.issue;
-    const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string};
+    const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string};
     const statements=[
       guard(`EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND identifier_prefix=? COLLATE BINARY AND archived_at IS NULL)
         AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)
         AND COALESCE((SELECT last_sequence FROM issue_prefix_sequences WHERE workspace_id=? AND identifier_prefix=?),0)<?`,issue.team_id,row.destination,issue.origin_prefix,issue.status_id,issue.team_id,imported.statusCategory,row.destination,issue.origin_prefix,issue.sequence_number),
     ];
-    if (issue.assignee_operator_id) statements.push(guard('EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL)',issue.assignee_operator_id,row.destination));
+    if (issue.assignee_operator_id) statements.push(guard(`EXISTS(SELECT 1 FROM operators o WHERE id=? AND workspace_id=? AND removed_at IS NULL${imported.format==='jira-csv'?" AND EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id WHERE m.operator_id=o.id AND a.status='active')":''})`,issue.assignee_operator_id,row.destination));
     if (issue.project_id) statements.push(guard('EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND archived_at IS NULL)',issue.project_id,row.destination));
     if (issue.cycle_id) statements.push(guard(`EXISTS(SELECT 1 FROM cycles WHERE id=? AND team_id=? AND closed_at IS NULL)
       AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND category NOT IN ('completed','canceled','duplicate'))`,issue.cycle_id,issue.team_id,issue.status_id));

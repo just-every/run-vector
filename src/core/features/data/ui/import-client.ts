@@ -1,9 +1,10 @@
+import { jiraReviewSchema } from './jira-review-schema';
 import { z } from 'zod';
 import { fetchJson } from '../../../app/api-client';
 import { parseCsv } from '../import/csv';
 import { importLimits,type ImportDiagnostic,type ImportInput } from '../import/types';
-const diagnostic=z.object({row:z.number(),field:z.string().optional(),code:z.string(),message:z.string()});
-export const previewSchema=z.object({jiraDates:z.object({pattern:z.string(),sample:z.string(),shortYearCentury:z.number().nullable(),sourceOffset:z.string(),policy:z.string(),cells:z.number()}).optional(),ready:z.boolean(),fingerprint:z.string().optional(),effectiveAt:z.string(),headers:z.array(z.string()),errors:z.array(diagnostic),omissions:z.array(diagnostic),count:z.number(),measured:z.record(z.string(),z.number())});
+const diagnostic=z.object({row:z.number(),column:z.number().optional(),field:z.string().optional(),code:z.string(),message:z.string(),sourceId:z.string().optional(),sourceKey:z.string().optional(),value:z.string().optional()});
+export const previewSchema=z.object({jiraReview:jiraReviewSchema.optional(),jiraDates:z.object({pattern:z.string(),sample:z.string(),shortYearCentury:z.number().nullable(),sourceOffset:z.string(),policy:z.string(),cells:z.number()}).optional(),ready:z.boolean(),fingerprint:z.string().optional(),effectiveAt:z.string(),headers:z.array(z.string()),errors:z.array(diagnostic),omissions:z.array(diagnostic),count:z.number(),measured:z.record(z.string(),z.number())});
 export type Review=z.infer<typeof previewSchema>;
 const progressSchema=z.object({batchSize:z.number(),batchesApplied:z.number(),batchesTotal:z.number(),unfinished:z.boolean(),issuesRemaining:z.number(),lastError:z.string().nullable(),lastErrorAt:z.string().nullable()});
 export const runSchema=z.object({id:z.string(),state:z.string(),checkpoint:z.number(),total:z.number(),progress:progressSchema});
@@ -24,7 +25,7 @@ export type RollbackPreview=z.infer<typeof rollbackPreviewSchema>;
 /** One line per field and reason, with its count and the first rows. */
 export function groupDiagnostics(items:ImportDiagnostic[]) {
  const groups=new Map<string,{field?:string;code:string;message:string;rows:number[]}>();
- for(const item of items){const key=(item.field??'')+'\u0000'+item.code;const group=groups.get(key)??{field:item.field,code:item.code,message:item.message,rows:[]};group.rows.push(item.row);groups.set(key,group);}
+ for(const item of items){const key=(item.field??'')+'\u0000'+item.code+'\u0000'+item.message;const group=groups.get(key)??{field:item.field,code:item.code,message:item.message,rows:[]};group.rows.push(item.row);groups.set(key,group);}
  return [...groups.values()].sort((a,b)=>b.rows.length-a.rows.length);
 }
 /** An API file is any JSON object; a mapped JSON import must be an array. */
@@ -42,11 +43,12 @@ export async function readImportFile(file:File,format:ImportInput['format'],rows
 }
 const dimension=z.array(z.object({source:z.string(),read:z.number(),written:z.number(),vector:z.array(z.object({name:z.string(),count:z.number()}))}));
 export const reportSchema=z.object({
+ jiraReview:jiraReviewSchema.optional(),
  run:z.object({id:z.string(),source:z.string(),fileName:z.string(),format:z.string(),state:z.string()}),
  totals:z.object({rowsRead:z.number(),issuesWritten:z.number(),rowsNotWritten:z.number(),omittedValues:z.number(),unresolvedReferences:z.number()}),
  dimensions:z.object({team:dimension,status:dimension,project:dimension,cycle:dimension,assignee:dimension}),
  omitted:z.array(z.object({field:z.string().optional(),code:z.string(),message:z.string(),count:z.number(),rows:z.array(z.number())})),
- references:z.array(z.object({row:z.number(),sourceId:z.string(),field:z.string().optional(),value:z.string(),code:z.string(),message:z.string()})),
+ references:z.array(z.object({row:z.number(),sourceId:z.string(),sourceKey:z.string().optional(),field:z.string().optional(),value:z.string(),code:z.string(),message:z.string()})),
  notInFile:z.array(z.string()),
  mapping:z.array(z.object({row:z.number(),sourceId:z.string(),identifier:z.string().nullable()})),
 });

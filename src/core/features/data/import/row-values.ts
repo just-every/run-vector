@@ -18,7 +18,7 @@ const instant=(value:string,label:string)=>{
 };
 export type MappedRow = {record:SourceRecord;value?:NativeIssueValue;parent:string;dependencies:string[];duplicateOf:string;blocks:string[];errors:ImportDiagnostic[];omissions:ImportDiagnostic[]};
 export function rowOmissions(record:SourceRecord,input:ImportInput):ImportDiagnostic[] {
-  if(input.format==='jira-csv')return jiraOmissions(record);
+  if(input.format==='jira-csv')return jiraOmissions(record,input);
   if(!record.payload || typeof record.payload!=='object' || Array.isArray(record.payload))return [];
   const payload=record.payload as Record<string,Json>,row=record.location.row!,result:ImportDiagnostic[]=[];
   const archived=importField(input,payload,'archivedAt');
@@ -47,7 +47,11 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
     catch(error){if(error instanceof Error && error.message.startsWith('Reference was not found')){omissions.push({row,field:'assignee',code:'unresolved_assignee',message:'No active operator matches this assignee. The issue is imported unassigned; the name stays in the original.'});return null;}throw error;}
   });
   const project=take('project',()=>text('project')?resolveReference(refs.projects,text('project'),'project',input):null);
-  const cycle=team?take('cycle',()=>text('cycle')?resolveReference(refs.cycles.filter(cycle=>cycle.team_id===team.id),text('cycle'),'cycle',input,String(team.name)):null):undefined;
+  const cycle=team?take('cycle',()=>{
+    const name=text('cycle');if(!name)return null;
+    try{return resolveReference(refs.cycles.filter(cycle=>cycle.team_id===team.id),name,'cycle',input,String(team.name));}
+    catch(error){if(input.format==='jira-csv'&&error instanceof Error&&error.message.startsWith('Reference was not found')){omissions.push({row,field:'cycle',code:'unresolved_sprint',message:'No explicit sprint mapping. The issue is imported without a cycle; the sprint stays in the original.'});return null;}throw error;}
+  }):undefined;
   const labelIds=take('labels',()=>listField(importField(input,payload,'labels'),'labels').map(name=>resolveReference(refs.labels,name,'labels',input).id));
   const title=take('title',()=>text('title',500).trim());
   const description=take('description',()=>text('description',100000));
@@ -87,7 +91,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const data=validation.data,id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
   const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:status.category==='completed'?updatedAt:null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
   value.labels=data.labelIds.sort().map(label_id=>({issue_id:id,label_id,created_at:createdAt}));
-  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
+  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(input.format==='jira-csv'?{format:input.format}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
   // Snapshot order: native relations are read back ordered by id.
   value.comments=(api?.comments??[]).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
   value.links=(api?.links??[]).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
