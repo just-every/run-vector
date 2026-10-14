@@ -1,6 +1,6 @@
 # Deploying Vector
 
-You need Git and the published `rer` command (Node 22 or later to install it); `rer` provides the exact Node and pnpm this source pins. The CLI and deploy kit come from pinned `@runeditrun/rer` 0.2.4; see [Base adoption](docs/BASE-ADOPTION.md).
+You need Git and the published `rer` command (Node 22 or later to install it); `rer` provides the exact Node and pnpm this source pins. The CLI and deploy kit come from pinned `@runeditrun/rer` 0.2.6; see [Base adoption](docs/BASE-ADOPTION.md).
 
 ## Owner account
 

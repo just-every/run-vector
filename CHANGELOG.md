@@ -7,7 +7,7 @@ Add a persisted daily reminder clock in Settings (09:00 in workspace time by def
 
 ## Unreleased
 
-- Run on published rer 0.2.4 in package mode. `rer deploy` no longer stops at owner claim: Vector's owner is the configured owner email's first sign-in, so the hosted deploy has no setup-token claim. Archives no longer list SETUP_TOKEN as required configuration. README, the Run page, DEPLOY.md and the install guide describe 0.2.4: no Node or pnpm choices, update with `git pull --ff-only` then `rer deploy`, remove with `rer deploy --remove --yes`.
+- Run on published rer 0.2.6 in package mode. `rer deploy` no longer stops at owner claim: Vector's owner is the configured owner email's first sign-in, so the hosted deploy has no setup-token claim. Archives no longer list SETUP_TOKEN as required configuration. README, the Run page, DEPLOY.md and the install guide describe 0.2.6: no Node or pnpm choices, update with `git pull --ff-only` then `rer deploy`, remove with `rer deploy --remove --yes`.
 - Remove the redundant foundation/removal browser harnesses; the CI admin journey now saves workspace time and checks it after restart. Manual package tools are listed in docs/VERIFICATION.md.
 - Publish each import receipt to the Data progress line and retained run row together, preventing a stale list read from showing an earlier batch.
 - Remove remote installation from the browser installer. Owner-account deployment remains available through `rer deploy`; setup configures the local workspace.
