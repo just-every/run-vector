@@ -1,6 +1,6 @@
 # Deploying Vector
 
-Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. The CLI and deploy kit come from pinned `@runeditrun/rer` 0.2.2; see [Base adoption](docs/BASE-ADOPTION.md).
+You need Git and the published `rer` command (Node 22 or later to install it); `rer` provides the exact Node and pnpm this source pins. The CLI and deploy kit come from pinned `@runeditrun/rer` 0.2.4; see [Base adoption](docs/BASE-ADOPTION.md).
 
 ## Owner account
 
@@ -169,4 +169,8 @@ Settings manages scoped Base tokens with safe usage, signed sources, outbound de
 
 ## Update
 
-Preserve matching backups and `.rer/deploy`, then run `git pull --ff-only` followed by `rer deploy`. The command provisions pnpm itself. If package pins or the lockfile changed, run `rer install` before `rer deploy`; 0.2.2 does not yet install dependencies during deploy. Existing migration bytes and identities remain unchanged.
+Preserve matching backups and `.rer/deploy`, then run `git pull --ff-only` followed by `rer deploy`. The command provides Node and pnpm itself and installs a changed package pin or lockfile first. Existing migration bytes and identities remain unchanged.
+
+## Remove
+
+From the checkout that deployed it, `rer deploy --remove --yes` deletes the Worker, D1 database and R2 bucket that `.rer/deploy` records `rer` created, with their data, confirms that each is gone and touches nothing else. Export first to keep anything.

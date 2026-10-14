@@ -37,7 +37,7 @@ The application runs on a Cloudflare Worker with TanStack Start, React and Hono,
 
 ## Run it on your computer
 
-Use Node **22.20.0**. Install the published command once with `npm install --global @runeditrun/rer@0.2.2`; `rer` provisions the pinned pnpm for you. Set `VECTOR_SOURCE` to the source supplied with your installation.
+You need Git and Node 22 or later, only to install the `rer` command once with `npm install --global @runeditrun/rer@0.2.4`. `rer` then provides the exact Node and pnpm this source pins, so there is nothing else to choose or install. Set `VECTOR_SOURCE` to the source supplied with your installation.
 
 <!-- vector-clone -->
 ```sh
@@ -49,7 +49,7 @@ Install the published command, install the pinned dependencies, prepare your loc
 
 <!-- vector-terminal -->
 ```sh
-npm install --global @runeditrun/rer@0.2.2
+npm install --global @runeditrun/rer@0.2.4
 rer install
 rer check --profile first-party
 rer setup --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-interactive
@@ -79,13 +79,13 @@ Reset removes local D1/R2, owner/sessions/outbox, installer drafts and generated
 
 ## Your own hosting account
 
-Commit the supplied source before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and the six public owner/workspace/team values above. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
+Commit the supplied source before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and the public `FIRST_OWNER_EMAIL`, `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME` and `DEFAULT_TEAM_PREFIX` values. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
 
 ```sh
 rer deploy --environment production
 ```
 
-This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
+This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. When it finishes, `rer deploy` prints the address of your installation. Open it and sign in by email as `FIRST_OWNER_EMAIL`: that first sign-in makes you the owner automatically, so there is no setup token or claim step to run. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
 
 Estimated infrastructure cost is **USD 0–15/month**, assuming up to 20 operators, 100,000 issues, 5 GB attachments and moderate traffic. Transactional email is billed separately. These are estimates, not a capacity qualification or a claim of hosted commissioning. Local provider fixtures prove behavior without making a real deployment.
 
@@ -98,7 +98,17 @@ git pull --ff-only
 rer deploy
 ```
 
-No separate pnpm installation is required. If the pull changes the package pin or lockfile, run `rer install` before `rer deploy`: published 0.2.2 does not yet install dependencies during deploy. Deployment preserves applied migration history and private secrets; it refuses changed or uncertain history. See [archives](docs/ARCHIVES.md) before restoring a backup.
+No separate Node or pnpm installation is required: `rer` installs the package pin and dependencies a pull changed before it deploys. Deployment preserves applied migration history and private secrets; it refuses changed or uncertain history. See [archives](docs/ARCHIVES.md) before restoring a backup.
+
+## Remove an installation
+
+To take the installation down, run this from the checkout that deployed it:
+
+```sh
+rer deploy --remove --yes
+```
+
+It deletes the Worker, D1 database and R2 bucket that this checkout's `.rer/deploy` record says `rer` created, with their data, confirms each is gone and touches nothing else. Export first if you want to keep anything.
 
 ## Workspace administration
 

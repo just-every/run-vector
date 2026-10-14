@@ -7,5 +7,5 @@ export const portabilityPolicy = {
  derivedTables: ['search_issues', 'search_projects', 'search_views'],
  secretColumns: { notification_deliveries: ['claim_token'], ik_jobs: ['lease_token'], integration_deliveries: ['claim'] },
  buckets: { FILES: {} },
- requiredConfiguration: ['FIRST_OWNER_EMAIL', 'SESSION_SECRET', 'SETUP_TOKEN', 'APP_ORIGIN', 'MAIL_MODE', 'MAIL_FROM'],
+ requiredConfiguration: ['FIRST_OWNER_EMAIL', 'SESSION_SECRET', 'APP_ORIGIN', 'MAIL_MODE', 'MAIL_FROM'],
 };

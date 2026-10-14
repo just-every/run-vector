@@ -24,9 +24,11 @@ export async function prepareHosting(context, env) {
 // Vector owns validation and secret custody; the package owns deployment and health.
 export const deploy = Object.assign(async context => {
  const { ownerDeploy } = await import('@runeditrun/rer/deploy');
- const { adapter } = await import('./local.mjs');
+ const { adapter: local } = await import('./local.mjs');
+ // The owner is the configured FIRST_OWNER_EMAIL, who signs in by email; Vector serves no /auth/bootstrap, so a hosted deploy has no setup-token claim to run.
+ const adapter = { ...local, hooks: { ...local.hooks, owner: undefined } };
  if (context.options.dryRun) return ownerDeploy('deploy.json', adapter)(context);
  const prepared = await prepareHosting({ ...context, fail: () => Error('Deployment inputs missing') }, process.env);
  context.store.addSecrets(Object.values(prepared));
  return ownerDeploy(hostingDeclaration, adapter)({ ...context, options: { ...context.options, envFile: hostingSecrets } });
-}, { declaration: 'deploy.json' });
+}, { declaration: 'deploy.json', managesHostedOwner: true });

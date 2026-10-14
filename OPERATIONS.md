@@ -1,6 +1,6 @@
 # Vector operations
 
-Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. All public lifecycle commands use `rer VERB`. Run `rer describe` for capabilities and `rer check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
+You need Git and the published `rer` command; it provides the exact Node and pnpm this source pins. All public lifecycle commands use `rer VERB`. Run `rer describe` for capabilities and `rer check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
 
 Run `install`, then `setup --owner-email EMAIL --non-interactive`, then `dev`. Setup consumes rer-setup.json, saves private .dev.vars, builds with secrets excluded, applies forward migrations, bootstraps the configured first owner and stops its temporary Worker. A repeated setup preserves settings, owner and data. Use a private `--answers` JSON file for declared workspace, team and timezone choices.
 

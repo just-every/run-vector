@@ -448,7 +448,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "1239303d5dee21d2236af6ff45edd99f137a12ec9376ef80fa5e7604aea1bcf8",
+      "sha256": "2037a933ce3fe5b80a852d2f818a62ea4640f4a56be52ec1c1e41c60e53c271c",
       "executable": false
     },
     "CLAUDE.md": {
@@ -468,7 +468,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "30c8798e2d2270d44e00b5596f8741bcfa3bea4a8312e2c98b45e9fe927cb474",
+      "sha256": "fe3d8adf0fa9c63d09a5327300e99942d3e7fbce53ea8a1214402f6c3fefe839",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -488,7 +488,7 @@
       "executable": false
     },
     "docs/BASE-ADOPTION.md": {
-      "sha256": "d3b483502655b63fbe0f73caec8d7c2fa8792ac87ceb31667bcb02123e757052",
+      "sha256": "42e61014f77622f659dcffa5e6e1fefc0e4e53357400db27dc37ac1ec688cb4e",
       "executable": false
     },
     "docs/BRAND.md": {
@@ -524,7 +524,7 @@
       "executable": false
     },
     "docs/guide/install.md": {
-      "sha256": "c828023ca01a9c7001cdc0b18bf3bb911dc4e9f57ad3effa1f1ce43d9bc75e19",
+      "sha256": "3dbe4ff915f28f7ca39f926eedd9a04c1914b50d7b82d3f30b871441de3f174a",
       "executable": false
     },
     "docs/guide/integrations.md": {
@@ -560,7 +560,7 @@
       "executable": false
     },
     "docs/INSTALLER.md": {
-      "sha256": "8c7075c368a085650e3b5db09859064cd402f60a069a86744259769025359d69",
+      "sha256": "027da805b78407b0bed938b981691861ed526f91c336d71cd5cf08c8f00dccf5",
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
@@ -820,15 +820,15 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "4fe70196e78b2a20c8ac82b4f7c323cb3f95bfd7d201f64e598d24933e20f77d",
+      "sha256": "67ca50ba86f952dc85cfefc8bf6d770cc97502531560c50fe05fe677b60c410b",
       "executable": false
     },
     "package.json": {
-      "sha256": "6b527706bfd82715a4455dc8efe1d5573f6ccca7a5d21bd13eb9133301549905",
+      "sha256": "a14530d02322717df9242b1292d8ff4c80d42d736dfb3c66da3374554bd21bea",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "8e3921ebd61368cc6cde6cec64c83152898b1d20ee7f8a9e2ecc133f1e2a2fbc",
+      "sha256": "9aeeb653fd061c1144ff3c20046c4aee3b24d257f9ebc33c26cad93013b013ee",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -884,7 +884,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "a0ee3a05dfcc1197a0186a041e4125863eff93caee491a1e781a52650b0c4021",
+      "sha256": "782a8db17b14ded3086c3c629d10278fa19b5b2a1669a26230a29c7f7a4b8cf6",
       "executable": false
     },
     "RELEASE.json": {
@@ -1052,7 +1052,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "b01525decdcc6c7a4bd54aeffd71d1b1ecfe8a8254a4e1893f4c346f42a9a5a2",
+      "sha256": "144e40c7e3efd4625b24e6caf022d764aaf75a9e74e0788beb162bd78fc2177d",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
@@ -1164,7 +1164,7 @@
       "executable": false
     },
     "scripts/installer/hosting.mjs": {
-      "sha256": "bd418ef96a195503cd18991b6e8ebc8f7e0124a61c679281f79d73f48b432a93",
+      "sha256": "45b8542e2e79255962070cf7bd886d2d30428b8540647af2bc41c0b80df7298d",
       "executable": false
     },
     "scripts/installer/local.mjs": {
@@ -1864,7 +1864,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "b09b2fe3080346eded6b5b91b4dd3e3cfc1f81ecdbc6e344b4b6d746c5eaee0b",
+      "sha256": "d6f90b213feda95e41165aef182eab4a97c950c3abab3274d1442d50446b2f40",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -3132,7 +3132,7 @@
       "executable": false
     },
     "src/site/run.ts": {
-      "sha256": "45ab7e1bc5711ce78c74e0f4f3fd51bb8a88d44391ca4bf1b4a2ef463e94c048",
+      "sha256": "09b853b51ae835ca89dc8951bce725cf73e5f2b60fd036ae1890a14213e65b8a",
       "executable": false
     },
     "src/vite-env.d.ts": {

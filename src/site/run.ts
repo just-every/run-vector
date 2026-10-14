@@ -5,7 +5,7 @@ export const run: RunData = {
   repository: 'https://github.com/just-every/run-vector',
   clone: 'git clone https://github.com/just-every/run-vector.git vector',
   folder: 'vector',
-  requirements: 'Needs Node 22 or later and pnpm 10.12.4, on macOS, Linux or Windows with WSL2.',
+  requirements: 'Needs Git and Node 22 or later, on macOS, Linux or Windows with WSL2. rer provides the pinned Node and pnpm.',
   licence: 'MIT',
   docs: true,
   hosted: [],
