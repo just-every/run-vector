@@ -45,18 +45,24 @@ git clone "$VECTOR_SOURCE" vector
 cd vector
 ```
 
-Install the published command, install the pinned dependencies, prepare your local owner, then start development. Replace the example mailbox with your own. Choose another explicit port if 8787 is occupied.
+Install the published command and pinned dependencies, then start development. No setup command or provider account is needed to try Vector locally.
 
 <!-- vector-terminal -->
 ```sh
 npm install --global @runeditrun/rer@0.2.4
 rer install
 rer check --profile first-party
-rer setup --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-interactive
 rer dev
 ```
 
-Setup builds and applies migrations, saves owner-only `.dev.vars`, prepares your first owner and stops its temporary app. A second setup preserves the owner, data and settings. Supply a private JSON `--answers` file for workspace, timezone and team values declared in `rer-setup.json`; otherwise its defaults apply. Existing installations must follow [local recovery](docs/LOCAL-RECOVERY.md) before changing their state path.
+On a fresh checkout, `rer dev` prepares a local placeholder owner (`owner@vector.test`). To choose your own local owner instead, run this optional setup **before the first `rer dev`**, replacing the example mailbox. Choose another explicit port if 8787 is occupied.
+
+<!-- vector-setup -->
+```sh
+rer setup --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-interactive
+```
+
+Setup builds and applies migrations, saves owner-only `.dev.vars`, prepares your first owner and stops its temporary app. A second setup preserves the owner, data and settings. Once development has initialized the placeholder owner, setup cannot silently replace it with another mailbox. Keep that owner and existing data, or, for a disposable installation, stop development, retain any needed export, explicitly run `rer reset --yes`, then run setup with your chosen mailbox and start development again. Reset deletes the local installation. Supply a private JSON `--answers` file for workspace, timezone and team values declared in `rer-setup.json`; otherwise its defaults apply. Existing installations must follow [local recovery](docs/LOCAL-RECOVERY.md) before changing their state path.
 
 Development prints `RER_READY` only after health is ready. `rer dev` opens signed in: it prints `RER_SIGNED_IN` (the owner) and `RER_OPEN`, a link that carries this checkout's private dev key in its fragment. Open `RER_OPEN` in a browser on this computer and you land signed in as the owner; a small dev badge switches to the `teammate` persona (a second operator in the same workspace; Vector has no product roles) or signs out. Never share the link: the key is what keeps the outbox and dev sign-in closed to anything that reaches this port through a proxy or tunnel, and `reset` removes the key so every earlier browser session stops working. `--as teammate` (or `--as signed-out`) starts as another persona, and `--login` turns dev identity off so dev prints `RER_SIGN_IN` and a key-carrying `RER_OPEN` for the outbox instead: choose the newest message and follow its one-use link (no email is sent). Previews open the outbox the same way. `RER_OPEN` is for people at this terminal; scripts use `rer dev --json` or the key header. Opening an outbox link is inert until you press **Confirm**. Stop with Ctrl-C or `rer dev --stop`. `rer outbox` prints the outbox address; `--owner-email` requests another ordinary link. Data is stored in `.wrangler/state` and private settings are excluded from builds.
 
@@ -79,13 +85,15 @@ Reset removes local D1/R2, owner/sessions/outbox, installer drafts and generated
 
 ## Your own hosting account
 
-Commit the supplied source before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and the public `FIRST_OWNER_EMAIL`, `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME` and `DEFAULT_TEAM_PREFIX` values. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
+Commit the supplied source before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and set `OWNER_EMAIL` to the mailbox that will own the hosted installation. Also supply the public `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME` and `DEFAULT_TEAM_PREFIX` values. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
 
 ```sh
-rer deploy --environment production
+FIRST_OWNER_EMAIL="$OWNER_EMAIL" rer deploy --environment production
 ```
 
-This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. When it finishes, `rer deploy` prints the address of your installation. Open it and sign in by email as `FIRST_OWNER_EMAIL`: that first sign-in makes you the owner automatically, so there is no setup token or claim step to run. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
+Vector’s current deployment adapter reads the internal `FIRST_OWNER_EMAIL` binding; the explicit assignment maps your `OWNER_EMAIL` into that adapter. Local `rer setup` does not choose or replace the hosted owner. The hosted owner is selected from this deployment input.
+
+This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. When it finishes, `rer deploy` prints the address of your installation. Open it and sign in by email as `OWNER_EMAIL`: that first sign-in makes you the owner automatically, so there is no setup token or claim step to run. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
 
 Estimated infrastructure cost is **USD 0–15/month**, assuming up to 20 operators, 100,000 issues, 5 GB attachments and moderate traffic. Transactional email is billed separately. These are estimates, not a capacity qualification or a claim of hosted commissioning. Local provider fixtures prove behavior without making a real deployment.
 

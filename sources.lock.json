@@ -468,7 +468,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "fe3d8adf0fa9c63d09a5327300e99942d3e7fbce53ea8a1214402f6c3fefe839",
+      "sha256": "b9966cc0fb8889ea13c95fa1657dfb6d5c33e09cfb1c6dd1a582d97ab836f8c1",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -560,7 +560,7 @@
       "executable": false
     },
     "docs/INSTALLER.md": {
-      "sha256": "027da805b78407b0bed938b981691861ed526f91c336d71cd5cf08c8f00dccf5",
+      "sha256": "9a69e3d43dd5ebfd6582985fa73b195f6cb53d8f9fe044fd047ca683bfe534ab",
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
@@ -884,7 +884,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "a746e2fec1c66d90dcd256089d4421c7cb109fb7582360e8f3f31acbcf5667e0",
+      "sha256": "7e791c2d65a9374fa10eaf97428bc67baabc9870c74984268b0117d876035fcb",
       "executable": false
     },
     "RELEASE.json": {
@@ -1868,7 +1868,7 @@
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
-      "sha256": "11ca658dd03d1d5796c493a07206166d5bf4838027bf9a926879d5408cb105f9",
+      "sha256": "f4d4470a785977531862b236a5946cd93f3dc1e2961148902d0dc57abbb28e16",
       "executable": false
     },
     "src/core/features/data/archive-service.d.mts": {
@@ -3624,7 +3624,7 @@
       "executable": false
     },
     "tests/installer/readme.test.mjs": {
-      "sha256": "65b5501344d804097612503a40dc6e5761185fcc87158dae40320944945121f3",
+      "sha256": "73afcbe438b5857890a5f94ca8d1e2405e78cde5438777b5590733c641523cb8",
       "executable": false
     },
     "tests/installer/startup-fixture.mjs": {
