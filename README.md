@@ -13,7 +13,7 @@
 <p align="center">
   <a href="https://justevery.com/#vol-vector"><img src=".github/assets/media/preview.gif" width="800" alt="Vector: the triage call on FLW-7, a reason typed, Accept and route work, and the issue appearing in Now"></a>
 </p>
-<p align="center"><a href="https://justevery.com/#vol-vector"><b>Watch the full demo</b></a> · 45 seconds</p>
+<p align="center"><a href="https://justevery.com/#vol-vector"><b>Watch the full demo</b></a> · 55 seconds</p>
 
 <p align="center">
   <img src=".github/assets/media/flow.webp" width="800" alt="FLW-7 awaiting decision, the triage call accepted with a reason, and the issue started in Maya's Now">
