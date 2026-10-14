@@ -57,6 +57,13 @@
   -webkit-font-smoothing: antialiased;
 }
 
+/* Inside the signed-in workspace the canvas is a near-neutral light grey: warmth comes from the accent, type and hatch
+   rather than paper. The public site, docs, setup and sign-in pages keep the brand paper above. */
+:root:has(.app-shell) {
+  --app-paper: #f6f5f1;
+  --app-paper-deep: #ecebe6;
+}
+
 * {
   box-sizing: border-box;
 }

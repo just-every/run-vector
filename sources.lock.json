@@ -1304,7 +1304,7 @@
       "executable": false
     },
     "src/core/app/app.css": {
-      "sha256": "fc734506ac1be9cb0e60ee9ec839f5b2e1826b7712932c4b2bbb1943d452b630",
+      "sha256": "3c08c5cad4d0141c55dd0031934f7b3e9fa9b4e18dbc29586325c06b1159ab53",
       "executable": false
     },
     "src/core/app/bindings.ts": {
@@ -2536,7 +2536,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
-      "sha256": "4cf0e20598dca1356022de04f8508e7f1aed5365d169c23d2a7c2d7499e54361",
+      "sha256": "72687dd8a200cacb674ea6e49889582e71de59784a6f2e2b21339fa92e9b0ae4",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-draft.ts": {
@@ -2884,7 +2884,7 @@
       "executable": false
     },
     "src/core/features/streams/ui/streams.css": {
-      "sha256": "105f958daf4f864f685a32451ada7cc6e0860fe622416bb28798371cfdd9c338",
+      "sha256": "9b03c9212063f500b601aea91d7d2e07d09a924a796057f95f8131a0706fa41e",
       "executable": false
     },
     "src/core/features/team-move/errors.ts": {

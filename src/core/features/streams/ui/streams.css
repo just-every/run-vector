@@ -22,13 +22,13 @@
 .stream-group-heading span { display: grid; min-width: 1.35rem; height: 1.35rem; place-items: center; border-radius: 999px; color: var(--app-body); background: rgb(23 26 32 / 9%); font-size: .75rem; }
 .stream-rows { display: grid; gap: .45rem; }
 .stream-row {
-  display: grid; width: 100%; min-height: 6.2rem; align-content: start; gap: .4rem; border: 1px solid rgb(23 26 32 / 62%); border-radius: .62rem; padding: .8rem .9rem; color: var(--app-ink); text-align: left; background: var(--app-card); box-shadow: 3px 3px 0 rgb(23 26 32 / 8%);
+  display: grid; width: 100%; min-height: 6.2rem; align-content: start; gap: .4rem; border: 1px solid var(--app-line-strong); border-radius: .62rem; padding: .8rem .9rem; color: var(--app-ink); text-align: left; background: var(--app-card); box-shadow: 0 1px 2px rgb(23 26 32 / 6%);
 }
 .stream-row:hover {
   border-color: var(--app-ink); background: var(--app-field);
 }
 .stream-row.is-selected {
-  border-color: var(--color-accent); background: var(--app-cobalt-soft); box-shadow: inset 0 0 0 1px var(--color-accent), 3px 3px 0 rgb(23 26 32 / 8%);
+  border-color: var(--color-accent); background: var(--app-cobalt-soft); box-shadow: inset 0 0 0 1px var(--color-accent), 0 1px 2px rgb(23 26 32 / 6%);
 }
 .stream-row-top, .stream-row-meta, .stream-reasons { display: flex; min-width: 0; align-items: center; gap: .45rem; }
 .stream-row-top { justify-content: space-between; }
