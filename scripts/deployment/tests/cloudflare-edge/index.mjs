@@ -1,3 +1,4 @@
+import {importFixture} from './import.mjs';
 import { databaseRequest } from './sql.mjs';
 import { workerRequest } from './workers.mjs';
 
@@ -5,11 +6,13 @@ import { workerRequest } from './workers.mjs';
 export function providerFixture() {
   const accountId='a'.repeat(32),token='test-only-provider-token';
   const state={calls:[],writes:[],databases:[],buckets:[],namespaces:[],settings:null,version:null,deployments:[],secrets:[],subdomain:false,schedules:[],objects:new Map(),failSql:null,healthOverride:null};
+  const imports=importFixture(accountId);
   const failures=[],prefix=`/client/v4/accounts/${accountId}`;
   const ok=(result,result_info)=>Response.json({success:true,errors:[],result,...(result_info?{result_info}:{})});
   const missing=()=>Response.json({success:false,errors:[{code:100,message:'missing'}]},{status:404});
   async function handle(input,init={}) {
     const url=new URL(input),method=init.method??'GET',path=url.pathname.slice(prefix.length);
+    const uploaded=imports.upload(url,init);if(uploaded)return uploaded;
     if(url.hostname.endsWith('.workers.dev')) {
       if(new Headers(init.headers).has('Authorization'))throw Error('Credential sent to health endpoint');
       if(state.healthOverride)return state.healthOverride();
@@ -22,7 +25,7 @@ export function providerFixture() {
     state.calls.push({method,path,search:url.search});
     const body=typeof init.body==='string'?JSON.parse(init.body):init.body;
     const write=body=>state.writes.push({method,path,body});
-    const context={path,method,body,state,ok,missing,write};
+    const context={path,method,body,state,ok,missing,write,imports};
     const database=databaseRequest(context);if(database)return database;
     if(path==='/workers/durable_objects/namespaces'&&method==='GET')return ok(state.namespaces,{page:1,per_page:100,total_count:state.namespaces.length});
     if(path==='/r2/buckets') {

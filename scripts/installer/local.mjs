@@ -28,7 +28,7 @@ export const adapter = { ...shared, run: (root, input, store, onApp, signal, opt
 export const install = async (root, input, store, onApp, signal) => {
  // A local workspace installs through the public commands, as Base's operator installer does (rer install,
  // rer setup --answers, rer preview), so its runtime only ever answers behind rer's traffic proxy.
- if (input.target && input.target !== 'local') throw Error('The browser installer supports this computer only. Use pnpm exec rer deploy for owner-account deployment.');
+ if (input.target && input.target !== 'local') throw Error('The browser installer supports this computer only. Use rer deploy for owner-account deployment.');
  return installOperator(root, input, isolatedStore(store), onApp, signal, hooks);
 };
 export const commandAdapter = createCommandAdapter(adapter, {

@@ -1,1 +1,1 @@
-export { readProjectOperations, inspectRequiredLoops } from '../vendor/operations/project-operations.mjs';
+export { readProjectOperations, inspectRequiredLoops } from '@runeditrun/rer/internal/operations/project-operations.mjs';

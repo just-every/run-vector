@@ -14,6 +14,6 @@ export async function developmentOrigin(root=process.cwd()) {
  const {values}=await readSettings(root,receipt);
  let url;try{url=new URL(values.APP_ORIGIN);}catch{}
  if(!url || url.protocol!=='http:' || url.hostname!=='127.0.0.1' || !url.port || url.origin!==values.APP_ORIGIN)
-  throw Error('Run pnpm run setup -- --owner-email EMAIL, then pnpm dev, before pnpm test:dev.');
+  throw Error('Run rer setup --owner-email EMAIL, then pnpm dev, before pnpm test:dev.');
  return url.origin;
 }

@@ -231,15 +231,15 @@ The package-script aliases remain available from the same runnable root:
 
 ```sh
 pnpm run deps
-pnpm run setup
-pnpm run dev
+rer setup
+rer dev
 ```
 
 `deps` dispatches to `rer install`; forwarded flags follow `--`.
 
 Package aliases, when used, take the form `pnpm run VERB -- FLAGS`; use
-`pnpm run deploy -- --dry-run` because `pnpm deploy` is a different built-in
-command. `pnpm install --frozen-lockfile` is the equivalent dependency action
+`rer deploy --dry-run` because `pnpm deploy` is a different built-in
+command. `rer install` is the equivalent dependency action
 to `rer install`.
 
 Local durable state is `.wrangler/state`; CLI bookkeeping is `.rer/local`,

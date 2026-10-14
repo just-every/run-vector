@@ -1,6 +1,6 @@
 # Verification and manual commands
 
-`pnpm verify` invokes the native rer verifier, which runs `verify:app` and
+`rer verify` invokes the native rer verifier, which runs `verify:app` and
 `scripts/verify.mjs`. The application wall validates sources, then runs installer,
 Node, Markdown, Worker and deployment tests; builds; and runs the emitted Worker
 and browser journeys. GitHub CI additionally runs the actual development setup
@@ -20,7 +20,7 @@ There are no separate foundation or removal suites to keep synchronized.
 ## Scripts outside the wall
 
 These are intentional manual tools, not additional unattended acceptance gates.
-Use `pnpm describe` for the native rer command's flags and effects. Commands that
+Use `rer describe` for the native rer command's flags and effects. Commands that
 publish, deploy, release or reset remain subject to the owner's instruction.
 
 | Scripts | Purpose and instructions |

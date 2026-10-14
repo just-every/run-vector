@@ -37,7 +37,7 @@ The application runs on a Cloudflare Worker with TanStack Start, React and Hono,
 
 ## Run it on your computer
 
-Use Node **22.20.0** and pnpm **10.12.4**. Set `VECTOR_SOURCE` to the source supplied with your installation.
+Use Node **22.20.0**. Install the published command once with `npm install --global @runeditrun/rer@0.2.2`; `rer` provisions the pinned pnpm for you. Set `VECTOR_SOURCE` to the source supplied with your installation.
 
 <!-- vector-clone -->
 ```sh
@@ -45,25 +45,26 @@ git clone "$VECTOR_SOURCE" vector
 cd vector
 ```
 
-Install frozen dependencies, prepare your local owner, then start development. Replace the example mailbox with your own. Choose another explicit port if 8787 is occupied.
+Install the published command, install the pinned dependencies, prepare your local owner, then start development. Replace the example mailbox with your own. Choose another explicit port if 8787 is occupied.
 
 <!-- vector-terminal -->
 ```sh
-pnpm install --frozen-lockfile
-pnpm run check -- --profile first-party
-pnpm run setup -- --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-interactive
-pnpm run dev
+npm install --global @runeditrun/rer@0.2.2
+rer install
+rer check --profile first-party
+rer setup --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-interactive
+rer dev
 ```
 
 Setup builds and applies migrations, saves owner-only `.dev.vars`, prepares your first owner and stops its temporary app. A second setup preserves the owner, data and settings. Supply a private JSON `--answers` file for workspace, timezone and team values declared in `rer-setup.json`; otherwise its defaults apply. Existing installations must follow [local recovery](docs/LOCAL-RECOVERY.md) before changing their state path.
 
-Development prints `RER_READY` only after health is ready. `rer dev` opens signed in: it prints `RER_SIGNED_IN` (the owner) and `RER_OPEN`, a link that carries this checkout's private dev key in its fragment. Open `RER_OPEN` in a browser on this computer and you land signed in as the owner; a small dev badge switches to the `teammate` persona (a second operator in the same workspace; Vector has no product roles) or signs out. Never share the link: the key is what keeps the outbox and dev sign-in closed to anything that reaches this port through a proxy or tunnel, and `reset` removes the key so every earlier browser session stops working. `--as teammate` (or `--as signed-out`) starts as another persona, and `--login` turns dev identity off so dev prints `RER_SIGN_IN` and a key-carrying `RER_OPEN` for the outbox instead: choose the newest message and follow its one-use link (no email is sent). Previews open the outbox the same way. `RER_OPEN` is for people at this terminal; scripts use `rer dev --json` or the key header. Opening an outbox link is inert until you press **Confirm**. Stop with Ctrl-C or `pnpm run dev -- --stop`. `pnpm run outbox` prints the outbox address; `--owner-email` requests another ordinary link. Data is stored in `.wrangler/state` and private settings are excluded from builds.
+Development prints `RER_READY` only after health is ready. `rer dev` opens signed in: it prints `RER_SIGNED_IN` (the owner) and `RER_OPEN`, a link that carries this checkout's private dev key in its fragment. Open `RER_OPEN` in a browser on this computer and you land signed in as the owner; a small dev badge switches to the `teammate` persona (a second operator in the same workspace; Vector has no product roles) or signs out. Never share the link: the key is what keeps the outbox and dev sign-in closed to anything that reaches this port through a proxy or tunnel, and `reset` removes the key so every earlier browser session stops working. `--as teammate` (or `--as signed-out`) starts as another persona, and `--login` turns dev identity off so dev prints `RER_SIGN_IN` and a key-carrying `RER_OPEN` for the outbox instead: choose the newest message and follow its one-use link (no email is sent). Previews open the outbox the same way. `RER_OPEN` is for people at this terminal; scripts use `rer dev --json` or the key header. Opening an outbox link is inert until you press **Confirm**. Stop with Ctrl-C or `rer dev --stop`. `rer outbox` prints the outbox address; `--owner-email` requests another ordinary link. Data is stored in `.wrangler/state` and private settings are excluded from builds.
 
 Install Chromium for browser checks, then run the complete verification:
 
 ```sh
 pnpm exec playwright install chromium
-pnpm run verify
+rer verify
 ```
 
 For the existing sample hydration journey, `pnpm test:dev:ci` prepares a disposable fixture, uses real setup and development, and reads the saved origin before running `pnpm test:dev`. It is separate from your empty installation.
@@ -71,23 +72,33 @@ For the existing sample hydration journey, `pnpm test:dev:ci` prepares a disposa
 Review the inventory before removing local data. Stop the app, retain an export and your backups, then explicitly confirm:
 
 ```sh
-pnpm run reset -- --yes
+rer reset --yes
 ```
 
 Reset removes local D1/R2, owner/sessions/outbox, installer drafts and generated settings. Source, dependencies, export archives and `.rer/deploy` receipts survive. See [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) for flags, exit codes and private state custody, and [Installer instructions](docs/INSTALLER.md) for setup details.
 
 ## Your own hosting account
 
-Build and commit the supplied source first with `pnpm build`. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and the six public owner/workspace/team values above. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
+Commit the supplied source before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and the six public owner/workspace/team values above. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
 
 ```sh
-pnpm run deploy -- --environment production
-pnpm deploy:health
+rer deploy --environment production
 ```
 
-These use Base owner-account deploy/health with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
+This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
 
 Estimated infrastructure cost is **USD 0–15/month**, assuming up to 20 operators, 100,000 issues, 5 GB attachments and moderate traffic. Transactional email is billed separately. These are estimates, not a capacity qualification or a claim of hosted commissioning. Local provider fixtures prove behavior without making a real deployment.
+
+## Update an installation
+
+Stop local development and keep matching source, D1/R2 backups and the private `.rer/deploy` directory. With the published `rer` command installed, update the source and deploy:
+
+```sh
+git pull --ff-only
+rer deploy
+```
+
+No separate pnpm installation is required. If the pull changes the package pin or lockfile, run `rer install` before `rer deploy`: published 0.2.2 does not yet install dependencies during deploy. Deployment preserves applied migration history and private secrets; it refuses changed or uncertain history. See [archives](docs/ARCHIVES.md) before restoring a backup.
 
 ## Workspace administration
 
@@ -119,13 +130,13 @@ Email is limited to assignments and direct mentions. It uses the existing Base t
 
 ## Data and updates
 
-Local installation archives use the public `pnpm run export -- --output FILE` and `pnpm run import -- --input FILE --yes` commands. Stop development first. Import requires an empty product database and FILES bucket; export creates a new owner-only file. Save archives under the unserved `exports/` folder, such as `exports/vector.jsonl`, or at an absolute path outside the checkout; copy a private archive into a different checkout before restoring there. See [Data ownership](docs/DATA-OWNERSHIP.md) for contents, credential exclusions, fresh owner sign-in, historical delivery quarantine and restore review. FTS is derived and rebuilt from stable primary IDs. Authenticated HTTP export and restore use the same Base engine with Vector's atomic pristine-bootstrap admission and a Durable Object coordinator. Restore requires a fresh ordinary owner sign-in before setup or edits; after commit, sign in freshly as the historical owner. Local Worker HTTP proof does not establish hosted HTTPS acceptance. See [Archives](docs/ARCHIVES.md).
+Local installation archives use the public `rer export --output FILE` and `rer import --input FILE --yes` commands. Stop development first. Import requires an empty product database and FILES bucket; export creates a new owner-only file. Save archives under the unserved `exports/` folder, such as `exports/vector.jsonl`, or at an absolute path outside the checkout; copy a private archive into a different checkout before restoring there. See [Data ownership](docs/DATA-OWNERSHIP.md) for contents, credential exclusions, fresh owner sign-in, historical delivery quarantine and restore review. FTS is derived and rebuilt from stable primary IDs. Authenticated HTTP export and restore use the same Base engine with Vector's atomic pristine-bootstrap admission and a Durable Object coordinator. Restore requires a fresh ordinary owner sign-in before setup or edits; after commit, sign in freshly as the historical owner. Local Worker HTTP proof does not establish hosted HTTPS acceptance. See [Archives](docs/ARCHIVES.md).
 
 Settings supports reviewed mapped CSV/JSON and Linear imports (documented CSV format and owner-made API file, tested at 2,000 issues with a generator; no owner export supplied), scoped API tokens, signed source receivers and GitHub PR webhook links. See [Move in](docs/MOVE-IN.md), [API](docs/API.md) and [Integrations](docs/INTEGRATIONS.md). Outbound delivery stays unconfigured until the owner provides an enforcing transport. No replacement-product claim is added. Preserve provider backups, private settings and compatible source before upgrades. Apply new migrations forward, keep additive schema and durable histories on code rollback, and validate recovery in isolated resources. Source before migration 0018 cannot read the current stable-ID search schema.
 
 Browser verification covers the core product journey and a representative accessibility and overflow pass. Release visual review covers the remaining layouts.
 
-Stage intentional source edits, run `pnpm sources:lock`, then `pnpm sources:check` and `pnpm verify`. See [HANDOVER.md](HANDOVER.md) for implemented scope and limitations, [CHANGELOG.md](CHANGELOG.md) for release changes, and [CONTRACT.md](CONTRACT.md) / [BASELINE.md](BASELINE.md) for requirements. Passing local checks does not establish every wider product, capacity or hosted-delivery guarantee.
+Stage intentional source edits, run `pnpm sources:lock`, then `pnpm sources:check` and `rer verify`. See [HANDOVER.md](HANDOVER.md) for implemented scope and limitations, [CHANGELOG.md](CHANGELOG.md) for release changes, and [CONTRACT.md](CONTRACT.md) / [BASELINE.md](BASELINE.md) for requirements. Passing local checks does not establish every wider product, capacity or hosted-delivery guarantee.
 
 The Base runtime selections and schema validator are pinned together; see [Base adoption](docs/BASE-ADOPTION.md) for exact copy custody, additive migrations and recovery.
 

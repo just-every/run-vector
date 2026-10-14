@@ -1,4 +1,4 @@
-import { assert, validatePlan, resourceName } from '../../vendor/base/deploy-kit/validation.mjs';
+import { assert, validatePlan, resourceName } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
 import { validatePublicConfiguration } from './input-validation.mjs';
 const fields = ['FIRST_OWNER_EMAIL', 'FIRST_OWNER_NAME', 'WORKSPACE_NAME', 'WORKSPACE_TIMEZONE', 'DEFAULT_TEAM_NAME', 'DEFAULT_TEAM_PREFIX', 'MAIL_FROM'];
 /** Reviewed controller-owned JSON. Never load candidate JavaScript or Wrangler configuration. */

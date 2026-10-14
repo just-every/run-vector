@@ -1,16 +1,16 @@
 # Deploying Vector
 
-Use Node 22.20.0 and pnpm 10.12.4. Exact Base copies are pinned at `679bb1a0eeb9c57d4ca08ce18e5c8a3935963862`; see [Base adoption](docs/BASE-ADOPTION.md).
+Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. The CLI and deploy kit come from pinned `@runeditrun/rer` 0.2.2; see [Base adoption](docs/BASE-ADOPTION.md).
 
 ## Owner account
 
-`pnpm build` completes in a credential-free command environment with `.dev.vars` excluded. Commit source before the provider operation. Supply explicit `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`, public `FIRST_OWNER_EMAIL`, `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME`, `DEFAULT_TEAM_PREFIX`, and a verified sender `MAIL_FROM`. Supply `SENDGRID_API_KEY` for the first installation. No ambient Wrangler login is used.
+`rer build` completes in a credential-free command environment with `.dev.vars` excluded. Commit source before the provider operation. Supply explicit `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`, public `FIRST_OWNER_EMAIL`, `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME`, `DEFAULT_TEAM_PREFIX`, and a verified sender `MAIL_FROM`. Supply `SENDGRID_API_KEY` for the first installation. No ambient Wrangler login is used.
 
-`pnpm exec rer deploy --environment production` (or `pnpm run deploy -- --environment production`) calls Base owner-cli's real deploy verb. `pnpm deploy:health` uses its health verb on the same durable declaration/state. `deploy.json` declares DB, FILES, minute Cron and APP_ORIGIN. Names derive from Vector's public identity and environment: `vector-projects-production`, its `-db` database and `-files` bucket. APP_ORIGIN is resolved from the explicit account's workers.dev subdomain; offline operations checks use the intended HTTPS origin, then runtime health verifies the actual deployment origin. Unrelated named resources are refused, never adopted or deleted.
+`rer deploy --environment production` runs the published package’s deploy and health checks on the same durable declaration/state. It builds before deployment. `deploy.json` declares DB, FILES, minute Cron and APP_ORIGIN. Names derive from Vector's public identity and environment: `vector-projects-production`, its `-db` database and `-files` bucket. APP_ORIGIN is resolved from the explicit account's workers.dev subdomain; offline operations checks use the intended HTTPS origin, then runtime health verifies the actual deployment origin. Unrelated named resources are refused, never adopted or deleted.
 
 The product materializes public values in private `.rer/deploy/declaration.json`. `.rer/deploy/secrets.env` is 0600, generates SESSION_SECRET once and stores the supplied mail credential. Existing values win on rerun; neither secret is implicitly rotated. The owner input SENDGRID_API_KEY maps to the established Worker binding MAIL_API_KEY, with no deployed binding rename. Retain `.rer/deploy/production.json` and the secret file. Only the explicit provider command receives these credentials; dependency/build commands never inherit them. Missing public/mail inputs refuse before resource writes. These commands do not provision a mail domain or verify mailbox arrival.
 
-The browser installer supports local installation only. Owner-account deployment runs separately through `rer deploy`; setup does not deploy. Local setup is `pnpm run setup -- --owner-email EMAIL` and uses `.dev.vars` plus `/__dev/outbox` without a provider credential. Follow README.md to approve installation and confirm a captured sign-in message. Estimated infrastructure cost is USD 0–15 per month under seed.json assumptions, plus transactional email; this is not capacity or live-provider acceptance.
+The browser installer supports local installation only. Owner-account deployment runs separately through `rer deploy`; setup does not deploy. Local setup is `rer setup --owner-email EMAIL` and uses `.dev.vars` plus `/__dev/outbox` without a provider credential. Follow README.md to approve installation and confirm a captured sign-in message. Estimated infrastructure cost is USD 0–15 per month under seed.json assumptions, plus transactional email; this is not capacity or live-provider acceptance.
 
 ## Artifact controller
 
@@ -125,11 +125,11 @@ not automatic replay. The controller never deletes resources or owner data.
 ## Evidence and local checks
 
 ```sh
-node --test scripts/deployment/tests/*.test.mjs vendor/base/deploy-kit/tests/deploy.test.mjs vendor/base/deploy-kit/tests/build-contract.test.mjs vendor/base/deploy-kit/tests/cron-contract.test.mjs
-pnpm verify
+node --test scripts/deployment/tests/*.test.mjs
+rer verify
 # In a disposable checkout, prepare the hydration fixture first:
 pnpm test:dev:setup
-# Start pnpm dev in another terminal, wait for /health, then:
+# Start rer dev in another terminal, wait for /health, then:
 pnpm test:dev
 ```
 
@@ -145,8 +145,8 @@ health identity, repeated-deploy API audit and real controlled-inbox sign-in,
 invite/revocation and empty-installation journeys. Keep live validation and any disposable-resource cleanup explicitly scoped to the installation.
 
 `.github/workflows/ci.yml` runs on main pushes and pull requests with Node 22.20.0,
-frozen install, headless Chromium, deployment tests, full `pnpm verify`, and an
-actual `pnpm dev` readiness check plus bare `pnpm test:dev` through `pnpm test:dev:ci`. The saved installation origin is read from the private `.seed/development.json` launch receipt without an extra environment variable. The process group is cleaned
+frozen install, headless Chromium, deployment tests, full `rer verify`, and an
+actual `rer dev` readiness check plus bare `pnpm test:dev` through `pnpm test:dev:ci`. The saved installation origin is read from the private `.seed/development.json` launch receipt without an extra environment variable. The process group is cleaned
 up even after readiness or journey failure. It has no deployment secret inputs.
 
 ## Upgrade custody
@@ -166,3 +166,7 @@ Apply 0025/0026 additively after 0024. Retain original bytes, import journals/pr
 ## Native integrations
 
 Settings manages scoped Base tokens with safe usage, signed sources, outbound destinations and GitHub PR webhook configuration. See docs/API.md and docs/INTEGRATIONS.md. Apply 0027/0028 additively after 0026; retain source/deletion and replay identities, attempts and terminal results on compatible-source rollback. Restore excludes credentials and transient claims, quarantines historical mail/webhook events, and requires fresh access/effect review and signing-key re-entry. Outbound delivery stays visibly unconfigured until a deployment-owned enforcing DNS/pinned-TLS RPC exists; there is no fetch fallback. Local native and loopback-TLS evidence does not establish hosted egress, a live source/account, stage installation or public publication.
+
+## Update
+
+Preserve matching backups and `.rer/deploy`, then run `git pull --ff-only` followed by `rer deploy`. The command provisions pnpm itself. If package pins or the lockfile changed, run `rer install` before `rer deploy`; 0.2.2 does not yet install dependencies during deploy. Existing migration bytes and identities remain unchanged.

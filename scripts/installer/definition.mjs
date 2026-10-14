@@ -17,8 +17,8 @@ export const localValidators={...publicValidators,SESSION_SECRET:secretValidator
  MAIL_MODE(value){if(value!=='local-outbox')throw Error('Invalid local mail mode');},
 };
 export function validateSettings(values) {
- for (const key of [...publicNames.slice(0,6),'APP_ORIGIN','SESSION_SECRET']) if (!values[key]) throw Error(`Missing ${key}; run pnpm run setup -- --owner-email EMAIL.`);
+ for (const key of [...publicNames.slice(0,6),'APP_ORIGIN','SESSION_SECRET']) if (!values[key]) throw Error(`Missing ${key}; run rer setup --owner-email EMAIL.`);
  try {for(const [key,validate] of Object.entries(localValidators))validate(values[key]);}
- catch {throw Error('Invalid local settings; run pnpm run setup -- --owner-email EMAIL.');}
+ catch {throw Error('Invalid local settings; run rer setup --owner-email EMAIL.');}
  return new URL(values.APP_ORIGIN);
 }

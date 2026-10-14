@@ -21,18 +21,12 @@ export async function prepareHosting(context, env) {
  context.store.report?.(`Owner secrets are kept in ${hostingSecrets}; preserve this file and .rer/deploy state.`);
  return secretContext.vars;
 }
-// Public deploy owns the owner declaration and private deployment secrets.
-export async function deploy(context) {
+// Vector owns validation and secret custody; the package owns deployment and health.
+export const deploy = Object.assign(async context => {
  const { ownerDeploy } = await import('@runeditrun/rer/deploy');
  const { adapter } = await import('./local.mjs');
  if (context.options.dryRun) return ownerDeploy('deploy.json', adapter)(context);
  const prepared = await prepareHosting({ ...context, fail: () => Error('Deployment inputs missing') }, process.env);
- const { main } = await import('../../vendor/base/deploy-kit/owner-cli.mjs');
- await adapter.run(context.root, {}, context.store, () => {}, context.signal, { verb: 'build', operationToken: context.operationToken });
- const env = { ...prepared, CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID, CLOUDFLARE_API_TOKEN: process.env.CLOUDFLARE_API_TOKEN };
  context.store.addSecrets(Object.values(prepared));
- const args = ['--declaration', hostingDeclaration, '--environment', context.options.environment ?? 'production'];
- const result = await main(['deploy', ...args], env, { cwd: context.root });
- await main(['health', ...args], env, { cwd: context.root });
- return { deployed: true, origin: result.origin };
-}
+ return ownerDeploy(hostingDeclaration, adapter)({ ...context, options: { ...context.options, envFile: hostingSecrets } });
+}, { declaration: 'deploy.json' });

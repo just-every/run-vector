@@ -24,14 +24,14 @@ An archive is still a full copy of your workspace, so keep it somewhere private.
 2. Copy the archive into that folder's `exports` folder, then restore it:
 
    ```sh
-   pnpm exec rer import --input exports/vector.jsonl --yes
+   rer import --input exports/vector.jsonl --yes
    ```
 
 3. Run setup with the same owner email the archive was made with, then start Vector and sign in:
 
    ```sh
-   pnpm exec rer setup --owner-email EMAIL --non-interactive
-   pnpm exec rer dev
+   rer setup --owner-email EMAIL --non-interactive
+   rer dev
    ```
 
 A restore only goes into an empty installation; it never overwrites one that holds data.

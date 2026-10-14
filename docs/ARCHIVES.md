@@ -1,7 +1,7 @@
 # Native application archives
 
-`pnpm run export -- --target local --output FILE --non-interactive` and
-`pnpm run import -- --target local --input FILE --yes --non-interactive` use the
+`rer export --target local --output FILE --non-interactive` and
+`rer import --target local --input FILE --yes --non-interactive` use the
 actual Base portability engine and Vector's explicit schema and FILES policy.
 Import is exact restoration, distinct from mapped issue import. Source archive
 and checkpoint files are private. An existing export path refuses replacement. Save archives in the checkout's unserved `exports/` folder (for example `exports/vector.jsonl`) or at an absolute path outside the checkout; any other path in the checkout is refused, because the app could serve it. To restore in a different checkout, copy the private archive into that checkout first.

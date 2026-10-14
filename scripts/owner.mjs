@@ -17,7 +17,8 @@ export async function ownerCommand(command,env=process.env,root=fileURLToPath(ne
   const context={root,store,fail:()=>installationFailure('command_failed',{step:'deploy'})};
   const secrets=await prepareHosting(context,env);
   store.addSecrets([env.CLOUDFLARE_API_TOKEN,...Object.values(secrets)]);
-  await store.run('Owner account '+command,process.execPath,['vendor/base/deploy-kit/owner-cli.mjs',command,'--declaration',hostingDeclaration,'--environment','production'],{cwd:root,env:{...secrets,CLOUDFLARE_ACCOUNT_ID:env.CLOUDFLARE_ACCOUNT_ID,CLOUDFLARE_API_TOKEN:env.CLOUDFLARE_API_TOKEN}});
+  const { main } = await import('@runeditrun/rer/modules/deploy-kit/owner-cli');
+  await main([command,'--declaration',hostingDeclaration,'--environment','production'],{...secrets,CLOUDFLARE_ACCOUNT_ID:env.CLOUDFLARE_ACCOUNT_ID,CLOUDFLARE_API_TOKEN:env.CLOUDFLARE_API_TOKEN},{cwd:root});
  } catch {store.report('Owner operation failed. See DEPLOY.md and the private installer log.');process.exitCode=1;}
  finally {await store.closeCommands();process.removeListener('SIGINT',cancel);process.removeListener('SIGTERM',cancel);}
 }

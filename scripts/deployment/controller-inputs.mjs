@@ -1,6 +1,6 @@
 import {resolve} from 'node:path';
-import {assert,hexId} from '../../vendor/base/deploy-kit/validation.mjs';
-import {cloudflare} from '../../vendor/base/deploy-kit/provider.mjs';
+import {assert,hexId} from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
+import {cloudflare} from '@runeditrun/rer/internal/modules/deploy-kit/provider.mjs';
 import {secretValidators} from './input-validation.mjs';
 export const controllerRequired=['CF_THROWAWAY_ACCOUNT_ID','CF_THROWAWAY_API_TOKEN','RER_DEPLOY_ARTIFACT','RER_DEPLOY_ARTIFACT_SHA256','RER_DEPLOY_SOURCE_SHA','RER_DEPLOY_RUN_ID','RER_DEPLOY_RUN_ATTEMPT','RER_DEPLOY_RECEIPT','RER_DEPLOY_PLAN'];
 const absolute=value=>assert(typeof value==='string' && value===resolve(value),'input-path-must-be-absolute');

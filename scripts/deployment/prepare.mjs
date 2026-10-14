@@ -2,9 +2,9 @@ import { execFileSync } from 'node:child_process';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { assertCredentialFree } from '../../vendor/base/deploy-kit/prepare.mjs';
-import { assert, hash } from '../../vendor/base/deploy-kit/validation.mjs';
-import { MAX_ARTIFACT } from '../../vendor/base/deploy-kit/artifact.mjs';
+import { assertCredentialFree } from '@runeditrun/rer/internal/modules/deploy-kit/prepare.mjs';
+import { assert, hash } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
+import { MAX_ARTIFACT } from '@runeditrun/rer/internal/modules/deploy-kit/artifact.mjs';
 import { packageBuild } from './pack.mjs';
 
 export async function prepare(env = process.env, root = process.cwd()) {

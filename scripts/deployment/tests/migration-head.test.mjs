@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
-import { validateMigrations, migrate } from '../../../vendor/base/deploy-kit/migrations.mjs';
-import { hash } from '../../../vendor/base/deploy-kit/validation.mjs';
-import { cloudflare } from '../../../vendor/base/deploy-kit/provider.mjs';
+import { validateMigrations, migrate } from '@runeditrun/rer/internal/modules/deploy-kit/migrations.mjs';
+import { hash } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
+import { cloudflare } from '@runeditrun/rer/internal/modules/deploy-kit/provider.mjs';
 import { providerFixture } from './cloudflare-edge/index.mjs';
 
 const dir = new URL('../../../migrations/core/', import.meta.url);
@@ -24,7 +24,7 @@ test('Vector deployment preserves owner and invitation guards, revokes removed o
   const database = await api.request('/d1/database', {method: 'POST', body: {name: 'vector-complete-head'}});
   assert.deepEqual(await migrate(api, database.uuid, migrations), { applied: names, history: expectedHistory });
   const db = fixture.state.databases[0].db;
-  const ledger = () => db.prepare('SELECT name, sha256, state FROM _rer_deploy_migrations ORDER BY name').all().map(row => ({ ...row }));
+  const ledger = () => db.prepare('SELECT name, sha256, state FROM d1_migrations ORDER BY id').all().map(row => ({ ...row }));
   const expectedLedger = expectedHistory.map(row => ({ ...row, state: 'applied' }));
   assert.deepEqual(ledger(), expectedLedger);
   db.exec("INSERT INTO oa_operators(id,email,display_name,role,status,version,created_at) VALUES ('owner','owner@example.test','Owner','owner','active',1,0),('pending','pending@example.test','Pending','member','invited',1,0)");

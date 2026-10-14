@@ -1,4 +1,4 @@
-import { assert } from '../../vendor/base/deploy-kit/validation.mjs';
+import { assert } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
 
 // Reviewed controller rules, deliberately independent of candidate/runtime imports.
 // Keep these aligned with bootstrap/config.ts and Base mail's parseAddress and

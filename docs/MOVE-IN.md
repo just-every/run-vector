@@ -155,7 +155,7 @@ as well.
 Use Jira's **All Fields** export and keep the UTF-8 file unchanged. Settings
 offers **Jira All Fields CSV (supported profile)**; the importer command remains
 `pnpm run import:issues` with `--format jira-csv`. For a local CLI session, start
-with `pnpm exec rer dev --login`; build with `pnpm exec rer build`. The default
+with `rer dev --login`; build with `rer build`. The default
 is preview only.
 Review the whole-file date result, explicit status/priority/account/cycle
 mappings, references and the complete omission report before acknowledging it

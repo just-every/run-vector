@@ -1,5 +1,5 @@
-import { cloudflare as baseCloudflare } from '../../vendor/base/deploy-kit/provider.mjs';
-import { assert } from '../../vendor/base/deploy-kit/validation.mjs';
+import { cloudflare as baseCloudflare } from '@runeditrun/rer/internal/modules/deploy-kit/provider.mjs';
+import { assert } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
 
 /** R2's documented lexicographic start_after interface with an explicit page size.
  * result_info is optional; no fabricated cursor metadata is passed to Base.

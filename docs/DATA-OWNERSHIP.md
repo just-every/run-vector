@@ -3,8 +3,8 @@
 Stop development before moving data. The public commands use Base's complete local D1/R2 portability engine, with Vector's schema and attachment preflight:
 
 ```sh
-pnpm run export -- --output exports/vector.jsonl
-pnpm run import -- --input exports/vector.jsonl --yes
+rer export --output exports/vector.jsonl
+rer import --input exports/vector.jsonl --yes
 ```
 
 Export creates a new owner-only archive; it never overwrites one. Import requires an empty product installation and empty FILES bucket. Use confirmed reset only after preserving an export and backups. Setup after restore must use the archived installation owner's email. Authenticated HTTPS and exact loopback HTTP targets use the same Base transport. Vector admits complete restore only into a pristine bootstrap created after migration 0034, with one ordinary owner session and its exact consumed source link. The coordinator and final transaction preserve custody and retire that authority atomically; sign in freshly as the historical owner afterward. See [Archives](ARCHIVES.md) for admission, uncertain settlement and rollback requirements. Local Worker HTTP proof does not establish hosted HTTPS acceptance.

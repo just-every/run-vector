@@ -2,13 +2,13 @@
 
 CONTRACT.md and BASELINE.md define the full target. HANDOVER.md records implemented scope and known limitations. A verified installation lets an operator sign in, inspect evidence, make an intake decision, create and update work, discuss it, retain private files, manage operators and sign out. Data, session revocation and authorization must survive new requests and runtime restart. Concurrent edits must preserve history and reject stale writes without stray activity.
 
-`pnpm verify` runs source integrity, unit and Worker tests, deployment tests, types/build, emitted Worker/browser checks, Base authentication journeys and clause registration. For hydration checks in a disposable checkout, run `pnpm test:dev:setup`, start `pnpm dev`, then run bare `pnpm test:dev` in another terminal. It reads the saved installation origin from the private `.seed/development.json` launch receipt; no origin variable is required. `pnpm test:dev:ci` runs this same sequence automatically. Focused foundation/removal commands exercise further journeys. Generated diagnostic output is ignored.
+`rer verify` runs source integrity, unit and Worker tests, deployment tests, types/build, emitted Worker/browser checks, Base authentication journeys and clause registration. For hydration checks in a disposable checkout, run `pnpm test:dev:setup`, start `rer dev`, then run bare `pnpm test:dev` in another terminal. It reads the saved installation origin from the private `.seed/development.json` launch receipt; no origin variable is required. `pnpm test:dev:ci` runs this same sequence automatically. Focused foundation/removal commands exercise further journeys. Generated diagnostic output is ignored.
 
 For a hosted installation, separately validate the exact source and deployment identities, received email sign-in and invitations, revocation, empty bootstrap, Cron delivery and repeat-deploy preservation of D1/R2 data. Provider submission alone does not establish inbox arrival. Hosted archive restore, capacity and complete contract acceptance require separate acceptance.
 
 ## Shared installation and source custody (9 October 2026)
 
-Use Node 22.20.0 and pnpm 10.12.4. The shared `pnpm exec rer setup --owner-email EMAIL` paths preserve configured FIRST_OWNER bootstrap, private `.dev.vars` and saved origin/owner/data; `pnpm dev` hydrates that installation. `/__dev/outbox` uses Base mail with explicit exact loopback admission and ordinary Base native sessions. Confirmation GET is inert; POST signs in. Owner-account setup/deploy/health uses explicit account inputs and SENDGRID_API_KEY mapped to MAIL_API_KEY. The reviewed artifact controller has separate artifact:setup/deploy/health commands.
+Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. The shared `rer setup --owner-email EMAIL` paths preserve configured FIRST_OWNER bootstrap, private `.dev.vars` and saved origin/owner/data; `rer dev` hydrates that installation. `/__dev/outbox` uses Base mail with explicit exact loopback admission and ordinary Base native sessions. Confirmation GET is inert; POST signs in. Owner-account setup/deploy/health uses explicit account inputs and SENDGRID_API_KEY mapped to MAIL_API_KEY. The reviewed artifact controller has separate artifact:setup/deploy/health commands.
 
 Exact Base copy/schema/source checks, installer/settings/outbox/hosting tests, populated previous-head migrations and native 1440/390 journeys form local acceptance. CI slow startup and literal README clone/own-frozen-install proof retain only safe receipts and captures. These do not establish hosted acceptance. Preserve 0001–0021, apply 0022/0023, keep additive schema and terminal delivery/migration ledgers on compatible-source rollback, and validate isolated recovery with matching source and D1/R2 backups. See docs/BASE-ADOPTION.md. Local archives preserve native records and FILES bytes with destination access/effect review. Mapped imports and native integrations are described below; authenticated HTTP restore into a pristine bootstrap is locally proven with fresh native authority after commit. Hosted HTTPS acceptance remains separate.
 
@@ -27,8 +27,8 @@ preflight and apply through native routes. The earlier copied-CLI run also
 covered repeat, status, resume, reconciliation and whole-run rollback on its
 recorded source head. The external public-port REPORT records exact source
 heads, commands and results, distinguishing that run from the `@runeditrun/rer`
-CLI run. The current commands are `pnpm exec rer dev --login` for a local session and
-`pnpm exec rer build` for a build; Jira imports still use `pnpm run import:issues`
+CLI run. The current commands are `rer dev --login` for a local session and
+`rer build` for a build; Jira imports still use `pnpm run import:issues`
 with `--format jira-csv`.
 Jira reuses the existing import storage, imported-comment schema and source
 identities; it adds no migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and

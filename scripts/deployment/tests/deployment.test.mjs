@@ -7,7 +7,7 @@ import { packageBuild } from '../pack.mjs';
 import { vectorPlan } from '../plan.mjs';
 import { main } from '../controller.mjs';
 import { prepare } from '../prepare.mjs';
-import { hash } from '../../../vendor/base/deploy-kit/validation.mjs';
+import { hash } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
 import { providerFixture } from './cloudflare-edge/index.mjs';
 const configuration = { version: 1, workersDev: true, worker: 'rer-seedproof-vector', FIRST_OWNER_EMAIL: 'owner@example.test', FIRST_OWNER_NAME: 'Test owner', WORKSPACE_NAME: 'Test workspace', WORKSPACE_TIMEZONE: 'Australia/Brisbane', DEFAULT_TEAM_NAME: 'Test team', DEFAULT_TEAM_PREFIX: 'TEST', MAIL_FROM: 'auth@example.test' };
 const file = (path, bytes) => ({ path, sha256: hash(bytes), base64: Buffer.from(bytes).toString('base64') });

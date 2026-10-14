@@ -69,53 +69,6 @@
       }
     },
     {
-      "id": "runeditrun/deploy-kit",
-      "role": "foundation",
-      "source": {
-        "kind": "local",
-        "paths": [
-          "vendor/base/deploy-kit"
-        ],
-        "origin": {
-          "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8b8fec168544108f3cc977bd9dcb46d68b11ca31",
-          "paths": [
-            "modules/deploy-kit"
-          ]
-        },
-        "mappings": [
-          {
-            "path": "vendor/base/deploy-kit",
-            "originPath": "modules/deploy-kit"
-          }
-        ]
-      }
-    },
-    {
-      "id": "runeditrun/operations",
-      "role": "module",
-      "source": {
-        "kind": "local",
-        "paths": [
-          "vendor/operations"
-        ],
-        "origin": {
-          "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8b8fec168544108f3cc977bd9dcb46d68b11ca31",
-          "paths": [
-            "operations/operations.mjs",
-            "operations/project-operations.mjs"
-          ]
-        },
-        "mappings": [
-          {
-            "path": "vendor/operations",
-            "originPath": "operations"
-          }
-        ]
-      }
-    },
-    {
       "id": "runeditrun/edition-authoring",
       "role": "module",
       "source": {

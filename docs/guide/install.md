@@ -1,11 +1,11 @@
 # Run it on your computer
 
-You need Node 22.20.0 and pnpm 10.12.4. From a copy of the source, install the locked dependencies, prepare your owner account, then start Vector:
+You need Node 22.20.0 and the published `rer` command; it provisions pnpm automatically. From a copy of the source, install the locked dependencies, prepare your owner account, then start Vector:
 
 ```sh
-pnpm exec rer install
-pnpm exec rer setup --owner-email EMAIL --non-interactive
-pnpm exec rer dev
+rer install
+rer setup --owner-email EMAIL --non-interactive
+rer dev
 ```
 
 Setup builds the app, prepares its local database, creates your owner account and workspace, and stops again. Running it a second time keeps your owner, data and settings. Nothing is sent by email while you run Vector on your computer.
@@ -18,9 +18,9 @@ The first time, Vector opens **Finish setting up Vector**. Check the workspace, 
 
 ## Stop, start and reset
 
-Stop Vector with Ctrl-C, or with `pnpm exec rer dev --stop`. Start it again with `pnpm exec rer dev`; your data stays where it was.
+Stop Vector with Ctrl-C, or with `rer dev --stop`. Start it again with `rer dev`; your data stays where it was.
 
-To start over, stop Vector, keep an export of anything you need (see [Your data](data.md)), then run `pnpm exec rer reset --yes`. Reset lists exactly what it removes before it removes it.
+To start over, stop Vector, keep an export of anything you need (see [Your data](data.md)), then run `rer reset --yes`. Reset lists exactly what it removes before it removes it.
 
 ## Choosing your settings
 

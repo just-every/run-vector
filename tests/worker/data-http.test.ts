@@ -1,3 +1,4 @@
+import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {reserveWithRacingWriter} from './http-archive-reservation';
 import {populatedHttpSource} from './http-archive-source';
@@ -9,6 +10,9 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ // Export the prior deploy-kit ledger format; restore into the package's current
+ // state-bearing D1 ledger. Neither ledger is application data in the archive.
+ await env.DB.exec("CREATE TABLE _rer_deploy_migrations(name TEXT PRIMARY KEY,sha256 TEXT NOT NULL,state TEXT NOT NULL); INSERT INTO _rer_deploy_migrations SELECT name,'test-only-ledger-hash','applied' FROM d1_migrations; DROP TABLE d1_migrations;");
  expect(await (await f.call('/data/restore')).json()).toMatchObject({restored:false,status:null});
  expect((await f.call('/data/restore/operators/'+f.peer,'POST',{})).status).toBe(409);
  expect((await f.call('/data/restore/review-effects','POST',{})).status).toBe(409);
@@ -18,8 +22,10 @@ it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin 
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
  const download=await f.call('/portability/exports/'+id+'/download');expect(download.status).toBe(200);const records=[];for await(const row of readArchive(download.body!))records.push(row);
- for(const name of ['oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
+ for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  const cookie=await freshTarget();
+ await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
+ const ledgerBefore=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results;
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]})).status).toBe(401);
  const refusedOrigin=await createServerApp().request(targetBindings.APP_ORIGIN+'/api/portability/imports',{method:'POST',headers:{Origin:'https://untrusted.example',cookie,'content-type':'application/json'},body:JSON.stringify({confirmed:true,manifest:records[0]})},targetBindings);expect(refusedOrigin.status).toBe(403);
  const retainedClaim=await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM oa_bootstrap').all();
@@ -28,6 +34,7 @@ it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin 
  expect((await targetCall('/api/issues','POST',{title:'Reserved target',teamId:targetTeam!.id},cookie)).status).toBe(409);
  const finalized=await targetCall('/api/portability/imports/'+job+'/finalize','POST',finalBody(records),cookie);
  expect(finalized.status,await finalized.clone().text()).toBe(200);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results).toEqual(ledgerBefore);
  expect(finalized.headers.get('set-cookie')).toContain('Max-Age=0');
  expect((await targetCall('/api/session','GET',undefined,cookie)).status).toBe(401);
  expect((await targetCall('/api/session','GET',undefined,f.cookie)).status).toBe(401);

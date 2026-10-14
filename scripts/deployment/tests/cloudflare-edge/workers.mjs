@@ -5,7 +5,7 @@ export async function workerRequest({path,method,body,state,ok,missing,write}) {
   if(path==='/workers/assets/upload'){write();return ok({jwt:'fixture-complete-jwt'});}
   const match=/^\/workers\/scripts\/([^/]+)(.*)$/.exec(path);if(!match)return;
   const suffix=match[2];
-  if(suffix==='/assets-upload-session'){write(body);return ok({jwt:'fixture-upload-jwt',buckets:[Object.values(body.manifest).map(item=>item.hash)]});}
+  if(suffix==='/assets-upload-session'){write(body);return ok({jwt:'fixture-upload-jwt',buckets:[[...new Set(Object.values(body.manifest).map(item=>item.hash))]]});}
   if(suffix==='/settings')return state.settings?ok(state.settings):missing();
   if(suffix==='/deployments')return ok({deployments:state.deployments});
   if(suffix.startsWith('/versions/'))return ok(state.version);

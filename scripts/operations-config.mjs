@@ -14,9 +14,9 @@ export async function configurationReport(env={},root=process.cwd()) {
    if(text===undefined)throw Error('missing settings');
    const missing=localRequired.filter(key=>typeof values[key]!=='string'||!values[key].trim());
    const invalid=invalidConfigurationNames(values,localValidators);
-   return {ok:missing.length===0&&invalid.length===0,mode,missing,invalid,sources:Object.fromEntries([...missing,...invalid].map(key=>[key,'OPERATIONS.md shared local setup and private installation settings'])),guidance:'Run pnpm run setup -- --owner-email EMAIL. See OPERATIONS.md.'};
+   return {ok:missing.length===0&&invalid.length===0,mode,missing,invalid,sources:Object.fromEntries([...missing,...invalid].map(key=>[key,'OPERATIONS.md shared local setup and private installation settings'])),guidance:'Run rer setup --owner-email EMAIL. See OPERATIONS.md.'};
   }
-  catch {return {ok:false,mode,missing:['.dev.vars'],guidance:'Run pnpm run setup -- --owner-email EMAIL. See OPERATIONS.md.'};}
+  catch {return {ok:false,mode,missing:['.dev.vars'],guidance:'Run rer setup --owner-email EMAIL. See OPERATIONS.md.'};}
  }
  const missing=(mode==='hosted'?hostedInputs:artifactInputs).filter(key=>typeof env[key]!=='string'||!env[key].trim());
  const invalid=[];

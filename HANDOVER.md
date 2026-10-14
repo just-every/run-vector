@@ -4,7 +4,7 @@ Vector is a self-hosted issue tracker on one Cloudflare Worker with TanStack Sta
 
 ## Run locally
 
-Use Node 22.20.0 and pnpm 10.12.4. Run `pnpm exec rer install`, `pnpm exec rer setup --owner-email EMAIL --non-interactive`, then `pnpm exec rer dev`. Sign in through the printed development outbox and confirm the message. Fresh owners review the workspace at /setup before entering the app. App routes return unfinished owners there; completed and existing installations enter the app. Repeated setup preserves private settings, owner, completion and data. Stop development before reset or restore.
+Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. Run `rer install`, `rer setup --owner-email EMAIL --non-interactive`, then `rer dev`. Sign in through the printed development outbox and confirm the message. Fresh owners review the workspace at /setup before entering the app. App routes return unfinished owners there; completed and existing installations enter the app. Repeated setup preserves private settings, owner, completion and data. Stop development before reset or restore.
 
 Use rer build, verify, reset --yes, export --output PATH and import --input PATH --yes. Describe lists flags and effects; check --profile first-party validates the offline command contract; doctor reports missing configuration safely. README.md describes archive exclusions, reset inventory and deployment commands.
 
@@ -43,8 +43,8 @@ preflight and apply through native routes. The earlier copied-CLI run also
 covered repeat, status, resume, reconciliation and whole-run rollback on its
 recorded source head. The external public-port REPORT records exact source
 heads, commands and results, distinguishing that run from the `@runeditrun/rer`
-CLI run. Use `pnpm exec rer dev --login` to start a local CLI session, then
-`pnpm exec rer build` to build; the Jira importer still runs through
+CLI run. Use `rer dev --login` to start a local CLI session, then
+`rer build` to build; the Jira importer still runs through
 `pnpm run import:issues` with `--format jira-csv`. Jira reuses the existing
 import storage, imported-comment schema and source identities; it adds no
 migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and

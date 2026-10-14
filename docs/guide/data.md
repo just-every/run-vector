@@ -7,13 +7,13 @@ Everything Vector knows lives in your own installation: issues, history, comment
 Stop Vector first, then export:
 
 ```sh
-pnpm exec rer export --output exports/vector.jsonl
+rer export --output exports/vector.jsonl
 ```
 
 Export writes a new private file and never overwrites an existing one. To restore it, use an empty installation:
 
 ```sh
-pnpm exec rer import --input exports/vector.jsonl --yes
+rer import --input exports/vector.jsonl --yes
 ```
 
 ## What a copy holds

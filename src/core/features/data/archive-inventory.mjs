@@ -1,8 +1,11 @@
+import { policy } from '@runeditrun/rer/modules/portability/catalogue';
 import inventory from './archive-inventory.json' with {type:'json'};
+const excluded=policy({product:'just-every/vector-projects'}).excludeTables;
+const excludedTable=name=>excluded.some(pattern=>pattern.endsWith('%')?name.toLowerCase().startsWith(pattern.slice(0,-1)):name.toLowerCase()===pattern);
 export async function validateArchiveInventory(db) {
  const tables=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all()).results;
  for(const {name} of tables) {
-  if(/^(?:sqlite_|_cf_|rer_portability_)/.test(name)||name==='d1_migrations')continue;
+  if(!Object.hasOwn(inventory,name)&&excludedTable(name))continue;
   if(!Object.hasOwn(inventory,name))throw Error('unclassified_table');
   const columns=(await db.prepare('PRAGMA table_xinfo("'+name.replaceAll('"','""')+'")').all()).results.map(c=>c.name);
   if(JSON.stringify(columns)!==JSON.stringify(inventory[name]))throw Error('unclassified_column');

@@ -2,12 +2,14 @@
   "revision": "8652fba6c98349e4b5ee7e7477cde506d9b93b4a",
   "source": "Base",
   "copies": {
-    "vendor/base/deploy-kit": "modules/deploy-kit",
-    "vendor/operations": "operations",
     "scripts/edition-authoring": "edition-authoring"
   },
   "customizations": [],
   "notes": [
-    "Deploy and owner runtime use exact copied modules. Product adapters own bindings and policy. Operations sits at the original deploy-kit relative import path. Base template authoring helpers are not a Vector command; scripts/edition-authoring is the sole authoring implementation."
-  ]
+    "Deployment and owner runtime use the published package. Vector adapters retain bindings, input validation and policy."
+  ],
+  "runtime": {
+    "package": "@runeditrun/rer",
+    "version": "0.2.2"
+  }
 }

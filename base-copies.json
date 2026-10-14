@@ -123,17 +123,6 @@
       }
     },
     {
-      "path": "RUN-LOCALLY.md",
-      "originPath": "export/RUN-LOCALLY.md",
-      "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
-      "files": {
-        "RUN-LOCALLY.md": "5eeb33783fc12fb09530716aa885e630f84123aa7f0fb79458fee4c5a2683e1d"
-      },
-      "modes": {
-        "RUN-LOCALLY.md": "100644"
-      }
-    },
-    {
       "path": "scripts/delivery/base/artifact.mjs",
       "originPath": "modules/delivery-producer/artifact.mjs",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
@@ -343,17 +332,6 @@
       }
     },
     {
-      "path": "SEED-COMMAND-CONTRACT.md",
-      "originPath": "export/SEED-COMMAND-CONTRACT.md",
-      "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
-      "files": {
-        "SEED-COMMAND-CONTRACT.md": "bccf98c60748f580b46bbf5eef83ddd66aefaf1e29499d2f50424d12c9c98ffa"
-      },
-      "modes": {
-        "SEED-COMMAND-CONTRACT.md": "100644"
-      }
-    },
-    {
       "path": "src/base",
       "originPath": "foundation/runtime",
       "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
@@ -429,71 +407,6 @@
         "vendor/base/dependencies/schema/approval-attempt.sql": "100644",
         "vendor/base/dependencies/schema/dependencies.sql": "100644",
         "vendor/base/dependencies/store.mjs": "100644"
-      }
-    },
-    {
-      "path": "vendor/base/deploy-kit",
-      "originPath": "modules/deploy-kit",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
-      "files": {
-        "vendor/base/deploy-kit/artifact.mjs": "84104eba381178baed0100e6c7fda107d095cdb79888925fe5b3f69874a0adc7",
-        "vendor/base/deploy-kit/build-modules.mjs": "14583fe6bef98ceeebb26a41886e1c8a47259fb99d21c668d331f818045c2ba5",
-        "vendor/base/deploy-kit/check.mjs": "e42e2aacb5f48748973bdf16758d37b014906ad703b55b685b71c3906bd9b79a",
-        "vendor/base/deploy-kit/cli.mjs": "3422765e133b78fc6a408f29a720686dbf8f7c8ac75a0536a8b7042c2c539b4e",
-        "vendor/base/deploy-kit/container-config.mjs": "c2f75cf5f5b2f1ac5ac9a55545342f2f73b6e5462c7e38b71e7dcf56c64bcf43",
-        "vendor/base/deploy-kit/default-stage.mjs": "c0887feda400c958192ca8b2aa7968af6c34b2c50159fe66d554c6f00295a4d7",
-        "vendor/base/deploy-kit/deploy.mjs": "feac8556472d03f8025958ccf84edfe0472807c939aa0c5baeb45fb4e4f242b0",
-        "vendor/base/deploy-kit/health-request.mjs": "f75f5b4eaf8209fe436ed2da525dfe49c8feb2a8b7b71787116fe25422ee2634",
-        "vendor/base/deploy-kit/health.mjs": "66d8eb8b294f22da059191dd1e97524215e2d74ac14522fec967b24f6ae8d977",
-        "vendor/base/deploy-kit/index.mjs": "218795edb7486d9fc22b9c4ed84760b8acf7ad869b8747fbd9578e42a599426a",
-        "vendor/base/deploy-kit/local-only.mjs": "2d6bcd56534ec07ba47d1e1951252a6fae7949ff52fdc517e6f4b27fb76981ea",
-        "vendor/base/deploy-kit/migrations.mjs": "063e146a93f2c43290569b5c5fac922667a9d434ebb0a9f6e0af97c8790961ce",
-        "vendor/base/deploy-kit/owner-cli.mjs": "4a6ecc145b24f45898c69269a72b9421e12fbc16bbf6cc93fddcfb12406af047",
-        "vendor/base/deploy-kit/owner.mjs": "64adb91737168cdd7cc5e8f7f8f24fedb60f7d8172b4a8d81899181520d1650e",
-        "vendor/base/deploy-kit/prepare.mjs": "5acf640abf90af32692a7138bda1b935497bc9a7335b14230957007429aa9b22",
-        "vendor/base/deploy-kit/provider.mjs": "555563517af57d8c8a8b54fe0056f61173d46af546988a7eca4435dbb8999b4d",
-        "vendor/base/deploy-kit/queue-consumer.mjs": "349b6200571359ab54e3a3f267c68d78c2f08fd479859fbf50473e57e1e0753f",
-        "vendor/base/deploy-kit/README.md": "48a22828659092874bbc7c79d0e2f63562863ce8e63a51429ae51b70f6eb1c5e",
-        "vendor/base/deploy-kit/receipt.mjs": "b85d33d9404eb3466e3fcf5d3f73d1c5d2d7ab9e7d84b1b00505d5613ba57b31",
-        "vendor/base/deploy-kit/render.mjs": "62aff446df8b444c2f78760951698e5799b13d8528228c7be987ac2d5e9fe274",
-        "vendor/base/deploy-kit/resources.mjs": "ed17ef6de4392319743b5457cc437b13b9a273028aba4fc9ed3385574f571e90",
-        "vendor/base/deploy-kit/service-grants.mjs": "441be67fe70a4f9fe126141df96db1d22e7a30f04229eb3d2f7fac637d961868",
-        "vendor/base/deploy-kit/sql-safety.mjs": "482634f15b0715c64756e819b02173fdc6292d206cd639c49abda6a78076e94b",
-        "vendor/base/deploy-kit/sql-tokens.mjs": "ddbcb2639e902dce995b32d75d8827f922651e080b40e01dbe76a4b682a96357",
-        "vendor/base/deploy-kit/teardown.mjs": "ee2d3d4b594c0c37513c8dc124d7dc16642582f2822c269192afa256cacbe8c3",
-        "vendor/base/deploy-kit/templates.mjs": "520ce28bd00ddb37918652cb1b3369ee1de950b03002071ae07e90735a84b0d0",
-        "vendor/base/deploy-kit/validation.mjs": "1e9b0b3c20420176e8f8d10d5f88ae18776cb35649e1ac2e6051372c81ff1309",
-        "vendor/base/deploy-kit/worker.mjs": "22dcd7ee17de0120de522d2495070015c54e2bdfd251d58e3a43f2e37b804b3b"
-      },
-      "modes": {
-        "vendor/base/deploy-kit/artifact.mjs": "100644",
-        "vendor/base/deploy-kit/build-modules.mjs": "100644",
-        "vendor/base/deploy-kit/check.mjs": "100644",
-        "vendor/base/deploy-kit/cli.mjs": "100644",
-        "vendor/base/deploy-kit/container-config.mjs": "100644",
-        "vendor/base/deploy-kit/default-stage.mjs": "100644",
-        "vendor/base/deploy-kit/deploy.mjs": "100644",
-        "vendor/base/deploy-kit/health-request.mjs": "100644",
-        "vendor/base/deploy-kit/health.mjs": "100644",
-        "vendor/base/deploy-kit/index.mjs": "100644",
-        "vendor/base/deploy-kit/local-only.mjs": "100644",
-        "vendor/base/deploy-kit/migrations.mjs": "100644",
-        "vendor/base/deploy-kit/owner-cli.mjs": "100644",
-        "vendor/base/deploy-kit/owner.mjs": "100644",
-        "vendor/base/deploy-kit/prepare.mjs": "100644",
-        "vendor/base/deploy-kit/provider.mjs": "100644",
-        "vendor/base/deploy-kit/queue-consumer.mjs": "100644",
-        "vendor/base/deploy-kit/README.md": "100644",
-        "vendor/base/deploy-kit/receipt.mjs": "100644",
-        "vendor/base/deploy-kit/render.mjs": "100644",
-        "vendor/base/deploy-kit/resources.mjs": "100644",
-        "vendor/base/deploy-kit/service-grants.mjs": "100644",
-        "vendor/base/deploy-kit/sql-safety.mjs": "100644",
-        "vendor/base/deploy-kit/sql-tokens.mjs": "100644",
-        "vendor/base/deploy-kit/teardown.mjs": "100644",
-        "vendor/base/deploy-kit/templates.mjs": "100644",
-        "vendor/base/deploy-kit/validation.mjs": "100644",
-        "vendor/base/deploy-kit/worker.mjs": "100644"
       }
     },
     {
@@ -2360,19 +2273,6 @@
         "vendor/base/schema/SEED.schema.json": "100644",
         "vendor/base/schema/setup-validation.mjs": "100644",
         "vendor/base/schema/validate.mjs": "100644"
-      }
-    },
-    {
-      "path": "vendor/operations",
-      "originPath": "operations",
-      "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
-      "files": {
-        "vendor/operations/operations.mjs": "c0af9edbc9ded47063b31f352fb76c83b0d236d00caa63b5f6b8a44cce59da88",
-        "vendor/operations/project-operations.mjs": "583a32cabf96c13a53b3cd493d8dd798c8a3e1ad4ff460b33512c4a37ef43385"
-      },
-      "modes": {
-        "vendor/operations/operations.mjs": "100644",
-        "vendor/operations/project-operations.mjs": "100644"
       }
     },
     {

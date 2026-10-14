@@ -1,6 +1,6 @@
 # Vector operations
 
-Use Node 22.20.0 and pnpm 10.12.4. All public commands use `pnpm exec rer VERB`; package aliases are `pnpm run VERB -- FLAGS`. Run `pnpm exec rer describe` for capabilities and `pnpm exec rer check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
+Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. All public lifecycle commands use `rer VERB`. Run `rer describe` for capabilities and `rer check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
 
 Run `install`, then `setup --owner-email EMAIL --non-interactive`, then `dev`. Setup consumes rer-setup.json, saves private .dev.vars, builds with secrets excluded, applies forward migrations, bootstraps the configured first owner and stops its temporary Worker. A repeated setup preserves settings, owner and data. Use a private `--answers` JSON file for declared workspace, team and timezone choices.
 

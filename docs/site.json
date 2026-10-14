@@ -249,10 +249,6 @@
       "reason": "Vendored Base library documentation, kept with its source"
     },
     {
-      "source": "vendor/base/deploy-kit/README.md",
-      "reason": "Vendored Base library documentation, kept with its source"
-    },
-    {
       "source": "vendor/base/egress-service/ADOPTION.md",
       "reason": "Vendored Base library documentation, kept with its source"
     },
