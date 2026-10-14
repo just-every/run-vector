@@ -3,7 +3,7 @@ import { createPortabilityHandler, PortabilityError, MAX_LINE_BYTES, canonicalJs
 // @ts-expect-error The native ESM transport helper has no declarations.
 import { boundedJson } from '@runeditrun/rer/modules/portability/http';
 import inventory from './archive-inventory.json';
-import { portabilityPolicy } from './archive-policy.mjs';
+import { portabilityPolicy,archiveImportPolicy } from './archive-policy.mjs';
 import { requireOperator, clearSessionCookie } from '../auth/service';
 import { mutationDatabase } from '../auth/mutation-database';
 import { validateArchiveInventory,validateArchiveAttachments } from './archive-inventory.mjs';
@@ -34,10 +34,12 @@ export async function restoreRequest(request: Request, env: WorkerBindings) {
   await validateArchiveInventory(env.DB);await validateArchiveAttachments(env.DB,env.FILES);
   const path=new URL(request.url).pathname,id=path.split('/')[4];
   const creating=request.method==='POST' && path==='/api/portability/imports';
+  let importPolicy=portabilityPolicy;
   if (creating) {
     try {
       const body=await boundedJson(request,MAX_LINE_BYTES);
       if(body.confirmed!==true || !Array.isArray(body.manifest?.tables))return response('confirmation_required',400);
+      importPolicy=archiveImportPolicy(body.manifest);
       const tableNames=body.manifest.tables.map((table:{name:unknown})=>table.name);
       if(tableNames.some((name:unknown)=>typeof name!=='string'||!Object.hasOwn(inventory,name)))return response('table_inventory',400);
       // A create whose job committed but whose reply was lost (a reset, or a
@@ -69,7 +71,7 @@ export async function restoreRequest(request: Request, env: WorkerBindings) {
     const admitted = await env.DB.prepare('SELECT 1 FROM vector_http_restore WHERE import_id=? AND actor_id=? AND (?=1 OR session_id=?)').bind(id, actor.id, aborting?1:0, actor.fence.sessionId).first();
     if (!admitted) return response('restore_admission_required', 409);
   }
-  const policy = {...portabilityPolicy,
+  const policy = {...importPolicy,
     replaceableTables:[...portabilityPolicy.replaceableTables!, ...bootstrapTables],
     validateStaged: async (staged:Staged) => {
       if (!(await env.DB.prepare('SELECT 1 FROM vector_http_restore_eligible WHERE id=1').first())) throw new PortabilityError('restore_authority_changed',409);

@@ -9,3 +9,14 @@ export const portabilityPolicy = {
  buckets: { FILES: {} },
  requiredConfiguration: ['FIRST_OWNER_EMAIL', 'SESSION_SECRET', 'APP_ORIGIN', 'MAIL_MODE', 'MAIL_FROM'],
 };
+
+// Older archives name the retired setup credential. Match that inventory only;
+// keep the original manifest intact because both archive digests authenticate it.
+export function archiveImportPolicy(manifest) {
+ const names=manifest?.requiredConfiguration,current=portabilityPolicy.requiredConfiguration;
+ if(Array.isArray(names)&&names.length===current.length+1&&names.includes('SETUP_TOKEN')&&
+  JSON.stringify(names.filter(name=>name!=='SETUP_TOKEN'))===JSON.stringify(current)) {
+  return {...portabilityPolicy,requiredConfiguration:[...names]};
+ }
+ return portabilityPolicy;
+}

@@ -87,6 +87,7 @@ it('[DATA-001 DATA-005 BASE-DATA-001] native archive restores identities, files,
  expect(manifest.tables.some((t:any)=>t.name==='oa_operators')).toBe(true);
  expect(manifest.tables.some((t:any)=>t.name==='vector_auth_operators')).toBe(true);
  for(const name of ['oa_sessions','oa_tokens','operator_sessions','rer_mail_development_outbox'])expect(manifest.tables.some((t:any)=>t.name===name)).toBe(false);
+ await expect(destination.imports.create({...manifest,requiredConfiguration:manifest.requiredConfiguration.map((name:string)=>name==='MAIL_MODE'?'UNRELATED_CONFIGURATION':name)})).rejects.toThrow('configuration_inventory');
  const id=await destination.imports.create(manifest);
  for(const record of archive.filter((r:any)=>r.kind==='part') as any[])await destination.imports.uploadPart(id,record.index,record);
  await destination.imports.finalize(id,{contentHash:closing.contentHash,archiveHash:closing.archiveHash});
