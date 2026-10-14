@@ -3468,7 +3468,7 @@
       "executable": false
     },
     "tests/e2e/outbox-session.mjs": {
-      "sha256": "08290ddcb8a42abee87e8c57dcf9f3bde69dab696c9c010e1063ec0b685cad28",
+      "sha256": "f678948475fe5abdb864216a31b1df311c4cd7db42162e5d320fef965fc0ef91",
       "executable": false
     },
     "tests/e2e/owned-dev-processes.mjs": {

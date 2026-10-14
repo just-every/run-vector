@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { devKey, keyHeader } from './dev-gate.mjs';
-const decodeHref=value=>value.replaceAll('&amp;','&').replaceAll('&quot;','"').replaceAll('&#39;',"'").replaceAll('&lt;','<').replaceAll('&gt;','>');
+const decodeHref=value=>value.replace(/&(?:amp|quot|#39|lt|gt);/g,entity=>({'&amp;':'&','&quot;':'"','&#39;':"'",'&lt;':'<','&gt;':'>'})[entity]);
 const escapeText=value=>value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
 /** Read the same local outbox index/detail that the owner opens. */
 export async function readDevelopmentLink(origin,request,email,key=devKey) {
