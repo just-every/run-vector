@@ -78,11 +78,11 @@
   gap: 1.5rem;
 }
 .evidence-inspector {
-  border: 1px solid rgb(23 26 32 / 55%);
+  border: 1px solid var(--app-line-strong);
   border-radius: 0.65rem;
   padding: 1.05rem;
   background: var(--app-card);
-  box-shadow: 4px 4px 0 rgb(23 26 32 / 7%);
+  box-shadow: 0 1px 2px rgb(23 26 32 / 6%);
 }
 .evidence-heading,
 .decision-heading {
@@ -147,7 +147,7 @@
   border-radius: 0.65rem;
   padding: 1.1rem;
   background: var(--app-card);
-  box-shadow: 5px 5px 0 rgb(23 26 32 / 9%);
+  box-shadow: 0 1px 2px rgb(23 26 32 / 6%);
 }
 .version-badge {
   color: var(--app-cobalt-ink);
