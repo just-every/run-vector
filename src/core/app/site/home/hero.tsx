@@ -19,6 +19,7 @@ export function Hero({ site = false }: { site?: boolean }) {
           <p className="vx-fine vx-hero-alt"><Alternative /></p>
           <div className="vx-actions">
             <a className="vx-pill vx-pill--large" href={site ? "/run" : links.source}>{site ? "Run Vector" : c.primary}</a>
+            {site && <a className="vx-pill vx-pill--large" href="https://demo.run-vector.com/">Try the demo</a>}
             <a className="vx-link vx-link--large" href={links.docs}>{c.secondary}</a>
           </div>
         </div>
