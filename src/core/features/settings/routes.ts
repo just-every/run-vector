@@ -1,5 +1,6 @@
 import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
 import { baseAuth } from "../auth/base.server";
+import { localMailEnabled } from "../auth/development.server";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -26,7 +27,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         role: "owner",
         returnTo: "/app",
       });
-      return c.json(result, 202);
+      return c.json({ ...result, delivery: localMailEnabled(c.env) ? 'local' : 'email' }, 202);
     } catch (error) {
       if (error instanceof AuthError)
         return Response.json(
@@ -72,7 +73,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   });
   app.get("/settings", async (c) => {
     try {
-      return c.json(await readSettings(c.env.DB, c.get("operatorId")));
+      return c.json({ ...await readSettings(c.env.DB, c.get("operatorId")), invitationDelivery: localMailEnabled(c.env) ? 'local' : 'email' });
     } catch (error) {
       if (error instanceof SettingsError)
         return c.json(
@@ -102,7 +103,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         parsed.data.timezone,
         parsed.data.reminderTime,
       );
-      return c.json(await readSettings(c.env.DB, c.get("operatorId")));
+      return c.json({ ...await readSettings(c.env.DB, c.get("operatorId")), invitationDelivery: localMailEnabled(c.env) ? 'local' : 'email' });
     } catch (error) {
       if (error instanceof SettingsError)
         return c.json(

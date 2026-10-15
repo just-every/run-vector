@@ -19,4 +19,5 @@ export const settingsSchema = z.object({
     }),
   ),
   operatorId: z.string(),
+  invitationDelivery: z.enum(['local', 'email']),
 });

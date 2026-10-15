@@ -9,13 +9,31 @@ concurrency:
   group: vector-ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  verify:
+  plan:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - id: plan
+        name: Read the shared verification plan
+        run: node --input-type=module -e 'import { verificationMatrix } from "./scripts/verification-plan.mjs"; console.log("matrix=" + JSON.stringify(verificationMatrix));' >> "$GITHUB_OUTPUT"
+
+  shards:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.plan.outputs.matrix) }}
     env:
       TZ: UTC
-      PLAYWRIGHT_SKIP_BROWSER_GC: 1
-      VITEST_MAX_WORKERS: 1
-    timeout-minutes: 90
+      PLAYWRIGHT_SKIP_BROWSER_GC: '1'
+      VITEST_MAX_WORKERS: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,44 +45,57 @@ jobs:
         with:
           node-version: 22.20.0
           cache: pnpm
-      - name: Reclaim unused runner SDKs for native disk guard
+      - name: Reserve disk for native runtime journeys
+        if: matrix.native
         run: |
-          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
-          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup
+          free_kib() { df -Pk "$GITHUB_WORKSPACE" | awk 'END { print $4 }'; }
+          for unused_tools in /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup; do
+            if [ "$(free_kib)" -ge "$((20 * 1024 * 1024))" ]; then break; fi
+            sudo rm -rf -- "$unused_tools"
+          done
           df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
       - run: pnpm install --frozen-lockfile
+      - name: Cache Chromium
+        if: matrix.browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: vector-chromium-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm verify:ci
-      - name: Hosted artifact and hydration boundaries
-        run: pnpm verify
-      - name: Actual shared local setup and existing development hydration
-        run: pnpm test:dev:ci
-      - name: Native installer with startup exceeding two minutes
-        run: pnpm test:installer:slow
-        env:
-          VECTOR_INSTALLER_EVIDENCE: evidence/installer/slow
-      - name: README literal clone and independent frozen installation
-        run: pnpm test:readme
+        if: matrix.browser
+      - name: Verify the independent shard
+        run: pnpm verify:ci --shard "${{ matrix.shard }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: vector-local-verification
+          name: vector-verification-${{ matrix.shard }}
+          include-hidden-files: true
           path: |
             evidence/installer/proof.json
             evidence/installer/*.png
-            evidence/installer/slow/proof.json
-            evidence/installer/slow/*.png
             evidence/access/proof.json
             evidence/mutation-refresh/proof.json
-            evidence/readme/proof.json
-            evidence/readme/*.png
             .artifacts/verification/ui-runtime-failure.png
             .artifacts/verification/ui-runtime-failure-safe.json
             .artifacts/verification/issue-controls/manifest.json
             .artifacts/verification/check-results.json
+            .artifacts/verification/shard-*.json
             .artifacts/verification/dev-runtime-results.json
             .artifacts/verification/dev-runtime-failure-safe.json
             .artifacts/verification/dev-failure.png
             .artifacts/verification/admin-browser/admin-failure-safe.json
             .artifacts/verification/collaboration-browser/collaboration-failure-safe.json
           if-no-files-found: ignore
+
+  # Keep the existing required check: skipped, cancelled or failed shards fail it.
+  verify:
+    needs: [plan, shards]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Require the complete verification wall
+        env:
+          PLAN_RESULT: ${{ needs.plan.result }}
+          SHARDS_RESULT: ${{ needs.shards.result }}
+        run: test "$PLAN_RESULT" = success && test "$SHARDS_RESULT" = success

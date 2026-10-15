@@ -3,8 +3,10 @@ import {applyD1Migrations} from 'cloudflare:test';
 import {beforeAll,expect,inject,it} from 'vitest';
 import {bindings,invite,mailToken,request,signIn} from './base-auth-fixture';
 import {beforeCommit} from './removal-interleaving';
+import {settingsSchema} from '../../src/core/features/settings/schema';
 beforeAll(async()=>applyD1Migrations(env.DB,inject('migrations')));
 it('[SETUP-001] first-run review belongs to the recorded owner, survives restart and refuses revoked-session completion atomically',async()=>{
+ expect(await (await request('/setup/state')).json()).toEqual({state:'unclaimed'});
  const prior=(env as unknown as {ARCHIVE_TARGET_DB:D1Database}).ARCHIVE_TARGET_DB;
  const migrations=inject('migrations');
  await applyD1Migrations(prior,migrations.filter(m=>m.name!=='0029_first_run_setup.sql'));
@@ -15,6 +17,11 @@ it('[SETUP-001] first-run review belongs to the recorded owner, survives restart
  expect((await prior.prepare('SELECT setup_completed_at FROM workspace_installation').first())?.setup_completed_at).not.toBeNull();
  expect((await request('/api/setup')).status).toBe(401);
  const owner=await signIn();
+ expect(await (await request('/setup/state')).json()).toEqual({state:'claimed'});
+ expect((await request('/')).status).toBe(200);
+ const saved=await request('/api/settings','PATCH',{timezone:'Australia/Brisbane'},owner);
+ expect(saved.status).toBe(200);
+ expect(settingsSchema.parse(await saved.json())).toMatchObject({workspace:{timezone:'Australia/Brisbane'},invitationDelivery:'local'});
  expect(await (await request('/api/setup','GET',undefined,owner)).json()).toMatchObject({owner:true,completed:false,workspace:bindings.WORKSPACE_NAME});
  const peer=await invite('peer@setup.test',owner);
  expect((await request('/api/setup/complete','POST',{confirmed:true},peer)).status).toBe(403);

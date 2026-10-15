@@ -1,9 +1,12 @@
 import { verificationDirectory } from './verification-paths.mjs';
+import { buildCommands, ciCommands, verificationShards } from './verification-plan.mjs';
 import { spawnSync, execFileSync } from "node:child_process";
 import { mkdir, writeFile, rm } from "node:fs/promises";
 const args = process.argv.slice(2);
-if (args.length > 1 || (args.length === 1 && args[0] !== '--ci'))
-  throw Error('Use no arguments for build verification, or --ci for the test suites.');
+const shard = args.length === 3 && args[0] === '--ci' && args[1] === '--shard' ? args[2] : undefined;
+if (!(args.length === 0 || (args.length === 1 && args[0] === '--ci') ||
+  (shard && Object.hasOwn(verificationShards, shard))))
+  throw Error('Use no arguments for build verification, --ci for all test suites, or --ci --shard <name>.');
 const ci = args[0] === '--ci';
 const sourceValidation = spawnSync("pnpm", ["run", "sources:check"], { stdio: "inherit" });
 if (sourceValidation.status !== 0) process.exit(sourceValidation.status ?? 1);
@@ -18,39 +21,18 @@ const report = {
   passed: false,
   checks: [],
 };
-const save = () =>
-  writeFile(evidence + "/check-results.json", JSON.stringify(report, null, 2));
+if (shard) report.shard = shard;
+const reportPath = shard ? `${evidence}/shard-${shard}.json` : `${evidence}/check-results.json`;
+const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
 await save();
-const commands = ci ? [
-  "sources:verify-base",
-  "check",
-  "test:installer",
-  "test:markdown",
-  "test:worker",
-  "test:deployment",
-  "test:public-site",
-  "build",
-  "integration:check",
-  "test:runtime",
-  "artifact:delivery",
-  "test:wave-b",
-  "test:data",
-  "test:integrations",
-  "test:base-auth",
-  "test:access",
-  "test:mutation-refresh",
-  "test:admin",
-  "test:collaboration",
-] : [
-  "sources:verify-base",
-  "check",
-  "build",
-  "integration:check",
-  "artifact:delivery",
-];
-for (const command of commands) {
+const commands = shard ? verificationShards[shard].commands : ci ? ciCommands : buildCommands;
+for (const entry of commands) {
+  const [script, ...scriptArgs] = typeof entry === 'string' ? [entry] : Array.isArray(entry) ? entry : [];
+  const executable = script ? 'pnpm' : process.execPath;
+  const commandArgs = script ? ['run', script, ...scriptArgs] : entry.node;
+  const command = script ? [script, ...scriptArgs].join(' ') : ['node', ...commandArgs].join(' ');
   const startedAt = new Date().toISOString();
-  const result = spawnSync("pnpm", ["run", command], { stdio: "inherit" });
+  const result = spawnSync(executable, commandArgs, { stdio: "inherit" });
   report.checks.push({
     command,
     startedAt,

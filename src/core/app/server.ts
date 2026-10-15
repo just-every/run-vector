@@ -19,7 +19,7 @@ import { lobbyResponse } from '../../base/lobby';
 import { claimedWhen, setupStateResponse } from '../../base/setup-state';
 import { identity } from './identity';
 
-const claimed = claimedWhen('SELECT 1 FROM workspace_installation WHERE setup_completed_at IS NOT NULL LIMIT 1');
+const claimed = claimedWhen('SELECT 1 FROM oa_bootstrap WHERE singleton = 1');
 
 export type { WorkerBindings } from "./bindings";
 

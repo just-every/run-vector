@@ -4,8 +4,10 @@
 native rer verifier. It does not run the contributor test suites. `pnpm verify:ci`
 is the CI application wall: it validates sources, runs installer, Node, Markdown,
 Worker and deployment tests, builds, and runs the emitted Worker and browser
-journeys. GitHub CI additionally runs the actual development setup and hydration
-journey, the slow installer and the literal fresh-clone README journey. `.github/workflows/ci.yml` and `scripts/verify.mjs` are the executable
+journeys. GitHub push CI runs independent shards, including actual development
+setup and hydration. Slow installer and literal fresh-clone README journeys run
+on release tags and nightly in `installer-journeys.yml`. `.github/workflows/ci.yml`,
+`scripts/verification-plan.mjs` and `scripts/verify.mjs` are the executable
 registration, rather than this document being an independent list of gates.
 
 The workspace foundation and removal flows belong to those existing suites.

@@ -19,7 +19,7 @@ To choose your own owner email instead of the placeholder, run `rer setup --owne
 
 ## Open it
 
-`dev` prints a link that starts with `RER_OPEN`. Open it in a browser on the same computer and you are signed in as the owner. The link carries a private key for this copy of Vector, so never share it. Development has no badge, toolbar or captured-mail UI. Legacy `rer dev --login` uses the same automatic entry. `rer preview` serves production output and prints its ready address without a captured-mail sign-in flow.
+`dev` prints a link that starts with `RER_OPEN`. Open it in a browser on the same computer and you are signed in as the owner. The link carries a private key for this copy of Vector, so never share it. Local titles and the app name carry a Dev suffix. Development has no toolbar or captured-mail UI. Legacy `rer dev --login` uses the same automatic entry. `rer preview` serves production output and prints its ready address without a captured-mail sign-in flow.
 
 The first time, Vector opens **Finish setting up Vector**. Check the workspace, timezone and first team that setup prepared, then choose **Open my workspace**. You can change all of them later in Settings.
 

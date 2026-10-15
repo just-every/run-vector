@@ -239,6 +239,7 @@ export function SettingsPage() {
               </div>
             )}
             <InviteOperator
+              delivery={resource.data.invitationDelivery}
               disabled={pending || denied}
               onInvited={() => {
                 resource.reload();

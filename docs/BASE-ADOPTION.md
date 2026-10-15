@@ -31,7 +31,7 @@ Wave B source preparation: see [managed source and recovery](MANAGED-SOURCE.md).
 
 ## Lobby and run site
 
-The public command is package-mode `@runeditrun/rer` 0.2.20, pinned exactly in package.json and pnpm-lock.yaml. Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` supplies the unchanged `src/base` runtime. Operations inspectors now come from the published package; `base-copies.json` records those bytes and the refreshed command/adoption documents. Historical migrations and the other copied application modules retain their recorded pins. The removed CLI and onboarding trees no longer appear as local edition components.
+The public command is package-mode `@runeditrun/rer` 0.2.22, pinned exactly in package.json and pnpm-lock.yaml. Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` supplies the unchanged `src/base` runtime. Operations inspectors now come from the published package; `base-copies.json` records those bytes and the refreshed command/adoption documents. Historical migrations and the other copied application modules retain their recorded pins. The removed CLI and onboarding trees no longer appear as local edition components.
 
 The installed Worker serves Base’s Lobby and setup-state response using Vector’s persisted first-run completion. The deployment name comes from the server-only `WORKSPACE_NAME` setting. The static site uses edition data only, keeps the approved homepage and fonts, and offers Run Vector at `/run`; its docs use the existing Markdown manifest and components. The installer adapter no longer supplies the undeclared `target` setup answer.
 

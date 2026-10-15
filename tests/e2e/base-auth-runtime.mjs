@@ -79,8 +79,9 @@ try {
   await page.getByLabel('Email',{exact:true}).fill('peer@auth-runtime.test');
   const invited=page.waitForResponse(response=>response.url()===origin+'/api/settings/operators/invite');
   await page.getByRole('button',{name:'Send invitation',exact:true}).click();
-  assert.equal((await invited).status(),202);
-  await page.getByText('Invitation submitted for delivery. The operator appears here after accepting it.',{exact:true}).waitFor();
+  const invitation = await invited;
+  assert.equal(invitation.status(),202);
+  assert.equal((await invitation.json()).delivery,'local');
   const peerContext=await browser.newContext();
   const peer=await peerContext.newPage(); peer.on('pageerror',error=>errors.push(error.message));
   await peer.goto(link('peer@auth-runtime.test'));

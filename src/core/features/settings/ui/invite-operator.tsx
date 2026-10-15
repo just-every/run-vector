@@ -18,7 +18,7 @@ function saveDraft(draft: { email: string; displayName: string } | null) {
 
 type StepUp = 'needed' | 'sending' | 'email'
 
-export function InviteOperator({ disabled, onInvited }: { disabled: boolean; onInvited: () => void }) {
+export function InviteOperator({ disabled, delivery, onInvited }: { disabled: boolean; delivery: 'local' | 'email'; onInvited: () => void }) {
   const [email, setEmail] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [pending, setPending] = useState(false)
@@ -34,10 +34,12 @@ export function InviteOperator({ disabled, onInvited }: { disabled: boolean; onI
   async function invite(event: FormEvent) {
     event.preventDefault(); setPending(true); setMessage(''); setFailed(false); setStepUp(null)
     try {
-      await fetchJson('/api/settings/operators/invite', z.object({ status: z.literal('accepted') }), {
+      const result = await fetchJson('/api/settings/operators/invite', z.object({ status: z.literal('accepted'), delivery: z.enum(['local', 'email']) }), {
         method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, displayName }),
       })
-      setMessage('Invitation submitted for delivery. The operator appears here after accepting it.')
+      setMessage(result.delivery === 'local'
+        ? 'Invitation saved locally. No email was sent. Use the teammate steps above to try another operator.'
+        : 'Invitation submitted for delivery. The operator appears here after accepting it.')
       setEmail(''); setDisplayName(''); saveDraft(null); onInvited()
     } catch (error) {
       if (error instanceof ApiError && (error.body as { error?: unknown } | null)?.error === 'step_up_required') {
@@ -58,6 +60,7 @@ export function InviteOperator({ disabled, onInvited }: { disabled: boolean; onI
   }
   return <form onSubmit={invite} aria-label="Invite operator">
     <h3>Invite an operator</h3>
+    {delivery === 'local' && <p>No email is sent from this local copy. To try a teammate, open the owner’s <code>RER_OPEN</code> link first, then run <code>rer dev --as teammate</code> and open its link in the same browser. This switches to a separate local operator; it does not accept an invitation for the email below. Deploy Vector to invite someone by email.</p>}
     <label htmlFor="invite-name">Name</label>
     <input id="invite-name" required maxLength={120} value={displayName} onChange={event => setDisplayName(event.target.value)} />
     <label htmlFor="invite-email">Email</label>

@@ -1,0 +1,65 @@
+name: Vector installer journeys
+on:
+  push:
+    tags: ['v*']
+  schedule:
+    - cron: '23 16 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: vector-installer-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  journeys:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        journey: [installer, readme]
+    env:
+      TZ: UTC
+      PLAYWRIGHT_SKIP_BROWSER_GC: '1'
+      VECTOR_INSTALLER_EVIDENCE: evidence/installer/slow
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.12.4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.20.0
+          cache: pnpm
+      - name: Reserve disk for native installations
+        run: |
+          free_kib() { df -Pk "$GITHUB_WORKSPACE" | awk 'END { print $4 }'; }
+          for unused_tools in /usr/local/lib/android /usr/share/dotnet /opt/ghc /usr/local/.ghcup; do
+            if [ "$(free_kib)" -ge "$((20 * 1024 * 1024))" ]; then break; fi
+            sudo rm -rf -- "$unused_tools"
+          done
+          df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: vector-chromium-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm sources:check
+      - name: Native installer with startup exceeding two minutes
+        if: matrix.journey == 'installer'
+        run: pnpm test:installer:slow
+      - name: README literal clone and independent frozen installation
+        if: matrix.journey == 'readme'
+        run: pnpm test:readme
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: vector-journey-${{ matrix.journey }}
+          path: |
+            evidence/installer/slow/proof.json
+            evidence/installer/slow/*.png
+            evidence/readme/proof.json
+            evidence/readme/*.png
+          if-no-files-found: ignore
