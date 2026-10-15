@@ -345,18 +345,18 @@
       "source": {
         "kind": "local",
         "paths": [
-          "vendor/demo/demo"
+          "vendor/base/demo"
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
+          "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
           "paths": [
             "modules/demo"
           ]
         },
         "mappings": [
           {
-            "path": "vendor/demo/demo",
+            "path": "vendor/base/demo",
             "originPath": "modules/demo"
           }
         ]

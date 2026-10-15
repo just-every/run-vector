@@ -9,6 +9,7 @@ Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b60
 | src/base | unchanged Lobby, setup-state and run-site runtime from Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` |
 | vendor/base/operator-auth | native operator authentication and dev v2, from Base rer 0.2.20 (`38aa7ef`); the dev label import is an explicit product adaptation to the package export |
 | migrations/core/0048_owner_signin.sql | the unchanged owner sign-in grant table, from Base `e17843562355e1b6e5068289c8e037951fbc8d3d` (rer 0.2.19) |
+| vendor/base/demo | demo guard, real public reads, mocked sends and Demo/Dev labels from Base rer 0.2.20 (`38aa7ef`) |
 | vendor/base/mail | transactional mail and retained local mail storage; no captured-mail viewer |
 | @runeditrun/rer 0.2.20 | published CLI, owner-account deploy, portability and operations |
 | scripts/edition-authoring | one authoring implementation |
@@ -37,3 +38,5 @@ The installed Worker serves Base’s Lobby and setup-state response using Vector
 `rer build --site` writes `dist/site`; `rer deploy --site --dry-run --json` describes the separate `vector-projects-production--site` Worker and its apex and www domains without a provider request. Deployment and the run-site workflow remain separate owner-controlled steps.
 
 The seed now maintains RUN-LOCALLY.md and SEED-COMMAND-CONTRACT.md as package-mode guidance rather than verbatim Base copies. The deploy-kit and operations copies are removed; the published package supplies those runtimes. Product validation and archive inventory remain seed adapters. Inventory uses the published portability policy’s shared ledger exclusions so both migration ledger formats remain recoverable.
+
+Demo mode uses the verbatim Base demo module beside operator-auth. The former `vendor/demo/demo` blocking guard and captured-mail bar are removed. Demo mail returns accepted without capture; webhook RPC delivery uses `demoEffect` with a 204 provider response, including when no production egress binding is configured. Ordinary installations retain their real configured transport and its egress checks. The existing sample-data hook is unchanged.

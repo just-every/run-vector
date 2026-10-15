@@ -6,7 +6,7 @@ import { openSecret } from './secrets';
 import { NativeWebhookRepository } from './outbound-repository';
 import { restoredEffectsHeld } from '../data/restore-authority';
 import { destinationSigningProblems } from './destination-signing';
-export const egressConfigured=(env:WorkerBindings)=>env.INTEGRATION_EGRESS_POLICY==='public-dns-pinned-tls-v1'&&typeof env.INTEGRATION_EGRESS?.send==='function';
+export const egressConfigured=(env:WorkerBindings)=>env.RER_DEMO==='1'||env.INTEGRATION_EGRESS_POLICY==='public-dns-pinned-tls-v1'&&typeof env.INTEGRATION_EGRESS?.send==='function';
 const keyBytes=(value:string)=>new Uint8Array(value.match(/../g)!.map(part=>parseInt(part,16)));
 export function outboundService(env:WorkerBindings,workspace:string,now:()=>number=Date.now,skipDestinations:readonly string[]=[]){
  if(!egressConfigured(env))throw new IntegrationError(503,'outbound_unconfigured','Provision an enforcing public DNS, pinned TLS RPC binding before dispatch.');
@@ -22,7 +22,10 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
   if(wire.url!==current.url||(await env.DB.prepare('SELECT 1 FROM vector_webhook_restore_holds WHERE namespace=? AND id=?').bind(workspace,eventId).first()))throw new IntegrationError(503,'outbound_delivery_held');
   await verifyWebhook({body:wire.body,headers:wire.headers,key:current.key,tenant:workspace,destinationId:destination,now:now()});
   if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,eventId).first())throw new IntegrationError(410,'outbound_issue_deleted');
-  return env.INTEGRATION_EGRESS!.send(wire);
+  const send = () => env.INTEGRATION_EGRESS!.send(wire);
+  if (env.RER_DEMO !== '1') return send();
+  const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs');
+  return demoEffect(send, () => ({status:204,headers:{},body:''}));
  }};
  return new DeliveryService({repository,protocols:[protocol],transport,now});
 }

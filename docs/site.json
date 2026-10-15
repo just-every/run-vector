@@ -381,7 +381,7 @@
       "reason": "Vendored Base library documentation, kept with its source"
     },
     {
-      "source": "vendor/demo/demo/README.md",
+      "source": "vendor/base/demo/README.md",
       "reason": "Vendored Base demo guard documentation, kept with its source"
     },
     {

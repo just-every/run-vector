@@ -1,3 +1,4 @@
+import { egressConfigured } from './outbound';
 import type { WorkerBindings } from '../../app/bindings';
 import { createUlid } from '../../shared/ids';
 import { validateDestination } from '../../../../vendor/base/integrations';
@@ -35,7 +36,7 @@ export async function registerDestination(env:WorkerBindings,owner:IntegrationOw
   {sql:"SELECT CASE WHEN (SELECT count(*) FROM vector_webhook_destinations WHERE workspace_id=? AND revoked_at IS NULL)<50 THEN 1 ELSE json('destination limit') END",params:[owner.workspace]},
   {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,created_at,updated_at) VALUES(?,?,?,?,?,?)',params:[id,owner.workspace,input.name,url.href,at,at]},
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
- ]);return {id,secret,dispatchConfigured:Boolean(env.INTEGRATION_EGRESS&&env.INTEGRATION_EGRESS_POLICY==='public-dns-pinned-tls-v1')};
+ ]);return {id,secret,dispatchConfigured:egressConfigured(env)};
 }
 export async function registerGithub(env:WorkerBindings,owner:IntegrationOwner,input:z.infer<typeof githubInput>){
  const repository=input.repository.toLowerCase();if(repository.split('/').some(part=>part==='.'||part==='..'))throw new IntegrationError(400,'invalid_repository');

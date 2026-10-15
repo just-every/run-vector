@@ -408,6 +408,35 @@
       }
     },
     {
+      "path": "vendor/base/demo",
+      "originPath": "modules/demo",
+      "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
+      "files": {
+        "vendor/base/demo/effects.mjs": "2e523da1d9fcffc4b6e3e0e4901b6bd45e6f08adfb380b397e775acb0358c395",
+        "vendor/base/demo/index.d.mts": "71caa39f5001ab8bd2891ae5bdb9bf1ab4910c121fb038d83ae549adaf8fcf10",
+        "vendor/base/demo/index.mjs": "a90f58afaf7d7d54121f1e49746a51631c1b12c603e44edba81b1570eaa68d96",
+        "vendor/base/demo/label.d.mts": "96a4692d568cfb6fd5593c9d7d4296bced338e0f54c2d17f80ae1da105287285",
+        "vendor/base/demo/label.mjs": "05c208a184941cf4c8be04502e2918c0ce9372159978022f02fb35c219f74d4f",
+        "vendor/base/demo/README.md": "b00a8aa86d6a0df3c7ce904c3fa3bbb18b0b25a5fac722b4d7beafad183ae74f",
+        "vendor/base/demo/responses.mjs": "3194f1a6aaec1f84477c15cf22fd32b650e317a119cfca26f0529c7ec5cd0cc5",
+        "vendor/base/demo/sockets.mjs": "af88b298b721b3b2a9fe2425b9a8b7c95d842f28b56b3c48cf4366226ec90389",
+        "vendor/base/demo/vite.d.mts": "f43b152b4a993feaf96afdbc276922bfa20d64725ea0150a12ec6ec805a7c7b3",
+        "vendor/base/demo/vite.mjs": "e38556e50c954814ee8e12278babd627d5cdd051a7ea2c242a61d6c5d84d12f8"
+      },
+      "modes": {
+        "vendor/base/demo/effects.mjs": "100644",
+        "vendor/base/demo/index.d.mts": "100644",
+        "vendor/base/demo/index.mjs": "100644",
+        "vendor/base/demo/label.d.mts": "100644",
+        "vendor/base/demo/label.mjs": "100644",
+        "vendor/base/demo/README.md": "100644",
+        "vendor/base/demo/responses.mjs": "100644",
+        "vendor/base/demo/sockets.mjs": "100644",
+        "vendor/base/demo/vite.d.mts": "100644",
+        "vendor/base/demo/vite.mjs": "100644"
+      }
+    },
+    {
       "path": "vendor/base/dependencies",
       "originPath": "modules/dependencies",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
@@ -2309,17 +2338,6 @@
       }
     },
     {
-      "path": "vendor/base/operator-auth/README.md",
-      "originPath": "modules/operator-auth/README.md",
-      "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
-      "files": {
-        "vendor/base/operator-auth/README.md": "999850a2a54147326ab738eac1446dcb8b2321ba0046d767c1536172cefb611e"
-      },
-      "modes": {
-        "vendor/base/operator-auth/README.md": "100644"
-      }
-    },
-    {
       "path": "vendor/base/operator-auth/accounts",
       "originPath": "modules/operator-auth/accounts",
       "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
@@ -2704,6 +2722,17 @@
       }
     },
     {
+      "path": "vendor/base/operator-auth/README.md",
+      "originPath": "modules/operator-auth/README.md",
+      "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
+      "files": {
+        "vendor/base/operator-auth/README.md": "999850a2a54147326ab738eac1446dcb8b2321ba0046d767c1536172cefb611e"
+      },
+      "modes": {
+        "vendor/base/operator-auth/README.md": "100644"
+      }
+    },
+    {
       "path": "vendor/base/operator-auth/rejected-response.mjs",
       "originPath": "modules/operator-auth/rejected-response.mjs",
       "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
@@ -2795,61 +2824,6 @@
         "vendor/base/schema/SEED.schema.json": "100644",
         "vendor/base/schema/setup-validation.mjs": "100644",
         "vendor/base/schema/validate.mjs": "100644"
-      }
-    },
-    {
-      "path": "vendor/demo/demo/index.d.mts",
-      "originPath": "modules/demo/index.d.mts",
-      "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
-      "files": {
-        "vendor/demo/demo/index.d.mts": "2fe3e8715a0b41cc931dbc31a0a73a01a8ddfd8363334f32ebc8978854016e22"
-      },
-      "modes": {
-        "vendor/demo/demo/index.d.mts": "100644"
-      }
-    },
-    {
-      "path": "vendor/demo/demo/README.md",
-      "originPath": "modules/demo/README.md",
-      "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
-      "files": {
-        "vendor/demo/demo/README.md": "2c79b0a5a4c1998f7bdd8638a442159c4eb3cb0eee07032d67d521347751b9f7"
-      },
-      "modes": {
-        "vendor/demo/demo/README.md": "100644"
-      }
-    },
-    {
-      "path": "vendor/demo/demo/sockets.mjs",
-      "originPath": "modules/demo/sockets.mjs",
-      "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
-      "files": {
-        "vendor/demo/demo/sockets.mjs": "be9978b79f3aeef305c6e6fa36ce041b7bda559941c6c377bc4cc2b19506177b"
-      },
-      "modes": {
-        "vendor/demo/demo/sockets.mjs": "100644"
-      }
-    },
-    {
-      "path": "vendor/demo/demo/vite.d.mts",
-      "originPath": "modules/demo/vite.d.mts",
-      "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
-      "files": {
-        "vendor/demo/demo/vite.d.mts": "f43b152b4a993feaf96afdbc276922bfa20d64725ea0150a12ec6ec805a7c7b3"
-      },
-      "modes": {
-        "vendor/demo/demo/vite.d.mts": "100644"
-      }
-    },
-    {
-      "path": "vendor/demo/demo/vite.mjs",
-      "originPath": "modules/demo/vite.mjs",
-      "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
-      "files": {
-        "vendor/demo/demo/vite.mjs": "e38556e50c954814ee8e12278babd627d5cdd051a7ea2c242a61d6c5d84d12f8"
-      },
-      "modes": {
-        "vendor/demo/demo/vite.mjs": "100644"
       }
     }
   ]

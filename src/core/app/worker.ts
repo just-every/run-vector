@@ -1,4 +1,4 @@
-import { withDemo } from '../../../vendor/demo/demo/index.mjs';
+import { withDemo } from '../../../vendor/base/demo/index.mjs';
 import { seedDemo } from '../../demo';
 import { isDependencyPath } from '../features/auth/dependencies.server';
 import { scheduled } from './scheduled';

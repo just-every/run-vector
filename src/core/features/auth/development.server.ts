@@ -14,9 +14,15 @@ export function localMailEnabled(env: WorkerBindings) {
 export function developmentSender(env: WorkerBindings) {
   if (env.RER_DEMO !== '1' && !localMailEnabled(env)) throw new Error('Development mail is disabled.')
   // Product SQL triggers guard capture and erasure atomically around Base storage.
-  return createMailSender({ provider: 'development', mode: 'development' }, {
+  const sender = createMailSender({ provider: 'development', mode: 'development' }, {
     outbox: createD1DevelopmentOutbox({ db: env.DB }),
   })
+  return { async send(message: unknown) {
+    if (env.RER_DEMO !== '1') return sender.send(message)
+    const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs')
+    return demoEffect(() => sender.send(message),
+      () => ({ provider: 'development', status: 'accepted', providerMessageId: null }))
+  } }
 }
 // Preview keeps the local key exchange; captured-mail pages are retired.
 export async function developmentKeyResponse(env: WorkerBindings, request: Request) {
