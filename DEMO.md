@@ -1,6 +1,6 @@
 # Vector demos
 
-Use Node 22.20.0 and the pinned `@runeditrun/rer` 0.2.12. Install and set up this checkout once, then start a throwaway demo:
+Use Node 22.20.0 and the pinned `@runeditrun/rer` 0.2.14. Install and set up this checkout once, then start a throwaway demo:
 
 ```sh
 rer install
@@ -13,7 +13,7 @@ Stop an ordinary `rer dev` before starting a demo. Open the private `RER_OPEN` l
 
 Demo data lives under `.rer/demo/<start-time>/`. Vector passes `RER_STATE_DIR` to both migrations and Vite, and its installer environment filter passes the demo switches. Stopping deletes that folder; a later demo starts fresh. Normal `.wrangler/state` is unchanged by the adopted demo path. The Demo bar lists captured mail and blocked sends. Base's guard is the first import of the actual Worker entry, `src/core/app/worker.ts`; Vite installs the socket guard first. Without `RER_DEMO=1`, the wrapper returns the original Worker.
 
-The guard under `vendor/demo/demo` comes from Base `rer-v0.2.12`, commit `c1cd7bfa55388886f9607cfe03e758aba09e98e4`. Its only adaptation is its helper imports: HTML escaping reuses Vector's unchanged auth copy at `479094f0b26a639a1868fa521004581ec8dbcb63`; CSP and loopback utilities are imported in place from the exact `@runeditrun/rer` 0.2.12 package. The latter utilities do not exist at the auth pin, whose older loopback predicate also lacks `*.localhost`. Their package bytes match the demo source commit, preserving the guard's behavior without a second native auth copy. These internal package paths are bound to that exact version. `edition.json` and `sources.lock.json` retain the demo comparison origin and import adaptation; `base-copies.json` records its five unchanged files. Vector's authentication implementation remains at its existing single pin.
+The guard under `vendor/demo/demo` comes from Base `rer-v0.2.12`, commit `c1cd7bfa55388886f9607cfe03e758aba09e98e4`. Its only adaptation is its helper imports: HTML escaping reuses Vector's unchanged auth copy at `479094f0b26a639a1868fa521004581ec8dbcb63`; CSP and loopback utilities are imported in place from the exact installed `@runeditrun/rer` 0.2.14 package. The latter utilities do not exist at the auth pin, whose older loopback predicate also lacks `*.localhost`. The vendored guard remains at its recorded 0.2.12 source; its internal helper imports now resolve against the 0.2.14 package pin, without a second native auth copy. `edition.json` and `sources.lock.json` retain the demo comparison origin and import adaptation; `base-copies.json` records its five unchanged files. Vector's authentication implementation remains at its existing single pin.
 
 ## Mail and integrations
 
@@ -38,6 +38,6 @@ rer deploy --demo --remove --yes --environment production
 
 For manual test-host deploy/removal, set the declaration's domain to `test.run-vector.com` in a disposable checkout and use `--environment demo-test`. The workflow does this automatically. Base removal checks ownership and removes only the selected demo's recorded Custom Domain, Container application and front Worker.
 
-**Hosted build blocker at 0.2.12:** `rer deploy --demo --dry-run` fails with `Container import boundary failed`. Base applies its Node import restrictions even to the selected workerd engine, refusing Vector's existing Cloudflare env imports and `VectorRestoreCoordinator`. No hosted demo image or live host is proven. Do not bypass the checker or remove the restore coordinator. The Base fix and hosted deployment/readback are required before adding a homepage demo link.
+**Workerd dry build at 0.2.14:** `rer deploy --demo --dry-run` now succeeds and writes the workerd image folder and front Worker plan under `.rer/demo-host/`. This resolves the 0.2.12 `Container import boundary failed` blocker for Vector's existing Cloudflare env imports and `VectorRestoreCoordinator`. The dry run makes no provider request and deploys nothing; a built Docker image, hosted runtime and live host are not proven. Production deployment and hosted readback remain pending before adding a homepage demo link.
 
 Local proof covers signed-in data and bar at 1440/390, issue creation, stop cleanup, a second fresh instance, and exact normal-state hashes. A built-Worker Miniflare probe separately covers HTTPS signed claims, replay, secure cookies, assignment/mention capture, outbound webhook refusal and inbound PR links; it is not a hosted container proof. The first pre-fix launch exposed the installer's hardcoded migration path and dropped demo environment, and did touch normal state before failing closed. Those adapters were corrected; both subsequent demo starts left the stable stopped normal-state baseline byte-for-byte unchanged. No normal state was reset or restored to obtain that result.
