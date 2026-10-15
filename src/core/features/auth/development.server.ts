@@ -1,7 +1,7 @@
 import type { WorkerBindings } from '../../app/bindings'
 // @ts-expect-error Base mail is native ESM.
 import { createMailSender } from '../../../../vendor/base/mail/index.mjs'
-import { createD1DevelopmentOutbox } from '../../../../vendor/base/mail/src/development/index.mjs'
+import { createD1DevelopmentOutbox, DevelopmentOutboxError, type DevelopmentMessage } from '../../../../vendor/base/mail/src/development/index.mjs'
 import { devGate, devNotFound } from '../../../../vendor/base/operator-auth/index.mjs'
 
 export function localMailEnabled(env: WorkerBindings) {
@@ -12,16 +12,18 @@ export function localMailEnabled(env: WorkerBindings) {
   return true
 }
 export function developmentSender(env: WorkerBindings) {
-  if (env.RER_DEMO !== '1' && !localMailEnabled(env)) throw new Error('Development mail is disabled.')
-  // Product SQL triggers guard capture and erasure atomically around Base storage.
-  const sender = createMailSender({ provider: 'development', mode: 'development' }, {
-    outbox: createD1DevelopmentOutbox({ db: env.DB }),
-  })
-  return { async send(message: unknown) {
-    if (env.RER_DEMO !== '1') return sender.send(message)
-    const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs')
-    return demoEffect(() => sender.send(message),
-      () => ({ provider: 'development', status: 'accepted', providerMessageId: null }))
+  const demo = env.RER_DEMO === '1'
+  if (!demo && !localMailEnabled(env)) throw new Error('Development mail is disabled.')
+  // Base validates development mail and suppresses it; demo mail ends there.
+  const sender = createMailSender({ provider: 'development', mode: 'development' })
+  if (demo) return sender
+  // Loopback installs keep the product's D1 capture beside Base's suppression;
+  // product SQL triggers guard capture and erasure atomically around it.
+  const outbox = createD1DevelopmentOutbox({ db: env.DB })
+  return { async send(message: DevelopmentMessage) {
+    const result = await sender.send(message)
+    try { await outbox.put(message) } catch { throw new DevelopmentOutboxError() }
+    return result
   } }
 }
 // Preview keeps the local key exchange; captured-mail pages are retired.

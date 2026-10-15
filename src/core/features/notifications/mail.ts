@@ -226,9 +226,7 @@ export async function drainNotificationMail(
     } catch (error) {
       // Validation failures are definitely local. Development persistence errors
       // and unknown exceptions may have accepted a submission: never replay.
-      const validation =
-        error instanceof MailValidationError &&
-        (error as { code?: string }).code !== "development_outbox_failed";
+      const validation = error instanceof MailValidationError;
       await settle(
         env,
         delivery,

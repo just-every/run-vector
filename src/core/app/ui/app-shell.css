@@ -214,14 +214,32 @@
   }
 }
 
-.app-settings-mobile > span {
+.app-settings-mobile .app-mobile-brand {
+  display: inline-flex;
+  align-items: center;
   margin-right: auto;
   min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--app-ink);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 620;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
-.app-settings-mobile a,
+.app-mobile-brand .vector-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.app-mobile-brand .vector-mark svg {
+  width: 0.811em;
+  height: 0.73em;
+  flex: none;
+}
+.app-settings-mobile a:not(.app-mobile-brand),
 .app-settings-mobile button,
 .app-sidebar-foot button {
   min-height: 36px;
@@ -232,7 +250,7 @@
   background: var(--app-field);
   text-decoration: none;
 }
-.app-settings-mobile a[aria-current="page"] {
+.app-settings-mobile a:not(.app-mobile-brand)[aria-current="page"] {
   border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
   background: var(--app-field);
 }

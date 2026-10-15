@@ -46,7 +46,7 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Two ste
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-or `npm install --global @runeditrun/rer@0.2.22`. This checkout pins rer 0.2.22 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
+or `npm install --global @runeditrun/rer@0.2.24`. This checkout pins rer 0.2.24 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
 
 **2. Get Vector and start it:**
 

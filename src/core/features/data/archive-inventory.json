@@ -1347,5 +1347,42 @@
     "identifier_prefix",
     "first_sequence",
     "last_sequence"
+  ],
+  "ik_d1_preparation_steps": [
+    "id",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "operation_key",
+    "reversal_policy",
+    "codec_id",
+    "source_digest",
+    "total",
+    "records",
+    "stages",
+    "phase",
+    "hash_json",
+    "fingerprint",
+    "verified_revision",
+    "revision"
+  ],
+  "ik_d1_stream_sources": [
+    "stream_id",
+    "destination",
+    "source_digest"
+  ],
+  "ik_d1_erasure_progress": [
+    "id",
+    "destination",
+    "request_hash",
+    "generation",
+    "phase",
+    "index_rows",
+    "value_rows",
+    "revision",
+    "records_erased",
+    "field_matches_json",
+    "created_at"
   ]
 }

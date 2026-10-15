@@ -33,7 +33,10 @@ export async function seedDemo(env: WorkerBindings, { ownerEmail, now }: { owner
     typeof value === 'string' ? ids.get(value) ?? value : value))
   data.sessions = []
   // The owner already exists with their own name and email; retain that identity.
+  // Teammates share the owner's workplace address.
+  const domain = ownerEmail.slice(ownerEmail.lastIndexOf('@') + 1).toLowerCase()
   data.operators = data.operators.filter(operator => operator.id !== owner.id)
+    .map(operator => ({ ...operator, email: operator.email.replace(/@vector\.test$/, '@' + domain) }))
   await insertSampleData(env.DB, data)
   await env.DB.prepare(`UPDATE workspace_installation SET setup_completed_at=COALESCE(setup_completed_at,?),updated_at=?
     WHERE workspace_id=? AND setup_operator_id=?`).bind(now.toISOString(), now.toISOString(), owner.workspace_id, owner.id).run()

@@ -227,7 +227,9 @@ function AppShellContent({ children }: AppShellProps) {
       </aside>
       <div className="app-stage">
         <div className="app-settings-mobile">
-          <span title={operator.name}>{operator.name}</span>
+          <Link className="app-mobile-brand" to="/app" title={operator.name}>
+            <VectorMark label={productConfig.productName} />
+          </Link>
           <Link to="/app/search">Search</Link>
           <Link
             to="/app/settings"

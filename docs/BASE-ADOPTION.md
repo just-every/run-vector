@@ -4,19 +4,17 @@ Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b60
 
 | Local selection | Source or role |
 | --- | --- |
-| @runeditrun/rer 0.2.23 | exact package pin for the public `rer` command and shared lifecycle runtime |
+| @runeditrun/rer 0.2.24 | exact package pin for the public `rer` command and shared lifecycle runtime |
 | scripts/installer | Vector's existing installer adapter using package exports |
-| src/base | unchanged Lobby, setup-state and run-site runtime from Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` |
-| vendor/base/operator-auth | native operator authentication, schema and dev v2, byte-exact from the source-lock Base revision `38aa7ef` (rer 0.2.20) |
-| migrations/core/0048_owner_signin.sql | the unchanged owner sign-in grant table, from Base `e17843562355e1b6e5068289c8e037951fbc8d3d` (rer 0.2.19) |
-| vendor/base/demo | demo guard, real public reads, mocked sends and Demo/Dev labels from Base rer 0.2.20 (`38aa7ef`) |
-| vendor/base/mail | RER adapter, validation and transport from Base `b4b372b` (rer 0.2.23); other mail selections retain their recorded revisions |
-| @runeditrun/rer 0.2.23 | published CLI, owner-account deploy, portability and operations |
+| src/base | unchanged Lobby, setup-state and run-site runtime from Base rer 0.2.24 (`1ee378e`) |
+| vendor/base/operator-auth, owner-claim, demo, mail, dependencies, editor, egress-service, integrations, import-kit, d1-transport | every recorded module copy, refreshed together from Base rer 0.2.24 (`1ee378e`) |
+| migrations/core/0050_import_steps.sql | import-kit's resumable preparation-step and erasure-progress tables, verbatim from Base rer 0.2.24 schema constants |
+| @runeditrun/rer 0.2.24 | published CLI, owner-account deploy, portability and operations |
 | scripts/edition-authoring | one authoring implementation |
 | vendor/base/schema | release/seed/setup validation |
 | migrations/core/0022_portability.sql | native portability schema |
 
-`base-copies.json` and edition origins describe the selections. Run `sources:verify-base`, `sources:check`, and `verify-base --base PATH` when refreshing them. Historical SQL 0001–0021 is unchanged. `src/core/platform/mail.ts` selects the native Base sender and passes `Retry-After` seconds to Vector’s queue. Base owns header validation, request serialization, Worker-compatible `redirect: manual` and refusal of relay redirects. The complete operator-auth selection, including its dev layer, retains the source-lock revision `38aa7ef`; Vector’s branded form uses Base’s `normalizeEmail` for complete `login_hint` values and never auto-submits. Product adapters own bindings, equal-operator authority, route selection, native mutations and archive policy. Three import-kit D1 files remove unused type imports for Vector’s compiler; those adaptations remain in the edition origin mappings and are excluded from byte-copy claims. The registry schema is also an explicitly mapped product adaptation. Mail’s `src/inbound/headers.mjs` is a security adaptation: header parsing removes overlapping whitespace repetition, and message IDs validate intervening text without deletion-based sanitization, preserving parsing behavior. Its edition origin mapping remains; split mail copy records retain the original revision, digests and modes for every other mail file and exclude only this adaptation.
+`base-copies.json` and edition origins describe the selections. Run `sources:verify-base`, `sources:check`, and `verify-base --base PATH` when refreshing them. Historical SQL 0001–0021 is unchanged. `src/core/platform/mail.ts` selects the native Base sender and passes `Retry-After` seconds to Vector’s queue. Base owns header validation, request serialization, Worker-compatible `redirect: manual` and refusal of relay redirects. The sign-in selection is refreshed to `b4b372b`; Vector’s branded form uses Base’s `normalizeEmail` for complete `login_hint` values and never auto-submits. Product adapters own bindings, equal-operator authority, route selection, native mutations and archive policy. The registry schema is also an explicitly mapped product adaptation. Mail’s `src/inbound/headers.mjs` is a security adaptation: header parsing removes overlapping whitespace repetition, and message IDs validate intervening text without deletion-based sanitization, preserving parsing behavior. It is the only vendored file outside `base-copies.json`; every other mail file is recorded at the refreshed revision.
 
 Public lifecycle commands dispatch through `rer` and the existing installer adapter. Root `rer-setup.json` is the single field/secret model. Node 22.20.0 and pnpm 10.12.4 are pinned. Setup preserves private settings and accepted data; development exposes health-gated readiness and automatic owner entry through `RER_OPEN`, including legacy `--login`. Local titles and the app name carry a Dev suffix. It has no toolbar or captured-mail UI; preview serves production output without captured-mail sign-in. Production requires declared outbound email or an approved Auth SSO setup dependency. Reset requires confirmation and removes only inventoried local state. See README.md and docs/LOCAL-RECOVERY.md before moving ambiguous old state.
 
@@ -31,7 +29,7 @@ Wave B source preparation: see [managed source and recovery](MANAGED-SOURCE.md).
 
 ## Lobby and run site
 
-The public command is package-mode `@runeditrun/rer` 0.2.23, pinned exactly in package.json and pnpm-lock.yaml. Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` supplies the unchanged `src/base` runtime. Operations inspectors now come from the published package; `base-copies.json` records those bytes and the refreshed command/adoption documents. Historical migrations and the other copied application modules retain their recorded pins. The removed CLI and onboarding trees no longer appear as local edition components.
+The public command is package-mode `@runeditrun/rer` 0.2.24, pinned exactly in package.json and pnpm-lock.yaml. Base rer 0.2.24 (`1ee378e`) supplies the unchanged `src/base` runtime. Operations inspectors now come from the published package; `base-copies.json` records those bytes and the refreshed command/adoption documents. Applied migrations are never rewritten by a refresh; schema Base adds arrives as a new numbered migration. The removed CLI and onboarding trees no longer appear as local edition components.
 
 The installed Worker serves Base’s Lobby and setup-state response using Vector’s persisted first-run completion. The deployment name comes from the server-only `WORKSPACE_NAME` setting. The static site uses edition data only, keeps the approved homepage and fonts, and offers Run Vector at `/run`; its docs use the existing Markdown manifest and components. The installer adapter no longer supplies the undeclared `target` setup answer.
 
