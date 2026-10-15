@@ -448,7 +448,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "df7e4e909f0fd05e70f02736cf21311e8f4a605b49de6f82ff869e508bfad15e",
+      "sha256": "5559e9e15b870431cb451a602865e4a6e0ea4e1fe9e77c452c0520deab6441b4",
       "executable": false
     },
     "CLAUDE.md": {
@@ -2028,7 +2028,7 @@
       "executable": false
     },
     "src/core/features/data/import/wire.ts": {
-      "sha256": "1d1019b50ecb4d2e399404ab7c89a227567c2de6fc8336780b52baebf0547c4f",
+      "sha256": "26b4760a27fdda1c2617b55318c9c47f0880a00fe2651e4b37f315d85a73bcf7",
       "executable": false
     },
     "src/core/features/data/restore-authority.ts": {
