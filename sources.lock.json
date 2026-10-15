@@ -3255,7 +3255,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "d1d583a081d1033962489215627d170434e3eb40ce3b70884a6fa55f153a3ce4",
+      "sha256": "ce786058a453cb0678f391d410d734eee0fc4d1f8b80739e29fd8b0fc08e8134",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {

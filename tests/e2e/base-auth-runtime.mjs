@@ -56,14 +56,14 @@ try {
   const page=await context.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
   await page.goto(origin+'/signin');
-  await page.getByLabel('Email',{exact:true}).fill(config.FIRST_OWNER_EMAIL,state);
+  await page.getByLabel('Email',{exact:true}).fill(config.FIRST_OWNER_EMAIL);
   const sent=page.waitForResponse(response=>response.url()===origin+'/auth/request'&&response.request().method()==='POST');
   await page.getByRole('button',{name:'Send sign-in link',exact:true}).click();
   assert.equal((await sent).status(),202);
   // The email-link path stays proven: the test observes delivery at the mail edge.
-  assert.equal((await fetch(origin+'/__dev/outbox')).status,404,'the outbox answers only a request that holds the key');
+  assert.equal((await fetch(origin+'/__dev/outbox')).status,404,'the captured-mail viewer is retired');
   assert.equal((await fetch(origin+'/__dev/outbox',{headers:keyHeader('not-the-key-'+'x'.repeat(43))})).status,404);
-  const ownerLink=await readDevelopmentLink(origin,(path,method,body,cookie,headers)=>fetch(origin+path,{method,headers}),config.FIRST_OWNER_EMAIL);
+  const ownerLink=await readDevelopmentLink(origin,(path,method,body,cookie,headers)=>fetch(origin+path,{method,headers}),config.FIRST_OWNER_EMAIL,state);
   assert.equal(new URL(ownerLink).pathname,'/auth/confirm');
   await page.goto(ownerLink);
   assert.equal(sql('SELECT count(*) n FROM oa_sessions')[0].n,0);
