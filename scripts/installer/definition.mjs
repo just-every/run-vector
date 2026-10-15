@@ -6,7 +6,7 @@ export const settings = { file: '.dev.vars', originKey:'APP_ORIGIN', keepExistin
 }) };
 export const persist = '.wrangler/state';
 export const config = 'wrangler.jsonc';
-export const migrate = ['pnpm',['exec','wrangler','d1','migrations','apply','vector-local','--local','--persist-to',persist,'--config',config]];
+export const migrate = ({ demo } = {}) => ['pnpm',['exec','wrangler','d1','migrations','apply','vector-local','--local','--persist-to',demo?.state ?? persist,'--config',config]];
 export const publicNames = ['FIRST_OWNER_EMAIL','FIRST_OWNER_NAME','WORKSPACE_NAME','WORKSPACE_TIMEZONE','DEFAULT_TEAM_NAME','DEFAULT_TEAM_PREFIX','MAIL_FROM'];
 export function configuredInput(env) {
  return Object.fromEntries(['email','displayName','workspace','timezone','team','prefix'].map((key,i)=>[key,env[publicNames[i]]]));

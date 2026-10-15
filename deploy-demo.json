@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "domain": "run-vector.com",
+  "name": "Vector",
+  "settings": {
+    "FIRST_OWNER_EMAIL": "owner@demo.invalid",
+    "FIRST_OWNER_NAME": "Demo owner",
+    "WORKSPACE_NAME": "Vector demo",
+    "WORKSPACE_TIMEZONE": "Australia/Brisbane",
+    "DEFAULT_TEAM_NAME": "Flow",
+    "DEFAULT_TEAM_PREFIX": "FLW",
+    "SEED_SAMPLE_DATA": "false",
+    "MAIL_MODE": "production",
+    "MAIL_PROVIDER": "development",
+    "MAIL_FROM": "Vector demo <demo@demo.invalid>",
+    "NOTIFICATION_EMAIL_ENABLED": "true"
+  }
+}

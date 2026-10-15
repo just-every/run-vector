@@ -1,3 +1,4 @@
+import { demoSockets } from './vendor/demo/demo/vite.mjs'
 import { readFileSync, existsSync } from 'node:fs'
 import { parseEnv } from 'node:util'
 import { defineConfig } from 'vite'
@@ -26,17 +27,18 @@ const local = (name: string, as = name, fallback?: string) => {
 // Setting `deny` replaces Vite's own list, so it repeats those entries: the dev key and installer state stay unreadable.
 const deny = ['.env', '.env.*', '*.{crt,pem}', '**/.git/**', '**/.rer/**', '**/.seed/**', '**/.wrangler/**', '**/.dev.vars*', '**/exports/**', '**/*.rer']
 // Native app modules import these Base libraries, the archive engine, sample data and seed limits.
-const allow = ['src', 'public', 'node_modules', 'vendor/base/editor', 'vendor/base/mail', 'vendor/base/operator-auth', 'vendor/base/dependencies', 'vendor/base/owner-claim', 'vendor/base/import-kit', 'vendor/base/integrations', 'node_modules/@runeditrun/rer/modules/portability', 'sample-data', 'seed.json', 'deploy-site.json']
+const allow = ['src', 'public', 'node_modules', 'vendor/demo', 'vendor/base/editor', 'vendor/base/mail', 'vendor/base/operator-auth', 'vendor/base/dependencies', 'vendor/base/owner-claim', 'vendor/base/import-kit', 'vendor/base/integrations', 'node_modules/@runeditrun/rer/modules/portability', 'sample-data', 'seed.json', 'deploy-site.json']
 
 export default defineConfig(({ command }) => ({
   server: { fs: { strict: true, allow, deny } },
   plugins: [
+    demoSockets(),
     requireLocalOrigin,
     cloudflare({
       configPath: 'wrangler.jsonc',
       inspectorPort: false,
       viteEnvironment: { name: 'ssr' },
-      persistState: { path: '.wrangler/state' },
+      persistState: { path: process.env.RER_STATE_DIR ?? '.wrangler/state' },
       config: (config) =>
         command === 'serve'
           ? {
@@ -44,6 +46,9 @@ export default defineConfig(({ command }) => ({
               vars: {
                 ...config.vars,
                 ...local('RER_DEV_ORIGIN', 'APP_ORIGIN', localOrigin()),
+                ...local('RER_DEMO'),
+                ...local('RER_DEMO_EXPIRES'),
+                ...(process.env.RER_DEMO === '1' ? { SEED_SAMPLE_DATA: 'false' } : {}),
                 ...local('RER_DEV_KEY'),
                 ...local('RER_DEV_IDENTITY'),
               },

@@ -44,7 +44,7 @@ export function notificationMessage(env: WorkerBindings, delivery: Delivery) {
   };
 }
 function senderFor(env: WorkerBindings, dependencies: MailDependencies) {
-  if (env.MAIL_MODE === "local-outbox")
+  if (env.RER_DEMO === "1" || env.MAIL_MODE === "local-outbox")
     return developmentSender(env);
   return createMailSender(
     { provider: "sendgrid", mode: "production", apiKey: env.MAIL_API_KEY },

@@ -338,6 +338,29 @@
           }
         ]
       }
+    },
+    {
+      "id": "runeditrun/demo",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/demo/demo"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "c1cd7bfa55388886f9607cfe03e758aba09e98e4",
+          "paths": [
+            "modules/demo"
+          ]
+        },
+        "mappings": [
+          {
+            "path": "vendor/demo/demo",
+            "originPath": "modules/demo"
+          }
+        ]
+      }
     }
   ]
 }

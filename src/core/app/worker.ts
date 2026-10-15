@@ -1,3 +1,5 @@
+import { withDemo } from '../../../vendor/demo/demo/index.mjs';
+import { seedDemo } from '../../demo';
 import { isDependencyPath } from '../features/auth/dependencies.server';
 import { scheduled } from './scheduled';
 export { VectorRestoreCoordinator } from '../features/data/restore-coordinator';
@@ -87,7 +89,7 @@ export async function handleRequest(
     response.headers.set("Cache-Control", "no-store");
   return response.headers.get("content-type")?.includes("text/html")?editorDocument(response,env):response;
 }
-export default {
+export default withDemo({
   fetch: handleRequest,
   scheduled,
-};
+}, { seed: seedDemo });

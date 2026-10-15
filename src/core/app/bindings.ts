@@ -27,6 +27,8 @@ export type WorkerBindings = Pick<VectorBindings, 'DB' | 'FILES' | 'APP_ORIGIN'>
   /** Local runtimes only: the checkout's key gate and dev identity switch. Deploy refuses both. */
   RER_DEV_KEY?: string
   RER_DEV_IDENTITY?: string
+  RER_DEMO?: string
+  RER_DEMO_EXPIRES?: string
   SEED_SAMPLE_DATA?: string
 }
 

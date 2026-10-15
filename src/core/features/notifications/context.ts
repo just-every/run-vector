@@ -20,6 +20,7 @@ export function notificationEmailAvailable(env: WorkerBindings): boolean {
     origin.hash
   )
     return false;
+  if (env.RER_DEMO === "1") return true;
   if (env.MAIL_MODE === "local-outbox")
     return ["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname) && Boolean(env.SESSION_SECRET && env.SESSION_SECRET.length >= 32);
   return (

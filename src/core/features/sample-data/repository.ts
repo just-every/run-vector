@@ -31,7 +31,7 @@ export async function insertSampleData(
     .values(data.workspace)
     .onConflictDoNothing();
   await db.insert(operators).values(data.operators).onConflictDoNothing();
-  await db.insert(operatorSessions).values(data.sessions).onConflictDoNothing();
+  if (data.sessions.length) await db.insert(operatorSessions).values(data.sessions).onConflictDoNothing();
   await db.insert(teams).values(data.teams).onConflictDoNothing();
   await db
     .insert(workflowStatuses)

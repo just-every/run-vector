@@ -15,14 +15,15 @@ export function signedOwnerClaimConfigured(env: WorkerBindings) {
 export async function ownerClaimResponse(env: WorkerBindings, request: Request) {
   try {
     bootstrapConfig(env);
-    if(env.APP_ORIGIN!==env.RER_OWNER_CLAIM_APP_ORIGIN)throw new OwnerClaimError('invalid_config',503);
+    const claimOrigin = env.RER_DEMO === '1' ? env.APP_ORIGIN : env.RER_OWNER_CLAIM_APP_ORIGIN;
+    if(env.APP_ORIGIN!==claimOrigin)throw new OwnerClaimError('invalid_config',503);
     const local=localMailEnabled(env);
     const result=await createOwnerClaimHandler({
       db:env.DB,authConfig:{origin:env.APP_ORIGIN,local,OWNER_EMAIL:env.FIRST_OWNER_EMAIL!,
         SESSION_SECRET:env.SESSION_SECRET!,SETUP_TOKEN:env.SETUP_TOKEN!},
       clientIp:request=>local?'loopback':request.headers.get('CF-Connecting-IP')??'',
       issuer:env.RER_OWNER_CLAIM_ISSUER!,installationId:env.RER_OWNER_CLAIM_INSTALLATION_ID!,
-      appOrigin:env.RER_OWNER_CLAIM_APP_ORIGIN!,expectedEmail:env.FIRST_OWNER_EMAIL!,
+      appOrigin:claimOrigin!,expectedEmail:env.FIRST_OWNER_EMAIL!,
       publicKeys:JSON.parse(env.RER_OWNER_CLAIM_PUBLIC_KEYS??'null'),
     })(request);
     if(result?.status===303||result?.status===200&&request.method==='POST') {

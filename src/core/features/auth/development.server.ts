@@ -12,7 +12,7 @@ export function localMailEnabled(env: WorkerBindings) {
   return true
 }
 export function developmentSender(env: WorkerBindings) {
-  if (!localMailEnabled(env)) throw new Error('Development mail is disabled.')
+  if (env.RER_DEMO !== '1' && !localMailEnabled(env)) throw new Error('Development mail is disabled.')
   // Product SQL triggers guard capture and erasure atomically around Base storage.
   return createMailSender({ provider: 'development', mode: 'development' }, {
     outbox: createD1DevelopmentOutbox({ db: env.DB }),

@@ -6,7 +6,7 @@ export function commandEnvironment(extra = {}) {
 export function isolatedStore(store) {
  return new Proxy(store, { get(target,key) {
   if (key === 'run' || key === 'spawn') return (label,command,args,options={}) => {
-   const allowed = ['RER_SERVER_JOURNEY','RER_JOB_POLICY','RER_JOB_MEMBERSHIP','RER_ORIGIN_KEY','RER_LOCAL_OPERATION','CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV','RER_DEV_ORIGIN','RER_RUNTIME_PORT','RER_RUNTIME_HOST','RER_DEV_KEY','RER_DEV_IDENTITY'];
+   const allowed = ['RER_SERVER_JOURNEY','RER_JOB_POLICY','RER_JOB_MEMBERSHIP','RER_ORIGIN_KEY','RER_LOCAL_OPERATION','CLOUDFLARE_LOAD_DEV_VARS_FROM_DOT_ENV','RER_DEV_ORIGIN','RER_RUNTIME_PORT','RER_RUNTIME_HOST','RER_DEV_KEY','RER_DEV_IDENTITY','RER_DEMO','RER_DEMO_EXPIRES','RER_STATE_DIR'];
    const extra = Object.fromEntries(allowed.filter(name => options.env?.[name] !== undefined).map(name => [name, options.env[name]]));
    const env = commandEnvironment(extra);
    // A caller that passes its own environment without the operation token (Base's browser installer
