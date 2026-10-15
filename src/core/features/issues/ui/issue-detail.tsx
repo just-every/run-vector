@@ -20,6 +20,7 @@ import { ApiError, useApiResource } from "../../../app/api-client";
 import { optionsSchema, type StreamOptions } from "../../streams/ui/data";
 import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
+import { activityChanges, activityTitle } from "./activity-changes";
 import { issueDetailSchema, type IssueDetailData } from "./data";
 
 type IssueDetailProps = {
@@ -316,11 +317,16 @@ function IssueInspector({
                 <ol className="activity-list">
                   {issue.activity.map((activity) => (
                     <li key={activity.id}>
-                      <strong>{activity.kind.replaceAll(".", " ")}</strong>
+                      <strong>{activityTitle(activity.kind)}</strong>
                       <span>
                         {activity.actor ?? "System"} ·{" "}
                         {relativeTime(activity.at)}
                       </span>
+                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options).map((change) => (
+                        <span className="activity-change" key={change.field}>
+                          {change.from === undefined ? `${change.field} edited` : `${change.field}: ${change.from} → ${change.to}`}
+                        </span>
+                      ))}
                     </li>
                   ))}
                 </ol>

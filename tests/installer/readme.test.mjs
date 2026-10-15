@@ -19,15 +19,19 @@ const markdown=await readFile('README.md','utf8');
 const literal=name=>{const match=markdown.match(new RegExp('<!-- vector-'+name+' -->\\s*```sh\\n([\\s\\S]*?)```'));assert(match,'README literal '+name);return match[1].trim();};
 test('README literal clone, own frozen install, optional setup and dev reach a real outbox-confirmed owner', {timeout:2700000},async()=>{
  const work=await mkdtemp(join(tmpdir(),'vector-readme-')),evidence=resolve('evidence/readme');await mkdir(evidence,{recursive:true});let store,browser,development;const controller=new AbortController();
- const result={status:'running',source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),commands:['README clone','README frozen install/check/setup/dev','setup repeat','confirmed reset'],publicMirrorProof:false};
+ const result={status:'running',source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),commands:['README install rer','README clone','README optional setup','setup repeat','README start','confirmed reset'],publicMirrorProof:false};
  try {
   store=await createState(work,await loadInstallerSeed(process.cwd(),createSeed()));store.setCommandSignal(controller.signal);
-  await store.run('README clone','/bin/sh',['-eu','-c',literal('clone')],{cwd:work,env:commandEnvironment({VECTOR_SOURCE:process.cwd()})});
-  const root=join(work,'vector'),commands=literal('terminal').split('\n'),setupCommand=literal('setup');const port=await freePort();
+  // The README's own two steps: install rer (its npm form, into a private prefix), then clone and start.
+  // The clone names the public repository; the journey clones this checkout in its place.
+  const start=literal('start').split('\n'),install=markdown.match(/`(npm install --global @runeditrun\/rer@[0-9.]+)`/);assert(install,'README npm install of rer');
+  const setupCommand=literal('setup');const port=await freePort();
   const prefix=join(work,'cli');
   const path=join(prefix,'bin')+':'+process.env.PATH;
   const environment=extra=>commandEnvironment({PATH:path,npm_config_prefix:prefix,...extra});
-  await store.run('README installation','/bin/sh',['-eu','-c',commands.slice(0,-1).join('\n')],{cwd:root,env:environment({VECTOR_PORT:String(port),CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
+  await store.run('README install rer','/bin/sh',['-eu','-c',install[1]],{cwd:work,env:environment({CI:'true'})});
+  await store.run('README clone','/bin/sh',['-eu','-c',start[0].replace('https://github.com/just-every/run-vector.git',process.cwd())],{cwd:work,env:commandEnvironment({})});
+  const root=join(work,'vector');
   await store.run('README optional setup','/bin/sh',['-eu','-c',setupCommand],{cwd:root,env:environment({VECTOR_PORT:String(port),CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
   const before=await readFile(join(root,'.dev.vars'));
   await store.run('README setup repeat','/bin/sh',['-eu','-c',setupCommand],{cwd:root,env:environment({VECTOR_PORT:String(port),CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'})});
@@ -36,7 +40,7 @@ test('README literal clone, own frozen install, optional setup and dev reach a r
   result.setupPreserved=true;
   const settings=parseEnv(await readFile(join(root,'.dev.vars'),'utf8'));store.addSecrets([settings.SESSION_SECRET]);
   development=publicDevelopment(store,root,environment({CI:'true',RER_LOCAL_OPERATION:undefined,RER_SERVER_JOURNEY:'1'}),settings.APP_ORIGIN);
-  await development.start('README development','/bin/sh',['-eu','-c',commands.at(-1)]);
+  await development.start('README development','/bin/sh',['-eu','-c','cd .. && '+start.at(-1)]);
   browser=await chromium.launch({headless:true});const page=await browser.newPage();
   result.developmentAssetFailures=[];result.browserErrorTypes=[];
   page.on('pageerror',error=>result.browserErrorTypes.push(error.name));

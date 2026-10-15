@@ -11,6 +11,7 @@ import {
 import { IssueListView } from "./issue-list-view";
 export { IssueListView } from "./issue-list-view";
 import { StoredIssueControls } from "./issue-list-preferences";
+import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import "./issues-browser.css";
 
 export function IssuesBrowser() {
@@ -113,7 +114,14 @@ export function IssueBrowserSurface({
   onReset?: () => void;
 }) {
   const navigate = useNavigate();
-  const shownQuery = issueListLayoutQuery(query, layout);
+  const teams = useApiResource("/api/options", workspaceOptionsSchema).data?.teams;
+  // A board shows one team's workflow. With a single team there is nothing to
+  // choose, so the board reads it directly instead of asking for it.
+  const layoutQuery = issueListLayoutQuery(query, layout);
+  const shownQuery =
+    layout === "board" && layoutQuery.team === "all" && teams?.length === 1
+      ? { ...layoutQuery, team: teams[0]!.id }
+      : layoutQuery;
   useEffect(() => {
     if (
       shownQuery.pageSize !== query.pageSize ||

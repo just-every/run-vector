@@ -266,6 +266,11 @@
 .activity-list span {
   color: var(--app-muted);
 }
+.activity-list .activity-change {
+  flex-basis: 100%;
+  color: var(--app-ink);
+  overflow-wrap: anywhere;
+}
 .direct-issue-page {
   max-width: 68rem;
   margin: 0 auto;

@@ -80,14 +80,6 @@ export function IssueListView({
     } else if (visible)
       setSelection((current) => refreshIssueSelection(current, visible.issues));
   }, [visible, denied]);
-  useEffect(() => {
-    if (
-      layout === "board" &&
-      query.team === "all" &&
-      options?.teams.length === 1
-    )
-      onChange({ team: options.teams[0].id });
-  }, [layout, query.team, options?.teams]);
   return (
     <main
       className="issues-browser"

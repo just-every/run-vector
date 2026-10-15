@@ -24,8 +24,11 @@ export function IssueFieldEditor({
   field: EditableIssueField;
   onRefresh: () => void;
 }) {
+  // `original` is the field's value when editing began: a newer version that
+  // left this field alone (often the operator's own property change) is not a conflict.
   const [snapshot, setSnapshot] = useState<{
     version: number;
+    original: string;
     draft: string;
   } | null>(null);
   const [receipt, setReceipt] = useState<IssueDetailData | null>(null);
@@ -36,7 +39,10 @@ export function IssueFieldEditor({
   const label = fieldLabels[field];
   const name = label.toLowerCase();
   const multiline = field === "expectedOutcome" || field === "customerImpact";
-  const stale = snapshot !== null && current.version > snapshot.version;
+  const stale =
+    snapshot !== null &&
+    current.version > snapshot.version &&
+    String(current[field] ?? "") !== snapshot.original;
   const value = current[field];
   const displayed =
     value === null
@@ -48,10 +54,8 @@ export function IssueFieldEditor({
           : value;
 
   function open() {
-    setSnapshot({
-      version: current.version,
-      draft: String(current[field] ?? ""),
-    });
+    const original = String(current[field] ?? "");
+    setSnapshot({ version: current.version, original, draft: original });
     setConflict(false);
     setError("");
   }
@@ -68,7 +72,11 @@ export function IssueFieldEditor({
           method: "PATCH",
           headers: { "content-type": "application/json" },
           body: JSON.stringify(
-            issueFieldPayload(snapshot.version, field, snapshot.draft),
+            issueFieldPayload(
+              Math.max(snapshot.version, current.version),
+              field,
+              snapshot.draft,
+            ),
           ),
         },
       );
@@ -99,10 +107,8 @@ export function IssueFieldEditor({
       );
       // A failed reload leaves both the draft and its version untouched.
       setReceipt(updated);
-      setSnapshot({
-        version: updated.version,
-        draft: String(updated[field] ?? ""),
-      });
+      const original = String(updated[field] ?? "");
+      setSnapshot({ version: updated.version, original, draft: original });
       setConflict(false);
       setError("");
       onRefresh();

@@ -4,12 +4,13 @@ Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b60
 
 | Local selection | Source or role |
 | --- | --- |
-| @runeditrun/rer 0.2.6 | exact package pin for the public `rer` command and shared lifecycle runtime |
+| @runeditrun/rer 0.2.19 | exact package pin for the public `rer` command and shared lifecycle runtime |
 | scripts/installer | Vector's existing installer adapter using package exports |
 | src/base | unchanged Lobby, setup-state and run-site runtime from Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` |
-| vendor/base/operator-auth | native operator authentication |
+| vendor/base/operator-auth | native operator authentication, including the `rer signin` owner link, from Base `e17843562355e1b6e5068289c8e037951fbc8d3d` (rer 0.2.19) |
+| migrations/core/0048_owner_signin.sql | the owner sign-in grant table, from the same Base revision |
 | vendor/base/mail | transactional mail and development outbox |
-| @runeditrun/rer 0.2.6 | published CLI, owner-account deploy, portability and operations |
+| @runeditrun/rer 0.2.19 | published CLI, owner-account deploy, portability and operations |
 | scripts/edition-authoring | one authoring implementation |
 | vendor/base/schema | release/seed/setup validation |
 | migrations/core/0022_portability.sql | native portability schema |

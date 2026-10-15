@@ -306,7 +306,7 @@ export function DecisionPanel({
                       });
                     }}
                   >
-                    <option value="">Leave unassigned</option>
+                    <option value="">Unassigned</option>
                     {options?.operators.map((operator) => (
                       <option key={operator.id} value={operator.id}>
                         {operator.name}
@@ -376,7 +376,7 @@ export function DecisionPanel({
                       setAccept({ ...accept, statusId: event.target.value });
                     }}
                   >
-                    <option value="">Default unstarted status</option>
+                    <option value="">Default</option>
                     {teamStatuses.map((status) => (
                       <option key={status.id} value={status.id}>
                         {status.name}

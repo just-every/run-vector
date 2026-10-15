@@ -1,5 +1,6 @@
 import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
 import { baseAuth } from "../auth/base.server";
+import { localMailEnabled } from "../auth/development.server";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -35,7 +36,35 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
             message:
               error.code === "mail_unavailable"
                 ? "Email delivery failed. Request a new invitation after the mail service is available."
-                : error.code,
+                : error.code === "step_up_required"
+                  ? "Inviting someone gives them full access to this workspace, so confirm it's you first."
+                  : error.code,
+          },
+          { status: error.status },
+        );
+      throw error;
+    }
+  });
+  // Inviting grants Base owner authority, which needs a sign-in proof from the
+  // last ten minutes. This sends the operator a one-use link to confirm it in place.
+  app.post("/settings/operators/confirm-identity", async (c) => {
+    try {
+      await baseAuth(c.env).requestStepUp(c.req.raw, {
+        action: "owner:transfer",
+        returnTo: "/app/settings#operators",
+      });
+      return c.json({ status: "accepted", delivery: localMailEnabled(c.env) ? "outbox" : "email" }, 202);
+    } catch (error) {
+      if (error instanceof AuthError)
+        return Response.json(
+          {
+            error: error.code,
+            message:
+              error.code === "mail_unavailable"
+                ? "The confirmation email could not be sent. Try again after the mail service is available."
+                : error.code === "rate_limited"
+                  ? "Too many confirmation links were requested. Wait a few minutes, then try again."
+                  : error.code,
           },
           { status: error.status },
         );

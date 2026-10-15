@@ -32,7 +32,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8b8fec168544108f3cc977bd9dcb46d68b11ca31",
+          "revision": "e17843562355e1b6e5068289c8e037951fbc8d3d",
           "paths": [
             "modules/operator-auth"
           ]
@@ -136,7 +136,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "8b8fec168544108f3cc977bd9dcb46d68b11ca31",
+          "revision": "e17843562355e1b6e5068289c8e037951fbc8d3d",
           "paths": [
             "modules/owner-claim"
           ]

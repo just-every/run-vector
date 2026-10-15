@@ -222,7 +222,7 @@ export function Discussion({
         {resource.data?.files.map((f) => (
           <div className="file-entry" key={f.id}>
             {f.state === "ready" && !f.removalPending ? (
-              <a href={`/api/issues/${identifier}/files/${f.id}`}>{f.name}</a>
+              <a href={`/api/issues/${identifier}/files/${f.id}`} download={f.name}>{f.name}</a>
             ) : (
               <span>
                 {f.name} ·{" "}

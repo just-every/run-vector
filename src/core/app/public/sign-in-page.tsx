@@ -38,7 +38,9 @@ export function SignInPage({ localOutbox, providerLinks = [] }: { localOutbox: b
             `Sign-in could not be requested (${response.status}).`,
         );
       setMessage(
-        "Check your inbox for your single-use sign-in link. It may take a moment to arrive; check your spam folder too.",
+        localOutbox
+          ? "Your single-use sign-in link is in the development outbox below. Nothing is emailed while Vector runs on this computer."
+          : "Check your inbox for your single-use sign-in link. It may take a moment to arrive; check your spam folder too.",
       );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Sign-in failed.");

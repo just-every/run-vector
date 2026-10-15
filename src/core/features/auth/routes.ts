@@ -13,7 +13,8 @@ import { AuthError, createAuthHandler, securityHeaders } from '../../../../vendo
 import { baseAuth, productOperator } from './base.server'
 import type { AppEnvironment } from '../../app/bindings'
 
-const enabled = new Set(['/auth/request', '/auth/magic-link', '/auth/confirm', '/auth/session', '/auth/signout', '/auth/setup-complete', '/auth/settings/identity'])
+// /auth/owner-signin admits the one-time link `rer signin` mints with the deploy credentials.
+const enabled = new Set(['/auth/request', '/auth/magic-link', '/auth/confirm', '/auth/owner-signin', '/auth/session', '/auth/signout', '/auth/setup-complete', '/auth/settings/identity'])
 export function createAuthApp() {
   const app = new Hono<AppEnvironment>()
   app.all('*', async c => {
@@ -51,8 +52,9 @@ export function createAuthApp() {
       }
       const result = await createAuthHandler(auth)(request)
       if (!result) return c.json({ error: 'not_found' }, 404)
-      if (path === '/auth/confirm' && request.method === 'POST' && result.status === 303) {
-        const cookie = result.headers.get('set-cookie')!
+      // A confirmed step-up proves the current session again and sets no cookie.
+      const cookie = result.headers.get('set-cookie')
+      if (['/auth/confirm', '/auth/owner-signin'].includes(path) && request.method === 'POST' && result.status === 303 && cookie) {
         const sessionRequest = new Request(request.url, { headers: {
           host: new URL(request.url).host, cookie: cookie.split(';')[0],
         } })

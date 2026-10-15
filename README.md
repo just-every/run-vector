@@ -37,23 +37,26 @@ The application runs on a Cloudflare Worker with TanStack Start, React and Hono,
 
 ## Run it on your computer
 
-You need Git and Node 22 or later, only to install the `rer` command once with `npm install --global @runeditrun/rer@0.2.6`. `rer` then provides the exact Node and pnpm this source pins, so there is nothing else to choose or install. Set `VECTOR_SOURCE` to the source supplied with your installation.
+You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Two steps, the same as on [run-vector.com/run](https://run-vector.com/run).
 
-<!-- vector-clone -->
+**1. Install rer**, the Run Edit Run command, once per computer:
+
+<!-- vector-install -->
 ```sh
-git clone "$VECTOR_SOURCE" vector
-cd vector
+curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-Install the published command and pinned dependencies, then start development. No setup command or provider account is needed to try Vector locally.
+or `npm install --global @runeditrun/rer@0.2.19`. This checkout pins rer 0.2.19 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
 
-<!-- vector-terminal -->
+**2. Get Vector and start it:**
+
+<!-- vector-start -->
 ```sh
-npm install --global @runeditrun/rer@0.2.6
-rer install
-rer check --profile first-party
-rer dev
+git clone https://github.com/just-every/run-vector.git vector
+cd vector && rer dev
 ```
+
+The first `rer dev` installs the pinned Node, pnpm and dependencies, makes you the local owner and prints a link that opens Vector signed in. There is nothing else to install and no provider account to set up.
 
 On a fresh checkout, `rer dev` prepares a local placeholder owner (`owner@vector.test`). To choose your own local owner instead, run this optional setup **before the first `rer dev`**, replacing the example mailbox. Choose another explicit port if 8787 is occupied.
 
@@ -64,16 +67,9 @@ rer setup --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-i
 
 Setup builds and applies migrations, saves owner-only `.dev.vars`, prepares your first owner and stops its temporary app. A second setup preserves the owner, data and settings. Once development has initialized the placeholder owner, setup cannot silently replace it with another mailbox. Keep that owner and existing data, or, for a disposable installation, stop development, retain any needed export, explicitly run `rer reset --yes`, then run setup with your chosen mailbox and start development again. Reset deletes the local installation. Supply a private JSON `--answers` file for workspace, timezone and team values declared in `rer-setup.json`; otherwise its defaults apply. Existing installations must follow [local recovery](docs/LOCAL-RECOVERY.md) before changing their state path.
 
-Development prints `RER_READY` only after health is ready. `rer dev` opens signed in: it prints `RER_SIGNED_IN` (the owner) and `RER_OPEN`, a link that carries this checkout's private dev key in its fragment. Open `RER_OPEN` in a browser on this computer and you land signed in as the owner; a small dev badge switches to the `teammate` persona (a second operator in the same workspace; Vector has no product roles) or signs out. Never share the link: the key is what keeps the outbox and dev sign-in closed to anything that reaches this port through a proxy or tunnel, and `reset` removes the key so every earlier browser session stops working. `--as teammate` (or `--as signed-out`) starts as another persona, and `--login` turns dev identity off so dev prints `RER_SIGN_IN` and a key-carrying `RER_OPEN` for the outbox instead: choose the newest message and follow its one-use link (no email is sent). Previews open the outbox the same way. `RER_OPEN` is for people at this terminal; scripts use `rer dev --json` or the key header. Opening an outbox link is inert until you press **Confirm**. Stop with Ctrl-C or `rer dev --stop`. `rer outbox` prints the outbox address; `--owner-email` requests another ordinary link. Data is stored in `.wrangler/state` and private settings are excluded from builds.
+Development prints `RER_READY` only after health is ready. `rer dev` opens signed in: it prints `RER_SIGNED_IN` (the owner) and `RER_OPEN`, a link that carries this checkout's private dev key in its fragment. Open `RER_OPEN` in a browser on this computer and you land signed in as the owner; a small dev badge switches to the `teammate` persona (a second operator in the same workspace; Vector has no product roles) or signs out. The badge names the signed-in operator with their sign-in role, which is `owner` for everyone: Vector has no product roles, so every operator holds full access. Never share the link: the key is what keeps the outbox and dev sign-in closed to anything that reaches this port through a proxy or tunnel, and `reset` removes the key so every earlier browser session stops working. `--as teammate` (or `--as signed-out`) starts as another persona, and `--login` turns dev identity off so dev prints `RER_SIGN_IN` and a key-carrying `RER_OPEN` for the outbox instead: choose the newest message and follow its one-use link (no email is sent). Previews open the outbox the same way. `RER_OPEN` is for people at this terminal; scripts use `rer dev --json` or the key header. Opening an outbox link is inert until you press **Confirm**. Inviting an operator asks you to confirm it's you when your sign-in is more than ten minutes old: Settings offers **Send confirmation link**, and on this computer the link arrives in the outbox. Stop with Ctrl-C or `rer dev --stop`. `rer outbox` prints the outbox address; `--owner-email` requests another ordinary link. Data is stored in `.wrangler/state` and private settings are excluded from builds.
 
-Install Chromium for browser checks, then run the complete verification:
-
-```sh
-pnpm exec playwright install chromium
-rer verify
-```
-
-For the existing sample hydration journey, `pnpm test:dev:ci` prepares a disposable fixture, uses real setup and development, and reads the saved origin before running `pnpm test:dev`. It is separate from your empty installation.
+`rer verify` runs the build, artifact and contract checks. The browser test suites are for contributors and run in CI; see [Verification](docs/VERIFICATION.md).
 
 Review the inventory before removing local data. Stop the app, retain an export and your backups, then explicitly confirm:
 
@@ -85,15 +81,25 @@ Reset removes local D1/R2, owner/sessions/outbox, installer drafts and generated
 
 ## Your own hosting account
 
-Commit the supplied source before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and set `OWNER_EMAIL` to the mailbox that will own the hosted installation. Also supply the public `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME` and `DEFAULT_TEAM_PREFIX` values. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
+Commit your checkout before deploying; `rer deploy` builds it. Then supply your explicit `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, verified sender `MAIL_FROM`, `SENDGRID_API_KEY`, and set `OWNER_EMAIL` to the mailbox that will own the hosted installation. Also supply the public `FIRST_OWNER_NAME`, `WORKSPACE_NAME`, `WORKSPACE_TIMEZONE`, `DEFAULT_TEAM_NAME` and `DEFAULT_TEAM_PREFIX` values. Follow [DEPLOY.md](DEPLOY.md) for private secret/state custody, the resulting workers.dev origin and permissions.
 
 ```sh
-FIRST_OWNER_EMAIL="$OWNER_EMAIL" rer deploy --environment production
+FIRST_OWNER_EMAIL="$OWNER_EMAIL" rer deploy
 ```
+
+Without `--environment NAME` this deploys the `production` environment, and every later `rer deploy`, `rer signin` and `rer deploy --remove --yes` from this checkout acts on `production` too. If you deploy a named environment instead, pass the same `--environment NAME` to each of those commands.
 
 Vector’s current deployment adapter reads the internal `FIRST_OWNER_EMAIL` binding; the explicit assignment maps your `OWNER_EMAIL` into that adapter. Local `rer setup` does not choose or replace the hosted owner. The hosted owner is selected from this deployment input.
 
-This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. When it finishes, `rer deploy` prints the address of your installation. Open it and sign in by email as `OWNER_EMAIL`: that first sign-in makes you the owner automatically, so there is no setup token or claim step to run. The separate artifact controller remains `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy` and `pnpm artifact:health`.
+This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. When it finishes, `rer deploy` prints the address of your installation. Open it and sign in by email as `OWNER_EMAIL`: that first sign-in makes you the owner automatically, so there is no setup token or claim step to run. The separate reviewed artifact controller is described in [DEPLOY.md](DEPLOY.md).
+
+If you cannot receive the sign-in email (no mail key yet, or the message never arrives), sign in as the owner with the same Cloudflare credentials that deployed it, from the deploying checkout:
+
+```sh
+rer signin
+```
+
+It prints a one-time sign-in link for the hosted owner. The link works once, only for that owner, expires in 15 minutes and is never saved; open it in your browser and press **Confirm**.
 
 Estimated infrastructure cost is **USD 0–15/month**, assuming up to 20 operators, 100,000 issues, 5 GB attachments and moderate traffic. Transactional email is billed separately. These are estimates, not a capacity qualification or a claim of hosted commissioning. Local provider fixtures prove behavior without making a real deployment.
 
@@ -110,13 +116,15 @@ No separate Node or pnpm installation is required: `rer` installs the package pi
 
 ## Remove an installation
 
-To take the installation down, run this from the checkout that deployed it:
+To take the installation down, run this from the checkout that deployed it, with the same Cloudflare credentials:
 
 ```sh
 rer deploy --remove --yes
 ```
 
-It deletes the Worker, D1 database and R2 bucket that this checkout's `.rer/deploy` record says `rer` created, with their data, confirms each is gone and touches nothing else. Export first if you want to keep anything.
+It deletes the Worker, D1 database and R2 bucket that this checkout's `.rer/deploy` record says `rer` created, with their data, confirms each is gone and touches nothing else. Export first if you want to keep anything. It removes the `production` environment; for a named environment add the same `--environment NAME` you deployed with.
+
+rer 0.2.19 cannot yet empty a bucket that still holds attached files: removal deletes the Worker and database, then stops with `provider-incomplete-pagination` and names the bucket. Until the next rer release, delete that bucket's objects in the Cloudflare dashboard (R2, the bucket ending in `-files`) and run the same command again; it then removes the bucket and confirms nothing remains.
 
 ## Workspace administration
 
@@ -154,7 +162,7 @@ Settings supports reviewed mapped CSV/JSON and Linear imports (documented CSV fo
 
 Browser verification covers the core product journey and a representative accessibility and overflow pass. Release visual review covers the remaining layouts.
 
-Stage intentional source edits, run `pnpm sources:lock`, then `pnpm sources:check` and `rer verify`. See [HANDOVER.md](HANDOVER.md) for implemented scope and limitations, [CHANGELOG.md](CHANGELOG.md) for release changes, and [CONTRACT.md](CONTRACT.md) / [BASELINE.md](BASELINE.md) for requirements. Passing local checks does not establish every wider product, capacity or hosted-delivery guarantee.
+Contributors changing recorded Base copies follow [AGENTS.md](AGENTS.md). See [HANDOVER.md](HANDOVER.md) for implemented scope and limitations, [CHANGELOG.md](CHANGELOG.md) for release changes, and [CONTRACT.md](CONTRACT.md) / [BASELINE.md](BASELINE.md) for requirements. Passing local checks does not establish every wider product, capacity or hosted-delivery guarantee.
 
 The Base runtime selections and schema validator are pinned together; see [Base adoption](docs/BASE-ADOPTION.md) for exact copy custody, additive migrations and recovery.
 
