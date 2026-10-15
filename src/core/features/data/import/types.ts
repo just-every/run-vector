@@ -3,10 +3,8 @@ import type { SourceBundle } from '../../../../../vendor/base/import-kit/src/d1/
 /** Measured bounds (docs/MOVE-IN.md). One reviewed run holds up to `rows` source
  * records in a file of `bytes`; it publishes in staged batches whose native SQL
  * stays within `batchStatements` and `batchBytes`, one batch per request so each
- * request stays inside D1's `executions` per Worker invocation. Creating the run
- * and every publication send the whole retained plan in one D1 call, which D1
- * limits to `requestBytes`; `requestOverhead` covers the rest of that call. */
-export const importLimits = { bytes: 4194304, rows: 4000, batchStatements: 500, batchBytes: 1500000, executions: 1000, requestBytes: 33554432, requestOverhead: 4000000 } as const;
+ * request stays inside D1's `executions` per Worker invocation. */
+export const importLimits = { bytes: 4194304, rows: 4000, batchStatements: 500, batchBytes: 1500000, executions: 1000 } as const;
 export const importFields = ['sourceId','title','description','team','status','priority','assignee','project','cycle','labels','estimate','dueDate','expectedOutcome','customerImpact','createdAt','updatedAt','parent','dependencies','duplicateOf','archivedAt'] as const;
 export type ImportField = typeof importFields[number];
 export type ImportMapping = Partial<Record<ImportField,string>>;

@@ -448,7 +448,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "057eae7df3324c4eb61d8f22c7ef348c48b909d82a136088649d7090327cc393",
+      "sha256": "5559e9e15b870431cb451a602865e4a6e0ea4e1fe9e77c452c0520deab6441b4",
       "executable": false
     },
     "CLAUDE.md": {
@@ -2016,7 +2016,7 @@
       "executable": false
     },
     "src/core/features/data/import/service.ts": {
-      "sha256": "13c60911ba65463870e7935948dd26eb7485621a9f403e5e90deee1f54376b10",
+      "sha256": "9c20386007f0c9d5f9c7c11448052117f0c9a7080f04f7a54b437b5a42f92807",
       "executable": false
     },
     "src/core/features/data/import/source.ts": {
@@ -2024,7 +2024,7 @@
       "executable": false
     },
     "src/core/features/data/import/types.ts": {
-      "sha256": "ce00e2a3f2cefcb2c33862e89044872e0fcf8a40f3f3246ac7fbc98158ccbdf5",
+      "sha256": "10492b2e3697724642848bd922c1183cbd2185910ae080d88fedaa5581ebc12b",
       "executable": false
     },
     "src/core/features/data/import/wire.ts": {

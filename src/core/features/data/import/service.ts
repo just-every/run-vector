@@ -63,12 +63,8 @@ async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin
       entryStatements=Math.max(entryStatements,statementsHere);entryBytes=Math.max(entryBytes,bytesHere);
     }
     const batchSize=Math.max(1,Math.min(1000,Math.floor(importLimits.batchStatements/entryStatements),Math.floor(importLimits.batchBytes/entryBytes),Math.floor(batchExecutions/(entryStatements+entryOverhead))));
-    const planText=canonicalJson(plan),planBytes=Buffer.byteLength(planText);
-    // A character above U+00FF is sent as a six-character escape (wire.ts); the retained plan chunks add about 5% of JSON quoting.
-    const planWireBytes=Math.ceil((planText.length+5*(planText.match(/[^\u0000-\u00ff]/g)?.length??0))*1.05);
-    if(planWireBytes+importLimits.requestOverhead>importLimits.requestBytes)throw new ImportError(413,'import_request_limit');
     const creation=await preflightReservedImport(plan,{...context,reviewedFingerprint:plan.fingerprint},id=>importRunMetadata(id,batchSize,reportJson));
-    Object.assign(preview.measured,{nativeBytes,nativeStatements,maxParameters,entryStatements,entryBytes,batchSize,batches:Math.ceil(plan.entries.length/batchSize),creationStatements:creation.mutationStatements,creationExecutions:creation.totalExecutions,creationMaxBoundBytes:creation.maxBoundBytes,planBytes,planWireBytes});
+    Object.assign(preview.measured,{nativeBytes,nativeStatements,maxParameters,entryStatements,entryBytes,batchSize,batches:Math.ceil(plan.entries.length/batchSize),creationStatements:creation.mutationStatements,creationExecutions:creation.totalExecutions,creationMaxBoundBytes:creation.maxBoundBytes,planBytes:Buffer.byteLength(canonicalJson(plan))});
     if(entryStatements+entryOverhead>batchExecutions || entryBytes>importLimits.batchBytes)throw new ImportError(413,'import_native_limit');
     preview.batchSize=batchSize;
   } catch(error) {
