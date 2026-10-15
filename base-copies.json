@@ -1945,6 +1945,28 @@
       }
     },
     {
+      "path": "vendor/base/mail/LICENSE",
+      "originPath": "modules/mail/LICENSE",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/LICENSE": "2f5076ef027045b9e0e72df8aa61ca8551e54b1877d531656d6e7985b2c32324"
+      },
+      "modes": {
+        "vendor/base/mail/LICENSE": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/README.md",
+      "originPath": "modules/mail/README.md",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/README.md": "e44a72114c68510be55003cf73191cd66ccbdcabfc025abb3086a09cc29d7967"
+      },
+      "modes": {
+        "vendor/base/mail/README.md": "100644"
+      }
+    },
+    {
       "path": "vendor/base/mail/doctor.mjs",
       "originPath": "modules/mail/doctor.mjs",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
@@ -1964,17 +1986,6 @@
       },
       "modes": {
         "vendor/base/mail/index.mjs": "100644"
-      }
-    },
-    {
-      "path": "vendor/base/mail/LICENSE",
-      "originPath": "modules/mail/LICENSE",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
-      "files": {
-        "vendor/base/mail/LICENSE": "2f5076ef027045b9e0e72df8aa61ca8551e54b1877d531656d6e7985b2c32324"
-      },
-      "modes": {
-        "vendor/base/mail/LICENSE": "100644"
       }
     },
     {
@@ -2010,17 +2021,6 @@
       },
       "modes": {
         "vendor/base/mail/pnpm-lock.yaml": "100644"
-      }
-    },
-    {
-      "path": "vendor/base/mail/README.md",
-      "originPath": "modules/mail/README.md",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
-      "files": {
-        "vendor/base/mail/README.md": "e44a72114c68510be55003cf73191cd66ccbdcabfc025abb3086a09cc29d7967"
-      },
-      "modes": {
-        "vendor/base/mail/README.md": "100644"
       }
     },
     {
@@ -2160,29 +2160,90 @@
       }
     },
     {
-      "path": "vendor/base/mail/src/inbound",
-      "originPath": "modules/mail/src/inbound",
+      "path": "vendor/base/mail/src/inbound/README.md",
+      "originPath": "modules/mail/src/inbound/README.md",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
       "files": {
-        "vendor/base/mail/src/inbound/bytes.mjs": "cf6d59fff8c693a2833d0015f134d5c2559ec749aeb69b292b38585be7b7db7f",
-        "vendor/base/mail/src/inbound/headers.mjs": "79673d562647f4e15e7fe10ca3b13241acd5b2cc25a651a32918cee45e02235c",
-        "vendor/base/mail/src/inbound/index.mjs": "6defd48ac74f7a267f63d84f5b7cc8c1acfecfb26940df1a200088aa8be9f824",
-        "vendor/base/mail/src/inbound/mime.mjs": "743ae43126ba32aa0cbc00b3be738a7486612b220787c548455c7a778fa1803c",
-        "vendor/base/mail/src/inbound/multipart.mjs": "3696b971db5cf7a8c43eae84faca32123645293dcf97304382359be501d19cca",
-        "vendor/base/mail/src/inbound/README.md": "19f1c3448ae767095f257e2aa0bef8e19e94bd9d00fe0cd7515fb4d0d9f53eff",
-        "vendor/base/mail/src/inbound/resend-attachment.mjs": "a2ca74f17f0018c96b12a6bcaadc31c9b20d870687c5a2d7374de50e4c8fbff3",
-        "vendor/base/mail/src/inbound/resend.mjs": "7d279b6dcb1280b0c3902afc05c7356a9fbfcc015051a5c852fbfbb789a41e17",
+        "vendor/base/mail/src/inbound/README.md": "19f1c3448ae767095f257e2aa0bef8e19e94bd9d00fe0cd7515fb4d0d9f53eff"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/README.md": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/bytes.mjs",
+      "originPath": "modules/mail/src/inbound/bytes.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/inbound/bytes.mjs": "cf6d59fff8c693a2833d0015f134d5c2559ec749aeb69b292b38585be7b7db7f"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/bytes.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/index.mjs",
+      "originPath": "modules/mail/src/inbound/index.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/inbound/index.mjs": "6defd48ac74f7a267f63d84f5b7cc8c1acfecfb26940df1a200088aa8be9f824"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/index.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/mime.mjs",
+      "originPath": "modules/mail/src/inbound/mime.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/inbound/mime.mjs": "743ae43126ba32aa0cbc00b3be738a7486612b220787c548455c7a778fa1803c"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/mime.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/multipart.mjs",
+      "originPath": "modules/mail/src/inbound/multipart.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/inbound/multipart.mjs": "3696b971db5cf7a8c43eae84faca32123645293dcf97304382359be501d19cca"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/multipart.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/resend-attachment.mjs",
+      "originPath": "modules/mail/src/inbound/resend-attachment.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/inbound/resend-attachment.mjs": "a2ca74f17f0018c96b12a6bcaadc31c9b20d870687c5a2d7374de50e4c8fbff3"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/resend-attachment.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/resend.mjs",
+      "originPath": "modules/mail/src/inbound/resend.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/inbound/resend.mjs": "7d279b6dcb1280b0c3902afc05c7356a9fbfcc015051a5c852fbfbb789a41e17"
+      },
+      "modes": {
+        "vendor/base/mail/src/inbound/resend.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/inbound/sendgrid.mjs",
+      "originPath": "modules/mail/src/inbound/sendgrid.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
         "vendor/base/mail/src/inbound/sendgrid.mjs": "b599533e99e7912adfd10fc7343ba59e9387d783a623af0c6ac0843314265118"
       },
       "modes": {
-        "vendor/base/mail/src/inbound/bytes.mjs": "100644",
-        "vendor/base/mail/src/inbound/headers.mjs": "100644",
-        "vendor/base/mail/src/inbound/index.mjs": "100644",
-        "vendor/base/mail/src/inbound/mime.mjs": "100644",
-        "vendor/base/mail/src/inbound/multipart.mjs": "100644",
-        "vendor/base/mail/src/inbound/README.md": "100644",
-        "vendor/base/mail/src/inbound/resend-attachment.mjs": "100644",
-        "vendor/base/mail/src/inbound/resend.mjs": "100644",
         "vendor/base/mail/src/inbound/sendgrid.mjs": "100644"
       }
     },

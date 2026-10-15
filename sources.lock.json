@@ -440,7 +440,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "f9a6d577eed14ae141561897198c53b41bbca4be874ca1bd445df5dce55dd6dc",
+      "sha256": "e941f5fe924c5ab25ae6acbeb291850f558e4910710d6e208c1a07065cc1fd3f",
       "executable": false
     },
     "BASELINE.md": {
@@ -488,7 +488,7 @@
       "executable": false
     },
     "docs/BASE-ADOPTION.md": {
-      "sha256": "0b969b3da6871c42ac33362dc208896c8f66327a00614db9e3cbb23a4be297e7",
+      "sha256": "5c8ab82d4393e3baf44374556f68829ba681d51553916ba5bfa04162936daded",
       "executable": false
     },
     "docs/BRAND.md": {
@@ -5648,7 +5648,7 @@
       "executable": false
     },
     "vendor/base/mail/src/inbound/headers.mjs": {
-      "sha256": "79673d562647f4e15e7fe10ca3b13241acd5b2cc25a651a32918cee45e02235c",
+      "sha256": "ab15f7e685571ed55034d0ffcfae4d4a5b423a9e8eb48123ac1d7521f380b681",
       "executable": false
     },
     "vendor/base/mail/src/inbound/index.mjs": {
