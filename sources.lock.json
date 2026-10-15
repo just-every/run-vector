@@ -491,7 +491,7 @@
       "executable": false
     },
     "DEMO.md": {
-      "sha256": "809941d4132717ac2a6597624fa3c04ca0c8d46d7904ff24586307c9753e94dd",
+      "sha256": "91f45aafb2951536fd2ba146b5582610cf639f9ca8b988602f2872ad5b54cf09",
       "executable": false
     },
     "deploy-demo.json": {
@@ -1555,7 +1555,7 @@
       "executable": false
     },
     "src/core/app/site/home/hero.tsx": {
-      "sha256": "c9b9a47d6d70bd709a7fbdb606ffd3f115fc1839b6e41091995a8a0d230eda7d",
+      "sha256": "0419c57c3a245c3b2a305bcdec810d24741a992df8f07ad79bd2ad9c511a1dcf",
       "executable": false
     },
     "src/core/app/site/home/home-page.tsx": {
