@@ -1,12 +1,13 @@
 import type { D1ImportContext } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { nativeTargets } from './native-targets';
+import { wireDatabase } from './wire';
 
 export type ImportActor = { id:string; workspace:string; fence:{sessionId:string;operatorVersion:number} };
 export function importContext(db:D1Database,actor:ImportActor,namespace:string,mappingVersion:string,reviewedFingerprint?:string,operationKey?:string): D1ImportContext {
   return {
     destination:actor.workspace,namespace,mappingVersion,reviewedFingerprint,operationKey,
     batchSize:1000,maxBatches:1,
-    storage:{database:db,targets:nativeTargets},
+    storage:{database:wireDatabase(db),targets:nativeTargets},
     authorization:{principalId:actor.id,predicate:(_action,destination)=>({
       sql:`?=? AND EXISTS(SELECT 1 FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id
         JOIN oa_operators a ON a.id=m.auth_id JOIN oa_sessions s ON s.operator_id=a.id

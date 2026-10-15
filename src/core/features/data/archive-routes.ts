@@ -4,6 +4,7 @@ import { createPortabilityHandler } from '@runeditrun/rer/modules/portability';
 import { portabilityPolicy } from './archive-policy.mjs';
 import { validateArchiveInventory,validateArchiveAttachments } from './archive-inventory.mjs';
 import { requireOperator } from '../auth/service';
+import { wireDatabase } from './import/wire';
 /** Cookie authority and same-origin writes remain the native API contract. */
 export function addArchiveRoutes(app:Hono<AppEnvironment>) {
  app.all('/portability/*',async c=>{
@@ -23,7 +24,7 @@ export function addArchiveRoutes(app:Hono<AppEnvironment>) {
    }
    throw error;
   }
-  const handler=await createPortabilityHandler({db:c.env.DB,buckets:{FILES:c.env.FILES},policy:portabilityPolicy,appOrigin:c.env.APP_ORIGIN,authorize:async request=>{
+  const handler=await createPortabilityHandler({db:wireDatabase(c.env.DB),buckets:{FILES:c.env.FILES},policy:portabilityPolicy,appOrigin:c.env.APP_ORIGIN,authorize:async request=>{
    const owner=await requireOperator(c.env,request);return owner?.id===c.get('operatorId')?owner.id:null;
   }});
   return await handler(c.req.raw)??c.json({error:'route_not_found'},404);

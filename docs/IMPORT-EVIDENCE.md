@@ -23,8 +23,9 @@ What is proven, and how:
   by search and lookup, and whole-run rollback refused for three issues with later
   work and complete for an untouched run. `tests/e2e/data-staged-cli.mjs` does the
   same run through `pnpm run import:issues`, stopping the process after its third
-  batch and resuming. A 4,000-issue run (4.05 MB) was measured locally; the
-  numbers are in [MOVE-IN.md](MOVE-IN.md).
+  batch and resuming. A 4,000-issue run (4.05 MB) was measured locally and a 2,000-issue run
+  completed on a hosted installation; the numbers and the hosted limits are in
+  [MOVE-IN.md](MOVE-IN.md).
 - **API file.** `tests/worker/linear-api-import.test.ts` merges a generated CSV
   and API file pair: comments with original times and author names, HTTPS links,
   dependencies and duplicates, and a malformed file refused row by row.

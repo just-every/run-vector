@@ -479,7 +479,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "945db3df4fedd1ba27fa78df6e93153a406d3dc1971a67bcd9d2330945ce607f",
+      "sha256": "97c236cc8aa4f6515e2e56ff24e798006f2b5ea2e0fecf64c5815a45eab100d3",
       "executable": false
     },
     "CLAUDE.md": {
@@ -595,7 +595,7 @@
       "executable": false
     },
     "docs/IMPORT-EVIDENCE.md": {
-      "sha256": "62c251357e51458cd6ca2973f43f592aa9a86511b2ad7613d862140498c56e9d",
+      "sha256": "fabf2da9636535aca3002d77b1a1c1c616c92fe8078a5073ce2d4765254024a1",
       "executable": false
     },
     "docs/INSTALLER.md": {
@@ -627,7 +627,7 @@
       "executable": false
     },
     "docs/MOVE-IN.md": {
-      "sha256": "63a774fa26040210abacc5c402d50526a0cf1dad4313fb55acc27d431d4a158a",
+      "sha256": "2d140b2d77c21bcec057130103daad55696bc4dae7950ba91b44c756481863b0",
       "executable": false
     },
     "docs/NOTIFICATIONS.md": {
@@ -1891,7 +1891,7 @@
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
-      "sha256": "f4d4470a785977531862b236a5946cd93f3dc1e2961148902d0dc57abbb28e16",
+      "sha256": "3dc943b2b112f64bd005af3e68b10bee7db0eacc1d619c571319a3ee45823a7b",
       "executable": false
     },
     "src/core/features/data/archive-service.d.mts": {
@@ -1931,7 +1931,7 @@
       "executable": false
     },
     "src/core/features/data/import/authority.ts": {
-      "sha256": "098c16bb23e3b698f7cadb74b638e3bb563aee789ae36fbf3f06dd119371c73b",
+      "sha256": "4c6403ef683d415ca0c54ff83ba053b78a1ad6882b69bd5e8bdfdeeb22a737f9",
       "executable": false
     },
     "src/core/features/data/import/csv.ts": {
@@ -2039,7 +2039,7 @@
       "executable": false
     },
     "src/core/features/data/import/service.ts": {
-      "sha256": "550b7c6ebc2dd87707fb87f65dc56fad630a5d548882817dc2fe357431cb51a4",
+      "sha256": "9c20386007f0c9d5f9c7c11448052117f0c9a7080f04f7a54b437b5a42f92807",
       "executable": false
     },
     "src/core/features/data/import/source.ts": {
@@ -2048,6 +2048,10 @@
     },
     "src/core/features/data/import/types.ts": {
       "sha256": "10492b2e3697724642848bd922c1183cbd2185910ae080d88fedaa5581ebc12b",
+      "executable": false
+    },
+    "src/core/features/data/import/wire.ts": {
+      "sha256": "4118ca30bad4a66473d5a589c7f43aa5fbca6cbe45a0a01ff986139098dfc7da",
       "executable": false
     },
     "src/core/features/data/restore-authority.ts": {
