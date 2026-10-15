@@ -6,7 +6,9 @@ import type { D1Database,D1Statement } from '../../../../../vendor/base/import-k
  * issue description) makes every character of the batch two bytes. A 2,000-row
  * import then passed the limit at about 1,700 rows and failed with a 503.
  * Strings that hold such a character are sent as ASCII JSON escapes instead and
- * decoded by SQLite to the identical text, so the batch stays one-byte. */
+ * decoded by SQLite to the identical text, so the batch stays one-byte. The
+ * import statements and the archive export (which stages every row of a page in
+ * one batch) both use it. */
 const wide=/[^\u0000-ÿ]/;
 const unit=/[^\u0000-ÿ]/g;
 const ascii=(text:string)=>Buffer.from(text.replace(unit,c=>'\\u'+c.charCodeAt(0).toString(16).padStart(4,'0')),'latin1').toString('latin1');
@@ -65,19 +67,23 @@ async function pagedPlanRead(db:D1Database,sql:string,values:unknown[]) {
   }
 }
 
-type Wired=D1Statement&{native:D1Statement};
+type Wired=D1Statement&{native:D1Statement;run:()=>Promise<unknown>;raw:(...args:unknown[])=>Promise<unknown>};
 function wrap(db:D1Database,sql:string,values:unknown[]|null):Wired {
   const wired=values&&wireStatement(sql,values);
-  const native=wired?db.prepare(wired.sql).bind(...wired.values):db.prepare(sql);
+  const native=(wired?db.prepare(wired.sql).bind(...wired.values):db.prepare(sql)) as D1Statement&{run:()=>Promise<unknown>;raw:(...args:unknown[])=>Promise<unknown>};
   return {native,
     bind:(...bound:unknown[])=>wrap(db,sql,bound),
     first:(...args:[])=>native.first(...args),
-    all:(...args:[])=>values&&planRead.test(sql)?pagedPlanRead(db,sql,wired!.values):native.all(...args)} as Wired;
+    all:(...args:[])=>values&&planRead.test(sql)?pagedPlanRead(db,sql,wired!.values):native.all(...args),
+    run:()=>native.run(),
+    raw:(...args:unknown[])=>native.raw(...args)} as Wired;
 }
-/** The kit's database with every statement kept one-byte on the wire. */
-export function wireDatabase(db:D1Database):D1Database {
-  return {
-    prepare:sql=>wrap(db,sql,null),
-    batch:statements=>db.batch(statements.map(statement=>(statement as Partial<Wired>).native??statement)),
+/** The database with every statement kept one-byte on the wire; other members
+ * (exec, dump, sessions) are the original's. */
+export function wireDatabase<T extends D1Database>(db:T):T {
+  const wired={
+    prepare:(sql:string)=>wrap(db,sql,null),
+    batch:(statements:D1Statement[])=>db.batch(statements.map(statement=>(statement as Partial<Wired>).native??statement)),
   };
+  return new Proxy(db,{get:(target,key)=>key in wired?wired[key as keyof typeof wired]:typeof target[key as keyof T]==='function'?(target[key as keyof T] as (...args:unknown[])=>unknown).bind(target):target[key as keyof T]});
 }

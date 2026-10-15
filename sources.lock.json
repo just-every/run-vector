@@ -448,7 +448,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "5559e9e15b870431cb451a602865e4a6e0ea4e1fe9e77c452c0520deab6441b4",
+      "sha256": "130d6b26a31816b58bbd5056389a2aa299fc9c94bb42fe8cf5025d429caf90f4",
       "executable": false
     },
     "CLAUDE.md": {
@@ -1868,7 +1868,7 @@
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
-      "sha256": "f4d4470a785977531862b236a5946cd93f3dc1e2961148902d0dc57abbb28e16",
+      "sha256": "3dc943b2b112f64bd005af3e68b10bee7db0eacc1d619c571319a3ee45823a7b",
       "executable": false
     },
     "src/core/features/data/archive-service.d.mts": {
@@ -2028,7 +2028,7 @@
       "executable": false
     },
     "src/core/features/data/import/wire.ts": {
-      "sha256": "26b4760a27fdda1c2617b55318c9c47f0880a00fe2651e4b37f315d85a73bcf7",
+      "sha256": "4118ca30bad4a66473d5a589c7f43aa5fbca6cbe45a0a01ff986139098dfc7da",
       "executable": false
     },
     "src/core/features/data/restore-authority.ts": {
