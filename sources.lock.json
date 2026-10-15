@@ -867,11 +867,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "f4b0ec15f351601bf4857a2598320a747baa6915d5be40990f2bbe6bf79760ae",
+      "sha256": "2a6c42831f5be83cdd70f9345a32ef1ad2a5106e75c883c85f82d4854af238b2",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "705968acab2f64a9cd0e7ae96b2d97b574c4d98d2af98a40cccec810c6142df7",
+      "sha256": "ea5776371f7a28dd3f847598edc670a8da907baf3ebbc570a3210101102092f1",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
