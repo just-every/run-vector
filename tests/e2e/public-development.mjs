@@ -5,6 +5,7 @@ import {liveServers} from '@runeditrun/rer/internal/global/registry.mjs';
 import {readOwnedGroup} from '@runeditrun/rer/internal/onboarding/local/process-table.mjs';
 import {developmentGroups,assertDevelopmentGone} from './owned-dev-processes.mjs';
 import {waitForPortRelease} from '../../scripts/installer/teardown.mjs';
+import {readCheckoutKey} from './dev-gate.mjs';
 
 // The public launcher backgrounds development when stdout is piped. Its
 // successful command completion is readiness; the exited launcher is not the
@@ -16,6 +17,7 @@ export function publicDevelopment(store,root,environment,origin) {
   async start(label,command='pnpm',args=['run','dev']) {
    assert(!requested,'Stop development before starting it again');
    requested=true;
+   store.addSecrets([await readCheckoutKey(root)]);
    child=store.spawn(label,command,args,{cwd:root,env:environment});launchers.push(child);
    const [code,signal]=await once(child,'close');
    assert.equal(signal,null,`${label} completed without a signal`);

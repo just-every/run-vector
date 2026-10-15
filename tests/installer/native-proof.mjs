@@ -61,6 +61,12 @@ async function capture(name){if(name==='setup'){await page.locator('#form').wait
  phase='forced-failure';process.env.PATH=basePath;await open(false);assert.equal((await api('/api/start',{...answers,target:'remote'})).status,400);assert.equal((await api('/api/state')).body.phase,'ready');check('unsupported browser target refuses before installation');assert.equal((await api('/api/draft',answers)).status,200);await page.reload();await capture('setup');assert.equal((await api('/api/start',answers)).status,202);
  const failed=await until();assert.equal(failed.phase,'failed');assert.match(failed.error,/installing dependencies/);await capture('failure');await close();check('forced failure drains and stops its command');
  await writeFile(join(root,'package.json'),packageBytes);
+ // pnpm can recreate node_modules before refusing the deliberately stale
+ // lockfile. Restore the installer's frozen dependencies before reopening
+ // its UI, just as the initial bootstrap does before loading that package.
+ phase='installer-bootstrap-repair';
+ execFileSync(realPnpm,['install','--frozen-lockfile'],{cwd:root,stdio:['ignore','pipe','pipe']});
+ check('installer dependencies restored after the deliberate lockfile failure');
  phase='resumed-install';process.env.PATH=basePath;await open(true);const resumed=(await api('/api/state')).body.draft;for(const [key,value] of Object.entries(answers))assert.equal(resumed[key],value);const manifest=JSON.parse(await readFile(join(root,'rer-setup.json'),'utf8'));for(const field of manifest.fields.filter(field=>field.kind==='secret'))assert.equal(Object.hasOwn(resumed,field.name),false);assert.equal((await api('/api/start',answers)).status,202);
  let delayed=false;
  const complete=await until(async state=>{if(!slow||delayed)return;let at;try{at=Number(await readFile(timing,'utf8'))}catch{return}if(Date.now()-at>121000){assert.equal(state.phase,'running');assert.match(state.logs.join('\n'),/Still starting/);delayed=true;report.slowStartupObservedMs=Date.now()-at;await capture('slow-start')}});
