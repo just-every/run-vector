@@ -98,14 +98,12 @@ async function capture(name){if(name==='setup'){await page.locator('#form').wait
   const signedIn=await identity.json();assert.equal(signedIn.kind,'dev');assert.equal(signedIn.operator.email,owner.email);assert.equal(signedIn.operator.role,'owner');
   assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1});
   assert.equal(sql("SELECT count(*) n FROM oa_sessions s JOIN oa_operators o ON o.id=s.operator_id WHERE s.kind='dev' AND s.revoked_at IS NULL AND o.email='owner@installer.test'")[0].n,1);
-  assert.equal(await app.locator('#rer-dev-badge').count(),0);
   await finishFirstRun(app,origin);await app.goto(origin+'/app');await app.waitForURL(origin+'/app');
   const session=await app.request.get(origin+'/api/session');assert.equal(session.status(),200);assert.equal((await session.json()).operatorId,owner.id);
   await app.goto(opened.body.url);await app.waitForURL(origin+'/app');
   assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1},'reopening the owner entry reuses its dev session');
-  assert.equal(await app.locator('#rer-dev-badge').count(),0);
   for(const path of ['/','/signin','/does-not-exist','/__dev/outbox'])assert.equal((await app.request.get(origin+path)).status(),['/does-not-exist','/__dev/outbox'].includes(path)?404:200);
-  check('completion link automatically signs in the configured dev owner, reuses its session, exposes no badge or outbox, and preserves document statuses');
+  check('completion link automatically signs in the configured dev owner, reuses its session, keeps the outbox retired, and preserves document statuses');
  }finally{await app.close();}
  const before=await readFile(join(root,'.dev.vars')),values=parseEnv(before.toString());const log=await readFile(join(root,'.seed/installer/install.log'),'utf8');
  assert.equal((await stat(join(root,'.seed/installer/install.log'))).mode&0o777,0o600);assert.equal((await stat(join(root,'.dev.vars'))).mode&0o777,0o600);

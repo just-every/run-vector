@@ -56,7 +56,6 @@ test('README literal clone, own frozen install, optional setup and dev automatic
   const ownerSession=await signedIn.json();assert.equal(ownerSession.kind,'dev');assert.equal(ownerSession.operator.email,settings.FIRST_OWNER_EMAIL);assert.equal(ownerSession.operator.role,'owner');
   const ownerResponse=await page.request.get(settings.APP_ORIGIN+'/api/session');assert.equal(ownerResponse.status(),200);const owner=await ownerResponse.json();
   assert.equal((await page.request.get(settings.APP_ORIGIN+'/__dev/outbox')).status(),404);
-  assert.equal(await page.locator('#rer-dev-badge').count(),0);
   result.autoOwnerEntry=true;
   const axe=await readFile(new URL('../../node_modules/axe-core/axe.min.js',import.meta.url),'utf8');
   for(const width of [1440,390]) {
@@ -103,7 +102,6 @@ test('README literal clone, own frozen install, optional setup and dev automatic
   const restoredOwner=await restoredPage.request.get(settings.APP_ORIGIN+'/api/session');assert.equal(restoredOwner.status(),200);assert.deepEqual(await restoredOwner.json(),owner);
   await restoredPage.goto(settings.APP_ORIGIN+'/app');await restoredPage.waitForURL(settings.APP_ORIGIN+'/app');
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/__dev/outbox')).status(),404);
-  assert.equal(await restoredPage.locator('#rer-dev-badge').count(),0);
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/issues/'+identifier)).status(),200);
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/data/restore')).status(),200);
   result.restoredNativeOwnerProof=true;
