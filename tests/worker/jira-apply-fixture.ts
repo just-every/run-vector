@@ -50,7 +50,7 @@ export async function checkJiraReconciliation(f:Awaited<ReturnType<typeof setupJ
   if(index%4===0)expect(row.due_date).toBe(new Date(Date.UTC(2025,0,1+index+600)).toISOString().slice(0,10));
   const source=fixture.rows[index];
   const comments=(await env.DB.prepare('SELECT body,created_at,imported_author_name FROM issue_comments WHERE issue_id=? ORDER BY created_at').bind(row.id).all()).results;
-  expect(comments).toEqual([25,30].flatMap((column,ordinal)=>source[column]?[{body:source[column].split(';').slice(2).join(';'),created_at:instant(index+1200+ordinal),imported_author_name:f.fixture.expected.nativeSetup.commentAuthorToken}]:[]));
+  expect(comments).toEqual([25,30].flatMap((column,ordinal)=>source[column]?[{body:source[column].split(';').slice(2).join(';'),created_at:instant(index+1200+ordinal),imported_author_name:f.fixture.expected.nativeSetup.commentAuthorAccountId}]:[]));
  }
  console.log('jira-300-reconciliation',JSON.stringify({run:id,totals:report.totals,effects:report.effects,dimensions:report.dimensions}));
  return {report,rows};

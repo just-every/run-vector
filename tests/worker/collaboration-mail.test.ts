@@ -17,7 +17,7 @@ const remote = {
   APP_ORIGIN: "https://vector.example.test",
   MAIL_MODE: "sendgrid",
   MAIL_PROVIDER: "sendgrid",
-  MAIL_API_KEY: "test-recording-only-key",
+  MAIL_API_KEY: "synthetic-test-recording-only-key",
 };
 contractWith(
   it,

@@ -22,8 +22,8 @@ export const CATEGORIES = ['To Do', 'In Progress', 'Done'];
 export const KEY_PREFIX_PATTERN = /^[A-Z][A-Z0-9_]{0,9}$/i;
 export const DEFAULT_KEY_PREFIX = 'VJ';
 
-export const mappedAssigneeToken = 'acct:fixture:mapped:opaque-7';
-export const unmappedAssigneeToken = 'acct:fixture:unmapped:opaque-2';
+export const mappedAssigneeAccountId = 'acct:fixture:mapped:opaque-7';
+export const unmappedAssigneeAccountId = 'acct:fixture:unmapped:opaque-2';
 export const rolloverCycle = 'R2 Fixture Cycle / Rollover';
 export const currentCycle = 'R2 Fixture Cycle / Current';
 export const unmappedSprint = 'R2 Fixture Sprint / Unmapped';

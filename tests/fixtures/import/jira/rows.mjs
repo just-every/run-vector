@@ -1,4 +1,4 @@
-import { ISSUE_COUNT, PRIORITIES, STATUSES, CATEGORIES, mappedAssigneeToken, unmappedAssigneeToken, rolloverCycle, currentCycle, unmappedSprint, PARENTS, BLOCKS, DUPLICATES, RELATES, EXTERNAL_BLOCK, sourceIds } from './data.mjs';
+import { ISSUE_COUNT, PRIORITIES, STATUSES, CATEGORIES, mappedAssigneeAccountId, unmappedAssigneeAccountId, rolloverCycle, currentCycle, unmappedSprint, PARENTS, BLOCKS, DUPLICATES, RELATES, EXTERNAL_BLOCK, sourceIds } from './data.mjs';
 import { issueKey,formatDate } from './serialization.mjs';
 function statusFor(index, variant) {
   if (variant === 'unknown-status' && index === ISSUE_COUNT - 1) return 'Awaiting Product Review';
@@ -62,7 +62,7 @@ export function sourceRow(index, prefix, variant) {
     status,
     categoryFor(index, variant),
     PRIORITIES[index % PRIORITIES.length],
-    index % 4 === 0 ? mappedAssigneeToken : index % 4 === 1 ? unmappedAssigneeToken : '',
+    index % 4 === 0 ? mappedAssigneeAccountId : index % 4 === 1 ? unmappedAssigneeAccountId : '',
     `acct:fixture:reporter-${1 + (index % 3)}`,
     formatDate(index, variant),
     formatDate(index + 300, variant),

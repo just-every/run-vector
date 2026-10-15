@@ -33,7 +33,7 @@ export function createAdminRuntime(width, sourceFiles = []) {
     WORKSPACE_TIMEZONE: "Australia/Brisbane",
     DEFAULT_TEAM_NAME: "Delivery",
     DEFAULT_TEAM_PREFIX: "BOOT",
-    SESSION_SECRET: "fixture-admin-runtime-local-secret-32-characters",
+    SESSION_SECRET: "synthetic-fixture-admin-runtime-local-secret-32-characters",
     MAIL_FROM: "Vector <signin@admin-runtime.test>",
   };
   const environment = {

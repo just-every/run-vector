@@ -95,7 +95,7 @@ export async function checkJiraLossReview(f:Awaited<ReturnType<typeof setupImpor
  const report=await (await f.call('/data/import/runs/'+run.id+'/report')).json() as {jiraReview:unknown};expect(report.jiraReview).toEqual(oneReview.jiraReview);
  const rolled=await f.call('/data/import/runs/'+run.id+'/rollback','POST',{confirmed:true});expect(rolled.status).toBe(200);await f.finish(await rolled.json());
  const after=await counts();for(const table of tables.filter(table=>table==='issues'||(table.startsWith('issue_')&&table!=='issue_prefix_sequences')))expect(after[table],table).toBe(before[table]);expect(await f.effects()).toEqual(effects);
- const author=expected.nativeSetup.commentAuthorToken;
+ const author=expected.nativeSetup.commentAuthorAccountId;
  expect((await holders(env.DB,[author])).vector_import_reports).toBeGreaterThan(0);
  const erasurePreview=await f.call('/data/erasure/preview','POST',{names:[author]});expect(erasurePreview.status).toBe(200);
  const erasure=await f.call('/data/erasure','POST',{subject:{names:[author]},confirmation:'erase '+author});expect(erasure.status,await erasure.clone().text()).toBe(200);

@@ -21,7 +21,7 @@ contractWith(
       APP_ORIGIN: "https://vector.example.test",
       MAIL_MODE: "sendgrid",
       MAIL_PROVIDER: "sendgrid",
-      MAIL_API_KEY: "test-recording-only-key",
+      MAIL_API_KEY: "synthetic-test-recording-only-key",
     };
     let calls = 0;
     const transport: typeof fetch = async () => {

@@ -6,7 +6,7 @@ import type { WorkerBindings } from '../../src/core/app/bindings'
 export const origin = 'http://127.0.0.1:15920'
 export const bindings: WorkerBindings = {
   ...env, APP_ORIGIN: origin, SEED_SAMPLE_DATA: 'false', MAIL_MODE: 'local-outbox',
-  SESSION_SECRET: 'local-test-auth-secret-with-at-least-32-characters',
+  SESSION_SECRET: 'synthetic-local-test-auth-secret-with-at-least-32-characters',
   MAIL_FROM: 'Vector <signin@vector.test>', FIRST_OWNER_EMAIL: 'owner@base.test',
   FIRST_OWNER_NAME: 'Owner', WORKSPACE_NAME: 'Base integration', WORKSPACE_TIMEZONE: 'UTC',
   DEFAULT_TEAM_NAME: 'Delivery', DEFAULT_TEAM_PREFIX: 'BASE',

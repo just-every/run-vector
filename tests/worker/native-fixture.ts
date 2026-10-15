@@ -1,6 +1,6 @@
 import { opaqueToken, hashToken } from '../../vendor/base/operator-auth/crypto.mjs'
 import { createUlid } from '../../src/core/shared/ids'
-export const testSecret = 'local-test-auth-secret-with-at-least-32-characters'
+export const testSecret = 'synthetic-local-test-auth-secret-with-at-least-32-characters'
 export async function testCookie(db: D1Database, operatorId: string, expiresAt=new Date(Date.now()+86400000).toISOString(), revokedAt: string|null=null) {
  const token=opaqueToken(), now=Date.now()
  await db.prepare(`INSERT INTO oa_sessions(id,operator_id,operator_version,kind,token_hash,expires_at,revoked_at,created_at)

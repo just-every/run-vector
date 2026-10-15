@@ -6,7 +6,7 @@ import { writePrivateFile, privateDirectory } from '@runeditrun/rer/private-file
 import { publicNames } from './definition.mjs';
 import { join } from 'node:path';
 export const hostingDeclaration = '.rer/deploy/declaration.json';
-export const hostingSecrets = '.rer/deploy/secrets.env';
+export const hostingSecrets = './.rer/deploy/secrets.env';
 export async function prepareHosting(context, env) {
  const missing=publicNames.filter(key=>typeof env[key]!=='string'||!env[key].trim());
  if (missing.length) {context.store.report(`Missing ${missing.join(', ')}. See DEPLOY.md.`);throw context.fail('deploy');}

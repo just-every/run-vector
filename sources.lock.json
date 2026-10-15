@@ -483,7 +483,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "7b19f46b74b1dcff3d58aeeba842e1d852a3cd3e153d0f14fa7cdff1328ff3c9",
+      "sha256": "59f856937fa107576fec8202016950c993b63c4cc3420f0260fae3d7bfe179c6",
       "executable": false
     },
     "CLAUDE.md": {
@@ -1199,7 +1199,7 @@
       "executable": false
     },
     "scripts/installer/hosting.mjs": {
-      "sha256": "379b243baf7a5ad29035a5fb41dc513cb8cff0670f15278f1fa04642ea450078",
+      "sha256": "f46cbf830aaef3b491200fa3db4b6327d0a20291e89d8bf17b97b91b58e39440",
       "executable": false
     },
     "scripts/installer/local.mjs": {
@@ -3255,7 +3255,7 @@
       "executable": false
     },
     "tests/e2e/admin-runtime-support.mjs": {
-      "sha256": "a25952c91f41b946ed4cf6ec220eb935ef6aa08197f58bea1805c9540ff394de",
+      "sha256": "41014cebdd8df16fcb7446f0dabe296fadf4600df95e0186068d6a1e60b2d723",
       "executable": false
     },
     "tests/e2e/admin-runtime.mjs": {
@@ -3275,7 +3275,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "9f77a95ae7d98b96c5261277ec0fd2f751c893f7e2ef0c21660c1bb712cab915",
+      "sha256": "45e74505fbb843cd6748fb3e0a4bafad9998df3204ff1cd1dae1379de7bcf7e7",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
@@ -3443,7 +3443,7 @@
       "executable": false
     },
     "tests/e2e/integrations/outbound-native.mjs": {
-      "sha256": "4b65dedb62b54633fda761438ca7d5f6f7137a6185407150dd0bd12cb33816b3",
+      "sha256": "7bba0e611208e66c8ee30c762764a0d32fb31da0af197f115cc9e7dd17a1aa33",
       "executable": false
     },
     "tests/e2e/integrations/register-loader.mjs": {
@@ -3499,7 +3499,7 @@
       "executable": false
     },
     "tests/e2e/outbox-session.mjs": {
-      "sha256": "faa148468c4577943b56a7ca3b2e24c415604c4ce898fd57a54acfb3e53af00c",
+      "sha256": "7a8e5ce4470149fce9ac92cdbeb3254f8e3b35778ffc39c2b8870d0f4dd1fb9f",
       "executable": false
     },
     "tests/e2e/owned-dev-processes.mjs": {
@@ -3519,7 +3519,7 @@
       "executable": false
     },
     "tests/e2e/removal-runtime-support.mjs": {
-      "sha256": "101f8d3131c705e8627fed870e6073b5e34959d201b4b79077817be776b974d0",
+      "sha256": "3ee4c33ed36ea87cc0f2171c871d1f45d51471423faf1a3b725c3e6e63e544b4",
       "executable": false
     },
     "tests/e2e/restore-ui-journey.mjs": {
@@ -3587,11 +3587,11 @@
       "executable": false
     },
     "tests/fixtures/import/jira/data.mjs": {
-      "sha256": "68703384d305f1fa10895b997b39a0f3f15e131deff3061ee50c57850e3069b0",
+      "sha256": "19b4c1d27f69781a04777e7f64e4b6a82702ab6909c46eea2bf013203434324f",
       "executable": false
     },
     "tests/fixtures/import/jira/expected.mjs": {
-      "sha256": "4059c529246ac7154cb2a2d72e0c0a8f70fe2bff8d077ff55ba30f877f4237f5",
+      "sha256": "af95e0379d925fff5f883e67632601e3de315e6febd96c5f3d73dcf00ef58562",
       "executable": false
     },
     "tests/fixtures/import/jira/generate.mjs": {
@@ -3603,7 +3603,7 @@
       "executable": false
     },
     "tests/fixtures/import/jira/rows.mjs": {
-      "sha256": "a0c18d9d2b078b28758724473f81888bfcc48a583bff838f431ff6d269855e62",
+      "sha256": "3cb59f52264130d4d927bb1ad153cac134f248b5393a285af8a132bdd03afa3c",
       "executable": false
     },
     "tests/fixtures/import/jira/serialization.mjs": {
@@ -3651,7 +3651,7 @@
       "executable": false
     },
     "tests/markdown-rendering.test.tsx": {
-      "sha256": "50e723794b40175fd76814294d0bb39940c179528b734e477046bbb6b3a99ff0",
+      "sha256": "1af7ff1b3715875ec03c5eecf1caf4d9b4d26038175c93225baa434cd6f917c2",
       "executable": false
     },
     "tests/worker/administration-fixture.ts": {
@@ -3667,7 +3667,7 @@
       "executable": false
     },
     "tests/worker/base-auth-fixture.ts": {
-      "sha256": "f3daa5b077b46d1657c803699e80c7551fc9012a52c6d48869431f34dbd2da4c",
+      "sha256": "1c344c90cc863154a825165ef6ad2a1ef63e02edbe9d617e229f92381afcac2f",
       "executable": false
     },
     "tests/worker/base-auth.test.ts": {
@@ -3691,7 +3691,7 @@
       "executable": false
     },
     "tests/worker/collaboration-final-admission.test.ts": {
-      "sha256": "81b581abd1d777228d4f47666d6fab8168f9e1ae4f6d69c18fe8d695ae0895d9",
+      "sha256": "9680c8909f2723254803b65cb4fc5d1e76dcd710d58eb7663d53b8cbd4431936",
       "executable": false
     },
     "tests/worker/collaboration-fixture.ts": {
@@ -3699,7 +3699,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "95ce540387b6ce279648bfaf953123088227cf4ddccd98ddf862152d5a397bc1",
+      "sha256": "80c20048a3875730f473d424ea7374b8b1cced95bdbb1c6a1a5771c77b5f432d",
       "executable": false
     },
     "tests/worker/cycle-closure-fixture.ts": {
@@ -3895,7 +3895,7 @@
       "executable": false
     },
     "tests/worker/jira-apply-fixture.ts": {
-      "sha256": "5f4cb64d1f861f728730abf2824aa1ffcec5661340901bb6ec26917fb2d103ea",
+      "sha256": "3e30d82d08cb74e62e4fd65afb6e450ca5b1c887126d88dcf9a70d3ff3e9572a",
       "executable": false
     },
     "tests/worker/jira-apply.test.ts": {
@@ -3907,7 +3907,7 @@
       "executable": false
     },
     "tests/worker/jira-loss-review-fixture.ts": {
-      "sha256": "22ebe9a4f948271cad058383f5c43e4d8ba77319723005569e475059ef708fbf",
+      "sha256": "d676b3b8f1628dbf025efadf97effd04493f58aeee0cbf3005982965f4026aa8",
       "executable": false
     },
     "tests/worker/linear-api-import.test.ts": {
@@ -3931,7 +3931,7 @@
       "executable": false
     },
     "tests/worker/native-fixture.ts": {
-      "sha256": "457ed3d09ef93c214f9b3465d1118467c81c1c305aa819294aff733b337eb7c6",
+      "sha256": "cdc46ace7b5eeee28329cbd6f9bd41ee2e725bd1d3f9fcd9446425a8423020cc",
       "executable": false
     },
     "tests/worker/notification-postmail-session.test.ts": {
@@ -5943,7 +5943,7 @@
       "executable": false
     },
     "vitest.config.ts": {
-      "sha256": "9982334941edab18b11406a772404331659296e7bda09f1d9356faca7ceb5bc6",
+      "sha256": "f5d0adc93986f00270a2b81188b6d38e6bac1eba3f40ee905c9246be4773c9af",
       "executable": false
     },
     "vitest.markdown.config.ts": {

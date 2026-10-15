@@ -1,4 +1,4 @@
-import { ISSUE_COUNT, PRIORITIES, STATUSES, mappedAssigneeToken, unmappedAssigneeToken, rolloverCycle, currentCycle, unmappedSprint, PARENTS, BLOCKS, DUPLICATES, RELATES, EXTERNAL_BLOCK, labelNames, sourceIds } from './data.mjs';
+import { ISSUE_COUNT, PRIORITIES, STATUSES, mappedAssigneeAccountId, unmappedAssigneeAccountId, rolloverCycle, currentCycle, unmappedSprint, PARENTS, BLOCKS, DUPLICATES, RELATES, EXTERNAL_BLOCK, labelNames, sourceIds } from './data.mjs';
 import { issueKey } from './serialization.mjs';
 const RAW_OCCURRENCE_COUNTS = [
   ['issue-id', 1, 'Issue id', 300, 300],
@@ -150,13 +150,13 @@ export function makeExpected(prefix, variant) {
       unmappedSprints: [unmappedSprint],
       labels: [...labelNames],
       assigneeTokens: [
-        { token: mappedAssigneeToken, mapping: 'map explicitly to an existing active native operator' },
-        { token: unmappedAssigneeToken, mapping: 'leave unmapped; expected to remain unassigned' },
+        { token: mappedAssigneeAccountId, mapping: 'map explicitly to an existing active native operator' },
+        { token: unmappedAssigneeAccountId, mapping: 'leave unmapped; expected to remain unassigned' },
       ],
       reporterTokens: ['acct:fixture:reporter-1', 'acct:fixture:reporter-2', 'acct:fixture:reporter-3'],
-      commentAuthorToken: 'acct:fixture:comment-author',
-      attachmentAuthorToken: 'acct:fixture:attachment-author',
-      worklogAuthorToken: 'acct:fixture:worklog-author',
+      commentAuthorAccountId: 'acct:fixture:comment-author',
+      attachmentAuthorAccountId: 'acct:fixture:attachment-author',
+      worklogAuthorAccountId: 'acct:fixture:worklog-author',
     },
     variant,
     expectedRefusal: variant === 'ambiguous-numeric-dates'

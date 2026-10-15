@@ -13,7 +13,7 @@ const config = {
   APP_ORIGIN: origin,
   SEED_SAMPLE_DATA: "false",
   MAIL_MODE: "local-outbox",
-  SESSION_SECRET:"fixture-native-runtime-secret-with-at-least-32-characters",
+  SESSION_SECRET:"synthetic-fixture-native-runtime-secret-with-at-least-32-characters",
   MAIL_FROM:"Vector <signin@vector.test>",
   FIRST_OWNER_EMAIL: "owner@removal.test",
   FIRST_OWNER_NAME: "Workspace owner",

@@ -21,7 +21,7 @@ const config = {
   FIRST_OWNER_EMAIL: 'owner@auth-runtime.test', FIRST_OWNER_NAME: 'Workspace owner',
   WORKSPACE_NAME: 'Auth runtime', WORKSPACE_TIMEZONE: 'UTC',
   DEFAULT_TEAM_NAME: 'Delivery', DEFAULT_TEAM_PREFIX: 'AUTH',
-  SESSION_SECRET: 'fixture-local-runtime-secret-at-least-32-characters',
+  SESSION_SECRET: 'synthetic-fixture-local-runtime-secret-at-least-32-characters',
   MAIL_FROM: 'Vector <signin@auth-runtime.test>', RER_DEV_KEY: devKey,
 };
 const run = args => execFileSync(process.execPath, [wrangler,...args], { encoding:'utf8',env:processEnvironment,maxBuffer:16*1024*1024 });

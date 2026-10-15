@@ -21,7 +21,7 @@ try{
  openssl(['req','-newkey','rsa:2048','-nodes','-keyout','key.pem','-out','receiver.csr','-subj','/CN=receiver.example.com']);
  await writeFile(join(work,'receiver.ext'),'subjectAltName=DNS:receiver.example.com,DNS:private.example.com,DNS:redirect.example.com\nextendedKeyUsage=serverAuth\n');
  openssl(['x509','-req','-in','receiver.csr','-CA','ca.pem','-CAkey','ca.key','-CAcreateserial','-days','1','-out','cert.pem','-extfile','receiver.ext']);
- const config={APP_ORIGIN:origin,SEED_SAMPLE_DATA:'false',FIRST_OWNER_EMAIL:'owner@egress.example',FIRST_OWNER_NAME:'Owner',WORKSPACE_NAME:'Native delivery proof',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Native',DEFAULT_TEAM_PREFIX:'NAT',MAIL_MODE:'local-outbox',MAIL_FROM:'Vector <signin@example.com>',SESSION_SECRET:'local-only-egress-proof-secret-at-least-32-characters'};
+ const config={APP_ORIGIN:origin,SEED_SAMPLE_DATA:'false',FIRST_OWNER_EMAIL:'owner@egress.example',FIRST_OWNER_NAME:'Owner',WORKSPACE_NAME:'Native delivery proof',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Native',DEFAULT_TEAM_PREFIX:'NAT',MAIL_MODE:'local-outbox',MAIL_FROM:'Vector <signin@example.com>',SESSION_SECRET:'synthetic-local-only-egress-proof-secret-at-least-32-characters'};
  worker=await waveBWorker(origin,config,resolve('evidence/outbound-native'));
  const proxyOptions={configPath:join(worker.state,'wrangler.json'),persist:{path:join(worker.state,'v3')},remoteBindings:false};
  proxy=await getPlatformProxy(proxyOptions);

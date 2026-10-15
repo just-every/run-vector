@@ -142,10 +142,10 @@ it("ISSUE-013 safe readable canonical mentions", () => {
       </SafeMarkdown>,
     );
 
-  const token = "@{01ARZ3NDEKTSV4RRFFQ69G5FAV|Alice%20%3Cscript%3E}";
+  const mention = "@{01ARZ3NDEKTSV4RRFFQ69G5FAV|Alice%20%3Cscript%3E}";
   // "renders selected names as escaped text after Markdown parsing"
   {
-    const html = renderMention(`Hello ${token}.`);
+    const html = renderMention(`Hello ${mention}.`);
     expect(html).toContain("@Alice &lt;script&gt;");
     expect(html).not.toContain("01ARZ3NDEKTSV4RRFFQ69G5FAV");
     expect(html).not.toContain("<script>");
@@ -153,22 +153,22 @@ it("ISSUE-013 safe readable canonical mentions", () => {
   // "does not reinterpret code, link text, HTML, escapes, or email adjacency"
   {
     for (const body of [
-      `\`${token}\``,
-      `[${token}](https://example.test)`,
-      `\\${token}`,
-      `email${token}`,
-      `<span>${token}</span>`,
+      `\`${mention}\``,
+      `[${mention}](https://example.test)`,
+      `\\${mention}`,
+      `email${mention}`,
+      `<span>${mention}</span>`,
     ]) {
       expect(renderMention(body)).not.toContain("@Alice &lt;script&gt;");
     }
-    expect(renderMention(`\`\`\`\n${token}\n\`\`\``)).toContain(
+    expect(renderMention(`\`\`\`\n${mention}\n\`\`\``)).toContain(
       "01ARZ3NDEKTSV4RRFFQ69G5FAV",
     );
   }
-  // "keeps an identical escaped or entity-created token literal before a selected token"
+  // "keeps an identical escaped or entity-created mention literal before a selected mention"
   {
-    for (const literal of [`\\${token}`, token.replace("@", "&#64;")]) {
-      const html = renderMention(`${literal} then ${token}`);
+    for (const literal of [`\\${mention}`, mention.replace("@", "&#64;")]) {
+      const html = renderMention(`${literal} then ${mention}`);
       expect(html.match(/01ARZ3NDEKTSV4RRFFQ69G5FAV/g)).toHaveLength(1);
       expect(html.match(/@Alice &lt;script&gt;/g)).toHaveLength(1);
     }
@@ -176,7 +176,7 @@ it("ISSUE-013 safe readable canonical mentions", () => {
   // "keeps image loading explicit when mentions occur nearby"
   {
     const html = renderMention(
-      `${token}\n\n![Evidence](https://example.test/pixel.png)`,
+      `${mention}\n\n![Evidence](https://example.test/pixel.png)`,
     );
     expect(html).toContain("Load image: Evidence");
     expect(html).not.toContain("<img");
@@ -184,7 +184,7 @@ it("ISSUE-013 safe readable canonical mentions", () => {
 
   // Unknown canonical identity remains literal.
   {
-    const token = "@{01ARZ3NDEKTSV4RRFFQ69G5FAV|Alice%20Smith}";
-    expect(render(token)).toContain(token);
+    const mention = "@{01ARZ3NDEKTSV4RRFFQ69G5FAV|Alice%20Smith}";
+    expect(render(mention)).toContain(mention);
   }
 });

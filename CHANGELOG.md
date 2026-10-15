@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Mark synthetic credentials and distinguish account IDs, mentions and file references for hosted source admission.
+
 ## 0.2.0 — 2026-10-16
 
 ### Upgrading from 0.1.0
