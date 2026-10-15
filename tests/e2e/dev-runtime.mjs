@@ -1,5 +1,6 @@
 import { reviewDevelopmentImport } from './data-development-journey.mjs';
 import { finishFirstRun } from './first-run-fixture.mjs';
+import { openGate, readCheckoutKey } from './dev-gate.mjs';
 import { navigate, settleReads } from "./collaboration-navigation.mjs";
 import { verificationDirectory } from '../../scripts/verification-paths.mjs';
 import { observeUiFailure, writeUiFailureDiagnostic } from "./ui-failure-diagnostics.mjs";
@@ -300,12 +301,22 @@ try {
   );
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.waitForLoadState("networkidle");
+  // Dev v2 uses the checkout key and one-click owner entry, including when
+  // this journey previously exercised an ordinary email confirmation session.
+  await openGate(page.context(), base, await readCheckoutKey(process.cwd()));
   await navigate(page, base + "/signin");
-  await page
-    .getByRole("heading", { name: "Sign in to your workspace" })
-    .waitFor();
+  await page.getByRole("heading", { name: "Open your local app", exact: true }).waitFor();
+  await page.getByRole("link", { name: "Continue as owner", exact: true }).click();
+  await page.waitForURL(base + "/app");
+  await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
+  const localSession = await page.request.get(base + "/auth/session");
+  assert.equal(localSession.status(), 200);
+  const identity = await localSession.json();
+  assert.equal(identity.kind, "dev");
+  assert.equal(identity.operator.email, "sarah@vector.test");
+  assert.equal((await page.request.get(base + "/__dev/outbox")).status(), 404);
   await settleReads(page);
-  await page.getByRole("link", { name: "← Return to welcome" }).click();
+  await navigate(page, base + "/");
   await page.waitForURL(base + "/");
   assert.deepEqual(errors, []);
   assert.deepEqual(failed, []);
