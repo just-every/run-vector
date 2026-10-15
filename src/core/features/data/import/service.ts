@@ -9,6 +9,7 @@ import { buildJiraReview } from './jira-review';
 import { jiraInput } from './jira';
 import { linearInput } from './linear';
 import { importContext,type ImportActor } from './authority';
+import { wireDatabase } from './wire';
 import { nativeTargets,nativeTargetsForRun } from './native-targets';
 import { createReservedImport,preflightReservedImport,importRunMetadata } from './reservations';
 import { explainResumeFailure } from './recovery';
@@ -112,7 +113,7 @@ async function runContext(db:D1Database,actor:ImportActor,id:string,batchSize=10
   if(!/^[a-f0-9-]{36}$/.test(id))throw new ImportError(400,'invalid_import_run');
   const row=await db.prepare('SELECT j.namespace,j.mapping_version,r.batch_size FROM ik_jobs j LEFT JOIN vector_import_runs r ON r.job_id=j.id WHERE j.id=? AND j.destination=? AND j.principal_id=?').bind(id,actor.workspace,actor.id).first<{namespace:string;mapping_version:string;batch_size:number|null}>();
   if(!row || !row.namespace.startsWith('vector-import:'))throw new ImportError(409,'import_run_unavailable');
-  return {...importContext(db,actor,row.namespace,row.mapping_version),storage:{database:db,targets:nativeTargetsForRun(id)},batchSize:row.batch_size??batchSize,maxBatches:1};
+  return {...importContext(db,actor,row.namespace,row.mapping_version),storage:{database:wireDatabase(db),targets:nativeTargetsForRun(id)},batchSize:row.batch_size??batchSize,maxBatches:1};
 }
 export async function importStatus(db:D1Database,actor:ImportActor,id:string) {
   return withProgress(db,await readD1ImportJob(id,await runContext(db,actor,id)));
