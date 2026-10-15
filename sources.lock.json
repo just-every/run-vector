@@ -483,7 +483,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "687e6c1eb2a1c43402580138cb4d0be70147f100122e15005630884ee9495ab8",
+      "sha256": "a6f9415345f79a064a7307af8db924d0eb7123251c35bf09ec98460c0cd0bde5",
       "executable": false
     },
     "CLAUDE.md": {
@@ -623,7 +623,7 @@
       "executable": false
     },
     "docs/MANAGED-SOURCE.md": {
-      "sha256": "6ed556dcdcc32a52d4b56f973768a646e877267583b7719300c5786e16552180",
+      "sha256": "4d185515fc6b902e3fdaaebf0ad65605961064bc2038762b6f85b6f74991826f",
       "executable": false
     },
     "docs/MOVE-IN-CHECKLIST.md": {
@@ -947,11 +947,11 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "f22cdd13b973a85d0e04f64c8d8205d6f1512cec5a0c5974f975d7d5911ef783",
+      "sha256": "ab1fa81aaf27c5b4133a5ca72de6afb2c08ea775e7404e475860488a0426e7b2",
       "executable": false
     },
     "rer-setup.json": {
-      "sha256": "ab5e5ebfce19f7996d280e7136b2d838cf76ab2a64e6586ecdb19e791f0b4b4d",
+      "sha256": "6b6f0c3fb294bc62ab5add3b163f01f230ee9eebb4f71469ff23c0d99f2a0107",
       "executable": false
     },
     "RUN-LOCALLY.md": {

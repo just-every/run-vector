@@ -85,8 +85,12 @@
       "label": "Mail provider",
       "kind": "select",
       "required": true,
-      "default": "sendgrid",
+      "default": "local-outbox",
       "options": [
+        {
+          "value": "local-outbox",
+          "label": "Local development outbox"
+        },
         {
           "value": "sendgrid",
           "label": "SendGrid"

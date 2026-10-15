@@ -7,7 +7,7 @@ Add a persisted daily reminder clock in Settings (09:00 in workspace time by def
 
 ## Unreleased
 
-- Pin rer 0.2.22 and adopt Base's native RER mail adapter for Managed Vector sign-in, invitations and notification mail. Managed Configure supplies and hides `MAIL_PROVIDER=rer`, `MAIL_FROM`, `MAIL_RELAY_URL` and private `MAIL_API_KEY`; customers need no mail-provider account or key. Free and Assisted provider choices and owner-account SendGrid deployment remain unchanged. Notification retries retain three attempts within 24 hours and respect `Retry-After`; failed authentication delivery revokes the issued link. This source change does not establish hosted relay acceptance.
+- Pin rer 0.2.22 and adopt Base's native RER mail adapter for Managed Vector sign-in, invitations and notification mail. Managed Configure supplies and hides `MAIL_PROVIDER=rer`, `MAIL_FROM`, `MAIL_RELAY_URL` and private `MAIL_API_KEY`; customers need no mail-provider account or key. Free and Assisted provider choices and owner-account SendGrid deployment remain unchanged. Local setup keeps its development outbox without requesting a mail credential; hosted Configure refuses that local-only choice. Notification retries retain three attempts within 24 hours and respect `Retry-After`; failed authentication delivery revokes the issued link. This source change does not establish hosted relay acceptance.
 
 - Release hardening: the installed lobby recognises the persisted owner claim before workspace review; local invitations explain that no email is sent and how to open a teammate session. Document owner-first teammate entry, simplify the webhook delivery note, and shard push verification while retaining installer/README clone journeys on release tags and nightly.
 
