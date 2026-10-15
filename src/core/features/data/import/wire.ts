@@ -1,7 +1,7 @@
 import { Buffer } from 'node:buffer';
 import type { D1Database,D1Statement } from '../../../../../vendor/base/import-kit/src/d1/index';
 
-/** D1 limits one batch to 32 MiB on the wire, and the runtime sends a string that
+/** D1 limits one call to 32 MiB on the wire, and the runtime sends a string that
  * holds any character above U+00FF as two bytes per character. One em dash in an
  * import file therefore doubled the retained plan and failed a 2,000-row apply at
  * about 1,700 rows. The kit passes its large values as JSON text read with
@@ -29,17 +29,32 @@ export function wireValues(sql:string,values:unknown[]):unknown[] {
   });
 }
 
+/** Every batch publication reloads the whole retained plan in one SELECT. The
+ * result travels as one two-byte call when any chunk holds a character above
+ * U+00FF, which passed 32 MiB at about 2,000 rows. The chunks are immutable
+ * once created, so reading them in a few pages returns the same rows. */
+const planRead=/^SELECT \* FROM ik_d1_plan_chunks WHERE job_id IN \(SELECT value FROM json_each\(\?\)\).* ORDER BY job_id,ordinal$/;
+const planPage=3;
+async function pagedPlanRead(sql:string,values:unknown[],prepare:(sql:string)=>D1Statement) {
+  const results:Record<string,unknown>[]=[];
+  for(let offset=0;;offset+=planPage){
+    const page=await prepare(`${sql} LIMIT ${planPage} OFFSET ${offset}`).bind(...values).all();
+    results.push(...page.results);
+    if(page.results.length<planPage)return {results};
+  }
+}
+
 type Wired=D1Statement&{native:D1Statement};
-function wrap(native:D1Statement,sql:string):Wired {
+function wrap(native:D1Statement,sql:string,prepare:(sql:string)=>D1Statement,values:unknown[]=[]):Wired {
   return {native,
-    bind:(...values:unknown[])=>wrap(native.bind(...wireValues(sql,values)),sql),
+    bind:(...bound:unknown[])=>{const wired=wireValues(sql,bound);return wrap(native.bind(...wired),sql,prepare,wired);},
     first:(...args:[])=>native.first(...args),
-    all:(...args:[])=>native.all(...args)} as Wired;
+    all:(...args:[])=>planRead.test(sql)?pagedPlanRead(sql,values,prepare):native.all(...args)} as Wired;
 }
 /** The kit's database with large JSON parameters kept one-byte on the wire. */
 export function wireDatabase(db:D1Database):D1Database {
   return {
-    prepare:sql=>wrap(db.prepare(sql),sql),
+    prepare:function prepare(sql:string):D1Statement{return wrap(db.prepare(sql),sql,prepare);},
     batch:statements=>db.batch(statements.map(statement=>(statement as Partial<Wired>).native??statement)),
   };
 }
