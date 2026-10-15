@@ -2071,18 +2071,25 @@
       }
     },
     {
-      "path": "vendor/base/mail/src/core",
-      "originPath": "modules/mail/src/core",
+      "path": "vendor/base/mail/src/core/errors.mjs",
+      "originPath": "modules/mail/src/core/errors.mjs",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
       "files": {
-        "vendor/base/mail/src/core/errors.mjs": "ad6d85870719774eff284328d54bdcb20cc9fb24faf790e3f1e934d19be5197c",
-        "vendor/base/mail/src/core/transport.mjs": "3f7bf52854e4908bb69b93032ac65cbd90bba57d03a62da1c2652ef4e470a1f8",
-        "vendor/base/mail/src/core/validation.mjs": "6a08d0f42f795b8e16520a3f7ea2a1accef17c91584f13f9be791c2d3e6f4f56"
+        "vendor/base/mail/src/core/errors.mjs": "ad6d85870719774eff284328d54bdcb20cc9fb24faf790e3f1e934d19be5197c"
       },
       "modes": {
-        "vendor/base/mail/src/core/errors.mjs": "100644",
-        "vendor/base/mail/src/core/transport.mjs": "100644",
-        "vendor/base/mail/src/core/validation.mjs": "100644"
+        "vendor/base/mail/src/core/errors.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/core/transport.mjs",
+      "originPath": "modules/mail/src/core/transport.mjs",
+      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "files": {
+        "vendor/base/mail/src/core/transport.mjs": "3f7bf52854e4908bb69b93032ac65cbd90bba57d03a62da1c2652ef4e470a1f8"
+      },
+      "modes": {
+        "vendor/base/mail/src/core/transport.mjs": "100644"
       }
     },
     {
