@@ -117,6 +117,10 @@
       "reason": "The product contract, clause by clause, for maintainers and reviewers"
     },
     {
+      "source": "DEMO.md",
+      "reason": "Demo adoption, operation and proof limitations, for maintainers"
+    },
+    {
       "source": "DEPLOY.md",
       "reason": "Owner-account deployment runbook with its credential boundary; linked from the install page"
     },
@@ -375,6 +379,10 @@
     {
       "source": "vendor/base/owner-claim/README.md",
       "reason": "Vendored Base library documentation, kept with its source"
+    },
+    {
+      "source": "vendor/demo/demo/README.md",
+      "reason": "Vendored Base demo guard documentation, kept with its source"
     },
     {
       "source": "tests/fixtures/import/jira/README.md",

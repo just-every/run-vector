@@ -639,7 +639,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "ca5f5929285c67ce19b34f84d27b9d27a07c5c3d8fa84ef289e60b73718b8766",
+      "sha256": "39125e67b6ff78099419949f0d9761de30e0de8c8aa5fdfe2580d3e81f1216ff",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -1575,7 +1575,7 @@
       "executable": false
     },
     "src/core/app/site/home/hero.tsx": {
-      "sha256": "c9b9a47d6d70bd709a7fbdb606ffd3f115fc1839b6e41091995a8a0d230eda7d",
+      "sha256": "0419c57c3a245c3b2a305bcdec810d24741a992df8f07ad79bd2ad9c511a1dcf",
       "executable": false
     },
     "src/core/app/site/home/home-page.tsx": {
