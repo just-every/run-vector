@@ -239,6 +239,17 @@
       }
     },
     {
+      "path": "scripts/delivery/base/mail.mjs",
+      "originPath": "modules/delivery-producer/mail.mjs",
+      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
+      "files": {
+        "scripts/delivery/base/mail.mjs": "2323205c7cbc1aea81ec85509d597df2e486abfc9443981ceaee04950db913a4"
+      },
+      "modes": {
+        "scripts/delivery/base/mail.mjs": "100644"
+      }
+    },
+    {
       "path": "scripts/delivery/base/migrations.mjs",
       "originPath": "modules/delivery-producer/migrations.mjs",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
@@ -329,9 +340,9 @@
     {
       "path": "scripts/delivery/base/spec.mjs",
       "originPath": "modules/delivery-producer/spec.mjs",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
       "files": {
-        "scripts/delivery/base/spec.mjs": "4526a4d0f3ec141b4afa8d848badb12a08e42d60e1b00bd1db9e63064483428b"
+        "scripts/delivery/base/spec.mjs": "6a11b2986a98936f60c8984e73add5ba491002f0609fb0b478874967caaffd92"
       },
       "modes": {
         "scripts/delivery/base/spec.mjs": "100644"
@@ -2088,7 +2099,7 @@
     {
       "path": "vendor/base/mail/src/adapters",
       "originPath": "modules/mail/src/adapters",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
       "files": {
         "vendor/base/mail/src/adapters/cloudflare/headers.mjs": "6bee46c1edb6228b9d3df8b26ca1acbb163c36d94ecbd8e28ace1a6811095f23",
         "vendor/base/mail/src/adapters/cloudflare/index.mjs": "377e4a322ac7803a1c56986ac909c35c1328896cff07c0610abbad5e8f8c3f86",
@@ -2101,6 +2112,8 @@
         "vendor/base/mail/src/adapters/messaging/README.md": "b9dcfc5aeeb1ee2118486efa584b790cee9f77e1c7c95036d6ff99e48df317db",
         "vendor/base/mail/src/adapters/messaging/request.mjs": "40a8a800c8791bceb8a9d7c86976693c9fb6eeb37d0b902c0fdab93b6b5c7f71",
         "vendor/base/mail/src/adapters/messaging/serialize.mjs": "4ee46c1ccb75edfd53b94bfff67ccdb08196a3ee68576c1eb0aa2494f9d4e1f5",
+        "vendor/base/mail/src/adapters/rer/contract.mjs": "b8ae90da173b40c7bde1a194ac35e9367802b9b608f050d63e2337a64e58454c",
+        "vendor/base/mail/src/adapters/rer/index.mjs": "2f27ff23d1182b4792b13b777e44fe1de9f7568474df11f3b60655415d2a6635",
         "vendor/base/mail/src/adapters/resend/index.mjs": "03d292468577cb51b012b2c71c13654cd7b0af82c240ec124921ee88e05639dc",
         "vendor/base/mail/src/adapters/resend/README.md": "07487907a351cde380774bed9b1f7b8d387f55f19be02990a521e25bdb09d468",
         "vendor/base/mail/src/adapters/resend/response.mjs": "a0f26cafacdae8c6b8070a9ddeb7c1a68a67b47310d27932e59f425450b4b650",
@@ -2122,6 +2135,8 @@
         "vendor/base/mail/src/adapters/messaging/README.md": "100644",
         "vendor/base/mail/src/adapters/messaging/request.mjs": "100644",
         "vendor/base/mail/src/adapters/messaging/serialize.mjs": "100644",
+        "vendor/base/mail/src/adapters/rer/contract.mjs": "100644",
+        "vendor/base/mail/src/adapters/rer/index.mjs": "100644",
         "vendor/base/mail/src/adapters/resend/index.mjs": "100644",
         "vendor/base/mail/src/adapters/resend/README.md": "100644",
         "vendor/base/mail/src/adapters/resend/response.mjs": "100644",
@@ -2133,17 +2148,35 @@
       }
     },
     {
-      "path": "vendor/base/mail/src/core",
-      "originPath": "modules/mail/src/core",
+      "path": "vendor/base/mail/src/core/errors.mjs",
+      "originPath": "modules/mail/src/core/errors.mjs",
       "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
       "files": {
-        "vendor/base/mail/src/core/errors.mjs": "ad6d85870719774eff284328d54bdcb20cc9fb24faf790e3f1e934d19be5197c",
-        "vendor/base/mail/src/core/transport.mjs": "3f7bf52854e4908bb69b93032ac65cbd90bba57d03a62da1c2652ef4e470a1f8",
-        "vendor/base/mail/src/core/validation.mjs": "6a08d0f42f795b8e16520a3f7ea2a1accef17c91584f13f9be791c2d3e6f4f56"
+        "vendor/base/mail/src/core/errors.mjs": "ad6d85870719774eff284328d54bdcb20cc9fb24faf790e3f1e934d19be5197c"
       },
       "modes": {
-        "vendor/base/mail/src/core/errors.mjs": "100644",
-        "vendor/base/mail/src/core/transport.mjs": "100644",
+        "vendor/base/mail/src/core/errors.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/core/transport.mjs",
+      "originPath": "modules/mail/src/core/transport.mjs",
+      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
+      "files": {
+        "vendor/base/mail/src/core/transport.mjs": "aecc91b5b12c2f315a3154679bb6780518453d04516c750517f06f25548ebb18"
+      },
+      "modes": {
+        "vendor/base/mail/src/core/transport.mjs": "100644"
+      }
+    },
+    {
+      "path": "vendor/base/mail/src/core/validation.mjs",
+      "originPath": "modules/mail/src/core/validation.mjs",
+      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
+      "files": {
+        "vendor/base/mail/src/core/validation.mjs": "382fe04dfa3dbcacb81b817e9d69ea5d4fd6542a887765078991c6fd0acc91b0"
+      },
+      "modes": {
         "vendor/base/mail/src/core/validation.mjs": "100644"
       }
     },
@@ -2305,9 +2338,9 @@
     {
       "path": "vendor/base/mail/src/sender.mjs",
       "originPath": "modules/mail/src/sender.mjs",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
       "files": {
-        "vendor/base/mail/src/sender.mjs": "1e4ec0a59b6a7a523ed929e56bc5a9433b039ff75c5611d8e1a9162d8a508a6b"
+        "vendor/base/mail/src/sender.mjs": "32e35cd88b3b7199f5ce7ac7139be853890428549a84f70a733a5a9a0df6979d"
       },
       "modes": {
         "vendor/base/mail/src/sender.mjs": "100644"

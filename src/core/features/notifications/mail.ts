@@ -1,9 +1,10 @@
 import { developmentSender } from '../auth/development.server';
+import { hostedMailSender } from '../../platform/mail';
 import seed from "../../../../seed.json";
 // Pinned Base owns transport serialization, validation and single submission.
 // @ts-expect-error Base's native ESM facade has no TypeScript declarations.
 import * as baseMail from "../../../../vendor/base/mail/index.mjs";
-const { createMailSender, MailValidationError } = baseMail;
+const { MailValidationError } = baseMail;
 import type { WorkerBindings } from "../../app/bindings";
 import { notificationEmailAvailable } from "./context";
 import { activeRecipient } from "./events";
@@ -26,6 +27,7 @@ export type MailResult = {
   status:
     "accepted" | "development" | "uncertain" | "rejected" | "rate_limited";
   code?: string;
+  retryAfterSeconds?: number;
 };
 export type MailDependencies = {
   fetch?: typeof fetch;
@@ -46,10 +48,7 @@ export function notificationMessage(env: WorkerBindings, delivery: Delivery) {
 function senderFor(env: WorkerBindings, dependencies: MailDependencies) {
   if (env.RER_DEMO === "1" || env.MAIL_MODE === "local-outbox")
     return developmentSender(env);
-  return createMailSender(
-    { provider: "sendgrid", mode: "production", apiKey: env.MAIL_API_KEY },
-    dependencies.fetch ? { fetch: dependencies.fetch } : {},
-  );
+  return hostedMailSender(env, dependencies.fetch);
 }
 /** Current recipient and issue authority, independent of the actor's old session. */
 async function admitted(
@@ -191,7 +190,7 @@ export async function drainNotificationMail(
     }
     // Construct the facade before final admission. From admission's resolution to
     // send invocation there is no hook, timer, or intervening asynchronous await.
-    let sender: ReturnType<typeof createMailSender>;
+    let sender: ReturnType<typeof senderFor> | null;
     try {
       sender = notificationEmailAvailable(env)
         ? senderFor(env, options.dependencies ?? {})
@@ -257,7 +256,8 @@ export async function drainNotificationMail(
           : "provider_rejected";
       if (!exhausted)
         next = new Date(
-          now.getTime() + (delivery.attempts === 1 ? 60_000 : 5 * 60_000),
+          now.getTime() + Math.max(delivery.attempts === 1 ? 60_000 : 5 * 60_000,
+            (result.retryAfterSeconds ?? 0) * 1000),
         ).toISOString();
     } else if (status === "uncertain") reason = "submission_uncertain";
     // If this batch fails, the durable claim remains. Cron marks it uncertain;

@@ -33,7 +33,9 @@ export function SignInPage({ providerLinks = [] }: { providerLinks?: {id: string
         .parse(await response.json());
       if (!response.ok)
         throw new Error(
-          body.message ??
+          (body.error === 'mail_unavailable'
+            ? 'Sign-in email is unavailable. Ask the workspace owner to check its mail settings.'
+            : body.message) ??
             body.error ??
             `Sign-in could not be requested (${response.status}).`,
         );

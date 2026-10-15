@@ -20,6 +20,7 @@ export type WorkerBindings = Pick<VectorBindings, 'DB' | 'FILES' | 'APP_ORIGIN'>
   MAIL_PROVIDER?: string
   MAIL_API_KEY?: string
   MAIL_FROM?: string
+  MAIL_RELAY_URL?: string
   RER_DEPLOY_SOURCE?: string
   RER_DEPLOY_FINGERPRINT?: string
   RER_VERSION?: { id: string }

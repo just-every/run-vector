@@ -6,7 +6,7 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Install
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-(or `npm install --global @runeditrun/rer@0.2.20`). Then get Vector and start it:
+(or `npm install --global @runeditrun/rer@0.2.22`). Then get Vector and start it:
 
 ```sh
 git clone https://github.com/just-every/run-vector.git vector

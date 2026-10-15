@@ -4,19 +4,19 @@ Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b60
 
 | Local selection | Source or role |
 | --- | --- |
-| @runeditrun/rer 0.2.20 | exact package pin for the public `rer` command and shared lifecycle runtime |
+| @runeditrun/rer 0.2.22 | exact package pin for the public `rer` command and shared lifecycle runtime |
 | scripts/installer | Vector's existing installer adapter using package exports |
 | src/base | unchanged Lobby, setup-state and run-site runtime from Base `8981bc2c4d9e61feca5787c83b4ed44056659dd9` |
 | vendor/base/operator-auth | native operator authentication and dev v2, from Base rer 0.2.20 (`38aa7ef`); the dev label import is an explicit product adaptation to the package export |
 | migrations/core/0048_owner_signin.sql | the unchanged owner sign-in grant table, from Base `e17843562355e1b6e5068289c8e037951fbc8d3d` (rer 0.2.19) |
 | vendor/base/demo | demo guard, real public reads, mocked sends and Demo/Dev labels from Base rer 0.2.20 (`38aa7ef`) |
-| vendor/base/mail | transactional mail and retained local mail storage; no captured-mail viewer |
-| @runeditrun/rer 0.2.20 | published CLI, owner-account deploy, portability and operations |
+| vendor/base/mail | native RER adapter identical to rer 0.2.22; relay validation/transport from Base `a1cde988`; existing development outbox retained |
+| @runeditrun/rer 0.2.22 | published CLI, owner-account deploy, portability and operations |
 | scripts/edition-authoring | one authoring implementation |
 | vendor/base/schema | release/seed/setup validation |
 | migrations/core/0022_portability.sql | native portability schema |
 
-`base-copies.json` and edition origins describe the selections. Run `sources:verify-base`, `sources:check`, and `verify-base --base PATH` when refreshing them. Historical SQL 0001–0021 is unchanged. Product adapters own bindings, equal-operator authority, route selection, native mutations and archive policy. Three import-kit D1 files remove unused type imports for Vector’s compiler; those adaptations remain in the edition origin mappings and are excluded from byte-copy claims. The registry schema is also an explicitly mapped product adaptation. Mail’s `src/inbound/headers.mjs` is a security adaptation: header parsing removes overlapping whitespace repetition, and message IDs validate intervening text without deletion-based sanitization, preserving parsing behavior. Its edition origin mapping remains; split mail copy records retain the original revision, digests and modes for every other mail file and exclude only this adaptation.
+`base-copies.json` and edition origins describe the selections. Run `sources:verify-base`, `sources:check`, and `verify-base --base PATH` when refreshing them. Historical SQL 0001–0021 is unchanged. `src/core/platform/mail.ts` selects the native Base sender, omits auth’s internal auto-response hint for the relay content contract, passes `Retry-After` seconds to Vector’s queue, and implements the adapter’s `redirect: error` at the Workerd fetch boundary using `manual` plus 3xx rejection (Workerd does not accept `error`). It does not serialize relay requests or fork the adapter. Product adapters own bindings, equal-operator authority, route selection, native mutations and archive policy. Three import-kit D1 files remove unused type imports for Vector’s compiler; those adaptations remain in the edition origin mappings and are excluded from byte-copy claims. The registry schema is also an explicitly mapped product adaptation. Mail’s `src/inbound/headers.mjs` is a security adaptation: header parsing removes overlapping whitespace repetition, and message IDs validate intervening text without deletion-based sanitization, preserving parsing behavior. Its edition origin mapping remains; split mail copy records retain the original revision, digests and modes for every other mail file and exclude only this adaptation.
 
 Public lifecycle commands dispatch through `rer` and the existing installer adapter. Root `rer-setup.json` is the single field/secret model. Node 22.20.0 and pnpm 10.12.4 are pinned. Setup preserves private settings and accepted data; development exposes health-gated readiness and automatic owner entry through `RER_OPEN`, including legacy `--login`. It has no badge, toolbar or captured-mail UI; preview serves production output without captured-mail sign-in. Production requires declared outbound email or an approved Auth SSO setup dependency. Reset requires confirmation and removes only inventoried local state. See README.md and docs/LOCAL-RECOVERY.md before moving ambiguous old state.
 

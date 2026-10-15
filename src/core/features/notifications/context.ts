@@ -1,4 +1,5 @@
 import type { WorkerBindings } from "../../app/bindings";
+import { hostedMailConfigured } from "../../platform/mail";
 const contexts = new WeakMap<
   D1Database,
   { available: boolean; origin: string; eventIds: Set<string> }
@@ -25,8 +26,7 @@ export function notificationEmailAvailable(env: WorkerBindings): boolean {
     return ["localhost", "127.0.0.1", "[::1]"].includes(origin.hostname) && Boolean(env.SESSION_SECRET && env.SESSION_SECRET.length >= 32);
   return (
     origin.protocol === "https:" &&
-    env.MAIL_PROVIDER === "sendgrid" &&
-    Boolean(env.MAIL_API_KEY)
+    hostedMailConfigured(env)
   );
 }
 export function configureNotifications(db: D1Database, env: WorkerBindings) {

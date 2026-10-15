@@ -34,7 +34,9 @@
     "SEED_SAMPLE_DATA": "false",
     "APP_ORIGIN": "http://127.0.0.1:15920",
     "MAIL_MODE": "production",
-    "MAIL_PROVIDER": "sendgrid"
+    "MAIL_PROVIDER": "sendgrid",
+    "MAIL_FROM": "",
+    "MAIL_RELAY_URL": ""
   },
   "triggers": {
     "crons": [

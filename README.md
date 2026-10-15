@@ -46,7 +46,7 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Two ste
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-or `npm install --global @runeditrun/rer@0.2.20`. This checkout pins rer 0.2.20 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
+or `npm install --global @runeditrun/rer@0.2.22`. This checkout pins rer 0.2.22 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
 
 **2. Get Vector and start it:**
 
@@ -78,6 +78,10 @@ rer reset --yes
 ```
 
 Reset removes local D1/R2, owner/sessions/outbox, installer drafts and generated settings. Source, dependencies, export archives and `.rer/deploy` receipts survive. See [SEED-COMMAND-CONTRACT.md](SEED-COMMAND-CONTRACT.md) for flags, exit codes and private state custody, and [Installer instructions](docs/INSTALLER.md) for setup details.
+
+## Managed hosting
+
+Managed Vector uses the Run Edit Run mail relay for sign-in, invitations, assignments and direct mentions. Configure supplies and hides `MAIL_PROVIDER=rer`, `MAIL_FROM`, `MAIL_RELAY_URL` and the private `MAIL_API_KEY`; you do not need a mail-provider account or key. Free and Assisted provider choices remain available. See [Managed source](docs/MANAGED-SOURCE.md) for relay limits and credential recovery. Hosted delivery acceptance requires separate validation.
 
 ## Your own hosting account
 
@@ -152,7 +156,7 @@ Operators can follow or mute their own issue notifications. Creators, assignees,
 
 Inbox lists assignments, selected mentions, comments on followed issues, returns of an operator's deferred intake, last-blocker resolution from a status change or dependency removal, and daily due/first-overdue reminders for assigned incomplete work. Settings sets the workspace reminder clock (09:00 by default). Opening a row marks it read; Mark all read and a live unread count are available. Settings controls event-type mutes, email preference and issue mutes, and shows failed or uncertain email outcomes. Mutes suppress future matching Inbox events and any matching mail that has not yet been sent; email opt-out also suppresses unsent mail while leaving Inbox active. Mutes do not unfollow issues or change historical Inbox rows or activity; unmuting does not backfill notifications.
 
-Email is limited to assignments and direct mentions. It uses the existing Base transactional mail provider. `NOTIFICATION_EMAIL_ENABLED=false` or unavailable mail capability disables it without queuing mail intents; each operator's preference defaults on when email is available. When email or operator removal is unavailable because deployment setup is incomplete, Settings explains who can finish setup and points to DEPLOY.md. A message contains the recipient address, issue title and identifier, readable actor, and a canonical issue link that requires sign-in. It includes no issue body, evidence or attachment details. Accepted messages are not proof of mailbox arrival; a definite provider rejection or rate limit gets at most three total attempts within 24 hours, with retries run by Cron, while uncertain or interrupted sends are never automatically resent. An already-started external send cannot be recalled by later local erasure. Due reminders stay in the Inbox. Digests, Slack and other chat channels remain deferred. See [Notifications and outbound email](docs/NOTIFICATIONS.md) for configuration, retry and privacy details.
+Email is limited to assignments and direct mentions. It uses the pinned Base transactional mail adapter: the RER relay for Managed hosting, or the configured provider such as SendGrid for owner-account hosting. `NOTIFICATION_EMAIL_ENABLED=false` or unavailable mail capability disables it without queuing mail intents; each operator's preference defaults on when email is available. When email or operator removal is unavailable because deployment setup is incomplete, Settings explains who can finish setup and points to DEPLOY.md. A message contains the recipient address, issue title and identifier, readable actor, and a canonical issue link that requires sign-in. It includes no issue body, evidence or attachment details. Accepted messages are not proof of mailbox arrival; a definite provider rejection or rate limit gets at most three total attempts within 24 hours, with retries run by Cron and delayed by any provider `Retry-After`, while uncertain or interrupted sends are never automatically resent. An already-started external send cannot be recalled by later local erasure. Due reminders stay in the Inbox. Digests, Slack and other chat channels remain deferred. See [Notifications and outbound email](docs/NOTIFICATIONS.md) for configuration, retry and privacy details.
 
 ## Data and updates
 

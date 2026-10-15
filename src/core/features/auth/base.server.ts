@@ -1,7 +1,5 @@
 import { createOperatorAuth, AuthError, type RolePolicy } from '../../../../vendor/base/operator-auth/index.mjs'
-// Base mail ships native ESM without declarations. The adapter owns its narrow boundary.
-// @ts-expect-error Base mail has no declaration file.
-import { createMailSender } from '../../../../vendor/base/mail/index.mjs'
+import { hostedMailSender } from '../../platform/mail'
 import type { WorkerBindings } from '../../app/bindings'
 import { developmentSender, localMailEnabled } from './development.server'
 import branding from '../../../branding.json'
@@ -29,11 +27,10 @@ export function baseAuth(env: WorkerBindings) {
     throw new AuthError('local_outbox_requires_loopback', 503)
   if (!env.MAIL_FROM) throw new AuthError('MAIL_FROM_required', 503)
   const capture = local || env.RER_DEMO === '1'
-  if (!capture && env.MAIL_PROVIDER !== 'sendgrid') throw new AuthError('MAIL_PROVIDER_sendgrid_required', 503)
+  if (!capture && !['sendgrid', 'resend', 'rer'].includes(env.MAIL_PROVIDER ?? '')) throw new AuthError('MAIL_PROVIDER_required', 503)
   // A mail key enables email delivery. Native owner claim, sessions and linked
   // identity providers remain available before optional mail is configured.
-  const sender = capture ? developmentSender(env) : env.MAIL_API_KEY
-    ? createMailSender({ provider: 'sendgrid', mode: 'production', apiKey: env.MAIL_API_KEY }) : undefined
+  const sender = capture ? developmentSender(env) : hostedMailSender(env)
   return createOperatorAuth({
     db: env.DB,
     config: authConfig(env),

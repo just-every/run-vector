@@ -190,7 +190,7 @@
       "name": "MAIL_MODE",
       "required": true,
       "secret": false,
-      "why": "sendgrid for configured remote Base delivery; local-outbox is restricted to explicit loopback development."
+      "why": "production for the configured Base mail provider; local-outbox is restricted to explicit loopback development."
     },
     {
       "name": "FIRST_OWNER_EMAIL",
@@ -238,19 +238,25 @@
       "name": "MAIL_PROVIDER",
       "required": false,
       "secret": false,
-      "why": "Explicit Base mail provider; remote deployment selects sendgrid. Required for the remote installation."
+      "why": "Explicit Base mail provider: rer for Managed, sendgrid or resend for direct provider delivery."
     },
     {
       "name": "MAIL_API_KEY",
       "required": false,
       "secret": true,
-      "why": "SendGrid API key supplied only as a Worker secret binding. Required for the remote installation."
+      "why": "Provider or RER relay credential supplied only as a Worker secret; required by the selected mail provider."
     },
     {
       "name": "MAIL_FROM",
       "required": false,
       "secret": false,
       "why": "Verified sender address for Base sign-in and invitation mail. Required for the remote installation."
+    },
+    {
+      "name": "MAIL_RELAY_URL",
+      "required": false,
+      "secret": false,
+      "why": "HTTPS RER mail relay endpoint; assigned by Managed Configure and required with MAIL_PROVIDER=rer."
     },
     {
       "name": "NOTIFICATION_EMAIL_ENABLED",
