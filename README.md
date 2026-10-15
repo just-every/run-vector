@@ -37,7 +37,7 @@ The application runs on a Cloudflare Worker with TanStack Start, React and Hono,
 
 ## Run it on your computer
 
-You need Git and Node 22 or later, only to install the `rer` command once with `npm install --global @runeditrun/rer@0.2.6`. `rer` then provides the exact Node and pnpm this source pins, so there is nothing else to choose or install. Set `VECTOR_SOURCE` to the source supplied with your installation.
+You need Git and Node 22 or later, only to install the `rer` command once with `npm install --global @runeditrun/rer@0.2.13`. `rer` then provides the exact Node and pnpm this source pins, so there is nothing else to choose or install. Set `VECTOR_SOURCE` to the source supplied with your installation.
 
 <!-- vector-clone -->
 ```sh
@@ -49,7 +49,7 @@ Install the published command and pinned dependencies, then start development. N
 
 <!-- vector-terminal -->
 ```sh
-npm install --global @runeditrun/rer@0.2.6
+npm install --global @runeditrun/rer@0.2.13
 rer install
 rer check --profile first-party
 rer dev
