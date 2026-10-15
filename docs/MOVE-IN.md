@@ -28,6 +28,31 @@ Times are from the local Workers runtime on a shared, busy machine (load near
 proceeds. 4,000 rows is the shipped row limit and 4 MiB the shipped file limit:
 a generated 5,000-issue file is 5.1 MB and is refused before parsing.
 
+## Measured on a hosted installation
+
+A generated 2,000-issue Linear CSV (1.97 MB, with em dashes in 211 descriptions)
+was imported on a Cloudflare Worker with D1 (15 October 2026). The run completed:
+53 batches, 2,000 issues, the retained original's SHA-256 equal to the file's, and
+all 211 em-dash descriptions stored unchanged. Preview took 4 to 14 s and
+recording the run 12 to 16 s. Each batch request took 16 to 21 s, so publishing
+took 16 minutes (the local figures above are for the local runtime). A run was also
+rolled back from Settings.
+
+D1 accepts at most 32 MiB in one call and sends a whole batch as one string, so a
+character above U+00FF anywhere in it (an em dash, a curly quote, an emoji) makes
+every character two bytes. Recording a 2,000-row run, and each batch publication,
+carry the whole retained plan, so before `wire.ts` such a file failed at about 1,700
+rows with a 503 `import_unavailable`. Import statements now send such text as ASCII
+escapes that SQLite decodes to the same characters, and the plan is read back in
+pages.
+
+The shipped 4,000-row and 4 MiB limits come from the local runtime. A hosted Worker
+has 128 MB of memory: previews of 2,400 and 2,800 generated rows (2.37 and 2.76 MB)
+succeeded, and previews of 3,200 and 3,600 rows (3.17 and 3.55 MB) were stopped by
+Cloudflare with 503 "Worker exceeded resource limits". Only the 2,000-row run is
+proven end to end, so on a hosted installation split larger files and keep each
+under about 2,000 rows and 2 MB until the hosted ceiling is measured.
+
 What bounds a run, and how each was found:
 
 - D1 allows 1,000 queries per Worker invocation. Preview reads the file's

@@ -556,7 +556,7 @@
       "executable": false
     },
     "docs/IMPORT-EVIDENCE.md": {
-      "sha256": "62c251357e51458cd6ca2973f43f592aa9a86511b2ad7613d862140498c56e9d",
+      "sha256": "fabf2da9636535aca3002d77b1a1c1c616c92fe8078a5073ce2d4765254024a1",
       "executable": false
     },
     "docs/INSTALLER.md": {
@@ -588,7 +588,7 @@
       "executable": false
     },
     "docs/MOVE-IN.md": {
-      "sha256": "63a774fa26040210abacc5c402d50526a0cf1dad4313fb55acc27d431d4a158a",
+      "sha256": "2d140b2d77c21bcec057130103daad55696bc4dae7950ba91b44c756481863b0",
       "executable": false
     },
     "docs/NOTIFICATIONS.md": {
