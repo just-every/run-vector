@@ -1,6 +1,6 @@
 # Base adoption
 
-Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b6031f5`. Copied runtime bytes remain unchanged. Base test files and fixtures are omitted from every seed distribution; Vector retains tests of its own commands and business flows.
+Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b6031f5`. Recorded byte copies remain unchanged; product adaptations are identified below. Base test files and fixtures are omitted from every seed distribution; Vector retains tests of its own commands and business flows.
 
 | Local selection | Source or role |
 | --- | --- |
@@ -14,7 +14,7 @@ Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b60
 | vendor/base/schema | release/seed/setup validation |
 | migrations/core/0022_portability.sql | native portability schema |
 
-`base-copies.json` and edition origins describe the selections. Run `sources:verify-base`, `sources:check`, and `verify-base --base PATH` when refreshing them. Historical SQL 0001–0021 is unchanged. Product adapters own bindings, equal-operator authority, route selection, native mutations and archive policy. Copied runtime behavior is unchanged. Three import-kit D1 files remove unused type imports for Vector’s compiler; those adaptations remain in the edition origin mappings and are excluded from byte-copy claims. The registry schema is also an explicitly mapped product adaptation.
+`base-copies.json` and edition origins describe the selections. Run `sources:verify-base`, `sources:check`, and `verify-base --base PATH` when refreshing them. Historical SQL 0001–0021 is unchanged. Product adapters own bindings, equal-operator authority, route selection, native mutations and archive policy. Three import-kit D1 files remove unused type imports for Vector’s compiler; those adaptations remain in the edition origin mappings and are excluded from byte-copy claims. The registry schema is also an explicitly mapped product adaptation. Mail’s `src/inbound/headers.mjs` is a security adaptation: header parsing removes overlapping whitespace repetition, and message IDs validate intervening text without deletion-based sanitization, preserving parsing behavior. Its edition origin mapping remains; split mail copy records retain the original revision, digests and modes for every other mail file and exclude only this adaptation.
 
 Public lifecycle commands dispatch through `rer` and the existing installer adapter. Root `rer-setup.json` is the single field/secret model. Node 22.20.0 and pnpm 10.12.4 are pinned. Setup preserves private settings and accepted data; development exposes health-gated readiness and ordinary outbox confirmation. Reset requires confirmation and removes only inventoried local state. See README.md and docs/LOCAL-RECOVERY.md before moving ambiguous old state.
 
