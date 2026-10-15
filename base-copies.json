@@ -2465,16 +2465,16 @@
       "originPath": "modules/operator-auth/conformance",
       "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
       "files": {
-        "vendor/base/operator-auth/conformance/README.md": "62b9e2dea277cd62ba0ddfd0ec9246bab7347de0d6c367971af209dae03163e6",
         "vendor/base/operator-auth/conformance/index.d.mts": "b8e9b4a51bf2b0f9c20eaf5c01902d763f6ea652adc5c7c600da69d2542e7055",
         "vendor/base/operator-auth/conformance/index.mjs": "b744282e573caa1a45748f92b76ccfdb608bda506eafb6bda276cc7ad12a4d99",
-        "vendor/base/operator-auth/conformance/presentation.mjs": "5626e1c96f43c41dfe5ff8d15d0b98e4cd0c1965cb2693968b50ae1295671606"
+        "vendor/base/operator-auth/conformance/presentation.mjs": "5626e1c96f43c41dfe5ff8d15d0b98e4cd0c1965cb2693968b50ae1295671606",
+        "vendor/base/operator-auth/conformance/README.md": "62b9e2dea277cd62ba0ddfd0ec9246bab7347de0d6c367971af209dae03163e6"
       },
       "modes": {
-        "vendor/base/operator-auth/conformance/README.md": "100644",
         "vendor/base/operator-auth/conformance/index.d.mts": "100644",
         "vendor/base/operator-auth/conformance/index.mjs": "100644",
-        "vendor/base/operator-auth/conformance/presentation.mjs": "100644"
+        "vendor/base/operator-auth/conformance/presentation.mjs": "100644",
+        "vendor/base/operator-auth/conformance/README.md": "100644"
       }
     },
     {
@@ -2555,6 +2555,17 @@
       }
     },
     {
+      "path": "vendor/base/operator-auth/dev/index.mjs",
+      "originPath": "modules/operator-auth/dev/index.mjs",
+      "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
+      "files": {
+        "vendor/base/operator-auth/dev/index.mjs": "75a8189aff8cc8310819d14c47f9addb5bc2fa8ecfc099d361fdd99a761538fa"
+      },
+      "modes": {
+        "vendor/base/operator-auth/dev/index.mjs": "100644"
+      }
+    },
+    {
       "path": "vendor/base/operator-auth/dev/personas.mjs",
       "originPath": "modules/operator-auth/dev/personas.mjs",
       "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
@@ -2592,14 +2603,14 @@
       "originPath": "modules/operator-auth/docs",
       "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
       "files": {
-        "vendor/base/operator-auth/docs/README.md": "098a5dfc2f761b962a0dae818a6130931789efe34376cc4efbd92cfc50d6fb2e",
         "vendor/base/operator-auth/docs/native-accounts.md": "068f1c664d3e6ac55942f2ea0db5791dd9656b3607b456aacb69c8c8480d701c",
+        "vendor/base/operator-auth/docs/README.md": "098a5dfc2f761b962a0dae818a6130931789efe34376cc4efbd92cfc50d6fb2e",
         "vendor/base/operator-auth/docs/tanstack-start.md": "52557d15e2c9840fc92d0ef148d9f7f67ba7f5d718eabd5b7dbb80ab8dbff9e1",
         "vendor/base/operator-auth/docs/vite-spa.md": "ba684430f1a5adeae8bb7c28d02ca11a95a666242048a33256ab427d8fbce781"
       },
       "modes": {
-        "vendor/base/operator-auth/docs/README.md": "100644",
         "vendor/base/operator-auth/docs/native-accounts.md": "100644",
+        "vendor/base/operator-auth/docs/README.md": "100644",
         "vendor/base/operator-auth/docs/tanstack-start.md": "100644",
         "vendor/base/operator-auth/docs/vite-spa.md": "100644"
       }
@@ -2639,7 +2650,6 @@
         "vendor/base/operator-auth/identity/email-link/message.mjs": "dcbd0eef8f8bac023235162b079945441daab3e0b27541f4738ba15c3ebebbec",
         "vendor/base/operator-auth/identity/index.d.mts": "5c7b8c2bf70f7a1e57dd53110ab88e4be8a46297d8838405763a3e95870a0b88",
         "vendor/base/operator-auth/identity/index.mjs": "0b68a78d59ecf553a1cacc182e280071f9554b37271249cfc037afcbf2d54cfb",
-        "vendor/base/operator-auth/identity/oidc/README.md": "5e03d2ef26aee1b96ef658c3dda90fe2b4781417ff1c9f32dff0d56105f7472b",
         "vendor/base/operator-auth/identity/oidc/client-auth.mjs": "061ac35699976c075b120891f7eacb4b1c893b9081faff1e5b3bd0a5834d97ef",
         "vendor/base/operator-auth/identity/oidc/config.mjs": "f4823ac3eca574fb14acb17b2cc2f83fd3b3c6f54fce2069c896f4bb84d5f1b8",
         "vendor/base/operator-auth/identity/oidc/crypto.mjs": "968787aa4d88b2d5323ef55dce0755d50e32502a6753505eaf3f6a0298078ff8",
@@ -2649,6 +2659,7 @@
         "vendor/base/operator-auth/identity/oidc/jwt.mjs": "b66750270020887f31339122c08ee9a55a7c6057486777e629d18bf7678d8562",
         "vendor/base/operator-auth/identity/oidc/network.mjs": "34a1951457d6aff44e1ea5eb2b7a9ac1d63062a33eb3540ff2f3a4a18380c098",
         "vendor/base/operator-auth/identity/oidc/presets.mjs": "8fdfa82f855de54cd984ff700a396a2a89c870f724faeaa4f74a6dcd131c240c",
+        "vendor/base/operator-auth/identity/oidc/README.md": "5e03d2ef26aee1b96ef658c3dda90fe2b4781417ff1c9f32dff0d56105f7472b",
         "vendor/base/operator-auth/identity/oidc/schema/oidc.sql": "f879fb86b079e591dfe4a8513752a8e0394e252b940aa35d3f7430f27b7382c6",
         "vendor/base/operator-auth/identity/oidc/store.mjs": "2f00ef6ac516528cdb468dca96744b16a843cc6bbbec847bba9716cfa80eb22c",
         "vendor/base/operator-auth/identity/principal.mjs": "6b949a826dab8f63d70da4603e4da9d50d9071faf0e18684a66f86beec63ab03"
@@ -2662,7 +2673,6 @@
         "vendor/base/operator-auth/identity/email-link/message.mjs": "100644",
         "vendor/base/operator-auth/identity/index.d.mts": "100644",
         "vendor/base/operator-auth/identity/index.mjs": "100644",
-        "vendor/base/operator-auth/identity/oidc/README.md": "100644",
         "vendor/base/operator-auth/identity/oidc/client-auth.mjs": "100644",
         "vendor/base/operator-auth/identity/oidc/config.mjs": "100644",
         "vendor/base/operator-auth/identity/oidc/crypto.mjs": "100644",
@@ -2672,6 +2682,7 @@
         "vendor/base/operator-auth/identity/oidc/jwt.mjs": "100644",
         "vendor/base/operator-auth/identity/oidc/network.mjs": "100644",
         "vendor/base/operator-auth/identity/oidc/presets.mjs": "100644",
+        "vendor/base/operator-auth/identity/oidc/README.md": "100644",
         "vendor/base/operator-auth/identity/oidc/schema/oidc.sql": "100644",
         "vendor/base/operator-auth/identity/oidc/store.mjs": "100644",
         "vendor/base/operator-auth/identity/principal.mjs": "100644"
@@ -2812,10 +2823,10 @@
     {
       "path": "vendor/base/operator-auth/signin",
       "originPath": "modules/operator-auth/signin",
-      "revision": "b4b372b032b2ddd7fbf47efa1bf17e1d5235be98",
+      "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
       "files": {
         "vendor/base/operator-auth/signin/index.d.mts": "9acad80108b974454b1473c761222ba7daaeceb13b7c9842107cbf1b15745c10",
-        "vendor/base/operator-auth/signin/index.mjs": "4dfa87e4c9699834bfc0271e8c0ad39c50062a30548b57d2a147052dcdb56ec2"
+        "vendor/base/operator-auth/signin/index.mjs": "c902a6895f5ffb8c141eb3214d78ccd654dc094671569594c51b0a73dfb1f3ce"
       },
       "modes": {
         "vendor/base/operator-auth/signin/index.d.mts": "100644",

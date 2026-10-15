@@ -475,7 +475,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "a024c656f1562f0e24172eb37354c2d752728f142029942011f116832d075b77",
+      "sha256": "b7ab77e1fe027ff0e0b329e6127a13a21a3d1e2e73638634ef6d47905a1ba2f3",
       "executable": false
     },
     "BASELINE.md": {
@@ -531,7 +531,7 @@
       "executable": false
     },
     "docs/BASE-ADOPTION.md": {
-      "sha256": "279edc8d6a6e74427905941f57460ae9888094a4b9dcc1c4ec7a9b2ab2c8d234",
+      "sha256": "8a0193dea140d5c0d98856b6459b3416075335f10f61391b9d007f755efb777b",
       "executable": false
     },
     "docs/BRAND.md": {
@@ -5491,7 +5491,7 @@
       "executable": false
     },
     "vendor/base/operator-auth/dev/index.mjs": {
-      "sha256": "9482f413ec3852322c47fcd198db6e9f51c5e664c0568a1725222b3cc2bfa822",
+      "sha256": "75a8189aff8cc8310819d14c47f9addb5bc2fa8ecfc099d361fdd99a761538fa",
       "executable": false
     },
     "vendor/base/operator-auth/dev/personas.mjs": {
@@ -5667,7 +5667,7 @@
       "executable": false
     },
     "vendor/base/operator-auth/signin/index.mjs": {
-      "sha256": "4dfa87e4c9699834bfc0271e8c0ad39c50062a30548b57d2a147052dcdb56ec2",
+      "sha256": "c902a6895f5ffb8c141eb3214d78ccd654dc094671569594c51b0a73dfb1f3ce",
       "executable": false
     },
     "vendor/base/owner-claim/idp.mjs": {

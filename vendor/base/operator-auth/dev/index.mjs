@@ -14,7 +14,7 @@ import { devGate, devNotFound } from '../dev-gate.mjs';
 import { registerDevAdmission } from '../dev-admission.mjs';
 import { definePersonas } from './personas.mjs';
 import { cliSession } from './cli-session.mjs';
-import { decorateLabel } from '@runeditrun/rer/modules/demo/label';
+import { decorateLabel } from '../../demo/label.mjs';
 import { pageResponse } from '../page.mjs';
 
 export const DEV_LAYER_MARKER = 'rer-dev-layer:local-only-never-deploy';
