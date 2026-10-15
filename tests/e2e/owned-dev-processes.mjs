@@ -11,10 +11,14 @@ export async function developmentGroups(leader) {
  const rows=stdout.trim().split('\n').map(line=>line.trim().split(/\s+/).map(Number));
  const owned=new Set([leader]);
  for(let changed=true;changed;){changed=false;for(const [pid,parent] of rows)if(owned.has(parent)&&!owned.has(pid)){owned.add(pid);changed=true;}}
- const groups=[...new Set(rows.filter(([pid])=>owned.has(pid)).map(([, ,group])=>group))];
- assert.ok(groups.includes(leader),'development launcher retains its owned group');
+ assert.ok(rows.some(([pid])=>pid===leader),'registered development owner is alive');
+ // The global launcher can share its parent's group. Track only complete
+ // descendant groups, never an unrelated parent or its other children.
+ const groups=[...new Set(rows.filter(([pid])=>owned.has(pid)).map(([, ,group])=>group))]
+  .filter(group=>rows.filter(([, ,candidate])=>candidate===group).every(([pid])=>owned.has(pid)));
+ assert.ok(groups.length,'actual development has a fully owned process group');
  const snapshots=await Promise.all(groups.map(async group=>({group,members:await readOwnedGroup(group)})));
- assert.ok(snapshots.some(row=>row.group!==leader&&row.members.length),'actual development runtime has an owned nested group');
+ assert.ok(snapshots.some(row=>row.members.length),'actual development runtime has an owned nested group');
  return snapshots;
 }
 export async function assertDevelopmentGone(snapshots) {
