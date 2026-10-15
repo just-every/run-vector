@@ -165,8 +165,10 @@ try {
   assert.match(homeHtml, /<!DOCTYPE html>/i);
   assert.match(homeHtml, /<title>[^<]+<\/title>/);
   assert.match(homeHtml, /<h1[^>]*>/);
-  assert.equal((await (await req("/setup/state")).json()).state, "unclaimed");
-  assert.match(homeHtml, /href="\/setup"/);
+  // The configured owner has already bootstrapped this fixture. The lobby's
+  // claim state is independent of the owner's remaining workspace review.
+  assert.equal((await (await req("/setup/state")).json()).state, "claimed");
+  assert.match(homeHtml, /href="\/signin"/);
   for (const path of ["/rer-theme.css", "/brand/mark.svg", "/brand/band.svg", "/fonts/fonts.css"])
     assert.equal((await req(path)).status, 200);
   for (const path of [
@@ -198,7 +200,7 @@ try {
   await ready();
   record(
     "HOME-001",
-    "Installed Lobby server-renders its heading and setup action; metadata, unclaimed state and assets verified.",
+    "Installed Lobby server-renders its heading and sign-in action for the persisted owner claim; metadata and assets verified.",
   );
   record(
     "RENDER-404",
