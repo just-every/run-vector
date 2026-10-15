@@ -3,6 +3,7 @@ import { createIntegrationReceivers } from '../features/integrations/receiver-ro
 import { createIntegrationApi } from '../features/integrations/api';
 import { editorConfigResponse } from '../editor/config.server';
 import { signedOwnerClaimConfigured,ownerClaimResponse } from '../features/auth/owner-claim.server';
+import { bootstrapOwnerResponse } from '../features/auth/bootstrap.server';
 import { developmentOutboxResponse } from '../features/auth/development.server';
 import { establishRestoredOwner } from '../features/data/restore-authority';
 import { BootstrapConfigurationError } from "../features/bootstrap/config";
@@ -59,6 +60,7 @@ export function createServerApp() {
     }
     if (isDependencyPath(context.req.path)) return await dependencyResponse(context.env, context.req.raw) ?? context.notFound();
     if(context.req.path==='/auth/owner-claim')return ownerClaimResponse(context.env,context.req.raw);
+    if(context.req.path==='/auth/bootstrap')return bootstrapOwnerResponse(context.env,context.req.raw);
     if (context.env.SEED_SAMPLE_DATA === "true") {
       if (!isLocalOrigin(context.env.APP_ORIGIN))
         return context.json(
@@ -74,7 +76,7 @@ export function createServerApp() {
     if (
       context.env.SEED_SAMPLE_DATA !== "true" &&
       context.env.FIRST_OWNER_EMAIL &&
-      (!signedOwnerClaimConfigured(context.env)||await context.env.DB.prepare("SELECT 1 FROM oa_operators LIMIT 1").first())
+      ((!signedOwnerClaimConfigured(context.env) && !context.env.SETUP_TOKEN)||await context.env.DB.prepare("SELECT 1 FROM oa_operators LIMIT 1").first())
     ) {
       try {
         await bootstrapWorkspace(context.env.DB, context.env);

@@ -30,8 +30,10 @@ export function baseAuth(env: WorkerBindings) {
   if (!env.MAIL_FROM) throw new AuthError('MAIL_FROM_required', 503)
   const capture = local || env.RER_DEMO === '1'
   if (!capture && env.MAIL_PROVIDER !== 'sendgrid') throw new AuthError('MAIL_PROVIDER_sendgrid_required', 503)
-  if (!capture && !env.MAIL_API_KEY) throw new AuthError('MAIL_API_KEY_required', 503)
-  const sender = capture ? developmentSender(env) : createMailSender({ provider: 'sendgrid', mode: 'production', apiKey: env.MAIL_API_KEY! })
+  // A mail key enables email delivery. Native owner claim, sessions and linked
+  // identity providers remain available before optional mail is configured.
+  const sender = capture ? developmentSender(env) : env.MAIL_API_KEY
+    ? createMailSender({ provider: 'sendgrid', mode: 'production', apiKey: env.MAIL_API_KEY }) : undefined
   return createOperatorAuth({
     db: env.DB,
     config: authConfig(env),

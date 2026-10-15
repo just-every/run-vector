@@ -16,7 +16,7 @@ const axeSource=await readFile(new URL('../../node_modules/axe-core/axe.min.js',
 const source=process.cwd(), slow=process.argv.includes('--slow'), evidence=resolve(process.env.VECTOR_INSTALLER_EVIDENCE??'evidence/installer');
 const report={source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),slow,checks:[],captures:[],teardown:[]};
 const check=name=>{report.checks.push(name);console.log('Installer proof: '+name)};
-const answers={FIRST_OWNER_NAME:'Installation owner',FIRST_OWNER_EMAIL:'owner@installer.test',WORKSPACE_NAME:'Installation workspace',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Delivery',DEFAULT_TEAM_PREFIX:'VEC',MAIL_MODE:'local-outbox'};
+const answers={FIRST_OWNER_NAME:'Installation owner',FIRST_OWNER_EMAIL:'owner@installer.test',WORKSPACE_NAME:'Installation workspace',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Delivery',DEFAULT_TEAM_PREFIX:'VEC'};
 await mkdir(evidence,{recursive:true});
 const realPnpm=execFileSync('/bin/sh',['-c','command -v pnpm'],{encoding:'utf8'}).trim();
 const work=await mkdtemp(join(tmpdir(),'vector-native-installer-')), root=join(work,'source');

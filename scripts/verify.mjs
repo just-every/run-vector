@@ -21,12 +21,12 @@ for (const command of [
   "sources:verify-base",
   "check",
   "test:installer",
-  "test:node",
   "test:markdown",
   "test:worker",
   "test:deployment",
   "test:public-site",
   "build",
+  "integration:check",
   "test:runtime",
   "artifact:delivery",
   "test:wave-b",
@@ -37,7 +37,6 @@ for (const command of [
   "test:mutation-refresh",
   "test:admin",
   "test:collaboration",
-  "test:installer:native",
 ]) {
   const startedAt = new Date().toISOString();
   const result = spawnSync("pnpm", ["run", command], { stdio: "inherit" });

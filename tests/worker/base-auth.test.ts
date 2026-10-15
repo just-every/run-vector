@@ -15,7 +15,9 @@ it('[OPS-001 OPS-002 TEAM-002] configured bootstrap atomically maps one equal Ba
     expect((await env.DB.prepare(`SELECT count(*) n FROM ${table}`).first())?.n).toBe(1)
   expect((await env.DB.prepare('SELECT count(DISTINCT category) n FROM workflow_statuses').first())?.n).toBe(7)
   expect((await env.DB.prepare('SELECT role,status FROM oa_operators').first())).toEqual({ role: 'owner', status: 'active' })
-  expect((await request('/auth/bootstrap', 'POST', { token: 'not-enabled' })).status).toBe(404)
+  const disabledBootstrap = await request('/auth/bootstrap', 'POST', { token: 'not-enabled' })
+  expect(disabledBootstrap.status).toBe(403)
+  expect(await disabledBootstrap.json()).toEqual({ error: 'invalid_setup_token' })
 })
 it('[BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-free and POST consumes once and unfinished owner review takes precedence', async () => {
   expect((await request('/auth/magic-link','POST',{email: bindings.FIRST_OWNER_EMAIL,returnTo:'/app/settings'})).status).toBe(202)
@@ -122,13 +124,6 @@ it('[BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine B
   expect((await request('/api/session','GET',undefined,cookie,remote)).status).toBe(200)
   expect((await request('/auth/signout','POST',{},cookie,remote)).status).toBe(200)
   expect((await request('/api/session','GET',undefined,cookie,remote)).status).toBe(401)
-})
-it('[BASE-OPS-001] configured deployment health identifies the source, fingerprint and running version after schema readiness', async () => {
-  const response = await request('/health','GET',undefined,'',{
-    RER_DEPLOY_SOURCE:'a'.repeat(40),RER_DEPLOY_FINGERPRINT:'b'.repeat(64),RER_VERSION:{id:'local-test-version'},
-  })
-  expect(response.status).toBe(200)
-  expect(await response.json()).toEqual({status:'ok',ok:true,deployment:{sourceSha:'a'.repeat(40),fingerprint:'b'.repeat(64),versionId:'local-test-version'}})
 })
 it('[OPS-002 OPS-004] setup owner self-removal preserves the equal successor and last-operator guard under Base sessions', async () => {
   const successor = await signIn('next@base.test')

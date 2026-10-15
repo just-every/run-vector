@@ -15,7 +15,7 @@ const artifact={version:1,source:{sha:'5'.repeat(40),tree:'6'.repeat(40)},run:{i
 async function fixture(t) {
  const provider=ownerProvider(),root=await mkdtemp(join(await realpath(tmpdir()),'vector-owner-'));t.after(async()=>{provider.close();await rm(root,{recursive:true,force:true})});
  const api=cloudflare(provider),target=await ownerTarget(api,{project:declaration.project,environment:'production'}),plan=ownerPlan(target,declaration,artifact),statePath=join(root,'production.json');
- return {...provider,target,plan,statePath,args:{api,target,plan,artifact,statePath,env:{SESSION_SECRET:'test-only-auth-secret',SENDGRID_API_KEY:'test-only-sendgrid-key'},fetch:provider.fetch}};
+ return {...provider,target,plan,statePath,args:{api,target,plan,artifact,statePath,env:{SESSION_SECRET:'test-only-auth-secret',SETUP_TOKEN:'test-only-setup-token-at-least-32-bytes',SENDGRID_API_KEY:'test-only-sendgrid-key'},fetch:provider.fetch}};
 }
 test('actual Vector owner plan preserves native data, secrets and state on exact repeat',async t=>{
  const f=await fixture(t);assert.equal(f.target.worker,'vector-projects-production');assert.deepEqual(f.plan.crons,['* * * * *']);
@@ -60,7 +60,7 @@ test('real owner CLI packages the Vector declaration, maps mail credentials and 
  const git=(...args)=>execFileSync('git',['-c','user.name=Vector fixture','-c','user.email=fixture@example.test','-c','commit.gpgsign=false',...args],{cwd:root,stdio:'pipe'});
  git('init','-q');git('add','.');git('commit','-qm','Owner CLI protocol fixture');
  const argv=['deploy','--declaration','deploy.json','--environment','production'],options={cwd:root,fetch:provider.fetch};
- const env={CLOUDFLARE_ACCOUNT_ID:provider.accountId,CLOUDFLARE_API_TOKEN:provider.token,SESSION_SECRET:'test-only-session-secret',SENDGRID_API_KEY:'test-only-sendgrid-key'};
+ const env={CLOUDFLARE_ACCOUNT_ID:provider.accountId,CLOUDFLARE_API_TOKEN:provider.token,SESSION_SECRET:'test-only-session-secret',SETUP_TOKEN:'test-only-setup-token-at-least-32-bytes',SENDGRID_API_KEY:'test-only-sendgrid-key'};
  await assert.rejects(ownerCli(argv,{},options),error=>error.message==='missing-input');assert.equal(provider.state.writes.length,0);
  const first=await ownerCli(argv,env,options);assert.equal(first.changed,true);assert.equal(first.worker,'vector-projects-production');
  assert.equal(provider.state.secrets.find(row=>row.name==='MAIL_API_KEY').value,env.SENDGRID_API_KEY);assert.equal(provider.state.secrets.some(row=>row.name==='SENDGRID_API_KEY'),false);

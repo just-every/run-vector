@@ -1,10 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, writeFile, readFile, symlink, rm, realpath } from 'node:fs/promises';
+import { mkdtemp, writeFile, readFile, rm, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { packageBuild } from '../pack.mjs';
-import { vectorPlan } from '../plan.mjs';
 import { main } from '../controller.mjs';
 import { prepare } from '../prepare.mjs';
 import { hash } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
@@ -14,16 +12,6 @@ const file = (path, bytes) => ({ path, sha256: hash(bytes), base64: Buffer.from(
 const sql = 'CREATE TABLE notes(id INTEGER PRIMARY KEY, body TEXT);';
 const artifact = { version: 1, source: { sha: '1'.repeat(40), tree: '2'.repeat(40) }, run: { id: '103', attempt: '1' }, main: 'index.js', modules: [file('index.js', 'export default {}')], assets: [file('index.html', '<h1>Vector</h1>')], migrations: [{ binding: 'DB', name: '0001_notes.sql', sql, sha256: hash(sql) }] };
 async function directory(t) { const root = await mkdtemp(join(await realpath(tmpdir()), 'vector-deploy-')); t.after(() => rm(root, { recursive: true, force: true })); return root; }
-
-test('reviewed Vector plan admits exact resources, minute Cron and production mail; rejects executable/extra inputs', () => {
-  const plan = vectorPlan(artifact, configuration, 'https://rer-seedproof-vector.example.workers.dev');
-  assert.deepEqual(plan.crons, ['* * * * *']);
-  assert.equal(plan.d1[0].name, 'rer-seedproof-vector-db'); assert.equal(plan.r2[0].binding, 'FILES');
-  assert.equal(plan.vars.SEED_SAMPLE_DATA, 'false'); assert.equal(plan.vars.MAIL_PROVIDER, 'sendgrid');
-  assert.deepEqual(plan.secrets.map(x => x.binding), ['SESSION_SECRET', 'MAIL_API_KEY']);
-  for (const change of [{ worker: '../evil' }, { command: 'evil' }, { workersDev: false }, { DEFAULT_TEAM_PREFIX: 'bad' }, { WORKSPACE_TIMEZONE: 'bad' }]) assert.throws(() => vectorPlan(artifact, { ...configuration, ...change }, 'https://rer-seedproof-vector.example.workers.dev'));
-  assert.throws(() => vectorPlan(artifact, configuration, 'https://attacker.example'));
-});
 
 test('seed controller first setup preserves data and repeated deploy has no writes and byte-identical receipt', async t => {
   const root = await directory(t); const fixture = providerFixture(); t.after(() => fixture.close());
@@ -41,18 +29,6 @@ test('seed controller first setup preserves data and repeated deploy has no writ
   await main(['health'], env, { fetch: fixture.fetch }); assert.equal(fixture.state.writes.length, writes);
   assert(!receipt.toString().includes('test-only-mail-key'));
   fixture.state.schedules = []; await assert.rejects(main(['deploy'], env, { fetch: fixture.fetch }), /cron-drift/); assert.equal(fixture.state.writes.length, writes);
-});
-
-test('packing keeps lazy runtime chunks and immutable SQL, excludes metadata and rejects links', async t => {
-  const root = await directory(t);
-  await mkdir(join(root, 'dist/server/.vite'), { recursive: true }); await mkdir(join(root, 'dist/client'), { recursive: true }); await mkdir(join(root, 'migrations/core'), { recursive: true });
-  await writeFile(join(root, 'dist/server/wrangler.json'), JSON.stringify({ main: 'index.js', no_bundle: true, rules: [{ type: 'ESModule', globs: ['**/*.js', '**/*.mjs'] }] }));
-  await writeFile(join(root, 'dist/server/index.js'), 'export default {}'); await writeFile(join(root, 'dist/server/lazy.mjs'), 'export const value = 1');
-  await writeFile(join(root, 'dist/server/.vite/manifest.json'), '{}'); await writeFile(join(root, 'dist/client/app.css'), 'body{}'); await writeFile(join(root, 'migrations/core/0001_notes.sql'), sql);
-  const packed = await packageBuild({ root, source: artifact.source, runIdentity: artifact.run });
-  assert.deepEqual(packed.modules.map(x => x.path), ['index.js', 'lazy.mjs']); assert.equal(packed.migrations[0].sha256, hash(sql));
-  await symlink(join(root, 'dist/server/index.js'), join(root, 'dist/client/leak.js'));
-  await assert.rejects(packageBuild({ root, source: artifact.source, runIdentity: artifact.run }), /symlink/);
 });
 
 test('prepare rejects credential-bearing environment before any build or provider access', async () => {

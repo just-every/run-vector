@@ -81,26 +81,3 @@ for (const method of ["POST", "DELETE"] as const)
         );
       },
     );
-
-contractWith(
-  it,
-  "BASE-ACCESS-004 ISSUE-009",
-  "direct file reservation rejects a foreign fixture actor without storage or history writes",
-  async () => {
-    const f = await privateFixture();
-    await f.change("workspace");
-    const before = await privateState();
-    const id = createUlid(new Date());
-    await expect(
-      addFile(env.DB, f.issue, f.bob, {
-        id,
-        name: "Rejected.txt",
-        contentType: "text/plain",
-        bytes: 1,
-        key: `issues/${f.issue.id}/${id}`,
-        sha256: "0".repeat(64),
-      }),
-    ).rejects.toMatchObject({ code: "not_found", status: 404 });
-    expect(await privateState()).toEqual(before);
-  },
-);

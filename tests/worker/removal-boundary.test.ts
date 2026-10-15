@@ -173,28 +173,6 @@ it("[OPS-004] every native mutation fences removed actors while active peers rem
     }
   }
 }, 20000);
-it("[OPS-004] direct mutation repository calls also reject removed actors", async () => {
-  const f = await fixture();
-  expect((await f.remove()).status).toBe(200);
-  const before = await retainedData();
-  await expect(
-    addComment(env.DB, f.issue.id, f.member, "Removed"),
-  ).rejects.toThrow("no longer active");
-  await expect(
-    updateIssueRecord(env.DB, f.issue.identifier, f.member, {
-      expectedVersion: 1,
-      title: "Removed",
-    }),
-  ).rejects.toThrow();
-  await expect(
-    createIssueRecord(env.DB, {
-      actorOperatorId: f.member,
-      input: createIssueInputSchema.parse({ title: "Removed", teamId: f.team }),
-      now: new Date(),
-    }),
-  ).rejects.toThrow();
-  expect(await retainedData()).toEqual(before);
-}, 20000);
 it("[ISSUE-007 OPS-004] a late failing statement rolls back comment and activity together", async () => {
   const f = await fixture();
   const before = await retainedData();

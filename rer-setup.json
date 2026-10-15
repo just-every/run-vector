@@ -81,23 +81,6 @@
       "input": "managed"
     },
     {
-      "name": "MAIL_MODE",
-      "label": "Email delivery",
-      "kind": "select",
-      "default": "local-outbox",
-      "options": [
-        {
-          "value": "local-outbox",
-          "label": "Development outbox"
-        },
-        {
-          "value": "sendgrid",
-          "label": "SendGrid"
-        }
-      ],
-      "group": "mail"
-    },
-    {
       "name": "MAIL_FROM",
       "label": "Sender email",
       "kind": "email",
@@ -106,26 +89,14 @@
       "group": "mail"
     },
     {
-      "name": "SENDGRID_API_KEY",
+      "name": "MAIL_API_KEY",
       "label": "SendGrid API key",
       "kind": "secret",
       "required": false,
       "ownerVisible": true,
       "input": "entered",
-      "when": {
-        "field": "MAIL_MODE",
-        "equals": "sendgrid"
-      },
-      "presentations": [
-        {
-          "when": {
-            "field": "MAIL_MODE",
-            "equals": "sendgrid"
-          },
-          "required": true
-        }
-      ],
-      "group": "mail"
+      "group": "mail",
+      "help": "Optional. Configure SendGrid to send sign-in links and invitations. Owner claim and linked identity do not send email."
     },
     {
       "name": "IDENTITY_PROVIDER",
