@@ -67,10 +67,14 @@ async function capture(name){if(name==='setup'){await page.locator('#form').wait
  const owner=sql('SELECT id,email FROM operators')[0];assert.equal(owner.email,answers.FIRST_OWNER_EMAIL);check('configured first owner, one workspace, one team and seven categories');
  await capture('complete');
  const app=await browser.newPage();try{
-  await openGate(app.context(),origin,await readCheckoutKey(root));await app.goto(complete.appUrl);await app.getByRole('link',{name:'Read message'}).first().click();await app.getByRole('link',{name:'Open this link',exact:true}).click();assert.equal(sql('SELECT count(*) n FROM oa_sessions')[0].n,0);
+  // Native bootstrap has already issued the setup session. Link navigation must
+  // leave that session inventory unchanged until the person confirms the POST.
+  const sessions=()=>({...sql('SELECT count(*) total, count(CASE WHEN revoked_at IS NULL THEN 1 END) active FROM oa_sessions')[0]});
+  const beforeSignIn=sessions();
+  await openGate(app.context(),origin,await readCheckoutKey(root));await app.goto(complete.appUrl);await app.getByRole('link',{name:'Read message'}).first().click();await app.getByRole('link',{name:'Open this link',exact:true}).click();assert.deepEqual(sessions(),beforeSignIn);
   await app.getByRole('button',{name:'Confirm',exact:true}).click();await app.waitForURL(origin+'/setup');await finishFirstRun(app,origin);await app.goto(origin+'/app');await app.waitForURL(origin+'/app');
   const session=await app.evaluate(async()=>({status:(await fetch('/api/session')).status}));assert.equal(session.status,200);
-  assert.equal(sql('SELECT count(*) n FROM oa_sessions WHERE revoked_at IS NULL')[0].n,1);
+  assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1});
   for(const path of ['/','/signin','/does-not-exist'])assert.equal((await app.request.get(origin+path)).status(),path==='/does-not-exist'?404:200);
   check('outbox navigation, inert GET, confirmation POST, session and document status matrix');
  }finally{await app.close();}
