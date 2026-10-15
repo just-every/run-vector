@@ -23,7 +23,9 @@ export const hooks = {
  signIn: { emailKey: 'FIRST_OWNER_EMAIL', returnTo: '/setup' },
 };
 const shared = localInstaller(hooks);
-export const adapter = { ...shared, run: (root, input, store, onApp, signal, options) => shared.run(root, input, isolatedStore(store), onApp, signal, options) };
+// FIRST_OWNER_NAME is already declared by the manifest; the generic installer
+// displayName input would ask for the same owner's name a second time.
+export const adapter = { ...shared, ownerBootstrap: false, run: (root, input, store, onApp, signal, options) => shared.run(root, input, isolatedStore(store), onApp, signal, options) };
 export const install = async (root, input, store, onApp, signal) => {
  // A local workspace installs through the public commands, as Base's operator installer does (rer install,
  // rer setup --answers, rer preview), so its runtime only ever answers behind rer's traffic proxy.
