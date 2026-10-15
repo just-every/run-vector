@@ -13,11 +13,12 @@ import {createSeed} from '../../scripts/installer/seed.mjs';
 import {commandEnvironment} from '../../scripts/installer-env.mjs';
 import {freePort} from '@runeditrun/rer/adapter-settings';
 import {publicDevelopment} from '../e2e/public-development.mjs';
-import {openGate,readCheckoutKey} from '../e2e/dev-gate.mjs';
+import {readCheckoutKey} from '../e2e/dev-gate.mjs';
+import {localCliProof} from '@runeditrun/rer/adapter-auth';
 process.env.RER_SERVER_JOURNEY = '1';
 const markdown=await readFile('README.md','utf8');
 const literal=name=>{const match=markdown.match(new RegExp('<!-- vector-'+name+' -->\\s*```sh\\n([\\s\\S]*?)```'));assert(match,'README literal '+name);return match[1].trim();};
-test('README literal clone, own frozen install, optional setup and dev reach a real outbox-confirmed owner', {timeout:2700000},async()=>{
+test('README literal clone, own frozen install, optional setup and dev automatically sign in the local owner', {timeout:2700000},async()=>{
  const work=await mkdtemp(join(tmpdir(),'vector-readme-')),evidence=resolve('evidence/readme');await mkdir(evidence,{recursive:true});let store,browser,development;const controller=new AbortController();
  const result={status:'running',source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),commands:['README install rer','README clone','README optional setup','setup repeat','README start','confirmed reset'],publicMirrorProof:false};
  try {
@@ -46,9 +47,17 @@ test('README literal clone, own frozen install, optional setup and dev reach a r
   page.on('pageerror',error=>result.browserErrorTypes.push(error.name));
   page.on('response',response=>{const path=new URL(response.url()).pathname;if(response.status()>=400&&/^\/(?:src|node_modules|@)/.test(path))result.developmentAssetFailures.push({path,status:response.status()});});
   for(const path of ['/','/signin','/does-not-exist'])assert.equal((await page.request.get(settings.APP_ORIGIN+path)).status(),path==='/does-not-exist'?404:200);
-  await page.goto(settings.APP_ORIGIN+'/setup');await page.waitForURL(url=>new URL(url).pathname==='/signin'&&new URL(url).searchParams.get('returnTo')==='/setup');await page.getByLabel('Email',{exact:true}).fill(settings.FIRST_OWNER_EMAIL);const sent=page.waitForResponse(r=>new URL(r.url()).pathname==='/auth/request');await page.getByRole('button',{name:'Send sign-in link',exact:true}).click();assert.equal((await sent).status(),202);
-  await openGate(page.context(),settings.APP_ORIGIN,await readCheckoutKey(root));await page.goto(settings.APP_ORIGIN+'/__dev/outbox');await page.getByRole('link',{name:'Read message',exact:true}).first().click();await page.getByRole('link',{name:'Open this link',exact:true}).click();
-  assert.equal((await page.request.get(settings.APP_ORIGIN+'/api/session')).status(),401);await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL(settings.APP_ORIGIN+'/setup');
+  assert.equal((await page.request.get(settings.APP_ORIGIN+'/api/session')).status(),401);
+  assert.equal((await page.request.get(settings.APP_ORIGIN+'/__dev/outbox')).status(),404);
+  const devKey=await readCheckoutKey(root);store.addSecrets([devKey]);
+  const entry=settings.APP_ORIGIN+'/__dev/key#'+new URLSearchParams({'rer-dev':devKey,as:'owner',next:'/auth/dev/enter?as=owner&returnTo='+encodeURIComponent('/setup')});
+  await page.goto(entry);await page.waitForURL(settings.APP_ORIGIN+'/setup');
+  const signedIn=await page.request.get(settings.APP_ORIGIN+'/auth/session');assert.equal(signedIn.status(),200);
+  const ownerSession=await signedIn.json();assert.equal(ownerSession.kind,'dev');assert.equal(ownerSession.operator.email,settings.FIRST_OWNER_EMAIL);assert.equal(ownerSession.operator.role,'owner');
+  const ownerResponse=await page.request.get(settings.APP_ORIGIN+'/api/session');assert.equal(ownerResponse.status(),200);const owner=await ownerResponse.json();
+  assert.equal((await page.request.get(settings.APP_ORIGIN+'/__dev/outbox')).status(),404);
+  assert.equal(await page.locator('#rer-dev-badge').count(),0);
+  result.autoOwnerEntry=true;
   const axe=await readFile(new URL('../../node_modules/axe-core/axe.min.js',import.meta.url),'utf8');
   for(const width of [1440,390]) {
    await page.setViewportSize({width,height:width===390?844:1000});
@@ -83,10 +92,21 @@ test('README literal clone, own frozen install, optional setup and dev reach a r
   await development.start('Restored development');
   const restoredPage=await browser.newPage();
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/session')).status(),401);
-  assert.equal((await restoredPage.request.post(settings.APP_ORIGIN+'/auth/request',{headers:{Origin:settings.APP_ORIGIN},data:{email:settings.FIRST_OWNER_EMAIL}})).status(),202);
-  await openGate(restoredPage.context(),settings.APP_ORIGIN,await readCheckoutKey(root));await restoredPage.goto(settings.APP_ORIGIN+'/__dev/outbox');await restoredPage.getByRole('link',{name:'Read message',exact:true}).first().click();await restoredPage.getByRole('link',{name:'Open this link',exact:true}).click();await restoredPage.getByRole('button',{name:'Confirm',exact:true}).click();await restoredPage.waitForURL(settings.APP_ORIGIN+'/app');
+  assert.equal((await page.request.get(settings.APP_ORIGIN+'/api/session')).status(),401,'the pre-reset dev session cannot authenticate the restored installation');
+  // Recovery review needs ordinary owner proof. The local CLI door issues a
+  // native session and fresh proof; a dev persona does not stand in for either.
+  const restoredSettings=parseEnv(await readFile(join(root,'.dev.vars'),'utf8'));store.addSecrets([restoredSettings.SESSION_SECRET]);
+  const recovered=await restoredPage.request.post(settings.APP_ORIGIN+'/auth/local/cli-session',{headers:{Origin:settings.APP_ORIGIN,'x-rer-local-cli':localCliProof(restoredSettings.SESSION_SECRET)},data:{returnTo:'/app'},maxRedirects:0});
+  assert.equal(recovered.status(),303);assert.equal(recovered.headers().location,'/app');
+  const nativeResponse=await restoredPage.request.get(settings.APP_ORIGIN+'/auth/session');assert.equal(nativeResponse.status(),200);
+  const nativeSession=await nativeResponse.json();assert.equal(nativeSession.kind,'native');assert.equal(nativeSession.operator.id,ownerSession.operator.id);assert.equal(nativeSession.operator.email,settings.FIRST_OWNER_EMAIL);assert.equal(nativeSession.operator.role,'owner');
+  const restoredOwner=await restoredPage.request.get(settings.APP_ORIGIN+'/api/session');assert.equal(restoredOwner.status(),200);assert.deepEqual(await restoredOwner.json(),owner);
+  await restoredPage.goto(settings.APP_ORIGIN+'/app');await restoredPage.waitForURL(settings.APP_ORIGIN+'/app');
+  assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/__dev/outbox')).status(),404);
+  assert.equal(await restoredPage.locator('#rer-dev-badge').count(),0);
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/issues/'+identifier)).status(),200);
   assert.equal((await restoredPage.request.get(settings.APP_ORIGIN+'/api/data/restore')).status(),200);
+  result.restoredNativeOwnerProof=true;
   await development.stop('Stop restored development');
   result.resetPreservedSourceExportsDeploy=true;
   result.status='passed';result.axeSerious=0;result.overflow=false;result.ownFrozenInstall=true;

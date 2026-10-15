@@ -55,6 +55,10 @@ p95 at the limits in `seed.json`.
 - **BASE-OPS-004 — Failure is visible.** A job that fails after its retries is marked failed where an operator can see it. Nothing is dropped silently.
 - **BASE-OPS-005 — Audit.** Every destructive action and every automated action that reaches a user records the actor, or the feature that acted, and the time. Audit records survive deletion of what they describe.
 
+## Current local lifecycle — rer 0.2.20
+
+For local entry under BASE-ACCESS-001, `rer dev` uses the private `RER_OPEN` link to create a real, key-gated owner session; legacy `--login` uses the same flow. `--as` selects another declared dev persona or signed-out entry. Development has no badge, toolbar or captured-mail UI. Preview serves production output and prints its ready address without captured-mail sign-in. These instructions replace the earlier outbox-based local-entry instructions below. Existing mail storage, erasure guards and applied migrations remain intact. Production requires declared outbound email or an approved Auth SSO setup dependency; Vector’s documented path uses SendGrid, with `rer signin` retained for Cloudflare-credential owner recovery.
+
 ## Shared installation and source custody (9 October 2026)
 
 Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. The shared `rer setup --owner-email EMAIL` paths preserve configured FIRST_OWNER bootstrap, private `.dev.vars` and saved origin/owner/data; `rer dev` hydrates that installation. `/__dev/outbox` uses Base mail with explicit exact loopback admission and ordinary Base native sessions. Confirmation GET is inert; POST signs in. Owner-account setup/deploy/health uses explicit account inputs and SENDGRID_API_KEY mapped to MAIL_API_KEY. The reviewed artifact controller has separate artifact:setup/deploy/health commands.

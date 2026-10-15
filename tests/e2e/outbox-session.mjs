@@ -1,17 +1,12 @@
+import { devKey } from './dev-gate.mjs';
 import assert from 'node:assert/strict';
-import { devKey, keyHeader } from './dev-gate.mjs';
-const decodeHref=value=>value.replace(/&(?:amp|quot|#39|lt|gt);/g,entity=>({'&amp;':'&','&quot;':'"','&#39;':"'",'&lt;':'<','&gt;':'>'})[entity]);
-const escapeText=value=>value.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#39;');
-/** Read the same local outbox index/detail that the owner opens. */
-export async function readDevelopmentLink(origin,request,email,key=devKey) {
- const index=await request('/__dev/outbox','GET',undefined,'',keyHeader(key));assert.equal(index.status,200);
- const article=(await index.text()).match(/<article>[\s\S]*?<\/article>/g)?.find(row=>row.includes(escapeText(email.trim().toLowerCase())));
- assert.ok(article,'Native outbox captured a message for the requested operator');
- const href=article.match(/href="([^"]+\?message=[^"]+)"/)?.[1];assert.ok(href,'Captured message has a detail link');
- const message=new URL(decodeHref(href),origin);assert.equal(message.origin,origin);
- const detail=await request(message.pathname+message.search,'GET',undefined,'',keyHeader(key));assert.equal(detail.status,200);
- const link=(await detail.text()).match(/class="open" href="([^"]+)"/)?.[1];assert.ok(link,'Captured native message exposes its sign-in link');
- const target=new URL(decodeHref(link));assert.equal(target.origin,origin);assert.equal(target.pathname,'/auth/confirm');
+import { readLocalD1 } from './local-d1-read.mjs';
+/** Test-only delivery observation at the local mail edge; no captured-mail UI is served. */
+export async function readDevelopmentLink(origin, _request, email, state) {
+ const row=readLocalD1(state, `SELECT message FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='${email.trim().toLowerCase().replaceAll("'","''")}' ORDER BY created_at DESC,sequence DESC LIMIT 1`)[0];
+ assert.ok(row,'Mail edge received a message for the requested operator');
+ const target=new URL(JSON.parse(row.message).text.match(/https?:\/\/[^\s]+/)[0]);
+ assert.equal(target.origin,origin);assert.equal(target.pathname,'/auth/confirm');
  return target.href;
 }
 /** Ordinary Base landing is inert; only same-origin POST confirms the token. */

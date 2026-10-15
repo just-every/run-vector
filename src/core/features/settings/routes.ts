@@ -1,6 +1,5 @@
 import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
 import { baseAuth } from "../auth/base.server";
-import { localMailEnabled } from "../auth/development.server";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -53,7 +52,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         action: "owner:transfer",
         returnTo: "/app/settings#operators",
       });
-      return c.json({ status: "accepted", delivery: localMailEnabled(c.env) ? "outbox" : "email" }, 202);
+      return c.json({ status: "accepted", delivery: "email" }, 202);
     } catch (error) {
       if (error instanceof AuthError)
         return Response.json(

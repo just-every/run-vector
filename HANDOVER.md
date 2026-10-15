@@ -4,9 +4,9 @@ Vector is a self-hosted issue tracker on one Cloudflare Worker with TanStack Sta
 
 ## Run locally
 
-Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. Run `rer install`, `rer setup --owner-email EMAIL --non-interactive`, then `rer dev`. Sign in through the printed development outbox and confirm the message. Fresh owners review the workspace at /setup before entering the app. App routes return unfinished owners there; completed and existing installations enter the app. Repeated setup preserves private settings, owner, completion and data. Stop development before reset or restore.
+Use Node 22.20.0 and the published `rer` command. `rer install` provisions the pinned pnpm automatically. Run `rer install`, `rer setup --owner-email EMAIL --non-interactive`, then `rer dev`. Open the private `RER_OPEN` link to enter automatically as the owner; legacy `--login` uses the same entry. Dev v2 has no badge, toolbar or captured-mail UI. Preview prints its production output’s ready address without captured-mail sign-in. Fresh owners review the workspace at /setup before entering the app. App routes return unfinished owners there; completed and existing installations enter the app. Repeated setup preserves private settings, owner, completion and data. Stop development before reset or restore.
 
-Use rer build, verify, reset --yes, export --output PATH and import --input PATH --yes. Describe lists flags and effects; check --profile first-party validates the offline command contract; doctor reports missing configuration safely. README.md describes archive exclusions, reset inventory and deployment commands.
+Use rer build, verify, reset --yes, export --output PATH and import --input PATH --yes. Describe lists flags and effects; check --profile first-party validates the offline command contract; doctor reports missing configuration safely. README.md describes archive exclusions, reset inventory and deployment commands. The CLI pin is rer 0.2.20. Production requires configured outbound email or an approved Auth SSO setup dependency; Vector’s documented path uses SendGrid. `rer signin` remains owner recovery with the deploying checkout’s Cloudflare credentials. `rer deploy --remove --yes` removes the owned resources and empties attached files from R2 in the same command.
 
 ## Product behavior
 
@@ -22,7 +22,7 @@ Apply immutable existing migrations and later additive migrations in order, incl
 
 ## Verification and boundaries
 
-Iterate with touched public-flow tests and typecheck. CI runs full verify plus development hydration, slow installer startup and the literal fresh-clone README journey. Stop every owned browser/server. Evidence excludes runtime databases, settings, mail bodies, cookies and tokens. Source checks use the native authoring tools: stage, sources:lock, sources:check. Current Base selections and adapters are documented in docs/BASE-ADOPTION.md.
+Iterate with touched public-flow tests and typecheck. `rer verify` runs build, artifact and contract checks; `pnpm verify:ci` runs the CI test wall, with development hydration, slow installer startup and the literal fresh-clone README journey. Stop every owned browser/server. Evidence excludes runtime databases, settings, mail bodies, cookies and tokens. Source checks use the native authoring tools: stage, sources:lock, sources:check. Current Base selections and adapters are documented in docs/BASE-ADOPTION.md.
 
 The separate foundation/removal browser harnesses were removed in favor of their existing CI coverage. The admin journey now submits workspace time and checks persistence after restart; docs/VERIFICATION.md distinguishes CI commands from intentional manual tools. The browser installer configures this computer only; owner-account deployment uses `rer deploy` as described in DEPLOY.md.
 
@@ -43,8 +43,8 @@ preflight and apply through native routes. The earlier copied-CLI run also
 covered repeat, status, resume, reconciliation and whole-run rollback on its
 recorded source head. The external public-port REPORT records exact source
 heads, commands and results, distinguishing that run from the `@runeditrun/rer`
-CLI run. Use `rer dev --login` to start a local CLI session, then
-`rer build` to build; the Jira importer still runs through
+CLI run. Use `rer dev` for automatic local owner entry; legacy `--login`
+uses the same dev session. Stop development before `rer build`; the Jira importer still runs through
 `pnpm run import:issues` with `--format jira-csv`. Jira reuses the existing
 import storage, imported-comment schema and source identities; it adds no
 migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and

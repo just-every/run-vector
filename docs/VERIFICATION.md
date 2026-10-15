@@ -1,11 +1,11 @@
 # Verification and manual commands
 
-`rer verify` invokes the native rer verifier, which runs `verify:app` and
-`scripts/verify.mjs`. The application wall validates sources, then runs installer,
-Node, Markdown, Worker and deployment tests; builds; and runs the emitted Worker
-and browser journeys. GitHub CI additionally runs the actual development setup
-and hydration journey, the slow installer and the literal fresh-clone README
-journey. `.github/workflows/ci.yml` and `scripts/verify.mjs` are the executable
+`rer verify` runs the build, artifact and command-contract checks through the
+native rer verifier. It does not run the contributor test suites. `pnpm verify:ci`
+is the CI application wall: it validates sources, runs installer, Node, Markdown,
+Worker and deployment tests, builds, and runs the emitted Worker and browser
+journeys. GitHub CI additionally runs the actual development setup and hydration
+journey, the slow installer and the literal fresh-clone README journey. `.github/workflows/ci.yml` and `scripts/verify.mjs` are the executable
 registration, rather than this document being an independent list of gates.
 
 The workspace foundation and removal flows belong to those existing suites.
@@ -29,7 +29,6 @@ publish, deploy, release or reset remain subject to the owner's instruction.
 | `setup`, `deps`, `rer` | Configure the owner/workspace, install dependencies, or invoke the native rer CLI. See README and `describe`. |
 | `reset` | Confirmed local reset; stop development first. See README. |
 | `export`, `import` | Local portable archives and confirmed empty-destination restore. See ARCHIVES.md and README. |
-| `outbox` | Open the key-gated development mail capture. See README and AUTHENTICATION.md. |
 | `doctor`, `describe` | Safe configuration diagnosis and CLI usage. See README. |
 | `release` | Explicit owner-authorized release operation; inspect `describe` before using it. |
 | `sources:lock` | Update the authoring lock after staging changes; then run `sources:check`. See AGENTS.md. |
@@ -42,7 +41,7 @@ publish, deploy, release or reset remain subject to the owner's instruction.
 Other convenience and plumbing scripts are already reached by the wall:
 `test` groups the independently gated Node/Markdown/Worker suites;
 `build:source` and `typecheck` are reached by `build` through the rer adapter;
-`verify:app` and `sources:check` are verifier plumbing; `test:dev:setup` and
+`verify:app` is build verification plumbing and `sources:check` validates source custody; `test:dev:setup` and
 `test:dev` are invoked by CI's `test:dev:ci`. They do not represent missing CI suites.
 
 Iterate with the public-flow tests for the change and typecheck. The final CI wall

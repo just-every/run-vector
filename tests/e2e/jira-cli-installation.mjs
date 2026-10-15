@@ -39,7 +39,7 @@ export async function startJiraCliInstallation(){
    const bytes=await response.arrayBuffer();return new Response([204,205,304].includes(response.status)?null:bytes,{status:response.status,headers:response.headers});
   };
   assert.equal((await request('/auth/request','POST',{email:'jira-cli@example.test'})).status,202);
-  const link=await readDevelopmentLink(origin,request,'jira-cli@example.test',await readCheckoutKey(root));
+  const link=await readDevelopmentLink(origin,request,'jira-cli@example.test',join(root,'.wrangler/state'));
   const confirmed=await confirmLink(link);assert.equal(confirmed.status,303);const cookie=confirmed.headers.get('set-cookie').split(';')[0];commands.addSecrets([cookie]);
   const setup=await request('/api/setup','GET',undefined,cookie);assert.equal(setup.status,200);const review=await setup.json();
   if(review.owner&&!review.completed)assert.equal((await request('/api/setup/complete','POST',{confirmed:true},cookie)).status,200);

@@ -4,7 +4,7 @@ import { createIntegrationApi } from '../features/integrations/api';
 import { editorConfigResponse } from '../editor/config.server';
 import { signedOwnerClaimConfigured,ownerClaimResponse } from '../features/auth/owner-claim.server';
 import { bootstrapOwnerResponse } from '../features/auth/bootstrap.server';
-import { developmentOutboxResponse } from '../features/auth/development.server';
+import { developmentKeyResponse } from '../features/auth/development.server';
 import { establishRestoredOwner } from '../features/data/restore-authority';
 import { BootstrapConfigurationError } from "../features/bootstrap/config";
 import { bootstrapWorkspace } from "../features/bootstrap/repository";
@@ -117,7 +117,7 @@ export function createServerApp() {
           503,
         );
   });
-  app.all("/__dev/outbox", async c => await developmentOutboxResponse(c.env, c.req.raw) ?? c.notFound());
+  app.all("/__dev/key", async c => await developmentKeyResponse(c.env, c.req.raw) ?? c.notFound());
   app.route("/auth", createAuthApp());
   app.all("/api/editor/config",async c=>editorConfigResponse(c.env,c.req.raw));
   app.route("/api/integrations",createIntegrationReceivers());

@@ -6,7 +6,7 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Install
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-(or `npm install --global @runeditrun/rer@0.2.19`). Then get Vector and start it:
+(or `npm install --global @runeditrun/rer@0.2.20`). Then get Vector and start it:
 
 ```sh
 git clone https://github.com/just-every/run-vector.git vector
@@ -19,7 +19,7 @@ To choose your own owner email instead of the placeholder, run `rer setup --owne
 
 ## Open it
 
-`dev` prints a link that starts with `RER_OPEN`. Open it in a browser on the same computer and you are signed in as the owner. The link carries a private key for this copy of Vector, so never share it.
+`dev` prints a link that starts with `RER_OPEN`. Open it in a browser on the same computer and you are signed in as the owner. The link carries a private key for this copy of Vector, so never share it. Development has no badge, toolbar or captured-mail UI. Legacy `rer dev --login` uses the same automatic entry. `rer preview` serves production output and prints its ready address without a captured-mail sign-in flow.
 
 The first time, Vector opens **Finish setting up Vector**. Check the workspace, timezone and first team that setup prepared, then choose **Open my workspace**. You can change all of them later in Settings.
 
@@ -43,7 +43,7 @@ FIRST_OWNER_EMAIL="$OWNER_EMAIL" rer deploy
 
 `rer deploy` builds Vector, creates its Worker, database and file bucket, and prints the address of your installation. Open it and sign in by email as your owner email: that first sign-in makes you the owner automatically. There is no setup token to enter.
 
-If the sign-in email does not reach you, run `rer signin` from the same checkout with the same Cloudflare credentials. It prints a one-time link that signs in the owner: it works once, only for the owner, and expires in 15 minutes.
+Production requires configured outbound email or an approved Auth SSO setup dependency; the deployment guide uses SendGrid. If the sign-in email does not reach you, run `rer signin` from the same checkout with the same Cloudflare credentials. It prints a one-time link that signs in the owner: it works once, only for the owner, and expires in 15 minutes.
 
 Without `--environment NAME`, `rer deploy`, `rer signin` and `rer deploy --remove --yes` all act on the `production` environment. If you deployed a named environment, pass the same `--environment NAME` to each.
 
@@ -62,4 +62,4 @@ Your data and secrets stay as they were. To take the installation down, run this
 rer deploy --remove --yes
 ```
 
-It deletes the Worker, database and file bucket that `rer` created, with their data, so export anything you need first. With rer 0.2.19, removal stops with `provider-incomplete-pagination` if the file bucket still holds attachments: delete the objects in the bucket ending in `-files` from the Cloudflare dashboard (R2), then run the same command again.
+It deletes the Worker, database and file bucket that `rer` created, with their data, so export anything you need first. The same command empties the owned file bucket, including attachments, before deleting it; no separate dashboard or Wrangler cleanup is needed. Uncertain ownership or incomplete pagination proof still stops removal.

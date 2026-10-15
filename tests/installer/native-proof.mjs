@@ -10,7 +10,7 @@ import { parseEnv } from 'node:util';
 import { tmpdir } from 'node:os';
 import { chromium } from '@playwright/test';
 import { readLocalD1 } from '../e2e/local-d1-read.mjs';
-import { openGate, readCheckoutKey } from '../e2e/dev-gate.mjs';
+import { readCheckoutKey } from '../e2e/dev-gate.mjs';
 process.env.RER_SERVER_JOURNEY = '1';
 const axeSource=await readFile(new URL('../../node_modules/axe-core/axe.min.js',import.meta.url),'utf8');
 const source=process.cwd(), slow=process.argv.includes('--slow'), evidence=resolve(process.env.VECTOR_INSTALLER_EVIDENCE??'evidence/installer');
@@ -67,20 +67,40 @@ async function capture(name){if(name==='setup'){await page.locator('#form').wait
  const owner=sql('SELECT id,email FROM operators')[0];assert.equal(owner.email,answers.FIRST_OWNER_EMAIL);check('configured first owner, one workspace, one team and seven categories');
  await capture('complete');
  const app=await browser.newPage();try{
-  // Native bootstrap has already issued the setup session. Link navigation must
-  // leave that session inventory unchanged until the person confirms the POST.
+  // The completion state holds only the destination. Its authenticated open
+  // action supplies the private fragment used by the real browser link.
+  assert.equal(complete.devOpen,true);
+  assert.equal(new URL(complete.appUrl).pathname,'/setup');
+  const opened=await api('/api/open-app');assert.equal(opened.status,200);
+  const entry=new URL(opened.body.url),fragment=new URLSearchParams(entry.hash.slice(1));
+  assert.equal(entry.origin,origin);assert.equal(entry.pathname,'/__dev/key');assert.equal(entry.search,'');
+  assert(fragment.get('rer-dev')===await readCheckoutKey(root),'completion entry carries this checkout key in its fragment');
+  assert.equal(fragment.get('as'),'owner');
+  const next=new URL(fragment.get('next'),origin);assert.equal(next.origin,origin);assert.equal(next.pathname,'/auth/dev/enter');assert.equal(next.searchParams.get('as'),'owner');assert.equal(next.searchParams.get('returnTo'),'/setup');
+  await page.waitForFunction(()=>document.querySelector('#open')?.dataset.devOpen==='ready');
+  assert(await page.locator('#open').getAttribute('href')===opened.body.url,'the visible completion link uses the authenticated dev entry');
   const sessions=()=>({...sql('SELECT count(*) total, count(CASE WHEN revoked_at IS NULL THEN 1 END) active FROM oa_sessions')[0]});
   const beforeSignIn=sessions();
-  await openGate(app.context(),origin,await readCheckoutKey(root));await app.goto(complete.appUrl);await app.getByRole('link',{name:'Read message'}).first().click();await app.getByRole('link',{name:'Open this link',exact:true}).click();assert.deepEqual(sessions(),beforeSignIn);
-  await app.getByRole('button',{name:'Confirm',exact:true}).click();await app.waitForURL(origin+'/setup');await finishFirstRun(app,origin);await app.goto(origin+'/app');await app.waitForURL(origin+'/app');
-  const session=await app.evaluate(async()=>({status:(await fetch('/api/session')).status}));assert.equal(session.status,200);
+  assert.equal((await app.request.get(origin+'/api/session')).status(),401);
+  assert.equal((await app.request.get(origin+'/__dev/outbox')).status(),404);
+  await app.goto(opened.body.url);await app.waitForURL(origin+'/setup');
+  const identity=await app.request.get(origin+'/auth/session');assert.equal(identity.status(),200);
+  const signedIn=await identity.json();assert.equal(signedIn.kind,'dev');assert.equal(signedIn.operator.email,owner.email);assert.equal(signedIn.operator.role,'owner');
   assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1});
-  for(const path of ['/','/signin','/does-not-exist'])assert.equal((await app.request.get(origin+path)).status(),path==='/does-not-exist'?404:200);
-  check('outbox navigation, inert GET, confirmation POST, session and document status matrix');
+  assert.equal(sql("SELECT count(*) n FROM oa_sessions s JOIN oa_operators o ON o.id=s.operator_id WHERE s.kind='dev' AND s.revoked_at IS NULL AND o.email='owner@installer.test'")[0].n,1);
+  assert.equal(await app.locator('#rer-dev-badge').count(),0);
+  await finishFirstRun(app,origin);await app.goto(origin+'/app');await app.waitForURL(origin+'/app');
+  const session=await app.request.get(origin+'/api/session');assert.equal(session.status(),200);assert.equal((await session.json()).operatorId,owner.id);
+  await app.goto(opened.body.url);await app.waitForURL(origin+'/app');
+  assert.deepEqual(sessions(),{total:beforeSignIn.total+1,active:beforeSignIn.active+1},'reopening the owner entry reuses its dev session');
+  assert.equal(await app.locator('#rer-dev-badge').count(),0);
+  for(const path of ['/','/signin','/does-not-exist','/__dev/outbox'])assert.equal((await app.request.get(origin+path)).status(),['/does-not-exist','/__dev/outbox'].includes(path)?404:200);
+  check('completion link automatically signs in the configured dev owner, reuses its session, exposes no badge or outbox, and preserves document statuses');
  }finally{await app.close();}
  const before=await readFile(join(root,'.dev.vars')),values=parseEnv(before.toString());const log=await readFile(join(root,'.seed/installer/install.log'),'utf8');
  assert.equal((await stat(join(root,'.seed/installer/install.log'))).mode&0o777,0o600);assert.equal((await stat(join(root,'.dev.vars'))).mode&0o777,0o600);
- for(const text of [log,JSON.stringify(complete),await page.locator('body').innerText(),await readFile(join(root,'.seed/installer/state.json'),'utf8')])assert.equal(text.includes(values.SESSION_SECRET),false,'generated credential absent');
+ const devKey=await readCheckoutKey(root);
+ for(const text of [log,JSON.stringify(complete),await page.locator('body').innerText(),await readFile(join(root,'.seed/installer/state.json'),'utf8')])for(const secret of [values.SESSION_SECRET,devKey])assert.equal(text.includes(secret),false,'generated credential absent');
  check('0600 settings and diagnostics; generated credentials absent from state, page and log');
  await close();process.env.PATH=basePath;await open(true);assert.equal((await api('/api/start',answers)).status,202);const repeated=await until();assert.equal(repeated.phase,'complete');assert.deepEqual(await readFile(join(root,'.dev.vars')),before);assert.equal(new URL(repeated.appUrl).origin,origin);assert.deepEqual(sql('SELECT id,email FROM operators'),[owner]);check('real rerun preserves exact settings, origin and owner');
  report.status='passed';

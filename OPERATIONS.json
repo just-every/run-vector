@@ -70,7 +70,7 @@
         "scripts/installer/local.mjs",
         "rer-setup.json"
       ],
-      "effects": "Serves the local application with HMR and development outbox."
+      "effects": "Serves the local application with HMR and automatic local owner entry."
     },
     "build": {
       "argv": [
@@ -240,18 +240,6 @@
         "rer-setup.json"
       ],
       "effects": "Runs the shared release command; see SEED-COMMAND-CONTRACT.md."
-    },
-    "outbox": {
-      "argv": [
-        "rer",
-        "outbox"
-      ],
-      "inputs": [
-        "package.json",
-        "scripts/installer/local.mjs",
-        "rer-setup.json"
-      ],
-      "effects": "Runs the shared outbox command; see SEED-COMMAND-CONTRACT.md."
     },
     "doctor": {
       "argv": [

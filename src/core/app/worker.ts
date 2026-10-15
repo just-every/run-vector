@@ -5,7 +5,7 @@ import { scheduled } from './scheduled';
 export { VectorRestoreCoordinator } from '../features/data/restore-coordinator';
 import { editorDocument } from '../editor/config.server';
 import { operatorProjectionAdmitted } from '../features/auth/projection-admission';
-import { developmentOutboxResponse } from '../features/auth/development.server';
+import { developmentKeyResponse } from '../features/auth/development.server';
 import { requireOperator, safeReturnTo } from "../features/auth/service";
 import start from "@tanstack/react-start/server-entry";
 import { createServerApp, type WorkerBindings } from "./server";
@@ -21,7 +21,7 @@ export async function handleRequest(
     return new Response("Not found", { status: 404 });
   const asset = await staticAssetResponse(request, env);
   if (asset) return asset;
-  if (url.pathname === '/__dev/outbox' || url.pathname === '/__dev/key') return await developmentOutboxResponse(env, request) ?? new Response('Not found', {status:404});
+  if (url.pathname === '/__dev/key') return await developmentKeyResponse(env, request) ?? new Response('Not found', {status:404});
   if (
     url.pathname.startsWith("/assets/") ||
     url.pathname.startsWith("/fonts/") ||

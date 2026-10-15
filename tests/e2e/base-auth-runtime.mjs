@@ -56,11 +56,11 @@ try {
   const page=await context.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
   await page.goto(origin+'/signin');
-  await page.getByLabel('Email',{exact:true}).fill(config.FIRST_OWNER_EMAIL);
+  await page.getByLabel('Email',{exact:true}).fill(config.FIRST_OWNER_EMAIL,state);
   const sent=page.waitForResponse(response=>response.url()===origin+'/auth/request'&&response.request().method()==='POST');
   await page.getByRole('button',{name:'Send sign-in link',exact:true}).click();
   assert.equal((await sent).status(),202);
-  // The email-link path stays proven: the owner's link is read from the key-gated outbox, as a person does.
+  // The email-link path stays proven: the test observes delivery at the mail edge.
   assert.equal((await fetch(origin+'/__dev/outbox')).status,404,'the outbox answers only a request that holds the key');
   assert.equal((await fetch(origin+'/__dev/outbox',{headers:keyHeader('not-the-key-'+'x'.repeat(43))})).status,404);
   const ownerLink=await readDevelopmentLink(origin,(path,method,body,cookie,headers)=>fetch(origin+path,{method,headers}),config.FIRST_OWNER_EMAIL);

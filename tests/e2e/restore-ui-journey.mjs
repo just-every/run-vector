@@ -7,7 +7,7 @@ import {readCheckoutKey} from './dev-gate.mjs';
 export async function createRestoreReviewPerson(installation,cookie) {
  const email='review@vector.test';
  assert.equal((await installation.req('/api/settings/operators/invite','POST',{email,displayName:'Jordan Review'},cookie)).status,202);
- const link=await readDevelopmentLink(installation.origin,installation.req,email,await readCheckoutKey(installation.root));
+ const link=await readDevelopmentLink(installation.origin,installation.req,email,installation.state);
  const confirmed=await confirmLink(link);assert.equal(confirmed.status,303);
  const session=await installation.req('/api/session','GET',undefined,confirmed.headers.get('set-cookie').split(';')[0]);assert.equal(session.status,200);
  return (await session.json()).operatorId;

@@ -6,8 +6,8 @@ import { Door } from "../site/door/door";
 import { SignInDrawing } from "../site/door/door-drawings";
 import { links } from "../site/shell/links";
 
-/** /signin: one email field that asks for a single-use sign-in link. `localOutbox` adds the local development note. */
-export function SignInPage({ localOutbox, providerLinks = [] }: { localOutbox: boolean; providerLinks?: {id: string; label: string; startPath: string}[] }) {
+/** /signin: one email field that asks for a single-use sign-in link. Local development has its own automatic owner entry. */
+export function SignInPage({ providerLinks = [] }: { providerLinks?: {id: string; label: string; startPath: string}[] }) {
   const search = useSearch({ strict: false }) as { returnTo?: string };
   const [email, setEmail] = useState(""),
     [message, setMessage] = useState(""),
@@ -38,9 +38,7 @@ export function SignInPage({ localOutbox, providerLinks = [] }: { localOutbox: b
             `Sign-in could not be requested (${response.status}).`,
         );
       setMessage(
-        localOutbox
-          ? "Your single-use sign-in link is in the development outbox below. Nothing is emailed while Vector runs on this computer."
-          : "Check your inbox for your single-use sign-in link. It may take a moment to arrive; check your spam folder too.",
+        "Check your inbox for your single-use sign-in link. It may take a moment to arrive; check your spam folder too.",
       );
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Sign-in failed.");
@@ -78,12 +76,6 @@ export function SignInPage({ localOutbox, providerLinks = [] }: { localOutbox: b
         {message ? (
           <p className="vx-door-notice" role="status">
             {message}
-          </p>
-        ) : null}
-        {localOutbox ? (
-          <p className="vx-door-note">
-            Running {productConfig.productName} on this computer? Open the <a href="/__dev/outbox">development outbox</a> for
-            your sign-in message, then press Confirm.
           </p>
         ) : null}
         <p className="vx-door-back"><a href={links.home}>← Return to welcome</a></p>

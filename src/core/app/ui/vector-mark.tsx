@@ -10,7 +10,7 @@ export function VectorMark({ label = 'Vector', compact = false }: VectorMarkProp
   return (
     <span className="vector-mark" aria-label={label}>
       <BrandMark className="vector-mark-symbol" />
-      {compact ? null : <span>{label}</span>}
+      {compact ? null : <span data-rer-name>{label}</span>}
     </span>
   )
 }

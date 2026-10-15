@@ -1,5 +1,5 @@
 // Local-only Worker entry. vite.config.ts loads it only for `vite dev`; the deployed main stays worker.ts,
-// and `rer build` refuses any output that contains the dev layer. It adds dev sign-in, personas and the dev badge.
+// and `rer build` refuses any output that contains the dev layer. It adds dev sign-in, personas without a dev bar.
 import worker from './worker'
 export { VectorRestoreCoordinator } from './worker'
 import { withDevIdentity } from '../../../vendor/base/operator-auth/dev/index.mjs'

@@ -2,27 +2,17 @@ import {env} from 'cloudflare:workers'
 import {applyD1Migrations} from 'cloudflare:test'
 import {beforeEach,expect,inject,it} from 'vitest'
 import {bindings,origin,request,mailToken,confirm} from '../worker/base-auth-fixture'
-import {developmentOutboxResponse,developmentSender} from '../../src/core/features/auth/development.server'
+import {developmentKeyResponse,developmentSender} from '../../src/core/features/auth/development.server'
 import {bootstrapWorkspace} from '../../src/core/features/bootstrap/repository'
 import {createD1DevelopmentOutbox} from '../../vendor/base/mail/src/development/index.mjs'
 beforeEach(async()=>{await applyD1Migrations(env.DB,inject('migrations'));await bootstrapWorkspace(env.DB,bindings);for(const table of ['oa_sessions','oa_tokens','rer_mail_development_outbox','oa_limits','access_rate_limits'])await env.DB.prepare(`DELETE FROM ${table}`).run()})
-it('[BASE-ACCESS-001 BASE-ACCESS-004] shared outbox requires explicit exact loopback and a secret; GET never consumes a link',async()=>{
- expect((await request('/auth/request','POST',{email:bindings.FIRST_OWNER_EMAIL})).status).toBe(202)
- const token=await mailToken(bindings.FIRST_OWNER_EMAIL!),before=(await env.DB.prepare('SELECT * FROM oa_tokens').all()).results
- for(const headers of [{host:new URL(origin).host},{host:new URL(origin).host,origin},{host:new URL(origin).host,origin:'https://hostile.test'},{host:'wrong.test'}]){
-  const response=await developmentOutboxResponse(bindings,new Request(origin+'/__dev/outbox',{headers:{...headers,'x-rer-dev-key':bindings.RER_DEV_KEY!}}));expect(response?.status??404).toBe(headers.host==='wrong.test'||headers.origin==='https://hostile.test'?404:200)
- }
- expect((await developmentOutboxResponse(bindings,new Request(origin+'/__dev/outbox',{headers:{host:new URL(origin).host}})))?.status).toBe(404)
- for(const override of [{MAIL_MODE:'production'},{SESSION_SECRET:''},{APP_ORIGIN:'https://vector.test'},{APP_ORIGIN:'https://hosted.example.test'}]){
-  expect(await developmentOutboxResponse({...bindings,...override},new Request(origin+'/__dev/outbox',{headers:{host:new URL(origin).host}}))).toBeNull()
- }
- expect(()=>developmentSender({...bindings,APP_ORIGIN:'https://vector.test'})).toThrow()
+it('[BASE-ACCESS-001 BASE-ACCESS-004] captured-mail UI is retired; key exchange requires explicit loopback',async()=>{
+ expect((await request('/__dev/outbox')).status).toBe(404)
  expect((await request('/__dev/outbox','POST',{})).status).toBe(404)
- expect((await developmentOutboxResponse(bindings,new Request(origin+'/__dev/outbox',{method:'POST',headers:{host:new URL(origin).host,'x-rer-dev-key':bindings.RER_DEV_KEY!}})))?.status).toBe(405)
- expect((await request('/auth/confirm?token='+token)).status).toBe(200)
- expect((await env.DB.prepare('SELECT * FROM oa_tokens').all()).results).toEqual(before)
- expect(await env.DB.prepare('SELECT count(*) n FROM oa_sessions').first('n')).toBe(0)
- const cookie=await confirm(token);expect((await request('/api/session','GET',undefined,cookie)).status).toBe(200)
+ expect((await developmentKeyResponse(bindings,new Request(origin+'/__dev/key')))?.status).toBe(200)
+ for(const override of [{MAIL_MODE:'production'},{SESSION_SECRET:''},{APP_ORIGIN:'https://vector.test'}])
+  expect(await developmentKeyResponse({...bindings,...override},new Request(origin+'/__dev/key'))).toBeNull()
+ expect(()=>developmentSender({...bindings,APP_ORIGIN:'https://vector.test'})).toThrow()
 })
 it('[BASE-ACCESS-001 BASE-ACCESS-004] revoked auth intent cannot be reinserted through actual Base D1 outbox',async()=>{
  expect((await request('/auth/request','POST',{email:bindings.FIRST_OWNER_EMAIL})).status).toBe(202)

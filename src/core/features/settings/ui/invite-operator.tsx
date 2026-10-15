@@ -16,7 +16,7 @@ function saveDraft(draft: { email: string; displayName: string } | null) {
   try { if (draft) localStorage.setItem(DRAFT, JSON.stringify({ ...draft, at: Date.now() })); else localStorage.removeItem(DRAFT) } catch { /* storage is a convenience */ }
 }
 
-type StepUp = 'needed' | 'sending' | 'outbox' | 'email'
+type StepUp = 'needed' | 'sending' | 'email'
 
 export function InviteOperator({ disabled, onInvited }: { disabled: boolean; onInvited: () => void }) {
   const [email, setEmail] = useState('')
@@ -48,7 +48,7 @@ export function InviteOperator({ disabled, onInvited }: { disabled: boolean; onI
   async function confirmIdentity() {
     setStepUp('sending'); setMessage(''); setFailed(false)
     try {
-      const sent = await fetchJson('/api/settings/operators/confirm-identity', z.object({ status: z.literal('accepted'), delivery: z.enum(['outbox', 'email']) }), {
+      const sent = await fetchJson('/api/settings/operators/confirm-identity', z.object({ status: z.literal('accepted'), delivery: z.literal('email') }), {
         method: 'POST', headers: { 'content-type': 'application/json' }, body: '{}',
       })
       setStepUp(sent.delivery)
@@ -67,9 +67,7 @@ export function InviteOperator({ disabled, onInvited }: { disabled: boolean; onI
       {stepUp === 'needed' || stepUp === 'sending' ? <>
         <p role="status">Inviting someone gives them full access to this workspace, so confirm it’s you first. Vector sends a one-use confirmation link to your own email address.</p>
         <button type="button" disabled={stepUp === 'sending'} onClick={confirmIdentity}>{stepUp === 'sending' ? 'Sending…' : 'Send confirmation link'}</button>
-      </> : stepUp === 'outbox' ? <p role="status">
-        Vector is running on this computer, so nothing is emailed. Open the <a href="/__dev/outbox">development outbox</a>, read the newest message, open its link and press Confirm. You come back here to send the invitation.
-      </p> : <p role="status">
+      </> : <p role="status">
         Check your email for the confirmation link, open it in this browser and press Confirm. You come back here to send the invitation. The link works once, for 15 minutes.
       </p>}
     </div>}

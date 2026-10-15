@@ -10,5 +10,5 @@ export const Route = createFileRoute('/signin')({
   component: editorLeaf(SignIn),
 })
 function SignIn() {
-  return <SignInPage localOutbox={Route.useLoaderData().localOutbox} providerLinks={Route.useLoaderData().providerLinks} />
+  return <SignInPage providerLinks={Route.useLoaderData().providerLinks} />
 }

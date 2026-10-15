@@ -46,7 +46,7 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Two ste
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-or `npm install --global @runeditrun/rer@0.2.19`. This checkout pins rer 0.2.19 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
+or `npm install --global @runeditrun/rer@0.2.20`. This checkout pins rer 0.2.20 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
 
 **2. Get Vector and start it:**
 
@@ -67,7 +67,7 @@ rer setup --owner-email owner@example.test --port "${VECTOR_PORT:-8787}" --non-i
 
 Setup builds and applies migrations, saves owner-only `.dev.vars`, prepares your first owner and stops its temporary app. A second setup preserves the owner, data and settings. Once development has initialized the placeholder owner, setup cannot silently replace it with another mailbox. Keep that owner and existing data, or, for a disposable installation, stop development, retain any needed export, explicitly run `rer reset --yes`, then run setup with your chosen mailbox and start development again. Reset deletes the local installation. Supply a private JSON `--answers` file for workspace, timezone and team values declared in `rer-setup.json`; otherwise its defaults apply. Existing installations must follow [local recovery](docs/LOCAL-RECOVERY.md) before changing their state path.
 
-Development prints `RER_READY` only after health is ready. `rer dev` opens signed in: it prints `RER_SIGNED_IN` (the owner) and `RER_OPEN`, a link that carries this checkout's private dev key in its fragment. Open `RER_OPEN` in a browser on this computer and you land signed in as the owner; a small dev badge switches to the `teammate` persona (a second operator in the same workspace; Vector has no product roles) or signs out. The badge names the signed-in operator with their sign-in role, which is `owner` for everyone: Vector has no product roles, so every operator holds full access. Never share the link: the key is what keeps the outbox and dev sign-in closed to anything that reaches this port through a proxy or tunnel, and `reset` removes the key so every earlier browser session stops working. `--as teammate` (or `--as signed-out`) starts as another persona, and `--login` turns dev identity off so dev prints `RER_SIGN_IN` and a key-carrying `RER_OPEN` for the outbox instead: choose the newest message and follow its one-use link (no email is sent). Previews open the outbox the same way. `RER_OPEN` is for people at this terminal; scripts use `rer dev --json` or the key header. Opening an outbox link is inert until you press **Confirm**. Inviting an operator asks you to confirm it's you when your sign-in is more than ten minutes old: Settings offers **Send confirmation link**, and on this computer the link arrives in the outbox. Stop with Ctrl-C or `rer dev --stop`. `rer outbox` prints the outbox address; `--owner-email` requests another ordinary link. Data is stored in `.wrangler/state` and private settings are excluded from builds.
+Development prints `RER_READY` only after health is ready, then `RER_SIGNED_IN` (the owner) and `RER_OPEN`. Open `RER_OPEN` in a browser on this computer to enter as the owner; finish your first workspace review at `/setup`. The link carries this checkout's private dev key in its fragment: treat it as a credential and never share it. Reset removes the key and invalidates earlier dev browser sessions. Development has no badge, toolbar or captured-mail UI. Use `rer dev --as teammate` (a second operator in the same workspace) or `--as signed-out` to choose another persona; Vector has no product roles. The legacy `--login` flag now uses the same automatic owner entry. `rer preview` serves production output and prints its ready address without a captured-mail sign-in flow. `RER_OPEN` is for people at this terminal; scripts can use `rer dev --json` and the key header. Stop with Ctrl-C or `rer dev --stop`. Data is stored in `.wrangler/state` and private settings are excluded from builds.
 
 `rer verify` runs the build, artifact and contract checks. The browser test suites are for contributors and run in CI; see [Verification](docs/VERIFICATION.md).
 
@@ -93,7 +93,7 @@ Vector’s current deployment adapter reads the internal `FIRST_OWNER_EMAIL` bin
 
 This uses the published package’s owner-account deploy and health checks with the same durable declaration and `.rer/deploy` state. `SENDGRID_API_KEY` maps to the established Worker binding `MAIL_API_KEY`. They do not use ambient Wrangler login. When it finishes, `rer deploy` prints the address of your installation. Open it and sign in by email as `OWNER_EMAIL`: that first sign-in makes you the owner automatically, so there is no setup token or claim step to run. The separate reviewed artifact controller is described in [DEPLOY.md](DEPLOY.md).
 
-If you cannot receive the sign-in email (no mail key yet, or the message never arrives), sign in as the owner with the same Cloudflare credentials that deployed it, from the deploying checkout:
+Production deployment requires configured outbound email or an approved Auth SSO setup dependency. Vector’s documented deployment path uses SendGrid. `rer signin` remains owner recovery when sign-in email does not arrive; run it with the same Cloudflare credentials that deployed the installation, from the deploying checkout:
 
 ```sh
 rer signin
@@ -124,7 +124,7 @@ rer deploy --remove --yes
 
 It deletes the Worker, D1 database and R2 bucket that this checkout's `.rer/deploy` record says `rer` created, with their data, confirms each is gone and touches nothing else. Export first if you want to keep anything. It removes the `production` environment; for a named environment add the same `--environment NAME` you deployed with.
 
-rer 0.2.19 cannot yet empty a bucket that still holds attached files: removal deletes the Worker and database, then stops with `provider-incomplete-pagination` and names the bucket. Until the next rer release, delete that bucket's objects in the Cloudflare dashboard (R2, the bucket ending in `-files`) and run the same command again; it then removes the bucket and confirms nothing remains.
+The same command empties the owned R2 bucket, including attached files, before deleting it. No separate dashboard or Wrangler cleanup is required. Uncertain resource ownership or incomplete pagination proof still stops removal.
 
 ## Workspace administration
 

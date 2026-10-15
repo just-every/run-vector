@@ -76,14 +76,13 @@ this computer set differently (each distinct pin keeps its own copy), and about
 a checkout on another volume than your home folder, where pnpm cannot clone
 packages from its store.
 
-After `RER_READY`, a seed with dev identity prints `RER_SIGNED_IN EMAIL` and
-`RER_OPEN URL`: open that URL on this computer and the app opens signed in as
-the owner, at `/setup` until first-run is finished. Other seeds, and
-`dev --login`, print `RER_SIGN_IN URL` for the local outbox: open it, follow
-the newest ordinary sign-in link and finish first-run setup at `/setup`. Until
-first-run completion is stored durably, app routes send the signed-in owner to
+After `RER_READY`, Vector prints `RER_SIGNED_IN EMAIL` and `RER_OPEN URL`.
+Open `RER_OPEN` on this computer to enter as the owner, at `/setup` until
+first-run is finished. Legacy `dev --login` uses this same automatic entry.
+Until completion is stored durably, app routes send the signed-in owner to
 `/setup`; signed-out visitors sign in and return there. Once complete,
-`/setup` opens the app or settings. The local outbox sends no external email.
+`/setup` opens the app or settings. No sign-in message or captured-mail UI
+participates in local setup or development.
 
 The saved local port is used; a first setup saves the first free port from 8787. Explicit ports are decimal
 integers from 1 through 65535 and must be free; a busy requested port fails
@@ -130,23 +129,19 @@ root, inspect the live queue with
 
 For the real owner mailbox, `setup` can prompt instead of receiving
 `--owner-email` on the command line. Setup builds the app, applies local
-migrations, prepares the first owner, requests an ordinary sign-in message and
-stops its temporary app before it exits. Existing owner data and private
+migrations, prepares the first owner and stops its temporary app before it exits. Existing owner data and private
 settings are preserved on a repeated setup.
 
 Dev starts the real local app with assets and HMR and prints `RER_READY URL`
-after the application health check. With dev identity it then prints
-`RER_SIGNED_IN EMAIL` and `RER_OPEN URL`. The `RER_OPEN` URL carries this
-checkout's dev key in its fragment: opening it signs the browser in through a
-real dev session, and the key is removed from the address bar and kept only as a
-host-only cookie. Treat that line as a credential and open it only on this
-computer. A dev-only badge switches between the owner, signed out and the
-seed's personas (`admin@dev.localhost` and so on). `dev --as PERSONA` starts as
-another persona or `signed-out`; `dev --login` turns dev identity off and uses
-the outbox: it prints `RER_SIGN_IN URL` and a `RER_OPEN` URL that opens that
-outbox. Choose the newest ordinary sign-in message and follow its link. No
-external email is sent. A successful sign-in consumes the link once. Seeds
-without dev identity print only `RER_SIGN_IN URL` for the local outbox.
+after the application health check, then `RER_SIGNED_IN EMAIL` and `RER_OPEN URL`.
+The `RER_OPEN` URL carries this checkout's dev key in its fragment: opening it
+signs the browser in through a real dev session. The key is removed from the
+address bar and exchanged for a host-only cookie. Treat that line as a
+credential and open it only on this computer. There is no dev badge, toolbar or
+captured-mail UI. Use `rer dev --as teammate` to select Vector's second dev
+operator, or `--as signed-out`; legacy `--login` uses automatic owner entry.
+The app name and browser title identify Dev mode. Preview serves production
+output and prints its ready address without a captured-mail sign-in flow.
 
 Dev and preview are managed servers. In a terminal the first invocation stays
 active while serving; without one, `rer dev` returns once the app is ready and
@@ -212,6 +207,11 @@ outbox, private settings and transient runtime state are excluded. Remote
 transfer is unsupported by the maintained references and fails visibly.
 
 Real deployment uses the owner-account procedure and its private credentials.
+Production requires configured outbound email in the declared bindings, or an
+Auth SSO setup dependency with its approval/link flow complete. Vector’s
+documented deployment path uses SendGrid. `rer signin` remains owner recovery
+using the deploying checkout’s Cloudflare credentials; it does not replace
+production sign-in configuration.
 `rer deploy --dry-run` validates and builds locally without a
 provider request. The default environment is `production`; select another with
 `--environment NAME`. Local validation does not establish provider acceptance,
@@ -246,9 +246,8 @@ Local durable state is `.wrangler/state`; CLI bookkeeping is `.rer/local`,
 installer state is `.seed/installer`, and the default private settings file is
 `.dev.vars` with mode 0600. Setup writes this checkout's dev key to
 `.rer/local/dev-key.env` (mode 0600); a repeat setup keeps it and reset removes
-it, which also ends every browser's earlier dev cookie. Dev sign-in, personas
-and the development outbox answer only a request holding that key's cookie, so
-a tunnel or local proxy to the app cannot reach them; anything else returns 404.
+it, which also ends every browser's earlier dev cookie. Dev sign-in and personas answer only a request holding that key's cookie or
+header, so a tunnel or local proxy to the app cannot reach them; anything else returns 404.
 Any local user or process that can read the checkout can read the key and sign
 in as the owner. `rer deploy` refuses the key, and `rer build` refuses output
 that contains the dev layer.

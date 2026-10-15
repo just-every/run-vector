@@ -64,7 +64,7 @@ export async function dataInstallation(work,name){
  const sql=query=>readLocalD1(state,query),fixture=script=>writeLocalD1(state,script);
  const signIn=async(email='sarah@vector.test')=>{
   assert.equal((await req('/auth/request','POST',{email})).status,202);
-  const link=await readDevelopmentLink(origin,req,email,await readCheckoutKey(root));store.addSecrets([new URL(link).searchParams.get('token')]);
+  const link=await readDevelopmentLink(origin,req,email,state);store.addSecrets([new URL(link).searchParams.get('token')]);
   const response=await confirmLink(link);assert.equal(response.status,303);const cookie=response.headers.get('set-cookie').split(';')[0];
   const review=await req('/api/setup','GET',undefined,cookie);assert.equal(review.status,200);const setup=await review.json();
   if(setup.owner&&!setup.completed)assert.equal((await req('/api/setup/complete','POST',{confirmed:true},cookie)).status,200);
