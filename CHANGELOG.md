@@ -8,6 +8,7 @@ Add a persisted daily reminder clock in Settings (09:00 in workspace time by def
 ## Unreleased
 
 - Run on published rer 0.2.13 in package mode. `rer deploy` no longer stops at owner claim: Vector's owner is the configured owner email's first sign-in, so the hosted deploy has no setup-token claim. Archives no longer list SETUP_TOKEN as required configuration. README, the Run page, DEPLOY.md and the install guide describe 0.2.13: no Node or pnpm choices, update with `git pull --ff-only` then `rer deploy`, remove with `rer deploy --remove --yes`.
+- Fix a hosted import that failed with 503 `import_unavailable` at about 1,700 rows when the file held a character above U+00FF (an em dash, a curly quote, an emoji): D1 sent the retained plan as two-byte text and passed its 32 MiB request limit. Large JSON parameters are now escaped to stay one-byte on the wire (`src/core/features/data/import/wire.ts`); the stored bytes are unchanged.
 - Remove the redundant foundation/removal browser harnesses; the CI admin journey now saves workspace time and checks it after restart. Manual package tools are listed in docs/VERIFICATION.md.
 - Publish each import receipt to the Data progress line and retained run row together, preventing a stale list read from showing an earlier batch.
 - Remove remote installation from the browser installer. Owner-account deployment remains available through `rer deploy`; setup configures the local workspace.

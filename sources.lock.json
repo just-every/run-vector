@@ -448,7 +448,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "8b5adca0ce6aebd44d8a9ce8ed7dcf062a5c4f5cc077d3d073439f335cad306d",
+      "sha256": "df7e4e909f0fd05e70f02736cf21311e8f4a605b49de6f82ff869e508bfad15e",
       "executable": false
     },
     "CLAUDE.md": {
@@ -1908,7 +1908,7 @@
       "executable": false
     },
     "src/core/features/data/import/authority.ts": {
-      "sha256": "098c16bb23e3b698f7cadb74b638e3bb563aee789ae36fbf3f06dd119371c73b",
+      "sha256": "4c6403ef683d415ca0c54ff83ba053b78a1ad6882b69bd5e8bdfdeeb22a737f9",
       "executable": false
     },
     "src/core/features/data/import/csv.ts": {
@@ -2025,6 +2025,10 @@
     },
     "src/core/features/data/import/types.ts": {
       "sha256": "10492b2e3697724642848bd922c1183cbd2185910ae080d88fedaa5581ebc12b",
+      "executable": false
+    },
+    "src/core/features/data/import/wire.ts": {
+      "sha256": "0a2abf7c6f8007083588f260a9b7ac8bf1f95e3c40efc1fb3de6d023ffd0f4e6",
       "executable": false
     },
     "src/core/features/data/restore-authority.ts": {
