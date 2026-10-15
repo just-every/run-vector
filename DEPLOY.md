@@ -26,6 +26,8 @@ The browser installer supports local installation only. Owner-account deployment
 
 ## Artifact controller
 
+For a hosted installation deployed with v0.1.0's `pnpm run deploy`, follow [Hosted upgrade from v0.1.0](docs/HOSTED-UPGRADE.md). Keep its reviewed plan and resources and use `pnpm artifact:deploy` with a new artifact/run/receipt; the current `pnpm run deploy` invokes the separate owner-account `rer deploy` path.
+
 Credential-free preparation and the reviewed artifact controller remain separate: `pnpm deploy:prepare`, `pnpm artifact:setup`, `pnpm artifact:deploy`, `pnpm artifact:health`. Their source/run/hash/receipt identities, strict plan, resource collision/drift refusal and byte-identical repeat remain enforced. The artifact mail input is MAIL_API_KEY directly; it does not use the owner-account input mapping.
 
 ## Build/controller separation
@@ -171,7 +173,7 @@ Wave B source preparation: see [managed source and recovery](docs/MANAGED-SOURCE
 
 ## Mapped imports and local archives
 
-Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the same reviewed native Base import-kit path in Settings and the terminal. See docs/MOVE-IN.md, docs/IMPORT-EVIDENCE.md and docs/ARCHIVES.md for limits, exact originals, command spelling and the authenticated HTTP restore admission and recovery requirements. Replacement claims remain empty; no owner export or hosted acceptance is asserted.
+Mapped CSV/JSON issue imports and the Linear importer (documented CSV format and owner-made API file, tested at 2,000 issues with a generator) use the same reviewed native Base import-kit path in Settings and the terminal. See docs/MOVE-IN.md, docs/IMPORT-EVIDENCE.md and docs/ARCHIVES.md for limits, exact originals, command spelling and the authenticated HTTP restore admission and recovery requirements. The approved alternative positioning lists Linear, Jira and Asana; no feature parity, owner export or hosted importer acceptance is asserted.
 
 Apply 0025/0026 additively after 0024. Retain original bytes, import journals/provenance, revisions, identifier reservations and authorization guards on compatible-source rollback. Archive export excludes credentials, delivery claims and import lease capabilities. Stop local runtimes before archive commands; restore into empty D1/FILES, configure fresh destination authority, and review access/effects. Never replay historical deliveries. Automatic cycle closure and immutable snapshots, Inbox-only due reminders with durable delivery/suppression history, native duplicate decisions and confirmed issue deletion have local transactional proof. Apply 0031–0033 in order and retain frozen history, feature audits, reminder settings, expanded live/erased source keys, deletion receipts and unresolved file custody on compatible-source rollback. Hosted Cron delivery, provider effects and physical erasure timing require separate acceptance evidence.
 
@@ -181,7 +183,7 @@ Settings manages scoped Base tokens with safe usage, signed sources, outbound de
 
 ## Update
 
-Preserve matching backups and `.rer/deploy`, then run `git pull --ff-only` followed by `rer deploy`. The command provides Node and pnpm itself and installs a changed package pin or lockfile first. Existing migration bytes and identities remain unchanged.
+For installations created with `rer deploy`, preserve matching backups and `.rer/deploy`, then run `git pull --ff-only` followed by `rer deploy`. The command provides Node and pnpm itself and installs a changed package pin or lockfile first. Existing migration bytes and identities remain unchanged. Controller installations retain the separate [v0.1.0 upgrade path](docs/HOSTED-UPGRADE.md).
 
 ## Remove
 

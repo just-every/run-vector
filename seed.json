@@ -1,8 +1,8 @@
 {
   "id": "vector",
   "name": "Vector",
-  "version": "0.1.0",
-  "maturity": "First public foundation release candidate; broader contract and capacity obligations remain as documented.",
+  "version": "0.2.0",
+  "maturity": "Second public release; managed-relay-shaped hosted acceptance is blocked by Base patch gr-base-162 and is not proven. Real Linear/Jira exports and broader hosted capacity remain unproven.",
   "category": "projects",
   "spine": {
     "id": "projects",

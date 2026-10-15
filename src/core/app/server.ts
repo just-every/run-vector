@@ -48,13 +48,13 @@ export function createServerApp() {
     if (state) return state;
     if (context.req.path === '/') {
       let isClaimed: boolean;
-      try { isClaimed = await claimed(context.env.DB); }
+      // Configured-owner installs have no setup token to ask for, even before
+      // the first request initializes their owner. Signed claims stay explicit.
+      try { isClaimed = await claimed(context.env.DB) || Boolean(context.env.FIRST_OWNER_EMAIL && !context.env.SETUP_TOKEN && !signedOwnerClaimConfigured(context.env)); }
       catch { return context.json({ error: 'setup_unavailable' }, 503, { 'Cache-Control': 'no-store' }); }
       const workspaceName = context.env.WORKSPACE_NAME?.trim();
       if (isClaimed && !workspaceName) return context.json({ error: 'configuration_missing', message: 'WORKSPACE_NAME is required.' }, 503, { 'Cache-Control': 'no-store' });
-      // Before claim the Lobby renders only the product, never a deployment.
-      // Use the same persisted snapshot for admission and rendering: a concurrent
-      // claim must not render a fabricated installation name.
+      // Use one admission snapshot for both the state and installation name.
       const lobby = await lobbyResponse(context.req.raw, lobbyBindings, { ...identity, deployment: workspaceName || identity.product }, async () => isClaimed);
       if (lobby) return lobby;
     }

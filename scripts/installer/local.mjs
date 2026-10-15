@@ -16,14 +16,17 @@ export const hooks = {
  build: ['pnpm', ['run', 'build:source']], migrate,
  // Local setup uses the dev entry for owner proof and automatic entry.
  start: developmentTarget,
- prepare: async context => { context.devKey ??= await ensureDevKey(context.root); context.store.addSecrets?.([context.devKey]); },
+ prepare: async context => { await guardLocalState(context); context.devKey ??= await ensureDevKey(context.root); context.store.addSecrets?.([context.devKey]); },
  owner: { returnTo: '/setup', displayName: input => input.FIRST_OWNER_NAME || 'Owner' },
  signIn: { emailKey: 'FIRST_OWNER_EMAIL', returnTo: '/setup' },
 };
 const shared = localInstaller(hooks);
 // FIRST_OWNER_NAME is already declared by the manifest; the generic installer
 // displayName input would ask for the same owner's name a second time.
-export const adapter = { ...shared, ownerBootstrap: false, run: (root, input, store, onApp, signal, options) => shared.run(root, input, isolatedStore(store), onApp, signal, options) };
+export const adapter = { ...shared, ownerBootstrap: false, run: async (root, input, store, onApp, signal, options) => {
+ await guardLocalState({ root });
+ return shared.run(root, input, isolatedStore(store), onApp, signal, options);
+} };
 export const install = async (root, input, store, onApp, signal) => {
  // A local workspace installs through the public commands, as Base's operator installer does (rer install,
  // rer setup --answers, rer preview), so its runtime only ever answers behind rer's traffic proxy.

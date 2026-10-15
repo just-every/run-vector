@@ -197,6 +197,10 @@
       "reason": "Importer evidence and claims, for reviewers"
     },
     {
+      "source": "docs/HOSTED-UPGRADE.md",
+      "reason": "Controller installation upgrade runbook for v0.1.0 owners; linked from README and deployment instructions"
+    },
+    {
       "source": "docs/INSTALLER.md",
       "reason": "Installer internals; the install page covers the owner path and links here"
     },

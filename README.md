@@ -109,6 +109,14 @@ Estimated infrastructure cost is **USD 0–15/month**, assuming up to 20 operato
 
 ## Update an installation
 
+### From v0.1.0
+
+For local sample data, stop the old runtime and follow [local recovery](docs/LOCAL-RECOVERY.md) before setup: back up and move `.wrangler/vector-dev` to `.wrangler/state`, retaining the existing owner (`sarah@vector.test` for the original samples). The guide also covers correcting private settings left by an earlier failed upgrade. Do not reset retained data.
+
+For hosted v0.1.0 installations made with `pnpm run deploy`, follow [the hosted upgrade guide](docs/HOSTED-UPGRADE.md). That command now invokes `rer deploy`, which targets a different owner-account installation. Update the original reviewed controller plan and resources with `pnpm artifact:deploy` and a new artifact/run/receipt. Migration 0046 deletes pending identity-dependency approvals, which owners must renew.
+
+### Installations created with rer deploy
+
 Stop local development and keep matching source, D1/R2 backups and the private `.rer/deploy` directory. With the published `rer` command installed, update the source and deploy:
 
 ```sh
