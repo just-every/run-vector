@@ -448,7 +448,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "945db3df4fedd1ba27fa78df6e93153a406d3dc1971a67bcd9d2330945ce607f",
+      "sha256": "8b5adca0ce6aebd44d8a9ce8ed7dcf062a5c4f5cc077d3d073439f335cad306d",
       "executable": false
     },
     "CLAUDE.md": {
@@ -468,7 +468,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "7b4ba22aa5512d53a09c7ca59c86fd88c6a3c8a6fb4d209e9c7a0a77b90a09db",
+      "sha256": "81ae8c8532ba9eafe6ec178a28e1f63355190b562a709e89b58be13493a53e0d",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -488,7 +488,7 @@
       "executable": false
     },
     "docs/BASE-ADOPTION.md": {
-      "sha256": "3ffbf96f28d9da96a039d9d02e9e230b762369e9f2cb3f5f8b8717d66bbc8ce4",
+      "sha256": "d0d369e96efc604cee488dbacd0fd39419c2664fe00472f5dd33a697e5d6f803",
       "executable": false
     },
     "docs/BRAND.md": {
@@ -824,11 +824,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "b851022125b1fa52da59a50d49df7547290261b82cca45c5c1bfeac75f329b8f",
+      "sha256": "8c7920bde57e65ab733361e795102303ec83c81a9525f441f87e7d4730e1accf",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "c4381cd8a4f1591d74ae700dcb0f296a103181e36634bb79806a9bce6ad672f4",
+      "sha256": "e19d2490793095e164d7908e675198cc7d2a702991f54c764aefa0760fb3175e",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -884,7 +884,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "17490600b377c5c2e5a216d80d70c2d9d51ba62c1baedd4715a32a689a6a91ae",
+      "sha256": "7476c39f1bc1622c92a92a8d84b0001371c91dad6207634b402723a6e965d78c",
       "executable": false
     },
     "RELEASE.json": {
@@ -1052,7 +1052,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "c663fd2c2fe51fe9e5d9a9b42aaf817de702fbf61fccc1dd5427dca16d28fc7b",
+      "sha256": "45c4bdcc763f7a6e1d3e8ae053e3f6459e88c380dac739c927245a302fb416dc",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
