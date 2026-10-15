@@ -7,9 +7,9 @@ import { SignInDrawing } from "../site/door/door-drawings";
 import { links } from "../site/shell/links";
 
 /** /signin: one email field that asks for a single-use sign-in link. Local development has its own automatic owner entry. */
-export function SignInPage({ providerLinks = [] }: { providerLinks?: {id: string; label: string; startPath: string}[] }) {
+export function SignInPage({ providerLinks = [], loginHint = '' }: { loginHint?: string; providerLinks?: {id: string; label: string; startPath: string}[] }) {
   const search = useSearch({ strict: false }) as { returnTo?: string };
-  const [email, setEmail] = useState(""),
+  const [email, setEmail] = useState(loginHint),
     [message, setMessage] = useState(""),
     [busy, setBusy] = useState(false),
     [ready, setReady] = useState(false);

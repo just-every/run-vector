@@ -121,8 +121,124 @@ try {
   assert.equal(sql('SELECT count(*) n FROM operators WHERE removed_at IS NULL')[0].n,1);
   assert.equal(sql('SELECT count(*) n FROM workflow_statuses')[0].n,7);
   assert.deepEqual(errors,[]);
+  await stop();
+  await managedMailRuntime(browser);
   await writeFile(resolve(evidence,'report.json'),JSON.stringify({status:'passed',checks:['rendered sign-in uses Base','GET confirmation does not admit','POST confirmation sets Base cookie','Settings invitation delivered to explicit outbox','invited equal operator can invite','setup owner protection','responsive settings','removal revokes session and issued invite','restart preserves peer revocation and owner Base session'],scope:'local emitted Worker and headless browser; no remote delivery claimed'},null,2)+'\n');
   console.log('Base authentication runtime: 9 checks passed; '+evidence);
 } finally {
   await browser?.close(); await stop();
+}
+
+// Exercise the emitted production Worker; only the external relay is a fake.
+async function managedMailRuntime(browser) {
+  const { createRequire } = await import('node:module');
+  const { readdirSync } = await import('node:fs');
+  const { dirname, join } = await import('node:path');
+  const { unstable_getMiniflareWorkerOptions } = await import('wrangler');
+  const require = createRequire(import.meta.url);
+  const { Miniflare, convertV4MiniflareOptions } = require(createRequire(require.resolve('wrangler')).resolve('miniflare'));
+  const built = resolve('dist/server/wrangler.json'), root = dirname(built);
+  const { workerOptions, main } = unstable_getMiniflareWorkerOptions(built);
+  const entry = resolve(root, main);
+  const modules = readdirSync(root, { recursive: true }).filter(name => /\.m?js$/.test(name))
+    .map(name => join(root, name)).sort((a,b) => (b === entry) - (a === entry)).map(path => ({type:'ESModule',path}));
+  const appOrigin = 'https://vector.example.test', relay = 'https://relay.example.test/api/managed-mail/send';
+  const calls = [], edges = []; let relayStatus = 202;
+  const mf = new Miniflare(convertV4MiniflareOptions({ rootPath: root, upstream: appOrigin,
+    resourcePersistencePath: resolve(state,'v3'), unsafeTriggerHandlers: true,
+    workers: [{ name:'vector-local',modulesRoot:root,modules,...workerOptions,
+      bindings:{...workerOptions.bindings,...config,APP_ORIGIN:appOrigin,MAIL_MODE:'production',MAIL_PROVIDER:'rer',
+        MAIL_API_KEY:'synthetic-fixture-managed-mail-key',MAIL_RELAY_URL:relay,RER_DEV_KEY:''},
+      outboundService: async request => {
+        // The Node service bridge reconstructs Request.redirect; assert the
+        // real no-follow behavior below. The existing Worker mail test observes init.
+        edges.push({url:request.url,method:request.method,
+          authorized:request.headers.get('Authorization')==='Bearer synthetic-fixture-managed-mail-key',
+          contentType:request.headers.get('Content-Type')});
+        calls.push(await request.json());
+        return Response.json(relayStatus === 202 ? {accepted:true} : {error:'relay refusal'}, {
+          status:relayStatus,headers:relayStatus === 302 ? {Location:'https://forbidden.example.test/'} : {'Retry-After':'120'},
+        });
+      },
+    }],
+  }));
+  let context;
+  try {
+    await mf.ready;
+    const db = await mf.getD1Database('DB');
+    const call = (path,method='GET',body,cookie='') => mf.dispatchFetch(appOrigin+path,{method,redirect:'manual',
+      headers:{Host:new URL(appOrigin).host,Origin:appOrigin,'Content-Type':'application/json',Cookie:cookie,'CF-Connecting-IP':'192.0.2.44'},
+      body:body === undefined ? undefined : JSON.stringify(body)});
+    await db.prepare('DELETE FROM oa_limits').run(); await db.prepare('DELETE FROM access_rate_limits').run();
+    const requested=await call('/auth/request','POST',{email:config.FIRST_OWNER_EMAIL});
+    assert.equal(requested.status,202,JSON.stringify({response:await requested.clone().text(),edges}));
+    assert.deepEqual(edges[0],{url:relay,method:'POST',authorized:true,contentType:'application/json'});
+    const wire = calls[0];
+    assert.deepEqual(Object.keys(wire).sort(),['html','subject','text','to']);
+    assert.equal(wire.to,config.FIRST_OWNER_EMAIL); assert.ok(wire.subject && wire.text && wire.html);
+    const link = new URL(wire.text.match(/https:\/\/[^\s]+/)[0]);
+    assert.equal(link.origin+link.pathname,appOrigin+'/auth/confirm');
+    const confirmed = await call('/auth/confirm','POST',{token:link.searchParams.get('token')});
+    assert.equal(confirmed.status,303); const cookie=confirmed.headers.get('set-cookie').split(';')[0];
+    console.log('Emitted Worker relay: exact POST envelope + bearer + JSON; redirect=manual; Auto-Submitted accepted; sign-in confirmed.');
+    assert.equal((await call('/api/settings/operators/invite','POST',{email:'sam@managed-runtime.test',displayName:'Sam Rivera'},cookie)).status,202);
+    const inviteLink = new URL(calls.at(-1).text.match(/https:\/\/[^\s]+/)[0]);
+    assert.equal((await call('/auth/confirm','POST',{token:inviteLink.searchParams.get('token')})).status,303);
+    const peer = await db.prepare("SELECT id FROM operators WHERE email='sam@managed-runtime.test'").first();
+    const team = await db.prepare('SELECT id FROM teams LIMIT 1').first();
+    relayStatus=429; const started=Date.now();
+    const created=await call('/api/issues','POST',{title:'Prepare customer onboarding',description:'Private details stay in Vector',teamId:team.id,assigneeOperatorId:peer.id},cookie);
+    assert.equal(created.status,201); const issue=await created.json();
+    const delivery=()=>db.prepare('SELECT status,attempts,next_attempt_at FROM notification_deliveries WHERE identifier=?').bind(issue.identifier).first();
+    let queued=await delivery(); assert.equal(queued.status,'retry'); assert.equal(queued.attempts,1);
+    assert.ok(Date.parse(queued.next_attempt_at)>=started+120000);
+    const count=calls.length;
+    await mf.dispatchFetch(appOrigin+'/cdn-cgi/local/scheduled');
+    assert.equal(calls.length,count,'Retry-After prevents an early send');
+    // Advance the persisted due time through the fixture DB, then use real Cron.
+    await db.prepare('UPDATE notification_deliveries SET next_attempt_at=? WHERE identifier=?').bind(new Date(Date.now()-1000).toISOString(),issue.identifier).run();
+    relayStatus=202; await mf.dispatchFetch(appOrigin+'/cdn-cgi/local/scheduled');
+    queued=await delivery(); assert.equal(queued.status,'accepted'); assert.equal(queued.attempts,2);
+    console.log('Emitted Worker relay: invitation sent; 429 queued for Retry-After=120; early Cron withheld; due Cron accepted attempt 2.');
+    for (const status of [302,401]) {
+      relayStatus=status; await db.prepare('DELETE FROM oa_limits').run(); await db.prepare('DELETE FROM access_rate_limits').run();
+      const before=calls.length, failed=await call('/auth/request','POST',{email:config.FIRST_OWNER_EMAIL});
+      assert.equal(failed.status,503); assert.deepEqual(await failed.json(),{error:'mail_unavailable'});
+      assert.equal(calls.length,before+1);
+      assert.notEqual((await db.prepare('SELECT revoked_at FROM oa_tokens ORDER BY created_at DESC,rowid DESC LIMIT 1').first()).revoked_at,null);
+    }
+    assert.ok(edges.every(edge=>edge.url===relay)); assert.equal(edges.length,calls.length);
+    console.log('Emitted Worker relay: 302 refused without following; 401 retires the link and returns the public mail problem.');
+    context=await browser.newContext();
+    await context.route('**/*',async route=>{
+      const request=route.request(),response=await mf.dispatchFetch(request.url(),{method:request.method(),headers:{...request.headers(),Host:new URL(appOrigin).host},body:request.postDataBuffer()??undefined,redirect:'manual'});
+      await route.fulfill({status:response.status,headers:Object.fromEntries(response.headers),body:Buffer.from(await response.arrayBuffer())});
+    });
+    const page=await context.newPage(); let submissions=0;
+    page.on('request',request=>{if(request.url()===appOrigin+'/auth/request')submissions++;});
+    for(const width of [1440,390]) {
+      await page.setViewportSize({width,height:width===1440?1000:844});
+      await page.goto(appOrigin+'/signin?login_hint='+encodeURIComponent('alex.morgan@example.test'));
+      await page.getByRole('button',{name:'Send sign-in link',exact:true}).waitFor({state:'visible'});
+      assert.equal(await page.getByLabel('Email',{exact:true}).inputValue(),'alex.morgan@example.test');
+      assert.equal(submissions,0); assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+      await page.screenshot({path:resolve(evidence,`login-hint-${width}.png`),fullPage:true});
+      await db.prepare('DELETE FROM oa_limits').run(); await db.prepare('DELETE FROM access_rate_limits').run();
+      await page.getByLabel('Email',{exact:true}).fill(config.FIRST_OWNER_EMAIL);
+      await page.getByRole('button',{name:'Send sign-in link',exact:true}).click();
+      await page.getByRole('status').waitFor();
+      assert.match(await page.getByRole('status').innerText(),/mail settings/);
+      await page.screenshot({path:resolve(evidence,`mail-problem-${width}.png`),fullPage:true});
+      submissions=0;
+    }
+    await page.goto(appOrigin+'/signin');
+    assert.equal(await page.getByLabel('Email',{exact:true}).inputValue(),'');
+    for(const hint of ['not-an-email','<script>']) {
+      const invalid=await call('/signin?login_hint='+encodeURIComponent(hint));
+      assert.equal(invalid.status,307);
+      assert.equal(new URL(invalid.headers.get('Location'),appOrigin).pathname,'/signin');
+      assert.equal(new URL(invalid.headers.get('Location'),appOrigin).searchParams.has('login_hint'),false);
+    }
+    console.log('Emitted Worker browser: login_hint prefilled without submitting; blank/invalid hints ignored; plain 401 mail problem at 1440 and 390.');
+  } finally { await context?.close(); await mf.dispose(); }
 }

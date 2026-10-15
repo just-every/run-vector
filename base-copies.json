@@ -2,6 +2,17 @@
   "schemaVersion": 1,
   "copies": [
     {
+      "path": ".github/workflows/run-site.yml",
+      "originPath": "export/run-site.yml",
+      "revision": "e17843562355e1b6e5068289c8e037951fbc8d3d",
+      "files": {
+        ".github/workflows/run-site.yml": "ef3626b149bbfd6220659264f072b83d63800c2de5c137910fe77426aaaea103"
+      },
+      "modes": {
+        ".github/workflows/run-site.yml": "100644"
+      }
+    },
+    {
       "path": "HOMEPAGE-VARIANTS.md",
       "originPath": "export/HOMEPAGE-VARIANTS.md",
       "revision": "8981bc2c4d9e61feca5787c83b4ed44056659dd9",
@@ -2088,9 +2099,9 @@
     {
       "path": "vendor/base/mail/README.md",
       "originPath": "modules/mail/README.md",
-      "revision": "479094f0b26a639a1868fa521004581ec8dbcb63",
+      "revision": "b4b372b032b2ddd7fbf47efa1bf17e1d5235be98",
       "files": {
-        "vendor/base/mail/README.md": "e44a72114c68510be55003cf73191cd66ccbdcabfc025abb3086a09cc29d7967"
+        "vendor/base/mail/README.md": "2067e03ab3f25fcf55d0ada52a19c44689839c6ca322853529d497430d4aa429"
       },
       "modes": {
         "vendor/base/mail/README.md": "100644"
@@ -2099,7 +2110,7 @@
     {
       "path": "vendor/base/mail/src/adapters",
       "originPath": "modules/mail/src/adapters",
-      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
+      "revision": "b4b372b032b2ddd7fbf47efa1bf17e1d5235be98",
       "files": {
         "vendor/base/mail/src/adapters/cloudflare/headers.mjs": "6bee46c1edb6228b9d3df8b26ca1acbb163c36d94ecbd8e28ace1a6811095f23",
         "vendor/base/mail/src/adapters/cloudflare/index.mjs": "377e4a322ac7803a1c56986ac909c35c1328896cff07c0610abbad5e8f8c3f86",
@@ -2112,8 +2123,8 @@
         "vendor/base/mail/src/adapters/messaging/README.md": "b9dcfc5aeeb1ee2118486efa584b790cee9f77e1c7c95036d6ff99e48df317db",
         "vendor/base/mail/src/adapters/messaging/request.mjs": "40a8a800c8791bceb8a9d7c86976693c9fb6eeb37d0b902c0fdab93b6b5c7f71",
         "vendor/base/mail/src/adapters/messaging/serialize.mjs": "4ee46c1ccb75edfd53b94bfff67ccdb08196a3ee68576c1eb0aa2494f9d4e1f5",
-        "vendor/base/mail/src/adapters/rer/contract.mjs": "b8ae90da173b40c7bde1a194ac35e9367802b9b608f050d63e2337a64e58454c",
-        "vendor/base/mail/src/adapters/rer/index.mjs": "2f27ff23d1182b4792b13b777e44fe1de9f7568474df11f3b60655415d2a6635",
+        "vendor/base/mail/src/adapters/rer/contract.mjs": "3dba4b2c07367775768b5d1683cb859ffd000a6eefd2236308a33ebf7ecad1dd",
+        "vendor/base/mail/src/adapters/rer/index.mjs": "23faa46d74aa987e7fc51e1a78d83760414a169e8bc0101e399bb4d685c4ce14",
         "vendor/base/mail/src/adapters/resend/index.mjs": "03d292468577cb51b012b2c71c13654cd7b0af82c240ec124921ee88e05639dc",
         "vendor/base/mail/src/adapters/resend/README.md": "07487907a351cde380774bed9b1f7b8d387f55f19be02990a521e25bdb09d468",
         "vendor/base/mail/src/adapters/resend/response.mjs": "a0f26cafacdae8c6b8070a9ddeb7c1a68a67b47310d27932e59f425450b4b650",
@@ -2161,9 +2172,9 @@
     {
       "path": "vendor/base/mail/src/core/transport.mjs",
       "originPath": "modules/mail/src/core/transport.mjs",
-      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
+      "revision": "b4b372b032b2ddd7fbf47efa1bf17e1d5235be98",
       "files": {
-        "vendor/base/mail/src/core/transport.mjs": "aecc91b5b12c2f315a3154679bb6780518453d04516c750517f06f25548ebb18"
+        "vendor/base/mail/src/core/transport.mjs": "67b721f37bdde8a5f419ca88eda0e88650ffaca06bcbf91eab0e33c879d0e230"
       },
       "modes": {
         "vendor/base/mail/src/core/transport.mjs": "100644"
@@ -2172,9 +2183,9 @@
     {
       "path": "vendor/base/mail/src/core/validation.mjs",
       "originPath": "modules/mail/src/core/validation.mjs",
-      "revision": "a1cde988c1be2c9f74ff5ca374dc47e044ba193c",
+      "revision": "b4b372b032b2ddd7fbf47efa1bf17e1d5235be98",
       "files": {
-        "vendor/base/mail/src/core/validation.mjs": "382fe04dfa3dbcacb81b817e9d69ea5d4fd6542a887765078991c6fd0acc91b0"
+        "vendor/base/mail/src/core/validation.mjs": "fa1f79579a96fc7b12964d9515e98135993c18ea1af23922779139abc4221571"
       },
       "modes": {
         "vendor/base/mail/src/core/validation.mjs": "100644"
@@ -2801,10 +2812,10 @@
     {
       "path": "vendor/base/operator-auth/signin",
       "originPath": "modules/operator-auth/signin",
-      "revision": "38aa7efdb3cceec585d2344ed54dd559295b9059",
+      "revision": "b4b372b032b2ddd7fbf47efa1bf17e1d5235be98",
       "files": {
         "vendor/base/operator-auth/signin/index.d.mts": "9acad80108b974454b1473c761222ba7daaeceb13b7c9842107cbf1b15745c10",
-        "vendor/base/operator-auth/signin/index.mjs": "c902a6895f5ffb8c141eb3214d78ccd654dc094671569594c51b0a73dfb1f3ce"
+        "vendor/base/operator-auth/signin/index.mjs": "4dfa87e4c9699834bfc0271e8c0ad39c50062a30548b57d2a147052dcdb56ec2"
       },
       "modes": {
         "vendor/base/operator-auth/signin/index.d.mts": "100644",

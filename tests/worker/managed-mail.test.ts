@@ -16,8 +16,7 @@ it('[BASE-ACCESS-001 NOTIFY-006] Managed sign-in and assignment mail use Base re
     const [url, init] = network.mock.calls[0]
     const wire = JSON.parse(String(init!.body))
     expect(url).toBe(remote.MAIL_RELAY_URL)
-    // Base asks for redirect:error; Vector's Workerd fetch boundary implements
-    // it using manual mode and refusing 3xx, since Workerd rejects error mode.
+    // Base owns the Worker-compatible request and refuses redirects itself.
     expect(init).toMatchObject({ method: 'POST', redirect: 'manual' })
     expect(new Headers(init!.headers).get('Authorization')).toBe(`Bearer ${remote.MAIL_API_KEY}`)
     expect(new Headers(init!.headers).get('Content-Type')).toBe('application/json')

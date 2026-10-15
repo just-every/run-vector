@@ -3,6 +3,8 @@
 ## Unreleased
 
 - Mark synthetic credentials and distinguish account IDs, mentions and file references for hosted source admission.
+- Pin rer 0.2.23 and adopt Base’s Worker-compatible Managed mail transport, including relay-owned Auto-Submitted headers, refused redirects and bounded notification retries. Remove Vector’s transport workaround.
+- Prefill sign-in email from a complete `login_hint` using Base’s email validation, without submitting the form.
 
 ## 0.2.0 — 2026-10-16
 

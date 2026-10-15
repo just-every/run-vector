@@ -17,11 +17,7 @@ export function hostedMailSender(env: WorkerBindings, network: typeof fetch = (u
     const sender = createMailSender({ provider, mode: 'production', apiKey: env.MAIL_API_KEY,
       ...(provider === 'rer' ? { relayUrl: env.MAIL_RELAY_URL } : {}),
     }, { fetch: async (url: RequestInfo | URL, init?: RequestInit) => {
-      // Workerd rejects the standard "error" redirect mode. Implement Base's
-      // contract at the host boundary: never follow, and reject any redirect.
-      const response = await network(url, provider === 'rer' ? { ...init, redirect: 'manual' } : init)
-      if (provider === 'rer' && response.status >= 300 && response.status < 400)
-        throw new Error('Mail relay redirects are not allowed')
+      const response = await network(url, init)
       const delay = response.headers.get('Retry-After')
       if (response.status === 429 && delay !== null && /^\d+$/.test(delay)) {
         const seconds = Number(delay)
@@ -30,14 +26,6 @@ export function hostedMailSender(env: WorkerBindings, network: typeof fetch = (u
       }
       return response
     } })
-    // Auth's auto-response hint belongs to direct email transport. The relay
-    // accepts only message content and owns provider headers and sender policy.
-    if (provider === 'rer' && message.headers?.['Auto-Submitted'] === 'auto-generated') {
-      const headers = { ...message.headers }
-      delete headers['Auto-Submitted']
-      const { headers: _headers, ...content } = message
-      message = Object.keys(headers).length ? { ...content, headers } : content
-    }
     const result = await sender.send(message)
     return { ...result, ...(retryAfterSeconds === undefined ? {} : { retryAfterSeconds }) }
   } }
