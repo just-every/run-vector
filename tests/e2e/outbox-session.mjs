@@ -25,4 +25,6 @@ export async function confirmLink(link) {
  return fetch(new URL('/auth/confirm',url),{method:'POST',redirect:'manual',headers:{Origin:url.origin,'Content-Type':'application/json'},body:JSON.stringify({token:url.searchParams.get('token')})});
 }
 export const localAuthSecret = 'fixture-native-runtime-secret-with-at-least-32-characters';
-export const localAuthArguments = ['--var','SESSION_SECRET:'+localAuthSecret,'--var','RER_DEV_KEY:'+devKey,'--var','FIRST_OWNER_EMAIL:sarah@vector.test','--var','MAIL_FROM:Vector <signin@vector.test>','--var','MAIL_MODE:local-outbox','--var','WORKSPACE_NAME:Vector'];
+// These journeys exercise the sample workspace explicitly; production builds
+// keep sample data disabled.
+export const localAuthArguments = ['--var','SEED_SAMPLE_DATA:true','--var','SESSION_SECRET:'+localAuthSecret,'--var','RER_DEV_KEY:'+devKey,'--var','FIRST_OWNER_EMAIL:sarah@vector.test','--var','MAIL_FROM:Vector <signin@vector.test>','--var','MAIL_MODE:local-outbox','--var','WORKSPACE_NAME:Vector'];
