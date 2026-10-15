@@ -34,7 +34,9 @@ jobs:
           df -h "$GITHUB_WORKSPACE" "$RUNNER_TEMP"
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm verify
+      - run: pnpm verify:ci
+      - name: Hosted artifact and hydration boundaries
+        run: pnpm verify
       - name: Actual shared local setup and existing development hydration
         run: pnpm test:dev:ci
       - name: Native installer with startup exceeding two minutes

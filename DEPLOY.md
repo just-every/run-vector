@@ -147,7 +147,7 @@ health identity, repeated-deploy API audit and real controlled-inbox sign-in,
 invite/revocation and empty-installation journeys. Keep live validation and any disposable-resource cleanup explicitly scoped to the installation.
 
 `.github/workflows/ci.yml` runs on main pushes and pull requests with Node 22.20.0,
-frozen install, headless Chromium, deployment tests, full `rer verify`, and an
+frozen install, headless Chromium, the test suites via `pnpm verify:ci`, test-free `rer verify` build/artifact and hosted boundaries, and an
 actual `rer dev` readiness check plus bare `pnpm test:dev` through `pnpm test:dev:ci`. The saved installation origin is read from the private `.seed/development.json` launch receipt without an extra environment variable. The process group is cleaned
 up even after readiness or journey failure. It has no deployment secret inputs.
 

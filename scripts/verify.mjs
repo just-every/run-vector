@@ -1,6 +1,10 @@
 import { verificationDirectory } from './verification-paths.mjs';
 import { spawnSync, execFileSync } from "node:child_process";
 import { mkdir, writeFile, rm } from "node:fs/promises";
+const args = process.argv.slice(2);
+if (args.length > 1 || (args.length === 1 && args[0] !== '--ci'))
+  throw Error('Use no arguments for build verification, or --ci for the test suites.');
+const ci = args[0] === '--ci';
 const sourceValidation = spawnSync("pnpm", ["run", "sources:check"], { stdio: "inherit" });
 if (sourceValidation.status !== 0) process.exit(sourceValidation.status ?? 1);
 const evidence = verificationDirectory;
@@ -10,14 +14,14 @@ const report = {
   sourceCommit: execFileSync("git", ["rev-parse", "HEAD"], {
     encoding: "utf8",
   }).trim(),
-  note: "Commands and outcomes for this checkout.",
+  note: ci ? "Vector CI test suites and build checks." : "Build, artifact and contract checks; no test suites.",
   passed: false,
   checks: [],
 };
 const save = () =>
   writeFile(evidence + "/check-results.json", JSON.stringify(report, null, 2));
 await save();
-for (const command of [
+const commands = ci ? [
   "sources:verify-base",
   "check",
   "test:installer",
@@ -37,7 +41,14 @@ for (const command of [
   "test:mutation-refresh",
   "test:admin",
   "test:collaboration",
-]) {
+] : [
+  "sources:verify-base",
+  "check",
+  "build",
+  "integration:check",
+  "artifact:delivery",
+];
+for (const command of commands) {
   const startedAt = new Date().toISOString();
   const result = spawnSync("pnpm", ["run", command], { stdio: "inherit" });
   report.checks.push({

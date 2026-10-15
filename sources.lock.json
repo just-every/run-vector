@@ -431,7 +431,7 @@
       "executable": false
     },
     ".github/workflows/ci.yml": {
-      "sha256": "4555020710663f0dc29e1283c2f63877a933390cde7508530938fe51be54ee89",
+      "sha256": "825ff95723235b017c0323923ed0300f39b1ce4c6dab7dcb54582bee3d33b387",
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {
@@ -467,7 +467,7 @@
       "executable": false
     },
     "AGENTS.md": {
-      "sha256": "31305b53a7bd456b630355446ed9b12969c19d9cd7157db7233f11d7b5a65072",
+      "sha256": "9a16ed300534a54e51f37a9afdfbb8303429417e9818bdaa328fa2bd65cad6cc",
       "executable": false
     },
     "base-copies.json": {
@@ -507,7 +507,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "a67b4c78e99510dc07c04510023bc91e0fd098e94d00a15745efd7629622d0a3",
+      "sha256": "ee29e236463429d6f0aa42c40fe2e3b911accae6c6c95ab710b7c23e55bffb7e",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -863,15 +863,15 @@
       "executable": false
     },
     "OPERATIONS.md": {
-      "sha256": "67ca50ba86f952dc85cfefc8bf6d770cc97502531560c50fe05fe677b60c410b",
+      "sha256": "97b3a325c7d73dbfeadc4489f48282b578b93ef5a97996d305ab7858192615df",
       "executable": false
     },
     "package.json": {
-      "sha256": "9d11b2129840ea3b5024054e0a8d469fb8ee0e31a6acce4df8d6535f00a5e77d",
+      "sha256": "f4b0ec15f351601bf4857a2598320a747baa6915d5be40990f2bbe6bf79760ae",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "966e0daafe6824928f9fed7f9b57827ac128559b971e3095d82b581151fb7fde",
+      "sha256": "705968acab2f64a9cd0e7ae96b2d97b574c4d98d2af98a40cccec810c6142df7",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -1183,7 +1183,7 @@
       "executable": false
     },
     "scripts/installer/local.mjs": {
-      "sha256": "2a30857731ba7254867fc4722785421015c41bb42f19f01469a6323084392088",
+      "sha256": "0382835c466d3395e4734cc93257da66bda98fd2a09eb1d8900c2cbdfff8014b",
       "executable": false
     },
     "scripts/installer/seed.mjs": {
@@ -1227,7 +1227,7 @@
       "executable": false
     },
     "scripts/verify.mjs": {
-      "sha256": "ba32a1b933966d173d7bc548ec1140a7df6750bfb2671cc661797c96487e2411",
+      "sha256": "12807fa48cf13642d38a4717d2717314e423bc3fe20fa8554247de2f921a9df5",
       "executable": false
     },
     "SEED-COMMAND-CONTRACT.md": {

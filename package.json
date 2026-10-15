@@ -50,7 +50,6 @@
     "check": "rer check",
     "deps": "rer install",
     "rer": "rer",
-    "verify:app": "node scripts/verify.mjs",
     "test:wave-b": "node tests/e2e/wave-b-runtime.mjs",
     "artifact:delivery": "node scripts/build-delivery-artifact.mjs",
     "import:issues": "node scripts/data/import-issues.mjs",
@@ -58,7 +57,9 @@
     "test:data": "node tests/e2e/data-runtime.mjs && node --import ./tests/e2e/integrations/register-loader.mjs tests/e2e/data-roundtrip.mjs",
     "test:public-site": "pnpm exec rer build --site && node tests/e2e/public-site-runtime.mjs",
     "integration:sync": "node scripts/sync-integration.mjs --write",
-    "integration:check": "node scripts/sync-integration.mjs --check"
+    "integration:check": "node scripts/sync-integration.mjs --check",
+    "verify:build": "node scripts/verify.mjs",
+    "verify:ci": "node scripts/verify.mjs --ci"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.33",
@@ -77,7 +78,7 @@
     "@cloudflare/vitest-plugin": "1.1.2",
     "@cloudflare/workers-types": "5.20260908.1",
     "@playwright/test": "1.63.0",
-    "@runeditrun/rer": "0.2.15",
+    "@runeditrun/rer": "0.2.16",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",
