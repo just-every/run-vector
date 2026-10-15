@@ -479,7 +479,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "fa2afa148f0e02405e3502306e969115d5b2d5c885e48f538aca6988763f0236",
+      "sha256": "25bf045b5b1cf69e73be19b66799a858c60307d9b48b28d973aff31810503709",
       "executable": false
     },
     "CLAUDE.md": {
@@ -507,7 +507,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "8ddc305eb6904e52e3d809d3566b8e6c9a18103393ff6a24a4ac5254ae61691a",
+      "sha256": "1126ab9eaf40cfd20960041c6a36c20f1368ffd5e9566fddfdd70db716a1dc1e",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -1187,7 +1187,7 @@
       "executable": false
     },
     "scripts/installer/hosting.mjs": {
-      "sha256": "85e8b9a76374e00d3384efd0092ecddc134106e6de4c8f904f7cb5b740f89d80",
+      "sha256": "379b243baf7a5ad29035a5fb41dc513cb8cff0670f15278f1fa04642ea450078",
       "executable": false
     },
     "scripts/installer/local.mjs": {
@@ -3607,7 +3607,7 @@
       "executable": false
     },
     "tests/installer/native-proof.mjs": {
-      "sha256": "e5b2c07b61953611a36107a89a78fb3304d4611f1955eac9ae2d2bbb438b3bef",
+      "sha256": "10d715da247236019fb6232416aa1452a21380ba542cb166a69548243e39fbb8",
       "executable": false
     },
     "tests/installer/outbox.test.ts": {
@@ -3623,7 +3623,7 @@
       "executable": false
     },
     "tests/installer/startup-fixture.mjs": {
-      "sha256": "5429ce20f24a7bba1691c66510b291e624f450a1d3eda9582a42ae660188c575",
+      "sha256": "19e4b57d84f4af02ba6bd01f006bda2df3658a77984406de1a015d6ba2307876",
       "executable": false
     },
     "tests/installer/teardown.test.mjs": {

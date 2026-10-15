@@ -1,3 +1,4 @@
+import {parseAddress} from '../../vendor/base/mail/src/core/validation.mjs';
 import {validatePublicConfiguration,validateSuppliedSecrets} from '../deployment/input-validation.mjs';
 import declaration from '../../deploy.json' with {type:'json'};
 import { prepareSettings } from '@runeditrun/rer/adapter-settings';
@@ -16,7 +17,7 @@ export async function prepareHosting(context, env) {
  await prepareSettings(secretContext,{secrets:{file:hostingSecrets,generate:env.SESSION_SECRET?[]:['SESSION_SECRET'],values:{SENDGRID_API_KEY:mailKey,SESSION_SECRET:env.SESSION_SECRET}}});
  await privateDirectory(context.root,['.rer','deploy']);
  const secrets=declaration.secrets.filter(item=>item.binding!=='MAIL_API_KEY'||secretContext.vars.SENDGRID_API_KEY);
- await writePrivateFile(join(context.root,hostingDeclaration),JSON.stringify({...declaration,secrets,vars:{...declaration.vars,...Object.fromEntries(publicNames.map(name=>[name,env[name]]))}},null,2)+'\n');
+ await writePrivateFile(join(context.root,hostingDeclaration),JSON.stringify({...declaration,secrets,vars:{...declaration.vars,...Object.fromEntries(publicNames.map(name=>[name,env[name]])),MAIL_FROM:parseAddress(env.MAIL_FROM).email}},null,2)+'\n');
  context.store.report?.(`Owner secrets are kept in ${hostingSecrets}; preserve this file and .rer/deploy state.`);
  return secretContext.vars;
 }
