@@ -73,7 +73,7 @@ The erasure adapter snapshots full rows for incoming and outgoing edges, direct 
 
 ## Clause acceptance — target contract (16 October 2026)
 
-CONTRACT.md now describes the full Linear/Jira-class product Vector is building towards. Every clause is listed here by area with its status and the acceptance evidence a build round works towards: **done** clauses name the test that proves them today; **partial** and **missing** clauses name the journey or test, through a public door (browser journey, HTTP route, command, signed provider fixture at the network edge, mobile simulator), that must pass before the status changes. Provider fixtures stand in only at the paid or network edge. A status changes only with the cited test passing in CI on the exact head; local proof does not establish hosted acceptance. Three tables in CONTRACT.md are checked cell by cell by the journeys that name them: the role matrix (ROLE-001), the setup path per provider (INTEG-001) and the provider delegation protocols (AGENT-009).
+CONTRACT.md now describes the full Linear/Jira-class product Vector is building towards. Every clause is listed here by area with its status and the acceptance evidence a build round works towards: **done** clauses name the test that proves them today; **partial** and **missing** clauses name the journey or test, through a public door (browser journey, HTTP route, command, signed provider fixture at the network edge, mobile simulator), that must pass before the status changes. Provider fixtures stand in only at the paid or network edge. A status changes only with the cited test passing in CI on the exact head; local proof does not establish hosted acceptance. Three tables in CONTRACT.md are checked cell by cell by the journeys that name them: the role matrix (ROLE-001 and ROLE-008, with each team row checked under both values of the team's ROLE-009 permissions), the setup path per provider (INTEG-001) and the provider delegation protocols (AGENT-009).
 
 ### Public homepage
 
@@ -86,18 +86,20 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **OPS-002 — Member management** (partial). The existing invite and removal tests plus the OPS-002 rows of the role-matrix journey (ROLE-001): a Member's invitation is refused 403 by default and admitted after the setting is enabled, a Member's attempt to invite an Admin is refused 403, and an Admin's removal of a Member succeeds.
 - **OPS-003 — Workspace time** (done). `tests/e2e/admin-workspace-time-journey.mjs`, `tests/e2e/admin-access-journey.mjs`, `tests/e2e/admin-runtime.mjs` (tests tagged OPS-003).
 - **OPS-004 — Safe removal** (done). `tests/worker/removal-boundary.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/worker/base-auth.test.ts` (tests tagged OPS-004).
-- **ROLE-001 — Workspace roles** (missing). A browser and HTTP journey in which an Admin promotes and demotes a Member, the demoted member's next settings request returns 403, and the last-Owner demotion is refused; plus a role-matrix journey that signs in as an Owner, an Admin, a Member who owns a team, a Member who does not, and a Guest, attempts every row of the role matrix through the browser and through `/api/v1`, and gets exactly the allowed (2xx) or refused (403, or 404 where the subject is invisible under ROLE-002) result in each cell.
+- **ROLE-001 — Workspace roles** (missing). A browser and HTTP journey in which an Admin promotes and demotes a Member, the demoted member's next settings request returns 403, and the last-Owner demotion is refused; plus a role-matrix journey that signs in as an Owner, an Admin, a Member who owns a team, a Member who does not, and a Guest, attempts every row of the role matrix through the browser and through `/api/v1`, and gets exactly the allowed (2xx) or refused (403, or 404 where the subject is invisible under ROLE-002) result in each cell, checking every "team setting" and "planning setting" cell under both values of the team's ROLE-009 permission.
 - **ROLE-002 — Private teams** (missing). A journey that creates a private team, proves a non-member gets 404 on its issue by identifier, sees no search hit, no Current entry and no export rows, then is added and sees all of them.
 - **ROLE-003 — Guests** (missing). A guest journey that reaches only the invited team and is refused every other team, settings and token route.
 - **ROLE-004 — Single sign-on and provisioning** (missing). A journey against a local SAML/OIDC identity-provider fixture at the network edge that signs a member in, then a SCIM `DELETE` that revokes their session within one request.
 - **ROLE-005 — Audit log** (partial). A journey that performs one action of each kind and finds each in the audit view and the CSV.
 - **ROLE-006 — Apps and agents as actors** (missing). A journey that installs an agent identity, sees its change attributed to it in activity and audit, revokes it and sees its next API call refused.
 - **ROLE-007 — Team membership and team owners** (missing). A journey in which a Member joins and leaves a public team from the directory, is refused 403 joining a private team, is added to it by its team owner and then sees its issues, a Guest's self-join is refused, and the last team owner's attempt to leave is refused until another owner is named.
+- **ROLE-008 — Operator and permission coverage** (missing). A coverage check that enumerates the registered mutation routes, server functions, Settings forms and write commands and fails when any door has no role-matrix row or a row names a clause that does not exist; the role-matrix journey (ROLE-001), driven from the same registry so a new row is a new set of checked cells; and a Guest journey that requests every Settings path and gets 403 everywhere but Account.
+- **ROLE-009 — Team-managed permissions** (missing). The ROLE-009 rows of the role-matrix journey: under the defaults, a Member who does not own the team creates a cycle and a team issue template (2xx) and is refused a routing rule and a status rename (403); after the team owner sets *Who manages cycles and templates* to Team owners only and *Who manages team settings* to All team members, the same Member is refused the cycle and the template and admitted the routing rule and the rename; a Guest in the team is refused all four under both values; and each permission change appears once in the audit log.
 
 ### Teams and workflows
 
 - **TEAM-001 — Team identity** (done). `tests/e2e/admin-team-journey.mjs` (tests tagged TEAM-001).
-- **TEAM-002 — Team workflow** (partial). `tests/e2e/admin-team-journey.mjs`, `tests/worker/base-auth.test.ts` (tests tagged TEAM-002) for the workflow rules, plus the TEAM-002 rows of the role-matrix journey (ROLE-001): a team owner renames a status, and a Member who does not own the team gets 403.
+- **TEAM-002 — Team workflow** (partial). `tests/e2e/admin-team-journey.mjs`, `tests/worker/base-auth.test.ts` (tests tagged TEAM-002) for the workflow rules, plus the TEAM-002 rows of the role-matrix journey (ROLE-001): a team owner renames a status, and a Member who does not own the team gets 403 under the default permission and succeeds once the permission is All team members.
 - **TEAM-003 — Team archiving** (done). `tests/e2e/admin-archive-team-journey.mjs` (tests tagged TEAM-003).
 - **TEAM-004 — Status removal** (done). `tests/e2e/admin-team-journey.mjs` (tests tagged TEAM-004).
 - **TEAM-005 — Team settings** (missing). A settings journey that switches a team to T-shirt estimates and off cycles, then sees the issue editor and Current reflect it while closed cycle snapshots stay unchanged.
@@ -120,16 +122,18 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **ISSUE-013 — Mentions** (done). `tests/e2e/collaboration-events.mjs`, `tests/markdown-rendering.test.tsx` (tests tagged ISSUE-013).
 - **ISSUE-014 — Labels** (partial). `tests/e2e/admin-issue-journey.mjs`, `tests/e2e/admin-label-journey.mjs`, `tests/e2e/collaboration-issue.mjs` (tests tagged ISSUE-014) for workspace labels; plus a journey that creates a team label and a label group, is refused applying two labels of one group, merges two labels and finds every issue relabelled, and the ISSUE-014 rows of the role-matrix journey (a Member's delete of a workspace label refused 403, an Admin's admitted).
 - **ISSUE-015 — Unsent drafts** (done). `tests/e2e/core-draft-journey.mjs` (tests tagged ISSUE-015).
-- **ISSUE-016 — Issue templates** (missing). A journey that creates a bug template with two sub-issues, creates an issue from it through the browser and through `/api/v1`, and finds both sub-issues linked.
+- **ISSUE-016 — Issue templates** (missing). A journey that creates a bug template with two sub-issues, creates an issue from it through the browser and through `/api/v1`, and finds both sub-issues linked; plus the ISSUE-016 rows of the role-matrix journey: a Member's workspace template is refused 403, a non-owner Member's team template is admitted under the default and refused 403 under Team owners only, and a Guest's template is refused 403.
 - **ISSUE-017 — Reactions** (missing). A journey that adds and removes a reaction, sees the count update in a second session within the SYNC-001 window, and finds it in the archive.
 - **ISSUE-018 — Description history** (partial). A journey that edits a description three times, compares revisions one and three, restores revision one and finds four revisions with the restore attributed.
 - **ISSUE-019 — Sub-issue progress** (partial). A journey that creates three sub-issues, completes them, and sees the parent count and the optional auto-complete rule act once.
 - **ISSUE-020 — Undo and Recently deleted** (missing). A journey that deletes an issue carrying two comments in a thread, a blocking relation and a parent link, restores it by Undo within 10 seconds and by Recently deleted after a reload, and finds the same identifier, comments, relations and one restore activity entry each time; deletes it again, advances the workspace clock 30 days, runs the purge twice and finds the issue gone with 404 by identifier and no reuse of its number; and presses Command/Ctrl-Z after a bulk priority change and finds every issue's previous priority back with one activity entry each.
 - **ISSUE-021 — Issue types** (missing). A journey that enables types on a team, creates a Bug whose required Severity field is refused when empty, groups a list by type, and a Jira fixture whose Story and Bug issues import to the mapped types.
+- **ISSUE-022 — Issue start date** (missing). A journey that sets an issue's start date in the browser and through `/api/v1`, finds a start date after the due date refused 400, filters a list to issues starting this week, finds the issue drawn from start to due on the timeline, and finds one activity entry per change.
+- **ISSUE-023 — Copy issue** (missing). A journey that copies an issue with two labels, a custom-field value and two sub-issues through the browser with sub-issues included and through `/api/v1` without, finds new identifiers with equal fields, no comments copied, and the copied-from entries on both issues.
 
 ### Custom fields
 
-- **FIELD-001 — Custom field definitions** (partial). A journey that creates a team single-select field "Severity" with three options, sets it on an issue through the browser and through `/api/v1`, finds a number value refused 400 for it, sees one activity entry per change, renames an option and finds the stored value unchanged, and a Member who does not own the team is refused 403 creating a team field.
+- **FIELD-001 — Custom field definitions** (partial). A journey that creates a team single-select field "Severity" with three options, sets it on an issue through the browser and through `/api/v1`, finds a number value refused 400 for it, sees one activity entry per change, renames an option and finds the stored value unchanged, and a Member who does not own the team is refused 403 creating a team field under the default permission.
 - **FIELD-002 — Custom fields in views, search, API and imports** (missing). A journey that filters and groups a list by the Severity field of FIELD-001, saves it as a view and finds the expected issues, and a GitHub API fixture whose Projects single-select "Priority" and number "Points" fields import into a single-select and a number custom field with every value matched in the reconciliation report.
 
 ### Relations
@@ -148,17 +152,17 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **INTAKE-002 — Idempotent sources** (done). `tests/worker/source-ingest.test.ts`, `tests/worker/source-erasure-identity.test.ts` (tests tagged INTAKE-002).
 - **INTAKE-003 — Evidence revisions** (done). `tests/worker/source-ingest.test.ts` (tests tagged INTAKE-003).
 - **INTAKE-004 — Inspectable assessment** (partial). The existing operator-intake journey plus a triage journey in which an agent suggestion is shown with its provenance and is applied only on acceptance.
-- **INTAKE-005 — Accept** (done). `tests/e2e/core-runtime.mjs` (tests tagged INTAKE-005).
-- **INTAKE-006 — Defer** (done). `tests/e2e/core-runtime.mjs`, `tests/worker/issue-session-projection.test.ts` (tests tagged INTAKE-006).
-- **INTAKE-007 — Decline** (partial). A journey that declines an intake item without a reason (refused) and with one, and finds it Canceled with its evidence and decision history kept.
+- **INTAKE-005 — Accept** (partial). `tests/e2e/core-runtime.mjs` (tests tagged INTAKE-005), plus the intake rows of the role-matrix journey (ROLE-001): a Guest's accept in an invited team is refused 403 and changes nothing.
+- **INTAKE-006 — Defer** (partial). `tests/e2e/core-runtime.mjs`, `tests/worker/issue-session-projection.test.ts` (tests tagged INTAKE-006), plus a Guest's defer and end-deferral in an invited team each refused 403 in the role-matrix journey.
+- **INTAKE-007 — Decline** (partial). A journey that declines an intake item without a reason (refused) and with one, and finds it Canceled with its evidence and decision history kept, and a Guest's decline refused 403.
 - **INTAKE-008 — Evidence after a terminal decision** (done). `tests/worker/source-ingest.test.ts` (exercises this behaviour; the test does not yet tag INTAKE-008).
 - **INTAKE-009 — Source failure** (done). `tests/worker/source-ingest.test.ts` (exercises this behaviour; the test does not yet tag INTAKE-009).
 - **INTAKE-010 — Decision policy** (partial). A test that delivers a source item with an explicit team and assignee, and one without, and checks the recommended defaults stay editable before acceptance.
-- **INTAKE-011 — Source registration** (done). `tests/worker/source-ingest.test.ts` (tests tagged INTAKE-011).
+- **INTAKE-011 — Source registration** (partial). `tests/worker/source-ingest.test.ts` (tests tagged INTAKE-011), plus the INTAKE-011 rows of the role-matrix journey: a Member's registration, rotation and revocation are each refused 403 and change nothing, and an Admin's succeed.
 - **TRIAGE-001 — Triage responsibility** (missing). A journey that sets a two-person weekly rotation, advances the workspace clock past the handover and sees new items notify the second person.
-- **TRIAGE-002 — Triage routing rules** (partial). A journey with two rules that routes a Sentry item and a Zendesk item to different teams and shows the acting rule on each.
+- **TRIAGE-002 — Triage routing rules** (partial). A journey with two rules that routes a Sentry item and a Zendesk item to different teams and shows the acting rule on each, and a non-owner Member's team rule refused 403 under the default permission.
 - **TRIAGE-003 — Agent triage suggestions** (missing). A journey with a seeded near-duplicate that the agent proposes with reason and evidence, the triager accepts the duplicate decision, and the rate report counts it; the model call is faked only at the provider edge.
-- **TRIAGE-004 — Request forms** (partial). A journey that builds a bug form with a required severity field, submits it from the app and from a Slack shortcut fixture, and finds two triage items with the answers.
+- **TRIAGE-004 — Request forms** (partial). A journey that builds a bug form with a required severity field, submits it from the app and from a Slack shortcut fixture, and finds two triage items with the answers, and a Guest's form edit refused 403 while the same Guest's submission is admitted.
 - **TRIAGE-005 — Email intake** (missing). An inbound-mail fixture at the provider edge that creates one item with two attachments and threads a reply as a comment.
 
 ### Customer requests
@@ -188,8 +192,8 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 
 ### Projects, initiatives and roadmaps
 
-- **PROJ-001 — Project record** (partial). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-001) for name, description, lead, target date, lifecycle, colour and icon; plus a journey that sets a project's start date, target date, High priority and two labels through the browser and through `/api/v1`, finds a target date before the start date refused 400, filters the projects list by one label and sorts by priority, and finds one activity entry per change.
-- **PROJ-002 — Manual lifecycle** (done). `tests/e2e/admin-project-cycle-journey.mjs`, `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-002).
+- **PROJ-001 — Project record** (partial). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-001) for name, description, lead, target date, lifecycle, colour and icon; plus a journey that sets a project's start date, target date, High priority and two labels through the browser and through `/api/v1`, finds a target date before the start date refused 400, filters the projects list by one label and sorts by priority, and finds one activity entry per change, and a Guest's project creation refused 403.
+- **PROJ-002 — Manual lifecycle** (partial). `tests/e2e/admin-project-cycle-journey.mjs`, `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-002), plus a Guest's lifecycle change refused 403 in the role-matrix journey.
 - **PROJ-003 — Project membership** (partial). A journey that removes, archives and deletes projects and checks no issue is deleted.
 - **PROJ-004 — Progress** (done). `tests/e2e/core-runtime.mjs` (tests tagged PROJ-004).
 - **PROJ-005 — Health** (partial). A health test covering each Blocked, At risk, On track and Unknown rule and the equal-capacity edge.
@@ -199,18 +203,19 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **PROJ-009 — Project archiving** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-009).
 - **PROJ-010 — Project updates** (missing). A journey that posts an At risk update, finds it in the project, the initiative roll-up and a Slack fixture, and a follower notification.
 - **PROJ-011 — Milestones** (missing). A journey that creates two milestones, assigns issues, completes one milestone and sees the other flagged past its date.
-- **PROJ-012 — Project templates** (missing). A journey that creates a launch project from a template with two milestones and four issues offset from a chosen start date.
+- **PROJ-012 — Project templates** (missing). A journey that creates a launch project from a template with two milestones and four issues offset from a chosen start date, and a Member's workspace project template refused 403.
 - **PROJ-013 — Project documents and specs** (missing). A journey that writes a spec under a project, links it to an issue, edits it twice and finds both revisions and a search hit.
 - **PROJ-014 — Project members and teams** (partial). A journey that adds two teams' issues to a project and finds the project in both teams' lists with both teams as contributors.
-- **INIT-001 — Initiatives** (missing). A journey that creates an initiative with a sub-initiative and three projects from two teams and sees them nested.
+- **PROJ-015 — Project dependencies** (missing). A journey that sets project B blocked by project A in the browser and through `/api/v1`, finds the reverse dependency refused 400 as a cycle, sees one solid connector and one dashed derived connector on the timeline, sees the date-conflict flag after moving B's start before A's target, and finds one activity entry on each project.
+- **INIT-001 — Initiatives** (missing). A journey that creates an initiative with a sub-initiative and three projects from two teams and sees them nested, and a Guest's initiative creation refused 403.
 - **INIT-002 — Initiative roll-up** (missing). A journey that posts updates on two projects and sees the initiative roll-up reflect them in order.
 - **INIT-003 — Roadmap timeline** (missing). A browser journey with four projects — both dates, target only, start only, no dates — that finds a bar, a diamond, an open-ended bar and an Unscheduled entry respectively; drags the target-only project's diamond and the unscheduled project onto the timeline and finds each change in the project's activity; moves a bar by keyboard; and a 390px check of the list equivalent.
 - **INIT-004 — Leadership digest** (missing). A scheduled-run test that sends one digest per subscriber to the mail and Slack fixtures and omits a private team's project from a non-member's digest.
 
 ### Cycles
 
-- **CYCLE-001 — Time box** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged CYCLE-001).
-- **CYCLE-002 — Commitment** (done). `tests/e2e/admin-cycle-list-journey.mjs`, `tests/e2e/admin-issue-journey.mjs` (tests tagged CYCLE-002).
+- **CYCLE-001 — Time box** (partial). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged CYCLE-001), plus the CYCLE-001 rows of the role-matrix journey: a non-owner Member creates a cycle under the default and is refused 403 under Team owners only, and a Guest is refused 403 under both.
+- **CYCLE-002 — Commitment** (partial). `tests/e2e/admin-cycle-list-journey.mjs`, `tests/e2e/admin-issue-journey.mjs` (tests tagged CYCLE-002), plus a Guest's commit admitted in an invited team and refused 404 in another team.
 - **CYCLE-003 — Progress and capacity** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-003).
 - **CYCLE-004 — Closure and rollover** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-004).
 - **CYCLE-005 — Closure snapshot** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-005).
@@ -220,7 +225,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 
 ### Releases and deployments
 
-- **RELEASE-001 — Releases** (missing). A journey that creates release 2.4, adds five issues, marks it Released and sees release state on each issue.
+- **RELEASE-001 — Releases** (missing). A journey that creates release 2.4, adds five issues, marks it Released and sees release state on each issue, and a Guest's release creation refused 403.
 - **RELEASE-002 — Deployment tracking** (missing). A signed GitHub Deployments fixture for a merged commit linked to an issue shows the issue deployed to production and triggers the team rule once on replay.
 - **RELEASE-003 — Release notes** (missing). A journey that drafts notes for a release of six issues, edits one line, and sends the approved text to Slack and Penny fixtures.
 
@@ -232,7 +237,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **SEARCH-004 — Advanced filters** (partial). A journey that builds an (A OR B) AND NOT C filter in the bar and the menu, matches the expected issues, and saves it.
 - **SEARCH-005 — Meaning-based search** (missing). A search for "checkout fails on Safari" that finds an issue titled "Payment page broken in WebKit" labelled as a semantic match, and does not return a private-team issue to a non-member.
 - **VIEW-001 — Issue controls** (done). `tests/e2e/dev-runtime.mjs` (tests tagged VIEW-001).
-- **VIEW-002 — Saved views** (done). `tests/worker/views-removal.test.ts`, `tests/e2e/core-keyboard-journey.mjs`, `tests/worker/search-access.test.ts` (tests tagged VIEW-002).
+- **VIEW-002 — Saved views** (partial). `tests/worker/views-removal.test.ts`, `tests/e2e/core-keyboard-journey.mjs`, `tests/worker/search-access.test.ts` (tests tagged VIEW-002), plus the VIEW-002 rows of the role-matrix journey: a Guest's attempt to share a view is refused 403 and a Member's update of another member's shared view is refused 403.
 - **VIEW-003 — Control persistence** (done). `tests/worker/views-removal.test.ts` (tests tagged VIEW-003).
 - **VIEW-004 — Bulk edit** (partial). A browser journey selecting issues with X and setting status in one operation, plus a failing selection that writes nothing and names the failing identifiers.
 - **VIEW-005 — Team board** (partial). A board journey at 1440px and 390px that changes status from a card and recovers from a stale conflict.
@@ -273,7 +278,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 ### Automation and follow-through
 
 - **AUTO-001 — Recurring issues** (missing). A scheduled-run test that creates a weekly series, runs the scheduler twice in the same week and finds one issue, then skips while open.
-- **AUTO-002 — Workflow rules** (partial). A journey that builds "when label Security is added, set priority Urgent and notify #security", dry-runs it, triggers it, and finds one run-log entry, one change and one Slack fixture message.
+- **AUTO-002 — Workflow rules** (partial). A journey that builds "when label Security is added, set priority Urgent and notify #security", dry-runs it, triggers it, and finds one run-log entry, one change and one Slack fixture message; plus the AUTO-002 rows of the role-matrix journey: a non-owner Member's team rule is refused 403 under the default permission and admitted under All team members, and a Member's workspace rule is refused 403.
 - **AUTO-003 — Auto-close and auto-archive** (missing). A scheduled-run test with a 30-day stale issue and a 90-day completed issue that closes one and archives the other, each with an automation activity entry.
 - **AUTO-004 — SLAs** (missing). A clock-advancing test that warns once before breach and records one breach.
 - **AUTO-005 — Update reminders** (missing). A scheduled-run test that reminds one lead once per cadence and flags a missed update.
@@ -285,7 +290,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **REPORT-002 — Cycle and project charts** (partial). A cycle seeded with day-by-day changes whose burn-up and final report match the CYCLE-005 snapshot.
 - **REPORT-003 — Dashboards** (missing). A journey that builds a three-widget dashboard, shares it, and opens it as another member who sees only what they may access.
 - **REPORT-004 — Workload** (partial). A journey with three assignees whose committed points match the view and over-capacity is marked.
-- **REPORT-005 — Warehouse and spreadsheet export** (missing). A scheduled export to an R2 fixture whose second run carries only changed rows, and a paged export API read.
+- **REPORT-005 — Warehouse and spreadsheet export** (missing). A scheduled export to an R2 fixture whose second run carries only changed rows, a paged export API read, and a Google Sheets API fixture at the network edge to which a saved view syncs: after one issue in the view changes and another leaves it, the next sync updates the first row and removes the second.
 
 ### Connecting integrations
 
@@ -304,7 +309,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **GITLAB-001 — GitLab** (missing). A setup journey against a GitLab API fixture in which pasting a token and choosing two projects creates two webhooks with the installation's URL and secret, then signed GitLab fixtures for MR opened, approved, merged and a production environment deployment that move one issue as configured.
 - **GITLAB-002 — GitLab Issues sync** (missing). The GITHUB-007 journey against GitLab fixtures.
 - **BITBUCKET-001 — Bitbucket** (missing). Signed Bitbucket fixtures for PR opened and merged that move one issue.
-- **CI-001 — CI and deploy providers** (missing). A CircleCI workflow-completed fixture and a Vercel deployment fixture that each appear on the linked issue.
+- **CI-001 — CI and deploy providers** (missing). One signed or API fixture per named provider — a CircleCI workflow-completed webhook, a GitHub Actions `workflow_run` event, a GitLab pipeline hook, a Vercel deployment webhook, a Netlify deploy notification and a Cloudflare Workers or Pages deployment — each appearing on the linked issue and firing an AUTO-002 rule exactly once when replayed.
 
 ### Chat
 
@@ -342,7 +347,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 
 - **API-001 — Native scoped API** (done). `tests/worker/integration-api.test.ts`, `tests/worker/dev-credentials.test.ts` (tests tagged API-001).
 - **API-002 — Token authority and usage** (done). `tests/worker/integration-authority.test.ts`, `tests/worker/integration-api.test.ts` (tests tagged API-002).
-- **API-003 — Complete public API** (partial). An API journey that creates a project, cycle, milestone and three issues and pages through them, and a refused private-team read.
+- **API-003 — Complete public API** (partial). An API journey that creates a project, cycle, milestone and three issues and pages through them, and a refused private-team read; plus a schema-coverage check that reads the published API schema and fails unless every object named in this clause has list (with cursor pagination and filters), get, create, update and delete operations, or a stated read-only reason for an operation it omits (for example creating a notification).
 - **API-004 — OAuth apps** (missing). An authorization-code journey that grants read-only scope, a refused write, and an Admin revocation that ends the next call.
 - **API-005 — SDK and docs** (missing). The SDK's example scripts run against a local installation in CI.
 - **WEBHOOK-001 — Durable native delivery** (done). `tests/worker/outbound-webhooks.test.ts`, `tests/worker/issue-deletion-webhooks.test.ts` (tests tagged WEBHOOK-001).
@@ -351,16 +356,16 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 ### Import, export and portability
 
 - **DATA-001 — Export contents** (done). `tests/worker/data-http.test.ts`, `tests/worker/data-archive-failure.test.ts`, `tests/worker/data-http-collision.test.ts` (tests tagged DATA-001).
-- **DATA-002 — Mapped import preflight** (done). `tests/worker/linear-import.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-002).
-- **DATA-003 — Atomic mapped import** (done). `tests/worker/data-import-atomic.test.ts` (tests tagged DATA-003).
+- **DATA-002 — Mapped import preflight** (partial). `tests/worker/linear-import.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-002), plus the import rows of the role-matrix journey: a Member's preflight, apply, resume and rollback are each refused 403 and write nothing, and an Admin's succeed.
+- **DATA-003 — Atomic mapped import** (partial). `tests/worker/data-import-atomic.test.ts` (tests tagged DATA-003), plus the import rows of the role-matrix journey (DATA-002).
 - **DATA-004 — Idempotent mapped import** (done). `tests/worker/data-import-atomic.test.ts`, `tests/worker/imported-person-erasure.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-004).
 - **DATA-005 — Exact portable restore** (done). `tests/worker/data-archive-failure.test.ts`, `tests/worker/data-http-collision.test.ts`, `tests/worker/data-http-concurrency.test.ts` (tests tagged DATA-005).
-- **DATA-006 — Staged import run** (done). `tests/e2e/data-staged-cli.mjs` (tests tagged DATA-006).
+- **DATA-006 — Staged import run** (partial). `tests/e2e/data-staged-cli.mjs` (tests tagged DATA-006), plus the import rows of the role-matrix journey (DATA-002).
 - **DATA-007 — Reconciliation report** (done). `tests/e2e/jira-public-journey.mjs` (exercises this behaviour; the test does not yet tag DATA-007).
 - **DATA-008 — Linear API enrichment file** (done). `tests/worker/linear-api-import.test.ts` (tests tagged DATA-008).
 - **DATA-009 — Jira CSV preflight and loss review** (done). `tests/worker/jira-import.test.ts`, `tests/worker/jira-loss-review-fixture.ts` (tests tagged DATA-009).
-- **DATA-010 — Jira staged apply and reconciliation** (done). `tests/worker/jira-apply.test.ts` (tests tagged DATA-010).
-- **DATA-011 — Erasing an imported person** (done). `tests/worker/imported-person-erasure.test.ts`, `tests/worker/base-refresh-upgrade.test.ts` (tests tagged DATA-011).
+- **DATA-010 — Jira staged apply and reconciliation** (partial). `tests/worker/jira-apply.test.ts` (tests tagged DATA-010), plus the import rows of the role-matrix journey (DATA-002).
+- **DATA-011 — Erasing an imported person** (partial). `tests/worker/imported-person-erasure.test.ts`, `tests/worker/base-refresh-upgrade.test.ts` (tests tagged DATA-011), plus a Member's erasure preview and confirmation each refused 403 with nothing erased.
 - **DATA-012 — GitHub Issues and Projects import** (missing). A run against a GitHub API fixture of a repository with a Project, milestones and comments whose reconciliation report matches source counts, and the DATA-017 scale run for a GitHub fixture of 50,000 issues across five repositories.
 - **DATA-013 — Jira Cloud and Data Center API import** (partial). A run against a Jira REST fixture with two projects, sprints and attachments whose reconciliation matches, and the DATA-017 scale run for a Jira fixture of 50,000 issues across six projects with cross-project Blocks and epic links.
 - **DATA-014 — Linear API import** (partial). A run against a Linear GraphQL fixture whose reconciliation includes projects, initiatives and attachment bytes, and the DATA-017 scale run.
