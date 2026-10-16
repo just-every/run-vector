@@ -70,3 +70,304 @@ One D1 transaction fences session, workspace, version and canonical relations; e
 Webhook event bodies, delivery envelopes and retained receiver replay envelopes are redacted in that transaction; permanent erasure fences block stale enqueue, replay publication, claims and transport while preserving fingerprints, attempts and terminal outcomes. Native protocol outcomes discard provider response bodies. Operator-entered reconciliation evidence codes are replaced by a fixed deletion code, including decisions published after erasure. Local erasure cannot recall an already invoked external provider operation. Closed cycle history, identifier high-water reservations and minimal audit/source identity remain. Migration 0033 copies the source tables into expanded schemas, preserving every old value while adding `erased=0` and extending the primary keys to `(source_id,record_id,erased)` and `(source_id,record_id,revision_id,erased)`. The live/erased discriminator is part of uniqueness, so any valid raw identifier, including another identifier’s digest, remains independent. Only confirmed deletion hashes record/revision IDs; secret rotation and archive credential exclusion do not change those hashes. Applied SQL stays unchanged; retain duplicate relations, identifier-only receipts and webhook erasure fences on compatible-source rollback. No Base copy, applied migration or pin changes are involved. Local proof is recorded in the task evidence; hosted provider timing and external erasure are separate acceptance.
 
 The erasure adapter snapshots full rows for incoming and outgoing edges, direct children, discussion and search, notifications/events/mail deliveries/attempts/development captures, GitHub issue links, reminder/import revisions, live and detached file custody, source receipts, and local webhook envelopes/history. The final transaction compares that complete preimage and an explicit postcondition. Captured dependent keys remain selected after their parent rows disappear, so orphaned copies cannot satisfy absence. Incoming child creation, Inbox changes and public webhook reconciliation abort prepared deletion with 409; unrelated issue work remains admissible. Request-only snapshots are never persisted or logged. The postcondition permits only the identifier-only deletion receipt and audit append, detached file cleanup custody, anonymous source hashes, payload-free webhook terminal ledgers, and children made roots with their new activity/version. Identifier-only frozen cycle history and audits, shared independent PR records, and allocation high-water marks remain unchanged.
+
+## Clause acceptance — target contract (16 October 2026)
+
+CONTRACT.md now describes the full Linear/Jira-class product Vector is building towards. Every clause is listed here by area with its status and the acceptance evidence a build round works towards: **done** clauses name the test that proves them today; **partial** and **missing** clauses name the journey or test, through a public door (browser journey, HTTP route, command, signed provider fixture at the network edge, mobile simulator), that must pass before the status changes. Provider fixtures stand in only at the paid or network edge. A status changes only with the cited test passing in CI on the exact head; local proof does not establish hosted acceptance.
+
+### Public homepage
+
+- **HOME-001 — Public homepage** (done). `tests/e2e/core-runtime.mjs` (tests tagged HOME-001).
+
+### Workspace, people and permissions
+
+- **OPS-001 — Workspace access** (partial). The existing equal-access tests plus a role-matrix journey that signs in as Admin, Member and Guest and checks every private route, `/api/v1` route, search and export against ROLE-001–003.
+- **SETUP-001 — First workspace review** (done). `tests/worker/first-run.test.ts` (tests tagged SETUP-001).
+- **OPS-002 — Operator management** (done). `tests/worker/base-auth.test.ts` (tests tagged OPS-002).
+- **OPS-003 — Workspace time** (done). `tests/e2e/admin-workspace-time-journey.mjs`, `tests/e2e/admin-access-journey.mjs`, `tests/e2e/admin-runtime.mjs` (tests tagged OPS-003).
+- **OPS-004 — Safe removal** (done). `tests/worker/removal-boundary.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/worker/base-auth.test.ts` (tests tagged OPS-004).
+- **ROLE-001 — Workspace roles** (missing). A browser and HTTP journey in which an Admin promotes and demotes a Member, the demoted member's next settings request returns 403, and the last-Owner demotion is refused.
+- **ROLE-002 — Private teams** (missing). A journey that creates a private team, proves a non-member gets 404 on its issue by identifier, sees no search hit, no Current entry and no export rows, then is added and sees all of them.
+- **ROLE-003 — Guests** (missing). A guest journey that reaches only the invited team and is refused every other team, settings and token route.
+- **ROLE-004 — Single sign-on and provisioning** (missing). A journey against a local SAML/OIDC identity-provider fixture at the network edge that signs a member in, then a SCIM `DELETE` that revokes their session within one request.
+- **ROLE-005 — Audit log** (partial). A journey that performs one action of each kind and finds each in the audit view and the CSV.
+- **ROLE-006 — Apps and agents as actors** (missing). A journey that installs an agent identity, sees its change attributed to it in activity and audit, revokes it and sees its next API call refused.
+
+### Teams and workflows
+
+- **TEAM-001 — Team identity** (done). `tests/e2e/admin-team-journey.mjs` (tests tagged TEAM-001).
+- **TEAM-002 — Team workflow** (done). `tests/e2e/admin-team-journey.mjs`, `tests/worker/base-auth.test.ts` (tests tagged TEAM-002).
+- **TEAM-003 — Team archiving** (done). `tests/e2e/admin-archive-team-journey.mjs` (tests tagged TEAM-003).
+- **TEAM-004 — Status removal** (done). `tests/e2e/admin-team-journey.mjs` (tests tagged TEAM-004).
+- **TEAM-005 — Team settings** (missing). A settings journey that switches a team to T-shirt estimates and off cycles, then sees the issue editor and Current reflect it while closed cycle snapshots stay unchanged.
+
+### Issues
+
+- **ISSUE-001 — Creation** (done). `tests/e2e/core-runtime.mjs`, `tests/markdown-rendering.test.tsx` (tests tagged ISSUE-001).
+- **ISSUE-002 — Stable identifiers** (done). `tests/worker/issue-deletion-relations.test.ts` (tests tagged ISSUE-002).
+- **ISSUE-003 — Priority** (partial). A test that sets each of the five priorities and checks that No priority is the default and sorts after Low.
+- **ISSUE-004 — Status transitions** (done). `tests/worker/issue-session-projection.test.ts` (tests tagged ISSUE-004).
+- **ISSUE-005 — Assignment** (done). `tests/worker/removal-assignment.test.ts` (tests tagged ISSUE-005).
+- **ISSUE-006 — Concurrent edits** (done). `tests/e2e/core-runtime.mjs`, `tests/e2e/collaboration-preferences.mjs`, `tests/worker/dependencies.test.ts` (tests tagged ISSUE-006).
+- **ISSUE-007 — Activity history** (done). `tests/worker/dependencies.test.ts`, `tests/e2e/admin-label-journey.mjs`, `tests/worker/cycle-closure.test.ts` (tests tagged ISSUE-007).
+- **ISSUE-008 — Comments** (done). `tests/worker/discussion-access.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/e2e/core-runtime.mjs` (tests tagged ISSUE-008).
+- **ISSUE-009 — Attachments and links** (done). `tests/worker/discussion-file-admission.test.ts`, `tests/e2e/core-runtime.mjs`, `tests/worker/link-cascade.test.ts` (tests tagged ISSUE-009).
+- **ISSUE-010 — Deletion** (done). `tests/worker/issue-deletion-cascade.test.ts`, `tests/worker/collaboration-atomicity.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged ISSUE-010).
+- **ISSUE-011 — Estimates** (done). `tests/worker/cycle-closure.test.ts` (tests tagged ISSUE-011).
+- **ISSUE-012 — Moving teams** (partial). A browser journey that moves an Intake and a Started issue to another team and checks identifier, cycle uncommit and the single activity entry; no test names the clause yet.
+- **ISSUE-013 — Mentions** (done). `tests/e2e/collaboration-events.mjs`, `tests/markdown-rendering.test.tsx` (tests tagged ISSUE-013).
+- **ISSUE-014 — Labels** (done). `tests/e2e/admin-issue-journey.mjs`, `tests/e2e/admin-label-journey.mjs`, `tests/e2e/collaboration-issue.mjs` (tests tagged ISSUE-014).
+- **ISSUE-015 — Unsent drafts** (done). `tests/e2e/core-draft-journey.mjs` (tests tagged ISSUE-015).
+- **ISSUE-016 — Issue templates** (missing). A journey that creates a bug template with two sub-issues, creates an issue from it through the browser and through `/api/v1`, and finds both sub-issues linked.
+- **ISSUE-017 — Reactions** (missing). A journey that adds and removes a reaction, sees the count update in a second session within the SYNC-001 window, and finds it in the archive.
+- **ISSUE-018 — Description history** (partial). A journey that edits a description three times, compares revisions one and three, restores revision one and finds four revisions with the restore attributed.
+- **ISSUE-019 — Sub-issue progress** (partial). A journey that creates three sub-issues, completes them, and sees the parent count and the optional auto-complete rule act once.
+
+### Relations
+
+- **REL-001 — Dependencies** (done). `tests/worker/dependencies.test.ts` (tests tagged REL-001).
+- **REL-002 — Blocked state** (done). `tests/worker/dependencies.test.ts` (tests tagged REL-002).
+- **REL-003 — Duplicate decision** (done). `tests/worker/issue-deletion-relations.test.ts` (tests tagged REL-003).
+- **REL-004 — Canonical duplicates** (done). `tests/worker/issue-deletion-relations.test.ts` (tests tagged REL-004).
+- **REL-005 — Undo duplicate** (done). `tests/worker/issue-deletion-relations.test.ts` (tests tagged REL-005).
+- **REL-006 — Parent and child** (done). `tests/worker/issue-deletion-preimage.test.ts`, `tests/worker/parent-deletion-custody.test.ts` (tests tagged REL-006).
+- **REL-007 — Related issues** (missing). A journey that relates two issues, sees both sides, and a Jira import fixture whose in-run Relates link becomes a related link.
+
+### Intake and triage
+
+- **INTAKE-001 — Intake creation** (done). `tests/worker/source-ingest.test.ts`, `tests/e2e/core-runtime.mjs` (tests tagged INTAKE-001).
+- **INTAKE-002 — Idempotent sources** (done). `tests/worker/source-ingest.test.ts`, `tests/worker/source-erasure-identity.test.ts` (tests tagged INTAKE-002).
+- **INTAKE-003 — Evidence revisions** (done). `tests/worker/source-ingest.test.ts` (tests tagged INTAKE-003).
+- **INTAKE-004 — Inspectable assessment** (partial). The existing operator-intake journey plus a triage journey in which an agent suggestion is shown with its provenance and is applied only on acceptance.
+- **INTAKE-005 — Accept** (done). `tests/e2e/core-runtime.mjs` (tests tagged INTAKE-005).
+- **INTAKE-006 — Defer** (done). `tests/e2e/core-runtime.mjs`, `tests/worker/issue-session-projection.test.ts` (tests tagged INTAKE-006).
+- **INTAKE-007 — Decline** (partial). A journey that declines an intake item without a reason (refused) and with one, and finds it Canceled with its evidence and decision history kept.
+- **INTAKE-008 — Evidence after a terminal decision** (done). `tests/worker/source-ingest.test.ts` (exercises this behaviour; the test does not yet tag INTAKE-008).
+- **INTAKE-009 — Source failure** (done). `tests/worker/source-ingest.test.ts` (exercises this behaviour; the test does not yet tag INTAKE-009).
+- **INTAKE-010 — Decision policy** (partial). A test that delivers a source item with an explicit team and assignee, and one without, and checks the recommended defaults stay editable before acceptance.
+- **INTAKE-011 — Source registration** (done). `tests/worker/source-ingest.test.ts` (tests tagged INTAKE-011).
+- **TRIAGE-001 — Triage responsibility** (missing). A journey that sets a two-person weekly rotation, advances the workspace clock past the handover and sees new items notify the second person.
+- **TRIAGE-002 — Triage routing rules** (partial). A journey with two rules that routes a Sentry item and a Zendesk item to different teams and shows the acting rule on each.
+- **TRIAGE-003 — Agent triage suggestions** (missing). A journey with a seeded near-duplicate that the agent proposes with reason and evidence, the triager accepts the duplicate decision, and the rate report counts it; the model call is faked only at the provider edge.
+- **TRIAGE-004 — Request forms** (partial). A journey that builds a bug form with a required severity field, submits it from the app and from a Slack shortcut fixture, and finds two triage items with the answers.
+- **TRIAGE-005 — Email intake** (missing). An inbound-mail fixture at the provider edge that creates one item with two attachments and threads a reply as a comment.
+
+### Customer requests
+
+- **CUST-001 — Customer requests on issues** (missing). A journey that links two Penny requests and one HappyToHelp conversation from the same company to one issue through signed fixtures and sees one customer, two sources and the USD revenue.
+- **CUST-002 — Customer-weighted planning** (missing). A view journey that sorts three issues by linked revenue and matches the expected order.
+- **CUST-003 — Close the loop with requesters** (missing). A journey that completes an issue with a Penny request and a Zendesk ticket and finds the Penny state change and the Zendesk internal note in the signed outbound fixtures, with no customer-visible message.
+- **CUST-004 — Penny keeps the board** (done). The public route inventory in `seed.json` lists no public feedback, voting or roadmap route; a Penny link shows Penny's state.
+
+### Current
+
+- **CURR-001 — Disjoint stream** (partial). An HTTP journey that places one issue of each kind and asserts it appears in exactly one Current section by precedence; the stream exists but no test names the clause.
+- **CURR-002 — Needs decision** (partial). A journey that defers, returns and declines intake items and asserts Needs decision membership.
+- **CURR-003 — Now** (partial). A journey with a Started issue and an overdue Unstarted issue at a workspace-timezone day boundary.
+- **CURR-004 — Next** (partial). A journey with active-cycle and due-in-seven-days Unstarted issues.
+- **CURR-005 — Recently done** (partial). A journey that completes issues across an eight-day window and checks the seven-day cut-off and order.
+- **CURR-006 — Explainable attention** (done). `tests/worker/dependencies.test.ts` (tests tagged CURR-006).
+- **CURR-007 — Ranking** (partial). A ranking test over priority, due date, update time and identifier ties.
+- **CURR-008 — Freshness** (done). `tests/e2e/core-current-journey.mjs` (tests tagged CURR-008).
+- **CURR-009 — Stream controls** (partial). A browser journey applying each Current filter and its reset.
+
+### My work
+
+- **WORK-001 — Personal queue** (done). `tests/worker/dependencies.test.ts` (tests tagged WORK-001).
+- **WORK-002 — Personal defaults** (done). `tests/worker/dependencies.test.ts` (tests tagged WORK-002).
+- **WORK-003 — Cycle context** (partial). A journey with an active cycle containing the operator's issue that checks the cycle row's dates, progress and unit.
+
+### Projects, initiatives and roadmaps
+
+- **PROJ-001 — Project record** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-001).
+- **PROJ-002 — Manual lifecycle** (done). `tests/e2e/admin-project-cycle-journey.mjs`, `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-002).
+- **PROJ-003 — Project membership** (partial). A journey that removes, archives and deletes projects and checks no issue is deleted.
+- **PROJ-004 — Progress** (done). `tests/e2e/core-runtime.mjs` (tests tagged PROJ-004).
+- **PROJ-005 — Health** (partial). A health test covering each Blocked, At risk, On track and Unknown rule and the equal-capacity edge.
+- **PROJ-006 — Risk explanation** (partial). A journey that opens a Blocked and an At risk project and finds the triggering issues and measurements.
+- **PROJ-007 — Portfolio** (done). `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-007).
+- **PROJ-008 — Historical truth** (done). `tests/worker/cycle-closure.test.ts` (tests tagged PROJ-008).
+- **PROJ-009 — Project archiving** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-009).
+- **PROJ-010 — Project updates** (missing). A journey that posts an At risk update, finds it in the project, the initiative roll-up and a Slack fixture, and a follower notification.
+- **PROJ-011 — Milestones** (missing). A journey that creates two milestones, assigns issues, completes one milestone and sees the other flagged past its date.
+- **PROJ-012 — Project templates** (missing). A journey that creates a launch project from a template with two milestones and four issues offset from a chosen start date.
+- **PROJ-013 — Project documents and specs** (missing). A journey that writes a spec under a project, links it to an issue, edits it twice and finds both revisions and a search hit.
+- **PROJ-014 — Project members and teams** (partial). A journey that adds two teams' issues to a project and finds the project in both teams' lists with both teams as contributors.
+- **INIT-001 — Initiatives** (missing). A journey that creates an initiative with a sub-initiative and three projects from two teams and sees them nested.
+- **INIT-002 — Initiative roll-up** (missing). A journey that posts updates on two projects and sees the initiative roll-up reflect them in order.
+- **INIT-003 — Roadmap timeline** (missing). A browser journey that drags a project's target date on the timeline and finds the change in the project's activity, and a 390px check of the list equivalent.
+- **INIT-004 — Leadership digest** (missing). A scheduled-run test that sends one digest per subscriber to the mail and Slack fixtures and omits a private team's project from a non-member's digest.
+
+### Cycles
+
+- **CYCLE-001 — Time box** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged CYCLE-001).
+- **CYCLE-002 — Commitment** (done). `tests/e2e/admin-cycle-list-journey.mjs`, `tests/e2e/admin-issue-journey.mjs` (tests tagged CYCLE-002).
+- **CYCLE-003 — Progress and capacity** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-003).
+- **CYCLE-004 — Closure and rollover** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-004).
+- **CYCLE-005 — Closure snapshot** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-005).
+- **CYCLE-006 — Missing next cycle** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-006).
+- **CYCLE-007 — Automatic cycle schedule** (partial). A scheduled-run test that keeps three upcoming two-week cycles with a one-week cooldown and closes a cycle without a CYCLE-006 failure.
+- **CYCLE-008 — Automatic cycle membership** (missing). A journey that starts an uncommitted issue and finds it in the active cycle with the automation activity entry.
+
+### Releases and deployments
+
+- **RELEASE-001 — Releases** (missing). A journey that creates release 2.4, adds five issues, marks it Released and sees release state on each issue.
+- **RELEASE-002 — Deployment tracking** (missing). A signed GitHub Deployments fixture for a merged commit linked to an issue shows the issue deployed to production and triggers the team rule once on replay.
+- **RELEASE-003 — Release notes** (missing). A journey that drafts notes for a release of six issues, edits one line, and sends the approved text to Slack and Penny fixtures.
+
+### Search, views and commands
+
+- **SEARCH-001 — Global search** (done). `tests/worker/search-access.test.ts`, `tests/e2e/dev-runtime.mjs`, `tests/worker/search-exact-admission.test.ts` (tests tagged SEARCH-001).
+- **SEARCH-002 — Exact identifier** (done). `tests/worker/search-exact-admission.test.ts`, `tests/worker/search-access.test.ts` (tests tagged SEARCH-002).
+- **SEARCH-003 — Index freshness** (done). `tests/worker/search-access.test.ts` (tests tagged SEARCH-003).
+- **SEARCH-004 — Advanced filters** (partial). A journey that builds an (A OR B) AND NOT C filter in the bar and the menu, matches the expected issues, and saves it.
+- **SEARCH-005 — Meaning-based search** (missing). A search for "checkout fails on Safari" that finds an issue titled "Payment page broken in WebKit" labelled as a semantic match, and does not return a private-team issue to a non-member.
+- **VIEW-001 — Issue controls** (done). `tests/e2e/dev-runtime.mjs` (tests tagged VIEW-001).
+- **VIEW-002 — Saved views** (done). `tests/worker/views-removal.test.ts`, `tests/e2e/core-keyboard-journey.mjs`, `tests/worker/search-access.test.ts` (tests tagged VIEW-002).
+- **VIEW-003 — Control persistence** (done). `tests/worker/views-removal.test.ts` (tests tagged VIEW-003).
+- **VIEW-004 — Bulk edit** (partial). A browser journey selecting issues with X and setting status in one operation, plus a failing selection that writes nothing and names the failing identifiers.
+- **VIEW-005 — Team board** (partial). A board journey at 1440px and 390px that changes status from a card and recovers from a stale conflict.
+- **VIEW-006 — Manual order** (missing). A journey that reorders three backlog issues by keyboard, reloads in a second session and finds the same order, while Current's order is unchanged.
+- **VIEW-007 — Timeline and calendar views** (missing). A journey that drags an issue's due date on the calendar and finds the change in its activity.
+- **VIEW-008 — Display options** (partial). A journey that adds assignee swimlanes, drags a card across a lane and a column, and finds both changes in activity.
+- **VIEW-009 — Workspace-wide views** (partial). A journey that saves a shared project view filtered by lead and health and a cross-team issue view, and opens both from the palette.
+- **CMD-001 — Command palette** (partial). The keyboard journey extended to move the highlight with the arrow keys; it already covers search, Enter and Escape in `tests/e2e/core-keyboard-journey.mjs`.
+- **CMD-002 — Keyboard navigation** (done). `tests/e2e/core-keyboard-journey.mjs` (tests tagged CMD-002).
+- **CMD-003 — Focus and selection** (partial). A keyboard journey moving focus with arrows, selecting with X, opening with Enter and returning focus with Escape.
+- **CMD-004 — Keyboard-first editing** (missing). A keyboard journey that changes status, assignee and priority of two selected issues without a mouse.
+
+### Speed, real time and mobile
+
+- **SYNC-001 — Real-time sync** (partial). A two-browser journey that changes an issue in one and measures its appearance in the other under one second, then drops the socket and recovers within CURR-008.
+- **SYNC-002 — Local-first speed** (missing). A browser journey that measures issue open and list filter latency from cache, makes an offline edit, reconnects and sees it applied, and a conflicting edit shown.
+- **SYNC-003 — Collaborative editing** (missing). A two-browser journey that types into the same description concurrently and finds both edits in the saved text.
+- **MOBILE-001 — iOS and Android apps** (missing). A device-simulator journey on iOS and Android builds that signs in to a local installation, accepts a triage item, creates an issue with a photo and finds both on the web.
+- **MOBILE-002 — Push notifications** (missing). A push-provider fixture at the edge that receives one payload per enabled event with no body text, and a quick action that marks the notification read.
+- **MOBILE-003 — Responsive web** (partial). The 390px viewport checks in the development journey plus a 390px pass over every new page.
+
+### Notifications
+
+- **NOTIFY-001 — Inbox events** (partial). The existing collaboration journeys for the original events plus one journey per added event.
+- **NOTIFY-002 — Followers** (done). `tests/e2e/collaboration-events.mjs`, `tests/worker/collaboration-atomicity.test.ts`, `tests/worker/discussion-access.test.ts` (tests tagged NOTIFY-002).
+- **NOTIFY-003 — No self-notification** (done). `tests/worker/due-reminders.test.ts`, `tests/e2e/collaboration-pagination.mjs`, `tests/e2e/collaboration-reads.mjs` (tests tagged NOTIFY-003).
+- **NOTIFY-004 — Read and mute** (done). `tests/e2e/collaboration-preferences.mjs`, `tests/worker/collaboration-final-admission.test.ts`, `tests/worker/collaboration-mail.test.ts` (tests tagged NOTIFY-004).
+- **NOTIFY-005 — Due reminders** (done). `tests/worker/due-reminders.test.ts` (tests tagged NOTIFY-005).
+- **NOTIFY-006 — Assignment and mention email** (done). `tests/e2e/collaboration-delivery-ui.mjs`, `tests/e2e/collaboration-disabled.mjs`, `tests/e2e/collaboration-preferences.mjs` (tests tagged NOTIFY-006).
+- **NOTIFY-007 — Channels and digests** (partial). A journey that routes mentions to Slack and comments to a daily digest, then checks the Slack and mail fixtures receive exactly one message each.
+- **NOTIFY-008 — Snooze and reminders** (missing). A journey that snoozes a notification for one hour, advances the clock, and sees it return once.
+- **NOTIFY-009 — Subscriptions** (missing). A journey that subscribes to a label and gets one notification when a new issue gets that label.
+
+### Automation and follow-through
+
+- **AUTO-001 — Recurring issues** (missing). A scheduled-run test that creates a weekly series, runs the scheduler twice in the same week and finds one issue, then skips while open.
+- **AUTO-002 — Workflow rules** (partial). A journey that builds "when label Security is added, set priority Urgent and notify #security", dry-runs it, triggers it, and finds one run-log entry, one change and one Slack fixture message.
+- **AUTO-003 — Auto-close and auto-archive** (missing). A scheduled-run test with a 30-day stale issue and a 90-day completed issue that closes one and archives the other, each with an automation activity entry.
+- **AUTO-004 — SLAs** (missing). A clock-advancing test that warns once before breach and records one breach.
+- **AUTO-005 — Update reminders** (missing). A scheduled-run test that reminds one lead once per cadence and flags a missed update.
+- **AUTO-006 — Due-soon rules** (partial). An AUTO-002 rule with a due-in-two-days trigger acting once per issue and date.
+
+### Reporting
+
+- **REPORT-001 — Insights** (partial). A journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues.
+- **REPORT-002 — Cycle and project charts** (partial). A cycle seeded with day-by-day changes whose burn-up and final report match the CYCLE-005 snapshot.
+- **REPORT-003 — Dashboards** (missing). A journey that builds a three-widget dashboard, shares it, and opens it as another member who sees only what they may access.
+- **REPORT-004 — Workload** (partial). A journey with three assignees whose committed points match the view and over-capacity is marked.
+- **REPORT-005 — Warehouse and spreadsheet export** (missing). A scheduled export to an R2 fixture whose second run carries only changed rows, and a paged export API read.
+
+### Code host and delivery
+
+- **GITHUB-001 — Signed PR links** (done). `tests/worker/github-links.test.ts` for signed linking and state, plus GITHUB-003's status journey.
+- **GITHUB-002 — Durable latest PR state** (done). `tests/worker/github-links.test.ts` (tests tagged GITHUB-002).
+- **GITHUB-003 — Branches and status automation** (partial). A signed-fixture journey that opens a draft PR, requests review and merges it, and finds three status moves with automation attribution, then replays the deliveries and finds no duplicates.
+- **GITHUB-004 — Commits** (missing). A signed push fixture with two commits naming one issue shows both on the issue and applies the closing rule once.
+- **GITHUB-005 — Review and checks on the issue** (missing). Signed review and check-run fixtures that change the issue's PR badge from checks failing to approved and passing.
+- **GITHUB-006 — GitHub App** (missing). An app-install journey against a GitHub API fixture at the network edge that posts one linkback and stops calling after uninstall.
+- **GITHUB-007 — GitHub Issues sync** (missing). A fixture journey that creates an issue on each side, edits a comment on each side and closes on GitHub, and finds both sides consistent with no duplicate.
+- **GITLAB-001 — GitLab** (missing). Signed GitLab fixtures for MR opened, approved, merged and a production environment deployment that move one issue as configured.
+- **GITLAB-002 — GitLab Issues sync** (missing). The GITHUB-007 journey against GitLab fixtures.
+- **BITBUCKET-001 — Bitbucket** (missing). Signed Bitbucket fixtures for PR opened and merged that move one issue.
+- **CI-001 — CI and deploy providers** (missing). A CircleCI workflow-completed fixture and a Vercel deployment fixture that each appear on the linked issue.
+
+### Chat
+
+- **SLACK-001 — Slack app** (missing). An install journey against a Slack API fixture that stores one encrypted bot token and links one member, then uninstalls and stops.
+- **SLACK-002 — Issues from Slack with synced threads** (missing). A Slack Events fixture that creates an issue from a message, posts a thread reply that becomes a comment, and a Vector comment that posts back to the thread once.
+- **SLACK-003 — Channel notifications** (missing). A journey that binds a project to a channel and finds one formatted Slack message per update.
+- **SLACK-004 — Personal Slack notifications** (missing). A mention routed to Slack produces one DM fixture with working actions.
+- **SLACK-005 — Link previews** (missing). Two unfurl fixtures for a private-team issue, one for a member and one for a non-member.
+- **TEAMS-001 — Microsoft Teams** (missing). The Slack journeys run against Microsoft Bot Framework and Graph fixtures.
+
+### Support, errors, design and knowledge
+
+- **SUPPORT-001 — Zendesk, Intercom and Front** (partial). Signed provider fixtures that link one ticket from each tool and receive one internal note each when the issue completes.
+- **SUPPORT-002 — HappyToHelp** (missing). A journey across local Vector and HappyToHelp installations that links a conversation and returns the completion note.
+- **ERROR-001 — Sentry and Datadog** (partial). Signed Sentry fixtures that create an issue, resolve it back, and a regression event that reopens it once.
+- **ERROR-002 — Spool** (missing). A journey across local Vector and Spool installations that links an error group and sees its counts on the issue.
+- **DESIGN-001 — Figma** (missing). A Figma API fixture that renders a frame preview on an issue and a plugin request that creates one issue.
+- **DOCS-001 — Notion, Confluence and Google Drive** (partial). Provider fixtures for Notion and Google Drive that render previews only for the connected member.
+- **CAL-001 — Calendar feeds** (missing). A feed request that returns the expected events and a revoked feed that returns 404.
+- **CONNECT-001 — Zapier and Make** (partial). The app definitions' trigger and action tests run against a local installation.
+
+### Coding agents
+
+- **AGENT-001 — Delegate an issue to an agent** (missing). A journey that delegates an issue to an agent fixture at the provider edge and sees the delegate, the human assignee and the exact context payload.
+- **AGENT-002 — Agent session on the issue** (missing). A journey where the agent fixture posts a plan and a question, the member answers, then cancels, and the session shows the question, answer, cancellation and actor.
+- **AGENT-003 — Reviewable output, human completion** (missing). A journey where the agent fixture opens a PR, the issue moves to In Review only, and the agent's attempt to complete the issue through the API is refused 403.
+- **AGENT-004 — Agent permissions and budgets** (missing). A journey that exhausts a test agent's session budget and sees the next delegation refused with a visible reason.
+- **AGENT-005 — MCP server** (missing). An MCP client journey that lists the tools, creates an issue and comments on it, and a refused read of a private-team issue for a non-member.
+- **AGENT-006 — Agent platform** (partial). A sample agent registered from the docs that receives a delegation webhook and posts three activity types that render on the issue.
+- **AGENT-007 — Ask Vector** (missing). A journey on seeded data whose answer cites the right blocking issues, and a proposed bulk change that applies only after confirmation.
+- **AGENT-008 — Agent guidance** (missing). A journey that edits team guidance and finds the new version in the next delegation payload.
+
+### API and platform
+
+- **API-001 — Native scoped API** (done). `tests/worker/integration-api.test.ts`, `tests/worker/dev-credentials.test.ts` (tests tagged API-001).
+- **API-002 — Token authority and usage** (done). `tests/worker/integration-authority.test.ts`, `tests/worker/integration-api.test.ts` (tests tagged API-002).
+- **API-003 — Complete public API** (partial). An API journey that creates a project, cycle, milestone and three issues and pages through them, and a refused private-team read.
+- **API-004 — OAuth apps** (missing). An authorization-code journey that grants read-only scope, a refused write, and an Admin revocation that ends the next call.
+- **API-005 — SDK and docs** (missing). The SDK's example scripts run against a local installation in CI.
+- **WEBHOOK-001 — Durable native delivery** (done). `tests/worker/outbound-webhooks.test.ts`, `tests/worker/issue-deletion-webhooks.test.ts` (tests tagged WEBHOOK-001).
+- **WEBHOOK-002 — Webhooks for every object** (partial). A destination subscribed to project updates and comments receives exactly those signed events.
+
+### Import, export and portability
+
+- **DATA-001 — Export contents** (done). `tests/worker/data-http.test.ts`, `tests/worker/data-archive-failure.test.ts`, `tests/worker/data-http-collision.test.ts` (tests tagged DATA-001).
+- **DATA-002 — Mapped import preflight** (done). `tests/worker/linear-import.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-002).
+- **DATA-003 — Atomic mapped import** (done). `tests/worker/data-import-atomic.test.ts` (tests tagged DATA-003).
+- **DATA-004 — Idempotent mapped import** (done). `tests/worker/data-import-atomic.test.ts`, `tests/worker/imported-person-erasure.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-004).
+- **DATA-005 — Exact portable restore** (done). `tests/worker/data-archive-failure.test.ts`, `tests/worker/data-http-collision.test.ts`, `tests/worker/data-http-concurrency.test.ts` (tests tagged DATA-005).
+- **DATA-006 — Staged import run** (done). `tests/e2e/data-staged-cli.mjs` (tests tagged DATA-006).
+- **DATA-007 — Reconciliation report** (done). `tests/e2e/jira-public-journey.mjs` (exercises this behaviour; the test does not yet tag DATA-007).
+- **DATA-008 — Linear API enrichment file** (done). `tests/worker/linear-api-import.test.ts` (tests tagged DATA-008).
+- **DATA-009 — Jira CSV preflight and loss review** (done). `tests/worker/jira-import.test.ts`, `tests/worker/jira-loss-review-fixture.ts` (tests tagged DATA-009).
+- **DATA-010 — Jira staged apply and reconciliation** (done). `tests/worker/jira-apply.test.ts` (tests tagged DATA-010).
+- **DATA-011 — Erasing an imported person** (done). `tests/worker/imported-person-erasure.test.ts`, `tests/worker/base-refresh-upgrade.test.ts` (tests tagged DATA-011).
+- **DATA-012 — GitHub Issues and Projects import** (missing). A run against a GitHub API fixture of a repository with a Project, milestones and comments whose reconciliation report matches source counts.
+- **DATA-013 — Jira Cloud and Data Center API import** (partial). A run against a Jira REST fixture with two projects, sprints and attachments whose reconciliation matches.
+- **DATA-014 — Linear API import** (partial). A run against a Linear GraphQL fixture whose reconciliation includes projects, initiatives and attachment bytes.
+- **DATA-015 — Plane, Huly and Shortcut import** (partial). One fixture per source whose reconciliation report matches.
+- **DATA-016 — Transition sync** (missing). A Jira fixture sync that mirrors a status change each way and stops at the configured end.
+
+### Security, privacy and agents' data
+
+- **SEC-001 — Integration credentials** (partial). An archive of an installation with Slack, GitHub and an agent configured contains no credential, and a restored installation shows each as needing re-entry.
+- **SEC-002 — Model and agent data handling** (missing). A journey that turns off triage suggestions for one team and finds no model call for that team's items at the provider fixture.
+- **SEC-003 — Erasure across integrations** (partial). An issue deletion with a synced Slack thread and an embedding that removes both and lists the GitHub comment it cannot recall.
+
+### Push further
+
+- **PUSH-001 — Issue to spec** (missing). A journey on a seeded bug with two Spool errors and a Zendesk ticket where the draft cites both, the assignee edits one criterion and approves, and the approved revision is attached.
+- **PUSH-002 — Spec to tested PR** (missing). An agent fixture that returns a PR covering two of three criteria with passing checks, and the issue shows one uncovered criterion and the session not done.
+- **PUSH-003 — Verified deployment** (missing). A merge fixture followed by a production deployment fixture that marks the issue deployed, and a second merge with no deployment that raises one question after the window.
+- **PUSH-004 — Outcome verification before close** (missing). A journey with a linked Spool error group whose rate drops to zero after the deploy fixture, producing a Verified proposal that the assignee confirms, and a second issue whose error persists and is proposed Not fixed.
+- **PUSH-005 — Customer follow-through** (missing). A verified issue with two tickets yields two drafts; approving one sends one fixture message, skipping the other sends none.
+- **PUSH-006 — Blocked-work follow-up** (partial). A blocked issue whose blocker owner is asked once, answers "Friday", and is asked again only after Friday; a stop instruction ends follow-ups.
+- **PUSH-007 — Plans with uncertainty** (partial). A seeded project where the forecast's 50% and 85% dates match a reference calculation, and the chosen option is recorded with its assumptions.
+- **PUSH-008 — Incident follow-up loop** (missing). A resolved-incident fixture that yields drafted follow-ups; approving two creates two linked issues and a weekly status post.
+- **PUSH-009 — Standups and cycle summaries** (partial). A seeded day of activity whose summary cites every completed and newly blocked issue and no private-team issue in a public channel.
+- **PUSH-010 — Agent accountability ledger** (missing). A journey that runs a triage suggestion and a spec draft, finds both in the ledger with costs, then pauses all agents and sees the next suggestion skipped.
+
+### Installation and lifecycle
+
+- **OWNER-CLAIM-001 — Signed owner claim** (done). `tests/worker/owner-claim.test.ts`, `tests/worker/owner-claim-upgrade.test.ts`.
+- **EDITOR-001 — Owner-gated editor** (done). `tests/worker/editor.test.ts`.
