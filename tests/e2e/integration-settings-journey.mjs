@@ -12,8 +12,19 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  const input={teamId:team.id,title:'Native signed signal '+width,summary:'Observed source evidence',sourceRecordId:'record-'+width,sourceRevisionId:'revision-1',observedAt:'2026-10-01T01:00:00.000Z',assertions:{hypothesis:{value:'Source hypothesis '+width,attribution:'source'},verified:{value:false,attribution:'source'}}};
  const protocol=createWebhookProtocol({resolveDestination:async()=>source.receiver,signingKey:async()=>new Uint8Array(Buffer.from(source.secret,'hex'))}),wire=await protocol.prepare({id:crypto.randomUUID(),tenant:source.workspaceId,destinationId:source.sourceId,event:'signal.revision',protocol:'webhook',body:JSON.stringify(input)},Date.now());
  const admitted=await fetch(source.receiver,{method:'POST',headers:wire.headers,body:wire.body});assert.equal(admitted.status,200);const issue=await admitted.json();
+ const plainBody={title:'Plain webhook alert '+width};
+ const postPlain=url=>fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(plainBody)});
+ const plain=await postPlain(source.webhookUrl);assert.equal(plain.status,200);const plainIssue=await plain.json();assert.equal(plainIssue.reused,false);
+ const replayPlain=await postPlain(source.webhookUrl);assert.equal(replayPlain.status,200);assert.deepEqual(await replayPlain.json(),{...plainIssue,reused:true});
+ await page.goto(runtime.base+'/app/issues/'+plainIssue.identifier);await page.getByRole('heading',{name:plainBody.title,exact:true}).waitFor();
+ await page.goto(runtime.base+'/app/settings');await panel.getByRole('heading',{name:'Integrations',exact:true}).waitFor();
+ const replaced=await receipt('/sources/'+source.id+'/webhook-url',()=>panel.getByRole('button',{name:'Replace webhook URL for Browser source '+width,exact:true}).click());await reveal(replaced.webhookUrl);
+ assert.equal((await postPlain(source.webhookUrl)).status,401);
+ const acceptedReplacement=await postPlain(replaced.webhookUrl);assert.equal(acceptedReplacement.status,200);assert.deepEqual(await acceptedReplacement.json(),{...plainIssue,reused:true});
+ const revokeSource=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname==='/api/settings/integrations/sources/'+source.id);await panel.getByRole('button',{name:'Revoke Browser source '+width,exact:true}).click();assert.equal((await revokeSource).status(),200);assert.equal((await postPlain(replaced.webhookUrl)).status,401);
+
  await panel.getByLabel('Destination name',{exact:true}).fill('Browser receiver '+width);await panel.getByLabel('Public HTTPS destination',{exact:true}).fill('https://receiver.example.com/events');const destination=await receipt('/destinations',()=>panel.getByRole('button',{name:'Register destination',exact:true}).click());await reveal(destination.secret);
- const config=await(await runtime.req('/api/settings/integrations',{headers:{Cookie:cookie}})).json();assert.equal(config.outboundConfigured,false);assert(!JSON.stringify(config).includes(token.token));assert(!JSON.stringify(config).includes(source.secret));assert(!JSON.stringify(config).includes(destination.secret));
+ const config=await(await runtime.req('/api/settings/integrations',{headers:{Cookie:cookie}})).json();assert.equal(config.outboundConfigured,false);assert(!JSON.stringify(config).includes(token.token));assert(!JSON.stringify(config).includes(source.secret));assert(!JSON.stringify(config).includes(source.webhookUrl));assert(!JSON.stringify(config).includes(replaced.webhookUrl));assert(!JSON.stringify(config).includes(destination.secret));
  await panel.getByLabel('Repository name',{exact:true}).fill('Browser repository '+width);await panel.getByLabel('GitHub owner/repository',{exact:true}).fill(pullRequestRepository(width));const github=await receipt('/github',()=>panel.getByRole('button',{name:'Register repository',exact:true}).click());await reveal(github.secret);
  await sendSignedPullRequest(github,issue.identifier,width);
  await page.reload();assert.equal(await panel.getByLabel('New credential',{exact:true}).count(),0);

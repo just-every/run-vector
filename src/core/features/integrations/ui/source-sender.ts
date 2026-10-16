@@ -1,6 +1,6 @@
 import {createWebhookProtocol} from '../../../../../vendor/base/integrations/core/webhook';
 
-export type SourceConnection={receiver:string;workspaceId:string;sourceId:string;teamId:string};
+export type SourceConnection={webhookUrl?:string;receiver:string;workspaceId:string;sourceId:string;teamId:string};
 export type SourceReport={title:string;summary:string;sourceRecordId:string;sourceRevisionId:string;observedAt:string;teamId:string};
 export async function sourceRequest(connection:SourceConnection,secret:string,report:SourceReport){
  if(!/^[a-f0-9]{64}$/.test(secret))throw new Error('Paste the 64-character source secret from registration.');

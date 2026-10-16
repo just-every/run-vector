@@ -8,7 +8,7 @@ curl -fsSL https://runeditrun.com/install.sh | sh
 
 or `npm install --global @runeditrun/rer@0.2.25`. The script installs the current global rer launcher. This source checkout runs its own exact rer 0.2.25 pin from `package.json`, so the launcher and the CLI used inside Vector can have different versions.
 
-Vector’s release numbers are separate from rer’s. [The latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The following clone uses the latest source on the default branch:
+Vector’s release numbers are separate from rer’s. [The latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The following clone uses `main`, which includes changes since v0.2.0:
 
 ```sh
 git clone https://github.com/just-every/run-vector.git vector
@@ -29,7 +29,7 @@ The first time, Vector opens **Finish setting up Vector**. Check the workspace, 
 
 ## Stop, start and reset
 
-Stop Vector with Ctrl-C, or with `rer dev --stop`. Start it again with `rer dev`; your data stays where it was.
+Stop Vector’s background development server with `rer dev --stop`. Start it again with `rer dev`; your data stays where it was.
 
 To start over, stop Vector, keep an export of anything you need (see [Your data](data.md)), then run `rer reset --yes`. Reset lists exactly what it removes before it removes it.
 

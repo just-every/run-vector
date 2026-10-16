@@ -35,6 +35,23 @@ When you change an issue, send the `expectedVersion` you last read. If someone c
 
 Other answers you may see: 401 when the token is missing, wrong, expired, revoked or lacks the permission; 400 when the request is not valid; 404 when the issue does not exist.
 
+## Use a local development token
+
+Choose `issues:read` for the list request below. A token created while signed in through `RER_OPEN` also requires this checkout's private development key on every request. A bearer token alone returns 401. Keep `rer dev` running, then run this in Bash from the checkout, replacing the origin with the address printed as `RER_READY`:
+
+```sh
+VECTOR_ORIGIN='http://127.0.0.1:8787'
+read -r -s -p 'API token: ' VECTOR_TOKEN
+. ./.rer/local/dev-key.env
+curl --fail-with-body \
+  --header "Authorization: Bearer $VECTOR_TOKEN" \
+  --header "x-rer-dev-key: $RER_DEV_KEY" \
+  "$VECTOR_ORIGIN/api/v1/issues"
+unset VECTOR_TOKEN RER_DEV_KEY
+```
+
+Paste the token when prompted; it is not shown or written into shell history. The key is loaded from its owner-only file without printing it. Keep both credentials private and omit verbose curl logging. Reset changes the checkout key and invalidates its old development credentials. Development tokens do not work on a deployed installation and are excluded from archives. For a deployed installation, create a token there and send only its bearer header.
+
 ## Watch and revoke
 
 **Token usage** in the same place lists each request a token made, when, and whether it was allowed. Choose **Revoke** next to a token to stop it at once.

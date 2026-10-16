@@ -26,8 +26,20 @@ export const deploy = Object.assign(async context => {
  const { ownerDeploy } = await import('@runeditrun/rer/deploy');
  const { adapter: local } = await import('./local.mjs');
  // Keep Base in charge of claiming the token it uploads and retiring it.
- if (context.options.dryRun) return ownerDeploy('deploy.json', local)(context);
- const prepared = await prepareHosting({ ...context, fail: () => Error('Deployment inputs missing') }, process.env);
- context.store.addSecrets(Object.values(prepared));
- return ownerDeploy(hostingDeclaration, local)({ ...context, options: { ...context.options, envFile: hostingSecrets } });
+ if (!context.options.dryRun) {
+  const prepared = await prepareHosting({ ...context, fail: () => Error('Deployment inputs missing') }, process.env);
+  context.store.addSecrets(Object.values(prepared));
+ }
+ // The pinned CLI overlays public mail inputs from process.env during its
+ // preflight, so normalizing only declaration.vars does not reach that check.
+ const sender = process.env.MAIL_FROM;
+ try {
+  if (sender) process.env.MAIL_FROM = parseAddress(sender).email;
+  return await ownerDeploy(context.options.dryRun ? 'deploy.json' : hostingDeclaration, local)({
+   ...context, options: { ...context.options, ...(context.options.dryRun ? {} : { envFile: hostingSecrets }) },
+  });
+ } finally {
+  if (sender === undefined) delete process.env.MAIL_FROM;
+  else process.env.MAIL_FROM = sender;
+ }
 }, { declaration: 'deploy.json', managesHostedOwner: true });

@@ -10,6 +10,14 @@ inside each mutation transaction. Operator removal revokes issued tokens.
 Send `Authorization: Bearer TOKEN` to the saved installation origin. Do not put
 credentials in URLs. Browser Origin, when supplied, must match that origin.
 
+Tokens created through local `RER_OPEN` sessions also require the checkout key in
+`x-rer-dev-key` on every request. Load it from the owner-only
+`.rer/local/dev-key.env` in that checkout; do not print it. Bearer-only local
+requests return 401. See [the local token command](guide/api.md#use-a-local-development-token)
+for the complete Bash/curl example. These development tokens are excluded from
+archives, fail after local reset and cannot authenticate to deployed Vector.
+Hosted tokens need only the bearer header.
+
 | Route | Scope | Native behavior |
 | --- | --- | --- |
 | GET /api/v1/issues | issues:read | Existing bounded filters, cursor paging, sort and grouping |

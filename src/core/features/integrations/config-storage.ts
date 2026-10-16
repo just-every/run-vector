@@ -4,19 +4,22 @@ import { createUlid } from '../../shared/ids';
 import { validateDestination } from '../../../../vendor/base/integrations';
 import { ownerPredicate,guardedSql,type IntegrationOwner } from './authority';
 import { newSigningSecret,sealSecret } from './secrets';
+import { newSourceWebhook } from './source-webhook-config';
 import { IntegrationError } from './errors';
 import type { z } from 'zod';
 import type { sourceConfigInput,destinationInput,githubInput } from './config-input';
 const safeError=()=>new IntegrationError(409,'integration_configuration_conflict');
 export async function registerSource(env:WorkerBindings,owner:IntegrationOwner,input:z.infer<typeof sourceConfigInput>){
  const now=new Date(),at=now.toISOString(),id=createUlid(now),identity='source:'+id,secret=newSigningSecret(),encrypted=await sealSecret(env,identity,secret);
+ const webhook=await newSourceWebhook(env,id);
  const sql=guardedSql(env.DB,ownerPredicate(owner));
  try{await sql.batch([
   {sql:`SELECT CASE WHEN EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND archived_at IS NULL) AND (SELECT count(*) FROM vector_integration_sources WHERE workspace_id=? AND revoked_at IS NULL)<50 THEN 1 ELSE json('source option denied') END`,params:[input.teamId,owner.workspace,owner.workspace]},
   {sql:'INSERT INTO vector_integration_sources(id,workspace_id,source_id,name,team_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',params:[id,owner.workspace,input.sourceId,input.name,input.teamId,at,at]},
   {sql:'INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,?,?)',params:[identity,'current',encrypted]},
+  {sql:'INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,?,?)',params:[webhook.identity,'current',webhook.encrypted]},
  ]);}catch{throw safeError();}
- return {id,sourceId:input.sourceId,teamId:input.teamId,workspaceId:owner.workspace,secret,receiver:env.APP_ORIGIN+'/api/integrations/sources/'+id+'/events'};
+ return {id,sourceId:input.sourceId,teamId:input.teamId,workspaceId:owner.workspace,secret,receiver:env.APP_ORIGIN+'/api/integrations/sources/'+id+'/events',webhookUrl:webhook.webhookUrl};
 }
 export async function rotateSource(env:WorkerBindings,owner:IntegrationOwner,id:string,hours:number){
  const identity='source:'+id,secret=newSigningSecret(),encrypted=await sealSecret(env,identity,secret),now=Date.now(),at=new Date(now).toISOString();
@@ -51,5 +54,6 @@ export async function revokeConfiguration(env:WorkerBindings,owner:IntegrationOw
  const rows=await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:`UPDATE ${table} SET enabled=0,revoked_at=COALESCE(revoked_at,?),updated_at=? WHERE id=? AND workspace_id=? RETURNING id`,params:[at,at,id,owner.workspace]},
   {sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:[kind+':'+id,id,owner.workspace]},
+  ...(kind==='source'?[{sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_integration_sources WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:['source-url:'+id,id,owner.workspace]}]:[]),
  ]);if(!rows[0].length)throw new IntegrationError(404,'configuration_unavailable');return {revoked:true};
 }

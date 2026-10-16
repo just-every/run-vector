@@ -5,7 +5,7 @@ import type { WorkerBindings } from '../../app/bindings';
 import { IntegrationError } from './errors';
 import type { SourceInput } from './source-input';
 export type RegisteredSource={id:string;workspace_id:string;source_id:string;name:string;team_id:string;version:number;enabled:number;revoked_at:string|null};
-export type SourceAdmission={source:RegisteredSource;keySlot:string;encrypted:string};
+export type SourceAdmission={source:RegisteredSource;keySlot:string;encrypted:string;credentialKind?:'url'};
 const denied=(db:D1Database,sql:string,...values:(string|number|null)[])=>db.prepare(`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('source transaction denied') END`).bind(...values);
 export async function storedSourceResult(db:D1Database,source:RegisteredSource,input:SourceInput,hash:string){
  const prior=await db.prepare(`SELECT r.payload_hash,r.issue_id,r.evidence_id,i.identifier FROM vector_source_receipts r LEFT JOIN issues i ON i.id=r.issue_id WHERE r.source_id=? AND ((r.erased=0 AND r.record_id=? AND r.revision_id=?) OR (r.erased=1 AND r.record_id=? AND r.revision_id=?))`).bind(source.id,input.sourceRecordId,input.sourceRevisionId,await erasedSourceIdentity(input.sourceRecordId),await erasedSourceIdentity(input.sourceRevisionId)).first<{payload_hash:string;issue_id:string;evidence_id:string;identifier:string|null}>();

@@ -27,3 +27,6 @@ rer-package/
 .rer/demo/
 .rer/demo-host/
 .rer/container/
+
+# Local data archives can contain private workspace records.
+/exports/

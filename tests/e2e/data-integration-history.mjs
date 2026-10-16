@@ -33,7 +33,7 @@ export async function populateIntegrationHistory(installation,cookie,identifier)
  for(const [index,state] of ['queued','accepted','uncertain'].entries()){
   const id='retained-webhook-'+index,envelope=JSON.stringify({id,tenant:namespace,destinationId:destination.id,event:'issue.created',protocol:'webhook',body:JSON.stringify({identifier,version:1})});
   sql.push(`INSERT INTO integration_deliveries(namespace,id,fingerprint,destination_hash,envelope,state,attempts,created_at,next_at,max_attempts,retry_delays) VALUES(${quote(namespace)},${quote(id)},'retained-fingerprint','retained-destination',${quote(envelope)},${quote(state)},${index?1:0},${at},${at},3,'[1000,2000]')`);
-  if(index)sql.push(`INSERT INTO integration_attempts(namespace,id,delivery_id,number,started_at,finished_at,outcome) VALUES(${quote(namespace)},${quote(id)},${quote(id)},1,${at},${at},${quote(state)})`);
+  if(index)sql.push(`INSERT INTO integration_attempts(namespace,id,delivery_id,number,started_at,finished_at,outcome) VALUES(${quote(namespace)},${quote(id)},${quote(id)},1,${at},${at},${quote(JSON.stringify({kind:state,code:state==='accepted'?'webhook_accepted':'response_unknown',...(state==='accepted'?{status:204}:{})}))})`);
  }
  sql.push(`INSERT INTO integration_replays(namespace,id,fingerprint,envelope,received_at) VALUES(${quote(namespace)},'retained-replay','retained-content','{}',${at})`);
  installation.fixture(sql.join(';')+';');

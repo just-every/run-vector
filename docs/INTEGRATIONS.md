@@ -1,6 +1,6 @@
 # Native integrations
 
-Settings / Integrations manages named API tokens, signed sources, immutable
+Settings / Integrations manages named API tokens, secret-URL and signed sources, immutable
 outbound destinations and GitHub repository receivers. Configuration requires
 the current native operator/session/workspace and destination restore grant.
 Credentials are revealed once. Token values are hashed by Base; source,
@@ -8,6 +8,29 @@ destination and GitHub signing values are encrypted at rest with AES-GCM bound
 to their identity, using the installation SESSION_SECRET. Keep that secret
 private. After changing it, rotate sources and revoke/re-register destinations
 and repositories; old encrypted values cannot be recovered with the new key.
+
+## Secret webhook URLs (no code)
+
+Register a source in Settings → Integrations → Signal sources and copy its secret
+webhook URL into a tool’s POST action. The page has complete Zapier, Make and
+UptimeRobot steps. Anyone holding the URL can send reports: keep it private.
+The URL credential is encrypted separately from the signing secret and excluded
+from archives. Replacing the URL invalidates the old URL immediately; revoking
+the source disables both options. URL replacement does not rotate the signing key.
+
+Send a JSON object, URL-encoded form fields, or plain text. A `title`, `subject`,
+`message`, `name` or UptimeRobot `monitorFriendlyName` supplies the title.
+`summary`, `message`, `text`, `alertDetails`, `details` or `description` supplies
+the details. Vector defaults the selected team and receipt time. Optional
+`sourceRecordId` (also `recordId`, `id`, `ticket_id`, `monitorID`) keeps updates
+on one issue; `sourceRevisionId`, `revisionId` or `event_id` identifies an update.
+Without revision IDs, identical payloads reuse their receipt. Without record
+IDs, changed payloads create separate issues. `observedAt`, `timestamp`,
+`alertDateTime` or `updated_at` can supply an observation time.
+
+This unsigned endpoint uses the same bounded body, atomic issue/evidence commit,
+revocation, restore, replay, archived-team and deletion checks as signed ingest.
+It requires no browser session, bearer header or development checkout key.
 
 ## Signed sources
 

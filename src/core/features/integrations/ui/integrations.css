@@ -11,7 +11,11 @@
 .integrations-panel pre{max-width:100%;overflow:auto;white-space:pre;padding:14px;border:1px solid var(--border);border-radius:6px;background:var(--surface);font-size:12px;line-height:1.6;tab-size:2}
 .integrations-panel ol{padding-left:22px;line-height:1.6}.integrations-panel ul{padding-left:20px;margin:0}.integration-secret .integration-setup{background:var(--surface)}
 .integrations-panel .integration-fields{align-items:start}
-.integrations-panel li{display:block}
-.integrations-panel ol li{display:list-item;padding:0;border:0}
+.settings-page .integrations-panel li{display:block}
+.settings-page .integrations-panel ol li{display:list-item;padding:0;border:0}
 .integrations-panel :is(h2,h3,h4,.integration-setup){scroll-margin-top:8rem}
 @media(max-width:700px){.integrations-panel :is(h2,h3,h4,.integration-setup){scroll-margin-top:11rem}}
+
+.integration-receivers{display:grid;gap:12px;min-width:0}.integrations-panel .integration-secret{margin:12px 0}.integrations-panel li>p{margin:6px 0}.integrations-panel [role=status] small{display:block;margin-top:6px}
+
+.settings-page .integrations-panel form{justify-items:stretch}.settings-page .integrations-panel ul{padding:0}.settings-page .integrations-panel ol{padding-left:22px}

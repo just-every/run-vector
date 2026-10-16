@@ -4,7 +4,7 @@ New reports arrive in **Needs decision** on Current, with the evidence that came
 
 ## Accept
 
-Accepting puts the issue to work. Choose its assignee, priority, cycle and whether it starts now (In progress) or next. Vector suggests an assignee, priority and start state; you can change any of them before you accept. The issue leaves Needs decision and moves to Now or Next.
+Accepting puts the issue to work. Choose its assignee, priority, cycle and whether it starts now (In progress) or next. If the newest evidence includes an explicit policy recommendation, Vector uses its valid assignee, priority, start state and cycle as suggestions. Otherwise the form starts unassigned, with no priority or cycle and the default Unstarted status. Review or change these choices before you accept. The issue leaves Needs decision and moves to Now or Next.
 
 ## Defer
 

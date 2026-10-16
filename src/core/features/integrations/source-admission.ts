@@ -1,7 +1,8 @@
 import type { SourceAdmission } from './source-storage';
 import { IntegrationError } from './errors';
-function credentialPredicate({source,keySlot,encrypted}:SourceAdmission){
- return {sql:`EXISTS(SELECT 1 FROM vector_integration_sources s JOIN vector_integration_secret_keys k ON k.identity='source:'||s.id WHERE s.id=? AND s.workspace_id=? AND s.team_id=? AND s.version=? AND s.enabled=1 AND s.revoked_at IS NULL AND k.slot=? AND k.encrypted=? AND (k.valid_until IS NULL OR k.valid_until>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER))) AND (NOT EXISTS(SELECT 1 FROM vector_restore_status) OR EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=0))`,values:[source.id,source.workspace_id,source.team_id,source.version,keySlot,encrypted]};
+function credentialPredicate({source,keySlot,encrypted,credentialKind}:SourceAdmission){
+ const identity=(credentialKind==='url'?'source-url:':'source:')+source.id;
+ return {sql:`EXISTS(SELECT 1 FROM vector_integration_sources s JOIN vector_integration_secret_keys k ON k.identity=? WHERE s.id=? AND s.workspace_id=? AND s.team_id=? AND s.version=? AND s.enabled=1 AND s.revoked_at IS NULL AND k.slot=? AND k.encrypted=? AND (k.valid_until IS NULL OR k.valid_until>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER))) AND (NOT EXISTS(SELECT 1 FROM vector_restore_status) OR EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=0))`,values:[identity,source.id,source.workspace_id,source.team_id,source.version,keySlot,encrypted]};
 }
 export function sourcePredicate(admission:SourceAdmission){
  const credential=credentialPredicate(admission);

@@ -165,8 +165,7 @@ export function SettingsPage() {
           <section id="operators" aria-labelledby="operators-heading">
             <h2 id="operators-heading">Operators</h2>
             <p>
-              All operators have equal access. The setup operator can only
-              remove themselves; the last operator must remain.
+              All operators have equal access and can remove other operators. Only the setup operator can remove their own setup account; the last operator must remain.
             </p>
             {!resource.data.workspace.setupOperatorId && (
               <p role="alert">

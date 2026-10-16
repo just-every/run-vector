@@ -15,7 +15,7 @@ export function DataPanel() {
  const [jira,setJira]=useState<NonNullable<ImportInput['jira']>>({});
  const publish=(run:Run)=>{
   runs.publishReceipt(current=>({runs:[receiptRow(run),...(current?.runs??[]).filter(row=>row.id!==run.id)]}));
-  setMessage({runId:run.id,text:run.progress.unfinished?runProgressText(run)+'…':`Import ${run.state}: ${runProgressText(run)}. No messages or invitations were sent.`});
+  setMessage({runId:run.id,text:run.progress.unfinished?runProgressText(run)+'…':`${runProgressText(run)}. No messages or invitations were sent.`});
  };
  const clear=()=>{setReview(null);setReviewedInput(null);setAcknowledged(false);setMessage({text:''});};
  const fail=(error:unknown,run?:Run)=>{

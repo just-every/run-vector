@@ -2,6 +2,7 @@ import type { WorkerBindings } from '../../app/bindings';
 import { createUlid } from '../../shared/ids';
 import { guardedSql, ownerPredicate, type IntegrationOwner } from './authority';
 import { deliveryConfigured, outboundService } from './outbound';
+import { deliveryResult } from './delivery-result';
 import { IntegrationError } from './errors';
 import { restoredEffectsHeld } from '../data/restore-authority';
 
@@ -18,5 +19,6 @@ export async function sendTestWebhook(env: WorkerBindings, owner: IntegrationOwn
   await service.enqueue({ id, tenant: owner.workspace, destinationId: destination, event: 'vector.test', protocol: 'webhook', body });
   await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=? WHERE id=? AND workspace_id=?').bind(at, id, owner.workspace).run();
   const result = await service.dispatch(id);
-  return { deliveryId: id, state: result?.state ?? 'queued' };
+  const state=result?.state??'queued',attempts=await service.log(id);
+  return { deliveryId: id, state, ...deliveryResult(state,attempts.at(-1)?.outcome) };
 }
