@@ -1,8 +1,8 @@
-import { duplicateRelations } from '../duplicates/repository';
-import { importedFrom } from '../data/import/issue-source';
+import { duplicateRelationsStatement, duplicateRelationsProjection, type DuplicateRelationRow } from '../duplicates/repository';
+import { importedFromStatement, importedFromProjection, type ImportedFromRow } from '../data/import/issue-source';
 import { evidenceChanges,type EvidenceChange } from '../integrations/evidence-changes';
-import { parentRelations } from "../parents/projection";
-import { evidenceMetadata } from "../operator-intake/repository";
+import { parentRelationsStatement, parentRelationsProjection, type ParentRelationRow } from "../parents/projection";
+import { evidenceMetadataStatement, type EvidenceMetadata } from "../operator-intake/repository";
 import { categoryByStatus, projectHealthForIssue } from "../projects";
 import { loadWorkspaceSnapshot, type WorkspaceSnapshot } from "../streams";
 
@@ -10,17 +10,45 @@ export async function getIssueDetail(
   binding: D1Database,
   identifier: string,
   now: Date,
+  workspace?: WorkspaceSnapshot,
 ) {
   const detail = buildIssueDetail(
-    await loadWorkspaceSnapshot(binding),
+    workspace ?? await loadWorkspaceSnapshot(binding),
     identifier,
     now,
   );
   if (!detail) return null;
+  const rows = await Promise.all(issueDetailReadStatements(binding, detail.id).map(statement => statement.all()));
+  return enrichIssueDetail(detail, rows);
+}
+
+export function issueDetailReadStatements(binding: D1Database, issueId: string) {
+  return [
+    evidenceMetadataStatement(binding, issueId),
+    binding
+      .prepare(
+        "SELECT id,actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL",
+      )
+      .bind(issueId),
+    parentRelationsStatement(binding, issueId),
+    duplicateRelationsStatement(binding, issueId),
+    importedFromStatement(binding, issueId),
+  ] as const;
+}
+
+export function enrichIssueDetail(
+  detail: NonNullable<ReturnType<typeof buildIssueDetail>>,
+  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult]: readonly D1Result[],
+) {
+  const metadataRows = metadataResult.results as EvidenceMetadata[];
+  const actorRows = actorResult.results as Array<{ id: string; actor_name: string }>;
+  const parents = parentRelationsProjection(parentResult.results as ParentRelationRow[]);
+  const duplicates = duplicateRelationsProjection(duplicateResult.results as DuplicateRelationRow[]);
+  const provenance = importedFromProjection(provenanceResult.results[0] as ImportedFromRow | undefined);
   const metadata = new Map(
-    (await evidenceMetadata(binding, detail.id)).map((row) => [row.id, row]),
+    metadataRows.map((row) => [row.id, row]),
   );
-  detail.evidence = detail.evidence.map((row) => {
+  const evidence = detail.evidence.map((row) => {
     const meta = metadata.get(row.id);
     if (!meta) throw new Error(`Evidence ${row.id} has no metadata`);
     return {
@@ -35,23 +63,16 @@ export async function getIssueDetail(
       ) as Array<{ customer?: string; summary: string; link: string | null }>,
     };
   });
-  const previous=new Map<string,typeof detail.evidence[number]>();
-  for(const evidence of detail.evidence){if(evidence.sourceId&&evidence.sourceRecordId){const key=evidence.sourceId+':'+evidence.sourceRecordId;evidence.changes=evidenceChanges(evidence,previous.get(key));previous.set(key,evidence);}}
+  const previous=new Map<string,typeof evidence[number]>();
+  for(const revision of evidence){if(revision.sourceId&&revision.sourceRecordId){const key=revision.sourceId+':'+revision.sourceRecordId;revision.changes=evidenceChanges(revision,previous.get(key));previous.set(key,revision);}}
   const actors = new Map(
-    (
-      await binding
-        .prepare(
-          "SELECT id,actor_name FROM issue_activity WHERE issue_id=? AND actor_name IS NOT NULL",
-        )
-        .bind(detail.id)
-        .all<{ id: string; actor_name: string }>()
-    ).results.map((row) => [row.id, row.actor_name]),
+    actorRows.map((row) => [row.id, row.actor_name]),
   );
-  detail.activity = detail.activity.map((row) => ({
+  const activity = detail.activity.map((row) => ({
     ...row,
     actor: actors.get(row.id) ?? row.actor,
   }));
-  return { ...detail, ...(await parentRelations(binding, detail.id)), ...(await duplicateRelations(binding, detail.id)), importedFrom: await importedFrom(binding, detail.id) };
+  return { ...detail, evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
 }
 
 export function buildIssueDetail(

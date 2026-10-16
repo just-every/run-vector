@@ -9,7 +9,12 @@ export async function listNamedLinks(
   db: D1Database,
   issueId: string,
 ): Promise<NamedLink[]> {
-  const result = await db
+  const result = await namedLinksStatement(db, issueId).all<NamedLink>();
+  return result.results;
+}
+
+export function namedLinksStatement(db: D1Database, issueId: string) {
+  return db
     .prepare(
       `SELECT l.id,l.name,l.url,l.comment_id AS commentId,o.name AS actor,l.created_at AS createdAt
     FROM issue_links l JOIN operators o ON o.id=l.actor_operator_id
@@ -17,9 +22,7 @@ export async function listNamedLinks(
       AND (l.comment_id IS NULL OR EXISTS(SELECT 1 FROM issue_comments c WHERE c.id=l.comment_id AND c.issue_id=l.issue_id AND c.deleted_at IS NULL))
     ORDER BY l.created_at,l.id`,
     )
-    .bind(issueId)
-    .all<NamedLink>();
-  return result.results;
+    .bind(issueId);
 }
 
 export async function addNamedLink(

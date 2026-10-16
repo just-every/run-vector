@@ -4,8 +4,12 @@ import { requireOperator } from '../auth/service';
 import type { WorkerBindings } from '../../app/bindings';
 import { IntegrationError } from './errors';
 export type IntegrationOwner={id:string;workspace:string;fence:{sessionId:string;operatorVersion:number}};
-export async function integrationOwner(env:WorkerBindings,request:Request):Promise<IntegrationOwner>{
- const owner=await requireOperator(env,request);if(!owner)throw new IntegrationError(401,'unauthenticated');
+export async function integrationOwner(env:WorkerBindings,request:Request,documentOwner?:NonNullable<Awaited<ReturnType<typeof requireOperator>>>):Promise<IntegrationOwner>{
+ const owner=documentOwner??await requireOperator(env,request);if(!owner)throw new IntegrationError(401,'unauthenticated');
+ // The document has already admitted its native operator. Guarded integration
+ // SQL still checks the current workspace/session, and the document rechecks
+ // full native authority before releasing any bytes.
+ if(documentOwner)return {id:owner.id,workspace:owner.workspaceId,fence:owner.fence};
  const row=await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL').bind(owner.id).first<{workspace_id:string}>();if(!row)throw new IntegrationError(401,'unauthenticated');
  return {id:owner.id,workspace:row.workspace_id,fence:owner.fence};
 }

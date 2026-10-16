@@ -45,15 +45,15 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
           !/^(?:\/api)?\/notifications$/.test(c.req.path)
         )
           z.object({}).strict().parse(c.req.query());
-        const admitted = await requireOperator(c.env, c.req.raw);
+        const admitted = c.get('operator');
         if (!admitted || admitted.id !== c.get("operatorId"))
           return c.json({ error: "unauthenticated" }, 401);
-        const workspace = (await settingsActor(c.env.DB, admitted.id))
-          .workspace_id;
+        const workspace = c.get('documentProjection') ? admitted.workspaceId
+          : (await settingsActor(c.env.DB, admitted.id)).workspace_id;
         const data = await run(c);
         // Revalidate the native session (including Base version and expiry), not
         // only its earlier product operator snapshot, after asynchronous projection.
-        const current = await requireOperator(c.env, c.req.raw);
+        const current = c.get('documentProjection') ? admitted : await requireOperator(c.env, c.req.raw);
         if (
           !current ||
           current.id !== admitted.id ||

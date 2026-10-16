@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { fetchJson } from "../../../app/api-client";
+import { useInitialResource } from '../../../app/initial-resources';
 import {
   preferenceSchema,
   type ListPreference,
@@ -82,9 +83,12 @@ export function useListPreferences<
   );
   if (queue.current === null) queue.current = createPreferenceWriteQueue();
 
-  const [snapshot, setSnapshot] = useState(() =>
-    initialSnapshot(surface, defaultsRef.current),
-  );
+  const initial = useInitialResource(`/api/preferences/${surface}`, preferenceSchema);
+  const [snapshot, setSnapshot] = useState(() => {
+    const snapshot = initialSnapshot(surface, defaultsRef.current);
+    return initial === null ? snapshot : { ...snapshot, phase: 'ready' as const,
+      values: valuesFromReceipt<Filters, Sort, Grouping>(surface, defaultsRef.current, initial) };
+  });
   const snapshotRef = useRef(snapshot);
   const [loadAttempt, setLoadAttempt] = useState(0);
 
@@ -97,6 +101,7 @@ export function useListPreferences<
   );
 
   useEffect(() => {
+    if (initial !== null && loadAttempt === 0) return;
     const request = ++loadSequence.current;
     const controller = new AbortController();
     const current = snapshotRef.current;
@@ -153,7 +158,7 @@ export function useListPreferences<
     });
 
     return () => controller.abort();
-  }, [loadAttempt, publish, surface]);
+  }, [loadAttempt, publish, surface, initial]);
 
   const visible =
     snapshot.surface === surface

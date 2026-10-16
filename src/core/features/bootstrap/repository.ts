@@ -23,13 +23,16 @@ export async function bootstrapWorkspace(
 ) {
   const config = bootstrapConfig(env);
   const existing = await db
-    .prepare("SELECT id FROM workspace_settings LIMIT 2")
-    .all<{ id: string }>();
+    .prepare(`SELECT w.id,i.workspace_id AS installation_workspace_id
+      FROM workspace_settings w LEFT JOIN workspace_installation i ON i.workspace_id=w.id LIMIT 2`)
+    .all<{ id: string; installation_workspace_id: string | null }>();
   if (existing.results.length) {
     if (existing.results.length !== 1)
       throw new BootstrapConfigurationError(
         "Bootstrap requires a single workspace.",
       );
+    // Established installations need no write; configuration was still validated.
+    if (existing.results[0].installation_workspace_id !== null) return;
     // Prior installations have no trustworthy setup-owner marker. Only explicit
     // installer configuration may associate their existing active operator.
     await db

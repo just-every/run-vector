@@ -8,37 +8,34 @@ export class IssueAccessError extends Error {
   }
 }
 
-async function requireActiveActor(binding: D1Database, actor: string) {
-  const operator = await binding
-    .prepare("SELECT removed_at FROM operators WHERE id=?")
-    .bind(actor)
-    .first<{ removed_at: string | null }>();
-  if (!operator || operator.removed_at !== null)
-    throw new IssueAccessError(
-      "unauthenticated",
-      "An active native operator is required.",
-      401,
-    );
-}
-
 /** Recheck this guard after asynchronous projection before exposing its DTO. */
 export async function requireIssueAccess(
   binding: D1Database,
   identifier: string,
   actor: string,
 ) {
-  await requireActiveActor(binding, actor);
-  const issue = await binding
+  const row = await issueAccessStatement(binding, identifier, actor).first<IssueAccessRow>();
+  return issueAccessProjection(row);
+}
+
+export type IssueAccessRow = { removed_at: string | null; id: string | null; identifier: string; version: number };
+
+export function issueAccessStatement(binding: D1Database, identifier: string, actor: string) {
+  return binding
     .prepare(
-      `SELECT i.id,i.identifier,i.version FROM issues i JOIN teams t ON t.id=i.team_id
-     JOIN operators actor ON actor.workspace_id=t.workspace_id AND actor.id=? AND actor.removed_at IS NULL
-     WHERE i.identifier=?`,
+      `SELECT actor.removed_at,i.id,i.identifier,i.version
+       FROM operators actor LEFT JOIN issues i ON i.identifier=?
+         AND EXISTS(SELECT 1 FROM teams t WHERE t.id=i.team_id AND t.workspace_id=actor.workspace_id)
+       WHERE actor.id=?`,
     )
-    .bind(actor, identifier)
-    .first<{ id: string; identifier: string; version: number }>();
-  if (!issue) {
-    await requireActiveActor(binding, actor);
+    .bind(identifier, actor);
+}
+
+export function issueAccessProjection(row: IssueAccessRow | null | undefined) {
+  if (!row || row.removed_at !== null)
+    throw new IssueAccessError('unauthenticated', 'An active native operator is required.', 401);
+  if (!row.id) {
     throw new IssueAccessError("not_found", "Issue is unavailable.", 404);
   }
-  return issue;
+  return { id: row.id, identifier: row.identifier, version: row.version };
 }

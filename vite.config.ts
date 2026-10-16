@@ -8,6 +8,7 @@ import { cloudflare } from '@cloudflare/vite-plugin'
 import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import { archiveOutputGuard } from '@runeditrun/rer/archive-output'
 import { docsSite } from './src/core/app/site/docs/build/plugin.ts'
+import { appChunks } from './scripts/app-chunks.ts'
 
 // Resolving this config must not throw: rer resolves it to check that an export path is not served,
 // also before setup. Only starting the dev server requires the origin setup wrote.
@@ -63,6 +64,7 @@ export default defineConfig(({ command }) => ({
         crawlLinks: false,
       },
     }),
+    appChunks(),
     react(),
     tailwindcss(),
     // Refuses a build whose output (copied public files included) holds an installation archive.

@@ -15,12 +15,13 @@ import { NativeWebhookRepository } from './outbound-repository';
 import { destinationSigningProblems } from './destination-signing';
 import { IntegrationError } from './errors';
 import { requireIssueProjection } from '../issues/projection-access';
+import { githubIssueProjection } from './github-read';
 const inputHelp:Record<string,string>={name:'Enter a name for this connection.',sourceId:'Use a source ID with letters, numbers, dots, underscores or hyphens.',teamId:'Choose a team for new reports.',repository:'Enter the GitHub owner and repository separated by /, for example just-every/run-vector.',overlapHours:'Choose a whole number of hours from 0 to 24.',accountId:'Enter the 32-character Cloudflare account ID.',apiToken:'Enter the Cloudflare read-only API token.',scopes:'Choose at least one API permission.',expiresAt:'Choose a valid future expiry date.'};
 function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_integration_input',inputHelp[String(result.error.issues[0]?.path[0])]??'Check the form values and try again.');return result.data;}
 const id=z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
 export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  app.get('/settings/integrations',async c=>{
-  const owner=await integrationOwner(c.env,c.req.raw),sql=guardedSql(c.env.DB,ownerPredicate(owner));
+  const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined),sql=guardedSql(c.env.DB,ownerPredicate(owner));
   const rows=await sql.batch([
    {sql:`SELECT id,source_id AS sourceId,name,team_id AS teamId,enabled,revoked_at AS revokedAt,NOT EXISTS(SELECT 1 FROM vector_integration_secret_keys k WHERE k.identity='source:'||vector_integration_sources.id AND k.slot='current') AS requiresReentry FROM vector_integration_sources WHERE workspace_id=? ORDER BY name,id LIMIT 100`,params:[owner.workspace]},
    {sql:`SELECT id,name,url,enabled,revoked_at AS revokedAt,(SELECT count(*) FROM vector_webhook_events e WHERE e.destination_id=vector_webhook_destinations.id AND e.enqueued_at IS NULL AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id)) AS waitingEvents FROM vector_webhook_destinations WHERE workspace_id=? ORDER BY name,id LIMIT 100`,params:[owner.workspace]},
@@ -35,7 +36,7 @@ export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  app.post('/settings/integrations/delivery',async c=>c.json(await configureDelivery(c.env,await integrationOwner(c.env,c.req.raw),parse(deliverySetupInput,await readRequestJson(c.req.raw)))));
  app.post('/settings/integrations/destinations/:id/test',async c=>c.json(await sendTestWebhook(c.env,await integrationOwner(c.env,c.req.raw),parse(id,c.req.param('id')))));
  app.post('/settings/integrations/tokens',async c=>{const owner=await integrationOwner(c.env,c.req.raw);const issued=await ownerTokens(c.env.DB,owner).issue(owner,parse(tokenInput,await readRequestJson(c.req.raw)));await recordDevMint(c.env.DB,owner.fence.sessionId,issued.credential.id);return c.json(issued,201);});
- app.get('/settings/integrations/tokens/usage',async c=>{const owner=await integrationOwner(c.env,c.req.raw);return c.json({usage:await ownerTokens(c.env.DB,owner).usage(owner)});});
+ app.get('/settings/integrations/tokens/usage',async c=>{const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined);return c.json({usage:await ownerTokens(c.env.DB,owner).usage(owner)});});
  app.delete('/settings/integrations/tokens/:id',async c=>{const owner=await integrationOwner(c.env,c.req.raw),selected=c.req.param('id');if(!/^[a-f0-9-]{36}$/.test(selected))throw new IntegrationError(400,'invalid_token_id');return c.json(await ownerTokens(c.env.DB,owner).revoke(owner,selected));});
  app.post('/settings/integrations/sources',async c=>c.json(await registerSource(c.env,await integrationOwner(c.env,c.req.raw),parse(sourceConfigInput,await readRequestJson(c.req.raw))),201));
  app.post('/settings/integrations/sources/:id/rotate',async c=>{const input=parse(rotationInput,await readRequestJson(c.req.raw));return c.json(await rotateSource(c.env,await integrationOwner(c.env,c.req.raw),parse(id,c.req.param('id')),input.overlapHours));});
@@ -49,7 +50,7 @@ export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  });
  app.get('/issues/:identifier/github',async c=>{
   const issue=await requireIssueProjection(c,c.req.param('identifier'));
-  const rows=(await c.env.DB.prepare(`SELECT r.repository,p.number,p.title,p.url,p.state,p.updated_at AS updatedAt FROM vector_github_issue_links l JOIN vector_github_repositories r ON r.id=l.repository_id JOIN vector_github_pull_requests p ON p.repository_id=l.repository_id AND p.number=l.number WHERE l.issue_id=? ORDER BY p.updated_at DESC,p.number LIMIT 100`).bind(issue.id).all()).results;
-  await requireIssueProjection(c,issue.identifier);return c.json({pullRequests:rows});
+  const projection=await githubIssueProjection(c.env.DB,issue.id);
+  await requireIssueProjection(c,issue.identifier);return c.json(projection);
  });
 }

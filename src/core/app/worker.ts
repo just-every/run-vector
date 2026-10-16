@@ -11,6 +11,8 @@ import start from "@tanstack/react-start/server-entry";
 import { createServerApp, type WorkerBindings } from "./server";
 import { isViteDevelopmentAsset } from "./vite-development-path";
 import { staticAssetResponse } from '../../base/static-assets';
+import { renderAsOperator } from './document-operator.server';
+import { encodePrivateDocument } from './document-encoding.server';
 const app = createServerApp();
 export async function handleRequest(
   request: Request,
@@ -20,7 +22,15 @@ export async function handleRequest(
   if (env.APP_ORIGIN && url.host !== new URL(env.APP_ORIGIN).host)
     return new Response("Not found", { status: 404 });
   const asset = await staticAssetResponse(request, env);
-  if (asset) return asset;
+  if (asset) {
+    // Vite embeds the content hash in these URLs; a new build gets a new URL.
+    if (/^\/assets\/[^/]+-[\w-]{8}\.(?:js|css)$/.test(url.pathname) && (asset.ok || asset.status === 304)) {
+      const immutable = new Response(asset.body, asset);
+      immutable.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+      return immutable;
+    }
+    return asset;
+  }
   if (url.pathname === '/__dev/key') return await developmentKeyResponse(env, request) ?? new Response('Not found', {status:404});
   if (
     url.pathname.startsWith("/assets/") ||
@@ -42,8 +52,14 @@ export async function handleRequest(
   )
     return app.fetch(request, env);
   const privateRequest = url.pathname === "/app" || url.pathname.startsWith("/app/") || url.pathname.startsWith("/_serverFn/");
-  const admitted = privateRequest ? await requireOperator(env, request) : null;
-  const workspace = admitted ? await env.DB.prepare("SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL").bind(admitted.id).first<string>("workspace_id") : null;
+  const timings: string[] = [];
+  const timed = async <T>(name: string, run: () => T | Promise<T>) => {
+    const started = performance.now();
+    try { return await run(); }
+    finally { timings.push(`${name};dur=${(performance.now() - started).toFixed(1)}`); }
+  };
+  const admitted = privateRequest ? await timed('auth', () => requireOperator(env, request, true)) : null;
+  const workspace = admitted?.workspaceId ?? null;
   if (url.pathname === "/app" || url.pathname.startsWith("/app/")) {
     if (!admitted) {
       const target = new URL("/signin", url);
@@ -81,15 +97,29 @@ export async function handleRequest(
         { status: 403, headers: { "Content-Type": "application/json" } },
       );
   }
-  let response = await start.fetch(request);
+  let response = await (privateRequest ? timed('render', () => renderAsOperator(admitted, () => start.fetch(request))) : start.fetch(request));
   // Finish private rendering before the final native snapshot, including streamed SSR.
-  if (admitted) response = new Response(await response.arrayBuffer(), {status:response.status,statusText:response.statusText,headers:response.headers});
-  if (admitted && !(await operatorProjectionAdmitted(env.DB, admitted.id, workspace, admitted.fence))) return Response.json({error:"unauthenticated"}, {status:401, headers:{"Cache-Control":"no-store"}});
+  if (admitted) response = new Response(await timed('body', () => response.arrayBuffer()), {status:response.status,statusText:response.statusText,headers:response.headers});
+  if (admitted) {
+    // Page resources now travel in the document. Retain the API's complete
+    // native reauthorization (provider policy and restore grants included).
+    const current = await timed('auth_end', () => requireOperator(env, request));
+    if (!current || current.id !== admitted.id || JSON.stringify(current.fence) !== JSON.stringify(admitted.fence))
+      return Response.json({error:'unauthenticated'}, {status:401, headers:{'Cache-Control':'no-store'}});
+  }
+  if (admitted && !(await timed('fence', () => operatorProjectionAdmitted(env.DB, admitted.id, workspace, admitted.fence)))) return Response.json({error:"unauthenticated"}, {status:401, headers:{"Cache-Control":"no-store"}});
   if (url.pathname.startsWith("/app") || url.pathname.startsWith("/_serverFn/"))
     response.headers.set("Cache-Control", "no-store");
+  if (admitted) response.headers.append('Server-Timing', timings.join(', '));
   return response.headers.get("content-type")?.includes("text/html")?editorDocument(response,env):response;
 }
-export default withDemo({
+const worker = withDemo({
   fetch: handleRequest,
   scheduled,
 }, { seed: seedDemo });
+export default {
+  ...worker,
+  async fetch(...args: Parameters<typeof worker.fetch>) {
+    return encodePrivateDocument(args[0], await worker.fetch(...args));
+  },
+};

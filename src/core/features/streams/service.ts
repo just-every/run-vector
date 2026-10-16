@@ -1,11 +1,18 @@
-import { returnDueIntake } from "../intake-return/service";
-import { loadWorkspaceSnapshot } from "./repository";
+import { returnIntakeCandidates } from "../intake-return/service";
+import { loadCurrentWorkspaceSnapshot, loadWorkspaceSnapshot } from "./repository";
 import { projectCurrent, projectMyWork } from "./projection";
+import type { WorkspaceProjection } from './snapshot';
 
-export async function getCurrentStream(binding: D1Database, now: Date) {
+export async function getCurrentStream(binding: D1Database, now: Date, workspace?: WorkspaceProjection) {
   // Caller-controlled as-of read time must never make a future deferral return.
-  await returnDueIntake({ DB: binding }, new Date());
-  const snapshot = await loadWorkspaceSnapshot(binding);
+  const returnTime = new Date();
+  const captured = await loadCurrentWorkspaceSnapshot(binding, returnTime.toISOString());
+  let snapshot = captured.snapshot;
+  if (captured.candidates.length) {
+    await returnIntakeCandidates(binding, captured.candidates, returnTime);
+    snapshot = await loadWorkspaceSnapshot(binding);
+  }
+  if (workspace) workspace.snapshot = snapshot;
   const intakeStatuses = new Set(
     snapshot.statuses
       .filter((status) => status.category === "intake")
@@ -32,8 +39,11 @@ export async function getMyWorkStream(
   binding: D1Database,
   operatorId: string,
   now: Date,
+  projection?: WorkspaceProjection,
 ) {
-  return projectMyWork(await loadWorkspaceSnapshot(binding), operatorId, now);
+  const snapshot = await loadWorkspaceSnapshot(binding);
+  if (projection) projection.snapshot = snapshot;
+  return projectMyWork(snapshot, operatorId, now);
 }
 
 export { loadWorkspaceSnapshot };

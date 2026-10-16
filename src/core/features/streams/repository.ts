@@ -1,5 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
+import { dueIntakeQuery } from '../intake-return/repository'
 import {
   cycles,
   evidenceRevisions,
@@ -19,8 +20,17 @@ import {
 } from '../../platform/db/schema'
 
 export async function loadWorkspaceSnapshot(binding: D1Database) {
+  return (await readWorkspaceSnapshot(binding)).snapshot
+}
+
+/** Current needs due candidates and the graph from the same fresh transaction. */
+export function loadCurrentWorkspaceSnapshot(binding: D1Database, dueAt: string) {
+  return readWorkspaceSnapshot(binding, dueAt)
+}
+
+async function readWorkspaceSnapshot(binding: D1Database, dueAt?: string) {
   const db = drizzle(binding)
-  const [workspace, operatorRows, teamRows, statusRows, projectRows, cycleRows, labelRows, issueRows, issueLabelRows, dependencyRows, evidenceRows, decisionRows, activityRows, savedViewRows, preferenceRows] = await Promise.all([
+  const queries = [
     db.select().from(workspaceSettings).limit(1),
     db.select().from(operators),
     db.select().from(teams),
@@ -36,9 +46,12 @@ export async function loadWorkspaceSnapshot(binding: D1Database) {
     db.select().from(issueActivity),
     db.select().from(savedViews),
     db.select().from(listPreferences),
-  ])
+  ] as const
+  const [workspace, operatorRows, teamRows, statusRows, projectRows, cycleRows, labelRows, issueRows, issueLabelRows, dependencyRows, evidenceRows, decisionRows, activityRows, savedViewRows, preferenceRows, candidates = []] = dueAt === undefined
+    ? await db.batch(queries)
+    : await db.batch([...queries, dueIntakeQuery(db, dueAt)])
 
-  return {
+  const snapshot = {
     workspace: workspace[0] ?? null,
     operators: operatorRows,
     teams: teamRows,
@@ -55,6 +68,7 @@ export async function loadWorkspaceSnapshot(binding: D1Database) {
     savedViews: savedViewRows,
     preferences: preferenceRows,
   }
+  return { snapshot, candidates }
 }
 
 export async function findIssueByIdentifier(binding: D1Database, identifier: string) {

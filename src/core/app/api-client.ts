@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { privateReads } from "./read-lifecycle.ts";
+import { resourceKey, useInitialResource } from './initial-resources';
 
 export class ApiError extends Error {
   readonly status: number;
@@ -171,12 +172,14 @@ export function useApiResource<S extends z.ZodType>(
   schema: S,
   pollMs?: number,
 ) {
+  url = resourceKey(url);
+  const initial = useInitialResource(url, schema);
   const [snapshot, setSnapshot] = useState<ResourceSnapshot<z.output<S>>>({
     url,
     schema,
-    data: null,
+    data: initial,
     error: null,
-    loading: true,
+    loading: initial === null,
   });
   const latestSnapshot = useRef(snapshot);
   latestSnapshot.current = snapshot;
@@ -202,7 +205,8 @@ export function useApiResource<S extends z.ZodType>(
     };
     // Let an immediately discarded mount dispose before starting network work.
     // Explicit reload and identity disposal still abort superseded reads.
-    queueMicrotask(() => void controller.refresh());
+    if (initial !== null) controller.publishReceipt(() => initial);
+    else queueMicrotask(() => void controller.refresh());
     if (!pollMs) return dispose;
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible")
@@ -218,7 +222,7 @@ export function useApiResource<S extends z.ZodType>(
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", visible);
     };
-  }, [url, schema, pollMs]);
+  }, [url, schema, pollMs, initial]);
 
   return { ...resourceStateForIdentity(snapshot, url, schema), reload, refreshAfterMutation, publishReceipt };
 }

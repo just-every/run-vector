@@ -56,7 +56,7 @@ for (const route of ["edit", "accept", "return"] as const)
           projected &&
           !fired &&
           query.includes(
-            "SELECT o.id,o.name,o.email FROM vector_auth_operators m",
+            "SELECT o.id,o.name,o.email,o.workspace_id AS workspaceId",
           )
         ) {
           fired = true;

@@ -73,6 +73,14 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         c.get("operatorId"),
         input.data.body,
       );
+      if (c.req.header('x-vector-projection') === 'discussion') {
+        // Return the committed state through the same final native admission
+        // used by document projections, rather than a second browser request.
+        c.set('mutationPageProjection', true);
+        const projection = await discussion(c.env.DB, issue.id);
+        await requireIssueProjection(c, issue.identifier);
+        return c.json({ id, discussion: projection }, 201);
+      }
       return c.json({ id }, 201);
     } catch (error) {
       if (!(error instanceof IssueAccessError)) throw error;

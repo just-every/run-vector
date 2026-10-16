@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import { issueListQuerySchema } from "../issues/list-schema";
 import { browseActor } from "../issues/browse-access";
+import { IssueAccessError } from "../issues/access";
 import {
   type PreferenceSurface,
   type ListPreference,
@@ -89,15 +90,18 @@ export async function getPreference(
   actor: string,
   surface: PreferenceSurface,
 ): Promise<ListPreference> {
-  const access = await browseActor(db, actor);
   const row = await db
     .prepare(
-      "SELECT filters_json,sort,grouping FROM list_preferences WHERE operator_id=? AND surface=?",
+      `SELECT o.workspace_id,p.filters_json,p.sort,p.grouping
+       FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id
+       LEFT JOIN list_preferences p ON p.operator_id=o.id AND p.surface=?
+       WHERE o.id=? AND o.removed_at IS NULL`,
     )
-    .bind(actor, surface)
-    .first<{ filters_json: string; sort: string; grouping: string }>();
-  await browseActor(db, actor, access.workspace_id);
-  return row
+    .bind(surface, actor)
+    .first<{ workspace_id: string; filters_json: string | null; sort: string; grouping: string }>();
+  if (!row) throw new IssueAccessError("unauthenticated", "The operator is no longer active in this workspace. Sign in again.", 401);
+  await browseActor(db, actor, row.workspace_id);
+  return row.filters_json !== null
     ? normalizePreference(surface, {
         filters: JSON.parse(row.filters_json),
         sort: row.sort,

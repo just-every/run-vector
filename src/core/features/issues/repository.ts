@@ -51,10 +51,16 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
   binding = mutationDatabase(binding, request.actorOperatorId)
   const db = drizzle(binding)
   const now = request.now.toISOString()
-  const team = await requireActiveTeam(db, request.input.teamId)
-  const status = request.input.statusId
-    ? await requireStatus(db, request.input.statusId, team.id)
-    : await defaultStatus(db, team.id, 'backlog')
+  const [teamResult, statusResult] = await Promise.allSettled([
+    requireActiveTeam(db, request.input.teamId),
+    request.input.statusId
+      ? requireStatus(db, request.input.statusId, request.input.teamId)
+      : defaultStatus(db, request.input.teamId, 'backlog'),
+  ])
+  // Preserve validation precedence while reading independent options together.
+  if (teamResult.status === 'rejected') throw teamResult.reason
+  if (statusResult.status === 'rejected') throw statusResult.reason
+  const team = teamResult.value, status = statusResult.value
   if (!['backlog', 'unstarted', 'started', 'completed', 'canceled'].includes(status.category)) {
     throw new IssueMutationError('invalid_option', 'New issues must use a non-Intake, non-Duplicate status.')
   }

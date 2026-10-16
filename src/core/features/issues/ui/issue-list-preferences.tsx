@@ -46,13 +46,15 @@ export function StoredIssueControls({
     initialized.current = true;
     if (issueListSearch(initialQuery.current))
       preference.update(issuePreferenceValues(initialQuery.current));
-    else
-      onChange({
+    else {
+      const restored = changeIssueListFilters(initialQuery.current, {
         ...preference.filters,
         sort: preference.sort,
         grouping: preference.grouping,
         offset: 0,
       });
+      if (issueListSearch(restored) !== issueListSearch(initialQuery.current)) onChange(restored);
+    }
   }, [preference.ready, onChange]);
   function change(changes: Partial<IssueListQuery>) {
     const next = changeIssueListFilters(latest.current.next, changes);

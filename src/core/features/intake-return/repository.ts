@@ -1,5 +1,7 @@
 import { returnStatements, finalizeEvent } from '../notifications/events';
 import { createUlid } from "../../shared/ids";
+import { sql } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/d1';
 
 export type DeferredIntake = {
   id: string;
@@ -20,20 +22,25 @@ export function findIntake(db: D1Database, identifier: string) {
     .first<DeferredIntake>();
 }
 
-export async function dueIntake(db: D1Database, now: string) {
-  const rows = await db
-    .prepare(
-      `SELECT i.id,i.identifier,i.version,i.deferred_until,s.category,(SELECT decision_id FROM issue_deferral_origins WHERE issue_id=i.id) decision_id
-    FROM issues i JOIN workflow_statuses s ON s.id=i.status_id
-    WHERE s.category='intake' AND i.deferred_until IS NOT NULL
-      AND julianday(i.deferred_until)<=julianday(?)
+/** Shared selection for scheduled returns and the Current snapshot transaction. */
+export function dueIntakeQuery(db: ReturnType<typeof drizzle>, now: string) {
+  return db.select({
+    id: sql<string>`i.id`,
+    identifier: sql<string>`i.identifier`,
+    version: sql<number>`i.version`,
+    deferred_until: sql<string | null>`i.deferred_until`,
+    category: sql<string>`s.category`,
+    decision_id: sql<string | null>`(SELECT decision_id FROM issue_deferral_origins WHERE issue_id=i.id)`,
+  }).from(sql`issues i JOIN workflow_statuses s ON s.id=i.status_id`)
+    .where(sql`s.category='intake' AND i.deferred_until IS NOT NULL
+      AND julianday(i.deferred_until)<=julianday(${now})
       AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
-      AND NOT EXISTS(SELECT 1 FROM vector_http_restore)
-    ORDER BY julianday(i.deferred_until),i.id LIMIT 50`,
-    )
-    .bind(now)
-    .all<DeferredIntake>();
-  return rows.results;
+      AND NOT EXISTS(SELECT 1 FROM vector_http_restore)`)
+    .orderBy(sql`julianday(i.deferred_until),i.id`).limit(50);
+}
+
+export async function dueIntake(db: D1Database, now: string) {
+  return dueIntakeQuery(drizzle(db), now);
 }
 
 export async function clearDeferral(

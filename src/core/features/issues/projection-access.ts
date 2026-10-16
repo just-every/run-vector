@@ -9,7 +9,9 @@ export async function requireIssueProjection(
   context: Context<AppEnvironment>,
   identifier: string,
 ) {
-  const operator = await requireOperator(context.env, context.req.raw);
+  // These projections have a full native reauthorization at the enclosing
+  // response boundary. Keep the current SQL session/membership fence here.
+  const operator = context.get('documentProjection') || context.get('mutationPageProjection') ? context.get('operator') : await requireOperator(context.env, context.req.raw);
   if (!operator || operator.id !== context.get("operatorId"))
     throw new IssueAccessError(
       "unauthenticated",

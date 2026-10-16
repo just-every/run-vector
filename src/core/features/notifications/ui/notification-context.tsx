@@ -9,6 +9,8 @@ import {
 } from "react";
 import type { ResourceState } from "../../../app/api-client";
 import { fetchNotificationCount } from "./data";
+import { countSchema } from './data';
+import { useInitialResource } from '../../../app/initial-resources';
 import { createNotificationCountController } from "./count-controller";
 const Context = createContext<{
   state: ResourceState<{ unreadCount: number }>;
@@ -18,10 +20,11 @@ const Context = createContext<{
   refresh: () => void;
 } | null>(null);
 export function NotificationProvider({ children }: { children: ReactNode }) {
+  const initial = useInitialResource('/api/notifications/count', countSchema);
   const [state, setState] = useState<ResourceState<{ unreadCount: number }>>({
-    data: null,
+    data: initial,
     error: null,
-    loading: true,
+    loading: initial === null,
   });
   const controller = useRef<ReturnType<
     typeof createNotificationCountController
@@ -32,7 +35,8 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       setState,
     );
     controller.current = current;
-    void current.refresh();
+    if (initial !== null) current.accept(initial.unreadCount);
+    else void current.refresh();
     const refresh = () => {
       if (document.visibilityState === "visible") void current.refresh();
     };
@@ -44,7 +48,7 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", refresh);
     };
-  }, []);
+  }, [initial]);
   return (
     <MentionOperatorsProvider>
       <Context.Provider

@@ -24,6 +24,8 @@ export async function createIssueRoute(context: Context<AppEnvironment>) {
         context.env.DB,
         context.get('operatorId'),
         parsed.data,
+        new Date(),
+        context.get('drainNotifications'),
       ),
       outcome: 'written' as const,
     }),
@@ -95,7 +97,20 @@ async function respondToMutation(
 ) {
   try {
     const result = await mutate()
+    const page = writtenStatus === 201 && result.outcome === 'written' && context.req.header('x-vector-page') === 'issue'
+    if (page) context.set('mutationPageProjection', true)
     await requireIssueProjection(context, result.issue.identifier)
+    if (page) {
+      const { readPageResources } = await import('../../app/page-resources.server')
+      const operator = context.get('operator')
+      const href = '/app/issues/' + result.issue.identifier
+      const resources = await readPageResources(context.env, context.req.raw, operator, href,
+        { ['/api/issues/' + result.issue.identifier]: result.issue })
+      await requireIssueProjection(context, result.issue.identifier)
+      context.set('mutationPageProjection', true)
+      return context.json({ ...result.issue, page: { id: operator.id, name: operator.name, resources,
+        editorConfigured: Boolean(context.env.RER_MANAGEMENT_ORIGIN && context.env.RER_INSTALLATION_ID) } }, 201)
+    }
     return result.outcome === 'stale'
       ? context.json(
           {

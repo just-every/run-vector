@@ -1,4 +1,3 @@
-import { restoredEffectsHeld } from '../data/restore-authority';
 import { requireIssueAccess } from '../issues/access';
 import { mutationDatabase } from "../auth/mutation-database";
 import { IssueMutationError } from "../issues/errors";
@@ -7,18 +6,29 @@ import {
   dueIntake,
   findIntake,
   guardReturnedNoop,
+  type DeferredIntake,
 } from "./repository";
 
 export async function returnDueIntake(
   env: { DB: D1Database },
   now = new Date(),
 ) {
+  return returnIntakeCandidates(env.DB, await dueIntake(env.DB, now.toISOString()), now);
+}
+
+/** Apply freshly selected candidates through the same guarded event transaction. */
+export async function returnIntakeCandidates(
+  db: D1Database,
+  candidates: readonly DeferredIntake[],
+  now: Date,
+) {
   const at = now.toISOString();
   const result = { processed: 0, returned: 0, skipped: 0 };
-  if (await restoredEffectsHeld(env.DB)) return result;
-  for (const issue of await dueIntake(env.DB, at)) {
+  // Candidate selection checks the restore hold in its own SQL snapshot;
+  // clearDeferral repeats that fence before committing any automatic effects.
+  for (const issue of candidates) {
     const changed = await clearDeferral(
-      env.DB,
+      db,
       issue,
       null,
       "Deferral return automation",

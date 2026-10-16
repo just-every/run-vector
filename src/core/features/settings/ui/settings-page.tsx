@@ -1,10 +1,10 @@
+import "./settings.css";
 import { IntegrationsPanel } from "../../integrations/ui/integrations-panel";
 import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { settingsSchema } from "../schema";
-import "./settings.css";
 import { administrationSchema } from "../../administration/schema";
 import { TeamsPanel } from "./teams-panel";
 import { LabelsPanel } from "./labels-panel";

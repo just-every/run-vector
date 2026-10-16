@@ -2,36 +2,12 @@ import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useRef, useState } from "react";
 import { z } from "zod";
 import { useApiResource } from "../../../app/api-client";
+import { useHydrated } from '../../../app/initial-resources';
 import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { NamedLinks } from "../../links/ui/named-links";
-import { namedLinksSchema } from "../../links/schema";
+import { discussionSchema } from "../../discussion/schema";
 import { relativeTime } from "../../streams/ui/helpers";
-const schema = z.object({
-  links: namedLinksSchema.shape.links,
-  comments: z.array(
-    z.object({
-      id: z.string(),
-      body: z.string().nullable(),
-      actor: z.string(),
-      imported: z.union([z.boolean(), z.number()]).transform(Boolean).optional(),
-      editedAt: z.string().nullable(),
-      deletedAt: z.string().nullable(),
-      createdAt: z.string(),
-    }),
-  ),
-  files: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      contentType: z.string(),
-      bytes: z.number(),
-      state: z.enum(["pending", "ready", "failed"]),
-      removalPending: z.string().nullable(),
-      cleanupError: z.string().nullable(),
-      createdAt: z.string(),
-    }),
-  ),
-});
+
 
 export function CommentTimestamp({
   createdAt,
@@ -61,9 +37,10 @@ export function Discussion({
   onRefresh: () => void;
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
+  const hydrated = useHydrated();
   const resource = useApiResource(
       `/api/issues/${identifier}/discussion`,
-      schema,
+      discussionSchema,
     ),
     [filesOpen, setFilesOpen] = useState(false),
     [body, setBody] = useState(""),
@@ -79,16 +56,24 @@ export function Discussion({
     setBusy(true);
     setError("");
     try {
-      const response = await fetch(`/api/issues/${identifier}/${path}`, init);
+      const comment = path === "comments" && init.method === "POST";
+      const headers = new Headers(init.headers);
+      if (comment) headers.set("x-vector-projection", "discussion");
+      const response = await fetch(`/api/issues/${identifier}/${path}`, { ...init, headers });
       if (!response.ok) {
         const data = z
           .object({ message: z.string().optional() })
           .parse(await response.json());
         throw new Error(data.message ?? `Action failed (${response.status}).`);
       }
-      await response.arrayBuffer();
+      if (comment) {
+        const receipt = z.object({ discussion: discussionSchema }).parse(await response.json());
+        resource.publishReceipt(() => receipt.discussion);
+      } else {
+        await response.arrayBuffer();
+        resource.refreshAfterMutation();
+      }
       onSuccess?.();
-      resource.refreshAfterMutation();
       onRefresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Action failed.");
@@ -196,12 +181,12 @@ export function Discussion({
             placeholder="Write a comment…"
             required
             maxLength={100000}
-            disabled={busy}
+            disabled={busy || !hydrated}
             value={body}
             onValueChange={setBody}
           />
         </label>
-        <button disabled={busy} type="submit">
+        <button disabled={busy || !hydrated} type="submit">
           Add comment
         </button>
       </form>

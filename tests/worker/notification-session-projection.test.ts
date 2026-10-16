@@ -74,7 +74,8 @@ contractWith(
               let nativeReads = 0,
                 fired = false;
               const db = afterNativeStatement(async (query) => {
-                if (query.includes(f.nativeQuery) && ++nativeReads === 3) {
+                // Initial middleware admission, then the route's final native read.
+                if (query.includes(f.nativeQuery) && ++nativeReads === 2) {
                   fired = true;
                   await f.invalidate(mode);
                 }

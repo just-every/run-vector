@@ -2,9 +2,10 @@ import { getIssueDetail } from './service'
 import { createIssueRecord, writeIntakeDecision } from './repository'
 import type { AcceptIssueInput, CreateIssueInput, DeclineIssueInput, DeferIssueInput } from './input'
 
-export async function createIssue(binding: D1Database, actorOperatorId: string, input: CreateIssueInput, now = new Date()) {
+export async function createIssue(binding: D1Database, actorOperatorId: string, input: CreateIssueInput, now = new Date(), onCommitted?: () => Promise<unknown>) {
   const created = await createIssueRecord(binding, { actorOperatorId, input, now })
-  const issue = await getIssueDetail(binding, created.identifier, now)
+  // Mail settlement and the fresh detail read are independent after commit.
+  const [issue] = await Promise.all([getIssueDetail(binding, created.identifier, now), onCommitted?.()])
   if (!issue) throw new Error(`Created issue ${created.identifier} could not be read.`)
   return issue
 }

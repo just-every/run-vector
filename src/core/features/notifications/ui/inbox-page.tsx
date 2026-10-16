@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useInitialResource } from '../../../app/initial-resources';
+import { inboxSchema } from './data';
 import { useNavigate } from "@tanstack/react-router";
 import {
   createApiResourceController,
@@ -80,12 +82,14 @@ export function InboxNotificationRow({
 }
 
 export function InboxPageView() {
+  const initial = useInitialResource('/api/notifications', inboxSchema);
+  const initialPending = useRef(initial);
   const navigate = useNavigate();
   const notifications = useNotifications();
   const [state, setState] = useState<ResourceState<InboxPage>>({
-    data: null,
+    data: initial,
     error: null,
-    loading: true,
+    loading: initial === null,
   });
   const [older, setOlder] = useState<InboxItem[]>([]);
   const [cursor, setCursor] = useState<string | null>(null);
@@ -134,7 +138,10 @@ export function InboxPageView() {
       },
     );
     controller.current = current;
-    void current.refresh();
+    const receipt = initialPending.current;
+    initialPending.current = null;
+    if (receipt !== null) current.publishReceipt(() => receipt);
+    else void current.refresh();
     const refresh = () => {
       if (!mutation.current && document.visibilityState === "visible")
         void current.refresh({ skipIfPending: true });

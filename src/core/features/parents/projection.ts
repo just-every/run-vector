@@ -5,8 +5,13 @@ export type RelatedIssueBrief = {
   status: { id: string; name: string; category: string };
 };
 /** Keep relations separate from the stable historical snapshot projection. */
-export async function parentRelations(db: D1Database, issueId: string) {
-  const rows = await db
+export type ParentRelationRow = {
+  id: string; identifier: string; title: string; status_id: string;
+  status_name: string; category: string; relation: string;
+};
+
+export function parentRelationsStatement(db: D1Database, issueId: string) {
+  return db
     .prepare(
       `SELECT related.id,related.identifier,related.title,s.id status_id,s.name status_name,s.category,'parent' relation
     FROM issue_parents link JOIN issues related ON related.id=link.parent_issue_id
@@ -17,17 +22,11 @@ export async function parentRelations(db: D1Database, issueId: string) {
     JOIN workflow_statuses s ON s.id=related.status_id WHERE link.parent_issue_id=?1
     ORDER BY 2`,
     )
-    .bind(issueId)
-    .all<{
-      id: string;
-      identifier: string;
-      title: string;
-      status_id: string;
-      status_name: string;
-      category: string;
-      relation: string;
-    }>();
-  const brief = (row: (typeof rows.results)[number]): RelatedIssueBrief => ({
+    .bind(issueId);
+}
+
+export function parentRelationsProjection(rows: ParentRelationRow[]) {
+  const brief = (row: ParentRelationRow): RelatedIssueBrief => ({
     id: row.id,
     identifier: row.identifier,
     title: row.title,
@@ -37,9 +36,9 @@ export async function parentRelations(db: D1Database, issueId: string) {
       category: row.category,
     },
   });
-  const parent = rows.results.find((row) => row.relation === "parent");
+  const parent = rows.find((row) => row.relation === "parent");
   return {
     parent: parent ? brief(parent) : null,
-    children: rows.results.filter((row) => row.relation === "child").map(brief),
+    children: rows.filter((row) => row.relation === "child").map(brief),
   };
 }

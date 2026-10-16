@@ -54,8 +54,8 @@ export async function productOperator(db: D1Database, authId: string) {
   return mappedOperator(db, authId)
 }
 async function mappedOperator(db: D1Database, authId: string) {
-  return db.prepare(`SELECT o.id,o.name,o.email FROM vector_auth_operators m
+  return db.prepare(`SELECT o.id,o.name,o.email,o.workspace_id AS workspaceId FROM vector_auth_operators m
     JOIN operators o ON o.id=m.operator_id JOIN oa_operators a ON a.id=m.auth_id
     WHERE m.auth_id=? AND o.removed_at IS NULL AND a.status='active'`).bind(authId)
-    .first<{ id: string; name: string; email: string }>()
+    .first<{ id: string; name: string; email: string; workspaceId: string }>()
 }

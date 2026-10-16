@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import { issueDetailSchema } from "./data";
+import { navigationPageSchema, offerNavigationReceipt } from '../../../app/navigation-receipt';
 import { isSafeHttpsUrl } from "../../links/schema";
 import {
   createIssuePayload,
@@ -22,6 +23,7 @@ const allowedStatusCategories = new Set([
   "completed",
   "canceled",
 ]);
+const createdIssueSchema = issueDetailSchema.extend({ page: navigationPageSchema.optional() });
 
 export function NewIssueForm() {
   const navigate = useNavigate();
@@ -118,10 +120,10 @@ export function NewIssueForm() {
       const isIntake = values.mode === "intake";
       const issue = await fetchJson(
         isIntake ? "/api/intake" : "/api/issues",
-        issueDetailSchema,
+        createdIssueSchema,
         {
           method: "POST",
-          headers: { "content-type": "application/json" },
+          headers: { "content-type": "application/json", ...(!isIntake ? { 'x-vector-page': 'issue' } : {}) },
           body: JSON.stringify(
             isIntake ? createIntakePayload(values) : createIssuePayload(values),
           ),
@@ -134,10 +136,10 @@ export function NewIssueForm() {
           "The issue was created, but this browser could not clear its draft.",
         );
       }
-      navigate({
-        to: "/app/issues/$identifier",
-        params: { identifier: issue.identifier },
-      });
+      const retire = issue.page ? offerNavigationReceipt('/app/issues/' + issue.identifier, issue.page) : undefined;
+      try {
+        await navigate({ to: "/app/issues/$identifier", params: { identifier: issue.identifier } });
+      } finally { retire?.(); }
     } catch (error) {
       setSubmissionError(
         error instanceof ApiError || error instanceof Error
@@ -184,7 +186,7 @@ export function NewIssueForm() {
       >
         <fieldset
           className="new-issue-controls"
-          disabled={submitting}
+          disabled={submitting || !draftReady}
           aria-label="Issue creation fields"
         >
           <header className="new-issue-header">

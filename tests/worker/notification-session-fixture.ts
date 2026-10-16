@@ -23,7 +23,7 @@ export async function notificationSessionFixture(hosted = false) {
   const currentBindings = hosted
     ? { ...bindings, APP_ORIGIN:"https://vector.example.test", MAIL_MODE:"production", MAIL_PROVIDER:"sendgrid", MAIL_API_KEY:"test-only-provider-key" }
     : bindings;
-  const nativeQuery = "SELECT o.id,o.name,o.email FROM vector_auth_operators m";
+  const nativeQuery = "SELECT o.id,o.name,o.email,o.workspace_id AS workspaceId";
   const bobEmail = (await env.DB.prepare(
     "SELECT email FROM operators WHERE id=?",
   )

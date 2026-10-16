@@ -7,17 +7,19 @@ import { IssueMutationError } from "../issues/errors";
 import { createUlid } from "../../shared/ids";
 import { blockerStatements, finalizeEvent } from "../notifications/events";
 
-export async function duplicateRelations(db: D1Database, id: string) {
-  const rows = (
-    await db
+export type DuplicateRelationRow = { identifier: string; title: string; relation: string };
+
+export function duplicateRelationsStatement(db: D1Database, id: string) {
+  return db
       .prepare(
         `SELECT i.identifier,i.title,CASE WHEN d.issue_id=?1 THEN 'canonical' ELSE 'duplicate' END relation
  FROM issue_duplicates d JOIN issues i ON i.id=CASE WHEN d.issue_id=?1 THEN d.canonical_issue_id ELSE d.issue_id END
  WHERE d.issue_id=?1 OR d.canonical_issue_id=?1 ORDER BY i.identifier`,
       )
-      .bind(id)
-      .all<{ identifier: string; title: string; relation: string }>()
-  ).results;
+      .bind(id);
+}
+
+export function duplicateRelationsProjection(rows: DuplicateRelationRow[]) {
   return {
     canonical: rows.find((r) => r.relation === "canonical") ?? null,
     duplicates: rows.filter((r) => r.relation === "duplicate"),

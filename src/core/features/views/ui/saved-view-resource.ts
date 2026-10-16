@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from "react";
 import { z } from "zod";
+import { useInitialResource } from '../../../app/initial-resources';
 import {
   fetchJson,
   resourceStateForIdentity,
@@ -101,13 +102,14 @@ function useReceiptResource<S extends z.ZodType>(
   },
 ) {
   const scope = useSavedViewReceiptScope();
+  const initial = useInitialResource(url, schema);
   const [snapshot, setSnapshot] = useState({
     url,
     schema,
     scope,
-    data: null as z.output<S> | null,
+    data: initial,
     error: null as Error | null,
-    loading: true,
+    loading: initial === null,
   });
   const latest = useRef(snapshot);
   latest.current = snapshot;
@@ -118,6 +120,7 @@ function useReceiptResource<S extends z.ZodType>(
     void controller.current?.refresh();
   }, []);
   useEffect(() => {
+    if (initial !== null && admission) scope.read(admission.views(initial), true);
     const reader = createSavedViewReceiptController(
       (signal) => fetchJson(url, schema, { signal }),
       (state) => {
@@ -126,7 +129,7 @@ function useReceiptResource<S extends z.ZodType>(
         setSnapshot(next);
       },
       merge,
-      latest.current.scope === scope
+      initial !== null ? { data: initial, error: null, loading: false } : latest.current.scope === scope
         ? resourceStateForIdentity(latest.current, url, schema)
         : { data: null, error: null, loading: true },
       admission,
@@ -137,7 +140,7 @@ function useReceiptResource<S extends z.ZodType>(
       if (document.visibilityState === "visible")
         void reader.refresh({ skipIfPending: true });
     };
-    queueMicrotask(() => void reader.refresh());
+    if (initial === null) queueMicrotask(() => void reader.refresh());
     const interval = pollMs ? window.setInterval(refresh, pollMs) : undefined;
     if (pollMs) document.addEventListener("visibilitychange", refresh);
     return () => {
@@ -146,7 +149,7 @@ function useReceiptResource<S extends z.ZodType>(
       if (interval !== undefined) window.clearInterval(interval);
       document.removeEventListener("visibilitychange", refresh);
     };
-  }, [url, schema, merge, pollMs, viewId, admission, scope]);
+  }, [url, schema, merge, pollMs, viewId, admission, scope, initial]);
   return {
     ...(snapshot.scope === scope
       ? resourceStateForIdentity(snapshot, url, schema)

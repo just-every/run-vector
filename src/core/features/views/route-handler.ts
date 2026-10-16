@@ -11,10 +11,10 @@ export const handle =
   (run: (c: Context<AppEnvironment>) => Promise<Response>) =>
   async (c: Context<AppEnvironment>) => {
     try {
-      const admitted = await requireOperator(c.env, c.req.raw);
+      const admitted = c.get('operator');
       if (!admitted || admitted.id !== c.get("operatorId"))
         return c.json({ error: "unauthenticated" }, 401);
-      const workspace = (await browseActor(c.env.DB, admitted.id)).workspace_id;
+      const workspace = c.get('documentProjection') ? admitted.workspaceId : (await browseActor(c.env.DB, admitted.id)).workspace_id;
       const response = await run(c);
       const payload = (await response.clone().json()) as {
         id?: string;
@@ -23,7 +23,7 @@ export const handle =
       const viewIds =
         payload.views?.map((view) => view.id) ??
         (payload.id ? [payload.id] : []);
-      const current = await requireOperator(c.env, c.req.raw);
+      const current = c.get('documentProjection') ? admitted : await requireOperator(c.env, c.req.raw);
       if (
         !current ||
         current.id !== admitted.id ||

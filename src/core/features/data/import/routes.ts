@@ -17,7 +17,7 @@ const parse=<T>(schema:z.ZodType<T>,value:unknown):T=>{
 };
 
 async function actor(c:Context<AppEnvironment>):Promise<ImportActor> {
-  const admitted=await requireOperator(c.env,c.req.raw);
+  const admitted=c.get('documentProjection')?c.get('operator'):await requireOperator(c.env,c.req.raw);
   if(!admitted || admitted.id!==c.get('operatorId'))throw new ImportError(401,'unauthenticated');
   const row=await c.env.DB.prepare('SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL').bind(admitted.id).first<{workspace_id:string}>();
   if(!row)throw new ImportError(401,'unauthenticated');

@@ -61,15 +61,34 @@ export async function subscription(
   identifier: string,
 ): Promise<IssueSubscription> {
   const issue = await requireIssueAccess(db, identifier, actor);
-  const result = await db
+  const result = await subscriptionProjection(db, issue.id, actor);
+  await requireIssueAccess(db, identifier, actor);
+  return result;
+}
+
+/** Read the DTO after the caller has admitted this issue; the caller owns its final fence. */
+export async function subscriptionProjection(
+  db: D1Database,
+  issueId: string,
+  actor: string,
+): Promise<IssueSubscription> {
+  const result = await subscriptionStatement(db, issueId, actor).first<SubscriptionRow>();
+  return subscriptionFromRow(result!);
+}
+
+export type SubscriptionRow = { following: number; muted: number };
+
+export function subscriptionStatement(db: D1Database, issueId: string, actor: string) {
+  return db
     .prepare(
       `SELECT EXISTS(SELECT 1 FROM issue_followers WHERE issue_id=? AND operator_id=?) following,
     EXISTS(SELECT 1 FROM issue_notification_mutes WHERE issue_id=? AND operator_id=?) muted`,
     )
-    .bind(issue.id, actor, issue.id, actor)
-    .first<{ following: number; muted: number }>();
-  await requireIssueAccess(db, identifier, actor);
-  return { following: !!result!.following, muted: !!result!.muted };
+    .bind(issueId, actor, issueId, actor);
+}
+
+export function subscriptionFromRow(result: SubscriptionRow): IssueSubscription {
+  return { following: !!result.following, muted: !!result.muted };
 }
 export async function preferences(
   db: D1Database,

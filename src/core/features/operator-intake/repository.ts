@@ -129,14 +129,11 @@ export type EvidenceMetadata = {
   customer_reports_json: string;
   source_id:string|null;source_record_id:string|null;source_revision_id:string|null;
 };
-export async function evidenceMetadata(db: D1Database, issueId: string) {
-  return (
-    await db
+export function evidenceMetadataStatement(db: D1Database, issueId: string) {
+  return db
       .prepare(
         `SELECT e.id,e.origin_kind,e.actor_operator_id,o.name AS actor,e.link,e.customer_reports_json,e.source_id,e.source_record_id,e.source_revision_id
     FROM evidence_revisions e LEFT JOIN operators o ON o.id=e.actor_operator_id WHERE e.issue_id=?`,
       )
-      .bind(issueId)
-      .all<EvidenceMetadata>()
-  ).results;
+      .bind(issueId);
 }

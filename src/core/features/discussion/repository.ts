@@ -4,8 +4,9 @@ import { MutationAccessError, mutationDatabase } from "../auth/mutation-database
 import { createUlid } from "../../shared/ids";
 import {
   commentLinkErasureStatements,
-  listNamedLinks,
+  namedLinksStatement,
 } from "../links/repository";
+import type { NamedLink } from '../links/schema';
 
 async function requireDiscussionMutationAccess(db: D1Database, identifier: string, actor: string) {
   try {
@@ -26,22 +27,31 @@ export async function findIssue(db: D1Database, identifier: string) {
     .first<{ id: string; identifier: string }>();
 }
 export async function discussion(db: D1Database, issueId: string) {
-  const [comments, files, links] = await Promise.all([
+  return discussionProjection(await Promise.all(discussionReadStatements(db, issueId).map(statement => statement.all())));
+}
+
+export function discussionReadStatements(db: D1Database, issueId: string) {
+  return [
     db
       .prepare(
         "SELECT c.id,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id WHERE c.issue_id=? ORDER BY c.created_at,c.id",
       )
-      .bind(issueId)
-      .all(),
+      .bind(issueId),
     db
       .prepare(
         "SELECT id,name,content_type AS contentType,bytes,state,removal_requested_at AS removalPending,cleanup_error AS cleanupError,created_at AS createdAt FROM issue_files WHERE issue_id=? AND (deleted_at IS NULL OR (removal_requested_at IS NOT NULL AND removal_confirmed_at IS NULL)) ORDER BY created_at,id",
       )
-      .bind(issueId)
-      .all(),
-    listNamedLinks(db, issueId),
-  ]);
-  return { comments: comments.results, files: files.results, links };
+      .bind(issueId),
+    namedLinksStatement(db, issueId),
+  ] as const;
+}
+
+export function discussionProjection([comments, files, links]: readonly D1Result[]) {
+  return {
+    comments: comments.results as Record<string, unknown>[],
+    files: files.results as Record<string, unknown>[],
+    links: links.results as NamedLink[],
+  };
 }
 function activity(
   db: D1Database,

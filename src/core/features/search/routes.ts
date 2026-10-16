@@ -1,7 +1,6 @@
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
-import { requireOperator } from "../auth/service";
 import { SearchAccessError } from "./access";
 import { getSearchOptions, searchWorkspace, SearchIndexError } from "./service";
 
@@ -14,7 +13,7 @@ const querySchema = z.object({
 export function addSearchRoutes(app: Hono<AppEnvironment>) {
   for (const path of ["/search", "/options"] as const)
     app.get(path, async (context) => {
-      const actor = await requireOperator(context.env, context.req.raw);
+      const actor = context.get('operator');
       if (!actor || actor.id !== context.get("operatorId"))
         return context.json(
           {

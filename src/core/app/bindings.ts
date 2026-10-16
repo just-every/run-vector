@@ -37,6 +37,10 @@ export type AppEnvironment = {
   Bindings: WorkerBindings
   Variables: {
     operatorId: string
+    operator: NonNullable<Awaited<ReturnType<typeof import('../features/auth/service').requireOperator>>>
+    documentProjection?: boolean
+    mutationPageProjection?: boolean
+    drainNotifications: () => Promise<boolean>
     concealWorkspaceChange?: boolean
   }
 }

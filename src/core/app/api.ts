@@ -9,7 +9,7 @@ import { addRestoreRoutes } from '../features/data/restore-routes';
 import { addImportRoutes } from '../features/data/import/routes';
 import { addErasureRoutes } from '../features/data/erasure/routes';
 import { ImportError } from '../features/data/import/types';
-import { identifierForSource } from '../features/data/import/issue-source';
+import { requireIssueSourceAccess } from '../features/data/import/issue-source';
 import { PaginationInvalidated } from "../features/issues/list-revision";
 import { addNotificationRoutes } from '../features/notifications/routes';
 import { addViewRoutes } from '../features/views/routes';
@@ -62,6 +62,7 @@ import { databaseIsReachable } from "../features/workspace/repository";
 import { requireOperator } from "../features/auth/service";
 import { operatorProjectionStatus } from "../features/auth/projection-admission";
 import type { AppEnvironment } from "./bindings";
+import type { WorkspaceProjection } from '../features/streams/snapshot';
 
 const timeQuerySchema = z.object({
   at: z.string().datetime({ offset: true }).optional(),
@@ -74,7 +75,7 @@ const issueParamSchema = z.object({
 });
 const projectParamSchema = z.object({ projectId: z.string().length(26) });
 
-export function createApiApp() {
+export function createApiApp(document?: { operator: AppEnvironment['Variables']['operator']; workspace?: WorkspaceProjection }) {
   const app = new Hono<AppEnvironment>();
 
   app.onError((error, context) => {
@@ -102,6 +103,15 @@ export function createApiApp() {
   });
 
   app.use("*", async (context, next) => {
+    // Server rendering owns admission and the final native-session fence for
+    // all of its read projections. This mode has no public HTTP entry point.
+    if (document && context.req.method === 'GET') {
+      context.set('operatorId', document.operator.id);
+      context.set('operator', document.operator);
+      context.set('documentProjection', true);
+      await next();
+      return;
+    }
     if (!context.env.DB) {
       return context.json(
         {
@@ -137,27 +147,34 @@ export function createApiApp() {
       !(await admitRate(context.env.DB, "operator:" + operator.id, 600, 60_000))
     )
       return context.json({ error: "rate_limited" }, 429);
-    const admittedWorkspace = await context.env.DB.prepare("SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL").bind(operator.id).first<string>("workspace_id");
+    const admittedWorkspace = operator.workspaceId;
     context.set("operatorId", operator.id);
+    context.set("operator", operator);
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
       context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence) };
     }
     configureNotifications(context.env.DB,context.env);
+    let pendingDrain: Promise<boolean> | undefined;
+    const drain = () => pendingDrain ??= (async () => {
+      const drained = await needsNotificationDrain(context.env.DB);
+      if (drained) {
+        try { await drainNotificationMail({...context.env,DB:fileSettlementDatabase(context.env.DB)},{eventIds:notificationEventIds(context.env.DB)}); }
+        catch { console.error('Notification mail drain interrupted; durable intent retained for recovery.'); }
+      }
+      return drained;
+    })();
+    context.set('drainNotifications', drain);
     try { await next(); } finally {
     // Only persisted intents are selected. A postcommit authorization failure
     // must hide the response without canceling recipients' committed mail.
     const preparedNotifications = notificationEventIds(context.env.DB).length > 0;
-    const drained = await needsNotificationDrain(context.env.DB);
-    if (drained) {
-      try { await drainNotificationMail({...context.env,DB:fileSettlementDatabase(context.env.DB)},{eventIds:notificationEventIds(context.env.DB)}); }
-      catch { console.error('Notification mail drain interrupted; durable intent retained for recovery.'); }
-    }
+    const drained = await drain();
     // Reads always retain their captured session through the last SQL snapshot.
     // Mutation mail projection keeps its existing fence; an explicit self-removal
     // acknowledgement remains successful after its own transaction revokes access.
     const read = ["GET", "HEAD"].includes(context.req.method);
-    if (preparedNotifications || read) {
+    if (preparedNotifications || read || context.get('mutationPageProjection')) {
       const current = await requireOperator(context.env, context.req.raw);
       const admission = !current || current.id !== operator.id || JSON.stringify(current.fence) !== JSON.stringify(operator.fence)
         ? 401
@@ -190,7 +207,7 @@ export function createApiApp() {
     const query = parseQuery(context, timeQuerySchema);
     if (!query.success) return query.response;
     return context.json(
-      await getCurrentStream(context.env.DB, toNow(query.data.at)),
+      await getCurrentStream(context.env.DB, toNow(query.data.at), document?.workspace),
     );
   });
 
@@ -202,6 +219,7 @@ export function createApiApp() {
         context.env.DB,
         context.get("operatorId"),
         toNow(query.data.at),
+        document?.workspace,
       ),
     );
   });
@@ -236,16 +254,12 @@ export function createApiApp() {
     if (!query.success) return query.response;
     try {
       const actor = context.get("operatorId");
-      const identifier = await identifierForSource(context.env.DB, actor, parameters.data.identifier);
-      await requireIssueAccess(
-        context.env.DB,
-        identifier,
-        actor,
-      );
+      const { identifier } = await requireIssueSourceAccess(context.env.DB, actor, parameters.data.identifier);
       const issue = await getIssueDetail(
         context.env.DB,
         identifier,
         toNow(query.data.at),
+        document?.workspace?.snapshot,
       );
       await requireIssueAccess(
         context.env.DB,
