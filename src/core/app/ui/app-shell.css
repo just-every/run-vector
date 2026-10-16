@@ -196,11 +196,12 @@
 @media (max-width: 46rem) {
   .app-settings-mobile {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
     align-items: center;
     justify-content: flex-end;
     min-height: 44px;
-    padding: 0 1rem;
+    padding: 0.5rem 1rem 0;
     color: var(--app-cobalt-ink);
     font-size: 0.75rem;
   }
@@ -214,10 +215,17 @@
   }
 }
 
+.app-settings-mobile > span {
+  margin-right: auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .app-settings-mobile .app-mobile-brand {
   display: inline-flex;
+  flex-basis: 100%;
   align-items: center;
-  margin-right: auto;
   min-width: 0;
   padding: 0;
   border: 0;

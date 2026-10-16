@@ -1691,11 +1691,11 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.css": {
-      "sha256": "87c482974416dd0fc978690196ca40629e5b3585389886acced4abbb551e16f0",
+      "sha256": "a003a2ef3ef6762a3719f57b7a3e617e6c69f7de223993685c9f8c1a9bfee0a3",
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
-      "sha256": "aa8fc602c6317f402ad02e095bb514d0c44caa479faeab1ac568ae108990cc09",
+      "sha256": "67bf2d5d02f7622e66b80be73cf96a42d18660ccffa92ca967e1e0ad25815d84",
       "executable": false
     },
     "src/core/app/ui/label-chip.tsx": {
