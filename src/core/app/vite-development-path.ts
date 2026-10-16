@@ -229,6 +229,8 @@ const developmentAssets = new Set([
   // decoders and micromark symbols; react-markdown imports the same chunk.
   '/node_modules/.vite/deps/micromark-util-decode-string.js',
   '/node_modules/.vite/deps/dev-Cqu_Xnum.js',
+  // react-markdown's reviewed CommonMark parser and mdast conversion chunk.
+  '/node_modules/.vite/deps/dev-BOFmHeSc.js',
   "/@id/virtual:tanstack-start-dev-client-entry",
   "/@react-refresh",
   "/@tanstack-start/styles.css",

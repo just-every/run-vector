@@ -1351,7 +1351,7 @@
       "executable": false
     },
     "src/core/app/api-client.ts": {
-      "sha256": "5a65fa81cc04fe10acbc78e208d8d705700ed5c06766c55f74348ed6acc63726",
+      "sha256": "dd6f5f3ee223a3ef377368990382c09b6be78602c75cbd252a08196add231eb1",
       "executable": false
     },
     "src/core/app/api.ts": {
@@ -1739,7 +1739,7 @@
       "executable": false
     },
     "src/core/app/vite-development-path.ts": {
-      "sha256": "9f34ceb56769e49f22bef6c53b434defbe5c1de1f6a9fe98a60d57de49343faa",
+      "sha256": "14a2c011d7b18e03f0c81d07ff17887a465896749ef2dc83d2d118d0918c78dd",
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
@@ -3131,11 +3131,11 @@
       "executable": false
     },
     "src/core/features/views/ui/saved-view-receipt.ts": {
-      "sha256": "972b291f057046e1ebebb8118a10e9d1f4838df3989b3a40c81c531cad580303",
+      "sha256": "1c431655db3f355cd806b51ac0c153471b2273d21a0521c4a33dc328e5720837",
       "executable": false
     },
     "src/core/features/views/ui/saved-view-resource.ts": {
-      "sha256": "e0db911e99c848d5b0060958f27472652a74b89547a86b9d615bcb5f7c7bf8a0",
+      "sha256": "4a035fe0faec0a29141c40b35000e77ef366e855d8dcf12ae5ace0e31f1cb247",
       "executable": false
     },
     "src/core/features/views/ui/saved-views.tsx": {

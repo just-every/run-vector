@@ -16,7 +16,7 @@ type NavigationAdmission<T> = {
   views: (data: T) => SavedView[];
 };
 
-// Readers retain transport cancellation locally. Admission and mutation
+// Readers drain superseded transports and cancel them on unmount. Admission and mutation
 // receipts belong to the operator app, so remounting cannot erase a denial.
 export function createSavedViewReceiptController<T>(
   load: (signal: AbortSignal) => Promise<T>,
@@ -34,6 +34,7 @@ export function createSavedViewReceiptController<T>(
     scope.read(admission.views(initial.data), true, source);
   let current = initial,
     active = true,
+    generation = 0,
     denied = isUnavailableResourceError(initial.error);
   if (context) {
     if (viewId && !scope.allowed(viewId))
@@ -66,11 +67,12 @@ export function createSavedViewReceiptController<T>(
         source,
       );
   };
-  const createReader = () =>
-    createApiResourceController(
+  const createReader = () => {
+    const revision = ++generation;
+    return createApiResourceController(
       async (signal) => {
         const data = await load(signal);
-        if (active && !signal.aborted) {
+        if (active && revision === generation && !signal.aborted) {
           if (admission) scope.read(admission.views(data), true, source);
           else scope.read([data as SavedView], false, source);
         }
@@ -79,20 +81,28 @@ export function createSavedViewReceiptController<T>(
       write,
       current,
     );
+  };
   let reader = createReader();
+  const draining = new Set<typeof reader>();
+  const retireReader = () => {
+    ++generation;
+    const retired = reader;
+    draining.add(retired);
+    void retired.dispose({ abortPending: false }).then(() => draining.delete(retired));
+  };
   const unsubscribe = scope.subscribe((change) => {
     if (!active) return;
     if (change.kind === "receipt") {
       if ((denied && !context) || !scope.allowed(change.receipt.id)) return;
       const data = merge(current.data, change.receipt);
       if (data === null) return;
-      reader.dispose();
+      retireReader();
       write({ data, error: null, loading: false });
     } else {
       if (change.source === source) return;
       if (!admission && (!viewId || (change.ids && !change.ids.has(viewId))))
         return;
-      reader.dispose();
+      retireReader();
       if (admission && change.ids) {
         let data = current.data;
         for (const id of change.ids) data = admission.remove(data, id);
@@ -104,7 +114,7 @@ export function createSavedViewReceiptController<T>(
       publish(current);
     }
     reader = createReader();
-    // Reconfirmations still retire older transports, but two navigation
+    // Reconfirmations still invalidate older reads, but two navigation
     // mounts must not retry each other forever after matching denials.
     // An omitted detail re-reads to show its current authorized/error state.
     if (
@@ -116,6 +126,14 @@ export function createSavedViewReceiptController<T>(
   if (context) publish(current);
   return {
     refresh: (options?: { skipIfPending?: boolean }) => reader.refresh(options),
+    receiveInitial(data: T) {
+      if (!active) return;
+      retireReader();
+      if (admission) scope.read(admission.views(data), true, source);
+      else scope.read([data as SavedView], false, source);
+      write({ data, error: null, loading: false });
+      reader = createReader();
+    },
     accept(receipt: SavedView, kind: SavedViewReceiptKind = "updated") {
       if (!active || (denied && !context)) return;
       scope.publish(receipt, kind);
@@ -126,6 +144,7 @@ export function createSavedViewReceiptController<T>(
     dispose() {
       active = false;
       reader.dispose();
+      for (const retired of draining) retired.dispose();
       unsubscribe();
       if (!context) scope.retire();
     },

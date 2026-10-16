@@ -103,6 +103,8 @@ function useReceiptResource<S extends z.ZodType>(
 ) {
   const scope = useSavedViewReceiptScope();
   const initial = useInitialResource(url, schema);
+  const latestInitial = useRef(initial);
+  latestInitial.current = initial;
   const [snapshot, setSnapshot] = useState({
     url,
     schema,
@@ -120,7 +122,7 @@ function useReceiptResource<S extends z.ZodType>(
     void controller.current?.refresh();
   }, []);
   useEffect(() => {
-    if (initial !== null && admission) scope.read(admission.views(initial), true);
+    const initial = latestInitial.current;
     const reader = createSavedViewReceiptController(
       (signal) => fetchJson(url, schema, { signal }),
       (state) => {
@@ -140,7 +142,8 @@ function useReceiptResource<S extends z.ZodType>(
       if (document.visibilityState === "visible")
         void reader.refresh({ skipIfPending: true });
     };
-    if (initial === null) queueMicrotask(() => void reader.refresh());
+    if (initial === null)
+      queueMicrotask(() => { if (latestInitial.current === null) void reader.refresh(); });
     const interval = pollMs ? window.setInterval(refresh, pollMs) : undefined;
     if (pollMs) document.addEventListener("visibilitychange", refresh);
     return () => {
@@ -149,6 +152,9 @@ function useReceiptResource<S extends z.ZodType>(
       if (interval !== undefined) window.clearInterval(interval);
       document.removeEventListener("visibilitychange", refresh);
     };
+  }, [url, schema, merge, pollMs, viewId, admission, scope]);
+  useEffect(() => {
+    if (initial !== null) controller.current?.receiveInitial(initial);
   }, [url, schema, merge, pollMs, viewId, admission, scope, initial]);
   return {
     ...(snapshot.scope === scope

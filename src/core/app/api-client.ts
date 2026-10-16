@@ -150,18 +150,21 @@ export function createApiResourceController<T>(
       if (!active || privateReads.paused || isUnavailableResourceError(current.error)) return;
       // A committed mutation receipt supersedes every earlier list read.
       ++sequence;
-      pending?.abort();
-      pending = null;
       write({ data: update(current.data), error: null, loading: false });
     },
-    dispose() {
+    dispose({ abortPending = true }: { abortPending?: boolean } = {}) {
       active = false;
       mutationPending = false;
       ++sequence;
       cancelResume?.();
       cancelResume = null;
-      pending?.abort();
-      pending = null;
+      // Superseding evidence may drain an admitted transport. Retain it so a
+      // later real unmount can still cancel it before settlement.
+      if (abortPending) {
+        pending?.abort();
+        pending = null;
+      }
+      return Promise.all([...reads]).then(() => {});
     },
   };
   return resource;
@@ -174,6 +177,8 @@ export function useApiResource<S extends z.ZodType>(
 ) {
   url = resourceKey(url);
   const initial = useInitialResource(url, schema);
+  const latestInitial = useRef(initial);
+  latestInitial.current = initial;
   const [snapshot, setSnapshot] = useState<ResourceSnapshot<z.output<S>>>({
     url,
     schema,
@@ -205,8 +210,8 @@ export function useApiResource<S extends z.ZodType>(
     };
     // Let an immediately discarded mount dispose before starting network work.
     // Explicit reload and identity disposal still abort superseded reads.
-    if (initial !== null) controller.publishReceipt(() => initial);
-    else queueMicrotask(() => void controller.refresh());
+    if (latestInitial.current === null)
+      queueMicrotask(() => { if (latestInitial.current === null) void controller.refresh(); });
     if (!pollMs) return dispose;
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible")
@@ -222,6 +227,10 @@ export function useApiResource<S extends z.ZodType>(
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", visible);
     };
+  }, [url, schema, pollMs]);
+
+  useEffect(() => {
+    if (initial !== null) currentController.current?.publishReceipt(() => initial);
   }, [url, schema, pollMs, initial]);
 
   return { ...resourceStateForIdentity(snapshot, url, schema), reload, refreshAfterMutation, publishReceipt };
