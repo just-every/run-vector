@@ -15,7 +15,7 @@ const records=async path=>{const result=[];for await(const row of readArchive(ne
 try{
  await mkdir(evidence,{recursive:true});source=await dataInstallation(work,'source');destination=await dataInstallation(work,'destination');await source.configure(true);
  await unlink(join(source.root,'node_modules'));await source.installDependencies();await source.start();const cookie=await source.signIn();
- browser=await chromium.launch({headless:true});const ordinary=await openAuthenticatedPage(browser,cookie,source.origin);
+ browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const ordinary=await openAuthenticatedPage(browser,cookie,source.origin);
  await ordinary.goto(source.origin+'/app/settings#after-restore');const ordinaryPanel=ordinary.getByRole('region',{name:'After a restore'});
  await expect(ordinaryPanel).toBeVisible();await expect(ordinaryPanel.getByRole('status')).toHaveCount(0);await expect(ordinaryPanel.getByRole('button')).toHaveCount(0);await expect(ordinaryPanel.getByRole('list')).toHaveCount(0);
  for(const width of [1440,390]){await ordinary.setViewportSize({width,height:1000});await ordinaryPanel.scrollIntoViewIfNeeded();await ordinary.screenshot({path:join(evidence,'settings-ordinary-'+width+'.png')});}
@@ -45,7 +45,7 @@ try{
  const history=destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),attempts=destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id');
  await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);
  await verifyRestoredIntegrations(destination,restored,integrations,fixture.identifier,reviewEffects);await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);proof.heldAfterCron=true;
- proof.restoreSettings={widths:[1440,390],loading:true,pending:true,refusal:true,refreshedAdmission:true,refreshedEffects:true,historicalDeliveriesQuarantined:true};
+ proof.restoreSettings={widths:[1440,390],initialProjection:true,pending:true,refusal:true,refreshedAdmission:true,refreshedEffects:true,historicalDeliveriesQuarantined:true};
  await destination.stop();proof.passed=true;
 }finally{await browser?.close();await source?.close();await destination?.close();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'roundtrip-proof.json'),JSON.stringify(proof,null,2)+'\n');await rm(work,{recursive:true,force:true});}
 console.log('Independent native installations: complete public archive command equality, restored privacy and no historical Cron replay passed.');

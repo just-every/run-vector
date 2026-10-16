@@ -62,12 +62,11 @@ const output = execFileSync(
   { encoding: "utf8" },
 );
 const link = JSON.parse(output)[0].results[0].sign_in_url.match(/https?:\/\/[^\s]+/)[0];
-const browser = await chromium.launch({ headless: true });
+const browser = await chromium.launch({ headless: true, args: ["--use-mock-keychain", "--password-store=basic"] });
 let trace, capturePage, observed;
 try {
-  const page = await browser.newPage({
-      viewport: { width: 1440, height: 900 },
-    }),
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage(),
     errors = [],
     failed = [],
     paths = new Set(), badResponses = [];
@@ -94,6 +93,9 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
+  // SSR now contains Current’s data before Vite finishes loading the client.
+  // Begin the client-navigation assertion after its scripts have loaded.
+  await page.waitForLoadState("networkidle");
   const origin = await page.evaluate(() => performance.timeOrigin);
   await settleReads(page);
   await page

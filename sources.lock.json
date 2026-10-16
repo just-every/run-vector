@@ -3479,7 +3479,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "3139aa6ef99232f82c71700088121292ca1b644244474459ff203915fc33b958",
+      "sha256": "12bd52ffdba05b303c4b4fe43cd1ee42c2c4d5247cb189bb617b7428d3cc23cf",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {
@@ -3507,7 +3507,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip.mjs": {
-      "sha256": "3f8f84825b1f8cc4174f1a6bdd658ed1b8d07434300016c50e6fd749bbea6d48",
+      "sha256": "dc5679ae99fb4d0427fe516ee94d904868a64c7f26b0540cbb40a105c28a7886",
       "executable": false
     },
     "tests/e2e/data-runtime.mjs": {
@@ -3539,7 +3539,7 @@
       "executable": false
     },
     "tests/e2e/dev-runtime.mjs": {
-      "sha256": "3a172353a6c04b69cc600998994f740124cd560d9d6f24922d902e16f89286e1",
+      "sha256": "e8855f1eae156834ebbad4e24f4e826faab4fb331cd5b4f6acf104c006b3c159",
       "executable": false
     },
     "tests/e2e/dev-setup.mjs": {
@@ -3655,7 +3655,7 @@
       "executable": false
     },
     "tests/e2e/restore-ui-journey.mjs": {
-      "sha256": "6da10ad5395925fd79013477eefb36d7c0ab593c52772c4d7d9caa3dcb1caa42",
+      "sha256": "922c3cb21976edfbede379067997628e251aba02c24f87042a56157cccead1fa",
       "executable": false
     },
     "tests/e2e/route-fetch.mjs": {

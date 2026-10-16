@@ -27,8 +27,8 @@ export async function restoreAccessJourney({page,installation,cookie,peer,review
  const capture=async name=>{await panel.scrollIntoViewIfNeeded();await page.screenshot({path:join(evidence,name+'.png'),fullPage:false});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Settings fits the viewport');};
  const loading=holdRequest(page,endpoint);await loading.start();
  await page.setViewportSize({width:1440,height:1000});await page.goto(installation.origin+'/app/settings#after-restore');await loading.seen;
- await expect(panel.getByRole('status')).toBeVisible();await capture('restore-loading-1440');await loading.finish();
- const people=panel.getByRole('list',{name:'Restored people'});await expect(people).toBeVisible();
+ // The document now supplies the initial review. A held background refresh must keep it usable.
+ const people=panel.getByRole('list',{name:'Restored people'});await expect(people).toBeVisible();await expect(panel.getByRole('status')).toHaveCount(0);await capture('restore-ready-1440');await loading.finish();
  const status=await(await installation.req('/api/data/restore','GET',undefined,cookie)).json(),person=status.operators.find(row=>row.id===peer);
  assert(person&&!person.approved&&person.eligible);
  const removed=installation.sql('SELECT id FROM operators WHERE removed_at IS NOT NULL');assert(removed.length>0);

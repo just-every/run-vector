@@ -284,6 +284,7 @@ try {
   assert.deepEqual(decoded.result, {
     id: ids.sarah,
     name: "Sarah Runtime SSR",
+    resources: {},
     editorConfigured: false,
   });
   assert.equal(decoded.error, undefined);
@@ -565,7 +566,7 @@ try {
     "BASE-OPS-005",
     "Actual emitted scheduled export recovers a persisted file-removal intent; download denies removed bytes, metadata is erased, and repeated local cron produces one deletion audit.",
   );
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, args: ["--use-mock-keychain", "--password-store=basic"] });
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
   });
