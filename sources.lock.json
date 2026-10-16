@@ -1743,11 +1743,11 @@
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
-      "sha256": "3e7a5a901227c8600bdb1082b769110a12b68c3362d67e449964892bbee57822",
+      "sha256": "fd342d9244422854461f3dd4740bf35fea0b6a2cdd6482f7362a7c6b448e537b",
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "3acd80c7eb8be75f29b175329eb7199b9c6a514184deee1451d74a2d7b3ae868",
+      "sha256": "1dfaba29ae22de579553cb2c11d01779cb12ce155e4f511d69e927b1f1e81451",
       "executable": false
     },
     "src/core/editor/config.server.ts": {

@@ -113,13 +113,13 @@ export async function handleRequest(
   if (admitted) response.headers.append('Server-Timing', timings.join(', '));
   return response.headers.get("content-type")?.includes("text/html")?editorDocument(response,env):response;
 }
-const worker = withDemo({
+export const documentWorker = withDemo({
   fetch: handleRequest,
   scheduled,
 }, { seed: seedDemo });
 export default {
-  ...worker,
-  async fetch(...args: Parameters<typeof worker.fetch>) {
-    return encodePrivateDocument(args[0], await worker.fetch(...args));
+  ...documentWorker,
+  async fetch(...args: Parameters<typeof documentWorker.fetch>) {
+    return encodePrivateDocument(args[0], await documentWorker.fetch(...args));
   },
 };
