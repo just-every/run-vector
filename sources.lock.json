@@ -1306,10 +1306,6 @@
       "sha256": "876f708136f0001b6e23871c54f4a1c7fc9c78f29882a55b9a9c7c793ad4466d",
       "executable": false
     },
-    "src/base/operator-auth-policy.d.ts": {
-      "sha256": "06f31f2222ab8b161291a8389182cebbc78e7c36cd08527500c8620b4f913c2d",
-      "executable": false
-    },
     "src/base/page-style.ts": {
       "sha256": "58211f173d3b6d9245e80f217c2f3e4e743d59a559e63817865644a991215111",
       "executable": false
@@ -1796,6 +1792,10 @@
     },
     "src/core/features/auth/mutation-database.ts": {
       "sha256": "50b0beb182877bd3c969993f88456f331e7f32ebae30e7eb00c422951ccb0980",
+      "executable": false
+    },
+    "src/core/features/auth/operator-auth-policy.d.ts": {
+      "sha256": "f321c09d252417be9a679c34a2d780d93e1653158dd5cd8947ab5d24a1865cc4",
       "executable": false
     },
     "src/core/features/auth/owner-claim.server.ts": {
