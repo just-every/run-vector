@@ -1,7 +1,7 @@
 import { editorLeaf } from '../core/editor/leaf';
 import { createFileRoute } from '@tanstack/react-router'
 import { SignInPage } from '../core/app/public/sign-in-page'
-import { normalizeEmail } from '../../vendor/base/operator-auth/index.mjs'
+import { normalizeEmail } from '../../vendor/base/operator-auth/policy.mjs'
 import { loadSignIn } from '../core/app/public/sign-in-loader'
 export const Route = createFileRoute('/signin')({
   validateSearch: (search: Record<string, unknown>): { returnTo?: string; login_hint?: string } => {
