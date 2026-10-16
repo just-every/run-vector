@@ -36,7 +36,10 @@ await contract(
   "real first-owner collaboration at mobile",
   async () => {
     try {
-      browser = await chromium.launch({ headless: true });
+      browser = await chromium.launch({
+        headless: true,
+        args: ["--use-mock-keychain", "--password-store=basic"],
+      });
       for (const viewport of [
         { width: 390, height: 844 },
       ]) {

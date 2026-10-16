@@ -3378,6 +3378,10 @@
       "sha256": "6fc01157e782ad77c2fe60d5cf7d604940d6e4c37c08c3d2d91cdb7d0c59599b",
       "executable": false
     },
+    "tests/e2e/collaboration-mail-checks.mjs": {
+      "sha256": "f287f00a79032e5467287563dc1ddbaacd2ffbdaf82c585264f7edf60bd47dff",
+      "executable": false
+    },
     "tests/e2e/collaboration-navigation.mjs": {
       "sha256": "8d57c3c10cb49938951a0b0f8eb9ac06e5a75f542c1a09120601dc562e245f0a",
       "executable": false
@@ -3387,7 +3391,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-preferences.mjs": {
-      "sha256": "3bc0eb2d3e8c5ebfe437c83b5167a8d66ede3b9b1c787aa8ec33fa108448f32b",
+      "sha256": "b9c723986fda6015ac1045967b75dad8a3cc6aebaf0e8945c7e3a2491941fd28",
       "executable": false
     },
     "tests/e2e/collaboration-reads.mjs": {
@@ -3395,7 +3399,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-runtime.mjs": {
-      "sha256": "ddcf902a840f07e8e93794f628ef93ea9ab5b852e8d93f3637204d013a74e518",
+      "sha256": "09a66cec9448b72ba5caa4e12eb5da0c791bb90f825d1bb3cd38bbfd3fc7e4bd",
       "executable": false
     },
     "tests/e2e/collaboration-support.mjs": {
@@ -3931,7 +3935,7 @@
       "executable": false
     },
     "tests/worker/issue-deletion-cascade-fixture.ts": {
-      "sha256": "4d66f756f3f9e4f3eec0f7af96b529e8d229f00727150679ef0d1a7773d2dfe8",
+      "sha256": "4f322984862e610db438dd3706b59645f8c991d2556aba9c432c9c91c218304f",
       "executable": false
     },
     "tests/worker/issue-deletion-cascade.test.ts": {

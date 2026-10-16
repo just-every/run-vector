@@ -2,6 +2,7 @@ import { navigate } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
 import { poll } from "./admin-runtime-support.mjs";
 import { counts, ownSubscription, receipt } from "./collaboration-support.mjs";
+import { checkNotificationMail } from "./collaboration-mail-checks.mjs";
 export async function collaborationPreferences({
   page,
   peer,
@@ -144,21 +145,20 @@ export async function collaborationPreferences({
         "optout creates no mail intent",
       );
       const captures = runtime.sql(
-        "SELECT * FROM (SELECT json_extract(message,'$.deliveryId') AS delivery_id,json_extract(message,'$.to[0]') AS recipient,json_extract(message,'$.subject') AS subject,json_extract(message,'$.text') AS text,created_at FROM rer_mail_development_outbox WHERE json_extract(message,'$.text') LIKE '%'||char(10)||'Sign in to view this issue.')",
+        "SELECT outbox.message, delivery.id AS delivery_id, notification.causes_json FROM rer_mail_development_outbox outbox JOIN notification_deliveries delivery ON delivery.id=json_extract(outbox.message,'$.deliveryId') JOIN notifications notification ON notification.id=delivery.notification_id",
       );
       assert.equal(captures.length, 4);
+      const current = runtime.sql(`SELECT description,expected_outcome,customer_impact FROM issues WHERE id='${issue.id}'`)[0];
+      const privateValues = [
+        ...Object.values(current),
+        ...runtime.sql(`SELECT body FROM issue_comments WHERE issue_id='${issue.id}'`).map(comment => comment.body),
+      ];
+      const reasons = new Set();
       for (const mail of captures) {
-        assert.equal(mail.recipient, operator.email);
-        assert.equal(mail.subject, `${issue.identifier}: ${issue.title}`);
-        assert.equal(
-          mail.text,
-          `${issue.identifier}: ${issue.title}\nBy: ${owner.name}\n\n${runtime.base}/app/issues/${issue.identifier}\nSign in to view this issue.`,
-        );
-        assert.doesNotMatch(
-          JSON.stringify(mail),
-          /PRIVATE_DESCRIPTION_SENTINEL|PRIVATE_COMMENT_SENTINEL/,
-        );
+        for (const reason of checkNotificationMail(mail, { issue, operator, owner, base: runtime.base, privateValues }))
+          reasons.add(reason);
       }
+      assert.ok(reasons.has("assignment") && reasons.has("mention"), "both assignment and mention emails explain their distinct causes");
       await navigate(peer, runtime.base + "/app/inbox");
       await peerCapture("inbox-email-optout-retained");
     },

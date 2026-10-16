@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import { ids, create } from "./bulk-parent-fixture";
 import { fixture } from "./parent-deletion-fixture";
+import { notificationMessage, type Delivery } from "../../src/core/features/notifications/mail";
 const at = "2026-10-01T00:00:00Z";
 export async function cascadeFixture(prefix: string) {
   const family = await fixture({title:prefix+" native issue",description:prefix+" private issue body"}),
@@ -179,21 +180,14 @@ export async function cascadeFixture(prefix: string) {
       at,
     ),
   ]);
-  const email = await env.DB.prepare("SELECT email FROM operators WHERE id=?")
-    .bind(ids.maya)
-    .first<string>("email");
+  const delivery = await env.DB.prepare(
+    "SELECT d.*,o.email FROM notification_deliveries d JOIN operators o ON o.id=d.recipient_id WHERE d.id=?",
+  ).bind(id("delivery")).first<Delivery>();
   await q(
     "INSERT INTO rer_mail_development_outbox(id,created_at,message) VALUES(?,?,?)",
     id("capture"),
     Date.now(),
-    JSON.stringify({
-      deliveryId: id("delivery"),
-      to: [email],
-      subject: "Erased mail",
-      text:
-        issue.identifier +
-        ": Erased mail title\nBy: Sarah\n\nhttps://vector.test/app\nSign in to view this issue.",
-    }),
+    JSON.stringify(notificationMessage(env, { ...delivery!, assignment: 1, mention: 0 })),
   ).run();
   const selections: Record<string, { where: string; params: any[] }> =
     Object.fromEntries(
