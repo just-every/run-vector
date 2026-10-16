@@ -1,7 +1,7 @@
 import { finishFirstRun } from './first-run-fixture.mjs';
 import assert from 'node:assert/strict';
 import { spawn, execFileSync } from 'node:child_process';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from '@playwright/test';
 import { readLocalD1 } from './local-d1-read.mjs';
@@ -216,9 +216,13 @@ async function managedMailRuntime(browser) {
     });
     const page=await context.newPage(); let submissions=0;
     page.on('request',request=>{if(request.url()===appOrigin+'/auth/request')submissions++;});
+    // Follow the same generated app handoff that RER's Open app consumes.
+    const spec=JSON.parse(await readFile('management/integration/deployment-spec.json','utf8'));
+    const signInUrl=new URL(spec.surfaces.app.signIn.path,appOrigin);
+    if(spec.surfaces.app.signIn.loginHint) signInUrl.searchParams.set('login_hint','alex.morgan@example.test');
     for(const width of [1440,390]) {
       await page.setViewportSize({width,height:width===1440?1000:844});
-      await page.goto(appOrigin+'/signin?login_hint='+encodeURIComponent('alex.morgan@example.test'));
+      await page.goto(signInUrl.href);
       await page.getByRole('button',{name:'Send sign-in link',exact:true}).waitFor({state:'visible'});
       assert.equal(await page.getByLabel('Email',{exact:true}).inputValue(),'alex.morgan@example.test');
       assert.equal(submissions,0); assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));

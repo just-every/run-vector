@@ -475,7 +475,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "430996047bb59097ae524a28de296d1ef993d6a378d826fe69d0bb40c82823e3",
+      "sha256": "020ba7d658520ed73a79110eb62e55f6634f3532d69f5da5b14609918e35cf6a",
       "executable": false
     },
     "BASELINE.md": {
@@ -675,7 +675,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "98f5555657a1da7cab7b19d3e66409da60f81854e4e99a4689552104702a3b4f",
+      "sha256": "4ee353b985f4828f8673f40ee5e4eea92ed0e4af61d5490c27401f527d52f7f3",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -887,11 +887,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "a5ff7640f3afd10c5e6934a5a50ad2dd7f07315e77ff4090c15d4eafc63b8297",
+      "sha256": "a55eca9bb46581b456bcd30d821830e4b584ad028b443447770473a8ea09e34d",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "7fc5c7deff476d1a5d713328dc595b2748a6bb07cdff9ed23e20ffc1af96d76a",
+      "sha256": "e3065613a57f3f0850719b90d10f99979efe657afc7a24deca65b460268442bc",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -1015,7 +1015,7 @@
       "executable": false
     },
     "scripts/delivery/base/declarations.mjs": {
-      "sha256": "00924a1564e172d4d210a32936afe757870e226796465c11ac148e39d0ea0a85",
+      "sha256": "d8cf67d18fdc6ff027d323d0986a7815b52c71df01c4cbb3dde428cfc7f55a0c",
       "executable": false
     },
     "scripts/delivery/base/export.mjs": {
@@ -1051,7 +1051,7 @@
       "executable": false
     },
     "scripts/delivery/base/packaging.json": {
-      "sha256": "61df962fc3f120bfcde9e7e5e9f088931a5faa6a3dd7d710a0eef7920e67218d",
+      "sha256": "58c7b67be2e886456fde6a3e47c9d4decf716537b0a3b9fe0f1e1f7bd76ecc05",
       "executable": false
     },
     "scripts/delivery/base/paths.mjs": {
@@ -3283,7 +3283,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "0336560c75846ef351a273cbe60def3f4fe6e5b327b3ae2248f15a28fcaf18e7",
+      "sha256": "3028bb56660069d75cd0d91894f33599e007c09b0b53e5d0989ca58e4d30a8ed",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {

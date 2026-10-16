@@ -103,6 +103,10 @@
       "surfaces": {
         "app": {
           "path": "/",
+          "signIn": {
+            "path": "/signin",
+            "loginHint": true
+          },
           "originVariable": "APP_ORIGIN",
           "readiness": [
             {
