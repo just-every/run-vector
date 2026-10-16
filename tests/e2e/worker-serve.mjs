@@ -34,12 +34,13 @@ if (!config || !port || !persist) throw new Error("worker-serve: --config, --por
 
 const { workerOptions, main } = unstable_getMiniflareWorkerOptions(config);
 // The built config is no_bundle with ESModule rules for **/*.js and **/*.mjs:
-// like wrangler, load every such file beside the entry, entry first.
+// like wrangler, load every runtime module beside the entry, entry first.
+// The enforcing outbound transport also imports a compiled TLS WebAssembly module.
 const root = dirname(config), entry = resolve(root, main);
 const modules = readdirSync(root, { recursive: true })
-  .filter((name) => /\.m?js$/.test(name)).map((name) => join(root, name))
+  .filter((name) => /\.(?:m?js|wasm)$/.test(name)).map((name) => join(root, name))
   .sort((a, b) => (b === entry) - (a === entry))
-  .map((path) => ({ type: "ESModule", path }));
+  .map((path) => ({ type: path.endsWith(".wasm") ? "CompiledWasm" : "ESModule", path }));
 const worker = new Miniflare(convertV4MiniflareOptions({
   host, port,
   rootPath: root,

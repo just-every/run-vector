@@ -7,6 +7,8 @@ import { jiraRowEffects,jiraCompletedAt } from './jira-effects';
 import { apiPayloadKey } from './api-file';
 export { stableImportId };
 import { createIssueInputSchema } from '../../issues/input';
+import { importValidationErrors } from './validation';
+import { importFieldLabel } from './field-labels';
 import { emptyIssueValue,type NativeIssueValue } from './native-snapshot';
 import { importField,resolveReference,stringField,listField,type ImportReferences } from './references';
 import { linearPriority,isLinear } from './linear';
@@ -26,7 +28,7 @@ export function rowOmissions(record:SourceRecord,input:ImportInput):ImportDiagno
   if(archived)result.push({row,field:'archivedAt',code:'unsupported_archive_state',message:'Vector has no issue archive state. The original Archived value is retained; importing this row does not archive it.'});
   const used=new Set(Object.values(input.mapping));
   for(const [field,value] of Object.entries(payload))if(field!==apiPayloadKey && !used.has(field) && value!=='' && value!==null)
-    result.push({row,field,code:'unmapped_column',message:'This column has no native mapping; its value remains in the exact original.'});
+    result.push({row,field,code:'unmapped_column',message:'This column is not mapped to a Vector field; its value stays in the original file.'});
   return result;
 }
 export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportReferences,actor:ImportActor,effectiveAt:string,sequence:number,inRun:Set<string>=new Set()): MappedRow {
@@ -37,7 +39,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const take=<T>(field:ImportField,read:()=>T):T|undefined=>{
     try{return read();}catch(error){errors.push({row,field,code:'invalid_field',message:error instanceof Error?error.message:'Invalid field.'});return undefined;}
   };
-  const text=(field:ImportField,max?:number)=>stringField(importField(input,payload,field),field,max);
+  const text=(field:ImportField,max?:number)=>stringField(importField(input,payload,field),importFieldLabel(field),max);
   const team=take('team',()=>resolveReference(refs.teams,text('team'), 'team',input));
   const status=team?take('status',()=>resolveReference(refs.statuses.filter(status=>status.team_id===team.id),text('status'),'status',input,String(team.name),input.format==='jira-csv'&&!payload.status)):undefined;
   // A person who is not an active operator (someone who left, say) does not
@@ -82,13 +84,13 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const api=input.format==='jira-csv'?jiraRowEffects(record,input,actor,effectiveAt,errors):apiRowEffects(payload,record.sourceId,row,input,actor,effectiveAt,inRun,errors,omissions);
   const completedAt=input.format==='jira-csv'?jiraCompletedAt(payload,input,String(status?.category),createdAt,updatedAt,effectiveAt,row,errors,omissions):status?.category==='completed'?updatedAt:null;
   if(api){result.parent||=api.parent;result.duplicateOf||=api.duplicateOf;result.blocks=api.blocks;}
-  if(status?.category==='intake')errors.push({row,field:'status',code:'intake_requires_evidence',message:'File imports cannot create signal Intake without its evidence. Choose an ordinary native workflow status explicitly.'});
+  if(status?.category==='intake')errors.push({row,field:'status',code:'intake_requires_evidence',message:'File imports cannot create signal Intake without its evidence. Choose a status for work that is ready to start, in progress or finished.'});
   if(status?.category==='duplicate' && !result.duplicateOf)errors.push({row,field:'duplicateOf',code:'duplicate_reference_required',message:'A Duplicate status needs an explicit duplicate-of reference.'});
   // Finished work's past cycle stays in the original; Vector commits only open work to a cycle.
   const terminal=['completed','canceled','duplicate'].includes(String(status?.category));
   if(cycle && terminal)omissions.push({row,field:'cycle',code:'terminal_cycle_omitted',message:'Finished issues are not committed to a cycle. The cycle stays in the original.'});
   const validation=createIssueInputSchema.safeParse({title,description,teamId:team?.id,statusId:status?.id,assigneeOperatorId:assignee?.id??null,projectId:project?.id??null,cycleId:terminal?null:cycle?.id??null,priority,labelIds,estimate,dueDate,expectedOutcome,customerImpact,customFields:{}});
-  if(!validation.success)for(const issue of validation.error.issues)errors.push({row,field:String(issue.path[0]),code:'invalid_native_field',message:issue.message});
+  if(!validation.success)errors.push(...importValidationErrors(validation.error.issues,row,errors));
   if(errors.length || !validation.success || !team || !status || !createdAt || !updatedAt)return result;
   const data=validation.data,id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
   const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});

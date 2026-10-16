@@ -37,15 +37,15 @@ export async function exerciseJiraPublicJourney({page,runtime,native,directory,p
  await panel.getByRole('heading',{name:'Data / Move in',exact:true}).waitFor();
  await panel.getByLabel('File format',{exact:true}).selectOption('jira-csv');
  await capture('jira-choice');
- await panel.getByLabel('Stable source name',{exact:true}).fill('jira-public-300');
+ await panel.getByLabel('Import source name',{exact:true}).fill('jira-public-300');
  await file(baseline);
  await panel.getByLabel('Default team',{exact:true}).selectOption(native.team.id);
  await panel.getByLabel('Source UTC offset',{exact:true}).fill('+10:00');
  const reference=async(kind,source,id)=>{
-  await panel.getByLabel('Reference kind',{exact:true}).selectOption(kind);
-  await panel.getByLabel('Source name',{exact:true}).fill(source);
-  await panel.getByLabel('Native record',{exact:true}).selectOption(id);
-  await panel.getByRole('button',{name:'Add reference mapping',exact:true}).click();
+  await panel.getByLabel('Field to match',{exact:true}).selectOption(kind);
+  await panel.getByLabel('Name in your file',{exact:true}).fill(source);
+  await panel.getByLabel('Value in Vector',{exact:true}).selectOption(id);
+  await panel.getByRole('button',{name:'Add name mapping',exact:true}).click();
  };
  for(const [source,category] of [['To Do','unstarted'],['In Progress','started'],['Done','completed']]) {
   await reference('status',native.team.name+'/'+source,native.statuses[category].id);
@@ -103,7 +103,7 @@ export async function exerciseJiraPublicJourney({page,runtime,native,directory,p
   await section.getByRole('button',{name:'Close report',exact:true}).click();
  } finally {page.off('response',observe);}
  const ambiguous=generateJiraFixture({variant:'ambiguous-numeric-dates'});
- await panel.getByLabel('Stable source name',{exact:true}).fill('jira-ambiguous-refusal');
+ await panel.getByLabel('Import source name',{exact:true}).fill('jira-ambiguous-refusal');
  await file(ambiguous);const refusal=await preview(ambiguous);
  assert.equal(refusal.ready,false);
  assert(refusal.errors.some(row=>row.code==='jira_ambiguous_dates'));

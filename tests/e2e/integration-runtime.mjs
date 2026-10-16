@@ -8,7 +8,7 @@ import {exerciseIntegrationSettings} from './integration-settings-journey.mjs';
 const runtime=createUiRuntime(),evidence=resolve('evidence/integrations');let browser;
 const proof={passed:false,widths:[],credentialsCaptured:false,liveProvider:false};
 try{
- await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
+ await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const admin=await(await runtime.req('/api/settings/administration',{headers:{Cookie:cookie}})).json(),team=admin.teams.find(row=>!row.archivedAt);
  for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
  proof.passed=true;

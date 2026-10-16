@@ -19,6 +19,8 @@ export const cycleSnapshotSchema = z.object({
     z.object({
       identifier: z.string(),
       projectId: z.string().nullable(),
+      // Older immutable snapshots did not record a readable project name.
+      projectName: z.string().nullable().optional(),
       estimate: z.number().nullable(),
       category: z.string(),
     }),

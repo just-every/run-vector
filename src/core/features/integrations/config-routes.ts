@@ -8,12 +8,15 @@ import { recordDevMint } from './dev-credentials';
 import { tokenInput,sourceConfigInput,rotationInput,destinationInput,githubInput } from './config-input';
 import { registerSource,rotateSource,registerDestination,registerGithub,revokeConfiguration } from './config-storage';
 import { reenterCredential } from './reenter';
-import { egressConfigured } from './outbound';
+import { deliveryConfigured } from './outbound';
+import { configureDelivery, deliverySetupInput } from './delivery-setup';
+import { sendTestWebhook } from './test-webhook';
 import { NativeWebhookRepository } from './outbound-repository';
 import { destinationSigningProblems } from './destination-signing';
 import { IntegrationError } from './errors';
 import { requireIssueProjection } from '../issues/projection-access';
-function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_integration_input');return result.data;}
+const inputHelp:Record<string,string>={name:'Enter a name for this connection.',sourceId:'Use a source ID with letters, numbers, dots, underscores or hyphens.',teamId:'Choose a team for new reports.',repository:'Enter the GitHub owner and repository separated by /, for example just-every/run-vector.',overlapHours:'Choose a whole number of hours from 0 to 24.',accountId:'Enter the 32-character Cloudflare account ID.',apiToken:'Enter the Cloudflare read-only API token.',scopes:'Choose at least one API permission.',expiresAt:'Choose a valid future expiry date.'};
+function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_integration_input',inputHelp[String(result.error.issues[0]?.path[0])]??'Check the form values and try again.');return result.data;}
 const id=z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
 export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  app.get('/settings/integrations',async c=>{
@@ -27,8 +30,10 @@ export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
    {sql:'SELECT e.id,e.event,e.created_at AS createdAt,e.enqueued_at AS enqueuedAt,EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id) AS held,EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id) AS erased FROM vector_webhook_events e WHERE e.workspace_id=? ORDER BY created_at DESC,id LIMIT 100',params:[owner.workspace]},
   ]);
   const problems=await destinationSigningProblems(c.env,owner.workspace),destinations=(rows[1] as {id:string}[]).map(row=>({...row,signingProblem:problems.get(row.id)??null,requiresReentry:problems.has(row.id)?1:0}));
-  return c.json({sources:rows[0],destinations,github:rows[2],tokens:rows[3],deliveries:rows[4],events:rows[5],outboundConfigured:egressConfigured(c.env)});
+  return c.json({sources:(rows[0] as {id:string}[]).map(row=>({...row,workspaceId:owner.workspace,receiver:c.env.APP_ORIGIN+'/api/integrations/sources/'+row.id+'/events'})),destinations,github:(rows[2] as {id:string}[]).map(row=>({...row,receiver:c.env.APP_ORIGIN+'/api/integrations/github/'+row.id})),tokens:rows[3],deliveries:rows[4],events:rows[5],outboundConfigured:await deliveryConfigured(c.env,owner.workspace),outboundSetupAvailable:true});
  });
+ app.post('/settings/integrations/delivery',async c=>c.json(await configureDelivery(c.env,await integrationOwner(c.env,c.req.raw),parse(deliverySetupInput,await readRequestJson(c.req.raw)))));
+ app.post('/settings/integrations/destinations/:id/test',async c=>c.json(await sendTestWebhook(c.env,await integrationOwner(c.env,c.req.raw),parse(id,c.req.param('id')))));
  app.post('/settings/integrations/tokens',async c=>{const owner=await integrationOwner(c.env,c.req.raw);const issued=await ownerTokens(c.env.DB,owner).issue(owner,parse(tokenInput,await readRequestJson(c.req.raw)));await recordDevMint(c.env.DB,owner.fence.sessionId,issued.credential.id);return c.json(issued,201);});
  app.get('/settings/integrations/tokens/usage',async c=>{const owner=await integrationOwner(c.env,c.req.raw);return c.json({usage:await ownerTokens(c.env.DB,owner).usage(owner)});});
  app.delete('/settings/integrations/tokens/:id',async c=>{const owner=await integrationOwner(c.env,c.req.raw),selected=c.req.param('id');if(!/^[a-f0-9-]{36}$/.test(selected))throw new IntegrationError(400,'invalid_token_id');return c.json(await ownerTokens(c.env.DB,owner).revoke(owner,selected));});

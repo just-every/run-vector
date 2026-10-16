@@ -50,6 +50,9 @@ check(
       snapshot = closed.snapshot!;
     expect(closed.cycle.closedAt).toBe("2026-09-08T00:01:00.000Z");
     expect(snapshot.committed).toHaveLength(7);
+    expect(
+      snapshot.committed.every((issue) => issue.projectName === project.name),
+    ).toBe(true);
     expect(snapshot.completed).toEqual([issues[4].identifier]);
     expect(snapshot.progress).toMatchObject({
       unit: "issue-count",
@@ -105,6 +108,9 @@ check(
         })
       ).status,
     ).toBe(400);
+    await f.mutate("/settings/projects/" + project.id, "PATCH", {
+      name: "Renamed after closure",
+    });
     await f.mutate("/settings", "PATCH", { timezone: "Australia/Brisbane" });
     expect((await f.detail()).snapshot).toEqual(snapshot);
     expect((await f.detail()).workspaceTimezone).toBe("UTC");

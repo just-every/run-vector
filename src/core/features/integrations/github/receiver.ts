@@ -23,8 +23,12 @@ export async function receiveGithub(env:WorkerBindings,request:Request,id:string
  const requireAuthority=async()=>{if(!await admitted(env.DB,{sql:authority,params:authValues}))throw new IntegrationError(401,'invalid_github_receiver');};
  const bytes=await rawIntegrationBody(request),secret=await openSecret(env,'github:'+id,key.encrypted);
  if(!await signature(secret,request.headers.get('X-Hub-Signature-256'),bytes))throw new IntegrationError(401,'invalid_github_signature');
- const delivery=request.headers.get('X-GitHub-Delivery');if(request.headers.get('X-GitHub-Event')!=='pull_request'||!delivery||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(delivery))throw new IntegrationError(400,'invalid_github_delivery');
+ const delivery=request.headers.get('X-GitHub-Delivery');if(!['pull_request','ping'].includes(request.headers.get('X-GitHub-Event')??'')||!delivery||!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(delivery))throw new IntegrationError(400,'invalid_github_delivery');
  let raw;try{raw=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw new IntegrationError(400,'invalid_github_payload');}
+ if(request.headers.get('X-GitHub-Event')==='ping'){
+  if(raw?.repository?.full_name?.toLowerCase()!==repository.repository)throw new IntegrationError(400,'github_repository_mismatch');
+  await requireAuthority();return {diagnostic:'connected'};
+ }
  const parsed=githubPayload.safeParse(raw);if(!parsed.success)throw new IntegrationError(400,'invalid_github_payload');
  const input=parsed.data,pr=input.pull_request;if(input.repository.full_name.toLowerCase()!==repository.repository||input.number!==pr.number)throw new IntegrationError(400,'github_repository_mismatch');
  let url;try{url=new URL(pr.html_url);}catch{throw new IntegrationError(400,'invalid_pull_request_url');}

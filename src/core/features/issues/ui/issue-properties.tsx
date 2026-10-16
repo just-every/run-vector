@@ -11,7 +11,7 @@ export function IssueProperties({
 }: {
   issue: IssueDetailData;
   options: StreamOptions | null;
-  onRefresh: () => void;
+  onRefresh: (receipt?: IssueDetailData) => void;
 }) {
   const [receipt, setReceipt] = useState<IssueDetailData | null>(null);
   const issue =
@@ -40,7 +40,7 @@ export function IssueProperties({
         },
       );
       setReceipt(updated);
-      onRefresh();
+      onRefresh(updated);
     } catch (e) {
       const stale = e instanceof ApiError && e.status === 409;
       setConflict(stale);
@@ -58,12 +58,14 @@ export function IssueProperties({
   async function reload() {
     setBusy(true);
     try {
-      setReceipt(
-        await fetchJson(`/api/issues/${issue.identifier}`, issueDetailSchema),
+      const updated = await fetchJson(
+        `/api/issues/${issue.identifier}`,
+        issueDetailSchema,
       );
+      setReceipt(updated);
       setConflict(false);
       setError("");
-      onRefresh();
+      onRefresh(updated);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Reload failed.");
     } finally {

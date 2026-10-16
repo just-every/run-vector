@@ -10,9 +10,9 @@ A signed source is a tool you trust to report problems, such as error tracking o
 
 1. Under **Signed signal sources**, give the source a name and a short ID that never changes, such as `sentry`.
 2. Choose the team its reports go to.
-3. Choose **Register source**, then give the tool the secret, the receiver address and the two IDs Vector shows you.
+3. Choose **Register source** and copy the generated secret. Use **Send signed test report** to create a real report, then copy the ready-to-run sender from the setup panel into your automation. The page supplies its receiver and other connection values.
 
-The tool signs every report with that secret, and Vector turns away anything unsigned or signed with the wrong one. A report never reopens an issue someone has already decided. The format a tool sends is in the [integration reference](../INTEGRATIONS.md).
+The supplied sender signs every report with that secret, and Vector turns away anything unsigned or signed with the wrong one. A report never reopens an issue someone has already decided. Setup and testing are complete on the page; the [integration reference](../INTEGRATIONS.md) gives protocol details.
 
 To change a source's secret, set how many hours the old one should keep working (up to 24) and choose **Rotate**. **Revoke** stops the source at once.
 
@@ -20,8 +20,8 @@ To change a source's secret, set how many hours the old one should keep working 
 
 Vector can send a signed message to an address of yours when an issue is created, changed or completed. The message carries the issue's identifier, title and status, never its description or files.
 
-1. Under **Outbound webhooks**, give the destination a name and its HTTPS address.
-2. Choose **Register destination** and give the receiving service the secret Vector shows you.
+1. Under **Outbound webhooks**, use **Enable delivery**. The page explains how to create a read-only Cloudflare token to identify and exclude your hosting domains; Vector does not save the token. Then give the destination a name and its HTTPS address.
+2. Choose **Register destination** and give the receiving service the secret Vector shows you. The page includes a signature verifier to copy into your receiver. Choose **Send test** and look for **accepted** plus the matching delivery ID at the receiver.
 
 Settings says whether sending is set up for your installation. Until it is, messages wait and are sent once it is. **Delivery history** shows each message and how it went. When Vector cannot tell whether a message arrived, it does not send it again; check with the receiving service and record what happened with **Reconcile this delivery**.
 

@@ -6,10 +6,11 @@ import { openSecret } from './secrets';
 import { NativeWebhookRepository } from './outbound-repository';
 import { restoredEffectsHeld } from '../data/restore-authority';
 import { destinationSigningProblems } from './destination-signing';
+import { deliveryOwnership } from './delivery-setup';
 export const egressConfigured=(env:WorkerBindings)=>env.RER_DEMO==='1'||env.INTEGRATION_EGRESS_POLICY==='public-dns-pinned-tls-v1'&&typeof env.INTEGRATION_EGRESS?.send==='function';
+export const deliveryConfigured=async(env:WorkerBindings,workspace:string)=>egressConfigured(env)||Boolean(await deliveryOwnership(env,workspace));
 const keyBytes=(value:string)=>new Uint8Array(value.match(/../g)!.map(part=>parseInt(part,16)));
 export function outboundService(env:WorkerBindings,workspace:string,now:()=>number=Date.now,skipDestinations:readonly string[]=[]){
- if(!egressConfigured(env))throw new IntegrationError(503,'outbound_unconfigured','Provision an enforcing public DNS, pinned TLS RPC binding before dispatch.');
  const repository=new NativeWebhookRepository(new D1SqlDatabase(env.DB),workspace);repository.skipDestinations=skipDestinations;
  const configuration=async(id:string)=>{
   const row=await env.DB.prepare(`SELECT d.url,k.encrypted FROM vector_webhook_destinations d JOIN vector_integration_secret_keys k ON k.identity='destination:'||d.id AND k.slot='current' WHERE d.id=? AND d.workspace_id=? AND d.enabled=1 AND d.revoked_at IS NULL`).bind(id,workspace).first<{url:string;encrypted:string}>();
@@ -22,7 +23,13 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
   if(wire.url!==current.url||(await env.DB.prepare('SELECT 1 FROM vector_webhook_restore_holds WHERE namespace=? AND id=?').bind(workspace,eventId).first()))throw new IntegrationError(503,'outbound_delivery_held');
   await verifyWebhook({body:wire.body,headers:wire.headers,key:current.key,tenant:workspace,destinationId:destination,now:now()});
   if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,eventId).first())throw new IntegrationError(410,'outbound_issue_deleted');
-  const send = () => env.INTEGRATION_EGRESS!.send(wire);
+  const send = async () => {
+   if(egressConfigured(env)&&env.INTEGRATION_EGRESS)return env.INTEGRATION_EGRESS.send(wire);
+   const ownership=await deliveryOwnership(env,workspace);
+   if(!ownership)throw new IntegrationError(503,'outbound_unconfigured','Enable delivery in Settings → Integrations.');
+   const {nativeEgress}=await import('./native-egress.mjs');
+   return nativeEgress(ownership).send(wire);
+  };
   if (env.RER_DEMO !== '1') return send();
   const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs');
   return demoEffect(send, () => ({status:204,headers:{},body:''}));
@@ -31,10 +38,12 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
 }
 /** A destination that cannot sign keeps its events queued, unsent, and is reported as held; every other destination proceeds. */
 export async function dispatchWebhooks(env:WorkerBindings){
- if(!egressConfigured(env)||await restoredEffectsHeld(env.DB))return {configured:egressConfigured(env),enqueued:0,dispatched:0,held:0};
+ if(await restoredEffectsHeld(env.DB))return {configured:false,enqueued:0,dispatched:0,held:0};
  const workspaces=(await env.DB.prepare('SELECT DISTINCT workspace_id FROM vector_webhook_destinations WHERE enabled=1 AND revoked_at IS NULL LIMIT 100').all<{workspace_id:string}>()).results;
- let enqueued=0,dispatched=0,held=0;
+ let enqueued=0,dispatched=0,held=0,configured=false;
  for(const {workspace_id:workspace} of workspaces){
+  if(!await deliveryConfigured(env,workspace))continue;
+  configured=true;
   const blocked=[...(await destinationSigningProblems(env,workspace)).keys()],service=outboundService(env,workspace,Date.now,blocked);
   const unsendable=blocked.length?` AND e.destination_id NOT IN (${blocked.map(()=>'?').join(',')})`:'';
   held+=blocked.length?(await env.DB.prepare(`SELECT count(*) AS n FROM vector_webhook_events e WHERE e.workspace_id=? AND e.enqueued_at IS NULL AND e.destination_id IN (${blocked.map(()=>'?').join(',')}) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id)`).bind(workspace,...blocked).first<{n:number}>())!.n:0;
@@ -46,5 +55,5 @@ export async function dispatchWebhooks(env:WorkerBindings){
   }
   dispatched+=(await service.dispatchDue(20)).length;
  }
- return {configured:true,enqueued,dispatched,held};
+ return {configured,enqueued,dispatched,held};
 }

@@ -20,7 +20,7 @@ export async function parseImport(input: ImportInput): Promise<ParsedImport> {
   const sourceId = (payload: Record<string,Json>, index: number) => {
     const field = input.mapping.sourceId, id = field ? payload[field] : undefined;
     if (typeof id !== 'string' || !id.trim() || id.length > 128) {
-      errors.push({ row:index, field:'sourceId',code:'invalid_source_id',message:'Map a nonempty stable source record ID (at most 128 characters).'});
+      errors.push({ row:index, field:'sourceId',code:'invalid_source_id',message:'Choose a column with an original issue ID for every row (1 to 128 characters). Keep these IDs unchanged when importing this source again.'});
       return 'row:'+index;
     }
     return id;

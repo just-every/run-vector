@@ -46,7 +46,7 @@ export function jiraRowEffects(record:SourceRecord,input:ImportInput,actor:Impor
 export function jiraCompletedAt(payload:Record<string,Json>,input:ImportInput,category:string,created:string|undefined,updated:string|undefined,effectiveAt:string,row:number,errors:ImportDiagnostic[],omissions:ImportDiagnostic[]) {
  const resolved=String(payload.$jiraResolved??'');
  if(category!=='completed') {
-  if(resolved)omissions.push({row,field:'resolved',code:'jira_resolution_without_completion',message:'Resolved is retained only because the explicitly mapped native status is not Completed.'});
+  if(resolved)omissions.push({row,field:'resolved',code:'jira_resolution_without_completion',message:'Resolved is retained only because the selected Vector status is not Completed.'});
   return null;
  }
  if(resolved) {

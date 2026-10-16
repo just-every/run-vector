@@ -6,8 +6,9 @@ WITH closing AS (
  WHERE c.id=? AND c.closed_at IS NULL AND julianday(c.ends_at)<=julianday(?)
  AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
 ), committed AS (
- SELECT i.identifier,i.project_id,i.estimate,s.category FROM issues i
- JOIN workflow_statuses s ON s.id=i.status_id JOIN closing c ON c.id=i.cycle_id ORDER BY i.identifier
+ SELECT i.identifier,i.project_id,p.name project_name,i.estimate,s.category FROM issues i
+ JOIN workflow_statuses s ON s.id=i.status_id JOIN closing c ON c.id=i.cycle_id
+ LEFT JOIN projects p ON p.id=i.project_id ORDER BY i.identifier
 ), scope AS (
  SELECT count(*) total_count,coalesce(sum(category='completed'),0) completed_count,
  coalesce(sum(estimate),0) total_points,coalesce(sum(CASE WHEN category='completed' THEN estimate ELSE 0 END),0) completed_points,
@@ -20,7 +21,7 @@ INSERT INTO cycle_snapshots(cycle_id,close_token,closed_at,next_cycle_id,body_js
 SELECT c.id,?,?,
  (SELECT n.id FROM cycles n WHERE n.team_id=c.team_id AND n.closed_at IS NULL AND julianday(n.starts_at)>=julianday(c.ends_at) ORDER BY julianday(n.starts_at),n.id LIMIT 1),
  json_object('closedAt',?,'timezone',c.timezone,'capacity',c.capacity,
- 'committed',(SELECT json_group_array(json_object('identifier',identifier,'projectId',project_id,'estimate',estimate,'category',category)) FROM committed),
+ 'committed',(SELECT json_group_array(json_object('identifier',identifier,'projectId',project_id,'projectName',project_name,'estimate',estimate,'category',category)) FROM committed),
  'completed',(SELECT json_group_array(identifier) FROM committed WHERE category='completed'),
  'estimateTotal',(SELECT coalesce(sum(estimate),0) FROM committed),
  'completedEstimateTotal',s.completed_points,

@@ -37,21 +37,35 @@ archive restore do not. Stable native business identities prevent duplicate
 enqueue. Payloads contain the issue identifier/version/title/status/time,
 without private attachments or credential values.
 
-Dispatch requires deployment-owned `INTEGRATION_EGRESS.send` and policy
-`INTEGRATION_EGRESS_POLICY=public-dns-pinned-tls-v1`. Ordinary fetch is not a
-substitute. With no such binding, Settings says delivery is unconfigured and
-native events stay queued.
+Enable delivery in Settings → Integrations → Outbound webhooks. The page asks
+for the Cloudflare account ID and a token with Account / Workers Scripts / Read
+and Zone / Zone / Read for the hosting account and all its zones. Vector reads
+the account’s workers.dev subdomain and complete visible zone inventory, verifies
+that the installation address belongs to that account, and stores only the
+excluded hosting domains encrypted beside its integration credentials. The token
+is used only for fixed Cloudflare read endpoints and is never saved. Renew this
+setup after adding hosting domains or restoring an archive; credential exclusion
+leaves restored delivery disabled. Choose a token that includes every account
+zone; a token restricted to selected zones cannot provide a complete inventory.
 
-The binding is Base's egress service (`vendor/base/egress-service`, read its
-README and DESIGN.md). It validates every DNS answer and refuses private,
-reserved and account-owned destinations before connecting. For an ordinary host
-it pins a validated public address and verifies TLS for the original name. For a
-host whose every answer is a Cloudflare address it posts with Worker fetch,
-which resolves again and relies on the platform's private-address refusal and
-the destination zone's origin TLS. It never follows a redirect. Vector's
-`deploy.json` declares no egress binding, so outbound stays off until the owner
-deploys and qualifies the egress Worker (Base `OWNER-STEPS.md`) and adds the
-binding with its grant (Base `ADOPTION.md`). This source change deploys none.
+The installation uses Base's enforcing `EgressTransport` inside its Worker.
+It checks all DNS answers, refuses private/reserved and hosting-account
+addresses, pins a public address with rustls certificate/name checks for
+non-Cloudflare destinations, and uses the existing all-Cloudflare platform-fetch
+route when all answers are Cloudflare addresses. That route resolves again and
+relies on platform private-address refusal and the destination zone's origin TLS
+policy; it does not promise an application address pin or origin certificate
+verification. Neither route follows redirects or falls back after failure.
+The existing deployment-owned `INTEGRATION_EGRESS` service binding and
+`public-dns-pinned-tls-v1` policy remain supported as an alternative composition.
+
+Each destination has **Send a test**. It creates one durable `vector.test` event
+without editing issues, signs it using the generated destination secret, and
+shows its actual delivery state. **Accepted** means the receiver returned a
+successful HTTP status; check the receiver for the same event ID. A lost
+acknowledgement is uncertain and is never automatically replayed. A receiver
+must support Vector's signed payload format (the exact signing format is shown
+on the page); a provider's incoming webhook may require an adapter.
 
 Base DeliveryService and the native repository retain attempts, backoff and
 cooldown across restart. Queued/sending/accepted/rejected/uncertain are actual
@@ -77,7 +91,7 @@ Native issue deletion erases local event, delivery and retained receiver-inbox b
 Register the repository by owner and name (for example
 `octocat/linguist`), save the reveal-once secret, and configure the
 repository webhook yourself. The receiver implements GitHub's distinct raw-byte
-HMAC protocol, `X-Hub-Signature-256`, `X-GitHub-Delivery` and allowlisted
+HMAC protocol, `X-Hub-Signature-256`, `X-GitHub-Delivery` and authenticated GitHub `ping` connection checks plus allowlisted
 `pull_request` actions: opened, edited, closed, reopened and synchronize.
 See [signature validation](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries)
 and [payload documentation](https://docs.github.com/en/webhooks/webhook-events-and-payloads).

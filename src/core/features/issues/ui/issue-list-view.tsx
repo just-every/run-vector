@@ -119,13 +119,19 @@ export function IssueListView({
       </nav>
       {!denied && (
         <>
-          <IssueFilters
-            fixedGrouping={layout === "board"}
-            query={query}
-            options={options}
-            onChange={onChange}
-            onReset={onReset ?? (() => onChange(defaultIssueListQuery))}
-          />
+          {options ? (
+            <IssueFilters
+              fixedGrouping={layout === "board"}
+              query={query}
+              options={options}
+              onChange={onChange}
+              onReset={onReset ?? (() => onChange(defaultIssueListQuery))}
+            />
+          ) : (
+            optionResource.loading && (
+              <p role="status">Loading filter choices…</p>
+            )
+          )}
           {viewActions ??
             (onCreateView && (
               <SaveView
@@ -202,40 +208,46 @@ export function IssueListView({
             }
           />
           {layout === "board" ? (
-            <IssueBoard
-              column={boardColumn}
-              setColumn={setBoardColumn}
-              notices={boardNotices}
-              onBoardNotice={(identifier, message) =>
-                setBoardNotices((current) => {
-                  const next = new Map(current);
-                  if (message) next.set(identifier, message);
-                  else next.delete(identifier);
-                  return next;
-                })
-              }
-              move={move}
-              onFocused={() => setMove(null)}
-              onMoved={(updated) => {
-                setMove({
-                  identifier: updated.identifier,
-                  status: updated.status.id,
-                  statusName: updated.status.name,
-                  version: updated.version,
-                  revision: visible.revision,
-                });
-                reload();
-              }}
-              revision={visible.revision}
-              refreshing={loading}
-              rows={visible.issues}
-              statusCounts={visible.statusCounts!}
-              team={query.team}
-              options={options}
-              onChangeTeam={(team) => onChange({ team })}
-              onOpen={onOpen}
-              onRefresh={reload}
-            />
+            options ? (
+              <IssueBoard
+                column={boardColumn}
+                setColumn={setBoardColumn}
+                notices={boardNotices}
+                onBoardNotice={(identifier, message) =>
+                  setBoardNotices((current) => {
+                    const next = new Map(current);
+                    if (message) next.set(identifier, message);
+                    else next.delete(identifier);
+                    return next;
+                  })
+                }
+                move={move}
+                onFocused={() => setMove(null)}
+                onMoved={(updated) => {
+                  setMove({
+                    identifier: updated.identifier,
+                    status: updated.status.id,
+                    statusName: updated.status.name,
+                    version: updated.version,
+                    revision: visible.revision,
+                  });
+                  reload();
+                }}
+                revision={visible.revision}
+                refreshing={loading}
+                rows={visible.issues}
+                statusCounts={visible.statusCounts!}
+                team={query.team}
+                options={options}
+                onChangeTeam={(team) => onChange({ team })}
+                onOpen={onOpen}
+                onRefresh={reload}
+              />
+            ) : (
+              optionResource.loading && (
+                <p role="status">Loading board workflow…</p>
+              )
+            )
           ) : (
             <IssueTable
               data={visible}

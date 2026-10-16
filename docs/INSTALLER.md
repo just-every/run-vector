@@ -1,6 +1,6 @@
 # Install Vector
 
-You need Git and the published `rer` command; it provides the exact Node and pnpm this source pins. Run `rer install`, then `rer dev` to try Vector with no setup command or provider account. A fresh checkout initializes the local placeholder owner `owner@vector.test`.
+You need Git and the published `rer` command; it provides the exact Node and pnpm this source pins. Install the global launcher using `curl -fsSL https://runeditrun.com/install.sh | sh` or `npm install --global @runeditrun/rer@0.2.25`. Inside this checkout, rer selects the exact 0.2.25 dependency in `package.json`, independently of the global launcher’s version. Vector release numbers are separate: the latest tag is [v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0), and a checkout of that tag uses its own recorded CLI pin. See [the public install guide](guide/install.md) for default-branch and tagged-release choices. Run `rer install`, then `rer dev` to try Vector with no setup command or provider account. A fresh checkout initializes the local placeholder owner `owner@vector.test`.
 
 To choose your own local owner, optionally run `rer setup --owner-email EMAIL --non-interactive` before the first development run. Setup reads rer-setup.json, creates private .dev.vars, builds without settings, applies forward migrations and prepares one owner/workspace. Supply a private `--answers` JSON file for declared workspace, timezone and team choices. Repeating setup preserves existing settings, owner and data. Setup stops its temporary Worker before returning.
 

@@ -12,18 +12,18 @@ export type JiraReview={concepts:JiraConcept[];statuses:JiraConfirmation[];prior
 const actions:Record<string,string>={
  'issue id':'Stable source identity; scoped to the supplied source name.',
  'issue key':'Visible/searchable Jira key; stable source identity remains Issue id.',
- summary:'Native title.',description:'Native description.',status:'Explicit confirmed native status; category only suggests.',
- 'status category':'Suggestion only; never resolves a status.',priority:'Explicit confirmed native priority; source names only suggest.',
+ summary:'Vector title.',description:'Vector description.',status:'Explicit confirmed Vector status; category only suggests.',
+ 'status category':'Suggestion only; never resolves a status.',priority:'Explicit confirmed Vector priority; source names only suggest.',
  assignee:'Explicit active existing operator mapping; blank is unassigned; unmapped tokens are omitted.',
- created:'Native created time.',updated:'Native updated time.', 'due date':'Native calendar due date.',resolved:'Source Resolved supplies native completion time for Completed issues; missing values require an explicit fallback policy.',
+ created:'Vector created time.',updated:'Vector updated time.', 'due date':'Vector calendar due date.',resolved:'Source Resolved supplies Vector completion time for Completed issues; missing values require an explicit fallback policy.',
  labels:'Exact existing label name, once per issue; missing labels are errors. No automatic creation.',
- 'issue type':'Epic becomes an ordinary issue labelled epic (existing label required); every other type is retained only. In-file Parent references become native parents, including subtasks.',
+ 'issue type':'Epic becomes an ordinary issue labelled epic (existing label required); every other type is retained only. In-file Parent references become parent relationships in Vector, including subtasks.',
  sprint:'Last NONEMPTY listed occurrence may map to an exact-name existing open cycle in the same team. Earlier occurrences are rolled over in Jira. Terminal issues cannot join cycles.',
- 'story point estimate':'Native integer estimate 1–100; takes precedence over original seconds.',
- 'original estimate':'Explicit seconds-per-native-unit policy only, with exact integer 1–100 result and no rounding; otherwise retained only.',
+ 'story point estimate':'Vector estimate of 1–100 points; takes precedence over original seconds.',
+ 'original estimate':'Explicit seconds-per-estimate-point policy only, with exact integer 1–100 result and no rounding; otherwise retained only.',
  comment:'Imported comment with original author name, normalized source time and complete body; no operator creation or historical notifications.',
  attachment:'Metadata retained; bytes absent and never fetched. Named HTTPS links require explicit opt-in.',
- parent:'Native parent resolved by source ID or key within this file only.', 'parent id':'Native parent resolved by source ID or key within this file only.',
+ parent:'Parent issue matched by original issue ID or key within this file only.', 'parent id':'Parent issue matched by original issue ID or key within this file only.',
 };
 const unique=(rows:number[])=>[...new Set(rows)].sort((a,b)=>a-b);
 /** One authoritative review, serialized unchanged by preview, the private CLI file and reports. */
@@ -42,7 +42,7 @@ export function buildJiraReview(records:SourceRecord[],input:ImportInput,errors:
  const unresolved:JiraReview['unresolved']=[];
  for(const item of [...errors,...omissions])if(item.sourceId&&(['unresolved_assignee','unresolved_sprint','terminal_cycle_omitted'].includes(item.code)||(['assignee','cycle'].includes(item.field??'')&&errors.includes(item))))unresolved.push({...item,sourceId:item.sourceId,sourceKey:item.sourceKey??'',value:item.value??''});
  for(const record of records)for(const column of jiraColumns(record)) {
-  const name=jiraHeader(column.header),concept=concepts.get(name)??{name,headers:[],action:ownEntry(actions,name)??(name==='outward issue link (blocks)'?'This issue blocks the referenced in-file issue.':name==='outward issue link (duplicate)'?'Named duplicate link to the canonical in-file issue; status is never guessed.':'No native field. Retained original only, not imported.'),rowCount:0,rows:[],valueCount:0,values:[],occurrences:[],dispositions:[]};
+  const name=jiraHeader(column.header),concept=concepts.get(name)??{name,headers:[],action:ownEntry(actions,name)??(name==='outward issue link (blocks)'?'This issue blocks the referenced in-file issue.':name==='outward issue link (duplicate)'?'Named duplicate link to the canonical in-file issue; status is never guessed.':'No matching Vector field. Retained original only, not imported.'),rowCount:0,rows:[],valueCount:0,values:[],occurrences:[],dispositions:[]};
   if(!concept.headers.some(item=>item.column===column.column))concept.headers.push({name:column.header,column:column.column});
   concepts.set(name,concept);if(!column.value.trim())continue;
   const row=record.location.row!,sourceKey=jiraValue(record,'issue key');
@@ -57,7 +57,7 @@ export function buildJiraReview(records:SourceRecord[],input:ImportInput,errors:
   if(['parent','parent id'].includes(name)||name.startsWith('outward issue link')) {
    const target=column.value.trim();
    if(!ids.has(target)&&!keys.has(target.toUpperCase())) {
-    const reason='Source reference is outside this file. It cannot bind any native issue with the same name or identifier; retained only.';
+    const reason='Source reference is outside this file. It cannot bind any Vector issue with the same name or identifier; retained only.';
     occurrence.reason=reason;
     unresolved.push({row,sourceId:record.sourceId,sourceKey,field:exactField,value:column.value,code:'jira_reference_outside_file',message:reason});
    }
@@ -87,7 +87,7 @@ export function buildJiraReview(records:SourceRecord[],input:ImportInput,errors:
   'Planned means the field can be written only after the whole run passes errors and review confirmation. Preview writes nothing.',
   'Status categories and priority suggestions are never implicit mappings. Blank assignee stays unassigned; no operators or labels are created.',
   'Repeated Sprint order is this supported profile’s declared policy, not a guarantee of Jira export chronology.',
-  input.jira?.originalEstimateSecondsPerUnit?`Confirmed original-estimate policy: ${input.jira.originalEstimateSecondsPerUnit} seconds per native unit; exact integers only, no rounding.`:'No original-estimate conversion policy confirmed. Seconds are retained only.',
+  input.jira?.originalEstimateSecondsPerUnit?`Confirmed original-estimate policy: ${input.jira.originalEstimateSecondsPerUnit} seconds per Vector estimate point; exact integers only, no rounding.`:'No original-estimate conversion policy confirmed. Seconds are retained only.',
   'Parents and Blocks resolve only within this file. Duplicate becomes a named canonical issue link; Relates remains an omission. Source IDs remain authoritative when keys change.',
   input.jira?.attachmentLinks?'Named HTTPS attachment links confirmed. No bytes are fetched; attachment author and timestamp remain source metadata.':'Attachment links not opted in. URLs remain plain source text; no attachment is fetched.',
   input.jira?.completedAtFallback?`Missing Resolved on Completed issues uses the confirmed ${input.jira.completedAtFallback} time.`:'Completed issues require Resolved; otherwise confirm a completion-time fallback policy.',

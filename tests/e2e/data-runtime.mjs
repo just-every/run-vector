@@ -12,7 +12,7 @@ const evidence=resolve('evidence/data'),scratch=await mkdtemp(join(tmpdir(),'vec
 const proof={passed:false,widths:[],publicCommands:[],privateReview:false};
 try{
  await mkdir(evidence,{recursive:true});installation=await startDataUiInstallation();const {runtime,cookie}=installation;
- browser=await chromium.launch({headless:true});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
+ browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const options=await(await runtime.req('/api/data/import/options',{headers:{Cookie:cookie}})).json(),team=options.references.teams.find(row=>!row.archived_at),status=options.references.statuses.find(row=>row.team_id===team.id&&row.category==='unstarted')??options.references.statuses.find(row=>row.team_id===team.id);
  for(const width of [1440,390]){await exerciseDataMapping({page,runtime,team,status,width,evidence});proof.widths.push(width);}
  const session=join(scratch,'session'),file=join(scratch,'issues.json'),mapping=join(scratch,'mapping.json'),review=join(scratch,'review.json');

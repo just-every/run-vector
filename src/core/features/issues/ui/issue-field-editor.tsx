@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
 import { shortDate } from "../../streams/ui/helpers";
 import { issueDetailSchema, type IssueDetailData } from "./data";
@@ -22,7 +22,7 @@ export function IssueFieldEditor({
 }: {
   issue: IssueDetailData;
   field: EditableIssueField;
-  onRefresh: () => void;
+  onRefresh: (receipt?: IssueDetailData) => void;
 }) {
   // `original` is the field's value when editing began: a newer version that
   // left this field alone (often the operator's own property change) is not a conflict.
@@ -59,9 +59,9 @@ export function IssueFieldEditor({
     setConflict(false);
     setError("");
   }
-  async function save(event: FormEvent) {
-    event.preventDefault();
+  async function save(draft: string) {
     if (!snapshot || pending || stale || conflict) return;
+    setSnapshot({ ...snapshot, draft });
     setPending(true);
     setError("");
     try {
@@ -75,14 +75,14 @@ export function IssueFieldEditor({
             issueFieldPayload(
               Math.max(snapshot.version, current.version),
               field,
-              snapshot.draft,
+              draft,
             ),
           ),
         },
       );
       setReceipt(updated);
       setSnapshot(null);
-      onRefresh();
+      onRefresh(updated);
     } catch (cause) {
       const staleVersion = cause instanceof ApiError && cause.status === 409;
       setConflict(staleVersion);
@@ -111,7 +111,7 @@ export function IssueFieldEditor({
       setSnapshot({ version: updated.version, original, draft: original });
       setConflict(false);
       setError("");
-      onRefresh();
+      onRefresh(updated);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Reload failed.");
     } finally {
@@ -144,7 +144,10 @@ export function IssueFieldEditor({
         <form
           className="issue-mutation-form"
           aria-label={`Edit ${name}`}
-          onSubmit={save}
+          onSubmit={(event) => {
+            event.preventDefault();
+            void save(snapshot.draft);
+          }}
         >
           <fieldset disabled={pending} className="issue-editor-controls">
             <label>
@@ -183,7 +186,12 @@ export function IssueFieldEditor({
               </button>
               <button
                 type="button"
-                onClick={() => setSnapshot({ ...snapshot, draft: "" })}
+                disabled={field === "estimate" && (pending || stale || conflict)}
+                onClick={() =>
+                  field === "estimate"
+                    ? void save("")
+                    : setSnapshot({ ...snapshot, draft: "" })
+                }
               >
                 Clear {name}
               </button>

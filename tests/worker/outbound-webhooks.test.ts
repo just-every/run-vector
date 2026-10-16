@@ -1,7 +1,7 @@
 import {env} from 'cloudflare:workers';
-import {it,expect} from 'vitest';
+import {it,expect,vi} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
-import {bindings} from './base-auth-fixture';
+import {bindings,request} from './base-auth-fixture';
 import {dispatchWebhooks,outboundService} from '../../src/core/features/integrations/outbound';
 import {verifyWebhook} from '../../vendor/base/integrations';
 it('[WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds',async()=>{
@@ -28,3 +28,32 @@ it('[WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; expl
  await f.create({title:'Held native event'});const held=await env.DB.prepare('SELECT id FROM vector_webhook_events WHERE enqueued_at IS NULL').first<{id:string}>();await env.DB.prepare('INSERT INTO vector_webhook_restore_holds(namespace,id) VALUES(?,?)').bind(workspace,held!.id).run();await dispatchWebhooks(current);expect(sends).toBe(before);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);
+
+it('operators enable delivery from Settings and send a signed test without creating an issue',async()=>{
+ const f=await setupIntegrations();
+ const account='1234567890abcdef1234567890abcdef',token='synthetic-read-only-account-token';
+ const provider=vi.spyOn(globalThis,'fetch').mockImplementation(async(input)=>{
+  const url=new URL(typeof input==='string'?input:input instanceof URL?input.href:input.url);
+  expect(url.origin).toBe('https://api.cloudflare.com');
+  if(url.pathname===`/client/v4/accounts/${account}/workers/subdomain`)return Response.json({success:true,errors:[],result:{subdomain:'vector-host'}});
+  if(url.pathname==='/client/v4/zones')return Response.json({success:true,errors:[],result:[],result_info:{page:1,per_page:50,count:0,total_count:0,total_pages:0}});
+  throw new Error('Unexpected network edge');
+ });
+ try {
+  const configured=await f.call('/settings/integrations/delivery','POST',{accountId:account,apiToken:token});expect(configured.status).toBe(200);
+  expect((await (await f.call('/settings/integrations')).json() as {outboundConfigured:boolean}).outboundConfigured).toBe(true);
+  expect(JSON.stringify((await env.DB.prepare('SELECT * FROM vector_integration_secret_keys').all()).results)).not.toContain(token);
+ } finally {provider.mockRestore();}
+ const registered=await f.call('/settings/integrations/destinations','POST',{name:'Operations receiver',url:'https://receiver.example.com/events'});
+ const destination=await registered.json() as {id:string;secret:string};
+ let sent=0;
+ const transport={async send(wire:{url:string;body:string;headers:Record<string,string>}){
+  await verifyWebhook({body:new TextEncoder().encode(wire.body),headers:wire.headers,key:new Uint8Array(destination.secret.match(/../g)!.map(pair=>parseInt(pair,16))),tenant:wire.headers['webhook-tenant'],destinationId:destination.id});
+  expect(JSON.parse(wire.body).event).toBe('vector.test');sent++;return {status:204,headers:{},body:''};
+ }};
+ const before=(await env.DB.prepare('SELECT count(*) n FROM issues').first())?.n;
+ const result=await request('/api/settings/integrations/destinations/'+destination.id+'/test','POST',{},f.cookie,{INTEGRATION_EGRESS_POLICY:'public-dns-pinned-tls-v1',INTEGRATION_EGRESS:transport});
+ expect(result.status).toBe(200);expect(await result.json()).toMatchObject({state:'accepted'});expect(sent).toBe(1);
+ expect((await env.DB.prepare('SELECT count(*) n FROM issues').first())?.n).toBe(before);
+ expect((await env.DB.prepare('SELECT state FROM integration_deliveries').first())?.state).toBe('accepted');
+});

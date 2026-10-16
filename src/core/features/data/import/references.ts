@@ -34,15 +34,15 @@ export function resolveReference(rows:ReferenceRow[],value:string,field:ImportFi
   }
   if(input.format==='jira-csv'&&['status','assignee','cycle'].includes(field)) {
     const id=referenceAlias(input,field,value,team)??(field==='status'&&defaultSelected&&input.defaults?.status===value?value:undefined);
-    if(!id)throw Error('Reference was not found; confirm an explicit Jira mapping to an active native record.');
+    if(!id)throw Error('Reference was not found; choose an existing Vector value for this Jira name in the mapping controls below.');
     const row=rows.find(row=>row.id===id);
-    if(!row||row.archived_at||row.removed_at||row.closed_at||(field==='assignee'&&!row.identity_active))throw Error('The explicitly mapped native record is missing, archived, removed, closed or has no active Base identity.');
-    if(field==='cycle'&&row.name!==value)throw Error('Jira sprint mapping requires the exact native cycle name.');
+    if(!row||row.archived_at||row.removed_at||row.closed_at||(field==='assignee'&&!row.identity_active))throw Error('The mapped Vector value is unavailable. Choose an active team, status, operator, project or cycle.');
+    if(field==='cycle'&&row.name!==value)throw Error('The Jira sprint and selected Vector cycle must have the same name.');
     return row;
   }
   const selected=referenceAlias(input,field,value,team)??value;
   const matches=referenceMatches(rows,selected,field==='assignee');
-  if(matches.length!==1) throw Error(matches.length?'Reference is ambiguous; map it to a native ID.':'Reference was not found; choose an existing native record.');
+  if(matches.length!==1) throw Error(matches.length?'More than one Vector value matches. Choose the intended value in the mapping controls below.':'Reference was not found; choose an existing Vector value in the mapping controls or select a default below.');
   const row=matches[0];
   if(row.archived_at || row.removed_at || row.closed_at) throw Error('The selected record is archived, removed or closed.');
   return row;

@@ -46,7 +46,9 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Two ste
 curl -fsSL https://runeditrun.com/install.sh | sh
 ```
 
-or `npm install --global @runeditrun/rer@0.2.24`. This checkout pins rer 0.2.24 in `package.json`, and the `rer` command always runs the version the checkout pins, so either install works.
+or `npm install --global @runeditrun/rer@0.2.25`. The script installs the current global rer launcher; inside this checkout, rer runs the exact 0.2.25 dependency in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
+
+Vector has its own release numbers: [the latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The clone below follows the latest source on the default branch. To use that tagged release instead, run `git checkout v0.2.0` after cloning and before `rer dev`; rer then uses the CLI pin recorded by that release.
 
 **2. Get Vector and start it:**
 

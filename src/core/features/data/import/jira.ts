@@ -86,19 +86,19 @@ export function jiraOmissions(record:SourceRecord,input:ImportInput):ImportDiagn
     const name=jiraHeader(column.header);if(!column.value.trim())return [];
     let message='';
     if(name==='sprint'&&column!==sprints.at(-1))message='Rolled over in Jira: earlier nonempty sprint occurrence retained; only the last nonempty occurrence can map to a cycle.';
-    else if(name==='issue type'&&column.value.trim().toLowerCase()!=='epic')message='This Jira issue type has no native field. The ordinary issue retains its source type in the original.';
+    else if(name==='issue type'&&column.value.trim().toLowerCase()!=='epic')message='This Jira issue type has no matching Vector field. The ordinary issue retains its source type in the original.';
     else if(name==='original estimate') {
       if(jiraValue(record,'story point estimate').trim())message='Story points take precedence. Original estimate seconds are retained without conversion.';
-      else if(!input.jira?.originalEstimateSecondsPerUnit)message='Original estimate is seconds. No seconds-per-native-unit conversion policy was confirmed; retained without conversion.';
+      else if(!input.jira?.originalEstimateSecondsPerUnit)message='Original estimate is seconds. No seconds-per-estimate-point conversion policy was confirmed; retained without conversion.';
     }
 
     else if(name==='attachment')message=input.jira?.attachmentLinks?'Named HTTPS link planned; attachment bytes are absent and never fetched. Source timestamp and author remain metadata.':'Attachment timestamp, author, filename and URL retained. Bytes are absent and never fetched; no named-link opt-in was confirmed.';
     else if(['parent','parent id','outward issue link (blocks)','outward issue link (duplicate)'].includes(name)) {
       const relation=jiraRelations(record).find(item=>item.column===column.column);
-      if(!relation?.target)message='Source reference is outside this file. It cannot bind any native issue with the same name or identifier; retained only.';
+      if(!relation?.target)message='Source reference is outside this file. It cannot bind any Vector issue with the same name or identifier; retained only.';
     }
-    else if(name.startsWith('outward issue link'))message='This relationship kind has no native mapping; retained in the original without a link.';
-    else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate','issue key','comment','resolved'].includes(name))message='No native field for this source column; every occurrence is retained in the original and not imported.';
+    else if(name.startsWith('outward issue link'))message='This relationship kind has no matching relationship in Vector; retained in the original without a link.';
+    else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate','issue key','comment','resolved'].includes(name))message='No matching Vector field for this source column; every occurrence is retained in the original and not imported.';
     return message?[{row:record.location.row!,field:`${column.header} [column ${column.column}]`,code:name==='sprint'?'jira_sprint_rollover':message.startsWith('Source reference is outside')?'jira_reference_outside_file':name==='attachment'&&input.jira?.attachmentLinks?'jira_attachment_bytes_absent':'jira_not_imported',message,sourceId:record.sourceId,sourceKey:jiraValue(record,'issue key'),value:column.value}]:[];
   });
 }

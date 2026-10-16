@@ -14,10 +14,10 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   const refs=await loadImportReferences(db,actor.workspace),errors:ImportDiagnostic[]=[],omissions:ImportDiagnostic[]=[],rows:MappedRow[]=[],effects=new Map<string,MappingResult>(),counters=new Map<string,number>(),floors=new Map<string,number>(),reusedRanks=new Map<string,number>();
   for(const [field,column] of Object.entries(input.mapping)) {
     if(!(importFields as readonly string[]).includes(field) || typeof column!=='string' || !source.records.some(record=>record.payload && typeof record.payload==='object' && !Array.isArray(record.payload) && Object.hasOwn(record.payload,column)))
-      errors.push({row:0,field,code:'invalid_mapping',message:'Choose a present file column for this native field.'});
+      errors.push({row:0,field,code:'invalid_mapping',message:'Choose a column that exists in this file.'});
   }
   for(const required of ['sourceId','title','team','status'] as const)if(!input.mapping[required] && !input.defaults?.[required])
-    errors.push({row:0,field:required,code:'missing_mapping',message:'This native field needs a column or an explicit default.'});
+    errors.push({row:0,field:required,code:'missing_mapping',message:required==='sourceId'||required==='title'?'Choose its file column in Match your file to Vector.':'Choose its file column or a default in Match your file to Vector.'});
   const seen=new Map<string,{hash:string;row:number}>(),inRun=new Set(source.records.map(record=>record.sourceId));let reused=0;
   const identities=[...new Set(source.records.map(record=>sourceIdentity(actor.workspace,input.source,'issue',record.sourceId)))];
   const {erased,priors,natives}=await retainedSources(db,actor.workspace,identities);
@@ -99,7 +99,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     const nativeOnly=value.startsWith('native:'),sourceOnly=value.startsWith('source:') || ((isLinear(input.format)||input.format==='jira-csv') && !nativeOnly),text=value.replace(/^(?:native|source):/,'');
     const candidates=[...(!nativeOnly && bySource.has(text)?[bySource.get(text)!]:[]),...(!sourceOnly?existing.filter(row=>row.id===text || row.identifier===text):[])];
     const unique=[...new Map(candidates.map(row=>[row.id,row])).values()];
-    if(unique.length!==1)throw Error(unique.length?'Reference is ambiguous; use source: or native: explicitly.':'Issue reference was not found in this file or workspace.');
+    if(unique.length!==1)throw Error(unique.length?'More than one issue matches. Prefix an original issue ID with source: for an issue in this file, or a Vector identifier with native: for an issue already in Vector.':'Issue reference was not found in this file or workspace.');
     if(unique[0].archived_at)throw Error('The referenced issue belongs to an archived team.');
     return unique[0];
   };

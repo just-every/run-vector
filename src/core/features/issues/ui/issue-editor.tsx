@@ -8,7 +8,7 @@ export function IssueEditor({
   onRefresh,
 }: {
   issue: IssueDetailData;
-  onRefresh: () => void;
+  onRefresh: (receipt?: IssueDetailData) => void;
 }) {
   // Scope every draft, receipt and error to one issue, including callers that
   // keep this component mounted while changing their issue selection.
@@ -26,7 +26,7 @@ function IssueWritingEditor({
   onRefresh,
 }: {
   issue: IssueDetailData;
-  onRefresh: () => void;
+  onRefresh: (receipt?: IssueDetailData) => void;
 }) {
   const [snapshot, setSnapshot] = useState<{
       issue: IssueDetailData;
@@ -66,7 +66,7 @@ function IssueWritingEditor({
         issue: structuredClone(refreshed),
         revision: snapshot.revision + 1,
       });
-      onRefresh();
+      onRefresh(refreshed);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Reload failed.");
     } finally {
@@ -103,7 +103,7 @@ function IssueWritingEditor({
         previous && previous.version > updated.version ? previous : updated,
       );
       setSnapshot(null);
-      onRefresh();
+      onRefresh(updated);
     } catch (e) {
       setError(
         e instanceof ApiError && e.status === 409

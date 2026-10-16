@@ -37,6 +37,9 @@ export function IssueDetail({
   const detail = useApiResource(`/api/issues/${identifier}`, issueDetailSchema);
   const options = useApiResource("/api/options", optionsSchema);
   const navigate=useNavigate();
+  const [committed,setCommitted]=useState<IssueDetailData|null>(null);
+  const currentIdentifier = useRef(identifier);
+  currentIdentifier.current = identifier;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (
@@ -82,7 +85,17 @@ export function IssueDetail({
         )}
       </div>
     );
-  const refresh = () => {
+  const refresh = (receipt?: IssueDetailData) => {
+    if (receipt) {
+      if (receipt.identifier !== currentIdentifier.current) return;
+      // Share the committed version while the admitted detail read drains.
+      setCommitted((current) =>
+        current?.identifier === receipt.identifier &&
+        current.version > receipt.version
+          ? current
+          : receipt,
+      );
+    }
     detail.refreshAfterMutation();
     onChanged?.();
   };
@@ -100,7 +113,7 @@ export function IssueDetail({
         </div>
       ) : null}
       <IssueInspector
-        issue={detail.data}
+        issue={committed?.identifier===detail.data.identifier&&committed.version>detail.data.version?committed:detail.data}
         onBack={onBack}
         onRefresh={refresh}
         options={options.data}
@@ -122,7 +135,7 @@ function IssueInspector({
   issue: IssueDetailData;
   onDeleted:(receipt:DeletionReceipt)=>void;
   onBack?: () => void;
-  onRefresh: () => void;
+  onRefresh: (receipt?: IssueDetailData) => void;
   options: StreamOptions | null;
   optionsError: Error | null;
 }) {

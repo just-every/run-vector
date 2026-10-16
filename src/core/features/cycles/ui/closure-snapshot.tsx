@@ -61,7 +61,11 @@ export function ClosureSnapshot({ snapshot }: { snapshot: CycleSnapshot }) {
                     ? "Unestimated"
                     : `${issue.estimate} points`}
                 </td>
-                <td>{issue.projectId ?? "No project"}</td>
+                <td>
+                  {issue.projectId === null
+                    ? "No project"
+                    : issue.projectName ?? "Project name was not recorded"}
+                </td>
               </tr>
             ))}
           </tbody>

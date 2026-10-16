@@ -36,13 +36,19 @@ export type MailDependencies = {
 };
 export const CLAIM_TIMEOUT_MS = 5 * 60_000;
 export const RETRY_WINDOW_MS = 24 * 60 * 60_000;
-export function notificationMessage(env: WorkerBindings, delivery: Delivery) {
+type AdmittedDelivery = Delivery & { assignment: number; mention: number };
+export function notificationMessage(env: WorkerBindings, delivery: AdmittedDelivery) {
+  const reason = delivery.assignment && delivery.mention
+    ? "This issue was assigned to you, and you were mentioned."
+    : delivery.assignment
+      ? "This issue was assigned to you."
+      : "You were mentioned on this issue.";
   return {
     deliveryId: delivery.id,
     from: env.MAIL_FROM!,
     to: [delivery.email],
     subject: `${delivery.identifier}: ${delivery.title}`,
-    text: `${delivery.identifier}: ${delivery.title}\nBy: ${delivery.actor_name ?? "Vector"}\n\n${delivery.app_link}\nSign in to view this issue.`,
+    text: `${delivery.identifier}: ${delivery.title}\n${reason}\nBy: ${delivery.actor_name ?? "Vector"}\n\n${delivery.app_link}\nSign in to view this issue.`,
   };
 }
 function senderFor(env: WorkerBindings, dependencies: MailDependencies) {
@@ -55,10 +61,15 @@ async function admitted(
   env: WorkerBindings,
   id: string,
   token: string,
-): Promise<Delivery | null> {
+): Promise<AdmittedDelivery | null> {
   if (!notificationEmailAvailable(env)) return null;
   return env.DB.prepare(
-    `SELECT d.*,o.email FROM notification_deliveries d JOIN notifications n ON n.id=d.notification_id
+    `SELECT d.*,o.email,
+    EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='assignment'
+      AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value)) AS assignment,
+    EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='mention'
+      AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value)) AS mention
+    FROM notification_deliveries d JOIN notifications n ON n.id=d.notification_id
     JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=d.recipient_id AND o.workspace_id=t.workspace_id
     WHERE d.id=? AND d.claim_token=? AND d.status='claimed' AND ${activeRecipient}
     AND (d.actor_id IS NULL OR d.actor_id<>o.id)
@@ -70,7 +81,7 @@ async function admitted(
       AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`,
   )
     .bind(id, token)
-    .first<Delivery>();
+    .first<AdmittedDelivery>();
 }
 async function settle(
   env: WorkerBindings,
