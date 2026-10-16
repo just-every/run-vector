@@ -37,30 +37,20 @@ The application runs on a Cloudflare Worker with TanStack Start, React and Hono,
 
 ## Run it on your computer
 
-You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. Two steps, the same as on [run-vector.com/run](https://run-vector.com/run).
-
-**1. Install rer**, the Run Edit Run command, once per computer:
-
-<!-- vector-install -->
-```sh
-curl -fsSL https://runeditrun.com/install.sh | sh
-```
-
-or `npm install --global @runeditrun/rer@0.2.25`. The script installs the current global rer launcher; inside this checkout, rer runs the exact 0.2.25 dependency in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
-
-Vector has its own release numbers: [the latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The clone below follows `main`, which includes changes since v0.2.0. To use that tagged release instead, run `git checkout v0.2.0` after cloning and before `rer dev`; rer then uses the CLI pin recorded by that release.
-
-**2. Get Vector and start it:**
+You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. One line, the same as on [run-vector.com/run](https://run-vector.com/run), installs rer (the Run Edit Run command), clones Vector and starts it:
 
 <!-- vector-start -->
 ```sh
-git clone https://github.com/just-every/run-vector.git vector
-cd vector && rer dev
+npx -y @runeditrun/rer dev just-every/run-vector
 ```
+
+To start it again later, run `cd run-vector && rer dev`. The line installs the current global rer launcher (you can also install it with `npm install --global @runeditrun/rer@0.2.25`); inside this checkout, rer runs the exact 0.2.25 dependency in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
+
+Vector has its own release numbers: [the latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The clone follows `main`, which includes changes since v0.2.0. To use that tagged release instead, run `git checkout v0.2.0` in the checkout before `rer dev`; rer then uses the CLI pin recorded by that release.
 
 The first `rer dev` installs the pinned Node, pnpm and dependencies, makes you the local owner and prints a link that opens Vector signed in. There is nothing else to install and no provider account to set up.
 
-On a fresh checkout, `rer dev` prepares a local placeholder owner (`owner@vector.test`). To choose your own local owner instead, run this optional setup **before the first `rer dev`**, replacing the example mailbox. Choose another explicit port if 8787 is occupied.
+On a fresh checkout, `rer dev` prepares a local placeholder owner (`owner@run-vector.test`). To choose your own local owner instead, run this optional setup **before the first `rer dev`**, replacing the example mailbox. Choose another explicit port if 8787 is occupied.
 
 <!-- vector-setup -->
 ```sh
