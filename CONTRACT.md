@@ -19,6 +19,16 @@ Vector is a full Linear/Jira-class issue tracker for software teams. A team that
 
 **Scope before this contract** was one business workspace of equal operators built around evidence-led intake decisions, issues, work streams, projects, dated cycles, saved views, search, in-app notifications and Linear/Jira file imports, with integrations, AI, roadmaps, roles, chat, mobile and real-time collaboration declared out of scope. Those clauses remain where they still hold, rewritten where the scope changed, and now form one part of the full job.
 
+## Product target
+
+Vector is the issue tracker and software project-management workspace a US software team buys instead of Linear, Jira or GitHub Issues and Projects, wired into the code host, chat and coding agents. This contract describes that product, which is what Vector is being built towards, and marks how close the current code is (see [Status](#status)).
+
+| | |
+| --- | --- |
+| Category | Issue tracking and software project management |
+| Incumbents a buyer switches from | Linear, Jira (Atlassian), GitHub Issues and Projects; up-and-comers Plane and Huly |
+| First buyer | A US software team of 5 to 500 people — engineering, product and design, with support and leadership as readers — replacing Linear, a Jira Software project or GitHub Projects; self-hosted on the buyer's own Cloudflare account, free and open source, with money appearing only as customer revenue in USD |
+
 ## Public homepage
 
 - **HOME-001 — Public homepage.** The owner-approved public marketing homepage at `/` remains exactly as approved, including its copy and assets and the line “100% free, open source alternative to Linear, Jira and Asana.” That line is product positioning; it does not promise feature parity or importer coverage for every named product. The page presents Vector with its headline, one supporting sentence, and source and docs links, followed by short sections (how Current explains each issue, free and open source, deferral, the rest of the product, trying it beside another tracker, a closing call to action), each drawing the product only from its real labels. The public site's “Run Vector” action remains unchanged and points to `/run`, the installation page. The installed application's root `/` serves the Base Lobby, whose Sign in entry satisfies this clause's sign-in requirement (owner decision, 13 Oct 2026 15:11Z). The page contains no pricing, hosting costs, customer testimonials or invented metrics, reads no installation data and is server-rendered. *Acceptance:* `tests/e2e/core-runtime.mjs` (tests tagged HOME-001). *Status:* done — `tests/e2e/core-runtime.mjs`.
@@ -505,261 +515,267 @@ Signed source ingestion implements INTAKE-001/002/003/008/009/011 using Base's s
 
 ## Status
 
-254 clauses: **64 done**, **86 partial**, **104 missing**. Judged against `main` at the commit this contract was written from; done cites the test that exercises the clause, partial cites the code that exists.
+Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f0c` (16 October 2026).
 
-| Clause | Status | Evidence |
-|---|---|---|
-| HOME-001 | done | `tests/e2e/core-runtime.mjs` |
-| OPS-001 | partial | `tests/worker/search-access.test.ts`, `tests/worker/removal-boundary.test.ts` |
-| SETUP-001 | done | `tests/worker/first-run.test.ts` |
-| OPS-002 | partial | `tests/worker/base-auth.test.ts` |
-| OPS-003 | done | `tests/e2e/admin-workspace-time-journey.mjs` |
-| OPS-004 | partial | `tests/worker/removal-boundary.test.ts` |
-| ROLE-001 | missing | — |
-| ROLE-002 | missing | — |
-| ROLE-003 | missing | — |
-| ROLE-004 | missing | — |
-| ROLE-005 | partial | `src/core/features/administration/transaction.ts` |
-| ROLE-006 | missing | — |
-| ROLE-007 | missing | — |
-| ROLE-008 | missing | — |
-| ROLE-009 | missing | — |
-| ROLE-010 | missing | — |
-| ROLE-011 | partial | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` |
-| ROLE-012 | partial | `src/core/features/settings/removal.ts`, `src/core/features/settings/removal-history.ts`, `tests/worker/removal-boundary.test.ts` |
-| TEAM-001 | done | `tests/e2e/admin-team-journey.mjs` |
-| TEAM-002 | partial | `tests/e2e/admin-team-journey.mjs` |
-| TEAM-003 | done | `tests/e2e/admin-archive-team-journey.mjs` |
-| TEAM-004 | done | `tests/e2e/admin-team-journey.mjs` |
-| TEAM-005 | missing | — |
-| TEAM-006 | missing | — |
-| ISSUE-001 | done | `tests/e2e/core-runtime.mjs` |
-| ISSUE-002 | done | `tests/worker/issue-deletion-relations.test.ts` |
-| ISSUE-003 | partial | `src/core/features/issues/input.ts` |
-| ISSUE-004 | done | `tests/worker/issue-session-projection.test.ts` |
-| ISSUE-005 | done | `tests/worker/removal-assignment.test.ts` |
-| ISSUE-006 | done | `tests/e2e/core-runtime.mjs` |
-| ISSUE-007 | done | `tests/worker/dependencies.test.ts` |
-| ISSUE-008 | partial | `tests/worker/discussion-access.test.ts` |
-| ISSUE-009 | done | `tests/worker/discussion-file-admission.test.ts` |
-| ISSUE-010 | partial | `tests/worker/issue-deletion-cascade.test.ts` |
-| ISSUE-011 | done | `tests/worker/cycle-closure.test.ts` |
-| ISSUE-012 | partial | `src/core/features/team-move/repository.ts` |
-| ISSUE-013 | done | `tests/e2e/collaboration-events.mjs` |
-| ISSUE-014 | partial | `tests/e2e/admin-label-journey.mjs` |
-| ISSUE-015 | done | `tests/e2e/core-draft-journey.mjs` |
-| ISSUE-016 | missing | — |
-| ISSUE-017 | missing | — |
-| ISSUE-018 | partial | `src/core/features/issue-edit/plan.ts` |
-| ISSUE-019 | partial | `src/core/features/parents/repository.ts` |
-| ISSUE-020 | missing | — |
-| ISSUE-021 | missing | — |
-| ISSUE-022 | missing | — |
-| ISSUE-023 | missing | — |
-| ISSUE-024 | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` |
-| ISSUE-025 | missing | — |
-| ISSUE-026 | partial | `src/core/features/markdown/ui/markdown.tsx`, `tests/markdown-rendering.test.tsx` |
-| ISSUE-027 | missing | — |
-| ISSUE-028 | missing | — |
-| FIELD-001 | partial | `src/core/features/issues/repository.ts`, `src/core/features/issues/input.ts` |
-| FIELD-002 | missing | — |
-| REL-001 | done | `tests/worker/dependencies.test.ts` |
-| REL-002 | done | `tests/worker/dependencies.test.ts` |
-| REL-003 | done | `tests/worker/issue-deletion-relations.test.ts` |
-| REL-004 | done | `tests/worker/issue-deletion-relations.test.ts` |
-| REL-005 | done | `tests/worker/issue-deletion-relations.test.ts` |
-| REL-006 | done | `tests/worker/issue-deletion-preimage.test.ts` |
-| REL-007 | missing | — |
-| INTAKE-001 | done | `tests/worker/source-ingest.test.ts` |
-| INTAKE-002 | done | `tests/worker/source-ingest.test.ts` |
-| INTAKE-003 | done | `tests/worker/source-ingest.test.ts` |
-| INTAKE-004 | partial | `tests/e2e/core-runtime.mjs` |
-| INTAKE-005 | partial | `tests/e2e/core-runtime.mjs` |
-| INTAKE-006 | partial | `tests/e2e/core-runtime.mjs` |
-| INTAKE-007 | partial | `src/core/features/issues/mutations.ts` |
-| INTAKE-008 | done | `tests/worker/source-ingest.test.ts` |
-| INTAKE-009 | done | `tests/worker/source-ingest.test.ts` |
-| INTAKE-010 | partial | `src/core/features/issues/ui/intake-recommendation.ts` |
-| INTAKE-011 | partial | `tests/worker/source-ingest.test.ts` |
-| TRIAGE-001 | missing | — |
-| TRIAGE-002 | partial | `src/core/features/issues/mutations.ts` |
-| TRIAGE-003 | missing | — |
-| TRIAGE-004 | partial | `src/core/features/operator-intake/input.ts` |
-| TRIAGE-005 | missing | — |
-| CUST-001 | missing | — |
-| CUST-002 | missing | — |
-| CUST-003 | missing | — |
-| CUST-004 | done | `tests/e2e/core-runtime.mjs` |
-| CUST-005 | missing | — |
-| CUST-006 | missing | — |
-| CUST-007 | missing | — |
-| CUST-008 | missing | — |
-| CURR-001 | partial | `src/core/features/streams/service.ts` |
-| CURR-002 | partial | `src/core/features/streams/service.ts` |
-| CURR-003 | partial | `src/core/features/streams/service.ts` |
-| CURR-004 | partial | `src/core/features/streams/service.ts` |
-| CURR-005 | partial | `src/core/features/streams/service.ts` |
-| CURR-006 | done | `tests/worker/dependencies.test.ts` |
-| CURR-007 | partial | `src/core/features/streams/service.ts` |
-| CURR-008 | done | `tests/e2e/core-current-journey.mjs` |
-| CURR-009 | partial | `src/core/features/streams/service.ts` |
-| WORK-001 | done | `tests/worker/dependencies.test.ts` |
-| WORK-002 | done | `tests/worker/dependencies.test.ts` |
-| WORK-003 | partial | `src/core/features/streams/projection.ts` |
-| WORK-004 | missing | — |
-| PROJ-001 | partial | `tests/e2e/admin-project-cycle-journey.mjs` |
-| PROJ-002 | partial | `tests/e2e/admin-project-cycle-journey.mjs` |
-| PROJ-003 | partial | `src/core/features/administration/projects.ts` |
-| PROJ-004 | done | `tests/e2e/core-runtime.mjs` |
-| PROJ-005 | partial | `src/core/features/projects/service.ts` |
-| PROJ-006 | partial | `src/core/features/projects/service.ts` |
-| PROJ-007 | done | `tests/e2e/admin-access-journey.mjs` |
-| PROJ-008 | done | `tests/worker/cycle-closure.test.ts` |
-| PROJ-009 | done | `tests/e2e/admin-project-cycle-journey.mjs` |
-| PROJ-010 | missing | — |
-| PROJ-011 | missing | — |
-| PROJ-012 | missing | — |
-| PROJ-013 | missing | — |
-| PROJ-014 | partial | `src/core/features/administration/projects.ts` |
-| PROJ-015 | missing | — |
-| PROJ-016 | partial | `src/core/features/administration/schema.ts`, `tests/e2e/admin-project-cycle-journey.mjs` |
-| INIT-001 | missing | — |
-| INIT-002 | missing | — |
-| INIT-003 | missing | — |
-| INIT-004 | missing | — |
-| CYCLE-001 | partial | `tests/e2e/admin-project-cycle-journey.mjs` |
-| CYCLE-002 | partial | `tests/e2e/admin-cycle-list-journey.mjs` |
-| CYCLE-003 | done | `tests/worker/cycle-closure.test.ts` |
-| CYCLE-004 | done | `tests/worker/cycle-closure.test.ts` |
-| CYCLE-005 | done | `tests/worker/cycle-closure.test.ts` |
-| CYCLE-006 | done | `tests/worker/cycle-closure.test.ts` |
-| CYCLE-007 | partial | `src/core/features/cycle-closure/service.ts` |
-| CYCLE-008 | missing | — |
-| RELEASE-001 | missing | — |
-| RELEASE-002 | missing | — |
-| RELEASE-003 | missing | — |
-| SEARCH-001 | done | `tests/worker/search-access.test.ts` |
-| SEARCH-002 | done | `tests/worker/search-exact-admission.test.ts` |
-| SEARCH-003 | done | `tests/worker/search-access.test.ts` |
-| SEARCH-004 | partial | `src/core/features/issues/list.ts` |
-| SEARCH-005 | missing | — |
-| VIEW-001 | done | `tests/e2e/dev-runtime.mjs` |
-| VIEW-002 | partial | `tests/worker/views-removal.test.ts` |
-| VIEW-003 | done | `tests/worker/views-removal.test.ts` |
-| VIEW-004 | partial | `src/core/features/bulk-edit/repository.ts` |
-| VIEW-005 | partial | `src/core/features/issues/ui/issue-board.tsx` |
-| VIEW-006 | missing | — |
-| VIEW-007 | missing | — |
-| VIEW-008 | partial | `src/core/features/issues/ui/issue-board.tsx` |
-| VIEW-009 | partial | `src/core/features/views/service.ts` |
-| VIEW-010 | missing | — |
-| VIEW-011 | partial | `src/core/app/theme.ts` |
-| CMD-001 | partial | `src/core/features/search/ui/command-palette.tsx` |
-| CMD-002 | done | `tests/e2e/core-keyboard-journey.mjs` |
-| CMD-003 | partial | `src/core/features/issues/ui/issue-list-view.tsx` |
-| CMD-004 | missing | — |
-| SYNC-001 | partial | `tests/e2e/core-current-journey.mjs` |
-| SYNC-002 | missing | — |
-| SYNC-003 | missing | — |
-| MOBILE-001 | missing | — |
-| MOBILE-002 | missing | — |
-| MOBILE-003 | partial | `tests/e2e/dev-runtime.mjs` |
-| MOBILE-004 | missing | — |
-| MOBILE-005 | missing | — |
-| NOTIFY-001 | partial | `tests/e2e/collaboration-events.mjs` |
-| NOTIFY-002 | done | `tests/e2e/collaboration-events.mjs` |
-| NOTIFY-003 | done | `tests/worker/due-reminders.test.ts` |
-| NOTIFY-004 | done | `tests/e2e/collaboration-preferences.mjs` |
-| NOTIFY-005 | done | `tests/worker/due-reminders.test.ts` |
-| NOTIFY-006 | done | `tests/e2e/collaboration-delivery-ui.mjs` |
-| NOTIFY-007 | partial | `src/core/features/notifications/mail.ts` |
-| NOTIFY-008 | missing | — |
-| NOTIFY-009 | missing | — |
-| NOTIFY-010 | missing | — |
-| AUTO-001 | missing | — |
-| AUTO-002 | partial | `src/core/features/due-reminders/service.ts`, `src/core/features/intake-return/service.ts` |
-| AUTO-003 | missing | — |
-| AUTO-004 | missing | — |
-| AUTO-005 | missing | — |
-| AUTO-006 | partial | `src/core/features/due-reminders/service.ts` |
-| REPORT-001 | partial | `src/core/features/cycle-closure/read.ts` |
-| REPORT-002 | partial | `src/core/features/cycles/progress.ts`, `src/core/features/cycle-closure/service.ts` |
-| REPORT-003 | missing | — |
-| REPORT-004 | partial | `src/core/features/cycles/progress.ts` |
-| REPORT-005 | missing | — |
-| INTEG-001 | partial | `src/core/features/integrations/ui/github-setup.tsx`, `src/core/features/integrations/ui/source-setup.tsx`, `src/core/features/integrations/ui/copy-field.tsx`, `src/core/features/integrations/test-webhook.ts` |
-| INTEG-002 | partial | `src/core/features/integrations/reenter.ts`, `src/core/features/integrations/ui/delivery-setup.tsx` |
-| GITHUB-001 | done | `tests/worker/github-links.test.ts` |
-| GITHUB-002 | done | `tests/worker/github-links.test.ts` |
-| GITHUB-003 | partial | `src/core/features/integrations/github/receiver.ts` |
-| GITHUB-004 | missing | — |
-| GITHUB-005 | missing | — |
-| GITHUB-006 | missing | — |
-| GITHUB-007 | missing | — |
-| GITLAB-001 | missing | — |
-| GITLAB-002 | missing | — |
-| BITBUCKET-001 | missing | — |
-| CI-001 | missing | — |
-| SLACK-001 | missing | — |
-| SLACK-002 | missing | — |
-| SLACK-003 | missing | — |
-| SLACK-004 | missing | — |
-| SLACK-005 | missing | — |
-| TEAMS-001 | missing | — |
-| SUPPORT-001 | partial | `src/core/features/integrations/source-ingest.ts` |
-| SUPPORT-002 | missing | — |
-| ERROR-001 | partial | `src/core/features/integrations/source-ingest.ts` |
-| ERROR-002 | missing | — |
-| DESIGN-001 | missing | — |
-| DOCS-001 | partial | `src/core/features/links/repository.ts` |
-| CAL-001 | missing | — |
-| CONNECT-001 | partial | `src/core/features/integrations/api.ts`, `src/core/features/integrations/outbound.ts` |
-| AGENT-001 | missing | — |
-| AGENT-002 | missing | — |
-| AGENT-003 | missing | — |
-| AGENT-004 | missing | — |
-| AGENT-005 | missing | — |
-| AGENT-006 | partial | `src/core/features/integrations/api.ts`, `src/core/features/integrations/outbound.ts` |
-| AGENT-007 | missing | — |
-| AGENT-008 | missing | — |
-| AGENT-009 | missing | — |
-| API-001 | done | `tests/worker/integration-api.test.ts` |
-| API-002 | done | `tests/worker/integration-authority.test.ts` |
-| API-003 | partial | `src/core/features/integrations/api.ts` |
-| API-004 | missing | — |
-| API-005 | missing | — |
-| WEBHOOK-001 | done | `tests/worker/outbound-webhooks.test.ts` |
-| WEBHOOK-002 | partial | `src/core/features/integrations/outbound.ts` |
-| DATA-001 | done | `tests/worker/data-http.test.ts` |
-| DATA-002 | partial | `tests/worker/linear-import.test.ts` |
-| DATA-003 | partial | `tests/worker/data-import-atomic.test.ts` |
-| DATA-004 | done | `tests/worker/data-import-atomic.test.ts` |
-| DATA-005 | done | `tests/worker/data-archive-failure.test.ts` |
-| DATA-006 | partial | `tests/e2e/data-staged-cli.mjs` |
-| DATA-007 | done | `tests/e2e/jira-public-journey.mjs` |
-| DATA-008 | done | `tests/worker/linear-api-import.test.ts` |
-| DATA-009 | done | `tests/worker/jira-import.test.ts` |
-| DATA-010 | partial | `tests/worker/jira-apply.test.ts` |
-| DATA-011 | partial | `tests/worker/imported-person-erasure.test.ts` |
-| DATA-012 | missing | — |
-| DATA-013 | partial | `src/core/features/data/import/jira.ts` |
-| DATA-014 | partial | `src/core/features/data/import/linear.ts`, `src/core/features/data/import/api-file.ts` |
-| DATA-015 | partial | `src/core/features/data/import/jira-review.ts` |
-| DATA-016 | missing | — |
-| DATA-017 | partial | `src/core/features/data/import/ids.ts`, `src/core/features/data/import/runs.ts`, `tests/e2e/data-staged-cli.mjs` |
-| DATA-018 | partial | `tests/e2e/jira-public-journey.mjs` |
-| SEC-001 | partial | `src/core/features/integrations/secrets.ts` |
-| SEC-002 | missing | — |
-| SEC-003 | partial | `src/core/features/issue-deletion/service.ts` |
-| PUSH-001 | missing | — |
-| PUSH-002 | missing | — |
-| PUSH-003 | missing | — |
-| PUSH-004 | missing | — |
-| PUSH-005 | missing | — |
-| PUSH-006 | partial | `src/core/features/dependencies/repository.ts`, `src/core/features/due-reminders/service.ts` |
-| PUSH-007 | partial | `src/core/features/projects/service.ts` |
-| PUSH-008 | missing | — |
-| PUSH-009 | partial | `src/core/features/cycle-closure/read.ts` |
-| PUSH-010 | missing | — |
-| OWNER-CLAIM-001 | done | `tests/worker/owner-claim.test.ts` |
-| EDITOR-001 | done | `tests/worker/editor.test.ts` |
+| Clauses | Done | Partial | Missing | Total |
+| --- | ---: | ---: | ---: | ---: |
+| Published | 63 | 41 | 0 | 104 |
+| Target and push further | 1 | 45 | 104 | 150 |
+| All | 64 | 86 | 104 | 254 |
+
+| Clause | Title | Kind | Status | Evidence | Gap |
+| --- | --- | --- | --- | --- | --- |
+| `HOME-001` | Public homepage | published | done | `tests/e2e/core-runtime.mjs` |  |
+| `OPS-001` | Workspace access | published | partial | `tests/worker/search-access.test.ts`, `tests/worker/removal-boundary.test.ts` | Equal operators; roles, private teams and guests open |
+| `SETUP-001` | First workspace review | published | done | `tests/worker/first-run.test.ts` |  |
+| `OPS-002` | Member management | published | partial | `tests/worker/base-auth.test.ts` | Invite and remove by any operator under the earlier equal-operator rule; role-restricted management is open with ROLE-001 |
+| `OPS-003` | Workspace time | published | done | `tests/e2e/admin-workspace-time-journey.mjs` |  |
+| `OPS-004` | Safe removal | published | partial | `tests/worker/removal-boundary.test.ts` | Removal revokes sessions, unassigns, transfers and rolls back as one unit, but today every removal also deletes the member's private views and anonymises their references at once; suspension that keeps the name is open with ROLE-011 and the separate erase with ROLE-012 |
+| `ROLE-001` | Workspace roles | target | missing |  | No implementation yet |
+| `ROLE-002` | Private teams | target | missing |  | No implementation yet |
+| `ROLE-003` | Guests | target | missing |  | No implementation yet |
+| `ROLE-004` | Single sign-on and provisioning | target | missing |  | No implementation yet |
+| `ROLE-005` | Audit log | target | partial | `src/core/features/administration/transaction.ts` | Audit entries are recorded; there is no audit view, filter or export |
+| `ROLE-006` | Apps and agents as actors | target | missing |  | No implementation yet |
+| `ROLE-007` | Team membership and team owners | target | missing |  | No implementation yet |
+| `ROLE-008` | Operator and permission coverage | target | missing |  | No implementation yet |
+| `ROLE-009` | Team-managed permissions | target | missing |  | No implementation yet |
+| `ROLE-010` | Sign in with Google and passkeys | target | missing |  | No implementation yet |
+| `ROLE-011` | Suspend and reactivate members | target | partial | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
+| `ROLE-012` | Erase a member's personal data | target | partial | `src/core/features/settings/removal.ts`, `src/core/features/settings/removal-history.ts`, `tests/worker/removal-boundary.test.ts` | Today's removal anonymises the member's references in comments, activity and audit and deletes their private views as part of every removal; a separate erase action on a suspended member, its preview, the typed confirmation and the single audit entry are absent |
+| `TEAM-001` | Team identity | published | done | `tests/e2e/admin-team-journey.mjs` |  |
+| `TEAM-002` | Team workflow | published | partial | `tests/e2e/admin-team-journey.mjs` | Workflow editing by any operator under the earlier equal-operator rule; the role restriction is open with ROLE-001 and ROLE-007 |
+| `TEAM-003` | Team archiving | published | done | `tests/e2e/admin-archive-team-journey.mjs` |  |
+| `TEAM-004` | Status removal | published | done | `tests/e2e/admin-team-journey.mjs` |  |
+| `TEAM-005` | Team settings | target | missing |  | No implementation yet |
+| `TEAM-006` | Sub-teams | target | missing |  | No implementation yet |
+| `ISSUE-001` | Creation | published | done | `tests/e2e/core-runtime.mjs` |  |
+| `ISSUE-002` | Stable identifiers | published | done | `tests/worker/issue-deletion-relations.test.ts` |  |
+| `ISSUE-003` | Priority | published | partial | `src/core/features/issues/input.ts` | Implemented; no test names the clause yet |
+| `ISSUE-004` | Status transitions | published | done | `tests/worker/issue-session-projection.test.ts` |  |
+| `ISSUE-005` | Assignment | published | done | `tests/worker/removal-assignment.test.ts` |  |
+| `ISSUE-006` | Concurrent edits | published | done | `tests/e2e/core-runtime.mjs` |  |
+| `ISSUE-007` | Activity history | published | done | `tests/worker/dependencies.test.ts` |  |
+| `ISSUE-008` | Comments, threads and resolution | published | partial | `tests/worker/discussion-access.test.ts` | Flat comments with edit, delete and tombstones by any operator; threads, resolution, inline comments and author-only editing are absent |
+| `ISSUE-009` | Attachments and links | published | done | `tests/worker/discussion-file-admission.test.ts` |  |
+| `ISSUE-010` | Deletion | published | partial | `tests/worker/issue-deletion-cascade.test.ts` | Immediate permanent cascade by any operator; Recently deleted, undo and the role policy are open with ISSUE-020 and ROLE-001 |
+| `ISSUE-011` | Estimates | published | done | `tests/worker/cycle-closure.test.ts` |  |
+| `ISSUE-012` | Moving teams | published | partial | `src/core/features/team-move/repository.ts` | Implemented; no test names the clause yet |
+| `ISSUE-013` | Mentions | published | done | `tests/e2e/collaboration-events.mjs` |  |
+| `ISSUE-014` | Labels | published | partial | `tests/e2e/admin-label-journey.mjs` | Workspace labels managed by any operator; team labels, groups, merging and the role policy are absent |
+| `ISSUE-015` | Unsent drafts | published | done | `tests/e2e/core-draft-journey.mjs` |  |
+| `ISSUE-016` | Issue templates | target | missing |  | No implementation yet |
+| `ISSUE-017` | Reactions | target | missing |  | No implementation yet |
+| `ISSUE-018` | Description history | target | partial | `src/core/features/issue-edit/plan.ts` | Previous and next values are kept in activity; compare and restore are absent |
+| `ISSUE-019` | Sub-issue progress | target | partial | `src/core/features/parents/repository.ts` | Parent and child links exist; progress, inline creation and the completion rule are absent |
+| `ISSUE-020` | Undo and Recently deleted | target | missing |  | No implementation yet |
+| `ISSUE-021` | Issue types | target | missing |  | No implementation yet |
+| `ISSUE-022` | Issue start date | target | missing |  | No implementation yet |
+| `ISSUE-023` | Copy issue | target | missing |  | No implementation yet |
+| `ISSUE-024` | Inline images and video | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and `nosniff`; paste, drop, the upload command, inline display, the viewer, video types, `Range` responses and resumable upload are absent, and `src/core/features/markdown/ui/markdown.tsx` refuses image paths on the installation itself |
+| `ISSUE-025` | Checklists | target | missing |  | `src/core/features/markdown/ui/markdown.tsx` renders plain CommonMark with no GitHub-flavoured Markdown, so `- [ ]` shows as literal text |
+| `ISSUE-026` | Editor formatting and slash commands | target | partial | `src/core/features/markdown/ui/markdown.tsx`, `tests/markdown-rendering.test.tsx` | Safe CommonMark display of headings, emphasis, lists, quotes and fenced code with no raw HTML; tables, strikethrough, highlighting, the slash menu, rich paste and the shortcuts are absent, and the editor is a plain text area at `src/core/features/notifications/ui/mention-textarea.tsx` |
+| `ISSUE-027` | Issue references and backlinks | target | missing |  | No implementation yet |
+| `ISSUE-028` | Drafts across devices | target | missing |  | No implementation yet |
+| `FIELD-001` | Custom field definitions | target | partial | `src/core/features/issues/repository.ts`, `src/core/features/issues/input.ts` | Issues store an untyped key/value custom-field map and its changes reach activity through `src/core/features/issue-edit/plan.ts`; typed definitions, scopes, project fields, validation and the role rule are absent |
+| `FIELD-002` | Custom fields in views, search, API and imports | target | missing |  | No implementation yet |
+| `REL-001` | Dependencies | published | done | `tests/worker/dependencies.test.ts` |  |
+| `REL-002` | Blocked state | published | done | `tests/worker/dependencies.test.ts` |  |
+| `REL-003` | Duplicate decision | published | done | `tests/worker/issue-deletion-relations.test.ts` |  |
+| `REL-004` | Canonical duplicates | published | done | `tests/worker/issue-deletion-relations.test.ts` |  |
+| `REL-005` | Undo duplicate | published | done | `tests/worker/issue-deletion-relations.test.ts` |  |
+| `REL-006` | Parent and child | published | done | `tests/worker/issue-deletion-preimage.test.ts` |  |
+| `REL-007` | Related issues | target | missing |  | No implementation yet |
+| `INTAKE-001` | Intake creation | published | done | `tests/worker/source-ingest.test.ts` |  |
+| `INTAKE-002` | Idempotent sources | published | done | `tests/worker/source-ingest.test.ts` |  |
+| `INTAKE-003` | Evidence revisions | published | done | `tests/worker/source-ingest.test.ts` |  |
+| `INTAKE-004` | Inspectable assessment | published | partial | `tests/e2e/core-runtime.mjs` | Source, operator and policy provenance; agent provenance is open with TRIAGE-003 |
+| `INTAKE-005` | Accept | published | partial | `tests/e2e/core-runtime.mjs` | Acceptance by any operator; the Guest refusal is open with ROLE-003 and ROLE-008 |
+| `INTAKE-006` | Defer | published | partial | `tests/e2e/core-runtime.mjs` | Deferral by any operator; the Guest refusal is open with ROLE-003 and ROLE-008 |
+| `INTAKE-007` | Decline | published | partial | `src/core/features/issues/mutations.ts` | Decline with a reason by any operator; no test names the clause yet, and the Guest refusal is open with ROLE-003 and ROLE-008 |
+| `INTAKE-008` | Evidence after a terminal decision | published | done | `tests/worker/source-ingest.test.ts` |  |
+| `INTAKE-009` | Source failure | published | done | `tests/worker/source-ingest.test.ts` |  |
+| `INTAKE-010` | Decision policy | published | partial | `src/core/features/issues/ui/intake-recommendation.ts` | Implemented; no test names the clause yet |
+| `INTAKE-011` | Source registration | published | partial | `tests/worker/source-ingest.test.ts` | Registration, rotation and revocation by any operator; the Owner/Admin restriction is open with ROLE-008 |
+| `TRIAGE-001` | Triage responsibility | target | missing |  | No implementation yet |
+| `TRIAGE-002` | Triage routing rules | target | partial | `src/core/features/issues/mutations.ts` | Manual acceptance chooses team, status and assignee; rules are absent |
+| `TRIAGE-003` | Agent triage suggestions | target | missing |  | No implementation yet |
+| `TRIAGE-004` | Request forms | target | partial | `src/core/features/operator-intake/input.ts` | One fixed internal intake form; configurable forms are absent |
+| `TRIAGE-005` | Email intake | target | missing |  | No implementation yet |
+| `CUST-001` | Customer requests on issues | target | missing |  | No implementation yet |
+| `CUST-002` | Customer-weighted planning | target | missing |  | No implementation yet |
+| `CUST-003` | Close the loop with requesters | target | missing |  | No implementation yet |
+| `CUST-004` | Penny keeps the board | target | done | `tests/e2e/core-runtime.mjs` |  |
+| `CUST-005` | Customer records | target | missing |  | No implementation yet |
+| `CUST-006` | Customer identity and merging | target | missing |  | No implementation yet |
+| `CUST-007` | Customers list and customer pages | target | missing |  | No implementation yet |
+| `CUST-008` | Adding customer requests by hand | target | missing |  | No implementation yet |
+| `CURR-001` | Disjoint stream | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-002` | Needs decision | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-003` | Now | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-004` | Next | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-005` | Recently done | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-006` | Explainable attention | published | done | `tests/worker/dependencies.test.ts` |  |
+| `CURR-007` | Ranking | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-008` | Freshness | published | done | `tests/e2e/core-current-journey.mjs` |  |
+| `CURR-009` | Stream controls | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `WORK-001` | Personal queue | published | done | `tests/worker/dependencies.test.ts` |  |
+| `WORK-002` | Personal defaults | published | done | `tests/worker/dependencies.test.ts` |  |
+| `WORK-003` | Cycle context | published | partial | `src/core/features/streams/projection.ts` | Implemented; no test names the clause yet |
+| `WORK-004` | Created, Subscribed and Activity tabs | target | missing |  | No implementation yet |
+| `PROJ-001` | Project record | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Name, description, lead, target date, lifecycle, colour, icon and archiving; start date, priority, labels and project custom fields are absent from `src/core/platform/db/schema.ts` |
+| `PROJ-002` | Manual lifecycle | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Manual lifecycle by any operator; the Guest refusal is open with ROLE-003 and ROLE-008 |
+| `PROJ-003` | Project membership | published | partial | `src/core/features/administration/projects.ts` | Implemented; no test names the clause yet |
+| `PROJ-004` | Progress | published | done | `tests/e2e/core-runtime.mjs` |  |
+| `PROJ-005` | Health | published | partial | `src/core/features/projects/service.ts` | Implemented; no test names the clause yet |
+| `PROJ-006` | Risk explanation | published | partial | `src/core/features/projects/service.ts` | Implemented; no test names the clause yet |
+| `PROJ-007` | Portfolio | published | done | `tests/e2e/admin-access-journey.mjs` |  |
+| `PROJ-008` | Historical truth | published | done | `tests/worker/cycle-closure.test.ts` |  |
+| `PROJ-009` | Project archiving | published | done | `tests/e2e/admin-project-cycle-journey.mjs` |  |
+| `PROJ-010` | Project updates | target | missing |  | No implementation yet |
+| `PROJ-011` | Milestones | target | missing |  | No implementation yet |
+| `PROJ-012` | Project templates | target | missing |  | No implementation yet |
+| `PROJ-013` | Project documents and specs | target | missing |  | No implementation yet |
+| `PROJ-014` | Project members and teams | target | partial | `src/core/features/administration/projects.ts` | Lead and cross-team issues exist; members, contributing teams and following are absent |
+| `PROJ-015` | Project dependencies | target | missing |  | No implementation yet |
+| `PROJ-016` | Project statuses | target | partial | `src/core/features/administration/schema.ts`, `tests/e2e/admin-project-cycle-journey.mjs` | A fixed lifecycle of Planned, Active, Completed and Canceled set by hand; named, ordered and coloured statuses, the Backlog and Paused categories, team sets, removal with a destination and status import are absent |
+| `INIT-001` | Initiatives | target | missing |  | No implementation yet |
+| `INIT-002` | Initiative roll-up | target | missing |  | No implementation yet |
+| `INIT-003` | Roadmap timeline | target | missing |  | No implementation yet |
+| `INIT-004` | Leadership digest | target | missing |  | No implementation yet |
+| `CYCLE-001` | Time box | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Cycle rules, created by any operator; the role and team-permission restriction is open with ROLE-008 and ROLE-009 |
+| `CYCLE-002` | Commitment | published | partial | `tests/e2e/admin-cycle-list-journey.mjs` | Commitment by any operator; Guest scoping is open with ROLE-003 |
+| `CYCLE-003` | Progress and capacity | published | done | `tests/worker/cycle-closure.test.ts` |  |
+| `CYCLE-004` | Closure and rollover | published | done | `tests/worker/cycle-closure.test.ts` |  |
+| `CYCLE-005` | Closure snapshot | published | done | `tests/worker/cycle-closure.test.ts` |  |
+| `CYCLE-006` | Missing next cycle | published | done | `tests/worker/cycle-closure.test.ts` |  |
+| `CYCLE-007` | Automatic cycle schedule | target | partial | `src/core/features/cycle-closure/service.ts` | Closure and rollover to an existing next cycle; automatic creation is absent |
+| `CYCLE-008` | Automatic cycle membership | target | missing |  | No implementation yet |
+| `RELEASE-001` | Releases | target | missing |  | No implementation yet |
+| `RELEASE-002` | Deployment tracking | target | missing |  | No implementation yet |
+| `RELEASE-003` | Release notes | target | missing |  | No implementation yet |
+| `SEARCH-001` | Global search | published | done | `tests/worker/search-access.test.ts` |  |
+| `SEARCH-002` | Exact identifier | published | done | `tests/worker/search-exact-admission.test.ts` |  |
+| `SEARCH-003` | Index freshness | published | done | `tests/worker/search-access.test.ts` |  |
+| `SEARCH-004` | Advanced filters | target | partial | `src/core/features/issues/list.ts` | Single-value filters per field; grouped and negated expressions are absent |
+| `SEARCH-005` | Meaning-based search | target | missing |  | No implementation yet |
+| `VIEW-001` | Issue controls | published | done | `tests/e2e/dev-runtime.mjs` |  |
+| `VIEW-002` | Saved views | published | partial | `tests/worker/views-removal.test.ts` | Private and shared views and owner-only edits; the Guest restriction is open with ROLE-003 and ROLE-008 |
+| `VIEW-003` | Control persistence | published | done | `tests/worker/views-removal.test.ts` |  |
+| `VIEW-004` | Bulk edit | published | partial | `src/core/features/bulk-edit/repository.ts` | Implemented; no test names the clause yet |
+| `VIEW-005` | Team board | published | partial | `src/core/features/issues/ui/issue-board.tsx` | Implemented; no test names the clause yet |
+| `VIEW-006` | Manual order | target | missing |  | No implementation yet |
+| `VIEW-007` | Timeline and calendar views | target | missing |  | No implementation yet |
+| `VIEW-008` | Display options | target | partial | `src/core/features/issues/ui/issue-board.tsx` | Columns by status with a keyboard selector; swimlanes, drag and property choices are absent |
+| `VIEW-009` | Workspace-wide views | target | partial | `src/core/features/views/service.ts` | Saved issue views; project, initiative and request views are absent |
+| `VIEW-010` | Sidebar favorites | target | missing |  | No implementation yet |
+| `VIEW-011` | Light, dark and system themes | target | partial | `src/core/app/theme.ts` | One product theme applied through CSS variables; a dark theme, the System choice and the per-member setting are absent |
+| `CMD-001` | Command palette | published | partial | `src/core/features/search/ui/command-palette.tsx` | Implemented; no test names the clause yet |
+| `CMD-002` | Keyboard navigation | published | done | `tests/e2e/core-keyboard-journey.mjs` |  |
+| `CMD-003` | Focus and selection | published | partial | `src/core/features/issues/ui/issue-list-view.tsx` | Implemented; no test names the clause yet |
+| `CMD-004` | Keyboard-first editing | target | missing |  | No implementation yet |
+| `SYNC-001` | Real-time sync | target | partial | `tests/e2e/core-current-journey.mjs` | Refresh within five seconds without reload; a live connection is absent |
+| `SYNC-002` | Local-first speed | target | missing |  | No implementation yet |
+| `SYNC-003` | Collaborative editing | target | missing |  | No implementation yet |
+| `MOBILE-001` | iOS and Android apps | target | missing |  | No implementation yet |
+| `MOBILE-002` | Push notifications | target | missing |  | No implementation yet |
+| `MOBILE-003` | Responsive web | target | partial | `tests/e2e/dev-runtime.mjs` | 390px checks exist for current pages; new pages in this contract are open |
+| `MOBILE-004` | Distributed apps and push relay | target | missing |  | No implementation yet |
+| `MOBILE-005` | Desktop apps and desktop notifications | target | missing |  | No implementation yet |
+| `NOTIFY-001` | Inbox events | published | partial | `tests/e2e/collaboration-events.mjs` | Assignment, mention, comment, deferral return, last blocker resolved and due reminder; follower completion, cancellation, status, Urgent, blocking and due-date events and the clause-linked events are absent from `src/core/features/notifications/schema.ts` |
+| `NOTIFY-002` | Followers | published | done | `tests/e2e/collaboration-events.mjs` |  |
+| `NOTIFY-003` | No self-notification | published | done | `tests/worker/due-reminders.test.ts` |  |
+| `NOTIFY-004` | Read and mute | published | done | `tests/e2e/collaboration-preferences.mjs` |  |
+| `NOTIFY-005` | Due reminders | published | done | `tests/worker/due-reminders.test.ts` |  |
+| `NOTIFY-006` | Assignment and mention email | published | done | `tests/e2e/collaboration-delivery-ui.mjs` |  |
+| `NOTIFY-007` | Channels and digests | target | partial | `src/core/features/notifications/mail.ts` | Immediate email for assignment and mention; other channels and digests are absent |
+| `NOTIFY-008` | Snooze and reminders | target | missing |  | No implementation yet |
+| `NOTIFY-009` | Subscriptions | target | missing |  | No implementation yet |
+| `NOTIFY-010` | Personal time zone and working hours | target | missing |  | No implementation yet |
+| `AUTO-001` | Recurring issues | target | missing |  | No implementation yet |
+| `AUTO-002` | Workflow rules | target | partial | `src/core/features/due-reminders/service.ts`, `src/core/features/intake-return/service.ts` | Fixed due reminders and deferral return; configurable rules are absent |
+| `AUTO-003` | Auto-close and auto-archive | target | missing |  | No implementation yet |
+| `AUTO-004` | SLAs | target | missing |  | No implementation yet |
+| `AUTO-005` | Update reminders | target | missing |  | No implementation yet |
+| `AUTO-006` | Due-soon rules | target | partial | `src/core/features/due-reminders/service.ts` | Due-today and overdue notifications only |
+| `REPORT-001` | Insights | target | partial | `src/core/features/cycle-closure/read.ts` | Closed-cycle totals only |
+| `REPORT-002` | Cycle and project charts | target | partial | `src/core/features/cycles/progress.ts`, `src/core/features/cycle-closure/service.ts` | Progress, capacity and immutable snapshots; burn-up and projections are absent |
+| `REPORT-003` | Dashboards | target | missing |  | No implementation yet |
+| `REPORT-004` | Workload | target | partial | `src/core/features/cycles/progress.ts` | Team cycle capacity; per-person workload is absent |
+| `REPORT-005` | Warehouse and spreadsheet export | target | missing |  | No implementation yet |
+| `INTEG-001` | Guided connection from Settings | target | partial | `src/core/features/integrations/ui/github-setup.tsx`, `src/core/features/integrations/ui/source-setup.tsx`, `src/core/features/integrations/ui/copy-field.tsx`, `src/core/features/integrations/test-webhook.ts` | Settings → Integrations exists for signed sources, GitHub repository webhooks and outbound destinations, with copyable payload URLs, reveal-once secrets and a test delivery; provider app creation, manifest flows, OAuth installs and the live first-event check are absent |
+| `INTEG-002` | Integration health and repair | target | partial | `src/core/features/integrations/reenter.ts`, `src/core/features/integrations/ui/delivery-setup.tsx` | Credential re-entry after restore and outbound delivery state; health for inbound providers and in-place repair are absent |
+| `GITHUB-001` | Signed PR links | published | done | `tests/worker/github-links.test.ts` |  |
+| `GITHUB-002` | Durable latest PR state | published | done | `tests/worker/github-links.test.ts` |  |
+| `GITHUB-003` | Branches and status automation | target | partial | `src/core/features/integrations/github/receiver.ts` | Signed PR links and latest state; branch names, magic words and status rules are absent |
+| `GITHUB-004` | Commits | target | missing |  | No implementation yet |
+| `GITHUB-005` | Review and checks on the issue | target | missing |  | No implementation yet |
+| `GITHUB-006` | GitHub App | target | missing |  | No implementation yet |
+| `GITHUB-007` | GitHub Issues sync | target | missing |  | No implementation yet |
+| `GITLAB-001` | GitLab | target | missing |  | No implementation yet |
+| `GITLAB-002` | GitLab Issues sync | target | missing |  | No implementation yet |
+| `BITBUCKET-001` | Bitbucket | target | missing |  | No implementation yet |
+| `CI-001` | CI and deploy providers | target | missing |  | No implementation yet |
+| `SLACK-001` | Slack app | target | missing |  | No implementation yet |
+| `SLACK-002` | Issues from Slack with synced threads | target | missing |  | No implementation yet |
+| `SLACK-003` | Channel notifications | target | missing |  | No implementation yet |
+| `SLACK-004` | Personal Slack notifications | target | missing |  | No implementation yet |
+| `SLACK-005` | Link previews | target | missing |  | No implementation yet |
+| `TEAMS-001` | Microsoft Teams | target | missing |  | No implementation yet |
+| `SUPPORT-001` | Zendesk, Intercom and Front | target | partial | `src/core/features/integrations/source-ingest.ts` | Signed generic source intake with replay identity; provider apps, linking and status sync are absent |
+| `SUPPORT-002` | HappyToHelp | target | missing |  | No implementation yet |
+| `ERROR-001` | Sentry and Datadog | target | partial | `src/core/features/integrations/source-ingest.ts` | Generic signed source intake; Sentry and Datadog adapters, resolution sync and regression handling are absent |
+| `ERROR-002` | Spool | target | missing |  | No implementation yet |
+| `DESIGN-001` | Figma | target | missing |  | No implementation yet |
+| `DOCS-001` | Notion, Confluence and Google Drive | target | partial | `src/core/features/links/repository.ts` | Named HTTPS links; previews and provider connections are absent |
+| `CAL-001` | Calendar feeds | target | missing |  | No implementation yet |
+| `CONNECT-001` | Zapier and Make | target | partial | `src/core/features/integrations/api.ts`, `src/core/features/integrations/outbound.ts` | The API and webhooks they need exist in part; the apps are absent |
+| `AGENT-001` | Delegate an issue to an agent | target | missing |  | No implementation yet |
+| `AGENT-002` | Agent session on the issue | target | missing |  | No implementation yet |
+| `AGENT-003` | Reviewable output, human completion | target | missing |  | No implementation yet |
+| `AGENT-004` | Agent permissions and budgets | target | missing |  | No implementation yet |
+| `AGENT-005` | MCP server | target | missing |  | No implementation yet |
+| `AGENT-006` | Agent platform | target | partial | `src/core/features/integrations/api.ts`, `src/core/features/integrations/outbound.ts` | Scoped tokens and signed outbound events; app actors, delegation events and activity types are absent |
+| `AGENT-007` | Ask Vector | target | missing |  | No implementation yet |
+| `AGENT-008` | Agent guidance | target | missing |  | No implementation yet |
+| `AGENT-009` | Provider delegation protocols | target | missing |  | No implementation yet |
+| `API-001` | Native scoped API | published | done | `tests/worker/integration-api.test.ts` |  |
+| `API-002` | Token authority and usage | published | done | `tests/worker/integration-authority.test.ts` |  |
+| `API-003` | Complete public API | target | partial | `src/core/features/integrations/api.ts` | Issue, comment and metadata routes under scoped tokens |
+| `API-004` | OAuth apps | target | missing |  | No implementation yet |
+| `API-005` | SDK and docs | target | missing |  | No implementation yet |
+| `WEBHOOK-001` | Durable native delivery | published | done | `tests/worker/outbound-webhooks.test.ts` |  |
+| `WEBHOOK-002` | Webhooks for every object | target | partial | `src/core/features/integrations/outbound.ts` | Issue created, updated and completed events |
+| `DATA-001` | Export contents | published | done | `tests/worker/data-http.test.ts` |  |
+| `DATA-002` | Mapped import preflight | published | partial | `tests/worker/linear-import.test.ts` | Preflight by any operator; the Owner/Admin restriction is open with ROLE-008 |
+| `DATA-003` | Atomic mapped import | published | partial | `tests/worker/data-import-atomic.test.ts` | Apply by any operator; the Owner/Admin restriction is open with ROLE-008 |
+| `DATA-004` | Idempotent mapped import | published | done | `tests/worker/data-import-atomic.test.ts` |  |
+| `DATA-005` | Exact portable restore | published | done | `tests/worker/data-archive-failure.test.ts` |  |
+| `DATA-006` | Staged import run | published | partial | `tests/e2e/data-staged-cli.mjs` | Staged runs by any operator; the Owner/Admin restriction is open with ROLE-008 |
+| `DATA-007` | Reconciliation report | published | done | `tests/e2e/jira-public-journey.mjs` |  |
+| `DATA-008` | Linear API enrichment file | published | done | `tests/worker/linear-api-import.test.ts` |  |
+| `DATA-009` | Jira CSV preflight and loss review | published | done | `tests/worker/jira-import.test.ts` |  |
+| `DATA-010` | Jira staged apply and reconciliation | published | partial | `tests/worker/jira-apply.test.ts` | Any operator session; the Owner/Admin restriction is open with ROLE-008 |
+| `DATA-011` | Erasing an imported person | published | partial | `tests/worker/imported-person-erasure.test.ts` | Erasure by any operator; the Owner/Admin restriction is open with ROLE-008 |
+| `DATA-012` | GitHub Issues and Projects import | target | missing |  | No implementation yet |
+| `DATA-013` | Jira Cloud and Data Center API import | target | partial | `src/core/features/data/import/jira.ts` | All Fields CSV file profile; the live API, attachment bytes, versions and Data Center are absent |
+| `DATA-014` | Linear API import | target | partial | `src/core/features/data/import/linear.ts`, `src/core/features/data/import/api-file.ts` | Workspace CSV plus an owner-produced API file; direct API, bytes, initiatives and updates are absent |
+| `DATA-015` | Plane, Huly and Shortcut import | target | partial | `src/core/features/data/import/jira-review.ts` | The shared reviewed mapped-CSV path; named source profiles are absent |
+| `DATA-016` | Transition sync | target | missing |  | No implementation yet |
+| `DATA-017` | Whole-workspace migration | target | partial | `src/core/features/data/import/ids.ts`, `src/core/features/data/import/runs.ts`, `tests/e2e/data-staged-cli.mjs` | Stable per-source import identities, staged runs with resume, repeat and rollback, and in-run relations; migrations, cross-run relation binding, the migration report, incremental re-runs and the 50,000-issue run are absent |
+| `DATA-018` | Old identifiers and links after a move | target | partial | `tests/e2e/jira-public-journey.mjs` | Imported issues show and find their source ID in search under DATA-007; URL resolution, alias redirects and Git magic words on old keys are absent |
+| `SEC-001` | Integration credentials | target | partial | `src/core/features/integrations/secrets.ts` | Source, webhook and token secrets; future providers follow the same rule |
+| `SEC-002` | Model and agent data handling | target | missing |  | No implementation yet |
+| `SEC-003` | Erasure across integrations | target | partial | `src/core/features/issue-deletion/service.ts` | Native, file and webhook erasure; external integrations and embeddings are absent |
+| `PUSH-001` | Issue to spec | push-further | missing |  | No implementation yet |
+| `PUSH-002` | Spec to tested PR | push-further | missing |  | No implementation yet |
+| `PUSH-003` | Verified deployment | push-further | missing |  | No implementation yet |
+| `PUSH-004` | Outcome verification before close | push-further | missing |  | No implementation yet |
+| `PUSH-005` | Customer follow-through | push-further | missing |  | No implementation yet |
+| `PUSH-006` | Blocked-work follow-up | push-further | partial | `src/core/features/dependencies/repository.ts`, `src/core/features/due-reminders/service.ts` | Waiting state and due reminders; questions, promised times and Slack are absent |
+| `PUSH-007` | Plans with uncertainty | push-further | partial | `src/core/features/projects/service.ts` | Explainable health and capacity risk; forecasts and options are absent |
+| `PUSH-008` | Incident follow-up loop | push-further | missing |  | No implementation yet |
+| `PUSH-009` | Standups and cycle summaries | push-further | partial | `src/core/features/cycle-closure/read.ts` | Numeric closed-cycle summaries; written summaries are absent |
+| `PUSH-010` | Agent accountability ledger | push-further | missing |  | No implementation yet |
+| `OWNER-CLAIM-001` | Signed owner claim | published | done | `tests/worker/owner-claim.test.ts` |  |
+| `EDITOR-001` | Owner-gated editor | published | done | `tests/worker/editor.test.ts` |  |
