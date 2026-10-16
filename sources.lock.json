@@ -3495,7 +3495,7 @@
       "executable": false
     },
     "tests/e2e/data-progress-checks.mjs": {
-      "sha256": "ada5568909152bf3b914996811869a839350e1eaaa2e7a3f928f26be26c486e2",
+      "sha256": "7c40021c3e24295c32ef8759d28db610b6480f360c5776c4965fb6ceabeedf64",
       "executable": false
     },
     "tests/e2e/data-roundtrip-fixture.mjs": {
@@ -3522,12 +3522,16 @@
       "sha256": "cd51c45b0705286ac92b178ef53faffffefa862d00864592a7ffd30d0ad21939",
       "executable": false
     },
+    "tests/e2e/data-stale-list-fixture.mjs": {
+      "sha256": "f1686388ab5d97f8e08e3858b3a05144925fece65bb0ce59ae4047ebf38c2c5a",
+      "executable": false
+    },
     "tests/e2e/data-ui-installation.mjs": {
       "sha256": "ffdaf7fa057f7e7f9eca42461362db6a7443b39228641f9597367dc48afe1ff2",
       "executable": false
     },
     "tests/e2e/data-ui-journey.mjs": {
-      "sha256": "73491b63af445a640f74473a9523eed334c70151ba9460b65fe0dec81158a6a8",
+      "sha256": "0dbb78372cbb311680779d5eaed9bf89d3ed6d9ddd38f278bf30ef7d665f4479",
       "executable": false
     },
     "tests/e2e/dev-ci.mjs": {

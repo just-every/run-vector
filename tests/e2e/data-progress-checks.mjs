@@ -5,7 +5,7 @@ import {writeFile} from 'node:fs/promises';
 
 /** Hold only real network receipts. The next resume request gives a stable
  * observation boundary for each published batch, without slowing application code. */
-export async function observeImportBatches(page,panel,{width,evidence,baselineEvidence=false}) {
+export async function observeImportBatches(page,panel,{width,evidence,baselineEvidence=false,anchorId}) {
  const waiting=[], readers=[],active=new Set();
  let releaseList, staleRead,finishStale,releaseAdvanced,firstList=true;
  const staleFinished=new Promise(resolve=>{finishStale=resolve;});
@@ -21,6 +21,9 @@ export async function observeImportBatches(page,panel,{width,evidence,baselineEv
  };
  await page.route('**/api/data/import/runs',listHandler);
  const resumeHandler=async route=>{
+  // The completed anchor's real UI action admits the initial stale list read;
+  // batch barriers apply to the new import whose progress this journey checks.
+  if(new URL(route.request().url()).pathname==='/api/data/import/runs/'+anchorId+'/resume')return route.continue();
   let release;const gate=new Promise(resolve=>{release=resolve;});
   const next={route,release};active.add(next);const reader=readers.shift();if(reader)reader(next);else waiting.push(next);
   await gate;active.delete(next);
