@@ -73,7 +73,7 @@ The erasure adapter snapshots full rows for incoming and outgoing edges, direct 
 
 ## Clause acceptance — target contract (16 October 2026)
 
-CONTRACT.md now describes the full Linear/Jira-class product Vector is building towards. Every clause is listed here by area with its status and the acceptance evidence a build round works towards: **done** clauses name the test that proves them today; **partial** and **missing** clauses name the journey or test, through a public door (browser journey, HTTP route, command, signed provider fixture at the network edge, mobile simulator), that must pass before the status changes. Provider fixtures stand in only at the paid or network edge. A status changes only with the cited test passing in CI on the exact head; local proof does not establish hosted acceptance.
+CONTRACT.md now describes the full Linear/Jira-class product Vector is building towards. Every clause is listed here by area with its status and the acceptance evidence a build round works towards: **done** clauses name the test that proves them today; **partial** and **missing** clauses name the journey or test, through a public door (browser journey, HTTP route, command, signed provider fixture at the network edge, mobile simulator), that must pass before the status changes. Provider fixtures stand in only at the paid or network edge. A status changes only with the cited test passing in CI on the exact head; local proof does not establish hosted acceptance. Three tables in CONTRACT.md are checked cell by cell by the journeys that name them: the role matrix (ROLE-001), the setup path per provider (INTEG-001) and the provider delegation protocols (AGENT-009).
 
 ### Public homepage
 
@@ -83,23 +83,25 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 
 - **OPS-001 — Workspace access** (partial). The existing equal-access tests plus a role-matrix journey that signs in as Admin, Member and Guest and checks every private route, `/api/v1` route, search and export against ROLE-001–003.
 - **SETUP-001 — First workspace review** (done). `tests/worker/first-run.test.ts` (tests tagged SETUP-001).
-- **OPS-002 — Operator management** (done). `tests/worker/base-auth.test.ts` (tests tagged OPS-002).
+- **OPS-002 — Member management** (partial). The existing invite and removal tests plus the OPS-002 rows of the role-matrix journey (ROLE-001): a Member's invitation is refused 403 by default and admitted after the setting is enabled, a Member's attempt to invite an Admin is refused 403, and an Admin's removal of a Member succeeds.
 - **OPS-003 — Workspace time** (done). `tests/e2e/admin-workspace-time-journey.mjs`, `tests/e2e/admin-access-journey.mjs`, `tests/e2e/admin-runtime.mjs` (tests tagged OPS-003).
 - **OPS-004 — Safe removal** (done). `tests/worker/removal-boundary.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/worker/base-auth.test.ts` (tests tagged OPS-004).
-- **ROLE-001 — Workspace roles** (missing). A browser and HTTP journey in which an Admin promotes and demotes a Member, the demoted member's next settings request returns 403, and the last-Owner demotion is refused.
+- **ROLE-001 — Workspace roles** (missing). A browser and HTTP journey in which an Admin promotes and demotes a Member, the demoted member's next settings request returns 403, and the last-Owner demotion is refused; plus a role-matrix journey that signs in as an Owner, an Admin, a Member who owns a team, a Member who does not, and a Guest, attempts every row of the role matrix through the browser and through `/api/v1`, and gets exactly the allowed (2xx) or refused (403, or 404 where the subject is invisible under ROLE-002) result in each cell.
 - **ROLE-002 — Private teams** (missing). A journey that creates a private team, proves a non-member gets 404 on its issue by identifier, sees no search hit, no Current entry and no export rows, then is added and sees all of them.
 - **ROLE-003 — Guests** (missing). A guest journey that reaches only the invited team and is refused every other team, settings and token route.
 - **ROLE-004 — Single sign-on and provisioning** (missing). A journey against a local SAML/OIDC identity-provider fixture at the network edge that signs a member in, then a SCIM `DELETE` that revokes their session within one request.
 - **ROLE-005 — Audit log** (partial). A journey that performs one action of each kind and finds each in the audit view and the CSV.
 - **ROLE-006 — Apps and agents as actors** (missing). A journey that installs an agent identity, sees its change attributed to it in activity and audit, revokes it and sees its next API call refused.
+- **ROLE-007 — Team membership and team owners** (missing). A journey in which a Member joins and leaves a public team from the directory, is refused 403 joining a private team, is added to it by its team owner and then sees its issues, a Guest's self-join is refused, and the last team owner's attempt to leave is refused until another owner is named.
 
 ### Teams and workflows
 
 - **TEAM-001 — Team identity** (done). `tests/e2e/admin-team-journey.mjs` (tests tagged TEAM-001).
-- **TEAM-002 — Team workflow** (done). `tests/e2e/admin-team-journey.mjs`, `tests/worker/base-auth.test.ts` (tests tagged TEAM-002).
+- **TEAM-002 — Team workflow** (partial). `tests/e2e/admin-team-journey.mjs`, `tests/worker/base-auth.test.ts` (tests tagged TEAM-002) for the workflow rules, plus the TEAM-002 rows of the role-matrix journey (ROLE-001): a team owner renames a status, and a Member who does not own the team gets 403.
 - **TEAM-003 — Team archiving** (done). `tests/e2e/admin-archive-team-journey.mjs` (tests tagged TEAM-003).
 - **TEAM-004 — Status removal** (done). `tests/e2e/admin-team-journey.mjs` (tests tagged TEAM-004).
 - **TEAM-005 — Team settings** (missing). A settings journey that switches a team to T-shirt estimates and off cycles, then sees the issue editor and Current reflect it while closed cycle snapshots stay unchanged.
+- **TEAM-006 — Sub-teams** (missing). A journey that creates a parent with two sub-teams, finds sub-team issues in the parent's list with the toggle on and absent with it off, and overrides one sub-team's workflow without changing its sibling's.
 
 ### Issues
 
@@ -110,18 +112,25 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **ISSUE-005 — Assignment** (done). `tests/worker/removal-assignment.test.ts` (tests tagged ISSUE-005).
 - **ISSUE-006 — Concurrent edits** (done). `tests/e2e/core-runtime.mjs`, `tests/e2e/collaboration-preferences.mjs`, `tests/worker/dependencies.test.ts` (tests tagged ISSUE-006).
 - **ISSUE-007 — Activity history** (done). `tests/worker/dependencies.test.ts`, `tests/e2e/admin-label-journey.mjs`, `tests/worker/cycle-closure.test.ts` (tests tagged ISSUE-007).
-- **ISSUE-008 — Comments** (done). `tests/worker/discussion-access.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/e2e/core-runtime.mjs` (tests tagged ISSUE-008).
+- **ISSUE-008 — Comments, threads and resolution** (partial). `tests/worker/discussion-access.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/e2e/core-runtime.mjs` (tests tagged ISSUE-008) for comment creation, editing, deletion and tombstones; plus a thread journey that replies twice to a comment, resolves the thread and sees it collapse to one line with the resolver, posts a new reply and sees it reopen, adds an inline comment on highlighted description text and finds it anchored in the margin, and is refused 403 editing another member's comment; plus the SLACK-002 fixture in which one Slack thread's replies land only in its mapped comment thread.
 - **ISSUE-009 — Attachments and links** (done). `tests/worker/discussion-file-admission.test.ts`, `tests/e2e/core-runtime.mjs`, `tests/worker/link-cascade.test.ts` (tests tagged ISSUE-009).
-- **ISSUE-010 — Deletion** (done). `tests/worker/issue-deletion-cascade.test.ts`, `tests/worker/collaboration-atomicity.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged ISSUE-010).
+- **ISSUE-010 — Deletion** (partial). `tests/worker/issue-deletion-cascade.test.ts`, `tests/worker/collaboration-atomicity.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged ISSUE-010) for the permanent cascade; plus the ISSUE-020 journey and the ISSUE-010 rows of the role-matrix journey: a Member who did not create the issue is refused 403 by default, its creator deletes it to Recently deleted, and a Member's "Delete permanently" is refused 403 while an Admin's succeeds and runs the cascade at once.
 - **ISSUE-011 — Estimates** (done). `tests/worker/cycle-closure.test.ts` (tests tagged ISSUE-011).
 - **ISSUE-012 — Moving teams** (partial). A browser journey that moves an Intake and a Started issue to another team and checks identifier, cycle uncommit and the single activity entry; no test names the clause yet.
 - **ISSUE-013 — Mentions** (done). `tests/e2e/collaboration-events.mjs`, `tests/markdown-rendering.test.tsx` (tests tagged ISSUE-013).
-- **ISSUE-014 — Labels** (done). `tests/e2e/admin-issue-journey.mjs`, `tests/e2e/admin-label-journey.mjs`, `tests/e2e/collaboration-issue.mjs` (tests tagged ISSUE-014).
+- **ISSUE-014 — Labels** (partial). `tests/e2e/admin-issue-journey.mjs`, `tests/e2e/admin-label-journey.mjs`, `tests/e2e/collaboration-issue.mjs` (tests tagged ISSUE-014) for workspace labels; plus a journey that creates a team label and a label group, is refused applying two labels of one group, merges two labels and finds every issue relabelled, and the ISSUE-014 rows of the role-matrix journey (a Member's delete of a workspace label refused 403, an Admin's admitted).
 - **ISSUE-015 — Unsent drafts** (done). `tests/e2e/core-draft-journey.mjs` (tests tagged ISSUE-015).
 - **ISSUE-016 — Issue templates** (missing). A journey that creates a bug template with two sub-issues, creates an issue from it through the browser and through `/api/v1`, and finds both sub-issues linked.
 - **ISSUE-017 — Reactions** (missing). A journey that adds and removes a reaction, sees the count update in a second session within the SYNC-001 window, and finds it in the archive.
 - **ISSUE-018 — Description history** (partial). A journey that edits a description three times, compares revisions one and three, restores revision one and finds four revisions with the restore attributed.
 - **ISSUE-019 — Sub-issue progress** (partial). A journey that creates three sub-issues, completes them, and sees the parent count and the optional auto-complete rule act once.
+- **ISSUE-020 — Undo and Recently deleted** (missing). A journey that deletes an issue carrying two comments in a thread, a blocking relation and a parent link, restores it by Undo within 10 seconds and by Recently deleted after a reload, and finds the same identifier, comments, relations and one restore activity entry each time; deletes it again, advances the workspace clock 30 days, runs the purge twice and finds the issue gone with 404 by identifier and no reuse of its number; and presses Command/Ctrl-Z after a bulk priority change and finds every issue's previous priority back with one activity entry each.
+- **ISSUE-021 — Issue types** (missing). A journey that enables types on a team, creates a Bug whose required Severity field is refused when empty, groups a list by type, and a Jira fixture whose Story and Bug issues import to the mapped types.
+
+### Custom fields
+
+- **FIELD-001 — Custom field definitions** (partial). A journey that creates a team single-select field "Severity" with three options, sets it on an issue through the browser and through `/api/v1`, finds a number value refused 400 for it, sees one activity entry per change, renames an option and finds the stored value unchanged, and a Member who does not own the team is refused 403 creating a team field.
+- **FIELD-002 — Custom fields in views, search, API and imports** (missing). A journey that filters and groups a list by the Severity field of FIELD-001, saves it as a view and finds the expected issues, and a GitHub API fixture whose Projects single-select "Priority" and number "Points" fields import into a single-select and a number custom field with every value matched in the reconciliation report.
 
 ### Relations
 
@@ -179,7 +188,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 
 ### Projects, initiatives and roadmaps
 
-- **PROJ-001 — Project record** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-001).
+- **PROJ-001 — Project record** (partial). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-001) for name, description, lead, target date, lifecycle, colour and icon; plus a journey that sets a project's start date, target date, High priority and two labels through the browser and through `/api/v1`, finds a target date before the start date refused 400, filters the projects list by one label and sorts by priority, and finds one activity entry per change.
 - **PROJ-002 — Manual lifecycle** (done). `tests/e2e/admin-project-cycle-journey.mjs`, `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-002).
 - **PROJ-003 — Project membership** (partial). A journey that removes, archives and deletes projects and checks no issue is deleted.
 - **PROJ-004 — Progress** (done). `tests/e2e/core-runtime.mjs` (tests tagged PROJ-004).
@@ -195,7 +204,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **PROJ-014 — Project members and teams** (partial). A journey that adds two teams' issues to a project and finds the project in both teams' lists with both teams as contributors.
 - **INIT-001 — Initiatives** (missing). A journey that creates an initiative with a sub-initiative and three projects from two teams and sees them nested.
 - **INIT-002 — Initiative roll-up** (missing). A journey that posts updates on two projects and sees the initiative roll-up reflect them in order.
-- **INIT-003 — Roadmap timeline** (missing). A browser journey that drags a project's target date on the timeline and finds the change in the project's activity, and a 390px check of the list equivalent.
+- **INIT-003 — Roadmap timeline** (missing). A browser journey with four projects — both dates, target only, start only, no dates — that finds a bar, a diamond, an open-ended bar and an Unscheduled entry respectively; drags the target-only project's diamond and the unscheduled project onto the timeline and finds each change in the project's activity; moves a bar by keyboard; and a 390px check of the list equivalent.
 - **INIT-004 — Leadership digest** (missing). A scheduled-run test that sends one digest per subscriber to the mail and Slack fixtures and omits a private team's project from a non-member's digest.
 
 ### Cycles
@@ -228,9 +237,10 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **VIEW-004 — Bulk edit** (partial). A browser journey selecting issues with X and setting status in one operation, plus a failing selection that writes nothing and names the failing identifiers.
 - **VIEW-005 — Team board** (partial). A board journey at 1440px and 390px that changes status from a card and recovers from a stale conflict.
 - **VIEW-006 — Manual order** (missing). A journey that reorders three backlog issues by keyboard, reloads in a second session and finds the same order, while Current's order is unchanged.
-- **VIEW-007 — Timeline and calendar views** (missing). A journey that drags an issue's due date on the calendar and finds the change in its activity.
+- **VIEW-007 — Timeline and calendar views** (missing). A journey that drags an issue's due date on the calendar and finds the change in its activity, and a timeline with one issue of each date combination placed as stated.
 - **VIEW-008 — Display options** (partial). A journey that adds assignee swimlanes, drags a card across a lane and a column, and finds both changes in activity.
 - **VIEW-009 — Workspace-wide views** (partial). A journey that saves a shared project view filtered by lead and health and a cross-team issue view, and opens both from the palette.
+- **VIEW-010 — Sidebar favorites** (missing). A journey that favorites an issue, a project and a view, moves the view into a folder, reloads in a second browser and finds the same order, then loses access to the project's private team and finds that favorite gone.
 - **CMD-001 — Command palette** (partial). The keyboard journey extended to move the highlight with the arrow keys; it already covers search, Enter and Escape in `tests/e2e/core-keyboard-journey.mjs`.
 - **CMD-002 — Keyboard navigation** (done). `tests/e2e/core-keyboard-journey.mjs` (tests tagged CMD-002).
 - **CMD-003 — Focus and selection** (partial). A keyboard journey moving focus with arrows, selecting with X, opening with Enter and returning focus with Escape.
@@ -241,13 +251,15 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **SYNC-001 — Real-time sync** (partial). A two-browser journey that changes an issue in one and measures its appearance in the other under one second, then drops the socket and recovers within CURR-008.
 - **SYNC-002 — Local-first speed** (missing). A browser journey that measures issue open and list filter latency from cache, makes an offline edit, reconnects and sees it applied, and a conflicting edit shown.
 - **SYNC-003 — Collaborative editing** (missing). A two-browser journey that types into the same description concurrently and finds both edits in the saved text.
-- **MOBILE-001 — iOS and Android apps** (missing). A device-simulator journey on iOS and Android builds that signs in to a local installation, accepts a triage item, creates an issue with a photo and finds both on the web.
-- **MOBILE-002 — Push notifications** (missing). A push-provider fixture at the edge that receives one payload per enabled event with no body text, and a quick action that marks the notification read.
+- **MOBILE-001 — iOS and Android apps** (missing). A device-simulator journey on iOS and Android builds that signs in to a local installation by URL, accepts a triage item, creates an issue with a photo and finds both on the web; plus the MOBILE-004 distributed-build check, which runs the same sign-in and triage steps on the store-distributed build (TestFlight and the Play internal testing track) against a hosted test installation.
+- **MOBILE-002 — Push notifications** (missing). A journey on a local installation configured with a relay fixture at the network edge that mirrors the relay's registration and send API: registering a simulator device, triggering one enabled and one disabled event, and finding exactly one relay request whose body has only the listed fields and no description text, then the "ID only" setting producing a request with no title; a quick action that marks the notification read on the installation; and the MOBILE-004 distributed-build check receiving one real push on a test device through the production relay.
 - **MOBILE-003 — Responsive web** (partial). The 390px viewport checks in the development journey plus a 390px pass over every new page.
+- **MOBILE-004 — Distributed apps and push relay** (missing). The release lane's distributed-build check on each release: install the TestFlight and Play internal-testing builds on test devices, sign in to a hosted test installation by URL, accept a triage item, and receive one real push through the production relay with only the MOBILE-002 fields; plus a relay test that refuses an unsigned send, a send signed by another installation's key, and a send to a device deregistered by sign-out.
+- **MOBILE-005 — Desktop apps and desktop notifications** (missing). A desktop-shell journey on macOS and Windows CI runners that signs in by URL and shows one native notification for an assignment, and a browser journey that grants notification permission, closes the tab, triggers a mention and finds one Web Push request at the push-service fixture with no description text.
 
 ### Notifications
 
-- **NOTIFY-001 — Inbox events** (partial). The existing collaboration journeys for the original events plus one journey per added event.
+- **NOTIFY-001 — Inbox events** (partial). The existing collaboration journeys for the original events plus one journey per added event, including: member A creates an issue, member B completes it, and A finds exactly one completion notification naming B within 5 seconds while B finds none; B cancels a second issue A follows and A gets one cancellation notification; B moves a followed issue from Todo to In Progress and raises it to Urgent in one edit and A gets one grouped notification naming both changes; B adds a blocker to it and A gets one blocking notification; and a merged-PR fixture under GITHUB-003 completes a followed issue and A's notification names the Git automation.
 - **NOTIFY-002 — Followers** (done). `tests/e2e/collaboration-events.mjs`, `tests/worker/collaboration-atomicity.test.ts`, `tests/worker/discussion-access.test.ts` (tests tagged NOTIFY-002).
 - **NOTIFY-003 — No self-notification** (done). `tests/worker/due-reminders.test.ts`, `tests/e2e/collaboration-pagination.mjs`, `tests/e2e/collaboration-reads.mjs` (tests tagged NOTIFY-003).
 - **NOTIFY-004 — Read and mute** (done). `tests/e2e/collaboration-preferences.mjs`, `tests/worker/collaboration-final-admission.test.ts`, `tests/worker/collaboration-mail.test.ts` (tests tagged NOTIFY-004).
@@ -256,6 +268,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **NOTIFY-007 — Channels and digests** (partial). A journey that routes mentions to Slack and comments to a daily digest, then checks the Slack and mail fixtures receive exactly one message each.
 - **NOTIFY-008 — Snooze and reminders** (missing). A journey that snoozes a notification for one hour, advances the clock, and sees it return once.
 - **NOTIFY-009 — Subscriptions** (missing). A journey that subscribes to a label and gets one notification when a new issue gets that label.
+- **NOTIFY-010 — Personal time zone and working hours** (missing). A scheduled-run test with a workspace in America/New_York, one member in America/Los_Angeles and one without a personal zone, both with an issue due today, that sends the Eastern member's reminder at 09:00 Eastern and the Pacific member's at 09:00 Pacific, each exactly once.
 
 ### Automation and follow-through
 
@@ -274,6 +287,11 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **REPORT-004 — Workload** (partial). A journey with three assignees whose committed points match the view and over-capacity is marked.
 - **REPORT-005 — Warehouse and spreadsheet export** (missing). A scheduled export to an R2 fixture whose second run carries only changed rows, and a paged export API read.
 
+### Connecting integrations
+
+- **INTEG-001 — Guided connection from Settings** (partial). One setup journey per provider in the table against a provider fixture at the network edge that mirrors that provider's real app-creation, OAuth and event APIs (for example Slack's `apps.manifest.create` and `oauth.v2.access`, GitHub's manifest redirect and `POST /app-manifests/{code}/conversions`), in which an Admin completes setup from Settings → Integrations without entering any scope, URL or manifest text, the first real event (an `@Vector` message, a PR opened) creates or links an issue, and a Member's attempt to open the setup is refused 403; plus a hosted connection run for Slack and GitHub against the real providers on a test workspace and organization, recorded as hosted evidence.
+- **INTEG-002 — Integration health and repair** (partial). A journey that changes the installation origin in a fixture run, repairs Slack and GitHub from Settings and finds each provider fixture's request URL updated and the next event received, with existing links intact.
+
 ### Code host and delivery
 
 - **GITHUB-001 — Signed PR links** (done). `tests/worker/github-links.test.ts` for signed linking and state, plus GITHUB-003's status journey.
@@ -281,43 +299,44 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **GITHUB-003 — Branches and status automation** (partial). A signed-fixture journey that opens a draft PR, requests review and merges it, and finds three status moves with automation attribution, then replays the deliveries and finds no duplicates.
 - **GITHUB-004 — Commits** (missing). A signed push fixture with two commits naming one issue shows both on the issue and applies the closing rule once.
 - **GITHUB-005 — Review and checks on the issue** (missing). Signed review and check-run fixtures that change the issue's PR badge from checks failing to approved and passing.
-- **GITHUB-006 — GitHub App** (missing). An app-install journey against a GitHub API fixture at the network edge that posts one linkback and stops calling after uninstall.
+- **GITHUB-006 — GitHub App** (missing). An app-install journey against a GitHub API fixture at the network edge that mirrors the manifest redirect, `POST /app-manifests/{code}/conversions` and the installation callback: the Admin connects without editing scopes or URLs, the first PR opened in a chosen repository links its issue and posts one linkback, and calls stop after uninstall; plus the INTEG-001 hosted connection run on a real test organization.
 - **GITHUB-007 — GitHub Issues sync** (missing). A fixture journey that creates an issue on each side, edits a comment on each side and closes on GitHub, and finds both sides consistent with no duplicate.
-- **GITLAB-001 — GitLab** (missing). Signed GitLab fixtures for MR opened, approved, merged and a production environment deployment that move one issue as configured.
+- **GITLAB-001 — GitLab** (missing). A setup journey against a GitLab API fixture in which pasting a token and choosing two projects creates two webhooks with the installation's URL and secret, then signed GitLab fixtures for MR opened, approved, merged and a production environment deployment that move one issue as configured.
 - **GITLAB-002 — GitLab Issues sync** (missing). The GITHUB-007 journey against GitLab fixtures.
 - **BITBUCKET-001 — Bitbucket** (missing). Signed Bitbucket fixtures for PR opened and merged that move one issue.
 - **CI-001 — CI and deploy providers** (missing). A CircleCI workflow-completed fixture and a Vercel deployment fixture that each appear on the linked issue.
 
 ### Chat
 
-- **SLACK-001 — Slack app** (missing). An install journey against a Slack API fixture that stores one encrypted bot token and links one member, then uninstalls and stops.
-- **SLACK-002 — Issues from Slack with synced threads** (missing). A Slack Events fixture that creates an issue from a message, posts a thread reply that becomes a comment, and a Vector comment that posts back to the thread once.
-- **SLACK-003 — Channel notifications** (missing). A journey that binds a project to a channel and finds one formatted Slack message per update.
+- **SLACK-001 — Slack app** (missing). An install journey against a Slack API fixture that mirrors `apps.manifest.create`, `oauth.v2.access` and the Events API: from Settings → Integrations → Slack an Admin connects through the manifest flow without hand-editing scopes or URLs, the first `@Vector` message in a channel creates an issue, one encrypted bot token is stored and one member is linked, then uninstalling stops all calls; the same journey through the prefilled-page path; and the INTEG-001 hosted connection run on a real test Slack workspace.
+- **SLACK-002 — Issues from Slack with synced threads** (missing). A Slack Events fixture that creates an issue from a message, posts a thread reply that becomes a reply in the mapped comment thread, a Vector reply in that thread that posts back to the Slack thread once, a separate top-level Vector comment that posts nothing to Slack, and a second linked Slack thread whose replies land only in its own comment thread.
+- **SLACK-003 — Channel notifications** (missing). A journey that binds a project to a channel and finds one formatted Slack message per update, a project created with "create Slack channel" that finds one `conversations.create` call and the binding, and a Discord webhook fixture that receives one message per bound event.
 - **SLACK-004 — Personal Slack notifications** (missing). A mention routed to Slack produces one DM fixture with working actions.
 - **SLACK-005 — Link previews** (missing). Two unfurl fixtures for a private-team issue, one for a member and one for a non-member.
-- **TEAMS-001 — Microsoft Teams** (missing). The Slack journeys run against Microsoft Bot Framework and Graph fixtures.
+- **TEAMS-001 — Microsoft Teams** (missing). A setup journey against Bot Framework and Graph fixtures in which an Admin pastes a bot ID and secret, downloads a package whose manifest carries that bot ID and this installation's domain, and the first message to the bot in a channel creates an issue; then the Slack journeys run against Microsoft Bot Framework and Graph fixtures.
 
 ### Support, errors, design and knowledge
 
-- **SUPPORT-001 — Zendesk, Intercom and Front** (partial). Signed provider fixtures that link one ticket from each tool and receive one internal note each when the issue completes.
+- **SUPPORT-001 — Zendesk, Intercom and Front** (partial). A setup journey per tool against provider fixtures that mirror Zendesk's private-app upload format, webhook and trigger APIs, Intercom's Canvas Kit initialize request and Front's plugin context, in which the Admin connects without editing a URL and the first sidebar action links a ticket; then signed provider fixtures that link one ticket from each tool and receive one internal note each when the issue completes.
 - **SUPPORT-002 — HappyToHelp** (missing). A journey across local Vector and HappyToHelp installations that links a conversation and returns the completion note.
-- **ERROR-001 — Sentry and Datadog** (partial). Signed Sentry fixtures that create an issue, resolve it back, and a regression event that reopens it once.
+- **ERROR-001 — Sentry and Datadog** (partial). A Sentry setup journey in which pasting the internal integration's token and secret admits the first signed Sentry webhook, then signed Sentry fixtures that create an issue, resolve it back, and a regression event that reopens it once.
 - **ERROR-002 — Spool** (missing). A journey across local Vector and Spool installations that links an error group and sees its counts on the issue.
-- **DESIGN-001 — Figma** (missing). A Figma API fixture that renders a frame preview on an issue and a plugin request that creates one issue.
+- **DESIGN-001 — Figma** (missing). A Figma API fixture that mirrors Figma's OAuth and file-image endpoints, in which a connected member's issue renders a frame preview and an unconnected member sees the link alone, a generated plugin manifest that names this installation's origin as its only allowed domain, and a plugin request that creates one issue.
 - **DOCS-001 — Notion, Confluence and Google Drive** (partial). Provider fixtures for Notion and Google Drive that render previews only for the connected member.
 - **CAL-001 — Calendar feeds** (missing). A feed request that returns the expected events and a revoked feed that returns 404.
-- **CONNECT-001 — Zapier and Make** (partial). The app definitions' trigger and action tests run against a local installation.
+- **CONNECT-001 — Zapier and Make** (partial). The app definitions' trigger and action tests run against a local installation, including a connection test that enters the installation URL, completes the OAuth consent and registers one webhook on that installation.
 
 ### Coding agents
 
-- **AGENT-001 — Delegate an issue to an agent** (missing). A journey that delegates an issue to an agent fixture at the provider edge and sees the delegate, the human assignee and the exact context payload.
-- **AGENT-002 — Agent session on the issue** (missing). A journey where the agent fixture posts a plan and a question, the member answers, then cancels, and the session shows the question, answer, cancellation and actor.
+- **AGENT-001 — Delegate an issue to an agent** (missing). For each named provider, a journey that delegates an issue to a fixture at the network edge that mirrors that provider's real delegation API as AGENT-009's table names it (request paths, payload shapes, status values and webhook signatures), and sees the delegate, the human assignee and the exact context payload the fixture received; plus AGENT-009's hosted run per provider.
+- **AGENT-002 — Agent session on the issue** (missing). Per provider, a journey against that provider's mirrored fixture (AGENT-009) where the agent posts a plan and progress, asks a question (or ends a run with one, for providers without a question channel), the member answers and the answer reaches the fixture in the provider's own form (Cursor follow-up, PR comment, runner callback), then cancels, and the session shows the question, answer, cancellation, actor and the provider's stopped status within one minute.
 - **AGENT-003 — Reviewable output, human completion** (missing). A journey where the agent fixture opens a PR, the issue moves to In Review only, and the agent's attempt to complete the issue through the API is refused 403.
 - **AGENT-004 — Agent permissions and budgets** (missing). A journey that exhausts a test agent's session budget and sees the next delegation refused with a visible reason.
 - **AGENT-005 — MCP server** (missing). An MCP client journey that lists the tools, creates an issue and comments on it, and a refused read of a private-team issue for a non-member.
 - **AGENT-006 — Agent platform** (partial). A sample agent registered from the docs that receives a delegation webhook and posts three activity types that render on the issue.
 - **AGENT-007 — Ask Vector** (missing). A journey on seeded data whose answer cites the right blocking issues, and a proposed bulk change that applies only after confirmation.
 - **AGENT-008 — Agent guidance** (missing). A journey that edits team guidance and finds the new version in the next delegation payload.
+- **AGENT-009 — Provider delegation protocols** (missing). One fixture journey per provider in which the fixture mirrors that provider's real API or runner protocol as the table names it and the journey drives all five steps end to end, including a signed provider webhook or callback and a refused unsigned one; plus a hosted run per provider on a test repository with the buyer-side setup from the docs, delegating one small issue and receiving one PR, recorded as hosted evidence.
 
 ### API and platform
 
@@ -342,16 +361,18 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **DATA-009 — Jira CSV preflight and loss review** (done). `tests/worker/jira-import.test.ts`, `tests/worker/jira-loss-review-fixture.ts` (tests tagged DATA-009).
 - **DATA-010 — Jira staged apply and reconciliation** (done). `tests/worker/jira-apply.test.ts` (tests tagged DATA-010).
 - **DATA-011 — Erasing an imported person** (done). `tests/worker/imported-person-erasure.test.ts`, `tests/worker/base-refresh-upgrade.test.ts` (tests tagged DATA-011).
-- **DATA-012 — GitHub Issues and Projects import** (missing). A run against a GitHub API fixture of a repository with a Project, milestones and comments whose reconciliation report matches source counts.
-- **DATA-013 — Jira Cloud and Data Center API import** (partial). A run against a Jira REST fixture with two projects, sprints and attachments whose reconciliation matches.
-- **DATA-014 — Linear API import** (partial). A run against a Linear GraphQL fixture whose reconciliation includes projects, initiatives and attachment bytes.
+- **DATA-012 — GitHub Issues and Projects import** (missing). A run against a GitHub API fixture of a repository with a Project, milestones and comments whose reconciliation report matches source counts, and the DATA-017 scale run for a GitHub fixture of 50,000 issues across five repositories.
+- **DATA-013 — Jira Cloud and Data Center API import** (partial). A run against a Jira REST fixture with two projects, sprints and attachments whose reconciliation matches, and the DATA-017 scale run for a Jira fixture of 50,000 issues across six projects with cross-project Blocks and epic links.
+- **DATA-014 — Linear API import** (partial). A run against a Linear GraphQL fixture whose reconciliation includes projects, initiatives and attachment bytes, and the DATA-017 scale run.
 - **DATA-015 — Plane, Huly and Shortcut import** (partial). One fixture per source whose reconciliation report matches.
 - **DATA-016 — Transition sync** (missing). A Jira fixture sync that mirrors a status change each way and stops at the configured end.
+- **DATA-017 — Whole-workspace migration** (partial). A Linear GraphQL fixture of 50,000 issues across six teams with comments, attachment bytes and 5,000 blocks, duplicate and parent links of which at least 2,000 cross run boundaries, imported as a migration of at least thirteen runs delivered out of order, whose single reconciliation report matches source counts by team, status, project, cycle and assignee, binds every cross-run relation and reports zero pending; a second pass after the fixture changes 100 issues imports exactly those 100; and a file-based migration whose last run is never supplied finishes only after the owner accepts the pending list.
+- **DATA-018 — Old identifiers and links after a move** (partial). After a Linear fixture migration, a journey that pastes a `linear.app` issue URL into search and opens the imported issue, follows `/alias/ENG-123` to it, and a signed GitHub fixture for a PR on branch `eng-123-fix-login` with "Fixes ENG-123" in its body that links and completes the imported issue once; plus a native `VEC-1` whose number collides with an alias and is never shadowed.
 
 ### Security, privacy and agents' data
 
 - **SEC-001 — Integration credentials** (partial). An archive of an installation with Slack, GitHub and an agent configured contains no credential, and a restored installation shows each as needing re-entry.
-- **SEC-002 — Model and agent data handling** (missing). A journey that turns off triage suggestions for one team and finds no model call for that team's items at the provider fixture.
+- **SEC-002 — Model and agent data handling** (missing). A journey that turns off triage suggestions for one team and finds no model call for that team's items at the provider fixture; a check that every enabled model provider in `seed.json` externals carries a terms URL, a no-training statement and data categories; and a journey in which enabling a self-hosted model provider is refused until an Owner records its terms and confirms no-training, with the confirmation found in the audit log.
 - **SEC-003 — Erasure across integrations** (partial). An issue deletion with a synced Slack thread and an embedding that removes both and lists the GitHub comment it cannot recall.
 
 ### Push further
