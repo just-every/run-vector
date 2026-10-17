@@ -3,9 +3,11 @@ import { applyD1Migrations } from 'cloudflare:test';
 import { expect,inject,it } from 'vitest';
 import { bindings,request,signIn,invite } from './base-auth-fixture';
 import { editorDocument } from '../../src/core/editor/config.server';
+import { bootstrapWorkspace } from '../../src/core/features/bootstrap/repository';
 
 it('[EDITOR-001] only current native owners receive short non-secret grants; configuration and revocation fail closed',async()=>{
   await applyD1Migrations(env.DB,inject('migrations'));
+  await bootstrapWorkspace(env.DB, bindings);
   const config={RER_MANAGEMENT_ORIGIN:'https://management.example.test',RER_INSTALLATION_ID:'vector-test'};
   expect((await request('/api/editor/config','GET',undefined,'',config)).status).toBe(403);
   const cookie=await signIn();

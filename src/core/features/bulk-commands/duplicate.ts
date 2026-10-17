@@ -1,3 +1,5 @@
+import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
+import { duplicateFields } from "../issue-undo/snapshot";
 import { isMutationAccessError, mutationDatabase } from "../auth/mutation-database";
 import { duplicateSelection, type DuplicateSelectionRow } from "../duplicates/selection";
 import { planSelectedDuplicate } from "../duplicates/selected-plan";
@@ -23,8 +25,12 @@ export async function decideSelectedDuplicates(source: D1Database, actor: string
         SELECT value,?,? FROM json_each(?)`).bind(rows[0].target_id, at, encoded),
     );
   }
+  const capture = await prepareUndoCapture(db, actor, {
+    actionId: plans[0].activityId, identifiers: rows.map((row) => row.identifier), fields: duplicateFields,
+    kind: "duplicate", cascade: input.canonicalIdentifier !== null,
+  });
   try {
-    await db.batch([
+    await commitUndoable(db, actor, capture, [
       validation.admission,
       selectedSnapshotAdmission(db, rows),
       ...plans.flatMap((plan) => plan.capture),
@@ -38,6 +44,7 @@ export async function decideSelectedDuplicates(source: D1Database, actor: string
     const current = await duplicateSelection(db, actor, input).statement.all<DuplicateSelectionRow>();
     const failures = validation.failures(current.results);
     if (failures.length) throw new BulkCommandError(failures);
+    if (error instanceof UndoCaptureConflict) throw new BulkCommandError(error.failures);
     throw error;
   }
   return {

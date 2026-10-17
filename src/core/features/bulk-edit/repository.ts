@@ -1,3 +1,4 @@
+import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
 import {
   isMutationAccessError,
   mutationDatabase,
@@ -64,10 +65,14 @@ export async function bulkUpdateIssues(
     ]);
   }
   const plans = planned.map((row) => row.plan!);
+  const capture = await prepareUndoCapture(db, actor, {
+    actionId: plans[0].activityId, identifiers: plans.map((plan) => plan.identifier),
+    fields: [...new Set(plans.flatMap((plan) => plan.undoFields))], kind: "property",
+  });
   try {
     // Admission runs before ANY activity, follower, notification or issue write.
     // D1 holds this snapshot through the complete batch transaction.
-    await db.batch([
+    await commitUndoable(db, actor, capture, [
       bulkValidation(db, actor, input).admission,
       ...plans.map((plan) =>
         db
@@ -82,6 +87,7 @@ export async function bulkUpdateIssues(
     if (isMutationAccessError(error)) throw error;
     const current = await bulkFailures(db, actor, input);
     if (current.length) throw new BulkIssueError(current);
+    if (error instanceof UndoCaptureConflict) throw new BulkIssueError(error.failures);
     throw error;
   }
   return {

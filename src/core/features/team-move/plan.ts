@@ -10,7 +10,7 @@ export function planSelectedTeamMove(
   statusId: string,
   at: string,
 ) {
-  if (issue.team_id === teamId) return { writes: [], version: issue.version, changed: false };
+  if (issue.team_id === teamId) return { writes: [], version: issue.version, changed: false, activityId: null };
   const activity = activityRow({
     issueId: issue.id, actorOperatorId: actor, kind: "issue.team_moved",
     previousValue: { teamId: issue.team_id, statusId: issue.status_id, cycleId: issue.cycle_id },
@@ -18,6 +18,7 @@ export function planSelectedTeamMove(
   });
   const event = { id: activity.id, issueId: issue.id, actor, at };
   return {
+    activityId: activity.id,
     version: issue.version + 1,
     changed: true,
     writes: [

@@ -13,6 +13,7 @@ export function IssueKeyboardHelp({ onClose }: { onClose: () => void }) {
         <dt>M</dt><dd>Move selected issues to another team</dd>
         <dt>Shift-D</dt><dd>Mark selected issues as duplicates or remove their duplicate decisions</dd>
         <dt>Command/Ctrl-.</dt><dd>Copy branch names, one line per issue</dd>
+        <dt>Command/Ctrl-Z</dt><dd>Undo the latest property, team or duplicate change within 10 seconds</dd>
         <dt>?</dt><dd>Show this help</dd>
       </dl>
       <p>Status changes require a workflow status valid for every selected issue. Team moves require an explicit destination status for each category. Selected changes succeed together or leave every issue unchanged.</p>

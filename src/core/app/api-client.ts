@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { privateReads } from "./read-lifecycle.ts";
 import { resourceKey, useInitialResource } from './initial-resources';
+import { receiveUndoReceipt } from '../features/issue-undo/ui/receipt';
 
 export class ApiError extends Error {
   readonly status: number;
@@ -23,7 +24,9 @@ export async function fetchJson<S extends z.ZodType>(
     const body: unknown = await response.json().catch(() => null);
     if(response.status===401&&typeof window!=='undefined')window.dispatchEvent(new Event('vector:auth-lost'));
     if (!response.ok) throw new ApiError(response.status, body);
-    return schema.parse(body);
+    const result = schema.parse(body);
+    receiveUndoReceipt(response);
+    return result;
   };
   return (init?.method ?? "GET").toUpperCase() === "GET" &&
     new URL(url, "http://vector.invalid").pathname.startsWith("/api/")

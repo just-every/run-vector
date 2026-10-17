@@ -1,3 +1,5 @@
+import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
+import { isMutationAccessError } from "../auth/mutation-database";
 import { drizzle } from "drizzle-orm/d1";
 import { mutationDatabase } from "../auth/mutation-database";
 import { requireIssue } from "../issues/repository";
@@ -25,7 +27,16 @@ export async function updateIssueRecord(
       ? ("written" as const)
       : ("stale" as const);
   }
-  const results = await db.batch(plan.writes);
+  const capture = await prepareUndoCapture(db, actor, { actionId: plan.activityId, identifiers: [identifier], fields: plan.undoFields, kind: "property" });
+  let results: D1Result[];
+  try { results = await commitUndoable(db, actor, capture, plan.writes); }
+  catch (error) {
+    if (isMutationAccessError(error)) throw error;
+    if (!(error instanceof UndoCaptureConflict)) throw error;
+    const current = await requireIssue(drizzle(db), identifier);
+    if (current.version !== input.expectedVersion) return "stale" as const;
+    throw new IssueMutationError("invalid_option", error.message);
+  }
   if (results[plan.mutationIndex].results.length === 1)
     return "written" as const;
   const current = await requireIssue(drizzle(db), identifier);

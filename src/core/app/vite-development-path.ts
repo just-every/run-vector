@@ -2,6 +2,10 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  '/src/core/features/issue-undo/ui/receipt.ts',
+  '/src/core/features/issue-undo/ui/use-issue-undo.ts',
+  '/src/core/features/issue-undo/ui/notice.tsx',
+  '/src/core/features/issue-undo/ui/notice.css',
   "/src/core/features/markdown/ui/task-checkbox.tsx",
   // Shared issue authoring, safe GFM parsing and highlighting. These optimized
   // chunks contain only the reviewed Markdown/parser/highlight browser packages.

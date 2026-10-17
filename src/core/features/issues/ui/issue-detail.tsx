@@ -42,6 +42,10 @@ export function IssueDetail({
   const currentIdentifier = useRef(identifier);
   currentIdentifier.current = identifier;
   useEffect(() => {
+    window.addEventListener('vector:issues-changed', detail.refreshAfterMutation);
+    return () => window.removeEventListener('vector:issues-changed', detail.refreshAfterMutation);
+  }, [detail.refreshAfterMutation]);
+  useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (
         event.key !== "Escape" ||
@@ -327,7 +331,7 @@ function IssueInspector({
                 <ol className="activity-list">
                   {issue.activity.map((activity) => (
                     <li key={activity.id}>
-                      <strong>{activityTitle(activity.kind)}</strong>
+                      <strong>{activityTitle(activity.kind, activity.nextValue)}</strong>
                       <span>
                         {activity.actor ?? "System"} ·{" "}
                         {relativeTime(activity.at)}

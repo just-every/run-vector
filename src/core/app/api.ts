@@ -17,6 +17,7 @@ import { addViewRoutes } from '../features/views/routes';
 import { addPreferenceRoutes } from '../features/views/preferences-routes';
 import { addBulkIssueRoutes } from '../features/bulk-edit/routes';
 import { addBulkCommandRoutes } from '../features/bulk-commands';
+import { addIssueUndoRoutes, configureUndoSession, committedUndoReceipt } from '../features/issue-undo';
 import { addParentIssueRoutes } from '../features/parents/routes';
 import { configureNotifications, needsNotificationDrain, notificationEventIds } from '../features/notifications/context';
 import { drainNotificationMail } from '../features/notifications/mail';
@@ -155,6 +156,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
       context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence) };
+      configureUndoSession(context.env.DB, operator.fence.sessionId);
     }
     configureNotifications(context.env.DB,context.env);
     let pendingDrain: Promise<boolean> | undefined;
@@ -196,10 +198,14 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
         context.res = context.json({ error: status === 401 ? 'unauthenticated' : 'not_found' }, status, { 'Cache-Control': 'no-store' });
       }
     }
+    const undo = committedUndoReceipt(context.env.DB);
+    if (undo && context.res.status >= 200 && context.res.status < 300)
+      context.header('x-vector-undo', JSON.stringify(undo));
     }
   });
 
   addFirstRunRoutes(app);
+  addIssueUndoRoutes(app);
 
   app.get("/session", (context) =>
     context.json({ operatorId: context.get("operatorId") }),

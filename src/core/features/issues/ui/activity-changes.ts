@@ -53,7 +53,8 @@ export function activityChanges(kind: string, previousValue: unknown, nextValue:
     .filter((change) => change.from === undefined || change.from !== change.to);
 }
 
-export function activityTitle(kind: string) {
+export function activityTitle(kind: string, nextValue?: unknown) {
+  if (typeof record(nextValue).undoOf === 'string') return 'Undid the previous change';
   const titles: Record<string, string> = {
     "issue.created": "Created the issue",
     "issue.updated": "Changed the issue",

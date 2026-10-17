@@ -40,6 +40,7 @@ export function planSelectedDuplicate(
       .bind(at, issue.id, JSON.stringify(selectedIds)));
   }
   return {
+    activityId: id,
     capture,
     cascadeWrites,
     sourceWrites: [

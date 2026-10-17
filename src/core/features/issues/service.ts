@@ -1,4 +1,5 @@
 import { parseTasks } from "../description-history/tasks";
+import { publicActivityValue } from '../issue-undo/public-activity';
 import { duplicateRelationsStatement, duplicateRelationsProjection, type DuplicateRelationRow } from '../duplicates/repository';
 import { importedFromStatement, importedFromProjection, type ImportedFromRow } from '../data/import/issue-source';
 import { evidenceChanges,type EvidenceChange } from '../integrations/evidence-changes';
@@ -169,10 +170,10 @@ export function buildIssueDetail(
       nextValue:
         item.nextValueJson === null
           ? null
-          : parsePersistedJson(
+          : publicActivityValue(parsePersistedJson(
               item.nextValueJson,
               `activity ${item.id} next value`,
-            ),
+            )),
     }));
   const decisions = snapshot.decisions
     .filter((item) => item.issueId === issue.id)

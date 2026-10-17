@@ -249,6 +249,8 @@ export async function planIssueUpdate(
       identifier,
       version: issue.version,
       changed: false,
+      activityId: null,
+      undoFields: [] as string[],
     };
   }
   const recordBefore = { ...previous },
@@ -357,6 +359,8 @@ export async function planIssueUpdate(
     writes,
     mutationIndex,
     identifier,
+    activityId: activity.id,
+    undoFields: Object.keys(recordBefore),
     version: issue.version + 1,
     changed: true,
   };

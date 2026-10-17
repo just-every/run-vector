@@ -1,3 +1,5 @@
+import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
+import { duplicateFields } from "../issue-undo/snapshot";
 import {
   mutationDatabase,
   isMutationAccessError,
@@ -148,12 +150,16 @@ export async function decideDuplicate(
         .bind(issue.id, target.id, at),
     );
   writes.push(...finalizeEvent(db, event));
+  const capture = await prepareUndoCapture(db, actor, {
+    actionId: id, identifiers: [identifier], fields: duplicateFields, kind: "duplicate", cascade: Boolean(target),
+  });
   try {
-    await db.batch(writes);
+    await commitUndoable(db, actor, capture, writes);
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
     const current = await requireIssueAccess(db, identifier, actor);
     if (current.version !== input.expectedVersion) return "stale" as const;
+    if (error instanceof UndoCaptureConflict) throw new IssueMutationError("invalid_transition", error.message);
     if (target) {
       await requireIssueAccess(db, input.canonicalIdentifier!, actor);
       if (

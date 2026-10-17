@@ -1,3 +1,5 @@
+import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
+import { teamFields } from "../issue-undo/snapshot";
 import { followerChangeStatements, finalizeEvent } from '../notifications/events';
 import { mutationDatabase } from '../auth/mutation-database';
 import { activityRow } from "../issues/repository";
@@ -137,7 +139,11 @@ export async function moveIssueTeamRecord(
     const followerWrites = followerChangeStatements(binding, event);
     // Eligibility and the original version guard all writes in one transaction;
     // identifiers, terminal/deferral timestamps and all graph rows are untouched.
-    const receipts = await binding.batch<{ id: string }>([
+    const capture = await prepareUndoCapture(binding, actor, {
+      actionId: activity.id, identifiers: [identifier], fields: teamFields, kind: "team",
+    });
+    let receipts: D1Result[];
+    try { receipts = await commitUndoable(binding, actor, capture, [
       binding
         .prepare(
           `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
@@ -159,8 +165,13 @@ export async function moveIssueTeamRecord(
         )
         .bind(input.teamId, input.statusId, timestamp, ...params),
       ...finalizeEvent(binding, event),
-    ]);
-    rows = receipts[1 + followerWrites.length].results;
+    ]); } catch (error) {
+      if (!(error instanceof UndoCaptureConflict)) throw error;
+      const current = await requireTeamMoveIssue(binding, identifier, actor);
+      if (current.version !== input.expectedVersion) return "stale";
+      throw new TeamMoveError("invalid_option", error.message, 400);
+    }
+    rows = receipts[1 + followerWrites.length].results as { id: string }[];
   }
   // Search/history triggers contribute to total changes, not direct rows.
   if (rows.length === 1 && rows[0].id === issue.id) return "written";

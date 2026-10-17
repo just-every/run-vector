@@ -1,4 +1,5 @@
 import { DeletionNotice } from '../../features/issue-deletion/receipt-notice'
+import { IssueUndoNotice } from '../../features/issue-undo/ui/notice'
 import { StreamPlanningProvider } from '../../features/streams/ui/stream-planning-state'
 import type { ReactNode } from 'react'
 import {
@@ -286,6 +287,7 @@ function AppShellContent({ children }: AppShellProps) {
           </details>
         ) : null}
         <DeletionNotice />
+        <IssueUndoNotice />
         {children}
       </div>
       <nav className="app-mobile-nav" aria-label="Workspace">
