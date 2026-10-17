@@ -32,6 +32,13 @@ export function changeIssueListFilters(
   return issueListQuerySchema.parse({
     ...query,
     ...changes,
+    // A workflow status belongs to one team. A new team selection must not
+    // retain the previous team's status; an explicit replacement is preserved.
+    status: changes.status ?? (
+      changes.team !== undefined && changes.team !== query.team
+        ? "all"
+        : query.status
+    ),
     offset: changes.offset ?? 0,
     revision: changes.offset !== undefined ? (changes.revision ?? query.revision) : "",
   });

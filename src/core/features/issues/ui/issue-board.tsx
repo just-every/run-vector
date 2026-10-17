@@ -6,6 +6,14 @@ import { issueDetailSchema, type IssueDetailData } from "./data";
 import type { IssueRow } from "./issue-selection";
 import type { IssueListData } from "../list-schema";
 
+const ordinaryCategories = new Set([
+  "backlog",
+  "unstarted",
+  "started",
+  "completed",
+  "canceled",
+]);
+
 export function IssueBoard({
   rows,
   statusCounts,
@@ -30,6 +38,7 @@ export function IssueBoard({
     statusName: string;
     version: number;
     revision: string;
+    rejected: boolean;
   } | null;
   revision: string;
   refreshing: boolean;
@@ -37,7 +46,7 @@ export function IssueBoard({
   setColumn: (column: string) => void;
   notices: Map<string, string>;
   onBoardNotice: (identifier: string, message: string | null) => void;
-  onMoved: (updated: IssueDetailData) => void;
+  onMoved: (updated: IssueDetailData, rejected?: boolean) => void;
   onFocused: () => void;
   rows: IssueRow[];
   statusCounts: NonNullable<IssueListData["statusCounts"]>;
@@ -56,20 +65,21 @@ export function IssueBoard({
   const noticesRegion = useRef<HTMLDivElement>(null);
   const [focusNotice, setFocusNotice] = useState<string | null>(null);
   useLayoutEffect(() => {
-    if (!move || refreshing || revision === move.revision) return;
+    if (!move || refreshing) return;
     const row = rows.find((row) => row.identifier === move.identifier);
+    if (revision === move.revision && (!row || row.version < move.version)) return;
     if (row && row.version < move.version) return;
     setColumn(row?.status.id ?? move.status);
     if (row) {
-      const selector = region.current?.querySelector(
-        `[data-status-identifier="${move.identifier}"]`,
-      ) as unknown as HTMLSelectElement | null;
-      if (!selector || selector.disabled) return;
-      selector.focus();
+      const control = region.current?.querySelector(
+        `[data-status-identifier="${move.identifier}"], [data-decision-identifier="${move.identifier}"]`,
+      ) as unknown as HTMLSelectElement | HTMLButtonElement | null;
+      if (!control || control.disabled) return;
+      control.focus();
     } else {
       report(
         move.identifier,
-        `Moved to ${move.statusName}. This issue is outside the current page or filters. Open issue to continue.`,
+        `${move.rejected ? "The requested move was not applied. Current server status is" : "Moved to"} ${move.statusName}. This issue is outside the current page or filters. Open issue to continue.`,
       );
       setFocusNotice(move.identifier);
     }
@@ -85,15 +95,14 @@ export function IssueBoard({
       setFocusNotice(null);
     }
   }, [focusNotice]);
-  function report(
-    identifier: string,
-    message: string | null,
-    statusId?: string,
-  ) {
-    if (statusId) setColumn(statusId);
+  function report(identifier: string, message: string | null) {
     onBoardNotice(identifier, message);
   }
-  const selectedColumn = move?.status ?? column;
+  const reconciled = move &&
+    rows.find(
+      (row) => row.identifier === move.identifier && row.version >= move.version,
+    );
+  const selectedColumn = reconciled?.status.id ?? move?.status ?? column;
   const active = statuses.some((s) => s.id === selectedColumn)
     ? selectedColumn
     : statuses[0]?.id;
@@ -166,6 +175,7 @@ export function IssueBoard({
               <section
                 key={status.id}
                 className={`board-column${status.id === active ? " is-current" : ""}`}
+                aria-label={`${status.name} column`}
               >
                 <h2>
                   {status.name} <span>{count(status.id)}</span>
@@ -203,17 +213,14 @@ function BoardCard({
   onNotice,
   onMoved,
 }: {
-  onMoved: (updated: IssueDetailData) => void;
+  onMoved: (updated: IssueDetailData, rejected?: boolean) => void;
   row: IssueRow;
   statuses: WorkspaceOptions["statuses"];
   onOpen: (id: string) => void;
   onRefresh: () => void;
-  onNotice: (
-    identifier: string,
-    message: string | null,
-    statusId?: string,
-  ) => void;
+  onNotice: (identifier: string, message: string | null) => void;
 }) {
+  const hydrated = useHydrated();
   const [receipt, setReceipt] = useState<IssueDetailData | null>(null),
     [busy, setBusy] = useState(false);
   const current = receipt && receipt.version > row.version ? receipt : row;
@@ -245,13 +252,14 @@ function BoardCard({
         body?.error === "stale_version"
       ) {
         const parsed = issueDetailSchema.safeParse(body.issue);
-        if (parsed.success) setReceipt(parsed.data);
         onNotice(
           row.identifier,
-          "This issue changed elsewhere. The board is refreshed from the server. Open this issue to review it, or choose a status again to retry.",
-          parsed.success ? parsed.data.status.id : undefined,
+          `This issue changed elsewhere. The requested move was not applied.${parsed.success ? ` Current server status is ${parsed.data.status.name}.` : ""} The board is refreshed from the server. Open this issue to review it, or choose a status again to retry.`,
         );
-        onRefresh();
+        if (parsed.success) {
+          setReceipt(parsed.data);
+          onMoved(parsed.data, true);
+        } else onRefresh();
       } else
         onNotice(
           row.identifier,
@@ -266,6 +274,7 @@ function BoardCard({
   return (
     <article className="board-card">
       <button
+        disabled={!hydrated}
         className="board-card-open"
         id={`issue-row-${row.identifier}`}
         onClick={() => onOpen(row.identifier)}
@@ -284,22 +293,36 @@ function BoardCard({
           <span key={label.id}>{label.name}</span>
         ))}
       </div>
-      <label>
-        Status for {row.identifier}
-        <select
-          data-status-identifier={row.identifier}
-          aria-label={`Status for ${row.identifier}`}
-          disabled={busy}
-          value={current.status.id}
-          onChange={(e) => void change(e.target.value)}
-        >
-          {statuses.map((s) => (
-            <option key={s.id} value={s.id}>
-              {s.name}
-            </option>
-          ))}
-        </select>
-      </label>
+      {ordinaryCategories.has(current.status.category) ? (
+        <label>
+          Status for {row.identifier}
+          <select
+            data-status-identifier={row.identifier}
+            aria-label={`Status for ${row.identifier}`}
+            disabled={!hydrated || busy}
+            value={current.status.id}
+            onChange={(e) => void change(e.target.value)}
+          >
+            {statuses.filter((s) => ordinaryCategories.has(s.category)).map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.name}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <>
+          <p>{current.status.name} requires a decision.</p>
+          <button
+            disabled={!hydrated}
+            data-decision-identifier={row.identifier}
+            aria-label={`Review decision for ${row.identifier}`}
+            onClick={() => onOpen(row.identifier)}
+          >
+            Review {current.status.category === "intake" ? "intake" : "duplicate"} decision
+          </button>
+        </>
+      )}
     </article>
   );
 }

@@ -71,6 +71,7 @@ export function IssueListView({
     version: number;
     revision: string;
     statusName: string;
+    rejected: boolean;
   } | null>(null);
   useEffect(() => {
     if (denied) {
@@ -223,13 +224,14 @@ export function IssueListView({
                 }
                 move={move}
                 onFocused={() => setMove(null)}
-                onMoved={(updated) => {
+                onMoved={(updated, rejected = false) => {
                   setMove({
                     identifier: updated.identifier,
                     status: updated.status.id,
                     statusName: updated.status.name,
                     version: updated.version,
                     revision: visible.revision,
+                    rejected,
                   });
                   reload();
                 }}

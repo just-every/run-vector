@@ -1,5 +1,5 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { fetchJson } from "../../../app/api-client";
 import { searchErrorMessage } from "./search-error";
 import { movePaletteHighlight } from "./command-helpers";
@@ -17,6 +17,7 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   const navigate = useNavigate();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [search, setSearch] = useState<ReturnType<
     typeof workspaceSearchSchema.parse
@@ -32,16 +33,29 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
     ],
     [query, currentSearch],
   );
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const activeIndex = Math.max(
+    entries.findIndex((entry) => entry.id === activeId),
+    0,
+  );
 
   useEffect(() => {
     inputRef.current?.focus();
   }, []);
-  useEffect(() => {
-    setActiveIndex((current) =>
-      Math.min(Math.max(current, 0), Math.max(entries.length - 1, 0)),
-    );
-  }, [entries.length]);
+  useLayoutEffect(() => {
+    // Search results can arrive ahead of commands. Keep the selected identity,
+    // rather than letting its previous position select an unrelated record.
+    const selectedId = entries[activeIndex]?.id ?? null;
+    if (selectedId !== activeId) setActiveId(selectedId);
+    const results = resultsRef.current;
+    const option = results?.querySelector<HTMLElement>('[aria-selected="true"]');
+    if (!results || !option) return;
+    const viewport = results.getBoundingClientRect();
+    const bounds = option.getBoundingClientRect();
+    if (bounds.top < viewport.top) results.scrollTop += bounds.top - viewport.top;
+    else if (bounds.bottom > viewport.bottom)
+      results.scrollTop += bounds.bottom - viewport.bottom;
+  }, [entries, activeId, activeIndex]);
   useEffect(() => {
     const term = query.trim();
     if (!term) {
@@ -101,13 +115,13 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   const keyDown = (event: React.KeyboardEvent<HTMLDialogElement>) => {
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
-      setActiveIndex((current) =>
-        movePaletteHighlight(
-          current,
-          event.key === "ArrowDown" ? "next" : "previous",
-          entries.length,
-        ),
+      const nextIndex = movePaletteHighlight(
+        activeIndex,
+        event.key === "ArrowDown" ? "next" : "previous",
+        entries.length,
       );
+      setActiveId(entries[nextIndex]?.id ?? null);
+      inputRef.current?.focus({ preventScroll: true });
       return;
     }
     if (event.key === "Enter") {
@@ -152,7 +166,11 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
               ref={inputRef}
               maxLength={200}
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setActiveId(null);
+                setSearch(null);
+              }}
               placeholder="Search issues, projects, saved views, commands…"
               aria-describedby="command-palette-description"
               aria-controls="command-palette-results"
@@ -172,6 +190,7 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
           Command palette
         </h2>
         <div
+          ref={resultsRef}
           id="command-palette-results"
           className="command-palette__results"
           // An empty listbox is invalid; the container holds only the message then.
@@ -209,7 +228,7 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
                   role="option"
                   aria-selected={index === activeIndex}
                   className={index === activeIndex ? "is-active" : ""}
-                  onMouseMove={() => setActiveIndex(index)}
+                  onMouseMove={() => setActiveId(entry.id)}
                   onClick={() => select(entry)}
                 >
                   <span>

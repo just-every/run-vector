@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { streamPlanningJourney } from './core-stream-planning-journey.mjs';
 import { undoJourney } from './core-undo-journey.mjs';
+import { paletteJourney } from './core-palette-journey.mjs';
 
 export async function keyboardJourney(page, context, base, record) {
   const origin = await page.evaluate(() => performance.timeOrigin);
@@ -24,24 +25,7 @@ export async function keyboardJourney(page, context, base, record) {
     await page.keyboard.press('Escape');
     await palette.waitFor({ state: 'detached' });
   }
-  const viewName = `Private keyboard view ${Date.now()}`;
-  const createdView = await context.request.post(base + '/api/views', {
-    headers: { Origin: base }, data: { name: viewName, isShared: false, layout: 'list', query: {} },
-  });
-  assert.equal(createdView.status(), 201);
-  const view = await createdView.json();
-  await settleReads(page);
-  await page.locator('h1').first().click();
-  await page.keyboard.press('Control+k');
-  const savedPalette = page.getByRole('dialog', { name: 'Command palette', exact: true });
-  await savedPalette.getByRole('textbox').fill(viewName);
-  await savedPalette.getByRole('option', { name: new RegExp(viewName) }).waitFor();
-  await settleReads(page);
-  await page.keyboard.press('Enter');
-  await page.waitForURL(base + '/app/views/' + view.id);
-  await page.getByRole('heading', { name: viewName, exact: true }).waitFor();
-  assert.equal(await savedPalette.count(), 0);
-  record('VIEW-002-PALETTE', 'A real newly created private saved view is found by palette search and Enter opens its persisted view page.');
+  await paletteJourney(page, context, base, record);
   await settleReads(page);
   await page.locator('h1').first().click();
   await page.keyboard.press('c');
