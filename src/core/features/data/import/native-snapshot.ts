@@ -6,6 +6,9 @@ import type { Json, D1Sql } from '../../../../../vendor/base/import-kit/src/d1/i
 // accepted batch may legitimately point at an earlier imported issue.
 export const nativeRelations = {
   labels:['issue_labels','issue_id','label_id'],
+  // Write recorded history before activity, whose trigger creates a revision
+  // only when the initial description has not already been recorded.
+  descriptionRevisions:['issue_description_revisions','issue_id','id'],
   activity:['issue_activity','issue_id','id'],
   parent:['issue_parents','issue_id','issue_id'],
   dependencies:['issue_dependencies','blocked_issue_id','blocking_issue_id'],

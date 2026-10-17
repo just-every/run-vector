@@ -151,6 +151,7 @@ await contract(
           async () => {
               assert.ok(
                 await page
+                  .locator(".issue-description .safe-markdown")
                   .getByText("First authored paragraph.", { exact: false })
                   .isVisible(),
                 "description open",
