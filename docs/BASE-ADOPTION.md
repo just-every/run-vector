@@ -4,12 +4,12 @@ Runtime selections come from Base revision `e3467bf282312cc46c36a57145e054757b60
 
 | Local selection | Source or role |
 | --- | --- |
-| @runeditrun/rer 0.2.25 | exact package pin for the public `rer` command and shared lifecycle runtime |
+| @runeditrun/rer 0.2.40 | exact package pin for the public `rer` command and shared lifecycle runtime |
 | scripts/installer | Vector's existing installer adapter using package exports |
-| src/base | unchanged Lobby, setup-state and run-site runtime from Base rer 0.2.24 (`1ee378e`) |
-| vendor/base/operator-auth, owner-claim, demo, mail, dependencies, editor, egress-service, integrations, import-kit, d1-transport | every recorded module copy, refreshed together from Base rer 0.2.24 (`1ee378e`) |
+| src/base | unchanged Lobby, setup-state and run-site runtime from Base rer 0.2.40 (`9eb83c8`) |
+| vendor/base/operator-auth, owner-claim, demo, mail, dependencies, editor, egress-service, integrations, import-kit, d1-transport | every recorded module copy, refreshed together from Base rer 0.2.40 (`9eb83c8`) |
 | migrations/core/0050_import_steps.sql | import-kit's resumable preparation-step and erasure-progress tables, verbatim from Base rer 0.2.24 schema constants |
-| @runeditrun/rer 0.2.25 | published CLI, owner-account deploy, portability and operations |
+| @runeditrun/rer 0.2.40 | published CLI, owner-account deploy, portability and operations |
 | scripts/edition-authoring | one authoring implementation |
 | vendor/base/schema | release/seed/setup validation |
 | migrations/core/0022_portability.sql | native portability schema |
@@ -29,7 +29,7 @@ Wave B source preparation: see [managed source and recovery](MANAGED-SOURCE.md).
 
 ## Lobby and run site
 
-The public command is package-mode `@runeditrun/rer` 0.2.25, pinned exactly in package.json and pnpm-lock.yaml. Base rer 0.2.24 (`1ee378e`) supplies the unchanged `src/base` runtime. Operations inspectors now come from the published package; `base-copies.json` records those bytes and the refreshed command/adoption documents. Applied migrations are never rewritten by a refresh; schema Base adds arrives as a new numbered migration. The removed CLI and onboarding trees no longer appear as local edition components.
+The public command is package-mode `@runeditrun/rer` 0.2.40, pinned exactly in package.json and pnpm-lock.yaml. Base rer 0.2.40 (`9eb83c8`) supplies the unchanged `src/base` runtime. Operations inspectors now come from the published package; `base-copies.json` records those bytes and the refreshed command/adoption documents. Applied migrations are never rewritten by a refresh; schema Base adds arrives as a new numbered migration. The removed CLI and onboarding trees no longer appear as local edition components.
 
 The installed Worker serves Base’s Lobby and setup-state response using Vector’s persisted first-run completion. The deployment name comes from the server-only `WORKSPACE_NAME` setting. The static site uses edition data only, keeps the approved homepage and fonts, and offers Run Vector at `/run`; its docs use the existing Markdown manifest and components. The installer adapter no longer supplies the undeclared `target` setup answer.
 

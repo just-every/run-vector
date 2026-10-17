@@ -2,7 +2,6 @@
   "version": 1,
   "domain": "run-vector.com",
   "name": "Vector",
-  "instanceType": "basic",
   "ownerEmail": "sarah@lumenfreight.example",
   "settings": {
     "FIRST_OWNER_EMAIL": "sarah@lumenfreight.example",

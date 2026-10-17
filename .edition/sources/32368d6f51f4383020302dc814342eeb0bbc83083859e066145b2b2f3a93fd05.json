@@ -1,8 +1,8 @@
 {
-  "key": "5d638b8a1d187628db789a84a4a0299d4354686856a28276c9864d87ded6c73d",
+  "key": "32368d6f51f4383020302dc814342eeb0bbc83083859e066145b2b2f3a93fd05",
   "origin": {
     "repository": "https://github.com/runeditrun/base.git",
-    "revision": "1ee378e41142c673a9098f60af21664c6d8477d1",
+    "revision": "9eb83c85a9088c16ffe94a3af43e8a2e95acc377",
     "path": ".",
     "paths": [
       "modules/editor/src"
