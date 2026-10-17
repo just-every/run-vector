@@ -3,31 +3,12 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 import { useApiResource } from "../../../app/api-client";
 import { useHydrated } from '../../../app/initial-resources';
-import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { NamedLinks } from "../../links/ui/named-links";
 import { discussionSchema } from "../../discussion/schema";
-import { relativeTime } from "../../streams/ui/helpers";
+import { CommentThread, commentThreads } from "./discussion-thread";
 
 
-export function CommentTimestamp({
-  createdAt,
-  editedAt,
-}: {
-  createdAt: string;
-  editedAt: string | null;
-}) {
-  return (
-    <small className="comment-timestamp">
-      <time dateTime={createdAt}>{relativeTime(createdAt)}</time>
-      {editedAt ? (
-        <>
-          {" · edited "}
-          <time dateTime={editedAt}>{relativeTime(editedAt)}</time>
-        </>
-      ) : null}
-    </small>
-  );
-}
+export { CommentTimestamp } from "./discussion-thread";
 
 export function Discussion({
   identifier,
@@ -47,9 +28,7 @@ export function Discussion({
     [filesOpen, setFilesOpen] = useState(false),
     [body, setBody] = useState(""),
     [busy, setBusy] = useState(false),
-    [error, setError] = useState(""),
-    [edit, setEdit] = useState<string | null>(null),
-    [editBody, setEditBody] = useState("");
+    [error, setError] = useState("");
   async function mutate(
     path: string,
     init: RequestInit,
@@ -98,77 +77,23 @@ export function Discussion({
           <button onClick={resource.reload}>Retry discussion</button>
         </p>
       ) : null}
-      {resource.data?.comments.map((c) => (
-        <article className="comment-entry" key={c.id}>
-          <strong>{c.actor}</strong>{c.imported ? <span> (imported)</span> : null}
-          <CommentTimestamp createdAt={c.createdAt} editedAt={c.editedAt} />
-          {c.deletedAt ? (
-            <p>Comment deleted</p>
-          ) : edit === c.id ? (
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                void mutate(
-                  `comments/${c.id}`,
-                  json("PATCH", { body: editBody }),
-                  () => setEdit(null),
-                );
+      {resource.data
+        ? commentThreads(resource.data.comments).map(({ root, replies }) => (
+            <CommentThread
+              key={root.id}
+              root={root}
+              replies={replies}
+              identifier={identifier}
+              data={resource.data!}
+              busy={busy}
+              mutate={mutate}
+              onLinksChanged={() => {
+                resource.refreshAfterMutation();
+                onRefresh();
               }}
-            >
-              <label>
-                Edit comment
-                <MentionTextarea
-                  aria-label="Edit comment"
-                  required
-                  disabled={busy}
-                  value={editBody}
-                  onValueChange={setEditBody}
-                />
-              </label>
-              <button disabled={busy}>Save comment</button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => setEdit(null)}
-              >
-                Cancel
-              </button>
-            </form>
-          ) : (
-            <>
-              <div className="comment-body">
-                <SafeMarkdown taskBusy={busy} onTaskChange={c.canEdit ? task => mutate(`comments/${c.id}/checklist`, json("POST", { expectedBody: c.body, ...task })) : undefined}>{c.body ?? ""}</SafeMarkdown>
-              </div>
-              <NamedLinks
-                identifier={identifier}
-                commentId={c.id}
-                links={resource.data?.links ?? []}
-                onRefresh={() => {
-                  resource.refreshAfterMutation();
-                  onRefresh();
-                }}
-              />
-              <button
-                disabled={busy}
-                onClick={() => {
-                  setEdit(c.id);
-                  setEditBody(c.body ?? "");
-                }}
-              >
-                Edit comment
-              </button>
-              <button
-                disabled={busy}
-                onClick={() =>
-                  void mutate(`comments/${c.id}`, { method: "DELETE" })
-                }
-              >
-                Delete comment
-              </button>
-            </>
-          )}
-        </article>
-      ))}
+            />
+          ))
+        : null}
       <form
         className="issue-mutation-form comment-composer"
         onSubmit={(e) => {

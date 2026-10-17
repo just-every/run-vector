@@ -65,6 +65,11 @@ export function activityTitle(kind: string, nextValue?: unknown) {
     "issue.evidence_added": "Added evidence",
     "issue.imported": "Imported the issue",
     "issue.operator_removed": "Unassigned a removed operator",
+    "comment.created": "Commented",
+    "comment.edited": "Edited a comment",
+    "comment.deleted": "Deleted a comment",
+    "thread.resolved": "Resolved a thread",
+    "thread.reopened": "Reopened a thread",
   };
   return titles[kind] ?? kind.replace(/^issue\./, "").replaceAll(/[._]/g, " ").replace(/^./, (letter) => letter.toUpperCase());
 }

@@ -340,6 +340,12 @@
       "name": "0055_followup_lookup_indexes.sql",
       "sha256": "abb2b750547cc008af46ecbf0d3509c689a9686576ab49bd0c7d8c535563b1d2",
       "sql": "-- Native issue changes and issue erasure must not scan every member's follow-ups.\nCREATE INDEX notification_snoozes_issue ON notification_snoozes(issue_id);\nCREATE INDEX issue_reminders_issue_recipient ON issue_reminders(issue_id,recipient_id,remind_at);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0056_comment_threads.sql",
+      "sha256": "fe191d13e7cfff096f69bf00d2eed06bfa9efa67e7dcb01849d4f92189e81e9e",
+      "sql": "-- ISSUE-008 threads: a reply names its top-level comment; resolution lives on\n-- the top-level comment. Additive columns only; existing comments stay\n-- top-level and unresolved.\nALTER TABLE issue_comments ADD COLUMN parent_comment_id TEXT;\nALTER TABLE issue_comments ADD COLUMN resolved_at TEXT;\nALTER TABLE issue_comments ADD COLUMN resolved_by_operator_id TEXT;\nCREATE INDEX issue_comments_parent_idx ON issue_comments(parent_comment_id,created_at);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

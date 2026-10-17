@@ -2,9 +2,12 @@ import { fileSettlementDatabase } from "../auth/mutation-database";
 import { IssueAccessError } from "../issues/access";
 import { requireIssueProjection } from "../issues/projection-access";
 import { discussionAccess } from "./access";
+import { CommentPermissionError } from "./permissions";
+import { requireOperator } from "../auth/service";
+import { changeResolution, ThreadError } from "./threads";
 import { requestFileRemoval } from "../file-removal/service";
 import { readRequestJson } from "../../app/input";
-import type { Hono } from "hono";
+import type { Context, Hono } from "hono";
 import { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import type { AppEnvironment } from "../../app/bindings";
@@ -21,6 +24,20 @@ import {
 const commentSchema = z
   .object({ body: z.string().trim().min(1).max(100000) })
   .strict();
+const itemIdSchema = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+const newCommentSchema = commentSchema.extend({ parentId: itemIdSchema.optional() }).strict();
+const resolutionSchema = z.object({ resolved: z.boolean() }).strict();
+/** Denials keep their public status; storage and programming errors propagate.
+ * A permission answer is given only to the session that is still current. */
+async function discussionDenial(c: Context<AppEnvironment>, error: unknown) {
+  if (!(error instanceof IssueAccessError || error instanceof CommentPermissionError || error instanceof ThreadError)) throw error;
+  if (error instanceof CommentPermissionError) {
+    const admitted = c.get("operator"), current = await requireOperator(c.env, c.req.raw);
+    if (!current || current.id !== admitted.id || JSON.stringify(current.fence) !== JSON.stringify(admitted.fence))
+      return c.json({ error: "unauthenticated" }, 401);
+  }
+  return c.json({ error: error.code, message: error.message }, error.status);
+}
 const mimeTypes = new Set([
   "image/png",
   "image/jpeg",
@@ -43,6 +60,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
   });
   for (const path of [
     "/issues/:identifier/comments/:itemId",
+    "/issues/:identifier/comments/:itemId/resolution",
     "/issues/:identifier/files/:itemId",
   ])
     app.use(path, async (c, next) => {
@@ -58,7 +76,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
     return c.json(projection);
   }));
   app.post("/issues/:identifier/comments", async (c) => {
-    const input = commentSchema.safeParse(await readRequestJson(c.req.raw));
+    const input = newCommentSchema.safeParse(await readRequestJson(c.req.raw));
     if (!input.success)
       return c.json(
         { error: "invalid_request", issues: input.error.issues },
@@ -72,6 +90,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         issue.id,
         c.get("operatorId"),
         input.data.body,
+        input.data.parentId,
       );
       if (c.req.header('x-vector-projection') === 'discussion') {
         // Return the committed state through the same final native admission
@@ -83,8 +102,19 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
       }
       return c.json({ id }, 201);
     } catch (error) {
-      if (!(error instanceof IssueAccessError)) throw error;
-      return c.json({ error: error.code, message: error.message }, error.status);
+      return discussionDenial(c, error);
+    }
+  });
+  app.post("/issues/:identifier/comments/:itemId/resolution", async (c) => {
+    const input = resolutionSchema.safeParse(await readRequestJson(c.req.raw));
+    if (!input.success) return c.json({ error: "invalid_request" }, 400);
+    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
+    if (!issue) return c.json({ error: "not_found" }, 404);
+    try {
+      await changeResolution(c.env.DB, issue, c.req.param("itemId"), c.get("operatorId"), input.data.resolved);
+      return c.json({ resolved: input.data.resolved });
+    } catch (error) {
+      return discussionDenial(c, error);
     }
   });
   for (const method of ["PATCH", "DELETE"] as const)
@@ -107,8 +137,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
           ? c.json({ updated: true })
           : c.json({ error: "not_found" }, 404);
       } catch (error) {
-        if (!(error instanceof IssueAccessError)) throw error;
-        return c.json({ error: error.code, message: error.message }, error.status);
+        return discussionDenial(c, error);
       }
     });
   app.post("/issues/:identifier/files", discussionAccess(async (c) => {

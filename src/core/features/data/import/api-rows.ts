@@ -18,7 +18,7 @@ export function apiRowEffects(payload: Record<string,Json>, sourceId: string, ro
   const outside = (field: string, identifier: string) => omissions.push({ row, field, code: 'relation_outside_run', message: `${identifier} is not in this run, so this relation is not linked. It stays in the original API file.` });
   issue.comments.forEach((comment, index) => {
     if (!comment.body.trim() || comment.body.length > 100000 || !instant(comment.createdAt)) { errors.push({ row, field: 'api comments', code: 'invalid_api_comment', message: `Comment ${index + 1} needs a body of at most 100,000 characters and an ISO createdAt with a timezone.` }); return; }
-    result.comments.push({ id: stableImportId(actor.workspace, input.source, sourceId, 'comment:' + index), issue_id: id, actor_operator_id: actor.id, body: comment.body, edited_at: null, deleted_at: null, created_at: comment.createdAt, updated_at: comment.createdAt, imported_author_name: comment.author });
+    result.comments.push({ id: stableImportId(actor.workspace, input.source, sourceId, 'comment:' + index), issue_id: id, actor_operator_id: actor.id, body: comment.body, edited_at: null, deleted_at: null, created_at: comment.createdAt, updated_at: comment.createdAt, imported_author_name: comment.author, parent_comment_id: null, resolved_at: null, resolved_by_operator_id: null });
   });
   issue.links.forEach((link, index) => {
     const parsed = createLinkSchema.safeParse({ name: link.title.trim() || link.url.slice(0, 200), url: link.url });

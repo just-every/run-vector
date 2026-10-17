@@ -495,7 +495,10 @@
     "deleted_at",
     "created_at",
     "updated_at",
-    "imported_author_name"
+    "imported_author_name",
+    "parent_comment_id",
+    "resolved_at",
+    "resolved_by_operator_id"
   ],
   "issue_deferral_origins": [
     "issue_id",

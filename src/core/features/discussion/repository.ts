@@ -2,11 +2,13 @@ import { commentStatements, mentionStatements, finalizeEvent } from '../notifica
 import { IssueAccessError, requireIssueAccess } from '../issues/access';
 import { MutationAccessError, mutationDatabase } from "../auth/mutation-database";
 import { createUlid } from "../../shared/ids";
+import { reopenStatements, threadRoot } from "./threads";
 import {
   commentLinkErasureStatements,
   namedLinksStatement,
 } from "../links/repository";
 import type { NamedLink } from '../links/schema';
+import { liveComment, moderatorSql, requireCommentChange } from "./permissions";
 
 async function requireDiscussionMutationAccess(db: D1Database, identifier: string, actor: string) {
   try {
@@ -34,9 +36,14 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
   return [
     db
       .prepare(
-        "SELECT c.id,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,(c.actor_operator_id=? AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id WHERE c.issue_id=? ORDER BY c.created_at,c.id",
+        `SELECT c.id,c.parent_comment_id AS parentId,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
+ c.resolved_at AS resolvedAt,r.name AS resolvedBy,
+ (c.actor_operator_id=? AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit,
+ (c.deleted_at IS NULL AND ((c.actor_operator_id=? AND c.imported_author_name IS NULL) OR ${moderatorSql})) AS canDelete
+ FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id LEFT JOIN operators r ON r.id=c.resolved_by_operator_id
+ WHERE c.issue_id=? ORDER BY c.created_at,c.id`,
       )
-      .bind(actor ?? null, issueId),
+      .bind(actor ?? null, actor ?? null, actor ?? null, issueId),
     db
       .prepare(
         "SELECT id,name,content_type AS contentType,bytes,state,removal_requested_at AS removalPending,cleanup_error AS cleanupError,created_at AS createdAt FROM issue_files WHERE issue_id=? AND (deleted_at IS NULL OR (removal_requested_at IS NOT NULL AND removal_confirmed_at IS NULL)) ORDER BY created_at,id",
@@ -81,6 +88,7 @@ export async function addComment(
   issueId: string,
   actor: string,
   body: string,
+  parentId?: string,
 ) {
   db = mutationDatabase(db, actor);
   const id = createUlid(new Date()),
@@ -90,13 +98,16 @@ export async function addComment(
   const issue = await db.prepare('SELECT identifier FROM issues WHERE id=?').bind(issueId).first<{identifier:string}>();
   if (!issue) throw new Error('Issue is unavailable.');
   await requireDiscussionMutationAccess(db,issue.identifier,actor);
+  const thread = parentId ? await threadRoot(db, issueId, parentId) : null;
   await db.batch([
     db.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('discussion access denied') END`).bind(issueId,actor),
+    // A new reply reopens a resolved thread, recorded before the reply itself.
+    ...(thread ? reopenStatements(db, issueId, thread, actor, now) : []),
     db
       .prepare(
-        "INSERT INTO issue_comments(id,issue_id,actor_operator_id,body,created_at,updated_at) VALUES(?,?,?,?,?,?)",
+        "INSERT INTO issue_comments(id,issue_id,actor_operator_id,body,parent_comment_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
       )
-      .bind(id, issueId, actor, body, now, now),
+      .bind(id, issueId, actor, body, thread, now, now),
     activity(db, actor, "comment.created", issueId, id, now, activityId),
     ...commentStatements(db,event), ...mentionStatements(db,event,body,id), ...finalizeEvent(db,event),
   ]);
@@ -114,13 +125,9 @@ export async function changeComment(
   const now = new Date().toISOString();
   const activityId = createUlid(new Date());
   const event = { id: activityId, issueId: issue.id, actor, at: now };
-  const row = await db
-    .prepare(
-      "SELECT id FROM issue_comments WHERE id=? AND issue_id=? AND deleted_at IS NULL",
-    )
-    .bind(id, issue.id)
-    .first();
+  const row = await liveComment(db, issue.id, id, actor);
   if (!row) return false;
+  requireCommentChange(row, body === null ? "delete" : "edit");
   const mutation =
     body === null
       ? db

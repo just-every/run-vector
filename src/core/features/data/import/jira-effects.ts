@@ -15,7 +15,7 @@ export function jiraRowEffects(record:SourceRecord,input:ImportInput,actor:Impor
  for(const metadata of jiraMetadata(record)) {
   if(metadata.kind==='comment') {
    if(!metadata.body?.trim()||metadata.body.length>100000||!metadata.time) {problem(metadata.column,'jira_invalid_comment','Comment requires a body of at most 100,000 characters and a valid source timestamp.');continue;}
-   result.comments.push({id:jiraCommentId(actor.workspace,input.source,record.sourceId,metadata.column),issue_id:id,actor_operator_id:actor.id,body:metadata.body,edited_at:null,deleted_at:null,created_at:metadata.time,updated_at:metadata.time,imported_author_name:metadata.author});
+   result.comments.push({id:jiraCommentId(actor.workspace,input.source,record.sourceId,metadata.column),issue_id:id,actor_operator_id:actor.id,body:metadata.body,edited_at:null,deleted_at:null,created_at:metadata.time,updated_at:metadata.time,imported_author_name:metadata.author,parent_comment_id:null,resolved_at:null,resolved_by_operator_id:null});
   } else if(input.jira?.attachmentLinks) {
    const parsed=createLinkSchema.safeParse({name:metadata.filename,url:metadata.url});
    if(!parsed.success){problem(metadata.column,'unsafe_link','Attachment opt-in requires a valid named HTTPS link without credentials. No attachment is fetched.');continue;}

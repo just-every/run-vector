@@ -3,10 +3,10 @@ import {readDevelopmentLink} from './outbox-session.mjs';
 import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mjs';
 
 /** Independent jobs use genuine invited operators and their own rate budgets. */
-export async function withInvitedOperator(page,context,base,state,journey){
+export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){
  const original=await context.cookies(),email=`stream-planning-${Date.now()}@vector.test`;
  const invited=await context.request.post(base+'/api/settings/operators/invite',{
-  headers:{Origin:base},data:{displayName:'Stream planning teammate',email},
+  headers:{Origin:base},data:{displayName,email},
  });assert.equal(invited.status(),202);
  const link=await readDevelopmentLink(base,context.request,email,state);
  await beforePrivateNavigation(page,link);await page.goto(link);

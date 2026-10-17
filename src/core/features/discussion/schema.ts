@@ -6,10 +6,14 @@ export const discussionSchema = z.object({
   comments: z.array(
     z.object({
       id: z.string(),
+      parentId: z.string().nullable(),
       body: z.string().nullable(),
       actor: z.string(),
       imported: z.union([z.boolean(), z.number()]).transform(Boolean).optional(),
       canEdit: z.union([z.boolean(), z.number()]).transform(Boolean),
+      canDelete: z.union([z.boolean(), z.number()]).transform(Boolean),
+      resolvedAt: z.string().nullable(),
+      resolvedBy: z.string().nullable(),
       editedAt: z.string().nullable(),
       deletedAt: z.string().nullable(),
       createdAt: z.string(),

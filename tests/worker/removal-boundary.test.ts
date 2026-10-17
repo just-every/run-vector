@@ -81,7 +81,8 @@ it("[OPS-004] every native mutation fences removed actors while active peers rem
         method = "POST";
         body = { body: "A late comment" };
         if (kind !== "comment") {
-          const c = await f.request(path, method, body);
+          // Only a comment's author edits it (ISSUE-008), so the member changes their own.
+          const c = await f.request(path, method, body, f.memberCookie);
           const id = ((await c.json()) as any).id;
           path += "/" + id;
           method = kind === "comment-delete" ? "DELETE" : "PATCH";
