@@ -44,7 +44,7 @@ You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. One lin
 npx -y @runeditrun/rer dev just-every/run-vector
 ```
 
-To start it again later, run `cd run-vector && rer dev`. The line installs the current global rer launcher (you can also install it with `npm install --global @runeditrun/rer@0.2.25`); inside this checkout, rer runs the exact 0.2.25 dependency in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
+To start it again later, run `cd run-vector && rer dev`. The line installs the current global rer launcher; inside this checkout, rer runs the exact 0.2.25 dependency in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
 
 Vector has its own release numbers: [the latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The clone follows `main`, which includes changes since v0.2.0. To use that tagged release instead, run `git checkout v0.2.0` in the checkout before `rer dev`; rer then uses the CLI pin recorded by that release.
 

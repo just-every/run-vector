@@ -1,6 +1,6 @@
 # Vector operations
 
-You need Git and the published `rer` command; it provides the exact Node and pnpm this source pins. All public lifecycle commands use `rer VERB`. Run `rer describe` for capabilities and `rer check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
+Start Vector with one line, `npx -y @runeditrun/rer dev just-every/run-vector` (set up only: `npx -y @runeditrun/rer setup just-every/run-vector`; without Node: `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector`). It needs Git, and `rer` provides the exact Node and pnpm this source pins. All public lifecycle commands use `rer VERB`. Run `rer describe` for capabilities and `rer check --profile first-party` for offline structural validation. `doctor` reports installed tools and missing configuration without printing values. OPERATIONS.json declares the real command adapter, inputs, loops and effects.
 
 Run `install`, then `setup --owner-email EMAIL --non-interactive`, then `dev`. Setup consumes rer-setup.json, saves private .dev.vars, builds with secrets excluded, applies forward migrations, bootstraps the configured first owner and stops its temporary Worker. A repeated setup preserves settings, owner and data. Use a private `--answers` JSON file for declared workspace, team and timezone choices.
 

@@ -1,7 +1,8 @@
 # Run it locally
 
-Install the `rer` command once: `npx -y @runeditrun/rer cli install`, or the
-installer script on the RER site (`curl -fsSL https://runeditrun.com/install.sh | sh`).
+Start Vector with one line, `npx -y @runeditrun/rer dev just-every/run-vector`
+(without Node: `curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector`);
+to only set it up, run `npx -y @runeditrun/rer setup just-every/run-vector`.
 `rer` runs every verb with the checkout's own pinned copy: a vendored
 `scripts/rer.mjs`, or in package mode the exact `@runeditrun/rer` devDependency in
 `node_modules`. The `OPERATIONS.json` argv and the `package.json` aliases are the

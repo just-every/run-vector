@@ -23,14 +23,14 @@ test('README literal clone, own frozen install, optional setup and dev automatic
  const result={status:'running',source:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),commands:['README install rer','README clone','README optional setup','setup repeat','README start','confirmed reset'],publicMirrorProof:false};
  try {
   store=await createState(work,await loadInstallerSeed(process.cwd(),createSeed()));store.setCommandSignal(controller.signal);
-  // The README's own two steps: install rer (its npm form, into a private prefix), then clone and start.
+  // The README's one line installs rer, clones and starts; the journey installs the pinned rer into a private prefix first.
   // The clone names the public repository; the journey clones this checkout in its place.
-  const start=literal('start').split('\n'),install=markdown.match(/`(npm install --global @runeditrun\/rer@[0-9.]+)`/);assert(install,'README npm install of rer');
+  const start=literal('start').split('\n'),pin=JSON.parse(await readFile('package.json','utf8')).devDependencies['@runeditrun/rer'];assert(pin,'package.json pins rer');
   const setupCommand=literal('setup');const port=await freePort();
   const prefix=join(work,'cli');
   const path=join(prefix,'bin')+':'+process.env.PATH;
   const environment=extra=>commandEnvironment({PATH:path,npm_config_prefix:prefix,...extra});
-  await store.run('README install rer','/bin/sh',['-eu','-c',install[1]],{cwd:work,env:environment({CI:'true'})});
+  await store.run('README install rer','/bin/sh',['-eu','-c','npm install --global @runeditrun/rer@'+pin],{cwd:work,env:environment({CI:'true'})});
   assert.deepEqual(start,['npx -y @runeditrun/rer dev just-every/run-vector'],'README starts Vector with the one line');
   // The one line clones the public repository into its repo-name folder; the journey clones this checkout in its place.
   await store.run('README clone','/bin/sh',['-eu','-c','git clone '+process.cwd()+' vector'],{cwd:work,env:commandEnvironment({})});
