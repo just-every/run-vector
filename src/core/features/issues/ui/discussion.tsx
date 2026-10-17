@@ -56,7 +56,7 @@ export function Discussion({
     setBusy(true);
     setError("");
     try {
-      const comment = path === "comments" && init.method === "POST";
+      const comment = (path === "comments" || /^comments\/[^/]+\/checklist$/.test(path)) && init.method === "POST";
       const headers = new Headers(init.headers);
       if (comment) headers.set("x-vector-projection", "discussion");
       const response = await fetch(`/api/issues/${identifier}/${path}`, { ...init, headers });
@@ -135,7 +135,7 @@ export function Discussion({
           ) : (
             <>
               <div className="comment-body">
-                <SafeMarkdown>{c.body ?? ""}</SafeMarkdown>
+                <SafeMarkdown taskBusy={busy} onTaskChange={c.canEdit ? task => mutate(`comments/${c.id}/checklist`, json("POST", { expectedBody: c.body, ...task })) : undefined}>{c.body ?? ""}</SafeMarkdown>
               </div>
               <NamedLinks
                 identifier={identifier}

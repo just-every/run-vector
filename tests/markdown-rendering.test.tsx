@@ -5,7 +5,7 @@ import { SafeMarkdown } from "../src/core/features/markdown/ui/markdown";
 const render = (text: string) =>
   renderToStaticMarkup(<SafeMarkdown>{text}</SafeMarkdown>);
 
-it("ISSUE-001 ISSUE-008 BASE-INPUT-002 safe CommonMark display", () => {
+it("ISSUE-001 ISSUE-008 ISSUE-025 ISSUE-026 BASE-INPUT-002 safe Markdown display", () => {
   // "renders headings, emphasis, lists, blockquotes, and literal code"
   {
     const html = render(
@@ -20,7 +20,19 @@ it("ISSUE-001 ISSUE-008 BASE-INPUT-002 safe CommonMark display", () => {
     expect(html).toContain(
       "<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>",
     );
-    expect(html).toContain('<pre><code class="language-js">const answer = 42');
+    expect(html).toContain('<pre><code class="language-js">');
+    expect(html).toContain('class="hljs-keyword">const</span>');
+    expect(html).toContain('class="hljs-number">42</span>');
+  }
+  {
+    const html = render("~~Old~~\n\n| Step | Result |\n| --- | --- |\n| Repro | Fixed |\n\n- [ ] Repro on iOS\n- [x] Add regression coverage\n\n:::details Investigation\n\nEvidence kept here.\n\n:::");
+    expect(html).toContain("<del>Old</del>");
+    expect(html).toContain("<table>");
+    expect(html).toContain("<td>Fixed</td>");
+    expect(html).toContain('type="checkbox"');
+    expect(html).toContain('aria-label="Repro on iOS"');
+    expect(html).toContain('disabled=""');
+    expect(html).toContain("<details><summary>Investigation</summary>");
   }
   // "does not render supplied script, form, frame, SVG, event handler, or raw tracking HTML"
   {

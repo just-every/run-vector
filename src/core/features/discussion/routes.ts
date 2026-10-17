@@ -53,7 +53,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
   app.get("/issues/:identifier/discussion", discussionAccess(async (c) => {
     c.set("concealWorkspaceChange", true);
     const issue = await requireIssueProjection(c, c.req.param().identifier);
-    const projection = await discussion(c.env.DB, issue.id);
+    const projection = await discussion(c.env.DB, issue.id, c.get("operatorId"));
     await requireIssueProjection(c, issue.identifier);
     return c.json(projection);
   }));
@@ -77,7 +77,7 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         // Return the committed state through the same final native admission
         // used by document projections, rather than a second browser request.
         c.set('mutationPageProjection', true);
-        const projection = await discussion(c.env.DB, issue.id);
+        const projection = await discussion(c.env.DB, issue.id, c.get("operatorId"));
         await requireIssueProjection(c, issue.identifier);
         return c.json({ id, discussion: projection }, 201);
       }

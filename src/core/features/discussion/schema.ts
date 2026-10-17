@@ -9,6 +9,7 @@ export const discussionSchema = z.object({
       body: z.string().nullable(),
       actor: z.string(),
       imported: z.union([z.boolean(), z.number()]).transform(Boolean).optional(),
+      canEdit: z.union([z.boolean(), z.number()]).transform(Boolean),
       editedAt: z.string().nullable(),
       deletedAt: z.string().nullable(),
       createdAt: z.string(),

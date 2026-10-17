@@ -28,6 +28,8 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
   parentIdentifier: { label: "Parent", show: (v) => (typeof v === "string" && v ? v : "None") },
   title: { label: "Title", show: (v) => (typeof v === "string" ? `“${v}”` : "None") },
   description: { label: "Description" },
+  checklist: { label: "Checklist", show: value => { const task = value as { text?: string; checked?: boolean } | null; return task?.text ? `${task.checked ? "Checked" : "Unchecked"}: ${task.text}` : ""; } },
+  descriptionRestore: { label: "Restored description revision", show: value => { const restore = value as { revisionId?: string } | null; return restore?.revisionId ?? ""; } },
   expectedOutcome: { label: "Expected outcome" },
   customerImpact: { label: "Customer impact" },
   customFields: { label: "Custom fields" },

@@ -26,17 +26,17 @@ export async function findIssue(db: D1Database, identifier: string) {
     .bind(identifier)
     .first<{ id: string; identifier: string }>();
 }
-export async function discussion(db: D1Database, issueId: string) {
-  return discussionProjection(await Promise.all(discussionReadStatements(db, issueId).map(statement => statement.all())));
+export async function discussion(db: D1Database, issueId: string, actor?: string) {
+  return discussionProjection(await Promise.all(discussionReadStatements(db, issueId, actor).map(statement => statement.all())));
 }
 
-export function discussionReadStatements(db: D1Database, issueId: string) {
+export function discussionReadStatements(db: D1Database, issueId: string, actor?: string) {
   return [
     db
       .prepare(
-        "SELECT c.id,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id WHERE c.issue_id=? ORDER BY c.created_at,c.id",
+        "SELECT c.id,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,(c.actor_operator_id=? AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id WHERE c.issue_id=? ORDER BY c.created_at,c.id",
       )
-      .bind(issueId),
+      .bind(actor ?? null, issueId),
     db
       .prepare(
         "SELECT id,name,content_type AS contentType,bytes,state,removal_requested_at AS removalPending,cleanup_error AS cleanupError,created_at AS createdAt FROM issue_files WHERE issue_id=? AND (deleted_at IS NULL OR (removal_requested_at IS NOT NULL AND removal_confirmed_at IS NULL)) ORDER BY created_at,id",

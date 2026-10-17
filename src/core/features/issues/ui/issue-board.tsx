@@ -1,3 +1,4 @@
+import { useHydrated } from "../../../app/initial-resources";
 import { useLayoutEffect, useRef, useState } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
 import type { WorkspaceOptions } from "../../../shared/workspace-options";
@@ -46,6 +47,7 @@ export function IssueBoard({
   onOpen: (id: string) => void;
   onRefresh: () => void;
 }) {
+  const hydrated = useHydrated();
   const statuses =
     options?.statuses
       .filter((s) => s.teamId === team)
@@ -119,6 +121,7 @@ export function IssueBoard({
         Board team
         <select
           aria-label="Board team"
+          disabled={!hydrated}
           value={team}
           onChange={(e) => onChangeTeam(e.target.value)}
         >
@@ -141,6 +144,7 @@ export function IssueBoard({
             Board column
             <select
               aria-label="Board column"
+              disabled={!hydrated}
               value={active ?? ""}
               onChange={(e) => setColumn(e.target.value)}
             >
@@ -268,6 +272,7 @@ function BoardCard({
       >
         <small>{row.identifier}</small>
         <strong>{current.title}</strong>
+        {row.checklist && row.checklist.total > 0 && <small aria-label="Checklist progress">{row.checklist.completed}/{row.checklist.total}</small>}
       </button>
       <p>
         {current.priority === "none" ? "No priority" : current.priority} ·{" "}

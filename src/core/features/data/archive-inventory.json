@@ -506,6 +506,15 @@
     "blocking_issue_id",
     "created_at"
   ],
+  "issue_description_revisions": [
+    "id",
+    "issue_id",
+    "description",
+    "actor_operator_id",
+    "actor_name",
+    "created_at",
+    "version"
+  ],
   "issue_files": [
     "id",
     "issue_id",

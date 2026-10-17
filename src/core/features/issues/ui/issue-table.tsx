@@ -119,6 +119,7 @@ export function IssueTable({
                         {issue.identifier}
                       </span>
                       <strong>{issue.title}</strong>
+                      {issue.checklist && issue.checklist.total > 0 && <small aria-label="Checklist progress">{issue.checklist.completed}/{issue.checklist.total}</small>}
                       {issue.blocked && (
                         <small className="issue-blocked">Blocked</small>
                       )}

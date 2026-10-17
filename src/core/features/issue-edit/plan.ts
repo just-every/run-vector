@@ -19,6 +19,11 @@ import {
 import { IssueMutationError } from "../issues/errors";
 import type { UpdateIssueInput } from "./routes";
 
+/** Only trusted feature services supply activity context; never request JSON. */
+export type IssueUpdateMetadata =
+  | { descriptionRestore: { revisionId: string } }
+  | { checklist: { index: number; text: string; checked: boolean } };
+
 const columns = {
   title: "title",
   description: "description",
@@ -62,6 +67,7 @@ export async function planIssueUpdate(
   actor: string,
   input: UpdateIssueInput,
   forceRecord = false,
+  metadata?: IssueUpdateMetadata,
 ) {
   await requireIssueAccess(binding, identifier, actor);
   if (
@@ -246,6 +252,10 @@ export async function planIssueUpdate(
   }
   const recordBefore = { ...previous },
     recordAfter = { ...values };
+  if (metadata && "descriptionRestore" in metadata) {
+    recordBefore.description = issue.description;
+    recordAfter.description = input.description;
+  }
   if (forceRecord) {
     for (const key of [
       "statusId",
@@ -269,7 +279,7 @@ export async function planIssueUpdate(
     actorOperatorId: actor,
     kind: "issue.updated",
     previousValue: recordBefore,
-    nextValue: recordAfter,
+    nextValue: { ...recordAfter, ...metadata },
     now,
   });
   const event = { id: activity.id, issueId: issue.id, actor, at: now };

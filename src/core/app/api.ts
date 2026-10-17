@@ -1,4 +1,5 @@
 import { addIssueDeletionRoutes } from '../features/issue-deletion/routes';
+import { addDescriptionHistoryRoutes } from '../features/description-history/routes';
 import { addDuplicateRoutes } from '../features/duplicates/routes';
 import { readProjectCycleHistory } from '../features/cycle-closure/read';
 import { IntegrationError } from '../features/integrations/errors';
@@ -283,6 +284,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   app.post("/issues/:identifier/dependencies", addDependencyRoute);
   app.delete("/issues/:identifier/dependencies", removeDependencyRoute);
   addDiscussionRoutes(app);
+  addDescriptionHistoryRoutes(app);
   addIssueDeletionRoutes(app);
   addDuplicateRoutes(app);
   app.post("/issues", createIssueRoute);

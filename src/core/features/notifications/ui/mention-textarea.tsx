@@ -6,6 +6,7 @@ import {
   type TextareaHTMLAttributes,
 } from "react";
 import { useMentionOperators } from "./mention-operators";
+import { useMarkdownAuthoring } from "../../markdown/editor/use-markdown-authoring";
 import {
   canonicalMentionBody,
   editMentionText,
@@ -140,6 +141,15 @@ export function MentionTextarea({
     setState(next);
     onValueChange?.(body);
   };
+  const authoring = useMarkdownAuthoring({
+    state,
+    publish,
+    textarea,
+    caret,
+    setCaret,
+    disabled: Boolean(props.disabled || props.readOnly),
+    maxLength: props.maxLength,
+  });
   function choose(index: number) {
     if (!query || !matches[index]) return;
     const next = selectEditorMention(
@@ -158,15 +168,19 @@ export function MentionTextarea({
   }
   return (
     <span className="mention-editor">
+      {authoring.controls}
       <textarea
         {...props}
         ref={textarea}
         value={state.text}
         data-canonical-body={canonicalMentionBody(state)}
-        aria-controls={query && matches.length ? listId : undefined}
+        aria-controls={
+          authoring.menuId ?? (query && matches.length ? listId : undefined)
+        }
         aria-autocomplete="list"
         aria-activedescendant={
-          query && matches.length ? `${listId}-${active}` : undefined
+          authoring.activeId ??
+          (query && matches.length ? `${listId}-${active}` : undefined)
         }
         aria-describedby={
           [props["aria-describedby"], query ? `${listId}-help` : undefined]
@@ -174,6 +188,7 @@ export function MentionTextarea({
             .join(" ") || undefined
         }
         onChange={(event) => {
+          authoring.onEdit();
           publish(
             editMentionText(state, event.target.value, editRange.current),
           );
@@ -181,11 +196,17 @@ export function MentionTextarea({
           setCaret(event.target.selectionStart);
           setSelected(0);
         }}
+        onPaste={(event) => {
+          props.onPaste?.(event);
+          authoring.onPaste(event);
+        }}
         onSelect={(event) => {
+          props.onSelect?.(event);
           if (event.currentTarget === document.activeElement)
             setCaret(event.currentTarget.selectionStart);
         }}
         onBlur={(event) => {
+          props.onBlur?.(event);
           const target = event.relatedTarget as HTMLElement | null;
           // Keep the in-flow panel steady until the form button receives its click.
           if (
@@ -197,8 +218,10 @@ export function MentionTextarea({
             setCaret(null);
         }}
         onKeyDown={(event) => {
+          if (authoring.onKeyDown(event)) return;
           props.onKeyDown?.(event);
-          if (!query || event.nativeEvent.isComposing) return;
+          if (event.defaultPrevented || !query || event.nativeEvent.isComposing)
+            return;
           if (event.key === "Escape") {
             event.preventDefault();
             event.stopPropagation();
@@ -221,6 +244,7 @@ export function MentionTextarea({
           }
         }}
       />
+      {authoring.panel}
       {query && (
         <span className="mention-suggestions">
           {options.loading && <span role="status">Loading operators…</span>}

@@ -1,3 +1,4 @@
+import { parseTasks } from "../description-history/tasks";
 import { duplicateRelationsStatement, duplicateRelationsProjection, type DuplicateRelationRow } from '../duplicates/repository';
 import { importedFromStatement, importedFromProjection, type ImportedFromRow } from '../data/import/issue-source';
 import { evidenceChanges,type EvidenceChange } from '../integrations/evidence-changes';
@@ -206,6 +207,7 @@ export function buildIssueDetail(
     identifier: issue.identifier,
     title: issue.title,
     description: issue.description,
+    checklist: { completed: parseTasks(issue.description).filter(task => task.checked).length, total: parseTasks(issue.description).length },
     status: { id: status.id, name: status.name, category: status.category },
     priority: issue.priority,
     dueDate: issue.dueDate,

@@ -1,3 +1,4 @@
+import { parseTasks } from "../description-history/tasks";
 import { PaginationInvalidated, resultRevision } from "./list-revision";
 import type { IssueListQuery, IssueListData } from "./list-schema";
 import { browseActor, workspaceDate } from "./browse-access";
@@ -7,6 +8,7 @@ type Row = {
   id: string;
   identifier: string;
   title: string;
+  description: string;
   version: number;
   cycleId: string | null;
   priority: IssueListData["issues"][number]["priority"];
@@ -60,7 +62,7 @@ export async function listIssues(
       db.prepare(`SELECT COUNT(*) total ${relation}`).bind(...values),
       db
         .prepare(
-          `SELECT i.id,i.identifier,i.title,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.due_date dueDate,
+          `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.due_date dueDate,
  s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,p.id projectId,p.name projectName,c.name cycleName,
  parent.identifier parentIdentifier,parent.title parentTitle,${blockedSql} blocked,${group.key} groupKey,
  (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (SELECT l.id,l.name,l.color FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id ORDER BY l.name,l.id)) labels
@@ -114,6 +116,7 @@ export async function listIssues(
       id: row.id,
       identifier: row.identifier,
       title: row.title,
+      checklist: checklistProgress(row.description),
       version: row.version,
       priority: row.priority,
       cycleId: row.cycleId,
@@ -142,3 +145,5 @@ export async function listIssues(
     })),
   };
 }
+
+function checklistProgress(source: string) { const tasks = parseTasks(source); return { completed: tasks.filter(task => task.checked).length, total: tasks.length }; }

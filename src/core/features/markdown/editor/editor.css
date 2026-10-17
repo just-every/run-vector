@@ -1,0 +1,88 @@
+.markdown-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.4rem;
+}
+.markdown-toolbar button,
+.markdown-menu button,
+.markdown-link-form button {
+  min-height: 44px;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.6rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.markdown-toolbar button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.markdown-toolbar button:focus-visible,
+.markdown-menu button:focus-visible,
+.markdown-link-form button:focus-visible {
+  outline: 2px solid var(--app-cobalt-ink);
+  outline-offset: 2px;
+}
+.markdown-table-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.markdown-menu,
+.markdown-link-form {
+  display: grid;
+  gap: 0.4rem;
+  box-sizing: border-box;
+  width: min(100%, 27rem);
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  margin-top: 0.4rem;
+  background: var(--app-card);
+  color: var(--app-ink);
+}
+.markdown-menu-options {
+  display: grid;
+  gap: 0.2rem;
+  max-height: min(16rem, 40dvh);
+  overflow-y: auto;
+}
+.markdown-menu button {
+  text-align: left;
+}
+.markdown-menu button[aria-selected="true"] {
+  background: var(--app-paper-deep);
+  border-color: var(--app-cobalt-ink);
+}
+.markdown-link-form input,
+.markdown-menu .markdown-menu-search {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.4rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--app-field);
+  color: var(--app-ink);
+  font: inherit;
+}
+.markdown-editor-help,
+.markdown-editor-notice {
+  display: block;
+  color: var(--app-body);
+  font-size: 0.75rem;
+  padding: 0.4rem 0;
+}
+@media (pointer: coarse) {
+  .markdown-toolbar button,
+  .markdown-menu button,
+  .markdown-link-form button {
+    min-height: 44px;
+  }
+}

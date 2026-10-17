@@ -2,6 +2,37 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  "/src/core/features/markdown/ui/task-checkbox.tsx",
+  // Shared issue authoring, safe GFM parsing and highlighting. These optimized
+  // chunks contain only the reviewed Markdown/parser/highlight browser packages.
+  '/src/core/features/description-history/tasks.ts',
+  '/src/core/features/description-history/ui/description.tsx',
+  '/src/core/features/description-history/ui/history.css',
+  '/src/core/features/markdown/ui/formatting.tsx',
+  '/src/core/features/markdown/ui/formatting.css',
+  '/src/core/features/markdown/editor/commands.ts',
+  '/src/core/features/markdown/editor/controls.tsx',
+  '/src/core/features/markdown/editor/editor.css',
+  '/src/core/features/markdown/editor/paste.ts',
+  '/src/core/features/markdown/editor/table.ts',
+  '/src/core/features/markdown/editor/use-markdown-authoring.tsx',
+  '/node_modules/.vite/deps/remark-gfm.js',
+  '/node_modules/.vite/deps/mdast-util-from-markdown.js',
+  '/node_modules/.vite/deps/mdast-util-gfm.js',
+  '/node_modules/.vite/deps/micromark-extension-gfm.js',
+  '/node_modules/.vite/deps/highlight__js.js',
+  '/node_modules/.vite/deps/blank-line-DqsN0j-o.js',
+  '/node_modules/.vite/deps/constants-DNpy_fp4.js',
+  '/node_modules/.vite/deps/dev-CB4fX9-0.js',
+  '/node_modules/.vite/deps/dev-DFtX2KD-.js',
+  '/node_modules/.vite/deps/dev-DJoZxOcS.js',
+  '/node_modules/.vite/deps/dev-DsaqlcDt.js',
+  '/node_modules/.vite/deps/lib-BqE-zV-S.js',
+  '/node_modules/.vite/deps/lib-D4qapLER.js',
+  '/node_modules/.vite/deps/mdast-util-gfm-CLR5pKqa.js',
+  '/node_modules/.vite/deps/micromark-extension-gfm-waMvlElg.js',
+  '/node_modules/.vite/deps/values-CRFkKJPy.js',
+
   // Start's custom client entry and its reviewed hydration modules.
   '/src/client.tsx',
   '/src/base/hydration/report.ts',
@@ -228,9 +259,7 @@ const developmentAssets = new Set([
   // shared browser chunk contains only that decoder, numeric/named character
   // decoders and micromark symbols; react-markdown imports the same chunk.
   '/node_modules/.vite/deps/micromark-util-decode-string.js',
-  '/node_modules/.vite/deps/dev-Cqu_Xnum.js',
   // react-markdown's reviewed CommonMark parser and mdast conversion chunk.
-  '/node_modules/.vite/deps/dev-BOFmHeSc.js',
   "/@id/virtual:tanstack-start-dev-client-entry",
   "/@react-refresh",
   "/@tanstack-start/styles.css",

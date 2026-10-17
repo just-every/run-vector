@@ -1,0 +1,9 @@
+.revision-selectors,.revision-comparison { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 12px; }
+.revision-selectors label { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.revision-selectors select { width: 100%; min-height: 44px; border: 1px solid var(--line,#ccd6cf); border-radius: 6px; padding: 8px; }
+.revision-comparison section { min-width: 0; }
+.revision-comparison h3 { font-size: 13px; }
+.revision-comparison pre { padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto; background: #f5f7f5; border: 1px solid #dae1dc; font-size: 12px; }
+.revision-line-changed { background: #e0eedf; }
+.description-history > button { min-height: 44px; margin-top: 12px; }
+@media (max-width: 600px) { .revision-selectors,.revision-comparison { grid-template-columns: minmax(0,1fr); } }

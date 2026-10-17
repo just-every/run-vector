@@ -520,8 +520,8 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 63 | 41 | 0 | 104 |
-| Target and push further | 1 | 45 | 104 | 150 |
-| All | 64 | 86 | 104 | 254 |
+| Target and push further | 2 | 45 | 103 | 150 |
+| All | 65 | 86 | 103 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -566,15 +566,15 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 | `ISSUE-015` | Unsent drafts | published | done | `tests/e2e/core-draft-journey.mjs` |  |
 | `ISSUE-016` | Issue templates | target | missing |  | No implementation yet |
 | `ISSUE-017` | Reactions | target | missing |  | No implementation yet |
-| `ISSUE-018` | Description history | target | partial | `src/core/features/issue-edit/plan.ts` | Previous and next values are kept in activity; compare and restore are absent |
+| `ISSUE-018` | Description history | target | done | `tests/worker/description-history.test.ts`; `work/sd-cp-vector/shots/ISSUE-018/` |  |
 | `ISSUE-019` | Sub-issue progress | target | partial | `src/core/features/parents/repository.ts` | Parent and child links exist; progress, inline creation and the completion rule are absent |
 | `ISSUE-020` | Undo and Recently deleted | target | missing |  | No implementation yet |
 | `ISSUE-021` | Issue types | target | missing |  | No implementation yet |
 | `ISSUE-022` | Issue start date | target | missing |  | No implementation yet |
 | `ISSUE-023` | Copy issue | target | missing |  | No implementation yet |
 | `ISSUE-024` | Inline images and video | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and `nosniff`; paste, drop, the upload command, inline display, the viewer, video types, `Range` responses and resumable upload are absent, and `src/core/features/markdown/ui/markdown.tsx` refuses image paths on the installation itself |
-| `ISSUE-025` | Checklists | target | missing |  | `src/core/features/markdown/ui/markdown.tsx` renders plain CommonMark with no GitHub-flavoured Markdown, so `- [ ]` shows as literal text |
-| `ISSUE-026` | Editor formatting and slash commands | target | partial | `src/core/features/markdown/ui/markdown.tsx`, `tests/markdown-rendering.test.tsx` | Safe CommonMark display of headings, emphasis, lists, quotes and fenced code with no raw HTML; tables, strikethrough, highlighting, the slash menu, rich paste and the shortcuts are absent, and the editor is a plain text area at `src/core/features/notifications/ui/mention-textarea.tsx` |
+| `ISSUE-025` | Checklists | target | partial | `tests/worker/description-history.test.ts`, `tests/markdown-rendering.test.tsx`; `work/sd-cp-vector/shots/ISSUE-025/` | Browser description and author-only comment ticks, independent stale description ticks, revision/activity attribution and list/board/API counts implemented; comment ticks use body checks; templates, documents, native mobile, live editing and role/private-team enforcement remain open |
+| `ISSUE-026` | Editor formatting and slash commands | target | partial | `tests/markdown-rendering.test.tsx`, `src/core/features/markdown/editor/`; `work/sd-cp-vector/shots/ISSUE-026/` | Shared browser editor has slash/formatting commands, shortcuts, safe rich paste, tables, collapsible sections, highlighting and copy; inline file/image commands, provider previews, templates/documents and native mobile editing remain open |
 | `ISSUE-027` | Issue references and backlinks | target | missing |  | No implementation yet |
 | `ISSUE-028` | Drafts across devices | target | missing |  | No implementation yet |
 | `FIELD-001` | Custom field definitions | target | partial | `src/core/features/issues/repository.ts`, `src/core/features/issues/input.ts` | Issues store an untyped key/value custom-field map and its changes reach activity through `src/core/features/issue-edit/plan.ts`; typed definitions, scopes, project fields, validation and the role rule are absent |

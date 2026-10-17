@@ -7,7 +7,10 @@ export function anonymizeActivityStatements(
   target: string,
   receipt: string,
 ) {
-  return (
+  return [
+    db.prepare(`UPDATE issue_description_revisions SET actor_operator_id=NULL,actor_name=NULL
+      WHERE actor_operator_id=? AND EXISTS(SELECT 1 FROM operator_removals WHERE id=?)`).bind(target,receipt),
+    ...(
     [
       ["issue_activity", "assigneeOperatorId"],
       ["project_activity", "leadOperatorId"],
@@ -26,5 +29,6 @@ export function anonymizeActivityStatements(
         AND (actor_operator_id=? OR (${matches("previous_value_json")}) OR (${matches("next_value_json")}))`,
       )
       .bind(target, target, target, receipt, target, target, target);
-  });
+  }),
+  ];
 }

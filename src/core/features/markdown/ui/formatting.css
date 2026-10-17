@@ -1,0 +1,19 @@
+.safe-markdown { overflow-wrap: anywhere; min-width: 0; }
+.safe-markdown table { border-collapse: collapse; display: block; max-width: 100%; overflow-x: auto; }
+.safe-markdown th,.safe-markdown td { border: 1px solid var(--line, #d6ddd8); padding: .6rem .8rem; min-width: 80px; }
+.safe-markdown th { background: var(--panel, #f0f4f1); text-align: left; }
+.safe-markdown .contains-task-list { list-style: none; padding-left: .25rem; }
+.safe-markdown .task-list-item input { width: 22px; height: 22px; margin: 0 .5rem 0 0; vertical-align: middle; accent-color: var(--accent, #426e58); }
+.safe-markdown .task-list-item { min-height: 44px; padding: 8px 0; }
+.markdown-code { position: relative; margin: 1rem 0; border: 1px solid var(--line, #d6ddd8); border-radius: 8px; background: #f4f6f4; color: #26372e; }
+.markdown-code pre { overflow: auto; padding: 3rem 1rem 1rem; margin: 0; }
+.markdown-code > button { position: absolute; top: .25rem; right: .4rem; min-height: 44px; font-size: 12px; }
+.safe-markdown .hljs-keyword,.safe-markdown .hljs-selector-tag,.safe-markdown .hljs-literal { color: #8a2a75; }
+.safe-markdown .hljs-string,.safe-markdown .hljs-attr { color: #226344; }
+.safe-markdown .hljs-title,.safe-markdown .hljs-number { color: #315f9a; }
+.safe-markdown .hljs-comment { color: #5a695e; font-style: italic; }
+.safe-markdown details { padding: .7rem; border: 1px solid var(--line, #d6ddd8); border-radius: 6px; }
+.safe-markdown summary { cursor: pointer; min-height: 44px; }
+
+.safe-markdown .markdown-task-toggle { display: inline-flex; vertical-align: middle; align-items: center; justify-content: center; width: 44px; height: 44px; min-width: 44px; margin: 0; padding: 0; }
+.safe-markdown .markdown-task-toggle input { margin: 0; }

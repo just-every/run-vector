@@ -2,7 +2,7 @@ import { drizzle } from "drizzle-orm/d1";
 import { mutationDatabase } from "../auth/mutation-database";
 import { requireIssue } from "../issues/repository";
 import { IssueMutationError } from "../issues/errors";
-import { planIssueUpdate } from "./plan";
+import { planIssueUpdate, type IssueUpdateMetadata } from "./plan";
 import type { UpdateIssueInput } from "./routes";
 
 export async function updateIssueRecord(
@@ -10,9 +10,10 @@ export async function updateIssueRecord(
   identifier: string,
   actor: string,
   input: UpdateIssueInput,
+  metadata?: IssueUpdateMetadata,
 ) {
   const db = mutationDatabase(binding, actor);
-  const plan = await planIssueUpdate(db, identifier, actor, input);
+  const plan = await planIssueUpdate(db, identifier, actor, input, Boolean(metadata && "descriptionRestore" in metadata), metadata);
   if (!plan) return "stale" as const;
   if (!plan.changed) {
     const result = await binding

@@ -1,4 +1,8 @@
 import { useState } from "react";
+import { MarkdownTasks, TaskCheckbox } from "./task-checkbox";
+import remarkGfm from "remark-gfm";
+import { parseTasks } from "../../description-history/tasks";
+import { CodeBlock, HighlightedCode, remarkDetails, rehypeTaskIndices } from "./formatting";
 import { useMentionOperators } from "../../notifications/ui/mention-operators";
 import { remarkMentions } from "../../notifications/mention-markdown";
 import Markdown, { type Components } from "react-markdown";
@@ -128,25 +132,36 @@ const components: Components = {
 export function SafeMarkdown({
   children,
   activeOperatorIds,
+  onTaskChange,
+  taskBusy = false,
 }: {
   children: string;
   activeOperatorIds?: readonly string[];
+  onTaskChange?: (task: { index: number; text: string; checked: boolean }) => void | Promise<void>;
+  taskBusy?: boolean;
 }) {
   const operators = useMentionOperators();
   const operatorIds =
     activeOperatorIds ??
     operators?.data?.operators.map((operator) => operator.id) ??
     [];
+  const tasks = parseTasks(children);
+  const rendered: Components = { ...components,
+    pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
+    code: ({ className, children }) => <HighlightedCode className={className}>{children}</HighlightedCode>,
+    input: TaskCheckbox,
+  };
   return (
-    <div className="safe-markdown">
+    <MarkdownTasks.Provider value={{ tasks, busy: taskBusy, onChange: onTaskChange }}><div className="safe-markdown">
       <Markdown
-        remarkPlugins={[[remarkMentions, { operatorIds }]]}
+        remarkPlugins={[remarkGfm, remarkDetails, [remarkMentions, { operatorIds }]]}
+        rehypePlugins={[rehypeTaskIndices]}
         skipHtml
-        components={components}
+        components={rendered}
         urlTransform={(url, key) => safeUrl(url, key === "src")}
       >
         {children}
       </Markdown>
-    </div>
+    </div></MarkdownTasks.Provider>
   );
 }

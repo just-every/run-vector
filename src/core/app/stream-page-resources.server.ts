@@ -34,7 +34,7 @@ export async function selectedStreamResources(db: D1Database, snapshot: Workspac
   if (!detail) return null
   const [metadata, actors, parents, duplicates, provenance, comments, files, links, subscription, github, admission] = await db.batch([
     ...issueDetailReadStatements(db, issue.id),
-    ...discussionReadStatements(db, issue.id),
+    ...discussionReadStatements(db, issue.id, operator.id),
     subscriptionStatement(db, issue.id, operator.id),
     githubIssueStatement(db, issue.id),
     // Keep admission last in the same transaction as all selected-detail reads.

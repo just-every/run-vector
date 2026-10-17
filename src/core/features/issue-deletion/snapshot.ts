@@ -55,6 +55,7 @@ for (const table of [
   "issue_links",
   "issue_files",
   "issue_activity",
+  "issue_description_revisions",
   "issue_labels",
   "evidence_revisions",
   "intake_decisions",

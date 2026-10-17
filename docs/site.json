@@ -395,6 +395,10 @@
     {
       "source": "visual/jira/README.md",
       "reason": "Instructions for the Jira move-in visual journey, for maintainers"
+    },
+    {
+      "source": "docs/ISSUE-WRITING.md",
+      "reason": "Issue authoring API, revision storage and implementation boundaries for maintainers"
     }
   ]
 }

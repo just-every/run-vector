@@ -1,3 +1,4 @@
+import { IssueDescription } from "../../description-history/ui/description";
 import { useNavigate } from '@tanstack/react-router';
 import { DeleteIssue,type DeletionReceipt } from '../../issue-deletion/ui';
 import { IssueDuplicates } from '../../duplicates/ui';
@@ -13,7 +14,6 @@ import { IssueFieldEditor } from "./issue-field-editor";
 import { TeamMove } from "./team-move";
 import { Dependencies } from "./dependencies";
 import { Discussion } from "./discussion";
-import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { isSafeHttpsUrl } from "../../links/schema";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ApiError, useApiResource } from "../../../app/api-client";
@@ -269,12 +269,7 @@ function IssueInspector({
             />
           )}
         </div>
-        {issue.description ? (
-          <details className="detail-section issue-description" open>
-            <summary>Description</summary>
-            <SafeMarkdown>{issue.description}</SafeMarkdown>
-          </details>
-        ) : null}
+        <IssueDescription issue={issue} onRefresh={onRefresh} />
         {issue.evidence.map((evidence) => (
           <EvidenceInspector
             key={evidence.id}
