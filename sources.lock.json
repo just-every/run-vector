@@ -513,7 +513,7 @@
       "executable": false
     },
     "DEMO.md": {
-      "sha256": "d8c3384dd282e95b3d009eff77a7fdb7d27249852dfdb55e5a28f718b1a8ffc1",
+      "sha256": "588924548082e0139e865b19244137b2da0e39aba7a1bc5e457b58559ec32c9a",
       "executable": false
     },
     "deploy-demo.json": {
@@ -529,7 +529,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "a11f47524ba9e45f840758fe99a9da11873cbb29dbb2f1885f4ddf906fe4c241",
+      "sha256": "debb1fc195c8a5abc8c35c28ab87970a20783c7269dfa4bb9aab5f0bbe0d84f9",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -549,7 +549,7 @@
       "executable": false
     },
     "docs/BASE-ADOPTION.md": {
-      "sha256": "d1a984d337deb8a157629f2ae389597bc1bb2d6883d56cd75ec156d48560d024",
+      "sha256": "e09dd1815717228a5a693b45461410196be0b9ef0627b59ddf400097a6c5bb62",
       "executable": false
     },
     "docs/BRAND.md": {
@@ -585,7 +585,7 @@
       "executable": false
     },
     "docs/guide/install.md": {
-      "sha256": "5eb36201ce9ce7e759b89a88606cf19e43f1daac1331c486237aeb5826e66d77",
+      "sha256": "911e39f42199ae8af9772f677c4671e99955262502d4350cded4c6548c28b7eb",
       "executable": false
     },
     "docs/guide/integrations.md": {
@@ -625,7 +625,7 @@
       "executable": false
     },
     "docs/INSTALLER.md": {
-      "sha256": "d55cd8cfcc7cd27b91572e230748907dbd67a6b1e6400795ccf33d8a1a451283",
+      "sha256": "b1cd9f829891bdfbe72ac80655288c8b91733057f531be605b6385b1c6c2efd5",
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
@@ -969,7 +969,7 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "78e8b3196245beabe91e8be4c8719d1f8c52b31e63d36717b96f0a700f3dfc0c",
+      "sha256": "f70c4930d8a54f0bc85f02fa83cf1a4a91af716732d852748540e9af0f0b38c9",
       "executable": false
     },
     "RELEASE.json": {
