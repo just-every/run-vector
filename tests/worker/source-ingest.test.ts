@@ -109,6 +109,12 @@ it('[INTAKE-006 NOTIFY-001] fresh signed evidence returns deferred intake once a
   expect(await returns()).toEqual([]);
 
   const fresh = { ...input, sourceRevisionId: 'fresh', summary: 'New observation' };
+  await env.DB.prepare("CREATE TRIGGER deferred_receipt_failure BEFORE INSERT ON vector_source_receipts BEGIN SELECT RAISE(ABORT,'receipt failure'); END").run();
+  try {
+    expect((await f.signed(source, fresh)).status).toBe(503);
+    expect(await detail()).toEqual(deferred);
+    expect(await returns()).toEqual([]);
+  } finally { await env.DB.prepare('DROP TRIGGER deferred_receipt_failure').run(); }
   const publication = await read<{ reused: boolean }>(await f.signed(source, fresh));
   expect(publication.reused).toBe(false);
   const returned = await detail();

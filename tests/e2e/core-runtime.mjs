@@ -3,6 +3,7 @@ import { streamControlsJourney } from './core-stream-controls-journey.mjs';
 import { boardJourney } from './core-board-journey.mjs';
 import { expectedBoardConflicts } from './core-board-support.mjs';
 import { expectedUndoConflicts } from './core-undo-properties.mjs';
+import { followerJourney } from './core-follower-journey.mjs';
 import { keyboardJourney } from './core-keyboard-journey.mjs';
 import { draftJourney } from './core-draft-journey.mjs';
 import { currentJourney } from './core-current-journey.mjs';
@@ -684,6 +685,15 @@ try {
   await withInvitedOperator(page, context, base, state, () => streamControlsJourney(page, context, base, record));
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await threadsJourney(page, context, base, state, ids.flow, evidence, record);
+  const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
+  const followerPage = await followerContext.newPage();
+  followerPage.on('pageerror', error => errors.push(error.message));
+  followerPage.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  try {
+    await followerPage.goto(base + '/app');
+    await withInvitedOperator(followerPage, followerContext, base, state,
+      () => followerJourney(followerPage, followerContext, page, context, base, record), 'Payment follow-up teammate');
+  } finally { await followerContext.close(); }
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');

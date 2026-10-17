@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "700c5867806129307cf5d12b4703dcb92442227f7d4ba9d05a0fcb47d6452586",
+      "sha256": "1e85654e5fe9d18f0e30a9261927ed3279897d7fae5193e332dd7472afd90aa5",
       "executable": false
     },
     "DEMO.md": {
@@ -762,6 +762,14 @@
     },
     "evidence/issue-follow-up/NOTIFY-001/follower-events-390.png": {
       "sha256": "213c41f88a87e2f7e80ca4024cc43e777e677719d7223a755bceb45a6dd909f5",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/inbox-events-1440.png": {
+      "sha256": "37cc5947b3fc553178274886000f05774c51f9769fdbf358a8a9ee4153bf6776",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/inbox-events-390.png": {
+      "sha256": "8b674c4386dd26d3a6148e57f18ce480ad494be7da778c7f8ffdae8256e792c9",
       "executable": false
     },
     "evidence/issue-follow-up/NOTIFY-001/preferences-1440.png": {
@@ -4708,6 +4716,10 @@
       "sha256": "d94cde4b2ccb8711f787361d95c356271ac78cc4d00606063cd4ab123aa6cc31",
       "executable": false
     },
+    "tests/e2e/core-follower-journey.mjs": {
+      "sha256": "d9b0dc9528cbec1114db62b71c9b5d60a02cb3660ef63f5c0a244511bccbfc3f",
+      "executable": false
+    },
     "tests/e2e/core-keyboard-journey.mjs": {
       "sha256": "0bf7eb5eecf5755c8c8817c9454718af1ae1b65fc89a033680ea3d4cf59cf944",
       "executable": false
@@ -4729,7 +4741,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "8d850204ead3a8a3ae2a3c5847c6b1cc886b31b848bb99063d8d53009a4720e4",
+      "sha256": "916706b13974dd5b983815ed569fa1680cfe8382b8ee61bb8939c02c873208b9",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -5236,6 +5248,10 @@
       "sha256": "77a2d9de8f59a9d3ba13e14dd1f7f1c39b17a859ca04ef7a1a90167257c13fe0",
       "executable": false
     },
+    "tests/worker/follower-last-blocker.test.ts": {
+      "sha256": "dd4bf272cdd19c033719ccdf01bff372db2b53915edda8ce915ff220e05335f5",
+      "executable": false
+    },
     "tests/worker/foundation-rollback.test.ts": {
       "sha256": "f65904d813e3ed24320b93c56e69d38067e8ab388eed49dbb653176f91570226",
       "executable": false
@@ -5481,7 +5497,7 @@
       "executable": false
     },
     "tests/worker/source-ingest.test.ts": {
-      "sha256": "b6acae969a90c5addf40e726804c10a2ebc1dbbbc8f3b0d52e1ab1870f23629c",
+      "sha256": "fca2231002de2d0284d57ddb6e165a334a9e9c30a91aa7be1c4a71378ade4288",
       "executable": false
     },
     "tests/worker/views-removal.test.ts": {
