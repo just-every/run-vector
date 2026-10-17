@@ -6,6 +6,14 @@ export const notificationKinds = [
   "intake_return",
   "unblocked",
   "due_reminder",
+  "status",
+  "completed",
+  "canceled",
+  "duplicate",
+  "urgent",
+  "blocking",
+  "due_changed",
+  "reminder",
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 export type InboxItem = {
@@ -17,6 +25,9 @@ export type InboxItem = {
   causes: NotificationKind[];
   createdAt: string;
   readAt: string | null;
+  snoozedUntil?: string | null;
+  snoozeOnChange?: boolean;
+  visibleAt?: string;
 };
 export type InboxPage = {
   items: InboxItem[];

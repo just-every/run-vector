@@ -124,7 +124,8 @@
 }
 .notification-mutes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  column-gap: 1rem;
 }
 .notifications-panel h3 {
   margin-top: 1.5rem;

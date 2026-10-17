@@ -64,6 +64,8 @@ for (const table of [
   "issue_notification_mutes",
   "issue_mentions",
   "notifications",
+  "notification_snoozes",
+  "issue_reminders",
   "notification_candidates",
   "vector_github_issue_links",
   "vector_import_revisions",

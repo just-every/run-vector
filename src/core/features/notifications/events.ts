@@ -123,6 +123,75 @@ export function mentionStatements(
       .bind(key, commentId, event.issueId, encoded, event.id),
   ];
 }
+const following = `EXISTS(SELECT 1 FROM issue_followers f WHERE f.issue_id=i.id AND f.operator_id=o.id)`;
+/** Read the immutable before/after receipt inside the mutation's transaction.
+ * Bulk plans may record unchanged fields; those must not produce an event. */
+export function followerChangeStatements(
+  db: D1Database,
+  event: CollaborationEvent,
+) {
+  const changedStatus = `json_type(a.next_value_json,'$.statusId')='text'
+    AND json_extract(a.previous_value_json,'$.statusId') IS NOT json_extract(a.next_value_json,'$.statusId')`;
+  const rules: [NotificationKind, string][] = [
+    [
+      "status",
+      `${changedStatus} AND EXISTS(SELECT 1 FROM workflow_statuses s WHERE s.id=json_extract(a.next_value_json,'$.statusId') AND (s.category NOT IN ('completed','canceled','duplicate') OR s.category=(SELECT p.category FROM workflow_statuses p WHERE p.id=json_extract(a.previous_value_json,'$.statusId'))))`,
+    ],
+    ...(["completed", "canceled", "duplicate"] as const).map(
+      (kind): [NotificationKind, string] => [
+        kind,
+        `(${changedStatus} AND EXISTS(SELECT 1 FROM workflow_statuses s WHERE s.id=json_extract(a.next_value_json,'$.statusId') AND s.category='${kind}' AND s.category IS NOT (SELECT p.category FROM workflow_statuses p WHERE p.id=json_extract(a.previous_value_json,'$.statusId'))))${kind === "duplicate" ? " OR (json_type(a.next_value_json,'$.canonicalIdentifier')='text' AND json_extract(a.previous_value_json,'$.canonicalIdentifier') IS NOT json_extract(a.next_value_json,'$.canonicalIdentifier'))" : ""}`,
+      ],
+    ),
+    [
+      "urgent",
+      `json_extract(a.next_value_json,'$.priority')='urgent' AND json_extract(a.previous_value_json,'$.priority') IS NOT 'urgent'`,
+    ],
+    [
+      "due_changed",
+      `json_type(a.next_value_json,'$.dueDate') IS NOT NULL AND json_extract(a.previous_value_json,'$.dueDate') IS NOT json_extract(a.next_value_json,'$.dueDate')`,
+    ],
+  ];
+  return rules.map(([kind, condition]) =>
+    candidate(
+      db,
+      event,
+      kind,
+      `i.id=? AND ${following} AND EXISTS(SELECT 1 FROM issue_activity a WHERE a.id=? AND a.issue_id=i.id AND (${condition}))`,
+      [event.issueId, event.id],
+    ),
+  );
+}
+/** Both endpoint histories describe one directed relation mutation. Its source
+ * receipt groups blocking and last-blocker resolution for each recipient. */
+export function followerBlockingStatements(
+  db: D1Database,
+  event: CollaborationEvent,
+  relatedIssueId: string,
+) {
+  return [
+    candidate(db, event, "blocking", `i.id IN (?,?) AND ${following}`, [
+      event.issueId,
+      relatedIssueId,
+    ]),
+  ];
+}
+/** Retargeting a canonical issue also changes its existing duplicates. Capture
+ * their followers before moving the relations, under the same source receipt. */
+export function duplicateFollowerStatements(
+  db: D1Database,
+  event: CollaborationEvent,
+) {
+  return [
+    candidate(
+      db,
+      event,
+      "duplicate",
+      `${following} AND EXISTS(SELECT 1 FROM issue_duplicates d WHERE d.issue_id=i.id AND d.canonical_issue_id=?)`,
+      [event.issueId],
+    ),
+  ];
+}
 /** Capture before the status/edge write; finalization checks after the write. */
 export function blockerStatements(
   db: D1Database,

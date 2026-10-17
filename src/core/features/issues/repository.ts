@@ -1,5 +1,5 @@
 import { requireIssueAccess } from './access'
-import { followStatements, assignmentStatements, mentionStatements, blockerStatements, finalizeEvent } from '../notifications/events'
+import { followStatements, assignmentStatements, mentionStatements, blockerStatements, followerChangeStatements, finalizeEvent } from '../notifications/events'
 import seed from '../../../../seed.json'
 import { creationGuard, creationError, allocateIssueSequence } from './create-guard'
 import { commitWithAssignee } from "./assignment-commit";
@@ -159,6 +159,7 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
       return binding.prepare(sql).bind(...params)
     })].concat([
       ...blockerStatements(binding,event),
+      ...followerChangeStatements(binding,event),
       ...(request.kind === 'accepted' && (request.input as AcceptIssueInput).assigneeOperatorId !== issue.assigneeOperatorId ? assignmentStatements(binding,event,(request.input as AcceptIssueInput).assigneeOperatorId) : []),
       binding.prepare(`DELETE FROM issue_deferral_origins WHERE issue_id=? AND EXISTS(SELECT 1 FROM intake_decisions WHERE id=?)`).bind(issue.id,decisionId),
       ...(request.kind === 'deferred' ? [binding.prepare(`INSERT INTO issue_deferral_origins(issue_id,decision_id) SELECT issue_id,id FROM intake_decisions WHERE id=?`).bind(decisionId)] : []),

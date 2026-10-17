@@ -5,6 +5,7 @@ import { IssueDuplicates } from '../../duplicates/ui';
 import { GithubLinks } from '../../integrations/ui/github-links';
 import { isEditableTarget } from "../../search/ui/command-helpers";
 import { IssueSubscriptionControls } from "../../notifications/ui/issue-subscription";
+import { PersonalReminderControls } from "../../notifications/ui/personal-reminders";
 import { IssueLabels } from "./issue-labels";
 import { IssueProperties } from "./issue-properties";
 import { IssueParent, hierarchyIsEmpty, type HierarchyState } from "./issue-parent";
@@ -224,6 +225,7 @@ function IssueInspector({
           </div>
         </div>
       </header>
+      <PersonalReminderControls key={`personal-reminders:${issue.identifier}`} identifier={issue.identifier} />
       <DecisionConfirmation
         key={issue.identifier + ":confirmation"}
         issue={issue}

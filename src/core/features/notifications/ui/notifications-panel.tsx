@@ -14,6 +14,14 @@ const labels: Record<NotificationKind, string> = {
   intake_return: "Deferred intake returns",
   unblocked: "Last blocker resolved",
   due_reminder: "Due reminders (Inbox only)",
+  status: "Followed status changes",
+  completed: "Followed issues completed",
+  canceled: "Followed issues canceled",
+  duplicate: "Followed issues marked duplicate",
+  urgent: "Followed issues raised to Urgent",
+  blocking: "Followed blocking changes",
+  due_changed: "Followed due date changes",
+  reminder: "Personal reminders (Inbox only)",
 };
 
 export function EmailUnavailableNotice() {

@@ -1,3 +1,4 @@
+import { deliverFollowups } from '../features/notification-followups/service';
 import { sendDueReminders } from "../features/due-reminders/service";
 import { closeEndedCycles } from "../features/cycle-closure/service";
 import { drainNotificationMail } from "../features/notifications/mail";
@@ -14,6 +15,7 @@ export async function scheduled(
   await Promise.all([
     closeEndedCycles(env, now),
     sendDueReminders(env, now),
+    deliverFollowups(env, now),
     processFileRemovals(env),
     returnDueIntake(env, now),
     drainNotificationMail(env, { scheduled: true }),

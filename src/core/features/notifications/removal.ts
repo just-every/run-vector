@@ -7,6 +7,7 @@ export function notificationRemovalStatements(
   const guard = "EXISTS(SELECT 1 FROM operator_removals WHERE id=?)";
   return [
     ...[
+      "issue_reminders",
       "notifications",
       "notification_candidates",
       "notification_deliveries",

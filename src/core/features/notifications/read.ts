@@ -11,7 +11,7 @@ export async function unreadCount(db: D1Database, actor: string) {
   await settingsActor(db, actor);
   return (await db
     .prepare(
-      "SELECT count(*) n FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=n.recipient_id AND o.workspace_id=t.workspace_id WHERE n.recipient_id=? AND n.read_at IS NULL",
+      "SELECT count(*) n FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=n.recipient_id AND o.workspace_id=t.workspace_id WHERE n.recipient_id=? AND n.read_at IS NULL AND NOT EXISTS(SELECT 1 FROM notification_snoozes s WHERE s.notification_id=n.id AND s.returned_at IS NULL)",
     )
     .bind(actor)
     .first<number>("n"))!;
@@ -21,15 +21,17 @@ export async function inbox(
   actor: string,
   limit: number,
   cursor?: { at: string; id: string },
+  snoozed = false,
 ): Promise<InboxPage> {
   await settingsActor(db, actor);
   const rows = (
     await db
       .prepare(
-        `SELECT n.id,n.event_id eventId,i.identifier,i.title,n.actor_name actor,n.causes_json causesJson,n.created_at createdAt,n.read_at readAt
+        `SELECT n.id,n.event_id eventId,i.identifier,i.title,n.actor_name actor,n.causes_json causesJson,n.created_at createdAt,n.read_at readAt,s.until_at snoozedUntil,s.until_change snoozeOnChange,COALESCE(s.returned_at,n.created_at) visibleAt
     FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=n.recipient_id AND o.workspace_id=t.workspace_id
-    WHERE n.recipient_id=? ${cursor ? "AND (n.created_at<? OR (n.created_at=? AND n.id<?))" : ""}
-    ORDER BY n.created_at DESC,n.id DESC LIMIT ?`,
+    LEFT JOIN notification_snoozes s ON s.notification_id=n.id
+    WHERE n.recipient_id=? AND ${snoozed ? 's.notification_id IS NOT NULL AND s.returned_at IS NULL' : '(s.notification_id IS NULL OR s.returned_at IS NOT NULL)'} ${cursor ? "AND (COALESCE(s.returned_at,n.created_at)<? OR (COALESCE(s.returned_at,n.created_at)=? AND n.id<?))" : ""}
+    ORDER BY COALESCE(s.returned_at,n.created_at) DESC,n.id DESC LIMIT ?`,
       )
       .bind(
         actor,
@@ -44,12 +46,13 @@ export async function inbox(
   const result = {
     items: page.map(({ causesJson, ...row }) => ({
       ...row,
+      snoozeOnChange: !!row.snoozeOnChange,
       causes: JSON.parse(causesJson) as NotificationKind[],
     })),
     unreadCount: await unreadCount(db, actor),
     nextCursor:
       more && last
-        ? btoa(JSON.stringify({ at: last.createdAt, id: last.id }))
+        ? btoa(JSON.stringify({ at: last.visibleAt, id: last.id }))
         : null,
   };
   await settingsActor(db, actor);

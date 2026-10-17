@@ -11,12 +11,16 @@ import { notificationKinds } from "./schema";
 import { notificationEmailAvailable } from "./context";
 import { inbox, unreadCount, subscription, preferences } from "./read";
 import { markRead, changeSubscription, changePreferences } from "./mutations";
+import { snooze, unsnooze, reminders, createReminder, cancelReminder } from '../notification-followups/repository';
+const snoozeSchema = z.union([z.object({ until: z.iso.datetime() }).strict(), z.object({ untilChange: z.literal(true) }).strict()]);
+const reminderSchema = z.object({ remindAt: z.iso.datetime() }).strict();
 const id = z.string().regex(/^[a-f0-9]{32}$/);
 const identifier = z.string().regex(/^[A-Z]{2,10}-[1-9][0-9]*$/);
 const cursorSchema = z.object({ at: z.iso.datetime(), id }).strict();
 const pageSchema = z
   .object({
     cursor: z.string().max(512).optional(),
+    snoozed: z.literal("true").optional(),
     limit: z.coerce.number().int().min(1).max(50).default(30),
   })
   .strict();
@@ -98,7 +102,7 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
       const cursor = query.cursor
         ? cursorSchema.parse(JSON.parse(atob(query.cursor)))
         : undefined;
-      return inbox(c.env.DB, c.get("operatorId"), query.limit, cursor);
+      return inbox(c.env.DB, c.get("operatorId"), query.limit, cursor, query.snoozed === "true");
     }),
   );
   app.post(
@@ -121,6 +125,24 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
       return { unreadCount: await unreadCount(c.env.DB, c.get("operatorId")) };
     }),
   );
+  app.post('/notifications/:id/snooze', protect(async (c) => {
+    await snooze(c.env.DB, c.get('operatorId'), id.parse(c.req.param('id')), snoozeSchema.parse(await readRequestJson(c.req.raw)));
+    return { unreadCount: await unreadCount(c.env.DB, c.get('operatorId')) };
+  }));
+  app.post('/notifications/:id/unsnooze', protect(async (c) => {
+    await readEmptyBody(c.req.raw);
+    await unsnooze(c.env.DB, c.get('operatorId'), id.parse(c.req.param('id')));
+    return { unreadCount: await unreadCount(c.env.DB, c.get('operatorId')) };
+  }));
+  app.get('/issues/:identifier/reminders', protect((c) => reminders(c.env.DB, c.get('operatorId'), identifier.parse(c.req.param('identifier')))));
+  app.post('/issues/:identifier/reminders', protect(async (c) => {
+    const body = reminderSchema.parse(await readRequestJson(c.req.raw));
+    return createReminder(c.env.DB, c.get('operatorId'), identifier.parse(c.req.param('identifier')), body.remindAt);
+  }));
+  app.delete('/issues/:identifier/reminders/:id', protect(async (c) => {
+    await readEmptyBody(c.req.raw);
+    return cancelReminder(c.env.DB, c.get('operatorId'), identifier.parse(c.req.param('identifier')), id.parse(c.req.param('id')));
+  }));
   app.get(
     "/issues/:identifier/subscription",
     protect((c) =>

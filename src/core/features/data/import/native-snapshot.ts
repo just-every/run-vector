@@ -22,6 +22,8 @@ export const nativeRelations = {
   mutes:['issue_notification_mutes','issue_id','operator_id'],
   deferralOrigins:['issue_deferral_origins','issue_id','issue_id'],
   notifications:['notifications','issue_id','id'],
+  notificationSnoozes:['notification_snoozes','issue_id','notification_id'],
+  personalReminders:['issue_reminders','issue_id','id'],
   notificationCandidates:['notification_candidates','issue_id','event_id'],
 } as const;
 export type NativeIssueValue = { issue: Record<string,Json> } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
@@ -36,7 +38,7 @@ const relation = (table: string,key: string,order: string) => `(SELECT json_grou
 export const snapshotExpression = 'json_object('+[
   ['issue',object('issues','i')],
   ...Object.entries(nativeRelations).map(([name,[table,key,order]])=>[name,relation(table,key,order)]),
-].sort(([a],[b])=>a.localeCompare(b)).flatMap(([name,expression])=>["'"+name+"'",'json('+expression+')']).join(',')+')';
+].sort(([a],[b])=>a<b?-1:a>b?1:0).flatMap(([name,expression])=>["'"+name+"'",'json('+expression+')']).join(',')+')';
 
 export function emptyIssueValue(issue: Record<string,Json>): NativeIssueValue {
   return { issue,...Object.fromEntries(Object.keys(nativeRelations).map(name=>[name,[]])) } as NativeIssueValue;

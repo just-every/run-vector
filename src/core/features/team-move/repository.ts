@@ -1,3 +1,4 @@
+import { followerChangeStatements, finalizeEvent } from '../notifications/events';
 import { mutationDatabase } from '../auth/mutation-database';
 import { activityRow } from "../issues/repository";
 import { TeamMoveError } from "./errors";
@@ -132,7 +133,9 @@ export async function moveIssueTeamRecord(
       },
       now: timestamp,
     });
-    // Eligibility and the original version guard both writes in one transaction;
+    const event = { id: activity.id, issueId: issue.id, actor, at: timestamp };
+    const followerWrites = followerChangeStatements(binding, event);
+    // Eligibility and the original version guard all writes in one transaction;
     // identifiers, terminal/deferral timestamps and all graph rows are untouched.
     const receipts = await binding.batch<{ id: string }>([
       binding
@@ -149,13 +152,15 @@ export async function moveIssueTeamRecord(
           timestamp,
           ...params,
         ),
+      ...followerWrites,
       binding
         .prepare(
           `UPDATE issues SET team_id=?,status_id=?,cycle_id=NULL,version=version+1,updated_at=? WHERE ${where} RETURNING id`,
         )
         .bind(input.teamId, input.statusId, timestamp, ...params),
+      ...finalizeEvent(binding, event),
     ]);
-    rows = receipts[1].results;
+    rows = receipts[1 + followerWrites.length].results;
   }
   // Search/history triggers contribute to total changes, not direct rows.
   if (rows.length === 1 && rows[0].id === issue.id) return "written";

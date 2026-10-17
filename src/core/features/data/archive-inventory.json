@@ -1393,5 +1393,23 @@
     "records_erased",
     "field_matches_json",
     "created_at"
+  ],
+  "notification_snoozes": [
+    "notification_id",
+    "issue_id",
+    "recipient_id",
+    "until_at",
+    "until_change",
+    "snoozed_at",
+    "returned_at"
+  ],
+  "issue_reminders": [
+    "id",
+    "issue_id",
+    "recipient_id",
+    "remind_at",
+    "created_at",
+    "delivered_at",
+    "delivery_id"
   ]
 }

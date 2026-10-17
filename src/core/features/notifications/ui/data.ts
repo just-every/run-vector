@@ -26,28 +26,52 @@ export const inboxSchema = z.object({
       causes: z.array(kind),
       createdAt: z.string(),
       readAt: z.string().nullable(),
+      snoozedUntil: z.string().nullable().optional(),
+      snoozeOnChange: z.boolean().optional(),
+      visibleAt: z.string().optional(),
     }),
   ),
   unreadCount: z.number().int().nonnegative(),
   nextCursor: z.string().nullable(),
 });
-export function fetchNotificationInbox(cursor?: string): Promise<InboxPage> {
+export function inboxUrl(cursor?: string, snoozed = false) {
+  const query = new URLSearchParams();
+  if (cursor !== undefined) query.set("cursor", cursor);
+  if (snoozed) query.set("snoozed", "true");
+  return `/api/notifications${query.size ? `?${query}` : ""}`;
+}
+export function fetchNotificationInbox(
+  cursor?: string,
+  snoozed = false,
+): Promise<InboxPage> {
   // Retiring an Inbox generation suppresses publication while its read-only
   // HTTP request finishes, including ordinary navigation away from Inbox.
-  return fetchJson(
-    cursor === undefined
-      ? "/api/notifications"
-      : `/api/notifications?cursor=${encodeURIComponent(cursor)}`,
-    inboxSchema,
-  );
+  return fetchJson(inboxUrl(cursor, snoozed), inboxSchema);
+}
+export async function fetchInboxPages(
+  pageCount: number,
+  snoozed: boolean,
+  signal: AbortSignal,
+): Promise<InboxPage> {
+  signal.throwIfAborted();
+  let page = await fetchNotificationInbox(undefined, snoozed);
+  let items = page.items;
+  for (let index = 1; index < pageCount && page.nextCursor; index++) {
+    signal.throwIfAborted();
+    page = await fetchNotificationInbox(page.nextCursor, snoozed);
+    items = [...items, ...page.items];
+  }
+  signal.throwIfAborted();
+  return { ...page, items };
 }
 export async function fetchCurrentInboxPage(
   cursor: string,
   signal: AbortSignal,
+  snoozed = false,
 ): Promise<InboxPage | null> {
   if (signal.aborted) return null;
   try {
-    const page = await fetchNotificationInbox(cursor);
+    const page = await fetchNotificationInbox(cursor, snoozed);
     return signal.aborted ? null : page;
   } catch (error) {
     if (signal.aborted) return null;

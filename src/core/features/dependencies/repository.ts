@@ -1,4 +1,8 @@
-import { blockerStatements, finalizeEvent } from '../notifications/events';
+import {
+  blockerStatements,
+  followerBlockingStatements,
+  finalizeEvent,
+} from "../notifications/events";
 import { activityRow } from "../issues/repository";
 import { DependencyError } from "./errors";
 import type { DependencyInput } from "./input";
@@ -199,6 +203,7 @@ export async function mutateDependencyRecord(
         ...guardParams,
       ),
     ...(operation === "remove" ? blockerStatements(binding,event,blocked) : []),
+    ...followerBlockingStatements(binding,event,relatedIssue.id),
     operation === "add"
       ? binding
           .prepare(

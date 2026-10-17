@@ -5,7 +5,12 @@ import {
 import { requireIssueAccess } from "../issues/access";
 import { IssueMutationError } from "../issues/errors";
 import { createUlid } from "../../shared/ids";
-import { blockerStatements, finalizeEvent } from "../notifications/events";
+import {
+  blockerStatements,
+  followerChangeStatements,
+  duplicateFollowerStatements,
+  finalizeEvent,
+} from "../notifications/events";
 
 export type DuplicateRelationRow = { identifier: string; title: string; relation: string };
 
@@ -97,7 +102,9 @@ export async function decideDuplicate(
   );
   const event = { id, issueId: issue.id, actor, at };
   writes.push(...blockerStatements(db, event));
+  writes.push(...followerChangeStatements(db, event));
   if (target) {
+    writes.push(...duplicateFollowerStatements(db, event));
     writes.push(
       db
         .prepare(

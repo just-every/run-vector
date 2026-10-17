@@ -2,6 +2,7 @@ import {
   assignmentStatements,
   mentionStatements,
   blockerStatements,
+  followerChangeStatements,
   finalizeEvent,
 } from "../notifications/events";
 import { requireIssueAccess } from "../issues/access";
@@ -300,6 +301,7 @@ export async function planIssueUpdate(
       ),
   ];
   writes.push(...blockerStatements(binding, event));
+  writes.push(...followerChangeStatements(binding, event));
   if ("assigneeOperatorId" in values)
     writes.push(
       ...assignmentStatements(
