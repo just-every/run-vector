@@ -3593,7 +3593,7 @@
       "executable": false
     },
     "tests/e2e/dev-runtime.mjs": {
-      "sha256": "e8855f1eae156834ebbad4e24f4e826faab4fb331cd5b4f6acf104c006b3c159",
+      "sha256": "64f4d4d979d165a55ed3192e891ded8b260aba7692988b8ea9421010ea978ad1",
       "executable": false
     },
     "tests/e2e/dev-setup.mjs": {

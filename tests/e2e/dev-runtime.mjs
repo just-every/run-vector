@@ -307,8 +307,9 @@ try {
   // this journey previously exercised an ordinary email confirmation session.
   await openGate(page.context(), base, await readCheckoutKey(process.cwd()));
   await navigate(page, base + "/signin");
-  await page.getByRole("heading", { name: "Open your local app", exact: true }).waitFor();
-  await page.getByRole("link", { name: "Continue as owner", exact: true }).click();
+  // Base's one-click page lists the owner first, then other local people.
+  await page.getByRole("heading", { name: /^Sign in to / }).waitFor();
+  await page.getByRole("link", { name: /^Sign in as / }).first().click();
   await page.waitForURL(base + "/app");
   await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
   const localSession = await page.request.get(base + "/auth/session");
