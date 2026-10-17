@@ -1949,7 +1949,7 @@
       "executable": false
     },
     "scripts/deployment/tests/migration-head.test.mjs": {
-      "sha256": "258dd79996721632099f1d34fbcb06c34c4c40912a56f2490f4b4eb7a077dbba",
+      "sha256": "3a2d27b377f2bd5a9699470c840d66bbdd4f0b5fbc7167b9b2390fd323be0f1e",
       "executable": false
     },
     "scripts/deployment/tests/owner-account.test.mjs": {
@@ -4557,7 +4557,7 @@
       "executable": false
     },
     "tests/e2e/core-board-support.mjs": {
-      "sha256": "fe2e0ba900c8bedb6302d2bd5fddf1990c3d3db87d223ba9d81348da80e4c8f2",
+      "sha256": "634de6ca2f94cb3326f063b471f38113158741a6b8a54209ade2119c4315c8ec",
       "executable": false
     },
     "tests/e2e/core-current-journey.mjs": {
@@ -4593,7 +4593,7 @@
       "executable": false
     },
     "tests/e2e/core-stream-controls-fixture.mjs": {
-      "sha256": "ceb7156c0ea3af1836a9f9d6423c817a19806069e28016164a4c65bd94ee003f",
+      "sha256": "cb57b6e38584c7d3ef0e9b45f2164b4b8adcd56d1186c43c39d26780e7786c9f",
       "executable": false
     },
     "tests/e2e/core-stream-controls-journey.mjs": {
