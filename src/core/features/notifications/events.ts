@@ -181,14 +181,16 @@ export function followerBlockingStatements(
 export function duplicateFollowerStatements(
   db: D1Database,
   event: CollaborationEvent,
+  excludedIssueIds: string[] = [],
 ) {
   return [
     candidate(
       db,
       event,
       "duplicate",
-      `${following} AND EXISTS(SELECT 1 FROM issue_duplicates d WHERE d.issue_id=i.id AND d.canonical_issue_id=?)`,
-      [event.issueId],
+      `${following} AND EXISTS(SELECT 1 FROM issue_duplicates d WHERE d.issue_id=i.id AND d.canonical_issue_id=?)
+        AND i.id NOT IN(SELECT value FROM json_each(?))`,
+      [event.issueId, JSON.stringify(excludedIssueIds)],
     ),
   ];
 }

@@ -31,6 +31,10 @@ export type StreamItem = {
   id: string;
   identifier: string;
   title: string;
+  version: number;
+  estimate: number | null;
+  cycle: { id: string; name: string } | null;
+  labels: Array<{ id: string; name: string; color: string }>;
   status: { id: string; name: string; category: string };
   priority: string;
   dueDate: string | null;
@@ -272,6 +276,18 @@ function toStreamItem(
     id: issue.id,
     identifier: issue.identifier,
     title: issue.title,
+    version: issue.version,
+    estimate: issue.estimate,
+    cycle: issue.cycleId === null ? null : (() => {
+      const cycle = snapshot.cycles.find(row => row.id === issue.cycleId);
+      if (!cycle) throw new Error(`Issue ${issue.identifier} references a missing cycle`);
+      return { id: cycle.id, name: cycle.name };
+    })(),
+    labels: snapshot.issueLabels.filter(row => row.issueId === issue.id).map(row => {
+      const label = snapshot.labels.find(label => label.id === row.labelId);
+      if (!label) throw new Error(`Issue ${issue.identifier} references a missing label`);
+      return { id: label.id, name: label.name, color: label.color };
+    }),
     status: { id: status.id, name: status.name, category: status.category },
     priority: issue.priority,
     dueDate: issue.dueDate,

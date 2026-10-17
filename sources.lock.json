@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "cd9c3a779cd0c0765853cab79029d6860e0d32b374c7c76aa8483515a966a390",
+      "sha256": "e6a02511d041d2d8882ac3cc0d8b82abc801cbd036df4733b8c66824af5023aa",
       "executable": false
     },
     "DEMO.md": {
@@ -640,6 +640,10 @@
       "sha256": "58e75a17ef6e0f458b5cb2752028ca0a153657f1cd979003b97a2329cd7ddb74",
       "executable": false
     },
+    "docs/KEYBOARD-PLANNING.md": {
+      "sha256": "4d7e59ab64f1dce8d183e6f8f0b14466d282281113ca821895163ab7168b17fc",
+      "executable": false
+    },
     "docs/LINEAR-API-FILE.md": {
       "sha256": "d3ddf7de66a580632ccc266ed15907d62a0085b62b996fe6fb6c50668f332dec",
       "executable": false
@@ -669,7 +673,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "d9adc603970e1474fa91ba6b007a51b9fa7fe042f246c2fbded25e30ccd1e961",
+      "sha256": "3199568dc5a5293399eec2e31d418d24243cbe51a46eb5cb60de6035a371f3bb",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -942,6 +946,158 @@
     },
     "evidence/keyboard-issues/VIEW-004/selected-bulk-390.png": {
       "sha256": "8dea3846c12f1b55db19e2025052bef2c5c7429e43fb8477cd1342cc845361e2",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-detail-1440.png": {
+      "sha256": "f55cc57d1ebd5a5b4689033afa4e6e0fb2322e811edc9c795748cb17ce690674",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-detail-390.png": {
+      "sha256": "7c05d161d17fea293283a3dbd66753151f9caacdbafb4ac7d25a5f2abeb6c5df",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-filtered-1440.png": {
+      "sha256": "7cbc102b12b48da80d0f1c644c99c02b25fbd4d6a509de896892a6b8b4973dd2",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-filtered-390.png": {
+      "sha256": "1451ace704179844855a196b876d2aebb8bdf7981ef48b5f0e68198623097bee",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-return-1440.png": {
+      "sha256": "3d6b83ae8870af55e4c2a843a6fdd9b7b9a15aa4bf408a58446bebab64201ada",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-return-390.png": {
+      "sha256": "aea18aedb01c529edb4ea5ade8e913993b4256166042d4c6b990d7aee56028fe",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-selection-1440.png": {
+      "sha256": "236e8e4b250cb9f8d64f7ee97c1913ac70c0f932034a1fe8fc03c20bce42153a",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/current-selection-390.png": {
+      "sha256": "aea18aedb01c529edb4ea5ade8e913993b4256166042d4c6b990d7aee56028fe",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/my-work-detail-1440.png": {
+      "sha256": "352972c28481fe007b4439051af4f6ca0aa874702bd7fe98a5e8a62c1b87b661",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/my-work-detail-390.png": {
+      "sha256": "ca3b6893a237d34ad183bc7d00b2260bf28dcb456c3ed6dbafeb315a4b343ab7",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/my-work-return-1440.png": {
+      "sha256": "457628662c6cfc49db2a9fc71137a42ef1f1e7dc5df59e084675ae741a171118",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/my-work-return-390.png": {
+      "sha256": "aa6cae197f59a925fb70e66370fe7c38d7a2a7a7fcf8d334ad740486bee56eb5",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/my-work-selection-1440.png": {
+      "sha256": "c945645e46fd949178340173cc225e6a304cb2d8b605e82cf5cf2a9a6785be53",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-003/my-work-selection-390.png": {
+      "sha256": "aa6cae197f59a925fb70e66370fe7c38d7a2a7a7fcf8d334ad740486bee56eb5",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/duplicate-decision-1440.png": {
+      "sha256": "53c9bb5621cb91dee58fb48d05ae970f30885826e1edf4c81aefd73ec46cf9bb",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/duplicate-decision-390.png": {
+      "sha256": "378f2abaa4022d40db764f374047583898918794c43e3a360631abf73311da19",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/duplicate-removal-1440.png": {
+      "sha256": "d9d9b17bb8bddb2b1f93fc829ded85dc0ba6a5fc703e32e8cde7633e2440aab2",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/duplicate-removal-390.png": {
+      "sha256": "c0bba314dc896f7f945738b2958b3f4da9371f20189c59246e8936fe1b71e271",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/multi-team-1440.png": {
+      "sha256": "56b8765ce6c6038f3724797a2ec67d828149bcf7b124a7cb93636143ce9e86b8",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/multi-team-390.png": {
+      "sha256": "9f010ea604560d5ac1a4e1479581faaafba5aa04e4846bfb56ade6d321a68049",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/planning-help-1440.png": {
+      "sha256": "931026a28eb46c6cab44702937fb7eb2e65ff2ce4536e5b1409a65d54624c849",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/planning-help-390.png": {
+      "sha256": "2a1e6859232e2a2298b900e5b42ed43d7e734845f00f154a6b8b2e6f1682ee45",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/planning-help-end-390.png": {
+      "sha256": "ebe303cf311f1163bea939c94cd5b3a72fcf34f5d895cc5117d6d42de0af747c",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/stream-estimate-1440.png": {
+      "sha256": "caedd887de1051b769ed91f22dc06e1e7a2189e4516209eb81729631ea180ca4",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/stream-estimate-390.png": {
+      "sha256": "d3c80448dfa93a4279c6e2605f3db7e51ec10f4106479173f2c7bc38e00ad3e2",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/stream-priority-1440.png": {
+      "sha256": "e7e02f14287f4f6e6c54af0e341ed1dd6784bc63cded9c3dbb5b520eadbf2d16",
+      "executable": false
+    },
+    "evidence/keyboard-planning/CMD-004/stream-priority-390.png": {
+      "sha256": "72024a9ed8be2cf52d1321a5a711b3455d550ec31d42f1c748218e3d58651960",
+      "executable": false
+    },
+    "evidence/keyboard-planning/ISSUE-012/moved-issues-1440.png": {
+      "sha256": "02092a6b1386df29c417d3ac4c756c7a13f837d87785e6b41dcaab7b2773beb4",
+      "executable": false
+    },
+    "evidence/keyboard-planning/ISSUE-012/moved-issues-390.png": {
+      "sha256": "2b4cfd519f05114a9fc3e89d3f07273ce098a0eb56c1663af15a6532f29e11b0",
+      "executable": false
+    },
+    "evidence/keyboard-planning/ISSUE-012/moved-issues-end-1440.png": {
+      "sha256": "61ff04ed53a3c1819ddf077f87e8f3ac4d89604af2fd65fb5c1b8add75feb9e1",
+      "executable": false
+    },
+    "evidence/keyboard-planning/ISSUE-012/moved-issues-end-390.png": {
+      "sha256": "ca54d296ce0ff254469328fa2580fe1209427db983c3e89ed07e042cb1178abf",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-1440.png": {
+      "sha256": "103471ab9a8abb1dbbdfb43328c88b84bbed464cb8e38bb1a08fa086e7ba7b53",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-390.png": {
+      "sha256": "cc4d2e9d9b88bfd17b33b622525b3468c341e02b5bbf32ab9b70896fbd3d9352",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-end-390.png": {
+      "sha256": "160ae610fa0e06bd37c81a7029dc3e84fa2d9b1bfbcaee9b3bd35b054e612d41",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-review-1440.png": {
+      "sha256": "d992b4e43b407f7e2b6f42d5dd490088012c571b0c5565565d93f3eee45592e3",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-review-390.png": {
+      "sha256": "cc4d2e9d9b88bfd17b33b622525b3468c341e02b5bbf32ab9b70896fbd3d9352",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-review-end-1440.png": {
+      "sha256": "1ee15236175b0235fd52cea089ea9af2d8a759ce88b818811a8bf02955284a07",
+      "executable": false
+    },
+    "evidence/keyboard-planning/VIEW-004/team-conflict-review-end-390.png": {
+      "sha256": "ecbd56ac9172950924e36d30d0d6d12f993b98d6c960c8722f5048c4619b896c",
       "executable": false
     },
     "HANDOVER.md": {
@@ -1689,7 +1845,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "1d11947ceeab941621836465d4d486ac88dd4d30d55f794b90dcfa098e5654ec",
+      "sha256": "cd222b3fb31f417c044e5b300d16026e9b26529bbc76ade46a39a46fb7be3c7b",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -2061,7 +2217,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
-      "sha256": "b2ad7b96ef0439a082485500b25105b690c6a562a1be12c4089f04dbe918f5d8",
+      "sha256": "a486fc09584adaffaa17bc73cc67a914156a67eae53687240660e01fb2a0191b",
       "executable": false
     },
     "src/core/app/ui/label-chip.tsx": {
@@ -2073,7 +2229,7 @@
       "executable": false
     },
     "src/core/app/vite-development-path.ts": {
-      "sha256": "ef912d3032992dec70490fa14a726f8bcd87cb18097c0d4f472a9b98b179d620",
+      "sha256": "22d4487eab680c712ea840edda5ce577ae392feca23dcc585f33d21b7f3d659c",
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
@@ -2194,6 +2350,30 @@
     },
     "src/core/features/bootstrap/repository.ts": {
       "sha256": "f5232cea0543e9e5dcd26064a1170d2b99338bf6f96a5f0eae230e947842509f",
+      "executable": false
+    },
+    "src/core/features/bulk-commands/duplicate.ts": {
+      "sha256": "f095f8d442d348156a431e1f4e54ab8273bc8debc0e5018f3d43758502970e69",
+      "executable": false
+    },
+    "src/core/features/bulk-commands/index.ts": {
+      "sha256": "cae81772c92a4dbb47a72304680508836393252ff828bda4fb901bc62a714c24",
+      "executable": false
+    },
+    "src/core/features/bulk-commands/input.ts": {
+      "sha256": "7055b3fde1c092c38863dbd16d2d1f01d319c0a5a08e4abba977a2187370b7b0",
+      "executable": false
+    },
+    "src/core/features/bulk-commands/routes.ts": {
+      "sha256": "b37345f43a8d2419968de362691f21926362dc872a9803877329b593d4378383",
+      "executable": false
+    },
+    "src/core/features/bulk-commands/team.ts": {
+      "sha256": "f7ef53a45bd359b911c9e580c9caa6d1a88d7469ed0311abebf8cda841dae935",
+      "executable": false
+    },
+    "src/core/features/bulk-commands/validation.ts": {
+      "sha256": "43338de27fcc3e7c603e502cf8573582a5e80b6bfe9ffbe85c38002e0b0c9a56",
       "executable": false
     },
     "src/core/features/bulk-edit/input.ts": {
@@ -2561,7 +2741,7 @@
       "executable": false
     },
     "src/core/features/description-history/ui/description.tsx": {
-      "sha256": "8bf05e1f8f1cccd22fa7735e9bc8433a0abd427911721b0943d68b6c39011e7a",
+      "sha256": "d1caf16baeb4d385d0f3048240854181d90d2d0da446fd498e7decc38cad45c2",
       "executable": false
     },
     "src/core/features/description-history/ui/history.css": {
@@ -2597,11 +2777,23 @@
       "executable": false
     },
     "src/core/features/duplicates/repository.ts": {
-      "sha256": "7f0f1b5e98e54f45f67dd1a9d8dd682edb007b37e8faf032630e6c38e5ed6d4f",
+      "sha256": "5cf41c7ece238a11009a213ba026b68433cd9f3ec6f36b9f22419abe5b4de6af",
       "executable": false
     },
     "src/core/features/duplicates/routes.ts": {
       "sha256": "0c13b62ae2fcc899e0f34fdc7ce04fd33876a764c5731debea3bc8992fc1961f",
+      "executable": false
+    },
+    "src/core/features/duplicates/selected-plan.ts": {
+      "sha256": "c6386b701fc7ed9ee99a6f2fd32a8703bb4a0cc1cbaf9bd70abcf3aaa89738e2",
+      "executable": false
+    },
+    "src/core/features/duplicates/selection.ts": {
+      "sha256": "04934a7942f2ae7014f1d2736c18bcefa7d07657d641a9ffb443914cda2dcf6f",
+      "executable": false
+    },
+    "src/core/features/duplicates/status.ts": {
+      "sha256": "00361e3bee9bcff7fb239c943ddd612fbac97cb307c6d51c44c11c3f11e0d6c0",
       "executable": false
     },
     "src/core/features/duplicates/ui.tsx": {
@@ -3009,7 +3201,11 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-bulk.tsx": {
-      "sha256": "33e384598b5753cf4ae7bb49e6fbfa64322d17a379ce03fa9ec125fc5aa1b926",
+      "sha256": "cd92e3858b5a8a00b0d48fb5094228fbfe02274371d4ab0363fe5fed17d7f52a",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-command-session.tsx": {
+      "sha256": "da79af45a2c1fdca90c7962634262cd2c7339800dcd8a5f54bd5f51b4640cdba",
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
@@ -3044,20 +3240,24 @@
       "sha256": "45d08ff68e4705757f1906300d94be4357850bd918a37bfa0eefeff5b4c2f985",
       "executable": false
     },
+    "src/core/features/issues/ui/issue-keyboard-duplicate.tsx": {
+      "sha256": "4572a7cbccbd2993442ff918b819e3e2bec91e6a701c5e01db5f8c8d27a9d33f",
+      "executable": false
+    },
     "src/core/features/issues/ui/issue-keyboard-fields.tsx": {
       "sha256": "d8b5a9969e8e6396c67b89bdd585d5928c4597fc131fee212f6a4140cc942b10",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-focus.ts": {
-      "sha256": "d09b9bee0db4e95cbc2fcf19ad5e82ee1d2aca6b99afa122484a2e933dbd6c69",
+      "sha256": "ef1c4fb33d5eb0d04f34b137a2526262f4f09ac50f9a592e970cbb4a4720a144",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-help.tsx": {
-      "sha256": "04f5fb7b58e6c61dfbe6d842d420dd1f62fa55e23769b95a929beb4add3c80c7",
+      "sha256": "cb8523747d4a33009d2196453a203cf3180b604ba22099619b5be102414e67f3",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-modal.tsx": {
-      "sha256": "09598fa7c73a201a73dc2a864706e25d38ee39f5ccc8edf221b76c909449dbe9",
+      "sha256": "faf3501c58b737ae75efe085f032763fc4e203e5676311677461238ea3263904",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-review.tsx": {
@@ -3065,7 +3265,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-team.tsx": {
-      "sha256": "b27fa2507fddec7ce9a9c6fcd3b3b2e7dd51089644d6916ba558bb821bf22592",
+      "sha256": "9c367a10ba42c2cdabaf515a12fd6d965f8965b359c0c7eaa43499ddbdb74c85",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard.css": {
@@ -3073,7 +3273,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard.tsx": {
-      "sha256": "f90d12cd935d945454f6c242eac400eb63b92fffff33f8675fcfddaf9b40a471",
+      "sha256": "bb00ddaa39fe480661a8f8fbed2ee225aa2ac68ef0ef4d9b1545e38fc95b6667",
       "executable": false
     },
     "src/core/features/issues/ui/issue-labels.tsx": {
@@ -3109,7 +3309,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-selection.ts": {
-      "sha256": "b93181608b2a0596cc5e7a86bb0c7ac628748865fa4e71e886510d361ba096d9",
+      "sha256": "f5bbcfcde9f21586965235fff3b18d355274a745227f382c3948781f1852b292",
       "executable": false
     },
     "src/core/features/issues/ui/issue-table.tsx": {
@@ -3217,7 +3417,7 @@
       "executable": false
     },
     "src/core/features/notifications/events.ts": {
-      "sha256": "12dcf6c9073c20a9cbeaa7eeb7cc3f1622d6bfaa9f64f2f42ac47742fda79188",
+      "sha256": "bfbf50df43b33f8fbbfef7720030f699b15f8d25f7f26a4707cf672382c93fa5",
       "executable": false
     },
     "src/core/features/notifications/input.ts": {
@@ -3297,7 +3497,7 @@
       "executable": false
     },
     "src/core/features/notifications/ui/issue-subscription.tsx": {
-      "sha256": "7599da139eba2a242ba4c8678d709e4111a58eb27890b01be87711bbf74e4af2",
+      "sha256": "d6d8eb1c81f01508b412cce79a7f43ac26e7a9dfe476a4ba65bbe280da84153e",
       "executable": false
     },
     "src/core/features/notifications/ui/mention-editor-state.ts": {
@@ -3517,7 +3717,7 @@
       "executable": false
     },
     "src/core/features/streams/projection.ts": {
-      "sha256": "2540a48e2caac12339c63dd00dee9d1ba37b2d6f770353c97b22ecbb4734363b",
+      "sha256": "9d839672e74bc604cf3d5b6d7b51cd3bfa0df22c62a88fb2a101e164456c7b78",
       "executable": false
     },
     "src/core/features/streams/repository.ts": {
@@ -3533,23 +3733,35 @@
       "executable": false
     },
     "src/core/features/streams/ui/data.ts": {
-      "sha256": "739fee4675b4698e6da3d5b32454ae47986b780cf6674d6b5ab535e1409e4c0d",
+      "sha256": "ae56bbf7733f245cc48eff695f03130619a97583314085553eac4b996c25078e",
       "executable": false
     },
     "src/core/features/streams/ui/helpers.ts": {
       "sha256": "8435c18ceb45df75f25b112435ae68bf94b4d190dd600f3d05bcfc89fd15e95b",
       "executable": false
     },
+    "src/core/features/streams/ui/stream-controls.tsx": {
+      "sha256": "05bbb0478d6da99c903fc4c96aa037db03a6359af8a5c1eb9b00f4ee102831c2",
+      "executable": false
+    },
     "src/core/features/streams/ui/stream-list.tsx": {
-      "sha256": "07731fe9124ca614a7d4ba4757921cf34b4eee13611ad646f31f3437a8eb23ae",
+      "sha256": "dfc1249d3b86f542a96dfb10956e4554765f2000b302e537b43b26fad4b152b5",
+      "executable": false
+    },
+    "src/core/features/streams/ui/stream-planning-state.tsx": {
+      "sha256": "a3ad1ee6d0c02c47159f3d5af6ae8ffab7e21df707c0b30a57d5a7ad08d9866f",
+      "executable": false
+    },
+    "src/core/features/streams/ui/stream-states.tsx": {
+      "sha256": "3756b63080ea4c9450c20f21d62a49bebce0bba91416f1d86150e2bee80028dd",
       "executable": false
     },
     "src/core/features/streams/ui/stream-workspace.tsx": {
-      "sha256": "3bf22c04e03de621eebe80d170dec8c3982fee56213017d00fffca455d0e589e",
+      "sha256": "c27f11f71dcb53b7e0ef63f56b85f5f0acd662fbc33c4699b3a5e7f572998b4e",
       "executable": false
     },
     "src/core/features/streams/ui/streams.css": {
-      "sha256": "9b03c9212063f500b601aea91d7d2e07d09a924a796057f95f8131a0706fa41e",
+      "sha256": "f96eb05c4f43a19edd0acdf00914ba55b62fa5df16ab17bf4481086c5044ba7d",
       "executable": false
     },
     "src/core/features/team-move/errors.ts": {
@@ -3560,12 +3772,20 @@
       "sha256": "6b41888410560ed68fc4e44da76102156f1ea9a7c60eb20ea934556114f46728",
       "executable": false
     },
+    "src/core/features/team-move/plan.ts": {
+      "sha256": "64185cdc75e717889877c602c0d5324f2712eeb219433ab067e5450b1e72eb8c",
+      "executable": false
+    },
     "src/core/features/team-move/repository.ts": {
       "sha256": "a5cf4d4526d740b3e5e9e15765a4aa7a0d54b801cd1bdc78784f19e85dd218ef",
       "executable": false
     },
     "src/core/features/team-move/routes.ts": {
       "sha256": "d62a11ec3d14b57d32d84f0b12775fc31a6b55cc55b78edffa06cff5f253a2e3",
+      "executable": false
+    },
+    "src/core/features/team-move/selection.ts": {
+      "sha256": "250d87045e30b5f90d6fc02695038c857be469023dd8b371e5d49de27a4e55e2",
       "executable": false
     },
     "src/core/features/views/preferences-routes.ts": {
@@ -3953,7 +4173,7 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "ec7c1c2c2ec808cbe68085b9599f47a70d1b9e8f2e7ceb9c6fc0d18dc5eda8df",
+      "sha256": "9c44329c6d3e193baea86360f0675c304685f41ff5555ff35c2e64d6fa608044",
       "executable": false
     },
     "tests/e2e/core-page-audit.mjs": {
@@ -3962,6 +4182,10 @@
     },
     "tests/e2e/core-runtime.mjs": {
       "sha256": "6b0660d25a56ab3405d8ff3725952e7aacdd26fc40015e96b1aefe14435712a4",
+      "executable": false
+    },
+    "tests/e2e/core-stream-planning-journey.mjs": {
+      "sha256": "2da29b6bef9034408fad05da1835c2ffdbc394eee891541f58feffe0fa83bcc3",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {
@@ -4298,6 +4522,10 @@
     },
     "tests/worker/bootstrap-owner.test.ts": {
       "sha256": "77996bc810bb60e776a7d5d6c87cd304360dcdaf4c2fcfbd310db5f64d66732a",
+      "executable": false
+    },
+    "tests/worker/bulk-commands.test.ts": {
+      "sha256": "d40e0f8a2f3dae65b3ce21964ea579e3e0cfae3fcc9ef9e72e5e4aa6ddc4e295",
       "executable": false
     },
     "tests/worker/bulk-parent-fixture.ts": {

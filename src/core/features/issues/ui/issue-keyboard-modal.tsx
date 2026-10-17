@@ -10,7 +10,7 @@ export function IssueKeyboardModal({ title, busy = false, onClose, children }: {
   useEffect(() => {
     const node = dialog.current;
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-    const rowId = previous?.closest(".issues-row")?.id;
+    const rowId = previous?.closest("[data-issue-identifier]")?.id;
     node?.showModal();
     return () => {
       node?.close();

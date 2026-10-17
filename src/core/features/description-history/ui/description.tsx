@@ -33,7 +33,11 @@ export function IssueDescription({ issue, onRefresh }: { issue: IssueDetailData;
 
 function DescriptionHistory({ issue, onRefresh }: { issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
   const hydrated = useHydrated();
-  const history = useApiResource(`/api/issues/${issue.identifier}/description-history`, historySchema);
+  // Returning from an inspector retires its state while admitted history reads
+  // finish, just like the inspector's personal-reminder reads.
+  const history = useApiResource(`/api/issues/${issue.identifier}/description-history`, historySchema, undefined, {
+    abortPendingOnDispose: false,
+  });
   const previousVersion = useRef(issue.version);
   useEffect(() => {
     if (previousVersion.current !== issue.version) {

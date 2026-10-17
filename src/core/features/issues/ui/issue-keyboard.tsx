@@ -6,13 +6,13 @@ import { issueBranchName, issueEditFields, issueEditShortcuts, type BulkReceipt,
 import { IssueKeyboardDialog } from "./issue-keyboard-dialog";
 import { IssueKeyboardHelp } from "./issue-keyboard-help";
 import { IssueKeyboardTeam } from "./issue-keyboard-team";
-import type { IssueRow } from "./issue-selection";
+import { IssueKeyboardDuplicate } from "./issue-keyboard-duplicate";
 import "./issue-keyboard.css";
 
 export function IssueKeyboard({ root, rows, selection, focused, options, onRefresh, onSuccess }: {
   root: RefObject<HTMLElement | null>;
-  rows: IssueRow[];
-  selection: Map<string, IssueRow>;
+  rows: IssueEditTarget[];
+  selection: Map<string, IssueEditTarget>;
   focused: string;
   options: WorkspaceOptions | null;
   onRefresh: () => void;
@@ -21,18 +21,19 @@ export function IssueKeyboard({ root, rows, selection, focused, options, onRefre
   const hydrated = useHydrated();
   const [edit, setEdit] = useState<{ field: IssueEditField; targets: IssueEditTarget[] } | null>(null);
   const [help, setHelp] = useState(false);
-  const [team, setTeam] = useState<string | null>(null);
+  const [team, setTeam] = useState<IssueEditTarget[] | null>(null);
+  const [duplicate, setDuplicate] = useState<IssueEditTarget[] | null>(null);
   const [notice, setNotice] = useState<{ error: boolean; text: string } | null>(null);
   useEffect(() => {
     function keyDown(event: KeyboardEvent) {
       const target = event.target instanceof HTMLElement ? event.target : null;
       if (event.defaultPrevented || event.repeat || event.altKey || isEditableTarget(target) ||
         !target || !root.current?.contains(target) || root.current.closest("[hidden]") ||
-        target.closest("dialog, [role=dialog]") || edit || help || team) return;
+        target.closest("dialog, [role=dialog]") || edit || help || team || duplicate) return;
       if (event.key === "?" && !event.metaKey && !event.ctrlKey) {
         event.preventDefault(); setHelp(true); return;
       }
-      const focusedRow = target.closest(".issues-row") ? rows.find((row) => row.identifier === focused) : null;
+      const focusedRow = target.closest("[data-issue-identifier]") ? rows.find((row) => row.identifier === focused) : null;
       const targets = selection.size ? [...selection.values()] : focusedRow ? [focusedRow] : [];
       if (!targets.length) return;
       if ((event.metaKey || event.ctrlKey) && event.key === ".") {
@@ -51,11 +52,10 @@ export function IssueKeyboard({ root, rows, selection, focused, options, onRefre
       const key = event.key.toLowerCase();
       if (key === "d" && event.shiftKey) {
         event.preventDefault();
-        setNotice({ error: true, text: "The duplicate shortcut is not available yet. Open an issue with Enter and use its Duplicates action." });
+        setNotice(null); setDuplicate(targets);
       } else if (key === "m") {
         event.preventDefault();
-        if (targets.length === 1) setTeam(targets[0]!.identifier);
-        else setNotice({ error: true, text: "Move team currently supports one issue at a time. Keep one issue selected, or clear selection and focus one row." });
+        setNotice(null); setTeam(targets);
       } else if (!event.shiftKey && issueEditShortcuts[key]) {
         event.preventDefault();
         setNotice(null);
@@ -64,12 +64,18 @@ export function IssueKeyboard({ root, rows, selection, focused, options, onRefre
     }
     window.addEventListener("keydown", keyDown);
     return () => window.removeEventListener("keydown", keyDown);
-  }, [root, rows, selection, focused, edit, help, team]);
+  }, [root, rows, selection, focused, edit, help, team, duplicate]);
+  function commandCompleted(receipt: BulkReceipt, action: string) {
+    onSuccess(receipt.issues);
+    setNotice({ error: false, text: `${receipt.changed} issues updated: ${action}.` });
+    setTeam(null); setDuplicate(null); onRefresh();
+  }
   return <>
     <button type="button" className="issue-keyboard-help-button" disabled={!hydrated} onClick={() => setHelp(true)}>Keyboard shortcuts (?)</button>
     {notice && <p role={notice.error ? "alert" : "status"}>{notice.text}</p>}
     {help && <IssueKeyboardHelp onClose={() => setHelp(false)} />}
-    {team && <IssueKeyboardTeam identifier={team} options={options} onClose={() => setTeam(null)} onRefresh={onRefresh} />}
+    {team && <IssueKeyboardTeam targets={team} options={options} onClose={() => setTeam(null)} onSuccess={receipt => commandCompleted(receipt, "team")} />}
+    {duplicate && <IssueKeyboardDuplicate targets={duplicate} limit={options?.bulkEditIssuesPerOperation} onClose={() => setDuplicate(null)} onSuccess={receipt => commandCompleted(receipt, "duplicate decision")} />}
     {edit && <IssueKeyboardDialog field={edit.field} targets={edit.targets} options={options} onClose={() => setEdit(null)}
       onSuccess={(receipt) => {
         onSuccess(receipt.issues);

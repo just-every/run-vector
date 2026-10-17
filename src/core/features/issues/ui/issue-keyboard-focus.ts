@@ -6,11 +6,11 @@ export function useIssueRowFocus(root: RefObject<HTMLElement | null>) {
   useEffect(() => {
     const focusedIn = (event: FocusEvent) => {
       const target = event.target instanceof HTMLElement ? event.target : null;
-      const row = target?.closest<HTMLButtonElement>("button.issues-row");
+      const row = target?.closest<HTMLButtonElement>("button[data-issue-identifier]");
       owned.current = row && root.current?.contains(row) ? row.dataset.issueIdentifier ?? null : null;
     };
     const pointerDown = (event: PointerEvent) => {
-      const row = event.target instanceof HTMLElement ? event.target.closest("button.issues-row") : null;
+      const row = event.target instanceof HTMLElement ? event.target.closest("button[data-issue-identifier]") : null;
       if (!row || !root.current?.contains(row)) owned.current = null;
     };
     const blurred = () => { owned.current = null; };

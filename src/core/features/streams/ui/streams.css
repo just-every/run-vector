@@ -21,6 +21,12 @@
 .stream-group-heading h2 { margin: 0; color: var(--app-muted); font-size: .75rem; font-weight: 760; letter-spacing: .11em; text-transform: uppercase; }
 .stream-group-heading span { display: grid; min-width: 1.35rem; height: 1.35rem; place-items: center; border-radius: 999px; color: var(--app-body); background: rgb(23 26 32 / 9%); font-size: .75rem; }
 .stream-rows { display: grid; gap: .45rem; }
+.stream-selectable { display: grid; grid-template-columns: 2.75rem minmax(0, 1fr); align-items: stretch; }
+.stream-selection { display: grid; place-items: center; min-height: 2.75rem; cursor: pointer; }
+.stream-selection input { width: 1.1rem; height: 1.1rem; accent-color: var(--app-cobalt-ink); }
+.stream-planning { padding: .75rem .85rem 0; }
+.stream-planning .issues-bulk { margin: .6rem 0; }
+.stream-row:focus-visible { outline: 2px solid var(--app-cobalt-ink); outline-offset: 2px; }
 .stream-row {
   display: grid; width: 100%; min-height: 6.2rem; align-content: start; gap: .4rem; border: 1px solid var(--app-line-strong); border-radius: .62rem; padding: .8rem .9rem; color: var(--app-ink); text-align: left; background: var(--app-card); box-shadow: 0 1px 2px rgb(23 26 32 / 6%);
 }

@@ -1,0 +1,9 @@
+# Planning from the keyboard
+
+Issues, saved issue lists, Current and My work share selection and property editing. Arrows follow the rendered rows, X toggles selection, Enter opens an issue, and Escape returns to its row. Current and My work retain their selection while opening and closing the inspector. Use the visible checkboxes and bulk controls for the same actions with a pointer.
+
+S, A, P, L, E and D edit status, assignee, priority, labels, estimate and due date. M moves every selected issue to a team in one transaction, with an explicit destination status for each current category, including Intake. Identifiers stay stable and moved issues leave their cycles. Shift-D marks the selection as duplicates of one canonical issue, or removes their duplicate decisions. Incoming duplicates are repointed once; selected sources receive only their own decision. Command/Ctrl-. copies branch names, and ? opens the help sheet. Fields and open dialogs keep their normal keyboard behavior.
+
+Every selected command uses the versions captured when its dialog opened. If any issue is stale or a chosen option is unavailable, the whole command fails and names the affected issues. The dialog retains the submitted choices, blocks retry, and offers current values for explicit review. Fetching those values does not approve a retry; choose **Use reviewed versions** first. Closing the dialog discards only its draft.
+
+Native session APIs are `POST /api/issues/bulk/team` and `POST /api/issues/bulk/duplicate`. They use the same batch limit as property edits, retain session and workspace admission inside the transaction, and return the selected identifiers with their committed versions. These native commands do not add bearer-token permissions. Undo remains the open ISSUE-020 requirement.

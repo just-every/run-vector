@@ -16,6 +16,7 @@ import { addNotificationRoutes } from '../features/notifications/routes';
 import { addViewRoutes } from '../features/views/routes';
 import { addPreferenceRoutes } from '../features/views/preferences-routes';
 import { addBulkIssueRoutes } from '../features/bulk-edit/routes';
+import { addBulkCommandRoutes } from '../features/bulk-commands';
 import { addParentIssueRoutes } from '../features/parents/routes';
 import { configureNotifications, needsNotificationDrain, notificationEventIds } from '../features/notifications/context';
 import { drainNotificationMail } from '../features/notifications/mail';
@@ -242,6 +243,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   });
 
   addBulkIssueRoutes(app);
+  addBulkCommandRoutes(app);
   addParentIssueRoutes(app);
 
   app.get("/issues/:identifier", async (context) => {

@@ -1,17 +1,17 @@
 import type { IssueListData } from "../list-schema.ts";
 export type IssueRow = IssueListData["issues"][number];
-export function toggleIssueSelection(
-  selection: Map<string, IssueRow>,
-  issue: IssueRow,
+export function toggleIssueSelection<Row extends { identifier: string }>(
+  selection: Map<string, Row>,
+  issue: Row,
 ) {
   const next = new Map(selection);
   if (next.has(issue.identifier)) next.delete(issue.identifier);
   else next.set(issue.identifier, issue);
   return next;
 }
-export function refreshIssueSelection(
-  selection: Map<string, IssueRow>,
-  rows: IssueRow[],
+export function refreshIssueSelection<Row extends { identifier: string }>(
+  selection: Map<string, Row>,
+  rows: Row[],
 ) {
   const next = new Map(selection);
   rows.forEach((row) => {

@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
+import { streamPlanningJourney } from './core-stream-planning-journey.mjs';
 
 export async function keyboardJourney(page, context, base, record) {
   const origin = await page.evaluate(() => performance.timeOrigin);
@@ -64,6 +65,7 @@ export async function keyboardJourney(page, context, base, record) {
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   record('CMD-002', 'Control+k and Meta+k each open a palette that navigates with Enter and closes with Escape; c and g m/c/p navigate, while title/description typing remains editable.');
   await issueEditingJourney(page, context, base, record);
+  await streamPlanningJourney(page, context, base, record);
 }
 
 // One native journey covers list focus, keyboard bulk editing, and an atomic

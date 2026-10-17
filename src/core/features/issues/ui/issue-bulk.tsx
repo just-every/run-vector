@@ -1,11 +1,10 @@
 import { useState } from "react";
 import type { WorkspaceOptions } from "../../../shared/workspace-options";
-import type { IssueRow } from "./issue-selection";
 import { issueEditFields, type IssueEditField, type IssueEditTarget } from "./issue-keyboard-actions";
 import { IssueKeyboardDialog } from "./issue-keyboard-dialog";
 
 export function IssueBulk({ selection, options, onRefresh, onClear, onRemove, onSuccess }: {
-  selection: Map<string, IssueRow>;
+  selection: Map<string, IssueEditTarget>;
   options: WorkspaceOptions | null;
   onRefresh: () => void;
   onClear: () => void;

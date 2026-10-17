@@ -1,4 +1,7 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import { useHydrated } from "../../../app/initial-resources";
+import type { IssueEditTarget } from "../../issues/ui/issue-keyboard-actions";
+import { toggleIssueSelection } from "../../issues/ui/issue-selection";
 import type { StreamItem } from "./data";
 import { moveRowFocus, reasonLabel, relativeTime, shortDate } from "./helpers";
 
@@ -7,6 +10,11 @@ type StreamListProps = {
   onOpen: (identifier: string) => void;
   selectedIdentifier?: string;
   hideAssignee?: boolean;
+  selection: Map<string, IssueEditTarget>;
+  setSelection: Dispatch<SetStateAction<Map<string, IssueEditTarget>>>;
+  focused: string;
+  setFocused: (identifier: string) => void;
+  ownedFocus: { current: string | null };
 };
 
 export function StreamList({
@@ -14,13 +22,25 @@ export function StreamList({
   onOpen,
   selectedIdentifier,
   hideAssignee = false,
+  selection, setSelection, focused, setFocused, ownedFocus,
 }: StreamListProps) {
+  const hydrated = useHydrated();
   const rows = groups.flatMap((group) => group.items);
+  const list = useRef<HTMLDivElement>(null);
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const focus = (index: number) => refs.current[index]?.focus();
+  useLayoutEffect(() => {
+    const next = rows.some(row => row.identifier === focused) ? focused : rows[0]?.identifier ?? "";
+    if (next !== focused) setFocused(next);
+    if (ownedFocus.current && list.current?.getClientRects().length) {
+      const retained = rows.findIndex(row => row.identifier === ownedFocus.current);
+      focus(retained < 0 ? 0 : retained);
+      if (!rows.length) ownedFocus.current = null;
+    }
+  }, [groups, focused, setFocused, ownedFocus]);
   let offset = 0;
   return (
-    <div className="stream-list" aria-label="Issue stream">
+    <div ref={list} className="stream-list" aria-label="Issue stream">
       {groups.map((group) => {
         const groupOffset = offset;
         offset += group.items.length;
@@ -41,16 +61,30 @@ export function StreamList({
                 {group.items.map((item, index) => {
                   const absoluteIndex = groupOffset + index;
                   return (
+                    <div className="stream-selectable" key={item.id}>
+                    <label className="stream-selection">
+                      <input type="checkbox" disabled={!hydrated} aria-label={`Select ${item.identifier}`}
+                        checked={selection.has(item.identifier)}
+                        onChange={() => setSelection(current => toggleIssueSelection(current, item))} />
+                    </label>
                     <button
+                      disabled={!hydrated}
                       className={`stream-row${selectedIdentifier === item.identifier ? " is-selected" : ""}`}
                       id={`issue-row-${item.identifier}`}
-                      key={item.id}
+                      data-issue-identifier={item.identifier}
+                      tabIndex={item.identifier === (focused || rows[0]?.identifier) ? 0 : -1}
+                      onFocus={() => setFocused(item.identifier)}
                       ref={(element) => {
                         refs.current[absoluteIndex] = element;
                       }}
                       type="button"
                       onClick={() => onOpen(item.identifier)}
                       onKeyDown={(event) => {
+                        if (event.target !== event.currentTarget || event.altKey || event.ctrlKey || event.metaKey) return;
+                        if (event.key.toLowerCase() === "x") {
+                          event.preventDefault();
+                          setSelection(current => toggleIssueSelection(current, item));
+                        }
                         if (
                           event.key === "ArrowDown" ||
                           event.key === "ArrowUp"
@@ -100,6 +134,7 @@ export function StreamList({
                         ))}
                       </span>
                     </button>
+                    </div>
                   );
                 })}
               </div>

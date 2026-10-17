@@ -1,4 +1,5 @@
 import { DeletionNotice } from '../../features/issue-deletion/receipt-notice'
+import { StreamPlanningProvider } from '../../features/streams/ui/stream-planning-state'
 import type { ReactNode } from 'react'
 import {
   Link,
@@ -53,7 +54,7 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <SavedViewReceiptProvider key={operator.id}>
       <NotificationProvider>
-        <AppShellContent>{children}</AppShellContent>
+        <StreamPlanningProvider><AppShellContent>{children}</AppShellContent></StreamPlanningProvider>
       </NotificationProvider>
     </SavedViewReceiptProvider>
   )

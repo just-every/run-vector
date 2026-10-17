@@ -1,10 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
-import { ApiError, useApiResource } from "../../../app/api-client";
+import { useEffect, useMemo, useRef } from "react";
+import { useApiResource } from "../../../app/api-client";
 import { IssueDetail } from "../../issues/ui/issue-detail";
-import {
-  ListPreferenceControls,
-  type ListPreferenceControlsProps,
-} from "../../views/ui/list-preference-controls";
 import { useListPreferences } from "../../views/ui/use-list-preferences";
 import {
   currentStreamSchema,
@@ -14,8 +11,16 @@ import {
   type CycleContextData,
 } from "./data";
 import { filterItems, type StreamFilters } from "./helpers";
-import { issueListSchema } from "../../issues/list-schema";
 import { StreamList } from "./stream-list";
+import { useStreamPlanningState } from "./stream-planning-state";
+import { IssueKeyboard } from "../../issues/ui/issue-keyboard";
+import { IssueBulk } from "../../issues/ui/issue-bulk";
+import { useIssueRowFocus } from "../../issues/ui/issue-keyboard-focus";
+import { refreshIssueSelection } from "../../issues/ui/issue-selection";
+import { focusIssueRow } from "../../issues/ui/issue-browser-pane";
+import "../../issues/ui/issues-browser.css";
+import { FilterBar, CycleContext } from "./stream-controls";
+import { LoadingState, ErrorState, EmptyState } from "./stream-states";
 
 type StreamWorkspaceProps = {
   surface: "current" | "my-work";
@@ -74,7 +79,7 @@ function CurrentWorkspace({
           items: stream.data.sections["recently-done"],
         },
       ]}
-      onRefresh={stream.reload}
+      onRefresh={stream.refreshAfterMutation}
       refreshError={stream.error}
     />
   );
@@ -85,7 +90,7 @@ function MyWorkWorkspace({
 }: {
   selectedIdentifier?: string;
 }) {
-  const stream = useApiResource("/api/my-work", myWorkSchema);
+  const stream = useApiResource("/api/my-work", myWorkSchema, 2000);
   if (stream.loading && stream.data === null)
     return <LoadingState label="Loading My work" />;
   if (stream.data === null)
@@ -111,7 +116,7 @@ function MyWorkWorkspace({
         { id: "now", title: "Now", items: stream.data.sections.now },
         { id: "next", title: "Next", items: stream.data.sections.next },
       ]}
-      onRefresh={stream.reload}
+      onRefresh={stream.refreshAfterMutation}
       refreshError={stream.error}
     />
   );
@@ -135,6 +140,10 @@ function WorkspaceContent({
   cycles?: CycleContextData[];
 }) {
   const navigate = useNavigate();
+  const root = useRef<HTMLDivElement>(null);
+  const detailPane = useRef<HTMLElement>(null);
+  const ownedFocus = useIssueRowFocus(root);
+  const planning = useStreamPlanningState(surface);
   const options = useApiResource("/api/options", optionsSchema);
   const preferences = useListPreferences(surface, {
     filters: defaultFilters,
@@ -142,11 +151,29 @@ function WorkspaceContent({
     grouping: "none",
   });
   const filters = preferences.filters;
-  const filteredGroups = groups.map((group) => ({
+  const filteredGroups = useMemo(() => groups.map((group) => ({
     ...group,
     items: filterItems(group.items, filters),
-  }));
-  const allItems = filteredGroups.flatMap((group) => group.items);
+  })), [groups, filters]);
+  const allItems = useMemo(() => filteredGroups.flatMap((group) => group.items), [filteredGroups]);
+  useEffect(() => {
+    planning.setSelection(current => refreshIssueSelection(current, allItems));
+  }, [allItems, planning.setSelection]);
+  useEffect(() => {
+    window.addEventListener("vector:issues-changed", onRefresh);
+    return () => window.removeEventListener("vector:issues-changed", onRefresh);
+  }, [onRefresh]);
+  useEffect(() => { if (selectedIdentifier) detailPane.current?.focus(); }, [selectedIdentifier]);
+  function updatedSelection(issues: Array<{ identifier: string; version: number }>) {
+    planning.setSelection(current => {
+      const next = new Map(current);
+      issues.forEach(receipt => {
+        const row = next.get(receipt.identifier);
+        if (row) next.set(receipt.identifier, { ...row, version: receipt.version });
+      });
+      return next;
+    });
+  }
   const detailIdentifier = selectedIdentifier ?? allItems[0]?.identifier;
   const open = (identifier: string) =>
     navigate({
@@ -156,8 +183,11 @@ function WorkspaceContent({
           : "/app/my-work/$identifier",
       params: { identifier },
     });
-  const back = () =>
-    navigate({ to: surface === "current" ? "/app" : "/app/my-work" });
+  const back = async () => {
+    const returnTo = allItems.some(row => row.identifier === selectedIdentifier) ? selectedIdentifier : allItems[0]?.identifier;
+    await navigate({ to: surface === "current" ? "/app" : "/app/my-work" });
+    if (returnTo) focusIssueRow(returnTo);
+  };
   return (
     <main
       className={`stream-workspace${selectedIdentifier ? " has-mobile-detail" : ""}`}
@@ -185,7 +215,7 @@ function WorkspaceContent({
         </div>
       ) : null}
       <div className="stream-layout">
-        <div className="stream-master">
+        <div ref={root} className="stream-master">
           <FilterBar
             personal={surface === "my-work"}
             filters={filters}
@@ -203,14 +233,25 @@ function WorkspaceContent({
               onReset: preferences.reset,
             }}
           />
+          <div className="stream-planning">
+            <IssueKeyboard root={root} rows={allItems} selection={planning.selection} focused={planning.focused}
+              options={options.data} onRefresh={onRefresh} onSuccess={updatedSelection} />
+            <IssueBulk selection={planning.selection} options={options.data} onRefresh={onRefresh}
+              onSuccess={updatedSelection} onClear={() => planning.setSelection(new Map())}
+              onRemove={identifier => planning.setSelection(current => { const next = new Map(current); next.delete(identifier); return next; })} />
+          </div>
           <StreamList
             hideAssignee={surface === "my-work"}
             groups={filteredGroups}
             selectedIdentifier={selectedIdentifier}
             onOpen={open}
+            selection={planning.selection} setSelection={planning.setSelection}
+            focused={planning.focused} setFocused={planning.setFocused} ownedFocus={ownedFocus}
           />
         </div>
         <section
+          ref={detailPane}
+          tabIndex={-1}
           className={`stream-detail${selectedIdentifier || !allItems.length ? "" : " stream-detail--default"}`}
           aria-label="Issue detail"
         >
@@ -232,230 +273,3 @@ function WorkspaceContent({
   );
 }
 
-function FilterBar({
-  filters,
-  onChange,
-  options,
-  loading,
-  personal,
-  preferenceControls,
-}: {
-  personal: boolean;
-  filters: StreamFilters;
-  onChange: (filters: StreamFilters) => void;
-  options: {
-    teams: Array<{ id: string; name: string }>;
-    operators: Array<{ id: string; name: string }>;
-  } | null;
-  loading: boolean;
-  preferenceControls: ListPreferenceControlsProps;
-}) {
-  const controlsDisabled = !preferenceControls.ready || loading || options === null;
-  return (
-    <div className="stream-filters" aria-label="Filter stream">
-      <label>
-        Team
-        <select
-          aria-label="Team"
-          value={filters.teamId}
-          disabled={controlsDisabled}
-          onChange={(event) =>
-            onChange({ ...filters, teamId: event.target.value })
-          }
-        >
-          <option value="all">All teams</option>
-          {options?.teams.map((team) => (
-            <option value={team.id} key={team.id}>
-              {team.name}
-            </option>
-          ))}
-        </select>
-      </label>
-      {!personal ? (
-        <label>
-          Assignee
-          <select
-            aria-label="Assignee"
-            value={filters.assigneeId}
-            disabled={controlsDisabled}
-            onChange={(event) =>
-              onChange({ ...filters, assigneeId: event.target.value })
-            }
-          >
-            <option value="all">Anyone</option>
-            <option value="unassigned">Unassigned</option>
-            {options?.operators.map((operator) => (
-              <option value={operator.id} key={operator.id}>
-                {operator.name}
-              </option>
-            ))}
-          </select>
-        </label>
-      ) : null}
-      <label>
-        Priority
-        <select
-          aria-label="Priority"
-          value={filters.priority}
-          disabled={!preferenceControls.ready}
-          onChange={(event) =>
-            onChange({ ...filters, priority: event.target.value })
-          }
-        >
-          <option value="all">Any priority</option>
-          <option value="urgent">Urgent</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-          <option value="none">No priority</option>
-        </select>
-      </label>
-      <ListPreferenceControls {...preferenceControls} />
-    </div>
-  );
-}
-
-function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
-  if (cycles.length === 0) return null;
-  const number = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
-  return (
-    <div className="cycle-context" aria-label="Active cycle context">
-      {cycles.map((cycle) => {
-        const date = new Intl.DateTimeFormat(undefined, {
-          timeZone: cycle.timezone,
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h23",
-        });
-        const capacityLabel =
-          cycle.capacityRisk === "unknown"
-            ? "Capacity unknown"
-            : cycle.capacityRisk === "at-risk"
-              ? "At risk"
-              : "Within capacity";
-        const capacityFacts = [
-          cycle.remainingPoints !== null
-            ? `${number.format(cycle.remainingPoints)} points remaining`
-            : null,
-          cycle.capacity !== null
-            ? `${number.format(cycle.capacity)} points capacity`
-            : "Capacity not set",
-          cycle.unestimatedRemaining > 0
-            ? `${number.format(cycle.unestimatedRemaining)} remaining ${cycle.unestimatedRemaining === 1 ? "issue" : "issues"} unestimated`
-            : null,
-        ].filter((fact): fact is string => fact !== null);
-        return (
-          <div key={cycle.id}>
-            <span>
-              {cycle.team} · {cycle.name}
-            </span>
-            <strong>
-              {cycle.percentage === null ? (
-                "No committed work"
-              ) : (
-                <>
-                  {number.format(cycle.completed)}/{number.format(cycle.total)}{" "}
-                  {cycle.unit === "points"
-                    ? "points"
-                    : "issues · by issue count"}{" "}
-                  · {number.format(cycle.percentage)}%
-                </>
-              )}
-            </strong>
-            <small className="cycle-dates">
-              <time dateTime={cycle.startsAt}>
-                {date.format(new Date(cycle.startsAt))}
-              </time>{" "}
-              –{" "}
-              <time dateTime={cycle.endsAt}>
-                {date.format(new Date(cycle.endsAt))}
-              </time>
-              <span className="cycle-timezone">{cycle.timezone}</span>
-            </small>
-            <small className="cycle-capacity" data-risk={cycle.capacityRisk}>
-              {capacityLabel} · {capacityFacts.join(" · ")}
-            </small>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function LoadingState({ label }: { label: string }) {
-  return (
-    <main className="app-state" aria-live="polite">
-      <span className="app-spinner" aria-hidden="true" />
-      {label}…
-    </main>
-  );
-}
-function ErrorState({
-  error,
-  onRetry,
-  returnTo,
-}: {
-  error: Error | null;
-  onRetry: () => void;
-  returnTo: string;
-}) {
-  return (
-    <main className="app-state app-state--error" role="alert">
-      <strong>Unable to load this workspace.</strong>
-      <span>{error?.message}</span>
-      {error instanceof ApiError && error.status === 401 ? (
-        <a href={`/signin?returnTo=${encodeURIComponent(returnTo)}`}>
-          Sign in again
-        </a>
-      ) : (
-        <button type="button" onClick={onRetry}>
-          Try again
-        </button>
-      )}
-    </main>
-  );
-}
-function EmptyState({
-  surface,
-  filtered,
-}: {
-  surface: "current" | "my-work";
-  filtered: boolean;
-}) {
-  const existing = useApiResource("/api/issues", issueListSchema);
-  const completed = useApiResource(
-    "/api/issues?category=completed",
-    issueListSchema,
-  );
-  const first = existing.data?.total === 0 && completed.data?.total === 0;
-  return (
-    <div className="stream-empty-detail">
-      <h2>
-        {surface === "my-work"
-          ? "You're all caught up"
-          : filtered
-            ? "No issues match these filters"
-            : first
-              ? "Create your first issue"
-              : "No work needs attention"}
-      </h2>
-      <p>
-        {surface === "my-work"
-          ? "Nothing assigned to you needs attention right now."
-          : filtered
-            ? "Adjust a filter to see the rest of the stream."
-            : "Start with an issue or bring evidence into intake to decide what happens next."}
-      </p>
-      <a href="/app/new-issue">Create issue →</a>
-      <a href="/app/issues">Browse all issues →</a>
-      {surface === "my-work" ? <a href="/app">Open Current →</a> : null}
-    </div>
-  );
-}
-
-export function allStreamItems(groups: Array<{ items: StreamItem[] }>) {
-  return groups.flatMap((group) => group.items);
-}
