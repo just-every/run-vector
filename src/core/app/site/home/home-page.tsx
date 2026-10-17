@@ -24,7 +24,7 @@ export function HomePage({ site = false }: { site?: boolean }) {
         <TryIt />
         <Closing site={site} />
       </main>
-      <SiteFooter signIn={!site} />
+      <SiteFooter signIn={!site} contract={site} />
     </div>
   )
 }

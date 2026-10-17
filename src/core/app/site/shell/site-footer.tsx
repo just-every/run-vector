@@ -4,7 +4,7 @@ import { links } from './links'
 
 /** The footer on every public page: the lockup, the same links as the header and the licence. Like the header, it drops
  *  Sign in on pages for someone already signed in. */
-export function SiteFooter({ signIn = true }: { signIn?: boolean }) {
+export function SiteFooter({ signIn = true, contract = false }: { signIn?: boolean; contract?: boolean }) {
   return (
     <HydrationUnit>
       <footer className="vx-footer">
@@ -16,6 +16,7 @@ export function SiteFooter({ signIn = true }: { signIn?: boolean }) {
             </a>
             <nav aria-label="Footer">
               <a href={links.docs}>Docs</a>
+              {contract ? <a href={links.contract}>Contract</a> : null}
               <a href={links.source}>Source</a>
               {signIn ? <a href={links.signIn}>Sign in</a> : null}
               <a className="vx-pill vx-pill--outline" href={links.licence}>MIT licence</a>

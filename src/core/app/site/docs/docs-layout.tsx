@@ -7,9 +7,9 @@ import { DocsNav } from './docs-nav';
 // page list, the reading column and, on a page, its contents.
 export function DocsLayout({ current, aside, children, site = false }: { site?: boolean; current?: string; aside?: ReactNode; children: ReactNode }) {
   return (
-    <SitePage signIn={!site} current="docs" className="vx-docs-site">
+    <SitePage signIn={!site} contract={site} current="docs" className="vx-docs-site">
       <div className="vx-wrap vx-docs-grid">
-        <DocsNav current={current} />
+        <DocsNav current={current} site={site} />
         <div className="vx-docs-main">{children}</div>
         <HydrationUnit><aside className="vx-docs-aside">{aside}</aside></HydrationUnit>
       </div>

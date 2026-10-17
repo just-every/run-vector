@@ -1,8 +1,9 @@
 import { HydrationUnit } from '../../../../base/hydration/unit'
+import { links } from '../shell/links';
 import { docsSections } from './pages';
 
 // Every published page by section; the current one is marked. On phones it folds into "All docs".
-export function DocsNav({ current }: { current?: string }) {
+export function DocsNav({ current, site = false }: { current?: string; site?: boolean }) {
   const list = (
     <HydrationUnit>
       <nav className="vx-docs-nav" aria-label="Docs">
@@ -19,6 +20,7 @@ export function DocsNav({ current }: { current?: string }) {
             </ul>
           </div>
         ))}
+        {site ? <div className="vx-docs-nav-section"><ul><li><a href={links.contract}>Contract</a></li></ul></div> : null}
       </nav>
     </HydrationUnit>
   );

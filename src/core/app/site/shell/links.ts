@@ -4,6 +4,7 @@ const source = 'https://github.com/just-every/run-vector'
 export const links = {
   home: '/',
   docs: '/docs',
+  contract: '/contract',
   source,
   installer: '/docs/install',
   licence: `${source}/blob/main/LICENSE`,
