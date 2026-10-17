@@ -84,6 +84,9 @@ export function useListPreferences<
   if (queue.current === null) queue.current = createPreferenceWriteQueue();
 
   const initial = useInitialResource(`/api/preferences/${surface}`, preferenceSchema);
+  // A mounted list consumes its initial receipt once. Route navigation replaces
+  // the provider receipt; it must not unload already-restored list controls.
+  const initialAtMount = useRef(initial);
   const [snapshot, setSnapshot] = useState(() => {
     const snapshot = initialSnapshot(surface, defaultsRef.current);
     return initial === null ? snapshot : { ...snapshot, phase: 'ready' as const,
@@ -101,7 +104,7 @@ export function useListPreferences<
   );
 
   useEffect(() => {
-    if (initial !== null && loadAttempt === 0) return;
+    if (initialAtMount.current !== null && snapshotRef.current.surface === surface && loadAttempt === 0) return;
     const request = ++loadSequence.current;
     const controller = new AbortController();
     const current = snapshotRef.current;
@@ -158,7 +161,7 @@ export function useListPreferences<
     });
 
     return () => controller.abort();
-  }, [loadAttempt, publish, surface, initial]);
+  }, [loadAttempt, publish, surface]);
 
   const visible =
     snapshot.surface === surface

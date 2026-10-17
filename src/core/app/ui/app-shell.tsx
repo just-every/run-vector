@@ -132,6 +132,10 @@ function AppShellContent({ children }: AppShellProps) {
         return
       }
       if (paletteOpen) return
+      if (event.target instanceof HTMLElement && event.target.closest('dialog, [role="dialog"]')) {
+        clearGo()
+        return
+      }
       const action = globalShortcut({
         key: event.key,
         metaKey: event.metaKey,

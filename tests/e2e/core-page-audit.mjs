@@ -10,7 +10,7 @@ export async function pageAudit(page, base, issue, evidence, record) {
   for (const path of ['/app', '/app/my-work', '/app/issues', '/app/board', '/app/projects', '/app/cycles', '/app/inbox', '/app/search', '/app/new-issue', '/app/issues/' + issue]) {
     await beforePrivateNavigation(page, base + path);
     await page.goto(base + path);
-    await page.locator('main').first().waitFor();
+    await page.locator('main:visible').first().waitFor();
     await settleReads(page);
     await page.evaluate(() => document.fonts.ready);
     await page.evaluate(source => {

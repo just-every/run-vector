@@ -18,9 +18,13 @@ export const verificationShards = {
     commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
       'test:deployment'],
   },
-  'worker-1': { commands: [['test:worker', '--shard=1/3']] },
-  'worker-2': { commands: [['test:worker', '--shard=2/3']] },
-  'worker-3': { commands: [['test:worker', '--shard=3/3']] },
+  // Keep Vitest's complete file partition; each runner owns only its shard.
+  'worker-1': { commands: [['test:worker', '--shard=1/6']] },
+  'worker-2': { commands: [['test:worker', '--shard=2/6']] },
+  'worker-3': { commands: [['test:worker', '--shard=3/6']] },
+  'worker-4': { commands: [['test:worker', '--shard=4/6']] },
+  'worker-5': { commands: [['test:worker', '--shard=5/6']] },
+  'worker-6': { commands: [['test:worker', '--shard=6/6']] },
   site: { browser: true, commands: ['test:public-site'] },
   runtime: { browser: true, commands: ['build', 'test:runtime'] },
   // rer verify includes the adapter's full build checks, followed by Base's
@@ -28,7 +32,11 @@ export const verificationShards = {
   delivery: { browser: true, commands: ['verify'] },
   ownership: {
     browser: true,
-    commands: ['build', 'test:wave-b', 'test:base-auth', 'test:access', 'test:mutation-refresh'],
+    commands: ['build', 'test:wave-b', 'test:base-auth'],
+  },
+  access: {
+    browser: true,
+    commands: ['build', 'test:access', 'test:mutation-refresh'],
   },
   imports: {
     browser: true, native: true,

@@ -28,6 +28,8 @@ export const bulkIssueInputSchema = z
         projectId: z.string().length(26).nullable().optional(),
         cycleId: z.string().length(26).nullable().optional(),
         labelIds: z.array(z.string().length(26)).optional(),
+        estimate: z.number().int().min(1).max(100).nullable().optional(),
+        dueDate: z.string().date().nullable().optional(),
       })
       .strict()
       .refine(

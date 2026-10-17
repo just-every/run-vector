@@ -1,4 +1,5 @@
-import type { Dispatch, SetStateAction } from "react";
+import { useHydrated } from '../../../app/initial-resources';
+import { useLayoutEffect, useRef, type Dispatch, type SetStateAction } from "react";
 import type { IssueListData } from "../list-schema";
 import {
   issueGroups,
@@ -13,6 +14,7 @@ export function IssueTable({
   onOpen,
   focused,
   setFocused,
+  ownedFocus,
 }: {
   data: IssueListData;
   grouping: string;
@@ -21,24 +23,40 @@ export function IssueTable({
   onOpen: (id: string) => void;
   focused: string;
   setFocused: (id: string) => void;
+  ownedFocus: { current: string | null };
 }) {
+  const hydrated = useHydrated();
+  const table = useRef<HTMLDivElement>(null);
+  const groups = issueGroups(data, grouping);
+  const ordered = groups.flatMap((group) => group.issues);
+  useLayoutEffect(() => {
+    const next = ordered.some((row) => row.identifier === focused) ? focused : ordered[0]?.identifier ?? "";
+    if (next !== focused) setFocused(next);
+    // Re-grouping can replace a row's DOM node. Restore only focus actually
+    // owned by a row; filters, dialogs and other controls keep their focus.
+    if (ownedFocus.current && !table.current?.closest("[hidden]")) {
+      const retained = ordered.some((row) => row.identifier === ownedFocus.current) ? ownedFocus.current : next;
+      if (retained) document.getElementById(`issue-row-${retained}`)?.focus();
+      else ownedFocus.current = null;
+    }
+  }, [data, grouping, focused, setFocused, ownedFocus]);
   function keyDown(event: React.KeyboardEvent, row: IssueRow) {
-    if (!data || event.target !== event.currentTarget) return;
+    if (event.target !== event.currentTarget || event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.key === "x" || event.key === "X") {
       event.preventDefault();
       setSelection((current) => toggleIssueSelection(current, row));
     }
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
       event.preventDefault();
-      const index = data.issues.findIndex(
+      const index = ordered.findIndex(
           (r) => r.identifier === row.identifier,
         ),
         next =
-          data.issues[
+          ordered[
             Math.max(
               0,
               Math.min(
-                data.issues.length - 1,
+                ordered.length - 1,
                 index + (event.key === "ArrowDown" ? 1 : -1),
               ),
             )
@@ -50,11 +68,12 @@ export function IssueTable({
     }
   }
   return (
-    <>
+    <div ref={table}>
       {data.issues.length > 0 && (
         <label className="issues-select-page">
           <input
             type="checkbox"
+            disabled={!hydrated}
             checked={data.issues.every((r) => selection.has(r.identifier))}
             onChange={(e) =>
               setSelection((current) => {
@@ -70,7 +89,7 @@ export function IssueTable({
           Select this page
         </label>
       )}
-      {issueGroups(data, grouping).map((group) => (
+      {groups.map((group) => (
         <section className="issues-group" key={group.key}>
           {grouping !== "none" && (
             <h2>
@@ -98,6 +117,7 @@ export function IssueTable({
                   <label className="issues-selection">
                     <input
                       type="checkbox"
+                      disabled={!hydrated}
                       aria-label={`Select ${issue.identifier}`}
                       checked={selection.has(issue.identifier)}
                       onChange={() =>
@@ -108,8 +128,11 @@ export function IssueTable({
                     />
                   </label>
                   <button
+                    disabled={!hydrated}
                     className={`issues-row${focused === issue.identifier ? " is-focused" : ""}`}
                     id={`issue-row-${issue.identifier}`}
+                    data-issue-identifier={issue.identifier}
+                    tabIndex={issue.identifier === (focused || ordered[0]?.identifier) ? 0 : -1}
                     onFocus={() => setFocused(issue.identifier)}
                     onKeyDown={(event) => keyDown(event, issue)}
                     onClick={() => onOpen(issue.identifier)}
@@ -163,6 +186,6 @@ export function IssueTable({
           </div>
         </section>
       ))}
-    </>
+    </div>
   );
 }

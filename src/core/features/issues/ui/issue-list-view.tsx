@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ApiError, useApiResource } from "../../../app/api-client";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import type { IssueListData, IssueListQuery } from "../list-schema";
@@ -7,6 +7,8 @@ import { IssueFilters } from "./issue-filters";
 import { IssueBoard } from "./issue-board";
 import { IssueTable } from "./issue-table";
 import { IssueBulk } from "./issue-bulk";
+import { IssueKeyboard } from "./issue-keyboard";
+import { useIssueRowFocus } from "./issue-keyboard-focus";
 import { refreshIssueSelection, type IssueRow } from "./issue-selection";
 import { SaveView } from "../../views/ui/saved-views";
 
@@ -59,6 +61,8 @@ export function IssueListView({
   const options = denied ? null : optionResource.data;
   const [selection, setSelection] = useState(new Map<string, IssueRow>());
   const [focused, setFocused] = useState("");
+  const root = useRef<HTMLElement>(null);
+  const ownedFocus = useIssueRowFocus(root);
   const [boardColumn, setBoardColumn] = useState("");
   const [boardNotices, setBoardNotices] = useState(new Map<string, string>());
   const [move, setMove] = useState<{
@@ -69,10 +73,6 @@ export function IssueListView({
     statusName: string;
   } | null>(null);
   useEffect(() => {
-    if (visible && !visible.issues.some((row) => row.identifier === focused))
-      setFocused(visible.issues[0]?.identifier ?? "");
-  }, [visible, focused]);
-  useEffect(() => {
     if (denied) {
       setSelection(new Map());
       setBoardNotices(new Map());
@@ -80,8 +80,19 @@ export function IssueListView({
     } else if (visible)
       setSelection((current) => refreshIssueSelection(current, visible.issues));
   }, [visible, denied]);
+  function updatedSelection(issues: Array<{ identifier: string; version: number }>) {
+    setSelection((current) => {
+      const next = new Map(current);
+      issues.forEach((receipt) => {
+        const row = next.get(receipt.identifier);
+        if (row) next.set(receipt.identifier, { ...row, version: receipt.version });
+      });
+      return next;
+    });
+  }
   return (
     <main
+      ref={root}
       className="issues-browser"
       // The shown query and its load state, for assistive checks and tests.
       data-list-query={issueListSearch(query)}
@@ -180,6 +191,8 @@ export function IssueListView({
           <p className="issues-count">
             {visible.total} {visible.total === 1 ? "issue" : "issues"}
           </p>
+          {layout === "list" && <IssueKeyboard root={root} rows={visible.issues} selection={selection}
+            focused={focused} options={options} onRefresh={reload} onSuccess={updatedSelection} />}
           <IssueBulk
             selection={selection}
             options={options}
@@ -192,20 +205,7 @@ export function IssueListView({
                 return next;
               })
             }
-            onSuccess={(issues) =>
-              setSelection((current) => {
-                const next = new Map(current);
-                issues.forEach((receipt) => {
-                  const row = next.get(receipt.identifier);
-                  if (row)
-                    next.set(receipt.identifier, {
-                      ...row,
-                      version: receipt.version,
-                    });
-                });
-                return next;
-              })
-            }
+            onSuccess={updatedSelection}
           />
           {layout === "board" ? (
             options ? (
@@ -257,6 +257,7 @@ export function IssueListView({
               onOpen={onOpen}
               focused={focused}
               setFocused={setFocused}
+              ownedFocus={ownedFocus}
             />
           )}
           {!visible.issues.length && (

@@ -578,6 +578,8 @@ try {
   const externalRequests = [],
     classifiedConsole = [];
   let expectedConflictUrl = null;
+  let expectedBulkConflictUrl = null;
+  const classifiedBulkConsole = [];
   await context.route("**/*", async (route) => {
     if (new URL(route.request().url()).origin !== base) {
       externalRequests.push(route.request().url());
@@ -601,6 +603,14 @@ try {
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => {
     if (m.type() !== "error") return;
+    // The keyboard flow deliberately submits one stale bulk version and
+    // asserts its exact 409 response, unchanged issues, and explicit retry.
+    if (expectedBulkConflictUrl && m.location().url === expectedBulkConflictUrl &&
+        /^Failed to load resource: the server responded with a status of 409(?: \([^)]*\))?$/.test(m.text()) &&
+        classifiedBulkConsole.length === 0) {
+      classifiedBulkConsole.push({ url: m.location().url, text: m.text(), expected: "Deliberate stale bulk POST409" });
+      return;
+    }
     if (
       expectedConflictUrl &&
       m.location().url === expectedConflictUrl &&
@@ -648,7 +658,9 @@ try {
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
   await currentJourney(page, context, base, ids.flow, evidence, record);
+  expectedBulkConflictUrl = `${base}/api/issues/bulk`;
   await keyboardJourney(page, context, base, record);
+  expectedBulkConflictUrl = null;
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
@@ -1424,7 +1436,7 @@ try {
         originalExpectedVersion: editBefore.version,
         conflictStatus: conflictResponse.status(),
         concurrentVersion: concurrentIssue.version,
-        classifiedConsole,
+        classifiedConsole: [...classifiedConsole, ...classifiedBulkConsole],
         explicitReload: true,
         browserCreated: {
           identifier: browserCreated.identifier,
@@ -1482,7 +1494,7 @@ try {
   assert.deepEqual(externalRequests, []);
   record(
     "RENDER-BROWSER",
-    "Hydration and internal navigation retain performance.timeOrigin; UI issue/comment/link persistence works; raw HTML is removed; only the intentional PATCH409 resource console event is classified; no unexpected page/console/request errors or external URL fetches; desktop/mobile screenshots captured.",
+    "Hydration and internal navigation retain performance.timeOrigin; UI issue/comment/link persistence works; raw HTML is removed; only the intentional stale-edit PATCH409 and stale-bulk POST409 resource console events are classified; no unexpected page/console/request errors or external URL fetches; desktop/mobile screenshots captured.",
   );
   await page.setViewportSize({ width: 1440, height: 1000 });
   const browserSignoutPromise = page.waitForResponse(

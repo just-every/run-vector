@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "1a128ea0bea16cfc1895d574e06941751569f549000a65c522c2227a9cd81002",
+      "sha256": "cef4d6809329af3ddc20dd5bf8606db22af15ff332ccf60a6d919f128bac55dd",
       "executable": false
     },
     "DEMO.md": {
@@ -790,6 +790,158 @@
     },
     "evidence/issue-writing/ISSUE-026/rendered-390.png": {
       "sha256": "3bd28418e9971419f86c6f110135e83f2b2dc6fc38eaafc5e0445f56b4fcc188",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/deep-link-1440.png": {
+      "sha256": "154e7e823eba0acc6bf364a1cb9e457729644418298eddd4f393fd8ad3884f5f",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/deep-link-390.png": {
+      "sha256": "b809bb421b07f9a1c6b005db783bc999d757bad4468e80a0d7ebaf948e0a0417",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/detail-1440.png": {
+      "sha256": "841466ad2008cd72c66e9f0bd66af18131eb7e4b7ba42d6a3f5377feb375728d",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/detail-390.png": {
+      "sha256": "b809bb421b07f9a1c6b005db783bc999d757bad4468e80a0d7ebaf948e0a0417",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/returned-focus-1440.png": {
+      "sha256": "20e75b7f14755192210cc7fcd361dccc8654a99bdfe21a6e2d4354f19080191c",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/returned-focus-390.png": {
+      "sha256": "7280a21ce2bcbb78a2ed034edbb94826ab5c2bf8fa91bfd7bdd81f9576db29f8",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/saved-view-selection-1440.png": {
+      "sha256": "81df897052138ce971621aef76814b1d66dccefccc459ebcc6daefaea5b774ae",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/saved-view-selection-390.png": {
+      "sha256": "c6ea36c87c64932a33ea91858946231fc0da63e9582a68ef966210f7fd18563c",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/selection-1440.png": {
+      "sha256": "2c4bf0edac8d59ba48dd8761b11e174c4cbb1b06370056e6bcaf876447cbc9ff",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-003/selection-390.png": {
+      "sha256": "daab571ff3da0f1847e3d953e84887cf814ec16453d9cd3f7c5a328bc68b2330",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/assignee-1440.png": {
+      "sha256": "a484f19fb4e06e2377f23975108fa68eb85af2d1fe8c4bfa0ab43d5e65c5ec4a",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/assignee-390.png": {
+      "sha256": "bd2d46134a6afb2c3cd92062e1ac44226382c9ecf0478bec8d491b9eed448ce4",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/due-date-1440.png": {
+      "sha256": "0753a83e19dfb60b95c0af327e26004118187189a4ef5ab6d4481abdff3d88c9",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/due-date-390.png": {
+      "sha256": "994dfca5c615a20a5b1032de8686f87eda004169182eab35a860838c844f2f01",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/estimate-1440.png": {
+      "sha256": "a139ca6d4dc4557d2f8533a8038319054df9968440a500f7b80e70ff103f719c",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/estimate-390.png": {
+      "sha256": "d317205a3a3dcf55fdd49aa5e4c8d7a77b755dacfb4492a482fbda5588ade0ab",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/help-1440.png": {
+      "sha256": "b11a10b445a426539193e3ead0290c317f2e9dc99af37df9b9d112dcdbfc5981",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/help-390.png": {
+      "sha256": "7a7b6fc778770e060610b9db39211297ab22f10b91100dc1478838792118712d",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/help-end-390.png": {
+      "sha256": "ff77adcfdf850ff8ca4643d74f8e1930293bdd56fb87b33e80bd3d7d185f4823",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/labels-1440.png": {
+      "sha256": "5d0999e038161f5978dd76e4a528b9afd5d9ddb9f396988026bc85f8b0e0d437",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/labels-390.png": {
+      "sha256": "e527126c10bab1de8cb28e37e41c05a20283992cf71c6fd8f222cf13ad4bd792",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/move-team-1440.png": {
+      "sha256": "ba03f8344c73cdd781c1ebb5d9323790f1f18ddb95edd32ea2e5505e708e00b9",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/move-team-390.png": {
+      "sha256": "1182a7b21ce84eaa4cee9f83430ecbc7162a952697506493ac46bad3ff4a1a05",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/priority-1440.png": {
+      "sha256": "dca8e88e5affaf66d472501fda81fab02da8a1abb329b6dcd779983fcfc292aa",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/priority-390.png": {
+      "sha256": "a4debb9df3000ecc32d595de44eb4dab68e7bb055a7036b3c6de7151e1a23ad3",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/status-1440.png": {
+      "sha256": "aa917135aceb7f869b34d66e76719c2790f4e12a83e79c449f16195328c0b30b",
+      "executable": false
+    },
+    "evidence/keyboard-issues/CMD-004/status-390.png": {
+      "sha256": "e84681a5293767c902a2e14396c131b4309e44ff5664be96ae854f94e1eeab08",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/atomic-conflict-1440.png": {
+      "sha256": "badc964735dc04795a8c574f8d0b621844909422bcaddc47fe95a334aa7db959",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/atomic-conflict-390.png": {
+      "sha256": "1650c789f13d50d3ad57368991562e6ad40d654f15e772387acde6cf2fa1aada",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/conflict-review-1440.png": {
+      "sha256": "f42f2c6439643eaee2148497153c3713fca9184c15a223ad428706c5792fb309",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/conflict-review-390.png": {
+      "sha256": "260e3751c86e7f227f61c3c762698b4167c0c9d062f9ee418e9efd01e47c442c",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/conflict-review-end-390.png": {
+      "sha256": "0061f933ed222a861ccfb6d0346e8d1b8527fb368755a1fe348dd1a060e73d50",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/pointer-cycle-1440.png": {
+      "sha256": "3da81dc73ea1ea9e60278fd8a59b265f1754520b53c719f5e9018a471e25cf6b",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/pointer-cycle-390.png": {
+      "sha256": "1e2b72176bf7073b2eb9edcb57c2ddd0b488c0adb726b7646ec2e2786fa8a41e",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/pointer-project-1440.png": {
+      "sha256": "b892d02169b3b2d1b0cbefbc790af65cc726ee29e28fa85a2c1c59646385e3ba",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/pointer-project-390.png": {
+      "sha256": "2b03760f8dd835baf5cc1eb6a757afe4ae854d093a794f00549d90a7b70ee476",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/selected-bulk-1440.png": {
+      "sha256": "388b6f479650261ccfcfb2c695454e6bb6ca193b922bc2f6edde6d67fe4e38cb",
+      "executable": false
+    },
+    "evidence/keyboard-issues/VIEW-004/selected-bulk-390.png": {
+      "sha256": "8dea3846c12f1b55db19e2025052bef2c5c7429e43fb8477cd1342cc845361e2",
       "executable": false
     },
     "HANDOVER.md": {
@@ -1421,7 +1573,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "174ce59f89d9d66b7344db9efaf04db56a901458c1edf846c513e51b7b968c55",
+      "sha256": "86536c71777f0450acff1ef6696e7e98bc05b9c253ddaf938bdeed002ee12494",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -1909,7 +2061,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
-      "sha256": "67bf2d5d02f7622e66b80be73cf96a42d18660ccffa92ca967e1e0ad25815d84",
+      "sha256": "b2ad7b96ef0439a082485500b25105b690c6a562a1be12c4089f04dbe918f5d8",
       "executable": false
     },
     "src/core/app/ui/label-chip.tsx": {
@@ -1921,7 +2073,7 @@
       "executable": false
     },
     "src/core/app/vite-development-path.ts": {
-      "sha256": "bc65bf4b9b6e9828d0c7ec4009d3a2eb1d05c882d2a6bac3a6fa3f39ba6a6508",
+      "sha256": "ef912d3032992dec70490fa14a726f8bcd87cb18097c0d4f472a9b98b179d620",
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
@@ -2045,7 +2197,7 @@
       "executable": false
     },
     "src/core/features/bulk-edit/input.ts": {
-      "sha256": "0e41f6c89c338eba8e4098ff1b695b014982e2628f7e4fa07095dd7b53ad7425",
+      "sha256": "cb8ec37163fba4daec35d3ae84f0b12bec9c3ba92bd961171b11e692fec17131",
       "executable": false
     },
     "src/core/features/bulk-edit/repository.ts": {
@@ -2857,7 +3009,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-bulk.tsx": {
-      "sha256": "e658da6645194576b54aec7eec537fea921234a3a955bf6f56cae2317a8e1647",
+      "sha256": "33e384598b5753cf4ae7bb49e6fbfa64322d17a379ce03fa9ec125fc5aa1b926",
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
@@ -2884,6 +3036,46 @@
       "sha256": "a0a56a73ffa1dd5c7946068e4610b3331853ae278aef9d6ce1bf1c33289d9a4e",
       "executable": false
     },
+    "src/core/features/issues/ui/issue-keyboard-actions.ts": {
+      "sha256": "dad8bf62059ace3461536f91ce72160ee538e5fa621103589acfe5a516561e89",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-dialog.tsx": {
+      "sha256": "45d08ff68e4705757f1906300d94be4357850bd918a37bfa0eefeff5b4c2f985",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-fields.tsx": {
+      "sha256": "d8b5a9969e8e6396c67b89bdd585d5928c4597fc131fee212f6a4140cc942b10",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-focus.ts": {
+      "sha256": "d09b9bee0db4e95cbc2fcf19ad5e82ee1d2aca6b99afa122484a2e933dbd6c69",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-help.tsx": {
+      "sha256": "04f5fb7b58e6c61dfbe6d842d420dd1f62fa55e23769b95a929beb4add3c80c7",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-modal.tsx": {
+      "sha256": "09598fa7c73a201a73dc2a864706e25d38ee39f5ccc8edf221b76c909449dbe9",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-review.tsx": {
+      "sha256": "143c45f7663c5ead175da5e1437f8aa2afd8ccf3d661e25bba3d18817a89ab9d",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard-team.tsx": {
+      "sha256": "b27fa2507fddec7ce9a9c6fcd3b3b2e7dd51089644d6916ba558bb821bf22592",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard.css": {
+      "sha256": "d5f6d5ef6538a8f3f2505559271a67d1ca15ac8a15ecca6f6300563bd580df59",
+      "executable": false
+    },
+    "src/core/features/issues/ui/issue-keyboard.tsx": {
+      "sha256": "f90d12cd935d945454f6c242eac400eb63b92fffff33f8675fcfddaf9b40a471",
+      "executable": false
+    },
     "src/core/features/issues/ui/issue-labels.tsx": {
       "sha256": "094b9b450a1e89c90d019d1c12d247311fd91876b60bb41f6f7dc408860987e8",
       "executable": false
@@ -2897,7 +3089,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-list-view.tsx": {
-      "sha256": "9766e4d8f4a00ab1e2f5427adf049598c70105c4e3370d1fbd88c0ac4e12f170",
+      "sha256": "4656cfff08c86c213897704cd6341a87299272bbca64e769fd8488ad9cc185cf",
       "executable": false
     },
     "src/core/features/issues/ui/issue-parent-picker.tsx": {
@@ -2921,7 +3113,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-table.tsx": {
-      "sha256": "4e53d22e2230373f99579125af1f31c433aa1389d0be5baaf589fdea9aa49501",
+      "sha256": "d7d88b3dd61b89ea84ccd94b130bdbc1bf0f364e561aa9d3d098f35d3ffe1524",
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.css": {
@@ -2929,7 +3121,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.tsx": {
-      "sha256": "8a1cdd8b00a149095828dfecd70aace89753a29016d8a66b79090fd5c152be6d",
+      "sha256": "9c4b4415106576a2c9e841c936fb7745b37691189bf039a5bf12036a4dcefda0",
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
@@ -3433,7 +3625,7 @@
       "executable": false
     },
     "src/core/features/views/ui/use-list-preferences.ts": {
-      "sha256": "2d78dcbe8e0889923ce91d992e4c206d10e17ec52066b61fc4891f26e22259f1",
+      "sha256": "baeda64305fae0d4c0ce1fd2c7f2014a7c298001e4f401df74eee36348fd8866",
       "executable": false
     },
     "src/core/features/workspace/repository.ts": {
@@ -3521,15 +3713,15 @@
       "executable": false
     },
     "src/routes/app.issues.$identifier.tsx": {
-      "sha256": "1c9045d58570e48efa5095de703ebdb08a11e6e3cffc50f94f1eb668b7c7f391",
+      "sha256": "68a0ae9c7266cb98392dc15c92f334a9ade21df2853c9e62590b565241913971",
       "executable": false
     },
     "src/routes/app.issues.index.tsx": {
-      "sha256": "4797d204b3fcbd6f3eee10ae80182680cd7ce066fe891f150eba70d0fd4a9b4a",
+      "sha256": "7cebfc5d994ffe9b1542614a0e496bcd7cfe05e51a7c8190ef77419373da9e64",
       "executable": false
     },
     "src/routes/app.issues.tsx": {
-      "sha256": "9294be201ccc9a4e6f41a882738c6887d855f7a79c4dd877a0c75d0f50d6c451",
+      "sha256": "35b9ccd083050fde8254be11f535b673658cea1e36d865151ff9bda149fcca8b",
       "executable": false
     },
     "src/routes/app.my-work.$identifier.tsx": {
@@ -3697,7 +3889,7 @@
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
-      "sha256": "405327f47eb7f4902499e35fa51a20cdc71cb4714e6368347c6b50063f2a03d9",
+      "sha256": "80e5d7de472e5ad4aa078ea70d0c58fe23deac2da041b5bb6f529f86cf0d2648",
       "executable": false
     },
     "tests/e2e/collaboration-delivery-fixture.mjs": {
@@ -3761,15 +3953,15 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "785a5741f7acb0073ec910a4ad6b056ecbca873475fcdf6ab5dfea0613d77c0e",
+      "sha256": "ec7c1c2c2ec808cbe68085b9599f47a70d1b9e8f2e7ceb9c6fc0d18dc5eda8df",
       "executable": false
     },
     "tests/e2e/core-page-audit.mjs": {
-      "sha256": "3ccab207e05ff3817c741a0de4a6140bc3b58c668152cc2cc11873c95e763ff2",
+      "sha256": "fb3cfd3680bcbe6340e20d6d530aadeb34596a2f494c89f4541851008ba8408b",
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "12bd52ffdba05b303c4b4fe43cd1ee42c2c4d5247cb189bb617b7428d3cc23cf",
+      "sha256": "6b0660d25a56ab3405d8ff3725952e7aacdd26fc40015e96b1aefe14435712a4",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {
@@ -3973,7 +4165,7 @@
       "executable": false
     },
     "tests/e2e/ui-controls-checks.mjs": {
-      "sha256": "0feaf25473e2ea8c639adec66de85e71cacf69d85a26eefb3470257575d2aea3",
+      "sha256": "12d9e3429b2cfa5561750cc6169c0de3e066cf6c1ae268ea30841c6c2d4b245c",
       "executable": false
     },
     "tests/e2e/ui-failure-diagnostics.mjs": {

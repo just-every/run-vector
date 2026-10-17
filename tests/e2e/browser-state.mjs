@@ -6,7 +6,7 @@ import { openDisclosures } from "./ui-controls-checks.mjs";
 // single representative accessibility/overflow audit.
 export function createStateRecorder(page, evidence, results) {
   return async function recordState(name) {
-    await page.locator("main").waitFor();
+    await page.locator("main:visible").waitFor();
     await page.waitForFunction(() =>
       ![...document.querySelectorAll("main [role=status]")].some((element) =>
         /^Loading|^Saving(?:…|\.\.\.| commitment)/.test(element.textContent.trim()),

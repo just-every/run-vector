@@ -1,0 +1,48 @@
+.issues-browser .issues-row.is-focused { box-shadow: inset 4px 0 var(--app-cobalt-ink); }
+.issues-browser .issues-row:focus-visible {
+  outline: 2px solid var(--app-cobalt-ink);
+  outline-offset: -2px;
+  background: var(--app-field);
+}
+.issue-keyboard-dialog {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: calc(100dvh - 3rem);
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 8px;
+  color: var(--app-ink);
+  background: var(--app-card);
+  font: inherit;
+}
+.issue-keyboard-dialog::backdrop { background: rgb(0 0 0 / 45%); }
+.issue-keyboard-dialog h2 { margin: 0 0 1rem; font-size: 1.25rem; }
+.issue-keyboard-dialog p { overflow-wrap: anywhere; }
+.issue-keyboard-dialog form, .issue-keyboard-dialog label { display: grid; gap: 0.6rem; }
+.issue-keyboard-dialog form { margin: 1rem 0; }
+.issue-keyboard-dialog input, .issue-keyboard-dialog select, .issue-keyboard-dialog button {
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 4px;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  color: var(--app-ink);
+  background: var(--app-field);
+}
+.issue-keyboard-dialog :focus-visible { outline: 2px solid var(--app-cobalt-ink); outline-offset: 2px; }
+.issue-keyboard-dialog button { cursor: pointer; }
+.issue-keyboard-dialog button:disabled { opacity: 0.55; cursor: default; }
+.issue-keyboard-dialog fieldset { display: grid; gap: 0.5rem; border: 0; padding: 0; }
+.issue-keyboard-dialog fieldset label { display: flex; align-items: center; }
+.issue-keyboard-dialog input[type=checkbox] { width: 1.25rem; min-height: 1.25rem; }
+.issue-keyboard-dialog small { color: var(--app-body); }
+.issue-keyboard-dialog [role=alert] { color: var(--app-warn); }
+.issue-keyboard-help { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.8rem 1rem; }
+.issue-keyboard-help dt { font-family: var(--app-mono); }
+.issue-keyboard-help dd { margin: 0; }
+.issue-keyboard-review { border-top: 1px solid var(--app-line-strong); padding: 1rem 0; }
+.issue-keyboard-review ul { padding-left: 1.25rem; }
+.issue-keyboard-review li { overflow-wrap: anywhere; margin-bottom: 0.6rem; }
+.issue-keyboard-review li span { display: block; color: var(--app-body); font-size: 0.875rem; }
