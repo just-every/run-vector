@@ -7,6 +7,8 @@ const date = z.union([z.literal(""), z.iso.date()]).default("");
 export const issueListQuerySchema = z
   .object({
     q: z.string().trim().max(200).default(""),
+    // WORK-004: issues the signed-in member created or follows, for whoever views.
+    scope: z.enum(["all", "created", "subscribed"]).default("all"),
     category: z
       .enum([
         "all",

@@ -6,6 +6,7 @@ import { keyboardJourney } from './core-keyboard-journey.mjs';
 import { draftJourney } from './core-draft-journey.mjs';
 import { currentJourney } from './core-current-journey.mjs';
 import { threadsJourney } from './core-threads-journey.mjs';
+import { myWorkTabsJourney } from './core-my-work-tabs-journey.mjs';
 import { pageAudit } from './core-page-audit.mjs';
 import { localAuthArguments,localAuthSecret } from './outbox-session.mjs';
 import { confirmLink } from './outbox-session.mjs';
@@ -676,6 +677,7 @@ try {
   await withInvitedOperator(page, context, base, state, () => streamControlsJourney(page, context, base, record));
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await threadsJourney(page, context, base, state, ids.flow, evidence, record);
+  await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');

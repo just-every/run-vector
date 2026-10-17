@@ -65,10 +65,15 @@ export const browseGroup: Record<
     rowOrder: "t.name,t.id",
   },
 };
+const scopeSql = {
+  created: "EXISTS(SELECT 1 FROM issue_activity created WHERE created.issue_id=i.id AND created.kind='issue.created' AND created.actor_operator_id=?)",
+  subscribed: "EXISTS(SELECT 1 FROM issue_followers f WHERE f.issue_id=i.id AND f.operator_id=?)",
+};
 export function browseWhere(
   query: IssueListQuery,
   workspace: string,
   today: string,
+  actor: string,
 ) {
   const conditions = ["t.workspace_id=?"],
     values: string[] = [workspace];
@@ -76,8 +81,13 @@ export function browseWhere(
     conditions.push(`${column}=?`);
     values.push(value);
   };
+  if (query.scope !== "all") {
+    conditions.push(scopeSql[query.scope]);
+    values.push(actor);
+  }
   if (query.category !== "all") equal("s.category", query.category);
-  else if (query.status === "all") conditions.push("s.category<>'completed'");
+  // A personal scope lists every such issue; the general list hides completed.
+  else if (query.status === "all" && query.scope === "all") conditions.push("s.category<>'completed'");
   if (query.status !== "all") equal("s.id", query.status);
   if (query.priority !== "all") equal("i.priority", query.priority);
   if (query.q) {

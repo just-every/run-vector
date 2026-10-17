@@ -43,6 +43,7 @@ import { RequestBodyError } from "./input";
 import { admitRate } from "../features/auth/repository";
 import { updateIssueRoute } from "../features/issue-edit/routes";
 import { addDiscussionRoutes } from "../features/discussion/routes";
+import { myActivity } from "../features/my-work/activity";
 import { addLinkRoutes } from "../features/links/routes";
 import { Hono, type Context } from "hono";
 import { z } from "zod";
@@ -230,6 +231,15 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
         document?.workspace,
       ),
     );
+  });
+
+  app.get("/my-work/activity", async (context) => {
+    try {
+      return context.json(await myActivity(context.env.DB, context.get("operatorId")));
+    } catch (error) {
+      if (!(error instanceof IssueAccessError)) throw error;
+      return context.json({ error: error.code, message: error.message }, error.status);
+    }
   });
 
   app.get("/issues", async (context) => {

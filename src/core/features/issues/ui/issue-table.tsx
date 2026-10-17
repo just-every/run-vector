@@ -1,5 +1,5 @@
 import { useHydrated } from '../../../app/initial-resources';
-import { useLayoutEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import { useLayoutEffect, useRef, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import type { IssueListData } from "../list-schema";
 import {
   issueGroups,
@@ -15,6 +15,7 @@ export function IssueTable({
   focused,
   setFocused,
   ownedFocus,
+  rowAction,
 }: {
   data: IssueListData;
   grouping: string;
@@ -24,6 +25,7 @@ export function IssueTable({
   focused: string;
   setFocused: (id: string) => void;
   ownedFocus: { current: string | null };
+  rowAction?: (issue: IssueListData["issues"][number]) => ReactNode;
 }) {
   const hydrated = useHydrated();
   const table = useRef<HTMLDivElement>(null);
@@ -180,6 +182,7 @@ export function IssueTable({
                       )}
                     </span>
                   </button>
+                  {rowAction ? <span className="issues-row-action">{rowAction(issue)}</span> : null}
                 </li>
               ))}
             </ul>

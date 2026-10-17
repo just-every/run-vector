@@ -49,7 +49,7 @@ export async function listIssues(
 ): Promise<IssueListData> {
   const access = await browseActor(db, actor);
   const today = workspaceDate(now, access.timezone);
-  const { relation, values } = browseWhere(query, access.workspace_id, today);
+  const { relation, values } = browseWhere(query, access.workspace_id, today, actor);
   const group = browseGroup[query.grouping];
   const order = [group.rowOrder, browseSort[query.sort], "i.identifier ASC"]
     .filter(Boolean)
@@ -92,7 +92,7 @@ export async function listIssues(
   await browseActor(db, actor, access.workspace_id);
   const revision = await resultRevision(
     query,
-    access.workspace_id,
+    query.scope === "all" ? access.workspace_id : `${access.workspace_id}:${actor}`,
     today,
     (identity.results[0] as { revision: string }).revision,
   );

@@ -51,9 +51,14 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
   }
   const shared = [read('/api/views'), read('/api/notifications/count'), read('/api/mentions/options')]
   const path = url.pathname
-  const surface = path === '/app' || path.startsWith('/app/current') ? 'current'
+  const personal = path.match(/^\/app\/my-work\/(created|subscribed|activity)(?:\/([A-Z]{2,10}-[1-9][0-9]*))?$/)
+  const surface = personal ? null : path === '/app' || path.startsWith('/app/current') ? 'current'
     : path.startsWith('/app/my-work') ? 'my-work' : null
-  if (surface) {
+  if (personal?.[1] === 'activity') await Promise.all([read('/api/my-work/activity'), read('/api/options')])
+  else if (personal) {
+    const query = issueListQuerySchema.parse({ ...Object.fromEntries(url.searchParams), scope: personal[1] })
+    await Promise.all([read('/api/options'), read(issueListApiUrl(query)), personal[2] ? detail(personal[2]) : Promise.resolve()])
+  } else if (surface) {
     const options = read('/api/options')
     const data = await read('/api/' + surface) as { sections: Record<string, StreamItem[]> } | null
     const snapshot = admittedStreamSnapshot(workspace, operator)

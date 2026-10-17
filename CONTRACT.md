@@ -329,7 +329,7 @@ Local portable archive commands use the landed Base D1/R2 engine. Mapped CSV/JSO
 
 ### Target: My work
 
-- **WORK-004 — Created, Subscribed and Activity tabs.** Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue). Created and Subscribed take the same filters and display options as issue views and can be saved as views (VIEW-002); every tab applies OPS-001 and ROLE-002, has a 390px layout and appears in the mobile apps (MOBILE-001). *Acceptance:* a journey in which a member creates two issues, follows a third created by someone else and comments on a fourth, then finds the two in Created, the third in Subscribed and gone after Unfollow from its row, and the comment first in Activity; plus a private-team issue the member has lost access to, absent from every tab. *Status:* missing.
+- **WORK-004 — Created, Subscribed and Activity tabs.** Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue). Created and Subscribed take the same filters and display options as issue views and can be saved as views (VIEW-002); every tab applies OPS-001 and ROLE-002, has a 390px layout and appears in the mobile apps (MOBILE-001). *Acceptance:* a journey in which a member creates two issues, follows a third created by someone else and comments on a fourth, then finds the two in Created, the third in Subscribed and gone after Unfollow from its row, and the comment first in Activity; plus a private-team issue the member has lost access to, absent from every tab. *Status:* partial — `tests/worker/my-work-tabs.test.ts`, `tests/e2e/core-my-work-tabs-journey.mjs`; `evidence/my-work-tabs/WORK-004/` (Created, Subscribed with a row Unfollow, and Activity are implemented at desktop and 390px, Created and Subscribed take the issue-view filters, display options and Save view, and every tab reads only the member's workspace; private-team narrowing waits on ROLE-002 and the mobile apps on MOBILE-001).
 
 ### Target: Projects, initiatives and roadmaps
 
@@ -561,8 +561,8 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 72 | 32 | 0 | 104 |
-| Target and push further | 4 | 46 | 100 | 150 |
-| All | 76 | 78 | 100 | 254 |
+| Target and push further | 4 | 47 | 99 | 150 |
+| All | 76 | 79 | 99 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -663,7 +663,7 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 | `WORK-001` | Personal queue | published | done | `tests/worker/dependencies.test.ts` |  |
 | `WORK-002` | Personal defaults | published | done | `tests/worker/dependencies.test.ts` |  |
 | `WORK-003` | Cycle context | published | done | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/WORK-003/` |  |
-| `WORK-004` | Created, Subscribed and Activity tabs | target | missing |  | No implementation yet |
+| `WORK-004` | Created, Subscribed and Activity tabs | target | partial | `tests/worker/my-work-tabs.test.ts`, `tests/e2e/core-my-work-tabs-journey.mjs`; `evidence/my-work-tabs/WORK-004/` | Created, Subscribed with row Unfollow and Activity, with issue-view filters, display and Save view, at desktop and 390px; private-team narrowing waits on ROLE-002 and the mobile apps on MOBILE-001 |
 | `PROJ-001` | Project record | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Name, description, lead, target date, lifecycle, colour, icon and archiving; start date, priority, labels and project custom fields are absent from `src/core/platform/db/schema.ts` |
 | `PROJ-002` | Manual lifecycle | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Manual lifecycle by any operator; the Guest refusal is open with ROLE-003 and ROLE-008 |
 | `PROJ-003` | Project membership | published | partial | `src/core/features/administration/projects.ts` | Implemented; no test names the clause yet |

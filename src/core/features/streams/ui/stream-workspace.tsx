@@ -21,6 +21,7 @@ import { focusIssueRow } from "../../issues/ui/issue-browser-pane";
 import "../../issues/ui/issues-browser.css";
 import { FilterBar, CycleContext } from "./stream-controls";
 import { LoadingState, ErrorState, EmptyState } from "./stream-states";
+import { MyWorkTabs } from "../../my-work/ui/my-work-tabs";
 
 type StreamWorkspaceProps = {
   surface: "current" | "my-work";
@@ -187,6 +188,7 @@ function WorkspaceContent({
       className={`stream-workspace${selectedIdentifier ? " has-mobile-detail" : ""}`}
       aria-label={surface === "current" ? "Current" : "My work"}
     >
+      {surface === "my-work" ? <MyWorkTabs current="Assigned" /> : null}
       <header className="stream-header">
         <div>
           <p className="stream-overline">

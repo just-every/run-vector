@@ -34,9 +34,14 @@ import { Route as AppIssuesIndexRouteImport } from './routes/app.issues.index'
 import { Route as AppIssuesIdentifierRouteImport } from './routes/app.issues.$identifier'
 import { Route as AppMyWorkIndexRouteImport } from './routes/app.my-work.index'
 import { Route as AppMyWorkIdentifierRouteImport } from './routes/app.my-work.$identifier'
+import { Route as AppMyWorkActivityRouteImport } from './routes/app.my-work.activity'
+import { Route as AppMyWorkCreatedRouteImport } from './routes/app.my-work.created'
+import { Route as AppMyWorkSubscribedRouteImport } from './routes/app.my-work.subscribed'
 import { Route as AppProjectsIndexRouteImport } from './routes/app.projects.index'
 import { Route as AppProjectsProjectIdRouteImport } from './routes/app.projects.$projectId'
 import { Route as AppViewsViewIdRouteImport } from './routes/app.views.$viewId'
+import { Route as AppMyWorkCreatedIdentifierRouteImport } from './routes/app.my-work.created.$identifier'
+import { Route as AppMyWorkSubscribedIdentifierRouteImport } from './routes/app.my-work.subscribed.$identifier'
 import { Route as AppViewsViewIdIdentifierRouteImport } from './routes/app.views.$viewId.$identifier'
 
 const IndexRoute = IndexRouteImport.update({
@@ -164,6 +169,21 @@ const AppMyWorkIdentifierRoute = AppMyWorkIdentifierRouteImport.update({
   path: '/$identifier',
   getParentRoute: () => AppMyWorkRoute,
 } as any)
+const AppMyWorkActivityRoute = AppMyWorkActivityRouteImport.update({
+  id: '/activity',
+  path: '/activity',
+  getParentRoute: () => AppMyWorkRoute,
+} as any)
+const AppMyWorkCreatedRoute = AppMyWorkCreatedRouteImport.update({
+  id: '/created',
+  path: '/created',
+  getParentRoute: () => AppMyWorkRoute,
+} as any)
+const AppMyWorkSubscribedRoute = AppMyWorkSubscribedRouteImport.update({
+  id: '/subscribed',
+  path: '/subscribed',
+  getParentRoute: () => AppMyWorkRoute,
+} as any)
 const AppProjectsIndexRoute = AppProjectsIndexRouteImport.update({
   id: '/projects/',
   path: '/projects/',
@@ -179,6 +199,18 @@ const AppViewsViewIdRoute = AppViewsViewIdRouteImport.update({
   path: '/views/$viewId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppMyWorkCreatedIdentifierRoute =
+  AppMyWorkCreatedIdentifierRouteImport.update({
+    id: '/$identifier',
+    path: '/$identifier',
+    getParentRoute: () => AppMyWorkCreatedRoute,
+  } as any)
+const AppMyWorkSubscribedIdentifierRoute =
+  AppMyWorkSubscribedIdentifierRouteImport.update({
+    id: '/$identifier',
+    path: '/$identifier',
+    getParentRoute: () => AppMyWorkSubscribedRoute,
+  } as any)
 const AppViewsViewIdIdentifierRoute =
   AppViewsViewIdIdentifierRouteImport.update({
     id: '/$identifier',
@@ -208,6 +240,9 @@ export interface FileRoutesByFullPath {
   '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
+  '/app/my-work/activity': typeof AppMyWorkActivityRoute
+  '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
+  '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
@@ -215,6 +250,8 @@ export interface FileRoutesByFullPath {
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
+  '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
   '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
 }
 export interface FileRoutesByTo {
@@ -235,6 +272,9 @@ export interface FileRoutesByTo {
   '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
+  '/app/my-work/activity': typeof AppMyWorkActivityRoute
+  '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
+  '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current': typeof AppCurrentIndexRoute
@@ -242,6 +282,8 @@ export interface FileRoutesByTo {
   '/app/issues': typeof AppIssuesIndexRoute
   '/app/my-work': typeof AppMyWorkIndexRoute
   '/app/projects': typeof AppProjectsIndexRoute
+  '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
+  '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
   '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
 }
 export interface FileRoutesById {
@@ -267,6 +309,9 @@ export interface FileRoutesById {
   '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
+  '/app/my-work/activity': typeof AppMyWorkActivityRoute
+  '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
+  '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
@@ -274,6 +319,8 @@ export interface FileRoutesById {
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
+  '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
   '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
 }
 export interface FileRouteTypes {
@@ -300,6 +347,9 @@ export interface FileRouteTypes {
     | '/app/cycles/$cycleId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
+    | '/app/my-work/activity'
+    | '/app/my-work/created'
+    | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
     | '/app/views/$viewId'
     | '/app/current/'
@@ -307,6 +357,8 @@ export interface FileRouteTypes {
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
+    | '/app/my-work/created/$identifier'
+    | '/app/my-work/subscribed/$identifier'
     | '/app/views/$viewId/$identifier'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -327,6 +379,9 @@ export interface FileRouteTypes {
     | '/app/cycles/$cycleId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
+    | '/app/my-work/activity'
+    | '/app/my-work/created'
+    | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
     | '/app/views/$viewId'
     | '/app/current'
@@ -334,6 +389,8 @@ export interface FileRouteTypes {
     | '/app/issues'
     | '/app/my-work'
     | '/app/projects'
+    | '/app/my-work/created/$identifier'
+    | '/app/my-work/subscribed/$identifier'
     | '/app/views/$viewId/$identifier'
   id:
     | '__root__'
@@ -358,6 +415,9 @@ export interface FileRouteTypes {
     | '/app/cycles/$cycleId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
+    | '/app/my-work/activity'
+    | '/app/my-work/created'
+    | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
     | '/app/views/$viewId'
     | '/app/current/'
@@ -365,6 +425,8 @@ export interface FileRouteTypes {
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
+    | '/app/my-work/created/$identifier'
+    | '/app/my-work/subscribed/$identifier'
     | '/app/views/$viewId/$identifier'
   fileRoutesById: FileRoutesById
 }
@@ -554,6 +616,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppMyWorkIdentifierRouteImport
       parentRoute: typeof AppMyWorkRoute
     }
+    '/app/my-work/activity': {
+      id: '/app/my-work/activity'
+      path: '/activity'
+      fullPath: '/app/my-work/activity'
+      preLoaderRoute: typeof AppMyWorkActivityRouteImport
+      parentRoute: typeof AppMyWorkRoute
+    }
+    '/app/my-work/created': {
+      id: '/app/my-work/created'
+      path: '/created'
+      fullPath: '/app/my-work/created'
+      preLoaderRoute: typeof AppMyWorkCreatedRouteImport
+      parentRoute: typeof AppMyWorkRoute
+    }
+    '/app/my-work/subscribed': {
+      id: '/app/my-work/subscribed'
+      path: '/subscribed'
+      fullPath: '/app/my-work/subscribed'
+      preLoaderRoute: typeof AppMyWorkSubscribedRouteImport
+      parentRoute: typeof AppMyWorkRoute
+    }
     '/app/projects/': {
       id: '/app/projects/'
       path: '/projects'
@@ -574,6 +657,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/views/$viewId'
       preLoaderRoute: typeof AppViewsViewIdRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/app/my-work/created/$identifier': {
+      id: '/app/my-work/created/$identifier'
+      path: '/$identifier'
+      fullPath: '/app/my-work/created/$identifier'
+      preLoaderRoute: typeof AppMyWorkCreatedIdentifierRouteImport
+      parentRoute: typeof AppMyWorkCreatedRoute
+    }
+    '/app/my-work/subscribed/$identifier': {
+      id: '/app/my-work/subscribed/$identifier'
+      path: '/$identifier'
+      fullPath: '/app/my-work/subscribed/$identifier'
+      preLoaderRoute: typeof AppMyWorkSubscribedIdentifierRouteImport
+      parentRoute: typeof AppMyWorkSubscribedRoute
     }
     '/app/views/$viewId/$identifier': {
       id: '/app/views/$viewId/$identifier'
@@ -625,13 +722,41 @@ const AppIssuesRouteWithChildren = AppIssuesRoute._addFileChildren(
   AppIssuesRouteChildren,
 )
 
+interface AppMyWorkCreatedRouteChildren {
+  AppMyWorkCreatedIdentifierRoute: typeof AppMyWorkCreatedIdentifierRoute
+}
+
+const AppMyWorkCreatedRouteChildren: AppMyWorkCreatedRouteChildren = {
+  AppMyWorkCreatedIdentifierRoute: AppMyWorkCreatedIdentifierRoute,
+}
+
+const AppMyWorkCreatedRouteWithChildren =
+  AppMyWorkCreatedRoute._addFileChildren(AppMyWorkCreatedRouteChildren)
+
+interface AppMyWorkSubscribedRouteChildren {
+  AppMyWorkSubscribedIdentifierRoute: typeof AppMyWorkSubscribedIdentifierRoute
+}
+
+const AppMyWorkSubscribedRouteChildren: AppMyWorkSubscribedRouteChildren = {
+  AppMyWorkSubscribedIdentifierRoute: AppMyWorkSubscribedIdentifierRoute,
+}
+
+const AppMyWorkSubscribedRouteWithChildren =
+  AppMyWorkSubscribedRoute._addFileChildren(AppMyWorkSubscribedRouteChildren)
+
 interface AppMyWorkRouteChildren {
   AppMyWorkIdentifierRoute: typeof AppMyWorkIdentifierRoute
+  AppMyWorkActivityRoute: typeof AppMyWorkActivityRoute
+  AppMyWorkCreatedRoute: typeof AppMyWorkCreatedRouteWithChildren
+  AppMyWorkSubscribedRoute: typeof AppMyWorkSubscribedRouteWithChildren
   AppMyWorkIndexRoute: typeof AppMyWorkIndexRoute
 }
 
 const AppMyWorkRouteChildren: AppMyWorkRouteChildren = {
   AppMyWorkIdentifierRoute: AppMyWorkIdentifierRoute,
+  AppMyWorkActivityRoute: AppMyWorkActivityRoute,
+  AppMyWorkCreatedRoute: AppMyWorkCreatedRouteWithChildren,
+  AppMyWorkSubscribedRoute: AppMyWorkSubscribedRouteWithChildren,
   AppMyWorkIndexRoute: AppMyWorkIndexRoute,
 }
 

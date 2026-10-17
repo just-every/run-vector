@@ -26,7 +26,11 @@ type Props = {
   onReset?: () => void;
   onSwitchLayout?: () => void;
   onCreateView?: (viewId: string) => void;
+  description?: string;
+  before?: React.ReactNode;
+  rowAction?: (issue: IssueListData["issues"][number]) => React.ReactNode;
 };
+const scopeNotes = { created: "Only issues you created.", subscribed: "Only issues you follow." } as const;
 export function IssueListView({
   query,
   data,
@@ -41,6 +45,9 @@ export function IssueListView({
   onReset,
   onSwitchLayout,
   onCreateView,
+  description,
+  before,
+  rowAction,
 }: Props) {
   const denied =
     error instanceof ApiError && [401, 403, 404, 410].includes(error.status);
@@ -99,14 +106,16 @@ export function IssueListView({
       data-list-query={issueListSearch(query)}
       data-list-state={loading ? "loading" : "ready"}
     >
+      {before}
       <header className="issues-heading">
         <div>
           <h1>{title ?? (layout === "board" ? "Board" : "Issues")}</h1>
           <p>
-            {layout === "board"
+            {description ?? (layout === "board"
               ? "Work through one team’s workflow."
-              : "Browse issues beyond Current."}
+              : "Browse issues beyond Current.")}
           </p>
+          {query.scope !== "all" && !description ? <p className="issues-scope">{scopeNotes[query.scope]}</p> : null}
         </div>
         <a href="/app/new">New issue</a>
       </header>
@@ -260,6 +269,7 @@ export function IssueListView({
               focused={focused}
               setFocused={setFocused}
               ownedFocus={ownedFocus}
+              rowAction={rowAction}
             />
           )}
           {!visible.issues.length && (

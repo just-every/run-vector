@@ -346,6 +346,12 @@
       "name": "0056_comment_threads.sql",
       "sha256": "fe191d13e7cfff096f69bf00d2eed06bfa9efa67e7dcb01849d4f92189e81e9e",
       "sql": "-- ISSUE-008 threads: a reply names its top-level comment; resolution lives on\n-- the top-level comment. Additive columns only; existing comments stay\n-- top-level and unresolved.\nALTER TABLE issue_comments ADD COLUMN parent_comment_id TEXT;\nALTER TABLE issue_comments ADD COLUMN resolved_at TEXT;\nALTER TABLE issue_comments ADD COLUMN resolved_by_operator_id TEXT;\nCREATE INDEX issue_comments_parent_idx ON issue_comments(parent_comment_id,created_at);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0057_activity_actor_index.sql",
+      "sha256": "e59c4f95be64b52d08a77418cf786836b0e1782770e366a58455decb6d61bd52",
+      "sql": "-- WORK-004 Activity reads one member's own recent changes newest first.\nCREATE INDEX issue_activity_actor_idx ON issue_activity(actor_operator_id,created_at);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

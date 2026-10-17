@@ -8,7 +8,7 @@ import {
 import { useEffect } from "react";
 import { IssueBrowserPane } from "./issue-browser-pane";
 import { useApiResource } from "../../../app/api-client";
-import { issueListSchema, type IssueListQuery } from "../list-schema";
+import { issueListSchema, type IssueListData, type IssueListQuery } from "../list-schema";
 import {
   changeIssueListFilters,
   issueListApiUrl,
@@ -128,6 +128,10 @@ export function IssueBrowserSurface({
   title,
   viewActions,
   onReset,
+  description,
+  before,
+  rowAction,
+  switchLayout = true,
 }: {
   query: IssueListQuery;
   layout: "list" | "board";
@@ -136,6 +140,10 @@ export function IssueBrowserSurface({
   title?: string;
   viewActions?: React.ReactNode;
   onReset?: () => void;
+  description?: string;
+  before?: React.ReactNode;
+  rowAction?: (issue: IssueListData["issues"][number], refresh: () => void) => React.ReactNode;
+  switchLayout?: boolean;
 }) {
   const navigate = useNavigate();
   const teams = useApiResource("/api/options", workspaceOptionsSchema).data
@@ -178,9 +186,11 @@ export function IssueBrowserSurface({
       onChange={onChange}
       onOpen={onOpen}
       onReset={onReset}
-      onSwitchLayout={() =>
-        void navigate({ to: layout === "board" ? "/app/issues" : "/app/board" })
-      }
+      description={description}
+      before={before}
+      rowAction={rowAction && ((issue) => rowAction(issue, resource.refreshAfterMutation))}
+      onSwitchLayout={switchLayout ? () =>
+        void navigate({ to: layout === "board" ? "/app/issues" : "/app/board" }) : undefined}
       onCreateView={(viewId) =>
         void navigate({ to: "/app/views/$viewId", params: { viewId } })
       }

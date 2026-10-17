@@ -104,7 +104,8 @@ export function IssueFilters({
             "canceled",
             "duplicate",
           ].map((id) => ({ id, name: id[0].toUpperCase() + id.slice(1) })),
-          "All except completed",
+          // A personal scope (WORK-004) lists completed issues too.
+          query.scope === "all" ? "All except completed" : "All",
         )}
         {choice("status", "Status", statuses)}
         {choice(
@@ -284,7 +285,7 @@ export function IssueFilters({
         Reset controls
       </button>
       {query.category === defaultIssueListQuery.category &&
-        query.status === "all" && (
+        query.status === "all" && query.scope === "all" && (
           <p className="issues-hint">
             Completed issues are hidden; choose Completed to browse them.
           </p>
