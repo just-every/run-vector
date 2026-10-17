@@ -15,7 +15,11 @@ const remindersSchema = z.object({
 
 export function usePersonalReminders(identifier: string) {
   const url = `/api/issues/${encodeURIComponent(identifier)}/reminders`;
-  const resource = useApiResource(url, remindersSchema, 2000);
+  // Inspector selection can change while a poll is reading its response. Stop
+  // polling on disposal, but let that admitted read finish without publishing.
+  const resource = useApiResource(url, remindersSchema, 2000, {
+    abortPendingOnDispose: false,
+  });
   const [pending, setPending] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [denied, setDenied] = useState(false);

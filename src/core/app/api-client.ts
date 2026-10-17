@@ -174,6 +174,7 @@ export function useApiResource<S extends z.ZodType>(
   url: string,
   schema: S,
   pollMs?: number,
+  { abortPendingOnDispose = true }: { abortPendingOnDispose?: boolean } = {},
 ) {
   url = resourceKey(url);
   const initial = useInitialResource(url, schema);
@@ -206,10 +207,11 @@ export function useApiResource<S extends z.ZodType>(
     currentController.current = controller;
     const dispose = () => {
       if (currentController.current === controller) currentController.current = null;
-      controller.dispose();
+      controller.dispose({ abortPending: abortPendingOnDispose });
     };
     // Let an immediately discarded mount dispose before starting network work.
-    // Explicit reload and identity disposal still abort superseded reads.
+    // Draining disposal retires the controller without canceling its admitted
+    // transport; fetchJson keeps that read in the private-read lifecycle.
     if (latestInitial.current === null)
       queueMicrotask(() => { if (latestInitial.current === null) void controller.refresh(); });
     if (!pollMs) return dispose;
@@ -227,7 +229,7 @@ export function useApiResource<S extends z.ZodType>(
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", visible);
     };
-  }, [url, schema, pollMs]);
+  }, [url, schema, pollMs, abortPendingOnDispose]);
 
   useEffect(() => {
     if (initial !== null) currentController.current?.publishReceipt(() => initial);
