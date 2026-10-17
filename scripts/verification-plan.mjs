@@ -11,33 +11,13 @@ export const ciCommands = [
   'test:mutation-refresh', 'test:admin', 'test:collaboration',
 ];
 
-// Each runtime runner builds its own output and owns its D1/R2 and browsers.
-// test:data is its two existing entry points, split without omitting either.
+// Keep the longest journeys first and avoid a long tail of queued runners.
+// The 18-runner plan spent over six minutes queueing its nine-minute archive
+// journey. Eight balanced runners retain every command, including fresh builds
+// between runtime suites, while needing fewer hosted-runner allocations.
+// Each runtime runner owns its own output, D1/R2 installations and browsers.
 export const verificationShards = {
-  source: {
-    commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
-      'test:deployment'],
-  },
-  // Keep Vitest's complete file partition; each runner owns only its shard.
-  'worker-1': { commands: [['test:worker', '--shard=1/6']] },
-  'worker-2': { commands: [['test:worker', '--shard=2/6']] },
-  'worker-3': { commands: [['test:worker', '--shard=3/6']] },
-  'worker-4': { commands: [['test:worker', '--shard=4/6']] },
-  'worker-5': { commands: [['test:worker', '--shard=5/6']] },
-  'worker-6': { commands: [['test:worker', '--shard=6/6']] },
-  site: { browser: true, commands: ['test:public-site'] },
-  runtime: { browser: true, commands: ['build', 'test:runtime'] },
-  // rer verify includes the adapter's full build checks, followed by Base's
-  // hosted artifact and hydration boundaries. It must remain the public door.
-  delivery: { browser: true, commands: ['verify'] },
-  ownership: {
-    browser: true,
-    commands: ['build', 'test:wave-b', 'test:base-auth'],
-  },
-  access: {
-    browser: true,
-    commands: ['build', 'test:access', 'test:mutation-refresh'],
-  },
+  // test:data is its two existing entry points, split without omitting either.
   imports: {
     browser: true, native: true,
     commands: ['build', { node: ['tests/e2e/data-runtime.mjs'] }],
@@ -46,12 +26,30 @@ export const verificationShards = {
     browser: true, native: true,
     commands: ['build', { node: ['--import', './tests/e2e/integrations/register-loader.mjs', 'tests/e2e/data-roundtrip.mjs'] }],
   },
-  integrations: { browser: true, commands: ['build', 'test:integrations'] },
-  administration: { browser: true, commands: ['build', 'test:admin'] },
-  collaboration: { browser: true, commands: ['build', 'test:collaboration'] },
-  development: { browser: true, native: true, commands: ['build', 'test:dev:ci'] },
+  runtime: {
+    browser: true,
+    commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
+      'test:deployment', 'build', 'test:runtime', 'test:public-site', 'verify'],
+  },
+  administration: {
+    browser: true, native: true,
+    commands: ['build', 'test:admin', 'build', 'test:collaboration',
+      'build', 'test:dev:ci'],
+  },
+  ownership: {
+    browser: true,
+    commands: ['build', 'test:wave-b', 'test:base-auth',
+      'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
+  },
+  // Keep Vitest's complete six-file-partition wall, balanced across three
+  // runners. Each invocation still gets its original isolated Vitest process.
+  'worker-1': { commands: [['test:worker', '--shard=4/6'], ['test:worker', '--shard=5/6']] },
+  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6']] },
+  'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
 };
 
+// The runtime shard's rer verify remains the public door for the adapter's full
+// build checks and Base's hosted artifact and hydration boundaries.
 export const verificationMatrix = Object.entries(verificationShards).map(([shard, plan]) => ({
   shard, browser: plan.browser ?? false, native: plan.native ?? false,
 }));
