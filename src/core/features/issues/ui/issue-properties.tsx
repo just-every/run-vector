@@ -1,6 +1,7 @@
 import { canSelectCycle } from "../../cycles/ui/commitment-choices";
 import { useState } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
+import { useHydrated } from "../../../app/initial-resources";
 import type { StreamOptions } from "../../streams/ui/data";
 import { issueDetailSchema, type IssueDetailData } from "./data";
 
@@ -13,6 +14,7 @@ export function IssueProperties({
   options: StreamOptions | null;
   onRefresh: (receipt?: IssueDetailData) => void;
 }) {
+  const hydrated = useHydrated();
   const [receipt, setReceipt] = useState<IssueDetailData | null>(null);
   const issue =
     receipt?.identifier === suppliedIssue.identifier &&
@@ -111,7 +113,7 @@ export function IssueProperties({
         <select
           aria-label={`Issue ${label.toLowerCase()}`}
           value={value}
-          disabled={busy || conflict || !options || disabled}
+          disabled={!hydrated || busy || conflict || !options || disabled}
           onChange={(e) => void change(field, e.target.value)}
         >
           {empty ? <option value="">{empty}</option> : null}

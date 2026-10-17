@@ -12,6 +12,37 @@ function receipt(response: Response): { actionId: string; expiresAt: number; ide
   return JSON.parse(value!);
 }
 
+it('[ISSUE-020] single-issue Undo restores status timestamps, assignment, labels, cycle and team through native commands', async () => {
+  const f = await collaborationFixture(), team = f.initial.teams[0];
+  const status = (category: string) => team.statuses.find(row => row.category === category)!.id;
+  await body(await f.call('/settings/labels', 'POST', { name: 'Payment reliability', color: '#2563eb' }));
+  await body(await f.call('/settings/cycles', 'POST', { teamId: team.id, name: 'Payment follow-up', startsLocal: '2027-05-03T09:00', endsLocal: '2027-05-10T09:00', capacity: 20 }));
+  const options = await f.data(f.cookie, '/options');
+  const label = options.labels.find((row: any) => row.name === 'Payment reliability');
+  const cycle = options.cycles.find((row: any) => row.name === 'Payment follow-up');
+  const issue = await f.create({ statusId: status('started'), priority: 'low' });
+  const read = () => f.data(f.cookie, '/issues/' + issue.identifier);
+  async function roundTrip(path: string, method: string, changes: Record<string, unknown>) {
+    const before = await read();
+    const changed = await f.call('/issues/' + issue.identifier + path, method, { expectedVersion: before.version, ...changes });
+    await body(changed);
+    const action = receipt(changed);
+    await body(await f.call('/issues/undo', 'POST', { actionId: action.actionId }));
+    const after = await read();
+    for (const field of ['status', 'priority', 'assignee', 'labels', 'cycle', 'team', 'completedAt', 'canceledAt'])
+      expect(after[field]).toEqual(before[field]);
+    expect(after.version).toBe(before.version + 2);
+    expect(after.activity.filter((row: any) => row.nextValue?.undoOf === action.actionId)).toHaveLength(1);
+  }
+  for (const category of ['completed', 'canceled'])
+    await roundTrip('', 'PATCH', { statusId: status(category), priority: 'urgent', assigneeOperatorId: f.bob, labelIds: [label.id] });
+  await roundTrip('', 'PATCH', { cycleId: cycle.id });
+  await body(await f.call('/issues/' + issue.identifier, 'PATCH', { expectedVersion: (await read()).version, cycleId: cycle.id }));
+  const teams = await body(await f.call('/settings/teams', 'POST', { name: 'Undo planning', identifierPrefix: 'UNDO' }));
+  const destination = teams.teams.find((row: any) => row.identifierPrefix === 'UNDO');
+  await roundTrip('/team', 'POST', { teamId: destination.id, statusId: destination.statuses.find((row: any) => row.category === 'started').id });
+});
+
 it('[ISSUE-020 VIEW-004] native Undo reverses one atomic action and refuses stale, replayed, expired or foreign actions', async () => {
   const f = await collaborationFixture(), team = f.initial.teams[0];
   const read = (identifier: string) => f.data(f.cookie, '/issues/' + identifier);

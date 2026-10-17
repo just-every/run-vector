@@ -25,7 +25,7 @@ export function TeamMove({
   const [error, setError] = useState("");
   const [denied, setDenied] = useState(false);
   const [conflict, setConflict] = useState(false);
-  const [receipt, setReceipt] = useState("");
+  const [receipt, setReceipt] = useState<{ message: string; version: number } | null>(null);
   const busy = pending !== null;
   const stale = snapshot !== null && issue.version > snapshot.version;
   const teams =
@@ -57,7 +57,7 @@ export function TeamMove({
     setError("");
     setDenied(false);
     setConflict(false);
-    setReceipt("");
+    setReceipt(null);
   }
 
   function reportFailure(cause: unknown) {
@@ -105,7 +105,7 @@ export function TeamMove({
     setPending("move");
     setError("");
     try {
-      await fetchJson(
+      const updated = await fetchJson(
         `/api/issues/${encodeURIComponent(snapshot.identifier)}/team`,
         issueDetailSchema,
         {
@@ -118,7 +118,7 @@ export function TeamMove({
           }),
         },
       );
-      setReceipt(`Moved to ${team.name}.`);
+      setReceipt({ message: `Moved to ${team.name}.`, version: updated.version });
       clearDraft();
       onRefresh();
     } catch (cause) {
@@ -274,7 +274,7 @@ export function TeamMove({
           </form>
         ) : null}
       </details>
-      {receipt ? <p role="status">{receipt}</p> : null}
+      {receipt?.version === issue.version ? <p role="status">{receipt.message}</p> : null}
     </section>
   );
 }

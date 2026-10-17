@@ -2,6 +2,7 @@ import { withInvitedOperator } from './core-operator-journey.mjs';
 import { streamControlsJourney } from './core-stream-controls-journey.mjs';
 import { boardJourney } from './core-board-journey.mjs';
 import { expectedBoardConflicts } from './core-board-support.mjs';
+import { expectedUndoConflicts } from './core-undo-properties.mjs';
 import { keyboardJourney } from './core-keyboard-journey.mjs';
 import { draftJourney } from './core-draft-journey.mjs';
 import { currentJourney } from './core-current-journey.mjs';
@@ -587,6 +588,7 @@ try {
   let expectedBulkConflictUrl = null;
   const classifiedBulkConsole = [];
   const classifiedBoardConsole = [];
+  const classifiedUndoConsole = [];
   await context.route("**/*", async (route) => {
     if (new URL(route.request().url()).origin !== base) {
       externalRequests.push(route.request().url());
@@ -610,6 +612,11 @@ try {
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => {
     if (m.type() !== "error") return;
+    if (expectedUndoConflicts.has(m.location().url) &&
+        /^Failed to load resource: the server responded with a status of 409(?: \([^)]*\))?$/.test(m.text())) {
+      classifiedUndoConsole.push({ url: m.location().url, text: m.text(), expected: "Deliberate stale Undo POST409, with unchanged issue and activity asserted" });
+      return;
+    }
     if (expectedBoardConflicts.has(m.location().url) &&
         /^Failed to load resource: the server responded with a status of 409(?: \([^)]*\))?$/.test(m.text())) {
       classifiedBoardConsole.push({ url: m.location().url, text: m.text(), expected: "Deliberate stale board PATCH409" });
@@ -1452,7 +1459,7 @@ try {
         originalExpectedVersion: editBefore.version,
         conflictStatus: conflictResponse.status(),
         concurrentVersion: concurrentIssue.version,
-        classifiedConsole: [...classifiedConsole, ...classifiedBulkConsole],
+        classifiedConsole: [...classifiedConsole, ...classifiedBulkConsole, ...classifiedUndoConsole],
         explicitReload: true,
         browserCreated: {
           identifier: browserCreated.identifier,

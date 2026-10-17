@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b774a0880bb2b0d0cfe845b5999fd8758ce959bed896601d7475281b0b41f11c",
+      "sha256": "700c5867806129307cf5d12b4703dcb92442227f7d4ba9d05a0fcb47d6452586",
       "executable": false
     },
     "DEMO.md": {
@@ -860,6 +860,14 @@
       "sha256": "0706cf1fce07b33176f546a898aa74781b41b03e2484217aaa68d491451a343e",
       "executable": false
     },
+    "evidence/issue-undo/ISSUE-020/expired-retained-1440.png": {
+      "sha256": "0d068ab0ca026d65d0f9949d8ad57e54fd7575e932ab4689f2e3f398ab17b586",
+      "executable": false
+    },
+    "evidence/issue-undo/ISSUE-020/expired-retained-390.png": {
+      "sha256": "35d1c0b53f41cb9298b76fe7b216ab476252ad0260e73ef04050c92f3fdcdce1",
+      "executable": false
+    },
     "evidence/issue-undo/ISSUE-020/expired-undo-1440.png": {
       "sha256": "8eb1296ff51492de6e7fa676307ee1f76431cb1c835043f9b729cff680cae1c4",
       "executable": false
@@ -876,6 +884,14 @@
       "sha256": "77cf1c2973f92b5291d1230d1d96d2282503262bfed6f676e86e6199de741dec",
       "executable": false
     },
+    "evidence/issue-undo/ISSUE-020/stale-refusal-1440.png": {
+      "sha256": "c01de93ec2963c30bfaf81e427aa1c9978d6cbd603f6c6024c49f4a4550f91df",
+      "executable": false
+    },
+    "evidence/issue-undo/ISSUE-020/stale-refusal-390.png": {
+      "sha256": "d44114f126cfb0117c07b74823d9da1a7f09aa065bcf114cce9b5247f8bd9fac",
+      "executable": false
+    },
     "evidence/issue-undo/ISSUE-020/stale-undo-1440.png": {
       "sha256": "11575fce9263bcb001e840f91710da43cd6dc5ce8b2eb1151ada0c8a5a8ae2ff",
       "executable": false
@@ -890,6 +906,22 @@
     },
     "evidence/issue-undo/ISSUE-020/stale-undo-page-390.png": {
       "sha256": "6656be04eb0b90d55d575fc69fd5a6aef0aa8b7a898f8a2c03b208ef2acaeb8f",
+      "executable": false
+    },
+    "evidence/issue-undo/ISSUE-020/status-offer-1440.png": {
+      "sha256": "ef32b818ae796721a37c1c68091290bbbf1f4c5d6bc5015746c170d77c827d0d",
+      "executable": false
+    },
+    "evidence/issue-undo/ISSUE-020/status-offer-390.png": {
+      "sha256": "630b43e3e6207045610d88a7f52cac6b1e4729731ea36cb5b7a0d3f744ac6758",
+      "executable": false
+    },
+    "evidence/issue-undo/ISSUE-020/team-cycle-restored-1440.png": {
+      "sha256": "b0057d326ca6f3cc2d61792bcfb42bd376f5f9460d4aefa0d17c96c5d7277290",
+      "executable": false
+    },
+    "evidence/issue-undo/ISSUE-020/team-cycle-restored-390.png": {
+      "sha256": "46696b835f4b66f440198b60ba20c73332800ddf049455aed4e764175a7074c3",
       "executable": false
     },
     "evidence/issue-undo/ISSUE-020/team-restored-1440.png": {
@@ -1721,11 +1753,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "5ee17d2710ee8094150c7396b09fb698fc3e147eb0dd26f39d6fc27ac8eed282",
+      "sha256": "609f74579dd4db2aaa2687c0d893cb6e4bf396d7197b29532c466124cad9011a",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "8c08c7846ec8246864cdf4db3e97f1a0f28123989ce8204c39b30e8b3e6cdbf1",
+      "sha256": "9338bd5ee5810587dec25010fbd9ee371167edacb768d94afadd1b9241f721a7",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -1969,7 +2001,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "c663fd2c2fe51fe9e5d9a9b42aaf817de702fbf61fccc1dd5427dca16d28fc7b",
+      "sha256": "381501d4e902dab7d0a18a2c44486e2c9809dc22e888415c45cc133dcc43a15d",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
@@ -2113,7 +2145,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "9a0b91e96deebc6e0481f7654dfb5144e57088ac4e0d6ad5f9d62347aac05c9f",
+      "sha256": "4936ca2af58641dbc519cfa192914c3a1a1b99bf9dd4893df41176b9b3288f29",
       "executable": false
     },
     "src/base/contract-filter.ts": {
@@ -3753,7 +3785,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-properties.tsx": {
-      "sha256": "6bbac46e1324da7a960be4de69742b5d0ad5ea964fef0c1f01801bc240da4b36",
+      "sha256": "dddec1bc9f34b95253355b1de4532a7707e9f6eed3ac3e4c7cb2282841e2b1c5",
       "executable": false
     },
     "src/core/features/issues/ui/issue-selection.ts": {
@@ -3793,7 +3825,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/team-move.tsx": {
-      "sha256": "b1b40327158755e261c59787eaebc6c2c24098595220f07b64547ddd90e7388a",
+      "sha256": "1479c0f929bc98082896233acb7764f39b76adb0c602066a0fe6f5b9668959cf",
       "executable": false
     },
     "src/core/features/links/repository.ts": {
@@ -4697,7 +4729,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "c293dae36d546518330df782cbcbfa0031ac08f04e688d3352ca27678e127589",
+      "sha256": "8d850204ead3a8a3ae2a3c5847c6b1cc886b31b848bb99063d8d53009a4720e4",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -4725,7 +4757,11 @@
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
-      "sha256": "6429c913c24ed95bf9ab43df7cb44e37a2837c31869767301bcbf1853c79cae3",
+      "sha256": "d8a48d2746e5da201ae8ef4f28cfbf6aa0894db7b1667878c9d851eec53712b3",
+      "executable": false
+    },
+    "tests/e2e/core-undo-properties.mjs": {
+      "sha256": "2eacb9a7c84753a8df1aa3a65f363da6e9f6a58c3363b0ed578aa83adfd1ed8e",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {
@@ -5293,7 +5329,7 @@
       "executable": false
     },
     "tests/worker/issue-undo.test.ts": {
-      "sha256": "3bb9e63415a1c46b3ff9d1cbba7e9e2360969f5fbfda3cf0a75451be7d73c529",
+      "sha256": "b433fa5a9e65576f3832520808e86b577b2e752c1875f38d2de3ebac2a313b2b",
       "executable": false
     },
     "tests/worker/jira-apply-fixture.ts": {

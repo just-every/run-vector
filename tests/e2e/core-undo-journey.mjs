@@ -1,7 +1,18 @@
 import assert from 'node:assert/strict';
 import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mjs';
+import {undoPropertiesJourney} from './core-undo-properties.mjs';
 
 export async function undoJourney(page,context,base,record){
+ const originalViewport=page.viewportSize();
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:width===390?844:1000});
+  await bulkUndoJourney(page,context,base,record);
+  await undoPropertiesJourney(page,context,base,record);
+ }
+ await page.setViewportSize(originalViewport);
+}
+
+async function bulkUndoJourney(page,context,base,record){
  const api=async(path,method='GET',data)=>{
   const response=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
   assert(response.ok(),`${method} ${path}: ${response.status()}`);return response.json();
