@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e6a02511d041d2d8882ac3cc0d8b82abc801cbd036df4733b8c66824af5023aa",
+      "sha256": "c0143ee3722a65e381245fb17c485073a03d7add566b50b787da23fbbbf4ea49",
       "executable": false
     },
     "DEMO.md": {
@@ -684,6 +684,22 @@
       "sha256": "2d57e31af65663d8671af35a57682642d15f023ef4e2a1b5837b759579c04ea1",
       "executable": false
     },
+    "evidence/issue-follow-up/INTAKE-006/deferred-source-1440.png": {
+      "sha256": "01f30a3dac0b7032af11c36a5fd1bcd992d11bc7e0b42d9ac39e5c7830bb39b9",
+      "executable": false
+    },
+    "evidence/issue-follow-up/INTAKE-006/deferred-source-390.png": {
+      "sha256": "bd8dd0a5e67680c85754a6c31ef0b333d89bc654dd4ef0dac4caaa9be6eb1062",
+      "executable": false
+    },
+    "evidence/issue-follow-up/INTAKE-006/returned-current-1440.png": {
+      "sha256": "b12b3459417377d79df612bfd782b21a1e276366c3ded69cb8771b1fcee113b2",
+      "executable": false
+    },
+    "evidence/issue-follow-up/INTAKE-006/returned-current-390.png": {
+      "sha256": "cacb6aba512a41f02a571ba1646451533142f8f70a2d449173ef14a10e186b5e",
+      "executable": false
+    },
     "evidence/issue-follow-up/NOTIFY-001/follower-events-1440.png": {
       "sha256": "9bcf872747a17ac9a42ebdadec0ccb8ea659816fc846b63e5ab22f7a6220fe8c",
       "executable": false
@@ -706,6 +722,30 @@
     },
     "evidence/issue-follow-up/NOTIFY-001/preferences-panel-390.png": {
       "sha256": "24897b8bb5ea2c525e01a9a82cd8a806d6b71f083ff321fda27cb0e6275caea3",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/source-return-inbox-1440.png": {
+      "sha256": "c19e0cbb78ad8c78f6aac3a403c1f8761b60549669ad89c860aeb057962ebed7",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/source-return-inbox-390.png": {
+      "sha256": "bc24f4bf954cd97252bedeca55a5a938cb2356539906c01c6352cb1c3da387f7",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/workflow-removal-1440.png": {
+      "sha256": "1a9263c3fcc34af46f8615ae8c677677bae5a50da3b34e82ea9d51a4679f25f4",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/workflow-removal-390.png": {
+      "sha256": "f5840d03f5c93075fdb91a6576ce3979936b0220faa8e4076e4f84dc3c9fc1e9",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/workflow-removal-inbox-1440.png": {
+      "sha256": "f5ab3a60696aa759c766d0c5a67e8b91ae77df931b268d0d461629a7ce1ff292",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/workflow-removal-inbox-390.png": {
+      "sha256": "6e71910f65354940995838a3283547490ab9537f0aaffcfebd8f5bfdcb87afeb",
       "executable": false
     },
     "evidence/issue-follow-up/NOTIFY-008/change-snooze-1440.png": {
@@ -2285,7 +2325,7 @@
       "executable": false
     },
     "src/core/features/administration/teams.ts": {
-      "sha256": "260cea00bf9ab0531144e7c6787528e7b7db6f1fef5a143d03ae3d4db2c30097",
+      "sha256": "6d78355e0d9c17476873a4831bba8b25c83471b65b97af68bc2dfb1bc3fb40ce",
       "executable": false
     },
     "src/core/features/administration/transaction.ts": {
@@ -2932,6 +2972,10 @@
       "sha256": "fdf82490da9d40ff2caaf0a8f60ab64144086922c71c5ee844401d53deaaad27",
       "executable": false
     },
+    "src/core/features/integrations/source-deferral-return.ts": {
+      "sha256": "1369157357b5e2135ab2be31c5604db15e82db1afb7350730932cdaaf7148d43",
+      "executable": false
+    },
     "src/core/features/integrations/source-identity.ts": {
       "sha256": "96dd2e53670d7fa04cb6a7ec5941c18e0f4c16adacb8333f9c8c1d1f26369794",
       "executable": false
@@ -2945,7 +2989,7 @@
       "executable": false
     },
     "src/core/features/integrations/source-storage.ts": {
-      "sha256": "d55ae325dac1c6532594c18a9c88fe22fcc434d60979ef65b6a448bb8ff0e687",
+      "sha256": "f076547eecf8ab10b74d6dd2cdaee3b0bdc1f2f9fea246e43294e1c04b9b7e88",
       "executable": false
     },
     "src/core/features/integrations/source-webhook-config.ts": {
@@ -3458,6 +3502,10 @@
     },
     "src/core/features/notifications/schema.ts": {
       "sha256": "299b13dbaecea41da786756a3a13433aa5a4d1dcdf14e5e2cac87fcf74864ab7",
+      "executable": false
+    },
+    "src/core/features/notifications/status-removal.ts": {
+      "sha256": "2fe44825dbf78a5164d8e9cf46321dcb3c12181be4d0287cadaf85ff9c512b86",
       "executable": false
     },
     "src/core/features/notifications/ui/count-controller.ts": {
@@ -4653,7 +4701,7 @@
       "executable": false
     },
     "tests/worker/follower-events.test.ts": {
-      "sha256": "2416914cf1edbdb94467f0fa542c687c46b5d3b496d449193544005e6192d9d7",
+      "sha256": "77a2d9de8f59a9d3ba13e14dd1f7f1c39b17a859ca04ef7a1a90167257c13fe0",
       "executable": false
     },
     "tests/worker/foundation-rollback.test.ts": {
@@ -4893,7 +4941,7 @@
       "executable": false
     },
     "tests/worker/source-ingest.test.ts": {
-      "sha256": "513942b48d642f5d79cab279f271491b31c78b20fe0244011dd5739b8e7094b5",
+      "sha256": "b6acae969a90c5addf40e726804c10a2ebc1dbbbc8f3b0d52e1ab1870f23629c",
       "executable": false
     },
     "tests/worker/views-removal.test.ts": {

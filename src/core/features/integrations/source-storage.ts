@@ -4,6 +4,7 @@ import { createUlid } from '../../shared/ids';
 import type { WorkerBindings } from '../../app/bindings';
 import { IntegrationError } from './errors';
 import type { SourceInput } from './source-input';
+import { sourceDeferralReturnStatements } from './source-deferral-return';
 export type RegisteredSource={id:string;workspace_id:string;source_id:string;name:string;team_id:string;version:number;enabled:number;revoked_at:string|null};
 export type SourceAdmission={source:RegisteredSource;keySlot:string;encrypted:string;credentialKind?:'url'};
 const denied=(db:D1Database,sql:string,...values:(string|number|null)[])=>db.prepare(`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('source transaction denied') END`).bind(...values);
@@ -26,7 +27,7 @@ export async function publishSource(env:WorkerBindings,admission:SourceAdmission
     SELECT ?,?||'-'||c.last_sequence,?,c.last_sequence,?,?,?,?,'none',?,?,'{}',1,?,? FROM issue_prefix_sequences c WHERE c.workspace_id=? AND c.identifier_prefix=?`).bind(issueId,team.identifier_prefix,team.identifier_prefix,source.team_id,input.title,input.description,team.status_id,input.expectedOutcome,input.customerImpact,at,at,source.workspace_id,team.identifier_prefix),
    db.prepare('INSERT INTO vector_source_records(source_id,record_id,issue_id,created_at) VALUES(?,?,?,?)').bind(source.id,input.sourceRecordId,issueId,at));
  }else statements.push(denied(db,`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_source_records r ON r.issue_id=i.id WHERE r.source_id=? AND r.record_id=? AND r.erased=0 AND i.id=? AND t.workspace_id=?)`,source.id,input.sourceRecordId,issueId,source.workspace_id),
-  db.prepare(`UPDATE issues SET deferred_until=NULL,version=version+1,updated_at=? WHERE id=? AND deferred_until IS NOT NULL AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=issues.status_id AND category='intake')`).bind(at,issueId));
+  ...sourceDeferralReturnStatements(db,issueId,source.name,at));
  statements.push(db.prepare(`INSERT INTO evidence_revisions(id,issue_id,source_name,origin_kind,actor_operator_id,observed_at,received_at,summary,link,measurements_json,customer_reports_json,assertions_json,created_at,updated_at,source_id,source_record_id,source_revision_id) VALUES(?,?,?,'source',NULL,?,?,?,?,?,?,?,?,?,?,?,?)`).bind(evidenceId,issueId,source.name,new Date(input.observedAt).toISOString(),at,input.summary||input.title,input.link,JSON.stringify(input.measurements),JSON.stringify(input.customerReports),JSON.stringify(input.assertions),at,at,source.source_id,input.sourceRecordId,input.sourceRevisionId),
   db.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) VALUES(?,?,NULL,?,?,NULL,?,?,?)`).bind(activityId,issueId,source.name,existing?'issue.evidence_added':'issue.created',JSON.stringify({sourceId:source.source_id,sourceRecordId:input.sourceRecordId,sourceRevisionId:input.sourceRevisionId,evidenceRevisionId:evidenceId}),at,at),
   db.prepare('INSERT INTO vector_source_receipts(source_id,record_id,revision_id,payload_hash,issue_id,evidence_id,received_at) VALUES(?,?,?,?,?,?,?)').bind(source.id,input.sourceRecordId,input.sourceRevisionId,hash,issueId,evidenceId,at),denied(db,authoritySql,...authorityValues));

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { createUlid } from "../../shared/ids";
+import { statusRemovalNotifications } from "../notifications/status-removal";
 import {
   teamCreateSchema,
   teamUpdateSchema,
@@ -263,19 +264,23 @@ export async function removeStatus(
       "Choose a different status in the same category; the last status cannot be removed.",
       400,
     );
+  const operationId = createUlid(new Date(ctx.at));
+  const notifications = statusRemovalNotifications(ctx.db, operationId);
   await commit(ctx, [
     workflowGuard(ctx, teamId, statuses),
     ctx.db
       .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT lower(hex(randomblob(16))),id,?,'workflow.status_removed',json_object('statusId',status_id),json_object('statusId',?),?,? FROM issues WHERE team_id=? AND status_id=?`,
+        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?||':'||id,id,?,'workflow.status_removed',json_object('statusId',status_id),json_object('statusId',?),?,? FROM issues WHERE team_id=? AND status_id=?`,
       )
-      .bind(actor, destination, ctx.at, ctx.at, teamId, id),
+      .bind(operationId, actor, destination, ctx.at, ctx.at, teamId, id),
+    ...notifications.capture,
     ctx.db
       .prepare(
         "UPDATE issues SET status_id=?,version=version+1,updated_at=? WHERE team_id=? AND status_id=?",
       )
       .bind(destination, ctx.at, teamId, id),
     ctx.db.prepare("DELETE FROM workflow_statuses WHERE id=?").bind(id),
+    ...notifications.finalize,
     ...audit(
       ctx,
       "workflow.status_removed",

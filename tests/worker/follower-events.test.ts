@@ -239,3 +239,97 @@ contractWith(
     expect(await count("notification_candidates")).toBe(0);
   },
 );
+
+
+contractWith(
+  it,
+  "TEAM-004 NOTIFY-001 NOTIFY-003 NOTIFY-004",
+  "workflow status removal notifies followers once without replaying terminal completion",
+  async () => {
+    const f = await collaborationFixture();
+    const team = f.initial.teams[0];
+    const actorName = (await f.state()).operators.find(row => row.id === f.bob)!.name;
+    type MappedIssue = Issue & {
+      status: { id: string; category: string };
+      completedAt: string | null;
+      canceledAt: string | null;
+      activity: { id: string; kind: string; previousValue: unknown; nextValue: unknown }[];
+    };
+    const detail = (issue: Issue) =>
+      f.call(`/issues/${issue.identifier}`).then(response => receipt<MappedIssue>(response));
+    const events = async (cookie: string, issue: Issue) =>
+      (await receipt<InboxPage>(await f.any(cookie, "/notifications?limit=50")))
+        .items.filter(row => row.identifier === issue.identifier);
+    await receipt(await f.any(f.caraCookie, "/settings/notifications", "PATCH", {
+      mutedKinds: ["status"],
+    }));
+
+    for (const category of ["unstarted", "completed", "canceled"]) {
+      const destination = team.statuses.find(row => row.category === category)!;
+      const name = `Alternative ${category}`;
+      const administration = await f.mutate(`/settings/teams/${team.id}/statuses`, "POST", {
+        name, category,
+      });
+      const removed = administration.teams.find(row => row.id === team.id)!
+        .statuses.find(row => row.name === name)!;
+      const issues = await Promise.all([
+        f.create({ statusId: removed.id }),
+        f.create({ statusId: removed.id }),
+      ]);
+      for (const issue of issues) {
+        for (const cookie of [f.bobCookie, f.caraCookie]) {
+          await receipt(await f.any(cookie, `/issues/${issue.identifier}/subscription`, "PATCH", {
+            following: true,
+          }));
+        }
+      }
+      const before = await Promise.all(issues.map(detail));
+      if (category === "completed")
+        expect(before.every(issue => typeof issue.completedAt === "string")).toBe(true);
+      if (category === "canceled")
+        expect(before.every(issue => typeof issue.canceledAt === "string")).toBe(true);
+
+      const path = `/settings/teams/${team.id}/statuses/${removed.id}`;
+      await receipt(await f.any(f.bobCookie, path, "DELETE", {
+        destinationStatusId: destination.id,
+      }));
+      const after = await Promise.all(issues.map(detail));
+      for (let index = 0; index < issues.length; index++) {
+        const issue = issues[index];
+        expect(after[index]).toMatchObject({
+          status: { id: destination.id, category },
+          version: before[index].version + 1,
+          completedAt: before[index].completedAt,
+          canceledAt: before[index].canceledAt,
+        });
+        const activity = after[index].activity.filter(row => row.kind === "workflow.status_removed");
+        expect(activity).toHaveLength(1);
+        expect(activity[0]).toMatchObject({
+          previousValue: { statusId: removed.id },
+          nextValue: { statusId: destination.id },
+        });
+        const ownerEvents = await events(f.cookie, issue);
+        expect(ownerEvents).toHaveLength(1);
+        expect(ownerEvents[0]).toMatchObject({
+          eventId: activity[0].id, actor: actorName, causes: ["status"],
+        });
+        expect(await events(f.bobCookie, issue)).toEqual([]);
+        expect(await events(f.caraCookie, issue)).toEqual([]);
+      }
+
+      await receipt(await f.any(f.bobCookie, path, "DELETE", {
+        destinationStatusId: destination.id,
+      }), 404);
+      const replayed = await Promise.all(issues.map(detail));
+      expect(replayed.map(issue => ({ version: issue.version, activity: issue.activity })))
+        .toEqual(after.map(issue => ({ version: issue.version, activity: issue.activity })));
+      for (const issue of issues) {
+        expect(await events(f.cookie, issue)).toHaveLength(1);
+        expect(await events(f.bobCookie, issue)).toEqual([]);
+        expect(await events(f.caraCookie, issue)).toEqual([]);
+      }
+    }
+    expect(await count("notification_deliveries")).toBe(0);
+    expect(await count("notification_candidates")).toBe(0);
+  },
+);

@@ -60,3 +60,113 @@ it('[INTAKE-002 ISSUE-010] deletion winning a new source revision returns gone a
  expect((await env.DB.prepare('SELECT * FROM issue_prefix_sequences').all()).results).toEqual(sequence.results);
  expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(unrelatedIssues);expect(await env.DB.prepare('SELECT count(*) n FROM evidence_revisions WHERE source_id=?').bind(source.sourceId).first<number>('n')).toBe(0);expect(await env.DB.prepare('SELECT count(*) n FROM vector_source_receipts WHERE source_id=?').bind(source.id).first<number>('n')).toBe(2);
 });
+
+
+it('[INTAKE-006 NOTIFY-001] fresh signed evidence returns deferred intake once and notifies its deferrer', async () => {
+  const f = await setupIntegrations();
+  const source = await f.source('deferred-evidence');
+  const input = {
+    teamId: f.initial.teams[0].id,
+    title: 'Deferred signal awaiting fresh evidence',
+    sourceRecordId: 'deferred-signal',
+    sourceRevisionId: 'first',
+    observedAt: new Date().toISOString(),
+  };
+  const read = async <T>(response: Response, status = 200): Promise<T> => {
+    expect(response.status, await response.clone().text()).toBe(status);
+    return response.json() as Promise<T>;
+  };
+  type Detail = {
+    identifier: string;
+    version: number;
+    status: { id: string; category: string };
+    deferredUntil: string | null;
+    completedAt: string | null;
+    canceledAt: string | null;
+    assignee: { id: string } | null;
+    priority: string;
+    evidence: { id: string; sourceRevisionId: string }[];
+    decisions: { id: string; kind: string; returnAt: string | null }[];
+    activity: { id: string; kind: string; actor: string | null; previousValue: unknown; nextValue: unknown }[];
+  };
+  type Inbox = {
+    items: { identifier: string; eventId: string; actor: string | null; causes: string[] }[];
+  };
+  const created = await read<{ identifier: string }>(await f.signed(source, input));
+  const path = `/issues/${created.identifier}`;
+  const detail = () => f.call(path).then(response => read<Detail>(response));
+  const returns = async () =>
+    (await read<Inbox>(await f.call('/notifications?limit=50'))).items
+      .filter(row => row.identifier === created.identifier && row.causes.includes('intake_return'));
+  const issue = await detail();
+  const returnAt = new Date(Date.now() + 3_600_000).toISOString();
+  const deferred = await read<Detail>(await f.call(path + '/defer', 'POST', {
+    expectedVersion: issue.version, returnAt, reason: 'Wait for another observation',
+  }));
+  expect(deferred.deferredUntil).toBe(returnAt);
+  const deferActivity = deferred.activity.find(row => row.kind === 'intake.deferred');
+  expect(deferActivity).toBeDefined();
+  expect(await returns()).toEqual([]);
+
+  const fresh = { ...input, sourceRevisionId: 'fresh', summary: 'New observation' };
+  const publication = await read<{ reused: boolean }>(await f.signed(source, fresh));
+  expect(publication.reused).toBe(false);
+  const returned = await detail();
+  expect(returned).toMatchObject({
+    version: deferred.version + 1,
+    deferredUntil: null,
+    status: deferred.status,
+    decisions: deferred.decisions,
+  });
+  expect(returned.evidence).toHaveLength(deferred.evidence.length + 1);
+  expect(returned.activity).toContainEqual(deferActivity);
+  const returnActivity = returned.activity.filter(row => row.kind === 'intake.returned');
+  expect(returnActivity).toHaveLength(1);
+  expect(returnActivity[0]).toMatchObject({
+    actor: 'Monitoring source',
+    previousValue: { deferredUntil: returnAt },
+    nextValue: { deferredUntil: null },
+  });
+  const notifications = await returns();
+  expect(notifications).toHaveLength(1);
+  expect(notifications[0]).toMatchObject({
+    eventId: returnActivity[0].id,
+    actor: 'Monitoring source',
+    causes: ['intake_return'],
+  });
+
+  f.restart();
+  expect(await read(await f.signed(source, fresh))).toMatchObject({ reused: true });
+  const replayed = await detail();
+  expect({ version: replayed.version, activity: replayed.activity, evidence: replayed.evidence, decisions: replayed.decisions })
+    .toEqual({ version: returned.version, activity: returned.activity, evidence: returned.evidence, decisions: returned.decisions });
+  expect(await returns()).toEqual(notifications);
+
+  await read(await f.signed(source, { ...input, sourceRevisionId: 'already-returned' }));
+  const alreadyReturned = await detail();
+  expect(alreadyReturned.version).toBe(returned.version);
+  expect(alreadyReturned.evidence).toHaveLength(returned.evidence.length + 1);
+  expect(alreadyReturned.activity.filter(row => row.kind === 'intake.returned')).toEqual(returnActivity);
+  expect(await returns()).toEqual(notifications);
+
+  const declined = await read<Detail>(await f.call(path + '/decline', 'POST', {
+    expectedVersion: alreadyReturned.version, reason: 'No further work required',
+  }));
+  expect(declined.status.category).toBe('canceled');
+  expect(declined.canceledAt).toEqual(expect.any(String));
+  await read(await f.signed(source, { ...input, sourceRevisionId: 'after-terminal' }));
+  const terminal = await detail();
+  expect(terminal).toMatchObject({
+    status: declined.status,
+    version: declined.version,
+    assignee: declined.assignee,
+    priority: declined.priority,
+    deferredUntil: null,
+    completedAt: declined.completedAt,
+    canceledAt: declined.canceledAt,
+    decisions: declined.decisions,
+  });
+  expect(terminal.evidence).toHaveLength(declined.evidence.length + 1);
+  expect(terminal.activity.filter(row => row.kind === 'intake.returned')).toEqual(returnActivity);
+  expect(await returns()).toEqual(notifications);
+});
