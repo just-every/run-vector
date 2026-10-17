@@ -13,7 +13,7 @@
     "Jira",
     "Asana"
   ],
-  "description": "A self-hosted, decision-centred issue tracker for one business, with evidence-backed intake, a unified Current stream, personal work queues, and explainable project risk.",
+  "description": "Track issues, plan projects, and keep software delivery moving.",
   "capabilities": [
     {
       "id": "public-homepage",
