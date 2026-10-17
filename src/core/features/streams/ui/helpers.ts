@@ -2,11 +2,23 @@ import type { StreamItem } from "./data";
 
 export type StreamFilters = {
   teamId: string;
+  projectId: string;
   assigneeId: string;
   priority: string;
+  itemType: "all" | "intake" | "issue";
+  attentionReason: string;
 };
 
-const labels: Record<string, string> = {
+export const defaultStreamFilters: StreamFilters = {
+  teamId: "all",
+  projectId: "all",
+  assigneeId: "all",
+  priority: "all",
+  itemType: "all",
+  attentionReason: "all",
+};
+
+const labels = {
   "awaiting-decision": "Awaiting decision",
   overdue: "Overdue",
   "started-work": "Started work",
@@ -19,21 +31,33 @@ const labels: Record<string, string> = {
   "unassigned-urgent-work": "Unassigned urgent work",
   "project-risk": "Project risk",
   "new-evidence": "New evidence",
-};
+} as const;
+
+export const attentionReasons = Object.keys(labels) as Array<keyof typeof labels>;
 
 export function reasonLabel(reason: string) {
-  return labels[reason] ?? reason.replaceAll("-", " ");
+  return labels[reason as keyof typeof labels] ?? reason.replaceAll("-", " ");
 }
 
+// Shared by document selection and the live list; no browser or server state.
 export function filterItems(items: StreamItem[], filters: StreamFilters) {
   return items.filter(
     (item) =>
       (filters.teamId === "all" || item.team.id === filters.teamId) &&
+      (filters.projectId === "all" ||
+        (filters.projectId === "none"
+          ? item.project === null
+          : item.project?.id === filters.projectId)) &&
       (filters.assigneeId === "all" ||
         (filters.assigneeId === "unassigned"
           ? item.assignee === null
           : item.assignee?.id === filters.assigneeId)) &&
-      (filters.priority === "all" || item.priority === filters.priority),
+      (filters.priority === "all" || item.priority === filters.priority) &&
+      (filters.itemType === "all" ||
+        (item.status.category === "intake" ? "intake" : "issue") === filters.itemType) &&
+      (filters.attentionReason === "all" ||
+        item.primaryReason === filters.attentionReason ||
+        item.contextReasons.includes(filters.attentionReason)),
   );
 }
 

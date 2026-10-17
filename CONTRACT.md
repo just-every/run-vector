@@ -180,15 +180,15 @@ Vector is the issue tracker and software project-management workspace a US softw
 - **CURR-004 — Next.** Next contains non-terminal issues in an Unstarted status that are committed to their team's active or next cycle (CYCLE-001) or due within the next seven calendar days, excluding anything already in a higher-precedence section. *Acceptance:* A journey with active-cycle and due-in-seven-days Unstarted issues. *Status:* partial — `src/core/features/streams/service.ts` (implemented; no test names the clause yet).
 - **CURR-005 — Recently done.** Recently done contains issues moved to a Completed category in the previous seven calendar days, newest completion first. *Acceptance:* A journey that completes issues across an eight-day window and checks the seven-day cut-off and order. *Status:* partial — `src/core/features/streams/service.ts` (implemented; no test names the clause yet).
 - **CURR-006 — Explainable attention.** Every issue in Current shows one primary inclusion reason — Awaiting decision, Started work, Overdue, Cycle commitment, Due within seven days, or Completed within seven days — and every applicable context reason from Customer escalation, Unresolved dependency, Unassigned urgent work, Project risk, and New evidence since the most recent intake decision. *Acceptance:* `tests/worker/dependencies.test.ts` (tests tagged CURR-006). *Status:* done — `tests/worker/dependencies.test.ts`.
-- **CURR-007 — Ranking.** Within a section the default order sorts by priority (Urgent first, No priority last), then by due date (overdue first, then earliest first, then issues with no due date), then by most recent update, and finally by stable identifier, so the order is total and stable. *Policy: `current.ranking.v1`.* *Acceptance:* A ranking test over priority, due date, update time and identifier ties. *Status:* partial — `src/core/features/streams/service.ts` (implemented; no test names the clause yet).
+- **CURR-007 — Ranking.** Within a section the default order sorts by priority (Urgent first, No priority last), then by due date (overdue first, then earliest first, then issues with no due date), then by most recent update, and finally by stable identifier, so the order is total and stable. *Policy: `current.ranking.v1`.* *Acceptance:* A ranking test over priority, due date, update time and identifier ties. *Status:* done — `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/`.
 - **CURR-008 — Freshness.** A decision or issue mutation that changes an issue's Current membership, section, or reasons is reflected in an already open Current view within 5 seconds without an operator-initiated reload, and in the next response to any other request. *Acceptance:* `tests/e2e/core-current-journey.mjs` (tests tagged CURR-008). *Status:* done — `tests/e2e/core-current-journey.mjs`.
-- **CURR-009 — Stream controls.** Operators can filter Current by team, project, priority, item type, assignee, and attention reason. The default includes all teams and all operators and shows Recently done. *Acceptance:* A browser journey applying each Current filter and its reset. *Status:* partial — `src/core/features/streams/service.ts` (implemented; no test names the clause yet).
+- **CURR-009 — Stream controls.** Operators can filter Current by team, project, priority, item type, assignee, and attention reason. The default includes all teams and all operators and shows Recently done. *Acceptance:* A browser journey applying each Current filter and its reset. *Status:* done — `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/CURR-009/`.
 
 ## My work
 
 - **WORK-001 — Personal queue.** My work contains every non-terminal issue assigned to the signed-in operator outside the Intake category, grouped disjointly in this precedence: Waiting for issues blocked under REL-002, Now for those the CURR-003 rule would place in Now, and Next for every issue still remaining, each group ordered by CURR-007. An issue assigned to the operator while in an Intake status appears in Current's Needs decision, not here. *Acceptance:* `tests/worker/dependencies.test.ts` (tests tagged WORK-001). *Status:* done — `tests/worker/dependencies.test.ts`.
 - **WORK-002 — Personal defaults.** Completed, Canceled, Duplicate, and actively deferred issues never appear in My work; an operator reads their finished work from Current's Recently done filtered to themselves (CURR-005, CURR-009). When no issue qualifies, the view states the operator is caught up and offers new issue and Current as next actions. *Acceptance:* `tests/worker/dependencies.test.ts` (tests tagged WORK-002). *Status:* done — `tests/worker/dependencies.test.ts`.
-- **WORK-003 — Cycle context.** My work shows one row for each team that has an active cycle containing an issue assigned to the operator, giving that cycle's name, start and end dates, and progress, with completed and total committed scope labelled in the unit CYCLE-003 used. *Acceptance:* A journey with an active cycle containing the operator's issue that checks the cycle row's dates, progress and unit. *Status:* partial — `src/core/features/streams/projection.ts` (implemented; no test names the clause yet).
+- **WORK-003 — Cycle context.** My work shows one row for each team that has an active cycle containing an issue assigned to the operator, giving that cycle's name, start and end dates, and progress, with completed and total committed scope labelled in the unit CYCLE-003 used. *Acceptance:* A journey with an active cycle containing the operator's issue that checks the cycle row's dates, progress and unit. *Status:* done — `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/WORK-003/`.
 
 ## Projects, initiatives and roadmaps
 
@@ -560,9 +560,9 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 69 | 35 | 0 | 104 |
+| Published | 72 | 32 | 0 | 104 |
 | Target and push further | 4 | 46 | 100 | 150 |
-| All | 73 | 81 | 100 | 254 |
+| All | 76 | 78 | 100 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -657,12 +657,12 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 | `CURR-004` | Next | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
 | `CURR-005` | Recently done | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
 | `CURR-006` | Explainable attention | published | done | `tests/worker/dependencies.test.ts` |  |
-| `CURR-007` | Ranking | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-007` | Ranking | published | done | `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/` |  |
 | `CURR-008` | Freshness | published | done | `tests/e2e/core-current-journey.mjs` |  |
-| `CURR-009` | Stream controls | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-009` | Stream controls | published | done | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/CURR-009/` |  |
 | `WORK-001` | Personal queue | published | done | `tests/worker/dependencies.test.ts` |  |
 | `WORK-002` | Personal defaults | published | done | `tests/worker/dependencies.test.ts` |  |
-| `WORK-003` | Cycle context | published | partial | `src/core/features/streams/projection.ts` | Implemented; no test names the clause yet |
+| `WORK-003` | Cycle context | published | done | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/WORK-003/` |  |
 | `WORK-004` | Created, Subscribed and Activity tabs | target | missing |  | No implementation yet |
 | `PROJ-001` | Project record | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Name, description, lead, target date, lifecycle, colour, icon and archiving; start date, priority, labels and project custom fields are absent from `src/core/platform/db/schema.ts` |
 | `PROJ-002` | Manual lifecycle | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Manual lifecycle by any operator; the Guest refusal is open with ROLE-003 and ROLE-008 |

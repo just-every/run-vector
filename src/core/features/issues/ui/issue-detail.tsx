@@ -35,7 +35,7 @@ export function IssueDetail({
   onBack,
   onChanged,
 }: IssueDetailProps) {
-  const detail = useApiResource(`/api/issues/${identifier}`, issueDetailSchema);
+  const detail = useApiResource(`/api/issues/${identifier}`, issueDetailSchema, undefined, { abortPendingOnDispose: false });
   const options = useApiResource("/api/options", optionsSchema);
   const navigate=useNavigate();
   const [committed,setCommitted]=useState<IssueDetailData|null>(null);

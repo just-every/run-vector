@@ -9,6 +9,8 @@ import { configureNotifications, needsNotificationDrain, notificationEventIds } 
 import { drainNotificationMail } from '../features/notifications/mail'
 import type { WorkspaceProjection } from '../features/streams/snapshot'
 import { admittedStreamSnapshot, selectedStreamResources, streamPreference } from './stream-page-resources.server'
+import { defaultStreamFilters, filterItems, type StreamFilters } from '../features/streams/ui/helpers'
+import type { StreamItem } from '../features/streams/ui/data'
 
 /** Run the normal read routes inside the document's native authorization fence. */
 export async function pageResources(env: WorkerBindings, request: Request, operator: import('./bindings').AppEnvironment['Variables']['operator'], href: string) {
@@ -53,7 +55,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     : path.startsWith('/app/my-work') ? 'my-work' : null
   if (surface) {
     const options = read('/api/options')
-    const data = await read('/api/' + surface) as { sections: Record<string, Array<{ identifier: string; team: { id: string }; assignee: { id: string } | null; priority: string }>> } | null
+    const data = await read('/api/' + surface) as { sections: Record<string, StreamItem[]> } | null
     const snapshot = admittedStreamSnapshot(workspace, operator)
     const preferencePath = '/api/preferences/' + surface
     let preference: unknown
@@ -63,12 +65,8 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
       catch { preference = await read(preferencePath) }
     } else preference = await read(preferencePath)
     const selected = path.match(/\/([A-Z]{2,10}-[1-9][0-9]*)$/)?.[1]
-    const prefs = preference as { filters?: Record<string, string> } | null
-    const filters = prefs?.filters ?? {}
-    const items = Object.values(data?.sections ?? {}).flat().filter(item =>
-      (!filters.teamId || filters.teamId === 'all' || item.team.id === filters.teamId) &&
-      (!filters.assigneeId || filters.assigneeId === 'all' || (filters.assigneeId === 'unassigned' ? !item.assignee : item.assignee?.id === filters.assigneeId)) &&
-      (!filters.priority || filters.priority === 'all' || item.priority === filters.priority))
+    const prefs = preference as { filters?: Partial<StreamFilters> } | null
+    const items = filterItems(Object.values(data?.sections ?? {}).flat(), { ...defaultStreamFilters, ...prefs?.filters })
     const identifier = selected ?? items[0]?.identifier
     if (identifier) {
       const resources = snapshot && await selectedStreamResources(env.DB, snapshot, operator, identifier)

@@ -1,5 +1,6 @@
+import { useHydrated } from "../../../app/initial-resources";
 import { ListPreferenceControls, type ListPreferenceControlsProps } from "../../views/ui/list-preference-controls";
-import type { StreamFilters } from "./helpers";
+import { attentionReasons, reasonLabel, type StreamFilters } from "./helpers";
 import type { CycleContextData } from "./data";
 
 export function FilterBar({
@@ -16,11 +17,13 @@ export function FilterBar({
   options: {
     teams: Array<{ id: string; name: string }>;
     operators: Array<{ id: string; name: string }>;
+    projects: Array<{ id: string; name: string }>;
   } | null;
   loading: boolean;
   preferenceControls: ListPreferenceControlsProps;
 }) {
-  const controlsDisabled = !preferenceControls.ready || loading || options === null;
+  const hydrated = useHydrated();
+  const controlsDisabled = !hydrated || !preferenceControls.ready || loading || options === null;
   return (
     <div className="stream-filters" aria-label="Filter stream">
       <label>
@@ -38,6 +41,21 @@ export function FilterBar({
             <option value={team.id} key={team.id}>
               {team.name}
             </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Project
+        <select
+          aria-label="Project"
+          value={filters.projectId}
+          disabled={controlsDisabled}
+          onChange={(event) => onChange({ ...filters, projectId: event.target.value })}
+        >
+          <option value="all">All projects</option>
+          <option value="none">No project</option>
+          {options?.projects.map((project) => (
+            <option value={project.id} key={project.id}>{project.name}</option>
           ))}
         </select>
       </label>
@@ -67,7 +85,7 @@ export function FilterBar({
         <select
           aria-label="Priority"
           value={filters.priority}
-          disabled={!preferenceControls.ready}
+          disabled={!hydrated || !preferenceControls.ready}
           onChange={(event) =>
             onChange({ ...filters, priority: event.target.value })
           }
@@ -80,7 +98,34 @@ export function FilterBar({
           <option value="none">No priority</option>
         </select>
       </label>
-      <ListPreferenceControls {...preferenceControls} />
+      <label>
+        Item type
+        <select
+          aria-label="Item type"
+          value={filters.itemType}
+          disabled={!hydrated || !preferenceControls.ready}
+          onChange={(event) => onChange({ ...filters, itemType: event.target.value as StreamFilters["itemType"] })}
+        >
+          <option value="all">All items</option>
+          <option value="intake">Intake</option>
+          <option value="issue">Issue</option>
+        </select>
+      </label>
+      <label>
+        Attention reason
+        <select
+          aria-label="Attention reason"
+          value={filters.attentionReason}
+          disabled={!hydrated || !preferenceControls.ready}
+          onChange={(event) => onChange({ ...filters, attentionReason: event.target.value })}
+        >
+          <option value="all">Any reason</option>
+          {attentionReasons.map((reason) => (
+            <option value={reason} key={reason}>{reasonLabel(reason)}</option>
+          ))}
+        </select>
+      </label>
+      <ListPreferenceControls {...preferenceControls} ready={preferenceControls.ready && hydrated} />
     </div>
   );
 }

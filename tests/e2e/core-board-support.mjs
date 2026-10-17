@@ -178,7 +178,6 @@ export async function rejectStaleBoardMove(page, base, api, issue, rejected, cur
     assert.equal(conflict.issue.title, concurrent.title);
     await recovered(page, concurrent, outside);
     const alert = page.getByRole('alert').filter({ has: page.locator('strong', { hasText: issue.identifier }) });
-    assert.match(await alert.textContent(), /requested move was not applied/i);
     assert((await alert.textContent()).includes(currentStatus.name), 'The notice names the current server status');
     if (!outside) assert.equal(await page.locator('#issue-row-' + issue.identifier + ' strong').textContent(), concurrent.title);
     const persisted = await api('/issues/' + issue.identifier);

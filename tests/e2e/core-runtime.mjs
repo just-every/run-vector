@@ -1,3 +1,5 @@
+import { withInvitedOperator } from './core-operator-journey.mjs';
+import { streamControlsJourney } from './core-stream-controls-journey.mjs';
 import { boardJourney } from './core-board-journey.mjs';
 import { expectedBoardConflicts } from './core-board-support.mjs';
 import { keyboardJourney } from './core-keyboard-journey.mjs';
@@ -670,6 +672,7 @@ try {
   await keyboardJourney(page, context, base, record);
   expectedBulkConflictUrl = null;
   await boardJourney(page, context, base, record);
+  await withInvitedOperator(page, context, base, state, () => streamControlsJourney(page, context, base, record));
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');

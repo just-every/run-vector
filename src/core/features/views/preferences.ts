@@ -3,6 +3,7 @@ import { createUlid } from "../../shared/ids";
 import { issueListQuerySchema } from "../issues/list-schema";
 import { browseActor } from "../issues/browse-access";
 import { IssueAccessError } from "../issues/access";
+import { attentionReasons } from "../streams/ui/helpers";
 import {
   type PreferenceSurface,
   type ListPreference,
@@ -20,8 +21,11 @@ const issueFilters = z.object(filterShape).strict();
 const streamFilters = z
   .object({
     teamId: filterShape.team,
+    projectId: filterShape.project,
     assigneeId: filterShape.assignee,
     priority: filterShape.priority,
+    itemType: z.enum(["all", "intake", "issue"]).default("all"),
+    attentionReason: z.enum(["all", ...attentionReasons]).default("all"),
   })
   .strict();
 const projectFilters = z

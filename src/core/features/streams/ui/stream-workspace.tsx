@@ -10,7 +10,7 @@ import {
   type StreamItem,
   type CycleContextData,
 } from "./data";
-import { filterItems, type StreamFilters } from "./helpers";
+import { defaultStreamFilters, filterItems } from "./helpers";
 import { StreamList } from "./stream-list";
 import { useStreamPlanningState } from "./stream-planning-state";
 import { IssueKeyboard } from "../../issues/ui/issue-keyboard";
@@ -25,12 +25,6 @@ import { LoadingState, ErrorState, EmptyState } from "./stream-states";
 type StreamWorkspaceProps = {
   surface: "current" | "my-work";
   selectedIdentifier?: string;
-};
-
-const defaultFilters: StreamFilters = {
-  teamId: "all",
-  assigneeId: "all",
-  priority: "all",
 };
 
 export function StreamWorkspace({
@@ -146,7 +140,7 @@ function WorkspaceContent({
   const planning = useStreamPlanningState(surface);
   const options = useApiResource("/api/options", optionsSchema);
   const preferences = useListPreferences(surface, {
-    filters: defaultFilters,
+    filters: defaultStreamFilters,
     sort: "priority",
     grouping: "none",
   });

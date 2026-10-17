@@ -41,6 +41,8 @@ export function Discussion({
   const resource = useApiResource(
       `/api/issues/${identifier}/discussion`,
       discussionSchema,
+      undefined,
+      { abortPendingOnDispose: false },
     ),
     [filesOpen, setFilesOpen] = useState(false),
     [body, setBody] = useState(""),
