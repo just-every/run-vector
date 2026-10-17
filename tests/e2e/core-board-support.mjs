@@ -11,6 +11,8 @@ export function boardApi(context, base) {
   return async (path, method = 'GET', data) => {
     const response = await context.request.fetch(base + '/api' + path, {
       method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      // A reused idle keep-alive socket can be reset between browser steps; retry reads only.
+      ...(method === 'GET' ? { maxRetries: 3 } : {}),
     });
     assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
     return response.json();

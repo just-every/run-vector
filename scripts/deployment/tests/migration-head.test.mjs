@@ -22,7 +22,7 @@ test('Vector deployment preserves owner and invitation guards, revokes removed o
   const fixture = providerFixture(); t.after(() => fixture.close());
   const api = cloudflare(fixture);
   const database = await api.request('/d1/database', {method: 'POST', body: {name: 'vector-complete-head'}});
-  assert.deepEqual(await migrate(api, database.uuid, migrations), { applied: names, history: expectedHistory });
+  assert.deepEqual(await migrate(api, database.uuid, migrations), { applied: names, retried: [], history: expectedHistory });
   const db = fixture.state.databases[0].db;
   const ledger = () => db.prepare('SELECT name, sha256, state FROM d1_migrations ORDER BY id').all().map(row => ({ ...row }));
   const expectedLedger = expectedHistory.map(row => ({ ...row, state: 'applied' }));
@@ -52,7 +52,7 @@ test('Vector deployment preserves owner and invitation guards, revokes removed o
 
   const writes = fixture.state.writes.length;
   const changes = db.prepare('SELECT total_changes() n').get().n;
-  assert.deepEqual(await migrate(api, database.uuid, migrations), { applied: [], history: expectedHistory });
+  assert.deepEqual(await migrate(api, database.uuid, migrations), { applied: [], retried: [], history: expectedHistory });
   assert.equal(fixture.state.writes.length, writes);
   assert.equal(db.prepare('SELECT total_changes() n').get().n, changes);
   assert.deepEqual(ledger(), expectedLedger);
