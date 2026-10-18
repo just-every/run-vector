@@ -80,9 +80,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 75 | 29 | 0 | 104 |
+| Published | 76 | 28 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 83 | 74 | 97 | 254 |
+| All | 84 | 73 | 97 | 254 |
 
 ### Public homepage
 
@@ -198,7 +198,7 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 - **CURR-001 — Disjoint stream** (partial). An HTTP journey that places one issue of each kind and asserts it appears in exactly one Current section by precedence; the stream exists but no test names the clause.
 - **CURR-002 — Needs decision** (partial). A journey that defers, returns and declines intake items and asserts Needs decision membership.
 - **CURR-003 — Now** (done). `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs`.
-- **CURR-004 — Next** (partial). A journey with active-cycle and due-in-seven-days Unstarted issues.
+- **CURR-004 — Next** (done). `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs`.
 - **CURR-005 — Recently done** (partial). A journey that completes issues across an eight-day window and checks the seven-day cut-off and completion-time order, including identifier ties, under CURR-007's Recently done exception. In the same Current view, two in-progress issues of different priority follow the normal CURR-007 order while two done issues completed at different times appear newest completion first even when their priority, due date or last update would put them in the opposite order.
 - **CURR-006 — Explainable attention** (done). `tests/worker/dependencies.test.ts` (tests tagged CURR-006).
 - **CURR-007 — Ranking** (done). Evidence: `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/`. Acceptance: A ranking test over priority, due date, update time and identifier ties, plus completion time and identifier ties in Recently done (CURR-005). One Current view shows two in-progress issues of different priority in normal ranking order alongside two done issues completed at different times in newest-completion-first order, with priority, due date and last update opposing the done issues' completion order. The cited ranking journey proves the normal order; the combined-view and Recently done cases are not covered by that cited journey.
