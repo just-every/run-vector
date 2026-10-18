@@ -1,3 +1,4 @@
+import { mapManualOrder } from './manual-order';
 import { canonicalJson,sha256 } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { sourceIdentity } from '../../../../../vendor/base/import-kit/src/provenance/identity';
 import type { MappingResult,SourceBundle,TargetEffect } from '../../../../../vendor/base/import-kit/src/d1/index';
@@ -144,6 +145,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
     link.name='Duplicate of '+identifier;
     link.url=origin+'/app/issues/'+encodeURIComponent(identifier);
   }
+  await mapManualOrder(db,actor.workspace,input,rows,errors);
   const ranked=new Map(order.map((id,index)=>[id,index]));
   const records=[...source.records].sort((a,b)=>{
     const ai=effects.get(a.sourceId)?.effects[0]?.targetId,bi=effects.get(b.sourceId)?.effects[0]?.targetId;

@@ -64,7 +64,7 @@ export function SavedViewPage() {
       onClose={() => navigate({ to: "/app/views/$viewId", params: { viewId } })}
     >
       <IssueBrowserSurface
-        query={query}
+        query={{ ...query, orderView: view.id }}
         layout={layout}
         title={view.name}
         onChange={(change) =>
@@ -113,7 +113,7 @@ export function SavedViewPage() {
                 key={view.id}
                 view={view}
                 operatorId={options.data.operator.id}
-                query={query}
+                query={{ ...query, orderView: view.id }}
                 layout={layout}
               />
             )}

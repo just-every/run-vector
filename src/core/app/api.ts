@@ -1,3 +1,4 @@
+import { addManualOrderRoutes } from '../features/manual-order/routes';
 import { addWorkloadRoutes } from '../features/workload/routes';
 import { addIssueDeletionRoutes } from '../features/issue-deletion/routes';
 import { addDescriptionHistoryRoutes } from '../features/description-history/routes';
@@ -262,6 +263,8 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addBulkIssueRoutes(app);
   addBulkCommandRoutes(app);
   addParentIssueRoutes(app);
+
+  addManualOrderRoutes(app);
 
   app.get("/issues/:identifier", async (context) => {
     const parameters = issueParamSchema.safeParse(context.req.param());

@@ -40,8 +40,9 @@ export const issueListQuerySchema = z
         z.string().regex(/^[A-Z]{2,10}-[1-9][0-9]*$/),
       ])
       .default("all"),
+    orderView: z.union([z.literal(""), id]).default(""),
     sort: z
-      .enum(["newest", "oldest", "priority", "status", "due", "updated"])
+      .enum(["newest", "oldest", "priority", "status", "due", "updated", "manual"])
       .default("newest"),
     grouping: z
       .enum([

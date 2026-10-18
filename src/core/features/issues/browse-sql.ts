@@ -22,6 +22,7 @@ export const browseSort: Record<IssueListQuery["sort"], string> = {
   status: "s.position ASC",
   due: "i.due_date IS NULL ASC,i.due_date ASC",
   updated: "i.updated_at DESC",
+  manual: "i.identifier ASC",
 };
 export const browseGroup: Record<
   IssueListQuery["grouping"],

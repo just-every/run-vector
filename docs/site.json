@@ -407,6 +407,10 @@
     {
       "source": "docs/CLAIMS.md",
       "reason": "Implementation claims and acceptance status for maintainers; CONTRACT.md defines the product target"
+    },
+    {
+      "source": "docs/MANUAL-ORDER.md",
+      "reason": "Manual-order storage, import custody and interaction behavior for maintainers"
     }
   ]
 }

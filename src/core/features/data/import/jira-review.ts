@@ -10,6 +10,8 @@ export type JiraConcept={name:string;headers:{name:string;column:number}[];actio
 export type JiraConfirmation={source:string;rows:number[];categories:string[];suggestion:string|null;target:string|null};
 export type JiraReview={concepts:JiraConcept[];statuses:JiraConfirmation[];priorities:JiraConfirmation[];unresolved:(ImportDiagnostic&{sourceId:string;sourceKey:string;value:string})[];policies:string[]};
 const actions:Record<string,string>={
+ rank:'Team manual order, ascending by source rank; ties use the new identifier. Existing ranked work stays ahead of this imported block.',
+ 'custom field (rank)':'Team manual order, ascending by source rank; ties use the new identifier. Existing ranked work stays ahead of this imported block.',
  'issue id':'Stable source identity; scoped to the supplied source name.',
  'issue key':'Visible/searchable Jira key; stable source identity remains Issue id.',
  summary:'Vector title.',description:'Vector description.',status:'Explicit confirmed Vector status; category only suggests.',

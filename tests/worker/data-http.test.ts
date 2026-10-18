@@ -8,8 +8,11 @@ import {request,bindings} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
+ expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
+ const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current
  // state-bearing D1 ledger. Neither ledger is application data in the archive.
  await env.DB.exec("CREATE TABLE _rer_deploy_migrations(name TEXT PRIMARY KEY,sha256 TEXT NOT NULL,state TEXT NOT NULL); INSERT INTO _rer_deploy_migrations SELECT name,'test-only-ledger-hash','applied' FROM d1_migrations; DROP TABLE d1_migrations;");
@@ -44,6 +47,10 @@ it('[BASE-DATA-001 DATA-001] native archive HTTP requires current owner, origin 
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_tokens').first())?.n).toBe(0);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ const restoredOrder=await targetCall('/api/issues?team='+f.team.id+'&sort=manual','GET',undefined,historical);expect(restoredOrder.status).toBe(200);
+ expect((await restoredOrder.json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier)).toEqual(planningOrder);
+ const restoredCapacity=await targetCall('/api/workload?cycleId='+f.closing.id,'GET',undefined,historical);expect(restoredCapacity.status).toBe(200);
+ expect((await restoredCapacity.json() as {rows:{operatorId:string;capacity:number|null}[]}).rows.find(row=>row.operatorId===f.owner)?.capacity).toBe(17);
  const restoreStatus=async()=>await (await targetCall('/api/data/restore','GET',undefined,historical)).json() as {operators:{id:string;approved:number;eligible:number}[];status:{effectsHeld:number;reviewedAt:string|null}};
  expect((await restoreStatus()).operators.find(row=>row.id===f.peer)).toMatchObject({approved:0,eligible:1});
  for(const path of ['/api/data/restore/operators/'+f.peer,'/api/data/restore/review-effects']) {

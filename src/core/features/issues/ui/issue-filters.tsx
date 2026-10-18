@@ -245,6 +245,7 @@ export function IssueFilters({
               ["status", "Workflow order"],
               ["due", "Due date"],
               ["updated", "Last update"],
+              ["manual", "Manual order"],
             ].map(([id, name]) => (
               <option key={id} value={id}>
                 {name}

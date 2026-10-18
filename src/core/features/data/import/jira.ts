@@ -98,7 +98,7 @@ export function jiraOmissions(record:SourceRecord,input:ImportInput):ImportDiagn
       if(!relation?.target)message='Source reference is outside this file. It cannot bind any Vector issue with the same name or identifier; retained only.';
     }
     else if(name.startsWith('outward issue link'))message='This relationship kind has no matching relationship in Vector; retained in the original without a link.';
-    else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate','issue key','comment','resolved'].includes(name))message='No matching Vector field for this source column; every occurrence is retained in the original and not imported.';
+    else if(!scalarField(name)&&!['status category','labels','sprint','issue type','original estimate','issue key','comment','resolved','rank','custom field (rank)'].includes(name))message='No matching Vector field for this source column; every occurrence is retained in the original and not imported.';
     return message?[{row:record.location.row!,field:`${column.header} [column ${column.column}]`,code:name==='sprint'?'jira_sprint_rollover':message.startsWith('Source reference is outside')?'jira_reference_outside_file':name==='attachment'&&input.jira?.attachmentLinks?'jira_attachment_bytes_absent':'jira_not_imported',message,sourceId:record.sourceId,sourceKey:jiraValue(record,'issue key'),value:column.value}]:[];
   });
 }

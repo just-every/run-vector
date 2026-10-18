@@ -1,3 +1,5 @@
+import { ManualOrderControls } from '../../manual-order/ui/controls';
+import { useManualOrder } from '../../manual-order/ui/context';
 import { useHydrated } from '../../../app/initial-resources';
 import { useLayoutEffect, useRef, type Dispatch, type ReactNode, type SetStateAction } from "react";
 import type { IssueListData } from "../list-schema";
@@ -28,6 +30,7 @@ export function IssueTable({
   rowAction?: (issue: IssueListData["issues"][number]) => ReactNode;
 }) {
   const hydrated = useHydrated();
+  const manual = useManualOrder();
   const table = useRef<HTMLDivElement>(null);
   const groups = issueGroups(data, grouping);
   const ordered = groups.flatMap((group) => group.issues);
@@ -43,6 +46,9 @@ export function IssueTable({
     }
   }, [data, grouping, focused, setFocused, ownedFocus]);
   function keyDown(event: React.KeyboardEvent, row: IssueRow) {
+    if (manual && event.target === event.currentTarget && event.altKey && ['ArrowUp','ArrowDown','Home'].includes(event.key)) {
+      event.preventDefault(); manual.move(row, event.key === 'Home' ? 'top' : event.key === 'ArrowUp' ? 'up' : 'down'); return;
+    }
     if (event.target !== event.currentTarget || event.metaKey || event.ctrlKey || event.altKey) return;
     if (event.key === "x" || event.key === "X") {
       event.preventDefault();
@@ -182,6 +188,7 @@ export function IssueTable({
                       )}
                     </span>
                   </button>
+                  <ManualOrderControls issue={issue} />
                   {rowAction ? <span className="issues-row-action">{rowAction(issue)}</span> : null}
                 </li>
               ))}

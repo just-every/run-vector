@@ -1437,5 +1437,16 @@
     "capacity",
     "version",
     "updated_at"
+  ],
+  "manual_order_scopes": [
+    "workspace_id",
+    "scope_key",
+    "version"
+  ],
+  "manual_order_entries": [
+    "workspace_id",
+    "scope_key",
+    "issue_id",
+    "position"
   ]
 }

@@ -7,7 +7,7 @@ import { ImportError,importLimits,type ImportDiagnostic } from './types';
  * the reviewed fingerprint and source conflicts cover it like any column. */
 export const apiPayloadKey = '@linearApi';
 export type ApiComment = { author: string; body: string; createdAt: string };
-export type ApiIssue = { parent: string|null; comments: ApiComment[]; links: { title: string; url: string }[]; relations: { type: string; identifier: string }[] };
+export type ApiIssue = { sortOrder?: number; parent: string|null; comments: ApiComment[]; links: { title: string; url: string }[]; relations: { type: string; identifier: string }[] };
 const object = (value: unknown): value is Record<string, unknown> => Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 const nodes = (value: unknown) => object(value) && Array.isArray(value.nodes) ? value.nodes as unknown[] : value === undefined || value === null ? [] : null;
 const text = (value: unknown) => typeof value === 'string' ? value : null;
@@ -32,6 +32,10 @@ export function readApiFile(base64: string): { issues: Map<string, ApiIssue>; er
     const parent = node.parent === undefined || node.parent === null ? null : object(node.parent) ? text(node.parent.identifier) : null;
     if (node.parent && !parent) return refuse('parent', 'parent must be { "identifier": "ENG-1" } or null.');
     const issue: ApiIssue = { parent, comments: [], links: [], relations: [] };
+    if (node.sortOrder !== undefined) {
+      if (typeof node.sortOrder !== 'number' || !Number.isFinite(node.sortOrder)) return refuse('sortOrder', 'sortOrder must be a finite number.');
+      issue.sortOrder = node.sortOrder;
+    }
     for (const comment of comments) {
       if (!object(comment) || !text(comment.body) || !text(comment.createdAt)) return refuse('comments', 'each comment needs body and createdAt.');
       const user = object(comment.user) ? comment.user : null, external = object(comment.externalUser) ? comment.externalUser : null, bot = object(comment.botActor) ? comment.botActor : null;

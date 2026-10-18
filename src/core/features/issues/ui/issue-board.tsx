@@ -1,3 +1,4 @@
+import { ManualOrderControls } from '../../manual-order/ui/controls';
 import { useHydrated } from "../../../app/initial-resources";
 import { useLayoutEffect, useRef, useState } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
@@ -293,6 +294,7 @@ function BoardCard({
           <span key={label.id}>{label.name}</span>
         ))}
       </div>
+      <ManualOrderControls issue={row} />
       {ordinaryCategories.has(current.status.category) ? (
         <label>
           Status for {row.identifier}

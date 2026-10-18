@@ -135,7 +135,8 @@
         "VIEW-005",
         "CMD-001",
         "CMD-002",
-        "CMD-003"
+        "CMD-003",
+        "VIEW-006"
       ]
     },
     {
@@ -157,7 +158,6 @@
     "Source-specific Sentry, Slack, GitLab, Jira, or email integrations in core",
     "AI triage, deduplication, ranking, or project-health inference",
     "Custom workflow categories",
-    "Manually drag-ranked backlogs; every order in Vector is derived and explainable",
     "Initiatives, roadmaps, Gantt charts, critical-path planning, time tracking",
     "Per-issue checklists",
     "Multiple assignees",

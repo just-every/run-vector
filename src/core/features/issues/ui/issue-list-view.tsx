@@ -1,3 +1,4 @@
+import { ManualOrderBoundary, ManualOrderNotice } from '../../manual-order/ui/context';
 import { useEffect, useRef, useState } from "react";
 import { ApiError, useApiResource } from "../../../app/api-client";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
@@ -99,6 +100,7 @@ export function IssueListView({
     });
   }
   return (
+    <ManualOrderBoundary query={query} rows={visible?.issues ?? []} reload={reload}>
     <main
       ref={root}
       className="issues-browser"
@@ -164,6 +166,7 @@ export function IssueListView({
             ))}
         </>
       )}
+      <ManualOrderNotice query={query} />
       {restarted && (
         <p role="status">
           Issues changed. Pagination restarted from the first page.
@@ -322,5 +325,6 @@ export function IssueListView({
         </>
       )}
     </main>
+    </ManualOrderBoundary>
   );
 }

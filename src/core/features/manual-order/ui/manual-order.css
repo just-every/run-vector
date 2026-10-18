@@ -1,0 +1,49 @@
+.manual-order-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.35rem;
+}
+.manual-order-controls button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.manual-order-handle {
+  cursor: grab;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+}
+.manual-order-controls[draggable="true"]:active {
+  cursor: grabbing;
+}
+.manual-order-notice {
+  font-size: 0.9rem;
+  margin-block: 1rem;
+}
+/* Keep the selection cell beside the issue; order controls occupy row two. */
+.issues-selectable:has(> .manual-order-controls) {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+}
+.issues-selectable:has(> .manual-order-controls) > .issues-selection {
+  grid-column: 1;
+  grid-row: 1;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+}
+.issues-selectable:has(> .manual-order-controls) > .issues-row {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+}
+.issues-selectable > .manual-order-controls,
+.issues-selectable:has(> .manual-order-controls) > .issues-row-action {
+  grid-column: 2;
+  margin-left: 0;
+}
+.issues-table:has(.manual-order-controls) .issues-columns {
+  padding-left: calc(44px + .75rem);
+}

@@ -1,3 +1,4 @@
+import { manualOrderJourney } from './core-manual-order-journey.mjs';
 import { workloadJourney } from './core-workload-journey.mjs';
 import { subissuesJourney } from './core-subissues-journey.mjs';
 import { cycleMembershipJourney } from './core-cycle-membership-journey.mjs';
@@ -698,6 +699,7 @@ try {
       () => followerJourney(followerPage, followerContext, page, context, base, record), 'Payment follow-up teammate');
   } finally { await followerContext.close(); }
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
+  await manualOrderJourney(page, context, base, record);
   await workloadJourney(page, context, base, record);
   await cycleMembershipJourney(page, context, base, record);
   await subissuesJourney(page, context, base, record);

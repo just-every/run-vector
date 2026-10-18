@@ -1,3 +1,4 @@
+import { manualBrowseOrder } from '../manual-order/browse';
 import { parseTasks } from "../description-history/tasks";
 import { PaginationInvalidated, resultRevision } from "./list-revision";
 import type { IssueListQuery, IssueListData } from "./list-schema";
@@ -51,7 +52,8 @@ export async function listIssues(
   const today = workspaceDate(now, access.timezone);
   const { relation, values } = browseWhere(query, access.workspace_id, today, actor);
   const group = browseGroup[query.grouping];
-  const order = [group.rowOrder, browseSort[query.sort], "i.identifier ASC"]
+  const manual = await manualBrowseOrder(db, actor, access.workspace_id, query);
+  const order = [group.rowOrder, manual?.sql ?? browseSort[query.sort], "i.identifier ASC"]
     .filter(Boolean)
     .join(",");
   const [identity, count, rows, assignees, groups, statusCounts] =
@@ -68,7 +70,7 @@ export async function listIssues(
  (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (SELECT l.id,l.name,l.color FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id ORDER BY l.name,l.id)) labels
  ${relation} ORDER BY ${order} LIMIT ${query.pageSize} OFFSET ?`,
         )
-        .bind(...values, query.offset),
+        .bind(...values, ...(manual?.values ?? []), query.offset),
       db
         .prepare(
           "SELECT id,name FROM operators WHERE workspace_id=? AND removed_at IS NULL ORDER BY name,id",

@@ -55,6 +55,8 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
     due_reminder_suppressions:(await db.prepare('SELECT count(*) AS n FROM due_reminder_suppressions WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n'))??0};
   for(const [table,key] of Object.values(nativeRelations))
     counts[table]=(counts[table]??0)+((await db.prepare(`SELECT count(*) AS n FROM "${table}" WHERE "${key}" IN (SELECT value FROM json_each(?))`).bind(inRun).first<number>('n'))??0);
+  const orderCount=await db.prepare('SELECT count(*) n FROM manual_order_entries WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
+  if(orderCount)counts.manual_order_entries=orderCount;
   return {runId:id,state:job.state,issues:ids.length,rows:counts,conflicts,detachedIssues:detached.length,detachedIdentifiers:detached.map(row=>row.identifier)};
 }
 /** Whole-run rollback starts only when no imported issue has later native work. */

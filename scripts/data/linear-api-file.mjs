@@ -7,6 +7,7 @@ import { open } from 'node:fs/promises';
 
 const endpoint = process.env.LINEAR_API_URL ?? 'https://api.linear.app/graphql';
 const issueFields = `identifier
+      sortOrder
       parent { identifier }
       comments(first: 50) { pageInfo { hasNextPage endCursor } nodes { body createdAt user { displayName name } externalUser { name } botActor { name } } }
       attachments(first: 50) { pageInfo { hasNextPage endCursor } nodes { title url } }
@@ -52,7 +53,7 @@ async function main() {
           info = more.pageInfo;
         }
       }
-      issues.push({ identifier: node.identifier, parent: node.parent, comments: { nodes: node.comments.nodes }, attachments: { nodes: node.attachments.nodes }, relations: { nodes: node.relations.nodes } });
+      issues.push({ identifier: node.identifier, sortOrder: node.sortOrder, parent: node.parent, comments: { nodes: node.comments.nodes }, attachments: { nodes: node.attachments.nodes }, relations: { nodes: node.relations.nodes } });
     }
     process.stderr.write(`read ${issues.length} issues\n`);
     if (!page.pageInfo.hasNextPage) break;
