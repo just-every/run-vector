@@ -58,6 +58,7 @@ export function activityTitle(kind: string, nextValue?: unknown) {
   const titles: Record<string, string> = {
     "issue.created": "Created the issue",
     "issue.updated": "Changed the issue",
+    "issue.cycle_automatically_added": "Added to the active cycle automatically",
     "issue.team_moved": "Moved to another team",
     "issue.parent_changed": "Changed the parent",
     "issue.duplicate_changed": "Changed the duplicate link",

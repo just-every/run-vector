@@ -21,6 +21,8 @@ type Team = {
   name: string;
   identifier_prefix: string;
   archived_at: string | null;
+  auto_cycle_started: number;
+  auto_cycle_completed: number;
 };
 type Status = {
   id: string;
@@ -85,6 +87,8 @@ export async function updateTeam(
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Team>(ctx, "teams", id);
   const next = {
+    autoCycleStarted: input.autoCycleStarted ?? Boolean(old.auto_cycle_started),
+    autoCycleCompleted: input.autoCycleCompleted ?? Boolean(old.auto_cycle_completed),
     name: input.name ?? old.name,
     identifierPrefix: input.identifierPrefix ?? old.identifier_prefix,
     archivedAt:
@@ -97,18 +101,19 @@ export async function updateTeam(
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ?)",
+      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=?)",
       id,
       ctx.workspace,
       old.name,
       old.identifier_prefix,
       old.archived_at,
+      old.auto_cycle_started, old.auto_cycle_completed,
     ),
     ctx.db
       .prepare(
-        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,updated_at=? WHERE id=?",
+        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,updated_at=? WHERE id=?",
       )
-      .bind(next.name, next.identifierPrefix, next.archivedAt, ctx.at, id),
+      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), ctx.at, id),
     ...audit(
       ctx,
       "team.updated",
@@ -118,6 +123,8 @@ export async function updateTeam(
         name: old.name,
         identifierPrefix: old.identifier_prefix,
         archivedAt: old.archived_at,
+        autoCycleStarted: Boolean(old.auto_cycle_started),
+        autoCycleCompleted: Boolean(old.auto_cycle_completed),
       },
       next,
     ),

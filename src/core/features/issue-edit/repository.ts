@@ -29,7 +29,7 @@ export async function updateIssueRecord(
   }
   const capture = await prepareUndoCapture(db, actor, { actionId: plan.activityId, identifiers: [identifier], fields: plan.undoFields, kind: "property" });
   let results: D1Result[];
-  try { results = await commitUndoable(db, actor, capture, plan.writes); }
+  try { results = await commitUndoable(db, actor, capture, plan.writes, [{ identifier, version: plan.version }]); }
   catch (error) {
     if (isMutationAccessError(error)) throw error;
     if (!(error instanceof UndoCaptureConflict)) throw error;

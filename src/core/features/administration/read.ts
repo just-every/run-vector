@@ -21,7 +21,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         .first(),
       db
         .prepare(
-          `SELECT t.id,t.name,t.identifier_prefix AS identifierPrefix,t.archived_at AS archivedAt,
+          `SELECT t.id,t.name,t.identifier_prefix AS identifierPrefix,t.archived_at AS archivedAt,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
       NOT EXISTS(SELECT 1 FROM team_issue_history h WHERE h.team_id=t.id) AS prefixEditable
       FROM teams t WHERE t.workspace_id=? ORDER BY t.name,t.id`,
         )
@@ -70,6 +70,8 @@ export async function readAdministration(db: D1Database, actor: string) {
     teams: teams.results.map((t) => ({
       ...t,
       prefixEditable: Boolean(t.prefixEditable),
+      autoCycleStarted: Boolean(t.autoCycleStarted),
+      autoCycleCompleted: Boolean(t.autoCycleCompleted),
       statuses: statuses.results.filter((s) => s.teamId === t.id),
     })),
     labels: labels.results.map((l) => ({

@@ -1,3 +1,4 @@
+import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import {
   assignmentStatements,
   mentionStatements,
@@ -239,6 +240,11 @@ export async function planIssueUpdate(
     for (const label of nextLabels)
       guard("EXISTS(SELECT 1 FROM labels WHERE id=?)", label);
   }
+  const automaticCycle = values.statusId ? await planAutomaticCycle(binding, issue.teamId,
+    (values.cycleId === undefined ? issue.cycleId : values.cycleId) as string | null,
+    (await requireStatus(db, issue.statusId, issue.teamId)).category,
+    (await requireStatus(db, String(values.statusId), issue.teamId)).category, now) : null;
+  if (automaticCycle) guard(automaticCycle.condition, ...automaticCycle.values);
   const where = conditions.join(" AND ");
   if (Object.keys(values).length === 0 && !forceRecord) {
     return {
@@ -333,13 +339,17 @@ export async function planIssueUpdate(
           .bind(label, now, ...guardValues),
       );
   }
+  if (automaticCycle) {
+    writes.push(...automaticCycleStatements(binding, issue.id, automaticCycle.cycleId, now, where, guardValues));
+    values.cycleId = automaticCycle.cycleId;
+  }
   const fields = Object.keys(values).filter(
     (key): key is keyof typeof columns => key in columns,
   );
   writes.push(
     binding
       .prepare(
-        `UPDATE issues SET ${[...fields.map((key) => columns[key] + "=?"), "version=version+1", "updated_at=?"].join(",")} WHERE ${where} RETURNING id`,
+        `UPDATE issues SET ${[...fields.map((key) => columns[key] + "=?"), `version=version+${automaticCycle ? 2 : 1}`, "updated_at=?"].join(",")} WHERE ${where} RETURNING id`,
       )
       .bind(
         ...fields.map((key) =>
@@ -360,8 +370,8 @@ export async function planIssueUpdate(
     mutationIndex,
     identifier,
     activityId: activity.id,
-    undoFields: Object.keys(recordBefore),
-    version: issue.version + 1,
+    undoFields: [...Object.keys(recordBefore), ...(automaticCycle ? ["cycleId"] : [])],
+    version: issue.version + (automaticCycle ? 2 : 1),
     changed: true,
   };
 }

@@ -43,6 +43,8 @@ export const teams = sqliteTable('teams', {
   name: text('name').notNull(),
   identifierPrefix: text('identifier_prefix').notNull(),
   archivedAt: text('archived_at'),
+  autoCycleStarted: integer('auto_cycle_started', { mode: 'boolean' }).notNull().default(false),
+  autoCycleCompleted: integer('auto_cycle_completed', { mode: 'boolean' }).notNull().default(false),
   ...timestamps,
 }, (table) => [
   uniqueIndex('teams_workspace_name_idx').on(table.workspaceId, table.name),

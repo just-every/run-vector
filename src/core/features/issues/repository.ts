@@ -1,3 +1,4 @@
+import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import { requireIssueAccess } from './access'
 import { followStatements, assignmentStatements, mentionStatements, blockerStatements, followerChangeStatements, finalizeEvent } from '../notifications/events'
 import seed from '../../../../seed.json'
@@ -147,11 +148,15 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
   }
 
   const next = await nextDecisionState(db, team, issue, request)
+  const destinationStatus = await requireStatus(db, String(next.issueValues.statusId ?? issue.statusId), team.id)
+  const automaticCycle = request.kind === 'accepted' ? await planAutomaticCycle(binding, team.id,
+    next.issueValues.cycleId as string | null, currentStatus.category, destinationStatus.category, now) : null
+  if (automaticCycle) next.issueValues.cycleId = automaticCycle.cycleId
   const decisionId = createUlid(request.now), activityId = createUlid(request.now)
   const event = { id: activityId, issueId: issue.id, actor: request.actorOperatorId, at: now }
   const decisionWrite = db.insert(intakeDecisions).select(decisionSelection(db, issue.identifier, request, next, now, decisionId))
   const activityWrite = db.insert(issueActivity).select(activitySelection(db, issue.identifier, request, next, now, activityId))
-  const issueWrite = db.update(issues).set({ ...next.issueValues, version: issue.version + 1, updatedAt: now })
+  const issueWrite = db.update(issues).set({ ...next.issueValues, version: issue.version + (automaticCycle ? 2 : 1), updatedAt: now })
     .where(and(eq(issues.identifier, issue.identifier), eq(issues.version, request.expectedVersion)))
     .returning({ id: issues.id })
   const statements = [binding.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('intake access denied') END`).bind(issue.id,request.actorOperatorId), ...[decisionWrite, activityWrite].map(query => {
@@ -165,6 +170,11 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
       ...(request.kind === 'deferred' ? [binding.prepare(`INSERT INTO issue_deferral_origins(issue_id,decision_id) SELECT issue_id,id FROM intake_decisions WHERE id=?`).bind(decisionId)] : []),
       (() => { const { sql, params } = issueWrite.toSQL(); return binding.prepare(sql).bind(...params) })(),
     ])
+  if (automaticCycle) {
+    const originalUpdate = statements.pop()!
+    statements.push(binding.prepare(`SELECT CASE WHEN ${automaticCycle.condition} THEN 1 ELSE json('automatic cycle changed') END`).bind(...automaticCycle.values),
+      ...automaticCycleStatements(binding, issue.id, automaticCycle.cycleId, now, 'id=? AND version=?', [issue.id, request.expectedVersion]), originalUpdate)
+  }
   const issueWriteIndex = statements.length - 1
   statements.push(...finalizeEvent(binding,event))
   const writes = await commitWithAssignee(binding, request.kind === 'accepted' ? (request.input as AcceptIssueInput).assigneeOperatorId : null, team.workspaceId, statements)

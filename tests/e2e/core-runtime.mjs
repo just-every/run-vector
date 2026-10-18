@@ -1,3 +1,4 @@
+import { cycleMembershipJourney } from './core-cycle-membership-journey.mjs';
 import { withInvitedOperator } from './core-operator-journey.mjs';
 import { streamControlsJourney } from './core-stream-controls-journey.mjs';
 import { boardJourney } from './core-board-journey.mjs';
@@ -695,6 +696,7 @@ try {
       () => followerJourney(followerPage, followerContext, page, context, base, record), 'Payment follow-up teammate');
   } finally { await followerContext.close(); }
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
+  await cycleMembershipJourney(page, context, base, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');

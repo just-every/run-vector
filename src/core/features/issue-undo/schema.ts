@@ -19,13 +19,14 @@ export const undoActionSchema = z.object({
   kind: z.enum(["property", "team", "duplicate"]), expiresAt: z.string().datetime(),
   fields: z.array(fieldSchema).min(identityFields.length),
   before: z.array(issueSnapshotSchema).min(1), after: z.array(issueSnapshotSchema).min(1),
+  postVersions: z.array(z.object({ identifier: z.string(), version: z.number().int().positive() })).default([]),
   graph: z.array(z.object({ issueId: z.string(), canonicalId: z.string(), createdAt: z.string() })),
 }).superRefine((action, context) => {
   if (new Set(action.fields).size !== action.fields.length || identityFields.some((field) => !action.fields.includes(field)) ||
       action.before.length !== action.after.length || new Set(action.before.map((row) => row.id)).size !== action.before.length ||
       action.before.some((before, index) => {
         const after = action.after[index];
-        return !after || before.id !== after.id || before.identifier !== after.identifier || after.version !== before.version + 1 ||
+        return !after || before.id !== after.id || before.identifier !== after.identifier || after.version !== (action.postVersions.find(row => row.identifier === before.identifier)?.version ?? before.version + 1) || ![1, 2].includes(after.version - before.version) ||
           action.fields.some((field) => !(field in before) || !(field in after));
       })) context.addIssue({ code: "custom", message: "Undo membership is invalid." });
 });

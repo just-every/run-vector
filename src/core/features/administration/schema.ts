@@ -40,7 +40,7 @@ export const teamCreateSchema = z
   .strict();
 export const teamUpdateSchema = teamCreateSchema
   .partial()
-  .extend({ archived: z.boolean().optional() })
+  .extend({ archived: z.boolean().optional(), autoCycleStarted: z.boolean().optional(), autoCycleCompleted: z.boolean().optional() })
   .strict()
   .refine((v) => Object.keys(v).length > 0);
 export const statusCreateSchema = z
@@ -122,6 +122,8 @@ export const administrationSchema = z.object({
       identifierPrefix: z.string(),
       archivedAt: z.string().nullable(),
       prefixEditable: z.boolean(),
+      autoCycleStarted: z.boolean(),
+      autoCycleCompleted: z.boolean(),
       statuses: z.array(administrationStatusSchema),
     }),
   ),

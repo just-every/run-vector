@@ -1,3 +1,4 @@
+import { useHydrated } from "../../../app/initial-resources";
 import { useState, type FormEvent } from "react";
 import { useAdministrationAction } from "./administration-action";
 import { AdministrationFeedback } from "./administration-feedback";
@@ -79,11 +80,14 @@ function TeamEditor({
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
+  const hydrated = useHydrated();
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
     await action.run(`/api/settings/teams/${team.id}`, "PATCH", {
       name: fields.get("name"),
+      autoCycleStarted: fields.has("autoCycleStarted"),
+      autoCycleCompleted: fields.has("autoCycleCompleted"),
       ...(team.prefixEditable
         ? { identifierPrefix: fields.get("prefix") }
         : {}),
@@ -109,7 +113,7 @@ function TeamEditor({
         {team.archivedAt ? " · Archived" : ""}
       </summary>
       <form aria-label={`Edit ${team.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending}>
+        <fieldset disabled={action.pending || !hydrated}>
           <label>
             Team name
             <input
@@ -137,6 +141,13 @@ function TeamEditor({
               team has issued an identifier.
             </p>
           )}
+          <label className="admin-checkbox"><input type="checkbox" name="autoCycleStarted" defaultChecked={team.autoCycleStarted} />
+            Add uncommitted work to the active cycle when it starts
+          </label>
+          <label className="admin-checkbox"><input type="checkbox" name="autoCycleCompleted" defaultChecked={team.autoCycleCompleted} />
+            Add uncommitted work to the active cycle when it completes
+          </label>
+          <p>These rules use this team’s current open cycle. Existing commitments stay in place. Turn either rule off here to stop it.</p>
           <button type="submit">Save team</button>
           <button
             type="button"
@@ -166,7 +177,7 @@ function TeamEditor({
         />
       ))}
       <form aria-label={`Add status to ${team.name}`} onSubmit={add}>
-        <fieldset disabled={action.pending}>
+        <fieldset disabled={action.pending || !hydrated}>
           <label>
             Status name
             <input name="name" required maxLength={120} />

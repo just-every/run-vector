@@ -46,7 +46,7 @@ function captureAdmission(db: D1Database, actor: string, capture: Capture) {
 
 /** Extra statements retain the original caller's result indexes. The preimage,
  * post-versions, complete membership and deadline belong to this transaction. */
-export async function commitUndoable(db: D1Database, actor: string, capture: Capture | null, writes: D1PreparedStatement[]) {
+export async function commitUndoable(db: D1Database, actor: string, capture: Capture | null, writes: D1PreparedStatement[], postVersions: { identifier: string; version: number }[] = []) {
   if (!capture) return db.batch(writes);
   const snapshot = issueSnapshotSql(capture.fields);
   const admission = captureAdmission(db, actor, capture);
@@ -56,18 +56,18 @@ export async function commitUndoable(db: D1Database, actor: string, capture: Cap
       post AS (SELECT value body FROM json_each(${snapshot}))
     UPDATE issue_activity SET next_value_json=json_set(COALESCE(next_value_json,'{}'),'$.undo',json_object(
       'actionId',?,'workspaceId',?,'sessionHash',?,'kind',?,'fields',json(?),
-      'before',json(?),'after',json(${snapshot}),'graph',json(${capture.kind === "duplicate" ? duplicateGraphSql : "'[]'"}),
+      'before',json(?),'after',json(${snapshot}),'postVersions',json(?),'graph',json(${capture.kind === "duplicate" ? duplicateGraphSql : "'[]'"}),
       'expiresAt',strftime('%Y-%m-%dT%H:%M:%fZ','now','+10 seconds')))
     WHERE id=? AND actor_operator_id=? AND EXISTS(
       SELECT 1 FROM pre JOIN post ON json_extract(pre.body,'$.id')=json_extract(post.body,'$.id')
       WHERE json_remove(pre.body,'$.version','$.canonicalCreatedAt')<>json_remove(post.body,'$.version','$.canonicalCreatedAt'))`)
     .bind(capture.ids, capture.before, capture.actionId, capture.workspaceId, capture.sessionHash, capture.kind,
-      JSON.stringify(capture.fields), capture.before, capture.actionId, actor);
+      JSON.stringify(capture.fields), capture.before, JSON.stringify(postVersions), capture.actionId, actor);
   const postGuard = db.prepare(`WITH ${memberCte}, pre AS (SELECT value body FROM json_each(?))
     SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM issue_activity WHERE id=?) OR NOT EXISTS(
       SELECT 1 FROM pre WHERE NOT EXISTS(SELECT 1 FROM issues i WHERE i.id=json_extract(pre.body,'$.id')
-        AND i.version=json_extract(pre.body,'$.version')+1)) THEN 1 ELSE json('undo post-version mismatch') END`)
-    .bind(capture.ids, capture.before, capture.actionId);
+        AND i.version=COALESCE((SELECT json_extract(value,'$.version') FROM json_each(?) WHERE json_extract(value,'$.identifier')=i.identifier),json_extract(pre.body,'$.version')+1))) THEN 1 ELSE json('undo post-version mismatch') END`)
+    .bind(capture.ids, capture.before, capture.actionId, JSON.stringify(postVersions));
   let results: D1Result[];
   try {
     results = await db.batch([guard, ...writes, postGuard, metadata,

@@ -82,7 +82,7 @@ export async function bulkUpdateIssues(
           .bind(...plan.guardValues),
       ),
       ...plans.flatMap((plan) => plan.writes),
-    ]);
+    ], plans.map(({ identifier, version }) => ({ identifier, version })));
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
     const current = await bulkFailures(db, actor, input);
