@@ -348,7 +348,7 @@ Local portable archive commands use the landed Base D1/R2 engine. Mapped CSV/JSO
 ### Target: Cycles
 
 - **CYCLE-007 — Automatic cycle schedule.** A team's owners — or all its members while its *Who manages cycles and templates* permission is All team members (ROLE-009) — and Owners and Admins set a cycle cadence (one to eight weeks, start weekday, optional cooldown between cycles) and the number of upcoming cycles to keep; Vector creates future cycles on schedule so rollover (CYCLE-004) always has a next cycle, and records each creation as automation. Changing the cadence affects only cycles not yet started. *Acceptance:* a scheduled-run test that keeps three upcoming two-week cycles with a one-week cooldown and closes a cycle without a CYCLE-006 failure. *Status:* partial — `src/core/features/cycle-closure/service.ts` (closure and rollover to an existing next cycle; automatic creation is absent).
-- **CYCLE-008 — Automatic cycle membership.** A team can choose to add issues to the active cycle when they move to Started, and when they complete without a cycle, so the cycle reflects real work; each addition is recorded as an automation change. *Acceptance:* a journey that starts an uncommitted issue and finds it in the active cycle with the automation activity entry. *Status:* missing.
+- **CYCLE-008 — Automatic cycle membership.** A team can choose to add issues to the active cycle when they move to Started, and when they complete without a cycle, so the cycle reflects real work; each addition is recorded as an automation change. *Acceptance:* a journey that starts an uncommitted issue and finds it in the active cycle with the automation activity entry. *Status:* done — `tests/worker/cycle-membership.test.ts`, `tests/e2e/core-cycle-membership-journey.mjs`.
 
 ### Releases and deployments
 
@@ -556,13 +556,13 @@ Signed source ingestion implements INTAKE-001/002/003/008/009/011 using Base's s
 
 ## Status
 
-Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f0c` (16 October 2026).
+Judged from the code and tests at commit `4af55617a0c72b6dafb8ad311bd669bfd5750efd` (18 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 72 | 32 | 0 | 104 |
-| Target and push further | 4 | 47 | 99 | 150 |
-| All | 76 | 79 | 99 | 254 |
+| Target and push further | 5 | 47 | 98 | 150 |
+| All | 77 | 79 | 98 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -691,7 +691,7 @@ Judged from the code and tests at commit `7c2c9fc6164682209643d899bce4e84596ef6f
 | `CYCLE-005` | Closure snapshot | published | done | `tests/worker/cycle-closure.test.ts` |  |
 | `CYCLE-006` | Missing next cycle | published | done | `tests/worker/cycle-closure.test.ts` |  |
 | `CYCLE-007` | Automatic cycle schedule | target | partial | `src/core/features/cycle-closure/service.ts` | Closure and rollover to an existing next cycle; automatic creation is absent |
-| `CYCLE-008` | Automatic cycle membership | target | missing |  | No implementation yet |
+| `CYCLE-008` | Automatic cycle membership | target | done | `tests/worker/cycle-membership.test.ts`, `tests/e2e/core-cycle-membership-journey.mjs` |  |
 | `RELEASE-001` | Releases | target | missing |  | No implementation yet |
 | `RELEASE-002` | Deployment tracking | target | missing |  | No implementation yet |
 | `RELEASE-003` | Release notes | target | missing |  | No implementation yet |

@@ -235,7 +235,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **CYCLE-005 — Closure snapshot** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-005).
 - **CYCLE-006 — Missing next cycle** (done). `tests/worker/cycle-closure.test.ts` (tests tagged CYCLE-006).
 - **CYCLE-007 — Automatic cycle schedule** (partial). A scheduled-run test that keeps three upcoming two-week cycles with a one-week cooldown and closes a cycle without a CYCLE-006 failure.
-- **CYCLE-008 — Automatic cycle membership** (missing). A journey that starts an uncommitted issue and finds it in the active cycle with the automation activity entry.
+- **CYCLE-008 — Automatic cycle membership** (done). `tests/worker/cycle-membership.test.ts` and `tests/e2e/core-cycle-membership-journey.mjs` cover opt-in starts and completions, intake acceptance, preserved commitments, stale and changed-rule refusal, bulk Undo, and 1440/390 rules and issue journeys.
 
 ### Releases and deployments
 
