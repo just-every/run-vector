@@ -448,10 +448,6 @@
       "sha256": "368733ea8d714c0e787e932effc97c8ad1a7012bc0ae018053c8eb270eb9338e",
       "executable": false
     },
-    ".github/workflows/ci.yml": {
-      "sha256": "e5d3de0f1c9fe0fa2c4d9ba8ea2f427f0e546caf28e7ffec5fbd079d85e12712",
-      "executable": false
-    },
     ".github/workflows/installer-journeys.yml": {
       "sha256": "64739027e8bb86f38988cf53250db35863c1cb54614150d62216e394acbd5fb6",
       "executable": false
@@ -466,6 +462,10 @@
     },
     ".github/workflows/run-site.yml": {
       "sha256": "ef3626b149bbfd6220659264f072b83d63800c2de5c137910fe77426aaaea103",
+      "executable": false
+    },
+    ".github/workflows/verify.yml": {
+      "sha256": "df7a428080ce25d435409b9fb547aad51133cc3ef29fd5cdb1a2df9eb450ff88",
       "executable": false
     },
     ".gitignore": {
@@ -529,7 +529,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "debb1fc195c8a5abc8c35c28ab87970a20783c7269dfa4bb9aab5f0bbe0d84f9",
+      "sha256": "8adbae072e8d0c673c093abae5b4e642d8d801829d92098214eb7da30561fa53",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -677,7 +677,7 @@
       "executable": false
     },
     "docs/VERIFICATION.md": {
-      "sha256": "98585b155adb961c190c9d0680d221aebe5c2c89af0e7aee8669acda8e19492b",
+      "sha256": "3c03aa5778bbd893e2a751beaf0669f31dffbf4d3ee11c2a79dbcba5719c90e1",
       "executable": false
     },
     "edition.json": {

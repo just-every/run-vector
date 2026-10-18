@@ -1,4 +1,4 @@
-name: Vector verification
+name: Verify
 on:
   push:
     branches: [main]

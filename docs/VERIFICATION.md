@@ -6,7 +6,7 @@ is the CI application wall: it validates sources, runs installer, Node, Markdown
 Worker and deployment tests, builds, and runs the emitted Worker and browser
 journeys. GitHub push CI runs independent shards, including actual development
 setup and hydration. Slow installer and literal fresh-clone README journeys run
-on release tags and nightly in `installer-journeys.yml`. `.github/workflows/ci.yml`,
+on release tags and nightly in `installer-journeys.yml`. `.github/workflows/verify.yml`,
 `scripts/verification-plan.mjs` and `scripts/verify.mjs` are the executable
 registration, rather than this document being an independent list of gates.
 
