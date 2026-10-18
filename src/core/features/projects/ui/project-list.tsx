@@ -1,24 +1,25 @@
-import { Link } from '@tanstack/react-router'
-import type { PortfolioFilters } from './helpers'
+import { useHydrated } from "../../../app/initial-resources";
+import { Link } from "@tanstack/react-router";
+import type { PortfolioFilters } from "./helpers";
 import {
   ListPreferenceControls,
   type ListPreferenceControlsProps,
-} from '../../views/ui/list-preference-controls'
+} from "../../views/ui/list-preference-controls";
 import {
   activeHealthLabel,
   lifecycleLabel,
   projectProgressLabel,
-} from './helpers'
-import type { ProjectSummaryData } from './data'
+} from "./helpers";
+import type { ProjectSummaryData } from "./data";
 
 type ProjectListProps = {
-  projects: ProjectSummaryData[]
-  hasProjects: boolean
-  filters: PortfolioFilters
-  lifecycleOptions: string[]
-  onFiltersChange: (filters: PortfolioFilters) => void
-  preferenceControls: ListPreferenceControlsProps
-}
+  projects: ProjectSummaryData[];
+  hasProjects: boolean;
+  filters: PortfolioFilters;
+  lifecycleOptions: string[];
+  onFiltersChange: (filters: PortfolioFilters) => void;
+  preferenceControls: ListPreferenceControlsProps;
+};
 
 export function ProjectList({
   projects,
@@ -28,6 +29,7 @@ export function ProjectList({
   onFiltersChange,
   preferenceControls,
 }: ProjectListProps) {
+  const ready = useHydrated() && preferenceControls.ready;
   return (
     <>
       <div className="project-filters" aria-label="Filter project portfolio">
@@ -35,6 +37,7 @@ export function ProjectList({
           Lifecycle
           <select
             aria-label="Lifecycle"
+            disabled={!ready}
             value={filters.lifecycle}
             onChange={(event) =>
               onFiltersChange({ ...filters, lifecycle: event.target.value })
@@ -52,11 +55,12 @@ export function ProjectList({
           Health
           <select
             aria-label="Health"
+            disabled={!ready}
             value={filters.health}
             onChange={(event) =>
               onFiltersChange({
                 ...filters,
-                health: event.target.value as PortfolioFilters['health'],
+                health: event.target.value as PortfolioFilters["health"],
               })
             }
           >
@@ -67,7 +71,7 @@ export function ProjectList({
             <option value="unknown">Unknown</option>
           </select>
         </label>
-        <ListPreferenceControls {...preferenceControls} />
+        <ListPreferenceControls {...preferenceControls} ready={ready} />
       </div>
       <section className="project-list" aria-label="Projects">
         <div className="project-list-heading" aria-hidden="true">
@@ -90,11 +94,11 @@ export function ProjectList({
         )}
       </section>
     </>
-  )
+  );
 }
 
 function ProjectRow({ project }: { project: ProjectSummaryData }) {
-  const health = activeHealthLabel(project.health)
+  const health = activeHealthLabel(project.health);
   return (
     <Link
       className="project-row"
@@ -104,7 +108,7 @@ function ProjectRow({ project }: { project: ProjectSummaryData }) {
     >
       <span className="project-row__name">
         <strong>{project.name}</strong>
-        <small>{project.description || 'No description'}</small>
+        <small>{project.description || "No description"}</small>
       </span>
       <span className="project-row__lead">{project.lead.name}</span>
       <span className="project-row__progress">
@@ -124,5 +128,5 @@ function ProjectRow({ project }: { project: ProjectSummaryData }) {
         ) : null}
       </span>
     </Link>
-  )
+  );
 }

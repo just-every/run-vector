@@ -1,3 +1,4 @@
+import { useHydrated } from "../../../app/initial-resources";
 import type { FormEvent } from "react";
 import type { Administration } from "../../administration/schema";
 import { useAdministrationAction } from "../../settings/ui/administration-action";
@@ -19,6 +20,7 @@ export function ProjectCreate({
   onCancel,
 }: Props & { onCancel: () => void }) {
   const action = useAdministrationAction(onChanged);
+  const hydrated = useHydrated();
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -27,7 +29,7 @@ export function ProjectCreate({
   }
   return (
     <form aria-label="Create project" onSubmit={create}>
-      <fieldset disabled={action.pending}>
+      <fieldset disabled={action.pending || !hydrated}>
         <ProjectFields operators={operators} autoFocus />
         <div className="admin-actions">
           <button>Create project</button>
@@ -46,6 +48,7 @@ export function ProjectAdministration({
   onChanged,
 }: Props & { project: Administration["projects"][number] }) {
   const action = useAdministrationAction(onChanged);
+  const hydrated = useHydrated();
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     await action.run(`/api/settings/projects/${project.id}`, "PATCH", {
@@ -60,7 +63,7 @@ export function ProjectAdministration({
         {project.archivedAt ? " · Archived" : ""}
       </summary>
       <form aria-label={`Edit project ${project.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending}>
+        <fieldset disabled={action.pending || !hydrated}>
           <ProjectFields operators={operators} project={project} />
           <label>
             Project lifecycle

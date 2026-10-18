@@ -1,3 +1,4 @@
+import { useHydrated } from "../../../app/initial-resources";
 import { useRef, useState } from "react";
 import { useApiResource } from "../../../app/api-client";
 import type { ListPreferenceControlsProps } from "../../views/ui/list-preference-controls";
@@ -13,6 +14,7 @@ import { ProjectCreate } from "./project-administration";
 import { ProjectList } from "./project-list";
 
 export function ProjectsWorkspace() {
+  const hydrated = useHydrated();
   const [creating, setCreating] = useState(false);
   const createTrigger = useRef<HTMLButtonElement>(null);
   const closeCreate = () => {
@@ -103,6 +105,7 @@ export function ProjectsWorkspace() {
         <button
           ref={createTrigger}
           className="projects-new-project"
+          disabled={!hydrated}
           type="button"
           aria-expanded={creating}
           aria-controls="project-create-panel"
@@ -132,6 +135,7 @@ export function ProjectsWorkspace() {
         <input
           type="checkbox"
           checked={includeArchived}
+          disabled={!hydrated || !preferences.ready}
           onChange={(event) =>
             preferences.update({
               filters: { ...filters, includeArchived: event.target.checked },

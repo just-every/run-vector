@@ -1,4 +1,4 @@
-import { ProjectCycleHistory } from './cycle-history';
+import { ProjectCycleHistory } from "./cycle-history";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { administrationSchema } from "../../administration/schema";
 import { ProjectAdministration } from "./project-administration";
@@ -129,10 +129,15 @@ function ProjectDetailContent({
         />
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
+      {project.healthExplanation ? (
+        <p className="project-health-explanation" role="status">
+          {project.healthExplanation}
+        </p>
+      ) : null}
       {project.health === "blocked" || project.health === "at-risk" ? (
         <RiskEvidence project={project} />
       ) : null}
-      <ProjectCycleHistory history={project.cycleHistory}/>
+      <ProjectCycleHistory history={project.cycleHistory} />
       <div className="project-detail__grid">
         <section className="project-detail__section">
           <h2>Issues</h2>

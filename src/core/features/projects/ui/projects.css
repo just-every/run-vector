@@ -20,7 +20,7 @@
   font-size: clamp(1.7rem, 2.7vw, 2.55rem);
   font-weight: 620;
   line-height: 1.06;
-  letter-spacing: -.03em;
+  letter-spacing: -0.03em;
 }
 .projects-header p:last-child,
 .project-detail__header > div:first-child > p:last-child {
@@ -60,7 +60,7 @@
 .project-metric span {
   display: block;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -71,7 +71,7 @@
   color: var(--app-ink);
   font-size: 1.55rem;
   line-height: 1;
-  letter-spacing: -.03em;
+  letter-spacing: -0.03em;
 }
 .project-metric--blocked strong {
   color: var(--app-danger);
@@ -95,7 +95,7 @@
   display: grid;
   gap: 0.22rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -118,9 +118,9 @@
   align-items: center;
   gap: 0.4rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
-.project-filters .list-preference-controls [role='alert'] {
+.project-filters .list-preference-controls [role="alert"] {
   max-width: 32rem;
   color: var(--app-danger);
   line-height: 1.4;
@@ -132,7 +132,7 @@
   padding: 0.35rem 0.55rem;
   color: var(--app-ink);
   background: var(--app-card);
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 .project-filters .list-preference-controls button:disabled {
   opacity: 0.55;
@@ -155,7 +155,7 @@
 .project-list-heading {
   padding: 0.65rem 0.85rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -192,7 +192,7 @@
 .project-row__name small {
   margin-top: 0.28rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 .project-row__lead {
   color: var(--app-body);
@@ -202,7 +202,7 @@
   display: grid;
   gap: 0.35rem;
   color: var(--app-body);
-  font-size: .75rem;
+  font-size: 0.75rem;
 }
 .project-row__progress i {
   display: block;
@@ -233,7 +233,7 @@
   border-radius: 999px;
   padding: 0.13rem 0.45rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 680;
   white-space: nowrap;
 }
@@ -307,7 +307,7 @@
 }
 .project-facts dt {
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -346,7 +346,8 @@
   list-style: none;
 }
 .project-risks li {
-  border-left: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-left: 2px solid
+    color-mix(in srgb, var(--color-accent) 55%, transparent);
   padding-left: 0.75rem;
 }
 .project-risks p {
@@ -364,7 +365,7 @@
 .project-risks a,
 .project-fact-list a {
   color: var(--app-cobalt-ink);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 .project-detail__grid {
@@ -412,7 +413,7 @@
 .project-issues strong {
   flex: none;
   color: var(--app-cobalt-ink);
-  font-size: .75rem;
+  font-size: 0.75rem;
   letter-spacing: 0.07em;
 }
 .project-issues b {
@@ -427,7 +428,7 @@
 .project-fact-list span,
 .project-fact-list small {
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-style: normal;
   line-height: 1.4;
 }
@@ -478,7 +479,7 @@
   .projects-new-project {
     min-width: 2.75rem;
     padding-inline: 0.65rem;
-    font-size: .75rem;
+    font-size: 0.75rem;
   }
   .project-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -574,4 +575,11 @@
 }
 .project-management {
   margin-top: 0.5rem;
+}
+
+.project-health-explanation {
+  margin: 0 0 24px;
+  color: var(--app-muted);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
 }

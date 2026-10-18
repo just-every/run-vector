@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { beforePrivateNavigation } from './collaboration-navigation.mjs';
+import { beforePrivateNavigation, settleReads, trackRequests } from './collaboration-navigation.mjs';
 export async function workloadJourney(page, context, base, record = async () => {}) {
   async function api(path, method='GET', data) {
     const response = await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
@@ -21,6 +21,18 @@ export async function workloadJourney(page, context, base, record = async () => 
     ['Protect the mobile checkout redirect',others[0].id,5],['Explain card authentication failures',others[1].id,3],
   ]) await api('/issues','POST',{teamId:team.id,title,assigneeOperatorId,estimate,cycleId:cycle.id,dueDate:due});
   const myName = state.operators.find(p=>p.id===me).name;
+  async function saveCapacity(mine, path) {
+    const url=base+'/api'+path;
+    const saved=page.waitForResponse(r=>r.url()===url&&r.request().method()==='PUT');
+    const refreshed=page.waitForResponse(r=>r.url()===url&&r.request().method()==='GET');
+    await mine.getByRole('button',{name:'Save my capacity',exact:true}).click();
+    const response=await saved;
+    assert.equal(response.status(),200);
+    assert.equal(await response.finished(),null,'capacity mutation response finished');
+    const snapshot=await refreshed;
+    assert.equal(snapshot.status(),200);
+    assert.equal(await snapshot.finished(),null,'post-save workload response finished');
+  }
   for (const width of [1440,390]) {
     await page.setViewportSize({width,height:1000});
     await beforePrivateNavigation(page,base+'/app/cycles/'+cycle.id); await page.goto(base+'/app/cycles/'+cycle.id);
@@ -28,8 +40,7 @@ export async function workloadJourney(page, context, base, record = async () => 
     await mine.getByText('2 issues · 13 estimated points',{exact:true}).waitFor();
     for (const [person,points] of [[others[0],5],[others[1],3]]) await page.getByRole('article',{name:'Workload for '+person.name,exact:true}).getByText(`1 issue · ${points} estimated points`,{exact:true}).waitFor();
     const capacity=mine.getByLabel('My capacity in points'); await capacity.fill('10');
-    const saved=page.waitForResponse(r=>r.url().includes('/api/workload?')&&r.request().method()==='PUT');
-    await mine.getByRole('button',{name:'Save my capacity',exact:true}).click(); assert.equal((await saved).status(),200);
+    await saveCapacity(mine,'/workload?cycleId='+encodeURIComponent(cycle.id));
     await mine.getByText('Over capacity',{exact:true}).waitFor();
     await mine.getByText('Capacity: 10 points',{exact:false}).waitFor();
     await page.getByRole('heading',{name:'Workload',exact:true}).scrollIntoViewIfNeeded();
@@ -39,10 +50,14 @@ export async function workloadJourney(page, context, base, record = async () => 
     await record('REPORT-004',`assigned-${width}`,page);
     // A distinct browser session, signed in as the same operator, reads the persisted capacity.
     const second=await context.browser().newContext({storageState:await context.storageState(),viewport:{width,height:1000}});
+    let other;
     try {
-      const other=await second.newPage(); await other.goto(base+'/app/cycles/'+cycle.id);
+      other=await second.newPage(); trackRequests(other); await other.goto(base+'/app/cycles/'+cycle.id);
       await other.getByRole('article',{name:'Workload for '+myName,exact:true}).getByText('Over capacity',{exact:true}).waitFor();
-    } finally { await second.close(); }
+    } finally {
+      try { if (other) await settleReads(other); }
+      finally { await second.close(); }
+    }
     const rangePath='/workload?from='+due+'&to='+due;
     const rangeMine=(await api(rangePath)).rows.find(r=>r.operatorId===me);
     await api(rangePath,'PUT',{capacity:null,expectedVersion:rangeMine.version});
@@ -52,7 +67,8 @@ export async function workloadJourney(page, context, base, record = async () => 
     await range.getByRole('button',{name:'Show workload'}).click();
     await mine.getByText('Capacity not stated',{exact:false}).waitFor();
     await mine.getByLabel('My capacity in points').fill(String(rangeMine.points));
-    await mine.getByRole('button',{name:'Save my capacity'}).click(); await mine.getByText(rangeMine.unestimated ? 'Capacity unknown' : 'Within capacity',{exact:true}).waitFor();
+    await saveCapacity(mine,rangePath);
+    await mine.getByText(rangeMine.unestimated ? 'Capacity unknown' : 'Within capacity',{exact:true}).waitFor();
     await page.getByRole('heading',{name:'Workload',exact:true}).scrollIntoViewIfNeeded();
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     await record('REPORT-004',`date-range-${width}`,page);

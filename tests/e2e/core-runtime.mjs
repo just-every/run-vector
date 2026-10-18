@@ -1,3 +1,4 @@
+import { projectHealthJourney } from './core-project-health-journey.mjs';
 import { manualOrderJourney } from './core-manual-order-journey.mjs';
 import { workloadJourney } from './core-workload-journey.mjs';
 import { subissuesJourney } from './core-subissues-journey.mjs';
@@ -701,6 +702,7 @@ try {
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
   await manualOrderJourney(page, context, base, record);
   await workloadJourney(page, context, base, record);
+  await projectHealthJourney(page, context, base, record);
   await cycleMembershipJourney(page, context, base, record);
   await subissuesJourney(page, context, base, record);
   await pageAudit(page, base, issue.identifier, evidence, record);

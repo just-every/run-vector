@@ -1,19 +1,19 @@
-import { historicalCycleSchema } from '../../cycle-closure/schema';
-import { z } from 'zod'
+import { historicalCycleSchema } from "../../cycle-closure/schema";
+import { z } from "zod";
 
 const healthSchema = z.enum([
-  'blocked',
-  'at-risk',
-  'on-track',
-  'unknown',
-  'none',
-])
-const personSchema = z.object({ id: z.string(), name: z.string() })
+  "blocked",
+  "at-risk",
+  "on-track",
+  "unknown",
+  "none",
+]);
+const personSchema = z.object({ id: z.string(), name: z.string() });
 const statusSchema = z.object({
   id: z.string().optional(),
   name: z.string(),
   category: z.string(),
-})
+});
 
 export const projectSummarySchema = z.object({
   id: z.string(),
@@ -24,6 +24,7 @@ export const projectSummarySchema = z.object({
   targetDate: z.string().nullable(),
   lead: personSchema,
   health: healthSchema,
+  healthExplanation: z.string().nullable(),
   progress: z.object({
     completed: z.number(),
     total: z.number(),
@@ -36,13 +37,13 @@ export const projectSummarySchema = z.object({
       message: z.string(),
     }),
   ),
-})
+});
 
 export const projectPortfolioSchema = z.object({
   generatedAt: z.string(),
   counts: z.record(z.string(), z.number()),
   projects: z.array(projectSummarySchema),
-})
+});
 
 export const projectDetailSchema = projectSummarySchema.extend({
   cycleHistory: z.array(historicalCycleSchema),
@@ -109,9 +110,9 @@ export const projectDetailSchema = projectSummarySchema.extend({
       ),
     }),
   ),
-})
+});
 
-export type ProjectSummaryData = z.output<typeof projectSummarySchema>
-export type ProjectPortfolioData = z.output<typeof projectPortfolioSchema>
-export type ProjectDetailData = z.output<typeof projectDetailSchema>
-export type ProjectHealthData = z.output<typeof healthSchema>
+export type ProjectSummaryData = z.output<typeof projectSummarySchema>;
+export type ProjectPortfolioData = z.output<typeof projectPortfolioSchema>;
+export type ProjectDetailData = z.output<typeof projectDetailSchema>;
+export type ProjectHealthData = z.output<typeof healthSchema>;
