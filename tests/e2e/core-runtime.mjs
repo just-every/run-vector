@@ -727,14 +727,14 @@ try {
   await workloadJourney(page, context, base, record);
   await projectHealthJourney(page, context, base, record);
   await projectRiskJourney(page, context, base, record);
-  await projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
+  await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  });
-  await intakePolicyJourney(page, context, base, async (id, name, currentPage) => {
+  }), 'Project maintenance teammate');
+  await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  });
+  }), 'Intake routing teammate');
   await cycleMembershipJourney(page, context, base, record);
   await subissuesJourney(page, context, base, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
