@@ -403,6 +403,10 @@
     {
       "source": "docs/KEYBOARD-PLANNING.md",
       "reason": "Keyboard planning API, atomic selection commands and conflict handling for maintainers"
+    },
+    {
+      "source": "docs/CLAIMS.md",
+      "reason": "Implementation claims and acceptance status for maintainers; CONTRACT.md defines the product target"
     }
   ]
 }
