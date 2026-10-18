@@ -1,3 +1,4 @@
+import { currentNowJourney } from './core-current-now-journey.mjs';
 import { projectRiskJourney } from './core-project-risk-journey.mjs';
 import { projectHealthJourney } from './core-project-health-journey.mjs';
 import { manualOrderJourney } from './core-manual-order-journey.mjs';
@@ -683,6 +684,10 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
+  await currentNowJourney(page, context, base, async (id, name, currentPage) => {
+    await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
+    record(id, name);
+  });
   await currentJourney(page, context, base, ids.flow, evidence, record);
   expectedBulkConflictUrl = `${base}/api/issues/bulk`;
   await keyboardJourney(page, context, base, record);

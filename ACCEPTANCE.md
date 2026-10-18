@@ -80,9 +80,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 74 | 30 | 0 | 104 |
+| Published | 75 | 29 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 82 | 75 | 97 | 254 |
+| All | 83 | 74 | 97 | 254 |
 
 ### Public homepage
 
@@ -197,7 +197,7 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 - **CURR-001 — Disjoint stream** (partial). An HTTP journey that places one issue of each kind and asserts it appears in exactly one Current section by precedence; the stream exists but no test names the clause.
 - **CURR-002 — Needs decision** (partial). A journey that defers, returns and declines intake items and asserts Needs decision membership.
-- **CURR-003 — Now** (partial). A journey with a Started issue and an overdue Unstarted issue at a workspace-timezone day boundary.
+- **CURR-003 — Now** (done). `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs`.
 - **CURR-004 — Next** (partial). A journey with active-cycle and due-in-seven-days Unstarted issues.
 - **CURR-005 — Recently done** (partial). A journey that completes issues across an eight-day window and checks the seven-day cut-off and completion-time order, including identifier ties, under CURR-007's Recently done exception. In the same Current view, two in-progress issues of different priority follow the normal CURR-007 order while two done issues completed at different times appear newest completion first even when their priority, due date or last update would put them in the opposite order.
 - **CURR-006 — Explainable attention** (done). `tests/worker/dependencies.test.ts` (tests tagged CURR-006).

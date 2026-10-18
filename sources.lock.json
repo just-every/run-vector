@@ -481,7 +481,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "435a035870803f12790c1cf420099ff964acdcbb42643581c788e280ba4eea7e",
+      "sha256": "8039e10c4327e9c61cbbcc8e7c8437fa87fbf6be2cf7143c817caac153496bfa",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "73d2bd91f10f6268b0c58a12b0119d71a6229d7d98624e4108fb16711c0f467b",
+      "sha256": "c50828230db8b720e8a5002130cac0e69d88ae271b626f82cc0d2d44a707c3f5",
       "executable": false
     },
     "DEMO.md": {
@@ -561,7 +561,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "a4da498d00161e75bc7397be12f57fa439d188de0dfc7489c64c2e52cb1f46b1",
+      "sha256": "908be9d78e49be2f8712ad683905e2b14ff75f380181842ba8329f99996cad7d",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -1785,11 +1785,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "5568e25528da372e1a3d2686ab9dcfcffc3e7ff0076335734d3c9c24e4607df3",
+      "sha256": "e3a9fdd803653f3938c91ba949fae0026035be29ffa2393cbe2c7a50052dd017",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "fa922cc148ffb3197175d4e9e7f9df5e2687896ff3a8f9030ce05706e4f9f5d0",
+      "sha256": "e0c101a61a2b1f8b6c4a07cd176bd453a3fe65bb1f7a986459f762c9a53323b6",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -2033,7 +2033,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "9cb0a07d55c343a0492767f47f3aaa5301867d74eb048fbcae5f8c96340967af",
+      "sha256": "dee18f516015a1148d46631f4ca584452122608ff633165596e1db27be507ec0",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
@@ -4856,6 +4856,10 @@
       "sha256": "cf77b1fa9f464254eb0bfbba43a28f1974c9f03b9aaed2701b25ff6a317e41e3",
       "executable": false
     },
+    "tests/e2e/core-current-now-journey.mjs": {
+      "sha256": "d2b9dcf0dcd4c2c34d79e3fbceb8c90effc15427143e775b0f3d0a35ce65b87f",
+      "executable": false
+    },
     "tests/e2e/core-cycle-membership-journey.mjs": {
       "sha256": "fa37c8db6fcd84fadb41ef5ecd514e18685c43f5809fc9ee03b79f99e40cfaa1",
       "executable": false
@@ -4901,7 +4905,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "4e8301e089f77b13576e0f9028f01180d218ba0e0b859602109042bd279a6529",
+      "sha256": "3c230dbf17176573ae722ab44db9fab25301980cda0f5a39c480f0ab4a46ae14",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -5302,6 +5306,10 @@
     },
     "tests/worker/collaboration-mail.test.ts": {
       "sha256": "80c20048a3875730f473d424ea7374b8b1cced95bdbb1c6a1a5771c77b5f432d",
+      "executable": false
+    },
+    "tests/worker/current-now.test.ts": {
+      "sha256": "823b64ba10b0c010799e30c85b6bb6db39d7fe9daffabe3c6317da3eff10c2a0",
       "executable": false
     },
     "tests/worker/cycle-closure-fixture.ts": {
