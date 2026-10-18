@@ -16,9 +16,9 @@ export async function poll(read, check, label) {
   }
   assert.fail("Persistence did not settle: " + label);
 }
-export function createAdminRuntime(width, sourceFiles = []) {
+export function createAdminRuntime(width, sourceFiles = [], { port = 15944, inspectorPort = 15945 } = {}) {
   const exceptions = createWorkerExceptionDiagnostics(sourceFiles);
-  const base = "http://127.0.0.1:15944";
+  const base = "http://127.0.0.1:" + port;
   const state = resolve(
     ".artifacts/verification/admin-state",
     `${width}-${Date.now()}-${process.pid}`,
@@ -84,8 +84,8 @@ export function createAdminRuntime(width, sourceFiles = []) {
       ]);
     },
     async start() {
-      await available(15944);
-      await available(15945);
+      await available(port);
+      if (inspectorPort) await available(inspectorPort);
       worker = spawn(
         process.execPath,
         [
@@ -96,9 +96,9 @@ export function createAdminRuntime(width, sourceFiles = []) {
           "--ip",
           "127.0.0.1",
           "--port",
-          "15944",
+          String(port),
           "--inspector-port",
-          "15945",
+          String(inspectorPort),
           "--persist-to",
           state,
           ...Object.entries(config).flatMap(([key, value]) => [

@@ -2169,7 +2169,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "a55a914a231fd45f5516b7a6bede2d9d6025525e793a015bfceb61e4779c8cf0",
+      "sha256": "c0e646db96262eaa458e4f2c0229504175931e0537dec23dd27adce7b587b843",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -4793,7 +4793,7 @@
       "executable": false
     },
     "tests/e2e/admin-runtime-support.mjs": {
-      "sha256": "41014cebdd8df16fcb7446f0dabe296fadf4600df95e0186068d6a1e60b2d723",
+      "sha256": "5c13f9396ece3d9bb199980636357b7f42fae42911e2dca01c041b9e348bd9ce",
       "executable": false
     },
     "tests/e2e/admin-runtime.mjs": {
@@ -4961,7 +4961,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "96361dc1b714a6134d8345d0893a06df94723a7cfb4be7b2a5d50aef0ab1b3d4",
+      "sha256": "f21de376919e934c25f1d28398b3b30f7b778ce2ad371e003a9a95713a5ec421",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -5002,6 +5002,10 @@
     },
     "tests/e2e/core-workload-journey.mjs": {
       "sha256": "724c767cfc924f4a500430eddd6d92390fe35a5339200e9324e7ce2153f525a0",
+      "executable": false
+    },
+    "tests/e2e/current-intake-runtime.mjs": {
+      "sha256": "f50d431c118dcccb07c2b15633d6e18699a664fb524f2062d2cafbe3e39978de",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {

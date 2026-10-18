@@ -1,4 +1,3 @@
-import { currentIntakePaginationJourney } from './core-current-intake-pagination-journey.mjs';
 import { intakePolicyJourney } from './core-intake-policy-journey.mjs';
 import { projectMembershipJourney } from './core-project-membership-journey.mjs';
 import { currentDisjointJourney } from './core-current-disjoint-journey.mjs';
@@ -692,10 +691,6 @@ try {
   await settleReads(page);
   await currentDisjointJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
-    record(id, name);
-  });
-  await currentIntakePaginationJourney(page, context, base, async (id, name, currentPage) => {
-    await currentPage.screenshot({ path: evidence + '/' + name + '.png' });
     record(id, name);
   });
   await currentRecentlyDoneJourney(page, context, base, async (id, name, currentPage) => {

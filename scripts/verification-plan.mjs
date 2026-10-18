@@ -6,7 +6,7 @@ export const buildCommands = [
 export const ciCommands = [
   'sources:verify-base', 'check', 'test:installer', 'test:markdown',
   'test:worker', 'test:deployment', 'test:public-site', 'build',
-  'integration:check', 'test:runtime', 'artifact:delivery', 'test:wave-b',
+  'integration:check', 'test:runtime', { node: ['tests/e2e/current-intake-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
   'test:data', 'test:integrations', 'test:base-auth', 'test:access',
   'test:mutation-refresh', 'test:admin', 'test:collaboration',
 ];
@@ -38,7 +38,9 @@ export const verificationShards = {
   },
   ownership: {
     browser: true,
-    commands: ['build', 'test:wave-b', 'test:base-auth',
+    // The high-volume intake fixture has its own installation and operator;
+    // sharing it with keyboard journeys spends their normal request budget.
+    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, 'test:wave-b', 'test:base-auth',
       'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
   },
   // Keep Vitest's complete six-file-partition wall, balanced across three
