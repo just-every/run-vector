@@ -481,7 +481,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "4c03c8ab5d54bebf854a429061110ef556a1d2e7c22b0bc5bb8ae326149e7eb9",
+      "sha256": "59568f4a920dd0a10b53e1d0759dd4249dbd11821f48e3e60a152ea0e5a9bd39",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d03cff90ff6dd0b84ddf1f4e8ae68e10af78f9c50118f42311943178a0909c7b",
+      "sha256": "fe48d51cc6af6958cce5c9c29b4536d4b2f5a4ef5f7969eddab330d9bdb96f67",
       "executable": false
     },
     "DEMO.md": {
@@ -561,7 +561,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "72b9c09fdd6ee7d9fd4c6050472c6802d401d9c3c0c3b41e9eb16d363c4ef2fb",
+      "sha256": "59377f395b08cba5ede807fd0953629b5dff556b7d9fef21e7130d8982df2323",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2033,7 +2033,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "dee18f516015a1148d46631f4ca584452122608ff633165596e1db27be507ec0",
+      "sha256": "b8cd4af0e1b3b747fb2706896d8af8e05690a44b54ca17f6edf5d02c684641e8",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
@@ -4868,6 +4868,10 @@
       "sha256": "321b09fabd433682828143fc7dfc9e9ecbf3c6a917721086992e549be036b36f",
       "executable": false
     },
+    "tests/e2e/core-current-recently-done-journey.mjs": {
+      "sha256": "06a7d91b9122e9db1b2463339f813d9221266c18714937d94fae2704e8d8609d",
+      "executable": false
+    },
     "tests/e2e/core-cycle-membership-journey.mjs": {
       "sha256": "fa37c8db6fcd84fadb41ef5ecd514e18685c43f5809fc9ee03b79f99e40cfaa1",
       "executable": false
@@ -4913,7 +4917,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "190a80d3d064f7dbc84cd58c9ccc22f47b44b5933c0efd6ea0341b5c8aca7aec",
+      "sha256": "b977f9337e2de7e0481a9dbc067752af55dac1277cbf337c9fcfb5f46b79615a",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -5322,6 +5326,10 @@
     },
     "tests/worker/current-now.test.ts": {
       "sha256": "823b64ba10b0c010799e30c85b6bb6db39d7fe9daffabe3c6317da3eff10c2a0",
+      "executable": false
+    },
+    "tests/worker/current-recently-done.test.ts": {
+      "sha256": "2fdf2669e901abd168eecfa6d608ee8ff1ebeb58d91e3b63a3fab3fe77a1da81",
       "executable": false
     },
     "tests/worker/cycle-closure-fixture.ts": {

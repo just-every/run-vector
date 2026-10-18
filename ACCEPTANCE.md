@@ -80,9 +80,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 76 | 28 | 0 | 104 |
+| Published | 77 | 27 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 84 | 73 | 97 | 254 |
+| All | 85 | 72 | 97 | 254 |
 
 ### Public homepage
 
@@ -199,9 +199,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 - **CURR-002 — Needs decision** (partial). A journey that defers, returns and declines intake items and asserts Needs decision membership.
 - **CURR-003 — Now** (done). `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs`.
 - **CURR-004 — Next** (done). `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs`.
-- **CURR-005 — Recently done** (partial). A journey that completes issues across an eight-day window and checks the seven-day cut-off and completion-time order, including identifier ties, under CURR-007's Recently done exception. In the same Current view, two in-progress issues of different priority follow the normal CURR-007 order while two done issues completed at different times appear newest completion first even when their priority, due date or last update would put them in the opposite order.
+- **CURR-005 — Recently done** (done). Evidence: `tests/worker/current-recently-done.test.ts`, `tests/e2e/core-current-recently-done-journey.mjs`. A journey that completes issues across an eight-day window and checks the seven-day cut-off and completion-time order, including identifier ties, under CURR-007's Recently done exception. In the same Current view, two in-progress issues of different priority follow the normal CURR-007 order while two done issues completed at different times appear newest completion first even when their priority, due date or last update would put them in the opposite order.
 - **CURR-006 — Explainable attention** (done). `tests/worker/dependencies.test.ts` (tests tagged CURR-006).
-- **CURR-007 — Ranking** (done). Evidence: `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/`. Acceptance: A ranking test over priority, due date, update time and identifier ties, plus completion time and identifier ties in Recently done (CURR-005). One Current view shows two in-progress issues of different priority in normal ranking order alongside two done issues completed at different times in newest-completion-first order, with priority, due date and last update opposing the done issues' completion order. The cited ranking journey proves the normal order; the combined-view and Recently done cases are not covered by that cited journey.
+- **CURR-007 — Ranking** (done). Evidence: `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/`. Acceptance: A ranking test over priority, due date, update time and identifier ties, plus completion time and identifier ties in Recently done (CURR-005). One Current view shows two in-progress issues of different priority in normal ranking order alongside two done issues completed at different times in newest-completion-first order, with priority, due date and last update opposing the done issues' completion order. The ranking journey proves the normal order; `tests/worker/current-recently-done.test.ts`, `tests/e2e/core-current-recently-done-journey.mjs` prove the combined view, completion-time order, identifier ties and workspace-calendar cutoff.
 - **CURR-008 — Freshness** (done). `tests/e2e/core-current-journey.mjs` (tests tagged CURR-008).
 - **CURR-009 — Stream controls** (done). Evidence: `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/CURR-009/`. Acceptance: A browser journey applying each Current filter and its reset.
 

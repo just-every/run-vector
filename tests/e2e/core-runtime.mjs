@@ -1,3 +1,4 @@
+import { currentRecentlyDoneJourney } from './core-current-recently-done-journey.mjs';
 import { currentNextJourney } from './core-current-next-journey.mjs';
 import { currentNowJourney } from './core-current-now-journey.mjs';
 import { projectRiskJourney } from './core-project-risk-journey.mjs';
@@ -685,6 +686,10 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
+  await currentRecentlyDoneJourney(page, context, base, async (id, name, currentPage) => {
+    await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
+    record(id, name);
+  });
   await currentNowJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
