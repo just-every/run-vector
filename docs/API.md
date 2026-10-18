@@ -26,6 +26,10 @@ Hosted tokens need only the bearer header.
 | PATCH /api/v1/issues/IDENTIFIER | issues:write | Existing field schema and required expectedVersion |
 | POST /api/v1/issues/IDENTIFIER/comments | comments:write | Existing trimmed nonempty body and comment mutation |
 | GET /api/v1/metadata | metadata:read | Current teams/statuses/operators/projects/cycles/labels |
+| GET /api/v1/projects | projects:read | Portfolio filters and matching lifecycle/health counts |
+| GET /api/v1/projects/ID | projects:read | Project fields, labels, progress, risk and activity |
+| POST /api/v1/projects | projects:write | Create a project with a lead, optional dates, priority and enabled project labels |
+| PATCH /api/v1/projects/ID | projects:write | Change native project fields with date validation and per-field activity |
 
 Unknown query/body fields refuse. Workspace and actor identity come from the
 token authority, never the request. Native status/reference/archived-team rules
@@ -44,6 +48,24 @@ their native policy; API access introduces no product roles or tenant selector.
 The native Worker tests exercise scopes, stale writes, revocation/removal,
 issuance/commit races, usage-write failure and restart. Local proof does not
 establish hosted token commissioning or a live client integration.
+
+## Project planning
+
+Project create accepts `name`, `description`, `leadOperatorId`, `startDate`,
+`targetDate`, `priority` and `labelIds`. Dates are `YYYY-MM-DD` or null; a target
+before the start is refused without changes. Priority is `urgent`, `high`,
+`medium`, `low` or `none`. Labels must be workspace labels marked **Use for
+projects** in Settings. PATCH accepts any of those fields plus `lifecycle` and
+`archived`; simultaneous changes are atomic, and each changed planning field
+has its own activity entry. Native project updates guard the fields and labels
+read during preparation; they do not use the issue `expectedVersion` protocol.
+
+The portfolio supports `lifecycle`, `health`, `lead`, `team`, `targetFrom`,
+`targetTo`, `label`, `includeArchived` and `sort=priority` (or `newest`, the
+retained name-order setting). Counts and rows use the same filters. The current
+portfolio response is a complete workspace list, without API-003 pagination.
+Project custom fields, configurable project statuses, roadmap editing and
+Linear project-field import remain targets in CONTRACT.md.
 
 ## Native operator deletion and duplicate decisions
 

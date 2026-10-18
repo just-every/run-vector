@@ -8,7 +8,7 @@ import {request,bindings} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
  expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
  expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
@@ -51,6 +51,9 @@ it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004] native archive HTTP requires cu
  expect((await restoredOrder.json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier)).toEqual(planningOrder);
  const restoredCapacity=await targetCall('/api/workload?cycleId='+f.closing.id,'GET',undefined,historical);expect(restoredCapacity.status).toBe(200);
  expect((await restoredCapacity.json() as {rows:{operatorId:string;capacity:number|null}[]}).rows.find(row=>row.operatorId===f.owner)?.capacity).toBe(17);
+ const restoredProject=await targetCall('/api/projects/'+f.project.id,'GET',undefined,historical);
+ expect(restoredProject.status).toBe(200);
+ expect(await restoredProject.json()).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});
  const restoreStatus=async()=>await (await targetCall('/api/data/restore','GET',undefined,historical)).json() as {operators:{id:string;approved:number;eligible:number}[];status:{effectsHeld:number;reviewedAt:string|null}};
  expect((await restoreStatus()).operators.find(row=>row.id===f.peer)).toMatchObject({approved:0,eligible:1});
  for(const path of ['/api/data/restore/operators/'+f.peer,'/api/data/restore/review-effects']) {

@@ -1,3 +1,4 @@
+import { useHydrated } from "../../../app/initial-resources";
 import { useRef, useState, type FormEvent } from "react";
 import type { Administration } from "../../administration/schema";
 import { LabelChip } from "../../../app/ui/label-chip";
@@ -11,6 +12,7 @@ export function LabelsPanel({
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
+  const hydrated = useHydrated();
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -32,7 +34,7 @@ export function LabelsPanel({
     >
       <h2 id="labels-heading">Labels</h2>
       <form aria-label="Create label" onSubmit={create}>
-        <fieldset disabled={action.pending}>
+        <fieldset disabled={action.pending || !hydrated}>
           <label>
             Label name
             <input name="name" required maxLength={120} />
@@ -60,6 +62,7 @@ function LabelEditor({
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
+  const hydrated = useHydrated();
   const [color, setColor] = useState(label.color);
   const [confirm, setConfirm] = useState(false);
   const deleteTrigger = useRef<HTMLButtonElement>(null);
@@ -77,7 +80,7 @@ function LabelEditor({
         <LabelChip name={label.name} color={label.color} />
       </summary>
       <form aria-label={`Edit label ${label.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending}>
+        <fieldset disabled={action.pending || !hydrated}>
           <label>
             Label name
             <input
@@ -115,7 +118,7 @@ function LabelEditor({
           </p>
           <div className="admin-actions">
             <button
-              disabled={action.pending}
+              disabled={action.pending || !hydrated}
               type="button"
               autoFocus
               aria-describedby={`delete-label-${label.id}`}
@@ -126,7 +129,7 @@ function LabelEditor({
               Confirm delete label
             </button>
             <button
-              disabled={action.pending}
+              disabled={action.pending || !hydrated}
               type="button"
               onClick={() => {
                 setConfirm(false);

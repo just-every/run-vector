@@ -11,7 +11,9 @@ export async function populatedHttpSource() {
  expect((await f.call('/setup/complete','POST',{confirmed:true})).status).toBe(200);
  const configured=await f.call('/settings/integrations/destinations','POST',{name:'HTTP receiver',url:'https://receiver.example.com/events'});expect(configured.status).toBe(201);
  const webhook=(await configured.json() as {id:string}).id;
- const project=(await f.mutate('/settings/projects','POST',{name:'HTTP preserved project',leadOperatorId:f.owner})).projects[0];
+ const labelState=await f.mutate('/settings/labels','POST',{name:'HTTP planning',color:'#405080',projectsEnabled:true});
+ const projectLabel=labelState.labels.find(label=>label.name==='HTTP planning')!;
+ const project=(await f.mutate('/settings/projects','POST',{name:'HTTP preserved project',leadOperatorId:f.owner,startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labelIds:[projectLabel.id]})).projects[0];
  const issue=await f.create({title:'HTTP preserved history',description:'Searchable issue',statusId:f.team.statuses.find(s=>s.category==='unstarted')!.id,cycleId:f.closing.id,projectId:project.id,estimate:5,assigneeOperatorId:f.owner,dueDate:'2026-09-07'});
  const at='2026-09-02T00:00:00.000Z',closedAt='2026-09-08T00:01:00.000Z';
  await env.DB.prepare('UPDATE cycle_membership_events SET occurred_at=? WHERE identifier=?').bind(at,issue.identifier).run();

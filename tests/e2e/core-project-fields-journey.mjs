@@ -1,12 +1,13 @@
+import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 import { openAdministrationForm,openDisclosures } from './ui-controls-checks.mjs';
 import { poll } from './admin-runtime-support.mjs';
 
 /** Called by the runtime's authenticated page at each required viewport. */
-export async function projectFieldsJourney({page,runtime,capture,clause}) {
+export async function projectFieldsJourney({page,runtime,capture,clause,expectedProjectRejections=new Set()}) {
   const {base,sql}=runtime;
-  const suffix=String(page.viewportSize().width);
+  const suffix=String(page.viewportSize().width)+'-'+randomBytes(3).toString('hex');
   const name=`Project planning ${suffix}`;
   const labels=[`Delivery ${suffix}`,`Customer ${suffix}`];
   await beforePrivateNavigation(page,base+'/app/settings');
@@ -27,28 +28,37 @@ export async function projectFieldsJourney({page,runtime,capture,clause}) {
   await page.getByRole('button',{name:'New project',exact:true}).click();
   const create=page.getByRole('form',{name:'Create project',exact:true});
   await create.getByLabel('Project name',{exact:true}).fill(name);
-  await create.getByLabel('Project lead',{exact:true}).selectOption(sql('SELECT id FROM operators WHERE removed_at IS NULL ORDER BY id LIMIT 1')[0].id);
+  await create.getByRole('combobox',{name:'Project lead',exact:true}).selectOption(sql('SELECT id FROM operators WHERE removed_at IS NULL ORDER BY id LIMIT 1')[0].id);
+  await capture(`project-create-${suffix}`);
   await create.getByRole('button',{name:'Create project',exact:true}).click();
   await page.getByRole('link',{name:`Open ${name}`,exact:true}).click();
+  await page.getByRole('heading',{name,exact:true}).waitFor();
   await openAdministrationForm(page,`Edit project ${name}`);
   const edit=page.getByRole('form',{name:`Edit project ${name}`,exact:true});
   await clause('PROJ-001','project planning dates, priority and two workspace labels each record activity',async()=>{
     await edit.getByLabel('Project start date',{exact:true}).fill('2027-02-01');
     await edit.getByLabel('Project target date',{exact:true}).fill('2027-02-20');
-    await edit.getByLabel('Project priority',{exact:true}).selectOption('high');
+    await edit.getByRole('combobox',{name:'Project priority',exact:true}).selectOption('high');
     await edit.getByLabel('Project labels',{exact:true}).selectOption(labelIds);
     await edit.getByRole('button',{name:'Save project',exact:true}).click();
     await poll(()=>sql(`SELECT id,start_date,target_date,priority FROM projects WHERE name='${name}'`),rows=>rows[0]?.start_date==='2027-02-01'&&rows[0]?.target_date==='2027-02-20'&&rows[0]?.priority==='high','planning fields saved');
     const project=sql(`SELECT id FROM projects WHERE name='${name}'`)[0];
     assert.equal(sql(`SELECT * FROM project_labels WHERE project_id='${project.id}'`).length,2);
     assert.equal(sql(`SELECT * FROM project_activity WHERE project_id='${project.id}' AND kind LIKE '%_changed'`).length,4);
+    await openAdministrationForm(page,`Edit project ${name}`);
     await edit.getByLabel('Project target date',{exact:true}).fill('2027-01-01');
-    await edit.getByRole('button',{name:'Save project',exact:true}).click();
+    const [refused] = await Promise.all([
+      page.waitForResponse(response=>response.url()===base+'/api/settings/projects/'+project.id && response.request().method()==='PATCH'),
+      edit.getByRole('button',{name:'Save project',exact:true}).click(),
+    ]);
+    assert.equal(refused.status(),400);
+    expectedProjectRejections.add(refused.url());
     await page.getByRole('alert').filter({hasText:'Target date must be on or after'}).waitFor();
     assert.equal(sql(`SELECT target_date FROM projects WHERE id='${project.id}'`)[0].target_date,'2027-02-20');
+    await capture(`project-date-refusal-${suffix}`);
   });
   await edit.getByLabel('Project target date',{exact:true}).fill('2027-02-20');
-  await edit.getByLabel('Project lifecycle',{exact:true}).selectOption('active');
+  await edit.getByRole('combobox',{name:'Project lifecycle',exact:true}).selectOption('active');
   await edit.getByRole('button',{name:'Save project',exact:true}).click();
   await poll(()=>sql(`SELECT lifecycle FROM projects WHERE name='${name}'`),rows=>rows[0]?.lifecycle==='active','active planning project');
   const project=sql(`SELECT id,lead_operator_id FROM projects WHERE name='${name}'`)[0];
@@ -59,6 +69,8 @@ export async function projectFieldsJourney({page,runtime,capture,clause}) {
   assert.equal(competitor.status(),200,await competitor.text());
   await beforePrivateNavigation(page,base+'/app/projects/'+project.id);
   await page.goto(base+'/app/projects/'+project.id);
+  await page.getByRole('heading',{name,exact:true}).waitFor();
+  await page.getByRole('heading',{name:'Project activity',exact:true}).waitFor();
   await capture(`project-planning-detail-${suffix}`);
   await beforePrivateNavigation(page,base+'/app/projects');
   await page.goto(base+'/app/projects');
@@ -105,7 +117,7 @@ export async function projectFieldsJourney({page,runtime,capture,clause}) {
     assert.equal(await page.locator('.project-row').count(),1);
     await openAdministrationForm(page,`Edit project ${name}`);
     const form=page.getByRole('form',{name:`Edit project ${name}`,exact:true});
-    await form.getByLabel('Project priority',{exact:true}).selectOption('urgent');
+    await form.getByRole('combobox',{name:'Project priority',exact:true}).selectOption('urgent');
     await form.getByRole('button',{name:'Save project',exact:true}).click();
     await poll(()=>sql(`SELECT priority FROM projects WHERE name='${name}'`),rows=>rows[0]?.priority==='urgent','portfolio edit persisted');
   });

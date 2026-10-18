@@ -88,3 +88,14 @@ Archives classify every column of `issue_duplicates` (issue/canonical IDs and cr
 Issue deletion also redacts retained `integration_replays` envelope bodies while preserving identity/fingerprint/time; operator-entered `integration_resolutions` evidence codes become a fixed deletion code. Native `integration_attempts` outcomes retain only fixed protocol codes and numeric status/retry metadata, never the provider response body. Additive triggers prevent late replay or reconciliation from restoring private projections.
 
 Source record/receipt `erased` columns are classified portable state and part of their respective uniqueness keys. Migration 0033 uses an explicit populated create/copy/swap to add that key discriminator, preserving all old fields as live rows. A valid raw source ID equal to a deleted ID’s digest has separate custody. Tombstone hashes are domain-separated and independent of signing secrets. Local archive proof restores live and erased overlapping identities exactly, excludes signing credentials, rotates a fresh destination secret through the native operator route, then proves same/new erased revisions return 410, conflicting content 409, and the independent live identity remains replayable. Retain schema and tombstones on compatible rollback; reversing 0033 would merge distinct identity domains.
+
+## Project planning upgrade
+
+Apply forward migration `0062_project_fields.sql` after 0061. Existing projects
+keep their target date, acquire no start date or labels and use No priority.
+Project start dates, priority, project-label membership and the label’s project
+flag are classified in the native archive and restore with project activity.
+Keep the additive columns, tables and validation guards on a compatible-source
+rollback; never reverse an applied migration. `tests/worker/data-http.test.ts`
+restores populated planning fields through the authenticated HTTP archive door;
+`tests/worker/project-fields-upgrade.test.ts` covers populated upgrades.

@@ -1,3 +1,4 @@
+import { projectFieldsJourney } from './core-project-fields-journey.mjs';
 import assert from "node:assert/strict";
 import {
   createAdminRequestDiagnostics,
@@ -51,7 +52,7 @@ await contract(
   "empty workspace administration through real mobile browser",
   async () => {
     try {
-      browser = await chromium.launch({ headless: true });
+      browser = await chromium.launch({ headless: true, args: ["--use-mock-keychain", "--password-store=basic"] });
       for (const viewport of [
         { width: 390, height: 844 },
       ]) {
@@ -62,6 +63,7 @@ await contract(
         const context = await browser.newContext({ viewport });
         page = await context.newPage();
         requestDiagnostics.observe(page, viewport.width);
+        const expectedProjectRejections = new Set();
         const errors = [],
           consoleErrors = [],
           failed = [],
@@ -148,6 +150,11 @@ await contract(
             receipt,
             "cycle receipts remain immutable after all administration operations",
           );
+        for (const width of [1440, 390]) {
+          await page.setViewportSize({ width, height: 1000 });
+          await projectFieldsJourney({ ...shared, capture: name => capture(name), expectedProjectRejections });
+        }
+        await page.setViewportSize(viewport);
         databases.push(await exportData(runtime, evidence, viewport.width));
         await assertDocumentReadRecovery({
           ...shared,
@@ -190,8 +197,10 @@ await contract(
             ((row.location.url === runtime.base + "/api/settings/cycles" &&
               /400/.test(row.message)) ||
               (row.location.url === runtime.base + "/api/intake" &&
-                /409/.test(row.message))),
+                /409/.test(row.message)) ||
+              (expectedProjectRejections.has(row.location.url) && /400/.test(row.message))),
         );
+        assert.equal(expectedHttpErrors.filter(row => expectedProjectRejections.has(row.location.url)).length, 2, "one refused date range per viewport");
         assert.deepEqual(errors, [], "browser page errors");
         assert.deepEqual(
           consoleErrors.filter((row) => !expectedHttpErrors.includes(row)),

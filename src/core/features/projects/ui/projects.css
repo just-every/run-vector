@@ -101,7 +101,7 @@
   text-transform: uppercase;
 }
 .project-filters select {
-  min-height: 2.4rem;
+  min-height: 44px;
   border: 1px solid rgb(23 26 32 / 18%);
   border-radius: 0.45rem;
   padding: 0.35rem 0.55rem;
@@ -126,7 +126,7 @@
   line-height: 1.4;
 }
 .project-filters .list-preference-controls button {
-  min-height: 2.2rem;
+  min-height: 44px;
   border: 1px solid rgb(23 26 32 / 21%);
   border-radius: 0.42rem;
   padding: 0.35rem 0.55rem;
@@ -600,4 +600,4 @@
 .project-list-management summary { font-size:.8rem; }
 .project-list-management form { max-width:40rem; }
 .project-list-management select[multiple], .project-management select[multiple] { min-height:6rem; }
-.project-filters input[type="date"] { min-height:2.4rem; max-width:100%; border:1px solid rgb(23 26 32 / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size:.76rem; }
+.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid rgb(23 26 32 / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size:.76rem; }

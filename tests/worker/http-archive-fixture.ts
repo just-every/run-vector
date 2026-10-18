@@ -7,7 +7,9 @@ import type {WorkerBindings} from '../../src/core/app/bindings';
 import inventory from '../../src/core/features/data/archive-inventory.json';
 import {readArchive,type Manifest,type Part,type Closing} from '@runeditrun/rer/modules/portability';
 export const destination=env as unknown as {ARCHIVE_TARGET_DB:D1Database;ARCHIVE_TARGET_FILES:R2Bucket;ARCHIVE_TARGET_COORDINATOR:NonNullable<WorkerBindings['RESTORE_COORDINATOR']>};
-export const targetBindings={...bindings,DB:destination.ARCHIVE_TARGET_DB,FILES:destination.ARCHIVE_TARGET_FILES,RESTORE_COORDINATOR:destination.ARCHIVE_TARGET_COORDINATOR};
+// This independent target has configured-owner bootstrap, regardless of the
+// optional setup token Wrangler reads from the developer checkout.
+export const targetBindings={...bindings,SETUP_TOKEN:undefined,DB:destination.ARCHIVE_TARGET_DB,FILES:destination.ARCHIVE_TARGET_FILES,RESTORE_COORDINATOR:destination.ARCHIVE_TARGET_COORDINATOR};
 const app=createServerApp();
 export async function targetCall(path:string,method='GET',body?:unknown,cookie='',overrides:Partial<WorkerBindings>={}) {
  const current={...targetBindings,...overrides};
