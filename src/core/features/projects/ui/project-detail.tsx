@@ -4,7 +4,7 @@ import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { administrationSchema } from "../../administration/schema";
 import { ProjectAdministration } from "./project-administration";
 import type { ReactNode } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useApiResource } from "../../../app/api-client";
 import {
   activeHealthLabel,
@@ -15,6 +15,7 @@ import {
 import { projectDetailSchema, type ProjectDetailData } from "./data";
 
 export function ProjectDetail({ projectId }: { projectId: string }) {
+  const navigate = useNavigate();
   const administration = useApiResource(
     "/api/settings/administration",
     administrationSchema,
@@ -65,6 +66,7 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
             <ProjectAdministration
               project={record}
               operators={administration.data.operators}
+              onDeleted={() => void navigate({ to: "/app/projects" })}
               onChanged={() => {
                 administration.reload();
                 project.reload();
