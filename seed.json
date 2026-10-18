@@ -1,7 +1,7 @@
 {
   "id": "vector",
   "name": "Vector",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "maturity": "Second public release; managed-relay-shaped hosted acceptance is blocked by Base patch gr-base-162 and is not proven. Real Linear/Jira exports and broader hosted capacity remain unproven.",
   "category": "projects",
   "spine": {
@@ -13,7 +13,7 @@
     "Jira",
     "Asana"
   ],
-  "description": "A self-hosted, decision-centred issue tracker for one business, with evidence-backed intake, a unified Current stream, personal work queues, and explainable project risk.",
+  "description": "Track issues, plan projects, and keep software delivery moving.",
   "capabilities": [
     {
       "id": "public-homepage",

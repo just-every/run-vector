@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 — 2026-10-18
+
+Description only; no product change. The catalogue description is now "Track issues, plan projects, and keep software delivery moving.", the same sentence as main. The application, contract, migrations and configuration are identical to 0.2.0, so upgrading from 0.2.0 needs no migration, configuration or data step.
+
 ## 0.2.0 — 2026-10-16
 
 ### Upgrading from 0.1.0
