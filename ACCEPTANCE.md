@@ -76,6 +76,14 @@ The erasure adapter snapshots full rows for incoming and outgoing edges, direct 
 
 CONTRACT.md now describes the full Linear/Jira-class product Vector is building towards. Every clause is listed here by area with its status and the acceptance evidence a build round works towards: **done** clauses name the test that proves them today; **partial** and **missing** clauses name the journey or test, through a public door (browser journey, HTTP route, command, signed provider fixture at the network edge, mobile simulator), that must pass before the status changes. Provider fixtures stand in only at the paid or network edge. A status changes only with the cited test passing in CI on the exact head; local proof does not establish hosted acceptance. Three tables in CONTRACT.md are checked cell by cell by the journeys that name them: the role matrix (ROLE-001 and ROLE-008, with each team row checked under both values of the team's ROLE-009 permissions), the setup path per provider (INTEG-001) and the provider delegation protocols (AGENT-009).
 
+The counts below are computed from CONTRACT.md's Status rows; they describe recorded implementation status, while each entry retains the full acceptance requirement.
+
+| Clauses | Done | Partial | Missing | Total |
+| --- | ---: | ---: | ---: | ---: |
+| Published | 74 | 30 | 0 | 104 |
+| Target and push further | 8 | 45 | 97 | 150 |
+| All | 82 | 75 | 97 | 254 |
+
 ### Public homepage
 
 - **HOME-001 — Public homepage** (done). `tests/e2e/core-runtime.mjs` (tests tagged HOME-001).
@@ -191,9 +199,9 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **CURR-002 — Needs decision** (partial). A journey that defers, returns and declines intake items and asserts Needs decision membership.
 - **CURR-003 — Now** (partial). A journey with a Started issue and an overdue Unstarted issue at a workspace-timezone day boundary.
 - **CURR-004 — Next** (partial). A journey with active-cycle and due-in-seven-days Unstarted issues.
-- **CURR-005 — Recently done** (partial). A journey that completes issues across an eight-day window and checks the seven-day cut-off and order.
+- **CURR-005 — Recently done** (partial). A journey that completes issues across an eight-day window and checks the seven-day cut-off and completion-time order, including identifier ties, under CURR-007's Recently done exception. In the same Current view, two in-progress issues of different priority follow the normal CURR-007 order while two done issues completed at different times appear newest completion first even when their priority, due date or last update would put them in the opposite order.
 - **CURR-006 — Explainable attention** (done). `tests/worker/dependencies.test.ts` (tests tagged CURR-006).
-- **CURR-007 — Ranking** (done). Evidence: `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/`. Acceptance: A ranking test over priority, due date, update time and identifier ties.
+- **CURR-007 — Ranking** (done). Evidence: `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/`. Acceptance: A ranking test over priority, due date, update time and identifier ties, plus completion time and identifier ties in Recently done (CURR-005). One Current view shows two in-progress issues of different priority in normal ranking order alongside two done issues completed at different times in newest-completion-first order, with priority, due date and last update opposing the done issues' completion order. The cited ranking journey proves the normal order; the combined-view and Recently done cases are not covered by that cited journey.
 - **CURR-008 — Freshness** (done). `tests/e2e/core-current-journey.mjs` (tests tagged CURR-008).
 - **CURR-009 — Stream controls** (done). Evidence: `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/CURR-009/`. Acceptance: A browser journey applying each Current filter and its reset.
 
