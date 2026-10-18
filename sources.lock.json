@@ -4857,7 +4857,7 @@
       "executable": false
     },
     "tests/e2e/core-current-now-journey.mjs": {
-      "sha256": "d2b9dcf0dcd4c2c34d79e3fbceb8c90effc15427143e775b0f3d0a35ce65b87f",
+      "sha256": "321b09fabd433682828143fc7dfc9e9ecbf3c6a917721086992e549be036b36f",
       "executable": false
     },
     "tests/e2e/core-cycle-membership-journey.mjs": {

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
 export async function currentNowJourney(page, context, base, capture = async () => {}) {
+  const viewport = page.viewportSize();
   const api = async (path, method = 'GET', data) => {
     const response = await context.request.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
     assert(response.ok(), `${method} ${path}: ${response.status()}`);
@@ -41,5 +42,6 @@ export async function currentNowJourney(page, context, base, capture = async () 
     }
   } finally {
     await api('/settings', 'PATCH', { timezone });
+    if (viewport) await page.setViewportSize(viewport);
   }
 }
