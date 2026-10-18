@@ -360,7 +360,7 @@ Local portable archive commands use the landed Base D1/R2 engine. Mapped CSV/JSO
 
 - **SEARCH-004 — Advanced filters.** Filters combine with AND/OR groups and negation over every issue field, custom field (FIELD-002), relation, customer request (CUST-002), Git state (GITHUB-005), release, milestone and date expressions ("due before next Friday", "updated in the last 7 days"); a typed filter bar accepts the same expressions with autocomplete, and any filter can be saved as a view. Jira JQL in imported saved filters is translated where every term maps and reported otherwise. *Acceptance:* a journey that builds an (A OR B) AND NOT C filter in the bar and the menu, matches the expected issues, and saves it. *Status:* partial — `src/core/features/issues/list.ts` (single-value filters per field; grouped and negated expressions are absent).
 - **SEARCH-005 — Meaning-based search.** Search also returns issues, documents and comments that match the meaning of a query, labelled as semantic matches and ranked after exact identifier and full-text hits, under the same access rules. *Acceptance:* a search for "checkout fails on Safari" that finds an issue titled "Payment page broken in WebKit" labelled as a semantic match, and does not return a private-team issue to a non-member. *Status:* missing.
-- **VIEW-006 — Manual order.** Besides the derived orders, lists and boards offer a Manual order that members set by dragging or keyboard (move up, move down, move to top); the order is shared per team and view, imported from Jira rank and Linear sort order, and never changes Current's derived ranking (CURR-007). *Acceptance:* a journey that reorders three backlog issues by keyboard, reloads in a second session and finds the same order, while Current's order is unchanged. *Status:* missing.
+- **VIEW-006 — Manual order.** Besides the derived orders, lists and boards offer a Manual order that members set by dragging or keyboard (move up, move down, move to top); the order is shared per team and view, imported from Jira rank and Linear sort order, and never changes Current's derived ranking (CURR-007). *Acceptance:* a journey that reorders three backlog issues by keyboard, reloads in a second session and finds the same order, while Current's order is unchanged. *Status:* done — `tests/worker/manual-order.test.ts`, `tests/worker/manual-order-import.test.ts`, `tests/e2e/core-manual-order-journey.mjs`, `tests/worker/data-http.test.ts`.
 - **VIEW-007 — Timeline and calendar views.** Issue lists can be shown as a timeline (by the issue start date (ISSUE-022) and the due date, with dependencies drawn; an issue with only a due date is a diamond, one with only a start date is open-ended to today, and one with neither is listed as Unscheduled beside the timeline) and as a month calendar of due dates, cycles and milestones; dragging changes dates through the version-checked mutation. *Acceptance:* a journey that drags an issue's due date on the calendar and finds the change in its activity, and a timeline with one issue of each date combination placed as stated. *Status:* missing.
 - **VIEW-008 — Display options.** Members choose the properties shown on rows and cards, show sub-issues nested or flat, group lists and add board swimlanes by assignee, project, priority, cycle, label (one label group at a time, ISSUE-014), project milestone (PROJ-011), parent issue (REL-006) or a single-select or person custom field (FIELD-002), and drag cards between columns and lanes (the labelled selector of VIEW-005 remains the keyboard path). Display options save with a view. *Acceptance:* a journey that adds assignee swimlanes, drags a card across a lane and a column, and finds both changes in activity; plus a list grouped by a label group, by milestone and by parent issue, each with group counts matching the filtered result. *Status:* partial — `src/core/features/issues/ui/issue-board.tsx` (columns by status with a keyboard selector; swimlanes, drag and property choices are absent).
 - **VIEW-009 — Workspace-wide views.** Views can span all teams the member can see, and also exist for projects, initiatives, releases, customers (CUST-007) and customer requests with the same filter, sort, group and save model. *Acceptance:* a journey that saves a shared project view filtered by lead and health and a cross-team issue view, and opens both from the palette. *Status:* partial — `src/core/features/views/service.ts` (saved issue views; project, initiative and request views are absent).
@@ -556,13 +556,13 @@ Signed source ingestion implements INTAKE-001/002/003/008/009/011 using Base's s
 
 ## Status
 
-Judged from the code and tests at commit `64d3c223936d84f925e4dc06b4981db588448a31` (18 October 2026).
+Judged from the code and tests at commit `1ae5fce46ab958057e4ec54b08cf45517555aa78` (18 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 72 | 32 | 0 | 104 |
-| Target and push further | 7 | 45 | 98 | 150 |
-| All | 79 | 77 | 98 | 254 |
+| Target and push further | 8 | 45 | 97 | 150 |
+| All | 80 | 77 | 97 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -705,7 +705,7 @@ Judged from the code and tests at commit `64d3c223936d84f925e4dc06b4981db588448a
 | `VIEW-003` | Control persistence | published | done | `tests/worker/views-removal.test.ts` |  |
 | `VIEW-004` | Bulk edit | published | done | `tests/e2e/core-keyboard-journey.mjs`, `tests/e2e/core-undo-journey.mjs`, `tests/worker/issue-undo.test.ts`, `evidence/issue-undo/VIEW-004/` |  |
 | `VIEW-005` | Team board | published | done | `tests/e2e/core-board-journey.mjs`, `evidence/keyboard-board/VIEW-005/` |  |
-| `VIEW-006` | Manual order | target | missing |  | No implementation yet |
+| `VIEW-006` | Manual order | target | done | `tests/worker/manual-order.test.ts`, `tests/worker/manual-order-import.test.ts`, `tests/e2e/core-manual-order-journey.mjs`, `tests/worker/data-http.test.ts` |  |
 | `VIEW-007` | Timeline and calendar views | target | missing |  | No implementation yet |
 | `VIEW-008` | Display options | target | partial | `src/core/features/issues/ui/issue-board.tsx` | Columns by status with a keyboard selector; swimlanes, drag and property choices are absent |
 | `VIEW-009` | Workspace-wide views | target | partial | `src/core/features/views/service.ts` | Saved issue views; project, initiative and request views are absent |
