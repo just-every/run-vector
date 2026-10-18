@@ -2261,7 +2261,7 @@
       "executable": false
     },
     "src/core/app/app.css": {
-      "sha256": "3c08c5cad4d0141c55dd0031934f7b3e9fa9b4e18dbc29586325c06b1159ab53",
+      "sha256": "f140a2ac697df78dbd7778946b009803632f702d53690be506267cf8bb782fa7",
       "executable": false
     },
     "src/core/app/bindings.ts": {
@@ -4221,7 +4221,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
-      "sha256": "ff2b5b92abf3b0d9f16d63119acda54556b7e868dc4bd860ebf88c67ad9483a4",
+      "sha256": "ae7fc3dc6a80f1977316fba5deefb30677f74976e97476566289994a0789c75f",
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {

@@ -108,6 +108,11 @@
   background: var(--app-field);
   color: var(--app-ink);
 }
+/* keeps the native select's 22px text line, so the control height is unchanged by the drawn chevron */
+.settings-page select:not([multiple], [size]:not([size="1"])),
+.administration-panel select:not([multiple], [size]:not([size="1"])) {
+  line-height: 22px;
+}
 .administration-panel {
   overflow-wrap: anywhere;
 }

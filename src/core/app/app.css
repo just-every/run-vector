@@ -141,6 +141,27 @@ a {
   background: var(--control-surface);
   color-scheme: light;
 }
+/* The app does not load rer-theme.css, so the theme's muted ink (#4f535b) is the fallback. Every single-choice select; multiple and size>1 lists keep their native look (Base #247 foundation/runtime/select-style.ts) */
+select:not([multiple], [size]:not([size="1"])) {
+  --rer-select-ink: var(--rer-muted, #4f535b);
+  -webkit-appearance: none;
+  appearance: none;
+  padding-inline-end: 40px;
+  line-height: normal;
+  text-overflow: ellipsis;
+  background-image:
+    linear-gradient(to top right, transparent calc(50% - 1.1px), var(--rer-select-ink) calc(50% - 0.55px), var(--rer-select-ink) calc(50% + 0.55px), transparent calc(50% + 1.1px)),
+    linear-gradient(to top left, transparent calc(50% - 1.1px), var(--rer-select-ink) calc(50% - 0.55px), var(--rer-select-ink) calc(50% + 0.55px), transparent calc(50% + 1.1px));
+  background-repeat: no-repeat;
+  background-position: right 20px center, right 14px center;
+  background-size: 6px 6px;
+}
+select:not([multiple], [size]:not([size="1"])):focus-visible {
+  --rer-select-ink: var(--rer-text, var(--app-ink));
+}
+select:not([multiple], [size]:not([size="1"])):disabled {
+  --rer-select-ink: color-mix(in srgb, var(--rer-muted, #4f535b) 55%, transparent);
+}
 :where(input[type="checkbox"], input[type="radio"]) {
   min-height: 1.1rem;
   width: 1.1rem;
