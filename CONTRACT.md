@@ -169,7 +169,7 @@ Vector is the issue tracker and software project-management workspace a US softw
 - **INTAKE-007 — Decline.** Declining an intake issue — open to Owners, Admins and Members who can see its team, never to Guests (role matrix) — requires a reason, moves it to the team's default Canceled status, and removes it from Needs decision without deleting its evidence or decision history. *Acceptance:* A journey that declines an intake item without a reason (refused) and with one, and finds it Canceled with its evidence and decision history kept, and a Guest's decline refused 403. *Status:* partial — `src/core/features/issues/mutations.ts` (decline with a reason by any operator; no test names the clause yet, and the Guest refusal is open with ROLE-003 and ROLE-008).
 - **INTAKE-008 — Evidence after a terminal decision.** Evidence received after an issue is Canceled or Duplicate is appended and visible but never reopens, reassigns, reprioritises, or resurfaces the issue. *Acceptance:* `tests/worker/source-ingest.test.ts` (exercises this behaviour; the test does not yet tag INTAKE-008). *Status:* done — `tests/worker/source-ingest.test.ts`.
 - **INTAKE-009 — Source failure.** A signal source request from an unknown or revoked source, or carrying a wrong signature, returns 401; one whose body fails validation returns 400; one naming an archived team returns 409 (TEAM-003). None of them creates anything. A valid request that cannot be stored durably returns 503 so the source retries. No request is acknowledged before its idempotency record and evidence are durable. *Acceptance:* `tests/worker/source-ingest.test.ts` (exercises this behaviour; the test does not yet tag INTAKE-009). *Status:* done — `tests/worker/source-ingest.test.ts`.
-- **INTAKE-010 — Decision policy.** Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance. *Policy: `intake.recommendation.v1`; default: use an explicitly supplied team and assignee, otherwise leave the issue unassigned with No priority and Unstarted status.* *Acceptance:* A test that delivers a source item with an explicit team and assignee, and one without, and checks the recommended defaults stay editable before acceptance. *Status:* partial — `src/core/features/issues/ui/intake-recommendation.ts` (implemented; no test names the clause yet).
+- **INTAKE-010 — Decision policy.** Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance. *Policy: `intake.recommendation.v1`; default: use an explicitly supplied team and assignee, otherwise leave the issue unassigned with No priority and Unstarted status.* *Acceptance:* A test that delivers a source item with an explicit team and assignee, and one without, and checks the recommended defaults stay editable before acceptance. *Status:* done — `tests/worker/intake-policy.test.ts`, `tests/e2e/core-intake-policy-journey.mjs`.
 - **INTAKE-011 — Source registration.** An Owner or Admin registers a signal source (integration management in the role matrix; Members and Guests are refused 403) with a display name, a source ID unique in the workspace, and a signing secret; the `signal.source.v1` adapter normalises that source's signed request into INTAKE-001. Rotating a secret (by an Owner or Admin) accepts both secrets for a configurable overlap of at most 24 hours and then rejects the previous one. An Owner or Admin revoking a source rejects every later request under INTAKE-009 and deletes no evidence. A secret is shown once at registration or rotation and never again. *Acceptance:* `tests/worker/source-ingest.test.ts` (tests tagged INTAKE-011), plus the INTAKE-011 rows of the role-matrix journey: a Member's registration, rotation and revocation are each refused 403 and change nothing, and an Admin's succeed. *Status:* partial — `tests/worker/source-ingest.test.ts` (registration, rotation and revocation by any operator; the Owner/Admin restriction is open with ROLE-008).
 
 ## Current
@@ -560,9 +560,9 @@ Judged from the code and tests at commit `d7a379435a6788bdf1a937a4a184932bf04665
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 79 | 25 | 0 | 104 |
+| Published | 80 | 24 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 87 | 70 | 97 | 254 |
+| All | 88 | 69 | 97 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -636,7 +636,7 @@ Judged from the code and tests at commit `d7a379435a6788bdf1a937a4a184932bf04665
 | `INTAKE-007` | Decline | published | partial | `src/core/features/issues/mutations.ts` | Decline with a reason by any operator; no test names the clause yet, and the Guest refusal is open with ROLE-003 and ROLE-008 |
 | `INTAKE-008` | Evidence after a terminal decision | published | done | `tests/worker/source-ingest.test.ts` |  |
 | `INTAKE-009` | Source failure | published | done | `tests/worker/source-ingest.test.ts` |  |
-| `INTAKE-010` | Decision policy | published | partial | `src/core/features/issues/ui/intake-recommendation.ts` | Implemented; no test names the clause yet |
+| `INTAKE-010` | Decision policy | published | done | `tests/worker/intake-policy.test.ts`, `tests/e2e/core-intake-policy-journey.mjs` |  |
 | `INTAKE-011` | Source registration | published | partial | `tests/worker/source-ingest.test.ts` | Registration, rotation and revocation by any operator; the Owner/Admin restriction is open with ROLE-008 |
 | `TRIAGE-001` | Triage responsibility | target | missing |  | No implementation yet |
 | `TRIAGE-002` | Triage routing rules | target | partial | `src/core/features/issues/mutations.ts` | Manual acceptance chooses team, status and assignee; rules are absent |

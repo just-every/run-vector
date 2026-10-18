@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { useHydrated } from "../../../app/initial-resources";
 import { ApiError, fetchJson } from "../../../app/api-client";
 import type { StreamOptions } from "../../streams/ui/data";
 import { issueDetailSchema, type IssueDetailData } from "./data";
@@ -20,6 +21,7 @@ export function DecisionPanel({
   optionsError,
   onRefresh,
 }: DecisionPanelProps) {
+  const hydrated = useHydrated();
   const panelRef = useRef<HTMLElement>(null);
   useEffect(() => {
     const panel = panelRef.current;
@@ -200,7 +202,7 @@ export function DecisionPanel({
             role="tab"
             aria-selected={kind === item}
             className={kind === item ? "is-active" : ""}
-            disabled={submitting}
+            disabled={submitting || !hydrated}
             onClick={() => setKind(item)}
           >
             {item === "return"
@@ -239,6 +241,7 @@ export function DecisionPanel({
           <button
             type="button"
             aria-expanded={routingExpanded}
+            disabled={!hydrated}
             aria-label={
               routingExpanded
                 ? "Close routing and reason"
@@ -268,7 +271,7 @@ export function DecisionPanel({
       <form onSubmit={submit} className="decision-form">
         <fieldset
           className="decision-controls"
-          disabled={submitting || (kind === "accept" && options === null)}
+          disabled={!hydrated || submitting || (kind === "accept" && options === null)}
         >
           <div className="decision-fields">
             {kind === "accept" ? (
@@ -480,7 +483,7 @@ export function DecisionPanel({
             <button
               className={`decision-submit decision-submit--${kind}`}
               type="submit"
-              disabled={submitting || (kind === "accept" && options === null)}
+              disabled={!hydrated || submitting || (kind === "accept" && options === null)}
             >
               {submitting
                 ? "Saving…"

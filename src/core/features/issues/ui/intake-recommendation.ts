@@ -26,6 +26,15 @@ export function intakeRecommendation(
     ordered[0]?.assertions.recommendation,
   );
   const recorded = parsed.success ? parsed.data : undefined;
+  // Signed producers use source-attributed primitive assertions. The policy
+  // takes an explicit assignee claim as a suggestion, never as an assignment.
+  const sourceAssignee = z.object({
+    attribution: z.literal("source"),
+    value: z.string().nullable(),
+  }).safeParse(ordered[0]?.assertions.assigneeOperatorId);
+  const requestedAssignee = recorded?.assigneeOperatorId !== undefined
+    ? recorded.assigneeOperatorId
+    : sourceAssignee.success ? sourceAssignee.data.value : undefined;
   const statuses =
     options?.statuses.filter((s) => s.teamId === issue.team.id) ?? [];
   const status = recorded?.statusId
@@ -40,9 +49,9 @@ export function intakeRecommendation(
           .sort((a, b) => a.position - b.position)[0]
       : undefined;
   const assignee =
-    recorded?.assigneeOperatorId &&
-    options?.operators.some((o) => o.id === recorded.assigneeOperatorId)
-      ? recorded.assigneeOperatorId
+    requestedAssignee &&
+    options?.operators.some((o) => o.id === requestedAssignee)
+      ? requestedAssignee
       : "";
   const cycle =
     recorded?.cycleId &&
@@ -54,10 +63,11 @@ export function intakeRecommendation(
   return {
     assigneeOperatorId: assignee,
     priority: recorded?.priority ?? "none",
-    statusId: status?.id ?? "",
+    statusId: status?.id ?? statuses.filter(s => s.category === "unstarted")
+      .sort((a, b) => a.position - b.position || a.id.localeCompare(b.id))[0]?.id ?? "",
     cycleId: cycle,
     recommended: {
-      assignee: recorded?.assigneeOperatorId === null || Boolean(assignee),
+      assignee: requestedAssignee === null || Boolean(assignee),
       priority: recorded?.priority !== undefined,
       status: Boolean(status),
       cycle: recorded?.cycleId === null || Boolean(cycle),

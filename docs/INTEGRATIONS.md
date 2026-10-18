@@ -40,7 +40,13 @@ receiver, signed tenant and source IDs with the producer. Use Base's actual
 the returned tenant/source audience. Source records require `sourceRecordId`,
 `sourceRevisionId`, `observedAt`, native `teamId`, title and the documented intake
 fields. Assertions explicitly carry `{value, attribution: "source"}`; they stay
-source claims rather than established facts. Rotation allows a selected overlap
+source claims rather than established facts. An optional `assertions.assigneeOperatorId`
+with `{value: "NATIVE_OPERATOR_ID", attribution: "source"}` supplies an explicit
+assignee suggestion for INTAKE-010. It is offered only while that operator is
+available in the workspace; it never assigns the Intake issue. Without one,
+acceptance starts unassigned with No priority and the team’s first Unstarted
+status. The triager can edit all three before accepting. A source always uses
+its registered team. Rotation allows a selected overlap
 of zero to 24 hours; revocation and expiry deny both new and repeated requests.
 
 The receiver bounds exact raw bytes and verifies before parsing. Signature or
