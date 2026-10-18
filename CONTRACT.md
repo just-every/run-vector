@@ -175,7 +175,7 @@ Vector is the issue tracker and software project-management workspace a US softw
 ## Current
 
 - **CURR-001 — Disjoint stream.** Current places an issue in at most one section using this precedence: Needs decision, Now, Next, then Recently done. Canceled, Duplicate, deleted, and actively deferred issues do not appear. *Acceptance:* `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs` place each kind through public routes, assert exact and disjoint membership with overlapping eligibility, exclude canceled/duplicate/deferred/deleted issues, and move Next work to Now through the native status selector at 1440 and 390. *Status:* done — `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs`.
-- **CURR-002 — Needs decision.** Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate. Every expired deferral returns to Current: none is hidden, and more than one page is reachable through paging or an explicit total and Show more control (for example, “50 shown of 132, show more”), in CURR-007 order. *Acceptance:* A journey that defers, returns and declines intake items and asserts Needs decision membership; it defers 120 issues until all are past due, opens Current and reaches all 120 across pages in CURR-007 order, with the total and remaining issues visible until every issue has been reached. *Status:* partial — Current returns at most 50 expired deferrals per read through `dueIntakeQuery` in `src/core/features/intake-return/repository.ts`; `src/core/features/streams/service.ts` hides the rest until their durable return clears the deferral. Reaching every expired deferral through paging or a visible total and Show more remains open.
+- **CURR-002 — Needs decision.** Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate. Every expired deferral returns to Current: none is hidden, and more than one page is reachable through paging or an explicit total and Show more control (for example, “50 shown of 132, show more”), in CURR-007 order. *Acceptance:* A journey that defers, returns and declines intake items and asserts Needs decision membership; it defers 120 issues until all are past due, opens Current and reaches all 120 across pages in CURR-007 order, with the total and remaining issues visible until every issue has been reached. *Status:* done — `tests/worker/current-intake-pagination.test.ts`, `tests/e2e/core-current-intake-pagination-journey.mjs` (every expired deferral is included before bounded return automation drains; Needs decision shows totals and Show more through all 120 items at 1440 and 390, in CURR-007 order).
 - **CURR-003 — Now.** Now contains non-terminal issues outside the Intake category that are overdue or in a Started status, excluding anything already in Needs decision. An issue is *overdue* when its due date is earlier than the current calendar day in the workspace timezone (OPS-003). *Acceptance:* A journey with a Started issue and an overdue Unstarted issue at a workspace-timezone day boundary. *Status:* done — `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs`.
 - **CURR-004 — Next.** Next contains non-terminal issues in an Unstarted status that are committed to their team's active or next cycle (CYCLE-001) or due within the next seven calendar days, excluding anything already in a higher-precedence section. *Acceptance:* A journey with active-cycle and due-in-seven-days Unstarted issues. *Status:* done — `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs`.
 - **CURR-005 — Recently done.** Recently done contains issues moved to a Completed category in the previous seven calendar days, ordered by the completion-time exception in CURR-007. *Acceptance:* A journey that completes issues across an eight-day window and checks the seven-day cut-off and completion-time order, including identifier ties. In the same Current view, two in-progress issues of different priority follow the normal CURR-007 order while two done issues completed at different times appear newest completion first even when their priority, due date or last update would put them in the opposite order. *Status:* done — `tests/worker/current-recently-done.test.ts`, `tests/e2e/core-current-recently-done-journey.mjs`.
@@ -556,13 +556,13 @@ Signed source ingestion implements INTAKE-001/002/003/008/009 and the source reg
 
 ## Status
 
-Judged from the code and tests at commit `d7a379435a6788bdf1a937a4a184932bf0466506` (19 October 2026).
+Judged from the code and tests at commit `fa7c075c897a26493507855238779bd18d788eaf` (19 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 79 | 25 | 0 | 104 |
+| Published | 80 | 24 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 87 | 70 | 97 | 254 |
+| All | 88 | 69 | 97 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -652,7 +652,7 @@ Judged from the code and tests at commit `d7a379435a6788bdf1a937a4a184932bf04665
 | `CUST-007` | Customers list and customer pages | target | missing |  | No implementation yet |
 | `CUST-008` | Adding customer requests by hand | target | missing |  | No implementation yet |
 | `CURR-001` | Disjoint stream | published | done | `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs` |  |
-| `CURR-002` | Needs decision | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-002` | Needs decision | published | done | `tests/worker/current-intake-pagination.test.ts`, `tests/e2e/core-current-intake-pagination-journey.mjs` |  |
 | `CURR-003` | Now | published | done | `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs` |  |
 | `CURR-004` | Next | published | done | `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs` |  |
 | `CURR-005` | Recently done | published | done | `tests/worker/current-recently-done.test.ts`, `tests/e2e/core-current-recently-done-journey.mjs` |  |

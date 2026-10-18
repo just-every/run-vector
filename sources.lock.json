@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b1fbe9176d41857887791cc8b1e92ed808526669470e1fb0e55734e4253e8422",
+      "sha256": "58c8c19e014fbe7ad276d8cc80271c3b160fdff9fc1c1a186f01e857e0787c25",
       "executable": false
     },
     "DEMO.md": {
@@ -561,7 +561,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "9fb2636e3ff99e1f64e2a47de17d9f913a55241defdee40933a70df3b6a15a00",
+      "sha256": "29b403ea8ee932d75a9723597d4a24882fce7b6c1fc06710532c4d5ce68a3d09",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -1785,11 +1785,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "04fa2ba62b200707e7b679466de63e6b65198e0e4f13308f237596191f503238",
+      "sha256": "efb895d9796cc48e74b029ca1379149464e40b89e20368047d871e633606c2bf",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "a10771c6c11e586c0260fc3dc819cdb6f4f097c4ac55844eb0d67093d158b11b",
+      "sha256": "1de6fcb31adaf192e2cbcd7f461adcc766fe4c4a54ae4016c24ed7f6d946db10",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -2033,7 +2033,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "5accd0a7bfeb44bdcdc216c16c85b9b98ddb31e602e9a4620cab71556ed77125",
+      "sha256": "6764fd862d6e0b4508ff766993a0c3c1bc10435412c1ebdabcc98b071125acec",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
@@ -4325,7 +4325,7 @@
       "executable": false
     },
     "src/core/features/streams/service.ts": {
-      "sha256": "bfc740d29eecb07f5c1b313c4237474dc7ff7666d76b5020c021075c8cb0c0c7",
+      "sha256": "526ea0e7199aa1dec3b7c6358d48ce7149b9f40809291a73bc2ac0c8499afa53",
       "executable": false
     },
     "src/core/features/streams/snapshot.ts": {
@@ -4345,7 +4345,7 @@
       "executable": false
     },
     "src/core/features/streams/ui/stream-list.tsx": {
-      "sha256": "dfc1249d3b86f542a96dfb10956e4554765f2000b302e537b43b26fad4b152b5",
+      "sha256": "9b8772bdd3d027e04c61d249f2956069a531e3e38c422e9ef7a91f0b5636c176",
       "executable": false
     },
     "src/core/features/streams/ui/stream-planning-state.tsx": {
@@ -4361,7 +4361,7 @@
       "executable": false
     },
     "src/core/features/streams/ui/streams.css": {
-      "sha256": "5b87249d271ae5ac17bc01d39d6c415b206532ed8166abd335ea87a584f1cb23",
+      "sha256": "09d1a99d3edbec03c2a6e7f4ac3f60e8fa86f07834541ffe7f642f7e271f1138",
       "executable": false
     },
     "src/core/features/subissues/access.ts": {
@@ -4860,6 +4860,10 @@
       "sha256": "ba3363178804350980b21bddb051c1a6c3f3547f8a46d8c6cef8f775d8a69f05",
       "executable": false
     },
+    "tests/e2e/core-current-intake-pagination-journey.mjs": {
+      "sha256": "70c43950f2216625d07b36de48e86bbdf1800cd0dc4d8b8b03a4b06d778b6368",
+      "executable": false
+    },
     "tests/e2e/core-current-journey.mjs": {
       "sha256": "cf77b1fa9f464254eb0bfbba43a28f1974c9f03b9aaed2701b25ff6a317e41e3",
       "executable": false
@@ -4929,7 +4933,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "f21de376919e934c25f1d28398b3b30f7b778ce2ad371e003a9a95713a5ec421",
+      "sha256": "96361dc1b714a6134d8345d0893a06df94723a7cfb4be7b2a5d50aef0ab1b3d4",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -5334,6 +5338,10 @@
     },
     "tests/worker/current-disjoint.test.ts": {
       "sha256": "a2c18264a3dcf8b8872b5f58345794f9e65a1fb3283ad7af85925ba859a75742",
+      "executable": false
+    },
+    "tests/worker/current-intake-pagination.test.ts": {
+      "sha256": "7d80c6b64e5815d99a15fa7a53b042b3144c69e83f213dc8b8413d4f60586781",
       "executable": false
     },
     "tests/worker/current-next.test.ts": {

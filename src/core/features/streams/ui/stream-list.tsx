@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type Dispatch, type SetStateAction } from "react";
+import { useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { useHydrated } from "../../../app/initial-resources";
 import type { IssueEditTarget } from "../../issues/ui/issue-keyboard-actions";
 import { toggleIssueSelection } from "../../issues/ui/issue-selection";
@@ -25,7 +25,12 @@ export function StreamList({
   selection, setSelection, focused, setFocused, ownedFocus,
 }: StreamListProps) {
   const hydrated = useHydrated();
-  const rows = groups.flatMap((group) => group.items);
+  const [decisionLimit, setDecisionLimit] = useState(50);
+  const visibleGroups = groups.map(group => ({
+    ...group, total: group.items.length,
+    items: group.id === "needs-decision" ? group.items.slice(0, decisionLimit) : group.items,
+  }));
+  const rows = visibleGroups.flatMap((group) => group.items);
   const list = useRef<HTMLDivElement>(null);
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const focus = (index: number) => refs.current[index]?.focus();
@@ -41,7 +46,7 @@ export function StreamList({
   let offset = 0;
   return (
     <div ref={list} className="stream-list" aria-label="Issue stream">
-      {groups.map((group) => {
+      {visibleGroups.map((group) => {
         const groupOffset = offset;
         offset += group.items.length;
         return (
@@ -52,7 +57,7 @@ export function StreamList({
           >
             <div className="stream-group-heading">
               <h2 id={`section-${group.id}`}>{group.title}</h2>
-              <span>{group.items.length}</span>
+              <span>{group.total}</span>
             </div>
             {group.items.length === 0 ? (
               <p className="stream-empty">Nothing in this section.</p>
@@ -139,6 +144,16 @@ export function StreamList({
                 })}
               </div>
             )}
+            {group.id === "needs-decision" && group.total > 50 ? (
+              <div className="stream-pagination">
+                <p role="status">{group.items.length} shown of {group.total}</p>
+                {group.items.length < group.total ? (
+                  <button type="button" disabled={!hydrated} onClick={() => setDecisionLimit(limit => limit + 50)}>
+                    Show more decisions
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
           </section>
         );
       })}

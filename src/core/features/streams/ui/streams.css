@@ -93,3 +93,7 @@
 .list-preference-controls button:disabled { opacity: .55; }
 .stream-filters .list-preference-controls { flex: 1 0 100%; }
 .stream-filters .list-preference-controls button { min-height: 44px; }
+
+.stream-pagination { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; padding: .75rem .4rem; color: var(--app-muted); font-size: .8rem; }
+.stream-pagination p { margin: 0; }
+.stream-pagination button { min-height: 44px; border: 1px solid var(--app-line-strong); border-radius: .42rem; padding: .5rem .75rem; color: var(--app-ink); background: var(--app-card); }

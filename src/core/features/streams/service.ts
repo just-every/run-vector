@@ -19,12 +19,14 @@ export async function getCurrentStream(binding: D1Database, now: Date, workspace
       .map((status) => status.id),
   );
   // Keep the full graph for dependency and project evaluation; hide only the
-  // projected rows until their durable return transaction cleared deferral.
+  // future deferrals using real time, even for a caller-supplied future as-of.
+  // Expired rows remain visible while bounded automation drains the receipts.
   const pending = new Set(
     snapshot.issues
       .filter(
         (issue) =>
-          intakeStatuses.has(issue.statusId) && issue.deferredUntil !== null,
+          intakeStatuses.has(issue.statusId) && issue.deferredUntil !== null &&
+          new Date(issue.deferredUntil) > returnTime,
       )
       .map((issue) => issue.id),
   );
