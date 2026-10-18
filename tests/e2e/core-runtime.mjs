@@ -1,3 +1,4 @@
+import { projectMembershipJourney } from './core-project-membership-journey.mjs';
 import { currentDisjointJourney } from './core-current-disjoint-journey.mjs';
 import { currentRecentlyDoneJourney } from './core-current-recently-done-journey.mjs';
 import { currentNextJourney } from './core-current-next-journey.mjs';
@@ -725,6 +726,10 @@ try {
   await workloadJourney(page, context, base, record);
   await projectHealthJourney(page, context, base, record);
   await projectRiskJourney(page, context, base, record);
+  await projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
+    await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
+    record(id, name);
+  });
   await cycleMembershipJourney(page, context, base, record);
   await subissuesJourney(page, context, base, record);
   await pageAudit(page, base, issue.identifier, evidence, record);

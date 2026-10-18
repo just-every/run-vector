@@ -1,4 +1,5 @@
 import { useHydrated } from "../../../app/initial-resources";
+import { useState } from "react";
 import type { FormEvent } from "react";
 import type { Administration } from "../../administration/schema";
 import { useAdministrationAction } from "../../settings/ui/administration-action";
@@ -46,8 +47,11 @@ export function ProjectAdministration({
   project,
   operators,
   onChanged,
-}: Props & { project: Administration["projects"][number] }) {
+  onDeleted,
+}: Props & { project: Administration["projects"][number]; onDeleted: () => void }) {
   const action = useAdministrationAction(onChanged);
+  const deletion = useAdministrationAction(onDeleted);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const hydrated = useHydrated();
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -89,6 +93,19 @@ export function ProjectAdministration({
         </fieldset>
       </form>
       <AdministrationFeedback action={action} />
+      {confirmingDelete ? (
+        <div role="group" aria-label="Confirm project deletion">
+          <p>Delete {project.name}? Its issues will stay in Vector without a project. This cannot be undone.</p>
+          <button type="button" disabled={deletion.pending || !hydrated}
+            onClick={() => void deletion.run(`/api/settings/projects/${project.id}`, "DELETE")}>
+            Delete project and keep issues
+          </button>
+          <button type="button" disabled={deletion.pending} onClick={() => setConfirmingDelete(false)}>Cancel deletion</button>
+          <AdministrationFeedback action={deletion} />
+        </div>
+      ) : (
+        <button type="button" disabled={action.pending || !hydrated} onClick={() => setConfirmingDelete(true)}>Delete project</button>
+      )}
     </details>
   );
 }
