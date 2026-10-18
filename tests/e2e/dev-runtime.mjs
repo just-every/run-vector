@@ -84,8 +84,10 @@ try {
     paths.add(new URL(r.url()).pathname);
   });
   await navigate(page, link);
+  await page.waitForLoadState("networkidle");
   await page.getByRole("button", {name:"Confirm",exact:true}).click();
   await page.waitForURL(url=>["/app","/setup"].includes(new URL(url).pathname));
+  await page.waitForLoadState("networkidle");
   await finishFirstRun(page,base);await page.goto(base+"/app");
   await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
   await page
@@ -309,6 +311,9 @@ try {
   await navigate(page, base + "/signin");
   // Base's one-click page lists the owner first, then other local people.
   await page.getByRole("heading", { name: /^Sign in to / }).waitFor();
+  // Let the public document's resources finish before leaving it. Otherwise
+  // an immediate sign-in click can cancel a still-loading branding resource.
+  await page.waitForLoadState("networkidle");
   await page.getByRole("link", { name: /^Sign in as / }).first().click();
   await page.waitForURL(base + "/app");
   await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
