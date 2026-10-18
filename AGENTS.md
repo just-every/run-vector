@@ -2,7 +2,7 @@
 
 ## Launch for review
 
-From this checkout, run `rer dev`. It installs and sets up a fresh checkout automatically. Allow the launch at least ten minutes; if the shell call times out, run `rer dev` again to resume. Give the owner `RER_READY` and the private `RER_OPEN` link in this chat. Do not run setup, reset or deploy just to launch a review. Stop with `rer dev --stop` when finished. If `rer` is missing, install it with `npx -y @runeditrun/rer cli install` or the installer script at https://runeditrun.com/install.sh.
+From this checkout, run `rer dev`. It installs and sets up a fresh checkout automatically. Allow the launch at least ten minutes; if the shell call times out, run `rer dev` again to resume. Give the owner `RER_READY` and the private `RER_OPEN` link in this chat. Do not run setup, reset or deploy just to launch a review. Stop a dev server only by its own PID when finished; never use a broad stop (owner rule, 17 October 2026). If `rer` is missing, install it with `npx -y @runeditrun/rer cli install` or the installer script at https://runeditrun.com/install.sh.
 
 ## Run it locally
 
