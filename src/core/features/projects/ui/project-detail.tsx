@@ -1,3 +1,4 @@
+import { ProjectActivity } from "./project-activity";
 import { RiskEvidence } from "./risk-evidence";
 import { ProjectCycleHistory } from "./cycle-history";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
@@ -66,6 +67,7 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
             <ProjectAdministration
               project={record}
               operators={administration.data.operators}
+              labels={administration.data.labels}
               onDeleted={() => void navigate({ to: "/app/projects" })}
               onChanged={() => {
                 administration.reload();
@@ -118,6 +120,9 @@ function ProjectDetailContent({
       {management}
       <dl className="project-facts">
         <Fact label="Lead" value={project.lead.name} />
+        <Fact label="Start date" value={project.startDate ? shortProjectDate(project.startDate) : "No start date"} />
+        <Fact label="Priority" value={project.priority === "none" ? "No priority" : lifecycleLabel(project.priority)} />
+        <Fact label="Labels" value={project.labels.map(label=>label.name).join(", ") || "No labels"} />
         <Fact
           label="Target date"
           value={shortProjectDate(project.targetDate)}
@@ -141,6 +146,7 @@ function ProjectDetailContent({
         <RiskEvidence project={project} />
       ) : null}
       <ProjectCycleHistory history={project.cycleHistory} />
+      <ProjectActivity activity={project.activity} />
       <div className="project-detail__grid">
         <section className="project-detail__section">
           <h2>Issues</h2>

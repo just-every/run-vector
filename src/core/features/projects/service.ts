@@ -34,7 +34,11 @@ export type ProjectSummary = {
   description: string;
   lifecycle: string;
   archived: boolean;
+  startDate: string | null;
   targetDate: string | null;
+  priority: string;
+  labels: Array<{id:string;name:string;color:string}>;
+  teamIds: string[];
   lead: { id: string; name: string };
   health: ProjectHealth;
   healthExplanation: string | null;
@@ -234,7 +238,15 @@ function buildProjectSummary(
     description: project.description,
     lifecycle: project.lifecycle,
     archived: project.archivedAt !== null,
+    teamIds: [...new Set(projectIssues.map(issue=>issue.teamId))],
+    startDate: project.startDate,
     targetDate: project.targetDate,
+    priority: project.priority,
+    labels: snapshot.projectLabels.filter(link=>link.projectId===project.id).map(link=>{
+      const label=snapshot.labels.find(label=>label.id===link.labelId);
+      if(!label)throw new Error(`Project ${project.id} has an unknown label`);
+      return {id:label.id,name:label.name,color:label.color};
+    }).sort((a,b)=>a.name.localeCompare(b.name)),
     lead: { id: lead.id, name: lead.name },
     health: health.value,
     healthExplanation: health.explanation,

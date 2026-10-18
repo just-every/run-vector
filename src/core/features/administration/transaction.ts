@@ -47,6 +47,12 @@ export async function commit(
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
     const message = String(error);
+    if (/invalid_project_dates/.test(message))
+      throw new SettingsError("invalid_project_dates", "Target date must be on or after the start date, and dates must be valid calendar dates.", 400);
+    if (/invalid_project_label/.test(message))
+      throw new SettingsError("invalid_project_label", "Choose workspace labels marked for projects.", 400);
+    if (/project_label_in_use/.test(message))
+      throw new SettingsError("project_label_in_use", "Remove this label from its projects before turning off project use.", 409);
     if (/team_prefix_frozen/.test(message))
       throw new SettingsError(
         "team_prefix_frozen",

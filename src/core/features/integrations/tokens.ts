@@ -4,7 +4,7 @@ import { sha256 } from '../../../../vendor/base/integrations/core/crypto';
 import { guardedSql,ownerPredicate,admitted,type IntegrationOwner } from './authority';
 import { IntegrationError } from './errors';
 import { devMintRefused } from './dev-credentials';
-export const tokenScopes=['issues:read','issues:write','comments:write','metadata:read'] as const;
+export const tokenScopes=['issues:read','issues:write','comments:write','metadata:read','projects:read','projects:write'] as const;
 export function ownerTokens(db:D1Database,owner:IntegrationOwner){
  const predicate=ownerPredicate(owner),namespace='vector:'+owner.workspace+':'+owner.id;
  const authority:TokenAuthority<IntegrationOwner>={

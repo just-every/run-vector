@@ -19,6 +19,7 @@ export function LabelsPanel({
       await action.run("/api/settings/labels", "POST", {
         name: fields.get("name"),
         color: fields.get("color"),
+        projectsEnabled: fields.get("projectsEnabled") === "on",
       })
     )
       form.reset();
@@ -40,6 +41,7 @@ export function LabelsPanel({
             Label colour
             <input name="color" type="color" defaultValue="#8fa3f0" />
           </label>
+          <label><input type="checkbox" name="projectsEnabled" />Use for projects</label>
           <button>Create label</button>
         </fieldset>
       </form>
@@ -66,6 +68,7 @@ function LabelEditor({
     await action.run(`/api/settings/labels/${label.id}`, "PATCH", {
       name: new FormData(event.currentTarget).get("name"),
       color,
+      projectsEnabled: new FormData(event.currentTarget).get("projectsEnabled") === "on",
     });
   }
   return (
@@ -92,6 +95,7 @@ function LabelEditor({
               onChange={(event) => setColor(event.target.value)}
             />
           </label>
+          <label><input type="checkbox" name="projectsEnabled" defaultChecked={label.projectsEnabled} />Use for projects</label>
           <LabelChip name={label.name} color={color} />
           <button>Save label</button>
           <button
@@ -106,7 +110,7 @@ function LabelEditor({
       {confirm && (
         <div role="group" aria-label="Confirm label deletion">
           <p id={`delete-label-${label.id}`}>
-            Delete {label.name}? It will be removed from issues and saved-view
+            Delete {label.name}? It will be removed from projects, issues and saved-view
             filters.
           </p>
           <div className="admin-actions">

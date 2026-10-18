@@ -1,9 +1,10 @@
+import { projectPortfolioQuery } from "../features/projects/portfolio";
+import { projectPortfolio,projectDetail } from "../features/projects/read";
 import { addManualOrderRoutes } from '../features/manual-order/routes';
 import { addWorkloadRoutes } from '../features/workload/routes';
 import { addIssueDeletionRoutes } from '../features/issue-deletion/routes';
 import { addDescriptionHistoryRoutes } from '../features/description-history/routes';
 import { addDuplicateRoutes } from '../features/duplicates/routes';
-import { readProjectCycleHistory } from '../features/cycle-closure/read';
 import { IntegrationError } from '../features/integrations/errors';
 import { addIntegrationConfigRoutes } from '../features/integrations/config-routes';
 import { addArchiveRoutes } from '../features/data/archive-routes';
@@ -56,13 +57,11 @@ import {
   deferIssueRoute,
   getIssueDetail,
 } from "../features/issues";
-import { getProjectDetail, listProjectSummaries } from "../features/projects";
 import { addSearchRoutes } from "../features/search";
 import { ensureSampleData } from "../features/sample-data/service";
 import {
   getCurrentStream,
   getMyWorkStream,
-  loadWorkspaceSnapshot,
 } from "../features/streams";
 import { databaseIsReachable } from "../features/workspace/repository";
 import { requireOperator } from "../features/auth/service";
@@ -72,9 +71,6 @@ import type { WorkspaceProjection } from '../features/streams/snapshot';
 
 const timeQuerySchema = z.object({
   at: z.string().datetime({ offset: true }).optional(),
-});
-const booleanQuerySchema = timeQuerySchema.extend({
-  includeArchived: z.enum(["true", "false"]).optional(),
 });
 const issueParamSchema = z.object({
   identifier: z.string().max(128).regex(/^(?:[A-Z][A-Z0-9_]{0,99}-[1-9][0-9]*|[0-9]+)$/i),
@@ -317,46 +313,17 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   app.post("/issues/:identifier/decline", declineIssueRoute);
 
   app.get("/projects", async (context) => {
-    const query = parseQuery(context, booleanQuerySchema);
-    if (!query.success) return query.response;
-    const now = toNow(query.data.at);
-    const projects = listProjectSummaries(
-      await loadWorkspaceSnapshot(context.env.DB),
-      now,
-      query.data.includeArchived === "true",
-    );
-    const counts = projects.reduce<Record<string, number>>((total, project) => {
-      if (project.health !== "none")
-        total[project.health] = (total[project.health] ?? 0) + 1;
-      total[project.lifecycle] = (total[project.lifecycle] ?? 0) + 1;
-      return total;
-    }, {});
-    return context.json({ generatedAt: now.toISOString(), counts, projects });
+    const query = projectPortfolioQuery.safeParse(context.req.query());
+    if (!query.success) return context.json({error:"invalid_request",issues:query.error.issues},400);
+    return context.json(await projectPortfolio(context.env.DB,context.get("operatorId"),query.data));
   });
-
   app.get("/projects/:projectId", async (context) => {
-    const parameters = projectParamSchema.safeParse(context.req.param());
-    if (!parameters.success)
-      return context.json(
-        { error: "invalid_request", issues: parameters.error.issues },
-        400,
-      );
-    const query = parseQuery(context, timeQuerySchema);
-    if (!query.success) return query.response;
-    const project = getProjectDetail(
-      await loadWorkspaceSnapshot(context.env.DB),
-      parameters.data.projectId,
-      toNow(query.data.at),
-    );
-    return project
-      ? context.json({...project,cycleHistory:await readProjectCycleHistory(context.env.DB,parameters.data.projectId)})
-      : context.json(
-          {
-            error: "not_found",
-            message: `Project ${parameters.data.projectId} does not exist.`,
-          },
-          404,
-        );
+    const parameters=projectParamSchema.safeParse(context.req.param());
+    const query=parseQuery(context,timeQuerySchema);
+    if(!parameters.success)return context.json({error:"invalid_request"},400);
+    if(!query.success)return query.response;
+    const project=await projectDetail(context.env.DB,context.get("operatorId"),parameters.data.projectId,toNow(query.data.at));
+    return project ? context.json(project) : context.json({error:"not_found"},404);
   });
 
   addSearchRoutes(app);

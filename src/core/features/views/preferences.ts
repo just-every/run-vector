@@ -31,6 +31,11 @@ const streamFilters = z
 const projectFilters = z
   .object({
     includeArchived: z.boolean().default(false),
+    label: z.union([z.literal("all"), z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)]).default("all"),
+    lead: z.union([z.literal("all"), z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)]).default("all"),
+    team: z.union([z.literal("all"), z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/)]).default("all"),
+    targetFrom: z.union([z.literal(""),z.string().date()]).default(""),
+    targetTo: z.union([z.literal(""),z.string().date()]).default(""),
     lifecycle: z
       .enum(["all", "planned", "active", "completed", "canceled"])
       .default("all"),
@@ -38,7 +43,7 @@ const projectFilters = z
       .enum(["all", "blocked", "at-risk", "on-track", "unknown"])
       .default("all"),
   })
-  .strict();
+  .strict().refine(filters=>!filters.targetFrom||!filters.targetTo||filters.targetFrom<=filters.targetTo);
 export function normalizePreference(
   surface: PreferenceSurface,
   input: z.output<typeof preferenceInputSchema>,
@@ -52,7 +57,7 @@ export function normalizePreference(
     isList
       ? issueListQuerySchema.shape.sort
       : isProject
-        ? z.literal("newest").default("newest")
+        ? z.enum(["newest", "priority"]).default("newest")
         : z.literal("priority").default("priority")
   ).safeParse(input.sort);
   const grouping = (

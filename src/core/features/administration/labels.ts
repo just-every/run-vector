@@ -10,7 +10,7 @@ import {
   SettingsError,
 } from "./transaction";
 
-type Label = { id: string; name: string; color: string };
+type Label = { id: string; name: string; color: string; projects_enabled: number };
 export async function createLabel(
   db: D1Database,
   actor: string,
@@ -21,9 +21,9 @@ export async function createLabel(
   await commit(ctx, [
     ctx.db
       .prepare(
-        "INSERT INTO labels(id,workspace_id,name,color,created_at,updated_at) VALUES(?,?,?,?,?,?)",
+        "INSERT INTO labels(id,workspace_id,name,color,projects_enabled,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
       )
-      .bind(id, ctx.workspace, input.name, input.color, ctx.at, ctx.at),
+      .bind(id, ctx.workspace, input.name, input.color, Number(input.projectsEnabled), ctx.at, ctx.at),
     ...audit(ctx, "label.created", id, input.name, null, input),
   ]);
 }
@@ -35,25 +35,26 @@ export async function updateLabel(
 ) {
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Label>(ctx, "labels", id),
-    next = { name: input.name ?? old.name, color: input.color ?? old.color };
+    next = { name: input.name ?? old.name, color: input.color ?? old.color, projectsEnabled: input.projectsEnabled ?? Boolean(old.projects_enabled) };
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=?)",
+      "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",
       id,
       ctx.workspace,
       old.name,
       old.color,
+      old.projects_enabled,
     ),
     ctx.db
-      .prepare("UPDATE labels SET name=?,color=?,updated_at=? WHERE id=?")
-      .bind(next.name, next.color, ctx.at, id),
+      .prepare("UPDATE labels SET name=?,color=?,projects_enabled=?,updated_at=? WHERE id=?")
+      .bind(next.name, next.color, Number(next.projectsEnabled), ctx.at, id),
     ...audit(
       ctx,
       "label.updated",
       id,
       next.name,
-      { name: old.name, color: old.color },
+      { name: old.name, color: old.color, projectsEnabled: Boolean(old.projects_enabled) },
       next,
     ),
   ]);
@@ -122,11 +123,12 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=?)",
+      "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",
       id,
       ctx.workspace,
       old.name,
       old.color,
+      old.projects_enabled,
     ),
     guard(
       ctx.db,
@@ -151,13 +153,21 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
         )
         .bind(v.after, ctx.at, v.id),
     ),
+    ctx.db.prepare(`INSERT INTO project_activity(id,project_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
+      SELECT lower(hex(randomblob(16))),p.id,?,'project.labelIds_changed',
+      (SELECT json_group_array(label_id) FROM (SELECT label_id FROM project_labels WHERE project_id=p.id ORDER BY label_id)),
+      (SELECT json_group_array(label_id) FROM (SELECT label_id FROM project_labels WHERE project_id=p.id AND label_id<>? ORDER BY label_id)),?,?
+      FROM projects p WHERE EXISTS(SELECT 1 FROM project_labels WHERE project_id=p.id AND label_id=?)`).bind(actor,id,ctx.at,ctx.at,id),
+    ctx.db.prepare("UPDATE projects SET updated_at=? WHERE id IN (SELECT project_id FROM project_labels WHERE label_id=?)").bind(ctx.at,id),
+    ctx.db.prepare(`UPDATE list_preferences SET filters_json=json_set(filters_json,'$.label','all'),updated_at=?
+      WHERE surface='projects' AND operator_id IN (SELECT id FROM operators WHERE workspace_id=?) AND json_extract(filters_json,'$.label')=?`).bind(ctx.at,ctx.workspace,id),
     ctx.db.prepare("DELETE FROM labels WHERE id=?").bind(id),
     ...audit(
       ctx,
       "label.removed",
       id,
       old.name,
-      { name: old.name, color: old.color },
+      { name: old.name, color: old.color, projectsEnabled: Boolean(old.projects_enabled) },
       null,
     ),
   ]);

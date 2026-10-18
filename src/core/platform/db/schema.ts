@@ -67,7 +67,9 @@ export const projects = sqliteTable('projects', {
   name: text('name').notNull(),
   description: text('description').notNull(),
   leadOperatorId: text('lead_operator_id').notNull(),
+  startDate: text('start_date'),
   targetDate: text('target_date'),
+  priority: text('priority').notNull().default('none'),
   lifecycle: text('lifecycle').notNull(),
   color: text('color'),
   icon: text('icon'),
@@ -86,11 +88,18 @@ export const cycles = sqliteTable('cycles', {
   ...timestamps,
 }, (table) => [uniqueIndex('cycles_team_name_idx').on(table.teamId, table.name)])
 
+export const projectLabels = sqliteTable('project_labels', {
+  projectId: text('project_id').notNull(),
+  labelId: text('label_id').notNull(),
+  createdAt: text('created_at').notNull(),
+}, (table) => [primaryKey({ columns: [table.projectId, table.labelId] })])
+
 export const labels = sqliteTable('labels', {
   id: text('id').primaryKey(),
   workspaceId: text('workspace_id').notNull(),
   name: text('name').notNull(),
   color: text('color').notNull(),
+  projectsEnabled: integer('projects_enabled', { mode: 'boolean' }).notNull().default(false),
   ...timestamps,
 }, (table) => [uniqueIndex('labels_workspace_name_idx').on(table.workspaceId, table.name)])
 

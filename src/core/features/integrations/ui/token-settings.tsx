@@ -1,7 +1,7 @@
 import {useState,type FormEvent} from 'react';
 import {secretSchema,send,acknowledged,type Configuration,type Secret} from './client';
 import {TokenUsage} from './token-usage';
-const scopes=['issues:read','issues:write','comments:write','metadata:read'] as const;
+const scopes=['issues:read','issues:write','comments:write','metadata:read','projects:read','projects:write'] as const;
 export function TokenSettings({tokens,onSecret,onChanged,onError}:{tokens:Configuration['tokens'];onSecret:(secret:Secret)=>void;onChanged:()=>void;onError:(error:unknown)=>void}){
  const [name,setName]=useState(''),[selected,setSelected]=useState<string[]>(['issues:read']),[expiry,setExpiry]=useState(''),[busy,setBusy]=useState(false);
  const create=async(event:FormEvent)=>{event.preventDefault();setBusy(true);try{const secret=await send('/tokens',secretSchema,{name,scopes:selected,...(expiry?{expiresAt:new Date(expiry).getTime()}: {})});onSecret(secret);setName('');onChanged();}catch(error){onError(error);}finally{setBusy(false);}};

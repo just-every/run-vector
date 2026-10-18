@@ -23,7 +23,7 @@ export function ProjectsWorkspace() {
   };
   const preferences = useListPreferences("projects", {
     filters: defaultPortfolioFilters,
-    sort: "newest",
+    sort: "newest" as string,
     grouping: "none",
   });
   const filters = preferences.filters;
@@ -86,7 +86,7 @@ export function ProjectsWorkspace() {
         </button>
       </main>
     );
-  const projects = filterProjects(portfolio.data.projects, filters);
+  const projects = filterProjects(portfolio.data.projects, filters, preferences.sort);
   const metrics = portfolioMetrics(projects);
   const lifecycleOptions = [
     ...new Set(portfolio.data.projects.map((project) => project.lifecycle)),
@@ -123,6 +123,7 @@ export function ProjectsWorkspace() {
           <h2>Create project</h2>
           <ProjectCreate
             operators={administration.data.operators}
+            labels={administration.data.labels}
             onChanged={() => {
               changed();
               closeCreate();
@@ -151,11 +152,16 @@ export function ProjectsWorkspace() {
         <Metric label="On track" value={metrics.onTrack} tone="on-track" />
         <Metric label="Unknown" value={metrics.unknown} tone="unknown" />
       </section>
+      <div className="project-lifecycle-counts" aria-label="Lifecycle counts">{["planned","active","completed","canceled"].map(lifecycle=><span key={lifecycle}>{lifecycle[0].toUpperCase()+lifecycle.slice(1)}: {projects.filter(project=>project.lifecycle===lifecycle).length}</span>)}</div>
       <ProjectList
         projects={projects}
         hasProjects={administration.data.projects.length > 0}
         filters={filters}
         lifecycleOptions={lifecycleOptions}
+        administration={administration.data}
+        onChanged={changed}
+        sort={preferences.sort}
+        onSortChange={sort=>preferences.update({sort})}
         onFiltersChange={(next) => preferences.update({ filters: next })}
         preferenceControls={preferenceControls}
       />

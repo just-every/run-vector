@@ -1,7 +1,7 @@
 import {env} from 'cloudflare:workers';
 import {applyD1Migrations} from 'cloudflare:test';
 import {expect,inject} from 'vitest';
-import {ensureSampleData} from '../../src/core/features/sample-data/service';
+import {insertHistoricalSample} from './historical-sample-fixture';
 import {baseAuth} from '../../src/core/features/auth/base.server';
 import {sampleBindings} from './sample-auth-fixture';
 import {mailToken,request} from './base-auth-fixture';
@@ -22,7 +22,7 @@ export async function applyAuthRuntimeMigrations(db:D1Database) {
 export async function provePopulatedUpgrade(boundaryName:string,schema?:{added:string[];removed:string[];changed?:string[];until?:string;signIn?:'after'},populated:string[]=[],populate?:(cookie:string)=>Promise<void>) {
  const migrations=inject('migrations'),boundary=migrations.findIndex(row=>row.name===boundaryName);
  await applyD1Migrations(env.DB,migrations.slice(0,2));
- await ensureSampleData(env.DB,new Date('2026-10-01T00:00:00Z'));
+ await insertHistoricalSample(env.DB,new Date('2026-10-01T00:00:00Z'));
  await applyD1Migrations(env.DB,migrations.slice(2,boundary));
  // Base's sign-in reads the dev-session and identity ledgers, so the populated store signs in only once those migrations are in place.
  if(schema?.signIn!=='after')await applyAuthRuntimeMigrations(env.DB);

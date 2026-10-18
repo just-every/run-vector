@@ -13,7 +13,7 @@ const cycleColumns =
   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
 export async function readAdministration(db: D1Database, actor: string) {
   const { workspace_id: workspaceId } = await settingsActor(db, actor);
-  const [workspace, teams, statuses, labels, projects, operators, cycles] =
+  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels] =
     await Promise.all([
       db
         .prepare("SELECT id,name,timezone FROM workspace_settings WHERE id=?")
@@ -35,13 +35,13 @@ export async function readAdministration(db: D1Database, actor: string) {
         .all(),
       db
         .prepare(
-          "SELECT id,name,color FROM labels WHERE workspace_id=? ORDER BY name,id",
+          "SELECT id,name,color,projects_enabled AS projectsEnabled FROM labels WHERE workspace_id=? ORDER BY name,id",
         )
         .bind(workspaceId)
-        .all<{ id: string; name: string; color: string }>(),
+        .all<{ id: string; name: string; color: string; projectsEnabled: number }>(),
       db
         .prepare(
-          "SELECT id,name,description,lead_operator_id AS leadOperatorId,target_date AS targetDate,lifecycle,archived_at AS archivedAt FROM projects WHERE workspace_id=? ORDER BY name,id",
+          "SELECT id,name,description,lead_operator_id AS leadOperatorId,start_date AS startDate,target_date AS targetDate,priority,lifecycle,archived_at AS archivedAt FROM projects WHERE workspace_id=? ORDER BY name,id",
         )
         .bind(workspaceId)
         .all(),
@@ -57,6 +57,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         )
         .bind(workspaceId)
         .all(),
+      db.prepare("SELECT pl.project_id AS projectId,pl.label_id AS labelId FROM project_labels pl JOIN projects p ON p.id=pl.project_id WHERE p.workspace_id=? ORDER BY pl.label_id").bind(workspaceId).all<{projectId:string;labelId:string}>(),
     ]);
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
@@ -77,8 +78,9 @@ export async function readAdministration(db: D1Database, actor: string) {
     labels: labels.results.map((l) => ({
       ...l,
       textColor: labelTextColor(l.color),
+      projectsEnabled: Boolean(l.projectsEnabled),
     })),
-    projects: projects.results,
+    projects: projects.results.map(p => ({...p, labelIds: projectLabels.results.filter(l => l.projectId === p.id).map(l => l.labelId)})),
     operators: operators.results,
     cycles: cycles.results,
   });

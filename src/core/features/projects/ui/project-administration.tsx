@@ -5,18 +5,22 @@ import type { Administration } from "../../administration/schema";
 import { useAdministrationAction } from "../../settings/ui/administration-action";
 import { AdministrationFeedback } from "../../settings/ui/administration-feedback";
 import "../../settings/ui/settings.css";
-type Props = { operators: Administration["operators"]; onChanged: () => void };
+type Props = { operators: Administration["operators"]; labels: Administration["labels"]; onChanged: () => void };
 function fields(form: HTMLFormElement) {
   const data = new FormData(form);
   return {
     name: data.get("name"),
     description: data.get("description"),
     leadOperatorId: data.get("lead"),
+    startDate: data.get("startDate") || null,
     targetDate: data.get("targetDate") || null,
+    priority: data.get("priority"),
+    labelIds: data.getAll("labelIds"),
   };
 }
 export function ProjectCreate({
   operators,
+  labels,
   onChanged,
   onCancel,
 }: Props & { onCancel: () => void }) {
@@ -31,7 +35,7 @@ export function ProjectCreate({
   return (
     <form aria-label="Create project" onSubmit={create}>
       <fieldset disabled={action.pending || !hydrated}>
-        <ProjectFields operators={operators} autoFocus />
+        <ProjectFields operators={operators} labels={labels} autoFocus />
         <div className="admin-actions">
           <button>Create project</button>
           <button type="button" onClick={onCancel}>
@@ -46,6 +50,7 @@ export function ProjectCreate({
 export function ProjectAdministration({
   project,
   operators,
+  labels,
   onChanged,
   onDeleted,
 }: Props & { project: Administration["projects"][number]; onDeleted: () => void }) {
@@ -68,7 +73,7 @@ export function ProjectAdministration({
       </summary>
       <form aria-label={`Edit project ${project.name}`} onSubmit={save}>
         <fieldset disabled={action.pending || !hydrated}>
-          <ProjectFields operators={operators} project={project} />
+          <ProjectFields key={project.id + project.startDate + project.targetDate + project.priority + project.labelIds.join(",")} operators={operators} labels={labels} project={project} />
           <label>
             Project lifecycle
             <select name="lifecycle" defaultValue={project.lifecycle}>
@@ -111,11 +116,13 @@ export function ProjectAdministration({
 }
 function ProjectFields({
   operators,
+  labels,
   project,
   autoFocus = false,
 }: {
   autoFocus?: boolean;
   operators: Administration["operators"];
+  labels: Administration["labels"];
   project?: Administration["projects"][number];
 }) {
   return (
@@ -155,12 +162,29 @@ function ProjectFields({
         </select>
       </label>
       <label>
+        Project start date
+        <input name="startDate" type="date" defaultValue={project?.startDate ?? ""} />
+      </label>
+      <label>
         Project target date
         <input
           name="targetDate"
           type="date"
           defaultValue={project?.targetDate ?? ""}
         />
+      </label>
+      <label>
+        Project priority
+        <select name="priority" defaultValue={project?.priority ?? "none"}>
+          {["urgent","high","medium","low","none"].map(priority => <option key={priority} value={priority}>{priority === "none" ? "No priority" : priority[0].toUpperCase()+priority.slice(1)}</option>)}
+        </select>
+      </label>
+      <label>
+        Project labels
+        <select name="labelIds" aria-label="Project labels" multiple defaultValue={project?.labelIds ?? []}>
+          {labels.filter(label=>label.projectsEnabled).map(label=><option key={label.id} value={label.id}>{label.name}</option>)}
+        </select>
+        <small>Choose any labels marked for projects in Settings. Use Command or Ctrl to select several.</small>
       </label>
     </>
   );

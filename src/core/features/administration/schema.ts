@@ -58,24 +58,33 @@ export const statusReorderSchema = z
 export const statusRemoveSchema = z
   .object({ destinationStatusId: administrationId })
   .strict();
-export const labelCreateSchema = z.object({ name, color: labelColor }).strict();
+export const labelCreateSchema = z.object({ name, color: labelColor, projectsEnabled: z.boolean().default(false) }).strict();
 export const labelUpdateSchema = labelCreateSchema
   .partial()
+  .extend({ projectsEnabled: z.boolean().optional() })
   .strict()
   .refine((v) => Object.keys(v).length > 0);
+export const projectPriority = z.enum(["urgent", "high", "medium", "low", "none"]);
+export const projectLabelIds = z.array(administrationId).max(100).refine(ids => new Set(ids).size === ids.length, "Choose each label once.");
 export const projectCreateSchema = z
   .object({
     name,
     description: z.string().max(100000).default(""),
     leadOperatorId: administrationId,
+    startDate: z.string().date().nullable().default(null),
     targetDate: z.string().date().nullable().default(null),
+    priority: projectPriority.default("none"),
+    labelIds: projectLabelIds.default([]),
   })
   .strict();
 export const projectUpdateSchema = projectCreateSchema
   .partial()
   .extend({
     description: projectCreateSchema.shape.description.removeDefault().optional(),
+    startDate: projectCreateSchema.shape.startDate.removeDefault().optional(),
     targetDate: projectCreateSchema.shape.targetDate.removeDefault().optional(),
+    priority: projectPriority.optional(),
+    labelIds: projectLabelIds.optional(),
     lifecycle: z
       .enum(["planned", "active", "completed", "canceled"])
       .optional(),
@@ -133,6 +142,7 @@ export const administrationSchema = z.object({
       name: z.string(),
       color: z.string(),
       textColor: z.string(),
+      projectsEnabled: z.boolean(),
     }),
   ),
   projects: z.array(
@@ -141,7 +151,10 @@ export const administrationSchema = z.object({
       name: z.string(),
       description: z.string(),
       leadOperatorId: z.string(),
+      startDate: z.string().nullable(),
       targetDate: z.string().nullable(),
+      priority: projectPriority,
+      labelIds: z.array(z.string()),
       lifecycle: z.enum(["planned", "active", "completed", "canceled"]),
       archivedAt: z.string().nullable(),
     }),

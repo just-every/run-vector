@@ -136,7 +136,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
   app.post(
     "/settings/projects",
     mutation(schema.projectCreateSchema, (c, b) =>
-      createProject(c.env.DB, c.get("operatorId"), b),
+      createProject(c.env.DB, c.get("operatorId"), b).then(() => {}),
     ),
   );
   app.patch(

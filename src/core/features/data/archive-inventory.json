@@ -615,7 +615,8 @@
     "name",
     "color",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "projects_enabled"
   ],
   "list_preferences": [
     "id",
@@ -809,6 +810,11 @@
     "created_at",
     "updated_at"
   ],
+  "project_labels": [
+    "project_id",
+    "label_id",
+    "created_at"
+  ],
   "projects": [
     "id",
     "workspace_id",
@@ -821,7 +827,9 @@
     "icon",
     "archived_at",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "start_date",
+    "priority"
   ],
   "rer_mail_development_outbox": [
     "sequence",

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateProjectDates, projectActivity as activity, readProjectLabelIds, projectLabelWrites, projectFieldActivity } from "./project-fields";
 import { createUlid } from "../../shared/ids";
 import { projectCreateSchema, projectUpdateSchema } from "./schema";
 import {
@@ -15,7 +16,9 @@ type Project = {
   name: string;
   description: string;
   lead_operator_id: string;
+  start_date: string | null;
   target_date: string | null;
+  priority: string;
   lifecycle: string;
   archived_at: string | null;
 };
@@ -27,28 +30,6 @@ function leadGuard(ctx: AdministrationContext, id: string) {
     ctx.workspace,
   );
 }
-function activity(
-  ctx: AdministrationContext,
-  id: string,
-  kind: string,
-  previous: unknown,
-  next: unknown,
-) {
-  return ctx.db
-    .prepare(
-      "INSERT INTO project_activity(id,project_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)",
-    )
-    .bind(
-      createUlid(new Date(ctx.at)),
-      id,
-      ctx.actor,
-      kind,
-      JSON.stringify(previous),
-      JSON.stringify(next),
-      ctx.at,
-      ctx.at,
-    );
-}
 export async function createProject(
   db: D1Database,
   actor: string,
@@ -56,11 +37,12 @@ export async function createProject(
 ) {
   const ctx = await administrationContext(db, actor),
     id = createUlid(new Date(ctx.at));
+  validateProjectDates(input.startDate, input.targetDate);
   await commit(ctx, [
     leadGuard(ctx, input.leadOperatorId),
     ctx.db
       .prepare(
-        `INSERT INTO projects(id,workspace_id,name,description,lead_operator_id,target_date,lifecycle,created_at,updated_at) VALUES(?,?,?,?,?,?,'planned',?,?)`,
+        `INSERT INTO projects(id,workspace_id,name,description,lead_operator_id,start_date,target_date,priority,lifecycle,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,'planned',?,?)`,
       )
       .bind(
         id,
@@ -68,15 +50,19 @@ export async function createProject(
         input.name,
         input.description,
         input.leadOperatorId,
+        input.startDate,
         input.targetDate,
+        input.priority,
         ctx.at,
         ctx.at,
       ),
+    ...projectLabelWrites(ctx, id, [...input.labelIds].sort()),
     activity(ctx, id, "project.created", null, {
       ...input,
       lifecycle: "planned",
     }),
   ]);
+  return id;
 }
 export async function updateProject(
   db: D1Database,
@@ -86,11 +72,15 @@ export async function updateProject(
 ) {
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Project>(ctx, "projects", id);
+  const oldLabels = await readProjectLabelIds(ctx, id);
   const previous = {
     name: old.name,
     description: old.description,
     leadOperatorId: old.lead_operator_id,
+    startDate: old.start_date,
     targetDate: old.target_date,
+    priority: old.priority,
+    labelIds: oldLabels,
     lifecycle: old.lifecycle,
     archivedAt: old.archived_at,
   };
@@ -98,6 +88,9 @@ export async function updateProject(
     name: input.name ?? old.name,
     description: input.description ?? old.description,
     leadOperatorId: input.leadOperatorId ?? old.lead_operator_id,
+    startDate: input.startDate === undefined ? old.start_date : input.startDate,
+    priority: input.priority ?? old.priority,
+    labelIds: input.labelIds === undefined ? oldLabels : [...input.labelIds].sort(),
     targetDate:
       input.targetDate === undefined ? old.target_date : input.targetDate,
     lifecycle: input.lifecycle ?? old.lifecycle,
@@ -108,35 +101,43 @@ export async function updateProject(
           ? (old.archived_at ?? ctx.at)
           : null,
   };
+  validateProjectDates(next.startDate, next.targetDate);
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND lifecycle=? AND archived_at IS ?)",
+      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
       id,
       ctx.workspace,
       old.name,
       old.description,
       old.lead_operator_id,
       old.target_date,
+      old.start_date,
+      old.priority,
       old.lifecycle,
       old.archived_at,
     ),
+    guard(ctx.db, "(SELECT json_group_array(label_id) FROM (SELECT label_id FROM project_labels WHERE project_id=? ORDER BY label_id))=?", id, JSON.stringify(oldLabels)),
     leadGuard(ctx, next.leadOperatorId),
     ctx.db
       .prepare(
-        "UPDATE projects SET name=?,description=?,lead_operator_id=?,target_date=?,lifecycle=?,archived_at=?,updated_at=? WHERE id=?",
+        "UPDATE projects SET name=?,description=?,lead_operator_id=?,target_date=?,start_date=?,priority=?,lifecycle=?,archived_at=?,updated_at=? WHERE id=?",
       )
       .bind(
         next.name,
         next.description,
         next.leadOperatorId,
         next.targetDate,
+        next.startDate,
+        next.priority,
         next.lifecycle,
         next.archivedAt,
         ctx.at,
         id,
       ),
-    activity(ctx, id, "project.updated", previous, next),
+    ...(input.labelIds === undefined ? [] : projectLabelWrites(ctx, id, next.labelIds)),
+    ...projectFieldActivity(ctx, id, previous, next),
+    ...(['name','description','leadOperatorId','lifecycle','archivedAt'].some(key => previous[key as keyof typeof previous] !== next[key as keyof typeof next]) ? [activity(ctx,id,"project.updated",previous,next)] : []),
   ]);
 }
 
@@ -146,13 +147,15 @@ export async function removeProject(db: D1Database, actor: string, id: string) {
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND lifecycle=? AND archived_at IS ?)",
+      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
       id,
       ctx.workspace,
       old.name,
       old.description,
       old.lead_operator_id,
       old.target_date,
+      old.start_date,
+      old.priority,
       old.lifecycle,
       old.archived_at,
     ),
