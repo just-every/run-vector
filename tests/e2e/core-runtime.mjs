@@ -1,3 +1,4 @@
+import { subissuesJourney } from './core-subissues-journey.mjs';
 import { cycleMembershipJourney } from './core-cycle-membership-journey.mjs';
 import { withInvitedOperator } from './core-operator-journey.mjs';
 import { streamControlsJourney } from './core-stream-controls-journey.mjs';
@@ -697,6 +698,7 @@ try {
   } finally { await followerContext.close(); }
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
   await cycleMembershipJourney(page, context, base, record);
+  await subissuesJourney(page, context, base, record);
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');

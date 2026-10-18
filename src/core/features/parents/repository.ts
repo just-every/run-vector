@@ -1,3 +1,4 @@
+import { reconcileParentChanges } from "../subissues/reconcile";
 import {
   mutationDatabase,
   isMutationAccessError,
@@ -70,9 +71,9 @@ export async function updateIssueParent(
         ? [
             db
               .prepare(
-                `INSERT INTO issue_parents(issue_id,parent_issue_id,created_at) SELECT ?,?,? WHERE EXISTS(SELECT 1 FROM issue_activity WHERE id=?)`,
+                `INSERT INTO issue_parents(issue_id,parent_issue_id,created_at,position) SELECT ?,?,?,COALESCE((SELECT max(position)+1 FROM issue_parents WHERE parent_issue_id=?),1) WHERE EXISTS(SELECT 1 FROM issue_activity WHERE id=?)`,
               )
-              .bind(issue.id, parent.id, now, activity),
+              .bind(issue.id, parent.id, now, parent.id, activity),
           ]
         : []),
       db
@@ -80,6 +81,7 @@ export async function updateIssueParent(
           `UPDATE issues SET version=version+1,updated_at=? WHERE id=? AND EXISTS(SELECT 1 FROM issue_activity WHERE id=?)`,
         )
         .bind(now, issue.id, activity),
+      reconcileParentChanges(db, activity),
     ]);
   } catch (error) {
     if (isMutationAccessError(error)) throw error;

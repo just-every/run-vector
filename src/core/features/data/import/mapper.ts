@@ -111,7 +111,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
       try{const target=selected(value);if(target.id===id)throw Error('An issue cannot reference itself.');needs.push(target.id);return target;}
       catch(error){errors.push({row:row.record.location.row!,field,code:'invalid_issue_reference',message:error instanceof Error?error.message:'Invalid reference.'});}
     };
-    if(row.parent) { const target=reference('parent',row.parent);if(target)row.value.parent=[{issue_id:id,parent_issue_id:target.id,created_at:effectiveAt}]; }
+    if(row.parent) { const target=reference('parent',row.parent);if(target)row.value.parent=[{issue_id:id,parent_issue_id:target.id,created_at:effectiveAt,position:0}]; }
     for(const value of row.dependencies){const target=reference('dependencies',value);if(target)row.value.dependencies.push({blocked_issue_id:id,blocking_issue_id:target.id,created_at:effectiveAt});}
     row.value.dependencies.sort((a,b)=>String(a.blocking_issue_id).localeCompare(String(b.blocking_issue_id)));
     if(row.duplicateOf) {

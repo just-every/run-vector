@@ -5,7 +5,7 @@ import { IssueParentPicker } from "./issue-parent-picker";
 import "./issue-parent.css";
 
 export type HierarchyState = { editing: boolean; message: string };
-/** An issue with no parent and no children shows only its Set parent action. */
+/** Keep empty hierarchies compact while preserving the sub-issue entry. */
 export function hierarchyIsEmpty(issue: IssueDetailData, state: HierarchyState) {
   return !issue.parent && !issue.children.length && !state.editing && !state.message;
 }
@@ -98,30 +98,7 @@ export function IssueParent({
               ? "Change parent"
               : "Set parent"}
         </button>
-        {current.children.length ? (
-          <details className="issue-parent__children">
-            <summary aria-label={`Children (${current.children.length})`}>
-              Children <span>{current.children.length}</span>
-            </summary>
-            <ul>
-              {current.children.map((child) => (
-                <li key={child.id}>
-                  <Link
-                    to="/app/issues/$identifier"
-                    params={{ identifier: child.identifier }}
-                    aria-label={`Child ${child.identifier}: ${child.title}, status ${child.status.name}`}
-                  >
-                    <strong>{child.identifier}</strong>
-                    <span>{child.title}</span>
-                  </Link>
-                  <span className="issue-parent__status">
-                    {child.status.name}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </details>
-        ) : null}
+
       </div>
 
       {editing ? (

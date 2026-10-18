@@ -1,3 +1,4 @@
+import { addSubissueRoutes } from "../subissues/routes";
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -15,6 +16,7 @@ const inputSchema = z
   })
   .strict();
 export function addParentIssueRoutes(app: Hono<AppEnvironment>) {
+  addSubissueRoutes(app);
   app.patch("/issues/:identifier/parent", async (c) => {
     const identifier = c.req.param("identifier");
     const input = inputSchema.safeParse(await readRequestJson(c.req.raw));

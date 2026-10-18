@@ -1,3 +1,4 @@
+import { Subissues } from "../../subissues/ui/subissues";
 import { IssueDescription } from "../../description-history/ui/description";
 import { useNavigate } from '@tanstack/react-router';
 import { DeleteIssue,type DeletionReceipt } from '../../issue-deletion/ui';
@@ -274,6 +275,7 @@ function IssueInspector({
               onState={onHierarchy}
             />
           )}
+          <Subissues key={issue.identifier + ":subissues"} issue={issue} onRefresh={onRefresh} />
         </div>
         <IssueDescription issue={issue} onRefresh={onRefresh} />
         {issue.evidence.map((evidence) => (

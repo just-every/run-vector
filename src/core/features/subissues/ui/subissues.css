@@ -1,0 +1,143 @@
+.issue-relations > .issue-subissues[open] {
+  flex: 1 0 100%;
+  width: 100%;
+}
+.issue-subissues {
+  min-width: 0;
+  font-size: 0.75rem;
+}
+.issue-subissues > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  min-height: 2.75rem;
+  border: 1px solid rgb(23 26 32 / 24%);
+  border-radius: 0.45rem;
+  padding: 0.25rem 0.55rem;
+  background: var(--app-field);
+  font-weight: 650;
+  cursor: pointer;
+}
+.issue-subissues > summary span {
+  color: var(--app-cobalt-ink);
+}
+.issue-subissues__panel {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.55rem;
+  min-width: 0;
+}
+.issue-subissues__panel p {
+  margin: 0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.issue-subissues__panel [role="alert"] {
+  color: var(--app-danger);
+}
+.issue-subissues__progress,
+.issue-subissues__hint,
+.issue-subissues__status,
+.issue-subissues__assignee {
+  color: var(--app-muted);
+}
+.issue-subissues__list {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.issue-subissues__list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 0.35rem 0.65rem;
+  align-items: center;
+  padding-block: 0.35rem;
+  border-bottom: 1px solid var(--app-line);
+}
+.issue-subissues__link {
+  display: flex;
+  min-height: 2.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  min-width: 0;
+  color: var(--app-cobalt-ink);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.issue-subissues__link strong {
+  color: var(--app-ink);
+}
+.issue-subissues__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  grid-column: 1 / -1;
+}
+.issue-subissues__panel button {
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  border: 1px solid rgb(23 26 32 / 24%);
+  border-radius: 0.45rem;
+  padding: 0.25rem 0.55rem;
+  color: var(--app-ink);
+  background: var(--app-field);
+  font-size: 0.75rem;
+  font-weight: 650;
+}
+.issue-subissues__panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+.issue-subissues__panel form {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.issue-subissues__panel form label {
+  display: grid;
+  flex: 1 1 12rem;
+  min-width: 0;
+  gap: 0.25rem;
+  color: var(--app-muted);
+}
+.issue-subissues__panel input:not([type="checkbox"]) {
+  min-width: 0;
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.45rem;
+  padding: 0.4rem 0.55rem;
+  color: var(--app-ink);
+  background: var(--app-card);
+}
+.issue-subissues__rule {
+  min-height: 2.75rem;
+  cursor: pointer;
+  display: flex;
+  gap: 0.4rem;
+  align-items: start;
+  line-height: 1.45;
+}
+.issue-subissues__rule input {
+  margin-top: 0.15rem;
+}
+.issue-subissues :focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+@media (max-width: 46rem) {
+  .issue-subissues__list li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .issue-subissues__link {
+    grid-column: 1 / -1;
+  }
+  .issue-subissues__assignee {
+    text-align: right;
+  }
+}

@@ -32,10 +32,8 @@
   white-space: nowrap;
 }
 .issue-parent__status { flex: 0 0 auto; font-size: .75rem; }
-.issue-parent__empty,
 .issue-parent__hint { color: var(--app-muted); }
 .issue-parent__edit,
-.issue-parent__children > summary,
 .issue-parent__actions > button:not(.decision-submit),
 .issue-parent__search > button,
 .issue-parent__message button,
@@ -50,21 +48,9 @@
   font-weight: 650;
   text-decoration: none;
 }
-.issue-parent__children { flex: 0 0 auto; }
 /* The row matches the other inline property edit buttons, keeping phone issues short. */
-.issue-parent__edit,
-.issue-parent__children > summary { min-height: 2rem; padding-block: 0.25rem; white-space: nowrap; }
-.issue-parent__children > summary {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  cursor: pointer;
-  list-style-position: inside;
-  white-space: nowrap;
-}
-.issue-parent__children summary span,
+.issue-parent__edit{ min-height: 2rem; padding-block: 0.25rem; white-space: nowrap; }
 .issue-parent__matches strong { color: var(--app-cobalt-ink); }
-.issue-parent__children ul,
 .issue-parent__matches {
   display: grid;
   gap: 0.4rem;
@@ -72,24 +58,6 @@
   padding: 0;
   list-style: none;
 }
-.issue-parent__children li {
-  display: flex;
-  min-width: 0;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 0.6rem;
-  font-size: 0.78rem;
-}
-.issue-parent__children li a {
-  display: flex;
-  min-width: 0;
-  flex: 1 1 14rem;
-  flex-wrap: wrap;
-  gap: 0.3rem;
-  color: var(--app-cobalt-ink);
-  overflow-wrap: anywhere;
-}
-.issue-parent__children li strong { color: var(--app-ink); }
 .issue-parent__editor { display: grid; gap: 0.45rem; margin-top: 0.55rem; }
 .issue-parent__search {
   display: flex;
@@ -144,7 +112,6 @@
   white-space: nowrap;
 }
 .issue-parent__matches small { color: var(--app-muted); font-size: .75rem; }
-.issue-parent__children > p,
 .issue-parent__hint,
 .issue-parent__selected,
 .issue-parent__message {
@@ -173,8 +140,7 @@
   .issue-parent__current { font-size: .75rem; }
   .issue-parent__link .issue-parent__status,
   .issue-parent__matches small { display: none; }
-  .issue-parent__edit,
-  .issue-parent__children > summary { padding-inline: 0.4rem; font-size: .75rem; }
+  .issue-parent__edit{ padding-inline: 0.4rem; font-size: .75rem; }
   .issue-parent__matches button { grid-template-columns: auto minmax(0, 1fr); }
 }
 /* Labels and hierarchy share one wrapping row; an open editor or a set
@@ -198,17 +164,4 @@
 .issue-relations > .issue-parent:has(.issue-parent__editor),
 .issue-relations > .issue-parent:has(details[open]) {
   flex-basis: 100%;
-}
-/* An open children list drops below the hierarchy controls. */
-.issue-parent__top:has(details[open]) {
-  flex-wrap: wrap;
-}
-.issue-parent__children[open] {
-  flex: 1 0 100%;
-}
-.issue-parent__children[open] > summary {
-  width: fit-content;
-}
-.issue-parent--compact {
-  display: inline-flex;
 }

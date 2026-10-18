@@ -575,7 +575,8 @@
   "issue_parents": [
     "issue_id",
     "parent_issue_id",
-    "created_at"
+    "created_at",
+    "position"
   ],
   "issue_prefix_sequences": [
     "workspace_id",
@@ -1416,5 +1417,17 @@
     "created_at",
     "delivered_at",
     "delivery_id"
+  ],
+  "subissue_progress_events": [
+    "id",
+    "parent_issue_id",
+    "created_at",
+    "changes_json"
+  ],
+  "subissue_team_rules": [
+    "team_id",
+    "enabled",
+    "version",
+    "updated_at"
   ]
 }
