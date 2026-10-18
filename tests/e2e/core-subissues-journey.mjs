@@ -10,9 +10,7 @@ export async function subissuesJourney(
   async function api(path, method = "GET", data) {
     const response = await context.request.fetch(base + "/api" + path, {
       method,
-      // Browser interaction can outlive the local Worker's idle socket. Own a
-      // fresh fixture connection, as core-runtime's Node request helper does.
-      headers: { Origin: base, Connection: "close" },
+      headers: { Origin: base },
       ...(data === undefined ? {} : { data }),
     });
     assert(response.ok(), `${method} ${path}: ${response.status()}`);
