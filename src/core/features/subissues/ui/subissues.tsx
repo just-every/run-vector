@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useId, useState } from "react";
+import { useState } from "react";
 import type { IssueDetailData } from "../../issues/ui/data";
 import { useSubissues } from "./use-subissues";
 import "./subissues.css";
@@ -10,8 +10,7 @@ export function Subissues({
   issue: IssueDetailData;
   onRefresh: () => void;
 }) {
-  const [open, setOpen] = useState(issue.children.length > 0),
-    contentId = useId();
+  const [open, setOpen] = useState(issue.children.length > 0);
   const completed = issue.children.filter(
     (child) => child.status.category === "completed",
   ).length;
@@ -21,14 +20,14 @@ export function Subissues({
       open={open}
       onToggle={(event) => setOpen(event.currentTarget.open)}
     >
-      <summary aria-controls={contentId}>
+      <summary>
         Sub-issues{" "}
         <span>
           {completed}/{issue.children.length}
         </span>
       </summary>
       {open && (
-        <SubissuePanel issue={issue} onRefresh={onRefresh} id={contentId} />
+        <SubissuePanel issue={issue} onRefresh={onRefresh} />
       )}
     </details>
   );
@@ -36,11 +35,9 @@ export function Subissues({
 function SubissuePanel({
   issue,
   onRefresh,
-  id,
 }: {
   issue: IssueDetailData;
   onRefresh: () => void;
-  id: string;
 }) {
   const state = useSubissues(issue.identifier, issue.version, onRefresh),
     [title, setTitle] = useState(""),
@@ -55,7 +52,7 @@ function SubissuePanel({
     void state.reorder(ids);
   }
   return (
-    <div className="issue-subissues__panel" id={id}>
+    <div className="issue-subissues__panel">
       {state.loading && !data && <p role="status">Loading sub-issues…</p>}
       {state.error && (
         <p role="alert">
