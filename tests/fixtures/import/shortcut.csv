@@ -1,0 +1,3 @@
+id,name,description,state,team,project,iteration,priority,estimate,due_date,created_at,updated_at,owners
+101,Review delivery,Check the delivery details.,Ready,,,,high,3,2026-10-30,2026-10-01T08:00:00Z,2026-10-02T09:30:00Z,"Synthetic Author; Another Author"
+102,Publish notes,Write the release notes.,Ready,,,,low,5,2026-11-02,2026-10-03T08:00:00Z,2026-10-04T09:30:00Z,

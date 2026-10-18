@@ -45,3 +45,20 @@ export async function exerciseStagedCli({runtime,cookie,scratch,command,session}
  assert.equal(imported(),2000);
  return {batches:preview.batches,stoppedAfter:partial.batchesApplied,resumedTo:finished.batchesApplied};
 }
+
+/** DATA-015: the Plane fixture uses the ordinary staged terminal door. */
+export async function exerciseProfileCli({runtime,scratch,command,team,status}) {
+ const file=join(scratch,'plane.csv'),mapping=join(scratch,'plane-mapping.json'),review=join(scratch,'plane-review.json');
+ await writeFile(file,await readFile(new URL('../fixtures/import/plane.csv',import.meta.url)),{mode:0o600});
+ await writeFile(mapping,JSON.stringify({mapping:{},defaults:{team:team.id},references:{status:{Ready:status.id}}}),{mode:0o600});
+ const preview=command('preview','--file',file,'--format','plane-csv','--source','plane-cli','--mapping',mapping,'--review',review);
+ assert.equal(preview.ready,true);assert.equal(preview.rows,2);assert.equal(preview.omissions.length,1);
+ const run=command('apply','--review',review,'--yes');assert.equal(run.state,'completed');assert.equal(run.checkpoint,2);
+ const report=command('report','--run',run.id);
+ assert.equal(report.totals.issuesWritten,2);assert.equal(report.totals.omittedValues,1);
+ assert.deepEqual(report.mapping.map(row=>row.sourceId).sort(),['ENG-42','ENG-43']);
+ assert.equal(report.effects.counts.parents.written,1);
+ assert.equal(command('rollback','--run',run.id,'--yes').state,'rolled_back');
+ assert.equal(command('report','--run',run.id).totals.issuesWritten,0);
+ console.log('[DATA-015] Plane CLI preview/apply/reconciliation/rollback passed.');
+}

@@ -9,7 +9,7 @@ export const importFields = ['sourceId','title','description','team','status','p
 export type ImportField = typeof importFields[number];
 export type ImportMapping = Partial<Record<ImportField,string>>;
 export type ImportInput = {
-  format: 'csv'|'json'|'linear-csv'|'linear-api-json'|'jira-csv'; name: string; base64: string; source: string;
+  format: 'csv'|'json'|'linear-csv'|'linear-api-json'|'jira-csv'|'plane-csv'|'huly-json'|'shortcut-csv'; name: string; base64: string; source: string;
   /** With linear-api-json: the owner's Linear API file (docs/LINEAR-API-FILE.md). */
   api?: { name: string; base64: string };
   jira?: { attachmentLinks?: boolean; completedAtFallback?: 'updated'|'created'|'effective'; sourceOffset?: string; shortYearCentury?: number; originalEstimateSecondsPerUnit?: number; priorities?: Record<string,'none'|'low'|'medium'|'high'|'urgent'> };

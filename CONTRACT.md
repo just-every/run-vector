@@ -801,7 +801,7 @@ Judged from the code and tests at commit `ef0de1ae8a307cd770828bc894f57a9becfc99
 | `DATA-012` | GitHub Issues and Projects import | target | missing |  | No implementation yet |
 | `DATA-013` | Jira Cloud and Data Center API import | target | partial | `src/core/features/data/import/jira.ts` | All Fields CSV file profile; the live API, attachment bytes, versions and Data Center are absent |
 | `DATA-014` | Linear API import | target | partial | `src/core/features/data/import/linear.ts`, `src/core/features/data/import/api-file.ts` | Workspace CSV plus an owner-produced API file; direct API, bytes, initiatives and updates are absent |
-| `DATA-015` | Plane, Huly and Shortcut import | target | partial | `src/core/features/data/import/jira-review.ts` | The shared reviewed mapped-CSV path; named source profiles are absent |
+| `DATA-015` | Plane, Huly and Shortcut import | target | done | `tests/worker/plane-huly-shortcut-import.test.ts`, `tests/e2e/data-staged-cli.mjs`, `tests/e2e/data-profile-journey.mjs` | |
 | `DATA-016` | Transition sync | target | missing |  | No implementation yet |
 | `DATA-017` | Whole-workspace migration | target | partial | `src/core/features/data/import/ids.ts`, `src/core/features/data/import/runs.ts`, `tests/e2e/data-staged-cli.mjs` | Stable per-source import identities, staged runs with resume, repeat and rollback, and in-run relations; migrations, cross-run relation binding, the migration report, incremental re-runs and the 50,000-issue run are absent |
 | `DATA-018` | Old identifiers and links after a move | target | partial | `tests/e2e/jira-public-journey.mjs` | Imported issues show and find their source ID in search under DATA-007; URL resolution, alias redirects and Git magic words on old keys are absent |

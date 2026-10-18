@@ -36,7 +36,7 @@ export async function readImportFile(file:File,format:ImportInput['format'],rows
  if(file.size>importLimits.bytes)throw Error(`Split the file before uploading: one run reads at most ${Math.round(importLimits.bytes/1048576)} MiB.`);
  const bytes=new Uint8Array(await file.arrayBuffer()),text=new TextDecoder('utf-8',{fatal:true}).decode(bytes);
  let headers:string[];
- if(format==='json'){
+ if(format==='json'||format==='huly-json'){
   const value:unknown=JSON.parse(text.replace(/^﻿/,''));
   if(rows&&!Array.isArray(value))throw Error('JSON must contain an array of objects.');
   headers=!Array.isArray(value)?[]:[...new Set(value.flatMap(row=>row && typeof row==='object' && !Array.isArray(row)?Object.keys(row):[]))];
@@ -47,7 +47,7 @@ export async function readImportFile(file:File,format:ImportInput['format'],rows
 const effectCount=z.object({planned:z.number(),written:z.number()});
 const dimension=z.array(z.object({source:z.string(),read:z.number(),written:z.number(),vector:z.array(z.object({name:z.string(),count:z.number()}))}));
 export const reportSchema=z.object({
- effects:z.object({counts:z.object({labels:effectCount,parents:effectCount,dependencies:effectCount,duplicates:effectCount,comments:effectCount,links:effectCount,files:effectCount}),labels:z.array(z.object({name:z.string(),planned:z.number(),written:z.number()}))}).optional(),
+ effects:z.object({counts:z.object({labels:effectCount,parents:effectCount,dependencies:effectCount,related:effectCount,duplicates:effectCount,comments:effectCount,links:effectCount,files:effectCount}),labels:z.array(z.object({name:z.string(),planned:z.number(),written:z.number()}))}).optional(),
  jiraReview:jiraReviewSchema.optional(),
  run:z.object({id:z.string(),source:z.string(),fileName:z.string(),format:z.string(),state:z.string()}),
  totals:z.object({rowsRead:z.number(),issuesWritten:z.number(),rowsNotWritten:z.number(),omittedValues:z.number(),unresolvedReferences:z.number()}),

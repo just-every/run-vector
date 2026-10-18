@@ -20,6 +20,9 @@ export type ReportInput = {
   notInFile: string[];
 };
 const notInFile: Record<ImportInput['format'],string[]> = {
+  'plane-csv': ['attachment file bytes','source timestamps with ambiguous 12-hour clocks','comments and complete history'],
+  'huly-json': ['attachment file bytes','complete history and memberships'],
+  'shortcut-csv': ['attachment file bytes','complete history and memberships; list/date encodings outside the supported profile'],
   'jira-csv': ['attachment file bytes','complete workflow transition history, permissions and complete plugin state are not established by this CSV'],
   'linear-csv': ['comments','attachment files and links','issue history','team and project memberships','relations other than the parent issue (blocks, related, duplicate)'],
   'linear-api-json': ['attachment file bytes (the API file lists attachment links only)','issue history','team and project memberships'],

@@ -1,3 +1,4 @@
+import { isProfile } from './profiles';
 import { mapRelated } from './related';
 import { mapManualOrder } from './manual-order';
 import { canonicalJson,sha256 } from '../../../../../vendor/base/import-kit/src/d1/index';
@@ -98,7 +99,7 @@ export async function mapImport(db:D1Database,actor:ImportActor,input:ImportInpu
   // A Linear file names related issues by Linear ID (ENG-123), which can equal an
   // unrelated Vector identifier; there a plain reference means a source record.
   const selected=(value:string)=>{
-    const nativeOnly=value.startsWith('native:'),sourceOnly=value.startsWith('source:') || ((isLinear(input.format)||input.format==='jira-csv') && !nativeOnly),text=value.replace(/^(?:native|source):/,'');
+    const nativeOnly=value.startsWith('native:'),sourceOnly=value.startsWith('source:') || ((isLinear(input.format)||isProfile(input.format)||input.format==='jira-csv') && !nativeOnly),text=value.replace(/^(?:native|source):/,'');
     const candidates=[...(!nativeOnly && bySource.has(text)?[bySource.get(text)!]:[]),...(!sourceOnly?existing.filter(row=>row.id===text || row.identifier===text):[])];
     const unique=[...new Map(candidates.map(row=>[row.id,row])).values()];
     if(unique.length!==1)throw Error(unique.length?'More than one issue matches. Prefix an original issue ID with source: for an issue in this file, or a Vector identifier with native: for an issue already in Vector.':'Issue reference was not found in this file or workspace.');

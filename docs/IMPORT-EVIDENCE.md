@@ -110,3 +110,7 @@ using [MOVE-IN-CHECKLIST.md](MOVE-IN-CHECKLIST.md) before broadening the claim.
 Default: an Epic is an ordinary parent issue with the existing `epic` label;
 Status Category supplies suggestions which the operator must confirm against
 actual workflow statuses. Release, tag and deployment wait for owner review.
+
+## Plane, Huly and Shortcut (DATA-015)
+
+Named file profiles now use the shared reviewed staged run and reconciliation report. [Plane CSV](PLANE-CSV.md), [Huly JSON](HULY-JSON.md) and [Shortcut CSV](SHORTCUT-CSV.md) document exact supported fields and omissions against primary export sources. Each two-issue synthetic fixture is exercised by `tests/worker/plane-huly-shortcut-import.test.ts`, including review acknowledgement, mapped fields, source-to-native counts, replay and whole-run rollback. `tests/e2e/data-staged-cli.mjs` exercises the Plane fixture through terminal preview/apply/report/rollback. `tests/e2e/data-profile-journey.mjs` exercises Huly JSON review, staged apply and reconciliation at 1440 and 390. No real owner export, live API, attachment-byte or hosted source acceptance is claimed. Base copies and the import-kit door are unchanged in this round.

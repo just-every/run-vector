@@ -1,0 +1,25 @@
+[
+  {
+    "_class": "tracker:class:Issue",
+    "_id": "huly-issue-1",
+    "identifier": "HUL-1",
+    "title": "Review delivery",
+    "description": "Check the delivery details.",
+    "status": "Ready",
+    "priority": 2,
+    "createdOn": "2026-10-01T08:00:00.000Z",
+    "modifiedOn": "2026-10-02T09:30:00.000Z"
+  },
+  {
+    "_class": "tracker:class:Issue",
+    "_id": "huly-issue-2",
+    "identifier": "HUL-2",
+    "title": "Publish notes",
+    "description": "Write the release notes.",
+    "status": "Ready",
+    "priority": 4,
+    "createdOn": "2026-10-03T08:00:00.000Z",
+    "modifiedOn": "2026-10-04T09:30:00.000Z",
+    "estimation": 2
+  }
+]

@@ -36,6 +36,45 @@
         "validation": "synthetic-only",
         "realExport": "not-supplied"
       }
+    },
+    {
+      "incumbent": "Plane",
+      "product": "Vector",
+      "status": "documented format",
+      "inputs": [
+        "issue CSV"
+      ],
+      "evidence": {
+        "link": "docs/IMPORT-EVIDENCE.md",
+        "validation": "synthetic-only",
+        "realExport": "not-supplied"
+      }
+    },
+    {
+      "incumbent": "Huly",
+      "product": "Vector",
+      "status": "documented format",
+      "inputs": [
+        "flattened JSON issue export"
+      ],
+      "evidence": {
+        "link": "docs/IMPORT-EVIDENCE.md",
+        "validation": "synthetic-only",
+        "realExport": "not-supplied"
+      }
+    },
+    {
+      "incumbent": "Shortcut",
+      "product": "Vector",
+      "status": "documented format",
+      "inputs": [
+        "stories CSV (supported scalar profile)"
+      ],
+      "evidence": {
+        "link": "docs/IMPORT-EVIDENCE.md",
+        "validation": "synthetic-only",
+        "realExport": "not-supplied"
+      }
     }
   ]
 }

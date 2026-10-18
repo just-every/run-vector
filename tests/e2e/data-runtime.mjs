@@ -7,7 +7,8 @@ import {chromium} from '@playwright/test';
 import {startDataUiInstallation} from './data-ui-installation.mjs';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {exerciseDataMapping} from './data-ui-journey.mjs';
-import {exerciseStagedCli} from './data-staged-cli.mjs';
+import {exerciseProfileBrowser} from './data-profile-journey.mjs';
+import {exerciseStagedCli,exerciseProfileCli} from './data-staged-cli.mjs';
 const evidence=resolve('evidence/data'),scratch=await mkdtemp(join(tmpdir(),'vector-import-cli-'));let browser,installation;
 const proof={passed:false,widths:[],publicCommands:[],privateReview:false};
 try{
@@ -27,6 +28,8 @@ try{
  assert.deepEqual(command('apply','--review',review,'--yes'),applied);assert.equal(command('status','--run',applied.id).state,'completed');assert.equal(command('resume','--run',applied.id).state,'completed');
  const before=runtime.sql("SELECT count(*) AS n FROM issues WHERE title='Public CLI mapped issue'")[0].n;assert.equal(before,1);
  assert.equal(command('rollback','--run',applied.id,'--yes').state,'rolled_back');assert.equal(runtime.sql("SELECT count(*) AS n FROM issues WHERE title='Public CLI mapped issue'")[0].n,0);
+ for(const width of [1440,390])await exerciseProfileBrowser({page,runtime,team,status,width,evidence});
+ await exerciseProfileCli({runtime,scratch,command,team,status});
  proof.staged=await exerciseStagedCli({runtime,cookie,scratch,command,session});
  proof.passed=true;
 }finally{await browser?.close();await installation?.close();await rm(scratch,{recursive:true,force:true});await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'mapping-proof.json'),JSON.stringify(proof,null,2)+'\n');}

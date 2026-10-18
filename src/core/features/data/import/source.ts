@@ -2,13 +2,14 @@ import { Buffer } from 'node:buffer';
 import { readFileSource } from '../../../../../vendor/base/import-kit/src/readers/index';
 import { canonicalJson, sha256 } from '../../../../../vendor/base/import-kit/src/d1/index';
 import type { Json, SourceRecord, SourceBundle } from '../../../../../vendor/base/import-kit/src/d1/index';
+import { prepareProfile,isProfile } from './profiles';
 import { readJiraCsv } from './jira';
 import { parseCsv } from './csv';
 import { readApiFile,apiPayloadKey } from './api-file';
 import { ImportError, importLimits, type ImportInput, type ParsedImport } from './types';
 
 export async function parseImport(input: ImportInput): Promise<ParsedImport> {
-  if (!['csv','json','linear-csv','linear-api-json','jira-csv'].includes(input.format)) throw new ImportError(400,'invalid_format');
+  if (!['csv','json','linear-csv','linear-api-json','jira-csv','plane-csv','huly-json','shortcut-csv'].includes(input.format)) throw new ImportError(400,'invalid_format');
   if ((input.format==='linear-api-json')!==Boolean(input.api)) throw new ImportError(400,'invalid_format','The Linear API file goes with the linear-api-json format, and that format needs it.');
   if (typeof input.name !== 'string' || !/^[^/\\\x00-\x1f]{1,160}$/.test(input.name)) throw new ImportError(400,'invalid_file_name');
   if (typeof input.source !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._:-]{0,127}$/.test(input.source)) throw new ImportError(400,'invalid_source');
@@ -25,7 +26,12 @@ export async function parseImport(input: ImportInput): Promise<ParsedImport> {
     }
     return id;
   };
-  if (input.format === 'json') {
+  const prepare=(raw:Record<string,Json>,row:number)=>{
+    const result=prepareProfile(input,raw,row);errors.push(...result.errors);
+    if(isProfile(input.format))for(const column of Object.values(input.mapping))result.payload[column]??='';
+    return result.payload;
+  };
+  if (input.format === 'json' || input.format === 'huly-json') {
     // Base's strict JSON reader rejects duplicate keys, unsafe integers and
     // malformed UTF-8 before application mappings can lose information.
     let root: unknown;
@@ -41,7 +47,8 @@ export async function parseImport(input: ImportInput): Promise<ParsedImport> {
         return {kind:'issue',sourceId:'row:'+row,payload:value};
       }
       Object.keys(value).forEach(key=>headers.add(key));
-      return {kind:'issue',sourceId:sourceId(value,row),payload:value};
+      const payload=prepare(value,row);
+      return {kind:'issue',sourceId:sourceId(payload,row),payload};
     }},{maxBytes:importLimits.bytes,maxRecords:importLimits.rows,maxRecordBytes:importLimits.bytes});
     } catch { throw new ImportError(400,'invalid_json','JSON must preserve distinct keys, safe numbers and valid source records.'); }
     return { source, headers:[...headers], errors };
@@ -58,7 +65,7 @@ export async function parseImport(input: ImportInput): Promise<ParsedImport> {
   if(api)errors.push(...api.errors);
   for (const row of csv.rows) {
     if (row.values.length !== csv.headers.length) errors.push({row:row.row,code:'column_count',message:`Expected ${csv.headers.length} fields; received ${row.values.length}.`});
-    const payload=jira?.payloads.get(row.row)??Object.fromEntries(csv.headers.map((header,index)=>[header,row.values[index]??''])) as Record<string,Json>;
+    const payload=prepare(jira?.payloads.get(row.row)??Object.fromEntries(csv.headers.map((header,index)=>[header,row.values[index]??''])) as Record<string,Json>,row.row);
     // The API file's issue joins its CSV row by Linear ID before hashing.
     const id=input.mapping.sourceId?payload[input.mapping.sourceId]:undefined,node=typeof id==='string'?api?.issues.get(id):undefined;
     if(node){payload[apiPayloadKey]=node as unknown as Json;joined.add(id as string);}

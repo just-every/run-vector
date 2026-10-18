@@ -2,6 +2,7 @@ import type { Json,SourceRecord } from '../../../../../vendor/base/import-kit/sr
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { stableImportId } from './ids';
 import { apiRowEffects } from './api-rows';
+import { isProfile,profileOmissions } from './profiles';
 import { jiraOmissions,jiraValue } from './jira';
 import { jiraRowEffects,jiraCompletedAt } from './jira-effects';
 import { apiPayloadKey } from './api-file';
@@ -22,6 +23,7 @@ const instant=(value:string,label:string)=>{
 export type MappedRow = {record:SourceRecord;value?:NativeIssueValue;parent:string;dependencies:string[];duplicateOf:string;blocks:string[];related:string[];errors:ImportDiagnostic[];omissions:ImportDiagnostic[]};
 export function rowOmissions(record:SourceRecord,input:ImportInput):ImportDiagnostic[] {
   if(input.format==='jira-csv')return jiraOmissions(record,input);
+  if(isProfile(input.format))return profileOmissions(record,input);
   if(!record.payload || typeof record.payload!=='object' || Array.isArray(record.payload))return [];
   const payload=record.payload as Record<string,Json>,row=record.location.row!,result:ImportDiagnostic[]=[];
   const archived=importField(input,payload,'archivedAt');
@@ -81,7 +83,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   result.dependencies=take('dependencies',()=>listField(importField(input,payload,'dependencies'),'dependencies'))||[];
   result.duplicateOf=take('duplicateOf',()=>text('duplicateOf',128))||'';
   take('archivedAt',()=>text('archivedAt'));
-  const api=input.format==='jira-csv'?jiraRowEffects(record,input,actor,effectiveAt,errors):apiRowEffects(payload,record.sourceId,row,input,actor,effectiveAt,inRun,errors,omissions);
+  const api=input.format==='jira-csv'?jiraRowEffects(record,input,actor,effectiveAt,errors):isProfile(input.format)?null:apiRowEffects(payload,record.sourceId,row,input,actor,effectiveAt,inRun,errors,omissions);
   const completedAt=input.format==='jira-csv'?jiraCompletedAt(payload,input,String(status?.category),createdAt,updatedAt,effectiveAt,row,errors,omissions):status?.category==='completed'?updatedAt:null;
   if(api){result.parent||=api.parent;result.duplicateOf||=api.duplicateOf;result.blocks=api.blocks;result.related=api.related;}
   if(status?.category==='intake')errors.push({row,field:'status',code:'intake_requires_evidence',message:'File imports cannot create signal Intake without its evidence. Choose a status for work that is ready to start, in progress or finished.'});

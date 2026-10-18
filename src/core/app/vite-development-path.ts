@@ -2,6 +2,12 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  '/src/core/features/data/import/profiles.ts',
+  '/src/core/features/data/import/profile-values.ts',
+  '/src/core/features/data/import/plane.ts',
+  '/src/core/features/data/import/huly.ts',
+  '/src/core/features/data/import/shortcut.ts',
+
   "/src/core/features/projects/ui/project-activity.tsx",
   '/src/core/features/issue-undo/ui/receipt.ts',
   '/src/core/features/issue-undo/ui/use-issue-undo.ts',

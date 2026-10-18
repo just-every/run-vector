@@ -6,6 +6,7 @@ import { parseImport } from './source';
 import { mapImport } from './mapper';
 import { effectPlan } from './effect-report';
 import { buildJiraReview } from './jira-review';
+import { profileInput } from './profiles';
 import { jiraInput } from './jira';
 import { linearInput } from './linear';
 import { importContext,type ImportActor } from './authority';
@@ -24,7 +25,7 @@ import { ImportError,importLimits,type ImportInput,type ImportPreview } from './
 const entryOverhead = 12, batchExecutions = 800;
 
 function normalized(input:ImportInput):ImportInput {
-  const selected=linearInput(jiraInput(input));
+  const selected=linearInput(jiraInput(profileInput(input)));
   return {...selected,source:'vector-import:'+selected.source};
 }
 function mappingVersion(input:ImportInput) {

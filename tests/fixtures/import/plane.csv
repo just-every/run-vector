@@ -1,0 +1,3 @@
+ID,Name,Description,State,Priority,Estimate,Target Date,Parent,Comments
+ENG-42,Review delivery,Check the delivery details.,Ready,high,3,"Fri, 30 Oct 2026",,
+ENG-43,Publish notes,Write the release notes.,Ready,low,5,"Mon, 02 Nov 2026",ENG-42,"[{""comment"":""Keep the review record."",""created_at"":""Mon, 19 Oct 2026"",""created_by"":""Synthetic Author""}]"
