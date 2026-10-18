@@ -118,7 +118,8 @@
         "CYCLE-004",
         "CYCLE-005",
         "CYCLE-006",
-        "CYCLE-008"
+        "CYCLE-008",
+        "REPORT-004"
       ]
     },
     {
@@ -157,7 +158,7 @@
     "AI triage, deduplication, ranking, or project-health inference",
     "Custom workflow categories",
     "Manually drag-ranked backlogs; every order in Vector is derived and explainable",
-    "Initiatives, roadmaps, Gantt charts, critical-path planning, time tracking, or resource management",
+    "Initiatives, roadmaps, Gantt charts, critical-path planning, time tracking",
     "Per-issue checklists",
     "Multiple assignees",
     "Notification email beyond assignments and direct mentions; chat or push notification channels",

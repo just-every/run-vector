@@ -1,0 +1,48 @@
+.workload {
+  min-width: 0;
+}
+.workload > p {
+  max-width: 75ch;
+}
+.workload-people {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
+}
+.workload-person {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.workload-person h3 {
+  margin-top: 0;
+}
+.workload-person form,
+.workload-range {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.75rem;
+}
+.workload-person label,
+.workload-range label {
+  flex: 1 1 9rem;
+}
+.workload-person small {
+  flex-basis: 100%;
+}
+.workload input,
+.workload button,
+.workload select,
+.workload summary {
+  min-height: 44px;
+}
+.workload-person ul {
+  padding-left: 1.2rem;
+}
+.workload-person li {
+  margin: 0.5rem 0;
+}
+.workload-person li a {
+  display: inline-block;
+  padding: 0.5rem 0;
+}

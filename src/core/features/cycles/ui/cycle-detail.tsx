@@ -1,3 +1,4 @@
+import { WorkloadPanel } from '../../workload/panel';
 import { ClosureSnapshot } from "./closure-snapshot";
 import { remainingScopeCopy, capacityRiskCopy } from "./capacity-copy";
 import { canSelectCycle } from "./commitment-choices";
@@ -126,6 +127,7 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
           </p>
         )}
       </section>
+      <WorkloadPanel cycleId={cycleId} />
       {detail.data.failure && (
         <section
           className="cycle-closure-failure"

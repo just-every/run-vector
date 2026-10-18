@@ -1,3 +1,4 @@
+import { addWorkloadRoutes } from '../features/workload/routes';
 import { addIssueDeletionRoutes } from '../features/issue-deletion/routes';
 import { addDescriptionHistoryRoutes } from '../features/description-history/routes';
 import { addDuplicateRoutes } from '../features/duplicates/routes';
@@ -361,6 +362,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addViewRoutes(app);
   addPreferenceRoutes(app);
   addAdministrationRoutes(app);
+  addWorkloadRoutes(app);
   addSettingsRoutes(app);
   addIntegrationConfigRoutes(app);
   addRestoreRoutes(app);

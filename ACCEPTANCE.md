@@ -305,7 +305,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **REPORT-001 — Insights** (partial). A journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues.
 - **REPORT-002 — Cycle and project charts** (partial). A cycle seeded with day-by-day changes whose burn-up and final report match the CYCLE-005 snapshot.
 - **REPORT-003 — Dashboards** (missing). A journey that builds a three-widget dashboard, shares it, and opens it as another member who sees only what they may access.
-- **REPORT-004 — Workload** (partial). A journey with three assignees whose committed points match the view and over-capacity is marked.
+- **REPORT-004 — Workload** (done). `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` cover three assignees, capacity, unestimated work, cycle and due-date scopes, stale writes, access and 1440/390 browser journeys.
 - **REPORT-005 — Warehouse and spreadsheet export** (missing). A scheduled export to an R2 fixture whose second run carries only changed rows, a paged export API read, and a Google Sheets API fixture at the network edge to which a saved view syncs: after one issue in the view changes and another leaves it, the next sync updates the first row and removes the second.
 
 ### Connecting integrations

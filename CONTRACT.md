@@ -402,7 +402,7 @@ Every background action in Vector has an accountable owner (the person or Admin 
 - **REPORT-001 — Insights.** Members chart any filtered set of issues by count or estimate over time and by any field: created vs completed, throughput, cycle time and lead time (from Started or created to Completed, with percentiles), time in each status, triage time, SLA breaches, bug inflow and open bug age, grouped by team, project, label, assignee, priority or customer tier. Each chart drills down to its issues and exports as CSV. *Acceptance:* a journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues. *Status:* partial — `src/core/features/cycle-closure/read.ts` (closed-cycle totals only).
 - **REPORT-002 — Cycle and project charts.** Each cycle shows a burn-up of scope and completion by day, with added and removed scope marked, and a final report (completed, carried over, added mid-cycle, by assignee); each project shows scope and completion over time with the projected completion date. *Acceptance:* a cycle seeded with day-by-day changes whose burn-up and final report match the CYCLE-005 snapshot. *Status:* partial — `src/core/features/cycles/progress.ts`, `src/core/features/cycle-closure/service.ts` (progress, capacity and immutable snapshots; burn-up and projections are absent).
 - **REPORT-003 — Dashboards.** Members compose dashboards of saved charts, counts and issue lists for a team or for leadership, share them inside the workspace, and filter the whole dashboard by team, date range or project. *Acceptance:* a journey that builds a three-widget dashboard, shares it, and opens it as another member who sees only what they may access. *Status:* missing.
-- **REPORT-004 — Workload.** For a cycle or date range, a workload view shows each person's assigned estimate and issue count against their stated capacity, including delegated agent work, so a lead can rebalance; it never ranks people by output. *Acceptance:* a journey with three assignees whose committed points match the view and over-capacity is marked. *Status:* partial — `src/core/features/cycles/progress.ts` (team cycle capacity; per-person workload is absent).
+- **REPORT-004 — Workload.** For a cycle or date range, a workload view shows each person's assigned estimate and issue count against their stated capacity, including delegated agent work, so a lead can rebalance; it never ranks people by output. *Acceptance:* a journey with three assignees whose committed points match the view and over-capacity is marked. *Status:* done — `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs`.
 - **REPORT-005 — Warehouse and spreadsheet export.** Owners and Admins (role matrix) schedule incremental exports of issues, history, cycles, projects and customer links as CSV or JSON to an S3-compatible bucket (Amazon S3, Cloudflare R2), expose a read-only export API that Fivetran and Airbyte connectors can page through, and sync a saved view to a Google Sheets spreadsheet through the Sheets API (`spreadsheets.values.batchUpdate`), refreshed on a schedule of at least hourly with one row per issue and one column per visible view property. *Acceptance:* a scheduled export to an R2 fixture whose second run carries only changed rows, a paged export API read, and a Google Sheets API fixture at the network edge to which a saved view syncs: after one issue in the view changes and another leaves it, the next sync updates the first row and removes the second. *Status:* missing.
 
 ### Connecting integrations
@@ -556,13 +556,13 @@ Signed source ingestion implements INTAKE-001/002/003/008/009/011 using Base's s
 
 ## Status
 
-Judged from the code and tests at commit `1394d658ca70460f15a3f903d5e05ec2ada568c3` (18 October 2026).
+Judged from the code and tests at commit `64d3c223936d84f925e4dc06b4981db588448a31` (18 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 72 | 32 | 0 | 104 |
-| Target and push further | 6 | 46 | 98 | 150 |
-| All | 78 | 78 | 98 | 254 |
+| Target and push further | 7 | 45 | 98 | 150 |
+| All | 79 | 77 | 98 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -742,7 +742,7 @@ Judged from the code and tests at commit `1394d658ca70460f15a3f903d5e05ec2ada568
 | `REPORT-001` | Insights | target | partial | `src/core/features/cycle-closure/read.ts` | Closed-cycle totals only |
 | `REPORT-002` | Cycle and project charts | target | partial | `src/core/features/cycles/progress.ts`, `src/core/features/cycle-closure/service.ts` | Progress, capacity and immutable snapshots; burn-up and projections are absent |
 | `REPORT-003` | Dashboards | target | missing |  | No implementation yet |
-| `REPORT-004` | Workload | target | partial | `src/core/features/cycles/progress.ts` | Team cycle capacity; per-person workload is absent |
+| `REPORT-004` | Workload | target | done | `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` |  |
 | `REPORT-005` | Warehouse and spreadsheet export | target | missing |  | No implementation yet |
 | `INTEG-001` | Guided connection from Settings | target | partial | `src/core/features/integrations/ui/github-setup.tsx`, `src/core/features/integrations/ui/source-setup.tsx`, `src/core/features/integrations/ui/copy-field.tsx`, `src/core/features/integrations/test-webhook.ts` | Settings → Integrations exists for signed sources, GitHub repository webhooks and outbound destinations, with copyable payload URLs, reveal-once secrets and a test delivery; provider app creation, manifest flows, OAuth installs and the live first-event check are absent |
 | `INTEG-002` | Integration health and repair | target | partial | `src/core/features/integrations/reenter.ts`, `src/core/features/integrations/ui/delivery-setup.tsx` | Credential re-entry after restore and outbound delivery state; health for inbound providers and in-place repair are absent |

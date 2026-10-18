@@ -1429,5 +1429,13 @@
     "enabled",
     "version",
     "updated_at"
+  ],
+  "workload_capacities": [
+    "workspace_id",
+    "operator_id",
+    "scope_key",
+    "capacity",
+    "version",
+    "updated_at"
   ]
 }
