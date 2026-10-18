@@ -9,10 +9,10 @@ export async function withInvitedOperator(page,context,base,state,journey,displa
   headers:{Origin:base},data:{displayName,email},
  });assert.equal(invited.status(),202);
  const link=await readDevelopmentLink(base,context.request,email,state);
- await beforePrivateNavigation(page,link);await page.goto(link);
+ await beforePrivateNavigation(page,link);await page.goto(link);await page.waitForLoadState('networkidle');
  await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL(base+'/app');await settleReads(page);
  try{await journey()}finally{
-  await beforePrivateNavigation(page,base+'/');await page.goto(base+'/');
+  await beforePrivateNavigation(page,base+'/');await page.goto(base+'/');await page.waitForLoadState('networkidle');
   await context.clearCookies();await context.addCookies(original);
  }
 }
