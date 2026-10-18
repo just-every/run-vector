@@ -80,9 +80,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 80 | 24 | 0 | 104 |
+| Published | 79 | 25 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 88 | 69 | 97 | 254 |
+| All | 87 | 70 | 97 | 254 |
 
 ### Public homepage
 
@@ -220,7 +220,7 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 - **PROJ-004 — Progress** (done). `tests/e2e/core-runtime.mjs` (tests tagged PROJ-004).
 - **PROJ-005 — Health** (done). `tests/worker/project-health.test.ts` covers health precedence, terminal exclusions, target dates, active and future cycles, missing estimates/capacity, cross-team scope and equal capacity through HTTP. `tests/e2e/core-project-health-journey.mjs` exercises editable dates, Unknown explanations and portfolio filters at 1440 and 390. Named project status sets remain PROJ-016.
 - **PROJ-006 — Risk explanation** (done). `tests/worker/project-risk.test.ts` proves precise urgent/all-blocked triggers, unresolved blocker links, concurrent target-date, unassigned-Urgent and active-cycle capacity evidence through HTTP. `tests/e2e/core-project-risk-journey.mjs` opens Blocked and At risk projects, checks exact issue links and measured scope/capacity, and follows the actual blocker at 1440 and 390.
-- **PROJ-007 — Portfolio** (done). Recorded Status-table classification: `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-007) covers the empty portfolio; `src/core/features/projects/ui/project-list.tsx` supplies lifecycle and health filters. Lead, team and target-date filters remain, and the label filter depends on PROJ-001's absent project labels. The remaining acceptance journey applies every lifecycle, health, lead, team and target-date filter and, once PROJ-001 supplies project labels, a label filter, checking matching counts and rows for each and for combined filters.
+- **PROJ-007 — Portfolio** (partial). `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-007) covers the empty portfolio; `src/core/features/projects/ui/project-list.tsx` supplies lifecycle and health filters. Lead, team and target-date filters remain, and the label filter depends on PROJ-001's absent project labels. The remaining acceptance journey applies every lifecycle, health, lead, team and target-date filter and, once PROJ-001 supplies project labels, a label filter, checking matching counts and rows for each and for combined filters.
 - **PROJ-008 — Historical truth** (done). `tests/worker/cycle-closure.test.ts` (tests tagged PROJ-008).
 - **PROJ-009 — Project archiving** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-009).
 - **PROJ-010 — Project updates** (missing). A journey that posts an At risk update, finds it in the project, the initiative roll-up and a Slack fixture, and a follower notification.
