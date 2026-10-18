@@ -352,6 +352,12 @@
       "name": "0057_activity_actor_index.sql",
       "sha256": "e59c4f95be64b52d08a77418cf786836b0e1782770e366a58455decb6d61bd52",
       "sql": "-- WORK-004 Activity reads one member's own recent changes newest first.\nCREATE INDEX issue_activity_actor_idx ON issue_activity(actor_operator_id,created_at);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0058_automatic_cycle_membership.sql",
+      "sha256": "faf92fcc32aca8d7b880ba813d90876afff7f720b7abf56b2a671733e3facffd",
+      "sql": "-- Opt-in rules; all existing teams keep manual commitment and their history.\nALTER TABLE teams ADD COLUMN auto_cycle_started INTEGER NOT NULL DEFAULT 0 CHECK(auto_cycle_started IN (0,1));\nALTER TABLE teams ADD COLUMN auto_cycle_completed INTEGER NOT NULL DEFAULT 0 CHECK(auto_cycle_completed IN (0,1));\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

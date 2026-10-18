@@ -1521,7 +1521,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "c6fca1ac1b22d6328062e2596fc8a89b7a1ab445006a3aa41e30cc33ecb5abc1",
+      "sha256": "7a30e4fe0d0ebc01e02d91cff2635037c30d4f8c1b385d6d01893c144f6150a0",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -4377,7 +4377,7 @@
       "executable": false
     },
     "src/core/platform/db/schema.ts": {
-      "sha256": "dd24c6e16229f8a292b3a93bcf12daa0589f19f84291af3596fe8624a3e036df",
+      "sha256": "8a920dc1c22c25a667cfa6ec4a5e2f114f7a9db5a63c1a56c8a32f4573b3cab4",
       "executable": false
     },
     "src/core/platform/mail.ts": {
