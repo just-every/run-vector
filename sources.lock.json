@@ -481,7 +481,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "59568f4a920dd0a10b53e1d0759dd4249dbd11821f48e3e60a152ea0e5a9bd39",
+      "sha256": "cac5567f3b670a143e9627c60c8b9ee2ec1cbcff955a2171029b93f707b8b60a",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -509,7 +509,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "fe48d51cc6af6958cce5c9c29b4536d4b2f5a4ef5f7969eddab330d9bdb96f67",
+      "sha256": "514fae5992062035bede355005f9cf5d37b1524f6a83f82035b31216ca9ac9a0",
       "executable": false
     },
     "DEMO.md": {
@@ -561,7 +561,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "59377f395b08cba5ede807fd0953629b5dff556b7d9fef21e7130d8982df2323",
+      "sha256": "7aa1105bcdce491f8e41c2182087ceb2c651cd7da8c62063c1c8758b0e96abea",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4856,6 +4856,10 @@
       "sha256": "634de6ca2f94cb3326f063b471f38113158741a6b8a54209ade2119c4315c8ec",
       "executable": false
     },
+    "tests/e2e/core-current-disjoint-journey.mjs": {
+      "sha256": "ba3363178804350980b21bddb051c1a6c3f3547f8a46d8c6cef8f775d8a69f05",
+      "executable": false
+    },
     "tests/e2e/core-current-journey.mjs": {
       "sha256": "cf77b1fa9f464254eb0bfbba43a28f1974c9f03b9aaed2701b25ff6a317e41e3",
       "executable": false
@@ -4917,7 +4921,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "b977f9337e2de7e0481a9dbc067752af55dac1277cbf337c9fcfb5f46b79615a",
+      "sha256": "adb425ff61a432d1b5089bf344a235764fa07c763133b9ecf86fd1b773a07838",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -5318,6 +5322,10 @@
     },
     "tests/worker/collaboration-mail.test.ts": {
       "sha256": "80c20048a3875730f473d424ea7374b8b1cced95bdbb1c6a1a5771c77b5f432d",
+      "executable": false
+    },
+    "tests/worker/current-disjoint.test.ts": {
+      "sha256": "a2c18264a3dcf8b8872b5f58345794f9e65a1fb3283ad7af85925ba859a75742",
       "executable": false
     },
     "tests/worker/current-next.test.ts": {

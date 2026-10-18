@@ -174,7 +174,7 @@ Vector is the issue tracker and software project-management workspace a US softw
 
 ## Current
 
-- **CURR-001 — Disjoint stream.** Current places an issue in at most one section using this precedence: Needs decision, Now, Next, then Recently done. Canceled, Duplicate, deleted, and actively deferred issues do not appear. *Acceptance:* An HTTP journey that places one issue of each kind and asserts it appears in exactly one Current section by precedence; the stream exists but no test names the clause. *Status:* partial — `src/core/features/streams/service.ts` (implemented; no test names the clause yet).
+- **CURR-001 — Disjoint stream.** Current places an issue in at most one section using this precedence: Needs decision, Now, Next, then Recently done. Canceled, Duplicate, deleted, and actively deferred issues do not appear. *Acceptance:* An HTTP journey that places one issue of each kind and asserts it appears in exactly one Current section by precedence; the stream exists but no test names the clause. *Status:* done — `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs`.
 - **CURR-002 — Needs decision.** Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate. *Acceptance:* A journey that defers, returns and declines intake items and asserts Needs decision membership. *Status:* partial — `src/core/features/streams/service.ts` (implemented; no test names the clause yet).
 - **CURR-003 — Now.** Now contains non-terminal issues outside the Intake category that are overdue or in a Started status, excluding anything already in Needs decision. An issue is *overdue* when its due date is earlier than the current calendar day in the workspace timezone (OPS-003). *Acceptance:* A journey with a Started issue and an overdue Unstarted issue at a workspace-timezone day boundary. *Status:* done — `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs`.
 - **CURR-004 — Next.** Next contains non-terminal issues in an Unstarted status that are committed to their team's active or next cycle (CYCLE-001) or due within the next seven calendar days, excluding anything already in a higher-precedence section. *Acceptance:* A journey with active-cycle and due-in-seven-days Unstarted issues. *Status:* done — `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs`.
@@ -556,13 +556,13 @@ Signed source ingestion implements INTAKE-001/002/003/008/009/011 using Base's s
 
 ## Status
 
-Judged from the code and tests at commit `c948ccbfdad1d9189ffdf12c9964f585cb4d55ca` (19 October 2026).
+Judged from the code and tests at commit `5542cea17abcd317445fc809020a35089a1ad81a` (19 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 77 | 27 | 0 | 104 |
+| Published | 78 | 26 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 85 | 72 | 97 | 254 |
+| All | 86 | 71 | 97 | 254 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -651,7 +651,7 @@ Judged from the code and tests at commit `c948ccbfdad1d9189ffdf12c9964f585cb4d55
 | `CUST-006` | Customer identity and merging | target | missing |  | No implementation yet |
 | `CUST-007` | Customers list and customer pages | target | missing |  | No implementation yet |
 | `CUST-008` | Adding customer requests by hand | target | missing |  | No implementation yet |
-| `CURR-001` | Disjoint stream | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
+| `CURR-001` | Disjoint stream | published | done | `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs` |  |
 | `CURR-002` | Needs decision | published | partial | `src/core/features/streams/service.ts` | Implemented; no test names the clause yet |
 | `CURR-003` | Now | published | done | `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs` |  |
 | `CURR-004` | Next | published | done | `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs` |  |

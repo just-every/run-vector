@@ -80,9 +80,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 77 | 27 | 0 | 104 |
+| Published | 78 | 26 | 0 | 104 |
 | Target and push further | 8 | 45 | 97 | 150 |
-| All | 85 | 72 | 97 | 254 |
+| All | 86 | 71 | 97 | 254 |
 
 ### Public homepage
 
@@ -195,7 +195,7 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 ### Current
 
-- **CURR-001 — Disjoint stream** (partial). An HTTP journey that places one issue of each kind and asserts it appears in exactly one Current section by precedence; the stream exists but no test names the clause.
+- **CURR-001 — Disjoint stream** (done). `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs` place each kind through public routes, assert exact and disjoint membership with overlapping eligibility, exclude canceled/duplicate/deferred/deleted issues, and move Next work to Now through the native status selector at 1440 and 390.
 - **CURR-002 — Needs decision** (partial). A journey that defers, returns and declines intake items and asserts Needs decision membership.
 - **CURR-003 — Now** (done). `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs`.
 - **CURR-004 — Next** (done). `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs`.
