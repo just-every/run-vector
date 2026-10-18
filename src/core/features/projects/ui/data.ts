@@ -35,6 +35,22 @@ export const projectSummarySchema = z.object({
       kind: z.string(),
       issueIdentifiers: z.array(z.string()).optional(),
       message: z.string(),
+      dependencyLinks: z
+        .array(
+          z.object({
+            blockedIdentifier: z.string(),
+            blockingIdentifier: z.string(),
+          }),
+        )
+        .optional(),
+      capacity: z
+        .object({
+          cycleId: z.string(),
+          estimatedPoints: z.number(),
+          capacityPoints: z.number(),
+          unestimatedIssueCount: z.number(),
+        })
+        .optional(),
     }),
   ),
 });

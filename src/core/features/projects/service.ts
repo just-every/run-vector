@@ -16,6 +16,16 @@ export type ProjectRisk = {
     "unresolved-dependency" | "unassigned-urgent" | "target-date" | "capacity";
   issueIdentifiers?: string[];
   message: string;
+  dependencyLinks?: Array<{
+    blockedIdentifier: string;
+    blockingIdentifier: string;
+  }>;
+  capacity?: {
+    cycleId: string;
+    estimatedPoints: number;
+    capacityPoints: number;
+    unestimatedIssueCount: number;
+  };
 };
 
 export type ProjectSummary = {

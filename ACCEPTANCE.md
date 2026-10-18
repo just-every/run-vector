@@ -211,7 +211,7 @@ CONTRACT.md now describes the full Linear/Jira-class product Vector is building 
 - **PROJ-003 — Project membership** (partial). A journey that removes, archives and deletes projects and checks no issue is deleted.
 - **PROJ-004 — Progress** (done). `tests/e2e/core-runtime.mjs` (tests tagged PROJ-004).
 - **PROJ-005 — Health** (done). `tests/worker/project-health.test.ts` covers health precedence, terminal exclusions, target dates, active and future cycles, missing estimates/capacity, cross-team scope and equal capacity through HTTP. `tests/e2e/core-project-health-journey.mjs` exercises editable dates, Unknown explanations and portfolio filters at 1440 and 390. Named project status sets remain PROJ-016.
-- **PROJ-006 — Risk explanation** (partial). A journey that opens a Blocked and an At risk project and finds the triggering issues and measurements.
+- **PROJ-006 — Risk explanation** (done). `tests/worker/project-risk.test.ts` proves precise urgent/all-blocked triggers, unresolved blocker links, concurrent target-date, unassigned-Urgent and active-cycle capacity evidence through HTTP. `tests/e2e/core-project-risk-journey.mjs` opens Blocked and At risk projects, checks exact issue links and measured scope/capacity, and follows the actual blocker at 1440 and 390.
 - **PROJ-007 — Portfolio** (done). `tests/e2e/admin-access-journey.mjs` (tests tagged PROJ-007).
 - **PROJ-008 — Historical truth** (done). `tests/worker/cycle-closure.test.ts` (tests tagged PROJ-008).
 - **PROJ-009 — Project archiving** (done). `tests/e2e/admin-project-cycle-journey.mjs` (tests tagged PROJ-009).

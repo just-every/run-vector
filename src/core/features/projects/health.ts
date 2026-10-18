@@ -26,34 +26,64 @@ export function calculateHealth(
     (issue) =>
       issue.priority === "urgent" && isBlocked(snapshot, issue.id, categories),
   );
-  if (
+  const isProjectBlocked =
     remaining.length > 0 &&
-    (urgentBlocked.length > 0 || unresolvedBlocked.length === remaining.length)
-  ) {
-    return {
-      value: "blocked",
-      explanation:
-        urgentBlocked.length > 0
-          ? "Urgent remaining work has an unresolved dependency."
-          : "Every remaining issue has an unresolved dependency.",
-      risks: [
+    (urgentBlocked.length > 0 || unresolvedBlocked.length === remaining.length);
+  const triggering =
+    urgentBlocked.length > 0 ? urgentBlocked : unresolvedBlocked;
+  const triggeringIds = new Set(triggering.map((issue) => issue.id));
+  const dependencyLinks = snapshot.dependencies
+    .filter((dependency) => {
+      if (!isProjectBlocked || !triggeringIds.has(dependency.blockedIssueId))
+        return false;
+      const blocker = snapshot.issues.find(
+        (issue) => issue.id === dependency.blockingIssueId,
+      );
+      if (!blocker)
+        throw new Error(
+          `Dependency references missing issue ${dependency.blockingIssueId}`,
+        );
+      return !["completed", "canceled", "duplicate"].includes(
+        categories.get(blocker.statusId) ?? "",
+      );
+    })
+    .map((dependency) => {
+      const blocked = snapshot.issues.find(
+        (issue) => issue.id === dependency.blockedIssueId,
+      )!;
+      const blocker = snapshot.issues.find(
+        (issue) => issue.id === dependency.blockingIssueId,
+      )!;
+      return {
+        blockedIdentifier: blocked.identifier,
+        blockingIdentifier: blocker.identifier,
+      };
+    })
+    .sort(
+      (a, b) =>
+        a.blockedIdentifier.localeCompare(b.blockedIdentifier) ||
+        a.blockingIdentifier.localeCompare(b.blockingIdentifier),
+    );
+  const blockedRisks: ProjectRisk[] = isProjectBlocked
+    ? [
         {
           kind: "unresolved-dependency",
-          issueIdentifiers: unresolvedBlocked.map((issue) => issue.identifier),
+          issueIdentifiers: triggering.map((issue) => issue.identifier),
+          dependencyLinks,
           message:
             urgentBlocked.length > 0
               ? `Urgent work is blocked: ${urgentBlocked.map((issue) => issue.identifier).join(", ")}`
               : "Every remaining issue is blocked by an unresolved dependency.",
         },
-      ],
-    };
-  }
+      ]
+    : [];
 
   const today = dateInTimezone(now, snapshot.workspace?.timezone ?? "UTC");
   const atRisk: ProjectRisk[] = [];
   if (project.targetDate !== null && project.targetDate < today) {
     atRisk.push({
       kind: "target-date",
+      issueIdentifiers: remaining.map((issue) => issue.identifier),
       message: `Target date ${project.targetDate} has passed.`,
     });
   }
@@ -69,6 +99,16 @@ export function calculateHealth(
   }
   const capacityRisks = capacityRisk(snapshot, remaining, now);
   atRisk.push(...capacityRisks);
+  if (isProjectBlocked) {
+    return {
+      value: "blocked",
+      risks: [...blockedRisks, ...atRisk],
+      explanation:
+        urgentBlocked.length > 0
+          ? "Urgent remaining work has an unresolved dependency."
+          : "Every remaining issue has an unresolved dependency.",
+    };
+  }
   if (atRisk.length > 0) {
     return {
       value: "at-risk",
@@ -149,6 +189,12 @@ function capacityRisk(
     return [
       {
         kind: "capacity" as const,
+        capacity: {
+          cycleId,
+          estimatedPoints: points,
+          capacityPoints: cycle.capacity,
+          unestimatedIssueCount: unestimated,
+        },
         issueIdentifiers: cycleIssues.map((issue) => issue.identifier),
         message:
           unestimated > 0

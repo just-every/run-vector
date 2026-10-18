@@ -583,3 +583,14 @@
   line-height: 1.6;
   overflow-wrap: anywhere;
 }
+
+@media (max-width: 700px) {
+  .project-risks a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .project-risks li div {
+    align-items: center;
+  }
+}
