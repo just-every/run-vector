@@ -63,7 +63,7 @@ function expectedRelations(prefix) {
     sourceIssueId: sourceIds[sourceIndex],
     targetIssueId: sourceIds[targetIndex],
     targetKey: issueKey(targetIndex, prefix),
-    expectedDisposition: 'omission',
+    expectedDisposition: 'related',
   }));
   return {
     parents,

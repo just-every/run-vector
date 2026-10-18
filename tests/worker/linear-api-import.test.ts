@@ -6,10 +6,12 @@ import type { ImportInput } from '../../src/core/features/data/import/types';
 
 const count=async(sql:string,...params:unknown[])=>(await env.DB.prepare(sql).bind(...params).first<number>('n'))??0;
 const tables=async()=>Object.fromEntries(await Promise.all((await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits') ORDER BY name").all<{name:string}>()).results.map(async({name})=>[name,await count(`SELECT count(*) AS n FROM "${name}"`)])));
-it('[DATA-008] a Linear CSV and API file pair imports comments with original times and authors, safe links, dependencies and duplicates with no outbound effect; a malformed file is refused row by row',async()=>{
+it('[DATA-008 REL-007] a Linear CSV and API file pair imports comments with original times and authors, safe links, dependencies and duplicates with no outbound effect; a malformed file is refused row by row',async()=>{
  const f=await setupLinearWorkspace(60);
  expect((await f.call('/settings/integrations/destinations','POST',{name:'Import effect proof',url:'https://receiver.example.com/events'})).status).toBe(201);
  const generated=f.workspace(80,11,3),api=generated.api.issues;
+ // Explicit reciprocal/circular related links exercise symmetry without a blocking cycle.
+ for(const [a,b] of [[0,1],[1,0],[1,2],[2,0]])api[a].relations.nodes.push({type:'related',relatedIssue:{identifier:api[b].identifier}});
  const pair=(file=api,source='linear-api'):ImportInput=>({...f.input(generated.csv,source),format:'linear-api-json',api:{name:'linear-api.json',base64:Buffer.from(JSON.stringify({issues:file})).toString('base64')}});
  const before={effects:await f.effects(),mail:await count('SELECT count(*) AS n FROM rer_mail_development_outbox')};
  const value=pair(),review=await f.preview(value);
@@ -30,6 +32,12 @@ it('[DATA-008] a Linear CSV and API file pair imports comments with original tim
  const blocks=api.flatMap(node=>node.relations.nodes.filter(relation=>relation.type==='blocks').map(relation=>[node.identifier,relation.relatedIssue.identifier]));
  expect(blocks.length).toBeGreaterThan(0);
  for(const [blocker,blocked] of blocks)expect(await count('SELECT count(*) AS n FROM issue_dependencies WHERE blocking_issue_id=? AND blocked_issue_id=?',(await issueOf(blocker)).id,(await issueOf(blocked)).id)).toBe(1);
+ const related=api.flatMap(node=>node.relations.nodes.filter(relation=>relation.type==='related').map(relation=>[node.identifier,relation.relatedIssue.identifier]));
+ expect(related.length).toBeGreaterThan(0);
+ for(const [a,b] of related)for(const [left,right] of [[a,b],[b,a]]){
+  const other=await issueOf(right),detail=await (await f.call('/issues/'+(await issueOf(left)).identifier)).json() as {dependencies:unknown[]};
+  expect(detail.dependencies).toContainEqual(expect.objectContaining({identifier:other.identifier,direction:'related'}));
+ }
  const duplicates=api.flatMap(node=>node.relations.nodes.filter(relation=>relation.type==='duplicate').map(relation=>[node.identifier,relation.relatedIssue.identifier]));
  expect(duplicates.length).toBe(3);
  for(const [copy,canonical] of duplicates)expect(await count("SELECT count(*) AS n FROM issue_links WHERE issue_id=? AND name=?",(await issueOf(copy)).id,'Duplicate of '+(await issueOf(canonical)).identifier)).toBe(1);

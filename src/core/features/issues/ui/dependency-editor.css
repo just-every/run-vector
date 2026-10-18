@@ -49,3 +49,7 @@
 .dependency-editor button:disabled {
   opacity: 0.6;
 }
+
+.dependency-editor .dependency-list strong {
+  margin-inline-end: 0.3rem;
+}

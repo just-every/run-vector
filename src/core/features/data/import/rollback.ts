@@ -6,7 +6,7 @@ import { ImportError } from './types';
 
 export type RollbackConflict = { identifier: string; sourceId: string; reasons: ('edited'|'commented'|'linked'|'notified'|'erasure_detached')[]; detachedIdentifiers?: string[] };
 export type RollbackPreview = { runId: string; state: string; issues: number; rows: Record<string,number>; conflicts: RollbackConflict[]; detachedIssues: number; detachedIdentifiers: string[] };
-const reason=(kind:string)=>kind.startsWith('comment.')?'commented' as const:/^(link\.|github\.)|dependency|parent|duplicate/.test(kind)?'linked' as const:'edited' as const;
+const reason=(kind:string)=>kind.startsWith('comment.')?'commented' as const:/^(link\.|github\.)|dependency|parent|duplicate|related/.test(kind)?'linked' as const:'edited' as const;
 
 /** What a whole-run rollback would remove, and every imported issue that later
  * native work makes unremovable. Read-only; nothing is written. */
@@ -24,6 +24,7 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
   // Relationships from issues outside the run also keep an imported issue in place.
   const incoming=(await db.prepare(`WITH incoming(id,other,relation) AS (
     SELECT parent_issue_id,issue_id,'parent' FROM issue_parents WHERE parent_issue_id IN (SELECT value FROM json_each(?1)) AND issue_id NOT IN (SELECT value FROM json_each(?1))
+    UNION SELECT second_issue_id,first_issue_id,'related' FROM issue_relations WHERE second_issue_id IN (SELECT value FROM json_each(?1)) AND first_issue_id NOT IN (SELECT value FROM json_each(?1))
     UNION SELECT blocking_issue_id,blocked_issue_id,'dependency' FROM issue_dependencies WHERE blocking_issue_id IN (SELECT value FROM json_each(?1)) AND blocked_issue_id NOT IN (SELECT value FROM json_each(?1))
     UNION SELECT canonical_issue_id,issue_id,'duplicate' FROM issue_duplicates WHERE canonical_issue_id IN (SELECT value FROM json_each(?1)) AND issue_id NOT IN (SELECT value FROM json_each(?1)))
     SELECT link.id,link.other,EXISTS(SELECT 1 FROM issue_activity a JOIN issues target ON target.id=link.id WHERE a.issue_id=link.other AND (
@@ -55,6 +56,8 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
     due_reminder_suppressions:(await db.prepare('SELECT count(*) AS n FROM due_reminder_suppressions WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n'))??0};
   for(const [table,key] of Object.values(nativeRelations))
     counts[table]=(counts[table]??0)+((await db.prepare(`SELECT count(*) AS n FROM "${table}" WHERE "${key}" IN (SELECT value FROM json_each(?))`).bind(inRun).first<number>('n'))??0);
+  const relatedCount=await db.prepare('SELECT count(*) n FROM issue_relations WHERE first_issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
+  if(relatedCount)counts.issue_relations=relatedCount;
   const orderCount=await db.prepare('SELECT count(*) n FROM manual_order_entries WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
   if(orderCount)counts.manual_order_entries=orderCount;
   return {runId:id,state:job.state,issues:ids.length,rows:counts,conflicts,detachedIssues:detached.length,detachedIdentifiers:detached.map(row=>row.identifier)};

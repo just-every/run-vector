@@ -1456,5 +1456,10 @@
     "scope_key",
     "issue_id",
     "position"
+  ],
+  "issue_relations": [
+    "first_issue_id",
+    "second_issue_id",
+    "created_at"
   ]
 }

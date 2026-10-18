@@ -25,6 +25,7 @@ const actions:Record<string,string>={
  'original estimate':'Explicit seconds-per-estimate-point policy only, with exact integer 1–100 result and no rounding; otherwise retained only.',
  comment:'Imported comment with original author name, normalized source time and complete body; no operator creation or historical notifications.',
  attachment:'Metadata retained; bytes absent and never fetched. Named HTTPS links require explicit opt-in.',
+ 'outward issue link (relates)':'Symmetric related link to an issue imported in this run, without blocking.',
  parent:'Parent issue matched by original issue ID or key within this file only.', 'parent id':'Parent issue matched by original issue ID or key within this file only.',
 };
 const unique=(rows:number[])=>[...new Set(rows)].sort((a,b)=>a-b);
@@ -90,7 +91,7 @@ export function buildJiraReview(records:SourceRecord[],input:ImportInput,errors:
   'Status categories and priority suggestions are never implicit mappings. Blank assignee stays unassigned; no operators or labels are created.',
   'Repeated Sprint order is this supported profile’s declared policy, not a guarantee of Jira export chronology.',
   input.jira?.originalEstimateSecondsPerUnit?`Confirmed original-estimate policy: ${input.jira.originalEstimateSecondsPerUnit} seconds per Vector estimate point; exact integers only, no rounding.`:'No original-estimate conversion policy confirmed. Seconds are retained only.',
-  'Parents and Blocks resolve only within this file. Duplicate becomes a named canonical issue link; Relates remains an omission. Source IDs remain authoritative when keys change.',
+  'Parents, Blocks and Relates resolve only within this file. Duplicate becomes a named canonical issue link; Relates becomes a symmetric related link without blocking. Source IDs remain authoritative when keys change.',
   input.jira?.attachmentLinks?'Named HTTPS attachment links confirmed. No bytes are fetched; attachment author and timestamp remain source metadata.':'Attachment links not opted in. URLs remain plain source text; no attachment is fetched.',
   input.jira?.completedAtFallback?`Missing Resolved on Completed issues uses the confirmed ${input.jira.completedAtFallback} time.`:'Completed issues require Resolved; otherwise confirm a completion-time fallback policy.',
  ]};

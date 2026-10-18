@@ -62,6 +62,8 @@ export function activityTitle(kind: string, nextValue?: unknown) {
     "issue.team_moved": "Moved to another team",
     "issue.parent_changed": "Changed the parent",
     "issue.duplicate_changed": "Changed the duplicate link",
+    "issue.related_added": "Related an issue",
+    "issue.related_removed": "Removed a related link",
     "issue.dependency_added": "Added a dependency",
     "issue.evidence_added": "Added evidence",
     "issue.imported": "Imported the issue",

@@ -8,7 +8,7 @@ import { generateJiraFixture } from './generate.mjs';
 const { csv, headers, rows, expected } = generateJiraFixture();
 ```
 
-`rows` contains 300 positional arrays without the header row. Use each array with the matching entry in `headers`; positional arrays preserve repeated header occurrences. `expected.rawConceptCounts` gives explicit nonempty-row and distinct-value totals for every original column position (one-based). The expected source IDs, parent edges, in-run Blocks and Duplicate links, external-key omission, and Relates omission are declared independently of importer code.
+`rows` contains 300 positional arrays without the header row. Use each array with the matching entry in `headers`; positional arrays preserve repeated header occurrences. `expected.rawConceptCounts` gives explicit nonempty-row and distinct-value totals for every original column position (one-based). The expected source IDs, parent edges, in-run Blocks and Duplicate links, external-key omission, and Relates link are declared independently of importer code.
 
 The default issue IDs are the numeric strings `710001` through `710300`. Issue keys use `VJ-1` through `VJ-300`; keys are separate from source IDs. A second untouched run can use another key prefix while retaining the same source IDs:
 

@@ -100,7 +100,7 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
       const control = document.querySelector('select[aria-label="Issue status"]');
       return control && !control.disabled;
     });
-    await actorPage.locator('summary').filter({ hasText: /^Dependencies ·/ }).click();
+    await actorPage.locator('summary').filter({ hasText: /^Relationships ·/ }).click();
     await actorPage.getByText('Add dependency', { exact: true }).click();
     const dependency = actorPage.getByRole('group', { name: 'Dependency fields', exact: true });
     await dependency.getByLabel('Issue identifier', { exact: true }).fill(blocker.identifier);

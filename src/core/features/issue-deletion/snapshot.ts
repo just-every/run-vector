@@ -92,6 +92,7 @@ Object.assign(relations, {
     table: "issue_parents",
     where: "r.issue_id=c.id OR r.parent_issue_id=c.id",
   },
+  issue_relations: { table: "issue_relations", where: "r.first_issue_id=c.id OR r.second_issue_id=c.id" },
   issue_dependencies: {
     table: "issue_dependencies",
     where: "r.blocked_issue_id=c.id OR r.blocking_issue_id=c.id",

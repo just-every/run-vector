@@ -626,7 +626,7 @@ Judged from the code and tests at commit `ef0de1ae8a307cd770828bc894f57a9becfc99
 | `REL-004` | Canonical duplicates | published | done | `tests/worker/issue-deletion-relations.test.ts` |  |
 | `REL-005` | Undo duplicate | published | done | `tests/worker/issue-deletion-relations.test.ts` |  |
 | `REL-006` | Parent and child | published | done | `tests/worker/issue-deletion-preimage.test.ts` |  |
-| `REL-007` | Related issues | target | missing |  | No implementation yet |
+| `REL-007` | Related issues | target | done | `tests/worker/related-issues.test.ts`, `tests/worker/jira-apply.test.ts`, `tests/worker/linear-api-import.test.ts`, `tests/e2e/core-related-journey.mjs` | |
 | `INTAKE-001` | Intake creation | published | done | `tests/worker/source-ingest.test.ts` |  |
 | `INTAKE-002` | Idempotent sources | published | done | `tests/worker/source-ingest.test.ts` |  |
 | `INTAKE-003` | Evidence revisions | published | done | `tests/worker/source-ingest.test.ts` |  |

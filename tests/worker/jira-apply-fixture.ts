@@ -37,6 +37,15 @@ export async function checkJiraReconciliation(f:Awaited<ReturnType<typeof setupJ
   expect(Object.fromEntries(actual),field).toEqual(Object.fromEntries(expectedCounts.map(row=>[row.name,row.n])));
  }
  const byId=new Map(rows.map(row=>[row.id,row.source_id]));
+ for(const relation of fixture.expected.relations.relates){
+  const left=rows.find(row=>row.source_id===relation.sourceIssueId)!,right=rows.find(row=>row.source_id===relation.targetIssueId)!;
+  for(const [issue,other] of [[left,right],[right,left]]){
+   const detail=await (await f.call('/issues/'+issue.identifier)).json() as {dependencies:unknown[]};
+   expect(detail.dependencies).toContainEqual(expect.objectContaining({identifier:other.identifier,direction:'related'}));
+  }
+ }
+ expect(report.effects!.counts.related).toEqual({planned:1,written:1});
+
  const parents=(await env.DB.prepare(`SELECT issue_id,parent_issue_id FROM issue_parents WHERE issue_id IN (${owned}) ORDER BY issue_id`).bind(id).all<{issue_id:string;parent_issue_id:string}>()).results;
  expect(parents.map(row=>({sourceIssueId:byId.get(row.issue_id),parentIssueId:byId.get(row.parent_issue_id)})).sort((a,b)=>a.sourceIssueId!.localeCompare(b.sourceIssueId!))).toEqual(f.fixture.expected.relations.parents);
  const blocks=(await env.DB.prepare(`SELECT blocked_issue_id,blocking_issue_id FROM issue_dependencies WHERE blocked_issue_id IN (${owned})`).bind(id).all<{blocked_issue_id:string;blocking_issue_id:string}>()).results;

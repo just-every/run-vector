@@ -98,8 +98,9 @@ the reviewed fingerprint, retained originals (both files, byte for byte) and the
 - **Relations.** `blocks` becomes a dependency (the related issue is blocked) and
   `duplicate` makes the issue a duplicate of the related issue, when both issues
   are in the run. When the other issue is not in the run, the relation is not
-  linked and the reconciliation report lists it with its row. Vector has no
-  `related` or `similar` link; those are listed in the report too.
+  linked and the reconciliation report lists it with its row. `related` becomes a symmetric related link without blocking when both issues
+  are imported in this run. Reciprocal entries produce one pair. `similar` has
+  no matching link and remains in the report.
 - **Parent** fills in a parent the CSV left empty.
 - **Attachment file bytes** are not in the API file (it lists links), and the
   report says so.

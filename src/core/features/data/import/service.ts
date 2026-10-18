@@ -28,7 +28,7 @@ function normalized(input:ImportInput):ImportInput {
   return {...selected,source:'vector-import:'+selected.source};
 }
 function mappingVersion(input:ImportInput) {
-  return 'vector-issues-v1:'+sha256(canonicalJson({...(input.format==='jira-csv'?{jiraEffectsVersion:3}:{}),format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
+  return 'vector-issues-v1:'+sha256(canonicalJson({...(input.format==='jira-csv'?{jiraEffectsVersion:4}:{}),...(input.format==='linear-api-json'?{linearEffectsVersion:2}:{}),format:input.format,mapping:input.mapping,defaults:input.defaults??{},references:input.references??{},...(input.jira?{jira:input.jira}:{})}));
 }
 type PlannedPreview = ImportPreview & { plan?: ImportPlan; batchSize?: number; report?: ReportInput };
 async function planImport(db:D1Database,actor:ImportActor,raw:ImportInput,origin:string):Promise<PlannedPreview> {

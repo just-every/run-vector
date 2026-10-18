@@ -9,7 +9,7 @@ import type { ImportDiagnostic,ImportInput } from './types';
 /** Dates were normalized by the whole-file detector, never by Date.parse here.
  * All effects join the shared native snapshot and whole-run rollback. */
 export function jiraRowEffects(record:SourceRecord,input:ImportInput,actor:ImportActor,effectiveAt:string,errors:ImportDiagnostic[]):ApiRowEffects {
- const result:ApiRowEffects={comments:[],links:[],blocks:[],parent:'',duplicateOf:''};
+ const result:ApiRowEffects={comments:[],links:[],blocks:[],related:[],parent:'',duplicateOf:''};
  const id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
  const problem=(column:number,code:string,message:string)=>{const original=jiraColumns(record).find(item=>item.column===column)!;errors.push({row:record.location.row!,field:`${original.header} [column ${column}]`,code,message,value:original.value});};
  for(const metadata of jiraMetadata(record)) {
@@ -32,9 +32,9 @@ export function jiraRowEffects(record:SourceRecord,input:ImportInput,actor:Impor
   if(relation.ambiguous){problem(relation.column,'jira_ambiguous_reference','This value names different source issues as an ID and as a key.');continue;}
   if(!relation.target)continue;
   const name=relation.header.trim().toLowerCase();
-  if(name==='outward issue link (relates)')continue;
   if(relation.target===record.sourceId){problem(relation.column,'invalid_issue_reference','An issue cannot reference itself.');continue;}
-  if(name==='parent'||name==='parent id')parents.add(relation.target);
+  if(name==='outward issue link (relates)')result.related.push(relation.target);
+  else if(name==='parent'||name==='parent id')parents.add(relation.target);
   else if(name==='outward issue link (duplicate)')duplicates.add(relation.target);
   else if(name==='outward issue link (blocks)'&&!result.blocks.includes(relation.target))result.blocks.push(relation.target);
  }

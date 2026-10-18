@@ -19,7 +19,7 @@ const instant=(value:string,label:string)=>{
   if(!/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d{1,3})?(?:Z|[+-]\d\d:\d\d)$/.test(value) || !Number.isFinite(Date.parse(value)))throw Error(`${label} must be an ISO timestamp with a timezone.`);
   return value;
 };
-export type MappedRow = {record:SourceRecord;value?:NativeIssueValue;parent:string;dependencies:string[];duplicateOf:string;blocks:string[];errors:ImportDiagnostic[];omissions:ImportDiagnostic[]};
+export type MappedRow = {record:SourceRecord;value?:NativeIssueValue;parent:string;dependencies:string[];duplicateOf:string;blocks:string[];related:string[];errors:ImportDiagnostic[];omissions:ImportDiagnostic[]};
 export function rowOmissions(record:SourceRecord,input:ImportInput):ImportDiagnostic[] {
   if(input.format==='jira-csv')return jiraOmissions(record,input);
   if(!record.payload || typeof record.payload!=='object' || Array.isArray(record.payload))return [];
@@ -33,7 +33,7 @@ export function rowOmissions(record:SourceRecord,input:ImportInput):ImportDiagno
 }
 export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportReferences,actor:ImportActor,effectiveAt:string,sequence:number,inRun:Set<string>=new Set()): MappedRow {
   const errors:ImportDiagnostic[]=[],omissions=rowOmissions(record,input),row=record.location.row!;
-  const result:MappedRow={record,parent:'',dependencies:[],duplicateOf:'',blocks:[],errors,omissions};
+  const result:MappedRow={record,parent:'',dependencies:[],duplicateOf:'',blocks:[],related:[],errors,omissions};
   if(!record.payload || typeof record.payload!=='object' || Array.isArray(record.payload))return result;
   const payload=record.payload as Record<string,Json>;
   const take=<T>(field:ImportField,read:()=>T):T|undefined=>{
@@ -83,7 +83,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   take('archivedAt',()=>text('archivedAt'));
   const api=input.format==='jira-csv'?jiraRowEffects(record,input,actor,effectiveAt,errors):apiRowEffects(payload,record.sourceId,row,input,actor,effectiveAt,inRun,errors,omissions);
   const completedAt=input.format==='jira-csv'?jiraCompletedAt(payload,input,String(status?.category),createdAt,updatedAt,effectiveAt,row,errors,omissions):status?.category==='completed'?updatedAt:null;
-  if(api){result.parent||=api.parent;result.duplicateOf||=api.duplicateOf;result.blocks=api.blocks;}
+  if(api){result.parent||=api.parent;result.duplicateOf||=api.duplicateOf;result.blocks=api.blocks;result.related=api.related;}
   if(status?.category==='intake')errors.push({row,field:'status',code:'intake_requires_evidence',message:'File imports cannot create signal Intake without its evidence. Choose a status for work that is ready to start, in progress or finished.'});
   if(status?.category==='duplicate' && !result.duplicateOf)errors.push({row,field:'duplicateOf',code:'duplicate_reference_required',message:'A Duplicate status needs an explicit duplicate-of reference.'});
   // Finished work's past cycle stays in the original; Vector commits only open work to a cycle.

@@ -7,7 +7,7 @@ import { setupJiraApply,checkJiraReconciliation } from './jira-apply-fixture';
 import { createServerApp } from '../../src/core/app/server';
 import { bindings,origin,invite,actor } from './base-auth-fixture';
 import type { RollbackPreview } from '../../src/core/features/data/import/rollback';
-it(contractTitle('DATA-010','Jira 300-issue staged apply preserves relationships, comments and old keys, reconciles SQL, refuses edited rollback and wholly undoes an untouched run'),async(context)=>{
+it(contractTitle('DATA-010 REL-007','Jira 300-issue staged apply preserves relationships, comments and old keys, reconciles SQL, refuses edited rollback and wholly undoes an untouched run'),async(context)=>{
  const proof:Record<string,unknown>={};
  const f=await setupJiraApply(),nativeSentinel=await f.create({title:'Native same-key reference sentinel'});
  const input=f.inputJira('jira-full',f.fixture.csv.replace('OUTSIDE-9001',nativeSentinel.identifier));

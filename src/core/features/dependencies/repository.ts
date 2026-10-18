@@ -125,6 +125,7 @@ export async function mutateDependencyRecord(
     relatedIssue.version !== input.relatedVersion
   )
     return "stale";
+  if (input.direction === "related") throw new Error("related_mutator_required");
   const blocking = input.direction === "blocks" ? issue.id : relatedIssue.id;
   const blocked = input.direction === "blocks" ? relatedIssue.id : issue.id;
   const timestamp = now.toISOString();

@@ -6,7 +6,9 @@ export class DependencyError extends Error {
       | "self_dependency"
       | "dependency_exists"
       | "dependency_cycle"
-      | "dependency_not_found",
+      | "dependency_not_found"
+      | "related_exists"
+      | "related_not_found",
     message: string,
     readonly status: 401 | 404 | 409,
   ) {

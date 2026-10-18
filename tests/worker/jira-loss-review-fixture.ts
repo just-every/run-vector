@@ -50,7 +50,7 @@ export async function checkJiraLossReview(f:Awaited<ReturnType<typeof setupImpor
  expect(concept('issue type').occurrences.filter(item=>item.action==='planned').map(item=>item.row)).toEqual([2]);
  for(const name of ['parent','outward issue link (duplicate)','issue key'])expect(concept(name).occurrences.every(item=>item.action==='planned')).toBe(true);
  expect(concept('outward issue link (blocks)').occurrences.map(item=>item.action)).toEqual(['planned','planned','not_imported']);
- expect(concept('outward issue link (relates)').occurrences.every(item=>item.action==='not_imported')).toBe(true);
+ expect(concept('outward issue link (relates)').occurrences.every(item=>item.action==='planned')).toBe(true);
  expect(loss.statuses.map(item=>[item.source,item.suggestion,item.rows.length])).toEqual([['To Do','unstarted',100],['In Progress','started',100],['Done','completed',100]]);
  expect(loss.priorities.map(item=>[item.source,item.suggestion,item.rows.length])).toEqual([['Highest','urgent',60],['High','high',60],['Medium','medium',60],['Low','low',60],['Lowest','low',60]]);
  expect(await counts()).toEqual(before);

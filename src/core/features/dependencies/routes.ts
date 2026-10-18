@@ -1,3 +1,4 @@
+import { mutateRelatedRecord } from '../related/repository';
 import {nativeSessionAdmission} from "../auth/projection-admission";
 import { requireOperator } from "../auth/service";
 import type { Context } from "hono";
@@ -80,7 +81,7 @@ async function dependencyRoute(
     );
   try {
     const actor = context.get("operatorId");
-    const outcome = await mutateDependencyRecord(
+    const outcome = await (parsed.data.direction === "related" ? mutateRelatedRecord : mutateDependencyRecord)(
       context.env.DB,
       identifier,
       actor,

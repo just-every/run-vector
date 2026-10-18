@@ -93,7 +93,7 @@ export function jiraOmissions(record:SourceRecord,input:ImportInput):ImportDiagn
     }
 
     else if(name==='attachment')message=input.jira?.attachmentLinks?'Named HTTPS link planned; attachment bytes are absent and never fetched. Source timestamp and author remain metadata.':'Attachment timestamp, author, filename and URL retained. Bytes are absent and never fetched; no named-link opt-in was confirmed.';
-    else if(['parent','parent id','outward issue link (blocks)','outward issue link (duplicate)'].includes(name)) {
+    else if(['parent','parent id','outward issue link (blocks)','outward issue link (duplicate)','outward issue link (relates)'].includes(name)) {
       const relation=jiraRelations(record).find(item=>item.column===column.column);
       if(!relation?.target)message='Source reference is outside this file. It cannot bind any Vector issue with the same name or identifier; retained only.';
     }

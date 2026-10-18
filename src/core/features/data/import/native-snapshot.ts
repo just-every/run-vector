@@ -26,7 +26,7 @@ export const nativeRelations = {
   personalReminders:['issue_reminders','issue_id','id'],
   notificationCandidates:['notification_candidates','issue_id','event_id'],
 } as const;
-export type NativeIssueValue = { issue: Record<string,Json>; manualOrder?: Record<string,Json>[] } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
+export type NativeIssueValue = { issue: Record<string,Json>; manualOrder?: Record<string,Json>[]; related?: Record<string,Json>[] } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
 const quote = (value: string) => '"'+value.replaceAll('"','""')+'"';
 const columns = (table: string) => {
   const value=(inventory as Record<string,string[]>)[table];
@@ -39,13 +39,18 @@ export const legacySnapshotExpression = 'json_object('+[
   ['issue',object('issues','i')],
   ...Object.entries(nativeRelations).map(([name,[table,key,order]])=>[name,relation(table,key,order)]),
 ].sort(([a],[b])=>a<b?-1:a>b?1:0).flatMap(([name,expression])=>["'"+name+"'",'json('+expression+')']).join(',')+')';
-// Omit the optional key entirely for pre-order imports, preserving every historical hash.
-const orderedSnapshotExpression = 'json_object('+[
-  ['issue',object('issues','i')],
-  ...Object.entries(nativeRelations).map(([name,[table,key,order]])=>[name,relation(table,key,order)]),
-  ['manualOrder',relation('manual_order_entries','issue_id','scope_key')],
-].sort(([a],[b])=>a<b?-1:a>b?1:0).flatMap(([name,expression])=>["'"+name+"'",'json('+expression+')']).join(',')+')';
-export const snapshotExpression = 'CASE WHEN EXISTS(SELECT 1 FROM manual_order_entries WHERE issue_id=i.id) THEN '+orderedSnapshotExpression+' ELSE '+legacySnapshotExpression+' END';
+// Optional keys preserve the exact shape of retained pre-feature snapshots.
+function extendedSnapshot(manual:boolean,related:boolean) {
+  return 'json_object('+[
+    ['issue',object('issues','i')],
+    ...Object.entries(nativeRelations).map(([name,[table,key,order]])=>[name,relation(table,key,order)]),
+    ...(manual?[['manualOrder',relation('manual_order_entries','issue_id','scope_key')]]:[]),
+    ...(related?[['related',relation('issue_relations','first_issue_id','second_issue_id')]]:[]),
+  ].sort(([a],[b])=>a<b?-1:a>b?1:0).flatMap(([name,expression])=>["'"+name+"'",'json('+expression+')']).join(',')+')';
+}
+export const snapshotExpression = `CASE WHEN EXISTS(SELECT 1 FROM issue_relations WHERE first_issue_id=i.id)
+  THEN CASE WHEN EXISTS(SELECT 1 FROM manual_order_entries WHERE issue_id=i.id) THEN ${extendedSnapshot(true,true)} ELSE ${extendedSnapshot(false,true)} END
+  ELSE CASE WHEN EXISTS(SELECT 1 FROM manual_order_entries WHERE issue_id=i.id) THEN ${extendedSnapshot(true,false)} ELSE ${legacySnapshotExpression} END END`;
 
 export function emptyIssueValue(issue: Record<string,Json>): NativeIssueValue {
   return { issue,...Object.fromEntries(Object.keys(nativeRelations).map(name=>[name,[]])) } as NativeIssueValue;

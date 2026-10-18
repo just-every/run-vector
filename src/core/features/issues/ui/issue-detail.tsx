@@ -303,7 +303,7 @@ function IssueInspector({
           </section>
         </details>
         <details className="secondary-section">
-          <summary>Dependencies · {issue.dependencies.length}</summary>
+          <summary>Relationships · {issue.dependencies.length}</summary>
           <Dependencies
             key={issue.identifier + ":dependencies"}
             issue={issue}

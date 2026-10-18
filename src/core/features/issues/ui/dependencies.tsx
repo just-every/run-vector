@@ -5,7 +5,7 @@ import { ApiError, fetchJson } from "../../../app/api-client";
 import { issueDetailSchema, type IssueDetailData } from "./data";
 import "./dependency-editor.css";
 
-type Direction = "blocks" | "blocked-by";
+type Direction = "blocks" | "blocked-by" | "related";
 type Failure = {
   message: string;
   denied: boolean;
@@ -81,8 +81,10 @@ export function Dependencies({
         : "";
     const denied = api !== null && [401, 403].includes(api.status);
     const needsReload =
-      code === "stale_version" || code === "dependency_not_found";
+      code === "stale_version" || code === "dependency_not_found" || code === "related_not_found";
     const graphMessages: Record<string, string> = {
+      related_exists: "These issues are already related.",
+      related_not_found: "This related link no longer exists. Reload the issue.",
       self_dependency: "An issue cannot depend on itself.",
       dependency_exists:
         "These issues already have a dependency in one direction.",
@@ -163,15 +165,15 @@ export function Dependencies({
       setReadReceipt(result.issue);
       const kind =
         method === "POST"
-          ? "issue.dependency_added"
-          : "issue.dependency_removed";
+          ? (relationship === "related" ? "issue.related_added" : "issue.dependency_added")
+          : (relationship === "related" ? "issue.related_removed" : "issue.dependency_removed");
       const oldIds = new Set(source.activity.map((activity) => activity.id));
       const activity = result.issue.activity.find(
         (entry) => entry.kind === kind && !oldIds.has(entry.id),
       );
-      const relation = relationship === "blocks" ? "blocks" : "is blocked by";
+      const relation = relationship === "related" ? "is related to" : relationship === "blocks" ? "blocks" : "is blocked by";
       setReceipt(
-        `${method === "POST" ? "Added" : "Removed"} dependency: ${source.identifier} ${relation} ${related.identifier}${activity?.actor ? ` · ${activity.actor}` : " · actor recorded in History"}.`,
+        `${method === "POST" ? "Added" : "Removed"} ${relationship === "related" ? "related link" : "dependency"}: ${source.identifier} ${relation} ${related.identifier}${activity?.actor ? ` · ${activity.actor}` : " · actor recorded in History"}.`,
       );
       if (method === "POST") clearAdd();
       onRefresh();
@@ -211,7 +213,7 @@ export function Dependencies({
           current.dependencies.length === 0 ? "visually-hidden" : undefined
         }
       >
-        Dependencies
+        Relationships
       </h2>
       {current.dependencies.length > 0 ? (
         <ul className="dependency-list">
@@ -222,7 +224,7 @@ export function Dependencies({
                   ? "Blocked by"
                   : dependency.direction === "blocks"
                     ? "Blocks"
-                    : dependency.direction}
+                    : dependency.direction === "related" ? "Related" : dependency.direction}
               </span>
               <Link
                 to="/app/issues/$identifier"
@@ -237,11 +239,12 @@ export function Dependencies({
               <button
                 type="button"
                 disabled={busy || blocked}
-                aria-label={`Remove dependency ${dependency.identifier}`}
+                aria-label={`Remove ${dependency.direction === "related" ? "related link" : "dependency"} ${dependency.identifier}`}
                 onClick={() => {
                   if (
                     dependency.direction !== "blocks" &&
-                    dependency.direction !== "blocked-by"
+                    dependency.direction !== "blocked-by" &&
+                    dependency.direction !== "related"
                   ) {
                     reportFailure(
                       new Error(
@@ -316,6 +319,7 @@ export function Dependencies({
                     }}
                   >
                     <option value="">Choose a relationship</option>
+                    <option value="related">Related, without blocking</option>
                     <option value="blocks">
                       This issue blocks the other issue
                     </option>
