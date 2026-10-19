@@ -4,10 +4,11 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  useMatch,
 } from "@tanstack/react-router";
 import { Door } from "../core/app/site/door/door";
 import { productConfig } from "../core/app/config";
-import { themeStyle } from "../core/app/theme";
+import { themeCss } from "../core/app/theme";
 import "../core/app/app.css";
 import { fontLinks } from "../core/app/fonts";
 import { introCss, introGuardScript } from "../base/hydration/intro-guard";
@@ -47,9 +48,12 @@ export const Route = createRootRoute({
   )),
 });
 function Root() {
+  // The member's saved choice is server-rendered on <html>, so CSS alone picks the palette before first paint.
+  const theme = useMatch({ from: "/app", shouldThrow: false })?.context.operator.theme;
   return (
-    <html lang="en">
+    <html lang="en" data-theme={theme}>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: themeCss(productConfig.theme) }} />
         <script dangerouslySetInnerHTML={{ __html: introGuardScript }} />
         <style>{introCss}</style>
         {fontLinks.map((link) => (
@@ -58,7 +62,7 @@ function Root() {
         <HeadContent />
       </head>
       <body>
-        <div className="app-root" style={themeStyle(productConfig.theme)}>
+        <div className="app-root">
           <Outlet />
         </div>
         <Scripts />

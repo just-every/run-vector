@@ -39,7 +39,7 @@
 .issue-parent__message button,
 .issue-parent__message a {
   min-height: 2.75rem;
-  border: 1px solid rgb(23 26 32 / 24%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 24%);
   border-radius: 0.45rem;
   padding: 0.35rem 0.55rem;
   color: var(--app-ink);
@@ -93,7 +93,7 @@
   align-items: center;
   gap: 0.45rem;
   min-height: 2.75rem;
-  border: 1px solid rgb(23 26 32 / 18%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 18%);
   border-radius: 0.45rem;
   padding: 0.4rem 0.55rem;
   color: var(--app-ink);

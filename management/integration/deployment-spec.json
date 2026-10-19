@@ -400,6 +400,12 @@
       "name": "0065_personal_time.sql",
       "sha256": "335611105bb1aaffa7b16c331ce6925515e0f96b18ddf053e107145b0a7a9adb",
       "sql": "-- Additive member preferences leave historical operator archive rows unchanged.\nCREATE TABLE operator_personal_time (\n operator_id TEXT PRIMARY KEY REFERENCES operators(id) ON DELETE CASCADE,\n timezone TEXT,\n working_hours_start TEXT NOT NULL CHECK(length(working_hours_start)=5 AND working_hours_start GLOB '[0-2][0-9]:[0-5][0-9]' AND substr(working_hours_start,1,2)<'24'),\n working_hours_end TEXT NOT NULL CHECK(length(working_hours_end)=5 AND working_hours_end GLOB '[0-2][0-9]:[0-5][0-9]' AND substr(working_hours_end,1,2)<'24' AND working_hours_end>working_hours_start),\n working_days_json TEXT NOT NULL CHECK(json_valid(working_days_json) AND json_type(working_days_json)='array' AND json_array_length(working_days_json) BETWEEN 1 AND 7),\n revision TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0066_appearance.sql",
+      "sha256": "7811f79dbb45e552a1dd323d48e29bf759c5ef879ea4fee553ebb67d5672de9d",
+      "sql": "-- Additive member preference; a member without a row follows the device (System).\nCREATE TABLE operator_appearance (\n operator_id TEXT PRIMARY KEY REFERENCES operators(id) ON DELETE CASCADE,\n theme TEXT NOT NULL CHECK(theme IN ('light','dark','system')),\n revision TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

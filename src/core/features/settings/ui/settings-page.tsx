@@ -1,5 +1,6 @@
 import { useViewerTime } from '../../../app/viewer-time';
 import { PersonalTimePanel } from './personal-time-panel';
+import { AppearancePanel } from './appearance-panel';
 import "./settings.css";
 import { IntegrationsPanel } from "../../integrations/ui/integrations-panel";
 import { useState, type FormEvent } from "react";
@@ -97,6 +98,7 @@ export function SettingsPage() {
       </header>
       {resource.data && administration.data && (
         <nav className="settings-sections" aria-label="Settings sections">
+          <a href="#appearance">Appearance</a>
           <a href="#personal-time">Your time</a>
           <a href="#workspace-time">Workspace time</a>
           <a href="#operators">Operators</a>
@@ -126,6 +128,7 @@ export function SettingsPage() {
       {message && <p role="status">{message}</p>}
       {resource.data && (
         <>
+          <AppearancePanel />
           <PersonalTimePanel />
           <section id="workspace-time" aria-labelledby="timezone-heading">
             <h2 id="timezone-heading">Workspace time</h2>

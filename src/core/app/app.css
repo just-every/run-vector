@@ -24,45 +24,9 @@
 @import "../features/issues/ui/new-issue.css";
 @import "../features/projects/ui/projects.css";
 @import "../features/search/ui/command-palette.css";
+@import "./ui/palette.css";
 /* Installer and CLI tooling under scripts/ ships its own stylesheet; keep it out of the app's scanned sources. */
 @source not "../../../scripts";
-
-/* The operator app wears the public site's brand (docs/BRAND.md): ink on warm paper, cards a shade lighter with an ink
-   hairline, and the installation's accent (cobalt by default) only for the current place, the chosen option and focus. */
-:root {
-  --app-paper: #f4f0e6;
-  --app-paper-deep: #ebe5d7;
-  --app-card: #fbf9f3;
-  --app-field: #fffdf8;
-  --app-ink: #171a20;
-  --app-body: #41454d;
-  --app-muted: #5d6067;
-  --app-on-ink: #fbf9f3;
-  --app-rule: #d8d1c1;
-  --app-line: rgb(23 26 32 / 13%);
-  --app-line-strong: rgb(23 26 32 / 26%);
-  --app-outline: #23262c;
-  --app-hatch: rgb(23 26 32 / 26%);
-  --app-danger: #b42318;
-  --app-danger-soft: #fbe8e4;
-  --app-warn: #94540a;
-  --app-warn-soft: #faeed9;
-  --app-ok: #1d6f43;
-  --app-ok-soft: #e1f0e5;
-  --app-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-family: var(--font-body);
-  color: var(--app-ink);
-  background: var(--app-paper);
-  font-synthesis: none;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Inside the signed-in workspace the canvas is a near-neutral light grey: warmth comes from the accent, type and hatch
-   rather than paper. The public site, docs, setup and sign-in pages keep the brand paper above. */
-:root:has(.app-shell) {
-  --app-paper: #f6f5f1;
-  --app-paper-deep: #ecebe6;
-}
 
 * {
   box-sizing: border-box;
@@ -90,10 +54,7 @@ a {
   cursor: pointer;
 }
 
-/* The accent comes from the installation theme, set inline on .app-root, so its derived tints are declared here. */
 .app-root {
-  --app-cobalt-ink: color-mix(in srgb, var(--color-accent) 82%, #000);
-  --app-cobalt-soft: color-mix(in srgb, var(--color-accent) 13%, var(--app-field));
   min-height: 100vh;
   color: var(--color-foreground);
   background: var(--color-background);
@@ -116,6 +77,7 @@ a {
 :root {
   --control-surface: var(--app-field);
   --control-border: var(--app-line-strong);
+  --control-field-border: var(--app-field-border);
   --control-text: var(--app-ink);
   --control-radius: 0.5rem;
   --control-height: 2.75rem;
@@ -139,11 +101,11 @@ a {
   padding: 0.5rem 0.65rem;
   color: var(--control-text);
   background: var(--control-surface);
-  color-scheme: light;
+  color-scheme: var(--app-color-scheme);
 }
-/* The app does not load rer-theme.css, so the theme's muted ink (#4f535b) is the fallback. Every single-choice select; multiple and size>1 lists keep their native look (Base #247 foundation/runtime/select-style.ts) */
+/* The app does not load rer-theme.css, so the palette's select ink is the fallback. Every single-choice select; multiple and size>1 lists keep their native look (Base #247 foundation/runtime/select-style.ts) */
 select:not([multiple], [size]:not([size="1"])) {
-  --rer-select-ink: var(--rer-muted, #4f535b);
+  --rer-select-ink: var(--rer-muted, var(--app-select-ink));
   -webkit-appearance: none;
   appearance: none;
   padding-inline-end: 40px;
@@ -160,7 +122,7 @@ select:not([multiple], [size]:not([size="1"])):focus-visible {
   --rer-select-ink: var(--rer-text, var(--app-ink));
 }
 select:not([multiple], [size]:not([size="1"])):disabled {
-  --rer-select-ink: color-mix(in srgb, var(--rer-muted, #4f535b) 55%, transparent);
+  --rer-select-ink: color-mix(in srgb, var(--rer-muted, var(--app-select-ink)) 55%, transparent);
 }
 :where(input[type="checkbox"], input[type="radio"]) {
   min-height: 1.1rem;
@@ -208,4 +170,9 @@ select:not([multiple], [size]:not([size="1"])):disabled {
 /* Fine print in the app (a shared view's tag, a control's hint) stays readable: never under 12px. */
 :where(.app-root) small {
   font-size: max(0.75rem, 0.8em);
+}
+
+/* Text-entry fields keep a 3:1 boundary in both themes (WCAG 1.4.11, VIEW-011), whatever a feature's own hairline. */
+.app-shell :is(input:not([type="checkbox"], [type="radio"], [type="color"], [type="file"], [type="range"]), select, textarea) {
+  border-color: var(--app-field-border);
 }

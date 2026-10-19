@@ -1,14 +1,12 @@
-import type { CSSProperties } from 'react'
-import type { ProductTheme } from '../shared/product-config'
+import type { ProductPalette, ProductTheme } from '../shared/product-config'
 
-type ThemeStyle = CSSProperties & Record<`--${string}`, string>
+const declarations = (palette: ProductPalette) =>
+  `--color-accent:${palette.accent};--color-background:${palette.background};--color-foreground:${palette.foreground};` +
+  `--color-muted:${palette.muted};--color-panel:${palette.panel};`
 
-export function themeStyle(theme: ProductTheme): ThemeStyle {
-  return {
-    '--color-accent': theme.accent,
-    '--color-background': theme.background,
-    '--color-foreground': theme.foreground,
-    '--color-muted': theme.muted,
-    '--color-panel': theme.panel,
-  }
+/** Head CSS for the installation palette. Only the signed-in app sets data-theme, so every other page keeps light. */
+export function themeCss(theme: ProductTheme) {
+  const dark = declarations(theme.dark)
+  return `:root{${declarations(theme.light)}}:root[data-theme="dark"]{${dark}}` +
+    `@media (prefers-color-scheme: dark){:root[data-theme="system"]{${dark}}}`
 }

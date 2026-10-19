@@ -8,7 +8,7 @@
   display: flex;
   min-height: 100%;
   flex-direction: column;
-  border-right: 1px solid rgb(23 26 32 / 11%);
+  border-right: 1px solid rgb(var(--app-ink-rgb) / 11%);
   padding: 1.15rem 0.7rem;
   background: var(--app-paper);
 }
@@ -50,7 +50,7 @@
 }
 .app-nav-link:hover {
   color: var(--color-foreground);
-  background: rgb(23 26 32 / 8%);
+  background: rgb(var(--app-ink-rgb) / 8%);
 }
 .app-nav-link.is-active {
   color: var(--color-foreground);
@@ -85,17 +85,17 @@
   min-height: 2.75rem;
   align-items: center;
   gap: 0.6rem;
-  border: 1px solid rgb(23 26 32 / 15%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 15%);
   border-radius: 0.48rem;
   padding: 0.5rem 0.7rem;
   color: var(--app-body);
-  background: rgb(23 26 32 / 4%);
+  background: rgb(var(--app-ink-rgb) / 4%);
   font-size: 0.78rem;
   text-align: left;
   text-decoration: none;
 }
 .app-search-trigger:hover {
-  border-color: rgb(23 26 32 / 27%);
+  border-color: rgb(var(--app-ink-rgb) / 27%);
   color: var(--app-ink);
 }
 .app-search-trigger > span:first-child {
@@ -121,7 +121,7 @@
   font-weight: 600;
 }
 .app-new-issue-link:hover {
-  box-shadow: 0 10px 22px -14px rgb(23 26 32 / 70%);
+  box-shadow: 0 10px 22px -14px rgb(var(--app-shadow-rgb) / 70%);
 }
 .app-avatar {
   display: grid;
@@ -167,11 +167,11 @@
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: minmax(0, 1fr);
-    border-top: 1px solid rgb(23 26 32 / 15%);
+    border-top: 1px solid rgb(var(--app-ink-rgb) / 15%);
     padding: 0.35rem max(0.4rem, env(safe-area-inset-right))
       calc(0.35rem + env(safe-area-inset-bottom))
       max(0.4rem, env(safe-area-inset-left));
-    background: rgb(244 240 230 / 95%);
+    background: color-mix(in srgb, var(--app-paper) 95%, transparent);
     backdrop-filter: blur(18px);
   }
   .app-mobile-nav .app-nav-link {

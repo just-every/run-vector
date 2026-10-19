@@ -9,7 +9,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid rgb(23 26 32 / 14%);
+  border-bottom: 1px solid rgb(var(--app-ink-rgb) / 14%);
   padding-bottom: 1.35rem;
 }
 .issue-header h1 {
@@ -51,7 +51,7 @@
   white-space: nowrap;
 }
 .detail-section {
-  border-top: 1px solid rgb(23 26 32 / 12%);
+  border-top: 1px solid rgb(var(--app-ink-rgb) / 12%);
   padding-top: 1.15rem;
 }
 .detail-section h2,
@@ -82,7 +82,7 @@
   border-radius: 0.65rem;
   padding: 1.05rem;
   background: var(--app-card);
-  box-shadow: 0 1px 2px rgb(23 26 32 / 6%);
+  box-shadow: 0 1px 2px rgb(var(--app-shadow-rgb) / 6%);
 }
 .evidence-heading,
 .decision-heading {
@@ -147,7 +147,7 @@
   border-radius: 0.65rem;
   padding: 1.1rem;
   background: var(--app-card);
-  box-shadow: 0 1px 2px rgb(23 26 32 / 6%);
+  box-shadow: 0 1px 2px rgb(var(--app-shadow-rgb) / 6%);
 }
 .version-badge {
   color: var(--app-cobalt-ink);
@@ -162,16 +162,16 @@
   min-width: 0;
   padding-inline: 0.25rem;
   min-height: 2.7rem;
-  border: 1px solid rgb(23 26 32 / 16%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 16%);
   border-radius: 0.45rem;
   color: var(--app-body);
-  background: rgb(23 26 32 / 4%);
+  background: rgb(var(--app-ink-rgb) / 4%);
   font-size: 0.76rem;
   font-weight: 650;
 }
 .decision-tabs button.is-active {
   border-color: var(--color-accent);
-  color: #fff;
+  color: var(--app-on-accent);
   background: var(--color-accent);
 }
 .decision-form {
@@ -356,7 +356,7 @@
 .safe-markdown blockquote {
   margin-inline: 0;
   padding-inline-start: 0.8rem;
-  border-inline-start: 2px solid rgb(23 26 32 / 27%);
+  border-inline-start: 2px solid rgb(var(--app-ink-rgb) / 27%);
 }
 .safe-markdown h1,
 .safe-markdown h2,
@@ -399,7 +399,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 999px;
   padding: 0.25rem 0.55rem;
   color: var(--app-muted);
@@ -471,7 +471,7 @@
 .issue-refresh-error button {
   margin-left: auto;
   min-height: 2.75rem;
-  border: 1px solid rgb(23 26 32 / 27%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
   border-radius: 0.45rem;
   padding: 0.4rem 0.7rem;
   color: var(--app-ink);
@@ -637,7 +637,7 @@
     overscroll-behavior: contain;
     border-radius: 0.85rem 0.85rem 0.5rem 0.5rem;
     padding: 0.65rem;
-    box-shadow: 0 -1rem 2rem rgb(23 26 32 / 30%);
+    box-shadow: 0 -1rem 2rem rgb(var(--app-shadow-rgb) / 30%);
   }
   .decision-heading {
     display: none;
@@ -972,7 +972,7 @@
   color: var(--app-cobalt-ink);
 }
 .issue-inspector summary:hover {
-  background: rgb(23 26 32 / 5%);
+  background: rgb(var(--app-ink-rgb) / 5%);
 }
 .issue-inspector summary:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);

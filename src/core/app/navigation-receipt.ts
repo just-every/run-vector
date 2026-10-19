@@ -1,7 +1,8 @@
 import { z } from 'zod'
+import { themeChoiceSchema } from '../features/settings/appearance-schema'
 
 export const navigationPageSchema = z.object({
-  id: z.string(), name: z.string(), editorConfigured: z.boolean(),
+  id: z.string(), name: z.string(), editorConfigured: z.boolean(), theme: themeChoiceSchema,
   resources: z.record(z.string(), z.json()),
 })
 type Page = z.output<typeof navigationPageSchema>

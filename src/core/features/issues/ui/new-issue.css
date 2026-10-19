@@ -18,7 +18,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid rgb(23 26 32 / 14%);
+  border-bottom: 1px solid rgb(var(--app-ink-rgb) / 14%);
   padding-bottom: 1.25rem;
 }
 .new-issue-header h1 {
@@ -40,7 +40,7 @@
 .new-issue-section,
 .new-issue-fields,
 .new-issue-more {
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 0.7rem;
   padding: 1rem;
   background: var(--app-card);
@@ -65,7 +65,7 @@
 .new-issue-form textarea {
   width: 100%;
   min-height: 2.65rem;
-  border: 1px solid rgb(23 26 32 / 18%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 18%);
   border-radius: 0.45rem;
   padding: 0.5rem 0.6rem;
   color: var(--app-ink);
@@ -90,7 +90,7 @@
 }
 .new-issue-labels {
   margin: 1rem 0;
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 0.7rem;
   padding: 0.8rem 1rem 1rem;
   background: var(--app-card);
@@ -116,7 +116,7 @@
   min-height: 2.65rem;
   align-items: center;
   gap: 0.4rem;
-  border: 1px solid rgb(23 26 32 / 16%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 16%);
   border-radius: 999px;
   padding: 0.35rem 0.65rem;
   color: var(--app-body);
@@ -177,7 +177,7 @@
 }
 .new-issue-state button {
   min-height: 2.75rem;
-  border: 1px solid rgb(23 26 32 / 27%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
   color: var(--app-ink);
@@ -202,7 +202,7 @@
   flex-wrap: wrap;
   gap: 0.7rem 1.5rem;
   margin: 1rem 0;
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 0.7rem;
   padding: 0.65rem 1rem 0.85rem;
   background: var(--app-card);
@@ -241,7 +241,7 @@
   min-width: 0;
   gap: 0.8rem;
   margin: 0;
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 0.5rem;
   padding: 0.8rem;
 }
@@ -253,7 +253,7 @@
 .new-intake-row-action {
   justify-self: start;
   min-height: 2.65rem;
-  border: 1px solid rgb(23 26 32 / 21%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 21%);
   border-radius: 0.45rem;
   padding: 0.4rem 0.7rem;
   color: var(--app-cobalt-ink);

@@ -1,0 +1,143 @@
+/* The operator app wears the public site's brand (docs/BRAND.md): ink on warm paper, cards a shade lighter with an ink
+   hairline, and the installation's accent (cobalt by default) only for the current place, the chosen option and focus.
+   Dark (VIEW-011) swaps the same tokens; only the signed-in app sets <html data-theme>, so other pages stay light. */
+:root {
+  --app-paper: #f4f0e6;
+  --app-paper-deep: #ebe5d7;
+  --app-card: #fbf9f3;
+  --app-field: #fffdf8;
+  --app-ink: #171a20;
+  /* Hairlines and tints are ink at an alpha; shadows stay black in both themes. */
+  --app-ink-rgb: 23 26 32;
+  --app-shadow-rgb: 23 26 32;
+  --app-body: #41454d;
+  --app-muted: #5d6067;
+  --app-on-ink: #fbf9f3;
+  --app-on-accent: #fff;
+  --app-rule: #d8d1c1;
+  --app-line: rgb(23 26 32 / 13%);
+  --app-line-strong: rgb(23 26 32 / 26%);
+  /* Text-entry fields need a 3:1 boundary (WCAG 1.4.11). */
+  --app-field-border: rgb(23 26 32 / 56%);
+  --app-outline: #23262c;
+  --app-hatch: rgb(23 26 32 / 26%);
+  --app-danger: #b42318;
+  --app-danger-soft: #fbe8e4;
+  --app-warn: #94540a;
+  --app-warn-soft: #faeed9;
+  --app-ok: #1d6f43;
+  --app-ok-soft: #e1f0e5;
+  --app-select-ink: #4f535b;
+  --app-code-surface: #f4f6f4;
+  --app-code-text: #26372e;
+  --app-code-line: #d6ddd8;
+  --app-code-keyword: #8a2a75;
+  --app-code-string: #226344;
+  --app-code-title: #315f9a;
+  --app-code-comment: #5a695e;
+  --app-diff-changed: #e0eedf;
+  --app-color-scheme: light;
+  --app-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: var(--app-color-scheme);
+  font-family: var(--font-body);
+  color: var(--app-ink);
+  background: var(--app-paper);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Inside the signed-in workspace the canvas is a near-neutral light grey: warmth comes from the accent, type and hatch
+   rather than paper. The public site, docs, setup and sign-in pages keep the brand paper above. */
+:root:has(.app-shell) {
+  --app-paper: #f6f5f1;
+  --app-paper-deep: #ecebe6;
+}
+
+/* The accent comes from the installation theme (src/ext/config.ts), so its derived tints are declared here. */
+.app-root {
+  --app-cobalt-ink: color-mix(in srgb, var(--color-accent) 82%, #000);
+  --app-cobalt-soft: color-mix(in srgb, var(--color-accent) 13%, var(--app-field));
+}
+
+:root[data-theme="dark"],
+:root[data-theme="dark"]:has(.app-shell) {
+  --app-paper: #15171c;
+  --app-paper-deep: #1d2026;
+  --app-card: #1c1f25;
+  --app-field: #23272e;
+  --app-ink: #eceae4;
+  --app-ink-rgb: 236 234 228;
+  --app-shadow-rgb: 0 0 0;
+  --app-body: #cfcdc6;
+  --app-muted: #a6a59f;
+  --app-on-ink: #15171c;
+  --app-on-accent: #10131a;
+  --app-rule: #3a3e46;
+  --app-line: rgb(236 234 228 / 14%);
+  --app-line-strong: rgb(236 234 228 / 28%);
+  --app-field-border: rgb(236 234 228 / 46%);
+  --app-outline: #d9d7d0;
+  --app-hatch: rgb(236 234 228 / 26%);
+  --app-danger: #ff8f80;
+  --app-danger-soft: #3b201d;
+  --app-warn: #f2b660;
+  --app-warn-soft: #382b18;
+  --app-ok: #74d39e;
+  --app-ok-soft: #17342a;
+  --app-select-ink: #a6a59f;
+  --app-code-surface: #1a1d22;
+  --app-code-text: #dde4de;
+  --app-code-line: #363b42;
+  --app-code-keyword: #f1a6e0;
+  --app-code-string: #8fd6aa;
+  --app-code-title: #a2c3f5;
+  --app-code-comment: #9daa9f;
+  --app-diff-changed: #1f3a27;
+  --app-color-scheme: dark;
+}
+:root[data-theme="dark"] .app-root {
+  --app-cobalt-ink: color-mix(in srgb, var(--color-accent) 78%, #fff);
+  --app-cobalt-soft: color-mix(in srgb, var(--color-accent) 18%, var(--app-field));
+}
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"],
+  :root[data-theme="system"]:has(.app-shell) {
+    --app-paper: #15171c;
+    --app-paper-deep: #1d2026;
+    --app-card: #1c1f25;
+    --app-field: #23272e;
+    --app-ink: #eceae4;
+    --app-ink-rgb: 236 234 228;
+    --app-shadow-rgb: 0 0 0;
+    --app-body: #cfcdc6;
+    --app-muted: #a6a59f;
+    --app-on-ink: #15171c;
+    --app-on-accent: #10131a;
+    --app-rule: #3a3e46;
+    --app-line: rgb(236 234 228 / 14%);
+    --app-line-strong: rgb(236 234 228 / 28%);
+    --app-field-border: rgb(236 234 228 / 46%);
+    --app-outline: #d9d7d0;
+    --app-hatch: rgb(236 234 228 / 26%);
+    --app-danger: #ff8f80;
+    --app-danger-soft: #3b201d;
+    --app-warn: #f2b660;
+    --app-warn-soft: #382b18;
+    --app-ok: #74d39e;
+    --app-ok-soft: #17342a;
+    --app-select-ink: #a6a59f;
+    --app-code-surface: #1a1d22;
+    --app-code-text: #dde4de;
+    --app-code-line: #363b42;
+    --app-code-keyword: #f1a6e0;
+    --app-code-string: #8fd6aa;
+    --app-code-title: #a2c3f5;
+    --app-code-comment: #9daa9f;
+    --app-diff-changed: #1f3a27;
+    --app-color-scheme: dark;
+  }
+  :root[data-theme="system"] .app-root {
+    --app-cobalt-ink: color-mix(in srgb, var(--color-accent) 78%, #fff);
+    --app-cobalt-soft: color-mix(in srgb, var(--color-accent) 18%, var(--app-field));
+  }
+}

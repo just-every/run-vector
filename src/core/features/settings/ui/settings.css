@@ -39,7 +39,7 @@
   width: min(100%, 28rem);
   padding: 0.7rem;
   min-height: 44px;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--app-field-border);
   border-radius: 0.35rem;
   background: var(--app-field);
   color: var(--app-ink);
@@ -103,7 +103,7 @@
   max-width: 100%;
   min-height: 44px;
   padding: 0.7rem;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--app-field-border);
   border-radius: 0.35rem;
   background: var(--app-field);
   color: var(--app-ink);

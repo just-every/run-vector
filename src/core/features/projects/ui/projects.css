@@ -10,7 +10,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  border-bottom: 1px solid rgb(23 26 32 / 14%);
+  border-bottom: 1px solid rgb(var(--app-ink-rgb) / 14%);
   padding-bottom: 1.35rem;
 }
 .projects-header h1,
@@ -52,7 +52,7 @@
 }
 .project-metric {
   min-height: 5.75rem;
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 0.65rem;
   padding: 0.85rem;
   background: var(--app-card);
@@ -102,7 +102,7 @@
 }
 .project-filters select {
   min-height: 44px;
-  border: 1px solid rgb(23 26 32 / 18%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 18%);
   border-radius: 0.45rem;
   padding: 0.35rem 0.55rem;
   color: var(--app-body);
@@ -127,7 +127,7 @@
 }
 .project-filters .list-preference-controls button {
   min-height: 44px;
-  border: 1px solid rgb(23 26 32 / 21%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 21%);
   border-radius: 0.42rem;
   padding: 0.35rem 0.55rem;
   color: var(--app-ink);
@@ -139,7 +139,7 @@
 }
 .project-list {
   overflow: hidden;
-  border: 1px solid rgb(23 26 32 / 14%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 14%);
   border-radius: 0.7rem;
   background: var(--app-card);
 }
@@ -159,11 +159,11 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  background: rgb(23 26 32 / 3%);
+  background: rgb(var(--app-ink-rgb) / 3%);
 }
 .project-row {
   min-height: 5.15rem;
-  border-top: 1px solid rgb(23 26 32 / 11%);
+  border-top: 1px solid rgb(var(--app-ink-rgb) / 11%);
   padding: 0.8rem 0.85rem;
   color: var(--app-body);
   text-decoration: none;
@@ -209,7 +209,7 @@
   height: 0.28rem;
   overflow: hidden;
   border-radius: 99px;
-  background: rgb(23 26 32 / 12%);
+  background: rgb(var(--app-ink-rgb) / 12%);
 }
 .project-row__progress b {
   display: block;
@@ -229,7 +229,7 @@
   display: inline-flex;
   min-height: 1.4rem;
   align-items: center;
-  border: 1px solid rgb(23 26 32 / 15%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 15%);
   border-radius: 999px;
   padding: 0.13rem 0.45rem;
   color: var(--app-muted);
@@ -277,7 +277,7 @@
 }
 .projects-state button {
   min-height: 2.75rem;
-  border: 1px solid rgb(23 26 32 / 27%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
   color: var(--app-ink);
@@ -296,9 +296,9 @@
   gap: 1px;
   overflow: hidden;
   margin: 1.15rem 0;
-  border: 1px solid rgb(23 26 32 / 12%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 12%);
   border-radius: 0.65rem;
-  background: rgb(23 26 32 / 12%);
+  background: rgb(var(--app-ink-rgb) / 12%);
 }
 .project-facts > div {
   min-width: 0;
@@ -375,7 +375,7 @@
   margin-top: 1rem;
 }
 .project-detail__section {
-  border: 1px solid rgb(23 26 32 / 12%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 12%);
   border-radius: 0.7rem;
   padding: 1rem;
   background: var(--app-card);
@@ -389,7 +389,7 @@
   margin-top: 0.85rem;
 }
 .project-issues li {
-  border-top: 1px solid rgb(23 26 32 / 12%);
+  border-top: 1px solid rgb(var(--app-ink-rgb) / 12%);
 }
 .project-issues li:first-child {
   border-top: 0;
@@ -441,7 +441,7 @@
 .project-fact-list li {
   display: grid;
   gap: 0.25rem;
-  border-top: 1px solid rgb(23 26 32 / 12%);
+  border-top: 1px solid rgb(var(--app-ink-rgb) / 12%);
   padding-top: 0.65rem;
 }
 .project-fact-list li:first-child {
@@ -514,7 +514,7 @@
     gap: 0.45rem 0.75rem;
     min-height: 6.4rem;
     margin-bottom: 0.5rem;
-    border: 1px solid rgb(23 26 32 / 14%);
+    border: 1px solid rgb(var(--app-ink-rgb) / 14%);
     border-radius: 0.65rem;
     background: var(--app-card);
   }
@@ -596,8 +596,8 @@
 }
 .project-lifecycle-counts { display:flex; flex-wrap:wrap; gap:1rem; font-size:.8rem; color:var(--app-muted); }
 .project-list-management { margin:0; padding:.6rem 1rem; border:0; border-radius:0; }
-.project-list-item + .project-list-item { border-top:1px solid rgb(23 26 32 / 14%); }
+.project-list-item + .project-list-item { border-top:1px solid rgb(var(--app-ink-rgb) / 14%); }
 .project-list-management summary { font-size:.8rem; }
 .project-list-management form { max-width:40rem; }
 .project-list-management select[multiple], .project-management select[multiple] { min-height:6rem; }
-.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid rgb(23 26 32 / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size:.76rem; }
+.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid rgb(var(--app-ink-rgb) / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size:.76rem; }

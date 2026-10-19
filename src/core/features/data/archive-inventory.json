@@ -1481,5 +1481,11 @@
     "working_days_json",
     "revision",
     "updated_at"
+  ],
+  "operator_appearance": [
+    "operator_id",
+    "theme",
+    "revision",
+    "updated_at"
   ]
 }

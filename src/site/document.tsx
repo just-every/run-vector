@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { fontLinks } from '../core/app/fonts'
 import { productConfig } from '../ext/config'
-import { themeStyle } from '../core/app/theme'
+import { themeCss } from '../core/app/theme'
 
 export function documentHtml(title: string, description: string, content: ReactNode, styles: string[]) {
   return '<!doctype html>' + renderToStaticMarkup(
@@ -13,10 +13,11 @@ export function documentHtml(title: string, description: string, content: ReactN
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="icon" href="/favicon.svg" />
+        <style dangerouslySetInnerHTML={{ __html: themeCss(productConfig.theme) }} />
         {fontLinks.map(link => <link key={link.href} {...link} />)}
         {styles.map(href => <link key={href} rel="stylesheet" href={href} />)}
       </head>
-      <body><div className="app-root" style={themeStyle(productConfig.theme)}>{content}</div></body>
+      <body><div className="app-root">{content}</div></body>
     </html>,
   )
 }

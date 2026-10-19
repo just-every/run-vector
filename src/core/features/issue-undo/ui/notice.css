@@ -1,6 +1,6 @@
 .issue-undo-notice { position: fixed; z-index: 70; right: 24px; bottom: 24px; width: min(620px, calc(100vw - 300px)); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 20px; background: var(--app-card); border: 1px solid var(--app-line-strong); border-radius: 12px; box-shadow: 0 8px 32px #18251d24; }
 .issue-undo-notice p { margin: 4px 0 0; color: var(--app-muted); font-size: .85rem; }
-.issue-undo-notice [role="alert"] { color: #922c24; }
+.issue-undo-notice [role="alert"] { color: var(--app-danger); }
 .issue-undo-notice ul { max-height: 10rem; overflow: auto; margin: 8px 0 0; padding-left: 20px; font-size: .85rem; }
 .issue-undo-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 .issue-undo-actions button { min-height: 44px; padding: 8px 12px; border: 1px solid var(--app-line-strong); border-radius: 7px; background: var(--app-card); color: inherit; cursor: pointer; }

@@ -9,10 +9,10 @@
   border: 0;
   padding: clamp(1rem, 10vh, 7rem) 1rem 1rem;
   color: var(--app-ink);
-  background: rgb(23 26 32 / 32%);
+  background: rgb(var(--app-shadow-rgb) / 32%);
 }
 .command-palette::backdrop {
-  background: rgb(23 26 32 / 32%);
+  background: rgb(var(--app-shadow-rgb) / 32%);
 }
 .command-palette__panel {
   width: min(42rem, 100%);
@@ -20,7 +20,7 @@
   margin: 0 auto;
   border: 1px solid var(--app-ink);
   border-radius: 0.8rem;
-  box-shadow: 0 1.5rem 5rem rgb(23 26 32 / 24%);
+  box-shadow: 0 1.5rem 5rem rgb(var(--app-shadow-rgb) / 24%);
   background: var(--app-card);
 }
 .command-palette__search {
@@ -28,7 +28,7 @@
   min-height: 3.5rem;
   align-items: center;
   gap: 0.65rem;
-  border-bottom: 1px solid rgb(23 26 32 / 14%);
+  border-bottom: 1px solid rgb(var(--app-ink-rgb) / 14%);
   padding: 0.45rem 0.75rem;
 }
 .command-palette__search > span {
@@ -52,11 +52,11 @@
   color: var(--app-muted);
 }
 .command-palette kbd {
-  border: 1px solid rgb(23 26 32 / 18%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 18%);
   border-radius: 0.35rem;
   padding: 0.18rem 0.35rem;
   color: var(--app-muted);
-  background: rgb(23 26 32 / 6%);
+  background: rgb(var(--app-ink-rgb) / 6%);
   font-family: inherit;
   font-size: .75rem;
 }
@@ -125,7 +125,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.8rem;
-  border-top: 1px solid rgb(23 26 32 / 12%);
+  border-top: 1px solid rgb(var(--app-ink-rgb) / 12%);
   padding: 0.65rem 0.85rem;
   color: var(--app-muted);
   font-size: .75rem;

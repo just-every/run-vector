@@ -12,8 +12,10 @@ export const loadOperator = createServerFn({ method: 'GET' }).inputValidator((hr
     if (!operator.setupCompleted) throw redirect({ to: '/setup' })
     const { pageResources } = await import('./page-resources.server')
     const { getRequest } = await import('@tanstack/react-start/server')
-    const resources = await pageResources(bindings, getRequest(), operator, href)
-    return { id: operator.id, name: operator.name, resources,
+    const { readAppearance } = await import('../features/settings/appearance')
+    const [resources, appearance] = await Promise.all([
+      pageResources(bindings, getRequest(), operator, href), readAppearance(bindings.DB, operator.id)])
+    return { id: operator.id, name: operator.name, resources, theme: appearance.theme,
       editorConfigured: Boolean(bindings.RER_MANAGEMENT_ORIGIN && bindings.RER_INSTALLATION_ID) }
   },
 )

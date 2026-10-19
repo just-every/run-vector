@@ -30,7 +30,7 @@
 .team-move-actions > button[type="button"],
 .team-move [role="alert"] button {
   min-height: 2.75rem;
-  border: 1px solid rgb(23 26 32 / 27%);
+  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
   color: var(--app-ink);

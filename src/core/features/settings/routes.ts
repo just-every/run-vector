@@ -12,8 +12,31 @@ import { reminderTimeSchema } from "./schema";
 import { removeOperator } from "./removal";
 import { readPersonalTime, updatePersonalTime } from "./personal-time";
 import { personalTimeInputSchema } from "./personal-time-schema";
+import { readAppearance, updateAppearance } from "./appearance";
+import { appearanceSchema } from "./appearance-schema";
 
 export function addSettingsRoutes(app: Hono<AppEnvironment>) {
+  app.get("/settings/appearance", async (c) => {
+    try {
+      return c.json(await readAppearance(c.env.DB, c.get("operatorId")));
+    } catch (error) {
+      if (error instanceof SettingsError)
+        return c.json({ error: error.code, message: error.message }, error.status);
+      throw error;
+    }
+  });
+  app.patch("/settings/appearance", async (c) => {
+    const parsed = appearanceSchema.safeParse(await readRequestJson(c.req.raw));
+    if (!parsed.success)
+      return c.json({ error: "invalid_request", issues: parsed.error.issues }, 400);
+    try {
+      return c.json(await updateAppearance(c.env.DB, c.get("operatorId"), parsed.data.theme));
+    } catch (error) {
+      if (error instanceof SettingsError)
+        return c.json({ error: error.code, message: error.message }, error.status);
+      throw error;
+    }
+  });
   app.get("/settings/personal-time", async (c) => {
     try {
       return c.json(await readPersonalTime(c.env.DB, c.get("operatorId")));
