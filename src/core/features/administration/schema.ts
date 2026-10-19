@@ -4,6 +4,7 @@ import {
   cycleProgressSchema,
 } from "../cycle-closure/schema.ts";
 import { z } from "zod";
+import { cycleReportSchema } from "../cycle-report/schema.ts";
 
 export const administrationId = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 export const workflowCategory = z.enum([
@@ -170,6 +171,7 @@ export const administrationSchema = z.object({
   cycles: z.array(administrationCycleSchema),
 });
 export const cycleDetailSchema = z.object({
+  report: cycleReportSchema,
   cycle: administrationCycleSchema,
   workspaceTimezone: z.string(),
   issues: z.array(

@@ -1,0 +1,37 @@
+.cycle-report { min-width: 0; border: 1px solid var(--app-rule); border-radius: 12px; padding: clamp(14px, 3vw, 24px); background: var(--app-card); }
+.cycle-report__heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.cycle-report h2, .cycle-report h3 { margin: 0 0 8px; }
+.cycle-report h3 { margin-top: 24px; }
+.cycle-report__heading p, .cycle-report__note { color: var(--app-muted); font-size: .88rem; line-height: 1.6; }
+.cycle-report__heading p { margin: 0; }
+.cycle-report__badge { font-size: .75rem; padding: 5px 9px; border: 1px solid var(--app-rule); border-radius: 999px; white-space: nowrap; }
+.cycle-report__legend { display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: .8rem; margin-top: 18px; }
+.cycle-report__scope-key, .cycle-report__completed-key { display: inline-flex; align-items: center; gap: 6px; }
+.cycle-report__scope-key::before, .cycle-report__completed-key::before { content: ""; width: 18px; border-top: 3px solid var(--app-cobalt-ink); }
+.cycle-report__completed-key::before { border-color: var(--app-ok); border-top-style: dashed; }
+.cycle-report__chart { display: block; width: 100%; height: auto; margin-top: 12px; overflow: visible; }
+.cycle-report__chart text { fill: currentColor; font-size: 11px; }
+.cycle-report__grid { stroke: var(--app-rule); stroke-width: 1; }
+.cycle-report__scope, .cycle-report__completed { fill: none; stroke-width: 2.5; stroke: var(--app-cobalt-ink); }
+.cycle-report__completed { stroke: var(--app-ok); stroke-dasharray: 6 3; }
+.cycle-report__scope-dot { fill: var(--app-cobalt-ink); }
+.cycle-report__completed-dot { fill: var(--app-ok); }
+.cycle-report__marker { font-weight: 700; }
+.cycle-report__table { max-width: 100%; overflow-x: auto; margin-top: 12px; }
+.cycle-report table { width: 100%; border-collapse: collapse; font-size: .82rem; text-align: left; }
+.cycle-report caption { text-align: left; font-weight: 600; padding-bottom: 10px; }
+.cycle-report th, .cycle-report td { border-bottom: 1px solid var(--app-rule); padding: 10px 8px; vertical-align: top; overflow-wrap: anywhere; }
+.cycle-report thead th { color: var(--app-muted); font-weight: 500; overflow-wrap: normal; white-space: nowrap; }
+.cycle-report tbody th { font-weight: 500; }
+.cycle-report__daily table { min-width: 540px; }
+.cycle-report__table[aria-label="Cycle report by assignee"] table { min-width: 580px; }
+.cycle-report details summary { cursor: pointer; font-size: .85rem; padding: 8px 0; }
+.cycle-report details p { overflow-wrap: anywhere; line-height: 1.6; }
+.cycle-report__metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.cycle-report__metric { padding: 14px; border: 1px solid var(--app-rule); border-radius: 8px; min-width: 0; }
+.cycle-report__metric > strong { display: block; font-size: 1.65rem; font-variant-numeric: tabular-nums; }
+.cycle-report__metric > span { font-size: .82rem; }
+.cycle-report__notice { padding: 12px; border-left: 3px solid var(--app-cobalt-ink); background: var(--app-field); font-size: .88rem; line-height: 1.6; }
+@media (max-width: 540px) { .cycle-report__metrics { grid-template-columns: 1fr; } .cycle-report__metric { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 12px; } .cycle-report__metric details { grid-column: 1 / -1; } .cycle-report__chart { min-height: 150px; } }
+
+@media (max-width: 540px) { .cycle-report__chart text { font-size: 24px; } .cycle-report__chart .cycle-report__marker { font-size: 22px; } }

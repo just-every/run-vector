@@ -1,3 +1,4 @@
+import { cycleReportFactsSql } from "../cycle-report/facts-sql";
 /** All facts are selected inside the closing batch, never from preflight JS reads. */
 export const snapshotSql = `
 WITH closing AS (
@@ -20,7 +21,7 @@ WITH closing AS (
 INSERT INTO cycle_snapshots(cycle_id,close_token,closed_at,next_cycle_id,body_json)
 SELECT c.id,?,?,
  (SELECT n.id FROM cycles n WHERE n.team_id=c.team_id AND n.closed_at IS NULL AND julianday(n.starts_at)>=julianday(c.ends_at) ORDER BY julianday(n.starts_at),n.id LIMIT 1),
- json_object('closedAt',?,'timezone',c.timezone,'capacity',c.capacity,
+ json_object('closedAt',?,'timezone',c.timezone,'capacity',c.capacity,'reportFacts',${cycleReportFactsSql},
  'committed',(SELECT json_group_array(json_object('identifier',identifier,'projectId',project_id,'projectName',project_name,'estimate',estimate,'category',category)) FROM committed),
  'completed',(SELECT json_group_array(identifier) FROM committed WHERE category='completed'),
  'estimateTotal',(SELECT coalesce(sum(estimate),0) FROM committed),

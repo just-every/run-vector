@@ -1,5 +1,6 @@
-import { useViewerTime } from '../../../app/viewer-time';
 import { WorkloadPanel } from '../../workload/panel';
+import { CycleReportPanel } from "../../cycle-report/panel";
+import { useViewerTime } from "../../../app/viewer-time";
 import { ClosureSnapshot } from "./closure-snapshot";
 import { remainingScopeCopy, capacityRiskCopy } from "./capacity-copy";
 import { canSelectCycle } from "./commitment-choices";
@@ -130,6 +131,7 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
         )}
       </section>
       <WorkloadPanel cycleId={cycleId} />
+      <CycleReportPanel report={detail.data.report} closed={!!cycle.closedAt} rolloverFailed={!!detail.data.failure} />
       {detail.data.failure && (
         <section
           className="cycle-closure-failure"

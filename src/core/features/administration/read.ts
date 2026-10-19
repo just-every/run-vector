@@ -7,6 +7,7 @@ import {
   labelTextColor,
 } from "./schema";
 import { calculateCycleProgress } from "../cycles/progress";
+import { readCycleReport } from "../cycle-report/read";
 import { SettingsError } from "./transaction";
 
 const cycleColumns =
@@ -112,12 +113,13 @@ export async function readCycle(db: D1Database, actor: string, id: string) {
         `SELECT i.id,i.identifier,i.title,i.version,i.team_id AS teamId,i.status_id AS statusId,s.category,i.estimate,i.cycle_id AS cycleId FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE i.cycle_id=? AND i.team_id=? ORDER BY i.identifier`,
       )
       .bind(id, cycle.teamId)
-      .all<{ category: string; estimate: number | null }>()
+      .all<{ identifier: string; category: string; estimate: number | null }>()
   ).results;
   const [snapshot, failure] = await Promise.all([
     readCycleSnapshot(db, id),
     readCycleFailure(db, id),
   ]);
+  const report = await readCycleReport(db, cycle, issues, snapshot);
   if ((await settingsActor(db, actor)).workspace_id !== access.workspace_id)
     throw new SettingsError(
       "unauthenticated",
@@ -128,6 +130,7 @@ export async function readCycle(db: D1Database, actor: string, id: string) {
     cycle: snapshot ? { ...cycle, closedAt: snapshot.closedAt } : cycle,
     workspaceTimezone: snapshot?.timezone ?? cycle.timezone,
     snapshot,
+    report,
     failure,
     issues,
     progress:

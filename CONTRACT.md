@@ -740,7 +740,7 @@ Judged from the code and tests at commit `3208cd6b46942ccec3e4c357ec989bd227d3c7
 | `AUTO-005` | Update reminders | target | missing |  | No implementation yet |
 | `AUTO-006` | Due-soon rules | target | partial | `src/core/features/due-reminders/service.ts` | Due-today and overdue notifications only |
 | `REPORT-001` | Insights | target | partial | `src/core/features/cycle-closure/read.ts` | Closed-cycle totals only |
-| `REPORT-002` | Cycle and project charts | target | partial | `src/core/features/cycles/progress.ts`, `src/core/features/cycle-closure/service.ts` | Progress, capacity and immutable snapshots; burn-up and projections are absent |
+| `REPORT-002` | Cycle and project charts | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`; `src/core/features/cycle-report/` | Cycle daily burn-up, added/removed scope, final outcomes and assignee breakdown implemented; new closures freeze report facts with CYCLE-005. Older snapshots expose missing daily/assignee history. Project scope/completion history and projected completion remain absent |
 | `REPORT-003` | Dashboards | target | missing |  | No implementation yet |
 | `REPORT-004` | Workload | target | done | `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` |  |
 | `REPORT-005` | Warehouse and spreadsheet export | target | missing |  | No implementation yet |
