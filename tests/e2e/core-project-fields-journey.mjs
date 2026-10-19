@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
-import { beforePrivateNavigation } from './collaboration-navigation.mjs';
+import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { openAdministrationForm,openDisclosures } from './ui-controls-checks.mjs';
 import { poll } from './admin-runtime-support.mjs';
 
@@ -45,6 +45,8 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
     const project=sql(`SELECT id FROM projects WHERE name='${name}'`)[0];
     assert.equal(sql(`SELECT * FROM project_labels WHERE project_id='${project.id}'`).length,2);
     assert.equal(sql(`SELECT * FROM project_activity WHERE project_id='${project.id}' AND kind LIKE '%_changed'`).length,4);
+    // The saved dates re-key the edit form when the reload lands; let it land before editing again.
+    await settleReads(page);
     await openAdministrationForm(page,`Edit project ${name}`);
     await edit.getByLabel('Project target date',{exact:true}).fill('2027-01-01');
     const [refused] = await Promise.all([

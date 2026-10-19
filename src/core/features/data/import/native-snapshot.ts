@@ -33,7 +33,13 @@ const columns = (table: string) => {
   if (!value) throw Error('unclassified_import_relation');
   return [...value].sort();
 };
-const object = (table: string,alias: string) => 'json_object('+columns(table).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';
+// AUTO-003's archived_at joins an issue's value only once set, so snapshots retained from before it keep their exact shape.
+const optional: Record<string,string[]> = { issues:['archived_at'] };
+const object = (table: string,alias: string) => {
+  const extra=optional[table]??[];
+  const base='json_object('+columns(table).filter(name=>!extra.includes(name)).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';
+  return extra.reduce((value,name)=>`CASE WHEN ${alias}.${quote(name)} IS NULL THEN ${value} ELSE json_set(${value},'$.${name}',${alias}.${quote(name)}) END`,base);
+};
 const relation = (table: string,key: string,order: string) => `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table,'r')} AS value FROM ${quote(table)} r WHERE r.${quote(key)}=i.id ORDER BY r.${quote(order)}))`;
 export const legacySnapshotExpression = 'json_object('+[
   ['issue',object('issues','i')],

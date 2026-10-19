@@ -3133,7 +3133,7 @@
       "executable": false
     },
     "src/core/features/data/import/native-snapshot.ts": {
-      "sha256": "4424bcebd6cd42fdbecd06dc6a91a98170bb2c3fde2343c5c81fec1c29fb35c4",
+      "sha256": "7c0dcea57fcb800b3b87c2376d04eaf879ed96be4ae4ba62afd02566ea5f99d9",
       "executable": false
     },
     "src/core/features/data/import/native-targets.ts": {
@@ -5149,7 +5149,7 @@
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
-      "sha256": "140350e9d88b8087aee13ad72f31c9c0b118897e096022c1ceb3d4c60394242c",
+      "sha256": "508bdb1751984a27399e6454ef51035e9be2499f2bb8ea04dfff1b6854dd706e",
       "executable": false
     },
     "tests/e2e/core-project-health-journey.mjs": {
