@@ -1,3 +1,4 @@
+import { maintainCycleSchedules } from "../features/cycle-schedule/service";
 import { deliverFollowups } from '../features/notification-followups/service';
 import { sendDueReminders } from "../features/due-reminders/service";
 import { closeEndedCycles } from "../features/cycle-closure/service";
@@ -12,6 +13,7 @@ export async function scheduled(
   env: WorkerBindings,
 ) {
   const now = new Date(event.scheduledTime);
+  await maintainCycleSchedules(env, now);
   await Promise.all([
     closeEndedCycles(env, now),
     sendDueReminders(env, now),

@@ -1,3 +1,4 @@
+import { saveCycleSchedule } from "../cycle-schedule/settings";
 import type { Hono, Context } from "hono";
 import type { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -158,6 +159,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
       createCycle(c.env.DB, c.get("operatorId"), b),
     ),
   );
+  app.put("/settings/teams/:id/cycle-schedule", mutation(schema.cycleScheduleSchema, (c,b) => saveCycleSchedule(c.env.DB,c.get("operatorId"),c.req.param("id")!,b)));
   app.get(
     "/cycles/:id",
     handle(async (c) =>

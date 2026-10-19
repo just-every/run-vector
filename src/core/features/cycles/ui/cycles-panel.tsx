@@ -1,3 +1,4 @@
+import { CycleSchedulePanel } from "../../cycle-schedule/panel";
 import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
 import type { Administration } from "../../administration/schema";
@@ -46,6 +47,7 @@ export function CyclesPanel({
         time that occurs once. Times that happen twice or are skipped cannot be
         saved.
       </p>
+      <CycleSchedulePanel data={data} onChanged={onChanged} />
       {data.cycles.length === 0 && (
         <p>No cycles yet. Create your first cycle below.</p>
       )}

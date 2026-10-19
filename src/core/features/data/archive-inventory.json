@@ -46,7 +46,8 @@
     "capacity",
     "closed_at",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "schedule_revision"
   ],
   "detached_file_removals": [
     "id",
@@ -1461,5 +1462,15 @@
     "first_issue_id",
     "second_issue_id",
     "created_at"
+  ],
+  "team_cycle_schedules": [
+    "team_id",
+    "weeks",
+    "start_weekday",
+    "cooldown_weeks",
+    "upcoming_count",
+    "revision",
+    "generation",
+    "updated_at"
   ]
 }

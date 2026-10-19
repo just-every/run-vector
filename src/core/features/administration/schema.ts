@@ -101,6 +101,12 @@ export const cycleCreateSchema = z
     capacity: z.number().int().nonnegative().nullable().default(null),
   })
   .strict();
+export const cycleScheduleSchema = z.object({
+  weeks: z.number().int().min(1).max(8),
+  startWeekday: z.number().int().min(0).max(6),
+  cooldownWeeks: z.number().int().min(0).max(8),
+  upcomingCount: z.number().int().min(1).max(24),
+}).strict();
 export const administrationStatusSchema = z.object({
   id: z.string(),
   teamId: z.string(),
@@ -123,6 +129,7 @@ export const administrationSchema = z.object({
     name: z.string(),
     timezone: z.string(),
   }),
+  cycleSchedules: z.array(cycleScheduleSchema.extend({teamId: z.string()})),
   labelsPerIssue: z.number(),
   teams: z.array(
     z.object({
