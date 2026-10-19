@@ -25,6 +25,7 @@ export type PaletteEntry = {
     | '/app/issues/$identifier'
     | '/app/projects/$projectId'
     | '/app/views/$viewId'
+  action?: "copy-issue"
   params?: { identifier: string } | { projectId: string } | { viewId: string }
 }
 

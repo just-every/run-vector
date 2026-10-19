@@ -54,6 +54,8 @@ export function activityChanges(kind: string, previousValue: unknown, nextValue:
 }
 
 export function activityTitle(kind: string, nextValue?: unknown) {
+  if (kind === "issue.copied_from") return `Copied from ${String(record(nextValue).identifier ?? "an issue")}`;
+  if (kind === "issue.copied_to") return `Copied to ${String(record(nextValue).identifier ?? "an issue")}`;
   if (typeof record(nextValue).undoOf === 'string') return 'Undid the previous change';
   const titles: Record<string, string> = {
     "issue.created": "Created the issue",

@@ -1,3 +1,5 @@
+import { IssueCopyDialog } from "../../issue-copy/ui";
+import { useRouterState } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { fetchJson } from "../../../app/api-client";
@@ -15,6 +17,13 @@ type CommandPaletteProps = { onDismiss: () => void };
 
 export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   const navigate = useNavigate();
+  const pathname = useRouterState({
+    select: (state) => state.location.pathname,
+  });
+  const currentIdentifier = /^\/app\/issues\/([A-Z]{2,10}-[1-9][0-9]*)$/.exec(
+    pathname,
+  )?.[1];
+  const [copyIdentifier, setCopyIdentifier] = useState<string | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
@@ -29,9 +38,10 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   const entries = useMemo(
     () => [
       ...paletteEntries(currentSearch, query),
+      ...copyPaletteEntries(currentIdentifier, currentSearch, query),
       ...savedViewPaletteEntries(currentSearch, query),
     ],
-    [query, currentSearch],
+    [query, currentSearch, currentIdentifier],
   );
   const [activeId, setActiveId] = useState<string | null>(null);
   const activeIndex = Math.max(
@@ -48,11 +58,14 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
     const selectedId = entries[activeIndex]?.id ?? null;
     if (selectedId !== activeId) setActiveId(selectedId);
     const results = resultsRef.current;
-    const option = results?.querySelector<HTMLElement>('[aria-selected="true"]');
+    const option = results?.querySelector<HTMLElement>(
+      '[aria-selected="true"]',
+    );
     if (!results || !option) return;
     const viewport = results.getBoundingClientRect();
     const bounds = option.getBoundingClientRect();
-    if (bounds.top < viewport.top) results.scrollTop += bounds.top - viewport.top;
+    if (bounds.top < viewport.top)
+      results.scrollTop += bounds.top - viewport.top;
     else if (bounds.bottom > viewport.bottom)
       results.scrollTop += bounds.bottom - viewport.bottom;
   }, [entries, activeId, activeIndex]);
@@ -90,6 +103,14 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
 
   const select = (entry: PaletteEntry | undefined) => {
     if (!entry) return;
+    if (
+      entry.action === "copy-issue" &&
+      entry.params &&
+      "identifier" in entry.params
+    ) {
+      setCopyIdentifier(entry.params.identifier);
+      return;
+    }
     if (
       entry.destination === "/app/issues/$identifier" &&
       entry.params &&
@@ -139,6 +160,8 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   };
 
   const grouped = groupEntries(entries);
+  if (copyIdentifier)
+    return <IssueCopyDialog identifier={copyIdentifier} onClose={onDismiss} />;
   return (
     <dialog
       className="command-palette"
@@ -286,4 +309,38 @@ function trapFocus(
     event.preventDefault();
     first.focus();
   }
+}
+
+function copyPaletteEntries(
+  identifier: string | undefined,
+  search: ReturnType<typeof workspaceSearchSchema.parse> | null,
+  query: string,
+): PaletteEntry[] {
+  const term = query.trim().toLocaleLowerCase();
+  const targets = [
+    ...(identifier ? [{ identifier, title: "Current issue" }] : []),
+    ...(search?.issues ?? []),
+  ];
+  return targets
+    .filter(
+      (issue, index) =>
+        targets.findIndex((other) => other.identifier === issue.identifier) ===
+        index,
+    )
+    .filter(
+      (issue) =>
+        !term ||
+        `copy issue ${issue.identifier} ${issue.title}`
+          .toLocaleLowerCase()
+          .includes(term),
+    )
+    .map((issue) => ({
+      id: `copy:${issue.identifier}`,
+      group: "Commands",
+      title: `Copy issue ${issue.identifier}`,
+      detail: issue.title,
+      destination: "/app/issues/$identifier",
+      params: { identifier: issue.identifier },
+      action: "copy-issue",
+    }));
 }

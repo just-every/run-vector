@@ -23,6 +23,7 @@ Hosted tokens need only the bearer header.
 | GET /api/v1/issues | issues:read | Existing bounded filters, cursor paging, sort and grouping |
 | GET /api/v1/issues/IDENTIFIER | issues:read | Current native issue projection |
 | POST /api/v1/issues | issues:write | Existing issue creation schema, references and history |
+| POST /api/v1/issues/IDENTIFIER/copy | issues:write | Copy with expectedVersion, optional teamId, includeSubissues and includeLinks |
 | PATCH /api/v1/issues/IDENTIFIER | issues:write | Existing field schema and required expectedVersion |
 | POST /api/v1/issues/IDENTIFIER/comments | comments:write | Existing trimmed nonempty body and comment mutation |
 | GET /api/v1/metadata | metadata:read | Current teams/statuses/operators/projects/cycles/labels |
@@ -74,3 +75,35 @@ A current cookie session may `DELETE /api/issues/IDENTIFIER` with the strict bod
 A 200 response confirms all attachment bytes absent; 202 reports pending or failed cleanup honestly. Both include only the identifier, timestamps, counts and the authorized `/api/issues/IDENTIFIER/deletion` receipt URL. Existing durable file-removal intents settle uploads and retry cleanup through Cron. An unsettled upload is never declared complete merely because its object is absent.
 
 `POST /api/issues/IDENTIFIER/duplicate` accepts `{ "expectedVersion": 1, "canonicalIdentifier": "FLW-123" }`; null undoes the decision. The selected canonical must be another non-duplicate issue. Incoming duplicates are repointed in the same transaction, and undo restores the latest nonterminal team status or default Backlog. These native commands are not added to `/api/v1`.
+
+## Copy an issue (ISSUE-023)
+
+`POST /api/v1/issues/IDENTIFIER/copy` accepts a strict body such as
+`{ "expectedVersion": 1, "includeSubissues": true, "includeLinks": true }`.
+Both options default to false. Omit `teamId` to stay in the source team; supply
+an available team ID from the same workspace to copy elsewhere. The cookie API
+uses the same body at `/api/issues/IDENTIFIER/copy`. Issue menu → Copy issue and
+the command palette open the same review form.
+
+The 201 response contains `issue`, `copies` (source and new identifiers),
+`mappings` (source/destination status, labels and custom-field keys), and
+`droppedValues` (source identifier, field, original value and reason). Every new
+issue starts in the destination's first Backlog status. Labels and custom fields
+are workspace scoped and map unchanged between teams. A cross-team cycle is
+dropped and reported; a same-team open cycle is preserved. A closed or missing
+cycle, or an unavailable project, is also reported when dropped.
+
+Selected sub-issues include the full ordered descendant tree, with new identifiers
+and independent histories. Selected links are issue-level named links; comment
+links stay with their excluded comments. Copies preserve title, description,
+priority, estimate, labels, project, custom fields, due date, expected outcome
+and customer impact. They are unassigned and have no original comments,
+activity, files, followers, customer requests, dependencies or duplicate links.
+Each source and copy receives its own copied-to/copied-from activity entry.
+Description-embedded file cloning belongs to ISSUE-024, whose inline attachment
+support is still partial.
+
+A stale source or a change to the selected tree, labels or links during
+preparation returns 409 and creates no copy. All selected issues and their new
+hierarchy/history commit together. Archived, missing and other-workspace target
+teams are refused. Token scope, native session and Origin checks remain in force.

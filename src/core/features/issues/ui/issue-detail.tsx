@@ -1,3 +1,4 @@
+import { IssueCopyAction } from "../../issue-copy/ui";
 import { Subissues } from "../../subissues/ui/subissues";
 import { IssueDescription } from "../../description-history/ui/description";
 import { useNavigate } from '@tanstack/react-router';
@@ -206,6 +207,7 @@ function IssueInspector({
           </div>
           <h1 id="issue-title">{issue.title}</h1>
           <div className="issue-header-actions">
+            <IssueCopyAction key={`copy:${issue.identifier}`} identifier={issue.identifier} onRefresh={onRefresh} />
             <IssueEditor
               key={`issue-editor:${issue.identifier}`}
               issue={issue}

@@ -1,3 +1,4 @@
+import { addIssueCopyRoutes } from "../issue-copy/routes";
 import { addProjectApi } from "./project-api";
 import { SettingsError } from "../administration/transaction";
 import { Hono } from 'hono';
@@ -46,7 +47,7 @@ export function createIntegrationApi(){
   else if(method==='GET'&&(path==='/projects'||/^\/projects\/[0-9A-HJKMNP-TV-Z]{26}$/.test(path)))scopes=['projects:read'];
   else if((method==='POST'&&path==='/projects')||(method==='PATCH'&&/^\/projects\/[0-9A-HJKMNP-TV-Z]{26}$/.test(path)))scopes=['projects:write'];
   else if(method==='GET'&&path==='/metadata')scopes=['metadata:read'];
-  else if((method==='POST'&&(path==='/issues'||/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*\/(?:description-restore|checklist)$/.test(path)))||(method==='PATCH'&&/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*$/.test(path)))scopes=['issues:write'];
+  else if((method==='POST'&&(path==='/issues'||/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*\/(?:description-restore|checklist|copy)$/.test(path)))||(method==='PATCH'&&/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*$/.test(path)))scopes=['issues:write'];
   else if(method==='POST'&&/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*\/comments(?:\/[0-9A-HJKMNP-TV-Z]{26}\/checklist)?$/.test(path))scopes=['comments:write'];
   else return c.json({error:'route_not_found'},404);
   // Cookie-authenticated browsers may not turn another origin into a bearer
@@ -69,6 +70,7 @@ export function createIntegrationApi(){
  app.post('/issues',async c=>c.json(await createIssue(c.env.DB,c.get('operatorId'),parse(createIssueInputSchema,await readRequestJson(c.req.raw))),201));
  app.patch('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(updateIssueSchema,await readRequestJson(c.req.raw));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const state=await updateIssueRecord(c.env.DB,id,c.get('operatorId'),input),issue=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return state==='stale'?c.json({error:'stale_version',version:issue?.version},409):c.json(issue);});
  app.post('/issues/:identifier/comments',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(comment,await readRequestJson(c.req.raw)),issue=await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json({id:await addComment(c.env.DB,issue.id,c.get('operatorId'),input.body)},201);});
+ addIssueCopyRoutes(app,false);
  addProjectApi(app);
  addDescriptionHistoryRoutes(app,false);
  return app;

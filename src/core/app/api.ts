@@ -1,3 +1,4 @@
+import { addIssueCopyRoutes } from "../features/issue-copy/routes";
 import { projectPortfolioQuery } from "../features/projects/portfolio";
 import { projectPortfolio,projectDetail } from "../features/projects/read";
 import { addManualOrderRoutes } from '../features/manual-order/routes';
@@ -332,6 +333,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addViewRoutes(app);
   addPreferenceRoutes(app);
   addAdministrationRoutes(app);
+  addIssueCopyRoutes(app);
   addWorkloadRoutes(app);
   addSettingsRoutes(app);
   addIntegrationConfigRoutes(app);
