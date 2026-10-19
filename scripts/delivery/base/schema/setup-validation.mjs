@@ -6,11 +6,6 @@ export const SETUP_SCHEMA_ID = 'urn:rer:setup:1';
 
 const PUBLIC_KINDS = new Set(['text', 'email', 'url', 'select', 'colour', 'timezone']);
 
-/** Effective audience of a validated public field, including its group default. */
-export function setupFieldAudience(field, groups) {
-  return field.audience ?? groups.find(group => group.id === field.group)?.audience ?? 'owner';
-}
-
 /** Match a validated condition against raw public input; whitespace is a value. */
 export function setupConditionMatches(condition, values) {
   const value = values[condition.field];
@@ -136,7 +131,6 @@ export function setupManifestSemanticErrors(data) {
     if (field.group !== undefined && !groups.has(field.group)) fail(`${path}.group`, 'group must reference a declared group');
 
     if (isSecret) {
-      if (Object.hasOwn(field, 'audience')) fail(`${path}.audience`, `${field.name}: secret fields cannot declare audience`);
       for (const name of ['default', 'prefill', 'options', 'runtimeEditable']) {
         if (Object.hasOwn(field, name)) fail(`${path}.${name}`, 'secret fields cannot declare public input metadata');
       }
@@ -150,9 +144,6 @@ export function setupManifestSemanticErrors(data) {
         fail(`${path}.ownerVisible`, 'only generated or explicitly entered secret values may be shown to the owner');
       }
     } else {
-      if (field.audience === 'owner' && groups.get(field.group)?.audience === 'developer') {
-        fail(`${path}.audience`, `${field.name} cannot declare owner audience inside developer group ${field.group}`);
-      }
       for (const name of ['generate', 'ownerVisible', 'input']) {
         if (Object.hasOwn(field, name)) fail(`${path}.${name}`, 'public fields cannot declare secret metadata');
       }
@@ -329,11 +320,6 @@ export function validateSetupManifest(schema, data) {
   if (schema?.$id !== SETUP_SCHEMA_ID) throw new Error('Expected setup schema version 1');
   checkSchema(schema);
   const errors = validate(schema, data);
-  if (errors.length) return errors.map(error => {
-    const match = error.match(/^(\$\.(fields|groups)\[(\d+)\]\.audience):/);
-    if (!match) return error;
-    const item = data[match[2]][Number(match[3])];
-    return `${match[1]}: ${item.name ?? item.id} audience must be "owner" or "developer"`;
-  });
+  if (errors.length) return errors;
   return setupManifestSemanticErrors(data);
 }

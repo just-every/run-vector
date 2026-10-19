@@ -14,8 +14,10 @@ import type { ClauseStatus, ContractClause, SeedContract } from './seed-contract
 type Counts = SeedContract['counts']
 const order: ClauseStatus[] = ['done', 'partial', 'missing']
 const word: Record<ClauseStatus, string> = { done: 'Done', partial: 'Partial', missing: 'Missing' }
-// The judged date is a calendar day, independent of the build machine's zone.
-const dateFormat = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+/** "2026-10-16" as "16 October 2026". */
+const longDate = (iso: string) => { const [year, month, day] = iso.split('-').map(Number); return `${day} ${months[month - 1]} ${year}` }
 
 /** Whole percentages of the total by largest remainder, so the three add to 100; a non-zero share under 1% reads "<1%". */
 export function shares(counts: Counts): Record<ClauseStatus, string> {
@@ -63,7 +65,7 @@ export function contractPageHtml(identity: EditionIdentity, run: RunData, contra
   checkIdentity(identity); checkRunData(run)
   const product = escape(identity.product), { counts, target } = contract
   const repository = run.repository.replace(/\/+$/, ''), contractUrl = `${repository}/blob/main/CONTRACT.md`
-  const short = contract.commit.slice(0, 7), date = dateFormat.format(new Date(`${contract.date}T00:00:00Z`))
+  const short = contract.commit.slice(0, 7), date = longDate(contract.date)
   const areaOrder = new Map(contract.areas.map((area, index) => [area.name, index]))
   const clauses = [...contract.clauses].sort((a, b) => areaOrder.get(a.area)! - areaOrder.get(b.area)! || a.line - b.line)
   const published = tally(clauses.filter(clause => clause.kind === 'published')), targeted = tally(clauses.filter(clause => clause.kind !== 'published'))
