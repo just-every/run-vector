@@ -1549,7 +1549,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "32a4cb329226f36b8612fe0f19f5f7303bd04dde0bcb999ef417911bc1ffb31b",
+      "sha256": "2dc9976f19631c901fbd73f0231807e7b33183e96dd2ef91f1d6021ad799b805",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -1822,6 +1822,10 @@
     },
     "migrations/core/0068_archive_notifications.sql": {
       "sha256": "dee9f5258605735784da15d04cfaeab0a29d6e57d156d830e4f09853f4d7d119",
+      "executable": false
+    },
+    "migrations/core/0069_restore_commit_guard.sql": {
+      "sha256": "11b2a9a86a657b318b8ef5b3f8af2c85a3fb697fa53aeab4c94c71f2eddac721",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -5705,7 +5709,7 @@
       "executable": false
     },
     "tests/worker/data-http-lost-reply.test.ts": {
-      "sha256": "a500ef85043237d9b0f5c8c514494eb86e4361810900cf3ff4546cb255ad45a8",
+      "sha256": "abde5337b53e6190128968ce79d163925038df700f7d598ed30dea0ae0905939",
       "executable": false
     },
     "tests/worker/data-http-object-failure.test.ts": {
