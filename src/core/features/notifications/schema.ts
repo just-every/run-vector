@@ -10,6 +10,7 @@ export const notificationKinds = [
   "completed",
   "canceled",
   "duplicate",
+  "archived",
   "urgent",
   "blocking",
   "due_changed",

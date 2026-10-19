@@ -2,14 +2,17 @@ import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
 import { readArchive } from "@runeditrun/rer/modules/portability";
 import { contractWith } from "../contract-tags";
-import { setupAdministration } from "./administration-fixture";
-import { bindings } from "./base-auth-fixture";
+import { bindings, request } from "./base-auth-fixture";
+import { collaborationFixture, count } from "./collaboration-fixture";
 import { scheduled } from "../../src/core/app/scheduled";
+import type { InboxPage } from "../../src/core/features/notifications/schema";
 
 const tick = (at: Date) => scheduled({ scheduledTime: at.getTime() }, bindings);
+// A fixed clock: synthetic history is aged against the same instant every scheduled run uses.
+const now = new Date();
 // Synthetic history: move an issue's last activity (or its closing) into the past.
 async function age(id: string, days: number, closed = false) {
-  const at = new Date(Date.now() - days * 86400000).toISOString();
+  const at = new Date(now.getTime() - days * 86400000).toISOString();
   await env.DB.batch([
     env.DB.prepare(`UPDATE issues SET updated_at=?,created_at=?${closed ? ",completed_at=?" : ""} WHERE id=?`)
       .bind(...(closed ? [at, at, at, id] : [at, at, id])),
@@ -20,15 +23,20 @@ async function age(id: string, days: number, closed = false) {
 contractWith(
   it,
   "AUTO-003",
-  "a scheduled run closes a 30-day stale issue and archives a 90-day completed one, each with an automation entry, as previewed",
+  "a scheduled run closes a 30-day stale issue and archives a 90-day completed one, each with a reason entry readers see and one follower notification like a status change, as previewed",
   async () => {
-    const f = await setupAdministration(), team = f.initial.teams[0];
+    const f = await collaborationFixture(), team = f.initial.teams[0];
     const status = (category: string) => team.statuses.find((s) => s.category === category)!.id;
     const bug = (await f.mutate("/settings/labels", "POST", { name: "Bug", color: "#d64545" })).labels.find((l) => l.name === "Bug")!;
     const stale = await f.create({ title: "Stale vendor follow-up", statusId: status("backlog") });
     const staleBug = await f.create({ title: "Stale checkout crash", statusId: status("backlog"), labelIds: [bug.id] });
     const fresh = await f.create({ title: "Fresh pricing question", statusId: status("backlog") });
     const done = await f.create({ title: "Shipped invoice export", statusId: status("completed") });
+    // Bob follows both automated issues and one an operator cancels by hand; Cara reads without following.
+    const manual = await f.create({ title: "Manually canceled vendor call", statusId: status("backlog") });
+    for (const issue of [stale, done, manual])
+      expect((await f.any(f.bobCookie, `/issues/${issue.identifier}/subscription`, "PATCH", { following: true })).status).toBe(200);
+    expect((await f.call("/issues/" + manual.identifier, "PATCH", { expectedVersion: manual.version, statusId: status("canceled") })).status).toBe(200);
     await age(stale.id, 31); await age(staleBug.id, 31); await age(done.id, 91, true);
 
     const path = `/settings/teams/${team.id}/housekeeping`;
@@ -41,16 +49,47 @@ contractWith(
     const unexempt = await (await f.call(path + "/preview", "POST", { ...rule, exemptBugs: false })).json() as typeof preview;
     expect(unexempt.close.map((i) => i.identifier).sort()).toEqual([stale.identifier, staleBug.identifier].sort());
 
-    await tick(new Date());
-    await tick(new Date());
-    const read = async (identifier: string) =>
-      (await (await f.call("/issues/" + identifier)).json()) as { status: { id: string }; archivedAt: string | null; activity: { kind: string; actor: string | null }[] };
+    await tick(now);
+    await tick(now);
+    type Read = { status: { id: string }; archivedAt: string | null; activity: { kind: string; actor: string | null; nextValue: { days?: number } }[] };
+    const readAs = async (cookie: string, identifier: string) => (await (await f.any(cookie, "/issues/" + identifier)).json()) as Read;
+    const read = (identifier: string) => readAs(f.cookie, identifier);
     const closed = await read(stale.identifier), archived = await read(done.identifier);
     expect(closed.status.id).toBe(status("canceled"));
-    expect(closed.activity.filter((a) => a.kind === "issue.auto_closed")).toEqual([expect.objectContaining({ actor: "Auto-close automation" })]);
     expect(archived.archivedAt).not.toBeNull();
-    expect(archived.activity.filter((a) => a.kind === "issue.auto_archived")).toEqual([expect.objectContaining({ actor: "Auto-archive automation" })]);
+    // Every reader finds the reason entry in the issue's own activity: the owner, a follower and a member who does not follow.
+    for (const cookie of [f.cookie, f.bobCookie, f.caraCookie]) {
+      expect((await readAs(cookie, stale.identifier)).activity.filter((a) => a.kind === "issue.auto_closed"))
+        .toEqual([expect.objectContaining({ actor: "Auto-close automation", nextValue: expect.objectContaining({ days: 30 }) })]);
+      expect((await readAs(cookie, done.identifier)).activity.filter((a) => a.kind === "issue.auto_archived"))
+        .toEqual([expect.objectContaining({ actor: "Auto-archive automation", nextValue: expect.objectContaining({ days: 90 }) })]);
+    }
     for (const kept of [staleBug, fresh]) expect((await read(kept.identifier)).status.id).toBe(status("backlog"));
+
+    // Each follower gets exactly one notification per automated change, as the manual cancel gave; non-followers get none.
+    const inbox = async (cookie: string, identifier: string) =>
+      ((await (await f.any(cookie, "/notifications?limit=50")).json()) as InboxPage).items.filter((i) => i.identifier === identifier);
+    const byHand = await inbox(f.bobCookie, manual.identifier);
+    expect(byHand.map((i) => i.causes)).toEqual([["canceled"]]);
+    // Bob follows explicitly and the owner as the issues' creator.
+    for (const cookie of [f.bobCookie, f.cookie]) {
+      expect((await inbox(cookie, stale.identifier)).map((i) => [i.actor, i.causes])).toEqual([["Auto-close automation", byHand[0].causes]]);
+      expect((await inbox(cookie, done.identifier)).map((i) => [i.actor, i.causes])).toEqual([["Auto-archive automation", ["archived"]]]);
+    }
+    for (const issue of [stale, done]) expect(await inbox(f.caraCookie, issue.identifier)).toEqual([]);
+    // Mail follows the same rule as the manual status change (status changes send no email).
+    const mailed = (issue: { id: string }) =>
+      count("notification_deliveries d JOIN notifications n ON n.id=d.notification_id", "n.issue_id=?", [issue.id]);
+    for (const issue of [stale, done]) expect(await mailed(issue)).toBe(await mailed(manual));
+
+    // Non-readers see neither the issue nor its entry: a signed-out visitor and a removed member.
+    expect((await f.call(`/settings/operators/${f.cara}`, "DELETE")).status).toBe(200);
+    for (const cookie of ["", f.caraCookie])
+      for (const issue of [stale, done]) {
+        const refused = await request("/api/issues/" + issue.identifier, "GET", undefined, cookie);
+        expect(refused.status).toBe(401);
+        expect(await refused.text()).not.toContain("Auto-");
+      }
 
     // Archived issues leave lists and default search, stay findable and exported.
     const listed = async (query: string) =>

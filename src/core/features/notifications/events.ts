@@ -162,6 +162,17 @@ export function followerChangeStatements(
     ),
   );
 }
+/** An archive (AUTO-003) is a lifecycle change followers receive like a status change. */
+export function followerArchiveStatements(
+  db: D1Database,
+  event: CollaborationEvent,
+) {
+  return [
+    candidate(db, event, "archived", `i.id=? AND ${following}`, [
+      event.issueId,
+    ]),
+  ];
+}
 /** Both endpoint histories describe one directed relation mutation. Its source
  * receipt groups blocking and last-blocker resolution for each recipient. */
 export function followerBlockingStatements(

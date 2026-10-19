@@ -18,6 +18,7 @@ const labels: Record<NotificationKind, string> = {
   completed: "Followed issues completed",
   canceled: "Followed issues canceled",
   duplicate: "Followed issues marked duplicate",
+  archived: "Followed issues archived",
   urgent: "Followed issues raised to Urgent",
   blocking: "Followed blocking changes",
   due_changed: "Followed due date changes",

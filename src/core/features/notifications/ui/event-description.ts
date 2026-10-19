@@ -11,6 +11,7 @@ const actions: Record<NotificationKind, string> = {
   completed: "completed",
   canceled: "canceled",
   duplicate: "marked duplicate",
+  archived: "archived",
   urgent: "raised the priority to Urgent for",
   blocking: "changed a blocking relation on",
   due_changed: "changed the due date of",
