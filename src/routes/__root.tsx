@@ -49,7 +49,7 @@ export const Route = createRootRoute({
 });
 function Root() {
   // The member's saved choice is server-rendered on <html>, so CSS alone picks the palette before first paint.
-  const theme = useMatch({ from: "/app", shouldThrow: false })?.context.operator.theme;
+  const theme = useMatch({ from: "/app", shouldThrow: false })?.context?.operator?.theme;
   return (
     <html lang="en" data-theme={theme}>
       <head>

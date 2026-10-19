@@ -3,7 +3,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium } from '@playwright/test';
 import { createAdminRuntime, bootstrapOwner } from './admin-runtime-support.mjs';
-import { settleReads } from './collaboration-navigation.mjs';
+import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { contrastFailures, canvasLuminance } from './theme-contrast.mjs';
 // VIEW-011: System follows the device before first paint, a saved choice follows the member, both themes pass AA.
 const output = resolve(process.env.VECTOR_THEME_SHOTS ?? '.artifacts/verification/theme');
@@ -24,6 +24,7 @@ async function signIn(target) {
   await target.waitForURL(url => url.pathname.startsWith('/app'));
 }
 async function show(target, path) {
+  await beforePrivateNavigation(target, runtime.base + path);
   await target.goto(runtime.base + path);
   await target.locator('main:visible').first().waitFor();
   await settleReads(target);

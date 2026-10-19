@@ -4757,7 +4757,7 @@
       "executable": false
     },
     "src/routes/__root.tsx": {
-      "sha256": "2f2e8d54d4c78399163c092021c9e2c13a7b57d1750a15e7b5948995f6fed4f7",
+      "sha256": "ad87a23e9c7b4839dd46859feae1d4fce2372fe216d42478e98267a1f448963a",
       "executable": false
     },
     "src/routes/app.board.$identifier.tsx": {
@@ -5425,7 +5425,7 @@
       "executable": false
     },
     "tests/e2e/theme-runtime.mjs": {
-      "sha256": "ddd2033a2150ede0a3fd115e446e5e2f774884ef18daf1e5983d36c6168ec25f",
+      "sha256": "b554ade34471bbbdae10b8f369d6843fe6c8ca126398a5dbdcf0b43f91d2bd84",
       "executable": false
     },
     "tests/e2e/ui-administration-form.mjs": {
