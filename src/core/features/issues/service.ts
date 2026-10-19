@@ -248,6 +248,7 @@ export function buildIssueDetail(
     deferredUntil: issue.deferredUntil,
     completedAt: issue.completedAt,
     canceledAt: issue.canceledAt,
+    archivedAt: issue.archivedAt,
     createdAt: issue.createdAt,
     updatedAt: issue.updatedAt,
   };

@@ -14,7 +14,7 @@ const cycleColumns =
   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
 export async function readAdministration(db: D1Database, actor: string) {
   const { workspace_id: workspaceId } = await settingsActor(db, actor);
-  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules] =
+  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping] =
     await Promise.all([
       db
         .prepare("SELECT id,name,timezone FROM workspace_settings WHERE id=?")
@@ -60,6 +60,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         .all(),
       db.prepare("SELECT pl.project_id AS projectId,pl.label_id AS labelId FROM project_labels pl JOIN projects p ON p.id=pl.project_id WHERE p.workspace_id=? ORDER BY pl.label_id").bind(workspaceId).all<{projectId:string;labelId:string}>(),
       db.prepare("SELECT s.team_id AS teamId,s.weeks,s.start_weekday AS startWeekday,s.cooldown_weeks AS cooldownWeeks,s.upcoming_count AS upcomingCount FROM team_cycle_schedules s JOIN teams t ON t.id=s.team_id WHERE t.workspace_id=?").bind(workspaceId).all(),
+      db.prepare("SELECT h.team_id AS teamId,h.close_after_days AS closeAfterDays,h.archive_after_days AS archiveAfterDays,h.exempt_bugs AS exemptBugs FROM team_housekeeping h JOIN teams t ON t.id=h.team_id WHERE t.workspace_id=?").bind(workspaceId).all<{teamId:string;closeAfterDays:number|null;archiveAfterDays:number|null;exemptBugs:number}>(),
     ]);
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
@@ -70,6 +71,7 @@ export async function readAdministration(db: D1Database, actor: string) {
   return administrationSchema.parse({
     workspace,
     cycleSchedules: schedules.results,
+    housekeeping: housekeeping.results.map((h) => ({ ...h, exemptBugs: h.exemptBugs === 1 })),
     labelsPerIssue: seed.limits.labelsPerIssue,
     teams: teams.results.map((t) => ({
       ...t,

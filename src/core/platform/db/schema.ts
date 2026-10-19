@@ -125,6 +125,7 @@ export const issues = sqliteTable('issues', {
   version: integer('version').notNull(),
   completedAt: text('completed_at'),
   canceledAt: text('canceled_at'),
+  archivedAt: text('archived_at'),
   ...timestamps,
 }, (table) => [
   uniqueIndex('issues_identifier_idx').on(table.identifier),

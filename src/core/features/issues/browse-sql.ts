@@ -76,7 +76,8 @@ export function browseWhere(
   today: string,
   actor: string,
 ) {
-  const conditions = ["t.workspace_id=?"],
+  // Archived issues (AUTO-003) leave every list; search with archived records and their own pages still find them.
+  const conditions = ["t.workspace_id=?", "i.archived_at IS NULL"],
     values: string[] = [workspace];
   const equal = (column: string, value: string) => {
     conditions.push(`${column}=?`);

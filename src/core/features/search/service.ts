@@ -27,7 +27,7 @@ export function searchExpression(query: string) {
     .map((word) => `"${word}"*`)
     .join(" AND ");
 }
-const archiveIssue = `( ?=1 OR (t.archived_at IS NULL AND (p.id IS NULL OR p.archived_at IS NULL)))`;
+const archiveIssue = `( ?=1 OR (i.archived_at IS NULL AND t.archived_at IS NULL AND (p.id IS NULL OR p.archived_at IS NULL)))`;
 
 export async function searchWorkspace(
   db: D1Database,

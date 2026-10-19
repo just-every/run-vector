@@ -6,7 +6,7 @@ export const buildCommands = [
 export const ciCommands = [
   'sources:verify-base', 'check', 'test:installer', 'test:markdown',
   'test:worker', 'test:deployment', 'test:public-site', 'build',
-  'integration:check', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
+  'integration:check', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
   'test:data', 'test:integrations', 'test:base-auth', 'test:access',
   'test:mutation-refresh', 'test:admin', 'test:collaboration',
 ];
@@ -40,7 +40,7 @@ export const verificationShards = {
     browser: true,
     // The high-volume intake fixture has its own installation and operator;
     // sharing it with keyboard journeys spends their normal request budget.
-    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, 'test:wave-b', 'test:base-auth',
+    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'test:wave-b', 'test:base-auth',
       'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
   },
   // Keep Vitest's complete six-file-partition wall, balanced across three

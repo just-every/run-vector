@@ -8,7 +8,7 @@ export const issueSnapshotSchema = z.object({
   assigneeOperatorId: text.optional(), projectId: text.optional(), cycleId: text.optional(),
   dueDate: text.optional(), estimate: z.number().nullable().optional(), expectedOutcome: text.optional(),
   customerImpact: text.optional(), customFields: z.json().optional(), completedAt: text.optional(),
-  canceledAt: text.optional(), deferredUntil: text.optional(), labelIds: z.array(z.string()).optional(),
+  canceledAt: text.optional(), archivedAt: text.optional(), deferredUntil: text.optional(), labelIds: z.array(z.string()).optional(),
   deferralOrigin: text.optional(), canonicalId: text.optional(), canonicalIdentifier: text.optional(),
   canonicalCreatedAt: text.optional(),
 });

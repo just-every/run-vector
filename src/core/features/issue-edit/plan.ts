@@ -40,6 +40,7 @@ const columns = {
   customerImpact: "customer_impact",
   completedAt: "completed_at",
   canceledAt: "canceled_at",
+  archivedAt: "archived_at",
   customFields: "custom_fields_json",
 } as const;
 
@@ -194,6 +195,11 @@ export async function planIssueUpdate(
     previous.canceledAt = issue.canceledAt;
     values.completedAt = next.category === "completed" ? now : null;
     values.canceledAt = next.category === "canceled" ? now : null;
+    // A status change brings an archived issue back into lists (AUTO-003).
+    if (issue.archivedAt) {
+      previous.archivedAt = issue.archivedAt;
+      values.archivedAt = null;
+    }
     guard(
       "EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)",
       next.id,

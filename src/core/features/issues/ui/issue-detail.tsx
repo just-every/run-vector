@@ -25,6 +25,7 @@ import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
 import { activityChanges, activityTitle } from "./activity-changes";
 import { issueDetailSchema, type IssueDetailData } from "./data";
+import { useViewerTime } from "../../../app/viewer-time";
 
 type IssueDetailProps = {
   identifier: string;
@@ -146,6 +147,7 @@ function IssueInspector({
   options: StreamOptions | null;
   optionsError: Error | null;
 }) {
+  const { formatInstant } = useViewerTime();
   const [hierarchy, setHierarchy] = useState<HierarchyState & { id: string }>({
     id: issue.identifier,
     editing: false,
@@ -206,6 +208,11 @@ function IssueInspector({
             ) : null}
           </div>
           <h1 id="issue-title">{issue.title}</h1>
+          {issue.archivedAt && (
+            <p className="issue-archived-notice" role="note">
+              Archived {formatInstant(issue.archivedAt)}. It is left out of lists and default search; choosing another status brings it back.
+            </p>
+          )}
           <div className="issue-header-actions">
             <IssueCopyAction key={`copy:${issue.identifier}`} identifier={issue.identifier} onRefresh={onRefresh} />
             <IssueEditor

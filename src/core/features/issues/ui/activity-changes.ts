@@ -57,6 +57,8 @@ export function activityTitle(kind: string, nextValue?: unknown) {
   if (kind === "issue.copied_from") return `Copied from ${String(record(nextValue).identifier ?? "an issue")}`;
   if (kind === "issue.copied_to") return `Copied to ${String(record(nextValue).identifier ?? "an issue")}`;
   if (typeof record(nextValue).undoOf === 'string') return 'Undid the previous change';
+  if (kind === "issue.auto_closed") return `Closed automatically after ${String(record(nextValue).days ?? "")} days without activity`;
+  if (kind === "issue.auto_archived") return `Archived automatically ${String(record(nextValue).days ?? "")} days after it closed`;
   const titles: Record<string, string> = {
     "issue.created": "Created the issue",
     "issue.updated": "Changed the issue",

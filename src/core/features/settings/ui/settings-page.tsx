@@ -10,6 +10,7 @@ import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { settingsSchema } from "../schema";
 import { administrationSchema } from "../../administration/schema";
 import { TeamsPanel } from "./teams-panel";
+import { HousekeepingPanel } from "../../housekeeping/panel";
 import { LabelsPanel } from "./labels-panel";
 import { CyclesPanel } from "../../cycles/ui/cycles-panel";
 import { NotificationsPanel } from "../../notifications/ui/notifications-panel";
@@ -103,6 +104,7 @@ export function SettingsPage() {
           <a href="#workspace-time">Workspace time</a>
           <a href="#operators">Operators</a>
           <a href="#teams">Teams</a>
+          <a href="#housekeeping">Auto-close</a>
           <a href="#labels">Labels</a>
           <a href="#projects">Projects</a>
           <a href="#cycles">Cycles</a>
@@ -270,6 +272,10 @@ export function SettingsPage() {
             <>
               <TeamsPanel
                 teams={administration.data.teams}
+                onChanged={administration.reload}
+              />
+              <HousekeepingPanel
+                data={administration.data}
                 onChanged={administration.reload}
               />
               <LabelsPanel

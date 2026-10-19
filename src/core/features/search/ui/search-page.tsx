@@ -86,7 +86,7 @@ export function SearchPage() {
             checked={archived}
             onChange={(e) => setArchived(e.target.checked)}
           />
-          Include archived teams and projects
+          Include archived issues, teams and projects
         </label>
       </div>
       {error && (

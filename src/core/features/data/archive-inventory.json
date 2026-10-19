@@ -608,7 +608,8 @@
     "completed_at",
     "canceled_at",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "archived_at"
   ],
   "labels": [
     "id",
@@ -1485,6 +1486,14 @@
   "operator_appearance": [
     "operator_id",
     "theme",
+    "revision",
+    "updated_at"
+  ],
+  "team_housekeeping": [
+    "team_id",
+    "close_after_days",
+    "archive_after_days",
+    "exempt_bugs",
     "revision",
     "updated_at"
   ]

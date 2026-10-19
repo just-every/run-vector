@@ -179,7 +179,9 @@ export function getProjectDetail(
     teams,
     cycles,
     dependencies,
+    // Progress counts every issue; the list leaves archived issues out (AUTO-003).
     issues: projectIssues
+      .filter((issue) => !issue.archivedAt)
       .map(issueDetail)
       .sort((left, right) => left.identifier.localeCompare(right.identifier)),
   };

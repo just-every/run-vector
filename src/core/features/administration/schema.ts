@@ -4,6 +4,7 @@ import {
   cycleProgressSchema,
 } from "../cycle-closure/schema.ts";
 import { z } from "zod";
+import { housekeepingSchema } from "../housekeeping/schema";
 import { cycleReportSchema } from "../cycle-report/schema.ts";
 
 export const administrationId = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
@@ -131,6 +132,7 @@ export const administrationSchema = z.object({
     timezone: z.string(),
   }),
   cycleSchedules: z.array(cycleScheduleSchema.extend({teamId: z.string()})),
+  housekeeping: z.array(housekeepingSchema.extend({ teamId: z.string() })),
   labelsPerIssue: z.number(),
   teams: z.array(
     z.object({

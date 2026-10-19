@@ -100,6 +100,7 @@ export const issueDetailSchema = z.object({
   deferredUntil: z.string().nullable(),
   completedAt: z.string().nullable(),
   canceledAt: z.string().nullable(),
+  archivedAt: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });

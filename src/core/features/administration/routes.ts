@@ -1,4 +1,6 @@
 import { saveCycleSchedule } from "../cycle-schedule/settings";
+import { previewHousekeeping, saveHousekeeping } from "../housekeeping/settings";
+import { housekeepingSchema } from "../housekeeping/schema";
 import type { Hono, Context } from "hono";
 import type { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -160,6 +162,12 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
     ),
   );
   app.put("/settings/teams/:id/cycle-schedule", mutation(schema.cycleScheduleSchema, (c,b) => saveCycleSchedule(c.env.DB,c.get("operatorId"),c.req.param("id")!,b)));
+  app.put("/settings/teams/:id/housekeeping", mutation(housekeepingSchema, (c,b) => saveHousekeeping(c.env.DB,c.get("operatorId"),c.req.param("id")!,b)));
+  app.post("/settings/teams/:id/housekeeping/preview", handle(async (c) => {
+    const parsed = housekeepingSchema.safeParse(await readRequestJson(c.req.raw));
+    if (!parsed.success) return c.json({ error: "invalid_request", issues: parsed.error.issues }, 400);
+    return c.json(await previewHousekeeping(c.env.DB, c.get("operatorId"), c.req.param("id")!, parsed.data));
+  }));
   app.get(
     "/cycles/:id",
     handle(async (c) =>

@@ -3,7 +3,7 @@ export const snapshotFields = [
   "id", "identifier", "version", "teamId", "statusId", "statusCategory",
   "title", "description", "priority", "assigneeOperatorId", "projectId", "cycleId",
   "dueDate", "estimate", "expectedOutcome", "customerImpact", "customFields",
-  "completedAt", "canceledAt", "deferredUntil", "labelIds", "deferralOrigin",
+  "completedAt", "canceledAt", "archivedAt", "deferredUntil", "labelIds", "deferralOrigin",
   "canonicalId", "canonicalIdentifier", "canonicalCreatedAt",
 ] as const;
 export type SnapshotField = typeof snapshotFields[number];
@@ -17,7 +17,7 @@ export const issueColumns = {
   priority: "priority", assigneeOperatorId: "assignee_operator_id", projectId: "project_id",
   cycleId: "cycle_id", dueDate: "due_date", estimate: "estimate", expectedOutcome: "expected_outcome",
   customerImpact: "customer_impact", customFields: "custom_fields_json", completedAt: "completed_at",
-  canceledAt: "canceled_at", deferredUntil: "deferred_until",
+  canceledAt: "canceled_at", archivedAt: "archived_at", deferredUntil: "deferred_until",
 } as const;
 const expressions: Record<SnapshotField, string> = {
   id: "i.id", identifier: "i.identifier", version: "i.version", teamId: "i.team_id",
@@ -25,7 +25,7 @@ const expressions: Record<SnapshotField, string> = {
   priority: "i.priority", assigneeOperatorId: "i.assignee_operator_id", projectId: "i.project_id",
   cycleId: "i.cycle_id", dueDate: "i.due_date", estimate: "i.estimate", expectedOutcome: "i.expected_outcome",
   customerImpact: "i.customer_impact", customFields: "json(i.custom_fields_json)", completedAt: "i.completed_at",
-  canceledAt: "i.canceled_at", deferredUntil: "i.deferred_until",
+  canceledAt: "i.canceled_at", archivedAt: "i.archived_at", deferredUntil: "i.deferred_until",
   labelIds: "json((SELECT json_group_array(label_id) FROM (SELECT label_id FROM issue_labels WHERE issue_id=i.id ORDER BY label_id)))",
   deferralOrigin: "(SELECT decision_id FROM issue_deferral_origins WHERE issue_id=i.id)",
   canonicalId: "(SELECT canonical_issue_id FROM issue_duplicates WHERE issue_id=i.id)",
