@@ -2953,7 +2953,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
-      "sha256": "9a9010255f3884dbffb46234aca69eedb1e5d243b033359000e87a454abaf908",
+      "sha256": "8c495149cff337dad36bb9be6e9eae383f7c7c029ba67f8ff32b0eb73905f745",
       "executable": false
     },
     "src/core/features/data/archive-policy.d.mts": {

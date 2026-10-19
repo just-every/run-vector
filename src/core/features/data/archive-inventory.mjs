@@ -4,13 +4,21 @@ const excluded=policy({product:'just-every/vector-projects'}).excludeTables;
 const excludedTable=name=>excluded.some(pattern=>pattern.endsWith('%')?name.toLowerCase().startsWith(pattern.slice(0,-1)):name.toLowerCase()===pattern);
 export async function validateArchiveInventory(db) {
  const tables=(await db.prepare("SELECT name FROM sqlite_master WHERE type='table' ORDER BY name").all()).results;
+ // Keep every schema check on every request, but execute the PRAGMAs in one
+ // D1 batch instead of a network round trip for each classified table.
+ const classified=[];
  for(const {name} of tables) {
   if(!Object.hasOwn(inventory,name)&&excludedTable(name))continue;
   if(!Object.hasOwn(inventory,name))throw Error('unclassified_table');
-  const columns=(await db.prepare('PRAGMA table_xinfo("'+name.replaceAll('"','""')+'")').all()).results.map(c=>c.name);
-  if(JSON.stringify(columns)!==JSON.stringify(inventory[name]))throw Error('unclassified_column');
+  classified.push(name);
  }
- for(const name of Object.keys(inventory))if(!tables.some(row=>row.name===name))throw Error('missing_table');
+ const present=new Set(tables.map(row=>row.name));
+ for(const name of Object.keys(inventory))if(!present.has(name))throw Error('missing_table');
+ const schemas=await db.batch(classified.map(name=>db.prepare('PRAGMA table_xinfo("'+name.replaceAll('"','""')+'")')));
+ for(let index=0;index<classified.length;index++) {
+  const columns=schemas[index].results.map(column=>column.name);
+  if(JSON.stringify(columns)!==JSON.stringify(inventory[classified[index]]))throw Error('unclassified_column');
+ }
  return tables.length;
 }
 export async function validateArchiveAttachments(db,bucket) {
