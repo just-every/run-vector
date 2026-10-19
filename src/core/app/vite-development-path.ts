@@ -2,6 +2,12 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  '/src/core/app/viewer-time.tsx',
+  '/src/core/shared/timezone.ts',
+  '/src/core/features/settings/personal-time-schema.ts',
+  '/src/core/features/administration/calendar.ts',
+  '/src/core/features/settings/ui/personal-time-panel.tsx',
+  '/src/core/features/settings/ui/personal-time.css',
   '/src/core/features/data/import/profiles.ts',
   '/src/core/features/data/import/profile-values.ts',
   '/src/core/features/data/import/plane.ts',
@@ -154,7 +160,6 @@ const developmentAssets = new Set([
   '/src/core/features/notifications/mention-token.ts',
   '/src/core/features/notifications/mention-markdown.ts',
   '/src/core/features/notifications/ui/event-description.ts',
-  '/src/core/features/notifications/ui/follow-up-time.ts',
   '/src/core/features/notifications/ui/follow-ups.css',
   '/src/core/features/notifications/ui/inbox-row.tsx',
   '/src/core/features/notifications/ui/inbox-snooze.tsx',

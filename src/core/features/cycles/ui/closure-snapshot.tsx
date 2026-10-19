@@ -1,17 +1,15 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import type { CycleSnapshot } from "../../cycle-closure/schema";
 import "./closure-snapshot.css";
 export function ClosureSnapshot({ snapshot }: { snapshot: CycleSnapshot }) {
+  const { formatInstant } = useViewerTime();
   return (
     <section className="closure-snapshot" aria-label="Frozen cycle snapshot">
       <h2>Snapshot at close</h2>
       <p>
         Closed{" "}
-        {new Intl.DateTimeFormat(undefined, {
-          dateStyle: "medium",
-          timeStyle: "short",
-          timeZone: snapshot.timezone,
-        }).format(new Date(snapshot.closedAt))}{" "}
-        · {snapshot.timezone}
+        {formatInstant(snapshot.closedAt)}{" "}
+        · Cycle calendar: {snapshot.timezone}
       </p>
       <p>
         {snapshot.committed.length} committed · {snapshot.completed.length}{" "}
@@ -78,11 +76,7 @@ export function ClosureSnapshot({ snapshot }: { snapshot: CycleSnapshot }) {
           {snapshot.changes.map((change, index) => (
             <li key={index}>
               {change.identifier} · {change.direction} ·{" "}
-              {new Intl.DateTimeFormat(undefined, {
-                dateStyle: "medium",
-                timeStyle: "short",
-                timeZone: snapshot.timezone,
-              }).format(new Date(change.at))}
+              {formatInstant(change.at)}
             </li>
           ))}
         </ul>

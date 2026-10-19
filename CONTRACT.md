@@ -732,7 +732,7 @@ Judged from the code and tests at commit `3208cd6b46942ccec3e4c357ec989bd227d3c7
 | `NOTIFY-007` | Channels and digests | target | partial | `src/core/features/notifications/mail.ts` | Immediate email for assignment and mention; other channels and digests are absent |
 | `NOTIFY-008` | Snooze and reminders | target | done | `tests/worker/notification-followups.test.ts`, `evidence/issue-follow-up/NOTIFY-008/` |  |
 | `NOTIFY-009` | Subscriptions | target | missing |  | No implementation yet |
-| `NOTIFY-010` | Personal time zone and working hours | target | missing |  | No implementation yet |
+| `NOTIFY-010` | Personal time zone and working hours | target | partial | `tests/worker/personal-time.test.ts`, `tests/e2e/personal-time-runtime.mjs`; `src/core/app/viewer-time.tsx` | Personal IANA zone with live workspace inheritance, working-hours preferences, per-assignee due reminders, viewer-zone timestamps and personal reminder/snooze inputs implemented; working-hours scheduling for email digests and push quiet hours waits on NOTIFY-007/MOBILE-002 |
 | `AUTO-001` | Recurring issues | target | missing |  | No implementation yet |
 | `AUTO-002` | Workflow rules | target | partial | `src/core/features/due-reminders/service.ts`, `src/core/features/intake-return/service.ts` | Fixed due reminders and deferral return; configurable rules are absent |
 | `AUTO-003` | Auto-close and auto-archive | target | missing |  | No implementation yet |

@@ -10,8 +10,46 @@ import { timezoneSchema } from "../bootstrap/config";
 import { readSettings, SettingsError, updateWorkspaceTime } from "./repository";
 import { reminderTimeSchema } from "./schema";
 import { removeOperator } from "./removal";
+import { readPersonalTime, updatePersonalTime } from "./personal-time";
+import { personalTimeInputSchema } from "./personal-time-schema";
 
 export function addSettingsRoutes(app: Hono<AppEnvironment>) {
+  app.get("/settings/personal-time", async (c) => {
+    try {
+      return c.json(await readPersonalTime(c.env.DB, c.get("operatorId")));
+    } catch (error) {
+      if (error instanceof SettingsError)
+        return c.json(
+          { error: error.code, message: error.message },
+          error.status,
+        );
+      throw error;
+    }
+  });
+  app.patch("/settings/personal-time", async (c) => {
+    const parsed = personalTimeInputSchema.safeParse(
+      await readRequestJson(c.req.raw),
+    );
+    if (!parsed.success)
+      return c.json(
+        { error: "invalid_request", issues: parsed.error.issues },
+        400,
+      );
+    try {
+      await updatePersonalTime(c.env.DB, c.get("operatorId"), parsed.data);
+      return c.json({
+        ...(await readSettings(c.env.DB, c.get("operatorId"))),
+        invitationDelivery: localMailEnabled(c.env) ? "local" : "email",
+      });
+    } catch (error) {
+      if (error instanceof SettingsError)
+        return c.json(
+          { error: error.code, message: error.message },
+          error.status,
+        );
+      throw error;
+    }
+  });
   app.post("/settings/operators/invite", async (c) => {
     const parsed = z
       .object({
@@ -27,7 +65,10 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         role: "owner",
         returnTo: "/app",
       });
-      return c.json({ ...result, delivery: localMailEnabled(c.env) ? 'local' : 'email' }, 202);
+      return c.json(
+        { ...result, delivery: localMailEnabled(c.env) ? "local" : "email" },
+        202,
+      );
     } catch (error) {
       if (error instanceof AuthError)
         return Response.json(
@@ -73,7 +114,10 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   });
   app.get("/settings", async (c) => {
     try {
-      return c.json({ ...await readSettings(c.env.DB, c.get("operatorId")), invitationDelivery: localMailEnabled(c.env) ? 'local' : 'email' });
+      return c.json({
+        ...(await readSettings(c.env.DB, c.get("operatorId"))),
+        invitationDelivery: localMailEnabled(c.env) ? "local" : "email",
+      });
     } catch (error) {
       if (error instanceof SettingsError)
         return c.json(
@@ -103,7 +147,10 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         parsed.data.timezone,
         parsed.data.reminderTime,
       );
-      return c.json({ ...await readSettings(c.env.DB, c.get("operatorId")), invitationDelivery: localMailEnabled(c.env) ? 'local' : 'email' });
+      return c.json({
+        ...(await readSettings(c.env.DB, c.get("operatorId"))),
+        invitationDelivery: localMailEnabled(c.env) ? "local" : "email",
+      });
     } catch (error) {
       if (error instanceof SettingsError)
         return c.json(

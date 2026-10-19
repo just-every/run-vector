@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
 import { useHydrated } from '../../../app/initial-resources';
@@ -32,6 +33,7 @@ export function IssueDescription({ issue, onRefresh }: { issue: IssueDetailData;
 }
 
 function DescriptionHistory({ issue, onRefresh }: { issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
+  const { formatInstant } = useViewerTime();
   const hydrated = useHydrated();
   // Returning from an inspector retires its state while admitted history reads
   // finish, just like the inspector's personal-reminder reads.
@@ -52,7 +54,7 @@ function DescriptionHistory({ issue, onRefresh }: { issue: IssueDetailData; onRe
   const [error, setError] = useState('');
   const left = revisions.find(revision => revision.id === from) ?? revisions[0];
   const right = revisions.find(revision => revision.id === to) ?? revisions.at(-1);
-  const option = (revision: typeof revisions[number], index: number) => `Revision ${index + 1} · ${revision.actor ?? 'Automation'} · ${new Date(revision.createdAt).toLocaleString()}`;
+  const option = (revision: typeof revisions[number], index: number) => `Revision ${index + 1} · ${revision.actor ?? 'Automation'} · ${formatInstant(revision.createdAt)}`;
   return <details className="secondary-section description-history"><summary>Description history{revisions.length ? ` · ${revisions.length}` : ''}</summary>
     {history.error ? <p role="alert">{history.error.message} <button onClick={history.reload}>Retry history</button></p> : null}
     {revisions.length > 0 && <>

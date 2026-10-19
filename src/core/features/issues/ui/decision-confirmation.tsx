@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useApiResource } from "../../../app/api-client";
 import { currentStreamSchema, myWorkSchema } from "../../streams/ui/data";
 import type { IssueDetailData } from "./data";
@@ -8,6 +9,7 @@ export function DecisionConfirmation({
   issue: IssueDetailData;
   operatorId?: string;
 }) {
+  const { formatInstant } = useViewerTime();
   const latest = [...issue.decisions].sort((a, b) =>
     b.at.localeCompare(a.at),
   )[0];
@@ -51,7 +53,7 @@ export function DecisionConfirmation({
       <p>
         {deferred
           ? activeDeferral
-            ? `Returns for decision ${latest.returnAt ? new Date(latest.returnAt).toLocaleString() : "when the deferral ends"}.`
+            ? `Returns for decision ${latest.returnAt ? formatInstant(latest.returnAt) : "when the deferral ends"}.`
             : "This issue is ready for a new decision. Its earlier deferral remains in history."
           : accepted
             ? `${issue.assignee?.name ?? "Unassigned"} · ${issue.status.name} · ${issue.priority === "none" ? "No priority" : issue.priority}.`

@@ -1,6 +1,7 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useHydrated } from '../../../app/initial-resources';
 import { useId, useState } from "react";
-import { futureLocalInstant, localDateTimeValue } from "./follow-up-time";
+
 
 export type SnoozeChoice = { until: string } | { untilChange: true };
 
@@ -13,6 +14,7 @@ export function InboxSnoozeControls({
   disabled: boolean;
   onSnooze: (choice: SnoozeChoice) => Promise<boolean>;
 }) {
+  const { localValue: localDateTimeValue, futureInstant: futureLocalInstant, effectiveTimezone } = useViewerTime();
   const hydrated = useHydrated();
   disabled = disabled || !hydrated;
   const id = useId();
@@ -73,7 +75,7 @@ export function InboxSnoozeControls({
             }}
           >
             <label>
-              Custom date and time (your local time)
+              Custom date and time ({effectiveTimezone})
               <input
                 type="datetime-local"
                 required

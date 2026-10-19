@@ -1,3 +1,4 @@
+import { localTimeToInstant } from '../../administration/calendar';
 import { isSafeHttpsUrl } from '../../links/schema.ts'
 
 export type IntakeMeasurementDraft = {
@@ -197,7 +198,7 @@ export function createIssuePayload(values: NewIssueDraft) {
   }
 }
 
-export function createIntakePayload(values: NewIssueDraft) {
+export function createIntakePayload(values: NewIssueDraft, timezone: string) {
   const measurements: Record<string, string | number | boolean> =
     Object.create(null)
   if (
@@ -243,10 +244,7 @@ export function createIntakePayload(values: NewIssueDraft) {
   })
   let observedAt: string | undefined
   if (values.intakeObservedAt) {
-    const observed = new Date(values.intakeObservedAt)
-    if (!Number.isFinite(observed.getTime()))
-      throw new Error('Enter a valid observed time.')
-    observedAt = observed.toISOString()
+    observedAt = localTimeToInstant(values.intakeObservedAt, timezone)
   }
   const summary = values.intakeSummary.trim()
   return {

@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { WorkloadPanel } from '../../workload/panel';
 import { ClosureSnapshot } from "./closure-snapshot";
 import { remainingScopeCopy, capacityRiskCopy } from "./capacity-copy";
@@ -15,6 +16,7 @@ import { issueDetailSchema } from "../../issues/ui/data";
 import "../../settings/ui/settings.css";
 import "./cycles.css";
 export function CycleDetailPage({ cycleId }: { cycleId: string }) {
+  const { formatInstant } = useViewerTime();
   const detail = useApiResource(`/api/cycles/${cycleId}`, cycleDetailSchema);
   const administration = useApiResource(
     "/api/settings/administration",
@@ -99,8 +101,8 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
           · Workspace time: {workspaceTimezone}
         </p>
         <p>
-          {format(cycle.startsAt, workspaceTimezone)} –{" "}
-          {format(cycle.endsAt, workspaceTimezone)}
+          {formatInstant(cycle.startsAt)} –{" "}
+          {formatInstant(cycle.endsAt)}
         </p>
       </header>
       <section aria-label="Cycle progress">
@@ -265,11 +267,4 @@ function CycleIssue({
       </label>
     </div>
   );
-}
-function format(instant: string, timezone: string) {
-  return new Intl.DateTimeFormat(undefined, {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: timezone,
-  }).format(new Date(instant));
 }

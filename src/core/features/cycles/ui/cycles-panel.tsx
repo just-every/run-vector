@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { CycleSchedulePanel } from "../../cycle-schedule/panel";
 import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
@@ -13,6 +14,7 @@ export function CyclesPanel({
   onChanged: () => void;
   heading?: string;
 }) {
+  const { formatInstant } = useViewerTime();
   const action = useAdministrationAction(onChanged);
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -41,7 +43,7 @@ export function CyclesPanel({
         All cycles
       </Link>
       <p>
-        Cycle dates use workspace time:{" "}
+        Create cycles in workspace time:{" "}
         <strong>{data.workspace.timezone}</strong>. End must follow start;
         cycles for the same team cannot overlap. When clocks change, choose a
         time that occurs once. Times that happen twice or are skipped cannot be
@@ -97,17 +99,9 @@ export function CyclesPanel({
           </Link>
           <p>
             {data.teams.find((team) => team.id === cycle.teamId)?.name} ·{" "}
-            {new Intl.DateTimeFormat(undefined, {
-              dateStyle: "medium",
-              timeStyle: "short",
-              timeZone: data.workspace.timezone,
-            }).format(new Date(cycle.startsAt))}{" "}
+            {formatInstant(cycle.startsAt)}{" "}
             –{" "}
-            {new Intl.DateTimeFormat(undefined, {
-              dateStyle: "medium",
-              timeStyle: "short",
-              timeZone: data.workspace.timezone,
-            }).format(new Date(cycle.endsAt))}
+            {formatInstant(cycle.endsAt)}
             {cycle.closedAt ? " · Closed" : ""}
           </p>
         </div>

@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useHydrated } from "../../../app/initial-resources";
 import { ListPreferenceControls, type ListPreferenceControlsProps } from "../../views/ui/list-preference-controls";
 import { attentionReasons, reasonLabel, type StreamFilters } from "./helpers";
@@ -131,20 +132,12 @@ export function FilterBar({
 }
 
 export function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
+  const { formatInstant, effectiveTimezone } = useViewerTime();
   if (cycles.length === 0) return null;
   const number = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
   return (
     <div className="cycle-context" aria-label="Active cycle context">
       {cycles.map((cycle) => {
-        const date = new Intl.DateTimeFormat(undefined, {
-          timeZone: cycle.timezone,
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          hourCycle: "h23",
-        });
         const capacityLabel =
           cycle.capacityRisk === "unknown"
             ? "Capacity unknown"
@@ -182,13 +175,13 @@ export function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
             </strong>
             <small className="cycle-dates">
               <time dateTime={cycle.startsAt}>
-                {date.format(new Date(cycle.startsAt))}
+                {formatInstant(cycle.startsAt)}
               </time>{" "}
               –{" "}
               <time dateTime={cycle.endsAt}>
-                {date.format(new Date(cycle.endsAt))}
+                {formatInstant(cycle.endsAt)}
               </time>
-              <span className="cycle-timezone">{cycle.timezone}</span>
+              <span className="cycle-timezone">{effectiveTimezone}</span>
             </small>
             <small className="cycle-capacity" data-risk={cycle.capacityRisk}>
               {capacityLabel} · {capacityFacts.join(" · ")}

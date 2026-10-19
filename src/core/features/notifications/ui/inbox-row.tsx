@@ -1,8 +1,9 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useHydrated } from '../../../app/initial-resources';
 import type { InboxItem } from "../schema";
 import { relativeTime } from "../../streams/ui/helpers";
 import { notificationAction } from "./event-description";
-import { followUpTime } from "./follow-up-time";
+
 import { InboxSnoozeControls, type SnoozeChoice } from "./inbox-snooze";
 
 export function InboxNotificationRow({
@@ -22,6 +23,7 @@ export function InboxNotificationRow({
   onSnooze?: (choice: SnoozeChoice) => Promise<boolean>;
   onReturn?: () => void;
 }) {
+  const { formatInstant: followUpTime } = useViewerTime();
   const hydrated = useHydrated();
   return (
     <div className={`inbox-entry${item.readAt ? "" : " is-unread"}`}>

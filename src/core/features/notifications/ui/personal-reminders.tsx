@@ -1,10 +1,7 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useHydrated } from '../../../app/initial-resources';
 import { useId, useState } from "react";
-import {
-  followUpTime,
-  futureLocalInstant,
-  localDateTimeValue,
-} from "./follow-up-time";
+
 import { usePersonalReminders } from "./use-personal-reminders";
 import "./notifications.css";
 import "./follow-ups.css";
@@ -14,6 +11,7 @@ export function PersonalReminderControls({
 }: {
   identifier: string;
 }) {
+  const { formatInstant: followUpTime, localValue: localDateTimeValue, futureInstant: futureLocalInstant, effectiveTimezone } = useViewerTime();
   const hydrated = useHydrated();
   const id = useId();
   const reminders = usePersonalReminders(identifier);
@@ -83,7 +81,7 @@ export function PersonalReminderControls({
       {open && (
         <div className="personal-reminder-panel" id={id}>
           <p>
-            A private Inbox reminder for you. Times use your local timezone.
+            A private Inbox reminder for you. Times use {effectiveTimezone}.
           </p>
           {reminders.reminders && (
             <>
@@ -94,7 +92,7 @@ export function PersonalReminderControls({
                 }}
               >
                 <label>
-                  Remind me at (your local time)
+                  Remind me at ({effectiveTimezone})
                   <input
                     type="datetime-local"
                     required

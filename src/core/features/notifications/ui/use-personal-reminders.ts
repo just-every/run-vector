@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import {
@@ -5,7 +6,7 @@ import {
   isUnavailableResourceError,
   useApiResource,
 } from "../../../app/api-client";
-import { followUpTime } from "./follow-up-time";
+
 
 const remindersSchema = z.object({
   reminders: z.array(
@@ -14,6 +15,7 @@ const remindersSchema = z.object({
 });
 
 export function usePersonalReminders(identifier: string) {
+  const { formatInstant: followUpTime } = useViewerTime();
   const url = `/api/issues/${encodeURIComponent(identifier)}/reminders`;
   // Inspector selection can change while a poll is reading its response. Stop
   // polling on disposal, but let that admitted read finish without publishing.

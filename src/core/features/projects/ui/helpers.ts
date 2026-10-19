@@ -73,8 +73,9 @@ export function projectProgressLabel(project: ProjectSummaryData) {
 export function shortProjectDate(value: string | null) {
   if (value === null) return 'No target date'
   return new Intl.DateTimeFormat(undefined, {
+    timeZone: 'UTC',
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  }).format(new Date(`${value}T00:00:00`))
+  }).format(new Date(`${value}T00:00:00Z`))
 }

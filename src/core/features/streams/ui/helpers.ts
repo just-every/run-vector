@@ -74,9 +74,10 @@ export function moveRowFocus(
 export function shortDate(value: string | null) {
   if (value === null) return "No due date";
   return new Intl.DateTimeFormat(undefined, {
+    timeZone: "UTC",
     month: "short",
     day: "numeric",
-  }).format(new Date(`${value}T00:00:00`));
+  }).format(new Date(`${value}T00:00:00Z`));
 }
 
 export function relativeTime(value: string) {

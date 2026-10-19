@@ -1,3 +1,5 @@
+import { useViewerTime } from '../../../app/viewer-time';
+import { PersonalTimePanel } from './personal-time-panel';
 import "./settings.css";
 import { IntegrationsPanel } from "../../integrations/ui/integrations-panel";
 import { useState, type FormEvent } from "react";
@@ -15,6 +17,7 @@ import { InviteOperator } from "./invite-operator";
 import { RestorePanel } from "../../data/ui/restore-panel";
 
 export function SettingsPage() {
+  const clock = useViewerTime();
   const administration = useApiResource(
     "/api/settings/administration",
     administrationSchema,
@@ -49,6 +52,7 @@ export function SettingsPage() {
           reminderTime: reminderTime ?? resource.data.workspace.reminderTime,
         }),
       });
+      clock.publish({...updated.personalTime, workspaceTimezone:updated.workspace.timezone, reminderTime:updated.workspace.reminderTime});
       setTimezone(updated.workspace.timezone);
       setReminderTime(updated.workspace.reminderTime);
       setMessage("Workspace time saved.");
@@ -93,6 +97,7 @@ export function SettingsPage() {
       </header>
       {resource.data && administration.data && (
         <nav className="settings-sections" aria-label="Settings sections">
+          <a href="#personal-time">Your time</a>
           <a href="#workspace-time">Workspace time</a>
           <a href="#operators">Operators</a>
           <a href="#teams">Teams</a>
@@ -121,10 +126,11 @@ export function SettingsPage() {
       {message && <p role="status">{message}</p>}
       {resource.data && (
         <>
+          <PersonalTimePanel />
           <section id="workspace-time" aria-labelledby="timezone-heading">
             <h2 id="timezone-heading">Workspace time</h2>
             <p>
-              Calendar days and work windows use this timezone. Existing
+              Workspace calendar days and cycle boundaries use this timezone. Existing
               timestamps are retained.
             </p>
             <form onSubmit={saveTimezone}>
@@ -154,7 +160,7 @@ export function SettingsPage() {
                 aria-describedby="reminder-time-help"
               />
               <p id="reminder-time-help">
-                Inbox reminders for assigned work use this workspace time.
+                Inbox reminders for assigned work use this time in each assignee’s timezone.
                 Overdue work is reminded once when the next day begins.
               </p>
               <button disabled={pending || denied} type="submit">

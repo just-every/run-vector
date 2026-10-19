@@ -1472,5 +1472,14 @@
     "revision",
     "generation",
     "updated_at"
+  ],
+  "operator_personal_time": [
+    "operator_id",
+    "timezone",
+    "working_hours_start",
+    "working_hours_end",
+    "working_days_json",
+    "revision",
+    "updated_at"
   ]
 }

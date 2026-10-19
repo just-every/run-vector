@@ -1,7 +1,6 @@
 import { z } from "zod";
-export const reminderTimeSchema = z
-  .string()
-  .regex(/^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/);
+import { reminderTimeSchema, personalTimeSchema } from "./personal-time-schema";
+export { reminderTimeSchema, personalTimeSchema } from "./personal-time-schema";
 export const settingsSchema = z.object({
   workspace: z.object({
     id: z.string(),
@@ -19,5 +18,6 @@ export const settingsSchema = z.object({
     }),
   ),
   operatorId: z.string(),
-  invitationDelivery: z.enum(['local', 'email']),
+  personalTime: personalTimeSchema,
+  invitationDelivery: z.enum(["local", "email"]),
 });

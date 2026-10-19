@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -26,6 +27,7 @@ const allowedStatusCategories = new Set([
 const createdIssueSchema = issueDetailSchema.extend({ page: navigationPageSchema.optional() });
 
 export function NewIssueForm() {
+  const { effectiveTimezone } = useViewerTime();
   const navigate = useNavigate();
   const options = useApiResource("/api/options", workspaceOptionsSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
@@ -125,7 +127,7 @@ export function NewIssueForm() {
           method: "POST",
           headers: { "content-type": "application/json", ...(!isIntake ? { 'x-vector-page': 'issue' } : {}) },
           body: JSON.stringify(
-            isIntake ? createIntakePayload(values) : createIssuePayload(values),
+            isIntake ? createIntakePayload(values, effectiveTimezone) : createIssuePayload(values),
           ),
         },
       );
@@ -303,7 +305,7 @@ export function NewIssueForm() {
                 aria-label="Intake context"
               >
                 <label>
-                  Observed time
+                  Observed time ({effectiveTimezone})
                   <span>
                     Optional · defaults to now, shown in your local time
                   </span>

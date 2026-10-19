@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { ProjectActivity } from "./project-activity";
 import { RiskEvidence } from "./risk-evidence";
 import { ProjectCycleHistory } from "./cycle-history";
@@ -215,6 +216,7 @@ function ProjectIssues({ issues }: { issues: ProjectDetailData["issues"] }) {
 }
 
 function CycleFacts({ project }: { project: ProjectDetailData }) {
+  const { formatInstant } = useViewerTime();
   return (
     <section className="project-detail__section">
       <h2>Cycle capacity</h2>
@@ -239,15 +241,9 @@ function CycleFacts({ project }: { project: ProjectDetailData }) {
                   ? "Capacity is not recorded."
                   : `${cycle.capacity} point capacity`}{" "}
                 ·{" "}
-                {new Intl.DateTimeFormat(undefined, {
-                  month: "short",
-                  day: "numeric",
-                }).format(new Date(cycle.startsAt))}
+                {formatInstant(cycle.startsAt)}
                 –
-                {new Intl.DateTimeFormat(undefined, {
-                  month: "short",
-                  day: "numeric",
-                }).format(new Date(cycle.endsAt))}
+                {formatInstant(cycle.endsAt)}
               </small>
             </li>
           ))}

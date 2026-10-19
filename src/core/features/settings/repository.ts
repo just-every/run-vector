@@ -2,6 +2,7 @@ import { reminderTimeSchema } from "./schema";
 import { hasPendingOperatorFiles } from "./removal-files";
 import { createUlid } from "../../shared/ids";
 import { timezoneSchema } from "../bootstrap/config";
+import { readPersonalTime } from "./personal-time";
 
 export class SettingsError extends Error {
   constructor(
@@ -45,8 +46,18 @@ export async function readSettings(db: D1Database, actor: string) {
     )
     .bind(access.workspace_id)
     .all();
+  const {
+    workspaceTimezone: _timezone,
+    reminderTime: _reminderTime,
+    ...personalTime
+  } = await readPersonalTime(db, actor);
   await settingsActor(db, actor);
-  return { workspace, operators: operators.results, operatorId: actor };
+  return {
+    workspace,
+    operators: operators.results,
+    operatorId: actor,
+    personalTime,
+  };
 }
 
 export async function updateWorkspaceTime(

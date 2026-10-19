@@ -10,10 +10,19 @@ export type ReminderCandidate = {
   assignee_operator_id: string;
   status_id: string;
 };
+export type ReminderRecipient = {
+  id: string;
+  timezone: string | null;
+  revision: string | null;
+  working_hours_start: string;
+  working_hours_end: string;
+  working_days_json: string;
+};
 /** The receipt, Inbox and durable feature audit commit together for this claim. */
 export async function claimReminder(
   db: D1Database,
   workspace: ReminderWorkspace,
+  recipient: ReminderRecipient,
   candidate: ReminderCandidate,
   date: string,
   dueToday: boolean,
@@ -23,8 +32,12 @@ export async function claimReminder(
     kind = candidate.due_date === date ? "due_today" : "overdue";
   const eligible = `FROM issues i JOIN teams t ON t.id=i.team_id JOIN workspace_settings w ON w.id=t.workspace_id
       JOIN workflow_statuses s ON s.id=i.status_id JOIN operators o ON o.id=i.assignee_operator_id AND o.workspace_id=w.id
+      LEFT JOIN operator_personal_time p ON p.operator_id=o.id
       WHERE i.id=? AND i.due_date=? AND i.assignee_operator_id=? AND i.status_id=?
         AND w.id=? AND w.timezone=? AND w.reminder_time=? AND ${activeRecipient}
+        AND p.timezone IS ? AND COALESCE(p.timezone,w.timezone)=? AND p.revision IS ?
+        AND COALESCE(p.working_hours_start,'09:00')=? AND COALESCE(p.working_hours_end,'17:00')=?
+        AND COALESCE(p.working_days_json,'[1,2,3,4,5]')=?
         AND s.category NOT IN ('completed','canceled','duplicate')
         AND (i.due_date<? OR (i.due_date=? AND ?=1))
         AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
@@ -40,6 +53,12 @@ export async function claimReminder(
     workspace.id,
     workspace.timezone,
     workspace.reminder_time,
+    recipient.timezone,
+    recipient.timezone ?? workspace.timezone,
+    recipient.revision,
+    recipient.working_hours_start,
+    recipient.working_hours_end,
+    recipient.working_days_json,
     date,
     date,
     dueToday ? 1 : 0,

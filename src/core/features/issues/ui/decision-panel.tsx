@@ -1,3 +1,4 @@
+import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useHydrated } from "../../../app/initial-resources";
 import { ApiError, fetchJson } from "../../../app/api-client";
@@ -21,6 +22,7 @@ export function DecisionPanel({
   optionsError,
   onRefresh,
 }: DecisionPanelProps) {
+  const { futureInstant, effectiveTimezone } = useViewerTime();
   const hydrated = useHydrated();
   const panelRef = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -107,16 +109,12 @@ export function DecisionPanel({
       };
     }
     if (kind === "defer") {
-      const returnDate = new Date(defer.returnAt);
-      if (Number.isNaN(returnDate.getTime())) {
-        setMessage("Choose a future return time.");
+      try {
+        body = {...body, returnAt: futureInstant(defer.returnAt), reason: defer.reason || undefined};
+      } catch (error) {
+        setMessage(error instanceof Error ? error.message : 'Choose a future return time.');
         return;
       }
-      body = {
-        ...body,
-        returnAt: returnDate.toISOString(),
-        reason: defer.reason || undefined,
-      };
     }
     if (kind === "decline") body = { ...body, reason: declineReason };
     setSubmitting(true);
@@ -439,7 +437,7 @@ export function DecisionPanel({
             {kind === "defer" ? (
               <>
                 <label className="decision-form__wide">
-                  Return for decision
+                  Return for decision ({effectiveTimezone})
                   <input
                     type="datetime-local"
                     required

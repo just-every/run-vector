@@ -6,7 +6,7 @@ export const buildCommands = [
 export const ciCommands = [
   'sources:verify-base', 'check', 'test:installer', 'test:markdown',
   'test:worker', 'test:deployment', 'test:public-site', 'build',
-  'integration:check', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/current-intake-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
+  'integration:check', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/current-intake-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
   'test:data', 'test:integrations', 'test:base-auth', 'test:access',
   'test:mutation-refresh', 'test:admin', 'test:collaboration',
 ];
@@ -29,7 +29,7 @@ export const verificationShards = {
   runtime: {
     browser: true,
     commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
-      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, 'test:public-site', 'verify'],
+      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, 'test:public-site', 'verify'],
   },
   administration: {
     browser: true, native: true,

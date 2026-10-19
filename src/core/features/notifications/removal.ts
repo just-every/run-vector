@@ -22,6 +22,7 @@ export function notificationRemovalStatements(
       "issue_notification_mutes",
       "notification_preferences",
       "notification_type_mutes",
+      "operator_personal_time",
     ].map((table) =>
       db
         .prepare(`DELETE FROM ${table} WHERE operator_id=? AND ${guard}`)
