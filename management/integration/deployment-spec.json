@@ -388,6 +388,12 @@
       "name": "0063_related_issues.sql",
       "sha256": "c71ebc746d0d47940f956fffdd90739d74291478898b63e91e084908b01ae5ff",
       "sql": "-- REL-007: unordered pairs, independent of the blocking graph. The first endpoint\n-- owns imported pairs so reversal can remove them before the earlier endpoint.\nCREATE TABLE issue_relations (\n  first_issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  second_issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  created_at TEXT NOT NULL,\n  PRIMARY KEY(first_issue_id,second_issue_id),\n  CHECK(first_issue_id <> second_issue_id)\n);\nCREATE UNIQUE INDEX issue_relations_pair ON issue_relations(min(first_issue_id,second_issue_id),max(first_issue_id,second_issue_id));\nCREATE INDEX issue_relations_second ON issue_relations(second_issue_id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0064_cycle_schedule.sql",
+      "sha256": "c262d19c6c0bee161f9a33315ce2f50d35aa58d55656bc415c6e0c83c59b3345",
+      "sql": "CREATE TABLE team_cycle_schedules (\n team_id TEXT PRIMARY KEY REFERENCES teams(id) ON DELETE CASCADE,\n weeks INTEGER NOT NULL CHECK(weeks BETWEEN 1 AND 8),\n start_weekday INTEGER NOT NULL CHECK(start_weekday BETWEEN 0 AND 6),\n cooldown_weeks INTEGER NOT NULL CHECK(cooldown_weeks BETWEEN 0 AND 8),\n upcoming_count INTEGER NOT NULL CHECK(upcoming_count BETWEEN 1 AND 24),\n revision TEXT NOT NULL,\n generation INTEGER NOT NULL DEFAULT 0,\n updated_at TEXT NOT NULL\n);\nALTER TABLE cycles ADD COLUMN schedule_revision TEXT;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
