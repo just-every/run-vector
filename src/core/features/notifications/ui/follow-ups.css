@@ -91,7 +91,7 @@
 }
 .personal-reminders button {
   min-height: 44px;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.4rem;
   padding: 0.5rem 0.75rem;
   background: var(--app-field);

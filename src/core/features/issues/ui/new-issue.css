@@ -177,7 +177,7 @@
 }
 .new-issue-state button {
   min-height: 2.75rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
+  border: 1px solid var(--control-border);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
   color: var(--app-ink);
@@ -253,7 +253,7 @@
 .new-intake-row-action {
   justify-self: start;
   min-height: 2.65rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 21%);
+  border: 1px solid var(--control-border);
   border-radius: 0.45rem;
   padding: 0.4rem 0.7rem;
   color: var(--app-cobalt-ink);

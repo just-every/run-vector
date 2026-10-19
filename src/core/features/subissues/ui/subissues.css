@@ -12,7 +12,7 @@
   gap: 0.35rem;
   width: fit-content;
   min-height: 2.75rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 24%);
+  border: 1px solid var(--control-border);
   border-radius: 0.45rem;
   padding: 0.25rem 0.55rem;
   background: var(--app-field);
@@ -80,7 +80,7 @@
 .issue-subissues__panel button {
   min-width: 2.75rem;
   min-height: 2.75rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 24%);
+  border: 1px solid var(--control-border);
   border-radius: 0.45rem;
   padding: 0.25rem 0.55rem;
   color: var(--app-ink);
@@ -127,7 +127,7 @@
   margin-top: 0.15rem;
 }
 .issue-subissues :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 2px;
 }
 @media (max-width: 46rem) {

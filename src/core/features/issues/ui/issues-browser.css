@@ -37,7 +37,7 @@
 .issues-browser select {
   font: inherit;
   color: inherit;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 6px;
   background: var(--app-field);
   min-height: 44px;
@@ -51,7 +51,7 @@
   cursor: default;
 }
 .issues-browser :focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 3px;
 }
 .issues-modes {
@@ -114,6 +114,7 @@
 }
 .issues-row:hover {
   background: var(--app-field);
+  box-shadow: inset 3px 0 0 var(--app-outline);
 }
 .issues-title {
   display: grid;
@@ -358,7 +359,7 @@
   width: 100%;
   padding: 0.5rem;
   background: var(--app-field);
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--app-field-border);
 }
 .board-card-open small {
   color: var(--app-body);

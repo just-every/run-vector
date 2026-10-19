@@ -22,6 +22,6 @@
 }
 .commit-issue-choices button[aria-selected="true"],
 .commit-issue-choices button:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-color: var(--app-cobalt-ink);
   background: var(--app-field);
 }

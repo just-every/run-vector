@@ -27,7 +27,7 @@
 .detail-back {
   min-height: 2.75rem;
   margin: -0.35rem 0 0.85rem;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.45rem;
   padding: 0.35rem 0.65rem;
   color: var(--app-cobalt-ink);
@@ -162,7 +162,7 @@
   min-width: 0;
   padding-inline: 0.25rem;
   min-height: 2.7rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 16%);
+  border: 1px solid var(--control-border);
   border-radius: 0.45rem;
   color: var(--app-body);
   background: rgb(var(--app-ink-rgb) / 4%);
@@ -471,7 +471,7 @@
 .issue-refresh-error button {
   margin-left: auto;
   min-height: 2.75rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
+  border: 1px solid var(--control-border);
   border-radius: 0.45rem;
   padding: 0.4rem 0.7rem;
   color: var(--app-ink);
@@ -807,7 +807,7 @@
   flex: 1 1 100%;
 }
 .discussion-file-picker:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 3px;
 }
 @media (max-width: 46rem) {
@@ -904,7 +904,7 @@
   padding: 0.25rem 0.6rem;
   color: var(--app-ink);
   background: var(--app-field);
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.35rem;
 }
 .issue-label-control fieldset {
@@ -973,9 +973,10 @@
 }
 .issue-inspector summary:hover {
   background: rgb(var(--app-ink-rgb) / 5%);
+  box-shadow: inset 3px 0 0 var(--app-outline);
 }
 .issue-inspector summary:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 2px;
 }
 @media (max-width: 46rem) {

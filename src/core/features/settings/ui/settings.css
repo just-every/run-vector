@@ -45,7 +45,7 @@
   color: var(--app-ink);
 }
 .settings-page button {
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.35rem;
   padding: 0.55rem 0.8rem;
   min-height: 44px;
@@ -136,7 +136,7 @@
 .administration-panel button,
 .administration-panel a.admin-link {
   min-height: 44px;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--app-field-border);
   border-radius: 0.35rem;
   padding: 0.55rem 0.8rem;
   background: var(--app-field);
@@ -186,7 +186,7 @@
 }
 .administration-panel
   :is(input, select, textarea, button, a, summary):focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 3px;
 }
 
@@ -206,7 +206,7 @@
 
 .administration-panel summary {
   padding: 0.55rem 0.75rem;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--app-field-border);
   border-radius: 0.35rem;
   background: var(--app-field);
   list-style: none;
@@ -254,9 +254,10 @@
 }
 .settings-sections a:hover {
   background: var(--app-field);
+  box-shadow: inset 3px 0 0 var(--app-outline);
 }
 .settings-sections a:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 2px;
 }
 .settings-page :is(section[id], #notifications) {

@@ -57,6 +57,8 @@
 .app-root {
   --app-cobalt-ink: color-mix(in srgb, var(--color-accent) 82%, #000);
   --app-cobalt-soft: color-mix(in srgb, var(--color-accent) 13%, var(--app-field));
+  /* Focus rings, the current place and a hovered row's bar keep 3:1 against the canvas (WCAG 1.4.11). */
+  --app-focus: var(--app-cobalt-ink);
 }
 
 :root[data-theme="dark"],

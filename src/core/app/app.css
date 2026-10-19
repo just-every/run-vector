@@ -60,7 +60,7 @@ a {
   background: var(--color-background);
 }
 :focus-visible {
-  outline: 3px solid var(--color-accent);
+  outline: 3px solid var(--app-focus, var(--color-accent));
   outline-offset: 3px;
 }
 .visually-hidden {
@@ -73,10 +73,10 @@ a {
   white-space: nowrap;
 }
 
-/* Shared controls establish the same usable surface in every app state. */
+/* Shared controls establish the same usable surface in every app state; their edge keeps 3:1 (WCAG 1.4.11, VIEW-011). */
 :root {
   --control-surface: var(--app-field);
-  --control-border: var(--app-line-strong);
+  --control-border: var(--app-field-border);
   --control-field-border: var(--app-field-border);
   --control-text: var(--app-ink);
   --control-radius: 0.5rem;

@@ -27,7 +27,7 @@
 .issue-editor-actions button {
   min-height: 2rem;
   padding: 0.25rem 0.6rem;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.35rem;
   color: var(--app-ink);
   background: var(--app-field);

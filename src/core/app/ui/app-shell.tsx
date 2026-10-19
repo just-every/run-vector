@@ -177,6 +177,7 @@ function AppShellContent({ children }: AppShellProps) {
         <Link
           className="app-brand"
           to="/app"
+          activeOptions={{ exact: true }}
           aria-label={`${productConfig.productName} Current`}
         >
           <VectorMark label={productConfig.productName} />
@@ -233,7 +234,7 @@ function AppShellContent({ children }: AppShellProps) {
       </aside>
       <div className="app-stage">
         <div className="app-settings-mobile">
-          <Link className="app-mobile-brand" to="/app">
+          <Link className="app-mobile-brand" to="/app" activeOptions={{ exact: true }}>
             <VectorMark label={productConfig.productName} />
           </Link>
           <span title={operator.name}>{operator.name}</span>
@@ -331,9 +332,11 @@ function NavLink({
       ? pathname === '/app' || pathname.startsWith('/app/current')
       : pathname.startsWith(item.to)
   return (
+    // The shell decides which place is current; the router's prefix match would mark Current on every page.
     <Link
       className={`app-nav-link${active ? ' is-active' : ''}`}
       to={item.to}
+      activeOptions={{ exact: true }}
       aria-current={active ? 'page' : undefined}
     >
       <span aria-hidden="true">{item.icon}</span>

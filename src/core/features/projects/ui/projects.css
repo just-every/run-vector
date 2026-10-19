@@ -127,7 +127,7 @@
 }
 .project-filters .list-preference-controls button {
   min-height: 44px;
-  border: 1px solid rgb(var(--app-ink-rgb) / 21%);
+  border: 1px solid var(--control-border);
   border-radius: 0.42rem;
   padding: 0.35rem 0.55rem;
   color: var(--app-ink);
@@ -170,6 +170,7 @@
 }
 .project-row:hover {
   background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+  box-shadow: inset 3px 0 0 var(--app-outline);
 }
 .project-row:focus-visible {
   position: relative;
@@ -277,7 +278,7 @@
 }
 .projects-state button {
   min-height: 2.75rem;
-  border: 1px solid rgb(var(--app-ink-rgb) / 27%);
+  border: 1px solid var(--control-border);
   border-radius: 0.5rem;
   padding: 0.5rem 0.8rem;
   color: var(--app-ink);
@@ -514,7 +515,7 @@
     gap: 0.45rem 0.75rem;
     min-height: 6.4rem;
     margin-bottom: 0.5rem;
-    border: 1px solid rgb(var(--app-ink-rgb) / 14%);
+    border: 1px solid var(--control-border);
     border-radius: 0.65rem;
     background: var(--app-card);
   }
@@ -554,7 +555,7 @@
   background: var(--color-accent);
 }
 .projects-new-project:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 2px solid var(--app-focus);
   outline-offset: 3px;
 }
 .projects-archived-filter {

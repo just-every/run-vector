@@ -5,7 +5,7 @@ import { chromium } from '@playwright/test';
 import { createAdminRuntime, bootstrapOwner } from './admin-runtime-support.mjs';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { contrastFailures, canvasLuminance } from './theme-contrast.mjs';
-// VIEW-011: System follows the device before first paint, a saved choice follows the member, both themes pass AA.
+// VIEW-011: System follows the device before first paint, a saved choice follows the member, both themes pass AA for text and controls.
 const output = resolve(process.env.VECTOR_THEME_SHOTS ?? '.artifacts/verification/theme');
 await mkdir(output, { recursive: true });
 const runtime = createAdminRuntime(1440, [], { port: 15976, inspectorPort: 15977 });
@@ -75,7 +75,7 @@ try {
       }
     }
     await writeFile(`${output}/contrast-${theme}.json`, JSON.stringify(audit, null, 2));
-    assert.deepEqual(audit, {}, `${theme}: no AA contrast failure on any screen`);
+    assert.deepEqual(audit, {}, `${theme}: no AA text or control contrast failure on any screen`);
   }
   await auditTheme('dark');
 
@@ -109,6 +109,6 @@ try {
   assert.equal(await page.evaluate(() => window.__sameDocument), true, 'no reload');
   assert.equal((await (await api.get(runtime.base + '/api/settings/appearance')).json()).theme, 'system');
   assert.equal((await api.patch(runtime.base + '/api/settings/appearance', { headers, data: { theme: 'sepia' } })).status(), 400);
-  console.log('[VIEW-011] dark first paint, per-member Light across reload and a second browser, live System, AA in both themes at 1440/390');
+  console.log('[VIEW-011] dark first paint, per-member Light across reload and a second browser, live System, AA text and control contrast in both themes at 1440/390');
 } catch (error) { if (page) await page.screenshot({ path: output + '/failure.png' }).catch(() => {}); throw error; }
 finally { if (browser) await browser.close(); if (second) await second.close(); await runtime.stop(); }

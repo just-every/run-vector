@@ -281,7 +281,7 @@ export function SavedViewNavigation() {
         : views && (
             <p>
               No saved views yet.{" "}
-              <Link to="/app/issues">Save your issue controls as a view.</Link>
+              <Link to="/app/issues" activeOptions={{ exact: true }}>Save your issue controls as a view.</Link>
             </p>
           )}
     </nav>

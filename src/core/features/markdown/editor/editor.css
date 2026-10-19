@@ -9,7 +9,7 @@
 .markdown-menu button,
 .markdown-link-form button {
   min-height: 44px;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.4rem;
   padding: 0.3rem 0.6rem;
   color: var(--app-ink);

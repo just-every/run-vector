@@ -83,7 +83,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.5rem;
   padding: 0.5rem 0.65rem;
   color: var(--app-body);
@@ -92,7 +92,7 @@
 }
 .command-palette__results button.is-active,
 .command-palette__results button:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 42%, transparent);
+  border-color: var(--app-cobalt-ink);
   color: var(--app-ink);
   background: color-mix(in srgb, var(--color-accent) 14%, transparent);
 }

@@ -22,7 +22,7 @@
 .issue-subscription button,
 .mention-suggestions button {
   min-height: 44px;
-  border: 1px solid var(--app-line-strong);
+  border: 1px solid var(--control-border);
   border-radius: 0.4rem;
   padding: 0.5rem 0.75rem;
   color: var(--app-ink);
@@ -161,7 +161,7 @@
 }
 .mention-suggestions button[aria-selected="true"] {
   background: var(--app-paper-deep);
-  border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-color: var(--app-cobalt-ink);
 }
 .mention-suggestions small,
 .mention-help {
