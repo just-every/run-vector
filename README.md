@@ -46,7 +46,7 @@ npx -y @runeditrun/rer dev just-every/run-vector
 
 To start it again later, run `cd run-vector && rer dev`. The line installs the current global rer launcher; inside this checkout, rer runs the exact dependency declared in `package.json`. The global launcher and the checkout’s CLI can therefore have different versions.
 
-Vector has its own release numbers: [the latest tagged Vector release is v0.2.0](https://github.com/just-every/run-vector/tree/v0.2.0). The clone follows `main`, which includes changes since v0.2.0. To use that tagged release instead, run `git checkout v0.2.0` in the checkout before `rer dev`; rer then uses the CLI pin recorded by that release.
+Vector has its own release numbers: [the latest tagged Vector release is v0.3.0](https://github.com/just-every/run-vector/tree/v0.3.0). The clone follows `main`, which includes changes since v0.3.0. To use that tagged release instead, run `git checkout v0.3.0` in the checkout before `rer dev`; rer then uses the CLI pin recorded by that release.
 
 The first `rer dev` installs the pinned Node, pnpm and dependencies, makes you the local owner and prints a link that opens Vector signed in. There is nothing else to install and no provider account to set up.
 

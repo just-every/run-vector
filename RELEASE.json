@@ -1,322 +1,1161 @@
 {
+  "version": "0.3.0",
+  "date": "2026-10-19",
+  "previousVersion": "0.2.0",
   "contractChanges": {
-    "NOTIFY-001": {
+    "HOME-001": {
       "change": "changed",
-      "summary": "Owner-authorized assignment and direct-mention email supersedes NOTIFY-001's in-app-only channel prohibition.",
-      "was": "Vector creates an in-app notification, visible within 5 seconds, for assignment of an issue to the operator, a direct mention (ISSUE-013), a comment on an issue they follow, the return of an intake item they deferred, the resolution of the last blocker on an issue assigned to them, and a due reminder (NOTIFY-005). Vector delivers notifications on no other channel; the only mail it sends is the sign-in link `BASE-ACCESS-001` requires.",
-      "now": "Vector creates an in-app notification, visible within 5 seconds, for assignment of an issue to the operator, a direct mention (ISSUE-013), a comment on an issue they follow, the return of an intake item they deferred, the resolution of the last blocker on an issue assigned to them, and a due reminder (NOTIFY-005). Assignment and direct-mention events may also send the minimal transactional email defined by NOTIFY-006; all other product notification events remain in-app."
+      "summary": "Public homepage: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
-    "NOTIFY-006": {
-      "change": "added",
-      "summary": "Atomic minimal assignment/direct-mention email intent, immediate Base submission, bounded definite-rejection retries and non-replaying uncertainty; recipient preferences, mutes and erasure apply."
+    "OPS-001": {
+      "change": "changed",
+      "summary": "Workspace access: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Every operator can see and act on every team, issue, intake item, cycle, project, label, and shared saved view, and on every notification addressed to them. There are no roles. Team membership organises work and never grants or restricts access. A private saved view (VIEW-002) is the only record one operator cannot see.",
+      "now": "Every workspace member sees every public team's issues, intake items, cycles, projects, initiatives, labels and shared saved views, and every notification addressed to them, and acts on them as the role matrix (ROLE-001, ROLE-008) allows; team membership organises work and, for a public team, never restricts access. Roles (ROLE-001), private teams (ROLE-002) and guests (ROLE-003) are the only rules that narrow access, and a private saved view (VIEW-002) is visible only to its owner. Every read, search result, notification, export, webhook, Slack unfurl, mobile payload, API response and agent context applies the same rule server-side."
+    },
+    "SETUP-001": {
+      "change": "changed",
+      "summary": "First workspace review: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "OPS-002": {
+      "change": "changed",
+      "summary": "Member management: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Operators are invited and removed in settings. The operator configured at setup can be removed only by themselves. *Policy: `operator.management.v1`; default: any operator may invite or remove.*",
+      "now": "Members are invited, removed by suspension (OPS-004, ROLE-011), reactivated and erased (ROLE-012) in Settings → Members, and every invitation names the invitee's role (ROLE-001) and, for a Guest, the teams they join (ROLE-003). Owners and Admins invite and remove Members and Guests; only Owners invite, promote to or remove Owners and Admins. The installation owner can be removed only by themselves, and never while they are the last Owner (ROLE-001). Members and Guests cannot remove anyone but themselves. *Policy: `operator.management.v1`; default: Owners and Admins invite and remove; a workspace setting lets Members invite Members (never Admins or Guests).*"
+    },
+    "OPS-003": {
+      "change": "changed",
+      "summary": "Workspace time: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "OPS-004": {
+      "change": "changed",
+      "summary": "Safe removal: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Vector rejects removal of the last operator. A successful removal revokes that operator's sessions, unassigns their non-terminal issues, transfers each project they lead and each shared saved view they own to the operator performing the removal — or to the longest-standing remaining operator when they removed themselves — deletes their private saved views and their notifications, anonymises their references in retained comments, activity, and audit records, and writes one activity entry per changed issue and project.",
+      "now": "Removing a member from the workspace — by an Owner or Admin in Settings → Members (role matrix), by the member leaving themselves, or by SCIM deprovisioning (ROLE-004) — suspends them under ROLE-011 and never erases them; erasing their personal data is the separate, explicit action of ROLE-012. Vector rejects the suspension of the last Owner. A suspension revokes the member's sessions and credentials (ROLE-011), transfers each project they lead and each shared saved view they own to the person performing it — or to the longest-standing remaining Owner when they left themselves or SCIM removed them — handles their non-terminal issues as the person performing it chooses (ROLE-011), keeps their name on every comment, activity and audit entry, and writes one activity entry per changed issue and project. A failed step rolls back the whole removal."
+    },
+    "TEAM-001": {
+      "change": "changed",
+      "summary": "Team identity: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "TEAM-002": {
+      "change": "changed",
+      "summary": "Team workflow: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Every team has an ordered list of workflow statuses with at least one status in each of the Intake, Backlog, Unstarted, Started, Completed, Canceled, and Duplicate categories, and status names unique within the team. Operators can add, rename, and reorder statuses; a status never changes category, and no category is added or removed. A team's *default status* in a category is the first status of that category in workflow order, and every clause naming a category as a destination moves the issue there.",
+      "now": "Every team has an ordered list of workflow statuses with at least one status in each of the Intake, Backlog, Unstarted, Started, Completed, Canceled, and Duplicate categories, and status names unique within the team. Owners, Admins and the team's owners (ROLE-007) can add, rename, and reorder statuses, and so can every member of the team while its *Who manages team settings* permission is All team members (ROLE-009); other Members and all Guests are refused. A status never changes category, and no category is added or removed. A team's *default status* in a category is the first status of that category in workflow order, and every clause naming a category as a destination moves the issue there."
+    },
+    "TEAM-003": {
+      "change": "changed",
+      "summary": "Team archiving: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "TEAM-004": {
+      "change": "changed",
+      "summary": "Status removal: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-001": {
+      "change": "changed",
+      "summary": "Creation: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "An operator can create an issue with a required title and team plus an optional Markdown description, assignee, project, cycle, priority, labels, estimate, due date, expected outcome, customer impact, and custom fields. It starts in the team's default Backlog status unless another non-Intake status is explicitly chosen. *Policy: `issue.defaults.v1`; default: unassigned, no priority, no cycle, and no project.*",
+      "now": "An operator can create an issue with a required title and team plus an optional Markdown description (written in the ISSUE-026 editor, with inline images and video under ISSUE-024 and checklists under ISSUE-025), assignee, project, cycle, priority, labels, estimate, due date, expected outcome, customer impact, and values for the custom fields defined for its team (FIELD-001, which carries their types and acceptance). It starts in the team's default Backlog status unless another non-Intake status is explicitly chosen. *Policy: `issue.defaults.v1`; default: unassigned, no priority, no cycle, and no project.*"
+    },
+    "ISSUE-002": {
+      "change": "changed",
+      "summary": "Stable identifiers: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-003": {
+      "change": "changed",
+      "summary": "Priority: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-004": {
+      "change": "changed",
+      "summary": "Status transitions: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-005": {
+      "change": "changed",
+      "summary": "Assignment: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-006": {
+      "change": "changed",
+      "summary": "Concurrent edits: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-007": {
+      "change": "changed",
+      "summary": "Activity history: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-008": {
+      "change": "changed",
+      "summary": "Comments, threads and resolution: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Any operator can add a Markdown comment, and can edit or delete any comment; the entry records who acted. An edited comment shows its edit time. Deleting a comment removes its body, attachments, links, and search entry, leaves a tombstone and an activity entry in the thread, and does not remove the follower state it created.",
+      "now": "Any member who can see an issue (a Guest only in invited teams) can add a Markdown comment in the ISSUE-026 editor, with inline images and video (ISSUE-024) and checklists (ISSUE-025). Each top-level comment starts a thread: members reply to it, and replies show under it in order. Any member who can comment can resolve a thread when its question is answered, which collapses it to one line naming who resolved it and when, and can reopen it; a new reply reopens a resolved thread. A comment can also quote highlighted text of the issue description or a document (PROJ-013) as an inline comment, which anchors the thread to that text and shows it in the margin; if the text is later removed, the thread stays in the issue with the quoted text shown as removed. Only a comment's author edits it; an edited comment shows its edit time. Authors delete their own comments; Owners, Admins and the team's owners delete anyone's (role matrix, ROLE-001); the entry records who acted. Deleting a comment removes its body, attachments, links, and search entry, leaves a tombstone and an activity entry in the thread, keeps its replies, and does not remove the follower state it created. A synced Slack or Teams thread maps to exactly one Vector comment thread (SLACK-002)."
+    },
+    "ISSUE-009": {
+      "change": "changed",
+      "summary": "Attachments and links: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Operators can attach files and named HTTPS links to an issue or a comment. Removing either records the action; removing a file also deletes its blob under `BASE-DATA-003`.",
+      "now": "Operators can attach files and named HTTPS links to an issue or a comment. Removing either records the action; removing a file also deletes its blob under `BASE-DATA-003`. An image or video pasted, dropped or uploaded into a description, comment or document is an attachment under this clause and is shown inline where it was placed (ISSUE-024)."
+    },
+    "ISSUE-010": {
+      "change": "changed",
+      "summary": "Deletion: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Deleting an issue removes its comments, attachments, links, evidence revisions, dependencies, parent link, follower state, notifications, activity, and search entry; its children become root issues, and a duplicate is removed from its canonical issue's list. Vector rejects deleting a canonical issue that still has duplicates. Closed cycle snapshots (CYCLE-005) and audit entries keep only its identifier, and its source idempotency records (INTAKE-002) are retained so a re-delivery cannot resurrect it. *Policy: `issue.can-delete.v1`; default: any operator.*",
+      "now": "Deleting an issue first moves it to Recently deleted (ISSUE-020), from which it can be undone or restored intact for 30 days. Permanent deletion happens when that retention ends, or at once when an Owner or Admin chooses \"Delete permanently\" (for erasure under SEC-003 and DATA-011): it removes the issue's comments, attachments, links, evidence revisions, dependencies, parent link, follower state, notifications, activity, and search entry; its children become root issues, and a duplicate is removed from its canonical issue's list. Vector rejects deleting a canonical issue that still has duplicates. Closed cycle snapshots (CYCLE-005) and audit entries keep only its identifier, and its source idempotency records (INTAKE-002) are retained so a re-delivery cannot resurrect it. *Policy: `issue.can-delete.v1`; default: Owners, Admins and the issue's creator; a workspace setting extends it to every Member of the issue's team; Guests never delete; only Owners and Admins delete permanently (role matrix, ROLE-001).*"
+    },
+    "ISSUE-011": {
+      "change": "changed",
+      "summary": "Estimates: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-012": {
+      "change": "changed",
+      "summary": "Moving teams: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Moving an issue requires a non-archived target team and an explicit target status in the same category as its current status, including Intake so a misrouted intake item reaches the right team without a decision. The move preserves the identifier (ISSUE-002), uncommits the issue from any cycle (CYCLE-002), keeps its project, assignee, labels, and history, and writes one activity entry. All of it happens or none of it does.",
+      "now": "Moving an issue requires a non-archived target team and an explicit target status in the same category as its current status, including Intake so a misrouted intake item reaches the right team without a decision. The move preserves the identifier (ISSUE-002), uncommits the issue from any cycle (CYCLE-002), keeps its project, assignee, labels, custom-field values and history, and writes one activity entry. Labels and custom-field values are preserved unchanged; the native move does not map them. All of it happens or none of it does."
+    },
+    "ISSUE-013": {
+      "change": "changed",
+      "summary": "Mentions: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "ISSUE-014": {
+      "change": "changed",
+      "summary": "Labels: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "A label belongs to the workspace and has a name unique among labels and a colour. Any operator can create, rename, recolour, and delete one; deleting a label removes it from every issue and from the filters of saved views naming it, and deletes no issue. An issue carries up to the number of labels in `seed.json → limits`.",
+      "now": "A label belongs to the workspace or to one team, has a name unique among the labels visible in that scope and a colour, and can sit in a label group (for example Area, Type) whose labels are mutually exclusive on an issue. Owners, Admins and Members create labels and apply them, and Guests apply existing labels in their invited teams; Owners and Admins rename, recolour, merge and delete workspace labels, and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — do so for that team's labels (role matrix, ROLE-001). Merging one label into another relabels every issue and saved-view filter in one change. Deleting a label removes it from every issue and from the filters of saved views naming it, and deletes no issue. An issue carries up to the number of labels in `seed.json → limits`. *Policy: `label.manage.v1`; default: as above; a workspace setting restricts label creation to Owners and Admins.*"
+    },
+    "ISSUE-015": {
+      "change": "changed",
+      "summary": "Unsent drafts: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "REL-001": {
+      "change": "changed",
+      "summary": "Dependencies: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "REL-002": {
+      "change": "changed",
+      "summary": "Blocked state: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "REL-003": {
+      "change": "changed",
+      "summary": "Duplicate decision: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "REL-004": {
+      "change": "changed",
+      "summary": "Canonical duplicates: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "REL-005": {
+      "change": "changed",
+      "summary": "Undo duplicate: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "REL-006": {
       "change": "changed",
-      "summary": "Expose parent authoring from issue details and root/child browsing filters while retaining workspace boundaries, cycle refusal, version checks and existing child detachment behavior.",
-      "was": "An issue has at most one parent. Vector rejects self-parenting and ancestry cycles; changing a parent never changes status, team, project, cycle, or assignee, and deleting a parent makes each direct child a root issue.",
-      "now": "An issue has at most one parent. An operator can set, replace, or clear it from issue details. Vector rejects self-parenting and ancestry cycles; changing a parent never changes status, team, project, cycle, or assignee, and deleting a parent makes each direct child a root issue. Issue lists can filter to roots or to children of one exact parent (VIEW-001)."
+      "summary": "Parent and child: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "INTAKE-001": {
+      "change": "changed",
+      "summary": "Intake creation: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "INTAKE-002": {
+      "change": "changed",
+      "summary": "Idempotent sources: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "INTAKE-003": {
+      "change": "changed",
+      "summary": "Evidence revisions: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "INTAKE-004": {
+      "change": "changed",
+      "summary": "Inspectable assessment: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, and suggested priority. Each assertion names whether it came from a source, an operator, or a policy; Vector does not invent or silently infer assertions in core.",
+      "now": "An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, suggested priority, suggested labels and likely duplicates. Each assertion names whether it came from a source, an operator, a policy or an agent; an agent assertion also names the model, the records it read and when, and is shown as a suggestion until a person accepts it. Vector never presents an inferred assertion as a fact or applies one silently."
+    },
+    "INTAKE-005": {
+      "change": "changed",
+      "summary": "Accept: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Accepting an intake issue atomically records the actor, the time, and an optional reason; applies the chosen assignee, priority, cycle, and Started or Unstarted status; and clears any deferral. It leaves Needs decision and reaches its new Current and My work sections within the CURR-008 window.",
+      "now": "Owners, Admins and Members who can see an intake item's team accept, defer and decline it; Guests cannot (role matrix). Accepting an intake issue atomically records the actor, the time, and an optional reason; applies the chosen assignee, priority, cycle, and Started or Unstarted status; and clears any deferral. It leaves Needs decision and reaches its new Current and My work sections within the CURR-008 window."
+    },
+    "INTAKE-006": {
+      "change": "changed",
+      "summary": "Defer: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Deferring an intake issue records the operator, an absolute return time strictly in the future, and an optional reason, and removes it from Needs decision. It returns there exactly once — within 5 minutes of the return time, or within 5 seconds of a new evidence revision (INTAKE-003), whichever comes first — and the return atomically clears the deferral and leaves the earlier decision visible. An operator can defer it again or end a deferral early.",
+      "now": "Deferring an intake issue (by an Owner, Admin or Member who can see its team; Guests cannot, role matrix) records who deferred it, an absolute return time strictly in the future, and an optional reason, and removes it from Needs decision. It returns there exactly once — within 5 minutes of the return time, or within 5 seconds of a new evidence revision (INTAKE-003), whichever comes first — and the return atomically clears the deferral and leaves the earlier decision visible. The same roles can defer it again or end a deferral early."
+    },
+    "INTAKE-007": {
+      "change": "changed",
+      "summary": "Decline: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Declining an intake issue requires a reason, moves it to the team's default Canceled status, and removes it from Needs decision without deleting its evidence or decision history.",
+      "now": "Declining an intake issue — open to Owners, Admins and Members who can see its team, never to Guests (role matrix) — requires a reason, moves it to the team's default Canceled status, and removes it from Needs decision without deleting its evidence or decision history."
+    },
+    "INTAKE-008": {
+      "change": "changed",
+      "summary": "Evidence after a terminal decision: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "INTAKE-009": {
+      "change": "changed",
+      "summary": "Source failure: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "INTAKE-010": {
+      "change": "changed",
+      "summary": "Decision policy: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance. *Policy: `intake.recommendation.v1`; default: use an explicitly supplied team and assignee, otherwise leave the issue unassigned with No priority and Unstarted status.*",
+      "now": "Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance. *Policy: `intake.recommendation.v1`; default: every registered source pins its team; the signed source payload may explicitly recommend an assignee through a source-attributed `assertions.assigneeOperatorId` value. An absent assignee recommendation leaves the issue unassigned in that team's triage, with No priority and Unstarted as the acceptance defaults. The recommendation never assigns the intake item before acceptance.*"
+    },
+    "INTAKE-011": {
+      "change": "changed",
+      "summary": "Source registration: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "An operator registers a signal source with a display name, a source ID unique in the workspace, and a signing secret; the `signal.source.v1` adapter normalises that source's signed request into INTAKE-001. Rotating a secret accepts both secrets for a configurable overlap of at most 24 hours and then rejects the previous one. Revoking a source rejects every later request under INTAKE-009 and deletes no evidence. A secret is shown once at registration or rotation and never again.",
+      "now": "An Owner or Admin registers a signal source (integration management in the role matrix; Members and Guests are refused 403) with a display name, a source ID unique in the workspace, and a signing secret; the `signal.source.v1` adapter normalises that source's signed request into INTAKE-001. Rotating a secret (by an Owner or Admin) accepts both secrets for a configurable overlap of at most 24 hours and then rejects the previous one. An Owner or Admin revoking a source rejects every later request under INTAKE-009 and deletes no evidence. A secret is shown once at registration or rotation and never again."
+    },
+    "CURR-001": {
+      "change": "changed",
+      "summary": "Disjoint stream: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CURR-002": {
+      "change": "changed",
+      "summary": "Needs decision: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate.",
+      "now": "Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate. Every expired deferral returns to Current: none is hidden, and more than one page is reachable through paging or an explicit total and Show more control (for example, “50 shown of 132, show more”), in CURR-007 order."
+    },
+    "CURR-003": {
+      "change": "changed",
+      "summary": "Now: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CURR-004": {
+      "change": "changed",
+      "summary": "Next: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CURR-005": {
+      "change": "changed",
+      "summary": "Recently done: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Recently done contains issues moved to a Completed category in the previous seven calendar days, newest completion first.",
+      "now": "Recently done contains issues moved to a Completed category in the previous seven calendar days, ordered by the completion-time exception in CURR-007."
+    },
+    "CURR-006": {
+      "change": "changed",
+      "summary": "Explainable attention: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CURR-007": {
+      "change": "changed",
+      "summary": "Ranking: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Within a section the default order sorts by priority (Urgent first, No priority last), then by due date (overdue first, then earliest first, then issues with no due date), then by most recent update, and finally by stable identifier, so the order is total and stable. *Policy: `current.ranking.v1`.*",
+      "now": "Within every Current section except Recently done, the default order sorts by priority (Urgent first, No priority last), then by due date (overdue first, then earliest first, then issues with no due date), then by most recent update, and finally by stable identifier, so the order is total and stable. Recently done (CURR-005) instead sorts by completion time, newest first, with stable identifier as the tiebreak; priority, due date and last update do not affect that section. *Policy: `current.ranking.v1`.*"
+    },
+    "CURR-008": {
+      "change": "changed",
+      "summary": "Freshness: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CURR-009": {
+      "change": "changed",
+      "summary": "Stream controls: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "WORK-001": {
+      "change": "changed",
+      "summary": "Personal queue: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "WORK-002": {
+      "change": "changed",
+      "summary": "Personal defaults: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "WORK-003": {
+      "change": "changed",
+      "summary": "Cycle context: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "PROJ-001": {
+      "change": "changed",
+      "summary": "Project record: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "A project has a name unique in the workspace, a Markdown description, exactly one lead who is an operator, an optional target date, a lifecycle, an optional colour, an optional icon, and custom fields. Its lifecycle is Planned, Active, Completed, or Canceled, and it starts as Planned.",
+      "now": "A project has a name unique in the workspace, a Markdown description, exactly one lead who is a workspace member, an optional start date, an optional target date that is on or after the start date when both are set, a priority (Urgent, High, Medium, Low or No priority, as ISSUE-003), project labels (workspace labels marked for projects, filterable by PROJ-007), a status (PROJ-016), an optional colour, an optional icon, and values for the custom fields that apply to projects (FIELD-001). Its status is one of the project statuses of its primary team or the workspace (PROJ-016), each in one of the categories Backlog, Planned, Started, Paused, Completed and Canceled, and a new project starts in the default Planned status unless another is chosen. Start date, target date, priority and labels are set in the project page, the projects list, the roadmap timeline (INIT-003) and `/api/v1`, and each change is a project activity entry. Linear project start and target dates, priority and labels import onto these fields (DATA-014). Owners, Admins and Members create projects and edit these fields; Guests see the projects their invited teams contribute to and cannot create or edit one (role matrix)."
+    },
+    "PROJ-002": {
+      "change": "changed",
+      "summary": "Manual lifecycle: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Only an operator changes a project's lifecycle. Completing or canceling all of its issues never completes or cancels the project.",
+      "now": "A project's status (PROJ-016) is changed only by a person — an Owner, Admin or Member; Guests are refused (role matrix). Completing or canceling all of its issues never completes or cancels the project."
+    },
+    "PROJ-003": {
+      "change": "changed",
+      "summary": "Project membership: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "PROJ-004": {
+      "change": "changed",
+      "summary": "Progress: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "PROJ-005": {
+      "change": "changed",
+      "summary": "Health: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Health is reported only for projects in the Active lifecycle; every other lifecycle reports no health and is excluded from health filters and counts. A *remaining issue* is a project issue outside the Completed, Canceled, and Duplicate categories. An Active project is Blocked, At risk, On track, or Unknown, evaluated in that order. The default reports Blocked when at least one remaining issue exists and either an Urgent remaining issue has an unresolved blocker (REL-002) or every remaining issue is blocked; At risk when its target date is in the past, a remaining Urgent issue is unassigned, or its remaining estimated points committed to any team's active cycle exceed that cycle's capacity; On track when a target date in the future, every applicable capacity, and every remaining active-cycle estimate exist and no earlier rule matches; and Unknown otherwise. Remaining scope exactly equal to capacity is not At risk. *Policy: `project.health.v1`.*",
+      "now": "Health is reported only for projects whose status is in the Started category (PROJ-016); a project in any other category, Paused included, reports no health and is excluded from health filters and counts. A *remaining issue* is a project issue outside the Completed, Canceled, and Duplicate categories. A Started project is Blocked, At risk, On track, or Unknown, evaluated in that order. The default reports Blocked when at least one remaining issue exists and either an Urgent remaining issue has an unresolved blocker (REL-002) or every remaining issue is blocked; At risk when its target date is in the past, a remaining Urgent issue is unassigned, or its remaining estimated points committed to any team's active cycle exceed that cycle's capacity; On track when a target date in the future, every applicable capacity, and every remaining active-cycle estimate exist and no earlier rule matches; and Unknown otherwise. Remaining scope exactly equal to capacity is not At risk. *Policy: `project.health.v1`.*"
+    },
+    "PROJ-006": {
+      "change": "changed",
+      "summary": "Risk explanation: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "PROJ-007": {
+      "change": "changed",
+      "summary": "Portfolio: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "The Projects view shows the count of projects in each health and lifecycle state and can filter by lifecycle, health, lead, team, target date, and label. Counts and rows use the same active filters.",
+      "now": "The Projects view shows the count of projects in each health and lifecycle state and can filter by lifecycle, health, lead, team, target date, and label. Counts and rows use the same active filters. The team filter selects contributing teams; target-date bounds are inclusive and exclude projects without a target date when either bound is set. The label filter selects workspace labels marked for projects (PROJ-001)."
+    },
+    "PROJ-008": {
+      "change": "changed",
+      "summary": "Historical truth: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "PROJ-009": {
+      "change": "changed",
+      "summary": "Project archiving: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CYCLE-001": {
+      "change": "changed",
+      "summary": "Time box: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "A cycle belongs to one team and has a name unique within that team, a start instant, an end instant after the start, and an optional capacity in estimate points, all interpreted in the workspace timezone (OPS-003). Vector rejects a cycle whose dates overlap another cycle of the same team, so a team's *active cycle* — the one whose start is at or before now and whose end is after now — is unique, and its *next cycle* is the cycle of that team with the earliest start at or after the active cycle's end.",
+      "now": "A cycle belongs to one team and has a name unique within that team, a start instant, an end instant after the start, and an optional capacity in estimate points, all interpreted in the workspace timezone (OPS-003). Vector rejects a cycle whose dates overlap another cycle of the same team, so a team's *active cycle* — the one whose start is at or before now and whose end is after now — is unique, and its *next cycle* is the cycle of that team with the earliest start at or after the active cycle's end. Owners, Admins and the team's owners create, edit, complete and delete its cycles, and so do all its members while its *Who manages cycles and templates* permission is All team members, the default (ROLE-009); Guests never do (role matrix)."
+    },
+    "CYCLE-002": {
+      "change": "changed",
+      "summary": "Commitment: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "A non-terminal issue can be committed to at most one cycle, and only to a cycle of its own team. Committing, moving, and uncommitting record both cycle identifiers and update both cycles atomically.",
+      "now": "A non-terminal issue can be committed to at most one cycle, and only to a cycle of its own team. Anyone who can edit the issue commits, moves or uncommits it — Owners, Admins, Members who can see its team, and Guests in an invited team (role matrix). Committing, moving, and uncommitting record both cycle identifiers and update both cycles atomically."
+    },
+    "CYCLE-003": {
+      "change": "changed",
+      "summary": "Progress and capacity: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CYCLE-004": {
+      "change": "changed",
+      "summary": "Closure and rollover: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CYCLE-005": {
+      "change": "changed",
+      "summary": "Closure snapshot: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "CYCLE-006": {
+      "change": "changed",
+      "summary": "Missing next cycle: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "SEARCH-001": {
       "change": "changed",
-      "summary": "Global full-text search also indexes saved-view names; searchable issue text, project names and label names remain included, with archived issue/project visibility controlled by the operator.",
-      "was": "Search covers issue identifiers, titles, descriptions, expected outcomes, customer impact, comments, evidence summaries, project names, and label names, and returns within 500ms. Issues of archived teams and projects are excluded unless the operator asks for them.",
-      "now": "Search covers issue identifiers, titles, descriptions, expected outcomes, customer impact, comments, evidence summaries, project names, label names, and saved-view names visible to the operator, and returns within 500ms. Issues of archived teams and projects are excluded unless the operator asks for them."
+      "summary": "Global search: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "SEARCH-002": {
       "change": "changed",
-      "summary": "Exact primary identifiers rank first alongside bounded full-text issue/project/accessible-view results; failed index reads retain only a newly admitted primary result. Forward migration 0018 stores stable source TEXT IDs in FTS and joins by ID, preserving identity across source rowid changes and index rebuilds.",
-      "was": "An exact issue identifier lookup reads the primary record and returns it even while full-text indexing is delayed or failed.",
-      "now": "An exact issue identifier lookup reads the primary record and returns it even while full-text indexing is delayed or unavailable, subject to the archive choice in SEARCH-001. On a successful full-text read, that exact issue ranks first, without duplicating it or dropping other matching issues, projects or accessible saved views; results remain bounded. Primary identity, archive choice and operator/session/workspace admission are rechecked before returning results, including after an index failure."
+      "summary": "Exact identifier: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "SEARCH-003": {
       "change": "changed",
-      "summary": "Source-transaction triggers retain immediate atomic indexing while migration 0018 replaces rowid mappings with stable source TEXT IDs. FTS read failure retains the admitted exact primary exception under SEARCH-002; other failures remain visibly unavailable.",
-      "was": "Created or changed searchable text appears in full-text results within 10 seconds. A failed indexing job is visible to operators with its last successful index time; Vector never presents known-stale results as complete.",
-      "now": "Created or changed searchable text appears in full-text results within 10 seconds. Database triggers maintain the full-text entries in the same transaction as searchable source changes, so a committed source change cannot leave its corresponding entry behind. If an index query fails, the exact primary-record lookup remains available under SEARCH-002; other searches are reported unavailable with the last successful index time; Vector never presents a known index failure as a complete empty result."
+      "summary": "Index freshness: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "VIEW-001": {
       "change": "changed",
-      "summary": "Parent filters remain; grouped SQL paging orders by group key, selected sort and stable identifier. Page-visible groups retain full-result counts and allGroups preserves the complete aggregate metadata.",
-      "was": "Issue lists can filter by status, status category, priority, assignee, team, project, cycle, label, due date, and blocked state; sort by newest, oldest, Urgent-to-No-priority, workflow status order, due date, or last update; and group by none, status, assignee, priority, project, cycle, or team. Completed issues are hidden by default outside Current.",
-      "now": "Issue lists can filter by status, status category, priority, assignee, team, project, cycle, label, due date, blocked state, and parent (all issues, root issues, or children of one exact parent identifier); sort by newest, oldest, Urgent-to-No-priority, workflow status order, due date, or last update; and group by none, status, assignee, priority, project, cycle, or team. Completed issues are hidden by default outside Current. Grouped pages order by the group key before the selected sort and stable identifier. Only groups with rows on the page are rendered, with counts for the complete filtered result; a group may continue onto another page. The issue-list HTTP response exposes page-present `groups` with full filtered counts and `allGroups` with the complete filtered grouping aggregate. Positive offsets require the response `revision` for the same query and workspace calendar date; invalidated or missing identity returns HTTP 409 `pagination_invalidated` without mixed rows, and browsing restarts visibly at offset zero."
+      "summary": "Issue controls: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "VIEW-002": {
       "change": "changed",
-      "summary": "Saved queries now include a persisted list or board layout in addition to filters, sort and grouping; the private/shared ownership rules remain unchanged. Successful rename/control receipts update the heading and navigation immediately, invalidate older reads, and still yield to subsequent authorized reads or access denial.",
-      "was": "An operator can save a named combination of filters, sort, and grouping as private or shared, then update, duplicate, or delete it. A private view is visible and editable only by its owner; any operator can open or duplicate a shared view, but only its owner can update or delete it, and ownership changes only under OPS-004. Deleting a view never changes an issue.",
-      "now": "An operator can save a named combination of filters, sort, grouping, and list or board layout as private or shared, then update, duplicate, or delete it. A private view is visible and editable only by its owner; any operator can open or duplicate a shared view, but only its owner can update or delete it, and ownership changes only under OPS-004. Deleting a view never changes an issue."
+      "summary": "Saved views: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "An operator can save a named combination of filters, sort, grouping, and list or board layout as private or shared, then update, duplicate, or delete it. A private view is visible and editable only by its owner; any operator can open or duplicate a shared view, but only its owner can update or delete it, and ownership changes only under OPS-004. Deleting a view never changes an issue.",
+      "now": "Anyone signed in can save a named combination of filters, sort, grouping, and list or board layout as a private view, then update, duplicate, or delete it; Owners, Admins and Members can also save a view as shared with the workspace or a team or switch it to shared, and a Guest's views are always private (role matrix). A private view is visible and editable only by its owner; anyone who can see a shared view's teams can open or duplicate it (a Guest only when it covers only their invited teams), but only its owner can update or delete it, and ownership changes only under OPS-004. Deleting a view never changes an issue."
     },
     "VIEW-003": {
       "change": "changed",
-      "summary": "Operator preferences cover the board as well as the issue list; each saved view owns its layout and opening it leaves the source surface preferences alone.",
-      "was": "The filters, sort, and grouping an operator last applied to Current, My work, the Projects portfolio, and each issue list are stored for that operator and restored on their next visit from any browser, and one visible control resets them to the defaults. Opening a saved view never changes the stored controls of the list it was opened from.",
-      "now": "The filters, sort, and grouping an operator last applied to Current, My work, the Projects portfolio, the issue list, and the board are stored for that operator and restored on their next visit from any browser, and one visible control resets them to the defaults. A saved view's layout belongs to that view. Opening a saved view never changes the stored controls of the list or board it was opened from."
+      "summary": "Control persistence: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "VIEW-004": {
+      "change": "changed",
+      "summary": "Bulk edit: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "An operator can select several issues in a list and set status, assignee, priority, project, cycle, or labels on all of them in one operation, up to the batch limit in `seed.json → limits`. The operation is atomic: if any selected issue fails ISSUE-004, ISSUE-006, or CYCLE-002, nothing is written and the response names the failing issues by identifier. A successful operation writes one activity entry per issue.",
+      "now": "An operator can select several issues in a list and set status, assignee, priority, project, cycle, or labels on all of them in one operation, up to the batch limit in `seed.json → limits`. The operation is atomic: if any selected issue fails ISSUE-004, ISSUE-006, or CYCLE-002, nothing is written and the response names the failing issues by identifier. A successful operation writes one activity entry per issue and is undone as one action by Undo or Command/Ctrl-Z within the ISSUE-020 window."
     },
     "VIEW-005": {
-      "change": "added",
-      "summary": "A team workflow board provides bounded status-grouped paging, complete SQL status totals, keyboard status changes and a phone column selector; it selects the sole team automatically and requires a choice in a multi-team workspace."
-    },
-    "BASE-ACCESS-001": {
       "change": "changed",
-      "summary": "Assignment and direct-mention transactional notification mail is permitted in addition to sign-in mail, with explicitly limited issue metadata.",
-      "was": "Operators sign in by magic link to an allow-listed email address; passkeys may be offered in addition. No passwords are stored.",
-      "now": "Operators sign in by magic link to an allow-listed email address; passkeys may be offered in addition. No passwords are stored. Separately, assignment and direct-mention notification mail under NOTIFY-006 can carry issue titles, identifiers, readable actors and authenticated app links outside the deployment through the declared transactional-email external."
+      "summary": "Team board: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
-    "OWNER-CLAIM-001": {
-      "change": "added",
-      "summary": "Five-minute signed owner confirmation uses Base native bootstrap with trusted deployment configuration, permanent admission ledger and a refused second claim. Local configured-owner setup remains available without RER configuration."
+    "CMD-001": {
+      "change": "changed",
+      "summary": "Command palette: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
-    "EDITOR-001": {
-      "change": "added",
-      "summary": "The recorded installation owner under current native Base authority receives a non-secret expiring editor configuration grant. The copied same-origin editor is revoked on native sign-out/auth loss and validates the exact management origin; document CSP restricts both framing directions."
+    "CMD-002": {
+      "change": "changed",
+      "summary": "Keyboard navigation: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
-    "API-001": {
-      "change": "added",
-      "summary": "Scoped Base-token routes reuse native issue/list/update/comment/metadata rules without document or file admission."
+    "CMD-003": {
+      "change": "changed",
+      "summary": "Focus and selection: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
-    "API-002": {
-      "change": "added",
-      "summary": "Transactional issuance, native publication and safe usage retain current issuer/workspace authority; removal revokes tokens."
+    "NOTIFY-001": {
+      "change": "changed",
+      "summary": "Inbox events: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Vector creates an in-app notification, visible within 5 seconds, for assignment of an issue to the operator, a direct mention (ISSUE-013), a comment on an issue they follow, the return of an intake item they deferred, the resolution of the last blocker on an issue assigned to them, and a due reminder (NOTIFY-005). Assignment and direct-mention events may also send the minimal transactional email defined by NOTIFY-006; all other product notification events remain in-app.",
+      "now": "Vector creates an in-app notification, visible within 5 seconds, for assignment of an issue to the member, a direct mention (ISSUE-013), a comment on an issue they follow, the return of an intake item they deferred, the resolution of the last blocker on an issue assigned to them, a due reminder (NOTIFY-005), a triage item they are responsible for (TRIAGE-001), a project or initiative update they follow (PROJ-010), a delegated agent's question or completion (AGENT-002), a review request or status change from Git (GITHUB-005) and an SLA warning (AUTO-004). Members who follow an issue (NOTIFY-002) — its creator, assignee, commenters, mentioned members and explicit followers — are also notified when it is completed, when it is canceled or marked duplicate, when its status changes to another status (one notification per change, grouped with any other change made in the same mutation), when its priority is raised to Urgent, when it becomes blocked by a newly added blocker or a blocking relation on it is added or removed, when its due date changes, and when a resolved thread they took part in is reopened (ISSUE-008). Each event notifies each follower once, never the actor (NOTIFY-003), and a completion caused by automation or Git (GITHUB-003) names that automation as actor. The inbox is always delivered; email, Slack, Teams, mobile push and desktop follow NOTIFY-006 and NOTIFY-007."
     },
-    "WEBHOOK-001": {
-      "change": "added",
-      "summary": "Durable minimal native issue events use Base delivery state, explicit uncertainty and deployment-owned enforcing RPC; no fetch fallback or live delivery claim."
+    "NOTIFY-002": {
+      "change": "changed",
+      "summary": "Followers: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "NOTIFY-003": {
+      "change": "changed",
+      "summary": "No self-notification: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "NOTIFY-004": {
+      "change": "changed",
+      "summary": "Read and mute: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "NOTIFY-005": {
+      "change": "changed",
+      "summary": "Due reminders: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "NOTIFY-006": {
+      "change": "changed",
+      "summary": "Assignment and mention email: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "GITHUB-001": {
-      "change": "added",
-      "summary": "Exact raw-byte GitHub HMAC deliveries link explicit identifiers to safe PR URLs/state without a GitHub token or changing issue decisions."
+      "change": "changed",
+      "summary": "Signed PR links: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "A current registered repository receiver verifies exact GitHub HMAC bytes before parsing an allowlisted pull_request delivery. Explicit native issue identifiers link stable repository/PR identity, safe HTTPS URL, title and open/closed/merged state. Unknown identifiers record diagnostics; no PR event creates, completes or reprioritises an issue. No GitHub token, live account request or enrichment is used.",
+      "now": "A current registered repository receiver verifies exact GitHub HMAC bytes before parsing an allowlisted pull_request delivery. Native issue identifiers in the PR title or body link stable repository/PR identity, safe HTTPS URL, title and open/closed/merged state. Unknown identifiers record diagnostics. A PR event changes issue status only through the team's Git automation rules (GITHUB-003), recorded as automation activity."
     },
     "GITHUB-002": {
-      "change": "added",
-      "summary": "Durable replay/current-state/configuration fences prevent duplicate/conflicting/older PR regression and preserve safe portable histories."
+      "change": "changed",
+      "summary": "Durable latest PR state: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "API-001": {
+      "change": "changed",
+      "summary": "Native scoped API: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Named reveal-once Base tokens admit only the explicit /api/v1 issue list/detail/create/version-checked update/comment and metadata routes under route-selected scopes. Token expiry, revocation, active issuer/workspace and resource authority are checked on every request; bearer tokens never admit documents, generated functions, private files or token administration. Existing native mutation and notification rules apply; no deletion API or product role is added.",
+      "now": "Named reveal-once Base tokens admit only the explicit `/api/v1` routes under route-selected scopes: issue list/detail and description history use `issues:read`; issue create/version-checked update, description restore and description checklist mutations use `issues:write`; comment creation and author-only comment checklist mutations use `comments:write`; metadata uses `metadata:read`; project list/detail use `projects:read`; and project create/update use `projects:write`. The project list applies portfolio filters and returns matching counts; create and update accept native project fields, validate dates and record planning-field activity. Project lists currently return the complete workspace list without pagination (API-003). Token expiry, revocation, active issuer/workspace and resource authority are checked on every request; bearer tokens never admit documents, generated functions, private files or token administration. Existing native mutation and notification rules apply; no deletion API or product role is added."
+    },
+    "API-002": {
+      "change": "changed",
+      "summary": "Token authority and usage: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
+    },
+    "WEBHOOK-001": {
+      "change": "changed",
+      "summary": "Durable native delivery: clause text revised for the full-product target contract (published clause, status done).",
+      "was": "Registered public HTTPS destinations receive minimal native created/updated/completed issue events under stable business identities. Base delivery attempts, backoff, cooldown and accepted/rejected/uncertain results survive restart. Ambiguous sends never retry under fresh IDs; explicit reconciliation requires receiver evidence. Mapped imports and restore create no delivery events. No configured enforcing DNS/pinned-TLS RPC means outbound is visibly unconfigured, with native events retained. Ordinary fetch is never substituted.",
+      "now": "Registered public HTTPS destinations receive minimal native created/updated/completed issue events under stable business identities. Base delivery attempts, backoff, cooldown and accepted/rejected/uncertain results survive restart. Ambiguous sends never retry under fresh IDs; explicit reconciliation requires receiver evidence. Mapped imports and restore create no delivery events. Until Settings has verified the hosting account’s domain inventory or an enforcing service is bound, outbound is visibly unconfigured and native events are retained. The built-in Base transport refuses private and account-owned destinations, pins TLS for non-Cloudflare answers, and uses its explicit all-Cloudflare platform-fetch route with the re-resolution and destination-zone TLS limits in docs/INTEGRATIONS.md. Failed sends never switch transports."
+    },
+    "DATA-001": {
+      "change": "changed",
+      "summary": "Export contents: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "DATA-002": {
       "change": "changed",
-      "summary": "CSV/JSON and documented Linear file preflight reports every row error, omitted field, existing native reference and measured bound before publication.",
-      "was": "Separately from portable restore, an operator can preflight an import of issues supplied as CSV rows or as a JSON array of objects with the same field names, before anything is written. The fields are title, description, team, status, priority, assignee, project, cycle, labels, estimate, due date, expected outcome, customer impact, source ID, and source record ID. The preflight validates the mapping, the timestamps, and every team, status, assignee, project, cycle, label, duplicate, and dependency reference, and reports every row that would fail with its row number and reason.",
-      "now": "Separately from portable restore, an operator can preflight an import of issues supplied as CSV rows or as a JSON array of objects with the same field names, before anything is written. The fields are title, description, team, status, priority, assignee, project, cycle, labels, estimate, due date, expected outcome, customer impact, source ID, and source record ID. The preflight validates the mapping, the timestamps, and every team, status, assignee, project, cycle, label, duplicate, and dependency reference, and reports every row that would fail with its row number and reason, and every nonempty value it would not import. One preflight covers the whole file of a run, up to the measured run limits in docs/MOVE-IN.md."
+      "summary": "Mapped import preflight: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Separately from portable restore, an operator can preflight an import of issues supplied as CSV rows or as a JSON array of objects with the same field names, before anything is written. The fields are title, description, team, status, priority, assignee, project, cycle, labels, estimate, due date, expected outcome, customer impact, source ID, and source record ID. The preflight validates the mapping, the timestamps, and every team, status, assignee, project, cycle, label, duplicate, and dependency reference, and reports every row that would fail with its row number and reason, and every nonempty value it would not import. One preflight covers the whole file of a run, up to the measured run limits in docs/MOVE-IN.md.",
+      "now": "Separately from portable restore, an Owner or Admin (role matrix; Members and Guests are refused 403) can preflight an import of issues supplied as CSV rows or as a JSON array of objects with the same field names, before anything is written. The fields are title, description, team, status, priority, assignee, project, cycle, labels, estimate, due date, expected outcome, customer impact, source ID, and source record ID. The preflight validates the mapping, the timestamps, and every team, status, assignee, project, cycle, label, duplicate, and dependency reference, and reports every row that would fail with its row number and reason, and every nonempty value it would not import. One preflight covers the whole file of a run, up to the measured run limits in docs/MOVE-IN.md."
     },
     "DATA-003": {
       "change": "changed",
-      "summary": "A reviewed run publishes in staged batches; each batch publishes all its native effects atomically with current-session and exact native-value fences, and a failed batch writes nothing while earlier batches stay for resume.",
-      "was": "Applying a successful preflight writes the batch atomically, preserves supplied creation and update times, and records an import-run identifier. A failed apply writes none of the batch.",
-      "now": "Applying a successful preflight records an import-run identifier and publishes the run in batches, each written atomically, preserving supplied creation and update times. A failed batch writes none of that batch and leaves earlier batches of the run in place for resume (DATA-006)."
+      "summary": "Atomic mapped import: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "Applying a successful preflight records an import-run identifier and publishes the run in batches, each written atomically, preserving supplied creation and update times. A failed batch writes none of that batch and leaves earlier batches of the run in place for resume (DATA-006).",
+      "now": "An Owner or Admin (role matrix) applying a successful preflight records an import-run identifier and publishes the run in batches, each written atomically, preserving supplied creation and update times. A failed batch writes none of that batch and leaves earlier batches of the run in place for resume (DATA-006)."
+    },
+    "DATA-004": {
+      "change": "changed",
+      "summary": "Idempotent mapped import: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "DATA-005": {
       "change": "changed",
-      "summary": "Public local export/import/export uses one Base engine and exact canonical native records and files. Authenticated restore into a pristine destination bootstrap is locally proven through native Worker HTTP, with atomic session/link retirement, fresh historical-owner sign-in, serialized R2 settlement and unchanged historical-effect quarantine. Hosted HTTPS acceptance remains separate.",
-      "was": "`pnpm import` restores a portable DATA-001 archive without synthesising activity, audit entries, notifications, or new timestamps; its records are equivalent after export, import, and export as `BASE-DATA-001` requires.",
-      "now": "`rer import --target local` restores a portable DATA-001 archive without synthesising activity, audit entries, notifications, or new timestamps; its records are equivalent after export, import, and export as `BASE-DATA-001` requires."
+      "summary": "Exact portable restore: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "DATA-006": {
-      "change": "added",
-      "summary": "One reviewed run of up to the measured limits (tested at 2,000 generated Linear issues) previews once, publishes in staged batches with exact \"applied N of M batches\" status, resumes after a stopped client or failed batch with each record landing once, and sends no notification, mail or webhook."
+      "change": "changed",
+      "summary": "Staged import run: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "One reviewed run of up to the measured limits in docs/MOVE-IN.md (tested at 2,000 issues) previews once and publishes in staged batches under one run identifier. Status says truthfully how many of its batches are applied and whether the last batch failed. An interrupted run (a stopped client or a failed batch) resumes from its last committed batch, and every source record lands exactly once. Issues already published are visible and marked as part of an unfinished run. Applying the same reviewed run again returns that run with no new rows; a different file under the same source name conflicts. No notification, mail or webhook is sent for an imported issue.",
+      "now": "Only an Owner or Admin starts, resumes or repeats a run (role matrix). One reviewed run of up to the measured limits in docs/MOVE-IN.md (tested at 2,000 issues; larger sources are split into the runs of one migration under DATA-017, never truncated) previews once and publishes in staged batches under one run identifier. Status says truthfully how many of its batches are applied and whether the last batch failed. An interrupted run (a stopped client or a failed batch) resumes from its last committed batch, and every source record lands exactly once. Issues already published are visible and marked as part of an unfinished run. Applying the same reviewed run again returns that run with no new rows; a different file under the same source name conflicts. No notification, mail or webhook is sent for an imported issue."
     },
     "DATA-007": {
-      "change": "added",
-      "summary": "After a finished or partial run, Settings and the terminal give one report and one CSV comparing source rows read with Vector issues written by team, status, project, cycle and assignee, every omitted field with its count, every unresolved reference with its row, what the file never held, and each source ID's Vector identifier; old source IDs find their issues by search and lookup."
+      "change": "changed",
+      "summary": "Reconciliation report: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "DATA-008": {
-      "change": "added",
-      "summary": "A Linear API file the owner produces (docs/LINEAR-API-FILE.md) merges with a Linear CSV run: comments with original times and read-only author names, HTTPS links never fetched, and blocks/duplicate relations inside the run; anything outside the run is reported, and a malformed file is refused with row-level reasons and nothing written."
+      "change": "changed",
+      "summary": "Linear API enrichment file: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "DATA-009": {
-      "change": "added",
-      "summary": "Jira Cloud All Fields CSV uses the reviewed staged importer for a supported profile. Preflight keeps exact bytes and repeated positions, detects dates across all date-bearing cells, requires explicit offsets for offsetless instants, reports every omission and refuses ambiguous or invalid values before writes. Status, priority, active-account, cycle and estimate mappings require explicit review. Evidence remains documented-format, synthetic-only; no real export was supplied."
+      "change": "changed",
+      "summary": "Jira CSV preflight and loss review: clause text unchanged; acceptance evidence and a status (published clause, status done) added."
     },
     "DATA-010": {
-      "change": "added",
-      "summary": "The Jira supported profile imports in-run parents, correctly directed Blocks dependencies and duplicate-to-canonical links, plus comments with original times and read-only author names. Old Jira keys remain visible/searchable. Exact existing labels, Epic labeling, explicit open-cycle mappings and exact seconds conversion preserve review decisions. Optional named HTTPS attachment links are off by default and never fetched; bytes remain separate. Unsupported columns stay in exact originals and the loss report. No operator, notification or external event is created."
+      "change": "changed",
+      "summary": "Jira staged apply and reconciliation: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "The reviewed Jira CSV imports preserved issue times (Resolved for completion, or an explicitly confirmed fallback), due dates, estimates, exact labels, confirmed status/priority/operator/sprint mappings, in-file parents and Blocks, canonical Duplicate links and original-author/time comments. Stable source IDs remain authoritative; old keys are visible and searchable. Outside-file and Relates targets are omissions and never bind a same-key native issue. Attachment bytes are never fetched; named HTTPS links require explicit opt-in. Preview, CLI review and stored report share one loss review and configuration fingerprint. Staged apply/replay, SQL reconciliation and whole-run rollback use the existing lifecycle; later native edits refuse the entire rollback without changes. Historical imports dispatch no notifications, mail, webhooks or agents. The public route requires a current operator session and same origin; API tokens are not admitted.",
+      "now": "The reviewed Jira CSV imports preserved issue times (Resolved for completion, or an explicitly confirmed fallback), due dates, estimates, exact labels, confirmed status/priority/operator/sprint mappings, in-file parents and Blocks, canonical Duplicate links and original-author/time comments. Stable source IDs remain authoritative; old keys are visible and searchable. Outside-file and Relates targets are omissions and never bind a same-key native issue. Attachment bytes are never fetched; named HTTPS links require explicit opt-in. Preview, CLI review and stored report share one loss review and configuration fingerprint. Staged apply/replay, SQL reconciliation and whole-run rollback use the existing lifecycle; later native edits refuse the entire rollback without changes. Historical imports dispatch no notifications, mail, webhooks or agents. The public route requires a current Owner or Admin session (role matrix) and same origin; API tokens are not admitted."
     },
     "DATA-011": {
-      "change": "added",
-      "summary": "An operator can erase a person that imports carried (exact email and/or display names) after a counts-only preview and typed confirmation: every applied or pending import run, Vector's imported copies, reports and development mail lose them in one D1 batch; issues already written stay, pending runs still finish, and an archive made before the erasure is refused on restore when a later journal is supplied."
-    },
-    "HOME-001": {
       "change": "changed",
-      "summary": "The approved public marketing homepage and installed Base Lobby replace the owner identity plate; comparative positioning does not promise feature parity or importer coverage.",
-      "was": "The public landing shows the configured owner's name, one configured statement of purpose, and a sign-in link. It contains no pricing, feature tour, customer testimonials, or invented metrics. The configured “Powered by <product> · runeditrun.com” credit is shown only when enabled.",
-      "now": "The owner-approved public marketing homepage at `/` remains exactly as approved, including its copy and assets and the line “100% free, open source alternative to Linear, Jira and Asana.” That line is product positioning; it does not promise feature parity or importer coverage for every named product. The page presents Vector with its headline, one supporting sentence, and source and docs links, followed by short sections (how Current explains each issue, free and open source, deferral, the rest of the product, trying it beside another tracker, a closing call to action), each drawing the product only from its real labels. The public site's “Run Vector” action remains unchanged and points to `/run`, the installation page. The installed application's root `/` serves the Base Lobby, whose Sign in entry satisfies this clause's sign-in requirement (owner decision, 13 Oct 2026 15:11Z). The page contains no pricing, hosting costs, customer testimonials or invented metrics, reads no installation data and is server-rendered."
+      "summary": "Erasing an imported person: clause text revised for the full-product target contract (published clause, status partial).",
+      "was": "An operator can erase a person that imports carried, by exact email and/or up to five exact display names, after a counts-only preview and a typed confirmation. One D1 batch removes the person from every import run, applied or still pending: records that hold them become permanent tombstones that never publish or replay, runs labelled with their email are retired, originals holding them are withdrawn, imported comments they wrote read as deleted with no author name, reconciliation reports lose those cells, and development mail naming them is dropped. Issues already written stay; a pending run still finishes, without the erased records and without links to them. A current member or invitation is refused until OPS-004 removal. The erasure journal is append-only, and an archive made before the erasure is refused on restore when a later archive's journal is supplied.",
+      "now": "An Owner or Admin (role matrix; Members and Guests are refused 403) can erase a person that imports carried, by exact email and/or up to five exact display names, after a counts-only preview and a typed confirmation. One D1 batch removes the person from every import run, applied or still pending: records that hold them become permanent tombstones that never publish or replay, runs labelled with their email are retired, originals holding them are withdrawn, imported comments they wrote read as deleted with no author name, reconciliation reports lose those cells, and development mail naming them is dropped. Issues already written stay; a pending run still finishes, without the erased records and without links to them. A current or suspended member, or an open invitation, is refused here; a member's native and imported records are erased together by ROLE-012. The erasure journal is append-only, and an archive made before the erasure is refused on restore when a later archive's journal is supplied."
     },
-    "SETUP-001": {
+    "ROLE-001": {
       "change": "added",
-      "summary": "Fresh configured installation owners complete a durable same-origin first workspace review; existing configured installations retain completion."
+      "summary": "Workspace roles: target clause added in the 16–19 October full-product target contract (status missing)."
     },
-    "BASE-DATA-001": {
-      "change": "changed",
-      "summary": "Portable archive export and restore use the public rer commands instead of pnpm script entry points.",
-      "was": "`pnpm export` produces every record and attachment; `pnpm import` restores it into an empty deployment; export, import, export yields an archive with equivalent contents.",
-      "now": "`rer export` produces every record and attachment; `rer import` restores it into an empty deployment; export, import, export yields an archive with equivalent contents."
+    "ROLE-002": {
+      "change": "added",
+      "summary": "Private teams: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-003": {
+      "change": "added",
+      "summary": "Guests: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-004": {
+      "change": "added",
+      "summary": "Single sign-on and provisioning: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-005": {
+      "change": "added",
+      "summary": "Audit log: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ROLE-006": {
+      "change": "added",
+      "summary": "Apps and agents as actors: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-007": {
+      "change": "added",
+      "summary": "Team membership and team owners: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-008": {
+      "change": "added",
+      "summary": "Operator and permission coverage: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-009": {
+      "change": "added",
+      "summary": "Team-managed permissions: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-010": {
+      "change": "added",
+      "summary": "Sign in with Google and passkeys: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ROLE-011": {
+      "change": "added",
+      "summary": "Suspend and reactivate members: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ROLE-012": {
+      "change": "added",
+      "summary": "Erase a member's personal data: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "TEAM-005": {
+      "change": "added",
+      "summary": "Team settings: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "TEAM-006": {
+      "change": "added",
+      "summary": "Sub-teams: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ISSUE-016": {
+      "change": "added",
+      "summary": "Issue templates: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ISSUE-017": {
+      "change": "added",
+      "summary": "Reactions: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ISSUE-018": {
+      "change": "added",
+      "summary": "Description history: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "ISSUE-019": {
+      "change": "added",
+      "summary": "Sub-issue progress: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "ISSUE-020": {
+      "change": "added",
+      "summary": "Undo and Recently deleted: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ISSUE-021": {
+      "change": "added",
+      "summary": "Issue types: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ISSUE-022": {
+      "change": "added",
+      "summary": "Issue start date: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ISSUE-023": {
+      "change": "added",
+      "summary": "Copy issue: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "ISSUE-024": {
+      "change": "added",
+      "summary": "Inline images and video: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ISSUE-025": {
+      "change": "added",
+      "summary": "Checklists: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ISSUE-026": {
+      "change": "added",
+      "summary": "Editor formatting and slash commands: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ISSUE-027": {
+      "change": "added",
+      "summary": "Issue references and backlinks: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ISSUE-028": {
+      "change": "added",
+      "summary": "Drafts across devices: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "FIELD-001": {
+      "change": "added",
+      "summary": "Custom field definitions: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "FIELD-002": {
+      "change": "added",
+      "summary": "Custom fields in views, search, API and imports: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "REL-007": {
+      "change": "added",
+      "summary": "Related issues: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "TRIAGE-001": {
+      "change": "added",
+      "summary": "Triage responsibility: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "TRIAGE-002": {
+      "change": "added",
+      "summary": "Triage routing rules: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "TRIAGE-003": {
+      "change": "added",
+      "summary": "Agent triage suggestions: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "TRIAGE-004": {
+      "change": "added",
+      "summary": "Request forms: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "TRIAGE-005": {
+      "change": "added",
+      "summary": "Email intake: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-001": {
+      "change": "added",
+      "summary": "Customer requests on issues: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-002": {
+      "change": "added",
+      "summary": "Customer-weighted planning: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-003": {
+      "change": "added",
+      "summary": "Close the loop with requesters: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-004": {
+      "change": "added",
+      "summary": "Penny keeps the board: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "CUST-005": {
+      "change": "added",
+      "summary": "Customer records: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-006": {
+      "change": "added",
+      "summary": "Customer identity and merging: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-007": {
+      "change": "added",
+      "summary": "Customers list and customer pages: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CUST-008": {
+      "change": "added",
+      "summary": "Adding customer requests by hand: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "WORK-004": {
+      "change": "added",
+      "summary": "Created, Subscribed and Activity tabs: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "PROJ-010": {
+      "change": "added",
+      "summary": "Project updates: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PROJ-011": {
+      "change": "added",
+      "summary": "Milestones: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PROJ-012": {
+      "change": "added",
+      "summary": "Project templates: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PROJ-013": {
+      "change": "added",
+      "summary": "Project documents and specs: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PROJ-014": {
+      "change": "added",
+      "summary": "Project members and teams: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "PROJ-015": {
+      "change": "added",
+      "summary": "Project dependencies: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PROJ-016": {
+      "change": "added",
+      "summary": "Project statuses: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "INIT-001": {
+      "change": "added",
+      "summary": "Initiatives: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "INIT-002": {
+      "change": "added",
+      "summary": "Initiative roll-up: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "INIT-003": {
+      "change": "added",
+      "summary": "Roadmap timeline: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "INIT-004": {
+      "change": "added",
+      "summary": "Leadership digest: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CYCLE-007": {
+      "change": "added",
+      "summary": "Automatic cycle schedule: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "CYCLE-008": {
+      "change": "added",
+      "summary": "Automatic cycle membership: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "RELEASE-001": {
+      "change": "added",
+      "summary": "Releases: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "RELEASE-002": {
+      "change": "added",
+      "summary": "Deployment tracking: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "RELEASE-003": {
+      "change": "added",
+      "summary": "Release notes: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SEARCH-004": {
+      "change": "added",
+      "summary": "Advanced filters: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "SEARCH-005": {
+      "change": "added",
+      "summary": "Meaning-based search: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "VIEW-006": {
+      "change": "added",
+      "summary": "Manual order: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "VIEW-007": {
+      "change": "added",
+      "summary": "Timeline and calendar views: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "VIEW-008": {
+      "change": "added",
+      "summary": "Display options: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "VIEW-009": {
+      "change": "added",
+      "summary": "Workspace-wide views: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "VIEW-010": {
+      "change": "added",
+      "summary": "Sidebar favorites: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "VIEW-011": {
+      "change": "added",
+      "summary": "Light, dark and system themes: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "CMD-004": {
+      "change": "added",
+      "summary": "Keyboard-first editing: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "SYNC-001": {
+      "change": "added",
+      "summary": "Real-time sync: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "SYNC-002": {
+      "change": "added",
+      "summary": "Local-first speed: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SYNC-003": {
+      "change": "added",
+      "summary": "Collaborative editing: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "MOBILE-001": {
+      "change": "added",
+      "summary": "iOS and Android apps: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "MOBILE-002": {
+      "change": "added",
+      "summary": "Push notifications: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "MOBILE-003": {
+      "change": "added",
+      "summary": "Responsive web: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "MOBILE-004": {
+      "change": "added",
+      "summary": "Distributed apps and push relay: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "MOBILE-005": {
+      "change": "added",
+      "summary": "Desktop apps and desktop notifications: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "NOTIFY-007": {
+      "change": "added",
+      "summary": "Channels and digests: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "NOTIFY-008": {
+      "change": "added",
+      "summary": "Snooze and reminders: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "NOTIFY-009": {
+      "change": "added",
+      "summary": "Subscriptions: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "NOTIFY-010": {
+      "change": "added",
+      "summary": "Personal time zone and working hours: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AUTO-001": {
+      "change": "added",
+      "summary": "Recurring issues: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AUTO-002": {
+      "change": "added",
+      "summary": "Workflow rules: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "AUTO-003": {
+      "change": "added",
+      "summary": "Auto-close and auto-archive: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AUTO-004": {
+      "change": "added",
+      "summary": "SLAs: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AUTO-005": {
+      "change": "added",
+      "summary": "Update reminders: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AUTO-006": {
+      "change": "added",
+      "summary": "Due-soon rules: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "REPORT-001": {
+      "change": "added",
+      "summary": "Insights: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "REPORT-002": {
+      "change": "added",
+      "summary": "Cycle and project charts: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "REPORT-003": {
+      "change": "added",
+      "summary": "Dashboards: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "REPORT-004": {
+      "change": "added",
+      "summary": "Workload: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "REPORT-005": {
+      "change": "added",
+      "summary": "Warehouse and spreadsheet export: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "INTEG-001": {
+      "change": "added",
+      "summary": "Guided connection from Settings: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "INTEG-002": {
+      "change": "added",
+      "summary": "Integration health and repair: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "GITHUB-003": {
+      "change": "added",
+      "summary": "Branches and status automation: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "GITHUB-004": {
+      "change": "added",
+      "summary": "Commits: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "GITHUB-005": {
+      "change": "added",
+      "summary": "Review and checks on the issue: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "GITHUB-006": {
+      "change": "added",
+      "summary": "GitHub App: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "GITHUB-007": {
+      "change": "added",
+      "summary": "GitHub Issues sync: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "GITLAB-001": {
+      "change": "added",
+      "summary": "GitLab: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "GITLAB-002": {
+      "change": "added",
+      "summary": "GitLab Issues sync: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "BITBUCKET-001": {
+      "change": "added",
+      "summary": "Bitbucket: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CI-001": {
+      "change": "added",
+      "summary": "CI and deploy providers: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SLACK-001": {
+      "change": "added",
+      "summary": "Slack app: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SLACK-002": {
+      "change": "added",
+      "summary": "Issues from Slack with synced threads: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SLACK-003": {
+      "change": "added",
+      "summary": "Channel notifications: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SLACK-004": {
+      "change": "added",
+      "summary": "Personal Slack notifications: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SLACK-005": {
+      "change": "added",
+      "summary": "Link previews: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "TEAMS-001": {
+      "change": "added",
+      "summary": "Microsoft Teams: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SUPPORT-001": {
+      "change": "added",
+      "summary": "Zendesk, Intercom and Front: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "SUPPORT-002": {
+      "change": "added",
+      "summary": "HappyToHelp: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "ERROR-001": {
+      "change": "added",
+      "summary": "Sentry and Datadog: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "ERROR-002": {
+      "change": "added",
+      "summary": "Spool: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "DESIGN-001": {
+      "change": "added",
+      "summary": "Figma: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "DOCS-001": {
+      "change": "added",
+      "summary": "Notion, Confluence and Google Drive: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "CAL-001": {
+      "change": "added",
+      "summary": "Calendar feeds: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "CONNECT-001": {
+      "change": "added",
+      "summary": "Zapier and Make: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "AGENT-001": {
+      "change": "added",
+      "summary": "Delegate an issue to an agent: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-002": {
+      "change": "added",
+      "summary": "Agent session on the issue: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-003": {
+      "change": "added",
+      "summary": "Reviewable output, human completion: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-004": {
+      "change": "added",
+      "summary": "Agent permissions and budgets: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-005": {
+      "change": "added",
+      "summary": "MCP server: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-006": {
+      "change": "added",
+      "summary": "Agent platform: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "AGENT-007": {
+      "change": "added",
+      "summary": "Ask Vector: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-008": {
+      "change": "added",
+      "summary": "Agent guidance: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "AGENT-009": {
+      "change": "added",
+      "summary": "Provider delegation protocols: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "API-003": {
+      "change": "added",
+      "summary": "Complete public API: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "API-004": {
+      "change": "added",
+      "summary": "OAuth apps: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "API-005": {
+      "change": "added",
+      "summary": "SDK and docs: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "WEBHOOK-002": {
+      "change": "added",
+      "summary": "Webhooks for every object: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "DATA-012": {
+      "change": "added",
+      "summary": "GitHub Issues and Projects import: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "DATA-013": {
+      "change": "added",
+      "summary": "Jira Cloud and Data Center API import: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "DATA-014": {
+      "change": "added",
+      "summary": "Linear API import: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "DATA-015": {
+      "change": "added",
+      "summary": "Plane, Huly and Shortcut import: target clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "DATA-016": {
+      "change": "added",
+      "summary": "Transition sync: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "DATA-017": {
+      "change": "added",
+      "summary": "Whole-workspace migration: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "DATA-018": {
+      "change": "added",
+      "summary": "Old identifiers and links after a move: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "SEC-001": {
+      "change": "added",
+      "summary": "Integration credentials: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "SEC-002": {
+      "change": "added",
+      "summary": "Model and agent data handling: target clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "SEC-003": {
+      "change": "added",
+      "summary": "Erasure across integrations: target clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "PUSH-001": {
+      "change": "added",
+      "summary": "Issue to spec: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PUSH-002": {
+      "change": "added",
+      "summary": "Spec to tested PR: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PUSH-003": {
+      "change": "added",
+      "summary": "Verified deployment: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PUSH-004": {
+      "change": "added",
+      "summary": "Outcome verification before close: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PUSH-005": {
+      "change": "added",
+      "summary": "Customer follow-through: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PUSH-006": {
+      "change": "added",
+      "summary": "Blocked-work follow-up: push-further clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "PUSH-007": {
+      "change": "added",
+      "summary": "Plans with uncertainty: push-further clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "PUSH-008": {
+      "change": "added",
+      "summary": "Incident follow-up loop: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "PUSH-009": {
+      "change": "added",
+      "summary": "Standups and cycle summaries: push-further clause added in the 16–19 October full-product target contract (status partial)."
+    },
+    "PUSH-010": {
+      "change": "added",
+      "summary": "Agent accountability ledger: push-further clause added in the 16–19 October full-product target contract (status missing)."
+    },
+    "OWNER-CLAIM-001": {
+      "change": "added",
+      "summary": "Signed owner claim: published clause added in the 16–19 October full-product target contract (status done)."
+    },
+    "EDITOR-001": {
+      "change": "added",
+      "summary": "Owner-gated editor: published clause added in the 16–19 October full-product target contract (status done)."
     }
   },
-  "version": "0.2.0",
-  "date": "2026-10-16",
-  "extensionPointChanges": [
-    {
-      "id": "import.completed.v1",
-      "change": "removed",
-      "summary": "Remove the unsupported import.completed.v1 declaration shipped in the seed metadata. No emitter was shipped for this extension point; staged imports do not emit it."
-    }
-  ],
+  "extensionPointChanges": [],
   "migrations": [
     {
-      "id": "0012_invitation_cancellation.sql",
-      "buyerSteps": "Apply after unchanged 0001–0011, including on fresh installations. Adds a durable cancellation ledger and admission guards; preserves operators, mappings, credentials, outbox and product data without inferring historical cancellation. Back up D1/R2 and validate recovery first. Keep the additive schema and ledger when rolling back application code; never prune or drop the cancellation ledger."
+      "id": "0050_import_steps.sql",
+      "buyerSteps": "Apply after unchanged 0001–0049. Adds Base import-kit preparation-step, stream-source and erasure-progress tables with their guards, verbatim from Base. Additive; existing imports and journals are unchanged."
     },
     {
-      "id": "0013_workspace_administration.sql",
-      "buyerSteps": "Apply after unchanged 0001–0012. Adds separate administration audit details, durable team issue history and a workspace/prefix reservation ledger, preserving prior product rows, identifiers, counters and closed snapshots. Existing reservations and issue origins backfill the ledger; legacy team history remains conservatively frozen. New reservations survive failed writes and released prefixes keep their consumed numbers. Back up D1/R2 first; validate the populated previous-head transition on a disposable copy. On application rollback retain the additive audit details, team history, prefix ledger and all synchronization and identity triggers; never prune either history or the reservation ledger. The retained team counters mirror the currently selected prefix for compatible prior application SQL. Restore a previous database backup only in isolated recovery validation before any traffic change."
+      "id": "0051_notification_reason.sql",
+      "buyerSteps": "Apply after 0050. Replaces the development-capture trigger so it admits only the currently admitted notification message; no product rows change. Keep the replacement trigger on compatible-source rollback."
     },
     {
-      "id": "0014_collaboration.sql",
-      "buyerSteps": "Apply after unchanged 0001–0013. Back up D1/R2 and validate populated previous-head preservation. Adds collaboration, mention sets, exact deferral identity and durable mail state. Backfills only recoverable historical follows, never mail or Inbox history. Keep all additive tables, claims, attempts and accepted/uncertain states on application rollback; never replay ambiguous claims or development captures. Older code remains SQL-compatible but does not produce collaboration events."
+      "id": "0052_description_history.sql",
+      "buyerSteps": "Apply after 0051. Adds immutable issue description revisions, rebuilt from recorded description activity plus a baseline of each issue's current description; versions that were never recorded stay empty rather than invented. Additive."
     },
     {
-      "id": "0015_issue_parents.sql",
-      "buyerSteps": "Apply after unchanged 0001–0014. Adds the issue_parents relation table (one parent per issue) and its index, with database guards against self-parenting, ancestry cycles and cross-workspace links; existing issue rows are not rewritten and every existing issue remains a root. Back up D1/R2 and validate on an isolated copy. On application-code rollback, retain the table, index and guards; do not reverse the migration."
+      "id": "0053_follower_events.sql",
+      "buyerSteps": "Apply after 0052. Rebuilds notification_candidates and notification_type_mutes through copy tables to admit the new follower event kinds, copying every existing candidate and mute. Back up first; retain the widened tables on rollback."
     },
     {
-      "id": "0016_indexed_search.sql",
-      "buyerSteps": "Apply after unchanged 0001–0015. Backfills full-text indexes for issue text, comments, evidence summaries, project names, labels and saved-view names, then maintains them with source-transaction triggers. A failed index write aborts its source mutation. Validate populated migration and rollback behavior on an isolated copy. On application rollback retain the FTS tables, state row, indexes, views and triggers; do not reverse the migration."
+      "id": "0054_notification_followups.sql",
+      "buyerSteps": "Apply after 0053. Adds personal issue reminders and notification snoozes with their indexes and an issue-change trigger. Additive."
     },
     {
-      "id": "0017_browsing_views.sql",
-      "buyerSteps": "Apply after unchanged 0001–0016. Adds the saved-view layout column, defaulting existing views to list, and indexes for derived issue browsing. Back up D1/R2 and validate populated previous-head preservation on an isolated copy. On application-code rollback retain the additive column and indexes; do not reverse the migration."
+      "id": "0055_followup_lookup_indexes.sql",
+      "buyerSteps": "Apply after 0054. Adds two lookup indexes for reminders and snoozes. Additive."
     },
     {
-      "id": "0018_stable_search_ids.sql",
-      "buyerSteps": "Apply after unchanged 0001–0017. Back up D1/R2 and validate populated migration and isolated recovery first. Replaces only derived FTS tables, search document view and synchronization triggers with stable source TEXT IDs; source records and the index-state record are retained. Deploy a stable-ID-compatible search reader with this schema: pre-0018 rowid-based readers are incompatible. Retain applied migration, FTS schema, ID-based triggers, state and all earlier product/identity/mail ledgers on application-code rollback; use only compatible code. Never reverse 0018 or deploy an older rowid reader against it. Validate any prior full D1/R2 backup with its matching source in isolated resources before switching traffic. FTS5 virtual tables may require special provider export handling; test the chosen backup and restoration tool. No application export/restore command is added."
+      "id": "0056_comment_threads.sql",
+      "buyerSteps": "Apply after 0055. Adds parent and resolution columns to issue comments; existing comments stay top-level and unresolved. Additive."
     },
     {
-      "id": "0019_browse_revision_file_custody.sql",
-      "buyerSteps": "Apply after unchanged 0001–0018. Adds conservative issue-list revisions and independent file-removal custody without rewriting source rows. Back up D1/R2 and validate populated transition. Retain schema and triggers on code rollback; only code that includes detached cleanup discovery, writer settlement and quota accounting is compatible after custody transfers. Never roll back to an older cleanup/quota reader or drop unresolved reservations. See docs/BROWSING-RECOVERY.md."
+      "id": "0057_activity_actor_index.sql",
+      "buyerSteps": "Apply after 0056. Adds an activity index by actor for My work Activity. Additive."
     },
     {
-      "id": "0020_development_outbox.sql",
-      "buyerSteps": "Apply after 0019. Adds the exact Base development outbox schema."
+      "id": "0058_automatic_cycle_membership.sql",
+      "buyerSteps": "Apply after 0057. Adds two opt-in team columns for automatic cycle membership; existing teams keep manual commitment. Additive."
     },
     {
-      "id": "0021_development_mail_custody.sql",
-      "buyerSteps": "Apply after 0020. Expires obsolete development-only mail captures and retires their tables; preserves all delivery, auth, removal and migration ledgers. Deploy only outbox-compatible source. Retain new schema on code rollback; validate isolated recovery from backups with matching source."
+      "id": "0059_subissue_progress.sql",
+      "buyerSteps": "Apply after 0058. Adds sub-issue order (backfilled for existing children), opt-in team progress rules and progress events with their triggers. Keep on compatible-source rollback."
     },
     {
-      "id": "0022_portability.sql",
-      "buyerSteps": "Apply the shared portability schema forward. Stop local runtime before archive operations; retain provider backups and migration history."
+      "id": "0060_workload.sql",
+      "buyerSteps": "Apply after 0059. Adds personal planning capacity per cycle or due-date window. Additive."
     },
     {
-      "id": "0023_restore_safety.sql",
-      "buyerSteps": "Apply destination access/effect review additively. Restore into empty resources, re-enter secrets, sign in as the archived installation owner and review other access/effects explicitly. Never replay historical pending, accepted or uncertain deliveries."
+      "id": "0061_manual_order.sql",
+      "buyerSteps": "Apply after 0060. Adds shared manual order scopes and entries with cleanup triggers. Additive; existing lists keep their derived order."
     },
     {
-      "id": "0024_owner_claim.sql",
-      "buyerSteps": "Apply the Base owner-claim ledger additively after 0023. Preserve existing owners, sessions and every prior table. Existing installations cannot be claimed again. Retain the permanent admission ledger and migrations when rolling compatible source back; never prune it. Re-enter trusted RER configuration and secret setup token only for a fresh signed installation."
+      "id": "0062_project_fields.sql",
+      "buyerSteps": "Apply after 0061. Adds project start date, priority and project labels with date and label guards; existing projects keep their dates and labels."
     },
     {
-      "id": "0025_import_kit.sql",
-      "buyerSteps": "Apply the Base D1 import-kit schema after 0024. Preserve all prior data and migration history. Keep originals, provenance, job and reversal journals on compatible-source rollback."
-    },
-    {
-      "id": "0026_mapped_imports.sql",
-      "buyerSteps": "Apply native import revision and publication guards after 0025. Preserve every previous column/value, session, identifier, file and search document. Retain current-session authorization and native-value fences; never reverse applied SQL or reclaim consumed identifiers."
-    },
-    {
-      "id": "0027_integrations.sql",
-      "buyerSteps": "Apply the actual Base core token/delivery schema after 0026. Preserve prior data, sessions and migration history; retain all attempts and terminal outcomes on compatible-source rollback."
-    },
-    {
-      "id": "0028_native_integrations.sql",
-      "buyerSteps": "Apply native configuration, encrypted signing values, source/replay/PR/event ledgers and authority/restore guards after 0027. Preserve old records and source versions; retain additive columns and all processed/deletion identities. Restore must exclude credentials/claims and permanently quarantine historical sends. Never reverse the SQL or drop the authority guard."
-    },
-    {
-      "id": "0029_first_run_setup.sql",
-      "buyerSteps": "Apply additively. Existing configured workspaces retain completion; the first owner of a fresh workspace reviews it at /setup before entering the app. Retain this state during rollback and restore."
-    },
-    {
-      "id": "0030_dev_sessions.sql",
-      "buyerSteps": "Apply additively after 0029. It rebuilds oa_sessions to admit the dev session kind, keeping every row, column, index and constraint, adds the dev credential table and recreates the operator-removal trigger unchanged. Retain it during rollback and restore."
-    },
-    {
-      "id": "0031_cycle_closure.sql",
-      "buyerSteps": "Apply additively after unchanged 0001–0030. Preserve prior schema and rows. Retain cycle snapshots, identifier-only membership events, failure entries, indexes and immutable/closed-commit guards on compatible-source rollback. Validate populated upgrade and isolated matching-source D1/R2 recovery before traffic changes. Provider Cron timing remains unproved."
-    },
-    {
-      "id": "0032_due_reminders.sql",
-      "buyerSteps": "Apply after unchanged 0001–0031. Adds workspace reminder_time default 09:00 and due_reminders delivered ledger plus due_reminder_suppressions per-operator history; expands the notification_type_mutes CHECK while preserving historical preferences. Validate populated prior-main upgrade and isolated matching-source D1/R2 recovery. Retain delivered identities, per-operator suppressions, identifier-only durable reminder feature audits, settings and all earlier schema on compatible-source rollback and archive restoration. Review restored effects before new scheduled work. Inbox only; no mail or integration producer. Hosted Cron timing remains unproved."
-    },
-    {
-      "id": "0033_issue_deletion.sql",
-      "buyerSteps": "Apply additively after the existing baseline migrations. Use create/copy/swap to expand source record/receipt primary keys with an erased discriminator defaulting to zero, preserving old column values and all unrelated indexes/triggers. Live raw IDs and anonymous erased digests have disjoint uniqueness domains. Retain expanded keys on compatible-source rollback; older code ignoring erased is not compatible. Confirmed deletion hashes external record/revision identifiers. Keep duplicate relations, identifier-only deletion receipts, webhook erasure fences, import erasure hashes, source identities and detached file custody on compatible-source rollback. Use only code respecting erasure fences. Validate populated migration and isolated matching source/D1/R2 recovery before traffic changes. Local confirmed erasure does not recall provider side effects already invoked."
-    },
-    {
-      "id": "0034_http_bootstrap_restore.sql",
-      "buyerSteps": "Apply forward after prior migrations. Retain destination pristine-bootstrap/admission ledgers, eligibility views and commit guards, and provision the declared RESTORE_COORDINATOR SQLite Durable Object through the existing deployment plan. Only newly bootstrapped, unedited installations with one ordinary owner session and its exact consumed source link are admitted; upgrades never bless prior state. Commit requires fresh historical-owner sign-in afterward. Preserve permanent Base claims and historical mail/webhook holds. Never clear uncertain R2 custody while work may be active; use stopped inspected recovery. Retain schema and coordinator custody with compatible source on rollback. Validate populated upgrade and isolated matching-source D1/R2 recovery; local Worker HTTP proof is not hosted HTTPS acceptance."
-    },
-    {
-      "id": "0035_staged_imports.sql",
-      "buyerSteps": "Apply in order. Adds the import run's batch size and last failure, and replaces the one-batch import triggers with an exact batch-boundary rule. Existing runs and their originals are unchanged; a run created before this migration still publishes whole."
-    },
-    {
-      "id": "0036_import_reports.sql",
-      "buyerSteps": "Apply in order. Adds the table holding what each reviewed import run read from its file, for its reconciliation report. Earlier rows, indexes and triggers are unchanged; runs created before it have no report."
-    },
-    {
-      "id": "0037_imported_comment_authors.sql",
-      "buyerSteps": "Apply in order. Adds a nullable read-only author name to comments for comments imported from Linear. Existing comments keep a null value and are unchanged; keep the column on application rollback."
-    },
-    {
-      "id": "0038_identity_providers.sql",
-      "buyerSteps": "Apply in order before switching to this runtime: Base operator-auth's OpenID Connect provider and transaction ledgers. Additive; existing operators, sessions and tokens are unchanged."
-    },
-    {
-      "id": "0039_domain_rules_step_up.sql",
-      "buyerSteps": "Apply in order: Base operator-auth domain rules and step-up proofs. Additive."
-    },
-    {
-      "id": "0040_provider_control.sql",
-      "buyerSteps": "Apply in order: Base operator-auth provider settings, audit, provider sessions, logout events and credentials (an absent setting means off). Additive."
-    },
-    {
-      "id": "0041_provider_pins.sql",
-      "buyerSteps": "Apply in order: Base operator-auth session provenance for provider pins. Additive (IF NOT EXISTS after 0040)."
-    },
-    {
-      "id": "0042_dependency_setup.sql",
-      "buyerSteps": "Apply in order: Base operator-auth ephemeral setup links, which a native owner claim closes. Additive; never exported."
-    },
-    {
-      "id": "0043_import_retirement.sql",
-      "buyerSteps": "Apply in order: Base import-kit d1RetirementSchema verbatim (append-only erasure journal and custody retirements; replaces the stream revision update trigger with one that admits retirement). Keep the journal and retirements on rollback and in archives."
-    },
-    {
-      "id": "0044_import_reversal_fence.sql",
-      "buyerSteps": "Apply in order: Base import-kit d1ReversalFenceSchema verbatim (indexed reversal fences and lookup indexes). Additive."
-    },
-    {
-      "id": "0045_identity_dependency.sql",
-      "buyerSteps": "Apply after 0044. Adds Base identity-dependency installation, linked-provider, pending-approval and replay-code ledgers. Preserve these additive tables and all earlier data on compatible-source rollback."
-    },
-    {
-      "id": "0046_identity_dependency_approval.sql",
-      "buyerSteps": "Apply after 0045. DESTRUCTIVE: deletes every pending identity-dependency approval because earlier approvals lack attempt fencing; owners must renew those approvals after the upgrade. Adds per-interface private-key storage and attempt_id. Existing established links remain; retain the new schema on compatible-source rollback and never restore or replay deleted approvals."
-    },
-    {
-      "id": "0047_import_number_reservations.sql",
-      "buyerSteps": "Apply after 0046. Adds durable reviewed import-number reservations and reserves eligible outstanding legacy ranges before new native work. Existing issues and allocated numbers are preserved; overlapping older runs surface import_number_conflict and require reviewed rollback and a new preview. Never rewind the prefix high-water mark or reclaim consumed numbers on rollback."
-    },
-    {
-      "id": "0048_owner_signin.sql",
-      "buyerSteps": "Apply after 0047. Adds Base one-time owner sign-in grant storage for rer signin using the deploying checkout's Cloudflare credentials. Retain existing operators, sessions, migration history and the additive table; raw grant tokens are never stored."
-    },
-    {
-      "id": "0049_development_step_up_capture.sql",
-      "buyerSteps": "Apply after 0048. Updates the local development mail capture guard to admit live step-up challenges and remove their captures when revoked. Local storage only: it adds no captured-mail UI and proves no hosted delivery. Preserve earlier auth/mail records and the updated guards on compatible-source rollback."
+      "id": "0063_related_issues.sql",
+      "buyerSteps": "Apply after 0062. Adds unordered related-issue pairs, independent of blocking dependencies. Additive."
     },
     {
       "id": "0064_cycle_schedule.sql",
-      "buyerSteps": "Apply additively after 0063. Retain team cadence settings, automatic-cycle provenance and automation audit records on rollback."
+      "buyerSteps": "Apply after 0063. Adds team cycle schedules and a schedule revision on cycles; existing cycles keep their dates. Additive."
     }
   ],
-  "breaking": true,
-  "agentUpdateInstructions": "This is the breaking 0.1.0-to-0.2.0 upgrade. Preserve owner customizations, every applied migration byte, product data, original files and permanent admission, erasure, source/replay, import, delivery and attempt ledgers. Apply migrations 0012 through 0049 in order after unchanged 0001-0011. Migration 0046 is destructive: it deletes every pending identity-dependency approval; owners must renew those approvals. Migration 0047 permanently reserves reviewed import numbers; never rewind a prefix high-water mark. Before local setup or development, inspect for legacy .wrangler/vector-dev. The guard refuses that state instead of creating a fresh installation: stop the runtime, preserve a complete backup, and follow docs/LOCAL-RECOVERY.md to move .wrangler/vector-dev to .wrangler/state without overwriting an existing destination. v0.1.0 local checkouts hold sample data owned by sarah@vector.test; retain that identity when configuring FIRST_OWNER_EMAIL. If an earlier failed start wrote a guessed owner to .dev.vars, correct only that setting under the recovery guide and preserve the other private values. The v0.1.0 /signin page had a dynamic-module loading failure; that history does not justify resetting retained data. For a controller-deployed hosted v0.1.0 installation, follow docs/HOSTED-UPGRADE.md and use pnpm artifact:deploy with its reviewed plan and existing resource identities. pnpm run deploy now invokes rer deploy and targets the owner-account vector-projects-<environment> resources; it is not the old controller upgrade command. Back up matching D1/R2 and validate recovery in isolated resources before changing traffic. Retain applied schema on compatible-source rollback; pre-0018 rowid search readers and code ignoring erasure or file custody fences are incompatible. Use the toolchain pinned in package.json and the published rer lifecycle. base-copies.json records five exact Base revisions: 479094f0b26a639a1868fa521004581ec8dbcb63 for the shared schema, delivery, authoring, integrations, import-kit and core mail selections and retained migration copies; 38aa7efdb3cceec585d2344ed54dd559295b9059 for operator-auth and demo selections; a1cde988c1be2c9f74ff5ca374dc47e044ba193c for mail adapters, transport, validation, sender and delivery mail/spec; 8981bc2c4d9e61feca5787c83b4ed44056659dd9 for src/base and homepage-variant documentation; e17843562355e1b6e5068289c8e037951fbc8d3d for owner-claim and migration 0048. Preserve per-path selection boundaries and explicit Vector adapters. Development enters through the private RER_OPEN owner entry, including legacy --login, with no badge, toolbar, captured-mail inbox/outbox page or printed sign-in link. Enter the owner before selecting a teammate in the same browser; fresh owners complete /setup. CLAUDE.md delegates to AGENTS.md. Restore uses native pristine-bootstrap admission and the declared SQLite coordinator; preserve uncertain custody, require fresh historical-owner sign-in, re-enter credentials and review future effects without replaying historical sends. Outbound webhooks require an enforcing INTEGRATION_EGRESS binding; source adoption does not commission hosted egress. Retain cycle snapshots, reminder delivered identities and suppression/audit history. seed.json positions Vector as an alternative to Linear, Jira and Asana under the 12 October owner decision. This is product positioning, not feature parity: Linear and Jira import profiles remain documented-format and synthetic-only, real owner exports have not been supplied, and there is no Asana importer. Managed-relay-shaped hosted acceptance is BLOCKED by Base patch gr-base-162 and is not proven; do not claim hosted relay sign-in, invitation delivery or DMARC acceptance. Local, provider-mail and source proofs do not establish relay acceptance, hosted Cron timing, hosted restore or broader capacity. Re-run affected public flows and the required release checks without broadening those claims. CYCLE-007 adds team cycle schedules and future cycle automation. Listing screenshot: docs/retained-verification/ui/1440-app.png, captured from the real 1440px app journey. ISSUE-023 adds issue copies through the issue menu, command palette and scoped API, with optional sub-issues/links, Backlog defaults, provenance and explicit cross-team cycle losses.",
-  "previousVersion": "0.1.0"
+  "breaking": false,
+  "agentUpdateInstructions": "Upgrade from 0.2.0 by merging this release into your checkout, keeping your customisations and every applied migration byte. Back up first: stop rer dev and run rer export --output exports/vector.jsonl; for a hosted installation, run node node_modules/@runeditrun/rer/modules/portability/cli.mjs export --origin ORIGIN --session-file PRIVATE_FILE --out ABSOLUTE_ARCHIVE with the owner's one __Host-operator_session cookie in a mode-600 file (rer export refuses a hosted origin and wrangler d1 export refuses Vector's FTS5 tables). Run rer install with the pinned @runeditrun/rer 0.2.62, then rer dev (local) or git pull --ff-only and rer deploy (hosted); both apply the fifteen additive migrations 0050 to 0064 in order after unchanged 0001-0049. Migration 0053 rebuilds notification_candidates and notification_type_mutes by copy; retain them and every later table on compatible-source rollback. The independent 0.3.0 gate upgraded a populated 0.2.0 local install (49 to 64 migrations) with its intake decision, comment and file bytes intact. Hosted HTTP restore into an rer-deployed installation is refused with restore_bootstrap_not_pristine because rer's owner claim leaves a second session; restore a hosted archive locally with rer import. Development has no captured-mail inbox; local sign-in uses rer dev's RER_OPEN owner entry. seed.json's description is the one plain catalogue sentence. Do not broaden claims: Linear and Jira importers remain synthetic-only, there is no Asana importer, and Managed relay delivery, hosted Cron timing and capacity are not proven.",
+  "publicReleaseNotes": "Vector 0.3.0 is the planning and follow-up release. Issues gain structured descriptions with checklists and a description history, comment threads you can resolve, follower notifications, snoozes and personal reminders, and ten-second Undo. Planning gains ordered sub-issues with automatic parent progress, related issues, issue copies from the menu, the command palette or the API, a shared manual order, per-person workload, project start dates, priorities, labels and a stated reason for project health, and automatic team cycle schedules.\n\nReports from monitoring or support tools reach Needs decision through a secret webhook URL (with Zapier, Make and UptimeRobot steps) as well as signed senders. Moving in now also accepts Plane CSV, Shortcut CSV and Huly JSON files through the same reviewed, staged import.\n\nChecked before release: an independent gate ran Vector's whole loop locally at 1440 and 390 and on a hosted installation with real email: a source report landed in Needs decision, was deferred and came back on time (and sooner when new evidence arrived), was accepted with a reason and routed into Now; Current, My work, Board, saved views, Inbox, project health, cycle rollover and Command-K search all worked; an invited teammate signed in from the emailed link and received assignment email, and the owner received mention email. A populated v0.2.0 installation upgraded with its data (migrations 0050 to 0064). A hosted backup was taken, the installation removed and redeployed, and the backup restored with all its records and file bytes.\n\nKnown issues: restoring a backup into a hosted installation made by rer deploy is refused (restore_bootstrap_not_pristine), so restore locally with rer import; a hosted backup uses Base's transfer client with the owner's session (see CHANGELOG.md), because rer export and wrangler d1 export cannot read the hosted database. The deferral return time is entered in your browser's time zone.\n\nProduct screenshot: docs/retained-verification/ui/1440-app.png"
 }

@@ -505,7 +505,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "63ad3c2327c76b43fc114beb1acb96cc94851927936c5d260bc81144f91c039f",
+      "sha256": "bb54425ac8e1ecee45586f49f8f19d29972209e9b6dd423f69a3f384cce8cf9a",
       "executable": false
     },
     "CLAUDE.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8335f83a699da07248445d29d77bcef0799502037d0922c716e1bc6bd794ece0",
+      "sha256": "0d9e0b1dd5ca563504b3b843f97607e94d4d4318bc180d0c6517b660df52e651",
       "executable": false
     },
     "DEMO.md": {
@@ -533,7 +533,7 @@
       "executable": false
     },
     "DEPLOY.md": {
-      "sha256": "8adbae072e8d0c673c093abae5b4e642d8d801829d92098214eb7da30561fa53",
+      "sha256": "334d14012072ab7b07435b77c65c8ca1597b212f06a71bed893ebf2cc4d6bae1",
       "executable": false
     },
     "DIVERGENCE.md": {
@@ -545,7 +545,7 @@
       "executable": false
     },
     "docs/ARCHIVES.md": {
-      "sha256": "1580470c79f902c0235df6162613c85759d29dd0730a88dc5b3567d4f79749dc",
+      "sha256": "a2de92d96ed7fe659f71127c993445239e3138ab9b0e4ce315a72813383857cc",
       "executable": false
     },
     "docs/AUTHENTICATION.md": {
@@ -593,7 +593,7 @@
       "executable": false
     },
     "docs/guide/install.md": {
-      "sha256": "911e39f42199ae8af9772f677c4671e99955262502d4350cded4c6548c28b7eb",
+      "sha256": "071ab79ce68263043534014aeb86dd4d3aa50e04fb072ccc1a8ba1f3f8a4f41c",
       "executable": false
     },
     "docs/guide/integrations.md": {
@@ -1817,7 +1817,7 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "efb895d9796cc48e74b029ca1379149464e40b89e20368047d871e633606c2bf",
+      "sha256": "d838f1f433d45fffa939f746b4863e2004a9300f78c738231b4ea1cfdcde48f6",
       "executable": false
     },
     "pnpm-lock.yaml": {
@@ -1877,11 +1877,11 @@
       "executable": false
     },
     "README.md": {
-      "sha256": "9a6b1782bf3540bb16664a124263981845100425f92b2fe95833df1211ab6abe",
+      "sha256": "873f9283a9619b426f876a019cc0b4bdeb6bb9058bfdef76d3bfdf0adbcc5bad",
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "4bef9a5d70baca13a7e92c17d738ad065997221293ee8dd71f7cbeb7570bc6c7",
+      "sha256": "256e611da64e67403df0a4f2c4bcffd937df8c334ab872187e69fc4edb35c6f2",
       "executable": false
     },
     "rer-project.json": {
@@ -2209,7 +2209,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "d719f57244f810fc541a9cc6096f413d49331eba52314f7b55a4901fbe9e07ef",
+      "sha256": "6c65a890179edc2e4d6fa02410b8c1aac4476de05d978ddabd96efbe2def3962",
       "executable": false
     },
     "src/base/contract-filter.ts": {

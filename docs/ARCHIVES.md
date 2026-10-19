@@ -24,9 +24,14 @@ accepted and uncertain deliveries retain their historical state and remain held.
 Review restores access for future work; it never replays historical sends.
 
 The native `/api/portability` HTTP transport uses current cookie authority,
-same-origin writes and per-operator job ownership. HTTPS origins and exact
-loopback HTTP origins can be passed to the public command with `--target remote
---origin ORIGIN --session-file PRIVATE_FILE`. No provider credentials are used.
+same-origin writes and per-operator job ownership. The pinned `rer export`
+saves only the local copy and refuses a hosted origin, and `wrangler d1 export`
+refuses Vector's database because it holds FTS5 search tables. To back up a
+hosted installation, run Base's transfer client from the checkout with an
+absolute private file holding the owner's one `__Host-operator_session=VALUE`
+cookie: `node node_modules/@runeditrun/rer/modules/portability/cli.mjs export
+--origin ORIGIN --session-file PRIVATE_FILE --out ABSOLUTE_ARCHIVE`. No provider
+credentials are used. The archive restores locally with `rer import`.
 
 **Authenticated HTTP restore:** use a fresh installation bootstrapped after
 migration 0034, with empty product data and FILES. Sign in once through an ordinary
@@ -35,7 +40,9 @@ must retain only that native session and its consumed, non-invitation source lin
 Additional sessions, links, operators, credential dependents, edited bootstrap
 settings (including the reminder clock), completed setup or product rows refuse
 admission. Existing installations upgraded to 0034 are not retrospectively
-classified as pristine. Stopped local import remains available into empty resources.
+classified as pristine. An installation created with `rer deploy` is not
+pristine either: rer's owner claim leaves a second session, so admission refuses
+with `restore_bootstrap_not_pristine` (a known issue in v0.3.0). Stopped local import remains available into empty resources.
 
 Vector records the pristine graph in its original bootstrap transaction and
 reserves the destination atomically. Ordinary product/file mutations are fenced

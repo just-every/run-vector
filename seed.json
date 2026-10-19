@@ -1,8 +1,8 @@
 {
   "id": "vector",
   "name": "Vector",
-  "version": "0.2.0",
-  "maturity": "Second public release; managed-relay-shaped hosted acceptance is blocked by Base patch gr-base-162 and is not proven. Real Linear/Jira exports and broader hosted capacity remain unproven.",
+  "version": "0.3.0",
+  "maturity": "Third public release; independently gated on 19 October 2026 locally at 1440 and 390 and on own-account hosting with real SendGrid mail. Hosted HTTP restore into an rer-deployed installation is refused (known issue); Managed relay delivery, real Linear/Jira exports, hosted Cron timing and broader capacity remain unproven.",
   "category": "projects",
   "spine": {
     "id": "projects",

@@ -1,10 +1,40 @@
 # Changelog
 
-## Unreleased
+## 0.3.0 — 2026-10-19
 
-- Mark synthetic credentials and distinguish account IDs, mentions and file references for hosted source admission.
-- Pin rer 0.2.23 and adopt Base’s Worker-compatible Managed mail transport, including relay-owned Auto-Submitted headers, refused redirects and bounded notification retries. Remove Vector’s transport workaround.
-- Prefill sign-in email from a complete `login_hint` using Base’s email validation, without submitting the form.
+What an owner gets:
+
+- Writing and follow-up: structured issue descriptions with checklists and a description history you can compare and restore; comment threads with replies, resolve and reopen, and author-only editing; notifications for followers and deferrers; snoozes and personal reminders (Remind me); ten-second Undo of issue changes.
+- Planning: ordered sub-issues with automatic parent progress; related issues, kept apart from blocking dependencies; copy an issue from the issue menu, the command palette or the API, optionally with its sub-issues and links; a shared manual order on lists and boards; per-person workload for a cycle or due-date window; project start date, priority, labels and health with its reason ("Urgent work is unassigned: VEC-3"); opt-in automatic cycle membership; automatic team cycle schedules that keep the next cycles ready.
+- Current and My work: every Current filter and attention reason, with expired deferrals back in Needs decision; My work Created, Subscribed and Activity tabs; keyboard selection, property editing and palette commands.
+- Intake: register a signal source and paste its secret webhook URL into a tool's POST action (Zapier, Make and UptimeRobot steps on the page), or use a signed sender; editable intake defaults for source reports.
+- Move in: Plane CSV, Shortcut CSV and Huly JSON files through the same reviewed, staged import as Linear and Jira; Linear and Jira imports carry related issues.
+- Mail: Managed hosting sends sign-in, invitation, assignment and mention mail through the Run Edit Run relay with no mail key; own-account hosting uses SendGrid. Sign-in prefills a valid `login_hint`.
+- Start and docs: the one-line start `npx -y @runeditrun/rer dev just-every/run-vector`; the contract at `/contract` on the run site; rer 0.2.62.
+- One plain catalogue sentence: "Track issues, plan projects, and keep software delivery moving."
+- Checked before release (independent gate on `3208cd6`): the whole loop locally at 1440 and 390 and on own-account hosting with real email. A source report landed in Needs decision, was deferred and returned on time (and sooner when new evidence arrived), was declined or accepted with a reason and routed into Now; Current, My work, Board, saved views, Inbox, project health, cycle rollover, Command-K search, related issues, issue copies, cycle schedules and a Plane import all worked. On hosting, an invited teammate signed in from the emailed link (390), received the assignment email, and the owner received the mention email (DMARC pass, no comment text in the mail). A populated v0.2.0 install upgraded with its data. A hosted backup held hosted-only issues, comments and file bytes, and after removal and a fresh deploy it restored with everything intact (locally; see Known issues).
+
+Not in this release:
+
+- CONTRACT.md is the full Linear/Jira-class target; its Status table reads 93 done, 66 partial and 95 missing of 254 clauses (published: 81 done, 23 partial). Roles, private teams and guests, single sign-on, the audit view, GitHub/GitLab/Slack/Teams integrations, initiatives and roadmaps, reporting, mobile apps, real-time collaboration and coding agents are partial or missing.
+- Homepage claims still ahead of the code: "alternative to Linear, Jira and Asana" is positioning only. There is no Asana importer, and the Linear and Jira importers are documented-format, synthetic-only (no real export has been supplied). Local invitations send no email; invite by email on a hosted installation.
+- Not exercised by this release's gate: Managed relay delivery, a hosted upgrade from v0.2.0 (the upgrade was proven locally), hosted Cron timing beyond the minute schedule, and capacity.
+
+Known issues:
+
+- Restoring a backup into a hosted installation created with `rer deploy` is refused with `restore_bootstrap_not_pristine`: rer's owner claim leaves a second session, and Vector's restore admission requires exactly one. Restore a hosted archive locally with `rer import --input FILE --yes`.
+- `rer export` refuses a hosted origin and `wrangler d1 export` refuses Vector's database (FTS5 search tables). Back up a hosted installation with Base's transfer client (below).
+- The deferral return time is entered in your browser's time zone, while cycle times use the workspace time zone.
+- v0.2.0's pinned rer 0.2.22 can stop `rer dev` with "Could not check local process ownership in time" on a busy computer; run it again.
+- Automatic cycles are named by start date plus a short code, for example "Cycle 2026-11-02 · D68MS7".
+
+Back up first: locally, stop dev and run `rer export --output exports/vector.jsonl`. For a hosted installation, put the owner's one `__Host-operator_session=VALUE` cookie in a mode-600 file and run `node node_modules/@runeditrun/rer/modules/portability/cli.mjs export --origin https://YOUR-ORIGIN --session-file /ABSOLUTE/PRIVATE/FILE --out /ABSOLUTE/exports/vector-hosted.jsonl` from the deploying checkout.
+
+Migrations `0050` to `0064` apply in order after unchanged `0001`–`0049`: import steps, notification reason trigger, description history, follower events (0053 rebuilds two notification tables by copy, keeping every row), follow-ups and their indexes, comment threads, activity index, automatic cycle membership, sub-issue progress, workload, manual order, project fields, related issues and cycle schedules. RELEASE.json lists each one's upgrade step.
+
+Upgrading: locally, stop dev, back up, pull, then run `rer install` and `rer dev`. Hosted installations made with `rer deploy`: back up, then `git pull --ff-only` and `rer deploy`.
+
+Screenshot: `docs/retained-verification/ui/1440-app.png` (an issue in the app at 1440 px).
 
 ## 0.2.0 — 2026-10-16
 
