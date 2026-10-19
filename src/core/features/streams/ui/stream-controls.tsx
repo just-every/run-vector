@@ -132,8 +132,12 @@ export function FilterBar({
 }
 
 export function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
-  const { formatInstant, effectiveTimezone } = useViewerTime();
+  const { effectiveTimezone } = useViewerTime();
   if (cycles.length === 0) return null;
+  const date = new Intl.DateTimeFormat(undefined, {
+    timeZone: effectiveTimezone, year: "numeric", month: "short", day: "numeric",
+    hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+  });
   const number = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
   return (
     <div className="cycle-context" aria-label="Active cycle context">
@@ -175,11 +179,11 @@ export function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
             </strong>
             <small className="cycle-dates">
               <time dateTime={cycle.startsAt}>
-                {formatInstant(cycle.startsAt)}
+                {date.format(new Date(cycle.startsAt))}
               </time>{" "}
               –{" "}
               <time dateTime={cycle.endsAt}>
-                {formatInstant(cycle.endsAt)}
+                {date.format(new Date(cycle.endsAt))}
               </time>
               <span className="cycle-timezone">{effectiveTimezone}</span>
             </small>

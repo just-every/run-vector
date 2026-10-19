@@ -4485,7 +4485,7 @@
       "executable": false
     },
     "src/core/features/streams/ui/stream-controls.tsx": {
-      "sha256": "dfeee8857f4cd07dadc12ae7fba42efde5bdb6f5351a2f3e6d94cc6fcee0aee6",
+      "sha256": "1146be87f7de543487e7bddaeb29fbec5bdc40434dd51b0b25785320c1504bf1",
       "executable": false
     },
     "src/core/features/streams/ui/stream-list.tsx": {
@@ -5313,7 +5313,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {
-      "sha256": "6b4c804db0f9e6fc3dd71d70153b564a0f38f16d245c5ec8072eb5e1a49858be",
+      "sha256": "bd64c17faeef99e74be7919350d4bd960e54b7cead4a4746946eb23d226706cf",
       "executable": false
     },
     "tests/e2e/profile-runtime.mjs": {
