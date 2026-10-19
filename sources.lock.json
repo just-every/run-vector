@@ -1549,7 +1549,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "2dc9976f19631c901fbd73f0231807e7b33183e96dd2ef91f1d6021ad799b805",
+      "sha256": "e09d5659579f0232c9b6ca6429ddea7e27d92b68e18c78f40df60f473d05d919",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -1825,7 +1825,7 @@
       "executable": false
     },
     "migrations/core/0069_restore_commit_guard.sql": {
-      "sha256": "11b2a9a86a657b318b8ef5b3f8af2c85a3fb697fa53aeab4c94c71f2eddac721",
+      "sha256": "ef1390db894fcc2c223af510dcd16a4969024ce37d752578028dbc1123ca9645",
       "executable": false
     },
     "OPERATIONS.json": {
