@@ -306,6 +306,7 @@ try {
     name: "Sarah Runtime SSR",
     resources: {},
     editorConfigured: false,
+    theme: "system",
   });
   assert.equal(decoded.error, undefined);
   const token = cookie.split("=")[1];
