@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cycleReportFactsSchema } from "../cycle-report/schema.ts";
 export const cycleProgressSchema = z.object({
   completed: z.number(),
   total: z.number(),
@@ -10,6 +11,8 @@ export const cycleProgressSchema = z.object({
   unestimatedRemaining: z.number(),
 });
 export const cycleSnapshotSchema = z.object({
+  // Additive JSON field; older immutable snapshots remain readable without invented history.
+  reportFacts: cycleReportFactsSchema.optional(),
   closedAt: z.string(),
   timezone: z.string(),
   capacity: z.number().nullable(),

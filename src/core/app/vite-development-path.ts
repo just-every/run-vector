@@ -2,6 +2,10 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  '/src/core/features/cycle-report/schema.ts',
+  '/src/core/features/cycle-report/panel.tsx',
+  '/src/core/features/cycle-report/burn-up.tsx',
+  '/src/core/features/cycle-report/report.css',
   '/src/core/app/viewer-time.tsx',
   '/src/core/shared/timezone.ts',
   '/src/core/features/settings/personal-time-schema.ts',
