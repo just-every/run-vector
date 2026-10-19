@@ -5089,7 +5089,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "f21de376919e934c25f1d28398b3b30f7b778ce2ad371e003a9a95713a5ec421",
+      "sha256": "f2f3d7912b384f07ed3d90919368912fddd10ebc40527d3e42502d49fc61b27c",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {

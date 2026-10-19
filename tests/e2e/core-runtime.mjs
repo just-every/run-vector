@@ -1314,12 +1314,15 @@ try {
     .getByRole("heading", { name: "Make the triage call", exact: true })
     .waitFor();
   await triage.getByRole("tab", { name: "Defer", exact: true }).click();
-  const localDeferralTime = await page.evaluate(() => {
+  const { effectiveTimezone } = await readBrowserJson("/api/settings/personal-time");
+  const localDeferralTime = await page.evaluate((timezone) => {
     const future = new Date(Date.now() + 600000);
-    return new Date(future.getTime() - future.getTimezoneOffset() * 60000)
-      .toISOString()
-      .slice(0, 16);
-  });
+    const parts = Object.fromEntries(new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hourCycle: "h23",
+    }).formatToParts(future).map(part => [part.type, part.value]));
+    return `${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
+  }, effectiveTimezone);
   await triage.getByLabel(/^Return for decision/).fill(localDeferralTime);
   const deferResponsePromise = page.waitForResponse(
     (response) =>
