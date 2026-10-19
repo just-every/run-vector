@@ -107,3 +107,5 @@ A stale source or a change to the selected tree, labels or links during
 preparation returns 409 and creates no copy. All selected issues and their new
 hierarchy/history commit together. Archived, missing and other-workspace target
 teams are refused. Token scope, native session and Origin checks remain in force.
+
+In the command palette, enter `Copy issue` on an open issue, or `Copy issue <identifier or title>` from any page. Ordinary issue searches retain one result per issue.

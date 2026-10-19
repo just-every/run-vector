@@ -1,3 +1,4 @@
+import { copyPaletteEntries, copySearchTerm } from "../../issue-copy/palette";
 import { IssueCopyDialog } from "../../issue-copy/ui";
 import { useRouterState } from "@tanstack/react-router";
 import { useNavigate } from "@tanstack/react-router";
@@ -35,13 +36,17 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const currentSearch = resultTerm === query.trim() ? search : null;
+  const copyTerm = copySearchTerm(query);
   const entries = useMemo(
     () => [
-      ...paletteEntries(currentSearch, query),
+      ...paletteEntries(copyTerm === null ? currentSearch : null, query),
       ...copyPaletteEntries(currentIdentifier, currentSearch, query),
-      ...savedViewPaletteEntries(currentSearch, query),
+      ...savedViewPaletteEntries(
+        copyTerm === null ? currentSearch : null,
+        query,
+      ),
     ],
-    [query, currentSearch, currentIdentifier],
+    [query, currentSearch, currentIdentifier, copyTerm],
   );
   const [activeId, setActiveId] = useState<string | null>(null);
   const activeIndex = Math.max(
@@ -70,7 +75,8 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
       results.scrollTop += bounds.bottom - viewport.bottom;
   }, [entries, activeId, activeIndex]);
   useEffect(() => {
-    const term = query.trim();
+    const requested = query.trim();
+    const term = copySearchTerm(requested) ?? requested;
     if (!term) {
       setSearch(null);
       setError(null);
@@ -88,7 +94,7 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
     )
       .then((result) => {
         if (!controller.signal.aborted) {
-          setResultTerm(term);
+          setResultTerm(requested);
           setSearch(result);
         }
       })
@@ -228,7 +234,11 @@ export function CommandPalette({ onDismiss }: CommandPaletteProps) {
           ) : null}
           {!error && entries.length === 0 && !loading ? (
             <p className="command-palette__message">
-              No available records or commands match “{query}”.
+              {copyTerm !== null ? (
+                "Add an issue identifier or title after “Copy issue”."
+              ) : (
+                <>No available records or commands match “{query}”.</>
+              )}
             </p>
           ) : null}
           {grouped.map(([group, groupEntries]) => (
@@ -309,38 +319,4 @@ function trapFocus(
     event.preventDefault();
     first.focus();
   }
-}
-
-function copyPaletteEntries(
-  identifier: string | undefined,
-  search: ReturnType<typeof workspaceSearchSchema.parse> | null,
-  query: string,
-): PaletteEntry[] {
-  const term = query.trim().toLocaleLowerCase();
-  const targets = [
-    ...(identifier ? [{ identifier, title: "Current issue" }] : []),
-    ...(search?.issues ?? []),
-  ];
-  return targets
-    .filter(
-      (issue, index) =>
-        targets.findIndex((other) => other.identifier === issue.identifier) ===
-        index,
-    )
-    .filter(
-      (issue) =>
-        !term ||
-        `copy issue ${issue.identifier} ${issue.title}`
-          .toLocaleLowerCase()
-          .includes(term),
-    )
-    .map((issue) => ({
-      id: `copy:${issue.identifier}`,
-      group: "Commands",
-      title: `Copy issue ${issue.identifier}`,
-      detail: issue.title,
-      destination: "/app/issues/$identifier",
-      params: { identifier: issue.identifier },
-      action: "copy-issue",
-    }));
 }

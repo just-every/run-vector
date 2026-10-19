@@ -204,6 +204,55 @@ try {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     );
+    await page.goto(runtime.base + "/app");
+    await page.getByRole("button", { name: /Search/ }).click();
+    const globalPalette = page.getByRole("dialog", {
+      name: "Command palette",
+      exact: true,
+    });
+    await globalPalette
+      .getByLabel("Search issues, projects, and commands")
+      .fill("Copy issue");
+    await globalPalette
+      .getByText("Add an issue identifier or title after “Copy issue”.", {
+        exact: true,
+      })
+      .waitFor();
+    await page.screenshot({
+      path: `${evidence}/ISSUE-023-global-prompt-${width}.png`,
+    });
+    await globalPalette
+      .getByLabel("Search issues, projects, and commands")
+      .fill("Copy issue " + issue.identifier);
+    const globalCommand = globalPalette.getByRole("option", {
+      name: new RegExp("^Copy issue " + issue.identifier + "\\b"),
+    });
+    await globalCommand.waitFor();
+    await page.screenshot({
+      path: `${evidence}/ISSUE-023-global-command-${width}.png`,
+    });
+    await globalCommand.click();
+    const globalDialog = page.getByRole("dialog", {
+      name: "Copy issue " + issue.identifier,
+      exact: true,
+    });
+    await globalDialog.getByLabel("Destination team").selectOption(team.id);
+    await globalDialog
+      .getByRole("button", { name: "Copy issue", exact: true })
+      .click();
+    await globalDialog.getByRole("link").waitFor();
+    const globalCopy = await call(
+      "/issues/" +
+        (await globalDialog.getByRole("link").textContent()).split(" · ")[0],
+    );
+    assert.equal(globalCopy.children.length, 0);
+    assert.notEqual(globalCopy.identifier, copyIdentifier);
+    await page.screenshot({
+      path: `${evidence}/ISSUE-023-global-created-${width}.png`,
+    });
+    await globalDialog
+      .getByRole("button", { name: "Close", exact: true })
+      .click();
     console.log(
       `[ISSUE-023] ${width}: menu copies two children and links, no discussion; palette copies without children; distinct identifiers and bidirectional history`,
     );
