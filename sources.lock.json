@@ -448,6 +448,10 @@
       "sha256": "368733ea8d714c0e787e932effc97c8ad1a7012bc0ae018053c8eb270eb9338e",
       "executable": false
     },
+    ".github/assets/release/vector-current-1600.png": {
+      "sha256": "b8ed0060fe78c39f77a445c378fc514b81fe2c81ab578bb9dc6499b32256720e",
+      "executable": false
+    },
     ".github/workflows/installer-journeys.yml": {
       "sha256": "64739027e8bb86f38988cf53250db35863c1cb54614150d62216e394acbd5fb6",
       "executable": false
