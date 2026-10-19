@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { timezoneSchema } from "../../shared/timezone";
+import { timezoneSchema } from "../../shared/timezone.ts";
 
 export const reminderTimeSchema = z
   .string()

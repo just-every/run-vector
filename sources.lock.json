@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "7fe5af1f511406d40a5c93419b0961acae1b018a55f75a5a822070428039885a",
+      "sha256": "bb5f83e1db1dc154524c15deade89216f43fa49001b9a4c963bcdfc64dc8e566",
       "executable": false
     },
     "DEMO.md": {
@@ -4389,7 +4389,7 @@
       "executable": false
     },
     "src/core/features/settings/personal-time-schema.ts": {
-      "sha256": "894eb908214d803ce240f15717d0914fdb63444d096b7fadec5ceb46153771c4",
+      "sha256": "60d6a424323eb3efbcca1eb68e66aab15d723f23653592aaa86cf893755192e5",
       "executable": false
     },
     "src/core/features/settings/personal-time.ts": {
@@ -4417,7 +4417,7 @@
       "executable": false
     },
     "src/core/features/settings/schema.ts": {
-      "sha256": "1dc83f443bae309e7895834f75f96000f2a6c5ea7b054011aeb769b2db472ac6",
+      "sha256": "63ca104d0b21091559d150c9a076517a26480b78476a78b287098f71664e00de",
       "executable": false
     },
     "src/core/features/settings/ui/administration-action.ts": {
