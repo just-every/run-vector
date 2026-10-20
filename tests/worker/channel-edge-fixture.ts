@@ -17,7 +17,7 @@ export function channelEdge(){
    if(postMode==='retry')return new Response(null,{status:429,headers:{'Retry-After':'1'}});
    return Response.json({ok:true,ts:'123.456'});
   }
-  if(method==='discord'){expect(url.href).toBe(webhook);return new Response(null,{status:204});}
+  if(method==='discord'){expect(url.href).toBe(webhook);return postMode==='redirect'?new Response(null,{status:302,headers:{Location:'https://forbidden.example.test'}}):new Response(null,{status:204});}
   throw Error('Unexpected network edge '+url.hostname+url.pathname);
  });
  return {token,webhook,calls,restore:()=>network.mockRestore(),createError:(value:string|null)=>{createError=value;},postMode:(value:string)=>{postMode=value;}};

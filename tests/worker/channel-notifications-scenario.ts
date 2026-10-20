@@ -30,6 +30,7 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   await f.create({projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted')!.id});await dispatchWebhooks(current);await dispatchWebhooks(current);expect(discord()).toHaveLength(1);
   await f.create({statusId:team.statuses.find(s=>s.category==='unstarted')!.id});await dispatchWebhooks(current);expect(discord()).toHaveLength(1);
   for(const webhookUrl of ['http://discord.com/api/webhooks/a/b','https://discord.com.evil.test/api/webhooks/a/b','https://discord.com/other/a/b'])expect((await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:team.id,provider:'discord',channelName:'bad',events:['issue.created'],webhookUrl})).status).toBe(400);
+  edge.postMode('redirect');await f.create({projectId:project.id});await dispatchWebhooks(current);expect(discord()).toHaveLength(2);expect((await env.DB.prepare("SELECT state FROM integration_deliveries WHERE json_extract(envelope,'$.protocol')='discord' ORDER BY created_at DESC,id DESC LIMIT 1").first())?.state).toBe('rejected');edge.postMode('accepted');
   await f.call('/settings/integrations/channels/'+discordId,'DELETE');
   const before=edge.calls.filter(c=>c.method==='conversations.create').length;
   await f.mutate('/settings/projects','POST',{name:'Checkout Delivery',leadOperatorId:f.owner,createSlackChannel:true});
@@ -40,7 +41,10 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   const viewResponse=await f.call('/views','POST',{name:'High delivery',isShared:true,query:{priority:'high'}});expect(viewResponse.status).toBe(201);const view=await viewResponse.json() as {id:string};
   const viewId=await bind('view',view.id);
   await f.create({priority:'low'});await f.create({priority:'high'});await dispatchWebhooks(current);const viewPosts=slack().length;expect(viewPosts).toBe(3);await f.call('/settings/integrations/channels/'+viewId,'DELETE');
-  await bind('team',team.id);edge.postMode('uncertain');await f.create();await dispatchWebhooks(current);const uncertainCount=slack().length;await dispatchWebhooks(current);expect(slack()).toHaveLength(uncertainCount);
+  await bind('team',team.id);
+  const triageSource=await f.source('channel-triage'),triageBefore=slack().length;
+  const triage=await f.signed(triageSource,{teamId:team.id,title:'Customer checkout incident',summary:'Private intake evidence',sourceRecordId:'channel-incident',sourceRevisionId:'one',observedAt:new Date().toISOString()});expect(triage.status,await triage.clone().text()).toBe(200);await dispatchWebhooks(current);expect(slack()).toHaveLength(triageBefore+1);expect(slack().at(-1)!.body.text).toContain('Customer checkout incident');
+  edge.postMode('uncertain');await f.create();await dispatchWebhooks(current);const uncertainCount=slack().length;await dispatchWebhooks(current);expect(slack()).toHaveLength(uncertainCount);
   const workspace=await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id');
   const uncertain=await env.DB.prepare("SELECT id FROM integration_deliveries WHERE state='uncertain' AND json_extract(envelope,'$.protocol')='slack'").first<{id:string}>();expect(uncertain).not.toBeNull();
   edge.postMode('retry');await f.create();await dispatchWebhooks(current);let retry=await env.DB.prepare("SELECT id,next_at,attempts,max_attempts,state FROM integration_deliveries WHERE state='queued' AND json_extract(envelope,'$.protocol')='slack'").first<any>();expect(retry).not.toBeNull();

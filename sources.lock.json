@@ -5629,7 +5629,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "7b1982dc2553e6198da278097f5d1b5867831f8db1d5c13f8ec77cf6d16e477c",
+      "sha256": "49fb51998ed95a35725c09e7dd1a83737f030fcaeae65600253f60a7f51b2cae",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
@@ -5949,11 +5949,11 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "bd8c8059ae60c29ca88ecb0259fb216abf867b0142b4c2d396616b0b149b8144",
+      "sha256": "79fc9fa4ca902f78053ff7eb275d3b84e37b58f86cb48e8cc3ae119eb5bc11c5",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "ef9d8cdd5cbade1c45592e735cd79492479b73b6d4dc0d196553257e449eb70d",
+      "sha256": "ece3fc3a79196ccd640e4e603719d33063857797b0d839cf35056c16ef665256",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {
