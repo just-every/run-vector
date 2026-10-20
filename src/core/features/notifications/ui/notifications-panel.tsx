@@ -11,6 +11,7 @@ const labels: Record<NotificationKind, string> = {
   assignment: "Assignments",
   mention: "Mentions",
   comment: "Followed comments",
+  thread_reopened: "Reopened threads (Inbox only)",
   intake_return: "Deferred intake returns",
   unblocked: "Last blocker resolved",
   due_reminder: "Due reminders (Inbox only)",

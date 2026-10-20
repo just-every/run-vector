@@ -64,7 +64,7 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
       const rows = inboxPage.locator('.inbox-row').filter({ hasText: issue.identifier });
       const description = causes.includes('completed') ? 'completed' : causes.includes('canceled') ? 'canceled'
         : causes.includes('intake_return') ? 'returned your deferred intake' : causes.includes('unblocked') ? 'removed the last blocker'
-        : causes.includes('blocking') ? 'changed a blocking relation' : 'changed the status';
+        : causes.includes('blocking') ? 'changed a blocking relation' : causes.includes('thread_reopened') ? 'reopened a thread' : 'changed the status';
       await rows.filter({ hasText: description }).first().waitFor({ timeout: Math.max(1, 5000 - (performance.now() - start)) });
       const elapsed = performance.now() - start;
       assert(elapsed <= 5000, `${description} appeared within five seconds: ${elapsed}`);
@@ -73,7 +73,7 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
       assert.equal(notifications.length, expectedCount);
       const matching = notifications.filter(row => JSON.stringify([...row.causes].sort()) === JSON.stringify([...causes].sort()));
       assert.equal(matching.length, 1); assert.equal(matching[0].actor, name);
-      assert.equal((await actor('/notifications?limit=50')).items.filter(row => row.identifier === issue.identifier).length, 0);
+      assert.equal((await actor('/notifications?limit=50')).items.filter(row => row.identifier === issue.identifier && (!causes.includes('thread_reopened') || row.causes.includes('thread_reopened'))).length, 0);
       assert.equal(await inboxPage.evaluate(() => performance.timeOrigin), timeOrigin, 'Inbox refreshes without navigation');
       timings.push(`${description}: ${Math.round(elapsed)}ms`);
     }
@@ -113,6 +113,30 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
       ]);
       assert.equal(response.status(), 200);
     }, method === 'POST' ? ['blocking'] : ['blocking', 'unblocked'], method === 'POST' ? 1 : 2);
+    // NOTIFY-001: a current follower who replied sees the reopener by name.
+    const threaded = await create('Retry failures returned after the fix');
+    const root = await actor('/issues/' + threaded.identifier + '/comments', 'POST', { body: 'Which payment retries still fail?' }, 201);
+    await recipient('/issues/' + threaded.identifier + '/comments', 'POST', { body: 'The delayed callback still fails on Safari.', parentId: root.id }, 201);
+    await actor('/issues/' + threaded.identifier + '/comments/' + root.id + '/resolution', 'POST', { resolved: true });
+    await beforePrivateNavigation(actorPage, base + '/app/issues/' + threaded.identifier);
+    await actorPage.goto(base + '/app/issues/' + threaded.identifier);
+    const resolvedThread = actorPage.getByRole('region', { name: /^Resolved thread/ });
+    await resolvedThread.getByRole('button', { name: 'Show thread', exact: true }).click();
+    const thread = actorPage.getByRole('region', { name: /^Thread started by/ });
+    const prior = (await recipient('/notifications?limit=50')).items.filter(row => row.identifier === threaded.identifier).length;
+    await live(threaded, async () => {
+      const [response] = await Promise.all([
+        actorPage.waitForResponse(r => new URL(r.url()).pathname === '/api/issues/' + threaded.identifier + '/comments/' + root.id + '/resolution' && r.request().method() === 'POST'),
+        thread.getByRole('button', { name: 'Reopen', exact: true }).click(),
+      ]);
+      assert.equal(response.status(), 200);
+    }, ['thread_reopened'], prior + 1);
+    await actor('/issues/' + threaded.identifier + '/comments/' + root.id + '/resolution', 'POST', { resolved: false });
+    assert.equal((await recipient('/notifications?limit=50')).items.filter(row => row.identifier === threaded.identifier && row.causes.includes('thread_reopened')).length, 1);
+    await mkdir(verificationDirectory + '/follower-events', { recursive: true });
+    const reopenRow = inboxPage.locator('.inbox-row').filter({ hasText: threaded.identifier }).filter({ hasText: 'reopened a thread' });
+    await reopenRow.scrollIntoViewIfNeeded();
+    await inboxPage.screenshot({ path: `${verificationDirectory}/follower-events/thread-reopened-${width}.png`, fullPage: true });
     await live(mapped, () => actor(`/settings/teams/${team.id}/statuses/${removed.id}`, 'DELETE', { destinationStatusId: status('started').id }), ['status']);
     const fresh = { ...input, sourceRevisionId: 'fresh', summary: 'The retry failed again' };
     await live(signal, () => revision(fresh), ['intake_return'], 1, 'Payment monitoring');
@@ -127,7 +151,26 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
     assert(await inboxPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Inbox fits the viewport');
     await mkdir(verificationDirectory + '/follower-events', { recursive: true });
     await inboxPage.screenshot({ path: `${verificationDirectory}/follower-events/inbox-${width}.png`, fullPage: true });
-    record('NOTIFY-001', `${width}px live Inbox: ${timings.join('; ')}. One grouped event per recipient; actor excluded; signed evidence replay and later revisions do not repeat the deferrer notification.`);
+    await beforePrivateNavigation(inboxPage, base + '/app/settings');
+    await inboxPage.goto(base + '/app/settings');
+    const notificationPanel = inboxPage.getByRole('region', { name: 'Notifications', exact: true });
+    const disclosure = inboxPage.locator('details').filter({ has: inboxPage.locator('#notifications-heading') }).first();
+    if (await disclosure.count() && await disclosure.getAttribute('open') === null) await disclosure.locator('summary').first().click();
+    const mute = notificationPanel.getByRole('checkbox', { name: 'Reopened threads (Inbox only)', exact: true });
+    await mute.waitFor();
+    await mute.scrollIntoViewIfNeeded();
+    await inboxPage.screenshot({ path: `${verificationDirectory}/follower-events/thread-preferences-${width}.png`, fullPage: true });
+    const [muted] = await Promise.all([
+      inboxPage.waitForResponse(r => new URL(r.url()).pathname === '/api/settings/notifications' && r.request().method() === 'PATCH'),
+      mute.check(),
+    ]);
+    assert.equal(muted.status(), 200);
+    assert((await recipient('/settings/notifications')).mutedKinds.includes('thread_reopened'));
+    await recipient('/settings/notifications', 'PATCH', { mutedKinds: [] });
+    await beforePrivateNavigation(inboxPage, base + '/app/inbox');
+    await inboxPage.goto(base + '/app/inbox');
+    await inboxPage.getByRole('heading', { name: 'Inbox', exact: true }).waitFor();
+    record('NOTIFY-001', `${width}px live Inbox: ${timings.join('; ')}. One grouped event per recipient; participated resolved-thread reopen names the actor once, repeat reopen adds nothing, per-type mute is editable; actor excluded; signed evidence replay and later revisions do not repeat the deferrer notification.`);
   }
   await inboxPage.setViewportSize(originalViewport);
   await actorPage.setViewportSize(originalViewport);

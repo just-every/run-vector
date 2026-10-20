@@ -3,6 +3,7 @@ export const notificationKinds = [
   "assignment",
   "mention",
   "comment",
+  "thread_reopened",
   "intake_return",
   "unblocked",
   "due_reminder",

@@ -14,8 +14,8 @@ async function receipt<T>(response: Response, status = 200): Promise<T> {
 
 contractWith(
   it,
-  "NOTIFY-001 NOTIFY-002 NOTIFY-003",
-  "followers receive atomic grouped issue changes with active subscriptions, mutes and actor exclusion",
+  "NOTIFY-001 NOTIFY-002 NOTIFY-003 NOTIFY-004",
+  "followers receive grouped issue changes and participated thread reopens with mutes and actor exclusion",
   async () => {
     const f = await collaborationFixture(),
       team = f.initial.teams[0];
@@ -235,6 +235,75 @@ contractWith(
     }));
     expect(await events(f.cookie, movedIssue)).toMatchObject([{ causes: ['status'], actor: actorName }]);
     expect(await events(f.bobCookie, movedIssue)).toHaveLength(0);
+
+    const threaded = await f.create({ title: "Reopened discussion" });
+    const post = async (cookie: string, body: string, parentId?: string) =>
+      (await receipt<{ id: string }>(
+        await f.any(cookie, `/issues/${threaded.identifier}/comments`, "POST", {
+          body, ...(parentId ? { parentId } : {}),
+        }), 201,
+      )).id;
+    const root = await post(f.cookie, "Can we reproduce this?");
+    await post(f.bobCookie, "Yes, on the latest build", root);
+    // An author in another thread follows the issue but does not participate
+    // in this thread and must not receive its reopened notification.
+    await post(f.caraCookie, "A separate discussion");
+    const resolution = async (cookie: string, resolved: boolean) =>
+      receipt(await f.any(cookie, `/issues/${threaded.identifier}/comments/${root}/resolution`, "POST", { resolved }));
+    const reopens = async (cookie: string) =>
+      (await events(cookie, threaded)).filter(row => row.causes.includes("thread_reopened"));
+
+    await resolution(f.cookie, false);
+    expect(await reopens(f.bobCookie)).toEqual([]);
+    await resolution(f.cookie, true);
+    await resolution(f.cookie, false);
+    const ownerName = (await f.state()).operators.find(row => row.id === f.owner)!.name;
+    expect(await reopens(f.bobCookie)).toMatchObject([
+      { actor: ownerName, causes: ["thread_reopened"] },
+    ]);
+    expect(await reopens(f.cookie)).toEqual([]);
+    expect(await reopens(f.caraCookie)).toEqual([]);
+    await resolution(f.cookie, false);
+    expect(await reopens(f.bobCookie)).toHaveLength(1);
+
+    // Both a top-level author and a reply author are participants. Each actual
+    // reopen gets its own receipt, with the current actor excluded.
+    await resolution(f.cookie, true);
+    await resolution(f.bobCookie, false);
+    expect(await reopens(f.cookie)).toMatchObject([
+      { actor: actorName, causes: ["thread_reopened"] },
+    ]);
+    expect(await reopens(f.bobCookie)).toHaveLength(1);
+    await resolution(f.cookie, true);
+    await post(f.cookie, "A new reply reopens the resolved thread", root);
+    const replyReopens = await reopens(f.bobCookie);
+    expect(replyReopens).toHaveLength(2);
+    expect(replyReopens.every(row => row.actor === ownerName)).toBe(true);
+    expect(new Set(replyReopens.map(row => row.eventId)).size).toBe(2);
+    expect(await reopens(f.cookie)).toHaveLength(1);
+    expect(await reopens(f.caraCookie)).toEqual([]);
+    await post(f.cookie, "Another reply while already open", root);
+    await resolution(f.cookie, false);
+    expect(await reopens(f.bobCookie)).toHaveLength(2);
+
+    // Type mutes suppress future reopens without changing following; a former
+    // participant who unfollows does not receive subsequent reopens either.
+    const muted = await receipt<{ mutedKinds: string[] }>(
+      await f.any(f.bobCookie, "/settings/notifications", "PATCH", {
+        mutedKinds: ["thread_reopened"],
+      }),
+    );
+    expect(muted.mutedKinds).toContain("thread_reopened");
+    await resolution(f.cookie, true);
+    await resolution(f.cookie, false);
+    expect(await reopens(f.bobCookie)).toHaveLength(2);
+    await receipt(await f.any(f.bobCookie, "/settings/notifications", "PATCH", { mutedKinds: [] }));
+    await subscription(f.bobCookie, threaded, { following: false });
+    await resolution(f.cookie, true);
+    await resolution(f.cookie, false);
+    expect(await reopens(f.bobCookie)).toHaveLength(2);
+    expect(await reopens(f.cookie)).toHaveLength(1);
+    expect(await reopens(f.caraCookie)).toEqual([]);
     expect(await count("notification_deliveries")).toBe(0);
     expect(await count("notification_candidates")).toBe(0);
   },

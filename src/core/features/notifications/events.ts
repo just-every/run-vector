@@ -124,6 +124,25 @@ export function mentionStatements(
   ];
 }
 const following = `EXISTS(SELECT 1 FROM issue_followers f WHERE f.issue_id=i.id AND f.operator_id=o.id)`;
+/** A reopened thread reaches only its participants who still follow the issue.
+ * The shared candidate receipt guard admits only an actual resolution change. */
+export function threadReopenedStatements(
+  db: D1Database,
+  event: CollaborationEvent,
+  root: string,
+) {
+  return [
+    candidate(
+      db,
+      event,
+      "thread_reopened",
+      `i.id=? AND ${following} AND EXISTS(SELECT 1 FROM issue_comments c
+        WHERE c.issue_id=i.id AND c.actor_operator_id=o.id AND c.imported_author_name IS NULL
+          AND (c.id=? OR c.parent_comment_id=?))`,
+      [event.issueId, root, root],
+    ),
+  ];
+}
 /** Read the immutable before/after receipt inside the mutation's transaction.
  * Bulk plans may record unchanged fields; those must not produce an event. */
 export function followerChangeStatements(

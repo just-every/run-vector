@@ -1,6 +1,7 @@
 import { mutationDatabase } from "../auth/mutation-database";
 import { requireIssueAccess } from "../issues/access";
 import { createUlid } from "../../shared/ids";
+import { finalizeEvent, threadReopenedStatements } from "../notifications/events";
 
 /** A thread is a top-level comment and its ordered replies (ISSUE-008). */
 export class ThreadError extends Error {
@@ -19,21 +20,24 @@ export async function threadRoot(db: D1Database, issueId: string, parentId: stri
   return root.id;
 }
 
-function threadActivity(db: D1Database, issueId: string, root: string, actor: string, kind: string, now: string, when: string) {
+function threadActivity(db: D1Database, issueId: string, root: string, actor: string, kind: string, now: string, when: string, id = createUlid(new Date(now))) {
   return db
     .prepare(
       `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at)
  SELECT ?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM issue_comments WHERE id=? AND issue_id=? AND ${when})`,
     )
-    .bind(createUlid(new Date(now)), issueId, actor, kind, JSON.stringify({ id: root }), now, now, root, issueId);
+    .bind(id, issueId, actor, kind, JSON.stringify({ id: root }), now, now, root, issueId);
 }
 
 export function reopenStatements(db: D1Database, issueId: string, root: string, actor: string, now: string) {
+  const event = { id: createUlid(new Date(now)), issueId, actor, at: now };
   return [
-    threadActivity(db, issueId, root, actor, "thread.reopened", now, "resolved_at IS NOT NULL"),
+    threadActivity(db, issueId, root, actor, "thread.reopened", now, "resolved_at IS NOT NULL", event.id),
+    ...threadReopenedStatements(db, event, root),
     db
       .prepare("UPDATE issue_comments SET resolved_at=NULL,resolved_by_operator_id=NULL,updated_at=? WHERE id=? AND issue_id=? AND resolved_at IS NOT NULL")
       .bind(now, root, issueId),
+    ...finalizeEvent(db, event),
   ];
 }
 

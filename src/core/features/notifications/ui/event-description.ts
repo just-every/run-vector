@@ -4,6 +4,7 @@ const actions: Record<NotificationKind, string> = {
   assignment: "assigned you",
   mention: "mentioned you on",
   comment: "commented on",
+  thread_reopened: "reopened a thread on",
   intake_return: "returned your deferred intake",
   unblocked: "removed the last blocker from",
   due_reminder: "has a due reminder for",
