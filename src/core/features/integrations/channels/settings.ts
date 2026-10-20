@@ -22,6 +22,7 @@ export async function saveSlack(env:WorkerBindings,owner:IntegrationOwner,token:
 }
 export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
  // Revoke at Slack before retiring local custody; an error is shown, never silently accepted.
+ // Disabling the installation also drops member links and the signing secret (0074 trigger).
  if(!await credentialProblem(env,'slack:'+owner.workspace))await slackCall(await slackToken(env,owner.workspace),'auth.revoke',{});
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'UPDATE vector_slack_installations SET enabled=0 WHERE workspace_id=?',params:[owner.workspace]},
@@ -72,5 +73,6 @@ export async function readChannels(env:WorkerBindings,owner:IntegrationOwner){
   {sql:"SELECT id,name,'team' scope FROM teams WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'project' scope FROM projects WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'view' scope FROM saved_views WHERE workspace_id=? AND (owner_operator_id=? OR is_shared=1)",params:[owner.workspace,owner.workspace,owner.workspace,owner.id]},
  ]);
  const needsAttention=Boolean(install[0]?.enabled)&&await credentialProblem(env,'slack:'+owner.workspace);
- return {slack:{connected:Boolean(install[0]?.enabled)&&!needsAttention,needsAttention,teamName:install[0]?.team_name??null},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?(needsAttention||Boolean(row.suspendedReason)):await credentialProblem(env,'destination:'+row.id)}))),objects};
+ const connected=Boolean(install[0]?.enabled)&&!needsAttention;
+ return {slack:{connected,needsAttention,teamName:install[0]?.team_name??null,signingSecret:connected&&!await credentialProblem(env,'slack-signing:'+owner.workspace),interactivityUrl:env.APP_ORIGIN.replace(/\/$/,'')+'/api/integrations/slack/interactive'},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?(needsAttention||Boolean(row.suspendedReason)):await credentialProblem(env,'destination:'+row.id)}))),objects};
 }

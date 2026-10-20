@@ -15,4 +15,4 @@ try{
  for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
  proof.passed=true;
 }finally{await browser?.close();await runtime.stop();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'browser-proof.json'),JSON.stringify(proof,null,2)+'\n');}
-console.log('[SLACK-003] Native channel bindings, Slack creation and delivery, Discord and existing integration journeys passed at 1440 and 390.');
+console.log('[SLACK-003 SLACK-004] Native channel bindings, Slack creation and delivery, Discord, member-linked Slack direct messages and existing integration journeys passed at 1440 and 390.');

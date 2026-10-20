@@ -1,6 +1,7 @@
 import { mentionedOperators } from "./mentions.server";
 import { notificationContext } from "./context";
 import type { NotificationKind } from "./schema";
+import { directIntent } from "../integrations/slack-dm/intent";
 export type CollaborationEvent = {
   id: string;
   issueId: string;
@@ -255,6 +256,7 @@ export function returnStatements(db: D1Database, event: CollaborationEvent) {
 export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
   const context = notificationContext(db);
   if (context?.available) context.eventIds.add(event.id);
+  context?.directEventIds.add(event.id);
   const statements = [
     db
       .prepare(
@@ -287,6 +289,8 @@ export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
         )
         .bind(context.origin.replace(/\/$/, ""), event.id),
     );
+  // SLACK-004: a linked member's chosen Slack direct message, beside the mail intent.
+  statements.push(directIntent(db, event.id));
   statements.push(
     db
       .prepare(

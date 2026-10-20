@@ -1,4 +1,5 @@
 import {exerciseChannels} from './integrations/channel-settings.mjs';
+import {exerciseSlackDirectMessages} from './integrations/slack-dm-settings.mjs';
 import assert from 'node:assert/strict';
 import {createWebhookProtocol} from '../../vendor/base/integrations/core/webhook.ts';
 import {sendSignedPullRequest,pullRequestRepository} from './integration-signed-pr.mjs';
@@ -25,6 +26,7 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  const revokeSource=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname==='/api/settings/integrations/sources/'+source.id);await panel.getByRole('button',{name:'Revoke Browser source '+width,exact:true}).click();assert.equal((await revokeSource).status(),200);assert.equal((await postPlain(replaced.webhookUrl)).status,401);
 
  await exerciseChannels({page,runtime,cookie,team,width,evidence});
+ await exerciseSlackDirectMessages({page,runtime,width,evidence});
  await panel.getByLabel('Destination name',{exact:true}).fill('Browser receiver '+width);await panel.getByLabel('Public HTTPS destination',{exact:true}).fill('https://receiver.example.com/events');const destination=await receipt('/destinations',()=>panel.getByRole('button',{name:'Register destination',exact:true}).click());await reveal(destination.secret);
  const config=await(await runtime.req('/api/settings/integrations',{headers:{Cookie:cookie}})).json();assert.equal(config.outboundConfigured,false);assert(!JSON.stringify(config).includes(token.token));assert(!JSON.stringify(config).includes(source.secret));assert(!JSON.stringify(config).includes(source.webhookUrl));assert(!JSON.stringify(config).includes(replaced.webhookUrl));assert(!JSON.stringify(config).includes(destination.secret));
  await panel.getByLabel('Repository name',{exact:true}).fill('Browser repository '+width);await panel.getByLabel('GitHub owner/repository',{exact:true}).fill(pullRequestRepository(width));const github=await receipt('/github',()=>panel.getByRole('button',{name:'Register repository',exact:true}).click());await reveal(github.secret);

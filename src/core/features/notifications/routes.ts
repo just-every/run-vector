@@ -12,6 +12,8 @@ import { notificationEmailAvailable } from "./context";
 import { inbox, unreadCount, subscription, preferences } from "./read";
 import { markRead, changeSubscription, changePreferences } from "./mutations";
 import { snooze, unsnooze, reminders, createReminder, cancelReminder } from '../notification-followups/repository';
+import { directKinds } from '../integrations/slack-dm/schema';
+import { directPreferences, lookupSlack, linkSlack, unlinkSlack, chooseDirectKinds } from '../integrations/slack-dm/links';
 const snoozeSchema = z.union([z.object({ until: z.iso.datetime() }).strict(), z.object({ untilChange: z.literal(true) }).strict()]);
 const reminderSchema = z.object({ remindAt: z.iso.datetime() }).strict();
 const id = z.string().regex(/^[a-f0-9]{32}$/);
@@ -31,6 +33,11 @@ const subscriptionSchema = z
 const preferenceSchema = z
   .object({
     emailEnabled: z.boolean().optional(),
+    slackKinds: z
+      .array(z.enum(directKinds))
+      .max(directKinds.length)
+      .refine((v) => new Set(v).size === v.length)
+      .optional(),
     mutedKinds: z
       .array(z.enum(notificationKinds))
       .max(notificationKinds.length)
@@ -39,7 +46,12 @@ const preferenceSchema = z
   })
   .strict()
   .refine((v) => Object.keys(v).length > 0);
+const slackLinkSchema = z.object({ slackUserId: z.string().regex(/^[UW][A-Z0-9]{2,30}$/) }).strict();
 export function addNotificationRoutes(app: Hono<AppEnvironment>) {
+  const allPreferences = async (c: Context<AppEnvironment>) => ({
+    ...(await preferences(c.env.DB, c.get("operatorId"), notificationEmailAvailable(c.env))),
+    slack: await directPreferences(c.env, c.get("operatorId")),
+  });
   const protect =
     (run: (c: Context<AppEnvironment>) => Promise<unknown>) =>
     async (c: Context<AppEnvironment>) => {
@@ -166,31 +178,30 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
       return subscription(c.env.DB, c.get("operatorId"), key);
     }),
   );
-  app.get(
-    "/settings/notifications",
-    protect((c) =>
-      preferences(
-        c.env.DB,
-        c.get("operatorId"),
-        notificationEmailAvailable(c.env),
-      ),
-    ),
-  );
+  app.get("/settings/notifications", protect(allPreferences));
   app.patch(
     "/settings/notifications",
     protect(async (c) => {
-      await changePreferences(
-        c.env.DB,
-        c.get("operatorId"),
-        preferenceSchema.parse(await readRequestJson(c.req.raw)),
-      );
-      return preferences(
-        c.env.DB,
-        c.get("operatorId"),
-        notificationEmailAvailable(c.env),
-      );
+      const { slackKinds, ...values } = preferenceSchema.parse(await readRequestJson(c.req.raw));
+      if (slackKinds) await chooseDirectKinds(c.env, c.get("operatorId"), slackKinds);
+      if (Object.keys(values).length) await changePreferences(c.env.DB, c.get("operatorId"), values);
+      return allPreferences(c);
     }),
   );
+  // SLACK-004: the member starts and confirms their own link; nothing is stored until they confirm.
+  app.post("/settings/notifications/slack/lookup", protect(async (c) => {
+    await readEmptyBody(c.req.raw);
+    return lookupSlack(c.env, c.get("operatorId"));
+  }));
+  app.post("/settings/notifications/slack/link", protect(async (c) => {
+    await linkSlack(c.env, c.get("operatorId"), slackLinkSchema.parse(await readRequestJson(c.req.raw)).slackUserId);
+    return allPreferences(c);
+  }));
+  app.delete("/settings/notifications/slack/link", protect(async (c) => {
+    await readEmptyBody(c.req.raw);
+    await unlinkSlack(c.env, c.get("operatorId"));
+    return allPreferences(c);
+  }));
   app.get(
     "/mentions/options",
     protect(async (c) => {

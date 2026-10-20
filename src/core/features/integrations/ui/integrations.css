@@ -21,3 +21,4 @@
 .settings-page .integrations-panel form{justify-items:stretch}.settings-page .integrations-panel ul{padding:0}.settings-page .integrations-panel ol{padding-left:22px}
 .channel-settings label.admin-checkbox{display:flex;align-items:center;gap:8px;min-height:44px}
 .channel-settings input[type=checkbox]{width:18px;height:18px;min-height:0;flex:none;accent-color:var(--app-cobalt-ink)}
+.slack-direct-actions{display:grid;gap:10px;min-width:0}.slack-direct-actions h4{margin:0}

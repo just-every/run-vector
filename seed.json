@@ -198,6 +198,25 @@
       ]
     },
     {
+      "id": "slack-direct-messages",
+      "required": false,
+      "why": "SLACK-004: a member looks up and confirms their own Slack account by their sign-in email, then chooses Slack direct messages for assignments and mentions; signed Assign to me and Change status requests return to Vector.",
+      "data": [
+        "operator email address",
+        "notification kind",
+        "issue identifier",
+        "issue title",
+        "actor display name",
+        "workflow status names and status change",
+        "due date",
+        "issue version",
+        "authenticated canonical app link"
+      ],
+      "adapters": [
+        "vector.slack-web-api.v1"
+      ]
+    },
+    {
       "id": "discord-channel-notifications",
       "required": false,
       "why": "SLACK-003: an Admin explicitly binds selected issue events to a sealed discord.com or discordapp.com webhook URL.",

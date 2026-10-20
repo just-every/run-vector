@@ -226,3 +226,74 @@ Discord requests server confirmation with `wait=true`, suppresses embeds and
 mentions, and retains only the transport result. Provider response bodies are
 not retained. Removed native operators’ queued actor display snapshots are
 anonymized locally while their events remain ineligible to post.
+
+## Slack direct messages (SLACK-004)
+
+Slack direct messages reuse the SLACK-003 bot token. The token also needs `im:write`
+(to open the direct message) and `users:read.email` (to find a member's own account).
+
+**Members link themselves.** In Settings → Notifications a signed-in member chooses
+**Link Slack**. Vector calls `users.lookupByEmail` with that member's own sign-in email,
+shows the Slack account it found and links it only after the member chooses **Confirm
+Slack link**. No match shows "No Slack account found for this email" and stores nothing;
+a lookup error is shown and not retried. Vector never looks members up in the background,
+never looks up someone else's email for an Admin, never reads the directory
+(`users.list`) and never matches on names. Linking and unlinking are audited. **Unlink
+Slack**, member removal, suspension (ROLE-011) and removing the Slack connection delete
+the link and stop every direct message. Explicit Admin mapping is SLACK-001's.
+
+**Choosing Slack.** A linked member turns on Slack direct messages for assignments and
+for mentions, the events Vector also mails (NOTIFY-006). The choice is unavailable, with
+the reason shown, while Slack is not connected or needs attention, or while the member
+has no link. Every other event's channel choice belongs to NOTIFY-007.
+
+**Delivery.** A qualifying notification creates one direct-message intent in the same
+transaction as the change that caused it. Right after that change commits, like
+immediate mail, Vector rechecks mutes, the actor, the recipient's activity, issue access
+and the member's link and choice, calls `conversations.open` and then `chat.postMessage`.
+The intent uses the existing outbound ledger: a rate limit, or a `conversations.open`
+that did not answer (nothing was posted), retries at most three attempts, after one and
+then five minutes; an unknown `chat.postMessage` result is uncertain and is never resent.
+The recipient sees failed and uncertain messages under Slack delivery updates in
+Settings → Notifications; personal messages are not listed in the Admin's delivery
+history.
+
+**What leaves the deployment.** For the lookup, the member's sign-in email. In a direct
+message, only the event kind, issue identifier and title, actor display name, status
+change, due date, the team's workflow status names in the Change status select, the
+issue version inside the action values, and the canonical `/app/issues/:identifier`
+link that requires sign-in. Messages use plain-text blocks with `unfurl_links` and
+`unfurl_media` false. Descriptions, comments, mention bodies, attachments, free text and
+AI output never leave. Private or restricted items do not exist until ROLE-002, which
+must send a generic notice without actor or text.
+
+**Actions and the signing secret.** Each message has **Open**, the canonical link.
+**Assign to me** and **Change status** appear only after an Admin enters the Slack app's
+signing secret (Basic Information → App Credentials) beside the bot token in Settings →
+Integrations; until then Settings says they are off and messages offer Open only. The
+signing secret is sealed per workspace with `sealSecret`/`openSecret`, never shown again,
+excluded from archives with the member links, needs entering again after a restore
+(members re-link) and is deleted when the Slack connection is removed.
+
+Until SLACK-001's manifest sets it, turn on **Interactivity** in the Slack app and set
+its Request URL to the value Settings shows:
+
+```
+https://<your Vector address>/api/integrations/slack/interactive
+```
+
+Vector verifies `X-Slack-Signature` (HMAC-SHA256 over `v0:<timestamp>:<raw body>`) in
+constant time, refuses a timestamp more than five minutes from its clock and any
+replayed request, and maps the Slack user to a Vector member only through a confirmed
+link. The change runs through the version-checked issue edit with that member's own
+authority and the issue version the message carried: an issue that changed since is
+refused with a threaded reply carrying Open, never overwritten; an applied change
+refreshes the message. Vector acknowledges within Slack's three seconds and replies
+afterwards. Unlinked, removed or suspended Slack users, bad or missing signatures,
+stale timestamps and replays change nothing.
+
+Apply `0074_slack_direct_messages.sql` additively after 0073. It adds the member link
+and request-key tables (both excluded from archives) and triggers that drop links and
+the signing secret when the connection is removed and scrub queued messages for a
+removed member. Keep all prior rows and outbound terminal states on rollback. An
+already-sent direct message cannot be recalled by local erasure (SEC-003).

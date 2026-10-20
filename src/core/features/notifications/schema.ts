@@ -1,4 +1,5 @@
 /** Client-safe collaboration DTOs. */
+import type { SlackDirectPreferences } from "../integrations/slack-dm/schema";
 export const notificationKinds = [
   "assignment",
   "mention",
@@ -52,3 +53,5 @@ export type NotificationPreferences = {
     updatedAt: string;
   }[];
 };
+/** Settings → Notifications: the member's own preferences and Slack direct messages (SLACK-004). */
+export type NotificationSettings = NotificationPreferences & { slack: SlackDirectPreferences };

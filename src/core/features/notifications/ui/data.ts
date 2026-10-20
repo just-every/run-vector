@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { fetchJson } from "../../../app/api-client.ts";
 import { notificationKinds } from "../schema.ts";
+import { slackDirectPreferences } from "../../integrations/slack-dm/schema.ts";
 import type { InboxPage } from "../schema.ts";
 const kind = z.enum(notificationKinds);
 export const countSchema = z.object({
@@ -94,6 +95,7 @@ export const preferencesSchema = z.object({
       updatedAt: z.string(),
     }),
   ),
+  slack: slackDirectPreferences,
 });
 export const mentionOptionsSchema = z.object({
   operators: z.array(

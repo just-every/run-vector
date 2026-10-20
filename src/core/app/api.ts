@@ -23,8 +23,9 @@ import { addBulkIssueRoutes } from '../features/bulk-edit/routes';
 import { addBulkCommandRoutes } from '../features/bulk-commands';
 import { addIssueUndoRoutes, configureUndoSession, committedUndoReceipt } from '../features/issue-undo';
 import { addParentIssueRoutes } from '../features/parents/routes';
-import { configureNotifications, needsNotificationDrain, notificationEventIds } from '../features/notifications/context';
+import { configureNotifications, needsNotificationDrain, notificationEventIds, directMessageEventIds } from '../features/notifications/context';
 import { drainNotificationMail } from '../features/notifications/mail';
+import { deliverCommittedDirectMessages } from '../features/integrations/outbound';
 import { fileSettlementDatabase } from '../features/auth/mutation-database';
 import { addAdministrationRoutes } from '../features/administration/routes';
 import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
@@ -166,6 +167,8 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
         try { await drainNotificationMail({...context.env,DB:fileSettlementDatabase(context.env.DB)},{eventIds:notificationEventIds(context.env.DB)}); }
         catch { console.error('Notification mail drain interrupted; durable intent retained for recovery.'); }
       }
+      try { await deliverCommittedDirectMessages({...context.env,DB:fileSettlementDatabase(context.env.DB)},directMessageEventIds(context.env.DB)); }
+      catch { console.error('Slack direct message delivery interrupted; durable intent retained for Cron.'); }
       return drained;
     })();
     context.set('drainNotifications', drain);

@@ -17,6 +17,7 @@ const app = createServerApp();
 export async function handleRequest(
   request: Request,
   env: WorkerBindings,
+  execution?: ExecutionContext,
 ): Promise<Response> {
   const url = new URL(request.url);
   if (env.APP_ORIGIN && url.host !== new URL(env.APP_ORIGIN).host)
@@ -50,7 +51,7 @@ export async function handleRequest(
     url.pathname.startsWith("/api/") ||
     url.pathname.startsWith("/auth/")
   )
-    return app.fetch(request, env);
+    return app.fetch(request, env, execution);
   const privateRequest = url.pathname === "/app" || url.pathname.startsWith("/app/") || url.pathname.startsWith("/_serverFn/");
   const timings: string[] = [];
   const timed = async <T>(name: string, run: () => T | Promise<T>) => {

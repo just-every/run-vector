@@ -5,7 +5,8 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnvironment } from '../../app/bindings';
 import { readRequestJson,RequestBodyError } from '../../app/input';
-import { configureNotifications,needsNotificationDrain,notificationEventIds } from '../notifications/context';
+import { configureNotifications,needsNotificationDrain,notificationEventIds,directMessageEventIds } from '../notifications/context';
+import { deliverCommittedDirectMessages } from './outbound';
 import { drainNotificationMail } from '../notifications/mail';
 import { mutationDatabase,isMutationAccessError,fileSettlementDatabase } from '../auth/mutation-database';
 import { createIssueInputSchema } from '../issues/input';
@@ -57,7 +58,8 @@ export function createIntegrationApi(){
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
   c.env={...c.env,DB:mutationDatabase(raw,actor.id,undefined,{sql:predicate.sql,values:predicate.params})};
   configureNotifications(c.env.DB,c.env);
-  try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}}
+  try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
+   try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
  });
  app.get('/metadata',async c=>c.json(await readAdministration(c.env.DB,c.get('operatorId'))));

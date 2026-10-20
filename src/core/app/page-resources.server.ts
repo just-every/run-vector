@@ -5,8 +5,9 @@ import type { WorkerBindings } from './bindings'
 import type { InitialResources } from './initial-resources'
 import { issueListQuerySchema } from '../features/issues/list-schema'
 import { issueListApiUrl, issueListLayoutQuery } from '../features/issues/ui/issue-list-controls'
-import { configureNotifications, needsNotificationDrain, notificationEventIds } from '../features/notifications/context'
+import { configureNotifications, needsNotificationDrain, notificationEventIds, directMessageEventIds } from '../features/notifications/context'
 import { drainNotificationMail } from '../features/notifications/mail'
+import { deliverCommittedDirectMessages } from '../features/integrations/outbound'
 import type { WorkspaceProjection } from '../features/streams/snapshot'
 import { admittedStreamSnapshot, selectedStreamResources, streamPreference } from './stream-page-resources.server'
 import { defaultStreamFilters, filterItems, type StreamFilters } from '../features/streams/ui/helpers'
@@ -21,6 +22,8 @@ export async function pageResources(env: WorkerBindings, request: Request, opera
       try { await drainNotificationMail(env, { eventIds: notificationEventIds(env.DB) }) }
       catch { console.error('Notification mail drain interrupted; durable intent retained for recovery.') }
     }
+    try { await deliverCommittedDirectMessages(env, directMessageEventIds(env.DB)) }
+    catch { console.error('Slack direct message delivery interrupted; durable intent retained for Cron.') }
   }
 }
 

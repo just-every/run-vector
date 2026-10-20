@@ -1560,5 +1560,18 @@
     "events",
     "created_by",
     "suspended_reason"
+  ],
+  "vector_slack_member_links": [
+    "operator_id",
+    "workspace_id",
+    "slack_team_id",
+    "slack_user_id",
+    "slack_name",
+    "dm_kinds",
+    "linked_at"
+  ],
+  "vector_slack_request_keys": [
+    "key",
+    "received_at"
   ]
 }

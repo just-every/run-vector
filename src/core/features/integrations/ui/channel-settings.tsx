@@ -2,6 +2,7 @@ import {useState,type FormEvent} from 'react';
 import {useApiResource} from '../../../app/api-client';
 import {channelConfiguration,channelEvents,channelEventLabels} from '../channels/schema';
 import {acknowledged,send} from './client';
+import {CopyField} from './copy-field';
 export function ChannelSettings(){
  const config=useApiResource('/api/settings/integrations/channels',channelConfiguration);
  const [provider,setProvider]=useState('slack'),[pending,setPending]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
@@ -12,6 +13,9 @@ export function ChannelSettings(){
  async function connect(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget;
   if(await run('/slack',{botToken:new FormData(form).get('botToken')})){form.reset();setNotice('Slack connected. The bot token is stored securely.');}
  }
+ async function saveSigningSecret(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget;
+  if(await run('/slack/signing-secret',{signingSecret:new FormData(form).get('signingSecret')})){form.reset();setNotice('Signing secret saved. Assign to me and Change status are on for new Slack direct messages.');}
+ }
  async function bind(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,data=new FormData(form),[scope,objectId]=String(data.get('object')).split(':');
   if(await run('/channels',{scope,objectId,provider,channelName:data.get('channelName'),events:data.getAll('events'),...(provider==='slack'?{channelId:data.get('channelId')}:{webhookUrl:data.get('webhookUrl')})})){form.reset();setNotice('Channel binding saved. Future selected events will be posted.');}
  }
@@ -21,8 +25,12 @@ export function ChannelSettings(){
  {config.data&&<>
  <p>{config.data.slack.needsAttention?'Slack needs attention. Re-enter the bot token.':config.data.slack.connected?`Slack connected to ${config.data.slack.teamName}`:'Slack is not connected.'}</p>
  <details><summary>{config.data.slack.connected?'Replace Slack bot token':'Connect Slack'}</summary>
- <p>Use a Slack bot token with chat:write and channels:manage. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack. Channels must be active, unshared and include the bot; Vector checks this when selected and before posting.</p>
- <form aria-label="Slack credential" onSubmit={connect}><fieldset disabled={pending}><label>Slack bot token<input name="botToken" type="password" autoComplete="off" required maxLength={500}/></label><button>Validate and save Slack token</button></fieldset></form></details>
+ <p>Use a Slack bot token with chat:write and channels:manage; Slack direct messages also need im:write and users:read.email. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack, deletes the signing secret and unlinks every member. Channels must be active, unshared and include the bot; Vector checks this when selected and before posting.</p>
+ <form aria-label="Slack credential" onSubmit={connect}><fieldset disabled={pending}><label>Slack bot token<input name="botToken" type="password" autoComplete="off" required maxLength={500}/></label><button>Validate and save Slack token</button></fieldset></form>
+ {config.data.slack.connected&&<form aria-label="Slack action verification" onSubmit={saveSigningSecret}><fieldset disabled={pending}><label>Slack signing secret<input name="signingSecret" type="password" autoComplete="off" required minLength={20} maxLength={128} pattern="[A-Za-z0-9]{20,128}" aria-describedby="slack-signing-help"/></label><small id="slack-signing-help">Copy it from your Slack app’s Basic Information page. Vector seals it beside the bot token and never shows it again; a restored installation needs it entered again.</small><button>Save signing secret</button></fieldset></form>}</details>
+ {config.data.slack.connected&&<div className="slack-direct-actions" role="group" aria-labelledby="slack-direct-actions-heading"><h4 id="slack-direct-actions-heading">Slack direct message actions</h4>
+ <p>{config.data.slack.signingSecret?'Assign to me and Change status are on. Vector verifies every Slack action with the signing secret.':'Assign to me and Change status are off until the signing secret is entered. Direct messages offer Open only.'}</p>
+ <CopyField label="Interactivity Request URL" value={config.data.slack.interactivityUrl}/><small>In your Slack app, turn on Interactivity and paste this Request URL. Members link their own Slack accounts in Settings → Notifications.</small></div>}
  {config.data.slack.connected&&<button type="button" disabled={pending} onClick={()=>void run('/slack',undefined,'DELETE')}>Remove Slack connection</button>}
  <form aria-label="Bind notification channel" onSubmit={bind}><fieldset disabled={pending}><legend>Bind a channel</legend>
  <label>Team, project or saved view<select name="object" required defaultValue=""><option value="">Choose where events come from</option>{config.data.objects.map(object=><option key={object.scope+object.id} value={object.scope+':'+object.id}>{object.scope==='view'?'Saved view':object.scope==='team'?'Team':'Project'} · {object.name}</option>)}</select></label>

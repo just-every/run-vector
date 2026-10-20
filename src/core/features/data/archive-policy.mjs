@@ -1,7 +1,7 @@
 // Domain identities and history stay portable; authentication is established at the destination.
 export const portabilityPolicy = {
  product: 'just-every/vector-projects',
- excludeTables: ['subissue_progress_events', 'operator_sessions', 'magic_links', 'local_mail_outbox', 'access_rate_limits', 'notification_development_mail', 'vector_restore_status', 'vector_restore_operator_grants', 'vector_restore_mail_holds', 'integration_tokens', 'vector_integration_secret_keys', 'vector_webhook_restore_holds', 'vector_integration_authority_guard', 'vector_http_bootstrap', 'vector_http_restore'],
+ excludeTables: ['subissue_progress_events', 'operator_sessions', 'magic_links', 'local_mail_outbox', 'access_rate_limits', 'notification_development_mail', 'vector_restore_status', 'vector_restore_operator_grants', 'vector_restore_mail_holds', 'integration_tokens', 'vector_integration_secret_keys', 'vector_webhook_restore_holds', 'vector_integration_authority_guard', 'vector_http_bootstrap', 'vector_http_restore', 'vector_slack_member_links', 'vector_slack_request_keys'],
  includeTables: ['oa_operators'],
  replaceableTables: ['search_index_state', 'issue_list_revision'],
  derivedTables: ['search_issues', 'search_projects', 'search_views'],

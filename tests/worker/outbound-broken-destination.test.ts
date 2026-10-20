@@ -1,4 +1,5 @@
 import {channelNotifications} from './channel-notifications-scenario';
+import {slackDirectMessages} from './slack-dm-scenario';
 import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
@@ -7,7 +8,7 @@ import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
 import {verifyWebhook} from '../../vendor/base/integrations';
 type Destination={id:string;secret:string};
 type Listed={destinations:{id:string;signingProblem:string|null;requiresReentry:number;waitingEvents:number}[]};
-it('[SLACK-003 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed',async()=>{
+it('[SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed; Slack channels and member-linked direct messages deliver once with signed actions',async()=>{
  const f=await setupIntegrations(),workspace=(await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id'))!;
  const register=async(name:string)=>{const r=await f.call('/settings/integrations/destinations','POST',{name,url:'https://'+name+'.example.com/events'});expect(r.status).toBe(201);return r.json() as Promise<Destination>;};
  const healthy=await register('healthy'),broken=await register('broken'),keys=new Map([[healthy.id,healthy.secret]]);
@@ -63,5 +64,6 @@ it('[SLACK-003 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as n
  expect(await state(healthy.id)).toMatchObject({signingProblem:null});expect(await state(broken.id)).toMatchObject({signingProblem:'secret_missing',waitingEvents:2});
  await f.call('/settings/integrations/destinations/'+healthy.id,'DELETE');await f.call('/settings/integrations/destinations/'+broken.id,'DELETE');
  await channelNotifications(f,egress);
+ await slackDirectMessages(f,egress);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
-},180000);
+},240000);

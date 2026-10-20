@@ -2,7 +2,7 @@ import type { WorkerBindings } from "../../app/bindings";
 import { hostedMailConfigured } from "../../platform/mail";
 const contexts = new WeakMap<
   D1Database,
-  { available: boolean; origin: string; eventIds: Set<string> }
+  { available: boolean; origin: string; eventIds: Set<string>; directEventIds: Set<string> }
 >();
 export function notificationEmailAvailable(env: WorkerBindings): boolean {
   if (env.NOTIFICATION_EMAIL_ENABLED === "false" || !env.MAIL_FROM)
@@ -35,6 +35,7 @@ export function configureNotifications(db: D1Database, env: WorkerBindings) {
     available,
     origin: available ? new URL(env.APP_ORIGIN).origin : "",
     eventIds: new Set(),
+    directEventIds: new Set(),
   });
 }
 export function notificationContext(db: D1Database) {
@@ -52,4 +53,9 @@ export async function needsNotificationDrain(db: D1Database) {
 
 export function notificationEventIds(db: D1Database) {
   return [...(contexts.get(db)?.eventIds ?? [])];
+}
+
+/** Slack direct messages follow immediate mail's timing whether or not mail is configured. */
+export function directMessageEventIds(db: D1Database) {
+  return [...(contexts.get(db)?.directEventIds ?? [])];
 }

@@ -130,6 +130,17 @@
 .notifications-panel h3 {
   margin-top: 1.5rem;
 }
+.slack-direct-link {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.slack-direct-link p {
+  flex: 1 1 100%;
+  margin: 0;
+}
 .mention-editor {
   display: block;
   width: 100%;

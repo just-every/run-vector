@@ -58,3 +58,20 @@ failure history. Removing a binding, deleting the issue or removing the binding
 operator stops future posts; a started request may finish, and local erasure
 cannot recall already-posted messages. Future project, release, SLA, agent and
 initiative clauses inherit the same once-per-bound-event rule.
+
+## Slack direct messages
+
+SLACK-004 adds a Slack direct message beside assignment and mention mail. A member who
+linked their own Slack account in Settings → Notifications chooses it separately for
+assignments and for mentions; mutes, actor exclusion, active-recipient and access checks
+apply exactly as they do to mail, at the source transaction and again before each send.
+The intent lives in the native outbound ledger rather than the mail intents, and is
+delivered immediately after commit like mail, with Cron retrying rate limits and
+unanswered `conversations.open` calls at most three attempts. Uncertain results are never
+resent; failures and uncertain results are listed to the recipient. Messages carry the
+event, identifier, title, actor, status change, due date and the authenticated link, and
+offer Open, plus Assign to me and Change status once the workspace's Slack signing
+secret is entered. Removing a member deletes their link and scrubs their queued
+messages. See [Integrations](INTEGRATIONS.md) for linking, signed actions and what
+leaves the deployment. Digests, push, desktop, Teams and every other event's channel
+choice remain NOTIFY-007.

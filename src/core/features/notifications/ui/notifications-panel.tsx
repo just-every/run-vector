@@ -3,9 +3,11 @@ import { fetchJson, useApiResource } from "../../../app/api-client";
 import {
   notificationKinds,
   type NotificationKind,
-  type NotificationPreferences,
+  type NotificationSettings,
 } from "../schema";
+import type { DirectKind } from "../../integrations/slack-dm/schema";
 import { preferencesSchema, subscriptionSchema } from "./data";
+import { SlackDirectMessages } from "./slack-direct-messages";
 import "./notifications.css";
 const labels: Record<NotificationKind, string> = {
   assignment: "Assignments",
@@ -53,7 +55,7 @@ export function NotificationsPanel() {
     "/api/settings/notifications",
     preferencesSchema,
   );
-  const [data, setData] = useState<NotificationPreferences | null>(null);
+  const [data, setData] = useState<NotificationSettings | null>(null);
   useEffect(() => {
     setData(resource.data);
   }, [resource.data]);
@@ -61,7 +63,7 @@ export function NotificationsPanel() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   async function save(
-    patch: { emailEnabled?: boolean; mutedKinds?: NotificationKind[] },
+    patch: { emailEnabled?: boolean; mutedKinds?: NotificationKind[]; slackKinds?: DirectKind[] },
     identifier?: string,
   ) {
     if (pending) return;
@@ -148,7 +150,15 @@ export function NotificationsPanel() {
             Email assignments and mentions
           </label>
           {!data.emailAvailable && <EmailUnavailableNotice />}
-          <p>Mute event types in your inbox and email:</p>
+          <SlackDirectMessages
+            slack={data.slack}
+            onSaved={(value) => {
+              setData(value);
+              resource.reload();
+            }}
+            onKinds={(slackKinds) => void save({ slackKinds })}
+          />
+          <p>Mute event types in your inbox, email and Slack direct messages:</p>
           <div className="notification-mutes">
             {notificationKinds.map((kind) => (
               <label className="notification-checkbox" key={kind}>

@@ -1,0 +1,116 @@
+{
+ "channel": "DSARAH1440",
+ "text": "You were mentioned: FLW-849 · Review checkout copy 1440",
+ "blocks": [
+  {
+   "type": "section",
+   "text": {
+    "type": "plain_text",
+    "text": "You were mentioned: FLW-849 · Review checkout copy 1440",
+    "emoji": false
+   }
+  },
+  {
+   "type": "context",
+   "elements": [
+    {
+     "type": "plain_text",
+     "text": "By Maya Ortiz",
+     "emoji": false
+    },
+    {
+     "type": "plain_text",
+     "text": "Due 2026-12-01",
+     "emoji": false
+    }
+   ]
+  },
+  {
+   "type": "actions",
+   "block_id": "vector_issue",
+   "elements": [
+    {
+     "type": "button",
+     "action_id": "vector_open",
+     "text": {
+      "type": "plain_text",
+      "text": "Open",
+      "emoji": false
+     },
+     "url": "http://127.0.0.1:15934/app/issues/FLW-849"
+    },
+    {
+     "type": "button",
+     "action_id": "vector_assign_me",
+     "text": {
+      "type": "plain_text",
+      "text": "Assign to me",
+      "emoji": false
+     },
+     "value": "FLW-849:1"
+    },
+    {
+     "type": "static_select",
+     "action_id": "vector_change_status",
+     "placeholder": {
+      "type": "plain_text",
+      "text": "Change status",
+      "emoji": false
+     },
+     "options": [
+      {
+       "text": {
+        "type": "plain_text",
+        "text": "Backlog",
+        "emoji": false
+       },
+       "value": "FLW-849:1:01J00000000000000000000021"
+      },
+      {
+       "text": {
+        "type": "plain_text",
+        "text": "Todo",
+        "emoji": false
+       },
+       "value": "FLW-849:1:01J00000000000000000000022"
+      },
+      {
+       "text": {
+        "type": "plain_text",
+        "text": "In progress",
+        "emoji": false
+       },
+       "value": "FLW-849:1:01J00000000000000000000023"
+      },
+      {
+       "text": {
+        "type": "plain_text",
+        "text": "Done",
+        "emoji": false
+       },
+       "value": "FLW-849:1:01J00000000000000000000024"
+      },
+      {
+       "text": {
+        "type": "plain_text",
+        "text": "Canceled",
+        "emoji": false
+       },
+       "value": "FLW-849:1:01J00000000000000000000025"
+      }
+     ],
+     "initial_option": {
+      "text": {
+       "type": "plain_text",
+       "text": "Backlog",
+       "emoji": false
+      },
+      "value": "FLW-849:1:01J00000000000000000000021"
+     }
+    }
+   ]
+  }
+ ],
+ "unfurl_links": false,
+ "unfurl_media": false
+}

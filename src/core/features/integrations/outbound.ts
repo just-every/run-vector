@@ -1,5 +1,7 @@
 import {channelProtocols,channelMessage,channelMatches,sendChannel} from './channels/delivery';
 import {credentialProblem} from './channels/settings';
+import {directProtocol,sendDirect,enqueueDirectMessages} from './slack-dm/delivery';
+import {directDestination} from './slack-dm/intent';
 import { DeliveryService,D1SqlDatabase,createWebhookProtocol,verifyWebhook } from '../../../../vendor/base/integrations';
 import type { TrustedTransport } from '../../../../vendor/base/integrations';
 import type { WorkerBindings } from '../../app/bindings';
@@ -21,6 +23,7 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
  };
  const protocol=createWebhookProtocol({resolveDestination:async id=>(await configuration(id)).url,signingKey:async envelope=>(await configuration(envelope.destinationId)).key});
  const transport:TrustedTransport={async send(wire){
+  if(wire.headers['vector-dm-event'])return sendDirect(env,workspace,wire);
   if(wire.headers['vector-channel-destination'])return sendChannel(env,workspace,wire);
   const destination=wire.headers['webhook-destination'],eventId=wire.headers['webhook-id'],current=await configuration(destination);
   if(wire.url!==current.url||(await env.DB.prepare('SELECT 1 FROM vector_webhook_restore_holds WHERE namespace=? AND id=?').bind(workspace,eventId).first()))throw new IntegrationError(503,'outbound_delivery_held');
@@ -37,19 +40,21 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
   const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs');
   return demoEffect(send, () => ({status:204,headers:{},body:''}));
  }};
- return new DeliveryService({repository,protocols:[protocol,...channelProtocols(env,workspace)],transport,now});
+ return new DeliveryService({repository,protocols:[protocol,...channelProtocols(env,workspace),directProtocol(env,workspace)],transport,now});
 }
 /** A destination that cannot sign keeps its events queued, unsent, and is reported as held; every other destination proceeds. */
 export async function dispatchWebhooks(env:WorkerBindings){
  if(await restoredEffectsHeld(env.DB))return {configured:false,enqueued:0,dispatched:0,held:0};
- const workspaces=(await env.DB.prepare('SELECT DISTINCT workspace_id FROM vector_webhook_destinations WHERE enabled=1 AND revoked_at IS NULL LIMIT 100').all<{workspace_id:string}>()).results;
+ const workspaces=(await env.DB.prepare('SELECT workspace_id FROM vector_webhook_destinations WHERE enabled=1 AND revoked_at IS NULL UNION SELECT workspace_id FROM vector_slack_installations WHERE enabled=1 LIMIT 100').all<{workspace_id:string}>()).results;
  let enqueued=0,dispatched=0,held=0,configured=false;
  for(const {workspace_id:workspace} of workspaces){
   const genericConfigured=await deliveryConfigured(env,workspace);
   configured ||= genericConfigured;
   const destinations=(await env.DB.prepare("SELECT id,kind FROM vector_webhook_destinations WHERE workspace_id=? AND enabled=1 AND revoked_at IS NULL").bind(workspace).all<{id:string;kind:string}>()).results;
-  if(!genericConfigured&&!destinations.some(d=>d.kind!=='webhook'))continue;
-  const blocked=[...(await destinationSigningProblems(env,workspace)).keys()];
+  // Slack direct messages (SLACK-004) share this queue under one per-workspace destination label.
+  const direct=Boolean(await env.DB.prepare('SELECT 1 FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(workspace).first()),directHeld=direct&&await credentialProblem(env,'slack:'+workspace);
+  if(!genericConfigured&&!destinations.some(d=>d.kind!=='webhook')&&!direct)continue;
+  const blocked=[...(await destinationSigningProblems(env,workspace)).keys(),...(directHeld?[directDestination]:[])];
   for(const destination of destinations){
    if(destination.kind==='webhook'&&!genericConfigured&&!blocked.includes(destination.id))blocked.push(destination.id);
    if(destination.kind==='slack'&&await credentialProblem(env,'slack:'+workspace))blocked.push(destination.id);
@@ -65,7 +70,18 @@ export async function dispatchWebhooks(env:WorkerBindings){
    catch(error){if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,event.id).first())continue;if(event.kind!=='webhook'&&error instanceof IntegrationError){held++;continue;}throw error;}
    await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=COALESCE(enqueued_at,?) WHERE id=? AND workspace_id=?').bind(new Date().toISOString(),event.id,workspace).run();enqueued++;
   }
+  if(direct&&!directHeld)enqueued+=(await enqueueDirectMessages(env,workspace,service)).length;
   dispatched+=(await service.dispatchDue(20)).length;
  }
  return {configured,enqueued,dispatched,held};
+}
+/** Immediately after a source mutation commits, like its mail: only that mutation's direct messages. */
+export async function deliverCommittedDirectMessages(env:WorkerBindings,eventIds:string[]){
+ if(!eventIds.length||await restoredEffectsHeld(env.DB))return;
+ const rows=(await env.DB.prepare("SELECT e.workspace_id AS workspace,e.id FROM notifications n JOIN vector_webhook_events e ON e.id=n.id||':slack-dm' WHERE n.event_id IN(SELECT value FROM json_each(?)) AND e.enqueued_at IS NULL").bind(JSON.stringify(eventIds)).all<{workspace:string;id:string}>()).results;
+ for(const workspace of new Set(rows.map(row=>row.workspace))){
+  if(await credentialProblem(env,'slack:'+workspace))continue;
+  const service=outboundService(env,workspace);
+  for(const id of await enqueueDirectMessages(env,workspace,service,rows.filter(row=>row.workspace===workspace).map(row=>row.id)))await service.dispatch(id);
+ }
 }
