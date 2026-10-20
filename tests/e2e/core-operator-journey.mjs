@@ -12,6 +12,7 @@ export async function withInvitedOperator(page,context,base,state,journey,displa
    method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
    body:JSON.stringify({displayName,email}),
   });
+  await response.arrayBuffer();
   return response.status;
  },{displayName,email});assert.equal(invited,202);
  const link=await readDevelopmentLink(base,context.request,email,state);
