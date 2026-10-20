@@ -759,7 +759,7 @@ Judged from the code and tests at commit `c6933bdab232693f3a0464d16ab4e92c67ded9
 | `CI-001` | CI and deploy providers | target | missing |  | No implementation yet |
 | `SLACK-001` | Slack app | target | missing |  | No implementation yet |
 | `SLACK-002` | Issues from Slack with synced threads | target | missing |  | No implementation yet |
-| `SLACK-003` | Channel notifications | target | done | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`; `src/core/features/integrations/channels/`; `evidence/slack-003/SAFE_PROVIDER.md`, `REAL_PROVIDER.md`, `CHANNEL_SAFETY.md` | |
+| `SLACK-003` | Channel notifications | target | done | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`; `src/core/features/integrations/channels/`; `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | |
 | `SLACK-004` | Personal Slack notifications | target | missing |  | No implementation yet |
 | `SLACK-005` | Link previews | target | missing |  | No implementation yet |
 | `TEAMS-001` | Microsoft Teams | target | missing |  | No implementation yet |

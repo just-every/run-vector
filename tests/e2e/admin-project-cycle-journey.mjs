@@ -289,7 +289,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await capture(`milestone-issue-assigned-${width}`);
     await page.getByRole('combobox',{name:'Issue project',exact:true}).selectOption(other.id);
     await poll(()=>sql(`SELECT project_id,milestone_id FROM issues WHERE id='${issues[1].id}'`),rows=>rows[0]?.project_id===other.id&&rows[0].milestone_id===null,'moving issue clears milestone');
-    await page.getByRole('combobox',{name:'Issue milestone',exact:true}).filter({has:page.locator('option[value=""]')}).waitFor();
+    await poll(()=>page.getByRole('combobox',{name:'Issue milestone',exact:true}).inputValue(),value=>value==='', 'rendered milestone clear after project move');
     assert.equal(await page.getByRole('combobox',{name:'Issue milestone',exact:true}).inputValue(),'');
     const activity=sql(`SELECT previous_value_json,next_value_json FROM issue_activity WHERE issue_id='${issues[1].id}' AND kind='issue.updated'`);
     assert.equal(activity.filter(row=>JSON.parse(row.next_value_json).milestoneId===null).length,1,'one activity entry for project move and milestone clear');
