@@ -20,7 +20,7 @@ export function channelEdge(){
    if(postMode==='retry')return new Response(null,{status:429,headers:{'Retry-After':'1'}});
    return Response.json({ok:true,ts:'123.456'});
   }
-  if(method==='discord'){expect(url.href).toBe(webhook);return postMode==='redirect'?new Response(null,{status:302,headers:{Location:'https://forbidden.example.test'}}):new Response(null,{status:204});}
+  if(method==='discord'){expect(url.origin+url.pathname).toBe(webhook);expect(url.searchParams.get('wait')).toBe('true');return postMode==='redirect'?new Response(null,{status:302,headers:{Location:'https://forbidden.example.test'}}):Response.json({id:'fixture-message',content:body.content});}
   throw Error('Unexpected network edge '+url.hostname+url.pathname);
  });
  return {get token(){return token;},renew(){token=['synthetic','slack',crypto.randomUUID()].join('-');revoked=false;},webhook,calls,safety:(value:Record<string,unknown>={})=>{safety=value;},restore:()=>network.mockRestore(),createError:(value:string|null)=>{createError=value;},postMode:(value:string)=>{postMode=value;}};

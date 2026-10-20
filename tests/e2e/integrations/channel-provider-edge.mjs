@@ -9,5 +9,5 @@ export async function channelProviderEdge(request){
  if(method==='conversations.create')return Response.json({ok:true,channel:{id:'C'+body.name.replaceAll('-','').toUpperCase(),name:body.name}});
  if(method==='chat.postMessage')return Response.json(body.channel==='CREFUSED'?{ok:false,error:'not_in_channel'}:{ok:true,ts:'123.456'});
  if(!['discord.com','discordapp.com'].includes(url.hostname))throw Error('Unexpected fixture host');
- return new Response(null,{status:204});
+ return Response.json({id:'fixture-message',content:body.content});
 }

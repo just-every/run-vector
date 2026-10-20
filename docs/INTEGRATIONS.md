@@ -207,3 +207,21 @@ The manifest/OAuth installation, Events API, @Vector issue creation and explicit
 member linking remain SLACK-001; this paste path does not claim those features.
 Apply `0073_channel_notifications.sql` additively after the v0.4.0 schema and keep
 all prior rows, outbound terminal states and new binding tables on rollback.
+
+Slack channel selection and every post require `conversations.info`: the bot
+must be a member, `is_channel` must be true, and `is_archived`, `is_shared`,
+`is_ext_shared`, `is_org_shared` and `is_pending_ext_shared` must explicitly be
+false. Frozen channels are refused; only an absent optional `is_frozen` means
+false (ct, 20 October 2026 19:12Z). Any other missing or malformed safety flag
+refuses routing. No channel is inferred from a name or email address.
+A channel that becomes unsafe, or whose post is refused as archived, frozen or
+not joined, is visibly suspended. An Admin must save a fresh binding after the
+underlying access is fixed; old held events are not replayed. The current
+workspace has no private/restricted teams; ROLE-002 must add generic notices
+without actor or text, or a DM to a permitted explicitly mapped member, before
+private-team channel delivery ships. This is named in its acceptance.
+
+Discord requests server confirmation with `wait=true`, suppresses embeds and
+mentions, and retains only the transport result. Provider response bodies are
+not retained. Removed native operators’ queued actor display snapshots are
+anonymized locally while their events remain ineligible to post.

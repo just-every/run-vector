@@ -33,7 +33,7 @@ const escapeSlack=(text:string)=>text.replaceAll('&','&amp;').replaceAll('<','&l
 export function channelMessage(env:WorkerBindings,kind:string,channelId:string,body:string){
  const event=JSON.parse(body),link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);
  const text=`${event.identifier} · ${event.title}\n${event.actor}: ${event.change}\n${link}`;
- return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]}});
+ return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]},flags:4});
 }
 export function channelProtocols(env:WorkerBindings,workspace:string):DeliveryProtocol[]{
  return (['slack','discord'] as const).map(kind=>({id:kind,async prepare(envelope:Envelope):Promise<WireRequest>{
@@ -44,7 +44,7 @@ export function channelProtocols(env:WorkerBindings,workspace:string):DeliveryPr
   if(kind==='slack'){return {url:'https://slack.com/api/chat.postMessage',body:envelope.body,headers:{'Content-Type':'application/json; charset=utf-8',Authorization:'Bearer '+await slackToken(env,workspace),'vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};}
   const encrypted=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity=? AND slot='current'").bind('destination:'+envelope.destinationId).first<string>('encrypted');
   if(!encrypted)throw new IntegrationError(409,'discord_needs_attention');
-  return {url:discordUrl(await openSecret(env,'destination:'+envelope.destinationId,encrypted)),body:envelope.body,headers:{'Content-Type':'application/json','vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};
+  return {url:discordUrl(await openSecret(env,'destination:'+envelope.destinationId,encrypted))+'?wait=true',body:envelope.body,headers:{'Content-Type':'application/json','vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};
  },classify(response){return classifyProvider(kind,response);}}));
 }
 export async function sendChannel(env:WorkerBindings,workspace:string,wire:WireRequest){

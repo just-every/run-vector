@@ -3,15 +3,15 @@ import { IntegrationError } from '../errors';
 import { openSecret } from '../secrets';
 import type { WireRequest, WireResponse, Outcome } from '../../../../../vendor/base/integrations';
 
-export function discordUrl(value:string) {
+export function discordUrl(value:string,allowWait=false) {
  let url:URL;try{url=new URL(value);}catch{throw new IntegrationError(400,'invalid_discord_webhook');}
- if(url.protocol!=='https:'||!['discord.com','discordapp.com'].includes(url.hostname)||url.port||url.username||url.password||url.hash||url.search||!url.pathname.startsWith('/api/webhooks/')||url.pathname.length<=14)throw new IntegrationError(400,'invalid_discord_webhook','Use an HTTPS discord.com or discordapp.com /api/webhooks/ URL.');
+ if(url.protocol!=='https:'||!['discord.com','discordapp.com'].includes(url.hostname)||url.port||url.username||url.password||url.hash||(url.search&&(!allowWait||url.search!=='?wait=true'))||!url.pathname.startsWith('/api/webhooks/')||url.pathname.length<=14)throw new IntegrationError(400,'invalid_discord_webhook','Use an HTTPS discord.com or discordapp.com /api/webhooks/ URL.');
  return url.href;
 }
 /** The only destinations here are fixed provider hosts. Redirects are never followed. */
 export async function providerSend(wire:WireRequest,method:'POST'|'GET'='POST'):Promise<WireResponse> {
  const url=new URL(wire.url);
- if(!(url.origin==='https://slack.com'&&/^\/api\/[a-zA-Z.]+$/.test(url.pathname)))discordUrl(wire.url);
+ if(!(url.origin==='https://slack.com'&&/^\/api\/[a-zA-Z.]+$/.test(url.pathname)))discordUrl(wire.url,true);
  if(method==='GET')for(const [key,value] of Object.entries(JSON.parse(wire.body)))url.searchParams.set(key,String(value));
  const response=await fetch(url.href,{method,headers:wire.headers,...(method==='POST'?{body:wire.body}:{}),redirect:'manual',signal:AbortSignal.timeout(15000)});
  return {status:response.status,headers:Object.fromEntries(response.headers),body:await response.text()};

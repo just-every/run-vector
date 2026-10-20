@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "22f5448a5d93ae13a979ee33b75e59f233b994119b9f496abe67cc3fd4cad2ed",
+      "sha256": "029d9c35eb2c893eb1b5bcadea5b2c00b518acf9f9e39e8c0fec62c5f0b82956",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3b43bd474d9a902727640ca8cec6eeae3ce10ce71f69ab91cfe26f12439629af",
+      "sha256": "a29b2c6a946bc379489818fcc5d11fe5cfae3ed6d2b1708523803fa87c7dcc86",
       "executable": false
     },
     "DEMO.md": {
@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "57cecebfd23bf6a862e4be15a41f64afad626bbad2151e2d485b594cdb0526b9",
+      "sha256": "edd6132d7d996e12048d5af63577d7cd25a637bea9c5abe4968da2cfb4f74c73",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -3729,11 +3729,11 @@
       "executable": false
     },
     "src/core/features/integrations/channels/delivery.ts": {
-      "sha256": "66e8bd6d0de90bfe142b3049873c198ae54d4445a78e34d80729631d18932b54",
+      "sha256": "79be6f633a5a40a86ae416f16fac6fd4221a5126daf20f805c0186892981a901",
       "executable": false
     },
     "src/core/features/integrations/channels/provider.ts": {
-      "sha256": "7585b32713e297b3beeed00376aef0b79a4bdbebe96e079858e9d1b38e699fb2",
+      "sha256": "b1dc898fef47ee9ec4be56cfb80739ea03727dbb02cc5a1634db032eba2388ee",
       "executable": false
     },
     "src/core/features/integrations/channels/routes.ts": {
@@ -5697,7 +5697,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "5407874bc2c8b5336ce73b12d2dc89149a24c30f9a6c7b149a751647099a526d",
+      "sha256": "adcf920883564cd1508c75893295a2bc8cb521d6dcfc41138d8593e31617c90b",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -6021,7 +6021,7 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "bf5f81a0fd56335ec9f4d0579ad4a48854c49dc23fb282628af5791ee57a9cc6",
+      "sha256": "9e4073c9e6d80e86ec5169db636d6c58b1943c72701d1dfaf90bc107591e6921",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
