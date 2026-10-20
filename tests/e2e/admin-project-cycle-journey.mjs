@@ -226,6 +226,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
       await page.getByRole('heading',{name:milestone,exact:true}).waitFor();
     }
     await page.getByRole('button',{name:'Edit Customer rollout',exact:true}).click();
+    await capture(`milestone-edit-open-${width}`);
     const edit=page.getByRole('form',{name:'Edit milestone Customer rollout',exact:true});
     await edit.getByLabel('Milestone description',{exact:true}).fill('Release to the customer cohort after sign-off.');
     await capture(`milestone-edit-${width}`);
