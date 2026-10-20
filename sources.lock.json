@@ -5789,7 +5789,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "04fa6decc5121ded92c57691ca468b7348fb675ba7074c2fe521ddf8f6aa3eac",
+      "sha256": "1518516d01b092fc2465f0b35e0069e2af3be033d40bacc414f23aec719e2f62",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {

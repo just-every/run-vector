@@ -8,7 +8,7 @@ import {request,bindings} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
  // Synthetic aggregate history tests archive custody; day-close behavior is exercised
  // through scheduled in project-report.test.ts and cycle-report.test.ts.
