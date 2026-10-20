@@ -1558,6 +1558,7 @@
     "channel_id",
     "channel_name",
     "events",
-    "created_by"
+    "created_by",
+    "suspended_reason"
   ]
 }

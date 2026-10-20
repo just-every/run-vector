@@ -3,7 +3,8 @@ export function deliveryResult(state:string,outcome:unknown){
  const value=outcome&&typeof outcome==='object'?outcome as {status?:unknown;code?:unknown}:{};
  const status=typeof value.status==='number'&&Number.isInteger(value.status)&&value.status>=100&&value.status<=599?value.status:null;
  let reason:string;
- if(typeof value.code==='string'&&/^slack_[a-z_]{1,80}$/.test(value.code)&&state!=='accepted')reason='Slack refused this message ('+value.code.slice(6)+'). Check the bot token and channel access.';
+ if(value.code==='channel_safety_refused')reason='Vector refused this post after checking the Slack channel. Check bot membership, sharing and credentials, then save the binding again.';
+ else if(typeof value.code==='string'&&/^slack_[a-z_]{1,80}$/.test(value.code)&&state!=='accepted')reason='Slack refused this message ('+value.code.slice(6)+'). Check the bot token and channel access.';
  else if(status!==null){
   if(status>=200&&status<300)reason=state==='accepted'?'The receiver accepted this request. Check its workflow for the next action.':'The provider did not accept this request. Check its integration settings.';
   else if(status===400||status===422)reason='The receiver could not use the data. Check its expected fields and workflow setup.';

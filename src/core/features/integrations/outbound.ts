@@ -62,7 +62,7 @@ export async function dispatchWebhooks(env:WorkerBindings){
   for(const event of events){
    if(event.kind!=='webhook'&&!await channelMatches(env,workspace,event.destination_id,event.body)){await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=? WHERE id=?').bind(new Date().toISOString(),event.id).run();continue;}
    try {await service.enqueue({id:event.id,tenant:workspace,destinationId:event.destination_id,event:event.event,protocol:event.kind,body:event.kind==='webhook'?event.body:channelMessage(env,event.kind,event.channel_id,event.body)});}
-   catch(error){if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,event.id).first())continue;throw error;}
+   catch(error){if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,event.id).first())continue;if(event.kind!=='webhook'&&error instanceof IntegrationError){held++;continue;}throw error;}
    await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=COALESCE(enqueued_at,?) WHERE id=? AND workspace_id=?').bind(new Date().toISOString(),event.id,workspace).run();enqueued++;
   }
   dispatched+=(await service.dispatchDue(20)).length;

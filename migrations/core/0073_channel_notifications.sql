@@ -8,7 +8,7 @@ CREATE TABLE vector_channel_bindings (
  destination_id TEXT PRIMARY KEY REFERENCES vector_webhook_destinations(id),
  workspace_id TEXT NOT NULL, scope TEXT NOT NULL CHECK(scope IN ('team','project','view')),
  object_id TEXT NOT NULL, channel_id TEXT NOT NULL, channel_name TEXT NOT NULL,
- events TEXT NOT NULL CHECK(json_valid(events)), created_by TEXT NOT NULL,
+ events TEXT NOT NULL CHECK(json_valid(events)), created_by TEXT NOT NULL, suspended_reason TEXT,
  UNIQUE(workspace_id,scope,object_id)
 );
 -- Preserve the existing webhook contract; channel destinations have their own minimal event body.
@@ -46,4 +46,6 @@ CREATE TRIGGER vector_channel_operator_removed AFTER UPDATE OF removed_at ON ope
  UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,NEW.removed_at) WHERE id IN(SELECT destination_id FROM vector_channel_bindings WHERE created_by=NEW.id);
  DELETE FROM vector_integration_secret_keys WHERE identity='slack:'||NEW.workspace_id AND EXISTS(SELECT 1 FROM vector_slack_installations WHERE workspace_id=NEW.workspace_id AND created_by=NEW.id);
  UPDATE vector_slack_installations SET enabled=0 WHERE workspace_id=NEW.workspace_id AND created_by=NEW.id;
+ UPDATE vector_webhook_events SET body=json_set(body,'$.actor','Former operator') WHERE workspace_id=NEW.workspace_id AND json_extract(body,'$.actorId')=NEW.id;
+ UPDATE integration_deliveries SET envelope=json_set(envelope,'$.body','{}') WHERE namespace=NEW.workspace_id AND json_extract(envelope,'$.protocol') IN('slack','discord') AND id IN(SELECT id FROM vector_webhook_events WHERE workspace_id=NEW.workspace_id AND json_extract(body,'$.actorId')=NEW.id);
 END;

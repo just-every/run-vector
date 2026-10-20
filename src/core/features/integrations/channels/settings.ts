@@ -1,3 +1,4 @@
+import {requireSlackChannel} from './channel-safety';
 import type {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {createUlid} from '../../../shared/ids';
@@ -30,7 +31,7 @@ export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
 }
 export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,input:Binding,skipObjectCheck=false){
  if(input.provider==='slack'&&!input.channelId)throw new IntegrationError(400,'slack_channel_required');
- if(input.provider==='slack')await slackToken(env,owner.workspace);
+ if(input.provider==='slack')await requireSlackChannel(env,owner.workspace,input.channelId!);
  const id=createUlid(new Date()),at=new Date().toISOString(),identity='destination:'+id;
  const encrypted=input.provider==='discord'?await sealSecret(env,identity,discordUrl(input.webhookUrl??'')):null;
  const table={team:'teams',project:'projects',view:'saved_views'}[input.scope];
@@ -67,9 +68,9 @@ export async function createSlackChannel(env:WorkerBindings,owner:IntegrationOwn
 export async function readChannels(env:WorkerBindings,owner:IntegrationOwner){
  const [install,bindings,objects]=await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'SELECT * FROM vector_slack_installations WHERE workspace_id=?',params:[owner.workspace]},
-  {sql:`SELECT b.destination_id id,b.scope,b.object_id objectId,b.channel_id channelId,b.channel_name channelName,b.events,d.kind provider,COALESCE(t.name,p.name,v.name,'Removed object') objectName FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.enabled=1 AND d.revoked_at IS NULL LEFT JOIN teams t ON b.scope='team' AND t.id=b.object_id LEFT JOIN projects p ON b.scope='project' AND p.id=b.object_id LEFT JOIN saved_views v ON b.scope='view' AND v.id=b.object_id WHERE b.workspace_id=? AND (b.scope<>'view' OR v.owner_operator_id=? OR v.is_shared=1) ORDER BY b.scope,b.channel_name`,params:[owner.workspace,owner.id]},
+  {sql:`SELECT b.destination_id id,b.scope,b.object_id objectId,b.channel_id channelId,b.channel_name channelName,b.events,b.suspended_reason suspendedReason,d.kind provider,COALESCE(t.name,p.name,v.name,'Removed object') objectName FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.revoked_at IS NULL LEFT JOIN teams t ON b.scope='team' AND t.id=b.object_id LEFT JOIN projects p ON b.scope='project' AND p.id=b.object_id LEFT JOIN saved_views v ON b.scope='view' AND v.id=b.object_id WHERE b.workspace_id=? AND (b.scope<>'view' OR v.owner_operator_id=? OR v.is_shared=1) ORDER BY b.scope,b.channel_name`,params:[owner.workspace,owner.id]},
   {sql:"SELECT id,name,'team' scope FROM teams WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'project' scope FROM projects WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'view' scope FROM saved_views WHERE workspace_id=? AND (owner_operator_id=? OR is_shared=1)",params:[owner.workspace,owner.workspace,owner.workspace,owner.id]},
  ]);
  const needsAttention=Boolean(install.length)&&(!install[0].enabled||await credentialProblem(env,'slack:'+owner.workspace));
- return {slack:{connected:Boolean(install[0]?.enabled)&&!needsAttention,needsAttention,teamName:install[0]?.team_name??null},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?needsAttention:await credentialProblem(env,'destination:'+row.id)}))),objects};
+ return {slack:{connected:Boolean(install[0]?.enabled)&&!needsAttention,needsAttention,teamName:install[0]?.team_name??null},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?(needsAttention||Boolean(row.suspendedReason)):await credentialProblem(env,'destination:'+row.id)}))),objects};
 }

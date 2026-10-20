@@ -2081,7 +2081,7 @@
       "executable": false
     },
     "migrations/core/0073_channel_notifications.sql": {
-      "sha256": "820574e7ed01b4d068b65e5873d3b06850e4b820dba3f60207919a358bb3e29f",
+      "sha256": "ad73ef95b2b6f9424241d1d3e3af57ac75efea997b40942a894eafeabdceceb1",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -2485,7 +2485,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "f9317b39f68ebefa586c201f4a20dd0e0d72505b8ffb9d1ace0a0d626ee2c0ad",
+      "sha256": "25100c45b44e334af72984c06ddf77fb7348f4b214ea83ed22c26cca5d885f7c",
       "executable": false
     },
     "src/base/contract-filter.ts": {
@@ -3269,7 +3269,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "73155abb7750b9c24f934895894a55b82ff37989944b09bc9fb90337e119cfb5",
+      "sha256": "e40ac9765140f93e280d31e55f7b0d284aeb4b26a316983deae0f7bfd2f78260",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -3724,12 +3724,16 @@
       "sha256": "435e9be542f925280a3d208f6a4738ed3eee1af4ae976a9b2af41ae5078407ee",
       "executable": false
     },
+    "src/core/features/integrations/channels/channel-safety.ts": {
+      "sha256": "ef7bf95dea916b5c389ffead248102e36f0b73267a8c7659b1173239b5d18d07",
+      "executable": false
+    },
     "src/core/features/integrations/channels/delivery.ts": {
-      "sha256": "d5191fa81e9d6ef088105582e6e7441a6d8160aa4d8a3997b94b81792e7421c2",
+      "sha256": "66e8bd6d0de90bfe142b3049873c198ae54d4445a78e34d80729631d18932b54",
       "executable": false
     },
     "src/core/features/integrations/channels/provider.ts": {
-      "sha256": "8cfe78c962ded7c8470b33eccbe6c12e9b7e11109eb1a6fea7bbe19444b198d3",
+      "sha256": "7585b32713e297b3beeed00376aef0b79a4bdbebe96e079858e9d1b38e699fb2",
       "executable": false
     },
     "src/core/features/integrations/channels/routes.ts": {
@@ -3737,11 +3741,11 @@
       "executable": false
     },
     "src/core/features/integrations/channels/schema.ts": {
-      "sha256": "6df1f9db901d1526a41e1b7ed0debe8d43456cd5017df5b5cc6539c07cf52c07",
+      "sha256": "d5623d9e5e0fdf2a6516f6f412d2695c84c14e1532608c68a08e5b27b0aa631b",
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "3ef65ab33a32d087387bdeb2aea3997204a5d2dd4d926b599362fe64cd088e6a",
+      "sha256": "97c1422f144ccbbc48116205a4166a218adf790da95a290c92ab35b1d0b87dd1",
       "executable": false
     },
     "src/core/features/integrations/config-input.ts": {
@@ -3757,7 +3761,7 @@
       "executable": false
     },
     "src/core/features/integrations/delivery-result.ts": {
-      "sha256": "fb5824a1424f1bc8678d6370a13ab3004552309e002c936a3c43952cf5f83caf",
+      "sha256": "c9c97a536856b246fa312f116ee894e0bf87baee9ce83023cfc01c808f22b1e3",
       "executable": false
     },
     "src/core/features/integrations/delivery-setup.ts": {
@@ -3805,7 +3809,7 @@
       "executable": false
     },
     "src/core/features/integrations/outbound.ts": {
-      "sha256": "5f6dc5dd6283c61977b2ababceafb7e803848333fbbc30c674bbfc3c5f3d08b5",
+      "sha256": "81ae2de0e5c16677274d8c5fff13473f7b764f1e2dbce2fcdcde9f6ec43b5773",
       "executable": false
     },
     "src/core/features/integrations/project-api.ts": {
@@ -3873,7 +3877,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "146ee75efcb670476151f87741e79c24a5c0765043bc1e69b3bb3ec38b365cc8",
+      "sha256": "36ee1fa5c14330bb96543f66e16bd8a9bb096c6e05bec647864863363bd8c7e8",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -5693,7 +5697,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "50a79d0f2a90f7c6a2b730d1b243e3c24af7eef743d5f72e342c78fa7ec4c209",
+      "sha256": "5407874bc2c8b5336ce73b12d2dc89149a24c30f9a6c7b149a751647099a526d",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -6017,11 +6021,11 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "4bb767bfafbf1179b4a7ecf9fddc4cc2a0bd571d7cbecd1277aca9f7608ac2e8",
+      "sha256": "bf5f81a0fd56335ec9f4d0579ad4a48854c49dc23fb282628af5791ee57a9cc6",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "d32b7951bb2219adbee3210a1ae252b6f01000878bd6eb559b289757f0afe5bd",
+      "sha256": "58cdf97df390c75cb410349a2588bbfffc82d7db19282220f1f3954ecadc169a",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {

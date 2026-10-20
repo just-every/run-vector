@@ -181,6 +181,36 @@
       "adapters": [
         "mail.sender.v1"
       ]
+    },
+    {
+      "id": "slack-channel-notifications",
+      "required": false,
+      "why": "SLACK-003: an Admin explicitly binds selected issue events to an active, unshared Slack channel containing the bot; credentials are entered in Settings.",
+      "data": [
+        "issue identifier",
+        "issue title",
+        "actor display name",
+        "workflow status change",
+        "authenticated canonical app link"
+      ],
+      "adapters": [
+        "vector.slack-web-api.v1"
+      ]
+    },
+    {
+      "id": "discord-channel-notifications",
+      "required": false,
+      "why": "SLACK-003: an Admin explicitly binds selected issue events to a sealed discord.com or discordapp.com webhook URL.",
+      "data": [
+        "issue identifier",
+        "issue title",
+        "actor display name",
+        "workflow status change",
+        "authenticated canonical app link"
+      ],
+      "adapters": [
+        "vector.discord-webhook.v1"
+      ]
     }
   ],
   "env": [

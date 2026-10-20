@@ -9,10 +9,11 @@ export function discordUrl(value:string) {
  return url.href;
 }
 /** The only destinations here are fixed provider hosts. Redirects are never followed. */
-export async function providerSend(wire:WireRequest):Promise<WireResponse> {
+export async function providerSend(wire:WireRequest,method:'POST'|'GET'='POST'):Promise<WireResponse> {
  const url=new URL(wire.url);
  if(!(url.origin==='https://slack.com'&&/^\/api\/[a-zA-Z.]+$/.test(url.pathname)))discordUrl(wire.url);
- const response=await fetch(wire.url,{method:'POST',headers:wire.headers,body:wire.body,redirect:'manual',signal:AbortSignal.timeout(15000)});
+ if(method==='GET')for(const [key,value] of Object.entries(JSON.parse(wire.body)))url.searchParams.set(key,String(value));
+ const response=await fetch(url.href,{method,headers:wire.headers,...(method==='POST'?{body:wire.body}:{}),redirect:'manual',signal:AbortSignal.timeout(15000)});
  return {status:response.status,headers:Object.fromEntries(response.headers),body:await response.text()};
 }
 export async function slackToken(env:WorkerBindings,workspace:string){
@@ -20,13 +21,14 @@ export async function slackToken(env:WorkerBindings,workspace:string){
  if(!row)throw new IntegrationError(409,'slack_needs_attention','Slack needs attention. Enter the bot token in Integrations.');
  return openSecret(env,'slack:'+workspace,row.encrypted);
 }
-export async function slackCall(token:string,method:string,body:unknown){
- let response:WireResponse;try{response=await providerSend({url:'https://slack.com/api/'+method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json; charset=utf-8'},body:JSON.stringify(body)});}catch{throw new IntegrationError(503,'slack_response_unknown','Slack did not return a known result. Check Slack before trying again.');}
+export async function slackCall(token:string,method:string,body:unknown,httpMethod:'POST'|'GET'='POST'){
+ let response:WireResponse;try{response=await providerSend({url:'https://slack.com/api/'+method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json; charset=utf-8'},body:JSON.stringify(body)},httpMethod);}catch{throw new IntegrationError(503,'slack_response_unknown','Slack did not return a known result. Check Slack before trying again.');}
  let result;try{result=JSON.parse(response.body);}catch{throw new IntegrationError(503,'slack_invalid_response');}
  if(response.status<200||response.status>=300||result.ok!==true){const code=typeof result.error==='string'&&/^[a-z_]{1,80}$/.test(result.error)?result.error:'request_failed';throw new IntegrationError(400,'slack_'+code,'Slack: '+code);}
  return result as {ok:true;team?:string;channel?:{id:string;name:string}};
 }
 export function classifyProvider(kind:string,response:WireResponse):Outcome {
+ if(response.headers['vector-channel-refusal']==='channel_safety_refused')return {kind:'rejected',code:'channel_safety_refused'};
  const {status}=response;
  if(status===429)return {kind:'retryable',code:'provider_rate_limited',status,retryAfterMs:Math.min(86400001,Math.max(0,Number(response.headers['retry-after']||60))*1000)};
  if(status>=500)return {kind:'uncertain',code:'provider_response_unknown',status};

@@ -21,7 +21,7 @@ export function ChannelSettings(){
  {config.data&&<>
  <p>{config.data.slack.needsAttention?'Slack needs attention. Re-enter the bot token.':config.data.slack.connected?`Slack connected to ${config.data.slack.teamName}`:'Slack is not connected.'}</p>
  <details><summary>{config.data.slack.connected?'Replace Slack bot token':'Connect Slack'}</summary>
- <p>Use a Slack bot token with chat:write and channels:manage. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack.</p>
+ <p>Use a Slack bot token with chat:write and channels:manage. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack. Channels must be active, unshared and include the bot; Vector checks this when selected and before posting.</p>
  <form aria-label="Slack credential" onSubmit={connect}><fieldset disabled={pending}><label>Slack bot token<input name="botToken" type="password" autoComplete="off" required maxLength={500}/></label><button>Validate and save Slack token</button></fieldset></form></details>
  {config.data.slack.connected&&<button type="button" disabled={pending} onClick={()=>void run('/slack',undefined,'DELETE')}>Remove Slack connection</button>}
  <form aria-label="Bind notification channel" onSubmit={bind}><fieldset disabled={pending}><legend>Bind a channel</legend>
@@ -32,7 +32,7 @@ export function ChannelSettings(){
  <fieldset><legend>Chosen events</legend>{channelEvents.map((event,index)=><label className="admin-checkbox" key={event}><input name="events" type="checkbox" value={event} defaultChecked={index<3}/>{channelEventLabels[event]}{index>2?' (when available)':''}</label>)}</fieldset>
  <button disabled={provider==='slack'&&!config.data.slack.connected}>Save channel binding</button></fieldset></form>
  <p>A new binding replaces this object’s previous channel. Removing a binding stops future posts. Messages already posted remain in Slack or Discord.</p>
- <ul>{config.data.bindings.map(binding=><li key={binding.id}><strong>{binding.objectName}</strong> → {binding.provider==='slack'?'Slack':'Discord'} #{binding.channelName}{binding.needsAttention&&<p role="status">Needs attention: re-enter {binding.provider==='slack'?'the Slack token':'this Discord webhook URL by saving the binding again'}.</p>}<p>{binding.events.map(event=>channelEventLabels[event]).join(', ')}</p><button type="button" disabled={pending} onClick={()=>void run('/channels/'+binding.id,undefined,'DELETE')}>Remove binding for {binding.objectName}</button></li>)}</ul>
+ <ul>{config.data.bindings.map(binding=><li key={binding.id}><strong>{binding.objectName}</strong> → {binding.provider==='slack'?'Slack':'Discord'} #{binding.channelName}{binding.suspendedReason&&<p role="alert">Routing suspended ({binding.suspendedReason}). Choose this object and save its channel binding again to confirm access. Held events are not replayed.</p>}{binding.needsAttention&&!binding.suspendedReason&&<p role="status">Needs attention: re-enter {binding.provider==='slack'?'the Slack token':'this Discord webhook URL by saving the binding again'}.</p>}<p>{binding.events.map(event=>channelEventLabels[event]).join(', ')}</p><button type="button" disabled={pending} onClick={()=>void run('/channels/'+binding.id,undefined,'DELETE')}>Remove binding for {binding.objectName}</button></li>)}</ul>
  </>}
  </section>;
 }

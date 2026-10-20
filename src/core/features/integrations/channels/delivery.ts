@@ -1,3 +1,4 @@
+import {checkBoundChannel,suspendChannel,suspendedSlackResponses} from './channel-safety';
 import type {WorkerBindings} from '../../../app/bindings';
 import type {DeliveryProtocol,Envelope,WireRequest} from '../../../../../vendor/base/integrations';
 import {IntegrationError} from '../errors';
@@ -40,7 +41,7 @@ export function channelProtocols(env:WorkerBindings,workspace:string):DeliveryPr
   if(current.kind!==kind)throw new IntegrationError(409,'channel_changed');
   const event=await env.DB.prepare('SELECT body FROM vector_webhook_events WHERE id=? AND workspace_id=?').bind(envelope.id,workspace).first<string>('body');
   if(!event||!await channelMatches(env,workspace,envelope.destinationId,event))throw new IntegrationError(409,'channel_event_disabled');
-  if(kind==='slack')return {url:'https://slack.com/api/chat.postMessage',body:envelope.body,headers:{'Content-Type':'application/json; charset=utf-8',Authorization:'Bearer '+await slackToken(env,workspace),'vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};
+  if(kind==='slack'){return {url:'https://slack.com/api/chat.postMessage',body:envelope.body,headers:{'Content-Type':'application/json; charset=utf-8',Authorization:'Bearer '+await slackToken(env,workspace),'vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};}
   const encrypted=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity=? AND slot='current'").bind('destination:'+envelope.destinationId).first<string>('encrypted');
   if(!encrypted)throw new IntegrationError(409,'discord_needs_attention');
   return {url:discordUrl(await openSecret(env,'destination:'+envelope.destinationId,encrypted)),body:envelope.body,headers:{'Content-Type':'application/json','vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};
@@ -53,7 +54,12 @@ export async function sendChannel(env:WorkerBindings,workspace:string,wire:WireR
  const current=await currentChannel(env,workspace,destination),protocol=channelProtocols(env,workspace).find(p=>p.id===current.kind)!;
  const fresh=await protocol.prepare({id,tenant:workspace,destinationId:destination,event:'channel.send',protocol:current.kind,body:wire.body},Date.now());
  if(fresh.url!==wire.url)throw new IntegrationError(409,'channel_changed');
+ if(current.kind==='slack'){try{await checkBoundChannel(env,workspace,destination,current.channel_id);}catch(error){if(error instanceof IntegrationError)return {status:403,headers:{'vector-channel-refusal':'channel_safety_refused'},body:''};throw error;}}
+ await currentChannel(env,workspace,destination);
+ const event=await env.DB.prepare('SELECT body FROM vector_webhook_events WHERE workspace_id=? AND id=?').bind(workspace,id).first<string>('body');if(!event||!await channelMatches(env,workspace,destination,event))throw new IntegrationError(409,'channel_event_disabled');
  const headers={...fresh.headers};delete headers['vector-channel-event'];delete headers['vector-channel-destination'];
  if(env.RER_DEMO==='1'){const {demoEffect}=await import('../../../../../vendor/base/demo/index.mjs');return demoEffect(()=>providerSend({...fresh,headers}),()=>({status:200,headers:{},body:current.kind==='slack'?'{"ok":true}':''}));}
- return providerSend({...fresh,headers});
+ const response=await providerSend({...fresh,headers});
+ if(current.kind==='slack'){try{const result=JSON.parse(response.body);if(result.ok===false&&suspendedSlackResponses.has(result.error))await suspendChannel(env,workspace,destination,'slack_'+result.error);}catch(error){if(!(error instanceof SyntaxError))throw error;}}
+ return response;
 }
