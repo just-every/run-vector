@@ -13,8 +13,8 @@ export const ciCommands = [
 
 // Keep the longest journeys first and avoid a long tail of queued runners.
 // The 18-runner plan spent over six minutes queueing its nine-minute archive
-// journey. Eight balanced runners retain every command, including fresh builds
-// between runtime suites, while needing fewer hosted-runner allocations.
+// journey. Nine runners retain every command and fresh build. Hosted artifact
+// checks have their own budget so the native runtime journey fits its limit.
 // Each runtime runner owns its own output, D1/R2 installations and browsers.
 export const verificationShards = {
   // test:data is its two existing entry points, split without omitting either.
@@ -29,7 +29,7 @@ export const verificationShards = {
   runtime: {
     browser: true,
     commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
-      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, 'test:public-site', 'verify'],
+      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }],
   },
   administration: {
     browser: true, native: true,
@@ -43,6 +43,10 @@ export const verificationShards = {
     commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'test:wave-b', 'test:base-auth',
       'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
   },
+  'hosted-artifact': {
+    browser: true,
+    commands: ['test:public-site', 'verify'],
+  },
   // Keep Vitest's complete six-file-partition wall, balanced across three
   // runners. Each invocation still gets its original isolated Vitest process.
   'worker-1': { commands: [['test:worker', '--shard=4/6'], ['test:worker', '--shard=5/6']] },
@@ -50,7 +54,7 @@ export const verificationShards = {
   'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
 };
 
-// The runtime shard's rer verify remains the public door for the adapter's full
+// The hosted-artifact shard's rer verify remains the public door for the adapter's full
 // build checks and Base's hosted artifact and hydration boundaries.
 export const verificationMatrix = Object.entries(verificationShards).map(([shard, plan]) => ({
   shard, browser: plan.browser ?? false, native: plan.native ?? false,
