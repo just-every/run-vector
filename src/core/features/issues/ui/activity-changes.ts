@@ -21,6 +21,7 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
   assigneeOperatorId: { label: "Assignee", show: (v, o) => name(o?.operators, v, "Unassigned", "a removed operator") },
   priority: { label: "Priority", show: priority },
   projectId: { label: "Project", show: (v, o) => name(o?.projects, v, "No project", "an archived project") },
+  milestoneId: { label: "Milestone", show: (v, o) => name(o?.milestones, v, "No milestone", "a removed milestone") },
   cycleId: { label: "Cycle", show: (v, o) => name(o?.cycles, v, "No cycle", "an earlier cycle") },
   dueDate: { label: "Due date", show: date },
   estimate: { label: "Estimate", show: (v) => (v === null || v === undefined ? "None" : String(v)) },

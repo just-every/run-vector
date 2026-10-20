@@ -1,0 +1,14 @@
+.project-milestones{padding:1.25rem;border:1px solid rgb(var(--app-ink-rgb) / 18%);border-radius:1rem;background:var(--app-card);margin:1.25rem 0}
+.project-milestones>header,.project-milestones__heading{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.project-milestones h2,.project-milestones h3{margin:0}.project-milestones header p{margin:.4rem 0;color:var(--app-muted)}
+.project-milestones ol{list-style:none;padding:0;margin:1rem 0 0;display:grid;gap:1rem}
+.project-milestones li{padding:1rem;border:1px solid rgb(var(--app-ink-rgb) / 18%);border-radius:.75rem;min-width:0;overflow-wrap:anywhere}
+.project-milestones__heading span{font-size:.8rem;font-weight:700;color:var(--app-muted)}.project-milestones__heading .project-milestones__slipped{color:var(--app-danger)}
+.project-milestones__facts{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;color:var(--app-muted);font-size:.9rem}
+.project-milestones progress{width:100%;height:.5rem;accent-color:var(--app-ink);margin:0 0 .75rem}
+.project-milestones button{min-height:44px;padding:.5rem .75rem;border:1px solid rgb(var(--app-ink-rgb) / 18%);border-radius:.5rem;background:var(--app-paper);color:var(--app-ink);cursor:pointer}
+.project-milestones button:disabled{opacity:.45;cursor:default}.project-milestones__actions{display:flex;flex-wrap:wrap;gap:.5rem}
+.project-milestones fieldset{border:0;padding:0;margin:1rem 0;display:grid;grid-template-columns:1fr 1fr;gap:1rem;min-width:0}
+.project-milestones label{display:grid;gap:.4rem;min-width:0}.project-milestones input,.project-milestones textarea{width:100%;min-width:0;box-sizing:border-box;padding:.65rem;border:1px solid rgb(var(--app-ink-rgb) / 18%);border-radius:.4rem;background:var(--app-paper);color:var(--app-ink);font:inherit}
+.project-milestones__description,.project-milestones fieldset>.project-milestones__actions{grid-column:1/-1}.project-milestones__delete{margin-top:1rem;border-top:1px solid rgb(var(--app-ink-rgb) / 18%);padding-top:.5rem}.project-milestones__delete button{margin-right:.5rem}
+@media(max-width:600px){.project-milestones{padding:1rem}.project-milestones fieldset{grid-template-columns:1fr}.project-milestones li{padding:.75rem}.project-milestones__heading{gap:.5rem}.project-milestones__facts{display:grid}}

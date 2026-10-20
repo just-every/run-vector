@@ -69,6 +69,12 @@ export const projectPortfolioSchema = z.object({
 });
 
 export const projectDetailSchema = projectSummarySchema.extend({
+  milestones: z.array(z.object({
+    id: z.string(), projectId: z.string(), name: z.string(), description: z.string(),
+    targetDate: z.string().nullable(), position: z.number(), completed: z.boolean(),
+    progress: z.object({completed:z.number(),total:z.number(),percentage:z.number().nullable()}),
+    slipped: z.boolean(),
+  })),
   report: projectReportSchema,
   cycleHistory: z.array(historicalCycleSchema),
   activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable()})),

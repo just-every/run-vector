@@ -52,6 +52,8 @@ export const issueDetailSchema = z.object({
   project: z
     .object({ id: z.string(), name: z.string(), health: z.string() })
     .nullable(),
+  milestoneId: z.string().nullable(),
+  milestone: z.object({ id: z.string(), name: z.string(), projectId: z.string() }).nullable(),
   cycle: z
     .object({
       id: z.string(),

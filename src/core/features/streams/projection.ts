@@ -41,6 +41,8 @@ export type StreamItem = {
   updatedAt: string;
   assignee: { id: string; name: string } | null;
   project: { id: string; name: string; health: string } | null;
+  milestoneId: string | null;
+  milestone: { id: string; name: string; projectId: string } | null;
   team: { id: string; name: string; identifierPrefix: string };
   primaryReason: PrimaryReason;
   contextReasons: ContextReason[];
@@ -272,8 +274,13 @@ function toStreamItem(
   if (issue.projectId !== null && !project) {
     throw new Error(`Issue ${issue.identifier} references a missing project`);
   }
+  const milestone = issue.milestoneId === null ? null : snapshot.projectMilestones.find(item => item.id === issue.milestoneId);
+  if (issue.milestoneId !== null && (!milestone || milestone.projectId !== issue.projectId))
+    throw new Error(`Issue ${issue.identifier} references a missing or incompatible milestone`);
   return {
     id: issue.id,
+    milestoneId: issue.milestoneId,
+    milestone: milestone ? { id: milestone.id, name: milestone.name, projectId: milestone.projectId } : null,
     identifier: issue.identifier,
     title: issue.title,
     version: issue.version,

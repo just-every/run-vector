@@ -19,10 +19,20 @@ import {
 import { createLabel, updateLabel, removeLabel } from "./labels";
 import { createProject, updateProject, removeProject } from "./projects";
 import { createCycle } from "./cycles";
+import { projectDetail } from "../projects/read";
+import {
+  createProjectMilestone, updateProjectMilestone,
+  reorderProjectMilestones, removeProjectMilestone,
+} from "./project-milestones";
 
 export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
   const read = async (c: Context<AppEnvironment>) =>
     c.json(await readAdministration(c.env.DB, c.get("operatorId")));
+  const readMilestoneProject = async (c: Context<AppEnvironment>) => {
+    const project = await projectDetail(c.env.DB, c.get("operatorId"), c.req.param("id")!);
+    if (!project) throw new SettingsError("not_found", "Project is unavailable.", 404);
+    return c.json(project);
+  };
   const handle =
     (run: (c: Context<AppEnvironment>) => Promise<Response>) =>
     async (c: Context<AppEnvironment>) => {
@@ -43,6 +53,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
   const mutation = <T extends z.ZodType>(
     input: T,
     run: (c: Context<AppEnvironment>, body: z.output<T>) => Promise<void>,
+    respond: (c: Context<AppEnvironment>) => Promise<Response> = read,
   ) =>
     handle(async (c) => {
       const parsed = input.safeParse(await readRequestJson(c.req.raw));
@@ -61,7 +72,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
           400,
         );
       await run(c, parsed.data);
-      return read(c);
+      return respond(c);
     });
   app.get("/settings/administration", handle(read));
   app.post(
@@ -153,6 +164,31 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
     handle(async (c) => {
       await removeProject(c.env.DB, c.get("operatorId"), c.req.param("id")!);
       return read(c);
+    }),
+  );
+  app.post(
+    "/settings/projects/:id/milestones",
+    mutation(schema.projectMilestoneCreateSchema, (c, body) =>
+      createProjectMilestone(c.env.DB, c.get("operatorId"), c.req.param("id")!, body),
+    readMilestoneProject),
+  );
+  app.patch(
+    "/settings/projects/:id/milestones/:milestoneId",
+    mutation(schema.projectMilestoneUpdateSchema, (c, body) =>
+      updateProjectMilestone(c.env.DB, c.get("operatorId"), c.req.param("id")!, c.req.param("milestoneId")!, body),
+    readMilestoneProject),
+  );
+  app.put(
+    "/settings/projects/:id/milestones/order",
+    mutation(schema.projectMilestoneOrderSchema, (c, body) =>
+      reorderProjectMilestones(c.env.DB, c.get("operatorId"), c.req.param("id")!, body.milestoneIds),
+    readMilestoneProject),
+  );
+  app.delete(
+    "/settings/projects/:id/milestones/:milestoneId",
+    handle(async (c) => {
+      await removeProjectMilestone(c.env.DB, c.get("operatorId"), c.req.param("id")!, c.req.param("milestoneId")!);
+      return readMilestoneProject(c);
     }),
   );
   app.post(

@@ -26,6 +26,7 @@ export const bulkIssueInputSchema = z
           .enum(["urgent", "high", "medium", "low", "none"])
           .optional(),
         projectId: z.string().length(26).nullable().optional(),
+    milestoneId: z.string().length(26).nullable().optional(),
         cycleId: z.string().length(26).nullable().optional(),
         labelIds: z.array(z.string().length(26)).optional(),
         estimate: z.number().int().min(1).max(100).nullable().optional(),

@@ -68,6 +68,20 @@ export const labelUpdateSchema = labelCreateSchema
   .strict()
   .refine((v) => Object.keys(v).length > 0);
 export const projectPriority = z.enum(["urgent", "high", "medium", "low", "none"]);
+export const projectMilestoneCreateSchema = z.object({
+  name,
+  description: z.string().max(100000).default(""),
+  targetDate: z.string().date().nullable().default(null),
+}).strict();
+export const projectMilestoneUpdateSchema = z.object({
+  name: name.optional(),
+  description: z.string().max(100000).optional(),
+  targetDate: z.string().date().nullable().optional(),
+  completed: z.boolean().optional(),
+}).strict().refine((value) => Object.keys(value).length > 0);
+export const projectMilestoneOrderSchema = z.object({
+  milestoneIds: z.array(administrationId).refine((ids) => new Set(ids).size === ids.length),
+}).strict();
 export const projectLabelIds = z.array(administrationId).max(100).refine(ids => new Set(ids).size === ids.length, "Choose each label once.");
 export const projectCreateSchema = z
   .object({

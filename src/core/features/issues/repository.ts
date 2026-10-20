@@ -17,6 +17,7 @@ import {
   labels,
   operators,
   projects,
+  projectMilestones,
   teams,
   workflowStatuses,
 } from '../../platform/db/schema'
@@ -83,6 +84,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
     priority: request.input.priority,
     assigneeOperatorId: request.input.assigneeOperatorId,
     projectId: request.input.projectId,
+    milestoneId: request.input.milestoneId,
     cycleId: request.input.cycleId,
     dueDate: request.input.dueDate,
     estimate: request.input.estimate,
@@ -109,6 +111,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
       statusId: status.id,
       assigneeOperatorId: request.input.assigneeOperatorId,
       projectId: request.input.projectId,
+    milestoneId: request.input.milestoneId,
       cycleId: request.input.cycleId,
       priority: request.input.priority,
       labelIds: request.input.labelIds,
@@ -308,6 +311,7 @@ async function validateIssueOptions(db: Database, workspaceId: string, teamId: s
   await Promise.all([
     validateAssignee(db, input.assigneeOperatorId),
     validateProject(db, input.projectId, workspaceId),
+    validateMilestone(db, input.milestoneId, input.projectId, workspaceId),
     validateCycle(db, input.cycleId, teamId),
     validateLabels(db, input.labelIds, workspaceId),
   ])
@@ -325,6 +329,14 @@ export async function validateProject(db: Database, projectId: string | null, wo
   if (!project || project.workspaceId !== workspaceId || project.archivedAt !== null) {
     throw new IssueMutationError('invalid_option', `Project ${projectId} is unavailable.`)
   }
+}
+
+export async function validateMilestone(db: Database, milestoneId: string | null, projectId: string | null, workspaceId: string) {
+  if (milestoneId === null) return
+  const [milestone] = await db.select({ id: projectMilestones.id }).from(projectMilestones)
+    .innerJoin(projects, eq(projects.id, projectMilestones.projectId))
+    .where(and(eq(projectMilestones.id, milestoneId), eq(projects.workspaceId, workspaceId), projectId === null ? sql`0` : eq(projectMilestones.projectId, projectId))).limit(1)
+  if (!milestone) throw new IssueMutationError('invalid_option', 'Milestone is unavailable for this project in this workspace.')
 }
 
 export async function validateCycle(db: Database, cycleId: string | null, teamId: string) {

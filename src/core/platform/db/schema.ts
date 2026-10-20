@@ -77,6 +77,17 @@ export const projects = sqliteTable('projects', {
   ...timestamps,
 }, (table) => [uniqueIndex('projects_workspace_name_idx').on(table.workspaceId, table.name)])
 
+export const projectMilestones = sqliteTable('project_milestones', {
+  id: text('id').primaryKey(),
+  projectId: text('project_id').notNull().references(() => projects.id, { onDelete: 'cascade' }),
+  name: text('name').notNull(),
+  description: text('description').notNull(),
+  targetDate: text('target_date'),
+  position: integer('position').notNull(),
+  completed: integer('completed', { mode: 'boolean' }).notNull().default(false),
+  ...timestamps,
+}, (table) => [uniqueIndex('project_milestones_position_idx').on(table.projectId, table.position)])
+
 export const cycles = sqliteTable('cycles', {
   id: text('id').primaryKey(),
   teamId: text('team_id').notNull(),
@@ -115,6 +126,7 @@ export const issues = sqliteTable('issues', {
   priority: text('priority').notNull(),
   assigneeOperatorId: text('assignee_operator_id'),
   projectId: text('project_id'),
+  milestoneId: text('milestone_id').references(() => projectMilestones.id, { onDelete: 'set null' }),
   cycleId: text('cycle_id'),
   dueDate: text('due_date'),
   estimate: integer('estimate'),
@@ -132,6 +144,7 @@ export const issues = sqliteTable('issues', {
   index('issues_team_status_idx').on(table.teamId, table.statusId),
   index('issues_assignee_idx').on(table.assigneeOperatorId),
   index('issues_project_idx').on(table.projectId),
+  index('issues_milestone_idx').on(table.milestoneId),
   index('issues_cycle_idx').on(table.cycleId),
 ])
 

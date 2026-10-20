@@ -93,12 +93,17 @@ export async function copyIssue(
         .prepare(
           `SELECT CASE WHEN
       (? IS NULL OR EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=?))
+      AND (? IS NULL OR EXISTS(SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE m.id=? AND m.project_id=? AND p.workspace_id=?))
       AND (? IS NULL OR EXISTS(SELECT 1 FROM cycles WHERE id=? AND team_id=? AND closed_at IS NULL))
       AND NOT EXISTS(SELECT value FROM json_each(?) WHERE NOT EXISTS(SELECT 1 FROM labels WHERE id=value AND workspace_id=?))
       THEN 1 ELSE json('copy option changed') END`,
         )
         .bind(
           mapped.projectId,
+          mapped.projectId,
+          original.workspace_id,
+          mapped.milestoneId,
+          mapped.milestoneId,
           mapped.projectId,
           original.workspace_id,
           mapped.cycleId,
@@ -111,8 +116,8 @@ export async function copyIssue(
     writes.push(
       db
         .prepare(
-          `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,project_id,cycle_id,due_date,estimate,expected_outcome,customer_impact,custom_fields_json,version,created_at,updated_at)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`,
+          `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,project_id,milestone_id,cycle_id,due_date,estimate,expected_outcome,customer_impact,custom_fields_json,version,created_at,updated_at)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`,
         )
         .bind(
           id,
@@ -125,6 +130,7 @@ export async function copyIssue(
           target.status_id,
           row.priority,
           mapped.projectId,
+          mapped.milestoneId,
           mapped.cycleId,
           row.due_date,
           row.estimate,

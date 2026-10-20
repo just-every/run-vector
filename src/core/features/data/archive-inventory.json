@@ -609,7 +609,8 @@
     "canceled_at",
     "created_at",
     "updated_at",
-    "archived_at"
+    "archived_at",
+    "milestone_id"
   ],
   "labels": [
     "id",
@@ -1529,5 +1530,16 @@
     "completed",
     "completions",
     "recorded_at"
+  ],
+  "project_milestones": [
+    "id",
+    "project_id",
+    "name",
+    "description",
+    "target_date",
+    "position",
+    "completed",
+    "created_at",
+    "updated_at"
   ]
 }

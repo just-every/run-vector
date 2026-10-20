@@ -11,6 +11,8 @@ export const streamItemSchema = z.object({
   version: z.number().int().positive(),
   estimate: z.number().nullable(),
   cycle: z.object({ id: z.string(), name: z.string() }).nullable(),
+  milestoneId: z.string().nullable(),
+  milestone: z.object({ id: z.string(), name: z.string(), projectId: z.string() }).nullable(),
   labels: z.array(z.object({ id: z.string(), name: z.string(), color: z.string() })),
   status: z.object({ id: z.string(), name: z.string(), category: z.string() }),
   priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']),

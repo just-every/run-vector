@@ -20,6 +20,7 @@ export const workspaceOptionsSchema = z.object({
   projects: z.array(
     z.object({ id: z.string(), name: z.string(), lifecycle: z.string() }),
   ),
+  milestones: z.array(z.object({ id: z.string(), projectId: z.string(), name: z.string(), completed: z.boolean() })),
   statuses: z.array(
     z.object({
       id: z.string(),

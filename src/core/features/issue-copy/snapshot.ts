@@ -7,6 +7,7 @@ export type CopySource = {
   status_id: string;
   priority: string;
   project_id: string | null;
+  milestone_id: string | null;
   cycle_id: string | null;
   due_date: string | null;
   estimate: number | null;
@@ -28,6 +29,7 @@ const fields = [
   "status_id",
   "priority",
   "project_id",
+  "milestone_id",
   "cycle_id",
   "due_date",
   "estimate",

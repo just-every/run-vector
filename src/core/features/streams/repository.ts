@@ -14,6 +14,7 @@ import {
   operators,
   projects,
   projectLabels,
+  projectMilestones,
   savedViews,
   teams,
   workflowStatuses,
@@ -48,8 +49,9 @@ async function readWorkspaceSnapshot(binding: D1Database, dueAt?: string) {
     db.select().from(savedViews),
     db.select().from(listPreferences),
     db.select().from(projectLabels),
+    db.select().from(projectMilestones),
   ] as const
-  const [workspace, operatorRows, teamRows, statusRows, projectRows, cycleRows, labelRows, issueRows, issueLabelRows, dependencyRows, evidenceRows, decisionRows, activityRows, savedViewRows, preferenceRows, projectLabelRows, candidates = []] = dueAt === undefined
+  const [workspace, operatorRows, teamRows, statusRows, projectRows, cycleRows, labelRows, issueRows, issueLabelRows, dependencyRows, evidenceRows, decisionRows, activityRows, savedViewRows, preferenceRows, projectLabelRows, projectMilestoneRows, candidates = []] = dueAt === undefined
     ? await db.batch(queries)
     : await db.batch([...queries, dueIntakeQuery(db, dueAt)])
 
@@ -70,6 +72,7 @@ async function readWorkspaceSnapshot(binding: D1Database, dueAt?: string) {
     savedViews: savedViewRows,
     preferences: preferenceRows,
     projectLabels: projectLabelRows,
+    projectMilestones: projectMilestoneRows,
   }
   return { snapshot, candidates }
 }

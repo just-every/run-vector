@@ -30,7 +30,10 @@ export async function prepareUndoCapture(db: D1Database, actor: string, input: {
     ORDER BY i.id`).bind(JSON.stringify(input.identifiers)).all<{ id: string; identifier: string; workspace_id: string }>()).results;
   if (rows.some((row) => row.workspace_id !== workspace) || input.identifiers.some((id) => !rows.some((row) => row.identifier === id)))
     throw new IssueAccessError("not_found", "An issue is unavailable.", 404);
-  const fields = fieldSchema.array().parse([...new Set([...identityFields, ...input.fields])]);
+  // Keep the pair in new snapshots even when only one side changes. Older
+  // actions retain their original fields and remain readable without a milestone.
+  const projectFields = input.fields.some(field => field === "projectId" || field === "milestoneId") ? ["projectId", "milestoneId"] : [];
+  const fields = fieldSchema.array().parse([...new Set([...identityFields, ...input.fields, ...projectFields])]);
   const ids = JSON.stringify(rows.map((row) => row.id));
   const snapshot = await db.prepare(`WITH ${memberCte} SELECT ${issueSnapshotSql(fields)} snapshot,
     ${input.kind === "duplicate" ? duplicateGraphSql : "'[]'"} graph`).bind(ids).first<{ snapshot: string; graph: string }>();

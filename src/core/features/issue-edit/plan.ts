@@ -15,6 +15,7 @@ import {
   requireStatus,
   validateAssignee,
   validateProject,
+  validateMilestone,
   validateCycle,
   validateLabels,
 } from "../issues/repository";
@@ -33,6 +34,7 @@ const columns = {
   assigneeOperatorId: "assignee_operator_id",
   statusId: "status_id",
   projectId: "project_id",
+  milestoneId: "milestone_id",
   cycleId: "cycle_id",
   estimate: "estimate",
   dueDate: "due_date",
@@ -97,6 +99,7 @@ export async function planIssueUpdate(
     "assigneeOperatorId",
     "statusId",
     "projectId",
+    "milestoneId",
     "cycleId",
     "estimate",
     "dueDate",
@@ -107,6 +110,12 @@ export async function planIssueUpdate(
       values[key] = input[key];
       previous[key] = issue[key];
     }
+  }
+  // Moving projects clears a retained milestone unless the caller chooses a
+  // milestone for the destination explicitly. Both changes share one activity.
+  if ("projectId" in values && input.milestoneId === undefined && issue.milestoneId !== null) {
+    values.milestoneId = null;
+    previous.milestoneId = issue.milestoneId;
   }
   if (input.customFields !== undefined) {
     const old = JSON.parse(issue.customFieldsJson);
@@ -176,6 +185,14 @@ export async function planIssueUpdate(
       "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND archived_at IS NULL)",
       String(values.projectId),
       team.workspace_id,
+    );
+  }
+  if (input.milestoneId !== undefined && input.milestoneId !== null) {
+    const projectId = input.projectId === undefined ? issue.projectId : input.projectId;
+    await validateMilestone(db, input.milestoneId, projectId, team.workspace_id);
+    guard(
+      "EXISTS(SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE m.id=? AND m.project_id=? AND p.workspace_id=?)",
+      input.milestoneId, projectId ?? "", team.workspace_id,
     );
   }
   if ("statusId" in values) {

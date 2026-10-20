@@ -403,7 +403,7 @@ export function NewIssueForm() {
                     <select
                       value={values.projectId}
                       onChange={(event) =>
-                        setValues({ ...values, projectId: event.target.value })
+                        setValues({ ...values, projectId: event.target.value, milestoneId: "" })
                       }
                     >
                       <option value="">No project</option>
@@ -411,6 +411,16 @@ export function NewIssueForm() {
                         <option key={project.id} value={project.id}>
                           {project.name}
                         </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Milestone
+                    <select value={values.milestoneId} disabled={!values.projectId}
+                      onChange={event => setValues({...values, milestoneId:event.target.value})}>
+                      <option value="">No milestone</option>
+                      {options.data.milestones.filter(item => item.projectId === values.projectId).map(item => (
+                        <option key={item.id} value={item.id}>{item.name}</option>
                       ))}
                     </select>
                   </label>

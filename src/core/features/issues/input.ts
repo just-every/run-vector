@@ -12,6 +12,7 @@ export const createIssueInputSchema = z.object({
   statusId: id.optional(),
   assigneeOperatorId: nullableId.optional().default(null),
   projectId: nullableId.optional().default(null),
+  milestoneId: nullableId.optional().default(null),
   cycleId: nullableId.optional().default(null),
   priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']).optional().default('none'),
   labelIds: z.array(id).max(seed.limits.labelsPerIssue).default([]).refine((values) => new Set(values).size === values.length, 'Label IDs must be unique.'),

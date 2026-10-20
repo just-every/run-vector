@@ -25,6 +25,10 @@ export async function getSearchOptions(
     (SELECT json_group_array(json_object('id',id,'name',name,'lifecycle',lifecycle)) FROM (
       SELECT id,name,lifecycle FROM projects WHERE workspace_id=actor.workspace_id AND archived_at IS NULL ORDER BY name,id LIMIT ${seed.limits.projects}
     )) AS projects,
+    (SELECT json_group_array(json_object('id',id,'projectId',project_id,'name',name,'completed',json(CASE WHEN completed=1 THEN 'true' ELSE 'false' END))) FROM (
+      SELECT m.id,m.project_id,m.name,m.completed FROM project_milestones m JOIN projects p ON p.id=m.project_id
+      WHERE p.workspace_id=actor.workspace_id AND p.archived_at IS NULL ORDER BY m.project_id,m.position,m.id
+    )) AS milestones,
     (SELECT json_group_array(json_object('id',id,'teamId',team_id,'name',name,'category',category,'position',position)) FROM (
       SELECT s.id,s.team_id,s.name,s.category,s.position FROM workflow_statuses s JOIN teams t ON t.id=s.team_id
       WHERE t.workspace_id=actor.workspace_id AND t.archived_at IS NULL ORDER BY s.team_id,s.position,s.id LIMIT 5000
@@ -48,6 +52,7 @@ export async function getSearchOptions(
       operators: string;
       labels: string;
       projects: string;
+      milestones: string;
       statuses: string;
       cycles: string;
       savedViews: string;
@@ -63,6 +68,7 @@ export async function getSearchOptions(
     operators: JSON.parse(row.operators),
     labels: JSON.parse(row.labels),
     projects: JSON.parse(row.projects),
+    milestones: JSON.parse(row.milestones),
     statuses: JSON.parse(row.statuses),
     cycles: JSON.parse(row.cycles),
     savedViews: JSON.parse(row.savedViews),

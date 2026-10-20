@@ -21,6 +21,10 @@ export function bulkValidation(
         NOT EXISTS(SELECT 1 FROM operators o WHERE o.id=json_extract(c.body,'$.assigneeOperatorId') AND o.workspace_id=t.workspace_id AND o.removed_at IS NULL) AS assignee,
       json_extract(c.body,'$.projectId') IS NOT NULL AND json_extract(c.body,'$.projectId') IS NOT i.project_id AND
         NOT EXISTS(SELECT 1 FROM projects p WHERE p.id=json_extract(c.body,'$.projectId') AND p.workspace_id=t.workspace_id AND p.archived_at IS NULL) AS project,
+      json_extract(c.body,'$.milestoneId') IS NOT NULL AND
+        NOT EXISTS(SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id
+          WHERE m.id=json_extract(c.body,'$.milestoneId') AND p.workspace_id=t.workspace_id
+            AND m.project_id=CASE WHEN json_type(c.body,'$.projectId') IS NULL THEN i.project_id ELSE json_extract(c.body,'$.projectId') END) AS milestone,
       json_extract(c.body,'$.cycleId') IS NOT NULL AND json_extract(c.body,'$.cycleId') IS NOT i.cycle_id AND
         (NOT EXISTS(SELECT 1 FROM cycles cy WHERE cy.id=json_extract(c.body,'$.cycleId') AND cy.team_id=i.team_id AND cy.closed_at IS NULL) OR
          NOT EXISTS(SELECT 1 FROM workflow_statuses n WHERE n.id=COALESCE(json_extract(c.body,'$.statusId'),i.status_id) AND n.team_id=i.team_id AND n.category NOT IN ('completed','canceled','duplicate'))) AS cycle,
@@ -36,7 +40,7 @@ export function bulkValidation(
     statement: db.prepare(sql).bind(...values),
     admission: db
       .prepare(
-        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR cycle OR labels OR labelLimit) THEN 1 ELSE json('bulk edit admission denied') END`,
+        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit) THEN 1 ELSE json('bulk edit admission denied') END`,
       )
       .bind(...values),
   };
@@ -47,6 +51,7 @@ const reasons = {
   status: "The workflow status transition is unavailable for this issue.",
   assignee: "Assignee is unavailable in this workspace.",
   project: "Project is unavailable or archived.",
+  milestone: "Milestone is unavailable for this project in this workspace.",
   cycle: "Cycle is unavailable for this team or terminal work.",
   labels: "Every added label must exist in this workspace.",
   labelLimit: `Choose at most ${seed.limits.labelsPerIssue} distinct labels.`,

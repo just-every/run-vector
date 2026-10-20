@@ -8,7 +8,7 @@ export function creationGuard(
   workspace: string,
   teamId: string,
   statusId: string,
-  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds">,
+  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null },
   category: string,
   allocatedPrefix: string,
 ) {
@@ -33,6 +33,10 @@ export function creationGuard(
       "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND archived_at IS NULL)",
     );
     values.push(input.projectId, workspace);
+  }
+  if (input.milestoneId) {
+    conditions.push("EXISTS(SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE m.id=? AND m.project_id=? AND p.workspace_id=?)");
+    values.push(input.milestoneId, input.projectId ?? "", workspace);
   }
   if (input.cycleId) {
     conditions.push(

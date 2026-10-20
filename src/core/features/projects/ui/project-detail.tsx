@@ -1,5 +1,6 @@
 import { ProjectReportPanel } from "../../project-report/panel";
 import { ProjectAppearance } from "./project-appearance";
+import { ProjectMilestones } from "./project-milestones";
 import { useViewerTime } from '../../../app/viewer-time';
 import { ProjectActivity } from "./project-activity";
 import { RiskEvidence } from "./risk-evidence";
@@ -50,6 +51,10 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   return (
     <ProjectDetailContent
       project={project.data}
+      milestones={<ProjectMilestones project={project.data} onChanged={(receipt) => {
+        project.publishReceipt(() => receipt);
+        project.refreshAfterMutation();
+      }} />}
       management={
         <section
           className="administration-panel project-management"
@@ -87,9 +92,11 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
 function ProjectDetailContent({
   project,
   management,
+  milestones,
 }: {
   project: ProjectDetailData;
   management: ReactNode;
+  milestones: ReactNode;
 }) {
   const health = activeHealthLabel(project.health);
   return (
@@ -140,6 +147,7 @@ function ProjectDetailContent({
         />
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
+      {milestones}
       {project.healthExplanation ? (
         <p className="project-health-explanation" role="status">
           {project.healthExplanation}

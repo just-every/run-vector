@@ -33,8 +33,9 @@ const columns = (table: string) => {
   if (!value) throw Error('unclassified_import_relation');
   return [...value].sort();
 };
-// AUTO-003's archived_at joins an issue's value only once set, so snapshots retained from before it keep their exact shape.
-const optional: Record<string,string[]> = { issues:['archived_at'] };
+// New nullable columns join an issue's value only once set, preserving the
+// exact shape and hashes of retained pre-feature import snapshots.
+const optional: Record<string,string[]> = { issues:['archived_at','milestone_id'] };
 const object = (table: string,alias: string) => {
   const extra=optional[table]??[];
   const base='json_object('+columns(table).filter(name=>!extra.includes(name)).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';

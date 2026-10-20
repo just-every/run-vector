@@ -76,6 +76,8 @@ const groupCount = z.object({
 export const issueListRowSchema = z.object({
   version: z.number(),
   cycleId: z.string().nullable(),
+  milestoneId: z.string().nullable(),
+  milestone: z.object({ id: z.string(), name: z.string(), projectId: z.string() }).nullable(),
   id: z.string(),
   identifier: z.string(),
   title: z.string(),

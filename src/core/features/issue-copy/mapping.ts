@@ -65,8 +65,15 @@ export async function mapCopyValues(
     drop("projectId", projectId, "The original project is unavailable.");
     projectId = null;
   }
+  let milestoneId = source.milestone_id;
+  if (milestoneId && !(await db.prepare(`SELECT 1 FROM project_milestones m JOIN projects p ON p.id=m.project_id
+    WHERE m.id=? AND m.project_id=? AND p.workspace_id=?`).bind(milestoneId, projectId ?? "", workspace).first())) {
+    drop("milestoneId", milestoneId, "The original milestone is unavailable for the copied project.");
+    milestoneId = null;
+  }
   return {
     labels,
+    milestoneId,
     cycleId,
     projectId,
     customFields: JSON.parse(source.custom_fields_json) as Record<

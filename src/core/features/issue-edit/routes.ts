@@ -17,6 +17,7 @@ export const updateIssueSchema = z
     statusId: z.string().length(26).optional(),
     assigneeOperatorId: z.string().length(26).nullable().optional(),
     projectId: z.string().length(26).nullable().optional(),
+    milestoneId: z.string().length(26).nullable().optional(),
     cycleId: z.string().length(26).nullable().optional(),
     estimate: z.number().int().min(1).max(100).nullable().optional(),
     dueDate: z.string().date().nullable().optional(),

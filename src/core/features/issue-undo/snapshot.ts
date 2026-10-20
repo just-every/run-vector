@@ -1,7 +1,7 @@
 /** Only relevant fields are retained; a bulk priority action never copies bodies. */
 export const snapshotFields = [
   "id", "identifier", "version", "teamId", "statusId", "statusCategory",
-  "title", "description", "priority", "assigneeOperatorId", "projectId", "cycleId",
+  "title", "description", "priority", "assigneeOperatorId", "projectId", "milestoneId", "cycleId",
   "dueDate", "estimate", "expectedOutcome", "customerImpact", "customFields",
   "completedAt", "canceledAt", "archivedAt", "deferredUntil", "labelIds", "deferralOrigin",
   "canonicalId", "canonicalIdentifier", "canonicalCreatedAt",
@@ -14,7 +14,7 @@ export const duplicateFields = ["cycleId", "completedAt", "canceledAt", "deferre
 /** These are the only issue columns an inverse may write. */
 export const issueColumns = {
   teamId: "team_id", statusId: "status_id", title: "title", description: "description",
-  priority: "priority", assigneeOperatorId: "assignee_operator_id", projectId: "project_id",
+  priority: "priority", assigneeOperatorId: "assignee_operator_id", projectId: "project_id", milestoneId: "milestone_id",
   cycleId: "cycle_id", dueDate: "due_date", estimate: "estimate", expectedOutcome: "expected_outcome",
   customerImpact: "customer_impact", customFields: "custom_fields_json", completedAt: "completed_at",
   canceledAt: "canceled_at", archivedAt: "archived_at", deferredUntil: "deferred_until",
@@ -22,7 +22,7 @@ export const issueColumns = {
 const expressions: Record<SnapshotField, string> = {
   id: "i.id", identifier: "i.identifier", version: "i.version", teamId: "i.team_id",
   statusId: "i.status_id", statusCategory: "s.category", title: "i.title", description: "i.description",
-  priority: "i.priority", assigneeOperatorId: "i.assignee_operator_id", projectId: "i.project_id",
+  priority: "i.priority", assigneeOperatorId: "i.assignee_operator_id", projectId: "i.project_id", milestoneId: "i.milestone_id",
   cycleId: "i.cycle_id", dueDate: "i.due_date", estimate: "i.estimate", expectedOutcome: "i.expected_outcome",
   customerImpact: "i.customer_impact", customFields: "json(i.custom_fields_json)", completedAt: "i.completed_at",
   canceledAt: "i.canceled_at", archivedAt: "i.archived_at", deferredUntil: "i.deferred_until",

@@ -10,6 +10,7 @@ const reasons = {
   status: "The original workflow status is unavailable or changed category.",
   assignee: "The original assignee is unavailable in this workspace.",
   project: "The original project is unavailable or archived.",
+  milestone: "The original milestone is unavailable for its project in this workspace.",
   cycle: "The original cycle is closed or unavailable for this team.",
   labels: "An original label is unavailable in this workspace.",
   origin: "The original deferral decision is unavailable.",
@@ -54,6 +55,10 @@ export function undoAdmission(db: D1Database, actor: string, sessionHash: string
       (${changed("projectId")}) AND ${before("projectId")} IS NOT NULL
         AND NOT EXISTS(SELECT 1 FROM projects original JOIN actor ON actor.workspace_id=original.workspace_id
           WHERE original.id=${before("projectId")} AND original.archived_at IS NULL) project,
+      ((${changed("milestoneId")}) OR (${changed("projectId")})) AND ${before("milestoneId")} IS NOT NULL
+        AND NOT EXISTS(SELECT 1 FROM project_milestones original JOIN projects p ON p.id=original.project_id
+          JOIN actor ON actor.workspace_id=p.workspace_id
+          WHERE original.id=${before("milestoneId")} AND original.project_id=${before("projectId")}) milestone,
       ((${changed("cycleId")}) OR (${changed("teamId")})) AND ${before("cycleId")} IS NOT NULL
         AND NOT EXISTS(SELECT 1 FROM cycles original WHERE original.id=${before("cycleId")}
           AND original.team_id=${before("teamId")} AND original.closed_at IS NULL) cycle,

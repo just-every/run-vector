@@ -97,6 +97,8 @@ export function IssueProperties({
           ? issue.assignee?.name
           : field === "projectId"
             ? issue.project?.name
+            : field === "milestoneId"
+              ? issue.milestone?.name
             : field === "cycleId"
               ? issue.cycle?.name
               : value;
@@ -104,7 +106,7 @@ export function IssueProperties({
       <label
         key={field}
         className={
-          field === "projectId" || field === "cycleId"
+          field === "projectId" || field === "cycleId" || field === "milestoneId"
             ? "issue-property-wide"
             : undefined
         }
@@ -175,6 +177,9 @@ export function IssueProperties({
         "No project",
       )}
       {picker("Cycle", "cycleId", issue.cycle?.id ?? "", cycles, "No cycle")}
+      {picker("Milestone", "milestoneId", issue.milestoneId ?? "",
+        options?.milestones.filter(item => item.projectId === issue.project?.id) ?? [],
+        "No milestone", !issue.project)}
       {error ? (
         <p role="alert">
           {error}{" "}

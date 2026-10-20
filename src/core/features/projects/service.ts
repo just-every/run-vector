@@ -1,5 +1,6 @@
 import type { WorkspaceSnapshot } from "../streams";
 import { calculateHealth } from "./health";
+import { projectMilestones, type ProjectMilestone } from "./milestones";
 import { categoryByStatus, isTerminalCategory } from "./facts";
 export {
   categoryByStatus,
@@ -74,6 +75,7 @@ export type ProjectIssue = {
 };
 
 export type ProjectDetail = ProjectSummary & {
+  milestones: ProjectMilestone[];
   teams: Array<{ id: string; name: string }>;
   cycles: Array<{
     id: string;
@@ -178,6 +180,7 @@ export function getProjectDetail(
 
   return {
     ...summary,
+    milestones: projectMilestones(snapshot, projectId, now),
     teams,
     cycles,
     dependencies,

@@ -180,12 +180,12 @@ export async function removeProject(db: D1Database, actor: string, id: string) {
     ctx.db
       .prepare(
         `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
-         SELECT substr(?,1,10)||upper(hex(randomblob(8))),id,?,'project.removed',json_object('projectId',project_id),json_object('projectId',NULL),?,?
+         SELECT substr(?,1,10)||upper(hex(randomblob(8))),id,?,'project.removed',json_object('projectId',project_id,'milestoneId',milestone_id),json_object('projectId',NULL,'milestoneId',NULL),?,?
          FROM issues WHERE project_id=?`,
       )
       .bind(createUlid(new Date(ctx.at)), actor, ctx.at, ctx.at, id),
     ctx.db
-      .prepare("UPDATE issues SET project_id=NULL,version=version+1,updated_at=? WHERE project_id=?")
+      .prepare("UPDATE issues SET project_id=NULL,milestone_id=NULL,version=version+1,updated_at=? WHERE project_id=?")
       .bind(ctx.at, id),
     ctx.db.prepare("DELETE FROM project_activity WHERE project_id=?").bind(id),
     ctx.db.prepare("DELETE FROM projects WHERE id=?").bind(id),

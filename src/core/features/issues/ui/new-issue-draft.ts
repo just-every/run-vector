@@ -25,6 +25,7 @@ export type NewIssueDraft = {
   statusId: string
   assigneeOperatorId: string
   projectId: string
+  milestoneId: string
   cycleId: string
   priority: 'urgent' | 'high' | 'medium' | 'low' | 'none'
   labelIds: string[]
@@ -47,6 +48,7 @@ export const emptyNewIssueDraft: NewIssueDraft = {
   statusId: '',
   assigneeOperatorId: '',
   projectId: '',
+  milestoneId: '',
   cycleId: '',
   priority: 'none',
   labelIds: [],
@@ -103,6 +105,7 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
     )
   )
     return null
+  if (value.milestoneId !== undefined && typeof value.milestoneId !== 'string') return null
   const priority = value.priority
   if (!['urgent', 'high', 'medium', 'low', 'none'].includes(String(priority)))
     return null
@@ -146,6 +149,7 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
     statusId: value.statusId as string,
     assigneeOperatorId: value.assigneeOperatorId as string,
     projectId: value.projectId as string,
+    milestoneId: (value.milestoneId as string | undefined) ?? '',
     cycleId: value.cycleId as string,
     priority: priority as NewIssueDraft['priority'],
     labelIds: value.labelIds as string[],
@@ -170,6 +174,7 @@ export function hasUnsavedDraft(values: NewIssueDraft) {
     values.statusId !== '' ||
     values.assigneeOperatorId !== '' ||
     values.projectId !== '' ||
+    values.milestoneId !== '' ||
     values.cycleId !== '' ||
     values.priority !== 'none' ||
     values.labelIds.length > 0 ||
@@ -188,6 +193,7 @@ export function createIssuePayload(values: NewIssueDraft) {
     ...(values.statusId ? { statusId: values.statusId } : {}),
     assigneeOperatorId: values.assigneeOperatorId || null,
     projectId: values.projectId || null,
+    milestoneId: values.milestoneId || null,
     cycleId: values.cycleId || null,
     priority: values.priority,
     labelIds: values.labelIds,

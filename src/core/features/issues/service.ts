@@ -201,6 +201,9 @@ export function buildIssueDetail(
     issue.projectId === null
       ? null
       : (snapshot.projects.find((item) => item.id === issue.projectId) ?? null);
+  const milestone = issue.milestoneId === null ? null : snapshot.projectMilestones.find(item => item.id === issue.milestoneId);
+  if (issue.milestoneId !== null && (!milestone || milestone.projectId !== issue.projectId))
+    throw new Error(`Issue ${identifier} references a missing or incompatible milestone`);
   const cycle =
     issue.cycleId === null
       ? null
@@ -233,6 +236,8 @@ export function buildIssueDetail(
       name: project.name,
       health: projectHealthForIssue(snapshot, project.id, now),
     },
+    milestoneId: issue.milestoneId,
+    milestone: milestone ? { id: milestone.id, name: milestone.name, projectId: milestone.projectId } : null,
     cycle: cycle && {
       id: cycle.id,
       name: cycle.name,
