@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "49275d98fcdb7e0f4efb29189c326b35da4bdd3189ca59f23b1a2d36895f53ed",
+      "sha256": "042cfda9ed2276f98fc44a9d95087bbc6ca3aa00662ea1464981f70d290e5398",
       "executable": false
     },
     "DEMO.md": {
@@ -1532,6 +1532,10 @@
       "sha256": "ecbd56ac9172950924e36d30d0d6d12f993b98d6c960c8722f5048c4619b896c",
       "executable": false
     },
+    "evidence/milestones/PROJ-011/dark-project-390.png": {
+      "sha256": "8a66ae768d4db46a8dcce557106e3d7d0462f234cc49ddd4e574a69461604c43",
+      "executable": false
+    },
     "evidence/milestones/PROJ-011/milestone-bulk-1440.png": {
       "sha256": "acdf15483e607aad356700b68309b9e62500c99372bc4109c605aa711123a0c4",
       "executable": false
@@ -1541,83 +1545,83 @@
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-create-1440-panel.png": {
-      "sha256": "2ec1dd2fe9c95414b3ef0b86c9458cb6fc4dc4b866bdb2f678d3022dbb6ec6db",
+      "sha256": "0c259c541caa991ba0d412d47c4c92d11333a8f539848efeaf0aef946cc1a7c9",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-create-1440.png": {
-      "sha256": "878e3319b7a199d0bcf79bfaceace8585549c7340f85fd34c1063190087c56f8",
+      "sha256": "d68b247a6126fd9d3b2561f4a39a7b9d9eed22771f2e5cd76666dc53d1f4007b",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-create-390-panel.png": {
-      "sha256": "2823d1acf8664705c78afc6e7dce8937117660e44663ae7ac772a85d8beda241",
+      "sha256": "2657f061976420c8e6c72989928af6ef4b537b814bb2e01519763fc833b5c959",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-create-390.png": {
-      "sha256": "246caeed5155de2db0f47486a8de2d41b8de33044ef000e8028323d60b092896",
+      "sha256": "f33d024dc5484b983b2fc9101976c5763286e959f835e3019d7049a8885b0316",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-delete-confirm-1440-panel.png": {
-      "sha256": "9b63a0453285c03922f31d97c47848835d1983754a846ce0bebefc77eedd9528",
+      "sha256": "d58d64915d04f768b338cd709746927ef79f1de29f26a82ba9235c971a57adef",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-delete-confirm-1440.png": {
-      "sha256": "bf07d82d474ee9b6ed3f501d37c2990f636cbc750993367d72289eec70f44212",
+      "sha256": "3fd33b677bddddb8ef3e3e64ca654db328f72dac67706169d070527e7df13550",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-delete-confirm-390-panel.png": {
-      "sha256": "85a9281ef5f2a888366ef610776269e2c342d88d521e2f6c8ecfb839f83ad989",
+      "sha256": "b13e0064bbb00a7b0941f2b944d3645ae71691862fe2b38f138734346c43104b",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-delete-confirm-390.png": {
-      "sha256": "faccd19b83309428d0340d8d3ec3057d8867bfc9aa39fd96aaae2b95327d9540",
+      "sha256": "cf9d083e8b46e394ce792e91a6a8a37dad7ad16b1ad550f3681defa9bf58fb5b",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-deleted-1440-panel.png": {
-      "sha256": "8f06683d8f915689805d5268f48c3bbf56b05fdde6afc2b7d0fb8fcc7782047e",
+      "sha256": "823f6d1dbc998bc6de7ed706d814749b0d87818a5f2b38ecde27c6c3bfa4502e",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-deleted-1440.png": {
-      "sha256": "d23deea3288b553464775bfc9b741690df3373349b5dd8cc62aeef71b2202b1d",
+      "sha256": "5d07e55e2e804fbb497896d126bd7a4117320b8a3c79e8163b3b3a343d53d586",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-deleted-390-panel.png": {
-      "sha256": "ca1fb96ba64273df359563a21443da3611334d2f77d06a467b2aae978900e13c",
+      "sha256": "0528a94d0006b01f4af6fe371ce4ddc146fa7195eb88e5bb0a152d2ff5e3c344",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-deleted-390.png": {
-      "sha256": "422aa12d19d102314a4d969c5bf012b524885e62f2f79e386ff4fe2a378d67d8",
+      "sha256": "80f12147bf177f89b76eee47c330c8ad53a2ff2ca07e5e1f23b7fdb0c0fa39e7",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-1440-panel.png": {
-      "sha256": "334204faf50d8b112997428d8c327c76dd5af25e0f0375c278d70db123bc94a2",
+      "sha256": "d7681c6ac875bc42b9d07477b55c6ddf5583ad7924902b9efc7205b2fe77ed52",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-1440.png": {
-      "sha256": "2c7910933bc7c19f0d7f428b3aec55a98b49a1760ef7d08b0f8997cce5965a7d",
+      "sha256": "2764841d944f2872b420b0c95efa3a400730dd043f91631ba7cdffaf19350f47",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-390-panel.png": {
-      "sha256": "ac3ac48f942a3876c6f08a530989beb8352a70013a8b2f0aa24c807ea6ef4aef",
+      "sha256": "d92618577c2f6b0fc27df6f88bfa9466aed98cf41b67424004a8ada2521725bc",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-390.png": {
-      "sha256": "2dbab6e9b6107392d339bd0d134817bd3fc0a1405eb6d243b6763121f617d09b",
+      "sha256": "0e20545a8eba59611c6a6c15e49170d8c15825a5bc7e35410cbcab61a769f396",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-open-1440-panel.png": {
-      "sha256": "75c52d642506dffa2ec55bde4f7acff70aafdc5848b0e6da5bd3a6f60f03383c",
+      "sha256": "d3119d0a58b4458502578a7f17a90aa6cd38272062da9f67379e3384880de53d",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-open-1440.png": {
-      "sha256": "da5d3d99dbaf9cfe6bc71dcec95dcbcd6199a21691558b0965f2a5840900b2f7",
+      "sha256": "f8e035d84c7c049db7e3cba404ebded8a5df081653783ef12742cc3cf5bb32e9",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-open-390-panel.png": {
-      "sha256": "791384084facc4136e53395b9499d42083edc4df52653868fafcff7b664550dd",
+      "sha256": "9c5bb2b55c9a1d7d6d151801159d2bbe706ac3e34d4bfcb227ea48eef38a69ee",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-edit-open-390.png": {
-      "sha256": "29adec6fa647d9e450a766cf5c2583c0616d08c0bdee32588c0a3d3442ce5b0c",
+      "sha256": "56ed4d9f80e5317fd07c2a92ab8a7fe16bbe8d70b0952564c9e42ae465215430",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-issue-assigned-1440.png": {
@@ -1633,7 +1637,7 @@
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-issue-create-390.png": {
-      "sha256": "9e633db13461932450616a4bd8d1d7c942ff1b0dc43351adf12b3e79258d0fe3",
+      "sha256": "dfb75cee1c9b798d84befbf723169678118cebaf84300cc7d9ec347c420d3868",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestone-project-move-1440.png": {
@@ -1645,35 +1649,35 @@
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-empty-1440-panel.png": {
-      "sha256": "86c93721d407f11fc3ea7679aefdd433394fb615813a31f7accade2acfb9adae",
+      "sha256": "d6aca68155532cd7d4cfc728ff14e8a0110a695691dc5961eafbff28235e1f60",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-empty-1440.png": {
-      "sha256": "b6d2f74494212c8cfd5588cc2b21070ae10f69b7955220d5e9c725ec56713e27",
+      "sha256": "4f4b12244505ff261117b9d29394304b8357e6763840200d2932c18ca02ee145",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-empty-390-panel.png": {
-      "sha256": "1cf49e61f2c8a1b2cbae36fc43ac6f8f64a447165aa1852e0383885069cf24fc",
+      "sha256": "6cee251994c4ffd98dbeaa3f0fd3a1141721c1a046dd126089f34ac18beb0287",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-empty-390.png": {
-      "sha256": "13f169316faa4b501c86c1374c3f5f1f6109cf748da627b2a2c0118557a7c68c",
+      "sha256": "be2aff2720cc52ac9c0ac416c0663d16387cac73919f4d88537a1a2917ddf04b",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-progress-1440-panel.png": {
-      "sha256": "5df5c9272984b8437b3b46998608cfaddf01734cd0b9ed804ee8251c399eb600",
+      "sha256": "a5d964bfa070bfa22db081ec9360f50e560d4d419866975b93f9480374f1d2c1",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-progress-1440.png": {
-      "sha256": "288c3b00922fce918070fd1efa27bab73e029168e608b5687a009f394997254e",
+      "sha256": "e1b38a2e3abe52dbf12abd1eefebecaa1c29f4584abafd6d9505b59c999242bb",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-progress-390-panel.png": {
-      "sha256": "a60fec23f32e04699950999f1b75661535baa78da0127de2b6b30a610308a642",
+      "sha256": "e45be45f946e9f72a6ac725a46ae43b23c2421fd244ea1f8325c6a244f77cd27",
       "executable": false
     },
     "evidence/milestones/PROJ-011/milestones-progress-390.png": {
-      "sha256": "d73460e2d7108aefded808fc55c1e384b1af3e0c4a5ad54ce902387c78aa73a9",
+      "sha256": "76cd0b7cdc6f47600640b23368b6df4d3db40dc9253d97c87b32008e1f6e1b04",
       "executable": false
     },
     "evidence/my-work-tabs/WORK-004/my-work-activity-1440.png": {
@@ -4633,7 +4637,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-milestones.css": {
-      "sha256": "9b20553eb477243440bcfe113e4393645964a377b16b29a3505a628b8e99b057",
+      "sha256": "8c4e647b7c73448bee9079fc3d37721c5eaa238b46270d025736792eff106790",
       "executable": false
     },
     "src/core/features/projects/ui/project-milestones.tsx": {
@@ -5305,7 +5309,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-issue.mjs": {
-      "sha256": "8d16e2f7747d2f4f9184f19297ccf054213e2cda2bda8dd805ec1968dd4cbca0",
+      "sha256": "eaa705eb9b87111bcc823675c23f4f69d51398dc325d184257972c8f029ea03d",
       "executable": false
     },
     "tests/e2e/collaboration-lifecycle.mjs": {
