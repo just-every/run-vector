@@ -2021,11 +2021,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "b7b7f210e48dcce2691307e98ce2594c9b9b057b8c6f3a555324dfc59f14f8fd",
+      "sha256": "bebe7445278a95e8feb99dec47c2eef7bef4c0e3b9d6e8aa8c6ca2cdb5e48367",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "4ca46886f7aba279cb77c5a5b5c0b5b5484334d55eaec4f52b8c80524923112e",
+      "sha256": "5b7cb12a95a8182457b289c26e1b52c91bc52b2b0e319a1e8995a53ccd5451db",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
