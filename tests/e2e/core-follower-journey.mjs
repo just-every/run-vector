@@ -162,9 +162,10 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
     await inboxPage.screenshot({ path: `${verificationDirectory}/follower-events/thread-preferences-${width}.png`, fullPage: true });
     const [muted] = await Promise.all([
       inboxPage.waitForResponse(r => new URL(r.url()).pathname === '/api/settings/notifications' && r.request().method() === 'PATCH'),
-      mute.check(),
+      mute.click(),
     ]);
     assert.equal(muted.status(), 200);
+    await inboxPage.waitForFunction(() => [...document.querySelectorAll('.notification-checkbox')].find(label => label.textContent.includes('Reopened threads')).querySelector('input').checked);
     assert((await recipient('/settings/notifications')).mutedKinds.includes('thread_reopened'));
     await recipient('/settings/notifications', 'PATCH', { mutedKinds: [] });
     await beforePrivateNavigation(inboxPage, base + '/app/inbox');
