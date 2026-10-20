@@ -159,7 +159,8 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
     const mute = notificationPanel.getByRole('checkbox', { name: 'Reopened threads (Inbox only)', exact: true });
     await mute.waitFor();
     await mute.scrollIntoViewIfNeeded();
-    await inboxPage.screenshot({ path: `${verificationDirectory}/follower-events/thread-preferences-${width}.png`, fullPage: true });
+    await notificationPanel.screenshot({ path: `${verificationDirectory}/follower-events/thread-preferences-panel-${width}.png` });
+    await inboxPage.screenshot({ path: `${verificationDirectory}/follower-events/thread-preferences-${width}.png` });
     const [muted] = await Promise.all([
       inboxPage.waitForResponse(r => new URL(r.url()).pathname === '/api/settings/notifications' && r.request().method() === 'PATCH'),
       mute.click(),

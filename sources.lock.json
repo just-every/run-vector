@@ -5193,7 +5193,7 @@
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
-      "sha256": "bdde76187d86b0082b72ed5744622206a065b49eeab57b14e2bc428966d049cd",
+      "sha256": "85eb4e41951cc5b36b4e4914b8e56874387a75c0acbfb816816d9b13368c5a99",
       "executable": false
     },
     "tests/e2e/core-intake-policy-journey.mjs": {
