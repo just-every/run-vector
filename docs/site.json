@@ -439,6 +439,10 @@
     {
       "source": "evidence/slack-003/CHANNEL_SAFETY.md",
       "reason": "Sanitized local Slack transport, channel safety and cleanup evidence for maintainers; not an owner guide."
+    },
+    {
+      "source": "evidence/slack-003/SAFE_PROVIDER.md",
+      "reason": "Recorded local guarded Slack delivery and cleanup at a named source SHA; provider evidence for maintainers."
     }
   ]
 }

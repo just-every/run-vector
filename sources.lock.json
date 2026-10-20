@@ -701,7 +701,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "9c516eff07249ad40f1eb8748b0763253b74a268e61501dfd5c6bbde7d3a24ea",
+      "sha256": "e0e5f17e65af8397e697e54bc5af8269a22ac47fe6bee09abc945d9d67534deb",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -1708,6 +1708,14 @@
       "sha256": "bdc1645e5294e8f14b8fdad777ec49f691eef8fa74024278dc300daebf60bc3d",
       "executable": false
     },
+    "evidence/slack-003/current-live/credential-1440.png": {
+      "sha256": "e91e6e0b1e25dc1307e791837ae19c836dab0fb481af7b5be76b1b739e7fe83c",
+      "executable": false
+    },
+    "evidence/slack-003/current-live/credential-390.png": {
+      "sha256": "191949e49229f07621cd3fcf3de0e028486e561ebe392a26bf37592c2c294ebb",
+      "executable": false
+    },
     "evidence/slack-003/fixture/slack-003-bound-discord-1440.png": {
       "sha256": "c500d0fe9b24b879a0399ffb33c225b67a4618f776928a712cc56d4743fb1224",
       "executable": false
@@ -1774,6 +1782,10 @@
     },
     "evidence/slack-003/REENTRY_ATTEMPT.md": {
       "sha256": "0d1d09fc4ca039838d56a21c77acab4b9946e77f67bd219f13b790b2378006e3",
+      "executable": false
+    },
+    "evidence/slack-003/SAFE_PROVIDER.md": {
+      "sha256": "bc9abc77326ad59259061d38700e7cb1fbf803190318778fcbd80bc4cea76d50",
       "executable": false
     },
     "HANDOVER.md": {
@@ -5705,7 +5717,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "b8dcd2e2550fbe65c58a25a16699aa408c097a3bb4c70b04611dda386b3c6fca",
+      "sha256": "f2203b5d3965e4c5cc273c324d706deb3ab670eedeb43f60542ca2ccc19f178c",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
