@@ -62,7 +62,7 @@ it('[INTAKE-002 ISSUE-010] deletion winning a new source revision returns gone a
 });
 
 
-it('[INTAKE-006 NOTIFY-001] fresh signed evidence returns deferred intake once and notifies its deferrer', async () => {
+it('[INTAKE-007] declining without a reason is refused; with one it reaches Canceled and keeps evidence and decision history [INTAKE-006 NOTIFY-001] fresh evidence returns deferred intake once', async () => {
   const f = await setupIntegrations();
   const source = await f.source('deferred-evidence');
   const input = {
@@ -155,10 +155,20 @@ it('[INTAKE-006 NOTIFY-001] fresh signed evidence returns deferred intake once a
   expect(alreadyReturned.activity.filter(row => row.kind === 'intake.returned')).toEqual(returnActivity);
   expect(await returns()).toEqual(notifications);
 
+  for (const reason of [undefined, '', '   ']) {
+    expect((await f.call(path + '/decline', 'POST', { expectedVersion: alreadyReturned.version, reason })).status).toBe(400);
+    expect(await detail()).toEqual(alreadyReturned);
+  }
   const declined = await read<Detail>(await f.call(path + '/decline', 'POST', {
     expectedVersion: alreadyReturned.version, reason: 'No further work required',
   }));
   expect(declined.status.category).toBe('canceled');
+  expect(declined.evidence).toEqual(alreadyReturned.evidence);
+  expect(declined.decisions).toEqual(expect.arrayContaining(alreadyReturned.decisions));
+  expect(declined.decisions.filter(row => row.kind === 'declined')).toHaveLength(1);
+  expect(declined.activity).toEqual(expect.arrayContaining(alreadyReturned.activity));
+  f.restart();
+  expect(await detail()).toEqual(declined);
   expect(declined.canceledAt).toEqual(expect.any(String));
   await read(await f.signed(source, { ...input, sourceRevisionId: 'after-terminal' }));
   const terminal = await detail();

@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "21a240c97bbaa34b759937d250d94cf551cd9de80f202d269543529876c7db5d",
+      "sha256": "cde84a04ba80226175a591cce91431a5fe160316ca8c627839f16e082f15181c",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e368c69710f9c8dffb67772a608cd3405cee28d4ba579d984a6d1e215b9d22ef",
+      "sha256": "da7156987205d09bb02705c1b6e65e2bd657cdbba8a82d88ff84216bde5d4ea1",
       "executable": false
     },
     "DEMO.md": {
@@ -6101,7 +6101,7 @@
       "executable": false
     },
     "tests/worker/source-ingest.test.ts": {
-      "sha256": "fca2231002de2d0284d57ddb6e165a334a9e9c30a91aa7be1c4a71378ade4288",
+      "sha256": "6c58322107a98556d9491126d68bff31d723b4da4d586d9a34d35b067fc13677",
       "executable": false
     },
     "tests/worker/subissues-access.test.ts": {
