@@ -3,7 +3,7 @@ import { exerciseMilestones } from './project-milestone-flow';
 import { env } from 'cloudflare:workers';
 import { setupIntegrations } from './integration-fixture';
 
-it('[PROJ-011 PROJ-001 PROJ-007] project planning and ordered milestones persist with activity, progress, slip and project-move clearing',async()=>{
+it('[PROJ-011 ISSUE-007 PROJ-001 PROJ-007] project planning and ordered milestones persist with activity, progress, slip and project-move clearing',async()=>{
   const f=await setupIntegrations();
   for(const name of ['Delivery','Customer'])await f.mutate('/settings/labels','POST',{name,color:'#405080',projectsEnabled:true});
   await f.mutate('/settings/labels','POST',{name:'Issues only',color:'#405080'});
