@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "1f96dc3e4588c4d248324575677cae8f85f26478ebe5dd3dc9d2142cc8a8b6b2",
+      "sha256": "347869338284b53489f684592d5e1e41b5b40c6bc7c1919b0346ac4a043c6a6b",
       "executable": false
     },
     "DEMO.md": {
@@ -822,6 +822,30 @@
     },
     "evidence/issue-follow-up/NOTIFY-001/source-return-inbox-390.png": {
       "sha256": "bc24f4bf954cd97252bedeca55a5a938cb2356539906c01c6352cb1c3da387f7",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/thread-preferences-1440.png": {
+      "sha256": "a3472ac8f119ea1289fddaa5df45b1985313245643a7597367ffcef41c103dcd",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/thread-preferences-390.png": {
+      "sha256": "7355b4c081deab87ad9ce89d8da1b657710efc340ea1717cbd95f28ce20a24be",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/thread-preferences-panel-1440.png": {
+      "sha256": "9d951fe0111e45855c308864d539df052d33e0ae35841f0d4ab23580179d42f5",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/thread-preferences-panel-390.png": {
+      "sha256": "ab1fe6b2deb2f662fcc2e087e7ffa10fd5049935c05ba3c65c107c2a85f52c85",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/thread-reopened-1440.png": {
+      "sha256": "3b678b1413aab6008dffec13e610d00e5bc0915e38f6cc38ccbba64a10dc39c8",
+      "executable": false
+    },
+    "evidence/issue-follow-up/NOTIFY-001/thread-reopened-390.png": {
+      "sha256": "26401afbd399a119686122eaf529bb4dfab0991b50be144731f40a764ad145dd",
       "executable": false
     },
     "evidence/issue-follow-up/NOTIFY-001/workflow-removal-1440.png": {
