@@ -8,8 +8,16 @@ import {request,bindings} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const sourceResponse=await f.call('/settings/integrations/sources','POST',{name:'Archive source',sourceId:'archive-source',teamId:f.team.id});expect(sourceResponse.status).toBe(201);
+ const source=await sourceResponse.json() as {id:string;secret:string;webhookUrl:string};
+ const githubResponse=await f.call('/settings/integrations/github','POST',{name:'Archive repository',repository:'just-every/run-vector'});expect(githubResponse.status).toBe(201);
+ const github=await githubResponse.json() as {id:string;secret:string};
+ const tokenResponse=await f.call('/settings/integrations/tokens','POST',{name:'Archive reader',scopes:['issues:read']});expect(tokenResponse.status).toBe(201);
+ const token=await tokenResponse.json() as {token:string;credential:{id:string}};
+ const sealed=(await env.DB.prepare('SELECT encrypted FROM vector_integration_secret_keys').all<{encrypted:string}>()).results;
+
  // Synthetic aggregate history tests archive custody; day-close behavior is exercised
  // through scheduled in project-report.test.ts and cycle-report.test.ts.
  await env.DB.prepare("INSERT INTO project_report_days VALUES(?, '2026-09-07','UTC',3,2,1,'2026-09-08T00:00:00Z')").bind(f.project.id).run();
@@ -36,6 +44,8 @@ it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native arch
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
  const download=await f.call('/portability/exports/'+id+'/download');expect(download.status).toBe(200);const records=[];for await(const row of readArchive(download.body!))records.push(row);
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
+ const archiveText=JSON.stringify(records);
+ for(const credential of [source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
  await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
  const ledgerBefore=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results;
@@ -57,6 +67,14 @@ it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native arch
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_tokens').first())?.n).toBe(0);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
+ const credentialState=async()=>await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json() as CredentialState;
+ const restoredCredentials=await credentialState();
+ expect(restoredCredentials.sources.find(row=>row.id===source.id)).toMatchObject({requiresReentry:1,webhookRequiresReentry:1});
+ expect(restoredCredentials.destinations.find(row=>row.id===f.webhook)).toMatchObject({requiresReentry:1});
+ expect(restoredCredentials.github.find(row=>row.id===github.id)).toMatchObject({requiresReentry:1});
+ expect(restoredCredentials.tokens.find(row=>row.id===token.credential.id)).toMatchObject({requiresReentry:1});
+ const oldToken=await createServerApp().request(targetBindings.APP_ORIGIN+'/api/v1/issues',{headers:{Authorization:'Bearer '+token.token}},targetBindings);expect(oldToken.status).toBe(401);
  const restoredOrder=await targetCall('/api/issues?team='+f.team.id+'&sort=manual','GET',undefined,historical);expect(restoredOrder.status).toBe(200);
  expect((await restoredOrder.json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier)).toEqual(planningOrder);
  const restoredCapacity=await targetCall('/api/workload?cycleId='+f.closing.id,'GET',undefined,historical);expect(restoredCapacity.status).toBe(200);
@@ -94,6 +112,17 @@ it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native arch
  const dispatchBindings={...targetBindings,INTEGRATION_EGRESS_POLICY:'public-dns-pinned-tls-v1',INTEGRATION_EGRESS:{send:async()=>{sent++;return {status:200,headers:{},body:''};}}};
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM vector_integration_secret_keys').first())?.n).toBe(0);
  expect((await targetCall('/api/settings/integrations/destinations/'+f.webhook+'/reenter','POST',{},historical)).status).toBe(201);
+ expect((await targetCall('/api/settings/integrations/sources/'+source.id+'/rotate','POST',{overlapHours:0},historical)).status).toBe(200);
+ expect((await targetCall('/api/settings/integrations/sources/'+source.id+'/webhook-url','POST',{},historical)).status).toBe(201);
+ expect((await targetCall('/api/settings/integrations/github/'+github.id+'/reenter','POST',{},historical)).status).toBe(201);
+ const replacement=await targetCall('/api/settings/integrations/tokens','POST',{name:'Restored archive reader',scopes:['issues:read']},historical);expect(replacement.status).toBe(201);
+ const replacementToken=await replacement.json() as {token:string};expect(replacementToken.token).not.toBe(token.token);
+ expect((await createServerApp().request(targetBindings.APP_ORIGIN+'/api/v1/issues',{headers:{Authorization:'Bearer '+replacementToken.token}},targetBindings)).status).toBe(200);
+ const reentered=await credentialState();
+ expect(reentered.sources.find(row=>row.id===source.id)).toMatchObject({requiresReentry:0,webhookRequiresReentry:0});
+ expect(reentered.destinations.find(row=>row.id===f.webhook)).toMatchObject({requiresReentry:0});
+ expect(reentered.github.find(row=>row.id===github.id)).toMatchObject({requiresReentry:0});
+ expect(reentered.tokens.find(row=>row.id===token.credential.id)).toMatchObject({requiresReentry:1});
  expect(await drainNotificationMail(targetBindings,{scheduled:true})).toEqual({processed:0});
  await dispatchWebhooks(dispatchBindings);expect(await historicalWebhooks()).toEqual(webhookHistory);expect(sent).toBe(0);
  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);

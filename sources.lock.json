@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "0fd3f9cc8f6e26bd8512caad77f26c252128775dbd0ec4bb957ff43cd13b254f",
+      "sha256": "8eaa3ce438b8b14c5ac57ede20eb09e8afe3f50ac3138c1e3ebf748588ea0104",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "4eaa4e6a3ced4fc1fdbd95a28ea44e9adedf3e7dc938ddc25e8dbe5f8b3cf8a5",
+      "sha256": "12824602fafb8476b6782be4864e1c373571a75e2d1d4355b909b7ca4a26506e",
       "executable": false
     },
     "DEMO.md": {
@@ -5789,7 +5789,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "1518516d01b092fc2465f0b35e0069e2af3be033d40bacc414f23aec719e2f62",
+      "sha256": "153930944bf7345a680a401bd46148157f6aa8a51dc042e6ba89dbd686fb5f57",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
@@ -6045,7 +6045,7 @@
       "executable": false
     },
     "tests/worker/outbound-broken-destination.test.ts": {
-      "sha256": "b52e4def73071c324b03e4e1a60d1358313d263684b486e0ad456380ddb25c1b",
+      "sha256": "09e5b922f1d6d85f3a40170659f37d2d194e43f756f61d6aac43f619b811f749",
       "executable": false
     },
     "tests/worker/outbound-webhooks.test.ts": {
