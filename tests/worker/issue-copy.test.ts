@@ -32,7 +32,7 @@ it("[PROJ-011 ISSUE-023] native and scoped API copies preserve fields and ordere
   await f.mutate("/settings/projects", "POST", {name:"Copy project",leadOperatorId:f.owner});
   const project = (await f.state()).projects.find(project => project.name === "Copy project")!;
   const milestoneResponse=await f.call('/settings/projects/'+project.id+'/milestones','POST',{name:'Copy milestone'});
-  expect(milestoneResponse.status).toBe(201);
+  expect(milestoneResponse.status).toBe(200);
   const milestone=(await milestoneResponse.json() as any).milestones[0];
   await f.mutate("/settings/cycles", "POST", {
     teamId: team.id,

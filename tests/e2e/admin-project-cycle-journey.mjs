@@ -232,7 +232,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await poll(()=>sql(`SELECT name FROM project_milestones WHERE project_id='${project.id}' ORDER BY position`),rows=>rows[0]?.name==='Customer rollout','milestone reordered');
     const milestones=sql(`SELECT * FROM project_milestones WHERE project_id='${project.id}' ORDER BY position`);
     const team=sql('SELECT id FROM teams WHERE archived_at IS NULL ORDER BY id LIMIT 1')[0];
-    const statuses=sql(`SELECT id,category FROM statuses WHERE team_id='${team.id}'`);
+    const statuses=sql(`SELECT id,category FROM workflow_statuses WHERE team_id='${team.id}'`);
     const issues=[];
     for(const [title,milestone,category] of [
       [`Validate payment ${width}`,'Payment foundation','completed'],

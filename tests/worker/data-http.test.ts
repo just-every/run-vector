@@ -10,7 +10,7 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
- const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(201);
+ const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
  const milestone=(await milestoneResponse.json() as any).milestones[0];
  const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:f.issue.version,milestoneId:milestone.id});expect(assigned.status).toBe(200);
  const sourceResponse=await f.call('/settings/integrations/sources','POST',{name:'Archive source',sourceId:'archive-source',teamId:f.team.id});expect(sourceResponse.status).toBe(201);

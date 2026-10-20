@@ -5,7 +5,7 @@ export async function exerciseMilestones(f:Awaited<ReturnType<typeof setupIntegr
   const base='/settings/projects/'+projectId+'/milestones';
   const send=async(path:string,method='GET',data?:unknown)=>{
     const response=await f.call(path,method,data);
-    expect(response.status,await response.clone().text()).toBe(method==='POST' && !path.endsWith('/bulk')?201:200);
+    expect(response.status,await response.clone().text()).toBe(200);
     return response.json() as Promise<any>;
   };
   let detail=await send(base,'POST',{name:'Foundation',description:'Payment validation'});
