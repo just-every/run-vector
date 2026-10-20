@@ -5,9 +5,15 @@ import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mj
 /** Independent jobs use genuine invited operators and their own rate budgets. */
 export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){
  const original=await context.cookies(),email=`stream-planning-${Date.now()}@vector.test`;
- const invited=await context.request.post(base+'/api/settings/operators/invite',{
-  headers:{Origin:base,Connection:'close'},data:{displayName,email},
- });assert.equal(invited.status(),202);
+ // Use the app's browser transport and current cookie jar. Playwright's API
+ // context keeps an independent pool across the long browser journeys here.
+ const invited=await page.evaluate(async({displayName,email})=>{
+  const response=await fetch('/api/settings/operators/invite',{
+   method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},
+   body:JSON.stringify({displayName,email}),
+  });
+  return response.status;
+ },{displayName,email});assert.equal(invited,202);
  const link=await readDevelopmentLink(base,context.request,email,state);
  await beforePrivateNavigation(page,link);await page.goto(link);await page.waitForLoadState('networkidle');
  await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL(base+'/app');await settleReads(page);
