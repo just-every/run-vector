@@ -220,7 +220,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
       const form=page.getByRole('form',{name:'Create milestone',exact:true});
       await form.getByLabel('Milestone name',{exact:true}).fill(milestone);
       await form.getByLabel('Milestone target date',{exact:true}).fill(date);
-      await form.getByLabel('Milestone description',{exact:true}).fill(description);
+      await form.getByRole('textbox',{name:'Milestone description',exact:true}).fill(description);
       if(milestone==='Customer rollout')await capture(`milestone-create-${width}`);
       await form.getByRole('button',{name:'Create milestone',exact:true}).click();
       await page.getByRole('heading',{name:milestone,exact:true}).waitFor();
@@ -228,7 +228,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await page.getByRole('button',{name:'Edit Customer rollout',exact:true}).click();
     await capture(`milestone-edit-open-${width}`);
     const edit=page.getByRole('form',{name:'Edit milestone Customer rollout',exact:true});
-    await edit.getByLabel('Milestone description',{exact:true}).fill('Release to the customer cohort after sign-off.');
+    await edit.getByRole('textbox',{name:'Milestone description',exact:true}).fill('Release to the customer cohort after sign-off.');
     await capture(`milestone-edit-${width}`);
     await edit.getByRole('button',{name:'Save milestone',exact:true}).click();
     await page.getByText('Release to the customer cohort after sign-off.',{exact:true}).waitFor();
@@ -265,9 +265,23 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     assert.equal(detail.milestones[1].completed,true);
     await page.getByRole('region',{name:'Project milestones',exact:true}).scrollIntoViewIfNeeded();
     await capture(`milestones-progress-${width}`);
+    await go('/app/issues?'+new URLSearchParams({q:issues[1].title,grouping:'none'}));
+    await page.locator('#issue-row-'+issues[1].identifier).focus();
+    await page.keyboard.press('x');
+    await page.getByRole('combobox',{name:'Change',exact:true}).selectOption('milestoneId');
+    await page.getByRole('button',{name:'Edit selected',exact:true}).click();
+    const bulk=page.getByRole('dialog',{name:'Change milestone',exact:true});
+    await bulk.getByRole('combobox',{name:'Milestone',exact:true}).selectOption(milestones.find(item=>item.name==='Payment foundation').id);
+    await capture(`milestone-bulk-${width}`);
+    const [bulkResponse]=await Promise.all([
+      page.waitForResponse(response=>response.url()===base+'/api/issues/bulk'&&response.request().method()==='POST'),
+      bulk.getByRole('button',{name:'Apply changes',exact:true}).click(),
+    ]);
+    assert.equal(bulkResponse.status(),200);
+    await bulk.waitFor({state:'detached'});
     await go('/app/issues/'+issues[1].identifier);
-    await page.getByRole('combobox',{name:'Issue milestone',exact:true}).selectOption(milestones.find(item=>item.name==='Payment foundation').id);
-    await poll(()=>sql(`SELECT milestone_id FROM issues WHERE id='${issues[1].id}'`),rows=>rows[0]?.milestone_id===milestones.find(item=>item.name==='Payment foundation').id,'issue milestone edit');
+    await page.getByRole('combobox',{name:'Issue milestone',exact:true}).selectOption(milestones.find(item=>item.name==='Customer rollout').id);
+    await poll(()=>sql(`SELECT milestone_id FROM issues WHERE id='${issues[1].id}'`),rows=>rows[0]?.milestone_id===milestones.find(item=>item.name==='Customer rollout').id,'issue milestone edit');
     await capture(`milestone-issue-assigned-${width}`);
     await page.getByRole('combobox',{name:'Issue project',exact:true}).selectOption(other.id);
     await poll(()=>sql(`SELECT project_id,milestone_id FROM issues WHERE id='${issues[1].id}'`),rows=>rows[0]?.project_id===other.id&&rows[0].milestone_id===null,'moving issue clears milestone');

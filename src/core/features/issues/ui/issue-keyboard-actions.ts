@@ -10,12 +10,13 @@ export const issueEditFields = {
   estimate: "Estimate",
   dueDate: "Due date",
   projectId: "Project",
+  milestoneId: "Milestone",
   cycleId: "Cycle",
 } as const;
 export type IssueEditField = keyof typeof issueEditFields;
 export type IssueEditTarget = Pick<IssueRow,
   "identifier" | "title" | "version" | "team" | "status" | "priority" |
-  "assignee" | "project" | "cycle" | "labels" | "dueDate"
+  "assignee" | "project" | "milestone" | "cycle" | "labels" | "dueDate"
 > & { estimate?: number | null };
 export const issueEditShortcuts: Record<string, IssueEditField> = {
   s: "statusId", a: "assigneeOperatorId", p: "priority", l: "labelIds",
@@ -38,6 +39,7 @@ export function issueEditChoices(field: IssueEditField, rows: IssueEditTarget[],
     !["intake", "duplicate"].includes(status.category));
   if (field === "assigneeOperatorId") return options.operators;
   if (field === "projectId") return options.projects;
+  if (field === "milestoneId") return options.milestones.filter(milestone => rows.every(row => row.project?.id === milestone.projectId));
   if (field === "cycleId") return options.cycles.filter((cycle) => teams.size === 1 && teams.has(cycle.teamId) &&
     rows.every((row) => row.cycle?.id === cycle.id || !["completed", "canceled", "duplicate"].includes(row.status.category)));
   return ["none", "low", "medium", "high", "urgent"].map((id) => ({
@@ -55,6 +57,7 @@ export function initialIssueEditValue(field: IssueEditField, rows: IssueEditTarg
   const values = rows.map((row) => field === "statusId" ? row.status.id :
     field === "assigneeOperatorId" ? row.assignee?.id ?? "" :
     field === "projectId" ? row.project?.id ?? "" :
+    field === "milestoneId" ? row.milestone?.id ?? "" :
     field === "cycleId" ? row.cycle?.id ?? "" :
     field === "priority" ? row.priority : field === "dueDate" ? row.dueDate ?? "" :
     field === "estimate" ? String(row.estimate ?? "") : "");

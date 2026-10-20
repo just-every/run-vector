@@ -41,7 +41,7 @@ export function IssueKeyboardFields({ field, rows, options, value, setValue, lab
         <select autoFocus aria-label={issueEditFields[field]} value={value} disabled={disabled}
           onChange={(event) => setValue(event.target.value)}>
           <option value="">{field === "assigneeOperatorId" ? "Unassigned" :
-            field === "projectId" ? "No project" : field === "cycleId" ? "No cycle" : "Choose value"}</option>
+            field === "projectId" ? "No project" : field === "milestoneId" ? "No milestone" : field === "cycleId" ? "No cycle" : "Choose value"}</option>
           {value && !choices.some((choice) => choice.id === value) && <option value={value} disabled>Selected value unavailable</option>}
           {choices.map((choice) => <option key={choice.id} value={choice.id}>{choice.name}</option>)}
         </select>
@@ -50,6 +50,7 @@ export function IssueKeyboardFields({ field, rows, options, value, setValue, lab
         ? "Status changes require issues from the same team; these issues have no shared workflow status."
         : "There is no status valid for every target issue. Intake and duplicate decisions use their issue detail actions."}</p>}
       {field === "cycleId" && !sameTeam && <p>Choose issues from one team to assign a cycle. You can clear cycles across teams.</p>}
+      {field === "milestoneId" && new Set(rows.map(row => row.project?.id ?? null)).size > 1 && <p>Choose issues from one project to assign a milestone. You can clear milestones across projects.</p>}
     </>
   );
 }
