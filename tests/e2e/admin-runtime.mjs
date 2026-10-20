@@ -23,6 +23,7 @@ import { createTeamWorkflow, removeUsedStatus } from "./admin-team-journey.mjs";
 import { authorLabel, deleteAppliedLabel } from "./admin-label-journey.mjs";
 import {
   authorProject,
+  milestonesJourney,
   authorCycles,
   archiveProject,
 } from "./admin-project-cycle-journey.mjs";
@@ -153,6 +154,7 @@ await contract(
         for (const width of [1440, 390]) {
           await page.setViewportSize({ width, height: 1000 });
           await projectFieldsJourney({ ...shared, capture: name => capture(name), expectedProjectRejections });
+          await milestonesJourney({...shared, capture:name => capture(name)});
         }
         await page.setViewportSize(viewport);
         databases.push(await exportData(runtime, evidence, viewport.width));

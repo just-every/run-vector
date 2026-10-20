@@ -9,7 +9,7 @@ import type { SubissuesData } from "../../src/core/features/subissues/schema";
 import type { copyIssue } from "../../src/core/features/issue-copy/service";
 type CopyReceipt = Awaited<ReturnType<typeof copyIssue>>;
 
-it("[ISSUE-023] native and scoped API copies preserve fields and ordered descendants, exclude discussion and map cross-team values with a loss report", async () => {
+it("[PROJ-011 ISSUE-023] native and scoped API copies preserve fields and ordered descendants, exclude discussion and map cross-team values with a loss report", async () => {
   const f = await setupIntegrations(),
     team = f.initial.teams[0];
   await f.mutate("/settings/labels", "POST", {
@@ -31,6 +31,9 @@ it("[ISSUE-023] native and scoped API copies preserve fields and ordered descend
   )!;
   await f.mutate("/settings/projects", "POST", {name:"Copy project",leadOperatorId:f.owner});
   const project = (await f.state()).projects.find(project => project.name === "Copy project")!;
+  const milestoneResponse=await f.call('/settings/projects/'+project.id+'/milestones','POST',{name:'Copy milestone'});
+  expect(milestoneResponse.status).toBe(201);
+  const milestone=(await milestoneResponse.json() as any).milestones[0];
   await f.mutate("/settings/cycles", "POST", {
     teamId: team.id,
     name: "Copy cycle",
@@ -47,6 +50,7 @@ it("[ISSUE-023] native and scoped API copies preserve fields and ordered descend
     estimate: 8,
     labelIds,
     projectId: project.id,
+    milestoneId: milestone.id,
     cycleId: cycle.id,
     customFields: { department: "Platform", cost: 42 },
     statusId: team.statuses.find((status) => status.category === "started")!.id,
@@ -130,6 +134,8 @@ it("[ISSUE-023] native and scoped API copies preserve fields and ordered descend
     "estimate",
     "customFields",
     "project",
+    "milestoneId",
+    "milestone",
     "cycle",
     "labels",
   ] as const)

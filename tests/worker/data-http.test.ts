@@ -8,8 +8,11 @@ import {request,bindings} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(201);
+ const milestone=(await milestoneResponse.json() as any).milestones[0];
+ const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:f.issue.version,milestoneId:milestone.id});expect(assigned.status).toBe(200);
  const sourceResponse=await f.call('/settings/integrations/sources','POST',{name:'Archive source',sourceId:'archive-source',teamId:f.team.id});expect(sourceResponse.status).toBe(201);
  const source=await sourceResponse.json() as {id:string;secret:string;webhookUrl:string};
  const githubResponse=await f.call('/settings/integrations/github','POST',{name:'Archive repository',repository:'just-every/run-vector'});expect(githubResponse.status).toBe(201);
@@ -28,7 +31,7 @@ it('[SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] nat
  const finalProjectBefore=await env.DB.prepare('SELECT * FROM project_report_snapshots WHERE project_id=?').bind(f.project.id).first();
  const projectReportBefore=await (await f.call('/projects/'+f.project.id)).json() as {report:unknown};
  const projectHistoryBefore=await env.DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all();
- expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
+ expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:1})).status).toBe(200);
  expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current
@@ -44,6 +47,7 @@ it('[SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] nat
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
  const download=await f.call('/portability/exports/'+id+'/download');expect(download.status).toBe(200);const records=[];for await(const row of readArchive(download.body!))records.push(row);
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
+ expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
  const archiveText=JSON.stringify(records);
  for(const credential of [source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
@@ -82,6 +86,8 @@ it('[SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] nat
  const restoredProject=await targetCall('/api/projects/'+f.project.id,'GET',undefined,historical);
  expect(restoredProject.status).toBe(200);
  const restoredProjectBody=await restoredProject.json();
+ expect(restoredProjectBody).toMatchObject({milestones:[expect.objectContaining({id:milestone.id,name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'})]});
+ expect(await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json()).toMatchObject({milestoneId:milestone.id,milestone:{name:'Archive delivery'}});
  expect(restoredProjectBody).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});
  expect(restoredProjectBody).toMatchObject({report:expect.objectContaining({days:(projectReportBefore.report as {days:unknown}).days})});
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all()).results).toEqual(projectHistoryBefore.results);

@@ -190,6 +190,96 @@ export async function authorCycles({ page, runtime, capture, clause, team }) {
   await capture("cycles-two-manual-windows");
   return sql("SELECT * FROM cycles ORDER BY starts_at");
 }
+
+/** PROJ-011: native project controls and issue assignment, at each viewport. */
+export async function milestonesJourney({page, runtime, capture, clause}) {
+  const {base,sql}=runtime;
+  const width=page.viewportSize().width;
+  const name=`Checkout delivery ${width}`;
+  const send=async(path,method,data)=>{
+    const response=await page.request.fetch(base+'/api'+path,{method,headers:{Origin:base,Connection:'close'},data});
+    assert.ok(response.ok(),`${method} ${path}: ${response.status()}`);
+    return response.json();
+  };
+  const owner=sql('SELECT id FROM operators WHERE removed_at IS NULL ORDER BY id LIMIT 1')[0].id;
+  const projects=await send('/settings/projects','POST',{name,leadOperatorId:owner});
+  const project=projects.projects.find(item=>item.name===name);
+  const otherName=`Follow-up delivery ${width}`;
+  const other=(await send('/settings/projects','POST',{name:otherName,leadOperatorId:owner})).projects.find(item=>item.name===otherName);
+  const go=async(path)=>{await beforePrivateNavigation(page,base+path);await page.goto(base+path);};
+  const projectPath='/app/projects/'+project.id;
+  await clause('PROJ-011','ordered milestones, progress, workspace-date slip and project-move clearing',async()=>{
+    await go(projectPath);
+    for(const [milestone,date,description] of [
+      ['Payment foundation','', 'Checkout service and payment validation.'],
+      ['Customer rollout','2001-01-01','Release to the customer cohort.'],
+    ]) {
+      await page.getByRole('button',{name:'Add milestone',exact:true}).click();
+      const form=page.getByRole('form',{name:'Create milestone',exact:true});
+      await form.getByLabel('Milestone name',{exact:true}).fill(milestone);
+      await form.getByLabel('Milestone target date',{exact:true}).fill(date);
+      await form.getByLabel('Milestone description',{exact:true}).fill(description);
+      if(milestone==='Customer rollout')await capture(`milestone-create-${width}`);
+      await form.getByRole('button',{name:'Create milestone',exact:true}).click();
+      await page.getByRole('heading',{name:milestone,exact:true}).waitFor();
+    }
+    await page.getByRole('button',{name:'Edit Customer rollout',exact:true}).click();
+    const edit=page.getByRole('form',{name:'Edit milestone Customer rollout',exact:true});
+    await edit.getByLabel('Milestone description',{exact:true}).fill('Release to the customer cohort after sign-off.');
+    await edit.getByRole('button',{name:'Save milestone',exact:true}).click();
+    await page.getByText('Release to the customer cohort after sign-off.',{exact:true}).waitFor();
+    await page.getByRole('button',{name:'Move Customer rollout up',exact:true}).click();
+    await poll(()=>sql(`SELECT name FROM project_milestones WHERE project_id='${project.id}' ORDER BY position`),rows=>rows[0]?.name==='Customer rollout','milestone reordered');
+    const milestones=sql(`SELECT * FROM project_milestones WHERE project_id='${project.id}' ORDER BY position`);
+    const team=sql('SELECT id FROM teams WHERE archived_at IS NULL ORDER BY id LIMIT 1')[0];
+    const statuses=sql(`SELECT id,category FROM statuses WHERE team_id='${team.id}'`);
+    const issues=[];
+    for(const [title,milestone,category] of [
+      [`Validate payment ${width}`,'Payment foundation','completed'],
+      [`Roll out checkout ${width}`,'Customer rollout','unstarted'],
+    ]) {
+      await go('/app/new-issue');
+      await page.getByLabel(/^Title/).fill(title);
+      await page.getByLabel(/^Team/).selectOption(team.id);
+      await openDisclosures(page);
+      await page.getByRole('combobox',{name:'Status',exact:true}).selectOption(statuses.find(item=>item.category===category).id);
+      await page.getByRole('combobox',{name:'Project',exact:true}).selectOption(project.id);
+      await page.getByRole('combobox',{name:'Milestone',exact:true}).selectOption(milestones.find(item=>item.name===milestone).id);
+      if(category==='unstarted')await capture(`milestone-issue-create-${width}`);
+      await page.getByRole('button',{name:'Create issue',exact:true}).click();
+      await page.getByRole('heading',{name:title,exact:true}).waitFor();
+      issues.push(sql(`SELECT * FROM issues WHERE title='${title}'`)[0]);
+    }
+    await go(projectPath);
+    await page.getByRole('button',{name:'Complete Payment foundation',exact:true}).click();
+    await page.getByRole('button',{name:'Reopen Payment foundation',exact:true}).waitFor();
+    const detail=await send('/projects/'+project.id,'GET');
+    assert.equal(detail.milestones[0].name,'Customer rollout');
+    assert.deepEqual(detail.milestones[0].progress,{completed:0,total:1,percentage:0});
+    assert.equal(detail.milestones[0].slipped,true);
+    assert.deepEqual(detail.milestones[1].progress,{completed:1,total:1,percentage:100});
+    assert.equal(detail.milestones[1].completed,true);
+    await page.getByRole('region',{name:'Project milestones',exact:true}).scrollIntoViewIfNeeded();
+    await capture(`milestones-progress-${width}`);
+    await go('/app/issues/'+issues[1].identifier);
+    await page.getByRole('combobox',{name:'Issue milestone',exact:true}).selectOption(milestones.find(item=>item.name==='Payment foundation').id);
+    await poll(()=>sql(`SELECT milestone_id FROM issues WHERE id='${issues[1].id}'`),rows=>rows[0]?.milestone_id===milestones.find(item=>item.name==='Payment foundation').id,'issue milestone edit');
+    await capture(`milestone-issue-assigned-${width}`);
+    await page.getByRole('combobox',{name:'Issue project',exact:true}).selectOption(other.id);
+    await poll(()=>sql(`SELECT project_id,milestone_id FROM issues WHERE id='${issues[1].id}'`),rows=>rows[0]?.project_id===other.id&&rows[0].milestone_id===null,'moving issue clears milestone');
+    await page.getByRole('combobox',{name:'Issue milestone',exact:true}).filter({has:page.locator('option[value=""]')}).waitFor();
+    assert.equal(await page.getByRole('combobox',{name:'Issue milestone',exact:true}).inputValue(),'');
+    const activity=sql(`SELECT previous_value_json,next_value_json FROM issue_activity WHERE issue_id='${issues[1].id}' AND kind='issue.updated'`);
+    assert.equal(activity.filter(row=>JSON.parse(row.next_value_json).milestoneId===null).length,1,'one activity entry for project move and milestone clear');
+    await capture(`milestone-project-move-${width}`);
+    await go(projectPath);
+    await page.getByRole('button',{name:'Delete Customer rollout',exact:true}).click();
+    await page.getByRole('button',{name:'Confirm delete Customer rollout',exact:true}).click();
+    await page.getByRole('heading',{name:'Customer rollout',exact:true}).waitFor({state:'hidden'});
+    assert.equal(sql(`SELECT count(*) n FROM issues WHERE id IN ('${issues[0].id}','${issues[1].id}')`)[0].n,2,'milestone delete keeps issues');
+    await capture(`milestone-deleted-${width}`);
+  });
+}
 export async function archiveProject({
   page,
   runtime,
