@@ -1496,5 +1496,38 @@
     "exempt_bugs",
     "revision",
     "updated_at"
+  ],
+  "project_membership_events": [
+    "id",
+    "project_id",
+    "identifier",
+    "direction",
+    "occurred_at"
+  ],
+  "project_report_snapshots": [
+    "project_id",
+    "through_at",
+    "timezone",
+    "final_state",
+    "scope",
+    "completed"
+  ],
+  "project_report_days": [
+    "project_id",
+    "day",
+    "timezone",
+    "scope",
+    "completed",
+    "completions",
+    "recorded_at"
+  ],
+  "cycle_report_days": [
+    "cycle_id",
+    "day",
+    "timezone",
+    "scope",
+    "completed",
+    "completions",
+    "recorded_at"
   ]
 }

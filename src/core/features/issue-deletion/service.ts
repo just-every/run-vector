@@ -1,3 +1,4 @@
+import { captureDailyReports } from "../project-report/capture";
 import { createUlid } from "../../shared/ids";
 import { sourceErasure } from "./source-erasure";
 import { eraseD1ImportTarget } from "../../../../vendor/base/import-kit/src/d1/index";
@@ -54,6 +55,9 @@ export async function deleteIssue(
   const context = importContext(db, actor, "vector-deletion", "native-v1");
   const at = new Date().toISOString(),
     operationId = createUlid(new Date(at));
+  // Close every due workspace day before erasure removes the source status rows.
+  // This also covers a deletion between midnight and the first cron tick.
+  await captureDailyReports({ DB: db },new Date(at),actor.workspace);
   context.storage.targets = deletionTargets({
     id: issue.id,
     identifier: issue.identifier,

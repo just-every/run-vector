@@ -52,6 +52,11 @@ export async function cycleReportJourney(page, context, base, record = async () 
   await patch(carried, { cycleId: cycle.id }, "2026-09-04T12:00:00Z");
   await patch(completed, { statusId: status("started") }, "2026-09-05T12:00:00Z");
   await patch(completed, { statusId: status("completed") }, "2026-09-06T12:00:00Z");
+  for (let day = 2; day <= 7; day++) {
+    const daily = await context.request.get(base + "/cdn-cgi/local/scheduled?cron=" + encodeURIComponent("* * * * *") + "&time=" + Date.parse(`2026-09-0${day}T00:01:00Z`));
+    assert.equal(daily.status(), 200);
+    await daily.body();
+  }
   const live = await api("/cycles/" + cycle.id);
   assert.equal(live.report.source, "live");
   assert.deepEqual(live.report.days.map(d=>[d.scope,d.completed]), [[2,1],[2,1],[1,1],[2,1],[2,0],[2,1],[2,1]]);

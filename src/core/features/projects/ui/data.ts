@@ -1,3 +1,4 @@
+import { projectReportSchema } from "../../project-report/schema";
 import { historicalCycleSchema } from "../../cycle-closure/schema";
 import { z } from "zod";
 
@@ -68,6 +69,7 @@ export const projectPortfolioSchema = z.object({
 });
 
 export const projectDetailSchema = projectSummarySchema.extend({
+  report: projectReportSchema,
   cycleHistory: z.array(historicalCycleSchema),
   activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable()})),
   teams: z.array(personSchema),

@@ -9,45 +9,56 @@ afterEach(() => vi.useRealTimers());
 it("[REPORT-002 CYCLE-005] daily burn-up follows completion, reopening, removal and re-addition, then freezes outcomes and assignees at closure", async () => {
   const f = await closureFixture();
   vi.useFakeTimers({ toFake: ["Date"] });
-  const at = (day: string) => vi.setSystemTime(new Date(day + "T12:00:00Z"));
+  const at = async (day: string, capture = true) => {
+    vi.setSystemTime(new Date(day + "T00:01:00Z"));
+    if (capture) await scheduled({ scheduledTime: Date.now() },bindings);
+    vi.setSystemTime(new Date(day + "T12:00:00Z"));
+  };
   const status = (category: string) => f.team.statuses.find(s => s.category === category)!.id;
   const patch = async (identifier: string, changes: Record<string, unknown>) => {
     const current = await (await f.call("/issues/" + identifier)).json() as { version: number };
     const response = await f.call("/issues/" + identifier, "PATCH", { expectedVersion: current.version, ...changes });
     expect(response.status, await response.clone().text()).toBe(200);
   };
-  at("2026-08-31");
+  await at("2026-08-31");
   const first = await f.create({ title: "Restore settlement receipts", cycleId: f.closing.id, statusId: status("started"), estimate: 3, assigneeOperatorId: f.owner });
   const removed = await f.create({ title: "Review duplicate charges", cycleId: f.closing.id, statusId: status("started"), estimate: 5 });
-  at("2026-09-01");
+  const erased = await f.create({ title: "Retire obsolete receipts", cycleId: f.closing.id, statusId: status("started") });
+  await at("2026-09-01");
   await patch(first.identifier, { statusId: status("completed") });
-  at("2026-09-02");
+  await at("2026-09-02");
   const added = await f.create({ title: "Reconcile delayed provider callbacks", cycleId: f.closing.id, statusId: status("started"), assigneeOperatorId: f.owner });
   await patch(removed.identifier, { cycleId: null });
-  at("2026-09-03");
+  await at("2026-09-03");
   await patch(added.identifier, { cycleId: null });
   await patch(removed.identifier, { cycleId: f.closing.id });
   await patch(first.identifier, { statusId: status("started") });
-  at("2026-09-04");
+  await at("2026-09-04");
   await patch(added.identifier, { cycleId: f.closing.id });
   await patch(first.identifier, { statusId: status("completed") });
   await patch(removed.identifier, { statusId: status("canceled") });
-  at("2026-09-05");
+  await at("2026-09-05");
   await patch(added.identifier, { statusId: status("completed") });
-  at("2026-09-06");
+  await at("2026-09-06");
   await patch(added.identifier, { statusId: status("started") });
-  at("2026-09-07");
+  await at("2026-09-07",false);
+  const erasedCurrent = await (await f.call("/issues/"+erased.identifier)).json() as {version:number};
+  expect((await f.call("/issues/"+erased.identifier,"DELETE",{expectedVersion:erasedCurrent.version,confirmed:true})).status).toBe(200);
+  await scheduled({scheduledTime:Date.now()},bindings);
+  const beforeClose = (await f.detail()).report;
+  expect(beforeClose.days.find(day=>day.date==="2026-09-06")).toMatchObject({scope:3,completed:1});
+  expect((await env.DB.prepare("SELECT count(*) AS n FROM issue_activity WHERE issue_id=?").bind(erased.id).first())?.n).toBe(0);
   await patch(added.identifier, { cycleId: null });
   vi.setSystemTime(new Date("2026-09-07T13:00:00Z"));
   await patch(added.identifier, { cycleId: f.closing.id });
   const live = (await f.detail()).report;
   expect(live.source).toBe("live");
   expect(live.days.map(d => [d.date, d.scope, d.completed])).toEqual([
-    ["2026-09-01", 2, 1], ["2026-09-02", 2, 1], ["2026-09-03", 2, 0],
-    ["2026-09-04", 2, 1], ["2026-09-05", 2, 2], ["2026-09-06", 2, 1], ["2026-09-07", 2, 1],
+    ["2026-09-01", 3, 1], ["2026-09-02", 3, 1], ["2026-09-03", 3, 0],
+    ["2026-09-04", 3, 1], ["2026-09-05", 3, 2], ["2026-09-06", 3, 1], ["2026-09-07", 2, 1],
   ]);
   expect(live.days[1]).toMatchObject({ added: [added.identifier], removed: [removed.identifier] });
-  expect(live.days[6]).toMatchObject({ added: [added.identifier], removed: [added.identifier] });
+  expect(live.days[6]).toMatchObject({ added: [added.identifier], removed: [added.identifier,erased.identifier].sort() });
   vi.setSystemTime(new Date("2026-09-08T00:01:00Z"));
   await scheduled({ scheduledTime: Date.now() }, bindings);
   const detail = await f.detail(), frozen = detail.report, snapshot = detail.snapshot!;

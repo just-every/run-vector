@@ -1,3 +1,4 @@
+import { ProjectReportPanel } from "../../project-report/panel";
 import { ProjectAppearance } from "./project-appearance";
 import { useViewerTime } from '../../../app/viewer-time';
 import { ProjectActivity } from "./project-activity";
@@ -147,6 +148,7 @@ function ProjectDetailContent({
       {project.health === "blocked" || project.health === "at-risk" ? (
         <RiskEvidence project={project} />
       ) : null}
+      <ProjectReportPanel report={project.report} />
       <ProjectCycleHistory history={project.cycleHistory} />
       <ProjectActivity activity={project.activity} />
       <div className="project-detail__grid">

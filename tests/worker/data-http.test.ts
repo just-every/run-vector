@@ -10,6 +10,16 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ // Synthetic aggregate history tests archive custody; day-close behavior is exercised
+ // through scheduled in project-report.test.ts and cycle-report.test.ts.
+ await env.DB.prepare("INSERT INTO project_report_days VALUES(?, '2026-09-07','UTC',3,2,1,'2026-09-08T00:00:00Z')").bind(f.project.id).run();
+ await env.DB.prepare("INSERT OR IGNORE INTO cycle_report_days VALUES(?, '2026-09-07','UTC',?,?,1,'2026-09-08T00:00:00Z')").bind(f.closing.id,f.closed.snapshot!.progress.total,f.closed.snapshot!.progress.completed).run();
+ await f.mutate('/settings/projects/'+f.project.id,'PATCH',{lifecycle:'completed'});
+ const projectDailyBefore=(await env.DB.prepare('SELECT * FROM project_report_days WHERE project_id=? ORDER BY day').bind(f.project.id).all()).results;
+ const cycleDailyBefore=(await env.DB.prepare('SELECT * FROM cycle_report_days WHERE cycle_id=? ORDER BY day').bind(f.closing.id).all()).results;
+ const finalProjectBefore=await env.DB.prepare('SELECT * FROM project_report_snapshots WHERE project_id=?').bind(f.project.id).first();
+ const projectReportBefore=await (await f.call('/projects/'+f.project.id)).json() as {report:unknown};
+ const projectHistoryBefore=await env.DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all();
  expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
  expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
@@ -53,7 +63,13 @@ it('[BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 PROJ-001] native archive HTTP re
  expect((await restoredCapacity.json() as {rows:{operatorId:string;capacity:number|null}[]}).rows.find(row=>row.operatorId===f.owner)?.capacity).toBe(17);
  const restoredProject=await targetCall('/api/projects/'+f.project.id,'GET',undefined,historical);
  expect(restoredProject.status).toBe(200);
- expect(await restoredProject.json()).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});
+ const restoredProjectBody=await restoredProject.json();
+ expect(restoredProjectBody).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});
+ expect(restoredProjectBody).toMatchObject({report:expect.objectContaining({days:(projectReportBefore.report as {days:unknown}).days})});
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all()).results).toEqual(projectHistoryBefore.results);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM project_report_days WHERE project_id=? ORDER BY day').bind(f.project.id).all()).results).toEqual(projectDailyBefore);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM cycle_report_days WHERE cycle_id=? ORDER BY day').bind(f.closing.id).all()).results).toEqual(cycleDailyBefore);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM project_report_snapshots WHERE project_id=?').bind(f.project.id).first()).toEqual(finalProjectBefore);
  const restoreStatus=async()=>await (await targetCall('/api/data/restore','GET',undefined,historical)).json() as {operators:{id:string;approved:number;eligible:number}[];status:{effectsHeld:number;reviewedAt:string|null}};
  expect((await restoreStatus()).operators.find(row=>row.id===f.peer)).toMatchObject({approved:0,eligible:1});
  for(const path of ['/api/data/restore/operators/'+f.peer,'/api/data/restore/review-effects']) {

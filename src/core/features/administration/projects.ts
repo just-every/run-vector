@@ -1,3 +1,4 @@
+import { captureDailyReports } from "../project-report/capture";
 import { z } from "zod";
 import { validateProjectDates, projectActivity as activity, readProjectLabelIds, projectLabelWrites, projectFieldActivity } from "./project-fields";
 import { createUlid } from "../../shared/ids";
@@ -110,6 +111,9 @@ export async function updateProject(
           : null,
   };
   validateProjectDates(next.startDate, next.targetDate);
+  if (!old.archived_at && !["completed", "canceled"].includes(old.lifecycle)
+    && (next.archivedAt || ["completed", "canceled"].includes(next.lifecycle)))
+    await captureDailyReports({ DB: db }, new Date(ctx.at), ctx.workspace);
   await commit(ctx, [
     guard(
       ctx.db,

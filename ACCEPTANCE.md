@@ -81,8 +81,8 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 95 | 9 | 0 | 104 |
-| Target and push further | 15 | 42 | 93 | 150 |
-| All | 110 | 51 | 93 | 254 |
+| Target and push further | 16 | 41 | 93 | 150 |
+| All | 111 | 50 | 93 | 254 |
 
 ### Public homepage
 
@@ -311,7 +311,7 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 ### Reporting
 
 - **REPORT-001 — Insights** (partial). A journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues. Inherited from VIEW-011: the same journey in Light and Dark finds every chart's text and marks free of AA contrast failures (axe `color-contrast`) and its series distinguishable.
-- **REPORT-002 — Cycle and project charts** (partial). Evidence: `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`. A cycle seeded with day-by-day changes whose burn-up and final report match the CYCLE-005 snapshot; the cycle burn-up, scope changes and final report by assignee pass this, live and frozen. Remaining: project scope and completion over time and the projected completion date.
+- **REPORT-002 — Cycle and project charts** (done). Evidence: `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts`. The named REPORT-002 scheduled HTTP journeys follow adds, moves, deletions and reopenings, preserve closed-day totals after erasure and project by the stated rule; real app journeys inspect live/frozen reports at 1440/390, and HTTP restore preserves history. At each workspace-zone day close, per-project and per-cycle daily scope and completion counts are recorded as counts only, without issue identifiers, titles, assignees or people. Later issue deletion does not rewrite those closed days; days before recording starts say history not recorded. Projected completion uses open issues divided by completions recorded in the last 28 closed workspace days / 28, rounded up to whole workspace calendar days. A day counts issues entering Completed while in the project, including creation in Completed; same-day events are deduplicated, and a reopened issue completed on a later day counts again. Today enters the rate only after day close. Fewer than three recorded completions shows Not enough history; zero remaining issues has no projected date. Completed, canceled and archived projects retain their last aggregate state; reopening resumes live history. Membership events retain identifiers and timestamps only, and erasure is unchanged.
 - **REPORT-003 — Dashboards** (missing). A journey that builds a three-widget dashboard, shares it, and opens it as another member who sees only what they may access.
 - **REPORT-004 — Workload** (done). `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` cover three assignees, capacity, unestimated work, cycle and due-date scopes, stale writes, access and 1440/390 browser journeys.
 - **REPORT-005 — Warehouse and spreadsheet export** (missing). A scheduled export to an R2 fixture whose second run carries only changed rows, a paged export API read, and a Google Sheets API fixture at the network edge to which a saved view syncs: after one issue in the view changes and another leaves it, the next sync updates the first row and removes the second.

@@ -1,4 +1,5 @@
 import type { CycleSnapshot } from "../cycle-closure/schema";
+import type { DailyReportCount } from "../project-report/schema";
 import type { CycleReport, CycleReportFacts } from "./schema";
 
 type CycleWindow = { startsAt: string; endsAt: string; timezone: string };
@@ -9,7 +10,7 @@ const excluded = (category: string) => ["canceled", "duplicate"].includes(catego
 /** Counts issues throughout: changing estimates never rewrites the burn-up's unit. */
 export function buildCycleReport(
   cycle: CycleWindow, facts: CycleReportFacts | null, committed: Committed[],
-  snapshot: CycleSnapshot | null, now = new Date(),
+  snapshot: CycleSnapshot | null, now = new Date(), recorded?: DailyReportCount[],
 ): CycleReport {
   const through = snapshot?.closedAt ?? now.toISOString();
   const timezone = snapshot?.timezone ?? cycle.timezone;
@@ -74,7 +75,18 @@ export function buildCycleReport(
     });
     date = new Date(Date.parse(date + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
   }
-  if (missingHistory) limitations.push("Some daily totals are unavailable because an issue was deleted or its historical status was removed before the report was recorded.");
+  if (!recorded && missingHistory) limitations.push("Some daily totals are unavailable because an issue was deleted or its historical status was removed before the report was recorded.");
+  // Older frozen cycle facts already crossed the approved closure boundary.
+  // Preserve those reports; newly recorded/live history uses counts-only days.
+  if (recorded) {
+  const recordedByDay = new Map(recorded.map(day => [day.date,day]));
+  for (const day of days) {
+    const captured = recordedByDay.get(day.date);
+    if (captured) { day.scope = captured.scope; day.completed = captured.completed; }
+    else if (day.date !== lastDay) { day.scope = null; day.completed = null; }
+  }
+  if (days.some(day => day.scope === null || day.completed === null)) limitations.push("History not recorded for days without a daily snapshot. Recording starts at the first scheduled workspace day close.");
+  }
   const groups = new Map<string, CycleReport["byAssignee"][number]>();
   for (const issue of committed) {
     const recorded = facts ? issueFacts.get(issue.identifier) : undefined;
