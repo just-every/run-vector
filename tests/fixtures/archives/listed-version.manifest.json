@@ -1,0 +1,6143 @@
+{
+  "epoch": 0,
+  "excludedColumns": {
+    "ik_jobs": [
+      "lease_token"
+    ],
+    "integration_deliveries": [
+      "claim"
+    ],
+    "notification_deliveries": [
+      "claim_token"
+    ]
+  },
+  "excludedTables": [
+    "_cf_METADATA",
+    "access_rate_limits",
+    "d1_migrations",
+    "integration_tokens",
+    "magic_links",
+    "oa_auth_audit",
+    "oa_auth_settings",
+    "oa_bootstrap",
+    "oa_credentials",
+    "oa_dev_credentials",
+    "oa_domain_rules",
+    "oa_external_identities",
+    "oa_identity_provider_health",
+    "oa_identity_providers",
+    "oa_invitation_cancellations",
+    "oa_limits",
+    "oa_logout_events",
+    "oa_oidc_limits",
+    "oa_oidc_transactions",
+    "oa_owner_signins",
+    "oa_provider_session_pins",
+    "oa_provider_sessions",
+    "oa_sessions",
+    "oa_setup_links",
+    "oa_step_up_challenges",
+    "oa_tokens",
+    "oc_owner_claims",
+    "operator_sessions",
+    "rer_dependency_codes",
+    "rer_dependency_keys",
+    "rer_dependency_pending",
+    "rer_mail_development_outbox",
+    "rer_portability_epochs",
+    "rer_portability_guard",
+    "rer_portability_jobs",
+    "rer_portability_journal",
+    "rer_portability_owned",
+    "rer_portability_parts",
+    "rer_portability_segments",
+    "rer_portability_state",
+    "search_issues",
+    "search_issues_config",
+    "search_issues_content",
+    "search_issues_data",
+    "search_issues_docsize",
+    "search_issues_idx",
+    "search_projects",
+    "search_projects_config",
+    "search_projects_content",
+    "search_projects_data",
+    "search_projects_docsize",
+    "search_projects_idx",
+    "search_views",
+    "search_views_config",
+    "search_views_content",
+    "search_views_data",
+    "search_views_docsize",
+    "search_views_idx",
+    "sqlite_sequence",
+    "vector_http_bootstrap",
+    "vector_http_restore",
+    "vector_integration_authority_guard",
+    "vector_integration_secret_keys",
+    "vector_restore_mail_holds",
+    "vector_restore_operator_grants",
+    "vector_restore_status",
+    "vector_webhook_restore_holds"
+  ],
+  "exportedAt": "2026-10-19T18:22:41.765Z",
+  "format": "runeditrun-portability",
+  "journal": [],
+  "kind": "manifest",
+  "migrations": [
+    "0001_data_spine.sql",
+    "0002_issue_sequences.sql",
+    "0003_native_access.sql",
+    "0004_discussion_files.sql",
+    "0005_file_lifecycle.sql",
+    "0006_named_links.sql",
+    "0007_file_removal_intents.sql",
+    "0008_operator_evidence.sql",
+    "0009_activity_actor_name.sql",
+    "0010_workspace_foundation.sql",
+    "0011_base_operator_auth.sql",
+    "0012_invitation_cancellation.sql",
+    "0013_workspace_administration.sql",
+    "0014_collaboration.sql",
+    "0015_issue_parents.sql",
+    "0016_indexed_search.sql",
+    "0017_browsing_views.sql",
+    "0018_stable_search_ids.sql",
+    "0019_browse_revision_file_custody.sql",
+    "0020_development_outbox.sql",
+    "0021_development_mail_custody.sql",
+    "0022_portability.sql",
+    "0023_restore_safety.sql",
+    "0024_owner_claim.sql",
+    "0025_import_kit.sql",
+    "0026_mapped_imports.sql",
+    "0027_integrations.sql",
+    "0028_native_integrations.sql",
+    "0029_first_run_setup.sql",
+    "0030_dev_sessions.sql",
+    "0031_cycle_closure.sql",
+    "0032_due_reminders.sql",
+    "0033_issue_deletion.sql",
+    "0034_http_bootstrap_restore.sql",
+    "0035_staged_imports.sql",
+    "0036_import_reports.sql",
+    "0037_imported_comment_authors.sql",
+    "0038_identity_providers.sql",
+    "0039_domain_rules_step_up.sql",
+    "0040_provider_control.sql",
+    "0041_provider_pins.sql",
+    "0042_dependency_setup.sql",
+    "0043_import_retirement.sql",
+    "0044_import_reversal_fence.sql",
+    "0045_identity_dependency.sql",
+    "0046_identity_dependency_approval.sql",
+    "0047_import_number_reservations.sql",
+    "0048_owner_signin.sql",
+    "0049_development_step_up_capture.sql",
+    "0050_import_steps.sql",
+    "0051_notification_reason.sql",
+    "0052_description_history.sql",
+    "0053_follower_events.sql",
+    "0054_notification_followups.sql",
+    "0055_followup_lookup_indexes.sql",
+    "0056_comment_threads.sql",
+    "0057_activity_actor_index.sql"
+  ],
+  "objects": [
+    {
+      "bucket": "FILES",
+      "customMetadata": {},
+      "httpMetadata": {
+        "contentType": "text/plain"
+      },
+      "key": "issue-files/file-1",
+      "sha256": "4338db507b1f6e76ed652e964b94e24944439b224105ee1d88195f2a97c22506",
+      "size": 33
+    }
+  ],
+  "partCount": 21,
+  "payloads": [],
+  "product": "just-every/vector-projects",
+  "requiredConfiguration": [
+    "FIRST_OWNER_EMAIL",
+    "SESSION_SECRET",
+    "APP_ORIGIN",
+    "MAIL_MODE",
+    "MAIL_FROM"
+  ],
+  "schema": "eb5c4ad583cbdbaa5a4c286947440bdca533e415d46a5330f00eefb8bf7c0976",
+  "sourceIdentity": "635df5fa-0ac6-4cce-907c-eb1dc7f09d10",
+  "tables": [
+    {
+      "columns": [
+        {
+          "name": "audit_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "previous_value_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "next_value_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "audit_records"
+      ],
+      "name": "administration_audit_details",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE administration_audit_details (\n  audit_id TEXT PRIMARY KEY REFERENCES audit_records(id),\n  previous_value_json TEXT,\n  next_value_json TEXT\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "action",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "subject_identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "subject_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "audit_records",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE audit_records (\n id TEXT PRIMARY KEY, actor_operator_id TEXT, action TEXT NOT NULL, subject_identifier TEXT NOT NULL,\n subject_id TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "cycle_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifiers_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "cycle_snapshots"
+      ],
+      "name": "cycle_closure_failures",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE cycle_closure_failures (\n cycle_id TEXT PRIMARY KEY REFERENCES cycle_snapshots(cycle_id),\n identifiers_json TEXT NOT NULL CHECK(json_valid(identifiers_json)),\n created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "cycle_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "direction",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "occurred_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "cycles"
+      ],
+      "name": "cycle_membership_events",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE cycle_membership_events (\n id TEXT PRIMARY KEY,\n cycle_id TEXT NOT NULL REFERENCES cycles(id) ON DELETE CASCADE,\n identifier TEXT NOT NULL,\n direction TEXT NOT NULL CHECK(direction IN ('added','removed')),\n occurred_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "cycle_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "close_token",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "closed_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "next_cycle_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "cycles"
+      ],
+      "name": "cycle_snapshots",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE cycle_snapshots (\n cycle_id TEXT PRIMARY KEY REFERENCES cycles(id),\n close_token TEXT NOT NULL UNIQUE,\n closed_at TEXT NOT NULL,\n next_cycle_id TEXT,\n body_json TEXT NOT NULL CHECK(json_valid(body_json))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "team_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "starts_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "ends_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "capacity",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "closed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "teams"
+      ],
+      "name": "cycles",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE cycles (\n  id TEXT PRIMARY KEY,\n  team_id TEXT NOT NULL REFERENCES teams(id),\n  name TEXT NOT NULL,\n  starts_at TEXT NOT NULL,\n  ends_at TEXT NOT NULL,\n  capacity INTEGER,\n  closed_at TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  UNIQUE (team_id, name),\n  CHECK (ends_at > starts_at),\n  CHECK (capacity IS NULL OR capacity >= 0)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "blob_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "bytes",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "writer_settled",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "content_sha256",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "removal_requested_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "removal_actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "removal_confirmed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "deleted_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "cleanup_error",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "detached_file_removals",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE detached_file_removals (\n id TEXT PRIMARY KEY, issue_id TEXT NOT NULL, identifier TEXT NOT NULL,\n actor_operator_id TEXT NOT NULL, blob_key TEXT NOT NULL UNIQUE,\n bytes INTEGER NOT NULL CHECK(bytes>0), writer_settled INTEGER NOT NULL CHECK(writer_settled IN (0,1)),\n content_sha256 TEXT, removal_requested_at TEXT NOT NULL,\n removal_actor_operator_id TEXT, removal_confirmed_at TEXT, deleted_at TEXT,\n cleanup_error TEXT, updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "due_date",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 4,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "due_reminder_suppressions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE due_reminder_suppressions (\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n due_date TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('due_today','overdue')),\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n created_at TEXT NOT NULL,\n PRIMARY KEY(issue_id,due_date,kind,operator_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "due_date",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "claim_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues"
+      ],
+      "name": "due_reminders",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE due_reminders (\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n due_date TEXT NOT NULL,\n kind TEXT NOT NULL CHECK(kind IN ('due_today','overdue')),\n claim_id TEXT NOT NULL UNIQUE,\n created_at TEXT NOT NULL,\n PRIMARY KEY(issue_id,due_date,kind)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "observed_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "received_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "summary",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "measurements_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "assertions_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "origin_kind",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "link",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "customer_reports_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_record_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_revision_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "evidence_revisions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE evidence_revisions (\n  id TEXT PRIMARY KEY,\n  issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  source_name TEXT NOT NULL,\n  observed_at TEXT NOT NULL,\n  received_at TEXT NOT NULL,\n  summary TEXT NOT NULL,\n  measurements_json TEXT NOT NULL DEFAULT '{}',\n  assertions_json TEXT NOT NULL DEFAULT '{}',\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n, origin_kind TEXT NOT NULL DEFAULT 'source' CHECK(origin_kind IN ('source','operator')), actor_operator_id TEXT REFERENCES operators(id), link TEXT, customer_reports_json TEXT NOT NULL DEFAULT '[]', source_id TEXT, source_record_id TEXT, source_revision_id TEXT)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "action",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "position",
+          "notnull": 1,
+          "pk": 3,
+          "type": "INTEGER"
+        },
+        {
+          "name": "end_position",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "fence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_batches",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_batches (\n job_id TEXT NOT NULL REFERENCES ik_jobs(id), action TEXT NOT NULL, position INTEGER NOT NULL,\n end_position INTEGER NOT NULL, fence INTEGER NOT NULL, PRIMARY KEY(job_id,action,position)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "ok",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_assertions",
+      "rowidAlias": "rowid",
+      "sql": "CREATE TABLE ik_d1_assertions (ok INTEGER NOT NULL CONSTRAINT IMPORT_ATOMIC_GUARD CHECK(ok=1))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "body",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "released",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_creation_plans",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_creation_plans (job_id TEXT NOT NULL REFERENCES ik_jobs(id), ordinal INTEGER NOT NULL, body TEXT NOT NULL, released INTEGER NOT NULL DEFAULT 0 CHECK(released IN (0,1)), PRIMARY KEY(job_id,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "seal",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_custody_revisions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_custody_revisions (job_id TEXT PRIMARY KEY REFERENCES ik_jobs(id) ON DELETE CASCADE,revision INTEGER NOT NULL DEFAULT 0,seal TEXT)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_custody_states",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_custody_states (job_id TEXT PRIMARY KEY REFERENCES ik_jobs(id) ON DELETE CASCADE,revision INTEGER NOT NULL DEFAULT 0)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_identity",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "owner_job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "effects_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_entries",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_entries (job_id TEXT NOT NULL REFERENCES ik_jobs(id), ordinal INTEGER NOT NULL, source_identity TEXT NOT NULL, owner_job_id TEXT NOT NULL REFERENCES ik_jobs(id), effects_hash TEXT NOT NULL, PRIMARY KEY(job_id,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "identity",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_erased_sources",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_erased_sources (destination TEXT NOT NULL, identity TEXT NOT NULL, PRIMARY KEY(destination,identity))"
+    },
+    {
+      "columns": [
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "identity",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_erased_targets",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_erased_targets (destination TEXT NOT NULL, identity TEXT NOT NULL, PRIMARY KEY(destination,identity))"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "recorded_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "records_erased",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "jobs_retired",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "streams_retired",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "stores_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_erasure_journal",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_erasure_journal (id TEXT PRIMARY KEY, destination TEXT NOT NULL, recorded_at TEXT NOT NULL, records_erased INTEGER NOT NULL CHECK(records_erased>=0), jobs_retired INTEGER NOT NULL CHECK(jobs_retired>=0), streams_retired INTEGER NOT NULL CHECK(streams_retired>=0), stores_json TEXT NOT NULL CHECK(json_valid(stores_json)))"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "request_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "generation",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "phase",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "index_rows",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "value_rows",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "records_erased",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "field_matches_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_erasure_progress",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_erasure_progress (id TEXT PRIMARY KEY,destination TEXT NOT NULL,request_hash TEXT NOT NULL,generation TEXT NOT NULL,phase TEXT NOT NULL CHECK(phase IN ('index','values','sealed','complete')),index_rows INTEGER NOT NULL CHECK(index_rows>=0),value_rows INTEGER NOT NULL CHECK(value_rows>=0),revision INTEGER NOT NULL CHECK(revision=index_rows+value_rows),records_erased INTEGER NOT NULL CHECK(records_erased>=0),field_matches_json TEXT NOT NULL CHECK(json_valid(field_matches_json)),created_at TEXT NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "receipt_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "store",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "image",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_erasure_tally",
+      "rowidAlias": "rowid",
+      "sql": "CREATE TABLE ik_d1_erasure_tally (receipt_id TEXT NOT NULL, store TEXT NOT NULL, image TEXT NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "effect_ordinal",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_identity",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_kind",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversed",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "record_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "successor_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_history",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_history (id TEXT PRIMARY KEY, job_id TEXT NOT NULL REFERENCES ik_jobs(id), ordinal INTEGER NOT NULL, effect_ordinal INTEGER NOT NULL, source_identity TEXT NOT NULL, destination TEXT NOT NULL, target_kind TEXT NOT NULL, target_id TEXT NOT NULL, reversed INTEGER NOT NULL CHECK(reversed=0), record_json TEXT NOT NULL, successor_id TEXT NOT NULL UNIQUE)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_indexed_jobs",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_indexed_jobs (job_id TEXT PRIMARY KEY REFERENCES ik_jobs(id), fingerprint TEXT NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "generation",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "job_fence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "action",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "values_count",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "chunks_count",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "identities",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "registered_revision",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "sealed_revision",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_native_staging",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_native_staging (id TEXT PRIMARY KEY,generation TEXT NOT NULL,destination TEXT NOT NULL,namespace TEXT NOT NULL,mapping_version TEXT NOT NULL,principal_id TEXT NOT NULL,job_id TEXT NOT NULL REFERENCES ik_jobs(id) ON DELETE CASCADE,fingerprint TEXT NOT NULL,job_fence INTEGER NOT NULL,action TEXT NOT NULL,values_count INTEGER NOT NULL,chunks_count INTEGER NOT NULL,identities INTEGER NOT NULL,revision INTEGER NOT NULL DEFAULT 0,registered_revision INTEGER,sealed_revision INTEGER,UNIQUE(destination,principal_id,job_id,action))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_identity",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_identity",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_native_staging"
+      ],
+      "name": "ik_d1_native_staging_index",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_native_staging_index (stage_id TEXT NOT NULL REFERENCES ik_d1_native_staging(id) ON DELETE CASCADE,ordinal INTEGER NOT NULL,source_identity TEXT NOT NULL,target_identity TEXT NOT NULL,PRIMARY KEY(stage_id,ordinal,target_identity))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "value_ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 3,
+          "type": "INTEGER"
+        },
+        {
+          "name": "body",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "value_chunks",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_native_staging"
+      ],
+      "name": "ik_d1_native_staging_values",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_native_staging_values (stage_id TEXT NOT NULL REFERENCES ik_d1_native_staging(id) ON DELETE CASCADE,value_ordinal INTEGER NOT NULL,ordinal INTEGER NOT NULL,body TEXT NOT NULL,body_hash TEXT NOT NULL,body_size INTEGER NOT NULL,value_chunks INTEGER NOT NULL,PRIMARY KEY(stage_id,value_ordinal,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "original_key",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 4,
+          "type": "INTEGER"
+        },
+        {
+          "name": "bytes",
+          "notnull": 1,
+          "pk": 0,
+          "type": "BLOB"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_original_chunks",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_original_chunks (job_id TEXT NOT NULL REFERENCES ik_jobs(id), kind TEXT NOT NULL, original_key TEXT NOT NULL, ordinal INTEGER NOT NULL, bytes BLOB NOT NULL, PRIMARY KEY(job_id,kind,original_key,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "body",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_plan_chunks",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_plan_chunks (job_id TEXT NOT NULL REFERENCES ik_jobs(id), ordinal INTEGER NOT NULL, body TEXT NOT NULL, PRIMARY KEY(job_id,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_identity",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_identity",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_plan_index",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_plan_index (job_id TEXT NOT NULL REFERENCES ik_jobs(id), ordinal INTEGER NOT NULL, source_identity TEXT NOT NULL, target_identity TEXT NOT NULL, PRIMARY KEY(job_id,ordinal,target_identity))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "generation",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "codec_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "header_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "header_size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "header_chunks",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_staging"
+      ],
+      "name": "ik_d1_preparation_receipts",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_preparation_receipts (stage_id TEXT PRIMARY KEY REFERENCES ik_d1_staging(id) ON DELETE CASCADE, generation TEXT NOT NULL, codec_id TEXT, header_hash TEXT NOT NULL, header_size INTEGER NOT NULL, header_chunks INTEGER NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversal_policy",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "codec_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_digest",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "records",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "stages",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "phase",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "hash_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "verified_revision",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_preparation_steps",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_preparation_steps (id TEXT PRIMARY KEY, destination TEXT NOT NULL, namespace TEXT NOT NULL, mapping_version TEXT NOT NULL, principal_id TEXT NOT NULL, operation_key TEXT NOT NULL, reversal_policy TEXT NOT NULL, codec_id TEXT, source_digest TEXT NOT NULL, total INTEGER NOT NULL, records INTEGER NOT NULL DEFAULT 0, stages TEXT NOT NULL DEFAULT '[]', phase TEXT NOT NULL CHECK(phase IN ('collecting','hashing','combining','prepared')), hash_json TEXT, fingerprint TEXT, verified_revision INTEGER, revision INTEGER NOT NULL DEFAULT 0, UNIQUE(destination,principal_id,operation_key))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stream_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_publication_fences",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_publication_fences (stream_id TEXT NOT NULL,job_id TEXT PRIMARY KEY)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "receipt_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "retired_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_retirements",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_retirements (id TEXT NOT NULL, kind TEXT NOT NULL CHECK(kind IN ('job','stream')), destination TEXT NOT NULL, receipt_id TEXT NOT NULL, retired_at TEXT NOT NULL, PRIMARY KEY(id, kind))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "action",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "state_revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "erased_records",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "reused",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_reversal_fences",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_reversal_fences (job_id TEXT PRIMARY KEY REFERENCES ik_jobs(id) ON DELETE CASCADE,action TEXT NOT NULL,fence INTEGER NOT NULL,state_revision INTEGER NOT NULL,erased_records INTEGER NOT NULL,reused INTEGER NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "effect_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "position",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "record_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_d1_reversal_reports",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_reversal_reports (job_id TEXT NOT NULL REFERENCES ik_jobs(id), effect_id TEXT NOT NULL, position INTEGER NOT NULL, record_json TEXT NOT NULL, PRIMARY KEY(job_id,effect_id), UNIQUE(job_id,position))"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "generation",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "pages",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "layout_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversal_policy",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "registered_revision",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "sealed_revision",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_staging",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_staging (id TEXT PRIMARY KEY, generation TEXT NOT NULL, destination TEXT NOT NULL, namespace TEXT NOT NULL, mapping_version TEXT NOT NULL, principal_id TEXT NOT NULL, fingerprint TEXT NOT NULL, operation_key TEXT NOT NULL, total INTEGER NOT NULL, pages INTEGER NOT NULL, layout_hash TEXT NOT NULL, reversal_policy TEXT NOT NULL, revision INTEGER NOT NULL DEFAULT 0, registered_revision INTEGER, sealed_revision INTEGER, UNIQUE(destination,principal_id,operation_key))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "page_ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 3,
+          "type": "INTEGER"
+        },
+        {
+          "name": "body",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_staging"
+      ],
+      "name": "ik_d1_staging_chunks",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_staging_chunks (stage_id TEXT NOT NULL REFERENCES ik_d1_staging(id) ON DELETE CASCADE, page_ordinal INTEGER NOT NULL, ordinal INTEGER NOT NULL, body TEXT NOT NULL, body_hash TEXT NOT NULL, body_size INTEGER NOT NULL, PRIMARY KEY(stage_id,page_ordinal,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "body",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_staging"
+      ],
+      "name": "ik_d1_staging_headers",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_staging_headers (stage_id TEXT NOT NULL REFERENCES ik_d1_staging(id) ON DELETE CASCADE, ordinal INTEGER NOT NULL, body TEXT NOT NULL, body_hash TEXT NOT NULL, body_size INTEGER NOT NULL, PRIMARY KEY(stage_id,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "page_ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 3,
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_identity",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_identity",
+          "notnull": 1,
+          "pk": 4,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_staging"
+      ],
+      "name": "ik_d1_staging_index",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_staging_index (stage_id TEXT NOT NULL REFERENCES ik_d1_staging(id) ON DELETE CASCADE, page_ordinal INTEGER NOT NULL, ordinal INTEGER NOT NULL, source_identity TEXT NOT NULL, target_identity TEXT NOT NULL, PRIMARY KEY(stage_id,page_ordinal,ordinal,target_identity))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "original_key",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "sha256",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_staging"
+      ],
+      "name": "ik_d1_staging_originals",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_staging_originals (stage_id TEXT NOT NULL REFERENCES ik_d1_staging(id) ON DELETE CASCADE, original_key TEXT NOT NULL, name TEXT NOT NULL, sha256 TEXT NOT NULL, size INTEGER NOT NULL, PRIMARY KEY(stage_id,original_key))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stage_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "plan_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "chunks",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "identities",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "index_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "policy_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "inline_plan",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_staging"
+      ],
+      "name": "ik_d1_staging_pages",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_staging_pages (stage_id TEXT NOT NULL REFERENCES ik_d1_staging(id) ON DELETE CASCADE, ordinal INTEGER NOT NULL, job_id TEXT NOT NULL UNIQUE, total INTEGER NOT NULL, fingerprint TEXT NOT NULL, plan_json TEXT NOT NULL, body_hash TEXT NOT NULL, body_size INTEGER NOT NULL, chunks INTEGER NOT NULL, identities INTEGER NOT NULL, index_hash TEXT NOT NULL, policy_hash TEXT NOT NULL, inline_plan INTEGER NOT NULL CHECK(inline_plan IN (0,1)), PRIMARY KEY(stage_id,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "stream_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "page_total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "job_operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "parent_layout_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_stream_origins",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_stream_origins (job_id TEXT PRIMARY KEY,stream_id TEXT NOT NULL,ordinal INTEGER NOT NULL,page_total INTEGER NOT NULL,job_operation_key TEXT NOT NULL,parent_destination TEXT NOT NULL,parent_namespace TEXT NOT NULL,parent_mapping_version TEXT NOT NULL,parent_principal_id TEXT NOT NULL,parent_fingerprint TEXT NOT NULL,parent_operation_key TEXT NOT NULL,parent_total INTEGER NOT NULL,parent_layout_hash TEXT NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "stream_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "erased_records",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_streams",
+        "ik_jobs"
+      ],
+      "name": "ik_d1_stream_pages",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_stream_pages (stream_id TEXT NOT NULL REFERENCES ik_d1_streams(id), ordinal INTEGER NOT NULL, job_id TEXT NOT NULL UNIQUE REFERENCES ik_jobs(id), total INTEGER NOT NULL, erased_records INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(stream_id,ordinal))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stream_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "layout_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "layout_revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "progress_revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_stream_revisions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_stream_revisions(stream_id TEXT PRIMARY KEY,destination TEXT NOT NULL,namespace TEXT NOT NULL,mapping_version TEXT NOT NULL,principal_id TEXT NOT NULL,fingerprint TEXT NOT NULL,operation_key TEXT NOT NULL,total INTEGER NOT NULL,layout_hash TEXT NOT NULL,layout_revision INTEGER NOT NULL DEFAULT 0 CHECK(typeof(layout_revision)='integer' AND layout_revision>=0),progress_revision INTEGER NOT NULL DEFAULT 0 CHECK(typeof(progress_revision)='integer' AND progress_revision>=0))"
+    },
+    {
+      "columns": [
+        {
+          "name": "stream_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_digest",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_d1_streams"
+      ],
+      "name": "ik_d1_stream_sources",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_stream_sources (stream_id TEXT PRIMARY KEY REFERENCES ik_d1_streams(id) ON DELETE CASCADE, destination TEXT NOT NULL, source_digest TEXT NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "layout_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "state",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_d1_streams",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_d1_streams (id TEXT PRIMARY KEY, destination TEXT NOT NULL, namespace TEXT NOT NULL, mapping_version TEXT NOT NULL, principal_id TEXT NOT NULL, fingerprint TEXT NOT NULL, operation_key TEXT NOT NULL, total INTEGER NOT NULL, layout_hash TEXT NOT NULL, state TEXT NOT NULL, UNIQUE(destination,principal_id,operation_key))"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "principal_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operation_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "plan_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "state",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "checkpoint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "total",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "fence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "lease_token",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "lease_expires",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "error",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversal_policy",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversal_policy_hash",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversal_cursor",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "reversal_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_jobs",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_jobs (\n id TEXT PRIMARY KEY, destination TEXT NOT NULL, namespace TEXT NOT NULL,\n mapping_version TEXT NOT NULL, principal_id TEXT NOT NULL, fingerprint TEXT NOT NULL,\n operation_key TEXT NOT NULL, plan_json TEXT NOT NULL, state TEXT NOT NULL,\n checkpoint INTEGER NOT NULL DEFAULT 0, total INTEGER NOT NULL, fence INTEGER NOT NULL DEFAULT 0,\n lease_token TEXT, lease_expires INTEGER, error TEXT, reversal_policy TEXT NOT NULL DEFAULT 'strict' CHECK(reversal_policy IN ('strict','preserve-conflicts')), reversal_policy_hash TEXT, reversal_cursor INTEGER NOT NULL DEFAULT 0 CHECK(reversal_cursor>=0), reversal_hash TEXT NOT NULL DEFAULT '4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945',\n UNIQUE(destination, principal_id, operation_key)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_original_sets",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_original_sets (\n job_id TEXT PRIMARY KEY REFERENCES ik_jobs(id), version INTEGER NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "original_key",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "sha256",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "bytes",
+          "notnull": 0,
+          "pk": 0,
+          "type": "BLOB"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_originals",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_originals (\n job_id TEXT NOT NULL REFERENCES ik_jobs(id), kind TEXT NOT NULL, original_key TEXT NOT NULL,\n name TEXT NOT NULL, sha256 TEXT NOT NULL, size INTEGER NOT NULL, bytes BLOB,\n PRIMARY KEY(job_id,kind,original_key)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "ordinal",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "effect_ordinal",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "source_identity",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_kind",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reversed",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "record_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_provenance",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_provenance (\n id TEXT PRIMARY KEY, job_id TEXT NOT NULL REFERENCES ik_jobs(id), ordinal INTEGER NOT NULL, effect_ordinal INTEGER NOT NULL,\n source_identity TEXT NOT NULL, destination TEXT NOT NULL, target_kind TEXT NOT NULL,\n target_id TEXT NOT NULL, reversed INTEGER NOT NULL DEFAULT 0, record_json TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "identity",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "mapping_version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "effects_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_sources",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_sources (\n identity TEXT PRIMARY KEY, source_hash TEXT NOT NULL, mapping_version TEXT NOT NULL,\n effects_hash TEXT NOT NULL, job_id TEXT NOT NULL REFERENCES ik_jobs(id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "fence",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "effect_id",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "sha256",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "bytes",
+          "notnull": 1,
+          "pk": 0,
+          "type": "BLOB"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs"
+      ],
+      "name": "ik_stages",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_stages (\n job_id TEXT NOT NULL REFERENCES ik_jobs(id), fence INTEGER NOT NULL, effect_id TEXT NOT NULL,\n sha256 TEXT NOT NULL, bytes BLOB NOT NULL, PRIMARY KEY(job_id,fence,effect_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "destination",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "value_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "attachment_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "ik_targets",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE ik_targets (\n destination TEXT NOT NULL, kind TEXT NOT NULL, id TEXT NOT NULL,\n revision TEXT NOT NULL, value_json TEXT NOT NULL, attachment_json TEXT,\n PRIMARY KEY(destination,kind,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reason",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "return_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "intake_decisions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE intake_decisions (\n  id TEXT PRIMARY KEY,\n  issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n  kind TEXT NOT NULL CHECK (kind IN ('accepted', 'deferred', 'declined')),\n  reason TEXT,\n  return_at TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "delivery_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "number",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "started_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "finished_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "outcome",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "integration_attempts",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE integration_attempts (\n namespace TEXT NOT NULL, id TEXT NOT NULL, delivery_id TEXT NOT NULL, number INTEGER NOT NULL,\n started_at INTEGER NOT NULL, finished_at INTEGER, outcome TEXT,\n PRIMARY KEY(namespace,id), UNIQUE(namespace,delivery_id,number)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "envelope",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "state",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "attempts",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "next_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "claim",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "claim_until",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "max_attempts",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "retry_delays",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "integration_deliveries",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE integration_deliveries (\n namespace TEXT NOT NULL, id TEXT NOT NULL, fingerprint TEXT NOT NULL, destination_hash TEXT NOT NULL,\n envelope TEXT NOT NULL, state TEXT NOT NULL CHECK(state IN ('queued','sending','accepted','rejected','uncertain')),\n attempts INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, next_at INTEGER NOT NULL,\n claim TEXT, claim_until INTEGER, max_attempts INTEGER NOT NULL, retry_delays TEXT NOT NULL,\n PRIMARY KEY(namespace,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "fingerprint",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "envelope",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "received_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "integration_replays",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE integration_replays (\n namespace TEXT NOT NULL, id TEXT NOT NULL, fingerprint TEXT NOT NULL, envelope TEXT NOT NULL, received_at INTEGER NOT NULL,\n PRIMARY KEY(namespace,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "delivery_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "outcome",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "integration_resolutions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE integration_resolutions (\n namespace TEXT NOT NULL, id TEXT NOT NULL, delivery_id TEXT NOT NULL, at INTEGER NOT NULL, outcome TEXT NOT NULL,\n PRIMARY KEY(namespace,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "token_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "action",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "feature",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "integration_token_events",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE integration_token_events (\n namespace TEXT NOT NULL, id TEXT NOT NULL, token_id TEXT NOT NULL, at INTEGER NOT NULL,\n action TEXT NOT NULL, feature TEXT NOT NULL,\n PRIMARY KEY(namespace,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "token_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "required_scopes",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "allowed",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "request_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "resource",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "integration_token_usage",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE integration_token_usage (\n namespace TEXT NOT NULL, id TEXT NOT NULL, token_id TEXT, at INTEGER NOT NULL, required_scopes TEXT NOT NULL, allowed INTEGER NOT NULL,\n request_id TEXT, resource TEXT,\n PRIMARY KEY(namespace,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "previous_value_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "next_value_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_activity",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_activity (\n  id TEXT PRIMARY KEY,\n  issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  actor_operator_id TEXT REFERENCES operators(id),\n  kind TEXT NOT NULL,\n  previous_value_json TEXT,\n  next_value_json TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n, actor_name TEXT)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "edited_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "deleted_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "imported_author_name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_comment_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "resolved_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "resolved_by_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_comments",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_comments (\n id TEXT PRIMARY KEY, issue_id TEXT NOT NULL REFERENCES issues(id), actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n body TEXT, edited_at TEXT, deleted_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL\n, imported_author_name TEXT CHECK(imported_author_name IS NULL OR length(imported_author_name) BETWEEN 1 AND 200), parent_comment_id TEXT, resolved_at TEXT, resolved_by_operator_id TEXT)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "decision_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "intake_decisions",
+        "issues"
+      ],
+      "name": "issue_deferral_origins",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_deferral_origins (\n issue_id TEXT PRIMARY KEY REFERENCES issues(id) ON DELETE CASCADE,\n decision_id TEXT NOT NULL UNIQUE REFERENCES intake_decisions(id) ON DELETE CASCADE\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "requested_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "workspace_settings"
+      ],
+      "name": "issue_deletions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_deletions (\n issue_id TEXT PRIMARY KEY,\n identifier TEXT NOT NULL UNIQUE,\n workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n requested_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "blocked_issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "blocking_issue_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "issues"
+      ],
+      "name": "issue_dependencies",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_dependencies (\n  blocked_issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  blocking_issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  created_at TEXT NOT NULL,\n  PRIMARY KEY (blocked_issue_id, blocking_issue_id),\n  CHECK (blocked_issue_id <> blocking_issue_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "description",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "version",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_description_revisions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_description_revisions (\n id TEXT PRIMARY KEY,\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n description TEXT NOT NULL,\n actor_operator_id TEXT REFERENCES operators(id),\n actor_name TEXT,\n created_at TEXT NOT NULL,\n version INTEGER CHECK(version IS NULL OR version>0)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "canonical_issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues"
+      ],
+      "name": "issue_duplicates",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_duplicates (\n issue_id TEXT PRIMARY KEY REFERENCES issues(id) ON DELETE CASCADE,\n canonical_issue_id TEXT NOT NULL REFERENCES issues(id),\n created_at TEXT NOT NULL,\n CHECK(issue_id<>canonical_issue_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "content_type",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "bytes",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "blob_key",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "deleted_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "state",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "writer_settled",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "removal_requested_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "removal_actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "removal_confirmed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "cleanup_error",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "content_sha256",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_files",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_files (\n id TEXT PRIMARY KEY, issue_id TEXT NOT NULL REFERENCES issues(id), actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n name TEXT NOT NULL, content_type TEXT NOT NULL, bytes INTEGER NOT NULL CHECK(bytes>0), blob_key TEXT NOT NULL UNIQUE,\n deleted_at TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL\n, state TEXT NOT NULL DEFAULT 'ready' CHECK(state IN ('pending','ready','failed')), writer_settled INTEGER NOT NULL DEFAULT 1 CHECK(writer_settled IN (0,1)), removal_requested_at TEXT, removal_actor_operator_id TEXT REFERENCES operators(id), removal_confirmed_at TEXT, cleanup_error TEXT, content_sha256 TEXT)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_followers",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_followers (\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n created_at TEXT NOT NULL, PRIMARY KEY(issue_id,operator_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "label_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "issues",
+        "labels"
+      ],
+      "name": "issue_labels",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_labels (\n  issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  label_id TEXT NOT NULL REFERENCES labels(id) ON DELETE CASCADE,\n  created_at TEXT NOT NULL,\n  PRIMARY KEY (issue_id, label_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "comment_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "url",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "deleted_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issue_comments",
+        "issues",
+        "operators"
+      ],
+      "name": "issue_links",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_links (\n id TEXT PRIMARY KEY,\n issue_id TEXT NOT NULL REFERENCES issues(id),\n comment_id TEXT REFERENCES issue_comments(id),\n actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n name TEXT,\n url TEXT,\n deleted_at TEXT,\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n CHECK ((deleted_at IS NULL AND name IS NOT NULL AND url IS NOT NULL)\n     OR (deleted_at IS NOT NULL AND name IS NULL AND url IS NULL))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 1,
+      "dependencies": [],
+      "name": "issue_list_revision",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_list_revision (id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "body_key",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "comment_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issue_comments",
+        "issues",
+        "operators"
+      ],
+      "name": "issue_mentions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_mentions (\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n body_key TEXT NOT NULL,\n comment_id TEXT REFERENCES issue_comments(id) ON DELETE CASCADE,\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n PRIMARY KEY(issue_id,body_key,operator_id),\n CHECK((body_key='description' AND comment_id IS NULL) OR (comment_id IS NOT NULL AND body_key=comment_id))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_notification_mutes",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_notification_mutes (\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n PRIMARY KEY(issue_id,operator_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "parent_issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues"
+      ],
+      "name": "issue_parents",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_parents (\n  issue_id TEXT PRIMARY KEY REFERENCES issues(id) ON DELETE CASCADE,\n  parent_issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier_prefix",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "last_sequence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "workspace_settings"
+      ],
+      "name": "issue_prefix_sequences",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_prefix_sequences (\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  identifier_prefix TEXT NOT NULL COLLATE NOCASE,\n  last_sequence INTEGER NOT NULL CHECK (last_sequence > 0),\n  updated_at TEXT NOT NULL,\n  PRIMARY KEY (workspace_id,identifier_prefix)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "recipient_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "remind_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "delivered_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "delivery_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "issue_reminders",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issue_reminders (\n id TEXT PRIMARY KEY, issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n recipient_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n remind_at TEXT NOT NULL, created_at TEXT NOT NULL, delivered_at TEXT, delivery_id TEXT,\n CHECK((delivered_at IS NULL)=(delivery_id IS NULL))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "origin_prefix",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "sequence_number",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "team_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "title",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "description",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "status_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "priority",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "assignee_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "project_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "cycle_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "due_date",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "estimate",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "expected_outcome",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "customer_impact",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "custom_fields_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "deferred_until",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "completed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "canceled_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 2,
+      "dependencies": [
+        "cycles",
+        "operators",
+        "projects",
+        "teams",
+        "workflow_statuses"
+      ],
+      "name": "issues",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE issues (\n  id TEXT PRIMARY KEY,\n  identifier TEXT NOT NULL UNIQUE,\n  origin_prefix TEXT NOT NULL,\n  sequence_number INTEGER NOT NULL,\n  team_id TEXT NOT NULL REFERENCES teams(id),\n  title TEXT NOT NULL,\n  description TEXT NOT NULL DEFAULT '',\n  status_id TEXT NOT NULL REFERENCES workflow_statuses(id),\n  priority TEXT NOT NULL CHECK (priority IN ('urgent', 'high', 'medium', 'low', 'none')),\n  assignee_operator_id TEXT REFERENCES operators(id),\n  project_id TEXT REFERENCES projects(id),\n  cycle_id TEXT REFERENCES cycles(id),\n  due_date TEXT,\n  estimate INTEGER,\n  expected_outcome TEXT,\n  customer_impact TEXT,\n  custom_fields_json TEXT NOT NULL DEFAULT '{}',\n  deferred_until TEXT,\n  version INTEGER NOT NULL DEFAULT 1,\n  completed_at TEXT,\n  canceled_at TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  CHECK (sequence_number > 0),\n  CHECK (estimate IS NULL OR estimate BETWEEN 1 AND 100)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "color",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "workspace_settings"
+      ],
+      "name": "labels",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE labels (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  name TEXT NOT NULL,\n  color TEXT NOT NULL,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  UNIQUE (workspace_id, name)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "surface",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "filters_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "sort",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "grouping",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators"
+      ],
+      "name": "list_preferences",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE list_preferences (\n  id TEXT PRIMARY KEY,\n  operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n  surface TEXT NOT NULL,\n  filters_json TEXT NOT NULL DEFAULT '{}',\n  sort TEXT NOT NULL DEFAULT 'newest',\n  grouping TEXT NOT NULL DEFAULT 'none',\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  UNIQUE (operator_id, surface)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "event_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "recipient_id",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 4,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "notification_candidates",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_candidates (\n event_id TEXT NOT NULL, issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n recipient_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n kind TEXT NOT NULL CHECK(kind IN ('assignment','mention','comment','intake_return','unblocked','due_reminder','status','completed','canceled','duplicate','urgent','blocking','due_changed','reminder')),\n actor_id TEXT REFERENCES operators(id) ON DELETE SET NULL, actor_name TEXT,\n created_at TEXT NOT NULL, PRIMARY KEY(event_id,issue_id,recipient_id,kind)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "notification_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "recipient_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "title",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "app_link",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "status",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "attempts",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "claim_token",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "claimed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "next_attempt_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reason",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "notifications",
+        "operators"
+      ],
+      "name": "notification_deliveries",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_deliveries (\n id TEXT PRIMARY KEY,\n notification_id TEXT NOT NULL UNIQUE REFERENCES notifications(id) ON DELETE CASCADE,\n recipient_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n actor_id TEXT REFERENCES operators(id) ON DELETE SET NULL, actor_name TEXT,\n identifier TEXT NOT NULL, title TEXT NOT NULL, app_link TEXT NOT NULL,\n status TEXT NOT NULL CHECK(status IN ('pending','claimed','retry','accepted','development','uncertain','failed','suppressed')),\n attempts INTEGER NOT NULL DEFAULT 0 CHECK(attempts BETWEEN 0 AND 3),\n claim_token TEXT, claimed_at TEXT, next_attempt_at TEXT, reason TEXT,\n created_at TEXT NOT NULL, updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "delivery_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "number",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "status",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reason",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "started_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "settled_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "notification_deliveries"
+      ],
+      "name": "notification_delivery_attempts",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_delivery_attempts (\n id TEXT PRIMARY KEY, delivery_id TEXT NOT NULL REFERENCES notification_deliveries(id) ON DELETE CASCADE,\n number INTEGER NOT NULL CHECK(number BETWEEN 1 AND 3), status TEXT NOT NULL,\n reason TEXT, started_at TEXT NOT NULL, settled_at TEXT,\n UNIQUE(delivery_id,number)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "event_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issue_activity"
+      ],
+      "name": "notification_events",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_events (\n event_id TEXT PRIMARY KEY REFERENCES issue_activity(id) ON DELETE CASCADE,\n created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "feature",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "subject_identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "outcome",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "notification_mail_audit",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_mail_audit (\n id TEXT PRIMARY KEY,\n feature TEXT NOT NULL CHECK(feature='notification.mail'),\n subject_identifier TEXT NOT NULL,\n outcome TEXT NOT NULL CHECK(outcome IN ('accepted','development')),\n created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "operator_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "email_enabled",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators"
+      ],
+      "name": "notification_preferences",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_preferences (\n operator_id TEXT PRIMARY KEY REFERENCES operators(id) ON DELETE CASCADE,\n email_enabled INTEGER NOT NULL CHECK(email_enabled IN (0,1))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "notification_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "recipient_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "until_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "until_change",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "snoozed_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "returned_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "notifications",
+        "operators"
+      ],
+      "name": "notification_snoozes",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_snoozes (\n notification_id TEXT PRIMARY KEY REFERENCES notifications(id) ON DELETE CASCADE,\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n recipient_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n until_at TEXT, until_change INTEGER NOT NULL CHECK(until_change IN(0,1)),\n snoozed_at TEXT NOT NULL, returned_at TEXT,\n CHECK((until_change=1 AND until_at IS NULL) OR (until_change=0 AND until_at IS NOT NULL))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators"
+      ],
+      "name": "notification_type_mutes",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notification_type_mutes (\n operator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n kind TEXT NOT NULL CHECK(kind IN ('assignment','mention','comment','intake_return','unblocked','due_reminder','status','completed','canceled','duplicate','urgent','blocking','due_changed','reminder')),\n PRIMARY KEY(operator_id,kind)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "event_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "recipient_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_name",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "causes_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "read_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues",
+        "operators"
+      ],
+      "name": "notifications",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE notifications (\n id TEXT PRIMARY KEY, event_id TEXT NOT NULL,\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n recipient_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n actor_id TEXT REFERENCES operators(id) ON DELETE SET NULL, actor_name TEXT,\n causes_json TEXT NOT NULL CHECK(json_valid(causes_json) AND json_type(causes_json)='array'),\n created_at TEXT NOT NULL, read_at TEXT,\n UNIQUE(event_id,issue_id,recipient_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "email",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "display_name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "role",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "status",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 1,
+      "dependencies": [],
+      "name": "oa_operators",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE oa_operators (\n id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, display_name TEXT NOT NULL,\n role TEXT NOT NULL CHECK(role IN ('owner','admin','member')),\n status TEXT NOT NULL CHECK(status IN ('invited','active','inactive')),\n version INTEGER NOT NULL DEFAULT 1, created_at INTEGER NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "successor_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators",
+        "workspace_settings"
+      ],
+      "name": "operator_removals",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE operator_removals (\n  id TEXT PRIMARY KEY,\n  operator_id TEXT NOT NULL UNIQUE REFERENCES operators(id),\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  actor_operator_id TEXT REFERENCES operators(id),\n  successor_operator_id TEXT NOT NULL REFERENCES operators(id),\n  created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "email",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "removed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "workspace_settings"
+      ],
+      "name": "operators",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE operators (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  name TEXT NOT NULL,\n  email TEXT NOT NULL UNIQUE,\n  removed_at TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "project_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "actor_operator_id",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "kind",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "previous_value_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "next_value_json",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators",
+        "projects"
+      ],
+      "name": "project_activity",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE project_activity (\n  id TEXT PRIMARY KEY,\n  project_id TEXT NOT NULL REFERENCES projects(id),\n  actor_operator_id TEXT REFERENCES operators(id),\n  kind TEXT NOT NULL,\n  previous_value_json TEXT,\n  next_value_json TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "description",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "lead_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "target_date",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "lifecycle",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "color",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "icon",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "archived_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "operators",
+        "workspace_settings"
+      ],
+      "name": "projects",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE projects (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  name TEXT NOT NULL,\n  description TEXT NOT NULL DEFAULT '',\n  lead_operator_id TEXT NOT NULL REFERENCES operators(id),\n  target_date TEXT,\n  lifecycle TEXT NOT NULL CHECK (lifecycle IN ('planned', 'active', 'completed', 'canceled')),\n  color TEXT,\n  icon TEXT,\n  archived_at TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  UNIQUE (workspace_id, name)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "singleton",
+          "notnull": 0,
+          "pk": 1,
+          "type": "INTEGER"
+        },
+        {
+          "name": "sector_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "rer_dependency_installation",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE rer_dependency_installation (\n singleton INTEGER PRIMARY KEY CHECK(singleton=1), sector_id TEXT NOT NULL UNIQUE\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "interface",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "issuer",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "client_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "metadata",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "needs_relink",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "linked_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "rer_dependency_link",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE rer_dependency_link (\n interface TEXT PRIMARY KEY, issuer TEXT NOT NULL, client_id TEXT NOT NULL, metadata TEXT NOT NULL,\n needs_relink INTEGER NOT NULL DEFAULT 0, linked_at INTEGER NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "owner_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "surface",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "is_shared",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "filters_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "sort",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "grouping",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "layout",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators",
+        "workspace_settings"
+      ],
+      "name": "saved_views",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE saved_views (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  owner_operator_id TEXT NOT NULL REFERENCES operators(id),\n  name TEXT NOT NULL,\n  surface TEXT NOT NULL,\n  is_shared INTEGER NOT NULL DEFAULT 0 CHECK (is_shared IN (0, 1)),\n  filters_json TEXT NOT NULL DEFAULT '{}',\n  sort TEXT NOT NULL DEFAULT 'newest',\n  grouping TEXT NOT NULL DEFAULT 'none',\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL, layout TEXT NOT NULL DEFAULT 'list' CHECK(layout IN ('list','board')),\n  UNIQUE (owner_operator_id, name)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "INTEGER"
+        },
+        {
+          "name": "last_successful_index_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [],
+      "name": "search_index_state",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE search_index_state (\n id INTEGER PRIMARY KEY CHECK(id=1),\n last_successful_index_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "team_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "first_issue_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "teams"
+      ],
+      "name": "team_issue_history",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE team_issue_history (\n  team_id TEXT PRIMARY KEY REFERENCES teams(id),\n  first_issue_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "team_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "last_sequence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "teams"
+      ],
+      "name": "team_issue_sequences",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE team_issue_sequences (\n  team_id TEXT PRIMARY KEY REFERENCES teams(id),\n  last_sequence INTEGER NOT NULL CHECK (last_sequence > 0),\n  updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier_prefix",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "archived_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "workspace_settings"
+      ],
+      "name": "teams",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE teams (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  name TEXT NOT NULL,\n  identifier_prefix TEXT NOT NULL COLLATE NOCASE,\n  archived_at TEXT,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  UNIQUE (workspace_id, name),\n  UNIQUE (workspace_id, identifier_prefix),\n  CHECK (length(identifier_prefix) BETWEEN 2 AND 10),\n  CHECK (identifier_prefix = upper(identifier_prefix))\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "auth_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [
+        "oa_operators",
+        "operators"
+      ],
+      "name": "vector_auth_operators",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_auth_operators (\n auth_id TEXT PRIMARY KEY REFERENCES oa_operators(id),\n operator_id TEXT NOT NULL UNIQUE REFERENCES operators(id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "repository_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "delivery_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "payload_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "received_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "diagnostic",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_github_deliveries",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_github_deliveries (\n repository_id TEXT NOT NULL,delivery_id TEXT NOT NULL,payload_hash TEXT NOT NULL,received_at TEXT NOT NULL,\n diagnostic TEXT NOT NULL,PRIMARY KEY(repository_id,delivery_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "repository_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "number",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues"
+      ],
+      "name": "vector_github_issue_links",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_github_issue_links (\n repository_id TEXT NOT NULL,number INTEGER NOT NULL,issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n created_at TEXT NOT NULL,PRIMARY KEY(repository_id,number,issue_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "repository_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "number",
+          "notnull": 1,
+          "pk": 2,
+          "type": "INTEGER"
+        },
+        {
+          "name": "title",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "url",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "state",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "received_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_github_pull_requests",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_github_pull_requests (\n repository_id TEXT NOT NULL,number INTEGER NOT NULL,title TEXT NOT NULL,url TEXT NOT NULL,state TEXT NOT NULL,\n updated_at TEXT NOT NULL,received_at TEXT NOT NULL,PRIMARY KEY(repository_id,number)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "repository",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "enabled",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revoked_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_github_repositories",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_github_repositories (\n id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,repository TEXT NOT NULL,name TEXT NOT NULL,\n enabled INTEGER NOT NULL DEFAULT 1,revoked_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,\n UNIQUE(workspace_id,repository)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier_prefix",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "first_sequence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "last_sequence",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "ik_jobs",
+        "workspace_settings"
+      ],
+      "name": "vector_import_allocations",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_import_allocations (\n job_id TEXT NOT NULL REFERENCES ik_jobs(id) ON DELETE CASCADE,\n workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n identifier_prefix TEXT NOT NULL COLLATE NOCASE,\n first_sequence INTEGER NOT NULL CHECK(first_sequence > 0),\n last_sequence INTEGER NOT NULL CHECK(last_sequence >= first_sequence),\n PRIMARY KEY(job_id,identifier_prefix)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "report_json",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_import_reports",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_import_reports (\n job_id TEXT PRIMARY KEY,\n report_json TEXT NOT NULL CHECK(json_valid(report_json)),\n created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "issue_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "revision",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "issues"
+      ],
+      "name": "vector_import_revisions",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_import_revisions (\n issue_id TEXT PRIMARY KEY REFERENCES issues(id) ON DELETE CASCADE,\n revision TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "job_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "batch_size",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "last_error",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "last_error_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_import_runs",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_import_runs (\n job_id TEXT PRIMARY KEY,\n batch_size INTEGER NOT NULL CHECK(batch_size BETWEEN 1 AND 1000),\n last_error TEXT,\n last_error_at TEXT,\n created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "source_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "team_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "version",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "enabled",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revoked_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_integration_sources",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_integration_sources (\n id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,source_id TEXT NOT NULL,name TEXT NOT NULL,team_id TEXT NOT NULL,\n version INTEGER NOT NULL DEFAULT 1,enabled INTEGER NOT NULL DEFAULT 1,revoked_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL,\n UNIQUE(workspace_id,source_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "token_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "scopes",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "expires_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revoked_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_integration_tokens",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_integration_tokens (\n namespace TEXT NOT NULL,token_id TEXT NOT NULL,workspace_id TEXT NOT NULL,operator_id TEXT NOT NULL,\n name TEXT NOT NULL,scopes TEXT NOT NULL,created_at INTEGER NOT NULL,expires_at INTEGER,revoked_at INTEGER,\n PRIMARY KEY(namespace,token_id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "source_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "record_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "revision_id",
+          "notnull": 1,
+          "pk": 3,
+          "type": "TEXT"
+        },
+        {
+          "name": "payload_hash",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "evidence_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "received_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "erased",
+          "notnull": 1,
+          "pk": 4,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_source_receipts",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE \"vector_source_receipts\" (\n source_id TEXT NOT NULL,record_id TEXT NOT NULL,revision_id TEXT NOT NULL,payload_hash TEXT NOT NULL,\n issue_id TEXT NOT NULL,evidence_id TEXT NOT NULL,received_at TEXT NOT NULL,\n erased INTEGER NOT NULL DEFAULT 0 CHECK(erased IN(0,1)),\n PRIMARY KEY(source_id,record_id,revision_id,erased)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "source_id",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "record_id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "issue_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "erased",
+          "notnull": 1,
+          "pk": 3,
+          "type": "INTEGER"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_source_records",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE \"vector_source_records\" (\n source_id TEXT NOT NULL,record_id TEXT NOT NULL,issue_id TEXT NOT NULL,created_at TEXT NOT NULL,\n erased INTEGER NOT NULL DEFAULT 0 CHECK(erased IN(0,1)),\n PRIMARY KEY(source_id,record_id,erased)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "url",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "enabled",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "revoked_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_webhook_destinations",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_webhook_destinations (\n id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,name TEXT NOT NULL,url TEXT NOT NULL,\n enabled INTEGER NOT NULL DEFAULT 1,revoked_at TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "namespace",
+          "notnull": 1,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "id",
+          "notnull": 1,
+          "pk": 2,
+          "type": "TEXT"
+        },
+        {
+          "name": "identifier",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "erased_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_webhook_erasures",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_webhook_erasures (\n namespace TEXT NOT NULL,\n id TEXT NOT NULL,\n identifier TEXT NOT NULL,\n erased_at TEXT NOT NULL,\n PRIMARY KEY(namespace,id)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "destination_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "event",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "body",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "enqueued_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "vector_webhook_events",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE vector_webhook_events (\n id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL,destination_id TEXT NOT NULL,event TEXT NOT NULL,\n body TEXT NOT NULL,created_at TEXT NOT NULL,enqueued_at TEXT\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "team_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "category",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "position",
+          "notnull": 1,
+          "pk": 0,
+          "type": "INTEGER"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 3,
+      "dependencies": [
+        "teams"
+      ],
+      "name": "workflow_statuses",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE workflow_statuses (\n  id TEXT PRIMARY KEY,\n  team_id TEXT NOT NULL REFERENCES teams(id),\n  name TEXT NOT NULL,\n  category TEXT NOT NULL CHECK (category IN ('intake', 'backlog', 'unstarted', 'started', 'completed', 'canceled', 'duplicate')),\n  position INTEGER NOT NULL,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  UNIQUE (team_id, name),\n  UNIQUE (team_id, position)\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "INTEGER"
+        },
+        {
+          "name": "workspace_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [],
+      "name": "workspace_bootstrap",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE workspace_bootstrap (\n  id INTEGER PRIMARY KEY CHECK (id = 1),\n  workspace_id TEXT NOT NULL UNIQUE,\n  created_at TEXT NOT NULL\n)"
+    },
+    {
+      "columns": [
+        {
+          "name": "workspace_id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "setup_operator_id",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "setup_completed_at",
+          "notnull": 0,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 0,
+      "dependencies": [
+        "operators",
+        "workspace_settings"
+      ],
+      "name": "workspace_installation",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE workspace_installation (\n  workspace_id TEXT PRIMARY KEY REFERENCES workspace_settings(id),\n  setup_operator_id TEXT NOT NULL REFERENCES operators(id),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n, setup_completed_at TEXT)"
+    },
+    {
+      "columns": [
+        {
+          "name": "id",
+          "notnull": 0,
+          "pk": 1,
+          "type": "TEXT"
+        },
+        {
+          "name": "name",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "timezone",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "created_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "updated_at",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        },
+        {
+          "name": "reminder_time",
+          "notnull": 1,
+          "pk": 0,
+          "type": "TEXT"
+        }
+      ],
+      "count": 1,
+      "dependencies": [],
+      "name": "workspace_settings",
+      "rowidAlias": null,
+      "sql": "CREATE TABLE workspace_settings (\n  id TEXT PRIMARY KEY,\n  name TEXT NOT NULL,\n  timezone TEXT NOT NULL,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n, reminder_time TEXT NOT NULL DEFAULT '09:00'\n CHECK(length(reminder_time)=5 AND reminder_time GLOB '[0-2][0-9]:[0-5][0-9]' AND substr(reminder_time,1,2)<'24'))"
+    }
+  ],
+  "version": 2
+}

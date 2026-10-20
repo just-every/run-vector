@@ -1583,7 +1583,7 @@ try {
   );
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   const browserSignout = await browserSignoutPromise;
-  assert.equal(browserSignout.status(), 200);
+  assert.equal(browserSignout.status(), 204);
   const browserSessionCookie = (await browserSignout.request().allHeaders())
     .cookie;
   assert.ok(browserSessionCookie);
@@ -1598,7 +1598,7 @@ try {
     headers: validHeaders,
     body: "{}",
   });
-  assert.equal(originalSignout.status, 200);
+  assert.equal(originalSignout.status, 204);
   await originalSignout.arrayBuffer();
   assert.equal(
     (await req("/api/session", { headers: { Cookie: cookie } })).status,

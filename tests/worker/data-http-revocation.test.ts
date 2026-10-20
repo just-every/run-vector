@@ -14,7 +14,7 @@ it('[DATA-001 DATA-005 BASE-DATA-001] revocation during HTTP object publication 
    if(key==='put')return async(...args:Parameters<R2Bucket['put']>)=>{
     const result=await target.put(...args);
     // This is the separately authorized native signout racing the final commit.
-    expect((await targetCall('/auth/signout','POST',{},cookie)).status).toBe(200);
+    expect((await targetCall('/auth/signout','POST',{},cookie)).status).toBe(204);
     expected=await targetSnapshot();return result;
    };const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;
   }})};

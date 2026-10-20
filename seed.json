@@ -1,8 +1,8 @@
 {
   "id": "vector",
   "name": "Vector",
-  "version": "0.3.0",
-  "maturity": "Third public release; independently gated on 19 October 2026 locally at 1440 and 390 and on own-account hosting with real SendGrid mail. Hosted HTTP restore into an rer-deployed installation is refused (known issue); Managed relay delivery, real Linear/Jira exports, hosted Cron timing and broader capacity remain unproven.",
+  "version": "0.4.0",
+  "maturity": "Fourth public release; retained older-version backups restore on rer 0.2.74. Roles, provider integrations, Managed relay delivery, real Linear/Jira exports and broader capacity remain incomplete or unproven; see CONTRACT.md and CHANGELOG.md.",
   "category": "projects",
   "spine": {
     "id": "projects",

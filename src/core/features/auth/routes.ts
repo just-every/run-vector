@@ -63,9 +63,6 @@ export function createAuthApp() {
         if (!operator) throw new AuthError('operator_unavailable', 503)
         if (!(await firstRunState(c.env.DB, operator.id)).completed) result.headers.set('Location','/setup')
       }
-      // Preserve the existing application signout response contract.
-      if (path === '/auth/signout' && result.status === 204)
-        return Response.json({ signedOut: true }, { headers: result.headers })
       return result
     } catch (error) {
       return Response.json({ error: error instanceof AuthError ? error.code : 'auth_unavailable' }, {

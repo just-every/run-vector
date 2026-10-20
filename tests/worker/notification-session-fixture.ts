@@ -36,7 +36,7 @@ export async function notificationSessionFixture(hosted = false) {
       expect(
         (await request("/auth/signout", "POST", {}, cookie, currentBindings))
           .status,
-      ).toBe(200);
+      ).toBe(204);
     } else if (mode === "remove") {
       expect(
         (await f.call(`/settings/operators/${f.bob}`, "DELETE")).status,

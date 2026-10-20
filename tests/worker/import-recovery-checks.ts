@@ -92,7 +92,7 @@ export async function checkQueuedReservations(f:Awaited<ReturnType<typeof setupI
  expect((await f.call(path+'/rollback','POST',{})).status).toBe(400);
  const rollback=await f.call(path+'/rollback','POST',{confirmed:true});expect(rollback.status).toBe(200);
  expect((await f.finish(await rollback.json() as ImportJob)).state).toBe('rolled_back');
- expect((await request('/auth/signout','POST',{},f.cookie)).status).toBe(200);
+ expect((await request('/auth/signout','POST',{},f.cookie)).status).toBe(204);
  for(const [suffix,method] of [['','GET'],['/resume','POST']]){
   const denied=await f.call(path+suffix,method,method==='POST'?{}:undefined);expect(denied.status).toBe(401);
   expect(await denied.text()).not.toContain(blocker.identifier);

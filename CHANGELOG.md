@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.0 — 2026-10-20
+
+- The current intake assessment, Created/Subscribed/Activity work tabs and credential custody are recorded complete. Future agent-triage, private-team, mobile-app and provider obligations remain under their owning clauses.
+- Backups from the previously listed Vector version restore through `rer import` with every archived cell and attachment byte retained, including destinations carrying Platform's migration ledger. Uses rer 0.2.74 and refreshed, recorded Base source.
+- Hosted deploy can retire its unused bootstrap session: `POST /auth/signout` now returns the native Base **204** with an empty body. Session revocation and the browser sign-out action are unchanged; HTTP clients should accept success without requiring the former JSON wrapper.
+- Personal time zones and working hours; light, dark and system appearance; automatic issue closing and archiving; project colors and emoji; daily aggregate cycle/project reports and final project snapshots.
+- Reopened discussion threads notify participants who still follow the issue, with a dedicated preference.
+- Project milestones: create, edit, reorder, complete and reopen dated milestones; assign issues and track progress. Project moves clear incompatible assignments, and milestone deletion preserves issues. Copy, Undo, bulk changes and native archives preserve milestone membership.
+- Apply migrations **0065–0072** after unchanged 0001–0064. These add preferences, housekeeping and report history; 0068 copies every notification mute/candidate while widening its event types, 0069 lets a refused HTTP restore settle safely, and 0071 widens notification event kinds while copying all mute and pending-candidate rows. Migration 0072 adds milestones and nullable issue assignments; existing issues start without a milestone. Keep milestone data on compatible-source rollback. No historical daily facts are invented. Preserve additive schema, permanent history and terminal effect ledgers on compatible-source rollback. RELEASE.json lists each migration's steps.
+- Upgrade locally: stop your development process by PID, `rer export --output exports/vector.rer`, pull the release, `rer install`, `rer dev`. Hosted: take a backup with the authenticated Base transfer client below, pull, and `rer deploy` with the existing environment and custody files. Validate backup recovery in isolated empty resources before changing traffic.
+
+Known issues and limits:
+
+- Roles, private teams, guests and external provider integrations remain incomplete; CONTRACT.md is the full target and records each clause's current status. Every admitted operator currently has owner authority.
+- Linear and Jira imports remain documented-format, synthetic-only; no actual owner export is claimed, and there is no Asana importer. Managed relay delivery and broad capacity are not proven here.
+- Milestone grouping, calendar feeds, complete public milestone API operations and Jira/Linear milestone mapping remain future work.
+- The deferral input uses the browser's time zone. Daily reporting preserves only observed aggregate history; days before measurement remain unknown.
+- `rer export` refuses a hosted origin, and `wrangler d1 export` cannot read Vector's FTS5 tables. Use the authenticated Base transfer client shown in the 0.3.0 backup instructions, retaining the owner's cookie privately.
+
+Product screenshot: `docs/retained-verification/ui/1440-app.png`.
+
 ## 0.3.0 — 2026-10-19
 
 What an owner gets:
