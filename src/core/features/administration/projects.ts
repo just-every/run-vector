@@ -37,6 +37,7 @@ export async function createProject(
   db: D1Database,
   actor: string,
   input: z.infer<typeof projectCreateSchema>,
+  additional: (id:string)=>D1PreparedStatement[] = () => [],
 ) {
   const ctx = await administrationContext(db, actor),
     id = createUlid(new Date(ctx.at));
@@ -61,6 +62,7 @@ export async function createProject(
         ctx.at,
         ctx.at,
       ),
+    ...additional(id),
     ...projectLabelWrites(ctx, id, [...input.labelIds].sort()),
     activity(ctx, id, "project.created", null, {
       ...input,

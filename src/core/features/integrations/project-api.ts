@@ -19,7 +19,7 @@ export function addProjectApi(app:Hono<AppEnvironment>) {
     return project?c.json(project):c.json({error:'not_found'},404);
   });
   app.post('/projects',async c=>{
-    const id=await createProject(c.env.DB,c.get('operatorId'),parse(projectCreateSchema,await readRequestJson(c.req.raw)));
+    const id=await createProject(c.env.DB,c.get('operatorId'),parse(projectCreateSchema.omit({createSlackChannel:true}),await readRequestJson(c.req.raw)));
     return c.json(await projectDetail(c.env.DB,c.get('operatorId'),id),201);
   });
   app.patch('/projects/:id',async c=>{

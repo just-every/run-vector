@@ -39,9 +39,9 @@ export function labelTextColor(color: string): "#000000" | "#ffffff" {
     : "#ffffff";
 }
 export const teamCreateSchema = z
-  .object({ name, identifierPrefix: prefix })
+  .object({ name, identifierPrefix: prefix, createSlackChannel: z.boolean().optional() })
   .strict();
-export const teamUpdateSchema = teamCreateSchema
+export const teamUpdateSchema = teamCreateSchema.omit({createSlackChannel:true})
   .partial()
   .extend({ archived: z.boolean().optional(), autoCycleStarted: z.boolean().optional(), autoCycleCompleted: z.boolean().optional() })
   .strict()
@@ -88,6 +88,7 @@ export const projectCreateSchema = z
     name,
     description: z.string().max(100000).default(""),
     leadOperatorId: administrationId,
+    createSlackChannel: z.boolean().optional(),
     startDate: z.string().date().nullable().default(null),
     targetDate: z.string().date().nullable().default(null),
     color: projectColor.nullable().default(null),
@@ -96,7 +97,7 @@ export const projectCreateSchema = z
     labelIds: projectLabelIds.default([]),
   })
   .strict();
-export const projectUpdateSchema = projectCreateSchema
+export const projectUpdateSchema = projectCreateSchema.omit({createSlackChannel:true})
   .partial()
   .extend({
     description: projectCreateSchema.shape.description.removeDefault().optional(),

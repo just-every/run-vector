@@ -1,3 +1,5 @@
+import {createSlackChannel} from '../integrations/channels/settings';
+import {integrationOwner} from '../integrations/authority';
 import { saveCycleSchedule } from "../cycle-schedule/settings";
 import { previewHousekeeping, saveHousekeeping } from "../housekeeping/settings";
 import { housekeepingSchema } from "../housekeeping/schema";
@@ -77,8 +79,8 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
   app.get("/settings/administration", handle(read));
   app.post(
     "/settings/teams",
-    mutation(schema.teamCreateSchema, (c, b) =>
-      createTeam(c.env.DB, c.get("operatorId"), b),
+    mutation(schema.teamCreateSchema, async (c, b) =>
+      createTeam(c.env.DB, c.get("operatorId"), b, b.createSlackChannel ? await createSlackChannel(c.env,await integrationOwner(c.env,c.req.raw),b.identifierPrefix,'team') : undefined),
     ),
   );
   app.patch(
@@ -149,8 +151,8 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
   );
   app.post(
     "/settings/projects",
-    mutation(schema.projectCreateSchema, (c, b) =>
-      createProject(c.env.DB, c.get("operatorId"), b).then(() => {}),
+    mutation(schema.projectCreateSchema, async (c, b) =>
+      createProject(c.env.DB, c.get("operatorId"), b, b.createSlackChannel ? await createSlackChannel(c.env,await integrationOwner(c.env,c.req.raw),b.name,'project') : undefined).then(() => {}),
     ),
   );
   app.patch(

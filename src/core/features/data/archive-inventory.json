@@ -1140,7 +1140,8 @@
     "enabled",
     "revoked_at",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "kind"
   ],
   "vector_webhook_events": [
     "id",
@@ -1541,5 +1542,22 @@
     "completed",
     "created_at",
     "updated_at"
+  ],
+  "vector_slack_installations": [
+    "workspace_id",
+    "team_name",
+    "created_by",
+    "enabled",
+    "updated_at"
+  ],
+  "vector_channel_bindings": [
+    "destination_id",
+    "workspace_id",
+    "scope",
+    "object_id",
+    "channel_id",
+    "channel_name",
+    "events",
+    "created_by"
   ]
 }

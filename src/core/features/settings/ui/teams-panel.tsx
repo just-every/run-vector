@@ -31,6 +31,7 @@ export function TeamsPanel({
       await action.run("/api/settings/teams", "POST", {
         name: fields.get("name"),
         identifierPrefix: fields.get("prefix"),
+        createSlackChannel: fields.has("createSlackChannel"),
       })
     )
       form.reset();
@@ -62,6 +63,8 @@ export function TeamsPanel({
               title="Two to ten uppercase letters"
             />
           </label>
+          <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
+          <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
           <button type="submit">Create team</button>
         </fieldset>
       </form>

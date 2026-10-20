@@ -1,3 +1,5 @@
+import {channelProtocols,channelMessage,channelMatches,sendChannel} from './channels/delivery';
+import {credentialProblem} from './channels/settings';
 import { DeliveryService,D1SqlDatabase,createWebhookProtocol,verifyWebhook } from '../../../../vendor/base/integrations';
 import type { TrustedTransport } from '../../../../vendor/base/integrations';
 import type { WorkerBindings } from '../../app/bindings';
@@ -19,6 +21,7 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
  };
  const protocol=createWebhookProtocol({resolveDestination:async id=>(await configuration(id)).url,signingKey:async envelope=>(await configuration(envelope.destinationId)).key});
  const transport:TrustedTransport={async send(wire){
+  if(wire.headers['vector-channel-destination'])return sendChannel(env,workspace,wire);
   const destination=wire.headers['webhook-destination'],eventId=wire.headers['webhook-id'],current=await configuration(destination);
   if(wire.url!==current.url||(await env.DB.prepare('SELECT 1 FROM vector_webhook_restore_holds WHERE namespace=? AND id=?').bind(workspace,eventId).first()))throw new IntegrationError(503,'outbound_delivery_held');
   await verifyWebhook({body:wire.body,headers:wire.headers,key:current.key,tenant:workspace,destinationId:destination,now:now()});
@@ -34,7 +37,7 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
   const { demoEffect } = await import('../../../../vendor/base/demo/index.mjs');
   return demoEffect(send, () => ({status:204,headers:{},body:''}));
  }};
- return new DeliveryService({repository,protocols:[protocol],transport,now});
+ return new DeliveryService({repository,protocols:[protocol,...channelProtocols(env,workspace)],transport,now});
 }
 /** A destination that cannot sign keeps its events queued, unsent, and is reported as held; every other destination proceeds. */
 export async function dispatchWebhooks(env:WorkerBindings){
@@ -42,14 +45,23 @@ export async function dispatchWebhooks(env:WorkerBindings){
  const workspaces=(await env.DB.prepare('SELECT DISTINCT workspace_id FROM vector_webhook_destinations WHERE enabled=1 AND revoked_at IS NULL LIMIT 100').all<{workspace_id:string}>()).results;
  let enqueued=0,dispatched=0,held=0,configured=false;
  for(const {workspace_id:workspace} of workspaces){
-  if(!await deliveryConfigured(env,workspace))continue;
-  configured=true;
-  const blocked=[...(await destinationSigningProblems(env,workspace)).keys()],service=outboundService(env,workspace,Date.now,blocked);
+  const genericConfigured=await deliveryConfigured(env,workspace);
+  configured ||= genericConfigured;
+  const destinations=(await env.DB.prepare("SELECT id,kind FROM vector_webhook_destinations WHERE workspace_id=? AND enabled=1 AND revoked_at IS NULL").bind(workspace).all<{id:string;kind:string}>()).results;
+  if(!genericConfigured&&!destinations.some(d=>d.kind!=='webhook'))continue;
+  const blocked=[...(await destinationSigningProblems(env,workspace)).keys()];
+  for(const destination of destinations){
+   if(destination.kind==='webhook'&&!genericConfigured&&!blocked.includes(destination.id))blocked.push(destination.id);
+   if(destination.kind==='slack'&&await credentialProblem(env,'slack:'+workspace))blocked.push(destination.id);
+   if(destination.kind==='discord'&&await credentialProblem(env,'destination:'+destination.id))blocked.push(destination.id);
+  }
+  const service=outboundService(env,workspace,Date.now,blocked);
   const unsendable=blocked.length?` AND e.destination_id NOT IN (${blocked.map(()=>'?').join(',')})`:'';
   held+=blocked.length?(await env.DB.prepare(`SELECT count(*) AS n FROM vector_webhook_events e WHERE e.workspace_id=? AND e.enqueued_at IS NULL AND e.destination_id IN (${blocked.map(()=>'?').join(',')}) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id)`).bind(workspace,...blocked).first<{n:number}>())!.n:0;
-  const events=(await env.DB.prepare(`SELECT e.* FROM vector_webhook_events e JOIN vector_webhook_destinations d ON d.id=e.destination_id WHERE e.workspace_id=? AND e.enqueued_at IS NULL AND d.enabled=1 AND d.revoked_at IS NULL${unsendable} AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id) ORDER BY e.created_at,e.id LIMIT 20`).bind(workspace,...blocked).all<{id:string;destination_id:string;event:string;body:string}>()).results;
+  const events=(await env.DB.prepare(`SELECT e.*,d.kind,b.channel_id FROM vector_webhook_events e JOIN vector_webhook_destinations d ON d.id=e.destination_id LEFT JOIN vector_channel_bindings b ON b.destination_id=d.id WHERE e.workspace_id=? AND e.enqueued_at IS NULL AND d.enabled=1 AND d.revoked_at IS NULL${unsendable} AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id) ORDER BY e.created_at,e.id LIMIT 20`).bind(workspace,...blocked).all<{id:string;destination_id:string;event:string;body:string;kind:string;channel_id:string}>()).results;
   for(const event of events){
-   try {await service.enqueue({id:event.id,tenant:workspace,destinationId:event.destination_id,event:event.event,protocol:'webhook',body:event.body});}
+   if(event.kind!=='webhook'&&!await channelMatches(env,workspace,event.destination_id,event.body)){await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=? WHERE id=?').bind(new Date().toISOString(),event.id).run();continue;}
+   try {await service.enqueue({id:event.id,tenant:workspace,destinationId:event.destination_id,event:event.event,protocol:event.kind,body:event.kind==='webhook'?event.body:channelMessage(env,event.kind,event.channel_id,event.body)});}
    catch(error){if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,event.id).first())continue;throw error;}
    await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=COALESCE(enqueued_at,?) WHERE id=? AND workspace_id=?').bind(new Date().toISOString(),event.id,workspace).run();enqueued++;
   }

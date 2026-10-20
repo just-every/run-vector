@@ -35,6 +35,7 @@ export async function createTeam(
   db: D1Database,
   actor: string,
   input: z.infer<typeof teamCreateSchema>,
+  additional: (id:string)=>D1PreparedStatement[] = () => [],
 ) {
   const ctx = await administrationContext(db, actor),
     id = createUlid(new Date(ctx.at));
@@ -75,6 +76,7 @@ export async function createTeam(
           ctx.at,
         ),
     ),
+    ...additional(id),
     ...audit(ctx, "team.created", id, input.name, null, input),
   ]);
 }

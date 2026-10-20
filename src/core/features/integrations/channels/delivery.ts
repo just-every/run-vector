@@ -1,0 +1,59 @@
+import type {WorkerBindings} from '../../../app/bindings';
+import type {DeliveryProtocol,Envelope,WireRequest} from '../../../../../vendor/base/integrations';
+import {IntegrationError} from '../errors';
+import {openSecret} from '../secrets';
+import {slackToken,discordUrl,classifyProvider,providerSend} from './provider';
+import {issueListQuerySchema} from '../../issues/list-schema';
+import {browseWhere} from '../../issues/browse-sql';
+import {workspaceDate} from '../../issues/browse-access';
+import {restoredEffectsHeld} from '../../data/restore-authority';
+type Channel={id:string;kind:'slack'|'discord';scope:string;object_id:string;created_by:string;channel_id:string;channel_name:string};
+async function currentChannel(env:WorkerBindings,workspace:string,id:string){
+ const row=await env.DB.prepare(`SELECT d.id,d.kind,b.scope,b.object_id,b.created_by,b.channel_id,b.channel_name FROM vector_webhook_destinations d JOIN vector_channel_bindings b ON b.destination_id=d.id JOIN operators o ON o.id=b.created_by AND o.removed_at IS NULL JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE d.id=? AND d.workspace_id=? AND d.enabled=1 AND d.revoked_at IS NULL`).bind(id,workspace).first<Channel>();
+ if(!row||await restoredEffectsHeld(env.DB))throw new IntegrationError(409,'channel_disabled');
+ return row;
+}
+/** Saved views use the same browse predicates as the member's list, at dispatch. */
+export async function channelMatches(env:WorkerBindings,workspace:string,id:string,body:string){
+ const channel=await currentChannel(env,workspace,id),event=JSON.parse(body);
+ if(event.actorId&&!await env.DB.prepare('SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL').bind(event.actorId,workspace).first())return false;
+ const issue=await env.DB.prepare('SELECT i.id,i.team_id,i.project_id FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(event.identifier,workspace).first<{id:string;team_id:string;project_id:string|null}>();
+ if(!issue)return false;
+ if(channel.scope==='team')return issue.team_id===channel.object_id;
+ if(channel.scope==='project')return issue.project_id===channel.object_id&&Boolean(await env.DB.prepare('SELECT 1 FROM projects WHERE id=? AND workspace_id=?').bind(channel.object_id,workspace).first());
+ const view=await env.DB.prepare('SELECT filters_json,sort,grouping FROM saved_views WHERE id=? AND workspace_id=? AND (owner_operator_id=? OR is_shared=1)').bind(channel.object_id,workspace,channel.created_by).first<{filters_json:string;sort:string;grouping:string}>();
+ if(!view)return false;
+ const timezone=await env.DB.prepare('SELECT timezone FROM workspace_settings WHERE id=?').bind(workspace).first<string>('timezone');
+ const query=issueListQuerySchema.parse({...JSON.parse(view.filters_json),sort:view.sort,grouping:view.grouping});
+ const {relation,values}=browseWhere(query,workspace,workspaceDate(new Date(),timezone!),channel.created_by);
+ return Boolean(await env.DB.prepare('SELECT 1 '+relation+' AND i.id=?').bind(...values,issue.id).first());
+}
+const escapeSlack=(text:string)=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+export function channelMessage(env:WorkerBindings,kind:string,channelId:string,body:string){
+ const event=JSON.parse(body),link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);
+ const text=`${event.identifier} · ${event.title}\n${event.actor}: ${event.change}\n${link}`;
+ return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]}});
+}
+export function channelProtocols(env:WorkerBindings,workspace:string):DeliveryProtocol[]{
+ return (['slack','discord'] as const).map(kind=>({id:kind,async prepare(envelope:Envelope):Promise<WireRequest>{
+  const current=await currentChannel(env,workspace,envelope.destinationId);
+  if(current.kind!==kind)throw new IntegrationError(409,'channel_changed');
+  const event=await env.DB.prepare('SELECT body FROM vector_webhook_events WHERE id=? AND workspace_id=?').bind(envelope.id,workspace).first<string>('body');
+  if(!event||!await channelMatches(env,workspace,envelope.destinationId,event))throw new IntegrationError(409,'channel_event_disabled');
+  if(kind==='slack')return {url:'https://slack.com/api/chat.postMessage',body:envelope.body,headers:{'Content-Type':'application/json; charset=utf-8',Authorization:'Bearer '+await slackToken(env,workspace),'vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};
+  const encrypted=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity=? AND slot='current'").bind('destination:'+envelope.destinationId).first<string>('encrypted');
+  if(!encrypted)throw new IntegrationError(409,'discord_needs_attention');
+  return {url:discordUrl(await openSecret(env,'destination:'+envelope.destinationId,encrypted)),body:envelope.body,headers:{'Content-Type':'application/json','vector-channel-destination':envelope.destinationId,'vector-channel-event':envelope.id}};
+ },classify(response){return classifyProvider(kind,response);}}));
+}
+export async function sendChannel(env:WorkerBindings,workspace:string,wire:WireRequest){
+ // Repeat all admission checks immediately before the network call.
+ const id=wire.headers['vector-channel-event'],destination=wire.headers['vector-channel-destination'];
+ if(await env.DB.prepare('SELECT 1 FROM vector_webhook_restore_holds WHERE namespace=? AND id=? UNION ALL SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,id,workspace,id).first())throw new IntegrationError(409,'channel_event_held');
+ const current=await currentChannel(env,workspace,destination),protocol=channelProtocols(env,workspace).find(p=>p.id===current.kind)!;
+ const fresh=await protocol.prepare({id,tenant:workspace,destinationId:destination,event:'channel.send',protocol:current.kind,body:wire.body},Date.now());
+ if(fresh.url!==wire.url)throw new IntegrationError(409,'channel_changed');
+ const headers={...fresh.headers};delete headers['vector-channel-event'];delete headers['vector-channel-destination'];
+ if(env.RER_DEMO==='1'){const {demoEffect}=await import('../../../../../vendor/base/demo/index.mjs');return demoEffect(()=>providerSend({...fresh,headers}),()=>({status:200,headers:{},body:current.kind==='slack'?'{"ok":true}':''}));}
+ return providerSend({...fresh,headers});
+}

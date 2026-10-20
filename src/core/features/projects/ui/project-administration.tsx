@@ -32,13 +32,15 @@ export function ProjectCreate({
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    if (await action.run("/api/settings/projects", "POST", fields(form)))
+    if (await action.run("/api/settings/projects", "POST", {...fields(form),createSlackChannel:new FormData(form).has("createSlackChannel")}))
       form.reset();
   }
   return (
     <form aria-label="Create project" onSubmit={create}>
       <fieldset disabled={action.pending || !hydrated}>
         <ProjectFields operators={operators} labels={labels} autoFocus />
+        <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
+        <p>Creates a public channel from the project name and binds new issue, triage and status events. Connect Slack in Settings → Integrations first. A Slack error stops creation.</p>
         <div className="admin-actions">
           <button>Create project</button>
           <button type="button" onClick={onCancel}>
