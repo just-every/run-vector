@@ -25,6 +25,7 @@ it('[SLACK-003 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPOR
  expect((await f.call('/settings/integrations/slack','POST',{botToken:slackEdge.token})).status).toBe(200);
  const bound=await f.call('/settings/integrations/channels','POST',{scope:'project',objectId:f.project.id,provider:'slack',channelId:'CARCHIVE',channelName:'archive-delivery',events:['issue.created','issue.status_changed']});expect(bound.status).toBe(201);
  const channelBinding=await bound.json() as {id:string};
+ const discordBound=await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:f.team.id,provider:'discord',channelName:'archive-discord',events:['issue.created'],webhookUrl:slackEdge.webhook});expect(discordBound.status).toBe(201);const discordBinding=await discordBound.json() as {id:string};
  const sealed=(await env.DB.prepare('SELECT encrypted FROM vector_integration_secret_keys').all<{encrypted:string}>()).results;
 
  // Synthetic aggregate history tests archive custody; day-close behavior is exercised
@@ -55,7 +56,7 @@ it('[SLACK-003 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPOR
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
  const archiveText=JSON.stringify(records);
- for(const credential of [slackEdge.token,source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
+ for(const credential of [slackEdge.token,slackEdge.webhook,source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
  await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
  const ledgerBefore=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results;
@@ -80,7 +81,7 @@ it('[SLACK-003 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPOR
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
  const credentialState=async()=>await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json() as CredentialState;
  const restoredCredentials=await credentialState();
- const restoredChannels=await (await targetCall('/api/settings/integrations/channels','GET',undefined,historical)).json() as any;expect(restoredChannels.slack).toMatchObject({connected:false,needsAttention:true});expect(restoredChannels.bindings).toMatchObject([{id:channelBinding.id,objectId:f.project.id,channelId:'CARCHIVE'}]);
+ const restoredChannels=await (await targetCall('/api/settings/integrations/channels','GET',undefined,historical)).json() as any;expect(restoredChannels.slack).toMatchObject({connected:false,needsAttention:true});expect(restoredChannels.bindings).toEqual(expect.arrayContaining([expect.objectContaining({id:channelBinding.id,objectId:f.project.id,channelId:'CARCHIVE'}),expect.objectContaining({id:discordBinding.id,objectId:f.team.id,provider:'discord',needsAttention:true})]));
  expect(restoredCredentials.sources.find(row=>row.id===source.id)).toMatchObject({requiresReentry:1,webhookRequiresReentry:1});
  expect(restoredCredentials.destinations.find(row=>row.id===f.webhook)).toMatchObject({requiresReentry:1});
  expect(restoredCredentials.github.find(row=>row.id===github.id)).toMatchObject({requiresReentry:1});
@@ -133,6 +134,8 @@ it('[SLACK-003 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPOR
  expect((await createServerApp().request(targetBindings.APP_ORIGIN+'/api/v1/issues',{headers:{Authorization:'Bearer '+replacementToken.token}},targetBindings)).status).toBe(200);
  expect((await targetCall('/api/settings/integrations/slack','POST',{botToken:slackEdge.token},historical)).status).toBe(200);
  expect(await (await targetCall('/api/settings/integrations/channels','GET',undefined,historical)).json()).toMatchObject({slack:{connected:true,needsAttention:false}});
+ expect((await targetCall('/api/settings/integrations/channels','POST',{scope:'team',objectId:f.team.id,provider:'discord',channelName:'archive-discord',events:['issue.created'],webhookUrl:slackEdge.webhook},historical)).status).toBe(201);
+ expect(await (await targetCall('/api/settings/integrations/channels','GET',undefined,historical)).json()).toMatchObject({bindings:expect.arrayContaining([expect.objectContaining({provider:'discord',needsAttention:false})])});
  slackEdge.restore();
  const reentered=await credentialState();
  expect(reentered.sources.find(row=>row.id===source.id)).toMatchObject({requiresReentry:0,webhookRequiresReentry:0});

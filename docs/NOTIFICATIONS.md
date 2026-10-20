@@ -45,3 +45,16 @@ Apply forward migration `0032_due_reminders.sql` after 0031. It adds the workspa
 Native confirmed issue deletion atomically removes inbox rows, candidates/events, notification deliveries and attempts, development captures and restore mail holds through their existing cascades. Recipient preferences and issue-independent notification settings remain. Current issue/session admission prevents a late mail capture or submission from recreating private local state. An already invoked mail or webhook provider operation cannot be recalled; identifier-only mail audit and terminal webhook evidence survive. Webhook event/envelope payloads are erased and permanent event fences block later enqueue, claim and transport. Attachment cleanup completion is tracked separately in the authorized deletion receipt.
 
 Issue deletion snapshots current Inbox state, finalized events, candidates, mail intents, attempts, restore holds and development captures. Their complete removal is a transaction postcondition, using captured IDs even after owner rows disappear. A concurrent public read/mute or transport state change requires a fresh deletion preparation. Identifier-only mail and due-reminder audits remain; deleted content and private preimages are never retained in the deletion receipt.
+
+## Bound Slack and Discord channels
+
+SLACK-003 channel posts use the native integration outbound ledger, rather than
+personal email intents. The configured team/project/saved-view destination gets
+one minimal post per selected new-triage, new-issue or status-change event.
+Messages include identifier, title, actor, change and canonical issue link only.
+No description or comment body leaves the deployment. See [Integrations](INTEGRATIONS.md)
+for credentials, creation, the Discord host restriction, restore holds and
+failure history. Removing a binding, deleting the issue or removing the binding
+operator stops future posts; a started request may finish, and local erasure
+cannot recall already-posted messages. Future project, release, SLA, agent and
+initiative clauses inherit the same once-per-bound-event rule.

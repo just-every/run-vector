@@ -153,3 +153,55 @@ Apply 0027/0028 additively after 0026. Keep schema, tombstones, processed marker
 attempts and terminal results on compatible-source rollback. Recover D1/FILES
 and matching source together in isolation. Hosted egress, stage installation,
 live accounts, the public site and publication remain owner work.
+
+## Slack and Discord channel notifications (SLACK-003)
+
+In Settings → Integrations → Slack and Discord channels, an Admin pastes a Slack
+bot token. Vector validates it with `auth.test` and seals it with AES-GCM using
+`sealSecret`/`openSecret`, bound to this workspace. The token never appears in a
+read response. Replace it in the same form to rotate it. Removing the connection
+deletes the stored token and disables its bindings. Every admitted operator acts
+as Admin until ROLE-001; teams are workspace-visible until ROLE-002.
+
+Choose a team, project or saved view, a Slack channel ID and display name, and
+chosen events. Each object has one destination; saving again replaces its
+binding. Add the Slack bot to an existing channel first. New triage, new issue
+and status changes post now. Saved views use the member’s current browse filters
+at dispatch. Project updates, releases, SLA warnings, agent completions and
+initiatives inherit their posts in PROJ-010, RELEASE-001/003, AUTO-004,
+AGENT-002/003 and INIT-001 before those objects ship. ROLE-002 must enforce that
+private-team content only posts to channels an Admin bound to that team.
+
+A team or project creation form offers **Create Slack channel**. Vector calls
+`conversations.create` once, for a public channel named from the identifier or
+name (lowercase, hyphens, at most 80 characters), and binds the returned channel
+as part of the native object transaction. A Slack error, including `name_taken`,
+is shown and refuses creation without an automatic retry. If Slack creates a
+channel but the later local transaction fails, check Slack before trying again;
+Vector cannot atomically commit across Slack and its own database.
+
+Discord destinations accept only HTTPS `discord.com` or `discordapp.com` URLs
+with a path beginning `/api/webhooks/`. The complete URL is sealed in the same
+excluded secret store; settings retain only its display name. Redirects are
+refused. Slack uses fixed `https://slack.com/api/` endpoints. These fixed provider
+hosts do not use the arbitrary-webhook resolved-address egress configuration.
+
+Messages send the issue identifier, title, readable actor name, status change
+and canonical `/app/issues/:identifier` link outside the deployment. Descriptions,
+comments, attachments and evidence bodies are never included. Slack formatting
+and Discord allowed mentions prevent issue text from generating mentions.
+
+Channel delivery reuses the existing durable outbound events, claims, attempts,
+finite retries and uncertain terminal states. Settings → Delivery history shows
+failures. A timeout or unknown provider result is never automatically resent.
+Unbinding, issue deletion, removal of the configuring operator or removing Slack
+stops future sends; a request already started may finish. Vector’s local erasure
+cannot recall messages already posted in Slack or Discord (SEC-003).
+
+Archives retain bindings and delivery history but exclude the bot token and
+Discord webhook URL. Restore holds historical effects permanently and shows
+**Needs attention** until credentials are re-entered and future effects reviewed.
+The manifest/OAuth installation, Events API, @Vector issue creation and explicit
+member linking remain SLACK-001; this paste path does not claim those features.
+Apply `0073_channel_notifications.sql` additively after the v0.4.0 schema and keep
+all prior rows, outbound terminal states and new binding tables on rollback.
