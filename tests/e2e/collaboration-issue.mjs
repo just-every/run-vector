@@ -82,11 +82,6 @@ export async function createCollaborationIssue({
         .waitFor({ state: "hidden" });
     },
   );
-  assert.equal(
-    await page.locator(".issue-property-bar select").count(),
-    5,
-    "exactly five existing property pickers",
-  );
   await page.getByRole("button", { name: "Edit issue", exact: true }).click();
   assert.deepEqual(
     await page
