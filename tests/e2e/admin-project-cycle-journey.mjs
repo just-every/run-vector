@@ -246,7 +246,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
       await page.getByLabel(/^Title/).fill(title);
       await page.getByLabel(/^Team/).selectOption(team.id);
       await openDisclosures(page);
-      await page.getByRole('combobox',{name:'Status',exact:true}).selectOption(statuses.find(item=>item.category===category).id);
+      await page.getByLabel(/^Status/).selectOption(statuses.find(item=>item.category===category).id);
       await page.getByRole('combobox',{name:'Project',exact:true}).selectOption(project.id);
       await page.getByRole('combobox',{name:'Milestone',exact:true}).selectOption(milestones.find(item=>item.name===milestone).id);
       if(category==='unstarted')await capture(`milestone-issue-create-${width}`);
