@@ -12,7 +12,8 @@ it('[PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ
  const f=await populatedHttpSource();const peer=f.peerCookie;
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
  const milestone=(await milestoneResponse.json() as any).milestones[0];
- const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:f.issue.version,milestoneId:milestone.id});expect(assigned.status).toBe(200);
+ const issueBefore=await (await f.call('/issues/'+f.issue.identifier)).json() as {version:number};
+ const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:issueBefore.version,milestoneId:milestone.id});expect(assigned.status,await assigned.clone().text()).toBe(200);
  const sourceResponse=await f.call('/settings/integrations/sources','POST',{name:'Archive source',sourceId:'archive-source',teamId:f.team.id});expect(sourceResponse.status).toBe(201);
  const source=await sourceResponse.json() as {id:string;secret:string;webhookUrl:string};
  const githubResponse=await f.call('/settings/integrations/github','POST',{name:'Archive repository',repository:'just-every/run-vector'});expect(githubResponse.status).toBe(201);
@@ -31,7 +32,7 @@ it('[PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ
  const finalProjectBefore=await env.DB.prepare('SELECT * FROM project_report_snapshots WHERE project_id=?').bind(f.project.id).first();
  const projectReportBefore=await (await f.call('/projects/'+f.project.id)).json() as {report:unknown};
  const projectHistoryBefore=await env.DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all();
- expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:1})).status).toBe(200);
+ expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
  expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current

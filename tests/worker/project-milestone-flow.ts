@@ -25,7 +25,7 @@ export async function exerciseMilestones(f:Awaited<ReturnType<typeof setupIntegr
   expect((await f.call(base+'/order','PUT',{milestoneIds:[foundation,foundation]})).status).toBe(400);
   const state=await f.mutate('/settings/projects','POST',{name:'Milestone destination',leadOperatorId:f.owner});
   const destination=state.projects.find(p=>p.name==='Milestone destination')!;
-  expect((await f.call('/issues/'+open.identifier,'PATCH',{expectedVersion:open.version,projectId:destination.id,milestoneId:rollout})).status).toBe(409);
+  expect((await f.call('/issues/'+open.identifier,'PATCH',{expectedVersion:open.version,projectId:destination.id,milestoneId:rollout})).status).toBe(400);
   const moved=await f.call('/issues/'+open.identifier,'PATCH',{expectedVersion:open.version,projectId:destination.id});
   expect(moved.status).toBe(200);
   const changed=await moved.json() as any;
