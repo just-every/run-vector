@@ -23,7 +23,7 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   await dispatchWebhooks(current);await dispatchWebhooks(current);expect(slack()).toHaveLength(1);
   expect(slack()[0].body.text).toContain(issue.identifier+' · Ship checkout');expect(slack()[0].body.text).toContain('Owner: Created');expect(slack()[0].body.text).toContain(current.APP_ORIGIN+'/app/issues/'+issue.identifier);expect(JSON.stringify(slack())).not.toContain('Private body');
   expect((await f.call('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started')!.id})).status).toBe(200);
-  await dispatchWebhooks(current);expect(slack()).toHaveLength(2);expect(slack()[1].body.text).toContain('Unstarted → Started');
+  await dispatchWebhooks(current);expect(slack()).toHaveLength(2);expect(slack()[1].body.text).toContain(team.statuses.find(s=>s.category==='unstarted')!.name+' → '+team.statuses.find(s=>s.category==='started')!.name);
   await f.create({title:'Unbound project event',statusId:team.statuses.find(s=>s.category==='unstarted')!.id});await dispatchWebhooks(current);expect(slack()).toHaveLength(2);
   await f.call('/settings/integrations/channels/'+binding,'DELETE');await f.create({projectId:project.id});await dispatchWebhooks(current);expect(slack()).toHaveLength(2);
   const discordId=await bind('project',project.id,'discord',['issue.created']);
@@ -40,7 +40,7 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   const viewResponse=await f.call('/views','POST',{name:'High delivery',isShared:true,query:{priority:'high'}});expect(viewResponse.status).toBe(201);const view=await viewResponse.json() as {id:string};
   const viewId=await bind('view',view.id);
   await f.create({priority:'low'});await f.create({priority:'high'});await dispatchWebhooks(current);const viewPosts=slack().length;expect(viewPosts).toBe(3);await f.call('/settings/integrations/channels/'+viewId,'DELETE');
-  const teamBinding=await bind('team',team.id);edge.postMode('uncertain');await f.create();await dispatchWebhooks(current);const uncertainCount=slack().length;await dispatchWebhooks(current);expect(slack()).toHaveLength(uncertainCount);
+  await bind('team',team.id);edge.postMode('uncertain');await f.create();await dispatchWebhooks(current);const uncertainCount=slack().length;await dispatchWebhooks(current);expect(slack()).toHaveLength(uncertainCount);
   const workspace=await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id');
   const uncertain=await env.DB.prepare("SELECT id FROM integration_deliveries WHERE state='uncertain' AND json_extract(envelope,'$.protocol')='slack'").first<{id:string}>();expect(uncertain).not.toBeNull();
   edge.postMode('retry');await f.create();await dispatchWebhooks(current);let retry=await env.DB.prepare("SELECT id,next_at,attempts,max_attempts,state FROM integration_deliveries WHERE state='queued' AND json_extract(envelope,'$.protocol')='slack'").first<any>();expect(retry).not.toBeNull();
@@ -53,5 +53,10 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   const peerCookie=await invite('channels@vector.test',f.cookie),peer=await actor(peerCookie);
   expect((await request('/api/settings/integrations/channels','POST',{scope:'team',objectId:team.id,provider:'slack',channelId:'CDELIVERY',channelName:'peer-delivery',events:['triage.created']},peerCookie)).status).toBe(201);
   expect((await f.call('/settings/operators/'+peer,'DELETE')).status).toBe(200);await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
+  await bind('team',team.id);
+  await env.DB.prepare("UPDATE vector_integration_secret_keys SET encrypted=? WHERE identity=?").bind('00'.repeat(12)+':'+'ab'.repeat(32),'slack:'+workspace).run();
+  await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);expect((await state()).slack).toMatchObject({connected:false,needsAttention:true});
+  expect((await f.call('/settings/integrations/slack','POST',{botToken:edge.token})).status).toBe(200);await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove+1);
+
  }finally{edge.restore();}
 }

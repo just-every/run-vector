@@ -41,6 +41,7 @@ const modules = readdirSync(root, { recursive: true })
   .filter((name) => /\.(?:m?js|wasm)$/.test(name)).map((name) => join(root, name))
   .sort((a, b) => (b === entry) - (a === entry))
   .map((path) => ({ type: path.endsWith(".wasm") ? "CompiledWasm" : "ESModule", path }));
+const channelEdge=process.env.VECTOR_CHANNEL_EDGE?(await import('./integrations/channel-provider-edge.mjs')).channelProviderEdge:undefined;
 const worker = new Miniflare(convertV4MiniflareOptions({
   host, port,
   rootPath: root,
@@ -49,7 +50,7 @@ const worker = new Miniflare(convertV4MiniflareOptions({
   unsafeLocalExplorer: process.env.X_LOCAL_EXPLORER !== "false", // wrangler's default
   logRequests: true,
   log: new Log(LogLevel.INFO),
-  workers: [{ name: "vector-local", modulesRoot: root, modules, ...workerOptions, bindings: { ...workerOptions.bindings, ...vars } }],
+  workers: [{ name: "vector-local", modulesRoot: root, modules, ...workerOptions, ...(channelEdge?{outboundService:channelEdge}:{}), bindings: { ...workerOptions.bindings, ...vars } }],
 }));
 await worker.ready;
 console.log(`worker-serve ready on http://${host}:${port}`);

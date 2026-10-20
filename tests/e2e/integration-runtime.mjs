@@ -5,6 +5,7 @@ import {chromium} from '@playwright/test';
 import {createUiRuntime} from './ui-runtime-support.mjs';
 import {signIn,openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {exerciseIntegrationSettings} from './integration-settings-journey.mjs';
+process.env.VECTOR_CHANNEL_EDGE=resolve('.artifacts/verification/channel-edge-'+process.pid+'.jsonl');
 const runtime=createUiRuntime(),evidence=resolve('evidence/integrations');let browser;
 const proof={passed:false,widths:[],credentialsCaptured:false,liveProvider:false};
 try{
@@ -13,4 +14,4 @@ try{
  for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
  proof.passed=true;
 }finally{await browser?.close();await runtime.stop();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'browser-proof.json'),JSON.stringify(proof,null,2)+'\n');}
-console.log('Native token, source, destination and signed PR link journeys passed at 1440 and 390.');
+console.log('[SLACK-003] Native channel bindings, Slack creation and delivery, Discord and existing integration journeys passed at 1440 and 390.');
