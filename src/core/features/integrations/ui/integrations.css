@@ -19,3 +19,5 @@
 .integration-receivers{display:grid;gap:12px;min-width:0}.integrations-panel .integration-secret{margin:12px 0}.integrations-panel li>p{margin:6px 0}.integrations-panel [role=status] small{display:block;margin-top:6px}
 
 .settings-page .integrations-panel form{justify-items:stretch}.settings-page .integrations-panel ul{padding:0}.settings-page .integrations-panel ol{padding-left:22px}
+.channel-settings label.admin-checkbox{display:flex;align-items:center;gap:8px;min-height:44px}
+.channel-settings input[type=checkbox]{width:18px;height:18px;min-height:0;flex:none;accent-color:var(--app-cobalt-ink)}

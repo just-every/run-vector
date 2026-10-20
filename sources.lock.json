@@ -3845,7 +3845,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/integrations.css": {
-      "sha256": "1d02f28327308ff31374d6917fe4ccbeab1ece3c8222c93bcfbc6962d05ffdd5",
+      "sha256": "4347b4a64da7247d31f277dcb4f46ebf8b7204d41d8e9018737cab95a525d9ff",
       "executable": false
     },
     "src/core/features/integrations/ui/one-time-secret.tsx": {
@@ -5613,7 +5613,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "a2f330af6c7af8d1b21c07a432c4126bbf4d236e9a1b4cf3a8c4cd6e7cfc9d0e",
+      "sha256": "0176b8e6ba761c074621544c14cb88c07687b95d319cbb3faf024fd5e89e9b99",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
