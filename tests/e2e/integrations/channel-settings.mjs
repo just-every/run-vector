@@ -11,10 +11,12 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  const axe=async(selector='.channel-settings')=>{await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const result=await page.evaluate(selector=>axe.run(document.querySelector(selector)),selector);assert.deepEqual(result.violations.filter(v=>['critical','serious'].includes(v.impact)),[]);};
  await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
  const details=panel.locator('details');await details.locator('summary').click();await panel.getByRole('form',{name:'Slack credential'}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('credential');
- await panel.getByLabel('Slack bot token',{exact:true}).fill('synthetic-browser-slack-credential');
+ await panel.getByLabel('Slack bot token',{exact:true}).fill('synthetic-browser-slack-credential-'+width);
  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/slack')&&r.request().method()==='POST');await panel.getByRole('button',{name:'Validate and save Slack token'}).click();assert.equal((await saved).status(),200);
  await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();assert.equal(await panel.getByLabel('Slack bot token').inputValue(),'');
  const admin=await send('/settings/administration','GET');const owner=admin.operators[0];
+ await runtime.writeFixture([{sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:['slack:'+admin.workspace.id]}]);await page.reload();await panel.getByText('Slack needs attention. Re-enter the bot token.',{exact:true}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('needs-attention');
+ await send('/settings/integrations/slack','POST',{botToken:'synthetic-browser-slack-credential-'+width});await page.reload();await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();
  const name='Checkout delivery '+width;
  await page.goto(runtime.base+'/app/projects');await page.getByRole('button',{name:'New project',exact:true}).click();
  const create=page.getByRole('form',{name:'Create project',exact:true});await create.getByLabel('Project name',{exact:true}).fill(name);await create.getByRole('combobox',{name:'Project lead',exact:true}).selectOption(owner.id);await create.getByLabel('Create Slack channel',{exact:true}).check();await create.getByLabel('Create Slack channel',{exact:true}).scrollIntoViewIfNeeded();await shot('create-project');await axe('form[aria-label="Create project"]');
@@ -45,5 +47,6 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  const resumedTick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(resumedTick.status(),200);await resumedTick.body();assert.equal((await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(resumed.identifier)).length,1);
  const failedBinding=(await send('/settings/integrations/channels','GET')).bindings.find(b=>b.scope==='team'&&b.objectId===team.id);await send('/settings/integrations/channels/'+failedBinding.id,'DELETE');
  const teamForm=page.getByRole('form',{name:'Create team',exact:true});await teamForm.getByLabel('Team name',{exact:true}).fill('Customer operations');await teamForm.getByLabel('Identifier prefix',{exact:true}).fill('CUST');await teamForm.getByLabel('Create Slack channel',{exact:true}).check();await teamForm.getByLabel('Create Slack channel',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('create-team');await axe('form[aria-label="Create team"]');
- await page.goto(runtime.base+'/app/settings');
+ await page.goto(runtime.base+'/app/settings');const removedSlack=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/slack')&&r.request().method()==='DELETE');await panel.getByRole('button',{name:'Remove Slack connection',exact:true}).click();assert.equal((await removedSlack).status(),200);await panel.getByText('Slack is not connected.',{exact:true}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('connection-removed');
 }
+

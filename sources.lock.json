@@ -3745,7 +3745,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "97c1422f144ccbbc48116205a4166a218adf790da95a290c92ab35b1d0b87dd1",
+      "sha256": "faf80268fe33c387e2985b5dacfc1638c316062b3f10219c849b80f7174ec18b",
       "executable": false
     },
     "src/core/features/integrations/config-input.ts": {
@@ -5697,11 +5697,11 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "adcf920883564cd1508c75893295a2bc8cb521d6dcfc41138d8593e31617c90b",
+      "sha256": "6d0e522fa57edabc563d499cb122f57e73c7fa79ae522b25f1bcd13f725f25de",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "44087d353bf3a8994b51d72ce90437119c075a2a684b8759f6147b06e43386d4",
+      "sha256": "b8dcd2e2550fbe65c58a25a16699aa408c097a3bb4c70b04611dda386b3c6fca",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
