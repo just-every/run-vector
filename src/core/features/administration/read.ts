@@ -42,7 +42,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         .all<{ id: string; name: string; color: string; projectsEnabled: number }>(),
       db
         .prepare(
-          "SELECT id,name,description,lead_operator_id AS leadOperatorId,start_date AS startDate,target_date AS targetDate,priority,lifecycle,archived_at AS archivedAt FROM projects WHERE workspace_id=? ORDER BY name,id",
+          "SELECT id,name,description,lead_operator_id AS leadOperatorId,start_date AS startDate,target_date AS targetDate,color,icon,priority,lifecycle,archived_at AS archivedAt FROM projects WHERE workspace_id=? ORDER BY name,id",
         )
         .bind(workspaceId)
         .all(),

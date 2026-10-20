@@ -1,6 +1,6 @@
 import { useViewerTime } from '../../../app/viewer-time';
 import type { ProjectDetailData } from './data';
-const fields:Record<string,string>={startDate:'Start date',targetDate:'Target date',priority:'Priority',labelIds:'Labels',name:'Name',description:'Description',leadOperatorId:'Lead',lifecycle:'Lifecycle',archivedAt:'Archive'};
+const fields:Record<string,string>={color:'Color',icon:'Icon',startDate:'Start date',targetDate:'Target date',priority:'Priority',labelIds:'Labels',name:'Name',description:'Description',leadOperatorId:'Lead',lifecycle:'Lifecycle',archivedAt:'Archive'};
 function value(value:unknown,field:string,formatInstant:(value:string)=>string) {
   if(field==='Labels' && Array.isArray(value))return `${value.length} ${value.length===1?'label':'labels'}`;
   if(field==='Priority' && typeof value==='string')return value==='none'?'No priority':value[0].toUpperCase()+value.slice(1);

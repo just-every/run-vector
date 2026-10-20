@@ -37,6 +37,8 @@ export type ProjectSummary = {
   startDate: string | null;
   targetDate: string | null;
   priority: string;
+  color: string | null;
+  icon: string | null;
   labels: Array<{id:string;name:string;color:string}>;
   teamIds: string[];
   lead: { id: string; name: string };
@@ -244,6 +246,8 @@ function buildProjectSummary(
     startDate: project.startDate,
     targetDate: project.targetDate,
     priority: project.priority,
+    color: project.color,
+    icon: project.icon,
     labels: snapshot.projectLabels.filter(link=>link.projectId===project.id).map(link=>{
       const label=snapshot.labels.find(label=>label.id===link.labelId);
       if(!label)throw new Error(`Project ${project.id} has an unknown label`);

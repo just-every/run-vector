@@ -1,3 +1,4 @@
+import { projectColor, projectIcon } from "../projects/appearance";
 import {
   cycleSnapshotSchema,
   cycleFailureSchema,
@@ -75,6 +76,8 @@ export const projectCreateSchema = z
     leadOperatorId: administrationId,
     startDate: z.string().date().nullable().default(null),
     targetDate: z.string().date().nullable().default(null),
+    color: projectColor.nullable().default(null),
+    icon: projectIcon.nullable().default(null),
     priority: projectPriority.default("none"),
     labelIds: projectLabelIds.default([]),
   })
@@ -85,6 +88,8 @@ export const projectUpdateSchema = projectCreateSchema
     description: projectCreateSchema.shape.description.removeDefault().optional(),
     startDate: projectCreateSchema.shape.startDate.removeDefault().optional(),
     targetDate: projectCreateSchema.shape.targetDate.removeDefault().optional(),
+    color: projectColor.nullable().optional(),
+    icon: projectIcon.nullable().optional(),
     priority: projectPriority.optional(),
     labelIds: projectLabelIds.optional(),
     lifecycle: z
@@ -161,6 +166,8 @@ export const administrationSchema = z.object({
       name: z.string(),
       description: z.string(),
       leadOperatorId: z.string(),
+      color: z.string().nullable(),
+      icon: z.string().nullable(),
       startDate: z.string().nullable(),
       targetDate: z.string().nullable(),
       priority: projectPriority,

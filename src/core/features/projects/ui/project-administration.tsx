@@ -1,3 +1,4 @@
+import { ProjectAppearanceFields } from "./project-appearance";
 import { useHydrated } from "../../../app/initial-resources";
 import { useState } from "react";
 import type { FormEvent } from "react";
@@ -12,6 +13,8 @@ function fields(form: HTMLFormElement) {
     name: data.get("name"),
     description: data.get("description"),
     leadOperatorId: data.get("lead"),
+    color: data.get("color") || null,
+    icon: data.get("icon") || null,
     startDate: data.get("startDate") || null,
     targetDate: data.get("targetDate") || null,
     priority: data.get("priority"),
@@ -73,7 +76,7 @@ export function ProjectAdministration({
       </summary>
       <form aria-label={`Edit project ${project.name}`} onSubmit={save}>
         <fieldset disabled={action.pending || !hydrated}>
-          <ProjectFields key={project.id + project.startDate + project.targetDate + project.priority + project.labelIds.join(",")} operators={operators} labels={labels} project={project} />
+          <ProjectFields key={project.id + project.color + project.icon + project.startDate + project.targetDate + project.priority + project.labelIds.join(",")} operators={operators} labels={labels} project={project} />
           <label>
             Project lifecycle
             <select name="lifecycle" defaultValue={project.lifecycle}>
@@ -161,6 +164,7 @@ function ProjectFields({
           ))}
         </select>
       </label>
+      <ProjectAppearanceFields project={project} />
       <label>
         Project start date
         <input name="startDate" type="date" defaultValue={project?.startDate ?? ""} />

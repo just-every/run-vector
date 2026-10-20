@@ -18,6 +18,8 @@ type Project = {
   lead_operator_id: string;
   start_date: string | null;
   target_date: string | null;
+  color: string | null;
+  icon: string | null;
   priority: string;
   lifecycle: string;
   archived_at: string | null;
@@ -42,7 +44,7 @@ export async function createProject(
     leadGuard(ctx, input.leadOperatorId),
     ctx.db
       .prepare(
-        `INSERT INTO projects(id,workspace_id,name,description,lead_operator_id,start_date,target_date,priority,lifecycle,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,'planned',?,?)`,
+        `INSERT INTO projects(id,workspace_id,name,description,lead_operator_id,start_date,target_date,color,icon,priority,lifecycle,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,'planned',?,?)`,
       )
       .bind(
         id,
@@ -52,6 +54,8 @@ export async function createProject(
         input.leadOperatorId,
         input.startDate,
         input.targetDate,
+        input.color,
+        input.icon,
         input.priority,
         ctx.at,
         ctx.at,
@@ -79,6 +83,8 @@ export async function updateProject(
     leadOperatorId: old.lead_operator_id,
     startDate: old.start_date,
     targetDate: old.target_date,
+    color: old.color,
+    icon: old.icon,
     priority: old.priority,
     labelIds: oldLabels,
     lifecycle: old.lifecycle,
@@ -89,6 +95,8 @@ export async function updateProject(
     description: input.description ?? old.description,
     leadOperatorId: input.leadOperatorId ?? old.lead_operator_id,
     startDate: input.startDate === undefined ? old.start_date : input.startDate,
+    color: input.color === undefined ? old.color : input.color,
+    icon: input.icon === undefined ? old.icon : input.icon,
     priority: input.priority ?? old.priority,
     labelIds: input.labelIds === undefined ? oldLabels : [...input.labelIds].sort(),
     targetDate:
@@ -105,7 +113,7 @@ export async function updateProject(
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
+      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND color IS ? AND icon IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
       id,
       ctx.workspace,
       old.name,
@@ -113,6 +121,8 @@ export async function updateProject(
       old.lead_operator_id,
       old.target_date,
       old.start_date,
+      old.color,
+      old.icon,
       old.priority,
       old.lifecycle,
       old.archived_at,
@@ -121,7 +131,7 @@ export async function updateProject(
     leadGuard(ctx, next.leadOperatorId),
     ctx.db
       .prepare(
-        "UPDATE projects SET name=?,description=?,lead_operator_id=?,target_date=?,start_date=?,priority=?,lifecycle=?,archived_at=?,updated_at=? WHERE id=?",
+        "UPDATE projects SET name=?,description=?,lead_operator_id=?,target_date=?,start_date=?,color=?,icon=?,priority=?,lifecycle=?,archived_at=?,updated_at=? WHERE id=?",
       )
       .bind(
         next.name,
@@ -129,6 +139,8 @@ export async function updateProject(
         next.leadOperatorId,
         next.targetDate,
         next.startDate,
+        next.color,
+        next.icon,
         next.priority,
         next.lifecycle,
         next.archivedAt,
@@ -147,7 +159,7 @@ export async function removeProject(db: D1Database, actor: string, id: string) {
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
+      "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND name=? AND description=? AND lead_operator_id=? AND target_date IS ? AND start_date IS ? AND color IS ? AND icon IS ? AND priority=? AND lifecycle=? AND archived_at IS ?)",
       id,
       ctx.workspace,
       old.name,
@@ -155,6 +167,8 @@ export async function removeProject(db: D1Database, actor: string, id: string) {
       old.lead_operator_id,
       old.target_date,
       old.start_date,
+      old.color,
+      old.icon,
       old.priority,
       old.lifecycle,
       old.archived_at,

@@ -1,3 +1,4 @@
+import { ProjectAppearance } from "./project-appearance";
 import type { Administration } from "../../administration/schema";
 import { ProjectAdministration } from "./project-administration";
 import { useHydrated } from "../../../app/initial-resources";
@@ -134,7 +135,7 @@ function ProjectRow({ project }: { project: ProjectSummaryData }) {
       aria-label={`Open ${project.name}`}
     >
       <span className="project-row__name">
-        <strong>{project.name}</strong>
+        <strong className="project-name"><ProjectAppearance color={project.color} icon={project.icon} />{project.name}</strong>
         <small>{project.description || "No description"}</small>
         <small>{project.priority === "none" ? "No priority" : lifecycleLabel(project.priority)}{project.startDate ? ` · Starts ${project.startDate}` : ""}{project.targetDate ? ` · Target ${project.targetDate}` : ""}</small>
         {project.labels.length > 0 && <small>{project.labels.map(label=>label.name).join(" · ")}</small>}

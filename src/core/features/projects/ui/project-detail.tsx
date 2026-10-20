@@ -1,3 +1,4 @@
+import { ProjectAppearance } from "./project-appearance";
 import { useViewerTime } from '../../../app/viewer-time';
 import { ProjectActivity } from "./project-activity";
 import { RiskEvidence } from "./risk-evidence";
@@ -100,7 +101,7 @@ function ProjectDetailContent({
           <p className="stream-overline">
             {lifecycleLabel(project.lifecycle)} project
           </p>
-          <h1 id="project-title">{project.name}</h1>
+          <h1 id="project-title" aria-label={project.name} className="project-name"><ProjectAppearance color={project.color} icon={project.icon} />{project.name}</h1>
           <SafeMarkdown>
             {project.description || "No description has been recorded."}
           </SafeMarkdown>

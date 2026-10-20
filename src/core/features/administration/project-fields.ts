@@ -20,6 +20,6 @@ export function projectLabelWrites(ctx: AdministrationContext, id: string, label
   ];
 }
 export function projectFieldActivity(ctx: AdministrationContext, id: string, previous: Record<string, unknown>, next: Record<string, unknown>) {
-  return ['startDate','targetDate','priority','labelIds'].filter(key => JSON.stringify(previous[key]) !== JSON.stringify(next[key]))
+  return ['startDate','targetDate','priority','labelIds','color','icon'].filter(key => JSON.stringify(previous[key]) !== JSON.stringify(next[key]))
     .map(key => projectActivity(ctx, id, `project.${key}_changed`, previous[key], next[key]));
 }

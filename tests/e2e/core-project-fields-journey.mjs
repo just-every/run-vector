@@ -59,7 +59,43 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
     assert.equal(sql(`SELECT target_date FROM projects WHERE id='${project.id}'`)[0].target_date,'2027-02-20');
     await capture(`project-date-refusal-${suffix}`);
   });
-  await edit.getByLabel('Project target date',{exact:true}).fill('2027-02-20');
+  await clause('PROJ-001',"a project's color and icon save, appear on list and page and are one activity entry each",async()=>{
+    await edit.getByLabel('Project target date',{exact:true}).fill('2027-02-20');
+    await edit.getByLabel('Project color',{exact:true}).fill('#A34F80');
+    await edit.getByLabel('Project icon',{exact:true}).fill('👩🏽‍💻');
+    const project=sql(`SELECT id FROM projects WHERE name='${name}'`)[0];
+    const detail=async()=>{
+      const response=await page.request.get(base+'/api/projects/'+project.id);
+      assert.equal(response.status(),200);
+      return response.json();
+    };
+    await edit.getByRole('button',{name:'Save project',exact:true}).click();
+    await poll(detail,value=>value.color==='#a34f80'&&value.icon==='👩🏽‍💻','project appearance saved');
+    await settleReads(page);
+    const saved=await detail();
+    for(const field of ['color','icon']) {
+      const entries=saved.activity.filter(entry=>entry.kind===`project.${field}_changed`);
+      assert.equal(entries.length,1);
+      assert.equal(entries[0].previousValue,null);
+      assert.equal(entries[0].nextValue,saved[field]);
+    }
+    const color=page.locator('.project-detail__header').getByRole('img',{name:'Project color #a34f80',exact:true});
+    await color.waitFor();
+    assert.equal(await color.evaluate(element=>getComputedStyle(element).backgroundColor),'rgb(163, 79, 128)');
+    await page.locator('.project-detail__header').getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
+    assert.equal(await page.locator('.project-fact-list li').filter({has:page.getByText('Color changed',{exact:true})}).count(),1);
+    assert.equal(await page.locator('.project-fact-list li').filter({has:page.getByText('Icon changed',{exact:true})}).count(),1);
+    await openAdministrationForm(page,`Edit project ${name}`);
+    const [unchanged]=await Promise.all([
+      page.waitForResponse(response=>response.url()===base+'/api/settings/projects/'+project.id&&response.request().method()==='PATCH'),
+      edit.getByRole('button',{name:'Save project',exact:true}).click(),
+    ]);
+    assert.equal(unchanged.status(),200);
+    await settleReads(page);
+    assert.deepEqual((await detail()).activity,saved.activity);
+    await capture(`project-appearance-detail-${suffix}`);
+  });
+  await openAdministrationForm(page,`Edit project ${name}`);
   await edit.getByRole('combobox',{name:'Project lifecycle',exact:true}).selectOption('active');
   await edit.getByRole('button',{name:'Save project',exact:true}).click();
   await poll(()=>sql(`SELECT lifecycle FROM projects WHERE name='${name}'`),rows=>rows[0]?.lifecycle==='active','active planning project');
@@ -76,6 +112,10 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
   await capture(`project-planning-detail-${suffix}`);
   await beforePrivateNavigation(page,base+'/app/projects');
   await page.goto(base+'/app/projects');
+  const identityRow=page.getByRole('link',{name:`Open ${name}`,exact:true});
+  await identityRow.getByRole('img',{name:'Project color #a34f80',exact:true}).waitFor();
+  await identityRow.getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
+  await capture(`project-appearance-list-${suffix}`);
   await clause('PROJ-007','every portfolio filter and combined filters keep rows and health/lifecycle counts aligned',async()=>{
     const assertPortfolio=async(query={})=>{
       const response=await page.request.get(base+'/api/projects?'+new URLSearchParams(query));
@@ -122,6 +162,29 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
     await form.getByRole('combobox',{name:'Project priority',exact:true}).selectOption('urgent');
     await form.getByRole('button',{name:'Save project',exact:true}).click();
     await poll(()=>sql(`SELECT priority FROM projects WHERE name='${name}'`),rows=>rows[0]?.priority==='urgent','portfolio edit persisted');
+  });
+  await clause('PROJ-001','project appearance can be cleared and set from the projects list',async()=>{
+    await settleReads(page);
+    await openAdministrationForm(page,`Edit project ${name}`);
+    const form=page.getByRole('form',{name:`Edit project ${name}`,exact:true});
+    const before=await (await page.request.get(base+'/api/projects/'+project.id)).json();
+    await form.getByLabel('Project color',{exact:true}).fill('');
+    await form.getByLabel('Project icon',{exact:true}).fill('');
+    await form.getByRole('button',{name:'Save project',exact:true}).click();
+    await poll(async()=>await (await page.request.get(base+'/api/projects/'+project.id)).json(),value=>value.color===null&&value.icon===null,'project appearance cleared');
+    await settleReads(page);
+    assert.equal(await identityRow.getByRole('img').count(),0);
+    const cleared=await (await page.request.get(base+'/api/projects/'+project.id)).json();
+    assert.equal(cleared.activity.length,before.activity.length+2);
+    for(const field of ['color','icon'])assert.equal(cleared.activity.filter(entry=>entry.kind===`project.${field}_changed`&&entry.nextValue===null).length,1);
+    await openAdministrationForm(page,`Edit project ${name}`);
+    await form.getByLabel('Project color',{exact:true}).fill('#a34f80');
+    await form.getByLabel('Project icon',{exact:true}).fill('👩🏽‍💻');
+    await form.getByRole('button',{name:'Save project',exact:true}).click();
+    await identityRow.getByRole('img',{name:'Project color #a34f80',exact:true}).waitFor();
+    await identityRow.getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
+    const restored=await (await page.request.get(base+'/api/projects/'+project.id)).json();
+    assert.equal(restored.activity.length,cleared.activity.length+2);
   });
   await capture(`project-planning-portfolio-${suffix}`);
 }

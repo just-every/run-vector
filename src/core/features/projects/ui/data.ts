@@ -23,6 +23,8 @@ export const projectSummarySchema = z.object({
   archived: z.boolean(),
   startDate: z.string().nullable(),
   targetDate: z.string().nullable(),
+  color: z.string().nullable(),
+  icon: z.string().nullable(),
   priority: z.string(),
   labels: z.array(z.object({id:z.string(),name:z.string(),color:z.string()})),
   teamIds: z.array(z.string()),

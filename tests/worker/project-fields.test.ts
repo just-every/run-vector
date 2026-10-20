@@ -84,3 +84,63 @@ it('[PROJ-001 API-001] scoped project API creates and changes native planning fi
   expect((await f.api(writer.token,'/projects','POST',{...input,name:'Bad range',targetDate:'2027-01-01'})).status).toBe(400);
 });
 
+
+it("[PROJ-001] a project's color and icon save, appear on list and page and are one activity entry each",async()=>{
+  const f=await setupIntegrations();
+  const state=await f.mutate('/settings/projects','POST',{name:'Visual identity',leadOperatorId:f.owner});
+  const id=state.projects.find(project=>project.name==='Visual identity')!.id;
+  const read=async()=>await (await f.call('/projects/'+id)).json() as any;
+  const initial=await read();
+  expect(initial).toMatchObject({color:null,icon:null});
+  const identity={color:'#A34F80',icon:'🚀'};
+  await f.mutate('/settings/projects/'+id,'PATCH',identity);
+  f.restart();
+  const detail=await read();
+  expect(detail).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
+  const changes=detail.activity.filter((entry:any)=>entry.kind.endsWith('_changed'));
+  expect(changes).toHaveLength(2);
+  expect(changes).toEqual(expect.arrayContaining([
+    expect.objectContaining({kind:'project.color_changed',previousValue:null,nextValue:identity.color.toLowerCase()}),
+    expect.objectContaining({kind:'project.icon_changed',previousValue:null,nextValue:identity.icon}),
+  ]));
+  const portfolio=await (await f.call('/projects')).json() as any;
+  expect(portfolio.projects.find((project:any)=>project.id===id)).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
+  expect((await f.state()).projects.find(project=>project.id===id)).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
+  await f.mutate('/settings/projects/'+id,'PATCH',identity);
+  expect((await read()).activity).toHaveLength(detail.activity.length);
+
+  const reader=await f.issueToken(['projects:read']),writer=await f.issueToken(['projects:read','projects:write']);
+  const apiRead=async()=>await (await f.api(reader.token,'/projects/'+id)).json() as any;
+  expect(await apiRead()).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
+  const apiList=await (await f.api(reader.token,'/projects')).json() as any;
+  expect(apiList.projects.find((project:any)=>project.id===id)).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
+  for(const invalid of [{color:'#abc'},{color:'red'},{color:''},{color:'#a34f80\n'},{icon:'🚀\n'},{icon:'text'},{icon:'🚀🌙'},{icon:''}]) {
+    expect((await f.call('/settings/projects/'+id,'PATCH',invalid)).status).toBe(400);
+    expect((await f.api(writer.token,'/projects/'+id,'PATCH',{...invalid,name:'Must not save'})).status).toBe(400);
+  }
+  expect(await apiRead()).toMatchObject({name:initial.name,color:identity.color.toLowerCase(),icon:identity.icon,activity:detail.activity});
+  // Multi-code-point emoji remain one icon and one change, including flags and keycaps.
+  let previous=identity.icon;
+  let expectedEntries=detail.activity.length;
+  for(const icon of ['👩🏽‍💻','🇦🇺','1️⃣']) {
+    const response=await f.api(writer.token,'/projects/'+id,'PATCH',{icon});
+    expect(response.status,await response.clone().text()).toBe(200);
+    const changed=await response.json() as any;
+    expect(changed).toMatchObject({color:identity.color.toLowerCase(),icon});
+    expect(changed.activity).toHaveLength(++expectedEntries);
+    expect(changed.activity).toContainEqual(expect.objectContaining({kind:'project.icon_changed',previousValue:previous,nextValue:icon}));
+    previous=icon;
+  }
+  const cleared=await f.api(writer.token,'/projects/'+id,'PATCH',{color:null,icon:null});
+  expect(cleared.status,await cleared.clone().text()).toBe(200);
+  expect(await cleared.json()).toMatchObject({color:null,icon:null,activity:expect.arrayContaining([
+    expect.objectContaining({kind:'project.color_changed',previousValue:identity.color.toLowerCase(),nextValue:null}),
+    expect.objectContaining({kind:'project.icon_changed',previousValue:previous,nextValue:null}),
+  ])});
+  expect((await apiRead()).activity).toHaveLength(expectedEntries+2);
+  await f.mutate('/settings/projects/'+id,'PATCH',{color:null,icon:null});
+  expect((await read()).activity).toHaveLength(expectedEntries+2);
+  const created=await f.api(writer.token,'/projects','POST',{name:'API visual identity',leadOperatorId:f.owner,...identity});
+  expect(created.status,await created.clone().text()).toBe(201);
+  expect(await created.json()).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
+});
