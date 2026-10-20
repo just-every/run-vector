@@ -401,6 +401,7 @@ const developmentAssets = new Set([
   "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/RawStreamRPCPlugin.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/ShallowErrorPlugin.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/makeSerovalPlugin.js",
+  "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/rawStreamCodec.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/seroval-plugins.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/transformer.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/ssr-match-id.js",
