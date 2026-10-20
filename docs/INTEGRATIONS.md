@@ -157,7 +157,7 @@ live accounts, the public site and publication remain owner work.
 ## Slack and Discord channel notifications (SLACK-003)
 
 In Settings → Integrations → Slack and Discord channels, an Admin pastes a Slack
-bot token. Vector validates it with `auth.test` and seals it with AES-GCM using
+bot token with `chat:write`, `channels:manage` and `channels:read`. Vector validates it with `auth.test` and seals it with AES-GCM using
 `sealSecret`/`openSecret`, bound to this workspace. The token never appears in a
 read response. Replace it in the same form to rotate it. Removing the connection
 calls `auth.revoke`, deletes the stored token and disables its bindings. A provider
@@ -212,7 +212,8 @@ Slack channel selection and every post require `conversations.info`: the bot
 must be a member, `is_channel` must be true, and `is_archived`, `is_shared`,
 `is_ext_shared`, `is_org_shared` and `is_pending_ext_shared` must explicitly be
 false. Frozen channels are refused; only an absent optional `is_frozen` means
-false (ct, 20 October 2026 19:12Z). Any other missing or malformed safety flag
+false: the held channel omitted this field in the recorded provider run, an
+assumption open to revision (ct, 20 October 2026 19:12Z and 19:24Z). Any other missing or malformed safety flag
 refuses routing. No channel is inferred from a name or email address.
 A channel that becomes unsafe, or whose post is refused as archived, frozen or
 not joined, is visibly suspended. An Admin must save a fresh binding after the
