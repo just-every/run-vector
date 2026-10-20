@@ -12,12 +12,12 @@ export function ProjectAppearanceFields({ project }: { project?: Appearance }) {
   return <>
     <label>
       Project color
-      <input name="color" placeholder="#405080" pattern="#[0-9a-fA-F]{6}" maxLength={7} defaultValue={project?.color ?? ""} />
+      <input aria-label="Project color" name="color" placeholder="#405080" pattern="#[0-9a-fA-F]{6}" maxLength={7} defaultValue={project?.color ?? ""} />
       <small>Six-digit hex color, or leave empty for no color.</small>
     </label>
     <label>
       Project icon
-      <input name="icon" placeholder="🚀" defaultValue={project?.icon ?? ""} />
+      <input aria-label="Project icon" name="icon" placeholder="🚀" defaultValue={project?.icon ?? ""} />
       <small>One emoji, or leave empty for no icon.</small>
     </label>
   </>;

@@ -4385,7 +4385,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-appearance.tsx": {
-      "sha256": "77d6d8c1ec34a6e30b861cf221a9c8ca78dea8fd35aa07e3560b00c0758a6732",
+      "sha256": "1658ae646f8e54fdaa403022516ebd225f58109d486d1cb33b417aa9b9a9451c",
       "executable": false
     },
     "src/core/features/projects/ui/project-detail.tsx": {
