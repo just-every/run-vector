@@ -19,7 +19,7 @@ export function ProjectMilestones({ project, onChanged }: {
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const base = `/api/settings/projects/${project.id}/milestones`;
-  async function run(path: string, method: string, body?: unknown) {
+  async function run(path: string, method: string, body?: unknown, saved?: () => void) {
     if (pending) return false;
     setPending(true); setError("");
     try {
@@ -27,6 +27,7 @@ export function ProjectMilestones({ project, onChanged }: {
         method, headers: { "content-type": "application/json" },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       });
+      saved?.();
       onChanged(receipt);
       return true;
     } catch (cause) {
@@ -37,9 +38,9 @@ export function ProjectMilestones({ project, onChanged }: {
   async function save(event: FormEvent<HTMLFormElement>, milestone?: Milestone) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    if (await run(milestone ? `/${milestone.id}` : "", milestone ? "PATCH" : "POST", {
+    await run(milestone ? `/${milestone.id}` : "", milestone ? "PATCH" : "POST", {
       name: data.get("name"), description: data.get("description"), targetDate: data.get("targetDate") || null,
-    })) { setEditing(null); setCreating(false); }
+    }, () => { setEditing(null); setCreating(false); });
   }
   async function move(index: number, direction: number) {
     const ids = project.milestones.map(item => item.id);

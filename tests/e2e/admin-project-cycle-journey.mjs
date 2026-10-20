@@ -210,6 +210,8 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
   const projectPath='/app/projects/'+project.id;
   await clause('PROJ-011','ordered milestones, progress, workspace-date slip and project-move clearing',async()=>{
     await go(projectPath);
+    await page.getByRole('button',{name:'Add milestone',exact:true}).waitFor();
+    await capture(`milestones-empty-${width}`);
     for(const [milestone,date,description] of [
       ['Payment foundation','', 'Checkout service and payment validation.'],
       ['Customer rollout','2001-01-01','Release to the customer cohort.'],
@@ -226,6 +228,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await page.getByRole('button',{name:'Edit Customer rollout',exact:true}).click();
     const edit=page.getByRole('form',{name:'Edit milestone Customer rollout',exact:true});
     await edit.getByLabel('Milestone description',{exact:true}).fill('Release to the customer cohort after sign-off.');
+    await capture(`milestone-edit-${width}`);
     await edit.getByRole('button',{name:'Save milestone',exact:true}).click();
     await page.getByText('Release to the customer cohort after sign-off.',{exact:true}).waitFor();
     await page.getByRole('button',{name:'Move Customer rollout up',exact:true}).click();
@@ -274,6 +277,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await capture(`milestone-project-move-${width}`);
     await go(projectPath);
     await page.getByRole('button',{name:'Delete Customer rollout',exact:true}).click();
+    await capture(`milestone-delete-confirm-${width}`);
     await page.getByRole('button',{name:'Confirm delete Customer rollout',exact:true}).click();
     await page.getByRole('heading',{name:'Customer rollout',exact:true}).waitFor({state:'hidden'});
     assert.equal(sql(`SELECT count(*) n FROM issues WHERE id IN ('${issues[0].id}','${issues[1].id}')`)[0].n,2,'milestone delete keeps issues');
