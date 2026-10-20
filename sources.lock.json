@@ -3673,7 +3673,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "0bb31ce6383729cd431d440ac1fe254db2bb8a1d05d147d4ece337b6547b7a01",
+      "sha256": "3ef65ab33a32d087387bdeb2aea3997204a5d2dd4d926b599362fe64cd088e6a",
       "executable": false
     },
     "src/core/features/integrations/config-input.ts": {
@@ -5953,7 +5953,7 @@
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "e95f104779d7f33b328f5dc7389cdabba1653067a0623f731f2fedf3b9754c48",
+      "sha256": "d32b7951bb2219adbee3210a1ae252b6f01000878bd6eb559b289757f0afe5bd",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {

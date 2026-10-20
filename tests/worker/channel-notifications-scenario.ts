@@ -26,9 +26,10 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   await dispatchWebhooks(current);expect(slack()).toHaveLength(2);expect(slack()[1].body.text).toContain(team.statuses.find(s=>s.category==='unstarted')!.name+' → '+team.statuses.find(s=>s.category==='started')!.name);
   await f.create({title:'Unbound project event',statusId:team.statuses.find(s=>s.category==='unstarted')!.id});await dispatchWebhooks(current);expect(slack()).toHaveLength(2);
   await f.call('/settings/integrations/channels/'+binding,'DELETE');await f.create({projectId:project.id});await dispatchWebhooks(current);expect(slack()).toHaveLength(2);
-  const discordId=await bind('project',project.id,'discord',['issue.created']);
+  let discordId=await bind('project',project.id,'discord',['issue.created']);
   await f.create({projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted')!.id});await dispatchWebhooks(current);await dispatchWebhooks(current);expect(discord()).toHaveLength(1);
   await f.create({statusId:team.statuses.find(s=>s.category==='unstarted')!.id});await dispatchWebhooks(current);expect(discord()).toHaveLength(1);
+  const retiredDiscord=discordId;discordId=await bind('project',project.id,'discord',['issue.created']);expect(await env.DB.prepare('SELECT 1 FROM vector_integration_secret_keys WHERE identity=?').bind('destination:'+retiredDiscord).first()).toBeNull();
   for(const webhookUrl of ['http://discord.com/api/webhooks/a/b','https://discord.com.evil.test/api/webhooks/a/b','https://discord.com/other/a/b'])expect((await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:team.id,provider:'discord',channelName:'bad',events:['issue.created'],webhookUrl})).status).toBe(400);
   edge.postMode('redirect');await f.create({projectId:project.id});await dispatchWebhooks(current);expect(discord()).toHaveLength(2);expect((await env.DB.prepare("SELECT state FROM integration_deliveries WHERE json_extract(envelope,'$.protocol')='discord' ORDER BY created_at DESC,id DESC LIMIT 1").first())?.state).toBe('rejected');edge.postMode('accepted');
   await f.call('/settings/integrations/channels/'+discordId,'DELETE');
