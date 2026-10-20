@@ -103,7 +103,7 @@ contractWith(
     );
     await held.reading;
     expect((await request("/auth/signout", "POST", {}, f.cookie)).status).toBe(
-      200,
+      204,
     );
     held.release(
       JSON.stringify({

@@ -1,5 +1,12 @@
 name: Verify
 on:
+  workflow_dispatch:
+    inputs:
+      tier:
+        description: Verification tier
+        type: choice
+        options: [full]
+        default: full
   push:
     branches: [main]
   pull_request:

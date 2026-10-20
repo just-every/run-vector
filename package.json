@@ -1,7 +1,7 @@
 {
   "name": "vector",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "type": "module",
   "packageManager": "pnpm@10.12.4",
@@ -58,7 +58,8 @@
     "integration:sync": "node scripts/sync-integration.mjs --write",
     "integration:check": "node scripts/sync-integration.mjs --check",
     "verify:build": "node scripts/verify.mjs",
-    "verify:ci": "node scripts/verify.mjs --ci"
+    "verify:ci": "node scripts/verify.mjs --ci",
+    "test:archive-upgrade": "node --test --test-concurrency=1 tests/installer/older-archive.test.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "1.170.33",
@@ -81,7 +82,7 @@
     "@cloudflare/vitest-plugin": "1.1.2",
     "@cloudflare/workers-types": "5.20260908.1",
     "@playwright/test": "1.63.0",
-    "@runeditrun/rer": "0.2.71",
+    "@runeditrun/rer": "0.2.74",
     "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.0.0",
     "@types/react": "^19.2.0",

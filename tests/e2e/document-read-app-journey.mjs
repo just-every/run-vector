@@ -207,7 +207,7 @@ export async function assertDocumentReadRecovery({
           .click();
         assert.equal(
           (await revoke).status(),
-          200,
+          204,
           "pending navigation permits independent real sign-out",
         );
         await page.waitForURL(runtime.base + "/signin");

@@ -4,7 +4,7 @@ export const buildCommands = [
 ];
 
 export const ciCommands = [
-  'sources:verify-base', 'check', 'test:installer', 'test:markdown',
+  'sources:verify-base', 'check', 'test:installer', 'test:archive-upgrade', 'test:markdown',
   'test:worker', 'test:deployment', 'test:public-site', 'build',
   'integration:check', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
   'test:data', 'test:integrations', 'test:base-auth', 'test:access',
@@ -46,7 +46,7 @@ export const verificationShards = {
   // Keep Vitest's complete six-file-partition wall, balanced across three
   // runners. Each invocation still gets its original isolated Vitest process.
   'worker-1': { commands: [['test:worker', '--shard=4/6'], ['test:worker', '--shard=5/6']] },
-  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6']] },
+  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6'], 'test:archive-upgrade'] },
   'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
 };
 

@@ -101,7 +101,7 @@ export async function privateFixture() {
     else if (mode === "signout")
       expect(
         (await request("/auth/signout", "POST", {}, f.bobCookie)).status,
-      ).toBe(200);
+      ).toBe(204);
     else if (mode === "expire")
       await env.DB.prepare(
         "UPDATE oa_sessions SET expires_at=? WHERE operator_id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)",

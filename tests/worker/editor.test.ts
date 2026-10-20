@@ -25,6 +25,6 @@ it('[EDITOR-001] only current native owners receive short non-secret grants; con
   expect(policy).toContain("script-src 'self' 'nonce-existing'");expect(policy).toContain("default-src 'self'");
   expect(policy).toContain("frame-ancestors 'self' https://management.example.test");
   expect(policy).toContain("frame-src 'self' https://management.example.test");
-  expect((await request('/auth/signout','POST',{},cookie)).status).toBe(200);
+  expect((await request('/auth/signout','POST',{},cookie)).status).toBe(204);
   expect((await request('/api/editor/config','GET',undefined,cookie,config)).status).toBe(403);
 });

@@ -122,7 +122,7 @@ it('[BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine B
   const cookie = result.headers.get('set-cookie')!.split(';')[0]
   expect(cookie.startsWith('__Host-operator_session=')).toBe(true)
   expect((await request('/api/session','GET',undefined,cookie,remote)).status).toBe(200)
-  expect((await request('/auth/signout','POST',{},cookie,remote)).status).toBe(200)
+  expect((await request('/auth/signout','POST',{},cookie,remote)).status).toBe(204)
   expect((await request('/api/session','GET',undefined,cookie,remote)).status).toBe(401)
 })
 it('[OPS-002 OPS-004] setup owner self-removal preserves the equal successor and last-operator guard under Base sessions', async () => {
