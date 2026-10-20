@@ -51,7 +51,8 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   while(retry.state==='queued'){await outboundService(current,workspace!,()=>retry.next_at+1).dispatch(retry.id);retry=await env.DB.prepare('SELECT id,next_at,attempts,max_attempts,state FROM integration_deliveries WHERE id=?').bind(retry.id).first<any>();}expect(retry.attempts).toBe(retry.max_attempts);expect(retry.state).toBe('rejected');
   edge.postMode('accepted');const beforeRemove=slack().length;
   const erased=await f.create();expect((await f.call('/issues/'+erased.identifier,'DELETE',{expectedVersion:erased.version,confirmed:true})).status).toBe(200);await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
-  expect((await f.call('/settings/integrations/slack','DELETE')).status).toBe(200);await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
+  expect((await f.call('/settings/integrations/slack','DELETE')).status).toBe(200);expect(edge.calls.filter(c=>c.method==='auth.revoke')).toHaveLength(1);await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
+  edge.renew();
   // A removed binding owner cannot leave a configured destination posting future events.
   expect((await f.call('/settings/integrations/slack','POST',{botToken:edge.token})).status).toBe(200);
   const peerCookie=await invite('channels@vector.test',f.cookie),peer=await actor(peerCookie);

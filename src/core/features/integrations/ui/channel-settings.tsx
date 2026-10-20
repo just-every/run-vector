@@ -21,7 +21,7 @@ export function ChannelSettings(){
  {config.data&&<>
  <p>{config.data.slack.needsAttention?'Slack needs attention. Re-enter the bot token.':config.data.slack.connected?`Slack connected to ${config.data.slack.teamName}`:'Slack is not connected.'}</p>
  <details><summary>{config.data.slack.connected?'Replace Slack bot token':'Connect Slack'}</summary>
- <p>Use a Slack bot token with chat:write and channels:manage. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it.</p>
+ <p>Use a Slack bot token with chat:write and channels:manage. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack.</p>
  <form aria-label="Slack credential" onSubmit={connect}><fieldset disabled={pending}><label>Slack bot token<input name="botToken" type="password" autoComplete="off" required maxLength={500}/></label><button>Validate and save Slack token</button></fieldset></form></details>
  {config.data.slack.connected&&<button type="button" disabled={pending} onClick={()=>void run('/slack',undefined,'DELETE')}>Remove Slack connection</button>}
  <form aria-label="Bind notification channel" onSubmit={bind}><fieldset disabled={pending}><legend>Bind a channel</legend>

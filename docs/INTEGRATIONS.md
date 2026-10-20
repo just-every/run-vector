@@ -160,7 +160,9 @@ In Settings → Integrations → Slack and Discord channels, an Admin pastes a S
 bot token. Vector validates it with `auth.test` and seals it with AES-GCM using
 `sealSecret`/`openSecret`, bound to this workspace. The token never appears in a
 read response. Replace it in the same form to rotate it. Removing the connection
-deletes the stored token and disables its bindings. Every admitted operator acts
+calls `auth.revoke`, deletes the stored token and disables its bindings. A provider
+revocation error is shown and refuses removal; a restored connection with no
+usable token can still be removed locally. Every admitted operator acts
 as Admin until ROLE-001; teams are workspace-visible until ROLE-002.
 
 Choose a team, project or saved view, a Slack channel ID and display name, and

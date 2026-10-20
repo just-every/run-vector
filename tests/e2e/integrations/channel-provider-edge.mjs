@@ -6,7 +6,7 @@ export async function channelProviderEdge(request){
  appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method,body})+'\n');
  if(method==='auth.test')return Response.json({ok:true,team:'Delivery workspace'});
  if(method==='conversations.create')return Response.json({ok:true,channel:{id:'C'+body.name.replaceAll('-','').toUpperCase(),name:body.name}});
- if(method==='chat.postMessage')return Response.json({ok:true,ts:'123.456'});
+ if(method==='chat.postMessage')return Response.json(body.channel==='CREFUSED'?{ok:false,error:'not_in_channel'}:{ok:true,ts:'123.456'});
  if(!['discord.com','discordapp.com'].includes(url.hostname))throw Error('Unexpected fixture host');
  return new Response(null,{status:204});
 }

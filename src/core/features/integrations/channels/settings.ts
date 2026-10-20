@@ -20,6 +20,8 @@ export async function saveSlack(env:WorkerBindings,owner:IntegrationOwner,token:
  return {connected:true};
 }
 export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
+ // Revoke at Slack before retiring local custody; an error is shown, never silently accepted.
+ if(!await credentialProblem(env,'slack:'+owner.workspace))await slackCall(await slackToken(env,owner.workspace),'auth.revoke',{});
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'UPDATE vector_slack_installations SET enabled=0 WHERE workspace_id=?',params:[owner.workspace]},
   {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:['slack:'+owner.workspace]},

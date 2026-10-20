@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6b2d7946a169602d6b352f434be34294f3674d7423959c31b69a3e5b585983fe",
+      "sha256": "bee16cfc25ba8dcb56bd354b05d157d0ff59b6c124ae6d6ef99e134e0750d31e",
       "executable": false
     },
     "DEMO.md": {
@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "0f12a31185854b8662ce1d573effacc099a2cf62fbc95b988d16aec7316dd9dc",
+      "sha256": "57cecebfd23bf6a862e4be15a41f64afad626bbad2151e2d485b594cdb0526b9",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -3673,7 +3673,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "bfb1ee0e5e57e081cb9e024b2dc6f05f063c6d727055dfd9333596cb5b6ab627",
+      "sha256": "0bb31ce6383729cd431d440ac1fe254db2bb8a1d05d147d4ece337b6547b7a01",
       "executable": false
     },
     "src/core/features/integrations/config-input.ts": {
@@ -3689,7 +3689,7 @@
       "executable": false
     },
     "src/core/features/integrations/delivery-result.ts": {
-      "sha256": "ced96c6dd8d9c20678292cb586aaae084d9c3409e970b696898b6df6a6f9e413",
+      "sha256": "fb5824a1424f1bc8678d6370a13ab3004552309e002c936a3c43952cf5f83caf",
       "executable": false
     },
     "src/core/features/integrations/delivery-setup.ts": {
@@ -3805,7 +3805,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "77d2de2916442b3ed951a8b899e274a4aef937a0aebf824c400eb4a1549fa19c",
+      "sha256": "146ee75efcb670476151f87741e79c24a5c0765043bc1e69b3bb3ec38b365cc8",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -5625,11 +5625,11 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "64e251f2bb56be05cd5cfceb30c06c3aa5c8cba9edb8aaf6cf62c8a52944cd8c",
+      "sha256": "50a79d0f2a90f7c6a2b730d1b243e3c24af7eef743d5f72e342c78fa7ec4c209",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "a35e008fe29522695f64aa6e5ebae2930b6e374dc82b5fe3c6eb8a847529bd77",
+      "sha256": "b85991aebb913a625698e5916798a0fbc0dff4b83988b4758e5aadaa08a348c8",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
@@ -5949,11 +5949,11 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "79fc9fa4ca902f78053ff7eb275d3b84e37b58f86cb48e8cc3ae119eb5bc11c5",
+      "sha256": "4bb767bfafbf1179b4a7ecf9fddc4cc2a0bd571d7cbecd1277aca9f7608ac2e8",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "a5004a6114c7bdfcd8545612376bf0e7272bdf585175ae64276cb55d98f5cdd0",
+      "sha256": "e95f104779d7f33b328f5dc7389cdabba1653067a0623f731f2fedf3b9754c48",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {
