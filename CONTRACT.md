@@ -556,7 +556,7 @@ Signed source ingestion implements INTAKE-001/002/003/008/009 and the source reg
 
 ## Status
 
-Judged from the code and tests at commit `dbb48f075695bd6164a6bef07d8ada95bc6c634d` (20 October 2026).
+Judged from the code and tests at commit `fbab396ed921050f1dff438ceed4c4f8aec47437` (20 October 2026).
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
