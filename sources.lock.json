@@ -5217,7 +5217,7 @@
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
-      "sha256": "85eb4e41951cc5b36b4e4914b8e56874387a75c0acbfb816816d9b13368c5a99",
+      "sha256": "6c740012446feba6e0de5a02ab23051bfa8188749015b2d6202d143bddd87791",
       "executable": false
     },
     "tests/e2e/core-intake-policy-journey.mjs": {
@@ -5237,7 +5237,7 @@
       "executable": false
     },
     "tests/e2e/core-operator-journey.mjs": {
-      "sha256": "ec5b123365f3198a54f1f69e40f127ea81c6c44f76c38e8a590c4cc0360d1a4b",
+      "sha256": "f4cf12583d5e8b2889be4e248059fa2eb53a445de18ed0d0d7c35cb52b37de61",
       "executable": false
     },
     "tests/e2e/core-page-audit.mjs": {

@@ -8,7 +8,7 @@ import { beforePrivateNavigation, settleReads } from './collaboration-navigation
 export async function followerJourney(actorPage, actorContext, inboxPage, recipientContext, base, record) {
   const api = context => async (path, method = 'GET', data, expected = 200) => {
     const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      method, headers: { Origin: base, Connection: "close" }, ...(data === undefined ? {} : { data }),
     });
     assert.equal(response.status(), expected, `${method} ${path}`);
     return response.json();

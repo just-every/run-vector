@@ -6,7 +6,7 @@ import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mj
 export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){
  const original=await context.cookies(),email=`stream-planning-${Date.now()}@vector.test`;
  const invited=await context.request.post(base+'/api/settings/operators/invite',{
-  headers:{Origin:base},data:{displayName,email},
+  headers:{Origin:base,Connection:'close'},data:{displayName,email},
  });assert.equal(invited.status(),202);
  const link=await readDevelopmentLink(base,context.request,email,state);
  await beforePrivateNavigation(page,link);await page.goto(link);await page.waitForLoadState('networkidle');
