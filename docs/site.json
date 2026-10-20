@@ -423,6 +423,22 @@
     {
       "source": "docs/MANUAL-ORDER.md",
       "reason": "Manual-order storage, import custody and interaction behavior for maintainers"
+    },
+    {
+      "source": "evidence/slack-003/INITIAL_ATTEMPT.md",
+      "reason": "Sanitized local Slack transport, channel safety and cleanup evidence for maintainers; not an owner guide."
+    },
+    {
+      "source": "evidence/slack-003/REAL_PROVIDER.md",
+      "reason": "Sanitized local Slack transport, channel safety and cleanup evidence for maintainers; not an owner guide."
+    },
+    {
+      "source": "evidence/slack-003/REENTRY_ATTEMPT.md",
+      "reason": "Sanitized local Slack transport, channel safety and cleanup evidence for maintainers; not an owner guide."
+    },
+    {
+      "source": "evidence/slack-003/CHANNEL_SAFETY.md",
+      "reason": "Sanitized local Slack transport, channel safety and cleanup evidence for maintainers; not an owner guide."
     }
   ]
 }

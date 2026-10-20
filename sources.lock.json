@@ -701,7 +701,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "b85a219327cca58a030f9ec914a2b8c6f50dbae150444828d07920fe2b56ca91",
+      "sha256": "9c516eff07249ad40f1eb8748b0763253b74a268e61501dfd5c6bbde7d3a24ea",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -1702,6 +1702,10 @@
     },
     "evidence/my-work-tabs/WORK-004/my-work-subscribed-390.png": {
       "sha256": "8e66060302ea23d94d578692b9cda923e68f47110fcdfafd9921d55706cb3865",
+      "executable": false
+    },
+    "evidence/slack-003/CHANNEL_SAFETY.md": {
+      "sha256": "bdc1645e5294e8f14b8fdad777ec49f691eef8fa74024278dc300daebf60bc3d",
       "executable": false
     },
     "evidence/slack-003/fixture/slack-003-bound-discord-1440.png": {
