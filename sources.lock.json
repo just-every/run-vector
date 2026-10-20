@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "8c39970e9252c178a1b9d769b255d8fde9b5d2420502b88d0c3428953282aa05",
+      "sha256": "22f5448a5d93ae13a979ee33b75e59f233b994119b9f496abe67cc3fd4cad2ed",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "bee16cfc25ba8dcb56bd354b05d157d0ff59b6c124ae6d6ef99e134e0750d31e",
+      "sha256": "3b43bd474d9a902727640ca8cec6eeae3ce10ce71f69ab91cfe26f12439629af",
       "executable": false
     },
     "DEMO.md": {
@@ -1702,6 +1702,74 @@
     },
     "evidence/my-work-tabs/WORK-004/my-work-subscribed-390.png": {
       "sha256": "8e66060302ea23d94d578692b9cda923e68f47110fcdfafd9921d55706cb3865",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-bound-discord-1440.png": {
+      "sha256": "c500d0fe9b24b879a0399ffb33c225b67a4618f776928a712cc56d4743fb1224",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-bound-discord-390.png": {
+      "sha256": "6df3c4b2258b4f3d52486a8e5924855cd79751264ef30668209ff1d557b1c829",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-bound-slack-1440.png": {
+      "sha256": "6a58fd798026994ef6d25729466876a54074f6b0a50ddeb60c5ca13e489a2138",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-bound-slack-390.png": {
+      "sha256": "dfb42b8bcbf74def0e0a1490c2af31626253674093a042f9cef07a24758b4bdc",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-create-project-1440.png": {
+      "sha256": "9a5962d1fb99bbb166591fd37ea1e5d34ae3bddc8cc1b15585989754a670b010",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-create-project-390.png": {
+      "sha256": "6476c001e2afe41b533bede5ba88ec84a593e081fc9d662e28a2a4acff021c81",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-create-team-1440.png": {
+      "sha256": "2706f7009800f4077408e740a134cad3b323e5982b2e47d7782780e486dd7fae",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-create-team-390.png": {
+      "sha256": "e3902190a0e831d7e9c8584167390960b06a0a5e689692a5417e26b415d918fd",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-credential-1440.png": {
+      "sha256": "d27067904dec8a8ae60387b10dfcb2d3c56caa5f5f49f3bb2d16ff3978a31beb",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-credential-390.png": {
+      "sha256": "63568414751a0a23a4dc2b3a823a30871af1953ff4a26dcdfd60dfb6616f3fb9",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-discord-form-1440.png": {
+      "sha256": "08099df684d371c4b911d8bfa8a770ab8e5354cf4dfb37f5b4fac68eac073176",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-discord-form-390.png": {
+      "sha256": "c9e542bb50e5612f941e355bc98b90c3d57e1fe1a46962538bb95181cc33e312",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-unbound-1440.png": {
+      "sha256": "09ce4074182be3397183d93214d0e32dcf7116b232a7d1d730a43c59279f654b",
+      "executable": false
+    },
+    "evidence/slack-003/fixture/slack-003-unbound-390.png": {
+      "sha256": "a24ba1326c078be336c1ea1e29bb2434c8ab115b550a08102b02fb8997f05930",
+      "executable": false
+    },
+    "evidence/slack-003/INITIAL_ATTEMPT.md": {
+      "sha256": "c3591b02a6e9a1e7e9077d3825fd33737e529b79273beda162b2d515d2a960d3",
+      "executable": false
+    },
+    "evidence/slack-003/REAL_PROVIDER.md": {
+      "sha256": "fc9e041366f4e18ee743ee95f2b50dd302682cb8ae8db6dc61a5591327ad4708",
+      "executable": false
+    },
+    "evidence/slack-003/REENTRY_ATTEMPT.md": {
+      "sha256": "0d1d09fc4ca039838d56a21c77acab4b9946e77f67bd219f13b790b2378006e3",
       "executable": false
     },
     "HANDOVER.md": {
