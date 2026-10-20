@@ -5701,7 +5701,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "b85991aebb913a625698e5916798a0fbc0dff4b83988b4758e5aadaa08a348c8",
+      "sha256": "44087d353bf3a8994b51d72ce90437119c075a2a684b8759f6147b06e43386d4",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
