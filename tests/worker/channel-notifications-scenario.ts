@@ -61,6 +61,10 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   await env.DB.prepare("UPDATE vector_integration_secret_keys SET encrypted=? WHERE identity=?").bind('00'.repeat(12)+':'+'ab'.repeat(32),'slack:'+workspace).run();
   await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);expect((await state()).slack).toMatchObject({connected:false,needsAttention:true});
   expect((await f.call('/settings/integrations/slack','POST',{botToken:edge.token})).status).toBe(200);await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove+1);
+  const statusState=await f.mutate('/settings/teams/'+team.id+'/statuses','POST',{name:'Validation',category:'started'}),validation=statusState.teams.find(t=>t.id===team.id)!.statuses.find(s=>s.name==='Validation')!;
+  const workflowIssue=await f.create({statusId:validation.id});await dispatchWebhooks(current);const workflowBefore=slack().length;
+  expect((await f.call('/settings/teams/'+team.id+'/statuses/'+validation.id,'DELETE',{destinationStatusId:team.statuses.find(s=>s.category==='started')!.id})).status).toBe(200);await dispatchWebhooks(current);expect(slack()).toHaveLength(workflowBefore+1);expect(slack().at(-1)!.body.text).toContain('Validation → '+team.statuses.find(s=>s.category==='started')!.name);
+
 
  }finally{edge.restore();}
 }

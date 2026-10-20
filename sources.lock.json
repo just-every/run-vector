@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "migrations/core/0073_channel_notifications.sql": {
-      "sha256": "868ac5573373d54a99453d73b48c00f361426b7a158f1fecf6064f6e28639fbc",
+      "sha256": "925336920fc58de2fb05729e1ae522a4e81d598961019dab6148ab9acb3159c3",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -5629,7 +5629,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "49fb51998ed95a35725c09e7dd1a83737f030fcaeae65600253f60a7f51b2cae",
+      "sha256": "a35e008fe29522695f64aa6e5ebae2930b6e374dc82b5fe3c6eb8a847529bd77",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
@@ -5953,7 +5953,7 @@
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "ece3fc3a79196ccd640e4e603719d33063857797b0d839cf35056c16ef665256",
+      "sha256": "a5004a6114c7bdfcd8545612376bf0e7272bdf585175ae64276cb55d98f5cdd0",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {

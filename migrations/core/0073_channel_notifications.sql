@@ -26,14 +26,14 @@ BEGIN
  WHERE i.id=NEW.issue_id ON CONFLICT(id) DO NOTHING;
 END;
 CREATE TRIGGER vector_channel_event AFTER INSERT ON issue_activity
-WHEN (NEW.kind='issue.created' OR (NEW.kind IN ('issue.updated','issue.status_changed') AND json_extract(NEW.next_value_json,'$.statusId') IS NOT NULL))
+WHEN NEW.kind<>'issue.imported' AND (NEW.kind='issue.created' OR (json_extract(NEW.next_value_json,'$.statusId') IS NOT NULL AND json_extract(NEW.next_value_json,'$.statusId') IS NOT json_extract(NEW.previous_value_json,'$.statusId')))
  AND (NOT EXISTS(SELECT 1 FROM vector_restore_status) OR EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=0))
 BEGIN
  INSERT INTO vector_webhook_events(id,workspace_id,destination_id,event,body,created_at)
  SELECT NEW.id||':'||d.id,t.workspace_id,d.id,
  CASE WHEN NEW.kind='issue.created' THEN CASE WHEN s.category='intake' THEN 'triage.created' ELSE 'issue.created' END ELSE 'issue.status_changed' END,
  json_object('identifier',i.identifier,'issueId',i.id,'title',COALESCE(json_extract(NEW.next_value_json,'$.title'),i.title),
- 'actor',COALESCE((SELECT name FROM operators WHERE id=NEW.actor_operator_id),'Automation'),'actorId',NEW.actor_operator_id,
+ 'actor',COALESCE(NEW.actor_name,(SELECT name FROM operators WHERE id=NEW.actor_operator_id),'Automation'),'actorId',NEW.actor_operator_id,
  'change',CASE WHEN NEW.kind='issue.created' THEN 'Created' ELSE COALESCE((SELECT name FROM workflow_statuses WHERE id=json_extract(NEW.previous_value_json,'$.statusId')),s.name)||' → '||COALESCE((SELECT name FROM workflow_statuses WHERE id=json_extract(NEW.next_value_json,'$.statusId')),s.name) END),NEW.created_at
  FROM issues i JOIN teams t ON t.id=i.team_id JOIN workflow_statuses s ON s.id=i.status_id
  JOIN vector_channel_bindings b ON b.workspace_id=t.workspace_id

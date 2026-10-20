@@ -21,7 +21,7 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  const createdResponse=page.waitForResponse(r=>r.url().endsWith('/settings/projects')&&r.request().method()==='POST');await create.getByRole('button',{name:'Create project',exact:true}).click();assert.equal((await createdResponse).status(),200);
  const project=(await send('/settings/administration','GET')).projects.find(p=>p.name===name);assert.ok(project);
  assert.equal((await calls()).filter(c=>c.method==='conversations.create'&&c.body.name==='checkout-delivery-'+width).length,1);
- await page.goto(runtime.base+'/app/settings#integrations');await panel.getByText(name,{exact:true}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('bound-slack');await axe();
+ await page.goto(runtime.base+'/app/settings#integrations');await panel.getByText(name,{exact:true}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-slack');await axe();
  const config=await send('/settings/integrations/channels','GET');assert.equal(config.bindings.find(b=>b.objectId===project.id).channelName,'checkout-delivery-'+width);
  const issue=await send('/issues','POST',{title:'Enable customer checkout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
  await send('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started').id});
@@ -32,8 +32,8 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  const discordIssue=await send('/issues','POST',{title:'Discord rollout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
  assert.equal((await calls()).filter(c=>c.method==='discord'&&c.body.content.includes(discordIssue.identifier)).length,1);
- await page.reload();await panel.getByText('Discord #checkout-discord',{exact:false}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('bound-discord');await axe();
+ await page.reload();await panel.getByText('Discord #checkout-discord',{exact:false}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-discord');await axe();
  const removed=page.waitForResponse(r=>r.url().includes('/settings/integrations/channels/')&&r.request().method()==='DELETE');await panel.getByRole('button',{name:'Remove binding for '+name,exact:true}).click();assert.equal((await removed).status(),200);await panel.getByRole('button',{name:'Remove binding for '+name,exact:true}).waitFor({state:'hidden'});await shot('unbound');
- const teamForm=page.getByRole('form',{name:'Create team',exact:true});await teamForm.getByLabel('Team name',{exact:true}).fill('Customer operations');await teamForm.getByLabel('Identifier prefix',{exact:true}).fill('CUST');await teamForm.getByLabel('Create Slack channel',{exact:true}).check();await teamForm.scrollIntoViewIfNeeded();await shot('create-team');await axe('form[aria-label="Create team"]');
+ const teamForm=page.getByRole('form',{name:'Create team',exact:true});await teamForm.getByLabel('Team name',{exact:true}).fill('Customer operations');await teamForm.getByLabel('Identifier prefix',{exact:true}).fill('CUST');await teamForm.getByLabel('Create Slack channel',{exact:true}).check();await teamForm.getByLabel('Create Slack channel',{exact:true}).scrollIntoViewIfNeeded();await shot('create-team');await axe('form[aria-label="Create team"]');
  await page.goto(runtime.base+'/app/settings');
 }
