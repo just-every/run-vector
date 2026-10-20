@@ -391,6 +391,13 @@ const developmentAssets = new Set([
   "/browser-package/@tanstack/router-core/dist/esm/searchMiddleware.js",
   "/browser-package/@tanstack/router-core/dist/esm/searchParams.js",
   "/browser-package/@tanstack/router-core/dist/esm/sieve-cache.js",
+  // Router core's browser entry and hydration/RPC serializers import these
+  // client-safe helpers after the patched Start dependency refresh.
+  "/browser-package/@tanstack/router-core/dist/esm/ssr/bodyScripts.js",
+  "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/makeSerovalPlugin.js",
+  "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/RawStreamJSONPlugin.js",
+  "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/RawStreamRPCPlugin.js",
+  "/browser-package/@tanstack/router-core/dist/esm/ssr/serializer/rawStreamCodec.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/client.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/constants.js",
   "/browser-package/@tanstack/router-core/dist/esm/ssr/headers.js",

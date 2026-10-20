@@ -2141,11 +2141,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "b7b7f210e48dcce2691307e98ce2594c9b9b057b8c6f3a555324dfc59f14f8fd",
+      "sha256": "bebe7445278a95e8feb99dec47c2eef7bef4c0e3b9d6e8aa8c6ca2cdb5e48367",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "4ca46886f7aba279cb77c5a5b5c0b5b5484334d55eaec4f52b8c80524923112e",
+      "sha256": "5b7cb12a95a8182457b289c26e1b52c91bc52b2b0e319a1e8995a53ccd5451db",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -3037,7 +3037,7 @@
       "executable": false
     },
     "src/core/app/vite-development-path.ts": {
-      "sha256": "9d2c620af68b8c5b40bbcdc5fccffb7628917a0740a74d0d9679e67f9560ed2c",
+      "sha256": "eed76889362040336ee1b77e37ab4c53c0b9c4c7d831b30ec0acdb186548130a",
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
