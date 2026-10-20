@@ -34,7 +34,7 @@ BEGIN
  CASE WHEN NEW.kind='issue.created' THEN CASE WHEN s.category='intake' THEN 'triage.created' ELSE 'issue.created' END ELSE 'issue.status_changed' END,
  json_object('identifier',i.identifier,'issueId',i.id,'title',COALESCE(json_extract(NEW.next_value_json,'$.title'),i.title),
  'actor',COALESCE(NEW.actor_name,(SELECT name FROM operators WHERE id=NEW.actor_operator_id),'Automation'),'actorId',NEW.actor_operator_id,
- 'change',CASE WHEN NEW.kind='issue.created' THEN 'Created' ELSE COALESCE((SELECT name FROM workflow_statuses WHERE id=json_extract(NEW.previous_value_json,'$.statusId')),s.name)||' → '||COALESCE((SELECT name FROM workflow_statuses WHERE id=json_extract(NEW.next_value_json,'$.statusId')),s.name) END),NEW.created_at
+ 'change',CASE WHEN NEW.kind='issue.created' THEN 'Created · '||s.name ELSE COALESCE((SELECT name FROM workflow_statuses WHERE id=json_extract(NEW.previous_value_json,'$.statusId')),s.name)||' → '||COALESCE((SELECT name FROM workflow_statuses WHERE id=json_extract(NEW.next_value_json,'$.statusId')),s.name) END),NEW.created_at
  FROM issues i JOIN teams t ON t.id=i.team_id JOIN workflow_statuses s ON s.id=i.status_id
  JOIN vector_channel_bindings b ON b.workspace_id=t.workspace_id
  JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.enabled=1 AND d.revoked_at IS NULL

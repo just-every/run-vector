@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "migrations/core/0073_channel_notifications.sql": {
-      "sha256": "925336920fc58de2fb05729e1ae522a4e81d598961019dab6148ab9acb3159c3",
+      "sha256": "820574e7ed01b4d068b65e5873d3b06850e4b820dba3f60207919a358bb3e29f",
       "executable": false
     },
     "OPERATIONS.json": {
