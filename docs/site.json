@@ -445,6 +445,10 @@
       "reason": "Recorded local guarded Slack delivery and cleanup at a named source SHA; provider evidence for maintainers."
     },
     {
+      "source": "evidence/slack-004/REAL_PROVIDER.md",
+      "reason": "Recorded local Slack lookup and message-format run at a named source SHA, with cleanup readback; provider evidence for maintainers."
+    },
+    {
       "source": "evidence/slack-004/UPGRADE.md",
       "reason": "One-off populated upgrade proof for the SLACK-004 migration; evidence for maintainers, not an owner guide."
     }
