@@ -249,7 +249,10 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
       await page.getByLabel(/^Status/).selectOption(statuses.find(item=>item.category===category).id);
       await page.getByRole('combobox',{name:'Project',exact:true}).selectOption(project.id);
       await page.getByRole('combobox',{name:'Milestone',exact:true}).selectOption(milestones.find(item=>item.name===milestone).id);
-      if(category==='unstarted')await capture(`milestone-issue-create-${width}`);
+      if(category==='unstarted'){
+        await page.getByRole('combobox',{name:'Milestone',exact:true}).scrollIntoViewIfNeeded();
+        await capture(`milestone-issue-create-${width}`);
+      }
       await page.getByRole('button',{name:'Create issue',exact:true}).click();
       await page.getByRole('heading',{name:title,exact:true}).waitFor();
       issues.push(sql(`SELECT * FROM issues WHERE title='${title}'`)[0]);
@@ -266,6 +269,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await page.getByRole('region',{name:'Project milestones',exact:true}).scrollIntoViewIfNeeded();
     await capture(`milestones-progress-${width}`);
     await go('/app/issues?'+new URLSearchParams({q:issues[1].title,grouping:'none'}));
+    await page.locator('#issue-row-'+issues[1].identifier+':not(:disabled)').waitFor();
     await page.locator('#issue-row-'+issues[1].identifier).focus();
     await page.keyboard.press('x');
     await page.getByRole('combobox',{name:'Change',exact:true}).selectOption('milestoneId');
