@@ -135,9 +135,9 @@ not expand an old token. New routes are:
 | --- | --- | --- |
 | GET /api/v1/comments | comments:read | Cursor list filtered by `issue`, `createdFrom`, `createdTo` (inclusive UTC timestamps) |
 | GET /api/v1/comments/ID | comments:read | A live comment on an issue this operator can read |
-| PATCH /api/v1/comments/ID | comments:edit | Strict `{body}` input, native author-only editing |
-| DELETE /api/v1/comments/ID | comments:delete | Native author/Owner/Admin deletion policy; deleted comments disappear |
-| DELETE /api/v1/projects/ID | projects:delete | Native project removal, including its current in-use refusal |
+| PATCH /api/v1/comments/ID | comments:edit | Strict `{body, expectedVersion}` input, native author-only editing |
+| DELETE /api/v1/comments/ID | comments:delete | Strict `{expectedVersion}` input, native author/Owner/Admin deletion policy; deleted comments disappear |
+| DELETE /api/v1/projects/ID | projects:delete | Deletes populated projects, preserves their issues and clears the issues’ project assignment |
 | GET /api/v1/projects/ID/milestones | milestones:read | Cursor list, optional `completed=true` or `false` filter |
 | GET /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:read | Full native milestone projection, including progress and slip |
 | POST /api/v1/projects/ID/milestones | milestones:write | Native creation: `name`, optional `description`, `targetDate` |
@@ -160,6 +160,7 @@ snapshot guard (409 on concurrent changes), not a new version protocol.
   "id": "stable comment ULID",
   "issueIdentifier": "TEAM-123",
   "body": "complete body text",
+  "version": 0,
   "author": { "id": "stable operator ULID", "displayName": "native display name" },
   "createdAt": "ISO-8601 timestamp",
   "editedAt": null,
@@ -168,6 +169,18 @@ snapshot guard (409 on concurrent changes), not a new version protocol.
   "truncated": false
 }
 ```
+
+`version` is a nonnegative integer revision, stable between body edits and
+increased by every native body edit, including checklist changes. Both PATCH
+and DELETE require the last-read `version` as the JSON body field
+`expectedVersion`, matching the issue API's body-field convention. PATCH takes
+`{"body":"replacement text","expectedVersion":0}`; DELETE takes
+`{"expectedVersion":0}`. `If-Match` is not a substitute for that required field.
+A missing or invalid revision returns 400; a stale revision returns 409. The
+revision comparison and mutation are atomic: refusal leaves the body, revision,
+history, links and notification effects unchanged (token usage and rate-limit
+accounting still apply). Two concurrent edits using the same revision admit
+exactly one. Read the comment again after a successful edit for its new revision.
 
 `editedAt` becomes an ISO timestamp after editing. The canonical link opens the
 containing issue. Responses do not truncate bodies; native creation/editing

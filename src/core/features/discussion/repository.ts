@@ -1,6 +1,6 @@
 import { commentStatements, mentionStatements, finalizeEvent } from '../notifications/events';
 import { IssueAccessError, requireIssueAccess } from '../issues/access';
-import { MutationAccessError, mutationDatabase } from "../auth/mutation-database";
+import { MutationAccessError, RestoreReservationError, isMutationAccessError, mutationDatabase } from "../auth/mutation-database";
 import { createUlid } from "../../shared/ids";
 import { reopenStatements, threadRoot } from "./threads";
 import {
@@ -9,6 +9,7 @@ import {
 } from "../links/repository";
 import type { NamedLink } from '../links/schema';
 import { liveComment, moderatorSql, requireCommentChange } from "./permissions";
+import { commentVersionSql, CommentVersionError } from "./revision";
 
 async function requireDiscussionMutationAccess(db: D1Database, identifier: string, actor: string) {
   try {
@@ -119,6 +120,7 @@ export async function changeComment(
   id: string,
   actor: string,
   body: string | null,
+  expectedVersion?: number,
 ) {
   db = mutationDatabase(db, actor);
   await requireDiscussionMutationAccess(db,issue.identifier,actor);
@@ -141,6 +143,12 @@ export async function changeComment(
           )
           .bind(body, now, now, id, issue.id);
   const statements = [
+    // Abort the entire batch before activity, audit, links, mentions or mail
+    // intent can change. This read and the mutation share one D1 transaction.
+    ...(expectedVersion === undefined ? [] : [db.prepare(`SELECT CASE WHEN EXISTS(
+      SELECT 1 FROM issue_comments c WHERE c.id=? AND c.issue_id=? AND c.deleted_at IS NULL
+      AND ${commentVersionSql}=?) THEN 1 ELSE json('comment revision mismatch') END`)
+      .bind(id, issue.id, expectedVersion)]),
     db.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('discussion access denied') END`).bind(issue.id,actor),
     db
       .prepare(
@@ -178,9 +186,23 @@ export async function changeComment(
     ...mentionStatements(db,event,body,id),
   ];
   const mutationIndex = statements.length;
-  const receipts = await db.batch<{ id: string }>([
-    ...statements, mutation, ...finalizeEvent(db,event),
-  ]);
+  let receipts: D1Result<{ id: string }>[];
+  try {
+    receipts = await db.batch<{ id: string }>([
+      ...statements, mutation, ...finalizeEvent(db,event),
+    ]);
+  } catch (error) {
+    // Preserve authority/storage failures. A failed revision guard rolls back
+    // every statement; re-read only to distinguish stale from deleted state.
+    if (expectedVersion === undefined || isMutationAccessError(error) || error instanceof RestoreReservationError) throw error;
+    await requireDiscussionMutationAccess(db, issue.identifier, actor);
+    const current = await db.prepare(`SELECT ${commentVersionSql} AS version
+      FROM issue_comments c WHERE c.id=? AND c.issue_id=? AND c.deleted_at IS NULL`)
+      .bind(id, issue.id).first<{ version: number }>();
+    if (!current) return false;
+    if (current.version !== expectedVersion) throw new CommentVersionError();
+    throw error;
+  }
   // Index triggers add writes to D1 meta.changes; only RETURNING identifies
   // whether this live comment survived the transaction guard.
   const rows = receipts[mutationIndex].results;

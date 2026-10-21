@@ -1138,10 +1138,17 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 100000
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991,
+                    "description": "Required last-read comment version. Missing/invalid: 400; stale: 409, with no mutation or side effects."
                   }
                 },
                 "required": [
-                  "body"
+                  "body",
+                  "expectedVersion"
                 ],
                 "additionalProperties": false
               }
@@ -1203,7 +1210,29 @@
               "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
             }
           }
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991,
+                    "description": "Required last-read comment version. Missing/invalid: 400; stale: 409, with no mutation or side effects."
+                  }
+                },
+                "required": [
+                  "expectedVersion"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
       }
     },
     "/projects": {
@@ -2529,7 +2558,8 @@
           "editedAt",
           "url",
           "maxBodyLength",
-          "truncated"
+          "truncated",
+          "version"
         ],
         "properties": {
           "id": {
@@ -2577,6 +2607,12 @@
           },
           "truncated": {
             "const": false
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Comment revision; changes on every native body edit, including checklist edits."
           }
         }
       }

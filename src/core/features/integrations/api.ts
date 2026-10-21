@@ -27,6 +27,7 @@ import { PaginationInvalidated } from '../issues/list-revision';
 import { updateIssueSchema } from '../issue-edit/routes';
 import { updateIssueRecord } from '../issue-edit/repository';
 import { addComment } from '../discussion/repository';
+import { CommentVersionError } from '../discussion/revision';
 import { addDescriptionHistoryRoutes } from '../description-history/routes';
 import { readAdministration } from '../administration/read';
 import { IntegrationError } from './errors';
@@ -39,6 +40,7 @@ function parse<T>(schema:z.ZodType<T>,input:unknown){const value=schema.safePars
 export function createIntegrationApi(){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
+  if(error instanceof CommentVersionError)return c.json({error:error.code,message:error.message},409);
   if(error instanceof z.ZodError)return c.json({error:'invalid_request'},400);
   if(error instanceof CommentPermissionError)return c.json({error:error.code,message:error.message},403);
   if(error instanceof SettingsError)return c.json({error:error.code,message:error.message},error.status);

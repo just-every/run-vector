@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "0a1d628ffba4bcaf055e2b89dfd123105ada512a92b5963937fcc532f50aaf5d",
+      "sha256": "5d92ae2db970aa346689131d726338c1e976eac2eef87c62d48ed787ed064e9c",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "fc55d43145befdc2bbd6affa9fd38ecb28c5479ad4be40119489a58b1dadc723",
+      "sha256": "e53658c31a3f6ea961d16c20921b0b4da8ec1dd6d6f6084e0c3827cf4435f7b4",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "fbe3591684d3b5a0bb12bc9645062cf171ac0a1968b7a1bc3c4e50f4d789f68f",
+      "sha256": "1ee5af769df5834caecebeb8f15035e3ee5d04175db6490c68cad716e448e4a7",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -2309,7 +2309,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "16a0bbd01cc6a587f926e464d678495c5902624e89a7bb5f7fc8bd0b1e606416",
+      "sha256": "1b760e281ea9c2da249e172ed0a4e92eed8cfb97d9d73cf5e6ce5fdb029d57e2",
       "executable": false
     },
     "schema/importers.schema.json": {
@@ -3745,7 +3745,11 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "322bb254f71ea10a2bd1f7b52246151f15f8437a1ec30bc60a59c352f80eb4d8",
+      "sha256": "0a1ce996b312328aeb1b0e5475986d2e20ddbd997a86c69557be1e1c048ab734",
+      "executable": false
+    },
+    "src/core/features/discussion/revision.ts": {
+      "sha256": "25891b20ae790879ffd66e348b92e32fc1573b4dd35c7206e6e8a0226806bdf4",
       "executable": false
     },
     "src/core/features/discussion/routes.ts": {
@@ -3873,7 +3877,7 @@
       "executable": false
     },
     "src/core/features/integrations/api.ts": {
-      "sha256": "ae4fb84b34a9dd81132510247422f72f6a4f2302f84290bc4c2d24a6be853821",
+      "sha256": "e0bc417151df9c508e2d23cdf73f47f5e035347f20e92f232790bc6cb1b55574",
       "executable": false
     },
     "src/core/features/integrations/authority.ts": {
@@ -3905,7 +3909,7 @@
       "executable": false
     },
     "src/core/features/integrations/comment-api.ts": {
-      "sha256": "5d4d8e43a53ccbb713191c50bb97523b2fb37785bc35074e9f132c618fdbceba",
+      "sha256": "59734fdca0593b665700476892331fb901fde733e18d20b7cfcb9d5ea844a5ae",
       "executable": false
     },
     "src/core/features/integrations/config-input.ts": {
@@ -6457,7 +6461,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "bda42af3d48f26f628016875ae98185cb7ff4aa4ad61d6ddba5a6cce03bbcbe9",
+      "sha256": "ec93bfb8a7ed2639cc28fb3ccad5bf0e8aec07f0310162dd3e3aa450b73b2328",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {

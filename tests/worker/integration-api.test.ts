@@ -1,3 +1,4 @@
+import { mentionToken } from '../../src/core/features/notifications/mention-token';
 import { apiCoverage } from '../../src/core/features/integrations/api-coverage';
 import { z } from 'zod';
 import * as planning from '../../src/core/features/administration/schema';
@@ -117,7 +118,7 @@ it('[API-003 PROJ-011 ISSUE-008] public tokens page a native planning journey an
  const comment=await call('/issues/'+issue.identifier+'/comments','POST',{body:'Stable API body'},201);
  await call('/issues/'+issue.identifier+'/comments','POST',{body:'Second API body'},201);
  const read=await call('/comments/'+comment.id);
- expect(read).toEqual({id:comment.id,issueIdentifier:issue.identifier,body:'Stable API body',author:{id:f.owner,displayName:'Owner'},createdAt:expect.any(String),editedAt:null,url:origin+'/app/issues/'+issue.identifier,maxBodyLength:100000,truncated:false});
+ expect(read).toEqual({id:comment.id,issueIdentifier:issue.identifier,body:'Stable API body',version:0,author:{id:f.owner,displayName:'Owner'},createdAt:expect.any(String),editedAt:null,url:origin+'/app/issues/'+issue.identifier,maxBodyLength:100000,truncated:false});
  expect((await pages('/comments?issue='+issue.identifier,'comments')).length).toBe(2);
  expect((await call('/comments?createdFrom=2099-01-01T00%3A00%3A00Z')).comments).toEqual([]);
  expect((await f.api(old,'/comments/'+comment.id,'PATCH',{body:'Scope denied'})).status).toBe(401);
@@ -127,7 +128,7 @@ it('[API-003 PROJ-011 ISSUE-008] public tokens page a native planning journey an
  expect((await f.api(peerToken,'/comments/'+comment.id,'PATCH',{body:'Another author'})).status).toBe(403);
  const cp=await call('/comments?issue='+issue.identifier+'&limit=1');
  expect((await f.api(peerToken,'/comments?issue='+issue.identifier+'&limit=1&cursor='+encodeURIComponent(cp.nextCursor))).status).toBe(409);
- await call('/comments/'+comment.id,'PATCH',{body:'Edited body'});
+ await call('/comments/'+comment.id,'PATCH',{body:'Edited body',expectedVersion:read.version});
  expect((await call('/comments/'+comment.id)).editedAt).not.toBeNull();
  expect((await f.api(token,'/comments?issue='+issue.identifier+'&limit=1&cursor='+encodeURIComponent(cp.nextCursor))).status).toBe(409);
  const peerCommentResponse=await f.api(peerToken,'/issues/'+issue.identifier+'/comments','POST',{body:'Retained author history'});expect(peerCommentResponse.status).toBe(201);
@@ -135,7 +136,7 @@ it('[API-003 PROJ-011 ISSUE-008] public tokens page a native planning journey an
  const removed=await f.call('/settings/operators/'+peer,'DELETE');expect(removed.status,await removed.clone().text()).toBe(200);
  expect((await f.api(peerToken,'/comments')).status).toBe(401);
  expect((await call('/comments/'+peerComment.id)).author).toEqual({id:peer,displayName:'Removed operator'});
- await call('/comments/'+comment.id,'DELETE');expect((await f.api(token,'/comments/'+comment.id)).status).toBe(404);
+ await call('/comments/'+comment.id,'DELETE',{expectedVersion:(await call('/comments/'+comment.id)).version});expect((await f.api(token,'/comments/'+comment.id)).status).toBe(404);
  expect((await call('/comments?issue='+issue.identifier)).comments.some((c:any)=>c.id===comment.id)).toBe(false);
  await call('/projects/'+project.id+'/milestones/'+milestone.id,'PATCH',{completed:true});
  expect((await call('/projects/'+project.id+'/milestones/'+milestone.id)).completed).toBe(true);
@@ -143,5 +144,70 @@ it('[API-003 PROJ-011 ISSUE-008] public tokens page a native planning journey an
  for(const value of issues)expect((await call('/issues/'+value.identifier)).milestoneId).toBeNull();
  expect((await f.api(old,'/projects/'+second.id,'DELETE')).status).toBe(401);
  await call('/projects/'+second.id,'DELETE');expect((await f.api(token,'/projects/'+second.id)).status).toBe(404);
+ expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+},180000);
+
+it('[API-003 ISSUE-008] stale and missing comment revisions refuse edit/delete with unchanged storage',async()=>{
+ const f=await setupIntegrations(),token=(await f.issueToken([...tokenScopes],'Comment revisions')).token;
+ const peer=await actor(await invite('revision-peer@base.test',f.cookie));
+ const call=async(path:string,method='GET',body?:unknown,status=200)=>{
+  const response=await f.api(token,path,method,body);expect(response.status,await response.clone().text()).toBe(status);return await response.json() as any;
+ };
+ const issue=await call('/issues','POST',{teamId:f.initial.teams[0].id,title:'Revision refusal'},201);
+ const comment=await call('/issues/'+issue.identifier+'/comments','POST',{body:'Original'},201),path='/comments/'+comment.id;
+ const original=await call(path);
+ const body='- [ ] Review\n\n'+mentionToken({id:peer,name:'Revision peer'});
+ await call(path,'PATCH',{body,expectedVersion:original.version});
+ const edited=await call(path);expect(edited.version).toBe(original.version+1);
+ // Native full-body edits, even identical text, and checklist edits invalidate API revisions too.
+ expect((await f.call('/issues/'+issue.identifier+'/comments/'+comment.id,'PATCH',{body})).status).toBe(200);
+ const native=await call(path);expect(native.version).toBe(edited.version+1);
+ expect((await f.call('/issues/'+issue.identifier+'/comments/'+comment.id+'/checklist','POST',{expectedBody:body,index:0,text:'Review',checked:true})).status).toBe(200);
+ const current=await call(path);expect(current.version).toBe(native.version+1);
+ expect((await call('/comments?issue='+issue.identifier)).comments[0]).toEqual(current);
+ expect((await f.call('/issues/'+issue.identifier+'/links','POST',{name:'Retained comment link',url:'https://example.test/review',commentId:comment.id})).status).toBe(201);
+ // Compare all application tables, including history, search/counters, links,
+ // followers, mentions, notifications and delivery queues. Only API request
+ // usage and rate-limit accounting may advance on a refused write.
+ const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' AND name NOT IN ('integration_token_usage','access_rate_limits') ORDER BY name").all<{name:string}>()).results;
+ const storage=async()=>Object.fromEntries(await Promise.all(tables.map(async({name})=>[name,(await env.DB.prepare('SELECT * FROM "'+name.replaceAll('"','""')+'"').all()).results.map(row=>JSON.stringify(row)).sort()])));
+ const before=await storage();
+ for(const [method,input,status] of [
+  ['PATCH',{body:'Stale replacement',expectedVersion:original.version},409],
+  ['DELETE',{expectedVersion:native.version},409],
+  ['PATCH',{body:'Missing revision'},400],
+  ['DELETE',{},400],
+ ] as const){
+  await call(path,method,input,status);
+  expect(await call(path)).toEqual(current);
+  expect(await storage()).toEqual(before);
+ }
+ // A fresh revision still permits the author to edit and delete normally.
+ await call(path,'PATCH',{body:'Fresh replacement',expectedVersion:current.version});
+ const fresh=await call(path);expect(fresh.body).toBe('Fresh replacement');expect(fresh.version).toBe(current.version+1);
+ await call(path,'DELETE',{expectedVersion:fresh.version});
+ expect((await f.api(token,path)).status).toBe(404);
+ expect((await call('/comments?issue='+issue.identifier)).comments).toEqual([]);
+ expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+},180000);
+
+it('[API-003 ISSUE-008] concurrent same-revision comment edits commit exactly one body and its effects',async()=>{
+ const f=await setupIntegrations(),token=(await f.issueToken([...tokenScopes],'Concurrent comments')).token;
+ const peer=await actor(await invite('concurrent-peer@base.test',f.cookie));
+ const issueResponse=await f.api(token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Concurrent revisions'});expect(issueResponse.status).toBe(201);
+ const issue=await issueResponse.json() as any;
+ const created=await f.api(token,'/issues/'+issue.identifier+'/comments','POST',{body:'Original'});expect(created.status).toBe(201);
+ const {id}=await created.json() as any,path='/comments/'+id;
+ const read=await f.api(token,path);expect(read.status).toBe(200);const original=await read.json() as any;
+ const bodies=['First '+mentionToken({id:peer,name:'Peer'}),'Second '+mentionToken({id:peer,name:'Peer'})];
+ const replies=await Promise.all(bodies.map(body=>f.api(token,path,'PATCH',{body,expectedVersion:original.version})));
+ expect(replies.map(r=>r.status).sort()).toEqual([200,409]);
+ const final=await f.api(token,path);expect(final.status).toBe(200);const current=await final.json() as any;
+ expect(current.body).toBe(bodies[replies.findIndex(r=>r.status===200)]);expect(current.version).toBe(original.version+1);
+ const edits=(await env.DB.prepare("SELECT id FROM issue_activity WHERE issue_id=? AND kind='comment.edited'").bind(issue.id).all<{id:string}>()).results;
+ expect(edits).toHaveLength(1);
+ expect((await env.DB.prepare("SELECT id FROM audit_records WHERE subject_id=? AND action='comment.edited'").bind(id).all()).results).toHaveLength(1);
+ expect((await env.DB.prepare('SELECT event_id FROM notification_events WHERE event_id=?').bind(edits[0].id).all()).results).toHaveLength(1);
+ expect((await env.DB.prepare('SELECT id FROM notifications WHERE event_id=? AND recipient_id=?').bind(edits[0].id,peer).all()).results).toHaveLength(1);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);
