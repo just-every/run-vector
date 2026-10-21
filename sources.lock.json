@@ -2225,11 +2225,11 @@
       "executable": false
     },
     "package.json": {
-      "sha256": "bebe7445278a95e8feb99dec47c2eef7bef4c0e3b9d6e8aa8c6ca2cdb5e48367",
+      "sha256": "10deb48cc9e237134283fe07341a3c82d94884bdd4148c12c4689305b25c4138",
       "executable": false
     },
     "pnpm-lock.yaml": {
-      "sha256": "5b7cb12a95a8182457b289c26e1b52c91bc52b2b0e319a1e8995a53ccd5451db",
+      "sha256": "2bc9b8074d872a10580a67e4ff80438ca51dec0f244c8341c11a138f496e04c8",
       "executable": false
     },
     "public/brand/apple-touch-icon.png": {
@@ -2324,12 +2324,16 @@
       "sha256": "b3a0036a76dfa4f6d45699694aff57d8189329213260347ebbb86f0f4f85f3e6",
       "executable": false
     },
+    "scripts/data/ledger.mjs": {
+      "sha256": "71ba8edf441bb100b004a82335d1e8eeef10e6a37c499c2a184cfc1be672239e",
+      "executable": false
+    },
     "scripts/data/linear-api-file.mjs": {
       "sha256": "6c3caa4cba0cf6a8ba7af6fa85a30ea0eaba78e74dbaa2a190555a0b403d58c8",
       "executable": false
     },
     "scripts/data/local.mjs": {
-      "sha256": "1b3729beb1b0723841a2df1de290ce4c1b8921d4e9b2806ebdb716903263a0f1",
+      "sha256": "9f266431577e7e5e66f64f81da5043365a7fd70e5eb4302f50e193b8fc2ad3cc",
       "executable": false
     },
     "scripts/data/preflight.mjs": {
@@ -2473,7 +2477,7 @@
       "executable": false
     },
     "scripts/deployment/provenance.json": {
-      "sha256": "9a6b1e2122d0e10cf49996f88da82f8ef30c171d3b52c0e44352c50bc4cbc0fc",
+      "sha256": "2636d27f5b2d2e402c38ae2d9847742461387e0f6bbdaa3189abed25d7f8fee5",
       "executable": false
     },
     "scripts/deployment/provider.mjs": {
@@ -6121,7 +6125,7 @@
       "executable": false
     },
     "tests/installer/older-archive.test.mjs": {
-      "sha256": "ce3a4dda8e8bc5869ffb5adc6ca29d6cf9ca27248e7515adcce49357918bbbbf",
+      "sha256": "511c0c2c0405fbe65f87f23edbb417f813777eeac02c75c7bd60b6a1122df0df",
       "executable": false
     },
     "tests/installer/outbox.test.ts": {

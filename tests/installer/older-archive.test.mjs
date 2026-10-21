@@ -5,7 +5,16 @@ import {mkdtemp,rm,symlink,readFile,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join,resolve} from 'node:path';
 import {getPlatformProxy} from 'wrangler';
+import {splitSqlStatements} from '../../scripts/delivery/base/sql-statements.mjs';
 import {compareRetainedArchive} from './retained-archive.mjs';
+
+// Run Edit Run Platform's runner records each deployment-spec migration in rer_migrations, in the same request as the
+// file's statements (platform src/integrations/migration-batch.ts); its effect stands in for the hosted service here.
+async function platformMigrations(root,db) {
+ const {migrations}=JSON.parse(await readFile(join(root,'management/integration/deployment-spec.json'),'utf8'));
+ await db.prepare('CREATE TABLE IF NOT EXISTS rer_migrations (name TEXT PRIMARY KEY, sha256 TEXT NOT NULL, applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)').run();
+ for(const migration of migrations)await db.batch([db.prepare('INSERT INTO rer_migrations(name,sha256) VALUES (?,?)').bind(migration.name,migration.sha256),...splitSqlStatements(migration.sql).map(sql=>db.prepare(sql))]);
+}
 
 test('[BASE-DATA-001 DATA-001] a backup from the listed version restores through rer import, with either migration ledger',async()=>{
  const source=process.cwd(),work=await mkdtemp(join(tmpdir(),'vector-retained-'));
@@ -18,18 +27,22 @@ test('[BASE-DATA-001 DATA-001] a backup from the listed version restores through
    const root=join(work,platform?'platform':'native');
    run(source,'git',['clone','--quiet','--no-hardlinks',source,root]);
    await symlink(resolve('node_modules'),join(root,'node_modules'),'dir');
-   run(root,'pnpm',['exec','wrangler','d1','migrations','apply','vector-local','--local','--persist-to','.wrangler/state','--config','wrangler.jsonc']);
    const options={configPath:join(root,'wrangler.jsonc'),persist:{path:join(root,'.wrangler/state/v3')},remoteBindings:false};
+   // A native destination is empty; import prepares its schema with Wrangler.
    if(platform) {
     const proxy=await getPlatformProxy(options);
-    try {await proxy.env.DB.exec('CREATE TABLE rer_migrations (name TEXT PRIMARY KEY, sha256 TEXT NOT NULL, applied_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)');}
+    try {await platformMigrations(root,proxy.env.DB);}
     finally {await proxy.dispose();}
    }
    run(root,process.execPath,[join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),'import','--input',archive,'--yes']);
+   // The restored installation backs up again through the same door.
+   run(root,process.execPath,[join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),'export','--output',join(work,(platform?'platform':'native')+'.rer')]);
    const proxy=await getPlatformProxy(options);
    try {
     await compareRetainedArchive(archive,proxy.env);
-    if(platform)assert(await proxy.env.DB.prepare("SELECT name FROM sqlite_master WHERE name='rer_migrations'").first());
+    // Platform's runner stays the database's only migration authority: Wrangler never adds its ledger beside it.
+    const ledgers=(await proxy.env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('rer_migrations','d1_migrations')").all()).results.map(row=>row.name);
+    assert.deepEqual(ledgers,[platform?'rer_migrations':'d1_migrations']);
    } finally {await proxy.dispose();}
   }
  } finally {await rm(work,{recursive:true,force:true});}
