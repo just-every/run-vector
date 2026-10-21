@@ -5881,7 +5881,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
-      "sha256": "605e2e4a5f4e8ecfd36ba7c992694419c715f8124262377fb8a5bfded3c0acdc",
+      "sha256": "c08adf6ef41446b8e80c0c6a24129b3a00a3ea1677572bb08274b292dec57362",
       "executable": false
     },
     "tests/e2e/integrations/typescript-loader.mjs": {

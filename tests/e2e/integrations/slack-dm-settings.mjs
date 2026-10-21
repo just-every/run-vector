@@ -41,7 +41,8 @@ export async function exerciseSlackDirectMessages({page,runtime,width,evidence})
  const channels=page.locator('.channel-settings'),details=channels.locator('details');if(!await details.evaluate(element=>element.open))await details.locator('summary').click();
  const secret=crypto.randomUUID().replaceAll('-',''),field=channels.getByLabel('Slack signing secret',{exact:true});await field.fill(secret);await shot('signing-secret',field);await axe('.channel-settings');
  await answered('/settings/integrations/slack/signing-secret','POST',()=>channels.getByRole('button',{name:'Save signing secret',exact:true}).click());
- assert.equal(await field.inputValue(),'');const actions=channels.locator('.slack-direct-actions');await actions.getByText(/Assign to me and Change status are on/).waitFor();
+ const actions=channels.locator('.slack-direct-actions');await actions.getByText(/Assign to me and Change status are on/).waitFor();
+ assert.ok(await field.inputValue()==='','Saving clears the signing secret field');
  assert.equal(await channels.getByLabel('Interactivity Request URL',{exact:true}).inputValue(),runtime.base+'/api/integrations/slack/interactive');await shot('actions-on',actions);await axe('.channel-settings');
  assert.ok(!JSON.stringify(await send('/settings/integrations/channels','GET')).includes(secret),'the signing secret is never read back');
  // A teammate mentions the member: one DM at the Slack edge with the three actions.
