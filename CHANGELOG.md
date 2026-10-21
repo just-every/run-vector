@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.1 — 2026-10-21
+
+- Backups restore into an installation whose database Run Edit Run Platform migrated. Platform's runner records each migration in its own `rer_migrations` ledger, which Wrangler cannot read; `rer import` (and `rer export`) ran `wrangler d1 migrations apply` regardless, which re-applied every migration and stopped at "Preparing archive schema" with `table workspace_settings already exists`. A local transfer now reads the migration ledger first: on a Platform-migrated database it leaves migrations to Platform's runner, refuses with `migration_ledger:unapplied:<file>` (or `migration_ledger:multiple`) unless every migration file is already applied, and never runs Wrangler; other databases are prepared by Wrangler as before. The listed version's backups and this version's own restore with every archived row, cell and file intact into Platform-migrated and native installations. Uses rer 0.2.77; recorded Base copies are unchanged.
+- Slack and Discord channel notifications (SLACK-003): teams, projects and saved views post new triage items, new issues and status changes to a bound Slack channel or Discord webhook through the native outbound ledger, with visible failures and no repeats; a team or project can create its own Slack channel. Messages carry identifier, title, readable actor and status change, never description or comment bodies.
+- Personal Slack direct messages (SLACK-004): a member links the Slack account found for their own sign-in email, then turns on direct messages for assignments and mentions, with Assign to me, Change status and Open actions on signed requests. Unlinking, member removal or removing the Slack credential stops every message.
+- TanStack Start is patched for GHSA-qx66-fv34-fjm8.
+- Apply migrations **0073–0074** after unchanged 0001–0072. 0073 adds channel destinations and bindings and replaces the native webhook trigger with the same events for existing webhook destinations; 0074 adds member Slack links and request replay keys, which archives exclude. Preserve additive schema and delivery ledgers on compatible-source rollback. RELEASE.json lists each migration's steps.
+- Upgrade locally: stop your development process by PID, `rer export --output exports/vector.rer`, pull the release, `rer install`, `rer dev`. Hosted: take a backup with the authenticated Base transfer client below, pull, and `rer deploy` with the existing environment and custody files. Validate backup recovery in isolated empty resources before changing traffic.
+
+Known issues and limits:
+
+- Roles, private teams, guests and most external provider integrations remain incomplete; CONTRACT.md is the full target and records each clause's current status. Every admitted operator currently has owner authority. Slack app installation through its manifest, Events API, @Vector issue creation, Admin mapping of members and Microsoft Teams are not available; Slack and Discord credentials never travel in backups and need re-entry, and Slack members re-link, after a restore. Posted Slack or Discord messages cannot be recalled by local erasure.
+- Local `rer setup` and `rer dev` still migrate with Wrangler. A local database carrying Platform's migration ledger is supported for backup and restore only, not for local development.
+- Linear and Jira imports remain documented-format, synthetic-only; no actual owner export is claimed, and there is no Asana importer. Managed relay delivery and broad capacity are not proven here.
+- Milestone grouping, calendar feeds, complete public milestone API operations and Jira/Linear milestone mapping remain future work.
+- The deferral input uses the browser's time zone. Daily reporting preserves only observed aggregate history; days before measurement remain unknown.
+- `rer export` refuses a hosted origin, and `wrangler d1 export` cannot read Vector's FTS5 tables. Use the authenticated Base transfer client shown in the 0.3.0 backup instructions, retaining the owner's cookie privately.
+
+Product screenshot: `docs/retained-verification/ui/1440-app.png`.
+
 ## 0.4.0 — 2026-10-20
 
 - The current intake assessment, Created/Subscribed/Activity work tabs and credential custody are recorded complete. Future agent-triage, private-team, mobile-app and provider obligations remain under their owning clauses.

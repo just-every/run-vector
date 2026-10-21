@@ -15,6 +15,14 @@ wrong schema/product, unsafe values, missing files, unexpected data or unresolve
 references refuse. Restore requires an empty native destination apart from the
 documented migration and derived bookkeeping tables.
 
+A local export or import first reads the database's migration ledger. A database
+Run Edit Run Platform migrated records its migrations in `rer_migrations`, which
+Wrangler cannot read, so Platform's runner stays its only migration authority:
+the transfer runs no Wrangler migrations there and refuses with
+`migration_ledger:unapplied:<file>` until Platform has applied every migration
+file (or `migration_ledger:multiple` when a Wrangler ledger sits beside it). Any
+other database is migrated by Wrangler before the transfer, as before.
+
 Sessions, sign-in links, mail outboxes, provider/signing secrets, transient rate
 limits and destination-only grants/holds are excluded. Safe Base operator
 identity is included because native foreign keys depend on it. The configured

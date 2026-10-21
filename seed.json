@@ -1,8 +1,8 @@
 {
   "id": "vector",
   "name": "Vector",
-  "version": "0.4.0",
-  "maturity": "Fourth public release; retained older-version backups restore on rer 0.2.74. Roles, provider integrations, Managed relay delivery, real Linear/Jira exports and broader capacity remain incomplete or unproven; see CONTRACT.md and CHANGELOG.md.",
+  "version": "0.4.1",
+  "maturity": "Fifth public release; backups restore on rer 0.2.77 into native and Platform-migrated installations. Roles, most provider integrations, Managed relay delivery, real Linear/Jira exports and broader capacity remain incomplete or unproven; see CONTRACT.md and CHANGELOG.md.",
   "category": "projects",
   "spine": {
     "id": "projects",
