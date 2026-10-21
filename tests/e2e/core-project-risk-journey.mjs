@@ -1,16 +1,24 @@
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
+import { request } from '@playwright/test';
 import { beforePrivateNavigation, settleReads, trackRequests } from './collaboration-navigation.mjs';
 
 // PROJ-006: concurrent risk evidence stays visible beneath health precedence.
 export async function projectRiskJourney(page, context, base, record = async () => {}) {
   trackRequests(page);
   const api = async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
-    });
-    assert(response.ok(), `${method} ${path}: ${response.status()}`);
-    return await response.json(); // Consume the actual response body before continuing.
+    // Browser navigation can outlast workerd's 5 s idle socket lifetime.
+    // Own and dispose each HTTP client so no request reuses an idle socket.
+    const client = await request.newContext({ storageState: await context.storageState() });
+    try {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()}`);
+      return await response.json(); // Consume the actual response body before disposing its client.
+    } finally {
+      await client.dispose();
+    }
   };
   const me = (await api('/session')).operatorId;
   await api('/settings', 'PATCH', { timezone: 'UTC' });

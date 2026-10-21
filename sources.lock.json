@@ -5737,7 +5737,7 @@
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
-      "sha256": "47eb8356ead8093aa127cddc68a7ede19617976efa5d8442b817675b2290259c",
+      "sha256": "90dbeb75ffaed484476684bac5476c988063bbf53f61ce70e82b4a49c3dca6dd",
       "executable": false
     },
     "tests/e2e/core-related-journey.mjs": {
