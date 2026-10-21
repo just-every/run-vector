@@ -86,4 +86,5 @@ export async function createCycle(
       capacity: input.capacity,
     }),
   ]);
+  return id;
 }

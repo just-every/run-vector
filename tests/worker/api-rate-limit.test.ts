@@ -17,7 +17,7 @@ afterAll(() => vi.useRealTimers())
 const get = (cookie: string) =>
   app.request(origin + '/api/session', { headers: { host: new URL(origin).host, cookie } }, bindings)
 
-it('[BASE-ACCESS-004] a person sending too many requests in a minute is refused with 429, without touching another person or the next minute', async () => {
+it('[BASE-ACCESS-004 API-003] session and token limits isolate people, tokens and windows with Retry-After', async () => {
   // The limit counts calendar minutes; hold the clock inside one so the run cannot straddle a boundary.
   const minute = Math.ceil(Date.now() / 60_000) * 60_000
   vi.useFakeTimers({ toFake: ['Date'] })
@@ -35,4 +35,17 @@ it('[BASE-ACCESS-004] a person sending too many requests in a minute is refused 
   assert.equal((await get(maya)).status, 200, 'another person is counted on their own')
   vi.setSystemTime(minute + 60_000)
   assert.equal((await get(sarah)).status, 200, 'the next minute starts a new count')
+  const mint=async(name:string)=>{
+    const response=await app.request(origin+'/api/settings/integrations/tokens',{method:'POST',headers:{host:new URL(origin).host,cookie:sarah,Origin:origin,'content-type':'application/json'},body:JSON.stringify({name,scopes:['metadata:read']})},bindings);
+    assert.equal(response.status,201,await response.clone().text());return (await response.json() as {token:string}).token;
+  };
+  const first=await mint('Rate limited token'),second=await mint('Independent token');
+  const api=(token:string)=>app.request(origin+'/api/v1/metadata',{headers:{Authorization:'Bearer '+token}},bindings);
+  for(let index=0;index<300;index++)assert.equal((await api(first)).status,200);
+  const denied=await api(first);assert.equal(denied.status,429);
+  assert.deepEqual(await denied.json(),{error:'rate_limited'});
+  assert.equal(denied.headers.get('Retry-After'),'60');
+  assert.equal((await api(second)).status,200);
+  vi.setSystemTime(minute+120_000);
+  assert.equal((await api(first)).status,200);
 })

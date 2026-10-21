@@ -2,7 +2,7 @@ import { useViewerTime } from '../../../app/viewer-time';
 import {useState,type FormEvent} from 'react';
 import {secretSchema,send,acknowledged,type Configuration,type Secret} from './client';
 import {TokenUsage} from './token-usage';
-const scopes=['issues:read','issues:write','comments:write','metadata:read','projects:read','projects:write'] as const;
+import { tokenScopes as scopes } from '../scopes';
 export function TokenSettings({tokens,onSecret,onChanged,onError}:{tokens:Configuration['tokens'];onSecret:(secret:Secret)=>void;onChanged:()=>void;onError:(error:unknown)=>void}){
  const {futureInstant,effectiveTimezone}=useViewerTime();
  const [name,setName]=useState(''),[selected,setSelected]=useState<string[]>(['issues:read']),[expiry,setExpiry]=useState(''),[busy,setBusy]=useState(false);

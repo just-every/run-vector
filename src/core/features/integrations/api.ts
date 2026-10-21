@@ -1,3 +1,10 @@
+import { apiSchema,apiRoute } from './api-schema';
+import { addCommentApi } from './comment-api';
+import { addMilestoneApi } from './milestone-api';
+import { addCycleApi } from './cycle-api';
+import { pageQuery,pageScope,decodeCursor,nextCursor } from './api-pagination';
+import { CommentPermissionError } from '../discussion/permissions';
+import { admitRate } from '../auth/repository';
 import { addIssueCopyRoutes } from "../issue-copy/routes";
 import { addProjectApi } from "./project-api";
 import { SettingsError } from "../administration/transaction";
@@ -32,6 +39,8 @@ function parse<T>(schema:z.ZodType<T>,input:unknown){const value=schema.safePars
 export function createIntegrationApi(){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
+  if(error instanceof z.ZodError)return c.json({error:'invalid_request'},400);
+  if(error instanceof CommentPermissionError)return c.json({error:error.code,message:error.message},403);
   if(error instanceof SettingsError)return c.json({error:error.code,message:error.message},error.status);
   if(error instanceof IntegrationError)return c.json({error:error.code,message:error.message},error.status);
   if(error instanceof IssueAccessError)return c.json({error:error.code},error.status);
@@ -43,18 +52,16 @@ export function createIntegrationApi(){
  });
  app.use('*',async(c,next)=>{
   const path=c.req.path.replace(/^\/api\/v1/,''),method=c.req.method;
-  let scopes:readonly string[];
-  if(method==='GET'&&(path==='/issues'||/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*(?:\/description-history)?$/.test(path)))scopes=['issues:read'];
-  else if(method==='GET'&&(path==='/projects'||/^\/projects\/[0-9A-HJKMNP-TV-Z]{26}$/.test(path)))scopes=['projects:read'];
-  else if((method==='POST'&&path==='/projects')||(method==='PATCH'&&/^\/projects\/[0-9A-HJKMNP-TV-Z]{26}$/.test(path)))scopes=['projects:write'];
-  else if(method==='GET'&&path==='/metadata')scopes=['metadata:read'];
-  else if((method==='POST'&&(path==='/issues'||/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*\/(?:description-restore|checklist|copy)$/.test(path)))||(method==='PATCH'&&/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*$/.test(path)))scopes=['issues:write'];
-  else if(method==='POST'&&/^\/issues\/[A-Z]{2,10}-[1-9][0-9]*\/comments(?:\/[0-9A-HJKMNP-TV-Z]{26}\/checklist)?$/.test(path))scopes=['comments:write'];
-  else return c.json({error:'route_not_found'},404);
+  const route=apiRoute(path,method);
+  if(!route)return c.json({error:'route_not_found'},404);
+  if(path==='/schema')return c.json(apiSchema);
+  if(!route.list&&Object.keys(c.req.query()).length)throw new IntegrationError(400,'invalid_query');
+  const scopes=route.scopes;
   // Cookie-authenticated browsers may not turn another origin into a bearer
   // write. Server clients omit Origin; if supplied it must be the saved origin.
   if(c.req.header('Origin')&&c.req.header('Origin')!==c.env.APP_ORIGIN)throw new IntegrationError(403,'origin_refused');
   const raw=c.env.DB,actor=await authorizeToken(raw,c.req.raw,scopes,method+':'+path),predicate=tokenPredicate(actor);
+  if(!await admitRate(raw,'api-v1:'+actor.workspace+':'+actor.tokenId,300,60000))return c.json({error:'rate_limited'},429,{'Retry-After':String(Math.max(1,Math.ceil((60000-Date.now()%60000)/1000))),'Cache-Control':'no-store'});
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
   c.env={...c.env,DB:mutationDatabase(raw,actor.id,undefined,{sql:predicate.sql,values:predicate.params})};
   configureNotifications(c.env.DB,c.env);
@@ -63,10 +70,18 @@ export function createIntegrationApi(){
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
  });
  app.get('/metadata',async c=>c.json(await readAdministration(c.env.DB,c.get('operatorId'))));
+ app.get('/schema',c=>c.json(apiSchema));
  app.get('/issues',async c=>{
-  const query=c.req.query(),allowed=Object.keys(issueListQuerySchema.shape);
-  if(Object.keys(query).some(key=>!allowed.includes(key)))throw new IntegrationError(400,'invalid_query');
-  return c.json(issueListResponse(await listIssues(c.env.DB,c.get('operatorId'),parse(issueListQuerySchema,query))));
+  const query=c.req.query(),{limit,cursor,...nativeQuery}=query;
+  const allowed=Object.keys(issueListQuerySchema.shape);
+  if(Object.keys(nativeQuery).some(key=>!allowed.includes(key)))throw new IntegrationError(400,'invalid_query');
+  if(limit===undefined&&cursor===undefined)return c.json(issueListResponse(await listIssues(c.env.DB,c.get('operatorId'),parse(issueListQuerySchema,nativeQuery))));
+  if('offset' in nativeQuery||'revision' in nativeQuery||'pageSize' in nativeQuery)throw new IntegrationError(400,'invalid_query');
+  const page=pageQuery.parse({limit,cursor}),filters=parse(issueListQuerySchema,{...nativeQuery,pageSize:100});
+  const scope=await pageScope(c.get('operatorId'),'issues',[filters,page.limit]),position=decodeCursor(cursor,scope);
+  const value=issueListResponse(await listIssues(c.env.DB,c.get('operatorId'),{...filters,offset:position.offset,revision:position.revision}));
+  const issues=value.issues.slice(0,page.limit),offset=position.offset+issues.length;
+  return c.json({...value,issues,nextCursor:offset<value.total?nextCursor(offset,value.revision,scope):null});
  });
  app.get('/issues/:identifier',async c=>{const id=parse(identifier,c.req.param('identifier'));await requireIssueAccess(c.env.DB,id,c.get('operatorId'));const value=await getIssueDetail(c.env.DB,id,new Date());await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json(value);});
  app.post('/issues',async c=>c.json(await createIssue(c.env.DB,c.get('operatorId'),parse(createIssueInputSchema,await readRequestJson(c.req.raw))),201));
@@ -74,6 +89,9 @@ export function createIntegrationApi(){
  app.post('/issues/:identifier/comments',async c=>{const id=parse(identifier,c.req.param('identifier')),input=parse(comment,await readRequestJson(c.req.raw)),issue=await requireIssueAccess(c.env.DB,id,c.get('operatorId'));return c.json({id:await addComment(c.env.DB,issue.id,c.get('operatorId'),input.body)},201);});
  addIssueCopyRoutes(app,false);
  addProjectApi(app);
+ addCommentApi(app);
+ addMilestoneApi(app);
+ addCycleApi(app);
  addDescriptionHistoryRoutes(app,false);
  return app;
 }

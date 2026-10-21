@@ -1,7 +1,12 @@
+import { apiCoverage } from '../../src/core/features/integrations/api-coverage';
+import { z } from 'zod';
+import * as planning from '../../src/core/features/administration/schema';
+import { apiRoutes } from '../../src/core/features/integrations/api-schema';
+import { tokenScopes } from '../../src/core/features/integrations/scopes';
 import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
-import {origin,bindings} from './base-auth-fixture';
+import {invite,actor,request,origin,bindings} from './base-auth-fixture';
 import {createIntegrationApi} from '../../src/core/features/integrations/api';
 it('[API-001 API-002] Base scoped token authority drives native routes, usage, stale writes and revocation without HTML or file admission',async()=>{
  const f=await setupIntegrations(),read=await f.issueToken(['issues:read','metadata:read']),write=await f.issueToken(['issues:read','issues:write','comments:write']);
@@ -41,5 +46,102 @@ it('[API-001 API-002] Base scoped token authority drives native routes, usage, s
  const profile=await env.DB.prepare('SELECT token_id AS id FROM vector_integration_tokens WHERE name=? LIMIT 1').bind('Native API').first<{id:string}>();
  expect((await f.call('/settings/integrations/tokens/'+profile!.id,'DELETE')).status).toBe(200);expect((await f.api(read.token,'/issues')).status).toBe(401);
  await env.DB.prepare('UPDATE integration_tokens SET expires_at=1 WHERE token_hash IS NOT NULL').run();expect((await f.api(write.token,'/issues')).status).toBe(401);
+ expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+},180000);
+
+it('[API-003] the versioned schema is published through the real app',async()=>{
+ const f=await setupIntegrations();
+ const response=await f.api('', '/schema');
+ expect(response.status).toBe(200);
+ const schema=await response.json() as any;
+ expect(schema.openapi).toBe('3.1.0');
+ for(const [path,method,validator] of [
+  ['/projects','post',planning.projectCreateSchema.omit({createSlackChannel:true})],
+  ['/projects/{id}','patch',planning.projectUpdateSchema],
+  ['/projects/{id}/milestones','post',planning.projectMilestoneCreateSchema],
+  ['/projects/{id}/milestones/{milestoneId}','patch',planning.projectMilestoneUpdateSchema],
+  ['/projects/{id}/milestones/order','put',planning.projectMilestoneOrderSchema],
+  ['/cycles','post',planning.cycleCreateSchema],
+ ] as const){const generated=z.toJSONSchema(validator,{io:'input'});delete generated.$schema;expect(schema.paths[path][method].requestBody.content['application/json'].schema).toEqual(generated);}
+ const mounted=createIntegrationApi().routes.filter(r=>r.method!=='ALL').map(r=>r.method+' '+r.path.replace(/:([A-Za-z]+)/g,'{$1}')).sort();
+ expect(mounted).toEqual(apiRoutes.map(r=>r.method+' '+r.path).sort());
+ const required='issues,comments,attachments,relations,labels,teams,workflow states,cycles,projects,milestones,initiatives,releases,documents,views,customers,customer requests,notifications,members'.split(',');
+ const remainder:string[]=[];
+ for(const name of required){
+  const object=schema['x-object-coverage'][name];expect(object).toBeDefined();
+  if(object.status==='not-built'){expect(object.clause).toMatch(/^[A-Z]+-\d{3}$/);remainder.push(name+': not built ('+object.clause+')');continue;}
+  for(const operation of ['list','get','create','update','delete']){
+   const entry=object.operations[operation];expect(entry).toBeDefined();
+   if(entry.status==='owed'){expect(entry.reason.length).toBeGreaterThan(0);remainder.push(name+'.'+operation);continue;}
+   expect(entry.routes.length).toBeGreaterThan(0);
+   for(const ref of entry.routes){const [method,path]=ref.split(' '),route=schema.paths[path][method.toLowerCase()];expect(route['x-object']).toBe(name);expect(route['x-operation']).toBe(operation);if(operation==='list'){expect(route['x-pagination']).toBe('cursor');expect(route['x-filters'].length).toBeGreaterThan(0);}}
+  }
+ }
+ const qualification=apiCoverage(schema);expect(qualification.complete).toBe(remainder.length===0);expect(qualification.missing.length+qualification.unbuilt.length).toBe(remainder.length);
+ // A declared gap is reported, never disguised as an unsupported read-only operation.
+ console.log('API-003 schema coverage: route inventory valid; OPEN remainder: '+remainder.join(', '));
+});
+
+it('[API-003 PROJ-011 ISSUE-008] public tokens page a native planning journey and enforce comment scopes, authorship, erasure and cursor invalidation',async()=>{
+ const f=await setupIntegrations(),token=(await f.issueToken([...tokenScopes],'Planning journey')).token;
+ const old=(await f.issueToken(['comments:write','projects:write'],'Existing scopes')).token;
+ const call=async(path:string,method='GET',body?:unknown,status=200)=>{
+  const response=await f.api(token,path,method,body);expect(response.status,await response.clone().text()).toBe(status);return await response.json() as any;
+ };
+ expect((await f.api('', '/unlisted')).status).toBe(404);
+ for(const path of ['/comments','/cycles','/projects/00000000000000000000000000/milestones'])expect((await f.api(old,path)).status).toBe(401);
+ const project=await call('/projects','POST',{name:'API planning',leadOperatorId:f.owner},201);
+ const second=await call('/projects','POST',{name:'Second project',leadOperatorId:f.owner},201);
+ const cycle=await call('/cycles','POST',{teamId:f.initial.teams[0].id,name:'API cycle',startsLocal:'2027-04-01T09:00',endsLocal:'2027-04-15T09:00'},201);
+ const milestone=await call('/projects/'+project.id+'/milestones','POST',{name:'API milestone'},201);
+ await call('/projects/'+project.id+'/milestones','POST',{name:'Next milestone'},201);
+ const issues=[];
+ for(let i=0;i<3;i++)issues.push(await call('/issues','POST',{teamId:f.initial.teams[0].id,title:'API journey '+i,projectId:project.id,cycleId:cycle.cycle.id,milestoneId:milestone.id},201));
+ const pages=async(path:string,key:string)=>{
+  const ids:string[]=[];let cursor:string|null=null;let total:number|undefined;
+  do{const page=await call(path+(path.includes('?')?'&':'?')+'limit=1'+(cursor?'&cursor='+encodeURIComponent(cursor):''));total??=page.total;expect(page.total).toBe(total);expect(page[key]).toHaveLength(1);ids.push(page[key][0].id);cursor=page.nextCursor;}while(cursor);
+  expect(new Set(ids).size).toBe(ids.length);expect(ids.length).toBe(total);return ids;
+ };
+ expect(await pages('/issues?project='+project.id,'issues')).toEqual(issues.map(i=>i.id).reverse());
+ expect(await pages('/projects','projects')).toEqual([project.id,second.id]);
+ expect(await pages('/cycles?team='+f.initial.teams[0].id,'cycles')).toEqual([cycle.cycle.id]);
+ expect((await pages('/projects/'+project.id+'/milestones','milestones')).length).toBe(2);
+ const first=await call('/issues?project='+project.id+'&limit=1');
+ expect((await f.api(token,'/issues?project='+second.id+'&limit=1&cursor='+encodeURIComponent(first.nextCursor))).status).toBe(409);
+ const issue=issues[0];
+ expect((await f.api(token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:999,title:'stale'})).status).toBe(409);
+ await call('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,title:'Changed ordering'});
+ expect((await f.api(token,'/issues?project='+project.id+'&limit=1&cursor='+encodeURIComponent(first.nextCursor))).status).toBe(409);
+ const pp=await call('/projects?limit=1');await call('/projects/'+second.id,'PATCH',{name:'A first'});
+ expect((await f.api(token,'/projects?limit=1&cursor='+encodeURIComponent(pp.nextCursor))).status).toBe(409);
+ const comment=await call('/issues/'+issue.identifier+'/comments','POST',{body:'Stable API body'},201);
+ await call('/issues/'+issue.identifier+'/comments','POST',{body:'Second API body'},201);
+ const read=await call('/comments/'+comment.id);
+ expect(read).toEqual({id:comment.id,issueIdentifier:issue.identifier,body:'Stable API body',author:{id:f.owner,displayName:'Owner'},createdAt:expect.any(String),editedAt:null,url:origin+'/app/issues/'+issue.identifier,maxBodyLength:100000,truncated:false});
+ expect((await pages('/comments?issue='+issue.identifier,'comments')).length).toBe(2);
+ expect((await call('/comments?createdFrom=2099-01-01T00%3A00%3A00Z')).comments).toEqual([]);
+ expect((await f.api(old,'/comments/'+comment.id,'PATCH',{body:'Scope denied'})).status).toBe(401);
+ const peerCookie=await invite('peer@base.test',f.cookie),peer=await actor(peerCookie);
+ const minted=await request('/api/settings/integrations/tokens','POST',{name:'Peer',scopes:['comments:read','comments:edit','comments:write']},peerCookie);expect(minted.status).toBe(201);
+ const peerToken=(await minted.json() as any).token;
+ expect((await f.api(peerToken,'/comments/'+comment.id,'PATCH',{body:'Another author'})).status).toBe(403);
+ const cp=await call('/comments?issue='+issue.identifier+'&limit=1');
+ expect((await f.api(peerToken,'/comments?issue='+issue.identifier+'&limit=1&cursor='+encodeURIComponent(cp.nextCursor))).status).toBe(409);
+ await call('/comments/'+comment.id,'PATCH',{body:'Edited body'});
+ expect((await call('/comments/'+comment.id)).editedAt).not.toBeNull();
+ expect((await f.api(token,'/comments?issue='+issue.identifier+'&limit=1&cursor='+encodeURIComponent(cp.nextCursor))).status).toBe(409);
+ const peerCommentResponse=await f.api(peerToken,'/issues/'+issue.identifier+'/comments','POST',{body:'Retained author history'});expect(peerCommentResponse.status).toBe(201);
+ const peerComment=await peerCommentResponse.json() as any;
+ const removed=await f.call('/settings/operators/'+peer,'DELETE');expect(removed.status,await removed.clone().text()).toBe(200);
+ expect((await f.api(peerToken,'/comments')).status).toBe(401);
+ expect((await call('/comments/'+peerComment.id)).author).toEqual({id:peer,displayName:'Removed operator'});
+ await call('/comments/'+comment.id,'DELETE');expect((await f.api(token,'/comments/'+comment.id)).status).toBe(404);
+ expect((await call('/comments?issue='+issue.identifier)).comments.some((c:any)=>c.id===comment.id)).toBe(false);
+ await call('/projects/'+project.id+'/milestones/'+milestone.id,'PATCH',{completed:true});
+ expect((await call('/projects/'+project.id+'/milestones/'+milestone.id)).completed).toBe(true);
+ await call('/projects/'+project.id+'/milestones/'+milestone.id,'DELETE');
+ for(const value of issues)expect((await call('/issues/'+value.identifier)).milestoneId).toBeNull();
+ expect((await f.api(old,'/projects/'+second.id,'DELETE')).status).toBe(401);
+ await call('/projects/'+second.id,'DELETE');expect((await f.api(token,'/projects/'+second.id)).status).toBe(404);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);

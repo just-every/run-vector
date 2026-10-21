@@ -1,0 +1,1 @@
+export const tokenScopes=["issues:read", "issues:write", "comments:write", "metadata:read", "projects:read", "projects:write", "comments:read", "comments:edit", "comments:delete", "projects:delete", "milestones:read", "milestones:write", "milestones:delete", "cycles:read", "cycles:write"] as const;

@@ -67,6 +67,7 @@ export async function createProjectMilestone(
       id,projectId,...input,position,completed:false,
     }),
   ]);
+  return id;
 }
 
 export async function updateProjectMilestone(

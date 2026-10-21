@@ -54,7 +54,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
     };
   const mutation = <T extends z.ZodType>(
     input: T,
-    run: (c: Context<AppEnvironment>, body: z.output<T>) => Promise<void>,
+    run: (c: Context<AppEnvironment>, body: z.output<T>) => Promise<unknown>,
     respond: (c: Context<AppEnvironment>) => Promise<Response> = read,
   ) =>
     handle(async (c) => {

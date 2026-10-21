@@ -1,8 +1,9 @@
+import { pageQuery,paginate } from './api-pagination';
 import type { Hono } from 'hono';
 import type { AppEnvironment } from '../../app/bindings';
 import { readRequestJson } from '../../app/input';
 import { administrationId,projectCreateSchema,projectUpdateSchema } from '../administration/schema';
-import { createProject,updateProject } from '../administration/projects';
+import { createProject,updateProject,removeProject } from '../administration/projects';
 import { projectPortfolioQuery } from '../projects/portfolio';
 import { projectPortfolio,projectDetail } from '../projects/read';
 import { IntegrationError } from './errors';
@@ -13,7 +14,16 @@ function parse<T>(schema:z.ZodType<T>,value:unknown) {
   return result.data;
 }
 export function addProjectApi(app:Hono<AppEnvironment>) {
-  app.get('/projects',async c=>c.json(await projectPortfolio(c.env.DB,c.get('operatorId'),parse(projectPortfolioQuery,c.req.query()))));
+  app.get('/projects',async c=>{
+    const {limit,cursor,...filters}=parse(projectPortfolioQuery.safeExtend(pageQuery.shape),c.req.query());
+    const value=await projectPortfolio(c.env.DB,c.get('operatorId'),filters);
+    const page=await paginate(value.projects,c.get('operatorId'),'projects',filters,{limit,cursor});
+    return c.json({...value,projects:page.items,total:page.total,nextCursor:page.nextCursor});
+  });
+  app.delete('/projects/:id',async c=>{
+    await removeProject(c.env.DB,c.get('operatorId'),parse(administrationId,c.req.param('id')));
+    return c.json({deleted:true});
+  });
   app.get('/projects/:id',async c=>{
     const project=await projectDetail(c.env.DB,c.get('operatorId'),parse(administrationId,c.req.param('id')));
     return project?c.json(project):c.json({error:'not_found'},404);

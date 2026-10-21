@@ -43,7 +43,7 @@ without erasing already-committed native notification intent.
 
 Tokens admit only these explicit routes. They cannot sign into documents,
 generated functions, private files, ordinary cookie APIs or token administration.
-There is no token deletion route. Existing assignment/direct-mention notifications keep
+Project, milestone and comment deletion use separately selected delete scopes; there is no issue deletion API or token-administration bearer route. Existing assignment/direct-mention notifications keep
 their native policy; API access introduces no product roles or tenant selector.
 
 The native Worker tests exercise scopes, stale writes, revocation/removal,
@@ -63,8 +63,7 @@ read during preparation; they do not use the issue `expectedVersion` protocol.
 
 The portfolio supports `lifecycle`, `health`, `lead`, `team`, `targetFrom`,
 `targetTo`, `label`, `includeArchived` and `sort=priority` (or `newest`, the
-retained name-order setting). Counts and rows use the same filters. The current
-portfolio response is a complete workspace list, without API-003 pagination.
+retained name-order setting). Counts and rows use the same filters. The portfolio response is cursor paginated, with `limit` (1–100, default 50), `cursor`, `nextCursor` and `total`. Lifecycle and health counts describe the entire filtered result, consistently across pages.
 Project custom fields, configurable project statuses, roadmap editing and
 Linear project-field import remain targets in CONTRACT.md.
 
@@ -109,3 +108,100 @@ hierarchy/history commit together. Archived, missing and other-workspace target
 teams are refused. Token scope, native session and Origin checks remain in force.
 
 In the command palette, enter `Copy issue` on an open issue, or `Copy issue <identifier or title>` from any page. Ordinary issue searches retain one result per issue.
+
+## Versioned schema and coverage (API-003)
+
+`GET /api/v1/schema` publishes the checked-in OpenAPI 3.1 document
+[`schema/api-v1.json`](../schema/api-v1.json), without authentication. Its path,
+method and `x-scopes` entries are the API admission table. Unknown paths or
+methods return 404 before bearer authentication. The normal worker test reads
+the published schema and checks it against every mounted route, the named
+object inventory, list filters and cursor declarations. `x-object-coverage`
+reports omitted native operations as **owed**, and initiatives (INIT-001),
+releases (RELEASE-001), documents (PROJ-013), customers (CUST-005) and customer
+requests (CUST-001) as **not-built**, never as read-only exemptions. Inventory
+validation is not full clause acceptance: complete operation coverage remains owed.
+Run `node --experimental-strip-types scripts/api-coverage.mjs` for strict full
+qualification; it exits nonzero with the exact missing operations and unbuilt
+objects until all clause coverage is complete. The normal worker test verifies
+that the published schema produces this incomplete qualification, rather than
+claiming full coverage from a partial inventory.
+
+Existing tokens keep exactly their issued scope arrays. Select new scopes in
+Settings → Integrations when issuing a new token; expanding the selector does
+not expand an old token. New routes are:
+
+| Route | Scope | Native behavior |
+| --- | --- | --- |
+| GET /api/v1/comments | comments:read | Cursor list filtered by `issue`, `createdFrom`, `createdTo` (inclusive UTC timestamps) |
+| GET /api/v1/comments/ID | comments:read | A live comment on an issue this operator can read |
+| PATCH /api/v1/comments/ID | comments:edit | Strict `{body}` input, native author-only editing |
+| DELETE /api/v1/comments/ID | comments:delete | Native author/Owner/Admin deletion policy; deleted comments disappear |
+| DELETE /api/v1/projects/ID | projects:delete | Native project removal, including its current in-use refusal |
+| GET /api/v1/projects/ID/milestones | milestones:read | Cursor list, optional `completed=true` or `false` filter |
+| GET /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:read | Full native milestone projection, including progress and slip |
+| POST /api/v1/projects/ID/milestones | milestones:write | Native creation: `name`, optional `description`, `targetDate` |
+| PATCH /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:write | Native fields and `completed`, including reopen |
+| PUT /api/v1/projects/ID/milestones/order | milestones:write | `{milestoneIds}` containing every project milestone once |
+| DELETE /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:delete | Preserves issues, clears assignment and records native activity |
+| GET /api/v1/cycles | cycles:read | Cursor list with optional `team` and `closed=true` or `false` filters |
+| GET /api/v1/cycles/ID | cycles:read | Native cycle detail, progress, report and closure snapshot |
+| POST /api/v1/cycles | cycles:write | `teamId`, `name`, `startsLocal`, `endsLocal`, optional `capacity`; native timezone and overlap guards |
+
+Issue creation and update accept the inherited `milestoneId` field. An issue
+must belong to that milestone's project. Project moves and milestone deletion
+retain the native assignment-clearing behavior. Milestone writes use the app's
+snapshot guard (409 on concurrent changes), not a new version protocol.
+
+### Comment read shape
+
+```json
+{
+  "id": "stable comment ULID",
+  "issueIdentifier": "TEAM-123",
+  "body": "complete body text",
+  "author": { "id": "stable operator ULID", "displayName": "native display name" },
+  "createdAt": "ISO-8601 timestamp",
+  "editedAt": null,
+  "url": "https://installation.example/app/issues/TEAM-123",
+  "maxBodyLength": 100000,
+  "truncated": false
+}
+```
+
+`editedAt` becomes an ISO timestamp after editing. The canonical link opens the
+containing issue. Responses do not truncate bodies; native creation/editing
+limits body text to 100,000 characters. Display names follow the app, including
+`Removed operator` after erasure and imported attribution. A suspended-member
+product state does not yet exist; its safe display behavior remains inherited
+under ROLE-012/OPS-004. Only comments on readable issues appear; deleted
+comments are absent from list and get, never content-bearing tombstones.
+
+### Pagination and limits
+
+Comments, projects, milestones and cycles accept `limit` and `cursor`; responses
+include their named array, `total` and nullable `nextCursor`. Treat cursors as
+opaque and keep all filters and the limit unchanged. They are bound to the actor
+and filters, and a changed ordered projection returns 409. Restart from the
+first page after that response. Issue lists support the same cursor protocol
+when `limit` or `cursor` is supplied, retaining legacy `offset`/`revision` paging
+for existing clients. Do not combine those two protocols. Cursor mode retains
+the native issue-list revision check and supports small pages.
+
+Authenticated API calls allow 300 requests per token per calendar minute.
+Exhaustion returns 429 with integer `Retry-After` seconds until the next minute;
+other tokens have independent buckets. The existing transient access limiter
+stores buckets and is excluded from archives. Public schema reads do not use a
+token bucket. Invalid, expired, revoked, removed-operator or insufficient-scope
+tokens remain refused before resource admission.
+
+### Open acceptance
+
+API-003 remains partial. Idempotency keys (including replay, concurrency,
+expiry, erasure and archive exclusion) are not implemented. Complete API
+operations for attachments, relations, labels, teams, workflow states, saved
+views, notifications and members, cycle update/delete and issue deletion remain
+owed. Attachment bytes stay behind the same-origin cookie file door: API-001
+still forbids private-file access by bearer. The five not-built objects and a
+real private-team refusal under ROLE-002 remain owed. Native cookie issue
+deletion, import erasure and its receipts are unchanged.
