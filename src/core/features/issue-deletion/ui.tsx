@@ -23,7 +23,7 @@ export function DeleteIssue({
   onDeleted: (receipt: DeletionReceipt) => void;
   onRefresh: () => void;
 }) {
-  const viewer = useApiResource("/api/session", viewerSchema, 5000);
+  const viewer = useApiResource("/api/session", viewerSchema, 5000, { abortPendingOnDispose: false });
   const trigger = useRef<HTMLButtonElement>(null),
     [version, setVersion] = useState<number | null>(null),
     [busy, setBusy] = useState(false),
