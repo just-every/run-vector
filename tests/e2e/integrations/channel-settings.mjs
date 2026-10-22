@@ -29,7 +29,7 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  const config=await send('/settings/integrations/channels','GET');assert.equal(config.bindings.find(b=>b.objectId===project.id).channelName,'checkout-delivery-'+width);
  const allowance=panel.getByRole('form',{name:'Allow project channel',exact:true});
  await allowance.getByLabel('Allowed channel name',{exact:true}).fill('member-delivery-'+width);await allowance.getByLabel('Allowed Slack channel ID',{exact:true}).fill('CALLOWED'+width);
- const allowed=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels/allowed')&&r.request().method()==='POST');await allowance.getByRole('button',{name:'Allow channel',exact:true}).click();assert.equal((await allowed).status(),201);await panel.getByText('Channel allowed for project creators.',{exact:true}).waitFor();await shot('allowed-project-channel');
+ const allowed=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels/allowed')&&r.request().method()==='POST');await allowance.getByRole('button',{name:'Allow channel',exact:true}).click();assert.equal((await allowed).status(),201);await panel.getByText('Channel allowed for project creators.',{exact:true}).waitFor();await shot('allowed-project-channel');await roleScreens(evidence)(page,allowance,'allow-project-channel-'+width);
  const email=`synthetic-vector-${width}@vector.test`;
  await send('/settings/operators/invite','POST',{email,displayName:'Delivery member '+width,role:'member'});
  const link=await readDevelopmentLink(runtime.base,page.request,email,runtime.state);
