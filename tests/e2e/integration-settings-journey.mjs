@@ -54,7 +54,7 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  await section.getByText('Email intake settings saved.',{exact:true}).waitFor();
  await inspect(page,section,'email-intake-saved');
  const messageId='<synthetic-vector-'+Date.now()+'@example.test>';
- const raw=['From: '+sender,'To: '+address,'Message-ID: '+messageId,'Subject: Delayed delivery from the warehouse','MIME-Version: 1.0','Content-Type: multipart/mixed; boundary="synthetic-vector-722"','','--synthetic-vector-722','Content-Type: text/plain','','Please check the delivery attached below.','--synthetic-vector-722','Content-Type: text/plain','Content-Disposition: attachment; filename="delivery.txt"','','Delivery route 721','--synthetic-vector-722--',''].join('\r\n');
+ const raw=['From: '+sender,'To: '+address,'Message-ID: '+messageId,'Subject: Delayed delivery from the warehouse','MIME-Version: 1.0','Content-Type: multipart/mixed; boundary="synthetic-vector-722"','','--synthetic-vector-722','Content-Type: text/plain','','Please check the delivery attached below.','--synthetic-vector-722','Content-Type: image/png','Content-Disposition: inline; filename="delivery.png"','Content-ID: <delivery-image>','Content-Transfer-Encoding: base64','','iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','--synthetic-vector-722','Content-Type: text/plain','Content-Disposition: attachment; filename="delivery.txt"','','Delivery route 721','--synthetic-vector-722--',''].join('\r\n');
  const accepted=await runtime.req('/cdn-cgi/local/email?from='+encodeURIComponent(sender)+'&to='+encodeURIComponent(address),{method:'POST',body:raw});assert.equal(accepted.status,200,await accepted.text());
  const receipts=await(await runtime.req('/api/settings/teams/'+team.id+'/email-intake',{headers:{Cookie:cookie}})).json();
  const identifier=receipts.receipts.find(r=>r.messageId===messageId)?.issueIdentifier;assert.ok(identifier);
@@ -62,6 +62,9 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  const requester=page.getByRole('region',{name:'Email requester',exact:true});await requester.getByText(sender,{exact:false}).waitFor();
  await requester.getByRole('link',{name:'delivery.txt',exact:true}).waitFor();
  await inspect(page,requester,'email-intake-requester');
+ await requester.getByRole('button',{name:'View inline image: delivery.png',exact:true}).click();
+ await requester.getByRole('img',{name:'delivery.png',exact:true}).waitFor();
+ await inspect(page,requester,'email-intake-inline-image');
  await page.getByRole('button',{name:'Reply by email',exact:true}).first().click();
  const form=page.getByRole('form',{name:'Reply by email',exact:true});
  await form.getByRole('textbox',{name:'Email reply',exact:true}).fill('We are checking with the warehouse and will follow up.');
