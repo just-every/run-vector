@@ -6217,7 +6217,7 @@
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
-      "sha256": "7fb3a2f2d7594d250fa9b0972d5bec28a8a5df4826a7a7f009fc89f0c83fb744",
+      "sha256": "94f69b43f83a872f22f163ac253c1d8938f3332c56a8431c8eea073e41e9eddc",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
@@ -6233,7 +6233,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
-      "sha256": "77bb220ba1ae783abe2a46591d2f209fae072de5b54aa7921c10094bca8d3693",
+      "sha256": "6ac6be0da2fe99e7b709c21595786519b001620c4b334c55d89d8c21f5281204",
       "executable": false
     },
     "tests/e2e/integrations/typescript-loader.mjs": {

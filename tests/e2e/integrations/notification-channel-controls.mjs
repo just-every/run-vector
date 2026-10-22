@@ -52,11 +52,17 @@ export async function exerciseNotificationChannelControls({page,region,send,answ
  const allowEmail=region.getByRole('checkbox',{name:'Allow email notifications',exact:true});
  assert.equal(await allowEmail.isDisabled(),!settings.emailAvailable);
  if(settings.emailAvailable){
-  await answered('/settings/notifications','PATCH',()=>allowEmail.setChecked(!settings.emailEnabled));
+  assert.equal(await allowEmail.isChecked(),settings.emailEnabled);
+  await allowEmail.evaluate(element=>element.scrollIntoView({block:'center'}));
+  await answered('/settings/notifications','PATCH',()=>allowEmail.click());
   await region.getByRole('status').filter({hasText:'Notification preferences saved.'}).waitFor();
+  assert.equal(await allowEmail.isChecked(),!settings.emailEnabled);
   assert.equal((await send('/settings/notifications','GET')).emailEnabled,!settings.emailEnabled);
-  await answered('/settings/notifications','PATCH',()=>allowEmail.setChecked(settings.emailEnabled));
+  await allowEmail.evaluate(element=>element.scrollIntoView({block:'center'}));
+  await answered('/settings/notifications','PATCH',()=>allowEmail.click());
   await region.getByRole('status').filter({hasText:'Notification preferences saved.'}).waitFor();
+  assert.equal(await allowEmail.isChecked(),settings.emailEnabled);
+  assert.equal((await send('/settings/notifications','GET')).emailEnabled,settings.emailEnabled);
  }
  await page.reload();await email().waitFor();
 }

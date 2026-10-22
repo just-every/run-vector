@@ -9,12 +9,19 @@ const require=createRequire(import.meta.url);
 /** SLACK-004 and NOTIFY-007 in the built Worker: Settings → Notifications linking states, the signing-secret
  * field in Settings → Integrations, and one teammate mention that reaches the Slack edge as a DM. */
 export async function exerciseSlackDirectMessages({page,runtime,width,evidence}){
+ await page.setViewportSize({width,height:900});
  const usersFile=process.env.VECTOR_CHANNEL_EDGE+'.users',headers={Origin:runtime.base};
  const calls=async()=>{try{return(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').filter(Boolean).map(JSON.parse);}catch{return[];}};
  const send=async(path,method,data)=>{const response=await page.request.fetch(runtime.base+'/api'+path,{method,headers,data});assert.ok(response.ok(),method+' '+path+' '+response.status());return response.json();};
- const shot=async(name,locator)=>{const surface=locator.page();await locator.evaluate(element=>element.scrollIntoView({block:'center'}));assert.ok(await surface.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');await surface.screenshot({path:resolve(evidence,`slack-004-${name}-${width}.png`)});};
+ const shot=async(name,locator)=>{const surface=locator.page();await locator.evaluate(element=>element.scrollIntoView({block:'center'}));assert.equal(await surface.evaluate(()=>innerWidth),width,'capture viewport matches its evidence width');assert.ok(await surface.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');await surface.screenshot({path:resolve(evidence,`slack-004-${name}-${width}.png`)});};
  const axe=async(selector,surface=page)=>{await surface.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const result=await surface.evaluate(selector=>axe.run(document.querySelector(selector)),selector);assert.deepEqual(result.violations.filter(v=>['critical','serious'].includes(v.impact)),[]);};
- const answered=async(path,method,action)=>{const pending=page.waitForResponse(r=>new URL(r.url()).pathname==='/api'+path&&r.request().method()===method);await action();const response=await pending;assert.equal(response.status(),200,method+' '+path);return response;};
+ const answered=async(path,method,action)=>{
+  const [response]=await Promise.all([
+   page.waitForResponse(r=>new URL(r.url()).pathname==='/api'+path&&r.request().method()===method),
+   Promise.resolve().then(action),
+  ]);
+  assert.equal(response.status(),200,method+' '+path);return response;
+ };
  const links=()=>runtime.sql('SELECT count(*) AS n FROM vector_slack_member_links')[0].n;
  const owner=runtime.sql("SELECT o.id,o.name,a.email FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id WHERE o.removed_at IS NULL ORDER BY o.created_at LIMIT 1")[0];
  const region=page.getByRole('region',{name:'Notifications',exact:true}),slack=region.locator('.slack-direct-messages');
@@ -23,8 +30,10 @@ export async function exerciseSlackDirectMessages({page,runtime,width,evidence})
  const assignments=matrix.getByRole('checkbox',{name:'Slack for Assignments',exact:true});
  const chooseSlack=async(control,checked)=>{
   if(await control.isChecked()===checked)return;
-  await answered('/settings/notifications/channels','PUT',()=>control.setChecked(checked));
+  await control.evaluate(element=>element.scrollIntoView({block:'center'}));
+  await answered('/settings/notifications/channels','PUT',()=>control.click());
   await region.locator('.notification-channels').getByRole('status').filter({hasText:'Notification channels saved.'}).waitFor();
+  assert.equal(await control.isChecked(),checked,'Slack choice follows the saved response');
  };
  await writeFile(usersFile,'{}');
  // Unavailable, with its reason, while the workspace has no Slack credential.
