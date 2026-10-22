@@ -65,6 +65,7 @@ export async function exerciseNotificationChannelControls({page,region,send,answ
   assert.equal((await send('/settings/notifications','GET')).emailEnabled,settings.emailEnabled);
  }
  await page.reload();await email().waitFor();
+ console.log('notification-channel-controls.mjs exerciseNotificationChannelControls passed at '+page.viewportSize().width);
 }
 
 export async function inspectMemberNotificationChannels({page,runtime,teammateCookie,width,shot,axe}) {
@@ -82,5 +83,6 @@ export async function inspectMemberNotificationChannels({page,runtime,teammateCo
   assert.equal(denied.status(),403);
   await shot('member-channel-preferences',panel.getByRole('combobox',{name:'Email for Followed comments',exact:true}));
   await axe('.notifications-panel',member);
+  console.log('notification-channel-controls.mjs inspectMemberNotificationChannels passed at '+width);
  } finally {await context.close();}
 }

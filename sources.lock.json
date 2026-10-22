@@ -6217,7 +6217,7 @@
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
-      "sha256": "94f69b43f83a872f22f163ac253c1d8938f3332c56a8431c8eea073e41e9eddc",
+      "sha256": "947e30a069bb7dc73b500a91b24dc43967a1f5b1808671cd9751e00660657c84",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
