@@ -14,13 +14,13 @@ import {migrationStatements} from '@runeditrun/rer/internal/modules/portability/
  * No database bindings or filesystem writes precede complete input verification.
  */
 export async function archiveUpgradePlan({root,path,journal,policy}) {
- let manifest,closing;const ledger=ledgerReader();
+ let manifest,closing,journalClosing;const ledger=ledgerReader();
  for await(const record of fileRecords(path)) {
   ledger.add(record);
   if(record.kind==='manifest')manifest=record;
   if(record.kind==='closing')closing=record;
  }
- if(journal)for await(const record of fileRecords(journal)) {}
+ if(journal)for await(const record of fileRecords(journal))if(record.kind==='closing')journalClosing=record;
  insist(manifest.product===policy.product,'wrong_product',409);
  const config=parseJsonc(await readFile(join(root,'wrangler.jsonc'),'utf8'));
  const database=config.d1_databases.find(entry=>entry.binding==='DB');
@@ -52,6 +52,6 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
  const currentSchema=await replay.schemaAfter(files.map(file=>file.name));
  const configuration=Object.fromEntries(['name','compatibility_date','compatibility_flags','d1_databases','r2_buckets'].filter(key=>config[key]!==undefined).map(key=>[key,config[key]]));
  return {needed:names.length<files.length,sourceCount:names.length,sourceSchema:source.schema,currentSchema,prefix,
-  archiveHash:closing.archiveHash,files:files.map(({name,sha256})=>({name,sha256})),
+  archiveHash:closing.archiveHash,journalArchiveHash:journalClosing?.archiveHash,files:files.map(({name,sha256})=>({name,sha256})),
   configuration};
 }

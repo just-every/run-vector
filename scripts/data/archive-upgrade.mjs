@@ -50,7 +50,11 @@ export async function withArchiveUpgrade(context,policy,transport,restore) {
   for await(const record of fileRecords(original))if(record.kind==='closing')closing=record;
   if(closing.archiveHash!==plan.archiveHash)throw new RerError('restore_refused','Archive upgrade refused (archive_changed).',4);
   let journal;
-  if(context.journal){journal=join(root,'journal.rer');await copyFile(context.journal,journal);await chmod(journal,0o600);}
+  if(context.journal){
+   journal=join(root,'journal.rer');await copyFile(context.journal,journal);await chmod(journal,0o600);
+   for await(const record of fileRecords(journal))if(record.kind==='closing'&&record.archiveHash!==plan.journalArchiveHash)
+    throw new RerError('restore_refused','Archive upgrade refused (journal_changed).',4);
+  }
   await migrationFiles(context,root,plan.files.slice(0,plan.sourceCount),config);
   context.store.report('Restoring the verified archive in isolated resources, then applying unchanged forward product migrations.');
   const scratch={...context,root,path:original,journal};
@@ -59,7 +63,7 @@ export async function withArchiveUpgrade(context,policy,transport,restore) {
   // Keep the source's declared configuration inventory. No manifest or
   // authenticated source bytes are edited.
   await transport(policy).export({...scratch,path:upgraded,journal:undefined});
-  const result=await restore({...context,path:upgraded},policy);
+  const result=await restore({...context,path:upgraded,journal},policy);
   return {...result,input:relative(context.root,context.path),upgraded:{fromSchema:plan.sourceSchema,toSchema:plan.currentSchema,migrations:plan.files.slice(plan.sourceCount).map(file=>file.name),sourceArchiveHash:plan.archiveHash}};
  } finally {await rm(root,{recursive:true,force:true});}
 }
