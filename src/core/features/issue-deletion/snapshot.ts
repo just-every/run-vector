@@ -122,6 +122,10 @@ Object.assign(relations, {
     table: "notification_channel_receipts",
     where: "r.notification_id IN(SELECT id FROM notifications WHERE issue_id=c.id) OR r.notification_id IN(" + captured("notification_channel_receipts", "notification_id") + ")",
   },
+  notification_channel_restore_holds: {
+    table: "notification_channel_restore_holds",
+    where: "r.notification_id IN(SELECT id FROM notifications WHERE issue_id=c.id) OR r.notification_id IN(" + captured("notification_channel_restore_holds", "notification_id") + ")",
+  },
   notification_digest_items: {
     table: "notification_digest_items",
     where: "r.notification_id IN(SELECT notification_id FROM notification_deliveries WHERE id IN(" + deliveryIds + ")) OR r.notification_id IN(" + captured("notification_digest_items", "notification_id") + ")",

@@ -2329,7 +2329,7 @@
       "executable": false
     },
     "migrations/core/0081_notification_channels.sql": {
-      "sha256": "7d909c5d8ec91fdbcf296f01047bdea3b64923cc90ea44e98b7c2a7711d6d4cf",
+      "sha256": "5d3a986ed4f77a61445835ae0e1fab4ef0cee1beb2fca9a1bb3b4206a9cc4fd1",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -3569,7 +3569,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "5594d81e6201838b4f9d64c22b03a12e17c22e0ebad9806aa47699e442a1b3b6",
+      "sha256": "222149c516878b46f102121635dcb87df7f7238d2ce41687ba541623860740d3",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -3581,7 +3581,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "8cf8d97844b2d0272485522f7a53e96051b8189d48d1d657cab41873b39599ba",
+      "sha256": "413893aa0d47ae3187afdb8b77bec934328d47917d9f6d800c986dbb4d808c58",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -4373,7 +4373,7 @@
       "executable": false
     },
     "src/core/features/issue-deletion/snapshot.ts": {
-      "sha256": "3a473d6289d995ae9c8b725927e3f1fa1794495b886d745c6c9c24f6f92d7859",
+      "sha256": "6ead11ff92d4414ded96d03b900b8050a6eab76fb377579290e847b6157cfa81",
       "executable": false
     },
     "src/core/features/issue-deletion/source-erasure.ts": {
@@ -4845,7 +4845,7 @@
       "executable": false
     },
     "src/core/features/notifications/channel-intents.ts": {
-      "sha256": "8258ae5c3baa8fe0b596e41380749e4e15e995e8fde9327402c828ed34ef575f",
+      "sha256": "996116c57352ed16543070c781fe55b7ced80037f6ca1a705baf1365c9098eee",
       "executable": false
     },
     "src/core/features/notifications/channel-preferences.ts": {
@@ -4893,7 +4893,7 @@
       "executable": false
     },
     "src/core/features/notifications/mail.ts": {
-      "sha256": "53650452b870ef11598eea158369781a3268644ba6eccf42e50757023c2f1bdf",
+      "sha256": "35544bc622987555448ae3f83c00681ccbe528a82c5968492c879c573841ecd5",
       "executable": false
     },
     "src/core/features/notifications/mention-markdown.ts": {
@@ -5997,7 +5997,7 @@
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
-      "sha256": "6c740012446feba6e0de5a02ab23051bfa8188749015b2d6202d143bddd87791",
+      "sha256": "c7e77f24f4a9254b3fa25848a6290d8615c424bd78a850d9c676099729e20dad",
       "executable": false
     },
     "tests/e2e/core-intake-policy-journey.mjs": {
@@ -6801,7 +6801,7 @@
       "executable": false
     },
     "tests/worker/issue-deletion-cascade-fixture.ts": {
-      "sha256": "4f322984862e610db438dd3706b59645f8c991d2556aba9c432c9c91c218304f",
+      "sha256": "24b819e0d8f2d810d12771ae92bd7be14572be7023615a1b3cb1a9871f316aff",
       "executable": false
     },
     "tests/worker/issue-deletion-cascade.test.ts": {
