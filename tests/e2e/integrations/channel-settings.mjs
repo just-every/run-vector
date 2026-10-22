@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import {readDevelopmentLink} from '../outbox-session.mjs';
+import {roleScreens} from '../role-ui-support.mjs';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
@@ -25,7 +27,25 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  assert.equal((await calls()).filter(c=>c.method==='conversations.create'&&c.body.name==='checkout-delivery-'+width).length,1);
  await page.goto(runtime.base+'/app/settings#integrations');await panel.getByText(name,{exact:true}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-slack');await axe();
  const config=await send('/settings/integrations/channels','GET');assert.equal(config.bindings.find(b=>b.objectId===project.id).channelName,'checkout-delivery-'+width);
- const issue=await send('/issues','POST',{title:'Enable customer checkout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
+ const email=`synthetic-vector-${width}@vector.test`;
+ await send('/settings/operators/invite','POST',{email,displayName:'Delivery member '+width,role:'member'});
+ const link=await readDevelopmentLink(runtime.base,page.request,email,runtime.state);
+ const memberContext=await page.context().browser().newContext({storageState:await page.context().storageState(),viewport:{width,height:900}});
+ let issue;
+ try{
+  const member=await memberContext.newPage();await member.goto(link);await member.getByRole('button',{name:'Confirm',exact:true}).click();await member.waitForURL(runtime.base+'/app');
+  await member.goto(runtime.base+'/app/projects/'+project.id);await member.getByText('Project Slack channel',{exact:true}).click();
+  const choice=member.getByRole('form',{name:'Project Slack channel',exact:true}),channelId=config.bindings.find(b=>b.objectId===project.id).channelId;
+  await choice.getByLabel('Approved Slack channel',{exact:true}).selectOption(channelId);
+  const inspect=roleScreens(evidence);await inspect(member,member.locator('.project-management'),'member-project-channel-choice-'+width);
+  const forbiddenBefore=(await calls()).length;
+  assert.equal((await member.request.post(runtime.base+'/api/projects/'+project.id+'/slack-channel',{headers,data:{channelId:'CUNAPPROVED'}})).status(),403);
+  assert.equal((await calls()).length,forbiddenBefore,'unapproved channel makes no Slack call');
+  const bound=member.waitForResponse(r=>r.url().endsWith('/projects/'+project.id+'/slack-channel')&&r.request().method()==='POST');
+  await choice.getByRole('button',{name:'Bind project channel',exact:true}).click();assert.equal((await bound).status(),201);
+  await member.getByText('Bound to #checkout-delivery-'+width,{exact:true}).waitFor();await inspect(member,member.locator('.project-management'),'member-project-channel-bound-'+width);
+  const created=await member.request.post(runtime.base+'/api/issues',{headers,data:{title:'Enable customer checkout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id}});assert.equal(created.status(),201);issue=await created.json();
+ }finally{await memberContext.close();}
  await send('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
  const posts=(await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(issue.identifier));assert.equal(posts.length,2);assert.ok(posts[1].body.text.includes(team.statuses.find(s=>s.category==='unstarted').name+' → '+team.statuses.find(s=>s.category==='started').name));

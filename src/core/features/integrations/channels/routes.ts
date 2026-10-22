@@ -5,10 +5,17 @@ import {readRequestJson} from '../../../app/input';
 import {integrationOwner} from '../authority';
 import {IntegrationError} from '../errors';
 import {bindingInput} from './schema';
+import {approvedProjectChannels,bindProjectChannel,allowProjectChannel,revokeProjectChannel} from './project-binding';
 import {saveSlack,removeSlack,saveBinding,removeBinding,readChannels} from './settings';
 import {saveSigningSecret} from '../slack-dm/signing';
 function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_channel_settings','Check the channel settings and selected events.');return result.data;}
 export function addChannelRoutes(app:Hono<AppEnvironment>){
+ const channelId=z.string().regex(/^[CG][A-Z0-9]{2,30}$/),projectId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+ app.get('/projects/:id/slack-channel',async c=>c.json(await approvedProjectChannels(c.env,await integrationOwner(c.env,c.req.raw),parse(projectId,c.req.param('id')))));
+ app.post('/projects/:id/slack-channel',async c=>{const actor=await integrationOwner(c.env,c.req.raw),input=parse(z.object({channelId}).strict(),await readRequestJson(c.req.raw));return c.json(await bindProjectChannel(c.env,actor,parse(projectId,c.req.param('id')),input.channelId),201);});
+ app.post('/settings/integrations/channels/allowed',async c=>{const actor=await integrationOwner(c.env,c.req.raw),input=parse(z.object({channelId,channelName:z.string().trim().min(1).max(120)}).strict(),await readRequestJson(c.req.raw));return c.json(await allowProjectChannel(c.env,actor,input.channelId,input.channelName),201);});
+ app.delete('/settings/integrations/channels/allowed/:channelId',async c=>c.json(await revokeProjectChannel(c.env,await integrationOwner(c.env,c.req.raw),parse(channelId,c.req.param('channelId')))));
+
  app.get('/settings/integrations/channels',async c=>c.json(await readChannels(c.env,await integrationOwner(c.env,c.req.raw))));
  app.post('/settings/integrations/slack',async c=>{const owner=await integrationOwner(c.env,c.req.raw),input=parse(z.object({botToken:z.string().trim().min(10).max(500)}).strict(),await readRequestJson(c.req.raw));return c.json(await saveSlack(c.env,owner,input.botToken));});
  app.delete('/settings/integrations/slack',async c=>c.json(await removeSlack(c.env,await integrationOwner(c.env,c.req.raw))));

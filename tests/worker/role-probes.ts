@@ -141,6 +141,19 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "views.edit-shared": { session: async (who, actor) => { const shared = await view(who === "guest" ? owner : actor, true, w.team.id); return () => actor.call(`/views/${shared}`, "PATCH", { name: `Renamed view ${unique()}` }); } },
     "integrations.manage": { session: async (_who, actor) => () => actor.call("/settings/integrations") },
     // Slack is faked at the network edge; a refused request never reaches it.
+    "channels.bind-project": { session: async (_who, actor) => {
+      const edge=channelEdge(),id=await project();
+      try {
+        expect((await owner.call("/settings/integrations/slack","POST",{botToken:edge.token})).status).toBe(200);
+        expect((await owner.call("/settings/integrations/channels/allowed","POST",{channelId:"CAPPROVED",channelName:"delivery"})).status).toBe(201);
+      } catch(error){edge.restore();throw error;}
+      return async()=>{try{
+        const before=edge.calls.length;
+        const denied=await actor.call(`/projects/${id}/slack-channel`,"POST",{channelId:"CUNAPPROVED"});
+        expect(denied.status).toBe(403);expect(edge.calls.length).toBe(before);
+        return await actor.call(`/projects/${id}/slack-channel`,"POST",{channelId:"CAPPROVED"});
+      }finally{edge.restore();}};
+    } },
     "channels.create": { session: async (_who, actor) => {
       const edge = channelEdge(), name = `Channel project ${unique()}`;
       try { expect((await owner.call("/settings/integrations/slack", "POST", { botToken: edge.token })).status).toBe(200); }

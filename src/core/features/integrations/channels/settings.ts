@@ -74,5 +74,6 @@ export async function readChannels(env:WorkerBindings,owner:IntegrationOwner){
  ]);
  const needsAttention=Boolean(install[0]?.enabled)&&await credentialProblem(env,'slack:'+owner.workspace);
  const connected=Boolean(install[0]?.enabled)&&!needsAttention;
- return {slack:{connected,needsAttention,teamName:install[0]?.team_name??null,signingSecret:connected&&!await credentialProblem(env,'slack-signing:'+owner.workspace),interactivityUrl:env.APP_ORIGIN.replace(/\/$/,'')+'/api/integrations/slack/interactive'},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?(needsAttention||Boolean(row.suspendedReason)):await credentialProblem(env,'destination:'+row.id)}))),objects};
+ const allowedChannels=(await env.DB.prepare('SELECT channel_id channelId,channel_name channelName FROM vector_slack_allowed_channels WHERE workspace_id=? ORDER BY channel_name,channel_id').bind(owner.workspace).all()).results;
+ return {allowedChannels,slack:{connected,needsAttention,teamName:install[0]?.team_name??null,signingSecret:connected&&!await credentialProblem(env,'slack-signing:'+owner.workspace),interactivityUrl:env.APP_ORIGIN.replace(/\/$/,'')+'/api/integrations/slack/interactive'},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?(needsAttention||Boolean(row.suspendedReason)):await credentialProblem(env,'destination:'+row.id)}))),objects};
 }

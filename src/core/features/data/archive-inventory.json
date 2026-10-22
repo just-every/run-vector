@@ -1565,6 +1565,7 @@
     "created_at",
     "updated_at"
   ],
+  "vector_slack_allowed_channels": ["workspace_id", "channel_id", "channel_name", "created_by", "created_at"],
   "vector_slack_installations": [
     "workspace_id",
     "team_name",

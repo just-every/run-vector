@@ -16,6 +16,9 @@ export function ChannelSettings(){
  async function saveSigningSecret(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget;
   if(await run('/slack/signing-secret',{signingSecret:new FormData(form).get('signingSecret')})){form.reset();setNotice('Signing secret saved. Assign to me and Change status are on for new Slack direct messages.');}
  }
+ async function allow(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,data=new FormData(form);
+  if(await run('/channels/allowed',{channelId:data.get('channelId'),channelName:data.get('channelName')})){form.reset();setNotice('Channel allowed for project creators.');}
+ }
  async function bind(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,data=new FormData(form),[scope,objectId]=String(data.get('object')).split(':');
   if(await run('/channels',{scope,objectId,provider,channelName:data.get('channelName'),events:data.getAll('events'),...(provider==='slack'?{channelId:data.get('channelId')}:{webhookUrl:data.get('webhookUrl')})})){form.reset();setNotice('Channel binding saved. Future selected events will be posted.');}
  }
@@ -32,6 +35,10 @@ export function ChannelSettings(){
  <p>{config.data.slack.signingSecret?'Assign to me and Change status are on. Vector verifies every Slack action with the signing secret.':'Assign to me and Change status are off until the signing secret is entered. Direct messages offer Open only.'}</p>
  <CopyField label="Interactivity Request URL" value={config.data.slack.interactivityUrl}/><small>In your Slack app, turn on Interactivity and paste this Request URL. Members link their own Slack accounts in Settings → Notifications.</small></div>}
  {config.data.slack.connected&&<button type="button" disabled={pending} onClick={()=>void run('/slack',undefined,'DELETE')}>Remove Slack connection</button>}
+ <form aria-label="Allow project channel" onSubmit={allow}><fieldset disabled={pending||!config.data.slack.connected}><legend>Allow a Slack channel for projects</legend>
+ <p>Members who create projects can bind them to a channel already bound by an Owner or Admin, or allowed here.</p>
+ <label>Allowed channel name<input name="channelName" required maxLength={120}/></label><label>Allowed Slack channel ID<input name="channelId" required pattern="[CG][A-Z0-9]{2,30}"/></label><button>Allow channel</button></fieldset></form>
+ <ul>{config.data.allowedChannels.map(channel=><li key={channel.channelId}>#{channel.channelName} <button type="button" disabled={pending} onClick={()=>void run('/channels/allowed/'+channel.channelId,undefined,'DELETE')}>Remove allowance for {channel.channelName}</button></li>)}</ul>
  <form aria-label="Bind notification channel" onSubmit={bind}><fieldset disabled={pending}><legend>Bind a channel</legend>
  <label>Team, project or saved view<select name="object" required defaultValue=""><option value="">Choose where events come from</option>{config.data.objects.map(object=><option key={object.scope+object.id} value={object.scope+':'+object.id}>{object.scope==='view'?'Saved view':object.scope==='team'?'Team':'Project'} · {object.name}</option>)}</select></label>
  <label>Channel service<select value={provider} onChange={event=>setProvider(event.target.value)}><option value="slack">Slack</option><option value="discord">Discord</option></select></label>

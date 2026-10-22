@@ -108,6 +108,7 @@ export function createUiRuntime() {
     });
   }
   return {
+    state,
     base,
     req,
     sql,

@@ -1,3 +1,4 @@
+import { ProjectChannel } from "../../integrations/ui/project-channel";
 import { ProjectReportPanel } from "../../project-report/panel";
 import { ProjectAppearance } from "./project-appearance";
 import { ProjectMilestones } from "./project-milestones";
@@ -71,6 +72,7 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
               </button>
             </p>
           )}
+          {record && administration.data && administration.data.viewer.role !== "guest" && <ProjectChannel projectId={projectId} />}
           {record && administration.data && (
             <ProjectAdministration
               project={record}

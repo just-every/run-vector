@@ -78,6 +78,10 @@ async function memberRole(db: D1Database, id: string) {
 }
 
 export const doors: Door[] = [
+  { method: 'GET', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
+  { method: 'POST', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
+  { method: 'POST', path: '/settings/integrations/channels/allowed', row: 'integrations.manage' },
+  { method: 'DELETE', path: '/settings/integrations/channels/allowed/:channelId', row: 'integrations.manage' },
   // Workspace, people and permissions
   { method: 'POST', path: '/settings/operators/invite', invitation: true, row: async request => leadership(await field(request, 'role')) ? 'leaders.manage' : 'members.manage' },
   { method: 'POST', path: '/settings/operators/confirm-identity', invitation: true, row: 'members.manage' },

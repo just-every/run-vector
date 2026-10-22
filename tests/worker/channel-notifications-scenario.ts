@@ -22,9 +22,16 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   }edge.safety();
   const project=(await f.mutate('/settings/projects','POST',{name:'Delivery',leadOperatorId:f.owner})).projects.find(p=>p.name==='Delivery')!;
   let binding=await bind('project',project.id);
-  const issue=await f.create({title:'Ship checkout',description:'Private body never leaves',projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted')!.id});
+  const memberCookie=await invite('synthetic-vector-301@vector.test',f.cookie),member=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,memberCookie);
+  const beforeUnapproved=edge.calls.length;
+  expect((await member('/projects/'+project.id+'/slack-channel','POST',{channelId:'CUNAPPROVED'})).status).toBe(403);
+  expect(edge.calls).toHaveLength(beforeUnapproved);
+  const memberBinding=await member('/projects/'+project.id+'/slack-channel','POST',{channelId:'CDELIVERY'});
+  expect(memberBinding.status,await memberBinding.clone().text()).toBe(201);binding=((await memberBinding.json()) as {id:string}).id;
+  const createdIssue=await member('/issues','POST',{title:'Ship checkout',description:'Private body never leaves',teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted')!.id});
+  expect(createdIssue.status).toBe(201);const issue=await createdIssue.json() as {identifier:string;version:number};
   await dispatchWebhooks(current);await dispatchWebhooks(current);expect(slack()).toHaveLength(1);
-  expect(slack()[0].body.text).toContain(issue.identifier+' · Ship checkout');expect(slack()[0].body.text).toContain('Owner: Created');expect(slack()[0].body.text).toContain(current.APP_ORIGIN+'/app/issues/'+issue.identifier);expect(JSON.stringify(slack())).not.toContain('Private body');
+  expect(slack()[0].body.text).toContain(issue.identifier+' · Ship checkout');expect(slack()[0].body.text).toContain('synthetic-vector-301: Created');expect(slack()[0].body.text).toContain(current.APP_ORIGIN+'/app/issues/'+issue.identifier);expect(JSON.stringify(slack())).not.toContain('Private body');
   expect((await f.call('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started')!.id})).status).toBe(200);
   await dispatchWebhooks(current);expect(slack()).toHaveLength(2);expect(slack()[1].body.text).toContain(team.statuses.find(s=>s.category==='unstarted')!.name+' → '+team.statuses.find(s=>s.category==='started')!.name);
   edge.safety({is_ext_shared:true});await f.create({title:'Became shared',projectId:project.id});await dispatchWebhooks(current);expect(slack()).toHaveLength(2);expect((await state()).bindings.find((b:any)=>b.id===binding).suspendedReason).not.toBeNull();

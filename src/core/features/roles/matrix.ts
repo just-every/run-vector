@@ -56,6 +56,7 @@ export const matrix = {
   'views.open-shared': row('Open or duplicate a shared view (VIEW-002)', 'yes', 'yes', 'yes', 'invited-teams'),
   'views.edit-shared': row('Update or delete a shared view (VIEW-002)', 'own', 'own', 'own', 'no'),
   'integrations.manage': row('Connect, repair or remove integrations; manage OAuth apps, agents, their budgets and model providers (ROLE-001, INTEG-001, INTEG-002, API-004, AGENT-004, AGENT-009, SEC-002)', 'yes', 'yes', 'no', 'no'),
+  'channels.bind-project': row('Bind a project to a Slack channel an Owner or Admin already bound or allowed, and post to it (SLACK-003)', 'yes', 'yes', 'yes', 'no'),
   'channels.create': row('Have the Slack bot create a channel in the customer\'s Slack workspace for a new team or project (SLACK-003)', 'yes', 'yes', 'no', 'no'),
   'tokens.personal': row('Create personal API tokens (API-001)', 'yes', 'yes', 'yes', 'no'),
   'identity.personal': row('Authorize an OAuth app for oneself; link one\'s own Slack or Teams identity (API-004, SLACK-001, SLACK-004, TEAMS-001)', 'yes', 'yes', 'yes', 'no'),
