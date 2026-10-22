@@ -64,7 +64,8 @@ it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the director
 
   // Every change is audited once, with its actor and the membership before and after.
   expect((await audits("team.member_joined")).map((row) => row.actor)).toEqual([w.member.id, w.member.id]);
-  expect((await audits("team.member_left")).map((row) => row.actor)).toEqual([w.member.id, w.owner, w.member.id]);
+  // Entries made within one millisecond order by their random identifiers, so compare them as sets.
+  expect((await audits("team.member_left")).map((row) => row.actor).sort()).toEqual([w.member.id, w.owner, w.member.id].sort());
   expect((await audits("team.member_removed")).map((row) => [row.actor, JSON.parse(String(row.previous))])).toEqual([[w.lead.id, { operatorId: w.guest.id, role: "member" }]]);
   expect(await audits("team.member_role_changed")).toEqual([]);
   expect((await audits("team.member_added")).map((row) => JSON.parse(String(row.next)))).toContainEqual({ operatorId: w.lead.id, role: "owner" });
@@ -117,8 +118,9 @@ it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions de
   const changes = rows.filter((item) => item.table === "audit_records" && item.row.action === "team.permission_changed");
   expect(changes.map((item) => item.row.actor_operator_id)).toEqual([w.lead.id, w.lead.id]);
   const details = changes.map((change) => rows.find((item) => item.table === "administration_audit_details" && item.row.audit_id === change.row.id)!.row);
-  expect(details.map((row) => [JSON.parse(String(row.previous_value_json)), JSON.parse(String(row.next_value_json))])).toEqual([
-    [{ settings: "team_owners" }, { settings: "all_members" }], [{ planning: "all_members" }, { planning: "team_owners" }]]);
+  // Both entries come from one transaction, so the export orders them by their random identifiers.
+  expect(details.map((row) => [JSON.parse(String(row.previous_value_json)), JSON.parse(String(row.next_value_json))])).toEqual(expect.arrayContaining([
+    [{ settings: "team_owners" }, { settings: "all_members" }], [{ planning: "all_members" }, { planning: "team_owners" }]]));
 });
 
 type Cells = Record<"Owner" | "Admin" | "Member" | "Guest", string>;
@@ -303,5 +305,6 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
     const detail = exported.find((other) => other.table === "administration_audit_details" && other.row.audit_id === item.row.id)!.row;
     return [item.row.actor_operator_id, item.row.subject_id, JSON.parse(String(detail.previous_value_json)).role, JSON.parse(String(detail.next_value_json)).role];
   });
-  expect(changes).toEqual([[owner.id, member.id, "member", "admin"], [owner.id, member.id, "admin", "member"], [owner.id, admin.id, "admin", "owner"], [owner.id, admin.id, "owner", "admin"]]);
+  expect(changes).toHaveLength(4);
+  expect(changes).toEqual(expect.arrayContaining([[owner.id, member.id, "member", "admin"], [owner.id, member.id, "admin", "member"], [owner.id, admin.id, "admin", "owner"], [owner.id, admin.id, "owner", "admin"]]));
 });
