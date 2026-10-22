@@ -309,14 +309,14 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
   await clause("ROLE-007 ROLE-009", "a team owner adds a member, names a team owner and sets the two permissions, each audited once", async () => {
     await openDisclosures(page);
     const add = page.getByRole("form", { name: `Add member to ${team.name}`, exact: true });
-    await add.getByLabel("Member to add", { exact: true }).selectOption({ label: "Role member" });
-    await add.getByLabel("Team role", { exact: true }).selectOption("member");
+    await add.getByRole("combobox", { name: "Member to add", exact: true }).selectOption({ label: "Role member" });
+    await add.getByRole("combobox", { name: "Team role", exact: true }).selectOption("member");
     await add.getByRole("button", { name: "Add member", exact: true }).click();
     await poll(() => [membership()], ([role]) => role === "member", "member added");
     await page.getByRole("button", { name: "Make Role member a team owner", exact: true }).click();
     await poll(() => [membership()], ([role]) => role === "owner", "team owner named");
     const permissions = page.getByRole("form", { name: `Permissions for ${team.name}`, exact: true });
-    await permissions.getByLabel("Who manages team settings", { exact: true }).selectOption("all_members");
+    await permissions.getByRole("combobox", { name: "Who manages team settings", exact: true }).selectOption("all_members");
     await permissions.getByRole("button", { name: "Save permissions", exact: true }).click();
     await poll(() => sql(`SELECT settings_permission AS value FROM teams WHERE id='${team.id}'`), (rows) => rows[0]?.value === "all_members", "settings permission");
     assert.equal(sql(`SELECT count(*) AS n FROM audit_records WHERE action='team.permission_changed' AND subject_id='${team.id}'`)[0].n, 1);

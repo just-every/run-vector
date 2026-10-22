@@ -269,7 +269,7 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   const settingsRequest = async () => (await peer.request.patch(base + "/api/settings", { headers: { Origin: base }, data: { timezone: "UTC" } })).status();
   const changeRole = async (name, id, role, status) => {
     const form = members.getByRole("form", { name: `Role for ${name}`, exact: true });
-    await form.getByLabel(`Role for ${name}`, { exact: true }).selectOption(role);
+    await form.getByRole("combobox", { name: `Role for ${name}`, exact: true }).selectOption(role);
     const path = `/api/settings/operators/${id}/role`;
     if (status !== 200) refusals.add(base + path);
     const changed = page.waitForResponse((r) => new URL(r.url()).pathname === path);
