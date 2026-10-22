@@ -1,8 +1,12 @@
 import { env } from "cloudflare:workers";
+import { Buffer } from "node:buffer";
 import { expect, it } from "vitest";
 import type { Administration } from "../../src/core/features/administration/schema";
 import { readArchive } from "@runeditrun/rer/modules/portability";
-import { roleWorkspace, snapshot } from "./role-fixture";
+import contract from "../../CONTRACT.md?raw";
+import { matrix, type RowId } from "../../src/core/features/roles/matrix";
+import { probes, type Probe } from "./role-probes";
+import { resetLimits, roleWorkspace, snapshot, type Kind } from "./role-fixture";
 
 const teams = async (response: Response) => ((await response.json()) as Administration).teams;
 const audits = (action: string) =>
@@ -112,4 +116,189 @@ it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002] a team's two permissions decide who 
   const details = changes.map((change) => rows.find((item) => item.table === "administration_audit_details" && item.row.audit_id === change.row.id)!.row);
   expect(details.map((row) => [JSON.parse(String(row.previous_value_json)), JSON.parse(String(row.next_value_json))])).toEqual([
     [{ settings: "team_owners" }, { settings: "all_members" }], [{ planning: "all_members" }, { planning: "team_owners" }]]);
+});
+
+type Cells = Record<"Owner" | "Admin" | "Member" | "Guest", string>;
+/** The oracle is CONTRACT.md's role-matrix table itself, read cell by cell. */
+const contractMatrix = (() => {
+  const rows = new Map<string, Cells>();
+  for (const line of contract.slice(contract.indexOf("| Action | Owner | Admin | Member | Guest |")).split("\n").slice(2)) {
+    if (!line.startsWith("|")) break;
+    const [action, Owner, Admin, Member, Guest] = line.split("|").slice(1, -1).map((cell) => cell.trim());
+    rows.set(action, { Owner, Admin, Member, Guest });
+  }
+  return rows;
+})();
+const column: Record<Kind, keyof Cells> = { owner: "Owner", admin: "Admin", lead: "Member", member: "Member", guest: "Guest" };
+type Context = { inTeam: boolean; settings: string; planning: string; memberInvites: boolean };
+/** What a cell promises this person: the lead owns the probed team, the other
+ * Member and the Guest belong to it, and every team is public (ROLE-002). */
+function promised(cell: string, who: Kind, c: Context) {
+  const text = cell.toLowerCase();
+  if (text.startsWith("no (yes when the invite setting is on")) return c.memberInvites ? "allow" : "forbidden";
+  if (text.startsWith("yes") || text === "own" || text.startsWith("member's teams")) return "allow";
+  if (text.startsWith("no") || text === "apply only") return "forbidden";
+  if (text === "team owner only") return who === "lead" ? "allow" : "forbidden";
+  if (text === "team setting") return who === "lead" || c.settings === "all_members" ? "allow" : "forbidden";
+  if (text === "planning setting") return who === "lead" || c.planning === "all_members" ? "allow" : "forbidden";
+  if (text === "invited teams only" || text === "only views covering only invited teams") return c.inTeam ? "allow" : "hidden";
+  throw new Error("The journey cannot read this cell yet: " + cell);
+}
+const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
+const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures",
+  "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
+  "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs"];
+
+it("[ROLE-001 ROLE-007 ROLE-009 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", async () => {
+  const w = await roleWorkspace();
+  const outside = (await w.mutate("/settings/teams", "POST", { name: "Roles outside", identifierPrefix: "ROLEOUT" })).teams.find((t) => t.name === "Roles outside")!.id;
+  const table = probes(w);
+  // Driven from the registry: each row a door is registered against has a probe.
+  expect(Object.keys(table).sort()).toEqual(Object.keys(matrix).sort());
+  const set = async (settings: string, planning: string, memberInvites: boolean) => {
+    await resetLimits();
+    expect((await w.call(`/settings/teams/${w.team.id}/permissions`, "PUT", { settings, planning })).status).toBe(200);
+    expect((await w.call("/settings", "PATCH", { timezone: "UTC", memberInvites })).status).toBe(200);
+    return { settings, planning, memberInvites };
+  };
+  let checked = 0;
+  for (const [row, probe] of Object.entries(table) as [RowId, Probe][]) {
+    const cells = contractMatrix.get(matrix[row].action);
+    expect(cells, `${row} names a CONTRACT.md role-matrix row`).toBeDefined();
+    const variants = probe.permission ? [["team_owners", "all_members", false], ["all_members", "team_owners", false]] as const
+      : probe.invites ? [["team_owners", "all_members", false], ["team_owners", "all_members", true]] as const : [["team_owners", "all_members", false]] as const;
+    for (const [settings, planning, memberInvites] of variants) {
+      const values = await set(settings, planning, memberInvites);
+      for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[])
+        for (const team of who === "guest" && probe.outside ? [w.team.id, outside] : [w.team.id])
+          for (const [surface, attempt] of [["browser", probe.session], ["/api/v1", probe.api]] as const) {
+            if (!attempt) continue;
+            await resetLimits();
+            const send = await attempt(who, w.people[who], team);
+            const want = promised(cells![column[who]], who, { ...values, inTeam: team === w.team.id });
+            const before = want === "allow" ? null : await snapshot(watched);
+            const response = await send();
+            expect(outcome(response.status), `${row} ${surface} ${who}${team === outside ? " outside the team" : ""} ${JSON.stringify(values)}: ${await response.clone().text()}`).toBe(want);
+            if (before) expect(await snapshot(watched), `${row} ${surface} ${who} refusal wrote nothing`).toEqual(before);
+            checked++;
+          }
+    }
+  }
+  await set("team_owners", "all_members", false);
+  expect(checked).toBeGreaterThan(Object.keys(matrix).length * 5);
+
+  // Open Settings pages (ROLE-008 row): Members open Account, the member
+  // directory and their personal tokens; a Guest opens Account only.
+  const pages = contractMatrix.get("Open Settings pages (ROLE-008)")!;
+  expect(pages.Guest).toBe("Account only");
+  for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[]) {
+    const call = w.people[who].call, all = pages[column[who]] === "every page";
+    expect((await call("/settings/appearance")).status, who).toBe(200);
+    expect(outcome((await call("/settings")).status), who).toBe(all || pages[column[who]].includes("member directory") ? "allow" : "forbidden");
+    expect(outcome((await call("/settings/integrations/tokens")).status), who).toBe(all || pages[column[who]].includes("personal integrations and tokens") ? "allow" : "forbidden");
+  }
+});
+
+it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-011] Owners change roles with one audit entry each, effective on the member's next request and token use; the last Owner stays; inherited refusals write nothing", async () => {
+  const w = await roleWorkspace();
+  const { owner, admin, member, guest } = w.people;
+  const role = (who: string, value: string, by = owner) => by.call(`/settings/operators/${who}/role`, "PATCH", { role: value });
+  const outsideTeam = (await w.mutate("/settings/teams", "POST", { name: "Roles promotions", identifierPrefix: "ROLEPRO" })).teams.find((t) => t.name === "Roles promotions")!.id;
+  let week = 0;
+  const cycleIn = (team: string) => ({ teamId: team, name: `Promotion cycle ${++week}`, startsLocal: `2033-0${week}-02T09:00`, endsLocal: `2033-0${week}-06T09:00`, capacity: null });
+
+  // An Owner promotes a Member to Admin and back; an Admin promotes no one (OPS-002 row).
+  expect((await role(member.id, "admin", admin)).status).toBe(403);
+  expect((await role(member.id, "admin")).status).toBe(200);
+  expect((await member.call("/settings", "PATCH", { timezone: "UTC" })).status).toBe(200);
+  expect((await member.api("/cycles", "POST", cycleIn(outsideTeam))).status).toBe(201);
+  expect((await role(member.id, "member")).status).toBe(200);
+  // The demotion applies to the same open session and token on their next request.
+  expect((await member.call("/session")).status).toBe(200);
+  expect((await member.call("/settings", "PATCH", { timezone: "UTC" })).status).toBe(403);
+  expect((await member.api("/cycles", "POST", cycleIn(outsideTeam))).status).toBe(403);
+  expect((await member.api("/issues")).status).toBe(200);
+
+  // The last Owner is never demoted or removed; the installation owner stays an Owner.
+  const owners = () => w.call("/settings").then((r) => r.json() as Promise<{ operators: { id: string; role: string }[] }>).then((s) => s.operators.filter((o) => o.role === "owner").map((o) => o.id));
+  const audited = await snapshot(["audit_records", "operators"]);
+  expect(await (await role(owner.id, "admin")).json()).toMatchObject({ error: "last_owner" });
+  expect(await (await owner.call(`/settings/operators/${owner.id}`, "DELETE")).json()).toMatchObject({ error: "last_owner" });
+  expect(await (await role(member.id, "guest")).json()).toMatchObject({ error: "role_not_assignable" });
+  expect(await (await owner.call("/settings/operators/invite", "POST", { email: "guest-invite@roles.test", displayName: "Guest", role: "guest" })).json()).toMatchObject({ error: "role_not_assignable" });
+  expect(await snapshot(["audit_records", "operators"])).toEqual(audited);
+  expect((await role(admin.id, "owner")).status).toBe(200);
+  expect(await (await role(owner.id, "member", admin)).json()).toMatchObject({ error: "installation_owner" });
+  expect(await owners()).toEqual([owner.id, admin.id]);
+  expect((await role(admin.id, "admin")).status).toBe(200);
+
+  // Owners and Admins remove Members; nobody else removes anyone but themselves.
+  const leaving = await w.fresh("member"), staying = await w.fresh("member");
+  expect((await staying.call(`/settings/operators/${leaving.id}`, "DELETE")).status).toBe(403);
+  expect((await admin.call(`/settings/operators/${owner.id}`, "DELETE")).status).toBe(403);
+  expect((await admin.call(`/settings/operators/${leaving.id}`, "DELETE")).status).toBe(200);
+
+  // Inherited cells: refused requests change nothing; Owners and Admins succeed.
+  const state = ["issues", "intake_decisions", "vector_integration_sources", "vector_integration_secret_keys", "saved_views", "ik_jobs", "ik_d1_erasure_journal", "audit_records"];
+  const refuse = async (send: () => Promise<Response>) => {
+    await resetLimits();
+    const before = await snapshot(state), response = await send();
+    expect(response.status, await response.clone().text()).toBe(403);
+    expect(await snapshot(state)).toEqual(before);
+  };
+  const intake = await (await owner.call("/intake", "POST", { title: "Guest decisions", teamId: w.team.id })).json() as { identifier: string; version: number };
+  await refuse(() => guest.call(`/issues/${intake.identifier}/accept`, "POST", { expectedVersion: intake.version }));
+  await refuse(() => guest.call(`/issues/${intake.identifier}/defer`, "POST", { expectedVersion: intake.version, returnAt: "2033-01-01T00:00:00Z" }));
+  const deferred = await (await owner.call(`/issues/${intake.identifier}/defer`, "POST", { expectedVersion: intake.version, returnAt: "2033-01-01T00:00:00Z" })).json() as { version: number };
+  await refuse(() => guest.call(`/issues/${intake.identifier}/return`, "POST", { expectedVersion: deferred.version }));
+  const shared = await (await owner.call("/views", "POST", { name: "Owner's shared view", isShared: true, layout: "list", query: { team: w.team.id } })).json() as { id: string };
+  await refuse(() => member.call(`/views/${shared.id}`, "PATCH", { name: "Not mine to rename" }));
+  await refuse(() => member.call(`/views/${shared.id}`, "DELETE"));
+  const source = await (await owner.call("/settings/integrations/sources", "POST", { sourceId: "role-source", name: "Role source", teamId: w.team.id })).json() as { id: string };
+  for (const who of [member, guest]) {
+    await refuse(() => who.call(`/settings/integrations/sources/${source.id}/rotate`, "POST", { overlapHours: 1 }));
+    await refuse(() => who.call(`/settings/integrations/sources/${source.id}`, "DELETE"));
+  }
+  expect((await admin.call(`/settings/integrations/sources/${source.id}/rotate`, "POST", { overlapHours: 1 })).status).toBe(200);
+  expect((await owner.call(`/settings/integrations/sources/${source.id}`, "DELETE")).status).toBe(200);
+  const rows = Buffer.from(JSON.stringify([{ id: "role-1", title: "Imported role issue", team: w.team.name, status: w.team.statuses.find((s) => s.category === "backlog")!.name,
+    created: "2026-09-01T01:02:03.000Z", updated: "2026-09-02T04:05:06.000Z" }])).toString("base64");
+  const importInput = { format: "json", source: "role-import", name: "issues.json", base64: rows,
+    mapping: { sourceId: "id", title: "title", team: "team", status: "status", createdAt: "created", updatedAt: "updated" } };
+  for (const who of [member, guest]) await refuse(() => who.call("/data/import/preview", "POST", importInput));
+  expect((await admin.call("/data/import/preview", "POST", importInput)).status).toBe(200);
+  const review = await (await owner.call("/data/import/preview", "POST", importInput)).json() as { fingerprint: string; effectiveAt: string };
+  const applyBody = { input: { ...importInput, effectiveAt: review.effectiveAt }, reviewedFingerprint: review.fingerprint, operationKey: "review:" + review.fingerprint, acknowledgeOmissions: true };
+  for (const who of [member, guest]) await refuse(() => who.call("/data/import/apply", "POST", applyBody));
+  const applied = await owner.call("/data/import/apply", "POST", applyBody);
+  expect(applied.status, await applied.clone().text()).toBe(200);
+  const run = await applied.json() as { id: string };
+  for (const who of [member, guest]) {
+    await refuse(() => who.call("/data/import/apply", "POST", applyBody));
+    await refuse(() => who.call(`/data/import/runs/${run.id}/resume`, "POST", {}));
+    await refuse(() => who.call(`/data/import/runs/${run.id}/rollback`, "POST", { confirmed: true }));
+    await refuse(() => who.call("/data/erasure/preview", "POST", { names: ["Departed Author"] }));
+    await refuse(() => who.call("/data/erasure", "POST", { subject: { names: ["Departed Author"] }, confirmation: "erase" }));
+  }
+  // A run belongs to whoever applied it: each Owner or Admin resumes their own.
+  expect((await owner.call(`/data/import/runs/${run.id}/resume`, "POST", {})).status).toBe(200);
+  const adminInput = { ...importInput, source: "role-import-admin" };
+  const adminReview = await (await admin.call("/data/import/preview", "POST", adminInput)).json() as { fingerprint: string; effectiveAt: string };
+  const adminRun = await (await admin.call("/data/import/apply", "POST", { input: { ...adminInput, effectiveAt: adminReview.effectiveAt },
+    reviewedFingerprint: adminReview.fingerprint, operationKey: "review:" + adminReview.fingerprint, acknowledgeOmissions: true })).json() as { id: string };
+  expect((await admin.call(`/data/import/runs/${adminRun.id}/resume`, "POST", {})).status).toBe(200);
+  expect((await admin.call("/data/erasure/preview", "POST", { names: ["Departed Author"] })).status).toBe(200);
+
+  // Every role change is one audit entry naming actor, subject, from and to, carried by the export.
+  const created = await owner.call("/portability/exports", "POST", {});
+  const job = ((await created.json()) as { id: string }).id;
+  while (((await (await owner.call(`/portability/exports/${job}/advance`, "POST", { maxParts: 16 })).json()) as { phase: string }).phase === "building");
+  const exported: { table: string; row: Record<string, unknown> }[] = [];
+  for await (const record of readArchive((await owner.call(`/portability/exports/${job}/download`)).body!))
+    if (record.kind === "part") for (const item of record.items) if (item.kind === "row") exported.push(item as { table: string; row: Record<string, unknown> });
+  const changes = exported.filter((item) => item.table === "audit_records" && item.row.action === "operator.role_changed").map((item) => {
+    const detail = exported.find((other) => other.table === "administration_audit_details" && other.row.audit_id === item.row.id)!.row;
+    return [item.row.actor_operator_id, item.row.subject_id, JSON.parse(String(detail.previous_value_json)).role, JSON.parse(String(detail.next_value_json)).role];
+  });
+  expect(changes).toEqual([[owner.id, member.id, "member", "admin"], [owner.id, member.id, "admin", "member"], [owner.id, admin.id, "admin", "owner"], [owner.id, admin.id, "owner", "admin"]]);
 });

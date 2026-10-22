@@ -36,6 +36,12 @@ export async function changeRole(source: D1Database, actor: string, target: stri
     .bind(target, ctx.workspace).first<{ id: string; name: string; role: string }>()
   if (!member) throw new SettingsError('not_found', 'Member is unavailable.', 404)
   if (member.role === role) return
+  if (member.role === 'owner') {
+    const owners = await ctx.db.prepare("SELECT count(*) AS n FROM operators WHERE workspace_id=? AND role='owner' AND removed_at IS NULL").bind(ctx.workspace).first<number>('n')
+    if ((owners ?? 0) <= 1) throw new SettingsError('last_owner', 'The last Owner cannot be demoted or removed. Make another member an Owner first.', 409)
+    if (await ctx.db.prepare('SELECT 1 FROM workspace_installation WHERE setup_operator_id=?').bind(target).first())
+      throw new SettingsError('installation_owner', 'The installation owner stays an Owner.', 409)
+  }
   await commit(ctx, [
     guard(ctx.db, 'EXISTS(SELECT 1 FROM operators WHERE id=? AND role=? AND removed_at IS NULL)', target, member.role),
     ctx.db.prepare('UPDATE operators SET role=?,updated_at=? WHERE id=?').bind(role, ctx.at, target),

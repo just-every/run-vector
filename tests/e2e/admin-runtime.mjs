@@ -18,8 +18,9 @@ import {
   auditEmptyWorkspace,
   inviteProjectLead,
   assertSignOut,
+  exerciseWorkspaceRoles,
 } from "./admin-access-journey.mjs";
-import { createTeamWorkflow, removeUsedStatus } from "./admin-team-journey.mjs";
+import { createTeamWorkflow, removeUsedStatus, exerciseTeamRoles } from "./admin-team-journey.mjs";
 import { authorLabel, deleteAppliedLabel } from "./admin-label-journey.mjs";
 import {
   authorProject,
@@ -65,6 +66,7 @@ await contract(
         page = await context.newPage();
         requestDiagnostics.observe(page, viewport.width);
         const expectedProjectRejections = new Set();
+        const roleRefusals = new Set();
         const errors = [],
           consoleErrors = [],
           failed = [],
@@ -126,6 +128,13 @@ await contract(
         const label = await authorLabel(shared);
         const project = await authorProject(shared);
         await inviteProjectLead({ ...shared, project });
+        const roles = await exerciseWorkspaceRoles({ ...shared, evidence, refusals: roleRefusals });
+        try {
+          await exerciseTeamRoles({ ...shared, evidence, refusals: roleRefusals, ...roles });
+        } finally {
+          await roles.context.close();
+        }
+        await page.setViewportSize(viewport);
         const cycles = await authorCycles({ ...shared, team });
         const issue = await createAdministrationIssue({
           ...shared,
@@ -200,7 +209,8 @@ await contract(
               /400/.test(row.message)) ||
               (row.location.url === runtime.base + "/api/intake" &&
                 /409/.test(row.message)) ||
-              (expectedProjectRejections.has(row.location.url) && /400/.test(row.message))),
+              (expectedProjectRejections.has(row.location.url) && /400/.test(row.message)) ||
+              (roleRefusals.has(row.location.url) && /409/.test(row.message))),
         );
         assert.equal(expectedHttpErrors.filter(row => expectedProjectRejections.has(row.location.url)).length, 2, "one refused date range per viewport");
         assert.deepEqual(errors, [], "browser page errors");

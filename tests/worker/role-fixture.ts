@@ -1,33 +1,57 @@
 import { env } from "cloudflare:workers";
 import { expect } from "vitest";
+import { createServerApp } from "../../src/core/app/server";
 import { setupAdministration } from "./administration-fixture";
-import { actor, invite, request } from "./base-auth-fixture";
+import { actor, bindings, invite, request } from "./base-auth-fixture";
+import { tokenScopes } from "../../src/core/features/integrations/scopes";
 
-let workspaces = 0;
+export type Kind = "owner" | "admin" | "lead" | "member" | "guest";
+type Call = (path: string, method?: string, body?: unknown) => Promise<Response>;
+export type Person = { id: string; cookie: string; token: string; call: Call; api: Call };
+const app = createServerApp();
+/** A personal API token, minted before any Guest conversion: it then acts with
+ * whatever role its member holds on each request. */
+async function person(cookie: string): Promise<Person> {
+  const call: Call = (path, method = "GET", body) => request("/api" + path, method, body, cookie);
+  const minted = await call("/settings/integrations/tokens", "POST", { name: "Role journey", scopes: [...tokenScopes] });
+  expect(minted.status).toBe(201);
+  const token = ((await minted.json()) as { token: string }).token;
+  const api: Call = (path, method = "GET", body) => app.request(bindings.APP_ORIGIN + "/api/v1" + path, {
+    method, headers: { Authorization: "Bearer " + token, "content-type": "application/json", host: new URL(bindings.APP_ORIGIN).host },
+    body: body === undefined ? undefined : JSON.stringify(body) }, bindings);
+  return { id: await actor(cookie), cookie, token, call, api };
+}
+
+let workspaces = 0, people = 0;
 /** The people of the role-matrix journey (ROLE-001): an Owner, an Admin, a
  * Member who owns the team, a Member who does not and a Guest in that team.
  * No door assigns Guest before ROLE-003, so the harness sets that role on an
- * invited member's record. */
+ * invited member's record. Cases in one file share a database, so each gets
+ * its own team and people. */
 export async function roleWorkspace() {
   const f = await setupAdministration();
-  // Cases in one file share a database: each gets its own people and team.
   const run = String.fromCharCode(65 + workspaces++);
   const team = (await f.mutate("/settings/teams", "POST", { name: `Roles ${run}`, identifierPrefix: `ROLE${run}` })).teams.find((t) => t.name === `Roles ${run}`)!;
-  const person = async (name: string, role?: "admin") => {
-    const cookie = await invite(`${name}-${run.toLowerCase()}@roles.test`, f.cookie, role);
-    return { cookie, id: await actor(cookie) };
+  /** Another person of the given kind, in the team unless they are its outsider. */
+  const fresh = async (kind: Kind, inTeam = true) => {
+    await resetLimits();
+    const cookie = await invite(`${kind}-${run.toLowerCase()}${people++}@roles.test`, f.cookie, kind === "owner" || kind === "admin" ? kind : undefined);
+    const made = await person(cookie);
+    if (kind === "guest") await env.DB.prepare("UPDATE operators SET role='guest' WHERE id=?").bind(made.id).run();
+    if (inTeam && kind !== "owner" && kind !== "admin")
+      expect((await f.call(`/settings/teams/${team.id}/members/${made.id}`, "PUT", { role: kind === "lead" ? "owner" : "member" })).status).toBe(200);
+    return made;
   };
-  const admin = await person("admin", "admin"),
-    lead = await person("lead"),
-    member = await person("member"),
-    guest = await person("guest");
-  await env.DB.prepare("UPDATE operators SET role='guest' WHERE id=?").bind(guest.id).run();
-  for (const [who, role] of [[lead, "owner"], [member, "member"], [guest, "member"]] as const)
-    expect((await f.call(`/settings/teams/${team.id}/members/${who.id}`, "PUT", { role })).status).toBe(200);
+  const owner = await person(f.cookie);
+  const admin = await fresh("admin"), lead = await fresh("lead"), member = await fresh("member"), guest = await fresh("guest");
   const as = (who: { cookie: string }) => (path: string, method = "GET", body?: unknown) =>
     request("/api" + path, method, body, who.cookie);
-  return { ...f, team, admin, lead, member, guest, as };
+  return { ...f, team, people: { owner, admin, lead, member, guest } as Record<Kind, Person>, admin, lead, member, guest, as, fresh };
 }
+
+/** The journey sends hundreds of requests from one loopback client within a
+ * minute; it clears the rate-limit counters so they measure nothing here. */
+export const resetLimits = () => env.DB.batch([env.DB.prepare("DELETE FROM oa_limits"), env.DB.prepare("DELETE FROM access_rate_limits")]);
 
 /** Every row a refused request could have touched, to prove it changed nothing. */
 export async function snapshot(tables: string[]) {

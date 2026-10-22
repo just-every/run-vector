@@ -1,8 +1,10 @@
 // Settle native polling before replacing an authorized private document.
-import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
+import { beforePrivateNavigation, navigate } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
 import { poll } from "./admin-runtime-support.mjs";
 import { openAdministrationForm } from "./ui-administration-form.mjs";
+import { openDisclosures } from "./ui-controls-checks.mjs";
+import { roleScreens } from "./role-ui-support.mjs";
 export async function createTeamWorkflow({ page, runtime, capture, clause }) {
   const { base, sql } = runtime;
 
@@ -255,4 +257,67 @@ export async function removeUsedStatus({
     },
   );
   await capture("status-remap-last-category-refusal");
+}
+
+/** ROLE-007 and ROLE-009 in Settings → Teams: a Member joins and leaves a
+ * public team from the directory and finds its settings locked, the last team
+ * owner stays, and a team owner adds members, names owners and sets the two
+ * permissions. */
+export async function exerciseTeamRoles({ page, runtime, clause, evidence, refusals, peer, memberId }) {
+  const { base, sql } = runtime;
+  const inspect = roleScreens(evidence);
+  const team = sql("SELECT id,name FROM teams WHERE name='Research delivery'")[0];
+  const membership = () => sql(`SELECT role FROM team_members WHERE team_id='${team.id}' AND operator_id='${memberId}'`)[0]?.role;
+  const peerTeams = peer.getByRole("region", { name: "Teams", exact: true });
+  const toggle = async (actor, region, action, status) => {
+    const path = `/api/teams/${team.id}/${action}`;
+    if (status !== 200) refusals.add(base + path);
+    const done = actor.waitForResponse((r) => new URL(r.url()).pathname === path);
+    await region.getByRole("button", { name: `${action === "join" ? "Join" : "Leave"} ${team.name}`, exact: true }).click();
+    assert.equal((await done).status(), status);
+  };
+  await clause("ROLE-007", "a Member joins a public team from the directory and finds its settings, members and permissions locked", async () => {
+    await navigate(peer, base + "/app/settings");
+    await toggle(peer, peerTeams, "join", 200);
+    await peerTeams.getByRole("button", { name: `Leave ${team.name}`, exact: true }).waitFor();
+    assert.equal(membership(), "member");
+    await openDisclosures(peer);
+    assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
+    assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
+    assert.equal(await peer.getByRole("form", { name: `Add member to ${team.name}`, exact: true }).count(), 0);
+    await peerTeams.getByText("Only this team's owners and Admins change its settings.", { exact: true }).first().waitFor();
+  });
+  await inspect(peer, peerTeams, "team-member-view");
+  await clause("ROLE-007", "the Member leaves the team from the directory", async () => {
+    await toggle(peer, peerTeams, "leave", 200);
+    await peerTeams.getByRole("button", { name: `Join ${team.name}`, exact: true }).waitFor();
+    assert.equal(membership(), undefined);
+  });
+  await navigate(page, base + "/app/settings");
+  const teams = page.getByRole("region", { name: "Teams", exact: true });
+  await clause("ROLE-007", "the last team owner cannot leave until another is named", async () => {
+    await toggle(page, teams, "leave", 409);
+    await teams.getByRole("alert").filter({ hasText: "Name another team owner before the last one leaves." }).waitFor();
+  });
+  await inspect(page, teams, "team-last-owner-refused");
+  await clause("ROLE-007 ROLE-009", "a team owner adds a member, names a team owner and sets the two permissions, each audited once", async () => {
+    await openDisclosures(page);
+    const add = page.getByRole("form", { name: `Add member to ${team.name}`, exact: true });
+    await add.getByLabel("Member to add", { exact: true }).selectOption({ label: "Role member" });
+    await add.getByLabel("Team role", { exact: true }).selectOption("member");
+    await add.getByRole("button", { name: "Add member", exact: true }).click();
+    await poll(() => [membership()], ([role]) => role === "member", "member added");
+    await page.getByRole("button", { name: "Make Role member a team owner", exact: true }).click();
+    await poll(() => [membership()], ([role]) => role === "owner", "team owner named");
+    const permissions = page.getByRole("form", { name: `Permissions for ${team.name}`, exact: true });
+    await permissions.getByLabel("Who manages team settings", { exact: true }).selectOption("all_members");
+    await permissions.getByRole("button", { name: "Save permissions", exact: true }).click();
+    await poll(() => sql(`SELECT settings_permission AS value FROM teams WHERE id='${team.id}'`), (rows) => rows[0]?.value === "all_members", "settings permission");
+    assert.equal(sql(`SELECT count(*) AS n FROM audit_records WHERE action='team.permission_changed' AND subject_id='${team.id}'`)[0].n, 1);
+  });
+  await inspect(page, teams, "team-owner-controls");
+  await clause("ROLE-007", "once another team owner is named, the former last owner leaves", async () => {
+    await toggle(page, teams, "leave", 200);
+    assert.equal(sql(`SELECT count(*) AS n FROM team_members WHERE team_id='${team.id}' AND role='owner'`)[0].n, 1);
+  });
 }
