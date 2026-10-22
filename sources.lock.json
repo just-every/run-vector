@@ -1728,8 +1728,24 @@
       "sha256": "a54538b471d112644f66d0a33ef27e72cd4b4f7f4bf804be2b85a1e3587a9a9d",
       "executable": false
     },
+    "evidence/roles/project-create-member-1440.png": {
+      "sha256": "c73cb1988ddf279271e73383734d110353409992f5e3aea44c5f30b0418bee62",
+      "executable": false
+    },
+    "evidence/roles/project-create-member-390.png": {
+      "sha256": "071a53b8fff9fa05b490350091b8e8c1336cd0e7c1baf90ebd78ec1b573d12a4",
+      "executable": false
+    },
     "evidence/roles/README.md": {
-      "sha256": "268a1bb09091c5af9a7d67efc8baaf9846e152ddbc7c4355c38a8039cbfa53f2",
+      "sha256": "1b9aced4b600ef3393407b3bc9010808fe53c5709c079698fd259986ffbd9950",
+      "executable": false
+    },
+    "evidence/roles/team-archive-member-all-members-1440.png": {
+      "sha256": "20e67eaffeed1634ec285a9a5b82a3496c051d1ec7217303eaf9097888f52fab",
+      "executable": false
+    },
+    "evidence/roles/team-archive-member-all-members-390.png": {
+      "sha256": "bf8f108576136c0a20e77a7f9bed56f65ceabe9b721dcce84827689dc4b881f5",
       "executable": false
     },
     "evidence/roles/team-last-owner-refused-1440.png": {

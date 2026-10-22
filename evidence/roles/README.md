@@ -9,4 +9,9 @@
 - `team-last-owner-refused-{1440,390}.png`: the last team owner's attempt to leave refused.
 - `team-owner-controls-{1440,390}.png`: a team owner's member, team-owner and permission controls after adding a member, naming them team owner and opening team settings to all members.
 
+A one-off capture for ct's c8a role rulings (sd-vector-c8b) checked two more states the same way (overflow and axe at both widths, none found); the admin journey does not write them:
+
+- `team-archive-member-all-members-{1440,390}.png`: a Member who does not own a team whose *Who manages team settings* is All team members. The team's settings are theirs to save, but Archive team is disabled with its reason: archiving belongs to Owners, Admins and team owners (TEAM-003 row).
+- `project-create-member-{1440,390}.png`: a Member's New project form without Create Slack channel, which only Owners and Admins are offered (SLACK-003 row).
+
 `UPGRADE.md` records the one-off migration upgrade proof.
