@@ -284,8 +284,8 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
       await peerTeams.getByRole("button", { name: `Leave ${team.name}`, exact: true }).waitFor();
       assert.equal(membership(), "member");
       await openDisclosures(peer);
-      assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
-      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).getByRole("button", { name: "Save team", exact: true }).isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).getByRole("button", { name: "Save permissions", exact: true }).isDisabled(), true);
       assert.equal(await peer.getByRole("form", { name: `Add member to ${team.name}`, exact: true }).count(), 0);
       await peerTeams.getByText("Only this team's owners and Admins change its settings.", { exact: true }).first().waitFor();
     });
