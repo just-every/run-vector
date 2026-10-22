@@ -167,6 +167,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
       }; } },
     "tokens.personal": { session: async (_who, actor) => () => actor.call("/settings/integrations/tokens", "POST", { name: `Token ${unique()}`, scopes: ["issues:read"] }) },
     "identity.personal": { session: async (_who, actor) => () => actor.call("/settings/notifications/slack/link", "DELETE") },
+    "audit.read": { session: async (_who, actor) => () => actor.call("/settings/audit") },
     "data.export": { session: async (_who, actor) => async () => {
       const created = await actor.call("/portability/exports", "POST", {});
       if (created.ok) await owner.call(`/portability/exports/${((await created.clone().json()) as { id: string }).id}/abort`, "POST", {});

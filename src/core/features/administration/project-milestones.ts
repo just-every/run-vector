@@ -1,3 +1,4 @@
+import { audit } from './transaction';
 import type { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import { projectActivity } from "./project-fields";
@@ -130,6 +131,7 @@ export async function removeProjectMilestone(
       "UPDATE issues SET milestone_id=NULL,version=version+1,updated_at=? WHERE project_id=? AND milestone_id=?",
     ).bind(ctx.at,projectId,id),
     ctx.db.prepare("DELETE FROM project_milestones WHERE id=? AND project_id=?").bind(id,projectId),
+    ...audit(ctx, "project.milestone_removed", id, id, null, null),
     projectActivity(ctx, projectId, "project.milestone_removed", milestoneValue(old), null),
   ]);
 }

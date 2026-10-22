@@ -1,3 +1,4 @@
+import { auditStatement } from '../audit/producer';
 import type {WorkerBindings} from '../../app/bindings';
 import {guardedSql,ownerPredicate,type IntegrationOwner} from './authority';
 import {sealSecret,openSecret,newSigningSecret} from './secrets';
@@ -15,6 +16,7 @@ export async function reenterCredential(env:WorkerBindings,owner:IntegrationOwne
   {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:[identity]},
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
   {sql:`UPDATE ${table} SET updated_at=? WHERE id=? AND workspace_id=?`,params:[new Date().toISOString(),id,owner.workspace]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.'+kind+'_credential_reentered',subject:id}),
  ]);}catch{throw new IntegrationError(409,'credential_reentry_refused');}
  return {id,secret,...(kind==='github'?{receiver:env.APP_ORIGIN+'/api/integrations/github/'+id}:{})};
 }

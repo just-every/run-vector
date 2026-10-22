@@ -1,3 +1,4 @@
+import { audit } from '../administration/transaction';
 import type { z } from "zod";
 import seed from "../../../../seed.json";
 import { createUlid } from "../../shared/ids";
@@ -195,6 +196,7 @@ export async function deleteView(db: D1Database, actor: string, id: string) {
         "DELETE FROM saved_views WHERE id=? AND owner_operator_id=? AND workspace_id=?",
       )
       .bind(id, actor, ctx.workspace),
+    ...audit(ctx, "view.deleted", id, id, null, null),
   ]);
   return { deleted: true };
 }

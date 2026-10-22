@@ -1,3 +1,4 @@
+import {auditStatement} from '../../audit/producer';
 import {requireSlackChannel} from './channel-safety';
 import type {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
@@ -17,6 +18,7 @@ export async function saveSlack(env:WorkerBindings,owner:IntegrationOwner,token:
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'INSERT INTO vector_slack_installations(workspace_id,team_name,created_by,enabled,updated_at) VALUES(?,?,?,1,?) ON CONFLICT(workspace_id) DO UPDATE SET team_name=excluded.team_name,created_by=excluded.created_by,enabled=1,updated_at=excluded.updated_at',params:[owner.workspace,auth.team??'Slack workspace',owner.id,new Date().toISOString()]},
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?) ON CONFLICT(identity,slot) DO UPDATE SET encrypted=excluded.encrypted",params:[identity,encrypted]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.connected',subject:identity}),
  ]);
  return {connected:true};
 }
@@ -28,6 +30,7 @@ export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
   {sql:'UPDATE vector_slack_installations SET enabled=0 WHERE workspace_id=?',params:[owner.workspace]},
   {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:['slack:'+owner.workspace]},
   {sql:"UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE workspace_id=? AND kind='slack'",params:[new Date().toISOString(),owner.workspace]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.disconnected',subject:'slack:'+owner.workspace}),
  ]);return {removed:true};
 }
 export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,input:Binding,skipObjectCheck=false){
@@ -43,6 +46,7 @@ export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,in
   {sql:'DELETE FROM vector_channel_bindings WHERE workspace_id=? AND scope=? AND object_id=?',params:[owner.workspace,input.scope,input.objectId]},
   {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,kind,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',params:[id,owner.workspace,input.channelName,input.provider==='slack'?'https://slack.com/api/chat.postMessage':'https://discord.com/api/webhooks/',input.provider,at,at]},
   {sql:'INSERT INTO vector_channel_bindings(destination_id,workspace_id,scope,object_id,channel_id,channel_name,events,created_by) VALUES(?,?,?,?,?,?,?,?)',params:[id,owner.workspace,input.scope,input.objectId,input.channelId??'',input.channelName,JSON.stringify(input.events),owner.id]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'channel.bound',subject:input.objectId,at}),
   ...(encrypted?[{sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]}]:[]),
  ]};
 }
@@ -55,6 +59,7 @@ export async function removeBinding(env:WorkerBindings,owner:IntegrationOwner,id
   {sql:"UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE id=? AND workspace_id=? AND kind<>'webhook'",params:[new Date().toISOString(),id,owner.workspace]},
   {sql:"DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_webhook_destinations WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)",params:['destination:'+id,id,owner.workspace]},
   {sql:'DELETE FROM vector_channel_bindings WHERE destination_id=? AND workspace_id=?',params:[id,owner.workspace]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'channel.unbound',subject:id}),
  ]);return {removed:true};
 }
 /** Called once by the create door; provider errors leave the native object uncreated. */

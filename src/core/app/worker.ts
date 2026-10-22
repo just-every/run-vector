@@ -1,3 +1,5 @@
+import { auditAuthority } from '../features/audit/repository';
+import { SettingsError } from '../features/settings/repository';
 import { withDemo } from '../../../vendor/base/demo/index.mjs';
 import { seedDemo } from '../../demo';
 import { isDependencyPath } from '../features/auth/dependencies.server';
@@ -75,6 +77,13 @@ export async function handleRequest(
           "Cache-Control": "no-store",
         },
       });
+    }
+  }
+  if (url.pathname.replace(/\/$/, '') === '/app/settings/audit' && admitted) {
+    try { await auditAuthority(env.DB, admitted.id); }
+    catch (error) {
+      if (error instanceof SettingsError) return Response.json({ error: error.code, message: error.message }, { status: error.status, headers: { 'Cache-Control': 'no-store' } });
+      throw error;
     }
   }
   if (

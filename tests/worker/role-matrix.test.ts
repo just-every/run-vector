@@ -1,3 +1,4 @@
+import { exerciseAudit } from './audit-scenario';
 import { env } from "cloudflare:workers";
 import { Buffer } from "node:buffer";
 import { expect, it } from "vitest";
@@ -12,6 +13,11 @@ const teams = async (response: Response) => ((await response.json()) as Administ
 const audits = (action: string) =>
   env.DB.prepare("SELECT a.actor_operator_id AS actor,d.previous_value_json AS previous,d.next_value_json AS next FROM audit_records a JOIN administration_audit_details d ON d.audit_id=a.id WHERE a.action=? ORDER BY a.id")
     .bind(action).all().then((rows) => rows.results);
+
+it('[ROLE-005] native actions populate an immutable workspace audit view and exactly filtered CSV for Owners and Admins, while Members and Guests are refused', {timeout:120_000}, async () => {
+  await exerciseAudit(await roleWorkspace());
+});
+
 
 it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the directory, a Guest cannot join, a team keeps an owner, and leaving keeps assigned work listed for its owners", async () => {
   const w = await roleWorkspace();
@@ -316,7 +322,7 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   const exported: { table: string; row: Record<string, unknown> }[] = [];
   for await (const record of readArchive((await owner.call(`/portability/exports/${job}/download`)).body!))
     if (record.kind === "part") for (const item of record.items) if (item.kind === "row") exported.push(item as { table: string; row: Record<string, unknown> });
-  const changes = exported.filter((item) => item.table === "audit_records" && item.row.action === "operator.role_changed").map((item) => {
+  const changes = exported.filter((item) => item.table === "audit_records" && item.row.action === "operator.role_changed" && [member.id, admin.id].includes(String(item.row.subject_id))).map((item) => {
     const detail = exported.find((other) => other.table === "administration_audit_details" && other.row.audit_id === item.row.id)!.row;
     return [item.row.actor_operator_id, item.row.subject_id, JSON.parse(String(detail.previous_value_json)).role, JSON.parse(String(detail.next_value_json)).role];
   });

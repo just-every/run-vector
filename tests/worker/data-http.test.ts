@@ -1,3 +1,5 @@
+import { auditSchema } from '../../src/core/features/audit/schema';
+import { expectAuditArchiveHistory } from './audit-archive';
 import {channelEdge} from './channel-edge-fixture';
 import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
@@ -124,7 +126,10 @@ it('[SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT
  }
  expect((await restoreStatus()).status.effectsHeld).toBe(1);
  const again=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,historical));
- expect(finalHash(again)).toBe(finalHash(records));
+ expectAuditArchiveHistory(records,again);
+ const auditResponse=await targetCall('/api/settings/audit','GET',undefined,historical);expect(auditResponse.status).toBe(200);
+ const restoredAudit=auditSchema.parse(await auditResponse.json());
+ expect((await targetCall('/api/settings/audit.csv?through='+restoredAudit.through,'GET',undefined,historical)).status).toBe(200);
  expect(await (await targetCall('/api/issues/'+f.erased.identifier+'/deletion','GET',undefined,historical)).json()).toEqual(f.deletionReceipt);
  expect((await targetCall('/api/issues/'+f.erased.identifier,'GET',undefined,historical)).status).toBe(404);
  const canonical=await targetCall('/api/issues/'+f.canonical.identifier,'GET',undefined,historical);

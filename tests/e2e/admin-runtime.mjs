@@ -1,3 +1,4 @@
+import { exerciseAuditView, exerciseAuditAccess } from './admin-audit-journey.mjs';
 import { projectFieldsJourney } from './core-project-fields-journey.mjs';
 import assert from "node:assert/strict";
 import {
@@ -131,6 +132,7 @@ await contract(
         const roles = await exerciseWorkspaceRoles({ ...shared, evidence, refusals: roleRefusals });
         try {
           await exerciseTeamRoles({ ...shared, evidence, refusals: roleRefusals, ...roles });
+          await exerciseAuditAccess({ ...shared, ...roles });
         } finally {
           await roles.context.close();
         }
@@ -152,6 +154,7 @@ await contract(
         await deleteAppliedLabel({ ...shared, label, issue });
         await archiveProject({ ...shared, project, issue });
         await archiveRestoreTeam({ ...shared, team, issue });
+        await exerciseAuditView(shared);
         for (const receipt of immutableCycleReceipts)
           assert.deepEqual(
             runtime.sql(

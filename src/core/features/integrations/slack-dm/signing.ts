@@ -1,3 +1,4 @@
+import {auditStatement} from '../../audit/producer';
 import type {WorkerBindings} from '../../../app/bindings';
 import {hex,equalSignature} from '../../../../../vendor/base/integrations/core/crypto';
 import {guardedSql,ownerPredicate,type IntegrationOwner} from '../authority';
@@ -13,6 +14,7 @@ export async function saveSigningSecret(env:WorkerBindings,owner:IntegrationOwne
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:"SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_slack_installations WHERE workspace_id=? AND enabled=1) THEN 1 ELSE json('slack not connected') END",params:[owner.workspace]},
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?) ON CONFLICT(identity,slot) DO UPDATE SET encrypted=excluded.encrypted",params:[identity,encrypted]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.signing_secret_changed',subject:identity}),
  ]);
  return {saved:true};
 }

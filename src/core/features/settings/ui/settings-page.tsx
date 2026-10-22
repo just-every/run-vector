@@ -92,6 +92,7 @@ export function SettingsPage() {
           </>}
           <a href="#integrations">Integrations</a>
           <a href="#notifications">Notifications</a>
+          {workspace && <a href="/app/settings/audit">Audit log</a>}
           {workspace && <a href="#data">Data / Move in</a>}
           {resource.data.role === "owner" && <a href="#after-restore">After a restore</a>}
         </nav>

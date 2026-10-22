@@ -82,6 +82,8 @@ export const doors: Door[] = [
   { method: 'POST', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
   { method: 'POST', path: '/settings/integrations/channels/allowed', row: 'integrations.manage' },
   { method: 'DELETE', path: '/settings/integrations/channels/allowed/:channelId', row: 'integrations.manage' },
+  { method: 'GET', path: '/settings/audit', row: 'audit.read' },
+  { method: 'GET', path: '/settings/audit.csv', row: 'audit.read' },
   // Workspace, people and permissions
   { method: 'POST', path: '/settings/operators/invite', invitation: true, row: async request => leadership(await field(request, 'role')) ? 'leaders.manage' : 'members.manage' },
   { method: 'POST', path: '/settings/operators/confirm-identity', invitation: true, row: 'members.manage' },

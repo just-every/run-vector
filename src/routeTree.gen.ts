@@ -39,6 +39,7 @@ import { Route as AppMyWorkCreatedRouteImport } from './routes/app.my-work.creat
 import { Route as AppMyWorkSubscribedRouteImport } from './routes/app.my-work.subscribed'
 import { Route as AppProjectsIndexRouteImport } from './routes/app.projects.index'
 import { Route as AppProjectsProjectIdRouteImport } from './routes/app.projects.$projectId'
+import { Route as AppSettingsAuditRouteImport } from './routes/app.settings_.audit'
 import { Route as AppViewsViewIdRouteImport } from './routes/app.views.$viewId'
 import { Route as AppMyWorkCreatedIdentifierRouteImport } from './routes/app.my-work.created.$identifier'
 import { Route as AppMyWorkSubscribedIdentifierRouteImport } from './routes/app.my-work.subscribed.$identifier'
@@ -194,6 +195,11 @@ const AppProjectsProjectIdRoute = AppProjectsProjectIdRouteImport.update({
   path: '/projects/$projectId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSettingsAuditRoute = AppSettingsAuditRouteImport.update({
+  id: '/settings_/audit',
+  path: '/settings/audit',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppViewsViewIdRoute = AppViewsViewIdRouteImport.update({
   id: '/views/$viewId',
   path: '/views/$viewId',
@@ -244,6 +250,7 @@ export interface FileRoutesByFullPath {
   '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
   '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/settings/audit': typeof AppSettingsAuditRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
   '/app/cycles/': typeof AppCyclesIndexRoute
@@ -276,6 +283,7 @@ export interface FileRoutesByTo {
   '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
   '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/settings/audit': typeof AppSettingsAuditRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current': typeof AppCurrentIndexRoute
   '/app/cycles': typeof AppCyclesIndexRoute
@@ -313,6 +321,7 @@ export interface FileRoutesById {
   '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
   '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/settings_/audit': typeof AppSettingsAuditRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
   '/app/cycles/': typeof AppCyclesIndexRoute
@@ -351,6 +360,7 @@ export interface FileRouteTypes {
     | '/app/my-work/created'
     | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
+    | '/app/settings/audit'
     | '/app/views/$viewId'
     | '/app/current/'
     | '/app/cycles/'
@@ -383,6 +393,7 @@ export interface FileRouteTypes {
     | '/app/my-work/created'
     | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
+    | '/app/settings/audit'
     | '/app/views/$viewId'
     | '/app/current'
     | '/app/cycles'
@@ -419,6 +430,7 @@ export interface FileRouteTypes {
     | '/app/my-work/created'
     | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
+    | '/app/settings_/audit'
     | '/app/views/$viewId'
     | '/app/current/'
     | '/app/cycles/'
@@ -651,6 +663,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/settings_/audit': {
+      id: '/app/settings_/audit'
+      path: '/settings/audit'
+      fullPath: '/app/settings/audit'
+      preLoaderRoute: typeof AppSettingsAuditRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/views/$viewId': {
       id: '/app/views/$viewId'
       path: '/views/$viewId'
@@ -789,6 +808,7 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppCyclesCycleIdRoute: typeof AppCyclesCycleIdRoute
   AppProjectsProjectIdRoute: typeof AppProjectsProjectIdRoute
+  AppSettingsAuditRoute: typeof AppSettingsAuditRoute
   AppViewsViewIdRoute: typeof AppViewsViewIdRouteWithChildren
   AppCyclesIndexRoute: typeof AppCyclesIndexRoute
   AppProjectsIndexRoute: typeof AppProjectsIndexRoute
@@ -807,6 +827,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppCyclesCycleIdRoute: AppCyclesCycleIdRoute,
   AppProjectsProjectIdRoute: AppProjectsProjectIdRoute,
+  AppSettingsAuditRoute: AppSettingsAuditRoute,
   AppViewsViewIdRoute: AppViewsViewIdRouteWithChildren,
   AppCyclesIndexRoute: AppCyclesIndexRoute,
   AppProjectsIndexRoute: AppProjectsIndexRoute,
@@ -825,7 +846,6 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
 import type { getRouter } from './router.tsx'
 import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {

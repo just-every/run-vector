@@ -1,3 +1,4 @@
+import { auditStatement } from '../../audit/producer';
 import { readD1ErasureJournal, retireD1ImportCustody, upgradeD1ImportErasureIndex } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { createVectorArchive } from '../archive-service.mjs';
 import { importContext, type ImportActor } from '../import/authority';
@@ -51,7 +52,7 @@ export async function erasePerson(db: D1Database, files: R2Bucket, actor: Import
   await reindex(context);
   try {
     const { nativeResults: _, ...journal } = await retireD1ImportCustody({ target: { kind: 'person', id: 'erased:' + values.join('\u0000') }, values: subject.email ? [subject.email] : [], related: relatedMatchers(values) },
-      product.statements, context, checkpoint);
+      [...product.statements, auditStatement({workspace:actor.workspace,actor:actor.id,action:'person.erased',subject:'erasure:'+crypto.randomUUID()})], context, checkpoint);
     await reindex(context);
     return { journal, imported: product.counts };
   } catch (error) {

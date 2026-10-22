@@ -16,7 +16,10 @@
     "subject_identifier",
     "subject_id",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "workspace_id",
+    "actor_kind",
+    "actor_reference"
   ],
   "cycle_closure_failures": [
     "cycle_id",

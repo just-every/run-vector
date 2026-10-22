@@ -125,10 +125,10 @@ export async function removeOperator(
       .bind(at, at, target, id),
     db
       .prepare(
-        `INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at)
-      SELECT ?,?,'operator.removed','Removed operator',?,?,? WHERE ${receipt}`,
+        `INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)
+      SELECT ?,?,'operator.removed','Removed operator',?,?,?,?,'person',? WHERE ${receipt}`,
       )
-      .bind(id, retainedActor, target, at, at, id),
+      .bind(id, retainedActor, target, at, at, access.workspace_id, `person:${actor}`, id),
   );
   let result: D1Result[];
   try {

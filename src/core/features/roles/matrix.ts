@@ -60,6 +60,7 @@ export const matrix = {
   'channels.create': row('Have the Slack bot create a channel in the customer\'s Slack workspace for a new team or project (SLACK-003)', 'yes', 'yes', 'no', 'no'),
   'tokens.personal': row('Create personal API tokens (API-001)', 'yes', 'yes', 'yes', 'no'),
   'identity.personal': row('Authorize an OAuth app for oneself; link one\'s own Slack or Teams identity (API-004, SLACK-001, SLACK-004, TEAMS-001)', 'yes', 'yes', 'yes', 'no'),
+  'audit.read': row('Browse and export the audit log (ROLE-005)', 'yes', 'yes', 'no', 'no'),
   'data.export': row('Export the portable archive (DATA-001)', 'yes', 'yes', 'no', 'no'),
   'data.restore': row('Restore an archive over HTTP and review the restored workspace (DATA-005)', 'yes', 'no', 'no', 'no'),
   'data.import': row('Preflight, apply, resume, repeat or roll back an import run or migration (DATA-002, DATA-003, DATA-006, DATA-008, DATA-009, DATA-010, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017)', 'yes', 'yes', 'no', 'no'),

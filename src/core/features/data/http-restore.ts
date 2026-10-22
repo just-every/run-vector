@@ -9,7 +9,7 @@ import { mutationDatabase } from '../auth/mutation-database';
 import { validateArchiveInventory,validateArchiveAttachments } from './archive-inventory.mjs';
 import type { WorkerBindings } from '../../app/bindings';
 
-const bootstrapTables = ['workspace_bootstrap', 'workspace_settings', 'workspace_installation', 'operators', 'oa_operators', 'vector_auth_operators', 'teams', 'workflow_statuses', 'team_members'];
+const bootstrapTables = ['workspace_bootstrap', 'workspace_settings', 'workspace_installation', 'operators', 'oa_operators', 'vector_auth_operators', 'teams', 'workflow_statuses', 'team_members', 'audit_records'];
 const response = (error: string, status: number) => Response.json({error}, {status, headers:{'Cache-Control':'no-store'}});
 
 /** Forwarding to the object conveys no authority, including for custody/status. */
@@ -56,6 +56,7 @@ export async function restoreRequest(request: Request, env: WorkerBindings) {
       // This transaction refuses an already-reserved upload before acquiring
       // the destination reservation; no preflight-only empty-target decision.
       await database.batch([
+        database.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_http_restore_audit_pristine) THEN 1 ELSE json('restore audit not pristine') END"),
         ...tableNames.filter((name:string)=>!replaceable.includes(name)).map((name:string)=>database.prepare(`SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM "${name.replaceAll('"','""')}") THEN 1 ELSE json('restore target not empty') END`)),
         database.prepare(`INSERT INTO vector_http_restore(id,actor_id,auth_id,session_id,source_token_id,operator_version)
           SELECT 1,?,s.operator_id,s.id,s.source_token_id,s.operator_version FROM oa_sessions s WHERE s.id=?`).bind(actor.id, actor.fence.sessionId),

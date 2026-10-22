@@ -1,3 +1,4 @@
+import { auditStatement } from '../audit/producer';
 import type { WorkerBindings } from '../../app/bindings';
 import { guardedSql,ownerPredicate,type IntegrationOwner } from './authority';
 import { newSigningSecret,sealSecret } from './secrets';
@@ -15,6 +16,7 @@ export async function replaceSourceWebhook(env:WorkerBindings,owner:IntegrationO
   {sql:`SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_integration_sources WHERE id=? AND workspace_id=? AND revoked_at IS NULL) THEN 1 ELSE json('source unavailable') END`,params:[id,owner.workspace]},
   {sql:"DELETE FROM vector_integration_secret_keys WHERE identity=?",params:[credential.identity]},
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[credential.identity,credential.encrypted]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.source_webhook_rotated',subject:id}),
  ]);
  return {id,...source,workspaceId:owner.workspace,receiver:env.APP_ORIGIN+'/api/integrations/sources/'+id+'/events',webhookUrl:credential.webhookUrl};
 }

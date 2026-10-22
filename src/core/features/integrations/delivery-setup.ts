@@ -1,3 +1,4 @@
+import { auditStatement } from '../audit/producer';
 import { z } from 'zod';
 import type { WorkerBindings } from '../../app/bindings';
 import { guardedSql, ownerPredicate, type IntegrationOwner } from './authority';
@@ -68,6 +69,7 @@ export async function configureDelivery(env: WorkerBindings, owner: IntegrationO
   const encrypted = await sealSecret(env, identity(owner.workspace), JSON.stringify(policy));
   await guardedSql(env.DB, ownerPredicate(owner)).batch([
     { sql: "INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?) ON CONFLICT(identity,slot) DO UPDATE SET encrypted=excluded.encrypted", params: [identity(owner.workspace), encrypted] },
+    auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.delivery_configured',subject:owner.workspace}),
   ]);
   return { configured: true };
 }

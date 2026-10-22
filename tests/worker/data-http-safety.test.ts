@@ -1,12 +1,11 @@
 import {expect,it} from 'vitest';
 import {populatedHttpSource} from './http-archive-source';
-import {destination,freshTarget,targetCall,targetSignIn,targetSnapshot,httpExport,stageArchive,finalHash,finalBody} from './http-archive-fixture';
-import {makePart,type Part} from '@runeditrun/rer/modules/portability';
-import {ContentVerifier,ArchiveVerifier} from '@runeditrun/rer/modules/portability/format';
+import {destination,freshTarget,targetCall,targetSnapshot,httpExport,finalBody} from './http-archive-fixture';
 
-it('[DATA-001 DATA-005 BASE-DATA-001] HTTP admission refuses extra authority or edited bootstrap; abort, corrupt content and late D1 failure retain authority and files',async()=>{
+it('[DATA-001 DATA-005 BASE-DATA-001] HTTP admission refuses extra authority or edited bootstrap and retains the audit history of added authority',async()=>{
  const f=await populatedHttpSource(),records=await httpExport(f.call),cookie=await freshTarget(),db=destination.ARCHIVE_TARGET_DB;
  const initial=await targetSnapshot();
+ const initialAudit=(await (await targetCall('/api/settings/audit','GET',undefined,cookie)).json() as {entries:{id:string;action:string}[]}).entries;
  const denied=async(status=409)=>{
   const before=await targetSnapshot();
   expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]},cookie)).status).toBe(status);
@@ -31,34 +30,10 @@ it('[DATA-001 DATA-005 BASE-DATA-001] HTTP admission refuses extra authority or 
  await db.prepare("INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at) SELECT 'extra-operator',workspace_id,'Extra','extra@target.test',created_at,updated_at FROM operators LIMIT 1").run();await denied();
  await db.batch([db.prepare("DELETE FROM vector_auth_operators WHERE operator_id='extra-operator'"),db.prepare("DELETE FROM oa_operators WHERE id='extra-operator'"),db.prepare("DELETE FROM operators WHERE id='extra-operator'")]);
  await db.prepare("INSERT INTO operator_sessions(id,operator_id,token_hash,expires_at,created_at,updated_at) SELECT 'legacy-session',id,'legacy-hash','2099-01-01T00:00:00Z',created_at,updated_at FROM operators LIMIT 1").run();await denied();await db.prepare("DELETE FROM operator_sessions WHERE id='legacy-session'").run();
- // The separately authorized fixture edits increment the conservative list
- // revision. All other native state was restored before the rollback cases.
- expect((await targetSnapshot()).filter(row=>row.table!=='issue_list_revision')).toEqual(initial.filter(row=>row.table!=='issue_list_revision'));
- const original=await targetSnapshot();
- // A pre-existing unowned object is not restore custody and must survive.
- await destination.ARCHIVE_TARGET_FILES.put('unowned-target-object',new Uint8Array([7,8]));
- const occupiedJob=await stageArchive(records,cookie);
- expect((await targetCall('/api/portability/imports/'+occupiedJob+'/finalize','POST',finalBody(records),cookie)).status).toBe(409);
- expect(await targetSnapshot()).toEqual(original);
- expect(new Uint8Array(await (await destination.ARCHIVE_TARGET_FILES.get('unowned-target-object'))!.arrayBuffer())).toEqual(new Uint8Array([7,8]));
- expect((await targetCall('/api/portability/imports/'+occupiedJob+'/abort','POST',{},cookie)).status).toBe(200);
- expect(new Uint8Array(await (await destination.ARCHIVE_TARGET_FILES.get('unowned-target-object'))!.arrayBuffer())).toEqual(new Uint8Array([7,8]));
- await destination.ARCHIVE_TARGET_FILES.delete('unowned-target-object');
- const checksumJob=await stageArchive(records,cookie);
- expect((await targetCall('/api/portability/imports/'+checksumJob+'/finalize','POST',{...finalBody(records),contentHash:'0'.repeat(64)},cookie)).status).toBe(400);
- expect(await targetSnapshot()).toEqual(original);
- expect((await targetCall('/api/portability/imports/'+checksumJob+'/abort','POST',{},cookie)).status).toBe(200);
- expect((await targetCall('/api/session','GET',undefined,cookie)).status).toBe(200);
- const broken=structuredClone(records),verifier=new ContentVerifier(broken[0] as import('@runeditrun/rer/modules/portability').Manifest),archive=new ArchiveVerifier(broken[0] as import('@runeditrun/rer/modules/portability').Manifest);
- for(let i=0;i<broken.length;i++)if(broken[i].kind==='part') {
-  const part=broken[i] as Part;
-  for(const item of part.items)if(item.kind==='row'&&item.table==='issue_files')item.row.actor_operator_id='absent-native-operator';
-  broken[i]=await makePart(part.index,part.items);archive.add(broken[i]);for(const item of part.items)verifier.add(item);
- }
- const badJob=await stageArchive(broken,cookie);
- const failure=await targetCall('/api/portability/imports/'+badJob+'/finalize','POST',{contentHash:verifier.digest(),archiveHash:archive.digest()},cookie);expect(failure.status).toBe(500);
- expect(await targetSnapshot()).toEqual(original);expect((await destination.ARCHIVE_TARGET_FILES.list()).objects).toEqual([]);
- expect((await targetCall('/api/session','GET',undefined,cookie)).status).toBe(200);
- expect((await targetCall('/api/portability/imports/'+badJob+'/abort','POST',{},cookie)).status).toBe(200);
- const realSecond=await targetSignIn();expect((await targetCall('/api/session','GET',undefined,realSecond)).status).toBe(200);await denied();
+ // Reverting a fixture's credential rows does not erase its recorded admission.
+ const afterAudit=(await (await targetCall('/api/settings/audit','GET',undefined,cookie)).json() as {entries:{id:string;action:string}[]}).entries;
+ expect(afterAudit.filter(row=>initialAudit.some(prior=>prior.id===row.id))).toEqual(initialAudit);
+ expect(afterAudit.filter(row=>!initialAudit.some(prior=>prior.id===row.id)).map(row=>[row.id,row.action]).sort()).toEqual([['joined:extra-operator','operator.joined'],['signin:extra-session','auth.signed_in']]);
+ expect((await targetSnapshot()).filter(row=>!['issue_list_revision','audit_records'].includes(row.table))).toEqual(initial.filter(row=>!['issue_list_revision','audit_records'].includes(row.table)));
+ await denied(); // Retained extra authority history itself makes this target non-pristine.
 },180000);

@@ -1,3 +1,4 @@
+import { auditStatement } from '../audit/producer';
 import { deliveryConfigured } from './outbound';
 import type { WorkerBindings } from '../../app/bindings';
 import { createUlid } from '../../shared/ids';
@@ -18,6 +19,7 @@ export async function registerSource(env:WorkerBindings,owner:IntegrationOwner,i
   {sql:'INSERT INTO vector_integration_sources(id,workspace_id,source_id,name,team_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',params:[id,owner.workspace,input.sourceId,input.name,input.teamId,at,at]},
   {sql:'INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,?,?)',params:[identity,'current',encrypted]},
   {sql:'INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,?,?)',params:[webhook.identity,'current',webhook.encrypted]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.source_registered',subject:id,at}),
  ]);}catch{throw safeError();}
  return {id,sourceId:input.sourceId,teamId:input.teamId,workspaceId:owner.workspace,secret,receiver:env.APP_ORIGIN+'/api/integrations/sources/'+id+'/events',webhookUrl:webhook.webhookUrl};
 }
@@ -30,6 +32,7 @@ export async function rotateSource(env:WorkerBindings,owner:IntegrationOwner,id:
   ...(hours?[{sql:"UPDATE vector_integration_secret_keys SET slot='previous',valid_until=? WHERE identity=? AND slot='current'",params:[now+hours*3600000,identity]}]:[{sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:[identity]}]),
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
   {sql:'UPDATE vector_integration_sources SET version=version+1,enabled=1,updated_at=? WHERE id=? AND workspace_id=?',params:[at,id,owner.workspace]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.source_rotated',subject:id,at}),
  ]);return {id,secret,overlapHours:hours,sourceId:source.sourceId,teamId:source.teamId,workspaceId:owner.workspace,receiver:env.APP_ORIGIN+'/api/integrations/sources/'+id+'/events'};
 }
 export async function registerDestination(env:WorkerBindings,owner:IntegrationOwner,input:z.infer<typeof destinationInput>){
@@ -38,6 +41,7 @@ export async function registerDestination(env:WorkerBindings,owner:IntegrationOw
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:"SELECT CASE WHEN (SELECT count(*) FROM vector_webhook_destinations WHERE workspace_id=? AND revoked_at IS NULL)<50 THEN 1 ELSE json('destination limit') END",params:[owner.workspace]},
   {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,created_at,updated_at) VALUES(?,?,?,?,?,?)',params:[id,owner.workspace,input.name,url.href,at,at]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.destination_registered',subject:id,at}),
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
  ]);return {id,secret,dispatchConfigured:await deliveryConfigured(env,owner.workspace)};
 }
@@ -46,6 +50,7 @@ export async function registerGithub(env:WorkerBindings,owner:IntegrationOwner,i
  const now=new Date(),id=createUlid(now),at=now.toISOString(),identity='github:'+id,secret=newSigningSecret(),encrypted=await sealSecret(env,identity,secret);
  try{await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'INSERT INTO vector_github_repositories(id,workspace_id,repository,name,created_at,updated_at) VALUES(?,?,?,?,?,?)',params:[id,owner.workspace,repository,input.name,at,at]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.github_registered',subject:id,at}),
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
  ]);}catch{throw safeError();}return {id,secret,receiver:env.APP_ORIGIN+'/api/integrations/github/'+id};
 }
@@ -53,6 +58,7 @@ export async function revokeConfiguration(env:WorkerBindings,owner:IntegrationOw
  const table={source:'vector_integration_sources',destination:'vector_webhook_destinations',github:'vector_github_repositories'}[kind],at=new Date().toISOString();
  const rows=await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:`UPDATE ${table} SET enabled=0,revoked_at=COALESCE(revoked_at,?),updated_at=? WHERE id=? AND workspace_id=? RETURNING id`,params:[at,at,id,owner.workspace]},
+  auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.'+kind+'_revoked',subject:id,at,condition:{sql:`EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=? AND revoked_at=?)`,params:[id,owner.workspace,at]}}),
   {sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:[kind+':'+id,id,owner.workspace]},
   ...(kind==='source'?[{sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_integration_sources WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:['source-url:'+id,id,owner.workspace]}]:[]),
  ]);if(!rows[0].length)throw new IntegrationError(404,'configuration_unavailable');return {revoked:true};

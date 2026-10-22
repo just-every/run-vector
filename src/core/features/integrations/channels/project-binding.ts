@@ -1,3 +1,4 @@
+import {auditStatement} from '../../audit/producer';
 import type {WorkerBindings} from '../../../app/bindings';
 import {settingsActor} from '../../settings/repository';
 import {guardedSql,ownerPredicate,type IntegrationOwner} from '../authority';
@@ -40,10 +41,11 @@ export async function allowProjectChannel(env:WorkerBindings,actor:IntegrationOw
  await guardedSql(env.DB,ownerPredicate(actor)).batch([
   {sql:`INSERT INTO vector_slack_allowed_channels(workspace_id,channel_id,channel_name,created_by,created_at) VALUES(?,?,?,?,?)
   ON CONFLICT(workspace_id,channel_id) DO UPDATE SET channel_name=excluded.channel_name,created_by=excluded.created_by,created_at=excluded.created_at`,params:[actor.workspace,channelId,channelName,actor.id,new Date().toISOString()]},
+  auditStatement({workspace:actor.workspace,actor:actor.id,action:'slack.channel_allowed',subject:channelId}),
  ]);
  return {allowed:true};
 }
 export async function revokeProjectChannel(env:WorkerBindings,actor:IntegrationOwner,channelId:string){
- await guardedSql(env.DB,ownerPredicate(actor)).batch([{sql:'DELETE FROM vector_slack_allowed_channels WHERE workspace_id=? AND channel_id=?',params:[actor.workspace,channelId]}]);
+ await guardedSql(env.DB,ownerPredicate(actor)).batch([{sql:'DELETE FROM vector_slack_allowed_channels WHERE workspace_id=? AND channel_id=?',params:[actor.workspace,channelId]},auditStatement({workspace:actor.workspace,actor:actor.id,action:'slack.channel_disallowed',subject:channelId})]);
  return {removed:true};
 }
