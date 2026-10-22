@@ -7,7 +7,7 @@ export const visibleTeam = (person: string, team: string) =>
   `(${person}.role<>'guest' OR EXISTS(SELECT 1 FROM main.team_members guest_team WHERE guest_team.operator_id=${person}.id AND guest_team.team_id=${team}))`
 
 const guest = `(SELECT role FROM __vector_reader)='guest'`
-const scoped = (table: string, where: string) => `${table} AS (SELECT r.* FROM main.${table} r WHERE NOT (${guest}) OR (${where}))`
+const scoped = (table: string, where: string) => `${table} AS (SELECT ${['issue_activity','issue_description_revisions'].includes(table) ? 'r.rowid AS rowid,' : ''}r.* FROM main.${table} r WHERE NOT (${guest}) OR (${where}))`
 const issue = (column = 'issue_id') => `r.${column} IN (SELECT id FROM issues)`
 const team = (column = 'team_id') => `r.${column} IN (SELECT id FROM teams)`
 const project = (column = 'project_id') => `r.${column} IN (SELECT id FROM projects)`

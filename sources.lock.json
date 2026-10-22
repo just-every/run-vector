@@ -3893,7 +3893,7 @@
       "executable": false
     },
     "src/core/features/discussion/routes.ts": {
-      "sha256": "3df22b775c58b9911ee8cc6cab9d38fa62a89ad92d726b9d47a1b99dbf761cf5",
+      "sha256": "344f272a9b3d620301bc64b17fac82a7da8b4181c9f648b9aaf6c5f91c5763d7",
       "executable": false
     },
     "src/core/features/discussion/schema.ts": {
@@ -5141,7 +5141,7 @@
       "executable": false
     },
     "src/core/features/roles/visibility-sql.ts": {
-      "sha256": "e3bd7275236105c4615ebd7c6cbe6a20d17ec19e4f07423aba9144fe4fc0d41e",
+      "sha256": "ace05dafe7805443fbe0178e21d162ea953da447db2f33fc4552985896d26f19",
       "executable": false
     },
     "src/core/features/sample-data/repository.ts": {

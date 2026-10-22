@@ -82,6 +82,9 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         { error: "invalid_request", issues: input.error.issues },
         400,
       );
+    const admitted = c.get("operator"), current = await requireOperator(c.env, c.req.raw);
+    if (!current || current.id !== admitted.id || JSON.stringify(current.fence) !== JSON.stringify(admitted.fence))
+      return c.json({ error: "unauthenticated" }, 401);
     const issue = await findIssue(c.env.DB, c.req.param("identifier"));
     if (!issue) return c.json({ error: "not_found" }, 404);
     try {
