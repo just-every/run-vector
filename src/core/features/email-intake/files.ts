@@ -18,7 +18,7 @@ export function validateInboundFiles(mail: InboundMail) {
 }
 export async function digest(value: string | Uint8Array) {
   const bytes = typeof value === 'string' ? new TextEncoder().encode(value) : value;
-  return [...new Uint8Array(await crypto.subtle.digest('SHA-256', bytes))].map(byte => byte.toString(16).padStart(2,'0')).join('');
+  return [...new Uint8Array(await crypto.subtle.digest('SHA-256', new Uint8Array(bytes)))].map(byte => byte.toString(16).padStart(2,'0')).join('');
 }
 export async function saveInboundFiles(env: WorkerBindings, actor: string, issue: {id:string;identifier:string}, messageId: string, mail: InboundMail) {
   for (const [index,file] of mail.attachments.entries()) {
@@ -50,7 +50,9 @@ export async function replyContent(env: WorkerBindings, issue: {id:string;identi
   const attachments: {filename:string;contentType:string;content:Uint8Array;contentId:string;disposition:'inline'}[] = [];
   let html = '', end = 0, total = 0;
   for (const match of body.matchAll(/!\[([^\]]*)\]\(([^\s)]+)\)/g)) {
-    const url = new URL(match[2],env.APP_ORIGIN);
+    let url: URL;
+    try { url = new URL(match[2],env.APP_ORIGIN); }
+    catch { throw new SettingsError('invalid_reply_image', 'Email reply images must be files attached to this issue.', 400); }
     const fileMatch = /^\/api\/issues\/([A-Z]{2,10}-[1-9][0-9]*)\/files\/([0-7][0-9A-HJKMNP-TV-Z]{25})$/.exec(url.pathname);
     if (url.origin !== env.APP_ORIGIN || !fileMatch || fileMatch[1] !== issue.identifier || url.search || url.hash)
       throw new SettingsError('invalid_reply_image', 'Email reply images must be files attached to this issue.', 400);

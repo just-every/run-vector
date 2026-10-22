@@ -3,7 +3,7 @@ import worker from './entry';
 import { bindings, request } from './base-auth-fixture';
 import { createUlid } from '../../src/core/shared/ids';
 
-export const mailBindings = {...bindings,MAIL_MODE:'sendgrid',MAIL_PROVIDER:'sendgrid',MAIL_API_KEY:'synthetic-vector-711'};
+export const mailBindings = {...bindings,MAIL_MODE:'local-outbox',MAIL_PROVIDER:'sendgrid',MAIL_API_KEY:'synthetic-vector-711'};
 export function inboundFixture(address: string, messageId: string, options: {from?:string;replyTo?:string;attachments?:boolean} = {}) {
   const from = options.from ?? 'synthetic-vector-712@example.test';
   const lines = [`From: ${from}`,`To: ${address}`,'Cc: synthetic-vector-713@example.test',`Message-ID: ${messageId}`,'Subject: A delivery problem',...(options.replyTo ? [`In-Reply-To: ${options.replyTo}`,`References: ${options.replyTo}`] : []),'MIME-Version: 1.0',
