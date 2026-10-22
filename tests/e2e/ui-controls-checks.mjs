@@ -13,7 +13,7 @@ export { openAdministrationForm } from "./ui-administration-form.mjs";
 export async function assertSettingsSections(page, label) {
   const sections = [
     "Workspace time",
-    "Operators",
+    "Members",
     "Teams",
     "Labels",
     "Projects",

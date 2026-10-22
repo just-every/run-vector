@@ -99,7 +99,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     await Promise.all([read('/api/projects' + (preference?.filters.includeArchived ? '?includeArchived=true' : '')), read('/api/settings/administration')])
   } else if (path === '/app/cycles') await read('/api/settings/administration')
   else if (path === '/app/inbox') await read('/api/notifications')
-  else if (path === '/app/settings') await Promise.all(['/api/settings', '/api/settings/administration', '/api/settings/notifications', '/api/settings/integrations', '/api/settings/integrations/tokens/usage', '/api/data/import/runs', '/api/data/restore'].map(read))
+  else if (path === '/app/settings') await Promise.all(['/api/settings', '/api/settings/administration', '/api/settings/notifications', '/api/settings/integrations', '/api/settings/integrations/tokens', '/api/settings/integrations/tokens/usage', '/api/data/import/runs', '/api/data/restore'].map(read))
   else if (path === '/app/new' || path === '/app/new-issue') await read('/api/options')
   await Promise.all(shared)
   return values

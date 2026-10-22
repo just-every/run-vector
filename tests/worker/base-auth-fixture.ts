@@ -37,8 +37,9 @@ export async function signIn(email = bindings.FIRST_OWNER_EMAIL!) {
   expect((await request('/auth/request', 'POST', { email })).status).toBe(202)
   return confirm(await mailToken(email))
 }
-export async function invite(email: string, cookie: string) {
-  const response = await request('/api/settings/operators/invite', 'POST', { email, displayName: email.split('@')[0] }, cookie)
+/** An invitation names the role it grants; the form's default is Member. */
+export async function invite(email: string, cookie: string, role?: 'owner' | 'admin' | 'member') {
+  const response = await request('/api/settings/operators/invite', 'POST', { email, displayName: email.split('@')[0], ...(role ? { role } : {}) }, cookie)
   expect(response.status).toBe(202)
   return confirm(await mailToken(email))
 }

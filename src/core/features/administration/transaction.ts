@@ -53,6 +53,10 @@ export async function commit(
       throw new SettingsError("invalid_project_label", "Choose workspace labels marked for projects.", 400);
     if (/project_label_in_use/.test(message))
       throw new SettingsError("project_label_in_use", "Remove this label from its projects before turning off project use.", 409);
+    if (/last_owner/.test(message))
+      throw new SettingsError("last_owner", "The last Owner cannot be demoted or removed. Make another member an Owner first.", 409);
+    if (/installation_owner/.test(message))
+      throw new SettingsError("installation_owner", "The installation owner stays an Owner.", 409);
     if (/team_prefix_frozen/.test(message))
       throw new SettingsError(
         "team_prefix_frozen",

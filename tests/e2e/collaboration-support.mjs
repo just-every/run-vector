@@ -20,7 +20,7 @@ export async function inviteRecipient({ page, browser, runtime }) {
   await navigate(page, runtime.base + "/app/settings");
   await openDisclosures(page);
   const operators = page.getByRole("region", {
-    name: "Operators",
+    name: "Members",
     exact: true,
   });
   await operators

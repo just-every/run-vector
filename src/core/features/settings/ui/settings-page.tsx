@@ -5,7 +5,6 @@ import "./settings.css";
 import { IntegrationsPanel } from "../../integrations/ui/integrations-panel";
 import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
-import { z } from "zod";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { settingsSchema } from "../schema";
 import { administrationSchema } from "../../administration/schema";
@@ -15,8 +14,9 @@ import { LabelsPanel } from "./labels-panel";
 import { CyclesPanel } from "../../cycles/ui/cycles-panel";
 import { NotificationsPanel } from "../../notifications/ui/notifications-panel";
 import { DataPanel } from "../../data/ui/data-panel";
-import { InviteOperator } from "./invite-operator";
 import { RestorePanel } from "../../data/ui/restore-panel";
+import { MembersPanel } from "./members-panel";
+import { openSettingsPages } from "../../roles/matrix";
 
 export function SettingsPage() {
   const clock = useViewerTime();
@@ -27,12 +27,16 @@ export function SettingsPage() {
   const resource = useApiResource("/api/settings", settingsSchema, 5000);
   const [reminderTime, setReminderTime] = useState<string | null>(null);
   const [timezone, setTimezone] = useState<string | null>(null);
-  const [removing, setRemoving] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState("");
+  // A Guest opens Account only; the member directory answers 403 (ROLE-008 row "Open Settings pages").
+  const accountOnly = resource.error instanceof ApiError && resource.error.status === 403;
   const denied =
     resource.error instanceof ApiError &&
     [401, 403].includes(resource.error.status);
+  // Owners and Admins open every Settings page; a Member opens Account, the
+  // member directory and their personal integrations and tokens.
+  const workspace = resource.data ? openSettingsPages[resource.data.role] === "all" : false;
   const fail = (error: unknown) => {
     setMessage(
       error instanceof Error ? error.message : "The change could not be saved.",
@@ -66,56 +70,34 @@ export function SettingsPage() {
       setPending(false);
     }
   };
-  const remove = async () => {
-    if (!removing) return;
-    setPending(true);
-    setMessage("");
-    try {
-      const result = await fetchJson(
-        "/api/settings/operators/" + removing,
-        z.object({ removed: z.boolean(), signedOut: z.boolean() }),
-        { method: "DELETE" },
-      );
-      if (result.signedOut) {
-        window.location.assign("/signin");
-        return;
-      }
-      setRemoving(null);
-      administration.reload();
-      setMessage("Operator removed. Their sessions are revoked.");
-      resource.reload();
-    } catch (error) {
-      fail(error);
-    } finally {
-      setPending(false);
-    }
-  };
   return (
     <main className="settings-page">
       <header>
         <p className="settings-eyebrow">Workspace</p>
         <h1>Settings</h1>
-        <p>Manage workspace time, operators and work organisation.</p>
+        <p>Manage your account, workspace members and work organisation.</p>
       </header>
       {resource.data && administration.data && (
         <nav className="settings-sections" aria-label="Settings sections">
           <a href="#appearance">Appearance</a>
           <a href="#personal-time">Your time</a>
-          <a href="#workspace-time">Workspace time</a>
-          <a href="#operators">Operators</a>
-          <a href="#teams">Teams</a>
-          <a href="#housekeeping">Auto-close</a>
-          <a href="#labels">Labels</a>
-          <a href="#projects">Projects</a>
-          <a href="#cycles">Cycles</a>
+          {workspace && <a href="#workspace-time">Workspace time</a>}
+          <a href="#members">Members</a>
+          {workspace && <>
+            <a href="#teams">Teams</a>
+            <a href="#housekeeping">Auto-close</a>
+            <a href="#labels">Labels</a>
+            <a href="#projects">Projects</a>
+            <a href="#cycles">Cycles</a>
+          </>}
           <a href="#integrations">Integrations</a>
           <a href="#notifications">Notifications</a>
-          <a href="#data">Data / Move in</a>
-          <a href="#after-restore">After a restore</a>
+          {workspace && <a href="#data">Data / Move in</a>}
+          {resource.data.role === "owner" && <a href="#after-restore">After a restore</a>}
         </nav>
       )}
       {resource.loading && <p role="status">Loading settings…</p>}
-      {resource.error && (
+      {resource.error && !accountOnly && (
         <p role="alert">
           {resource.error.message}{" "}
           {denied ? (
@@ -128,11 +110,18 @@ export function SettingsPage() {
         </p>
       )}
       {message && <p role="status">{message}</p>}
+      {accountOnly && (
+        <>
+          <AppearancePanel />
+          <PersonalTimePanel />
+          <NotificationsPanel />
+        </>
+      )}
       {resource.data && (
         <>
           <AppearancePanel />
           <PersonalTimePanel />
-          <section id="workspace-time" aria-labelledby="timezone-heading">
+          {workspace && <section id="workspace-time" aria-labelledby="timezone-heading">
             <h2 id="timezone-heading">Workspace time</h2>
             <p>
               Workspace calendar days and cycle boundaries use this timezone. Existing
@@ -172,91 +161,16 @@ export function SettingsPage() {
                 Save workspace time
               </button>
             </form>
-          </section>
-          <section id="operators" aria-labelledby="operators-heading">
-            <h2 id="operators-heading">Operators</h2>
-            <p>
-              All operators have equal access and can remove other operators. Only the setup operator can remove their own setup account; the last operator must remain.
-            </p>
-            {!resource.data.workspace.setupOperatorId && (
-              <p role="alert">
-                Ask the person who deployed Vector to finish owner setup before
-                removing operators. They can run the setup command in DEPLOY.md
-                and set the first owner’s email (FIRST_OWNER_EMAIL).
-              </p>
-            )}
-            <ul>
-              {resource.data.operators.map((operator) => {
-                const own = operator.id === resource.data!.operatorId;
-                const protectedOwner =
-                  operator.id === resource.data!.workspace.setupOperatorId &&
-                  !own;
-                return (
-                  <li key={operator.id}>
-                    <div>
-                      <strong>
-                        {operator.name}
-                        {own ? " (you)" : ""}
-                      </strong>
-                      <span>{operator.email}</span>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={
-                        pending ||
-                        denied ||
-                        resource.data!.operators.length === 1 ||
-                        protectedOwner ||
-                        !resource.data!.workspace.setupOperatorId
-                      }
-                      onClick={() => {
-                        setRemoving(operator.id);
-                        setMessage("");
-                      }}
-                    >
-                      Remove {operator.name}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-            {removing && (
-              <div
-                className="settings-confirm"
-                role="group"
-                aria-label="Confirm operator removal"
-              >
-                <p>
-                  Remove this operator? Their sessions will end, open issues
-                  will be unassigned, and projects and shared views will
-                  transfer. Retained history will show an anonymous operator.
-                </p>
-                <button
-                  autoFocus
-                  disabled={pending}
-                  type="button"
-                  onClick={remove}
-                >
-                  Confirm removal
-                </button>
-                <button
-                  disabled={pending}
-                  type="button"
-                  onClick={() => setRemoving(null)}
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
-            <InviteOperator
-              delivery={resource.data.invitationDelivery}
-              disabled={pending || denied}
-              onInvited={() => {
-                resource.reload();
-                administration.reload();
-              }}
-            />
-          </section>
+          </section>}
+          <MembersPanel
+            data={resource.data}
+            denied={denied}
+            onMessage={setMessage}
+            onChanged={() => {
+              resource.reload();
+              administration.reload();
+            }}
+          />
           {administration.loading && (
             <p role="status">Loading workspace administration…</p>
           )}
@@ -268,7 +182,7 @@ export function SettingsPage() {
               </button>
             </p>
           )}
-          {administration.data && (
+          {workspace && administration.data && (
             <>
               <TeamsPanel
                 teams={administration.data.teams}
@@ -301,10 +215,11 @@ export function SettingsPage() {
               />
             </>
           )}
-          <DataPanel />
-          <RestorePanel />
+          {workspace && <DataPanel />}
+          {/* Restore review has no role-matrix row, so it is the Owners' (ROLE-008). */}
+          {resource.data.role === "owner" && <RestorePanel />}
           <div id="notifications">
-            <IntegrationsPanel teams={administration.data?.teams ?? []} />
+            <IntegrationsPanel teams={administration.data?.teams ?? []} workspace={workspace} />
             <NotificationsPanel />
           </div>
         </>

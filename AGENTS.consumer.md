@@ -15,7 +15,7 @@ The following describes the product requirements; consult its handover for imple
 
 Vector is a decision-centred internal issue tracker for one business. Its shared Current stream explains why work needs attention; evidence-backed intake turns signals and customer impact into explicit accept, defer, or decline decisions; My work and project health keep execution focused without opaque AI ranking.
 
-The core deliberately stays narrow: equal operators, lightweight teams, one assignee per issue, cycles, projects, dependencies, saved views, and in-app notifications. Provider-specific signal integrations belong behind `signal.source.v1`; the default product remains useful without them through manual intake and import.
+The core deliberately stays narrow: workspace roles (Owner, Admin, Member), lightweight teams, one assignee per issue, cycles, projects, dependencies, saved views, and in-app notifications. Provider-specific signal integrations belong behind `signal.source.v1`; the default product remains useful without them through manual intake and import.
 
 ## Run the product
 

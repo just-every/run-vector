@@ -1,8 +1,7 @@
 /** ISSUE-008 and the role matrix: only a comment's author edits it; its author
- * deletes it, and so do workspace Owners and Admins. Team owners (ROLE-007) do
- * not exist yet, so a Member never deletes another member's comment. */
-export const moderatorSql = `EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id
- WHERE m.operator_id=? AND a.status='active' AND a.role IN ('owner','admin'))`;
+ * deletes it, and so do workspace Owners and Admins (ROLE-001). Team owners
+ * (ROLE-007) do not exist yet, so a Member never deletes another member's comment. */
+export const moderatorSql = `EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.removed_at IS NULL AND o.role IN ('owner','admin'))`;
 
 export class CommentPermissionError extends Error {
   readonly code = "forbidden";

@@ -275,3 +275,16 @@
     scroll-margin-top: 10rem;
   }
 }
+.settings-members li > form {
+  grid-auto-flow: column;
+  align-items: end;
+}
+.settings-members li > form label {
+  display: grid;
+  gap: 0.3rem;
+}
+@media (max-width: 700px) {
+  .settings-members li > form {
+    grid-auto-flow: row;
+  }
+}

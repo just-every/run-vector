@@ -8,13 +8,14 @@ import { beforeCommit } from './removal-interleaving'
 beforeAll(async () => applyD1Migrations(env.DB, inject('migrations')))
 let ownerCookie: string
 let ownerId: string
-it('[OPS-001 OPS-002 TEAM-002] configured bootstrap atomically maps one equal Base operator and remains idempotent', async () => {
+it('[OPS-001 OPS-002 TEAM-002 ROLE-001] configured bootstrap atomically maps one Base operator as the installation Owner and remains idempotent', async () => {
   expect((await request('/health')).status).toBe(200)
   expect((await request('/health')).status).toBe(200)
   for (const table of ['operators','oa_operators','vector_auth_operators','oa_bootstrap','teams'])
     expect((await env.DB.prepare(`SELECT count(*) n FROM ${table}`).first())?.n).toBe(1)
   expect((await env.DB.prepare('SELECT count(DISTINCT category) n FROM workflow_statuses').first())?.n).toBe(7)
   expect((await env.DB.prepare('SELECT role,status FROM oa_operators').first())).toEqual({ role: 'owner', status: 'active' })
+  expect((await env.DB.prepare('SELECT o.role FROM operators o JOIN workspace_installation i ON i.setup_operator_id=o.id').first())?.role).toBe('owner')
   const disabledBootstrap = await request('/auth/bootstrap', 'POST', { token: 'not-enabled' })
   expect(disabledBootstrap.status).toBe(403)
   expect(await disabledBootstrap.json()).toEqual({ error: 'invalid_setup_token' })
@@ -39,14 +40,24 @@ it('[BASE-ACCESS-001 BASE-ACCESS-004] Base confirmation preview is side-effect-f
   expect((await request('/auth/confirm','POST',{token})).status).toBe(400)
   expect((await request('/auth/confirm?token='+token)).status).toBe(400)
 })
-it('[OPS-001 OPS-002 BASE-ACCESS-002] unauthorized invites make no records; equal operators invite and cannot bypass safe removal', async () => {
+it('[OPS-001 OPS-002 ROLE-001 BASE-ACCESS-002] unauthorized invites make no records; a Member invites only Members, only while the workspace allows it, and removes nobody else', async () => {
   const before = (await env.DB.prepare('SELECT count(*) n FROM oa_operators').first())?.n
   expect((await request('/api/settings/operators/invite','POST',{email:'outsider@base.test',displayName:'Outsider'})).status).toBe(401)
   expect((await env.DB.prepare('SELECT count(*) n FROM oa_operators').first())?.n).toBe(before)
   const peer = await invite('peer@base.test',ownerCookie)
+  const records = async () => (await env.DB.prepare('SELECT (SELECT count(*) FROM oa_operators)+(SELECT count(*) FROM oa_tokens) n').first())?.n
+  const unchanged = await records()
+  expect((await request('/api/settings/operators/invite','POST',{email:'next@base.test',displayName:'next'},peer)).status).toBe(403)
+  expect((await request('/api/settings','PATCH',{timezone:'UTC',memberInvites:true},peer)).status).toBe(403)
+  expect(await records()).toBe(unchanged)
+  expect((await request('/api/settings','PATCH',{timezone:'UTC',memberInvites:true},ownerCookie)).status).toBe(200)
+  expect((await request('/api/settings/operators/invite','POST',{email:'lead@base.test',displayName:'Lead',role:'admin'},peer)).status).toBe(403)
+  expect(await records()).toBe(unchanged)
   const next = await invite('next@base.test',peer)
   expect(await actor(next)).toMatch(/^[0-9A-HJKMNP-TV-Z]{26}$/)
-  expect((await request('/api/settings/operators/'+ownerId,'DELETE',undefined,peer)).status).toBe(409)
+  expect((await env.DB.prepare("SELECT role FROM operators WHERE email='next@base.test'").first())?.role).toBe('member')
+  expect((await request('/api/settings/operators/'+ownerId,'DELETE',undefined,peer)).status).toBe(403)
+  expect((await request('/api/settings/operators/'+await actor(next),'DELETE',undefined,peer)).status).toBe(403)
   for (const path of ['/auth/invite','/auth/operator/status','/auth/operator/role'])
     expect((await request(path,'POST',{operatorId:ownerId,status:'inactive'},peer)).status).toBe(404)
 })
@@ -96,6 +107,8 @@ it('[OPS-004 BASE-ACCESS-002] removal atomically revokes Base sessions, unused l
 it('[OPS-004 BASE-ACCESS-002] a Base session revoked after validation cannot commit an application mutation', async () => {
   const cookie = await signIn('next@base.test')
   const id = await actor(cookie)
+  // Workspace time is an Admin setting; the promotion applies to the open session.
+  expect((await request('/api/settings/operators/'+id+'/role','PATCH',{role:'admin'},ownerCookie)).status).toBe(200)
   const before = await env.DB.prepare('SELECT timezone FROM workspace_settings').first()
   const db = beforeCommit(sql => sql.includes('UPDATE workspace_settings'), async () => {
     await env.DB.prepare('UPDATE oa_sessions SET revoked_at=? WHERE operator_id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)').bind(Date.now(),id).run()
@@ -125,9 +138,13 @@ it('[BASE-ACCESS-001 BASE-ACCESS-004] remote request adapter creates a genuine B
   expect((await request('/auth/signout','POST',{},cookie,remote)).status).toBe(204)
   expect((await request('/api/session','GET',undefined,cookie,remote)).status).toBe(401)
 })
-it('[OPS-002 OPS-004] setup owner self-removal preserves the equal successor and last-operator guard under Base sessions', async () => {
+it('[OPS-002 OPS-004 ROLE-001] the setup owner leaves only while another Owner remains, who succeeds them, and the last Owner cannot leave', async () => {
   const successor = await signIn('next@base.test')
   const successorId = await actor(successor)
+  const lastOwner = await request('/api/settings/operators/'+ownerId,'DELETE',undefined,ownerCookie)
+  expect(lastOwner.status).toBe(409)
+  expect(await lastOwner.json()).toMatchObject({ error: 'last_owner' })
+  expect((await request('/api/settings/operators/'+successorId+'/role','PATCH',{role:'owner'},ownerCookie)).status).toBe(200)
   const removed = await request('/api/settings/operators/'+ownerId,'DELETE',undefined,ownerCookie)
   expect(removed.status).toBe(200)
   expect(removed.headers.get('set-cookie')).toContain('operator_session_local_15920=;')

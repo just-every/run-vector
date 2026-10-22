@@ -90,8 +90,8 @@ export async function bootstrapWorkspace(
       ),
     db
       .prepare(
-        `INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at)
-      SELECT ?,?,?,?,?,? WHERE ${ownClaim}`,
+        `INSERT INTO operators(id,workspace_id,name,email,role,created_at,updated_at)
+      SELECT ?,?,?,?,'owner',?,? WHERE ${ownClaim}`,
       )
       .bind(
         ownerId,

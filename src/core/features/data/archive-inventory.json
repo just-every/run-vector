@@ -801,7 +801,8 @@
     "email",
     "removed_at",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "role"
   ],
   "project_activity": [
     "id",
@@ -1102,6 +1103,12 @@
     "expires_at",
     "revoked_at"
   ],
+  "vector_invitation_roles": [
+    "token_id",
+    "role",
+    "inviter_operator_id",
+    "created_at"
+  ],
   "vector_restore_mail_holds": [
     "delivery_id"
   ],
@@ -1183,7 +1190,8 @@
     "timezone",
     "created_at",
     "updated_at",
-    "reminder_time"
+    "reminder_time",
+    "member_invites"
   ],
   "issue_duplicates": [
     "issue_id",

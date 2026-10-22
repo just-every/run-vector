@@ -5,7 +5,7 @@ import {reserveWithRacingWriter} from './http-archive-reservation';
 import {populatedHttpSource} from './http-archive-source';
 import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
 import {drainNotificationMail} from '../../src/core/features/notifications/mail';
-import {request,bindings} from './base-auth-fixture';
+import {request,bindings,invite} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
@@ -53,6 +53,12 @@ it('[SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT
  expect((await f.call('/data/restore/review-effects','POST',{})).status).toBe(409);
  expect((await request('/api/portability/exports','POST',{})).status).toBe(401);
  const wrongOrigin=await createServerApp().request(bindings.APP_ORIGIN+'/api/portability/exports',{method:'POST',headers:{Origin:'https://untrusted.example',cookie:f.cookie,'content-type':'application/json'},body:'{}'},bindings);expect(wrongOrigin.status).toBe(403);
+ // Another Owner, who may export and restore, still cannot read this job or a restored one.
+ expect((await f.call('/settings/operators/'+f.peer+'/role','PATCH',{role:'owner'})).status).toBe(200);
+ await invite('member@http-archive.test',f.cookie);await invite('admin@http-archive.test',f.cookie,'admin');
+ const roles=(db:D1Database)=>db.prepare('SELECT id,email,role FROM operators ORDER BY id').all().then(rows=>rows.results);
+ const archivedRoles=await roles(env.DB);
+ expect(new Set(archivedRoles.map(row=>row.role))).toEqual(new Set(['owner','admin','member']));
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
@@ -80,6 +86,8 @@ it('[SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM oa_bootstrap').all()).results).toEqual(retainedClaim.results);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_sessions').first())?.n).toBe(0);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_tokens').first())?.n).toBe(0);
+ // ROLE-001: every member's role restores with them; no session or link comes along.
+ expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};

@@ -83,13 +83,13 @@ contractWith(
 
     const caraRoot = await post(f.caraCookie, "Cara's root"), reply = await post(f.cookie, "Reply under Cara's root", caraRoot);
     // A Member deletes only their own comments; an Admin or Owner deletes anyone's.
-    // A role change ends the changed operators' sessions, so they act directly.
-    await env.DB.prepare("UPDATE oa_operators SET role='member' WHERE id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)").bind(f.bob).run();
-    await env.DB.prepare("UPDATE oa_operators SET role='admin' WHERE id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)").bind(f.cara).run();
+    // Bob was invited as a Member; Cara's promotion applies to her open session.
+    expect((await f.call(`/settings/operators/${f.cara}/role`, "PATCH", { role: "admin" })).status).toBe(200);
+    expect((await f.any(f.bobCookie, `/issues/${issue.identifier}/comments/${owners}`, "DELETE")).status).toBe(403);
     await expect(changeComment(env.DB, issue, owners, f.bob, null)).rejects.toThrow(CommentPermissionError);
     expect((await comments()).find((c) => c.id === owners)).toMatchObject({ deletedAt: null, body: "Owner's note" });
     const another = await post(f.cookie, "Second owner note");
-    expect(await changeComment(env.DB, issue, another, f.cara, null)).toBe(true);
+    expect((await f.any(f.caraCookie, `/issues/${issue.identifier}/comments/${another}`, "DELETE")).status).toBe(200);
     expect(await changeComment(env.DB, issue, bobs, f.bob, null)).toBe(true);
     const deletion = await env.DB.prepare("SELECT actor_operator_id AS actor FROM audit_records WHERE action='comment.deleted' AND subject_id=?").bind(another).first();
     expect(deletion).toEqual({ actor: f.cara });

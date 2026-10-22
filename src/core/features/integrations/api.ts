@@ -15,7 +15,8 @@ import { readRequestJson,RequestBodyError } from '../../app/input';
 import { configureNotifications,needsNotificationDrain,notificationEventIds,directMessageEventIds } from '../notifications/context';
 import { deliverCommittedDirectMessages } from './outbound';
 import { drainNotificationMail } from '../notifications/mail';
-import { mutationDatabase,isMutationAccessError,fileSettlementDatabase } from '../auth/mutation-database';
+import { mutationDatabase,isMutationAccessError,fileSettlementDatabase,AuthorityChangedError } from '../auth/mutation-database';
+import { doorAuthority } from '../roles/enforcement';
 import { createIssueInputSchema } from '../issues/input';
 import { createIssue } from '../issues/mutations';
 import { IssueAccessError,requireIssueAccess } from '../issues/access';
@@ -41,6 +42,7 @@ export function createIntegrationApi(){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
   if(error instanceof CommentVersionError)return c.json({error:error.code,message:error.message},409);
+  if(error instanceof AuthorityChangedError)return c.json({error:'authority_changed',message:error.message},409);
   if(error instanceof z.ZodError)return c.json({error:'invalid_request'},400);
   if(error instanceof CommentPermissionError)return c.json({error:error.code,message:error.message},403);
   if(error instanceof SettingsError)return c.json({error:error.code,message:error.message},error.status);
@@ -65,7 +67,9 @@ export function createIntegrationApi(){
   const raw=c.env.DB,actor=await authorizeToken(raw,c.req.raw,scopes,method+':'+path),predicate=tokenPredicate(actor);
   if(!await admitRate(raw,'api-v1:'+actor.workspace+':'+actor.tokenId,300,60000))return c.json({error:'rate_limited'},429,{'Retry-After':String(Math.max(1,Math.ceil((60000-Date.now()%60000)/1000))),'Cache-Control':'no-store'});
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
-  c.env={...c.env,DB:mutationDatabase(raw,actor.id,undefined,{sql:predicate.sql,values:predicate.params})};
+  // ROLE-001: a token acts with its member's current role, never a copied one.
+  const authority=await doorAuthority(c,'v1',actor.id,raw);if(authority.denied)return authority.denied;
+  c.env={...c.env,DB:mutationDatabase(raw,actor.id,undefined,{sql:predicate.sql,values:predicate.params},authority.fence)};
   configureNotifications(c.env.DB,c.env);
   try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}

@@ -10,6 +10,7 @@ import { timezoneSchema } from "../bootstrap/config";
 import { readSettings, SettingsError, updateWorkspaceTime } from "./repository";
 import { reminderTimeSchema } from "./schema";
 import { removeOperator } from "./removal";
+import { assignable, changeRole, guestNotAssignable, recordInvitationRole } from "./roles";
 import { readPersonalTime, updatePersonalTime } from "./personal-time";
 import { personalTimeInputSchema } from "./personal-time-schema";
 import { readAppearance, updateAppearance } from "./appearance";
@@ -78,16 +79,25 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       .object({
         email: z.email().max(254),
         displayName: z.string().trim().min(1).max(120),
+        role: z.enum(["owner", "admin", "member", "guest"]).default("member"),
       })
       .strict()
       .safeParse(await readRequestJson(c.req.raw));
     if (!parsed.success) return c.json({ error: "invalid_request" }, 400);
+    const { role, ...invitee } = parsed.data;
+    if (!assignable(role)) {
+      const refusal = guestNotAssignable();
+      return c.json({ error: refusal.code, message: refusal.message }, refusal.status);
+    }
     try {
+      // Base issues its implementation owner link; the product role travels
+      // with that link and is granted when it is accepted.
       const result = await baseAuth(c.env).invite(c.req.raw, {
-        ...parsed.data,
+        ...invitee,
         role: "owner",
         returnTo: "/app",
       });
+      await recordInvitationRole(c.env.DB, c.get("operatorId"), invitee.email, role);
       return c.json(
         { ...result, delivery: localMailEnabled(c.env) ? "local" : "email" },
         202,
@@ -101,7 +111,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
               error.code === "mail_unavailable"
                 ? "Email delivery failed. Request a new invitation after the mail service is available."
                 : error.code === "step_up_required"
-                  ? "Inviting someone gives them full access to this workspace, so confirm it's you first."
+                  ? "Inviting someone gives them access to this workspace, so confirm it's you first."
                   : error.code,
           },
           { status: error.status },
@@ -109,8 +119,8 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       throw error;
     }
   });
-  // Inviting grants Base owner authority, which needs a sign-in proof from the
-  // last ten minutes. This sends the operator a one-use link to confirm it in place.
+  // Base issues every invitation as an owner link, which needs a sign-in proof
+  // from the last ten minutes. This sends a one-use link to confirm it in place.
   app.post("/settings/operators/confirm-identity", async (c) => {
     try {
       await baseAuth(c.env).requestStepUp(c.req.raw, {
@@ -155,6 +165,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       .object({
         timezone: timezoneSchema,
         reminderTime: reminderTimeSchema.optional(),
+        memberInvites: z.boolean().optional(),
       })
       .strict()
       .safeParse(await readRequestJson(c.req.raw));
@@ -169,6 +180,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         c.get("operatorId"),
         parsed.data.timezone,
         parsed.data.reminderTime,
+        parsed.data.memberInvites,
       );
       return c.json({
         ...(await readSettings(c.env.DB, c.get("operatorId"))),
@@ -180,6 +192,23 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
           { error: error.code, message: error.message },
           error.status,
         );
+      throw error;
+    }
+  });
+  app.patch("/settings/operators/:operatorId/role", async (c) => {
+    const target = c.req.param("operatorId");
+    const parsed = z.object({ role: z.string() }).strict().safeParse(await readRequestJson(c.req.raw));
+    if (!/^[0-9A-HJKMNP-TV-Z]{26}$/.test(target) || !parsed.success)
+      return c.json({ error: "invalid_request" }, 400);
+    try {
+      await changeRole(c.env.DB, c.get("operatorId"), target, parsed.data.role);
+      return c.json({
+        ...(await readSettings(c.env.DB, c.get("operatorId"))),
+        invitationDelivery: localMailEnabled(c.env) ? "local" : "email",
+      });
+    } catch (error) {
+      if (error instanceof SettingsError)
+        return c.json({ error: error.code, message: error.message }, error.status);
       throw error;
     }
   });

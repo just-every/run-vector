@@ -3,13 +3,15 @@ import {readDevelopmentLink} from './outbox-session.mjs';
 import {beforePrivateNavigation,navigate,settleReads} from './collaboration-navigation.mjs';
 import {openDisclosures} from './ui-controls-checks.mjs';
 
-/** Independent jobs use genuine invited operators and their own rate budgets. */
+/** Independent jobs use genuine invited operators and their own rate budgets.
+ * They predate roles and act as their inviter could, so each is invited as an Owner. */
 export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){
  const original=await context.cookies(),email=`stream-planning-${Date.now()}@vector.test`;
  await navigate(page,base+'/app/settings');await openDisclosures(page);
- const operators=page.getByRole('region',{name:'Operators',exact:true});
+ const operators=page.getByRole('region',{name:'Members',exact:true});
  await operators.getByLabel('Name',{exact:true}).fill(displayName);
  await operators.getByLabel('Email',{exact:true}).fill(email);
+ await operators.getByLabel('Role',{exact:true}).selectOption('owner');
  const invited=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/settings/operators/invite'&&response.request().method()==='POST');
  await operators.getByRole('button',{name:'Send invitation',exact:true}).click();
  const response=await invited;assert.equal(response.status(),202);assert.equal(await response.finished(),null);

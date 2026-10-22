@@ -32,8 +32,9 @@ it('[DATA-001 DATA-005 BASE-DATA-001] bad native references roll back publicatio
  expect(await (await env.FILES.get('retained-file'))!.text()).toBe('one');
  expect((await destination.imports.status(id)).phase).toBe('staging');await destination.imports.abort(id);
  expect((await destination.imports.status(id)).phase).toBe('aborted');
- // A removed historical setup owner must not make an archive inaccessible.
- await invite('replacement@archive.test',cookie);
+ // A removed historical setup owner must not make an archive inaccessible;
+ // the last Owner stays, so the replacement is invited as an Owner.
+ await invite('replacement@archive.test',cookie,'owner');
  expect((await request('/api/settings/operators/'+owner,'DELETE',undefined,cookie)).status).toBe(200);
  const next=await source.exports.create();while((await source.exports.advance(next,{maxParts:16})).phase==='building'){}
  const replacement:any[]=[];for await(const record of readArchive(await source.exports.download(next)))replacement.push(record);await source.exports.abort(next);

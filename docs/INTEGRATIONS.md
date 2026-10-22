@@ -162,8 +162,8 @@ bot token with `chat:write`, `channels:manage` and `channels:read`. Vector valid
 read response. Replace it in the same form to rotate it. Removing the connection
 calls `auth.revoke`, deletes the stored token and disables its bindings. A provider
 revocation error is shown and refuses removal; a restored connection with no
-usable token can still be removed locally. Every admitted operator acts
-as Admin until ROLE-001; teams are workspace-visible until ROLE-002.
+usable token can still be removed locally. Owners and Admins connect, bind and
+remove Slack (role matrix, ROLE-001); teams are workspace-visible until ROLE-002.
 
 Choose a team, project or saved view, a Slack channel ID and display name, and
 chosen events. Each object has one destination; saving again replaces its

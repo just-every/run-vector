@@ -3,6 +3,7 @@ import { hasPendingOperatorFiles } from "./removal-files";
 import { createUlid } from "../../shared/ids";
 import { timezoneSchema } from "../bootstrap/config";
 import { readPersonalTime } from "./personal-time";
+import type { Role } from "../roles/matrix";
 
 export class SettingsError extends Error {
   constructor(
@@ -17,11 +18,11 @@ export class SettingsError extends Error {
 export async function settingsActor(db: D1Database, actor: string) {
   const row = await db
     .prepare(
-      `SELECT o.workspace_id,w.setup_operator_id FROM operators o
+      `SELECT o.workspace_id,o.role,w.setup_operator_id FROM operators o
     LEFT JOIN workspace_installation w ON w.workspace_id=o.workspace_id WHERE o.id=? AND o.removed_at IS NULL`,
     )
     .bind(actor)
-    .first<{ workspace_id: string; setup_operator_id: string | null }>();
+    .first<{ workspace_id: string; role: Role; setup_operator_id: string | null }>();
   if (!row)
     throw new SettingsError(
       "unauthenticated",
@@ -35,13 +36,13 @@ export async function readSettings(db: D1Database, actor: string) {
   const access = await settingsActor(db, actor);
   const workspace = await db
     .prepare(
-      "SELECT w.id,w.name,w.timezone,w.reminder_time AS reminderTime,i.setup_operator_id AS setupOperatorId FROM workspace_settings w LEFT JOIN workspace_installation i ON i.workspace_id=w.id WHERE w.id=?",
+      "SELECT w.id,w.name,w.timezone,w.reminder_time AS reminderTime,w.member_invites=1 AS memberInvites,i.setup_operator_id AS setupOperatorId FROM workspace_settings w LEFT JOIN workspace_installation i ON i.workspace_id=w.id WHERE w.id=?",
     )
     .bind(access.workspace_id)
-    .first();
+    .first<{ memberInvites: number }>();
   const operators = await db
     .prepare(
-      `SELECT id,name,email,created_at AS createdAt FROM operators
+      `SELECT id,name,email,role,created_at AS createdAt FROM operators
     WHERE workspace_id=? AND removed_at IS NULL ORDER BY created_at,id`,
     )
     .bind(access.workspace_id)
@@ -51,11 +52,12 @@ export async function readSettings(db: D1Database, actor: string) {
     reminderTime: _reminderTime,
     ...personalTime
   } = await readPersonalTime(db, actor);
-  await settingsActor(db, actor);
+  const current = await settingsActor(db, actor);
   return {
-    workspace,
+    workspace: workspace && { ...workspace, memberInvites: workspace.memberInvites === 1 },
     operators: operators.results,
     operatorId: actor,
+    role: current.role,
     personalTime,
   };
 }
@@ -65,6 +67,7 @@ export async function updateWorkspaceTime(
   actor: string,
   timezone: string,
   reminderTime?: string,
+  memberInvites?: boolean,
 ) {
   if (!timezoneSchema.safeParse(timezone).success)
     throw new SettingsError(
@@ -82,14 +85,20 @@ export async function updateWorkspaceTime(
       400,
     );
   const at = new Date().toISOString();
-  const result = await db
-    .prepare(
-      `UPDATE workspace_settings SET timezone=?,reminder_time=COALESCE(?,reminder_time),updated_at=?
+  const invites = memberInvites === undefined ? null : Number(memberInvites);
+  const [result] = await db.batch<{ id: string }>([
+    db.prepare(
+      `UPDATE workspace_settings SET timezone=?,reminder_time=COALESCE(?,reminder_time),member_invites=COALESCE(?,member_invites),updated_at=?
     WHERE id=(SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL)
     RETURNING id`,
-    )
-    .bind(timezone, reminderTime ?? null, at, actor)
-    .run<{ id: string }>();
+    ).bind(timezone, reminderTime ?? null, invites, at, actor),
+    // Turning Member invitations off stops the links Members already sent.
+    db.prepare(
+      `UPDATE oa_tokens SET revoked_at=? WHERE ?=0 AND kind='invite' AND consumed_at IS NULL AND revoked_at IS NULL
+    AND issuer_id IN (SELECT m.auth_id FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id
+      WHERE o.role IN ('member','guest') AND o.workspace_id=(SELECT workspace_id FROM operators WHERE id=?))`,
+    ).bind(Date.parse(at), invites ?? 1, actor),
+  ]);
   // Count direct workspace rows, excluding writes made by revision triggers.
   if (result.results.length !== 1)
     throw new SettingsError(
@@ -123,6 +132,18 @@ export async function assertRemovalAllowed(
     throw new SettingsError(
       "setup_owner_protected",
       "Only the setup operator can remove themselves.",
+      409,
+    );
+  const owners = await db
+    .prepare(
+      "SELECT count(*) AS count, sum(id=?) AS target FROM operators WHERE workspace_id=? AND removed_at IS NULL AND role='owner'",
+    )
+    .bind(target, access.workspace_id)
+    .first<{ count: number; target: number }>();
+  if (owners?.target && owners.count <= 1)
+    throw new SettingsError(
+      "last_owner",
+      "The last Owner cannot be demoted or removed. Make another member an Owner first.",
       409,
     );
   const remaining = await db

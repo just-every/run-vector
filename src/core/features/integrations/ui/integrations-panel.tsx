@@ -1,14 +1,23 @@
 import {ChannelSettings} from './channel-settings';
 import {useState} from 'react';
 import {useApiResource} from '../../../app/api-client';
-import {configSchema,send,acknowledged,type Secret} from './client';
+import {configSchema,personalTokensSchema,send,acknowledged,type Secret} from './client';
 import {TokenSettings} from './token-settings';
 import {SourceSettings} from './source-settings';
 import {WebhookSettings} from './webhook-settings';
 import {GithubSettings} from './github-settings';
 import {OneTimeSecret} from './one-time-secret';
 import './integrations.css';
-export function IntegrationsPanel({teams}:{teams:{id:string;name:string;archivedAt:string|null}[]}){
+/** Owners and Admins manage the workspace's integrations; every other member
+ * sees only their own API tokens (ROLE-008 row "Open Settings pages"). */
+export function IntegrationsPanel({teams,workspace}:{teams:{id:string;name:string;archivedAt:string|null}[];workspace:boolean}){
+ return workspace?<WorkspaceIntegrations teams={teams}/>:<PersonalTokens/>;
+}
+function PersonalTokens(){
+ const tokens=useApiResource('/api/settings/integrations/tokens',personalTokensSchema),[secret,setSecret]=useState<Secret|null>(null),[error,setError]=useState('');
+ return <section id="integrations" className="integrations-panel" aria-labelledby="integrations-heading"><h2 id="integrations-heading">Integrations</h2><p>Owners and Admins connect the workspace’s integrations. Your personal API tokens are here.</p>{tokens.error&&<p role="alert">{tokens.error.message}</p>}{error&&<p role="alert">{error}</p>}{secret&&<OneTimeSecret key={secret.token} value={secret} onClose={()=>setSecret(null)}/>}{tokens.data&&<TokenSettings tokens={tokens.data.tokens} onSecret={value=>{setError('');setSecret(value);}} onChanged={tokens.reload} onError={cause=>setError(cause instanceof Error?cause.message:'The operation could not complete.')}/>}</section>;
+}
+function WorkspaceIntegrations({teams}:{teams:{id:string;name:string;archivedAt:string|null}[]}){
  const config=useApiResource('/api/settings/integrations',configSchema),[secret,setSecret]=useState<Secret|null>(null),[error,setError]=useState(''),[resolving,setResolving]=useState<string|null>(null),[evidence,setEvidence]=useState('');
  const fail=(error:unknown)=>setError(error instanceof Error?error.message:'The operation could not complete. Read the retained state before retrying.');
  const reveal=(value:Secret)=>{setError('');setSecret(value);};

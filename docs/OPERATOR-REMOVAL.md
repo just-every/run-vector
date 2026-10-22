@@ -112,7 +112,9 @@ the target; marks Base authority inactive; increments the Base version; and
 anonymizes the Base display name/email. All product transfers, file settlement
 rules, setup-owner protection, last-operator rejection and rollback guarantees
 remain in force. Every admitted operator uses the same internal Base owner
-role, so the last-owner trigger cannot privilege one product operator. Base's
+role, so Base's last-owner trigger cannot privilege one product operator; the
+product role on the Vector record decides, and migration 0075 refuses removing
+or demoting the last Owner and demoting the installation owner. Base's
 standalone status/role endpoints are not exposed. See
 [authentication and migration details](AUTHENTICATION.md).
 

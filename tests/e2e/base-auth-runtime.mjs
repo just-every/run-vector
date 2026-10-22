@@ -77,6 +77,7 @@ try {
   await page.getByRole('heading',{name:'Settings',exact:true}).waitFor();
   await page.getByLabel('Name',{exact:true}).fill('Invited peer');
   await page.getByLabel('Email',{exact:true}).fill('peer@auth-runtime.test');
+  await page.getByLabel('Role',{exact:true}).selectOption('admin');
   const invited=page.waitForResponse(response=>response.url()===origin+'/api/settings/operators/invite');
   await page.getByRole('button',{name:'Send invitation',exact:true}).click();
   const invitation = await invited;
@@ -89,13 +90,15 @@ try {
   await peer.waitForURL(origin+'/app');
   await peer.goto(origin+'/app/settings');
   await peer.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor();
-  assert.equal(await peer.getByRole('button',{name:'Remove Workspace owner',exact:true}).isDisabled(),true);
-  await peer.getByLabel('Name',{exact:true}).fill('Equal operator');
-  await peer.getByLabel('Email',{exact:true}).fill('equal@auth-runtime.test');
-  const equalInvite=peer.waitForResponse(response=>response.url()===origin+'/api/settings/operators/invite');
+  // An Admin removes Members and itself, never an Owner, and invites only Members.
+  assert.equal(await peer.getByRole('button',{name:'Remove Workspace owner',exact:true}).count(),0);
+  assert.deepEqual(await peer.getByLabel('Role',{exact:true}).locator('option').allTextContents(),['Member']);
+  await peer.getByLabel('Name',{exact:true}).fill('Invited member');
+  await peer.getByLabel('Email',{exact:true}).fill('member@auth-runtime.test');
+  const memberInvite=peer.waitForResponse(response=>response.url()===origin+'/api/settings/operators/invite');
   await peer.getByRole('button',{name:'Send invitation',exact:true}).click();
-  assert.equal((await equalInvite).status(),202);
-  const equalLink=link('equal@auth-runtime.test');
+  assert.equal((await memberInvite).status(),202);
+  const memberLink=link('member@auth-runtime.test');
   await page.reload();
   await page.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor();
   await page.screenshot({path:resolve(evidence,'base-invite-settings-1440.jpg'),type:'jpeg',quality:85,fullPage:true});
@@ -107,10 +110,10 @@ try {
   await page.getByRole('button',{name:'Confirm removal',exact:true}).click();
   assert.equal((await removed).status(),200);
   await page.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor({state:'detached'});
-  await page.getByRole('group',{name:'Confirm operator removal',exact:true}).waitFor({state:'detached'});
+  await page.getByRole('group',{name:'Confirm member removal',exact:true}).waitFor({state:'detached'});
   assert.ok((await page.locator('main.settings-page > [role="status"]').innerText()).trim());
   assert.equal((await peer.request.get(origin+'/api/session')).status(),401);
-  assert.equal((await fetch(equalLink)).status,400);
+  assert.equal((await fetch(memberLink)).status,400);
   // Unload app documents while preserving both native cookie jars across restart.
   await Promise.all(browser.contexts().flatMap(context=>context.pages()).map(page=>page.goto('about:blank')));
   await stop(); await start();
@@ -123,7 +126,7 @@ try {
   assert.deepEqual(errors,[]);
   await stop();
   await managedMailRuntime(browser);
-  await writeFile(resolve(evidence,'report.json'),JSON.stringify({status:'passed',checks:['rendered sign-in uses Base','GET confirmation does not admit','POST confirmation sets Base cookie','Settings invitation delivered to explicit outbox','invited equal operator can invite','setup owner protection','responsive settings','removal revokes session and issued invite','restart preserves peer revocation and owner Base session'],scope:'local emitted Worker and headless browser; no remote delivery claimed'},null,2)+'\n');
+  await writeFile(resolve(evidence,'report.json'),JSON.stringify({status:'passed',checks:['rendered sign-in uses Base','GET confirmation does not admit','POST confirmation sets Base cookie','Settings invitation delivered to explicit outbox','invited Admin invites only Members','setup owner protection','responsive settings','removal revokes session and issued invite','restart preserves peer revocation and owner Base session'],scope:'local emitted Worker and headless browser; no remote delivery claimed'},null,2)+'\n');
   console.log('Base authentication runtime: 9 checks passed; '+evidence);
 } finally {
   await browser?.close(); await stop();

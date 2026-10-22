@@ -23,7 +23,7 @@ export async function removeOperator(
         `INSERT INTO operator_removals(id,operator_id,workspace_id,actor_operator_id,successor_operator_id,created_at)
       SELECT ?,target.id,target.workspace_id,?,
         CASE WHEN target.id<>actor.id THEN actor.id ELSE
-          (SELECT id FROM operators WHERE workspace_id=target.workspace_id AND id<>target.id AND removed_at IS NULL ORDER BY created_at,id LIMIT 1) END,?
+          (SELECT id FROM operators WHERE workspace_id=target.workspace_id AND id<>target.id AND removed_at IS NULL AND role='owner' ORDER BY created_at,id LIMIT 1) END,?
       FROM operators target JOIN operators actor ON actor.workspace_id=target.workspace_id
       JOIN workspace_installation w ON w.workspace_id=target.workspace_id
       WHERE target.id=? AND actor.id=? AND target.removed_at IS NULL AND actor.removed_at IS NULL
@@ -123,7 +123,15 @@ export async function removeOperator(
       )
       .bind(id, retainedActor, target, at, at, id),
   );
-  const result = await db.batch(statements);
+  let result: D1Result[];
+  try {
+    result = await db.batch(statements);
+  } catch (error) {
+    // The database keeps the last Owner (0075); a concurrent change reaches it here.
+    if (/last_owner/.test(String(error)))
+      throw new SettingsError("last_owner", "The last Owner cannot be demoted or removed. Make another member an Owner first.", 409);
+    throw error;
+  }
   if (result[0].meta.changes !== 1) {
     await assertRemovalAllowed(db, actor, target);
     throw new SettingsError(

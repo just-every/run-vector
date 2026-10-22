@@ -1,6 +1,6 @@
 # Vector product target
 
-Vector is a self-hosted internal issue tracker for one business. One workspace has equal operators: teams organize work, not access. Evidence-led intake feeds an explainable Current stream; My work is personal execution; projects expose the facts behind risk. CONTRACT.md and BASELINE.md define the requirements; HANDOVER.md records implemented scope and limitations.
+Vector is a self-hosted internal issue tracker for one business. One workspace's members each hold a role (Owner, Admin or Member): public teams organize work, and roles decide what each member may change. Evidence-led intake feeds an explainable Current stream; My work is personal execution; projects expose the facts behind risk. CONTRACT.md and BASELINE.md define the requirements; HANDOVER.md records implemented scope and limitations.
 
 ## Request ownership
 

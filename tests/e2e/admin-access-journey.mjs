@@ -133,10 +133,10 @@ export async function inviteProjectLead({
   await openDisclosures(page);
   await clause(
     "PROJ-002",
-    "project lead transfers to a genuinely invited equal operator",
+    "project lead transfers to a genuinely invited Member",
     async () => {
       const operators = page.getByRole("region", {
-        name: "Operators",
+        name: "Members",
         exact: true,
       });
       await operators.getByLabel("Name", { exact: true }).fill("Delivery lead");

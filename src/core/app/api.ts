@@ -29,7 +29,8 @@ import { deliverCommittedDirectMessages } from '../features/integrations/outboun
 import { fileSettlementDatabase } from '../features/auth/mutation-database';
 import { addAdministrationRoutes } from '../features/administration/routes';
 import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
-import { mutationDatabase, isMutationAccessError, RestoreReservationError } from "../features/auth/mutation-database";
+import { mutationDatabase, isMutationAccessError, RestoreReservationError, AuthorityChangedError } from "../features/auth/mutation-database";
+import { doorAuthority } from "../features/roles/enforcement";
 import { addSettingsRoutes } from '../features/settings/routes';
 import { listIssues, issueListResponse } from "../features/issues/list";
 import { issueListQuerySchema } from "../features/issues/list-schema";
@@ -84,6 +85,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
 
   app.onError((error, context) => {
     if (error instanceof RestoreReservationError) return context.json({error:'restore_in_progress',message:error.message},409);
+    if (error instanceof AuthorityChangedError) return context.json({error:'authority_changed',message:error.message},409,{'Cache-Control':'no-store'});
     if (error instanceof IntegrationError)return context.json({error:error.code,message:error.message},error.status,{'Cache-Control':'no-store'});
     if (error instanceof ImportError)
       return context.json({error:error.code,message:error.message,...error.details},error.status,{'Cache-Control':'no-store'});
@@ -113,6 +115,8 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       context.set('operatorId', document.operator.id);
       context.set('operator', document.operator);
       context.set('documentProjection', true);
+      const authority = await doorAuthority(context, 'api', document.operator.id, context.env.DB);
+      if (authority.denied) return authority.denied;
       await next();
       return;
     }
@@ -154,9 +158,12 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     const admittedWorkspace = operator.workspaceId;
     context.set("operatorId", operator.id);
     context.set("operator", operator);
+    // ROLE-001: the door's role-matrix row, on the actor's current role.
+    const authority = await doorAuthority(context, 'api', operator.id, context.env.DB);
+    if (authority.denied) return authority.denied;
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
-      context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence) };
+      context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence, undefined, authority.fence) };
       configureUndoSession(context.env.DB, operator.fence.sessionId);
     }
     configureNotifications(context.env.DB,context.env);

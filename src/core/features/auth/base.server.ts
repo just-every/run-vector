@@ -5,12 +5,24 @@ import { developmentSender, localMailEnabled } from './development.server'
 import branding from '../../../branding.json'
 import { createUlid } from '../../shared/ids'
 
-// There are no product roles. All admitted operators use Base's owner authority;
-// its last-owner constraint therefore also protects the last Vector operator.
-const equalOperators: RolePolicy = ({ actor, action, target, role }) =>
-  action === 'operators:invite' ? role === 'owner' :
-  action === 'operators:list' ||
-  (['sessions:list', 'sessions:revoke'].includes(action) && target?.id === actor.id)
+// Every Base operator keeps Base's owner role as an implementation detail (0011),
+// so Base's last-owner constraint still protects the last Vector operator. The
+// product role on the Vector record decides (ROLE-001): Owners and Admins invite,
+// and Members only while the workspace lets them (operator.management.v1). The
+// role an invitation grants is Vector's (vector_invitation_roles); Base links
+// are always owner links, checked again when accepted.
+function productRoles(db: D1Database): RolePolicy {
+  return async ({ actor, action, target, role }) => {
+    if (['sessions:list', 'sessions:revoke'].includes(action)) return target?.id === actor.id
+    if (action !== 'operators:invite' && action !== 'operators:list') return false
+    const current = await db.prepare(`SELECT o.role,w.member_invites AS memberInvites FROM vector_auth_operators m
+      JOIN operators o ON o.id=m.operator_id JOIN workspace_settings w ON w.id=o.workspace_id
+      WHERE m.auth_id=? AND o.removed_at IS NULL`).bind(actor.id).first<{ role: string; memberInvites: number }>()
+    if (!current) return false
+    if (action === 'operators:list') return current.role !== 'guest'
+    return role === 'owner' && (['owner', 'admin'].includes(current.role) || current.role === 'member' && current.memberInvites === 1)
+  }
+}
 
 /** The operator-auth configuration; the local-only dev entry builds the same one. */
 export function authConfig(env: WorkerBindings) {
@@ -34,19 +46,23 @@ export function baseAuth(env: WorkerBindings) {
   return createOperatorAuth({
     db: env.DB,
     config: authConfig(env),
-    mailSender: sender, rolePolicy: equalOperators,
+    mailSender: sender, rolePolicy: productRoles(env.DB),
     clientIp: request => local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '',
   })
 }
 
 /** Base's accepted invitation creates the product record only after admission.
- * The SQL rechecks current authority and atomically installs its stable ULID map. */
+ * The SQL rechecks current authority and atomically installs its stable ULID map.
+ * The role is the one the accepted link was issued for; a person admitted
+ * without an invitation (a local dev persona) is a Member. */
 export async function productOperator(db: D1Database, authId: string) {
   const existing = await mappedOperator(db, authId)
   if (existing) return existing
   const at = new Date().toISOString()
-  await db.prepare(`INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at)
-    SELECT ?,w.id,a.display_name,a.email,?,? FROM oa_operators a CROSS JOIN workspace_settings w
+  await db.prepare(`INSERT INTO operators(id,workspace_id,name,email,role,created_at,updated_at)
+    SELECT ?,w.id,a.display_name,a.email,COALESCE((SELECT r.role FROM oa_tokens t JOIN vector_invitation_roles r ON r.token_id=t.id
+      WHERE t.operator_id=a.id AND t.kind='invite' AND t.consumed_at IS NOT NULL ORDER BY t.consumed_at DESC LIMIT 1),'member'),?,?
+    FROM oa_operators a CROSS JOIN workspace_settings w
     WHERE a.id=? AND a.status='active'
     AND NOT EXISTS(SELECT 1 FROM vector_auth_operators WHERE auth_id=a.id)
     AND (SELECT count(*) FROM workspace_settings)=1

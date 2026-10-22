@@ -44,7 +44,7 @@ without erasing already-committed native notification intent.
 Tokens admit only these explicit routes. They cannot sign into documents,
 generated functions, private files, ordinary cookie APIs or token administration.
 Project, milestone and comment deletion use separately selected delete scopes; there is no issue deletion API or token-administration bearer route. Existing assignment/direct-mention notifications keep
-their native policy; API access introduces no product roles or tenant selector.
+their native policy. A token acts with its member's current role, read on every request (ROLE-001); there is no tenant selector.
 
 The native Worker tests exercise scopes, stale writes, revocation/removal,
 issuance/commit races, usage-write failure and restart. Local proof does not

@@ -332,6 +332,8 @@ contractWith(
     await receipt(await f.any(f.caraCookie, "/settings/notifications", "PATCH", {
       mutedKinds: ["status"],
     }));
+    // Bob removes statuses below; workflow editing is an Admin's (ROLE-001).
+    await receipt(await f.call(`/settings/operators/${f.bob}/role`, "PATCH", { role: "admin" }));
 
     for (const category of ["unstarted", "completed", "canceled"]) {
       const destination = team.statuses.find(row => row.category === category)!;
