@@ -2741,7 +2741,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "258bb4ec4cce94c523fe3cf717c043255a2ef54b7edd71103bfe3a9bc11e9e27",
+      "sha256": "a066aaff43dbb761a069b245edfea8f7b6b6ccf4bf136c6ee63a081121639287",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -6237,7 +6237,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-runtime.mjs": {
-      "sha256": "baea7eb0320ed658ccd096da6d7fdb32fd3be85605980445960ba86ba95fcf1f",
+      "sha256": "84da3b0e6e566d68d3f891e559c9da541c466aff86bb0f07b821f992d14e1f89",
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {
@@ -6417,7 +6417,7 @@
       "executable": false
     },
     "tests/installer/older-archive.test.mjs": {
-      "sha256": "96c6a7e9738ec39f33265550d943469db1baef97e39f11b1aecafed3bdd7e71d",
+      "sha256": "ca38235cdb52fc6e111bba3f23219afca8ea798ea7887366f6e5212580f7cd03",
       "executable": false
     },
     "tests/installer/outbox.test.ts": {

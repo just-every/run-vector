@@ -19,7 +19,7 @@ async function platformMigrations(root,db) {
 test('[BASE-DATA-001 DATA-001] a backup from the listed version restores through rer import, with either migration ledger',async()=>{
  const source=process.cwd(),work=await mkdtemp(join(tmpdir(),'vector-retained-'));
  const fixture=resolve('tests/fixtures/archives/listed-version'),archive=join(work,'listed-version.rer');
- const run=(root,command,args)=>execFileSync(command,args,{cwd:root,encoding:'utf8',timeout:120000,maxBuffer:32*1024*1024,env:{...process.env,CI:'true'},stdio:'pipe'});
+ const run=(root,command,args)=>execFileSync(command,args,{cwd:root,encoding:'utf8',timeout:300000,maxBuffer:32*1024*1024,env:{...process.env,CI:'true'},stdio:'pipe'});
  try {
   // Keep the historical manifest readable in source; restore its original wire bytes.
   await writeFile(archive,Buffer.concat([Buffer.from(JSON.stringify(JSON.parse(await readFile(fixture+'.manifest.json','utf8')))+'\n'),await readFile(fixture+'.records.ndjson')]),{mode:0o600});

@@ -13,7 +13,7 @@ export const ciCommands = [
 
 // Keep the longest journeys first and avoid a long tail of queued runners.
 // The 18-runner plan spent over six minutes queueing its nine-minute archive
-// journey. Nine runners retain every command and fresh build. Hosted artifact
+// journey. Ten runners retain every command and fresh build. Hosted artifact
 // checks have their own budget so the native runtime journey fits its limit.
 // Each runtime runner owns its own output, D1/R2 installations and browsers.
 export const verificationShards = {
@@ -50,8 +50,10 @@ export const verificationShards = {
   // Keep Vitest's complete six-file-partition wall, balanced across three
   // runners. Each invocation still gets its original isolated Vitest process.
   'worker-1': { commands: [['test:worker', '--shard=4/6'], ['test:worker', '--shard=5/6']] },
-  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6'], 'test:archive-upgrade'] },
+  'worker-2': { commands: [['test:worker', '--shard=2/6'], ['test:worker', '--shard=3/6']] },
   'worker-3': { commands: [['test:worker', '--shard=1/6'], ['test:worker', '--shard=6/6']] },
+  // Authentic historical restores run independently of the worker partitions.
+  'archive-upgrade': { native: true, commands: ['test:archive-upgrade'] },
 };
 
 // The hosted-artifact shard's rer verify remains the public door for the adapter's full

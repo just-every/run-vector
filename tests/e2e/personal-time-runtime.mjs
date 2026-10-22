@@ -10,7 +10,7 @@ const runtime=createAdminRuntime(1440,[],{port:15972,inspectorPort:15973});
 let browser,page;
 try {
  runtime.initialize();await runtime.start();browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
- const context=await browser.newContext({viewport:{width:1440,height:1000},timezoneId:'Asia/Tokyo'});page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
+ const context=await browser.newContext({viewport:{width:1440,height:1000},timezoneId:'Asia/Tokyo',extraHTTPHeaders:{Connection:'close'}});page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
  const api=context.request,headers={Origin:runtime.base};
  const settings=await api.patch(runtime.base+'/api/settings',{headers,data:{timezone:'America/New_York'}});assert.equal(settings.status(),200);
  const state=await(await api.get(runtime.base+'/api/settings/administration')).json(),team=state.teams[0];
