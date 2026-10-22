@@ -67,7 +67,7 @@ export async function exerciseGuestRoles({page,browser,runtime,clause,evidence})
   try {
     await clause('ROLE-003','an Owner invites a Guest to named teams from desktop and mobile Settings',async()=>{
       await members.getByLabel('Name',{exact:true}).fill('Agency collaborator');
-      await members.getByLabel('Email',{exact:true}).fill('guest-role@admin-runtime.test');
+      await members.getByLabel('Email',{exact:true}).fill('synthetic-vector-803@vector.test');
       await members.getByLabel('Role',{exact:true}).selectOption('guest');
       const group=members.getByRole('group',{name:'Teams this Guest can access',exact:true});
       await group.getByRole('checkbox',{name:invitedTeam.name,exact:true}).check();
@@ -76,7 +76,7 @@ export async function exerciseGuestRoles({page,browser,runtime,clause,evidence})
       await members.getByRole('button',{name:'Send invitation',exact:true}).click();
       assert.equal((await sent).status(),202);
     });
-    const link=sql("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='guest-role@admin-runtime.test' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
+    const link=sql("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='synthetic-vector-803@vector.test' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
     context=await browser.newContext({viewport:{width:1440,height:1000}});
     const guest=await context.newPage(), errors=[];
     guest.on('pageerror',error=>errors.push(error.message));
@@ -93,17 +93,20 @@ export async function exerciseGuestRoles({page,browser,runtime,clause,evidence})
         assert.ok(!body.includes(hidden.identifier),path);
         assert.ok(!body.includes('Guest excluded delivery'),path);
       }
+      await navigate(guest,base+'/app/issues/'+visible.identifier);
+      await guest.getByRole('heading',{name:'Guest invited delivery issue',exact:true}).waitFor();
+      await inspect(guest,guest.locator('main:visible').first(),'guest-issue-read');
       await navigate(guest,base+'/app/projects/'+project.id);
       await guest.getByRole('heading',{name:project.name,exact:true}).waitFor();
       await guest.getByRole('link',{name:new RegExp(visible.identifier)}).first().waitFor();
       assert.equal(await guest.getByRole('button',{name:'Add milestone',exact:true}).count(),0);
       assert.equal(await guest.getByRole('form',{name:`Edit project ${project.name}`,exact:true}).count(),0);
-      await inspect(guest,guest.getByRole('main'),'guest-project-read');
+      await inspect(guest,guest.locator('main:visible').first(),'guest-project-read');
       await navigate(guest,base+'/app/cycles/'+cycle.id);
       await guest.getByRole('heading',{name:cycle.name,exact:true}).waitFor();
       await guest.getByRole('heading',{name:'Workload',exact:true}).waitFor();
       await settleReads(guest);
-      await inspect(guest,guest.getByRole('main'),'guest-cycle-read');
+      await inspect(guest,guest.locator('main:visible').first(),'guest-cycle-read');
       await navigate(guest,base+'/app/cycles');
       await guest.getByRole('link',{name:'Open '+cycle.name,exact:true}).waitFor();
       assert.equal(await guest.getByRole('form',{name:'Create cycle',exact:true}).count(),0);
@@ -112,9 +115,9 @@ export async function exerciseGuestRoles({page,browser,runtime,clause,evidence})
       await guest.getByRole('heading',{name:'Appearance',exact:true}).waitFor();
       assert.equal(await guest.getByRole('region',{name:'Members',exact:true}).count(),0);
       assert.equal(await guest.getByRole('heading',{name:'API tokens',exact:true}).count(),0);
-      await inspect(guest,guest.getByRole('main'),'guest-account-only');
+      await inspect(guest,guest.locator('main:visible').first(),'guest-account-only');
     });
-    const id=sql("SELECT id FROM operators WHERE email='guest-role@admin-runtime.test'")[0].id;
+    const id=sql("SELECT id FROM operators WHERE email='synthetic-vector-803@vector.test'")[0].id;
     await clause('ROLE-003','an Owner changes an accepted Guest to Member and back through the named-team role form; its open session follows immediately',async()=>{
       await navigate(page,base+'/app/settings');
       await openDisclosures(page);
