@@ -5897,7 +5897,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "75dc60b6cf4909a82c17d99e128b29cbad49ac59c0c674cdfe87277b88338b19",
+      "sha256": "a11cecd532e0f680a3f8b3170499ed4f681af8ce36e9d717b2eb2e9d700e7c8a",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {

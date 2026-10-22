@@ -41,6 +41,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
       await memberPage.goto(base + '/app/projects/' + project.id);
       await memberPage.getByText('Manage ' + name, { exact: true }).click();
       assert(await memberPage.getByRole('button', { name: 'Delete project', exact: true }).isDisabled());
+      await capture('PROJ-003', `member-project-deletion-disabled-${width}`, memberPage);
       for (const [path, headers] of [
         ['/api/settings/projects/', { Origin: base }],
         ['/api/v1/projects/', { Authorization: 'Bearer ' + token }],
