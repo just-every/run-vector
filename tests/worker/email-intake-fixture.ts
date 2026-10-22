@@ -25,9 +25,13 @@ export async function seedIntakeForTeam(teamId:string,cookie:string,attachments=
   expect(result.status).toBe('received');expect(receipt.rejected()).toBeUndefined();
   return {address,messageId,settings,identifier:result.identifier!};
 }
-export async function recordedReply(cookie:string,identifier:string,body:string,requestId=createUlid(new Date())) {
+export async function recordSendGrid<T>(operation:()=>Promise<T>) {
   const calls: {url:string;body:any}[]=[];
   vi.stubGlobal('fetch',async (input:RequestInfo|URL,init?:RequestInit)=>{calls.push({url:String(input),body:JSON.parse(String(init?.body))});return new Response(null,{status:202});});
-  try {return {response:await request(`/api/issues/${identifier}/email-replies`,'POST',{body,requestId},cookie,mailBindings),calls,requestId};}
+  try {return {result:await operation(),calls};}
   finally {vi.unstubAllGlobals();}
+}
+export async function recordedReply(cookie:string,identifier:string,body:string,requestId=createUlid(new Date())) {
+  const {result:response,calls}=await recordSendGrid(()=>request(`/api/issues/${identifier}/email-replies`,'POST',{body,requestId},cookie,mailBindings));
+  return {response,calls,requestId};
 }

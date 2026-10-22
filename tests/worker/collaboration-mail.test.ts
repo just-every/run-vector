@@ -231,7 +231,7 @@ async function proveFiniteNotificationRetries() {
 }
 
 contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail becomes one intake conversation with bounded attachments, explicit once-only Member replies, and no Guest sending',async()=>{
-  const {seedIntakeForTeam,inboundFixture,recordedReply,mailBindings}=await import('./email-intake-fixture');
+  const {seedIntakeForTeam,inboundFixture,recordedReply,recordSendGrid,mailBindings}=await import('./email-intake-fixture');
   const {request}=await import('./base-auth-fixture');
   const {default:worker}=await import('./entry');
   const f=await collaborationFixture(), teamId=f.initial.teams[0].id;
@@ -239,6 +239,8 @@ contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail beco
   const context=await f.data(f.cookie,`/issues/${intake.identifier}/email-intake`);
   expect(context.thread).toMatchObject({requester:'synthetic-vector-712@example.test',requesterDomain:'example.test',messageId:intake.messageId});
   expect(context.messages[0].attachments).toHaveLength(2);
+  expect(context.messages[0].attachments.find((a:any)=>a.contentType==='image/png').contentId).toBe('delivery-image');
+  expect(await count('operators','email=?',['synthetic-vector-712@example.test'])).toBe(0);
   expect(context.customerMappingAvailable).toBe(false);
   expect((await f.any(f.bobCookie,`/settings/teams/${teamId}/email-intake`)).status).toBe(403);
   expect((await f.any(f.bobCookie,`/settings/teams/${teamId}/email-intake`,'PUT',intake.settings)).status).toBe(403);
@@ -270,4 +272,12 @@ contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail beco
   const guest=await recordedReply(f.caraCookie,intake.identifier,'Guest external reply');expect(guest.response.status).toBe(403);expect(guest.calls).toHaveLength(0);
   expect((await f.any(f.caraCookie,`/settings/teams/${teamId}/email-intake`)).status).toBe(403);
   const after=await f.data(f.cookie,`/issues/${intake.identifier}/email-intake`);expect(after.deliveries).toHaveLength(1);expect(after.messages).toHaveLength(2);
+  expect((await f.any(f.bobCookie,`/settings/teams/${teamId}/email-intake`,'PUT',{...intake.settings,acknowledgement:true})).status).toBe(200);
+  const ackId='<synthetic-vector-718@example.test>';
+  const ack=await recordSendGrid(()=>worker.email(inboundFixture(intake.address,ackId).message,mailBindings));
+  expect(ack.result.status).toBe('received');expect(ack.calls).toHaveLength(1);
+  expect(JSON.stringify(ack.calls[0].body.content)).toContain(ack.result.identifier);
+  const ackAgain=await recordSendGrid(()=>worker.email(inboundFixture(intake.address,ackId).message,mailBindings));
+  expect(ackAgain.result.status).toBe('duplicate');expect(ackAgain.calls).toHaveLength(0);
+
 });
