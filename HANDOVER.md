@@ -10,7 +10,7 @@ Use rer build, verify, reset --yes, export --output PATH and import --input PATH
 
 ## Product behavior
 
-Current, My work, issues, projects, cycles, intake decisions, comments, private files, dependencies, parents, labels, saved views, boards and indexed search use native version/session checks. Settings provides equal-operator invitations, safe removal, workspace time and organization administration. Inbox and bounded mail delivery preserve notification preferences and terminal outcomes. See the corresponding feature docs for recovery and limits.
+Current, My work, issues, projects, cycles, intake decisions, comments, private files, dependencies, parents, labels, saved views, boards and indexed search use native version/session checks. Settings provides invitations that name a role, Owner-governed role changes (ROLE-001), team membership, team owners and team permissions (ROLE-007, ROLE-009), safe removal, workspace time and organization administration. Inbox and bounded mail delivery preserve notification preferences and terminal outcomes. See the corresponding feature docs for recovery and limits.
 
 Signout and document departure coordinate private reads while server-side admission remains authoritative. Stale writes retain drafts. Search updates in the source transaction and joins stable identifiers. Private file removal preserves cleanup intent and quota until the writer is settled and byte absence confirmed. An uncertain external send is never automatically replayed.
 
