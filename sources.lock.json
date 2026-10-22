@@ -2853,7 +2853,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "59d42276fec52ff0b624de551cf8cc254391d810da5306c385d7b9b92c2a5d0b",
+      "sha256": "44c7e36f26ed5c8631be78466a53a2b7b7306c152ca3766db804eff9740ea189",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -6261,7 +6261,7 @@
       "executable": false
     },
     "tests/e2e/role-ui-support.mjs": {
-      "sha256": "fa4ecaee6800c3a7502504b2718fb2454f31b549bd1dee234fdb6bc87b3928d2",
+      "sha256": "a02327b802b1c713880fe832ced1b4cfc2ed4671cd1ae9ce926528b3afe6b917",
       "executable": false
     },
     "tests/e2e/route-fetch.mjs": {

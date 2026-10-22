@@ -167,7 +167,10 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     // ROLE-001: the door's role-matrix row, on the actor's current role.
     const authority = await doorAuthority(context, 'api', operator.id, context.env.DB);
     if (authority.denied) return authority.denied;
-    context.env = { ...context.env, DB: context.req.path.startsWith('/api/portability/') ? context.env.DB : visibilityDatabase(context.env.DB, operator.id) };
+    // Archive and imported-person erasure operate on physical schema inventory.
+    // Their matrix doors admit only Owners/Admins; retain the mutation fence below.
+    const archiveDoor = context.req.path.startsWith('/api/portability/') || context.req.path.startsWith('/api/data/erasure');
+    context.env = { ...context.env, DB: archiveDoor ? context.env.DB : visibilityDatabase(context.env.DB, operator.id) };
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
       context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence, undefined, authority.fence) };
