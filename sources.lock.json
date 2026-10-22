@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "d321f3bd5be06ff34ead185cb2ad4d9a7377172a00b287fc61154d3c3ed4345a",
+      "sha256": "1e7933cbadb0e6a5f06bb1c03075d1243fdec0cdd87f23a6b2254f25c54e768d",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3c09c7b519a1a37a7cda4097ae4d0ddf3d7f3ee0a224204e49dd468f14c02ffb",
+      "sha256": "5e9d73aae72ee7519eeb0f4678cdc72a439d735a867843e2fed6fb10bc48d380",
       "executable": false
     },
     "DEMO.md": {
@@ -681,7 +681,7 @@
       "executable": false
     },
     "docs/NOTIFICATIONS.md": {
-      "sha256": "12cef718ff417fde7b95c45bcdece20e5466da42d5d1627c6d06f39e6ab39ed2",
+      "sha256": "e44cfe322c3c578f5e82a16fbd48d1ca0f527e043f2b3c83637009495012fb45",
       "executable": false
     },
     "docs/OPERATOR-REMOVAL.md": {
