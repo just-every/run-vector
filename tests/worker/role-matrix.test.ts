@@ -241,7 +241,11 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   const leaving = await w.fresh("member"), staying = await w.fresh("member");
   expect((await staying.call(`/settings/operators/${leaving.id}`, "DELETE")).status).toBe(403);
   expect((await admin.call(`/settings/operators/${owner.id}`, "DELETE")).status).toBe(403);
+  const memberships = () => env.DB.prepare("SELECT count(*) AS n FROM team_members WHERE operator_id=?").bind(leaving.id).first("n");
+  expect(await memberships()).toBe(1);
   expect((await admin.call(`/settings/operators/${leaving.id}`, "DELETE")).status).toBe(200);
+  // Removal from the workspace ends every team membership (ROLE-007).
+  expect(await memberships()).toBe(0);
 
   // Inherited cells: refused requests change nothing; Owners and Admins succeed.
   const state = ["issues", "intake_decisions", "vector_integration_sources", "vector_integration_secret_keys", "saved_views", "ik_jobs", "ik_d1_erasure_journal", "audit_records"];
