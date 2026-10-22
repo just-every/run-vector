@@ -1,5 +1,5 @@
-import { fileSettlementDatabase } from "../auth/mutation-database";
-import { IssueAccessError } from "../issues/access";
+import { fileSettlementDatabase, MutationAccessError } from "../auth/mutation-database";
+import { IssueAccessError, requireIssueAccess } from "../issues/access";
 import { requireIssueProjection } from "../issues/projection-access";
 import { discussionAccess } from "./access";
 import { CommentPermissionError } from "./permissions";
@@ -31,6 +31,10 @@ const resolutionSchema = z.object({ resolved: z.boolean() }).strict();
  * A permission answer is given only to the session that is still current. */
 async function discussionDenial(c: Context<AppEnvironment>, error: unknown) {
   if (!(error instanceof IssueAccessError || error instanceof CommentPermissionError || error instanceof ThreadError)) throw error;
+  // Visibility can hide the issue after operator removal. Preserve the common
+  // mutation denial before answering whether the requested resource exists.
+  if (error instanceof IssueAccessError && error.code === "unauthenticated")
+    throw new MutationAccessError();
   if (error instanceof CommentPermissionError) {
     const admitted = c.get("operator"), current = await requireOperator(c.env, c.req.raw);
     if (!current || current.id !== admitted.id || JSON.stringify(current.fence) !== JSON.stringify(admitted.fence))
@@ -82,12 +86,8 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
         { error: "invalid_request", issues: input.error.issues },
         400,
       );
-    const admitted = c.get("operator"), current = await requireOperator(c.env, c.req.raw);
-    if (!current || current.id !== admitted.id || JSON.stringify(current.fence) !== JSON.stringify(admitted.fence))
-      return c.json({ error: "unauthenticated" }, 401);
-    const issue = await findIssue(c.env.DB, c.req.param("identifier"));
-    if (!issue) return c.json({ error: "not_found" }, 404);
     try {
+      const issue = await requireIssueAccess(c.env.DB, c.req.param("identifier"), c.get("operatorId"));
       const id = await addComment(
         c.env.DB,
         issue.id,
@@ -127,9 +127,8 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
           ? { success: true as const, data: { body: null } }
           : commentSchema.safeParse(await readRequestJson(c.req.raw));
       if (!input.success) return c.json({ error: "invalid_request" }, 400);
-      const issue = await findIssue(c.env.DB, c.req.param("identifier"));
-      if (!issue) return c.json({ error: "not_found" }, 404);
       try {
+        const issue = await requireIssueAccess(c.env.DB, c.req.param("identifier"), c.get("operatorId"));
         return (await changeComment(
           c.env.DB,
           issue,
