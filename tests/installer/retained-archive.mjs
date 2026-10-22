@@ -32,7 +32,9 @@ export async function compareRetainedArchive(archive,env,{auditActions=[]}={}) {
     assert.equal(row.actor_operator_id,job.actor);
     assert.equal(row.subject_identifier,job.id);
     assert(Number.isFinite(Date.parse(row.created_at)));
-    if(completed)assert.equal(job.phase,'complete');
+    // Local export cleans its completed snapshot with abortExport after the
+    // file is written; the immutable completion event survives that cleanup.
+    if(completed)assert.equal(job.phase,job.kind==='export'?'aborted':'complete');
    }
    stored=stored.filter(row=>originalIds.has(row.id));
   }
