@@ -5824,6 +5824,10 @@
       "sha256": "f44dcabe0b772b173644206548de5ae0edad1b71eed9e030de79234cdb2eb746",
       "executable": false
     },
+    "tests/e2e/archive-audit-history.mjs": {
+      "sha256": "b904aedca304ea20126669c23e0459117172ff81648f6ba20248dd73ed02c417",
+      "executable": false
+    },
     "tests/e2e/base-auth-runtime.mjs": {
       "sha256": "5553c9dbfbb0080fe94236f4603d572b043dd379946c27e2d5ea3bc4ec8623cd",
       "executable": false
@@ -6065,7 +6069,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip.mjs": {
-      "sha256": "934437fb44c0944b279905892d21c6505f746d2cb0850a41fcd9892a8b8ae580",
+      "sha256": "33ec80a1f6f72199f29af1b4df7a3c98a360d192f2bfbf0d79f7bea49ff2b9e1",
       "executable": false
     },
     "tests/e2e/data-runtime.mjs": {
@@ -6445,7 +6449,7 @@
       "executable": false
     },
     "tests/worker/audit-archive.ts": {
-      "sha256": "6bb23ce5bafb7c9a15ba4951b3ad38c56efbfd6f50daffed7bc3c3174dcef1ad",
+      "sha256": "e71458cae9a6550e45d3d0223572879bd40603f148d8908dcd14c05381c8b1db",
       "executable": false
     },
     "tests/worker/audit-scenario.ts": {
@@ -6849,7 +6853,7 @@
       "executable": false
     },
     "tests/worker/parent-deletion-admission.test.ts": {
-      "sha256": "0f975a0ea06dfb3795573278b2d9323b7d60bd40606cc94d8aeb9de706fe0373",
+      "sha256": "7974e5aeac4c145ab8861137482b10eb9ddfeed5402e84bd8df18ec14cfde525",
       "executable": false
     },
     "tests/worker/parent-deletion-custody.test.ts": {

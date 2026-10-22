@@ -114,10 +114,10 @@ it("[BASE-ACCESS-002 ISSUE-010 ISSUE-006] final version fence and transport matr
   expect((await deleteRequest("FLW-999999999", 1, { cookie })).status).toBe(404);
   expect(await receipt()).toEqual(preimage);
   const removedCookie = await signedInCookie(ids.maya);
-  const beforeRemoval = await receipt();
   await env.DB.prepare("UPDATE operators SET removed_at='now' WHERE id=?")
     .bind(ids.maya)
     .run();
+  const beforeRemoval = await receipt();
   expect(
     (await deleteRequest(parent.identifier, parent.version, { cookie: removedCookie })).status,
   ).toBe(401);

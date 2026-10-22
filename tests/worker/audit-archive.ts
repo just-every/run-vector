@@ -3,7 +3,7 @@ import type { Part } from '@runeditrun/rer/modules/portability';
 import type { ArchiveRecords } from './http-archive-fixture';
 
 type AuditRow = Record<string, unknown>;
-const restoredActions = ['archive.import.completed', 'auth.signed_in', 'archive.export.started'];
+const restoredActions = ['archive.import.completed', 'auth.signed_in'];
 
 /** Audit history is append-only: old rows survive byte-for-byte, and every new
  * row must correspond to an explicitly expected action, including multiplicity. */

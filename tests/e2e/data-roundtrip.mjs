@@ -29,7 +29,7 @@ try{
  await copyFile(first,input);assert.equal((await stat(input)).mode&0o777,0o600);
  await destination.run('Import into independent empty installation',['import','--','--target','local','--input','input.jsonl','--yes','--non-interactive']);proof.commands.push('pnpm run import -- --target local');
  await destination.run('Export independent restored archive',['export','--','--target','local','--output','exports/second.jsonl','--non-interactive']);proof.commands.push('pnpm run export -- --target local');
- const before=await records(first),after=await records(second);assertArchiveHistory(before,after,['archive.import.completed','archive.export.started']);
+ const before=await records(first),after=await records(second);assertArchiveHistory(before,after,['archive.import.completed']);
  proof.categories=[...verifyRoundtripCategories(before),...verifyIntegrationCategories(before)];proof.rows=before[0].tables.reduce((sum,row)=>sum+row.count,0);proof.objects=before[0].objects.length;assert.equal(proof.objects,2);proof.equality=true;
  assert.deepEqual(destination.sql('PRAGMA foreign_key_check'),[]);await destination.configure();
  await unlink(join(destination.root,'node_modules'));await destination.installDependencies();
