@@ -120,6 +120,7 @@ export async function authorCycles({ page, runtime, capture, clause, team }) {
   await beforePrivateNavigation(page, base + "/app/settings");
   await page.goto(base + "/app/settings");
   await page.getByRole("form", { name: "Create cycle", exact: true }).waitFor();
+  const beforeCycles = sql("SELECT * FROM cycles ORDER BY id");
   await clause(
     "CYCLE-001",
     "manual nonoverlap cycles use workspace timezone and reject invalid end",
@@ -147,9 +148,9 @@ export async function authorCycles({ page, runtime, capture, clause, team }) {
         .getByRole("alert")
         .filter({ hasText: /end|after/i })
         .waitFor();
-      assert.equal(
-        sql("SELECT count(*) n FROM cycles")[0].n,
-        0,
+      assert.deepEqual(
+        sql("SELECT * FROM cycles ORDER BY id"),
+        beforeCycles,
         "invalid end creates nothing",
       );
       await capture("cycle-end-validation");
@@ -173,7 +174,7 @@ export async function authorCycles({ page, runtime, capture, clause, team }) {
           "manual cycle",
         );
       }
-      const cycles = sql("SELECT * FROM cycles ORDER BY starts_at");
+      const cycles = sql("SELECT * FROM cycles WHERE name IN ('First window','Second window') ORDER BY starts_at");
       assert.equal(cycles.length, 2);
       assert.equal(
         cycles[0].ends_at,
@@ -188,7 +189,7 @@ export async function authorCycles({ page, runtime, capture, clause, team }) {
     },
   );
   await capture("cycles-two-manual-windows");
-  return sql("SELECT * FROM cycles ORDER BY starts_at");
+  return sql("SELECT * FROM cycles WHERE name IN ('First window','Second window') ORDER BY starts_at");
 }
 
 /** PROJ-011: native project controls and issue assignment, at each viewport. */

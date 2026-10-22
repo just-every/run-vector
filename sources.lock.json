@@ -5797,7 +5797,7 @@
       "executable": false
     },
     "tests/e2e/admin-project-cycle-journey.mjs": {
-      "sha256": "d1d11e483ec1e8679670ec2a3b59b9ad6d71a828403c6645e3f4847d0ae0c688",
+      "sha256": "f67af616457e0ab70a32848e29d4d01f66a2d417c755b3c6206ee97fabf43367",
       "executable": false
     },
     "tests/e2e/admin-request-diagnostics.mjs": {
