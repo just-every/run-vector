@@ -33,6 +33,7 @@ import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
 import { mutationDatabase, isMutationAccessError, RestoreReservationError, AuthorityChangedError } from "../features/auth/mutation-database";
 import { doorAuthority } from "../features/roles/enforcement";
 import { addSettingsRoutes } from '../features/settings/routes';
+import { settingsActor } from '../features/settings/repository';
 import { listIssues, issueListResponse } from "../features/issues/list";
 import { issueListQuerySchema } from "../features/issues/list-schema";
 import { moveIssueTeamRoute } from "../features/team-move/routes";
@@ -218,9 +219,11 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 
-  app.get("/session", (context) =>
-    context.json({ operatorId: context.get("operatorId") }),
-  );
+  app.get("/session", async (context) => {
+    const operatorId = context.get("operatorId");
+    const { role } = await settingsActor(context.env.DB, operatorId);
+    return context.json({ operatorId, role });
+  });
 
   app.get("/current", async (context) => {
     const query = parseQuery(context, timeQuerySchema);

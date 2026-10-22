@@ -128,7 +128,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "projects.status": {
       session: async (_who, actor) => { const id = await project(); return () => actor.call(`/settings/projects/${id}`, "PATCH", { lifecycle: "active" }); },
       api: async (_who, actor) => { const id = await project(); return () => actor.api(`/projects/${id}`, "PATCH", { lifecycle: "active" }); } },
-    // The Member who owns the probed team also leads the probed project.
+    // Leading the project grants no deletion privilege until recoverable deletion ships.
     "projects.delete": {
       session: async (_who, actor) => { const id = await project(w.people.lead.id); return () => actor.call(`/settings/projects/${id}`, "DELETE"); },
       api: async (_who, actor) => { const id = await project(w.people.lead.id); return () => actor.api(`/projects/${id}`, "DELETE"); } },

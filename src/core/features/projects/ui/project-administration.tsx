@@ -69,9 +69,8 @@ export function ProjectAdministration({
   const deletion = useAdministrationAction(onDeleted);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const hydrated = useHydrated();
-  // Owners, Admins and the project's lead delete it (PROJ-003 row).
-  const deletes = decide({ role: viewer.role, memberInvites: false, teams: new Map(), leads: new Set(project.leadOperatorId === viewer.id ? [project.id] : []) },
-    { row: "projects.delete", project: project.id }) === "allow";
+  const deletes = decide({ role: viewer.role, memberInvites: false, teams: new Map() },
+    { row: "projects.delete" }) === "allow";
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     await action.run(`/api/settings/projects/${project.id}`, "PATCH", {
@@ -112,7 +111,7 @@ export function ProjectAdministration({
         </fieldset>
       </form>
       <AdministrationFeedback action={action} />
-      {confirmingDelete ? (
+      {confirmingDelete && deletes ? (
         <div role="group" aria-label="Confirm project deletion">
           <p>Delete {project.name}? Its issues will stay in Vector without a project. This cannot be undone.</p>
           <button type="button" disabled={deletion.pending || !hydrated}
@@ -124,7 +123,7 @@ export function ProjectAdministration({
         </div>
       ) : (
         <>
-          {!deletes && <p>Only Owners, Admins and this project&apos;s lead delete it.</p>}
+          {!deletes && <p>Only Owners and Admins can delete projects.</p>}
           <button type="button" disabled={action.pending || !hydrated || !deletes} onClick={() => setConfirmingDelete(true)}>Delete project</button>
         </>
       )}

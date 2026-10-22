@@ -1,7 +1,10 @@
 import { useRef, useState } from "react";
 import { z } from "zod";
-import { fetchJson } from "../../app/api-client";
+import { fetchJson, useApiResource } from "../../app/api-client";
 import type { IssueDetailData } from "../issues/ui/data";
+import { roles } from "../roles/matrix";
+import { decide } from "../roles/policy";
+const viewerSchema = z.object({ role: z.enum(roles) });
 export const deletionReceiptSchema = z.object({
   identifier: z.string(),
   deleted: z.literal(true),
@@ -20,6 +23,7 @@ export function DeleteIssue({
   onDeleted: (receipt: DeletionReceipt) => void;
   onRefresh: () => void;
 }) {
+  const viewer = useApiResource("/api/session", viewerSchema, 5000);
   const trigger = useRef<HTMLButtonElement>(null),
     [version, setVersion] = useState<number | null>(null),
     [busy, setBusy] = useState(false),
@@ -52,6 +56,10 @@ export function DeleteIssue({
       setBusy(false);
     }
   }
+  if (!viewer.data || viewer.error || decide(
+    { role: viewer.data.role, memberInvites: false, teams: new Map() },
+    { row: "issues.delete-permanent" },
+  ) !== "allow") return null;
   return (
     <section className="detail-section issue-deletion">
       <button

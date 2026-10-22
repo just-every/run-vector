@@ -141,10 +141,12 @@ type Context = { inTeam: boolean; settings: string; planning: string; memberInvi
  * every team is public (ROLE-002). */
 function promised(cell: string, who: Kind, c: Context) {
   const text = cell.toLowerCase();
+  // Recovery-dependent grants remain refused until recoverable deletion ships.
+  if (text.includes("after recoverable delete")) return "forbidden";
   if (text.startsWith("no (yes when the invite setting is on")) return c.memberInvites ? "allow" : "forbidden";
   if (text.startsWith("yes") || text === "own" || text.startsWith("member's teams")) return "allow";
   if (text.startsWith("no") || text === "apply only") return "forbidden";
-  if (text === "team owner only" || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
+  if (text.startsWith("team owner only") || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
   if (text === "team setting") return who === "lead" || c.settings === "all_members" ? "allow" : "forbidden";
   if (text === "planning setting") return who === "lead" || c.planning === "all_members" ? "allow" : "forbidden";
   if (text === "invited teams only" || text === "only views covering only invited teams") return c.inTeam ? "allow" : "hidden";
