@@ -44,6 +44,7 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  const {roleScreens}=await import('./role-ui-support.mjs'),inspect=roleScreens(evidence);
  const sender='synthetic-vector-721@example.test',address='synthetic-vector-'+Date.now()+'@example.test';
  await page.goto(runtime.base+'/app/settings');
+ await page.locator('#teams summary').filter({hasText:team.name+' · '+team.identifierPrefix}).first().click();
  const section=page.getByRole('region',{name:'Email intake for '+team.name,exact:true});
  await section.getByLabel('Private intake address',{exact:true}).waitFor();
  await section.getByLabel('Enable email intake',{exact:true}).check();
