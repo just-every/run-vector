@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
+import { roleScreens } from './role-ui-support.mjs';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
-export async function exerciseAuditView({ page, runtime, capture, clause }) {
+export async function exerciseAuditView({ page, runtime, capture, clause, evidence }) {
   await clause('ROLE-005', 'Owners browse and filter retained audit entries and download exactly the visible filtered set', async () => {
     const all = await (await page.request.get(runtime.base + '/api/settings/audit')).json();
     const entry = all.entries.find(item => item.action === 'operator.role_changed');
@@ -11,6 +12,8 @@ export async function exerciseAuditView({ page, runtime, capture, clause }) {
     await page.getByRole('link', { name: 'Audit log', exact: true }).click();
     const panel = page.locator('#audit');
     await panel.getByRole('heading', { name: 'Audit log', exact: true }).waitFor();
+    const inspect = roleScreens(evidence);
+    await inspect(page, panel, 'workspace-audit');
     await panel.getByLabel('Actor reference', {exact:true}).fill(entry.actorRef);
     await panel.getByRole('combobox', {name:'Actor kind',exact:true}).selectOption(entry.actorKind);
     await panel.getByLabel('Action kind', {exact:true}).fill(entry.action);
@@ -32,11 +35,13 @@ export async function exerciseAuditView({ page, runtime, capture, clause }) {
     assert.deepEqual(ids,selected.entries.map(item=>item.id));
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth <= innerWidth),true,'audit filters fit the viewport');
     await capture('workspace-audit-filtered');
+    await inspect(page, panel, 'workspace-audit-filtered');
     await panel.getByLabel('Subject reference',{exact:true}).fill('absent');
     const empty=page.waitForResponse(r=>r.url().includes('/api/settings/audit?')&&r.url().includes('subject=absent'));
     await panel.getByRole('button',{name:'Apply filters',exact:true}).click();
     await empty;
     await panel.getByText('No audit entries match these filters.').waitFor();
+    await inspect(page, panel, 'workspace-audit-empty');
   });
 }
 

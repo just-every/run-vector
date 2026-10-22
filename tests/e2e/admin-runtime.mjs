@@ -154,7 +154,7 @@ await contract(
         await deleteAppliedLabel({ ...shared, label, issue });
         await archiveProject({ ...shared, project, issue });
         await archiveRestoreTeam({ ...shared, team, issue });
-        await exerciseAuditView(shared);
+        await exerciseAuditView({ ...shared, evidence });
         for (const receipt of immutableCycleReceipts)
           assert.deepEqual(
             runtime.sql(

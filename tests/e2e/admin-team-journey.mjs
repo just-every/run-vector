@@ -222,8 +222,10 @@ export async function removeUsedStatus({
           .n,
         0,
       );
-      await openAdministrationForm(page, "Rename " + to.name);
-      const last = page.getByRole("group", {
+      const teamRow = page.locator("details").filter({ has: page.getByRole("form", {
+        name: "Edit " + team.name, exact: true, includeHidden: true,
+      }) });
+      const last = teamRow.getByRole("group", {
         name: "Workflow status " + to.name,
         exact: true,
       });
