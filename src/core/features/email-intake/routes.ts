@@ -42,11 +42,8 @@ export function addEmailIntakeRoutes(app: Hono<AppEnvironment>) {
   }));
   app.put('/settings/teams/:teamId/email-intake',door(async c => {
     const teamId = idSchema.parse(c.req.param('teamId'));
-    const person = await requireTeamSettings(c.env.DB,c.get('operatorId'),teamId);
+    await requireTeamSettings(c.env.DB,c.get('operatorId'),teamId);
     const input = settingsSchema.parse(await readRequestJson(c.req.raw));
-    const prior = await c.env.DB.prepare('SELECT acknowledgement FROM team_email_intake WHERE team_id=?').bind(teamId).first<{acknowledgement:number}>();
-    if (input.acknowledgement && prior?.acknowledgement !== 1 && !['owner','admin'].includes(person.role))
-      throw new SettingsError('forbidden','Only an Owner or Admin may enable automatic acknowledgements.',403);
     const conflict = await c.env.DB.prepare('SELECT team_id FROM team_email_intake WHERE address=? AND team_id<>?').bind(input.address,teamId).first();
     if (conflict) throw new SettingsError('address_in_use','Another team uses this email address.',409);
     const at = new Date().toISOString();

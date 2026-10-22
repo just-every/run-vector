@@ -203,7 +203,7 @@ function TeamEditor({
       </form>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
       <TeamPermissions data={data} team={team} onChanged={onChanged} />
-      {access.settings && <TeamEmailIntake teamId={team.id} teamName={team.name} canAcknowledge={data.viewer.role === "owner" || data.viewer.role === "admin"} />}
+      {access.settings && <TeamEmailIntake teamId={team.id} teamName={team.name} />}
       <h3>Workflow</h3>
       <p>
         Each category keeps at least one status. The first status in a category

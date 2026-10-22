@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1e7933cbadb0e6a5f06bb1c03075d1243fdec0cdd87f23a6b2254f25c54e768d",
+      "sha256": "c411fb6c64f8e9b2c358899b4e324df99cb6ba8ade697410439825d815beed31",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "5e9d73aae72ee7519eeb0f4678cdc72a439d735a867843e2fed6fb10bc48d380",
+      "sha256": "4c2d59d08455940e8bd1b725d2d8f4c4d58d1bbdcede2acf22d4a96d72f25069",
       "executable": false
     },
     "DEMO.md": {
@@ -3981,7 +3981,7 @@
       "executable": false
     },
     "src/core/features/email-intake/routes.ts": {
-      "sha256": "22b7e5d7b6947da405a8a37e62826d8bdf7b5389d94edd99807c0c15376a0cca",
+      "sha256": "68ebb59c5561e2765e7dfc194628bb8b410a9dbd49ccc644c2db65fb52a41855",
       "executable": false
     },
     "src/core/features/email-intake/types.ts": {
@@ -4005,7 +4005,7 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/team-email-intake.tsx": {
-      "sha256": "7310cf54dc724db8e41081d565056a85665f7f906b7bc0a8799e976923c1df4d",
+      "sha256": "e127caaa33bd5dd115b4e30fa61a9c0d7fa52ba3aefa680d104d80049e9360e2",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {
@@ -5437,7 +5437,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "7b629b9a6e4e9eaeef17fac71358431bd8e333401fe90a0f38795d357cd7b952",
+      "sha256": "b04342ad9bcf0a1a64336e2e390ff17a8c0a0912e84cd040c6c80b1576861767",
       "executable": false
     },
     "src/core/features/streams/index.ts": {

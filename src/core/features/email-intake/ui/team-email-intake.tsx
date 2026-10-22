@@ -2,8 +2,8 @@ import { useState, type FormEvent } from "react";
 import { fetchJson, useApiResource } from "../../../app/api-client";
 import { emailSettingsSchema } from "./schema";
 
-export function TeamEmailIntake({ teamId, teamName, canAcknowledge }: {
-  teamId: string; teamName: string; canAcknowledge: boolean;
+export function TeamEmailIntake({ teamId, teamName }: {
+  teamId: string; teamName: string;
 }) {
   const path = `/api/settings/teams/${teamId}/email-intake`;
   const resource = useApiResource(path, emailSettingsSchema);
@@ -21,7 +21,7 @@ export function TeamEmailIntake({ teamId, teamName, canAcknowledge }: {
         body: JSON.stringify({
           enabled: fields.has("enabled"), address: fields.get("address"),
           allowedSenders: String(fields.get("allowedSenders") ?? "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
-          acknowledgement: canAcknowledge ? fields.has("acknowledgement") : resource.data.settings.acknowledgement,
+          acknowledgement: fields.has("acknowledgement"),
         }),
       });
       resource.publishReceipt(() => receipt);
@@ -45,8 +45,8 @@ export function TeamEmailIntake({ teamId, teamName, canAcknowledge }: {
           <label>Private intake address<input type="email" name="address" maxLength={254} defaultValue={data.settings.address} /></label>
           <label>Allowed sender addresses<textarea name="allowedSenders" rows={4} defaultValue={data.settings.allowedSenders.join("\n")} aria-describedby={`email-senders-${teamId}`} /></label>
           <p id={`email-senders-${teamId}`}>One full email address per line. Domains and wildcards are not accepted. An empty list admits no senders.</p>
-          <label className="admin-checkbox"><input type="checkbox" name="acknowledgement" defaultChecked={data.settings.acknowledgement} disabled={!canAcknowledge} />Send one acknowledgement with the issue identifier</label>
-          <p>Acknowledgements are off by default. Only Owners and Admins enable them. Internal comments and status changes are never emailed.</p>
+          <label className="admin-checkbox"><input type="checkbox" name="acknowledgement" defaultChecked={data.settings.acknowledgement} />Send one acknowledgement with the issue identifier</label>
+          <p>Acknowledgements are off by default. Team managers enable them explicitly. Internal comments and status changes are never emailed.</p>
           <button type="submit">{pending ? "Saving…" : "Save email intake"}</button>
         </fieldset>
       </form>
