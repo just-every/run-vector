@@ -1,5 +1,6 @@
 // Hono/D1/R2 domain tests. Start transport is verified against the emitted Worker.
 import { createServerApp } from '../../src/core/app/server'
+import { receiveIntakeMail } from '../../src/core/features/email-intake/inbound'
 import { scheduled } from '../../src/core/app/scheduled'
 import { VectorRestoreCoordinator } from '../../src/core/features/data/restore-coordinator'
 import type { WorkerBindings } from '../../src/core/app/bindings'
@@ -13,4 +14,4 @@ export class ArchiveTargetCoordinator extends VectorRestoreCoordinator {
   }
 }
 const app = createServerApp()
-export default { fetch: app.fetch, scheduled }
+export default { fetch: app.fetch, scheduled, email: receiveIntakeMail }

@@ -1,4 +1,5 @@
 import { auditAuthority } from '../features/audit/repository';
+import { receiveIntakeMail } from '../features/email-intake/inbound';
 import { SettingsError } from '../features/settings/repository';
 import { withDemo } from '../../../vendor/base/demo/index.mjs';
 import { seedDemo } from '../../demo';
@@ -129,6 +130,7 @@ export const documentWorker = withDemo({
 }, { seed: seedDemo });
 export default {
   ...documentWorker,
+  email: receiveIntakeMail,
   async fetch(...args: Parameters<typeof documentWorker.fetch>) {
     return encodePrivateDocument(args[0], await documentWorker.fetch(...args));
   },

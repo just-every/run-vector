@@ -1660,5 +1660,55 @@
     "cadence",
     "slot",
     "batch_id"
+  ],
+  "team_email_intake": [
+    "team_id",
+    "enabled",
+    "address",
+    "allowed_senders_json",
+    "acknowledgement",
+    "actor_operator_id",
+    "revision",
+    "created_at",
+    "updated_at"
+  ],
+  "intake_email_messages": [
+    "id",
+    "team_id",
+    "message_key",
+    "message_id",
+    "issue_id",
+    "comment_id",
+    "root_id",
+    "sender",
+    "requester_domain",
+    "subject",
+    "text_body",
+    "html_body",
+    "cc_json",
+    "references_json",
+    "status",
+    "error",
+    "created_at",
+    "updated_at"
+  ],
+  "intake_email_files": [
+    "message_id",
+    "file_id",
+    "content_id"
+  ],
+  "intake_email_deliveries": [
+    "id",
+    "issue_id",
+    "comment_id",
+    "root_id",
+    "request_id",
+    "message_id",
+    "kind",
+    "status",
+    "error",
+    "provider_message_id",
+    "created_at",
+    "updated_at"
   ]
 }

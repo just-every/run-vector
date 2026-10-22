@@ -17,6 +17,7 @@ export async function createOperatorIntake(
   actor: string,
   input: OperatorIntakeInput,
   now = new Date(),
+  onCommit?: (db: D1Database, created: { id: string; identifier: string }) => D1PreparedStatement[],
 ) {
   db = mutationDatabase(db, actor);
   const orm = drizzle(db);
@@ -109,7 +110,7 @@ export async function createOperatorIntake(
     );
   const event = { id: activityId, issueId, actor, at };
   let result;
-  try { result = await db.batch<{ id: string }>([creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[]},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...finalizeEvent(db,event)]); }
+  try { result = await db.batch<{ id: string }>([creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[]},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
   catch (error) { return creationError(db,team.id,error,true); }
   // The indexed issue insert returns its own identity independently of trigger writes.
   if (result[1].results.length !== 1 || result[1].results[0].id !== issueId)

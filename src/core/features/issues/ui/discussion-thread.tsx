@@ -6,6 +6,9 @@ import { NamedLinks } from "../../links/ui/named-links";
 import type { discussionSchema } from "../../discussion/schema";
 import { relativeTime } from "../../streams/ui/helpers";
 import "./discussion-thread.css";
+import type { IssueEmail } from "../../email-intake/ui/schema";
+import { CommentEmailDetails } from "../../email-intake/ui/email-discussion";
+import { EmailReply } from "../../email-intake/ui/email-reply";
 
 type DiscussionData = z.output<typeof discussionSchema>;
 type Comment = DiscussionData["comments"][number];
@@ -44,7 +47,7 @@ export function commentThreads(comments: Comment[]) {
   return [...roots.values()];
 }
 
-type Shared = { identifier: string; data: DiscussionData; busy: boolean; mutate: Mutate; onLinksChanged: () => void };
+type Shared = { identifier: string; data: DiscussionData; busy: boolean; mutate: Mutate; onLinksChanged: () => void; email?: IssueEmail | null; onEmailSent?: () => void };
 
 export function CommentThread({ root, replies, ...shared }: Shared & { root: Comment; replies: Comment[] }) {
   const [expanded, setExpanded] = useState(false),
@@ -98,6 +101,7 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
         </form>
       ) : null}
       <div className="comment-thread-actions">
+        {shared.email?.canReply && shared.email.thread && shared.onEmailSent && <EmailReply identifier={shared.identifier} requester={shared.email.thread.requester} cc={shared.email.thread.cc} parentId={root.id} onSent={shared.onEmailSent} />}
         {!replying ? <button type="button" disabled={busy} onClick={() => setReplying(true)}>Reply</button> : null}
         {root.resolvedAt ? (
           <>
@@ -116,7 +120,7 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
   );
 }
 
-function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChanged }: Shared & { comment: Comment }) {
+function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChanged, email }: Shared & { comment: Comment }) {
   const [editing, setEditing] = useState(false),
     [body, setBody] = useState("");
   return (
@@ -151,6 +155,7 @@ function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChang
             </SafeMarkdown>
           </div>
           <NamedLinks identifier={identifier} commentId={c.id} links={data.links} onRefresh={onLinksChanged} />
+          {email && <CommentEmailDetails email={email} commentId={c.id} identifier={identifier} />}
           {c.canEdit ? (
             <button disabled={busy} onClick={() => { setEditing(true); setBody(c.body ?? ""); }}>
               Edit comment

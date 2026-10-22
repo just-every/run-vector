@@ -90,6 +90,7 @@ export async function addComment(
   actor: string,
   body: string,
   parentId?: string,
+  onCommit?: (db: D1Database, commentId: string) => D1PreparedStatement[],
 ) {
   db = mutationDatabase(db, actor);
   const id = createUlid(new Date()),
@@ -111,6 +112,7 @@ export async function addComment(
       .bind(id, issueId, actor, body, thread, now, now),
     activity(db, actor, "comment.created", issueId, id, now, activityId),
     ...commentStatements(db,event), ...mentionStatements(db,event,body,id), ...finalizeEvent(db,event),
+    ...(onCommit?.(db,id) ?? []),
   ]);
   return id;
 }

@@ -33,6 +33,7 @@ export const matrix = {
   'teams.archive': row('Archive or unarchive a team, whatever its *Who manages team settings* permission (TEAM-003)', 'yes', 'yes', 'team-owner', 'no'),
   'issues.write': row('Create, edit and comment on issues in the member\'s teams (ISSUE-001, ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),
   'issues.copy': row('Copy an issue (ROLE-003/ROLE-008; ISSUE-023 action)', 'yes', 'yes', 'teams', 'invited-teams'),
+  'email.reply': row('Reply by email to an intake sender (TRIAGE-005)', 'yes', 'yes', 'teams', 'no'),
   'comments.own': row('Edit own comment; resolve or reopen any thread (ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),
   'media.write': row('Paste, drop or upload images and video into a description, comment or document they can edit, and tick its checklists (ISSUE-024, ISSUE-025)', 'yes', 'yes', 'yes', 'invited-teams'),
   'comments.edit-others': row('Edit another member\'s comment, including ticking its checklists (ISSUE-008, ISSUE-025)', 'no', 'no', 'no', 'no'),

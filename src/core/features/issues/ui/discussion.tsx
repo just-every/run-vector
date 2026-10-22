@@ -6,6 +6,9 @@ import { useHydrated } from '../../../app/initial-resources';
 import { NamedLinks } from "../../links/ui/named-links";
 import { discussionSchema } from "../../discussion/schema";
 import { CommentThread, commentThreads } from "./discussion-thread";
+import { issueEmailSchema } from "../../email-intake/ui/schema";
+import { EmailRequester } from "../../email-intake/ui/email-discussion";
+import { EmailReply } from "../../email-intake/ui/email-reply";
 
 
 export { CommentTimestamp } from "./discussion-thread";
@@ -19,6 +22,12 @@ export function Discussion({
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const hydrated = useHydrated();
+  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema);
+  function emailSent() {
+    email.refreshAfterMutation();
+    resource.refreshAfterMutation();
+    onRefresh();
+  }
   const resource = useApiResource(
       `/api/issues/${identifier}/discussion`,
       discussionSchema,
@@ -71,6 +80,8 @@ export function Discussion({
   return (
     <section className="detail-section">
       <h2>Discussion</h2>
+      {email.error && <p role="alert">{email.error.message} <button type="button" onClick={email.reload}>Retry email conversation</button></p>}
+      {email.data && <EmailRequester email={email.data} identifier={identifier} />}
       {resource.error ? (
         <p role="alert">
           {resource.error.message}
@@ -86,6 +97,8 @@ export function Discussion({
               identifier={identifier}
               data={resource.data!}
               busy={busy}
+              email={email.data}
+              onEmailSent={emailSent}
               mutate={mutate}
               onLinksChanged={() => {
                 resource.refreshAfterMutation();
@@ -117,6 +130,7 @@ export function Discussion({
           Add comment
         </button>
       </form>
+      {email.data?.canReply && email.data.thread && <EmailReply identifier={identifier} requester={email.data.thread.requester} cc={email.data.thread.cc} onSent={emailSent} />}
       <NamedLinks
         identifier={identifier}
         links={resource.data?.links ?? []}

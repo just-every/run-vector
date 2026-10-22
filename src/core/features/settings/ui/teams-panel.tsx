@@ -6,6 +6,7 @@ import { teamAccess } from "./team-access";
 import { TeamMembers } from "./team-members";
 import { TeamPermissions } from "./team-permissions";
 import { decide } from "../../roles/policy";
+import { TeamEmailIntake } from "../../email-intake/ui/team-email-intake";
 
 import type { Administration } from "../../administration/schema";
 type Team = Administration["teams"][number];
@@ -202,6 +203,7 @@ function TeamEditor({
       </form>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
       <TeamPermissions data={data} team={team} onChanged={onChanged} />
+      {access.settings && <TeamEmailIntake teamId={team.id} teamName={team.name} canAcknowledge={data.viewer.role === "owner" || data.viewer.role === "admin"} />}
       <h3>Workflow</h3>
       <p>
         Each category keeps at least one status. The first status in a category

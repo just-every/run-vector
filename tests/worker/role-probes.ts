@@ -1,3 +1,4 @@
+import { seedIntakeForTeam, recordedReply } from './email-intake-fixture';
 import { expect } from "vitest";
 import type { RowId } from "../../src/core/features/roles/matrix";
 import type { Kind, Person, roleWorkspace } from "./role-fixture";
@@ -61,6 +62,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
   };
 
   return {
+    "email.reply": { session: async (_who, actor, teamId) => { const intake=await seedIntakeForTeam(teamId,w.cookie); return async () => (await recordedReply(actor.cookie,intake.identifier,"The team is investigating.")).response; } },
     "members.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `invitee${unique()}@roles.test`, displayName: "Invitee", role: "member" }) },
     "leaders.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `leader${unique()}@roles.test`, displayName: "Leader", role: "admin" }) },
     "workspace.leave": { session: async (who) => { const leaving = await w.fresh(who); return () => leaving.call(`/settings/operators/${leaving.id}`, "DELETE"); } },

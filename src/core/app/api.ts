@@ -1,4 +1,5 @@
 import { addAuditRoutes } from '../features/audit/routes';
+import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
 import { addIssueCopyRoutes } from "../features/issue-copy/routes";
 import { projectPortfolioQuery } from "../features/projects/portfolio";
@@ -353,6 +354,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   });
 
   addSearchRoutes(app);
+  addEmailIntakeRoutes(app);
 
   addNotificationRoutes(app);
   addViewRoutes(app);

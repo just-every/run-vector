@@ -1,0 +1,25 @@
+.email-requester,
+.email-reply {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.email-reply {
+  width: 100%;
+  margin-left: 0;
+}
+.email-attachment {
+  display: grid;
+  justify-items: start;
+  min-width: 0;
+  gap: 0.4rem;
+  margin: 0.5rem 0;
+}
+.email-attachment img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.email-original-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

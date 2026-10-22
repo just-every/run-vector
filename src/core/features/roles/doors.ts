@@ -120,6 +120,8 @@ export const doors: Door[] = [
   // Archiving is not a team setting: only team owners, Owners and Admins archive (TEAM-003).
   { method: 'PATCH', path: '/settings/teams/:id', row: async request => await field(request, 'archived') !== undefined ? 'teams.archive' : 'teams.settings', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/housekeeping', row: 'teams.settings', teams: team('id') },
+  { method: 'GET', path: '/settings/teams/:teamId/email-intake', row: 'teams.settings', teams: team('teamId') },
+  { method: 'PUT', path: '/settings/teams/:teamId/email-intake', row: 'teams.settings', teams: team('teamId') },
   { method: 'POST', path: '/settings/teams/:id/housekeeping/preview', row: 'teams.settings', teams: team('id') },
   { method: 'PATCH', path: '/teams/:teamId/subissue-rule', row: 'teams.settings', teams: team('teamId') },
   { method: 'POST', path: '/settings/teams/:id/statuses', row: 'teams.workflow', teams: team('id') },
@@ -142,6 +144,8 @@ export const doors: Door[] = [
   { method: 'POST', path: '/issues/order', row: 'issues.write', teams: bodyTeam },
   { method: 'POST', path: '/issues/undo', row: 'issues.write' },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
+  { method: 'GET', path: '/issues/:identifier/email-intake', row: 'issues.write', teams: issue },
+  { method: 'POST', path: '/issues/:identifier/email-replies', row: 'email.reply', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/comments/:itemId', row: commentEdit('comments.own'), teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/comments/:itemId', row: commentDeletion, teams: issue },
   { method: 'POST', path: '/issues/:identifier/comments/:itemId/resolution', row: 'comments.own', teams: issue },
