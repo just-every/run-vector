@@ -1,5 +1,5 @@
-import { developmentSender } from '../auth/development.server';
-import { hostedMailSender } from '../../platform/mail';
+import { notificationSender } from './mail-sender';
+import { routePendingNotifications } from './channel-intents';
 import seed from "../../../../seed.json";
 // Pinned Base owns transport serialization, validation and single submission.
 // @ts-expect-error Base's native ESM facade has no TypeScript declarations.
@@ -7,7 +7,6 @@ import * as baseMail from "../../../../vendor/base/mail/index.mjs";
 const { MailValidationError } = baseMail;
 import type { WorkerBindings } from "../../app/bindings";
 import { notificationEmailAvailable } from "./context";
-import { visibleRecipient } from "./events";
 export type Delivery = {
   id: string;
   notification_id: string;
@@ -36,25 +35,15 @@ export type MailDependencies = {
 };
 export const CLAIM_TIMEOUT_MS = 5 * 60_000;
 export const RETRY_WINDOW_MS = 24 * 60 * 60_000;
-type AdmittedDelivery = Delivery & { assignment: number; mention: number };
-export function notificationMessage(env: WorkerBindings, delivery: AdmittedDelivery) {
+type AdmittedDelivery = Delivery & { assignment: number; mention: number; message_text: string; message_subject: string };
+/** Existing single-event rendering helper remains source-compatible for erasure snapshots. */
+export function notificationMessage(env: WorkerBindings, delivery: Delivery & {assignment: number; mention: number}) {
   const reason = delivery.assignment && delivery.mention
     ? "This issue was assigned to you, and you were mentioned."
-    : delivery.assignment
-      ? "This issue was assigned to you."
-      : "You were mentioned on this issue.";
-  return {
-    deliveryId: delivery.id,
-    from: env.MAIL_FROM!,
-    to: [delivery.email],
+    : delivery.assignment ? "This issue was assigned to you." : "You were mentioned on this issue.";
+  return {deliveryId: delivery.id,from: env.MAIL_FROM!,to: [delivery.email],
     subject: `${delivery.identifier}: ${delivery.title}`,
-    text: `${delivery.identifier}: ${delivery.title}\n${reason}\nBy: ${delivery.actor_name ?? "Vector"}\n\n${delivery.app_link}\nSign in to view this issue.`,
-  };
-}
-function senderFor(env: WorkerBindings, dependencies: MailDependencies) {
-  if (env.RER_DEMO === "1" || env.MAIL_MODE === "local-outbox")
-    return developmentSender(env);
-  return hostedMailSender(env, dependencies.fetch);
+    text: `${delivery.identifier}: ${delivery.title}\n${reason}\nBy: ${delivery.actor_name ?? "Vector"}\n\n${delivery.app_link}\nSign in to view this issue.`};
 }
 /** Current recipient and issue authority, independent of the actor's old session. */
 async function admitted(
@@ -63,26 +52,12 @@ async function admitted(
   token: string,
 ): Promise<AdmittedDelivery | null> {
   if (!notificationEmailAvailable(env)) return null;
-  const row = await env.DB.prepare(
-    `SELECT d.*,o.email,
-    COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=d.actor_id),d.actor_name) AS current_actor_name,
-    EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='assignment'
-      AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value)) AS assignment,
-    EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='mention'
-      AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value)) AS mention
-    FROM notification_deliveries d JOIN notifications n ON n.id=d.notification_id
-    JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=d.recipient_id AND o.workspace_id=t.workspace_id
-    WHERE d.id=? AND d.claim_token=? AND d.status='claimed' AND ${visibleRecipient}
-    AND (d.actor_id IS NULL OR d.actor_id<>o.id)
-    AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
-    AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=d.id)
-    AND COALESCE((SELECT email_enabled FROM notification_preferences WHERE operator_id=o.id),1)=1
-    AND NOT EXISTS(SELECT 1 FROM issue_notification_mutes m WHERE m.issue_id=i.id AND m.operator_id=o.id)
-    AND EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value IN ('assignment','mention')
-      AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`,
-  )
-    .bind(id, token)
-    .first<AdmittedDelivery & {current_actor_name:string|null}>();
+  const row = await env.DB.prepare(`SELECT d.*,m.email,m.text message_text,m.subject message_subject,
+    m.assignment,m.mention,m.actor_name current_actor_name FROM notification_deliveries d
+    JOIN notification_mail_messages m ON m.delivery_id=d.id AND m.claim_token=d.claim_token
+    WHERE d.id=? AND d.claim_token=? AND d.email_mode='immediate'
+    AND NOT EXISTS(SELECT 1 FROM notification_digest_items item WHERE item.notification_id=d.notification_id)`)
+    .bind(id,token).first<AdmittedDelivery & {current_actor_name: string|null}>();
   return row ? {...row,actor_name:row.current_actor_name} : null;
 }
 async function settle(
@@ -130,24 +105,25 @@ export async function drainNotificationMail(
     at = now.toISOString(),
     db = env.DB;
   if (await db.prepare('SELECT id FROM vector_restore_status WHERE effects_held=1').first()) return {processed:0};
+  await routePendingNotifications(env,options.eventIds);
   if (options.scheduled)
     await db.batch([
       db
         .prepare(
           `UPDATE notification_delivery_attempts SET status='uncertain',reason='claim_interrupted',settled_at=? WHERE status='claimed'
-      AND delivery_id IN(SELECT id FROM notification_deliveries WHERE status='claimed' AND claimed_at<? AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id))`,
+      AND delivery_id IN(SELECT id FROM notification_deliveries WHERE email_mode='immediate' AND status='claimed' AND claimed_at<? AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id))`,
         )
         .bind(at, new Date(now.getTime() - CLAIM_TIMEOUT_MS).toISOString()),
       db
         .prepare(
-          `UPDATE notification_deliveries SET status='uncertain',reason='claim_interrupted',updated_at=? WHERE status='claimed' AND claimed_at<? AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id)`,
+          `UPDATE notification_deliveries SET status='uncertain',reason='claim_interrupted',updated_at=? WHERE email_mode='immediate' AND status='claimed' AND claimed_at<? AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id)`,
         )
         .bind(at, new Date(now.getTime() - CLAIM_TIMEOUT_MS).toISOString()),
     ]);
   const rows = (
     await db
       .prepare(
-        `SELECT id FROM notification_deliveries WHERE NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id) AND (status='pending' ${options.scheduled ? "OR (status='retry' AND next_attempt_at<=?)" : ""})
+        `SELECT id FROM notification_deliveries WHERE email_mode='immediate' AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id) AND (status='pending' ${options.scheduled ? "OR (status='retry' AND next_attempt_at<=?)" : ""})
     ${options.eventIds ? "AND notification_id IN(SELECT n.id FROM notifications n JOIN notification_events e ON e.event_id=n.event_id WHERE n.event_id IN(SELECT value FROM json_each(?)))" : ""} ORDER BY created_at,id LIMIT ?`,
       )
       .bind(
@@ -166,7 +142,7 @@ export async function drainNotificationMail(
       db
         .prepare(
           `UPDATE notification_deliveries SET status='claimed',claim_token=?,claimed_at=?,attempts=attempts+1,updated_at=?
-        WHERE id=? AND attempts<3 AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1) AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id) AND (status='pending' ${options.scheduled ? "OR (status='retry' AND next_attempt_at<=?)" : ""})`,
+        WHERE id=? AND email_mode='immediate' AND attempts<3 AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1) AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=notification_deliveries.id) AND (status='pending' ${options.scheduled ? "OR (status='retry' AND next_attempt_at<=?)" : ""})`,
         )
         .bind(token, at, at, id, ...(options.scheduled ? [at] : [])),
       db
@@ -203,10 +179,10 @@ export async function drainNotificationMail(
     }
     // Construct the facade before final admission. From admission's resolution to
     // send invocation there is no hook, timer, or intervening asynchronous await.
-    let sender: ReturnType<typeof senderFor> | null;
+    let sender: ReturnType<typeof notificationSender> | undefined | null;
     try {
       sender = notificationEmailAvailable(env)
-        ? senderFor(env, options.dependencies ?? {})
+        ? notificationSender(env, options.dependencies?.fetch)
         : null;
     } catch {
       await settle(
@@ -235,7 +211,8 @@ export async function drainNotificationMail(
     }
     let result: MailResult;
     try {
-      result = await sender.send(notificationMessage(env, delivery));
+      result = await sender.send({deliveryId: delivery.id,from: env.MAIL_FROM!,to: [delivery.email],
+        subject: delivery.message_subject,text: delivery.message_text});
     } catch (error) {
       // Validation failures are definitely local. Development persistence errors
       // and unknown exceptions may have accepted a submission: never replay.

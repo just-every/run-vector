@@ -21,7 +21,7 @@ export async function disabledEmailJourney({
         name: "Notifications",
         exact: true,
       });
-      const checkbox = section.getByLabel("Email assignments and mentions", {
+      const checkbox = section.getByLabel("Allow email notifications", {
         exact: true,
       });
       await checkbox.waitFor();

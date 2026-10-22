@@ -32,7 +32,7 @@ export function PersonalTimePanel() {
       <div className="personal-time-hours"><label>Working day starts<input type="time" required value={values.workingHoursStart} onChange={event=>edit({workingHoursStart:event.target.value})}/></label>
       <label>Working day ends<input type="time" required value={values.workingHoursEnd} onChange={event=>edit({workingHoursEnd:event.target.value})}/></label></div>
       <fieldset className="personal-time-days"><legend>Working days</legend>{days.map((day,index)=><label key={day}><input type="checkbox" checked={values.workingDays.includes(index+1)} onChange={event=>edit({workingDays:event.target.checked?[...values.workingDays,index+1]:values.workingDays.filter(value=>value!==index+1)})}/>{day}</label>)}</fieldset>
-      <p>Working hours are saved for your account. Due reminders keep the reminder time above. Email digests and push quiet hours are not available yet.</p>
+      <p>Email digests follow your saved timezone, working days and working hours. Due reminders keep the reminder time above. Push quiet hours are not available yet.</p>
       <button type="submit">{busy?'Saving…':'Save your time preferences'}</button>
     </fieldset></form>{message&&<p role="status">{message}</p>}
   </section>;

@@ -1,6 +1,7 @@
 import type {WorkerBindings} from '../../../app/bindings';
 import type {DeliveryProtocol,DeliveryService,Outcome,WireRequest,WireResponse} from '../../../../../vendor/base/integrations';
 import {visibleRecipient} from '../../notifications/events';
+import {effectiveSlackSql,unmutedCauseSql} from '../../notifications/channel-sql';
 import {IntegrationError} from '../errors';
 import {classifyProvider,providerSend,slackToken} from '../channels/provider';
 import {credentialProblem} from '../channels/settings';
@@ -10,13 +11,14 @@ import {directDestination} from './intent';
 import seed from '../../../../../seed.json';
 /** Mirrors immediate mail: three attempts, Cron retries after one and then five minutes. */
 const retryPolicy={maxAttempts:3,retryDelaysMs:[60_000,300_000]};
-type Target={identifier:string;title:string;version:number;dueDate:string|null;statusId:string;statusCategory:string;teamId:string;actor:string|null;slackUserId:string;assignment:number;mention:number};
-const routed=(kind:string)=>`EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='${kind}' AND cause.value IN(SELECT value FROM json_each(l.dm_kinds))
+type Target={identifier:string;title:string;version:number;dueDate:string|null;statusId:string;statusCategory:string;teamId:string;actor:string|null;slackUserId:string;assignment:number;mention:number;kindsJson:string};
+const routed=(kind:string)=>`EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='${kind}' AND ${effectiveSlackSql()}=1
  AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`;
 /** NOTIFY-006's admission rules, with the member's Slack link and choice in place of the email preference. */
 export async function directTarget(env:WorkerBindings,workspace:string,id:string):Promise<Target|null>{
  const row=await env.DB.prepare(`SELECT i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=n.actor_id),n.actor_name) AS actor,l.slack_user_id AS slackUserId,
-  ${routed('assignment')} AS assignment,${routed('mention')} AS mention
+  ${routed('assignment')} AS assignment,${routed('mention')} AS mention,
+  (SELECT json_group_array(cause.value) FROM json_each(n.causes_json) cause WHERE ${effectiveSlackSql()}=1 AND ${unmutedCauseSql}) kindsJson
   FROM vector_webhook_events e JOIN notifications n ON n.id=json_extract(e.body,'$.notificationId') AND n.recipient_id=json_extract(e.body,'$.recipientId')
   JOIN issues i ON i.id=n.issue_id JOIN workflow_statuses st ON st.id=i.status_id JOIN teams t ON t.id=i.team_id AND t.workspace_id=e.workspace_id
   JOIN operators o ON o.id=n.recipient_id AND o.workspace_id=t.workspace_id
@@ -28,7 +30,7 @@ export async function directTarget(env:WorkerBindings,workspace:string,id:string
   AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id)
   AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id)
   AND NOT EXISTS(SELECT 1 FROM issue_notification_mutes m WHERE m.issue_id=i.id AND m.operator_id=o.id)`).bind(id,workspace).first<Target>();
- return row&&(row.assignment||row.mention)?row:null;
+ return row&&JSON.parse(row.kindsJson).length?row:null;
 }
 /** The statuses the issue-edit door accepts as a next status, in workflow order. */
 export async function directIssue(env:WorkerBindings,issue:Omit<DirectIssue,'statuses'>&{teamId:string}):Promise<DirectIssue>{
@@ -44,7 +46,7 @@ export async function enqueueDirectMessages(env:WorkerBindings,workspace:string,
  for(const {id} of pending){
   const target=await directTarget(env,workspace,id);
   if(target){
-   const body=directBody(env.APP_ORIGIN,await directIssue(env,target),kindHeadline(Boolean(target.assignment),Boolean(target.mention)),target.actor,actions);
+   const body=directBody(env.APP_ORIGIN,await directIssue(env,target),kindHeadline(Boolean(target.assignment),Boolean(target.mention),JSON.parse(target.kindsJson)),target.actor,actions);
    try{await service.enqueue({id,tenant:workspace,destinationId:directDestination,event:'slack.dm',protocol:'slack_dm',body},retryPolicy);}
    catch(error){if(error instanceof IntegrationError)continue;throw error;}
    queued.push(id);
@@ -70,7 +72,12 @@ export async function sendDirect(env:WorkerBindings,workspace:string,wire:WireRe
   let channel:string|null=null;
   try{const value=JSON.parse(opened.body);if(opened.status===200&&value.ok===true&&typeof value.channel?.id==='string'&&/^D[A-Z0-9]{2,30}$/.test(value.channel.id))channel=value.channel.id;}catch{return refused('open_unknown');}
   if(!channel)return {...opened,headers:{...opened.headers,'vector-dm-stage':'open'}};
-  if(!await directTarget(env,workspace,id))return refused('suppressed');
+  const current=await directTarget(env,workspace,id);
+  if(!current)return refused('suppressed');
+  const expectedHeadline=kindHeadline(Boolean(current.assignment),Boolean(current.mention),JSON.parse(current.kindsJson));
+  const original=JSON.parse(wire.body) as {text?:string};
+  const expectedPrefix=(expectedHeadline+': ').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  if(!original.text?.startsWith(expectedPrefix))return refused('suppressed');
   return providerSend({url:wire.url,headers,body:'{"channel":'+JSON.stringify(channel)+','+wire.body.slice(1)});
  };
  if(env.RER_DEMO==='1'){const {demoEffect}=await import('../../../../../vendor/base/demo/index.mjs');return demoEffect(send,()=>({status:200,headers:{},body:'{"ok":true}'}));}

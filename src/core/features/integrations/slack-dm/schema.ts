@@ -1,6 +1,7 @@
 import {z} from 'zod';
-/** The events Vector also mails today (NOTIFY-006). NOTIFY-007 owns every other event's channel choice. */
-export const directKinds=['assignment','mention'] as const;
+import {notificationKinds} from '../../notifications/schema';
+/** Every implemented Inbox event can be routed to a confirmed Slack account. */
+export const directKinds=notificationKinds;
 export type DirectKind=typeof directKinds[number];
 export const slackDirectPreferences=z.object({
  available:z.boolean(),

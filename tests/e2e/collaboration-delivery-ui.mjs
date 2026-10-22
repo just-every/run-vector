@@ -88,13 +88,13 @@ export async function deliveryPresentation({
       });
       await receipt(peer, "/api/settings/notifications", "PATCH", () =>
         section
-          .getByLabel("Email assignments and mentions", { exact: true })
+          .getByLabel("Allow email notifications", { exact: true })
           .click(),
       );
       await poll(
         () =>
           section
-            .getByLabel("Email assignments and mentions", { exact: true })
+            .getByLabel("Allow email notifications", { exact: true })
             .isChecked(),
         (checked) => checked,
         "email reenabled checked",

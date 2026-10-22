@@ -669,7 +669,8 @@
     "next_attempt_at",
     "reason",
     "created_at",
-    "updated_at"
+    "updated_at",
+    "email_mode"
   ],
   "notification_delivery_attempts": [
     "id",
@@ -1569,7 +1570,13 @@
     "created_at",
     "updated_at"
   ],
-  "vector_slack_allowed_channels": ["workspace_id", "channel_id", "channel_name", "created_by", "created_at"],
+  "vector_slack_allowed_channels": [
+    "workspace_id",
+    "channel_id",
+    "channel_name",
+    "created_by",
+    "created_at"
+  ],
   "vector_slack_installations": [
     "workspace_id",
     "team_name",
@@ -1600,5 +1607,55 @@
   "vector_slack_request_keys": [
     "key",
     "received_at"
+  ],
+  "notification_channel_defaults": [
+    "workspace_id",
+    "kind",
+    "email_mode",
+    "slack_enabled"
+  ],
+  "notification_channel_overrides": [
+    "operator_id",
+    "kind",
+    "email_mode",
+    "slack_enabled"
+  ],
+  "notification_channel_receipts": [
+    "notification_id"
+  ],
+  "notification_digest_batches": [
+    "id",
+    "workspace_id",
+    "recipient_id",
+    "cadence",
+    "slot",
+    "status",
+    "attempts",
+    "claim_token",
+    "claimed_at",
+    "next_attempt_at",
+    "reason",
+    "created_at",
+    "updated_at"
+  ],
+  "notification_digest_items": [
+    "notification_id",
+    "batch_id"
+  ],
+  "notification_digest_attempts": [
+    "id",
+    "batch_id",
+    "number",
+    "status",
+    "reason",
+    "started_at",
+    "settled_at"
+  ],
+  "notification_digest_windows": [
+    "workspace_id",
+    "recipient_id",
+    "cadence",
+    "slot",
+    "batch_id"
   ]
 }

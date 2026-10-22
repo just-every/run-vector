@@ -3,6 +3,7 @@ import { mentionedOperators } from "./mentions.server";
 import { notificationContext } from "./context";
 import type { NotificationKind } from "./schema";
 import { directIntent } from "../integrations/slack-dm/intent";
+import { emailIntent, routingReceipt } from "./channel-intents";
 export type CollaborationEvent = {
   id: string;
   issueId: string;
@@ -279,20 +280,11 @@ export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
       )
       .bind(event.id),
   ];
-  if (context?.available)
-    statements.push(
-      db
-        .prepare(
-          `INSERT OR IGNORE INTO notification_deliveries(id,notification_id,recipient_id,actor_id,actor_name,identifier,title,app_link,status,created_at,updated_at)
-    SELECT n.id,n.id,n.recipient_id,n.actor_id,n.actor_name,i.identifier,i.title,?||'/app/issues/'||i.identifier,'pending',n.created_at,n.created_at
-    FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN operators o ON o.id=n.recipient_id
-    WHERE n.event_id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=n.event_id) AND ${visibleRecipient} AND COALESCE((SELECT email_enabled FROM notification_preferences WHERE operator_id=o.id),1)=1
-    AND EXISTS(SELECT 1 FROM json_each(n.causes_json) WHERE value IN ('assignment','mention'))`,
-        )
-        .bind(context.origin.replace(/\/$/, ""), event.id),
-    );
+  const predicate = "n.event_id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=n.event_id)";
+  if (context?.available) statements.push(emailIntent(db,predicate,[event.id],context.origin));
   // SLACK-004: a linked member's chosen Slack direct message, beside the mail intent.
   statements.push(directIntent(db, event.id));
+  if (context) statements.push(routingReceipt(db,predicate,[event.id]));
   statements.push(
     db
       .prepare(

@@ -6,6 +6,9 @@ import {slackCall,slackToken} from '../channels/provider';
 import {credentialProblem} from '../channels/settings';
 import {signingIdentity} from './signing';
 import type {DirectKind,SlackDirectPreferences,SlackLookup} from './schema';
+import {channelPreferences} from '../../notifications/channel-preferences';
+import {effectiveEmailSql} from '../../notifications/channel-sql';
+import {notificationKinds} from '../../notifications/schema';
 type Member={id:string;workspace:string;email:string};
 type SlackUser={id?:unknown;team_id?:unknown;name?:unknown;real_name?:unknown;deleted?:unknown;is_bot?:unknown;profile?:{display_name?:unknown;real_name?:unknown}};
 const text=(value:unknown)=>typeof value==='string'&&value.trim()?value.trim().slice(0,200):null;
@@ -60,7 +63,11 @@ export async function unlinkSlack(env:WorkerBindings,operatorId:string){
 export async function chooseDirectKinds(env:WorkerBindings,operatorId:string,kinds:DirectKind[]){
  const current=await member(env,operatorId);
  if(!(await installation(env,current.workspace)).connected)throw new IntegrationError(409,'slack_unavailable','Slack direct messages are unavailable until an Admin connects Slack in Settings → Integrations.');
- const [result]=await env.DB.batch([env.DB.prepare('UPDATE vector_slack_member_links SET dm_kinds=? WHERE operator_id=? AND workspace_id=?').bind(JSON.stringify(kinds),operatorId,current.workspace)]);
+ const [result]=await env.DB.batch([env.DB.prepare('UPDATE vector_slack_member_links SET dm_kinds=? WHERE operator_id=? AND workspace_id=?').bind(JSON.stringify(kinds),operatorId,current.workspace),
+  ...notificationKinds.map(kind=>env.DB.prepare(`INSERT INTO notification_channel_overrides(operator_id,kind,email_mode,slack_enabled)
+    SELECT o.id,?,${effectiveEmailSql('?', 'o.id', 'o.workspace_id')},? FROM operators o WHERE o.id=?
+    AND EXISTS(SELECT 1 FROM vector_slack_member_links WHERE operator_id=o.id)
+    ON CONFLICT(operator_id,kind) DO UPDATE SET slack_enabled=excluded.slack_enabled`).bind(kind,kind,kind,kind,Number(kinds.includes(kind)),operatorId))]);
  if(!result.meta.changes)throw new IntegrationError(409,'slack_link_required','Link your Slack account before choosing Slack direct messages.');
 }
 function deliveryReason(state:string,outcome:string|null){
@@ -80,7 +87,7 @@ export async function directPreferences(env:WorkerBindings,operatorId:string):Pr
   available:slack.connected,
   reason:slack.connected?null:slack.needsAttention?'Slack needs attention: an Admin must re-enter the Slack bot token in Settings → Integrations.':'Slack is not connected: an Admin connects it in Settings → Integrations.',
   actionsEnabled:slack.actions,email:current.email,
-  link:link?{name:link.name,teamName:slack.teamName,linkedAt:link.linkedAt,kinds:JSON.parse(link.kinds)}:null,
+  link:link?{name:link.name,teamName:slack.teamName,linkedAt:link.linkedAt,kinds:(await channelPreferences(env.DB,operatorId)).channels.filter(row=>row.slack).map(row=>row.kind)}:null,
   deliveries:deliveries.filter(row=>!String(row.outcome).includes('"slack_dm_suppressed"')).map(({outcome,...row})=>({...row,reason:deliveryReason(row.state,outcome)})),
  };
 }

@@ -105,7 +105,7 @@ export async function collaborationPreferences({
       });
       assert.equal(
         await preferences
-          .getByLabel("Email assignments and mentions", { exact: true })
+          .getByLabel("Allow email notifications", { exact: true })
           .isEnabled(),
         true,
         "configured email preference remains enabled",
@@ -119,13 +119,13 @@ export async function collaborationPreferences({
       );
       await receipt(peer, "/api/settings/notifications", "PATCH", () =>
         preferences
-          .getByLabel("Email assignments and mentions", { exact: true })
+          .getByLabel("Allow email notifications", { exact: true })
           .click(),
       );
       await poll(
         () =>
           preferences
-            .getByLabel("Email assignments and mentions", { exact: true })
+            .getByLabel("Allow email notifications", { exact: true })
             .isChecked(),
         (checked) => !checked,
         "email optout control unchecked",

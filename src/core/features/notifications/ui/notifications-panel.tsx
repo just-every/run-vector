@@ -5,28 +5,11 @@ import {
   type NotificationKind,
   type NotificationSettings,
 } from "../schema";
-import type { DirectKind } from "../../integrations/slack-dm/schema";
 import { preferencesSchema, subscriptionSchema } from "./data";
 import { SlackDirectMessages } from "./slack-direct-messages";
+import { NotificationChannels } from "./notification-channels";
+import { channelLabels } from "./channel-data";
 import "./notifications.css";
-const labels: Record<NotificationKind, string> = {
-  assignment: "Assignments",
-  mention: "Mentions",
-  comment: "Followed comments",
-  thread_reopened: "Reopened threads (Inbox only)",
-  intake_return: "Deferred intake returns",
-  unblocked: "Last blocker resolved",
-  due_reminder: "Due reminders (Inbox only)",
-  status: "Followed status changes",
-  completed: "Followed issues completed",
-  canceled: "Followed issues canceled",
-  duplicate: "Followed issues marked duplicate",
-  archived: "Followed issues archived",
-  urgent: "Followed issues raised to Urgent",
-  blocking: "Followed blocking changes",
-  due_changed: "Followed due date changes",
-  reminder: "Personal reminders (Inbox only)",
-};
 
 export function EmailUnavailableNotice() {
   return (
@@ -63,7 +46,7 @@ export function NotificationsPanel() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   async function save(
-    patch: { emailEnabled?: boolean; mutedKinds?: NotificationKind[]; slackKinds?: DirectKind[] },
+    patch: { emailEnabled?: boolean; mutedKinds?: NotificationKind[] },
     identifier?: string,
   ) {
     if (pending) return;
@@ -135,6 +118,7 @@ export function NotificationsPanel() {
       )}
       {message && <p role="status">{message}</p>}
       {error && <p role="alert">{error}</p>}
+      {resource.data && data && <NotificationChannels settings={data} />}
       {resource.data && data && (
         <fieldset disabled={pending || resource.loading}>
           <legend>Your notification preferences</legend>
@@ -147,8 +131,9 @@ export function NotificationsPanel() {
                 void save({ emailEnabled: event.target.checked })
               }
             />
-            Email assignments and mentions
+            Allow email notifications
           </label>
+          <p>Pausing email stops immediate notifications and digests. Your event channel choices are kept.</p>
           {!data.emailAvailable && <EmailUnavailableNotice />}
           <SlackDirectMessages
             slack={data.slack}
@@ -156,7 +141,6 @@ export function NotificationsPanel() {
               setData(value);
               resource.reload();
             }}
-            onKinds={(slackKinds) => void save({ slackKinds })}
           />
           <p>Mute event types in your inbox, email and Slack direct messages:</p>
           <div className="notification-mutes">
@@ -173,7 +157,7 @@ export function NotificationsPanel() {
                     })
                   }
                 />
-                {labels[kind]}
+                {channelLabels[kind]}
               </label>
             ))}
           </div>

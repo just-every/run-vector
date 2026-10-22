@@ -1,7 +1,9 @@
 import { env } from "cloudflare:workers";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { contractWith } from "../contract-tags";
-import { actor, invite, request } from "./base-auth-fixture";
+import { actor, bindings, invite, request } from "./base-auth-fixture";
+import { scheduled } from "../../src/core/app/scheduled";
+import { mentionToken } from "../../src/core/features/notifications/mention-token";
 import {
   beforeReminderClaim,
   reminderFixture,
@@ -10,7 +12,7 @@ import {
 
 contractWith(
   it,
-  "NOTIFY-010 NOTIFY-005 OPS-003",
+  "NOTIFY-010 NOTIFY-005 NOTIFY-007 OPS-003",
   "personal clocks inherit workspace time, isolate settings and fence exactly-once scheduled reminders",
   async () => {
     const f = await reminderFixture();
@@ -212,6 +214,7 @@ contractWith(
         .bind(easternIssue.id, pacificIssue.id)
         .first("n"),
     ).toBe(2);
+    await digestClockScenario(f, pacificCookie, pacific);
     expect(
       (await f.call("/settings/operators/" + pacific, "DELETE")).status,
     ).toBe(200);
@@ -227,3 +230,130 @@ contractWith(
     ).toBe(0);
   },
 );
+
+/** Native choices enqueue real Inbox events; only the SendGrid boundary is replaced. */
+async function digestClockScenario(
+  f: Awaited<ReturnType<typeof reminderFixture>>,
+  cookie: string,
+  person: string,
+) {
+  const own = (path: string, method: string, body: unknown) =>
+    request("/api" + path, method, body, cookie);
+  const save = async (path: string, method: string, body: unknown) => {
+    const response = await own(path, method, body);
+    expect(response.status, await response.clone().text()).toBe(200);
+  };
+  await f.configure("America/New_York");
+  await save("/settings/personal-time", "PATCH", {
+    timezone: "America/Los_Angeles", workingHoursStart: "09:00",
+    workingHoursEnd: "17:00", workingDays: [1, 2, 3, 4, 5],
+  });
+  await save("/settings/notifications", "PATCH", { emailEnabled: true });
+  await save("/settings/notifications/channels", "PUT", { channels: [
+    { kind: "mention", emailMode: "daily", slack: false },
+    { kind: "comment", emailMode: "hourly", slack: false },
+  ] });
+  const received: { personalizations: { to: { email: string }[] }[]; content: { value: string }[] }[] = [];
+  let mode: "accepted" | "retry" | "uncertain" = "accepted";
+  const network = vi.spyOn(globalThis, "fetch").mockImplementation(async (input, init) => {
+    expect(new URL(String(input)).origin).toBe("https://api.sendgrid.com");
+    expect(init).toMatchObject({ method: "POST", redirect: "manual" });
+    received.push(JSON.parse(String(init?.body)));
+    if (mode === "uncertain") throw Error("Provider acknowledgement lost");
+    return new Response(null, { status: mode === "retry" ? 429 : 202 });
+  });
+  const runtime = { ...bindings, APP_ORIGIN: "https://vector.test", MAIL_MODE: "production",
+    MAIL_PROVIDER: "sendgrid", MAIL_API_KEY: "synthetic-vector-1001", NOTIFICATION_EMAIL_ENABLED: "true" };
+  const at = async (instant: string) => {
+    vi.setSystemTime(new Date(instant));
+    await scheduled({ scheduledTime: Date.parse(instant) }, runtime);
+  };
+  vi.useFakeTimers({ toFake: ["Date"] });
+  try {
+    vi.setSystemTime(new Date("2026-10-16T23:59:00Z")); // Friday 16:59 Pacific.
+    const daily = await f.create({ title: "Pacific daily digest", dueDate: null,
+      description: mentionToken({ id: person, name: "Pacific" }) + " PRIVATE_DIGEST_DESCRIPTION" });
+    const hourly = await f.create({ title: "Pacific hourly digest", dueDate: null });
+    await save("/issues/" + hourly.identifier + "/subscription", "PATCH", { following: true });
+    const comment = async (identifier = hourly.identifier) => {
+      const response = await f.call("/issues/" + identifier + "/comments", "POST", { body: "PRIVATE_DIGEST_COMMENT" });
+      expect(response.status).toBe(201);
+    };
+    await comment();
+    // End of work, Saturday, and the workspace's Monday 09:00 are all closed for this member.
+    for (const instant of ["2026-10-17T00:00:00Z", "2026-10-17T16:00:00Z", "2026-10-19T13:00:00Z", "2026-10-19T15:59:00Z"])
+      await at(instant);
+    expect(received).toHaveLength(0);
+    await at("2026-10-19T16:00:00Z");
+    expect(received).toHaveLength(2);
+    const texts = received.map(message => message.content.map(part => part.value).join("\n"));
+    expect(texts.filter(text => text.includes(daily.identifier))).toHaveLength(1);
+    expect(texts.filter(text => text.includes(hourly.identifier))).toHaveLength(1);
+    expect(received.every(message => message.personalizations[0].to[0].email === "pacific@personal-time.test")).toBe(true);
+    for (const text of texts) {
+      expect(text).toContain("Owner");
+      expect(text).not.toMatch(/PRIVATE_DIGEST_|pacific@personal-time\.test|synthetic-vector-1001/);
+    }
+    await at("2026-10-19T16:00:00Z");
+    vi.setSystemTime(new Date("2026-10-19T16:10:00Z"));
+    await comment();
+    await at("2026-10-19T16:59:00Z");
+    expect(received).toHaveLength(2);
+    // A definitive refusal retries only when due; the accepted envelope then stays terminal.
+    mode = "retry";
+    await at("2026-10-19T17:00:00Z");
+    expect(received).toHaveLength(3);
+    await at("2026-10-19T17:00:30Z");
+    expect(received).toHaveLength(3);
+    mode = "accepted";
+    await at("2026-10-19T17:01:00Z");
+    expect(received).toHaveLength(4);
+    await at("2026-10-19T17:02:00Z");
+    expect(received).toHaveLength(4);
+    // An old-window retry consumes the next working slot; new arrivals carry forward intact.
+    await comment();
+    mode = "retry";
+    await at("2026-10-19T18:00:00Z");
+    expect(received).toHaveLength(5);
+    vi.setSystemTime(new Date("2026-10-19T18:10:00Z"));
+    const nextSlot = await f.create({ title: "Next hourly slot", dueDate: null });
+    await save("/issues/" + nextSlot.identifier + "/subscription", "PATCH", { following: true });
+    await comment(nextSlot.identifier);
+    mode = "accepted";
+    await at("2026-10-19T19:00:00Z");
+    expect(received).toHaveLength(6);
+    expect(received[5]).toEqual(received[4]);
+    const retried = received[5].content.map(part => part.value).join("\n");
+    expect(retried).toContain(hourly.identifier);
+    expect(retried).not.toContain(nextSlot.identifier);
+    await at("2026-10-19T19:01:00Z");
+    expect(received).toHaveLength(6);
+    await at("2026-10-19T20:00:00Z");
+    expect(received).toHaveLength(7);
+    const carried = received[6].content.map(part => part.value).join("\n");
+    expect(carried).toContain(nextSlot.identifier);
+    expect(carried).not.toContain(hourly.identifier);
+    await at("2026-10-19T20:01:00Z");
+    expect(received).toHaveLength(7);
+    // A mute after enqueue is rechecked before the digest leaves the process.
+    await comment();
+    await save("/settings/notifications", "PATCH", { mutedKinds: ["comment"] });
+    await at("2026-10-19T21:00:00Z");
+    expect(received).toHaveLength(7);
+    await save("/settings/notifications", "PATCH", { mutedKinds: [] });
+    await comment();
+    mode = "uncertain";
+    await at("2026-10-19T22:00:00Z");
+    expect(received).toHaveLength(8);
+    mode = "accepted";
+    await at("2026-10-19T22:01:00Z");
+    await at("2026-10-19T23:00:00Z");
+    expect(received).toHaveLength(8);
+    const response = await request("/api/settings/notifications/channels", "GET", undefined, cookie);
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ digestDeliveries: [{ status: "uncertain", attempts: 1 }] });
+  } finally {
+    vi.useRealTimers();
+    network.mockRestore();
+  }
+}

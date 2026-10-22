@@ -91,6 +91,10 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/settings/operators/:operatorId', row: async ({ db, actor, params }) =>
     params.operatorId === actor ? 'workspace.leave' : leadership(await memberRole(db, params.operatorId)) ? 'leaders.manage' : 'members.manage' },
   { method: 'PATCH', path: '/settings', row: 'workspace.settings' },
+  { method: 'GET', path: '/settings/notifications/channel-defaults', row: 'workspace.settings' },
+  { method: 'PUT', path: '/settings/notifications/channel-defaults', row: 'workspace.settings' },
+  { method: 'GET', path: '/settings/notifications/channels', row: 'identity.personal' },
+  { method: 'PUT', path: '/settings/notifications/channels', row: 'identity.personal' },
   { method: 'GET', path: '/settings', row: null, page: 'directory' },
   { method: 'GET', path: '/settings/administration', row: null, page: 'teams' },
   { method: 'POST', path: '/setup/complete', row: null },

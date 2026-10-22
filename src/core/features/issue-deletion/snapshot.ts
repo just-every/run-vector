@@ -28,6 +28,10 @@ const scopes = [
     `(SELECT json_group_array(${storedValueSql("d.id")}) FROM notification_deliveries d,c WHERE d.identifier=c.identifier OR d.notification_id IN(SELECT id FROM notifications WHERE issue_id=c.id))`,
     capturedIds("notification_deliveries", "id"),
   ]),
+  ids("erasure_digest_ids", [
+    `(SELECT json_group_array(${storedValueSql("item.batch_id")}) FROM notification_digest_items item JOIN notification_deliveries d ON d.notification_id=item.notification_id,c WHERE d.id IN(${deliveryIds}))`,
+    capturedIds("notification_digest_items", "batch_id"),
+  ]),
   ids("erasure_child_ids", [
     `(SELECT json_group_array(${storedValueSql("p.issue_id")}) FROM issue_parents p,c WHERE p.parent_issue_id=c.id)`,
     capturedIds("children", "id"),
@@ -114,6 +118,17 @@ Object.assign(relations, {
     table: "notification_deliveries",
     where: `r.id IN(${deliveryIds})`,
   },
+  notification_channel_receipts: {
+    table: "notification_channel_receipts",
+    where: "r.notification_id IN(SELECT id FROM notifications WHERE issue_id=c.id) OR r.notification_id IN(" + captured("notification_channel_receipts", "notification_id") + ")",
+  },
+  notification_digest_items: {
+    table: "notification_digest_items",
+    where: "r.notification_id IN(SELECT notification_id FROM notification_deliveries WHERE id IN(" + deliveryIds + ")) OR r.notification_id IN(" + captured("notification_digest_items", "notification_id") + ")",
+  },
+  notification_digest_batches: { table: "notification_digest_batches", where: "r.id IN(SELECT id FROM erasure_digest_ids)" },
+  notification_digest_attempts: { table: "notification_digest_attempts", where: "r.batch_id IN(SELECT id FROM erasure_digest_ids)" },
+  notification_digest_windows: { table: "notification_digest_windows", where: "r.batch_id IN(SELECT id FROM erasure_digest_ids)" },
   notification_delivery_attempts: {
     table: "notification_delivery_attempts",
     where: `r.delivery_id IN(${deliveryIds}) OR r.id IN(${captured("notification_delivery_attempts", "id")})`,
@@ -124,7 +139,7 @@ Object.assign(relations, {
   },
   rer_mail_development_outbox: {
     table: "rer_mail_development_outbox",
-    where: `json_extract(r.message,'$.deliveryId') IN(${deliveryIds}) OR r.id IN(${captured("rer_mail_development_outbox", "id")})`,
+    where: `json_extract(r.message,'$.deliveryId') IN(${deliveryIds}) OR json_extract(r.message,'$.deliveryId') IN(SELECT id FROM erasure_digest_ids) OR r.id IN(${captured("rer_mail_development_outbox", "id")})`,
   },
   vector_webhook_events: {
     table: "vector_webhook_events",

@@ -118,6 +118,10 @@ export async function erasedSnapshot(
     "integration_resolutions",
   ])
     after[table] = projected[table];
+  // Digest envelopes retain no issue payload and keep their terminal slot fence.
+  after.notification_digest_batches = before.notification_digest_batches;
+  after.notification_digest_attempts = before.notification_digest_attempts;
+  after.notification_digest_windows = before.notification_digest_windows;
   after.integration_attempts = before.integration_attempts;
   after.vector_webhook_restore_holds = before.vector_webhook_restore_holds;
   const ids = new Map(

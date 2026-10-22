@@ -1,28 +1,20 @@
 import { useState } from "react";
 import { fetchJson } from "../../../app/api-client";
 import {
-  directKinds,
   slackLookup,
-  type DirectKind,
   type SlackDirectPreferences,
   type SlackLookup,
 } from "../../integrations/slack-dm/schema";
 import type { NotificationSettings } from "../schema";
 import { preferencesSchema } from "./data";
-const kindLabels: Record<DirectKind, string> = {
-  assignment: "Slack direct message for assignments",
-  mention: "Slack direct message for mentions",
-};
 
 /** SLACK-004: the member links their own Slack account, confirms it, and chooses which events reach Slack. */
 export function SlackDirectMessages({
   slack,
   onSaved,
-  onKinds,
 }: {
   slack: SlackDirectPreferences;
   onSaved: (value: NotificationSettings) => void;
-  onKinds: (kinds: DirectKind[]) => void;
 }) {
   const [found, setFound] = useState<SlackLookup["match"]>(null);
   const [notice, setNotice] = useState("");
@@ -107,20 +99,6 @@ export function SlackDirectMessages({
       {pending && <p role="status">Checking Slack…</p>}
       {notice && <p role="status">{notice}</p>}
       {error && <p role="alert">{error}</p>}
-      {directKinds.map((kind) => (
-        <label className="notification-checkbox" key={kind}>
-          <input
-            type="checkbox"
-            checked={Boolean(slack.available && link?.kinds.includes(kind))}
-            disabled={!slack.available || !link || pending}
-            onChange={(event) =>
-              link &&
-              onKinds(event.target.checked ? [...link.kinds, kind] : link.kinds.filter((value) => value !== kind))
-            }
-          />
-          {kindLabels[kind]}
-        </label>
-      ))}
       {slack.available && !link && <p>Link your Slack account to turn on Slack direct messages.</p>}
       {slack.available &&
         (slack.actionsEnabled ? (

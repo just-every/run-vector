@@ -204,6 +204,22 @@ it("[ROLE-001 ROLE-007 ROLE-009 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-
   await set("team_owners", "all_members", false);
   expect(checked).toBeGreaterThan(Object.keys(matrix).length * 5);
 
+  // NOTIFY-007's workspace defaults use the same matrix row as other workspace settings.
+  for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[]) {
+    const person = w.people[who], allowed = who === "owner" || who === "admin";
+    const tables = ["notification_channel_defaults", "notification_channel_overrides"];
+    const before = await snapshot(tables);
+    expect((await person.call("/settings/notifications/channel-defaults")).status, who).toBe(allowed ? 200 : 403);
+    expect((await person.call("/settings/notifications/channel-defaults", "PUT", {
+      channels: [{kind: "comment", emailMode: "daily", slack: false}],
+    })).status, who).toBe(allowed ? 200 : 403);
+    if (!allowed) expect(await snapshot(tables), who + " cannot change notification defaults").toEqual(before);
+    expect((await person.call("/settings/notifications/channels", "PUT", {
+      channels: [{kind: "comment", inherit: true}],
+    })).status, who + " controls their own notification channels").toBe(200);
+  }
+
+
   // Open Settings pages (ROLE-008 row): Members open Account, the member
   // directory and their personal tokens; a Guest opens Account only.
   const pages = contractMatrix.get("Open Settings pages (ROLE-008)")!;

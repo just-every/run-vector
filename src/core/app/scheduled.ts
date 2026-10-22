@@ -3,6 +3,8 @@ import { maintainCycleSchedules } from "../features/cycle-schedule/service";
 import { deliverFollowups } from '../features/notification-followups/service';
 import { sendDueReminders } from "../features/due-reminders/service";
 import { closeEndedCycles } from "../features/cycle-closure/service";
+import { configureNotifications } from "../features/notifications/context";
+import { drainNotificationDigests } from "../features/notifications/digests";
 import { drainNotificationMail } from "../features/notifications/mail";
 import { dispatchWebhooks } from "../features/integrations/outbound";
 import { returnDueIntake } from "../features/intake-return/service";
@@ -15,6 +17,7 @@ export async function scheduled(
   env: WorkerBindings,
 ) {
   const now = new Date(event.scheduledTime);
+  configureNotifications(env.DB,env);
   await captureDailyReports(env, now);
   await maintainCycleSchedules(env, now);
   await Promise.all([
@@ -24,7 +27,9 @@ export async function scheduled(
     processFileRemovals(env),
     returnDueIntake(env, now),
     runHousekeeping(env, now),
-    drainNotificationMail(env, { scheduled: true }),
-    dispatchWebhooks(env),
   ]);
+  // Route notifications after scheduled Inbox producers finish, including SQL automation.
+  await drainNotificationMail(env, { scheduled: true, now });
+  await drainNotificationDigests(env, { now });
+  await dispatchWebhooks(env);
 }

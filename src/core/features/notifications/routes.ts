@@ -1,3 +1,5 @@
+import { channelDefaults, channelPreferences, saveChannelDefaults, saveChannelPreferences } from "./channel-preferences";
+import { channelDefaultsInputSchema, channelPreferencesInputSchema } from "./channel-schema";
 import { visibleDirectoryPerson } from '../roles/visibility-sql';
 import { readEmptyBody } from "./input";
 import type { Hono, Context } from "hono";
@@ -179,6 +181,12 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
       return subscription(c.env.DB, c.get("operatorId"), key);
     }),
   );
+  app.get("/settings/notifications/channels", protect(c => channelPreferences(c.env.DB, c.get("operatorId"))));
+  app.put("/settings/notifications/channels", protect(async c => saveChannelPreferences(
+    c.env.DB, c.get("operatorId"), channelPreferencesInputSchema.parse(await readRequestJson(c.req.raw)))));
+  app.get("/settings/notifications/channel-defaults", protect(c => channelDefaults(c.env.DB, c.get("operatorId"))));
+  app.put("/settings/notifications/channel-defaults", protect(async c => saveChannelDefaults(
+    c.env.DB, c.get("operatorId"), channelDefaultsInputSchema.parse(await readRequestJson(c.req.raw)))));
   app.get("/settings/notifications", protect(allPreferences));
   app.patch(
     "/settings/notifications",

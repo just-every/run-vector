@@ -1,0 +1,114 @@
+.notification-channel-matrix {
+  width: 100%;
+  border-collapse: collapse;
+  margin-block: 1rem;
+  font-size: 0.85rem;
+  text-align: left;
+}
+.notification-channel-matrix caption {
+  text-align: left;
+  font-weight: 600;
+  padding-bottom: 0.7rem;
+  color: var(--app-ink);
+}
+.notification-channel-matrix :is(th, td) {
+  padding: 0.65rem 0.4rem;
+  border-bottom: 1px solid var(--app-line-strong);
+  vertical-align: middle;
+}
+.notification-channel-matrix th {
+  font-weight: 600;
+}
+.notification-channel-matrix thead {
+  color: var(--app-body);
+}
+.notification-channel-matrix th:first-child {
+  padding-left: 0;
+}
+.notification-channel-matrix label {
+  display: block;
+}
+.notification-channel-matrix .notification-checkbox {
+  justify-content: center;
+}
+.notification-channel-matrix :is(th, td):nth-child(2),
+.notification-channel-matrix :is(th, td):nth-child(4) {
+  text-align: center;
+}
+.settings-page .notification-channel-matrix select {
+  min-width: 8rem;
+  padding-inline: 0.4rem;
+  font: inherit;
+}
+.notification-channel-matrix .channel-inheritance {
+  font-size: 0.8rem;
+  width: 7rem;
+}
+.channel-inheritance button {
+  display: block;
+  margin-top: 0.3rem;
+  font: inherit;
+}
+.channel-mobile-label {
+  display: none;
+}
+.notification-channel-defaults {
+  margin-block: 1.25rem;
+}
+.notification-channels :is(button, select, input):focus-visible {
+  outline: 2px solid var(--app-focus);
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .notification-channel-matrix,
+  .notification-channel-matrix tbody {
+    display: block;
+  }
+  .notification-channel-matrix thead {
+    display: none;
+  }
+  .notification-channel-matrix tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr) minmax(0, 1fr);
+    gap: 0.4rem;
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--app-line-strong);
+  }
+  .notification-channel-matrix :is(th, td) {
+    border: 0;
+    min-width: 0;
+    padding: 0;
+  }
+  .notification-channel-matrix th {
+    grid-column: 1 / -1;
+    margin-bottom: 0.35rem;
+  }
+  .channel-mobile-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: var(--app-body);
+    font-size: 0.75rem;
+  }
+  .notification-channel-matrix .notification-checkbox {
+    flex-direction: column;
+    gap: 0;
+    justify-content: start;
+  }
+  .notification-channel-matrix input[type="checkbox"] {
+    margin-block: 0.7rem;
+  }
+  .notification-channel-matrix .channel-inheritance {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: auto;
+  }
+  .channel-inheritance button {
+    margin: 0;
+  }
+  .settings-page .notification-channel-matrix select {
+    min-width: 0;
+    width: 100%;
+  }
+}

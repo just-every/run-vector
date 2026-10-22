@@ -5,7 +5,8 @@ export type DirectIssue={identifier:string;title:string;version:number;dueDate:s
 const escapeSlack=(text:string)=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 const plain=(text:string,limit=3000)=>({type:'plain_text',text:text.slice(0,limit),emoji:false});
 export const issueLink=(origin:string,identifier:string)=>origin.replace(/\/$/,'')+'/app/issues/'+encodeURIComponent(identifier);
-export function kindHeadline(assignment:boolean,mention:boolean){
+export function kindHeadline(assignment:boolean,mention:boolean,kinds:string[]=[]){
+ if(!assignment&&!mention)return kinds.map(kind=>kind.replaceAll('_',' ')).join(', ');
  return assignment&&mention?'Assigned to you, and you were mentioned':assignment?'Assigned to you':'You were mentioned';
 }
 /** Assign to me and Change status appear only while the signing secret can verify their requests. */

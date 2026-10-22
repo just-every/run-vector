@@ -4,6 +4,8 @@ import {expect} from 'vitest';
 import type {WorkerBindings} from '../../src/core/app/bindings';
 import {createServerApp} from '../../src/core/app/server';
 import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
+import {drainNotificationDigests} from '../../src/core/features/notifications/digests';
+import {scheduled} from '../../src/core/app/scheduled';
 import {mutationDatabase} from '../../src/core/features/auth/mutation-database';
 import {createIssueRecord} from '../../src/core/features/issues/repository';
 import {createIssueInputSchema} from '../../src/core/features/issues/input';
@@ -56,6 +58,18 @@ export async function slackDirectMessages(f:Awaited<ReturnType<typeof setupInteg
   expect(await mine(peerCookie)).toMatchObject({link:{name:'Peer',teamName:'Fixture workspace',kinds:[]}});
   expect(await env.DB.prepare("SELECT count(*) AS n FROM audit_records WHERE action='slack.member_linked' AND actor_operator_id=?").bind(peer).first<number>('n')).toBe(1);
   expect(await (await as(peerCookie,'/settings/notifications','PATCH',{slackKinds:['mention']})).json()).toMatchObject({slack:{link:{kinds:['mention']}}});
+  // One member chooses independently: mentions only in Slack, followed comments in a daily email.
+  const choice=await as(peerCookie,'/settings/notifications/channels','PUT',{channels:[
+   {kind:'mention',emailMode:'off',slack:true},{kind:'comment',emailMode:'daily',slack:false},
+  ]});
+  expect(choice.status).toBe(200);
+  const chosen=await choice.json() as any;
+  expect(chosen.channels).toEqual(expect.arrayContaining([
+   {kind:'mention',emailMode:'off',slack:true,inherited:false},{kind:'comment',emailMode:'daily',slack:false,inherited:false},
+  ]));
+  const ownChannels=await as(peerCookie,'/settings/notifications/channels','GET');expect(ownChannels.status).toBe(200);
+  expect((await ownChannels.json() as any).channels).toEqual(chosen.channels);
+  expect((await as(peerCookie,'/settings/notifications','PATCH',{emailEnabled:true})).status).toBe(200);
   // The owner (the actor) is linked too and routes mentions to Slack; acting never messages the actor.
   edge.users(ownerEmail,'UOWNER1','Owner');expect((await f.call('/settings/notifications/slack/link','POST',{slackUserId:'UOWNER1'})).status).toBe(200);
   expect((await f.call('/settings/notifications','PATCH',{slackKinds:['assignment','mention']})).status).toBe(200);
@@ -70,6 +84,7 @@ export async function slackDirectMessages(f:Awaited<ReturnType<typeof setupInteg
   expect(await mine(peerCookie)).toMatchObject({actionsEnabled:true});
   // A mention routed to Slack: exactly one DM with the three actions and only the allowed fields.
   const issue=await f.create({title:'Ship checkout',description:'Needs '+mention(peer,'Peer')+' PRIVATE_DM_BODY',dueDate:'2026-12-01',statusId:team.statuses.find(s=>s.category==='unstarted')!.id});
+  expect((await as(peerCookie,'/issues/'+issue.identifier+'/subscription','PATCH',{following:true})).status).toBe(200);
   await f.call('/issues/'+issue.identifier+'/comments','POST',{body:'PRIVATE_COMMENT_BODY'});
   await dispatchWebhooks(current);await dispatchWebhooks(current);
   expect(dms()).toHaveLength(2);const dm=dms()[1].body,link=bindings.APP_ORIGIN+'/app/issues/'+issue.identifier;
@@ -79,6 +94,28 @@ export async function slackDirectMessages(f:Awaited<ReturnType<typeof setupInteg
   expect(elements[2].initial_option.text.text).toBe(team.statuses.find(s=>s.category==='unstarted')!.name);
   for(const hidden of ['PRIVATE_DM_BODY','PRIVATE_COMMENT_BODY',peerEmail,ownerEmail,edge.token])expect(JSON.stringify(dms())).not.toContain(hidden);
   expect(edge.calls.filter(c=>c.method==='conversations.open').map(c=>c.body.users)).toEqual([slackPeer,slackPeer]);
+  // The native daily queue stays quiet until Cron; its one email is never a second Slack message.
+  expect(await env.DB.prepare('SELECT count(*) n FROM notification_mail_audit WHERE subject_identifier=?').bind(issue.identifier).first<number>('n')).toBe(0);
+  const mail: {personalizations:{to:{email:string}[]}[];content:{value:string}[]}[]=[];
+  const mailFetch:typeof fetch=async(input,init)=>{
+   expect(new URL(String(input)).origin).toBe('https://api.sendgrid.com');
+   expect(init).toMatchObject({method:'POST',redirect:'manual'});mail.push(JSON.parse(String(init?.body)));
+   return new Response(null,{status:202});
+  };
+  expect((await as(peerCookie,'/settings/personal-time','PATCH',{timezone:'UTC',workingHoursStart:'09:00',workingHoursEnd:'17:00',workingDays:[1,2,3,4,5]})).status).toBe(200);
+  const digestAt=new Date();digestAt.setUTCDate(digestAt.getUTCDate()+1);digestAt.setUTCHours(9,0,0,0);
+  while([0,6].includes(digestAt.getUTCDay()))digestAt.setUTCDate(digestAt.getUTCDate()+1);
+  const digestEnv={...current,APP_ORIGIN:'https://vector.test',MAIL_MODE:'production',MAIL_PROVIDER:'sendgrid',MAIL_API_KEY:'synthetic-vector-1002',NOTIFICATION_EMAIL_ENABLED:'true'};
+  await drainNotificationDigests(digestEnv,{now:digestAt,dependencies:{fetch:mailFetch}});
+  expect(mail).toHaveLength(1);expect(mail[0].personalizations[0].to).toEqual([{email:peerEmail}]);
+  const digestText=mail[0].content.map(part=>part.value).join('\n');
+  expect(digestText).toContain(issue.identifier+': Ship checkout');expect(digestText).toContain('Owner');
+  for(const hidden of ['PRIVATE_DM_BODY','PRIVATE_COMMENT_BODY',peerEmail,ownerEmail,edge.token])expect(digestText).not.toContain(hidden);
+  await drainNotificationDigests(digestEnv,{now:digestAt,dependencies:{fetch:mailFetch}});
+  await scheduled({scheduledTime:digestAt.getTime()},current);await scheduled({scheduledTime:digestAt.getTime()},current);
+  await dispatchWebhooks(current);await dispatchWebhooks(current);
+  expect(mail).toHaveLength(1);expect(dms()).toHaveLength(2);
+  expect(await env.DB.prepare('SELECT count(*) n FROM notification_mail_audit WHERE subject_identifier=?').bind(issue.identifier).first<number>('n')).toBe(1);
   // Slack's three actions arrive only through the signed door.
   const before=(await issueState(issue.identifier))!,assign={action_id:'vector_assign_me',value:elements[1].value};
   expect((await slackDoor(action(slackPeer,assign),{signed:false})).status).toBe(401);
@@ -103,6 +140,7 @@ export async function slackDirectMessages(f:Awaited<ReturnType<typeof setupInteg
   expect(await issueState(issue.identifier)).toMatchObject({status:started.id,version:afterAssign.version+1});
   // Mutes, the actor's own mention, a turned-off choice, removal and suspension produce no DM.
   const count=dms().length;
+  expect((await as(peerCookie,'/settings/notifications/channels','PUT',{channels:[{kind:'mention',inherit:true}]})).status).toBe(200);
   expect((await as(peerCookie,'/settings/notifications','PATCH',{mutedKinds:['mention']})).status).toBe(200);
   await f.create({description:'Muted '+mention(peer,'Peer')});expect(dms()).toHaveLength(count);
   expect((await as(peerCookie,'/settings/notifications','PATCH',{mutedKinds:[],slackKinds:[]})).status).toBe(200);
