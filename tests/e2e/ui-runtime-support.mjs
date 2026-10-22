@@ -4,9 +4,11 @@ import { resolve } from "node:path";
 import { verificationDirectory } from "../../scripts/verification-paths.mjs";
 import { readLocalD1 } from "./local-d1-read.mjs";
 import { writeRuntimeD1 } from "./runtime-d1.mjs";
+import { freePort } from "@runeditrun/rer/adapter-settings";
+const runtimePort = await freePort();
 export function createUiRuntime() {
   const root = process.cwd(),
-    base = "http://127.0.0.1:15934",
+    base = "http://127.0.0.1:" + runtimePort,
     state = `.wrangler/vector-ui/runs/${Date.now()}-${process.pid}`;
   function command(args) {
     return execFileSync("pnpm", ["exec", "wrangler", ...args], {
@@ -40,9 +42,9 @@ export function createUiRuntime() {
         "--ip",
         "127.0.0.1",
         "--port",
-        "15934",
+        String(runtimePort),
         "--inspector-port",
-        "15935",
+        "0",
         "--persist-to",
         state,
         "--var",
@@ -70,6 +72,10 @@ export function createUiRuntime() {
   async function ready() {
     for (let i = 0; i < 150; i++) {
       if (worker.exitCode !== null) throw new Error(workerLog);
+      if (!workerLog.includes("worker-serve ready on " + base)) {
+        await new Promise((r) => setTimeout(r, 200));
+        continue;
+      }
       try {
         if (
           (await fetch(base + "/health", { headers: { Connection: "close" } }))

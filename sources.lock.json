@@ -6385,7 +6385,7 @@
       "executable": false
     },
     "tests/e2e/ui-runtime-support.mjs": {
-      "sha256": "3e3c75aa5815c3b8a180530fbf2e19c8c5375d8f95974b5083185a29803f4e63",
+      "sha256": "9d866e907761aaf302a6509bf84ffcf62e00f68ca99aba2cb66e9b5500957ef0",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
