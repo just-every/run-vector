@@ -15,6 +15,11 @@ CREATE TABLE notification_channel_overrides (
 CREATE TABLE notification_channel_receipts (
  notification_id TEXT PRIMARY KEY REFERENCES notifications(id) ON DELETE CASCADE
 );
+-- Destination-only quarantine, excluded from archives like restore mail holds.
+-- An imported pending routing intent is historical, not a newly authored event.
+CREATE TABLE notification_channel_restore_holds (
+ notification_id TEXT PRIMARY KEY REFERENCES notifications(id) ON DELETE CASCADE
+);
 -- Enabling routing never creates mail or Slack for historical Inbox rows.
 INSERT INTO notification_channel_receipts SELECT id FROM notifications;
 ALTER TABLE notification_deliveries ADD COLUMN email_mode TEXT NOT NULL DEFAULT 'immediate'
@@ -150,9 +155,10 @@ WHEN NEW.removed_at IS NOT NULL BEGIN
  DELETE FROM notification_digest_batches WHERE recipient_id=NEW.id;
 END;
 
--- Older archives have no channel receipts. Quarantine their Inbox history too,
--- so reviewing future effects cannot backfill newly supported event channels.
+-- Preserve the source's exact routing receipts, including unrouted notifications.
+-- Historical effects are quarantined separately rather than marked as processed.
+-- Older archives receive their one-time backfill when this forward migration runs.
 CREATE TRIGGER notification_channel_restore_complete AFTER UPDATE OF phase ON rer_portability_jobs
 WHEN NEW.kind='import' AND NEW.phase='complete' AND OLD.phase!='complete' BEGIN
- INSERT OR IGNORE INTO notification_channel_receipts(notification_id) SELECT id FROM notifications;
+ INSERT OR IGNORE INTO notification_channel_restore_holds(notification_id) SELECT id FROM notifications;
 END;

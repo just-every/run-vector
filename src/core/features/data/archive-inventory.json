@@ -1623,6 +1623,9 @@
   "notification_channel_receipts": [
     "notification_id"
   ],
+  "notification_channel_restore_holds": [
+    "notification_id"
+  ],
   "notification_digest_batches": [
     "id",
     "workspace_id",

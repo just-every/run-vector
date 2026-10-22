@@ -156,7 +156,7 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
     const notificationPanel = inboxPage.getByRole('region', { name: 'Notifications', exact: true });
     const disclosure = inboxPage.locator('details').filter({ has: inboxPage.locator('#notifications-heading') }).first();
     if (await disclosure.count() && await disclosure.getAttribute('open') === null) await disclosure.locator('summary').first().click();
-    const mute = notificationPanel.getByRole('checkbox', { name: 'Reopened threads (Inbox only)', exact: true });
+    const mute = notificationPanel.locator('.notification-mutes').getByRole('checkbox', { name: 'Reopened threads', exact: true });
     await mute.waitFor();
     await mute.scrollIntoViewIfNeeded();
     await notificationPanel.screenshot({ path: `${verificationDirectory}/follower-events/thread-preferences-panel-${width}.png` });
@@ -166,7 +166,7 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
       mute.click(),
     ]);
     assert.equal(muted.status(), 200);
-    await inboxPage.waitForFunction(() => [...document.querySelectorAll('.notification-checkbox')].find(label => label.textContent.includes('Reopened threads')).querySelector('input').checked);
+    await inboxPage.waitForFunction(() => [...document.querySelectorAll('.notification-mutes .notification-checkbox')].find(label => label.textContent.includes('Reopened threads')).querySelector('input').checked);
     assert((await recipient('/settings/notifications')).mutedKinds.includes('thread_reopened'));
     await recipient('/settings/notifications', 'PATCH', { mutedKinds: [] });
     await beforePrivateNavigation(inboxPage, base + '/app/inbox');

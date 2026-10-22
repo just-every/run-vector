@@ -9,6 +9,7 @@ export function emailIntent(db: D1Database, predicate: string, values: unknown[]
     FROM notifications n JOIN notification_channel_routes r ON r.notification_id=n.id JOIN issues i ON i.id=n.issue_id
     WHERE (${predicate}) AND r.email_mode<>'off' AND r.email_enabled=1
     AND NOT EXISTS(SELECT 1 FROM notification_channel_receipts receipt WHERE receipt.notification_id=n.id)
+    AND NOT EXISTS(SELECT 1 FROM notification_channel_restore_holds held WHERE held.notification_id=n.id)
     AND NOT EXISTS(SELECT 1 FROM rer_portability_state WHERE applying=1)`)
     .bind(origin.replace(/\/$/, ''), ...values);
 }
@@ -21,6 +22,7 @@ export function slackIntent(db: D1Database, predicate: string, values: unknown[]
     JOIN vector_slack_installations s ON s.workspace_id=r.workspace_id AND s.enabled=1
     WHERE (${predicate}) AND r.slack_enabled=1
     AND NOT EXISTS(SELECT 1 FROM notification_channel_receipts receipt WHERE receipt.notification_id=n.id)
+    AND NOT EXISTS(SELECT 1 FROM notification_channel_restore_holds held WHERE held.notification_id=n.id)
     AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
     AND NOT EXISTS(SELECT 1 FROM rer_portability_state WHERE applying=1)`).bind(...values);
 }
@@ -33,6 +35,7 @@ export function routingReceipt(db: D1Database, predicate: string, values: unknow
 export async function routePendingNotifications(env: WorkerBindings, eventIds?: string[]) {
   const rows = (await env.DB.prepare(`SELECT n.id FROM notifications n
     WHERE NOT EXISTS(SELECT 1 FROM notification_channel_receipts r WHERE r.notification_id=n.id)
+    AND NOT EXISTS(SELECT 1 FROM notification_channel_restore_holds held WHERE held.notification_id=n.id)
     AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
     AND NOT EXISTS(SELECT 1 FROM rer_portability_state WHERE applying=1)
     ${eventIds ? 'AND n.event_id IN(SELECT value FROM json_each(?))' : ''}

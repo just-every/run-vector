@@ -36,15 +36,6 @@ export type MailDependencies = {
 export const CLAIM_TIMEOUT_MS = 5 * 60_000;
 export const RETRY_WINDOW_MS = 24 * 60 * 60_000;
 type AdmittedDelivery = Delivery & { assignment: number; mention: number; message_text: string; message_subject: string };
-/** Existing single-event rendering helper remains source-compatible for erasure snapshots. */
-export function notificationMessage(env: WorkerBindings, delivery: Delivery & {assignment: number; mention: number}) {
-  const reason = delivery.assignment && delivery.mention
-    ? "This issue was assigned to you, and you were mentioned."
-    : delivery.assignment ? "This issue was assigned to you." : "You were mentioned on this issue.";
-  return {deliveryId: delivery.id,from: env.MAIL_FROM!,to: [delivery.email],
-    subject: `${delivery.identifier}: ${delivery.title}`,
-    text: `${delivery.identifier}: ${delivery.title}\n${reason}\nBy: ${delivery.actor_name ?? "Vector"}\n\n${delivery.app_link}\nSign in to view this issue.`};
-}
 /** Current recipient and issue authority, independent of the actor's old session. */
 async function admitted(
   env: WorkerBindings,

@@ -1,7 +1,9 @@
 import { env } from "cloudflare:workers";
+import { expect } from "vitest";
 import { ids, create } from "./bulk-parent-fixture";
 import { fixture } from "./parent-deletion-fixture";
-import { notificationMessage, type Delivery } from "../../src/core/features/notifications/mail";
+import { bindings } from "./base-auth-fixture";
+import { drainNotificationMail } from "../../src/core/features/notifications/mail";
 const at = "2026-10-01T00:00:00Z";
 export async function cascadeFixture(prefix: string) {
   const family = await fixture({title:prefix+" native issue",description:prefix+" private issue body"}),
@@ -100,32 +102,6 @@ export async function cascadeFixture(prefix: string) {
       at,
     ),
     q(
-      "INSERT INTO notification_deliveries(id,notification_id,recipient_id,actor_id,actor_name,identifier,title,app_link,status,attempts,created_at,updated_at) VALUES(?,?,?,?,'Sarah',?,'Erased mail title','https://vector.test/app','claimed',1,?,?)",
-      id("delivery"),
-      id("notification"),
-      ids.maya,
-      ids.sarah,
-      issue.identifier,
-      at,
-      at,
-    ),
-    q(
-      "INSERT INTO notification_delivery_attempts(id,delivery_id,number,status,started_at) VALUES(?,?,1,'claimed',?)",
-      id("attempt"),
-      id("delivery"),
-      at,
-    ),
-    q(
-      "INSERT INTO notification_mail_audit(id,feature,subject_identifier,outcome,created_at) VALUES(?,'notification.mail',?,'development',?)",
-      id("mail-audit"),
-      issue.identifier,
-      at,
-    ),
-    q(
-      "INSERT INTO vector_restore_mail_holds(delivery_id) VALUES(?)",
-      id("delivery"),
-    ),
-    q(
       "INSERT INTO vector_github_issue_links(repository_id,number,issue_id,created_at) VALUES(?,1,?,?)",
       id("repository"),
       issue.id,
@@ -180,14 +156,17 @@ export async function cascadeFixture(prefix: string) {
       at,
     ),
   ]);
+  // Capture the actual admitted native message, including current actor and channel policy.
+  await drainNotificationMail(bindings, { eventIds: [id("activity")] });
   const delivery = await env.DB.prepare(
-    "SELECT d.*,o.email FROM notification_deliveries d JOIN operators o ON o.id=d.recipient_id WHERE d.id=?",
-  ).bind(id("delivery")).first<Delivery>();
+    "SELECT id,status FROM notification_deliveries WHERE notification_id=?",
+  ).bind(id("notification")).first<{ id: string; status: string }>();
+  expect(delivery).toMatchObject({ status: "development" });
+  const deliveryId = delivery!.id;
+  // Keep restored custody represented too, after native delivery has captured its message.
   await q(
-    "INSERT INTO rer_mail_development_outbox(id,created_at,message) VALUES(?,?,?)",
-    id("capture"),
-    Date.now(),
-    JSON.stringify(notificationMessage(env, { ...delivery!, assignment: 1, mention: 0 })),
+    "INSERT INTO vector_restore_mail_holds(delivery_id) VALUES(?)",
+    deliveryId,
   ).run();
   const selections: Record<string, { where: string; params: any[] }> =
     Object.fromEntries(
@@ -223,16 +202,19 @@ export async function cascadeFixture(prefix: string) {
       params: [issue.id, issue.id],
     },
     notification_events: { where: "event_id=?", params: [id("activity")] },
-    notification_deliveries: { where: "id=?", params: [id("delivery")] },
+    notification_deliveries: { where: "id=?", params: [deliveryId] },
     notification_delivery_attempts: {
       where: "delivery_id=?",
-      params: [id("delivery")],
+      params: [deliveryId],
     },
     vector_restore_mail_holds: {
       where: "delivery_id=?",
-      params: [id("delivery")],
+      params: [deliveryId],
     },
-    rer_mail_development_outbox: { where: "id=?", params: [id("capture")] },
+    rer_mail_development_outbox: {
+      where: "json_extract(message,'$.deliveryId')=?",
+      params: [deliveryId],
+    },
   });
   async function rows() {
     return Object.fromEntries(
