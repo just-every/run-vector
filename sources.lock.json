@@ -2321,7 +2321,7 @@
       "executable": false
     },
     "migrations/core/0079_workspace_audit.sql": {
-      "sha256": "5dd0c7f4b4edd269a1b278d74ae2b6a24d7770d7d262659e136634ea09745f15",
+      "sha256": "469008fa88a3e2db01c4e2cd6967da8ce6cf8b121ef3154cecd1fcc40d3cc058",
       "executable": false
     },
     "migrations/core/0080_guest_invitations.sql": {
@@ -6065,7 +6065,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip.mjs": {
-      "sha256": "dc5679ae99fb4d0427fe516ee94d904868a64c7f26b0540cbb40a105c28a7886",
+      "sha256": "934437fb44c0944b279905892d21c6505f746d2cb0850a41fcd9892a8b8ae580",
       "executable": false
     },
     "tests/e2e/data-runtime.mjs": {
@@ -6445,7 +6445,7 @@
       "executable": false
     },
     "tests/worker/audit-archive.ts": {
-      "sha256": "d0649031a8e7328f4c02094777e73dbb8830c94f974a20df7aacadbfbd3159d6",
+      "sha256": "6bb23ce5bafb7c9a15ba4951b3ad38c56efbfd6f50daffed7bc3c3174dcef1ad",
       "executable": false
     },
     "tests/worker/audit-scenario.ts": {
@@ -6541,7 +6541,7 @@
       "executable": false
     },
     "tests/worker/data-archive-failure.test.ts": {
-      "sha256": "df032fbbbbf4421011e863aea5691eaf5cb4e1c8543fd2748b2e6d70d1b1db9f",
+      "sha256": "b226400d98a3db00c7880974a3acd912a418900d036e917f3882b705cb520e53",
       "executable": false
     },
     "tests/worker/data-http-audit-recovery.test.ts": {
@@ -6549,11 +6549,11 @@
       "executable": false
     },
     "tests/worker/data-http-collision.test.ts": {
-      "sha256": "8f851313dc64a806bae74d34b72c6641042884dc9c55d3c4f06f9e2e699618bc",
+      "sha256": "644d95df2ff7a07b8c2d73d5d4bebe847ee07ecb813e5c7e41598e27b09a1723",
       "executable": false
     },
     "tests/worker/data-http-concurrency.test.ts": {
-      "sha256": "a792c4ac28705057af18ae4c0901eeb5e9133d7d17f474dc5e47dd351b78ad6d",
+      "sha256": "0389f14be74f27f86ea3ca4ed050f8e254a6c5657f0140e09e0fcf39d8138b41",
       "executable": false
     },
     "tests/worker/data-http-interruption.test.ts": {
@@ -6565,7 +6565,7 @@
       "executable": false
     },
     "tests/worker/data-http-object-failure.test.ts": {
-      "sha256": "63bffc8e49371032e0a2e369962f4ec04db5a0d37c5e0dfeaa65a3c0447123b5",
+      "sha256": "f8acbd65b7d994ea7ce401571ec60f448b23ef87201db6cb8096f295765c037e",
       "executable": false
     },
     "tests/worker/data-http-revocation.test.ts": {
@@ -6769,7 +6769,7 @@
       "executable": false
     },
     "tests/worker/jira-apply.test.ts": {
-      "sha256": "8eef38afb29b04bac991093a900e1e097e851d3471d94bc713ed2dacaea64c0f",
+      "sha256": "309f9b9e0c6d3f27caa294341ab017be5fc64fd543d498bc09c2f264ee737fe7",
       "executable": false
     },
     "tests/worker/jira-import.test.ts": {
@@ -6849,7 +6849,7 @@
       "executable": false
     },
     "tests/worker/parent-deletion-admission.test.ts": {
-      "sha256": "3309f61b7138247f1fcac59657ed7b6ac12bf0f7161ad8dc50e089df3b4fa268",
+      "sha256": "0f975a0ea06dfb3795573278b2d9323b7d60bd40606cc94d8aeb9de706fe0373",
       "executable": false
     },
     "tests/worker/parent-deletion-custody.test.ts": {

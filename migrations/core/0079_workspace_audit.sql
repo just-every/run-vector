@@ -71,15 +71,18 @@ CREATE TRIGGER vector_audit_import_state AFTER UPDATE OF state ON ik_jobs WHEN N
  INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id)
  VALUES('import-state:'||lower(hex(randomblob(16))),NEW.principal_id,'import.'||NEW.state,NEW.id,NEW.id,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'),NEW.destination);
 END;
-CREATE TRIGGER vector_audit_archive_started AFTER INSERT ON rer_portability_jobs BEGIN
+-- A local import has no signed-in actor and its destination must remain empty
+-- until publication. Its completion is audited atomically after restoration.
+CREATE TRIGGER vector_audit_archive_started AFTER INSERT ON rer_portability_jobs
+WHEN NEW.kind<>'import' OR (NEW.actor IS NOT NULL AND NEW.actor<>'direct') BEGIN
  INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)
  VALUES('archive:'||NEW.id,NEW.actor,'archive.'||NEW.kind||'.started',NEW.id,NEW.id,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'),
- COALESCE((SELECT workspace_id FROM operators WHERE id=NEW.actor),(SELECT id FROM workspace_settings WHERE (SELECT count(*) FROM workspace_settings)=1)),'person','person:'||NEW.actor);
+ COALESCE((SELECT workspace_id FROM operators WHERE id=NEW.actor),(SELECT id FROM workspace_settings WHERE (SELECT count(*) FROM workspace_settings)=1)),CASE WHEN NEW.actor IS NULL OR NEW.actor='direct' THEN 'automation' ELSE 'person' END,CASE WHEN NEW.actor IS NULL OR NEW.actor='direct' THEN 'automation:archive.'||NEW.kind||'.started' ELSE 'person:'||NEW.actor END);
 END;
 CREATE TRIGGER vector_audit_archive_completed AFTER UPDATE OF phase ON rer_portability_jobs WHEN NEW.phase='complete' AND OLD.phase<>'complete' BEGIN
  INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)
  VALUES('archive-complete:'||NEW.id,NEW.actor,'archive.'||NEW.kind||'.completed',NEW.id,NEW.id,strftime('%Y-%m-%dT%H:%M:%fZ','now'),strftime('%Y-%m-%dT%H:%M:%fZ','now'),
- COALESCE((SELECT workspace_id FROM operators WHERE id=NEW.actor),(SELECT id FROM workspace_settings WHERE (SELECT count(*) FROM workspace_settings)=1)),'person','person:'||NEW.actor);
+ COALESCE((SELECT workspace_id FROM operators WHERE id=NEW.actor),(SELECT id FROM workspace_settings WHERE (SELECT count(*) FROM workspace_settings)=1)),CASE WHEN NEW.actor IS NULL OR NEW.actor='direct' THEN 'automation' ELSE 'person' END,CASE WHEN NEW.actor IS NULL OR NEW.actor='direct' THEN 'automation:archive.'||NEW.kind||'.completed' ELSE 'person:'||NEW.actor END);
 END;
 -- AUTO-003's committed activity is the authority for this event, not a Cron
 -- attempt. No entry is recorded for an ineligible or rolled-back candidate.

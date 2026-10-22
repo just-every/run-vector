@@ -1,5 +1,6 @@
 import {runInDurableObject,evictDurableObject} from 'cloudflare:test';
 import {expect,it} from 'vitest';
+import {expectAuditArchiveHistory} from './audit-archive';
 import {populatedHttpSource} from './http-archive-source';
 import {destination,targetBindings,freshTarget,targetCall,targetSignIn,httpExport,stageArchive,finalHash,finalBody} from './http-archive-fixture';
 import type {WorkerBindings} from '../../src/core/app/bindings';
@@ -45,5 +46,5 @@ it('[DATA-001 DATA-005 BASE-DATA-001] HTTP finalize serializes abort and recover
  const fresh=await targetSignIn();
  const status=await targetCall('/api/data/restore','GET',undefined,fresh);expect(status.status).toBe(200);expect((await status.json() as {status:unknown}).status).toMatchObject({importId:job,phase:'complete',contentHash:finalHash(records)});
  expect(new Uint8Array(await (await destination.ARCHIVE_TARGET_FILES.get('http-archive-file'))!.arrayBuffer())).toEqual(new Uint8Array([0,1,2,255]));
- const again=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,fresh));expect(finalHash(again)).toBe(finalHash(records));
+ const again=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,fresh));expectAuditArchiveHistory(records,again);
 },180000);

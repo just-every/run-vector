@@ -6,15 +6,40 @@ import { beforeCommit } from "./removal-interleaving";
 import { deleteRequest } from "./issue-deletion-request";
 import { testCookie, testSessionFence } from "./native-fixture";
 beforeAll(setup);
+async function signedInCookie(operatorId: string) {
+  const before = await receipt();
+  const cookie = await testCookie(env.DB, operatorId);
+  const fence = await testSessionFence(env.DB, cookie);
+  const identity = await env.DB.prepare(
+    "SELECT m.auth_id,o.workspace_id FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id WHERE o.id=?",
+  ).bind(operatorId).first<{ auth_id: string; workspace_id: string }>();
+  expect(await receipt()).toEqual({
+    ...before,
+    audit_records: [...before.audit_records, {
+      id: "signin:" + fence.sessionId,
+      action: "auth.signed_in",
+      actor_operator_id: operatorId,
+      actor_kind: "person",
+      actor_reference: "auth:" + identity!.auth_id,
+      subject_id: "auth:" + identity!.auth_id,
+      subject_identifier: "auth:" + identity!.auth_id,
+      workspace_id: identity!.workspace_id,
+      created_at: expect.any(String),
+      updated_at: expect.any(String),
+    }],
+  });
+  return cookie;
+}
 it("[ISSUE-010 ISSUE-006 BASE-ACCESS-001] public deletion rejects stale intent, lost native admission and late SQL failure without any erasure", async () => {
   const { parent, files } = await fixture(),
+    cookie = await signedInCookie(ids.sarah),
     before = await receipt();
   expect(
-    (await deleteRequest(parent.identifier, parent.version + 1)).status,
+    (await deleteRequest(parent.identifier, parent.version + 1, { cookie })).status,
   ).toBe(409);
   expect(await receipt()).toEqual(before);
   for (const mode of ["revoke", "expire", "remove"]) {
-    const cookie = await testCookie(env.DB, ids.maya),
+    const cookie = await signedInCookie(ids.maya),
       fence = await testSessionFence(env.DB, cookie);
     let preimage: unknown;
     const DB = beforeCommit(
@@ -48,7 +73,7 @@ it("[ISSUE-010 ISSUE-006 BASE-ACCESS-001] public deletion rejects stale intent, 
   );
   try {
     expect(
-      (await deleteRequest(parent.identifier, parent.version)).status,
+      (await deleteRequest(parent.identifier, parent.version, { cookie })).status,
     ).toBe(500);
     expect(await receipt()).toEqual(beforeSqlFailure);
     for (const file of files.filter((f) => f.state !== "pending"))
@@ -59,6 +84,7 @@ it("[ISSUE-010 ISSUE-006 BASE-ACCESS-001] public deletion rejects stale intent, 
 });
 it("[BASE-ACCESS-002 ISSUE-010 ISSUE-006] final version fence and transport matrix preserve all dependency custody", async () => {
   const { parent } = await fixture();
+  const cookie = await signedInCookie(ids.sarah);
   let preimage: unknown;
   const DB = beforeCommit(
     (sql) => sql.includes("DELETE FROM issues"),
@@ -70,7 +96,7 @@ it("[BASE-ACCESS-002 ISSUE-010 ISSUE-006] final version fence and transport matr
     },
   );
   expect(
-    (await deleteRequest(parent.identifier, parent.version, { DB })).status,
+    (await deleteRequest(parent.identifier, parent.version, { DB, cookie })).status,
   ).toBe(409);
   expect(await receipt()).toEqual(preimage);
   for (const [options, status] of [
@@ -81,18 +107,21 @@ it("[BASE-ACCESS-002 ISSUE-010 ISSUE-006] final version fence and transport matr
     [{ body: { expectedVersion: 0, confirmed: true } }, 400],
   ] as const) {
     expect(
-      (await deleteRequest(parent.identifier, parent.version, options)).status,
+      (await deleteRequest(parent.identifier, parent.version, { cookie, ...options })).status,
     ).toBe(status);
     expect(await receipt()).toEqual(preimage);
   }
-  expect((await deleteRequest("FLW-999999999", 1)).status).toBe(404);
-  const cookie = await testCookie(env.DB, ids.maya);
+  expect((await deleteRequest("FLW-999999999", 1, { cookie })).status).toBe(404);
+  expect(await receipt()).toEqual(preimage);
+  const removedCookie = await signedInCookie(ids.maya);
+  const beforeRemoval = await receipt();
   await env.DB.prepare("UPDATE operators SET removed_at='now' WHERE id=?")
     .bind(ids.maya)
     .run();
   expect(
-    (await deleteRequest(parent.identifier, parent.version, { cookie })).status,
+    (await deleteRequest(parent.identifier, parent.version, { cookie: removedCookie })).status,
   ).toBe(401);
+  expect(await receipt()).toEqual(beforeRemoval);
 });
 it("[ISSUE-010 BASE-ACCESS-002] held request body, workspace race and postcommit response each recheck current native authority", async () => {
   const { heldBody } = await import("./removal-fixture"),

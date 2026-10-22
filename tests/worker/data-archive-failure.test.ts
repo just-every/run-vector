@@ -3,7 +3,7 @@ import {applyD1Migrations} from 'cloudflare:test';
 import {beforeAll,expect,inject,it} from 'vitest';
 import {createVectorArchive} from '../../src/core/features/data/archive-service.mjs';
 import {readArchive,makePart} from '@runeditrun/rer/modules/portability';
-import {ContentVerifier} from '@runeditrun/rer/modules/portability/format';
+import {ContentVerifier,ArchiveVerifier} from '@runeditrun/rer/modules/portability/format';
 import {bindings,request,signIn,actor,invite} from './base-auth-fixture';
 import {createServerApp} from '../../src/core/app/server';
 const target=env as unknown as {ARCHIVE_TARGET_DB:D1Database,ARCHIVE_TARGET_FILES:R2Bucket};
@@ -18,13 +18,13 @@ it('[DATA-001 DATA-005 BASE-DATA-001] bad native references roll back publicatio
  const source=await createVectorArchive({db:env.DB,files:env.FILES}),destination=await createVectorArchive({db:target.ARCHIVE_TARGET_DB,files:target.ARCHIVE_TARGET_FILES});
  const exported=await source.exports.create();while((await source.exports.advance(exported,{maxParts:16})).phase==='building'){}
  const records:any[]=[];for await(const record of readArchive(await source.exports.download(exported)))records.push(record);await source.exports.abort(exported);
- const manifest=records[0],verifier=new ContentVerifier(manifest),id=await destination.imports.create(manifest);
+ const manifest=records[0],verifier=new ContentVerifier(manifest),archive=new ArchiveVerifier(manifest),id=await destination.imports.create(manifest);
  for(const record of records.filter(row=>row.kind==='part')) {
   for(const item of record.items)if(item.kind==='row'&&item.table==='issue_files')item.row.actor_operator_id='01K00000000000000000000099';
-  const part=await makePart(record.index,record.items);for(const item of part.items)verifier.add(item);
+  const part=await makePart(record.index,record.items);archive.add(part);for(const item of part.items)verifier.add(item);
   await destination.imports.uploadPart(id,part.index,part);
  }
- await expect(destination.imports.finalize(id,{contentHash:verifier.digest()})).rejects.toThrow();
+ await expect(destination.imports.finalize(id,{contentHash:verifier.digest(),archiveHash:archive.digest()})).rejects.toThrow(/FOREIGN KEY constraint failed/);
  expect((await target.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM operators').first())?.n).toBe(0);
  expect((await target.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM issues').first())?.n).toBe(0);
  expect((await target.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM vector_restore_status').first())?.n).toBe(0);

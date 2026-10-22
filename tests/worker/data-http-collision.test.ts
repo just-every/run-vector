@@ -1,6 +1,7 @@
 import {expect,it} from 'vitest';
+import {expectAuditArchiveHistory} from './audit-archive';
 import {setupAdministration} from './administration-fixture';
-import {destination,freshTarget,targetCall,targetSignIn,httpExport,stageArchive,finalHash,finalBody} from './http-archive-fixture';
+import {destination,freshTarget,targetCall,targetSignIn,httpExport,stageArchive,finalBody} from './http-archive-fixture';
 import {makePart,type Part,type Manifest,type Closing} from '@runeditrun/rer/modules/portability';
 import {ContentVerifier,ArchiveVerifier} from '@runeditrun/rer/modules/portability/format';
 
@@ -24,5 +25,5 @@ it('[DATA-001 DATA-005 BASE-DATA-001] matching restored native identity and auth
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_sessions').first())?.n).toBe(0);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_tokens').first())?.n).toBe(0);
  const fresh=await targetSignIn();expect((await targetCall('/api/session','GET',undefined,fresh)).status).toBe(200);
- const next=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,fresh));expect(finalHash(next)).toBe(finalHash(records));
+ const next=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,fresh));expectAuditArchiveHistory(records,next);
 },180000);

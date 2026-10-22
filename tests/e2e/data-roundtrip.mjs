@@ -4,8 +4,9 @@ import {join,resolve} from 'node:path';
 import {tmpdir} from 'node:os';
 import {populateIntegrationHistory,verifyIntegrationCategories,verifyRestoredIntegrations} from './data-integration-history.mjs';
 import {dataInstallation} from './data-installation.mjs';
+import {assertArchiveHistory} from './archive-audit-history.mjs';
 import {populateRoundtrip,verifyRoundtripCategories} from './data-roundtrip-fixture.mjs';
-import {readArchive,canonicalJson} from '@runeditrun/rer/modules/portability';
+import {readArchive} from '@runeditrun/rer/modules/portability';
 import {chromium,expect} from '@playwright/test';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {createRestoreReviewPerson,restoreAccessJourney} from './restore-ui-journey.mjs';
@@ -24,11 +25,11 @@ try{
  // rer keeps archives in the unserved exports/ folder.
  const first=join(source.root,'exports/first.jsonl'),repeat=join(source.root,'exports/repeat.jsonl'),input=join(destination.root,'input.jsonl'),second=join(destination.root,'exports/second.jsonl');
  await source.run('Export source archive',['export','--','--target','local','--output','exports/first.jsonl','--non-interactive']);proof.commands.push('pnpm run export -- --target local');
- assert.equal((await stat(first)).mode&0o777,0o600);await source.run('Repeat export without changing product',['export','--','--target','local','--output','exports/repeat.jsonl','--non-interactive']);const repeated=await records(repeat),original=await records(first);assert.equal(repeated.at(-1).contentHash,original.at(-1).contentHash);assert.deepEqual(repeated.filter(row=>row.kind==='part').flatMap(row=>row.items),original.filter(row=>row.kind==='part').flatMap(row=>row.items));
+ assert.equal((await stat(first)).mode&0o777,0o600);await source.run('Repeat export without changing product',['export','--','--target','local','--output','exports/repeat.jsonl','--non-interactive']);const repeated=await records(repeat),original=await records(first);assertArchiveHistory(original,repeated,['archive.export.completed','archive.export.started']);
  await copyFile(first,input);assert.equal((await stat(input)).mode&0o777,0o600);
  await destination.run('Import into independent empty installation',['import','--','--target','local','--input','input.jsonl','--yes','--non-interactive']);proof.commands.push('pnpm run import -- --target local');
  await destination.run('Export independent restored archive',['export','--','--target','local','--output','exports/second.jsonl','--non-interactive']);proof.commands.push('pnpm run export -- --target local');
- const before=await records(first),after=await records(second);assert.equal(before.at(-1).contentHash,after.at(-1).contentHash);assert.deepEqual(before.filter(row=>row.kind==='part').flatMap(row=>row.items).map(canonicalJson),after.filter(row=>row.kind==='part').flatMap(row=>row.items).map(canonicalJson));
+ const before=await records(first),after=await records(second);assertArchiveHistory(before,after,['archive.import.completed','archive.export.started']);
  proof.categories=[...verifyRoundtripCategories(before),...verifyIntegrationCategories(before)];proof.rows=before[0].tables.reduce((sum,row)=>sum+row.count,0);proof.objects=before[0].objects.length;assert.equal(proof.objects,2);proof.equality=true;
  assert.deepEqual(destination.sql('PRAGMA foreign_key_check'),[]);await destination.configure();
  await unlink(join(destination.root,'node_modules'));await destination.installDependencies();
