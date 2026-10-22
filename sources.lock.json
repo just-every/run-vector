@@ -2445,7 +2445,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
-      "sha256": "6b856cdef6549787d7c520438a3da40fa39f54433d58253192a5e64527e0a841",
+      "sha256": "2182f8b326a3082731e66db24189d1bdc23140695303752a503bd0f6c5f5f5c7",
       "executable": false
     },
     "scripts/data/archive-upgrade-worker.mjs": {
@@ -2453,7 +2453,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade.mjs": {
-      "sha256": "d95a5f7e760e767e5c92b33eeca143fa7138d58dd391789bc3f6b964e4dc132e",
+      "sha256": "4daf3094ee444ec054065c916a2b1007a80218cc585aca6b73d8516d4f41c03d",
       "executable": false
     },
     "scripts/data/import-issues.mjs": {
@@ -6197,7 +6197,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "1fd109a8a97d2425471123c21102bc1e12beffe2b6bc136a9815ba3f4e163cad",
+      "sha256": "70fb32993716175d3b9e4b16e5f7520a067d7313850fc4e8cf0b159ba9ff61d3",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -6233,7 +6233,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
-      "sha256": "b72cfe0bbad7052b55e528a4e22983b9507bf20753e0735ba573a1f3e08159ac",
+      "sha256": "77bb220ba1ae783abe2a46591d2f209fae072de5b54aa7921c10094bca8d3693",
       "executable": false
     },
     "tests/e2e/integrations/typescript-loader.mjs": {
@@ -7021,7 +7021,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "696d737015c28e017ee8896e60ef93ad41987a64b836f5a6905faff75181b93e",
+      "sha256": "ca545d51d7a42edcc1dc699cfcfca1b7a982988d501ec7aecd744785e9a7d4c5",
       "executable": false
     },
     "tests/worker/role-probes.ts": {

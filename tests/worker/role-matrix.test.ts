@@ -166,7 +166,7 @@ const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_ro
   "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
 
 // Driven from the registry, this case grows with every row; its time limit is not a product assertion.
-it("[ROLE-001 ROLE-007 ROLE-009 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", { timeout: 120_000 }, async () => {
+it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", { timeout: 120_000 }, async () => {
   const w = await roleWorkspace();
   const outside = (await w.mutate("/settings/teams", "POST", { name: "Roles outside", identifierPrefix: "ROLEOUT" })).teams.find((t) => t.name === "Roles outside")!.id;
   const table = probes(w);

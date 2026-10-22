@@ -6,7 +6,7 @@ import {confirmLink} from '../outbox-session.mjs';
 import {mentionToken} from '../../../src/core/features/notifications/mention-token.ts';
 import {exerciseNotificationChannelControls,inspectMemberNotificationChannels} from './notification-channel-controls.mjs';
 const require=createRequire(import.meta.url);
-/** SLACK-004 in the built Worker: Settings → Notifications linking states, the signing-secret
+/** SLACK-004 and NOTIFY-007 in the built Worker: Settings → Notifications linking states, the signing-secret
  * field in Settings → Integrations, and one teammate mention that reaches the Slack edge as a DM. */
 export async function exerciseSlackDirectMessages({page,runtime,width,evidence}){
  const usersFile=process.env.VECTOR_CHANNEL_EDGE+'.users',headers={Origin:runtime.base};

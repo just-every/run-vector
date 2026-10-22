@@ -9,6 +9,7 @@ import {insist} from '@runeditrun/rer/modules/portability/storage';
 import {ledgerReader,archivedHistory,matchMigrationLedger} from '@runeditrun/rer/internal/modules/portability/ledgers.mjs';
 import {restorableManifest} from '@runeditrun/rer/internal/modules/portability/bookkeeping.mjs';
 import {migrationStatements} from '@runeditrun/rer/internal/modules/portability/migration-sql.mjs';
+import {canonicalJson} from '@runeditrun/rer/internal/modules/portability/hash.mjs';
 
 /** Locate authenticated history using this product's unchanged migration files.
  * No database bindings or filesystem writes precede complete input verification.
@@ -49,9 +50,19 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
  }
  insist(new Set(names).size===names.length && names.every((name,index)=>files[index]?.name===name),'archive_migration_order',409);
  insist(await replay.schemaAfter(names)===source.schema,'schema_mismatch',409);
+ // Apply current secrecy requirements only to columns that existed at the
+ // proven source schema. The archive cannot select its own redactions: its
+ // authenticated inventory must exactly equal this projection, and Base's
+ // historical import still checks every table and column against real D1.
+ const sourceSecretColumns=Object.fromEntries(Object.entries(policy.secretColumns??{}).flatMap(([name,columns])=>{
+  const table=source.tables.find(table=>table.name===name);
+  const present=columns.filter(column=>table?.columns.some(entry=>entry.name===column));
+  return table && (present.length || !columns.length)?[[name,present]]:[];
+ }));
+ insist(canonicalJson(source.excludedColumns)===canonicalJson(sourceSecretColumns),'secret_inventory',409);
  const currentSchema=await replay.schemaAfter(files.map(file=>file.name));
  const configuration=Object.fromEntries(['name','compatibility_date','compatibility_flags','d1_databases','r2_buckets'].filter(key=>config[key]!==undefined).map(key=>[key,config[key]]));
- return {needed:names.length<files.length,sourceCount:names.length,sourceSchema:source.schema,currentSchema,prefix,
+ return {needed:names.length<files.length,sourceCount:names.length,sourceSchema:source.schema,currentSchema,prefix,sourceSecretColumns,
   archiveHash:closing.archiveHash,journalArchiveHash:journalClosing?.archiveHash,files:files.map(({name,sha256})=>({name,sha256})),
   configuration};
 }
