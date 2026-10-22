@@ -1,3 +1,4 @@
+import { roles } from "../roles/matrix";
 import { projectColor, projectIcon } from "../projects/appearance";
 import {
   cycleSnapshotSchema,
@@ -146,6 +147,7 @@ export const administrationCycleSchema = z.object({
   closedAt: z.string().nullable(),
 });
 export const administrationSchema = z.object({
+  viewer: z.object({ id: z.string(), role: z.enum(roles) }),
   workspace: z.object({
     id: z.string(),
     name: z.string(),
@@ -164,6 +166,8 @@ export const administrationSchema = z.object({
       autoCycleStarted: z.boolean(),
       autoCycleCompleted: z.boolean(),
       statuses: z.array(administrationStatusSchema),
+      members: z.array(z.object({ operatorId: z.string(), role: z.enum(["owner", "member"]) })),
+      departedAssignments: z.array(z.object({ identifier: z.string(), title: z.string(), assigneeOperatorId: z.string() })),
     }),
   ),
   labels: z.array(

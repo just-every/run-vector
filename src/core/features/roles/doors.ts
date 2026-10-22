@@ -88,6 +88,10 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   // Teams and workflows
   { method: 'POST', path: '/settings/teams', row: 'teams.create' },
+  { method: 'POST', path: '/teams/:teamId/join', row: 'teams.join', teams: team('teamId') },
+  { method: 'POST', path: '/teams/:teamId/leave', row: 'teams.join', teams: team('teamId') },
+  { method: 'PUT', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
+  { method: 'DELETE', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
   { method: 'PATCH', path: '/settings/teams/:id', row: 'teams.settings', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/housekeeping', row: 'teams.settings', teams: team('id') },
   { method: 'POST', path: '/settings/teams/:id/housekeeping/preview', row: 'teams.settings', teams: team('id') },

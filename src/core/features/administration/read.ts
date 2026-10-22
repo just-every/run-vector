@@ -13,8 +13,8 @@ import { SettingsError } from "./transaction";
 const cycleColumns =
   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
 export async function readAdministration(db: D1Database, actor: string) {
-  const { workspace_id: workspaceId } = await settingsActor(db, actor);
-  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping] =
+  const { workspace_id: workspaceId, role } = await settingsActor(db, actor);
+  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed] =
     await Promise.all([
       db
         .prepare("SELECT id,name,timezone FROM workspace_settings WHERE id=?")
@@ -61,6 +61,14 @@ export async function readAdministration(db: D1Database, actor: string) {
       db.prepare("SELECT pl.project_id AS projectId,pl.label_id AS labelId FROM project_labels pl JOIN projects p ON p.id=pl.project_id WHERE p.workspace_id=? ORDER BY pl.label_id").bind(workspaceId).all<{projectId:string;labelId:string}>(),
       db.prepare("SELECT s.team_id AS teamId,s.weeks,s.start_weekday AS startWeekday,s.cooldown_weeks AS cooldownWeeks,s.upcoming_count AS upcomingCount FROM team_cycle_schedules s JOIN teams t ON t.id=s.team_id WHERE t.workspace_id=?").bind(workspaceId).all(),
       db.prepare("SELECT h.team_id AS teamId,h.close_after_days AS closeAfterDays,h.archive_after_days AS archiveAfterDays,h.exempt_bugs AS exemptBugs FROM team_housekeeping h JOIN teams t ON t.id=h.team_id WHERE t.workspace_id=?").bind(workspaceId).all<{teamId:string;closeAfterDays:number|null;archiveAfterDays:number|null;exemptBugs:number}>(),
+      db.prepare("SELECT m.team_id AS teamId,m.operator_id AS operatorId,m.role FROM team_members m JOIN teams t ON t.id=m.team_id JOIN operators o ON o.id=m.operator_id WHERE t.workspace_id=? AND o.removed_at IS NULL ORDER BY m.role DESC,o.name,o.id").bind(workspaceId).all<{teamId:string;operatorId:string;role:string}>(),
+      // ROLE-007: issues still assigned to someone who left the team, for its owners to reassign.
+      db.prepare(`SELECT i.team_id AS teamId,i.identifier,i.title,i.assignee_operator_id AS assigneeOperatorId FROM issues i
+        JOIN team_departures d ON d.team_id=i.team_id AND d.operator_id=i.assignee_operator_id
+        JOIN workflow_statuses s ON s.id=i.status_id JOIN teams t ON t.id=i.team_id
+        WHERE t.workspace_id=? AND s.category NOT IN ('completed','canceled','duplicate')
+        AND NOT EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=i.team_id AND m.operator_id=i.assignee_operator_id)
+        ORDER BY i.identifier`).bind(workspaceId).all<{teamId:string;identifier:string;title:string;assigneeOperatorId:string}>(),
     ]);
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
@@ -69,6 +77,7 @@ export async function readAdministration(db: D1Database, actor: string) {
       401,
     );
   return administrationSchema.parse({
+    viewer: { id: actor, role },
     workspace,
     cycleSchedules: schedules.results,
     housekeeping: housekeeping.results.map((h) => ({ ...h, exemptBugs: h.exemptBugs === 1 })),
@@ -79,6 +88,8 @@ export async function readAdministration(db: D1Database, actor: string) {
       autoCycleStarted: Boolean(t.autoCycleStarted),
       autoCycleCompleted: Boolean(t.autoCycleCompleted),
       statuses: statuses.results.filter((s) => s.teamId === t.id),
+      members: members.results.filter((m) => m.teamId === t.id).map(({ operatorId, role }) => ({ operatorId, role })),
+      departedAssignments: departed.results.filter((d) => d.teamId === t.id).map(({ teamId: _team, ...issue }) => issue),
     })),
     labels: labels.results.map((l) => ({
       ...l,

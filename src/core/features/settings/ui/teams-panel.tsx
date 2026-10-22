@@ -2,6 +2,9 @@ import { useHydrated } from "../../../app/initial-resources";
 import { useState, type FormEvent } from "react";
 import { useAdministrationAction } from "./administration-action";
 import { AdministrationFeedback } from "./administration-feedback";
+import { teamAccess } from "./team-access";
+import { TeamMembers } from "./team-members";
+import { decide } from "../../roles/policy";
 
 import type { Administration } from "../../administration/schema";
 type Team = Administration["teams"][number];
@@ -16,13 +19,14 @@ const categories = [
   "duplicate",
 ];
 export function TeamsPanel({
-  teams,
+  data,
   onChanged,
 }: {
-  teams: Team[];
+  data: Administration;
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
+  const creates = decide({ role: data.viewer.role, memberInvites: false, teams: new Map() }, { row: "teams.create" }) === "allow";
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -45,8 +49,33 @@ export function TeamsPanel({
       <h2 id="teams-heading">Teams</h2>
       <p>
         Teams organise work. Archived teams retain their issues and history.
+        Every member sees every team&apos;s work; join a team to work in it.
       </p>
-      <form aria-label="Create team" onSubmit={create}>
+      <h3>Team directory</h3>
+      <ul className="team-directory">
+        {data.teams.map((team) => {
+          const access = teamAccess(data, team);
+          return (
+            <li key={team.id}>
+              <span>
+                {team.name} · {team.identifierPrefix}
+                {team.archivedAt ? " · Archived" : ""}
+                {access.standing === "owner" ? " · You own this team" : access.standing ? " · You are a member" : ""}
+              </span>
+              {access.join && (access.standing ? (
+                <button type="button" disabled={action.pending} onClick={() => void action.run(`/api/teams/${team.id}/leave`, "POST", {})}>
+                  Leave {team.name}
+                </button>
+              ) : !team.archivedAt && (
+                <button type="button" disabled={action.pending} onClick={() => void action.run(`/api/teams/${team.id}/join`, "POST", {})}>
+                  Join {team.name}
+                </button>
+              ))}
+            </li>
+          );
+        })}
+      </ul>
+      {creates && <form aria-label="Create team" onSubmit={create}>
         <fieldset disabled={action.pending}>
           <label>
             Team name
@@ -67,23 +96,26 @@ export function TeamsPanel({
           <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
           <button type="submit">Create team</button>
         </fieldset>
-      </form>
+      </form>}
       <AdministrationFeedback action={action} />
-      {teams.map((team) => (
-        <TeamEditor key={team.id} team={team} onChanged={onChanged} />
+      {data.teams.filter((team) => teamAccess(data, team).opens).map((team) => (
+        <TeamEditor key={team.id} data={data} team={team} onChanged={onChanged} />
       ))}
     </section>
   );
 }
 function TeamEditor({
+  data,
   team,
   onChanged,
 }: {
+  data: Administration;
   team: Team;
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
   const hydrated = useHydrated();
+  const access = teamAccess(data, team);
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
@@ -115,8 +147,9 @@ function TeamEditor({
         {team.name} · {team.identifierPrefix}
         {team.archivedAt ? " · Archived" : ""}
       </summary>
+      {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}
       <form aria-label={`Edit ${team.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending || !hydrated}>
+        <fieldset disabled={action.pending || !hydrated || !access.settings}>
           <label>
             Team name
             <input
@@ -164,11 +197,13 @@ function TeamEditor({
           </button>
         </fieldset>
       </form>
+      <TeamMembers data={data} team={team} onChanged={onChanged} />
       <h3>Workflow</h3>
       <p>
         Each category keeps at least one status. The first status in a category
         is its default.
       </p>
+      {!access.workflow && <p>Only this team&apos;s owners and Admins change its workflow.</p>}
       {statuses.map((status, index) => (
         <StatusEditor
           key={status.id}
@@ -176,11 +211,12 @@ function TeamEditor({
           status={status}
           statuses={statuses}
           index={index}
+          editable={access.workflow}
           onChanged={onChanged}
         />
       ))}
       <form aria-label={`Add status to ${team.name}`} onSubmit={add}>
-        <fieldset disabled={action.pending || !hydrated}>
+        <fieldset disabled={action.pending || !hydrated || !access.workflow}>
           <label>
             Status name
             <input name="name" required maxLength={120} />
@@ -207,15 +243,18 @@ function StatusEditor({
   status,
   statuses,
   index,
+  editable,
   onChanged,
 }: {
   teamId: string;
   status: Status;
   statuses: Status[];
   index: number;
+  editable: boolean;
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
+  const locked = action.pending || !editable;
   const [destination, setDestination] = useState("");
   const choices = statuses.filter(
     (s) => s.category === status.category && s.id !== status.id,
@@ -255,22 +294,22 @@ function StatusEditor({
             required
             maxLength={120}
             defaultValue={status.name}
-            disabled={action.pending}
+            disabled={locked}
           />
         </label>
-        <button disabled={action.pending}>Rename status</button>
+        <button disabled={locked}>Rename status</button>
       </form>
       <div className="admin-actions">
         <button
           type="button"
-          disabled={action.pending || index === 0}
+          disabled={locked || index === 0}
           onClick={() => reorder(-1)}
         >
           Move up
         </button>
         <button
           type="button"
-          disabled={action.pending || index === statuses.length - 1}
+          disabled={locked || index === statuses.length - 1}
           onClick={() => reorder(1)}
         >
           Move down
@@ -282,7 +321,7 @@ function StatusEditor({
             Destination status
             <select
               value={destination}
-              disabled={action.pending}
+              disabled={locked}
               onChange={(event) => setDestination(event.target.value)}
             >
               <option value="">Choose a same-category destination</option>
@@ -295,7 +334,7 @@ function StatusEditor({
           </label>
           <button
             type="button"
-            disabled={action.pending || !destination}
+            disabled={locked || !destination}
             onClick={() =>
               void action.run(
                 `/api/settings/teams/${teamId}/statuses/${status.id}`,

@@ -76,6 +76,10 @@ export async function createTeam(
           ctx.at,
         ),
     ),
+    // ROLE-007: whoever creates a team is its first team owner.
+    ctx.db
+      .prepare("INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) VALUES(?,?,'owner',?,?)")
+      .bind(id, actor, ctx.at, ctx.at),
     ...additional(id),
     ...audit(ctx, "team.created", id, input.name, null, input),
   ]);

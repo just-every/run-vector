@@ -24,6 +24,8 @@ export const matrix = {
   'workspace.leave': row('Leave the workspace oneself, which suspends (OPS-004, ROLE-011)', 'yes', 'yes', 'yes', 'yes'),
   'workspace.settings': row('Change workspace settings: timezone, the invite, label-creation and deletion settings, notification defaults (OPS-003, OPS-002, ISSUE-014, ISSUE-010, NOTIFY-007)', 'yes', 'yes', 'no', 'no'),
   'teams.create': row('Create a team; make a team private or public (ROLE-002)', 'yes', 'yes', 'no', 'no'),
+  'teams.members': row('Manage a team\'s members and team owners (ROLE-007)', 'yes', 'yes', 'team-owner', 'no'),
+  'teams.join': row('Join or leave a public team (ROLE-007)', 'yes', 'yes', 'yes', 'no'),
   'teams.settings': row('Change team settings: triage, cycles and estimates on or off, estimate scale, default template, Git automation rules, auto-close and auto-archive (TEAM-005, GITHUB-003, AUTO-003)', 'yes', 'yes', 'team-setting', 'no'),
   'teams.workflow': row('Add, rename, reorder or remove workflow statuses (TEAM-002, TEAM-004)', 'yes', 'yes', 'team-setting', 'no'),
   'issues.write': row('Create, edit and comment on issues in the member\'s teams (ISSUE-001, ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),

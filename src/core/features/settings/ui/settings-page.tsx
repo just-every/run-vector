@@ -83,8 +83,8 @@ export function SettingsPage() {
           <a href="#personal-time">Your time</a>
           {workspace && <a href="#workspace-time">Workspace time</a>}
           <a href="#members">Members</a>
+          <a href="#teams">Teams</a>
           {workspace && <>
-            <a href="#teams">Teams</a>
             <a href="#housekeeping">Auto-close</a>
             <a href="#labels">Labels</a>
             <a href="#projects">Projects</a>
@@ -182,12 +182,14 @@ export function SettingsPage() {
               </button>
             </p>
           )}
+          {administration.data && (
+            <TeamsPanel
+              data={administration.data}
+              onChanged={administration.reload}
+            />
+          )}
           {workspace && administration.data && (
             <>
-              <TeamsPanel
-                teams={administration.data.teams}
-                onChanged={administration.reload}
-              />
               <HousekeepingPanel
                 data={administration.data}
                 onChanged={administration.reload}

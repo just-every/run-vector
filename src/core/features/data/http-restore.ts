@@ -9,7 +9,7 @@ import { mutationDatabase } from '../auth/mutation-database';
 import { validateArchiveInventory,validateArchiveAttachments } from './archive-inventory.mjs';
 import type { WorkerBindings } from '../../app/bindings';
 
-const bootstrapTables = ['workspace_bootstrap', 'workspace_settings', 'workspace_installation', 'operators', 'oa_operators', 'vector_auth_operators', 'teams', 'workflow_statuses'];
+const bootstrapTables = ['workspace_bootstrap', 'workspace_settings', 'workspace_installation', 'operators', 'oa_operators', 'vector_auth_operators', 'teams', 'workflow_statuses', 'team_members'];
 const response = (error: string, status: number) => Response.json({error}, {status, headers:{'Cache-Control':'no-store'}});
 
 /** Forwarding to the object conveys no authority, including for custody/status. */

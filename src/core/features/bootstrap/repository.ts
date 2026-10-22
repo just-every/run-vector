@@ -121,6 +121,11 @@ export async function bootstrapWorkspace(
         at,
         workspaceId,
       ),
+    db
+      .prepare(
+        `INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) SELECT ?,?,'owner',?,? WHERE ${ownClaim}`,
+      )
+      .bind(teamId, ownerId, at, at, workspaceId),
     ...statuses.map(([name, category], position) =>
       db
         .prepare(

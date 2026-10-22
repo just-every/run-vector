@@ -1,7 +1,9 @@
 /** ISSUE-008 and the role matrix: only a comment's author edits it; its author
- * deletes it, and so do workspace Owners and Admins (ROLE-001). Team owners
- * (ROLE-007) do not exist yet, so a Member never deletes another member's comment. */
-export const moderatorSql = `EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.removed_at IS NULL AND o.role IN ('owner','admin'))`;
+ * deletes it, and so do workspace Owners and Admins (ROLE-001) and the team
+ * owners of the comment's issue (ROLE-007). Read with the comment as `c`. */
+export const moderatorSql = `EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.removed_at IS NULL AND (o.role IN ('owner','admin')
+ OR o.role='member' AND EXISTS(SELECT 1 FROM issues i JOIN team_members m ON m.team_id=i.team_id
+  WHERE i.id=c.issue_id AND m.operator_id=o.id AND m.role='owner')))`;
 
 export class CommentPermissionError extends Error {
   readonly code = "forbidden";
@@ -35,6 +37,6 @@ export function requireCommentChange(row: CommentRow, action: "edit" | "delete")
   throw new CommentPermissionError(
     action === "edit"
       ? "Only the comment's author can edit it."
-      : "Only the comment's author, an Owner or an Admin can delete it.",
+      : "Only the comment's author, a team owner, an Owner or an Admin can delete it.",
   );
 }

@@ -9,7 +9,7 @@ export class SettingsError extends Error {
   constructor(
     public code: string,
     message: string,
-    public status: 400 | 401 | 404 | 409,
+    public status: 400 | 401 | 403 | 404 | 409,
   ) {
     super(message);
   }

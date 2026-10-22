@@ -11,16 +11,15 @@ export type Authority = { role: Role; memberInvites: boolean; teams: ReadonlyMap
 export type Question = { row: RowId | null; page?: SettingsPage; teams?: readonly string[] | null; invitation?: boolean }
 export type Decision = 'allow' | 'forbidden' | 'hidden'
 
-/** ROLE-001: the matrix decides. A Guest never sees a team they were not added
- * to, so a request acting on one is answered as if it were absent (ROLE-003). */
+/** ROLE-001: the matrix decides. Where a Guest may act only in invited teams,
+ * a team they were not added to is answered as if it were absent (ROLE-003). */
 export function decide(actor: Authority, question: Question): Decision {
   const { teams } = question
-  if (actor.role === 'guest' && teams && !teams.every(team => actor.teams.get(team)?.role)) return 'hidden'
   if (question.row === null) return question.page ? (opensSettingsPage(actor.role, question.page) ? 'allow' : 'forbidden') : actor.role === 'owner' ? 'allow' : 'forbidden'
   const cell = matrix[question.row].cells[actor.role]
   if (teamCells.includes(cell) && teams !== undefined && teams !== null) {
     const every = (test: (standing: TeamStanding | undefined) => boolean) => teams.length > 0 && teams.every(team => test(actor.teams.get(team)))
-    if (cell === 'invited-teams') return every(standing => !!standing?.role) ? 'allow' : 'forbidden'
+    if (cell === 'invited-teams') return every(standing => !!standing?.role) ? 'allow' : 'hidden'
     if (cell === 'team-owner') return every(standing => standing?.role === 'owner') ? 'allow' : 'forbidden'
     return every(standing => manages(standing, cell === 'team-setting' ? 'settings' : 'planning')) ? 'allow' : 'forbidden'
   }
@@ -37,6 +36,6 @@ export function decisionInputs(actor: Authority, question: Question) {
   const cell = question.row === null ? null : matrix[question.row].cells[actor.role]
   return {
     memberInvites: cell === 'member-invites',
-    teams: actor.role === 'guest' || (cell !== null && teamCells.includes(cell)) ? question.teams ?? [] : [],
+    teams: cell !== null && teamCells.includes(cell) ? question.teams ?? [] : [],
   }
 }
