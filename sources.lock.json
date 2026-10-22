@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3b86fb33dc59cc545994569d3cf76b51cc3adba7bf8d266484aa640296c4a630",
+      "sha256": "6217ff42d5a6997a2b826ec78f03740965f12aabc6ff4355b4ebbdda499b9384",
       "executable": false
     },
     "DEMO.md": {
@@ -4997,7 +4997,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-administration.tsx": {
-      "sha256": "3f98d6a024ac32b4d964950e69e0a613b751aa908ba498f4b6aa683984d837af",
+      "sha256": "d3a39f1548ba1c3dee233ec22d978f7276c2c35938de1c13268e72a3be14eb23",
       "executable": false
     },
     "src/core/features/projects/ui/project-appearance.tsx": {
@@ -5021,7 +5021,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/projects-workspace.tsx": {
-      "sha256": "183cd4e0e552d3fb518a2eb08e0e737b0f25b97f0353a4aa2bf8f67d583546f5",
+      "sha256": "09be2b09557269b85cf3a1f68a05cafdf703af44a9ad7618b69ab56e0b559930",
       "executable": false
     },
     "src/core/features/projects/ui/projects.css": {
@@ -5037,23 +5037,23 @@
       "executable": false
     },
     "src/core/features/roles/authority.ts": {
-      "sha256": "020c74c4b10f73deb1332a4038269eb7c5c3dd6d30fc01f5bc4bfb4c0a3a9df9",
+      "sha256": "bb9fa1cc594b24ad23f7a97c37ef31064af01afd3409436b3bb9434b0a664a47",
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "3ccdb4f30c4e9cee9d97eeddb7098d78c13b69165a530e6f30cf1ba82868da07",
+      "sha256": "5ae0b459f67ac1aaffde9f1ad74451ae2aab76b71ca98f5368187bc99163e1c7",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
-      "sha256": "02774aee3628828e09b5f145cd802defb6e0f378a63f2c53d990b73a8d85ce68",
+      "sha256": "ee5b14c9a953142a69238acebcf5f4c9880e8531d7a995f61776e24b4cfdfcb1",
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "1298faf0d1be815e27cdb8c0a6881c8945e36e83ad17f65bfd076e9945202d85",
+      "sha256": "9d7b22f6d5bed2492a1f536e1304874edd4731ed8f3807b42a3bc6de3b0c4c86",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
-      "sha256": "0cafb2bb691d53123ef2dae10c3bc23d616ef478827be19e072c79b4688a3151",
+      "sha256": "60f3f1332cce1bf506474eceed6f628be4a8b0f87169ac82ae89866c0b49d7c9",
       "executable": false
     },
     "src/core/features/sample-data/repository.ts": {
@@ -5205,7 +5205,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/team-access.ts": {
-      "sha256": "d2260924d5508c4355172528582418f261e284d53028865beea94774835772a0",
+      "sha256": "3095baa74e93acf01bf1370507a37cf6022a94ef1feafe4ab8a13eab38a61e70",
       "executable": false
     },
     "src/core/features/settings/ui/team-members.tsx": {
@@ -5217,7 +5217,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "106e39b6500189d54ef1a3d64efd580d865156df51191f949d13d9f50cde1d45",
+      "sha256": "317e6430ed4d5a4fee317348309bd42ef0c3ba8673ec04df04cfd6d00e97298f",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
@@ -5665,7 +5665,7 @@
       "executable": false
     },
     "tests/e2e/admin-access-journey.mjs": {
-      "sha256": "7b878bc12453bcc58acabf3f2bce182e92d2cd58f53b116f4b5819cf73314d55",
+      "sha256": "8efb135180b0e24d3e30947e871fe36aa7112cd5aa1e8c0bc2d8a737016c3aab",
       "executable": false
     },
     "tests/e2e/admin-archive-team-journey.mjs": {
@@ -6817,11 +6817,11 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "14dfb542043713eb32104c00e6e15c602de69b28680652c158be1e0ec19b5ef6",
+      "sha256": "79f260ede96d16717701da35d45f7a8ed6fb776d5cbaac8e8bbff69892a145a3",
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "5825d1a20f03f425e525c4944cd78181de31ed9a63aebfe08568ecda9a7c1d64",
+      "sha256": "0d72fa80dcce4f78509b775d42d7a75d7b95ee5738e90bed4ce5993a37148d6b",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {

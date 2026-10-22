@@ -278,11 +278,16 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     await form.getByRole("button", { name: "Change role", exact: true }).click();
     assert.equal((await changed).status(), status);
   };
-  await clause("ROLE-001", "an Owner promotes a Member at 1440 and demotes them at 390; the demoted member's next settings request returns 403", async () => {
+  await clause("ROLE-001", "an Owner promotes a Member at 1440 and demotes them at 390; the Admin's promotions are refused 403; the demoted member's next settings request returns 403", async () => {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await changeRole("Role member", memberId, "admin", 200);
     await page.getByText("Role member is now an Admin.", { exact: true }).waitFor();
     assert.equal(await settingsRequest(), 200);
+    // The new Admin promotes no one to Admin or Owner; the project lead stays a Member.
+    const lead = sql("SELECT id FROM operators WHERE email='lead@admin-runtime.test'")[0].id;
+    for (const role of ["admin", "owner"])
+      assert.equal((await peer.request.patch(base + `/api/settings/operators/${lead}/role`, { headers: { Origin: base }, data: { role } })).status(), 403, `an Admin's promotion to ${role}`);
+    assert.equal(sql(`SELECT role FROM operators WHERE id='${lead}'`)[0].role, "member");
     await page.setViewportSize({ width: 390, height: 844 });
     await changeRole("Role member", memberId, "member", 200);
     await page.getByText("Role member is now a Member.", { exact: true }).waitFor();

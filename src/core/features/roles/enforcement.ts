@@ -40,8 +40,9 @@ export async function doorAuthority(c: Context<AppEnvironment>, surface: keyof t
   }
   const row = door ? typeof door.row === 'function' ? await door.row(request) : door.row : null
   const teams = door?.teams ? await door.teams(request) : null
-  const question = { row, page: door?.page, teams, invitation: door?.invitation }
-  const authority = await loadAuthority(source, actor, teams ?? [])
+  const project = door?.project ? await door.project(request) : undefined
+  const question = { row, page: door?.page, teams, project, invitation: door?.invitation }
+  const authority = await loadAuthority(source, actor, teams ?? [], project ?? undefined)
   if (!authority) return { denied: c.json({ error: 'unauthenticated', message: 'Sign in again to continue.' }, 401, { 'Cache-Control': 'no-store' }) }
   const decision = decide(authority, question)
   if (decision === 'hidden') return { denied: c.json({ error: 'not_found', message: 'The selected record is unavailable.' }, 404, { 'Cache-Control': 'no-store' }) }

@@ -3,12 +3,13 @@ import { matrix, opensSettingsPage, type Cell, type Role, type RowId, type Setti
 export type TeamPermission = 'team_owners' | 'all_members'
 /** The actor's standing in one subject team (ROLE-007, ROLE-009). */
 export type TeamStanding = { role: 'owner' | 'member' | null; settings: TeamPermission; planning: TeamPermission }
-export type Authority = { role: Role; memberInvites: boolean; teams: ReadonlyMap<string, TeamStanding> }
+/** `leads` holds the projects the actor leads among those a request names. */
+export type Authority = { role: Role; memberInvites: boolean; teams: ReadonlyMap<string, TeamStanding>; leads?: ReadonlySet<string> }
 /** What a door asks: its row (null for a door with no row), the Settings page
- * it opens, whether it is an invitation, and the teams it acts on in the
- * actor's workspace: undefined when the door names none, null when its subject
- * is not in the workspace at all (the handler answers that, writing nothing). */
-export type Question = { row: RowId | null; page?: SettingsPage; teams?: readonly string[] | null; invitation?: boolean }
+ * it opens, whether it is an invitation, and the teams or project it acts on in
+ * the actor's workspace: undefined when the door names none, null when its
+ * subject is not in the workspace at all (the handler answers that, writing nothing). */
+export type Question = { row: RowId | null; page?: SettingsPage; teams?: readonly string[] | null; project?: string | null; invitation?: boolean }
 export type Decision = 'allow' | 'forbidden' | 'hidden'
 
 /** ROLE-001: the matrix decides. Where a Guest may act only in invited teams,
@@ -24,6 +25,7 @@ export function decide(actor: Authority, question: Question): Decision {
     return every(standing => manages(standing, cell === 'team-setting' ? 'settings' : 'planning')) ? 'allow' : 'forbidden'
   }
   if (teamCells.includes(cell)) return teams === null ? 'allow' : 'forbidden'
+  if (cell === 'lead') return question.project === null || (question.project !== undefined && actor.leads?.has(question.project)) ? 'allow' : 'forbidden'
   if (cell === 'member-invites') return question.invitation === true && actor.memberInvites ? 'allow' : 'forbidden'
   return cell === 'no' ? 'forbidden' : 'allow'
 }
@@ -37,5 +39,6 @@ export function decisionInputs(actor: Authority, question: Question) {
   return {
     memberInvites: cell === 'member-invites',
     teams: cell !== null && teamCells.includes(cell) ? question.teams ?? [] : [],
+    project: cell === 'lead' ? question.project ?? null : null,
   }
 }

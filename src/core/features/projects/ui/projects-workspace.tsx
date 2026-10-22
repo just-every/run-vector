@@ -10,6 +10,7 @@ import {
   portfolioMetrics,
 } from "./helpers";
 import { administrationSchema } from "../../administration/schema";
+import { decide } from "../../roles/policy";
 import { ProjectCreate } from "./project-administration";
 import { ProjectList } from "./project-list";
 
@@ -124,6 +125,7 @@ export function ProjectsWorkspace() {
           <ProjectCreate
             operators={administration.data.operators}
             labels={administration.data.labels}
+            channel={decide({ role: administration.data.viewer.role, memberInvites: false, teams: new Map() }, { row: "channels.create" }) === "allow"}
             onChanged={() => {
               changed();
               closeCreate();

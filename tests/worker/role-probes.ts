@@ -1,6 +1,7 @@
 import { expect } from "vitest";
 import type { RowId } from "../../src/core/features/roles/matrix";
 import type { Kind, Person, roleWorkspace } from "./role-fixture";
+import { channelEdge } from "./channel-edge-fixture";
 
 type Workspace = Awaited<ReturnType<typeof roleWorkspace>>;
 type Issue = { id: string; identifier: string; version: number };
@@ -46,7 +47,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     const created = cycle(team);
     return (await json<{ cycles: { id: string; name: string }[] }>(owner.call("/settings/cycles", "POST", created))).cycles.find((c) => c.name === created.name)!.id;
   };
-  const project = async () => (await json<{ id: string }>(owner.api("/projects", "POST", { name: `Probe project ${unique()}`, leadOperatorId: owner.id }))).id;
+  const project = async (lead = owner.id) => (await json<{ id: string }>(owner.api("/projects", "POST", { name: `Probe project ${unique()}`, leadOperatorId: lead }))).id;
   const view = async (by: Person, shared: boolean, team: string) => (await json<{ id: string }>(by.call("/views", "POST", {
     name: `Probe view ${unique()}`, isShared: shared, layout: "list", query: { team } }))).id;
   const label = async () => {
@@ -72,6 +73,12 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "teams.join": { session: async (_who, actor) => { const id = await team(`Directory team ${unique()}`, "DIR"); return () => actor.call(`/teams/${id}/join`, "POST", {}); } },
     "teams.settings": { permission: "settings", session: async (_who, actor, id) => { const value = unique() % 2 === 0; return () => actor.call(`/settings/teams/${id}`, "PATCH", { autoCycleStarted: value }); } },
     "teams.workflow": { permission: "settings", session: async (_who, actor, id) => { const status = await backlog(id), name = `Backlog ${unique()}`; return () => actor.call(`/settings/teams/${id}/statuses/${status}`, "PATCH", { name }); } },
+    // Checked under both settings values: All team members never lets a member archive.
+    "teams.archive": { permission: "settings", session: async (_who, actor, id) => async () => {
+      const response = await actor.call(`/settings/teams/${id}`, "PATCH", { archived: true });
+      // The probed team stays in use for the rows that follow.
+      if (response.ok) expect((await owner.call(`/settings/teams/${id}`, "PATCH", { archived: false })).status).toBe(200);
+      return response; } },
     "issues.write": { outside: true,
       session: async (_who, actor, id) => () => actor.call("/issues", "POST", { title: `Written ${unique()}`, teamId: id }),
       api: async (_who, actor, id) => () => actor.api("/issues", "POST", { title: `Written ${unique()}`, teamId: id }) },
@@ -121,6 +128,10 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "projects.status": {
       session: async (_who, actor) => { const id = await project(); return () => actor.call(`/settings/projects/${id}`, "PATCH", { lifecycle: "active" }); },
       api: async (_who, actor) => { const id = await project(); return () => actor.api(`/projects/${id}`, "PATCH", { lifecycle: "active" }); } },
+    // The Member who owns the probed team also leads the probed project.
+    "projects.delete": {
+      session: async (_who, actor) => { const id = await project(w.people.lead.id); return () => actor.call(`/settings/projects/${id}`, "DELETE"); },
+      api: async (_who, actor) => { const id = await project(w.people.lead.id); return () => actor.api(`/projects/${id}`, "DELETE"); } },
     "milestones.write": {
       session: async (_who, actor) => { const id = await project(); return () => actor.call(`/settings/projects/${id}/milestones`, "POST", { name: `Milestone ${unique()}` }); },
       api: async (_who, actor) => { const id = await project(); return () => actor.api(`/projects/${id}/milestones`, "POST", { name: `Milestone ${unique()}` }); } },
@@ -129,6 +140,18 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "views.open-shared": { outside: true, session: async (_who, actor, id) => { const shared = await view(owner, true, id); return () => actor.call(`/views/${shared}/duplicate`, "POST", { name: `Copied view ${unique()}` }); } },
     "views.edit-shared": { session: async (who, actor) => { const shared = await view(who === "guest" ? owner : actor, true, w.team.id); return () => actor.call(`/views/${shared}`, "PATCH", { name: `Renamed view ${unique()}` }); } },
     "integrations.manage": { session: async (_who, actor) => () => actor.call("/settings/integrations") },
+    // Slack is faked at the network edge; a refused request never reaches it.
+    "channels.create": { session: async (_who, actor) => {
+      const edge = channelEdge(), name = `Channel project ${unique()}`;
+      try { expect((await owner.call("/settings/integrations/slack", "POST", { botToken: edge.token })).status).toBe(200); }
+      catch (error) { edge.restore(); throw error; }
+      return async () => {
+        try {
+          const response = await actor.call("/settings/projects", "POST", { name, leadOperatorId: actor.id, createSlackChannel: true });
+          expect(edge.calls.filter((call) => call.method === "conversations.create")).toHaveLength(response.ok ? 1 : 0);
+          return response;
+        } finally { edge.restore(); }
+      }; } },
     "tokens.personal": { session: async (_who, actor) => () => actor.call("/settings/integrations/tokens", "POST", { name: `Token ${unique()}`, scopes: ["issues:read"] }) },
     "identity.personal": { session: async (_who, actor) => () => actor.call("/settings/notifications/slack/link", "DELETE") },
     "data.export": { session: async (_who, actor) => async () => {
@@ -136,6 +159,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
       if (created.ok) await owner.call(`/portability/exports/${((await created.clone().json()) as { id: string }).id}/abort`, "POST", {});
       return created; } },
     "data.import": { session: async (_who, actor) => () => actor.call("/data/import/runs") },
+    "data.restore": { session: async (_who, actor) => () => actor.call("/data/restore") },
     "data.erase-imported": { session: async (_who, actor) => () => actor.call("/data/erasure/journal") },
   };
 }

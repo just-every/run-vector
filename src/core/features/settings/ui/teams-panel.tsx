@@ -149,6 +149,7 @@ function TeamEditor({
         {team.archivedAt ? " · Archived" : ""}
       </summary>
       {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}
+      {access.settings && !access.archive && <p>Only this team&apos;s owners and Admins archive or unarchive it.</p>}
       <form aria-label={`Edit ${team.name}`} onSubmit={save}>
         <fieldset disabled={action.pending || !hydrated || !access.settings}>
           <label>
@@ -188,6 +189,7 @@ function TeamEditor({
           <button type="submit">Save team</button>
           <button
             type="button"
+            disabled={!access.archive}
             onClick={() =>
               void action.run(`/api/settings/teams/${team.id}`, "PATCH", {
                 archived: !team.archivedAt,

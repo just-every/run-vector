@@ -8,14 +8,16 @@ type Resolve<T> = (request: DoorRequest) => Promise<T> | T
  * A few doors serve several matrix actions; they resolve the one row each
  * request acts under. `null` is a door with no row: only Owners pass (ROLE-008),
  * unless it opens a Settings `page`, which the "Open Settings pages" row decides.
- * `teams` names the teams a request acts on, for team cells and Guests.
- * Read doors are registered only where a row narrows a Settings page. */
+ * `teams` names the teams a request acts on, for team cells and Guests, and
+ * `project` the project whose lead a lead cell admits.
+ * Read doors are registered only where a row narrows what they show. */
 export type Door = {
   method: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'ALL'
   path: string
   row: RowId | null | Resolve<RowId | null>
   page?: SettingsPage
   teams?: Resolve<string[] | null>
+  project?: Resolve<string | null>
   invitation?: true
 }
 
@@ -35,6 +37,12 @@ async function teamsOf(db: D1Database, actor: string, ids: string[] | 'all', ide
 const team = (param: string): Resolve<string[] | null> => ({ db, actor, params }) => teamsOf(db, actor, params[param] ? [params[param]] : [])
 const bodyTeam: Resolve<string[] | null> = async request => { const id = text(await field(request, 'teamId')); return teamsOf(request.db, request.actor, id ? [id] : []) }
 const issue: Resolve<string[] | null> = ({ db, actor, params }) => teamsOf(db, actor, [], params.identifier ? [params.identifier] : [])
+/** The project named by the `id` parameter, kept only inside the actor's workspace. */
+const project: Resolve<string | null> = async ({ db, actor, params }) => (await db.prepare(`SELECT p.id FROM projects p
+  JOIN operators o ON o.workspace_id=p.workspace_id AND o.id=? WHERE p.id=?`).bind(actor, params.id ?? '').first<{ id: string }>())?.id ?? null
+/** A create that asks the Slack bot for a channel acts under the channel row,
+ * which admits no one the create row refuses (SLACK-003). */
+const channelOr = (row: RowId): Resolve<RowId> => async request => await field(request, 'createSlackChannel') === true ? 'channels.create' : row
 /** A move or copy acts on its issue's team and on the destination team. */
 const issueAndDestination: Resolve<string[] | null> = async request => {
   const destination = text(await field(request, 'teamId'))
@@ -79,9 +87,9 @@ export const doors: Door[] = [
   { method: 'PATCH', path: '/settings', row: 'workspace.settings' },
   { method: 'GET', path: '/settings', row: null, page: 'directory' },
   { method: 'POST', path: '/setup/complete', row: null },
-  { method: 'POST', path: '/data/restore/operators/:id', row: null },
-  { method: 'POST', path: '/data/restore/review-effects', row: null },
-  { method: 'GET', path: '/data/restore', row: null },
+  { method: 'POST', path: '/data/restore/operators/:id', row: 'data.restore' },
+  { method: 'POST', path: '/data/restore/review-effects', row: 'data.restore' },
+  { method: 'GET', path: '/data/restore', row: 'data.restore' },
   // Account: every role opens and changes its own records.
   ...([['PATCH', '/settings/appearance'], ['PATCH', '/settings/personal-time'], ['PATCH', '/settings/notifications'], ['GET', '/settings/appearance'], ['GET', '/settings/personal-time'], ['GET', '/settings/notifications'],
     ['POST', '/notifications/:id/read'], ['POST', '/notifications/read-all'], ['POST', '/notifications/:id/snooze'], ['POST', '/notifications/:id/unsnooze'],
@@ -92,13 +100,14 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   { method: 'DELETE', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   // Teams and workflows
-  { method: 'POST', path: '/settings/teams', row: 'teams.create' },
+  { method: 'POST', path: '/settings/teams', row: channelOr('teams.create') },
   { method: 'POST', path: '/teams/:teamId/join', row: 'teams.join', teams: team('teamId') },
   { method: 'POST', path: '/teams/:teamId/leave', row: 'teams.join', teams: team('teamId') },
   { method: 'PUT', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
   { method: 'DELETE', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/permissions', row: 'teams.permissions', teams: team('id') },
-  { method: 'PATCH', path: '/settings/teams/:id', row: 'teams.settings', teams: team('id') },
+  // Archiving is not a team setting: only team owners, Owners and Admins archive (TEAM-003).
+  { method: 'PATCH', path: '/settings/teams/:id', row: async request => await field(request, 'archived') !== undefined ? 'teams.archive' : 'teams.settings', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/housekeeping', row: 'teams.settings', teams: team('id') },
   { method: 'POST', path: '/settings/teams/:id/housekeeping/preview', row: 'teams.settings', teams: team('id') },
   { method: 'PATCH', path: '/teams/:teamId/subissue-rule', row: 'teams.settings', teams: team('teamId') },
@@ -140,9 +149,9 @@ export const doors: Door[] = [
   ...([['POST', '/settings/integrations/sources'], ['POST', '/settings/integrations/sources/:id/rotate'], ['POST', '/settings/integrations/sources/:id/webhook-url'], ['DELETE', '/settings/integrations/sources/:id']] as const)
     .map(([method, path]): Door => ({ method, path, row: 'sources.manage' })),
   // Projects
-  { method: 'POST', path: '/settings/projects', row: 'projects.write' },
+  { method: 'POST', path: '/settings/projects', row: channelOr('projects.write') },
   { method: 'PATCH', path: '/settings/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
-  { method: 'DELETE', path: '/settings/projects/:id', row: null },
+  { method: 'DELETE', path: '/settings/projects/:id', row: 'projects.delete', project },
   { method: 'POST', path: '/settings/projects/:id/milestones', row: 'milestones.write' },
   { method: 'PATCH', path: '/settings/projects/:id/milestones/:milestoneId', row: 'milestones.write' },
   { method: 'PUT', path: '/settings/projects/:id/milestones/order', row: 'milestones.write' },
@@ -167,7 +176,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/integrations/tokens', row: 'tokens.personal' },
   { method: 'DELETE', path: '/settings/integrations/tokens/:id', row: 'tokens.personal' },
   // Import, export and portability
-  { method: 'ALL', path: '/portability/*', row: ({ path }) => /^\/api\/portability\/imports(?:\/|$)/.test(path) ? null : 'data.export' },
+  { method: 'ALL', path: '/portability/*', row: ({ path }) => /^\/api\/portability\/imports(?:\/|$)/.test(path) ? 'data.restore' : 'data.export' },
   ...([['GET', '/data/import/options'], ['GET', '/data/import/runs'], ['GET', '/data/import/runs/:id'], ['GET', '/data/import/runs/:id/originals'], ['GET', '/data/import/runs/:id/report'],
     ['GET', '/data/import/runs/:id/report.csv'], ['GET', '/data/import/runs/:id/rollback'], ['POST', '/data/import/preview'], ['POST', '/data/import/apply'],
     ['POST', '/data/import/runs/:id/resume'], ['POST', '/data/import/runs/:id/rollback']] as const)
@@ -190,7 +199,7 @@ export const apiDoors: Door[] = [
   { method: 'DELETE', path: '/comments/:id', row: commentDeletion, teams: comment },
   { method: 'POST', path: '/projects', row: 'projects.write' },
   { method: 'PATCH', path: '/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
-  { method: 'DELETE', path: '/projects/:id', row: null },
+  { method: 'DELETE', path: '/projects/:id', row: 'projects.delete', project },
   { method: 'POST', path: '/projects/:id/milestones', row: 'milestones.write' },
   { method: 'PATCH', path: '/projects/:id/milestones/:milestoneId', row: 'milestones.write' },
   { method: 'PUT', path: '/projects/:id/milestones/order', row: 'milestones.write' },
@@ -203,6 +212,6 @@ export const apiDoors: Door[] = [
 export const terminalCommands = {
   'pnpm import:issues preview|apply|resume|rollback': '/api/data/import/* (data.import)',
   'rer export': '/api/portability/* (data.export)',
-  'rer import (HTTP restore)': '/api/portability/imports/* (no row: Owners only)',
+  'rer import (HTTP restore)': '/api/portability/imports/* (data.restore)',
   'rer import --target local, rer reset, rer setup': 'local resources of the checkout, no workspace session',
 } as const

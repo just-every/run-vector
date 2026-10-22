@@ -136,14 +136,15 @@ const contractMatrix = (() => {
 })();
 const column: Record<Kind, keyof Cells> = { owner: "Owner", admin: "Admin", lead: "Member", member: "Member", guest: "Guest" };
 type Context = { inTeam: boolean; settings: string; planning: string; memberInvites: boolean };
-/** What a cell promises this person: the lead owns the probed team, the other
- * Member and the Guest belong to it, and every team is public (ROLE-002). */
+/** What a cell promises this person: the lead owns the probed team and leads
+ * the probed project, the other Member and the Guest belong to the team, and
+ * every team is public (ROLE-002). */
 function promised(cell: string, who: Kind, c: Context) {
   const text = cell.toLowerCase();
   if (text.startsWith("no (yes when the invite setting is on")) return c.memberInvites ? "allow" : "forbidden";
   if (text.startsWith("yes") || text === "own" || text.startsWith("member's teams")) return "allow";
   if (text.startsWith("no") || text === "apply only") return "forbidden";
-  if (text === "team owner only") return who === "lead" ? "allow" : "forbidden";
+  if (text === "team owner only" || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
   if (text === "team setting") return who === "lead" || c.settings === "all_members" ? "allow" : "forbidden";
   if (text === "planning setting") return who === "lead" || c.planning === "all_members" ? "allow" : "forbidden";
   if (text === "invited teams only" || text === "only views covering only invited teams") return c.inTeam ? "allow" : "hidden";
@@ -152,7 +153,8 @@ function promised(cell: string, who: Kind, c: Context) {
 const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
 const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
-  "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs"];
+  "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
+  "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
 
 it("[ROLE-001 ROLE-007 ROLE-009 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", async () => {
   const w = await roleWorkspace();
@@ -212,8 +214,9 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   let week = 0;
   const cycleIn = (team: string) => ({ teamId: team, name: `Promotion cycle ${++week}`, startsLocal: `2033-0${week}-02T09:00`, endsLocal: `2033-0${week}-06T09:00`, capacity: null });
 
-  // An Owner promotes a Member to Admin and back; an Admin promotes no one (OPS-002 row).
+  // An Owner promotes a Member to Admin and back; an Admin promotes no one to Admin or Owner (OPS-002 row).
   expect((await role(member.id, "admin", admin)).status).toBe(403);
+  expect((await role(member.id, "owner", admin)).status).toBe(403);
   expect((await role(member.id, "admin")).status).toBe(200);
   expect((await member.call("/settings", "PATCH", { timezone: "UTC" })).status).toBe(200);
   expect((await member.api("/cycles", "POST", cycleIn(outsideTeam))).status).toBe(201);
@@ -248,7 +251,7 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   expect(await memberships()).toBe(0);
 
   // Inherited cells: refused requests change nothing; Owners and Admins succeed.
-  const state = ["issues", "intake_decisions", "vector_integration_sources", "vector_integration_secret_keys", "saved_views", "ik_jobs", "ik_d1_erasure_journal", "audit_records"];
+  const state = ["issues", "intake_decisions", "vector_integration_sources", "vector_integration_secret_keys", "saved_views", "ik_jobs", "ik_d1_erasure_journal", "audit_records", "rer_portability_jobs", "vector_http_restore"];
   const refuse = async (send: () => Promise<Response>) => {
     await resetLimits();
     const before = await snapshot(state), response = await send();
@@ -275,6 +278,8 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   const importInput = { format: "json", source: "role-import", name: "issues.json", base64: rows,
     mapping: { sourceId: "id", title: "title", team: "team", status: "status", createdAt: "created", updatedAt: "updated" } };
   for (const who of [member, guest]) await refuse(() => who.call("/data/import/preview", "POST", importInput));
+  // Restoring an archive over HTTP is an Owner's alone (DATA-005 row).
+  for (const who of [admin, member]) await refuse(() => who.call("/portability/imports", "POST", { confirmed: true, manifest: { tables: [] } }));
   expect((await admin.call("/data/import/preview", "POST", importInput)).status).toBe(200);
   const review = await (await owner.call("/data/import/preview", "POST", importInput)).json() as { fingerprint: string; effectiveAt: string };
   const applyBody = { input: { ...importInput, effectiveAt: review.effectiveAt }, reviewedFingerprint: review.fingerprint, operationKey: "review:" + review.fingerprint, acknowledgeOmissions: true };

@@ -19,6 +19,7 @@ export function teamAccess(data: Administration, team: Team) {
     opens: leads || standing !== null,
     join: may("teams.join"),
     settings: may("teams.settings"),
+    archive: may("teams.archive"),
     workflow: may("teams.workflow"),
     members: may("teams.members"),
     permissions: may("teams.permissions"),
