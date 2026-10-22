@@ -39,7 +39,7 @@ test('[BASE-DATA-001 DATA-001] a backup from the listed version restores through
    run(root,process.execPath,[join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),'export','--output',join(work,(platform?'platform':'native')+'.rer')]);
    const proxy=await getPlatformProxy(options);
    try {
-    await compareRetainedArchive(archive,proxy.env);
+    await compareRetainedArchive(archive,proxy.env,{auditActions:['archive.import.completed','archive.export.started','archive.export.completed']});
     // Platform's runner stays the database's only migration authority: Wrangler never adds its ledger beside it.
     const ledgers=(await proxy.env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name IN ('rer_migrations','d1_migrations')").all()).results.map(row=>row.name);
     assert.deepEqual(ledgers,[platform?'rer_migrations':'d1_migrations']);
