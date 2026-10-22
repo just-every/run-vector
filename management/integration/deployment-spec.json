@@ -472,6 +472,12 @@
       "name": "0077_team_permissions.sql",
       "sha256": "b5d8e08372d867c939316dc4cfbd96d7e66fabd0de4c21a8a76edaf3fab7450b",
       "sql": "-- ROLE-009 (team.permissions.v1): each team decides who manages its settings\n-- (default Team owners only) and who manages its cycles and templates (default\n-- All team members). Owners and Admins pass both and Guests fail both,\n-- whatever their value.\nALTER TABLE teams ADD COLUMN settings_permission TEXT NOT NULL DEFAULT 'team_owners' CHECK(settings_permission IN ('team_owners','all_members'));\nALTER TABLE teams ADD COLUMN planning_permission TEXT NOT NULL DEFAULT 'all_members' CHECK(planning_permission IN ('team_owners','all_members'));\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0078_project_slack_channels.sql",
+      "sha256": "641b2f901237b32f7491f209d7c3de984e232a3f1beca1d8f95f897e5bcc200e",
+      "sql": "-- Explicit workspace channels that an Owner/Admin lets project creators bind.\nCREATE TABLE vector_slack_allowed_channels (\n workspace_id TEXT NOT NULL, channel_id TEXT NOT NULL, channel_name TEXT NOT NULL,\n created_by TEXT NOT NULL, created_at TEXT NOT NULL,\n PRIMARY KEY(workspace_id,channel_id)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
