@@ -6,7 +6,8 @@ import { readLegacyArchive } from '@runeditrun/rer/modules/portability/format';
 import { PortabilityError } from '@runeditrun/rer/modules/portability';
 import { RerError } from '@runeditrun/rer/errors';
 import { guardLocalState } from '../installer/state.mjs';
-const transport=policy=>localPortability({database:'vector-local',buckets:{FILES:'FILES'},policy,transient:['sessions and sign-in links','development outbox','private settings','destination restore access and effect review']});
+import { withArchiveUpgrade } from './archive-upgrade.mjs';
+const transport=(policy,platformMigrations)=>localPortability({database:'vector-local',buckets:{FILES:'FILES'},policy,platformMigrations,transient:['sessions and sign-in links','development outbox','private settings','destination restore access and effect review']});
 // A database Platform's runner migrated keeps that runner as its sole authority: Wrangler cannot see its rer_migrations
 // ledger and would apply every file again. Such a database must already hold every migration file, as rer's transfer
 // checks again before it moves any data.
@@ -38,6 +39,6 @@ async function guarded(context,verb){
  const env={...process.env,RER_LOCAL_OPERATION:context.operationToken,WRANGLER_SEND_METRICS:'false'};
  if(!await platformLedger(context,env))await context.store.run('Preparing archive schema','pnpm',['exec','wrangler','d1','migrations','apply','vector-local','--local','--persist-to','.wrangler/state','--config','wrangler.jsonc'],{cwd:context.root,signal:context.signal,env});
  await context.store.run('Checking archive inventory and live attachments',process.execPath,['scripts/data/preflight.mjs'],{cwd:context.root,signal:context.signal,env});
- return transport(policy)[verb](context);
+ return verb==='import'?withArchiveUpgrade(context,policy,transport,(prepared,selected)=>transport(selected).import(prepared)):transport(policy).export(context);
 }
 export const portability={remote:true,export:context=>guarded(context,'export'),import:context=>guarded(context,'import')};

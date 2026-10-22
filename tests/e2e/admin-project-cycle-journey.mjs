@@ -321,6 +321,8 @@ export async function archiveProject({
     "PROJ-009",
     "archive excludes default portfolio retains members include archived and unarchive restore",
     async () => {
+      const visibleBefore = sql("SELECT count(*) n FROM projects WHERE archived_at IS NULL")[0].n;
+      const allProjects = sql("SELECT count(*) n FROM projects")[0].n;
       const edit = page.getByRole("form", {
         name: "Edit project " + project.name,
         exact: true,
@@ -364,7 +366,7 @@ export async function archiveProject({
             .locator("strong")
             .textContent()
         ).trim(),
-        "0",
+        String(visibleBefore - 1),
         "default portfolio count excludes archived",
       );
       await page
@@ -381,7 +383,7 @@ export async function archiveProject({
             .locator("strong")
             .textContent()
         ).trim(),
-        "1",
+        String(allProjects),
         "include archived rows and portfolio count agree",
       );
       await capture("projects-include-archived");
