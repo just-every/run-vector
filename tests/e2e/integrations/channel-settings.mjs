@@ -36,7 +36,8 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
   const member=await memberContext.newPage();await member.goto(link);await member.getByRole('button',{name:'Confirm',exact:true}).click();await member.waitForURL(runtime.base+'/app');
   await member.goto(runtime.base+'/app/projects/'+project.id);await member.getByText('Project Slack channel',{exact:true}).click();
   const choice=member.getByRole('form',{name:'Project Slack channel',exact:true}),channelId=config.bindings.find(b=>b.objectId===project.id).channelId;
-  await choice.getByLabel('Approved Slack channel',{exact:true}).selectOption(channelId);
+  const options=await member.request.get(runtime.base+'/api/projects/'+project.id+'/slack-channel');assert.equal(options.status(),200);
+  await choice.getByRole('combobox').selectOption(channelId);
   const inspect=roleScreens(evidence);await inspect(member,member.locator('.project-management'),'member-project-channel-choice-'+width);
   const forbiddenBefore=(await calls()).length;
   assert.equal((await member.request.post(runtime.base+'/api/projects/'+project.id+'/slack-channel',{headers,data:{channelId:'CUNAPPROVED'}})).status(),403);
@@ -45,7 +46,7 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
   await choice.getByRole('button',{name:'Bind project channel',exact:true}).click();assert.equal((await bound).status(),201);
   await member.getByText('Bound to #checkout-delivery-'+width,{exact:true}).waitFor();await inspect(member,member.locator('.project-management'),'member-project-channel-bound-'+width);
   const created=await member.request.post(runtime.base+'/api/issues',{headers,data:{title:'Enable customer checkout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id}});assert.equal(created.status(),201);issue=await created.json();
- }finally{await memberContext.close();}
+ }catch(error){console.error('Member project settings:',await memberContext.pages().at(-1)?.locator('.project-management').innerText());await memberContext.pages().at(-1)?.screenshot({path:resolve(evidence,'member-channel-failure-'+width+'.png')});throw error;}finally{await memberContext.close();}
  await send('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
  const posts=(await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(issue.identifier));assert.equal(posts.length,2);assert.ok(posts[1].body.text.includes(team.statuses.find(s=>s.category==='unstarted').name+' → '+team.statuses.find(s=>s.category==='started').name));
