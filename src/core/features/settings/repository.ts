@@ -42,7 +42,7 @@ export async function readSettings(db: D1Database, actor: string) {
     .first<{ memberInvites: number }>();
   const operators = await db
     .prepare(
-      `SELECT id,name,email,role,created_at AS createdAt FROM operators
+      `SELECT id,name,email,role,created_at AS createdAt,(SELECT json_group_array(team_id) FROM team_members m WHERE m.operator_id=operators.id) AS teamIdsJson FROM operators
     WHERE workspace_id=? AND removed_at IS NULL ORDER BY created_at,id`,
     )
     .bind(access.workspace_id)
@@ -55,7 +55,8 @@ export async function readSettings(db: D1Database, actor: string) {
   const current = await settingsActor(db, actor);
   return {
     workspace: workspace && { ...workspace, memberInvites: workspace.memberInvites === 1 },
-    operators: operators.results,
+    operators: operators.results.map(({ teamIdsJson,...member }) => ({...member,teamIds:JSON.parse(String(teamIdsJson))})),
+    teams: (await db.prepare('SELECT id,name FROM teams WHERE workspace_id=? AND archived_at IS NULL ORDER BY name,id').bind(access.workspace_id).all()).results,
     operatorId: actor,
     role: current.role,
     personalTime,

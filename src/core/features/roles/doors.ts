@@ -92,6 +92,7 @@ export const doors: Door[] = [
     params.operatorId === actor ? 'workspace.leave' : leadership(await memberRole(db, params.operatorId)) ? 'leaders.manage' : 'members.manage' },
   { method: 'PATCH', path: '/settings', row: 'workspace.settings' },
   { method: 'GET', path: '/settings', row: null, page: 'directory' },
+  { method: 'GET', path: '/settings/administration', row: null, page: 'teams' },
   { method: 'POST', path: '/setup/complete', row: null },
   { method: 'POST', path: '/data/restore/operators/:id', row: 'data.restore' },
   { method: 'POST', path: '/data/restore/review-effects', row: 'data.restore' },

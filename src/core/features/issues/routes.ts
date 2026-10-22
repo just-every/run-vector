@@ -105,11 +105,12 @@ async function respondToMutation(
       const operator = context.get('operator')
       const href = '/app/issues/' + result.issue.identifier
       const { readAppearance } = await import('../settings/appearance')
-      const [resources, { theme }] = await Promise.all([readPageResources(context.env, context.req.raw, operator, href,
-        { ['/api/issues/' + result.issue.identifier]: result.issue }), readAppearance(context.env.DB, operator.id)])
+      const [resources, { theme }, name] = await Promise.all([readPageResources(context.env, context.req.raw, operator, href,
+        { ['/api/issues/' + result.issue.identifier]: result.issue }), readAppearance(context.env.DB, operator.id),
+        context.env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(operator.id).first<string>('name')])
       await requireIssueProjection(context, result.issue.identifier)
       context.set('mutationPageProjection', true)
-      return context.json({ ...result.issue, page: { id: operator.id, name: operator.name, resources, theme,
+      return context.json({ ...result.issue, page: { id: operator.id, name: name!, resources, theme,
         editorConfigured: Boolean(context.env.RER_MANAGEMENT_ORIGIN && context.env.RER_INSTALLATION_ID) } }, 201)
     }
     return result.outcome === 'stale'

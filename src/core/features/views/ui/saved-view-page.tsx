@@ -113,6 +113,7 @@ export function SavedViewPage() {
                 key={view.id}
                 view={view}
                 operatorId={options.data.operator.id}
+                canShare={options.data.operator.role !== "guest"}
                 query={{ ...query, orderView: view.id }}
                 layout={layout}
               />

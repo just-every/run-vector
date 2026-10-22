@@ -16,6 +16,7 @@ import { configureNotifications,needsNotificationDrain,notificationEventIds,dire
 import { deliverCommittedDirectMessages } from './outbound';
 import { drainNotificationMail } from '../notifications/mail';
 import { mutationDatabase,isMutationAccessError,fileSettlementDatabase,AuthorityChangedError } from '../auth/mutation-database';
+import { visibilityDatabase } from '../roles/visibility-database';
 import { doorAuthority } from '../roles/enforcement';
 import { createIssueInputSchema } from '../issues/input';
 import { createIssue } from '../issues/mutations';
@@ -52,6 +53,7 @@ export function createIntegrationApi(){
   if(error instanceof RequestBodyError)return c.json({error:'invalid_request'},error.status);
   if(error instanceof PaginationInvalidated)return c.json({error:'pagination_invalidated'},409);
   if(error instanceof IssueMutationError)return c.json({error:error.code,message:error.message},error.code==='issue_not_found'?404:error.code==='invalid_transition'?409:400);
+  console.error(error);
   return c.json({error:'integration_unavailable'},503);
  });
  app.use('*',async(c,next)=>{
@@ -69,7 +71,7 @@ export function createIntegrationApi(){
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
   // ROLE-001: a token acts with its member's current role, never a copied one.
   const authority=await doorAuthority(c,'v1',actor.id,raw);if(authority.denied)return authority.denied;
-  c.env={...c.env,DB:mutationDatabase(raw,actor.id,undefined,{sql:predicate.sql,values:predicate.params},authority.fence)};
+  c.env={...c.env,DB:mutationDatabase(visibilityDatabase(raw,actor.id),actor.id,undefined,{sql:predicate.sql,values:predicate.params},authority.fence)};
   configureNotifications(c.env.DB,c.env);
   try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}

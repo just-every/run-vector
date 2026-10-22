@@ -23,7 +23,7 @@ import { projectDetailSchema, type ProjectDetailData } from "./data";
 export function ProjectDetail({ projectId }: { projectId: string }) {
   const navigate = useNavigate();
   const administration = useApiResource(
-    "/api/settings/administration",
+    "/api/metadata",
     administrationSchema,
   );
   const project = useApiResource(
@@ -52,11 +52,11 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   return (
     <ProjectDetailContent
       project={project.data}
-      milestones={<ProjectMilestones project={project.data} onChanged={(receipt) => {
+      milestones={<ProjectMilestones writable={!!administration.data && administration.data.viewer.role !== "guest"} project={project.data} onChanged={(receipt) => {
         project.publishReceipt(() => receipt);
         project.refreshAfterMutation();
       }} />}
-      management={
+      management={administration.data?.viewer.role === "guest" ? null :
         <section
           className="administration-panel project-management"
           aria-label="Project administration"
@@ -72,7 +72,7 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
               </button>
             </p>
           )}
-          {record && administration.data && administration.data.viewer.role !== "guest" && <ProjectChannel projectId={projectId} />}
+          {record && administration.data && <ProjectChannel projectId={projectId} />}
           {record && administration.data && (
             <ProjectAdministration
               project={record}

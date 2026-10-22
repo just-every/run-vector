@@ -1,4 +1,6 @@
 import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
+import { invitationDatabase } from "./invitation-database";
+import { settingsActor } from "./repository";
 import { baseAuth } from "../auth/base.server";
 import { localMailEnabled } from "../auth/development.server";
 import type { Hono } from "hono";
@@ -10,7 +12,7 @@ import { timezoneSchema } from "../bootstrap/config";
 import { readSettings, SettingsError, updateWorkspaceTime } from "./repository";
 import { reminderTimeSchema } from "./schema";
 import { removeOperator } from "./removal";
-import { assignable, changeRole, guestNotAssignable, recordInvitationRole } from "./roles";
+import { changeRole, guestTeams } from "./roles";
 import { readPersonalTime, updatePersonalTime } from "./personal-time";
 import { personalTimeInputSchema } from "./personal-time-schema";
 import { readAppearance, updateAppearance } from "./appearance";
@@ -80,29 +82,29 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         email: z.email().max(254),
         displayName: z.string().trim().min(1).max(120),
         role: z.enum(["owner", "admin", "member", "guest"]).default("member"),
+        teamIds: z.array(z.string().length(26)).max(100).optional(),
       })
       .strict()
       .safeParse(await readRequestJson(c.req.raw));
     if (!parsed.success) return c.json({ error: "invalid_request" }, 400);
-    const { role, ...invitee } = parsed.data;
-    if (!assignable(role)) {
-      const refusal = guestNotAssignable();
-      return c.json({ error: refusal.code, message: refusal.message }, refusal.status);
-    }
+    const { role, teamIds, ...invitee } = parsed.data;
     try {
       // Base issues its implementation owner link; the product role travels
       // with that link and is granted when it is accepted.
-      const result = await baseAuth(c.env).invite(c.req.raw, {
+      const actor = await settingsActor(c.env.DB, c.get("operatorId"));
+      if (role === 'guest' && !['owner','admin'].includes(actor.role)) return c.json({error:'forbidden'},403);
+      const teams = role === 'guest' ? await guestTeams(c.env.DB,actor.workspace_id,teamIds) : [];
+      const result = await baseAuth({...c.env, DB: invitationDatabase(c.env.DB,c.get("operatorId"),invitee.email.trim().toLowerCase(),role,teams)}).invite(c.req.raw, {
         ...invitee,
         role: "owner",
         returnTo: "/app",
       });
-      await recordInvitationRole(c.env.DB, c.get("operatorId"), invitee.email, role);
       return c.json(
         { ...result, delivery: localMailEnabled(c.env) ? "local" : "email" },
         202,
       );
     } catch (error) {
+      if (error instanceof SettingsError) return c.json({ error:error.code,message:error.message },error.status);
       if (error instanceof AuthError)
         return Response.json(
           {
@@ -197,11 +199,11 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   });
   app.patch("/settings/operators/:operatorId/role", async (c) => {
     const target = c.req.param("operatorId");
-    const parsed = z.object({ role: z.string() }).strict().safeParse(await readRequestJson(c.req.raw));
+    const parsed = z.object({ role: z.string(), teamIds: z.array(z.string().length(26)).max(100).optional() }).strict().safeParse(await readRequestJson(c.req.raw));
     if (!/^[0-9A-HJKMNP-TV-Z]{26}$/.test(target) || !parsed.success)
       return c.json({ error: "invalid_request" }, 400);
     try {
-      await changeRole(c.env.DB, c.get("operatorId"), target, parsed.data.role);
+      await changeRole(c.env.DB, c.get("operatorId"), target, parsed.data.role, parsed.data.teamIds);
       return c.json({
         ...(await readSettings(c.env.DB, c.get("operatorId"))),
         invitationDelivery: localMailEnabled(c.env) ? "local" : "email",

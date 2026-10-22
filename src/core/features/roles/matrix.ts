@@ -2,8 +2,8 @@
  * Pure data shared by the server policy and the Settings screens. */
 export const roles = ['owner', 'admin', 'member', 'guest'] as const
 export type Role = typeof roles[number]
-/** Roles an invitation or role change may name; Guests wait for ROLE-003. */
-export const assignableRoles = ['owner', 'admin', 'member'] as const
+/** Roles an invitation or role change may name. */
+export const assignableRoles = ['owner', 'admin', 'member', 'guest'] as const
 export type AssignableRole = typeof assignableRoles[number]
 
 /** yes/no, or the subject-dependent cells of the matrix:

@@ -59,14 +59,22 @@ export async function productOperator(db: D1Database, authId: string) {
   const existing = await mappedOperator(db, authId)
   if (existing) return existing
   const at = new Date().toISOString()
-  await db.prepare(`INSERT INTO operators(id,workspace_id,name,email,role,created_at,updated_at)
+  await db.batch([db.prepare(`INSERT INTO operators(id,workspace_id,name,email,role,created_at,updated_at)
     SELECT ?,w.id,a.display_name,a.email,COALESCE((SELECT r.role FROM oa_tokens t JOIN vector_invitation_roles r ON r.token_id=t.id
       WHERE t.operator_id=a.id AND t.kind='invite' AND t.consumed_at IS NOT NULL ORDER BY t.consumed_at DESC LIMIT 1),'member'),?,?
     FROM oa_operators a CROSS JOIN workspace_settings w
     WHERE a.id=? AND a.status='active'
     AND NOT EXISTS(SELECT 1 FROM vector_auth_operators WHERE auth_id=a.id)
     AND (SELECT count(*) FROM workspace_settings)=1
-    ON CONFLICT DO NOTHING`).bind(createUlid(new Date()), at, at, authId).run()
+    ON CONFLICT DO NOTHING`).bind(createUlid(new Date()), at, at, authId),
+    db.prepare(`INSERT OR IGNORE INTO team_members(team_id,operator_id,role,created_at,updated_at)
+      SELECT t.id,m.operator_id,'member',?,? FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id
+      JOIN oa_tokens token ON token.operator_id=m.auth_id AND token.kind='invite' AND token.consumed_at IS NOT NULL
+      JOIN vector_invitation_roles r ON r.token_id=token.id JOIN json_each(r.team_ids_json) invited
+      JOIN teams t ON t.id=invited.value AND t.workspace_id=o.workspace_id
+      WHERE m.auth_id=? AND o.role='guest' AND token.id=(SELECT id FROM oa_tokens WHERE operator_id=m.auth_id AND kind='invite' AND consumed_at IS NOT NULL ORDER BY consumed_at DESC LIMIT 1)`)
+      .bind(at,at,authId),
+  ])
   return mappedOperator(db, authId)
 }
 async function mappedOperator(db: D1Database, authId: string) {

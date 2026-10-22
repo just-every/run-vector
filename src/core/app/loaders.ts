@@ -13,9 +13,11 @@ export const loadOperator = createServerFn({ method: 'GET' }).inputValidator((hr
     const { pageResources } = await import('./page-resources.server')
     const { getRequest } = await import('@tanstack/react-start/server')
     const { readAppearance } = await import('../features/settings/appearance')
-    const [resources, appearance] = await Promise.all([
-      pageResources(bindings, getRequest(), operator, href), readAppearance(bindings.DB, operator.id)])
-    return { id: operator.id, name: operator.name, resources, theme: appearance.theme,
+    const { visibilityDatabase } = await import('../features/roles/visibility-database')
+    const [resources, appearance, name] = await Promise.all([
+      pageResources(bindings, getRequest(), operator, href), readAppearance(bindings.DB, operator.id),
+      visibilityDatabase(bindings.DB,operator.id).prepare('SELECT name FROM operators WHERE id=?').bind(operator.id).first<string>('name')])
+    return { id: operator.id, name: name!, resources, theme: appearance.theme,
       editorConfigured: Boolean(bindings.RER_MANAGEMENT_ORIGIN && bindings.RER_INSTALLATION_ID) }
   },
 )

@@ -1,3 +1,4 @@
+import { visibleDirectoryPerson } from '../roles/visibility-sql';
 import seed from "../../../../seed.json";
 import type { WorkspaceOptions } from "../../shared/workspace-options";
 import { searchAdmission, SearchAccessError, type SearchFence } from "./access";
@@ -12,12 +13,12 @@ export async function getSearchOptions(
   const admission = await searchAdmission(db, operatorId, fence);
   const row = await db
     .prepare(
-      `SELECT w.id,w.name,
+      `SELECT w.id,w.name,actor.role,
     (SELECT json_group_array(json_object('id',id,'name',name,'identifierPrefix',identifier_prefix)) FROM (
       SELECT id,name,identifier_prefix FROM teams WHERE workspace_id=actor.workspace_id AND archived_at IS NULL ORDER BY name,id LIMIT ${seed.limits.teams}
     )) AS teams,
-    (SELECT json_group_array(json_object('id',id,'name',name)) FROM (
-      SELECT id,name FROM operators WHERE workspace_id=actor.workspace_id AND removed_at IS NULL ORDER BY name,id LIMIT ${seed.limits.operators}
+    (SELECT json_group_array(json_object('id',id,'name',name,'role',role)) FROM (
+      SELECT directory.id,directory.name,directory.role FROM operators directory WHERE directory.workspace_id=actor.workspace_id AND directory.removed_at IS NULL AND ${visibleDirectoryPerson('directory','actor.id')} ORDER BY name,id LIMIT ${seed.limits.operators}
     )) AS operators,
     (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (
       SELECT id,name,color FROM labels WHERE workspace_id=actor.workspace_id ORDER BY name,id LIMIT ${seed.limits.labels}
@@ -48,6 +49,7 @@ export async function getSearchOptions(
     .first<{
       id: string;
       name: string;
+      role: import("../roles/matrix").Role;
       teams: string;
       operators: string;
       labels: string;
@@ -60,7 +62,7 @@ export async function getSearchOptions(
   if (!row) throw new SearchAccessError();
   return {
     workspace: { id: row.id, name: row.name },
-    operator: { id: operatorId },
+    operator: { id: operatorId, role:row.role },
     labelsPerIssue: seed.limits.labelsPerIssue,
     savedViewsPerOperator: seed.limits.savedViewsPerOperator,
     bulkEditIssuesPerOperation: seed.limits.bulkEditIssuesPerOperation,

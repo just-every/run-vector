@@ -1,3 +1,4 @@
+import { visibleDirectoryPerson } from '../roles/visibility-sql';
 import { readCycleSnapshot, readCycleFailure } from "../cycle-closure/read";
 import seed from "../../../../seed.json";
 import { settingsActor } from "../settings/repository";
@@ -49,9 +50,9 @@ export async function readAdministration(db: D1Database, actor: string) {
         .all(),
       db
         .prepare(
-          "SELECT id,name FROM operators WHERE workspace_id=? AND removed_at IS NULL ORDER BY name,id",
+          `SELECT person.id,person.name FROM operators person WHERE person.workspace_id=? AND person.removed_at IS NULL AND ${visibleDirectoryPerson('person','?')} ORDER BY name,id`,
         )
-        .bind(workspaceId)
+        .bind(workspaceId,actor)
         .all(),
       db
         .prepare(

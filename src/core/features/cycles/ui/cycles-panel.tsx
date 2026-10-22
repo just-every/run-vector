@@ -16,6 +16,7 @@ export function CyclesPanel({
 }) {
   const { formatInstant } = useViewerTime();
   const action = useAdministrationAction(onChanged);
+  const mayManage = data.viewer.role !== "guest";
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -42,18 +43,18 @@ export function CyclesPanel({
       <Link className="admin-link" to="/app/cycles">
         All cycles
       </Link>
-      <p>
+      {mayManage && <><p>
         Create cycles in workspace time:{" "}
         <strong>{data.workspace.timezone}</strong>. End must follow start;
         cycles for the same team cannot overlap. When clocks change, choose a
         time that occurs once. Times that happen twice or are skipped cannot be
         saved.
       </p>
-      <CycleSchedulePanel data={data} onChanged={onChanged} />
+      <CycleSchedulePanel data={data} onChanged={onChanged} /></>}
       {data.cycles.length === 0 && (
-        <p>No cycles yet. Create your first cycle below.</p>
+        <p>{mayManage ? "No cycles yet. Create your first cycle below." : "No cycles in your invited teams."}</p>
       )}
-      <form aria-label="Create cycle" onSubmit={create}>
+      {mayManage && <form aria-label="Create cycle" onSubmit={create}>
         <fieldset disabled={action.pending}>
           <label>
             Cycle team
@@ -86,7 +87,7 @@ export function CyclesPanel({
           </label>
           <button>Create cycle</button>
         </fieldset>
-      </form>
+      </form>}
       <AdministrationFeedback action={action} />
       {data.cycles.map((cycle) => (
         <div className="admin-record" key={cycle.id}>

@@ -8,7 +8,16 @@ export async function readCycleSnapshot(db: D1Database, cycleId: string) {
     .prepare("SELECT body_json FROM cycle_snapshots WHERE cycle_id=?")
     .bind(cycleId)
     .first<{ body_json: string }>();
-  return row ? cycleSnapshotSchema.parse(JSON.parse(row.body_json)) : null;
+  if (!row) return null;
+  const snapshot=cycleSnapshotSchema.parse(JSON.parse(row.body_json));
+  if (snapshot.reportFacts) {
+    const guests=(await db.prepare("SELECT id FROM operators WHERE role='guest'").all<{id:string}>()).results;
+    const ids=new Set(guests.map(person=>person.id));
+    snapshot.reportFacts.issues=snapshot.reportFacts.issues.map(issue=>({...issue,
+      assigneeName:issue.assigneeId && ids.has(issue.assigneeId) && issue.assigneeName && !issue.assigneeName.endsWith(' (Guest)')
+        ? issue.assigneeName+' (Guest)' : issue.assigneeName}));
+  }
+  return snapshot;
 }
 export async function readCycleFailure(db: D1Database, cycleId: string) {
   const row = await db

@@ -31,7 +31,8 @@ export async function unsnooze(db: D1Database, actor: string, id: string) {
     db.prepare(`UPDATE notifications SET read_at=NULL WHERE id=? AND recipient_id=?
       AND EXISTS(SELECT 1 FROM notification_snoozes s WHERE s.notification_id=notifications.id AND s.returned_at IS NULL)`)
       .bind(id, actor),
-    db.prepare(`UPDATE notification_snoozes SET returned_at=? WHERE notification_id=? AND recipient_id=? AND returned_at IS NULL RETURNING notification_id`)
+    db.prepare(`UPDATE notification_snoozes SET returned_at=? WHERE notification_id=? AND recipient_id=? AND returned_at IS NULL
+      AND EXISTS(SELECT 1 FROM notifications n WHERE n.id=notification_snoozes.notification_id) RETURNING notification_id`)
       .bind(at, id, actor),
   ]);
   if (result[1].results.length !== 1) throw new SettingsError('not_found', 'Snoozed notification is unavailable.', 404);
@@ -58,7 +59,8 @@ export async function createReminder(db: D1Database, actor: string, identifier: 
 export async function cancelReminder(db: D1Database, actor: string, identifier: string, id: string) {
   db = mutationDatabase(db, actor);
   const issue = await requireIssueAccess(db, identifier, actor);
-  const result = await db.prepare(`DELETE FROM issue_reminders WHERE id=? AND issue_id=? AND recipient_id=? AND delivered_at IS NULL RETURNING id`)
+  const result = await db.prepare(`DELETE FROM issue_reminders WHERE id=? AND issue_id=? AND recipient_id=? AND delivered_at IS NULL
+    AND EXISTS(SELECT 1 FROM issues i WHERE i.id=issue_reminders.issue_id) RETURNING id`)
     .bind(id, issue.id, actor).all();
   if (result.results.length !== 1) throw new SettingsError('not_found', 'Reminder is unavailable.', 404);
   return reminders(db, actor, identifier);

@@ -7,7 +7,7 @@ import * as baseMail from "../../../../vendor/base/mail/index.mjs";
 const { MailValidationError } = baseMail;
 import type { WorkerBindings } from "../../app/bindings";
 import { notificationEmailAvailable } from "./context";
-import { activeRecipient } from "./events";
+import { visibleRecipient } from "./events";
 export type Delivery = {
   id: string;
   notification_id: string;
@@ -63,15 +63,16 @@ async function admitted(
   token: string,
 ): Promise<AdmittedDelivery | null> {
   if (!notificationEmailAvailable(env)) return null;
-  return env.DB.prepare(
+  const row = await env.DB.prepare(
     `SELECT d.*,o.email,
+    COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=d.actor_id),d.actor_name) AS current_actor_name,
     EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='assignment'
       AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value)) AS assignment,
     EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='mention'
       AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value)) AS mention
     FROM notification_deliveries d JOIN notifications n ON n.id=d.notification_id
     JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=d.recipient_id AND o.workspace_id=t.workspace_id
-    WHERE d.id=? AND d.claim_token=? AND d.status='claimed' AND ${activeRecipient}
+    WHERE d.id=? AND d.claim_token=? AND d.status='claimed' AND ${visibleRecipient}
     AND (d.actor_id IS NULL OR d.actor_id<>o.id)
     AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
     AND NOT EXISTS(SELECT 1 FROM vector_restore_mail_holds h WHERE h.delivery_id=d.id)
@@ -81,7 +82,8 @@ async function admitted(
       AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`,
   )
     .bind(id, token)
-    .first<AdmittedDelivery>();
+    .first<AdmittedDelivery & {current_actor_name:string|null}>();
+  return row ? {...row,actor_name:row.current_actor_name} : null;
 }
 async function settle(
   env: WorkerBindings,

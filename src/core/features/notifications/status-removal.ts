@@ -1,4 +1,4 @@
-import { activeRecipient } from "./events";
+import { visibleRecipient } from "./events";
 
 /** A removal's activity IDs share one operation prefix. Select the affected
  * issues inside the transaction, including issues committed after planning. */
@@ -18,7 +18,7 @@ export function statusRemovalNotifications(db: D1Database, operationId: string) 
         JOIN operators o ON o.id=f.operator_id AND o.workspace_id=t.workspace_id
         JOIN operators actor ON actor.id=a.actor_operator_id
         WHERE ${operation} AND old.category=next.category AND old.id<>next.id
-          AND ${activeRecipient} AND o.id<>a.actor_operator_id
+          AND ${visibleRecipient} AND o.id<>a.actor_operator_id
           AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=a.id)`)
         .bind(...activityRange),
     ],
@@ -30,7 +30,7 @@ export function statusRemovalNotifications(db: D1Database, operationId: string) 
         FROM notification_candidates c JOIN issue_activity a ON a.id=c.event_id
         JOIN issues i ON i.id=c.issue_id JOIN teams t ON t.id=i.team_id
         JOIN operators o ON o.id=c.recipient_id AND o.workspace_id=t.workspace_id
-        WHERE ${operation} AND ${activeRecipient} AND o.id<>c.actor_id
+        WHERE ${operation} AND ${visibleRecipient} AND o.id<>c.actor_id
           AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=c.event_id)
           AND NOT EXISTS(SELECT 1 FROM issue_notification_mutes m
             WHERE m.issue_id=c.issue_id AND m.operator_id=c.recipient_id)

@@ -1,4 +1,4 @@
-import { activeRecipient } from '../notifications/events';
+import { visibleRecipient } from '../notifications/events';
 import type { WorkerBindings } from '../../app/bindings';
 
 const effectsAllowed = `NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
@@ -10,7 +10,7 @@ export async function deliverFollowups(env: WorkerBindings, now: Date) {
   const dueSnoozes = `SELECT s.notification_id FROM notification_snoozes s
     JOIN issues i ON i.id=s.issue_id JOIN teams t ON t.id=i.team_id
     JOIN operators o ON o.id=s.recipient_id AND o.workspace_id=t.workspace_id
-    WHERE s.returned_at IS NULL AND s.until_at<=? AND ${activeRecipient} AND ${effectsAllowed}`;
+    WHERE s.returned_at IS NULL AND s.until_at<=? AND ${visibleRecipient} AND ${effectsAllowed}`;
   await db.batch([
     db.prepare(`UPDATE notifications SET read_at=NULL WHERE id IN (${dueSnoozes})`).bind(at),
     db.prepare(`UPDATE notification_snoozes SET returned_at=? WHERE notification_id IN (${dueSnoozes})`).bind(at, at),
@@ -20,7 +20,7 @@ export async function deliverFollowups(env: WorkerBindings, now: Date) {
     db.prepare(`UPDATE issue_reminders SET delivered_at=?,delivery_id=?||':'||id WHERE id IN (
       SELECT r.id FROM issue_reminders r JOIN issues i ON i.id=r.issue_id JOIN teams t ON t.id=i.team_id
       JOIN operators o ON o.id=r.recipient_id AND o.workspace_id=t.workspace_id
-      WHERE r.delivered_at IS NULL AND r.remind_at<=? AND ${activeRecipient} AND ${effectsAllowed})`)
+      WHERE r.delivered_at IS NULL AND r.remind_at<=? AND ${visibleRecipient} AND ${effectsAllowed})`)
       .bind(at, claim, at),
     db.prepare(`INSERT INTO notifications(id,event_id,issue_id,recipient_id,actor_id,actor_name,causes_json,created_at)
       SELECT lower(hex(randomblob(16))),r.delivery_id,r.issue_id,r.recipient_id,NULL,'Vector','["reminder"]',r.delivered_at

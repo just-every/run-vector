@@ -25,8 +25,8 @@ async function person(cookie: string): Promise<Person> {
 let workspaces = 0, people = 0;
 /** The people of the role-matrix journey (ROLE-001): an Owner, an Admin, a
  * Member who owns the team, a Member who does not and a Guest in that team.
- * No door assigns Guest before ROLE-003, so the harness sets that role on an
- * invited member's record. Cases in one file share a database, so each gets
+ * Guest conversion goes through the real role door after minting a Member
+ * token, proving retained tokens follow current role and membership. Cases in one file share a database, so each gets
  * its own team and people. */
 export async function roleWorkspace() {
   const f = await setupAdministration();
@@ -37,9 +37,12 @@ export async function roleWorkspace() {
     await resetLimits();
     const cookie = await invite(`${kind}-${run.toLowerCase()}${people++}@roles.test`, f.cookie, kind === "owner" || kind === "admin" ? kind : undefined);
     const made = await person(cookie);
-    if (kind === "guest") await env.DB.prepare("UPDATE operators SET role='guest' WHERE id=?").bind(made.id).run();
     if (inTeam && kind !== "owner" && kind !== "admin")
       expect((await f.call(`/settings/teams/${team.id}/members/${made.id}`, "PUT", { role: kind === "lead" ? "owner" : "member" })).status).toBe(200);
+    if (kind === "guest") {
+      const assigned = await f.call(`/settings/operators/${made.id}/role`, "PATCH", { role:"guest",teamIds:[team.id] });
+      expect(assigned.status,await assigned.clone().text()).toBe(200);
+    }
     return made;
   };
   const owner = await person(f.cookie);

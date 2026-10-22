@@ -8,8 +8,9 @@ import "./project-milestones.css";
 
 type Milestone = ProjectDetailData["milestones"][number];
 
-export function ProjectMilestones({ project, onChanged }: {
+export function ProjectMilestones({ project, writable, onChanged }: {
   project: ProjectDetailData;
+  writable:boolean;
   onChanged: (project: ProjectDetailData) => void;
 }) {
   const hydrated = useHydrated();
@@ -50,7 +51,7 @@ export function ProjectMilestones({ project, onChanged }: {
   const disabled = pending || !hydrated;
   return <section className="project-milestones" aria-label="Project milestones">
     <header><div><h2>Milestones</h2><p>Follow the steps from first delivery to completion.</p></div>
-      <button type="button" disabled={disabled || creating} onClick={() => setCreating(true)}>Add milestone</button>
+      {writable && <button type="button" disabled={disabled || creating} onClick={() => setCreating(true)}>Add milestone</button>}
     </header>
     {error && <p role="alert">{error}</p>}
     {creating && <MilestoneForm disabled={disabled} onSave={save} onCancel={() => setCreating(false)} />}
@@ -69,13 +70,13 @@ export function ProjectMilestones({ project, onChanged }: {
           <span>{milestone.progress.total === 0 ? "No countable issues" : `${milestone.progress.completed}/${milestone.progress.total} issues complete · ${milestone.progress.percentage}%`}</span>
         </p>
         {milestone.progress.percentage !== null && <progress aria-label={`${milestone.name} progress`} value={milestone.progress.completed} max={milestone.progress.total} />}
-        <div className="project-milestones__actions">
+        {writable && <div className="project-milestones__actions">
           <button type="button" disabled={disabled} onClick={() => setEditing(milestone.id)}>Edit {milestone.name}</button>
           <button type="button" disabled={disabled} onClick={() => void run(`/${milestone.id}`, "PATCH", {completed:!milestone.completed})}>{milestone.completed ? "Reopen" : "Complete"} {milestone.name}</button>
           <button type="button" aria-label={`Move ${milestone.name} up`} disabled={disabled || index === 0} onClick={() => void move(index, -1)}>↑</button>
           <button type="button" aria-label={`Move ${milestone.name} down`} disabled={disabled || index === project.milestones.length - 1} onClick={() => void move(index, 1)}>↓</button>
           <button type="button" disabled={disabled} onClick={() => setDeleting(milestone.id)}>Delete {milestone.name}</button>
-        </div>
+        </div>}
         {deleting === milestone.id && <div className="project-milestones__delete" role="group" aria-label={`Delete ${milestone.name}`}>
           <p>Delete this milestone? Its issues stay in the project and lose their milestone.</p>
           <button type="button" disabled={disabled} onClick={() => void run(`/${milestone.id}`, "DELETE").then(saved => {if(saved) setDeleting(null);})}>Confirm delete {milestone.name}</button>

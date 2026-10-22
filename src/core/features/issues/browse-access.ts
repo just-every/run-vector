@@ -6,10 +6,10 @@ export async function browseActor(
 ) {
   const row = await db
     .prepare(
-      `SELECT o.workspace_id,w.timezone FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id WHERE o.id=? AND o.removed_at IS NULL`,
+      `SELECT o.workspace_id,w.timezone,o.role,(SELECT json_group_array(team_id) FROM (SELECT team_id FROM team_members WHERE operator_id=o.id ORDER BY team_id)) AS teamScope FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id WHERE o.id=? AND o.removed_at IS NULL`,
     )
     .bind(actor)
-    .first<{ workspace_id: string; timezone: string }>();
+    .first<{ workspace_id: string; timezone: string; role:string; teamScope:string }>();
   if (
     !row ||
     (expectedWorkspace !== undefined && row.workspace_id !== expectedWorkspace)

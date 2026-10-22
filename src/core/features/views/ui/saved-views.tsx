@@ -16,11 +16,13 @@ export { savedViewsSchema } from "./saved-view-resource";
 export function SaveView({
   query,
   layout,
+  canShare,
   limit,
   onCreated,
 }: {
   query: IssueListQuery;
   layout: "list" | "board";
+  canShare:boolean;
   limit?: number;
   onCreated: (id: string) => void;
 }) {
@@ -72,14 +74,14 @@ export function SaveView({
               onChange={(e) => setName(e.target.value)}
             />
           </label>
-          <label className="saved-view-check">
+          {canShare && <label className="saved-view-check">
             <input
               type="checkbox"
               checked={shared}
               onChange={(e) => setShared(e.target.checked)}
             />
             Shared with workspace
-          </label>
+          </label>}
           <p>
             Private views are only visible to you.
             {limit !== undefined && <> You can own up to {limit} views.</>}
@@ -96,11 +98,13 @@ export function SaveView({
 export function SavedViewActions({
   view,
   operatorId,
+  canShare,
   query,
   layout,
 }: {
   view: SavedView;
   operatorId: string;
+  canShare:boolean;
   query: IssueListQuery;
   layout: "list" | "board";
 }) {
@@ -200,7 +204,7 @@ export function SavedViewActions({
           onChange={(e) => setName(e.target.value)}
         />
       </label>
-      {owner && (
+      {owner && canShare && (
         <label className="saved-view-check">
           <input
             type="checkbox"

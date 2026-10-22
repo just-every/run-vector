@@ -1,3 +1,4 @@
+import { visibleDirectoryPerson } from '../roles/visibility-sql';
 import { settingsActor, SettingsError } from "../settings/repository";
 import {
   administrationContext,
@@ -49,9 +50,9 @@ export async function readWorkload(
   const [people, capacities, issues] = await Promise.all([
     db
       .prepare(
-        "SELECT id,name FROM operators WHERE workspace_id=? AND removed_at IS NULL ORDER BY name COLLATE NOCASE,id",
+        `SELECT person.id,person.name FROM operators person WHERE person.workspace_id=? AND person.removed_at IS NULL AND ${visibleDirectoryPerson('person','?')} ORDER BY name COLLATE NOCASE,id`,
       )
-      .bind(scope.workspace)
+      .bind(scope.workspace,actor)
       .all<{ id: string; name: string }>(),
     db
       .prepare(

@@ -1,3 +1,4 @@
+import { visibleTeam } from '../roles/visibility-sql';
 import { reminderCalendar } from "./calendar";
 import { activeRecipient } from "../notifications/events";
 import {
@@ -28,7 +29,7 @@ export async function sendDueReminders(
       COALESCE(p.working_days_json,'[1,2,3,4,5]') working_days_json
       FROM operators o LEFT JOIN operator_personal_time p ON p.operator_id=o.id
       WHERE o.workspace_id=? AND ${activeRecipient}
-      AND EXISTS(SELECT 1 FROM issues i WHERE i.assignee_operator_id=o.id AND i.due_date IS NOT NULL)`,
+      AND EXISTS(SELECT 1 FROM issues i WHERE i.assignee_operator_id=o.id AND i.due_date IS NOT NULL AND ${visibleTeam('o','i.team_id')})`,
         )
         .bind(workspace.id)
         .all<ReminderRecipient>()

@@ -1,6 +1,6 @@
 import type {WorkerBindings} from '../../../app/bindings';
 import type {DeliveryProtocol,DeliveryService,Outcome,WireRequest,WireResponse} from '../../../../../vendor/base/integrations';
-import {activeRecipient} from '../../notifications/events';
+import {visibleRecipient} from '../../notifications/events';
 import {IntegrationError} from '../errors';
 import {classifyProvider,providerSend,slackToken} from '../channels/provider';
 import {credentialProblem} from '../channels/settings';
@@ -15,14 +15,14 @@ const routed=(kind:string)=>`EXISTS(SELECT 1 FROM json_each(n.causes_json) cause
  AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`;
 /** NOTIFY-006's admission rules, with the member's Slack link and choice in place of the email preference. */
 export async function directTarget(env:WorkerBindings,workspace:string,id:string):Promise<Target|null>{
- const row=await env.DB.prepare(`SELECT i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,n.actor_name AS actor,l.slack_user_id AS slackUserId,
+ const row=await env.DB.prepare(`SELECT i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=n.actor_id),n.actor_name) AS actor,l.slack_user_id AS slackUserId,
   ${routed('assignment')} AS assignment,${routed('mention')} AS mention
   FROM vector_webhook_events e JOIN notifications n ON n.id=json_extract(e.body,'$.notificationId') AND n.recipient_id=json_extract(e.body,'$.recipientId')
   JOIN issues i ON i.id=n.issue_id JOIN workflow_statuses st ON st.id=i.status_id JOIN teams t ON t.id=i.team_id AND t.workspace_id=e.workspace_id
   JOIN operators o ON o.id=n.recipient_id AND o.workspace_id=t.workspace_id
   JOIN vector_slack_member_links l ON l.operator_id=o.id AND l.workspace_id=t.workspace_id
   JOIN vector_slack_installations s ON s.workspace_id=t.workspace_id AND s.enabled=1
-  WHERE e.id=? AND e.workspace_id=? AND e.event='slack.dm' AND ${activeRecipient} AND (n.actor_id IS NULL OR n.actor_id<>o.id)
+  WHERE e.id=? AND e.workspace_id=? AND e.event='slack.dm' AND ${visibleRecipient} AND (n.actor_id IS NULL OR n.actor_id<>o.id)
   AND (json_extract(e.body,'$.actorId') IS NULL OR EXISTS(SELECT 1 FROM operators actor WHERE actor.id=json_extract(e.body,'$.actorId') AND actor.removed_at IS NULL))
   AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
   AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id)

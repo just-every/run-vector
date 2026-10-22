@@ -1,4 +1,5 @@
 import { audit } from '../administration/transaction';
+import { requireGuestViewScope } from './guest-scope';
 import type { z } from "zod";
 import seed from "../../../../seed.json";
 import { createUlid } from "../../shared/ids";
@@ -100,6 +101,7 @@ export async function createView(
 ) {
   const ctx = await viewContext(db, actor),
     id = createUlid(new Date(ctx.at));
+  await requireGuestViewScope(ctx.db,actor,input.query);
   const insert = ctx.db
     .prepare(
       `INSERT INTO saved_views(id,workspace_id,owner_operator_id,name,surface,is_shared,filters_json,sort,grouping,layout,created_at,updated_at)
@@ -154,6 +156,7 @@ export async function updateView(
       "Only the owner can change this shared view.",
       403,
     );
+  if (input.query) await requireGuestViewScope(ctx.db,actor,input.query);
   const assignments: string[] = [],
     values: (string | number)[] = [];
   if (input.name !== undefined) {

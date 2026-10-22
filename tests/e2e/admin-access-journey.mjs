@@ -4,7 +4,7 @@ import {
   navigate,
   settleReads,
 } from "./collaboration-navigation.mjs";
-import { roleScreens } from "./role-ui-support.mjs";
+import { roleScreens, exerciseGuestRoles } from "./role-ui-support.mjs";
 import assert from "node:assert/strict";
 import { poll } from "./admin-runtime-support.mjs";
 import { saveWorkspaceTime } from "./admin-workspace-time-journey.mjs";
@@ -248,7 +248,7 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   await clause("ROLE-001", "an invitation names its role, Member by default", async () => {
     const role = members.getByLabel("Role", { exact: true });
     assert.equal(await role.inputValue(), "member");
-    assert.deepEqual(await role.locator("option").allTextContents(), ["Member", "Admin", "Owner"]);
+    assert.deepEqual(await role.locator("option").allTextContents(), ["Member", "Guest", "Admin", "Owner"]);
     await members.getByLabel("Name", { exact: true }).fill("Role member");
     await members.getByLabel("Email", { exact: true }).fill("role-member@admin-runtime.test");
     const invited = page.waitForResponse((r) => new URL(r.url()).pathname === "/api/settings/operators/invite");
@@ -318,5 +318,6 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     await peer.getByRole("region", { name: "Integrations", exact: true }).getByRole("heading", { name: "API tokens", exact: true }).waitFor();
   });
   await inspect(peer, peer.getByRole("region", { name: "Members", exact: true }), "members-member-view");
+  await exerciseGuestRoles({page,browser,runtime,clause,evidence});
   return { context, peer, memberId };
 }

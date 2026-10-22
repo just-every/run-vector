@@ -158,6 +158,7 @@ export function IssueListView({
           {viewActions ??
             (onCreateView && (
               <SaveView
+                canShare={!!options && options.operator.role !== "guest"}
                 query={query}
                 layout={layout}
                 limit={options?.savedViewsPerOperator}

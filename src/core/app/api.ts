@@ -1,4 +1,5 @@
 import { addAuditRoutes } from '../features/audit/routes';
+import { readAdministration } from '../features/administration/read';
 import { addIssueCopyRoutes } from "../features/issue-copy/routes";
 import { projectPortfolioQuery } from "../features/projects/portfolio";
 import { projectPortfolio,projectDetail } from "../features/projects/read";
@@ -32,6 +33,7 @@ import { addAdministrationRoutes } from '../features/administration/routes';
 import { addTeamMembershipRoutes } from '../features/team-membership/routes';
 import { AuthError } from '../../../vendor/base/operator-auth/index.mjs';
 import { mutationDatabase, isMutationAccessError, RestoreReservationError, AuthorityChangedError } from "../features/auth/mutation-database";
+import { visibilityDatabase } from "../features/roles/visibility-database";
 import { doorAuthority } from "../features/roles/enforcement";
 import { addSettingsRoutes } from '../features/settings/routes';
 import { settingsActor } from '../features/settings/repository';
@@ -120,6 +122,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       context.set('documentProjection', true);
       const authority = await doorAuthority(context, 'api', document.operator.id, context.env.DB);
       if (authority.denied) return authority.denied;
+      context.env = { ...context.env, DB: visibilityDatabase(context.env.DB, document.operator.id) };
       await next();
       return;
     }
@@ -164,6 +167,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     // ROLE-001: the door's role-matrix row, on the actor's current role.
     const authority = await doorAuthority(context, 'api', operator.id, context.env.DB);
     if (authority.denied) return authority.denied;
+    context.env = { ...context.env, DB: context.req.path.startsWith('/api/portability/') ? context.env.DB : visibilityDatabase(context.env.DB, operator.id) };
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
       context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence, undefined, authority.fence) };
@@ -220,11 +224,14 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 
+  app.get("/metadata", async (context) => context.json(await readAdministration(context.env.DB,context.get("operatorId"))));
+
   app.get("/session", async (context) => {
     const operatorId = context.get("operatorId");
     const { role } = await settingsActor(context.env.DB, operatorId);
     return context.json({ operatorId, role });
   });
+
 
   app.get("/current", async (context) => {
     const query = parseQuery(context, timeQuerySchema);

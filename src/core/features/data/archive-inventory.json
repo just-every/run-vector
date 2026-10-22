@@ -1124,7 +1124,8 @@
     "token_id",
     "role",
     "inviter_operator_id",
-    "created_at"
+    "created_at",
+    "team_ids_json"
   ],
   "vector_restore_mail_holds": [
     "delivery_id"

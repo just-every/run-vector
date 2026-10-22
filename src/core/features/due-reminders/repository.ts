@@ -1,4 +1,4 @@
-import { activeRecipient } from "../notifications/events";
+import { visibleRecipient } from "../notifications/events";
 export type ReminderWorkspace = {
   id: string;
   timezone: string;
@@ -34,7 +34,7 @@ export async function claimReminder(
       JOIN workflow_statuses s ON s.id=i.status_id JOIN operators o ON o.id=i.assignee_operator_id AND o.workspace_id=w.id
       LEFT JOIN operator_personal_time p ON p.operator_id=o.id
       WHERE i.id=? AND i.due_date=? AND i.assignee_operator_id=? AND i.status_id=?
-        AND w.id=? AND w.timezone=? AND w.reminder_time=? AND ${activeRecipient}
+        AND w.id=? AND w.timezone=? AND w.reminder_time=? AND ${visibleRecipient}
         AND p.timezone IS ? AND COALESCE(p.timezone,w.timezone)=? AND p.revision IS ?
         AND COALESCE(p.working_hours_start,'09:00')=? AND COALESCE(p.working_hours_end,'17:00')=?
         AND COALESCE(p.working_days_json,'[1,2,3,4,5]')=?

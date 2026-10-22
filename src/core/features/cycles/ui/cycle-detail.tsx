@@ -20,7 +20,7 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
   const { formatInstant } = useViewerTime();
   const detail = useApiResource(`/api/cycles/${cycleId}`, cycleDetailSchema);
   const administration = useApiResource(
-    "/api/settings/administration",
+    "/api/metadata",
     administrationSchema,
   );
   const [pending, setPending] = useState(false);
@@ -131,7 +131,7 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
         )}
       </section>
       <WorkloadPanel cycleId={cycleId} />
-      <CycleReportPanel report={detail.data.report} closed={!!cycle.closedAt} rolloverFailed={!!detail.data.failure} />
+      <CycleReportPanel report={detail.data.report} closed={!!cycle.closedAt && !!detail.data.snapshot} rolloverFailed={!!detail.data.failure} />
       {detail.data.failure && (
         <section
           className="cycle-closure-failure"
@@ -152,7 +152,7 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
         <ClosureSnapshot snapshot={detail.data.snapshot} />
       )}
       {cycle.closedAt && !detail.data.snapshot && (
-        <p>No closure snapshot was recorded for this closed cycle.</p>
+        <p>No visible closure snapshot is available for this closed cycle.</p>
       )}
       {!cycle.closedAt && (
         <section aria-labelledby="committed-issues-heading">

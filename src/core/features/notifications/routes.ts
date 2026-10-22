@@ -1,3 +1,4 @@
+import { visibleDirectoryPerson } from '../roles/visibility-sql';
 import { readEmptyBody } from "./input";
 import type { Hono, Context } from "hono";
 import { z } from "zod";
@@ -209,10 +210,10 @@ export function addNotificationRoutes(app: Hono<AppEnvironment>) {
       return {
         operators: (
           await c.env.DB.prepare(
-            `SELECT o.id,o.name FROM operators o WHERE o.workspace_id=? AND o.removed_at IS NULL
+            `SELECT o.id,o.name FROM operators o WHERE o.workspace_id=? AND o.removed_at IS NULL AND ${visibleDirectoryPerson('o','?')}
       AND NOT EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id WHERE m.operator_id=o.id AND a.status<>'active') ORDER BY o.name,o.id`,
           )
-            .bind(access.workspace_id)
+            .bind(access.workspace_id,c.get("operatorId"))
             .all()
         ).results,
       };

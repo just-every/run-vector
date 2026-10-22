@@ -1,3 +1,4 @@
+import { visibilityDatabase } from '../features/roles/visibility-database'
 import { createApiApp } from './api'
 import { Hono } from 'hono'
 import type { AppEnvironment } from './bindings'
@@ -15,6 +16,7 @@ import type { StreamItem } from '../features/streams/ui/data'
 
 /** Run the normal read routes inside the document's native authorization fence. */
 export async function pageResources(env: WorkerBindings, request: Request, operator: import('./bindings').AppEnvironment['Variables']['operator'], href: string) {
+  env = {...env,DB:visibilityDatabase(env.DB,operator.id)}
   configureNotifications(env.DB, env)
   try { return await readPageResources(env, request, operator, href) }
   finally {
@@ -28,6 +30,7 @@ export async function pageResources(env: WorkerBindings, request: Request, opera
 }
 
 export async function readPageResources(env: WorkerBindings, request: Request, operator: AppEnvironment['Variables']['operator'], href: string, initial: InitialResources = {}) {
+  env = {...env,DB:visibilityDatabase(env.DB,operator.id)}
   const url = new URL(href, env.APP_ORIGIN)
   if (url.origin !== env.APP_ORIGIN || !/^\/app(?:\/|$)/.test(url.pathname)) return {}
   const workspace: WorkspaceProjection = {}
@@ -77,7 +80,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     const items = filterItems(Object.values(data?.sections ?? {}).flat(), { ...defaultStreamFilters, ...prefs?.filters })
     const identifier = selected ?? items[0]?.identifier
     if (identifier) {
-      const resources = snapshot && await selectedStreamResources(env.DB, snapshot, operator, identifier)
+      const resources = snapshot && await selectedStreamResources(visibilityDatabase(env.DB,operator.id), snapshot, operator, identifier)
       if (resources) Object.assign(values, resources)
       else await detail(identifier)
     }
@@ -96,8 +99,8 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     await Promise.all([read(issueListApiUrl(surface === 'board' && shown.team === 'all' && teams?.length === 1 ? { ...shown, team: teams[0]!.id } : shown)), selected ? detail(selected) : Promise.resolve()])
   } else if (path === '/app/projects') {
     const preference = await read('/api/preferences/projects') as { filters: { includeArchived?: boolean } } | null
-    await Promise.all([read('/api/projects' + (preference?.filters.includeArchived ? '?includeArchived=true' : '')), read('/api/settings/administration')])
-  } else if (path === '/app/cycles') await read('/api/settings/administration')
+    await Promise.all([read('/api/projects' + (preference?.filters.includeArchived ? '?includeArchived=true' : '')), read('/api/metadata')])
+  } else if (path === '/app/cycles') await read('/api/metadata')
   else if (path === '/app/inbox') await read('/api/notifications')
   else if (path === '/app/settings/audit') await read('/api/settings/audit?')
   else if (path === '/app/settings') await Promise.all(['/api/settings', '/api/settings/administration', '/api/settings/notifications', '/api/settings/integrations', '/api/settings/integrations/tokens', '/api/settings/integrations/tokens/usage', '/api/data/import/runs', '/api/data/restore'].map(read))

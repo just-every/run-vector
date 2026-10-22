@@ -4,7 +4,7 @@ import { CyclesPanel } from "./cycles-panel";
 import "../../settings/ui/settings.css";
 export function CyclesWorkspace() {
   const resource = useApiResource(
-    "/api/settings/administration",
+    "/api/metadata",
     administrationSchema,
   );
   return (

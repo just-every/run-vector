@@ -1,3 +1,4 @@
+import { visibleTeam } from '../roles/visibility-sql';
 import { mentionedOperators } from "./mentions.server";
 import { notificationContext } from "./context";
 import type { NotificationKind } from "./schema";
@@ -10,6 +11,7 @@ export type CollaborationEvent = {
   at: string;
 };
 export const activeRecipient = `o.removed_at IS NULL AND NOT EXISTS(SELECT 1 FROM vector_auth_operators mapping JOIN oa_operators native ON native.id=mapping.auth_id WHERE mapping.operator_id=o.id AND native.status<>'active')`;
+export const visibleRecipient = `${activeRecipient} AND ${visibleTeam('o','i.team_id')}`;
 const receipt =
   "EXISTS(SELECT 1 FROM issue_activity a WHERE a.id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=a.id))";
 function candidate(
@@ -24,7 +26,7 @@ function candidate(
       `INSERT OR IGNORE INTO notification_candidates(event_id,issue_id,recipient_id,kind,actor_id,actor_name,created_at)
     SELECT ?,i.id,o.id,?,?,COALESCE((SELECT name FROM operators WHERE id=?),?),?
     FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id
-    WHERE ${activeRecipient} AND (o.id<>? OR ? IS NULL) AND ${receipt} AND (${selection})`,
+    WHERE ${visibleRecipient} AND (o.id<>? OR ? IS NULL) AND ${receipt} AND (${selection})`,
     )
     .bind(
       event.id,
@@ -49,7 +51,7 @@ export function followStatements(
       .prepare(
         `INSERT OR IGNORE INTO issue_followers(issue_id,operator_id,created_at)
     SELECT i.id,o.id,? FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id
-    WHERE i.id=? AND ${activeRecipient} AND o.id IN(SELECT value FROM json_each(?)) AND ${receipt}`,
+    WHERE i.id=? AND ${visibleRecipient} AND o.id IN(SELECT value FROM json_each(?)) AND ${receipt}`,
       )
       .bind(
         event.at,
@@ -106,7 +108,7 @@ export function mentionStatements(
       .prepare(
         `INSERT OR IGNORE INTO issue_followers(issue_id,operator_id,created_at)
       SELECT i.id,o.id,? FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id
-      WHERE i.id=? AND ${activeRecipient} AND o.id IN(SELECT value FROM json_each(?)) AND ${receipt}
+      WHERE i.id=? AND ${visibleRecipient} AND o.id IN(SELECT value FROM json_each(?)) AND ${receipt}
       AND NOT EXISTS(SELECT 1 FROM issue_mentions m WHERE m.issue_id=i.id AND m.body_key=? AND m.operator_id=o.id)`,
       )
       .bind(event.at, event.issueId, encoded, event.id, key),
@@ -119,7 +121,7 @@ export function mentionStatements(
       .prepare(
         `INSERT INTO issue_mentions(issue_id,body_key,comment_id,operator_id)
       SELECT i.id,?,?,o.id FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id
-      WHERE i.id=? AND ${activeRecipient} AND o.id IN(SELECT value FROM json_each(?)) AND ${receipt}`,
+      WHERE i.id=? AND ${visibleRecipient} AND o.id IN(SELECT value FROM json_each(?)) AND ${receipt}`,
       )
       .bind(key, commentId, event.issueId, encoded, event.id),
   ];
@@ -269,8 +271,8 @@ export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
       .prepare(
         `INSERT OR IGNORE INTO notifications(id,event_id,issue_id,recipient_id,actor_id,actor_name,causes_json,created_at)
       SELECT lower(hex(randomblob(16))),c.event_id,c.issue_id,c.recipient_id,c.actor_id,c.actor_name,json_group_array(c.kind),c.created_at
-      FROM notification_candidates c JOIN operators o ON o.id=c.recipient_id
-      WHERE c.event_id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=c.event_id) AND ${activeRecipient}
+      FROM notification_candidates c JOIN issues i ON i.id=c.issue_id JOIN operators o ON o.id=c.recipient_id
+      WHERE c.event_id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=c.event_id) AND ${visibleRecipient}
        AND NOT EXISTS(SELECT 1 FROM issue_notification_mutes m WHERE m.issue_id=c.issue_id AND m.operator_id=c.recipient_id)
        AND NOT EXISTS(SELECT 1 FROM notification_type_mutes m WHERE m.kind=c.kind AND m.operator_id=c.recipient_id)
       GROUP BY c.event_id,c.issue_id,c.recipient_id`,
@@ -284,7 +286,7 @@ export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
           `INSERT OR IGNORE INTO notification_deliveries(id,notification_id,recipient_id,actor_id,actor_name,identifier,title,app_link,status,created_at,updated_at)
     SELECT n.id,n.id,n.recipient_id,n.actor_id,n.actor_name,i.identifier,i.title,?||'/app/issues/'||i.identifier,'pending',n.created_at,n.created_at
     FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN operators o ON o.id=n.recipient_id
-    WHERE n.event_id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=n.event_id) AND ${activeRecipient} AND COALESCE((SELECT email_enabled FROM notification_preferences WHERE operator_id=o.id),1)=1
+    WHERE n.event_id=? AND NOT EXISTS(SELECT 1 FROM notification_events e WHERE e.event_id=n.event_id) AND ${visibleRecipient} AND COALESCE((SELECT email_enabled FROM notification_preferences WHERE operator_id=o.id),1)=1
     AND EXISTS(SELECT 1 FROM json_each(n.causes_json) WHERE value IN ('assignment','mention'))`,
         )
         .bind(context.origin.replace(/\/$/, ""), event.id),

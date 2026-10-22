@@ -1,4 +1,5 @@
 import { exerciseAudit } from './audit-scenario';
+import { guestVisibilityJourney } from "./role-guest-journey";
 import { env } from "cloudflare:workers";
 import { Buffer } from "node:buffer";
 import { expect, it } from "vitest";
@@ -241,10 +242,10 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   const audited = await snapshot(["audit_records", "operators"]);
   expect(await (await role(owner.id, "admin")).json()).toMatchObject({ error: "last_owner" });
   expect(await (await owner.call(`/settings/operators/${owner.id}`, "DELETE")).json()).toMatchObject({ error: "last_owner" });
-  // Guest is assigned by no door until ROLE-003: a role change or invitation naming it is a 400.
+  // A Guest must name real teams; invalid assignments write nothing.
   for (const refused of [await role(member.id, "guest"), await owner.call("/settings/operators/invite", "POST", { email: "guest-invite@roles.test", displayName: "Guest", role: "guest" })]) {
     expect(refused.status).toBe(400);
-    expect(await refused.json()).toMatchObject({ error: "role_not_assignable" });
+    expect(await refused.json()).toMatchObject({ error: "guest_teams_required" });
   }
   expect(await snapshot(["audit_records", "operators"])).toEqual(audited);
   expect((await role(admin.id, "owner")).status).toBe(200);
@@ -322,10 +323,16 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   const exported: { table: string; row: Record<string, unknown> }[] = [];
   for await (const record of readArchive((await owner.call(`/portability/exports/${job}/download`)).body!))
     if (record.kind === "part") for (const item of record.items) if (item.kind === "row") exported.push(item as { table: string; row: Record<string, unknown> });
-  const changes = exported.filter((item) => item.table === "audit_records" && item.row.action === "operator.role_changed" && [member.id, admin.id].includes(String(item.row.subject_id))).map((item) => {
+  const changes = exported.filter((item) => item.table === "audit_records" && item.row.action === "operator.role_changed" && [member.id,admin.id,guest.id].includes(String(item.row.subject_id))).map((item) => {
+
     const detail = exported.find((other) => other.table === "administration_audit_details" && other.row.audit_id === item.row.id)!.row;
     return [item.row.actor_operator_id, item.row.subject_id, JSON.parse(String(detail.previous_value_json)).role, JSON.parse(String(detail.next_value_json)).role];
   });
-  expect(changes).toHaveLength(4);
-  expect(changes).toEqual(expect.arrayContaining([[owner.id, member.id, "member", "admin"], [owner.id, member.id, "admin", "member"], [owner.id, admin.id, "admin", "owner"], [owner.id, admin.id, "owner", "admin"]]));
+  expect(changes).toHaveLength(5);
+  expect(changes).toEqual(expect.arrayContaining([[owner.id, guest.id, "member", "guest"], [owner.id, member.id, "member", "admin"], [owner.id, member.id, "admin", "member"], [owner.id, admin.id, "admin", "owner"], [owner.id, admin.id, "owner", "admin"]]));
+});
+
+
+it("[ROLE-003 OPS-001 OPS-002] real Guest invitations and assignments scope native, bearer, search, project, notification and document reads to current invited teams", {timeout:120_000}, async () => {
+  await guestVisibilityJourney(await roleWorkspace());
 });

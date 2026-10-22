@@ -1,41 +1,26 @@
-import { normalizeEmail } from '../../../../vendor/base/operator-auth/policy.mjs'
 import { administrationContext, audit, commit, guard, SettingsError } from '../administration/transaction'
 import { assignableRoles, type AssignableRole } from '../roles/matrix'
 
 export const assignable = (role: string): role is AssignableRole => (assignableRoles as readonly string[]).includes(role)
-export const guestNotAssignable = () => new SettingsError('role_not_assignable',
-  'Guests are invited to named teams with guest access, which is not available yet (ROLE-003). Choose Owner, Admin or Member.', 400)
-
-/** The role an invitation grants travels with the exact link its inviter just
- * issued. A link without one admits a Member. */
-export async function recordInvitationRole(db: D1Database, actor: string, email: string, role: AssignableRole) {
-  await db.prepare(`INSERT INTO vector_invitation_roles(token_id,role,inviter_operator_id,created_at)
-    SELECT t.id,?,?,? FROM oa_tokens t JOIN oa_operators o ON o.id=t.operator_id
-    WHERE o.email=? AND t.kind='invite' AND t.consumed_at IS NULL AND t.revoked_at IS NULL
-    AND t.issuer_id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)
-    ORDER BY t.created_at DESC LIMIT 1
-    ON CONFLICT(token_id) DO UPDATE SET role=excluded.role`)
-    .bind(role, actor, new Date().toISOString(), normalizeEmail(email), actor).run()
-}
-
 /** Pending links an operator issued for a role they can no longer grant stop
  * admitting anyone; acceptance rechecks the rest (Base's invite policy). */
 export function revokeUngrantableInvitations(db: D1Database, operator: string, role: string, at: number) {
   return db.prepare(`UPDATE oa_tokens SET revoked_at=? WHERE ?<>'owner' AND kind='invite' AND consumed_at IS NULL AND revoked_at IS NULL
     AND issuer_id IN (SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)
-    AND id IN (SELECT token_id FROM vector_invitation_roles WHERE role IN ('owner','admin'))`).bind(at, role, operator)
+    AND id IN (SELECT token_id FROM vector_invitation_roles WHERE role IN ('owner','admin') OR role='guest' AND ? NOT IN('owner','admin'))`).bind(at, role, operator, role)
 }
 
 /** ROLE-001: one audited role change, effective on the member's next request.
  * The database keeps the last Owner and the installation owner Owners. */
-export async function changeRole(source: D1Database, actor: string, target: string, role: string) {
-  if (role === 'guest') throw guestNotAssignable()
-  if (!assignable(role)) throw new SettingsError('invalid_role', 'Choose Owner, Admin or Member.', 400)
+export async function changeRole(source: D1Database, actor: string, target: string, role: string, teams?: string[]) {
+  if (!assignable(role)) throw new SettingsError('invalid_role', 'Choose Owner, Admin, Member or Guest.', 400)
   const ctx = await administrationContext(source, actor)
   const member = await ctx.db.prepare('SELECT id,name,role FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL')
     .bind(target, ctx.workspace).first<{ id: string; name: string; role: string }>()
   if (!member) throw new SettingsError('not_found', 'Member is unavailable.', 404)
-  if (member.role === role) return
+  const selectedTeams = role === 'guest' ? await guestTeams(ctx.db, ctx.workspace, teams) : []
+  const previousTeams=(await ctx.db.prepare('SELECT team_id AS id,role FROM team_members WHERE operator_id=? ORDER BY team_id').bind(target).all<{id:string;role:string}>()).results
+  if (member.role === role && (role !== 'guest' || previousTeams.every(team=>team.role==='member') && JSON.stringify(previousTeams.map(team=>team.id))===JSON.stringify([...selectedTeams].sort()))) return
   if (member.role === 'owner') {
     const owners = await ctx.db.prepare("SELECT count(*) AS n FROM operators WHERE workspace_id=? AND role='owner' AND removed_at IS NULL").bind(ctx.workspace).first<number>('n')
     if ((owners ?? 0) <= 1) throw new SettingsError('last_owner', 'The last Owner cannot be demoted or removed. Make another member an Owner first.', 409)
@@ -44,8 +29,30 @@ export async function changeRole(source: D1Database, actor: string, target: stri
   }
   await commit(ctx, [
     guard(ctx.db, 'EXISTS(SELECT 1 FROM operators WHERE id=? AND role=? AND removed_at IS NULL)', target, member.role),
+    ...(role === 'guest' ? [
+      guard(ctx.db, `(SELECT json_group_array(json_object('id',team_id,'role',role)) FROM (SELECT team_id,role FROM team_members WHERE operator_id=? ORDER BY team_id))=?`,target,JSON.stringify(previousTeams)),
+      guard(ctx.db, 'NOT EXISTS(SELECT 1 FROM json_each(?) j WHERE NOT EXISTS(SELECT 1 FROM teams WHERE id=j.value AND workspace_id=? AND archived_at IS NULL))',JSON.stringify(selectedTeams),ctx.workspace),
+    ] : []),
     ctx.db.prepare('UPDATE operators SET role=?,updated_at=? WHERE id=?').bind(role, ctx.at, target),
+    ...(role === 'guest' ? [
+      ctx.db.prepare(`INSERT INTO team_departures(team_id,operator_id,departed_at)
+        SELECT team_id,operator_id,? FROM team_members WHERE operator_id=? AND team_id NOT IN(SELECT value FROM json_each(?))
+        ON CONFLICT(team_id,operator_id) DO UPDATE SET departed_at=excluded.departed_at`).bind(ctx.at,target,JSON.stringify(selectedTeams)),
+      ctx.db.prepare('DELETE FROM team_departures WHERE operator_id=? AND team_id IN(SELECT value FROM json_each(?))').bind(target,JSON.stringify(selectedTeams)),
+      ctx.db.prepare('DELETE FROM team_members WHERE operator_id=?').bind(target),
+      ...selectedTeams.map(team => ctx.db.prepare("INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) VALUES(?,?,'member',?,?)").bind(team,target,ctx.at,ctx.at)),
+    ] : []),
     revokeUngrantableInvitations(ctx.db, target, role, Date.parse(ctx.at)),
-    ...audit(ctx, 'operator.role_changed', target, member.name, { role: member.role }, { role }),
+    ...audit(ctx, 'operator.role_changed', target, member.name, { role: member.role, ...(role === 'guest' || member.role === 'guest' ? {teamIds:previousTeams.map(team=>team.id)} : {}) }, { role, ...(role === 'guest' ? { teamIds: selectedTeams } : {}) }),
   ])
+}
+
+/** Guests require a nonempty set of real, active teams in this workspace. */
+export async function guestTeams(db: D1Database, workspace: string, teams?: string[]) {
+  const ids = [...new Set(teams ?? [])]
+  if (!ids.length) throw new SettingsError('guest_teams_required', 'Choose at least one team for the Guest.', 400)
+  const rows = (await db.prepare('SELECT id FROM teams WHERE workspace_id=? AND archived_at IS NULL AND id IN(SELECT value FROM json_each(?))')
+    .bind(workspace,JSON.stringify(ids)).all<{id:string}>()).results
+  if (rows.length !== ids.length) throw new SettingsError('invalid_team', 'Choose available teams in this workspace.', 400)
+  return ids
 }

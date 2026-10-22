@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import {writeRuntimeD1} from './runtime-d1.mjs';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
 export async function exerciseAuditView({ page, runtime, capture, clause }) {
@@ -41,7 +40,7 @@ export async function exerciseAuditView({ page, runtime, capture, clause }) {
   });
 }
 
-export async function exerciseAuditAccess({ peer, runtime, clause, memberId }) {
+export async function exerciseAuditAccess({ page, peer, runtime, clause, memberId }) {
   await clause('ROLE-005', 'a Member is refused the audit document and both data doors', async () => {
     for (const path of ['/app/settings/audit', '/api/settings/audit', '/api/settings/audit.csv']) {
       const response = await peer.request.get(runtime.base + path);
@@ -49,15 +48,16 @@ export async function exerciseAuditAccess({ peer, runtime, clause, memberId }) {
       assert.equal((await response.json()).error, 'forbidden');
     }
     assert.equal(await peer.getByRole('link', { name: 'Audit log', exact: true }).count(), 0);
-    await exerciseGuestAuditAccess({peer,runtime,memberId});
+    await exerciseGuestAuditAccess({page,peer,runtime,memberId});
   });
 }
 
-/** ROLE-005 independently refuses the stored Guest role before ROLE-003's
- * assignment door lands. This is synthetic fixture state, never app code. */
-export async function exerciseGuestAuditAccess({peer,runtime,memberId}) {
- await writeRuntimeD1(runtime.base,"UPDATE operators SET role='guest' WHERE id=?",[memberId]);
+/** After ROLE-003, audit refusals use a Guest assigned through the real door. */
+export async function exerciseGuestAuditAccess({page,peer,runtime,memberId}) {
+ const metadata=await (await page.request.get(runtime.base+'/api/metadata')).json();
+ const role=async value=>{const response=await page.request.patch(runtime.base+'/api/settings/operators/'+memberId+'/role',{headers:{Origin:runtime.base},data:{role:value,...(value==='guest'?{teamIds:[metadata.teams[0].id]}:{})}});assert.equal(response.status(),200);};
+ await role('guest');
  try {for(const path of ['/app/settings/audit','/api/settings/audit','/api/settings/audit.csv']) {
   const response=await peer.request.get(runtime.base+path);assert.equal(response.status(),403,'Guest '+path);assert.equal((await response.json()).error,'forbidden');
- }}finally{await writeRuntimeD1(runtime.base,"UPDATE operators SET role='member' WHERE id=?",[memberId]);}
+ }}finally{await role('member');}
 }

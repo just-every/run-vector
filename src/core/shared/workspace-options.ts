@@ -1,11 +1,12 @@
 import { z } from 'zod'
+import { roles } from '../features/roles/matrix'
 
 export const workspaceOptionsSchema = z.object({
   labelsPerIssue: z.number(),
   savedViewsPerOperator: z.number(),
   bulkEditIssuesPerOperation: z.number(),
   workspace: z.object({ id: z.string(), name: z.string() }),
-  operator: z.object({ id: z.string() }),
+  operator: z.object({ id: z.string(), role:z.enum(roles) }),
   teams: z.array(
     z.object({
       id: z.string(),

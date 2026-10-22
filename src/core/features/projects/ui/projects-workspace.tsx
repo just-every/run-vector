@@ -40,7 +40,7 @@ export function ProjectsWorkspace() {
     onReset: preferences.reset,
   };
   const administration = useApiResource(
-    "/api/settings/administration",
+    "/api/metadata",
     administrationSchema,
   );
   const portfolio = useApiResource(
@@ -87,6 +87,7 @@ export function ProjectsWorkspace() {
         </button>
       </main>
     );
+  const canCreate = decide({role:administration.data.viewer.role, memberInvites:false,teams:new Map()}, {row:"projects.write"}) === "allow";
   const projects = filterProjects(portfolio.data.projects, filters, preferences.sort);
   const metrics = portfolioMetrics(projects);
   const lifecycleOptions = [
@@ -103,7 +104,7 @@ export function ProjectsWorkspace() {
             and cycle capacity.
           </p>
         </div>
-        <button
+        {canCreate && <button
           ref={createTrigger}
           className="projects-new-project"
           disabled={!hydrated}
@@ -113,9 +114,9 @@ export function ProjectsWorkspace() {
           onClick={() => setCreating(true)}
         >
           New project
-        </button>
+        </button>}
       </header>
-      {creating && (
+      {canCreate && creating && (
         <section
           id="project-create-panel"
           className="administration-panel project-detail__section"
