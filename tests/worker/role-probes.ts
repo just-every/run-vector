@@ -27,6 +27,15 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     json<Issue>(owner.call("/issues", "POST", { title: `Probe issue ${unique()}`, teamId: team, ...extra }));
   const comment = async (by: Person, identifier: string) =>
     (await json<{ id: string }>(by.call(`/issues/${identifier}/comments`, "POST", { body: `Probe comment ${unique()}` }))).id;
+  /** The actor's own comment on a team's issue; a Guest outside the team wrote
+   * it while they were still in it. */
+  const authored = async (actor: Person, team: string, identifier: string) => {
+    const visiting = team !== w.team.id && actor === w.people.guest;
+    if (visiting) expect((await owner.call(`/settings/teams/${team}/members/${actor.id}`, "PUT", { role: "member" })).status).toBe(200);
+    const id = await comment(actor, identifier);
+    if (visiting) expect((await owner.call(`/settings/teams/${team}/members/${actor.id}`, "DELETE")).status).toBe(200);
+    return id;
+  };
   const commentVersion = async (id: string) => (await json<{ version: number }>(owner.api(`/comments/${id}`))).version;
   const cycle = (team: string) => {
     const week = unique();
@@ -70,10 +79,15 @@ export function probes(w: Workspace): Record<RowId, Probe> {
       session: async (_who, actor, id) => { const source = await issue(id); return () => actor.call(`/issues/${source.identifier}/copy`, "POST", { expectedVersion: source.version, teamId: id }); },
       api: async (_who, actor, id) => { const source = await issue(id); return () => actor.api(`/issues/${source.identifier}/copy`, "POST", { expectedVersion: source.version, teamId: id }); } },
     "comments.own": { outside: true,
-      session: async (who, actor, id) => { const target = await issue(id), mine = await comment(who === "guest" && id !== w.team.id ? owner : actor, target.identifier);
+      session: async (_who, actor, id) => { const target = await issue(id), mine = await authored(actor, id, target.identifier);
         return () => actor.call(`/issues/${target.identifier}/comments/${mine}`, "PATCH", { body: "Edited by its author" }); },
-      api: async (who, actor, id) => { const target = await issue(id), mine = await comment(who === "guest" && id !== w.team.id ? owner : actor, target.identifier), expectedVersion = await commentVersion(mine);
+      api: async (_who, actor, id) => { const target = await issue(id), mine = await authored(actor, id, target.identifier), expectedVersion = await commentVersion(mine);
         return () => actor.api(`/comments/${mine}`, "PATCH", { expectedVersion, body: "Edited by its author" }); } },
+    "comments.edit-others": {
+      session: async (who, actor) => { const target = await issue(w.team.id), theirs = await comment(who === "owner" ? w.people.admin : owner, target.identifier);
+        return () => actor.call(`/issues/${target.identifier}/comments/${theirs}`, "PATCH", { body: "Rewritten by someone else" }); },
+      api: async (who, actor) => { const target = await issue(w.team.id), theirs = await comment(who === "owner" ? w.people.admin : owner, target.identifier), expectedVersion = await commentVersion(theirs);
+        return () => actor.api(`/comments/${theirs}`, "PATCH", { expectedVersion, body: "Rewritten by someone else" }); } },
     "media.write": { outside: true, session: async (_who, actor, id) => {
       const target = await issue(id, { description: "- [ ] Check the backup" });
       return () => actor.call(`/issues/${target.identifier}/checklist`, "POST", { expectedVersion: target.version, index: 0, text: "Check the backup", checked: true }); } },

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { reminderTimeSchema, personalTimeSchema } from "./personal-time-schema.ts";
-import { roles } from "../roles/matrix";
+import { roles } from "../roles/matrix.ts";
 export { reminderTimeSchema, personalTimeSchema } from "./personal-time-schema.ts";
 export const settingsSchema = z.object({
   workspace: z.object({

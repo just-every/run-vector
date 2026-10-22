@@ -33,6 +33,7 @@ export const matrix = {
   'issues.copy': row('Copy an issue (ROLE-003/ROLE-008; ISSUE-023 action)', 'yes', 'yes', 'teams', 'invited-teams'),
   'comments.own': row('Edit own comment; resolve or reopen any thread (ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),
   'media.write': row('Paste, drop or upload images and video into a description, comment or document they can edit, and tick its checklists (ISSUE-024, ISSUE-025)', 'yes', 'yes', 'yes', 'invited-teams'),
+  'comments.edit-others': row('Edit another member\'s comment, including ticking its checklists (ISSUE-008, ISSUE-025)', 'no', 'no', 'no', 'no'),
   'comments.delete-own': row('Delete own comment (ISSUE-008)', 'yes', 'yes', 'yes', 'yes'),
   'comments.delete-others': row('Delete another member\'s comment (ISSUE-008)', 'yes', 'yes', 'team-owner', 'no'),
   'issues.delete-permanent': row('Permanently delete an issue before retention ends (ISSUE-010)', 'yes', 'yes', 'no', 'no'),

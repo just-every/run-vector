@@ -72,7 +72,8 @@ for (const method of ["POST", "PATCH"] as const)
         try {
           const f = await collaborationFixture(),
             issue = await f.create({ title: "Private discussion title" }),
-            id = await addComment(env.DB, issue.id, f.owner, "Private comment"),
+            // Bob edits his own comment: another's is refused before its body is read.
+            id = await addComment(env.DB, issue.id, method === "PATCH" ? f.bob : f.owner, "Private comment"),
             held = heldBody();
           const path = `/issues/${issue.identifier}/comments${method === "PATCH" ? `/${id}` : ""}`;
           const pending = createApiApp().request(

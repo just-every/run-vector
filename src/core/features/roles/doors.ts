@@ -49,9 +49,14 @@ const comment: Resolve<string[] | null> = async ({ db, actor, params }) => {
   const row = await db.prepare('SELECT i.identifier FROM issue_comments c JOIN issues i ON i.id=c.issue_id WHERE c.id=?').bind(params.id ?? params.itemId).first<{ identifier: string }>()
   return teamsOf(db, actor, [], row ? [row.identifier] : [])
 }
-const ownComment = async ({ db, actor, params }: DoorRequest) => Boolean(await db.prepare(
-  'SELECT 1 FROM issue_comments WHERE id=? AND actor_operator_id=? AND imported_author_name IS NULL').bind(params.id ?? params.itemId, actor).first())
-const commentDeletion: Resolve<RowId> = async request => await ownComment(request) ? 'comments.delete-own' : 'comments.delete-others'
+/** Whether the comment is someone else's, in the actor's workspace. A comment
+ * the actor cannot reach there keeps its own-comment row for the handler to answer. */
+const othersComment = async ({ db, actor, params }: DoorRequest) => Boolean(await db.prepare(`SELECT 1 FROM issue_comments c
+  JOIN issues i ON i.id=c.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id AND o.id=?
+  WHERE c.id=? AND (c.actor_operator_id<>o.id OR c.imported_author_name IS NOT NULL)`).bind(actor, params.id ?? params.itemId).first())
+const commentDeletion: Resolve<RowId> = async request => await othersComment(request) ? 'comments.delete-others' : 'comments.delete-own'
+/** Only a comment's author edits it or ticks its checklists; anyone else acts under its own row. */
+const commentEdit = (own: RowId): Resolve<RowId> => async request => await othersComment(request) ? 'comments.edit-others' : own
 const view = ({ db, params }: DoorRequest) => db.prepare('SELECT is_shared AS shared,filters_json AS query FROM saved_views WHERE id=?').bind(params.id).first<{ shared: number; query: string }>()
 const viewTeams: Resolve<string[] | null> = async request => {
   const row = await view(request)
@@ -117,10 +122,10 @@ export const doors: Door[] = [
   { method: 'POST', path: '/issues/order', row: 'issues.write', teams: bodyTeam },
   { method: 'POST', path: '/issues/undo', row: 'issues.write' },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
-  { method: 'PATCH', path: '/issues/:identifier/comments/:itemId', row: 'comments.own', teams: issue },
+  { method: 'PATCH', path: '/issues/:identifier/comments/:itemId', row: commentEdit('comments.own'), teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/comments/:itemId', row: commentDeletion, teams: issue },
   { method: 'POST', path: '/issues/:identifier/comments/:itemId/resolution', row: 'comments.own', teams: issue },
-  { method: 'POST', path: '/issues/:identifier/comments/:itemId/checklist', row: 'media.write', teams: issue },
+  { method: 'POST', path: '/issues/:identifier/comments/:itemId/checklist', row: commentEdit('media.write'), teams: issue },
   { method: 'POST', path: '/issues/:identifier/checklist', row: 'media.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/files', row: 'media.write', teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/files/:itemId', row: 'issues.write', teams: issue },
@@ -179,9 +184,9 @@ export const apiDoors: Door[] = [
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/description-restore', row: 'issues.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/checklist', row: 'media.write', teams: issue },
-  { method: 'POST', path: '/issues/:identifier/comments/:itemId/checklist', row: 'media.write', teams: issue },
+  { method: 'POST', path: '/issues/:identifier/comments/:itemId/checklist', row: commentEdit('media.write'), teams: issue },
   { method: 'POST', path: '/issues/:identifier/copy', row: 'issues.copy', teams: issueAndDestination },
-  { method: 'PATCH', path: '/comments/:id', row: 'comments.own', teams: comment },
+  { method: 'PATCH', path: '/comments/:id', row: commentEdit('comments.own'), teams: comment },
   { method: 'DELETE', path: '/comments/:id', row: commentDeletion, teams: comment },
   { method: 'POST', path: '/projects', row: 'projects.write' },
   { method: 'PATCH', path: '/projects/:id', row: async request => { const body = await request.body() as Record<string, unknown> | undefined; return body && ('lifecycle' in body || 'archived' in body) ? 'projects.status' : 'projects.write' } },
