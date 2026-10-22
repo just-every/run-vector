@@ -48,7 +48,7 @@ function escapeHtml(value: string) {
  * fetch a URL named by a comment or send a private authenticated file link. */
 export async function replyContent(env: WorkerBindings, issue: {id:string;identifier:string}, body: string) {
   const attachments: {filename:string;contentType:string;content:Uint8Array;contentId:string;disposition:'inline'}[] = [];
-  let html = '', end = 0, total = 0;
+  let html = '', text = '', end = 0, total = 0;
   for (const match of body.matchAll(/!\[([^\]]*)\]\(([^\s)]+)\)/g)) {
     let url: URL;
     try { url = new URL(match[2],env.APP_ORIGIN); }
@@ -68,9 +68,11 @@ export async function replyContent(env: WorkerBindings, issue: {id:string;identi
     if (content.length !== file.bytes) throw new SettingsError('reply_image_missing', 'The reply image is incomplete.', 409);
     const contentId = `vector-${fileMatch[2]}-${attachments.length}`;
     attachments.push({filename:file.name,contentType:file.contentType,content,contentId,disposition:'inline'});
+    text += body.slice(end,match.index) + `[${match[1] || 'Attached image'}]`;
     html += escapeHtml(body.slice(end,match.index)) + `<img src="cid:${contentId}" alt="${escapeHtml(match[1])}">`;
     end = match.index! + match[0].length;
   }
+  text += body.slice(end);
   html += escapeHtml(body.slice(end));
-  return {text:body,html:html.replaceAll('\n','<br>'),attachments};
+  return {text,html:html.replaceAll('\n','<br>'),attachments};
 }

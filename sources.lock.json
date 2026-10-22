@@ -3965,7 +3965,7 @@
       "executable": false
     },
     "src/core/features/email-intake/files.ts": {
-      "sha256": "3c305a119f610e082dc7227f5b188d1a5b49aabd84109b233ba507e8e8e05742",
+      "sha256": "8c05ed02e466084c66816fb7de518d5a030b05226af6130529428e78ef21c68f",
       "executable": false
     },
     "src/core/features/email-intake/inbound.ts": {
@@ -6625,7 +6625,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "84e6d61b21011d8dd96f1f5021cc1eb48a50deed7e76c395a7258ef8019edd59",
+      "sha256": "57a56168ffd59aed4a78eab8dc0c3b16d8d8c450715df10a92485f688a3f44ec",
       "executable": false
     },
     "tests/worker/current-disjoint.test.ts": {

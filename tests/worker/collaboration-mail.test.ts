@@ -258,7 +258,7 @@ contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail beco
   expect(reply.calls).toHaveLength(1);expect(reply.calls[0].url).toBe('https://api.sendgrid.com/v3/mail/send');
   const wire=reply.calls[0].body;expect(wire.headers['In-Reply-To']).toBe(intake.messageId);expect(wire.headers.References).toContain(intake.messageId);
   expect(wire.personalizations[0].to).toEqual([{email:'synthetic-vector-712@example.test'}]);expect(wire.personalizations[0].cc).toEqual([{email:'synthetic-vector-713@example.test'}]);
-  expect(wire.attachments).toHaveLength(1);expect(wire.attachments[0].disposition).toBe('inline');expect(wire.content.find((c:any)=>c.type==='text/html').value).toContain('cid:');
+  expect(wire.attachments).toHaveLength(1);expect(wire.attachments[0].disposition).toBe('inline');expect(wire.content.find((c:any)=>c.type==='text/html').value).toContain('cid:');expect(JSON.stringify(wire.content)).not.toContain('/api/issues/');
   const repeat=await recordedReply(f.bobCookie,intake.identifier,'Never send a changed retry',reply.requestId);
   expect(repeat.calls).toHaveLength(0);expect(await repeat.response.json()).toMatchObject({commentId:outcome.commentId,status:'accepted'});
   let internalSends=0;vi.stubGlobal('fetch',async()=>{internalSends++;return new Response(null,{status:202});});
