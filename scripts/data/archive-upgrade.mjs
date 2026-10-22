@@ -63,7 +63,10 @@ export async function withArchiveUpgrade(context,policy,transport,restore) {
   // Keep the source's declared configuration inventory. No manifest or
   // authenticated source bytes are edited.
   await transport(policy).export({...scratch,path:upgraded,journal:undefined});
-  const result=await restore({...context,path:upgraded,journal},policy);
+  // Scratch finalize merged the trusted later tombstones/epoch into its state;
+  // Base export authenticates that complete journal in the converted manifest.
+  // Passing the older journal again can reject a newer migrated checkpoint.
+  const result=await restore({...context,path:upgraded,journal:undefined},policy);
   return {...result,input:relative(context.root,context.path),upgraded:{fromSchema:plan.sourceSchema,toSchema:plan.currentSchema,migrations:plan.files.slice(plan.sourceCount).map(file=>file.name),sourceArchiveHash:plan.archiveHash}};
  } finally {await rm(root,{recursive:true,force:true});}
 }

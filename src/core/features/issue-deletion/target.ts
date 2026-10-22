@@ -7,6 +7,7 @@ import {
   snapshotExpression,
   expectedExpression,
   snapshotContext,
+  snapshotParts,
   type ErasureSnapshot,
 } from "./snapshot";
 import { erasedSnapshot, type ErasureOperation } from "./postcondition";
@@ -57,6 +58,18 @@ export function deletionTargets(operation: ErasureOperation): D1TargetAdapter {
         sql: `(${snapshotContext}, e AS (SELECT ? value) SELECT ${snapshotExpression}=${expectedExpression} FROM c,b,e)`,
         params: [...context(before), canonicalJson(row ? row.value : after)],
       };
+    },
+    matchesParts(row, destination, kind, id) {
+      identity(destination, kind, id);
+      if (!before || !after) throw Error("IMPORT_ERASURE_NATIVE_MISSING");
+      const expected = (row ? row.value : after) as ErasureSnapshot;
+      // Visibility CTEs and the kit's custody guards share this SQL statement.
+      // Compare each complete relation separately to bound expression depth;
+      // Base requires every part in the same atomic erasure transaction.
+      return snapshotParts.map(({ name, current, expected: expression }) => ({
+        sql: `(${snapshotContext}, e AS (SELECT ? value) SELECT ${current}=${expression} FROM c,b,e)`,
+        params: [...context(before), canonicalJson({ [name]: expected[name] })],
+      }));
     },
   };
 }

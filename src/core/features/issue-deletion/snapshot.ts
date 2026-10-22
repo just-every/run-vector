@@ -167,30 +167,23 @@ const object = (table: string, fields?: string[]) => {
     ")"
   );
 };
-export const snapshotExpression =
-  "json_object(" +
-  Object.keys(relations)
-    .sort()
-    .flatMap((name) => {
-      const { table, where, columns } = relations[name];
-      return [
-        "'" + name + "'",
-        `json((SELECT json_group_array(json(value)) FROM (SELECT ${object(table, columns)} value FROM ${quote(table)} r WHERE ${where} ORDER BY value)))`,
-      ];
-    })
-    .join(",") +
-  ")";
 // Canonicalize arrays with SQLite's own binary ordering, also for arbitrary
 // Unicode external IDs. Every full row and cardinality must match.
+export const snapshotParts = Object.keys(relations).sort().map((name) => {
+  const { table, where, columns } = relations[name];
+  return {
+    name,
+    current: `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table, columns)} value FROM ${quote(table)} r WHERE ${where} ORDER BY value))`,
+    expected: `(SELECT json_group_array(json(value)) FROM (SELECT value FROM json_each(e.value,'$.${name}') ORDER BY value))`,
+  };
+});
+export const snapshotExpression =
+  "json_object(" +
+  snapshotParts.flatMap(({ name, current }) => ["'" + name + "'", `json(${current})`]).join(",") +
+  ")";
 export const expectedExpression =
   "json_object(" +
-  Object.keys(relations)
-    .sort()
-    .flatMap((name) => [
-      "'" + name + "'",
-      `json((SELECT json_group_array(json(value)) FROM (SELECT value FROM json_each(e.value,'$.${name}') ORDER BY value)))`,
-    ])
-    .join(",") +
+  snapshotParts.flatMap(({ name, expected }) => ["'" + name + "'", `json(${expected})`]).join(",") +
   ")";
 export const snapshotContext =
   "WITH c AS (SELECT ? id,? identifier,? workspace), b AS (SELECT ? value), " +
