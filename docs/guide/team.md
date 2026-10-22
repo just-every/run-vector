@@ -12,11 +12,11 @@ Settings sets the workspace timezone. Cycles and due dates use it.
 
 ## Teams and workflows
 
-Each team has its own identifier prefix (like `FLW`) and its own workflow. A new team starts with Intake, Backlog, Unstarted, Started, Completed, Canceled and Duplicate. You can add, rename and reorder statuses; removing one asks which status its issues should move to. Archiving a team keeps all its issues and history and stops new work going to it.
+Each team has its own identifier prefix (like `FLW`) and its own workflow. A new team starts with Intake, Backlog, Unstarted, Started, Completed, Canceled and Duplicate. You can add, rename and reorder statuses; removing one asks which status its issues should move to. Archiving a team keeps all its issues and history and stops new work going to it. Only Owners, Admins and the team's owners archive or unarchive a team, whatever else the team lets its members manage.
 
 ## Labels
 
-Labels can be renamed, recoloured and deleted. Deleting a label removes it from issues and from saved views.
+Owners and Admins create, rename, recolour and delete labels in **Settings → Labels**. Deleting a label removes it from issues and from saved views.
 
 ## Notifications
 

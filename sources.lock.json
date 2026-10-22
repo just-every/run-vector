@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "38bb316942595d02d1fa0e20e95dc2205c7656801ccb86572c50945ec30261f5",
+      "sha256": "c859c4715e65cc9ad91dd4c91c0cc14f0991c91cbaaaa0463807ac196d78f958",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6217ff42d5a6997a2b826ec78f03740965f12aabc6ff4355b4ebbdda499b9384",
+      "sha256": "acab4c883a0ef18b8374e781c30215889b54cd37309c2524a207ca6377cdc157",
       "executable": false
     },
     "DEMO.md": {
@@ -613,7 +613,7 @@
       "executable": false
     },
     "docs/guide/team.md": {
-      "sha256": "fff195e3f8e2d59bda354392132872550027a7a919fbb6947afc5af1c81e0478",
+      "sha256": "de13b91eb466a5d4e84293c730eefa980b696b71712a5e6fa9b74cbf09726a62",
       "executable": false
     },
     "docs/guide/triage.md": {
