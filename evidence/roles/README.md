@@ -13,5 +13,7 @@ A one-off capture for ct's c8a role rulings (sd-vector-c8b) checked two more sta
 
 - `team-archive-member-all-members-{1440,390}.png`: a Member who does not own a team whose *Who manages team settings* is All team members. The team's settings are theirs to save, but Archive team is disabled with its reason: archiving belongs to Owners, Admins and team owners (TEAM-003 row).
 - `project-create-member-{1440,390}.png`: a Member's New project form without Create Slack channel, which only Owners and Admins are offered (SLACK-003 row).
+- `project-delete-member-{1440,390}.png`: a Member's project page for a project someone else leads. They can still edit it, but Delete project is disabled with its reason: deleting belongs to Owners, Admins and the project's lead (PROJ-003 row). Before this, the control was enabled and its confirmation was refused 403.
+- `project-delete-lead-confirm-{1440,390}.png`: the same Member on the project they lead, at the existing confirmation; confirming deleted it.
 
 `UPGRADE.md` records the one-off migration upgrade proof.

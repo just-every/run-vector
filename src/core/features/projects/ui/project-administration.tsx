@@ -3,6 +3,7 @@ import { useHydrated } from "../../../app/initial-resources";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import type { Administration } from "../../administration/schema";
+import { decide } from "../../roles/policy";
 import { useAdministrationAction } from "../../settings/ui/administration-action";
 import { AdministrationFeedback } from "../../settings/ui/administration-feedback";
 import "../../settings/ui/settings.css";
@@ -58,15 +59,19 @@ export function ProjectCreate({
 }
 export function ProjectAdministration({
   project,
+  viewer,
   operators,
   labels,
   onChanged,
   onDeleted,
-}: Props & { project: Administration["projects"][number]; onDeleted: () => void }) {
+}: Props & { project: Administration["projects"][number]; viewer: Administration["viewer"]; onDeleted: () => void }) {
   const action = useAdministrationAction(onChanged);
   const deletion = useAdministrationAction(onDeleted);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const hydrated = useHydrated();
+  // Owners, Admins and the project's lead delete it (PROJ-003 row).
+  const deletes = decide({ role: viewer.role, memberInvites: false, teams: new Map(), leads: new Set(project.leadOperatorId === viewer.id ? [project.id] : []) },
+    { row: "projects.delete", project: project.id }) === "allow";
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     await action.run(`/api/settings/projects/${project.id}`, "PATCH", {
@@ -118,7 +123,10 @@ export function ProjectAdministration({
           <AdministrationFeedback action={deletion} />
         </div>
       ) : (
-        <button type="button" disabled={action.pending || !hydrated} onClick={() => setConfirmingDelete(true)}>Delete project</button>
+        <>
+          {!deletes && <p>Only Owners, Admins and this project&apos;s lead delete it.</p>}
+          <button type="button" disabled={action.pending || !hydrated || !deletes} onClick={() => setConfirmingDelete(true)}>Delete project</button>
+        </>
       )}
     </details>
   );

@@ -74,6 +74,7 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
           {record && administration.data && (
             <ProjectAdministration
               project={record}
+              viewer={administration.data.viewer}
               operators={administration.data.operators}
               labels={administration.data.labels}
               onDeleted={() => void navigate({ to: "/app/projects" })}

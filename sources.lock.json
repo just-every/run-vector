@@ -1736,8 +1736,24 @@
       "sha256": "071a53b8fff9fa05b490350091b8e8c1336cd0e7c1baf90ebd78ec1b573d12a4",
       "executable": false
     },
+    "evidence/roles/project-delete-lead-confirm-1440.png": {
+      "sha256": "58dd09615794b16f782c1668bd49d7a33c62fb871f686316dde600d04c06bd5a",
+      "executable": false
+    },
+    "evidence/roles/project-delete-lead-confirm-390.png": {
+      "sha256": "8bf860bb1796244c6c17f30ec639e9d45739ce3786633638b5a118eb1b117804",
+      "executable": false
+    },
+    "evidence/roles/project-delete-member-1440.png": {
+      "sha256": "7a43c128922051e61853be4248635bb3c6aa7742d2a2bf5f42b4ae976da22ee9",
+      "executable": false
+    },
+    "evidence/roles/project-delete-member-390.png": {
+      "sha256": "884d1fb609baa560184a2128b9dd95a84ccc9655d823b86457661b7888d77e84",
+      "executable": false
+    },
     "evidence/roles/README.md": {
-      "sha256": "1b9aced4b600ef3393407b3bc9010808fe53c5709c079698fd259986ffbd9950",
+      "sha256": "984ba9a141cc49423de6dcc281242cd332cb18098de951b7fbdc9bb151ea50c4",
       "executable": false
     },
     "evidence/roles/team-archive-member-all-members-1440.png": {
@@ -5013,7 +5029,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-administration.tsx": {
-      "sha256": "d3a39f1548ba1c3dee233ec22d978f7276c2c35938de1c13268e72a3be14eb23",
+      "sha256": "fec9f269d7f580989191b9d9785f04eabe921041fec83d3d4ae875884112f25b",
       "executable": false
     },
     "src/core/features/projects/ui/project-appearance.tsx": {
@@ -5021,11 +5037,11 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-detail.tsx": {
-      "sha256": "cd1a5af9093ecb3c59b79fa0f05c3594e693c50477717d63a4127251f2981225",
+      "sha256": "10fdfadd131b823a9d51baab55e74c9f24ba7e47b9f0c1c84308b3da75d9dc89",
       "executable": false
     },
     "src/core/features/projects/ui/project-list.tsx": {
-      "sha256": "cf104a0536b41f6939aaab9315320a643d1a804f34140d9ab0d24d7c4179bd86",
+      "sha256": "35eae21b9a101143cae29643845999425a15c1b524bc8b65f7c9a46415fb7e7d",
       "executable": false
     },
     "src/core/features/projects/ui/project-milestones.css": {

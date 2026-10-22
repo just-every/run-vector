@@ -116,7 +116,7 @@ export function ProjectList({
             return (
             <div key={project.id} className="project-list-item">
               <ProjectRow project={project} />
-              <div className="administration-panel project-list-management">{record ? <ProjectAdministration project={record} operators={administration.operators} labels={administration.labels} onChanged={onChanged} onDeleted={onChanged} /> : <p role="status">Refreshing project management…</p>}</div>
+              <div className="administration-panel project-list-management">{record ? <ProjectAdministration project={record} viewer={administration.viewer} operators={administration.operators} labels={administration.labels} onChanged={onChanged} onDeleted={onChanged} /> : <p role="status">Refreshing project management…</p>}</div>
             </div>
           );})
         )}
