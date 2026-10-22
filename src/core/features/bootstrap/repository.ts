@@ -35,19 +35,30 @@ export async function bootstrapWorkspace(
     if (existing.results[0].installation_workspace_id !== null) return;
     // Prior installations have no trustworthy setup-owner marker. Only explicit
     // installer configuration may associate their existing active operator.
-    await db
-      .prepare(
-        `INSERT INTO workspace_installation(workspace_id,setup_operator_id,created_at,updated_at)
+    // Recorded after the role upgrade, that owner owns every team still
+    // without a team owner, as 0076 does for an owner recorded before it.
+    await db.batch([
+      db
+        .prepare(
+          `INSERT INTO workspace_installation(workspace_id,setup_operator_id,created_at,updated_at)
       SELECT workspace_id,id,?,? FROM operators WHERE workspace_id=? AND lower(email)=? AND removed_at IS NULL
       ON CONFLICT(workspace_id) DO NOTHING`,
-      )
-      .bind(
-        now.toISOString(),
-        now.toISOString(),
-        existing.results[0].id,
-        config.email,
-      )
-      .run();
+        )
+        .bind(
+          now.toISOString(),
+          now.toISOString(),
+          existing.results[0].id,
+          config.email,
+        ),
+      db
+        .prepare(
+          `INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at)
+      SELECT t.id,i.setup_operator_id,'owner',?,? FROM teams t JOIN workspace_installation i ON i.workspace_id=t.workspace_id
+      WHERE t.workspace_id=? AND NOT EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=t.id AND m.role='owner')
+      ON CONFLICT(team_id,operator_id) DO UPDATE SET role='owner',updated_at=excluded.updated_at`,
+        )
+        .bind(now.toISOString(), now.toISOString(), existing.results[0].id),
+    ]);
     if (
       !(await db
         .prepare(
