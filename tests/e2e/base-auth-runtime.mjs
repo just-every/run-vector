@@ -111,7 +111,7 @@ try {
   assert.equal((await removed).status(),200);
   await page.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor({state:'detached'});
   await page.getByRole('group',{name:'Confirm member removal',exact:true}).waitFor({state:'detached'});
-  assert.ok((await page.locator('main.settings-page > [role="status"]').innerText()).trim());
+  assert.ok((await page.getByRole('region',{name:'Members',exact:true}).getByRole('status').innerText()).trim());
   assert.equal((await peer.request.get(origin+'/api/session')).status(),401);
   assert.equal((await fetch(memberLink)).status,400);
   // Unload app documents while preserving both native cookie jars across restart.
