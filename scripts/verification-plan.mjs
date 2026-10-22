@@ -20,7 +20,7 @@ export const verificationShards = {
   // test:data is its two existing entry points, split without omitting either.
   imports: {
     browser: true, native: true,
-    commands: ['build', { node: ['tests/e2e/data-runtime.mjs'] }],
+    commands: ['build', { node: ['tests/e2e/data-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }],
   },
   portability: {
     browser: true, native: true,
@@ -29,7 +29,7 @@ export const verificationShards = {
   runtime: {
     browser: true,
     commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
-      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }],
+      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }],
   },
   administration: {
     browser: true, native: true,
