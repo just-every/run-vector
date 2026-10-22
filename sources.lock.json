@@ -6833,7 +6833,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "79f260ede96d16717701da35d45f7a8ed6fb776d5cbaac8e8bbff69892a145a3",
+      "sha256": "9fd201813fbb8f7851a7f6305777f1502d2ac56e06cbf7ae689fbce0986b479a",
       "executable": false
     },
     "tests/worker/role-probes.ts": {
