@@ -701,7 +701,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "6924d6441c9a6a43e31c9833cbdfdffe1eed36097156b868a5413b9a9c879c6c",
+      "sha256": "51fb79423aa65c62e9e4c1f3722776312ed3be2a04c75ccf1ef979593bea2432",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -2581,7 +2581,7 @@
       "executable": false
     },
     "scripts/deployment/tests/migration-head.test.mjs": {
-      "sha256": "3a2d27b377f2bd5a9699470c840d66bbdd4f0b5fbc7167b9b2390fd323be0f1e",
+      "sha256": "e11807d118fa99634daf4df76965e6cace6432305891e82880813d3739425ffa",
       "executable": false
     },
     "scripts/deployment/tests/owner-account.test.mjs": {
@@ -6361,7 +6361,7 @@
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "58cdf97df390c75cb410349a2588bbfffc82d7db19282220f1f3954ecadc169a",
+      "sha256": "3e0401c76ada00319f027e70e81686d79aa703c94bce9a1440868e635ec86ea7",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {

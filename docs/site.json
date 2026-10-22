@@ -451,6 +451,14 @@
     {
       "source": "evidence/slack-004/UPGRADE.md",
       "reason": "One-off populated upgrade proof for the SLACK-004 migration; evidence for maintainers, not an owner guide."
+    },
+    {
+      "source": "evidence/roles/README.md",
+      "reason": "Index of the role screens captured by the admin browser journey; evidence for maintainers, not an owner guide."
+    },
+    {
+      "source": "evidence/roles/UPGRADE.md",
+      "reason": "One-off populated upgrade proof for the ROLE-001, ROLE-007 and ROLE-009 migrations; evidence for maintainers, not an owner guide."
     }
   ]
 }

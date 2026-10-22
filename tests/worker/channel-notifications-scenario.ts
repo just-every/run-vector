@@ -59,9 +59,10 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
   const erased=await f.create();expect((await f.call('/issues/'+erased.identifier,'DELETE',{expectedVersion:erased.version,confirmed:true})).status).toBe(200);await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
   expect((await f.call('/settings/integrations/slack','DELETE')).status).toBe(200);expect(edge.calls.filter(c=>c.method==='auth.revoke')).toHaveLength(1);await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
   edge.renew();
-  // A removed binding owner cannot leave a configured destination posting future events.
+  // A removed binding owner cannot leave a configured destination posting future events;
+  // binding channels is an Admin's (role matrix), so the peer is invited as one.
   expect((await f.call('/settings/integrations/slack','POST',{botToken:edge.token})).status).toBe(200);
-  const peerCookie=await invite('channels@vector.test',f.cookie),peer=await actor(peerCookie);
+  const peerCookie=await invite('channels@vector.test',f.cookie,'admin'),peer=await actor(peerCookie);
   expect((await request('/api/settings/integrations/channels','POST',{scope:'team',objectId:team.id,provider:'slack',channelId:'CDELIVERY',channelName:'peer-delivery',events:['triage.created']},peerCookie)).status).toBe(201);
   expect((await f.call('/settings/operators/'+peer,'DELETE')).status).toBe(200);await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(beforeRemove);
   await bind('team',team.id);

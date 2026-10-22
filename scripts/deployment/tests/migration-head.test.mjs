@@ -42,6 +42,9 @@ test('Vector deployment preserves owner and invitation guards, revokes removed o
   db.exec(`INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) VALUES ('workspace','Workspace','UTC','2026-08-31','2026-08-31');
     INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at) VALUES ('product','workspace','Product','product@example.test','2026-08-31','2026-08-31');`);
   assert.deepEqual({ ...db.prepare("SELECT * FROM vector_auth_operators WHERE operator_id='product'").get() }, { auth_id: 'product', operator_id: 'product' });
+  // The workspace's last Owner is never removed (0075); a second Owner lets this one leave.
+  assert.throws(() => db.exec("UPDATE operators SET removed_at='2026-09-01' WHERE id='product'"), /last_owner/);
+  db.exec("INSERT INTO operators(id,workspace_id,name,email,created_at,updated_at) VALUES ('keeper','workspace','Keeper','keeper@example.test','2026-08-31','2026-08-31')");
   db.exec(`INSERT INTO oa_tokens(id,token_hash,kind,operator_id,operator_version,return_to,created_at,expires_at) VALUES ('token','token-hash','magic','product',1,'/',0,9999999999999);
     INSERT INTO oa_sessions(id,token_hash,operator_id,operator_version,kind,source_token_id,created_at,expires_at) VALUES ('session','session-hash','product',1,'native','token',0,9999999999999);
     UPDATE operators SET removed_at='2026-09-01' WHERE id='product';`);
