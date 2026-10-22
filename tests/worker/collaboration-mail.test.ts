@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { expect, it } from "vitest";
+import { expect, it, vi } from "vitest";
 import { contractWith } from "../contract-tags";
 import { collaborationFixture, count } from "./collaboration-fixture";
 import { bindings } from "./base-auth-fixture";
@@ -259,7 +259,8 @@ contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail beco
   expect(wire.attachments).toHaveLength(1);expect(wire.attachments[0].disposition).toBe('inline');expect(wire.content.find((c:any)=>c.type==='text/html').value).toContain('cid:');
   const repeat=await recordedReply(f.bobCookie,intake.identifier,'Never send a changed retry',reply.requestId);
   expect(repeat.calls).toHaveLength(0);expect(await repeat.response.json()).toMatchObject({commentId:outcome.commentId,status:'accepted'});
-  const internal=await f.any(f.bobCookie,`/issues/${intake.identifier}/comments`,'POST',{body:'Internal routing detail'});expect(internal.status).toBe(201);
+  let internalSends=0;vi.stubGlobal('fetch',async()=>{internalSends++;return new Response(null,{status:202});});
+  try {const internal=await f.any(f.bobCookie,`/issues/${intake.identifier}/comments`,'POST',{body:'Internal routing detail'});expect(internal.status).toBe(201);expect(internalSends).toBe(0);}finally{vi.unstubAllGlobals();}
   const native=(await f.data(f.cookie,`/issues/${intake.identifier}/discussion`));expect(JSON.stringify(native)).toContain('Internal routing detail');
   const answer=inboundFixture(intake.address,'<synthetic-vector-717@example.test>',{replyTo:wire.headers['Message-ID']});
   expect((await worker.email(answer.message,mailBindings)).status).toBe('received');

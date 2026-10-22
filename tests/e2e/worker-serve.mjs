@@ -50,7 +50,7 @@ const worker = new Miniflare(convertV4MiniflareOptions({
   unsafeLocalExplorer: process.env.X_LOCAL_EXPLORER !== "false", // wrangler's default
   logRequests: true,
   log: new Log(LogLevel.INFO),
-  workers: [{ name: "vector-local", modulesRoot: root, modules, ...workerOptions, ...(channelEdge?{outboundService:channelEdge}:{}), bindings: { ...workerOptions.bindings, ...vars } }],
+  workers: [{ name: "vector-local", modulesRoot: root, modules, ...workerOptions, ...(channelEdge?{outboundService:channelEdge}:{}), bindings: { ...workerOptions.bindings, ...vars, ...(channelEdge?{MAIL_PROVIDER:"sendgrid",MAIL_API_KEY:"synthetic-vector-720"}:{}) } }],
 }));
 await worker.ready;
 console.log(`worker-serve ready on http://${host}:${port}`);

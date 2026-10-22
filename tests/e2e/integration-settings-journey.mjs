@@ -25,6 +25,7 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  const acceptedReplacement=await postPlain(replaced.webhookUrl);assert.equal(acceptedReplacement.status,200);assert.deepEqual(await acceptedReplacement.json(),{...plainIssue,reused:true});
  const revokeSource=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname==='/api/settings/integrations/sources/'+source.id);await panel.getByRole('button',{name:'Revoke Browser source '+width,exact:true}).click();assert.equal((await revokeSource).status(),200);assert.equal((await postPlain(replaced.webhookUrl)).status,401);
 
+ await exerciseEmailIntake({page,runtime,cookie,team,evidence});
  await exerciseChannels({page,runtime,cookie,team,width,evidence});
  await exerciseSlackDirectMessages({page,runtime,width,evidence});
  await panel.getByLabel('Destination name',{exact:true}).fill('Browser receiver '+width);await panel.getByLabel('Public HTTPS destination',{exact:true}).fill('https://receiver.example.com/events');const destination=await receipt('/destinations',()=>panel.getByRole('button',{name:'Register destination',exact:true}).click());await reveal(destination.secret);
@@ -35,4 +36,39 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  await panel.getByRole('button',{name:'Revoke '+name,exact:true}).waitFor();
  await page.goto(runtime.base+'/app/issues/'+issue.identifier);const pr=page.getByRole('link',{name:'Fix '+issue.identifier+' · '+pullRequestRepository(width)+' #42',exact:true});await pr.waitFor();assert.equal(await pr.getAttribute('href'),'https://github.com/'+pullRequestRepository(width)+'/pull/42');await page.getByText('· merged',{exact:true}).waitFor();await pr.scrollIntoViewIfNeeded();
  await page.goto(runtime.base+'/app/settings');const revoked=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname.startsWith('/api/settings/integrations/tokens/'));await panel.getByRole('button',{name:'Revoke '+name,exact:true}).click();assert.equal((await revoked).status(),200);assert.equal((await runtime.req('/api/v1/issues',{headers:{Authorization:'Bearer '+token.token}})).status,401);
+}
+
+/** The existing integrations journey also proves the team's mail conversation. */
+export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
+ const {roleScreens}=await import('./role-ui-support.mjs'),inspect=roleScreens(evidence);
+ const sender='synthetic-vector-721@example.test',address='synthetic-vector-'+Date.now()+'@example.test';
+ await page.goto(runtime.base+'/app/settings');
+ const section=page.getByRole('region',{name:'Email intake for '+team.name,exact:true});
+ await section.getByLabel('Private intake address',{exact:true}).waitFor();
+ await section.getByLabel('Enable email intake',{exact:true}).check();
+ await section.getByLabel('Private intake address',{exact:true}).fill(address);
+ await section.getByLabel('Allowed sender addresses',{exact:true}).fill(sender);
+ await inspect(page,section,'email-intake-configure');
+ const saved=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/email-intake'));
+ await section.getByRole('button',{name:'Save email intake',exact:true}).click();assert.equal((await saved).status(),200);
+ await section.getByText('Email intake settings saved.',{exact:true}).waitFor();
+ await inspect(page,section,'email-intake-saved');
+ const messageId='<synthetic-vector-'+Date.now()+'@example.test>';
+ const raw=['From: '+sender,'To: '+address,'Message-ID: '+messageId,'Subject: Delayed delivery from the warehouse','MIME-Version: 1.0','Content-Type: multipart/mixed; boundary="synthetic-vector-722"','','--synthetic-vector-722','Content-Type: text/plain','','Please check the delivery attached below.','--synthetic-vector-722','Content-Type: text/plain','Content-Disposition: attachment; filename="delivery.txt"','','Delivery route 721','--synthetic-vector-722--',''].join('\r\n');
+ const accepted=await runtime.req('/cdn-cgi/local/email?from='+encodeURIComponent(sender)+'&to='+encodeURIComponent(address),{method:'POST',body:raw});assert.equal(accepted.status,200,await accepted.text());
+ const receipts=await(await runtime.req('/api/settings/teams/'+team.id+'/email-intake',{headers:{Cookie:cookie}})).json();
+ const identifier=receipts.receipts.find(r=>r.messageId===messageId)?.issueIdentifier;assert.ok(identifier);
+ await page.goto(runtime.base+'/app/issues/'+identifier);
+ const requester=page.getByRole('region',{name:'Email requester',exact:true});await requester.getByText(sender,{exact:false}).waitFor();
+ await requester.getByRole('link',{name:'delivery.txt',exact:true}).waitFor();
+ await inspect(page,requester,'email-intake-requester');
+ await page.getByRole('button',{name:'Reply by email',exact:true}).first().click();
+ const form=page.getByRole('form',{name:'Reply by email',exact:true});
+ await form.getByRole('textbox',{name:'Email reply',exact:true}).fill('We are checking with the warehouse and will follow up.');
+ await inspect(page,form,'email-intake-reply');
+ const sent=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/email-replies'));
+ await form.getByRole('button',{name:'Send reply by email',exact:true}).click();assert.equal((await sent).status(),201);
+ const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
+ await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
+ console.log('TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390');
 }

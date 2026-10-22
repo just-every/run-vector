@@ -6253,7 +6253,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "2a0f5252d06a773eb3550e29a68bbbfc4c678cea5a612118d56d641bb7bd9895",
+      "sha256": "3c19becde79a6287623decfd0f16b4fdbb83fd0d7fe29b08b16b5f542d2038da",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
@@ -6261,7 +6261,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "ff62b5cd5aaf6751b3483962244bcbfbb007b59bf145a22de7b68099d0cebe88",
+      "sha256": "c7d9300c2631d6820ae0290e27bab39f375a8430fe5b8868c25812d0844a694a",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -6457,7 +6457,7 @@
       "executable": false
     },
     "tests/e2e/worker-serve.mjs": {
-      "sha256": "ef5880e49697b20f98aa83c0905c930eb150b8d28762dc0d30c3f77f0bfefcef",
+      "sha256": "bf1e32d744396d90cae6969cbc2581e79f9b95ff2e648c71cf2b6cb1154b42b1",
       "executable": false
     },
     "tests/fixtures/archives/listed-version.manifest.json": {
@@ -6625,7 +6625,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "0d7b6b4299b783bf8940746abd26c2274d10f98467df684398bb83f461ec43fd",
+      "sha256": "31eaba25bd2ad0d97e0220d0cac475959d1bb6784e3628103b9eafee5915c4e3",
       "executable": false
     },
     "tests/worker/current-disjoint.test.ts": {
