@@ -233,8 +233,11 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
   const audited = await snapshot(["audit_records", "operators"]);
   expect(await (await role(owner.id, "admin")).json()).toMatchObject({ error: "last_owner" });
   expect(await (await owner.call(`/settings/operators/${owner.id}`, "DELETE")).json()).toMatchObject({ error: "last_owner" });
-  expect(await (await role(member.id, "guest")).json()).toMatchObject({ error: "role_not_assignable" });
-  expect(await (await owner.call("/settings/operators/invite", "POST", { email: "guest-invite@roles.test", displayName: "Guest", role: "guest" })).json()).toMatchObject({ error: "role_not_assignable" });
+  // Guest is assigned by no door until ROLE-003: a role change or invitation naming it is a 400.
+  for (const refused of [await role(member.id, "guest"), await owner.call("/settings/operators/invite", "POST", { email: "guest-invite@roles.test", displayName: "Guest", role: "guest" })]) {
+    expect(refused.status).toBe(400);
+    expect(await refused.json()).toMatchObject({ error: "role_not_assignable" });
+  }
   expect(await snapshot(["audit_records", "operators"])).toEqual(audited);
   expect((await role(admin.id, "owner")).status).toBe(200);
   expect(await (await role(owner.id, "member", admin)).json()).toMatchObject({ error: "installation_owner" });

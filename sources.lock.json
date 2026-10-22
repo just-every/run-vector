@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "acab4c883a0ef18b8374e781c30215889b54cd37309c2524a207ca6377cdc157",
+      "sha256": "e135e198b2a03ea30092ece7a52bcbe6756349cca91d0f8263fb22848600c388",
       "executable": false
     },
     "DEMO.md": {
@@ -613,7 +613,7 @@
       "executable": false
     },
     "docs/guide/team.md": {
-      "sha256": "de13b91eb466a5d4e84293c730eefa980b696b71712a5e6fa9b74cbf09726a62",
+      "sha256": "cf11f1f23a29051f49b70cdbbef9e8277c41068f00eb39376bbbb54f1ee1eca5",
       "executable": false
     },
     "docs/guide/triage.md": {
@@ -6849,7 +6849,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "9fd201813fbb8f7851a7f6305777f1502d2ac56e06cbf7ae689fbce0986b479a",
+      "sha256": "cce17da0f88cbcfd701a8f7c25e11cb41980e1e5b6b893c5009b2a5f0174eeba",
       "executable": false
     },
     "tests/worker/role-probes.ts": {
