@@ -3997,7 +3997,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/project-binding.ts": {
-      "sha256": "f5b4ed8f0e75951d9ae7a52b38d0f2c63c1626e2cea07f772d25f84179722012",
+      "sha256": "e1b7784cd388f5d0caf55fef920d39e9b202154ed7a87b4c3a4f8d85aae88cc9",
       "executable": false
     },
     "src/core/features/integrations/channels/provider.ts": {
@@ -4237,7 +4237,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/project-channel.tsx": {
-      "sha256": "6699ef1e4f803b8908378e12a200b35b821197813ffe2d6af2273d3bb16bb8c4",
+      "sha256": "5c0ab6233f4a5c90b5ed7d34524731050e8ad71b4425097120198518e72c44e7",
       "executable": false
     },
     "src/core/features/integrations/ui/source-sender.ts": {
@@ -6073,7 +6073,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "6b5c78a17f6230ba8faa48acdc66e3536bbd85950ae94845f1f2776b3c7e4a4f",
+      "sha256": "fb66f0c22bddebf1ea8e7151309d619f249ec88f183209bf8fa0a65b0d1897b8",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {
@@ -6861,7 +6861,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "763b18956964ddb2c20c0ad538d4299786c6aeea0a908bf231262ea1670f83bb",
+      "sha256": "03bb16e8d16be4d819666af09681649a5c688a9f4f2f1025513ca111b12d640a",
       "executable": false
     },
     "tests/worker/role-probes.ts": {

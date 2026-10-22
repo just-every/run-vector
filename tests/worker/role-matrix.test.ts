@@ -156,7 +156,7 @@ const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : st
 const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
-  "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
+  "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
 
 // Driven from the registry, this case grows with every row; its time limit is not a product assertion.
 it("[ROLE-001 ROLE-007 ROLE-009 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", { timeout: 120_000 }, async () => {

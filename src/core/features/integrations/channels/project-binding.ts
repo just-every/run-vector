@@ -14,7 +14,7 @@ export async function approvedProjectChannels(env:WorkerBindings,actor:Integrati
  const access=await settingsActor(env.DB,actor.id);
  if(access.role==='guest')throw new IntegrationError(403,'forbidden');
  if(!await env.DB.prepare('SELECT 1 FROM projects WHERE id=? AND workspace_id=?').bind(projectId,actor.workspace).first())throw new IntegrationError(404,'not_found');
- const channels=(await env.DB.prepare(approved).bind(actor.workspace,actor.workspace).all<{channelId:string;channelName:string}>()).results;
+ const channels=(await env.DB.prepare(`SELECT channelId,MIN(channelName) channelName FROM (${approved}) GROUP BY channelId ORDER BY channelName,channelId`).bind(actor.workspace,actor.workspace).all<{channelId:string;channelName:string}>()).results;
  const current=await env.DB.prepare(`SELECT b.channel_id channelId,b.channel_name channelName FROM vector_channel_bindings b
  JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.kind='slack' AND d.revoked_at IS NULL
  WHERE b.workspace_id=? AND b.scope='project' AND b.object_id=?`).bind(actor.workspace,projectId).first();

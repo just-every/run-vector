@@ -27,6 +27,9 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  assert.equal((await calls()).filter(c=>c.method==='conversations.create'&&c.body.name==='checkout-delivery-'+width).length,1);
  await page.goto(runtime.base+'/app/settings#integrations');await panel.getByText(name,{exact:true}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-slack');await axe();
  const config=await send('/settings/integrations/channels','GET');assert.equal(config.bindings.find(b=>b.objectId===project.id).channelName,'checkout-delivery-'+width);
+ const allowance=panel.getByRole('form',{name:'Allow project channel',exact:true});
+ await allowance.getByLabel('Allowed channel name',{exact:true}).fill('member-delivery-'+width);await allowance.getByLabel('Allowed Slack channel ID',{exact:true}).fill('CALLOWED'+width);
+ const allowed=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels/allowed')&&r.request().method()==='POST');await allowance.getByRole('button',{name:'Allow channel',exact:true}).click();assert.equal((await allowed).status(),201);await panel.getByText('Channel allowed for project creators.',{exact:true}).waitFor();await shot('allowed-project-channel');
  const email=`synthetic-vector-${width}@vector.test`;
  await send('/settings/operators/invite','POST',{email,displayName:'Delivery member '+width,role:'member'});
  const link=await readDevelopmentLink(runtime.base,page.request,email,runtime.state);
@@ -35,7 +38,7 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
  try{
   const member=await memberContext.newPage();await member.goto(link);await member.getByRole('button',{name:'Confirm',exact:true}).click();await member.waitForURL(runtime.base+'/app');
   await member.goto(runtime.base+'/app/projects/'+project.id);await member.getByText('Project Slack channel',{exact:true}).click();
-  const choice=member.getByRole('form',{name:'Project Slack channel',exact:true}),channelId=config.bindings.find(b=>b.objectId===project.id).channelId;
+  const choice=member.getByRole('form',{name:'Project Slack channel',exact:true}),channelId='CALLOWED'+width;
   const options=await member.request.get(runtime.base+'/api/projects/'+project.id+'/slack-channel');assert.equal(options.status(),200);
   await choice.getByRole('combobox').selectOption(channelId);
   const inspect=roleScreens(evidence);await inspect(member,member.locator('.project-management'),'member-project-channel-choice-'+width);
@@ -44,12 +47,12 @@ export async function exerciseChannels({page,runtime,cookie,team,width,evidence}
   assert.equal((await calls()).length,forbiddenBefore,'unapproved channel makes no Slack call');
   const bound=member.waitForResponse(r=>r.url().endsWith('/projects/'+project.id+'/slack-channel')&&r.request().method()==='POST');
   await choice.getByRole('button',{name:'Bind project channel',exact:true}).click();assert.equal((await bound).status(),201);
-  await member.getByText('Bound to #checkout-delivery-'+width,{exact:true}).waitFor();await inspect(member,member.locator('.project-management'),'member-project-channel-bound-'+width);
+  await member.getByText('Bound to #member-delivery-'+width,{exact:true}).waitFor();await member.getByText('Project channel bound.',{exact:true}).waitFor();assert.equal(await member.locator('.project-management [role=alert]').count(),0);await inspect(member,member.locator('.project-management'),'member-project-channel-bound-'+width);
   const created=await member.request.post(runtime.base+'/api/issues',{headers,data:{title:'Enable customer checkout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id}});assert.equal(created.status(),201);issue=await created.json();
  }catch(error){console.error('Member project settings:',await memberContext.pages().at(-1)?.locator('.project-management').innerText());await memberContext.pages().at(-1)?.screenshot({path:resolve(evidence,'member-channel-failure-'+width+'.png')});throw error;}finally{await memberContext.close();}
  await send('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
- const posts=(await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(issue.identifier));assert.equal(posts.length,2);assert.ok(posts[1].body.text.includes(team.statuses.find(s=>s.category==='unstarted').name+' → '+team.statuses.find(s=>s.category==='started').name));
+ const posts=(await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(issue.identifier));assert.equal(posts.length,2);assert.ok(posts.every(post=>post.body.channel==='CALLOWED'+width));assert.ok(posts[1].body.text.includes(team.statuses.find(s=>s.category==='unstarted').name+' → '+team.statuses.find(s=>s.category==='started').name));
  const form=panel.getByRole('form',{name:'Bind notification channel'});await form.getByLabel('Team, project or saved view').selectOption('project:'+project.id);await form.getByLabel('Channel service').selectOption('discord');await form.getByLabel('Channel display name').fill('checkout-discord');await form.getByLabel('Discord webhook URL').fill('https://discord.com/api/webhooks/123/synthetic-browser-discord');
  await form.getByLabel('Discord webhook URL').evaluate(element=>element.scrollIntoView({block:'center'}));await shot('discord-form');const bindingResponse=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels')&&r.request().method()==='POST');await form.getByRole('button',{name:'Save channel binding'}).click();assert.equal((await bindingResponse).status(),201);
  const discordIssue=await send('/issues','POST',{title:'Discord rollout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
