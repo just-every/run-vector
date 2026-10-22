@@ -296,6 +296,7 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     const before = sql("SELECT id,role FROM operators ORDER BY id");
     await changeRole(owner.name, owner.id, "admin", 409);
     await page.getByText("The last Owner cannot be demoted or removed. Make another member an Owner first.", { exact: true }).waitFor();
+    assert.equal(await members.getByRole("combobox", { name: `Role for ${owner.name}`, exact: true }).inputValue(), "owner", "the refused choice gives way to the actual role");
     assert.deepEqual(sql("SELECT id,role FROM operators ORDER BY id"), before);
   });
   await inspect(page, members, "members-last-owner-refused");

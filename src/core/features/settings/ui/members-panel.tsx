@@ -26,16 +26,18 @@ export function memberControls(data: Settings) {
   };
 }
 
-export function MembersPanel({ data, denied, onMessage, onChanged }: { data: Settings; denied: boolean; onMessage: (message: string) => void; onChanged: () => void }) {
+export function MembersPanel({ data, denied, onChanged }: { data: Settings; denied: boolean; onChanged: () => void }) {
   const [removing, setRemoving] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  // Results show beside the member controls, where the change was made.
+  const [message, setMessage] = useState("");
   const controls = memberControls(data);
   // The last Owner stays (ROLE-001); demoting them is answered by the server.
   const lastOwner = (member: Member) => member.role === "owner" && data.operators.filter((other) => other.role === "owner").length === 1;
   async function act(run: () => Promise<unknown>, done: string) {
-    setPending(true); onMessage("");
-    try { await run(); onMessage(done); }
-    catch (error) { onMessage(error instanceof Error ? error.message : "The change could not be saved."); }
+    setPending(true); setMessage("");
+    try { await run(); setMessage(done); return true; }
+    catch (error) { setMessage(error instanceof Error ? error.message : "The change could not be saved."); return false; }
     finally { setPending(false); onChanged(); }
   }
   const remove = async () => {
@@ -49,10 +51,11 @@ export function MembersPanel({ data, denied, onMessage, onChanged }: { data: Set
   };
   const changeRole = (member: Member) => async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const role = String(new FormData(event.currentTarget).get("role"));
-    await act(() => fetchJson(`/api/settings/operators/${member.id}/role`, settingsSchema, {
+    const form = event.currentTarget, role = String(new FormData(form).get("role"));
+    // A refused change shows the member's actual role again.
+    if (!await act(() => fetchJson(`/api/settings/operators/${member.id}/role`, settingsSchema, {
       method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ role }),
-    }), `${member.name} is now ${role === "admin" ? "an" : "a"} ${roleLabels[role as Role]}.`);
+    }), `${member.name} is now ${role === "admin" ? "an" : "a"} ${roleLabels[role as Role]}.`)) form.reset();
   };
   const saveInvites = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -99,7 +102,7 @@ export function MembersPanel({ data, denied, onMessage, onChanged }: { data: Set
               )}
               {controls.removable(member) && (
                 <button type="button" disabled={pending || denied || !data.workspace.setupOperatorId || lastOwner(member)}
-                  onClick={() => { setRemoving(member.id); onMessage(""); }}>
+                  onClick={() => { setRemoving(member.id); setMessage(""); }}>
                   Remove {member.name}
                 </button>
               )}
@@ -117,9 +120,10 @@ export function MembersPanel({ data, denied, onMessage, onChanged }: { data: Set
           <button disabled={pending} type="button" onClick={() => setRemoving(null)}>Cancel</button>
         </div>
       )}
+      {message && <p role="status">{message}</p>}
       {(controls.leads || controls.manages) && (
-        <form aria-label="Member invitations" onSubmit={saveInvites}>
-          <label className="admin-checkbox">
+        <form className="settings-member-invites" aria-label="Member invitations" onSubmit={saveInvites}>
+          <label>
             <input type="checkbox" name="memberInvites" defaultChecked={data.workspace.memberInvites} disabled={pending || denied} key={String(data.workspace.memberInvites)} />
             Members can invite other Members
           </label>

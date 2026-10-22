@@ -26,7 +26,15 @@ export function roleScreens(evidence) {
       const findings = await page.evaluate(async () => (await window.axe.run()).violations
         .filter((v) => ["serious", "critical"].includes(v.impact)).map((v) => ({ id: v.id, targets: v.nodes.map((n) => n.target) })));
       assert.deepEqual(findings, [], `${name} ${width}: no serious or critical axe findings`);
-      await region.screenshot({ path: resolve(folder, `${name}-${width}.png`) });
+      // A capture taller than the viewport would stitch the sticky Settings
+      // navigation and the fixed mobile bar over the region; hide them for it.
+      await region.evaluate((root) => {
+        for (const element of document.querySelectorAll("body *"))
+          if (["fixed", "sticky"].includes(getComputedStyle(element).position) && !root.contains(element) && !element.contains(root))
+            element.setAttribute("data-capture-hidden", "");
+      });
+      await region.screenshot({ path: resolve(folder, `${name}-${width}.png`), style: "[data-capture-hidden] { visibility: hidden !important; }" });
+      await page.evaluate(() => document.querySelectorAll("[data-capture-hidden]").forEach((element) => element.removeAttribute("data-capture-hidden")));
     }
   };
 }

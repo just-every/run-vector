@@ -165,7 +165,6 @@ export function SettingsPage() {
           <MembersPanel
             data={resource.data}
             denied={denied}
-            onMessage={setMessage}
             onChanged={() => {
               resource.reload();
               administration.reload();
