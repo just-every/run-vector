@@ -263,6 +263,9 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     assert.equal(sql("SELECT role FROM operators WHERE email='role-member@admin-runtime.test'")[0].role, "member");
   });
   const memberId = sql("SELECT id FROM operators WHERE email='role-member@admin-runtime.test'")[0].id;
+  // The accepted member joins the directory on the Owner's next Settings visit.
+  await navigate(page, base + "/app/settings");
+  await openDisclosures(page);
   const settingsRequest = async () => (await peer.request.patch(base + "/api/settings", { headers: { Origin: base }, data: { timezone: "UTC" } })).status();
   const changeRole = async (name, id, role, status) => {
     const form = members.getByRole("form", { name: `Role for ${name}`, exact: true });

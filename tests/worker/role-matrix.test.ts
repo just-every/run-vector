@@ -70,7 +70,7 @@ it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the director
   expect((await audits("team.member_added")).map((row) => JSON.parse(String(row.next)))).toContainEqual({ operatorId: w.lead.id, role: "owner" });
 });
 
-it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported", async () => {
+it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002 AUTO-003] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported", async () => {
   const w = await roleWorkspace();
   const member = w.as(w.member), guest = w.as(w.guest), lead = w.as(w.lead), admin = w.as(w.admin);
   const status = w.team.statuses.find((s) => s.category === "backlog")!;
@@ -83,16 +83,18 @@ it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002] a team's two permissions decide who 
   };
   const schedule = (actor: typeof member) => actor(`/settings/teams/${w.team.id}/cycle-schedule`, "PUT", { weeks: 2, startWeekday: 1, cooldownWeeks: 0, upcomingCount: 2 });
   const set = (actor: typeof member, settings: string, planning: string) => actor(`/settings/teams/${w.team.id}/permissions`, "PUT", { settings, planning });
+  const autoClose = (actor: typeof member) => actor(`/settings/teams/${w.team.id}/housekeeping`, "PUT", { closeAfterDays: 30, archiveAfterDays: null, exemptBugs: true });
   expect([w.team.settingsPermission, w.team.planningPermission]).toEqual(["team_owners", "all_members"]);
 
   // Defaults: a Member who does not own the team plans cycles but not its settings.
   expect((await cycle(member)).status).toBe(200);
   expect((await schedule(member)).status).toBe(200);
   expect((await rename(member, "Queued")).status).toBe(403);
+  expect((await autoClose(member)).status).toBe(403);
   // Only the team's owners, an Owner or an Admin set the permissions; Guests fail both.
   const unchanged = await snapshot(["teams", "cycles", "workflow_statuses", "audit_records"]);
   expect((await set(member, "all_members", "team_owners")).status).toBe(403);
-  for (const attempt of [cycle(guest), schedule(guest), rename(guest, "Guest name"), set(guest, "all_members", "team_owners")])
+  for (const attempt of [cycle(guest), schedule(guest), rename(guest, "Guest name"), autoClose(guest), set(guest, "all_members", "team_owners")])
     expect((await attempt).status).toBe(403);
   expect(await snapshot(["teams", "cycles", "workflow_statuses", "audit_records"])).toEqual(unchanged);
 
@@ -100,7 +102,8 @@ it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002] a team's two permissions decide who 
   expect((await cycle(member)).status).toBe(403);
   expect((await schedule(member)).status).toBe(403);
   expect((await rename(member, "Queued")).status).toBe(200);
-  for (const attempt of [cycle(guest), schedule(guest), rename(guest, "Guest name")]) expect((await attempt).status).toBe(403);
+  expect((await autoClose(member)).status).toBe(200);
+  for (const attempt of [cycle(guest), schedule(guest), rename(guest, "Guest name"), autoClose(guest)]) expect((await attempt).status).toBe(403);
   // Team owners, Owners and Admins pass whatever the values.
   for (const actor of [lead, admin, w.call]) expect((await cycle(actor)).status).toBe(200);
 
