@@ -276,23 +276,29 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
     await region.getByRole("button", { name: `${action === "join" ? "Join" : "Leave"} ${team.name}`, exact: true }).click();
     assert.equal((await done).status(), status);
   };
-  await clause("ROLE-007", "a Member joins a public team from the directory and finds its settings, members and permissions locked", async () => {
-    await navigate(peer, base + "/app/settings");
-    await toggle(peer, peerTeams, "join", 200);
-    await peerTeams.getByRole("button", { name: `Leave ${team.name}`, exact: true }).waitFor();
-    assert.equal(membership(), "member");
-    await openDisclosures(peer);
-    assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
-    assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
-    assert.equal(await peer.getByRole("form", { name: `Add member to ${team.name}`, exact: true }).count(), 0);
-    await peerTeams.getByText("Only this team's owners and Admins change its settings.", { exact: true }).first().waitFor();
-  });
-  await inspect(peer, peerTeams, "team-member-view");
-  await clause("ROLE-007", "the Member leaves the team from the directory", async () => {
-    await toggle(peer, peerTeams, "leave", 200);
-    await peerTeams.getByRole("button", { name: `Join ${team.name}`, exact: true }).waitFor();
-    assert.equal(membership(), undefined);
-  });
+  await navigate(peer, base + "/app/settings");
+  for (const width of [1440, 390]) {
+    await peer.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+    await clause("ROLE-007", `a Member joins a public team from the directory at ${width} and finds its settings, members and permissions locked`, async () => {
+      await toggle(peer, peerTeams, "join", 200);
+      await peerTeams.getByRole("button", { name: `Leave ${team.name}`, exact: true }).waitFor();
+      assert.equal(membership(), "member");
+      await openDisclosures(peer);
+      assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).locator("fieldset").isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Add member to ${team.name}`, exact: true }).count(), 0);
+      await peerTeams.getByText("Only this team's owners and Admins change its settings.", { exact: true }).first().waitFor();
+    });
+    if (width === 1440) {
+      await inspect(peer, peerTeams, "team-member-view");
+      await peer.setViewportSize({ width, height: 1000 });
+    }
+    await clause("ROLE-007", `the Member leaves the team from the directory at ${width}`, async () => {
+      await toggle(peer, peerTeams, "leave", 200);
+      await peerTeams.getByRole("button", { name: `Join ${team.name}`, exact: true }).waitFor();
+      assert.equal(membership(), undefined);
+    });
+  }
   await navigate(page, base + "/app/settings");
   const teams = page.getByRole("region", { name: "Teams", exact: true });
   await clause("ROLE-007", "the last team owner cannot leave until another is named", async () => {

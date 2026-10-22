@@ -273,11 +273,14 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     await form.getByRole("button", { name: "Change role", exact: true }).click();
     assert.equal((await changed).status(), status);
   };
-  await clause("ROLE-001", "an Owner promotes and demotes a Member; the demoted member's next settings request returns 403", async () => {
+  await clause("ROLE-001", "an Owner promotes a Member at 1440 and demotes them at 390; the demoted member's next settings request returns 403", async () => {
+    await page.setViewportSize({ width: 1440, height: 1000 });
     await changeRole("Role member", memberId, "admin", 200);
     await page.getByText("Role member is now an Admin.", { exact: true }).waitFor();
     assert.equal(await settingsRequest(), 200);
+    await page.setViewportSize({ width: 390, height: 844 });
     await changeRole("Role member", memberId, "member", 200);
+    await page.getByText("Role member is now a Member.", { exact: true }).waitFor();
     assert.equal(await settingsRequest(), 403);
     assert.equal((await peer.request.get(base + "/api/session")).status(), 200, "the session itself survives the role change");
     const audit = sql(`SELECT d.previous_value_json AS previous,d.next_value_json AS next FROM audit_records a JOIN administration_audit_details d ON d.audit_id=a.id WHERE a.action='operator.role_changed' AND a.subject_id='${memberId}' ORDER BY a.id`);

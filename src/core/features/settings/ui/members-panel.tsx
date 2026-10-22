@@ -30,6 +30,8 @@ export function MembersPanel({ data, denied, onMessage, onChanged }: { data: Set
   const [removing, setRemoving] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const controls = memberControls(data);
+  // The last Owner stays (ROLE-001); demoting them is answered by the server.
+  const lastOwner = (member: Member) => member.role === "owner" && data.operators.filter((other) => other.role === "owner").length === 1;
   async function act(run: () => Promise<unknown>, done: string) {
     setPending(true); onMessage("");
     try { await run(); onMessage(done); }
@@ -96,7 +98,7 @@ export function MembersPanel({ data, denied, onMessage, onChanged }: { data: Set
                 </form>
               )}
               {controls.removable(member) && (
-                <button type="button" disabled={pending || denied || !data.workspace.setupOperatorId}
+                <button type="button" disabled={pending || denied || !data.workspace.setupOperatorId || lastOwner(member)}
                   onClick={() => { setRemoving(member.id); onMessage(""); }}>
                   Remove {member.name}
                 </button>
