@@ -2329,7 +2329,7 @@
       "executable": false
     },
     "migrations/core/0081_notification_channels.sql": {
-      "sha256": "642d6b1f30179549857971c96b85011d55ac1b3502ddf5843827d5f383b6110c",
+      "sha256": "7d909c5d8ec91fdbcf296f01047bdea3b64923cc90ea44e98b7c2a7711d6d4cf",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -5189,7 +5189,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "9ddfb8b0ef20c7b774bef8ff0fcdba6b5db4b0624188b2c2dc2e45e46bd37c2b",
+      "sha256": "21fdea5ba30a84ecf1dc7ae1154c4fe2135812808606518fc1f0d7c44cddca44",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {

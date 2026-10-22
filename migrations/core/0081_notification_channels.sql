@@ -124,8 +124,23 @@ END;
 DROP TRIGGER vector_development_actor_erasure;
 CREATE TRIGGER vector_development_actor_erasure AFTER UPDATE OF actor_name ON notification_deliveries
 WHEN OLD.actor_name IS NOT NEW.actor_name BEGIN
- DELETE FROM rer_mail_development_outbox WHERE json_extract(message,'$.deliveryId')=NEW.id
- OR json_extract(message,'$.deliveryId') IN(SELECT batch_id FROM notification_digest_items WHERE notification_id=NEW.notification_id);
+ -- An immediate capture remains the one delivered message, with its actor
+ -- anonymized. Rebuild from its issue/event facts so no old actor text survives.
+ UPDATE rer_mail_development_outbox SET message=json_set(message,'$.text',
+  NEW.identifier||': '||NEW.title||char(10)||
+  (SELECT CASE
+   WHEN EXISTS(SELECT 1 FROM json_each(n.causes_json) WHERE value='assignment')
+    AND EXISTS(SELECT 1 FROM json_each(n.causes_json) WHERE value='mention') THEN 'This issue was assigned to you, and you were mentioned.'
+   WHEN EXISTS(SELECT 1 FROM json_each(n.causes_json) WHERE value='assignment') THEN 'This issue was assigned to you.'
+   WHEN EXISTS(SELECT 1 FROM json_each(n.causes_json) WHERE value='mention') THEN 'You were mentioned on this issue.'
+   ELSE 'Events: '||(SELECT group_concat(value,', ') FROM json_each(n.causes_json))||'.' END
+   FROM notifications n WHERE n.id=NEW.notification_id)
+  ||char(10)||'By: '||COALESCE(NEW.actor_name,'Vector')||char(10)||char(10)||NEW.app_link||char(10)||'Sign in to view this issue.')
+ WHERE json_extract(message,'$.deliveryId')=NEW.id AND NEW.email_mode='immediate';
+ -- A digest may name several actors; removing its capture erases the affected
+ -- snapshot without changing the terminal envelope or permitting another send.
+ DELETE FROM rer_mail_development_outbox WHERE json_extract(message,'$.deliveryId')
+  IN(SELECT batch_id FROM notification_digest_items WHERE notification_id=NEW.notification_id);
 END;
 CREATE TRIGGER notification_channel_member_erasure AFTER UPDATE OF removed_at ON operators
 WHEN NEW.removed_at IS NOT NULL BEGIN
