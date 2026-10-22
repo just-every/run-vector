@@ -170,6 +170,7 @@ export function IssueBrowserSurface({
     issueListApiUrl(shownQuery),
     issueListSchema,
     5000,
+    { abortPendingOnDispose: false },
   );
   useEffect(() => {
     const changed = () => resource.refreshAfterMutation();

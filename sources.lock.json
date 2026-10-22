@@ -4641,7 +4641,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.tsx": {
-      "sha256": "d126994955dbe054a2d8e7a729e77b59944edd4ba4c9f0dc4969fdc0da983b29",
+      "sha256": "b7777a0882d0699776d95ddedc5f4ae5453de7f70a7d00e27309515e0e54b800",
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
