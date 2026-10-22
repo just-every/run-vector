@@ -92,6 +92,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/teams/:teamId/leave', row: 'teams.join', teams: team('teamId') },
   { method: 'PUT', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
   { method: 'DELETE', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
+  { method: 'PUT', path: '/settings/teams/:id/permissions', row: 'teams.permissions', teams: team('id') },
   { method: 'PATCH', path: '/settings/teams/:id', row: 'teams.settings', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/housekeeping', row: 'teams.settings', teams: team('id') },
   { method: 'POST', path: '/settings/teams/:id/housekeeping/preview', row: 'teams.settings', teams: team('id') },

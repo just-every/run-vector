@@ -1015,7 +1015,9 @@
     "created_at",
     "updated_at",
     "auto_cycle_started",
-    "auto_cycle_completed"
+    "auto_cycle_completed",
+    "settings_permission",
+    "planning_permission"
   ],
   "vector_auth_operators": [
     "auth_id",

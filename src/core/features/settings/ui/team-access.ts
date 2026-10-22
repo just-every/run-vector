@@ -9,7 +9,7 @@ export function teamAccess(data: Administration, team: Team) {
   const standing = team.members.find((member) => member.operatorId === data.viewer.id)?.role ?? null;
   const authority: Authority = {
     role: data.viewer.role, memberInvites: false,
-    teams: new Map([[team.id, { role: standing, settings: "team_owners", planning: "all_members" }]]),
+    teams: new Map([[team.id, { role: standing, settings: team.settingsPermission, planning: team.planningPermission }]]),
   };
   const may = (row: RowId) => decide(authority, { row, teams: [team.id] }) === "allow";
   const leads = data.viewer.role === "owner" || data.viewer.role === "admin";
@@ -21,5 +21,7 @@ export function teamAccess(data: Administration, team: Team) {
     settings: may("teams.settings"),
     workflow: may("teams.workflow"),
     members: may("teams.members"),
+    permissions: may("teams.permissions"),
+    planning: may("cycles.manage"),
   };
 }

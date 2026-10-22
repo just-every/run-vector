@@ -9,11 +9,10 @@ export async function loadAuthority(db: D1Database, actor: string, teams: readon
     JOIN workspace_settings w ON w.id=o.workspace_id WHERE o.id=? AND o.removed_at IS NULL`)
     .bind(actor).first<{ role: Role; memberInvites: number }>()
   if (!row) return null
-  const standings = teams.length ? (await db.prepare(`SELECT t.id,m.role FROM teams t
+  const standings = teams.length ? (await db.prepare(`SELECT t.id,m.role,t.settings_permission AS settings,t.planning_permission AS planning FROM teams t
     LEFT JOIN team_members m ON m.team_id=t.id AND m.operator_id=? WHERE t.id IN (SELECT value FROM json_each(?))`)
-    .bind(actor, JSON.stringify(teams)).all<{ id: string; role: TeamStanding['role'] }>()).results : []
-  return { role: row.role, memberInvites: row.memberInvites === 1, teams: new Map(standings.map(team =>
-    [team.id, { role: team.role, settings: 'team_owners', planning: 'all_members' } satisfies TeamStanding])) }
+    .bind(actor, JSON.stringify(teams)).all<TeamStanding & { id: string }>()).results : []
+  return { role: row.role, memberInvites: row.memberInvites === 1, teams: new Map(standings.map(({ id, ...standing }) => [id, standing])) }
 }
 
 /** The same inputs, required unchanged inside every write of the request: a
@@ -26,8 +25,10 @@ export function authorityFence(actor: string, authority: Authority, inputs: { me
     values.push(actor)
   }
   for (const team of inputs.teams) {
-    clauses.push('(SELECT role FROM team_members WHERE team_id=? AND operator_id=?) IS ?')
-    values.push(team, actor, authority.teams.get(team)?.role ?? null)
+    const standing = authority.teams.get(team)
+    clauses.push('(SELECT role FROM team_members WHERE team_id=? AND operator_id=?) IS ?',
+      'EXISTS(SELECT 1 FROM teams WHERE id=? AND settings_permission IS ? AND planning_permission IS ?)')
+    values.push(team, actor, standing?.role ?? null, team, standing?.settings ?? null, standing?.planning ?? null)
   }
   return { sql: clauses.join(' AND '), values }
 }

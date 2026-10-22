@@ -1,6 +1,7 @@
 import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
 import type { Administration } from "../../src/core/features/administration/schema";
+import { readArchive } from "@runeditrun/rer/modules/portability";
 import { roleWorkspace, snapshot } from "./role-fixture";
 
 const teams = async (response: Response) => ((await response.json()) as Administration).teams;
@@ -10,7 +11,7 @@ const audits = (action: string) =>
 
 it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the directory, a Guest cannot join, a team keeps an owner, and leaving keeps assigned work listed for its owners", async () => {
   const w = await roleWorkspace();
-  const platform = (await w.mutate("/settings/teams", "POST", { name: "Platform", identifierPrefix: "PLAT" })).teams.find((t) => t.name === "Platform")!;
+  const platform = (await w.mutate("/settings/teams", "POST", { name: "Platform", identifierPrefix: "PLATF" })).teams.find((t) => t.name === "Platform")!;
   // Owners and Admins create teams and become their first team owner.
   expect(platform.members).toEqual([{ operatorId: w.owner, role: "owner" }]);
   const member = w.as(w.member), lead = w.as(w.lead), guest = w.as(w.guest);
@@ -63,4 +64,52 @@ it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the director
   expect((await audits("team.member_removed")).map((row) => [row.actor, JSON.parse(String(row.previous))])).toEqual([[w.lead.id, { operatorId: w.guest.id, role: "member" }]]);
   expect(await audits("team.member_role_changed")).toEqual([]);
   expect((await audits("team.member_added")).map((row) => JSON.parse(String(row.next)))).toContainEqual({ operatorId: w.lead.id, role: "owner" });
+});
+
+it("[ROLE-009 CYCLE-001 CYCLE-007 TEAM-002] a team's two permissions decide who changes its settings and cycles; each change is audited once and exported", async () => {
+  const w = await roleWorkspace();
+  const member = w.as(w.member), guest = w.as(w.guest), lead = w.as(w.lead), admin = w.as(w.admin);
+  const status = w.team.statuses.find((s) => s.category === "backlog")!;
+  const rename = (actor: typeof member, name: string) => actor(`/settings/teams/${w.team.id}/statuses/${status.id}`, "PATCH", { name });
+  let week = 0;
+  const cycle = (actor: typeof member) => {
+    const day = (offset: number) => new Date(Date.UTC(2031, 0, 6 + 7 * week + offset)).toISOString().slice(0, 10) + "T09:00";
+    week += 1;
+    return actor("/settings/cycles", "POST", { teamId: w.team.id, name: `Planning week ${week}`, startsLocal: day(0), endsLocal: day(5), capacity: null });
+  };
+  const schedule = (actor: typeof member) => actor(`/settings/teams/${w.team.id}/cycle-schedule`, "PUT", { weeks: 2, startWeekday: 1, cooldownWeeks: 0, upcomingCount: 2 });
+  const set = (actor: typeof member, settings: string, planning: string) => actor(`/settings/teams/${w.team.id}/permissions`, "PUT", { settings, planning });
+  expect([w.team.settingsPermission, w.team.planningPermission]).toEqual(["team_owners", "all_members"]);
+
+  // Defaults: a Member who does not own the team plans cycles but not its settings.
+  expect((await cycle(member)).status).toBe(200);
+  expect((await schedule(member)).status).toBe(200);
+  expect((await rename(member, "Queued")).status).toBe(403);
+  // Only the team's owners, an Owner or an Admin set the permissions; Guests fail both.
+  const unchanged = await snapshot(["teams", "cycles", "workflow_statuses", "audit_records"]);
+  expect((await set(member, "all_members", "team_owners")).status).toBe(403);
+  for (const attempt of [cycle(guest), schedule(guest), rename(guest, "Guest name"), set(guest, "all_members", "team_owners")])
+    expect((await attempt).status).toBe(403);
+  expect(await snapshot(["teams", "cycles", "workflow_statuses", "audit_records"])).toEqual(unchanged);
+
+  expect((await set(lead, "all_members", "team_owners")).status).toBe(200);
+  expect((await cycle(member)).status).toBe(403);
+  expect((await schedule(member)).status).toBe(403);
+  expect((await rename(member, "Queued")).status).toBe(200);
+  for (const attempt of [cycle(guest), schedule(guest), rename(guest, "Guest name")]) expect((await attempt).status).toBe(403);
+  // Team owners, Owners and Admins pass whatever the values.
+  for (const actor of [lead, admin, w.call]) expect((await cycle(actor)).status).toBe(200);
+
+  // Each changed permission is one audit entry, carried by the portable export.
+  const created = await w.call("/portability/exports", "POST", {});
+  const job = ((await created.json()) as { id: string }).id;
+  while (((await (await w.call(`/portability/exports/${job}/advance`, "POST", { maxParts: 16 })).json()) as { phase: string }).phase === "building");
+  const rows: { table: string; row: Record<string, unknown> }[] = [];
+  for await (const record of readArchive((await w.call(`/portability/exports/${job}/download`)).body!))
+    if (record.kind === "part") for (const item of record.items) if (item.kind === "row") rows.push(item as { table: string; row: Record<string, unknown> });
+  const changes = rows.filter((item) => item.table === "audit_records" && item.row.action === "team.permission_changed");
+  expect(changes.map((item) => item.row.actor_operator_id)).toEqual([w.lead.id, w.lead.id]);
+  const details = changes.map((change) => rows.find((item) => item.table === "administration_audit_details" && item.row.audit_id === change.row.id)!.row);
+  expect(details.map((row) => [JSON.parse(String(row.previous_value_json)), JSON.parse(String(row.next_value_json))])).toEqual([
+    [{ settings: "team_owners" }, { settings: "all_members" }], [{ planning: "all_members" }, { planning: "team_owners" }]]);
 });

@@ -4,6 +4,7 @@ import { useAdministrationAction } from "./administration-action";
 import { AdministrationFeedback } from "./administration-feedback";
 import { teamAccess } from "./team-access";
 import { TeamMembers } from "./team-members";
+import { TeamPermissions } from "./team-permissions";
 import { decide } from "../../roles/policy";
 
 import type { Administration } from "../../administration/schema";
@@ -198,6 +199,7 @@ function TeamEditor({
         </fieldset>
       </form>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
+      <TeamPermissions data={data} team={team} onChanged={onChanged} />
       <h3>Workflow</h3>
       <p>
         Each category keeps at least one status. The first status in a category

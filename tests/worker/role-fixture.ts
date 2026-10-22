@@ -3,21 +3,24 @@ import { expect } from "vitest";
 import { setupAdministration } from "./administration-fixture";
 import { actor, invite, request } from "./base-auth-fixture";
 
+let workspaces = 0;
 /** The people of the role-matrix journey (ROLE-001): an Owner, an Admin, a
  * Member who owns the team, a Member who does not and a Guest in that team.
  * No door assigns Guest before ROLE-003, so the harness sets that role on an
  * invited member's record. */
 export async function roleWorkspace() {
   const f = await setupAdministration();
-  const team = f.initial.teams[0];
-  const person = async (email: string, role?: "admin") => {
-    const cookie = await invite(email, f.cookie, role);
+  // Cases in one file share a database: each gets its own people and team.
+  const run = String.fromCharCode(65 + workspaces++);
+  const team = (await f.mutate("/settings/teams", "POST", { name: `Roles ${run}`, identifierPrefix: `ROLE${run}` })).teams.find((t) => t.name === `Roles ${run}`)!;
+  const person = async (name: string, role?: "admin") => {
+    const cookie = await invite(`${name}-${run.toLowerCase()}@roles.test`, f.cookie, role);
     return { cookie, id: await actor(cookie) };
   };
-  const admin = await person("admin@roles.test", "admin"),
-    lead = await person("lead@roles.test"),
-    member = await person("member@roles.test"),
-    guest = await person("guest@roles.test");
+  const admin = await person("admin", "admin"),
+    lead = await person("lead"),
+    member = await person("member"),
+    guest = await person("guest");
   await env.DB.prepare("UPDATE operators SET role='guest' WHERE id=?").bind(guest.id).run();
   for (const [who, role] of [[lead, "owner"], [member, "member"], [guest, "member"]] as const)
     expect((await f.call(`/settings/teams/${team.id}/members/${who.id}`, "PUT", { role })).status).toBe(200);

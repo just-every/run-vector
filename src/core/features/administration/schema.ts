@@ -166,6 +166,8 @@ export const administrationSchema = z.object({
       autoCycleStarted: z.boolean(),
       autoCycleCompleted: z.boolean(),
       statuses: z.array(administrationStatusSchema),
+      settingsPermission: z.enum(["team_owners", "all_members"]),
+      planningPermission: z.enum(["team_owners", "all_members"]),
       members: z.array(z.object({ operatorId: z.string(), role: z.enum(["owner", "member"]) })),
       departedAssignments: z.array(z.object({ identifier: z.string(), title: z.string(), assigneeOperatorId: z.string() })),
     }),
