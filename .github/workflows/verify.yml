@@ -13,7 +13,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: vector-ci-${{ github.ref }}
+  group: vector-ci-${{ github.event_name == 'workflow_dispatch' && github.sha || github.ref }}
   cancel-in-progress: true
 jobs:
   plan:
