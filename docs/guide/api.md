@@ -31,7 +31,7 @@ Send the token in an `Authorization: Bearer` header to your Vector address. Neve
 | `POST /api/v1/issues/FLW-12/comments` | `comments:write` | Adds a comment |
 | `GET /api/v1/metadata` | `metadata:read` | Lists teams, statuses, people, projects, cycles and labels |
 
-When you change an issue, send the `expectedVersion` you last read. If someone changed the issue in the meantime, Vector refuses the change with status 409; read it again and retry. The API cannot delete anything.
+When you change an issue, send the `expectedVersion` you last read. If someone changed the issue in the meantime, Vector refuses the change with status 409; read it again and retry. The API deletes projects with `DELETE /api/v1/projects/:id` for Owners and Admins only; a Member project lead may delete once recoverable project deletion ships. It also deletes a project milestone with `DELETE /api/v1/projects/:id/milestones/:milestoneId` for Owners, Admins and Members. Deleting a project keeps its issues; deleting a milestone clears its issue assignments.
 
 Other answers you may see: 401 when the token is missing, wrong, expired, revoked or lacks the permission; 400 when the request is not valid; 404 when the issue does not exist.
 

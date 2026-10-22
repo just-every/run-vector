@@ -174,7 +174,7 @@ initiatives inherit their posts in PROJ-010, RELEASE-001/003, AUTO-004,
 AGENT-002/003 and INIT-001 before those objects ship. ROLE-002 must enforce that
 private-team content only posts to channels an Admin bound to that team.
 
-A team or project creation form offers **Create Slack channel**. Vector calls
+Owners and Admins see **Create Slack channel** on a team or project creation form. Members who may create a project can instead choose a Slack channel an Owner or Admin already bound or allowed. Vector calls
 `conversations.create` once, for a public channel named from the identifier or
 name (lowercase, hyphens, at most 80 characters), and binds the returned channel
 as part of the native object transaction. A Slack error, including `name_taken`,
