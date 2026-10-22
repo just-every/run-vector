@@ -68,7 +68,10 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: vector-chromium-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm exec playwright install --with-deps chromium
+      # Hosted Ubuntu already supplies Chromium runtime libraries. Installing
+      # optional fonts/upgrades from its apt mirror can consume the shard cap;
+      # the real browser journeys below still validate every runtime dependency.
+      - run: pnpm exec playwright install chromium
         if: matrix.browser
       - name: Verify the independent shard
         run: pnpm verify:ci --shard "${{ matrix.shard }}"
