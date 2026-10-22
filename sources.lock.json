@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "0f8680f16551c013156255f64d4c74f48c7f0c99966813822b2413988390f1f9",
+      "sha256": "0aee5923df12c8044487821ce90edc6b4b7b243d65a909ee03cea02431407179",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "dfbd0a8892c950437fa902985da0873235e46b2b9f4488a898c67be41902334b",
+      "sha256": "30bb51783f4e4a5fd7701ba19124ff36bc7471f3ca12b1d4d786f92470d8090c",
       "executable": false
     },
     "DEMO.md": {
@@ -5301,7 +5301,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
-      "sha256": "5ae751f1aa81955d96337b59386cef8e3dbc7376f71af0ce18e80a7f03371190",
+      "sha256": "7391370fc289a0c1ef12aa16b0456e4c930bc365630654abd8153d96e993f9ca",
       "executable": false
     },
     "src/core/features/settings/ui/team-access.ts": {

@@ -314,3 +314,16 @@
   min-height: 0;
   padding: 0;
 }
+.guest-team-options {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+  border: 0;
+  padding: 0;
+}
+.guest-team-options label.admin-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+}
