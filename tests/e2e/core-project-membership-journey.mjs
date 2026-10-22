@@ -86,7 +86,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
       await navigate('/app/issues/' + second.identifier);
       await page.getByRole('heading', { name: second.title, exact: true }).waitFor();
       await page.getByRole('button', { name: 'Delete issue', exact: true }).waitFor();
-      await page.getByText('Keep the settlement evidence.', { exact: true }).waitFor();
+      await page.getByText('Keep the settlement evidence.', { exact: true }).filter({visible:true}).first().waitFor();
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await capture('PROJ-003', `retained-issue-${width}`, page);
     }
