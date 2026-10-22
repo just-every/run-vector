@@ -40,6 +40,7 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
 
 /** The existing integrations journey also proves the team's mail conversation. */
 export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
+ const viewport=page.viewportSize();
  const {roleScreens}=await import('./role-ui-support.mjs'),inspect=roleScreens(evidence);
  const sender='synthetic-vector-721@example.test',address='synthetic-vector-'+Date.now()+'@example.test';
  await page.goto(runtime.base+'/app/settings');
@@ -73,5 +74,6 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  await form.getByRole('button',{name:'Send reply by email',exact:true}).click();assert.equal((await sent).status(),201);
  const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
+ if(viewport)await page.setViewportSize(viewport);
  console.log('TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390');
 }
