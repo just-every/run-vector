@@ -302,3 +302,15 @@
   min-height: 0;
   margin: 0;
 }
+
+.settings-members li > form label.admin-checkbox {
+  display: flex;
+  align-items: center;
+}
+.guest-team-options input[type="checkbox"] {
+  flex: 0 0 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  min-height: 0;
+  padding: 0;
+}

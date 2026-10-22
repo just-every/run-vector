@@ -5269,7 +5269,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/guest-teams.tsx": {
-      "sha256": "943f4748706cd790bd65220ca7d37551082e66fdbe58eae95ad8cfe3092739d2",
+      "sha256": "f0d7828c933aa210cebb5f0300dde69ce27460d2a95a883d346542b47c0e4238",
       "executable": false
     },
     "src/core/features/settings/ui/invite-operator.tsx": {
@@ -5301,7 +5301,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
-      "sha256": "da84dffe5434610e8d53fed15e599dd5a5e9fa1d34ff8753f65ec7969c623708",
+      "sha256": "5ae751f1aa81955d96337b59386cef8e3dbc7376f71af0ce18e80a7f03371190",
       "executable": false
     },
     "src/core/features/settings/ui/team-access.ts": {
