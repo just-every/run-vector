@@ -148,6 +148,7 @@ export const doors: Door[] = [
   { method: 'GET', path: '/issues/:identifier/reactions', row: 'issues.write', teams: issue },
   { method: 'PUT', path: '/issues/:identifier/reactions', row: 'issues.write', teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/reactions', row: 'issues.write', teams: issue },
+  { method: 'GET', path: '/issues/:identifier/references', row: 'issues.write', teams: issue },
   { method: 'GET', path: '/issues/:identifier/email-intake', row: 'issues.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/email-replies', row: 'email.reply', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/comments/:itemId', row: commentEdit('comments.own'), teams: issue },

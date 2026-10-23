@@ -24,3 +24,5 @@ Guests can read reactions on visible issues. Reactions create no notification,
 refresh in other open sessions within five seconds, and survive portable export
 and restore. Removed members appear under the same anonymous name as their
 comments. Slack thread reaction sync remains dependent on SLACK-002.
+
+Type a current issue identifier in a description or comment to link an issue you can see. Hover or focus the link to read its title and status. Native edits keep one “Mentioned in” activity entry per source issue and target; removing the final reference marks that entry removed. Backlinks stay visible only while you can see the source issue. Historical/imported text links when read, but does not gain historical backlink entries. Old imported identifiers do not resolve as aliases yet.

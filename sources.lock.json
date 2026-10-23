@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "f8a1606d890a08039335ed1dd7a34907871bb6cee22d050f9b3a16d96b1e0098",
+      "sha256": "2549a0d1c0e2fcf6e6102e9a88fac2632579d9f75ab6da06371bd329947c159b",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "44298044d48bf4a504856d479ec1c2c18b5f8da4bce3b6088e0811acdbe47a01",
+      "sha256": "f23eb3bd8165452fbcdaf25d259038e872e00064200d81c199c2753b995d1f4c",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "e000feb58269b1a33c62db95e53bfeacb5785e035146ba2f28b877b88ba1015b",
+      "sha256": "14a1f622a82ca35451e526c71ae464bd78f6786ab1da11ba5917b0a54202081f",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
-      "sha256": "b3a516d6a27922e20ea0581bbbfb3682f492b1c36d30e13d67368179fa38f15d",
+      "sha256": "6dee905e3c7ab9bff54553dbe307abab6eb15301d8598b08e70d2829bd0e8753",
       "executable": false
     },
     "docs/JIRA-CSV.md": {
@@ -5309,7 +5309,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "6f83ed94342e64a6fa0467f129f991a95760f8da29ee4b225ec4afff724460b3",
+      "sha256": "64426b427f5c8623b7661a61b4d1e7b75825ac152d97b25c954706ebbeb380c5",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -7165,7 +7165,7 @@
       "executable": false
     },
     "tests/worker/role-guest-journey.ts": {
-      "sha256": "5e893af06fee11cb0f8ef069b5245775c3dabfc39a7ffeb3ce49bb86b6566fa5",
+      "sha256": "edcd4a8c1233fe162f7387c6c8b4575b9516242426d088c29bd61b5721d34452",
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
