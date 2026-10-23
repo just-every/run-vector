@@ -179,3 +179,13 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "data.erase-imported": { session: async (_who, actor) => () => actor.call("/data/erasure/journal") },
   };
 }
+
+/** Additional doors carried by existing matrix rows. Kept separate so another
+ * campaign's team-settings probes remain intact. */
+export function githubRuleProbes(w:Workspace):{row:RowId;probe:Probe}[]{
+ return [{row:'teams.settings',probe:{permission:'settings',session:async(_who,actor,team)=>{
+  const state=await json<{teams:{id:string;rules:{trigger:string;version:number}[]}[]}>(w.people.owner.call('/github/automation'));
+  const version=state.teams.find(t=>t.id===team)!.rules.find(r=>r.trigger==='draft')!.version;
+  return ()=>actor.call('/settings/teams/'+team,'PATCH',{githubAutomation:{trigger:'draft',statusId:null,allowReopen:false,expectedVersion:version}});
+ }}}];
+}

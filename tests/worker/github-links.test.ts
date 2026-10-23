@@ -1,8 +1,9 @@
 import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
+import {exerciseGithubAutomation} from './github-automation-scenario';
 import {bindings} from './base-auth-fixture';
-it('[GITHUB-001 GITHUB-002] exact signed PR deliveries preserve links and latest state without changing native issue decisions',async()=>{
+it('[GITHUB-001 GITHUB-002 GITHUB-003] signed deliveries preserve links, automate team statuses and notify followers exactly once',async()=>{
  const f=await setupIntegrations(),issue=await f.create(),second=await f.create({title:'Second referenced work'}),res=await f.call('/settings/integrations/github','POST',{name:'Owned repository',repository:'octocat/test-repo1'});expect(res.status).toBe(201);
  expect(await (await f.call('/issues/'+issue.identifier)).json()).toMatchObject({branchName:issue.identifier.toLowerCase()+'-authored-work'});
  const config=await res.json() as {id:string;secret:string;receiver:string};
@@ -23,6 +24,7 @@ it('[GITHUB-001 GITHUB-002] exact signed PR deliveries preserve links and latest
  expect((await send(payload('reopened','open','2026-10-02T00:00:00.000Z'))).status).toBe(200);
  expect(await env.DB.prepare('SELECT state FROM vector_github_pull_requests WHERE number=42').first<string>('state')).toBe('merged');
  const links=await f.call('/issues/'+issue.identifier+'/github');expect(links.status).toBe(200);expect((await links.json() as {pullRequests:{state:string;url:string}[]}).pullRequests[0]).toMatchObject({state:'merged',url:'https://github.com/octocat/test-repo1/pull/42'});
+ await exerciseGithubAutomation(f,send);
  expect((await f.call('/settings/integrations/github/'+config.id,'DELETE')).status).toBe(200);expect((await send(payload())).status).toBe(401);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);

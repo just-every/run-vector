@@ -4,7 +4,8 @@ import { createUlid } from '../../../shared/ids';
 import { IntegrationError } from '../errors';
 import { openSecret } from '../secrets';
 import { rawIntegrationBody } from '../raw-body';
-import { githubPayload,githubReferences } from './input';
+import { gitMove } from './rules';
+import { githubPayload,githubReferences,githubReferenceKind } from './input';
 import { admitted } from '../authority';
 const encoder=new TextEncoder();
 type Repository={id:string;workspace_id:string;repository:string;enabled:number;revoked_at:string|null};
@@ -49,8 +50,13 @@ export async function receiveGithub(env:WorkerBindings,request:Request,id:string
  current?guard('EXISTS(SELECT 1 FROM vector_github_pull_requests WHERE repository_id=? AND number=? AND updated_at=? AND state=? AND title=?)',id,pr.number,current.updated_at,current.state,current.title):guard('NOT EXISTS(SELECT 1 FROM vector_github_pull_requests WHERE repository_id=? AND number=?)',id,pr.number)];
  if(!stale&&!ambiguous&&!terminal){
   for(const issue of issues)statements.push(guard('EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND i.version=? AND t.workspace_id=?)',issue.id,issue.version,repository.workspace_id));
-  statements.push(env.DB.prepare(`INSERT INTO vector_github_pull_requests(repository_id,number,title,url,state,updated_at,received_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT(repository_id,number) DO UPDATE SET title=excluded.title,url=excluded.url,state=excluded.state,updated_at=excluded.updated_at,received_at=excluded.received_at`).bind(id,pr.number,pr.title,url.href,state,updatedAt,at));
-  for(const issue of issues){statements.push(env.DB.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?,?,NULL,?,'github.pr_linked',NULL,?,?,? WHERE NOT EXISTS(SELECT 1 FROM vector_github_issue_links WHERE repository_id=? AND number=? AND issue_id=?)`).bind(createUlid(new Date(at)),issue.id,'GitHub '+repository.repository,JSON.stringify({repository:repository.repository,number:pr.number,state}),at,at,id,pr.number,issue.id),env.DB.prepare('INSERT INTO vector_github_issue_links(repository_id,number,issue_id,created_at) VALUES(?,?,?,?) ON CONFLICT DO NOTHING').bind(id,pr.number,issue.id,at));}
+  statements.push(env.DB.prepare(`INSERT INTO vector_github_pull_requests(repository_id,number,title,url,state,updated_at,received_at,merge_sha) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(repository_id,number) DO UPDATE SET title=excluded.title,url=excluded.url,state=excluded.state,updated_at=excluded.updated_at,received_at=excluded.received_at,merge_sha=COALESCE(excluded.merge_sha,vector_github_pull_requests.merge_sha)`).bind(id,pr.number,pr.title,url.href,state,updatedAt,at,pr.merged?pr.merge_commit_sha??null:null));
+  for(const issue of issues){statements.push(env.DB.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?,?,NULL,?,'github.pr_linked',NULL,?,?,? WHERE NOT EXISTS(SELECT 1 FROM vector_github_issue_links WHERE repository_id=? AND number=? AND issue_id=?)`).bind(createUlid(new Date(at)),issue.id,'GitHub '+repository.repository,JSON.stringify({repository:repository.repository,number:pr.number,state}),at,at,id,pr.number,issue.id),env.DB.prepare('INSERT INTO vector_github_issue_links(repository_id,number,issue_id,created_at,relation) VALUES(?,?,?,?,?) ON CONFLICT(repository_id,number,issue_id) DO UPDATE SET relation=excluded.relation').bind(id,pr.number,issue.id,at,githubReferenceKind(issue.identifier,pr.title,pr.body)));}
+  const trigger=input.action==='opened'&&pr.draft?'draft':input.action==='review_requested'?'review':input.action==='closed'&&pr.merged?'merged':null;
+  if(trigger)for(const issue of issues){
+   if(trigger==='merged'&&githubReferenceKind(issue.identifier,pr.title,pr.body)==='contributes')continue;
+   statements.push(...await gitMove(env.DB,issue.id,trigger,at));
+  }
  }
  statements.push(env.DB.prepare('INSERT INTO vector_github_deliveries(repository_id,delivery_id,payload_hash,received_at,diagnostic) VALUES(?,?,?,?,?)').bind(id,delivery,hash,at,diagnostic),guard(authority,...authValues));
  try{await env.DB.batch(statements);}catch{await requireAuthority();const committed=await prior();if(committed){await requireAuthority();if(committed.payload_hash!==hash)throw new IntegrationError(409,'github_delivery_conflict');return {reused:true,diagnostic:committed.diagnostic};}throw new IntegrationError(503,'github_durability_unavailable');}

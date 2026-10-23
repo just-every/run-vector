@@ -21,7 +21,7 @@ export async function gitMove(db:D1Database,issueId:string,trigger:GitTrigger,at
  if(!rule.statusId||rule.statusId===issue.statusId||issue.category==='intake'||(issue.category==='completed'&&!rule.allowReopen))return [fence];
  const target=await db.prepare('SELECT category FROM workflow_statuses WHERE id=? AND team_id=?').bind(rule.statusId,issue.team).first<{category:string}>();
  if(!target||!['backlog','unstarted','started','completed','canceled'].includes(target.category))return [fence];
- const id=createUlid(),event={id,issueId,actor:null,actorName:'Git automation',at};
+ const id=createUlid(new Date(at)),event={id,issueId,actor:null,actorName:'Git automation',at};
  const previous=JSON.stringify({statusId:issue.statusId}),next=JSON.stringify({statusId:rule.statusId,automation:'git',trigger});
  return [fence,gitGuard(db,'EXISTS(SELECT 1 FROM issues WHERE id=? AND version=? AND status_id=?)',issueId,issue.version,issue.statusId),
  db.prepare("INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) VALUES(?,?,NULL,'Git automation','issue.status_changed',?,?,?,?)").bind(id,issueId,previous,next,at,at),
