@@ -1,3 +1,4 @@
+import {SaveProjectTemplate} from '../../project-templates/controls';
 import { ProjectAppearanceFields } from "./project-appearance";
 import { useHydrated } from "../../../app/initial-resources";
 import { useState } from "react";
@@ -111,6 +112,7 @@ export function ProjectAdministration({
         </fieldset>
       </form>
       <AdministrationFeedback action={action} />
+      <SaveProjectTemplate project={project} />
       {confirmingDelete && deletes ? (
         <div role="group" aria-label="Confirm project deletion">
           <p>Delete {project.name}? Its issues will stay in Vector without a project. This cannot be undone.</p>

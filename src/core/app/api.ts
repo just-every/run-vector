@@ -1,3 +1,4 @@
+import {addProjectTemplateRoutes} from '../features/project-templates/routes';
 import { addDashboardRoutes } from "../features/dashboards/routes";
 import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/calendar-feeds/routes";
 import { addInsightRoutes } from "../features/insights/routes";
@@ -384,6 +385,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addTeamMembershipRoutes(app);
   addIssueCopyRoutes(app);
   addWorkloadRoutes(app);
+  addProjectTemplateRoutes(app);
   addSettingsRoutes(app);
   addAuditRoutes(app);
   addIntegrationConfigRoutes(app);
