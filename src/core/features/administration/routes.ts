@@ -12,6 +12,7 @@ import { readAdministration, readCycle } from "./read";
 import { SettingsError } from "./transaction";
 import {
   createTeam,
+  setTeamCreation,
   updateTeam,
   createStatus,
   renameStatus,
@@ -77,10 +78,11 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
       return respond(c);
     });
   app.get("/settings/administration", handle(read));
+  app.put("/settings/teams/creation", mutation(schema.teamCreationPermissionSchema, (c,b) => setTeamCreation(c.env.DB,c.get("operatorId"),b.membersMayCreate)));
   app.post(
     "/settings/teams",
     mutation(schema.teamCreateSchema, async (c, b) =>
-      createTeam(c.env.DB, c.get("operatorId"), b, b.createSlackChannel ? await createSlackChannel(c.env,await integrationOwner(c.env,c.req.raw),b.identifierPrefix,'team') : undefined),
+      createTeam(c.env.DB, c.get("operatorId"), b, b.createSlackChannel ? await createSlackChannel(c.env,await integrationOwner(c.env,c.req.raw),b.identifierPrefix,'team') : undefined).then(() => {}),
     ),
   );
   app.patch(

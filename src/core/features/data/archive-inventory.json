@@ -1211,7 +1211,8 @@
     "updated_at",
     "reminder_time",
     "member_invites",
-    "member_label_creation"
+    "member_label_creation",
+    "member_team_creation"
   ],
   "issue_duplicates": [
     "issue_id",

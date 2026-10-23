@@ -15,7 +15,7 @@ export type AssignableRole = typeof assignableRoles[number]
  * - member-invites: only while the workspace lets Members invite Members
  * - own: the feature itself admits only the subject's owner
  * - lead: the subject project's lead */
-export type Cell = 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'own' | 'lead'
+export type Cell = 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'member-team-creation' | 'own' | 'lead'
 type Row = { action: string; cells: Record<Role, Cell> }
 const row = (action: string, owner: Cell, admin: Cell, member: Cell, guest: Cell): Row => ({ action, cells: { owner, admin, member, guest } })
 
@@ -24,7 +24,8 @@ export const matrix = {
   'leaders.manage': row('Invite, promote to, or remove by suspension Owners and Admins (OPS-002, ROLE-001, ROLE-011)', 'yes', 'no', 'no', 'no'),
   'workspace.leave': row('Leave the workspace oneself, which suspends (OPS-004, ROLE-011)', 'yes', 'yes', 'yes', 'yes'),
   'workspace.settings': row('Change workspace settings: timezone, the invite, label-creation and deletion settings, notification defaults (OPS-003, OPS-002, ISSUE-014, ISSUE-010, NOTIFY-007)', 'yes', 'yes', 'no', 'no'),
-  'teams.create': row('Create a team (TEAM-008)', 'yes', 'yes', 'no', 'no'),
+  'teams.creation-setting': row('Set who may create teams (TEAM-008)', 'yes', 'yes', 'no', 'no'),
+  'teams.create': row('Create a team (TEAM-008)', 'yes', 'yes', 'member-team-creation', 'no'),
   'teams.members': row('Manage a team\'s members and team owners (ROLE-007, TEAM-007, ROLE-013)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.permissions': row('Set a team\'s two permissions, *Who manages team settings* and *Who manages cycles and templates* (ROLE-009)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.join': row('Join an open public team or leave one\'s team (ROLE-007, TEAM-007)', 'yes', 'yes', 'yes', 'no'),

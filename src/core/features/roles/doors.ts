@@ -111,6 +111,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   { method: 'DELETE', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   // Teams and workflows
+  { method: 'PUT', path: '/settings/teams/creation', row: 'teams.creation-setting' },
   { method: 'POST', path: '/settings/teams', row: channelOr('teams.create') },
   { method: 'POST', path: '/teams/:teamId/join', row: 'teams.join', teams: team('teamId') },
   { method: 'POST', path: '/teams/:teamId/leave', row: 'teams.join', teams: team('teamId') },
@@ -205,6 +206,7 @@ export const doors: Door[] = [
 
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
+  { method: 'POST', path: '/teams', row: 'teams.create' },
   { method: 'POST', path: '/labels', row: 'labels.create' },
   { method: 'POST', path: '/issues', row: 'issues.write', teams: bodyTeam },
   { method: 'PATCH', path: '/issues/:identifier', row: async request => (await request.body() as { cycleId?: unknown } | undefined)?.cycleId !== undefined ? 'cycles.commit' : 'issues.write', teams: issue },
