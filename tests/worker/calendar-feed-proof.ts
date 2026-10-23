@@ -33,6 +33,19 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   expect(stored).toMatch(/^[a-f0-9]{64}$/);expect(path.includes(stored!)).toBe(false);
   const listing=await call('/calendar/feeds','GET',undefined,member);expect((await listing.text()).includes(stored!)).toBe(false);
   expect((await request('/api/calendar/feed/'+'0'.repeat(64)+'.ics')).status).toBe(404);
+  const calendar=await call('/calendar/events?month=2026-11','GET',undefined,member);expect(calendar.status).toBe(200);
+  const month=await calendar.json() as {month:string;events:{id:string;kind:string;identifier?:string;version?:number;firstDay:string;lastDay:string}[]};expect(month.month).toBe('2026-11');
+  expect(month.events.filter(e=>e.id===`issue-${issue.id}-2026-11-04`)).toHaveLength(1);
+  for(const kind of ['issue','cycle','milestone'])expect(month.events.some(e=>e.kind===kind)).toBe(true);
+  const event=month.events.find(e=>e.identifier===issue.identifier)!;
+  const move=await call('/issues/'+issue.identifier,'PATCH',{expectedVersion:event.version,dueDate:'2026-11-06'},member);expect(move.status).toBe(200);
+  const changedIssue=await move.json() as {version:number;dueDate:string;activity:{kind:string;previousValue:{dueDate?:string};nextValue:{dueDate?:string}}[]};expect(changedIssue.dueDate).toBe('2026-11-06');
+  expect(changedIssue.activity.filter(a=>a.previousValue?.dueDate==='2026-11-04'&&a.nextValue?.dueDate==='2026-11-06')).toHaveLength(1);
+  const stale=await call('/issues/'+issue.identifier,'PATCH',{expectedVersion:event.version,dueDate:'2026-11-07'},member);expect(stale.status).toBe(409);
+  expect(await env.DB.prepare('SELECT due_date FROM issues WHERE id=?').bind(issue.id).first('due_date')).toBe('2026-11-06');
+  const undo=JSON.parse(move.headers.get('x-vector-undo')!);expect(undo.actionId).toBeTruthy();expect((await call('/issues/undo','POST',{actionId:undo.actionId},member)).status).toBe(200);
+  const restoredMonth=await(await call('/calendar/events?month=2026-11','GET',undefined,member)).json() as typeof month;expect(restoredMonth.events.find(e=>e.identifier===issue.identifier)?.firstDay).toBe('2026-11-04');
+  expect((await call('/calendar/events?month=2026-13')).status).toBe(400);expect((await request('/api/calendar/events')).status).toBe(401);
   const changed=await call('/calendar/feeds/'+feed.id+'/rotate','POST',{expectedVersion:1},member);expect(changed.status).toBe(200);
   const rotated=await changed.json() as {url:string};expect((await request(path)).status).toBe(404);
   expect((await request(new URL(rotated.url).pathname)).status).toBe(200);
@@ -45,7 +58,7 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   expect((await call('/calendar/feeds','POST',{teamId:team.id},member)).status).toBe(403);
   const guest=await invite('synthetic-vector-25@example.test',owner),guestId=await actor(guest);
   expect((await call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[team.id]})).status).toBe(200);
-  for(const [route,method,body] of [['/calendar/feeds','GET',undefined],['/calendar/feeds','POST',{}],['/calendar/feeds/'+teamFeed.id+'/rotate','POST',{expectedVersion:1}],['/calendar/feeds/'+teamFeed.id,'DELETE',{expectedVersion:1}]] as const)
+  for(const [route,method,body] of [['/calendar/events','GET',undefined],['/calendar/feeds','GET',undefined],['/calendar/feeds','POST',{}],['/calendar/feeds/'+teamFeed.id+'/rotate','POST',{expectedVersion:1}],['/calendar/feeds/'+teamFeed.id,'DELETE',{expectedVersion:1}]] as const)
     expect((await call(route,method,body,guest)).status).toBe(403);
   expect((await call('/settings/operators/'+guestId,'DELETE')).status).toBe(200);
   return new URL((await make(null)).url).pathname;
