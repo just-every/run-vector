@@ -4245,7 +4245,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-dm/interactive.ts": {
-      "sha256": "fa5ffa36702eb23ea499ab96655099a80b7ba1792fc0d4093311a1856058c5d4",
+      "sha256": "fb660b7203273205623688d438bd03c5798f164408c52e5d8866bca7572ed352",
       "executable": false
     },
     "src/core/features/integrations/slack-dm/links.ts": {
@@ -5297,7 +5297,7 @@
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
-      "sha256": "ee5b14c9a953142a69238acebcf5f4c9880e8531d7a995f61776e24b4cfdfcb1",
+      "sha256": "1268d54430b0939bf94d53ef239aadf42101d6322cc2d2cc8f6161163db74561",
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
@@ -7037,7 +7037,7 @@
       "executable": false
     },
     "tests/worker/outbound-broken-destination.test.ts": {
-      "sha256": "b09e0de3b4277220bfb35b6c2d09ef3d202787b8d61147f6df5434bf84aa79b9",
+      "sha256": "dbacd5bffb0e95537d304570c8af07937b0812774c19c1d90e68503f3c603612",
       "executable": false
     },
     "tests/worker/outbound-webhooks.test.ts": {
@@ -7181,7 +7181,7 @@
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {
-      "sha256": "7b02c74fcf6cc23462e77e1cd89f6f512c83c46bd8fe137a82d7725d9d3ef6c2",
+      "sha256": "837e9d3908f58732f8e0f304c06f3116d051e6e2d9530083047e762bcf07fad8",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {

@@ -4,8 +4,8 @@ import type { AppEnvironment } from '../../app/bindings'
 import { readRequestJson } from '../../app/input'
 import type { NativeAccessFence } from '../auth/mutation-database'
 import { authorityFence, loadAuthority } from './authority'
-import { apiDoors, doors, type DoorRequest } from './doors'
-import { decide, decisionInputs } from './policy'
+import { apiDoors, doors, type Door, type DoorRequest } from './doors'
+import { decide, decisionInputs, type Decision } from './policy'
 
 const surfaces = { api: doors, v1: apiDoors }
 const pattern = (path: string) => new RegExp('^' + path.replace(/[.]/g, '\\.').replace(/:([A-Za-z]+)/g, '(?<$1>[^/]+)').replace(/\*$/, '(?<rest>.*)') + '$')
@@ -38,14 +38,28 @@ export async function doorAuthority(c: Context<AppEnvironment>, surface: keyof t
     // Resolvers read a copy; the handler still owns the request body and its errors.
     body: () => body ??= read ? Promise.resolve(undefined) : readRequestJson(c.req.raw.clone() as unknown as Request).catch(() => undefined),
   }
+  const { decision, fence } = await decideDoor(door, request)
+  if (decision === 'unauthenticated') return { denied: c.json({ error: 'unauthenticated', message: 'Sign in again to continue.' }, 401, { 'Cache-Control': 'no-store' }) }
+  if (decision === 'hidden') return { denied: c.json({ error: 'not_found', message: 'The selected record is unavailable.' }, 404, { 'Cache-Control': 'no-store' }) }
+  if (decision === 'forbidden') return { denied: c.json({ error: 'forbidden', message: 'Your workspace role does not allow this action.' }, 403, { 'Cache-Control': 'no-store' }) }
+  return read ? {} : { fence }
+}
+
+/** The same decision for a registered write door reached outside Hono routing,
+ * such as a signed Slack action: no stored link or message carries a role. */
+export function actionAuthority(source: D1Database, actor: string, method: Door['method'], path: string, params: Record<string, string>, body: unknown) {
+  const door = doors.find(door => door.method === method && door.path === path)
+  if (!door) throw new Error(`No registered door for ${method} ${path}.`)
+  return decideDoor(door, { db: source, actor, path, params, body: () => Promise.resolve(body) })
+}
+
+async function decideDoor(door: Door | undefined, request: DoorRequest): Promise<{ decision: Decision | 'unauthenticated'; fence?: NativeAccessFence }> {
   const row = door ? typeof door.row === 'function' ? await door.row(request) : door.row : null
   const teams = door?.teams ? await door.teams(request) : null
   const project = door?.project ? await door.project(request) : undefined
   const question = { row, page: door?.page, teams, project, invitation: door?.invitation }
-  const authority = await loadAuthority(source, actor, teams ?? [], project ?? undefined)
-  if (!authority) return { denied: c.json({ error: 'unauthenticated', message: 'Sign in again to continue.' }, 401, { 'Cache-Control': 'no-store' }) }
+  const authority = await loadAuthority(request.db, request.actor, teams ?? [], project ?? undefined)
+  if (!authority) return { decision: 'unauthenticated' }
   const decision = decide(authority, question)
-  if (decision === 'hidden') return { denied: c.json({ error: 'not_found', message: 'The selected record is unavailable.' }, 404, { 'Cache-Control': 'no-store' }) }
-  if (decision === 'forbidden') return { denied: c.json({ error: 'forbidden', message: 'Your workspace role does not allow this action.' }, 403, { 'Cache-Control': 'no-store' }) }
-  return read ? {} : { fence: authorityFence(actor, authority, decisionInputs(authority, question)) }
+  return decision === 'allow' ? { decision, fence: authorityFence(request.actor, authority, decisionInputs(authority, question)) } : { decision }
 }

@@ -2,7 +2,9 @@ import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
 import {admitRate} from '../../auth/repository';
-import {mutationDatabase,isMutationAccessError} from '../../auth/mutation-database';
+import {mutationDatabase,isMutationAccessError,AuthorityChangedError} from '../../auth/mutation-database';
+import {actionAuthority} from '../../roles/enforcement';
+import {visibilityDatabase} from '../../roles/visibility-database';
 import {updateIssueRecord} from '../../issue-edit/repository';
 import {updateIssueSchema} from '../../issue-edit/routes';
 import {IssueAccessError} from '../../issues/access';
@@ -60,19 +62,27 @@ export async function receiveSlackAction(env:WorkerBindings,request:Request,afte
  const chosen=assign??status;
  if(!chosen)throw new IntegrationError(400,'slack_action_unsupported');
  const identifier=chosen[1],input=updateIssueSchema.parse({expectedVersion:Number(chosen[2]),...(assign?{assigneeOperatorId:link.operator_id}:{statusId:status![3]})});
- const before=await env.DB.prepare('SELECT s.name FROM issues i JOIN workflow_statuses s ON s.id=i.status_id JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(identifier,link.workspace_id).first<string>('name');
+ // ROLE-001/ROLE-003: the member's current role and teams decide, as for the native issue edit,
+ // and the write sees and changes only what they may see, fenced in its transaction.
+ const authority=await actionAuthority(env.DB,link.operator_id,'PATCH','/issues/:identifier',{identifier},input);
+ if(authority.decision==='unauthenticated')throw notLinked();
+ const db=visibilityDatabase(env.DB,link.operator_id);
+ const before=await db.prepare('SELECT s.name FROM issues i JOIN workflow_statuses s ON s.id=i.status_id JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(identifier,link.workspace_id).first<string>('name');
+ const unavailable={refusal:'This issue is not available to you, so nothing was changed.'};
  let outcome:Outcome;
- try{outcome=await updateIssueRecord(mutationDatabase(env.DB,link.operator_id,undefined,slackAuthority(link,signer.encrypted)),identifier,link.operator_id,input);}
+ try{outcome=authority.fence?await updateIssueRecord(mutationDatabase(db,link.operator_id,undefined,slackAuthority(link,signer.encrypted),authority.fence),identifier,link.operator_id,input)
+  :authority.decision==='forbidden'?{refusal:'Your workspace role does not allow this change, so nothing was changed.'}:unavailable;}
  catch(error){
   if(isMutationAccessError(error))throw notLinked();
-  if(error instanceof IssueAccessError)outcome={refusal:'This issue is not available to you, so nothing was changed.'};
-  else if(error instanceof IssueMutationError)outcome={refusal:error.message+' Nothing was changed.'};
+  if(error instanceof IssueAccessError)outcome=unavailable;
+  else if(error instanceof IssueMutationError||error instanceof AuthorityChangedError)outcome={refusal:error.message+' Nothing was changed.'};
   else throw error;
  }
- after(reply(env,link.workspace_id,payload.container,identifier,assign?'assign':'status',outcome,before));
+ after(reply(env,link.workspace_id,link.operator_id,payload.container,identifier,assign?'assign':'status',outcome,before));
 }
-/** A change refreshes the message with the new version; a refusal answers in its thread with Open. */
-async function reply(env:WorkerBindings,workspace:string,container:Container,identifier:string,kind:'assign'|'status',outcome:Outcome,before:string|null){
+/** A change refreshes the message with the new version, projected only while the member may still see the
+ * issue; a refusal answers in its thread with Open. */
+async function reply(env:WorkerBindings,workspace:string,operator:string,container:Container,identifier:string,kind:'assign'|'status',outcome:Outcome,before:string|null){
  if(!container?.channel_id||!container.message_ts)return;
  try{
   const token=await slackToken(env,workspace);
@@ -80,7 +90,7 @@ async function reply(env:WorkerBindings,workspace:string,container:Container,ide
    await slackCall(token,'chat.postMessage',{channel:container.channel_id,thread_ts:container.message_ts,...refusalMessage(env.APP_ORIGIN,identifier,outcome==='stale'?'This issue changed after this message was sent, so nothing was changed. Open it to see the current issue.':outcome.refusal)});
    return;
   }
-  const issue=await env.DB.prepare('SELECT i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,s.category AS statusCategory,s.name AS statusName,i.team_id AS teamId FROM issues i JOIN workflow_statuses s ON s.id=i.status_id JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(identifier,workspace).first<{identifier:string;title:string;version:number;dueDate:string|null;statusId:string;statusCategory:string;statusName:string;teamId:string}>();
+  const issue=await visibilityDatabase(env.DB,operator).prepare('SELECT i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,s.category AS statusCategory,s.name AS statusName,i.team_id AS teamId FROM issues i JOIN workflow_statuses s ON s.id=i.status_id JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(identifier,workspace).first<{identifier:string;title:string;version:number;dueDate:string|null;statusId:string;statusCategory:string;statusName:string;teamId:string}>();
   if(!issue)return;
   const actions=!await credentialProblem(env,signingIdentity(workspace));
   const message=kind==='assign'?directMessage(env.APP_ORIGIN,await directIssue(env,issue),'Assigned to you',['You assigned this issue to yourself in Slack.'],actions)

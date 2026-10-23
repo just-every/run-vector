@@ -1,5 +1,5 @@
 import {channelNotifications} from './channel-notifications-scenario';
-import {slackDirectMessages} from './slack-dm-scenario';
+import {slackDirectMessages,slackActionsFollowCurrentAccess} from './slack-dm-scenario';
 import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
@@ -67,3 +67,6 @@ it('[SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cann
  await slackDirectMessages(f,egress);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },240000);
+it('a Slack action changes only issues its member can still edit after a role or team change',async()=>{
+ await slackActionsFollowCurrentAccess(await setupIntegrations());
+},120000);

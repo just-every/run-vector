@@ -169,3 +169,33 @@ export async function slackDirectMessages(f:Awaited<ReturnType<typeof setupInteg
   expect((await slackDoor(action('UCARA1',{action_id:'vector_assign_me',value:lost.identifier+':'+lost.version}))).status).toBe(401);
  }finally{edge.restore();}
 }
+/** A signed Slack action acts with its member's current role and teams: a linked Member later made a Guest
+ * of another team changes nothing on an issue they no longer see, and Slack hears only a refusal. */
+export async function slackActionsFollowCurrentAccess(f:Awaited<ReturnType<typeof setupIntegrations>>){
+ const edge=channelEdge(),app=createServerApp(),secret=[...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,'0')).join('');
+ const suffix=crypto.randomUUID().slice(0,8),email='moved-'+suffix+'@vector.test',cookie=await invite(email,f.cookie),member=await actor(cookie),slackUser='UMOVED'+suffix.toUpperCase();
+ const issueState=async(identifier:string)=>env.DB.prepare('SELECT version,assignee_operator_id AS assignee,status_id AS status FROM issues WHERE identifier=?').bind(identifier).first();
+ const click=async(element:{action_id:string;value?:string;selected_option?:{value:string}})=>{
+  const body='payload='+encodeURIComponent(JSON.stringify({type:'block_actions',user:{id:slackUser},team:{id:'TFIXTURE'},container:{type:'message',message_ts:'1700000000.000200',channel_id:'D'+slackUser.slice(1)},actions:[element]})),timestamp=String(Math.floor(Date.now()/1000));
+  const execution=createExecutionContext(),response=await app.request(bindings.APP_ORIGIN+'/api/integrations/slack/interactive',{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded','x-slack-request-timestamp':timestamp,'x-slack-signature':await signature(secret,timestamp,body)},body},bindings,execution);
+  await waitOnExecutionContext(execution);return response.status;
+ };
+ try{
+  expect((await f.call('/settings/integrations/slack','POST',{botToken:edge.token})).status).toBe(200);
+  expect((await f.call('/settings/integrations/slack/signing-secret','POST',{signingSecret:secret})).status).toBe(200);
+  edge.users(email,slackUser,'Moved');
+  expect((await request('/api/settings/notifications/slack/link','POST',{slackUserId:slackUser},cookie)).status).toBe(200);
+  const team=f.initial.teams[0],issue=await f.create({title:'Hidden roadmap '+suffix}),started=team.statuses.find(s=>s.category==='started')!;
+  const invited=(await f.mutate('/settings/teams','POST',{name:'Slack guests '+suffix,identifierPrefix:'SLKGST'})).teams.find(t=>t.name==='Slack guests '+suffix)!;
+  expect((await f.call('/settings/operators/'+member+'/role','PATCH',{role:'guest',teamIds:[invited.id]})).status).toBe(200);
+  expect((await request('/api/issues/'+issue.identifier,'GET',undefined,cookie)).status).toBe(404);
+  // The buttons of a DM sent while they were a Member still produce fresh, validly signed requests.
+  const before=await issueState(issue.identifier);
+  expect(await click({action_id:'vector_assign_me',value:issue.identifier+':'+issue.version})).toBe(200);
+  expect(await click({action_id:'vector_change_status',selected_option:{value:issue.identifier+':'+issue.version+':'+started.id}})).toBe(200);
+  expect(await issueState(issue.identifier)).toEqual(before);
+  expect(edge.calls.filter(c=>c.method==='chat.update')).toEqual([]);
+  expect(edge.calls.filter(c=>c.method==='chat.postMessage'&&c.body.thread_ts==='1700000000.000200')).toHaveLength(2);
+  expect(JSON.stringify(edge.calls)).not.toContain('Hidden roadmap');
+ }finally{edge.restore();}
+}
