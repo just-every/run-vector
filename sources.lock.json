@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "9051773a9abe376f96e190201145727ae7b3a7da68b0938edbf36be5ddf38a25",
+      "sha256": "b81412649dd0b7a9aa21411aaf6d0746d9ae172c4213fa1df247225fdc5bcf56",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "6d9d6c2ec8ba12cc50bd19405ae1ef674730c8a9fffe096a8b3496b784b1408d",
+      "sha256": "98fc8fd056e4b3483e83084c8a9844e142730d0ea9c306c2df735f8e1d9bbb0c",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "b6db1a03ef40503d547218df33c4b35a768e2de24e1ba5a1926974941d3b6cfa",
+      "sha256": "e2c0adab26b38df182ae3329a31478c1b7b05e3dc3fee6778d742c1fdf316e3e",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4149,11 +4149,15 @@
       "executable": false
     },
     "src/core/features/insights/page.tsx": {
-      "sha256": "f2cabce9eb259f08e66f220684f1aecd21172279d8c1a48d715c6eb355541bf7",
+      "sha256": "bde37b71ad9134517f12a688caa44955189d10f1041bb67339bffd1948a9598f",
       "executable": false
     },
     "src/core/features/insights/read.ts": {
       "sha256": "19ce4fe486da86c38a5a7271526f2b9f3207fcf021f4a00628e0d00648ff367e",
+      "executable": false
+    },
+    "src/core/features/insights/README.md": {
+      "sha256": "ed15b1abbb75ab8b7bc9dc5e00aacaaae0ddec8cc58021bf2e1c6e4be51a563a",
       "executable": false
     },
     "src/core/features/insights/routes.ts": {
@@ -6533,7 +6537,7 @@
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
-      "sha256": "ce7d57dad5d352a8aa3c55c131da7ad3e6e6db6a7f6d01ae2386610c836ece17",
+      "sha256": "6bc95544d7dc702381ce3d8fd3529164b67632ab3232eb7ae97ac94c5a52d8b2",
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
