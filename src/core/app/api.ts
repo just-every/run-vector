@@ -1,4 +1,5 @@
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
+import { githubIssueProjection } from '../features/integrations/github-read';
 import { addGithubRuleRoutes } from '../features/integrations/github/rule-routes';
 import { githubBranchName } from '../features/integrations/github/branch-name';
 import { addAuditRoutes } from '../features/audit/routes';
@@ -318,7 +319,9 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       );
       if (!issue)
         throw new IssueAccessError("not_found", "Issue is unavailable.", 404);
-      return context.json({...issue,branchName:githubBranchName(issue.identifier,issue.title)});
+      const deployments=(await githubIssueProjection(context.env.DB,issue.id)).deployments;
+      await requireIssueAccess(context.env.DB,identifier,actor);
+      return context.json({...issue,branchName:githubBranchName(issue.identifier,issue.title),deployments});
     } catch (error) {
       if (!(error instanceof IssueAccessError)) throw error;
       return context.json(
