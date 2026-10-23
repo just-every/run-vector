@@ -5965,7 +5965,7 @@
       "executable": false
     },
     "src/routes/app.releases.$releaseId.tsx": {
-      "sha256": "3e098ae5adfcfb8a63026a963533aa7d5604f8da33d8fbd6fafe72bc954a2c30",
+      "sha256": "35cda6f0e56097597681c48146a0e0cd6d0499c33bbfd92c82a396c842bc7c70",
       "executable": false
     },
     "src/routes/app.releases.index.tsx": {
@@ -7269,11 +7269,11 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "6c6f9bfa1050cab8eb7a8a4b6dc59c236cd68de2a3fbb7bf72db2fe67c3df259",
+      "sha256": "fe40239f7804d5f8db6dffdc98c41ef60eb853e0d4e15b59ec0e6f3802c00e7d",
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "6eae1ced5d9d48b481985fc701b8d7cf36f2cf583cf7ac0b14b70f86ba834e83",
+      "sha256": "7c9f9a523de60201150ff3775a6899ad2c3c532ef092d31f1efb317b62c37c20",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
