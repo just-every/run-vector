@@ -38,4 +38,4 @@ export const issueEmailSchema = z.object({
 });
 
 export type IssueEmail = z.output<typeof issueEmailSchema>;
-export const emailReplySchema = z.object({ commentId: z.string(), status: z.string(), error: z.string().nullable().optional() });
+export const emailReplySchema = z.object({ commentId: z.string().nullable(), kind: z.string(), status: z.string(), error: z.string().nullable().optional() });

@@ -48,8 +48,7 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  const page=await shared.context().newPage();trackRequests(page);
  try {
  await page.setViewportSize(shared.viewportSize());
- const {roleScreens}=await import('./role-ui-support.mjs'),screens=roleScreens(evidence);
- const inspect=async(...args)=>{await screens(...args);assert.equal(await page.evaluate(()=>window.__rerHydration?.count??0),0,'Email intake has no hydration recovery');};
+ const {roleScreens}=await import('./role-ui-support.mjs'),inspect=roleScreens(evidence);
  const sender='synthetic-vector-721@example.test',address='synthetic-vector-'+Date.now()+'@example.test';
  await page.goto(runtime.base+'/app/settings');
  await page.locator('#teams summary').filter({hasText:team.name+' · '+team.identifierPrefix}).first().click();

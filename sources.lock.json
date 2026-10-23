@@ -4009,7 +4009,7 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/schema.ts": {
-      "sha256": "677e2d4f52a9fa61e894d00a67fd1129e151f4cf416d1272f73847a376ff2b00",
+      "sha256": "9598ab6203cdea543f22eab6a2dc35cc05543d28254238b04a39b57d1ad115f0",
       "executable": false
     },
     "src/core/features/email-intake/ui/team-email-intake.tsx": {
@@ -6261,7 +6261,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "91b5df05142a196fcf61f708f603876c39a128db7cde97a738eb4a77a8a615d1",
+      "sha256": "ff46041d57795d36ed38b63e6867830620400059205ff7308052a3ab8641bd1a",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
