@@ -1,3 +1,4 @@
+import {ProjectTemplateLauncher} from '../../project-templates/controls';
 import { ProjectAppearance } from "./project-appearance";
 import type { Administration } from "../../administration/schema";
 import { ProjectAdministration } from "./project-administration";
@@ -43,6 +44,7 @@ export function ProjectList({
   const ready = useHydrated() && preferenceControls.ready;
   return (
     <>
+      {administration.viewer.role !== "guest" && <ProjectTemplateLauncher onChanged={onChanged} />}
       <div className="project-filters" aria-label="Filter project portfolio">
         <label>
           Lifecycle
