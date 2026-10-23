@@ -2929,7 +2929,7 @@
       "executable": false
     },
     "src/core/app/page-resources.server.ts": {
-      "sha256": "1e420a8cf986e0f14ada33a57dc2f8056e153818c18e1f738299f5ed876e1b7c",
+      "sha256": "37db5efd305dfedd2fc39d6503ed0da6e0ead7b5bd7583fdc48468cf19fb469d",
       "executable": false
     },
     "src/core/app/public-paths.ts": {
@@ -4005,7 +4005,7 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/team-email-intake.tsx": {
-      "sha256": "e04a2ff9cbe41847fd6d5da839faf2091abcafc1541678590550a695126b529e",
+      "sha256": "374b84bdb3ab09299f0ebd06a431440d8c24a75f651c4b17c3a8fa153c32391b",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {

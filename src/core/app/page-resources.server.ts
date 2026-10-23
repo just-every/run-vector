@@ -103,7 +103,11 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
   } else if (path === '/app/cycles') await read('/api/metadata')
   else if (path === '/app/inbox') await read('/api/notifications')
   else if (path === '/app/settings/audit') await read('/api/settings/audit?')
-  else if (path === '/app/settings') await Promise.all(['/api/settings', '/api/settings/administration', '/api/settings/notifications', '/api/settings/integrations', '/api/settings/integrations/tokens', '/api/settings/integrations/tokens/usage', '/api/data/import/runs', '/api/data/restore'].map(read))
+  else if (path === '/app/settings') {
+    const [, administration] = await Promise.all(['/api/settings', '/api/settings/administration', '/api/settings/notifications', '/api/settings/integrations', '/api/settings/integrations/tokens', '/api/settings/integrations/tokens/usage', '/api/data/import/runs', '/api/data/restore'].map(read)) as [unknown, { teams: Array<{ id: string, archivedAt: string | null }> } | null]
+    // Each active team's email intake renders inside its settings at first paint, like the panels above.
+    await Promise.all((administration?.teams ?? []).filter(team => team.archivedAt === null).map(team => read(`/api/settings/teams/${team.id}/email-intake`)))
+  }
   else if (path === '/app/new' || path === '/app/new-issue') await read('/api/options')
   await Promise.all(shared)
   return values

@@ -1,5 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { fetchJson, useApiResource } from "../../../app/api-client";
+import { useViewerTime } from "../../../app/viewer-time";
+import { useHydrated } from "../../../app/initial-resources";
 import { emailSettingsSchema } from "./schema";
 
 type Team = { teamId: string; teamName: string };
@@ -13,6 +15,8 @@ export function TeamEmailIntake({ archived, ...team }: Team & { archived: boolea
 }
 
 function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
+  const { formatInstant } = useViewerTime();
+  const hydrated = useHydrated();
   const path = `/api/settings/teams/${teamId}/email-intake`;
   const resource = useApiResource(path, emailSettingsSchema, undefined, {
     abortPendingOnDispose: false,
@@ -50,7 +54,7 @@ function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
     {data && <>
       {!data.ingressConfigured && <p>Provider routing is not verified by Vector. Confirm the Cloudflare route before forwarding mail.</p>}
       <form aria-label={`Configure email intake for ${teamName}`} onSubmit={save}>
-        <fieldset disabled={pending}>
+        <fieldset disabled={pending || !hydrated}>
           <label className="admin-checkbox"><input type="checkbox" name="enabled" defaultChecked={data.settings.enabled} />Enable email intake</label>
           <label>Private intake address<input type="email" name="address" maxLength={254} defaultValue={data.settings.address} /></label>
           {/* A textarea's saved list is its text content; a wrapping label would carry it in its own text. */}
@@ -67,7 +71,7 @@ function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
       {data.receipts.length > 0 && <details>
         <summary>Recent inbound mail · {data.receipts.length}</summary>
         <ul>{data.receipts.map(receipt => <li key={receipt.id}>
-          <time dateTime={receipt.createdAt}>{new Date(receipt.createdAt).toLocaleString()}</time>{" · "}{receipt.status}
+          <time dateTime={receipt.createdAt}>{formatInstant(receipt.createdAt)}</time>{" · "}{receipt.status}
           {receipt.issueIdentifier && <> · <a href={`/app/issues/${encodeURIComponent(receipt.issueIdentifier)}`}>{receipt.issueIdentifier}</a></>}
           {receipt.error && <> · {receipt.error}</>}
         </li>)}</ul>
