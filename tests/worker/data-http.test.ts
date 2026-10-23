@@ -48,6 +48,12 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const projectHistoryBefore=await env.DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all();
  expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
  expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
+ // Subscription preferences and event history survive; restored pending effects stay behind the destination cutoff.
+ const preference=await f.call('/subscriptions','POST',{subjectType:'team',subjectId:f.team.id});expect(preference.status).toBe(201);
+ const pendingSubscriptionResponse=await request('/api/issues','POST',{teamId:f.team.id,title:'synthetic-vector-1776'},peer);expect(pendingSubscriptionResponse.status).toBe(201);
+ const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
+ const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
+ const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current
  // state-bearing D1 ledger. Neither ledger is application data in the archive.
@@ -63,12 +69,6 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const roles=(db:D1Database)=>db.prepare('SELECT id,email,role FROM operators ORDER BY id').all().then(rows=>rows.results);
  const archivedRoles=await roles(env.DB);
  expect(new Set(archivedRoles.map(row=>row.role))).toEqual(new Set(['owner','admin','member']));
- // Subscription preferences and event history survive; restored pending effects stay behind the destination cutoff.
- const preference=await f.call('/subscriptions','POST',{subjectType:'team',subjectId:f.team.id});expect(preference.status).toBe(201);
- const pendingSubscriptionResponse=await request('/api/issues','POST',{teamId:f.team.id,title:'synthetic-vector-1776'},peer);expect(pendingSubscriptionResponse.status).toBe(201);
- const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
- const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
- const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
