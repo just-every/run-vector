@@ -70,7 +70,7 @@ export function CalendarPage() {
           {feed.canRevoke && <button onClick={() => void change(feed.id, feed.version, false)} disabled={busy}>Revoke feed</button>}
         </article>)}
       </section>
-      <p className="insights-note">Feeds contain event titles and links, never descriptions or comments. Feed credentials are excluded from archives: after restoring, create new feeds. Releases await RELEASE-001.</p>
+      <p className="insights-note">Feeds contain event titles and links, never descriptions or comments. Feed credentials are excluded from archives: after restoring, create new feeds. Release dates are not included yet.</p>
     </>}
   </main>;
 }
