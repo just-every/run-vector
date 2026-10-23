@@ -4,10 +4,13 @@ import { bindings } from './base-auth-fixture';
 // @ts-expect-error Shared native test fixture.
 import { emailEventSigner } from '../email-event-signing.mjs';
 
-export async function proveEmailBounces(f:any,intake:any,commentId:string,providerId:string,ack:any) {
+export async function proveEmailBounces(f:any,intake:any,commentId:string,providerId:string,deliveryId:string,ack:any) {
   const signer=await emailEventSigner(),wrong=await emailEventSigner();
+  const {recordedReply}=await import('./email-intake-fixture');
+  const delayed=await recordedReply(f.cookie,ack.result.identifier,'We will follow up on the delayed delivery.');
+  expect(delayed.response.status).toBe(201);const delayedComment=await delayed.response.json() as any;
   const teamId=f.initial.teams[0].id,path=`/api/integrations/email/${teamId}/events`;
-  const event={event:'bounce',sg_message_id:providerId+'.synthetic-vector-731',email:'synthetic-vector-712@example.test',sg_event_id:'synthetic-vector-732'};
+  const event={event:'bounce',sg_message_id:providerId+'.synthetic-vector-731',rer_delivery_id:deliveryId,email:'synthetic-vector-712@example.test',sg_event_id:'synthetic-vector-732'};
   const app=createServerApp();
   const send=(target:string,wire:any)=>app.request(bindings.APP_ORIGIN+target,{method:'POST',...wire},bindings);
   const read=()=>f.data(f.cookie,`/issues/${intake.identifier}/email-intake`);
@@ -34,10 +37,16 @@ export async function proveEmailBounces(f:any,intake:any,commentId:string,provid
     const bounced=await read();expect(bounced.deliveries.find((d:any)=>d.commentId===commentId).status).toBe('bounced');
     expect((await send(path,await signer.signed([event,{...event,event:'delivered'}]))).status).toBe(200);
     expect(await read()).toEqual(bounced);
-    const ackEvent={...event,event:'dropped',sg_message_id:ack.calls[0].providerId+'.synthetic-vector-736'};
+    const ackEvent={...event,event:'dropped',rer_delivery_id:ack.calls[0].body.custom_args.rer_delivery_id,sg_message_id:ack.calls[0].providerId+'.synthetic-vector-736'};
     expect((await send(path,await signer.signed([ackEvent]))).status).toBe(200);
     const ackState=await f.data(f.cookie,`/issues/${ack.result.identifier}/email-intake`);
     expect(ackState.deliveries.find((d:any)=>d.kind==='acknowledgement').status).toBe('bounced');
+    const delayedEvent={event:'bounce',email:'synthetic-vector-712@example.test','smtp-id':delayed.calls[0].body.headers['Message-ID'],sg_event_id:'synthetic-vector-737'};
+    expect((await send(path,await signer.signed([delayedEvent]))).status).toBe(200);
+    const delayedState=await f.data(f.cookie,`/issues/${ack.result.identifier}/email-intake`);
+    expect(delayedState.deliveries.find((d:any)=>d.commentId===delayedComment.commentId).status).toBe('bounced');
+    expect((await send(path,await signer.signed([{event:'bounce',email:'synthetic-vector-712@example.test'}]))).status).toBe(200);
+    expect(await f.data(f.cookie,`/issues/${ack.result.identifier}/email-intake`)).toEqual(delayedState);
     expect(await f.data(f.bobCookie,'/notifications')).toEqual(notificationBefore);
     expect(outbound).toBe(0);
   } finally {vi.unstubAllGlobals();}

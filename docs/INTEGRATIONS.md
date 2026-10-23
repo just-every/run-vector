@@ -322,8 +322,11 @@ skew. Missing keys, invalid signatures and stale timestamps return 401 without
 changes. See [SendGrid's signature contract](https://www.twilio.com/docs/sendgrid/for-developers/tracking-events/getting-started-event-webhook-security-features).
 
 Vector correlates the stored Mail Send `X-Message-ID` with `sg_message_id`
-(including SendGrid's dot-delimited recipient suffix), then requires exactly one
-send in the route's team and a matching original recipient. Unknown identities
+with the signed `rer_delivery_id` custom argument for suffixed identities, without
+assuming a suffix grammar. Delayed bounces without `sg_message_id` must name the
+exact stored outbound Message-ID in `smtp-id`. Both paths require exactly one
+known send in the route's team and a matching original recipient. Unknown or
+uncorrelatable identities
 are acknowledged without changes or disclosure. A bounce or drop permanently
 shows **bounced** on the comment, or on the requester's acknowledgement outcome;
 repeats and later delivered events cannot reverse it. The callback emits no mail

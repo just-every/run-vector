@@ -88,7 +88,7 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
  const edge=(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').map(line=>JSON.parse(line));
  const sends=edge.filter(row=>row.method==='sendgrid'&&row.body.personalizations[0].to[0].email===sender),send=sends.at(-1),ack=sends.at(-2);assert.ok(send?.providerId);assert.ok(ack?.providerId);
- const wire=await signer.signed([{event:'bounce',sg_event_id:'synthetic-vector-737',sg_message_id:send.providerId+'.synthetic-vector-738',email:sender},{event:'dropped',sg_event_id:'synthetic-vector-739',sg_message_id:ack.providerId+'.synthetic-vector-738',email:sender}]);
+ const wire=await signer.signed([{event:'bounce',sg_event_id:'synthetic-vector-737',sg_message_id:send.providerId+'.synthetic-vector-738',rer_delivery_id:send.body.custom_args.rer_delivery_id,email:sender},{event:'dropped',sg_event_id:'synthetic-vector-739',sg_message_id:ack.providerId+'.synthetic-vector-738',rer_delivery_id:ack.body.custom_args.rer_delivery_id,email:sender}]);
  const bounced=await runtime.req('/api/integrations/email/'+team.id+'/events',{method:'POST',...wire});assert.equal(bounced.status,200);
  await settleReads(page);await page.reload();
  await outcome.getByText('Email delivery: bounced',{exact:false}).waitFor();
