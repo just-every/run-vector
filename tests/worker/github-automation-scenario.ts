@@ -58,3 +58,41 @@ export async function exerciseGithubCommits(f:Awaited<ReturnType<typeof setupInt
  expect(await env.DB.prepare('SELECT count(*) AS n FROM notifications WHERE issue_id=?').bind(issue.id).first<number>('n')).toBe(1);
  expect(await env.DB.prepare('SELECT count(*) AS n FROM operators').first<number>('n')).toBe(authorsBefore);
 }
+
+export async function exerciseGithubDeployments(f:Awaited<ReturnType<typeof setupIntegrations>>,send:Send){
+ const team=f.initial.teams[0],issue=await f.create({title:'synthetic-vector-1730 deployed work'});
+ const statuses=await f.call('/settings/teams/'+team.id+'/statuses','POST',{name:'Shipped',category:'completed'});
+ expect(statuses.status).toBe(200);
+ const shipped=(await f.state()).teams[0].statuses.find(s=>s.name==='Shipped')!;
+ expect((await f.call('/settings/teams/'+team.id,'PATCH',{githubAutomation:{trigger:'deploy',statusId:shipped.id,allowReopen:false,expectedVersion:0,environment:'production'}})).status).toBe(200);
+ const push=(before:string,after:string,forced:boolean,commits:object[])=>({ref:'refs/heads/main',before,after,forced,repository:{full_name:'octocat/test-repo1',default_branch:'main'},commits});
+ const d='d'.repeat(40),e='e'.repeat(40),unknown='f'.repeat(40);
+ const commit={id:d,message:'Fixes '+issue.identifier,author:{name:'synthetic-vector-1731'},url:'https://github.com/octocat/test-repo1/commit/'+d};
+ expect((await send(push('a'.repeat(40),d,false,[commit]),crypto.randomUUID(),false,'push')).status).toBe(200);
+ expect((await send(push(d,e,false,[]),crypto.randomUUID(),false,'push')).status).toBe(200);
+ const deployment=(id:number,sha:string,environment:string,state='success')=>({repository:{full_name:'octocat/test-repo1'},deployment:{id,sha,environment},deployment_status:{state,created_at:'2026-10-11T12:00:00.000Z'}});
+ expect((await send(deployment(801,d,'staging'),crypto.randomUUID(),true,'deployment_status')).status).toBe(401);
+ expect((await send(deployment(801,d,'staging'),crypto.randomUUID(),false,'deployment_status')).status).toBe(200);
+ expect(await env.DB.prepare('SELECT status_id FROM issues WHERE id=?').bind(issue.id).first<string>('status_id')).not.toBe(shipped.id);
+ const production=deployment(802,e,'PrOdUcTiOn'),delivery=crypto.randomUUID();
+ expect((await send(production,delivery,false,'deployment_status')).status).toBe(200);
+ expect(await env.DB.prepare('SELECT status_id FROM issues WHERE id=?').bind(issue.id).first<string>('status_id')).toBe(shipped.id);
+ const detail=await(await f.call('/issues/'+issue.identifier)).json() as {version:number;deployments:{environment:string;deployedAt:string}[]};
+ expect(detail.deployments.map(d=>d.environment).sort()).toEqual(['PrOdUcTiOn','staging']);
+ expect(detail.deployments.every(d=>d.deployedAt==='2026-10-11T12:00:00.000Z')).toBe(true);
+ expect((await send(production,delivery,false,'deployment_status')).status).toBe(200);
+ expect((await send(production,crypto.randomUUID(),false,'deployment_status')).status).toBe(200);
+ expect((await(await f.call('/issues/'+issue.identifier)).json()) as object).toMatchObject({version:detail.version});
+ expect(await env.DB.prepare("SELECT count(*) AS n FROM issue_activity WHERE issue_id=? AND json_extract(next_value_json,'$.trigger')='deploy'").bind(issue.id).first<number>('n')).toBe(1);
+ expect((await send(deployment(802,d,'PrOdUcTiOn'),crypto.randomUUID(),false,'deployment_status')).status).toBe(409);
+ expect((await send(push(e,unknown,true,[]),crypto.randomUUID(),false,'push')).status).toBe(200);
+ expect((await send(deployment(803,unknown,'production'),crypto.randomUUID(),false,'deployment_status')).status).toBe(200);
+ expect((await send(deployment(804,unknown,'staging','failure'),crypto.randomUUID(),false,'deployment_status')).status).toBe(200);
+ expect(await env.DB.prepare('SELECT count(*) AS n FROM github_issue_environments WHERE deployment_id IN(803,804)').first<number>('n')).toBe(0);
+ // The first PR-only issue is also included by its retained merge SHA.
+ const prOnly=await env.DB.prepare('SELECT id,identifier FROM issues WHERE title=?').bind('synthetic-vector-1701 checkout').first<{id:string;identifier:string}>();
+ expect(prOnly).not.toBeNull();
+ expect((await send(deployment(805,'a'.repeat(40),'staging'),crypto.randomUUID(),false,'deployment_status')).status).toBe(200);
+ const projection=await(await f.call('/issues/'+prOnly!.identifier+'/github')).json() as {deployments:{deploymentId:number}[]};
+ expect(projection.deployments.some(d=>d.deploymentId===805)).toBe(true);
+}

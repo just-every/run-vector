@@ -3,13 +3,13 @@ import { followerChangeStatements, blockerStatements, finalizeEvent } from '../.
 export const gitTriggers=['draft','review','merged','deploy'] as const;
 export type GitTrigger=typeof gitTriggers[number];
 const defaults={draft:'in progress',review:'in review',merged:'done',deploy:null};
-export type GitRule={statusId:string|null;allowReopen:number;version:number};
+export type GitRule={statusId:string|null;allowReopen:number;version:number;environment:string};
 export const gitGuard=(db:D1Database,sql:string,...values:(string|number|null)[])=>db.prepare(`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('github transaction denied') END`).bind(...values);
 export async function gitRule(db:D1Database,team:string,trigger:GitTrigger):Promise<GitRule>{
- const configured=await db.prepare('SELECT status_id AS statusId,allow_reopen AS allowReopen,version FROM github_automation_rules WHERE team_id=? AND trigger=?').bind(team,trigger).first<GitRule>();
+ const configured=await db.prepare('SELECT status_id AS statusId,allow_reopen AS allowReopen,version,production_environment AS environment FROM github_automation_rules WHERE team_id=? AND trigger=?').bind(team,trigger).first<GitRule>();
  if(configured)return configured;
  const status=defaults[trigger] ? await db.prepare('SELECT id FROM workflow_statuses WHERE team_id=? AND lower(name)=? ORDER BY position,id LIMIT 1').bind(team,defaults[trigger]).first<{id:string}>():null;
- return {statusId:status?.id??null,allowReopen:0,version:0};
+ return {statusId:status?.id??null,allowReopen:0,version:0,environment:'production'};
 }
 /** Prepared inside the signed delivery transaction; receipt, move and notices
  * commit together. The actor is a system identity, never the webhook sender. */

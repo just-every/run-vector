@@ -11,12 +11,13 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
  try{
   const initial=await call('/settings/administration'),current=initial.teams.find(t=>t.id===team.id);
   if(!current.statuses.some(s=>s.name==='In Review'))await call('/settings/teams/'+team.id+'/statuses','POST',{name:'In Review',category:'started'});
+  if(!current.statuses.some(s=>s.name==='Shipped'))await call('/settings/teams/'+team.id+'/statuses','POST',{name:'Shipped',category:'completed'});
   const state=await call('/settings/administration'),statuses=state.teams.find(t=>t.id===team.id).statuses;
-  const review=statuses.find(s=>s.name==='In Review'),started=statuses.find(s=>s.category==='started'),done=statuses.find(s=>s.category==='completed');
+  const shipped=statuses.find(s=>s.name==='Shipped'),review=statuses.find(s=>s.name==='In Review'),started=statuses.find(s=>s.category==='started'),done=statuses.find(s=>s.category==='completed');
   const config=await call('/settings/integrations/github','POST',{name:'synthetic-vector-1710 '+width,repository:'synthetic-vector-1710/chain-'+width},201);
   await page.setViewportSize({width,height:900});await navigate(page,runtime.base+'/app/settings');
   const rules=page.getByRole('region',{name:'Git automation rules',exact:true});await rules.getByText(team.name+' Git automation',{exact:true}).click();
-  for(const [trigger,label,status] of [['draft','Draft PR opened',started.id],['review','Review requested',review.id],['merged','PR merged',done.id]]){
+  for(const [trigger,label,status] of [['draft','Draft PR opened',started.id],['review','Review requested',review.id],['merged','PR merged',done.id],['deploy','Production deployed',shipped.id]]){
    await rules.getByLabel(team.name+' '+label+' status',{exact:true}).selectOption(status);
    const saved=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/settings/teams/'+team.id);
    await rules.getByRole('button',{name:'Save '+label+' rule',exact:true}).click();assert.equal((await saved).status(),200);
@@ -57,6 +58,18 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   const git=page.getByRole('region',{name:'GitHub links',exact:true});
   for(const commit of commitRows){await git.getByRole('link',{name:commit.message,exact:true}).waitFor();await git.getByText('· '+commit.author.name+' · '+commit.id.slice(0,7),{exact:true}).waitFor();}
   await inspect(page,git,'github-commits-'+width);
+  const afterSha='e'.repeat(40);
+  await send({ref:'refs/heads/main',before:'c'.repeat(40),after:afterSha,forced:false,repository:push.repository,commits:[]},randomUUID(),'push');
+  const deployed=(id,sha,environment)=>({repository:push.repository,deployment:{id,sha,environment},deployment_status:{state:'success',created_at:'2026-10-11T12:00:00.000Z'}});
+  await send(deployed(901,'c'.repeat(40),'staging'),randomUUID(),'deployment_status');
+  const prod=deployed(902,afterSha,'production'),deploymentId=randomUUID();await send(prod,deploymentId,'deployment_status');
+  const deployedIssue=await call('/issues/'+committed.identifier);assert.equal(deployedIssue.status.id,shipped.id);assert.equal(deployedIssue.deployments.length,2);
+  await send(prod,deploymentId,'deployment_status');assert.equal((await call('/issues/'+committed.identifier)).version,deployedIssue.version);
+  await navigate(page,runtime.base+'/app/issues/'+committed.identifier);
+  await git.getByRole('heading',{name:'Deployments',exact:true}).waitFor();
+  await git.getByText('staging ·',{exact:false}).waitFor();await git.getByText('production ·',{exact:false}).waitFor();
+  assert.equal(await git.locator('time[datetime="2026-10-11T12:00:00.000Z"]').count(),2);
+  await inspect(page,git,'github-deployments-'+width);
   // Native Guest invitation and confirmation in this disposable test workspace.
   const email='synthetic-vector-1712-'+width+'@example.test';
   await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1712',email,role:'guest',teamIds:[team.id]},202);

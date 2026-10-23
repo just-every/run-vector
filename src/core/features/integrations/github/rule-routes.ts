@@ -7,7 +7,7 @@ import {loadAuthority} from '../../roles/authority';
 import {decide} from '../../roles/policy';
 import {IntegrationError} from '../errors';
 import {gitRule,gitTriggers,gitGuard} from './rules';
-const input=z.object({githubAutomation:z.object({trigger:z.enum(gitTriggers),statusId:z.string().length(26).nullable(),allowReopen:z.boolean(),expectedVersion:z.number().int().min(0)}).strict()}).strict();
+const input=z.object({githubAutomation:z.object({trigger:z.enum(gitTriggers),statusId:z.string().length(26).nullable(),allowReopen:z.boolean(),expectedVersion:z.number().int().min(0),environment:z.string().trim().min(1).max(200).optional()}).strict()}).strict();
 export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
  app.get('/github/automation',async c=>{
   const actor=c.get('operatorId'),workspace=c.get('operator').workspaceId;
@@ -34,7 +34,7 @@ export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
   if(rule.statusId&&!await db.prepare("SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category IN ('backlog','unstarted','started','completed','canceled')").bind(rule.statusId,team).first())throw new IntegrationError(400,'invalid_github_status');
   const current=await gitRule(db,team,rule.trigger);if(current.version!==rule.expectedVersion)throw new IntegrationError(409,'stale_github_rule');
   await db.batch([gitGuard(db,'COALESCE((SELECT version FROM github_automation_rules WHERE team_id=? AND trigger=?),0)=?',team,rule.trigger,rule.expectedVersion),
-   db.prepare('INSERT INTO github_automation_rules(team_id,trigger,status_id,allow_reopen,version,updated_at) VALUES(?,?,?,?,1,?) ON CONFLICT(team_id,trigger) DO UPDATE SET status_id=excluded.status_id,allow_reopen=excluded.allow_reopen,version=github_automation_rules.version+1,updated_at=excluded.updated_at').bind(team,rule.trigger,rule.statusId,Number(rule.allowReopen),at),
+   db.prepare('INSERT INTO github_automation_rules(team_id,trigger,status_id,allow_reopen,version,updated_at,production_environment) VALUES(?,?,?,?,1,?,?) ON CONFLICT(team_id,trigger) DO UPDATE SET status_id=excluded.status_id,allow_reopen=excluded.allow_reopen,version=github_automation_rules.version+1,updated_at=excluded.updated_at,production_environment=excluded.production_environment').bind(team,rule.trigger,rule.statusId,Number(rule.allowReopen),at,rule.environment??current.environment),
    ...audit({db,actor:c.get('operatorId'),workspace:c.get('operator').workspaceId,at},'team.github_rule_changed',team,rule.trigger,current,rule)]);
   return c.json({saved:true,rule:await gitRule(db,team,rule.trigger)});
  });
