@@ -1,3 +1,4 @@
+import { requestLedger } from './core-request-ledger.mjs';
 import { intakePolicyJourney } from './core-intake-policy-journey.mjs';
 import { projectMembershipJourney } from './core-project-membership-journey.mjs';
 import { currentDisjointJourney } from './core-current-disjoint-journey.mjs';
@@ -1622,7 +1623,7 @@ try {
   sql(`UPDATE operators SET name='Sarah Chen' WHERE id='${ids.sarah}'`);
   await writeFile(
     evidence + "/runtime-results.json",
-    JSON.stringify({ passed: true, results, documents }, null, 2),
+    JSON.stringify({ passed: true, results, documents, requestLedger: requestLedger(sql) }, null, 2),
   );
   console.log(
     JSON.stringify({ passed: true, checks: results.length, evidence }, null, 2),
