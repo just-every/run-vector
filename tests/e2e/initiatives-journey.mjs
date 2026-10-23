@@ -24,7 +24,7 @@ export async function initiativesJourney({page:shared,runtime,evidence}){
    await form.getByLabel('Target date',{exact:true}).fill('2027-04-01');await form.getByLabel('Description',{exact:true}).fill('synthetic-vector-1793 across teams');
    await capture(parentId?'initiative-create-child':'initiative-create-root');
    const created=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/initiatives');await form.getByRole('button',{name:'Create initiative',exact:true}).click();assert.equal((await created).status(),201);const node=await(await created).json();
-   await page.getByRole('heading',{name,exact:true}).waitFor();return node;
+   await page.getByRole('heading',{name,exact:true,level:1}).waitFor();return node;
   };
   const root=await create('synthetic-vector-1794-'+width),child=await create('synthetic-vector-1795-'+width,root.id);
   await page.getByText('Choose projects',{exact:true}).click();
@@ -46,7 +46,7 @@ export async function initiativesJourney({page:shared,runtime,evidence}){
   await page.getByText('Edit initiative',{exact:true}).click();
   const edit=page.getByRole('form',{name:'Edit initiative',exact:true});await edit.getByLabel('Initiative status',{exact:true}).selectOption('active');
   const saved=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);
-  await edit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await saved).status(),200);await page.getByText('Active · Owner:',{exact:false}).waitFor();await capture('initiative-active');
+  await edit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await saved).status(),200);await page.locator('header').getByText('Active · Owner:',{exact:false}).waitFor();await capture('initiative-active');
   const email='synthetic-vector-1798-'+width+'@example.test';
   await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1798',email,role:'member'},202);
   const signed=await confirmLink(await readDevelopmentLink(base,null,email,runtime.state));assert.equal(signed.status,303);
