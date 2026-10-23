@@ -16,7 +16,7 @@ Each team has its own identifier prefix (like `FLW`) and its own workflow. A new
 
 ## Labels
 
-Owners and Admins create, rename, recolour and delete labels in **Settings → Labels**. Deleting a label removes it from issues and from saved views.
+Owners and Admins create, rename, recolour and delete labels in **Settings → Labels**. Merging a workspace label into another rewrites issues, projects and saved-view filters in one transaction. A destination used by projects must have project use enabled. Deleting a label removes it from issues and from saved views.
 
 Members can open **Settings → Labels** to read workspace label names and colours. This read-only list offers no creation, rename, recolour or deletion controls; workspace label management remains with Owners and Admins. Members create labels from an issue’s Labels picker instead. Owners and Admins can change **Who may create labels** in Settings → Labels to restrict creation to themselves; the next browser, session or scoped API creation request follows that permission.
 

@@ -58,6 +58,30 @@ export async function deleteAppliedLabel({
 }) {
   const { base, sql } = runtime;
   const view = await insertPrivateViewFixture(runtime, label);
+  const made = await page.request.post(base+"/api/settings/labels",{headers:{Origin:base},data:{name:"synthetic-vector-merge-target",color:"#224466"}});
+  assert.equal(made.status(),200);
+  const destination = (await made.json()).labels.find(row=>row.name==="synthetic-vector-merge-target");
+  const second = await page.request.post(base+"/api/issues",{headers:{Origin:base},data:{title:"synthetic-vector-merge-second",teamId:issue.team_id,labelIds:[label.id,destination.id]}});
+  assert.equal(second.status(),201);
+  const secondIssue = await second.json();
+  await beforePrivateNavigation(page,base+"/app/settings");
+  await page.goto(base+"/app/settings");
+  await openAdministrationForm(page,"Edit label "+label.name);
+  const merge=page.getByRole("form",{name:"Merge label "+label.name,exact:true});
+  await merge.getByLabel("Merge into",{exact:true}).selectOption(destination.id);
+  const {roleScreens}=await import("./role-ui-support.mjs");
+  await roleScreens(".artifacts/verification/admin-browser")(page,merge,"label-merge");
+  const merged=page.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/labels/${label.id}/merge`);
+  await merge.getByRole("button",{name:"Merge label",exact:true}).click();
+  assert.equal((await merged).status(),200);
+  assert.equal(sql(`SELECT count(*) n FROM labels WHERE id='${label.id}'`)[0].n,0);
+  for (const id of [issue.id,secondIssue.id]) {
+    assert.equal(sql(`SELECT count(*) n FROM issue_labels WHERE issue_id='${id}' AND label_id='${destination.id}'`)[0].n,1);
+    assert.equal(sql(`SELECT count(*) n FROM issue_activity WHERE issue_id='${id}' AND kind='label.merged'`)[0].n,1);
+  }
+  const rewritten=JSON.parse(sql(`SELECT filters_json FROM saved_views WHERE id='${view.id}'`)[0].filters_json);
+  assert.deepEqual(rewritten,{...view.filters,labelIds:[destination.id]});
+  label=destination;
 
   await beforePrivateNavigation(page, base + "/app/settings");
   await page.goto(base + "/app/settings");

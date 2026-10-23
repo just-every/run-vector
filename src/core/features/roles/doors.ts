@@ -157,6 +157,7 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/issues/:identifier', row: 'issues.delete-permanent', teams: issue },
   { method: 'PUT', path: '/settings/labels/creation', row: 'workspace.settings' },
   { method: 'POST', path: '/settings/labels', row: 'labels.create' },
+  { method: 'POST', path: '/settings/labels/:id/merge', row: 'labels.manage' },
   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
   // Intake and triage

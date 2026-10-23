@@ -43,12 +43,11 @@ export function LabelsPanel({
         await action.run("/api/settings/labels/creation", "PUT", {membersMayCreate: new FormData(event.currentTarget).get("membersMayCreate") === "members"});
       }}>
         <fieldset disabled={action.pending || !hydrated}>
-          <label>Who may create labels
-            <select name="membersMayCreate" key={String(memberLabelCreation)} defaultValue={memberLabelCreation ? "members" : "admins"}>
+          <label htmlFor="label-creation-permission">Who may create labels</label>
+            <select id="label-creation-permission" name="membersMayCreate" key={String(memberLabelCreation)} defaultValue={memberLabelCreation ? "members" : "admins"}>
               <option value="members">Members too</option>
               <option value="admins">Owners and Admins only</option>
             </select>
-          </label>
           <button>Save label permission</button>
         </fieldset>
       </form>}
@@ -70,16 +69,18 @@ export function LabelsPanel({
       {labels.map((label) => (
         readOnly
           ? <p key={label.id}><LabelChip name={label.name} color={label.color} /></p>
-          : <LabelEditor key={label.id} label={label} onChanged={onChanged} />
+          : <LabelEditor key={label.id} label={label} labels={labels} onChanged={onChanged} />
       ))}
     </section>
   );
 }
 function LabelEditor({
   label,
+  labels,
   onChanged,
 }: {
   label: Administration["labels"][number];
+  labels: Administration["labels"];
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
@@ -129,6 +130,20 @@ function LabelEditor({
           >
             Delete label
           </button>
+        </fieldset>
+      </form>
+      <form aria-label={`Merge label ${label.name}`} onSubmit={async event => {
+        event.preventDefault();
+        await action.run(`/api/settings/labels/${label.id}/merge`, "POST", {destinationLabelId: new FormData(event.currentTarget).get("destinationLabelId")});
+      }}>
+        <fieldset disabled={action.pending || !hydrated}>
+          <label htmlFor={`merge-label-${label.id}`}>Merge into</label>
+            <select id={`merge-label-${label.id}`} name="destinationLabelId" required defaultValue="">
+              <option value="" disabled>Choose destination label</option>
+              {labels.filter(candidate=>candidate.id!==label.id).map(candidate=><option key={candidate.id} value={candidate.id}>{candidate.name}</option>)}
+            </select>
+          <p>Merging relabels issues, projects and saved-view filters and removes this label.</p>
+          <button>Merge label</button>
         </fieldset>
       </form>
       {confirm && (
