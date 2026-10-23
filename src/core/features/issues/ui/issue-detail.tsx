@@ -1,5 +1,3 @@
-import { TooltipScope } from '../../../ui/tooltip';
-import { ReactionsProvider } from '../../reactions/ui/context';
 import { IssueCopyAction } from "../../issue-copy/ui";
 import { Subissues } from "../../subissues/ui/subissues";
 import { IssueDescription } from "../../description-history/ui/description";
@@ -122,14 +120,14 @@ export function IssueDetail({
           </button>
         </div>
       ) : null}
-      <TooltipScope><ReactionsProvider key={identifier} identifier={identifier}><IssueInspector
+      <IssueInspector
         issue={committed?.identifier===detail.data.identifier&&committed.version>detail.data.version?committed:detail.data}
         onBack={onBack}
         onRefresh={refresh}
         options={options.data}
         onDeleted={receipt=>{onChanged?.();window.dispatchEvent(new Event("vector:issues-changed"));window.dispatchEvent(new CustomEvent("vector:issue-deleted",{detail:receipt}));if(onBack)onBack();else void navigate({to:"/app/issues"});}}
         optionsError={options.error}
-      /></ReactionsProvider></TooltipScope>
+      />
     </>
   );
 }

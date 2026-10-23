@@ -1,4 +1,3 @@
-import { exerciseReactions } from './reaction-scenario';
 import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
@@ -29,8 +28,8 @@ async function threadFixture() {
 
 contractWith(
   it,
-  "ISSUE-008 ISSUE-017",
-  "replies form ordered threads with silent member reactions; resolving names who and when; a new reply or reopen clears it",
+  "ISSUE-008",
+  "replies form ordered threads; resolving names who and when; a new reply or reopen clears it",
   async () => {
     const { f, issue, post, comments, kinds, names } = await threadFixture();
     const root = await post(f.cookie, "Which browser fails?");
@@ -62,7 +61,6 @@ contractWith(
     expect((await resolve(f.bobCookie, false)).status).toBe(200);
     expect((await comments())[0]).toMatchObject({ resolvedAt: null });
     expect((await kinds()).map((row) => row.kind)).toEqual(["thread.resolved", "thread.reopened", "thread.resolved", "thread.reopened"]);
-    await exerciseReactions({f,issue,commentId:root});
   },
 );
 

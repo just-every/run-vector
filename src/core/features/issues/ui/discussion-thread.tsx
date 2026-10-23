@@ -1,4 +1,3 @@
-import { Reactions } from '../../reactions/ui/reactions';
 import { useState } from "react";
 import type { z } from "zod";
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
@@ -155,7 +154,6 @@ function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChang
               {c.body ?? ""}
             </SafeMarkdown>
           </div>
-          <Reactions subjectId={c.id} label={`comment by ${c.actor}`} />
           <NamedLinks identifier={identifier} commentId={c.id} links={data.links} onRefresh={onLinksChanged} />
           {email && <CommentEmailDetails email={email} commentId={c.id} identifier={identifier} />}
           {c.canEdit ? (

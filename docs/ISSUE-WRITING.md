@@ -16,11 +16,3 @@ The native authenticated API provides:
 The same paths under `/api/v1` admit scoped API tokens: history requires `issues:read`, description restores/ticks require `issues:write`, and comment ticks require `comments:write`. Native requests retain session and same-origin checks. Changed or stale targets return 409; another author's comment tick returns 403. Archives carry revisions and Markdown; issue deletion removes the revision content, and member erasure anonymizes revision authors.
 
 Inline image/video commands, templates, documents, native mobile editing and live collaborative editing remain contract gaps. Existing Attach file controls remain available in issue discussion. Remote Markdown images still load only when a reader asks, and raw HTML is never rendered.
-
-Use **Add reaction** beneath a description or comment to choose an emoji or enter
-another emoji. Select your reaction again to remove it. Its count shows everyone
-who reacted on hover or keyboard focus. Owners, Admins and Members can react;
-Guests can read reactions on visible issues. Reactions create no notification,
-refresh in other open sessions within five seconds, and survive portable export
-and restore. Removed members appear under the same anonymous name as their
-comments. Slack thread reaction sync remains dependent on SLACK-002.
