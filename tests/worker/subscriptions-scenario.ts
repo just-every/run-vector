@@ -43,6 +43,15 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  expect(await notices(cara,hidden.identifier)).toHaveLength(0);
  for(const sub of subscriptions)await read(await bob('/subscriptions/'+sub.id,'DELETE'));
  const second=await f.create({title:'synthetic-vector-1766',labelIds:[label.id],projectId:project.id});expect(await notices(bob,second.identifier)).toHaveLength(0);
+ // Each subject independently admits a new match and a status change; overlapping subscriptions above still deduplicate.
+ for(const [subjectType,subjectId] of subjects){
+  const isolated=await read(await bob('/subscriptions','POST',{subjectType,subjectId}),201);
+  const issue=await f.create({title:'synthetic-vector-1769-'+subjectType,labelIds:[label.id],projectId:project.id});
+  expect(await notices(bob,issue.identifier)).toHaveLength(1);
+  await read(await f.call('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:started.id}));
+  expect(await notices(bob,issue.identifier)).toHaveLength(2);
+  await read(await bob('/subscriptions/'+isolated.id,'DELETE'));
+ }
  // A fresh subscription never backfills the second issue.
  const teamSub=await read(await bob('/subscriptions','POST',{subjectType:'team',subjectId:team.id}),201);
  expect(await notices(bob,second.identifier)).toHaveLength(0);
