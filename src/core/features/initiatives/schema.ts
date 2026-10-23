@@ -1,0 +1,12 @@
+import {z} from 'zod';
+export const initiativeStatuses=['planned','active','completed'] as const;
+export const initiativeNames={planned:'Planned',active:'Active',completed:'Completed'};
+export const initiativeInput=z.object({name:z.string().trim().min(1).max(200),ownerOperatorId:z.string().length(26),parentId:z.string().length(26).nullable().default(null),description:z.string().max(100000).default(''),targetDate:z.iso.date().nullable().default(null),status:z.enum(initiativeStatuses).default('planned')}).strict();
+export const initiativeEdit=initiativeInput.partial().extend({expectedVersion:z.number().int().positive()}).strict();
+export const initiativeProjects=z.object({expectedVersion:z.number().int().positive(),projectIds:z.array(z.string().length(26)).max(200)}).strict();
+export const initiativeRecord=z.object({id:z.string(),workspaceId:z.string(),parentId:z.string().nullable(),ownerOperatorId:z.string(),ownerName:z.string(),name:z.string(),description:z.string(),targetDate:z.string().nullable(),status:z.enum(initiativeStatuses),version:z.number()});
+export const initiativeList=z.object({initiatives:z.array(initiativeRecord)});
+export const initiativeProject=z.object({id:z.string(),name:z.string(),teams:z.array(z.string())});
+export const initiativeNode=initiativeRecord.extend({depth:z.number(),projects:z.array(initiativeProject)});
+export const initiativeDetail=initiativeRecord.extend({nodes:z.array(initiativeNode)});
+export type Initiative=z.infer<typeof initiativeRecord>;

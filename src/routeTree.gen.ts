@@ -30,6 +30,8 @@ import { Route as AppCurrentIndexRouteImport } from './routes/app.current.index'
 import { Route as AppCurrentIdentifierRouteImport } from './routes/app.current.$identifier'
 import { Route as AppCyclesIndexRouteImport } from './routes/app.cycles.index'
 import { Route as AppCyclesCycleIdRouteImport } from './routes/app.cycles.$cycleId'
+import { Route as AppInitiativesIndexRouteImport } from './routes/app.initiatives.index'
+import { Route as AppInitiativesInitiativeIdRouteImport } from './routes/app.initiatives.$initiativeId'
 import { Route as AppIssuesIndexRouteImport } from './routes/app.issues.index'
 import { Route as AppIssuesIdentifierRouteImport } from './routes/app.issues.$identifier'
 import { Route as AppMyWorkIndexRouteImport } from './routes/app.my-work.index'
@@ -152,6 +154,17 @@ const AppCyclesCycleIdRoute = AppCyclesCycleIdRouteImport.update({
   path: '/cycles/$cycleId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInitiativesIndexRoute = AppInitiativesIndexRouteImport.update({
+  id: '/initiatives/',
+  path: '/initiatives/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInitiativesInitiativeIdRoute =
+  AppInitiativesInitiativeIdRouteImport.update({
+    id: '/initiatives/$initiativeId',
+    path: '/initiatives/$initiativeId',
+    getParentRoute: () => AppRoute,
+  } as any)
 const AppIssuesIndexRoute = AppIssuesIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -256,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/app/board/$identifier': typeof AppBoardIdentifierRoute
   '/app/current/$identifier': typeof AppCurrentIdentifierRoute
   '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
+  '/app/initiatives/$initiativeId': typeof AppInitiativesInitiativeIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/my-work/activity': typeof AppMyWorkActivityRoute
@@ -267,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
   '/app/cycles/': typeof AppCyclesIndexRoute
+  '/app/initiatives/': typeof AppInitiativesIndexRoute
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
@@ -291,6 +306,7 @@ export interface FileRoutesByTo {
   '/app/board/$identifier': typeof AppBoardIdentifierRoute
   '/app/current/$identifier': typeof AppCurrentIdentifierRoute
   '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
+  '/app/initiatives/$initiativeId': typeof AppInitiativesInitiativeIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/my-work/activity': typeof AppMyWorkActivityRoute
@@ -302,6 +318,7 @@ export interface FileRoutesByTo {
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current': typeof AppCurrentIndexRoute
   '/app/cycles': typeof AppCyclesIndexRoute
+  '/app/initiatives': typeof AppInitiativesIndexRoute
   '/app/issues': typeof AppIssuesIndexRoute
   '/app/my-work': typeof AppMyWorkIndexRoute
   '/app/projects': typeof AppProjectsIndexRoute
@@ -331,6 +348,7 @@ export interface FileRoutesById {
   '/app/board/$identifier': typeof AppBoardIdentifierRoute
   '/app/current/$identifier': typeof AppCurrentIdentifierRoute
   '/app/cycles/$cycleId': typeof AppCyclesCycleIdRoute
+  '/app/initiatives/$initiativeId': typeof AppInitiativesInitiativeIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/my-work/activity': typeof AppMyWorkActivityRoute
@@ -342,6 +360,7 @@ export interface FileRoutesById {
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
   '/app/cycles/': typeof AppCyclesIndexRoute
+  '/app/initiatives/': typeof AppInitiativesIndexRoute
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
@@ -372,6 +391,7 @@ export interface FileRouteTypes {
     | '/app/board/$identifier'
     | '/app/current/$identifier'
     | '/app/cycles/$cycleId'
+    | '/app/initiatives/$initiativeId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
     | '/app/my-work/activity'
@@ -383,6 +403,7 @@ export interface FileRouteTypes {
     | '/app/views/$viewId'
     | '/app/current/'
     | '/app/cycles/'
+    | '/app/initiatives/'
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
@@ -407,6 +428,7 @@ export interface FileRouteTypes {
     | '/app/board/$identifier'
     | '/app/current/$identifier'
     | '/app/cycles/$cycleId'
+    | '/app/initiatives/$initiativeId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
     | '/app/my-work/activity'
@@ -418,6 +440,7 @@ export interface FileRouteTypes {
     | '/app/views/$viewId'
     | '/app/current'
     | '/app/cycles'
+    | '/app/initiatives'
     | '/app/issues'
     | '/app/my-work'
     | '/app/projects'
@@ -446,6 +469,7 @@ export interface FileRouteTypes {
     | '/app/board/$identifier'
     | '/app/current/$identifier'
     | '/app/cycles/$cycleId'
+    | '/app/initiatives/$initiativeId'
     | '/app/issues/$identifier'
     | '/app/my-work/$identifier'
     | '/app/my-work/activity'
@@ -457,6 +481,7 @@ export interface FileRouteTypes {
     | '/app/views/$viewId'
     | '/app/current/'
     | '/app/cycles/'
+    | '/app/initiatives/'
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
@@ -622,6 +647,20 @@ declare module '@tanstack/react-router' {
       path: '/cycles/$cycleId'
       fullPath: '/app/cycles/$cycleId'
       preLoaderRoute: typeof AppCyclesCycleIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/initiatives/': {
+      id: '/app/initiatives/'
+      path: '/initiatives'
+      fullPath: '/app/initiatives/'
+      preLoaderRoute: typeof AppInitiativesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/initiatives/$initiativeId': {
+      id: '/app/initiatives/$initiativeId'
+      path: '/initiatives/$initiativeId'
+      fullPath: '/app/initiatives/$initiativeId'
+      preLoaderRoute: typeof AppInitiativesInitiativeIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/issues/': {
@@ -845,11 +884,13 @@ interface AppRouteChildren {
   AppSettingsRoute: typeof AppSettingsRoute
   AppIndexRoute: typeof AppIndexRoute
   AppCyclesCycleIdRoute: typeof AppCyclesCycleIdRoute
+  AppInitiativesInitiativeIdRoute: typeof AppInitiativesInitiativeIdRoute
   AppProjectsProjectIdRoute: typeof AppProjectsProjectIdRoute
   AppReleasesReleaseIdRoute: typeof AppReleasesReleaseIdRoute
   AppSettingsAuditRoute: typeof AppSettingsAuditRoute
   AppViewsViewIdRoute: typeof AppViewsViewIdRouteWithChildren
   AppCyclesIndexRoute: typeof AppCyclesIndexRoute
+  AppInitiativesIndexRoute: typeof AppInitiativesIndexRoute
   AppProjectsIndexRoute: typeof AppProjectsIndexRoute
   AppReleasesIndexRoute: typeof AppReleasesIndexRoute
 }
@@ -866,11 +907,13 @@ const AppRouteChildren: AppRouteChildren = {
   AppSettingsRoute: AppSettingsRoute,
   AppIndexRoute: AppIndexRoute,
   AppCyclesCycleIdRoute: AppCyclesCycleIdRoute,
+  AppInitiativesInitiativeIdRoute: AppInitiativesInitiativeIdRoute,
   AppProjectsProjectIdRoute: AppProjectsProjectIdRoute,
   AppReleasesReleaseIdRoute: AppReleasesReleaseIdRoute,
   AppSettingsAuditRoute: AppSettingsAuditRoute,
   AppViewsViewIdRoute: AppViewsViewIdRouteWithChildren,
   AppCyclesIndexRoute: AppCyclesIndexRoute,
+  AppInitiativesIndexRoute: AppInitiativesIndexRoute,
   AppProjectsIndexRoute: AppProjectsIndexRoute,
   AppReleasesIndexRoute: AppReleasesIndexRoute,
 }
@@ -888,12 +931,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
