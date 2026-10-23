@@ -20,5 +20,8 @@ try {
  });
  await insightsJourney(page,context,runtime,output);
  await calendarFeedsJourney(page,context,runtime,output);
-} catch(error){if(page)await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
+} catch(error){
+ if(page){await page.locator('input[aria-label="New feed URL"]').evaluateAll(inputs=>inputs.forEach(input=>input.value='Feed URL omitted')).catch(()=>{});await page.screenshot({path:output+'/failure.png'}).catch(()=>{});}
+ throw new Error(String(error.stack??error).replace(/\/calendar\/feed\/[a-f0-9]{64}/g,'/calendar/feed/[redacted]'));
+}
 finally{if(browser)await browser.close();await runtime.stop();}
