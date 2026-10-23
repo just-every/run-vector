@@ -2973,9 +2973,6 @@
         "x-object": "releases",
         "x-operation": "update",
         "responses": {
-          "201": {
-            "description": "Native result; see docs/API.md"
-          },
           "400": {
             "description": "Invalid input"
           },
@@ -3001,6 +2998,9 @@
                 "description": "Seconds until the next minute"
               }
             }
+          },
+          "200": {
+            "description": "Native result; see docs/API.md"
           }
         },
         "requestBody": {
@@ -3064,9 +3064,6 @@
         "x-object": "releases",
         "x-operation": "update",
         "responses": {
-          "201": {
-            "description": "Native result; see docs/API.md"
-          },
           "400": {
             "description": "Invalid input"
           },
@@ -3092,6 +3089,9 @@
                 "description": "Seconds until the next minute"
               }
             }
+          },
+          "200": {
+            "description": "Native result; see docs/API.md"
           }
         },
         "requestBody": {
