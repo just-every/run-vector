@@ -6557,7 +6557,7 @@
       "executable": false
     },
     "tests/e2e/releases-journey.mjs": {
-      "sha256": "0bc57050336f013d45fd4d878a54a9025d313ff009b2803da4378cc75dbd84e5",
+      "sha256": "6b6d75be0ffbfba40d769fcdf45e4ecaccf743da1c208beb4974c0ff58a76625",
       "executable": false
     },
     "tests/e2e/removal-runtime-support.mjs": {

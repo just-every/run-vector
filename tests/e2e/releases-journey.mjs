@@ -1,3 +1,4 @@
+import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import assert from 'node:assert/strict';
 import {createHmac,randomUUID} from 'node:crypto';
 import {roleScreens} from './role-ui-support.mjs';
@@ -65,7 +66,10 @@ export async function releasesJourney({page:shared,runtime,evidence}){
   const guestHeaders={Cookie:cookie,Origin:base,'Content-Type':'application/json'};
   const session=await(await runtime.req('/api/session',{headers:guestHeaders})).json();
   const scopedToken=await runtime.req('/api/settings/integrations/tokens',{method:'POST',headers:guestHeaders,body:JSON.stringify({name:'synthetic-vector-1757',scopes:['releases:read','releases:write']})});assert.equal(scopedToken.status,201);const guestToken=(await scopedToken.json()).token;
-  const memberShare=await runtime.req('/app/releases/'+release.id+'?readOnly=1',{redirect:'follow',headers:guestHeaders});assert.equal(memberShare.status,200);assert.match(await memberShare.text(),/Read-only workspace view/);
+  const memberShare=await runtime.req('/app/releases/'+release.id+'?readOnly=1',{redirect:'follow',headers:guestHeaders});assert.equal(memberShare.status,200);await memberShare.body.cancel();
+  const memberPage=await openAuthenticatedPage(page.context().browser(),cookie,base);
+  memberPage.on('pageerror',e=>errors.push(e.message));
+  try{await memberPage.goto(share);await memberPage.getByText('Read-only workspace view',{exact:true}).waitFor();await memberPage.getByRole('heading',{name:'2.4',exact:true}).waitFor();assert.equal(await memberPage.getByText('Edit release',{exact:true}).count(),0);await settleReads(memberPage);}finally{await memberPage.context().close();}
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'guest',teamIds:[team.id]});
   const refusal=await runtime.req('/api/releases',{method:'POST',headers:guestHeaders,body:JSON.stringify({name:'Guest release'})});assert.equal(refusal.status,403);await refusal.body.cancel();
   const deniedApi=await runtime.req('/api/v1/releases',{method:'POST',headers:{Origin:base,Authorization:'Bearer '+guestToken,'Content-Type':'application/json'},body:JSON.stringify({name:'Guest release'})});assert.equal(deniedApi.status,403);await deniedApi.body.cancel();
