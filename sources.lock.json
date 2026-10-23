@@ -7449,11 +7449,11 @@
       "executable": false
     },
     "tests/worker/populated-upgrade.ts": {
-      "sha256": "0bb81e94455776e046c25b200ce8905b65fea4d2cc22df563c95d435f600e4bf",
+      "sha256": "4cc6593c2322880baa940a7690d0ef515a50021a6cbac707868016b2ad002ba0",
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
-      "sha256": "76c4abcc38b9e2b9d93e0e5500f5651434c7ec6401faa3cea15668f6d7651332",
+      "sha256": "56ec0a0479241464b282b60a576218c5852652c626fa752bec22d07d90613cb4",
       "executable": false
     },
     "tests/worker/project-fields.test.ts": {
