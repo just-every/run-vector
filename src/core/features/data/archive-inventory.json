@@ -413,6 +413,16 @@
     "created_at",
     "updated_at"
   ],
+  "github_commit_links": [
+    "repository_id",
+    "sha",
+    "issue_id",
+    "author",
+    "subject",
+    "url",
+    "closing_applied",
+    "received_at"
+  ],
   "github_automation_rules": [
     "team_id",
     "trigger",

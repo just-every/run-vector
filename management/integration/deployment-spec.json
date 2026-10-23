@@ -508,6 +508,12 @@
       "name": "0087_github_automation.sql",
       "sha256": "73643c4cd527502acc1abca468719114fe279a1c2657ce5f2117180b0f4d7f11",
       "sql": "-- Team rules are portable configuration; provider credentials remain excluded.\nCREATE TABLE github_automation_rules (\n team_id TEXT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,\n trigger TEXT NOT NULL CHECK(trigger IN ('draft','review','merged','deploy')),\n status_id TEXT REFERENCES workflow_statuses(id) ON DELETE SET NULL,\n allow_reopen INTEGER NOT NULL DEFAULT 0 CHECK(allow_reopen IN (0,1)),\n version INTEGER NOT NULL,\n updated_at TEXT NOT NULL,\n PRIMARY KEY(team_id,trigger)\n);\nALTER TABLE vector_github_pull_requests ADD COLUMN merge_sha TEXT;\nALTER TABLE vector_github_issue_links ADD COLUMN relation TEXT NOT NULL DEFAULT 'reference';\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0088_github_commits.sql",
+      "sha256": "a53536af73402817abcc67626b2f84bff1e9a903d99832354d88b0f3ce850932",
+      "sql": "CREATE TABLE github_commit_links (\n repository_id TEXT NOT NULL REFERENCES vector_github_repositories(id),\n sha TEXT NOT NULL,\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n author TEXT NOT NULL,\n subject TEXT NOT NULL,\n url TEXT NOT NULL,\n closing_applied INTEGER NOT NULL DEFAULT 0 CHECK(closing_applied IN (0,1)),\n received_at TEXT NOT NULL,\n PRIMARY KEY(repository_id,sha,issue_id)\n);\nCREATE INDEX github_commit_issue ON github_commit_links(issue_id,received_at);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
