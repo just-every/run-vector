@@ -22,7 +22,9 @@ export function Discussion({
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const hydrated = useHydrated();
-  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema);
+  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema, undefined, {
+    abortPendingOnDispose: false,
+  });
   function emailSent() {
     email.refreshAfterMutation();
     resource.refreshAfterMutation();

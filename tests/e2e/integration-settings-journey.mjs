@@ -1,5 +1,6 @@
 import {exerciseChannels} from './integrations/channel-settings.mjs';
 import {exerciseSlackDirectMessages} from './integrations/slack-dm-settings.mjs';
+import {navigate} from './collaboration-navigation.mjs';
 import assert from 'node:assert/strict';
 import {createWebhookProtocol} from '../../vendor/base/integrations/core/webhook.ts';
 import {sendSignedPullRequest,pullRequestRepository} from './integration-signed-pr.mjs';
@@ -76,5 +77,6 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
  if(viewport)await page.setViewportSize(viewport);
+ await navigate(page,runtime.base+'/app/settings');
  console.log('TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390');
 }

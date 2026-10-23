@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "c411fb6c64f8e9b2c358899b4e324df99cb6ba8ade697410439825d815beed31",
+      "sha256": "ff7fd13e728ae8bea7bd72001b7adcb2b885cc78e09830b63eaf4b0ab162cc2a",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "4c2d59d08455940e8bd1b725d2d8f4c4d58d1bbdcede2acf22d4a96d72f25069",
+      "sha256": "d22d483137f3989f4d0781a7451ed8efa542d55e3fa56f9bf1343d61b7e421ae",
       "executable": false
     },
     "DEMO.md": {
@@ -4005,7 +4005,7 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/team-email-intake.tsx": {
-      "sha256": "e127caaa33bd5dd115b4e30fa61a9c0d7fa52ba3aefa680d104d80049e9360e2",
+      "sha256": "512b58bb511c1d4d5a86032ebd93f208ca13a7bd0dc7b9834ca08eb05da10d23",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {
@@ -4609,7 +4609,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/discussion.tsx": {
-      "sha256": "c7df5f6fb894f56bb3fee7f281c7da854edbbbb12791af8a8e03328e2d401cfa",
+      "sha256": "96010da95107ab36e86b86037213cd03b3e86793158e8e46177296d40c247780",
       "executable": false
     },
     "src/core/features/issues/ui/intake-recommendation.ts": {
@@ -5437,7 +5437,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "b04342ad9bcf0a1a64336e2e390ff17a8c0a0912e84cd040c6c80b1576861767",
+      "sha256": "60f512326928e4c1edf1c0b7e95876f0967d58fc5c18ca3159e1959bb85a1d8b",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
@@ -6253,7 +6253,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "beed7dc826978ea55669ebc00cc76b69726c5ae3a51d6feb5b3641e7fa77d147",
+      "sha256": "5e4fed4a30dea753f4e077d08f9c937134a061c384bde05a7763d29407740e11",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {

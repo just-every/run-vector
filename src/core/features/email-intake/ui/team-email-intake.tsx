@@ -2,11 +2,21 @@ import { useState, type FormEvent } from "react";
 import { fetchJson, useApiResource } from "../../../app/api-client";
 import { emailSettingsSchema } from "./schema";
 
-export function TeamEmailIntake({ teamId, teamName }: {
-  teamId: string; teamName: string;
-}) {
+type Team = { teamId: string; teamName: string };
+
+export function TeamEmailIntake({ archived, ...team }: Team & { archived: boolean }) {
+  if (archived) return <section aria-label={`Email intake for ${team.teamName}`}>
+    <h3>Email intake</h3>
+    <p>Email intake is unavailable while this team is archived. Unarchive the team to manage its retained settings.</p>
+  </section>;
+  return <ActiveTeamEmailIntake {...team} />;
+}
+
+function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
   const path = `/api/settings/teams/${teamId}/email-intake`;
-  const resource = useApiResource(path, emailSettingsSchema);
+  const resource = useApiResource(path, emailSettingsSchema, undefined, {
+    abortPendingOnDispose: false,
+  });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
