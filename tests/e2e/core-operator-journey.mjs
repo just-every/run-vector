@@ -3,9 +3,27 @@ import {readDevelopmentLink} from './outbox-session.mjs';
 import {beforePrivateNavigation,navigate,settleReads} from './collaboration-navigation.mjs';
 import {openDisclosures} from './ui-controls-checks.mjs';
 
+// A long journey can outlive the inviter's app-local email proof. Renew it
+// through the same public confirmation door before the next privileged action.
+const confirmedProofs = new Map();
+async function confirmInviter(page,context,base,state) {
+ const response=await context.request.get(base+'/auth/session');assert.equal(response.status(),200);
+ const session=await response.json(),confirmedAt=confirmedProofs.get(session.id)??session.createdAt;
+ if(Date.now()-confirmedAt<5*60_000)return;
+ const requested=await context.request.post(base+'/api/settings/operators/confirm-identity',{headers:{Origin:base},data:{}});
+ assert.equal(requested.status(),202);await requested.json();
+ const link=await readDevelopmentLink(base,context.request,session.operator.email,state);
+ await navigate(page,link);await page.getByRole('button',{name:'Confirm',exact:true}).click();
+ await page.waitForURL(base+'/app/settings#operators');
+ const renewed=await context.request.get(base+'/auth/session');assert.equal(renewed.status(),200);
+ assert.equal((await renewed.json()).id,session.id,'confirmation preserves the inviter session');
+ confirmedProofs.set(session.id,Date.now());
+}
+
 /** Independent jobs use genuine invited operators and their own rate budgets.
  * They predate roles and act as their inviter could, so each is invited as an Owner. */
 export async function withInvitedOperator(page,context,base,state,journey,displayName='Stream planning teammate'){
+ await confirmInviter(page,context,base,state);
  const original=await context.cookies(),email=`stream-planning-${Date.now()}@vector.test`;
  await navigate(page,base+'/app/settings');await openDisclosures(page);
  const operators=page.getByRole('region',{name:'Members',exact:true});
