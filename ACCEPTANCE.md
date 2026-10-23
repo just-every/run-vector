@@ -81,8 +81,8 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 98 | 6 | 0 | 104 |
-| Target and push further | 26 | 46 | 82 | 154 |
-| All | 124 | 52 | 82 | 258 |
+| Target and push further | 26 | 47 | 81 | 154 |
+| All | 124 | 53 | 81 | 258 |
 
 ### Public homepage
 
@@ -271,7 +271,7 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 - **VIEW-004 — Bulk edit** (done). Evidence: `tests/e2e/core-keyboard-journey.mjs`, `tests/e2e/core-undo-journey.mjs`, `tests/worker/issue-undo.test.ts`, `evidence/issue-undo/VIEW-004/`. Acceptance: A browser journey selecting issues with X and setting status in one operation, plus a failing selection that writes nothing and names the failing identifiers.
 - **VIEW-005 — Team board** (done). Evidence: `tests/e2e/core-board-journey.mjs`, `evidence/keyboard-board/VIEW-005/`. Acceptance: A board journey at 1440px and 390px that changes status from a card and recovers from a stale conflict.
 - **VIEW-006 — Manual order** (done). `tests/worker/manual-order.test.ts`, `tests/worker/manual-order-import.test.ts`, `tests/e2e/core-manual-order-journey.mjs`, `tests/worker/data-http.test.ts` cover keyboard and drag moves, two sessions, isolated shared-view order, unchanged Current/history, Jira Rank and Linear API-file ordering, repeat and rollback custody, archive restore and 1440/390 list/board journeys.
-- **VIEW-007 — Timeline and calendar views** (missing). A journey that drags an issue's due date on the calendar and finds the change in its activity, and a timeline with one issue of each date combination placed as stated.
+- **VIEW-007 — Timeline and calendar views** (partial). A journey that drags an issue's due date on the calendar and finds the change in its activity, and a timeline with one issue of each date combination placed as stated. Evidence: `tests/worker/base-auth.test.ts` (calendar capability and shared month reader via exerciseCalendarCapability), `tests/e2e/calendar-month-journey.mjs` (calendarMonthJourney), run by `tests/e2e/cycle-report-runtime.mjs`. Gap: Timeline, dependency drawing and start-date combinations await ISSUE-022. Releases await RELEASE-001; private-team isolation and Viewers await ROLE-002/013. Calendar uses the feed event reader, workspace-local cycle days, native version-checked due-date edits and Undo. Guests retain the Calendar page refusal adopted for CAL-001.
 - **VIEW-008 — Display options** (partial). A journey that adds assignee swimlanes, drags a card across a lane and a column, and finds both changes in activity; plus a list grouped by a label group, by milestone and by parent issue, each with group counts matching the filtered result. VIEW-008 inherits PROJ-011's milestone grouping in saved views.
 - **VIEW-009 — Workspace-wide views** (partial). A journey that saves a shared project view filtered by lead and health and a cross-team issue view, and opens both from the palette.
 - **VIEW-010 — Sidebar favorites** (missing). A journey that favorites an issue, a project and a view, moves the view into a folder, reloads in a second browser and finds the same order, then loses access to the project's private team and finds that favorite gone.

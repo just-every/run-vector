@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "0b0fe8b8520278b581a67b1bf92ee65ce8ad45be746aa256d9b325bf7ac8582e",
+      "sha256": "ca8404fd2ff7f3cbfa40258084fddcf7a1cdb501a3cf1d9415722e961956e174",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "07c1ea6f0ecc37b24995f485c95ac1688865d0f1c974c24f1d3073c310371eb5",
+      "sha256": "9273d076ed8e5bd47e30efe3bf1d257ede69f6254d7de0511b980621e2e9c737",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "f3b4b1902bf3041f251e04ee0fb38557bf0fda031f32639cad1e9748be1f0544",
+      "sha256": "a8ff7a20a512a2414b8af558d48268da6e19bff5180547ab16ef3f85f199589e",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -3549,11 +3549,11 @@
       "executable": false
     },
     "src/core/features/calendar-view/calendar.css": {
-      "sha256": "888f220600c09912b1b27827fb0e76d5f77eaa34f7e4b833f80a08eb780bc8cd",
+      "sha256": "9f8d03e6d163f5779b8cb588eb0ed4da83d21f6fa835e8cf122fcef6a91813af",
       "executable": false
     },
     "src/core/features/calendar-view/page.tsx": {
-      "sha256": "4576a2c893882f84a5a0ff9f42d93b7a7e9a8a2b88923b13f69b2221a436f325",
+      "sha256": "861a2e22c668845e177786b3c40ca15577fef19ffe1875ae6d2846dd1a1b51e8",
       "executable": false
     },
     "src/core/features/calendar-view/read.ts": {
