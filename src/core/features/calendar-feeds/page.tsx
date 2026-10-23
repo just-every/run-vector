@@ -1,3 +1,4 @@
+import {MonthCalendar} from '../calendar-view/page';
 import { useState } from "react";
 import { z } from "zod";
 import { fetchJson, useApiResource } from "../../app/api-client";
@@ -35,6 +36,7 @@ export function CalendarPage() {
   }
   return <main className="settings-page insights-page calendar-page" aria-labelledby="calendar-title" data-calendar-ready={data.data && !data.loading && !data.error ? "true" : "false"}>
     <header><p className="insights-eyebrow">Workspace planning</p><h1 id="calendar-title">Calendar</h1><p>Keep due dates, cycles and milestones in your calendar.</p></header>
+    <MonthCalendar />
     {data.error && <p role="alert">{data.error.message} <button onClick={data.reload}>Retry feeds</button></p>}
     {!data.data && !data.error && <p role="status">Loading calendar feeds…</p>}
     {data.data && !data.error && <>

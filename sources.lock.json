@@ -2925,7 +2925,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "890e0ffc6c54b6e318f158b92951e9b72b1c19e140de043cb1714108c6500300",
+      "sha256": "96cdc25e1915d1544370f456cf06ae5398e9930dc473ef9752af17bfa11fa6ff",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3533,7 +3533,7 @@
       "executable": false
     },
     "src/core/features/calendar-feeds/page.tsx": {
-      "sha256": "58b200e2e057ec1ca91b9cfc62514b12296cb6eed85d2b284f59faa942d86b76",
+      "sha256": "d3b8bff336de53e31da70ad78ded1b2c8e7a0f4b77e1b6ddc062d3183e7e5628",
       "executable": false
     },
     "src/core/features/calendar-feeds/routes.ts": {
@@ -3546,6 +3546,26 @@
     },
     "src/core/features/calendar-feeds/service.ts": {
       "sha256": "d10070919e1a76cae804f468b310a9d1d084a8a2799d33cc9e65a5edf1e2d4e7",
+      "executable": false
+    },
+    "src/core/features/calendar-view/calendar.css": {
+      "sha256": "888f220600c09912b1b27827fb0e76d5f77eaa34f7e4b833f80a08eb780bc8cd",
+      "executable": false
+    },
+    "src/core/features/calendar-view/page.tsx": {
+      "sha256": "5c23ddcb54fe735d1e0be9ce2703aba034204bb15ae74dcda66de74ea53120d9",
+      "executable": false
+    },
+    "src/core/features/calendar-view/read.ts": {
+      "sha256": "766bc3895262963a2ca96a3440e522923c733f3d400cd1a8bf9fe480c05a85cb",
+      "executable": false
+    },
+    "src/core/features/calendar-view/routes.ts": {
+      "sha256": "b49cc6171a752a4c8542d9e72fb8eae49d9dae8089db2df9f4db77c48aa4c0c7",
+      "executable": false
+    },
+    "src/core/features/calendar-view/schema.ts": {
+      "sha256": "f19205e8826e60c778916cbe17b68add7961e96c9852f08be3a71e84d8eb858b",
       "executable": false
     },
     "src/core/features/cycle-closure/read.ts": {
@@ -5549,7 +5569,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "e95e27e560501328623797f4fb8c7658bbaaea310bc388f1de5d620f4122b48e",
+      "sha256": "d2741dd65665d01a6d91222632e3f5ef1d28cd19077592dae853eff7680857b4",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6329,7 +6349,11 @@
       "executable": false
     },
     "tests/e2e/calendar-feeds-journey.mjs": {
-      "sha256": "d8823c9546c8932320a8d68ea82e42da6f2963dbbcad85fbd7429ad9eb7ab480",
+      "sha256": "bdc31fc67b92bfaeac48bc2702cd266f905fcbdff130cfdb4d7942810b3e6d7c",
+      "executable": false
+    },
+    "tests/e2e/calendar-month-journey.mjs": {
+      "sha256": "1663aa616a3ade366030f5d8f48d1061633f162e26bfa962c5c08085e1ce836e",
       "executable": false
     },
     "tests/e2e/collaboration-delivery-fixture.mjs": {
@@ -7013,7 +7037,7 @@
       "executable": false
     },
     "tests/worker/calendar-feed-proof.ts": {
-      "sha256": "6eef3f2ec85dea37aca66b2a6df6689a95c5f69a7364f3a20319066823615e0f",
+      "sha256": "7b879b7a0cf5445a85ac11c1c42572451af06d1630b2d7054353e07abf30b019",
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
