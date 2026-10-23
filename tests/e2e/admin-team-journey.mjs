@@ -372,3 +372,67 @@ export async function teamCreationPermission({page,peer,runtime,clause,evidence}
   await inspect(peer,peer.getByRole("region",{name:"Teams",exact:true}),"member-team-created");
   assert.equal(sql("SELECT count(*) n FROM audit_records WHERE action='workspace.team_creation_changed'")[0].n-before,4);
 }
+
+export async function teamJoinPermissions({page,peer,browser,runtime,clause,evidence}) {
+ const {base,sql}=runtime,inspect=roleScreens(evidence);
+ const context=await browser.newContext({viewport:{width:1440,height:1000}});
+ try {
+  const requester=await context.newPage();
+  await requester.goto(base+"/signin");
+  await requester.getByLabel("Email",{exact:true}).fill("lead@admin-runtime.test");
+  const sent=requester.waitForResponse(r=>new URL(r.url()).pathname==="/auth/request"&&r.request().method()==="POST");
+  await requester.getByRole("button",{name:"Send sign-in link",exact:true}).click();
+  assert.equal((await sent).status(),202);
+  const link=sql("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='lead@admin-runtime.test' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
+  await requester.goto(link);await requester.getByRole("button",{name:"Confirm",exact:true}).click();await requester.waitForURL(base+"/app");
+  const member=sql("SELECT id FROM operators WHERE email='lead@admin-runtime.test'")[0].id;
+  const owner=sql("SELECT id FROM operators WHERE email='role-member@admin-runtime.test'")[0].id;
+  for(const width of [1440,390]) {
+   await peer.setViewportSize({width,height:width===390?844:1000});
+   await requester.setViewportSize({width,height:width===390?844:1000});
+   const name="synthetic-vector-join-"+width;
+   const made=await page.request.post(base+"/api/settings/teams",{headers:{Origin:base},data:{name,identifierPrefix:width===1440?"JOINA":"JOINB"}});
+   assert.equal(made.status(),200);const team=(await made.json()).teams.find(team=>team.name===name);
+   assert.equal((await page.request.put(base+`/api/settings/teams/${team.id}/members/${owner}`,{headers:{Origin:base},data:{role:"owner"}})).status(),200);
+   await clause("TEAM-007",`a Member requests an invite-only public team and a Member team owner approves once at ${width}`,async()=>{
+    await navigate(peer,base+"/app/settings");await openAdministrationForm(peer,"Edit "+name);
+    const mode=peer.getByRole("form",{name:"Membership mode for "+name,exact:true});
+    await mode.getByLabel("Membership mode",{exact:true}).selectOption("invite_only");
+    await mode.getByLabel("Accept membership requests",{exact:true}).check();
+    const changed=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/membership`);
+    await mode.getByRole("button",{name:"Save membership mode",exact:true}).click();assert.equal((await changed).status(),200);
+    assert.equal((await requester.request.post(base+`/api/teams/${team.id}/join`,{headers:{Origin:base},data:{}})).status(),403);
+    await navigate(requester,base+"/app/settings");
+    const requested=requester.waitForResponse(r=>new URL(r.url()).pathname===`/api/teams/${team.id}/requests`);
+    await requester.getByRole("button",{name:"Request to join "+name,exact:true}).click();assert.equal((await requested).status(),200);
+    await requester.getByRole("button",{name:"Request pending for "+name,exact:true}).waitFor();
+    assert.equal(sql(`SELECT count(*) n FROM team_members WHERE team_id='${team.id}' AND operator_id='${member}'`)[0].n,0);
+    if(width===1440)await inspect(requester,requester.getByRole("region",{name:"Teams",exact:true}),"public-team-request-pending");
+    await navigate(peer,base+"/app/settings");await openAdministrationForm(peer,"Edit "+name);
+    let group=peer.getByRole("group",{name:"Request from Delivery lead",exact:true});
+    const decide=async decision=>{
+     const receipt=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/requests/${member}/decision`);
+     await group.getByRole("button",{name:(decision==="approved"?"Approve ":"Decline ")+"Delivery lead",exact:true}).click();assert.equal((await receipt).status(),200);
+    };
+    if(width===390) {
+     await decide("declined");
+     assert.equal(sql(`SELECT count(*) n FROM team_members WHERE team_id='${team.id}' AND operator_id='${member}'`)[0].n,0);
+     await navigate(requester,base+"/app/settings");
+     const retry=requester.waitForResponse(r=>new URL(r.url()).pathname===`/api/teams/${team.id}/requests`);
+     await requester.getByRole("button",{name:"Request to join "+name,exact:true}).click();assert.equal((await retry).status(),200);
+     await navigate(peer,base+"/app/settings");await openAdministrationForm(peer,"Edit "+name);
+     group=peer.getByRole("group",{name:"Request from Delivery lead",exact:true});
+    }
+    if(width===1440)await inspect(peer,peer.getByRole("region",{name:"Membership for "+name,exact:true}),"team-owner-request-decision");
+    await decide("approved");
+    const before=sql(`SELECT count(*) n FROM audit_records WHERE action='team.join_request_approved' AND subject_id='${team.id}'`)[0].n;
+    assert.equal(before,1);
+    assert.equal((await peer.request.post(base+`/api/settings/teams/${team.id}/requests/${member}/decision`,{headers:{Origin:base},data:{decision:"approved"}})).status(),200);
+    assert.equal(sql(`SELECT count(*) n FROM audit_records WHERE action='team.join_request_approved' AND subject_id='${team.id}'`)[0].n,before);
+    assert.equal(sql(`SELECT count(*) n FROM team_members WHERE team_id='${team.id}' AND operator_id='${member}'`)[0].n,1);
+    await navigate(requester,base+"/app/settings");await requester.getByRole("button",{name:"Leave "+name,exact:true}).waitFor();
+    assert.equal(sql(`SELECT count(*) n FROM audit_records WHERE action='team.membership_mode_changed' AND subject_id='${team.id}'`)[0].n,1);
+   });
+  }
+ } finally {await context.close();}
+}

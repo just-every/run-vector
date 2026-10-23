@@ -4,6 +4,7 @@ import type { RowId } from "../../src/core/features/roles/matrix";
 import type { Kind, Person, roleWorkspace } from "./role-fixture";
 import { channelEdge } from "./channel-edge-fixture";
 
+type AdministrationForRequests = {teams:{id:string;name:string}[]};
 type Workspace = Awaited<ReturnType<typeof roleWorkspace>>;
 type Issue = { id: string; identifier: string; version: number };
 type Send = () => Promise<Response>;
@@ -73,6 +74,14 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "teams.permissions": { session: async (_who, actor, id) => {
       const current = (await w.state()).teams.find((t) => t.id === id)!;
       return () => actor.call(`/settings/teams/${id}/permissions`, "PUT", { settings: current.settingsPermission, planning: current.planningPermission }); } },
+    "teams.membership": {session: async (_who,actor,id)=>()=>actor.call(`/settings/teams/${id}/membership`,"PUT",{mode:"open",requestsEnabled:false})},
+    "teams.request": {session: async (who,actor)=>{
+      const creator=who==="owner"?w.people.admin:owner, name=`Request team ${unique()}`;
+      const created=await json<AdministrationForRequests>(creator.call("/settings/teams","POST",{name,identifierPrefix:prefix("REQ")}));
+      const id=created.teams.find(team=>team.name===name)!.id;
+      expect((await owner.call(`/settings/teams/${id}/membership`,"PUT",{mode:"invite_only",requestsEnabled:true})).status).toBe(200);
+      return ()=>actor.call(`/teams/${id}/requests`,"POST",{});
+    }},
     "teams.join": { session: async (_who, actor) => { const id = await team(`Directory team ${unique()}`, "DIR"); return () => actor.call(`/teams/${id}/join`, "POST", {}); } },
     "teams.settings": { permission: "settings", session: async (_who, actor, id) => { const value = unique() % 2 === 0; return () => actor.call(`/settings/teams/${id}`, "PATCH", { autoCycleStarted: value }); } },
     "teams.workflow": { permission: "settings", session: async (_who, actor, id) => { const status = await backlog(id), name = `Backlog ${unique()}`; return () => actor.call(`/settings/teams/${id}/statuses/${status}`, "PATCH", { name }); } },

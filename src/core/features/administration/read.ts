@@ -15,7 +15,7 @@ const cycleColumns =
   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
 export async function readAdministration(db: D1Database, actor: string) {
   const { workspace_id: workspaceId, role } = await settingsActor(db, actor);
-  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed] =
+  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests] =
     await Promise.all([
       db
         .prepare("SELECT id,name,timezone,member_label_creation AS memberLabelCreation,member_team_creation AS memberTeamCreation FROM workspace_settings WHERE id=?")
@@ -24,7 +24,7 @@ export async function readAdministration(db: D1Database, actor: string) {
       db
         .prepare(
           `SELECT t.id,t.name,t.identifier_prefix AS identifierPrefix,t.archived_at AS archivedAt,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
-      t.settings_permission AS settingsPermission,t.planning_permission AS planningPermission,
+      t.membership_mode AS membershipMode,t.requests_enabled AS requestsEnabled,t.settings_permission AS settingsPermission,t.planning_permission AS planningPermission,
       NOT EXISTS(SELECT 1 FROM team_issue_history h WHERE h.team_id=t.id) AS prefixEditable
       FROM teams t WHERE t.workspace_id=? ORDER BY t.name,t.id`,
         )
@@ -71,6 +71,11 @@ export async function readAdministration(db: D1Database, actor: string) {
         WHERE t.workspace_id=? AND s.category NOT IN ('completed','canceled','duplicate')
         AND NOT EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=i.team_id AND m.operator_id=i.assignee_operator_id)
         ORDER BY i.identifier`).bind(workspaceId).all<{teamId:string;identifier:string;title:string;assigneeOperatorId:string}>(),
+      db.prepare(`SELECT r.team_id AS teamId,r.requester_id AS requesterId,o.name,r.state FROM team_join_requests r
+        JOIN teams t ON t.id=r.team_id JOIN operators o ON o.id=r.requester_id AND o.removed_at IS NULL
+        WHERE t.workspace_id=? AND (r.requester_id=? OR EXISTS(SELECT 1 FROM operators actor WHERE actor.id=? AND actor.role IN('owner','admin'))
+          OR EXISTS(SELECT 1 FROM team_members own WHERE own.team_id=t.id AND own.operator_id=? AND own.role='owner')) ORDER BY r.created_at,r.requester_id`)
+        .bind(workspaceId,actor,actor,actor).all<{teamId:string;requesterId:string;name:string;state:string}>(),
     ]);
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
@@ -87,6 +92,8 @@ export async function readAdministration(db: D1Database, actor: string) {
     teams: teams.results.map((t) => ({
       ...t,
       prefixEditable: Boolean(t.prefixEditable),
+      requestsEnabled: Boolean(t.requestsEnabled),
+      joinRequests: joinRequests.results.filter(request=>request.teamId===t.id),
       autoCycleStarted: Boolean(t.autoCycleStarted),
       autoCycleCompleted: Boolean(t.autoCycleCompleted),
       statuses: statuses.results.filter((s) => s.teamId === t.id),

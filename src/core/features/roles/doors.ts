@@ -117,6 +117,9 @@ export const doors: Door[] = [
   { method: 'POST', path: '/teams/:teamId/leave', row: 'teams.join', teams: team('teamId') },
   { method: 'PUT', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
   { method: 'DELETE', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
+  { method: 'PUT', path: '/settings/teams/:id/membership', row: 'teams.membership', teams: team('id') },
+  { method: 'POST', path: '/settings/teams/:id/requests/:requesterId/decision', row: 'teams.membership', teams: team('id') },
+  { method: 'POST', path: '/teams/:teamId/requests', row: 'teams.request', teams: team('teamId') },
   { method: 'PUT', path: '/settings/teams/:id/permissions', row: 'teams.permissions', teams: team('id') },
   // Archiving is not a team setting: only team owners, Owners and Admins archive (TEAM-003).
   { method: 'PATCH', path: '/settings/teams/:id', row: async request => await field(request, 'archived') !== undefined ? 'teams.archive' : 'teams.settings', teams: team('id') },
