@@ -19,8 +19,9 @@ export function DashboardsPage({source}:{source:Source}) {
   const saved=await fetchJson('/api/dashboards'+(editing?'/'+editing.id:''),dashboardSchema,{method:editing?'PUT':'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...draft,...(editing?{expectedVersion:editing.version}:{})})});
   setDraft(null);setEditing(null);setSelected(saved.id);list.reload();
  }catch(cause){setError(cause instanceof Error?cause.message:'Dashboard could not be saved.');}finally{setBusy(false);}}
- return <section aria-label="Dashboards" data-dashboards-ready={list.data&&!list.loading&&!list.error?'true':'false'}>
+ return <div role="region" aria-label="Dashboards" data-dashboards-ready={list.data&&!list.loading&&!list.error?'true':'false'}>
   <div className="insights-card"><h2>Dashboards</h2><p>Combine saved charts, counts and issue lists. Each person sees results computed from their own access.</p>
+   {options.error&&<p role="alert">{options.error.message} <button onClick={options.reload}>Retry filter choices</button></p>}
    {list.error&&<p role="alert">{list.error.message} <button onClick={list.reload}>Retry dashboards</button></p>}
    <div className="insights-controls"><label>Open dashboard<select aria-label="Open dashboard" value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null);setError('');}}><option value="">Choose a dashboard</option>{list.data?.dashboards.map(d=><option key={d.id} value={d.id}>{d.name}{d.isShared?' · Shared':' · Private'}</option>)}</select></label></div>
    <button onClick={()=>{setEditing(null);setDraft({name:'',teamId:null,isShared:false,widgets:[widget('chart')]});setError('');}}>New dashboard</button>
@@ -45,7 +46,7 @@ export function DashboardsPage({source}:{source:Source}) {
   </form>}
   {error&&<p role="alert">{error}</p>}
   {selected&&!draft&&<DashboardDetail key={selected} id={selected} options={options.data} edit={d=>{setEditing(d);setDraft({name:d.name,teamId:d.teamId,isShared:d.isShared,widgets:d.widgets});}} deleted={()=>{setSelected('');list.reload();}}/>}
- </section>;
+ </div>;
 }
 function WidgetFields({widget:w,options,change}:{widget:Widget;options:z.infer<typeof workspaceOptionsSchema>|null;change:(w:Widget)=>void}) {
  const filters=(patch:Partial<IssueListQuery>)=>change({...w,filters:{...w.filters,...patch}});
@@ -68,7 +69,7 @@ function DashboardDetail({id,options,edit,deleted}:{id:string;options:z.infer<ty
  const data=useApiResource('/api/dashboards/'+id+'?'+search,dashboardReadSchema);
  const change=(patch:Partial<DashboardFilters>)=>setFilters({...filters,...patch,widget:-1,bucket:''});
  async function remove(){if(!data.data||busy)return;setBusy(true);setError('');try{await fetchJson('/api/dashboards/'+id,z.object({deleted:z.literal(true)}),{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({expectedVersion:data.data.dashboard.version})});deleted();}catch(cause){setError(cause instanceof Error?cause.message:'Dashboard could not be deleted.');}finally{setBusy(false);}}
- return <section aria-label="Open dashboard" data-dashboard-ready={data.data&&!data.loading&&!data.error?'true':'false'}>
+ return <div role="region" aria-label="Open dashboard" data-dashboard-ready={data.data&&!data.loading&&!data.error?'true':'false'}>
   <div className="insights-card"><h2>{data.data?.dashboard.name??'Loading dashboard…'}</h2><p>{data.data?.dashboard.isShared?'Shared':'Private'} · Results use your current access.</p>
    <div className="insights-controls"><label>Dashboard team<select aria-label="Dashboard team" value={filters.team} onChange={e=>change({team:e.target.value})}><option value="all">All teams</option>{options?.teams.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></label>
     <label>Dashboard project<select aria-label="Dashboard project" value={filters.project} onChange={e=>change({project:e.target.value})}><option value="all">All projects</option><option value="none">No project</option>{options?.projects.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
@@ -83,12 +84,12 @@ function DashboardDetail({id,options,edit,deleted}:{id:string;options:z.infer<ty
    {widget.kind==='count'&&<p className="dashboard-count"><strong>{result.count}</strong> issues</p>}
    {widget.kind==='list'&&<><p>{result.count} issues · first 25 shown</p><ul>{result.issues.map(issue=><li key={issue.identifier}><Link to="/app/issues/$identifier" params={{identifier:issue.identifier}}>{issue.identifier} · {issue.title}</Link></li>)}</ul></>}
    {result.report&&<><a href={result.csvHref} download>{result.report.drill?"Export counted issues CSV":"Export chart CSV"}</a><p className="insights-note">{result.report.timezone} · Weeks start Monday · Duration percentiles use nearest rank.</p><InsightChart report={result.report} select={bucket=>setFilters({...filters,widget:index,bucket})}/>
-    <div className="insights-table" role="region" aria-label="Saved chart data" tabIndex={0}><table><caption>{metricNames[widget.chart.metric]} · text equivalent</caption><thead><tr><th>Week</th><th>Group</th><th>Series</th><th>Issues</th><th>{result.report.duration?'Total days':widget.chart.unit==='estimate'?'Points':'Count'}</th><th>Median days</th><th>75th percentile</th><th>90th percentile</th></tr></thead><tbody>{result.report.rows.map(row=><tr key={row.key}><th scope="row">{row.week}</th><td>{row.group}</td><td>{row.series.split(' · ')[0]}</td><td>{row.count}</td><td>{number(row.value)}</td><td>{number(row.median)}</td><td>{number(row.p75)}</td><td>{number(row.p90)}</td></tr>)}</tbody></table></div>
+    <div className="insights-table" role="region" aria-label="Saved chart data" tabIndex={0}><table><caption>{metricNames[widget.chart.metric]} · text equivalent</caption><thead><tr><th>Week</th><th>Group</th><th>Series</th><th>Issues</th><th>{result.report.duration?'Total days':widget.chart.unit==='estimate'?'Points':'Count'}</th>{result.report.duration&&<><th>Median days</th><th>75th percentile</th><th>90th percentile</th></>}</tr></thead><tbody>{result.report.rows.map(row=><tr key={row.key}><th scope="row">{row.week}</th><td>{row.group}</td><td>{row.series.split(' · ')[0]}</td><td>{row.count}</td><td>{number(row.value)}</td>{result.report?.duration&&<><td>{number(row.median)}</td><td>{number(row.p75)}</td><td>{number(row.p90)}</td></>}</tr>)}</tbody></table></div>
     {result.report.limitations.map(text=><p className="insights-note" key={text}>{text}</p>)}
     {result.report.drill&&<div aria-label="Counted dashboard issues"><h4>Counted issues ({result.report.drill.issues.length})</h4><ul>{result.report.drill.issues.map(issue=><li key={issue.identifier}><Link to="/app/issues/$identifier" params={{identifier:issue.identifier}}>{issue.identifier} · {issue.title}</Link></li>)}</ul></div>}
    </>}
    {result.empty&&<p>No issues match the combined filters.</p>}
    {widget.kind!=='chart'&&result.href&&<a href={result.href}>Open full issue list</a>}
   </section>;})}
- </section>;
+ </div>;
 }

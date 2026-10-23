@@ -49,6 +49,19 @@ export async function dashboardsJourney(page,context,runtime,output) {
   for(const theme of ['light','dark'])for(const width of [1440,390]) {
    await open(page,context,theme,width);
    assert.equal(await page.getByRole('region',{name:'Delivery count',exact:true}).locator('strong').textContent(),'2');
+   await page.getByRole('button',{name:'Edit dashboard',exact:true}).click();
+   await form.waitFor();
+   for(const summary of await form.locator('.dashboard-widget-editor summary').all())await summary.click();
+   await capture(page,theme,width,'editor');
+   await form.locator('.dashboard-widget-editor').nth(2).getByRole('button',{name:'Move up',exact:true}).click();
+   await form.locator('.dashboard-widget-editor').nth(1).getByRole('button',{name:'Move down',exact:true}).click();
+   await form.getByRole('checkbox',{name:'Share inside the workspace',exact:true}).uncheck();
+   await form.getByRole('button',{name:'Save dashboard',exact:true}).click();await page.locator('[data-dashboard-ready="true"]').waitFor();
+   assert.equal((await member.request.get(base+'/api/dashboards/'+id)).status(),404);
+   await page.getByRole('button',{name:'Edit dashboard',exact:true}).click();
+   await form.getByRole('checkbox',{name:'Share inside the workspace',exact:true}).check();
+   await form.getByRole('button',{name:'Save dashboard',exact:true}).click();await page.locator('[data-dashboard-ready="true"]').waitFor();
+
    await page.getByRole('region',{name:'Delivery chart',exact:true}).locator('.insights-bar').first().click();await page.getByRole('heading',{name:'Counted issues (2)',exact:true}).waitFor();
    await page.getByRole('combobox',{name:'Dashboard team',exact:true}).selectOption(team.id);await page.locator('[data-dashboard-ready="true"]').waitFor();
    await page.getByLabel('Due from',{exact:true}).fill('2026-11-02');await page.getByLabel('Due through',{exact:true}).fill('2026-11-05');
