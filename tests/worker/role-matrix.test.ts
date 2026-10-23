@@ -227,6 +227,9 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
   for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[]) {
     const call = w.people[who].call, all = pages[column[who]] === "every page";
     expect((await call("/settings/appearance")).status, who).toBe(200);
+    const labelsPage = await call("/settings/administration");
+    expect(labelsPage.status, who + " reads Labels through the existing administration door").toBe(who === "guest" ? 403 : 200);
+    if (who !== "guest") expect(await labelsPage.json()).toHaveProperty("labels");
     expect(outcome((await call("/settings")).status), who).toBe(all || pages[column[who]].includes("member directory") ? "allow" : "forbidden");
     expect(outcome((await call("/settings/integrations/tokens")).status), who).toBe(all || pages[column[who]].includes("personal integrations and tokens") ? "allow" : "forbidden");
   }

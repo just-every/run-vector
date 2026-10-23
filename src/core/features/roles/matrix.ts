@@ -70,7 +70,7 @@ export const matrix = {
 export type RowId = keyof typeof matrix
 
 /** The "Open Settings pages" row (ROLE-008): Owners and Admins open every page. */
-export const settingsPages = ['account', 'directory', 'teams', 'personal-integrations'] as const
+export const settingsPages = ['account', 'directory', 'labels', 'teams', 'personal-integrations'] as const
 export type SettingsPage = typeof settingsPages[number]
 export const openSettingsPages: Record<Role, 'all' | readonly SettingsPage[]> = {
   owner: 'all', admin: 'all', member: settingsPages, guest: ['account'],

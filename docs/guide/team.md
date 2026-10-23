@@ -18,6 +18,8 @@ Each team has its own identifier prefix (like `FLW`) and its own workflow. A new
 
 Owners and Admins create, rename, recolour and delete labels in **Settings → Labels**. Deleting a label removes it from issues and from saved views.
 
+Members can open **Settings → Labels** to read workspace label names and colours. This read-only list offers no creation, rename, recolour or deletion controls; workspace label management remains with Owners and Admins.
+
 ## Notifications
 
 Each person chooses which notifications reach their Inbox and whether assignments and mentions also arrive by email. See [Notifications and email](notifications.md).
