@@ -33,6 +33,15 @@
     "direction",
     "occurred_at"
   ],
+  "cycle_report_days": [
+    "cycle_id",
+    "day",
+    "timezone",
+    "scope",
+    "completed",
+    "completions",
+    "recorded_at"
+  ],
   "cycle_snapshots": [
     "cycle_id",
     "close_token",
@@ -101,6 +110,14 @@
     "source_record_id",
     "source_revision_id"
   ],
+  "github_automation_rules": [
+    "team_id",
+    "trigger",
+    "status_id",
+    "allow_reopen",
+    "version",
+    "updated_at"
+  ],
   "ik_batches": [
     "job_id",
     "action",
@@ -140,6 +157,33 @@
   "ik_d1_erased_targets": [
     "destination",
     "identity"
+  ],
+  "ik_d1_erasure_journal": [
+    "id",
+    "destination",
+    "recorded_at",
+    "records_erased",
+    "jobs_retired",
+    "streams_retired",
+    "stores_json"
+  ],
+  "ik_d1_erasure_progress": [
+    "id",
+    "destination",
+    "request_hash",
+    "generation",
+    "phase",
+    "index_rows",
+    "value_rows",
+    "revision",
+    "records_erased",
+    "field_matches_json",
+    "created_at"
+  ],
+  "ik_d1_erasure_tally": [
+    "receipt_id",
+    "store",
+    "image"
   ],
   "ik_d1_history": [
     "id",
@@ -217,9 +261,43 @@
     "header_size",
     "header_chunks"
   ],
+  "ik_d1_preparation_steps": [
+    "id",
+    "destination",
+    "namespace",
+    "mapping_version",
+    "principal_id",
+    "operation_key",
+    "reversal_policy",
+    "codec_id",
+    "source_digest",
+    "total",
+    "records",
+    "stages",
+    "phase",
+    "hash_json",
+    "fingerprint",
+    "verified_revision",
+    "revision"
+  ],
   "ik_d1_publication_fences": [
     "stream_id",
     "job_id"
+  ],
+  "ik_d1_retirements": [
+    "id",
+    "kind",
+    "destination",
+    "receipt_id",
+    "retired_at"
+  ],
+  "ik_d1_reversal_fences": [
+    "job_id",
+    "action",
+    "fence",
+    "state_revision",
+    "erased_records",
+    "reused"
   ],
   "ik_d1_reversal_reports": [
     "job_id",
@@ -323,6 +401,11 @@
     "layout_revision",
     "progress_revision"
   ],
+  "ik_d1_stream_sources": [
+    "stream_id",
+    "destination",
+    "source_digest"
+  ],
   "ik_d1_streams": [
     "id",
     "destination",
@@ -410,6 +493,45 @@
     "kind",
     "reason",
     "return_at",
+    "created_at",
+    "updated_at"
+  ],
+  "intake_email_deliveries": [
+    "id",
+    "issue_id",
+    "comment_id",
+    "root_id",
+    "request_id",
+    "message_id",
+    "kind",
+    "status",
+    "error",
+    "provider_message_id",
+    "created_at",
+    "updated_at"
+  ],
+  "intake_email_files": [
+    "message_id",
+    "file_id",
+    "content_id"
+  ],
+  "intake_email_messages": [
+    "id",
+    "team_id",
+    "message_key",
+    "message_id",
+    "issue_id",
+    "comment_id",
+    "root_id",
+    "sender",
+    "requester_domain",
+    "subject",
+    "text_body",
+    "html_body",
+    "cc_json",
+    "references_json",
+    "status",
+    "error",
     "created_at",
     "updated_at"
   ],
@@ -508,6 +630,12 @@
     "issue_id",
     "decision_id"
   ],
+  "issue_deletions": [
+    "issue_id",
+    "identifier",
+    "workspace_id",
+    "requested_at"
+  ],
   "issue_dependencies": [
     "blocked_issue_id",
     "blocking_issue_id",
@@ -521,6 +649,11 @@
     "actor_name",
     "created_at",
     "version"
+  ],
+  "issue_duplicates": [
+    "issue_id",
+    "canonical_issue_id",
+    "created_at"
   ],
   "issue_files": [
     "id",
@@ -588,6 +721,20 @@
     "last_sequence",
     "updated_at"
   ],
+  "issue_relations": [
+    "first_issue_id",
+    "second_issue_id",
+    "created_at"
+  ],
+  "issue_reminders": [
+    "id",
+    "issue_id",
+    "recipient_id",
+    "remind_at",
+    "created_at",
+    "delivered_at",
+    "delivery_id"
+  ],
   "issues": [
     "id",
     "identifier",
@@ -644,6 +791,17 @@
     "created_at",
     "updated_at"
   ],
+  "manual_order_entries": [
+    "workspace_id",
+    "scope_key",
+    "issue_id",
+    "position"
+  ],
+  "manual_order_scopes": [
+    "workspace_id",
+    "scope_key",
+    "version"
+  ],
   "notification_candidates": [
     "event_id",
     "issue_id",
@@ -652,6 +810,24 @@
     "actor_id",
     "actor_name",
     "created_at"
+  ],
+  "notification_channel_defaults": [
+    "workspace_id",
+    "kind",
+    "email_mode",
+    "slack_enabled"
+  ],
+  "notification_channel_overrides": [
+    "operator_id",
+    "kind",
+    "email_mode",
+    "slack_enabled"
+  ],
+  "notification_channel_receipts": [
+    "notification_id"
+  ],
+  "notification_channel_restore_holds": [
+    "notification_id"
   ],
   "notification_deliveries": [
     "id",
@@ -681,6 +857,41 @@
     "started_at",
     "settled_at"
   ],
+  "notification_digest_attempts": [
+    "id",
+    "batch_id",
+    "number",
+    "status",
+    "reason",
+    "started_at",
+    "settled_at"
+  ],
+  "notification_digest_batches": [
+    "id",
+    "workspace_id",
+    "recipient_id",
+    "cadence",
+    "slot",
+    "status",
+    "attempts",
+    "claim_token",
+    "claimed_at",
+    "next_attempt_at",
+    "reason",
+    "created_at",
+    "updated_at"
+  ],
+  "notification_digest_items": [
+    "notification_id",
+    "batch_id"
+  ],
+  "notification_digest_windows": [
+    "workspace_id",
+    "recipient_id",
+    "cadence",
+    "slot",
+    "batch_id"
+  ],
   "notification_events": [
     "event_id",
     "created_at"
@@ -695,6 +906,15 @@
   "notification_preferences": [
     "operator_id",
     "email_enabled"
+  ],
+  "notification_snoozes": [
+    "notification_id",
+    "issue_id",
+    "recipient_id",
+    "until_at",
+    "until_change",
+    "snoozed_at",
+    "returned_at"
   ],
   "notification_type_mutes": [
     "operator_id",
@@ -711,20 +931,75 @@
     "created_at",
     "read_at"
   ],
+  "oa_auth_audit": [
+    "id",
+    "actor_id",
+    "action",
+    "value",
+    "created_at"
+  ],
+  "oa_auth_settings": [
+    "singleton",
+    "idp_sign_in",
+    "generation",
+    "first_setup"
+  ],
   "oa_bootstrap": [
     "singleton",
     "claim_id",
     "claimed_at"
+  ],
+  "oa_credentials": [
+    "id",
+    "token_hash",
+    "operator_id",
+    "operator_version",
+    "kind",
+    "expires_at",
+    "revoked_at"
   ],
   "oa_dev_credentials": [
     "credential",
     "id",
     "created_at"
   ],
+  "oa_domain_rules": [
+    "domain",
+    "provider_id",
+    "created_by",
+    "created_at"
+  ],
   "oa_external_identities": [
     "issuer",
     "subject",
     "operator_id"
+  ],
+  "oa_identity_provider_health": [
+    "provider_id",
+    "failing_since",
+    "hard_failure_at",
+    "checked_at"
+  ],
+  "oa_identity_providers": [
+    "provider_id",
+    "preset",
+    "status",
+    "issuer",
+    "client_id",
+    "jwks_uri",
+    "authorization_endpoint",
+    "token_endpoint",
+    "algorithms",
+    "token_auth_method",
+    "response_iss",
+    "interface_version",
+    "linked_at",
+    "pending_issuer",
+    "pending_client_id",
+    "pending_preset",
+    "pending_at",
+    "jwks",
+    "jwks_fetched_at"
   ],
   "oa_invitation_cancellations": [
     "operator_id",
@@ -735,6 +1010,23 @@
     "window",
     "count"
   ],
+  "oa_logout_events": [
+    "issuer",
+    "jti",
+    "consumed_at"
+  ],
+  "oa_oidc_limits": [
+    "bucket",
+    "count",
+    "expires_at"
+  ],
+  "oa_oidc_transactions": [
+    "state_hash",
+    "binding_hash",
+    "config_hash",
+    "payload",
+    "expires_at"
+  ],
   "oa_operators": [
     "id",
     "email",
@@ -743,6 +1035,20 @@
     "status",
     "version",
     "created_at"
+  ],
+  "oa_provider_session_pins": [
+    "session_id",
+    "provider_id",
+    "issuer",
+    "client_id",
+    "linked_at"
+  ],
+  "oa_provider_sessions": [
+    "session_id",
+    "issuer",
+    "subject",
+    "sid",
+    "generation"
   ],
   "oa_sessions": [
     "id",
@@ -754,6 +1060,27 @@
     "created_at",
     "expires_at",
     "revoked_at"
+  ],
+  "oa_setup_links": [
+    "interface",
+    "attempt_id",
+    "expires_at",
+    "owner_id",
+    "owner_version",
+    "session_id",
+    "completed"
+  ],
+  "oa_step_up_challenges": [
+    "id",
+    "token_hash",
+    "session_id",
+    "operator_id",
+    "operator_version",
+    "action",
+    "return_to",
+    "created_at",
+    "expires_at",
+    "consumed_at"
   ],
   "oa_tokens": [
     "id",
@@ -780,6 +1107,21 @@
     "operator_id",
     "session_id",
     "completed"
+  ],
+  "operator_appearance": [
+    "operator_id",
+    "theme",
+    "revision",
+    "updated_at"
+  ],
+  "operator_personal_time": [
+    "operator_id",
+    "timezone",
+    "working_hours_start",
+    "working_hours_end",
+    "working_days_json",
+    "revision",
+    "updated_at"
   ],
   "operator_removals": [
     "id",
@@ -823,6 +1165,41 @@
     "label_id",
     "created_at"
   ],
+  "project_membership_events": [
+    "id",
+    "project_id",
+    "identifier",
+    "direction",
+    "occurred_at"
+  ],
+  "project_milestones": [
+    "id",
+    "project_id",
+    "name",
+    "description",
+    "target_date",
+    "position",
+    "completed",
+    "created_at",
+    "updated_at"
+  ],
+  "project_report_days": [
+    "project_id",
+    "day",
+    "timezone",
+    "scope",
+    "completed",
+    "completions",
+    "recorded_at"
+  ],
+  "project_report_snapshots": [
+    "project_id",
+    "through_at",
+    "timezone",
+    "final_state",
+    "scope",
+    "completed"
+  ],
   "projects": [
     "id",
     "workspace_id",
@@ -838,6 +1215,36 @@
     "updated_at",
     "start_date",
     "priority"
+  ],
+  "rer_dependency_codes": [
+    "digest",
+    "created_at"
+  ],
+  "rer_dependency_installation": [
+    "singleton",
+    "sector_id"
+  ],
+  "rer_dependency_keys": [
+    "interface",
+    "private_key"
+  ],
+  "rer_dependency_link": [
+    "interface",
+    "issuer",
+    "client_id",
+    "metadata",
+    "needs_relink",
+    "linked_at"
+  ],
+  "rer_dependency_pending": [
+    "interface",
+    "issuer",
+    "approved_by",
+    "expires_at",
+    "approved_session",
+    "approved_version",
+    "callbacks",
+    "attempt_id"
   ],
   "rer_mail_development_outbox": [
     "sequence",
@@ -989,10 +1396,51 @@
     "term",
     "pgno"
   ],
+  "subissue_progress_events": [
+    "id",
+    "parent_issue_id",
+    "created_at",
+    "changes_json"
+  ],
+  "subissue_team_rules": [
+    "team_id",
+    "enabled",
+    "version",
+    "updated_at"
+  ],
+  "team_cycle_schedules": [
+    "team_id",
+    "weeks",
+    "start_weekday",
+    "cooldown_weeks",
+    "upcoming_count",
+    "revision",
+    "generation",
+    "updated_at"
+  ],
   "team_departures": [
     "team_id",
     "operator_id",
     "departed_at"
+  ],
+  "team_email_intake": [
+    "team_id",
+    "enabled",
+    "address",
+    "allowed_senders_json",
+    "acknowledgement",
+    "actor_operator_id",
+    "revision",
+    "created_at",
+    "updated_at"
+  ],
+  "team_housekeeping": [
+    "team_id",
+    "close_after_days",
+    "archive_after_days",
+    "exempt_bugs",
+    "revision",
+    "updated_at"
   ],
   "team_issue_history": [
     "team_id",
@@ -1027,6 +1475,17 @@
     "auth_id",
     "operator_id"
   ],
+  "vector_channel_bindings": [
+    "destination_id",
+    "workspace_id",
+    "scope",
+    "object_id",
+    "channel_id",
+    "channel_name",
+    "events",
+    "created_by",
+    "suspended_reason"
+  ],
   "vector_github_deliveries": [
     "repository_id",
     "delivery_id",
@@ -1038,7 +1497,8 @@
     "repository_id",
     "number",
     "issue_id",
-    "created_at"
+    "created_at",
+    "relation"
   ],
   "vector_github_pull_requests": [
     "repository_id",
@@ -1047,7 +1507,8 @@
     "url",
     "state",
     "updated_at",
-    "received_at"
+    "received_at",
+    "merge_sha"
   ],
   "vector_github_repositories": [
     "id",
@@ -1072,14 +1533,21 @@
     "source_token_id",
     "operator_version"
   ],
-  "vector_import_revisions": [
-    "issue_id",
-    "revision"
+  "vector_import_allocations": [
+    "job_id",
+    "workspace_id",
+    "identifier_prefix",
+    "first_sequence",
+    "last_sequence"
   ],
   "vector_import_reports": [
     "job_id",
     "report_json",
     "created_at"
+  ],
+  "vector_import_revisions": [
+    "issue_id",
+    "revision"
   ],
   "vector_import_runs": [
     "job_id",
@@ -1141,6 +1609,33 @@
     "effects_held",
     "reviewed_at"
   ],
+  "vector_slack_allowed_channels": [
+    "workspace_id",
+    "channel_id",
+    "channel_name",
+    "created_by",
+    "created_at"
+  ],
+  "vector_slack_installations": [
+    "workspace_id",
+    "team_name",
+    "created_by",
+    "enabled",
+    "updated_at"
+  ],
+  "vector_slack_member_links": [
+    "operator_id",
+    "workspace_id",
+    "slack_team_id",
+    "slack_user_id",
+    "slack_name",
+    "dm_kinds",
+    "linked_at"
+  ],
+  "vector_slack_request_keys": [
+    "key",
+    "received_at"
+  ],
   "vector_source_receipts": [
     "source_id",
     "record_id",
@@ -1169,6 +1664,12 @@
     "updated_at",
     "kind"
   ],
+  "vector_webhook_erasures": [
+    "namespace",
+    "id",
+    "identifier",
+    "erased_at"
+  ],
   "vector_webhook_events": [
     "id",
     "workspace_id",
@@ -1191,6 +1692,14 @@
     "created_at",
     "updated_at"
   ],
+  "workload_capacities": [
+    "workspace_id",
+    "operator_id",
+    "scope_key",
+    "capacity",
+    "version",
+    "updated_at"
+  ],
   "workspace_bootstrap": [
     "id",
     "workspace_id",
@@ -1211,504 +1720,5 @@
     "updated_at",
     "reminder_time",
     "member_invites"
-  ],
-  "issue_duplicates": [
-    "issue_id",
-    "canonical_issue_id",
-    "created_at"
-  ],
-  "issue_deletions": [
-    "issue_id",
-    "identifier",
-    "workspace_id",
-    "requested_at"
-  ],
-  "vector_webhook_erasures": [
-    "namespace",
-    "id",
-    "identifier",
-    "erased_at"
-  ],
-  "oa_auth_audit": [
-    "id",
-    "actor_id",
-    "action",
-    "value",
-    "created_at"
-  ],
-  "oa_auth_settings": [
-    "singleton",
-    "idp_sign_in",
-    "generation",
-    "first_setup"
-  ],
-  "oa_credentials": [
-    "id",
-    "token_hash",
-    "operator_id",
-    "operator_version",
-    "kind",
-    "expires_at",
-    "revoked_at"
-  ],
-  "oa_domain_rules": [
-    "domain",
-    "provider_id",
-    "created_by",
-    "created_at"
-  ],
-  "oa_identity_provider_health": [
-    "provider_id",
-    "failing_since",
-    "hard_failure_at",
-    "checked_at"
-  ],
-  "oa_identity_providers": [
-    "provider_id",
-    "preset",
-    "status",
-    "issuer",
-    "client_id",
-    "jwks_uri",
-    "authorization_endpoint",
-    "token_endpoint",
-    "algorithms",
-    "token_auth_method",
-    "response_iss",
-    "interface_version",
-    "linked_at",
-    "pending_issuer",
-    "pending_client_id",
-    "pending_preset",
-    "pending_at",
-    "jwks",
-    "jwks_fetched_at"
-  ],
-  "oa_logout_events": [
-    "issuer",
-    "jti",
-    "consumed_at"
-  ],
-  "oa_oidc_limits": [
-    "bucket",
-    "count",
-    "expires_at"
-  ],
-  "oa_oidc_transactions": [
-    "state_hash",
-    "binding_hash",
-    "config_hash",
-    "payload",
-    "expires_at"
-  ],
-  "oa_provider_session_pins": [
-    "session_id",
-    "provider_id",
-    "issuer",
-    "client_id",
-    "linked_at"
-  ],
-  "oa_provider_sessions": [
-    "session_id",
-    "issuer",
-    "subject",
-    "sid",
-    "generation"
-  ],
-  "oa_setup_links": [
-    "interface",
-    "attempt_id",
-    "expires_at",
-    "owner_id",
-    "owner_version",
-    "session_id",
-    "completed"
-  ],
-  "oa_step_up_challenges": [
-    "id",
-    "token_hash",
-    "session_id",
-    "operator_id",
-    "operator_version",
-    "action",
-    "return_to",
-    "created_at",
-    "expires_at",
-    "consumed_at"
-  ],
-  "ik_d1_erasure_journal": [
-    "id",
-    "destination",
-    "recorded_at",
-    "records_erased",
-    "jobs_retired",
-    "streams_retired",
-    "stores_json"
-  ],
-  "ik_d1_erasure_tally": [
-    "receipt_id",
-    "store",
-    "image"
-  ],
-  "ik_d1_retirements": [
-    "id",
-    "kind",
-    "destination",
-    "receipt_id",
-    "retired_at"
-  ],
-  "ik_d1_reversal_fences": [
-    "job_id",
-    "action",
-    "fence",
-    "state_revision",
-    "erased_records",
-    "reused"
-  ],
-  "rer_dependency_codes": [
-    "digest",
-    "created_at"
-  ],
-  "rer_dependency_installation": [
-    "singleton",
-    "sector_id"
-  ],
-  "rer_dependency_keys": [
-    "interface",
-    "private_key"
-  ],
-  "rer_dependency_link": [
-    "interface",
-    "issuer",
-    "client_id",
-    "metadata",
-    "needs_relink",
-    "linked_at"
-  ],
-  "rer_dependency_pending": [
-    "interface",
-    "issuer",
-    "approved_by",
-    "expires_at",
-    "approved_session",
-    "approved_version",
-    "callbacks",
-    "attempt_id"
-  ],
-  "vector_import_allocations": [
-    "job_id",
-    "workspace_id",
-    "identifier_prefix",
-    "first_sequence",
-    "last_sequence"
-  ],
-  "ik_d1_preparation_steps": [
-    "id",
-    "destination",
-    "namespace",
-    "mapping_version",
-    "principal_id",
-    "operation_key",
-    "reversal_policy",
-    "codec_id",
-    "source_digest",
-    "total",
-    "records",
-    "stages",
-    "phase",
-    "hash_json",
-    "fingerprint",
-    "verified_revision",
-    "revision"
-  ],
-  "ik_d1_stream_sources": [
-    "stream_id",
-    "destination",
-    "source_digest"
-  ],
-  "ik_d1_erasure_progress": [
-    "id",
-    "destination",
-    "request_hash",
-    "generation",
-    "phase",
-    "index_rows",
-    "value_rows",
-    "revision",
-    "records_erased",
-    "field_matches_json",
-    "created_at"
-  ],
-  "notification_snoozes": [
-    "notification_id",
-    "issue_id",
-    "recipient_id",
-    "until_at",
-    "until_change",
-    "snoozed_at",
-    "returned_at"
-  ],
-  "issue_reminders": [
-    "id",
-    "issue_id",
-    "recipient_id",
-    "remind_at",
-    "created_at",
-    "delivered_at",
-    "delivery_id"
-  ],
-  "subissue_progress_events": [
-    "id",
-    "parent_issue_id",
-    "created_at",
-    "changes_json"
-  ],
-  "subissue_team_rules": [
-    "team_id",
-    "enabled",
-    "version",
-    "updated_at"
-  ],
-  "workload_capacities": [
-    "workspace_id",
-    "operator_id",
-    "scope_key",
-    "capacity",
-    "version",
-    "updated_at"
-  ],
-  "manual_order_scopes": [
-    "workspace_id",
-    "scope_key",
-    "version"
-  ],
-  "manual_order_entries": [
-    "workspace_id",
-    "scope_key",
-    "issue_id",
-    "position"
-  ],
-  "issue_relations": [
-    "first_issue_id",
-    "second_issue_id",
-    "created_at"
-  ],
-  "team_cycle_schedules": [
-    "team_id",
-    "weeks",
-    "start_weekday",
-    "cooldown_weeks",
-    "upcoming_count",
-    "revision",
-    "generation",
-    "updated_at"
-  ],
-  "operator_personal_time": [
-    "operator_id",
-    "timezone",
-    "working_hours_start",
-    "working_hours_end",
-    "working_days_json",
-    "revision",
-    "updated_at"
-  ],
-  "operator_appearance": [
-    "operator_id",
-    "theme",
-    "revision",
-    "updated_at"
-  ],
-  "team_housekeeping": [
-    "team_id",
-    "close_after_days",
-    "archive_after_days",
-    "exempt_bugs",
-    "revision",
-    "updated_at"
-  ],
-  "project_membership_events": [
-    "id",
-    "project_id",
-    "identifier",
-    "direction",
-    "occurred_at"
-  ],
-  "project_report_snapshots": [
-    "project_id",
-    "through_at",
-    "timezone",
-    "final_state",
-    "scope",
-    "completed"
-  ],
-  "project_report_days": [
-    "project_id",
-    "day",
-    "timezone",
-    "scope",
-    "completed",
-    "completions",
-    "recorded_at"
-  ],
-  "cycle_report_days": [
-    "cycle_id",
-    "day",
-    "timezone",
-    "scope",
-    "completed",
-    "completions",
-    "recorded_at"
-  ],
-  "project_milestones": [
-    "id",
-    "project_id",
-    "name",
-    "description",
-    "target_date",
-    "position",
-    "completed",
-    "created_at",
-    "updated_at"
-  ],
-  "vector_slack_allowed_channels": [
-    "workspace_id",
-    "channel_id",
-    "channel_name",
-    "created_by",
-    "created_at"
-  ],
-  "vector_slack_installations": [
-    "workspace_id",
-    "team_name",
-    "created_by",
-    "enabled",
-    "updated_at"
-  ],
-  "vector_channel_bindings": [
-    "destination_id",
-    "workspace_id",
-    "scope",
-    "object_id",
-    "channel_id",
-    "channel_name",
-    "events",
-    "created_by",
-    "suspended_reason"
-  ],
-  "vector_slack_member_links": [
-    "operator_id",
-    "workspace_id",
-    "slack_team_id",
-    "slack_user_id",
-    "slack_name",
-    "dm_kinds",
-    "linked_at"
-  ],
-  "vector_slack_request_keys": [
-    "key",
-    "received_at"
-  ],
-  "notification_channel_defaults": [
-    "workspace_id",
-    "kind",
-    "email_mode",
-    "slack_enabled"
-  ],
-  "notification_channel_overrides": [
-    "operator_id",
-    "kind",
-    "email_mode",
-    "slack_enabled"
-  ],
-  "notification_channel_receipts": [
-    "notification_id"
-  ],
-  "notification_channel_restore_holds": [
-    "notification_id"
-  ],
-  "notification_digest_batches": [
-    "id",
-    "workspace_id",
-    "recipient_id",
-    "cadence",
-    "slot",
-    "status",
-    "attempts",
-    "claim_token",
-    "claimed_at",
-    "next_attempt_at",
-    "reason",
-    "created_at",
-    "updated_at"
-  ],
-  "notification_digest_items": [
-    "notification_id",
-    "batch_id"
-  ],
-  "notification_digest_attempts": [
-    "id",
-    "batch_id",
-    "number",
-    "status",
-    "reason",
-    "started_at",
-    "settled_at"
-  ],
-  "notification_digest_windows": [
-    "workspace_id",
-    "recipient_id",
-    "cadence",
-    "slot",
-    "batch_id"
-  ],
-  "team_email_intake": [
-    "team_id",
-    "enabled",
-    "address",
-    "allowed_senders_json",
-    "acknowledgement",
-    "actor_operator_id",
-    "revision",
-    "created_at",
-    "updated_at"
-  ],
-  "intake_email_messages": [
-    "id",
-    "team_id",
-    "message_key",
-    "message_id",
-    "issue_id",
-    "comment_id",
-    "root_id",
-    "sender",
-    "requester_domain",
-    "subject",
-    "text_body",
-    "html_body",
-    "cc_json",
-    "references_json",
-    "status",
-    "error",
-    "created_at",
-    "updated_at"
-  ],
-  "intake_email_files": [
-    "message_id",
-    "file_id",
-    "content_id"
-  ],
-  "intake_email_deliveries": [
-    "id",
-    "issue_id",
-    "comment_id",
-    "root_id",
-    "request_id",
-    "message_id",
-    "kind",
-    "status",
-    "error",
-    "provider_message_id",
-    "created_at",
-    "updated_at"
   ]
 }
