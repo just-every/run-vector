@@ -1,10 +1,10 @@
 import { administrationContext, audit, commit, guard, SettingsError, type AdministrationContext } from "../administration/transaction";
 
 export type TeamRole = "owner" | "member";
-type Team = { id: string; name: string; archived_at: string | null };
+type Team = { id: string; name: string; archived_at: string | null; membership_mode: string };
 
 async function teamOf(ctx: AdministrationContext, id: string) {
-  const team = await ctx.db.prepare("SELECT id,name,archived_at FROM teams WHERE id=? AND workspace_id=?").bind(id, ctx.workspace).first<Team>();
+  const team = await ctx.db.prepare("SELECT id,name,archived_at,membership_mode FROM teams WHERE id=? AND workspace_id=?").bind(id, ctx.workspace).first<Team>();
   if (!team) throw new SettingsError("not_found", "Team is unavailable.", 404);
   return team;
 }
@@ -29,7 +29,9 @@ export async function joinTeam(source: D1Database, actor: string, teamId: string
   const ctx = await administrationContext(source, actor), team = await teamOf(ctx, teamId);
   if (team.archived_at) throw new SettingsError("team_archived", "Archived teams take no new members.", 409);
   if (await membership(ctx, teamId, actor)) return;
+  if (team.membership_mode !== "open") throw new SettingsError("team_invitation_required", "This team requires an invitation or approved membership request.", 403);
   await commit(ctx, [
+    guard(ctx.db,"EXISTS(SELECT 1 FROM teams WHERE id=? AND membership_mode='open' AND archived_at IS NULL)",teamId),
     unchanged(ctx, teamId, actor, null),
     ctx.db.prepare("INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) VALUES(?,?,'member',?,?)").bind(teamId, actor, ctx.at, ctx.at),
     returned(ctx, teamId, actor),

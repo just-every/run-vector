@@ -1,3 +1,4 @@
+import {setMembershipMode,requestMembership,decideMembership} from "./join-rules";
 import type { Context, Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -26,6 +27,17 @@ export function addTeamMembershipRoutes(app: Hono<AppEnvironment>) {
       throw error;
     }
   };
+  app.put("/settings/teams/:id/membership", act(async c=>{
+    const input=z.object({mode:z.enum(["open","invite_only"]),requestsEnabled:z.boolean()}).strict().safeParse(await readRequestJson(c.req.raw));
+    if(!input.success)throw new SettingsError("invalid_request","Choose Open or Invite only and whether to accept requests.",400);
+    await setMembershipMode(c.env.DB,c.get("operatorId"),c.req.param("id")!,input.data);
+  }));
+  app.post("/teams/:teamId/requests",act(c=>requestMembership(c.env.DB,c.get("operatorId"),c.req.param("teamId")!)));
+  app.post("/settings/teams/:id/requests/:requesterId/decision",act(async c=>{
+    const input=z.object({decision:z.enum(["approved","declined"])}).strict().safeParse(await readRequestJson(c.req.raw));
+    if(!input.success)throw new SettingsError("invalid_request","Choose approve or decline.",400);
+    await decideMembership(c.env.DB,c.get("operatorId"),c.req.param("id")!,c.req.param("requesterId")!,input.data.decision);
+  }));
   app.post("/teams/:teamId/join", act((c) => joinTeam(c.env.DB, c.get("operatorId"), c.req.param("teamId")!)));
   app.post("/teams/:teamId/leave", act((c) => leaveTeam(c.env.DB, c.get("operatorId"), c.req.param("teamId")!)));
   app.put("/settings/teams/:id/members/:operatorId", act(async (c) => {

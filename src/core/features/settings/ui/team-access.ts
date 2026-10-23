@@ -18,6 +18,8 @@ export function teamAccess(data: Administration, team: Team) {
     /** Owners and Admins open every team; a Member opens the teams they belong to. */
     opens: leads || standing !== null,
     join: may("teams.join"),
+    request: may("teams.request"),
+    membership: may("teams.membership"),
     settings: may("teams.settings"),
     archive: may("teams.archive"),
     workflow: may("teams.workflow"),

@@ -29,7 +29,7 @@ export function visibilityCtes(actor: string) {
       FROM main.operators r JOIN __vector_reader reader ON reader.workspace_id=r.workspace_id)`,
     scoped('issues', team()),
     scoped('projects', 'EXISTS(SELECT 1 FROM issues i WHERE i.project_id=r.id)'),
-    ...['workflow_statuses', 'cycles', 'team_members', 'team_departures', 'team_cycle_schedules', 'team_housekeeping', 'subissue_team_rules'].map(t => scoped(t, team())),
+    ...['workflow_statuses', 'cycles', 'team_join_requests', 'team_members', 'team_departures', 'team_cycle_schedules', 'team_housekeeping', 'subissue_team_rules'].map(t => scoped(t, team())),
     ...['issue_labels', 'evidence_revisions', 'intake_decisions', 'issue_comments', 'issue_files', 'issue_links', 'issue_followers', 'issue_mentions', 'issue_notification_mutes', 'issue_reminders', 'notification_snoozes', 'issue_description_revisions'].map(t => scoped(t, issue())),
     `notifications AS (SELECT r.id,r.event_id,r.issue_id,r.recipient_id,r.actor_id,
       COALESCE((SELECT name FROM operators o WHERE o.id=r.actor_id),r.actor_name) actor_name,

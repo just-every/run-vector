@@ -20,7 +20,7 @@ it('[ROLE-005] native actions populate an immutable workspace audit view and exa
 });
 
 
-it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the directory, a Guest cannot join, a team keeps an owner, and leaving keeps assigned work listed for its owners", async () => {
+it("[TEAM-007 TEAM-008 ROLE-007 OPS-001] a Member joins and leaves a public team from the directory, a Guest cannot join, a team keeps an owner, and leaving keeps assigned work listed for its owners", async () => {
   const w = await roleWorkspace();
   const platform = (await w.mutate("/settings/teams", "POST", { name: "Platform", identifierPrefix: "PLATF" })).teams.find((t) => t.name === "Platform")!;
   // TEAM-008: the same Member session and scoped token follow each setting change.
@@ -41,6 +41,38 @@ it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the director
   expect((await w.guest.api("/teams","POST",{name:"synthetic-vector-guest-team",identifierPrefix:"SYNGST"})).status).toBe(403);
   expect((await w.state()).teams.find(team=>team.id===owned.id)?.members).toEqual([{operatorId:w.member.id,role:"owner"}]);
   expect(await audits("workspace.team_creation_changed")).toHaveLength(2);
+  // TEAM-007: invite-only changes joining, never public work visibility.
+  const inviteTeam=(await w.mutate("/settings/teams","POST",{name:"synthetic-vector-invite-team",identifierPrefix:"SYNINV"})).teams.find(team=>team.name==="synthetic-vector-invite-team")!;
+  expect((await w.call(`/settings/teams/${inviteTeam.id}/members/${w.lead.id}`,"PUT",{role:"owner"})).status).toBe(200);
+  expect((await w.lead.call(`/settings/teams/${inviteTeam.id}/membership`,"PUT",{mode:"invite_only",requestsEnabled:true})).status).toBe(200);
+  expect((await w.member.call(`/teams/${inviteTeam.id}/join`,"POST",{})).status).toBe(403);
+  const publicIssue=await w.call("/issues","POST",{title:"synthetic-vector-public-invite-work",teamId:inviteTeam.id});
+  expect(publicIssue.status).toBe(201);
+  const visible=await publicIssue.json() as {identifier:string};
+  expect((await w.member.call(`/issues/${visible.identifier}`)).status).toBe(200);
+  expect((await w.member.call(`/teams/${inviteTeam.id}/requests`,"POST",{})).status).toBe(200);
+  const pending=await snapshot(["team_join_requests","team_members","audit_records"]);
+  expect((await w.member.call(`/teams/${inviteTeam.id}/requests`,"POST",{})).status).toBe(200);
+  expect(await snapshot(["team_join_requests","team_members","audit_records"])).toEqual(pending);
+  expect(await env.DB.prepare("SELECT 1 FROM team_members WHERE team_id=? AND operator_id=?").bind(inviteTeam.id,w.member.id).first()).toBeNull();
+  expect((await w.member.call(`/settings/teams/${inviteTeam.id}/requests/${w.member.id}/decision`,"POST",{decision:"approved"})).status).toBe(403);
+  expect((await w.member.call(`/settings/teams/${inviteTeam.id}/members/${w.admin.id}`,"PUT",{role:"member"})).status).toBe(403);
+  for(const path of [`/teams/${inviteTeam.id}/join`,`/teams/${inviteTeam.id}/requests`])expect((await w.guest.call(path,"POST",{})).status).toBe(403);
+  expect(await snapshot(["team_join_requests","team_members","audit_records"])).toEqual(pending);
+  const approve=()=>w.lead.call(`/settings/teams/${inviteTeam.id}/requests/${w.member.id}/decision`,"POST",{decision:"approved"});
+  expect((await approve()).status).toBe(200);
+  const approved=await snapshot(["team_join_requests","team_members","audit_records"]);
+  expect((await approve()).status).toBe(200);
+  expect(await snapshot(["team_join_requests","team_members","audit_records"])).toEqual(approved);
+  expect(await env.DB.prepare("SELECT role FROM team_members WHERE team_id=? AND operator_id=?").bind(inviteTeam.id,w.member.id).first("role")).toBe("member");
+  const another=await w.fresh("member",false);
+  expect((await another.call(`/teams/${inviteTeam.id}/requests`,"POST",{})).status).toBe(200);
+  expect((await w.admin.call(`/settings/teams/${inviteTeam.id}/requests/${another.id}/decision`,"POST",{decision:"declined"})).status).toBe(200);
+  expect(await env.DB.prepare("SELECT 1 FROM team_members WHERE team_id=? AND operator_id=?").bind(inviteTeam.id,another.id).first()).toBeNull();
+  expect((await w.call(`/settings/teams/${inviteTeam.id}/membership`,"PUT",{mode:"invite_only",requestsEnabled:false})).status).toBe(200);
+  expect((await another.call(`/teams/${inviteTeam.id}/requests`,"POST",{})).status).toBe(403);
+  expect((await w.call(`/settings/operators/${another.id}`,"DELETE")).status).toBe(200);
+  expect(await env.DB.prepare("SELECT count(*) n FROM team_join_requests WHERE requester_id=?").bind(another.id).first("n")).toBe(0);
   // Owners and Admins create teams and become their first team owner.
   expect(platform.members).toEqual([{ operatorId: w.owner, role: "owner" }]);
   const member = w.as(w.member), lead = w.as(w.lead), guest = w.as(w.guest);
@@ -170,6 +202,7 @@ function promised(cell: string, who: Kind, c: Context) {
   if (text.includes("after recoverable delete")) return "forbidden";
   if (text.startsWith("no (yes when the workspace permits Members".toLowerCase())) return c.memberTeamCreation ? "allow" : "forbidden";
   if (text.startsWith("no (yes when the invite setting is on")) return c.memberInvites ? "allow" : "forbidden";
+  if (text.startsWith("where request is visible")) return "allow";
   if (text.startsWith("yes") || text === "own" || text.startsWith("member's teams")) return "allow";
   if (text.startsWith("no") || text === "apply only") return "forbidden";
   if (text.startsWith("team owner only") || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
@@ -179,7 +212,7 @@ function promised(cell: string, who: Kind, c: Context) {
   throw new Error("The journey cannot read this cell yet: " + cell);
 }
 const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
-const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures",
+const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
   "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];

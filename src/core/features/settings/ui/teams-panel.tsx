@@ -1,3 +1,4 @@
+import {TeamJoinRules} from "./team-join-rules";
 import { useHydrated } from "../../../app/initial-resources";
 import { useState, type FormEvent } from "react";
 import { useAdministrationAction } from "./administration-action";
@@ -80,11 +81,15 @@ export function TeamsPanel({
                 <button type="button" disabled={action.pending} onClick={() => void action.run(`/api/teams/${team.id}/leave`, "POST", {})}>
                   Leave {team.name}
                 </button>
-              ) : !team.archivedAt && (
+              ) : !team.archivedAt && (team.membershipMode === "open" ? (
                 <button type="button" disabled={action.pending} onClick={() => void action.run(`/api/teams/${team.id}/join`, "POST", {})}>
                   Join {team.name}
                 </button>
-              ))}
+              ) : team.requestsEnabled && access.request ? (
+                <button type="button" disabled={action.pending || team.joinRequests.some(request=>request.requesterId===data.viewer.id&&request.state==="pending")} onClick={()=>void action.run(`/api/teams/${team.id}/requests`,"POST",{})}>
+                  {team.joinRequests.some(request=>request.requesterId===data.viewer.id&&request.state==="pending") ? "Request pending for " : "Request to join "}{team.name}
+                </button>
+              ) : <span>Invitation required</span>))}
             </li>
           );
         })}
@@ -216,6 +221,7 @@ function TeamEditor({
         </fieldset>
       </form>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
+      <TeamJoinRules data={data} team={team} onChanged={onChanged}/>
       <TeamPermissions data={data} team={team} onChanged={onChanged} />
       {access.settings && <TeamEmailIntake teamId={team.id} teamName={team.name} archived={team.archivedAt !== null} />}
       <h3>Workflow</h3>

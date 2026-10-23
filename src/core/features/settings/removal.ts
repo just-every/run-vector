@@ -96,6 +96,8 @@ export async function removeOperator(
         `DELETE FROM list_preferences WHERE operator_id=? AND ${receipt}`,
       )
       .bind(target, id),
+    db.prepare(`DELETE FROM team_join_requests WHERE requester_id=? AND ${receipt}`).bind(target,id),
+    db.prepare(`UPDATE team_join_requests SET decided_by=NULL WHERE decided_by=? AND ${receipt}`).bind(target,id),
     // ROLE-007: a team left without an owner is managed by Admins until one is named.
     db
       .prepare(`DELETE FROM team_members WHERE operator_id=? AND ${receipt}`)
