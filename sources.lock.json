@@ -2352,6 +2352,10 @@
       "sha256": "528c502df5e56a863093ecff5e2b7f38938ba970735bdb73682d2aec542297bf",
       "executable": false
     },
+    "migrations/core/0087_github_automation.sql": {
+      "sha256": "73643c4cd527502acc1abca468719114fe279a1c2657ce5f2117180b0f4d7f11",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -2889,7 +2893,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "797ca245971afd71a87a612bf683a518c74af6eea69e13fe0e17b0480156e235",
+      "sha256": "c0364bf28e2847d5acf9f11346feea1c8e90feef7025c182efed84290a5d3cfc",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3589,7 +3593,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "5c44d0c6bcc0dda3a58ba555453f87403f4737690b183110853dbfcec820fae2",
+      "sha256": "f3d8e628ff4560c106ffaf3a9650307988487f66f984712d310eaa0ee813a790",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4196,6 +4200,14 @@
       "sha256": "7843a6eab16de5b95aa8bec409b8d8c114628354d68bb40d6d1beb6b7487c15b",
       "executable": false
     },
+    "src/core/features/integrations/github/rule-routes.ts": {
+      "sha256": "495b686e52c39f7effb78bd779d42840ab3bb01768c42c4637ae9833d88c895c",
+      "executable": false
+    },
+    "src/core/features/integrations/github/rules.ts": {
+      "sha256": "03fe1f703b5f16635878becee5857e720a115a6c8fb84b35ca1c0c701216cf6c",
+      "executable": false
+    },
     "src/core/features/integrations/milestone-api.ts": {
       "sha256": "40f93dbdfe18648842dda8edcf728a6f1ce5d651b18a29faecb2fe65c3a75fa8",
       "executable": false
@@ -4340,8 +4352,12 @@
       "sha256": "076265eb234dbe1b32f020b34cfedf0ded364615af2270ecdd06fb5f18335770",
       "executable": false
     },
+    "src/core/features/integrations/ui/github-rules.tsx": {
+      "sha256": "9cba013d5298fe8f0aa3c1aa194e0c75f78b33c99faa562fb6c23bb5308c181d",
+      "executable": false
+    },
     "src/core/features/integrations/ui/github-settings.tsx": {
-      "sha256": "d5c5991bc235cd8a6a91986593885fa22937c037e7db233678172f44f5e828de",
+      "sha256": "d5bdf1007a536ac062a06c354cbd85b9466f0d385191e8d77c3b2a8d7ecf4ecc",
       "executable": false
     },
     "src/core/features/integrations/ui/github-setup.tsx": {

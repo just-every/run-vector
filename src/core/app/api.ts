@@ -1,4 +1,5 @@
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
+import { addGithubRuleRoutes } from '../features/integrations/github/rule-routes';
 import { githubBranchName } from '../features/integrations/github/branch-name';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
@@ -227,6 +228,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addGithubRuleRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 
