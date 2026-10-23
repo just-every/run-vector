@@ -280,6 +280,6 @@ contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail beco
   const ackAgain=await recordSendGrid(()=>worker.email(inboundFixture(intake.address,ackId).message,mailBindings));
   expect(ackAgain.result.status).toBe('duplicate');expect(ackAgain.calls).toHaveLength(0);
   const {proveEmailBounces}=await import('./email-bounce-scenario');
-  await proveEmailBounces(f,intake,outcome.commentId,reply.calls[0].providerId,reply.calls[0].body.custom_args.rer_delivery_id,ack);
+  await proveEmailBounces(f,intake,outcome.commentId,reply.calls[0].providerId,ack);
 
 });

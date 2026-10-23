@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "b4e02d1a0ed8d576097a70faad7557f9cac4d14ca3bd1ac3a8f2fbaf4a745ee2",
+      "sha256": "48df6a9afc906eea909291718ce43a494bf3ae2db7e0dc63b509b5c9b1316fa6",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -3969,7 +3969,7 @@
       "executable": false
     },
     "src/core/features/email-intake/events.ts": {
-      "sha256": "b70173275c2c7f88ff3bcc526a7fa5245b1e4cfbeb0e44e519056ca184cd0b13",
+      "sha256": "d9eb4c7ea03ad9f652b4ffae27c9c7b350d6b46b7911dfecbff538f8ab46ea15",
       "executable": false
     },
     "src/core/features/email-intake/files.ts": {
@@ -6261,7 +6261,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "cc16b80ec48f0b8affbc165ca2446fcd0275f399de7c9e8255d6f5e779e24f4f",
+      "sha256": "8f97d1e4303ea7145e5779b12cb47b059aef53223987b99f1acefff3df68097e",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
@@ -6637,7 +6637,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "877ae98455dff7f78b71e754fd6baa196c9a94f64cc3a02aa0efb5800922747f",
+      "sha256": "6eabed971c79f5663e1d02c3d0fccf4b98cdd665d1250c2dbd44085eb68f4a1a",
       "executable": false
     },
     "tests/worker/current-disjoint.test.ts": {
@@ -6773,7 +6773,7 @@
       "executable": false
     },
     "tests/worker/email-bounce-scenario.ts": {
-      "sha256": "bccea9dedc4c01d3031e6db19c0d186e08cf4e0e7758b1d3c7553377b682b9c9",
+      "sha256": "740fc5e31866be357f3f32baad8c57feaf45c7caf7eed9c3a6878be8acf276fd",
       "executable": false
     },
     "tests/worker/email-intake-fixture.ts": {
