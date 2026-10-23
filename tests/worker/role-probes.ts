@@ -254,7 +254,7 @@ export function initiativeMatrixProbes(w:Workspace){
     ['/initiatives/'+initiative.id,'GET',undefined],
     ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version,description:'synthetic-vector-1759'}],
     ['/initiatives/'+initiative.id+'/projects','PUT',{expectedVersion:version+1,projectIds:[]}],
-    ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version+2,status:'initiatived'}],
+    ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version+2,status:'completed'}],
    ] as const){const response=await send(path,method,body);expect(response.status).toBe(who==='guest'?403:200);}
    return created;
   };
