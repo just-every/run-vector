@@ -1021,7 +1021,9 @@
     "auto_cycle_started",
     "auto_cycle_completed",
     "settings_permission",
-    "planning_permission"
+    "planning_permission",
+    "membership_mode",
+    "requests_enabled"
   ],
   "vector_auth_operators": [
     "auth_id",
@@ -1712,5 +1714,14 @@
     "provider_message_id",
     "created_at",
     "updated_at"
+  ],
+  "team_join_requests": [
+    "team_id",
+    "requester_id",
+    "state",
+    "decided_by",
+    "created_at",
+    "updated_at",
+    "decided_at"
   ]
 }
