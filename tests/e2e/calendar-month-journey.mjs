@@ -28,7 +28,13 @@ export async function calendarMonthJourney(page,context,runtime,output){
   await panel.getByLabel('Calendar month',{exact:true}).fill('2026-11');await ready();await day('2026-11-04');await event().waitFor();
   const activityBefore=(await api('/issues/'+identifier)).activity.length;
   const saved=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/issues/'+identifier&&r.request().method()==='PATCH');
-  await event().dragTo(panel.locator('[data-calendar-day="2026-11-06"]'),{sourcePosition:{x:12,y:12},targetPosition:{x:18,y:18}});assert.equal((await saved).status(),200);await ready();
+  // Begin a real pointer drag before scrolling the drop date into view. The
+  // agenda can sit below the grid, so both endpoints need their own viewport.
+  await event().scrollIntoViewIfNeeded();const from=await event().boundingBox();assert(from);
+  await page.mouse.move(from.x+12,from.y+12);await page.mouse.down();await page.mouse.move(from.x+30,from.y+24,{steps:5});
+  const target=panel.locator('[data-calendar-day="2026-11-06"]');await target.scrollIntoViewIfNeeded();const to=await target.boundingBox();assert(to);
+  await page.mouse.move(to.x+18,to.y+18,{steps:12});await page.mouse.move(to.x+20,to.y+20);await page.mouse.up();
+  assert.equal((await saved).status(),200);await ready();
   const moved=await api('/issues/'+identifier);assert.equal(moved.dueDate,'2026-11-06');assert.equal(moved.activity.length,activityBefore+1);assert(moved.activity.some(a=>a.previousValue?.dueDate==='2026-11-04'&&a.nextValue?.dueDate==='2026-11-06'));
   await page.getByRole('button',{name:'Dismiss Undo notice',exact:true}).click();await day('2026-11-06');assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-83'));assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-84'));await proof(theme,width,'drag');
   await event().getByRole('button',{name:'Change due date for '+identifier,exact:true}).focus();await page.keyboard.press('Enter');

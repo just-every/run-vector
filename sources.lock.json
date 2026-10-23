@@ -6353,7 +6353,7 @@
       "executable": false
     },
     "tests/e2e/calendar-month-journey.mjs": {
-      "sha256": "5260306ec0c548f60119865be6d117bea288d29c3bf629c7a3e2ea55a79cb34f",
+      "sha256": "b76d08eea3ccabe8f8396901f82e1714052d63252e39f01cb0d94d4e2adadab2",
       "executable": false
     },
     "tests/e2e/collaboration-delivery-fixture.mjs": {
