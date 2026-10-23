@@ -23,8 +23,11 @@ export async function currentIntakePaginationJourney(page, context, base, captur
       teamId: team.id, title: `Review settlement exception ${String(start + offset + 1).padStart(3, '0')}`,
     }))));
   }
-  const returnAt = new Date(Date.now() + 15000).toISOString();
+  let returnAt;
   for (let start = 0; start < issues.length; start += 6) {
+    // Each batch owns a fresh future instant; earlier batch latency cannot
+    // spend the admission window of deferrals that have not been sent yet.
+    returnAt = new Date(Date.now() + 15000).toISOString();
     await Promise.all(issues.slice(start, start + 6).map(issue => api(`/issues/${issue.identifier}/defer`, 'POST', {
       expectedVersion: issue.version, returnAt, reason: 'Wait for the reconciliation window',
     })));
