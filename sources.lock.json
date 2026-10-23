@@ -4005,7 +4005,7 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/team-email-intake.tsx": {
-      "sha256": "512b58bb511c1d4d5a86032ebd93f208ca13a7bd0dc7b9834ca08eb05da10d23",
+      "sha256": "e04a2ff9cbe41847fd6d5da839faf2091abcafc1541678590550a695126b529e",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {

@@ -53,7 +53,9 @@ function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
         <fieldset disabled={pending}>
           <label className="admin-checkbox"><input type="checkbox" name="enabled" defaultChecked={data.settings.enabled} />Enable email intake</label>
           <label>Private intake address<input type="email" name="address" maxLength={254} defaultValue={data.settings.address} /></label>
-          <label>Allowed sender addresses<textarea name="allowedSenders" rows={4} defaultValue={data.settings.allowedSenders.join("\n")} aria-describedby={`email-senders-${teamId}`} /></label>
+          {/* A textarea's saved list is its text content; a wrapping label would carry it in its own text. */}
+          <label htmlFor={`email-senders-field-${teamId}`}>Allowed sender addresses</label>
+          <textarea id={`email-senders-field-${teamId}`} name="allowedSenders" rows={4} defaultValue={data.settings.allowedSenders.join("\n")} aria-describedby={`email-senders-${teamId}`} />
           <p id={`email-senders-${teamId}`}>One full email address per line. Domains and wildcards are not accepted. An empty list admits no senders.</p>
           <label className="admin-checkbox"><input type="checkbox" name="acknowledgement" defaultChecked={data.settings.acknowledgement} />Send one acknowledgement with the issue identifier</label>
           <p>Acknowledgements are off by default. Team managers enable them explicitly. Internal comments and status changes are never emailed.</p>
