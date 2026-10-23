@@ -2789,7 +2789,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "a066aaff43dbb761a069b245edfea8f7b6b6ccf4bf136c6ee63a081121639287",
+      "sha256": "dc88448b20282032a1cfddb4e3bb21068eee6146faeb99ad5d81e64065742ea7",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -7357,7 +7357,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "d93c7ace7ed1cc68ebae3fc999e6a6d7ff70c0b342195053882fd6bf77fc47d4",
+      "sha256": "b62323ea6e3b813754a3ee4cda8dc7dea8ef6c7572d97b97c82c01bfb59e2cd5",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
