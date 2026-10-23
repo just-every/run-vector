@@ -14,7 +14,7 @@ export async function calendarFeedsJourney(page,context,runtime,output) {
   await beforePrivateNavigation(page,base+'/app/calendar');assert.equal((await page.goto(base+'/app/calendar')).status(),200);
   await page.locator('[data-calendar-ready="true"]').waitFor();
   await page.getByRole('button',{name:'Create feed',exact:true}).click();
-  const field=page.getByLabel('New feed URL',{exact:true});await field.waitFor();const original=await field.inputValue();
+  const field=page.getByRole('textbox',{name:'New feed URL',exact:true});await field.waitFor();const original=await field.inputValue();
   const anonymous=await context.browser().newContext();
   try {
    const feed=await anonymous.request.get(original);assert.equal(feed.status(),200);assert.equal(feed.headers()['cache-control'],'no-store');assert.equal(feed.headers()['set-cookie'],undefined);

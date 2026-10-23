@@ -47,5 +47,6 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   expect((await call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[team.id]})).status).toBe(200);
   for(const [route,method,body] of [['/calendar/feeds','GET',undefined],['/calendar/feeds','POST',{}],['/calendar/feeds/'+teamFeed.id+'/rotate','POST',{expectedVersion:1}],['/calendar/feeds/'+teamFeed.id,'DELETE',{expectedVersion:1}]] as const)
     expect((await call(route,method,body,guest)).status).toBe(403);
+  expect((await call('/settings/operators/'+guestId,'DELETE')).status).toBe(200);
   return new URL((await make(null)).url).pathname;
 }
