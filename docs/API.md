@@ -218,3 +218,13 @@ owed. Attachment bytes stay behind the same-origin cookie file door: API-001
 still forbids private-file access by bearer. The five not-built objects and a
 real private-team refusal under ROLE-002 remain owed. Native cookie issue
 deletion, import erasure and its receipts are unchanged.
+
+## Native GitHub read projections
+
+| Native app route | Read-only fields |
+| --- | --- |
+| GET /api/issues/IDENTIFIER | `branchName` suggestion and `deployments` (repository, deploymentId, sha, environment, deployedAt) |
+| GET /api/issues/IDENTIFIER/github | `pullRequests`, `commits` (literal author, subject and URL), and `deployments` |
+
+These native fields are not yet exposed by GET /api/v1/issues/IDENTIFIER.
+GitHub signing credentials authorize receiver deliveries only, never member API access.
