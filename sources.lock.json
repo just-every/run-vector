@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "17fd8062271a4ae0752ed944c545a62e1845c4cff85b5217fe90b7027a058533",
+      "sha256": "9051773a9abe376f96e190201145727ae7b3a7da68b0938edbf36be5ddf38a25",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3394c14c5a1c08fbc8d686fd3358fde72b5aa88ba21e9a8f7904993942aa48f8",
+      "sha256": "3edad294a369894dc166ecac271228114c77f714e9e2b9ad9fa558849e8bcb76",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "ca21b0d7e31431e195996d0cb7544f679664c8923080f5648e32f8da63679d78",
+      "sha256": "b424fa4ad619d7b6e686f3f8d9e8526ac6ced08e23517d4b76187f9cfc165976",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "74abcac9ef7b5efa636534c7fde688809a47a5689dffaa53826c49f299dac638",
+      "sha256": "97e277bca9ed33467d41d0b10e4b5894c39ed206ada59f1502da6de4d6746305",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -592,6 +592,10 @@
       "sha256": "524b5a948ecfea9494343657d40b6dcc0b218ab9df10ab95c804f7e9b00209ab",
       "executable": false
     },
+    "docs/guide/initiatives.md": {
+      "sha256": "5c2cfb2375ea3709939354dc66328738a99503c3c3d028fffefa34fb81e75d70",
+      "executable": false
+    },
     "docs/guide/install.md": {
       "sha256": "071ab79ce68263043534014aeb86dd4d3aa50e04fb072ccc1a8ba1f3f8a4f41c",
       "executable": false
@@ -605,7 +609,7 @@
       "executable": false
     },
     "docs/guide/notifications.md": {
-      "sha256": "fba7acf41cd1a136ef459d6ea5710397b9b2c41e43349ed8d29c7e5e0d78ec3c",
+      "sha256": "70044774926ca8332bea98a815de03be3c6320125c5ee906bd10b32e891c4bdd",
       "executable": false
     },
     "docs/guide/overview.md": {
@@ -2005,7 +2009,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "94f96592c00ed2c5e3ac13ee8a0f2fdb4fb7950593d0b96074a65d84b986a381",
+      "sha256": "fd97db4d0484854b00b5dab5bf45e57e0e74627314b52dcf3d4d276ead4a39ab",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
