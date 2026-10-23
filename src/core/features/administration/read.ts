@@ -18,7 +18,7 @@ export async function readAdministration(db: D1Database, actor: string) {
   const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed] =
     await Promise.all([
       db
-        .prepare("SELECT id,name,timezone FROM workspace_settings WHERE id=?")
+        .prepare("SELECT id,name,timezone,member_label_creation AS memberLabelCreation FROM workspace_settings WHERE id=?")
         .bind(workspaceId)
         .first(),
       db
@@ -80,7 +80,7 @@ export async function readAdministration(db: D1Database, actor: string) {
     );
   return administrationSchema.parse({
     viewer: { id: actor, role },
-    workspace,
+    workspace: workspace && {...workspace, memberLabelCreation: workspace.memberLabelCreation === 1},
     cycleSchedules: schedules.results,
     housekeeping: housekeeping.results.map((h) => ({ ...h, exemptBugs: h.exemptBugs === 1 })),
     labelsPerIssue: seed.limits.labelsPerIssue,

@@ -130,3 +130,61 @@ export async function deleteAppliedLabel({
   await page.getByRole("heading", { name: issue.title, exact: true }).waitFor();
   await capture("label-cascade-issue-history");
 }
+
+/** ISSUE-014: a Member creates in the issue picker, never the Settings list. */
+export async function memberLabelCreation({page, peer, runtime, clause, evidence, refusals}) {
+  const {navigate} = await import("./collaboration-navigation.mjs");
+  const {roleScreens} = await import("./role-ui-support.mjs");
+  const inspect = roleScreens(evidence), {base,sql}=runtime;
+  const team=sql("SELECT id FROM teams WHERE identifier_prefix='"+runtime.config.DEFAULT_TEAM_PREFIX+"'")[0];
+  const made=await page.request.post(base+"/api/issues", {headers:{Origin:base},data:{title:"synthetic-vector-label-creation",teamId:team.id}});
+  assert.equal(made.status(),201);
+  const issue=await made.json();
+  const permission=async (membersMayCreate) => {
+    await navigate(page,base+"/app/settings");
+    const form=page.getByRole("form",{name:"Label creation permission",exact:true});
+    await form.getByLabel("Who may create labels",{exact:true}).selectOption(membersMayCreate?"members":"admins");
+    const receipt=page.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/labels/creation"&&r.request().method()==="PUT");
+    await form.getByRole("button",{name:"Save label permission",exact:true}).click();
+    assert.equal((await receipt).status(),200);
+  };
+  const open=async()=>{
+    await navigate(peer,base+"/app/issues/"+issue.identifier);
+    await peer.getByRole("heading",{name:issue.title,exact:true}).waitFor();
+    await peer.getByRole("button",{name:/^Labels(?: · \d+)?$/}).click();
+  };
+  for(const width of [1440,390]) {
+    await page.setViewportSize({width,height:width===390?844:1000});
+    await peer.setViewportSize({width,height:width===390?844:1000});
+    await permission(true);
+    await clause("ISSUE-014",`Member inline creation at ${width} follows the workspace permission without workspace management`,async()=>{
+      await open();
+      const form=peer.getByRole("form",{name:"Create label inline",exact:true});
+      const name="synthetic-vector-inline-"+width;
+      await form.getByLabel("New label name",{exact:true}).fill(name);
+      await form.getByLabel("New label colour",{exact:true}).fill("#224466");
+      const receipt=peer.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/labels"&&r.request().method()==="POST");
+      await form.getByRole("button",{name:"Create label",exact:true}).click();
+      assert.equal((await receipt).status(),200);
+      const apply=peer.getByRole("form",{name:"Apply issue labels",exact:true});
+      await apply.getByLabel(name,{exact:true}).waitFor();
+      assert.equal(await apply.getByLabel(name,{exact:true}).isChecked(),true);
+      const saved=peer.waitForResponse(r=>new URL(r.url()).pathname==="/api/issues/"+issue.identifier&&r.request().method()==="PATCH");
+      await apply.getByRole("button",{name:"Save labels",exact:true}).click();
+      assert.equal((await saved).status(),200);
+      await permission(false);
+      await open();
+      assert.equal(await peer.getByRole("form",{name:"Create label inline",exact:true}).count(),0);
+      assert.equal((await peer.request.post(base+"/api/settings/labels",{headers:{Origin:base},data:{name:"synthetic-vector-refused-"+width,color:"#224466"}})).status(),403);
+      assert.equal(sql("SELECT count(*) n FROM labels WHERE name='synthetic-vector-refused-"+width+"'")[0].n,0);
+      const managed=base+"/api/settings/labels/creation";
+      refusals.add(managed);
+      assert.equal((await peer.request.put(managed,{headers:{Origin:base},data:{membersMayCreate:true}})).status(),403);
+    });
+  }
+  await inspect(peer,peer.getByRole("form",{name:"Apply issue labels",exact:true}),"member-labels-restricted");
+  await permission(true);
+  await open();
+  await inspect(peer,peer.getByRole("form",{name:"Create label inline",exact:true}),"member-labels-inline-create");
+  assert.equal(sql("SELECT count(*) n FROM audit_records WHERE action='workspace.label_creation_changed'")[0].n,4);
+}

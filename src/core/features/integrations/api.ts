@@ -1,3 +1,5 @@
+import { createLabel } from "../administration/labels";
+import { labelCreateSchema } from "../administration/schema";
 import { apiSchema,apiRoute } from './api-schema';
 import { addCommentApi } from './comment-api';
 import { addMilestoneApi } from './milestone-api';
@@ -77,7 +79,12 @@ export function createIntegrationApi(){
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
  });
- app.get('/metadata',async c=>c.json(await readAdministration(c.env.DB,c.get('operatorId'))));
+ app.post('/labels',async c=>{
+  const input=labelCreateSchema.parse(await readRequestJson(c.req.raw));
+  const id=await createLabel(c.env.DB,c.get('operatorId'),input);
+  return c.json({id,...input},201);
+ });
+ app.get('/metadata' ,async c=>c.json(await readAdministration(c.env.DB,c.get('operatorId'))));
  app.get('/schema',c=>c.json(apiSchema));
  app.get('/issues',async c=>{
   const query=c.req.query(),{limit,cursor,...nativeQuery}=query;

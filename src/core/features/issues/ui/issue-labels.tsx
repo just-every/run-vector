@@ -1,3 +1,4 @@
+import { administrationSchema } from "../../administration/schema";
 import { useState, type FormEvent } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
 import type { StreamOptions } from "../../streams/ui/data";
@@ -12,6 +13,10 @@ export function IssueLabels({
   options: StreamOptions | null;
   onRefresh: () => void;
 }) {
+  const [createdLabels, setCreatedLabels] = useState<NonNullable<StreamOptions>["labels"]>([]);
+  const [labelName, setLabelName] = useState("");
+  const [labelColor, setLabelColor] = useState("#8fa3f0");
+  const availableLabels = [...(options?.labels ?? []), ...createdLabels.filter(label => !options?.labels.some(existing => existing.id === label.id))];
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(
     issue.labels.map((label) => label.id),
@@ -46,6 +51,26 @@ export function IssueLabels({
     } finally {
       setPending(false);
     }
+  }
+  async function create(event: FormEvent) {
+    event.preventDefault();
+    if (pending || !options?.canCreateLabels) return;
+    setPending(true);
+    setError("");
+    try {
+      const data = await fetchJson("/api/settings/labels", administrationSchema, {
+        method: "POST", headers: {"content-type": "application/json"},
+        body: JSON.stringify({name: labelName, color: labelColor}),
+      });
+      const label = data.labels.find(label => label.name === labelName.trim());
+      if (!label) throw new Error("The created label could not be read. Refresh labels.");
+      setCreatedLabels(labels => [...labels, label]);
+      if (selected.length < options.labelsPerIssue) setSelected(labels => [...labels, label.id]);
+      setLabelName("");
+      onRefresh();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Label could not be created.");
+    } finally { setPending(false); }
   }
   async function reload() {
     setPending(true);
@@ -95,14 +120,14 @@ export function IssueLabels({
           <fieldset disabled={pending || !options}>
             <legend>Issue labels · maximum {options?.labelsPerIssue}</legend>
             <div className="issue-label-choices">
-              {options?.labels.map((label) => (
+              {availableLabels.map((label) => (
                 <label key={label.id}>
                   <input
                     type="checkbox"
                     checked={selected.includes(label.id)}
                     disabled={
                       !selected.includes(label.id) &&
-                      selected.length >= options.labelsPerIssue
+                      (!options || selected.length >= options.labelsPerIssue)
                     }
                     onChange={(event) =>
                       setSelected(
@@ -140,6 +165,14 @@ export function IssueLabels({
           )}
         </form>
       )}
+      {open && options?.canCreateLabels && <form aria-label="Create label inline" onSubmit={create}>
+        <fieldset disabled={pending}>
+          <legend>Create label</legend>
+          <label>New label name<input required maxLength={120} value={labelName} onChange={event => setLabelName(event.target.value)} /></label>
+          <label>New label colour<input type="color" value={labelColor} onChange={event => setLabelColor(event.target.value)} /></label>
+          <button>Create label</button>
+        </fieldset>
+      </form>}
     </div>
   );
 }

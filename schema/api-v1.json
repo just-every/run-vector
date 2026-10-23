@@ -2537,6 +2537,83 @@
           }
         ]
       }
+    },
+    "/labels": {
+      "post": {
+        "operationId": "labels_create",
+        "summary": "Create a workspace label",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "labels:write"
+        ],
+        "x-object": "labels",
+        "x-operation": "create",
+        "responses": {
+          "201": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "color": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$"
+                  },
+                  "projectsEnabled": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                },
+                "required": [
+                  "name",
+                  "color"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2740,8 +2817,9 @@
           "reason": "Native object API operation remains required by API-003."
         },
         "create": {
-          "status": "owed",
-          "reason": "Native object API operation remains required by API-003."
+          "routes": [
+            "POST /labels"
+          ]
         },
         "update": {
           "status": "owed",

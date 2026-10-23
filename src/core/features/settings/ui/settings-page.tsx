@@ -193,6 +193,7 @@ export function SettingsPage() {
               labels={administration.data.labels}
               onChanged={administration.reload}
               readOnly={!workspace}
+              memberLabelCreation={administration.data.workspace.memberLabelCreation}
             />
           )}
           {workspace && administration.data && (

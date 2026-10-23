@@ -18,13 +18,30 @@ export async function createLabel(
 ) {
   const ctx = await administrationContext(db, actor),
     id = createUlid(new Date(ctx.at));
+  const allowed = `EXISTS(SELECT 1 FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id
+    WHERE o.id=? AND o.removed_at IS NULL AND (o.role IN ('owner','admin') OR o.role='member' AND w.member_label_creation=1))`;
+  if (!await ctx.db.prepare(`SELECT 1 WHERE ${allowed}`).bind(actor).first())
+    throw new SettingsError("label_creation_forbidden", "Only Owners and Admins may create labels with the current workspace permission.", 403);
   await commit(ctx, [
+    guard(ctx.db, allowed, actor),
     ctx.db
       .prepare(
         "INSERT INTO labels(id,workspace_id,name,color,projects_enabled,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
       )
       .bind(id, ctx.workspace, input.name, input.color, Number(input.projectsEnabled), ctx.at, ctx.at),
     ...audit(ctx, "label.created", id, input.name, null, input),
+  ]);
+  return id;
+}
+export async function setLabelCreation(db: D1Database, actor: string, membersMayCreate: boolean) {
+  const ctx = await administrationContext(db, actor);
+  const previous = await ctx.db.prepare("SELECT member_label_creation AS value FROM workspace_settings WHERE id=?").bind(ctx.workspace).first<number>("value");
+  if (previous === Number(membersMayCreate)) return;
+  await commit(ctx, [
+    guard(ctx.db, "EXISTS(SELECT 1 FROM operators WHERE id=? AND role IN ('owner','admin') AND removed_at IS NULL)", actor),
+    guard(ctx.db, "EXISTS(SELECT 1 FROM workspace_settings WHERE id=? AND member_label_creation=?)", ctx.workspace, previous!),
+    ctx.db.prepare("UPDATE workspace_settings SET member_label_creation=?,updated_at=? WHERE id=?").bind(Number(membersMayCreate),ctx.at,ctx.workspace),
+    ...audit(ctx, "workspace.label_creation_changed", ctx.workspace, "Label creation", {membersMayCreate: previous === 1}, {membersMayCreate}),
   ]);
 }
 export async function updateLabel(
