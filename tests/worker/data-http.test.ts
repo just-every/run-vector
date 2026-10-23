@@ -15,6 +15,7 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const f=await populatedHttpSource();const peer=f.peerCookie;
  const calendarCreated=await f.call('/calendar/feeds','POST',{});expect(calendarCreated.status).toBe(201);const calendarFeed=await calendarCreated.json() as {id:string;url:string};
  expect((await request(new URL(calendarFeed.url).pathname)).status).toBe(200);
+ const dashboardCreated=await f.call('/dashboards','POST',{name:'synthetic-vector-35',widgets:[{name:'Portable count',kind:'count',filters:{q:f.issue.identifier},chart:{}}]});expect(dashboardCreated.status).toBe(201);const portableDashboard=await dashboardCreated.json() as {id:string;widgets:unknown[]};
  const referenceResponse=await f.call('/issues','POST',{teamId:f.team.id,title:'Portable reference source',description:'See '+f.issue.identifier});expect(referenceResponse.status).toBe(201);const referenceSource=await referenceResponse.json() as {identifier:string};
  const referenceBefore=await (await f.call('/issues/'+referenceSource.identifier+'/references')).json();
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
@@ -78,6 +79,7 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore','vector_slack_member_links','vector_slack_request_keys'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
  expect(records[0].kind==='manifest' && (records[0].tables.find(t=>t.name==='issue_reference_subjects')?.count??0)>0).toBe(true);
+ for(const name of ['dashboards','dashboard_widgets'])expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name===name)?.count).toBe(1);
  const archiveText=JSON.stringify(records);
  expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name==='calendar_feed_tokens')).toBe(false);
  expect(archiveText.includes(calendarFeed.url)).toBe(false);
@@ -106,6 +108,7 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
  expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM calendar_feed_tokens').first<number>('n')).toBe(0);
  const restoredReferences=await targetCall('/api/issues/'+referenceSource.identifier+'/references','GET',undefined,historical);expect(restoredReferences.status).toBe(200);expect(await restoredReferences.json()).toEqual(referenceBefore);
