@@ -62,6 +62,7 @@ export const statusReorderSchema = z
 export const statusRemoveSchema = z
   .object({ destinationStatusId: administrationId })
   .strict();
+export const labelMergeSchema = z.object({destinationLabelId: administrationId}).strict();
 export const labelCreationPermissionSchema = z.object({membersMayCreate: z.boolean()}).strict();
 export const labelCreateSchema = z.object({ name, color: labelColor, projectsEnabled: z.boolean().default(false) }).strict();
 export const labelUpdateSchema = labelCreateSchema
