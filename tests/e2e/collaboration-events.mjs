@@ -1,3 +1,6 @@
+import { exerciseReactions } from './collaboration-reactions.mjs';
+import { resolve } from 'node:path';
+import { verificationDirectory } from '../../scripts/verification-paths.mjs';
 import { navigate } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
 import { performance } from "node:perf_hooks";
@@ -308,6 +311,8 @@ export async function collaborationEvents({
     path,
     owner,
   });
+  await clause("ISSUE-017", "silent reactions on descriptions and comments update both sessions within five seconds",
+    () => exerciseReactions({page,peer,runtime,issue,operator,owner,evidence:resolve(verificationDirectory,"collaboration-browser")}));
   await collaborationPreferences({
     page,
     peer,

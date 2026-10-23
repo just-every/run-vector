@@ -8,7 +8,9 @@ export async function populateRoundtrip(installation,cookie){
  const root=await api('/api/issues','POST',{teamId:team.id,statusId:status.id,title:'Complete archive root',description:'Original native records',assigneeOperatorId:peer},201),child=await api('/api/issues','POST',{teamId:team.id,statusId:status.id,title:'Complete archive child'},201);
  await api('/api/issues/'+child.identifier+'/parent','PATCH',{expectedVersion:child.version,parentIdentifier:root.identifier});
  await api('/api/issues/'+root.identifier+'/dependencies','POST',{expectedVersion:root.version,relatedIdentifier:child.identifier,relatedVersion:child.version+1,direction:'blocks'});
- await api('/api/issues/'+root.identifier+'/comments','POST',{body:'Restored searchable comment'},201);
+ const reactionComment=await api('/api/issues/'+root.identifier+'/comments','POST',{body:'Restored searchable comment'},201);
+ await api('/api/issues/'+root.identifier+'/reactions','PUT',{subjectId:'description',emoji:'👍'});
+ await api('/api/issues/'+root.identifier+'/reactions','PUT',{subjectId:reactionComment.id,emoji:'🎉'});
  const tombstone=await api('/api/issues/'+root.identifier+'/comments','POST',{body:'Removed comment history'},201);await api('/api/issues/'+root.identifier+'/comments/'+tombstone.id,'DELETE');
  const link=await api('/api/issues/'+root.identifier+'/links','POST',{name:'Historical reference',url:'https://example.com/history'},201);await api('/api/issues/'+root.identifier+'/links/'+link.id,'DELETE');await api('/api/issues/'+root.identifier+'/links','POST',{name:'Retained reference',url:'https://example.com/retained'},201);
  for(const [name,type,bytes] of [['original.txt','text/plain',Buffer.from('Original text bytes')],['original.json','application/json',Buffer.from('{"retained":true,"unicode":"Δ"}')]]){
@@ -35,10 +37,10 @@ export async function populateRoundtrip(installation,cookie){
  populateDeliveryHistory(installation,{issue:root,owner,peer});
  const removed=installation.sql("SELECT id FROM operators WHERE email='alex@vector.test'")[0].id;await api('/api/settings/operators/'+removed,'DELETE');
  assert.equal(installation.sql('SELECT count(*) AS n FROM operators WHERE removed_at IS NOT NULL')[0].n,1);
- return {identifier:root.identifier,peer,privateView:privateView.id,sharedView:sharedView.id};
+ return {identifier:root.identifier,reactionComment:reactionComment.id,peer,privateView:privateView.id,sharedView:sharedView.id};
 }
 export function verifyRoundtripCategories(records){
- const manifest=records[0],required=['operators','teams','workflow_statuses','issues','issue_comments','issue_files','issue_links','issue_dependencies','issue_parents','evidence_revisions','intake_decisions','issue_activity','projects','cycles','labels','saved_views','list_preferences','notifications','notification_deliveries','notification_delivery_attempts','workspace_settings','audit_records','operator_removals','ik_jobs','ik_sources','ik_originals'];
+ const manifest=records[0],required=['operators','teams','workflow_statuses','issues','issue_comments','issue_reactions','issue_files','issue_links','issue_dependencies','issue_parents','evidence_revisions','intake_decisions','issue_activity','projects','cycles','labels','saved_views','list_preferences','notifications','notification_deliveries','notification_delivery_attempts','workspace_settings','audit_records','operator_removals','ik_jobs','ik_sources','ik_originals'];
  for(const name of required)assert(manifest.tables.find(row=>row.name===name)?.count>0,'Complete archive category: '+name);
  const items=records.filter(row=>row.kind==='part').flatMap(row=>row.items),text=canonicalRecords(items);
  assert(text.includes('Removed comment history')===false,'Tombstoned comment content is absent');assert(text.includes('"rolled_back"'));assert(text.includes('"failed"'));

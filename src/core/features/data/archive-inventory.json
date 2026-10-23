@@ -1710,5 +1710,12 @@
     "provider_message_id",
     "created_at",
     "updated_at"
+  ],
+  "issue_reactions": [
+    "issue_id",
+    "subject_id",
+    "operator_id",
+    "emoji",
+    "created_at"
   ]
 }
