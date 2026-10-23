@@ -11,7 +11,7 @@ type Send = () => Promise<Response>;
  * team they are not in): the Owner prepares its subjects, then it returns the
  * one request to send, through the browser door (`call`) or `/api/v1` (`api`). */
 export type Attempt = (who: Kind, actor: Person, team: string) => Promise<Send>;
-export type Probe = { permission?: "settings" | "planning"; invites?: true; outside?: true; session: Attempt; api?: Attempt };
+export type Probe = { permission?: "settings" | "planning"; invites?: true; creates?: true; outside?: true; session: Attempt; api?: Attempt };
 
 const json = async <T>(response: Response | Promise<Response>) => {
   const settled = await response;
@@ -67,7 +67,8 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "leaders.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `leader${unique()}@roles.test`, displayName: "Leader", role: "admin" }) },
     "workspace.leave": { session: async (who) => { const leaving = await w.fresh(who); return () => leaving.call(`/settings/operators/${leaving.id}`, "DELETE"); } },
     "workspace.settings": { session: async (_who, actor) => () => actor.call("/settings", "PATCH", { timezone: "UTC" }) },
-    "teams.create": { session: async (_who, actor) => { const name = `Probe team ${unique()}`, identifierPrefix = prefix("PRB"); return () => actor.call("/settings/teams", "POST", { name, identifierPrefix }); } },
+    "teams.creation-setting": { session: async (_who, actor) => () => actor.call("/settings/teams/creation", "PUT", {membersMayCreate: false}) },
+    "teams.create": { creates: true, api: async (_who, actor) => () => actor.api("/teams", "POST", {name:`API team ${unique()}`,identifierPrefix:prefix("API")}), session: async (_who, actor) => { const name = `Probe team ${unique()}`, identifierPrefix = prefix("PRB"); return () => actor.call("/settings/teams", "POST", { name, identifierPrefix }); } },
     "teams.members": { session: async (_who, actor, id) => { const joining = await w.fresh("member", false); return () => actor.call(`/settings/teams/${id}/members/${joining.id}`, "PUT", { role: "member" }); } },
     "teams.permissions": { session: async (_who, actor, id) => {
       const current = (await w.state()).teams.find((t) => t.id === id)!;

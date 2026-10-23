@@ -39,6 +39,7 @@ export function labelTextColor(color: string): "#000000" | "#ffffff" {
     ? "#000000"
     : "#ffffff";
 }
+export const teamCreationPermissionSchema = z.object({membersMayCreate:z.boolean()}).strict();
 export const teamCreateSchema = z
   .object({ name, identifierPrefix: prefix, createSlackChannel: z.boolean().optional() })
   .strict();
@@ -155,6 +156,7 @@ export const administrationSchema = z.object({
     name: z.string(),
     timezone: z.string(),
     memberLabelCreation: z.boolean(),
+    memberTeamCreation: z.boolean(),
   }),
   cycleSchedules: z.array(cycleScheduleSchema.extend({teamId: z.string()})),
   housekeeping: z.array(housekeepingSchema.extend({ teamId: z.string() })),

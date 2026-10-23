@@ -1,3 +1,5 @@
+import {createTeam} from "../administration/teams";
+import {teamCreateSchema} from "../administration/schema";
 import { createLabel } from "../administration/labels";
 import { labelCreateSchema } from "../administration/schema";
 import { apiSchema,apiRoute } from './api-schema';
@@ -79,7 +81,13 @@ export function createIntegrationApi(){
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
  });
- app.post('/labels',async c=>{
+ app.post('/teams',async c=>{
+  const input=teamCreateSchema.omit({createSlackChannel:true}).parse(await readRequestJson(c.req.raw));
+  const id=await createTeam(c.env.DB,c.get('operatorId'),input);
+  const data=await readAdministration(c.env.DB,c.get('operatorId'));
+  return c.json(data.teams.find(team=>team.id===id),201);
+ });
+ app.post('/labels' ,async c=>{
   const input=labelCreateSchema.parse(await readRequestJson(c.req.raw));
   const id=await createLabel(c.env.DB,c.get('operatorId'),input);
   return c.json({id,...input},201);

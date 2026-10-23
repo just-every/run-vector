@@ -14,6 +14,7 @@ Scripts and other tools can read and change issues through Vector's API with a t
 | `issues:read` | List issues and read one issue |
 | `issues:write` | Create issues and change them |
 | `comments:write` | Add comments |
+| `teams:write` | Create public teams under the workspace team-creation permission |
 | `labels:write` | Create workspace labels, subject to the current role and workspace creation permission |
 | `metadata:read` | Read the teams, statuses, people, projects, cycles and labels |
 
@@ -30,6 +31,7 @@ Send the token in an `Authorization: Bearer` header to your Vector address. Neve
 | `POST /api/v1/issues` | `issues:write` | Creates an issue |
 | `PATCH /api/v1/issues/FLW-12` | `issues:write` | Changes an issue |
 | `POST /api/v1/issues/FLW-12/comments` | `comments:write` | Adds a comment |
+| `POST /api/v1/teams` | `teams:write` | Create a public team (`name`, uppercase `identifierPrefix`); the creator becomes its first team owner |
 | `POST /api/v1/labels` | `labels:write` | Create a workspace label (`name`, six-digit hex `color`, optional `projectsEnabled`); Guests refused and restricted Members refused |
 | `GET /api/v1/metadata` | `metadata:read` | Lists teams, statuses, people, projects, cycles and labels |
 

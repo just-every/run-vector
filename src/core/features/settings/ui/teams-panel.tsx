@@ -28,7 +28,7 @@ export function TeamsPanel({
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
-  const creates = decide({ role: data.viewer.role, memberInvites: false, teams: new Map() }, { row: "teams.create" }) === "allow";
+  const creates = decide({ role: data.viewer.role, memberInvites: false, memberTeamCreation: data.workspace.memberTeamCreation, teams: new Map() }, { row: "teams.create" }) === "allow";
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -53,6 +53,18 @@ export function TeamsPanel({
         Teams organise work. Archived teams retain their issues and history.
         Every member sees every team&apos;s work; join a team to work in it.
       </p>
+      {(data.viewer.role === "owner" || data.viewer.role === "admin") && <form aria-label="Team creation permission" onSubmit={async event=>{
+        event.preventDefault();
+        await action.run("/api/settings/teams/creation","PUT",{membersMayCreate:new FormData(event.currentTarget).get("membersMayCreate")==="members"});
+      }}>
+        <fieldset disabled={action.pending}>
+          <label htmlFor="team-creation-permission">Who may create teams</label>
+          <select id="team-creation-permission" name="membersMayCreate" key={String(data.workspace.memberTeamCreation)} defaultValue={data.workspace.memberTeamCreation?"members":"admins"}>
+            <option value="admins">Owners and Admins only</option><option value="members">Members too</option>
+          </select>
+          <button>Save team creation permission</button>
+        </fieldset>
+      </form>}
       <h3>Team directory</h3>
       <ul className="team-directory">
         {data.teams.map((team) => {
@@ -94,8 +106,10 @@ export function TeamsPanel({
               title="Two to ten uppercase letters"
             />
           </label>
-          <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
-          <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
+          {(data.viewer.role === "owner" || data.viewer.role === "admin") && <>
+            <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
+            <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
+          </>}
           <button type="submit">Create team</button>
         </fieldset>
       </form>}

@@ -23,6 +23,24 @@ it('[ROLE-005] native actions populate an immutable workspace audit view and exa
 it("[ROLE-007 OPS-001] a Member joins and leaves a public team from the directory, a Guest cannot join, a team keeps an owner, and leaving keeps assigned work listed for its owners", async () => {
   const w = await roleWorkspace();
   const platform = (await w.mutate("/settings/teams", "POST", { name: "Platform", identifierPrefix: "PLATF" })).teams.find((t) => t.name === "Platform")!;
+  // TEAM-008: the same Member session and scoped token follow each setting change.
+  const memberCreate={name:"synthetic-vector-member-team",identifierPrefix:"SYNMEM"};
+  expect((await w.member.call("/settings/teams","POST",memberCreate)).status).toBe(403);
+  expect((await w.member.api("/teams","POST",memberCreate)).status).toBe(403);
+  expect((await w.admin.call("/settings/teams/creation","PUT",{membersMayCreate:true})).status).toBe(200);
+  expect((await w.member.call("/settings/teams/creation","PUT",{membersMayCreate:false})).status).toBe(403);
+  expect((await w.guest.call("/settings/teams","POST",memberCreate)).status).toBe(403);
+  expect((await w.guest.api("/teams","POST",memberCreate)).status).toBe(403);
+  const created=await w.member.api("/teams","POST",memberCreate);
+  expect(created.status).toBe(201);
+  const owned=await created.json() as Administration["teams"][number];
+  expect(owned.members).toEqual([{operatorId:w.member.id,role:"owner"}]);
+  expect((await w.call("/settings/teams/creation","PUT",{membersMayCreate:false})).status).toBe(200);
+  expect((await w.member.call("/settings/teams","POST",{name:"synthetic-vector-next-team",identifierPrefix:"SYNNEXT"})).status).toBe(403);
+  expect((await w.member.api("/teams","POST",{name:"synthetic-vector-next-api-team",identifierPrefix:"SYNAPI"})).status).toBe(403);
+  expect((await w.guest.api("/teams","POST",{name:"synthetic-vector-guest-team",identifierPrefix:"SYNGST"})).status).toBe(403);
+  expect((await w.state()).teams.find(team=>team.id===owned.id)?.members).toEqual([{operatorId:w.member.id,role:"owner"}]);
+  expect(await audits("workspace.team_creation_changed")).toHaveLength(2);
   // Owners and Admins create teams and become their first team owner.
   expect(platform.members).toEqual([{ operatorId: w.owner, role: "owner" }]);
   const member = w.as(w.member), lead = w.as(w.lead), guest = w.as(w.guest);
@@ -142,7 +160,7 @@ const contractMatrix = (() => {
   return rows;
 })();
 const column: Record<Kind, keyof Cells> = { owner: "Owner", admin: "Admin", lead: "Member", member: "Member", guest: "Guest" };
-type Context = { inTeam: boolean; settings: string; planning: string; memberInvites: boolean };
+type Context = { inTeam: boolean; settings: string; planning: string; memberInvites: boolean; memberTeamCreation?: boolean };
 /** What a cell promises this person: the lead owns the probed team and leads
  * the probed project, the other Member and the Guest belong to the team, and
  * every team is public (ROLE-002). */
@@ -150,6 +168,7 @@ function promised(cell: string, who: Kind, c: Context) {
   const text = cell.toLowerCase();
   // Recovery-dependent grants remain refused until recoverable deletion ships.
   if (text.includes("after recoverable delete")) return "forbidden";
+  if (text.startsWith("no (yes when the workspace permits Members".toLowerCase())) return c.memberTeamCreation ? "allow" : "forbidden";
   if (text.startsWith("no (yes when the invite setting is on")) return c.memberInvites ? "allow" : "forbidden";
   if (text.startsWith("yes") || text === "own" || text.startsWith("member's teams")) return "allow";
   if (text.startsWith("no") || text === "apply only") return "forbidden";
@@ -172,20 +191,21 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
   const table = probes(w);
   // Driven from the registry: each row a door is registered against has a probe.
   expect(Object.keys(table).sort()).toEqual(Object.keys(matrix).sort());
-  const set = async (settings: string, planning: string, memberInvites: boolean) => {
+  const set = async (settings: string, planning: string, memberInvites: boolean, memberTeamCreation = false) => {
     await resetLimits();
     expect((await w.call(`/settings/teams/${w.team.id}/permissions`, "PUT", { settings, planning })).status).toBe(200);
     expect((await w.call("/settings", "PATCH", { timezone: "UTC", memberInvites })).status).toBe(200);
-    return { settings, planning, memberInvites };
+    expect((await w.call("/settings/teams/creation", "PUT", {membersMayCreate:memberTeamCreation})).status).toBe(200);
+    return { settings, planning, memberInvites, memberTeamCreation };
   };
   let checked = 0;
   for (const [row, probe] of Object.entries(table) as [RowId, Probe][]) {
     const cells = contractMatrix.get(matrix[row].action);
     expect(cells, `${row} names a CONTRACT.md role-matrix row`).toBeDefined();
-    const variants = probe.permission ? [["team_owners", "all_members", false], ["all_members", "team_owners", false]] as const
+    const variants = probe.creates ? [["team_owners","all_members",false,false],["team_owners","all_members",false,true]] as const : probe.permission ? [["team_owners", "all_members", false], ["all_members", "team_owners", false]] as const
       : probe.invites ? [["team_owners", "all_members", false], ["team_owners", "all_members", true]] as const : [["team_owners", "all_members", false]] as const;
-    for (const [settings, planning, memberInvites] of variants) {
-      const values = await set(settings, planning, memberInvites);
+    for (const [settings, planning, memberInvites, memberTeamCreation] of variants) {
+      const values = await set(settings, planning, memberInvites, memberTeamCreation);
       for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[])
         for (const team of who === "guest" && probe.outside ? [w.team.id, outside] : [w.team.id])
           for (const [surface, attempt] of [["browser", probe.session], ["/api/v1", probe.api]] as const) {
