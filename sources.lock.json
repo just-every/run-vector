@@ -3357,7 +3357,7 @@
       "executable": false
     },
     "src/core/features/audit/ui/audit-panel.tsx": {
-      "sha256": "b313b7c53c2148e1d4cae4c554901206b602fce16d7a32c929d031600eed1331",
+      "sha256": "c520fcbbe5a0d56babf35d3bb568e37bf3bef7782baf6bb244b224367be126c0",
       "executable": false
     },
     "src/core/features/audit/ui/audit.css": {

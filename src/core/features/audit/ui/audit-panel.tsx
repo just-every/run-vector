@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { useApiResource } from '../../../app/api-client';
+import { useViewerTime } from '../../../app/viewer-time';
 import { actorKinds, auditSchema, auditSearch, type AuditQuery } from '../schema';
 import '../../settings/ui/settings.css';
 import './audit.css';
 
 type Filters = Partial<Record<keyof AuditQuery, string>>;
 export function AuditPanel() {
+  const { formatInstant } = useViewerTime();
   const [draft, setDraft] = useState<Filters>({});
   const [filters, setFilters] = useState<Filters>({});
   const resource = useApiResource('/api/settings/audit?' + auditSearch(filters), auditSchema);
@@ -32,7 +34,7 @@ export function AuditPanel() {
     {resource.error && <p role="alert">{resource.error.message} <button type="button" onClick={resource.reload}>Retry</button></p>}
     {entries && <><p role="status">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
       {entries.length ? <div className="audit-table-scroll"><table><thead><tr><th scope="col">Time</th><th scope="col">Actor</th><th scope="col">Action</th><th scope="col">Subject reference</th></tr></thead>
-        <tbody>{entries.map(entry => <tr key={entry.id}><td data-label="Time"><time dateTime={entry.at}>{new Date(entry.at).toLocaleString()}</time></td>
+        <tbody>{entries.map(entry => <tr key={entry.id}><td data-label="Time"><time dateTime={entry.at}>{formatInstant(entry.at)}</time></td>
           <td data-label="Actor"><div className="audit-value">{entry.actorName && <span>{entry.actorName}<br /></span>}<small>{entry.actorKind}</small><br /><code>{entry.actorRef}</code></div></td><td data-label="Action"><span>{entry.action}</span></td><td data-label="Subject"><code>{entry.subjectRef}</code></td></tr>)}</tbody></table></div> : <p>No audit entries match these filters.</p>}
     </>}
   </section>;
