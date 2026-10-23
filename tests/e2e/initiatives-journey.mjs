@@ -10,6 +10,8 @@ export async function initiativesJourney({page:shared,runtime,evidence}){
  try{
  const settings=await call('/settings/administration'),team=settings.teams.find(t=>!t.archivedAt),owner=settings.viewer.id;
  await call('/settings/notifications','PATCH',{mutedKinds:[]});
+ let memberFixture;
+ // Viewports share one real Member; restore its role through the public Owner door.
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:1000});
   const capture=async(name)=>{await inspect(page,page.locator('main:visible').first(),name+'-'+width);await page.setViewportSize({width,height:1000});};
@@ -47,11 +49,15 @@ export async function initiativesJourney({page:shared,runtime,evidence}){
   const edit=page.getByRole('form',{name:'Edit initiative',exact:true});await edit.getByLabel('Initiative status',{exact:true}).selectOption('active');
   const saved=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);
   await edit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await saved).status(),200);await page.locator('header').getByText('Active · Owner:',{exact:false}).waitFor();await capture('initiative-active');
-  const email='synthetic-vector-1798-'+width+'@example.test';
-  await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1798',email,role:'member'},202);
-  const signed=await confirmLink(await readDevelopmentLink(base,null,email,runtime.state));assert.equal(signed.status,303);
-  const headers={Cookie:signed.headers.get('set-cookie').split(';')[0],Origin:base,'Content-Type':'application/json'};
-  const session=await(await runtime.req('/api/session',{headers})).json();
+  if(!memberFixture){
+   const email='synthetic-vector-1798@example.test';
+   await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1798',email,role:'member'},202);
+   const signed=await confirmLink(await readDevelopmentLink(base,null,email,runtime.state));assert.equal(signed.status,303);
+   const headers={Cookie:signed.headers.get('set-cookie').split(';')[0],Origin:base,'Content-Type':'application/json'};
+   const session=await(await runtime.req('/api/session',{headers})).json();
+   memberFixture={headers,session};
+  }else await call('/settings/operators/'+memberFixture.session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});
+  const {headers,session}=memberFixture;
   const tokenResponse=await runtime.req('/api/settings/integrations/tokens',{method:'POST',headers,body:JSON.stringify({name:'synthetic-vector-1799',scopes:['initiatives:read','initiatives:write']})});assert.equal(tokenResponse.status,201);const {token}=await tokenResponse.json();
   const added=await runtime.req('/api/issues',{method:'POST',headers,body:JSON.stringify({teamId:other.id,projectId:projects[1].id,title:'synthetic-vector-1800-'+width})});assert.equal(added.status,201);const issue=await added.json();
   const notices=(await call('/notifications?limit=50')).items.filter(n=>n.identifier===issue.identifier);assert.equal(notices.length,1);assert.equal((await call('/notifications?limit=50')).items.filter(n=>n.identifier===issue.identifier).length,1);

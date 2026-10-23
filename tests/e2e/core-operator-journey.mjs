@@ -35,7 +35,9 @@ export async function withInvitedOperator(page,context,base,state,journey,displa
  const response=await invited;assert.equal(response.status(),202);assert.equal(await response.finished(),null);
  const link=await readDevelopmentLink(base,context.request,email,state);
  await beforePrivateNavigation(page,link);await page.goto(link);await page.waitForLoadState('networkidle');
- await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL(base+'/app');await settleReads(page);
+ const confirmed=page.waitForResponse(response=>new URL(response.url()).pathname==='/auth/confirm'&&response.request().method()==='POST');
+ await page.getByRole('button',{name:'Confirm',exact:true}).click();assert.equal((await confirmed).status(),303,'invitation confirmation succeeds within the native proof budget');
+ await page.waitForURL(base+'/app');await settleReads(page);
  try{await journey()}finally{
   await beforePrivateNavigation(page,base+'/');await page.goto(base+'/');await page.waitForLoadState('networkidle');
   await context.clearCookies();await context.addCookies(original);

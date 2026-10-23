@@ -11,6 +11,8 @@ export async function releasesJourney({page:shared,runtime,evidence}){
  const call=async(path,method='GET',data,status=200)=>{const res=await page.request.fetch(base+'/api'+path,{method,headers:{Origin:base},data});assert.equal(res.status(),status,await res.text());return res.json();};
  try{
  const settings=await call('/settings/administration'),team=settings.teams.find(t=>!t.archivedAt),done=team.statuses.find(s=>s.category==='completed'),owner=(await call('/session')).operatorId;
+ let memberFixture;
+ // Viewports share one real Member; restore its role through the public Owner door.
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:1000});
   const inspect=async(region,name)=>{await capture(page,region,name+'-'+width);await page.setViewportSize({width,height:1000});};
@@ -60,11 +62,16 @@ export async function releasesJourney({page:shared,runtime,evidence}){
   await navigate(page,share);await page.getByText('Read-only workspace view',{exact:true}).waitFor();assert.equal(await page.getByText('Edit release',{exact:true}).count(),0);await inspect(page.locator('.release-page'),'release-share');
   await navigate(page,base+'/app/issues/'+issues[0].identifier);
   const chip=page.getByRole('region',{name:'Issue releases',exact:true});await chip.getByRole('link',{name:'2.4 · Released',exact:true}).waitFor();await inspect(chip,'release-issue-chip');
-  const email='synthetic-vector-1756-'+width+'@example.test';
-  await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1756',email,role:'member'},202);
-  const signed=await confirmLink(await readDevelopmentLink(base,null,email,runtime.state));assert.equal(signed.status,303);const cookie=signed.headers.get('set-cookie').split(';')[0];
-  const guestHeaders={Cookie:cookie,Origin:base,'Content-Type':'application/json'};
-  const session=await(await runtime.req('/api/session',{headers:guestHeaders})).json();
+  if(!memberFixture){
+   const email='synthetic-vector-1756@example.test';
+   await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1756',email,role:'member'},202);
+   const signed=await confirmLink(await readDevelopmentLink(base,null,email,runtime.state));assert.equal(signed.status,303);
+   const cookie=signed.headers.get('set-cookie').split(';')[0];
+   const guestHeaders={Cookie:cookie,Origin:base,'Content-Type':'application/json'};
+   const session=await(await runtime.req('/api/session',{headers:guestHeaders})).json();
+   memberFixture={cookie,guestHeaders,session};
+  }else await call('/settings/operators/'+memberFixture.session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});
+  const {cookie,guestHeaders,session}=memberFixture;
   const scopedToken=await runtime.req('/api/settings/integrations/tokens',{method:'POST',headers:guestHeaders,body:JSON.stringify({name:'synthetic-vector-1757',scopes:['releases:read','releases:write']})});assert.equal(scopedToken.status,201);const guestToken=(await scopedToken.json()).token;
   const memberShare=await runtime.req('/app/releases/'+release.id+'?readOnly=1',{redirect:'follow',headers:guestHeaders});assert.equal(memberShare.status,200);await memberShare.body.cancel();
   const memberPage=await openAuthenticatedPage(page.context().browser(),cookie,base);
