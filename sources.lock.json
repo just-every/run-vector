@@ -6473,7 +6473,7 @@
       "executable": false
     },
     "tests/e2e/core-operator-journey.mjs": {
-      "sha256": "3b9293d27c8d4ff9279d5f9c388e07ce9deec3bab94e7dbe547e22ec87ffaefe",
+      "sha256": "319312fbe8ee61f96bd3304e4d28d5b8f85eaf38fbfdd58ca2a2c6af6c06bc24",
       "executable": false
     },
     "tests/e2e/core-page-audit.mjs": {
