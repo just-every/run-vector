@@ -233,3 +233,11 @@ export function releaseMatrixProbes(w:Workspace){
   }
  };
 }
+
+
+/** Personal-preference doors inherit the existing Account access row. */
+export function subscriptionPersonalProbe(w:Workspace){
+ return {parent:'Open Settings pages (ROLE-008)',attempt:async(_who:Kind,actor:Person,team:string)=>()=>{
+  return actor.call('/subscriptions','POST',{subjectType:'team',subjectId:team});
+ }};
+}

@@ -1143,7 +1143,8 @@
     "id",
     "import_id",
     "effects_held",
-    "reviewed_at"
+    "reviewed_at",
+    "subscription_revision"
   ],
   "vector_source_receipts": [
     "source_id",
@@ -1790,5 +1791,28 @@
   "release_projects": [
     "release_id",
     "project_id"
+  ],
+  "subscription_clock": [
+    "id",
+    "revision"
+  ],
+  "subject_subscriptions": [
+    "id",
+    "operator_id",
+    "subject_type",
+    "subject_id",
+    "start_revision",
+    "created_at"
+  ],
+  "subscription_events": [
+    "event_id",
+    "issue_id",
+    "revision",
+    "kind",
+    "created_at"
+  ],
+  "subscription_event_receipts": [
+    "event_id",
+    "operator_id"
   ]
 }

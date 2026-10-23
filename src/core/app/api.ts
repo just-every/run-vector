@@ -1,5 +1,6 @@
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import { githubIssueProjection } from '../features/integrations/github-read';
+import {addSubscriptionRoutes,subscriptionAuthority} from '../features/subscriptions/routes';
 import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
 import {addReleaseRoutes} from '../features/releases/routes';
 import {releaseAuthority} from '../features/releases/authority';
@@ -127,7 +128,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       context.set('operatorId', document.operator.id);
       context.set('operator', document.operator);
       context.set('documentProjection', true);
-      const authority = await releaseAuthority(context,document.operator.id,context.env.DB) ?? await doorAuthority(context, 'api', document.operator.id, context.env.DB);
+      const authority = await subscriptionAuthority(context,document.operator.id,context.env.DB) ?? await releaseAuthority(context,document.operator.id,context.env.DB) ?? await doorAuthority(context, 'api', document.operator.id, context.env.DB);
       if (authority.denied) return authority.denied;
       context.env = { ...context.env, DB: visibilityDatabase(context.env.DB, document.operator.id) };
       await next();
@@ -172,7 +173,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     context.set("operatorId", operator.id);
     context.set("operator", operator);
     // ROLE-001: the door's role-matrix row, on the actor's current role.
-    const authority = await releaseAuthority(context,operator.id,context.env.DB) ?? await doorAuthority(context, 'api', operator.id, context.env.DB);
+    const authority = await subscriptionAuthority(context,operator.id,context.env.DB) ?? await releaseAuthority(context,operator.id,context.env.DB) ?? await doorAuthority(context, 'api', operator.id, context.env.DB);
     if (authority.denied) return authority.denied;
     // Archive and imported-person erasure operate on physical schema inventory.
     // Their matrix doors admit only Owners/Admins; retain the mutation fence below.
@@ -231,6 +232,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addSubscriptionRoutes(app);
   addReleaseRoutes(app);
   addGithubIssueProjection(app);
   addGithubRuleRoutes(app);

@@ -1,3 +1,4 @@
+import {processSubscriptionQueue} from '../features/subscriptions/process';
 import { captureDailyReports } from "../features/project-report/capture";
 import { maintainCycleSchedules } from "../features/cycle-schedule/service";
 import { deliverFollowups } from '../features/notification-followups/service';
@@ -30,6 +31,7 @@ export async function scheduled(
     runHousekeeping(env, now),
     settleInterruptedEmailIntake(env, now),
   ]);
+  await processSubscriptionQueue(env);
   // Route notifications after scheduled Inbox producers finish, including SQL automation.
   await drainNotificationMail(env, { scheduled: true, now });
   await drainNotificationDigests(env, { now });

@@ -20,6 +20,7 @@ export const notificationKinds = [
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 export type InboxItem = {
+  sourceEventKind?: string | null;
   id: string;
   eventId: string;
   identifier: string;
