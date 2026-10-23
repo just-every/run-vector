@@ -592,10 +592,6 @@
       "sha256": "524b5a948ecfea9494343657d40b6dcc0b218ab9df10ab95c804f7e9b00209ab",
       "executable": false
     },
-    "docs/guide/initiatives.md": {
-      "sha256": "5c2cfb2375ea3709939354dc66328738a99503c3c3d028fffefa34fb81e75d70",
-      "executable": false
-    },
     "docs/guide/install.md": {
       "sha256": "071ab79ce68263043534014aeb86dd4d3aa50e04fb072ccc1a8ba1f3f8a4f41c",
       "executable": false
@@ -625,7 +621,7 @@
       "executable": false
     },
     "docs/guide/work.md": {
-      "sha256": "6bad289ee34878f13b14725ff8ce684874cfb3d608068e8f26d01c35ac7a68cf",
+      "sha256": "b9555c2c4a666b97335333df67319db9a0626f27ec29b780f84110c9e573e09b",
       "executable": false
     },
     "docs/HOSTED-UPGRADE.md": {
