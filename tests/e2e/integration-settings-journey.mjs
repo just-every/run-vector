@@ -1,6 +1,6 @@
 import {exerciseChannels} from './integrations/channel-settings.mjs';
 import {exerciseSlackDirectMessages} from './integrations/slack-dm-settings.mjs';
-import {navigate} from './collaboration-navigation.mjs';
+import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
 import assert from 'node:assert/strict';
 import {createWebhookProtocol} from '../../vendor/base/integrations/core/webhook.ts';
 import {sendSignedPullRequest,pullRequestRepository} from './integration-signed-pr.mjs';
@@ -39,9 +39,13 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  await page.goto(runtime.base+'/app/settings');const revoked=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname.startsWith('/api/settings/integrations/tokens/'));await panel.getByRole('button',{name:'Revoke '+name,exact:true}).click();assert.equal((await revoked).status(),200);assert.equal((await runtime.req('/api/v1/issues',{headers:{Authorization:'Bearer '+token.token}})).status,401);
 }
 
-/** The existing integrations journey also proves the team's mail conversation. */
-export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
- const viewport=page.viewportSize();
+/** The existing integrations journey also proves the team's mail conversation, on a page of its
+ * own: it settles that page's reads before leaving each document and closes it, so nothing it
+ * starts stays on the shared page between the journey's configurations. */
+export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evidence}) {
+ const page=await shared.context().newPage();trackRequests(page);
+ try {
+ await page.setViewportSize(shared.viewportSize());
  const {roleScreens}=await import('./role-ui-support.mjs'),inspect=roleScreens(evidence);
  const sender='synthetic-vector-721@example.test',address='synthetic-vector-'+Date.now()+'@example.test';
  await page.goto(runtime.base+'/app/settings');
@@ -61,7 +65,7 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  const accepted=await runtime.req('/cdn-cgi/local/email?from='+encodeURIComponent(sender)+'&to='+encodeURIComponent(address),{method:'POST',body:raw});assert.equal(accepted.status,200,await accepted.text());
  const receipts=await(await runtime.req('/api/settings/teams/'+team.id+'/email-intake',{headers:{Cookie:cookie}})).json();
  const identifier=receipts.receipts.find(r=>r.messageId===messageId)?.issueIdentifier;assert.ok(identifier);
- await page.goto(runtime.base+'/app/issues/'+identifier);
+ await navigate(page,runtime.base+'/app/issues/'+identifier);
  const requester=page.getByRole('region',{name:'Email requester',exact:true});await requester.getByText(sender,{exact:false}).waitFor();
  await requester.getByRole('link',{name:'delivery.txt',exact:true}).waitFor();
  await inspect(page,requester,'email-intake-requester');
@@ -76,7 +80,7 @@ export async function exerciseEmailIntake({page,runtime,cookie,team,evidence}) {
  await form.getByRole('button',{name:'Send reply by email',exact:true}).click();assert.equal((await sent).status(),201);
  const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
- if(viewport)await page.setViewportSize(viewport);
- await navigate(page,runtime.base+'/app/settings');
+ await settleReads(page);
+ } finally {await page.close();}
  console.log('TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390');
 }
