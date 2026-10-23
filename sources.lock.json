@@ -4749,7 +4749,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-labels.tsx": {
-      "sha256": "5cdf22fb7c1279be3daf42bbeabc8dce32b6550ac05d3aecadea8259e1404348",
+      "sha256": "c756e56924fa91fd1dfddcce4340d0f2f5b172b0f7a30db4fef8fac5207aec9b",
       "executable": false
     },
     "src/core/features/issues/ui/issue-list-controls.ts": {
@@ -4797,7 +4797,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
-      "sha256": "231bad8b49b2e5f55d63cddb4a27c08b59ef01f654f34c153bc5077cf89e48d7",
+      "sha256": "120ce2fed250d6c6a78d0c6e4047a6e5fbb12b42cfcb0d600d32e2200e02c9dd",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-draft.ts": {

@@ -165,7 +165,7 @@ export function IssueLabels({
           )}
         </form>
       )}
-      {open && options?.canCreateLabels && <form aria-label="Create label inline" onSubmit={create}>
+      {open && options?.canCreateLabels && <form className="issue-label-create" aria-label="Create label inline" onSubmit={create}>
         <fieldset disabled={pending}>
           <legend>Create label</legend>
           <label>New label name<input required maxLength={120} value={labelName} onChange={event => setLabelName(event.target.value)} /></label>
