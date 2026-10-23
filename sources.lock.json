@@ -5709,7 +5709,7 @@
       "executable": false
     },
     "src/core/features/subscriptions/ui/subscriptions.tsx": {
-      "sha256": "bcdc195b464a8a759c7d593abb9306e431212fda91a5717cc0887ff8c7928334",
+      "sha256": "b1f5daf83d8d5a62c057685b19d50deddb9bb31d1952968cd9f6e378da075c0a",
       "executable": false
     },
     "src/core/features/team-membership/join-rules.ts": {
