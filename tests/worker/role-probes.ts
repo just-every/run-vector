@@ -1,3 +1,5 @@
+import {createServerApp} from '../../src/core/app/server';
+import {bindings,origin} from './base-auth-fixture';
 import { seedIntakeForTeam, recordedReply } from './email-intake-fixture';
 import { expect } from "vitest";
 import type { RowId } from "../../src/core/features/roles/matrix";
@@ -204,7 +206,30 @@ export function githubRuleProbes(w:Workspace):{row:RowId;probe:Probe}[]{
 /** RELEASE-001 carries the existing contract row without changing the
  * core role table owned by the concurrent administration campaign. */
 export function releaseMatrixProbes(w:Workspace){
- return {action:'Create, edit or release a release (RELEASE-001)',session:async(_who:Kind,actor:Person,team:string)=>{
-  return ()=>actor.call('/releases','POST',{name:'synthetic-vector-1751 '+actor.id,teamId:team});
- }};
+ const app=createServerApp();
+ const prepare=async(who:Kind,actor:Person,team:string,send:(path:string,method?:string,body?:unknown)=>Promise<Response>)=>{
+  const target=who==='guest'?await json<{id:string;version:number}>(w.people.owner.call('/releases','POST',{name:'synthetic-vector-1759',teamId:team})):null;
+  return async()=>{
+   const created=await send('/releases','POST',{name:'synthetic-vector-1751 '+actor.id,teamId:team});
+   expect(created.status).toBe(who==='guest'?403:201);
+   const release=target??await created.clone().json() as {id:string;version:number};let version=release.version;
+   for(const [path,method,body] of [
+    ['/releases/'+release.id,'GET',undefined],
+    ['/releases/'+release.id,'PATCH',{expectedVersion:version,description:'synthetic-vector-1759'}],
+    ['/releases/'+release.id+'/scope','PUT',{expectedVersion:version+1,issueIdentifiers:[],projectIds:[]}],
+    ['/releases/'+release.id,'PATCH',{expectedVersion:version+2,status:'released'}],
+   ] as const){const response=await send(path,method,body);expect(response.status).toBe(who==='guest'?403:200);}
+   return created;
+  };
+ };
+ return {action:'Create, edit or release a release (RELEASE-001)',
+  session:async(who:Kind,actor:Person,team:string)=>prepare(who,actor,team,actor.call),
+  api:async(who:Kind,actor:Person,team:string)=>{
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'member'})).status).toBe(200);
+   const minted=await json<{token:string}>(actor.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1759',scopes:['releases:read','releases:write']}));
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'guest',teamIds:[team]})).status).toBe(200);
+   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+   return prepare(who,actor,team,send);
+  }
+ };
 }
