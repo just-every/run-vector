@@ -4,7 +4,7 @@ import { streamControlsFixture } from './core-stream-controls-fixture.mjs';
 import { streamRankingJourney } from './core-stream-controls-ranking.mjs';
 import { controlsFit, cycleContextChecks, fixtureRows, saveControl, streamControlsReady } from './core-stream-controls-browser.mjs';
 
-export async function streamControlsJourney(page, context, base, record, capture) {
+export async function streamControlsJourney(page, context, base, record, capture, widths = [1440, 390]) {
   const fixture = await streamControlsFixture(context, base);
   const { api, teams, project, operatorId, items } = fixture;
   const all = Object.values(items);
@@ -53,7 +53,7 @@ export async function streamControlsJourney(page, context, base, record, capture
     else await page.goto(base + path);
     await streamControlsReady(page);
   }
-  for (const width of [1440, 390]) {
+  for (const width of widths) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await open('/app');
     await fixtureRows(page, items, all);
@@ -96,7 +96,7 @@ export async function streamControlsJourney(page, context, base, record, capture
   await fixtureRows(page, items, [items.other]);
   await reset('my-work');
   await fixtureRows(page, items, [items.primary, items.other]);
-  for (const width of [1440, 390]) {
+  for (const width of widths) {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await cycleContextChecks(page, fixture);
     await controlsFit(page);
