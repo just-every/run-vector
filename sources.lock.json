@@ -2008,10 +2008,6 @@
       "sha256": "fd97db4d0484854b00b5dab5bf45e57e0e74627314b52dcf3d4d276ead4a39ab",
       "executable": false
     },
-    "migrations/0092_project_templates.sql": {
-      "sha256": "010c73fcb9b84587c4af75fb7c3fd5fd5d51bae0c79a1421f850af14d4280937",
-      "executable": false
-    },
     "migrations/core/0001_data_spine.sql": {
       "sha256": "ca2afa215d51acc4e435f29573beec77f1e912fdc15a2cbd80de6a9dbde7a7e8",
       "executable": false
@@ -2386,6 +2382,10 @@
     },
     "migrations/core/0092_initiatives.sql": {
       "sha256": "d250b4c0e88433446735ff64cb2d85330b0249941530d057f20b6f634db18864",
+      "executable": false
+    },
+    "migrations/core/0092_project_templates.sql": {
+      "sha256": "010c73fcb9b84587c4af75fb7c3fd5fd5d51bae0c79a1421f850af14d4280937",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -5417,7 +5417,7 @@
       "executable": false
     },
     "src/core/features/project-templates/service.ts": {
-      "sha256": "734f053f63caa8482bd5d9404226dee3bdce904dadcbfad6aaf6358fa8a08d7f",
+      "sha256": "c1f7d75471986210ae9f91245882a61cb6d56e877fad9e6edb86ae22e79b278f",
       "executable": false
     },
     "src/core/features/project-templates/templates.css": {
