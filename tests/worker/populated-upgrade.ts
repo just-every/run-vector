@@ -19,7 +19,7 @@ export async function applyAuthRuntimeMigrations(db:D1Database) {
 /** `signIn: 'after'` proves the migrations sign-in itself needs: the store holds
  * sessions and a token written at the prior schema, and the owner signs in only
  * once the upgrade is applied. */
-export async function provePopulatedUpgrade(boundaryName:string,schema?:{added:string[];removed:string[];changed?:string[];until?:string;signIn?:'after'},populated:string[]=[],populate?:(cookie:string)=>Promise<void>) {
+export async function provePopulatedUpgrade(boundaryName:string,schema?:{added:string[];removed:string[];changed?:string[];until?:string;preserveAfter?:string;signIn?:'after'},populated:string[]=[],populate?:(cookie:string)=>Promise<void>) {
  const migrations=inject('migrations'),boundary=migrations.findIndex(row=>row.name===boundaryName);
  await applyD1Migrations(env.DB,migrations.slice(0,2));
  await insertHistoricalSample(env.DB,new Date('2026-10-01T00:00:00Z'));
@@ -66,7 +66,22 @@ export async function provePopulatedUpgrade(boundaryName:string,schema?:{added:s
   for(const [id,sql] of schemaBefore)if(schemaAfter.has(id)&&!schema.changed?.includes(id))expect(schemaAfter.get(id),id).toBe(sql);
   for(const id of schema.changed??[])expect(schemaAfter.get(id),id).not.toBe(schemaBefore.get(id));
  }
- await applyD1Migrations(env.DB,migrations.slice(until));
+ // The same populated installation also crosses the selected previous head.
+ // Freeze every column present there before applying the candidate's additions.
+ const checkpoint=schema?.preserveAfter?migrations.findIndex(row=>row.name===schema.preserveAfter)+1:until;
+ expect(checkpoint).toBeGreaterThanOrEqual(until);
+ await applyD1Migrations(env.DB,migrations.slice(until,checkpoint));
+ const retained=[] as Array<{name:string;columns:string;rows:unknown[]}>;
+ if(schema?.preserveAfter) {
+  const current=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name!='d1_migrations' ORDER BY name").all<{name:string}>()).results;
+  for(const {name} of current) {
+   const columns=(await env.DB.prepare('PRAGMA table_info("'+name+'")').all<{name:string}>()).results.map(row=>'"'+row.name+'"').join(',');
+   const rows=(await env.DB.prepare('SELECT '+columns+' FROM "'+name+'" ORDER BY '+columns).all()).results;
+   retained.push({name,columns,rows});
+  }
+ }
+ await applyD1Migrations(env.DB,migrations.slice(checkpoint));
+ for(const row of retained)expect((await env.DB.prepare('SELECT '+row.columns+' FROM "'+row.name+'" ORDER BY '+row.columns).all()).results,row.name+' retained from '+schema!.preserveAfter).toEqual(row.rows);
  for(const row of before)expect(await read(row.name),row.name).toEqual(row.rows);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
  if(!cookie)cookie=await signIn();
