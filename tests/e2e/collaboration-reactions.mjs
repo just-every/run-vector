@@ -1,5 +1,3 @@
-import {mkdir} from 'node:fs/promises';
-import {resolve} from 'node:path';
 import assert from 'node:assert/strict';
 import {performance} from 'node:perf_hooks';
 import {navigate,settleReads} from './collaboration-navigation.mjs';
@@ -7,7 +5,6 @@ import {roleScreens} from './role-ui-support.mjs';
 
 /** Existing collaboration journey: two actual member sessions, no provider. */
 export async function exerciseReactions({page,peer,runtime,issue,operator,owner,evidence}) {
-  await mkdir(evidence,{recursive:true});
   const url=runtime.base+'/app/issues/'+issue.identifier;
   await navigate(page,url);await navigate(peer,url);
   const before=runtime.sql('SELECT id FROM notifications ORDER BY id');
@@ -37,7 +34,6 @@ export async function exerciseReactions({page,peer,runtime,issue,operator,owner,
     const people=page.getByRole('tooltip').filter({hasText:owner.name});
     assert.equal(await people.isVisible(),true,'Who reacted appears immediately on keyboard focus');
     assert.ok((await people.innerText()).includes(operator.name));
-    await page.screenshot({path:resolve(evidence,'reaction-who-'+width+'.png')});
     await inspect(page.locator('.issue-description'),'description-reactions-people-'+width);
     await live(peer,emoji,1,description,()=>mutate(page,'DELETE',()=>reaction.click()));
     await live(page,emoji,0,description,()=>mutate(peer,'DELETE',()=>badge(description(peer),emoji,1).click()));
