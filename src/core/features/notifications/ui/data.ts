@@ -21,6 +21,7 @@ export const inboxSchema = z.object({
     z.object({
       id: z.string(),
       eventId: z.string(),
+      sourceEventKind: z.string().nullable().optional(),
       identifier: z.string(),
       title: z.string(),
       actor: z.string().nullable(),

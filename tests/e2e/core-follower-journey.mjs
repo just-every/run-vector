@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { createHmac, randomBytes, randomUUID } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
 import { verificationDirectory } from '../../scripts/verification-paths.mjs';
+import { subscriptionsJourney } from './subscriptions-journey.mjs';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 
 // Two genuine native sessions, with signed source input only at the network edge.
@@ -174,6 +175,8 @@ export async function followerJourney(actorPage, actorContext, inboxPage, recipi
     await inboxPage.getByRole('heading', { name: 'Inbox', exact: true }).waitFor();
     record('NOTIFY-001', `${width}px live Inbox: ${timings.join('; ')}. One grouped event per recipient; participated resolved-thread reopen names the actor once, repeat reopen adds nothing, per-type mute is editable; actor excluded; signed evidence replay and later revisions do not repeat the deferrer notification.`);
   }
+  await subscriptionsJourney({recipientPage:inboxPage,actorPage,base,evidence:verificationDirectory+'/subject-subscriptions'});
+  record('NOTIFY-009', 'Team, project, label and saved-view subscriptions at 1440 and 390; one created notice across four matches; actor excluded; unsubscribe immediately stops future notices.');
   await inboxPage.setViewportSize(originalViewport);
   await actorPage.setViewportSize(originalViewport);
 }
