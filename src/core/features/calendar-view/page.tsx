@@ -32,7 +32,7 @@ export function MonthCalendar(){
    <div className="calendar-weekdays" aria-hidden="true">{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=><span key={day}>{day}</span>)}</div>
    <div className="month-grid" aria-label={'Dates in '+current.month}>
     {days(current.month).map(day=>{const items=current.events.filter(e=>onDay(e,day)),inside=day.startsWith(current.month);return <div key={day} className={'month-day'+(!inside?' month-day--outside':'')+(day===selectedDay?' month-day--selected':'')} data-calendar-day={day} onDragOver={e=>{if(dragged&&!busy&&inside){e.preventDefault();e.dataTransfer.dropEffect='move';}}} onDrop={e=>{e.preventDefault();if(dragged&&inside)void move(dragged,day);}}>
-     <button type="button" disabled={!inside||busy} aria-label={dayLabel(day)+', '+items.length+' events'} aria-pressed={day===selectedDay} aria-current={day===current.today?'date':undefined} onClick={()=>setSelected(day)}><span>{Number(day.slice(-2))}</span><span className="calendar-event-count">{items.length?items.length+' events':'—'}</span></button>
+     <button type="button" disabled={!inside||busy} aria-label={dayLabel(day)+', '+items.length+' events'} aria-pressed={day===selectedDay} aria-current={day===current.today?'date':undefined} onClick={()=>setSelected(day)}><span>{Number(day.slice(-2))}</span><span className="calendar-event-count">{items.length?<>{items.length}<span className="calendar-count-word"> events</span></>:'—'}</span></button>
      <ul className="calendar-day-preview" aria-hidden="true">{items.slice(0,3).map(e=><li key={e.id} className={'calendar-kind calendar-kind--'+e.kind}>{kindName[e.kind]} · {e.title}</li>)}{items.length>3&&<li>+{items.length-3} more</li>}</ul>
     </div>;})}
    </div>
