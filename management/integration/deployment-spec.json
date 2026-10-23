@@ -514,6 +514,12 @@
       "name": "0088_github_commits.sql",
       "sha256": "a53536af73402817abcc67626b2f84bff1e9a903d99832354d88b0f3ce850932",
       "sql": "CREATE TABLE github_commit_links (\n repository_id TEXT NOT NULL REFERENCES vector_github_repositories(id),\n sha TEXT NOT NULL,\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n author TEXT NOT NULL,\n subject TEXT NOT NULL,\n url TEXT NOT NULL,\n closing_applied INTEGER NOT NULL DEFAULT 0 CHECK(closing_applied IN (0,1)),\n received_at TEXT NOT NULL,\n PRIMARY KEY(repository_id,sha,issue_id)\n);\nCREATE INDEX github_commit_issue ON github_commit_links(issue_id,received_at);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0089_github_deployments.sql",
+      "sha256": "87837ae810379a2a2c4fe2685e09e029f501d5166d316269f51973d237b73295",
+      "sql": "ALTER TABLE github_automation_rules ADD COLUMN production_environment TEXT NOT NULL DEFAULT 'production';\nCREATE TABLE github_push_proofs (\n repository_id TEXT NOT NULL REFERENCES vector_github_repositories(id),\n delivery_id TEXT NOT NULL,\n after_sha TEXT NOT NULL,\n ancestors_json TEXT NOT NULL,\n received_at TEXT NOT NULL,\n PRIMARY KEY(repository_id,delivery_id)\n);\nCREATE INDEX github_push_after ON github_push_proofs(repository_id,after_sha);\nCREATE TABLE github_deployments (\n repository_id TEXT NOT NULL REFERENCES vector_github_repositories(id),\n deployment_id INTEGER NOT NULL,\n sha TEXT NOT NULL,\n environment TEXT NOT NULL,\n deployed_at TEXT NOT NULL,\n PRIMARY KEY(repository_id,deployment_id)\n);\nCREATE TABLE github_issue_environments (\n repository_id TEXT NOT NULL,\n deployment_id INTEGER NOT NULL,\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n PRIMARY KEY(repository_id,deployment_id,issue_id),\n FOREIGN KEY(repository_id,deployment_id) REFERENCES github_deployments(repository_id,deployment_id)\n);\nCREATE INDEX github_environment_issue ON github_issue_environments(issue_id);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
