@@ -6773,7 +6773,7 @@
       "executable": false
     },
     "tests/worker/email-bounce-scenario.ts": {
-      "sha256": "740fc5e31866be357f3f32baad8c57feaf45c7caf7eed9c3a6878be8acf276fd",
+      "sha256": "28342cb19d992528bbe7fc7015a53407d4e9387e84d77a056bf8337290c65557",
       "executable": false
     },
     "tests/worker/email-intake-fixture.ts": {
