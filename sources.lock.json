@@ -6049,7 +6049,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-references.mjs": {
-      "sha256": "cc9c8ca442e7d420507b42f57037397767e23ba4cde2877d657b5f05edca5301",
+      "sha256": "9126d05375f004d98037e8413e1a4ee6f4969b9e0244b445d647f3ca25a4f3e5",
       "executable": false
     },
     "tests/e2e/collaboration-runtime.mjs": {

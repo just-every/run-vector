@@ -4,8 +4,11 @@ import {resolve} from 'node:path';
 import {navigate,settleReads} from './collaboration-navigation.mjs';
 import {roleScreens} from './role-ui-support.mjs';
 
+/** The actor page is shared with the collaboration clauses that follow, which comment on `issue`:
+ * the references leave it on another issue at another viewport, so they hand it back on `issue`
+ * at the viewport they found. */
 export async function exerciseReferences({page,runtime,issue,evidence}) {
- await mkdir(evidence,{recursive:true});const inspect=roleScreens(evidence);
+ await mkdir(evidence,{recursive:true});const inspect=roleScreens(evidence);const viewport=page.viewportSize();
  const api=async(path,method='GET',data,status=200)=>{const response=await page.request.fetch(runtime.base+'/api'+path,{method,headers:{Origin:runtime.base},...(data===undefined?{}:{data})});assert.equal(response.status(),status);return response.json();};
  const original=await api('/issues/'+issue.identifier);
  for(const width of [1440,390]){
@@ -43,5 +46,6 @@ export async function exerciseReferences({page,runtime,issue,evidence}) {
   await inspect(page,page.locator('.issue-history'),`reference-removed-${width}`);await page.setViewportSize({width,height:900});
   assert.equal(await page.evaluate(()=>window.__rerHydration?.count??0),0);
  }
+ await page.setViewportSize(viewport);await navigate(page,runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:original.title,exact:true}).waitFor();
  await settleReads(page);console.log('ISSUE-027 description/comment links, title/status hover and focus, one retained backlink and removed state passed at1440 and390');
 }
