@@ -17,6 +17,7 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppBoardRouteImport } from './routes/app.board'
 import { Route as AppCurrentRouteImport } from './routes/app.current'
 import { Route as AppInboxRouteImport } from './routes/app.inbox'
+import { Route as AppInsightsRouteImport } from './routes/app.insights'
 import { Route as AppIssuesRouteImport } from './routes/app.issues'
 import { Route as AppMyWorkRouteImport } from './routes/app.my-work'
 import { Route as AppNewRouteImport } from './routes/app.new'
@@ -87,6 +88,11 @@ const AppCurrentRoute = AppCurrentRouteImport.update({
 const AppInboxRoute = AppInboxRouteImport.update({
   id: '/inbox',
   path: '/inbox',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInsightsRoute = AppInsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIssuesRoute = AppIssuesRouteImport.update({
@@ -257,6 +263,7 @@ export interface FileRoutesByFullPath {
   '/app/board': typeof AppBoardRouteWithChildren
   '/app/current': typeof AppCurrentRouteWithChildren
   '/app/inbox': typeof AppInboxRoute
+  '/app/insights': typeof AppInsightsRoute
   '/app/issues': typeof AppIssuesRouteWithChildren
   '/app/my-work': typeof AppMyWorkRouteWithChildren
   '/app/new': typeof AppNewRoute
@@ -296,6 +303,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/app/board': typeof AppBoardRouteWithChildren
   '/app/inbox': typeof AppInboxRoute
+  '/app/insights': typeof AppInsightsRoute
   '/app/new': typeof AppNewRoute
   '/app/new-issue': typeof AppNewIssueRoute
   '/app/search': typeof AppSearchRoute
@@ -336,6 +344,7 @@ export interface FileRoutesById {
   '/app/board': typeof AppBoardRouteWithChildren
   '/app/current': typeof AppCurrentRouteWithChildren
   '/app/inbox': typeof AppInboxRoute
+  '/app/insights': typeof AppInsightsRoute
   '/app/issues': typeof AppIssuesRouteWithChildren
   '/app/my-work': typeof AppMyWorkRouteWithChildren
   '/app/new': typeof AppNewRoute
@@ -379,6 +388,7 @@ export interface FileRouteTypes {
     | '/app/board'
     | '/app/current'
     | '/app/inbox'
+    | '/app/insights'
     | '/app/issues'
     | '/app/my-work'
     | '/app/new'
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/app/board'
     | '/app/inbox'
+    | '/app/insights'
     | '/app/new'
     | '/app/new-issue'
     | '/app/search'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/app/board'
     | '/app/current'
     | '/app/inbox'
+    | '/app/insights'
     | '/app/issues'
     | '/app/my-work'
     | '/app/new'
@@ -556,6 +568,13 @@ declare module '@tanstack/react-router' {
       path: '/inbox'
       fullPath: '/app/inbox'
       preLoaderRoute: typeof AppInboxRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/insights': {
+      id: '/app/insights'
+      path: '/insights'
+      fullPath: '/app/insights'
+      preLoaderRoute: typeof AppInsightsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/issues': {
@@ -876,6 +895,7 @@ interface AppRouteChildren {
   AppBoardRoute: typeof AppBoardRouteWithChildren
   AppCurrentRoute: typeof AppCurrentRouteWithChildren
   AppInboxRoute: typeof AppInboxRoute
+  AppInsightsRoute: typeof AppInsightsRoute
   AppIssuesRoute: typeof AppIssuesRouteWithChildren
   AppMyWorkRoute: typeof AppMyWorkRouteWithChildren
   AppNewRoute: typeof AppNewRoute
@@ -899,6 +919,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppBoardRoute: AppBoardRouteWithChildren,
   AppCurrentRoute: AppCurrentRouteWithChildren,
   AppInboxRoute: AppInboxRoute,
+  AppInsightsRoute: AppInsightsRoute,
   AppIssuesRoute: AppIssuesRouteWithChildren,
   AppMyWorkRoute: AppMyWorkRouteWithChildren,
   AppNewRoute: AppNewRoute,

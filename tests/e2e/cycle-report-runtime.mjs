@@ -1,3 +1,4 @@
+import {insightsJourney} from "./insights-journey.mjs";
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium} from '@playwright/test';
@@ -16,5 +17,6 @@ try {
   await panel.getByRole('region',{name:'Cycle report by assignee',exact:true}).evaluate(el=>el.scrollIntoView({block:'start'}));await page.screenshot({path:`${output}/${name}-assignees.png`});
   console.log(`[${clause}] ${name}: inspect daily scope, completion, additions/removals and assignees`);
  });
+ await insightsJourney(page,context,runtime,output);
 } catch(error){if(page)await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
 finally{if(browser)await browser.close();await runtime.stop();}
