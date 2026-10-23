@@ -36,9 +36,11 @@ function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
           enabled: fields.has("enabled"), address: fields.get("address"),
           allowedSenders: String(fields.get("allowedSenders") ?? "").split(/\r?\n/).map(value => value.trim()).filter(Boolean),
           acknowledgement: fields.has("acknowledgement"),
+          ...(fields.get("eventVerificationKey") ? {eventVerificationKey:fields.get("eventVerificationKey")} : {}),
         }),
       });
       resource.publishReceipt(() => receipt);
+      (event.target as HTMLFormElement).querySelector<HTMLInputElement>('[name="eventVerificationKey"]')!.value = "";
       setSaved(true);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Email intake settings could not be saved.");
@@ -63,6 +65,9 @@ function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
           <p id={`email-senders-${teamId}`}>One full email address per line. Domains and wildcards are not accepted. An empty list admits no senders.</p>
           <label className="admin-checkbox"><input type="checkbox" name="acknowledgement" defaultChecked={data.settings.acknowledgement} />Send one acknowledgement with the issue identifier</label>
           <p>Acknowledgements are off by default. Team managers enable them explicitly. Internal comments and status changes are never emailed.</p>
+          <label>SendGrid event verification key<input type="password" name="eventVerificationKey" autoComplete="off" maxLength={256} /></label>
+          <p>{data.eventsConfigured ? "Signed delivery events configured." : "Enter the public verification key from SendGrid Event Webhook settings."} Leave blank to keep the current key.</p>
+          <p>Event webhook path: <code>/api/integrations/email/{teamId}/events</code></p>
           <button type="submit">{pending ? "Saving…" : "Save email intake"}</button>
         </fieldset>
       </form>

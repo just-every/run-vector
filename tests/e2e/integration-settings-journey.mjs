@@ -1,3 +1,5 @@
+import {emailEventSigner} from '../email-event-signing.mjs';
+import {readFile} from 'node:fs/promises';
 import {exerciseChannels} from './integrations/channel-settings.mjs';
 import {exerciseSlackDirectMessages} from './integrations/slack-dm-settings.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
@@ -55,6 +57,8 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  await section.getByLabel('Enable email intake',{exact:true}).check();
  await section.getByLabel('Private intake address',{exact:true}).fill(address);
  await section.getByLabel('Allowed sender addresses',{exact:true}).fill(sender);
+ const signer=await emailEventSigner();
+ await section.getByLabel('SendGrid event verification key',{exact:true}).fill(signer.key);
  await inspect(page,section,'email-intake-configure');
  const saved=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/email-intake'));
  await section.getByRole('button',{name:'Save email intake',exact:true}).click();assert.equal((await saved).status(),200);
@@ -80,7 +84,14 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  await form.getByRole('button',{name:'Send reply by email',exact:true}).click();assert.equal((await sent).status(),201);
  const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
+ const edge=(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').map(line=>JSON.parse(line));
+ const send=edge.filter(row=>row.method==='sendgrid'&&row.body.personalizations[0].to[0].email===sender).at(-1);assert.ok(send?.providerId);
+ const wire=await signer.signed([{event:'bounce',sg_event_id:'synthetic-vector-737',sg_message_id:send.providerId+'.synthetic-vector-738',email:sender}]);
+ const bounced=await runtime.req('/api/integrations/email/'+team.id+'/events',{method:'POST',...wire});assert.equal(bounced.status,200);
+ await settleReads(page);await page.reload();
+ await outcome.getByText('Email delivery: bounced',{exact:false}).waitFor();
+ await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-bounced');
  await settleReads(page);
  } finally {await page.close();}
- console.log('TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390');
+ console.log('TRIAGE-005 email intake settings, requester, reply and signed bounce outcomes passed at 1440 and 390');
 }

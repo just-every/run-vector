@@ -1,3 +1,5 @@
+import { sealSecret } from '../integrations/secrets';
+import { eventKeyIdentity } from './events';
 import type { Context, Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnvironment } from '../../app/bindings';
@@ -32,7 +34,8 @@ async function teamProjection(c: Context<AppEnvironment>, teamId: string) {
     FROM intake_email_messages m LEFT JOIN issues i ON i.id=m.issue_id WHERE m.team_id=? AND m.status<>'erased' ORDER BY m.created_at DESC,m.id DESC LIMIT 50`)
     .bind(teamId).all();
   await requireTeamSettings(c.env.DB,c.get('operatorId'),teamId);
-  return {settings:{enabled:row?.enabled === 1,address:row?.address ?? '',allowedSenders:row ? JSON.parse(row.allowed_senders_json) as string[] : [],acknowledgement:row?.acknowledgement === 1},
+  const configured = await c.env.DB.prepare("SELECT 1 FROM vector_integration_secret_keys WHERE identity=? AND slot='current'").bind(eventKeyIdentity(teamId)).first();
+  return {eventsConfigured:!!configured,settings:{enabled:row?.enabled === 1,address:row?.address ?? '',allowedSenders:row ? JSON.parse(row.allowed_senders_json) as string[] : [],acknowledgement:row?.acknowledgement === 1},
     receipts:receipts.results,provider:'cloudflare' as const,ingressConfigured:false,customerMappingAvailable:false as const};
 }
 export function addEmailIntakeRoutes(app: Hono<AppEnvironment>) {
@@ -47,7 +50,10 @@ export function addEmailIntakeRoutes(app: Hono<AppEnvironment>) {
     const conflict = await c.env.DB.prepare('SELECT team_id FROM team_email_intake WHERE address=? AND team_id<>?').bind(input.address,teamId).first();
     if (conflict) throw new SettingsError('address_in_use','Another team uses this email address.',409);
     const at = new Date().toISOString();
+    const identity = eventKeyIdentity(teamId);
+    const encrypted = input.eventVerificationKey ? await sealSecret(c.env,identity,input.eventVerificationKey) : null;
     await c.env.DB.batch([
+      ...(encrypted ? [c.env.DB.prepare("INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?) ON CONFLICT(identity,slot) DO UPDATE SET encrypted=excluded.encrypted").bind(identity,encrypted)] : []),
       c.env.DB.prepare(`INSERT INTO team_email_intake(team_id,enabled,address,allowed_senders_json,acknowledgement,actor_operator_id,created_at,updated_at)
         VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(team_id) DO UPDATE SET enabled=excluded.enabled,address=excluded.address,allowed_senders_json=excluded.allowed_senders_json,
         acknowledgement=excluded.acknowledgement,actor_operator_id=excluded.actor_operator_id,revision=team_email_intake.revision+1,updated_at=excluded.updated_at`)
@@ -64,7 +70,7 @@ export function addEmailIntakeRoutes(app: Hono<AppEnvironment>) {
     const rows = await c.env.DB.prepare(`SELECT * FROM intake_email_messages WHERE issue_id=? AND status NOT IN('erased','quarantined') ORDER BY created_at,id`).bind(issue.id).all<IntakeMessage>();
     const files = await c.env.DB.prepare(`SELECT e.message_id AS messageId,f.id AS fileId,e.content_id AS contentId,f.name AS filename,f.content_type AS contentType
       FROM intake_email_files e JOIN issue_files f ON f.id=e.file_id WHERE f.issue_id=? AND f.deleted_at IS NULL AND f.state='ready'`).bind(issue.id).all<{messageId:string;fileId:string;contentId:string|null;filename:string;contentType:string}>();
-    const deliveries = await c.env.DB.prepare(`SELECT comment_id AS commentId,status,error,created_at AS createdAt FROM intake_email_deliveries WHERE issue_id=? AND kind='reply' AND comment_id IS NOT NULL ORDER BY created_at,id`).bind(issue.id).all();
+    const deliveries = await c.env.DB.prepare(`SELECT comment_id AS commentId,kind,CASE WHEN bounced_at IS NOT NULL THEN 'bounced' ELSE status END AS status,error,created_at AS createdAt FROM intake_email_deliveries WHERE issue_id=? ORDER BY created_at,id`).bind(issue.id).all();
     await requireIssueProjection(c,identifier);
     return c.json({thread:root && {requester:root.sender!,requesterDomain:root.requester_domain!,subject:root.subject ?? '',cc:JSON.parse(root.cc_json) as string[],messageId:root.message_id!},
       canReply:person.role !== 'guest' && !!root,deliveries:deliveries.results,

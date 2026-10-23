@@ -11,6 +11,7 @@ export const settingsSchema = z.object({
   enabled: z.boolean(), address: mailbox,
   allowedSenders: z.array(mailbox).max(100).refine(values => new Set(values).size === values.length),
   acknowledgement: z.boolean(),
+  eventVerificationKey: z.string().regex(/^[A-Za-z0-9+/]+={0,2}$/).min(80).max(256).optional(),
 }).strict().refine(value => !value.enabled || value.allowedSenders.length > 0, 'Enabled intake requires allowed senders.');
 
 export async function requireTeamSettings(db: D1Database, actor: string, teamId: string) {
