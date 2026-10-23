@@ -65,7 +65,7 @@ export async function releasesJourney({page:shared,runtime,evidence}){
   const guestHeaders={Cookie:cookie,Origin:base,'Content-Type':'application/json'};
   const session=await(await runtime.req('/api/session',{headers:guestHeaders})).json();
   const scopedToken=await runtime.req('/api/settings/integrations/tokens',{method:'POST',headers:guestHeaders,body:JSON.stringify({name:'synthetic-vector-1757',scopes:['releases:read','releases:write']})});assert.equal(scopedToken.status,201);const guestToken=(await scopedToken.json()).token;
-  assert.equal((await runtime.req('/app/releases/'+release.id+'?readOnly=1',{headers:guestHeaders})).status,200);
+  const memberShare=await runtime.req('/app/releases/'+release.id+'?readOnly=1',{redirect:'follow',headers:guestHeaders});assert.equal(memberShare.status,200);assert.match(await memberShare.text(),/Read-only workspace view/);
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'guest',teamIds:[team.id]});
   const refusal=await runtime.req('/api/releases',{method:'POST',headers:guestHeaders,body:JSON.stringify({name:'Guest release'})});assert.equal(refusal.status,403);await refusal.body.cancel();
   const deniedApi=await runtime.req('/api/v1/releases',{method:'POST',headers:{Origin:base,Authorization:'Bearer '+guestToken,'Content-Type':'application/json'},body:JSON.stringify({name:'Guest release'})});assert.equal(deniedApi.status,403);await deniedApi.body.cancel();

@@ -148,8 +148,7 @@ Each issue/deployment pair acts once. Git status changes have a system actor,
 Git automation, and followers receive one in-app notice per change.
 
 The issue's branch suggestion and native issue read expose `branchName`; native
-issue reads and the GitHub block expose deployments. These fields are not yet in
-the versioned API. Creating a provider branch requires the unbuilt GitHub App
+issue reads and the GitHub block expose deployments. The same fields accompany full issue reads and mutation receipts in the versioned API. Creating a provider branch requires the unbuilt GitHub App
 connection; no provider write credential or outbound enrichment is used here.
 GitLab, CircleCI, Vercel, Netlify and Cloudflare deployment receivers remain unbuilt.
 
