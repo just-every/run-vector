@@ -220,6 +220,35 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
   }
 
 
+  // ISSUE-014: workspace merge/delete use the same management row as rename.
+  for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[]) {
+    const make = async (suffix: string) => {
+      const name = `synthetic-vector-merge-${who}-${suffix}`;
+      const response = await w.people.owner.call("/settings/labels", "POST", {name,color:"#224466"});
+      expect(response.status).toBe(200);
+      return ((await response.json()) as Administration).labels.find(label=>label.name===name)!.id;
+    };
+    const source = await make("source"), destination = await make("destination"), person = w.people[who];
+    const allowed = who === "owner" || who === "admin";
+    const made = await w.people.owner.call("/issues", "POST", {title:`synthetic-vector-merge-${who}`,teamId:w.team.id,labelIds:[source,destination]});
+    expect(made.status).toBe(201);
+    const issue = await made.json() as {id:string;identifier:string;version:number};
+    const saved = await w.people.owner.call("/views", "POST", {name:`synthetic-vector-merge-${who}`,isShared:false,layout:"list",query:{label:source}});
+    expect(saved.status).toBe(201);
+    const view = await saved.json() as {id:string};
+    const before = await snapshot(["labels","issues","issue_labels","saved_views","issue_activity","audit_records"]);
+    if (!allowed) expect((await person.call(`/settings/labels/${source}`,"DELETE")).status).toBe(403);
+    expect((await person.call(`/settings/labels/${source}/merge`,"POST",{destinationLabelId:destination})).status).toBe(allowed?200:403);
+    if (!allowed) { expect(await snapshot(["labels","issues","issue_labels","saved_views","issue_activity","audit_records"])).toEqual(before); continue; }
+    expect(await env.DB.prepare("SELECT id FROM labels WHERE id=?").bind(source).first()).toBeNull();
+    expect((await env.DB.prepare("SELECT label_id FROM issue_labels WHERE issue_id=? ORDER BY label_id").bind(issue.id).all()).results).toEqual([{label_id:destination}]);
+    expect(await env.DB.prepare("SELECT version FROM issues WHERE id=?").bind(issue.id).first("version")).toBe(issue.version+1);
+    expect(await env.DB.prepare("SELECT count(*) n FROM issue_activity WHERE issue_id=? AND kind='label.merged'").bind(issue.id).first("n")).toBe(1);
+    expect(JSON.parse(String(await env.DB.prepare("SELECT filters_json FROM saved_views WHERE id=?").bind(view.id).first("filters_json"))).label).toBe(destination);
+    expect((await person.call(`/settings/labels/${destination}`,"DELETE")).status).toBe(200);
+    expect(await env.DB.prepare("SELECT id FROM issues WHERE id=?").bind(issue.id).first()).not.toBeNull();
+  }
+
   // ISSUE-014: the workspace permission gates every creation door on the next request.
   for (const membersMayCreate of [false, true]) {
     expect((await w.people.owner.call("/settings/labels/creation", "PUT", {membersMayCreate})).status).toBe(200);

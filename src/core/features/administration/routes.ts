@@ -18,7 +18,7 @@ import {
   reorderStatuses,
   removeStatus,
 } from "./teams";
-import { createLabel, updateLabel, removeLabel, setLabelCreation } from "./labels";
+import { createLabel, updateLabel, removeLabel, setLabelCreation, mergeLabel } from "./labels";
 import { createProject, updateProject, removeProject } from "./projects";
 import { createCycle } from "./cycles";
 import { projectDetail } from "../projects/read";
@@ -130,6 +130,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
       ),
     ),
   );
+  app.post("/settings/labels/:id/merge", mutation(schema.labelMergeSchema, (c,b) => mergeLabel(c.env.DB,c.get("operatorId"),c.req.param("id")!,b.destinationLabelId)));
   app.put("/settings/labels/creation", mutation(schema.labelCreationPermissionSchema, (c,b) => setLabelCreation(c.env.DB,c.get("operatorId"),b.membersMayCreate)));
   app.post(
     "/settings/labels",

@@ -189,3 +189,50 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
     ),
   ]);
 }
+
+/** Replace only native top-level label predicates, retaining extension data. */
+export function mergeLabelFilter(value: unknown, source: string, destination: string) {
+  removeLabelFilter(value, source); // validates exactly the same native filter shape as deletion
+  const next = {...value as Record<string, unknown>};
+  for (const key of ["labelIds", "labels"])
+    if (Array.isArray(next[key])) next[key] = [...new Set((next[key] as string[]).map(id => id === source ? destination : id))];
+  for (const key of ["labelId", "label"]) if (next[key] === source) next[key] = destination;
+  return next;
+}
+export async function mergeLabel(db: D1Database, actor: string, source: string, destination: string) {
+  if (source === destination) throw new SettingsError("invalid_label_merge", "Choose a different destination label.", 400);
+  const ctx = await administrationContext(db, actor);
+  const old = await ownedRow<Label>(ctx, "labels", source), target = await ownedRow<Label>(ctx, "labels", destination);
+  if (!target.projects_enabled && await ctx.db.prepare("SELECT 1 FROM project_labels WHERE label_id=?").bind(source).first())
+    throw new SettingsError("invalid_label_merge", "Enable the destination label for projects before merging a label used by projects.", 409);
+  const views = (await ctx.db.prepare("SELECT id,filters_json FROM saved_views WHERE workspace_id=? ORDER BY id").bind(ctx.workspace).all<{id:string;filters_json:string}>()).results;
+  const changed = views.map(view => {
+    let filters: unknown;
+    try { filters=JSON.parse(view.filters_json); }
+    catch { throw new SettingsError("invalid_saved_view", "Repair corrupt saved-view filters before merging labels.", 409); }
+    return {...view, next: JSON.stringify(mergeLabelFilter(filters,source,destination))};
+  }).filter(view=>view.next!==view.filters_json);
+  const previous = `(SELECT json_group_array(label_id) FROM (SELECT label_id FROM issue_labels WHERE issue_id=issues.id ORDER BY label_id))`;
+  const next = `(SELECT json_group_array(label_id) FROM (SELECT DISTINCT CASE WHEN label_id=? THEN ? ELSE label_id END AS label_id FROM issue_labels WHERE issue_id=issues.id ORDER BY label_id))`;
+  await commit(ctx, [
+    guard(ctx.db,"EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",source,ctx.workspace,old.name,old.color,old.projects_enabled),
+    guard(ctx.db,"EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",destination,ctx.workspace,target.name,target.color,target.projects_enabled),
+    guard(ctx.db,"(SELECT json_group_array(json_array(id,filters_json)) FROM (SELECT id,filters_json FROM saved_views WHERE workspace_id=? ORDER BY id))=?",ctx.workspace,JSON.stringify(views.map(view=>[view.id,view.filters_json]))),
+    ctx.db.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
+      SELECT lower(hex(randomblob(16))),id,?,'label.merged',json_object('labelIds',json(${previous})),json_object('labelIds',json(${next})),?,? FROM issues
+      WHERE EXISTS(SELECT 1 FROM issue_labels WHERE issue_id=issues.id AND label_id=?)`).bind(actor,source,destination,ctx.at,ctx.at,source),
+    ctx.db.prepare("UPDATE issues SET version=version+1,updated_at=? WHERE id IN(SELECT issue_id FROM issue_labels WHERE label_id=?)").bind(ctx.at,source),
+    ctx.db.prepare("INSERT OR IGNORE INTO issue_labels(issue_id,label_id,created_at) SELECT issue_id,?,? FROM issue_labels WHERE label_id=?").bind(destination,ctx.at,source),
+    ctx.db.prepare(`INSERT INTO project_activity(id,project_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
+      SELECT lower(hex(randomblob(16))),p.id,?,'project.labelIds_changed',
+      (SELECT json_group_array(label_id) FROM (SELECT label_id FROM project_labels WHERE project_id=p.id ORDER BY label_id)),
+      (SELECT json_group_array(label_id) FROM (SELECT DISTINCT CASE WHEN label_id=? THEN ? ELSE label_id END AS label_id FROM project_labels WHERE project_id=p.id ORDER BY label_id)),?,?
+      FROM projects p WHERE EXISTS(SELECT 1 FROM project_labels WHERE project_id=p.id AND label_id=?)`).bind(actor,source,destination,ctx.at,ctx.at,source),
+    ctx.db.prepare("UPDATE projects SET updated_at=? WHERE id IN(SELECT project_id FROM project_labels WHERE label_id=?)").bind(ctx.at,source),
+    ctx.db.prepare("INSERT OR IGNORE INTO project_labels(project_id,label_id,created_at) SELECT project_id,?,? FROM project_labels WHERE label_id=?").bind(destination,ctx.at,source),
+    ...changed.map(view=>ctx.db.prepare("UPDATE saved_views SET filters_json=?,updated_at=? WHERE id=?").bind(view.next,ctx.at,view.id)),
+    ctx.db.prepare("UPDATE list_preferences SET filters_json=json_set(filters_json,'$.label',?),updated_at=? WHERE surface='projects' AND operator_id IN(SELECT id FROM operators WHERE workspace_id=?) AND json_extract(filters_json,'$.label')=?").bind(destination,ctx.at,ctx.workspace,source),
+    ctx.db.prepare("DELETE FROM labels WHERE id=?").bind(source),
+    ...audit(ctx,"label.merged",source,old.name,{id:source,name:old.name},{id:destination,name:target.name}),
+  ]);
+}
