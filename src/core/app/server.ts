@@ -1,3 +1,4 @@
+import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
 import { dependencyResponse, isDependencyPath } from '../features/auth/dependencies.server';
 import { createIntegrationReceivers } from '../features/integrations/receiver-routes';
 import { createIntegrationApi } from '../features/integrations/api';
@@ -121,6 +122,7 @@ export function createServerApp() {
   app.route("/auth", createAuthApp());
   app.all("/api/editor/config",async c=>editorConfigResponse(c.env,c.req.raw));
   app.route("/api/integrations",createIntegrationReceivers());
+  addGithubIssueProjection(app,true);
   app.route("/api/v1",createIntegrationApi());
   app.route("/api", createApiApp());
 

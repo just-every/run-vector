@@ -1,7 +1,7 @@
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import { githubIssueProjection } from '../features/integrations/github-read';
+import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
 import { addGithubRuleRoutes } from '../features/integrations/github/rule-routes';
-import { githubBranchName } from '../features/integrations/github/branch-name';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
@@ -229,6 +229,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addGithubIssueProjection(app);
   addGithubRuleRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
@@ -319,9 +320,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       );
       if (!issue)
         throw new IssueAccessError("not_found", "Issue is unavailable.", 404);
-      const deployments=(await githubIssueProjection(context.env.DB,issue.id)).deployments;
-      await requireIssueAccess(context.env.DB,identifier,actor);
-      return context.json({...issue,branchName:githubBranchName(issue.identifier,issue.title),deployments});
+      return context.json(issue);
     } catch (error) {
       if (!(error instanceof IssueAccessError)) throw error;
       return context.json(
