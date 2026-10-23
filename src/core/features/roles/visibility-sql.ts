@@ -39,7 +39,9 @@ export function visibilityCtes(actor: string) {
     scoped('issue_relations', `${issue('first_issue_id')} AND ${issue('second_issue_id')}`),
     scoped('issue_deletions', '0'),
     scoped('issue_duplicates', `${issue()} AND ${issue('canonical_issue_id')}`),
-    scoped('issue_activity', `${issue()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')}`),
+    `issue_activity AS (SELECT r.rowid AS rowid,r.* FROM main.issue_activity r WHERE
+      (r.kind<>'issue.mentioned' OR EXISTS(SELECT 1 FROM issues source WHERE source.id=json_extract(r.next_value_json,'$.sourceIssueId')))
+      AND (NOT (${guest}) OR (${issue()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')})))`,
     ...['project_labels', 'project_milestones'].map(t => scoped(t, project())),
     scoped('project_activity', `${project()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')}`),
     scoped('project_membership_events', `${project()} AND r.identifier IN(SELECT identifier FROM issues)`),

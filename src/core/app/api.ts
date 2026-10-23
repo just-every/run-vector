@@ -1,4 +1,5 @@
 import { addReactionRoutes } from '../features/reactions/routes';
+import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
@@ -357,6 +358,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addSearchRoutes(app);
   addEmailIntakeRoutes(app);
   addReactionRoutes(app);
+  addIssueReferenceRoutes(app);
 
   addNotificationRoutes(app);
   addViewRoutes(app);

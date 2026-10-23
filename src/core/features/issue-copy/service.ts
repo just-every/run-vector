@@ -1,3 +1,4 @@
+import { issueReferenceStatements } from "../issue-references/repository";
 import {
   mutationDatabase,
   isMutationAccessError,
@@ -146,6 +147,7 @@ export async function copyIssue(
         )
         .bind(id, at, JSON.stringify(mapped.labels)),
     );
+    const copiedActivityId = createUlid(now);
     for (const [issueId, kind, next] of [
       [id, "issue.copied_from", { identifier: row.identifier }],
       [row.id, "issue.copied_to", { identifier: plan.identifier }],
@@ -156,7 +158,7 @@ export async function copyIssue(
             `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at) VALUES(?,?,?,?,?,?,?)`,
           )
           .bind(
-            createUlid(now),
+            issueId === id ? copiedActivityId : createUlid(now),
             issueId,
             actor,
             kind,
@@ -165,6 +167,7 @@ export async function copyIssue(
             at,
           ),
       );
+    writes.push(...issueReferenceStatements(db, { id: copiedActivityId, issueId: id, actor, at }, row.description));
     if (input.includeLinks)
       writes.push(
         db

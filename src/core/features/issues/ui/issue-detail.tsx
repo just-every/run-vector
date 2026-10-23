@@ -1,5 +1,7 @@
 import { TooltipScope } from '../../../ui/tooltip';
 import { ReactionsProvider } from '../../reactions/ui/context';
+import { IssueReferencesProvider } from '../../issue-references/ui/context';
+import { IssueActivityTitle } from '../../issue-references/ui/activity';
 import { IssueCopyAction } from "../../issue-copy/ui";
 import { Subissues } from "../../subissues/ui/subissues";
 import { IssueDescription } from "../../description-history/ui/description";
@@ -25,7 +27,7 @@ import { ApiError, useApiResource } from "../../../app/api-client";
 import { optionsSchema, type StreamOptions } from "../../streams/ui/data";
 import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
-import { activityChanges, activityTitle } from "./activity-changes";
+import { activityChanges } from "./activity-changes";
 import { issueDetailSchema, type IssueDetailData } from "./data";
 import { useViewerTime } from "../../../app/viewer-time";
 
@@ -122,14 +124,14 @@ export function IssueDetail({
           </button>
         </div>
       ) : null}
-      <TooltipScope><ReactionsProvider key={identifier} identifier={identifier}><IssueInspector
+      <TooltipScope><ReactionsProvider key={identifier} identifier={identifier}><IssueReferencesProvider identifier={identifier} revision={detail.data.version}><IssueInspector
         issue={committed?.identifier===detail.data.identifier&&committed.version>detail.data.version?committed:detail.data}
         onBack={onBack}
         onRefresh={refresh}
         options={options.data}
         onDeleted={receipt=>{onChanged?.();window.dispatchEvent(new Event("vector:issues-changed"));window.dispatchEvent(new CustomEvent("vector:issue-deleted",{detail:receipt}));if(onBack)onBack();else void navigate({to:"/app/issues"});}}
         optionsError={options.error}
-      /></ReactionsProvider></TooltipScope>
+      /></IssueReferencesProvider></ReactionsProvider></TooltipScope>
     </>
   );
 }
@@ -344,7 +346,7 @@ function IssueInspector({
                 <ol className="activity-list">
                   {issue.activity.map((activity) => (
                     <li key={activity.id}>
-                      <strong>{activityTitle(activity.kind, activity.nextValue)}</strong>
+                      <strong><IssueActivityTitle kind={activity.kind} nextValue={activity.nextValue}/></strong>
                       <span>
                         {activity.actor ?? "System"} ·{" "}
                         {relativeTime(activity.at)}

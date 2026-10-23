@@ -134,4 +134,17 @@ export async function guestVisibilityJourney(w:Workspace) {
   expect(sent.status,await sent.clone().text()).toBe(200)
   expect(changed).toBe(true)
   expect(await env.DB.prepare('SELECT status FROM notification_deliveries WHERE identifier=? AND recipient_id=?').bind(queued.identifier,recipient.id).first('status')).toBe('suppressed')
+  // Reference projections and retained backlinks obey the reader's current teams.
+  const visibleNow=await current(visible.identifier), hiddenNow=await current(hidden.identifier)
+  expect((await owner.call(`/issues/${visible.identifier}`,'PATCH',{expectedVersion:visibleNow.version,description:`See ${hidden.identifier} and SYNTHETIC_VECTOR-999999.`})).status).toBe(200)
+  expect((await owner.call(`/issues/${hidden.identifier}`,'PATCH',{expectedVersion:hiddenNow.version,description:`See ${visible.identifier}.`})).status).toBe(200)
+  expect(JSON.stringify(await json(await owner.call(`/issues/${visible.identifier}`)))).toContain('issue.mentioned')
+  for(const who of [member,guest]) {
+    expect(await json(await who.call(`/issues/${visible.identifier}/references`))).toEqual({references:[]})
+    const scoped=await json<{activity:{kind:string;nextValue:unknown}[]}>(await who.call(`/issues/${visible.identifier}`))
+    expect(scoped.activity.some(row=>row.kind==='issue.mentioned')).toBe(false)
+    expect(JSON.stringify(scoped.activity)).not.toContain(hidden.identifier)
+    expect((await who.call(`/issues/${hidden.identifier}/references`)).status).toBe(404)
+  }
+
 }

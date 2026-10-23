@@ -1,3 +1,4 @@
+import { referenceSourceVisible } from "../issue-references/projection";
 import { relatedIssuesStatement } from '../related/repository';
 import { parseTasks } from "../description-history/tasks";
 import { publicActivityValue } from '../issue-undo/public-activity';
@@ -154,8 +155,10 @@ export function buildIssueDetail(
         `evidence ${item.id} assertions`,
       ),
     }));
+  const visibleIssueIds = new Set(snapshot.issues.map(item => item.id));
   const activity = snapshot.activity
     .filter((item) => item.issueId === issue.id)
+    .filter((item) => referenceSourceVisible(item, visibleIssueIds))
     .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
     .map((item) => ({
       id: item.id,

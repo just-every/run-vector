@@ -1,3 +1,4 @@
+import { issueReferenceStatements } from "../issue-references/repository";
 import { commentStatements, mentionStatements, finalizeEvent } from '../notifications/events';
 import { IssueAccessError, requireIssueAccess } from '../issues/access';
 import { MutationAccessError, RestoreReservationError, isMutationAccessError, mutationDatabase } from "../auth/mutation-database";
@@ -111,7 +112,7 @@ export async function addComment(
       )
       .bind(id, issueId, actor, body, thread, now, now),
     activity(db, actor, "comment.created", issueId, id, now, activityId),
-    ...commentStatements(db,event), ...mentionStatements(db,event,body,id), ...finalizeEvent(db,event),
+    ...commentStatements(db,event), ...mentionStatements(db,event,body,id), ...issueReferenceStatements(db,event,body,{kind:"comment",id}), ...finalizeEvent(db,event),
     ...(onCommit?.(db,id) ?? []),
   ]);
   return id;
@@ -191,7 +192,7 @@ export async function changeComment(
   let receipts: D1Result<{ id: string }>[];
   try {
     receipts = await db.batch<{ id: string }>([
-      ...statements, mutation, ...finalizeEvent(db,event),
+      ...statements, mutation, ...issueReferenceStatements(db,event,body,{kind:"comment",id}), ...finalizeEvent(db,event),
     ]);
   } catch (error) {
     // Preserve authority/storage failures. A failed revision guard rolls back

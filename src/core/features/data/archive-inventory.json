@@ -1717,5 +1717,12 @@
     "operator_id",
     "emoji",
     "created_at"
+  ],
+  "issue_reference_subjects": [
+    "source_issue_id",
+    "target_issue_id",
+    "subject_kind",
+    "subject_id",
+    "created_at"
   ]
 }

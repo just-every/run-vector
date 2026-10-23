@@ -1,3 +1,4 @@
+import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import { requireIssueAccess } from './access'
 import { followStatements, assignmentStatements, mentionStatements, blockerStatements, followerChangeStatements, finalizeEvent } from '../notifications/events'
@@ -132,7 +133,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
     [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
-    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...finalizeEvent(binding,event)]) } catch (error) { return creationError(binding, team.id, error) }
+    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event)]) } catch (error) { return creationError(binding, team.id, error) }
   return { identifier }
 }
 

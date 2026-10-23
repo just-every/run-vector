@@ -96,6 +96,14 @@ Object.assign(relations, {
     table: "issue_parents",
     where: "r.issue_id=c.id OR r.parent_issue_id=c.id",
   },
+  issue_reference_subjects: {
+    table: "issue_reference_subjects",
+    where: "r.source_issue_id=c.id OR r.target_issue_id=c.id",
+  },
+  reference_source_activity: {
+    table: "issue_activity",
+    where: "(r.kind='issue.mentioned' AND json_extract(r.next_value_json,'$.sourceIssueId')=c.id) OR r.id IN(" + captured("reference_source_activity", "id") + ")",
+  },
   issue_relations: { table: "issue_relations", where: "r.first_issue_id=c.id OR r.second_issue_id=c.id" },
   issue_dependencies: {
     table: "issue_dependencies",

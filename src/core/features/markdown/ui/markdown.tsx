@@ -1,3 +1,6 @@
+import { useIssueReferences } from '../../issue-references/ui/context';
+import { remarkIssueReferences } from '../../issue-references/ui/remark';
+import { Tooltip } from '../../../ui/tooltip';
 import { useState } from "react";
 import { MarkdownTasks, TaskCheckbox } from "./task-checkbox";
 import remarkGfm from "remark-gfm";
@@ -95,8 +98,9 @@ function containsImage(node: MarkdownNode): boolean {
   return node.tagName === "img" || Boolean(node.children?.some(containsImage));
 }
 
-const components: Components = {
-  a({ href, children, title, node }) {
+function MarkdownLink({href,children,title,node}:Parameters<NonNullable<Components['a']>>[0]) {
+    const references=useIssueReferences();
+    const reference=references.find(row=>href===`/app/issues/${row.identifier}`);
     const safe = safeUrl(href);
     if (!safe) return <span>{children}</span>;
     const external = safe.startsWith("https://");
@@ -114,9 +118,12 @@ const components: Components = {
         {children} <a {...linkProps}>Open linked page</a>
       </span>
     ) : (
-      <a {...linkProps}>{children}</a>
+      reference ? <Tooltip label={`${reference.title} · ${reference.status.name}`}><a {...linkProps} title={undefined}>{children}</a></Tooltip> : <a {...linkProps}>{children}</a>
     );
-  },
+}
+
+const components: Components = {
+  a: MarkdownLink,
   img({ src, alt, title }) {
     const safe = safeUrl(typeof src === "string" ? src : undefined, true);
     if (!safe) return <span>{alt || "Image unavailable"}</span>;
@@ -140,6 +147,7 @@ export function SafeMarkdown({
   onTaskChange?: (task: { index: number; text: string; checked: boolean }) => void | Promise<void>;
   taskBusy?: boolean;
 }) {
+  const references = useIssueReferences();
   const operators = useMentionOperators();
   const operatorIds =
     activeOperatorIds ??
@@ -154,7 +162,7 @@ export function SafeMarkdown({
   return (
     <MarkdownTasks.Provider value={{ tasks, busy: taskBusy, onChange: onTaskChange }}><div className="safe-markdown">
       <Markdown
-        remarkPlugins={[remarkGfm, remarkDetails, [remarkMentions, { operatorIds }]]}
+        remarkPlugins={[remarkGfm, remarkDetails, [remarkIssueReferences, { references }], [remarkMentions, { operatorIds }]]}
         rehypePlugins={[rehypeTaskIndices]}
         skipHtml
         components={rendered}

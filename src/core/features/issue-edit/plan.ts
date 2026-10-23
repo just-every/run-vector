@@ -1,3 +1,4 @@
+import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import {
   assignmentStatements,
@@ -385,6 +386,7 @@ export async function planIssueUpdate(
       ),
   );
   const mutationIndex = writes.length - 1;
+  if ("description" in values) writes.push(...issueReferenceStatements(binding, event, values.description as string));
   writes.push(...finalizeEvent(binding, event));
   return {
     where,

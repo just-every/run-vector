@@ -1,3 +1,4 @@
+import { issueReferenceStatements } from "../issue-references/repository";
 import { activityRow } from "../issues/repository";
 import { assignmentStatements, blockerStatements, followerChangeStatements, finalizeEvent, mentionStatements } from "../notifications/events";
 import type { IssueSnapshot, UndoAction } from "./schema";
@@ -50,6 +51,7 @@ export function planUndoReversal(db: D1Database, actor: string, action: UndoActi
     }
     updates.push(db.prepare(`UPDATE issues SET ${[...fields.map((key) => issueColumns[key] + "=?"), "version=version+1", "updated_at=?"].join(",")} WHERE id=?`)
       .bind(...fields.map((key) => columnValue(original, key)), at, original.id));
+    if (fields.includes("description")) finalize.push(...issueReferenceStatements(db, event, original.description ?? ""));
     finalize.push(...finalizeEvent(db, event));
   }
   const relations: D1PreparedStatement[] = [];

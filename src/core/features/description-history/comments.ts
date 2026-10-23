@@ -1,3 +1,4 @@
+import { issueReferenceStatements } from "../issue-references/repository";
 import { mutationDatabase } from "../auth/mutation-database";
 import { requireIssueAccess } from "../issues/access";
 import { createUlid } from "../../shared/ids";
@@ -42,6 +43,7 @@ export async function tickCommentTask(db: D1Database, identifier: string, id: st
     ...statements,
     db.prepare(`UPDATE issue_comments SET body=?,edited_at=?,updated_at=? WHERE ${where} RETURNING id`)
       .bind(body, now, now, ...params),
+    ...issueReferenceStatements(db, event, body, { kind: "comment", id }),
     ...finalizeEvent(db, event),
   ]);
   if (result[index].results[0]?.id === id) return;
