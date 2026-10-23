@@ -29,7 +29,13 @@ export const verificationShards = {
   runtime: {
     browser: true,
     commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
-      'test:deployment', 'build', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }],
+      'test:deployment', 'build', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }],
+  },
+  // Delivery and subscription journeys extend the core runtime proof. Give
+  // that unchanged public entry point its own job instead of raising timeouts.
+  'core-runtime': {
+    browser: true, native: true,
+    commands: ['build', 'test:runtime'],
   },
   administration: {
     browser: true, native: true,
