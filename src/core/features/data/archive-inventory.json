@@ -1814,5 +1814,26 @@
   "subscription_event_receipts": [
     "event_id",
     "operator_id"
+  ],
+  "initiative_graph": [
+    "workspace_id",
+    "revision"
+  ],
+  "initiatives": [
+    "id",
+    "workspace_id",
+    "parent_id",
+    "owner_operator_id",
+    "name",
+    "description",
+    "target_date",
+    "status",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "initiative_projects": [
+    "initiative_id",
+    "project_id"
   ]
 }

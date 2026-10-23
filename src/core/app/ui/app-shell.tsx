@@ -35,6 +35,7 @@ type NavigationItem = {
     | '/app/my-work'
     | '/app/projects'
     | '/app/releases'
+    | '/app/initiatives'
     | '/app/issues'
     | '/app/inbox'
     | '/app/board'
@@ -46,6 +47,7 @@ const navigation: NavigationItem[] = [
   { to: '/app', label: 'Current', icon: '◈' },
   { to: '/app/my-work', label: 'My work', icon: '◒' },
   { to: '/app/projects', label: 'Projects', icon: '◇' },
+  { to: '/app/initiatives', label: 'Initiatives', icon: '◎' },
   { to: '/app/releases', label: 'Releases', icon: '◉' },
   { to: '/app/issues', label: 'Issues', icon: '▤' },
   { to: '/app/board', label: 'Board', icon: '▥' },
@@ -278,12 +280,13 @@ function AppShellContent({ children }: AppShellProps) {
           </div>
         )}
         {/* Phone browsing pages carry the board and saved views; issue pages stay short. */}
-        {/^\/app\/(?:issues|board|releases)$|^\/app\/views\/[^/]+$/.test(
+        {/^\/app\/(?:issues|board|releases|initiatives)$|^\/app\/views\/[^/]+$/.test(
           location.pathname,
         ) ? (
           <details className="app-mobile-views">
-            <summary>Board, releases and saved views</summary>
+            <summary>Board, releases, initiatives and saved views</summary>
             <Link className="app-nav-link" to="/app/releases">Releases</Link>
+            <Link className="app-nav-link" to="/app/initiatives">Initiatives</Link>
             <Link className="app-nav-link" to="/app/board">
               Board
             </Link>
@@ -296,7 +299,7 @@ function AppShellContent({ children }: AppShellProps) {
       </div>
       <nav className="app-mobile-nav" aria-label="Workspace">
         {navigation
-          .filter((item) => item.to !== '/app/board' && item.to !== '/app/releases')
+          .filter((item) => item.to !== '/app/board' && item.to !== '/app/releases' && item.to !== '/app/initiatives')
           .map((item) => (
             <NavLink key={item.to} item={item} pathname={location.pathname} />
           ))}
