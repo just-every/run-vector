@@ -78,6 +78,10 @@ async function memberRole(db: D1Database, id: string) {
 }
 
 export const doors: Door[] = [
+  { method: 'GET', path: '/calendar/feeds', row: 'projects.write' },
+  { method: 'POST', path: '/calendar/feeds', row: 'projects.write' },
+  { method: 'POST', path: '/calendar/feeds/:id/rotate', row: 'projects.write' },
+  { method: 'DELETE', path: '/calendar/feeds/:id', row: 'projects.write' },
   { method: 'GET', path: '/insights', row: 'projects.write' },
   { method: 'GET', path: '/insights.csv', row: 'projects.write' },
   { method: 'GET', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },

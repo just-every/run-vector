@@ -101,7 +101,7 @@ export async function insightsJourney(page, context, runtime, output) {
   try {
     const confirmation = await guest.request.post(base + "/auth/confirm", { headers: { Origin: base }, data: { token }, maxRedirects: 0 });
     assert.equal(confirmation.status(), 303);
-    for (const path of ["/app/insights", "/api/insights", "/api/insights.csv"])
+    for (const path of ["/app/insights", "/api/insights", "/api/insights.csv", "/app/calendar", "/api/calendar/feeds"])
       assert.equal((await guest.request.get(base + path)).status(), 403, "Guest refused " + path);
   } finally { await guest.close(); }
   console.log("REPORT-001 Guest document, data and CSV doors: 403 PASS");

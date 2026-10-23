@@ -1,0 +1,51 @@
+import { env } from 'cloudflare:workers';
+import { expect } from 'vitest';
+import { actor, invite, request } from './base-auth-fixture';
+import type { Administration } from '../../src/core/features/administration/schema';
+export async function exerciseCalendarCapability(owner: string, member: string, memberId: string) {
+  const call = (path: string, method = 'GET', body?: unknown, cookie = owner) => request('/api' + path, method, body, cookie);
+  const result = await call('/settings/teams','POST',{name:'synthetic-vector-20',identifierPrefix:'SYNCAL'});
+  expect(result.status).toBe(200);
+  const state = await result.json() as Administration, team = state.teams.find(t=>t.identifierPrefix==='SYNCAL')!;
+  expect((await call('/teams/'+team.id+'/join','POST',{},member)).status).toBe(200);
+  const projectResult = await call('/settings/projects','POST',{name:'synthetic-vector-21',leadOperatorId:memberId});
+  expect(projectResult.status).toBe(200);
+  const project = (await projectResult.json() as Administration).projects.find(p=>p.name==='synthetic-vector-21')!;
+  expect((await call('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-22',targetDate:'2026-11-05'})).status).toBe(200);
+  expect((await call('/settings/cycles','POST',{teamId:team.id,name:'synthetic-vector-23',startsLocal:'2026-11-01T00:00',endsLocal:'2026-11-08T00:00'})).status).toBe(200);
+  const issueResult = await call('/issues','POST',{teamId:team.id,projectId:project.id,title:'synthetic-vector-24, café; '+ 'é'.repeat(70),description:'Never include this description',dueDate:'2026-11-04',assigneeOperatorId:memberId});
+  expect(issueResult.status).toBe(201);const issue = await issueResult.json() as {id:string;identifier:string};
+  const make = async (teamId: string | null, cookie=member) => {
+    const response=await call('/calendar/feeds','POST',{teamId},cookie);expect(response.status).toBe(201);
+    return await response.json() as {id:string;url:string;version:number};
+  };
+  const feed=await make(null), path=new URL(feed.url).pathname;
+  const response=await request(path);expect(response.status).toBe(200);
+  expect(response.headers.get('cache-control')).toBe('no-store');expect(response.headers.get('set-cookie')).toBeNull();
+  expect(response.headers.get('content-type')).toBe('text/calendar; charset=utf-8');
+  const folded=await response.text(),text=folded.replace(/\r\n /g,'');
+  for(const name of ['synthetic-vector-22','synthetic-vector-23','synthetic-vector-24\\, café\\;'])expect(text).toContain(name);
+  expect(text).toContain('UID:issue-'+issue.id+'-2026-11-04@vector');
+  expect(text).toContain('DTSTART;VALUE=DATE:20261104\r\nDTEND;VALUE=DATE:20261105');
+  expect(text).not.toContain('Never include this description');
+  for(const line of folded.split('\r\n'))expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
+  const stored=await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(feed.id).first<string>('token_hash');
+  expect(stored).toMatch(/^[a-f0-9]{64}$/);expect(path.includes(stored!)).toBe(false);
+  const listing=await call('/calendar/feeds','GET',undefined,member);expect((await listing.text()).includes(stored!)).toBe(false);
+  expect((await request('/api/calendar/feed/'+'0'.repeat(64)+'.ics')).status).toBe(404);
+  const changed=await call('/calendar/feeds/'+feed.id+'/rotate','POST',{expectedVersion:1},member);expect(changed.status).toBe(200);
+  const rotated=await changed.json() as {url:string};expect((await request(path)).status).toBe(404);
+  expect((await request(new URL(rotated.url).pathname)).status).toBe(200);
+  expect((await call('/calendar/feeds/'+feed.id,'DELETE',{expectedVersion:2},member)).status).toBe(200);
+  expect((await request(new URL(rotated.url).pathname)).status).toBe(404);
+  const teamFeed=await make(team.id);
+  expect((await request(new URL(teamFeed.url).pathname)).status).toBe(200);
+  expect((await call('/settings/teams/'+team.id+'/members/'+memberId,'DELETE')).status).toBe(200);
+  expect((await request(new URL(teamFeed.url).pathname)).status).toBe(404);
+  expect((await call('/calendar/feeds','POST',{teamId:team.id},member)).status).toBe(403);
+  const guest=await invite('synthetic-vector-25@example.test',owner),guestId=await actor(guest);
+  expect((await call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[team.id]})).status).toBe(200);
+  for(const [route,method,body] of [['/calendar/feeds','GET',undefined],['/calendar/feeds','POST',{}],['/calendar/feeds/'+teamFeed.id+'/rotate','POST',{expectedVersion:1}],['/calendar/feeds/'+teamFeed.id,'DELETE',{expectedVersion:1}]] as const)
+    expect((await call(route,method,body,guest)).status).toBe(403);
+  return new URL((await make(null)).url).pathname;
+}

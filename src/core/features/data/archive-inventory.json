@@ -1730,5 +1730,16 @@
     "created_at",
     "updated_at",
     "decided_at"
+  ],
+  "calendar_feed_tokens": [
+    "id",
+    "workspace_id",
+    "creator_id",
+    "team_id",
+    "token_hash",
+    "version",
+    "created_at",
+    "updated_at",
+    "revoked_at"
   ]
 }

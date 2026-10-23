@@ -15,6 +15,7 @@ import { Route as SetupRouteImport } from './routes/setup'
 import { Route as SigninRouteImport } from './routes/signin'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppBoardRouteImport } from './routes/app.board'
+import { Route as AppCalendarRouteImport } from './routes/app.calendar'
 import { Route as AppCurrentRouteImport } from './routes/app.current'
 import { Route as AppInboxRouteImport } from './routes/app.inbox'
 import { Route as AppInsightsRouteImport } from './routes/app.insights'
@@ -74,6 +75,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppBoardRoute = AppBoardRouteImport.update({
   id: '/board',
   path: '/board',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppCalendarRoute = AppCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCurrentRoute = AppCurrentRouteImport.update({
@@ -236,6 +242,7 @@ export interface FileRoutesByFullPath {
   '/setup': typeof SetupRoute
   '/signin': typeof SigninRoute
   '/app/board': typeof AppBoardRouteWithChildren
+  '/app/calendar': typeof AppCalendarRoute
   '/app/current': typeof AppCurrentRouteWithChildren
   '/app/inbox': typeof AppInboxRoute
   '/app/insights': typeof AppInsightsRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/setup': typeof SetupRoute
   '/signin': typeof SigninRoute
   '/app/board': typeof AppBoardRouteWithChildren
+  '/app/calendar': typeof AppCalendarRoute
   '/app/inbox': typeof AppInboxRoute
   '/app/insights': typeof AppInsightsRoute
   '/app/new': typeof AppNewRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/setup': typeof SetupRoute
   '/signin': typeof SigninRoute
   '/app/board': typeof AppBoardRouteWithChildren
+  '/app/calendar': typeof AppCalendarRoute
   '/app/current': typeof AppCurrentRouteWithChildren
   '/app/inbox': typeof AppInboxRoute
   '/app/insights': typeof AppInsightsRoute
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/signin'
     | '/app/board'
+    | '/app/calendar'
     | '/app/current'
     | '/app/inbox'
     | '/app/insights'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/signin'
     | '/app/board'
+    | '/app/calendar'
     | '/app/inbox'
     | '/app/insights'
     | '/app/new'
@@ -421,6 +432,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/signin'
     | '/app/board'
+    | '/app/calendar'
     | '/app/current'
     | '/app/inbox'
     | '/app/insights'
@@ -505,6 +517,13 @@ declare module '@tanstack/react-router' {
       path: '/board'
       fullPath: '/app/board'
       preLoaderRoute: typeof AppBoardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/calendar': {
+      id: '/app/calendar'
+      path: '/calendar'
+      fullPath: '/app/calendar'
+      preLoaderRoute: typeof AppCalendarRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/current': {
@@ -816,6 +835,7 @@ const AppViewsViewIdRouteWithChildren = AppViewsViewIdRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppBoardRoute: typeof AppBoardRouteWithChildren
+  AppCalendarRoute: typeof AppCalendarRoute
   AppCurrentRoute: typeof AppCurrentRouteWithChildren
   AppInboxRoute: typeof AppInboxRoute
   AppInsightsRoute: typeof AppInsightsRoute
@@ -836,6 +856,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppBoardRoute: AppBoardRouteWithChildren,
+  AppCalendarRoute: AppCalendarRoute,
   AppCurrentRoute: AppCurrentRouteWithChildren,
   AppInboxRoute: AppInboxRoute,
   AppInsightsRoute: AppInsightsRoute,
@@ -867,12 +888,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}
