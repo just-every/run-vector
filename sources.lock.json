@@ -6789,7 +6789,7 @@
       "executable": false
     },
     "tests/e2e/public-development.mjs": {
-      "sha256": "ab59ff14771ccfdf239c59b7ac4c914d07a5be5ea01d3f3e6fbcd17c89bada8c",
+      "sha256": "ba9bf03c0c5697db49f57a16ee973171f6f7307baab1956c658b27a2db0b95be",
       "executable": false
     },
     "tests/e2e/public-site-runtime.mjs": {
