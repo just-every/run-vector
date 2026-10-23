@@ -1,14 +1,14 @@
 import { useIssueReferences } from '../../issue-references/ui/context';
 import { remarkIssueReferences } from '../../issue-references/ui/remark';
 import { Tooltip } from '../../../ui/tooltip';
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import { MarkdownTasks, TaskCheckbox } from "./task-checkbox";
 import remarkGfm from "remark-gfm";
 import { parseTasks } from "../../description-history/tasks";
 import { CodeBlock, HighlightedCode, remarkDetails, rehypeTaskIndices } from "./formatting";
 import { useMentionOperators } from "../../notifications/ui/mention-operators";
 import { remarkMentions } from "../../notifications/mention-markdown";
-import Markdown, { type Components } from "react-markdown";
+import Markdown, { type Components, type ExtraProps } from "react-markdown";
 
 // User text cannot introduce a scheme, a network-path reference, or an encoded
 // control character. The private routes below are the reviewed document routes;
@@ -98,7 +98,7 @@ function containsImage(node: MarkdownNode): boolean {
   return node.tagName === "img" || Boolean(node.children?.some(containsImage));
 }
 
-function MarkdownLink({href,children,title,node}:Parameters<NonNullable<Components['a']>>[0]) {
+function MarkdownLink({href,children,title,node}:ComponentProps<'a'> & ExtraProps) {
     const references=useIssueReferences();
     const reference=references.find(row=>href===`/app/issues/${row.identifier}`);
     const safe = safeUrl(href);

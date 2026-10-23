@@ -4901,7 +4901,7 @@
       "executable": false
     },
     "src/core/features/markdown/ui/markdown.tsx": {
-      "sha256": "6b1f9658269685990a93677be67dc3bca400266c60db4014bc46ab951d0b33d7",
+      "sha256": "d8c9dd77109532929695185877054636c0a59b5b7ae21caf5fd1e07c24292fab",
       "executable": false
     },
     "src/core/features/markdown/ui/task-checkbox.tsx": {
