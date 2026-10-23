@@ -94,6 +94,17 @@ export async function insightsJourney(page, context, runtime, output) {
       console.log(`REPORT-001 ${metric} ${theme} ${width}: public read, chart, table, axe and overflow PASS`);
     }
   }
+  await api("/settings/operators/invite", "POST", { email: "synthetic-vector-7@example.test", displayName: "synthetic-vector-7", role: "guest", teamIds: [team.id] });
+  const mail = runtime.sql("SELECT json_extract(message,'$.text') text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='synthetic-vector-7@example.test' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text;
+  const token = new URL(mail.match(/https?:\/\/[^\s]+/)[0]).searchParams.get("token");
+  const guest = await context.browser().newContext();
+  try {
+    const confirmation = await guest.request.post(base + "/auth/confirm", { headers: { Origin: base }, data: { token }, maxRedirects: 0 });
+    assert.equal(confirmation.status(), 303);
+    for (const path of ["/app/insights", "/api/insights", "/api/insights.csv"])
+      assert.equal((await guest.request.get(base + path)).status(), 403, "Guest refused " + path);
+  } finally { await guest.close(); }
+  console.log("REPORT-001 Guest document, data and CSV doors: 403 PASS");
   assert.deepEqual(errors, [], "no hydration mismatch or page errors");
   page.off("console", consoleError); page.off("pageerror", pageError);
   await api("/settings/appearance", "PATCH", { theme: "system" });

@@ -30,3 +30,10 @@
   .insights-bar span { grid-column: 1 / -1; }
   .insights-table table { min-width: 650px; }
 }
+.insights-table table { table-layout: auto; }
+.insights-table th { white-space: nowrap; }
+@media (max-width: 46rem) {
+  /* New report destinations keep their labels and touch targets; the navigation
+     scrolls within its own viewport instead of squeezing the app's text. */
+  .app-mobile-nav { overflow-x: auto; grid-auto-columns: minmax(62px, 1fr); }
+}
