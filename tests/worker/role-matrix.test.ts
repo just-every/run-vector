@@ -273,8 +273,8 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
 
   const releaseProbe=releaseMatrixProbes(w),releaseCells=contractMatrix.get(releaseProbe.action)!;
   expect(releaseCells).toBeDefined();
-  for(const who of ['owner','admin','lead','member','guest'] as Kind[]){
-    const send=await releaseProbe.session(who,w.people[who],w.team.id);
+  for(const who of ['owner','admin','lead','member','guest'] as Kind[])for(const surface of ['session','api'] as const){
+    const send=await releaseProbe[surface](who,w.people[who],w.team.id);
     const want=promised(releaseCells[column[who]],who,{settings:'team_owners',planning:'team_owners',memberInvites:false,inTeam:true});
     const before=want==='allow'?null:await snapshot(watched),response=await send();
     expect(outcome(response.status),'release '+who).toBe(want);
