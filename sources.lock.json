@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "9b4a0226416b89b7945a86932907220469cbee8e99e2ed984f0baea879505961",
+      "sha256": "9df144f0ebf9db0497ad6427e56aa20ee9f6753336546383b5d488c67eb500ea",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0c6195663ce8ba6948538925fe677920d2a81c6500274621a0dacfa32140e212",
+      "sha256": "738120d1e58e193bfdb50d37d97d2b94a122c08c90f7c1d9ba3e78fd2bccab23",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "e1f84edcbbbfa61431efdb2f1b1c86566aeba310e3c533e8121aa11f9c91d2c4",
+      "sha256": "3a823343902a2896c2675bc12116412c4acc6a3778b126a27b5258b6fb9a869e",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -3525,11 +3525,11 @@
       "executable": false
     },
     "src/core/features/calendar-view/calendar.css": {
-      "sha256": "888f220600c09912b1b27827fb0e76d5f77eaa34f7e4b833f80a08eb780bc8cd",
+      "sha256": "9f8d03e6d163f5779b8cb588eb0ed4da83d21f6fa835e8cf122fcef6a91813af",
       "executable": false
     },
     "src/core/features/calendar-view/page.tsx": {
-      "sha256": "4576a2c893882f84a5a0ff9f42d93b7a7e9a8a2b88923b13f69b2221a436f325",
+      "sha256": "861a2e22c668845e177786b3c40ca15577fef19ffe1875ae6d2846dd1a1b51e8",
       "executable": false
     },
     "src/core/features/calendar-view/read.ts": {
@@ -6181,7 +6181,7 @@
       "executable": false
     },
     "tests/e2e/calendar-month-journey.mjs": {
-      "sha256": "5260306ec0c548f60119865be6d117bea288d29c3bf629c7a3e2ea55a79cb34f",
+      "sha256": "b76d08eea3ccabe8f8396901f82e1714052d63252e39f01cb0d94d4e2adadab2",
       "executable": false
     },
     "tests/e2e/collaboration-delivery-fixture.mjs": {
