@@ -17,6 +17,8 @@ it('[ISSUE-017 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const reactionComment=(await reactionReply.json() as {id:string}).id;
  for(const [subjectId,emoji] of [['description','👍'],[reactionComment,'🎉']])expect((await f.call('/issues/'+f.issue.identifier+'/reactions','PUT',{subjectId,emoji})).status).toBe(200);
  const reactionBefore=await (await f.call('/issues/'+f.issue.identifier+'/reactions')).json();
+ const referenceResponse=await f.call('/issues','POST',{teamId:f.team.id,title:'Portable reference source',description:'See '+f.issue.identifier});expect(referenceResponse.status).toBe(201);const referenceSource=await referenceResponse.json() as {identifier:string};
+ const referenceBefore=await (await f.call('/issues/'+referenceSource.identifier+'/references')).json();
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
  const milestone=(await milestoneResponse.json() as any).milestones[0];
  const issueBefore=await (await f.call('/issues/'+f.issue.identifier)).json() as {version:number};
@@ -72,6 +74,7 @@ it('[ISSUE-017 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore','vector_slack_member_links','vector_slack_request_keys'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='issue_reactions')?.count).toBe(2);
+ expect(records[0].kind==='manifest' && (records[0].tables.find(t=>t.name==='issue_reference_subjects')?.count??0)>0).toBe(true);
  const archiveText=JSON.stringify(records);
  for(const credential of [slackEdge.token,slackEdge.webhook,signingSecret,'UARCHIVE1',source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
@@ -98,6 +101,7 @@ it('[ISSUE-017 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
  const restoredReactions=await targetCall('/api/issues/'+f.issue.identifier+'/reactions','GET',undefined,historical);expect(restoredReactions.status).toBe(200);expect(await restoredReactions.json()).toEqual(reactionBefore);
+ const restoredReferences=await targetCall('/api/issues/'+referenceSource.identifier+'/references','GET',undefined,historical);expect(restoredReferences.status).toBe(200);expect(await restoredReferences.json()).toEqual(referenceBefore);
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
  const credentialState=async()=>await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json() as CredentialState;
  const restoredCredentials=await credentialState();

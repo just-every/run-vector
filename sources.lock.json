@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f23eb3bd8165452fbcdaf25d259038e872e00064200d81c199c2753b995d1f4c",
+      "sha256": "88fcac7c0be6b573c0d88342a7480b926d91af2cd11516f0155d21eacd92d03e",
       "executable": false
     },
     "DEMO.md": {
@@ -6265,7 +6265,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip-fixture.mjs": {
-      "sha256": "e13a6de3bc914aedb84a9f25642eb9e363133053e6c4a8cc752007744a58e548",
+      "sha256": "359a0d58bf9615ffeb5bd2820eca1879f7dfeebe7d94b9c6e5a5a7f16b19816e",
       "executable": false
     },
     "tests/e2e/data-roundtrip-history.mjs": {
@@ -6789,7 +6789,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "a17e0a05f9a6786fe53026916c92b8b86e6051c9e53e355d137fdd07d4acce57",
+      "sha256": "7466288b8e74d8fb73519574fc05095a53070ad67d88ead8ac039801d2b5aa9d",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
