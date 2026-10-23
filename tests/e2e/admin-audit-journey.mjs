@@ -9,6 +9,8 @@ export async function exerciseAuditView({ page, runtime, capture, clause, eviden
     assert.ok(entry, 'the preceding native role journey produced an audit event');
     await beforePrivateNavigation(page, runtime.base + '/app/settings');
     await page.goto(runtime.base + '/app/settings');
+    // Following the link leaves Settings; its reads finish first, as before any private navigation.
+    await beforePrivateNavigation(page, runtime.base + '/app/settings/audit');
     await page.getByRole('link', { name: 'Audit log', exact: true }).click();
     const panel = page.locator('#audit');
     await panel.getByRole('heading', { name: 'Audit log', exact: true }).waitFor();
