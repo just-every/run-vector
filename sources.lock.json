@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "41273016ae28b00dcfd265f111950f54c28164df11ad87fc2949ed78d14aefdb",
+      "sha256": "a4f955fe18063e9517a90214e7f279cfd147c8fe33037a6565d629e2eb1119aa",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "505251ef4c65407c7f4af0db4cf8d7c2539c648108454ff743926dab875c5c49",
+      "sha256": "13cd03deac260ce81aae8e4fc04932632761a28442935e335a00c96eefff2d28",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "4ef794493f32c038de522fe168c30d55fe0da6aa66277723749d37e5633c4f0e",
+      "sha256": "a97903f7c46979fcd0e07dc4b7c4a9206107c234948e7c467aab2fbb7aeee2a9",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -3649,11 +3649,11 @@
       "executable": false
     },
     "src/core/features/dashboards/dashboards.css": {
-      "sha256": "7896ae1e3ef99ef7f871625471c6a1f17359e75dfe25c17126bd6c914c84fb48",
+      "sha256": "84c70765b5a5ad46a7de50a12e8c49231dbca28de9faa62be89849c0156dd91f",
       "executable": false
     },
     "src/core/features/dashboards/page.tsx": {
-      "sha256": "088659108340634ef159f003b03622aa7d8a8a4415ad429440e770992b57e04f",
+      "sha256": "9a02b4e3a362c51c52e5b8c086690abc25e81b4263fa1d876e495e662ebc3e5a",
       "executable": false
     },
     "src/core/features/dashboards/routes.ts": {
@@ -6517,7 +6517,7 @@
       "executable": false
     },
     "tests/e2e/dashboards-journey.mjs": {
-      "sha256": "bd04d42528b8c8d6724a0002eb721a8f78866915920361af86b2ec43d2330c71",
+      "sha256": "bd999a2afae3ba70268a4d6fcd44b6a324453a4e81e6fb086a813e6916c28120",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {

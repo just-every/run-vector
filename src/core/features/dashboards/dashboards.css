@@ -8,3 +8,8 @@
 .dashboard-count strong { font-size: 2.5rem; line-height: 1.2; }
 .dashboard-widget h3 { margin-top: 0; }
 .dashboard-widget ul { margin-bottom: 20px; }
+
+.dashboard-widget .insights-table table { min-width: 620px; table-layout: auto; }
+.dashboard-widget .insights-table :is(th,td) { white-space: nowrap; }
+.dashboard-editor { width: 100%; }
+.dashboard-editor > fieldset { width: 100%; }
