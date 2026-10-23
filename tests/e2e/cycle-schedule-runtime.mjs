@@ -30,6 +30,25 @@ try {
     await context.request.get(runtime.base + "/api/settings/administration")
   ).json();
   const team = state.teams[0];
+  // The schedule form is keyed on the saved schedule, so the read that follows
+  // a save remounts it with the saved values as its defaults. Wait for that
+  // render: the filled values, and at 390 the "Scheduled" heading left by the
+  // 1440 save, are already on the form it replaces.
+  const savedSchedule = (values) =>
+    page.waitForFunction(
+      ({ name, values }) => {
+        const form = document.querySelector(`form[aria-label="${name}"]`);
+        return (
+          !!form &&
+          !form.querySelector("fieldset").disabled &&
+          Object.entries(values).every(
+            ([field, value]) =>
+              form.elements.namedItem(field).defaultValue === value,
+          )
+        );
+      },
+      { name: "Cycle schedule " + team.name, values },
+    );
   const create = await context.request.post(runtime.base + "/api/issues", {
     headers: { Origin: runtime.base },
     data: {
@@ -60,6 +79,7 @@ try {
       .getByRole("button", { name: "Save cycle schedule", exact: true })
       .click();
     assert.equal((await savedResponse).status(), 200);
+    await savedSchedule({ weeks: "2", cooldown: "1", upcoming: "3" });
     await form
       .getByRole("button", { name: "Save cycle schedule", exact: true })
       .waitFor({ state: "visible" });
@@ -92,6 +112,7 @@ try {
       .getByRole("button", { name: "Save cycle schedule", exact: true })
       .click();
     assert.equal((await response).status(), 200);
+    await savedSchedule({ weeks: "1", cooldown: "0" });
     await page.waitForFunction(
       () =>
         document.querySelector('input[name="weeks"]')?.value === "1" &&
