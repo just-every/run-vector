@@ -215,7 +215,7 @@ expiry, erasure and archive exclusion) are not implemented. Complete API
 operations for attachments, relations, labels, teams, workflow states, saved
 views, notifications and members, cycle update/delete and issue deletion remain
 owed. Attachment bytes stay behind the same-origin cookie file door: API-001
-still forbids private-file access by bearer. The five not-built objects and a
+still forbids private-file access by bearer. The remaining not-built objects and a
 real private-team refusal under ROLE-002 remain owed. Native cookie issue
 deletion, import erasure and its receipts are unchanged.
 

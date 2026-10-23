@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3edad294a369894dc166ecac271228114c77f714e9e2b9ad9fa558849e8bcb76",
+      "sha256": "f6278b70213294ea5214d2fd0c3074f847b0ff9e0df192204a689c57cf37ee49",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "b424fa4ad619d7b6e686f3f8d9e8526ac6ced08e23517d4b76187f9cfc165976",
+      "sha256": "5a2369fd202761aca12825fb22551bd8162a09888e96feeab2582d6a7f12eddb",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -2469,7 +2469,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "032e06512f37c1dcdea9c1ad4900fc52b1dd82d9e12f77b774b680ac10c16b3f",
+      "sha256": "557cbfbb17e74524db0cf06ee5ba0b977f24cacb955e794f4a0e5a4226384f69",
       "executable": false
     },
     "schema/importers.schema.json": {
