@@ -1,3 +1,4 @@
+import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
@@ -226,6 +227,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addInsightRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 
