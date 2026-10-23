@@ -5721,7 +5721,7 @@
       "executable": false
     },
     "src/core/ui/tooltip.tsx": {
-      "sha256": "e6542f8bfa96050e4b68cc7cc1dd27ce6bd5f6d14d33f92d252d25b3147b4da3",
+      "sha256": "15ac6985fc74824cab73aa757fc07e36ea466e0d33978872ec3817bccbdeb308",
       "executable": false
     },
     "src/demo.ts": {
@@ -6033,7 +6033,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-reactions.mjs": {
-      "sha256": "89259e8be0ee72f72c6e2e440b25fa5186d3450d17b71b1468f521666293b71a",
+      "sha256": "8bd259884dcf37d3f9d05ab3ee7617b691718244ceb77d73e19282722b9bb799",
       "executable": false
     },
     "tests/e2e/collaboration-reads.mjs": {

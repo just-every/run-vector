@@ -24,9 +24,15 @@ export function Tooltip({ label, children }: { label: string; children: ReactEle
   useEffect(() => () => clear(), []);
   useLayoutEffect(() => {
     if (!open || !anchor.current || !popup.current) return;
-    const target = anchor.current.getBoundingClientRect(), box = popup.current.getBoundingClientRect();
-    setPosition({ left: Math.max(8, Math.min(target.left + target.width / 2 - box.width / 2, innerWidth - box.width - 8)),
-      top: target.bottom + box.height + 8 < innerHeight ? target.bottom + 6 : Math.max(8, target.top - box.height - 6) });
+    const place = () => {
+      if (!anchor.current || !popup.current) return;
+      const target = anchor.current.getBoundingClientRect(), box = popup.current.getBoundingClientRect();
+      setPosition({ left: Math.max(8, Math.min(target.left + target.width / 2 - box.width / 2, innerWidth - box.width - 8)),
+        top: target.bottom + box.height + 8 < innerHeight ? target.bottom + 6 : Math.max(8, target.top - box.height - 6) });
+    };
+    place();
+    window.addEventListener('resize', place);window.addEventListener('scroll', place, true);
+    return () => { window.removeEventListener('resize', place);window.removeEventListener('scroll', place, true); };
   }, [open, label]);
   return <span className="tooltip-anchor" ref={anchor}
     onPointerEnter={() => { clear(); timer.current = setTimeout(() => setOpen(true), 300); }}
