@@ -3285,7 +3285,7 @@
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
-      "sha256": "fd342d9244422854461f3dd4740bf35fea0b6a2cdd6482f7362a7c6b448e537b",
+      "sha256": "24ad740a853bb463042ca5d19fc0389321e804d908ee55858140ff201a08fde7",
       "executable": false
     },
     "src/core/app/worker.ts": {
@@ -9289,7 +9289,7 @@
       "executable": false
     },
     "vite.config.ts": {
-      "sha256": "0a0b6c6927c52c1ccf0d61af4f435708fd71bf2c1f079d75e194617fa28ff2a8",
+      "sha256": "641522844141f2ae83c8a015a3cc8d5fd2d17c27f19a1aec285c8502587af4f5",
       "executable": false
     },
     "vite.site.config.ts": {

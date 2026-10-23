@@ -32,6 +32,7 @@ const allow = ['src', 'public', 'node_modules', 'vendor/base/demo', 'vendor/base
 
 export default defineConfig(({ command }) => ({
   server: { fs: { strict: true, allow, deny } },
+  ...(command === 'serve' ? { define: { __VECTOR_DEV_ORIGIN__: JSON.stringify(process.env.RER_DEV_ORIGIN ?? '') } } : {}),
   plugins: [
     demoSockets(),
     requireLocalOrigin,
@@ -46,7 +47,6 @@ export default defineConfig(({ command }) => ({
               main: './src/core/app/worker.dev.ts',
               vars: {
                 ...config.vars,
-                ...local('RER_DEV_ORIGIN', 'APP_ORIGIN', localOrigin()),
                 ...local('RER_DEMO'),
                 ...local('RER_DEMO_EXPIRES'),
                 ...(process.env.RER_DEMO === '1' ? { SEED_SAMPLE_DATA: 'false' } : {}),

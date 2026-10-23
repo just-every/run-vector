@@ -12,4 +12,15 @@ import type { WorkerBindings } from './bindings'
 // Vector names its origin APP_ORIGIN and marks a local runtime by MAIL_MODE; the dev layer reads the common names.
 const local = (env: WorkerBindings) => ({ ...env, AUTH_ORIGIN: env.APP_ORIGIN, AUTH_LOCAL: env.MAIL_MODE === 'local-outbox' ? 'true' : 'false' })
 
-export default withDevIdentity<WorkerBindings, typeof documentWorker>(documentWorker, { bindings: local as (env: WorkerBindings) => WorkerBindings, config: authConfig, personas: devPersonas })
+declare const __VECTOR_DEV_ORIGIN__: string
+
+const devWorker = withDevIdentity<WorkerBindings, typeof documentWorker>(documentWorker, { bindings: local as (env: WorkerBindings) => WorkerBindings, config: authConfig, personas: devPersonas })
+
+// Apply the selected origin after Wrangler resolves .dev.vars, before either dev auth or host admission.
+export default {
+  ...devWorker,
+  fetch(request: Request, env: WorkerBindings, execution: ExecutionContext) {
+    const bindings = __VECTOR_DEV_ORIGIN__ ? { ...env, APP_ORIGIN: __VECTOR_DEV_ORIGIN__ } : env
+    return devWorker.fetch(request, bindings, execution)
+  },
+}
