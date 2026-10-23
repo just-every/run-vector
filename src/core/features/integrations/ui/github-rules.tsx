@@ -1,14 +1,14 @@
 import './github-rules.css';
 import {useState} from 'react';
 import {z} from 'zod';
-import {fetchJson,useApiResource} from '../../../app/api-client';
+import {ApiError,fetchJson,useApiResource} from '../../../app/api-client';
 const ruleSchema=z.object({trigger:z.enum(['draft','review','merged','deploy']),statusId:z.string().nullable(),allowReopen:z.number(),version:z.number(),environment:z.string()});
 const teamSchema=z.object({id:z.string(),name:z.string(),statuses:z.array(z.object({id:z.string(),name:z.string()})),rules:z.array(ruleSchema)});
 const schema=z.object({teams:z.array(teamSchema)});
 const names={draft:'Draft PR opened',review:'Review requested',merged:'PR merged',deploy:'Production deployed'};
 function Rule({team,rule,onSaved}:{team:z.infer<typeof teamSchema>;rule:z.infer<typeof ruleSchema>;onSaved:()=>void}){
- const [status,setStatus]=useState(rule.statusId??''),[environment,setEnvironment]=useState(rule.environment),[reopen,setReopen]=useState(Boolean(rule.allowReopen)),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
- async function save(){setBusy(true);setMessage('');try{await fetchJson('/api/settings/teams/'+team.id,z.object({saved:z.boolean()}),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({githubAutomation:{trigger:rule.trigger,statusId:status||null,allowReopen:reopen,expectedVersion:rule.version,environment}})});setMessage('Rule saved.');onSaved();}catch(e){setMessage(e instanceof Error?e.message:'Rule could not be saved.');}finally{setBusy(false);}}
+ const [version,setVersion]=useState(rule.version),[status,setStatus]=useState(rule.statusId??''),[environment,setEnvironment]=useState(rule.environment),[reopen,setReopen]=useState(Boolean(rule.allowReopen)),[message,setMessage]=useState(''),[busy,setBusy]=useState(false);
+ async function save(){setBusy(true);setMessage('');try{const receipt=await fetchJson('/api/settings/teams/'+team.id,z.object({saved:z.boolean(),rule:ruleSchema}),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({githubAutomation:{trigger:rule.trigger,statusId:status||null,allowReopen:reopen,expectedVersion:version,environment}})});setVersion(receipt.rule.version);setMessage('Rule saved.');onSaved();}catch(e){setMessage(e instanceof ApiError&&e.status===409?'This rule changed. Reload the page before saving again.':e instanceof Error?e.message:'Rule could not be saved.');}finally{setBusy(false);}}
  return <form onSubmit={event=>{event.preventDefault();void save();}}><fieldset disabled={busy}><legend>{names[rule.trigger]}</legend><label htmlFor={team.id+'-'+rule.trigger}>{team.name} {names[rule.trigger]} status</label><select id={team.id+'-'+rule.trigger} value={status} onChange={e=>setStatus(e.target.value)}><option value="">Do not move</option>{team.statuses.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select>{rule.trigger==='deploy'&&<label>{team.name} production environment<input value={environment} required maxLength={200} onChange={e=>setEnvironment(e.target.value)}/></label>}<label className="github-rule-reopen"><input type="checkbox" checked={reopen} onChange={e=>setReopen(e.target.checked)}/>Allow this rule to reopen completed issues</label><button type="submit">Save {names[rule.trigger]} rule</button>{message&&<p role="status">{message}</p>}</fieldset></form>;
 }
 export function GithubRules(){

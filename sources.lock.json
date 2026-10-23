@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "7be1c79ed5d09a55d6c4b6b93760ebf427ada3dd6af359ce56f02f9d843cff71",
+      "sha256": "699709ce7ccf10ed6bf2e84b8634bcea17e4158cbf739f8de22f72d5d2f813d2",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b1557f42f68d11090ff2d2fac4b722a4b954fd2104f5d5ae0857baa3583ae224",
+      "sha256": "e2566be7d3315577f2e393a06a31c034077eaac1ae2e8e215c4f7ce68cf6ca51",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "f3c56fff751b5a3a102d40ef65b0b7ba830c4787575a396cc245a839faa0706e",
+      "sha256": "e9fe3843e2e84719b27de45f0f8de07b56f18642fafe71507a48ed4e19455b51",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "1ae95e5b81f76c7382d05b91277c4f6bf41b41caeaebb8cab9492efdf4367196",
+      "sha256": "5a767d92015118fc8094efbaa3919c0ea7890aaa4fc97919def4d0e86fc26a3f",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4377,7 +4377,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.tsx": {
-      "sha256": "60c5f117e104fde28b87a7b80682bb9f115ee826e609094e6710bd9a674cd110",
+      "sha256": "0a1872658781957a4f501cdf7039e8e110f077f9db7b73d2df1bdeebc0ce6b69",
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
