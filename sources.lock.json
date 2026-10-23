@@ -7125,7 +7125,7 @@
       "executable": false
     },
     "tests/worker/reference-scenario.ts": {
-      "sha256": "de6904e591258ffa1a4b63c3bb68b8624bde943172fe8db8e0bff5f7979b70a7",
+      "sha256": "0ad7d2ba21d9222ba4f4fdd51f5c5d559422d6d3ec6cfb00531e4df08c80c352",
       "executable": false
     },
     "tests/worker/related-issues.test.ts": {

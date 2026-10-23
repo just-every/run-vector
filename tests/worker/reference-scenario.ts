@@ -26,4 +26,7 @@ export async function referenceScenario(){
  expect((await read()).version).toBe(before.version+1);
  const code=await f.create({description:`\`${target.identifier}\` and [an external label](https://example.test/${target.identifier}) and &#86;EC-1 and SYNTHETIC_VECTOR-999999.`});
  expect(await json(await f.call(`/issues/${code.identifier}/references`))).toEqual({references:[]});
+ const sourceNow=await json<Issue>(await f.call(path));await json(await f.call(path,'DELETE',{expectedVersion:sourceNow.version,confirmed:true}));
+ expect(backlinks(await read())).toHaveLength(0);expect((await read()).version).toBe(target.version+1);
+
 }
