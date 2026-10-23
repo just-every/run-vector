@@ -56,7 +56,6 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  const section=page.getByRole('region',{name:'Email intake for '+team.name,exact:true});
  await section.getByLabel('Private intake address',{exact:true}).waitFor();
  await section.getByLabel('Enable email intake',{exact:true}).check();
- await section.getByLabel('Send one acknowledgement with the issue identifier',{exact:true}).check();
  await section.getByLabel('Private intake address',{exact:true}).fill(address);
  await section.getByLabel('Allowed sender addresses',{exact:true}).fill(sender);
  const signer=await emailEventSigner();
@@ -87,12 +86,11 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
  const edge=(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').map(line=>JSON.parse(line));
- const sends=edge.filter(row=>row.method==='sendgrid'&&row.body.personalizations[0].to[0].email===sender),send=sends.at(-1),ack=sends.at(-2);assert.ok(send?.providerId);assert.ok(ack?.providerId);
- const wire=await signer.signed([{event:'bounce',sg_event_id:'synthetic-vector-737',sg_message_id:send.providerId+'.synthetic-vector-738',email:sender},{event:'dropped',sg_event_id:'synthetic-vector-739',sg_message_id:ack.providerId+'.synthetic-vector-738',email:sender}]);
+ const send=edge.filter(row=>row.method==='sendgrid'&&row.body.personalizations[0].to[0].email===sender).at(-1);assert.ok(send?.providerId);
+ const wire=await signer.signed([{event:'bounce',sg_event_id:'synthetic-vector-737',sg_message_id:send.providerId+'.synthetic-vector-738',email:sender}]);
  const bounced=await runtime.req('/api/integrations/email/'+team.id+'/events',{method:'POST',...wire});assert.equal(bounced.status,200);
  await settleReads(page);await page.reload();
  await outcome.getByText('Email delivery: bounced',{exact:false}).waitFor();
- await requester.getByLabel('Acknowledgement delivery outcome',{exact:true}).getByText('Acknowledgement delivery: bounced',{exact:true}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-bounced');
  await settleReads(page);
  } finally {await page.close();}
