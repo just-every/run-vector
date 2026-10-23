@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react';
-import { useViewerTime } from '../../../app/viewer-time';
+import { useViewerTime, viewerTimeSchema } from '../../../app/viewer-time';
 import { fetchJson } from '../../../app/api-client';
-import { settingsSchema } from '../schema';
 import './personal-time.css';
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 export function PersonalTimePanel() {
@@ -13,12 +12,12 @@ export function PersonalTimePanel() {
   async function save(event: FormEvent) {
     event.preventDefault(); setBusy(true); setMessage('');
     try {
-      const updated = await fetchJson('/api/settings/personal-time', settingsSchema, {
+      const updated = await fetchJson('/api/settings/personal-time', viewerTimeSchema, {
         method: 'PATCH', headers: {'content-type':'application/json'},
         body: JSON.stringify({timezone: values.timezone || null, workingHoursStart: values.workingHoursStart,
           workingHoursEnd: values.workingHoursEnd, workingDays: values.workingDays}),
       });
-      clock.publish({...updated.personalTime, workspaceTimezone:updated.workspace.timezone, reminderTime:updated.workspace.reminderTime});
+      clock.publish(updated);
       setDraft(null); setMessage('Your time preferences are saved.');
     } catch (error) { setMessage(error instanceof Error ? error.message : 'Your time preferences could not be saved.'); }
     finally { setBusy(false); }

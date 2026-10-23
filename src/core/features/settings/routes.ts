@@ -63,10 +63,8 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       );
     try {
       await updatePersonalTime(c.env.DB, c.get("operatorId"), parsed.data);
-      return c.json({
-        ...(await readSettings(c.env.DB, c.get("operatorId"))),
-        invitationDelivery: localMailEnabled(c.env) ? "local" : "email",
-      });
+      // Every role saves its own time; the answer is that time, never the directory.
+      return c.json(await readPersonalTime(c.env.DB, c.get("operatorId")));
     } catch (error) {
       if (error instanceof SettingsError)
         return c.json(

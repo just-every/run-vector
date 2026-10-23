@@ -2,6 +2,7 @@ import { env } from "cloudflare:workers";
 import { expect, it, vi } from "vitest";
 import { contractWith } from "../contract-tags";
 import { actor, bindings, invite, request } from "./base-auth-fixture";
+import { setupAdministration } from "./administration-fixture";
 import { scheduled } from "../../src/core/app/scheduled";
 import { mentionToken } from "../../src/core/features/notifications/mention-token";
 import {
@@ -39,11 +40,9 @@ contractWith(
       const response = await request(path, "PATCH", values, cookie);
       expect(response.status).toBe(200);
       return (await response.json()) as {
-        personalTime: {
-          timezone: string | null;
-          effectiveTimezone: string;
-          workingDays: number[];
-        };
+        timezone: string | null;
+        effectiveTimezone: string;
+        workingDays: number[];
       };
     };
     expect(await read(f.cookie)).toMatchObject({
@@ -54,12 +53,10 @@ contractWith(
     expect((await request(path, "PATCH", defaults)).status).toBe(401);
     const preferences = { ...defaults, timezone: "America/Los_Angeles" };
     expect(
-      (
-        await save(pacificCookie, {
-          ...preferences,
-          workingDays: [5, 3, 1, 4, 2],
-        })
-      ).personalTime,
+      await save(pacificCookie, {
+        ...preferences,
+        workingDays: [5, 3, 1, 4, 2],
+      }),
     ).toMatchObject({
       timezone: preferences.timezone,
       effectiveTimezone: preferences.timezone,
@@ -357,3 +354,16 @@ async function digestClockScenario(
     network.mockRestore();
   }
 }
+
+it("a Guest saving their time gets back only their own time, never members outside their teams", async () => {
+  const f = await setupAdministration();
+  const outsiderEmail = "outside-member@personal-time.test", outsider = await actor(await invite(outsiderEmail, f.cookie));
+  const guestCookie = await invite("time-guest@personal-time.test", f.cookie), guest = await actor(guestCookie);
+  const team = (await f.mutate("/settings/teams", "POST", { name: "Guest time", identifierPrefix: "GTIME" })).teams.find((t) => t.name === "Guest time")!;
+  expect((await f.call(`/settings/operators/${guest}/role`, "PATCH", { role: "guest", teamIds: [team.id] })).status).toBe(200);
+  const saved = await request("/api/settings/personal-time", "PATCH", { timezone: null, workingHoursStart: "08:00", workingHoursEnd: "16:00", workingDays: [1, 2, 3, 4, 5] }, guestCookie);
+  expect(saved.status).toBe(200);
+  const body = await saved.text();
+  for (const hidden of [outsider, outsiderEmail, "outside-member"]) expect(body).not.toContain(hidden);
+  expect(JSON.parse(body)).toEqual(await (await request("/api/settings/personal-time", "GET", undefined, guestCookie)).json());
+});

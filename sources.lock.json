@@ -5417,7 +5417,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "8414526de602aac86a9400fb37a014749f9909be712e847d56af5a1e0046d1f0",
+      "sha256": "05c71916eb376b65b53b99f1dc5e05f4fd564ab7646dbb822d9c9a1568b31f83",
       "executable": false
     },
     "src/core/features/settings/schema.ts": {
@@ -5461,7 +5461,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/personal-time-panel.tsx": {
-      "sha256": "5befa42319184803cb3069d7792c2a175240400f8e53d31b09ade445012e6088",
+      "sha256": "c95a68fd88d68ed7372bc3950e089489c957957e9805f73ecfb85bfc7bd0e26b",
       "executable": false
     },
     "src/core/features/settings/ui/personal-time.css": {
@@ -7065,7 +7065,7 @@
       "executable": false
     },
     "tests/worker/personal-time.test.ts": {
-      "sha256": "167911af0f1f1932d194892f71c01ed520c372ed5493c8fe9f6dbcc8813d78eb",
+      "sha256": "f82d0fef77e249a81b65918746fcbb7f13fab3b286c9a3f5440d1f02a311e12d",
       "executable": false
     },
     "tests/worker/plane-huly-shortcut-import.test.ts": {
