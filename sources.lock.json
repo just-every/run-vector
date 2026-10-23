@@ -4689,7 +4689,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/activity-changes.ts": {
-      "sha256": "4c580ef8e23b5ace655e901a1c3933997e9759878e676a2da18a72b470141aa7",
+      "sha256": "2e4d0046ad9ce86eebe1c68e7826100c5d7aae7fc41cae9c2010a4b0fb90605a",
       "executable": false
     },
     "src/core/features/issues/ui/data.ts": {
@@ -5965,7 +5965,7 @@
       "executable": false
     },
     "src/routes/app.releases.$releaseId.tsx": {
-      "sha256": "35cda6f0e56097597681c48146a0e0cd6d0499c33bbfd92c82a396c842bc7c70",
+      "sha256": "fa85d4e0a2e27bd2bec3663bef474aca84ef8611637c8de309fde2b8ba614100",
       "executable": false
     },
     "src/routes/app.releases.index.tsx": {
