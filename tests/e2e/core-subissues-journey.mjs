@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { request } from "@playwright/test";
 import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
 
 export async function subissuesJourney(
@@ -8,15 +9,25 @@ export async function subissuesJourney(
   record = async () => {},
 ) {
   async function api(path, method = "GET", data) {
-    const response = await context.request.fetch(base + "/api" + path, {
-      method,
-      // Browser interaction can outlive the local Worker's idle socket. Own a
-      // fresh fixture connection, as core-runtime's Node request helper does.
-      headers: { Origin: base, Connection: "close" },
-      ...(data === undefined ? {} : { data }),
+    // Earlier journeys leave keep-alive sockets in this context's request
+    // pool, and the local Worker closes an idle socket after 5 s; a request
+    // sent on one fails with "socket hang up" whatever its own Connection
+    // header. Own and dispose a client per call, as the project risk journey
+    // does, so no request reuses a pooled socket.
+    const client = await request.newContext({
+      storageState: await context.storageState(),
     });
-    assert(response.ok(), `${method} ${path}: ${response.status()}`);
-    return response.json();
+    try {
+      const response = await client.fetch(base + "/api" + path, {
+        method,
+        headers: { Origin: base },
+        ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()}`);
+      return await response.json();
+    } finally {
+      await client.dispose();
+    }
   }
   const visit = async (identifier) => {
     await beforePrivateNavigation(page, base + "/app/issues/" + identifier);
