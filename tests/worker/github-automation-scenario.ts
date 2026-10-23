@@ -80,6 +80,10 @@ export async function exerciseGithubDeployments(f:Awaited<ReturnType<typeof setu
  const detail=await(await f.call('/issues/'+issue.identifier)).json() as {version:number;deployments:{environment:string;deployedAt:string}[]};
  expect(detail.deployments.map(d=>d.environment).sort()).toEqual(['PrOdUcTiOn','staging']);
  expect(detail.deployments.every(d=>d.deployedAt==='2026-10-11T12:00:00.000Z')).toBe(true);
+ const credential=await f.issueToken(['issues:read'],'synthetic-vector-1732');
+ const publicIssue=await(await f.api(credential.token,'/issues/'+issue.identifier)).json();
+ expect(publicIssue).toMatchObject({branchName:issue.identifier.toLowerCase()+'-synthetic-vector-1730-deployed-work',deployments:detail.deployments});
+
  expect((await send(production,delivery,false,'deployment_status')).status).toBe(200);
  expect((await send(production,crypto.randomUUID(),false,'deployment_status')).status).toBe(200);
  expect((await(await f.call('/issues/'+issue.identifier)).json()) as object).toMatchObject({version:detail.version});
