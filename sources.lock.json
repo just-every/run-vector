@@ -3509,7 +3509,7 @@
       "executable": false
     },
     "src/core/features/calendar-feeds/page.tsx": {
-      "sha256": "d3b8bff336de53e31da70ad78ded1b2c8e7a0f4b77e1b6ddc062d3183e7e5628",
+      "sha256": "e57ebf033618a356c6fd5e04cf40db9709ac63bfbdcbca3edf2c9db81272c5e6",
       "executable": false
     },
     "src/core/features/calendar-feeds/routes.ts": {
@@ -3529,7 +3529,7 @@
       "executable": false
     },
     "src/core/features/calendar-view/page.tsx": {
-      "sha256": "861a2e22c668845e177786b3c40ca15577fef19ffe1875ae6d2846dd1a1b51e8",
+      "sha256": "9c2b23709881da2a7a6dca8702b54ef391435dbbdcc5e4e7631571a5b8f9904a",
       "executable": false
     },
     "src/core/features/calendar-view/read.ts": {
