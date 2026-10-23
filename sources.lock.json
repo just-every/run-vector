@@ -5305,7 +5305,7 @@
       "executable": false
     },
     "src/core/features/project-templates/controls.tsx": {
-      "sha256": "bff4b6327268e73e64896a41d3cd253773c49d3d68e732505941b094d241c5ad",
+      "sha256": "7c16626ae2f7ff269fd07ffa96c37ffe9778c2cb73bba0ad6fc5b1f0d18b1125",
       "executable": false
     },
     "src/core/features/project-templates/routes.ts": {
@@ -7261,7 +7261,7 @@
       "executable": false
     },
     "tests/worker/project-template-proof.ts": {
-      "sha256": "4d3c7ae6ea22ae5af5d86a69c59f5893ff911ec0f30f5dea7cc4d0902bbe0525",
+      "sha256": "234f8f58973fbcbd7b143ef6b4aa7c526811411ee8ad9d4d68d76e92b9375988",
       "executable": false
     },
     "tests/worker/recovery.test.ts": {

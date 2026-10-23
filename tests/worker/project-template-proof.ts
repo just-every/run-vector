@@ -30,6 +30,6 @@ export async function exerciseProjectTemplates(f:Awaited<ReturnType<typeof setup
  expect((await call('/project-templates/'+owned.id,'DELETE',{expectedVersion:2})).status).toBe(200);
  expect((await f.call('/projects/'+result.projectId)).status).toBe(200);
  const outsider=await invite('synthetic-vector-65@example.test',f.cookie,'member');expect((await request('/api/project-templates/'+teamTemplate.id,'GET',undefined,outsider)).status).toBe(404);
- const guest=await invite('synthetic-vector-66@example.test',f.cookie,'guest');
+ const guest=await invite('synthetic-vector-66@example.test',f.cookie,'member'),guestId=await actor(guest);expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[team.id]})).status).toBe(200);
  for(const [path,method,body] of [['/project-templates','GET',undefined],['/project-templates/'+template.id,'GET',undefined],['/project-templates','POST',input],['/project-templates/'+template.id,'PUT',{...input,expectedVersion:1}],['/project-templates/'+template.id,'DELETE',{expectedVersion:1}],['/project-templates/'+template.id+'/apply','POST',{name:'synthetic-vector-67',startDate:'2027-04-01',teamId:team.id,expectedVersion:1}],['/project-templates/from-project/'+result.projectId,'POST',{name:'synthetic-vector-68',teamId:null,referenceDate:'2027-03-01'}]] as const)expect((await request('/api'+path,method,body,guest)).status).toBe(403);
 }
