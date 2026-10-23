@@ -40,7 +40,7 @@ export async function receiveGithub(env:WorkerBindings,request:Request,id:string
  const retained=await prior();if(retained){await requireAuthority();if(retained.payload_hash!==hash)throw new IntegrationError(409,'github_delivery_conflict');return {reused:true,diagnostic:retained.diagnostic};}
  const at=new Date().toISOString(),updatedAt=new Date(pr.updated_at).toISOString(),state=pr.merged?'merged':pr.state;
  const current=await env.DB.prepare('SELECT updated_at,state,title FROM vector_github_pull_requests WHERE repository_id=? AND number=?').bind(id,pr.number).first<{updated_at:string;state:string;title:string}>();
- const refs=githubReferences(pr.title,pr.body);if(refs.length>20)throw new IntegrationError(413,'github_reference_limit');
+ const refs=githubReferences(pr.title,pr.body,pr.head?.ref);if(refs.length>20)throw new IntegrationError(413,'github_reference_limit');
  const issues=(await env.DB.prepare(`SELECT i.id,i.identifier,i.version FROM issues i JOIN teams t ON t.id=i.team_id WHERE t.workspace_id=? AND i.identifier IN (SELECT value FROM json_each(?))`).bind(repository.workspace_id,JSON.stringify(refs)).all<{id:string;identifier:string;version:number}>()).results;
  const stale=current&&updatedAt<current.updated_at,ambiguous=current&&updatedAt===current.updated_at&&(state!==current.state||pr.title!==current.title),terminal=current?.state==='merged'&&state!=='merged';
  const diagnostic=stale?'older_pull_request_state':ambiguous?'same_time_state_conflict':terminal?'merged_state_retained':!refs.length?'no_issue_reference':issues.length!==refs.length?'unknown_issue_reference':'linked';
