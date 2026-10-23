@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "f7a84d9c388307f2f9430417c6aed03f280d50fe873bd5495139123f4f7d622f",
+      "sha256": "1e96a6848b65b25b18a24c796925ac22993abfb0f188efd219f6be6155131e56",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "159a9d248778137b03cb46cc7dd5daf55ef8075c4ba1c55b81bf4a6dca97d30b",
+      "sha256": "662579c436c23e53fcdbcbe5da5b0bea0f1a2fd893a1a019c7557cf1cae30638",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "b0343416c121c0b8594e42222eb386f9855007afcd244b0e4634aaf51cdca9c5",
+      "sha256": "74abcac9ef7b5efa636534c7fde688809a47a5689dffaa53826c49f299dac638",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
-      "sha256": "6dee905e3c7ab9bff54553dbe307abab6eb15301d8598b08e70d2829bd0e8753",
+      "sha256": "6f38c7d14109b7f53ef26dabfc52e3fa6d767c9bc983fb287d9f871981b43aa6",
       "executable": false
     },
     "docs/JIRA-CSV.md": {
@@ -2005,7 +2005,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "1dbb9b9759438cf098ccb38fa727f8baea4f0a0137ed5c8ac678896e70c3960a",
+      "sha256": "7d0da850c144db6c087ae5eccc4d6d0e179573f19ef009aec25628dcfa3bd5ff",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2336,11 +2336,7 @@
       "sha256": "18731e1a8112e789703e1cbdd5fd706922d416cf82da874447e5f4281137d6e8",
       "executable": false
     },
-    "migrations/core/0083_issue_reactions.sql": {
-      "sha256": "5808a827f2afebe3c50230e26f1613ec529b72e370a2ad7287e00322d9eacf32",
-      "executable": false
-    },
-    "migrations/core/0084_issue_references.sql": {
+    "migrations/core/0083_issue_references.sql": {
       "sha256": "cc538270455a06c57294edf66557d4ba80192b4b14468db23774f5d634e3e291",
       "executable": false
     },
@@ -2881,7 +2877,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "9bf80bb8edd46d20b6f95b89490eb87d4804c4555751fe061a07b7ab0f8378c8",
+      "sha256": "7caddb76add4cfa59b5eefaff1f871bd7d0e2015024dbe79add9bc62a0aa2289",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3581,7 +3577,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "cafbf43e66dd10627cac2c2cb2e40495b0774b363256529196299a98a80fd98b",
+      "sha256": "3ad980db9b7c27ed4dbc37483cf70b72d63b3a473edd3d7a3a405103e6d500b5",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -3897,7 +3893,7 @@
       "executable": false
     },
     "src/core/features/description-history/ui/description.tsx": {
-      "sha256": "719b9993fa922bd6a82d960995895539cc57062b4a34640c132708bcd78fa8b1",
+      "sha256": "456d39c89ce03f0ebc5d372fc6bc9bf417c078416e6913c41b428a59018196d9",
       "executable": false
     },
     "src/core/features/description-history/ui/history.css": {
@@ -4649,7 +4645,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/discussion-thread.tsx": {
-      "sha256": "f4514cda10f6671c32ca5edd95137f6ec5251c55b11e337ac99ba0efe5bda5e1",
+      "sha256": "070e860015e29bccb35cea4ab20210efa4469c312316e3c23221f3cc49daa6b8",
       "executable": false
     },
     "src/core/features/issues/ui/discussion.tsx": {
@@ -4677,7 +4673,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "500019342beb5a2192dd6cd69c7b12afb7681ae2a2cf42473eb82e172d61a9a9",
+      "sha256": "f7857aabf56f77eb27acdffe301eb96359573e528e6c56012eeee6320b0a0e40",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -5276,30 +5272,6 @@
       "sha256": "6c559921ce2f4b3b94b19eca46397f5ded9977c30f89a4a52cd7e16991f2a4b2",
       "executable": false
     },
-    "src/core/features/reactions/repository.ts": {
-      "sha256": "d279d0e3a76a38d9a2f6ec0066eb20f08adaf25ac88fff6ac135bf12da08eb29",
-      "executable": false
-    },
-    "src/core/features/reactions/routes.ts": {
-      "sha256": "4d49118b69ee6b9cbb91e2117f3032ea7fb9ea76d43289e2d8b0cb6bfeb59130",
-      "executable": false
-    },
-    "src/core/features/reactions/schema.ts": {
-      "sha256": "b536e7c2d2689da7e0fa98744d926ba15797fee7a3dde88c65d672ad066d874f",
-      "executable": false
-    },
-    "src/core/features/reactions/ui/context.tsx": {
-      "sha256": "2ff022180f1c88264c42361f5159f565fb7dd2683c3d49fab588a4025314e22c",
-      "executable": false
-    },
-    "src/core/features/reactions/ui/reactions.css": {
-      "sha256": "1777910229d8d327d3f941df40b1c0059a0615448eb07584a22836f2daf4eb12",
-      "executable": false
-    },
-    "src/core/features/reactions/ui/reactions.tsx": {
-      "sha256": "b65be324be7862607e32ba41b739f326460429e589b572f68526be38c2e39dcb",
-      "executable": false
-    },
     "src/core/features/related/repository.ts": {
       "sha256": "22411440349b8cf836868eb368f68b8ce7b3bb56ea6b7e535c5fd4e238317531",
       "executable": false
@@ -5309,7 +5281,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "64426b427f5c8623b7661a61b4d1e7b75825ac152d97b25c954706ebbeb380c5",
+      "sha256": "d3a786f4dea1a3b804e9c4a2f182435e37e63146090207a5f9363bb1275f8853",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6045,7 +6017,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-events.mjs": {
-      "sha256": "daf3581481a84d57e2c2223b558325a5a4b98bef6cc191c9afebdee49b177abe",
+      "sha256": "3e1229601744b9b30dfcc1f99a8de986320b4f38711f7ae7695477e54c9a2d50",
       "executable": false
     },
     "tests/e2e/collaboration-issue.mjs": {
@@ -6070,10 +6042,6 @@
     },
     "tests/e2e/collaboration-preferences.mjs": {
       "sha256": "96046cb05d9439e10dc5c95ba195d91e5bbb7603329451b9eaba25dbf4d6ea17",
-      "executable": false
-    },
-    "tests/e2e/collaboration-reactions.mjs": {
-      "sha256": "b897a700216cd80361618b577d3a515f115e62414a85cf5c3689841040c868a4",
       "executable": false
     },
     "tests/e2e/collaboration-reads.mjs": {
@@ -6265,7 +6233,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip-fixture.mjs": {
-      "sha256": "359a0d58bf9615ffeb5bd2820eca1879f7dfeebe7d94b9c6e5a5a7f16b19816e",
+      "sha256": "19c10fcfa482451e5072db993cc2d3aa9d4e5fb5fa75b3a50472b0916fee54ce",
       "executable": false
     },
     "tests/e2e/data-roundtrip-history.mjs": {
@@ -6273,7 +6241,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip.mjs": {
-      "sha256": "89d7ab4ff51672b2de68f21da7e6c701656d24835b74c7fe8422cbc589651a1a",
+      "sha256": "8c84a2fb635db4b7a12a5c7bb8ab240e38a36c53f611f2bc55623a73446007f7",
       "executable": false
     },
     "tests/e2e/data-runtime.mjs": {
@@ -6789,7 +6757,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "7466288b8e74d8fb73519574fc05095a53070ad67d88ead8ac039801d2b5aa9d",
+      "sha256": "86f8827616e02e297ebf39117e947c1432b982d22f5ec73e1aec4e40fcbc08bc",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
@@ -6825,7 +6793,7 @@
       "executable": false
     },
     "tests/worker/discussion-threads.test.ts": {
-      "sha256": "bd537b359ddc724d3c1dfc4f6ee62dfbce9f7b126e8ae9de46fb1321c77ee616",
+      "sha256": "30358af603ae1ce5d80e12e3760e1a6dbd5f204a650c82d3e17ba46d72bd5c70",
       "executable": false
     },
     "tests/worker/due-reminders-fixture.ts": {
@@ -7114,10 +7082,6 @@
     },
     "tests/worker/project-risk.test.ts": {
       "sha256": "5f100982e0378c0b57d7d373566cd68c9886bc424b814ffd5530f2a3eb04c521",
-      "executable": false
-    },
-    "tests/worker/reaction-scenario.ts": {
-      "sha256": "5e41745994a854fe11bbed7e6de5fc14d9119d43c3e49a63b0273d701116745a",
       "executable": false
     },
     "tests/worker/recovery.test.ts": {

@@ -1711,13 +1711,6 @@
     "created_at",
     "updated_at"
   ],
-  "issue_reactions": [
-    "issue_id",
-    "subject_id",
-    "operator_id",
-    "emoji",
-    "created_at"
-  ],
   "issue_reference_subjects": [
     "source_issue_id",
     "target_issue_id",
