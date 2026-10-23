@@ -4,7 +4,7 @@ export type TeamPermission = 'team_owners' | 'all_members'
 /** The actor's standing in one subject team (ROLE-007, ROLE-009). */
 export type TeamStanding = { role: 'owner' | 'member' | null; settings: TeamPermission; planning: TeamPermission }
 /** `leads` holds the projects the actor leads among those a request names. */
-export type Authority = { role: Role; memberInvites: boolean; teams: ReadonlyMap<string, TeamStanding>; leads?: ReadonlySet<string> }
+export type Authority = { role: Role; memberInvites: boolean; memberTeamCreation?: boolean; teams: ReadonlyMap<string, TeamStanding>; leads?: ReadonlySet<string> }
 /** What a door asks: its row (null for a door with no row), the Settings page
  * it opens, whether it is an invitation, and the teams or project it acts on in
  * the actor's workspace: undefined when the door names none, null when its
@@ -26,6 +26,7 @@ export function decide(actor: Authority, question: Question): Decision {
   }
   if (teamCells.includes(cell)) return teams === null ? 'allow' : 'forbidden'
   if (cell === 'lead') return question.project === null || (question.project !== undefined && actor.leads?.has(question.project)) ? 'allow' : 'forbidden'
+  if (cell === 'member-team-creation') return actor.memberTeamCreation === true ? 'allow' : 'forbidden'
   if (cell === 'member-invites') return question.invitation === true && actor.memberInvites ? 'allow' : 'forbidden'
   return cell === 'no' ? 'forbidden' : 'allow'
 }
@@ -38,6 +39,7 @@ export function decisionInputs(actor: Authority, question: Question) {
   const cell = question.row === null ? null : matrix[question.row].cells[actor.role]
   return {
     memberInvites: cell === 'member-invites',
+    memberTeamCreation: cell === 'member-team-creation',
     teams: cell !== null && teamCells.includes(cell) ? question.teams ?? [] : [],
     project: cell === 'lead' ? question.project ?? null : null,
   }

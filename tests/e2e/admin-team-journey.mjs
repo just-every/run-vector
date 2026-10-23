@@ -329,3 +329,46 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
     assert.equal(sql(`SELECT count(*) AS n FROM team_members WHERE team_id='${team.id}' AND role='owner'`)[0].n, 1);
   });
 }
+
+export async function teamCreationPermission({page,peer,runtime,clause,evidence}) {
+  const {base,sql}=runtime, inspect=roleScreens(evidence);
+  const set=async value=>{
+    await navigate(page,base+"/app/settings");
+    const form=page.getByRole("form",{name:"Team creation permission",exact:true});
+    await form.getByLabel("Who may create teams",{exact:true}).selectOption(value?"members":"admins");
+    const receipt=page.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/teams/creation"&&r.request().method()==="PUT");
+    await form.getByRole("button",{name:"Save team creation permission",exact:true}).click();
+    assert.equal((await receipt).status(),200);
+  };
+  const before=sql("SELECT count(*) n FROM audit_records WHERE action='workspace.team_creation_changed'")[0].n;
+  for (const width of [1440,390]) {
+    await page.setViewportSize({width,height:width===390?844:1000});
+    await peer.setViewportSize({width,height:width===390?844:1000});
+    await clause("TEAM-008",`workspace policy controls a Member's public team creation at ${width}`,async()=>{
+      await navigate(peer,base+"/app/settings");
+      assert.equal(await peer.getByRole("form",{name:"Create team",exact:true}).count(),0);
+      assert.equal(await peer.getByRole("form",{name:"Team creation permission",exact:true}).count(),0);
+      await set(true);
+      await navigate(peer,base+"/app/settings");
+      const create=peer.getByRole("form",{name:"Create team",exact:true});
+      await create.getByLabel("Team name",{exact:true}).fill("synthetic-vector-team-"+width);
+      await create.getByLabel("Identifier prefix",{exact:true}).fill(width===1440?"SYNVA":"SYNVB");
+      assert.equal(await create.getByLabel("Create Slack channel",{exact:true}).count(),0);
+      const receipt=peer.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/teams"&&r.request().method()==="POST");
+      await create.getByRole("button",{name:"Create team",exact:true}).click();
+      assert.equal((await receipt).status(),200);
+      const owned=sql("SELECT t.id,m.role FROM teams t JOIN team_members m ON m.team_id=t.id JOIN operators o ON o.id=m.operator_id WHERE t.name='synthetic-vector-team-"+width+"' AND o.email='role-member@admin-runtime.test'");
+      assert.equal(owned.length,1);
+      assert.equal(owned[0].role,"owner");
+      assert.equal((await peer.request.put(base+"/api/settings/teams/creation",{headers:{Origin:base},data:{membersMayCreate:false}})).status(),403);
+      await set(false);
+      assert.equal((await peer.request.post(base+"/api/settings/teams",{headers:{Origin:base},data:{name:"synthetic-vector-refused-team-"+width,identifierPrefix:"REFUSE"}})).status(),403);
+      await navigate(peer,base+"/app/settings");
+      assert.equal(await peer.getByRole("form",{name:"Create team",exact:true}).count(),0);
+      assert.equal(sql("SELECT count(*) n FROM teams WHERE id='"+owned[0].id+"'")[0].n,1);
+    });
+  }
+  await inspect(page,page.getByRole("region",{name:"Teams",exact:true}),"team-creation-policy");
+  await inspect(peer,peer.getByRole("region",{name:"Teams",exact:true}),"member-team-created");
+  assert.equal(sql("SELECT count(*) n FROM audit_records WHERE action='workspace.team_creation_changed'")[0].n-before,4);
+}

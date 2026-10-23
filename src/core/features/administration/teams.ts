@@ -83,6 +83,7 @@ export async function createTeam(
     ...additional(id),
     ...audit(ctx, "team.created", id, input.name, null, input),
   ]);
+  return id;
 }
 export async function updateTeam(
   db: D1Database,
@@ -302,5 +303,17 @@ export async function removeStatus(
       { teamId, statusId: id, category: old.category },
       { teamId, statusId: destination, category: target.category },
     ),
+  ]);
+}
+
+export async function setTeamCreation(db: D1Database, actor: string, membersMayCreate: boolean) {
+  const ctx = await administrationContext(db, actor);
+  const previous=await ctx.db.prepare("SELECT member_team_creation FROM workspace_settings WHERE id=?").bind(ctx.workspace).first<number>("member_team_creation");
+  if (previous===Number(membersMayCreate)) return;
+  await commit(ctx,[
+    guard(ctx.db,"EXISTS(SELECT 1 FROM operators WHERE id=? AND role IN('owner','admin') AND removed_at IS NULL)",actor),
+    guard(ctx.db,"EXISTS(SELECT 1 FROM workspace_settings WHERE id=? AND member_team_creation=?)",ctx.workspace,previous!),
+    ctx.db.prepare("UPDATE workspace_settings SET member_team_creation=?,updated_at=? WHERE id=?").bind(Number(membersMayCreate),ctx.at,ctx.workspace),
+    ...audit(ctx,"workspace.team_creation_changed",ctx.workspace,"Team creation",{membersMayCreate:previous===1},{membersMayCreate}),
   ]);
 }

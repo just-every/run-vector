@@ -23,3 +23,5 @@ Members can open **Settings → Labels** to read workspace label names and colou
 ## Notifications
 
 Each person chooses which notifications reach their Inbox and whether assignments and mentions also arrive by email. See [Notifications and email](notifications.md).
+
+Owners and Admins choose **Who may create teams** in Settings → Teams. The default is **Owners and Admins only**. With **Members too**, a Member can create a public team and becomes its first team owner. Restoring the default refuses their next creation request without changing teams already created. Guests cannot create teams. The browser, session and scoped API doors use the same current permission.
