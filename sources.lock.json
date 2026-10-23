@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f6278b70213294ea5214d2fd0c3074f847b0ff9e0df192204a689c57cf37ee49",
+      "sha256": "6d9d6c2ec8ba12cc50bd19405ae1ef674730c8a9fffe096a8b3496b784b1408d",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "97e277bca9ed33467d41d0b10e4b5894c39ed206ada59f1502da6de4d6746305",
+      "sha256": "b6db1a03ef40503d547218df33c4b35a768e2de24e1ba5a1926974941d3b6cfa",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4601,7 +4601,7 @@
       "executable": false
     },
     "src/core/features/issue-references/ui/context.tsx": {
-      "sha256": "9452ea1166efeb11af858ddc7b8b1585f8770a2ca7f84e9a68af37534eefc995",
+      "sha256": "711e1fb584b59a2b76b3e9965721412d0513807d4441723d20303c5e4de515f4",
       "executable": false
     },
     "src/core/features/issue-references/ui/remark.ts": {
@@ -6301,7 +6301,7 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "0bf7eb5eecf5755c8c8817c9454718af1ae1b65fc89a033680ea3d4cf59cf944",
+      "sha256": "413a311427187bfa7331db18553d12e6cae77c63a5e361b497d01276efef3694",
       "executable": false
     },
     "tests/e2e/core-manual-order-journey.mjs": {
@@ -6345,7 +6345,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "d7dbfa8be926d5986f2b46a33c97e3a35d1dd68c025bb98545aa1a7cdb047370",
+      "sha256": "25825cb96a44a9a60b7a96348b7f3d83ec8e83eaaa3a3646a7ccf00e0901e3c9",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -6357,7 +6357,7 @@
       "executable": false
     },
     "tests/e2e/core-stream-controls-journey.mjs": {
-      "sha256": "286718541edbc15831b42892557a2080b395d735d770f7778bbf1e306189f47e",
+      "sha256": "669fcb57362ec5000644e237086739e179b1852b8fbf82ea9771a546e84218bd",
       "executable": false
     },
     "tests/e2e/core-stream-controls-ranking.mjs": {
@@ -6377,7 +6377,7 @@
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
-      "sha256": "d8a48d2746e5da201ae8ef4f28cfbf6aa0894db7b1667878c9d851eec53712b3",
+      "sha256": "2f26540ad3022a95a49bed41d40f2b3a2a19ebac64b2de72918320b811dbf84f",
       "executable": false
     },
     "tests/e2e/core-undo-properties.mjs": {
