@@ -6089,7 +6089,7 @@
       "executable": false
     },
     "src/routeTree.gen.ts": {
-      "sha256": "61d32a3c264c48dec25ca87a5c466dc951490a455b0c05c966743b05de64206e",
+      "sha256": "9562e64babf04184edd4c139131f2438e5b7f21f3a435074a22444430453820a",
       "executable": false
     },
     "src/site/document.tsx": {
@@ -7409,7 +7409,7 @@
       "executable": false
     },
     "tests/worker/subscriptions-scenario.ts": {
-      "sha256": "64ab2dd103ca0a63ec14383ef8dcb2ff3b535475cfb011e53a025bcd137fbf39",
+      "sha256": "3fe74f6cca10e2810d5359a748a4f78bc007240050e6afb8993f279df3d36cf5",
       "executable": false
     },
     "tests/worker/views-removal.test.ts": {
