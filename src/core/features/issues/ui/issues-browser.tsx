@@ -1,3 +1,4 @@
+import {SubscriptionFilters} from '../../subscriptions/ui/subscriptions';
 import {
   useMatch,
   useNavigate,
@@ -188,7 +189,7 @@ export function IssueBrowserSurface({
       onOpen={onOpen}
       onReset={onReset}
       description={description}
-      before={before}
+      before={<>{before}<SubscriptionFilters team={shownQuery.team} label={shownQuery.label}/></>}
       rowAction={rowAction && ((issue) => rowAction(issue, resource.refreshAfterMutation))}
       onSwitchLayout={switchLayout ? () =>
         void navigate({ to: layout === "board" ? "/app/issues" : "/app/board" }) : undefined}

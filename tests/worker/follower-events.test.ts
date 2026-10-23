@@ -1,3 +1,4 @@
+import {exerciseSubjectSubscriptions} from './subscriptions-scenario';
 import { expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
 import { collaborationFixture, count } from "./collaboration-fixture";
@@ -14,7 +15,7 @@ async function receipt<T>(response: Response, status = 200): Promise<T> {
 
 contractWith(
   it,
-  "NOTIFY-001 NOTIFY-002 NOTIFY-003 NOTIFY-004",
+  "NOTIFY-001 NOTIFY-002 NOTIFY-003 NOTIFY-004 NOTIFY-009",
   "followers receive grouped issue changes and participated thread reopens with mutes and actor exclusion",
   async () => {
     const f = await collaborationFixture(),
@@ -402,5 +403,6 @@ contractWith(
     }
     expect(await count("notification_deliveries")).toBe(0);
     expect(await count("notification_candidates")).toBe(0);
+    await exerciseSubjectSubscriptions(f);
   },
 );

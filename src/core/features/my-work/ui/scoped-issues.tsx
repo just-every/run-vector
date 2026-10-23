@@ -1,3 +1,4 @@
+import {SubscriptionManager} from '../../subscriptions/ui/subscriptions';
 import { useMatch, useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { fetchJson } from "../../../app/api-client";
@@ -10,7 +11,7 @@ import { MyWorkTabs } from "./my-work-tabs";
 
 const copy = {
   created: { title: "Created", tab: "Created", description: "Every issue you created, newest first." },
-  subscribed: { title: "Subscribed", tab: "Subscribed", description: "Every issue you follow. Unfollow to remove one." },
+  subscribed: { title: "Subscribed", tab: "Subscribed", description: "Your subject subscriptions and the issues you follow. Unfollow to remove an issue." },
 } as const;
 
 /** Created and Subscribed take the issue views' filters, display and Save view;
@@ -33,7 +34,7 @@ export function MyScopedIssues({ scope }: { scope: "created" | "subscribed" }) {
         layout="list"
         title={copy[scope].title}
         description={copy[scope].description}
-        before={<MyWorkTabs current={copy[scope].tab} />}
+        before={<><MyWorkTabs current={copy[scope].tab}/>{scope==="subscribed"&&<SubscriptionManager/>}</>}
         switchLayout={false}
         onChange={change}
         onReset={() => change({ ...defaultIssueListQuery })}

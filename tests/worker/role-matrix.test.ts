@@ -7,7 +7,7 @@ import type { Administration } from "../../src/core/features/administration/sche
 import { readArchive } from "@runeditrun/rer/modules/portability";
 import contract from "../../CONTRACT.md?raw";
 import { matrix, type RowId } from "../../src/core/features/roles/matrix";
-import { releaseMatrixProbes, githubRuleProbes, probes, type Probe } from "./role-probes";
+import { subscriptionPersonalProbe, releaseMatrixProbes, githubRuleProbes, probes, type Probe } from "./role-probes";
 import { resetLimits, roleWorkspace, snapshot, type Kind } from "./role-fixture";
 
 const teams = async (response: Response) => ((await response.json()) as Administration).teams;
@@ -345,6 +345,13 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
     }
   }
   expect(await audits("workspace.label_creation_changed")).toHaveLength(2);
+
+  const personalSubscriptions=subscriptionPersonalProbe(w);
+  expect(contractMatrix.has(personalSubscriptions.parent)).toBe(true);
+  for(const who of ['owner','admin','lead','member','guest'] as Kind[]){
+    const send=await personalSubscriptions.attempt(who,w.people[who],w.team.id);
+    expect((await send()).status,'own subscription '+who).toBe(201);
+  }
 
   // Open Settings pages (ROLE-008 row): Members open Account, the member
   // directory and their personal tokens; a Guest opens Account only.

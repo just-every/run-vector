@@ -27,7 +27,7 @@ export async function inbox(
   const rows = (
     await db
       .prepare(
-        `SELECT n.id,n.event_id eventId,i.identifier,i.title,n.actor_name actor,n.causes_json causesJson,n.created_at createdAt,n.read_at readAt,s.until_at snoozedUntil,s.until_change snoozeOnChange,COALESCE(s.returned_at,n.created_at) visibleAt
+        `SELECT n.id,n.event_id eventId,i.identifier,i.title,n.actor_name actor,(SELECT kind FROM issue_activity WHERE id=n.event_id) sourceEventKind,n.causes_json causesJson,n.created_at createdAt,n.read_at readAt,s.until_at snoozedUntil,s.until_change snoozeOnChange,COALESCE(s.returned_at,n.created_at) visibleAt
     FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=n.recipient_id AND o.workspace_id=t.workspace_id
     LEFT JOIN notification_snoozes s ON s.notification_id=n.id
     WHERE n.recipient_id=? AND ${snoozed ? 's.notification_id IS NOT NULL AND s.returned_at IS NULL' : '(s.notification_id IS NULL OR s.returned_at IS NOT NULL)'} ${cursor ? "AND (COALESCE(s.returned_at,n.created_at)<? OR (COALESCE(s.returned_at,n.created_at)=? AND n.id<?))" : ""}
@@ -44,7 +44,8 @@ export async function inbox(
     page = rows.slice(0, limit),
     last = page.at(-1);
   const result = {
-    items: page.map(({ causesJson, ...row }) => ({
+    items: page.map(({ causesJson, sourceEventKind, ...row }) => ({
+      ...(sourceEventKind==="issue.created"&&(JSON.parse(causesJson) as string[]).includes("status")?{sourceEventKind}:{}),
       ...row,
       snoozeOnChange: !!row.snoozeOnChange,
       causes: JSON.parse(causesJson) as NotificationKind[],
