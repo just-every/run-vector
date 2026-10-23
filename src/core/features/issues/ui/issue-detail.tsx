@@ -7,6 +7,7 @@ import { IssueDescription } from "../../description-history/ui/description";
 import { useNavigate } from '@tanstack/react-router';
 import { DeleteIssue,type DeletionReceipt } from '../../issue-deletion/ui';
 import { IssueDuplicates } from '../../duplicates/ui';
+import { GithubBranch } from '../../integrations/ui/github-branch';
 import { GithubLinks } from '../../integrations/ui/github-links';
 import { isEditableTarget } from "../../search/ui/command-helpers";
 import { IssueSubscriptionControls } from "../../notifications/ui/issue-subscription";
@@ -254,6 +255,7 @@ function IssueInspector({
         options={options}
         onRefresh={onRefresh}
       />
+      <GithubBranch identifier={issue.identifier} title={issue.title}/>
       <div className="issue-body">
         <div className="issue-planning-fields">
           <IssueFieldEditor
