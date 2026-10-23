@@ -2889,7 +2889,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "7caddb76add4cfa59b5eefaff1f871bd7d0e2015024dbe79add9bc62a0aa2289",
+      "sha256": "797ca245971afd71a87a612bf683a518c74af6eea69e13fe0e17b0480156e235",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -4184,6 +4184,10 @@
       "sha256": "c9dd5ae5c66499ecec551eaab5814d433aa28d53cd91503d1366fa275668f781",
       "executable": false
     },
+    "src/core/features/integrations/github/branch-name.ts": {
+      "sha256": "38080d348669d1123e0bb6107aa03b71980925e4743ccf67402d6f859ca33677",
+      "executable": false
+    },
     "src/core/features/integrations/github/input.ts": {
       "sha256": "f35004d11213fb2799b9265d193bb7cb526150b79a61bb71745bdff5fb21e4b7",
       "executable": false
@@ -4326,6 +4330,10 @@
     },
     "src/core/features/integrations/ui/destination-setup.tsx": {
       "sha256": "0f9c15ddb5fbffc3408a117b337b44e06c3ca7ee8b16ce3f3e2c0b8def9539a6",
+      "executable": false
+    },
+    "src/core/features/integrations/ui/github-branch.tsx": {
+      "sha256": "b31d9a175a531bfc54bde0acfc87d46f45c61ef115fedbb7159aeb3edd56701a",
       "executable": false
     },
     "src/core/features/integrations/ui/github-links.tsx": {
@@ -4685,7 +4693,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "f7857aabf56f77eb27acdffe301eb96359573e528e6c56012eeee6320b0a0e40",
+      "sha256": "9f11fc949b22865945099f2b4d8cf5b561bdcafbcac4e4d318448f4e32378fa2",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -6861,7 +6869,7 @@
       "executable": false
     },
     "tests/worker/github-links.test.ts": {
-      "sha256": "f4209a0d1517dbd131702072ed98243edf4fed612a65c40f87c84d568688a341",
+      "sha256": "04e161990ca7c806c75bb0ce5cc51ac7388433b1fed9fad237dc02a1f23ad4ce",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {

@@ -1,4 +1,5 @@
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
+import { githubBranchName } from '../features/integrations/github/branch-name';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
@@ -315,7 +316,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       );
       if (!issue)
         throw new IssueAccessError("not_found", "Issue is unavailable.", 404);
-      return context.json(issue);
+      return context.json({...issue,branchName:githubBranchName(issue.identifier,issue.title)});
     } catch (error) {
       if (!(error instanceof IssueAccessError)) throw error;
       return context.json(
