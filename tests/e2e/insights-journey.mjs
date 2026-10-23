@@ -46,9 +46,7 @@ export async function insightsJourney(page, context, runtime, output) {
   ]);
   assert.deepEqual((await api("/insights?" + new URLSearchParams({ team: team.id, metric: "throughput" }))).rows.map(r => r.count), [3, 1]);
   async function select(label, value) {
-    const receipt = page.waitForResponse(r => new URL(r.url()).pathname === "/api/insights" && r.status() === 200);
-    await page.getByLabel(label, { exact: true }).selectOption(value);
-    await receipt;
+    await Promise.all([page.waitForResponse(r => new URL(r.url()).pathname === "/api/insights" && r.status() === 200), page.getByLabel(label, { exact: true }).selectOption(value)]);
     await page.locator('[data-insights-ready="true"]').waitFor();
   }
   for (const theme of ["light", "dark"]) for (const width of [1440, 390]) {
@@ -60,6 +58,7 @@ export async function insightsJourney(page, context, runtime, output) {
     await page.locator('[data-insights-ready="true"]').waitFor();
     assert.equal(await page.locator("html").getAttribute("data-theme"), theme);
     await page.getByText("Filter issues", { exact: true }).click();
+    await page.screenshot({ path: `${output}/insights-controls-${theme}-${width}.png` });
     await select("Team", team.id);
     for (const metric of ["cycle-time", "throughput", "lead-time", "status-time", "bug-inflow", "bug-age", "flow"]) {
       await select("Chart", metric);
