@@ -2005,7 +2005,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "fd97db4d0484854b00b5dab5bf45e57e0e74627314b52dcf3d4d276ead4a39ab",
+      "sha256": "d3135ddaf44b8fb3b889fd03d8f341ee0de0c57311d804d1a13df6edceb43af5",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2364,16 +2364,8 @@
       "sha256": "87837ae810379a2a2c4fe2685e09e029f501d5166d316269f51973d237b73295",
       "executable": false
     },
-    "migrations/core/0090_calendar_feeds.sql": {
-      "sha256": "ed31504e5a5495087e96df4e0bbe04e21074519910cfee17e8e8c204d39797fe",
-      "executable": false
-    },
     "migrations/core/0090_releases.sql": {
       "sha256": "723e784ae71c944a0323f961fbcaeb8afc4d4b29afb6313ed5c542328ead4a3a",
-      "executable": false
-    },
-    "migrations/core/0091_dashboards.sql": {
-      "sha256": "a1e8b4000bdf198f39c2976cc731e232749b47a00f436fadc1c204d616be7c3d",
       "executable": false
     },
     "migrations/core/0091_subject_subscriptions.sql": {
@@ -2384,7 +2376,15 @@
       "sha256": "d250b4c0e88433446735ff64cb2d85330b0249941530d057f20b6f634db18864",
       "executable": false
     },
-    "migrations/core/0092_project_templates.sql": {
+    "migrations/core/0093_calendar_feeds.sql": {
+      "sha256": "ed31504e5a5495087e96df4e0bbe04e21074519910cfee17e8e8c204d39797fe",
+      "executable": false
+    },
+    "migrations/core/0094_dashboards.sql": {
+      "sha256": "a1e8b4000bdf198f39c2976cc731e232749b47a00f436fadc1c204d616be7c3d",
+      "executable": false
+    },
+    "migrations/core/0095_project_templates.sql": {
       "sha256": "010c73fcb9b84587c4af75fb7c3fd5fd5d51bae0c79a1421f850af14d4280937",
       "executable": false
     },
