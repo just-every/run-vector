@@ -297,35 +297,3 @@ and request-key tables (both excluded from archives) and triggers that drop link
 the signing secret when the connection is removed and scrub queued messages for a
 removed member. Keep all prior rows and outbound terminal states on rollback. An
 already-sent direct message cannot be recalled by local erasure (SEC-003).
-
-## Email intake and signed delivery outcomes
-
-Team managers configure the private intake address and exact sender allow-list in
-Settings → Teams → Email intake. Configure Cloudflare Email Routing to forward
-that address to this Worker's email handler, and authenticate its sender domain
-in SendGrid before enabling replies or the optional acknowledgement. These are
-installation steps; fixture proof does not claim a hosted mailbox receipt.
-
-In SendGrid Settings → Mail Settings → Event Webhooks, create a webhook with this
-installation's HTTPS origin and `/api/integrations/email/<teamId>/events` path.
-Select Bounce and Dropped events and enable Signed Event Webhook. Paste its
-public verification key into the team's **SendGrid event verification key** field.
-The key is sealed with the installation's session-secret custody beside sibling
-integration credentials, never returned, and excluded from archives. Re-enter it
-after restore or key rotation; leaving the field blank retains the current key.
-
-The public callback requires the provider signature, without a Vector session.
-Base verifies ECDSA P-256/SHA-256 over the timestamp followed by the original body
-bytes using `X-Twilio-Email-Event-Webhook-Signature` and
-`X-Twilio-Email-Event-Webhook-Timestamp`. Vector allows five minutes of clock
-skew. Missing keys, invalid signatures and stale timestamps return 401 without
-changes. See [SendGrid's signature contract](https://www.twilio.com/docs/sendgrid/for-developers/tracking-events/getting-started-event-webhook-security-features).
-
-Vector correlates the stored Mail Send `X-Message-ID` with `sg_message_id`
-(including SendGrid's dot-delimited recipient suffix), then requires exactly one
-send in the route's team and a matching original recipient. Unknown identities
-are acknowledged without changes or disclosure. A bounce or drop permanently
-shows **bounced** on the comment, or on the requester's acknowledgement outcome;
-repeats and later delivered events cannot reverse it. The callback emits no mail
-or notifications. Provider acceptance is distinct from inbox receipt. Customer
-mapping remains CUST-006's unbuilt dependency.

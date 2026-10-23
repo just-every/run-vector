@@ -230,7 +230,7 @@ async function proveFiniteNotificationRetries() {
 
 }
 
-contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail becomes one intake conversation with bounded attachments, once-only Member replies, signature-verified bounces, and no Guest sending',async()=>{
+contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail becomes one intake conversation with bounded attachments, explicit once-only Member replies, and no Guest sending',async()=>{
   const {seedIntakeForTeam,inboundFixture,recordedReply,recordSendGrid,mailBindings}=await import('./email-intake-fixture');
   const {request}=await import('./base-auth-fixture');
   const {default:worker}=await import('./entry');
@@ -279,7 +279,5 @@ contractWith(it,'TRIAGE-005 ROLE-003 ROLE-009 BASE-DATA-004','provider mail beco
   expect(JSON.stringify(ack.calls[0].body.content)).toContain(ack.result.identifier);
   const ackAgain=await recordSendGrid(()=>worker.email(inboundFixture(intake.address,ackId).message,mailBindings));
   expect(ackAgain.result.status).toBe('duplicate');expect(ackAgain.calls).toHaveLength(0);
-  const {proveEmailBounces}=await import('./email-bounce-scenario');
-  await proveEmailBounces(f,intake,outcome.commentId,reply.calls[0].providerId,ack);
 
 });

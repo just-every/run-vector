@@ -9,7 +9,6 @@ export function EmailRequester({ email, identifier }: { email: IssueEmail; ident
     <p>{email.thread.requester} · {email.thread.subject}</p>
     {email.thread.cc.length > 0 && <p>Cc: {email.thread.cc.join(", ")}</p>}
     <p>Customer domain mapping is unavailable. This requester has no Vector seat or sign-in.</p>
-    {email.deliveries.filter(delivery => delivery.kind === "acknowledgement").map(delivery => <p key={delivery.createdAt} role="status" aria-label="Acknowledgement delivery outcome">Acknowledgement delivery: {delivery.status}</p>)}
     {email.messages.filter(message => message.commentId === null).map(message => <section key={message.id} aria-label="Original email">
       <p className="email-original-body">{message.text}</p>
       <EmailAttachments identifier={identifier} attachments={message.attachments} />
@@ -27,7 +26,6 @@ export function CommentEmailDetails({ email, commentId, identifier }: {
     </section>)}
     {email.deliveries.filter(delivery => delivery.commentId === commentId).map((delivery, index) => <p key={`${delivery.createdAt}-${index}`} role="status" aria-label="Email delivery outcome">
       Email delivery: {delivery.status}{delivery.status === "accepted" ? " · Provider accepted; inbox delivery is not confirmed." : ""}
-      {delivery.status === "bounced" ? " · The provider reported a bounce or dropped message." : ""}
       {delivery.status === "uncertain" ? " · Delivery could not be confirmed. Check the provider before sending another reply." : ""}
       {delivery.error ? ` · ${delivery.error}` : ""}
     </p>)}

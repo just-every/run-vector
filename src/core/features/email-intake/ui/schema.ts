@@ -11,7 +11,6 @@ export const emailSettingsSchema = z.object({
     id: z.string(), messageId: z.string(), status: z.string(),
     error: z.string().nullable(), issueIdentifier: z.string().nullable(), createdAt: z.string(),
   })),
-  eventsConfigured: z.boolean(),
   provider: z.literal("cloudflare"),
   ingressConfigured: z.boolean(),
   customerMappingAvailable: z.literal(false),
@@ -24,7 +23,7 @@ export const issueEmailSchema = z.object({
   }).nullable(),
   canReply: z.boolean(),
   deliveries: z.array(z.object({
-    commentId: z.string().nullable(), kind: z.string(), status: z.string(), error: z.string().nullable(), createdAt: z.string(),
+    commentId: z.string(), status: z.string(), error: z.string().nullable(), createdAt: z.string(),
   })),
   messages: z.array(z.object({
     id: z.string(), commentId: z.string().nullable(), sender: z.string(), subject: z.string(),
@@ -38,4 +37,4 @@ export const issueEmailSchema = z.object({
 });
 
 export type IssueEmail = z.output<typeof issueEmailSchema>;
-export const emailReplySchema = z.object({ commentId: z.string().nullable(), kind: z.string(), status: z.string(), error: z.string().nullable().optional() });
+export const emailReplySchema = z.object({ commentId: z.string(), status: z.string(), error: z.string().nullable().optional() });

@@ -1,4 +1,3 @@
-import { receiveEmailEvents } from '../email-intake/events';
 import { Hono } from 'hono';
 import type { AppEnvironment } from '../../app/bindings';
 import { IntegrationError } from './errors';
@@ -8,7 +7,6 @@ import { receiveGithub } from './github/receiver';
 import { receiveSlackAction } from './slack-dm/interactive';
 export function createIntegrationReceivers(){
  const app=new Hono<AppEnvironment>();
- app.post('/email/:teamId/events',async c=>c.json(await receiveEmailEvents(c.env,c.req.raw,c.req.param('teamId')),200,{'Cache-Control':'no-store'}));
  app.onError((error,c)=>error instanceof IntegrationError?c.json({error:error.code,message:error.message},error.status,{'Cache-Control':'no-store'}):c.json({error:'integration_unavailable'},503,{'Cache-Control':'no-store'}));
  app.post('/sources/:id/events',async c=>c.json(await ingestSource(c.env,c.req.raw,c.req.param('id'))));
  app.post('/sources/:id/receive/:token',async c=>c.json(await receiveSourceWebhook(c.env,c.req.raw,c.req.param('id'),c.req.param('token')),200,{'Cache-Control':'no-store'}));

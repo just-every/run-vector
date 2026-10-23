@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "77214e5fff7823bcaca1d0741a84ce359109f0bc1b3b1d00100cc5ca28fe0ec7",
+      "sha256": "ff7fd13e728ae8bea7bd72001b7adcb2b885cc78e09830b63eaf4b0ab162cc2a",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "c043c8baa634ce7f4a3e98ebe51b782824e6312b795a9506dcaee4af73e56c0c",
+      "sha256": "d22d483137f3989f4d0781a7451ed8efa542d55e3fa56f9bf1343d61b7e421ae",
       "executable": false
     },
     "DEMO.md": {
@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "48df6a9afc906eea909291718ce43a494bf3ae2db7e0dc63b509b5c9b1316fa6",
+      "sha256": "1ae95e5b81f76c7382d05b91277c4f6bf41b41caeaebb8cab9492efdf4367196",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -2336,10 +2336,6 @@
       "sha256": "18731e1a8112e789703e1cbdd5fd706922d416cf82da874447e5f4281137d6e8",
       "executable": false
     },
-    "migrations/core/0083_email_bounces.sql": {
-      "sha256": "9ae48564a09f5fcbd7877eb76c17f7201deebfc9fc988653fa6804d14a893e6b",
-      "executable": false
-    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -3577,7 +3573,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "36ffe2b39a19b7b62f4ce0a488a1057465d844ca47653ecec2747827a85494e4",
+      "sha256": "d67b5e952a0a3e6ad64e64eb2a2db4a3f54bb14797c11c3483ba9faecfd8036d",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -3965,11 +3961,7 @@
       "executable": false
     },
     "src/core/features/email-intake/authority.ts": {
-      "sha256": "17f790f334fb35b7884f4975ce9f0005fb1490691b4f6c4bc45706a96ff03088",
-      "executable": false
-    },
-    "src/core/features/email-intake/events.ts": {
-      "sha256": "d9eb4c7ea03ad9f652b4ffae27c9c7b350d6b46b7911dfecbff538f8ab46ea15",
+      "sha256": "7d1ae35d86dc818806920109e39c4e84bba9c239dbf519ab39be8bfa354f0700",
       "executable": false
     },
     "src/core/features/email-intake/files.ts": {
@@ -3989,7 +3981,7 @@
       "executable": false
     },
     "src/core/features/email-intake/routes.ts": {
-      "sha256": "69bf373167659f0b3c44a90459bd5c9ef74a6ca40493b355dd76a900f214e779",
+      "sha256": "68ebb59c5561e2765e7dfc194628bb8b410a9dbd49ccc644c2db65fb52a41855",
       "executable": false
     },
     "src/core/features/email-intake/types.ts": {
@@ -3997,7 +3989,7 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/email-discussion.tsx": {
-      "sha256": "8e20f7149f43224dbd35ae5af573d2a9d52d2878c57146316c215799ef856fd3",
+      "sha256": "2829557e0dbb686a8dbdac970f2bb6fe473cc2b8154888a23ff0e09bc3c5ad28",
       "executable": false
     },
     "src/core/features/email-intake/ui/email-intake.css": {
@@ -4009,11 +4001,11 @@
       "executable": false
     },
     "src/core/features/email-intake/ui/schema.ts": {
-      "sha256": "9598ab6203cdea543f22eab6a2dc35cc05543d28254238b04a39b57d1ad115f0",
+      "sha256": "a4fced44b0ac6198a177515b2752ea3a58b5a3c16e276cb6fa1990a6d6f5540d",
       "executable": false
     },
     "src/core/features/email-intake/ui/team-email-intake.tsx": {
-      "sha256": "797d0fa9db9469c981d387c64a9549ca28cc4756ddd34b63c89e58d3ff37674b",
+      "sha256": "374b84bdb3ab09299f0ebd06a431440d8c24a75f651c4b17c3a8fa153c32391b",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {
@@ -4213,7 +4205,7 @@
       "executable": false
     },
     "src/core/features/integrations/receiver-routes.ts": {
-      "sha256": "519f902491132866aa3d26cfefbe3163158dc84d80b73058ee48cf30191089e3",
+      "sha256": "640fc113ea0977ddfdc193f9bcd4844ecb1b4343469bdcb6a453b21fd9bf2eaf",
       "executable": false
     },
     "src/core/features/integrations/reenter.ts": {
@@ -6261,7 +6253,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "ff46041d57795d36ed38b63e6867830620400059205ff7308052a3ab8641bd1a",
+      "sha256": "8c927f65eec2aa4b62d56ba179090be140a73ec15f92d7e412fe7479624253bb",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
@@ -6269,7 +6261,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "b42bf31217a9945409fe7aa4d47806aa3fa2bc628959e3b874c24409c0ca4031",
+      "sha256": "c7d9300c2631d6820ae0290e27bab39f375a8430fe5b8868c25812d0844a694a",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -6468,10 +6460,6 @@
       "sha256": "bf1e32d744396d90cae6969cbc2581e79f9b95ff2e648c71cf2b6cb1154b42b1",
       "executable": false
     },
-    "tests/email-event-signing.mjs": {
-      "sha256": "c010c45f0cebb774ce8d664919033685809158913b333791b3765a09a219f171",
-      "executable": false
-    },
     "tests/fixtures/archives/listed-version.manifest.json": {
       "sha256": "eb4268de9b8c530e937caa26690b1d3f82bd552b1006ddc664340a65f96e27d8",
       "executable": false
@@ -6637,7 +6625,7 @@
       "executable": false
     },
     "tests/worker/collaboration-mail.test.ts": {
-      "sha256": "6eabed971c79f5663e1d02c3d0fccf4b98cdd665d1250c2dbd44085eb68f4a1a",
+      "sha256": "57a56168ffd59aed4a78eab8dc0c3b16d8d8c450715df10a92485f688a3f44ec",
       "executable": false
     },
     "tests/worker/current-disjoint.test.ts": {
@@ -6772,12 +6760,8 @@
       "sha256": "855f1ace560b5164af2cb28061084cc10cfed5f3be2eafbf6a96d0fa06b57ef7",
       "executable": false
     },
-    "tests/worker/email-bounce-scenario.ts": {
-      "sha256": "28342cb19d992528bbe7fc7015a53407d4e9387e84d77a056bf8337290c65557",
-      "executable": false
-    },
     "tests/worker/email-intake-fixture.ts": {
-      "sha256": "8e52c9f793133332e302efffc36703781f0a1791ffc2c74ad802814d2c80437b",
+      "sha256": "03c45656e2e82e116b6f4dd68cc4a83677c943045956361d008ad3f84cd5153d",
       "executable": false
     },
     "tests/worker/entry.ts": {
