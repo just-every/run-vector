@@ -1730,5 +1730,63 @@
     "created_at",
     "updated_at",
     "decided_at"
+  ],
+  "calendar_feed_tokens": [
+    "id",
+    "workspace_id",
+    "creator_id",
+    "team_id",
+    "token_hash",
+    "version",
+    "created_at",
+    "updated_at",
+    "revoked_at"
+  ],
+  "dashboards": [
+    "id",
+    "workspace_id",
+    "creator_id",
+    "team_id",
+    "name",
+    "is_shared",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "dashboard_widgets": [
+    "dashboard_id",
+    "position",
+    "definition_json"
+  ],
+  "project_templates": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "name",
+    "description",
+    "cadence",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "project_template_milestones": [
+    "template_id",
+    "position",
+    "name",
+    "description",
+    "offset_days"
+  ],
+  "project_template_labels": [
+    "template_id",
+    "name"
+  ],
+  "project_template_issues": [
+    "template_id",
+    "position",
+    "title",
+    "description",
+    "priority",
+    "offset_days",
+    "milestone_position"
   ]
 }

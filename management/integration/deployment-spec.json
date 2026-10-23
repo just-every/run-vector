@@ -526,6 +526,24 @@
       "name": "0086_team_join_requests.sql",
       "sha256": "528c502df5e56a863093ecff5e2b7f38938ba970735bdb73682d2aec542297bf",
       "sql": "-- TEAM-007: explicit request exposure; existing public teams stay open.\nALTER TABLE teams ADD COLUMN membership_mode TEXT NOT NULL DEFAULT 'open' CHECK(membership_mode IN('open','invite_only'));\nALTER TABLE teams ADD COLUMN requests_enabled INTEGER NOT NULL DEFAULT 0 CHECK(requests_enabled IN(0,1));\nCREATE TABLE team_join_requests (\n team_id TEXT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,\n requester_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n state TEXT NOT NULL CHECK(state IN('pending','approved','declined')),\n decided_by TEXT REFERENCES operators(id) ON DELETE SET NULL,\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n decided_at TEXT,\n PRIMARY KEY(team_id,requester_id)\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0090_calendar_feeds.sql",
+      "sha256": "ed31504e5a5495087e96df4e0bbe04e21074519910cfee17e8e8c204d39797fe",
+      "sql": "-- Feed capabilities are credentials, excluded from portable archives.\nCREATE TABLE calendar_feed_tokens (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id) ON DELETE CASCADE,\n  creator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n  team_id TEXT REFERENCES teams(id) ON DELETE CASCADE,\n  token_hash TEXT NOT NULL UNIQUE CHECK(length(token_hash)=64),\n  version INTEGER NOT NULL DEFAULT 1,\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL,\n  revoked_at TEXT\n);\nCREATE INDEX calendar_feed_creator ON calendar_feed_tokens(creator_id,team_id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0091_dashboards.sql",
+      "sha256": "a1e8b4000bdf198f39c2976cc731e232749b47a00f436fadc1c204d616be7c3d",
+      "sql": "CREATE TABLE dashboards (\n id TEXT PRIMARY KEY,\n workspace_id TEXT NOT NULL REFERENCES workspace_settings(id) ON DELETE CASCADE,\n creator_id TEXT NOT NULL REFERENCES operators(id) ON DELETE CASCADE,\n team_id TEXT REFERENCES teams(id) ON DELETE CASCADE,\n name TEXT NOT NULL,\n is_shared INTEGER NOT NULL DEFAULT 0 CHECK(is_shared IN (0,1)),\n version INTEGER NOT NULL DEFAULT 1,\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL\n);\nCREATE INDEX dashboards_workspace ON dashboards(workspace_id,creator_id,is_shared);\n-- Only definitions are saved. Every count and issue is read as the current viewer.\nCREATE TABLE dashboard_widgets (\n dashboard_id TEXT NOT NULL REFERENCES dashboards(id) ON DELETE CASCADE,\n position INTEGER NOT NULL CHECK(position>=0),\n definition_json TEXT NOT NULL CHECK(json_valid(definition_json)),\n PRIMARY KEY(dashboard_id,position)\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0092_project_templates.sql",
+      "sha256": "010c73fcb9b84587c4af75fb7c3fd5fd5d51bae0c79a1421f850af14d4280937",
+      "sql": "CREATE TABLE project_templates (\n id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL REFERENCES workspace_settings(id) ON DELETE CASCADE,\n team_id TEXT REFERENCES teams(id) ON DELETE CASCADE, name TEXT NOT NULL, description TEXT NOT NULL,\n cadence TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, created_at TEXT NOT NULL, updated_at TEXT NOT NULL\n);\nCREATE TABLE project_template_milestones (template_id TEXT NOT NULL REFERENCES project_templates(id) ON DELETE CASCADE, position INTEGER NOT NULL, name TEXT NOT NULL, description TEXT NOT NULL, offset_days INTEGER, PRIMARY KEY(template_id,position));\nCREATE TABLE project_template_labels (template_id TEXT NOT NULL REFERENCES project_templates(id) ON DELETE CASCADE, name TEXT NOT NULL, PRIMARY KEY(template_id,name));\nCREATE TABLE project_template_issues (template_id TEXT NOT NULL REFERENCES project_templates(id) ON DELETE CASCADE, position INTEGER NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL, priority TEXT NOT NULL, offset_days INTEGER, milestone_position INTEGER, PRIMARY KEY(template_id,position));\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

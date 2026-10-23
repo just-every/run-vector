@@ -1,12 +1,15 @@
+import { exerciseDashboards } from "./dashboard-proof";
 import { env } from "cloudflare:workers";
 import { afterEach, expect, it, vi } from "vitest";
 import { closureFixture } from "./cycle-closure-fixture";
+import { invite, actor, request } from "./base-auth-fixture";
+import { insightReportSchema } from "../../src/core/features/insights/schema";
 import { bindings } from "./base-auth-fixture";
 import { scheduled } from "../../src/core/app/scheduled";
 
 afterEach(() => vi.useRealTimers());
 
-it("[REPORT-002 CYCLE-005] daily burn-up follows completion, reopening, removal and re-addition, then freezes outcomes and assignees at closure", async () => {
+it("[REPORT-003 REPORT-001 REPORT-002 CYCLE-005] Insights, shared dashboards and daily burn-up follows completion, reopening, removal and re-addition, then freezes outcomes and assignees at closure", async () => {
   const f = await closureFixture();
   vi.useFakeTimers({ toFake: ["Date"] });
   const at = async (day: string, capture = true) => {
@@ -80,4 +83,40 @@ it("[REPORT-002 CYCLE-005] daily burn-up follows completion, reopening, removal 
   await env.DB.prepare("UPDATE operators SET name='Changed after closure' WHERE id=?").bind(f.owner).run();
   expect((await f.detail()).snapshot).toEqual(snapshot);
   expect((await f.detail()).report).toEqual(frozen);
+  // Four synthetic delivery durations: 1, 3, 5, 9 days. Nearest rank yields
+  // median 3, p75 5 and p90 9. Completion weeks contain 3 and 1 issues.
+  const insightIssues: {identifier:string}[] = [];
+  for (const [index, days] of [1,3,5,9].entries()) {
+    await at("2026-10-05", false);
+    const issue = await f.create({ title: (index === 0 ? "=" : "") + "synthetic-vector-" + (index + 1), statusId: status("started"), estimate: index + 1 });
+    await at("2026-10-" + String(5 + days).padStart(2,"0"), false);
+    await patch(issue.identifier, { statusId: status("completed") });
+    insightIssues.push(issue);
+  }
+  await at("2026-10-20", false);
+  const params = new URLSearchParams({ q:"synthetic-vector-",team:f.team.id,metric:"cycle-time" });
+  const read = async (extra: Record<string,string> = {}) => {
+    const response = await f.call("/insights?" + new URLSearchParams({...Object.fromEntries(params),...extra}));
+    expect(response.status, await response.clone().text()).toBe(200);
+    return insightReportSchema.parse(await response.json());
+  };
+  const cycle = await read();
+  expect(cycle.rows.map(r=>[r.week,r.count,r.median,r.p75,r.p90])).toEqual([
+    ["2026-10-05",3,3,5,5],["2026-10-12",1,9,9,9],
+  ]);
+  const throughput = await read({metric:"throughput",unit:"estimate"});
+  expect(throughput.rows.map(r=>[r.week,r.count,r.value])).toEqual([["2026-10-05",3,6],["2026-10-12",1,4]]);
+  const drill = await read({bucket:cycle.rows[0].key});
+  expect(drill.drill?.issues.map(i=>i.identifier).sort()).toEqual(insightIssues.slice(0,3).map(i=>i.identifier).sort());
+  const csv = await f.call("/insights.csv?" + params + "&bucket=" + encodeURIComponent(cycle.rows[0].key));
+  expect(csv.status).toBe(200);
+  expect(await csv.text()).toContain("'=synthetic-vector-1");
+  const memberCookie = await invite("synthetic-vector-5@example.test",f.cookie);
+  const memberId = await actor(memberCookie);
+  expect((await request("/api/insights?" + params,"GET",undefined,memberCookie)).status).toBe(200);
+  const dashboardId = await exerciseDashboards(f,memberCookie,memberId,insightIssues.map(i=>i.identifier));
+  expect((await f.call("/settings/operators/" + memberId + "/role","PATCH",{role:"guest",teamIds:[f.team.id]})).status).toBe(200);
+  for(const [path,method] of [["/api/dashboards","GET"],["/api/dashboards","POST"],["/api/dashboards/"+dashboardId,"GET"],["/api/dashboards/"+dashboardId,"PUT"],["/api/dashboards/"+dashboardId,"DELETE"]]) expect((await request(path,method,method==="GET"?undefined:{},memberCookie)).status).toBe(403);
+  for (const path of ["/api/insights?","/api/insights.csv?"]) expect((await request(path + params,"GET",undefined,memberCookie)).status).toBe(403);
+
 });

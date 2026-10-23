@@ -1,0 +1,17 @@
+import {z} from 'zod';
+import {issueListQuerySchema} from '../issues/list-schema';
+import {insightQuerySchema,insightReportSchema} from '../insights/schema';
+const id=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/),date=z.union([z.literal(''),z.iso.date()]).default('');
+export const widgetSchema=z.object({name:z.string().trim().min(1).max(120),kind:z.enum(['chart','count','list']),filters:issueListQuerySchema,chart:insightQuerySchema}).strict();
+export type Widget=z.infer<typeof widgetSchema>;
+export const dashboardInputSchema=z.object({name:z.string().trim().min(1).max(120),teamId:id.nullable().default(null),isShared:z.boolean().default(false),widgets:z.array(widgetSchema).min(1).max(12)}).strict();
+export type DashboardInput=z.infer<typeof dashboardInputSchema>;
+export const dashboardUpdateSchema=dashboardInputSchema.extend({expectedVersion:z.number().int().positive()});
+export const dashboardFiltersSchema=z.object({team:z.union([z.literal('all'),id]).default('all'),project:z.union([z.enum(['all','none']),id]).default('all'),from:date,to:date,widget:z.coerce.number().int().min(-1).max(11).default(-1),bucket:z.string().max(500).default('')}).refine(q=>!q.from||!q.to||q.from<=q.to,{message:'Choose due dates in order.'});
+export type DashboardFilters=z.infer<typeof dashboardFiltersSchema>;
+const summary=z.object({id,name:z.string(),teamId:id.nullable(),isShared:z.boolean(),creatorId:id,version:z.number(),canEdit:z.boolean()});
+export const dashboardListSchema=z.object({dashboards:z.array(summary),teams:z.array(z.object({id,name:z.string()}))});
+export const dashboardSchema=summary.extend({widgets:z.array(widgetSchema)});
+export type Dashboard=z.infer<typeof dashboardSchema>;
+export const dashboardReadSchema=z.object({dashboard:dashboardSchema,results:z.array(z.object({count:z.number(),issues:z.array(z.object({identifier:z.string(),title:z.string()})),report:insightReportSchema.nullable(),href:z.string(),csvHref:z.string(),empty:z.boolean()}))});
+export type DashboardRead=z.infer<typeof dashboardReadSchema>;

@@ -1,0 +1,35 @@
+import {expect} from 'vitest';
+import {env} from 'cloudflare:workers';
+import {invite,actor,request} from './base-auth-fixture';
+import type {setupIntegrations} from './integration-fixture';
+export async function exerciseProjectTemplates(f:Awaited<ReturnType<typeof setupIntegrations>>){
+ const team=f.initial.teams[0],member=await invite('synthetic-vector-51@example.test',f.cookie,'member'),memberId=await actor(member);
+ const call=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,member);
+ expect((await f.call('/settings/teams/'+team.id+'/members/'+memberId,'PUT',{role:'member'})).status).toBe(200);
+ const input={name:'synthetic-vector-52',teamId:null,description:'## Launch structure',cadence:'Every Friday',labels:['synthetic-vector-53'],milestones:[{name:'synthetic-vector-54',description:'Foundation',offsetDays:3},{name:'synthetic-vector-55',description:'Launch',offsetDays:10}],issues:[0,1,2,3].map(i=>({title:'synthetic-vector-'+(56+i),description:'**Default work**',priority:'high',offsetDays:i+2,milestonePosition:i<2?0:1}))};
+ expect((await call('/project-templates','POST',input)).status).toBe(403);
+ const made=await f.call('/project-templates','POST',input);expect(made.status,await made.clone().text()).toBe(201);const template=await made.json() as any;
+ const apply=await f.call('/project-templates/'+template.id+'/apply','POST',{name:'synthetic-vector-60',startDate:'2027-03-01',teamId:team.id,expectedVersion:1});expect(apply.status,await apply.clone().text()).toBe(201);const result=await apply.json() as any;expect(result.skippedLabels).toEqual([]);
+ const detail=await(await f.call('/projects/'+result.projectId)).json() as any;
+ expect(detail).toMatchObject({name:'synthetic-vector-60',startDate:'2027-03-01',description:input.description});
+ expect(detail.milestones.map((m:any)=>m.targetDate)).toEqual(['2027-03-04','2027-03-11']);
+ expect(detail.labels.map((l:any)=>l.name)).toEqual(input.labels);
+ const issues=(await env.DB.prepare('SELECT title,description,due_date,milestone_id,assignee_operator_id FROM issues WHERE project_id=? ORDER BY title').bind(result.projectId).all()).results;
+ expect(issues).toHaveLength(4);expect(issues.map(i=>i.due_date)).toEqual(['2027-03-03','2027-03-04','2027-03-05','2027-03-06']);expect(issues.map(i=>i.milestone_id)).toEqual([result.milestoneIds[0],result.milestoneIds[0],result.milestoneIds[1],result.milestoneIds[1]]);expect(issues.every(i=>i.assignee_operator_id===null)).toBe(true);
+ expect(detail.activity.filter((a:any)=>a.kind==='project.template_applied')).toHaveLength(1);
+ expect(detail.activity.find((a:any)=>a.kind==='project.template_applied').nextValue.templateName).toBe(input.name);
+ const captured=await f.call('/project-templates/from-project/'+result.projectId,'POST',{name:'synthetic-vector-61',teamId:team.id,referenceDate:'2027-03-01',cadence:'Weekly'});expect(captured.status,await captured.clone().text()).toBe(201);const teamTemplate=await captured.json() as any;
+ expect(teamTemplate).toMatchObject({issues:input.issues,milestones:input.milestones,labels:input.labels,cadence:'Weekly'});expect(JSON.stringify(teamTemplate)).not.toContain(memberId);
+ const own=await call('/project-templates','POST',{...input,teamId:team.id,name:'synthetic-vector-62',labels:['synthetic-vector-63']});expect(own.status,await own.clone().text()).toBe(201);const owned=await own.json() as any;
+ const memberApply=await call('/project-templates/'+owned.id+'/apply','POST',{name:'synthetic-vector-64',startDate:'2027-04-01',teamId:team.id,expectedVersion:1});expect(memberApply.status).toBe(201);expect((await memberApply.json() as any).skippedLabels).toEqual(['synthetic-vector-63']);expect(await env.DB.prepare('SELECT id FROM labels WHERE name=?').bind('synthetic-vector-63').first()).toBeNull();
+ expect((await f.call('/settings/teams/'+team.id+'/permissions','PUT',{settings:'team_owners',planning:'team_owners'})).status).toBe(200);
+ for(const [path,method,body] of [['/project-templates','POST',{...input,teamId:team.id}],['/project-templates/'+owned.id,'PUT',{...input,teamId:team.id,expectedVersion:1}],['/project-templates/'+owned.id,'DELETE',{expectedVersion:1}]] as const)expect((await call(path,method,body)).status).toBe(403);
+ expect((await f.call('/settings/teams/'+team.id+'/members/'+memberId,'PUT',{role:'owner'})).status).toBe(200);
+ expect((await call('/project-templates/'+owned.id,'PUT',{...input,teamId:team.id,expectedVersion:1})).status).toBe(200);
+ expect((await call('/project-templates/'+owned.id,'DELETE',{expectedVersion:1})).status).toBe(409);
+ expect((await call('/project-templates/'+owned.id,'DELETE',{expectedVersion:2})).status).toBe(200);
+ expect((await f.call('/projects/'+result.projectId)).status).toBe(200);
+ const outsider=await invite('synthetic-vector-65@example.test',f.cookie,'member');expect((await request('/api/project-templates/'+teamTemplate.id,'GET',undefined,outsider)).status).toBe(404);
+ const guest=await invite('synthetic-vector-66@example.test',f.cookie,'member'),guestId=await actor(guest);expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[team.id]})).status).toBe(200);
+ for(const [path,method,body] of [['/project-templates','GET',undefined],['/project-templates/'+template.id,'GET',undefined],['/project-templates','POST',input],['/project-templates/'+template.id,'PUT',{...input,expectedVersion:1}],['/project-templates/'+template.id,'DELETE',{expectedVersion:1}],['/project-templates/'+template.id+'/apply','POST',{name:'synthetic-vector-67',startDate:'2027-04-01',teamId:team.id,expectedVersion:1}],['/project-templates/from-project/'+result.projectId,'POST',{name:'synthetic-vector-68',teamId:null,referenceDate:'2027-03-01'}]] as const)expect((await request('/api'+path,method,body,guest)).status).toBe(403);
+}

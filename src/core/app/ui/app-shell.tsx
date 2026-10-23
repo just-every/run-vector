@@ -36,7 +36,7 @@ type NavigationItem = {
     | '/app/projects'
     | '/app/issues'
     | '/app/inbox'
-    | '/app/board'
+    | '/app/board' | '/app/insights' | '/app/calendar'
   label: string
   icon: string
 }
@@ -48,6 +48,8 @@ const navigation: NavigationItem[] = [
   { to: '/app/issues', label: 'Issues', icon: '▤' },
   { to: '/app/board', label: 'Board', icon: '▥' },
   { to: '/app/inbox', label: 'Inbox', icon: '▣' },
+  { to: '/app/insights', label: 'Insights', icon: '▧' },
+  { to: '/app/calendar', label: 'Calendar', icon: '▦' },
 ]
 
 export function AppShell({ children }: AppShellProps) {

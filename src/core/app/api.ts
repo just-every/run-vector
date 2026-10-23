@@ -1,3 +1,8 @@
+import {addMonthCalendarRoutes} from '../features/calendar-view/routes';
+import {addProjectTemplateRoutes} from '../features/project-templates/routes';
+import { addDashboardRoutes } from "../features/dashboards/routes";
+import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/calendar-feeds/routes";
+import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
@@ -115,6 +120,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     );
   });
 
+  addCalendarFeedPublicRoutes(app);
   app.use("*", async (context, next) => {
     // Server rendering owns admission and the final native-session fence for
     // all of its read projections. This mode has no public HTTP entry point.
@@ -226,6 +232,9 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addCalendarFeedRoutes(app);
+  addInsightRoutes(app);
+  addDashboardRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 
@@ -365,6 +374,8 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addTeamMembershipRoutes(app);
   addIssueCopyRoutes(app);
   addWorkloadRoutes(app);
+  addMonthCalendarRoutes(app);
+  addProjectTemplateRoutes(app);
   addSettingsRoutes(app);
   addAuditRoutes(app);
   addIntegrationConfigRoutes(app);
