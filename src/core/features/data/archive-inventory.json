@@ -1770,5 +1770,25 @@
     "repository_id",
     "deployment_id",
     "issue_id"
+  ],
+  "releases": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "name",
+    "target_date",
+    "status",
+    "description",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "release_issues": [
+    "release_id",
+    "issue_id"
+  ],
+  "release_projects": [
+    "release_id",
+    "project_id"
   ]
 }

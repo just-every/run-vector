@@ -39,6 +39,8 @@ import { Route as AppMyWorkCreatedRouteImport } from './routes/app.my-work.creat
 import { Route as AppMyWorkSubscribedRouteImport } from './routes/app.my-work.subscribed'
 import { Route as AppProjectsIndexRouteImport } from './routes/app.projects.index'
 import { Route as AppProjectsProjectIdRouteImport } from './routes/app.projects.$projectId'
+import { Route as AppReleasesIndexRouteImport } from './routes/app.releases.index'
+import { Route as AppReleasesReleaseIdRouteImport } from './routes/app.releases.$releaseId'
 import { Route as AppSettingsAuditRouteImport } from './routes/app.settings_.audit'
 import { Route as AppViewsViewIdRouteImport } from './routes/app.views.$viewId'
 import { Route as AppMyWorkCreatedIdentifierRouteImport } from './routes/app.my-work.created.$identifier'
@@ -195,6 +197,16 @@ const AppProjectsProjectIdRoute = AppProjectsProjectIdRouteImport.update({
   path: '/projects/$projectId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppReleasesIndexRoute = AppReleasesIndexRouteImport.update({
+  id: '/releases/',
+  path: '/releases/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReleasesReleaseIdRoute = AppReleasesReleaseIdRouteImport.update({
+  id: '/releases/$releaseId',
+  path: '/releases/$releaseId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsAuditRoute = AppSettingsAuditRouteImport.update({
   id: '/settings_/audit',
   path: '/settings/audit',
@@ -250,6 +262,7 @@ export interface FileRoutesByFullPath {
   '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
   '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/releases/$releaseId': typeof AppReleasesReleaseIdRoute
   '/app/settings/audit': typeof AppSettingsAuditRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
@@ -257,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/releases/': typeof AppReleasesIndexRoute
   '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
   '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
   '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
@@ -283,6 +297,7 @@ export interface FileRoutesByTo {
   '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
   '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/releases/$releaseId': typeof AppReleasesReleaseIdRoute
   '/app/settings/audit': typeof AppSettingsAuditRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current': typeof AppCurrentIndexRoute
@@ -290,6 +305,7 @@ export interface FileRoutesByTo {
   '/app/issues': typeof AppIssuesIndexRoute
   '/app/my-work': typeof AppMyWorkIndexRoute
   '/app/projects': typeof AppProjectsIndexRoute
+  '/app/releases': typeof AppReleasesIndexRoute
   '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
   '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
   '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
@@ -321,6 +337,7 @@ export interface FileRoutesById {
   '/app/my-work/created': typeof AppMyWorkCreatedRouteWithChildren
   '/app/my-work/subscribed': typeof AppMyWorkSubscribedRouteWithChildren
   '/app/projects/$projectId': typeof AppProjectsProjectIdRoute
+  '/app/releases/$releaseId': typeof AppReleasesReleaseIdRoute
   '/app/settings_/audit': typeof AppSettingsAuditRoute
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
@@ -328,6 +345,7 @@ export interface FileRoutesById {
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/releases/': typeof AppReleasesIndexRoute
   '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
   '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
   '/app/views/$viewId/$identifier': typeof AppViewsViewIdIdentifierRoute
@@ -360,6 +378,7 @@ export interface FileRouteTypes {
     | '/app/my-work/created'
     | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
+    | '/app/releases/$releaseId'
     | '/app/settings/audit'
     | '/app/views/$viewId'
     | '/app/current/'
@@ -367,6 +386,7 @@ export interface FileRouteTypes {
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
+    | '/app/releases/'
     | '/app/my-work/created/$identifier'
     | '/app/my-work/subscribed/$identifier'
     | '/app/views/$viewId/$identifier'
@@ -393,6 +413,7 @@ export interface FileRouteTypes {
     | '/app/my-work/created'
     | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
+    | '/app/releases/$releaseId'
     | '/app/settings/audit'
     | '/app/views/$viewId'
     | '/app/current'
@@ -400,6 +421,7 @@ export interface FileRouteTypes {
     | '/app/issues'
     | '/app/my-work'
     | '/app/projects'
+    | '/app/releases'
     | '/app/my-work/created/$identifier'
     | '/app/my-work/subscribed/$identifier'
     | '/app/views/$viewId/$identifier'
@@ -430,6 +452,7 @@ export interface FileRouteTypes {
     | '/app/my-work/created'
     | '/app/my-work/subscribed'
     | '/app/projects/$projectId'
+    | '/app/releases/$releaseId'
     | '/app/settings_/audit'
     | '/app/views/$viewId'
     | '/app/current/'
@@ -437,6 +460,7 @@ export interface FileRouteTypes {
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
+    | '/app/releases/'
     | '/app/my-work/created/$identifier'
     | '/app/my-work/subscribed/$identifier'
     | '/app/views/$viewId/$identifier'
@@ -663,6 +687,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/releases/': {
+      id: '/app/releases/'
+      path: '/releases'
+      fullPath: '/app/releases/'
+      preLoaderRoute: typeof AppReleasesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/releases/$releaseId': {
+      id: '/app/releases/$releaseId'
+      path: '/releases/$releaseId'
+      fullPath: '/app/releases/$releaseId'
+      preLoaderRoute: typeof AppReleasesReleaseIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings_/audit': {
       id: '/app/settings_/audit'
       path: '/settings/audit'
@@ -808,10 +846,12 @@ interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppCyclesCycleIdRoute: typeof AppCyclesCycleIdRoute
   AppProjectsProjectIdRoute: typeof AppProjectsProjectIdRoute
+  AppReleasesReleaseIdRoute: typeof AppReleasesReleaseIdRoute
   AppSettingsAuditRoute: typeof AppSettingsAuditRoute
   AppViewsViewIdRoute: typeof AppViewsViewIdRouteWithChildren
   AppCyclesIndexRoute: typeof AppCyclesIndexRoute
   AppProjectsIndexRoute: typeof AppProjectsIndexRoute
+  AppReleasesIndexRoute: typeof AppReleasesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -827,10 +867,12 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppCyclesCycleIdRoute: AppCyclesCycleIdRoute,
   AppProjectsProjectIdRoute: AppProjectsProjectIdRoute,
+  AppReleasesReleaseIdRoute: AppReleasesReleaseIdRoute,
   AppSettingsAuditRoute: AppSettingsAuditRoute,
   AppViewsViewIdRoute: AppViewsViewIdRouteWithChildren,
   AppCyclesIndexRoute: AppCyclesIndexRoute,
   AppProjectsIndexRoute: AppProjectsIndexRoute,
+  AppReleasesIndexRoute: AppReleasesIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -846,6 +888,7 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
 import type { getRouter } from './router.tsx'
 import type { createStart } from '@tanstack/react-start'
 declare module '@tanstack/react-start' {

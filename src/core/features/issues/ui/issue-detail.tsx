@@ -1,6 +1,7 @@
 import { TooltipScope } from '../../../ui/tooltip';
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
+import {IssueReleases} from '../../releases/ui/releases';
 import { IssueCopyAction } from "../../issue-copy/ui";
 import { Subissues } from "../../subissues/ui/subissues";
 import { IssueDescription } from "../../description-history/ui/description";
@@ -256,6 +257,7 @@ function IssueInspector({
         onRefresh={onRefresh}
       />
       <GithubBranch identifier={issue.identifier} title={issue.title}/>
+      <IssueReleases identifier={issue.identifier}/>
       <div className="issue-body">
         <div className="issue-planning-fields">
           <IssueFieldEditor
