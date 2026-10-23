@@ -21,7 +21,7 @@ export function InsightsPage() {
   const change = (values: Partial<IssueListQuery>) => { try { const next = changeIssueListFilters(filters, values); setFilterError(""); setBucket(""); setFilters(next); } catch { setFilterError("Choose valid filters and dates in order."); } };
   const configure = (values: Partial<InsightQuery>) => { setBucket(""); setChart(q => ({ ...q, ...values })); };
   function choice(key: keyof IssueListQuery, label: string, values: { id: string; name: string }[], none?: string) {
-    return <label>{label}<select value={String(filters[key])} onChange={e => change({ [key]: e.target.value })}>
+    return <label>{label}<select aria-label={label} value={String(filters[key])} onChange={e => change({ [key]: e.target.value })}>
       <option value="all">All</option>{none && <option value={key === "assignee" ? "unassigned" : "none"}>{none}</option>}
       {values.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
     </select></label>;
@@ -32,11 +32,11 @@ export function InsightsPage() {
       <p>Understand delivery over time. Every result uses the issues you can read.</p></header>
     <section aria-label="Chart controls" className="insights-card">
       <div className="insights-controls">
-        <label>Chart<select value={chart.metric} onChange={e => configure({ metric: e.target.value as InsightQuery["metric"] })}>
+        <label>Chart<select aria-label="Chart" value={chart.metric} onChange={e => configure({ metric: e.target.value as InsightQuery["metric"] })}>
           {metrics.map(m => <option key={m} value={m}>{metricNames[m]}</option>)}</select></label>
-        <label>Group by<select value={chart.group} onChange={e => configure({ group: e.target.value as InsightQuery["group"] })}>
+        <label>Group by<select aria-label="Group by" value={chart.group} onChange={e => configure({ group: e.target.value as InsightQuery["group"] })}>
           {names(["none", "team", "project", "label", "assignee", "priority"]).map(v => <option key={v.id} value={v.id}>{v.name}</option>)}</select></label>
-        <label>Measure<select value={chart.unit} onChange={e => configure({ unit: e.target.value as InsightQuery["unit"] })}>
+        <label>Measure<select aria-label="Measure" value={chart.unit} onChange={e => configure({ unit: e.target.value as InsightQuery["unit"] })}>
           <option value="count">Issue count</option><option value="estimate">Estimate points</option></select></label>
         <label>From<input type="date" value={chart.from} onChange={e => configure({ from: e.target.value })} /></label>
         <label>Through<input type="date" value={chart.to} onChange={e => configure({ to: e.target.value })} /></label>
@@ -55,10 +55,10 @@ export function InsightsPage() {
         {choice("due", "Due date", names(["overdue", "range", "none"]))}
         {filters.due === "range" && <><label>Due from<input type="date" value={filters.dueFrom} onChange={e => change({ dueFrom: e.target.value })} /></label>
           <label>Due through<input type="date" value={filters.dueTo} onChange={e => change({ dueTo: e.target.value })} /></label></>}
-        <label>Scope<select value={filters.scope} onChange={e => change({ scope: e.target.value as IssueListQuery["scope"] })}>
+        <label>Scope<select aria-label="Scope" value={filters.scope} onChange={e => change({ scope: e.target.value as IssueListQuery["scope"] })}>
           <option value="all">All visible issues</option><option value="created">Created by me</option><option value="subscribed">Followed by me</option></select></label>
         <label>Parent<input value={parent} placeholder="All, none or identifier" onChange={e => setParent(e.target.value)} /><button type="button" onClick={() => change({ parent: parent || "all" })}>Apply parent</button></label>
-        <label>Completed issues<select value={chart.includeCompleted} onChange={e => configure({ includeCompleted: e.target.value as "true" | "false" })}>
+        <label>Completed issues<select aria-label="Completed issues" value={chart.includeCompleted} onChange={e => configure({ includeCompleted: e.target.value as "true" | "false" })}>
           <option value="true">Include when category is All</option><option value="false">Use issue list default</option></select></label>
       </div><button type="button" onClick={() => { setFilters(issueListQuerySchema.parse({})); setBucket(""); }}>Reset filters</button></details>
       {filterError && <p role="alert">{filterError}</p>}
