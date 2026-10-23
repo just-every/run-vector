@@ -6504,8 +6504,12 @@
       "sha256": "04644e5ab6db07e947c34943f79aadfa9e2a6a10ea20ef56ee84d889ce3c8564",
       "executable": false
     },
+    "tests/e2e/core-request-ledger.mjs": {
+      "sha256": "8dee3f2e5b79a5b52ec84d95c6e8e1f5cde2e8e5a2c732ce19d291871aec96bc",
+      "executable": false
+    },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "25825cb96a44a9a60b7a96348b7f3d83ec8e83eaaa3a3646a7ccf00e0901e3c9",
+      "sha256": "cab9ddf273981862807f88df89f855e3fc2c764a29866d3b95387aeb1041393e",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
