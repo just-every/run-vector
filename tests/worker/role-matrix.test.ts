@@ -7,7 +7,7 @@ import type { Administration } from "../../src/core/features/administration/sche
 import { readArchive } from "@runeditrun/rer/modules/portability";
 import contract from "../../CONTRACT.md?raw";
 import { matrix, type RowId } from "../../src/core/features/roles/matrix";
-import { probes, type Probe } from "./role-probes";
+import { githubRuleProbes, probes, type Probe } from "./role-probes";
 import { resetLimits, roleWorkspace, snapshot, type Kind } from "./role-fixture";
 
 const teams = async (response: Response) => ((await response.json()) as Administration).teams;
@@ -215,7 +215,7 @@ const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : st
 const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
-  "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
+  "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
 
 // Driven from the registry, this case grows with every row; its time limit is not a product assertion.
 it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", { timeout: 120_000 }, async () => {
@@ -252,6 +252,20 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
             if (before) expect(await snapshot(watched), `${row} ${surface} ${who} refusal wrote nothing`).toEqual(before);
             checked++;
           }
+    }
+  }
+  for(const {row,probe} of githubRuleProbes(w)){
+    const cells=contractMatrix.get(matrix[row].action)!;
+    for(const settings of ['team_owners','all_members']){
+      const values=await set(settings,'team_owners',false);
+      for(const who of ['owner','admin','lead','member','guest'] as Kind[]){
+        const send=await probe.session(who,w.people[who],w.team.id);
+        const want=promised(cells[column[who]],who,{...values,inTeam:true});
+        const before=want==='allow'?null:await snapshot(watched);
+        const response=await send();
+        expect(outcome(response.status),row+' Git rule '+who+' '+settings).toBe(want);
+        if(before)expect(await snapshot(watched)).toEqual(before);
+      }
     }
   }
   await set("team_owners", "all_members", false);
