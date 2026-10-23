@@ -243,3 +243,18 @@ Owners, Admins and Members act on readable team and workspace releases; Guests a
 Native app doors use /api/releases and the same inputs. Released scope stays fixed until
 an explicit reopen. Release deletion remains an API-003 gap. A ?readOnly=1 workspace
 link hides editing and retains normal sign-in and scope admission; it is not a public share.
+
+## Initiatives
+
+| Route | Scope | Behavior |
+| --- | --- | --- |
+| GET /api/v1/initiatives | initiatives:read | Cursor paging with status and parent filters |
+| GET /api/v1/initiatives/ID | initiatives:read | Three-level hierarchy with visible projects and their teams |
+| POST /api/v1/initiatives | initiatives:write | Name, ownerOperatorId, optional parentId/targetDate, status and description |
+| PATCH /api/v1/initiatives/ID | initiatives:write | Version-checked field and parent edits |
+| PUT /api/v1/initiatives/ID/projects | initiatives:write | Replace direct projectIds with expectedVersion |
+
+Native app doors use /api/initiatives and the same inputs. Owners, Admins and Members
+may act; Guests receive 403 on native, scoped API and page doors. A fourth level or
+a parent cycle receives 400. A project may join several initiatives. Deletion,
+INIT-002 roll-ups and Slack/Discord initiative bindings are not implemented.
