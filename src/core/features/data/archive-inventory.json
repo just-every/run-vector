@@ -1739,7 +1739,8 @@
     "status_id",
     "allow_reopen",
     "version",
-    "updated_at"
+    "updated_at",
+    "production_environment"
   ],
   "github_commit_links": [
     "repository_id",
@@ -1750,5 +1751,24 @@
     "url",
     "closing_applied",
     "received_at"
+  ],
+  "github_push_proofs": [
+    "repository_id",
+    "delivery_id",
+    "after_sha",
+    "ancestors_json",
+    "received_at"
+  ],
+  "github_deployments": [
+    "repository_id",
+    "deployment_id",
+    "sha",
+    "environment",
+    "deployed_at"
+  ],
+  "github_issue_environments": [
+    "repository_id",
+    "deployment_id",
+    "issue_id"
   ]
 }
