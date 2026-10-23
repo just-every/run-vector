@@ -1,3 +1,4 @@
+import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import {initiativeAuthority} from '../features/initiatives/authority';
 import {addInitiativeRoutes} from '../features/initiatives/routes';
@@ -238,6 +239,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addReleaseRoutes(app);
   addGithubIssueProjection(app);
   addGithubRuleRoutes(app);
+  addInsightRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 
