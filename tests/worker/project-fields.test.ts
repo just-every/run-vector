@@ -1,9 +1,10 @@
+import {exerciseProjectTemplates} from './project-template-proof';
 import { expect,it } from 'vitest';
 import { exerciseMilestones } from './project-milestone-flow';
 import { env } from 'cloudflare:workers';
 import { setupIntegrations } from './integration-fixture';
 
-it('[PROJ-011 ISSUE-007 PROJ-001 PROJ-007] project planning and ordered milestones persist with activity, progress, slip and project-move clearing',async()=>{
+it('[PROJ-012 PROJ-011 ISSUE-007 PROJ-001 PROJ-007] project planning and ordered milestones persist with activity, progress, slip and project-move clearing',async()=>{
   const f=await setupIntegrations();
   for(const name of ['Delivery','Customer'])await f.mutate('/settings/labels','POST',{name,color:'#405080',projectsEnabled:true});
   await f.mutate('/settings/labels','POST',{name:'Issues only',color:'#405080'});
@@ -56,6 +57,7 @@ it('[PROJ-011 ISSUE-007 PROJ-001 PROJ-007] project planning and ordered mileston
   expect(after.activity.filter((a:any)=>a.kind==='project.labelIds_changed')).toHaveLength(2);
   expect(await (await f.call('/preferences/projects')).json()).toMatchObject({filters:{label:'all'}});
   await exerciseMilestones(f,project.id);
+  await exerciseProjectTemplates(f);
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 });
 
