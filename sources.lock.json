@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "ff7fd13e728ae8bea7bd72001b7adcb2b885cc78e09830b63eaf4b0ab162cc2a",
+      "sha256": "dc472d19963714f9e447afea40048a0591d1325cd13a7f2b0cb031530947c545",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d22d483137f3989f4d0781a7451ed8efa542d55e3fa56f9bf1343d61b7e421ae",
+      "sha256": "63dc8879ca8c26423a64f7fb479c600ae78a616d5a9d98dd46210627f7aa778b",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "f3c56fff751b5a3a102d40ef65b0b7ba830c4787575a396cc245a839faa0706e",
+      "sha256": "e9fe3843e2e84719b27de45f0f8de07b56f18642fafe71507a48ed4e19455b51",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "31fc3a6bcdbf8f4e492715de4cc14658f60545c4d96e8426727e404d649d2388",
+      "sha256": "c5470c49abaa367abb097d289a67cec7122c78c805904a7d1533dbfa71dc952d",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "1ae95e5b81f76c7382d05b91277c4f6bf41b41caeaebb8cab9492efdf4367196",
+      "sha256": "5a767d92015118fc8094efbaa3919c0ea7890aaa4fc97919def4d0e86fc26a3f",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -2005,7 +2005,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "23aa547a6b9ad3e25782e6b9614ad224e8daca4d2c086bcdb9d4d997c5889960",
+      "sha256": "efd60e128e019a797917d1ebd3317684a9f2294a914f53b85816f66599170670",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2334,6 +2334,18 @@
     },
     "migrations/core/0082_email_intake.sql": {
       "sha256": "18731e1a8112e789703e1cbdd5fd706922d416cf82da874447e5f4281137d6e8",
+      "executable": false
+    },
+    "migrations/core/0087_github_automation.sql": {
+      "sha256": "73643c4cd527502acc1abca468719114fe279a1c2657ce5f2117180b0f4d7f11",
+      "executable": false
+    },
+    "migrations/core/0088_github_commits.sql": {
+      "sha256": "a53536af73402817abcc67626b2f84bff1e9a903d99832354d88b0f3ce850932",
+      "executable": false
+    },
+    "migrations/core/0089_github_deployments.sql": {
+      "sha256": "87837ae810379a2a2c4fe2685e09e029f501d5166d316269f51973d237b73295",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -2873,7 +2885,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "50ef325d866d4bc01acd033ec80134c0f9f49353a4d588d9cb773793b555b620",
+      "sha256": "bd48f287034e2df6b82ddab0ab1b0f92e7144b808a4ff7d4b9310e93efe99f27",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3573,7 +3585,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "d67b5e952a0a3e6ad64e64eb2a2db4a3f54bb14797c11c3483ba9faecfd8036d",
+      "sha256": "e62951192d2ea6c63c00ba5961c43f04783e91e54fec4b2958e6af73ee51c656",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4165,15 +4177,39 @@
       "executable": false
     },
     "src/core/features/integrations/github-read.ts": {
-      "sha256": "c9dd5ae5c66499ecec551eaab5814d433aa28d53cd91503d1366fa275668f781",
+      "sha256": "2d5953908201bc472010e9dc19f05ce159e6593651cf1673ac8cd0cbfab39537",
+      "executable": false
+    },
+    "src/core/features/integrations/github/branch-name.ts": {
+      "sha256": "38080d348669d1123e0bb6107aa03b71980925e4743ccf67402d6f859ca33677",
+      "executable": false
+    },
+    "src/core/features/integrations/github/delivery.ts": {
+      "sha256": "1a617b124b2086ab87a9fc6dfd59fca6aa39a16686a77d3313b74c3d8540c4c0",
+      "executable": false
+    },
+    "src/core/features/integrations/github/deployments.ts": {
+      "sha256": "363866641315c6c0045795e2d14fc5bdcc5622b2f5bc02a07ca0de3aed7a87a9",
       "executable": false
     },
     "src/core/features/integrations/github/input.ts": {
-      "sha256": "f35004d11213fb2799b9265d193bb7cb526150b79a61bb71745bdff5fb21e4b7",
+      "sha256": "f697275a92a15795607e55c4ab7be6ce736424af7a5456e16831ffe7471e6ec2",
+      "executable": false
+    },
+    "src/core/features/integrations/github/push.ts": {
+      "sha256": "44286e1374f3ffca4a54645dccb06623428476fc46d8b18e7306e182b1fe9ed4",
       "executable": false
     },
     "src/core/features/integrations/github/receiver.ts": {
-      "sha256": "642d72a7233c3d514b6f1426326937004c3a30bf3c84c0ab0cef5fe2a93645a8",
+      "sha256": "af0b6541454f2f7ac8b53a04ace2f3f24e14befa28bf45ddedffe4a30bb9ad46",
+      "executable": false
+    },
+    "src/core/features/integrations/github/rule-routes.ts": {
+      "sha256": "b2e405ed13a8bac128c9281141746d764ff572ccb669926cd58ca63e721ab573",
+      "executable": false
+    },
+    "src/core/features/integrations/github/rules.ts": {
+      "sha256": "5535ef591fb1eabe5989e7bfbdb3b79d4c675defd1b4699f7db8ce12359f8aaa",
       "executable": false
     },
     "src/core/features/integrations/milestone-api.ts": {
@@ -4312,16 +4348,28 @@
       "sha256": "0f9c15ddb5fbffc3408a117b337b44e06c3ca7ee8b16ce3f3e2c0b8def9539a6",
       "executable": false
     },
+    "src/core/features/integrations/ui/github-branch.tsx": {
+      "sha256": "b31d9a175a531bfc54bde0acfc87d46f45c61ef115fedbb7159aeb3edd56701a",
+      "executable": false
+    },
     "src/core/features/integrations/ui/github-links.tsx": {
-      "sha256": "076265eb234dbe1b32f020b34cfedf0ded364615af2270ecdd06fb5f18335770",
+      "sha256": "4902fa3258b50db181fe632bb6c3ef015963251d98ed0cee9625185cd34a2ed1",
+      "executable": false
+    },
+    "src/core/features/integrations/ui/github-rules.css": {
+      "sha256": "0bf6f74fc946af4ac10187a78af48cd4f354df08d79bcf0c496774ca4bd47852",
+      "executable": false
+    },
+    "src/core/features/integrations/ui/github-rules.tsx": {
+      "sha256": "0a1872658781957a4f501cdf7039e8e110f077f9db7b73d2df1bdeebc0ce6b69",
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
-      "sha256": "d5c5991bc235cd8a6a91986593885fa22937c037e7db233678172f44f5e828de",
+      "sha256": "d5bdf1007a536ac062a06c354cbd85b9466f0d385191e8d77c3b2a8d7ecf4ecc",
       "executable": false
     },
     "src/core/features/integrations/ui/github-setup.tsx": {
-      "sha256": "ec494ce54177dacc1c4560ec44cc3ea478e11bf3d656f539b44570e50724d05c",
+      "sha256": "6117796df371a285ab1160bb21fe5e41ee708029249936344d2da3f2f72f0b1a",
       "executable": false
     },
     "src/core/features/integrations/ui/github-test.tsx": {
@@ -4633,7 +4681,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "720e17b9e199153881ebbf8ea957baee89c391f87ba8ec62d03fdb116d7d15fa",
+      "sha256": "73e62cdeb7d0c81100f92ee31a2ab0fac31096b54f7649472fdf0e3ddaa9a3c2",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -6249,7 +6297,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "70fb32993716175d3b9e4b16e5f7520a067d7313850fc4e8cf0b159ba9ff61d3",
+      "sha256": "64fdaa9e95cc12869559332777b53a709f645ee78e72f50a49be2de014bb99df",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -6266,6 +6314,10 @@
     },
     "tests/e2e/integrations/channel-settings.mjs": {
       "sha256": "e974af3af1be812749684c01101592cf45665c2f05c03c764b8929fe3670cd54",
+      "executable": false
+    },
+    "tests/e2e/integrations/github-chain.mjs": {
+      "sha256": "ba7a58be1e3d17046da15a6274c286ad3a7a2294674895907902d5d73a608722",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
@@ -6788,8 +6840,12 @@
       "sha256": "f65904d813e3ed24320b93c56e69d38067e8ab388eed49dbb653176f91570226",
       "executable": false
     },
+    "tests/worker/github-automation-scenario.ts": {
+      "sha256": "98941a7e34c9932a1141f8fef58b824224d27c3a67a6e56339c864f214b75a89",
+      "executable": false
+    },
     "tests/worker/github-links.test.ts": {
-      "sha256": "f4209a0d1517dbd131702072ed98243edf4fed612a65c40f87c84d568688a341",
+      "sha256": "69897180ba16e7a54d542ff54b440b91367e1c23414dfc382abf1d698e378e67",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {
@@ -7077,11 +7133,11 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "ca545d51d7a42edcc1dc699cfcfca1b7a982988d501ec7aecd744785e9a7d4c5",
+      "sha256": "1b9c82f83cbfc099fe820b7d91a666ae95fd123a5c7717e76500ea23dc4e869a",
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "de0204417af536bfefaf9716c9164e5eba96cca1b46bf63edc7ecb0d8a9dbf99",
+      "sha256": "b361bea645627c167ea2dd692cb97340098682baed4c26754f501e68ffacf7dc",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
