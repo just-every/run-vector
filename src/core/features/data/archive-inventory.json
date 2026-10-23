@@ -1040,7 +1040,8 @@
     "repository_id",
     "number",
     "issue_id",
-    "created_at"
+    "created_at",
+    "relation"
   ],
   "vector_github_pull_requests": [
     "repository_id",
@@ -1049,7 +1050,8 @@
     "url",
     "state",
     "updated_at",
-    "received_at"
+    "received_at",
+    "merge_sha"
   ],
   "vector_github_repositories": [
     "id",
@@ -1730,5 +1732,13 @@
     "created_at",
     "updated_at",
     "decided_at"
+  ],
+  "github_automation_rules": [
+    "team_id",
+    "trigger",
+    "status_id",
+    "allow_reopen",
+    "version",
+    "updated_at"
   ]
 }
