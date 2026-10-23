@@ -2687,6 +2687,406 @@
           }
         }
       }
+    },
+    "/releases": {
+      "get": {
+        "operationId": "releases_list_get",
+        "summary": "Releases list",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "releases:read"
+        ],
+        "x-object": "releases",
+        "x-operation": "list",
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "team",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "planned",
+                "in_progress",
+                "released"
+              ]
+            }
+          }
+        ],
+        "x-pagination": "cursor",
+        "x-filters": [
+          "team",
+          "status"
+        ]
+      },
+      "post": {
+        "operationId": "releases_create_post",
+        "summary": "Releases create",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "releases:write"
+        ],
+        "x-object": "releases",
+        "x-operation": "create",
+        "responses": {
+          "201": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "teamId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  "targetDate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "planned",
+                      "in_progress",
+                      "released"
+                    ]
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 100000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/releases/{id}": {
+      "get": {
+        "operationId": "releases_get_get",
+        "summary": "Releases get",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "releases:read"
+        ],
+        "x-object": "releases",
+        "x-operation": "get",
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "releases_update_patch",
+        "summary": "Releases update",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "releases:write"
+        ],
+        "x-object": "releases",
+        "x-operation": "update",
+        "responses": {
+          "201": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  },
+                  "targetDate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date"
+                  },
+                  "status": {
+                    "type": "string",
+                    "enum": [
+                      "planned",
+                      "in_progress",
+                      "released"
+                    ]
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 100000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/releases/{id}/scope": {
+      "put": {
+        "operationId": "releases_update_put",
+        "summary": "Releases update",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "releases:write"
+        ],
+        "x-object": "releases",
+        "x-operation": "update",
+        "responses": {
+          "201": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "expectedVersion",
+                  "issueIdentifiers",
+                  "projectIds"
+                ],
+                "properties": {
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "issueIdentifiers": {
+                    "type": "array",
+                    "maxItems": 500,
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "projectIds": {
+                    "type": "array",
+                    "maxItems": 200,
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3048,8 +3448,39 @@
       "clause": "INIT-001"
     },
     "releases": {
-      "status": "not-built",
-      "clause": "RELEASE-001"
+      "status": "partial",
+      "clause": "RELEASE-001",
+      "operations": {
+        "list": {
+          "status": "implemented",
+          "routes": [
+            "GET /releases"
+          ]
+        },
+        "get": {
+          "status": "implemented",
+          "routes": [
+            "GET /releases/{id}"
+          ]
+        },
+        "create": {
+          "status": "implemented",
+          "routes": [
+            "POST /releases"
+          ]
+        },
+        "update": {
+          "status": "implemented",
+          "routes": [
+            "PATCH /releases/{id}",
+            "PUT /releases/{id}/scope"
+          ]
+        },
+        "delete": {
+          "status": "owed",
+          "reason": "Release deletion is not built; scope replacement preserves issues and projects."
+        }
+      }
     },
     "documents": {
       "status": "not-built",

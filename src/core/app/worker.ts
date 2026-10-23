@@ -1,3 +1,4 @@
+import {releasePageDenial} from '../features/releases/authority';
 import { auditAuthority } from '../features/audit/repository';
 import { receiveIntakeMail } from '../features/email-intake/inbound';
 import { SettingsError } from '../features/settings/repository';
@@ -80,6 +81,7 @@ export async function handleRequest(
       });
     }
   }
+  if(admitted){const denial=await releasePageDenial(env,url.pathname,admitted.id);if(denial)return denial;}
   if (url.pathname.replace(/\/$/, '') === '/app/settings/audit' && admitted) {
     try { await auditAuthority(env.DB, admitted.id); }
     catch (error) {
@@ -121,6 +123,7 @@ export async function handleRequest(
   if (admitted && !(await timed('fence', () => operatorProjectionAdmitted(env.DB, admitted.id, workspace, admitted.fence)))) return Response.json({error:"unauthenticated"}, {status:401, headers:{"Cache-Control":"no-store"}});
   if (url.pathname.startsWith("/app") || url.pathname.startsWith("/_serverFn/"))
     response.headers.set("Cache-Control", "no-store");
+  if(admitted){const denial=await releasePageDenial(env,url.pathname,admitted.id);if(denial)return denial;}
   if (admitted) response.headers.append('Server-Timing', timings.join(', '));
   return response.headers.get("content-type")?.includes("text/html")?editorDocument(response,env):response;
 }

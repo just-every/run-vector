@@ -1,0 +1,10 @@
+import {z} from 'zod';
+export const releaseStatuses=['planned','in_progress','released'] as const;
+export const releaseNames={planned:'Planned',in_progress:'In progress',released:'Released'};
+export const releaseInput=z.object({name:z.string().trim().min(1).max(200),teamId:z.string().length(26).nullable().default(null),targetDate:z.iso.date().nullable().default(null),status:z.enum(releaseStatuses).default('planned'),description:z.string().max(100000).default('')}).strict();
+export const releaseEdit=z.object({name:z.string().trim().min(1).max(200).optional(),targetDate:z.iso.date().nullable().optional(),status:z.enum(releaseStatuses).optional(),description:z.string().max(100000).optional(),expectedVersion:z.number().int().positive()}).strict();
+export const releaseScope=z.object({expectedVersion:z.number().int().positive(),issueIdentifiers:z.array(z.string().regex(/^[A-Z][A-Z0-9_]{1,99}-[1-9][0-9]*$/i).transform(s=>s.toUpperCase())).max(500),projectIds:z.array(z.string().length(26)).max(200)}).strict();
+export const releaseRecord=z.object({id:z.string(),workspaceId:z.string(),teamId:z.string().nullable(),teamName:z.string().nullable(),name:z.string(),targetDate:z.string().nullable(),status:z.enum(releaseStatuses),description:z.string(),version:z.number()});
+export const releasesList=z.object({releases:z.array(releaseRecord)});
+export const releaseDetail=releaseRecord.extend({issues:z.array(z.object({id:z.string(),identifier:z.string(),title:z.string(),category:z.string(),status:z.string()})),directIssues:z.array(z.string()),projects:z.array(z.object({id:z.string(),name:z.string()})),completed:z.number(),total:z.number(),blockers:z.array(z.object({identifier:z.string(),title:z.string(),blockedIdentifier:z.string()})),pullRequests:z.array(z.object({repository:z.string(),number:z.number(),title:z.string(),url:z.string(),state:z.string()}))});
+export type Release=z.infer<typeof releaseRecord>;
