@@ -1711,5 +1711,12 @@
     "created_at",
     "updated_at",
     "bounced_at"
+  ],
+  "issue_reactions": [
+    "issue_id",
+    "subject_id",
+    "operator_id",
+    "emoji",
+    "created_at"
   ]
 }

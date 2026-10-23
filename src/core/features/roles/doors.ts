@@ -144,6 +144,9 @@ export const doors: Door[] = [
   { method: 'POST', path: '/issues/order', row: 'issues.write', teams: bodyTeam },
   { method: 'POST', path: '/issues/undo', row: 'issues.write' },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
+  // ISSUE-017 adopts a narrower Member-only rule in its handler pending ct's reaction row.
+  { method: 'PUT', path: '/issues/:identifier/reactions', row: 'issues.write', teams: issue },
+  { method: 'DELETE', path: '/issues/:identifier/reactions', row: 'issues.write', teams: issue },
   { method: 'GET', path: '/issues/:identifier/email-intake', row: 'issues.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/email-replies', row: 'email.reply', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/comments/:itemId', row: commentEdit('comments.own'), teams: issue },

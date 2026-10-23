@@ -1,0 +1,10 @@
+.issue-reactions { margin: .65rem 0; min-width: 0; }
+.reaction-list, .reaction-choices { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
+.reaction-list button { min-height: 2rem; padding: .2rem .6rem; border-radius: 1rem; }
+.reaction-badge { display: inline-flex; align-items: center; gap: .4rem; }
+.reaction-badge[aria-pressed="true"] { border-color: var(--accent, #243fe6); background: #243fe610; }
+.reaction-picker { margin-top: .5rem; padding: .6rem; border: 1px solid var(--border, #c8c8c8); border-radius: .5rem; max-width: 24rem; }
+.reaction-choices button { min-width: 2.5rem; min-height: 2.5rem; font-size: 1.1rem; padding: .25rem; }
+.reaction-picker form { display: flex; flex-wrap: wrap; align-items: end; gap: .5rem; margin-top: .6rem; }
+.reaction-picker label { display: grid; gap: .2rem; min-width: 0; flex: 1 1 9rem; }
+.reaction-picker input { width: 100%; min-width: 0; }

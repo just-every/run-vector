@@ -1,3 +1,4 @@
+import { Reactions } from '../../reactions/ui/reactions';
 import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState } from 'react';
 import { z } from 'zod';
@@ -26,6 +27,7 @@ export function IssueDescription({ issue, onRefresh }: { issue: IssueDetailData;
           if (cause instanceof ApiError && cause.status === 409) onRefresh();
         } finally { setBusy(false); }
       }}>{issue.description}</SafeMarkdown>
+      <Reactions subjectId="description" label="description" />
       {error && <p role="alert">{error}</p>}
     </details> : null}
     <DescriptionHistory key={issue.identifier} issue={issue} onRefresh={onRefresh} />
