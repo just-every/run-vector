@@ -588,8 +588,11 @@ try {
     "Actual emitted scheduled export recovers a persisted file-removal intent; download denies removed bytes, metadata is erased, and repeated local cron produces one deletion audit.",
   );
   browser = await chromium.launch({ headless: true, args: ["--use-mock-keychain", "--password-store=basic"] });
+  // Browser reads and context.request calls can outlast workerd's 5 s idle
+  // socket lifetime between journey steps; never reuse an idle connection.
   const context = await browser.newContext({
     viewport: { width: 1440, height: 1000 },
+    extraHTTPHeaders: { Connection: "close" },
   });
   const page = await context.newPage(),
     errors = [],
