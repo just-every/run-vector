@@ -64,7 +64,7 @@ it('[API-003] the versioned schema is published through the real app',async()=>{
   ['/projects/{id}/milestones/order','put',planning.projectMilestoneOrderSchema],
   ['/cycles','post',planning.cycleCreateSchema],
  ] as const){const generated=z.toJSONSchema(validator,{io:'input'});delete generated.$schema;expect(schema.paths[path][method].requestBody.content['application/json'].schema).toEqual(generated);}
- const mounted=createIntegrationApi().routes.filter(r=>r.method!=='ALL').map(r=>r.method+' '+r.path.replace(/:([A-Za-z]+)/g,'{$1}')).sort();
+ const mounted=f.app.routes.filter(r=>r.method!=='ALL'&&r.path.startsWith('/api/v1/')).map(r=>r.method+' '+r.path.slice('/api/v1'.length).replace(/:([A-Za-z]+)/g,'{$1}')).sort();
  expect(mounted).toEqual(apiRoutes.map(r=>r.method+' '+r.path).sort());
  const required='issues,comments,attachments,relations,labels,teams,workflow states,cycles,projects,milestones,initiatives,releases,documents,views,customers,customer requests,notifications,members'.split(',');
  const remainder:string[]=[];

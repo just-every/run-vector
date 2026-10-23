@@ -199,3 +199,12 @@ export function githubRuleProbes(w:Workspace):{row:RowId;probe:Probe}[]{
   return ()=>actor.call('/settings/teams/'+team,'PATCH',{githubAutomation:{trigger:'draft',statusId:null,allowReopen:false,expectedVersion:version}});
  }}}];
 }
+
+
+/** RELEASE-001 carries the existing contract row without changing the
+ * core role table owned by the concurrent administration campaign. */
+export function releaseMatrixProbes(w:Workspace){
+ return {action:'Create, edit or release a release (RELEASE-001)',session:async(_who:Kind,actor:Person,team:string)=>{
+  return ()=>actor.call('/releases','POST',{name:'synthetic-vector-1751 '+actor.id,teamId:team});
+ }};
+}
