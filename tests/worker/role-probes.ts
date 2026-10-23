@@ -241,3 +241,34 @@ export function subscriptionPersonalProbe(w:Workspace){
   return actor.call('/subscriptions','POST',{subjectType:'team',subjectId:team});
  }};
 }
+
+export function initiativeMatrixProbes(w:Workspace){
+ const app=createServerApp();
+ const prepare=async(who:Kind,actor:Person,team:string,send:(path:string,method?:string,body?:unknown)=>Promise<Response>)=>{
+  const target=who==='guest'?await json<{id:string;version:number}>(w.people.owner.call('/initiatives','POST',{name:'synthetic-vector-1759',ownerOperatorId:actor.id})):null;
+  return async()=>{
+   const created=await send('/initiatives','POST',{name:'synthetic-vector-1751 '+actor.id,ownerOperatorId:actor.id});
+   expect(created.status).toBe(who==='guest'?403:201);
+   const initiative=target??await created.clone().json() as {id:string;version:number};let version=initiative.version;
+   for(const [path,method,body] of [
+    ['/initiatives/'+initiative.id,'GET',undefined],
+    ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version,description:'synthetic-vector-1759'}],
+    ['/initiatives/'+initiative.id+'/projects','PUT',{expectedVersion:version+1,projectIds:[]}],
+    ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version+2,status:'initiatived'}],
+   ] as const){const response=await send(path,method,body);expect(response.status).toBe(who==='guest'?403:200);}
+   return created;
+  };
+ };
+ return {action:'Create and edit initiatives; add projects to them (INIT-001)',
+  session:async(who:Kind,actor:Person,team:string)=>prepare(who,actor,team,actor.call),
+  api:async(who:Kind,actor:Person,team:string)=>{
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'member'})).status).toBe(200);
+   const minted=await json<{token:string}>(actor.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1759',scopes:['initiatives:read','initiatives:write']}));
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'guest',teamIds:[team]})).status).toBe(200);
+   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+   return prepare(who,actor,team,send);
+  }
+ };
+}
+
+

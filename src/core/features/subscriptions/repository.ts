@@ -9,10 +9,11 @@ export function subjectSelection(type:SubjectType,id:string|undefined,workspace:
  if(type==='team')return {sql:'SELECT s.id,s.name FROM teams s WHERE s.workspace_id=?'+bound,values};
  if(type==='project')return {sql:'SELECT s.id,s.name FROM projects s WHERE s.workspace_id=?'+bound,values};
  if(type==='label')return {sql:"SELECT s.id,s.name FROM labels s WHERE s.workspace_id=?"+bound+" AND ((SELECT role FROM operators WHERE id=?)<>'guest' OR EXISTS(SELECT 1 FROM issue_labels l JOIN issues i ON i.id=l.issue_id WHERE l.label_id=s.id))",values:[...values,actor]};
+ if(type==='initiative')return {sql:"SELECT s.id,s.name FROM initiatives s WHERE s.workspace_id=?"+bound+" AND (SELECT role FROM operators WHERE id=?)<>'guest'",values:[...values,actor]};
  if(type==='view')return {sql:'SELECT s.id,s.name FROM saved_views s WHERE s.workspace_id=?'+bound+' AND (s.owner_operator_id=? OR s.is_shared=1)',values:[...values,actor]};
  throw new IntegrationError(400,'invalid_subscription_subject');
 }
-export const subjectUrl=(type:SubjectType,id:string)=>type==='project'?'/app/projects/'+id:type==='view'?'/app/views/'+id:'/app/issues?'+(type==='team'?'team':'label')+'='+id;
+export const subjectUrl=(type:SubjectType,id:string)=>type==='initiative'?'/app/initiatives/'+id:type==='project'?'/app/projects/'+id:type==='view'?'/app/views/'+id:'/app/issues?'+(type==='team'?'team':'label')+'='+id;
 export async function subscriptions(db:D1Database,actor:string){
  const access=await settingsActor(db,actor);
  const subjects=[];

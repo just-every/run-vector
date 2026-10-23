@@ -24,6 +24,7 @@ export async function processMemberSubscriptions(env:WorkerBindings,actor:string
   if(sub.subjectType==='team')test={sql:'i.team_id=?',values:[sub.subjectId]};
   else if(sub.subjectType==='project')test={sql:'i.project_id=? AND EXISTS(SELECT 1 FROM projects WHERE id=?)',values:[sub.subjectId,sub.subjectId]};
   else if(sub.subjectType==='label')test={sql:'EXISTS(SELECT 1 FROM issue_labels label WHERE label.issue_id=i.id AND label.label_id=?)',values:[sub.subjectId]};
+  else if(sub.subjectType==='initiative')test={sql:`EXISTS(WITH RECURSIVE tree(id) AS (SELECT id FROM initiatives WHERE id=? AND workspace_id=? UNION ALL SELECT n.id FROM initiatives n JOIN tree parent ON n.parent_id=parent.id) SELECT 1 FROM tree JOIN initiative_projects link ON link.initiative_id=tree.id WHERE link.project_id=i.project_id) AND o.role<>'guest'`,values:[sub.subjectId,access.workspace_id]};
   else if(sub.subjectType==='view'){
    const view=await db.prepare('SELECT filters_json,sort,grouping FROM saved_views WHERE id=? AND workspace_id=? AND (owner_operator_id=? OR is_shared=1)').bind(sub.subjectId,access.workspace_id,actor).first<{filters_json:string;sort:string;grouping:string}>();
    if(!view)continue;
