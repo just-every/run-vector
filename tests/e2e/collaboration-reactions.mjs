@@ -31,6 +31,9 @@ export async function exerciseReactions({page,peer,runtime,issue,operator,owner,
   for(const width of [1440,390]) {
     await page.setViewportSize({width,height:900});await peer.setViewportSize({width,height:900});
     const emoji=width===1440?'👍':'🎉',name=width===1440?'Thumbs up':'Celebrate';
+    const trigger=description(page).getByRole('button',{name:'Add reaction to description',exact:true});
+    await trigger.click();await description(page).getByRole('textbox',{name:'Other emoji',exact:true}).fill('🚚');
+    await inspect(description(page),'reaction-picker-'+width);await trigger.click();
     await live(peer,emoji,1,description,()=>add(page,description(page),name));
     await live(page,emoji,2,description,()=>add(peer,description(peer),name));
     const reaction=badge(description(page),emoji,2);await reaction.focus();
@@ -50,6 +53,12 @@ export async function exerciseReactions({page,peer,runtime,issue,operator,owner,
     assert.equal(await page.getByRole('tooltip').filter({hasText:owner.name}).isVisible(),true);
     await inspect(page.locator('.comment-entry').filter({has:page.locator('.issue-reactions')}).first(),'comment-reactions-added-'+width);
     await live(peer,commentEmoji,0,comments,()=>mutate(page,'DELETE',()=>badge(comments(page),commentEmoji,1).click()));
+    await live(peer,'🚚',1,comments,async()=>{
+      await comments(page).getByRole('button',{name:/^Add reaction to/}).click();
+      await comments(page).getByRole('textbox',{name:'Other emoji',exact:true}).fill('🚚');
+      await mutate(page,'PUT',()=>comments(page).getByRole('button',{name:'Add emoji',exact:true}).click());
+    });
+    await live(peer,'🚚',0,comments,()=>mutate(page,'DELETE',()=>badge(comments(page),'🚚',1).click()));
     const bold=page.getByRole('button',{name:'Bold',exact:true}).last();await bold.focus();
     assert.equal(await page.getByRole('tooltip',{name:'Bold',exact:true}).isVisible(),true,'Formatting icon has a keyboard tooltip');
     await inspect(comments(page),'comment-reactions-removed-'+width);

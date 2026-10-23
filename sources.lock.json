@@ -6033,7 +6033,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-reactions.mjs": {
-      "sha256": "8bd259884dcf37d3f9d05ab3ee7617b691718244ceb77d73e19282722b9bb799",
+      "sha256": "b897a700216cd80361618b577d3a515f115e62414a85cf5c3689841040c868a4",
       "executable": false
     },
     "tests/e2e/collaboration-reads.mjs": {
