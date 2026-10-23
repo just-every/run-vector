@@ -6261,7 +6261,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "91b5df05142a196fcf61f708f603876c39a128db7cde97a738eb4a77a8a615d1",
+      "sha256": "8f97d1e4303ea7145e5779b12cb47b059aef53223987b99f1acefff3df68097e",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
