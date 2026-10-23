@@ -49,6 +49,15 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   const notices=runtime.sql("SELECT actor_id,actor_name,causes_json FROM notifications WHERE issue_id='"+issue.id+"'");assert.equal(notices.length,3);assert.equal(notices.filter(n=>JSON.parse(n.causes_json).includes('completed')).length,1);assert.ok(notices.every(n=>n.actor_id===null&&n.actor_name==='Git automation'));
   await navigate(page,runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('link',{name:'Fixes '+issue.identifier+' · '+fixtureRepository+' #71',exact:true}).waitFor();
   await inspect(page,page.locator('.issue-inspector'),'github-linked-issue-'+width);
+  const committed=await call('/issues','POST',{teamId:team.id,title:'synthetic-vector-1725 committed checkout '+width},201);
+  const commitRows=['b','c'].map((letter,index)=>({id:letter.repeat(40),message:'Fixes '+committed.identifier+' synthetic-vector-172'+index,author:{name:'synthetic-vector-172'+index},url:'https://github.com/'+fixtureRepository+'/commit/'+letter.repeat(40)}));
+  const push={ref:'refs/heads/main',repository:{full_name:fixtureRepository,default_branch:'main'},commits:commitRows},pushId=randomUUID();
+  await send(push,pushId,'push');const first=await call('/issues/'+committed.identifier);assert.equal(first.status.id,done.id);
+  await send(push,pushId,'push');assert.equal((await call('/issues/'+committed.identifier)).version,first.version);
+  await navigate(page,runtime.base+'/app/issues/'+committed.identifier);
+  const git=page.getByRole('region',{name:'GitHub links',exact:true});
+  for(const commit of commitRows){await git.getByRole('link',{name:commit.message,exact:true}).waitFor();await git.getByText('· '+commit.author.name+' · '+commit.id.slice(0,7),{exact:true}).waitFor();}
+  await inspect(page,git,'github-commits-'+width);
   // Native Guest invitation and confirmation in this disposable test workspace.
   const email='synthetic-vector-1712-'+width+'@example.test';
   await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1712',email,role:'guest',teamIds:[team.id]},202);

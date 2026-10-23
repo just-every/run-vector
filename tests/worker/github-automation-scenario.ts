@@ -34,3 +34,27 @@ export async function exerciseGithubAutomation(f:Awaited<ReturnType<typeof setup
  expect((await send({...back,number:45,pull_request:{...back.pull_request,number:45,title:'synthetic-vector-1705 branch reference',head:{ref:branch.identifier.toLowerCase()+'-work'},html_url:'https://github.com/octocat/test-repo1/pull/45'}})).status).toBe(200);
  expect((await (await f.call('/issues/'+branch.identifier+'/github')).json()) as object).toMatchObject({pullRequests:[{number:45}]});
 }
+
+export async function exerciseGithubCommits(f:Awaited<ReturnType<typeof setupIntegrations>>,send:Send){
+ const issue=await f.create({title:'synthetic-vector-1720 committed work'}),done=f.initial.teams[0].statuses.find(s=>s.category==='completed')!;
+ const authorsBefore=await env.DB.prepare('SELECT count(*) AS n FROM operators').first<number>('n');
+ const commits=['b','c'].map((letter,index)=>({id:letter.repeat(40),message:'Fixes '+issue.identifier+' synthetic-vector-172'+index+'\nDetails stay out of the first-line projection.',author:{name:'synthetic-vector-172'+index,email:'synthetic-vector-172'+index+'@example.test'},url:'https://github.com/octocat/test-repo1/commit/'+letter.repeat(40)}));
+ const body={ref:'refs/heads/feature',repository:{full_name:'octocat/test-repo1',default_branch:'main'},commits};
+ expect((await send(body,crypto.randomUUID(),true,'push')).status).toBe(401);
+ expect((await send({...body,repository:{...body.repository,full_name:'synthetic-vector-1724/foreign'}},crypto.randomUUID(),false,'push')).status).toBe(400);
+ expect((await send(body,crypto.randomUUID(),false,'push')).status).toBe(200);
+ expect(await env.DB.prepare('SELECT status_id FROM issues WHERE id=?').bind(issue.id).first<string>('status_id')).not.toBe(done.id);
+ const delivery=crypto.randomUUID(),main={...body,ref:'refs/heads/main'};
+ expect((await send(main,delivery,false,'push')).status).toBe(200);
+ const linked=await(await f.call('/issues/'+issue.identifier+'/github')).json() as {commits:object[]};
+ expect(linked.commits).toHaveLength(2);
+ for(const commit of commits)expect(linked.commits).toContainEqual({repository:'octocat/test-repo1',sha:commit.id,author:commit.author.name,subject:commit.message.split('\n')[0],url:commit.url});
+ expect(await env.DB.prepare('SELECT status_id FROM issues WHERE id=?').bind(issue.id).first<string>('status_id')).toBe(done.id);
+ const moves=()=>env.DB.prepare("SELECT count(*) AS n FROM issue_activity WHERE issue_id=? AND kind='issue.status_changed' AND actor_name='Git automation'").bind(issue.id).first<number>('n');
+ expect(await moves()).toBe(1);
+ expect((await send(main,delivery,false,'push')).status).toBe(200);
+ expect((await send(main,crypto.randomUUID(),false,'push')).status).toBe(200);
+ expect(await moves()).toBe(1);
+ expect(await env.DB.prepare('SELECT count(*) AS n FROM notifications WHERE issue_id=?').bind(issue.id).first<number>('n')).toBe(1);
+ expect(await env.DB.prepare('SELECT count(*) AS n FROM operators').first<number>('n')).toBe(authorsBefore);
+}
