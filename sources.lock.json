@@ -2901,7 +2901,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "79f33bbbe4d5153ab3301fb549922b89968e442c1893cf613db1dd8ec3d6abfe",
+      "sha256": "4c9cf3db0587a3d0f874c83a653287df938898956aabc0d2db09351531e82654",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -2985,7 +2985,7 @@
       "executable": false
     },
     "src/core/app/server.ts": {
-      "sha256": "c72aa612a5e39c1bd84984e7806effb90b5af14d647f14787ee7e3b3aa33cdb5",
+      "sha256": "4364c5d9ff232d3dc4b4c56b82bc4d8c357037f176f443e724e4aea633d3e714",
       "executable": false
     },
     "src/core/app/site/brand/chrome.css": {
@@ -4210,6 +4210,10 @@
     },
     "src/core/features/integrations/github/input.ts": {
       "sha256": "f697275a92a15795607e55c4ab7be6ce736424af7a5456e16831ffe7471e6ec2",
+      "executable": false
+    },
+    "src/core/features/integrations/github/issue-projection.ts": {
+      "sha256": "7b98250212d2c0211d17edc5033b34617d1f0f83919ac442809fa89f76738944",
       "executable": false
     },
     "src/core/features/integrations/github/push.ts": {
@@ -6913,7 +6917,7 @@
       "executable": false
     },
     "tests/worker/github-automation-scenario.ts": {
-      "sha256": "98941a7e34c9932a1141f8fef58b824224d27c3a67a6e56339c864f214b75a89",
+      "sha256": "d5eadb5f712516efa2b1ab9d14f1d228569b40937822911f2e3bde6f0239bdec",
       "executable": false
     },
     "tests/worker/github-links.test.ts": {
