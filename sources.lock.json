@@ -2005,11 +2005,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "e18ce6383e56eb636c3f06d634835bd14f2f1e06cad32454fb8f5bed50c8f678",
-      "executable": false
-    },
-    "migrations/0092_project_templates.sql": {
-      "sha256": "010c73fcb9b84587c4af75fb7c3fd5fd5d51bae0c79a1421f850af14d4280937",
+      "sha256": "90365194b1839d8d6fe8f1ec1ea0245aae28720d47a0059cc8e6b3ff411346c8",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2362,6 +2358,10 @@
     },
     "migrations/core/0091_dashboards.sql": {
       "sha256": "a1e8b4000bdf198f39c2976cc731e232749b47a00f436fadc1c204d616be7c3d",
+      "executable": false
+    },
+    "migrations/core/0092_project_templates.sql": {
+      "sha256": "010c73fcb9b84587c4af75fb7c3fd5fd5d51bae0c79a1421f850af14d4280937",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -5317,7 +5317,7 @@
       "executable": false
     },
     "src/core/features/project-templates/service.ts": {
-      "sha256": "734f053f63caa8482bd5d9404226dee3bdce904dadcbfad6aaf6358fa8a08d7f",
+      "sha256": "c1f7d75471986210ae9f91245882a61cb6d56e877fad9e6edb86ae22e79b278f",
       "executable": false
     },
     "src/core/features/project-templates/templates.css": {

@@ -9,12 +9,13 @@ import {createIssue} from '../issues/mutations';
 import {createIssueInputSchema} from '../issues/input';
 import {loadAuthority,authorityFence} from '../roles/authority';
 import {decide,decisionInputs,type Question} from '../roles/policy';
-import {visibilityDatabase} from '../roles/visibility-database';
 import {browseActor} from '../issues/browse-access';
 import {addDays} from '../cycle-schedule/calendar';
 import {templateInputSchema,type TemplateInput,type Template,applySchema,captureSchema} from './schema';
 import type {z} from 'zod';
 type Row={id:string;workspace_id:string;team_id:string|null;name:string;description:string;cadence:string;version:number};
+// Native routes supply the same visibility-scoped database as the issue list,
+// with a session and authority fence outside it for mutations. Never wrap it twice.
 async function access(db:D1Database,actor:string){const a=await browseActor(db,actor);if(a.role==='guest')throw new SettingsError('forbidden','Guests cannot use project templates.',403);return a;}
 async function permission(db:D1Database,actor:string,teamId:string|null){
  const authority=await loadAuthority(db,actor,teamId?[teamId]:[]);
@@ -27,7 +28,7 @@ async function editable(db:D1Database,actor:string,teamId:string|null){try{await
 // Team templates are conservatively visible to members of their own team only.
 const visible=`(t.team_id IS NULL OR EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=t.team_id AND m.operator_id=?))`;
 export async function readTemplate(source:D1Database,actor:string,id:string):Promise<Template>{
- const db=visibilityDatabase(source,actor),a=await access(db,actor);
+ const db=source,a=await access(db,actor);
  const row=await db.prepare(`SELECT t.* FROM project_templates t WHERE t.id=? AND t.workspace_id=? AND ${visible}`).bind(id,a.workspace_id,actor).first<Row>();
  if(!row)throw new SettingsError('not_found','Template is unavailable.',404);
  const milestones=(await db.prepare('SELECT name,description,offset_days offsetDays FROM project_template_milestones WHERE template_id=? ORDER BY position').bind(id).all<TemplateInput['milestones'][number]>()).results;
@@ -38,7 +39,7 @@ export async function readTemplate(source:D1Database,actor:string,id:string):Pro
  return {...templateInputSchema.parse({name:row.name,teamId:row.team_id,description:row.description,cadence:row.cadence,milestones,labels,issues}),id,version:row.version,canEdit:await editable(db,actor,row.team_id)};
 }
 export async function listTemplates(source:D1Database,actor:string){
- const db=visibilityDatabase(source,actor),a=await access(db,actor);
+ const db=source,a=await access(db,actor);
  const rows=(await db.prepare(`SELECT t.id FROM project_templates t WHERE t.workspace_id=? AND ${visible} ORDER BY t.name,t.id`).bind(a.workspace_id,actor).all<{id:string}>()).results;
  const teams=(await db.prepare('SELECT t.id,t.name FROM teams t JOIN team_members m ON m.team_id=t.id WHERE m.operator_id=? ORDER BY t.name').bind(actor).all<{id:string;name:string}>()).results;
  return {templates:await Promise.all(rows.map(r=>readTemplate(db,actor,r.id))),teams,workspaceAllowed:['owner','admin'].includes(a.role)};
@@ -61,7 +62,7 @@ export async function deleteTemplate(db:D1Database,actor:string,id:string,versio
  await commit(ctx,[guard(ctx.db,fence.sql,...fence.values),guard(ctx.db,'EXISTS(SELECT 1 FROM project_templates WHERE id=? AND version=?)',id,version),ctx.db.prepare('DELETE FROM project_templates WHERE id=?').bind(id)]);return {deleted:true};
 }
 export async function captureTemplate(source:D1Database,actor:string,projectId:string,input:z.infer<typeof captureSchema>){
- const db=visibilityDatabase(source,actor);await access(db,actor);await permission(db,actor,input.teamId);
+ const db=source;await access(db,actor);await permission(db,actor,input.teamId);
  const project=await db.prepare('SELECT description FROM projects WHERE id=?').bind(projectId).first<{description:string}>();if(!project)throw new SettingsError('not_found','Project is unavailable.',404);
  const offset=(date:string|null)=>date===null?null:Math.round((Date.parse(date+'T00:00:00Z')-Date.parse(input.referenceDate+'T00:00:00Z'))/86400000);
  const milestones=(await db.prepare('SELECT id,name,description,target_date FROM project_milestones WHERE project_id=? ORDER BY position,id').bind(projectId).all<{id:string;name:string;description:string;target_date:string|null}>()).results;
