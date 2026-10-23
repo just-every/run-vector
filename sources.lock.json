@@ -4201,11 +4201,11 @@
       "executable": false
     },
     "src/core/features/integrations/github/rule-routes.ts": {
-      "sha256": "7fb9a05d152b0ab4aeb48c91c6175fdd8514931350929895242d49cfa22932d9",
+      "sha256": "a8a1837e9b933edc38075cb185867cf4e1f3da97e8181f48a30fc5af0f82ae41",
       "executable": false
     },
     "src/core/features/integrations/github/rules.ts": {
-      "sha256": "9c50d6c18f45fcbf20e61c6825d512476e93e3334cd478f70d74afde08e3d166",
+      "sha256": "93feb657ba2cb5c5bf4813188e10c71b5840c36ff6b6017c0663fe4b3ab91eb9",
       "executable": false
     },
     "src/core/features/integrations/milestone-api.ts": {
@@ -4353,7 +4353,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.tsx": {
-      "sha256": "9cba013d5298fe8f0aa3c1aa194e0c75f78b33c99faa562fb6c23bb5308c181d",
+      "sha256": "fdc6566bc0a2e27db8d8bf0628bd79c69a45b006e055ec2b01510199faba2975",
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
@@ -6365,7 +6365,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
-      "sha256": "564563ce3fb99bada330855cf848e4b2ae58224cece02f539402517db8491ac5",
+      "sha256": "82f869014d8ca6c6898cd9d8de7795ed17da65bb160ec681d0d332533d3ca631",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {

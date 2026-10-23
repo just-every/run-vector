@@ -57,5 +57,5 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   const refused=await runtime.req('/api/settings/teams/'+team.id,{method:'PATCH',headers:{...headers,Cookie:guestCookie},body:JSON.stringify({githubAutomation:{trigger:'draft',statusId:null,allowReopen:false,expectedVersion:0}})});
   assert.equal(refused.status,403);await refused.body.cancel();
   assert.deepEqual(errors,[],'GitHub screens have no browser or hydration errors');
- }finally{await settleReads(page);await page.close();}
+ }catch(error){console.error('Git rule controls:',await page.getByRole('region',{name:'Git automation rules',exact:true}).ariaSnapshot().catch(()=>''));throw error;}finally{await settleReads(page);await page.close();}
 }
