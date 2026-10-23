@@ -36,7 +36,8 @@ export async function proveEmailBounces(f:any,intake:any,commentId:string,provid
     expect(await read()).toEqual(bounced);
     const ackEvent={...event,event:'dropped',sg_message_id:ack.calls[0].providerId+'.synthetic-vector-736'};
     expect((await send(path,await signer.signed([ackEvent]))).status).toBe(200);
-    expect((await read()).deliveries.find((d:any)=>d.kind==='acknowledgement').status).toBe('bounced');
+    const ackState=await f.data(f.cookie,`/issues/${ack.result.identifier}/email-intake`);
+    expect(ackState.deliveries.find((d:any)=>d.kind==='acknowledgement').status).toBe('bounced');
     expect(await f.data(f.bobCookie,'/notifications')).toEqual(notificationBefore);
     expect(outbound).toBe(0);
   } finally {vi.unstubAllGlobals();}
