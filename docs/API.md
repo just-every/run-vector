@@ -21,7 +21,7 @@ Hosted tokens need only the bearer header.
 | Route | Scope | Native behavior |
 | --- | --- | --- |
 | GET /api/v1/issues | issues:read | Existing bounded filters, cursor paging, sort and grouping |
-| GET /api/v1/issues/IDENTIFIER | issues:read | Current native issue projection |
+| GET /api/v1/issues/IDENTIFIER | issues:read | Current native issue projection, branchName and deployments |
 | POST /api/v1/issues | issues:write | Existing issue creation schema, references and history |
 | POST /api/v1/issues/IDENTIFIER/copy | issues:write | Copy with expectedVersion, optional teamId, includeSubissues and includeLinks |
 | PATCH /api/v1/issues/IDENTIFIER | issues:write | Existing field schema and required expectedVersion |
@@ -226,5 +226,20 @@ deletion, import erasure and its receipts are unchanged.
 | GET /api/issues/IDENTIFIER | `branchName` suggestion and `deployments` (repository, deploymentId, sha, environment, deployedAt) |
 | GET /api/issues/IDENTIFIER/github | `pullRequests`, `commits` (literal author, subject and URL), and `deployments` |
 
-These native fields are not yet exposed by GET /api/v1/issues/IDENTIFIER.
+Full issue reads and mutation receipts carry branchName and deployments on both native and versioned issue doors.
 GitHub signing credentials authorize receiver deliveries only, never member API access.
+
+## Releases
+
+| Route | Scope | Behavior |
+| --- | --- | --- |
+| GET /api/v1/releases | releases:read | Cursor paging with team and status filters |
+| GET /api/v1/releases/ID | releases:read | Scope, progress, blockers and linked PRs |
+| POST /api/v1/releases | releases:write | Name, optional teamId/targetDate, status and description |
+| PATCH /api/v1/releases/ID | releases:write | Field edits or publishing with expectedVersion |
+| PUT /api/v1/releases/ID/scope | releases:write | Replace issueIdentifiers and projectIds with expectedVersion |
+
+Owners, Admins and Members act on readable team and workspace releases; Guests are refused 403.
+Native app doors use /api/releases and the same inputs. Released scope stays fixed until
+an explicit reopen. Release deletion remains an API-003 gap. A ?readOnly=1 workspace
+link hides editing and retains normal sign-in and scope admission; it is not a public share.

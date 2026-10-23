@@ -384,7 +384,51 @@
         "x-operation": "get",
         "responses": {
           "200": {
-            "description": "Native result; see docs/API.md"
+            "description": "Native result; see docs/API.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "branchName": {
+                      "type": "string"
+                    },
+                    "deployments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "repository",
+                          "deploymentId",
+                          "sha",
+                          "environment",
+                          "deployedAt"
+                        ],
+                        "properties": {
+                          "repository": {
+                            "type": "string"
+                          },
+                          "deploymentId": {
+                            "type": "integer"
+                          },
+                          "sha": {
+                            "type": "string"
+                          },
+                          "environment": {
+                            "type": "string"
+                          },
+                          "deployedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
