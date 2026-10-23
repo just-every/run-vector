@@ -1,3 +1,4 @@
+import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/calendar-feeds/routes";
 import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import {initiativeAuthority} from '../features/initiatives/authority';
@@ -123,6 +124,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     );
   });
 
+  addCalendarFeedPublicRoutes(app);
   app.use("*", async (context, next) => {
     // Server rendering owns admission and the final native-session fence for
     // all of its read projections. This mode has no public HTTP entry point.
@@ -239,6 +241,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addReleaseRoutes(app);
   addGithubIssueProjection(app);
   addGithubRuleRoutes(app);
+  addCalendarFeedRoutes(app);
   addInsightRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);

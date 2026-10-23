@@ -1835,5 +1835,16 @@
   "initiative_projects": [
     "initiative_id",
     "project_id"
+  ],
+  "calendar_feed_tokens": [
+    "id",
+    "workspace_id",
+    "creator_id",
+    "team_id",
+    "token_hash",
+    "version",
+    "created_at",
+    "updated_at",
+    "revoked_at"
   ]
 }

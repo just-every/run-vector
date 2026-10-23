@@ -1,3 +1,4 @@
+import {calendarFeedsJourney} from "./calendar-feeds-journey.mjs";
 import {insightsJourney} from "./insights-journey.mjs";
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -18,5 +19,6 @@ try {
   console.log(`[${clause}] ${name}: inspect daily scope, completion, additions/removals and assignees`);
  });
  await insightsJourney(page,context,runtime,output);
+ await calendarFeedsJourney(page,context,runtime,output);
 } catch(error){if(page)await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
 finally{if(browser)await browser.close();await runtime.stop();}
