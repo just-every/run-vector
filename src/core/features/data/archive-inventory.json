@@ -1740,5 +1740,15 @@
     "allow_reopen",
     "version",
     "updated_at"
+  ],
+  "github_commit_links": [
+    "repository_id",
+    "sha",
+    "issue_id",
+    "author",
+    "subject",
+    "url",
+    "closing_applied",
+    "received_at"
   ]
 }
