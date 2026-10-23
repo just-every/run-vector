@@ -305,6 +305,10 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     assert.deepEqual(sql("SELECT id,role FROM operators ORDER BY id"), before);
   });
   await inspect(page, members, "members-last-owner-refused");
+  const labelCreated = await page.request.post(base + "/api/settings/labels", {
+    headers: { Origin: base }, data: { name: "synthetic-vector-15", color: "#224466" },
+  });
+  assert.equal(labelCreated.status(), 200);
   await clause("ROLE-001", "a Member reads the member directory without managing anyone and opens only their own Settings pages", async () => {
     await navigate(peer, base + "/app/settings");
     await openDisclosures(peer);
@@ -313,8 +317,21 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     assert.equal(await directory.getByRole("button", { name: "Change role", exact: true }).count(), 0);
     assert.deepEqual(await directory.getByRole("button", { name: /^Remove / }).allTextContents(), ["Remove Role member"]);
     assert.equal(await directory.getByRole("form", { name: "Invite member", exact: true }).count(), 0);
-    for (const name of ["Workspace time", "Labels", "Cycles", "Data / Move in"])
+    for (const name of ["Workspace time", "Cycles", "Data / Move in"])
       assert.equal(await peer.getByRole("region", { name, exact: true }).count(), 0, name);
+    const labels = peer.getByRole("region", { name: "Labels", exact: true });
+    await labels.getByText("Workspace labels are read-only here. Owners and Admins manage labels.", { exact: true }).waitFor();
+    await labels.getByText("synthetic-vector-15", { exact: true }).waitFor();
+    for (const viewport of [{ width: 1440, height: 1000 }, { width: 390, height: 844 }]) {
+      await peer.setViewportSize(viewport);
+      assert.equal(await labels.getByRole("form").count(), 0, "a Member has no label creation or management form in Settings");
+      assert.equal(await labels.getByRole("button").count(), 0, "a Member has no label management controls");
+      const response = await peer.request.get(base + "/api/settings/administration");
+      assert.equal(response.status(), 200);
+      for (const label of (await response.json()).labels)
+        await labels.getByText(label.name, { exact: true }).waitFor();
+    }
+    await inspect(peer, labels, "member-labels-read-only");
     await peer.getByRole("region", { name: "Integrations", exact: true }).getByRole("heading", { name: "API tokens", exact: true }).waitFor();
   });
   await inspect(peer, peer.getByRole("region", { name: "Members", exact: true }), "members-member-view");

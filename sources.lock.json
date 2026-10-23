@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "1e96a6848b65b25b18a24c796925ac22993abfb0f188efd219f6be6155131e56",
+      "sha256": "331d8e8700e43e7467ce2c1d8be365b50b21e7593f9a67a232d63908feb26d7d",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3adfa73747cd65f5e53583dc9700f04d6543a842e45312c0a2f7e66dda34bd14",
+      "sha256": "c349441993ed1ce986698c5885d3f2bb73319d0dd9a80529ce24c57064336793",
       "executable": false
     },
     "DEMO.md": {
@@ -613,7 +613,7 @@
       "executable": false
     },
     "docs/guide/team.md": {
-      "sha256": "cf11f1f23a29051f49b70cdbbef9e8277c41068f00eb39376bbbb54f1ee1eca5",
+      "sha256": "a66d6e30a56725cae2137b851fbd118f46096d40bba8299952a6565e02b0c8ca",
       "executable": false
     },
     "docs/guide/triage.md": {
@@ -5289,7 +5289,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "43df2d3834406dbcbae1ad014ef2143366b3bc33c1f72702f7c3be22da17666b",
+      "sha256": "61daf8bd42adf010dacf768d51af9a1ae91bb98b11d6849135e7a98aa898924d",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -5437,7 +5437,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/labels-panel.tsx": {
-      "sha256": "1db63590ef4f4ed16ce5cfc138c8fe007f51b32991105580cf6eaf8876fd8eb4",
+      "sha256": "8f6d573c051286b4335b455fa1ce213190bdb7dc895bb74a08124b049fff23d8",
       "executable": false
     },
     "src/core/features/settings/ui/member-role-form.tsx": {
@@ -5457,7 +5457,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-page.tsx": {
-      "sha256": "b220de344d4b94c6890bd7754d714c42bb198b7b038596c3b1c08a8aea1262f1",
+      "sha256": "d7be4b903f2e0681760534f5ad67a66b8193a4e7b2a57bf3bf023826936ed301",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
@@ -5941,7 +5941,7 @@
       "executable": false
     },
     "tests/e2e/admin-access-journey.mjs": {
-      "sha256": "9ebc17e0fe7902b1eaa037dd9ecb4399c2517e1e9ed17cf8d31a94e98f4f0fd2",
+      "sha256": "21afba936fe50547ac098f14f976c941d5421c99f02b3a40afb416b020095d75",
       "executable": false
     },
     "tests/e2e/admin-archive-team-journey.mjs": {
@@ -7133,7 +7133,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "ca545d51d7a42edcc1dc699cfcfca1b7a982988d501ec7aecd744785e9a7d4c5",
+      "sha256": "8255b14f1a4c9f8a56d4e37fa75b079c0b0d1c252db3454f1ca715ce30fe8b2c",
       "executable": false
     },
     "tests/worker/role-probes.ts": {

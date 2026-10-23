@@ -7,9 +7,11 @@ import { AdministrationFeedback } from "./administration-feedback";
 export function LabelsPanel({
   labels,
   onChanged,
+  readOnly = false,
 }: {
   labels: Administration["labels"];
   onChanged: () => void;
+  readOnly?: boolean;
 }) {
   const action = useAdministrationAction(onChanged);
   const hydrated = useHydrated();
@@ -33,7 +35,8 @@ export function LabelsPanel({
       aria-labelledby="labels-heading"
     >
       <h2 id="labels-heading">Labels</h2>
-      <form aria-label="Create label" onSubmit={create}>
+      {readOnly && <p>Workspace labels are read-only here. Owners and Admins manage labels.</p>}
+      {!readOnly && <form aria-label="Create label" onSubmit={create}>
         <fieldset disabled={action.pending || !hydrated}>
           <label>
             Label name
@@ -46,10 +49,12 @@ export function LabelsPanel({
           <label><input type="checkbox" name="projectsEnabled" />Use for projects</label>
           <button>Create label</button>
         </fieldset>
-      </form>
+      </form>}
       <AdministrationFeedback action={action} />
       {labels.map((label) => (
-        <LabelEditor key={label.id} label={label} onChanged={onChanged} />
+        readOnly
+          ? <p key={label.id}><LabelChip name={label.name} color={label.color} /></p>
+          : <LabelEditor key={label.id} label={label} onChanged={onChanged} />
       ))}
     </section>
   );

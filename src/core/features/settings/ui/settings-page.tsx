@@ -84,9 +84,9 @@ export function SettingsPage() {
           {workspace && <a href="#workspace-time">Workspace time</a>}
           <a href="#members">Members</a>
           <a href="#teams">Teams</a>
+          <a href="#labels">Labels</a>
           {workspace && <>
             <a href="#housekeeping">Auto-close</a>
-            <a href="#labels">Labels</a>
             <a href="#projects">Projects</a>
             <a href="#cycles">Cycles</a>
           </>}
@@ -188,14 +188,17 @@ export function SettingsPage() {
               onChanged={administration.reload}
             />
           )}
+          {administration.data && (
+            <LabelsPanel
+              labels={administration.data.labels}
+              onChanged={administration.reload}
+              readOnly={!workspace}
+            />
+          )}
           {workspace && administration.data && (
             <>
               <HousekeepingPanel
                 data={administration.data}
-                onChanged={administration.reload}
-              />
-              <LabelsPanel
-                labels={administration.data.labels}
                 onChanged={administration.reload}
               />
               <section
