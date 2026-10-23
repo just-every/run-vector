@@ -5269,7 +5269,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "b912c939e8751bc63dba17048d3b9e0b8a6ad070c79949aec2efe1a19d08acd0",
+      "sha256": "6f83ed94342e64a6fa0467f129f991a95760f8da29ee4b225ec4afff724460b3",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
