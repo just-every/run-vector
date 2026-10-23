@@ -36,8 +36,8 @@ If Settings says email notifications are off for this installation, sending emai
 
 ## Subject subscriptions
 
-Use **Subscribe** on a project, saved view, or filtered team/label issue list. **My work → Subscribed** lists your subject subscriptions beside followed issues and lets you add or remove them.
+Use **Subscribe** on a project, initiative, saved view, or filtered team/label issue list. **My work → Subscribed** lists your subject subscriptions beside followed issues and lets you add or remove them.
 
 A subject subscription brings new matching issues and status changes to your Inbox. Several subscriptions matching one change produce one notice. New matching issues use your existing status channel preferences; completion events use their completion preferences. Mutes, email/digest choices and access checks apply. You never receive your own actions.
 
-Unsubscribing stops future notices immediately. Leaving a team removes that team's subscription. Guests can subscribe only to subjects visible through their invited teams. Subscription preferences survive an archive restore, while historical pending events stay held behind the destination's restore cutoff. Initiative subscriptions are not available yet.
+Unsubscribing stops future notices immediately. Leaving a team removes that team's subscription. Guests can subscribe only to subjects visible through their invited teams. Subscription preferences survive an archive restore, while historical pending events stay held behind the destination's restore cutoff. Initiative subscriptions include projects nested beneath their sub-initiatives.
