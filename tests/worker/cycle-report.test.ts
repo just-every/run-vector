@@ -1,3 +1,4 @@
+import { exerciseDashboards } from "./dashboard-proof";
 import { env } from "cloudflare:workers";
 import { afterEach, expect, it, vi } from "vitest";
 import { closureFixture } from "./cycle-closure-fixture";
@@ -8,7 +9,7 @@ import { scheduled } from "../../src/core/app/scheduled";
 
 afterEach(() => vi.useRealTimers());
 
-it("[REPORT-001 REPORT-002 CYCLE-005] Insights and daily burn-up follows completion, reopening, removal and re-addition, then freezes outcomes and assignees at closure", async () => {
+it("[REPORT-003 REPORT-001 REPORT-002 CYCLE-005] Insights, shared dashboards and daily burn-up follows completion, reopening, removal and re-addition, then freezes outcomes and assignees at closure", async () => {
   const f = await closureFixture();
   vi.useFakeTimers({ toFake: ["Date"] });
   const at = async (day: string, capture = true) => {
@@ -113,7 +114,9 @@ it("[REPORT-001 REPORT-002 CYCLE-005] Insights and daily burn-up follows complet
   const memberCookie = await invite("synthetic-vector-5@example.test",f.cookie);
   const memberId = await actor(memberCookie);
   expect((await request("/api/insights?" + params,"GET",undefined,memberCookie)).status).toBe(200);
+  const dashboardId = await exerciseDashboards(f,memberCookie,memberId,insightIssues.map(i=>i.identifier));
   expect((await f.call("/settings/operators/" + memberId + "/role","PATCH",{role:"guest",teamIds:[f.team.id]})).status).toBe(200);
+  for(const [path,method] of [["/api/dashboards","GET"],["/api/dashboards","POST"],["/api/dashboards/"+dashboardId,"GET"],["/api/dashboards/"+dashboardId,"PUT"],["/api/dashboards/"+dashboardId,"DELETE"]]) expect((await request(path,method,method==="GET"?undefined:{},memberCookie)).status).toBe(403);
   for (const path of ["/api/insights?","/api/insights.csv?"]) expect((await request(path + params,"GET",undefined,memberCookie)).status).toBe(403);
 
 });

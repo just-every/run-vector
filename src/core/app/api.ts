@@ -1,3 +1,4 @@
+import { addDashboardRoutes } from "../features/dashboards/routes";
 import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/calendar-feeds/routes";
 import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
@@ -231,6 +232,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
 
   addCalendarFeedRoutes(app);
   addInsightRoutes(app);
+  addDashboardRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
 

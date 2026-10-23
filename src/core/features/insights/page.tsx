@@ -1,15 +1,18 @@
+import {DashboardsPage} from "../dashboards/page";
+import {InsightChart} from "./chart";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useApiResource } from "../../app/api-client";
 import { workspaceOptionsSchema } from "../../shared/workspace-options";
 import { issueListQuerySchema, type IssueListQuery } from "../issues/list-schema";
 import { changeIssueListFilters } from "../issues/ui/issue-list-controls";
-import { insightQuerySchema, insightReportSchema, metrics, metricNames, type InsightQuery, type InsightReport } from "./schema";
+import { insightQuerySchema, insightReportSchema, metrics, metricNames, type InsightQuery } from "./schema";
 import "./insights.css";
 import "../settings/ui/settings.css";
 
 const number = (n: number | null) => n === null ? "—" : new Intl.NumberFormat("en", { maximumFractionDigits: 2 }).format(n);
 export function InsightsPage() {
+  const [tab, setTab] = useState("charts");
   const [filters, setFilters] = useState(() => issueListQuerySchema.parse({}));
   const [chart, setChart] = useState(() => insightQuerySchema.parse({}));
   const [bucket, setBucket] = useState("");
@@ -30,6 +33,8 @@ export function InsightsPage() {
   return <main className="settings-page insights-page" aria-labelledby="insights-title" data-insights-ready={report.data && !report.loading && !report.error ? "true" : "false"}>
     <header><p className="insights-eyebrow">Workspace reports</p><h1 id="insights-title">Insights</h1>
       <p>Understand delivery over time. Every result uses the issues you can read.</p></header>
+    <nav className="insights-tabs" aria-label="Insights pages"><button aria-pressed={tab === "charts"} onClick={() => setTab("charts")}>Charts</button><button aria-pressed={tab === "dashboards"} onClick={() => setTab("dashboards")}>Dashboards</button></nav>
+    {tab === "dashboards" ? <DashboardsPage source={{ filters, chart }} /> : <>
     <section aria-label="Chart controls" className="insights-card">
       <div className="insights-controls">
         <label>Chart<select aria-label="Chart" value={chart.metric} onChange={e => configure({ metric: e.target.value as InsightQuery["metric"] })}>
@@ -90,20 +95,6 @@ export function InsightsPage() {
         <button onClick={() => setBucket("")}>Close counted issues</button>
       </section>}
     </>}
+    </>}
   </main>;
-}
-function InsightChart({ report, select }: { report: InsightReport; select: (key: string) => void }) {
-  const max = Math.max(1, ...report.rows.map(r => report.duration ? r.median ?? 0 : r.value));
-  return <div className="insights-bars" aria-label="Weekly chart">
-    {report.rows.map(row => {
-      const value = report.duration ? row.median ?? 0 : row.value;
-      return <button key={row.key} className="insights-bar" onClick={() => select(row.key)}
-        aria-label={`${row.week}, ${row.group}, ${row.series.split(" · ")[0]}: ${number(value)}${report.duration ? " days" : ""}. View ${row.count} issues.`}>
-        <span>{row.week} · {row.group} · {row.series.split(" · ")[0]}</span>
-        <svg viewBox="0 0 400 24" aria-hidden="true" focusable="false">
-          <rect x="1" y="4" width={Math.max(1, 395 * value / max)} height="16" className={row.series === "Completed" ? "insights-mark-outline" : "insights-mark"} />
-        </svg><strong>{number(value)}</strong>
-      </button>;
-    })}
-  </div>;
 }
