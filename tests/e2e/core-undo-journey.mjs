@@ -2,12 +2,14 @@ import assert from 'node:assert/strict';
 import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mjs';
 import {undoPropertiesJourney} from './core-undo-properties.mjs';
 
-export async function undoJourney(page,context,base,record){
+export async function undoJourney(page,context,base,record,independent=journey=>journey()){
  const originalViewport=page.viewportSize();
  for(const width of [1440,390]){
+  await independent(async()=>{
   await page.setViewportSize({width,height:width===390?844:1000});
   await bulkUndoJourney(page,context,base,record);
   await undoPropertiesJourney(page,context,base,record);
+  });
  }
  await page.setViewportSize(originalViewport);
 }

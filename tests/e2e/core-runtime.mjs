@@ -693,28 +693,36 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
-  await currentDisjointJourney(page, context, base, async (id, name, currentPage) => {
+  await withInvitedOperator(page, context, base, state, () => currentDisjointJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  });
-  await currentRecentlyDoneJourney(page, context, base, async (id, name, currentPage) => {
+  }), 'synthetic-vector-1901');
+  await withInvitedOperator(page, context, base, state, () => currentRecentlyDoneJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  });
-  await currentNowJourney(page, context, base, async (id, name, currentPage) => {
+  }), 'synthetic-vector-1902');
+  await withInvitedOperator(page, context, base, state, () => currentNowJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  });
-  await currentNextJourney(page, context, base, async (id, name, currentPage) => {
+  }), 'synthetic-vector-1903');
+  await withInvitedOperator(page, context, base, state, () => currentNextJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
-  });
+  }), 'synthetic-vector-1904');
   await currentJourney(page, context, base, ids.flow, evidence, record);
   expectedBulkConflictUrl = `${base}/api/issues/bulk`;
-  await keyboardJourney(page, context, base, record);
+  // Independent keyboard, board and stream fixtures retain their assertions
+  // under real invited Owners, each with the ordinary operator request budget.
+  let keyboardFixture = 1910;
+  await withInvitedOperator(page, context, base, state, () =>
+    keyboardJourney(page, context, base, record, journey =>
+      withInvitedOperator(page, context, base, state, journey, `synthetic-vector-${++keyboardFixture}`)), 'synthetic-vector-1910');
   expectedBulkConflictUrl = null;
-  await boardJourney(page, context, base, record);
-  await withInvitedOperator(page, context, base, state, () => streamControlsJourney(page, context, base, record));
+  await withInvitedOperator(page, context, base, state, () => boardJourney(page, context, base, record), 'synthetic-vector-1920');
+  // Each viewport proves the complete persisted-preference flow for its own Owner.
+  for (const width of [1440, 390])
+    await withInvitedOperator(page, context, base, state, () =>
+      streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await threadsJourney(page, context, base, state, ids.flow, evidence, record);
   const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
@@ -727,10 +735,10 @@ try {
       () => followerJourney(followerPage, followerContext, page, context, base, record), 'Payment follow-up teammate');
   } finally { await followerContext.close(); }
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
-  await manualOrderJourney(page, context, base, record);
-  await workloadJourney(page, context, base, record);
-  await projectHealthJourney(page, context, base, record);
-  await projectRiskJourney(page, context, base, record);
+  await withInvitedOperator(page, context, base, state, () => manualOrderJourney(page, context, base, record), 'synthetic-vector-1930');
+  await withInvitedOperator(page, context, base, state, () => workloadJourney(page, context, base, record), 'synthetic-vector-1931');
+  await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');
+  await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');
   await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
@@ -739,8 +747,8 @@ try {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
   }), 'Intake routing teammate');
-  await cycleMembershipJourney(page, context, base, record);
-  await subissuesJourney(page, context, base, record);
+  await withInvitedOperator(page, context, base, state, () => cycleMembershipJourney(page, context, base, record), 'synthetic-vector-1934');
+  await withInvitedOperator(page, context, base, state, () => subissuesJourney(page, context, base, record), 'synthetic-vector-1935');
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');
