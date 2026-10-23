@@ -2501,7 +2501,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
-      "sha256": "2182f8b326a3082731e66db24189d1bdc23140695303752a503bd0f6c5f5f5c7",
+      "sha256": "e3c60c46e401bb7752d19a696390be55788d7ee15b5c569285cf280ecc52884c",
       "executable": false
     },
     "scripts/data/archive-upgrade-worker.mjs": {
@@ -2509,7 +2509,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade.mjs": {
-      "sha256": "4daf3094ee444ec054065c916a2b1007a80218cc585aca6b73d8516d4f41c03d",
+      "sha256": "1068332ec24f62978a9e919cc19ab96873aaae0f0f1787db3a3c1c765ec99599",
       "executable": false
     },
     "scripts/data/import-issues.mjs": {
