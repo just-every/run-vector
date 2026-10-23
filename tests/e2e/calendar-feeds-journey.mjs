@@ -1,3 +1,4 @@
+import {calendarMonthJourney} from './calendar-month-journey.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -39,4 +40,5 @@ export async function calendarFeedsJourney(page,context,runtime,output) {
  }
  assert.deepEqual(errors,[],'no calendar hydration mismatch or page errors');page.off('console',consoleError);page.off('pageerror',pageError);
  await api('/settings/appearance','PATCH',{theme:'system'});
+ await calendarMonthJourney(page,context,runtime,output);
 }
