@@ -18,9 +18,9 @@ export async function gitMove(db:D1Database,issueId:string,trigger:GitTrigger,at
  if(!issue)return [];
  const rule=await gitRule(db,issue.team,trigger);
  const fence=gitGuard(db,'COALESCE((SELECT version FROM github_automation_rules WHERE team_id=? AND trigger=?),0)=?',issue.team,trigger,rule.version);
- if(!rule.statusId||rule.statusId===issue.statusId||issue.category==='intake'||(issue.category==='completed'&&!rule.allowReopen))return [fence];
+ if(!rule.statusId||rule.statusId===issue.statusId||issue.category==='intake')return [fence];
  const target=await db.prepare('SELECT category FROM workflow_statuses WHERE id=? AND team_id=?').bind(rule.statusId,issue.team).first<{category:string}>();
- if(!target||!['backlog','unstarted','started','completed','canceled'].includes(target.category))return [fence];
+ if(!target||!['backlog','unstarted','started','completed','canceled'].includes(target.category)||(issue.category==='completed'&&target.category!=='completed'&&!rule.allowReopen))return [fence];
  const id=createUlid(new Date(at)),event={id,issueId,actor:null,actorName:'Git automation',at};
  const previous=JSON.stringify({statusId:issue.statusId}),next=JSON.stringify({statusId:rule.statusId,automation:'git',trigger});
  return [fence,gitGuard(db,'EXISTS(SELECT 1 FROM issues WHERE id=? AND version=? AND status_id=?)',issueId,issue.version,issue.statusId),
