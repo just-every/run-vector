@@ -14,6 +14,7 @@ Scripts and other tools can read and change issues through Vector's API with a t
 | `issues:read` | List issues and read one issue |
 | `issues:write` | Create issues and change them |
 | `comments:write` | Add comments |
+| `labels:write` | Create workspace labels, subject to the current role and workspace creation permission |
 | `metadata:read` | Read the teams, statuses, people, projects, cycles and labels |
 
 A token acts as the person who made it. When that person is removed from Vector, their tokens stop working.
@@ -29,6 +30,7 @@ Send the token in an `Authorization: Bearer` header to your Vector address. Neve
 | `POST /api/v1/issues` | `issues:write` | Creates an issue |
 | `PATCH /api/v1/issues/FLW-12` | `issues:write` | Changes an issue |
 | `POST /api/v1/issues/FLW-12/comments` | `comments:write` | Adds a comment |
+| `POST /api/v1/labels` | `labels:write` | Create a workspace label (`name`, six-digit hex `color`, optional `projectsEnabled`); Guests refused and restricted Members refused |
 | `GET /api/v1/metadata` | `metadata:read` | Lists teams, statuses, people, projects, cycles and labels |
 
 When you change an issue, send the `expectedVersion` you last read. If someone changed the issue in the meantime, Vector refuses the change with status 409; read it again and retry. The API deletes projects with `DELETE /api/v1/projects/:id` for Owners and Admins only; a Member project lead may delete once recoverable project deletion ships. It also deletes a project milestone with `DELETE /api/v1/projects/:id/milestones/:milestoneId` for Owners, Admins and Members. It deletes comments with `DELETE /api/v1/comments/:id`: authors delete their own comments, while Owners, Admins and the issue team’s owners may delete another member’s comment. Deleting a project keeps its issues; deleting a milestone clears its issue assignments; deleting a comment keeps a tombstone and its replies.

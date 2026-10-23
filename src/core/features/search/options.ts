@@ -13,7 +13,7 @@ export async function getSearchOptions(
   const admission = await searchAdmission(db, operatorId, fence);
   const row = await db
     .prepare(
-      `SELECT w.id,w.name,actor.role,
+      `SELECT w.id,w.name,actor.role,w.member_label_creation AS memberLabelCreation,
     (SELECT json_group_array(json_object('id',id,'name',name,'identifierPrefix',identifier_prefix)) FROM (
       SELECT id,name,identifier_prefix FROM teams WHERE workspace_id=actor.workspace_id AND archived_at IS NULL ORDER BY name,id LIMIT ${seed.limits.teams}
     )) AS teams,
@@ -49,6 +49,7 @@ export async function getSearchOptions(
     .first<{
       id: string;
       name: string;
+      memberLabelCreation: number;
       role: import("../roles/matrix").Role;
       teams: string;
       operators: string;
@@ -64,6 +65,7 @@ export async function getSearchOptions(
     workspace: { id: row.id, name: row.name },
     operator: { id: operatorId, role:row.role },
     labelsPerIssue: seed.limits.labelsPerIssue,
+    canCreateLabels: row.role === "owner" || row.role === "admin" || row.role === "member" && row.memberLabelCreation === 1,
     savedViewsPerOperator: seed.limits.savedViewsPerOperator,
     bulkEditIssuesPerOperation: seed.limits.bulkEditIssuesPerOperation,
     teams: JSON.parse(row.teams),

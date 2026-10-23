@@ -3,6 +3,7 @@ import { roles } from '../features/roles/matrix'
 
 export const workspaceOptionsSchema = z.object({
   labelsPerIssue: z.number(),
+  canCreateLabels: z.boolean(),
   savedViewsPerOperator: z.number(),
   bulkEditIssuesPerOperation: z.number(),
   workspace: z.object({ id: z.string(), name: z.string() }),

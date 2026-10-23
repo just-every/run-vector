@@ -62,6 +62,7 @@ export const statusReorderSchema = z
 export const statusRemoveSchema = z
   .object({ destinationStatusId: administrationId })
   .strict();
+export const labelCreationPermissionSchema = z.object({membersMayCreate: z.boolean()}).strict();
 export const labelCreateSchema = z.object({ name, color: labelColor, projectsEnabled: z.boolean().default(false) }).strict();
 export const labelUpdateSchema = labelCreateSchema
   .partial()
@@ -152,6 +153,7 @@ export const administrationSchema = z.object({
     id: z.string(),
     name: z.string(),
     timezone: z.string(),
+    memberLabelCreation: z.boolean(),
   }),
   cycleSchedules: z.array(cycleScheduleSchema.extend({teamId: z.string()})),
   housekeeping: z.array(housekeepingSchema.extend({ teamId: z.string() })),

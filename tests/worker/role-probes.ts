@@ -110,7 +110,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
       api: async (who, actor) => { const target = await issue(w.team.id), theirs = await comment(who === "owner" ? w.people.admin : owner, target.identifier), expectedVersion = await commentVersion(theirs);
         return () => actor.api(`/comments/${theirs}`, "DELETE", { expectedVersion }); } },
     "issues.delete-permanent": { session: async (_who, actor) => { const target = await issue(w.team.id); return () => actor.call(`/issues/${target.identifier}`, "DELETE", { expectedVersion: target.version, confirmed: true }); } },
-    "labels.create": { session: async (_who, actor) => () => actor.call("/settings/labels", "POST", { name: `Created label ${unique()}`, color: "#aa5522" }) },
+    "labels.create": { api: async (_who, actor) => () => actor.api("/labels", "POST", {name: `API label ${unique()}`,color: "#aa5522"}), session: async (_who, actor) => () => actor.call("/settings/labels", "POST", { name: `Created label ${unique()}`, color: "#aa5522" }) },
     "labels.manage": { session: async (_who, actor) => { const id = await label(), name = `Renamed label ${unique()}`; return () => actor.call(`/settings/labels/${id}`, "PATCH", { name }); } },
     "intake.create": { outside: true, session: async (_who, actor, id) => () => actor.call("/intake", "POST", { title: `Intake ${unique()}`, teamId: id }) },
     "intake.decide": { session: async (_who, actor) => {

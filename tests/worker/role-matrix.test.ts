@@ -220,6 +220,26 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
   }
 
 
+  // ISSUE-014: the workspace permission gates every creation door on the next request.
+  for (const membersMayCreate of [false, true]) {
+    expect((await w.people.owner.call("/settings/labels/creation", "PUT", {membersMayCreate})).status).toBe(200);
+    const beforeAudits = (await audits("workspace.label_creation_changed")).length;
+    expect((await w.people.admin.call("/settings/labels/creation", "PUT", {membersMayCreate})).status).toBe(200);
+    expect((await audits("workspace.label_creation_changed")).length).toBe(beforeAudits);
+    for (const who of ["owner", "admin", "lead", "member", "guest"] as Kind[]) {
+      const person = w.people[who], allowed = who === "owner" || who === "admin" || membersMayCreate && who !== "guest";
+      const before = allowed ? null : await snapshot(["labels", "audit_records"]);
+      for (const [surface, send] of [["session", person.call], ["api", person.api]] as const) {
+        const response = await send(surface === "session" ? "/settings/labels" : "/labels", "POST", {name: `synthetic-vector-${membersMayCreate}-${who}-${surface}`,color: "#224466"});
+        expect(response.status, who + surface).toBe(allowed ? surface === "session" ? 200 : 201 : 403);
+      }
+      if (before) expect(await snapshot(["labels", "audit_records"])).toEqual(before);
+      if (who !== "owner" && who !== "admin")
+        expect((await person.call("/settings/labels/creation", "PUT", {membersMayCreate: !membersMayCreate})).status).toBe(403);
+    }
+  }
+  expect(await audits("workspace.label_creation_changed")).toHaveLength(2);
+
   // Open Settings pages (ROLE-008 row): Members open Account, the member
   // directory and their personal tokens; a Guest opens Account only.
   const pages = contractMatrix.get("Open Settings pages (ROLE-008)")!;
