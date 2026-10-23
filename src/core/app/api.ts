@@ -1,5 +1,4 @@
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
-import { githubIssueProjection } from '../features/integrations/github-read';
 import {initiativeAuthority} from '../features/initiatives/authority';
 import {addInitiativeRoutes} from '../features/initiatives/routes';
 import {addSubscriptionRoutes,subscriptionAuthority} from '../features/subscriptions/routes';
