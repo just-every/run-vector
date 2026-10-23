@@ -6333,7 +6333,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "8886b3458d9b976c3fee9baec0928c37f93baca44d6446e97fbee03e2b926b4c",
+      "sha256": "5424ee38d91adfcad6367f2d3564d6dee50c6e4019a948cfa7699fa6ca7b7aba",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
@@ -6490,6 +6490,10 @@
     },
     "tests/e2e/housekeeping-runtime.mjs": {
       "sha256": "7f6df60e0c1b6a9f59d83fcecbb89c0221e891176d7947d870a78bba5ce8717a",
+      "executable": false
+    },
+    "tests/e2e/initiatives-journey.mjs": {
+      "sha256": "2b5eb64771eb02e4d75bb606f9d497b25b15f15b93624dbb4f37130e5d818929",
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
@@ -7353,7 +7357,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "7789e744afec5435bfc03c86765e4d58e2134947f3b20894fd236a40164e0264",
+      "sha256": "d93c7ace7ed1cc68ebae3fc999e6a6d7ff70c0b342195053882fd6bf77fc47d4",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
