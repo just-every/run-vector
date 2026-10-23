@@ -156,6 +156,7 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/issues/:identifier/files/:itemId', row: 'issues.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/copy', row: 'issues.copy', teams: issueAndDestination },
   { method: 'DELETE', path: '/issues/:identifier', row: 'issues.delete-permanent', teams: issue },
+  { method: 'PUT', path: '/settings/labels/creation', row: 'workspace.settings' },
   { method: 'POST', path: '/settings/labels', row: 'labels.create' },
   { method: 'PATCH', path: '/settings/labels/:id', row: 'labels.manage' },
   { method: 'DELETE', path: '/settings/labels/:id', row: 'labels.manage' },
@@ -204,6 +205,7 @@ export const doors: Door[] = [
 
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
+  { method: 'POST', path: '/labels', row: 'labels.create' },
   { method: 'POST', path: '/issues', row: 'issues.write', teams: bodyTeam },
   { method: 'PATCH', path: '/issues/:identifier', row: async request => (await request.body() as { cycleId?: unknown } | undefined)?.cycleId !== undefined ? 'cycles.commit' : 'issues.write', teams: issue },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },

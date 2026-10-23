@@ -22,7 +22,7 @@ import {
   exerciseWorkspaceRoles,
 } from "./admin-access-journey.mjs";
 import { createTeamWorkflow, removeUsedStatus, exerciseTeamRoles } from "./admin-team-journey.mjs";
-import { authorLabel, deleteAppliedLabel } from "./admin-label-journey.mjs";
+import { authorLabel, deleteAppliedLabel, memberLabelCreation } from "./admin-label-journey.mjs";
 import {
   authorProject,
   milestonesJourney,
@@ -131,6 +131,7 @@ await contract(
         await inviteProjectLead({ ...shared, project });
         const roles = await exerciseWorkspaceRoles({ ...shared, evidence, refusals: roleRefusals });
         try {
+          await memberLabelCreation({ ...shared, ...roles, evidence, refusals: roleRefusals });
           await exerciseTeamRoles({ ...shared, evidence, refusals: roleRefusals, ...roles });
           await exerciseAuditAccess({ ...shared, ...roles });
         } finally {

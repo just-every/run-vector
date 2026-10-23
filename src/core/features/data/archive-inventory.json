@@ -1210,7 +1210,8 @@
     "created_at",
     "updated_at",
     "reminder_time",
-    "member_invites"
+    "member_invites",
+    "member_label_creation"
   ],
   "issue_duplicates": [
     "issue_id",
