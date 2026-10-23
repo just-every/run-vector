@@ -24,7 +24,7 @@ export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
  // The existing team-settings door supplies ROLE-009 and the transaction's
  // native-session/role fence. Ordinary team edits continue to their own handler.
  app.patch('/settings/teams/:id',async(c,next)=>{
-  const raw=await readRequestJson(c.req.raw.clone());
+  const raw=await readRequestJson(c.req.raw.clone() as unknown as Request);
   if(!raw||typeof raw!=='object'||!Object.hasOwn(raw,'githubAutomation'))return next();
   const parsed=input.safeParse(raw);if(!parsed.success)throw new IntegrationError(400,'invalid_github_rule');
   const team=c.req.param('id'),rule=parsed.data.githubAutomation,db=c.env.DB,at=new Date().toISOString();
