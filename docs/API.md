@@ -21,7 +21,7 @@ Hosted tokens need only the bearer header.
 | Route | Scope | Native behavior |
 | --- | --- | --- |
 | GET /api/v1/issues | issues:read | Existing bounded filters, cursor paging, sort and grouping |
-| GET /api/v1/issues/IDENTIFIER | issues:read | Current native issue projection |
+| GET /api/v1/issues/IDENTIFIER | issues:read | Current native issue projection, branchName and deployments |
 | POST /api/v1/issues | issues:write | Existing issue creation schema, references and history |
 | POST /api/v1/issues/IDENTIFIER/copy | issues:write | Copy with expectedVersion, optional teamId, includeSubissues and includeLinks |
 | PATCH /api/v1/issues/IDENTIFIER | issues:write | Existing field schema and required expectedVersion |
@@ -215,6 +215,46 @@ expiry, erasure and archive exclusion) are not implemented. Complete API
 operations for attachments, relations, labels, teams, workflow states, saved
 views, notifications and members, cycle update/delete and issue deletion remain
 owed. Attachment bytes stay behind the same-origin cookie file door: API-001
-still forbids private-file access by bearer. The five not-built objects and a
+still forbids private-file access by bearer. The remaining not-built objects and a
 real private-team refusal under ROLE-002 remain owed. Native cookie issue
 deletion, import erasure and its receipts are unchanged.
+
+## Native GitHub read projections
+
+| Native app route | Read-only fields |
+| --- | --- |
+| GET /api/issues/IDENTIFIER | `branchName` suggestion and `deployments` (repository, deploymentId, sha, environment, deployedAt) |
+| GET /api/issues/IDENTIFIER/github | `pullRequests`, `commits` (literal author, subject and URL), and `deployments` |
+
+Full issue reads and mutation receipts carry branchName and deployments on both native and versioned issue doors.
+GitHub signing credentials authorize receiver deliveries only, never member API access.
+
+## Releases
+
+| Route | Scope | Behavior |
+| --- | --- | --- |
+| GET /api/v1/releases | releases:read | Cursor paging with team and status filters |
+| GET /api/v1/releases/ID | releases:read | Scope, progress, blockers and linked PRs |
+| POST /api/v1/releases | releases:write | Name, optional teamId/targetDate, status and description |
+| PATCH /api/v1/releases/ID | releases:write | Field edits or publishing with expectedVersion |
+| PUT /api/v1/releases/ID/scope | releases:write | Replace issueIdentifiers and projectIds with expectedVersion |
+
+Owners, Admins and Members act on readable team and workspace releases; Guests are refused 403.
+Native app doors use /api/releases and the same inputs. Released scope stays fixed until
+an explicit reopen. Release deletion remains an API-003 gap. A ?readOnly=1 workspace
+link hides editing and retains normal sign-in and scope admission; it is not a public share.
+
+## Initiatives
+
+| Route | Scope | Behavior |
+| --- | --- | --- |
+| GET /api/v1/initiatives | initiatives:read | Cursor paging with status and parent filters |
+| GET /api/v1/initiatives/ID | initiatives:read | Three-level hierarchy with visible projects and their teams |
+| POST /api/v1/initiatives | initiatives:write | Name, ownerOperatorId, optional parentId/targetDate, status and description |
+| PATCH /api/v1/initiatives/ID | initiatives:write | Version-checked field and parent edits |
+| PUT /api/v1/initiatives/ID/projects | initiatives:write | Replace direct projectIds with expectedVersion |
+
+Native app doors use /api/initiatives and the same inputs. Owners, Admins and Members
+may act; Guests receive 403 on native, scoped API and page doors. A fourth level or
+a parent cycle receives 400. A project may join several initiatives. Deletion,
+INIT-002 roll-ups and Slack/Discord initiative bindings are not implemented.

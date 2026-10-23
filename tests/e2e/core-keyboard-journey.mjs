@@ -4,7 +4,7 @@ import { streamPlanningJourney } from './core-stream-planning-journey.mjs';
 import { undoJourney } from './core-undo-journey.mjs';
 import { paletteJourney } from './core-palette-journey.mjs';
 
-export async function keyboardJourney(page, context, base, record) {
+export async function keyboardJourney(page, context, base, record, independent = journey => journey()) {
   const origin = await page.evaluate(() => performance.timeOrigin);
   for (const modifier of ['Control', 'Meta']) {
     await settleReads(page);
@@ -49,9 +49,9 @@ export async function keyboardJourney(page, context, base, record) {
   }
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   record('CMD-002', 'Control+k and Meta+k each open a palette that navigates with Enter and closes with Escape; c and g m/c/p navigate, while title/description typing remains editable.');
-  await issueEditingJourney(page, context, base, record);
-  await streamPlanningJourney(page, context, base, record);
-  await undoJourney(page, context, base, record);
+  await independent(() => issueEditingJourney(page, context, base, record));
+  await independent(() => streamPlanningJourney(page, context, base, record));
+  await undoJourney(page, context, base, record, independent);
 }
 
 // One native journey covers list focus, keyboard bulk editing, and an atomic

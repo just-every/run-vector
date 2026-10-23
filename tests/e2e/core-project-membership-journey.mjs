@@ -1,3 +1,5 @@
+import {initiativesJourney} from './initiatives-journey.mjs';
+import {releasesJourney} from './releases-journey.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 import { readDevelopmentLink } from './outbox-session.mjs';
@@ -90,6 +92,8 @@ export async function projectMembershipJourney(page, context, base, capture = as
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await capture('PROJ-003', `retained-issue-${width}`, page);
     }
+    await initiativesJourney({page,runtime:{base,state,req:(path,init={})=>fetch(base+path,init)},evidence:process.env.VECTOR_EVIDENCE_DIR??'.artifacts/verification/initiatives'});
+    await releasesJourney({page,runtime:{base,state,req:(path,init={})=>fetch(base+path,init)},evidence:process.env.VECTOR_EVIDENCE_DIR??'.artifacts/verification/releases'});
   } finally {
     await memberContext.close();
   }

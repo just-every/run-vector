@@ -20,6 +20,7 @@ const actions: Record<NotificationKind, string> = {
 };
 
 export function notificationAction(item: InboxItem): string {
+  if(item.sourceEventKind==="issue.created"&&item.causes.includes("status"))return "created";
   const labels = [...new Set(item.causes)].map((kind) => actions[kind]);
   return labels.length > 1
     ? labels.slice(0, -1).join(", ") + " and " + labels.at(-1)

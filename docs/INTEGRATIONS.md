@@ -115,24 +115,42 @@ uncertainty. This is local composition proof, with no live endpoint.
 
 Native issue deletion erases local event, delivery and retained receiver-inbox bodies atomically. Permanent event-identity guards prevent stale enqueue, replay publication, claims and transport. Attempts retain only protocol-generated kind/code/status/retry delay; the native webhook classifier ignores response bodies and Base projects the result before persistence. Operator-entered reconciliation codes can contain private text, so deletion replaces them with a fixed deletion code while retaining the decision, identity and time. The same rule applies to late reconciliation. Vector currently mounts no generic Base replay receiver, but populated archive replay rows receive the same erasure and publication guard. An already invoked external provider operation cannot be recalled.
 
-## GitHub pull requests
+## GitHub pull requests, commits and deployments
 
-Register the repository by owner and name (for example
-`octocat/linguist`), save the reveal-once secret, and configure the
-repository webhook yourself. The receiver implements GitHub's distinct raw-byte
-HMAC protocol, `X-Hub-Signature-256`, `X-GitHub-Delivery` and authenticated GitHub `ping` connection checks plus allowlisted
-`pull_request` actions: opened, edited, closed, reopened and synchronize.
+Register the repository by owner and name, save its reveal-once secret, and select
+Pull requests, Pushes and Deployment statuses in the repository's webhook settings.
+Vector validates the exact raw-byte HMAC, repository, delivery UUID and payload.
 See [signature validation](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries)
 and [payload documentation](https://docs.github.com/en/webhooks/webhook-events-and-payloads).
 
-Explicit native identifiers in PR titles/bodies persist repository/number links,
-title, validated HTTPS PR URL and open/closed/merged state in issue details.
-Unknown references record a diagnostic. A PR never creates, completes or
-reprioritises an issue. Delivery identity/hash and version/state fences commit
-with the link; duplicate or older deliveries cannot regress current state.
-Merged state remains terminal. Current receiver authority also gates retained
-replay results. No GitHub token, OAuth/App installation, enrichment or URL fetch
-is used. The browser checks links locally without opening the GitHub account.
+PR branches, titles and bodies name native issue keys without creating members or
+issues. Closing and contributing phrases distinguish completion from contribution.
+Draft opening, review requests and merges use each team's configured status.
+Defaults match In Progress, In Review and Done by name; an absent name means no
+move. Explicitly disabling a rule also means no move. Completed work is never
+reopened unless that rule permits it. Team-rule writes use Who manages team settings,
+with Owners/Admins admitted and Guests refused. The editor currently appears in
+Owners/Admins' GitHub settings. The same-origin native team PATCH door accepts
+`githubAutomation: {trigger, statusId, allowReopen, expectedVersion, environment?}`.
+
+Signed branch push events retain the author string, first message line and validated
+GitHub commit URL. Authors never create or match members. Closing commits on the
+default branch share the merged-PR rule; other branches only link. Delivery and
+commit receipts prevent repeated moves and follower notices. The receiver accepts
+up to 200 commits and 200 issue links per push; oversized requests are refused.
+
+Successful GitHub deployment statuses attach environment and provider time when
+the SHA matches a linked commit or retained merged-PR merge SHA, or recorded
+non-forced signed branch pushes prove ancestry. Forced updates, absent proof and
+unknown SHAs never establish inclusion. Production defaults to the environment
+named production, case-insensitively; each team can choose another name and status.
+Each issue/deployment pair acts once. Git status changes have a system actor,
+Git automation, and followers receive one in-app notice per change.
+
+The issue's branch suggestion and native issue read expose `branchName`; native
+issue reads and the GitHub block expose deployments. The same fields accompany full issue reads and mutation receipts in the versioned API. Creating a provider branch requires the unbuilt GitHub App
+connection; no provider write credential or outbound enrichment is used here.
+GitLab, CircleCI, Vercel, Netlify and Cloudflare deployment receivers remain unbuilt.
 
 ## Restoration and upgrades
 

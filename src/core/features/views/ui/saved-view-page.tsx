@@ -1,3 +1,4 @@
+import {SubjectSubscribe} from '../../subscriptions/ui/subscriptions';
 import { useEffect, useState } from "react";
 import { useMatch, useNavigate, useParams } from "@tanstack/react-router";
 import {
@@ -91,6 +92,7 @@ export function SavedViewPage() {
         }
         viewActions={
           <>
+            <SubjectSubscribe subjectType="view" subjectId={view.id}/>
             <label className="saved-view-layout">
               View layout
               <select

@@ -1,3 +1,4 @@
+import {SubjectSubscribe} from '../../subscriptions/ui/subscriptions';
 import { ProjectChannel } from "../../integrations/ui/project-channel";
 import { ProjectReportPanel } from "../../project-report/panel";
 import { ProjectAppearance } from "./project-appearance";
@@ -118,6 +119,7 @@ function ProjectDetailContent({
           </SafeMarkdown>
         </div>
         <div className="project-detail__badges">
+          <SubjectSubscribe subjectType="project" subjectId={project.id}/>
           <span className="project-lifecycle">
             {lifecycleLabel(project.lifecycle)}
           </span>

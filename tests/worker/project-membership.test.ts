@@ -1,7 +1,9 @@
+import {exerciseInitiatives} from './initiatives-scenario';
+import {exerciseReleases} from './releases-scenario';
 import { expect, it } from 'vitest';
 import { roleWorkspace, snapshot } from './role-fixture';
 
-it('[PROJ-003 ROLE-001] only Owners and Admins delete a project; removal, archive and deletion preserve its issues', async () => {
+it('[PROJ-003 ROLE-001 RELEASE-001 INIT-001 NOTIFY-009] only Owners and Admins delete a project; removal, archive and deletion preserve its issues', async () => {
   const f = await roleWorkspace();
   for (const surface of ['session', 'api'] as const) {
     const name = `Payment reliability ${surface}`;
@@ -43,4 +45,6 @@ it('[PROJ-003 ROLE-001] only Owners and Admins delete a project; removal, archiv
     expect((await f.call('/settings/projects/' + project.id, 'DELETE')).status).toBe(404);
     expect((await read(second.identifier)).version).toBe(after.version);
   }
+  await exerciseReleases(f);
+  await exerciseInitiatives(f);
 });

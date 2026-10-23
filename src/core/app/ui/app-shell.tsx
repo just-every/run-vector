@@ -34,9 +34,11 @@ type NavigationItem = {
     | '/app'
     | '/app/my-work'
     | '/app/projects'
+    | '/app/releases'
+    | '/app/initiatives'
     | '/app/issues'
     | '/app/inbox'
-    | '/app/board'
+    | '/app/board' | '/app/insights' | '/app/calendar'
   label: string
   icon: string
 }
@@ -45,9 +47,13 @@ const navigation: NavigationItem[] = [
   { to: '/app', label: 'Current', icon: '◈' },
   { to: '/app/my-work', label: 'My work', icon: '◒' },
   { to: '/app/projects', label: 'Projects', icon: '◇' },
+  { to: '/app/initiatives', label: 'Initiatives', icon: '◎' },
+  { to: '/app/releases', label: 'Releases', icon: '◉' },
   { to: '/app/issues', label: 'Issues', icon: '▤' },
   { to: '/app/board', label: 'Board', icon: '▥' },
   { to: '/app/inbox', label: 'Inbox', icon: '▣' },
+  { to: '/app/insights', label: 'Insights', icon: '▧' },
+  { to: '/app/calendar', label: 'Calendar', icon: '▦' },
 ]
 
 export function AppShell({ children }: AppShellProps) {
@@ -276,11 +282,13 @@ function AppShellContent({ children }: AppShellProps) {
           </div>
         )}
         {/* Phone browsing pages carry the board and saved views; issue pages stay short. */}
-        {/^\/app\/(?:issues|board)$|^\/app\/views\/[^/]+$/.test(
+        {/^\/app\/(?:issues|board|releases|initiatives)$|^\/app\/views\/[^/]+$/.test(
           location.pathname,
         ) ? (
           <details className="app-mobile-views">
-            <summary>Board and saved views</summary>
+            <summary>Board, releases, initiatives and saved views</summary>
+            <Link className="app-nav-link" to="/app/releases">Releases</Link>
+            <Link className="app-nav-link" to="/app/initiatives">Initiatives</Link>
             <Link className="app-nav-link" to="/app/board">
               Board
             </Link>
@@ -293,7 +301,7 @@ function AppShellContent({ children }: AppShellProps) {
       </div>
       <nav className="app-mobile-nav" aria-label="Workspace">
         {navigation
-          .filter((item) => item.to !== '/app/board')
+          .filter((item) => item.to !== '/app/board' && item.to !== '/app/releases' && item.to !== '/app/initiatives')
           .map((item) => (
             <NavLink key={item.to} item={item} pathname={location.pathname} />
           ))}

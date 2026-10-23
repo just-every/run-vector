@@ -1,3 +1,4 @@
+import {projectTemplatesJourney} from './project-templates-journey.mjs';
 // Settle native polling before replacing an authorized private document.
 import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
@@ -110,6 +111,7 @@ export async function authorProject({ page, runtime, capture, clause }) {
   );
   await capture("project-markdown-detail");
 
+  await clause("PROJ-012", "save project structure and launch relative milestones and issues", async()=>{await projectTemplatesJourney(page,page.context(),runtime,async name=>capture(name));});
   await beforePrivateNavigation(page, base + "/app/settings");
   await page.goto(base + "/app/settings");
   await openDisclosures(page);

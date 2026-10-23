@@ -58,7 +58,7 @@ export async function withArchiveUpgrade(context,policy,transport,restore) {
   await migrationFiles(context,root,plan.files.slice(0,plan.sourceCount),config);
   context.store.report('Restoring the verified archive in isolated resources, then applying unchanged forward product migrations.');
   const scratch={...context,root,path:original,journal};
-  const historicalPolicy={...policy,secretColumns:plan.sourceSecretColumns};
+  const historicalPolicy={...policy,secretColumns:plan.sourceSecretColumns,replaceableTables:plan.sourceReplaceableTables};
   await transport(historicalPolicy,{prefix:plan.prefix}).import(scratch);
   await migrationFiles(context,root,plan.files.slice(plan.sourceCount),config);
   // Keep the source's declared configuration inventory. No manifest or

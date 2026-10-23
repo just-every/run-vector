@@ -1,0 +1,2 @@
+.integrations-panel .github-rule-reopen { display:flex; align-items:flex-start; gap:.6rem; }
+.integrations-panel .github-rule-reopen input[type="checkbox"] { width:1rem; height:1rem; min-height:0; flex:none; margin-top:.25rem; }

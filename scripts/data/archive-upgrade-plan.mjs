@@ -60,9 +60,12 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
   return table && (present.length || !columns.length)?[[name,present]]:[];
  }));
  insist(canonicalJson(source.excludedColumns)===canonicalJson(sourceSecretColumns),'secret_inventory',409);
+ // Historical import uses only replaceable state present in the authenticated
+ // source schema. Forward migrations create later state before current export.
+ const sourceReplaceableTables=(policy.replaceableTables??[]).filter(name=>source.tables.some(table=>table.name===name));
  const currentSchema=await replay.schemaAfter(files.map(file=>file.name));
  const configuration=Object.fromEntries(['name','compatibility_date','compatibility_flags','d1_databases','r2_buckets'].filter(key=>config[key]!==undefined).map(key=>[key,config[key]]));
- return {needed:names.length<files.length,sourceCount:names.length,sourceSchema:source.schema,currentSchema,prefix,sourceSecretColumns,
+ return {needed:names.length<files.length,sourceCount:names.length,sourceSchema:source.schema,currentSchema,prefix,sourceSecretColumns,sourceReplaceableTables,
   archiveHash:closing.archiveHash,journalArchiveHash:journalClosing?.archiveHash,files:files.map(({name,sha256})=>({name,sha256})),
   configuration};
 }

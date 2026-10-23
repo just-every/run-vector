@@ -1,3 +1,4 @@
+import { exerciseCalendarCapability } from './calendar-feed-proof'
 import {legacyCookie} from './historical-auth-fixture'
 import { env } from 'cloudflare:workers'
 import { applyD1Migrations } from 'cloudflare:test'
@@ -88,9 +89,10 @@ it('[BASE-ACCESS-001] real Base SendGrid serialization and rejected/uncertain de
     expect(wire.tracking_settings.click_tracking.enable).toBe(false)
   } finally { send.mockRestore() }
 })
-it('[OPS-004 BASE-ACCESS-002] removal atomically revokes Base sessions, unused links and invitations issued by the removed actor', async () => {
+it('[CAL-001 OPS-004 BASE-ACCESS-002] removal revokes calendar capabilities, Base sessions, unused links and invitations issued by the removed actor', async () => {
   const cookie = await signIn('peer@base.test')
   const peerId = await actor(cookie)
+  const feedPath = await exerciseCalendarCapability(ownerCookie, cookie, peerId)
   const priorVersion = (await env.DB.prepare('SELECT a.version FROM oa_operators a JOIN vector_auth_operators m ON a.id=m.auth_id WHERE m.operator_id=?').bind(peerId).first<{version:number}>())!.version
   expect((await request('/auth/magic-link','POST',{email:'peer@base.test'})).status).toBe(202)
   const unconsumed = await mailToken('peer@base.test')
@@ -98,6 +100,7 @@ it('[OPS-004 BASE-ACCESS-002] removal atomically revokes Base sessions, unused l
   const pending = await mailToken('pending@base.test')
   expect((await request('/api/settings/operators/'+peerId,'DELETE',undefined,ownerCookie)).status).toBe(200)
   expect((await request('/api/session','GET',undefined,cookie)).status).toBe(401)
+  expect((await request(feedPath)).status).toBe(404)
   for (const token of [unconsumed,pending]) {
     expect((await request('/auth/confirm?token='+token)).status).toBe(400)
     expect((await request('/auth/confirm','POST',{token})).status).toBe(400)

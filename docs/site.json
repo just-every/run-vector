@@ -459,6 +459,10 @@
     {
       "source": "evidence/roles/UPGRADE.md",
       "reason": "One-off populated upgrade proof for the ROLE-001, ROLE-007 and ROLE-009 migrations; evidence for maintainers, not an owner guide."
+    },
+    {
+      "source": "src/core/features/insights/README.md",
+      "reason": "Metric definitions, nearest-rank percentiles and recorded-history limits for Insights maintainers."
     }
   ]
 }

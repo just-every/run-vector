@@ -55,6 +55,7 @@ export function activityChanges(kind: string, previousValue: unknown, nextValue:
 }
 
 export function activityTitle(kind: string, nextValue?: unknown) {
+  if (kind === "release.published") return "Released in " + String(record(nextValue).releaseName);
   if (kind === "issue.copied_from") return `Copied from ${String(record(nextValue).identifier ?? "an issue")}`;
   if (kind === "issue.copied_to") return `Copied to ${String(record(nextValue).identifier ?? "an issue")}`;
   if (typeof record(nextValue).undoOf === 'string') return 'Undid the previous change';

@@ -1,12 +1,14 @@
 import { TooltipScope } from '../../../ui/tooltip';
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
+import {IssueReleases} from '../../releases/ui/releases';
 import { IssueCopyAction } from "../../issue-copy/ui";
 import { Subissues } from "../../subissues/ui/subissues";
 import { IssueDescription } from "../../description-history/ui/description";
 import { useNavigate } from '@tanstack/react-router';
 import { DeleteIssue,type DeletionReceipt } from '../../issue-deletion/ui';
 import { IssueDuplicates } from '../../duplicates/ui';
+import { GithubBranch } from '../../integrations/ui/github-branch';
 import { GithubLinks } from '../../integrations/ui/github-links';
 import { isEditableTarget } from "../../search/ui/command-helpers";
 import { IssueSubscriptionControls } from "../../notifications/ui/issue-subscription";
@@ -254,6 +256,8 @@ function IssueInspector({
         options={options}
         onRefresh={onRefresh}
       />
+      <GithubBranch identifier={issue.identifier} title={issue.title}/>
+      <IssueReleases identifier={issue.identifier}/>
       <div className="issue-body">
         <div className="issue-planning-fields">
           <IssueFieldEditor

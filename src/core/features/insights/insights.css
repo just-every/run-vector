@@ -1,0 +1,39 @@
+.insights-page { max-width: 1180px; min-width: 0; }
+.insights-page h1 { margin-top: 6px; }
+.insights-eyebrow { color: var(--app-muted); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+.insights-card { min-width: 0; padding: clamp(16px, 3vw, 26px); border: 1px solid var(--app-rule); border-radius: 12px; background: var(--app-card); margin: 20px 0; }
+.insights-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 12px 0; }
+.insights-controls label { display: grid; gap: 6px; font-size: .86rem; min-width: 0; }
+.insights-controls input, .insights-controls select { width: 100%; min-width: 0; padding: 9px; color: var(--app-ink); background: var(--app-field); border: 1px solid var(--app-field-border); border-radius: 6px; }
+.insights-heading { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: start; }
+.insights-heading h2 { margin: 0; }
+.insights-card p { line-height: 1.6; }
+.insights-card summary { cursor: pointer; padding: 8px 0; }
+.insights-card button, .insights-export { color: var(--app-ink); background: var(--app-field); border: 1px solid var(--app-field-border); border-radius: 6px; padding: 9px 12px; cursor: pointer; }
+.insights-card a { color: var(--app-cobalt-ink); }
+.insights-bars { display: grid; gap: 8px; margin: 24px 0; }
+.insights-bar { display: grid; grid-template-columns: minmax(150px, 1fr) minmax(100px, 2fr) 60px; gap: 12px; align-items: center; text-align: left; width: 100%; }
+.insights-bar span { overflow-wrap: anywhere; font-size: .82rem; }
+.insights-bar strong { text-align: right; }
+.insights-bar svg { width: 100%; height: 24px; color: var(--app-ink); }
+.insights-mark { fill: currentColor; }
+.insights-mark-outline { fill: none; stroke: currentColor; stroke-width: 2; stroke-dasharray: 6 2; }
+.insights-table { max-width: 100%; overflow-x: auto; margin: 16px 0; }
+.insights-table table { width: 100%; border-collapse: collapse; font-size: .85rem; text-align: left; }
+.insights-table th, .insights-table td { border-bottom: 1px solid var(--app-rule); padding: 12px 8px; vertical-align: top; }
+.insights-table caption { text-align: left; padding: 10px 0; font-weight: 600; }
+.insights-note { color: var(--app-muted); font-size: .85rem; }
+.insights-page ul { padding-left: 20px; overflow-wrap: anywhere; line-height: 1.8; }
+@media (max-width: 540px) {
+  .insights-controls { grid-template-columns: 1fr; }
+  .insights-bar { grid-template-columns: minmax(0, 1fr) 50px; }
+  .insights-bar span { grid-column: 1 / -1; }
+  .insights-table table { min-width: 650px; }
+}
+.insights-table table { table-layout: auto; }
+.insights-table th { white-space: nowrap; }
+@media (max-width: 46rem) {
+  /* New report destinations keep their labels and touch targets; the navigation
+     scrolls within its own viewport instead of squeezing the app's text. */
+  .app-mobile-nav { overflow-x: auto; grid-auto-columns: minmax(62px, 1fr); }
+}

@@ -1040,7 +1040,8 @@
     "repository_id",
     "number",
     "issue_id",
-    "created_at"
+    "created_at",
+    "relation"
   ],
   "vector_github_pull_requests": [
     "repository_id",
@@ -1049,7 +1050,8 @@
     "url",
     "state",
     "updated_at",
-    "received_at"
+    "received_at",
+    "merge_sha"
   ],
   "vector_github_repositories": [
     "id",
@@ -1141,7 +1143,8 @@
     "id",
     "import_id",
     "effects_held",
-    "reviewed_at"
+    "reviewed_at",
+    "subscription_revision"
   ],
   "vector_source_receipts": [
     "source_id",
@@ -1730,5 +1733,165 @@
     "created_at",
     "updated_at",
     "decided_at"
+  ],
+  "github_automation_rules": [
+    "team_id",
+    "trigger",
+    "status_id",
+    "allow_reopen",
+    "version",
+    "updated_at",
+    "production_environment"
+  ],
+  "github_commit_links": [
+    "repository_id",
+    "sha",
+    "issue_id",
+    "author",
+    "subject",
+    "url",
+    "closing_applied",
+    "received_at"
+  ],
+  "github_push_proofs": [
+    "repository_id",
+    "delivery_id",
+    "after_sha",
+    "ancestors_json",
+    "received_at"
+  ],
+  "github_deployments": [
+    "repository_id",
+    "deployment_id",
+    "sha",
+    "environment",
+    "deployed_at"
+  ],
+  "github_issue_environments": [
+    "repository_id",
+    "deployment_id",
+    "issue_id"
+  ],
+  "releases": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "name",
+    "target_date",
+    "status",
+    "description",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "release_issues": [
+    "release_id",
+    "issue_id"
+  ],
+  "release_projects": [
+    "release_id",
+    "project_id"
+  ],
+  "subscription_clock": [
+    "id",
+    "revision"
+  ],
+  "subject_subscriptions": [
+    "id",
+    "operator_id",
+    "subject_type",
+    "subject_id",
+    "start_revision",
+    "created_at"
+  ],
+  "subscription_events": [
+    "event_id",
+    "issue_id",
+    "revision",
+    "kind",
+    "created_at"
+  ],
+  "subscription_event_receipts": [
+    "event_id",
+    "operator_id"
+  ],
+  "initiative_graph": [
+    "workspace_id",
+    "revision"
+  ],
+  "initiatives": [
+    "id",
+    "workspace_id",
+    "parent_id",
+    "owner_operator_id",
+    "name",
+    "description",
+    "target_date",
+    "status",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "initiative_projects": [
+    "initiative_id",
+    "project_id"
+  ],
+  "calendar_feed_tokens": [
+    "id",
+    "workspace_id",
+    "creator_id",
+    "team_id",
+    "token_hash",
+    "version",
+    "created_at",
+    "updated_at",
+    "revoked_at"
+  ],
+  "dashboards": [
+    "id",
+    "workspace_id",
+    "creator_id",
+    "team_id",
+    "name",
+    "is_shared",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "dashboard_widgets": [
+    "dashboard_id",
+    "position",
+    "definition_json"
+  ],
+  "project_templates": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "name",
+    "description",
+    "cadence",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "project_template_milestones": [
+    "template_id",
+    "position",
+    "name",
+    "description",
+    "offset_days"
+  ],
+  "project_template_labels": [
+    "template_id",
+    "name"
+  ],
+  "project_template_issues": [
+    "template_id",
+    "position",
+    "title",
+    "description",
+    "priority",
+    "offset_days",
+    "milestone_position"
   ]
 }

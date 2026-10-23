@@ -1,3 +1,5 @@
+import {createServerApp} from '../../src/core/app/server';
+import {bindings,origin} from './base-auth-fixture';
 import { seedIntakeForTeam, recordedReply } from './email-intake-fixture';
 import { expect } from "vitest";
 import type { RowId } from "../../src/core/features/roles/matrix";
@@ -188,4 +190,83 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "data.restore": { session: async (_who, actor) => () => actor.call("/data/restore") },
     "data.erase-imported": { session: async (_who, actor) => () => actor.call("/data/erasure/journal") },
   };
+}
+
+/** Additional doors carried by existing matrix rows. Kept separate so another
+ * campaign's team-settings probes remain intact. */
+export function githubRuleProbes(w:Workspace):{row:RowId;probe:Probe}[]{
+ return [{row:'teams.settings',probe:{permission:'settings',session:async(_who,actor,team)=>{
+  const state=await json<{teams:{id:string;rules:{trigger:string;version:number}[]}[]}>(w.people.owner.call('/github/automation'));
+  const version=state.teams.find(t=>t.id===team)!.rules.find(r=>r.trigger==='draft')!.version;
+  return ()=>actor.call('/settings/teams/'+team,'PATCH',{githubAutomation:{trigger:'draft',statusId:null,allowReopen:false,expectedVersion:version}});
+ }}}];
+}
+
+
+/** RELEASE-001 carries the existing contract row without changing the
+ * core role table owned by the concurrent administration campaign. */
+export function releaseMatrixProbes(w:Workspace){
+ const app=createServerApp();
+ const prepare=async(who:Kind,actor:Person,team:string,send:(path:string,method?:string,body?:unknown)=>Promise<Response>)=>{
+  const target=who==='guest'?await json<{id:string;version:number}>(w.people.owner.call('/releases','POST',{name:'synthetic-vector-1759',teamId:team})):null;
+  return async()=>{
+   const created=await send('/releases','POST',{name:'synthetic-vector-1751 '+actor.id,teamId:team});
+   expect(created.status).toBe(who==='guest'?403:201);
+   const release=target??await created.clone().json() as {id:string;version:number};let version=release.version;
+   for(const [path,method,body] of [
+    ['/releases/'+release.id,'GET',undefined],
+    ['/releases/'+release.id,'PATCH',{expectedVersion:version,description:'synthetic-vector-1759'}],
+    ['/releases/'+release.id+'/scope','PUT',{expectedVersion:version+1,issueIdentifiers:[],projectIds:[]}],
+    ['/releases/'+release.id,'PATCH',{expectedVersion:version+2,status:'released'}],
+   ] as const){const response=await send(path,method,body);expect(response.status).toBe(who==='guest'?403:200);}
+   return created;
+  };
+ };
+ return {action:'Create, edit or release a release (RELEASE-001)',
+  session:async(who:Kind,actor:Person,team:string)=>prepare(who,actor,team,actor.call),
+  api:async(who:Kind,actor:Person,team:string)=>{
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'member'})).status).toBe(200);
+   const minted=await json<{token:string}>(actor.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1759',scopes:['releases:read','releases:write']}));
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'guest',teamIds:[team]})).status).toBe(200);
+   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+   return prepare(who,actor,team,send);
+  }
+ };
+}
+
+
+/** Personal-preference doors inherit the existing Account access row. */
+export function subscriptionPersonalProbe(w:Workspace){
+ return {parent:'Open Settings pages (ROLE-008)',attempt:async(_who:Kind,actor:Person,team:string)=>()=>{
+  return actor.call('/subscriptions','POST',{subjectType:'team',subjectId:team});
+ }};
+}
+
+export function initiativeMatrixProbes(w:Workspace){
+ const app=createServerApp();
+ const prepare=async(who:Kind,actor:Person,team:string,send:(path:string,method?:string,body?:unknown)=>Promise<Response>)=>{
+  const target=who==='guest'?await json<{id:string;version:number}>(w.people.owner.call('/initiatives','POST',{name:'synthetic-vector-1759',ownerOperatorId:actor.id})):null;
+  return async()=>{
+   const created=await send('/initiatives','POST',{name:'synthetic-vector-1751 '+actor.id,ownerOperatorId:actor.id});
+   expect(created.status).toBe(who==='guest'?403:201);
+   const initiative=target??await created.clone().json() as {id:string;version:number};let version=initiative.version;
+   for(const [path,method,body] of [
+    ['/initiatives/'+initiative.id,'GET',undefined],
+    ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version,description:'synthetic-vector-1759'}],
+    ['/initiatives/'+initiative.id+'/projects','PUT',{expectedVersion:version+1,projectIds:[]}],
+    ['/initiatives/'+initiative.id,'PATCH',{expectedVersion:version+2,status:'completed'}],
+   ] as const){const response=await send(path,method,body);expect(response.status).toBe(who==='guest'?403:200);}
+   return created;
+  };
+ };
+ return {action:'Create and edit initiatives; add projects to them (INIT-001)',
+  session:async(who:Kind,actor:Person,team:string)=>prepare(who,actor,team,actor.call),
+  api:async(who:Kind,actor:Person,team:string)=>{
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'member'})).status).toBe(200);
+   const minted=await json<{token:string}>(actor.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1759',scopes:['initiatives:read','initiatives:write']}));
+   if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'guest',teamIds:[team]})).status).toBe(200);
+   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+   return prepare(who,actor,team,send);
+  }
+ };
 }

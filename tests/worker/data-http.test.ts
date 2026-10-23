@@ -13,6 +13,10 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const calendarCreated=await f.call('/calendar/feeds','POST',{});expect(calendarCreated.status).toBe(201);const calendarFeed=await calendarCreated.json() as {id:string;url:string};
+ expect((await request(new URL(calendarFeed.url).pathname)).status).toBe(200);
+ const dashboardCreated=await f.call('/dashboards','POST',{name:'synthetic-vector-35',widgets:[{name:'Portable count',kind:'count',filters:{q:f.issue.identifier},chart:{}}]});expect(dashboardCreated.status).toBe(201);const portableDashboard=await dashboardCreated.json() as {id:string;widgets:unknown[]};
+ const templateCreated=await f.call('/project-templates','POST',{name:'synthetic-vector-69',description:'Portable structure',cadence:'Weekly',milestones:[{name:'Launch',offsetDays:7}],labels:['synthetic-vector-70'],issues:[{title:'synthetic-vector-71',offsetDays:3,milestonePosition:0}]});expect(templateCreated.status).toBe(201);const portableTemplate=await templateCreated.json() as {id:string};
  const referenceResponse=await f.call('/issues','POST',{teamId:f.team.id,title:'Portable reference source',description:'See '+f.issue.identifier});expect(referenceResponse.status).toBe(201);const referenceSource=await referenceResponse.json() as {identifier:string};
  const referenceBefore=await (await f.call('/issues/'+referenceSource.identifier+'/references')).json();
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
@@ -48,6 +52,12 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const projectHistoryBefore=await env.DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all();
  expect((await f.call('/issues/order','POST',{teamId:f.team.id,identifier:f.issue.identifier,action:'top',expectedVersion:0})).status).toBe(200);
  expect((await f.call('/workload?cycleId='+f.closing.id,'PUT',{capacity:17,expectedVersion:0})).status).toBe(200);
+ // Subscription preferences and event history survive; restored pending effects stay behind the destination cutoff.
+ const preference=await f.call('/subscriptions','POST',{subjectType:'team',subjectId:f.team.id});expect(preference.status).toBe(201);
+ const pendingSubscriptionResponse=await request('/api/issues','POST',{teamId:f.team.id,title:'synthetic-vector-1776'},peer);expect(pendingSubscriptionResponse.status).toBe(201);
+ const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
+ const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
+ const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current
  // state-bearing D1 ledger. Neither ledger is application data in the archive.
@@ -70,7 +80,12 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore','vector_slack_member_links','vector_slack_request_keys'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
  expect(records[0].kind==='manifest' && (records[0].tables.find(t=>t.name==='issue_reference_subjects')?.count??0)>0).toBe(true);
+ for(const name of ['project_templates','project_template_milestones','project_template_labels','project_template_issues'])expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name===name)?.count).toBe(1);
+ for(const name of ['dashboards','dashboard_widgets'])expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name===name)?.count).toBe(1);
  const archiveText=JSON.stringify(records);
+ expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name==='calendar_feed_tokens')).toBe(false);
+ expect(archiveText.includes(calendarFeed.url)).toBe(false);
+ expect(archiveText.includes((await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(calendarFeed.id).first<string>('token_hash'))!)).toBe(false);
  for(const credential of [slackEdge.token,slackEdge.webhook,signingSecret,'UARCHIVE1',source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
  await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
@@ -95,6 +110,10 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
+ const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
+ expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM calendar_feed_tokens').first<number>('n')).toBe(0);
  const restoredReferences=await targetCall('/api/issues/'+referenceSource.identifier+'/references','GET',undefined,historical);expect(restoredReferences.status).toBe(200);expect(await restoredReferences.json()).toEqual(referenceBefore);
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
  const credentialState=async()=>await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json() as CredentialState;
@@ -167,9 +186,13 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect(reentered.tokens.find(row=>row.id===token.credential.id)).toMatchObject({requiresReentry:1});
  expect(await drainNotificationMail(targetBindings,{scheduled:true})).toEqual({processed:0});
  await dispatchWebhooks(dispatchBindings);expect(await historicalWebhooks()).toEqual(webhookHistory);expect(sent).toBe(0);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results).toEqual(subscriptionPreferences);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision')).toBe(subscriptionRevision);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT subscription_revision FROM vector_restore_status WHERE id=1').first<number>('subscription_revision')).toBe(subscriptionRevision);
  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
  expect(await drainNotificationMail(targetBindings,{scheduled:true})).toEqual({processed:0});
  await dispatchWebhooks(dispatchBindings);expect(await historicalWebhooks()).toEqual(webhookHistory);expect(sent).toBe(0);
+ const restoredSubscriptionInbox=await targetCall('/api/notifications?limit=50','GET',undefined,historical);expect(restoredSubscriptionInbox.status).toBe(200);expect((await restoredSubscriptionInbox.json() as {items:{identifier:string}[]}).items.some(item=>item.identifier===pendingSubscriptionIssue.identifier)).toBe(false);
  const recovered=await targetCall('/api/data/restore','GET',undefined,historical);expect(recovered.status).toBe(200);
  expect((await recovered.json() as {status:unknown}).status).toMatchObject({importId:job,phase:'complete',contentHash:finalHash(records),effectsHeld:0});
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]},historical)).status).toBe(409);
