@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {beforePrivateNavigation} from './collaboration-navigation.mjs';
 const require=createRequire(import.meta.url),axe=await readFile(require.resolve('axe-core/axe.min.js'),'utf8');
 export async function projectTemplatesJourney(page,context,runtime,capture){
- const base=runtime.base,errors=[];const onError=e=>errors.push(e.message),onConsole=m=>{if(/hydrat|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());};page.on('pageerror',onError);page.on('console',onConsole);
+ const viewport=page.viewportSize(),base=runtime.base,errors=[];const onError=e=>errors.push(e.message),onConsole=m=>{if(/hydrat|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());};page.on('pageerror',onError);page.on('console',onConsole);
  const api=async(path,method='GET',data)=>{const r=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});assert(r.ok(),method+' '+path+' '+r.status());return r.json();};
  const state=await api('/settings/administration'),owner=state.viewer.operatorId??runtime.sql("SELECT id FROM operators WHERE role='owner' AND removed_at IS NULL")[0].id;
  const team=state.teams.find(t=>t.members.some(m=>m.operatorId===owner))??state.teams[0];
@@ -34,5 +34,5 @@ export async function projectTemplatesJourney(page,context,runtime,capture){
   console.log('PROJ-012 '+width+': save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS');
  }
  assert.deepEqual(errors,[],'no template hydration mismatch or page errors');
- }finally{page.off('pageerror',onError);page.off('console',onConsole);}
+ }finally{page.off('pageerror',onError);page.off('console',onConsole);if(viewport)await page.setViewportSize(viewport);}
 }

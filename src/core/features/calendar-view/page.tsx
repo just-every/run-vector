@@ -5,7 +5,7 @@ import {monthCalendarSchema,type MonthEvent} from './schema';
 import './calendar.css';
 const dayLabel=(day:string)=>new Intl.DateTimeFormat('en',{weekday:'long',month:'long',day:'numeric',year:'numeric',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z'));
 function shifted(month:string,delta:number){const d=new Date(month+'-01T12:00:00Z');d.setUTCMonth(d.getUTCMonth()+delta);return d.toISOString().slice(0,7);}
-function days(month:string){const date=new Date(month+'-01T12:00:00Z');date.setUTCDate(1-(date.getUTCDay()+6)%7);return Array.from({length:42},(_,i)=>{const d=new Date(date);d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10);});}
+function days(month:string){const date=new Date(month+'-01T12:00:00Z');date.setUTCDate(1-(date.getUTCDay()+6)%7);return Array.from({length:42},(_,i)=>{const d=new Date(date);d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10);}).filter(day=>/^\d{4}-\d{2}-\d{2}$/.test(day));}
 const onDay=(event:MonthEvent,day:string)=>event.firstDay<=day&&event.lastDay>=day;
 const kindName={issue:'Due issue',cycle:'Cycle',milestone:'Milestone'};
 export function MonthCalendar(){
@@ -38,7 +38,7 @@ export function MonthCalendar(){
    </div>
    <div className="calendar-agenda" role="region" aria-label="Selected day events"><h3>{dayLabel(selectedDay)}</h3>{!events.length&&<p>No events on this day.</p>}
     {events.map(event=><article key={event.id} className={'calendar-event calendar-kind--'+event.kind} data-calendar-event={event.identifier??event.id} draggable={event.kind==='issue'&&!busy} onDragStart={e=>{if(event.kind!=='issue')return;setDragged(event);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',event.identifier!);}} onDragEnd={()=>setDragged(null)}>
-     <p className="insights-note">{kindName[event.kind]}{event.kind==='cycle'?' · '+event.firstDay+' to '+event.lastDay:''}</p><a href={new URL(event.url).pathname}>{event.title}</a>
+     <p className="insights-note">{kindName[event.kind]}{event.kind==='cycle'?' · '+event.firstDay+' to '+event.lastDay:''}</p><a draggable={false} href={new URL(event.url).pathname}>{event.title}</a>
      {event.kind==='issue'&&<button type="button" disabled={busy} aria-label={'Change due date for '+event.identifier} onClick={()=>{setEditing(event);setDate(event.start);setError('');}}>Change due date</button>}
     </article>)}
    </div>

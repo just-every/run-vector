@@ -3529,7 +3529,7 @@
       "executable": false
     },
     "src/core/features/calendar-view/page.tsx": {
-      "sha256": "5c23ddcb54fe735d1e0be9ce2703aba034204bb15ae74dcda66de74ea53120d9",
+      "sha256": "4576a2c893882f84a5a0ff9f42d93b7a7e9a8a2b88923b13f69b2221a436f325",
       "executable": false
     },
     "src/core/features/calendar-view/read.ts": {
@@ -6181,7 +6181,7 @@
       "executable": false
     },
     "tests/e2e/calendar-month-journey.mjs": {
-      "sha256": "1663aa616a3ade366030f5d8f48d1061633f162e26bfa962c5c08085e1ce836e",
+      "sha256": "5260306ec0c548f60119865be6d117bea288d29c3bf629c7a3e2ea55a79cb34f",
       "executable": false
     },
     "tests/e2e/collaboration-delivery-fixture.mjs": {
@@ -6605,7 +6605,7 @@
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
-      "sha256": "2678e8a5a5a8efcf392dd7ecaf44e697f4525194b2dd7cea9a75b70564a35983",
+      "sha256": "1d0025005623774dc0b72fafb70a3325a2e08a6c5e2bfb219b5018c721f6450a",
       "executable": false
     },
     "tests/e2e/public-development.mjs": {
