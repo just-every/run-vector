@@ -63,6 +63,12 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const roles=(db:D1Database)=>db.prepare('SELECT id,email,role FROM operators ORDER BY id').all().then(rows=>rows.results);
  const archivedRoles=await roles(env.DB);
  expect(new Set(archivedRoles.map(row=>row.role))).toEqual(new Set(['owner','admin','member']));
+ // Subscription preferences and event history survive; restored pending effects stay behind the destination cutoff.
+ const preference=await f.call('/subscriptions','POST',{subjectType:'team',subjectId:f.team.id});expect(preference.status).toBe(201);
+ const pendingSubscriptionResponse=await request('/api/issues','POST',{teamId:f.team.id,title:'synthetic-vector-1776'},peer);expect(pendingSubscriptionResponse.status).toBe(201);
+ const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
+ const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
+ const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
@@ -167,9 +173,13 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect(reentered.tokens.find(row=>row.id===token.credential.id)).toMatchObject({requiresReentry:1});
  expect(await drainNotificationMail(targetBindings,{scheduled:true})).toEqual({processed:0});
  await dispatchWebhooks(dispatchBindings);expect(await historicalWebhooks()).toEqual(webhookHistory);expect(sent).toBe(0);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results).toEqual(subscriptionPreferences);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision')).toBe(subscriptionRevision);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT subscription_revision FROM vector_restore_status WHERE id=1').first<number>('subscription_revision')).toBe(subscriptionRevision);
  expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
  expect(await drainNotificationMail(targetBindings,{scheduled:true})).toEqual({processed:0});
  await dispatchWebhooks(dispatchBindings);expect(await historicalWebhooks()).toEqual(webhookHistory);expect(sent).toBe(0);
+ const restoredSubscriptionInbox=await targetCall('/api/notifications?limit=50','GET',undefined,historical);expect(restoredSubscriptionInbox.status).toBe(200);expect((await restoredSubscriptionInbox.json() as {items:{identifier:string}[]}).items.some(item=>item.identifier===pendingSubscriptionIssue.identifier)).toBe(false);
  const recovered=await targetCall('/api/data/restore','GET',undefined,historical);expect(recovered.status).toBe(200);
  expect((await recovered.json() as {status:unknown}).status).toMatchObject({importId:job,phase:'complete',contentHash:finalHash(records),effectsHeld:0});
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]},historical)).status).toBe(409);
