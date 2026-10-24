@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a536474239e4bb63804a69d403069cc0a644794d51e0dcb5ebc9cd32c7c9381a",
+      "sha256": "86369129aa4401b49dc8d28ebd073c3f5476837008f83e44e42da34eb4f67104",
       "executable": false
     },
     "DEMO.md": {
@@ -6925,7 +6925,7 @@
       "executable": false
     },
     "tests/e2e/role-reader-support.mjs": {
-      "sha256": "c3f33336c731800c7ba445b9d6555b943ee0655a96e05d0a913507aa9450aaf1",
+      "sha256": "360f504c3cf4e2eb52f089282352fa1994245a1374d03a988bc75204714e6dc7",
       "executable": false
     },
     "tests/e2e/role-ui-support.mjs": {
@@ -6993,7 +6993,7 @@
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
-      "sha256": "992a54ba92d945bd3a62b3386ed1ba1020892a926d5e72225845811d05c8d0f7",
+      "sha256": "cdf2c7d18ece0ed39076c90b84968bb9959e350b835cb4f9d1cbef49ac089aea",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
@@ -7681,7 +7681,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "46def8fd7e3b06394c3e630e210fcf2dd6b37a7d3c0c313b7942e149327b6970",
+      "sha256": "bed4d4392f9ebedaf2add5569007f42a11761cb4a01f8e7cffe76acdc573e19e",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
@@ -7733,7 +7733,7 @@
       "executable": false
     },
     "tests/worker/subscriptions-scenario.ts": {
-      "sha256": "986ce0f61f70b3ad6bd90a25a4f44230a1da0a163f5bce1041543850314fc1b1",
+      "sha256": "e580b683f8169b001d1d04e8c6c2d6fc9f74c3a467285a3bc63c7e63530a15ff",
       "executable": false
     },
     "tests/worker/viewer-role-upgrade.ts": {
