@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -27,13 +28,15 @@ try {
   page.setDefaultTimeout(15000);
   await bootstrapOwner(page, runtime);
   const call = async (path, method = "GET", data, expected = 200) => {
-    const r = await context.request.fetch(runtime.base + "/api" + path, {
+    return withOperatorClient(context, async client => {
+const r = await client.fetch(runtime.base + "/api" + path, {
       method,
       headers: { Origin: runtime.base },
       data,
     });
     assert.equal(r.status(), expected, await r.text());
-    return r.json();
+    return await r.json();
+});
   };
   let state = await call("/settings/administration");
   const team = state.teams[0];

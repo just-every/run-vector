@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
@@ -9,13 +10,13 @@ export const ordinaryCategories = new Set(['backlog', 'unstarted', 'started', 'c
 
 export function boardApi(context, base) {
   return async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
-      // A reused idle keep-alive socket can be reset between browser steps; retry reads only.
-      ...(method === 'GET' ? { maxRetries: 3 } : {}),
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
+      return await response.json();
     });
-    assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
   };
 }
 

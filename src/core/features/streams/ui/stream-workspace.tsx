@@ -45,7 +45,11 @@ function CurrentWorkspace({
   selectedIdentifier?: string;
 }) {
   // Leave room for request and render latency within Current's five-second freshness budget.
-  const stream = useApiResource("/api/current", currentStreamSchema, 2000);
+  const stream = useApiResource("/api/current", currentStreamSchema, 2000, {
+    // A route change stops polling; let a read already admitted by this
+    // document finish, as the issue browser does, without canceling its I/O.
+    abortPendingOnDispose: false,
+  });
   if (stream.loading && stream.data === null)
     return <LoadingState label="Loading Current" />;
   if (stream.data === null)

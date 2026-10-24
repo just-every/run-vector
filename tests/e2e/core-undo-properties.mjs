@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { mkdir } from 'node:fs/promises';
 import { randomBytes } from 'node:crypto';
@@ -8,11 +9,13 @@ export const expectedUndoConflicts = new Set();
 
 export async function undoPropertiesJourney(page, context, base, record) {
   const api = async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
+      return await response.json();
     });
-    assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
   };
   const width = page.viewportSize().width, marker = 'Payment retry ' + Date.now();
   const suffix = [...randomBytes(7)].map(n => String.fromCharCode(65 + n % 26)).join('');

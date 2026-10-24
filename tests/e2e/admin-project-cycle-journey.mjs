@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {projectTemplateAccessCells} from './template-access-cells.mjs';
 import {projectTemplatesJourney,nativeProjectTemplatesJourney} from './project-templates-journey.mjs';
 // Settle native polling before replacing an authorized private document.
@@ -201,9 +202,11 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
   const width=page.viewportSize().width;
   const name=`Checkout delivery ${width}`;
   const send=async(path,method,data)=>{
-    const response=await page.request.fetch(base+'/api'+path,{method,headers:{Origin:base,Connection:'close'},data});
-    assert.ok(response.ok(),`${method} ${path}: ${response.status()}`);
-    return response.json();
+    return withOperatorClient(page.context(), async client => {
+      const response=await client.fetch(base+'/api'+path,{method,headers:{Origin:base,Connection:'close'},data});
+      assert.ok(response.ok(),`${method} ${path}: ${response.status()}`);
+      return await response.json();
+    });
   };
   const owner=sql('SELECT id FROM operators WHERE removed_at IS NULL ORDER BY id LIMIT 1')[0].id;
   const projects=await send('/settings/projects','POST',{name,leadOperatorId:owner});

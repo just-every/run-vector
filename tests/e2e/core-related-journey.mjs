@@ -1,11 +1,14 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation,settleReads } from './collaboration-navigation.mjs';
 
 /** REL-007 through the same editor at desktop and phone sizes. */
 export async function relatedJourney(page,context,base,teamId,evidence,record) {
   const call=async(path,method='GET',data)=>{
-    const response=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},data});
-    assert.ok(response.ok(),method+' '+path+' '+response.status());return response.json();
+    return withOperatorClient(context, async client => {
+      const response=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data});
+      assert.ok(response.ok(),method+' '+path+' '+response.status());return await response.json();
+    });
   };
   const a=await call('/issues','POST',{title:'Investigate weekly billing export delay',teamId});
   const b=await call('/issues','POST',{title:'Document billing export size limits',teamId});

@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {readDevelopmentLink} from './outbox-session.mjs';
 import {beforePrivateNavigation,navigate,settleReads} from './collaboration-navigation.mjs';
@@ -7,16 +8,15 @@ import {openDisclosures} from './ui-controls-checks.mjs';
 // through the same public confirmation door before the next privileged action.
 const confirmedProofs = new Map();
 async function confirmInviter(page,context,base,state) {
- const response=await context.request.get(base+'/auth/session');assert.equal(response.status(),200);
- const session=await response.json(),confirmedAt=confirmedProofs.get(session.id)??session.createdAt;
+ const session=await withOperatorClient(context,async client=>{const response=await client.get(base+'/auth/session');assert.equal(response.status(),200);return await response.json()});
+ const confirmedAt=confirmedProofs.get(session.id)??session.createdAt;
  if(Date.now()-confirmedAt<5*60_000)return;
- const requested=await context.request.post(base+'/api/settings/operators/confirm-identity',{headers:{Origin:base},data:{}});
- assert.equal(requested.status(),202);await requested.json();
+ await withOperatorClient(context,async client=>{const requested=await client.post(base+'/api/settings/operators/confirm-identity',{headers:{Origin:base},data:{}});assert.equal(requested.status(),202);await requested.json()});
  const link=await readDevelopmentLink(base,context.request,session.operator.email,state);
  await navigate(page,link);await page.getByRole('button',{name:'Confirm',exact:true}).click();
  await page.waitForURL(base+'/app/settings#operators');
- const renewed=await context.request.get(base+'/auth/session');assert.equal(renewed.status(),200);
- assert.equal((await renewed.json()).id,session.id,'confirmation preserves the inviter session');
+ const renewed=await withOperatorClient(context,async client=>{const response=await client.get(base+'/auth/session');assert.equal(response.status(),200);return await response.json()});
+ assert.equal(renewed.id,session.id,'confirmation preserves the inviter session');
  confirmedProofs.set(session.id,Date.now());
 }
 
@@ -38,8 +38,17 @@ export async function withInvitedOperator(page,context,base,state,journey,displa
  const confirmed=page.waitForResponse(response=>new URL(response.url()).pathname==='/auth/confirm'&&response.request().method()==='POST');
  await page.getByRole('button',{name:'Confirm',exact:true}).click();assert.equal((await confirmed).status(),303,'invitation confirmation succeeds within the native proof budget');
  await page.waitForURL(base+'/app');await settleReads(page);
- try{await journey()}finally{
-  await beforePrivateNavigation(page,base+'/');await page.goto(base+'/');await page.waitForLoadState('networkidle');
-  await context.clearCookies();await context.addCookies(original);
+ let journeyError;
+ try{await journey()}catch(error){journeyError=error;throw error}finally{
+  try{
+   try{
+    await beforePrivateNavigation(page,base+'/');await page.goto(base+'/');await page.waitForLoadState('networkidle');
+   }finally{
+    await context.clearCookies();await context.addCookies(original);
+   }
+  }catch(error){
+   if(!journeyError)throw error;
+   console.error('[Invited operator cleanup failed after journey error]',error);
+  }
  }
 }

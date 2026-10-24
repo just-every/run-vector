@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {initiativesJourney} from './initiatives-journey.mjs';
 import {releasesJourney} from './releases-journey.mjs';
 import assert from 'node:assert/strict';
@@ -6,9 +7,11 @@ import { readDevelopmentLink } from './outbox-session.mjs';
 
 export async function projectMembershipJourney(page, context, base, capture = async () => {}, state) {
   const api = async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
-    assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
+      assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
+      return await response.json();
+    });
   };
   const navigate = async path => {
     await beforePrivateNavigation(page, base + path);

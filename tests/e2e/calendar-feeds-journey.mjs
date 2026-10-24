@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {calendarAccessCells} from './calendar-access-cells.mjs';
 import {calendarMonthJourney} from './calendar-month-journey.mjs';
 import assert from 'node:assert/strict';
@@ -10,7 +11,9 @@ export async function calendarFeedsJourney(page,context,runtime,output) {
  const consoleError=m=>{if(/hydrat|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());};
  const pageError=e=>errors.push(e.message);page.on('console',consoleError);page.on('pageerror',pageError);
  await context.grantPermissions(['clipboard-read','clipboard-write'],{origin:base});
- const api=async(path,method='GET',data)=>{const r=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});assert(r.ok(),method+' '+path+' '+r.status());return r.json();};
+ const api=async(path,method='GET',data)=>{return withOperatorClient(context, async client => {
+const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});assert(r.ok(),method+' '+path+' '+r.status());return await r.json();
+});};
  for(const theme of ['light','dark'])for(const width of [1440,390]) {
   await api('/settings/appearance','PATCH',{theme});await page.setViewportSize({width,height:width===390?844:1000});
   await beforePrivateNavigation(page,base+'/app/calendar');assert.equal((await page.goto(base+'/app/calendar')).status(),200);

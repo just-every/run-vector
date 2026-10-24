@@ -1,3 +1,4 @@
+import { withOperatorClient } from '../operator-request.mjs';
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -12,7 +13,9 @@ export async function exerciseSlackDirectMessages({page,runtime,width,evidence})
  await page.setViewportSize({width,height:900});
  const usersFile=process.env.VECTOR_CHANNEL_EDGE+'.users',headers={Origin:runtime.base};
  const calls=async()=>{try{return(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').filter(Boolean).map(JSON.parse);}catch{return[];}};
- const send=async(path,method,data)=>{const response=await page.request.fetch(runtime.base+'/api'+path,{method,headers,data});assert.ok(response.ok(),method+' '+path+' '+response.status());return response.json();};
+ const send=async(path,method,data)=>{return withOperatorClient(page.context(), async client => {
+const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data});assert.ok(response.ok(),method+' '+path+' '+response.status());return await response.json();
+});};
  const shot=async(name,locator)=>{const surface=locator.page();await locator.evaluate(element=>element.scrollIntoView({block:'center'}));assert.equal(await surface.evaluate(()=>innerWidth),width,'capture viewport matches its evidence width');assert.ok(await surface.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');await surface.screenshot({path:resolve(evidence,`slack-004-${name}-${width}.png`)});};
  const axe=async(selector,surface=page)=>{await surface.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const result=await surface.evaluate(selector=>axe.run(document.querySelector(selector)),selector);assert.deepEqual(result.violations.filter(v=>['critical','serious'].includes(v.impact)),[]);};
  const answered=async(path,method,action)=>{

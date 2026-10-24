@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { withInvitedOperator } from './core-operator-journey.mjs';
@@ -5,9 +6,11 @@ import { withInvitedOperator } from './core-operator-journey.mjs';
 /** WORK-004: a member's Created, Subscribed (with Unfollow) and Activity tabs. */
 export async function myWorkTabsJourney(page, context, base, state, teamId, evidence, record) {
   const api = async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data ? { data } : {}) });
-    assert.ok(response.ok(), `${method} ${path} ${response.status()}`);
-    return response.json();
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data ? { data } : {}) });
+      assert.ok(response.ok(), `${method} ${path} ${response.status()}`);
+      return await response.json();
+    });
   };
   const stamp = Date.now();
   const others = [await api('/issues', 'POST', { title: `Owner issue to follow ${stamp}`, teamId }), await api('/issues', 'POST', { title: `Owner issue to discuss ${stamp}`, teamId })];

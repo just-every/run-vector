@@ -1,10 +1,13 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
 export async function cycleMembershipJourney(page, context, base, record = async () => {}) {
   async function api(path, method='GET', data) {
-    const response=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
-    assert(response.ok(),`${method} ${path}: ${response.status()}`); return response.json();
+    return withOperatorClient(context, async client => {
+      const response=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
+      assert(response.ok(),`${method} ${path}: ${response.status()}`); return await response.json();
+    });
   }
   const suffix=String(Date.now()), prefix='CM'+suffix.slice(-5).replaceAll(/\d/g,d=>String.fromCharCode(65+Number(d)));
   const administration=await api('/settings/teams','POST',{name:'Checkout delivery '+suffix,identifierPrefix:prefix});

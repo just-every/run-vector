@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from "node:assert/strict";
 import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
 import { writeRuntimeD1 } from "./runtime-d1.mjs";
@@ -6,11 +7,13 @@ import { writeRuntimeD1 } from "./runtime-d1.mjs";
  * Only test chronology is backdated. Every issue mutation and closure uses the public door. */
 export async function cycleReportJourney(page, context, base, record = async () => {}) {
   async function api(path, method = "GET", data) {
-    const response = await context.request.fetch(base + "/api" + path, {
+    return withOperatorClient(context, async client => {
+const response = await client.fetch(base + "/api" + path, {
       method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
     });
     assert(response.ok(), `${method} ${path}: ${response.status()}`);
-    return response.json();
+    return await response.json();
+});
   }
   const original = await api("/settings/administration");
   const { operatorId } = await api("/session");

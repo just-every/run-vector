@@ -33,9 +33,16 @@ export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
   if(!exists)throw new IntegrationError(404,'team_not_found');
   if(rule.statusId&&!await db.prepare("SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category IN ('backlog','unstarted','started','completed','canceled')").bind(rule.statusId,team).first())throw new IntegrationError(400,'invalid_github_status');
   const current=await gitRule(db,team,rule.trigger);if(current.version!==rule.expectedVersion)throw new IntegrationError(409,'stale_github_rule');
-  await db.batch([gitGuard(db,'COALESCE((SELECT version FROM github_automation_rules WHERE team_id=? AND trigger=?),0)=?',team,rule.trigger,rule.expectedVersion),
+  try{await db.batch([gitGuard(db,'COALESCE((SELECT version FROM github_automation_rules WHERE team_id=? AND trigger=?),0)=?',team,rule.trigger,rule.expectedVersion),
    db.prepare('INSERT INTO github_automation_rules(team_id,trigger,status_id,allow_reopen,version,updated_at,production_environment) VALUES(?,?,?,?,1,?,?) ON CONFLICT(team_id,trigger) DO UPDATE SET status_id=excluded.status_id,allow_reopen=excluded.allow_reopen,version=github_automation_rules.version+1,updated_at=excluded.updated_at,production_environment=excluded.production_environment').bind(team,rule.trigger,rule.statusId,Number(rule.allowReopen),at,rule.environment??current.environment),
-   ...audit({db,actor:c.get('operatorId'),workspace:c.get('operator').workspaceId,at},'team.github_rule_changed',team,rule.trigger,current,rule)]);
+   ...audit({db,actor:c.get('operatorId'),workspace:c.get('operator').workspaceId,at},'team.github_rule_changed',team,rule.trigger,current,rule)]);}catch(error){
+   // Both requests can pass the read above. The transactional guard is the
+   // authority for the loser; only a changed version maps to a stale write.
+   if(!/malformed JSON/i.test(String(error)))throw error;
+   if((await gitRule(db,team,rule.trigger)).version!==rule.expectedVersion)
+    throw new IntegrationError(409,'stale_github_rule');
+   throw error;
+  }
   return c.json({saved:true,rule:await gitRule(db,team,rule.trigger)});
  });
 }

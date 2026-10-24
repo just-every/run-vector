@@ -182,6 +182,9 @@ export function IssueBrowserSurface({
     <IssueListView
       query={shownQuery}
       {...resource}
+      // Row mutations also publish issues-changed. Join that draining refresh
+      // instead of canceling its read with a second explicit reload.
+      reload={resource.refreshAfterMutation}
       layout={layout}
       title={title}
       viewActions={viewActions}

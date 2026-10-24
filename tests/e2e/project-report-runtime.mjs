@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -16,9 +17,11 @@ try {
  const context=await browser.newContext({viewport:{width:1440,height:1000}});
  page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
  async function api(path,method='GET',data) {
-  const response=await context.request.fetch(runtime.base+'/api'+path,{method,headers:{Origin:runtime.base},...(data===undefined?{}:{data})});
+  return withOperatorClient(context, async client => {
+const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Origin:runtime.base},...(data===undefined?{}:{data})});
   assert(response.ok(),`${method} ${path}: ${response.status()} ${await response.text()}`);
-  return response.json();
+  return await response.json();
+});
  }
  const {operatorId}=await api('/session');
  await api('/settings','PATCH',{timezone:'Australia/Brisbane'});

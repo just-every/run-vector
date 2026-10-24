@@ -1,10 +1,13 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {roleScreens} from './role-ui-support.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
 export async function subscriptionsJourney({recipientPage:page,actorPage,base,evidence}){
  trackRequests(page);trackRequests(actorPage);
  const errors=[];for(const p of [page,actorPage]){p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(/hydration|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());});}
- const call=context=>async(path,method='GET',data,status=200)=>{const r=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},data});assert.equal(r.status(),status,await r.text());return r.json();};
+ const call=context=>async(path,method='GET',data,status=200)=>{return withOperatorClient(context, async client => {
+const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data});assert.equal(r.status(),status,await r.text());return await r.json();
+});};
  const recipient=call(page.context()),actor=call(actorPage.context()),inspect=roleScreens(evidence);
  const options=await recipient('/options'),team=options.teams[0],owner=options.operator.id;
  await recipient('/settings/notifications','PATCH',{mutedKinds:[]});

@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -5,7 +6,9 @@ import {beforePrivateNavigation} from './collaboration-navigation.mjs';
 const require=createRequire(import.meta.url),axe=await readFile(require.resolve('axe-core/axe.min.js'),'utf8');
 export async function calendarMonthJourney(page,context,runtime,output){
  const base=runtime.base,errors=[];const onError=e=>errors.push(e.message),onConsole=m=>{if(/hydrat|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());};page.on('pageerror',onError);page.on('console',onConsole);
- const api=async(path,method='GET',data)=>{const r=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});assert(r.ok(),method+' '+path+' '+r.status());return r.json();};
+ const api=async(path,method='GET',data)=>{return withOperatorClient(context, async client => {
+const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});assert(r.ok(),method+' '+path+' '+r.status());return await r.json();
+});};
  const state=await api('/settings/teams','POST',{name:'synthetic-vector-81',identifierPrefix:'SYNMON'}),team=state.teams.find(t=>t.identifierPrefix==='SYNMON');
  const owner=runtime.sql("SELECT id FROM operators WHERE role='owner' AND removed_at IS NULL")[0].id;
  const projects=await api('/settings/projects','POST',{name:'synthetic-vector-82',leadOperatorId:owner}),project=projects.projects.find(p=>p.name==='synthetic-vector-82');

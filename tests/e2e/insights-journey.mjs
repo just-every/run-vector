@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {insightsAccessCells} from './report-access-cells.mjs';
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -13,9 +14,11 @@ export async function insightsJourney(page, context, runtime, output) {
   const pageError = error => errors.push(error.message);
   page.on("console", consoleError); page.on("pageerror", pageError);
   async function api(path, method = "GET", data) {
-    const response = await context.request.fetch(base + "/api" + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
+    return withOperatorClient(context, async client => {
+const response = await client.fetch(base + "/api" + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
     assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
+    return await response.json();
+});
   }
   await api("/settings", "PATCH", { timezone: "UTC" });
   const state = await api("/settings/teams", "POST", { name: "synthetic-vector-1", identifierPrefix: "SYNINS" });

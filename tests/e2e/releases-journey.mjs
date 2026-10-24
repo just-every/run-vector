@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import assert from 'node:assert/strict';
 import {createHmac,randomUUID} from 'node:crypto';
@@ -8,7 +9,9 @@ export async function releasesJourney({page:shared,runtime,evidence}){
  const page=await shared.context().newPage();trackRequests(page);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(/hydration|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());});
  const capture=roleScreens(evidence),base=runtime.base;
- const call=async(path,method='GET',data,status=200)=>{const res=await page.request.fetch(base+'/api'+path,{method,headers:{Origin:base},data});assert.equal(res.status(),status,await res.text());return res.json();};
+ const call=async(path,method='GET',data,status=200)=>{return withOperatorClient(page.context(), async client => {
+const res=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data});assert.equal(res.status(),status,await res.text());return await res.json();
+});};
  try{
  const settings=await call('/settings/administration'),team=settings.teams.find(t=>!t.archivedAt),done=team.statuses.find(s=>s.category==='completed'),owner=(await call('/session')).operatorId;
  let memberFixture;

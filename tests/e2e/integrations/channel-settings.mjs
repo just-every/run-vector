@@ -1,3 +1,4 @@
+import { withOperatorClient } from '../operator-request.mjs';
 import assert from 'node:assert/strict';
 import {readDevelopmentLink} from '../outbox-session.mjs';
 import {roleScreens} from '../role-ui-support.mjs';
@@ -8,7 +9,9 @@ const require=createRequire(import.meta.url);
 export async function exerciseChannels({page,runtime,cookie,team,width,evidence}){
  const panel=page.locator('.channel-settings'),headers={Origin:runtime.base};
  const calls=async()=>{try{return(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').filter(Boolean).map(JSON.parse);}catch{return[];}};
- const send=async(path,method,data)=>{const response=await page.request.fetch(runtime.base+'/api'+path,{method,headers,data});assert.ok(response.ok(),method+' '+path+' '+response.status());return response.json();};
+ const send=async(path,method,data)=>{return withOperatorClient(page.context(), async client => {
+const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data});assert.ok(response.ok(),method+' '+path+' '+response.status());return await response.json();
+});};
  const shot=async(name)=>{assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');await page.screenshot({path:resolve(evidence,`slack-003-${name}-${width}.png`)});};
  const axe=async(selector='.channel-settings')=>{await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const result=await page.evaluate(selector=>axe.run(document.querySelector(selector)),selector);assert.deepEqual(result.violations.filter(v=>['critical','serious'].includes(v.impact)),[]);};
  await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();

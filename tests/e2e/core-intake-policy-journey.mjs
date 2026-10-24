@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { createWebhookProtocol } from '../../vendor/base/integrations/core/webhook.ts';
@@ -5,9 +6,11 @@ import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
 export async function intakePolicyJourney(page, context, base, capture = async () => {}) {
   const api = async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
-    assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, { method, headers: { Origin: base }, ...(data === undefined ? {} : { data }) });
+      assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
+      return await response.json();
+    });
   };
   const options = await api('/options'), team = options.teams[0], me = options.operator.id;
   const started = options.statuses.find(s => s.teamId === team.id && s.category === 'started');

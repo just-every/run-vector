@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
@@ -6,11 +7,13 @@ import { streamControlsReady } from './core-stream-controls-browser.mjs';
 export async function currentRecentlyDoneJourney(page, context, base, capture = async () => {}) {
   const viewport = page.viewportSize();
   const api = async (path, method = 'GET', data) => {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
+      return await response.json();
     });
-    assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
   };
   const preferences = await api('/preferences/current');
   const token = Array.from(randomBytes(4), b => String.fromCharCode(65 + b % 26)).join('');

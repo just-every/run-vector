@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mjs';
 import {undoPropertiesJourney} from './core-undo-properties.mjs';
@@ -16,8 +17,10 @@ export async function undoJourney(page,context,base,record,independent=journey=>
 
 async function bulkUndoJourney(page,context,base,record){
  const api=async(path,method='GET',data)=>{
-  const response=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
-  assert(response.ok(),`${method} ${path}: ${response.status()}`);return response.json();
+  return withOperatorClient(context, async client => {
+    const response=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
+    assert(response.ok(),`${method} ${path}: ${response.status()}`);return await response.json();
+  });
  };
  const options=await api('/options'),team=options.teams[0],marker='Undo checkout planning '+Date.now();
  const issues=[];for(const [index,priority]of['low','medium'].entries())issues.push(await api('/issues','POST',{teamId:team.id,title:marker+' '+index,priority}));

@@ -1,9 +1,12 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads, trackRequests } from './collaboration-navigation.mjs';
 export async function workloadJourney(page, context, base, record = async () => {}) {
   async function api(path, method='GET', data) {
-    const response = await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
-    assert(response.ok(),`${method} ${path}: ${response.status()}`); return response.json();
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
+      assert(response.ok(),`${method} ${path}: ${response.status()}`); return await response.json();
+    });
   }
   const state = await api('/settings/administration'), me = (await api('/session')).operatorId;
   const others = state.operators.filter(p=>p.id!==me).slice(0,2);

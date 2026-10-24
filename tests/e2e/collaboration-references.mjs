@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {referenceAccessCells} from './reference-access-cells.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
@@ -10,7 +11,9 @@ import {roleScreens} from './role-ui-support.mjs';
  * at the viewport they found. */
 export async function exerciseReferences({page,runtime,issue,evidence}) {
  await mkdir(evidence,{recursive:true});const inspect=roleScreens(evidence);const viewport=page.viewportSize();
- const api=async(path,method='GET',data,status=200)=>{const response=await page.request.fetch(runtime.base+'/api'+path,{method,headers:{Origin:runtime.base},...(data===undefined?{}:{data})});assert.equal(response.status(),status);return response.json();};
+ const api=async(path,method='GET',data,status=200)=>{return withOperatorClient(page.context(), async client => {
+const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Origin:runtime.base},...(data===undefined?{}:{data})});assert.equal(response.status(),status);return await response.json();
+});};
  const original=await api('/issues/'+issue.identifier);
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:900});

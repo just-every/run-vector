@@ -1,9 +1,12 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 export async function manualOrderJourney(page, context, base, record=async()=>{}) {
   async function api(path,method='GET',data) {
-    const r=await context.request.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
-    assert(r.ok(),`${method} ${path}: ${r.status()}`);return r.json();
+    return withOperatorClient(context, async client => {
+      const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
+      assert(r.ok(),`${method} ${path}: ${r.status()}`);return await r.json();
+    });
   }
   const suffix=String(Date.now()), prefix='MR'+suffix.slice(-6).replaceAll(/\d/g,d=>String.fromCharCode(65+Number(d)));
   const state=await api('/settings/teams','POST',{name:'Delivery planning '+suffix.slice(-4),identifierPrefix:prefix}),team=state.teams.find(t=>t.identifierPrefix===prefix);

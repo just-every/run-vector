@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { createHmac, randomBytes, randomUUID } from 'node:crypto';
 import { mkdir } from 'node:fs/promises';
@@ -8,11 +9,13 @@ import { beforePrivateNavigation, settleReads } from './collaboration-navigation
 // Two genuine native sessions, with signed source input only at the network edge.
 export async function followerJourney(actorPage, actorContext, inboxPage, recipientContext, base, record) {
   const api = context => async (path, method = 'GET', data, expected = 200) => {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base, Connection: "close" }, ...(data === undefined ? {} : { data }),
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base, Connection: "close" }, ...(data === undefined ? {} : { data }),
+      });
+      assert.equal(response.status(), expected, `${method} ${path}`);
+      return await response.json();
     });
-    assert.equal(response.status(), expected, `${method} ${path}`);
-    return response.json();
   };
   const recipient = api(recipientContext), actor = api(actorContext);
   const actorOptions = await actor('/options');

@@ -1,13 +1,16 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 
 export async function streamPlanningJourney(page, context, base, record) {
   async function api(path, method = 'GET', data) {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()}`);
+      return await response.json();
     });
-    assert(response.ok(), `${method} ${path}: ${response.status()}`);
-    return response.json();
   }
   const options = await api('/options'), team = options.teams[0];
   const started = options.statuses.find(row => row.teamId === team.id && row.category === 'started');

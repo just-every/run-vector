@@ -40,6 +40,10 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   const versioned=(await call('/github/automation')).teams.find(t=>t.id===team.id).rules.find(r=>r.trigger==='review');
   const staleSaves=await Promise.all([review.id,review.id].map(statusId=>runtime.req('/api/settings/teams/'+team.id,{method:'PATCH',headers,body:JSON.stringify({githubAutomation:{trigger:'review',statusId,allowReopen:false,expectedVersion:versioned.version}})})));
   assert.deepEqual(staleSaves.map(r=>r.status).sort(),[200,409],'one concurrent rule save wins and the stale version refuses');
+  const refused=staleSaves.find(response=>response.status===409);
+  assert.equal((await refused.clone().json()).error,'stale_github_rule');
+  const afterRace=(await call('/github/automation')).teams.find(t=>t.id===team.id).rules.find(r=>r.trigger==='review');
+  assert.equal(afterRace.version,versioned.version+1,'the losing save commits no rule update');
   for(const response of staleSaves)await response.body.cancel();
   console.log('Git concurrent stale saves '+width+': 200/409 PASS');
   const issue=await call('/issues','POST',{teamId:team.id,title:'synthetic-vector-1711 Fix checkout '+width},201);

@@ -1,30 +1,67 @@
 import { lifecycleOperation } from "./collaboration-lifecycle.mjs";
 import assert from "node:assert/strict";
 const inFlight = new WeakMap();
-// Polling reads (notification count, issue following) start on their own
-// timers, and leaving a page aborts the reads it still owns. A journey waits
-// for each read already in flight before it navigates.
+// Track the document that admitted each operation. Chromium does not always
+// emit a terminal request event when it replaces a document after a poll starts.
 export function trackRequests(page) {
-  let pending = inFlight.get(page);
-  if (pending) return pending;
-  pending = new Set();
-  inFlight.set(page, pending);
+  const existing = inFlight.get(page);
+  if (existing) return existing.pending;
+  const state = { pending: new Set(), document: 0, settledAt: 0, departures: [] };
+  const entries = new WeakMap();
+  let navigation = null;
+  inFlight.set(page, state);
   page.on("request", (request) => {
-    if (["fetch", "xhr"].includes(request.resourceType())) pending.add(request);
+    if (request.isNavigationRequest() && request.frame() === page.mainFrame())
+      navigation = request;
+    if (["fetch", "xhr"].includes(request.resourceType())) {
+      entries.set(request, { document: state.document, startedAt: request.timing().startTime });
+      state.pending.add(request);
+    }
   });
-  const settle = (request) => pending.delete(request);
+  const settle = (request) => state.pending.delete(request);
   page.on("requestfinished", settle);
-  page.on("requestfailed", settle);
-  return pending;
+  page.on("requestfailed", (request) => {
+    settle(request);
+    if (navigation === request) navigation = null;
+  });
+  page.on("framenavigated", (frame) => {
+    // SPA/history changes retain their document and every pending operation.
+    if (frame !== page.mainFrame() || !navigation ||
+        frame.url().split("#")[0] !== navigation.url()) return;
+    navigation = null;
+    for (const request of state.pending) {
+      const entry = entries.get(request);
+      if (entry.document !== state.document) continue;
+      const cutoff = {
+        method: request.method(), pathname: new URL(request.url()).pathname,
+        document: entry.document, startedAt: entry.startedAt,
+        settledAt: state.settledAt, documentEndedAt: Date.now(),
+      };
+      // Only a read admitted after the preceding successful settle can be
+      // owned by this departure. Earlier work and writes still fail the gate.
+      if (state.settledAt > 0 && entry.startedAt > state.settledAt &&
+          ["GET", "HEAD"].includes(request.method())) {
+        state.pending.delete(request);
+        console.info("[Vector document read cutoff] " + JSON.stringify(cutoff));
+      } else {
+        state.departures.push(cutoff);
+      }
+    }
+    ++state.document;
+  });
+  return state.pending;
 }
 // Readiness is a deadline, never permission to navigate over unfinished I/O.
 export async function settleReads(page, limit = 10000) {
   const pending = trackRequests(page);
+  const state = inFlight.get(page);
   const deadline = performance.now() + limit;
   // A page just shown starts its reads from effects; give them a moment to begin.
   await page.waitForTimeout(Math.min(150, limit));
   while (pending.size && performance.now() < deadline)
     await page.waitForTimeout(Math.min(20, deadline - performance.now()));
+  assert.deepEqual(state.departures, [],
+    "[Vector browser] navigation cut off work admitted before the preceding settle");
   assert.equal(
     pending.size,
     0,
@@ -33,6 +70,7 @@ export async function settleReads(page, limit = 10000) {
         [...pending].map((r) => [r.method(), new URL(r.url()).pathname]),
       ),
   );
+  state.settledAt = Date.now();
 }
 // A full-document navigation unmounts private polling. Wait for the current
 // native count request to finish so navigation does not abort legitimate I/O.

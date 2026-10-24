@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 
@@ -12,13 +13,13 @@ function localMinute(value, timeZone) {
 /** Every fixture is created through the signed-in operator's ordinary API. */
 export async function streamControlsFixture(context, base) {
   async function api(path, method = 'GET', data) {
-    const response = await context.request.fetch(base + '/api' + path, {
-      method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
-      // A reused idle keep-alive socket can be reset between browser steps; retry reads only.
-      ...(method === 'GET' ? { maxRetries: 3 } : {}),
+    return withOperatorClient(context, async client => {
+      const response = await client.fetch(base + '/api' + path, {
+        method, headers: { Origin: base }, ...(data === undefined ? {} : { data }),
+      });
+      assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
+      return await response.json();
     });
-    assert(response.ok(), `${method} ${path}: ${response.status()} ${await response.text()}`);
-    return response.json();
   }
   const [options, initial] = await Promise.all([api('/options'), api('/settings/administration')]);
   const token = Array.from(randomBytes(4), value => String.fromCharCode(65 + value % 26)).join('');
