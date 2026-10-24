@@ -45,11 +45,14 @@ it("[TEAM-007 TEAM-008 ROLE-007 OPS-001] a Member joins and leaves a public team
   const created=await w.member.api("/teams","POST",memberCreate);
   expect(created.status).toBe(201);
   const owned=await created.json() as Administration["teams"][number];
+  expect(owned.isPrivate).toBe(false);
+  expect(await env.DB.prepare("SELECT is_private FROM teams WHERE id=?").bind(owned.id).first("is_private")).toBe(0);
   expect(owned.members).toEqual([{operatorId:w.member.id,role:"owner"}]);
   expect((await w.call("/settings/teams/creation","PUT",{membersMayCreate:false})).status).toBe(200);
   expect((await w.member.call("/settings/teams","POST",{name:"synthetic-vector-next-team",identifierPrefix:"SYNNEXT"})).status).toBe(403);
   expect((await w.member.api("/teams","POST",{name:"synthetic-vector-next-api-team",identifierPrefix:"SYNAPI"})).status).toBe(403);
   expect((await w.guest.api("/teams","POST",{name:"synthetic-vector-guest-team",identifierPrefix:"SYNGST"})).status).toBe(403);
+  expect((await w.state()).teams.find(team=>team.id===owned.id)?.isPrivate).toBe(false);
   expect((await w.state()).teams.find(team=>team.id===owned.id)?.members).toEqual([{operatorId:w.member.id,role:"owner"}]);
   expect(await audits("workspace.team_creation_changed")).toHaveLength(2);
   // TEAM-007: invite-only changes joining, never public work visibility.

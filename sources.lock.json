@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9901c2e2baf3ae33f2318ed8dd76b8050e6836d019fcb0025a03471e00c9b7ac",
+      "sha256": "5088ef7432b63883aaaff576f3208f481ef2aacee5ade2e634c5853378f51c90",
       "executable": false
     },
     "DEMO.md": {
@@ -6357,7 +6357,7 @@
       "executable": false
     },
     "tests/e2e/admin-team-journey.mjs": {
-      "sha256": "bbc76d000c90fa768f74eb0f40cfeefab09782fb74eef50f6d9844673b71f7f5",
+      "sha256": "c6ac3c2d848f144957d9dd79cb1af94b37f6f6d9113763831b3be882fe859ef0",
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
@@ -7613,7 +7613,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "c9cf988dc179c010ade90fbe2a1b8c47fbaad86b3fd0b7fa862c44081667a1a3",
+      "sha256": "ca20a2bbc5a1c8498f71a7955e61fe5de104516da2c66d9cacf939acea604de2",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
