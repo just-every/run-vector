@@ -9,7 +9,7 @@ export function readerApi(page,base){return async(path,method='GET',data,status=
  assert.equal(response.status,status,method+' '+path+' '+response.text);return response.text?JSON.parse(response.text):undefined;
 };}
 /** Native invitation, with no credentials retained in browser proof. */
-export async function inviteReader({owner,browser,runtime,email,name,role='viewer',teams=[],form=false,beforeSend}){
+export async function inviteReader({owner,browser,runtime,email,name,role='viewer',teams=[],form=false,beforeSend,width=1440,beforeConfirm}){
  const {base,sql}=runtime;
  await confirmInviter(owner,owner.context(),base,runtime.state);
  if(form){
@@ -22,8 +22,8 @@ export async function inviteReader({owner,browser,runtime,email,name,role='viewe
   await invite.getByRole('button',{name:'Send invitation',exact:true}).click();assert.equal((await sent).status(),202);
  }else await readerApi(owner,base)('/settings/operators/invite','POST',{email,displayName:name,role,teamIds:teams},202);
  const link=sql("SELECT json_extract(message,'$.text') text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='"+email+"' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
- const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage();
- try{await page.goto(link);await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL(base+'/app');}
+ const context=await browser.newContext({viewport:{width,height:width===390?844:1000}}),page=await context.newPage();
+ try{await page.goto(link);await beforeConfirm?.(page);await page.getByRole('button',{name:'Confirm',exact:true}).click();await page.waitForURL(base+'/app');}
  catch(error){await context.close();throw error;}
  const id=sql("SELECT id FROM operators WHERE email='"+email+"'")[0].id;
  return {context,page,id,api:readerApi(page,base)};

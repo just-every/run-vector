@@ -23,7 +23,7 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
  let invited;
  try{
   await clause('ROLE-013','Owner invites a Viewer through named-team Settings; accepted sign-in reads public work without write controls at 1440 and 390',async()=>{
-   invited=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1809@vector.test',name:'synthetic-vector-1809',form:true,beforeSend:form=>inspect(page,form,'viewer-invitation')});
+   invited=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1809@vector.test',name:'synthetic-vector-1809',form:true,beforeSend:form=>inspect(page,form,'viewer-invitation'),beforeConfirm:reader=>inspect(reader,reader.locator('main').first(),'viewer-sign-in')});
    const reader=invited.page,api=invited.api;
    assert.equal((await api('/metadata')).viewer.role,'viewer');
    for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${view.id}`])await api(path);
@@ -44,6 +44,7 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
    for(const width of [1440,390]){
     await reader.setViewportSize({width,height:width===390?844:1000});
     await navigate(reader,base+'/app/issues/'+issue.identifier);await reader.getByRole('heading',{name:issue.title,exact:true}).waitFor();
+    await reader.getByText(label.name,{exact:true}).waitFor();
     await reader.getByRole('button',{name:'Edit estimate',exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Edit estimate',exact:true}).isDisabled(),true);
     assert.equal(await reader.getByRole('button',{name:'Edit issue',exact:true}).count(),0);assert.equal(await reader.getByRole('button',{name:'Add comment',exact:true}).count(),0);
     assert.equal(await reader.getByRole('combobox',{name:'Issue status',exact:true}).isDisabled(),true);
@@ -55,7 +56,9 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
     if(width===1440)await inspect(reader,reader.locator('main:visible').first(),'viewer-shared-view');
     await navigate(reader,base+'/app/settings');await reader.getByRole('heading',{name:'Appearance',exact:true}).waitFor();await reader.getByText('synthetic-vector-1809 (you)',{exact:true}).waitFor();
     assert.equal(await reader.getByRole('region',{name:'Teams',exact:true}).count(),0);assert.equal(await reader.getByRole('heading',{name:'API tokens',exact:true}).count(),0);assert.equal(await reader.getByRole('button',{name:'Change role',exact:true}).count(),0);
-    if(width===1440)await inspect(reader,reader.locator('main:visible').first(),'viewer-account-directory-labels');
+    const labels=reader.getByRole('region',{name:'Labels',exact:true});await labels.getByText(label.name,{exact:true}).waitFor();
+    assert.equal(await labels.getByRole('form',{name:'Create label',exact:true}).count(),0);
+    await inspect(reader,labels,'viewer-labels-'+width);
    }
   });
   await clause('ROLE-013','private lookup/search stay hidden until an Admin adds the Viewer; they stay read-only there',async()=>{
@@ -79,7 +82,12 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
    await navigate(invited.page,base+path);await invited.page.getByRole('heading',{name:heading,exact:true,level:1}).waitFor();await inspect(invited.page,invited.page.locator('main:visible').first(),name);
   }
   await clause('ROLE-013','Viewer signs out through the native account control and loses admission',async()=>{
-   await navigate(invited.page,base+'/app/settings');await settleReads(invited.page);await invited.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await invited.page.waitForURL(base+'/signin');await invited.api('/session','GET',undefined,401);
+   await invited.page.setViewportSize({width:1440,height:1000});await navigate(invited.page,base+'/app/settings');await inspect(invited.page,invited.page.locator('main:visible').first(),'viewer-sign-out');await settleReads(invited.page);await invited.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await invited.page.waitForURL(base+'/signin');await invited.api('/session','GET',undefined,401);
+  });
+  await clause('ROLE-013','Viewer signs in and signs out at 390',async()=>{
+   const mobile=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1993@vector.test',name:'synthetic-vector-1993',width:390,beforeConfirm:reader=>inspect(reader,reader.locator('main').first(),'viewer-mobile-sign-in')});
+   try{assert.equal((await mobile.api('/metadata')).viewer.role,'viewer');await navigate(mobile.page,base+'/app/settings');await settleReads(mobile.page);await mobile.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await mobile.page.waitForURL(base+'/signin');await mobile.api('/session','GET',undefined,401);}
+   finally{await mobile.context.close();}
   });
   for(const width of [1440,390])await clause('ROLE-013',`Viewer leaves their own account at ${width}`,async()=>{
    const name='synthetic-vector-'+(width===1440?1964:1965),leaving=await inviteReader({owner:page,browser,runtime,email:name+'@vector.test',name});

@@ -12,7 +12,8 @@ export async function viewerVisibilityJourney(w:Workspace){
  const viewerCookie=await invite('synthetic-vector-1720@vector.test',owner.cookie,'viewer'),viewerId=await actor(viewerCookie);
  expect(await env.DB.prepare('SELECT role FROM operators WHERE id=?').bind(viewerId).first('role')).toBe('viewer');
  const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:owner.id}),201);
- const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id}),201);
+ const label=(await json(await owner.call('/settings/labels','POST',{name:'synthetic-vector-1990',color:'#3355aa'}))).labels.find((l:any)=>l.name==='synthetic-vector-1990');
+ const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id,labelIds:[label.id]}),201);
  const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1723'}),201);
  const reactionPath=`/issues/${issue.identifier}/reactions`;
  const quiet=await snapshot(['notifications','notification_events','notification_deliveries']);
@@ -39,17 +40,23 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  expect((await member.api(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${shared.id}`])expect((await member.call(path)).status,path).toBe(200);
- const before=await snapshot(['issues','issue_comments','issue_reactions','issue_labels','projects','team_members','subject_subscriptions','audit_records','integration_tokens']);
+ expect((await json(await member.call('/settings/administration'))).labels).toContainEqual(expect.objectContaining({id:label.id,name:label.name}));
+ expect((await json(await member.call(`/issues/${issue.identifier}`))).labels).toContainEqual(expect.objectContaining({id:label.id,name:label.name}));
+ // Enumerate storage rather than maintaining an incomplete list of tables. Only
+ // request-budget counters may change on a refused authenticated request.
+ const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits') ORDER BY name").all<{name:string}>()).results.map(row=>row.name);
+ const stored=async()=>Object.fromEntries(await Promise.all(tables.map(async name=>[name,(await env.DB.prepare('SELECT * FROM \"'+name+'\"').all()).results.map(row=>JSON.stringify(row)).sort()])));
  const logicalId=ownComment.id;
  // Each registered work mutation is reached through its actual native/bearer transport.
  for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){
   if(door.method==='GET'||door.page==='account'&&!door.workMutation||typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row))continue;
   await resetLimits();
   const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
+  const before=await stored();
   const response=await send(path,door.method==='ALL'?'POST':door.method,{});
+  expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
  }
- expect(await snapshot(Object.keys(before))).toEqual(before);
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
  const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-1728',identifierPrefix:'SYNVIEW',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-1728');
