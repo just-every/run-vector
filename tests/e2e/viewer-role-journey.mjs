@@ -85,10 +85,8 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
   ]){
    await navigate(invited.page,base+path);await invited.page.getByRole('heading',{name:heading,exact:true,level:1}).waitFor();await inspect(invited.page,invited.page.locator('main:visible').first(),name);
   }
-  await clause('ROLE-013','Viewer signs out through the native account control and loses admission',async()=>{
+  await clause('ROLE-013','Viewer signs in and signs out through native account controls at 1440 and 390 and loses admission',async()=>{
    await invited.page.setViewportSize({width:1440,height:1000});await navigate(invited.page,base+'/app/settings');await inspect(invited.page,invited.page.locator('main:visible').first(),'viewer-sign-out');await settleReads(invited.page);await invited.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await invited.page.waitForURL(base+'/signin');await invited.api('/session','GET',undefined,401);
-  });
-  await clause('ROLE-013','Viewer signs in and signs out at 390',async()=>{
    const mobile=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1993@vector.test',name:'synthetic-vector-1993',width:390,beforeConfirm:signInScreen('viewer-mobile-sign-in')});
    try{assert.equal((await mobile.api('/metadata')).viewer.role,'viewer');await navigate(mobile.page,base+'/app/settings');await settleReads(mobile.page);await mobile.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await mobile.page.waitForURL(base+'/signin');await mobile.api('/session','GET',undefined,401);assert.deepEqual(mobile.errors,[],'Viewer mobile hydration errors');}
    finally{await mobile.context.close();}

@@ -6993,7 +6993,7 @@
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
-      "sha256": "2d027786f8a22019167ee1d9ad96467c9bc3f64306837a18a9a55c8a3dafc26e",
+      "sha256": "3f0b27bc6a86adbb43ec2ad7aa3f08ec2a0c4a320887e4844cc6c3ae85f5a185",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
