@@ -170,6 +170,7 @@ export function NewIssueForm() {
       </main>
     );
 
+  if (options.data.operator.role === 'viewer') return <main className="new-issue-state"><h1>New issue</h1><p>Your Viewer role is read-only.</p></main>;
   const labelsPerIssue = options.data.labelsPerIssue;
 
   return (

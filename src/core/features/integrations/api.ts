@@ -21,7 +21,7 @@ import { readRequestJson,RequestBodyError } from '../../app/input';
 import { configureNotifications,needsNotificationDrain,notificationEventIds,directMessageEventIds } from '../notifications/context';
 import { deliverCommittedDirectMessages } from './outbound';
 import { drainNotificationMail } from '../notifications/mail';
-import { mutationDatabase,isMutationAccessError,fileSettlementDatabase,AuthorityChangedError } from '../auth/mutation-database';
+import { mutationDatabase,isMutationAccessError,fileSettlementDatabase,AuthorityChangedError, VisibilityChangedError } from '../auth/mutation-database';
 import { visibilityDatabase } from '../roles/visibility-database';
 import { doorAuthority } from '../roles/enforcement';
 import { createIssueInputSchema } from '../issues/input';
@@ -49,6 +49,7 @@ export function createIntegrationApi(){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
   if(error instanceof CommentVersionError)return c.json({error:error.code,message:error.message},409);
+  if(error instanceof VisibilityChangedError)return c.json({error:'not_found',message:error.message},404);
   if(error instanceof AuthorityChangedError)return c.json({error:'authority_changed',message:error.message},409);
   if(error instanceof z.ZodError)return c.json({error:'invalid_request'},400);
   if(error instanceof CommentPermissionError)return c.json({error:error.code,message:error.message},403);

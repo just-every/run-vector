@@ -44,7 +44,7 @@ export function ProjectList({
   const ready = useHydrated() && preferenceControls.ready;
   return (
     <>
-      {administration.viewer.role !== "guest" && <ProjectTemplateLauncher onChanged={onChanged} />}
+      {!["guest","viewer"].includes(administration.viewer.role) && <ProjectTemplateLauncher onChanged={onChanged} />}
       <div className="project-filters" aria-label="Filter project portfolio">
         <label>
           Lifecycle
@@ -107,8 +107,8 @@ export function ProjectList({
         </div>
         {!hasProjects ? (
           <div className="projects-empty">
-            <h2>{administration.viewer.role === "guest" ? "No projects in your invited teams" : "Create your first project"}</h2>
-            {administration.viewer.role !== "guest" && <p>Choose New project to start planning your work.</p>}
+            <h2>{["guest","viewer"].includes(administration.viewer.role) ? "No visible projects" : "Create your first project"}</h2>
+            {!["guest","viewer"].includes(administration.viewer.role) && <p>Choose New project to start planning your work.</p>}
           </div>
         ) : projects.length === 0 ? (
           <p className="projects-empty">No projects match these filters.</p>
@@ -118,7 +118,7 @@ export function ProjectList({
             return (
             <div key={project.id} className="project-list-item">
               <ProjectRow project={project} />
-              {administration.viewer.role !== "guest" && <div className="administration-panel project-list-management">{record ? <ProjectAdministration project={record} viewer={administration.viewer} operators={administration.operators} labels={administration.labels} onChanged={onChanged} onDeleted={onChanged} /> : <p role="status">Refreshing project management…</p>}</div>}
+              {!["guest","viewer"].includes(administration.viewer.role) && <div className="administration-panel project-list-management">{record ? <ProjectAdministration project={record} viewer={administration.viewer} operators={administration.operators} labels={administration.labels} onChanged={onChanged} onDeleted={onChanged} /> : <p role="status">Refreshing project management…</p>}</div>}
             </div>
           );})
         )}

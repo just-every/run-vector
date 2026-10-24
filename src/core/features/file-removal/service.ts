@@ -1,6 +1,6 @@
 import { restoredEffectsHeld } from '../data/restore-authority';
 import { IssueAccessError } from "../issues/access";
-import { fileSettlementDatabase, isMutationAccessError } from "../auth/mutation-database";
+import { fileSettlementDatabase, isMutationAccessError, VisibilityChangedError, AuthorityChangedError } from "../auth/mutation-database";
 import {
   confirmRemoval,
   markWriterSettled,
@@ -92,7 +92,7 @@ export async function requestFileRemoval(
     const row = await requestRemovalIntent(env.DB, issue.id, fileId, actor, operatorIssue);
     return row ? completeRemoval({ ...env, DB: fileSettlementDatabase(env.DB) }, row) : "failed";
   } catch (error) {
-    if (isMutationAccessError(error) || error instanceof IssueAccessError) throw error;
+    if (isMutationAccessError(error) || error instanceof VisibilityChangedError || error instanceof AuthorityChangedError || error instanceof IssueAccessError) throw error;
     return "failed";
   }
 }

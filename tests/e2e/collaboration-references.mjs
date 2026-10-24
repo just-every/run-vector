@@ -1,3 +1,4 @@
+import {referenceAccessCells} from './reference-access-cells.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -46,6 +47,7 @@ export async function exerciseReferences({page,runtime,issue,evidence}) {
   await inspect(page,page.locator('.issue-history'),`reference-removed-${width}`);await page.setViewportSize({width,height:900});
   assert.equal(await page.evaluate(()=>window.__rerHydration?.count??0),0);
  }
+ await referenceAccessCells(page,runtime,evidence);
  await page.setViewportSize(viewport);await navigate(page,runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:original.title,exact:true}).waitFor();
  await settleReads(page);console.log('ISSUE-027 description/comment links, title/status hover and focus, one retained backlink and removed state passed at1440 and390');
 }

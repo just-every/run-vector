@@ -48,7 +48,7 @@ export function IssueKeyboard({ root, rows, selection, focused, options, onRefre
         })();
         return;
       }
-      if (event.metaKey || event.ctrlKey) return;
+      if (!options || options.operator.role === 'viewer' || event.metaKey || event.ctrlKey) return;
       const key = event.key.toLowerCase();
       if (key === "d" && event.shiftKey) {
         event.preventDefault();
@@ -64,7 +64,7 @@ export function IssueKeyboard({ root, rows, selection, focused, options, onRefre
     }
     window.addEventListener("keydown", keyDown);
     return () => window.removeEventListener("keydown", keyDown);
-  }, [root, rows, selection, focused, edit, help, team, duplicate]);
+  }, [root, rows, selection, focused, edit, help, team, duplicate, options]);
   function commandCompleted(receipt: BulkReceipt, action: string) {
     onSuccess(receipt.issues);
     setNotice({ error: false, text: `${receipt.changed} issues updated: ${action}.` });

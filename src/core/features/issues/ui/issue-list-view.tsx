@@ -156,7 +156,7 @@ export function IssueListView({
             )
           )}
           {viewActions ??
-            (onCreateView && (
+            (onCreateView && options && options.operator.role !== "viewer" && (
               <SaveView
                 canShare={!!options && options.operator.role !== "guest"}
                 query={query}

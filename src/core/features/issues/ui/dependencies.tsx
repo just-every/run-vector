@@ -21,7 +21,9 @@ const identifierPattern = /^[A-Z]{2,10}-[1-9][0-9]*$/;
 export function Dependencies({
   issue,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   onRefresh: () => void;
 }) {
@@ -229,7 +231,7 @@ export function Dependencies({
               <Link
                 to="/app/issues/$identifier"
                 params={{ identifier: dependency.identifier }}
-                aria-disabled={busy || undefined}
+                aria-disabled={!writable || busy || undefined}
                 onClick={(event) => {
                   if (busy) event.preventDefault();
                 }}
@@ -238,7 +240,7 @@ export function Dependencies({
               </Link>
               <button
                 type="button"
-                disabled={busy || blocked}
+                disabled={!writable || busy || blocked}
                 aria-label={`Remove ${dependency.direction === "related" ? "related link" : "dependency"} ${dependency.identifier}`}
                 onClick={() => {
                   if (
@@ -277,7 +279,7 @@ export function Dependencies({
         }}
       >
         <summary
-          aria-disabled={busy || undefined}
+          aria-disabled={!writable || busy || undefined}
           onClick={(event) => {
             event.preventDefault();
             if (busy) return;
@@ -291,7 +293,7 @@ export function Dependencies({
           <form className="issue-mutation-form" onSubmit={submit}>
             <fieldset
               className="dependency-controls"
-              disabled={busy}
+              disabled={!writable || busy}
               aria-label="Dependency fields"
             >
               <div className="detail-section--two">
@@ -333,11 +335,11 @@ export function Dependencies({
                 <button
                   type="submit"
                   className="decision-submit"
-                  disabled={busy || blocked}
+                  disabled={!writable || busy || blocked}
                 >
                   {pending === "add" ? "Adding…" : "Add dependency"}
                 </button>
-                <button type="button" disabled={busy} onClick={clearAdd}>
+                <button type="button" disabled={!writable || busy} onClick={clearAdd}>
                   Cancel
                 </button>
               </div>
@@ -351,7 +353,7 @@ export function Dependencies({
             "This issue changed. Your dependency choices were kept. Reload before adding it."}{" "}
           <button
             type="button"
-            disabled={busy}
+            disabled={!writable || busy}
             onClick={() => void reloadCurrent()}
           >
             {pending === "reload" ? "Reloading…" : "Reload issue"}
@@ -361,7 +363,7 @@ export function Dependencies({
               {" "}
               <button
                 type="button"
-                disabled={busy}
+                disabled={!writable || busy}
                 onClick={() => setFailure(null)}
               >
                 Cancel

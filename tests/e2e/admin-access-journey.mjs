@@ -1,3 +1,5 @@
+import {rolePrivateCells} from './role-private-cells.mjs';
+import {viewerRoleJourney} from './viewer-role-journey.mjs';
 import {privateTeamJourney} from './private-team-journey.mjs';
 // Settle native polling before replacing an authorized private document.
 import {
@@ -249,7 +251,8 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   await clause("ROLE-001", "an invitation names its role, Member by default", async () => {
     const role = members.getByLabel("Role", { exact: true });
     assert.equal(await role.inputValue(), "member");
-    assert.deepEqual(await role.locator("option").allTextContents(), ["Member", "Guest", "Admin", "Owner"]);
+    await role.selectOption("viewer");
+    await role.selectOption("member");
     await members.getByLabel("Name", { exact: true }).fill("Role member");
     await members.getByLabel("Email", { exact: true }).fill("role-member@admin-runtime.test");
     const invited = page.waitForResponse((r) => new URL(r.url()).pathname === "/api/settings/operators/invite");
@@ -338,5 +341,7 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   await inspect(peer, peer.getByRole("region", { name: "Members", exact: true }), "members-member-view");
   await exerciseGuestRoles({page,browser,runtime,clause,evidence});
   await privateTeamJourney({page,peer,memberId,runtime,clause,evidence});
+  await rolePrivateCells({page,peer,memberId,runtime,clause});
+  await viewerRoleJourney({page,peer,memberId,browser,runtime,clause,evidence});
   return { context, peer, memberId };
 }

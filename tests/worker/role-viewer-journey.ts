@@ -1,0 +1,59 @@
+import {env} from 'cloudflare:workers';
+import {expect} from 'vitest';
+import {doors,apiDoors} from '../../src/core/features/roles/doors';
+import {invite,actor} from './base-auth-fixture';
+import {resetLimits,snapshot,type roleWorkspace} from './role-fixture';
+type Workspace=Awaited<ReturnType<typeof roleWorkspace>>;
+const json=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
+
+/** Real invitation plus an already-open Member session and token cross the role boundary. */
+export async function viewerVisibilityJourney(w:Workspace){
+ const owner=w.people.owner,member=w.member;
+ const viewerCookie=await invite('synthetic-vector-1720@vector.test',owner.cookie,'viewer'),viewerId=await actor(viewerCookie);
+ expect(await env.DB.prepare('SELECT role FROM operators WHERE id=?').bind(viewerId).first('role')).toBe('viewer');
+ const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:owner.id}),201);
+ const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id}),201);
+ const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1723'}),201);
+ const shared=await json(await owner.call('/views','POST',{name:'synthetic-vector-1724',isShared:true,query:{team:w.team.id}}),201);
+ expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
+ expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
+ expect((await member.api(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
+ for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${shared.id}`])expect((await member.call(path)).status,path).toBe(200);
+ const before=await snapshot(['issues','issue_comments','issue_labels','projects','team_members','subject_subscriptions','audit_records','integration_tokens']);
+ const logicalId=ownComment.id;
+ // Each registered work mutation is reached through its actual native/bearer transport.
+ for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){
+  if(door.method==='GET'||door.page==='account'&&!door.workMutation||typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row))continue;
+  await resetLimits();
+  const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
+  const response=await send(path,door.method==='ALL'?'POST':door.method,{});
+  expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
+ }
+ expect(await snapshot(Object.keys(before))).toEqual(before);
+ expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
+ expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
+ const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-1728',identifierPrefix:'SYNVIEW',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-1728');
+ const hidden=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1729',teamId:privateTeam.id,statusId:privateTeam.statuses.find((status:any)=>status.category==='started').id,assigneeOperatorId:member.id}),201);
+ expect((await member.call(`/issues/${hidden.identifier}`)).status).toBe(404);
+ expect(JSON.stringify(await json(await member.call('/search?q=synthetic-vector-1729')))).not.toContain(hidden.identifier);
+ for(const path of ['/current','/notifications','/issues?q=synthetic-vector-1729','/insights.csv?q=synthetic-vector-1729']){const response=await member.call(path);expect(response.status,path).toBe(200);expect(await response.text(),path).not.toContain(hidden.identifier);}
+ expect((await w.lead.call(`/settings/teams/${w.team.id}/members/${viewerId}`,'PUT',{role:'member'})).status).toBe(403);
+ expect((await w.admin.call(`/settings/teams/${privateTeam.id}/members/${member.id}`,'PUT',{role:'member'})).status).toBe(200);
+ expect((await member.call(`/issues/${hidden.identifier}`)).status).toBe(200);
+ expect((await member.api(`/issues/${hidden.identifier}`)).status).toBe(200);
+ expect(JSON.stringify(await json(await member.call('/current')))).toContain(hidden.identifier);
+ const report=await json(await member.call('/insights?q=synthetic-vector-1729'));expect(report.total).toBe(1);
+ expect(await(await member.call('/insights.csv?q=synthetic-vector-1729&bucket='+encodeURIComponent(report.rows[0].key))).text()).toContain(hidden.identifier);
+ expect((await member.call(`/issues/${hidden.identifier}/comments`,'POST',{body:'synthetic-vector-1730'})).status).toBe(403);
+ for(const path of [`/teams/${privateTeam.id}/join`,`/teams/${privateTeam.id}/requests`])expect((await member.call(path,'POST',{})).status).toBe(403);
+ const feed=await json(await member.call('/calendar/feeds','POST',{}),201);expect((await member.call(`/calendar/feeds/${feed.id}`,'DELETE',{expectedVersion:feed.version})).status).toBe(200);
+ expect((await member.call('/calendar/feeds','POST',{teamId:privateTeam.id})).status).toBe(403);
+ expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'admin'})).status).toBe(403);
+ expect((await owner.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'guest',teamIds:[privateTeam.id]})).status).toBe(200);
+ expect((await member.call('/issues','POST',{teamId:privateTeam.id,title:'synthetic-vector-1731'})).status).toBe(201);
+ expect((await member.call('/issues','POST',{teamId:w.team.id,title:'synthetic-vector-1732'})).status).toBe(404);
+ expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[privateTeam.id]})).status).toBe(200);
+ expect((await member.call('/issues','POST',{teamId:privateTeam.id,title:'synthetic-vector-1733'})).status).toBe(403);
+ expect((await member.call(`/settings/operators/${member.id}`,'DELETE')).status).toBe(200);
+ expect((await member.call('/session')).status).toBe(401);
+}

@@ -65,6 +65,13 @@ export function probes(w: Workspace): Record<RowId, Probe> {
   };
 
   return {
+    "work.read": {outside:true,session:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.call('/issues/'+made.identifier+'/references');},api:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.api('/issues/'+made.identifier);}},
+    "viewers.manage": {session:async(_who,actor)=>()=>actor.call('/settings/operators/invite','POST',{email:`synthetic-vector-${1100+unique()}@vector.test`,displayName:'synthetic-vector-1100',role:'viewer'})},
+    "reports.read": {session:async(_who,actor)=>()=>actor.call('/insights')},
+    "dashboards.write": {session:async(_who,actor)=>()=>actor.call('/dashboards','POST',{name:`synthetic-vector-${1200+unique()}`,widgets:[{name:'Visible count',kind:'count',filters:{},chart:{}}]})},
+    "calendar.feeds": {session:async(_who,actor)=>()=>actor.call('/calendar/feeds','POST',{})},
+    "initiatives.write": {session:async(_who,actor)=>()=>actor.call('/initiatives','POST',{name:`synthetic-vector-${1300+unique()}`,ownerOperatorId:actor.id}),api:async(_who,actor)=>()=>actor.api('/initiatives','POST',{name:`synthetic-vector-${1400+unique()}`,ownerOperatorId:actor.id})},
+    "releases.write": {session:async(_who,actor,teamId)=>()=>actor.call('/releases','POST',{name:`synthetic-vector-${1500+unique()}`,teamId}),api:async(_who,actor,teamId)=>()=>actor.api('/releases','POST',{name:`synthetic-vector-${1600+unique()}`,teamId})},
     "email.reply": { session: async (_who, actor, teamId) => { const intake=await seedIntakeForTeam(teamId,w.cookie); return async () => (await recordedReply(actor.cookie,intake.identifier,"The team is investigating.")).response; } },
     "members.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `invitee${unique()}@roles.test`, displayName: "Invitee", role: "member" }) },
     "leaders.manage": { invites: true, session: async (_who, actor) => () => actor.call("/settings/operators/invite", "POST", { email: `leader${unique()}@roles.test`, displayName: "Leader", role: "admin" }) },

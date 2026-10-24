@@ -97,7 +97,7 @@ export async function updateWorkspaceTime(
     db.prepare(
       `UPDATE oa_tokens SET revoked_at=? WHERE ?=0 AND kind='invite' AND consumed_at IS NULL AND revoked_at IS NULL
     AND issuer_id IN (SELECT m.auth_id FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id
-      WHERE o.role IN ('member','guest') AND o.workspace_id=(SELECT workspace_id FROM operators WHERE id=?))`,
+      WHERE o.role IN ('member','guest','viewer') AND o.workspace_id=(SELECT workspace_id FROM operators WHERE id=?))`,
     ).bind(Date.parse(at), invites ?? 1, actor),
   ]);
   // Count direct workspace rows, excluding writes made by revision triggers.

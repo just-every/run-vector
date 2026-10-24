@@ -25,7 +25,7 @@ export function invitationDatabase(db: D1Database, actor: string, email: string,
       const result = await target.batch([
         ...statements.map(statement => issuance.get(statement) ?? statement),
         target.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id
-          WHERE o.id=? AND o.removed_at IS NULL AND (o.role='owner' OR o.role='admin' AND ? IN('member','guest') OR o.role='member' AND ?='member' AND w.member_invites=1)
+          WHERE o.id=? AND o.removed_at IS NULL AND (o.role='owner' OR o.role='admin' AND ? IN('member','guest','viewer') OR o.role='member' AND ?='member' AND w.member_invites=1)
           AND NOT EXISTS(SELECT 1 FROM json_each(?) j WHERE NOT EXISTS(SELECT 1 FROM teams t WHERE t.id=j.value AND t.workspace_id=o.workspace_id AND t.archived_at IS NULL)))
           THEN 1 ELSE json('invitation authority changed') END`).bind(actor, role, role, JSON.stringify(teams)),
         target.prepare(`INSERT INTO vector_invitation_roles(token_id,role,inviter_operator_id,created_at,team_ids_json)

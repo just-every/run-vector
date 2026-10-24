@@ -58,7 +58,7 @@ async function decideDoor(door: Door | undefined, request: DoorRequest): Promise
   const row = door ? typeof door.row === 'function' ? await door.row(request) : door.row : null
   const teams = door?.teams ? await door.teams(request) : null
   const project = door?.project ? await door.project(request) : undefined
-  const question = { row, page: door?.page, teams, project, invitation: door?.invitation }
+  const question = { row, page: door?.page, teams, project, invitation: door?.invitation, workMutation: door?.workMutation }
   const authority = await loadAuthority(request.db, request.actor, teams ?? [], project ?? undefined)
   if (!authority) return { decision: 'unauthenticated' }
   const decision = decide(authority, question)
@@ -71,5 +71,5 @@ async function decideDoor(door: Door | undefined, request: DoorRequest): Promise
   }:null
   if(scope&&!await request.db.prepare('SELECT ('+scope.sql+') AS allowed').bind(...scope.values).first<number>('allowed'))return {decision:'hidden'}
   const fence=authorityFence(request.actor,authority,decisionInputs(authority,question))
-  return {decision,fence:scope?{sql:`(${fence.sql}) AND (${scope.sql})`,values:[...fence.values,...scope.values]}:fence}
+  return {decision,fence:scope?{...fence,visibility:scope}:fence}
 }

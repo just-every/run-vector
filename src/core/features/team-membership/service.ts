@@ -57,7 +57,7 @@ export async function leaveTeam(source: D1Database, actor: string, teamId: strin
 }
 
 /** A team owner or an Admin adds a member or names a team owner; only an
- * Owner or Admin adds a Guest (ROLE-003). */
+ * Owner or Admin adds a Guest or Viewer (ROLE-003/013). */
 export async function setTeamMember(source: D1Database, actor: string, teamId: string, operator: string, role: TeamRole) {
   const ctx = await administrationContext(source, actor), team = await teamOf(ctx, teamId);
   const person = await ctx.db.prepare("SELECT role FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL").bind(operator, ctx.workspace).first<{ role: string }>();
@@ -65,11 +65,12 @@ export async function setTeamMember(source: D1Database, actor: string, teamId: s
   const current = await membership(ctx, teamId, operator);
   if (current?.role === role) return;
   const acting = (await ctx.db.prepare("SELECT role FROM operators WHERE id=?").bind(actor).first<{ role: string }>())?.role;
-  if (!current && person.role === "guest" && acting !== "owner" && acting !== "admin")
-    throw new SettingsError("forbidden", "Only an Owner or Admin adds a Guest to a team.", 403);
+  if (!current && ["guest","viewer"].includes(person.role) && acting !== "owner" && acting !== "admin")
+    throw new SettingsError("forbidden", "Only an Owner or Admin adds a Guest or Viewer to a team.", 403);
   if (!current && team.archived_at) throw new SettingsError("team_archived", "Archived teams take no new members.", 409);
   await commit(ctx, [
     unchanged(ctx, teamId, operator, current?.role ?? null),
+    ...(!current ? [guard(ctx.db,"EXISTS(SELECT 1 FROM operators person JOIN operators acting ON acting.id=? WHERE person.id=? AND (person.role NOT IN('guest','viewer') OR acting.role IN('owner','admin')))",actor,operator)] : []),
     ...(current?.role === "owner" ? [await keepsAnOwner(ctx, teamId, operator)] : []),
     ctx.db.prepare(`INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) VALUES(?,?,?,?,?)
       ON CONFLICT(team_id,operator_id) DO UPDATE SET role=excluded.role,updated_at=excluded.updated_at`).bind(teamId, operator, role, ctx.at, ctx.at),

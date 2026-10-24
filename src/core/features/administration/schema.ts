@@ -208,7 +208,7 @@ export const administrationSchema = z.object({
       archivedAt: z.string().nullable(),
     }),
   ),
-  operators: z.array(z.object({ id: z.string(), name: z.string() })),
+  operators: z.array(z.object({ id: z.string(), name: z.string(), role: z.enum(roles) })),
   cycles: z.array(administrationCycleSchema),
 });
 export const cycleDetailSchema = z.object({

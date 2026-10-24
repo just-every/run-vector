@@ -263,7 +263,7 @@ INIT-002 roll-ups and Slack/Discord initiative bindings are not implemented.
 Owners and Admins can create a private team with `isPrivate: true` on
 `POST /api/v1/teams`, or switch an existing team with
 `PUT /api/v1/teams/ID/privacy` and `{ "isPrivate": true }` (false makes it public).
-Both require `teams:write`. Members and Guests receive 403. Reads apply the
+Both require `teams:write`. Members, Guests and Viewers receive 403. Reads apply the
 current team membership on every request; a hidden identifier returns 404.
 Private-team content never travels through generic workspace webhooks. Slack
 private notices require an exact team binding and contain no title or actor.
@@ -272,3 +272,5 @@ Calendar feed capabilities exclude private-team items even for their creator.
 A whole-workspace portable archive names every team as its scope. An Admin
 without access to any private team receives 404 at that archive door; an Owner
 can export it. Scoped counted-issue CSV exports remain available for visible work.
+
+Viewer is the fifth stored workspace role. Owners and Admins invite Viewers and change Member, Guest and Viewer roles; only Owners change leadership roles. Viewer reads use current team visibility and every registered work mutation returns 403. Viewer assignments may name private teams explicitly. Personal account preferences, leaving the workspace and personal calendar capabilities follow their own matrix rows. Viewer role values survive portable archive restore; invitation credentials and feed capabilities remain excluded.

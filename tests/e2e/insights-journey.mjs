@@ -1,3 +1,4 @@
+import {insightsAccessCells} from './report-access-cells.mjs';
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { createRequire } from "node:module";
@@ -94,6 +95,7 @@ export async function insightsJourney(page, context, runtime, output) {
       console.log(`REPORT-001 ${metric} ${theme} ${width}: public read, chart, table, axe and overflow PASS`);
     }
   }
+  await insightsAccessCells({page,context,runtime,output,team,issues});
   await api("/settings/operators/invite", "POST", { email: "synthetic-vector-7@example.test", displayName: "synthetic-vector-7", role: "guest", teamIds: [team.id] });
   const mail = runtime.sql("SELECT json_extract(message,'$.text') text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='synthetic-vector-7@example.test' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text;
   const token = new URL(mail.match(/https?:\/\/[^\s]+/)[0]).searchParams.get("token");
