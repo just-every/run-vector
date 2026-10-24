@@ -13,13 +13,16 @@ export async function credentialProblem(env:WorkerBindings,identity:string){
  const row=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity=? AND slot='current'").bind(identity).first<{encrypted:string}>();
  if(!row)return true;try{await openSecret(env,identity,row.encrypted);return false;}catch{return true;}
 }
-export async function saveSlack(env:WorkerBindings,owner:IntegrationOwner,token:string){
+export async function slackCredentialWrites(env:WorkerBindings,owner:IntegrationOwner,token:string){
  const identity='slack:'+owner.workspace,auth=await slackCall(token,'auth.test',{}),encrypted=await sealSecret(env,identity,token);
- await guardedSql(env.DB,ownerPredicate(owner)).batch([
+ return [
   {sql:'INSERT INTO vector_slack_installations(workspace_id,team_name,created_by,enabled,updated_at) VALUES(?,?,?,1,?) ON CONFLICT(workspace_id) DO UPDATE SET team_name=excluded.team_name,created_by=excluded.created_by,enabled=1,updated_at=excluded.updated_at',params:[owner.workspace,auth.team??'Slack workspace',owner.id,new Date().toISOString()]},
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?) ON CONFLICT(identity,slot) DO UPDATE SET encrypted=excluded.encrypted",params:[identity,encrypted]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.connected',subject:identity}),
- ]);
+ ];
+}
+export async function saveSlack(env:WorkerBindings,owner:IntegrationOwner,token:string){
+ await guardedSql(env.DB,ownerPredicate(owner)).batch(await slackCredentialWrites(env,owner,token));
  return {connected:true};
 }
 export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){

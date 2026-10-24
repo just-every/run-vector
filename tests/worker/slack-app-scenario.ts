@@ -27,8 +27,8 @@ export async function slackAppInstall(){
  const begin=async()=>new URL((await read(await f.call('/settings/integrations/slack/app/install','POST',{}))).url).searchParams.get('state')!;
  try{
   // A Member cannot create, inspect credentials, or start an installation.
-  const member=await invite('synthetic-vector-2004@vector.test',f.cookie);
-  for(const [path,method] of [['/slack/app','GET'],['/slack/app','POST'],['/slack/app/create','POST'],['/slack/app/install','POST']])expect((await request('/api/settings/integrations'+path,method,{},member)).status).toBe(403);
+  const member=await invite('synthetic-vector-2004@vector.test',f.cookie),admin=await invite('synthetic-vector-2005@vector.test',f.cookie,'admin');
+  for(const [path,method] of [['/slack/app','GET'],['/slack/app','POST'],['/slack/app/create','POST'],['/slack/app/install','POST']])expect((await request('/api/settings/integrations'+path,method,method==='GET'?undefined:{},member)).status).toBe(403);
   expect(calls).toHaveLength(0);
   const preview=await read(await f.call('/settings/integrations/slack/app'));
   expect(JSON.parse(new URL(preview.createUrl).searchParams.get('manifest_json')!)).toEqual(preview.manifest);
@@ -43,6 +43,7 @@ export async function slackAppInstall(){
   const discarded=await begin(),current=await begin();
   expect((await callback(discarded)).status).toBe(403);
   expect((await callback(current,member)).status).toBe(403);
+  expect((await callback(current,admin)).status).toBe(403);
   expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(0);
   const installed=await callback(current);expect(installed.status,await installed.clone().text()).toBe(303);
   expect(installed.headers.get('Location')).toBe('/app/settings#integrations');

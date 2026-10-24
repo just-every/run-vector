@@ -1,12 +1,10 @@
 import {z} from 'zod';
-import {actionAuthority} from '../../roles/enforcement';
-import {mutationDatabase} from '../../auth/mutation-database';
 import type {WorkerBindings} from '../../../app/bindings';
 import {IntegrationError} from '../errors';
 import {integrationOwner,ownerPredicate,guardedSql,type IntegrationOwner} from '../authority';
 import {sealSecret,openSecret} from '../secrets';
 import {providerSend} from '../channels/provider';
-import {saveSlack} from '../channels/settings';
+import {slackCredentialWrites} from '../channels/settings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
 import {auditStatement} from '../../audit/producer';
 
@@ -81,19 +79,21 @@ export async function completeInstall(env:WorkerBindings,request:Request){
  const owner=await appManager(env,request),url=new URL(request.url),state=url.searchParams.get('state')??'',code=url.searchParams.get('code')??'';
  if(state.length!==72||!code||code.length>2000||url.searchParams.has('error'))throw new IntegrationError(400,'slack_oauth_refused');
  const key='slack-oauth:'+owner.workspace+':'+await sha256(state);
- const rows=await managed(env,owner).batch([{sql:"DELETE FROM vector_integration_secret_keys WHERE identity=? AND slot='current' AND valid_until>? RETURNING encrypted",params:[key,Date.now()]}]);
- if(!rows[0].length)throw new IntegrationError(403,'slack_oauth_state_invalid');
- const pending=z.object({actor:z.string(),encrypted:z.string()}).parse(JSON.parse(await openSecret(env,key,String(rows[0][0].encrypted))));
+ const encrypted=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity=? AND slot='current' AND valid_until>?").bind(key,Date.now()).first<string>('encrypted');
+ if(!encrypted)throw new IntegrationError(403,'slack_oauth_state_invalid');
+ const pending=z.object({actor:z.string(),encrypted:z.string()}).parse(JSON.parse(await openSecret(env,key,encrypted)));
  const saved=await load(env,owner.workspace);
  if(pending.actor!==owner.id||!saved||saved.encrypted!==pending.encrypted)throw new IntegrationError(403,'slack_oauth_state_invalid');
+ const rows=await managed(env,owner).batch([{sql:"DELETE FROM vector_integration_secret_keys WHERE identity=? AND encrypted=? AND slot='current' AND valid_until>? RETURNING encrypted",params:[key,encrypted,Date.now()]}]);
+ if(!rows[0].length)throw new IntegrationError(403,'slack_oauth_state_invalid');
  const result=await call('oauth.v2.access',{client_id:saved.profile.clientId,client_secret:saved.profile.clientSecret,code,redirect_uri:appManifest(env.APP_ORIGIN).oauth_config.redirect_urls[0]},undefined,true);
  const token=z.object({access_token:z.string().min(10).max(500),token_type:z.literal('bot'),app_id:z.string(),scope:z.string()}).safeParse(result);
  if(!token.success||token.data.app_id!==saved.profile.appId||appScopes.some(scope=>!token.data.scope.split(',').includes(scope)))throw new IntegrationError(400,'slack_oauth_grant_invalid');
- const authority=await actionAuthority(env.DB,owner.id,'POST','/settings/integrations/slack/app',{},{});
- if(authority.decision!=='allow'||!authority.fence)throw new IntegrationError(403,'forbidden');
- await saveSlack({...env,DB:mutationDatabase(env.DB,owner.id,owner.fence,undefined,authority.fence)},owner,token.data.access_token);
+ const botWrites=await slackCredentialWrites(env,owner,token.data.access_token);
  const signing=await sealSecret(env,'slack-signing:'+owner.workspace,saved.profile.signingSecret);
  await managed(env,owner).batch([
+  {sql:"SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_integration_secret_keys WHERE identity=? AND slot='current' AND encrypted=?) THEN 1 ELSE json('Slack app changed') END",params:[identity(owner.workspace),saved.encrypted]},
+  ...botWrites,
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?) ON CONFLICT(identity,slot) DO UPDATE SET encrypted=excluded.encrypted",params:['slack-signing:'+owner.workspace,signing]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.app_installed',subject:saved.profile.appId}),
  ]);
