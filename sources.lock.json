@@ -6345,7 +6345,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "35784a223714acfe4842304bf85649ee7dff594fb70676ac9b122f8e6ae4b22d",
+      "sha256": "1af9454ffd25766eb0a0efa684bf5eca95d2d07f78faefe736fabf9d23fbeb50",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
