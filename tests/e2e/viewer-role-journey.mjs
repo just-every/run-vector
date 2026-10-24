@@ -86,7 +86,7 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
   });
   await clause('ROLE-013','Viewer signs in and signs out at 390',async()=>{
    const mobile=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1993@vector.test',name:'synthetic-vector-1993',width:390,beforeConfirm:reader=>inspect(reader,reader.locator('main').first(),'viewer-mobile-sign-in')});
-   try{assert.equal((await mobile.api('/metadata')).viewer.role,'viewer');await navigate(mobile.page,base+'/app/settings');await settleReads(mobile.page);await mobile.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await mobile.page.waitForURL(base+'/signin');await mobile.api('/session','GET',undefined,401);}
+   try{assert.equal((await mobile.api('/metadata')).viewer.role,'viewer');await navigate(mobile.page,base+'/app/settings');await settleReads(mobile.page);await mobile.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await mobile.page.waitForURL(base+'/signin');await mobile.api('/session','GET',undefined,401);assert.deepEqual(mobile.errors,[],'Viewer mobile hydration errors');}
    finally{await mobile.context.close();}
   });
   for(const width of [1440,390])await clause('ROLE-013',`Viewer leaves their own account at ${width}`,async()=>{
@@ -97,5 +97,6 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
    }finally{await leaving.context.close();}
   });
 
+  assert.deepEqual(invited.errors,[],'Viewer hydration errors');
  }finally{await invited?.context.close();}
 }
