@@ -16,7 +16,7 @@ export function trackRequests(page) {
     if (["fetch", "xhr"].includes(request.resourceType())) {
       // Playwright's timing starts at 0 until a response arrives. Event order
       // records admission even for the very read that never gets a response.
-      entries.set(request, { document: state.document, sequence: ++state.sequence, startedAt: Date.now() });
+      entries.set(request, { document: state.document, sequence: ++state.sequence, startedAt: Date.now(), documentUrl: new URL(page.url()).origin + new URL(page.url()).pathname });
       state.pending.add(request);
     }
   });
@@ -36,7 +36,7 @@ export function trackRequests(page) {
       if (entry.document !== state.document) continue;
       const cutoff = {
         method: request.method(), pathname: new URL(request.url()).pathname,
-        document: entry.document, sequence: entry.sequence, startedAt: entry.startedAt,
+        document: entry.document, documentUrl: entry.documentUrl, sequence: entry.sequence, startedAt: entry.startedAt,
         settledSequence: state.settledSequence,
         settledAt: state.settledAt, documentEndedAt: Date.now(),
       };

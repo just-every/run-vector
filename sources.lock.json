@@ -6417,7 +6417,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-navigation.mjs": {
-      "sha256": "371209a693218aad3ffa4cb86cb2ad0d95e1b02668f9c55b1090afed588f8ec5",
+      "sha256": "f6772893707d4617e438d08ccf8e780321cd04fd9ff0fac5439f13f3b84e6b27",
       "executable": false
     },
     "tests/e2e/collaboration-pagination.mjs": {
@@ -6797,11 +6797,11 @@
       "executable": false
     },
     "tests/e2e/operator-request.mjs": {
-      "sha256": "e068b242fa5b099bbd478a355e9a13df1b4850d422592f3de6f305c54291707c",
+      "sha256": "74f6216f1b181c42c681d28180c5a1fdcaf4fac8002630b458992d3523e459ba",
       "executable": false
     },
     "tests/e2e/outbox-session.mjs": {
-      "sha256": "7a8e5ce4470149fce9ac92cdbeb3254f8e3b35778ffc39c2b8870d0f4dd1fb9f",
+      "sha256": "60e5fc42a59dc3db4db75eea2849eb497930c84876b3bf1004b6682a35222b4a",
       "executable": false
     },
     "tests/e2e/owned-dev-processes.mjs": {
@@ -6857,7 +6857,7 @@
       "executable": false
     },
     "tests/e2e/removal-runtime-support.mjs": {
-      "sha256": "3ee4c33ed36ea87cc0f2171c871d1f45d51471423faf1a3b725c3e6e63e544b4",
+      "sha256": "719dda10a6b2399435c85f1603c552066093004ed0d6ef6beca914b472bcbcc9",
       "executable": false
     },
     "tests/e2e/report-access-cells.mjs": {

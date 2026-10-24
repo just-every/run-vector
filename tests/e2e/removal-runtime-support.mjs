@@ -1,3 +1,4 @@
+import { publicRequest } from './operator-request.mjs';
 import { confirmLink } from './outbox-session.mjs';
 import assert from "node:assert/strict";
 import { spawn, execFileSync } from "node:child_process";
@@ -116,13 +117,13 @@ export async function stop() {
 // and the separately asserted five-requests-then-429 auth policy stay intact.
 export async function signIn(email) {
   sql("DELETE FROM access_rate_limits WHERE key LIKE 'base-magic:loopback:%'");
-  const sent = await fetch(origin + "/auth/request", {
+  const sent = await publicRequest(origin + "/auth/request", {
     method: "POST",
     headers: {
       origin,
       "content-type": "application/json",
     },
-    body: JSON.stringify({ email, returnTo: "/app/settings" }),
+    data: { email, returnTo: "/app/settings" },
   });
   assert.equal(sent.status, 202);
   const link = sql(
@@ -143,10 +144,10 @@ export async function signIn(email) {
   return cookie;
 }
 export const api = (cookie, path, method = "GET", body) =>
-  fetch(origin + "/api" + path, {
+  publicRequest(origin + "/api" + path, {
     method,
     headers: { cookie, origin, "content-type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body),
+    data: body,
   });
 export function heldRequest(cookie, path, method, prefix, base = origin) {
   let request;
