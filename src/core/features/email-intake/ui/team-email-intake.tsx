@@ -1,3 +1,4 @@
+import {EventWebhookKey} from "./event-key";
 import { useState, type FormEvent } from "react";
 import { fetchJson, useApiResource } from "../../../app/api-client";
 import { useViewerTime } from "../../../app/viewer-time";
@@ -66,6 +67,7 @@ function ActiveTeamEmailIntake({ teamId, teamName }: Team) {
           <button type="submit">{pending ? "Saving…" : "Save email intake"}</button>
         </fieldset>
       </form>
+      <EventWebhookKey teamId={teamId} configured={data.eventWebhook.configured} url={data.eventWebhook.url} onChanged={resource.refreshAfterMutation}/>
       {saved && <p role="status">Email intake settings saved.</p>}
       <p>Customer domain mapping is unavailable in this installation. Requesters are recorded by their email address without a seat or sign-in.</p>
       {data.receipts.length > 0 && <details>

@@ -1,3 +1,4 @@
+// issue_reactions retains description/comment targets, emoji, actor and creation time as portable domain data.
 // operators.role retains the Viewer grant; invitation grants remain excluded credentials.
 // issue_deletions.team_id is retained receipt access state; older unscoped receipts remain Owner-only.
 // teams.is_private is portable domain access state, restored with its memberships.
@@ -8,7 +9,7 @@ export const portabilityPolicy = {
  includeTables: ['oa_operators'],
  replaceableTables: ['search_index_state', 'issue_list_revision', 'subscription_clock'],
  derivedTables: ['search_issues', 'search_projects', 'search_views'],
- secretColumns: { notification_digest_batches: ['claim_token'], notification_deliveries: ['claim_token'], ik_jobs: ['lease_token'], integration_deliveries: ['claim'] },
+ secretColumns: { team_email_intake: ['event_verification_key'], notification_digest_batches: ['claim_token'], notification_deliveries: ['claim_token'], ik_jobs: ['lease_token'], integration_deliveries: ['claim'] },
  buckets: { FILES: {} },
  requiredConfiguration: ['FIRST_OWNER_EMAIL', 'SESSION_SECRET', 'APP_ORIGIN', 'MAIL_MODE', 'MAIL_FROM'],
 };

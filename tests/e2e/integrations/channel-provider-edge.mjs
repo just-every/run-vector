@@ -2,7 +2,7 @@
 import {appendFileSync,readFileSync} from 'node:fs';
 export async function channelProviderEdge(request){
  const url=new URL(request.url);
- if(url.hostname==='api.sendgrid.com'&&url.pathname==='/v3/mail/send'){appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sendgrid',body:await request.json()})+'\n');return new Response(null,{status:202});}
+ if(url.hostname==='api.sendgrid.com'&&url.pathname==='/v3/mail/send'){appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sendgrid',body:await request.json()})+'\n');return new Response(null,{status:202,headers:{'X-Message-Id':'synthetic-vector-'+crypto.randomUUID()}});}
  const body=request.method==='GET'?Object.fromEntries(url.searchParams):await request.json(),method=url.hostname==='slack.com'?url.pathname.slice(5):'discord';
  if(!['auth.test','auth.revoke','conversations.info','conversations.create','chat.postMessage','users.lookupByEmail','conversations.open','chat.update','discord'].includes(method))throw Error('Unexpected provider fixture endpoint');
  appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method,body})+'\n');

@@ -1,3 +1,4 @@
+import { Reactions, ReactionProvider } from "../../reactions/ui";
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useRef, useState } from "react";
 import { z } from "zod";
@@ -13,7 +14,11 @@ import { EmailReply } from "../../email-intake/ui/email-reply";
 
 export { CommentTimestamp } from "./discussion-thread";
 
-export function Discussion({
+type DiscussionProps = {writable?:boolean;identifier:string;onRefresh:()=>void};
+export function Discussion(props:DiscussionProps) {
+  return <ReactionProvider identifier={props.identifier}><DiscussionContents {...props}/></ReactionProvider>;
+}
+function DiscussionContents({
   identifier,
   onRefresh,
   writable = true,
@@ -24,7 +29,7 @@ export function Discussion({
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const hydrated = useHydrated();
-  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema, undefined, {
+  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema, 4000, {
     abortPendingOnDispose: false,
   });
   function emailSent() {
@@ -83,6 +88,7 @@ export function Discussion({
   });
   return (
     <section className="detail-section">
+      <Reactions identifier={identifier} writable={writable} />
       <h2>Discussion</h2>
       {email.error && <p role="alert">{email.error.message} <button type="button" onClick={email.reload}>Retry email conversation</button></p>}
       {email.data && <EmailRequester email={email.data} identifier={identifier} />}

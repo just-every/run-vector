@@ -27,7 +27,7 @@ export async function seedIntakeForTeam(teamId:string,cookie:string,attachments=
 }
 export async function recordSendGrid<T>(operation:()=>Promise<T>) {
   const calls: {url:string;body:any}[]=[];
-  vi.stubGlobal('fetch',async (input:RequestInfo|URL,init?:RequestInit)=>{calls.push({url:String(input),body:JSON.parse(String(init?.body))});return new Response(null,{status:202});});
+  vi.stubGlobal('fetch',async (input:RequestInfo|URL,init?:RequestInit)=>{calls.push({url:String(input),body:JSON.parse(String(init?.body))});return new Response(null,{status:202,headers:{'X-Message-Id':'synthetic-vector-'+createUlid(new Date())}});});
   try {return {result:await operation(),calls};}
   finally {vi.unstubAllGlobals();}
 }

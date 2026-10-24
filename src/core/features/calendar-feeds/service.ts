@@ -94,6 +94,13 @@ export async function feedContent(source: D1Database, value: string, origin: str
   }
   // Rotation, revocation and current creator authority are checked again after
   // the projection, before any event leaves this request.
-  if (!await source.prepare(select).bind(digest).first()) return null;
+  const releaseIds=events.filter(event=>event.kind==='release').map(event=>event.id.slice('release-'.length));
+  // Every team-scoped personal release came from one of the creator's teams.
+  // Recheck that membership in the final capability admission too, so a loss
+  // during projection cannot publish a now-private release from an old read.
+  if (!await source.prepare(select+` AND NOT EXISTS(SELECT 1 FROM main.releases r
+    WHERE r.id IN(SELECT value FROM json_each(?)) AND (r.workspace_id<>f.workspace_id OR
+      r.team_id IS NOT NULL AND NOT EXISTS(SELECT 1 FROM main.team_members member WHERE member.team_id=r.team_id AND member.operator_id=o.id)))`)
+    .bind(digest,JSON.stringify(releaseIds)).first()) return null;
   return calendarIcs(events);
 }

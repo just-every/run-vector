@@ -229,7 +229,7 @@ function promised(cell: string, who: Kind, c: Context) {
 const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
 const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
-  "project_milestones", "saved_views", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
+  "project_milestones", "saved_views", "issue_reactions", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
   "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
 
 // Driven from the registry, this case grows with every row; its time limit is not a product assertion.

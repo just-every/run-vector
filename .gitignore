@@ -30,3 +30,6 @@ rer-package/
 
 # Local data archives can contain private workspace records.
 /exports/
+
+# Local environment configuration.
+.env*

@@ -1,3 +1,4 @@
+import { Reactions } from "../../reactions/ui";
 import { useState } from "react";
 import { useHydrated } from "../../../app/initial-resources";
 import type { z } from "zod";
@@ -158,6 +159,7 @@ function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChang
               {c.body ?? ""}
             </SafeMarkdown>
           </div>
+          <Reactions identifier={identifier} targetId={c.id} writable={writable} />
           <NamedLinks writable={writable} identifier={identifier} commentId={c.id} links={data.links} onRefresh={onLinksChanged} />
           {email && <CommentEmailDetails email={email} commentId={c.id} identifier={identifier} />}
           {writable && c.canEdit ? (

@@ -42,7 +42,7 @@ export function CalendarPage() {
     {data.data && !data.error && <>
       <section className="insights-card" aria-label="Create calendar feed">
         <h2>Private calendar feeds</h2><p>Subscribe in Google Calendar, Outlook or Apple Calendar using a feed URL. Anyone holding the URL can read its events. Keep it private.</p>
-        <p>Your feed includes assigned issues, cycles for your teams, and milestones for projects you lead or have assigned work in. A team feed includes that team’s due issues, cycles and milestones from its contributing projects.</p>
+        <p>Your feed includes assigned issues, cycles for your teams, milestones for projects you lead or have assigned work in, and releases for your teams or the workspace that you can currently read. A team feed includes that team’s due issues, cycles, releases and milestones from its contributing projects.</p>
         <div className="insights-controls"><label>Feed scope<select aria-label="Feed scope" value={team} onChange={e => setTeam(e.target.value)} disabled={busy}>
           <option value="">My calendar</option>{data.data.teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
         </select></label></div>
@@ -70,7 +70,7 @@ export function CalendarPage() {
           {feed.canRevoke && <button onClick={() => void change(feed.id, feed.version, false)} disabled={busy}>Revoke feed</button>}
         </article>)}
       </section>
-      <p className="insights-note">Feeds contain event titles and links, never descriptions or comments. Feed credentials are excluded from archives: after restoring, create new feeds. Release dates are not included yet.</p>
+      <p className="insights-note">Feeds contain event titles and links, never descriptions or comments. Feed credentials are excluded from archives: after restoring, create new feeds.</p>
     </>}
   </main>;
 }

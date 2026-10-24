@@ -12,6 +12,11 @@ async function json<T=any>(response:Response,status=200):Promise<T>{expect(respo
 export async function privateVisibilityJourney(w:Workspace) {
  const owner=w.people.owner,member=w.member,admin=w.admin;
  const team=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-960',identifierPrefix:'SYNPVT',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-960');
+ const metadata=(await json(await admin.call('/settings/administration'))).teams.find((t:any)=>t.id===team.id);
+ expect(metadata.canRead).toBe(false);
+ expect(metadata.isPrivate).toBe(true);
+ expect(metadata.members).toEqual(team.members);
+ expect(metadata.issueCount).toBe(0);
  const set=(isPrivate:boolean,by=owner)=>by.call(`/settings/teams/${team.id}/privacy`,'PUT',{isPrivate});
  const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-961',leadOperatorId:owner.id}),201);
  const publicIssue=await json(await owner.call('/issues','POST',{teamId:w.team.id,projectId:project.id,title:'synthetic-vector-962'}),201);
@@ -79,9 +84,15 @@ export async function privateVisibilityJourney(w:Workspace) {
  // Existing definitions immediately re-evaluate when privacy changes, without data edits.
  expect((await set(false,admin)).status).toBe(200);
  const publicPage=await json(await member.call('/issues'));
+ expect((await member.call(`/views/${view.id}`)).status).toBe(200);
+ expect(JSON.stringify(await json(await member.call('/views')))).toContain(view.id);
+ const viewStored=await env.DB.prepare('SELECT * FROM saved_views WHERE id=?').bind(view.id).first();
  expect((await member.call(`/issues/${issue.identifier}`)).status).toBe(200);
  expect((await admin.api(`/teams/${team.id}/privacy`,'PUT',{isPrivate:true})).status).toBe(200);
  expect((await member.call('/issues?offset=1&revision='+encodeURIComponent(publicPage.revision))).status).toBe(409);
+ expect((await member.call(`/views/${view.id}`)).status).toBe(404);
+ expect(JSON.stringify(await json(await member.call('/views')))).not.toContain(view.id);
+ expect(await env.DB.prepare('SELECT * FROM saved_views WHERE id=?').bind(view.id).first()).toEqual(viewStored);
  expect((await set(true)).status).toBe(200); // idempotent: no duplicate audit.
  expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE action='team.privacy_changed' AND subject_id=?").bind(team.id).first('n')).toBe(2);
  expect((await admin.call(`/settings/teams/${team.id}/members/${member.id}`,'PUT',{role:'member'})).status).toBe(200);

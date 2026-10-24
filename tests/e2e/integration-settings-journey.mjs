@@ -1,3 +1,4 @@
+import {eventSigner} from '../sendgrid-event-fixture.ts';
 import {exerciseChannels} from './integrations/channel-settings.mjs';
 import {exerciseSlackDirectMessages} from './integrations/slack-dm-settings.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
@@ -60,6 +61,13 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  await section.getByRole('button',{name:'Save email intake',exact:true}).click();assert.equal((await saved).status(),200);
  await section.getByText('Email intake settings saved.',{exact:true}).waitFor();
  await inspect(page,section,'email-intake-saved');
+ const signer=await eventSigner(),eventKey=section.getByRole('form',{name:'Configure SendGrid Event Webhook',exact:true});
+ await eventKey.getByLabel('SendGrid Event Webhook verification key',{exact:true}).fill(signer.publicKey);
+ const keySaved=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/email-intake/event-key'));
+ await eventKey.getByRole('button',{name:'Save Event Webhook key',exact:true}).click();assert.equal((await keySaved).status(),200);
+ await eventKey.getByText('No verification key saved.',{exact:true}).waitFor({state:'hidden'});
+ await inspect(page,eventKey,'email-provider-event-settings');
+
  const messageId='<synthetic-vector-'+Date.now()+'@example.test>';
  const raw=['From: '+sender,'To: '+address,'Message-ID: '+messageId,'Subject: Delayed delivery from the warehouse','MIME-Version: 1.0','Content-Type: multipart/mixed; boundary="synthetic-vector-722"','','--synthetic-vector-722','Content-Type: text/plain','','Please check the delivery attached below.','--synthetic-vector-722','Content-Type: image/png','Content-Disposition: inline; filename="delivery.png"','Content-ID: <delivery-image>','Content-Transfer-Encoding: base64','','iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','--synthetic-vector-722','Content-Type: text/plain','Content-Disposition: attachment; filename="delivery.txt"','','Delivery route 721','--synthetic-vector-722--',''].join('\r\n');
  const accepted=await runtime.req('/cdn-cgi/local/email?from='+encodeURIComponent(sender)+'&to='+encodeURIComponent(address),{method:'POST',body:raw});assert.equal(accepted.status,200,await accepted.text());
@@ -80,6 +88,15 @@ export async function exerciseEmailIntake({page:shared,runtime,cookie,team,evide
  await form.getByRole('button',{name:'Send reply by email',exact:true}).click();assert.equal((await sent).status(),201);
  const outcome=page.getByLabel('Email delivery outcome',{exact:true});await outcome.getByText('Email delivery: accepted',{exact:false}).waitFor();
  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-intake-accepted');
+
+ const delivery=runtime.sql(`SELECT provider_message_id FROM intake_email_deliveries WHERE issue_id=(SELECT id FROM issues WHERE identifier='${identifier}') AND kind='reply'`)[0];assert.ok(delivery.provider_message_id);
+ for(const [index,event] of ['processed','bounce'].entries()){
+  const signed=await signer.sign([{sg_event_id:'synthetic-vector-'+(2200+index)+'-'+Date.now(),sg_message_id:delivery.provider_message_id+'.filter',email:sender,event}]);
+  const result=await runtime.req(`/api/integrations/sendgrid/events/${team.id}`,{method:'POST',...signed});assert.equal(result.status,200);
+  await outcome.getByText('Email delivery: '+(event==='bounce'?'bounced':'accepted'),{exact:true}).waitFor();
+  await inspect(page,page.locator('.detail-section').filter({has:page.getByRole('heading',{name:'Discussion',exact:true})}),'email-provider-'+event);
+ }
+
  await settleReads(page);
  } finally {await page.close();}
  console.log('TRIAGE-005 email intake settings, requester, reply and accepted outcome passed at 1440 and 390');

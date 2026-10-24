@@ -14,12 +14,32 @@ export async function viewerVisibilityJourney(w:Workspace){
  const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:owner.id}),201);
  const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id}),201);
  const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1723'}),201);
+ const reactionPath=`/issues/${issue.identifier}/reactions`;
+ const quiet=await snapshot(['notifications','notification_events','notification_deliveries']);
+ for(const targetId of ['',ownComment.id]) {
+  const input={targetId,emoji:'👍'};
+  expect((await member.call(reactionPath,'PUT',input)).status).toBe(200);
+  expect((await member.call(reactionPath,'PUT',input)).status).toBe(200);
+  expect((await owner.call(reactionPath,'PUT',input)).status).toBe(200);
+  const reactions=(await json(await owner.call(reactionPath))).reactions.filter((r:any)=>r.targetId===targetId);
+  expect(reactions).toHaveLength(2);
+  expect(reactions.map((r:any)=>r.actorId).sort()).toEqual([member.id,owner.id].sort());
+  expect(reactions.every((r:any)=>typeof r.actor==='string'&&r.actor.length>0)).toBe(true);
+  expect((await member.call(reactionPath,'DELETE',input)).status).toBe(200);
+  expect((await member.call(reactionPath,'DELETE',input)).status).toBe(200);
+  expect((await json(await owner.call(reactionPath))).reactions.filter((r:any)=>r.targetId===targetId)).toHaveLength(1);
+ }
+ expect(await snapshot(Object.keys(quiet))).toEqual(quiet);
+ const guestBefore=await snapshot(['issue_reactions']);
+ expect((await w.guest.call(reactionPath,'PUT',{targetId:'',emoji:'🎉'})).status).toBe(200);
+ expect((await w.guest.call(reactionPath,'DELETE',{targetId:'',emoji:'🎉'})).status).toBe(200);
+ expect(await snapshot(Object.keys(guestBefore))).toEqual(guestBefore);
  const shared=await json(await owner.call('/views','POST',{name:'synthetic-vector-1724',isShared:true,query:{team:w.team.id}}),201);
  expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
  expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  expect((await member.api(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${shared.id}`])expect((await member.call(path)).status,path).toBe(200);
- const before=await snapshot(['issues','issue_comments','issue_labels','projects','team_members','subject_subscriptions','audit_records','integration_tokens']);
+ const before=await snapshot(['issues','issue_comments','issue_reactions','issue_labels','projects','team_members','subject_subscriptions','audit_records','integration_tokens']);
  const logicalId=ownComment.id;
  // Each registered work mutation is reached through its actual native/bearer transport.
  for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){

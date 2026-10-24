@@ -315,3 +315,11 @@ and request-key tables (both excluded from archives) and triggers that drop link
 the signing secret when the connection is removed and scrub queued messages for a
 removed member. Keep all prior rows and outbound terminal states on rollback. An
 already-sent direct message cannot be recalled by local erasure (SEC-003).
+
+### Signed SendGrid reply outcomes
+
+In Settings → Teams → the team's Email intake, save the intake address and allowed senders first. Under SendGrid Event Webhook, paste SendGrid's public verification key and copy the displayed team URL into SendGrid's signed Event Webhook configuration. Enable processed, delivered and bounce events. The key's saved state survives a page reload; clearing it stops callbacks. This does not configure the provider account or verify hosted delivery.
+
+Callbacks verify SendGrid's P-256 signature over the timestamp and exact request body, require a timestamp within five minutes, and match the provider message ID and original recipient to an accepted reply from that team. Processed and delivered events show Accepted on the reply; bounce events show Bounced and cannot be overwritten by a later acceptance event. Replayed event IDs, unsigned or altered bodies, stale timestamps and foreign messages or recipients are refused without changing the reply. Callbacks send no mail.
+
+Archives retain outcomes and replay identities. Verification keys are excluded and intake stays disabled after restore; configure the destination's provider account and key again. Local signed fixtures prove these transitions; installation routing, sender-domain configuration and hosted provider receipt remain installation work. Customer/domain attachment remains unavailable until customer records exist.

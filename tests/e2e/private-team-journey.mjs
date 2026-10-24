@@ -1,4 +1,4 @@
-import {privateTeamRequest} from './admin-team-journey.mjs';
+import {privateTeamRequest,privateAdminMetadata} from './admin-team-journey.mjs';
 import assert from 'node:assert/strict';
 import {navigate} from './collaboration-navigation.mjs';
 import {openDisclosures} from './ui-controls-checks.mjs';
@@ -53,6 +53,7 @@ export async function privateTeamJourney({page,peer,memberId,runtime,clause,evid
    assert.equal(await peer.getByRole('form',{name:'Edit '+name,exact:true}).count(),0);
    const control=peer.getByRole('combobox',{name:'Visibility of '+name,exact:true});
    assert.equal(await control.inputValue(),'private');
+   await privateAdminMetadata({peer,name,team,api,inspect,width});
    if(width===1440)await inspect(peer,control.locator('..'),'private-team-admin-metadata');
    for(const value of ['public','private']){
     const receipt=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/privacy`&&r.request().method()==='PUT');

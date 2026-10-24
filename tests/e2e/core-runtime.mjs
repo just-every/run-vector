@@ -53,6 +53,10 @@ const root = process.cwd(),
   base = "http://127.0.0.1:15924",
   state = `.wrangler/vector-e2e/runs/${new Date().toISOString().replace(/[:.]/g, "-")}-${process.pid}`,
   evidence = resolve(verificationDirectory);
+// CI partitions the independent invited-operator journeys; the public command
+// keeps the complete serial proof. Both partitions retain the shared doors.
+const journeyGroup = process.argv[2] ?? 'all';
+assert.ok(['all', 'current', 'planning'].includes(journeyGroup), 'Unknown runtime journey partition');
 const ids = {
   sarah: "01J00000000000000000000002",
   flow: "01J00000000000000000000010",
@@ -695,6 +699,7 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
+  if (journeyGroup !== 'planning') {
   await withInvitedOperator(page, context, base, state, () => currentDisjointJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
@@ -725,6 +730,8 @@ try {
   for (const width of [1440, 390])
     await withInvitedOperator(page, context, base, state, () =>
       streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
+  }
+  if (journeyGroup !== 'current') {
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await threadsJourney(page, context, base, state, ids.flow, evidence, record);
   const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
@@ -751,6 +758,7 @@ try {
   }), 'Intake routing teammate');
   await withInvitedOperator(page, context, base, state, () => cycleMembershipJourney(page, context, base, record), 'synthetic-vector-1934');
   await withInvitedOperator(page, context, base, state, () => subissuesJourney(page, context, base, record), 'synthetic-vector-1935');
+  }
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');

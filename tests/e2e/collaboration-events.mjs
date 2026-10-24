@@ -309,6 +309,27 @@ export async function collaborationEvents({
     path,
     owner,
   });
+  await clause('ISSUE-017','native description and comment reactions synchronize without notifications',async()=>{
+    await navigate(peer,runtime.base+'/app/issues/'+issue.identifier);
+    await navigate(page,runtime.base+'/app/issues/'+issue.identifier);
+    await page.getByRole('group',{name:'Comment reactions',exact:true}).last().waitFor();
+    await peer.getByRole('group',{name:'Comment reactions',exact:true}).last().waitFor();
+    const before=runtime.sql('SELECT count(*) n FROM notifications')[0].n;
+    for(const label of ['Description reactions','Comment reactions']) {
+      const own=page.getByRole('group',{name:label,exact:true}).last();
+      const other=peer.getByRole('group',{name:label,exact:true}).last();
+      const started=performance.now();
+      await receipt(page,path+'/reactions','PUT',()=>own.getByRole('button',{name:'Add 👍 reaction',exact:true}).click());
+      await other.getByRole('button',{name:'Add 👍 reaction',exact:true}).filter({hasText:'1'}).waitFor({timeout:Math.max(1,5000-(performance.now()-started))});
+      await own.getByRole('button',{name:'Remove 👍 reaction',exact:true}).waitFor();
+      await own.getByLabel('Who reacted 👍',{exact:true}).click();
+      await own.getByRole('listitem').filter({hasText:owner.name}).waitFor();
+      await capture('reactions-'+(label==='Description reactions'?'description':'comment'));
+      await own.screenshot({path:'.artifacts/verification/collaboration-browser/reactions-'+(label==='Description reactions'?'description':'comment')+'-'+page.viewportSize().width+'.png'});
+      await receipt(page,path+'/reactions','DELETE',()=>own.getByRole('button',{name:'Remove 👍 reaction',exact:true}).click());
+    }
+    assert.equal(runtime.sql('SELECT count(*) n FROM notifications')[0].n,before);
+  });
   await exerciseReferences({page,runtime,issue,evidence:runtime.evidence ?? ".artifacts/verification/references"});
   await collaborationPreferences({
     page,

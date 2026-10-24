@@ -169,6 +169,7 @@ export const administrationSchema = z.object({
       identifierPrefix: z.string(),
       isPrivate: z.boolean(),
       canRead: z.boolean(),
+      issueCount: z.number().int().nonnegative().nullable(),
       archivedAt: z.string().nullable(),
       prefixEditable: z.boolean(),
       autoCycleStarted: z.boolean(),

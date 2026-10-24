@@ -11,7 +11,8 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
  const project=(await owner('/settings/projects','POST',{name:'synthetic-vector-1800',leadOperatorId:ownerId})).projects.find(p=>p.name==='synthetic-vector-1800');
  const label=(await owner('/settings/labels','POST',{name:'synthetic-vector-1801',color:'#2255aa'})).labels.find(l=>l.name==='synthetic-vector-1801');
  const issue=await owner('/issues','POST',{title:'synthetic-vector-1802',teamId:team.id,projectId:project.id,labelIds:[label.id],estimate:3,dueDate:'2026-11-04',expectedOutcome:'Release evidence is ready',customerImpact:'Stakeholders can inspect the delivery',description:'Read this delivery.\n\n- [ ] Confirm delivery'},201);
- await owner(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1803'},201);
+ const reactedComment=await owner(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1803'},201);
+ for(const targetId of ['',reactedComment.id])await owner(`/issues/${issue.identifier}/reactions`,'PUT',{targetId,emoji:'👍'});
  const view=await owner('/views','POST',{name:'synthetic-vector-1804',isShared:true,query:{project:project.id}},201);
  const initiative=await owner('/initiatives','POST',{name:'synthetic-vector-1805',ownerOperatorId:ownerId},201);
  await owner(`/initiatives/${initiative.id}/projects`,'PUT',{expectedVersion:initiative.version,projectIds:[project.id]});
@@ -27,6 +28,9 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
    assert.equal((await api('/metadata')).viewer.role,'viewer');
    for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${view.id}`])await api(path);
    const before=sql(`SELECT title,version FROM issues WHERE id='${issue.id}'`)[0];
+   const reactionsBefore=sql(`SELECT * FROM issue_reactions WHERE issue_id='${issue.id}' ORDER BY target_id`);
+   for(const targetId of ['',reactedComment.id])for(const method of ['PUT','DELETE'])await api(`/issues/${issue.identifier}/reactions`,method,{targetId,emoji:'👍'},403);
+   assert.deepEqual(sql(`SELECT * FROM issue_reactions WHERE issue_id='${issue.id}' ORDER BY target_id`),reactionsBefore);
    for(const [path,method,data] of [
     [`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1810'}],
     [`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1811'}],
@@ -43,7 +47,8 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
     await reader.getByRole('button',{name:'Edit estimate',exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Edit estimate',exact:true}).isDisabled(),true);
     assert.equal(await reader.getByRole('button',{name:'Edit issue',exact:true}).count(),0);assert.equal(await reader.getByRole('button',{name:'Add comment',exact:true}).count(),0);
     assert.equal(await reader.getByRole('combobox',{name:'Issue status',exact:true}).isDisabled(),true);
-    if(width===1440)await inspect(reader,reader.locator('main:visible').first(),'viewer-issue-read');
+    for(const label of ['Description reactions','Comment reactions']){const group=reader.getByRole('group',{name:label,exact:true});await group.getByRole('button',{name:'Add 👍 reaction',exact:true}).waitFor();assert.equal(await group.getByRole('button',{name:'Add 👍 reaction',exact:true}).isDisabled(),true);}
+    await inspect(reader,reader.locator('main:visible').first(),'viewer-issue-read-'+width);
     await navigate(reader,base+'/app/projects/'+project.id);await reader.getByRole('heading',{name:project.name,exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Add milestone',exact:true}).count(),0);
     if(width===1440)await inspect(reader,reader.locator('main:visible').first(),'viewer-project-read');
     await navigate(reader,base+'/app/views/'+view.id);await reader.getByRole('heading',{name:view.name,exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Duplicate view',exact:true}).count(),0);

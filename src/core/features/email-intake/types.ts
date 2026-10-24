@@ -1,5 +1,6 @@
 export type IntakeSettings = {
   team_id: string; enabled: number; address: string; allowed_senders_json: string;
+  event_verification_key: string | null;
   acknowledgement: number; actor_operator_id: string | null; revision: number;
 };
 export type IntakeMessage = {
