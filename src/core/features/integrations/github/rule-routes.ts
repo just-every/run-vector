@@ -17,7 +17,7 @@ export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
   for(const team of teams){
    if(decide(authority,{row:'teams.settings',teams:[team.id]})!=='allow')continue;
    const statuses=(await c.env.DB.prepare("SELECT id,name FROM workflow_statuses WHERE team_id=? AND category IN ('backlog','unstarted','started','completed','canceled') ORDER BY position,id").bind(team.id).all<{id:string;name:string}>()).results;
-   const rules=await Promise.all(gitTriggers.map(async trigger=>({trigger,...await gitRule(c.env.DB,team.id,trigger)})));
+   const rules=await Promise.all(gitTriggers.map(trigger=>gitRule(c.env.DB,team.id,trigger)));
    result.push({...team,statuses,rules});
   }
   return c.json({teams:result});
