@@ -194,7 +194,8 @@ export function useApiResource<S extends z.ZodType>(
   latestSnapshot.current = snapshot;
   const currentController = useRef<ReturnType<typeof createApiResourceController<z.output<S>>> | null>(null);
   const publishReceipt = useCallback((update: (data: z.output<S> | null) => z.output<S>) => { currentController.current?.publishReceipt(update); }, []);
-  const reload = useCallback(() => { void currentController.current?.refresh(); }, []);
+  // Explicit reloads invalidate old receipts without canceling admitted reads.
+  const reload = useCallback(() => { void currentController.current?.refreshAfterMutation(); }, []);
   const refreshAfterMutation = useCallback(() => { void currentController.current?.refreshAfterMutation(); }, []);
 
   useEffect(() => {
