@@ -45,7 +45,10 @@ export async function viewerVisibilityJourney(w:Workspace){
  // Enumerate storage rather than maintaining an incomplete list of tables. Only
  // request-budget counters and the independently asserted bearer-use audit may change.
  const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits','integration_token_usage') ORDER BY name").all<{name:string}>()).results.map(row=>row.name);
- const stored=async()=>Object.fromEntries(await Promise.all(tables.map(async name=>[name,(await env.DB.prepare('SELECT * FROM \"'+name+'\"').all()).results.map(row=>JSON.stringify(row)).sort()])));
+ const stored=async()=>{
+  const results=await env.DB.batch(tables.map(name=>env.DB.prepare('SELECT * FROM \"'+name+'\"')));
+  return Object.fromEntries(tables.map((name,index)=>[name,results[index].results.map(row=>JSON.stringify(row)).sort()]));
+ };
  const logicalId=ownComment.id;
  // Each registered work mutation is reached through its actual native/bearer transport.
  for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){
