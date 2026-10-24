@@ -2821,7 +2821,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "5e5c59ff516c74b4bc7af08a60d460ad50dc849a61681174ff03c6c470405554",
+      "sha256": "a2c66643bb1c0573b53f69b96a53b62991ec72441f02958b98e0dc2d01136e89",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -3553,7 +3553,7 @@
       "executable": false
     },
     "src/core/features/calendar-feeds/page.tsx": {
-      "sha256": "e57ebf033618a356c6fd5e04cf40db9709ac63bfbdcbca3edf2c9db81272c5e6",
+      "sha256": "5baeb22e0592e25edefc169b7dc0a6f6deaa5ec55dce5873a780423e80798573",
       "executable": false
     },
     "src/core/features/calendar-feeds/routes.ts": {
@@ -3573,7 +3573,7 @@
       "executable": false
     },
     "src/core/features/calendar-view/page.tsx": {
-      "sha256": "19a8b0bbbdf1f4075b5149f239db9b49872bd06e9419d455eda7c2cca62f2a42",
+      "sha256": "6b54fe442964e209cf9ec1d7128a7f6b6a439fc1b3ffac69acd53e749d5ef7e9",
       "executable": false
     },
     "src/core/features/calendar-view/read.ts": {
@@ -5828,8 +5828,12 @@
       "sha256": "e7e8663036b2ccaa027f251e281313a9ad8f41961cee1da3980277acbacc5e39",
       "executable": false
     },
+    "src/core/features/settings/ui/team-metadata.css": {
+      "sha256": "dcecd289ad6e71f888013d6cc7d89e88822179aca1ba11419677ef1c1d13a224",
+      "executable": false
+    },
     "src/core/features/settings/ui/team-metadata.tsx": {
-      "sha256": "6db45cccd47558448553580e7d8a2845151f97a5f8b6d188b087cb8755d5f4c1",
+      "sha256": "8750b52f88df0aaea445d1fcc62f8f1fef36c65bbaf9ae13e93bef7e691a7e0e",
       "executable": false
     },
     "src/core/features/settings/ui/team-permissions.tsx": {
@@ -6589,7 +6593,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "cad3219630616e94e401876fd492e44c2aa66a1c5260a48367a5c30911435685",
+      "sha256": "18874253e4676a895be45a617b551c849f42e0b582bc4e3f27cad420778a2a79",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {

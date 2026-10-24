@@ -31,11 +31,15 @@ export const verificationShards = {
     commands: ['sources:verify-base', 'check', 'test:installer', 'test:markdown',
       'test:deployment', 'build', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }],
   },
-  // Delivery and subscription journeys extend the core runtime proof. Give
-  // that unchanged public entry point its own job instead of raising timeouts.
+  // Keep every core journey and shared public-door assertion inside the normal
+  // job budget. The serial test:runtime entry point still runs both groups.
   'core-runtime': {
     browser: true, native: true,
-    commands: ['build', 'test:runtime'],
+    commands: ['build', { node: ['tests/e2e/core-runtime.mjs', 'current'] }],
+  },
+  'core-runtime-planning': {
+    browser: true, native: true,
+    commands: ['build', { node: ['tests/e2e/core-runtime.mjs', 'planning'] }],
   },
   administration: {
     browser: true, native: true,
