@@ -56,6 +56,7 @@ const relations: Record<
 > = {};
 for (const table of [
   "issue_comments",
+  "issue_reactions",
   "issue_links",
   "issue_files",
   "issue_activity",

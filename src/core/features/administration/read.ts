@@ -23,7 +23,8 @@ export async function readAdministration(db: D1Database, actor: string) {
         .first(),
       db
         .prepare(
-          `SELECT t.id,t.name,CASE WHEN ${visibleTeam('reader','t.id')} THEN t.identifier_prefix ELSE '' END AS identifierPrefix,t.is_private AS isPrivate,${visibleTeam('reader','t.id')} AS canRead,t.archived_at AS archivedAt,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
+          `SELECT t.id,t.name,CASE WHEN ${visibleTeam('reader','t.id')} THEN t.identifier_prefix ELSE '' END AS identifierPrefix,t.is_private AS isPrivate,${visibleTeam('reader','t.id')} AS canRead,
+      CASE WHEN reader.role IN('owner','admin') OR ${visibleTeam('reader','t.id')} THEN (SELECT count(*) FROM main.issues i WHERE i.team_id=t.id) ELSE NULL END AS issueCount,t.archived_at AS archivedAt,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
       CASE WHEN t.is_private=1 THEN 'invite_only' ELSE t.membership_mode END AS membershipMode,t.requests_enabled AS requestsEnabled,t.settings_permission AS settingsPermission,t.planning_permission AS planningPermission,
       NOT EXISTS(SELECT 1 FROM team_issue_history h WHERE h.team_id=t.id) AS prefixEditable
       FROM main.teams t JOIN operators reader ON reader.id='${actor.replaceAll("'","''")}' WHERE t.workspace_id=? AND (reader.role='admin' OR ${visibleTeam('reader','t.id')} OR ${requestableTeam('reader','t.id')}) ORDER BY t.name,t.id`,
@@ -63,7 +64,7 @@ export async function readAdministration(db: D1Database, actor: string) {
       db.prepare("SELECT pl.project_id AS projectId,pl.label_id AS labelId FROM project_labels pl JOIN projects p ON p.id=pl.project_id WHERE p.workspace_id=? ORDER BY pl.label_id").bind(workspaceId).all<{projectId:string;labelId:string}>(),
       db.prepare("SELECT s.team_id AS teamId,s.weeks,s.start_weekday AS startWeekday,s.cooldown_weeks AS cooldownWeeks,s.upcoming_count AS upcomingCount FROM team_cycle_schedules s JOIN teams t ON t.id=s.team_id WHERE t.workspace_id=?").bind(workspaceId).all(),
       db.prepare("SELECT h.team_id AS teamId,h.close_after_days AS closeAfterDays,h.archive_after_days AS archiveAfterDays,h.exempt_bugs AS exemptBugs FROM team_housekeeping h JOIN teams t ON t.id=h.team_id WHERE t.workspace_id=?").bind(workspaceId).all<{teamId:string;closeAfterDays:number|null;archiveAfterDays:number|null;exemptBugs:number}>(),
-      db.prepare("SELECT m.team_id AS teamId,m.operator_id AS operatorId,m.role FROM team_members m JOIN teams t ON t.id=m.team_id JOIN operators o ON o.id=m.operator_id WHERE t.workspace_id=? AND o.removed_at IS NULL ORDER BY m.role DESC,o.name,o.id").bind(workspaceId).all<{teamId:string;operatorId:string;role:string}>(),
+      db.prepare("SELECT m.team_id AS teamId,m.operator_id AS operatorId,m.role FROM main.team_members m JOIN main.teams t ON t.id=m.team_id JOIN operators o ON o.id=m.operator_id JOIN operators reader ON reader.id=? WHERE t.workspace_id=? AND o.removed_at IS NULL AND (reader.role IN('owner','admin') OR EXISTS(SELECT 1 FROM teams visible WHERE visible.id=t.id)) ORDER BY m.role DESC,o.name,o.id").bind(actor,workspaceId).all<{teamId:string;operatorId:string;role:string}>(),
       // ROLE-007: issues still assigned to someone who left the team, for its owners to reassign.
       db.prepare(`SELECT i.team_id AS teamId,i.identifier,i.title,i.assignee_operator_id AS assigneeOperatorId FROM issues i
         JOIN team_departures d ON d.team_id=i.team_id AND d.operator_id=i.assignee_operator_id

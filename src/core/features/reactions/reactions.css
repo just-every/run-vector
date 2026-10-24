@@ -1,0 +1,8 @@
+.issue-reactions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-block: 8px; font-size: 13px; }
+.issue-reaction { display: inline-flex; align-items: center; gap: 4px; }
+.issue-reaction button { border: 1px solid var(--app-field-border); border-radius: 6px; padding: 4px 8px; font: inherit; }
+.issue-reaction button[aria-pressed="true"] { background: var(--app-paper-deep); }
+.issue-reaction details { font-size: 13px; }
+.issue-reaction summary { cursor: pointer; }
+.issue-reaction ul { margin: 4px; padding-inline-start: 18px; }
+@media (max-width: 600px) { .issue-reactions > span:not(.issue-reaction) { flex-basis: 100%; } }

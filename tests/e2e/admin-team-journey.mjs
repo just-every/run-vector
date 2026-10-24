@@ -468,3 +468,13 @@ export async function privateTeamRequest({page,peer,memberId,runtime,team,clause
  await page.getByRole('button',{name:'Approve Role member',exact:true}).click();assert.equal((await response).status(),200);
  assert.equal((await peer.request.get(base+'/api/issues/'+team.identifier)).status(),200);
 }
+
+/** ROLE-002(a): non-member Admin metadata has counts and membership, with no work form. */
+export async function privateAdminMetadata({peer,name,team,api,inspect,width}) {
+ const metadata=peer.getByRole('region',{name:'Metadata for '+name,exact:true});
+ assert.ok((await metadata.innerText()).includes('1 members · 1 team owners · 1 issues'));
+ assert.ok((await metadata.innerText()).includes('Team owner'));
+ await inspect(peer,metadata,'private-team-admin-metadata-counts-'+width);
+ const state=(await api(peer,'/settings/administration')).teams.find(t=>t.id===team.id);
+ assert.equal(state.issueCount,1);assert.equal(state.canRead,false);assert.equal(state.members.length,1);
+}

@@ -43,6 +43,7 @@ export const matrix = {
   'teams.workflow': row('Add, rename, reorder or remove workflow statuses (TEAM-002, TEAM-004)', 'yes', 'yes', 'team-setting', 'no'),
   'teams.archive': row('Archive or unarchive a team, whatever its *Who manages team settings* permission (TEAM-003)', 'yes', 'yes', 'team-owner', 'no'),
   'issues.write': row('Create, edit and comment on issues in the member\'s teams (ISSUE-001, ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),
+  'reactions.write': row('Add or remove reactions on issue descriptions and comments (ISSUE-017)', 'yes', 'yes', 'yes', 'invited-teams'),
   'issues.copy': row('Copy an issue (ROLE-003/ROLE-008; ISSUE-023 action)', 'yes', 'yes', 'teams', 'invited-teams'),
   'email.reply': row('Reply by email to an intake sender (TRIAGE-005)', 'yes', 'yes', 'teams', 'no'),
   'comments.own': row('Edit own comment; resolve or reopen any thread (ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),
