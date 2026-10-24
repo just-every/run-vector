@@ -6369,7 +6369,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "1af9454ffd25766eb0a0efa684bf5eca95d2d07f78faefe736fabf9d23fbeb50",
+      "sha256": "abc198453f4c4e9386bd7d9ea48d828ad80512fd4b46d365855f920e8c6d5df4",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
@@ -7209,7 +7209,7 @@
       "executable": false
     },
     "tests/worker/data-http-safety.test.ts": {
-      "sha256": "402eac2d47a43e7903d808173627bad436b121ba951b1a4f1ec3bfc2b1f0fec7",
+      "sha256": "a97c63266f162d8621ddc3b5625640c8a427f762fbf21f51f17864f3e7246b14",
       "executable": false
     },
     "tests/worker/data-http.test.ts": {

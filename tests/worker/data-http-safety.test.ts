@@ -20,7 +20,7 @@ it('[DATA-001 DATA-005 BASE-DATA-001] HTTP admission refuses extra authority or 
   ["INSERT INTO oa_external_identities SELECT 'https://identity.example','external',id FROM oa_operators","DELETE FROM oa_external_identities WHERE subject='external'"],
   ["INSERT INTO oa_dev_credentials VALUES('session','dev-fixture',0)","DELETE FROM oa_dev_credentials WHERE id='dev-fixture'"],
   ["INSERT INTO oa_invitation_cancellations SELECT id,version FROM oa_operators",'DELETE FROM oa_invitation_cancellations'],
-  ["INSERT INTO issue_deletions SELECT 'existing-deletion','BASE-99',id,'2026-09-02T00:00:00Z' FROM workspace_settings", "DELETE FROM issue_deletions WHERE issue_id='existing-deletion'"],
+  ["INSERT INTO issue_deletions(issue_id,identifier,workspace_id,requested_at) SELECT 'existing-deletion','BASE-99',id,'2026-09-02T00:00:00Z' FROM workspace_settings", "DELETE FROM issue_deletions WHERE issue_id='existing-deletion'"],
   ["INSERT INTO vector_webhook_erasures SELECT id,'existing-erasure','BASE-99','2026-09-02T00:00:00Z' FROM workspace_settings", "DELETE FROM vector_webhook_erasures WHERE id='existing-erasure'"],
  ];
  for(const [change,undo] of variants){await db.prepare(change).run();await denied();await db.prepare(undo).run();}

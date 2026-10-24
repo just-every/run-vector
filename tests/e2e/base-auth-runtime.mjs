@@ -113,9 +113,9 @@ try {
   await peer.waitForURL(origin+'/app');
   await peer.goto(origin+'/app/settings');
   await peer.getByRole('button',{name:'Remove Invited peer',exact:true}).waitFor();
-  // An Admin removes Members and itself, never an Owner, and invites Members or named-team Guests.
+  // An Admin removes Members and itself, never an Owner, and invites Members, named-team Guests or Viewers.
   assert.equal(await peer.getByRole('button',{name:'Remove Workspace owner',exact:true}).count(),0);
-  assert.deepEqual(await peer.getByLabel('Role',{exact:true}).locator('option').allTextContents(),['Member','Guest']);
+  assert.deepEqual(await peer.getByLabel('Role',{exact:true}).locator('option').allTextContents(),['Member','Guest','Viewer']);
   await peer.getByLabel('Name',{exact:true}).fill('Invited member');
   await peer.getByLabel('Email',{exact:true}).fill('member@auth-runtime.test');
   const memberInvite=peer.waitForResponse(response=>response.url()===origin+'/api/settings/operators/invite');
