@@ -24,7 +24,7 @@ export async function slackAppInstall(){
  });
  const read=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
  const callback=(state:string,cookie=f.cookie)=>request('/api/integrations/slack/oauth/callback?state='+encodeURIComponent(state)+'&code=synthetic-vector-2003','GET',undefined,cookie);
- const begin=async()=>new URL((await read(await f.call('/settings/integrations/slack/app/install','POST',{}))).url).searchParams.get('state')!;
+ const begin=async(cookie=f.cookie)=>new URL((await read(await request('/api/settings/integrations/slack/app/install','POST',{},cookie))).url).searchParams.get('state')!;
  try{
   // A Member cannot create, inspect credentials, or start an installation.
   const member=await invite('synthetic-vector-2004@vector.test',f.cookie),admin=await invite('synthetic-vector-2005@vector.test',f.cookie,'admin');
@@ -51,6 +51,11 @@ export async function slackAppInstall(){
   expect((await callback(current)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(1);
   const all=(await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").all()).results;
   expect(all).toHaveLength(3);expect(JSON.stringify(all)).not.toContain(botToken);expect(JSON.stringify(all)).not.toContain(clientSecret);expect(JSON.stringify(all)).not.toContain(secret);
+  expect((await request('/api/settings/integrations/slack/app','GET',undefined,admin)).status).toBe(200);
+  const adminState=await begin(admin);expect((await callback(adminState)).status).toBe(403);expect((await callback(adminState,admin)).status).toBe(303);
+  expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(2);
+  await begin();await env.DB.prepare("UPDATE vector_integration_secret_keys SET valid_until=? WHERE identity LIKE 'slack-oauth:%'").bind(Date.now()-1).run();
+  const expired=await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack-oauth:%' AND valid_until<?").bind(Date.now()).first<number>('n');expect(expired).toBe(1);
   // The manual manifest path stores the same sealed profile, without a configuration token.
   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
   await begin();await read(await f.call('/settings/integrations/slack','DELETE'));
