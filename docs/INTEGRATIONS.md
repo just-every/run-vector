@@ -293,7 +293,7 @@ signing secret is sealed per workspace with `sealSecret`/`openSecret`, never sho
 excluded from archives with the member links, needs entering again after a restore
 (members re-link) and is deleted when the Slack connection is removed.
 
-Until SLACK-001's manifest sets it, turn on **Interactivity** in the Slack app and set
+For a bot token entered directly, turn on **Interactivity** in the Slack app and set
 its Request URL to the value Settings shows:
 
 ```
@@ -323,3 +323,34 @@ In Settings → Teams → the team's Email intake, save the intake address and a
 Callbacks verify SendGrid's P-256 signature over the timestamp and exact request body, require a timestamp within five minutes, and match the provider message ID and original recipient to an accepted reply from that team. Processed and delivered events show Accepted on the reply; bounce events show Bounced and cannot be overwritten by a later acceptance event. Replayed event IDs, unsigned or altered bodies, stale timestamps and foreign messages or recipients are refused without changing the reply. Callbacks send no mail.
 
 Archives retain outcomes and replay identities. Verification keys are excluded and intake stays disabled after restore; configure the destination's provider account and key again. Local signed fixtures prove these transitions; installation routing, sender-domain configuration and hosted provider receipt remain installation work. Customer/domain attachment remains unavailable until customer records exist.
+
+
+### Install a notification app with Slack OAuth
+
+Owners and Admins can open **Install your Slack app** in Settings → Integrations.
+Create an app with a one-time Slack app configuration token, or open the
+prefilled Slack manifest and enter its app ID, client ID, client secret and
+signing secret. The configuration token is sent once and is not retained.
+App credentials use the same encrypted, archive-excluded custody as the bot
+token; Settings returns only the app and client IDs.
+
+**Install Slack app** opens Slack's OAuth consent page. The callback is
+`/api/integrations/slack/oauth/callback` on this installation's origin. OAuth
+state belongs to the member who started installation, expires after ten minutes
+and is consumed once. Reconfiguring the app invalidates pending state. The
+callback validates the bot grant and stores its bot and signing credentials in
+one guarded transaction under current Owner/Admin authority.
+
+This manifest requests the channel and personal-notification capabilities
+Vector currently uses and configures the existing signed interactivity door.
+Message intake, Events API setup, `@Vector` issue creation, explicit Admin member
+mapping and synced Slack threads remain unavailable. The complete intake,
+slash-command and unfurl manifest configuration and the hosted real-workspace
+installation remain SLACK-001's unproved acceptance.
+
+**Remove Slack connection** revokes the bot token and removes local app
+credentials, pending OAuth state, signing credentials and member links. This
+does not delete the app definition in Slack. Provider-initiated uninstall
+events still require the Events API work. After an archive restore, re-enter
+credentials and reconnect before sending. No hosted Slack installation or
+real-workspace delivery is claimed by the fixture journey.

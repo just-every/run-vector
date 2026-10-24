@@ -30,7 +30,8 @@ function managed(env:WorkerBindings,owner:IntegrationOwner){
  return guardedSql(env.DB,{sql:'('+native.sql+") AND EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND role IN ('owner','admin') AND removed_at IS NULL)",params:[...(native.params??[]),owner.id,owner.workspace]});
 }
 async function call(method:string,body:Record<string,unknown>,token?:string,form=false){
- const response=await providerSend({url:'https://slack.com/api/'+method,headers:{...(token?{Authorization:'Bearer '+token}:{}),'Content-Type':form?'application/x-www-form-urlencoded':'application/json; charset=utf-8'},body:form?new URLSearchParams(Object.entries(body).map(([key,value])=>[key,String(value)])).toString():JSON.stringify(body)});
+ const wire={url:'https://slack.com/api/'+method,headers:{...(token?{Authorization:'Bearer '+token}:{}),'Content-Type':form?'application/x-www-form-urlencoded':'application/json; charset=utf-8'},body:form?new URLSearchParams(Object.entries(body).map(([key,value])=>[key,String(value)])).toString():JSON.stringify(body)};
+ let response;try{response=await providerSend(wire);}catch(error){if(error instanceof IntegrationError)throw error;throw new IntegrationError(503,'slack_response_unknown','Slack did not return a known result. Check Slack before trying again.');}
  let value:unknown;try{value=JSON.parse(response.body);}catch{throw new IntegrationError(503,'slack_invalid_response');}
  const parsed=z.object({ok:z.boolean(),error:z.string().regex(/^[a-z_]{1,80}$/).optional()}).passthrough().safeParse(value);
  if(!parsed.success||response.status<200||response.status>=300)throw new IntegrationError(503,'slack_response_unknown','Slack did not return a known result. Check Slack before trying again.');
