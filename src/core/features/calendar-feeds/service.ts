@@ -40,12 +40,13 @@ export async function listFeeds(db: D1Database, actor: string) {
   return { feeds: rows.map(f => ({
     id: f.id, teamId: f.team_id, teamName: f.team_name, creatorId: f.creator_id, version: f.version,
     createdAt: f.created_at, updatedAt: f.updated_at, revokedAt: f.revoked_at,
-    canRotate: f.creator_id === actor && (!f.team_id || teams.some(t => t.id === f.team_id)) && !f.revoked_at,
-    canRevoke: !f.revoked_at,
-  })), teams };
+    canRotate: (access.role !== 'viewer' || !f.team_id) && f.creator_id === actor && (!f.team_id || teams.some(t => t.id === f.team_id)) && !f.revoked_at,
+    canRevoke: (access.role !== 'viewer' || !f.team_id) && !f.revoked_at,
+  })), teams: access.role==='viewer' ? [] : teams };
 }
 export async function createFeed(db: D1Database, actor: string, team: string | null, origin: string) {
   const access = await calendarAuthority(db, actor);
+  if (team && access.role === 'viewer') throw new SettingsError('forbidden','Viewers manage only their personal calendar feed.',403);
   if (team && !await belongs(db, actor, team, access.workspace_id)) throw new SettingsError("forbidden", "Join this team before creating its calendar feed.", 403);
   const at = new Date().toISOString(), id = createUlid(new Date(at)), key = await capability();
   const result = await db.prepare(`INSERT INTO calendar_feed_tokens(id,workspace_id,creator_id,team_id,token_hash,created_at,updated_at)
@@ -59,6 +60,7 @@ export async function changeFeed(db: D1Database, actor: string, id: string, vers
   const access = await calendarAuthority(db, actor);
   const feed = await db.prepare("SELECT * FROM calendar_feed_tokens WHERE id=? AND workspace_id=?").bind(id, access.workspace_id).first<Feed>();
   if (!feed) throw new SettingsError("not_found", "Calendar feed is unavailable.", 404);
+  if (feed.team_id && access.role === 'viewer') throw new SettingsError('forbidden','Viewers manage only their personal calendar feed.',403);
   const member = feed.team_id ? await belongs(db, actor, feed.team_id, access.workspace_id) : false;
   const allowed = rotate ? feed.creator_id === actor && (!feed.team_id || member)
     : feed.creator_id === actor || ["owner", "admin"].includes(access.role) && member;
@@ -85,7 +87,7 @@ export async function feedContent(source: D1Database, value: string, origin: str
   if (!feed) return null;
   const db = visibilityDatabase(source, feed.creator_id);
   let events;
-  try { events = await readCalendarEvents(db, feed.creator_id, feed.team_id ? { kind: "team", teamId: feed.team_id } : { kind: "personal" }, origin); }
+  try { events = await readCalendarEvents(db, feed.creator_id, feed.team_id ? { kind: "team", teamId: feed.team_id } : { kind: "personal" }, origin,true); }
   catch (error) {
     if (error instanceof IssueAccessError || error instanceof SettingsError && [401,403,404].includes(error.status)) return null;
     throw error;

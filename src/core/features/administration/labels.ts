@@ -110,7 +110,7 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
   const views = (
     await ctx.db
       .prepare(
-        "SELECT id,filters_json FROM saved_views WHERE workspace_id=? ORDER BY id",
+        "SELECT id,filters_json FROM main.saved_views WHERE workspace_id=? ORDER BY id",
       )
       .bind(ctx.workspace)
       .all<{ id: string; filters_json: string }>()
@@ -149,7 +149,7 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
     ),
     guard(
       ctx.db,
-      `(SELECT json_group_array(json_array(id,filters_json)) FROM (SELECT id,filters_json FROM saved_views WHERE workspace_id=? ORDER BY id))=?`,
+      `(SELECT json_group_array(json_array(id,filters_json)) FROM (SELECT id,filters_json FROM main.saved_views WHERE workspace_id=? ORDER BY id))=?`,
       ctx.workspace,
       JSON.stringify(views.map((v) => [v.id, v.filters_json])),
     ),
@@ -205,7 +205,7 @@ export async function mergeLabel(db: D1Database, actor: string, source: string, 
   const old = await ownedRow<Label>(ctx, "labels", source), target = await ownedRow<Label>(ctx, "labels", destination);
   if (!target.projects_enabled && await ctx.db.prepare("SELECT 1 FROM project_labels WHERE label_id=?").bind(source).first())
     throw new SettingsError("invalid_label_merge", "Enable the destination label for projects before merging a label used by projects.", 409);
-  const views = (await ctx.db.prepare("SELECT id,filters_json FROM saved_views WHERE workspace_id=? ORDER BY id").bind(ctx.workspace).all<{id:string;filters_json:string}>()).results;
+  const views = (await ctx.db.prepare("SELECT id,filters_json FROM main.saved_views WHERE workspace_id=? ORDER BY id").bind(ctx.workspace).all<{id:string;filters_json:string}>()).results;
   const changed = views.map(view => {
     let filters: unknown;
     try { filters=JSON.parse(view.filters_json); }
@@ -217,7 +217,7 @@ export async function mergeLabel(db: D1Database, actor: string, source: string, 
   await commit(ctx, [
     guard(ctx.db,"EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",source,ctx.workspace,old.name,old.color,old.projects_enabled),
     guard(ctx.db,"EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",destination,ctx.workspace,target.name,target.color,target.projects_enabled),
-    guard(ctx.db,"(SELECT json_group_array(json_array(id,filters_json)) FROM (SELECT id,filters_json FROM saved_views WHERE workspace_id=? ORDER BY id))=?",ctx.workspace,JSON.stringify(views.map(view=>[view.id,view.filters_json]))),
+    guard(ctx.db,"(SELECT json_group_array(json_array(id,filters_json)) FROM (SELECT id,filters_json FROM main.saved_views WHERE workspace_id=? ORDER BY id))=?",ctx.workspace,JSON.stringify(views.map(view=>[view.id,view.filters_json]))),
     ctx.db.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
       SELECT lower(hex(randomblob(16))),id,?,'label.merged',json_object('labelIds',json(${previous})),json_object('labelIds',json(${next})),?,? FROM issues
       WHERE EXISTS(SELECT 1 FROM issue_labels WHERE issue_id=issues.id AND label_id=?)`).bind(actor,source,destination,ctx.at,ctx.at,source),

@@ -47,13 +47,14 @@ export function commentThreads(comments: Comment[]) {
   return [...roots.values()];
 }
 
-type Shared = { identifier: string; data: DiscussionData; busy: boolean; mutate: Mutate; onLinksChanged: () => void; email?: IssueEmail | null; onEmailSent?: () => void };
+type Shared = { writable?:boolean; identifier: string; data: DiscussionData; busy: boolean; mutate: Mutate; onLinksChanged: () => void; email?: IssueEmail | null; onEmailSent?: () => void };
 
 export function CommentThread({ root, replies, ...shared }: Shared & { root: Comment; replies: Comment[] }) {
   const [expanded, setExpanded] = useState(false),
     [replying, setReplying] = useState(false),
     [reply, setReply] = useState("");
   const { busy, mutate } = shared;
+  const writable = shared.writable !== false;
   const resolve = (resolved: boolean) => mutate(`comments/${root.id}/resolution`, json("POST", { resolved }));
   if (root.resolvedAt && !expanded)
     return (
@@ -67,7 +68,7 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
             {root.actor} · {replies.length} {replies.length === 1 ? "reply" : "replies"}
           </span>
           <button type="button" onClick={() => setExpanded(true)}>Show thread</button>
-          <button type="button" disabled={busy} onClick={() => void resolve(false)}>Reopen</button>
+          <button type="button" disabled={shared.writable === false || busy} onClick={() => void resolve(false)}>Reopen</button>
         </p>
       </section>
     );
@@ -95,14 +96,14 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
           }}
         >
           <MentionTextarea aria-label="Reply to thread" placeholder="Write a reply…" required maxLength={100000}
-            disabled={busy} value={reply} onValueChange={setReply} />
-          <button disabled={busy}>Post reply</button>
-          <button type="button" disabled={busy} onClick={() => setReplying(false)}>Cancel</button>
+            disabled={shared.writable === false || busy} value={reply} onValueChange={setReply} />
+          <button disabled={shared.writable === false || busy}>Post reply</button>
+          <button type="button" disabled={shared.writable === false || busy} onClick={() => setReplying(false)}>Cancel</button>
         </form>
       ) : null}
       <div className="comment-thread-actions">
-        {shared.email?.canReply && shared.email.thread && shared.onEmailSent && <EmailReply identifier={shared.identifier} requester={shared.email.thread.requester} cc={shared.email.thread.cc} parentId={root.id} onSent={shared.onEmailSent} />}
-        {!replying ? <button type="button" disabled={busy} onClick={() => setReplying(true)}>Reply</button> : null}
+        {writable && shared.email?.canReply && shared.email.thread && shared.onEmailSent && <EmailReply identifier={shared.identifier} requester={shared.email.thread.requester} cc={shared.email.thread.cc} parentId={root.id} onSent={shared.onEmailSent} />}
+        {writable && !replying ? <button type="button" disabled={shared.writable === false || busy} onClick={() => setReplying(true)}>Reply</button> : null}
         {root.resolvedAt ? (
           <>
             <span>
@@ -110,17 +111,17 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
               <time dateTime={root.resolvedAt}>{relativeTime(root.resolvedAt)}</time>
             </span>
             <button type="button" onClick={() => setExpanded(false)}>Collapse</button>
-            <button type="button" disabled={busy} onClick={() => void resolve(false)}>Reopen</button>
+            <button type="button" disabled={shared.writable === false || busy} onClick={() => void resolve(false)}>Reopen</button>
           </>
         ) : (
-          <button type="button" disabled={busy} onClick={() => void resolve(true)}>Resolve thread</button>
+          <button type="button" disabled={shared.writable === false || busy} onClick={() => void resolve(true)}>Resolve thread</button>
         )}
       </div>
     </section>
   );
 }
 
-function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChanged, email }: Shared & { comment: Comment }) {
+function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChanged, email, writable = true }: Shared & { comment: Comment }) {
   const [editing, setEditing] = useState(false),
     [body, setBody] = useState("");
   return (
@@ -139,30 +140,30 @@ function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChang
         >
           <label>
             Edit comment
-            <MentionTextarea aria-label="Edit comment" required disabled={busy} value={body} onValueChange={setBody} />
+            <MentionTextarea aria-label="Edit comment" required disabled={!writable || busy} value={body} onValueChange={setBody} />
           </label>
-          <button disabled={busy}>Save comment</button>
-          <button type="button" disabled={busy} onClick={() => setEditing(false)}>Cancel</button>
+          <button disabled={!writable || busy}>Save comment</button>
+          <button type="button" disabled={!writable || busy} onClick={() => setEditing(false)}>Cancel</button>
         </form>
       ) : (
         <>
           <div className="comment-body">
             <SafeMarkdown
               taskBusy={busy}
-              onTaskChange={c.canEdit ? (task) => mutate(`comments/${c.id}/checklist`, json("POST", { expectedBody: c.body, ...task })) : undefined}
+              onTaskChange={writable && c.canEdit ? (task) => mutate(`comments/${c.id}/checklist`, json("POST", { expectedBody: c.body, ...task })) : undefined}
             >
               {c.body ?? ""}
             </SafeMarkdown>
           </div>
-          <NamedLinks identifier={identifier} commentId={c.id} links={data.links} onRefresh={onLinksChanged} />
+          <NamedLinks writable={writable} identifier={identifier} commentId={c.id} links={data.links} onRefresh={onLinksChanged} />
           {email && <CommentEmailDetails email={email} commentId={c.id} identifier={identifier} />}
-          {c.canEdit ? (
-            <button disabled={busy} onClick={() => { setEditing(true); setBody(c.body ?? ""); }}>
+          {writable && c.canEdit ? (
+            <button disabled={!writable || busy} onClick={() => { setEditing(true); setBody(c.body ?? ""); }}>
               Edit comment
             </button>
           ) : null}
-          {c.canDelete ? (
-            <button disabled={busy} onClick={() => void mutate(`comments/${c.id}`, { method: "DELETE" })}>
+          {writable && c.canDelete ? (
+            <button disabled={!writable || busy} onClick={() => void mutate(`comments/${c.id}`, { method: "DELETE" })}>
               Delete comment
             </button>
           ) : null}

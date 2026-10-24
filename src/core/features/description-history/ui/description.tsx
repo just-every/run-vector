@@ -10,12 +10,12 @@ import './history.css';
 const historySchema = z.object({ revisions: z.array(z.object({ id: z.string(), description: z.string(), actor: z.string().nullable(), createdAt: z.string(), version: z.number().nullable() })) });
 const json = (value: unknown): RequestInit => ({ method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(value) });
 
-export function IssueDescription({ issue, onRefresh }: { issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
+export function IssueDescription({ issue, onRefresh, writable = true }: { writable?:boolean; issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   return <>
     {issue.description ? <details className="detail-section issue-description" open><summary>Description</summary>
-      <SafeMarkdown taskBusy={busy} onTaskChange={async task => {
+      <SafeMarkdown taskBusy={busy} onTaskChange={writable ? async task => {
         if (busy) return;
         setBusy(true); setError('');
         try {
@@ -25,14 +25,14 @@ export function IssueDescription({ issue, onRefresh }: { issue: IssueDetailData;
           setError(cause instanceof Error ? cause.message : 'The checklist could not be saved.');
           if (cause instanceof ApiError && cause.status === 409) onRefresh();
         } finally { setBusy(false); }
-      }}>{issue.description}</SafeMarkdown>
+      } : undefined}>{issue.description}</SafeMarkdown>
       {error && <p role="alert">{error}</p>}
     </details> : null}
-    <DescriptionHistory key={issue.identifier} issue={issue} onRefresh={onRefresh} />
+    <DescriptionHistory writable={writable} key={issue.identifier} issue={issue} onRefresh={onRefresh} />
   </>;
 }
 
-function DescriptionHistory({ issue, onRefresh }: { issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
+function DescriptionHistory({ issue, onRefresh, writable = true }: { writable?:boolean; issue: IssueDetailData; onRefresh: (issue?: IssueDetailData) => void }) {
   const { formatInstant } = useViewerTime();
   const hydrated = useHydrated();
   // Returning from an inspector retires its state while admitted history reads
@@ -62,7 +62,7 @@ function DescriptionHistory({ issue, onRefresh }: { issue: IssueDetailData; onRe
       <label>Compare to<select aria-label="Compare to revision" value={right?.id ?? ''} onChange={event => setTo(event.target.value)}>{revisions.map((revision, index) => <option key={revision.id} value={revision.id}>{option(revision, index)}</option>)}</select></label></div>
       <p>Changed lines are highlighted. Restoring writes a new revision.</p>
       <div className="revision-comparison"><RevisionText title="Earlier Markdown" text={left?.description ?? ''} other={right?.description ?? ''} /><RevisionText title="Later Markdown" text={right?.description ?? ''} other={left?.description ?? ''} /></div>
-      <button type="button" disabled={!hydrated || busy || !left} onClick={async () => {
+      <button type="button" disabled={!writable || !hydrated || busy || !left} onClick={async () => {
         if (!left || busy) return;
         setBusy(true); setError('');
         try {

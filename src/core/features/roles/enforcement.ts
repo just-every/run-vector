@@ -6,6 +6,7 @@ import type { NativeAccessFence } from '../auth/mutation-database'
 import { authorityFence, loadAuthority } from './authority'
 import { apiDoors, doors, type Door, type DoorRequest } from './doors'
 import { decide, decisionInputs, type Decision } from './policy'
+import {visibleTeam,requestableTeam} from './visibility-sql'
 
 const surfaces = { api: doors, v1: apiDoors }
 const pattern = (path: string) => new RegExp('^' + path.replace(/[.]/g, '\\.').replace(/:([A-Za-z]+)/g, '(?<$1>[^/]+)').replace(/\*$/, '(?<rest>.*)') + '$')
@@ -57,9 +58,18 @@ async function decideDoor(door: Door | undefined, request: DoorRequest): Promise
   const row = door ? typeof door.row === 'function' ? await door.row(request) : door.row : null
   const teams = door?.teams ? await door.teams(request) : null
   const project = door?.project ? await door.project(request) : undefined
-  const question = { row, page: door?.page, teams, project, invitation: door?.invitation }
+  const question = { row, page: door?.page, teams, project, invitation: door?.invitation, workMutation: door?.workMutation }
   const authority = await loadAuthority(request.db, request.actor, teams ?? [], project ?? undefined)
   if (!authority) return { decision: 'unauthenticated' }
   const decision = decide(authority, question)
-  return decision === 'allow' ? { decision, fence: authorityFence(request.actor, authority, decisionInputs(authority, question)) } : { decision }
+  if(decision!=='allow')return {decision}
+  // Administrative metadata/membership authority does not grant content reads.
+  const metadata=authority.role==='admin' && row?.startsWith('teams.') && row!=='teams.request' && row!=='teams.join'
+  const scope=teams?.length && !metadata && row!=='teams.join' ? {
+    sql:`NOT EXISTS(SELECT 1 FROM main.teams t JOIN main.operators reader ON reader.id=? WHERE t.id IN(SELECT value FROM json_each(?)) AND NOT (${visibleTeam('reader','t.id')}${row==='teams.request'?` OR ${requestableTeam('reader','t.id')}`:''}))`,
+    values:[request.actor,JSON.stringify(teams)],
+  }:null
+  if(scope&&!await request.db.prepare('SELECT ('+scope.sql+') AS allowed').bind(...scope.values).first<number>('allowed'))return {decision:'hidden'}
+  const fence=authorityFence(request.actor,authority,decisionInputs(authority,question))
+  return {decision,fence:scope?{...fence,visibility:scope}:fence}
 }

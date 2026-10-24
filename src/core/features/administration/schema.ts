@@ -40,10 +40,11 @@ export function labelTextColor(color: string): "#000000" | "#ffffff" {
     : "#ffffff";
 }
 export const teamCreationPermissionSchema = z.object({membersMayCreate:z.boolean()}).strict();
+export const teamPrivacySchema = z.object({isPrivate:z.boolean()}).strict();
 export const teamCreateSchema = z
-  .object({ name, identifierPrefix: prefix, createSlackChannel: z.boolean().optional() })
+  .object({ name, identifierPrefix: prefix, createSlackChannel: z.boolean().optional(), isPrivate:z.boolean().optional() })
   .strict();
-export const teamUpdateSchema = teamCreateSchema.omit({createSlackChannel:true})
+export const teamUpdateSchema = teamCreateSchema.omit({createSlackChannel:true,isPrivate:true})
   .partial()
   .extend({ archived: z.boolean().optional(), autoCycleStarted: z.boolean().optional(), autoCycleCompleted: z.boolean().optional() })
   .strict()
@@ -166,6 +167,8 @@ export const administrationSchema = z.object({
       id: z.string(),
       name: z.string(),
       identifierPrefix: z.string(),
+      isPrivate: z.boolean(),
+      canRead: z.boolean(),
       archivedAt: z.string().nullable(),
       prefixEditable: z.boolean(),
       autoCycleStarted: z.boolean(),
@@ -205,7 +208,7 @@ export const administrationSchema = z.object({
       archivedAt: z.string().nullable(),
     }),
   ),
-  operators: z.array(z.object({ id: z.string(), name: z.string() })),
+  operators: z.array(z.object({ id: z.string(), name: z.string(), role: z.enum(roles) })),
   cycles: z.array(administrationCycleSchema),
 });
 export const cycleDetailSchema = z.object({

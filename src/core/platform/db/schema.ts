@@ -25,7 +25,7 @@ export const operators = sqliteTable('operators', {
   name: text('name').notNull(),
   email: text('email').notNull(),
   removedAt: text('removed_at'),
-  role: text('role', { enum: ['owner', 'admin', 'member', 'guest'] }).notNull().default('owner'),
+  role: text('role', { enum: ['owner', 'admin', 'member', 'guest', 'viewer'] }).notNull().default('owner'),
   ...timestamps,
 }, (table) => [uniqueIndex('operators_email_idx').on(table.email)])
 
@@ -43,6 +43,7 @@ export const teams = sqliteTable('teams', {
   workspaceId: text('workspace_id').notNull(),
   name: text('name').notNull(),
   identifierPrefix: text('identifier_prefix').notNull(),
+  isPrivate: integer('is_private', { mode: 'boolean' }).notNull().default(false),
   archivedAt: text('archived_at'),
   ...timestamps,
 }, (table) => [

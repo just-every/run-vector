@@ -24,7 +24,7 @@ export function DashboardsPage({source}:{source:Source}) {
    {options.error&&<p role="alert">{options.error.message} <button onClick={options.reload}>Retry filter choices</button></p>}
    {list.error&&<p role="alert">{list.error.message} <button onClick={list.reload}>Retry dashboards</button></p>}
    <div className="insights-controls"><label>Open dashboard<select aria-label="Open dashboard" value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null);setError('');}}><option value="">Choose a dashboard</option>{list.data?.dashboards.map(d=><option key={d.id} value={d.id}>{d.name}{d.isShared?' · Shared':' · Private'}</option>)}</select></label></div>
-   <button onClick={()=>{setEditing(null);setDraft({name:'',teamId:null,isShared:false,widgets:[widget('chart')]});setError('');}}>New dashboard</button>
+   {options.data && options.data.operator.role!=='viewer' && <button onClick={()=>{setEditing(null);setDraft({name:'',teamId:null,isShared:false,widgets:[widget('chart')]});setError('');}}>New dashboard</button>}
   </div>
   {draft&&<form className="insights-card dashboard-editor" aria-label="Edit dashboard" onSubmit={e=>{e.preventDefault();void save();}}>
    <fieldset disabled={busy}><legend>{editing?'Edit dashboard':'New dashboard'}</legend>

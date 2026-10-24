@@ -1,13 +1,13 @@
 /** The CONTRACT.md role matrix rows that today's doors act under (ROLE-001).
  * Pure data shared by the server policy and the Settings screens. */
-export const roles = ['owner', 'admin', 'member', 'guest'] as const
+export const roles = ['owner', 'admin', 'member', 'guest', 'viewer'] as const
 export type Role = typeof roles[number]
 /** Roles an invitation or role change may name. */
-export const assignableRoles = ['owner', 'admin', 'member', 'guest'] as const
+export const assignableRoles = ['owner', 'admin', 'member', 'guest', 'viewer'] as const
 export type AssignableRole = typeof assignableRoles[number]
 
 /** yes/no, or the subject-dependent cells of the matrix:
- * - teams: the member's teams (a public team counts; every team is public until ROLE-002)
+ * - teams: the member's teams (a readable public team counts)
  * - invited-teams: only teams a Guest belongs to; any other team is invisible (404)
  * - team-owner: a team owner of the subject's team (ROLE-007)
  * - team-setting / planning-setting: team owners, or every team member while the
@@ -17,15 +17,23 @@ export type AssignableRole = typeof assignableRoles[number]
  * - lead: the subject project's lead */
 export type Cell = 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'member-team-creation' | 'own' | 'lead'
 type Row = { action: string; cells: Record<Role, Cell> }
-const row = (action: string, owner: Cell, admin: Cell, member: Cell, guest: Cell): Row => ({ action, cells: { owner, admin, member, guest } })
+const row = (action: string, owner: Cell, admin: Cell, member: Cell, guest: Cell, viewer: Cell = 'no'): Row => ({ action, cells: { owner, admin, member, guest, viewer } })
 
 export const matrix = {
+  'work.read': row('Read visible work (OPS-001, ROLE-002, ROLE-003, ROLE-013)', 'yes', 'yes', 'yes', 'invited-teams', 'yes'),
+  'viewers.manage': row('Invite or suspend Viewers; change between Member, Guest and Viewer (ROLE-013)', 'yes', 'yes', 'no', 'no'),
+  'reports.read': row('Open Insights and shared dashboards (REPORT-001)', 'yes', 'yes', 'yes', 'no', 'yes'),
+  'dashboards.write': row('Create, edit or share a dashboard (REPORT-003)', 'yes', 'yes', 'own', 'no'),
+  'calendar.feeds': row('Create, rotate or revoke a calendar feed (CAL-001)', 'yes', 'yes', 'own', 'no', 'own'),
+  'initiatives.write': row('Create and edit initiatives; add projects to them (INIT-001)', 'yes', 'yes', 'yes', 'no'),
+  'releases.write': row('Create, edit or release a release (RELEASE-001)', 'yes', 'yes', 'teams', 'no'),
   'members.manage': row('Invite, or remove by suspension, Members and Guests (OPS-002, OPS-004, ROLE-011)', 'yes', 'yes', 'member-invites', 'no'),
   'leaders.manage': row('Invite, promote to, or remove by suspension Owners and Admins (OPS-002, ROLE-001, ROLE-011)', 'yes', 'no', 'no', 'no'),
-  'workspace.leave': row('Leave the workspace oneself, which suspends (OPS-004, ROLE-011)', 'yes', 'yes', 'yes', 'yes'),
+  'workspace.leave': row('Leave the workspace oneself, which suspends (OPS-004, ROLE-011)', 'yes', 'yes', 'yes', 'yes', 'yes'),
   'workspace.settings': row('Change workspace settings: timezone, the invite, label-creation and deletion settings, notification defaults (OPS-003, OPS-002, ISSUE-014, ISSUE-010, NOTIFY-007)', 'yes', 'yes', 'no', 'no'),
   'teams.creation-setting': row('Set who may create teams (TEAM-008)', 'yes', 'yes', 'no', 'no'),
   'teams.create': row('Create a team (TEAM-008)', 'yes', 'yes', 'member-team-creation', 'no'),
+  'teams.privacy': row('Make a team private or public (ROLE-002)', 'yes', 'yes', 'no', 'no'),
   'teams.members': row('Manage a team\'s members and team owners (ROLE-007, TEAM-007, ROLE-013)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.permissions': row('Set a team\'s two permissions, *Who manages team settings* and *Who manages cycles and templates* (ROLE-009)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.membership': row('Set open or invite-only membership; approve join requests; add Members to an invite-only or private team (TEAM-007)', 'yes', 'yes', 'team-owner', 'no'),
@@ -76,7 +84,7 @@ export type RowId = keyof typeof matrix
 export const settingsPages = ['account', 'directory', 'labels', 'teams', 'personal-integrations'] as const
 export type SettingsPage = typeof settingsPages[number]
 export const openSettingsPages: Record<Role, 'all' | readonly SettingsPage[]> = {
-  owner: 'all', admin: 'all', member: settingsPages, guest: ['account'],
+  owner: 'all', admin: 'all', member: settingsPages, guest: ['account'], viewer: ['account', 'directory', 'labels'],
 }
 export function opensSettingsPage(role: Role, page: SettingsPage) {
   const open = openSettingsPages[role]

@@ -4,18 +4,19 @@ export type TeamPermission = 'team_owners' | 'all_members'
 /** The actor's standing in one subject team (ROLE-007, ROLE-009). */
 export type TeamStanding = { role: 'owner' | 'member' | null; settings: TeamPermission; planning: TeamPermission }
 /** `leads` holds the projects the actor leads among those a request names. */
-export type Authority = { role: Role; memberInvites: boolean; memberTeamCreation?: boolean; teams: ReadonlyMap<string, TeamStanding>; leads?: ReadonlySet<string> }
+export type Authority = { workspace?:string; role: Role; memberInvites: boolean; memberTeamCreation?: boolean; teams: ReadonlyMap<string, TeamStanding>; leads?: ReadonlySet<string> }
 /** What a door asks: its row (null for a door with no row), the Settings page
  * it opens, whether it is an invitation, and the teams or project it acts on in
  * the actor's workspace: undefined when the door names none, null when its
  * subject is not in the workspace at all (the handler answers that, writing nothing). */
-export type Question = { row: RowId | null; page?: SettingsPage; teams?: readonly string[] | null; project?: string | null; invitation?: boolean }
+export type Question = { row: RowId | null; page?: SettingsPage; teams?: readonly string[] | null; project?: string | null; invitation?: boolean; workMutation?: boolean }
 export type Decision = 'allow' | 'forbidden' | 'hidden'
 
 /** ROLE-001: the matrix decides. Where a Guest may act only in invited teams,
  * a team they were not added to is answered as if it were absent (ROLE-003). */
 export function decide(actor: Authority, question: Question): Decision {
   const { teams } = question
+  if (actor.role === 'viewer' && question.workMutation) return 'forbidden'
   if (question.row === null) return question.page ? (opensSettingsPage(actor.role, question.page) ? 'allow' : 'forbidden') : actor.role === 'owner' ? 'allow' : 'forbidden'
   const cell = matrix[question.row].cells[actor.role]
   if (teamCells.includes(cell) && teams !== undefined && teams !== null) {

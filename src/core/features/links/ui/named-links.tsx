@@ -6,7 +6,9 @@ export function NamedLinks({
   commentId,
   onRefresh,
   links: suppliedLinks,
+  writable = true,
 }: {
+  writable?: boolean;
   identifier: string;
   commentId?: string;
   onRefresh: () => void;
@@ -92,14 +94,14 @@ export function NamedLinks({
             <small>{link.actor}</small>
             <button
               type="button"
-              disabled={busy}
+              disabled={!writable || busy}
               onClick={() => void mutate("DELETE", link.id)}
             >
               Remove link
             </button>
           </div>
         ))}
-        <form
+        {writable && <form
           className="issue-mutation-form"
           onSubmit={(event) => {
             event.preventDefault();
@@ -113,7 +115,7 @@ export function NamedLinks({
               maxLength={200}
               value={name}
               onChange={(event) => setName(event.target.value)}
-              disabled={busy}
+              disabled={!writable || busy}
             />
           </label>
           <label>
@@ -124,13 +126,13 @@ export function NamedLinks({
               maxLength={2000}
               value={url}
               onChange={(event) => setUrl(event.target.value)}
-              disabled={busy}
+              disabled={!writable || busy}
             />
           </label>
-          <button type="submit" disabled={busy}>
+          <button type="submit" disabled={!writable || busy}>
             Add link
           </button>
-        </form>
+        </form>}
       </details>
       {error ? <p role="alert">{error}</p> : null}
     </section>

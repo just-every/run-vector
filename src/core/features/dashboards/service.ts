@@ -18,7 +18,7 @@ async function record(db:D1Database,actor:string,id:string) {
  if(!row)throw new SettingsError('not_found','Dashboard is unavailable.',404);
  return {row,access};
 }
-function summary(row:Row,actor:string,role:string) {return {id:row.id,name:row.name,teamId:row.team_id,isShared:!!row.is_shared,creatorId:row.creator_id,version:row.version,canEdit:row.creator_id===actor||leader(role)};}
+function summary(row:Row,actor:string,role:string) {return {id:row.id,name:row.name,teamId:row.team_id,isShared:!!row.is_shared,creatorId:row.creator_id,version:row.version,canEdit:role!=='viewer'&&(row.creator_id===actor||leader(role))};}
 export async function listDashboards(db:D1Database,actor:string) {
  const access=await insightAuthority(db,actor);
  const rows=(await db.prepare(`SELECT d.* FROM dashboards d WHERE d.workspace_id=? AND ${visible} ORDER BY d.name,d.id`)

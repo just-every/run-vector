@@ -13,6 +13,9 @@ export class MutationAccessError extends Error {
 export class AuthorityChangedError extends Error {
   constructor() { super('Your workspace role or team permissions changed. Reload and try again.'); }
 }
+export class VisibilityChangedError extends Error {
+  constructor(){super('The selected record is unavailable.')}
+}
 export class RestoreReservationError extends Error {
   constructor() { super('The workspace is reserved for an archive restore. Finish or abort that restore first.'); }
 }
@@ -26,7 +29,7 @@ export function isMutationAccessError(error: unknown): boolean {
 }
 
 type BaseFence = { sessionId: string; operatorVersion: number };
-export type NativeAccessFence = { sql: string; values: (string|number|null)[] };
+export type NativeAccessFence = { sql: string; values: (string|number|null)[]; workspace?:string; visibility?:NativeAccessFence };
 type Identity = { actor: string; sessionHash?: BaseFence; accessFence?: NativeAccessFence; authorityFence?: NativeAccessFence };
 const scopes = new WeakMap<
   D1Database,
@@ -59,10 +62,11 @@ export function mutationDatabase(
       AND a.status='active' AND s.revoked_at IS NULL AND s.expires_at>CAST((julianday('now')-2440587.5)*86400000 AS INTEGER))`
     : '';
   const identityEligible = `EXISTS(SELECT 1 FROM operators o WHERE o.id=? AND o.removed_at IS NULL${sessionClause})${accessFence ? " AND ("+accessFence.sql+")" : ""}`;
-  const authorized = authorityFence ? ` AND (${authorityFence.sql})` : '';
+  const visibility=authorityFence?.visibility;
+  const authorized = authorityFence ? ` AND (${authorityFence.sql})${visibility ? ` AND (${visibility.sql})` : ''}` : '';
   const eligible = `${identityEligible}${authorized} AND NOT EXISTS(SELECT 1 FROM vector_http_restore)`;
   const identityValues = [...(base ? [actor, base.sessionId, base.operatorVersion] : [actor]),...(accessFence?.values??[])];
-  const values = [...identityValues, ...(authorityFence?.values ?? [])];
+  const values = [...identityValues, ...(authorityFence?.values ?? []),...(visibility?.values??[])];
   const statements = new WeakMap<D1PreparedStatement, D1PreparedStatement>();
   const active = () =>
     source
@@ -93,7 +97,11 @@ export function mutationDatabase(
         ])
       ).slice(1,accessFence ? -1 : undefined);
     } catch (error) {
-      if (authorityFence && (await active()) && !(await admitted())) throw new AuthorityChangedError();
+      if (authorityFence && await active()) {
+        if(authorityFence.workspace && !await source.prepare('SELECT 1 FROM operators WHERE id=? AND workspace_id=?').bind(actor,authorityFence.workspace).first())throw new VisibilityChangedError();
+        if(!await admitted())throw new AuthorityChangedError();
+        if(visibility && !await source.prepare('SELECT ('+visibility.sql+') AS visible').bind(...visibility.values).first<number>('visible'))throw new VisibilityChangedError();
+      }
       if ((accessFence && String(error).includes('vector_integration_authority')) || !(await active())) throw new MutationAccessError();
       if (await source.prepare('SELECT 1 FROM vector_http_restore').first()) throw new RestoreReservationError();
       throw error;

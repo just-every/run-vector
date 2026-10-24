@@ -1,3 +1,4 @@
+import {visibleTeam} from '../roles/visibility-sql';
 import { IssueAccessError } from "./access";
 export async function browseActor(
   db: D1Database,
@@ -6,7 +7,7 @@ export async function browseActor(
 ) {
   const row = await db
     .prepare(
-      `SELECT o.workspace_id,w.timezone,o.role,(SELECT json_group_array(team_id) FROM (SELECT team_id FROM team_members WHERE operator_id=o.id ORDER BY team_id)) AS teamScope FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id WHERE o.id=? AND o.removed_at IS NULL`,
+      `SELECT o.workspace_id,w.timezone,o.role,(SELECT json_group_array(id) FROM (SELECT visible.id FROM main.teams visible WHERE visible.workspace_id=o.workspace_id AND ${visibleTeam('o','visible.id')} ORDER BY visible.id)) AS teamScope FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id WHERE o.id=? AND o.removed_at IS NULL`,
     )
     .bind(actor)
     .first<{ workspace_id: string; timezone: string; role:string; teamScope:string }>();

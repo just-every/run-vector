@@ -16,7 +16,9 @@ export { CommentTimestamp } from "./discussion-thread";
 export function Discussion({
   identifier,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   identifier: string;
   onRefresh: () => void;
 }) {
@@ -92,7 +94,7 @@ export function Discussion({
       ) : null}
       {resource.data
         ? commentThreads(resource.data.comments).map(({ root, replies }) => (
-            <CommentThread
+            <CommentThread writable={writable}
               key={root.id}
               root={root}
               replies={replies}
@@ -109,7 +111,7 @@ export function Discussion({
             />
           ))
         : null}
-      <form
+      {writable && <form
         className="issue-mutation-form comment-composer"
         onSubmit={(e) => {
           e.preventDefault();
@@ -131,9 +133,9 @@ export function Discussion({
         <button disabled={busy || !hydrated} type="submit">
           Add comment
         </button>
-      </form>
-      {email.data?.canReply && email.data.thread && <EmailReply identifier={identifier} requester={email.data.thread.requester} cc={email.data.thread.cc} onSent={emailSent} />}
-      <NamedLinks
+      </form>}
+      {writable && email.data?.canReply && email.data.thread && <EmailReply identifier={identifier} requester={email.data.thread.requester} cc={email.data.thread.cc} onSent={emailSent} />}
+      <NamedLinks writable={writable}
         identifier={identifier}
         links={resource.data?.links ?? []}
         onRefresh={() => {
@@ -165,7 +167,7 @@ export function Discussion({
             )}
             <span>{Math.ceil(f.bytes / 1024)} KB</span>
             <button
-              disabled={busy}
+              disabled={!writable || busy}
               onClick={() => void mutate(`files/${f.id}`, { method: "DELETE" })}
             >
               {f.removalPending ? "Retry removal" : "Remove file"}
@@ -178,7 +180,7 @@ export function Discussion({
           ref={fileInput}
           tabIndex={-1}
           type="file"
-          disabled={busy}
+          disabled={!writable || busy}
           accept=".png,.jpg,.jpeg,.webp,.gif,.pdf,.txt,.csv,.json,.zip"
           onChange={(e) => {
             const file = e.target.files?.[0];
@@ -203,7 +205,7 @@ export function Discussion({
         <button
           type="button"
           className="discussion-file-picker"
-          disabled={busy}
+          disabled={!writable || busy}
           onClick={() => fileInput.current?.click()}
         >
           Attach file

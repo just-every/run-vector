@@ -72,7 +72,7 @@ export async function productOperator(db: D1Database, authId: string) {
       JOIN oa_tokens token ON token.operator_id=m.auth_id AND token.kind='invite' AND token.consumed_at IS NOT NULL
       JOIN vector_invitation_roles r ON r.token_id=token.id JOIN json_each(r.team_ids_json) invited
       JOIN teams t ON t.id=invited.value AND t.workspace_id=o.workspace_id
-      WHERE m.auth_id=? AND o.role='guest' AND token.id=(SELECT id FROM oa_tokens WHERE operator_id=m.auth_id AND kind='invite' AND consumed_at IS NOT NULL ORDER BY consumed_at DESC LIMIT 1)`)
+      WHERE m.auth_id=? AND o.role IN('guest','viewer') AND token.id=(SELECT id FROM oa_tokens WHERE operator_id=m.auth_id AND kind='invite' AND consumed_at IS NOT NULL ORDER BY consumed_at DESC LIMIT 1)`)
       .bind(at,at,authId),
   ])
   return mappedOperator(db, authId)

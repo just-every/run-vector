@@ -110,7 +110,7 @@ export function SavedViewPage() {
                 <option value="board">Board</option>
               </select>
             </label>
-            {options.data && (
+            {options.data && options.data.operator.role !== "viewer" && (
               <SavedViewActions
                 key={view.id}
                 view={view}

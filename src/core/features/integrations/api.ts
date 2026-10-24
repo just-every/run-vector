@@ -1,4 +1,6 @@
 import {createTeam} from "../administration/teams";
+import {setTeamPrivacy} from '../team-membership/privacy';
+import {teamPrivacySchema} from '../administration/schema';
 import {teamCreateSchema} from "../administration/schema";
 import { createLabel } from "../administration/labels";
 import { labelCreateSchema } from "../administration/schema";
@@ -19,7 +21,7 @@ import { readRequestJson,RequestBodyError } from '../../app/input';
 import { configureNotifications,needsNotificationDrain,notificationEventIds,directMessageEventIds } from '../notifications/context';
 import { deliverCommittedDirectMessages } from './outbound';
 import { drainNotificationMail } from '../notifications/mail';
-import { mutationDatabase,isMutationAccessError,fileSettlementDatabase,AuthorityChangedError } from '../auth/mutation-database';
+import { mutationDatabase,isMutationAccessError,fileSettlementDatabase,AuthorityChangedError, VisibilityChangedError } from '../auth/mutation-database';
 import { visibilityDatabase } from '../roles/visibility-database';
 import { doorAuthority } from '../roles/enforcement';
 import { createIssueInputSchema } from '../issues/input';
@@ -47,6 +49,7 @@ export function createIntegrationApi(){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
   if(error instanceof CommentVersionError)return c.json({error:error.code,message:error.message},409);
+  if(error instanceof VisibilityChangedError)return c.json({error:'not_found',message:error.message},404);
   if(error instanceof AuthorityChangedError)return c.json({error:'authority_changed',message:error.message},409);
   if(error instanceof z.ZodError)return c.json({error:'invalid_request'},400);
   if(error instanceof CommentPermissionError)return c.json({error:error.code,message:error.message},403);
@@ -80,6 +83,11 @@ export function createIntegrationApi(){
   try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
+ });
+ app.put('/teams/:id/privacy',async c=>{
+  const input=parse(teamPrivacySchema,await readRequestJson(c.req.raw));
+  await setTeamPrivacy(c.env.DB,c.get('operatorId'),c.req.param('id'),input.isPrivate);
+  return c.json({id:c.req.param('id'),isPrivate:input.isPrivate});
  });
  app.post('/teams',async c=>{
   const input=teamCreateSchema.omit({createSlackChannel:true}).parse(await readRequestJson(c.req.raw));

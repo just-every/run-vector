@@ -1,3 +1,6 @@
+// operators.role retains the Viewer grant; invitation grants remain excluded credentials.
+// issue_deletions.team_id is retained receipt access state; older unscoped receipts remain Owner-only.
+// teams.is_private is portable domain access state, restored with its memberships.
 // Domain identities and history stay portable; authentication is established at the destination.
 export const portabilityPolicy = {
  product: 'just-every/vector-projects',

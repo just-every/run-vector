@@ -19,7 +19,7 @@ export async function subscriptions(db:D1Database,actor:string){
  const subjects=[];
  for(const type of subjectTypes){const q=subjectSelection(type,undefined,access.workspace_id,actor);for(const row of (await db.prepare(q.sql+' ORDER BY s.name,s.id LIMIT 500').bind(...q.values).all<{id:string;name:string}>()).results)subjects.push({subjectType:type,subjectId:row.id,name:row.name,url:subjectUrl(type,row.id)});}
  const rows=(await db.prepare('SELECT id,subject_type AS subjectType,subject_id AS subjectId,start_revision AS startRevision FROM subject_subscriptions WHERE operator_id=? ORDER BY created_at,id').bind(actor).all<Subscription>()).results;
- return {subjects,subscriptions:await Promise.all(rows.map(async row=>{
+ return {canManage:access.role!=='viewer',subjects,subscriptions:await Promise.all(rows.map(async row=>{
   const q=subjectSelection(row.subjectType,row.subjectId,access.workspace_id,actor),subject=await db.prepare(q.sql).bind(...q.values).first<{name:string}>();
   return {...row,name:subject?.name??'Unavailable subject',available:Boolean(subject),url:subject?subjectUrl(row.subjectType,row.subjectId):''};
  }))};

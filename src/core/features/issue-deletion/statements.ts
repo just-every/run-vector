@@ -62,8 +62,8 @@ export function deletionStatements(
       params: [workspace, workspace, issue.identifier],
     },
     {
-      sql: "INSERT INTO issue_deletions(issue_id,identifier,workspace_id,requested_at) VALUES(?,?,?,?)",
-      params: [issue.id, issue.identifier, workspace, at],
+      sql: "INSERT INTO issue_deletions(issue_id,identifier,workspace_id,requested_at,team_id) SELECT ?,?,?,?,team_id FROM issues WHERE id=?",
+      params: [issue.id, issue.identifier, workspace, at,issue.id],
     },
     {
       sql: `INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at) VALUES(?,?,'issue.deleted',?,?,?,?)`,

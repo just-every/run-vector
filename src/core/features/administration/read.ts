@@ -1,4 +1,4 @@
-import { visibleDirectoryPerson } from '../roles/visibility-sql';
+import { visibleDirectoryPerson, visibleTeam, requestableTeam } from '../roles/visibility-sql';
 import { readCycleSnapshot, readCycleFailure } from "../cycle-closure/read";
 import seed from "../../../../seed.json";
 import { settingsActor } from "../settings/repository";
@@ -23,10 +23,10 @@ export async function readAdministration(db: D1Database, actor: string) {
         .first(),
       db
         .prepare(
-          `SELECT t.id,t.name,t.identifier_prefix AS identifierPrefix,t.archived_at AS archivedAt,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
-      t.membership_mode AS membershipMode,t.requests_enabled AS requestsEnabled,t.settings_permission AS settingsPermission,t.planning_permission AS planningPermission,
+          `SELECT t.id,t.name,CASE WHEN ${visibleTeam('reader','t.id')} THEN t.identifier_prefix ELSE '' END AS identifierPrefix,t.is_private AS isPrivate,${visibleTeam('reader','t.id')} AS canRead,t.archived_at AS archivedAt,t.auto_cycle_started AS autoCycleStarted,t.auto_cycle_completed AS autoCycleCompleted,
+      CASE WHEN t.is_private=1 THEN 'invite_only' ELSE t.membership_mode END AS membershipMode,t.requests_enabled AS requestsEnabled,t.settings_permission AS settingsPermission,t.planning_permission AS planningPermission,
       NOT EXISTS(SELECT 1 FROM team_issue_history h WHERE h.team_id=t.id) AS prefixEditable
-      FROM teams t WHERE t.workspace_id=? ORDER BY t.name,t.id`,
+      FROM main.teams t JOIN operators reader ON reader.id='${actor.replaceAll("'","''")}' WHERE t.workspace_id=? AND (reader.role='admin' OR ${visibleTeam('reader','t.id')} OR ${requestableTeam('reader','t.id')}) ORDER BY t.name,t.id`,
         )
         .bind(workspaceId)
         .all(),
@@ -50,7 +50,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         .all(),
       db
         .prepare(
-          `SELECT person.id,person.name FROM operators person WHERE person.workspace_id=? AND person.removed_at IS NULL AND ${visibleDirectoryPerson('person','?')} ORDER BY name,id`,
+          `SELECT person.id,person.name,person.role FROM operators person WHERE person.workspace_id=? AND person.removed_at IS NULL AND ${visibleDirectoryPerson('person','?')} ORDER BY name,id`,
         )
         .bind(workspaceId,actor)
         .all(),
@@ -72,7 +72,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         AND NOT EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=i.team_id AND m.operator_id=i.assignee_operator_id)
         ORDER BY i.identifier`).bind(workspaceId).all<{teamId:string;identifier:string;title:string;assigneeOperatorId:string}>(),
       db.prepare(`SELECT r.team_id AS teamId,r.requester_id AS requesterId,o.name,r.state FROM team_join_requests r
-        JOIN teams t ON t.id=r.team_id JOIN operators o ON o.id=r.requester_id AND o.removed_at IS NULL
+        JOIN main.teams t ON t.id=r.team_id JOIN operators o ON o.id=r.requester_id AND o.removed_at IS NULL
         WHERE t.workspace_id=? AND (r.requester_id=? OR EXISTS(SELECT 1 FROM operators actor WHERE actor.id=? AND actor.role IN('owner','admin'))
           OR EXISTS(SELECT 1 FROM team_members own WHERE own.team_id=t.id AND own.operator_id=? AND own.role='owner')) ORDER BY r.created_at,r.requester_id`)
         .bind(workspaceId,actor,actor,actor).all<{teamId:string;requesterId:string;name:string;state:string}>(),
@@ -92,6 +92,8 @@ export async function readAdministration(db: D1Database, actor: string) {
     teams: teams.results.map((t) => ({
       ...t,
       prefixEditable: Boolean(t.prefixEditable),
+      isPrivate: Boolean(t.isPrivate),
+      canRead: Boolean(t.canRead),
       requestsEnabled: Boolean(t.requestsEnabled),
       joinRequests: joinRequests.results.filter(request=>request.teamId===t.id),
       autoCycleStarted: Boolean(t.autoCycleStarted),

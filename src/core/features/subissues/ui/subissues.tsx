@@ -6,7 +6,9 @@ import "./subissues.css";
 export function Subissues({
   issue,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   onRefresh: () => void;
 }) {
@@ -27,7 +29,7 @@ export function Subissues({
         </span>
       </summary>
       {open && (
-        <SubissuePanel issue={issue} onRefresh={onRefresh} />
+        <SubissuePanel writable={writable} issue={issue} onRefresh={onRefresh} />
       )}
     </details>
   );
@@ -35,7 +37,9 @@ export function Subissues({
 function SubissuePanel({
   issue,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   onRefresh: () => void;
 }) {
@@ -44,7 +48,7 @@ function SubissuePanel({
     [existing, setExisting] = useState(""),
     [ruleChoice, setRuleChoice] = useState<boolean | null>(null);
   const data = state.data,
-    blocked = state.pending || !data || Boolean(state.error);
+    blocked = !writable || state.pending || !data || Boolean(state.error);
   function move(index: number, delta: number) {
     if (!data) return;
     const ids = data.children.map((child) => child.identifier);
@@ -123,7 +127,7 @@ function SubissuePanel({
               ))}
             </ol>
           )}
-          <form
+          {writable && <form
             onSubmit={(event) => {
               event.preventDefault();
               void state.create(title).then((saved) => {
@@ -144,8 +148,8 @@ function SubissuePanel({
             <button type="submit" disabled={blocked || !title.trim()}>
               Create sub-issue
             </button>
-          </form>
-          <form
+          </form>}
+          {writable && <form
             onSubmit={(event) => {
               event.preventDefault();
               void state
@@ -170,7 +174,7 @@ function SubissuePanel({
             <button type="submit" disabled={blocked || !existing.trim()}>
               Add existing issue
             </button>
-          </form>
+          </form>}
           <label className="issue-subissues__rule">
             <input
               type="checkbox"

@@ -12,7 +12,7 @@ export function TeamMembers({ data, team, onChanged }: { data: Administration; t
   const action = useAdministrationAction(onChanged);
   const access = teamAccess(data, team);
   const name = (id: string) => data.operators.find((operator) => operator.id === id)?.name ?? "Former member";
-  const outside = data.operators.filter((operator) => !team.members.some((member) => member.operatorId === operator.id));
+  const outside = data.operators.filter((operator) => (['owner','admin'].includes(data.viewer.role) || !['guest','viewer'].includes(operator.role)) && !team.members.some((member) => member.operatorId === operator.id));
   const base = `/api/settings/teams/${team.id}/members/`;
   async function add(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

@@ -1,3 +1,4 @@
+import {dashboardAccessCells} from './report-access-cells.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -76,6 +77,7 @@ export async function dashboardsJourney(page,context,runtime,output) {
    await capture(memberPage,theme,width,'member');
    console.log(`REPORT-003 ${theme} ${width}: compose three widgets, share, viewer-scoped results, filters, drill-down, axe and overflow PASS`);
   }
+  await dashboardAccessCells({page,member,memberPage,runtime,output,team,id,mine});
   assert.deepEqual(errors,[],'no dashboard hydration mismatch or page errors');
  }finally{await member.close();page.off('console',consoleError);page.off('pageerror',pageError);}
  await api('/settings/appearance','PATCH',{theme:'system'});

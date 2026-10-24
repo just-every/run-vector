@@ -4,7 +4,7 @@ import {settingsActor,SettingsError} from '../settings/repository';
 export const releaseRoleAction='Create, edit or release a release (RELEASE-001)';
 const resource=(path:string)=>/^\/api\/(?:v1\/)?(?:releases(?:\/|$)|issues\/[^/]+\/releases$)/.test(path);
 export async function releaseAuthority(c:Context<AppEnvironment>,actor:string,db:D1Database){
- if(!resource(c.req.path))return;
+ if(!resource(c.req.path)||!['GET','HEAD'].includes(c.req.method))return;
  const access=await settingsActor(db,actor);
  if(access.role==='guest')return {denied:c.json({error:'forbidden',message:'Guests cannot open or change releases.'},403)};
  return {fence:{sql:'EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND role=? AND removed_at IS NULL)',values:[actor,access.workspace_id,access.role]}};

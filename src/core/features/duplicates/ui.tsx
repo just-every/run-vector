@@ -4,7 +4,9 @@ import { issueDetailSchema, type IssueDetailData } from "../issues/ui/data";
 export function IssueDuplicates({
   issue,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   onRefresh: () => void;
 }) {
@@ -48,7 +50,7 @@ export function IssueDuplicates({
           <a href={`/app/issues/${issue.canonical.identifier}`}>
             {issue.canonical.identifier} · {issue.canonical.title}
           </a>{" "}
-          <button type="button" disabled={busy} onClick={() => decide(null)}>
+          <button type="button" disabled={!writable || busy} onClick={() => decide(null)}>
             Undo duplicate
           </button>
         </p>
@@ -64,7 +66,7 @@ export function IssueDuplicates({
           ))}
         </ul>
       )}
-      <form
+      {writable && <form
         onSubmit={(event) => {
           event.preventDefault();
           void decide(target.trim().toUpperCase());
@@ -78,13 +80,13 @@ export function IssueDuplicates({
             placeholder="FLW-123"
             required
             pattern="[A-Za-z]{2,10}-[1-9][0-9]*"
-            disabled={busy}
+            disabled={!writable || busy}
           />
         </label>{" "}
-        <button type="submit" disabled={busy}>
+        <button type="submit" disabled={!writable || busy}>
           Mark duplicate
         </button>
-      </form>
+      </form>}
       {error && <p role="alert">{error}</p>}
     </details>
   );

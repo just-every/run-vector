@@ -13,7 +13,7 @@ export function MonthCalendar(){
  const data=useApiResource('/api/calendar/events'+(month?'?month='+month:''),monthCalendarSchema);
  useEffect(()=>{const changed=()=>data.reload();window.addEventListener('vector:issues-changed',changed);return()=>window.removeEventListener('vector:issues-changed',changed);},[data.reload]);
  async function move(event:MonthEvent,next:string){
-  if(busy||!event.identifier||!event.version||next===event.start)return;
+  if(!data.data?.canEdit||busy||!event.identifier||!event.version||next===event.start)return;
   setBusy(true);setError('');setMessage('');
   try{await fetchJson('/api/issues/'+event.identifier,z.object({identifier:z.string(),version:z.number()}),{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify({expectedVersion:event.version,dueDate:next})});setMessage(event.identifier+' due date changed to '+next+'.');setSelected(next);if(next.slice(0,7)!==data.data?.month)setMonth(next.slice(0,7));setEditing(null);data.reload();}
   catch(e){setError(e instanceof ApiError&&e.status===409?'This issue changed since the calendar was loaded. Your date change was not saved. The calendar has refreshed; review the current date and try again.':e instanceof Error?e.message:'The due date could not be changed.');setEditing(null);data.reload();}
@@ -37,9 +37,9 @@ export function MonthCalendar(){
     </div>;})}
    </div>
    <div className="calendar-agenda" role="region" aria-label="Selected day events"><h3>{dayLabel(selectedDay)}</h3>{!events.length&&<p>No events on this day.</p>}
-    {events.map(event=><article key={event.id} className={'calendar-event calendar-kind--'+event.kind} data-calendar-event={event.identifier??event.id} draggable={event.kind==='issue'&&!busy} onDragStart={e=>{if(event.kind!=='issue')return;setDragged(event);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',event.identifier!);}} onDragEnd={()=>setDragged(null)}>
+    {events.map(event=><article key={event.id} className={'calendar-event calendar-kind--'+event.kind} data-calendar-event={event.identifier??event.id} draggable={current.canEdit&&event.kind==='issue'&&!busy} onDragStart={e=>{if(!current.canEdit||event.kind!=='issue')return;setDragged(event);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',event.identifier!);}} onDragEnd={()=>setDragged(null)}>
      <p className="insights-note">{kindName[event.kind]}{event.kind==='cycle'?' · '+event.firstDay+' to '+event.lastDay:''}</p><a draggable={false} href={new URL(event.url).pathname}>{event.title}</a>
-     {event.kind==='issue'&&<button type="button" disabled={busy} aria-label={'Change due date for '+event.identifier} onClick={()=>{setEditing(event);setDate(event.start);setError('');}}>Change due date</button>}
+     {current.canEdit&&event.kind==='issue'&&<button type="button" disabled={busy} aria-label={'Change due date for '+event.identifier} onClick={()=>{setEditing(event);setDate(event.start);setError('');}}>Change due date</button>}
     </article>)}
    </div>
   </>}
