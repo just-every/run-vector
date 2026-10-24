@@ -1,3 +1,4 @@
+import {exerciseSlackApp} from './slack-app-settings.mjs';
 import { withOperatorClient } from '../operator-request.mjs';
 import assert from 'node:assert/strict';
 import {readDevelopmentLink} from '../outbox-session.mjs';
@@ -15,6 +16,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  const shot=async(name)=>{assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');await page.screenshot({path:resolve(evidence,`slack-003-${name}-${width}.png`)});};
  const axe=async(selector='.channel-settings')=>{await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const result=await page.evaluate(selector=>axe.run(document.querySelector(selector)),selector);assert.deepEqual(result.violations.filter(v=>['critical','serious'].includes(v.impact)),[]);};
  await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
+ await exerciseSlackApp({page,runtime,width,evidence});
  const details=panel.locator('details').filter({has:page.getByRole('form',{name:'Slack credential',exact:true})});await details.locator('summary').click();await panel.getByRole('form',{name:'Slack credential'}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('credential');
  await panel.getByLabel('Slack bot token',{exact:true}).fill('synthetic-browser-slack-credential-'+width);
  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/slack')&&r.request().method()==='POST');await panel.getByRole('button',{name:'Validate and save Slack token'}).click();assert.equal((await saved).status(),200);

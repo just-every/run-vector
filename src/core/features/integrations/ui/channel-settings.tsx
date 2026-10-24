@@ -27,7 +27,7 @@ export function ChannelSettings(){
  <p>Post selected changes from a team, project or saved view. Messages include the issue identifier, title, actor, status change and a sign-in link.</p>
  {config.error&&<p role="alert">{config.error.message}</p>}{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
  {config.data&&<>
- <SlackAppSettings/>
+ <SlackAppSettings key={String(config.data.slack.connected)}/>
  <p>{config.data.slack.needsAttention?'Slack needs attention. Re-enter the bot token.':config.data.slack.connected?`Slack connected to ${config.data.slack.teamName}`:'Slack is not connected.'}</p>
  <details><summary>{config.data.slack.connected?'Replace Slack bot token':'Connect Slack'}</summary>
  <p>Use a Slack bot token with chat:write and channels:manage; Slack direct messages also need im:write and users:read.email. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack, deletes the signing secret and unlinks every member. Channels must be active, unshared and include the bot; Vector checks this when selected and before posting.</p>
