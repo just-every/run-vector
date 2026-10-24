@@ -5,18 +5,18 @@ import {effectiveSlackSql,unmutedCauseSql} from '../../notifications/channel-sql
 import {IntegrationError} from '../errors';
 import {classifyProvider,providerSend,slackToken} from '../channels/provider';
 import {credentialProblem} from '../channels/settings';
-import {directBody,kindHeadline,type DirectIssue} from './message';
+import {directBody,privateDirectBody,kindHeadline,type DirectIssue} from './message';
 import {signingIdentity} from './signing';
 import {directDestination} from './intent';
 import seed from '../../../../../seed.json';
 /** Mirrors immediate mail: three attempts, Cron retries after one and then five minutes. */
 const retryPolicy={maxAttempts:3,retryDelaysMs:[60_000,300_000]};
-type Target={identifier:string;title:string;version:number;dueDate:string|null;statusId:string;statusCategory:string;teamId:string;actor:string|null;slackUserId:string;assignment:number;mention:number;kindsJson:string};
+type Target={isPrivate:number;identifier:string;title:string;version:number;dueDate:string|null;statusId:string;statusCategory:string;teamId:string;actor:string|null;slackUserId:string;assignment:number;mention:number;kindsJson:string};
 const routed=(kind:string)=>`EXISTS(SELECT 1 FROM json_each(n.causes_json) cause WHERE cause.value='${kind}' AND ${effectiveSlackSql()}=1
  AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`;
 /** NOTIFY-006's admission rules, with the member's Slack link and choice in place of the email preference. */
 export async function directTarget(env:WorkerBindings,workspace:string,id:string):Promise<Target|null>{
- const row=await env.DB.prepare(`SELECT i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=n.actor_id),n.actor_name) AS actor,l.slack_user_id AS slackUserId,
+ const row=await env.DB.prepare(`SELECT t.is_private AS isPrivate,i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=n.actor_id),n.actor_name) AS actor,l.slack_user_id AS slackUserId,
   ${routed('assignment')} AS assignment,${routed('mention')} AS mention,
   (SELECT json_group_array(cause.value) FROM json_each(n.causes_json) cause WHERE ${effectiveSlackSql()}=1 AND ${unmutedCauseSql}) kindsJson
   FROM vector_webhook_events e JOIN notifications n ON n.id=json_extract(e.body,'$.notificationId') AND n.recipient_id=json_extract(e.body,'$.recipientId')
@@ -46,7 +46,7 @@ export async function enqueueDirectMessages(env:WorkerBindings,workspace:string,
  for(const {id} of pending){
   const target=await directTarget(env,workspace,id);
   if(target){
-   const body=directBody(env.APP_ORIGIN,await directIssue(env,target),kindHeadline(Boolean(target.assignment),Boolean(target.mention),JSON.parse(target.kindsJson)),target.actor,actions);
+   const body=target.isPrivate?privateDirectBody(env.APP_ORIGIN,target.identifier):directBody(env.APP_ORIGIN,await directIssue(env,target),kindHeadline(Boolean(target.assignment),Boolean(target.mention),JSON.parse(target.kindsJson)),target.actor,actions);
    try{await service.enqueue({id,tenant:workspace,destinationId:directDestination,event:'slack.dm',protocol:'slack_dm',body},retryPolicy);}
    catch(error){if(error instanceof IntegrationError)continue;throw error;}
    queued.push(id);
@@ -77,8 +77,8 @@ export async function sendDirect(env:WorkerBindings,workspace:string,wire:WireRe
   const expectedHeadline=kindHeadline(Boolean(current.assignment),Boolean(current.mention),JSON.parse(current.kindsJson));
   const original=JSON.parse(wire.body) as {text?:string};
   const expectedPrefix=(expectedHeadline+': ').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
-  if(!original.text?.startsWith(expectedPrefix))return refused('suppressed');
-  return providerSend({url:wire.url,headers,body:'{"channel":'+JSON.stringify(channel)+','+wire.body.slice(1)});
+  if(!current.isPrivate&&!original.text?.startsWith(expectedPrefix))return refused('suppressed');
+  return providerSend({url:wire.url,headers,body:'{"channel":'+JSON.stringify(channel)+','+(current.isPrivate?privateDirectBody(env.APP_ORIGIN,current.identifier):wire.body).slice(1)});
  };
  if(env.RER_DEMO==='1'){const {demoEffect}=await import('../../../../../vendor/base/demo/index.mjs');return demoEffect(send,()=>({status:200,headers:{},body:'{"ok":true}'}));}
  return send();

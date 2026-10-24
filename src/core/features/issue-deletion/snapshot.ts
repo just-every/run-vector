@@ -200,7 +200,7 @@ export const snapshotParts = Object.keys(relations).sort().map((name) => {
   const { table, where, columns } = relations[name];
   return {
     name,
-    current: `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table, columns)} value FROM ${quote(table)} r WHERE ${where} ORDER BY value))`,
+    current: `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table, columns)} value FROM main.${quote(table)} r WHERE ${where} ORDER BY value))`,
     expected: `(SELECT json_group_array(json(value)) FROM (SELECT value FROM json_each(e.value,'$.${name}') ORDER BY value))`,
   };
 });

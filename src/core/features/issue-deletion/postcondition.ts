@@ -31,12 +31,12 @@ export async function erasedSnapshot(
   );
   after.issue_deletions = [
     ...before.issue_deletions,
-    storedRow({
+    {...storedRow({
       issue_id: operation.id,
       identifier,
       workspace_id: workspace,
       requested_at: at,
-    }),
+    }),team_id:before.issues[0].team_id},
   ];
   after.audit_records = [
     ...before.audit_records,

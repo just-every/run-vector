@@ -1,3 +1,4 @@
+import {privateVisibilityJourney} from './role-private-journey';
 import { exerciseAudit } from './audit-scenario';
 import { guestVisibilityJourney } from "./role-guest-journey";
 import { env } from "cloudflare:workers";
@@ -29,6 +30,10 @@ it("[TEAM-007 TEAM-008 ROLE-007 OPS-001] a Member joins and leaves a public team
   expect((await w.member.api("/teams","POST",memberCreate)).status).toBe(403);
   expect((await w.admin.call("/settings/teams/creation","PUT",{membersMayCreate:true})).status).toBe(200);
   expect((await w.member.call("/settings/teams/creation","PUT",{membersMayCreate:false})).status).toBe(403);
+  for(const surface of ['call','api'] as const){
+    expect((await w.member[surface](surface==='call'?'/settings/teams':'/teams','POST',{name:'synthetic-vector-989',identifierPrefix:'SYNDENY',isPrivate:true})).status).toBe(403);
+    for(const who of [w.people.owner,w.admin]){const name='synthetic-vector-'+(surface==='call'?990:992)+(who===w.admin?'1':'0');const made=await who[surface](surface==='call'?'/settings/teams':'/teams','POST',{name,identifierPrefix:'SYN'+(surface==='call'?'N':'A')+(who===w.admin?'D':'O'),isPrivate:true});expect(made.status).toBe(surface==='call'?200:201);const body=await made.json() as any,created=surface==='call'?body.teams.find((t:any)=>t.name===name):body;expect(created.isPrivate).toBe(true);expect((await w.call(`/settings/teams/${created.id}/privacy`,'PUT',{isPrivate:false})).status).toBe(200);}
+  }
   expect((await w.guest.call("/settings/teams","POST",memberCreate)).status).toBe(403);
   expect((await w.guest.api("/teams","POST",memberCreate)).status).toBe(403);
   const created=await w.member.api("/teams","POST",memberCreate);
@@ -493,6 +498,7 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
 });
 
 
-it("[ROLE-003 OPS-001 OPS-002] real Guest invitations and assignments scope native, bearer, search, project, notification and document reads to current invited teams", {timeout:120_000}, async () => {
+it("[ROLE-002 ROLE-003 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads", {timeout:120_000}, async () => {
   await guestVisibilityJourney(await roleWorkspace());
+  await privateVisibilityJourney(await roleWorkspace());
 });

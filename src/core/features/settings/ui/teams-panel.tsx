@@ -1,4 +1,5 @@
 import {TeamJoinRules} from "./team-join-rules";
+import {TeamPrivacy} from './team-privacy';
 import { useHydrated } from "../../../app/initial-resources";
 import { useState, type FormEvent } from "react";
 import { useAdministrationAction } from "./administration-action";
@@ -39,6 +40,7 @@ export function TeamsPanel({
         name: fields.get("name"),
         identifierPrefix: fields.get("prefix"),
         createSlackChannel: fields.has("createSlackChannel"),
+        isPrivate: fields.has('isPrivate'),
       })
     )
       form.reset();
@@ -52,7 +54,7 @@ export function TeamsPanel({
       <h2 id="teams-heading">Teams</h2>
       <p>
         Teams organise work. Archived teams retain their issues and history.
-        Every member sees every team&apos;s work; join a team to work in it.
+        Public work is visible across the workspace. Private work is for its team members and Owners.
       </p>
       {(data.viewer.role === "owner" || data.viewer.role === "admin") && <form aria-label="Team creation permission" onSubmit={async event=>{
         event.preventDefault();
@@ -74,14 +76,14 @@ export function TeamsPanel({
             <li key={team.id}>
               <span>
                 {team.name} · {team.identifierPrefix}
-                {team.archivedAt ? " · Archived" : ""}
+                {team.archivedAt ? " · Archived" : ""}{team.isPrivate ? ' · Private' : ''}
                 {access.standing === "owner" ? " · You own this team" : access.standing ? " · You are a member" : ""}
               </span>
               {access.join && (access.standing ? (
                 <button type="button" disabled={action.pending} onClick={() => void action.run(`/api/teams/${team.id}/leave`, "POST", {})}>
                   Leave {team.name}
                 </button>
-              ) : !team.archivedAt && (team.membershipMode === "open" ? (
+              ) : !team.archivedAt && (team.membershipMode === "open" && !team.isPrivate ? (
                 <button type="button" disabled={action.pending} onClick={() => void action.run(`/api/teams/${team.id}/join`, "POST", {})}>
                   Join {team.name}
                 </button>
@@ -112,6 +114,7 @@ export function TeamsPanel({
             />
           </label>
           {(data.viewer.role === "owner" || data.viewer.role === "admin") && <>
+            <label className="admin-checkbox"><input name="isPrivate" type="checkbox"/>Private team</label>
             <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
             <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
           </>}
@@ -168,6 +171,8 @@ function TeamEditor({
         {team.name} · {team.identifierPrefix}
         {team.archivedAt ? " · Archived" : ""}
       </summary>
+      {(data.viewer.role === 'owner' || data.viewer.role === 'admin') && <TeamPrivacy team={team} onChanged={onChanged}/>}
+      {team.canRead && <>
       {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}
       {access.settings && !access.archive && <p>Only this team&apos;s owners and Admins archive or unarchive it.</p>}
       <form aria-label={`Edit ${team.name}`} onSubmit={save}>
@@ -261,6 +266,7 @@ function TeamEditor({
         </fieldset>
       </form>
       <AdministrationFeedback action={action} />
+      </>}
     </details>
   );
 }

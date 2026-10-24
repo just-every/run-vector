@@ -436,3 +436,24 @@ export async function teamJoinPermissions({page,peer,browser,runtime,clause,evid
   }
  } finally {await context.close();}
 }
+
+/** An explicitly exposed private request grants metadata only until approval. */
+export async function privateTeamRequest({page,peer,memberId,runtime,team,clause}) {
+ const {base}=runtime,headers={Origin:base};
+ await navigate(page,base+'/app/settings');await openDisclosures(page);
+ const form=page.getByRole('form',{name:'Membership mode for '+team.name,exact:true});
+ await form.getByLabel('Membership mode',{exact:true}).selectOption('invite_only');
+ await form.getByLabel('Accept membership requests',{exact:true}).check();
+ let response=page.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/membership`);
+ await form.getByRole('button',{name:'Save membership mode',exact:true}).click();assert.equal((await response).status(),200);
+ await navigate(peer,base+'/app/settings');
+ response=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/teams/${team.id}/requests`);
+ await peer.getByRole('button',{name:'Request to join '+team.name,exact:true}).click();assert.equal((await response).status(),200);
+ await peer.getByRole('button',{name:'Request pending for '+team.name,exact:true}).waitFor();
+ assert.equal((await peer.request.get(base+'/api/issues/'+team.identifier)).status(),404);
+ assert.equal(runtime.sql(`SELECT count(*) n FROM team_members WHERE team_id='${team.id}' AND operator_id='${memberId}'`)[0].n,0);
+ await navigate(page,base+'/app/settings');await openDisclosures(page);
+ response=page.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/requests/${memberId}/decision`);
+ await page.getByRole('button',{name:'Approve Role member',exact:true}).click();assert.equal((await response).status(),200);
+ assert.equal((await peer.request.get(base+'/api/issues/'+team.identifier)).status(),200);
+}

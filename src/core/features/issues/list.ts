@@ -97,8 +97,7 @@ export async function listIssues(
   await browseActor(db, actor, access.workspace_id);
   const revision = await resultRevision(
     query,
-    access.role === "guest" ? `${access.workspace_id}:${actor}:${access.teamScope}`
-      : query.scope === "all" ? access.workspace_id : `${access.workspace_id}:${actor}`,
+    `${access.workspace_id}:${actor}:${access.teamScope}`,
     today,
     (identity.results[0] as { revision: string }).revision,
   );

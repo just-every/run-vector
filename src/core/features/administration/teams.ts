@@ -51,7 +51,7 @@ export async function createTeam(
   await commit(ctx, [
     ctx.db
       .prepare(
-        "INSERT INTO teams(id,workspace_id,name,identifier_prefix,created_at,updated_at) VALUES(?,?,?,?,?,?)",
+        "INSERT INTO teams(id,workspace_id,name,identifier_prefix,created_at,updated_at,is_private) VALUES(?,?,?,?,?,?,?)",
       )
       .bind(
         id,
@@ -60,6 +60,7 @@ export async function createTeam(
         input.identifierPrefix,
         ctx.at,
         ctx.at,
+        Number(input.isPrivate ?? false),
       ),
     ...categories.map((category, position) =>
       ctx.db

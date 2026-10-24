@@ -1,5 +1,6 @@
 import {createSlackChannel} from '../integrations/channels/settings';
 import {integrationOwner} from '../integrations/authority';
+import {setTeamPrivacy} from '../team-membership/privacy';
 import { saveCycleSchedule } from "../cycle-schedule/settings";
 import { previewHousekeeping, saveHousekeeping } from "../housekeeping/settings";
 import { housekeepingSchema } from "../housekeeping/schema";
@@ -78,6 +79,7 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
       return respond(c);
     });
   app.get("/settings/administration", handle(read));
+  app.put('/settings/teams/:id/privacy',mutation(schema.teamPrivacySchema,(c,b)=>setTeamPrivacy(c.env.DB,c.get('operatorId'),c.req.param('id')!,b.isPrivate)));
   app.put("/settings/teams/creation", mutation(schema.teamCreationPermissionSchema, (c,b) => setTeamCreation(c.env.DB,c.get("operatorId"),b.membersMayCreate)));
   app.post(
     "/settings/teams",

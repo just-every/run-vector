@@ -70,7 +70,7 @@ export async function readInitiative(db:D1Database,actor:string,id:string){
  let level=[root],depth=1;
  while(level.length&&depth<=3){
   for(const node of level){
-   const projects=(await db.prepare('SELECT p.id,p.name FROM initiative_projects link JOIN projects p ON p.id=link.project_id WHERE link.initiative_id=? ORDER BY p.name,p.id').bind(node.id).all<{id:string;name:string}>()).results;
+   const projects=(await db.prepare('SELECT p.id,p.name,(SELECT count(*) FROM issues visible_issue WHERE visible_issue.project_id=p.id) AS issueCount FROM initiative_projects link JOIN projects p ON p.id=link.project_id WHERE link.initiative_id=? ORDER BY p.name,p.id').bind(node.id).all<{id:string;name:string;issueCount:number}>()).results;
    const enriched=await Promise.all(projects.map(async p=>({...p,teams:(await db.prepare('SELECT DISTINCT t.name FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.project_id=? ORDER BY t.name').bind(p.id).all<{name:string}>()).results.map(t=>t.name)})));
    nodes.push({...node,depth,projects:enriched});
   }

@@ -1,3 +1,4 @@
+import {visibilityDatabase} from '../../src/core/features/roles/visibility-database';
 import { env } from "cloudflare:workers";
 import { beforeAll, expect, it } from "vitest";
 import {
@@ -58,6 +59,16 @@ it("[SEARCH-001 SEARCH-002 OPS-001] exact and full text use identical team/proje
 });
 
 it("[SEARCH-001 SEARCH-003 VIEW-002 OPS-001] view create/rename/privacy/delete and foreign workspace records are fenced in all results and options", async () => {
+  const privateIssue=await f.issue('synthetic-vector-973'),reader=searchId();
+  await env.DB.prepare("INSERT INTO operators(id,workspace_id,name,email,role,created_at,updated_at) VALUES(?,?,?,?,'member',?,?)").bind(reader,f.actor.workspace_id,'synthetic-vector-974','synthetic-vector-974@vector.test',searchNow,searchNow).run();
+  const scoped=visibilityDatabase(env.DB,reader);
+  expect((await searchWorkspace(scoped,reader,privateIssue.identifier,false)).issues).toHaveLength(1);
+  await env.DB.prepare('UPDATE teams SET is_private=1 WHERE id=?').bind(f.team.id).run();
+  for(const q of [privateIssue.identifier,'synthetic-vector-973'])expect((await searchWorkspace(scoped,reader,q,false)).issues).toEqual([]);
+  expect((await getSearchOptions(scoped,reader)).teams.some(t=>t.id===f.team.id)).toBe(false);
+  await env.DB.prepare("INSERT INTO team_members(team_id,operator_id,role,created_at,updated_at) VALUES(?,?,'member',?,?)").bind(f.team.id,reader,searchNow,searchNow).run();
+  expect((await searchWorkspace(scoped,reader,privateIssue.identifier,false)).issues).toHaveLength(1);
+  await env.DB.prepare('UPDATE teams SET is_private=0 WHERE id=?').bind(f.team.id).run();
   const other = searchId(),
     foreign = searchId();
   await env.DB.batch([

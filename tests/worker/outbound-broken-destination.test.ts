@@ -1,3 +1,4 @@
+import {privateChannelRouting} from './private-channel-scenario';
 import {channelNotifications} from './channel-notifications-scenario';
 import {slackDirectMessages,slackActionsFollowCurrentAccess} from './slack-dm-scenario';
 import {env} from 'cloudflare:workers';
@@ -64,6 +65,7 @@ it('[SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cann
  expect(await state(healthy.id)).toMatchObject({signingProblem:null});expect(await state(broken.id)).toMatchObject({signingProblem:'secret_missing',waitingEvents:2});
  await f.call('/settings/integrations/destinations/'+healthy.id,'DELETE');await f.call('/settings/integrations/destinations/'+broken.id,'DELETE');
  await channelNotifications(f,egress);
+ await privateChannelRouting(f,egress);
  await slackDirectMessages(f,egress);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },240000);

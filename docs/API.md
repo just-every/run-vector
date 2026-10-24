@@ -258,3 +258,17 @@ Native app doors use /api/initiatives and the same inputs. Owners, Admins and Me
 may act; Guests receive 403 on native, scoped API and page doors. A fourth level or
 a parent cycle receives 400. A project may join several initiatives. Deletion,
 INIT-002 roll-ups and Slack/Discord initiative bindings are not implemented.
+
+
+Owners and Admins can create a private team with `isPrivate: true` on
+`POST /api/v1/teams`, or switch an existing team with
+`PUT /api/v1/teams/ID/privacy` and `{ "isPrivate": true }` (false makes it public).
+Both require `teams:write`. Members and Guests receive 403. Reads apply the
+current team membership on every request; a hidden identifier returns 404.
+Private-team content never travels through generic workspace webhooks. Slack
+private notices require an exact team binding and contain no title or actor.
+Calendar feed capabilities exclude private-team items even for their creator.
+
+A whole-workspace portable archive names every team as its scope. An Admin
+without access to any private team receives 404 at that archive door; an Owner
+can export it. Scoped counted-issue CSV exports remain available for visible work.
