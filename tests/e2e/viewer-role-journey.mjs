@@ -1,3 +1,5 @@
+import {readFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
 import {navigate,settleReads} from './collaboration-navigation.mjs';
 import {roleScreens} from './role-ui-support.mjs';
@@ -5,6 +7,8 @@ import {inviteReader,readerApi} from './role-reader-support.mjs';
 
 export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clause,evidence}){
  const {base,sql}=runtime,owner=readerApi(page,base),screens=roleScreens(evidence);
+ const axeSource=await readFile(createRequire(import.meta.url).resolve('axe-core/axe.min.js'),'utf8');
+ const signInScreen=name=>async reader=>{await reader.evaluate(axeSource);await inspect(reader,reader.locator('main').first(),name);};
  const inspect=async(actor,region,name)=>{const viewport=actor.viewportSize();await screens(actor,region,name);await actor.setViewportSize(viewport);};
  const ownerId=sql('SELECT setup_operator_id id FROM workspace_installation')[0].id;
  const team=(await owner('/settings/administration')).teams.find(t=>!t.isPrivate&&!t.archivedAt);
@@ -23,7 +27,7 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
  let invited;
  try{
   await clause('ROLE-013','Owner invites a Viewer through named-team Settings; accepted sign-in reads public work without write controls at 1440 and 390',async()=>{
-   invited=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1809@vector.test',name:'synthetic-vector-1809',form:true,beforeSend:form=>inspect(page,form,'viewer-invitation'),beforeConfirm:reader=>inspect(reader,reader.locator('main').first(),'viewer-sign-in')});
+   invited=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1809@vector.test',name:'synthetic-vector-1809',form:true,beforeSend:form=>inspect(page,form,'viewer-invitation'),beforeConfirm:signInScreen('viewer-sign-in')});
    const reader=invited.page,api=invited.api;
    assert.equal((await api('/metadata')).viewer.role,'viewer');
    for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${view.id}`])await api(path);
@@ -85,7 +89,7 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
    await invited.page.setViewportSize({width:1440,height:1000});await navigate(invited.page,base+'/app/settings');await inspect(invited.page,invited.page.locator('main:visible').first(),'viewer-sign-out');await settleReads(invited.page);await invited.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await invited.page.waitForURL(base+'/signin');await invited.api('/session','GET',undefined,401);
   });
   await clause('ROLE-013','Viewer signs in and signs out at 390',async()=>{
-   const mobile=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1993@vector.test',name:'synthetic-vector-1993',width:390,beforeConfirm:reader=>inspect(reader,reader.locator('main').first(),'viewer-mobile-sign-in')});
+   const mobile=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1993@vector.test',name:'synthetic-vector-1993',width:390,beforeConfirm:signInScreen('viewer-mobile-sign-in')});
    try{assert.equal((await mobile.api('/metadata')).viewer.role,'viewer');await navigate(mobile.page,base+'/app/settings');await settleReads(mobile.page);await mobile.page.getByRole('button',{name:'Sign out',exact:true}).filter({visible:true}).click();await mobile.page.waitForURL(base+'/signin');await mobile.api('/session','GET',undefined,401);assert.deepEqual(mobile.errors,[],'Viewer mobile hydration errors');}
    finally{await mobile.context.close();}
   });

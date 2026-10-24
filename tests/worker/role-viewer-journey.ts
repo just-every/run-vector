@@ -54,12 +54,13 @@ export async function viewerVisibilityJourney(w:Workspace){
   const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
   const before=await stored();
   const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
+  const usageIds=new Set(usageBefore.map(row=>row.id));
   const response=await send(path,door.method==='ALL'?'POST':door.method,{});
   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
   const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
-  expect(usageAfter.filter(row=>usageBefore.some(old=>old.id===row.id))).toEqual(usageBefore);
-  const usage=usageAfter.filter(row=>!usageBefore.some(old=>old.id===row.id));
+  expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
+  const usage=usageAfter.filter(row=>!usageIds.has(row.id));
   if(registry===apiDoors){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
   else expect(usage).toHaveLength(0);
  }
