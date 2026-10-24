@@ -29,6 +29,7 @@ export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'UPDATE vector_slack_installations SET enabled=0 WHERE workspace_id=?',params:[owner.workspace]},
   {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:['slack:'+owner.workspace]},
+  {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=? OR identity LIKE ?',params:['slack-app:'+owner.workspace,'slack-oauth:'+owner.workspace+':%']},
   {sql:"UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE workspace_id=? AND kind='slack'",params:[new Date().toISOString(),owner.workspace]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.disconnected',subject:'slack:'+owner.workspace}),
  ]);return {removed:true};
