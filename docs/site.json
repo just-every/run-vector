@@ -10,6 +10,12 @@
           "summary": "What Vector keeps, how Current, triage and the rest fit together, and where to start."
         },
         {
+          "slug": "getting-started",
+          "title": "Getting started",
+          "source": "docs/guide/getting-started.md",
+          "summary": "Start Vector on your own computer with one line."
+        },
+        {
           "slug": "install",
           "title": "Run it on your computer",
           "source": "docs/guide/install.md",

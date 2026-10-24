@@ -1,12 +1,12 @@
 # Run it on your computer
 
-You need Git and Node 22 or later, on macOS, Linux or Windows with WSL2. One line installs the Run Edit Run command, clones Vector and starts it:
+Vector runs on macOS, Linux or Windows with WSL2. Git is required; rer brings Node and pnpm. One line installs the Run Edit Run command, clones Vector into `run-vector` and starts it:
 
 ```sh
-npx -y @runeditrun/rer dev just-every/run-vector
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector
 ```
 
-To start it again later, run `cd run-vector && rer dev`. The line installs the current global rer launcher. This source checkout runs its own exact rer 0.2.62 pin from `package.json`, so the launcher and the CLI used inside Vector can have different versions.
+Already have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-vector` does the same. If the installer prints a line that puts `rer` on your PATH, run that line too. To start it again later, run the same line from the same folder, or `cd run-vector && rer dev`. The line installs the current global rer launcher. This source checkout runs its own exact rer 0.2.62 pin from `package.json`, so the launcher and the CLI used inside Vector can have different versions.
 
 Vector’s release numbers are separate from rer’s. [The latest tagged Vector release is v0.3.0](https://github.com/just-every/run-vector/tree/v0.3.0). The one line uses `main`, which includes changes since v0.3.0. To use the tagged release instead, run `git checkout v0.3.0` in the checkout before `rer dev`. That release uses the rer pin in its own `package.json`.
 
@@ -31,6 +31,8 @@ To start over, stop Vector, keep an export of anything you need (see [Your data]
 Setup reads its questions from `rer-setup.json`. To choose the workspace name, timezone or first team yourself, put your answers in a private JSON file and pass it with `--answers`. The [command contract](../../SEED-COMMAND-CONTRACT.md) lists every flag and exit code, and the [installer notes](../INSTALLER.md) describe setup in more detail.
 
 ## Put it on your own Cloudflare account
+
+**Or let Run Edit Run host it.** [Run Edit Run](https://app.runeditrun.com/?product=vector&plan=assisted) can set Vector up on your own Cloudflare account and keep it updated; sign-ups are by request for now.
 
 When you want Vector running for your whole team, follow the [deployment guide](../../DEPLOY.md) to supply your Cloudflare account, mail sender and owner details, then run:
 

@@ -592,8 +592,12 @@
       "sha256": "524b5a948ecfea9494343657d40b6dcc0b218ab9df10ab95c804f7e9b00209ab",
       "executable": false
     },
+    "docs/guide/getting-started.md": {
+      "sha256": "909c3e59cf66fac5186afc14d8ec3744ce490220e5b349abad12f33329e33878",
+      "executable": false
+    },
     "docs/guide/install.md": {
-      "sha256": "071ab79ce68263043534014aeb86dd4d3aa50e04fb072ccc1a8ba1f3f8a4f41c",
+      "sha256": "79f6fd2e9b4b7c6eb5fd5cd3977a1226393f3cacaa166214bd5042fd71e834db",
       "executable": false
     },
     "docs/guide/integrations.md": {
@@ -701,7 +705,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "eedcec29399bab09f8b2dc6e05a1167a8d402d15fe38e2cc08999957e0618b72",
+      "sha256": "7492a218f23352be0addcf9defd1e8d526052a9ac695fe56f5265e617e6cb9bf",
       "executable": false
     },
     "docs/VERIFICATION.md": {
