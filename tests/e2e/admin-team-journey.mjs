@@ -1,3 +1,5 @@
+import {inviteReader} from './role-reader-support.mjs';
+import {teamCreationReaderCell,teamJoinReaderCells,privateTeamCreationCells} from './team-reader-cells.mjs';
 // Settle native polling before replacing an authorized private document.
 import { beforePrivateNavigation, navigate } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
@@ -332,6 +334,8 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
 
 export async function teamCreationPermission({page,peer,runtime,clause,evidence}) {
   const {base,sql}=runtime, inspect=roleScreens(evidence);
+  const viewer=await inviteReader({owner:page,browser:page.context().browser(),runtime,email:'synthetic-vector-1944@vector.test',name:'synthetic-vector-1944'});
+  try{
   const set=async value=>{
     await navigate(page,base+"/app/settings");
     const form=page.getByRole("form",{name:"Team creation permission",exact:true});
@@ -348,7 +352,11 @@ export async function teamCreationPermission({page,peer,runtime,clause,evidence}
       await navigate(peer,base+"/app/settings");
       assert.equal(await peer.getByRole("form",{name:"Create team",exact:true}).count(),0);
       assert.equal(await peer.getByRole("form",{name:"Team creation permission",exact:true}).count(),0);
+      await teamCreationReaderCell(viewer,runtime,width);
       await set(true);
+      await teamCreationReaderCell(viewer,runtime,width);
+      await privateTeamCreationCells({page,peer,runtime,width,evidence});
+      assert.equal((await peer.request.post(base+'/api/settings/teams',{headers:{Origin:base},data:{name:'synthetic-vector-1945',identifierPrefix:'SYNPRIVATE',isPrivate:true}})).status(),403);
       await navigate(peer,base+"/app/settings");
       const create=peer.getByRole("form",{name:"Create team",exact:true});
       await create.getByLabel("Team name",{exact:true}).fill("synthetic-vector-team-"+width);
@@ -371,10 +379,12 @@ export async function teamCreationPermission({page,peer,runtime,clause,evidence}
   await inspect(page,page.getByRole("region",{name:"Teams",exact:true}),"team-creation-policy");
   await inspect(peer,peer.getByRole("region",{name:"Teams",exact:true}),"member-team-created");
   assert.equal(sql("SELECT count(*) n FROM audit_records WHERE action='workspace.team_creation_changed'")[0].n-before,4);
+  }finally{await viewer.context.close();}
 }
 
 export async function teamJoinPermissions({page,peer,browser,runtime,clause,evidence}) {
  const {base,sql}=runtime,inspect=roleScreens(evidence);
+ const viewer=await inviteReader({owner:page,browser,runtime,email:'synthetic-vector-1946@vector.test',name:'synthetic-vector-1946'});
  const context=await browser.newContext({viewport:{width:1440,height:1000}});
  try {
   const requester=await context.newPage();
@@ -433,8 +443,9 @@ export async function teamJoinPermissions({page,peer,browser,runtime,clause,evid
     await navigate(requester,base+"/app/settings");await requester.getByRole("button",{name:"Leave "+name,exact:true}).waitFor();
     assert.equal(sql(`SELECT count(*) n FROM audit_records WHERE action='team.membership_mode_changed' AND subject_id='${team.id}'`)[0].n,1);
    });
+   await clause('TEAM-007',`private and Viewer membership cells at ${width}`,()=>teamJoinReaderCells({page,peer,requester,viewer,runtime,team,member,width}));
   }
- } finally {await context.close();}
+ } finally {await context.close();await viewer.context.close();}
 }
 
 /** An explicitly exposed private request grants metadata only until approval. */

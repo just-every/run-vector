@@ -16,7 +16,9 @@ export function IssueParent({
   onState,
   compact = false,
   triggerRef,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   onRefresh: () => void;
   state: HierarchyState;
@@ -89,7 +91,7 @@ export function IssueParent({
           ref={triggerRef}
           className="issue-parent__edit"
           aria-expanded={editing}
-          disabled={editing}
+          disabled={!writable || editing}
           onClick={() => onState({ editing: true, message: "" })}
         >
           {editing
@@ -101,7 +103,7 @@ export function IssueParent({
 
       </div>
 
-      {editing ? (
+      {writable && editing ? (
         <IssueParentPicker
           key={issue.identifier}
           issue={current}

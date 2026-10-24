@@ -7,7 +7,7 @@ import type { AssignableRole } from '../../roles/matrix'
 // The draft survives the round trip through the confirmation link (which may
 // open in another tab), so the operator only presses Send invitation again.
 const DRAFT = 'vector:invite-draft'
-const draftSchema = z.object({ email: z.string(), displayName: z.string(), role: z.enum(['owner', 'admin', 'member','guest']).default('member'), teamIds:z.array(z.string()).default([]), at: z.number() })
+const draftSchema = z.object({ email: z.string(), displayName: z.string(), role: z.enum(['owner', 'admin', 'member','guest','viewer']).default('member'), teamIds:z.array(z.string()).default([]), at: z.number() })
 function readDraft() {
   try {
     const parsed = draftSchema.safeParse(JSON.parse(localStorage.getItem(DRAFT) ?? 'null'))
@@ -20,7 +20,7 @@ function saveDraft(draft: { email: string; displayName: string; role: Assignable
 
 type StepUp = 'needed' | 'sending' | 'email'
 
-const roleNames: Record<AssignableRole, string> = { owner: 'Owner', admin: 'Admin', member: 'Member', guest:'Guest' }
+const roleNames: Record<AssignableRole, string> = { owner: 'Owner', admin: 'Admin', member: 'Member', guest:'Guest',viewer:'Viewer' }
 
 /** An invitation names the role it grants (ROLE-001); Member is the default. */
 export function InviteOperator({ disabled, delivery, roles, teams, onInvited }: { disabled: boolean; delivery: 'local' | 'email'; roles: AssignableRole[]; teams:{id:string;name:string}[]; onInvited: () => void }) {
@@ -42,7 +42,7 @@ export function InviteOperator({ disabled, delivery, roles, teams, onInvited }: 
     event.preventDefault(); setPending(true); setMessage(''); setFailed(false); setStepUp(null)
     try {
       const result = await fetchJson('/api/settings/operators/invite', z.object({ status: z.literal('accepted'), delivery: z.enum(['local', 'email']) }), {
-        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, displayName, role, ...(role === 'guest' ? {teamIds} : {}) }),
+        method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, displayName, role, ...(['guest','viewer'].includes(role) ? {teamIds} : {}) }),
       })
       setMessage(result.delivery === 'local'
         ? 'Invitation saved locally. No email was sent. Use the teammate steps above to try another member.'
@@ -76,7 +76,7 @@ export function InviteOperator({ disabled, delivery, roles, teams, onInvited }: 
     <select id="invite-role" value={role} onChange={event => setRole(event.target.value as AssignableRole)}>
       {roles.map(choice => <option key={choice} value={choice}>{roleNames[choice]}</option>)}
     </select>
-    {role === 'guest' && <GuestTeams teams={teams} selected={teamIds} onChange={setTeamIds} disabled={disabled || pending} />}
+    {['guest','viewer'].includes(role) && <GuestTeams role={role === 'viewer' ? 'viewer' : 'guest'} teams={teams} selected={teamIds} onChange={setTeamIds} disabled={disabled || pending} />}
     <button type="submit" disabled={disabled || pending || role === 'guest' && !teamIds.length || stepUp === 'sending'}>{pending ? 'Sending…' : 'Send invitation'}</button>
     {stepUp && <div className="settings-confirm" role="group" aria-label="Confirm it's you">
       {stepUp === 'needed' || stepUp === 'sending' ? <>

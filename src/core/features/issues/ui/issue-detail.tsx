@@ -152,6 +152,7 @@ function IssueInspector({
   options: StreamOptions | null;
   optionsError: Error | null;
 }) {
+  const writable = !!options && options.operator.role !== 'viewer';
   const { formatInstant } = useViewerTime();
   const [hierarchy, setHierarchy] = useState<HierarchyState & { id: string }>({
     id: issue.identifier,
@@ -219,19 +220,19 @@ function IssueInspector({
             </p>
           )}
           <div className="issue-header-actions">
-            <IssueCopyAction key={`copy:${issue.identifier}`} identifier={issue.identifier} onRefresh={onRefresh} />
-            <IssueEditor
+            {writable && <IssueCopyAction key={`copy:${issue.identifier}`} identifier={issue.identifier} onRefresh={onRefresh} />}
+            {writable && <IssueEditor
               key={`issue-editor:${issue.identifier}`}
               issue={issue}
               onRefresh={onRefresh}
-            />
-            <IssueSubscriptionControls
+            />}
+            {writable && <IssueSubscriptionControls
               key={`issue-subscription:${issue.identifier}`}
               identifier={issue.identifier}
-            />
+            />}
             {/* With no parent or children, Set parent sits with the issue actions. */}
             {compactHierarchy ? (
-              <IssueParent
+              <IssueParent writable={writable}
                 key={issue.identifier + ":parent"}
                 issue={issue}
                 onRefresh={onRefresh}
@@ -244,13 +245,13 @@ function IssueInspector({
           </div>
         </div>
       </header>
-      <PersonalReminderControls key={`personal-reminders:${issue.identifier}`} identifier={issue.identifier} />
-      <DecisionConfirmation
+      {writable && <PersonalReminderControls key={`personal-reminders:${issue.identifier}`} identifier={issue.identifier} />}
+      {writable && <DecisionConfirmation
         key={issue.identifier + ":confirmation"}
         issue={issue}
         operatorId={options?.operator.id}
-      />
-      <IssueProperties
+      />}
+      <IssueProperties writable={writable}
         key={issue.identifier}
         issue={issue}
         options={options}
@@ -260,13 +261,13 @@ function IssueInspector({
       <IssueReleases identifier={issue.identifier}/>
       <div className="issue-body">
         <div className="issue-planning-fields">
-          <IssueFieldEditor
+          <IssueFieldEditor writable={writable}
             key={issue.identifier + ":estimate"}
             issue={issue}
             field="estimate"
             onRefresh={onRefresh}
           />
-          <IssueFieldEditor
+          <IssueFieldEditor writable={writable}
             key={issue.identifier + ":due-date"}
             issue={issue}
             field="dueDate"
@@ -275,14 +276,14 @@ function IssueInspector({
         </div>
         {/* Labels and hierarchy share a wrapping row so short ones sit side by side. */}
         <div className="issue-relations">
-          <IssueLabels
+          <IssueLabels writable={writable}
             key={issue.identifier + ":labels"}
             issue={issue}
             options={options}
             onRefresh={onRefresh}
           />
           {compactHierarchy ? null : (
-            <IssueParent
+            <IssueParent writable={writable}
               key={issue.identifier + ":parent"}
               issue={issue}
               onRefresh={onRefresh}
@@ -291,9 +292,9 @@ function IssueInspector({
               onState={onHierarchy}
             />
           )}
-          <Subissues key={issue.identifier + ":subissues"} issue={issue} onRefresh={onRefresh} />
+          <Subissues writable={writable} key={issue.identifier + ":subissues"} issue={issue} onRefresh={onRefresh} />
         </div>
-        <IssueDescription issue={issue} onRefresh={onRefresh} />
+        <IssueDescription writable={writable} issue={issue} onRefresh={onRefresh} />
         {issue.evidence.map((evidence) => (
           <EvidenceInspector
             key={evidence.id}
@@ -304,13 +305,13 @@ function IssueInspector({
         <details className="detail-section issue-outcome" open>
           <summary>Outcome and customer impact</summary>
           <section className="detail-section detail-section--two">
-            <IssueFieldEditor
+            <IssueFieldEditor writable={writable}
               key={issue.identifier + ":outcome"}
               issue={issue}
               field="expectedOutcome"
               onRefresh={onRefresh}
             />
-            <IssueFieldEditor
+            <IssueFieldEditor writable={writable}
               key={issue.identifier + ":impact"}
               issue={issue}
               field="customerImpact"
@@ -320,22 +321,22 @@ function IssueInspector({
         </details>
         <details className="secondary-section">
           <summary>Relationships · {issue.dependencies.length}</summary>
-          <Dependencies
+          <Dependencies writable={writable}
             key={issue.identifier + ":dependencies"}
             issue={issue}
             onRefresh={onRefresh}
           />
         </details>
-        <IssueDuplicates issue={issue} onRefresh={onRefresh}/>
-        <TeamMove
+        <IssueDuplicates writable={writable} issue={issue} onRefresh={onRefresh}/>
+        {writable && <TeamMove
           key={issue.identifier + ":team-move"}
           issue={issue}
           options={options}
           optionsError={optionsError}
           onRefresh={onRefresh}
-        />
-        <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>
-        <GithubLinks identifier={issue.identifier}/><Discussion
+        />}
+        {writable && <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>}
+        <GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
           key={issue.identifier + ":discussion"}
           identifier={issue.identifier}
           onRefresh={onRefresh}
@@ -384,7 +385,7 @@ function IssueInspector({
           </details>
         ) : null}
       </div>
-      {issue.status.category === "intake" ? (
+      {writable && issue.status.category === "intake" ? (
         <DecisionPanel
           key={issue.identifier + ":decision"}
           issue={issue}

@@ -1,17 +1,11 @@
-import type {Hono,Context} from 'hono';
+import type {Hono} from 'hono';
 import {z} from 'zod';
 import type {AppEnvironment} from '../../app/bindings';
 import {readRequestJson} from '../../app/input';
-import {settingsActor} from '../settings/repository';
 import {IntegrationError} from '../integrations/errors';
 import {subscriptionInput} from './schema';
 import {subscriptions,subscribe,unsubscribe} from './repository';
 import {processMemberSubscriptions} from './process';
-export async function subscriptionAuthority(c:Context<AppEnvironment>,actor:string,db:D1Database){
- if(!/^\/api\/subscriptions(?:\/|$)/.test(c.req.path))return;
- const access=await settingsActor(db,actor);
- return {denied:undefined,fence:{sql:'EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND role=? AND removed_at IS NULL)',values:[actor,access.workspace_id,access.role]}};
-}
 export function addSubscriptionRoutes(app:Hono<AppEnvironment>){
  app.use('*',async(c,next)=>{
   if(c.req.method==='GET'&&/^\/api\/notifications(?:\/count)?$/.test(c.req.path))await processMemberSubscriptions(c.env,c.get('operatorId'),c.env.DB);

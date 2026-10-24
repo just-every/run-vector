@@ -16,7 +16,7 @@ import { NotificationsPanel } from "../../notifications/ui/notifications-panel";
 import { DataPanel } from "../../data/ui/data-panel";
 import { RestorePanel } from "../../data/ui/restore-panel";
 import { MembersPanel } from "./members-panel";
-import { openSettingsPages } from "../../roles/matrix";
+import { openSettingsPages, opensSettingsPage } from "../../roles/matrix";
 
 export function SettingsPage() {
   const clock = useViewerTime();
@@ -83,14 +83,14 @@ export function SettingsPage() {
           <a href="#personal-time">Your time</a>
           {workspace && <a href="#workspace-time">Workspace time</a>}
           <a href="#members">Members</a>
-          <a href="#teams">Teams</a>
+          {resource.data && opensSettingsPage(resource.data.role,'teams') && <a href="#teams">Teams</a>}
           <a href="#labels">Labels</a>
           {workspace && <>
             <a href="#housekeeping">Auto-close</a>
             <a href="#projects">Projects</a>
             <a href="#cycles">Cycles</a>
           </>}
-          <a href="#integrations">Integrations</a>
+          {resource.data && opensSettingsPage(resource.data.role,'personal-integrations') && <a href="#integrations">Integrations</a>}
           <a href="#notifications">Notifications</a>
           {workspace && <a href="/app/settings/audit">Audit log</a>}
           {workspace && <a href="#data">Data / Move in</a>}
@@ -182,7 +182,7 @@ export function SettingsPage() {
               </button>
             </p>
           )}
-          {administration.data && (
+          {administration.data && opensSettingsPage(resource.data.role,'teams') && (
             <TeamsPanel
               data={administration.data}
               onChanged={administration.reload}
@@ -225,7 +225,7 @@ export function SettingsPage() {
           {/* Restore review has no role-matrix row, so it is the Owners' (ROLE-008). */}
           {resource.data.role === "owner" && <RestorePanel />}
           <div id="notifications">
-            <IntegrationsPanel teams={administration.data?.teams ?? []} workspace={workspace} />
+            {opensSettingsPage(resource.data.role,'personal-integrations') && <IntegrationsPanel teams={administration.data?.teams ?? []} workspace={workspace} />}
             <NotificationsPanel />
           </div>
         </>

@@ -9,7 +9,9 @@ export function IssueProperties({
   issue: suppliedIssue,
   options,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   options: StreamOptions | null;
   onRefresh: (receipt?: IssueDetailData) => void;
@@ -115,7 +117,7 @@ export function IssueProperties({
         <select
           aria-label={`Issue ${label.toLowerCase()}`}
           value={value}
-          disabled={!hydrated || busy || conflict || !options || disabled}
+          disabled={!writable || !hydrated || busy || conflict || !options || disabled}
           onChange={(e) => void change(field, e.target.value)}
         >
           {empty ? <option value="">{empty}</option> : null}
@@ -129,7 +131,7 @@ export function IssueProperties({
             <option
               key={c.id}
               value={c.id}
-              disabled={
+              disabled={!writable ||
                 field === "cycleId" &&
                 !canSelectCycle(
                   issue.status.category,
@@ -184,7 +186,7 @@ export function IssueProperties({
         <p role="alert">
           {error}{" "}
           {conflict ? (
-            <button type="button" disabled={busy} onClick={() => void reload()}>
+            <button type="button" disabled={!writable || busy} onClick={() => void reload()}>
               Reload properties
             </button>
           ) : null}

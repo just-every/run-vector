@@ -79,7 +79,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       .object({
         email: z.email().max(254),
         displayName: z.string().trim().min(1).max(120),
-        role: z.enum(["owner", "admin", "member", "guest"]).default("member"),
+        role: z.enum(["owner", "admin", "member", "guest", "viewer"]).default("member"),
         teamIds: z.array(z.string().length(26)).max(100).optional(),
       })
       .strict()
@@ -90,8 +90,8 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
       // Base issues its implementation owner link; the product role travels
       // with that link and is granted when it is accepted.
       const actor = await settingsActor(c.env.DB, c.get("operatorId"));
-      if (role === 'guest' && !['owner','admin'].includes(actor.role)) return c.json({error:'forbidden'},403);
-      const teams = role === 'guest' ? await guestTeams(c.env.DB,actor.workspace_id,teamIds) : [];
+      if (['guest','viewer'].includes(role) && !['owner','admin'].includes(actor.role)) return c.json({error:'forbidden'},403);
+      const teams = ['guest','viewer'].includes(role) ? await guestTeams(c.env.DB,actor.workspace_id,teamIds,role==='guest') : [];
       const result = await baseAuth({...c.env, DB: invitationDatabase(c.env.DB,c.get("operatorId"),invitee.email.trim().toLowerCase(),role,teams)}).invite(c.req.raw, {
         ...invitee,
         role: "owner",

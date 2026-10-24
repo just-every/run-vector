@@ -53,11 +53,11 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   return (
     <ProjectDetailContent
       project={project.data}
-      milestones={<ProjectMilestones writable={!!administration.data && administration.data.viewer.role !== "guest"} project={project.data} onChanged={(receipt) => {
+      milestones={<ProjectMilestones writable={!!administration.data && !["guest","viewer"].includes(administration.data.viewer.role)} project={project.data} onChanged={(receipt) => {
         project.publishReceipt(() => receipt);
         project.refreshAfterMutation();
       }} />}
-      management={administration.data?.viewer.role === "guest" ? null :
+      management={(!administration.data || ["guest","viewer"].includes(administration.data.viewer.role)) ? null :
         <section
           className="administration-panel project-management"
           aria-label="Project administration"

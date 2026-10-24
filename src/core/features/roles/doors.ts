@@ -19,6 +19,7 @@ export type Door = {
   teams?: Resolve<string[] | null>
   project?: Resolve<string | null>
   invitation?: true
+  workMutation?: true
 }
 
 const field = async (request: DoorRequest, name: string) => {
@@ -73,31 +74,40 @@ const viewTeams: Resolve<string[] | null> = async request => {
   // A view across every team covers every team, so only a Guest in all of them opens it.
   return teamsOf(request.db, request.actor, teamId && teamId !== 'all' ? [teamId] : row ? 'all' : [])
 }
+const restrictedRole = (role: unknown) => role === 'viewer' || role === 'guest'
 const leadership = (role: unknown) => role === 'owner' || role === 'admin'
 async function memberRole(db: D1Database, id: string) {
   return (await db.prepare('SELECT role FROM operators WHERE id=? AND removed_at IS NULL').bind(id).first<{ role: string }>())?.role
 }
 
 export const doors: Door[] = [
-  { method: 'GET', path: '/project-templates', row: 'projects.write' },
-  { method: 'GET', path: '/project-templates/:id', row: 'projects.write' },
+  {method:'POST',path:'/initiatives',row:'initiatives.write'},
+  {method:'PATCH',path:'/initiatives/:id',row:'initiatives.write'},
+  {method:'PUT',path:'/initiatives/:id/projects',row:'initiatives.write'},
+  {method:'POST',path:'/releases',row:'releases.write',teams:bodyTeam},
+  {method:'PATCH',path:'/releases/:id',row:'releases.write'},
+  {method:'PUT',path:'/releases/:id/scope',row:'releases.write'},
+  {method:'POST',path:'/subscriptions',row:null,page:'account',workMutation:true},
+  {method:'DELETE',path:'/subscriptions/:id',row:null,page:'account',workMutation:true},
+  { method: 'GET', path: '/project-templates', row: 'work.read' },
+  { method: 'GET', path: '/project-templates/:id', row: 'work.read' },
   { method: 'POST', path: '/project-templates', row: 'projects.write' },
   { method: 'PUT', path: '/project-templates/:id', row: 'projects.write' },
   { method: 'DELETE', path: '/project-templates/:id', row: 'projects.write' },
   { method: 'POST', path: '/project-templates/:id/apply', row: 'projects.write' },
   { method: 'POST', path: '/project-templates/from-project/:id', row: 'projects.write' },
-  { method: 'GET', path: '/dashboards', row: 'projects.write' },
-  { method: 'GET', path: '/dashboards/:id', row: 'projects.write' },
-  { method: 'POST', path: '/dashboards', row: 'projects.write' },
-  { method: 'PUT', path: '/dashboards/:id', row: 'projects.write' },
-  { method: 'DELETE', path: '/dashboards/:id', row: 'projects.write' },
-  { method: 'GET', path: '/calendar/events', row: 'projects.write' },
-  { method: 'GET', path: '/calendar/feeds', row: 'projects.write' },
-  { method: 'POST', path: '/calendar/feeds', row: 'projects.write' },
-  { method: 'POST', path: '/calendar/feeds/:id/rotate', row: 'projects.write' },
-  { method: 'DELETE', path: '/calendar/feeds/:id', row: 'projects.write' },
-  { method: 'GET', path: '/insights', row: 'projects.write' },
-  { method: 'GET', path: '/insights.csv', row: 'projects.write' },
+  { method: 'GET', path: '/dashboards', row: 'reports.read' },
+  { method: 'GET', path: '/dashboards/:id', row: 'reports.read' },
+  { method: 'POST', path: '/dashboards', row: 'dashboards.write' },
+  { method: 'PUT', path: '/dashboards/:id', row: 'dashboards.write' },
+  { method: 'DELETE', path: '/dashboards/:id', row: 'dashboards.write' },
+  { method: 'GET', path: '/calendar/events', row: 'work.read' },
+  { method: 'GET', path: '/calendar/feeds', row: 'calendar.feeds' },
+  { method: 'POST', path: '/calendar/feeds', row: 'calendar.feeds' },
+  { method: 'POST', path: '/calendar/feeds/:id/rotate', row: 'calendar.feeds' },
+  { method: 'DELETE', path: '/calendar/feeds/:id', row: 'calendar.feeds' },
+  { method: 'GET', path: '/insights', row: 'reports.read' },
+  { method: 'GET', path: '/insights.csv', row: 'reports.read' },
   { method: 'GET', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
   { method: 'POST', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
   { method: 'POST', path: '/settings/integrations/channels/allowed', row: 'integrations.manage' },
@@ -105,18 +115,18 @@ export const doors: Door[] = [
   { method: 'GET', path: '/settings/audit', row: 'audit.read' },
   { method: 'GET', path: '/settings/audit.csv', row: 'audit.read' },
   // Workspace, people and permissions
-  { method: 'POST', path: '/settings/operators/invite', invitation: true, row: async request => leadership(await field(request, 'role')) ? 'leaders.manage' : 'members.manage' },
+  { method: 'POST', path: '/settings/operators/invite', invitation: true, row: async request => leadership(await field(request, 'role')) ? 'leaders.manage' : await field(request, 'role') === 'viewer' ? 'viewers.manage' : 'members.manage' },
   { method: 'POST', path: '/settings/operators/confirm-identity', invitation: true, row: 'members.manage' },
-  { method: 'PATCH', path: '/settings/operators/:operatorId/role', row: async request => leadership(await field(request, 'role')) || leadership(await memberRole(request.db, request.params.operatorId)) ? 'leaders.manage' : 'members.manage' },
+  { method: 'PATCH', path: '/settings/operators/:operatorId/role', row: async request => leadership(await field(request, 'role')) || leadership(await memberRole(request.db, request.params.operatorId)) ? 'leaders.manage' : restrictedRole(await field(request, 'role')) || restrictedRole(await memberRole(request.db, request.params.operatorId)) ? 'viewers.manage' : 'members.manage' },
   { method: 'DELETE', path: '/settings/operators/:operatorId', row: async ({ db, actor, params }) =>
-    params.operatorId === actor ? 'workspace.leave' : leadership(await memberRole(db, params.operatorId)) ? 'leaders.manage' : 'members.manage' },
+    params.operatorId === actor ? 'workspace.leave' : leadership(await memberRole(db, params.operatorId)) ? 'leaders.manage' : await memberRole(db, params.operatorId) === 'viewer' ? 'viewers.manage' : 'members.manage' },
   { method: 'PATCH', path: '/settings', row: 'workspace.settings' },
   { method: 'GET', path: '/settings/notifications/channel-defaults', row: 'workspace.settings' },
   { method: 'PUT', path: '/settings/notifications/channel-defaults', row: 'workspace.settings' },
   { method: 'GET', path: '/settings/notifications/channels', row: null, page: 'account' },
   { method: 'PUT', path: '/settings/notifications/channels', row: null, page: 'account' },
   { method: 'GET', path: '/settings', row: null, page: 'directory' },
-  { method: 'GET', path: '/settings/administration', row: null, page: 'teams' },
+  { method: 'GET', path: '/settings/administration', row: null, page: 'labels' },
   { method: 'POST', path: '/setup/complete', row: null },
   { method: 'POST', path: '/data/restore/operators/:id', row: 'data.restore' },
   { method: 'POST', path: '/data/restore/review-effects', row: 'data.restore' },
@@ -126,7 +136,7 @@ export const doors: Door[] = [
     ['POST', '/notifications/:id/read'], ['POST', '/notifications/read-all'], ['POST', '/notifications/:id/snooze'], ['POST', '/notifications/:id/unsnooze'],
     ['PATCH', '/issues/:identifier/subscription'], ['POST', '/issues/:identifier/reminders'], ['DELETE', '/issues/:identifier/reminders/:id'],
     ['PUT', '/preferences/:surface'], ['DELETE', '/preferences/:surface'], ['PUT', '/workload']] as const)
-    .map(([method, path]): Door => ({ method, path, row: null, page: 'account' })),
+    .map(([method, path]): Door => ({ method, path, row: null, page: 'account', ...(/^(?:\/issues\/|\/workload)/.test(path) ? {workMutation:true} : {}) })),
   { method: 'POST', path: '/settings/notifications/slack/lookup', row: 'identity.personal' },
   { method: 'POST', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   { method: 'DELETE', path: '/settings/notifications/slack/link', row: 'identity.personal' },
@@ -169,8 +179,8 @@ export const doors: Door[] = [
   { method: 'POST', path: '/issues/order', row: 'issues.write', teams: bodyTeam },
   { method: 'POST', path: '/issues/undo', row: 'issues.write' },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
-  { method: 'GET', path: '/issues/:identifier/references', row: 'issues.write', teams: issue },
-  { method: 'GET', path: '/issues/:identifier/email-intake', row: 'issues.write', teams: issue },
+  { method: 'GET', path: '/issues/:identifier/references', row: 'work.read', teams: issue },
+  { method: 'GET', path: '/issues/:identifier/email-intake', row: 'work.read', teams: issue },
   { method: 'POST', path: '/issues/:identifier/email-replies', row: 'email.reply', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/comments/:itemId', row: commentEdit('comments.own'), teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/comments/:itemId', row: commentDeletion, teams: issue },
@@ -231,6 +241,13 @@ export const doors: Door[] = [
 
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
+  {method:'POST',path:'/initiatives',row:'initiatives.write'},
+  {method:'PATCH',path:'/initiatives/:id',row:'initiatives.write'},
+  {method:'PUT',path:'/initiatives/:id/projects',row:'initiatives.write'},
+  {method:'POST',path:'/releases',row:'releases.write',teams:bodyTeam},
+  {method:'PATCH',path:'/releases/:id',row:'releases.write'},
+  {method:'PUT',path:'/releases/:id/scope',row:'releases.write'},
+
   { method: 'POST', path: '/teams', row: teamCreation },
   { method: 'PUT', path: '/teams/:id/privacy', row: 'teams.privacy' },
   { method: 'POST', path: '/labels', row: 'labels.create' },

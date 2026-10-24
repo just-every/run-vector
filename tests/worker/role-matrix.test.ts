@@ -1,3 +1,4 @@
+import {viewerVisibilityJourney} from './role-viewer-journey';
 import {privateVisibilityJourney} from './role-private-journey';
 import { exerciseAudit } from './audit-scenario';
 import { guestVisibilityJourney } from "./role-guest-journey";
@@ -25,11 +26,16 @@ it("[TEAM-007 TEAM-008 ROLE-007 OPS-001] a Member joins and leaves a public team
   const w = await roleWorkspace();
   const platform = (await w.mutate("/settings/teams", "POST", { name: "Platform", identifierPrefix: "PLATF" })).teams.find((t) => t.name === "Platform")!;
   // TEAM-008: the same Member session and scoped token follow each setting change.
+  const readOnly=await w.fresh('member',false);
+  expect((await w.call(`/settings/operators/${readOnly.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
+  const viewerCreates=async()=>{for(const surface of ['call','api'] as const){expect((await readOnly[surface](surface==='call'?'/settings/teams':'/teams','POST',{name:'synthetic-vector-1947',identifierPrefix:'SYNREAD'})).status).toBe(403);if(surface==='call')expect((await readOnly.call('/settings/teams/creation','PUT',{membersMayCreate:true})).status).toBe(403);}};
+  await viewerCreates();
   const memberCreate={name:"synthetic-vector-member-team",identifierPrefix:"SYNMEM"};
   expect((await w.member.call("/settings/teams","POST",memberCreate)).status).toBe(403);
   expect((await w.member.api("/teams","POST",memberCreate)).status).toBe(403);
   expect((await w.admin.call("/settings/teams/creation","PUT",{membersMayCreate:true})).status).toBe(200);
   expect((await w.member.call("/settings/teams/creation","PUT",{membersMayCreate:false})).status).toBe(403);
+  await viewerCreates();
   for(const surface of ['call','api'] as const){
     expect((await w.member[surface](surface==='call'?'/settings/teams':'/teams','POST',{name:'synthetic-vector-989',identifierPrefix:'SYNDENY',isPrivate:true})).status).toBe(403);
     for(const who of [w.people.owner,w.admin]){const name='synthetic-vector-'+(surface==='call'?990:992)+(who===w.admin?'1':'0');const made=await who[surface](surface==='call'?'/settings/teams':'/teams','POST',{name,identifierPrefix:'SYN'+(surface==='call'?'N':'A')+(who===w.admin?'D':'O'),isPrivate:true});expect(made.status).toBe(surface==='call'?200:201);const body=await made.json() as any,created=surface==='call'?body.teams.find((t:any)=>t.name===name):body;expect(created.isPrivate).toBe(true);expect((await w.call(`/settings/teams/${created.id}/privacy`,'PUT',{isPrivate:false})).status).toBe(200);}
@@ -203,6 +209,7 @@ type Context = { inTeam: boolean; settings: string; planning: string; memberInvi
  * every team is public (ROLE-002). */
 function promised(cell: string, who: Kind, c: Context) {
   const text = cell.toLowerCase();
+  if(text.startsWith('public teams'))return 'allow';
   // Recovery-dependent grants remain refused until recoverable deletion ships.
   if (text.includes("after recoverable delete")) return "forbidden";
   if (text.startsWith("no (yes when the workspace permits Members".toLowerCase())) return c.memberTeamCreation ? "allow" : "forbidden";
@@ -276,6 +283,13 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
   await set("team_owners", "all_members", false);
   expect(checked).toBeGreaterThan(Object.keys(matrix).length * 5);
 
+  // ROLE-001's own private cells use fresh subjects through both registered transports.
+  const privateMatrixTeam=(await w.mutate('/settings/teams','POST',{name:'synthetic-vector-1962',identifierPrefix:'SYNMATR',isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-1962')!;
+  const privateMatrixResponse=await w.call('/issues','POST',{teamId:privateMatrixTeam.id,title:'synthetic-vector-1963'});expect(privateMatrixResponse.status).toBe(201);const privateMatrixIssue=await privateMatrixResponse.json() as {identifier:string};
+  for(const who of ['admin','lead','member','guest'] as const)for(const send of [w.people[who].call,w.people[who].api])expect((await send('/issues/'+privateMatrixIssue.identifier)).status,who+' private matrix read').toBe(404);
+  expect((await w.call('/issues/'+privateMatrixIssue.identifier)).status).toBe(200);
+  expect((await w.call(`/settings/teams/${privateMatrixTeam.id}/members/${w.member.id}`,'PUT',{role:'member'})).status).toBe(200);
+  for(const send of [w.member.call,w.member.api])expect((await send('/issues/'+privateMatrixIssue.identifier)).status).toBe(200);
   const releaseProbe=releaseMatrixProbes(w),releaseCells=contractMatrix.get(releaseProbe.action)!;
   expect(releaseCells).toBeDefined();
   for(const who of ['owner','admin','lead','member','guest'] as Kind[])for(const surface of ['session','api'] as const){
@@ -498,7 +512,8 @@ it("[ROLE-001 OPS-002 OPS-004 INTAKE-005 INTAKE-006 INTAKE-011 VIEW-002 DATA-002
 });
 
 
-it("[ROLE-002 ROLE-003 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads", {timeout:120_000}, async () => {
+it("[ROLE-002 ROLE-003 ROLE-013 OPS-001 OPS-002 WORK-004] current private and invited teams scope native, bearer, search, project, notification and document reads; Viewers remain read-only", {timeout:120_000}, async () => {
   await guestVisibilityJourney(await roleWorkspace());
   await privateVisibilityJourney(await roleWorkspace());
+  await viewerVisibilityJourney(await roleWorkspace());
 });

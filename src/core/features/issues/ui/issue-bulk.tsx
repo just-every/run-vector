@@ -15,7 +15,7 @@ export function IssueBulk({ selection, options, onRefresh, onClear, onRemove, on
   const [targets, setTargets] = useState<IssueEditTarget[] | null>(null);
   const [message, setMessage] = useState("");
   const rows = [...selection.values()];
-  if (!rows.length) return null;
+  if (!rows.length || options?.operator.role === 'viewer') return null;
   return (
     <section className="issues-bulk" aria-label="Bulk edit">
       <strong>{rows.length} selected</strong>

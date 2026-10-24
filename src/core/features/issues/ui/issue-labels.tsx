@@ -8,7 +8,9 @@ export function IssueLabels({
   issue,
   options,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   options: StreamOptions | null;
   onRefresh: () => void;
@@ -98,7 +100,7 @@ export function IssueLabels({
         ))}
         <button
           type="button"
-          disabled={!options || pending}
+          disabled={!writable || !options || pending}
           aria-expanded={open}
           onClick={() => {
             setOpen(!open);
@@ -111,13 +113,13 @@ export function IssueLabels({
           Labels{issue.labels.length ? ` · ${issue.labels.length}` : ""}
         </button>
       </div>
-      {open && (
+      {writable && open && (
         <form
           aria-label="Apply issue labels"
           onSubmit={save}
           aria-busy={pending}
         >
-          <fieldset disabled={pending || !options}>
+          <fieldset disabled={!writable || pending || !options}>
             <legend>Issue labels · maximum {options?.labelsPerIssue}</legend>
             <div className="issue-label-choices">
               {availableLabels.map((label) => (
@@ -125,7 +127,7 @@ export function IssueLabels({
                   <input
                     type="checkbox"
                     checked={selected.includes(label.id)}
-                    disabled={
+                    disabled={!writable ||
                       !selected.includes(label.id) &&
                       (!options || selected.length >= options.labelsPerIssue)
                     }
@@ -142,7 +144,7 @@ export function IssueLabels({
               ))}
             </div>
             <div className="issue-editor-actions">
-              <button disabled={pending || stale || conflict}>
+              <button disabled={!writable || pending || stale || conflict}>
                 {pending ? "Saving labels…" : "Save labels"}
               </button>
               <button type="button" onClick={() => setOpen(false)}>
@@ -156,7 +158,7 @@ export function IssueLabels({
                 "This issue changed. Your label choices are kept. Reload labels before saving."}{" "}
               <button
                 type="button"
-                disabled={pending}
+                disabled={!writable || pending}
                 onClick={() => void reload()}
               >
                 Reload labels
@@ -165,8 +167,8 @@ export function IssueLabels({
           )}
         </form>
       )}
-      {open && options?.canCreateLabels && <form className="issue-label-create" aria-label="Create label inline" onSubmit={create}>
-        <fieldset disabled={pending}>
+      {writable && open && options?.canCreateLabels && <form className="issue-label-create" aria-label="Create label inline" onSubmit={create}>
+        <fieldset disabled={!writable || pending}>
           <legend>Create label</legend>
           <label>New label name<input required maxLength={120} value={labelName} onChange={event => setLabelName(event.target.value)} /></label>
           <label>New label colour<input type="color" value={labelColor} onChange={event => setLabelColor(event.target.value)} /></label>

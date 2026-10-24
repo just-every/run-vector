@@ -1,3 +1,4 @@
+import {doorAuthority} from '../roles/enforcement';
 import {Hono} from 'hono';
 import {z} from 'zod';
 import type {AppEnvironment} from '../../app/bindings';
@@ -7,7 +8,7 @@ import {apiRoute} from '../integrations/api-schema';
 import {admitted} from '../integrations/authority';
 import {IntegrationError} from '../integrations/errors';
 import {admitRate} from '../auth/repository';
-import {mutationDatabase,isMutationAccessError,AuthorityChangedError} from '../auth/mutation-database';
+import {mutationDatabase,isMutationAccessError,AuthorityChangedError,VisibilityChangedError} from '../auth/mutation-database';
 import {visibilityDatabase} from '../roles/visibility-database';
 import {PaginationInvalidated} from '../issues/list-revision';
 import {SettingsError} from '../settings/repository';
@@ -16,6 +17,7 @@ import {addReleaseRoutes} from './routes';
 export function createReleaseApi(){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
+  if(error instanceof VisibilityChangedError)return c.json({error:'not_found',message:error.message},404);
   if(error instanceof IntegrationError||error instanceof SettingsError)return c.json({error:error.code,message:error.message},error.status);
   if(error instanceof z.ZodError||error instanceof RequestBodyError)return c.json({error:'invalid_request'},400);
   if(error instanceof PaginationInvalidated||error instanceof AuthorityChangedError)return c.json({error:'stale_state'},409);
@@ -30,8 +32,7 @@ export function createReleaseApi(){
   const raw=c.env.DB,actor=await authorizeToken(raw,c.req.raw,route.scopes,c.req.method+':'+path),predicate=tokenPredicate(actor);
   if(!await admitRate(raw,'api-v1:'+actor.workspace+':'+actor.tokenId,300,60000))return c.json({error:'rate_limited'},429,{'Retry-After':String(Math.max(1,Math.ceil((60000-Date.now()%60000)/1000)))});
   c.set('operatorId',actor.id);c.header('Cache-Control','no-store');
-  const authority=await releaseAuthority(c,actor.id,raw);if(authority?.denied)return authority.denied;
-  if(!authority)throw new IntegrationError(403,'unregistered_release_door');
+  const authority=await releaseAuthority(c,actor.id,raw) ?? await doorAuthority(c,'v1',actor.id,raw);if(authority?.denied)return authority.denied;
   c.env={...c.env,DB:mutationDatabase(visibilityDatabase(raw,actor.id),actor.id,undefined,{sql:predicate.sql,values:predicate.params},authority.fence)};
   await next();
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401);}

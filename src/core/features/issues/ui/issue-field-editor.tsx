@@ -19,7 +19,9 @@ export function IssueFieldEditor({
   issue,
   field,
   onRefresh,
+  writable = true,
 }: {
+  writable?: boolean;
   issue: IssueDetailData;
   field: EditableIssueField;
   onRefresh: (receipt?: IssueDetailData) => void;
@@ -134,13 +136,13 @@ export function IssueFieldEditor({
           type="button"
           aria-label={`Edit ${name}`}
           aria-expanded={snapshot !== null}
-          disabled={pending}
+          disabled={!writable || pending}
           onClick={() => (snapshot ? setSnapshot(null) : open())}
         >
           Edit
         </button>
       </div>
-      {snapshot ? (
+      {writable && snapshot ? (
         <form
           className="issue-mutation-form"
           aria-label={`Edit ${name}`}
@@ -149,7 +151,7 @@ export function IssueFieldEditor({
             void save(snapshot.draft);
           }}
         >
-          <fieldset disabled={pending} className="issue-editor-controls">
+          <fieldset disabled={!writable || pending} className="issue-editor-controls">
             <label>
               {label}
               {multiline ? (
@@ -178,7 +180,7 @@ export function IssueFieldEditor({
               )}
             </label>
             <div className="issue-editor-actions">
-              <button type="submit" disabled={pending || stale || conflict}>
+              <button type="submit" disabled={!writable || pending || stale || conflict}>
                 {pending ? "Saving…" : `Save ${name}`}
               </button>
               <button type="button" onClick={() => setSnapshot(null)}>
@@ -186,7 +188,7 @@ export function IssueFieldEditor({
               </button>
               <button
                 type="button"
-                disabled={field === "estimate" && (pending || stale || conflict)}
+                disabled={!writable || field === "estimate" && (pending || stale || conflict)}
                 onClick={() =>
                   field === "estimate"
                     ? void save("")

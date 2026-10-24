@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import type { AssignableRole } from '../../roles/matrix'
 import { GuestTeams } from './guest-teams'
-const labels = {owner:'Owner',admin:'Admin',member:'Member',guest:'Guest'}
+const labels = {owner:'Owner',admin:'Admin',member:'Member',guest:'Guest',viewer:'Viewer'}
 export function MemberRoleForm({ member, teams, roles, disabled, onSubmit }: {
   member: { id:string; name:string; role:AssignableRole; teamIds:string[] }
   teams:{id:string;name:string}[]; roles:AssignableRole[]; disabled:boolean
@@ -15,7 +15,7 @@ export function MemberRoleForm({ member, teams, roles, disabled, onSubmit }: {
         {roles.map(role => <option key={role} value={role}>{labels[role]}</option>)}
       </select>
     </label>
-    {role === 'guest' && <GuestTeams teams={teams} selected={selected} onChange={setSelected} disabled={disabled} />}
+    {(role === 'guest' || role === 'viewer') && <GuestTeams role={role} teams={teams} selected={selected} onChange={setSelected} disabled={disabled} />}
     <button type="submit" disabled={disabled || role === 'guest' && !selected.length}>Change role</button>
   </form>
 }
