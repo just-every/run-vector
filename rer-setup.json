@@ -68,7 +68,8 @@
       "ownerVisible": false,
       "input": "managed",
       "generate": "hex",
-      "group": "workspace"
+      "group": "workspace",
+      "help": "Generated installation secret protects sign-in sessions and links. Keep it private."
     },
     {
       "name": "SETUP_TOKEN",
@@ -78,7 +79,8 @@
       "ownerVisible": false,
       "generate": "hex",
       "group": "workspace",
-      "input": "managed"
+      "input": "managed",
+      "help": "Generated token protects the initial owner claim. Keep it private."
     },
     {
       "name": "MAIL_PROVIDER",
@@ -177,7 +179,8 @@
           "required": true
         }
       ],
-      "group": "mail"
+      "group": "mail",
+      "help": "Optional until a delivery provider is selected; enter its API key or managed relay credential."
     },
     {
       "name": "IDENTITY_PROVIDER",

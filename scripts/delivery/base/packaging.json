@@ -121,6 +121,8 @@
       "recovery": "Preserve private deployment receipts and the D1 migration ledger. Restore into an empty database and FILES bucket; re-enter secrets, review operator access and release the installation effect hold. Never replay historical mail or webhooks. Integration credentials require re-entry; historical source identities, PR states and webhook attempts remain held.",
       "mail": {
         "providers": [
+          "sendgrid",
+          "resend",
           "rer"
         ]
       }

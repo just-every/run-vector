@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "c63ec608613d1f7686341fbc1e7b16e5cbed00d9cc0b867c8d560601e4712771",
+      "sha256": "149b0168ed349cc9f845c8ada60c51c0580bc3b3ccfa86443dcf4c95b69aab5d",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "259fcf61909cbf2517a93f671e54f821094f2d9ab8c1c2c0e00320da231dd3dc",
+      "sha256": "97baa120359650d864c342a5f5382ba99b7f1d15354be237fb6ecddebf0c73cb",
       "executable": false
     },
     "DEMO.md": {
@@ -2009,7 +2009,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "73cb9081b182d5020e14bb45d122ec17231e69a454c8ba96e2178fc1b3f1b277",
+      "sha256": "ecd3b55056e05c75178408d09b9fc6d8a1e1d5fbcf91f076296ddaf022484b6a",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2485,11 +2485,11 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "ab1fa81aaf27c5b4133a5ca72de6afb2c08ea775e7404e475860488a0426e7b2",
+      "sha256": "9823f49d20886bc2d93e149a3f9e87c5d8d3388c2089645fb9f596baca6151cb",
       "executable": false
     },
     "rer-setup.json": {
-      "sha256": "6b6f0c3fb294bc62ab5add3b163f01f230ee9eebb4f71469ff23c0d99f2a0107",
+      "sha256": "9fd813a1b304c4184c3e206afd55c7c9c32f492de4c6f4585dd7ff805d34e4fc",
       "executable": false
     },
     "RUN-LOCALLY.md": {
@@ -2613,7 +2613,7 @@
       "executable": false
     },
     "scripts/delivery/base/packaging.json": {
-      "sha256": "58c7b67be2e886456fde6a3e47c9d4decf716537b0a3b9fe0f1e1f7bd76ecc05",
+      "sha256": "7504e0f4d601d72aefb91d4667a068be2cbd9cd1c0807b5aecb28b26f4365578",
       "executable": false
     },
     "scripts/delivery/base/paths.mjs": {
@@ -7409,7 +7409,7 @@
       "executable": false
     },
     "tests/worker/initiatives-scenario.ts": {
-      "sha256": "4e97e117e377536b29c3f03ad486b0d94795d5d01e233f74b942a06f72e7f676",
+      "sha256": "a19592241a87b6b04ce2977fe019e56fb3ea2e633539525e9bb6d9e318f40c18",
       "executable": false
     },
     "tests/worker/intake-policy.test.ts": {

@@ -668,6 +668,8 @@
   },
   "mail": {
     "providers": [
+      "sendgrid",
+      "resend",
       "rer"
     ]
   }

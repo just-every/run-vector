@@ -39,15 +39,19 @@ export async function exerciseInitiatives(w:Awaited<ReturnType<typeof roleWorksp
  ] as const)expect((await send(path,method,body)).status).toBe(403);
  expect(await snapshot(['initiatives','initiative_projects','initiative_graph','audit_records'])).toEqual(before);
  expect((await guest.call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id})).status).toBe(404);
- await json(await w.member.call('/settings/notifications','PATCH',{mutedKinds:[]}));
- const sub=await json(await w.member.call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
- await json(await w.member.call('/subscriptions','POST',{subjectType:'project',subjectId:projects[1].id}),201);
+ // A fresh recipient follows only the initiative: project/team/view matches cannot carry this proof.
+ const recipient=await w.fresh('member');
+ await json(await recipient.call('/settings/notifications','PATCH',{mutedKinds:[]}));
+ const sub=await json(await recipient.call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id}),201);
+ const subscriptions=await json(await recipient.call('/subscriptions'));
+ expect(subscriptions.subscriptions.map((s:any)=>[s.subjectType,s.subjectId])).toEqual([['initiative',root.id]]);
  const matching=await w.create({teamId:w.initial.teams[0].id,projectId:projects[1].id,title:'synthetic-vector-1789'});
- const notices=async()=> (await json(await w.member.call('/notifications?limit=50'))).items.filter((n:any)=>n.identifier===matching.identifier);
- expect(await notices()).toHaveLength(1);expect(await notices()).toHaveLength(1);
+ const notices=async()=> (await json(await recipient.call('/notifications?limit=50'))).items.filter((n:any)=>n.identifier===matching.identifier);
+ expect(await notices(),'initiative-only creation notice').toHaveLength(1);
  const started=w.initial.teams[0].statuses.find(s=>s.category==='started')!;
  await json(await owner.call('/issues/'+matching.identifier,'PATCH',{expectedVersion:matching.version,statusId:started.id}));
- expect(await notices()).toHaveLength(2);
- expect((await w.member.call('/subscriptions/'+sub.id,'DELETE')).status).toBe(200);
+ expect(await notices(),'initiative-only status-change notice').toHaveLength(2);
+ expect(await notices(),'rereading preserves exactly two initiative-only notices').toHaveLength(2);
+ expect((await recipient.call('/subscriptions/'+sub.id,'DELETE')).status).toBe(200);
  expect(childLinked.nodes[0].projects).toHaveLength(3);
 }
