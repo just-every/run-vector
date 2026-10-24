@@ -52,13 +52,13 @@ export async function viewerVisibilityJourney(w:Workspace){
  const logicalId=ownComment.id;
  // Each registered work mutation is reached through its actual native/bearer transport.
  for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){
-  if(door.method==='GET'||door.page==='account'&&!door.workMutation||typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row))continue;
+  if(door.method==='GET'&&!door.workMutation||door.page==='account'&&!door.workMutation||typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row))continue;
   await resetLimits();
   const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
   const before=await stored();
   const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
   const usageIds=new Set(usageBefore.map(row=>row.id));
-  const response=await send(path,door.method==='ALL'?'POST':door.method,{});
+  const response=await send(path,door.method==='ALL'?'POST':door.method,door.method==='GET'?undefined:{});
   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
   const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
