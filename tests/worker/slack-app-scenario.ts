@@ -23,7 +23,7 @@ export async function slackAppInstall(){
   throw Error('Unexpected Slack installation edge '+method);
  });
  const read=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
- const callback=(state:string,cookie=f.cookie)=>f.app.request(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback?state='+encodeURIComponent(state)+'&code=synthetic-vector-2003',{headers:{Cookie:cookie}},bindings);
+ const callback=(state:string,cookie=f.cookie)=>request('/api/integrations/slack/oauth/callback?state='+encodeURIComponent(state)+'&code=synthetic-vector-2003','GET',undefined,cookie);
  const begin=async()=>new URL((await read(await f.call('/settings/integrations/slack/app/install','POST',{}))).url).searchParams.get('state')!;
  try{
   // A Member cannot create, inspect credentials, or start an installation.
