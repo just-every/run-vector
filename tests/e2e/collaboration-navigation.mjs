@@ -6,7 +6,7 @@ const inFlight = new WeakMap();
 export function trackRequests(page) {
   const existing = inFlight.get(page);
   if (existing) return existing.pending;
-  const state = { pending: new Set(), document: 0, settledAt: 0, departures: [] };
+  const state = { pending: new Set(), document: 0, sequence: 0, settledSequence: null, settledAt: 0, departures: [] };
   const entries = new WeakMap();
   let navigation = null;
   inFlight.set(page, state);
@@ -14,7 +14,9 @@ export function trackRequests(page) {
     if (request.isNavigationRequest() && request.frame() === page.mainFrame())
       navigation = request;
     if (["fetch", "xhr"].includes(request.resourceType())) {
-      entries.set(request, { document: state.document, startedAt: request.timing().startTime });
+      // Playwright's timing starts at 0 until a response arrives. Event order
+      // records admission even for the very read that never gets a response.
+      entries.set(request, { document: state.document, sequence: ++state.sequence, startedAt: Date.now() });
       state.pending.add(request);
     }
   });
@@ -34,12 +36,13 @@ export function trackRequests(page) {
       if (entry.document !== state.document) continue;
       const cutoff = {
         method: request.method(), pathname: new URL(request.url()).pathname,
-        document: entry.document, startedAt: entry.startedAt,
+        document: entry.document, sequence: entry.sequence, startedAt: entry.startedAt,
+        settledSequence: state.settledSequence,
         settledAt: state.settledAt, documentEndedAt: Date.now(),
       };
       // Only a read admitted after the preceding successful settle can be
       // owned by this departure. Earlier work and writes still fail the gate.
-      if (state.settledAt > 0 && entry.startedAt > state.settledAt &&
+      if (state.settledSequence !== null && entry.sequence > state.settledSequence &&
           ["GET", "HEAD"].includes(request.method())) {
         state.pending.delete(request);
         console.info("[Vector document read cutoff] " + JSON.stringify(cutoff));
@@ -70,6 +73,7 @@ export async function settleReads(page, limit = 10000) {
         [...pending].map((r) => [r.method(), new URL(r.url()).pathname]),
       ),
   );
+  state.settledSequence = state.sequence;
   state.settledAt = Date.now();
 }
 // A full-document navigation unmounts private polling. Wait for the current

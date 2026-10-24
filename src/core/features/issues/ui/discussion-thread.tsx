@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useHydrated } from "../../../app/initial-resources";
 import type { z } from "zod";
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
@@ -53,7 +54,9 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
   const [expanded, setExpanded] = useState(false),
     [replying, setReplying] = useState(false),
     [reply, setReply] = useState("");
-  const { busy, mutate } = shared;
+  const hydrated = useHydrated();
+  const { mutate } = shared;
+  const busy = shared.busy || !hydrated;
   const writable = shared.writable !== false;
   const resolve = (resolved: boolean) => mutate(`comments/${root.id}/resolution`, json("POST", { resolved }));
   if (root.resolvedAt && !expanded)
@@ -67,7 +70,7 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
           <span className="comment-thread-count">
             {root.actor} · {replies.length} {replies.length === 1 ? "reply" : "replies"}
           </span>
-          <button type="button" onClick={() => setExpanded(true)}>Show thread</button>
+          <button type="button" disabled={busy} onClick={() => setExpanded(true)}>Show thread</button>
           <button type="button" disabled={shared.writable === false || busy} onClick={() => void resolve(false)}>Reopen</button>
         </p>
       </section>

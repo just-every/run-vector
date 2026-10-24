@@ -7,7 +7,7 @@ import {openDisclosures} from './ui-controls-checks.mjs';
 // A long journey can outlive the inviter's app-local email proof. Renew it
 // through the same public confirmation door before the next privileged action.
 const confirmedProofs = new Map();
-async function confirmInviter(page,context,base,state) {
+export async function confirmInviter(page,context,base,state) {
  const session=await withOperatorClient(context,async client=>{const response=await client.get(base+'/auth/session');assert.equal(response.status(),200);return await response.json()});
  const confirmedAt=confirmedProofs.get(session.id)??session.createdAt;
  if(Date.now()-confirmedAt<5*60_000)return;

@@ -1,3 +1,4 @@
+import {confirmInviter} from './core-operator-journey.mjs';
 import assert from 'node:assert/strict';
 import {navigate} from './collaboration-navigation.mjs';
 import {openDisclosures} from './ui-controls-checks.mjs';
@@ -10,6 +11,7 @@ export function readerApi(page,base){return async(path,method='GET',data,status=
 /** Native invitation, with no credentials retained in browser proof. */
 export async function inviteReader({owner,browser,runtime,email,name,role='viewer',teams=[],form=false,beforeSend}){
  const {base,sql}=runtime;
+ await confirmInviter(owner,owner.context(),base,runtime.state);
  if(form){
   await navigate(owner,base+'/app/settings');await openDisclosures(owner);
   const invite=owner.getByRole('form',{name:'Invite member',exact:true});

@@ -4901,7 +4901,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/discussion-thread.tsx": {
-      "sha256": "889c0b8020833d51327fcae4611dffcf3375745384c7046a52e0ed68e5504c70",
+      "sha256": "ec0874af0624f3cc87c87d589105ab8d1856873f275b080d9a623b3081746996",
       "executable": false
     },
     "src/core/features/issues/ui/discussion.tsx": {
@@ -6417,7 +6417,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-navigation.mjs": {
-      "sha256": "62337892f32215bf90e6e315da7333fd16b98803422db0007e6db038974189ba",
+      "sha256": "371209a693218aad3ffa4cb86cb2ad0d95e1b02668f9c55b1090afed588f8ec5",
       "executable": false
     },
     "tests/e2e/collaboration-pagination.mjs": {
@@ -6505,7 +6505,7 @@
       "executable": false
     },
     "tests/e2e/core-operator-journey.mjs": {
-      "sha256": "a362930bc16479c6970b60f400eb85422444ea4137473ecbaafce561ca2eabfd",
+      "sha256": "19f99c42925800d36b2e118f68207db3c61222ff4a9d0bb6929a298421a43450",
       "executable": false
     },
     "tests/e2e/core-page-audit.mjs": {
@@ -6873,7 +6873,7 @@
       "executable": false
     },
     "tests/e2e/role-reader-support.mjs": {
-      "sha256": "cef5ce27878f88c85d7d31fb831e3963a9ba4d8c0f0990ee952cfe8f050efc0f",
+      "sha256": "c3f33336c731800c7ba445b9d6555b943ee0655a96e05d0a913507aa9450aaf1",
       "executable": false
     },
     "tests/e2e/role-ui-support.mjs": {
