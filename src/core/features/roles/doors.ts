@@ -157,6 +157,7 @@ export const doors: Door[] = [
   { method: 'PUT', path: '/settings/teams/:id/housekeeping', row: 'teams.settings', teams: team('id') },
   { method: 'GET', path: '/settings/teams/:teamId/email-intake', row: 'teams.settings', teams: team('teamId') },
   { method: 'PUT', path: '/settings/teams/:teamId/email-intake', row: 'teams.settings', teams: team('teamId') },
+  { method: 'PUT', path: '/settings/teams/:teamId/email-intake/event-key', row: 'teams.settings', teams: team('teamId') },
   { method: 'POST', path: '/settings/teams/:id/housekeeping/preview', row: 'teams.settings', teams: team('id') },
   { method: 'PATCH', path: '/teams/:teamId/subissue-rule', row: 'teams.settings', teams: team('teamId') },
   { method: 'POST', path: '/settings/teams/:id/statuses', row: 'teams.workflow', teams: team('id') },

@@ -15,6 +15,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
  await api('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-83',targetDate:'2026-11-06'});
  await api('/settings/cycles','POST',{name:'synthetic-vector-84',teamId:team.id,startsLocal:'2026-11-01T00:00',endsLocal:'2026-11-08T00:00'});
  const created=await api('/issues','POST',{teamId:team.id,projectId:project.id,title:'synthetic-vector-85',dueDate:'2026-11-04'}),identifier=created.identifier;
+ await api('/releases','POST',{name:'synthetic-vector-2302',teamId:team.id,targetDate:'2026-11-06'});
  const panel=page.getByRole('region',{name:'Month calendar',exact:true});
  const ready=()=>page.locator('[data-month-calendar-ready="true"]').waitFor();
  const day=async value=>{await panel.locator(`[data-calendar-day="${value}"]>button`).click();await panel.getByRole('region',{name:'Selected day events',exact:true}).waitFor();};
@@ -39,7 +40,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
   await page.mouse.move(to.x+18,to.y+18,{steps:12});await page.mouse.move(to.x+20,to.y+20);await page.mouse.up();
   assert.equal((await saved).status(),200);await ready();
   const moved=await api('/issues/'+identifier);assert.equal(moved.dueDate,'2026-11-06');assert.equal(moved.activity.length,activityBefore+1);assert(moved.activity.some(a=>a.previousValue?.dueDate==='2026-11-04'&&a.nextValue?.dueDate==='2026-11-06'));
-  await page.getByRole('button',{name:'Dismiss Undo notice',exact:true}).click();await day('2026-11-06');assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-83'));assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-84'));await proof(theme,width,'drag');
+  await page.getByRole('button',{name:'Dismiss Undo notice',exact:true}).click();await day('2026-11-06');assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-83'));assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-84'));assert((await panel.getByRole('region',{name:'Selected day events',exact:true}).textContent()).includes('synthetic-vector-2302'));await proof(theme,width,'drag');
   await event().getByRole('button',{name:'Change due date for '+identifier,exact:true}).focus();await page.keyboard.press('Enter');
   const form=panel.getByRole('form',{name:'Change due date for '+identifier,exact:true});await form.getByLabel('New due date',{exact:true}).fill('2026-11-07');await form.getByRole('button',{name:'Save due date',exact:true}).click();await ready();
   const keyboard=await api('/issues/'+identifier);assert.equal(keyboard.dueDate,'2026-11-07');assert.equal(keyboard.activity.length,moved.activity.length+1);

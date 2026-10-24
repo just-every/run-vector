@@ -19,6 +19,8 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
     const response=await call('/calendar/feeds','POST',{teamId},cookie);expect(response.status).toBe(201);
     return await response.json() as {id:string;url:string;version:number};
   };
+  const releaseResult=await call('/releases','POST',{name:'synthetic-vector-2301',teamId:team.id,targetDate:'2026-11-06',description:'synthetic-vector-private-release-body'});expect(releaseResult.status).toBe(201);
+  const release=await releaseResult.json() as {id:string};
   const feed=await make(null), path=new URL(feed.url).pathname;
   const response=await request(path);expect(response.status).toBe(200);
   expect(response.headers.get('cache-control')).toBe('no-store');expect(response.headers.get('set-cookie')).toBeNull();
@@ -28,6 +30,14 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   expect(text).toContain('UID:issue-'+issue.id+'-2026-11-04@vector');
   expect(text).toContain('DTSTART;VALUE=DATE:20261104\r\nDTEND;VALUE=DATE:20261105');
   expect(text).not.toContain('Never include this description');
+  expect(text).toContain('synthetic-vector-2301');expect(text).not.toContain('synthetic-vector-private-release-body');
+  expect(text).toContain('UID:release-'+release.id+'@vector');
+  const {afterNativeStatement}=await import('./notification-session-fixture');
+  let lostDuringRead=false;
+  const changing=afterNativeStatement(async sql=>{if(!lostDuringRead&&sql.includes('FROM releases r')){lostDuringRead=true;expect((await call('/settings/teams/'+team.id+'/members/'+memberId,'DELETE')).status).toBe(200);}});
+  expect((await request(path,'GET',undefined,'',{DB:changing})).status).toBe(404);expect(lostDuringRead).toBe(true);
+  expect((await call('/settings/teams/'+team.id+'/members/'+memberId,'PUT',{role:'member'})).status).toBe(200);
+
   for(const line of folded.split('\r\n'))expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
   const stored=await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(feed.id).first<string>('token_hash');
   expect(stored).toMatch(/^[a-f0-9]{64}$/);expect(path.includes(stored!)).toBe(false);
@@ -36,7 +46,7 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   const calendar=await call('/calendar/events?month=2026-11','GET',undefined,member);expect(calendar.status).toBe(200);
   const month=await calendar.json() as {month:string;events:{id:string;kind:string;identifier?:string;version?:number;firstDay:string;lastDay:string}[]};expect(month.month).toBe('2026-11');
   expect(month.events.filter(e=>e.id===`issue-${issue.id}-2026-11-04`)).toHaveLength(1);
-  for(const kind of ['issue','cycle','milestone'])expect(month.events.some(e=>e.kind===kind)).toBe(true);
+  for(const kind of ['issue','cycle','milestone','release'])expect(month.events.some(e=>e.kind===kind)).toBe(true);
   const event=month.events.find(e=>e.identifier===issue.identifier)!;
   const move=await call('/issues/'+issue.identifier,'PATCH',{expectedVersion:event.version,dueDate:'2026-11-06'},member);expect(move.status).toBe(200);
   const changedIssue=await move.json() as {version:number;dueDate:string;activity:{kind:string;previousValue:{dueDate?:string};nextValue:{dueDate?:string}}[]};expect(changedIssue.dueDate).toBe('2026-11-06');

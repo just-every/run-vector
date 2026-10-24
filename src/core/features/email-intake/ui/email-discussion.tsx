@@ -25,7 +25,7 @@ export function CommentEmailDetails({ email, commentId, identifier }: {
       <EmailAttachments identifier={identifier} attachments={message.attachments} />
     </section>)}
     {email.deliveries.filter(delivery => delivery.commentId === commentId).map((delivery, index) => <p key={`${delivery.createdAt}-${index}`} role="status" aria-label="Email delivery outcome">
-      Email delivery: {delivery.status}{delivery.status === "accepted" ? " · Provider accepted; inbox delivery is not confirmed." : ""}
+      Email delivery: {delivery.providerOutcome ?? delivery.status}{delivery.status === "accepted" && !delivery.providerOutcome ? " · Provider accepted; inbox delivery is not confirmed." : ""}
       {delivery.status === "uncertain" ? " · Delivery could not be confirmed. Check the provider before sending another reply." : ""}
       {delivery.error ? ` · ${delivery.error}` : ""}
     </p>)}

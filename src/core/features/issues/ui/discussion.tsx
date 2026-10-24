@@ -29,7 +29,7 @@ function DiscussionContents({
 }) {
   const fileInput = useRef<HTMLInputElement>(null);
   const hydrated = useHydrated();
-  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema, undefined, {
+  const email = useApiResource(`/api/issues/${identifier}/email-intake`, issueEmailSchema, 4000, {
     abortPendingOnDispose: false,
   });
   function emailSent() {

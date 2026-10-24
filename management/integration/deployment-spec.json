@@ -598,6 +598,12 @@
       "name": "0098_issue_reactions.sql",
       "sha256": "c0f651aee7c0b272fc2c573bbcb493531800895cb68d245f68e73df813227945",
       "sql": "CREATE TABLE issue_reactions (\n  issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  target_id TEXT NOT NULL DEFAULT '',\n  emoji TEXT NOT NULL CHECK (emoji IN ('👍','❤️','🎉','👀','🚀','👎')),\n  actor_operator_id TEXT NOT NULL REFERENCES operators(id),\n  created_at TEXT NOT NULL,\n  PRIMARY KEY (issue_id,target_id,emoji,actor_operator_id)\n);\nCREATE INDEX issue_reactions_actor ON issue_reactions(actor_operator_id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0099_email_provider_events.sql",
+      "sha256": "97b35a52dedab86b30dab07da265625e680f4818ed1fd08dcec3c2a6464762a7",
+      "sql": "ALTER TABLE team_email_intake ADD COLUMN event_verification_key TEXT;\nALTER TABLE intake_email_deliveries ADD COLUMN provider_outcome TEXT CHECK(provider_outcome IN('accepted','bounced'));\nCREATE TABLE intake_email_provider_events (\n team_id TEXT NOT NULL REFERENCES teams(id) ON DELETE CASCADE,\n event_id TEXT NOT NULL,\n delivery_id TEXT NOT NULL REFERENCES intake_email_deliveries(id) ON DELETE CASCADE,\n outcome TEXT NOT NULL CHECK(outcome IN('accepted','bounced')),\n created_at TEXT NOT NULL,\n PRIMARY KEY(team_id,event_id)\n);\nCREATE TRIGGER intake_event_key_restore AFTER UPDATE OF phase ON rer_portability_jobs\nWHEN NEW.kind='import' AND NEW.phase='complete' AND OLD.phase!='complete' BEGIN\n UPDATE team_email_intake SET event_verification_key=NULL;\nEND;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

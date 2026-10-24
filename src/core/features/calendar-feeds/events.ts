@@ -16,7 +16,8 @@ export async function readCalendarEvents(source: D1Database, actor: string, scop
     ? "EXISTS(SELECT 1 FROM issues i WHERE i.project_id=p.id AND i.team_id=?)"
     : scope.kind === "personal" ? "(p.lead_operator_id=? OR EXISTS(SELECT 1 FROM issues i WHERE i.project_id=p.id AND i.assignee_operator_id=?))" : "1";
   const milestoneValues = scope.kind === "team" ? [scope.teamId] : scope.kind === "personal" ? [actor, actor] : [];
-  const [issues, cycles, milestones] = await db.batch([
+  const releaseWhere=scope.kind==='team'?'r.team_id=?':scope.kind==='personal'?"(r.team_id IS NULL OR EXISTS(SELECT 1 FROM team_members member WHERE member.team_id=r.team_id AND member.operator_id=?))":'1';
+  const [issues, cycles, milestones, releases] = await db.batch([
     db.prepare(`SELECT i.id,i.identifier,i.title,i.due_date day,i.version,i.team_id teamId,i.updated_at updatedAt
       FROM issues i JOIN teams t ON t.id=i.team_id WHERE t.workspace_id=? AND i.due_date IS NOT NULL
       AND i.archived_at IS NULL AND ${publicOnly?'t.is_private=0':'1'} AND ${issueWhere} ORDER BY i.due_date,i.identifier`).bind(access.workspace_id, ...issueValues),
@@ -26,6 +27,11 @@ export async function readCalendarEvents(source: D1Database, actor: string, scop
     db.prepare(`SELECT m.id,m.name,m.target_date day,m.project_id projectId,m.updated_at updatedAt
       FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE p.workspace_id=?
       AND m.target_date IS NOT NULL AND ${publicOnly?'NOT EXISTS(SELECT 1 FROM main.issues hidden JOIN main.teams private ON private.id=hidden.team_id WHERE hidden.project_id=p.id AND private.is_private=1)':'1'} AND ${milestoneWhere} ORDER BY m.target_date,m.id`).bind(access.workspace_id, ...milestoneValues),
+    db.prepare(`SELECT r.id,r.name,r.target_date day,r.updated_at updatedAt FROM releases r
+      WHERE r.workspace_id=? AND r.target_date IS NOT NULL
+      AND (r.team_id IS NULL OR r.team_id IN(SELECT id FROM teams))
+      AND ${publicOnly?"(r.team_id IS NULL OR EXISTS(SELECT 1 FROM teams t WHERE t.id=r.team_id AND (t.is_private=0 OR EXISTS(SELECT 1 FROM team_members member WHERE member.team_id=t.id AND member.operator_id=?))))":'1'}
+      AND ${releaseWhere} ORDER BY r.target_date,r.id`).bind(access.workspace_id,...(publicOnly?[actor]:[]),...issueValues),
   ]);
   const events: CalendarEvent[] = [
     ...(issues.results as { id: string; identifier: string; title: string; day: string; version: number; teamId: string; updatedAt: string }[]).map(i => ({
@@ -40,6 +46,10 @@ export async function readCalendarEvents(source: D1Database, actor: string, scop
     ...(milestones.results as { id: string; name: string; day: string; projectId: string; updatedAt: string }[]).map(m => ({
       id: "milestone-" + m.id, kind: "milestone" as const, title: m.name, start: m.day, end: addDays(m.day, 1),
       allDay: true, url: origin + "/app/projects/" + m.projectId, updatedAt: m.updatedAt,
+    })),
+    ...(releases.results as {id:string;name:string;day:string;updatedAt:string}[]).map(release=>({
+      id:'release-'+release.id,kind:'release' as const,title:release.name,start:release.day,end:addDays(release.day,1),
+      allDay:true,url:origin+'/app/releases/'+release.id,updatedAt:release.updatedAt,
     })),
   ];
   await browseActor(db, actor, access.workspace_id);

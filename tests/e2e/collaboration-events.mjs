@@ -325,6 +325,7 @@ export async function collaborationEvents({
       await own.getByLabel('Who reacted 👍',{exact:true}).click();
       await own.getByRole('listitem').filter({hasText:owner.name}).waitFor();
       await capture('reactions-'+(label==='Description reactions'?'description':'comment'));
+      await own.screenshot({path:'.artifacts/verification/collaboration-browser/reactions-'+(label==='Description reactions'?'description':'comment')+'-'+page.viewportSize().width+'.png'});
       await receipt(page,path+'/reactions','DELETE',()=>own.getByRole('button',{name:'Remove 👍 reaction',exact:true}).click());
     }
     assert.equal(runtime.sql('SELECT count(*) n FROM notifications')[0].n,before);

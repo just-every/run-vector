@@ -13,6 +13,14 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const {seedIntakeForTeam,recordedReply,mailBindings}=await import('./email-intake-fixture'),{eventSigner}=await import('../sendgrid-event-fixture');
+ const mail=await seedIntakeForTeam(f.team.id,f.cookie),reply=await recordedReply(f.cookie,mail.identifier,'synthetic-vector-2401');expect(reply.response.status).toBe(201);
+ const signer=await eventSigner();expect((await f.call(`/settings/teams/${f.team.id}/email-intake/event-key`,'PUT',{key:signer.publicKey})).status).toBe(200);
+ const intakeRevision=await env.DB.prepare('SELECT revision FROM team_email_intake WHERE team_id=?').bind(f.team.id).first<number>('revision');
+ const provider=await env.DB.prepare('SELECT provider_message_id FROM intake_email_deliveries WHERE issue_id=(SELECT id FROM issues WHERE identifier=?)').bind(mail.identifier).first<string>('provider_message_id');expect(provider).toBeTruthy();
+ const providerEvent=await signer.sign([{sg_event_id:'synthetic-vector-2402',sg_message_id:provider,email:'synthetic-vector-712@example.test',event:'bounce'}]);
+ expect((await createServerApp().request(mailBindings.APP_ORIGIN+`/api/integrations/sendgrid/events/${f.team.id}`,{method:'POST',...providerEvent},mailBindings)).status).toBe(200);
+
  const calendarCreated=await f.call('/calendar/feeds','POST',{});expect(calendarCreated.status).toBe(201);const calendarFeed=await calendarCreated.json() as {id:string;url:string};
  expect((await request(new URL(calendarFeed.url).pathname)).status).toBe(200);
  const dashboardCreated=await f.call('/dashboards','POST',{name:'synthetic-vector-35',widgets:[{name:'Portable count',kind:'count',filters:{q:f.issue.identifier},chart:{}}]});expect(dashboardCreated.status).toBe(201);const portableDashboard=await dashboardCreated.json() as {id:string;widgets:unknown[]};
@@ -77,6 +85,7 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
  const download=await f.call('/portability/exports/'+id+'/download');expect(download.status).toBe(200);const records=[];for await(const row of readArchive(download.body!))records.push(row);
+ expect(JSON.stringify(records)).not.toContain(signer.publicKey);expect(JSON.stringify(records)).toContain('bounced');
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore','vector_slack_member_links','vector_slack_request_keys'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
  expect(records[0].kind==='manifest' && (records[0].tables.find(t=>t.name==='issue_reference_subjects')?.count??0)>0).toBe(true);
@@ -113,6 +122,10 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
  const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
  expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);
+ const restoredMail=await targetCall(`/api/issues/${mail.identifier}/email-intake`,'GET',undefined,historical);expect(restoredMail.status).toBe(200);expect((await restoredMail.json() as any).deliveries[0].providerOutcome).toBe('bounced');
+ const restoredIntake=await targetCall(`/api/settings/teams/${f.team.id}/email-intake`,'GET',undefined,historical);expect(restoredIntake.status).toBe(200);expect((await restoredIntake.json() as any).eventWebhook.configured).toBe(false);
+ expect((await createServerApp().request(targetBindings.APP_ORIGIN+`/api/integrations/sendgrid/events/${f.team.id}`,{method:'POST',...providerEvent},targetBindings)).status).toBe(401);
+
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM calendar_feed_tokens').first<number>('n')).toBe(0);
  const restoredReferences=await targetCall('/api/issues/'+referenceSource.identifier+'/references','GET',undefined,historical);expect(restoredReferences.status).toBe(200);expect(await restoredReferences.json()).toEqual(referenceBefore);
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
@@ -149,7 +162,11 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  }
  expect((await restoreStatus()).status.effectsHeld).toBe(1);
  const again=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,historical));
- expectAuditArchiveHistory(records,again);
+ // Import deliberately retires the source team's delegated sending authority.
+ // Keep exact equality for every other field and every replay/outcome row.
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT enabled,acknowledgement,actor_operator_id,revision,event_verification_key FROM team_email_intake WHERE team_id=?').bind(f.team.id).first()).toEqual({enabled:0,acknowledgement:0,actor_operator_id:null,revision:intakeRevision!+1,event_verification_key:null});
+ const expectedAfterMailRestore=records.map(record=>record.kind==='part'?{...record,items:record.items.map(item=>item.kind==='row'&&item.table==='team_email_intake'&&item.row.team_id===f.team.id?{...item,row:{...item.row,enabled:0,acknowledgement:0,actor_operator_id:null,revision:intakeRevision!+1}}:item)}:record);
+ expectAuditArchiveHistory(expectedAfterMailRestore,again);
  const auditResponse=await targetCall('/api/settings/audit','GET',undefined,historical);expect(auditResponse.status).toBe(200);
  const restoredAudit=auditSchema.parse(await auditResponse.json());
  expect((await targetCall('/api/settings/audit.csv?through='+restoredAudit.through,'GET',undefined,historical)).status).toBe(200);

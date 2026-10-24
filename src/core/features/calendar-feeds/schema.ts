@@ -13,7 +13,7 @@ export const feedListSchema = z.object({
 });
 export const feedReceiptSchema = z.object({ id, url: z.string().url(), version: z.number() });
 export type CalendarEvent = {
-  id: string; kind: "issue" | "cycle" | "milestone"; title: string;
+  id: string; kind: "issue" | "cycle" | "milestone" | "release"; title: string;
   start: string; end: string; allDay: boolean; url: string; updatedAt: string;
   identifier?: string; version?: number; teamId?: string;
 };
