@@ -53,6 +53,9 @@ export async function privateVisibilityJourney(w:Workspace) {
  expect((await member.call(`/teams/${team.id}/join`,'POST',{})).status).toBe(403);
  expect((await member.call(`/teams/${team.id}/requests`,'POST',{})).status).toBe(404);
  expect((await owner.call(`/settings/teams/${team.id}/members/${w.lead.id}`,'PUT',{role:'owner'})).status).toBe(200);
+ // Admin membership authority sees the owner guard without content admission.
+ expect((await admin.call(`/settings/teams/${team.id}/members/${w.lead.id}`,'DELETE')).status).toBe(200);
+ expect((await admin.call(`/settings/teams/${team.id}/members/${w.lead.id}`,'PUT',{role:'owner'})).status).toBe(200);
  expect((await w.lead.call(`/settings/teams/${team.id}/members/${member.id}`,'PUT',{role:'member'})).status).toBe(200);
  expect((await member.call(`/issues/${issue.identifier}`)).status).toBe(200);
  expect((await member.api(`/issues/${issue.identifier}`)).status).toBe(200);
