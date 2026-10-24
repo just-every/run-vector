@@ -1,4 +1,4 @@
-import {projectTemplatesJourney} from './project-templates-journey.mjs';
+import {projectTemplatesJourney,nativeProjectTemplatesJourney} from './project-templates-journey.mjs';
 // Settle native polling before replacing an authorized private document.
 import { beforePrivateNavigation } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
@@ -111,7 +111,7 @@ export async function authorProject({ page, runtime, capture, clause }) {
   );
   await capture("project-markdown-detail");
 
-  await clause("PROJ-012", "save project structure, launch native issue teams and retain projects after template deletion", async()=>{await projectTemplatesJourney(page,page.context(),runtime,async name=>capture(name));});
+  await clause("PROJ-012", "save project structure, launch native issue teams and retain projects after template deletion", async()=>{await projectTemplatesJourney(page,page.context(),runtime,async name=>capture(name));await nativeProjectTemplatesJourney(page.context().browser());});
   await beforePrivateNavigation(page, base + "/app/settings");
   await page.goto(base + "/app/settings");
   await openDisclosures(page);

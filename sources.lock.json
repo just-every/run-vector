@@ -6313,7 +6313,7 @@
       "executable": false
     },
     "tests/e2e/admin-project-cycle-journey.mjs": {
-      "sha256": "7965e2593852d09484de214ba0d8f9eb398d0893bd8c0ac7c512990622ea254a",
+      "sha256": "9eb80858256ce7ebf802ee7d1e9dc0058f19610b86b7020b14b255242bedf812",
       "executable": false
     },
     "tests/e2e/admin-request-diagnostics.mjs": {
@@ -6793,7 +6793,7 @@
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
-      "sha256": "ba414c74ce54c43b58c7d9c38201773fb61faa9d104e8a9baa21a0e38a6fb4d5",
+      "sha256": "99c0d15dde04e8a8ef70d7a88dcf95ac4f162c642213f246a45e33f183280781",
       "executable": false
     },
     "tests/e2e/public-development.mjs": {

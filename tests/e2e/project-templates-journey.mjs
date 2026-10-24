@@ -1,5 +1,9 @@
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
+import {readFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {verificationDirectory} from '../../scripts/verification-paths.mjs';
+import {createUiRuntime} from './ui-runtime-support.mjs';
+import {signIn,openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {createRequire} from 'node:module';
 import {beforePrivateNavigation} from './collaboration-navigation.mjs';
 const require=createRequire(import.meta.url),axe=await readFile(require.resolve('axe-core/axe.min.js'),'utf8');
@@ -40,4 +44,18 @@ export async function projectTemplatesJourney(page,context,runtime,capture){
  }
  assert.deepEqual(errors,[],'no template hydration mismatch or page errors');
  }finally{page.off('pageerror',onError);page.off('console',onConsole);if(viewport)await page.setViewportSize(viewport);}
+}
+
+// Keep the historical native sample installation distinct from configured-owner
+// setup: its first Owner has public issue access without any team memberships.
+export async function nativeProjectTemplatesJourney(browser){
+ const runtime=createUiRuntime(),output=resolve(verificationDirectory,'native-template-browser');let page;
+ await mkdir(output,{recursive:true});
+ try{
+  runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);
+  assert.equal(runtime.sql('SELECT count(*) count FROM team_members')[0].count,0,'native sample is not silently joined to a team');
+  page=await openAuthenticatedPage(browser,cookie,runtime.base);page.setDefaultTimeout(20000);
+  await projectTemplatesJourney(page,page.context(),runtime,(name,current)=>current.screenshot({path:resolve(output,name+'.png'),fullPage:true}));
+  assert.equal(runtime.sql('SELECT count(*) count FROM team_members')[0].count,0,'template launch never backfills membership');
+ }finally{await page?.context().close();await runtime.stop();}
 }
