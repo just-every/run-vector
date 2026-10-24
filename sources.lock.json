@@ -6801,7 +6801,7 @@
       "executable": false
     },
     "tests/e2e/private-team-journey.mjs": {
-      "sha256": "53f1351f7575bd38bfd8ae197664f5efa6c1f49570da1e6f38f6e1ce10b2509d",
+      "sha256": "2af5ce2ad0365ae60a58216643764a1552f1a00cbf4f1904f174c567e353207e",
       "executable": false
     },
     "tests/e2e/profile-runtime.mjs": {

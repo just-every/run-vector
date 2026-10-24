@@ -19,6 +19,7 @@ export async function privateTeamJourney({page,peer,memberId,runtime,clause,evid
   await navigate(page,base+'/app/settings');await openDisclosures(page);
   const create=page.getByRole('form',{name:'Create team',exact:true});
   await create.getByLabel('Team name',{exact:true}).fill(name);await create.getByLabel('Identifier prefix',{exact:true}).fill(width===1440?'SYNUIA':'SYNUIB');
+  if(width===1440)await inspect(page,create,'private-team-create-controls');
   const made=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/teams'&&r.request().method()==='POST');
   await create.getByRole('button',{name:'Create team',exact:true}).click();assert.equal((await made).status(),200);
   const team=(await api(page,'/settings/administration')).teams.find(t=>t.name===name);
@@ -45,7 +46,7 @@ export async function privateTeamJourney({page,peer,memberId,runtime,clause,evid
    await navigate(peer,base+'/app');assert.ok(!(await peer.locator('main:visible').first().innerText()).includes(issue.identifier));
    await navigate(peer,base+'/app/settings');assert.equal(await peer.getByRole('button',{name:'Join '+name,exact:true}).count(),0);
   });
-  if(width===1440){await inspect(page,page.getByRole('combobox',{name:'Visibility of '+name,exact:true}).locator('..'),'private-team-owner-controls');await inspect(page,create,'private-team-create-controls');}
+  if(width===1440){await inspect(page,page.getByRole('combobox',{name:'Visibility of '+name,exact:true}).locator('..'),'private-team-owner-controls');}
   await clause('ROLE-002',`non-member Admin sees its name and privacy control, changes visibility, and cannot read its work at ${width}`,async()=>{
    await api(page,`/settings/operators/${memberId}/role`,'PATCH',{role:'admin'});
    await navigate(peer,base+'/app/settings');await openDisclosures(peer);
@@ -86,7 +87,7 @@ export async function privateTeamJourney({page,peer,memberId,runtime,clause,evid
    await navigate(peer,base+'/app/projects/'+project.id);await peer.getByRole('heading',{name:project.name,exact:true}).waitFor();assert.ok(!(await peer.locator('main:visible').first().innerText()).includes(issue.title));
   });
   if(width===1440)await inspect(peer,peer.locator('main:visible').first(),'private-team-spanning-project');
-  await navigate(peer,base+'/app/initiatives/'+initiative.id);await peer.getByRole('heading',{name:initiative.name,exact:true}).waitFor();assert.ok(!(await peer.locator('main:visible').first().innerText()).includes(issue.title));await peer.getByText(/Visible issues: 1/).waitFor();
+  await navigate(peer,base+'/app/initiatives/'+initiative.id);await peer.getByRole('heading',{name:initiative.name,exact:true,level:1}).waitFor();assert.ok(!(await peer.locator('main:visible').first().innerText()).includes(issue.title));await peer.getByText(/Visible issues: 1/).waitFor();
   if(width===1440)await inspect(peer,peer.locator('main:visible').first(),'private-team-spanning-initiative');
   await clause('ROLE-002 TEAM-007',`an exposed private request at ${width} grants no content or membership until its owner approves`,()=>privateTeamRequest({page,peer,memberId,runtime,team:{...team,identifier:issue.identifier},clause}));
   await set('public');assert.equal((await peer.request.get(base+`/api/issues/${issue.identifier}`)).status(),200);
