@@ -9,7 +9,8 @@ export const Route = createFileRoute('/signin')({
     try { login_hint = normalizeEmail(search.login_hint) } catch {}
     return { returnTo: typeof search.returnTo === 'string' ? search.returnTo : undefined, login_hint }
   },
-  loader: () => loadSignIn(),
+  loaderDeps: ({ search }) => ({ returnTo: search.returnTo }),
+  loader: ({ deps }) => loadSignIn({ data: deps }),
   component: editorLeaf(SignIn),
 })
 function SignIn() {

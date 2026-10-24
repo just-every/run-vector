@@ -51,7 +51,7 @@ try {
   await mkdir(evidence,{recursive:true});
   run(['d1','migrations','apply','vector-local','--local','--config','wrangler.jsonc','--persist-to',state]);
   await start();
-  browser=await chromium.launch({headless:true});
+  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
   const context=await browser.newContext({viewport:{width:1440,height:1000}});
   const page=await context.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
@@ -73,6 +73,29 @@ try {
   await page.waitForURL(origin+'/app');
   assert.ok((await context.cookies()).some(cookie=>cookie.name==='operator_session_local_'+port));
   assert.ok(!(await context.cookies()).some(cookie=>cookie.name==='vector_session'));
+  let handoffSubmissions=0;
+  page.on('request',request=>{if(request.url()===origin+'/auth/request')handoffSubmissions++;});
+  const spec=JSON.parse(await readFile('management/integration/deployment-spec.json','utf8'));
+  const signInUrl=new URL(spec.surfaces.app.signIn.path,origin);
+  signInUrl.searchParams.set('login_hint',config.FIRST_OWNER_EMAIL);
+  for(const width of [1440,390]) {
+    await page.setViewportSize({width,height:width===1440?1000:844});
+    for(const [returnTo,destination,name] of [
+      [undefined,'/app','app'],
+      ['/app/settings','/app/settings','settings'],
+      ['https://forbidden.example.test/','/app','unsafe'],
+    ]) {
+      const handoff=new URL(signInUrl);
+      if(returnTo) handoff.searchParams.set('returnTo',returnTo);
+      await page.goto(handoff.href);
+      assert.equal(page.url(),origin+destination,`signed-in ${name} handoff at ${width}`);
+      assert.equal(await page.getByRole('button',{name:'Send sign-in link',exact:true}).count(),0);
+      assert.equal(handoffSubmissions,0,'an admitted handoff never requests another email');
+      assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+      await page.screenshot({path:resolve(evidence,`signed-in-handoff-${name}-${width}.png`),fullPage:true});
+    }
+  }
+  await page.setViewportSize({width:1440,height:1000});
   await page.goto(origin+'/app/settings');
   await page.getByRole('heading',{name:'Settings',exact:true}).waitFor();
   await page.getByLabel('Name',{exact:true}).fill('Invited peer');
