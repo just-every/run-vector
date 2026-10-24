@@ -1,5 +1,6 @@
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
+import {invite,actor} from './base-auth-fixture';
 import type {collaborationFixture} from './collaboration-fixture';
 export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof collaborationFixture>>){
  const read=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
@@ -21,6 +22,27 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  await read(await bob('/teams/'+team.id+'/join','POST',{}));
  const labelState=await read(await f.call('/settings/labels','POST',{name:'synthetic-vector-1760',color:'#3355aa'}));
  const label=labelState.labels.find((l:any)=>l.name==='synthetic-vector-1760');
+ // A fresh label-only recipient separates creation's status channel from completion.
+ const completionCookie=await invite('synthetic-vector-1991@vector.test',f.cookie),completionId=await actor(completionCookie);
+ const completion=(path:string,method='GET',body?:unknown)=>f.any(completionCookie,path,method,body);
+ await read(await completion('/settings/notifications','PATCH',{mutedKinds:[],emailEnabled:true}));
+ await read(await completion('/settings/notifications/channels','PUT',{channels:[{kind:'status',emailMode:'off',slack:false},{kind:'completed',emailMode:'immediate',slack:false}]}));
+ await read(await completion('/subscriptions','POST',{subjectType:'label',subjectId:label.id}),201);
+ const matching=await f.create({title:'synthetic-vector-1992',labelIds:[label.id]});
+ const completionDeliveries=async()=>(await env.DB.prepare('SELECT d.* FROM notification_deliveries d JOIN notifications n ON n.id=d.notification_id WHERE n.issue_id=? AND n.recipient_id=? ORDER BY d.id').bind(matching.id,completionId).all()).results;
+ const createdNotices=await notices(completion,matching.identifier);
+ expect(createdNotices).toHaveLength(1);expect(createdNotices[0]).toMatchObject({causes:['status']});
+ expect(await completionDeliveries()).toHaveLength(0);
+ const completed=team.statuses.find(s=>s.category==='completed')!;
+ await read(await f.call('/issues/'+matching.identifier,'PATCH',{expectedVersion:matching.version,statusId:completed.id}));
+ const completedNotices=await notices(completion,matching.identifier);
+ expect(completedNotices).toHaveLength(2);
+ const newNotice=completedNotices.find((n:any)=>n.id!==createdNotices[0].id);
+ expect(newNotice).toMatchObject({causes:['completed']});
+ const sent=await completionDeliveries();expect(sent).toHaveLength(1);
+ expect(sent[0]).toMatchObject({notification_id:newNotice.id,status:'development'});
+ expect(await notices(completion,matching.identifier)).toEqual(completedNotices);
+ expect(await completionDeliveries()).toEqual(sent);
  const projectState=await read(await f.call('/settings/projects','POST',{name:'synthetic-vector-1761',leadOperatorId:f.owner}));
  const project=projectState.projects.find((p:any)=>p.name==='synthetic-vector-1761');
  const view=await read(await f.call('/views','POST',{name:'synthetic-vector-1762',isShared:true,query:{team:team.id,label:label.id}}),201);
