@@ -15,7 +15,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  const shot=async(name)=>{assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');await page.screenshot({path:resolve(evidence,`slack-003-${name}-${width}.png`)});};
  const axe=async(selector='.channel-settings')=>{await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});const result=await page.evaluate(selector=>axe.run(document.querySelector(selector)),selector);assert.deepEqual(result.violations.filter(v=>['critical','serious'].includes(v.impact)),[]);};
  await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
- const details=panel.locator('details');await details.locator('summary').click();await panel.getByRole('form',{name:'Slack credential'}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('credential');
+ const details=panel.locator('details').filter({has:page.getByRole('form',{name:'Slack credential',exact:true})});await details.locator('summary').click();await panel.getByRole('form',{name:'Slack credential'}).waitFor();await panel.scrollIntoViewIfNeeded();await shot('credential');
  await panel.getByLabel('Slack bot token',{exact:true}).fill('synthetic-browser-slack-credential-'+width);
  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/slack')&&r.request().method()==='POST');await panel.getByRole('button',{name:'Validate and save Slack token'}).click();assert.equal((await saved).status(),200);
  await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();assert.equal(await panel.getByLabel('Slack bot token').inputValue(),'');

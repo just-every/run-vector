@@ -17,7 +17,7 @@ export const appCredentials=profile.strict();
 const identity=(workspace:string)=>'slack-app:'+workspace;
 export function appManifest(origin:string){
  const base=new URL(origin);
- if(!['http:','https:'].includes(base.protocol)||base.username||base.password)throw new IntegrationError(503,'slack_origin_invalid');
+ if(!['http:','https:'].includes(base.protocol)||(base.protocol==='http:'&&!['127.0.0.1','localhost','[::1]'].includes(base.hostname))||base.username||base.password)throw new IntegrationError(503,'slack_origin_invalid');
  const callback=new URL('/api/integrations/slack/oauth/callback',base).href;
  return {display_information:{name:'Vector',description:'Workspace issue notifications'},features:{bot_user:{display_name:'Vector',always_online:false}},oauth_config:{redirect_urls:[callback],scopes:{bot:appScopes}},settings:{org_deploy_enabled:true,socket_mode_enabled:false,token_rotation_enabled:false}};
 }
