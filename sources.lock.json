@@ -5925,7 +5925,7 @@
       "executable": false
     },
     "src/core/features/team-membership/service.ts": {
-      "sha256": "26307a2bde5e2f5effc1d3c563608e6484733c3f73081963b3d03d7de06493af",
+      "sha256": "46e2c0b6bfe2a38006a39400cecf44e21abd12553e1e21887323ca3498b37766",
       "executable": false
     },
     "src/core/features/team-move/errors.ts": {
@@ -7573,7 +7573,7 @@
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
-      "sha256": "37c5a6944239134cf2f33f353395a0ae968ecb54ff073b51048050c27c51f467",
+      "sha256": "6f29066a01dcf6ad589b3f41f0c03e3fe6bf556dddb41b888d9ed251ac8a1a28",
       "executable": false
     },
     "tests/worker/role-probes.ts": {

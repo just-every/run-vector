@@ -14,9 +14,9 @@ const membership = (ctx: AdministrationContext, team: string, operator: string) 
 /** A team keeps at least one team owner; only leaving the workspace (OPS-004)
  * may leave it to its Admins until one is named. */
 async function keepsAnOwner(ctx: AdministrationContext, team: string, operator: string) {
-  const others = await ctx.db.prepare("SELECT count(*) AS n FROM team_members WHERE team_id=? AND role='owner' AND operator_id<>?").bind(team, operator).first<number>("n");
+  const others = await ctx.db.prepare("SELECT count(*) AS n FROM main.team_members WHERE team_id=? AND role='owner' AND operator_id<>?").bind(team, operator).first<number>("n");
   if (!others) throw new SettingsError("last_team_owner", "Name another team owner before the last one leaves.", 409);
-  return guard(ctx.db, "EXISTS(SELECT 1 FROM team_members WHERE team_id=? AND role='owner' AND operator_id<>?)", team, operator);
+  return guard(ctx.db, "EXISTS(SELECT 1 FROM main.team_members WHERE team_id=? AND role='owner' AND operator_id<>?)", team, operator);
 }
 const unchanged = (ctx: AdministrationContext, team: string, operator: string, role: TeamRole | null) =>
   guard(ctx.db, "(SELECT role FROM main.team_members WHERE team_id=? AND operator_id=?) IS ?", team, operator, role);
