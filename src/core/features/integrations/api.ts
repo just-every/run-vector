@@ -1,4 +1,6 @@
 import {createTeam} from "../administration/teams";
+import {setTeamPrivacy} from '../team-membership/privacy';
+import {teamPrivacySchema} from '../administration/schema';
 import {teamCreateSchema} from "../administration/schema";
 import { createLabel } from "../administration/labels";
 import { labelCreateSchema } from "../administration/schema";
@@ -80,6 +82,11 @@ export function createIntegrationApi(){
   try{await next();}finally{if(await needsNotificationDrain(c.env.DB)){try{await drainNotificationMail({...c.env,DB:fileSettlementDatabase(c.env.DB)},{eventIds:notificationEventIds(c.env.DB)});}catch{console.error('Integration notification delivery interrupted; durable intent retained.');}}
    try{await deliverCommittedDirectMessages({...c.env,DB:fileSettlementDatabase(c.env.DB)},directMessageEventIds(c.env.DB));}catch{console.error('Slack direct message delivery interrupted; durable intent retained for Cron.');}}
   if(!await admitted(raw,predicate)){await c.res.body?.cancel();c.res=c.json({error:'invalid_token'},401,{'Cache-Control':'no-store'});}
+ });
+ app.put('/teams/:id/privacy',async c=>{
+  const input=parse(teamPrivacySchema,await readRequestJson(c.req.raw));
+  await setTeamPrivacy(c.env.DB,c.get('operatorId'),c.req.param('id'),input.isPrivate);
+  return c.json({id:c.req.param('id'),isPrivate:input.isPrivate});
  });
  app.post('/teams',async c=>{
   const input=teamCreateSchema.omit({createSlackChannel:true}).parse(await readRequestJson(c.req.raw));

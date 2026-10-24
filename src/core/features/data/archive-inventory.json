@@ -1023,7 +1023,8 @@
     "settings_permission",
     "planning_permission",
     "membership_mode",
-    "requests_enabled"
+    "requests_enabled",
+    "is_private"
   ],
   "vector_auth_operators": [
     "auth_id",
@@ -1228,7 +1229,8 @@
     "issue_id",
     "identifier",
     "workspace_id",
-    "requested_at"
+    "requested_at",
+    "team_id"
   ],
   "vector_webhook_erasures": [
     "namespace",

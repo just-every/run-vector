@@ -6,7 +6,7 @@ export type CalendarScope = { kind: "personal" } | { kind: "team"; teamId: strin
 /** The feed and calendar view share this reader, always projected as the viewer.
  * Personal feeds contain assigned work, own-team cycles and milestones of
  * projects the reader leads or has assigned work in. Team feeds use contributing issues. */
-export async function readCalendarEvents(source: D1Database, actor: string, scope: CalendarScope, origin: string): Promise<CalendarEvent[]> {
+export async function readCalendarEvents(source: D1Database, actor: string, scope: CalendarScope, origin: string, publicOnly=false): Promise<CalendarEvent[]> {
   const db = visibilityDatabase(source, actor), access = await browseActor(db, actor);
   const issueWhere = scope.kind === "team" ? "i.team_id=?" : scope.kind === "personal" ? "i.assignee_operator_id=?" : "1";
   const issueValues = scope.kind === "team" ? [scope.teamId] : scope.kind === "personal" ? [actor] : [];
@@ -19,13 +19,13 @@ export async function readCalendarEvents(source: D1Database, actor: string, scop
   const [issues, cycles, milestones] = await db.batch([
     db.prepare(`SELECT i.id,i.identifier,i.title,i.due_date day,i.version,i.team_id teamId,i.updated_at updatedAt
       FROM issues i JOIN teams t ON t.id=i.team_id WHERE t.workspace_id=? AND i.due_date IS NOT NULL
-      AND i.archived_at IS NULL AND ${issueWhere} ORDER BY i.due_date,i.identifier`).bind(access.workspace_id, ...issueValues),
+      AND i.archived_at IS NULL AND ${publicOnly?'t.is_private=0':'1'} AND ${issueWhere} ORDER BY i.due_date,i.identifier`).bind(access.workspace_id, ...issueValues),
     db.prepare(`SELECT c.id,c.name,c.starts_at start,c.ends_at end,c.updated_at updatedAt
-      FROM cycles c JOIN teams t ON t.id=c.team_id WHERE t.workspace_id=? AND ${cycleWhere} ORDER BY c.starts_at,c.id`)
+      FROM cycles c JOIN teams t ON t.id=c.team_id WHERE t.workspace_id=? AND ${publicOnly?'t.is_private=0':'1'} AND ${cycleWhere} ORDER BY c.starts_at,c.id`)
       .bind(access.workspace_id, ...issueValues),
     db.prepare(`SELECT m.id,m.name,m.target_date day,m.project_id projectId,m.updated_at updatedAt
       FROM project_milestones m JOIN projects p ON p.id=m.project_id WHERE p.workspace_id=?
-      AND m.target_date IS NOT NULL AND ${milestoneWhere} ORDER BY m.target_date,m.id`).bind(access.workspace_id, ...milestoneValues),
+      AND m.target_date IS NOT NULL AND ${publicOnly?'NOT EXISTS(SELECT 1 FROM main.issues hidden JOIN main.teams private ON private.id=hidden.team_id WHERE hidden.project_id=p.id AND private.is_private=1)':'1'} AND ${milestoneWhere} ORDER BY m.target_date,m.id`).bind(access.workspace_id, ...milestoneValues),
   ]);
   const events: CalendarEvent[] = [
     ...(issues.results as { id: string; identifier: string; title: string; day: string; version: number; teamId: string; updatedAt: string }[]).map(i => ({

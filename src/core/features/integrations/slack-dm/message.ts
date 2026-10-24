@@ -34,3 +34,8 @@ export function directBody(origin:string,issue:DirectIssue,headline:string,actor
 export function refusalMessage(origin:string,identifier:string,reason:string){
  return {text:escapeSlack(identifier+': '+reason),blocks:[{type:'section',text:plain(identifier+': '+reason)},{type:'actions',block_id:'vector_issue',elements:[{type:'button',action_id:'vector_open',text:plain('Open '+identifier,75),url:issueLink(origin,identifier)}]}],unfurl_links:false,unfurl_media:false};
 }
+
+/** Private items disclose no actor, title, status or excerpt to Slack. */
+export function privateDirectBody(origin:string,identifier:string){
+ return JSON.stringify({text:'Private work changed. Sign in to Vector to view it.',blocks:[{type:'section',text:plain('Private work changed. Sign in to Vector to view it.')},{type:'actions',elements:[{type:'button',action_id:'vector_open',text:plain('Open Vector',75),url:issueLink(origin,identifier)}]}],unfurl_links:false,unfurl_media:false});
+}

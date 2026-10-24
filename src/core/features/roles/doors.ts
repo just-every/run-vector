@@ -43,6 +43,7 @@ const project: Resolve<string | null> = async ({ db, actor, params }) => (await 
 /** A create that asks the Slack bot for a channel acts under the channel row,
  * which admits no one the create row refuses (SLACK-003). */
 const channelOr = (row: RowId): Resolve<RowId> => async request => await field(request, 'createSlackChannel') === true ? 'channels.create' : row
+const teamCreation: Resolve<RowId> = async request => await field(request, 'isPrivate') === true ? 'teams.privacy' : channelOr('teams.create')(request)
 /** A move or copy acts on its issue's team and on the destination team. */
 const issueAndDestination: Resolve<string[] | null> = async request => {
   const destination = text(await field(request, 'teamId'))
@@ -131,7 +132,8 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/settings/notifications/slack/link', row: 'identity.personal' },
   // Teams and workflows
   { method: 'PUT', path: '/settings/teams/creation', row: 'teams.creation-setting' },
-  { method: 'POST', path: '/settings/teams', row: channelOr('teams.create') },
+  { method: 'POST', path: '/settings/teams', row: teamCreation },
+  { method: 'PUT', path: '/settings/teams/:id/privacy', row: 'teams.privacy' },
   { method: 'POST', path: '/teams/:teamId/join', row: 'teams.join', teams: team('teamId') },
   { method: 'POST', path: '/teams/:teamId/leave', row: 'teams.join', teams: team('teamId') },
   { method: 'PUT', path: '/settings/teams/:id/members/:operatorId', row: 'teams.members', teams: team('id') },
@@ -217,7 +219,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/settings/integrations/tokens', row: 'tokens.personal' },
   { method: 'DELETE', path: '/settings/integrations/tokens/:id', row: 'tokens.personal' },
   // Import, export and portability
-  { method: 'ALL', path: '/portability/*', row: ({ path }) => /^\/api\/portability\/imports(?:\/|$)/.test(path) ? 'data.restore' : 'data.export' },
+  { method: 'ALL', path: '/portability/*', row: ({ path }) => /^\/api\/portability\/imports(?:\/|$)/.test(path) ? 'data.restore' : 'data.export', teams:({db,actor})=>teamsOf(db,actor,'all') },
   ...([['GET', '/data/import/options'], ['GET', '/data/import/runs'], ['GET', '/data/import/runs/:id'], ['GET', '/data/import/runs/:id/originals'], ['GET', '/data/import/runs/:id/report'],
     ['GET', '/data/import/runs/:id/report.csv'], ['GET', '/data/import/runs/:id/rollback'], ['POST', '/data/import/preview'], ['POST', '/data/import/apply'],
     ['POST', '/data/import/runs/:id/resume'], ['POST', '/data/import/runs/:id/rollback']] as const)
@@ -229,7 +231,8 @@ export const doors: Door[] = [
 
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
-  { method: 'POST', path: '/teams', row: 'teams.create' },
+  { method: 'POST', path: '/teams', row: teamCreation },
+  { method: 'PUT', path: '/teams/:id/privacy', row: 'teams.privacy' },
   { method: 'POST', path: '/labels', row: 'labels.create' },
   { method: 'POST', path: '/issues', row: 'issues.write', teams: bodyTeam },
   { method: 'PATCH', path: '/issues/:identifier', row: async request => (await request.body() as { cycleId?: unknown } | undefined)?.cycleId !== undefined ? 'cycles.commit' : 'issues.write', teams: issue },

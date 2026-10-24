@@ -43,6 +43,7 @@ export const teams = sqliteTable('teams', {
   workspaceId: text('workspace_id').notNull(),
   name: text('name').notNull(),
   identifierPrefix: text('identifier_prefix').notNull(),
+  isPrivate: integer('is_private', { mode: 'boolean' }).notNull().default(false),
   archivedAt: text('archived_at'),
   ...timestamps,
 }, (table) => [

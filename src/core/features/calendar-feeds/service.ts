@@ -85,7 +85,7 @@ export async function feedContent(source: D1Database, value: string, origin: str
   if (!feed) return null;
   const db = visibilityDatabase(source, feed.creator_id);
   let events;
-  try { events = await readCalendarEvents(db, feed.creator_id, feed.team_id ? { kind: "team", teamId: feed.team_id } : { kind: "personal" }, origin); }
+  try { events = await readCalendarEvents(db, feed.creator_id, feed.team_id ? { kind: "team", teamId: feed.team_id } : { kind: "personal" }, origin,true); }
   catch (error) {
     if (error instanceof IssueAccessError || error instanceof SettingsError && [401,403,404].includes(error.status)) return null;
     throw error;

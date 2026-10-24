@@ -26,6 +26,7 @@ export const matrix = {
   'workspace.settings': row('Change workspace settings: timezone, the invite, label-creation and deletion settings, notification defaults (OPS-003, OPS-002, ISSUE-014, ISSUE-010, NOTIFY-007)', 'yes', 'yes', 'no', 'no'),
   'teams.creation-setting': row('Set who may create teams (TEAM-008)', 'yes', 'yes', 'no', 'no'),
   'teams.create': row('Create a team (TEAM-008)', 'yes', 'yes', 'member-team-creation', 'no'),
+  'teams.privacy': row('Make a team private or public (ROLE-002)', 'yes', 'yes', 'no', 'no'),
   'teams.members': row('Manage a team\'s members and team owners (ROLE-007, TEAM-007, ROLE-013)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.permissions': row('Set a team\'s two permissions, *Who manages team settings* and *Who manages cycles and templates* (ROLE-009)', 'yes', 'yes', 'team-owner', 'no'),
   'teams.membership': row('Set open or invite-only membership; approve join requests; add Members to an invite-only or private team (TEAM-007)', 'yes', 'yes', 'team-owner', 'no'),

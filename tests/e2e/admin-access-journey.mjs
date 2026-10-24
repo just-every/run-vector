@@ -1,3 +1,4 @@
+import {privateTeamJourney} from './private-team-journey.mjs';
 // Settle native polling before replacing an authorized private document.
 import {
   beforePrivateNavigation,
@@ -336,5 +337,6 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   });
   await inspect(peer, peer.getByRole("region", { name: "Members", exact: true }), "members-member-view");
   await exerciseGuestRoles({page,browser,runtime,clause,evidence});
+  await privateTeamJourney({page,peer,memberId,runtime,clause,evidence});
   return { context, peer, memberId };
 }
