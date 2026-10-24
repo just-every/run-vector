@@ -43,8 +43,8 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect((await json(await member.call('/settings/administration'))).labels).toContainEqual(expect.objectContaining({id:label.id,name:label.name}));
  expect((await json(await member.call(`/issues/${issue.identifier}`))).labels).toContainEqual(expect.objectContaining({id:label.id,name:label.name}));
  // Enumerate storage rather than maintaining an incomplete list of tables. Only
- // request-budget counters may change on a refused authenticated request.
- const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits') ORDER BY name").all<{name:string}>()).results.map(row=>row.name);
+ // request-budget counters and the independently asserted bearer-use audit may change.
+ const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' AND name<>'d1_migrations' AND name NOT IN ('access_rate_limits','oa_limits','integration_token_usage') ORDER BY name").all<{name:string}>()).results.map(row=>row.name);
  const stored=async()=>Object.fromEntries(await Promise.all(tables.map(async name=>[name,(await env.DB.prepare('SELECT * FROM \"'+name+'\"').all()).results.map(row=>JSON.stringify(row)).sort()])));
  const logicalId=ownComment.id;
  // Each registered work mutation is reached through its actual native/bearer transport.
@@ -53,9 +53,13 @@ export async function viewerVisibilityJourney(w:Workspace){
   await resetLimits();
   const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
   const before=await stored();
+  const usageBefore=(await env.DB.prepare('SELECT id FROM integration_token_usage').all<{id:string}>()).results.map(row=>row.id);
   const response=await send(path,door.method==='ALL'?'POST':door.method,{});
   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
+  const usage=(await env.DB.prepare('SELECT * FROM integration_token_usage').all()).results.filter(row=>!usageBefore.includes(row.id as string));
+  if(registry===apiDoors){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
+  else expect(usage).toHaveLength(0);
  }
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
