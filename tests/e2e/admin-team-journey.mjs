@@ -315,7 +315,7 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
     await add.getByRole("combobox", { name: "Team role", exact: true }).selectOption("member");
     await add.getByRole("button", { name: "Add member", exact: true }).click();
     await poll(() => [membership()], ([role]) => role === "member", "member added");
-    await page.getByRole("button", { name: "Make Role member a team owner", exact: true }).click();
+    await page.getByRole("group", { name: `${team.name} members`, exact: true }).getByRole("button", { name: "Make Role member a team owner", exact: true }).click();
     await poll(() => [membership()], ([role]) => role === "owner", "team owner named");
     const permissions = page.getByRole("form", { name: `Permissions for ${team.name}`, exact: true });
     await permissions.getByRole("combobox", { name: "Who manages team settings", exact: true }).selectOption("all_members");

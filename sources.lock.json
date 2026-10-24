@@ -6349,7 +6349,7 @@
       "executable": false
     },
     "tests/e2e/admin-team-journey.mjs": {
-      "sha256": "b7b9d4be006385d3f1980f634af860fcb94fcb055c2c7886acb37c18af60289f",
+      "sha256": "e69b9718a7bb0e85fd4fe143577ef25f906d444fe1b5b6d3e4c5d20b20a75524",
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
