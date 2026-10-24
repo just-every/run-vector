@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import {roleScreens} from '../role-ui-support.mjs';
 import {readFile} from 'node:fs/promises';
 export async function exerciseSlackApp({page,runtime,width,evidence}){
- const panel=page.getByRole('region',{name:'Install your Slack app',exact:true}),inspect=roleScreens(evidence);
+ const panel=page.getByRole('region',{name:'Install your Slack app',exact:true}),screens=roleScreens(evidence);
+ const inspect=async(...args)=>{const viewport=page.viewportSize();await screens(...args);await page.setViewportSize(viewport);};
  await panel.getByRole('heading',{name:'Install your Slack app',exact:true}).waitFor();
  await panel.getByText('Create or configure a Slack app',{exact:true}).click();
  await inspect(page,panel,'slack-app-configuration-'+width);

@@ -54,8 +54,8 @@ export async function slackAppInstall(){
   expect((await request('/api/settings/integrations/slack/app','GET',undefined,admin)).status).toBe(200);
   const adminState=await begin(admin);expect((await callback(adminState)).status).toBe(403);expect((await callback(adminState,admin)).status).toBe(303);
   expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(2);
-  await begin();await env.DB.prepare("UPDATE vector_integration_secret_keys SET valid_until=? WHERE identity LIKE 'slack-oauth:%'").bind(Date.now()-1).run();
-  const expired=await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack-oauth:%' AND valid_until<?").bind(Date.now()).first<number>('n');expect(expired).toBe(1);
+  const expiredState=await begin();await env.DB.prepare("UPDATE vector_integration_secret_keys SET valid_until=? WHERE identity LIKE 'slack-oauth:%'").bind(Date.now()-1).run();
+  const expired=await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack-oauth:%' AND valid_until<?").bind(Date.now()).first<number>('n');expect(expired).toBe(1);expect((await callback(expiredState)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(2);
   // The manual manifest path stores the same sealed profile, without a configuration token.
   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
   await begin();await read(await f.call('/settings/integrations/slack','DELETE'));
