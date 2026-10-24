@@ -1,3 +1,4 @@
+import { streamControlsReady } from './core-stream-controls-browser.mjs';
 import { requestLedger } from './core-request-ledger.mjs';
 import { intakePolicyJourney } from './core-intake-policy-journey.mjs';
 import { projectMembershipJourney } from './core-project-membership-journey.mjs';
@@ -754,6 +755,7 @@ try {
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');
   await page.waitForLoadState('networkidle');
+  await streamControlsReady(page);
   await settleReads(page);
   const timeOrigin = await page.evaluate(() => performance.timeOrigin);
   await page

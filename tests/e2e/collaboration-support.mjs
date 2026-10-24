@@ -1,3 +1,4 @@
+import { freePort } from '@runeditrun/rer/adapter-settings';
 import { lifecycleOperation } from "./collaboration-lifecycle.mjs";
 import { navigate } from "./collaboration-navigation.mjs";
 import assert from "node:assert/strict";
@@ -7,8 +8,8 @@ import { resolve } from "node:path";
 import { createAdminRuntime, poll } from "./admin-runtime-support.mjs";
 import { openDisclosures } from "./ui-controls-checks.mjs";
 
-export function collaborationRuntime(width, sourceFiles = []) {
-  const runtime = createAdminRuntime(width, sourceFiles);
+export async function collaborationRuntime(width, sourceFiles = []) {
+  const runtime = createAdminRuntime(width, sourceFiles, {port: await freePort(), inspectorPort: 0});
   Object.assign(runtime.config, {
     WORKSPACE_NAME: "Collaboration runtime",
     FIRST_OWNER_NAME: "Collaboration owner",

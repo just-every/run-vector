@@ -43,7 +43,7 @@ await contract(
       for (const viewport of [
         { width: 390, height: 844 },
       ]) {
-        runtime = collaborationRuntime(viewport.width);
+        runtime = await collaborationRuntime(viewport.width);
         runtime.initialize();
         await runtime.start();
         context = await browser.newContext({ viewport });
@@ -212,7 +212,7 @@ await contract(
         context = null;
         page = null;
         await runtime.stop();
-        runtime = collaborationRuntime(viewport.width);
+        runtime = await collaborationRuntime(viewport.width);
         runtime.config.NOTIFICATION_EMAIL_ENABLED = "false";
         runtime.initialize();
         await runtime.start();

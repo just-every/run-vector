@@ -2757,7 +2757,7 @@
       "executable": false
     },
     "scripts/installer-env.mjs": {
-      "sha256": "f51fda1d17ada0ca4f2a0006a8f138582240494b5053d8c29eb460109a226101",
+      "sha256": "b8bc0004c0de655d4ed62a32fbaa5f05950aa298778f3fe74e34663dada0f4b2",
       "executable": false
     },
     "scripts/installer/definition.mjs": {
@@ -6437,11 +6437,11 @@
       "executable": false
     },
     "tests/e2e/collaboration-runtime.mjs": {
-      "sha256": "6989e793a2c0229333761abdf8dff0286f39270df9cc0f4dfcd915a3f7d02ae5",
+      "sha256": "acc6395d20f6fcd95742d70ac9b76a9ffac9a65732cfcd368d96f626876123b8",
       "executable": false
     },
     "tests/e2e/collaboration-support.mjs": {
-      "sha256": "37e80ffdc135eeb2bb01eac1c5780bdd8375cf41c41a00ee6c973db432a1a81b",
+      "sha256": "f0caaab7ca90b5918225edb33032b073d6b64b4f71415cb9fa0ee2879d2d661a",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
@@ -6541,7 +6541,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "cab9ddf273981862807f88df89f855e3fc2c764a29866d3b95387aeb1041393e",
+      "sha256": "cad3219630616e94e401876fd492e44c2aa66a1c5260a48367a5c30911435685",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -6721,7 +6721,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
-      "sha256": "d7aa05683894455caa8f55284678fd8539e7e60feb2913f16363a4097d74b13b",
+      "sha256": "b78f5ff72fc99f3fb066bfaead908bb273a7a91713841252cd4632d6bc264fd0",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
