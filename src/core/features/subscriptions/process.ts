@@ -21,7 +21,7 @@ export async function processMemberSubscriptions(env:WorkerBindings,actor:string
  for(const sub of rows){
   const own='EXISTS(SELECT 1 FROM subject_subscriptions subscription WHERE subscription.id=? AND subscription.operator_id=o.id AND subscription.start_revision<e.revision)';
   let test:Predicate;
-  if(sub.subjectType==='team')test={sql:'i.team_id=?',values:[sub.subjectId]};
+  if(sub.subjectType==='team')test={sql:'i.team_id=? AND EXISTS(SELECT 1 FROM team_members membership WHERE membership.team_id=i.team_id AND membership.operator_id=o.id)',values:[sub.subjectId]};
   else if(sub.subjectType==='project')test={sql:'i.project_id=? AND EXISTS(SELECT 1 FROM projects WHERE id=?)',values:[sub.subjectId,sub.subjectId]};
   else if(sub.subjectType==='label')test={sql:'EXISTS(SELECT 1 FROM issue_labels label WHERE label.issue_id=i.id AND label.label_id=?)',values:[sub.subjectId]};
   else if(sub.subjectType==='initiative')test={sql:`EXISTS(WITH RECURSIVE tree(id) AS (SELECT id FROM initiatives WHERE id=? AND workspace_id=? UNION ALL SELECT n.id FROM initiatives n JOIN tree parent ON n.parent_id=parent.id) SELECT 1 FROM tree JOIN initiative_projects link ON link.initiative_id=tree.id WHERE link.project_id=i.project_id) AND o.role<>'guest'`,values:[sub.subjectId,access.workspace_id]};

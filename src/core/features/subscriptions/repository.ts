@@ -6,7 +6,7 @@ import {subjectTypes,type SubjectType,type Subscription} from './schema';
 type Selection={sql:string;values:(string|number|null)[]};
 export function subjectSelection(type:SubjectType,id:string|undefined,workspace:string,actor:string):Selection{
  const bound=id?' AND s.id=?':'',values:(string|number|null)[]=[workspace,...(id?[id]:[])];
- if(type==='team')return {sql:'SELECT s.id,s.name FROM teams s WHERE s.workspace_id=?'+bound,values};
+ if(type==='team')return {sql:'SELECT s.id,s.name FROM teams s WHERE s.workspace_id=?'+bound+' AND EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=s.id AND m.operator_id=?)',values:[...values,actor]};
  if(type==='project')return {sql:'SELECT s.id,s.name FROM projects s WHERE s.workspace_id=?'+bound,values};
  if(type==='label')return {sql:"SELECT s.id,s.name FROM labels s WHERE s.workspace_id=?"+bound+" AND ((SELECT role FROM operators WHERE id=?)<>'guest' OR EXISTS(SELECT 1 FROM issue_labels l JOIN issues i ON i.id=l.issue_id WHERE l.label_id=s.id))",values:[...values,actor]};
  if(type==='initiative')return {sql:"SELECT s.id,s.name FROM initiatives s WHERE s.workspace_id=?"+bound+" AND (SELECT role FROM operators WHERE id=?)<>'guest'",values:[...values,actor]};
@@ -26,7 +26,10 @@ export async function subscriptions(db:D1Database,actor:string){
 }
 export async function subscribe(db:D1Database,actor:string,type:SubjectType,subjectId:string){
  const access=await settingsActor(db,actor),q=subjectSelection(type,subjectId,access.workspace_id,actor);
- if(!await db.prepare(q.sql).bind(...q.values).first())throw new IntegrationError(404,'subject_not_found');
+ if(!await db.prepare(q.sql).bind(...q.values).first()){
+  if(type==='team'&&await db.prepare('SELECT 1 FROM teams WHERE id=? AND workspace_id=?').bind(subjectId,access.workspace_id).first())throw new IntegrationError(403,'team_membership_required');
+  throw new IntegrationError(404,'subject_not_found');
+ }
  const existing=await db.prepare('SELECT id FROM subject_subscriptions WHERE operator_id=? AND subject_type=? AND subject_id=?').bind(actor,type,subjectId).first<{id:string}>();
  if(existing)return {id:existing.id};
  if((await db.prepare('SELECT count(*) AS n FROM subject_subscriptions WHERE operator_id=?').bind(actor).first<number>('n'))!>=100)throw new IntegrationError(409,'subscription_limit','Manage up to 100 subject subscriptions.');

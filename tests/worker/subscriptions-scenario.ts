@@ -6,6 +6,16 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  const bob=(path:string,method='GET',body?:unknown)=>f.any(f.bobCookie,path,method,body);
  const cara=(path:string,method='GET',body?:unknown)=>f.any(f.caraCookie,path,method,body);
  const team=f.initial.teams[0];
+ // The calling workflow case promoted Bob; this regression is an ordinary Member.
+ await read(await f.call('/settings/operators/'+f.bob+'/role','PATCH',{role:'member'}));
+ expect(await env.DB.prepare('SELECT role FROM operators WHERE id=?').bind(f.bob).first('role')).toBe('member');
+ const notices=async(call:typeof bob,identifier:string)=>(await read(await call('/notifications?limit=50'))).items.filter((n:any)=>n.identifier===identifier);
+ const teamRows=()=>env.DB.prepare("SELECT count(*) n FROM subject_subscriptions WHERE operator_id=? AND subject_type='team' AND subject_id=?").bind(f.bob,team.id).first<number>('n');
+ const refused=async()=>{expect(await read(await bob('/subscriptions','POST',{subjectType:'team',subjectId:team.id}),403)).toMatchObject({error:'team_membership_required'});expect(await teamRows()).toBe(0);};
+ expect(await env.DB.prepare('SELECT 1 FROM team_members WHERE team_id=? AND operator_id=?').bind(team.id,f.bob).first()).toBeNull();
+ expect((await read(await bob('/subscriptions'))).subjects.some((s:any)=>s.subjectType==='team'&&s.subjectId===team.id)).toBe(false);
+ await refused();
+ const outside=await f.create({title:'synthetic-vector-1780'});expect(await notices(bob,outside.identifier)).toHaveLength(0);
  await read(await bob('/settings/notifications','PATCH',{mutedKinds:[],emailEnabled:true}));
  await read(await bob('/settings/notifications/channels','PUT',{channels:[{kind:'status',emailMode:'immediate',slack:false},{kind:'completed',emailMode:'immediate',slack:false}]}));
  await read(await bob('/teams/'+team.id+'/join','POST',{}));
@@ -23,7 +33,6 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  expect((await bob('/subscriptions','POST',{subjectType:'label',subjectId:label.id,operatorId:f.owner})).status).toBe(400);
  await read(await f.call('/subscriptions','POST',{subjectType:'label',subjectId:label.id}),201);
  const first=await f.create({title:'synthetic-vector-1763',labelIds:[label.id],projectId:project.id});
- const notices=async(call:typeof bob,identifier:string)=>(await read(await call('/notifications?limit=50'))).items.filter((n:any)=>n.identifier===identifier);
  let rows=await notices(bob,first.identifier);expect(rows).toHaveLength(1);expect(rows[0]).toMatchObject({sourceEventKind:'issue.created',causes:['status']});
  expect(await notices((p,m,b)=>f.call(p,m,b),first.identifier)).toHaveLength(0);
  expect(await notices(bob,first.identifier)).toHaveLength(1);
@@ -58,7 +67,13 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  const third=await f.create({title:'synthetic-vector-1767'});expect(await notices(bob,third.identifier)).toHaveLength(1);
  await read(await bob('/teams/'+team.id+'/leave','POST',{}));
  expect((await read(await bob('/subscriptions'))).subscriptions.some((s:any)=>s.id===teamSub.id)).toBe(false);
+ await refused();
  const fourth=await f.create({title:'synthetic-vector-1768'});expect(await notices(bob,fourth.identifier)).toHaveLength(0);
+ // A retained pre-fix row must be unavailable and cannot deliver new work.
+ await env.DB.prepare("INSERT INTO subject_subscriptions(id,operator_id,subject_type,subject_id,start_revision,created_at) SELECT ?,?,'team',?,revision,? FROM subscription_clock WHERE id=1").bind(teamSub.id,f.bob,team.id,new Date().toISOString()).run();
+ expect((await read(await bob('/subscriptions'))).subscriptions.find((s:any)=>s.id===teamSub.id)).toMatchObject({name:'Unavailable subject',available:false,url:''});
+ const stale=await f.create({title:'synthetic-vector-1781'});expect(await notices(bob,stale.identifier)).toHaveLength(0);
+ await read(await bob('/subscriptions/'+teamSub.id,'DELETE'));
  await read(await bob('/subscriptions','POST',{subjectType:'label',subjectId:label.id}),201);
  expect((await f.call('/settings/operators/'+f.bob,'DELETE')).status).toBe(200);
  expect(await env.DB.prepare('SELECT count(*) AS n FROM subject_subscriptions WHERE operator_id=?').bind(f.bob).first<number>('n')).toBe(0);

@@ -14,6 +14,8 @@ export function SubjectSubscribe({subjectType,subjectId}:{subjectType:SubjectTyp
  const current=data.data?.subscriptions.find(s=>s.subjectType===subjectType&&s.subjectId===subjectId);
  async function toggle(){setBusy(true);setError('');try{if(current)await fetchJson('/api/subscriptions/'+current.id,z.object({removed:z.boolean()}),{method:'DELETE'});else await fetchJson('/api/subscriptions',z.object({id:z.string()}),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subjectType,subjectId})});changed();}catch(e){setError(e instanceof Error?e.message:'The subscription could not be changed.');}finally{setBusy(false);}}
  if(data.data?.canManage===false)return null;
+ if(subjectType==='team'&&!current&&!data.data?.subjects.some(s=>s.subjectType==='team'&&s.subjectId===subjectId))
+  return data.error?<span role="alert">{data.error.message}</span>:null;
  return <span className="subject-subscribe"><button type="button" disabled={busy||!data.data} title={current?'Stop subject updates':'Receive subject updates'} onClick={()=>void toggle()}>{current?'Unsubscribe from ':'Subscribe to '}{subjectType==='view'?'saved view':subjectType}</button>{(error||data.error)&&<span role="alert">{error||data.error?.message}</span>}</span>;
 }
 export function SubscriptionFilters({team,label}:{team:string;label:string}){

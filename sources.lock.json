@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "5088ef7432b63883aaaff576f3208f481ef2aacee5ade2e634c5853378f51c90",
+      "sha256": "53fcab56bff802dd039aac3e8686bf4397becb733cd56aea729bcd0835edee54",
       "executable": false
     },
     "DEMO.md": {
@@ -5893,11 +5893,11 @@
       "executable": false
     },
     "src/core/features/subscriptions/process.ts": {
-      "sha256": "4329061be53394a8c813786650b15ab8171958076dfdcccf699b1b34d70a690f",
+      "sha256": "b2d83d5c6b206870b9d7dc630e572658f3fab4c0d74de8f9f502f68da5bc2a09",
       "executable": false
     },
     "src/core/features/subscriptions/repository.ts": {
-      "sha256": "7eb9e8f4231c223d6666c3f76c8debbf82a05c1f235cac75488b5355e8527821",
+      "sha256": "bb57974f4364f0d6b422bfacf974445f1d79a6eaeee88bb14eabad71d0a16266",
       "executable": false
     },
     "src/core/features/subscriptions/routes.ts": {
@@ -5913,7 +5913,7 @@
       "executable": false
     },
     "src/core/features/subscriptions/ui/subscriptions.tsx": {
-      "sha256": "38affb702941b58e6d4871bbf7b2b7aa2d7371b8530510d324053562708c02d1",
+      "sha256": "315c048f2dce05b3442ea06ba34b7540eff217fdaaf42b7cd42947f3ef25495a",
       "executable": false
     },
     "src/core/features/team-membership/join-rules.ts": {
@@ -6601,7 +6601,7 @@
       "executable": false
     },
     "tests/e2e/dashboards-journey.mjs": {
-      "sha256": "521f56d9d808c553407d741cede0f3a9d2d7c3dc05ddadd15daa5a6b37ac8ba8",
+      "sha256": "6780efeed68effdc027fc2197b2479b747bf48f37546e9d3c9f7b7762bf42780",
       "executable": false
     },
     "tests/e2e/data-development-journey.mjs": {
@@ -6897,7 +6897,7 @@
       "executable": false
     },
     "tests/e2e/subscriptions-journey.mjs": {
-      "sha256": "d2ad114d0b8d7c5331f25924b5420a3ad3599d9ced0712f98f02677bcaff18e4",
+      "sha256": "aa57a8c9f06fe8542473e9083c954b21cbb0dc3c6d913f2a2eed7b021f028ddd",
       "executable": false
     },
     "tests/e2e/team-reader-cells.mjs": {
@@ -7289,7 +7289,7 @@
       "executable": false
     },
     "tests/worker/follower-events.test.ts": {
-      "sha256": "ee7274262af7506dcd83379245c7a2577ed352b4663be68a362c8bbbfb376931",
+      "sha256": "2a73a176d058785a8e8dca9f5e426f28f074be52c0a91fd9fe945e700b86bf3d",
       "executable": false
     },
     "tests/worker/follower-last-blocker.test.ts": {
@@ -7621,7 +7621,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "849a3bedbf259b1a9c912d8135dcdc1c1f9c604f8238cc5948305cd60fc3dd64",
+      "sha256": "d098b84ee6a98adadafd67e77267505f5770c8f5f5ac4b1cfcdcc5fd86287af2",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
@@ -7677,7 +7677,7 @@
       "executable": false
     },
     "tests/worker/subscriptions-scenario.ts": {
-      "sha256": "3fe74f6cca10e2810d5359a748a4f78bc007240050e6afb8993f279df3d36cf5",
+      "sha256": "986ce0f61f70b3ad6bd90a25a4f44230a1da0a163f5bce1041543850314fc1b1",
       "executable": false
     },
     "tests/worker/viewer-role-upgrade.ts": {

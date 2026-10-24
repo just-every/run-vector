@@ -313,7 +313,7 @@ contractWith(
 
 contractWith(
   it,
-  "TEAM-004 NOTIFY-001 NOTIFY-003 NOTIFY-004",
+  "TEAM-004 NOTIFY-001 NOTIFY-003 NOTIFY-004 NOTIFY-009",
   "workflow status removal notifies followers once without replaying terminal completion",
   async () => {
     const f = await collaborationFixture();
