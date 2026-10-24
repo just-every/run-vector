@@ -18,12 +18,24 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   const config=await call('/settings/integrations/github','POST',{name:'synthetic-vector-1710 '+width,repository:fixtureRepository},201);
   await page.setViewportSize({width,height:900});await navigate(page,runtime.base+'/app/settings');
   const rules=page.getByRole('region',{name:'Git automation rules',exact:true});await rules.getByText(team.name+' Git automation',{exact:true}).click();
-  for(const [trigger,label,status] of [['draft','Draft PR opened',started.id],['review','Review requested',review.id],['merged','PR merged',done.id],['deploy','Production deployed',shipped.id]]){
+  const saveMessages=[];
+  for(const [trigger,label,status] of [['draft','Draft PR opened',review.id],['review','Review requested',review.id],['merged','PR merged',done.id],['deploy','Production deployed',shipped.id]]){
    await rules.getByLabel(team.name+' '+label+' status',{exact:true}).selectOption(status);
    const saved=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/settings/teams/'+team.id);
    await rules.getByRole('button',{name:'Save '+label+' rule',exact:true}).click();assert.equal((await saved).status(),200);
    await settleReads(page);
+   const message=rules.getByRole('group',{name:label,exact:true}).getByRole('status');
+   await message.waitFor();saveMessages.push(await message.textContent());
   }
+  await rules.getByLabel(team.name+' Draft PR opened status',{exact:true}).selectOption(started.id);
+  const savedAgain=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/settings/teams/'+team.id);
+  await rules.getByRole('button',{name:'Save Draft PR opened rule',exact:true}).click();
+  const second=await savedAgain;
+  console.log('Git rule saves '+width+': first message='+saveMessages[0]+' second PATCH='+second.status());
+  assert.equal(second.status(),200,'Owner can save the Draft PR rule twice without reloading');
+  await rules.getByRole('group',{name:'Draft PR opened',exact:true}).getByRole('status').getByText('Rule saved.',{exact:true}).waitFor();
+  assert.ok(saveMessages.every(message=>message==='Rule saved.'),'Every first save confirms success');
+  assert.ok(!(await rules.textContent()).includes('invalid_value'),'Rule saves never expose validation JSON');
   await inspect(page,rules,'github-rules-'+width);
   const issue=await call('/issues','POST',{teamId:team.id,title:'synthetic-vector-1711 Fix checkout '+width},201);
   await navigate(page,runtime.base+'/app/issues/'+issue.identifier);

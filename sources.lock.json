@@ -6341,7 +6341,7 @@
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
-      "sha256": "62caf6e9ca767391b7b55c8854ed68b7134feeb88683f98378a3c8cb543cd0c9",
+      "sha256": "a0689f7e4b89d782d7f9e43f3a25f8b6e018af366d199749205f5e2ef4089be3",
       "executable": false
     },
     "tests/e2e/browser-state.mjs": {
@@ -6689,7 +6689,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
-      "sha256": "99b5d06c10c3fc91f172bc4bdc297f037157415710bbfd187e59bcab6911bc19",
+      "sha256": "fa2c052f9f0d7a65e96d485a165913e2a11c10ea32a71d3eaa54b92fa77cfed3",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {

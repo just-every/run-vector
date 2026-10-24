@@ -51,7 +51,7 @@ try {
   await mkdir(evidence,{recursive:true});
   run(['d1','migrations','apply','vector-local','--local','--config','wrangler.jsonc','--persist-to',state]);
   await start();
-  browser=await chromium.launch({headless:true});
+  browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
   const context=await browser.newContext({viewport:{width:1440,height:1000}});
   const page=await context.newPage();
   const errors=[]; page.on('pageerror',error=>errors.push(error.message));
@@ -246,6 +246,34 @@ async function managedMailRuntime(browser) {
       assert.equal(new URL(invalid.headers.get('Location'),appOrigin).pathname,'/signin');
       assert.equal(new URL(invalid.headers.get('Location'),appOrigin).searchParams.has('login_hint'),false);
     }
+    // Admit the same owner through the public confirmation page before opening
+    // the deployment handoff again with the browser's own authenticated session.
+    relayStatus=202;
+    await db.prepare('DELETE FROM oa_limits').run(); await db.prepare('DELETE FROM access_rate_limits').run();
+    assert.equal((await call('/auth/request','POST',{email:config.FIRST_OWNER_EMAIL})).status,202);
+    const ownerLink=calls.at(-1).text.match(/https:\/\/[^\s]+/)[0];
+    await page.goto(ownerLink);
+    await page.getByRole('button',{name:'Confirm',exact:true}).click();
+    await page.waitForURL(appOrigin+'/app');
+    submissions=0;
+    for(const width of [1440,390]) {
+      await page.setViewportSize({width,height:width===1440?1000:844});
+      for(const [returnTo,destination,name] of [
+        [undefined,'/app','app'],
+        ['/app/settings','/app/settings','settings'],
+        ['https://forbidden.example.test/','/app','unsafe'],
+      ]) {
+        const handoff=new URL(signInUrl);
+        if(returnTo) handoff.searchParams.set('returnTo',returnTo);
+        await page.goto(handoff.href);
+        assert.equal(page.url(),appOrigin+destination,`signed-in ${name} handoff at ${width}`);
+        assert.equal(await page.getByRole('button',{name:'Send sign-in link',exact:true}).count(),0);
+        assert.equal(submissions,0,'an admitted handoff never requests another email');
+        assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+        await page.screenshot({path:resolve(evidence,`signed-in-handoff-${name}-${width}.png`),fullPage:true});
+      }
+    }
     console.log('Emitted Worker browser: login_hint prefilled without submitting; blank/invalid hints ignored; plain 401 mail problem at 1440 and 390.');
+    console.log('Emitted Worker browser: signed-in login_hint handoff opens app, preserves Settings returnTo and rejects external returnTo at 1440 and 390.');
   } finally { await context?.close(); await mf.dispose(); }
 }
