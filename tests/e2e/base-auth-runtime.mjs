@@ -256,6 +256,7 @@ async function managedMailRuntime(browser) {
     await page.getByRole('button',{name:'Confirm',exact:true}).click();
     await page.waitForURL(appOrigin+'/app');
     submissions=0;
+    signInUrl.searchParams.set('login_hint',config.FIRST_OWNER_EMAIL);
     for(const width of [1440,390]) {
       await page.setViewportSize({width,height:width===1440?1000:844});
       for(const [returnTo,destination,name] of [
