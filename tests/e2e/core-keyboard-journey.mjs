@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { streamPlanningJourney } from './core-stream-planning-journey.mjs';
@@ -174,11 +175,11 @@ export async function issueEditingJourney(page, context, base, record) {
     await dialog.getByLabel(name, { exact: true }).fill(value);
     await submit(dialog);
   }
-  const read = async id => {
-    const response = await context.request.get(base + '/api/issues/' + id);
+  const read = async id => withOperatorClient(context, async client => {
+    const response = await client.get(base + '/api/issues/' + id);
     assert.equal(response.status(), 200);
-    return response.json();
-  };
+    return await response.json();
+  });
   const saved = await Promise.all(selected.map(read));
   for (const issue of saved) {
     assert.equal(issue.status.id, statuses[1].id);

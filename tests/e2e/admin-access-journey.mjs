@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import {rolePrivateCells} from './role-private-cells.mjs';
 import {viewerRoleJourney} from './viewer-role-journey.mjs';
 import {privateTeamJourney} from './private-team-journey.mjs';
@@ -271,8 +272,13 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   await navigate(page, base + "/app/settings");
   await openDisclosures(page);
   // A workspace settings write that saves the current timezone: only the role decides its answer.
-  const settingsRequest = async () => (await peer.request.patch(base + "/api/settings", {
-    headers: { Origin: base }, data: { timezone: sql("SELECT timezone FROM workspace_settings")[0].timezone } })).status();
+  const settingsRequest = async () => withOperatorClient(peer.context(), async client => {
+    const response = await client.patch(base + "/api/settings", {
+      headers: { Origin: base }, data: { timezone: sql("SELECT timezone FROM workspace_settings")[0].timezone },
+    });
+    await response.body();
+    return response.status();
+  });
   const changeRole = async (name, id, role, status) => {
     const form = members.getByRole("form", { name: `Role for ${name}`, exact: true });
     await form.getByRole("combobox", { name: `Role for ${name}`, exact: true }).selectOption(role);

@@ -39,8 +39,15 @@ export const verificationShards = {
   },
   administration: {
     browser: true, native: true,
-    commands: ['build', 'test:admin', 'build', 'test:collaboration',
-      'build', 'test:dev:ci'],
+    commands: ['build', 'test:admin'],
+  },
+  collaboration: {
+    browser: true, native: true,
+    commands: ['build', 'test:collaboration'],
+  },
+  development: {
+    browser: true, native: true,
+    commands: ['build', 'test:dev:ci'],
   },
   ownership: {
     browser: true,

@@ -2813,7 +2813,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "dc88448b20282032a1cfddb4e3bb21068eee6146faeb99ad5d81e64065742ea7",
+      "sha256": "5e5c59ff516c74b4bc7af08a60d460ad50dc849a61681174ff03c6c470405554",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -6313,7 +6313,7 @@
       "executable": false
     },
     "tests/e2e/admin-access-journey.mjs": {
-      "sha256": "9229f8df7818f5c72686dc245a0788bfd69f7a1c11e523126cedf965650dfbb4",
+      "sha256": "8c611c8f10e5a5815b1eb9fd5e6538ad5ca7caa041f262972e5028f2695f8fde",
       "executable": false
     },
     "tests/e2e/admin-archive-team-journey.mjs": {
@@ -6493,7 +6493,7 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "413a311427187bfa7331db18553d12e6cae77c63a5e361b497d01276efef3694",
+      "sha256": "37903f1bc52738ef66e2abf8c7d6e39a38dba80bd4be6dddebdd8e7a1b0faeb8",
       "executable": false
     },
     "tests/e2e/core-manual-order-journey.mjs": {
