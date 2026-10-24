@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {z} from 'zod';
 import {fetchJson,useApiResource} from '../../app/api-client';
 import {templateSchema,templateListSchema,type TemplateInput} from './schema';
+import {workspaceOptionsSchema} from '../../shared/workspace-options';
 import './templates.css';
 const optionsUrl='/api/project-templates';
 const send=(method:string,data:unknown)=>({method,headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
@@ -28,6 +29,8 @@ export function ProjectTemplateLauncher({onChanged}:{onChanged:()=>void}){
  return <div className="administration-panel project-template-controls"><button type="button" onClick={()=>setOpen(!open)}>New project from template</button>{open&&<TemplateLibrary onChanged={onChanged}/>}</div>;
 }
 function TemplateLibrary({onChanged}:{onChanged:()=>void}){
+ // Launch creates native issues; template scope choices are membership-only.
+ const issueOptions=useApiResource('/api/options',workspaceOptionsSchema);
  const list=useApiResource(optionsUrl,templateListSchema),[selected,setSelected]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[result,setResult]=useState<{projectId:string;skippedLabels:string[]}|null>(null),[draft,setDraft]=useState<TemplateInput|null>(null),[confirm,setConfirm]=useState(false);
  const template=list.data?.templates.find(t=>t.id===selected);
  const act=async(run:()=>Promise<void>)=>{setBusy(true);setError('');try{await run();}catch(e){setError(e instanceof Error?e.message:'Template operation failed.');}finally{setBusy(false);}};
@@ -35,12 +38,12 @@ function TemplateLibrary({onChanged}:{onChanged:()=>void}){
   <h2>Project templates</h2><p>Start a project with relative milestone and issue dates. Template deletion never changes projects already created from it.</p>
   <label>Choose project template<select aria-label="Choose project template" value={selected} onChange={e=>{setSelected(e.target.value);setDraft(null);setResult(null);setConfirm(false);}}><option value="">Choose a template</option>{list.data?.templates.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></label>
   {list.data?.templates.length===0&&<p>Open a project’s Manage controls and choose Save as template to create the first one.</p>}
-  {(error||list.error)&&<p role="alert">{error||list.error?.message}</p>}
+  {(error||list.error||issueOptions.error)&&<p role="alert">{error||list.error?.message||issueOptions.error?.message}</p>}
   {template&&!draft&&<>
    <p>{template.milestones.length} milestones · {template.issues.length} default issues · Update cadence: {template.cadence||'Not set'} (stored only)</p>
    <details><summary>Preview project structure</summary><p>{template.description||'No description'}</p><ul>{template.milestones.map((m,i)=><li key={i}>{m.name} · {m.offsetDays===null?'No target':`Day ${m.offsetDays}`}</li>)}</ul><ul>{template.issues.map((i,n)=><li key={n}>{i.title} · {i.offsetDays===null?'No due date':`Day ${i.offsetDays}`}</li>)}</ul><p>Labels: {template.labels.join(', ')||'None'}</p></details>
-   <form aria-label="Create project from template" onSubmit={e=>{e.preventDefault();const data=new FormData(e.currentTarget);void act(async()=>{const value=await fetchJson(optionsUrl+'/'+template.id+'/apply',z.object({projectId:z.string(),skippedLabels:z.array(z.string())}),send('POST',{name:data.get('name'),startDate:data.get('start'),teamId:data.get('team'),expectedVersion:template.version}));setResult(value);onChanged();});}}><fieldset disabled={busy}>
-    <label>New project name<input name="name" required maxLength={120}/></label><label>New project start date<input type="date" name="start" required/></label><label>Default issue team<select aria-label="Default issue team" name="team" required><option value="">Choose your team</option>{list.data?.teams.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></label><button>Create project from template</button>
+   <form aria-label="Create project from template" onSubmit={e=>{e.preventDefault();const data=new FormData(e.currentTarget);void act(async()=>{const value=await fetchJson(optionsUrl+'/'+template.id+'/apply',z.object({projectId:z.string(),skippedLabels:z.array(z.string())}),send('POST',{name:data.get('name'),startDate:data.get('start'),teamId:data.get('team'),expectedVersion:template.version}));setResult(value);onChanged();});}}><fieldset disabled={busy||!issueOptions.data}>
+    <label>New project name<input name="name" required maxLength={120}/></label><label>New project start date<input type="date" name="start" required/></label><label>Default issue team<select aria-label="Default issue team" name="team" required><option value="">Choose your team</option>{issueOptions.data?.teams.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</select></label><button>Create project from template</button>
    </fieldset></form>
    {template.canEdit&&<div className="template-actions"><button disabled={busy} onClick={()=>{const {id,version,canEdit,...input}=template;setDraft(input);}}>Edit project template</button><button disabled={busy} onClick={()=>setConfirm(true)}>Delete project template</button></div>}
    {confirm&&<div role="group" aria-label="Confirm template deletion"><p>Delete this template? Existing projects remain unchanged.</p><button disabled={busy} onClick={()=>void act(async()=>{await fetchJson(optionsUrl+'/'+template.id,z.object({deleted:z.boolean()}),send('DELETE',{expectedVersion:template.version}));setSelected('');setConfirm(false);list.reload();})}>Delete template and keep projects</button><button onClick={()=>setConfirm(false)}>Cancel template deletion</button></div>}

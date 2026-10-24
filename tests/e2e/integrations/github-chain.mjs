@@ -37,6 +37,11 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   assert.ok(saveMessages.every(message=>message==='Rule saved.'),'Every first save confirms success');
   assert.ok(!(await rules.textContent()).includes('invalid_value'),'Rule saves never expose validation JSON');
   await inspect(page,rules,'github-rules-'+width);
+  const versioned=(await call('/github/automation')).teams.find(t=>t.id===team.id).rules.find(r=>r.trigger==='review');
+  const staleSaves=await Promise.all([review.id,review.id].map(statusId=>runtime.req('/api/settings/teams/'+team.id,{method:'PATCH',headers,body:JSON.stringify({githubAutomation:{trigger:'review',statusId,allowReopen:false,expectedVersion:versioned.version}})})));
+  assert.deepEqual(staleSaves.map(r=>r.status).sort(),[200,409],'one concurrent rule save wins and the stale version refuses');
+  for(const response of staleSaves)await response.body.cancel();
+  console.log('Git concurrent stale saves '+width+': 200/409 PASS');
   const issue=await call('/issues','POST',{teamId:team.id,title:'synthetic-vector-1711 Fix checkout '+width},201);
   await navigate(page,runtime.base+'/app/issues/'+issue.identifier);
   const branch=page.getByRole('region',{name:'Git branch',exact:true});const expected=issue.identifier.toLowerCase()+'-synthetic-vector-1711-fix-checkout-'+width;

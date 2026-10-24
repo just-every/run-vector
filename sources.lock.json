@@ -5429,7 +5429,7 @@
       "executable": false
     },
     "src/core/features/project-templates/controls.tsx": {
-      "sha256": "7c16626ae2f7ff269fd07ffa96c37ffe9778c2cb73bba0ad6fc5b1f0d18b1125",
+      "sha256": "fc5975b8bde8834beb1ca085885db438c9c451c08a006811aec2eac2e5177033",
       "executable": false
     },
     "src/core/features/project-templates/routes.ts": {
@@ -6313,7 +6313,7 @@
       "executable": false
     },
     "tests/e2e/admin-project-cycle-journey.mjs": {
-      "sha256": "979457f0e8a873f38bcd482e5b745ceff6ebf4ac050935d6fed35cb8aee6971b",
+      "sha256": "7965e2593852d09484de214ba0d8f9eb398d0893bd8c0ac7c512990622ea254a",
       "executable": false
     },
     "tests/e2e/admin-request-diagnostics.mjs": {
@@ -6693,7 +6693,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
-      "sha256": "fa2c052f9f0d7a65e96d485a165913e2a11c10ea32a71d3eaa54b92fa77cfed3",
+      "sha256": "e11520d33239728ec4732bab2adceac4721e280734eb13b84dc04f1e793cd615",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
@@ -6793,7 +6793,7 @@
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
-      "sha256": "1d0025005623774dc0b72fafb70a3325a2e08a6c5e2bfb219b5018c721f6450a",
+      "sha256": "ba414c74ce54c43b58c7d9c38201773fb61faa9d104e8a9baa21a0e38a6fb4d5",
       "executable": false
     },
     "tests/e2e/public-development.mjs": {
