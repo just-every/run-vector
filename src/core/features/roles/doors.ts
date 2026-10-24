@@ -179,6 +179,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/issues/order', row: 'issues.write', teams: bodyTeam },
   { method: 'POST', path: '/issues/undo', row: 'issues.write' },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
+  ...(['PUT','DELETE'] as const).map((method): Door => ({method,path:'/issues/:identifier/reactions',row:'reactions.write',teams:issue})),
   { method: 'GET', path: '/issues/:identifier/references', row: 'work.read', teams: issue },
   { method: 'GET', path: '/issues/:identifier/email-intake', row: 'work.read', teams: issue },
   { method: 'POST', path: '/issues/:identifier/email-replies', row: 'email.reply', teams: issue },

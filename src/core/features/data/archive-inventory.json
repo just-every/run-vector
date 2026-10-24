@@ -1895,5 +1895,12 @@
     "priority",
     "offset_days",
     "milestone_position"
+  ],
+  "issue_reactions": [
+    "issue_id",
+    "target_id",
+    "emoji",
+    "actor_operator_id",
+    "created_at"
   ]
 }

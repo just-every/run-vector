@@ -1,3 +1,4 @@
+import { addReactionRoutes } from "../reactions/routes";
 import { fileSettlementDatabase, MutationAccessError } from "../auth/mutation-database";
 import { IssueAccessError, requireIssueAccess } from "../issues/access";
 import { requireIssueProjection } from "../issues/projection-access";
@@ -54,6 +55,7 @@ const mimeTypes = new Set([
   "application/zip",
 ]);
 export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
+  addReactionRoutes(app);
   app.use("/issues/:identifier/*", async (c, next) => {
     if (!/^[A-Z]{2,10}-[1-9][0-9]*$/.test(c.req.param("identifier") ?? ""))
       return c.json({ error: "invalid_request" }, 400);
