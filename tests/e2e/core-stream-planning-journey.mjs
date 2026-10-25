@@ -33,7 +33,7 @@ export async function streamPlanningJourney(page, context, base, record) {
     for (const issue of fixtures) {
       await page.locator('#issue-row-' + issue.identifier).focus();
       await page.keyboard.press('x');
-      assert(await page.getByRole('checkbox', { name: 'Select ' + issue.identifier, exact: true }).isChecked());
+      assert(await page.getByRole('checkbox', { name: 'Select ' + issue.identifier, exact: true, includeHidden: true }).isChecked());
     }
     await page.keyboard.press('p');
     const dialog = page.getByRole('dialog', { name: 'Change priority', exact: true });
@@ -59,7 +59,7 @@ export async function streamPlanningJourney(page, context, base, record) {
     await page.keyboard.press('Escape');
     await page.waitForURL(url => url.pathname === path);
     await page.waitForFunction(identifier => document.activeElement?.id === 'issue-row-' + identifier, fixtures[0].identifier);
-    for (const issue of fixtures) assert(await page.getByRole('checkbox', { name: 'Select ' + issue.identifier, exact: true }).isChecked());
+    for (const issue of fixtures) assert(await page.getByRole('checkbox', { name: 'Select ' + issue.identifier, exact: true, includeHidden: true }).isChecked());
   }
   record('CMD-003-STREAMS', 'Current and My work support rendered-order arrows, X selection, one atomic keyboard edit, and Enter/Escape with selection and row focus preserved.');
   await selectedCommands(page, base, api, record);
