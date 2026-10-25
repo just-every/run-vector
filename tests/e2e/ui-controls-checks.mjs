@@ -2,9 +2,9 @@ import { expect } from '@playwright/test';
 import assert from "node:assert/strict";
 
 export async function openDisclosures(page) {
-  // Existing visible disclosures may be nested; opening a parent reveals children.
+  // Page disclosures may be nested; opening a parent reveals children. Shell menus stay user-controlled.
   await page.locator("main:visible").waitFor({ state: "visible" });
-  await page.locator("details").evaluateAll((elements) => {
+  await page.locator("main:visible details").evaluateAll((elements) => {
     for (const element of elements)
       if (element.getClientRects().length) element.open = true;
   });

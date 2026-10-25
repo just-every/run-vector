@@ -3345,7 +3345,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.css": {
-      "sha256": "a56b4e5796e2ae7efb2a26a74c6314df4f6657cae8626c9d14eed224bbc78d02",
+      "sha256": "77ef8d5eea5ba722faefc56515fa2c957b21da301a3fff2744119bb9e77e531a",
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
@@ -7085,7 +7085,7 @@
       "executable": false
     },
     "tests/e2e/ui-controls-checks.mjs": {
-      "sha256": "305c4388482989ac3c61bcfdb9840d592cbfe03f45df52df3fe9b143f6d100d8",
+      "sha256": "ae013440be590fd948eb0de272fad7a7406e15694af0ec71b8aa21db78d395c9",
       "executable": false
     },
     "tests/e2e/ui-failure-diagnostics.mjs": {
