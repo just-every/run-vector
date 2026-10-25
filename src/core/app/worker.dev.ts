@@ -20,7 +20,10 @@ const devWorker = withDevIdentity<WorkerBindings, typeof documentWorker>(documen
 export default {
   ...devWorker,
   fetch(request: Request, env: WorkerBindings, execution: ExecutionContext) {
-    const bindings = __VECTOR_DEV_ORIGIN__ ? { ...env, APP_ORIGIN: __VECTOR_DEV_ORIGIN__ } : env
-    return devWorker.fetch(request, bindings, execution)
+    // Server functions also import cloudflare:workers.env. Keep that original
+    // binding aligned with the explicitly selected local origin, not a clone
+    // visible only to the outer Worker. Never derive admission from a request.
+    if (__VECTOR_DEV_ORIGIN__) env.APP_ORIGIN = __VECTOR_DEV_ORIGIN__
+    return devWorker.fetch(request, env, execution)
   },
 }

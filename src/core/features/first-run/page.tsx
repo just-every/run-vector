@@ -14,11 +14,11 @@ export function FirstRunPage({state}:{state:FirstRunState}) {
       window.location.assign('/app');
     } catch(error) {setMessage(error instanceof Error ? error.message : 'Setup could not be completed');setBusy(false);}
   }
-  return <Door drawing={<TeamDrawing team={state.team} prefix={state.prefix}/>}><p className="vx-door-kicker">Your workspace</p><h1>Finish setting up Vector</h1>
-    <p className="vx-door-lead">Review the workspace prepared by setup. You can manage teams and workspace time in Settings after opening the app.</p>
+  return <Door drawing={<TeamDrawing team={state.team} prefix={state.prefix}/>}><p className="vx-door-kicker">Your workspace</p><h1>{state.completed ? 'Your workspace is ready' : 'Finish setting up Vector'}</h1>
+    <p className="vx-door-lead">{state.completed ? 'Setup is complete. Open your workspace to continue.' : 'Review the workspace prepared by setup. You can manage teams and workspace time in Settings after opening the app.'}</p>
     <dl className="vx-door-facts"><dt>Workspace</dt><dd>{state.workspace}</dd><dt>Timezone</dt><dd>{state.timezone}</dd>
       <dt>First team</dt><dd>{state.team} · {state.prefix}</dd></dl>
-    <button className="vx-pill vx-pill--large" disabled={!ready||busy} onClick={complete}>{busy?'Opening workspace…':'Open my workspace'}</button>
+    {state.completed ? <a className="vx-pill vx-pill--large" href="/app">Open my workspace</a> : <button className="vx-pill vx-pill--large" disabled={!ready||busy} onClick={complete}>{busy?'Opening workspace…':'Open my workspace'}</button>}
     {message?<p className="vx-door-notice" role="alert">{message}</p>:null}
   </Door>;
 }

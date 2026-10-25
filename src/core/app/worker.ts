@@ -57,7 +57,7 @@ export async function handleRequest(
     url.pathname.startsWith("/auth/")
   )
     return app.fetch(request, env, execution);
-  const privateRequest = url.pathname === "/app" || url.pathname.startsWith("/app/") || url.pathname.startsWith("/_serverFn/");
+  const privateRequest = url.pathname === "/setup" || url.pathname === "/app" || url.pathname.startsWith("/app/") || url.pathname.startsWith("/_serverFn/");
   const timings: string[] = [];
   const timed = async <T>(name: string, run: () => T | Promise<T>) => {
     const started = performance.now();

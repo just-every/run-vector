@@ -3353,11 +3353,11 @@
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
-      "sha256": "24ad740a853bb463042ca5d19fc0389321e804d908ee55858140ff201a08fde7",
+      "sha256": "3af909f03540efbf491e8929073dcbb0f96585ac22f7d5ed2fa6669d37d837f4",
       "executable": false
     },
     "src/core/app/worker.ts": {
-      "sha256": "aede5cf019ef94fb4ab6ac92a8948bb3b141594cf626aab826a25b3613af7f86",
+      "sha256": "e5fb3bfab519335a2644ad8ca6df9774165e0b5e6be57e4d9d9dea81f9ab2507",
       "executable": false
     },
     "src/core/editor/config.server.ts": {
@@ -4197,11 +4197,11 @@
       "executable": false
     },
     "src/core/features/first-run/loader.ts": {
-      "sha256": "2c45215e127e91a539c828db89c17c83d33c56d2818cbc64ca1a39a0be48a286",
+      "sha256": "4552b8bbe179500cfdbe9fc9ea40f8b6f7633276c2aedc199cfe0e36454a7d8f",
       "executable": false
     },
     "src/core/features/first-run/page.tsx": {
-      "sha256": "963698230dcd84fadb040dd7d75ae4992ade603bd868b5ffc3747aba96d118c3",
+      "sha256": "519810034fa5e5de9fa7720c1745dc73d77020dc4cd8b33fff65fda0fa94bff9",
       "executable": false
     },
     "src/core/features/first-run/repository.ts": {
@@ -6357,7 +6357,7 @@
       "executable": false
     },
     "src/routes/setup.tsx": {
-      "sha256": "ec7c7487ac6e9546b4d472b2ce4dfa5887bcf44957d3f3a8a591d88b28741437",
+      "sha256": "9020524286712d77940db93c453234103c4f5675e92fc4ef8e239f7ae3cb96a1",
       "executable": false
     },
     "src/routes/signin.tsx": {
