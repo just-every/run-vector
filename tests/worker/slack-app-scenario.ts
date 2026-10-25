@@ -1,3 +1,4 @@
+import {slackUnfurlScenario} from './slack-unfurl-scenario';
 import {slackAppArchive,slackProviderUninstall} from './slack-app-recovery-scenario';
 import {setupSlackIntake,slackEventIntake,slackIntakeFixture,slackMemberMapping} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
@@ -5,7 +6,7 @@ import {reset} from 'cloudflare:test';
 import {expect,vi} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
 import {invite,request,bindings,actor} from './base-auth-fixture';
-export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'archive'|'uninstall'){
+export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'archive'|'uninstall'|'unfurl'){
  // Each registration owns fresh bindings, identities and public-door setup.
  await reset();
  const f=await setupIntegrations(),secret='synthetic-vector-'+crypto.randomUUID(),clientSecret='synthetic-vector-'+crypto.randomUUID(),configToken='synthetic-vector-'+crypto.randomUUID(),botToken='synthetic-vector-'+crypto.randomUUID();
@@ -37,6 +38,7 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
   if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002',team_id:slackIntakeFixture.team});}
   if(method==='users.lookupByEmail')return Response.json({ok:true,user:{id:slackIntakeFixture.user,team_id:slackIntakeFixture.team,real_name:'Synthetic member'}});
   if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'synthetic-vector-33001',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});
+  if(method==='chat.unfurl'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true});}
   if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
   throw Error('Unexpected Slack installation edge '+method);
  });
@@ -106,6 +108,7 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
   }
   const mappedMember=await actor(member);
   await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:mappedMember,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}));
+  if(phase==='unfurl'){await slackUnfurlScenario(f,secret,member,mappedMember,calls);return;}
   if(phase==='events'){await slackEventIntake(f,secret,mappedMember);return;}
   const intake=await setupSlackIntake(f,secret,mappedMember);
   await intake.read(await intake.send(intake.payload));

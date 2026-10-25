@@ -223,11 +223,12 @@ function promised(cell: string, who: Kind, c: Context) {
   if (text.startsWith("team owner only") || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
   if (text === "team setting") return who === "lead" || c.settings === "all_members" ? "allow" : "forbidden";
   if (text === "planning setting") return who === "lead" || c.planning === "all_members" ? "allow" : "forbidden";
+  if (text === "under invited teams' issues and projects only") return c.inTeam ? "allow" : "hidden";
   if (text === "invited teams only" || text === "only views covering only invited teams") return c.inTeam ? "allow" : "hidden";
   throw new Error("The journey cannot read this cell yet: " + cell);
 }
 const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
-const watched = ["operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
+const watched = ["documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "issue_reactions", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
   "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];

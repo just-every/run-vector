@@ -1,3 +1,4 @@
+import {documentDoorRow,documentDoorTeams} from '../documents/authority'
 import type { RowId, SettingsPage } from './matrix'
 
 /** What a door's resolvers may read: route parameters, the parsed JSON body
@@ -81,6 +82,10 @@ async function memberRole(db: D1Database, id: string) {
 }
 
 export const doors: Door[] = [
+  ...([
+    ['POST','/documents'],['PATCH','/documents/:documentId'],['POST','/documents/:documentId/comments'],
+    ['PUT','/issues/:identifier/specification'],['DELETE','/issues/:identifier/specification'],
+  ] as const).map(([method,path])=>({method,path,row:documentDoorRow,teams:documentDoorTeams,workMutation:true as const})),
   {method:'GET',path:'/integrations/slack/oauth/callback',row:'integrations.manage',workMutation:true},
   {method:'GET',path:'/settings/integrations/slack/app',row:'integrations.manage'},
   {method:'GET',path:'/settings/integrations/slack/app/members',row:'integrations.manage'},
