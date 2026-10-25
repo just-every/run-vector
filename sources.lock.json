@@ -4361,7 +4361,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "8f21b04aee94fe47f54775d0832990ef0e493befeaaf906064d5adc3347a4993",
+      "sha256": "0e9059701c3da4e4ead6a4acad48c980c7bb2436c2cc7dccf2bbdbe78d544465",
       "executable": false
     },
     "src/core/features/integrations/comment-api.ts": {
@@ -4505,7 +4505,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/events.ts": {
-      "sha256": "10410815dfa263ad8d1015d4a8afda6f64ab944494700db421e12d40bbd9f0ee",
+      "sha256": "0e695f10b1df38f3cd2dc02ba71fe23c25f5bb8e16f03d26e22c6d8328923f3a",
       "executable": false
     },
     "src/core/features/integrations/slack-app/install.ts": {
@@ -4514,6 +4514,10 @@
     },
     "src/core/features/integrations/slack-app/members.ts": {
       "sha256": "6fb57737edfd56c8c2c3bfd241e55b65c7e87943f6dd52ae7a70cd4f00350d5e",
+      "executable": false
+    },
+    "src/core/features/integrations/slack-app/retire.ts": {
+      "sha256": "eaf9b270665319d85122b1878d6a7fc61d7bd4ac6e53e24649f732db6d5e8ba3",
       "executable": false
     },
     "src/core/features/integrations/slack-app/routes.ts": {
@@ -6824,8 +6828,12 @@
       "sha256": "e15233703812d69de83d774e1bfe37f3e1cd954378535ce428c9295254c8ea12",
       "executable": false
     },
+    "tests/e2e/integrations/slack-app-archive.mjs": {
+      "sha256": "52bd6efc7f2c12b3cb5ee8d1e11577e7fccbbfeba00c7486c33b4dffbc902721",
+      "executable": false
+    },
     "tests/e2e/integrations/slack-app-installation.mjs": {
-      "sha256": "4e6bd25288192ab71c6d4ea21eab5d7a00864c09f10d1b6f9c3b07950b1fd957",
+      "sha256": "032be668eb11cfd08fb304b2079f9f69b15d61824ed12246d62f5daa304d2faa",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
@@ -7744,8 +7752,12 @@
       "sha256": "9cff455604717cebd7bb417378a164545139305170d1f100855776a7984e91ca",
       "executable": false
     },
+    "tests/worker/slack-app-recovery-scenario.ts": {
+      "sha256": "9b1a0e7b5deeea7f5d3bce779c1ae498e132ebef361f5a3a93818a22cdbaa1db",
+      "executable": false
+    },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "494da601674afbdfebde71a2ea95849f247e8d37f43202278a3ca53e7e312f5e",
+      "sha256": "b9cec1cd7367c4b1b82f5db17cb60ced20e0a676ca2fe4eb8caf3c96bd327deb",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {

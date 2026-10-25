@@ -1,3 +1,4 @@
+import {slackAppArchive,slackProviderUninstall} from './slack-app-recovery-scenario';
 import {slackEventIntake,slackIntakeFixture,slackMemberMapping} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
 import {expect,vi} from 'vitest';
@@ -87,6 +88,12 @@ export async function slackAppInstall(){
   const viewer=await invite('synthetic-vector-33007@vector.test',f.cookie,'viewer');
   const mappedMember=await slackMemberMapping(f,admin,member,viewer);
   await slackEventIntake(f,secret,mappedMember);
+  await begin();await slackAppArchive(f,[secret,clientSecret,configToken,botToken]);
+  for(const event of ['app_uninstalled','tokens_revoked'] as const){
+   const priorCalls=calls.length;await slackProviderUninstall(f,secret,event);expect(calls).toHaveLength(priorCalls);
+   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
+   const reconnect=await begin();expect((await callback(reconnect)).status).toBe(303);
+  }
   await begin();await read(await f.call('/settings/integrations/slack','DELETE'));
   expect((await read(await f.call('/settings/integrations/slack/app'))).app).toBeNull();
   expect(await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").first<number>('n')).toBe(0);

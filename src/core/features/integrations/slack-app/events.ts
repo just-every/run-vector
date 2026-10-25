@@ -1,3 +1,4 @@
+import {providerUninstall} from './retire';
 import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
@@ -23,6 +24,8 @@ export async function receiveSlackEvent(env:WorkerBindings,request:Request){
  let payload:unknown;try{payload=JSON.parse(body);}catch{throw new IntegrationError(400,'slack_payload_invalid');}
  const verification=z.object({type:z.literal('url_verification'),challenge:z.string().min(1).max(3000)}).safeParse(payload);
  if(verification.success)return {challenge:verification.data.challenge};
+ const uninstall=z.object({type:z.literal('event_callback'),event:z.object({type:z.enum(['app_uninstalled','tokens_revoked'])})}).safeParse(payload);
+ if(uninstall.success)return providerUninstall(env,signer);
  const parsed=callback.safeParse(payload);
  if(!parsed.success)throw new IntegrationError(400,'slack_event_unsupported');
  const {event,event_id,team_id}=parsed.data;

@@ -1,3 +1,4 @@
+import {exerciseSlackAppArchive} from './slack-app-archive.mjs';
 import {createHmac} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {mkdir,readFile} from 'node:fs/promises';
@@ -101,7 +102,14 @@ export async function exerciseSlackAppInstallation({page,runtime,cookie,team,wid
   for(const [label,value] of [['App ID',fixture.appId],['App client ID',fixture.clientId],['App client secret',fixture.clientSecret],['App signing secret',fixture.signingSecret]])await manual.getByLabel(label,{exact:true}).fill(value);
   await receive('/slack/app',()=>manual.getByRole('button',{name:'Save Slack app credentials',exact:true}).click());await panel.getByRole('button',{name:'Install Slack app',exact:true}).waitFor();
   for(const label of ['App client secret','App signing secret'])assert.equal(await manual.getByLabel(label,{exact:true}).inputValue(),'');
-  const oauthBefore=(await calls()).filter(row=>row.method==='oauth.v2.access').length;await install();assert.equal((await calls()).filter(row=>row.method==='oauth.v2.access').length,oauthBefore+1);await remove();
+  const oauthBefore=(await calls()).filter(row=>row.method==='oauth.v2.access').length;await install();assert.equal((await calls()).filter(row=>row.method==='oauth.v2.access').length,oauthBefore+1);
+  await exerciseSlackAppArchive({page,runtime,cookie,width,evidence,fixture});await remove();
+  // A fresh installation is then retired by a signed provider lifecycle event.
+  for(const [label,value] of [['App ID',fixture.appId],['App client ID',fixture.clientId],['App client secret',fixture.clientSecret],['App signing secret',fixture.signingSecret]])await manual.getByLabel(label,{exact:true}).fill(value);
+  await receive('/slack/app',()=>manual.getByRole('button',{name:'Save Slack app credentials',exact:true}).click());await install();
+  const lifecycle=JSON.stringify({type:'event_callback',event_id:'synthetic-vector-33030-'+width,event:{type:width===1440?'app_uninstalled':'tokens_revoked'}}),timestamp=String(Math.floor(Date.now()/1000)),beforeUninstall=(await calls()).length;
+  const retired=await runtime.req('/api/integrations/slack/events',{method:'POST',headers:{'Content-Type':'application/json','x-slack-request-timestamp':timestamp,'x-slack-signature':'v0='+createHmac('sha256',fixture.signingSecret).update('v0:'+timestamp+':'+lifecycle).digest('hex')},body:lifecycle});assert.equal(retired.status,200);assert.equal((await calls()).length,beforeUninstall);
+  await page.reload();await panel.getByRole('heading',{name:'Slack app installation',exact:true}).waitFor();await page.getByText('Slack is not connected.',{exact:true}).waitFor();assert.equal(await panel.getByRole('button',{name:'Install Slack app',exact:true}).count(),0);await inspect('provider-uninstalled');
   const reloaded=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations/slack/app'&&r.request().method()==='GET');await page.reload();assert.equal((await(await reloaded).json()).app,null);await panel.getByRole('heading',{name:'Slack app installation',exact:true}).waitFor();assert.equal(await panel.getByRole('button',{name:'Install Slack app',exact:true}).count(),0);assert.deepEqual(errors,[]);
  }finally{await page.context().unroute('https://slack.com/oauth/v2/authorize**',provider);await page.context().unroute('https://api.slack.com/apps**',provider);page.off('pageerror',onError);page.off('console',onConsole);}
 }

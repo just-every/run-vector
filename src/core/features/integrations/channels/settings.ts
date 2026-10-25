@@ -1,3 +1,4 @@
+import {retireSlackWrites} from '../slack-app/retire';
 import {auditStatement} from '../../audit/producer';
 import {requireSlackChannel} from './channel-safety';
 import type {z} from 'zod';
@@ -29,13 +30,7 @@ export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
  // Revoke at Slack before retiring local custody; an error is shown, never silently accepted.
  // Disabling the installation also drops member links and the signing secret (0074 trigger).
  if(!await credentialProblem(env,'slack:'+owner.workspace))await slackCall(await slackToken(env,owner.workspace),'auth.revoke',{});
- await guardedSql(env.DB,ownerPredicate(owner)).batch([
-  {sql:'UPDATE vector_slack_installations SET enabled=0 WHERE workspace_id=?',params:[owner.workspace]},
-  {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=?',params:['slack:'+owner.workspace]},
-  {sql:'DELETE FROM vector_integration_secret_keys WHERE identity=? OR identity LIKE ?',params:['slack-app:'+owner.workspace,'slack-oauth:'+owner.workspace+':%']},
-  {sql:"UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE workspace_id=? AND kind='slack'",params:[new Date().toISOString(),owner.workspace]},
-  auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.disconnected',subject:'slack:'+owner.workspace}),
- ]);return {removed:true};
+ await guardedSql(env.DB,ownerPredicate(owner)).batch(retireSlackWrites(owner.workspace,owner.id));return {removed:true};
 }
 export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,input:Binding,skipObjectCheck=false){
  if(input.provider==='slack'&&!input.channelId)throw new IntegrationError(400,'slack_channel_required');
