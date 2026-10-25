@@ -13,6 +13,7 @@ export function ProjectAppearance({ color, icon }: Appearance) {
 }
 
 export function ProjectAppearanceFields({ project }: { project?: Appearance }) {
+  const emoji = projectIcon.safeParse(project?.icon);
   return <>
     <fieldset className="project-palette">
       <legend>Project color</legend>
@@ -24,7 +25,7 @@ export function ProjectAppearanceFields({ project }: { project?: Appearance }) {
     </fieldset>
     <label>
       Project icon (optional)
-      <input aria-label="Project icon" name="icon" placeholder="🚀" defaultValue={project?.icon ?? ""} />
+      <input aria-label="Project icon" name="icon" placeholder="🚀" defaultValue={emoji.success ? emoji.data : ""} />
     </label>
   </>;
 }
