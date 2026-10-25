@@ -7681,7 +7681,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "bbfe25ec6b72b370c14c6a0e50c840add425f03e645ec46b234ebbc99e72a078",
+      "sha256": "a977a16e301e308cffd782af9b4faa8ecf50d15507859f677755c142a03d3661",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
@@ -7733,7 +7733,7 @@
       "executable": false
     },
     "tests/worker/subscriptions-scenario.ts": {
-      "sha256": "9dc4f758682b6b4135db4b0b1bb266e9327476ad58f0e58018e6c67595bbc324",
+      "sha256": "8160d49a97eaaacd20346b344281a113224bcdae188cac1899a046acfb9676a1",
       "executable": false
     },
     "tests/worker/viewer-role-upgrade.ts": {
