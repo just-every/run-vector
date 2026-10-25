@@ -1,3 +1,5 @@
+import {DocumentsSection} from '../../documents/ui/list';
+import {IssueSpecification} from '../../documents/ui/specification';
 import { TooltipScope } from '../../../ui/tooltip';
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
@@ -336,7 +338,7 @@ function IssueInspector({
           onRefresh={onRefresh}
         />}
         {writable && <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>}
-        <GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
+        <IssueSpecification identifier={issue.identifier} writable={writable}/><DocumentsSection parentKind="issue" parentId={issue.id}/><GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
           key={issue.identifier + ":discussion"}
           identifier={issue.identifier}
           onRefresh={onRefresh}

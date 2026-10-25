@@ -5,7 +5,7 @@ import {slackCall,slackToken} from '../channels/provider';
 import {IntegrationError} from '../errors';
 
 export const linkSharedEvent=z.object({type:z.literal('link_shared'),channel:z.string().min(1).max(100),user:z.string().min(1).max(100),message_ts:z.string().max(100),unfurl_id:z.string().min(1).max(300),source:z.string().min(1).max(100),links:z.array(z.object({domain:z.string().max(300),url:z.string().max(3000)})).max(100)});
-type Preview={identifier:string;title:string;status:string;assignee:string|null;priority:string};
+type Preview={identifier:string;title:string;status:string|null;assignee:string|null;priority:string|null};
 /** Native visibility CTEs resolve every link using the sharing person's current
  * role and memberships. A Slack installation grants no content authority. */
 export async function unfurlSlackLinks(env:WorkerBindings,signer:{workspace:string;encrypted:string},team:string,event:z.infer<typeof linkSharedEvent>,key:string){
@@ -25,14 +25,15 @@ export async function unfurlSlackLinks(env:WorkerBindings,signer:{workspace:stri
   for(const link of event.links){
    let url:URL;try{url=new URL(link.url);}catch{continue;}
    if(url.origin!==origin||url.username||url.password)continue;
-   const match=/^\/app\/(issues|projects)\/([^/]+)\/?$/.exec(url.pathname);if(!match)continue;
+   const match=/^\/app\/(issues|projects|documents)\/([^/]+)\/?$/.exec(url.pathname);if(!match)continue;
    let id:string;try{id=decodeURIComponent(match[2]);}catch{continue;}
    const preview=match[1]==='issues'
     ?await db.prepare('SELECT i.identifier,i.title,s.name status,o.name assignee,i.priority FROM issues i JOIN teams t ON t.id=i.team_id JOIN workflow_statuses s ON s.id=i.status_id LEFT JOIN operators o ON o.id=i.assignee_operator_id WHERE i.identifier=? AND t.archived_at IS NULL AND i.archived_at IS NULL AND NOT EXISTS(SELECT 1 FROM issue_deletions d WHERE d.issue_id=i.id) AND '+admission).bind(id,...values).first<Preview>()
+    :match[1]==='documents'?await db.prepare("SELECT d.id identifier,d.title,NULL status,NULL assignee,NULL priority FROM documents d WHERE d.id=? AND (CASE d.parent_kind WHEN 'team' THEN EXISTS(SELECT 1 FROM teams t WHERE t.id=d.parent_id AND t.archived_at IS NULL) WHEN 'project' THEN EXISTS(SELECT 1 FROM projects p WHERE p.id=d.parent_id AND p.archived_at IS NULL) WHEN 'issue' THEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=d.parent_id AND i.archived_at IS NULL AND t.archived_at IS NULL) ELSE 1 END) AND "+admission).bind(id,...values).first<Preview>()
     :await db.prepare('SELECT p.id identifier,p.name title,p.lifecycle status,o.name assignee,p.priority FROM projects p LEFT JOIN operators o ON o.id=p.lead_operator_id WHERE p.id=? AND p.archived_at IS NULL AND '+admission).bind(id,...values).first<Preview>();
    if(!preview)continue;
    // Plain text prevents titles and people names from becoming Slack markup.
-   unfurls[link.url]={blocks:[{type:'section',text:{type:'plain_text',text:[preview.identifier,preview.title,'Status: '+preview.status,(match[1]==='issues'?'Assignee: ':'Lead: ')+(preview.assignee??'Unassigned'),'Priority: '+preview.priority].join('\n')}}]};
+   unfurls[link.url]={blocks:[{type:'section',text:{type:'plain_text',text:(match[1]==='documents'?[preview.identifier,preview.title]:[preview.identifier,preview.title,'Status: '+preview.status,(match[1]==='issues'?'Assignee: ':'Lead: ')+(preview.assignee??'Unassigned'),'Priority: '+preview.priority]).join('\n')}}]};
   }
  }
  if(Object.keys(unfurls).length&&token)await slackCall(token,'chat.unfurl',{unfurl_id:event.unfurl_id,source:event.source,unfurls});

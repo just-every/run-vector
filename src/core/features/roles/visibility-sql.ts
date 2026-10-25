@@ -64,6 +64,13 @@ export function visibilityCtes(actor: string) {
     scoped('dashboards', 'r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (r.team_id IS NULL OR r.team_id IN(SELECT id FROM teams))'),
     scoped('dashboard_widgets', 'r.dashboard_id IN(SELECT id FROM dashboards)'),
     scoped('initiative_projects', 'r.project_id IN(SELECT id FROM projects)'),
+    scoped('documents', `r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (
+      (r.parent_kind='issue' AND r.parent_id IN(SELECT id FROM issues)) OR
+      (r.parent_kind='project' AND r.parent_id IN(SELECT id FROM projects)) OR
+      (r.parent_kind='team' AND r.parent_id IN(SELECT id FROM teams)) OR
+      (r.parent_kind='initiative' AND NOT (${guest}) AND r.parent_id IN(SELECT id FROM main.initiatives WHERE workspace_id=(SELECT workspace_id FROM __vector_reader))))`),
+    ...['document_revisions','document_comments'].map(t=>scoped(t,'r.document_id IN(SELECT id FROM documents)')),
+    scoped('issue_specifications', 'r.issue_id IN(SELECT id FROM issues) AND r.document_id IN(SELECT id FROM documents)'),
   ].join(',\n')
 }
 

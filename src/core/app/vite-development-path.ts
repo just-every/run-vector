@@ -2,6 +2,15 @@
 // plus the retained main.tsx smoke assertion (its missing file is an asset 404).
 // Never admit a general source/node_modules/@ namespace or _serverFn here.
 const developmentAssets = new Set([
+  // Reviewed document UI only; repository, authority and native routes stay private.
+  '/src/core/features/documents/schema.ts',
+  '/src/core/features/documents/ui/form.tsx',
+  '/src/core/features/documents/ui/list.tsx',
+  '/src/core/features/documents/ui/page.tsx',
+  '/src/core/features/documents/ui/specification.tsx',
+  '/src/core/features/documents/ui/documents.css',
+  '/src/routes/app.documents.$documentId.tsx',
+  '/src/routes/app.teams.$teamId.tsx',
   '/src/core/features/cycle-report/schema.ts',
   '/src/core/features/cycle-report/panel.tsx',
   '/src/core/features/cycle-report/burn-up.tsx',

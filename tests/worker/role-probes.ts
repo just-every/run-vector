@@ -65,6 +65,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
   };
 
   return {
+    "documents.write": {outside:true,session:async(_who,actor,team)=>{const target=await issue(team);return()=>actor.call('/documents','POST',{parentKind:'issue',parentId:target.id,title:'synthetic-vector-document-probe-'+unique(),body:'synthetic-vector-document-body'});}},
     "work.read": {outside:true,session:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.call('/issues/'+made.identifier+'/references');},api:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.api('/issues/'+made.identifier);}},
     "viewers.manage": {session:async(_who,actor)=>()=>actor.call('/settings/operators/invite','POST',{email:`synthetic-vector-${1100+unique()}@vector.test`,displayName:'synthetic-vector-1100',role:'viewer'})},
     "reports.read": {session:async(_who,actor)=>()=>actor.call('/insights')},
