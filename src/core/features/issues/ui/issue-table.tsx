@@ -1,3 +1,4 @@
+import { useDateFormat } from "../../../shared/date-format";
 import { ManualOrderControls } from '../../manual-order/ui/controls';
 import { useManualOrder } from '../../manual-order/ui/context';
 import { useHydrated } from '../../../app/initial-resources';
@@ -30,6 +31,7 @@ export function IssueTable({
   rowAction?: (issue: IssueListData["issues"][number]) => ReactNode;
 }) {
   const hydrated = useHydrated();
+  const { date } = useDateFormat();
   const manual = useManualOrder();
   const table = useRef<HTMLDivElement>(null);
   const groups = issueGroups(data, grouping);
@@ -183,7 +185,7 @@ export function IssueTable({
                       {issue.assignee?.name ?? "Unassigned"}
                       {issue.dueDate && (
                         <small className="issues-due">
-                          Due {issue.dueDate}
+                          Due {date(issue.dueDate)}
                         </small>
                       )}
                     </span>

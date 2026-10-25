@@ -1,0 +1,12 @@
+.stream-row.stream-row--condensed { min-height: 0; gap: .35rem; }
+.stream-row--condensed .stream-row-meta { text-overflow: ellipsis; }
+.stream-row--condensed .stream-row-meta > span { flex: none; }
+.stream-row--condensed .stream-row-meta .reason-pill::after { content: none; }
+@media (hover: hover) {
+ .stream-selection { opacity: 0; }
+ .stream-selectable:hover .stream-selection, .stream-selectable:focus-within .stream-selection, .stream-selection:has(:checked) { opacity: 1; }
+}
+@media (max-width: 46rem) {
+ .stream-selectable { grid-template-columns: minmax(0, 1fr); }
+ .stream-selection { display: none; }
+}

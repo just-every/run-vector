@@ -1,3 +1,4 @@
+import "./board-actions.css";
 import { ManualOrderControls } from '../../manual-order/ui/controls';
 import { useHydrated } from "../../../app/initial-resources";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -20,7 +21,6 @@ export function IssueBoard({
   statusCounts,
   team,
   options,
-  onChangeTeam,
   onOpen,
   onRefresh,
   move,
@@ -53,7 +53,6 @@ export function IssueBoard({
   statusCounts: NonNullable<IssueListData["statusCounts"]>;
   team: string;
   options: WorkspaceOptions | null;
-  onChangeTeam: (team: string) => void;
   onOpen: (id: string) => void;
   onRefresh: () => void;
 }) {
@@ -63,6 +62,7 @@ export function IssueBoard({
       .filter((s) => s.teamId === team)
       .sort((a, b) => a.position - b.position) || [];
   const region = useRef<HTMLDivElement>(null);
+  const dragged = useRef<{ change: (status: string) => Promise<void> } | null>(null);
   const noticesRegion = useRef<HTMLDivElement>(null);
   const [focusNotice, setFocusNotice] = useState<string | null>(null);
   useLayoutEffect(() => {
@@ -76,6 +76,8 @@ export function IssueBoard({
         `[data-status-identifier="${move.identifier}"], [data-decision-identifier="${move.identifier}"]`,
       ) as unknown as HTMLSelectElement | HTMLButtonElement | null;
       if (!control || control.disabled) return;
+      const disclosure = control.closest("details");
+      if (disclosure) disclosure.open = true;
       control.focus();
     } else {
       report(
@@ -127,25 +129,6 @@ export function IssueBoard({
           </div>
         ))}
       </div>
-      <label className="board-team">
-        Board team
-        <select
-          aria-label="Board team"
-          disabled={!hydrated}
-          value={team}
-          onChange={(e) => onChangeTeam(e.target.value)}
-        >
-          <option value="all">Choose a team</option>
-          {team !== "all" && !options?.teams.some((t) => t.id === team) && (
-            <option value={team}>Selected team unavailable</option>
-          )}
-          {options?.teams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-      </label>
       {team === "all" ? (
         <p>Choose one team to see its workflow board.</p>
       ) : (
@@ -177,13 +160,13 @@ export function IssueBoard({
                 key={status.id}
                 className={`board-column${status.id === active ? " is-current" : ""}`}
                 aria-label={`${status.name} column`}
+                onDragOver={event => { if (dragged.current && ordinaryCategories.has(status.category)) { event.preventDefault(); event.dataTransfer.dropEffect = "move"; } }}
+                onDrop={event => { if (!dragged.current || !ordinaryCategories.has(status.category)) return; event.preventDefault(); void dragged.current.change(status.id); dragged.current = null; }}
               >
                 <h2>
                   {status.name} <span>{count(status.id)}</span>
                 </h2>
-                <p>
-                  Showing {columnRows(status.id).length} of {count(status.id)}
-                </p>
+                {columnRows(status.id).length < count(status.id) && <p>Showing {columnRows(status.id).length} of {count(status.id)}</p>}
                 {columnRows(status.id).map((row) => (
                   <BoardCard
                     key={row.id}
@@ -193,11 +176,10 @@ export function IssueBoard({
                     onRefresh={onRefresh}
                     onNotice={report}
                     onMoved={onMoved}
+                    onDrag={change => { dragged.current = change ? { change } : null; }}
                   />
                 ))}
-                {!rows.some((r) => r.status.id === status.id) && (
-                  <p>No issues on this page.</p>
-                )}
+
               </section>
             ))}
           </div>
@@ -213,7 +195,9 @@ function BoardCard({
   onRefresh,
   onNotice,
   onMoved,
+  onDrag,
 }: {
+  onDrag: (change: ((status: string) => Promise<void>) | null) => void;
   onMoved: (updated: IssueDetailData, rejected?: boolean) => void;
   row: IssueRow;
   statuses: WorkspaceOptions["statuses"];
@@ -273,7 +257,11 @@ function BoardCard({
     }
   }
   return (
-    <article className="board-card">
+    <article className="board-card"
+      draggable={hydrated && !busy && ordinaryCategories.has(current.status.category)}
+      onDragStart={event => { if ((event.target as HTMLElement).closest(".manual-order-controls")) return; event.dataTransfer.setData("text/x-vector-status", row.identifier); event.dataTransfer.effectAllowed = "move"; onDrag(change); }}
+      onDragEnd={() => onDrag(null)}
+    >
       <button
         disabled={!hydrated}
         className="board-card-open"
@@ -296,8 +284,9 @@ function BoardCard({
       </div>
       <ManualOrderControls issue={row} />
       {ordinaryCategories.has(current.status.category) ? (
+        <details className="board-card-status"><summary aria-label={`Move ${row.identifier}`}>Move</summary>
         <label>
-          Status for {row.identifier}
+          Status
           <select
             data-status-identifier={row.identifier}
             aria-label={`Status for ${row.identifier}`}
@@ -311,7 +300,7 @@ function BoardCard({
               </option>
             ))}
           </select>
-        </label>
+        </label></details>
       ) : (
         <>
           <p>{current.status.name} requires a decision.</p>

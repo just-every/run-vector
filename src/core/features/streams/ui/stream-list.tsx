@@ -1,9 +1,11 @@
+import { useDateFormat } from "../../../shared/date-format";
+import "./condensed-rows.css";
 import { useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { useHydrated } from "../../../app/initial-resources";
 import type { IssueEditTarget } from "../../issues/ui/issue-keyboard-actions";
 import { toggleIssueSelection } from "../../issues/ui/issue-selection";
 import type { StreamItem } from "./data";
-import { moveRowFocus, reasonLabel, relativeTime, shortDate } from "./helpers";
+import { moveRowFocus, reasonLabel, relativeTime } from "./helpers";
 
 type StreamListProps = {
   groups: Array<{ id: string; title: string; items: StreamItem[] }>;
@@ -25,6 +27,7 @@ export function StreamList({
   selection, setSelection, focused, setFocused, ownedFocus,
 }: StreamListProps) {
   const hydrated = useHydrated();
+  const { date } = useDateFormat();
   const [decisionLimit, setDecisionLimit] = useState(50);
   const visibleGroups = groups.map(group => ({
     ...group, total: group.items.length,
@@ -74,7 +77,7 @@ export function StreamList({
                     </label>
                     <button
                       disabled={!hydrated}
-                      className={`stream-row${selectedIdentifier === item.identifier ? " is-selected" : ""}`}
+                      className={`stream-row stream-row--condensed${selectedIdentifier === item.identifier ? " is-selected" : ""}`}
                       id={`issue-row-${item.identifier}`}
                       data-issue-identifier={item.identifier}
                       tabIndex={item.identifier === (focused || rows[0]?.identifier) ? 0 : -1}
@@ -106,37 +109,15 @@ export function StreamList({
                       }}
                       aria-label={`${item.identifier}: ${item.title}. ${reasonLabel(item.primaryReason)}.`}
                     >
-                      <span className="stream-row-top">
-                        <span className="issue-identifier">
-                          {item.identifier}
-                        </span>
-                        <span className={`priority priority--${item.priority}`}>
-                          {item.priority === "none"
-                            ? "No priority"
-                            : item.priority}
-                        </span>
-                      </span>
                       <strong>{item.title}</strong>
                       <span className="stream-row-meta">
+                        <span className="issue-identifier">{item.identifier}</span>
                         <span>{item.status.name}</span>
-                        {!hideAssignee ? (
-                          <span>{item.assignee?.name ?? "Unassigned"}</span>
-                        ) : null}
-                        <span>
-                          {item.dueDate
-                            ? shortDate(item.dueDate)
-                            : relativeTime(item.updatedAt)}
-                        </span>
-                      </span>
-                      <span className="stream-reasons">
-                        <span className="reason-pill reason-pill--primary">
-                          {reasonLabel(item.primaryReason)}
-                        </span>
-                        {item.contextReasons.map((reason) => (
-                          <span className="reason-pill" key={reason}>
-                            {reasonLabel(reason)}
-                          </span>
-                        ))}
+                        {item.priority !== "none" && <span>{item.priority}</span>}
+                        {!hideAssignee && item.assignee && <span>{item.assignee.name}</span>}
+                        <span>{item.dueDate ? date(item.dueDate) : relativeTime(item.updatedAt)}</span>
+                        <span className="reason-pill reason-pill--primary">{reasonLabel(item.primaryReason)}</span>
+                        {item.contextReasons.length > 0 && <span aria-label={item.contextReasons.map(reasonLabel).join(", ")}>+{item.contextReasons.length}</span>}
                       </span>
                     </button>
                     </div>

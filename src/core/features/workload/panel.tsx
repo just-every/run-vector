@@ -12,11 +12,11 @@ export function WorkloadPanel({ cycleId }: { cycleId: string }) {
   return (
     <section className="workload" aria-labelledby="workload-heading">
       <h2 id="workload-heading">Workload</h2>
-      <p>
+      <details><summary>How workload is worked out</summary><p>
         Assigned scope and each person's stated capacity, in points. Canceled
         and duplicate issues are excluded; unestimated work keeps capacity
         uncertain. This is planning scope, not a measure of output.
-      </p>
+      </p></details>
       <label>
         Workload period
         <select
@@ -55,6 +55,7 @@ export function WorkloadPanel({ cycleId }: { cycleId: string }) {
             Due through
             <input type="date" name="to" required />
           </label>
+          <details><summary>Which due dates count?</summary><p>Both dates are included. Issues without a due date are excluded.</p></details>
           <button>Show workload</button>
         </form>
       )}
@@ -68,9 +69,7 @@ export function WorkloadPanel({ cycleId }: { cycleId: string }) {
       {data && (
         <>
           <p>
-            Scope: {data.title} · Calendar dates in {data.timezone}. Date ranges
-            include due dates at both ends; issues with no due date are
-            excluded.
+            Scope: {data.title}
           </p>
           <div className="workload-people">
             {data.rows.map((row) => (
