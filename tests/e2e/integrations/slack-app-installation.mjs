@@ -48,14 +48,14 @@ export async function exerciseSlackAppInstallation({page,runtime,cookie,team,wid
  const exerciseMappingAndIntake=async()=>{
   const mappings=panel.getByRole('form',{name:'Map Slack member',exact:true});
   const owner=runtime.sql("SELECT id,name FROM operators WHERE role='owner' AND removed_at IS NULL ORDER BY created_at LIMIT 1")[0];
-  await mappings.getByLabel('Vector member',{exact:true}).selectOption(owner.id);
+  await mappings.getByLabel('Vector member').selectOption(owner.id);
   await mappings.getByLabel('Slack workspace ID',{exact:true}).fill(fixture.teamId);
   await mappings.getByLabel('Slack member ID',{exact:true}).fill(fixture.memberId);
   await receive('/slack/app/members',()=>mappings.getByRole('button',{name:'Map Slack member',exact:true}).click());
   await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor();await inspect('member-mapped');
   const binding=page.getByRole('form',{name:'Bind notification channel',exact:true});
-  await binding.getByLabel('Team, project or saved view',{exact:true}).selectOption('team:'+team.id);
-  await binding.getByLabel('Channel service',{exact:true}).selectOption('slack');
+  await binding.getByLabel('Team, project or saved view').selectOption('team:'+team.id);
+  await binding.getByLabel('Channel service').selectOption('slack');
   await binding.getByLabel('Channel display name',{exact:true}).fill('synthetic-vector-33010');
   await binding.getByLabel('Slack channel ID',{exact:true}).fill(fixture.intakeChannel);
   await receive('/channels',()=>binding.getByRole('button',{name:'Save channel binding',exact:true}).click(),201);
