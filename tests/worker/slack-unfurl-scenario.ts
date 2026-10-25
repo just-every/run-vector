@@ -26,7 +26,10 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  const delivered=await snapshot();await read(await send(event),409);expect(await snapshot()).toEqual(delivered);expect(effects()).toHaveLength(count+1);
  const bare=async(event:ReturnType<typeof payload>)=>{
   const state=await snapshot(),prior=effects().length;await read(await send(event));const after=await snapshot();
-  expect(after.vector_slack_event_receipts).toHaveLength((state.vector_slack_event_receipts as string[]).length+1);
+  const oldReceipts=state.vector_slack_event_receipts as string[],newReceipts=after.vector_slack_event_receipts as string[];
+  expect(newReceipts).toHaveLength(oldReceipts.length+1);
+  for(const receipt of oldReceipts)expect(newReceipts).toContain(receipt);
+  const added=newReceipts.filter(receipt=>!oldReceipts.includes(receipt));expect(added).toHaveLength(1);expect(JSON.parse(added[0]).identifier).toBe(event.event.unfurl_id);
   delete state.vector_slack_event_receipts;delete after.vector_slack_event_receipts;
   expect(after).toEqual(state);expect(effects()).toHaveLength(prior);
  };

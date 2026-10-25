@@ -7837,7 +7837,7 @@
       "executable": false
     },
     "tests/worker/slack-unfurl-scenario.ts": {
-      "sha256": "d48f704cf97e3cdfe0f4be1c6f54af590782605cce20eb1708fc84b87b68c1b8",
+      "sha256": "68a0e6d137ed5355f87016e1c452523c1cfcb30973d1774f95fdc1a40f4163c5",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {
