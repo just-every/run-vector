@@ -37,6 +37,7 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect((await w.guest.call(reactionPath,'DELETE',{targetId:'',emoji:'🎉'})).status).toBe(200);
  expect(await snapshot(Object.keys(guestBefore))).toEqual(guestBefore);
  const shared=await json(await owner.call('/views','POST',{name:'synthetic-vector-1724',isShared:true,query:{team:w.team.id}}),201);
+ const token=await json(await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-2021',scopes:['issues:read']}),201);
  const viewerSubscription=await json(await member.call('/subscriptions','POST',{subjectType:'label',subjectId:label.id}),201);
  expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
  expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
@@ -57,7 +58,6 @@ export async function viewerVisibilityJourney(w:Workspace){
  const milestoneState=await json(await owner.call('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-2004'}));
  const milestone=milestoneState.milestones.find((m:any)=>m.name==='synthetic-vector-2004');
  const source=await json(await owner.call('/settings/integrations/sources','POST',{sourceId:'synthetic-vector-2019',name:'synthetic-vector-2020',teamId:w.team.id}),201);
- const token=await json(await owner.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-2021',scopes:['issues:read']}),201);
  const workflowState=await json(await owner.call('/settings/teams/'+w.team.id+'/statuses','POST',{name:'synthetic-vector-2029',category:'unstarted'}));
  const workflow=workflowState.teams.find((team:any)=>team.id===w.team.id).statuses;
  const workflowStatus=workflow.find((status:any)=>status.name==='synthetic-vector-2029');
@@ -65,12 +65,11 @@ export async function viewerVisibilityJourney(w:Workspace){
  const destination=await json(await owner.call('/settings/integrations/destinations','POST',{name:'synthetic-vector-2035',url:'https://synthetic-vector-2035.example.com/events'}),201);
  const github=await json(await owner.call('/settings/integrations/github','POST',{name:'synthetic-vector-2036',repository:'synthetic-vector-2036/synthetic-vector-2037'}),201);
  const edge=channelEdge(),channelId='CSYNTHETIC2038';
- let channelBinding:any;
  try{
+ let channelBinding:any;
   await json(await owner.call('/settings/integrations/slack','POST',{botToken:edge.token}));
   await json(await owner.call('/settings/integrations/channels/allowed','POST',{channelId,channelName:'synthetic-vector-2038'}),201);
   channelBinding=await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']}),201);
- }finally{edge.restore();}
  const signingSecret=Array.from(crypto.getRandomValues(new Uint8Array(16)),value=>value.toString(16).padStart(2,'0')).join('');
  const templateInput={name:'synthetic-vector-2043',teamId:w.team.id,issues:[{title:'synthetic-vector-2044',offsetDays:null,milestonePosition:null}]};
  const template=await json(await owner.call('/project-templates','POST',templateInput),201);
@@ -143,7 +142,11 @@ export async function viewerVisibilityJourney(w:Workspace){
   else if(route==='/projects/:id/slack-channel')body={channelId};
   else if(route==='/settings/integrations/channels')body={scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']};
   else if(route==='/settings/integrations/channels/:id')id=channelBinding.id;
-  if(route==='/issues'||route==='/intake')body={title:'synthetic-vector-2030',teamId:w.team.id,projectId:project.id,labelIds:[label.id]};
+  if(route==='/cycles'||route==='/settings/cycles')body={teamId:w.team.id,name:'synthetic-vector-2050',startsLocal:'2032-01-05T00:00',endsLocal:'2032-01-12T00:00',capacity:null};
+  else if(route==='/settings/operators/invite')body={email:'synthetic-vector-2051@vector.test',displayName:'synthetic-vector-2051',role:'member'};
+  else if(route==='/settings/operators/:operatorId/role')body={role:'member'};
+  else if(route==='/settings')body={timezone:'UTC'};
+  else if(route==='/issues'||route==='/intake')body={title:'synthetic-vector-2030',teamId:w.team.id,projectId:project.id,labelIds:[label.id]};
   else if(route==='/issues/:identifier'&&method==='PATCH')body={expectedVersion:issue.version,title:'synthetic-vector-2031'};
   else if(route==='/issues/:identifier'&&method==='DELETE')body={expectedVersion:issue.version,confirmed:true};
   else if(route==='/issues/:identifier/comments')body={body:'synthetic-vector-2032'};
@@ -155,7 +158,7 @@ export async function viewerVisibilityJourney(w:Workspace){
   else if(route.endsWith('/reactions'))body={targetId:'',emoji:'👍'};
   else if(route.endsWith('/copy'))body={expectedVersion:issue.version,teamId:w.team.id};
   else if(route.endsWith('/subscription'))body={following:true};
-  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:name==='channelId'?channelId:id).replace(/\*$/,'exports');
+  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?w.lead.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:name==='channelId'?channelId:id).replace(/\*$/,'exports');
   return {path,body};
  };
  // Each registered work mutation is reached through its actual native/bearer transport.
@@ -166,11 +169,13 @@ export async function viewerVisibilityJourney(w:Workspace){
   attempts++;
   await resetLimits();
   const {path,body}=familyRequest(door);
+  const providerCalls=edge.calls.length;
   const before=await stored();
   const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
   const usageIds=new Set(usageBefore.map(row=>row.id));
   const response=await send(path,door.method==='ALL'?'POST':door.method,body);
   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
+  expect(edge.calls,door.method+' '+path+' refusal reached a provider').toHaveLength(providerCalls);
   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
   expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:'forbidden'});
   const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
@@ -181,6 +186,7 @@ export async function viewerVisibilityJourney(w:Workspace){
  }
  expect(attempts,registry===doors?'native src/core/features/roles/doors.ts':'bearer src/core/features/roles/doors.ts').toBe(mutations.length);
  }
+ }finally{edge.restore();}
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
  const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-1728',identifierPrefix:'SYNVIEW',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-1728');

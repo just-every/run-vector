@@ -2821,7 +2821,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "a2c66643bb1c0573b53f69b96a53b62991ec72441f02958b98e0dc2d01136e89",
+      "sha256": "9794b32346352992ad14f4d52f9c25699fdfc87320ac4d93a89ab5521a2123f3",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -7681,7 +7681,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "ec29153196b21e75344d7e67539674aef887c72d5c9ce28c8c93f1d8d7dfe5d4",
+      "sha256": "5fe20dfd817427d58eeb00c31692787e77cd873b95eb27702e22b37cdddabddb",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
