@@ -36,6 +36,9 @@ export async function boardJourney(page, context, base, record, capture) {
   await shot('board-choose-team', 1440);
   await page.getByLabel('Team', { exact: true }).selectOption(team.id);
   await readyBoard(page, { team: team.id, pageSize: 100, grouping: 'status' });
+  await openBoard(page, base, { q: marker });
+  await readyBoard(page, { team: team.id, pageSize: 100, grouping: 'status' });
+  assert.equal(await page.getByLabel('Team', { exact: true }).inputValue(), team.id, 'Reopening Board restores the last selected team');
   const first = await boardSnapshot(page, api, statuses);
   assert.equal(first.total, fixture.issues.length);
   assert(first.total > first.pageSize, 'Public fixture reaches beyond the first 100 cards');
@@ -55,7 +58,7 @@ export async function boardJourney(page, context, base, record, capture) {
   await page.getByRole('navigation', { name: 'Issue pages', exact: true }).getByRole('button', { name: 'Previous', exact: true }).click();
   await readyBoard(page, { offset: 0 });
 
-  // Both team controls share the filter reducer, including its status reset.
+  // The team control shares the filter reducer, including its status reset.
   for (const control of ['Team']) {
     await page.getByLabel('Status', { exact: true }).selectOption(status('backlog').id);
     await readyBoard(page, { status: status('backlog').id });

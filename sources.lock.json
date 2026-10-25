@@ -6581,7 +6581,7 @@
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
-      "sha256": "c791a2ecbaa84f32526573591386fdbe731dcef9342478720032e99f46f55d0c",
+      "sha256": "6a86f3151f90a2fbdbbe39504d669cb331d4f1508434abdcc96b6496ec3abf89",
       "executable": false
     },
     "tests/e2e/core-board-support.mjs": {
