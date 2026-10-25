@@ -36,7 +36,9 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  const createdNotices=await notices(completion,matching.identifier);
  expect(createdNotices).toHaveLength(1);expect(createdNotices[0].causes).toEqual(['status']);
  expect(await completionDeliveries()).toHaveLength(0);expect(await completionMail()).toBe(0);
- const completed=team.statuses.find(s=>s.category==='completed')!;
+ const completedDestination=team.statuses.find(s=>s.category==='completed')!;
+ const remapState=await read(await f.call('/settings/teams/'+team.id+'/statuses','POST',{name:'synthetic-vector-2018',category:'completed'}));
+ const completed=remapState.teams.find((t:any)=>t.id===team.id).statuses.find((s:any)=>s.name==='synthetic-vector-2018');
  await read(await f.call('/issues/'+matching.identifier,'PATCH',{expectedVersion:matching.version,statusId:completed.id}));
  const completedNotices=await notices(completion,matching.identifier);
  expect(completedNotices).toHaveLength(2);
@@ -45,6 +47,15 @@ export async function exerciseSubjectSubscriptions(f:Awaited<ReturnType<typeof c
  const sent=await completionDeliveries();expect(sent).toHaveLength(1);
  expect(sent[0]).toMatchObject({notification_id:newNotice.id,status:'development'});expect(await completionMail()).toBe(1);
  expect(await notices(completion,matching.identifier)).toEqual(completedNotices);
+ expect(await completionDeliveries()).toEqual(sent);expect(await completionMail()).toBe(1);
+ // Remapping terminal workflow identities is a status change, not a new completion.
+ await read(await f.call('/settings/teams/'+team.id+'/statuses/'+completed.id,'DELETE',{destinationStatusId:completedDestination.id}));
+ const remappedNotices=await notices(completion,matching.identifier);
+ expect(remappedNotices).toHaveLength(3);
+ const remapNotice=remappedNotices.find((n:any)=>!completedNotices.some((old:any)=>old.id===n.id));
+ expect(remapNotice.causes).toEqual(['status']);
+ expect(await completionDeliveries()).toEqual(sent);expect(await completionMail()).toBe(1);
+ expect(await notices(completion,matching.identifier)).toEqual(remappedNotices);
  expect(await completionDeliveries()).toEqual(sent);expect(await completionMail()).toBe(1);
  const projectState=await read(await f.call('/settings/projects','POST',{name:'synthetic-vector-1761',leadOperatorId:f.owner}));
  const project=projectState.projects.find((p:any)=>p.name==='synthetic-vector-1761');
