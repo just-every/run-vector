@@ -39,6 +39,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
   const form = useRef<HTMLFormElement>(null), draft = useRef<Draft | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const busy = useRef(false), mounted = useRef(false);
+  const departing = useRef(false);
   const current = useRef({ path, method, schema, read, onSaved });
   current.current = { path, method, schema, read, onSaved };
   const [state, setState] = useState<SaveState>('idle');
@@ -62,7 +63,9 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
       const receipt = await request;
       if (draft.current?.revision === snapshot.revision) {
         draft.current = null;
-        try { if (readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }
+        // The next document may already contain an older server read. Let its
+        // form restore this draft even when this outgoing write succeeds.
+        try { if (!departing.current && readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }
         status('saved');
       }
       options.onSaved?.(receipt);
@@ -90,7 +93,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     status('dirty'); schedule();
   }
   useEffect(() => {
-    mounted.current = true;
+    mounted.current = true; departing.current = false;
     const first = form.current?.querySelector('[name]');
     if (first instanceof HTMLInputElement || first instanceof HTMLSelectElement || first instanceof HTMLTextAreaElement) setField(saveField(first));
     try {
@@ -98,9 +101,10 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
       if (saved && form.current) { draft.current = saved; restore(form.current, saved); if (saved.field) setField(saved.field); onRestored?.(new FormData(form.current)); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
       else if (form.current && initialize?.(form.current)) edit();
     } catch { /* An unreadable device draft cannot replace current server values. */ }
-    const leave = () => { if (!confirm) void flush(); };
+    const leave = () => { departing.current = true; if (!confirm) void flush(); };
+    window.addEventListener('beforeunload', leave);
     window.addEventListener('pagehide', leave);
-    return () => { leave(); mounted.current = false; clearTimeout(timer.current); window.removeEventListener('pagehide', leave); };
+    return () => { leave(); mounted.current = false; clearTimeout(timer.current); window.removeEventListener('beforeunload', leave); window.removeEventListener('pagehide', leave); };
   }, [key]);
   return <SettingsSaveFeedback.Provider value={{state, field, retry: () => void flush()}}><form {...props} ref={form} onChange={event => edit(event.target)} onSubmit={event => {
     event.preventDefault();
