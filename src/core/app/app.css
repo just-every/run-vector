@@ -173,7 +173,7 @@ select:not([multiple], [size]:not([size="1"])):disabled {
 
 /* Text-entry fields keep a 3:1 boundary in both themes (WCAG 1.4.11, VIEW-011), whatever a feature's own hairline. */
 .app-shell :is(input:not([type="checkbox"], [type="radio"], [type="color"], [type="file"], [type="range"]), select, textarea) {
-  border-color: var(--app-field-border);
+  border: 1px solid var(--app-field-border);
 }
 
 .app-shell :is(input:not([type="checkbox"], [type="radio"], [type="color"], [type="file"], [type="range"], [type="button"], [type="submit"], [type="reset"]), select, textarea):focus-visible {
