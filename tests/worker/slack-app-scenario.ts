@@ -4,6 +4,17 @@ import {setupIntegrations} from './integration-fixture';
 import {invite,request,bindings} from './base-auth-fixture';
 export async function slackAppInstall(){
  const f=await setupIntegrations(),secret='synthetic-vector-'+crypto.randomUUID(),clientSecret='synthetic-vector-'+crypto.randomUUID(),configToken='synthetic-vector-'+crypto.randomUUID(),botToken='synthetic-vector-'+crypto.randomUUID();
+ const manifestForInstallation=(manifest:any)=>{
+  const at=(path:string)=>bindings.APP_ORIGIN+'/api/integrations/slack/'+path;
+  expect(manifest.oauth_config.redirect_urls).toEqual([at('oauth/callback')]);
+  expect(manifest.settings.interactivity).toMatchObject({is_enabled:true,request_url:at('interactive')});
+  expect(manifest.settings.event_subscriptions.request_url).toBe(at('events'));
+  expect(manifest.settings.event_subscriptions.bot_events).toEqual(expect.arrayContaining(['app_mention','message.channels','link_shared']));
+  expect(manifest.features.slash_commands).toEqual(expect.arrayContaining([expect.objectContaining({command:'/vector',url:at('commands'),should_escape:true})]));
+  expect(manifest.features.unfurl_domains).toContain(new URL(bindings.APP_ORIGIN).hostname);
+  expect(manifest.oauth_config.scopes.bot).toEqual(expect.arrayContaining(['app_mentions:read','channels:history','commands','links:read','links:write']));
+  expect(manifest.oauth_config.scopes.bot).not.toContain('admin');
+ };
  const calls:{method:string;body:any}[]=[];
  let denied=false,grant:'valid'|'wrong-app'|'missing-scope'|'user'='valid';
  const edge=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{
@@ -13,11 +24,11 @@ export async function slackAppInstall(){
   if(method==='apps.manifest.create'){
    expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+configToken);
    if(denied)return Response.json({ok:false,error:'invalid_auth'});
-   const manifest=JSON.parse(body.manifest);expect(manifest.oauth_config.redirect_urls).toEqual([bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback']);
+   const manifest=JSON.parse(body.manifest);manifestForInstallation(manifest);
    expect(manifest.oauth_config.scopes.bot).toContain('chat:write');
    return Response.json({ok:true,app_id:'synthetic-vector-2000',credentials:{client_id:'synthetic-vector-2001',client_secret:clientSecret,signing_secret:secret}});
   }
-  if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:grant==='user'?'user':'bot',app_id:grant==='wrong-app'?'synthetic-vector-2099':'synthetic-vector-2000',scope:grant==='missing-scope'?'chat:write':'chat:write,channels:manage,channels:read,im:write,users:read.email',access_token:botToken});}
+  if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:grant==='user'?'user':'bot',app_id:grant==='wrong-app'?'synthetic-vector-2099':'synthetic-vector-2000',scope:grant==='missing-scope'?'chat:write':'chat:write,channels:manage,channels:read,im:write,users:read.email,app_mentions:read,channels:history,commands,links:read,links:write',access_token:botToken});}
   if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002'});}
   if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
   throw Error('Unexpected Slack installation edge '+method);
@@ -32,6 +43,7 @@ export async function slackAppInstall(){
   expect(calls).toHaveLength(0);
   const preview=await read(await f.call('/settings/integrations/slack/app'));
   expect(JSON.parse(new URL(preview.createUrl).searchParams.get('manifest_json')!)).toEqual(preview.manifest);
+  manifestForInstallation(JSON.parse(new URL(preview.createUrl).searchParams.get('manifest_json')!));
   expect(preview.app).toBeNull();
   await read(await f.call('/settings/integrations/slack/app/create','POST',{configurationToken:configToken}));
   const configured=await read(await f.call('/settings/integrations/slack/app'));

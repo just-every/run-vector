@@ -10,6 +10,16 @@ export async function exerciseSlackAppInstallation({page,runtime,width,evidence}
  const errors=[];const onError=error=>errors.push(error.message),onConsole=message=>{if(message.type()==='error'&&/hydrat/i.test(message.text()))errors.push(message.text());};
  page.on('pageerror',onError);page.on('console',onConsole);
  const panel=page.getByRole('region',{name:'Slack app installation',exact:true});
+ const inspectManifest=manifest=>{
+  const at=path=>runtime.base+'/api/integrations/slack/'+path;
+  assert.deepEqual(manifest.oauth_config.redirect_urls,[at('oauth/callback')]);
+  assert.equal(manifest.settings.event_subscriptions.request_url,at('events'));
+  for(const event of ['app_mention','message.channels','link_shared'])assert.ok(manifest.settings.event_subscriptions.bot_events.includes(event));
+  assert.equal(manifest.settings.interactivity.request_url,at('interactive'));
+  assert.ok(manifest.features.slash_commands.some(command=>command.command==='/vector'&&command.url===at('commands')&&command.should_escape));
+  assert.ok(manifest.features.unfurl_domains.includes(new URL(runtime.base).hostname));
+  for(const scope of ['app_mentions:read','channels:history','commands','links:read','links:write'])assert.ok(manifest.oauth_config.scopes.bot.includes(scope));
+ };
  const calls=async()=>(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').filter(Boolean).map(JSON.parse);
  const inspect=async name=>{
   await panel.scrollIntoViewIfNeeded();assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow');
@@ -53,10 +63,10 @@ export async function exerciseSlackAppInstallation({page,runtime,width,evidence}
   const before=(await calls()).filter(row=>row.method==='apps.manifest.create').length;
   await automatic.getByLabel('App configuration token',{exact:true}).fill('synthetic-vector-32015');await receive('/slack/app/create',()=>automatic.getByRole('button',{name:'Create Slack app',exact:true}).click());
   await panel.getByRole('button',{name:'Install Slack app',exact:true}).waitFor();assert.equal(await automatic.getByLabel('App configuration token',{exact:true}).inputValue(),'');
-  assert.equal((await calls()).filter(row=>row.method==='apps.manifest.create').length,before+1);await install();await remove(false);
+  const generated=(await calls()).filter(row=>row.method==='apps.manifest.create');assert.equal(generated.length,before+1);inspectManifest(JSON.parse(generated.at(-1).body.manifest));await install();await remove(false);
   await panel.getByText('Use Slack’s prefilled page',{exact:true}).click();const manual=panel.getByRole('form',{name:'Slack app credentials',exact:true});await inspect('manual');
   const popupPromise=page.waitForEvent('popup');await panel.getByRole('link',{name:'Open Slack app setup',exact:true}).click();const popup=await popupPromise;await popup.waitForURL('https://api.slack.com/apps**');
-  const manifest=JSON.parse(new URL(popup.url()).searchParams.get('manifest_json'));assert.deepEqual(manifest.oauth_config.redirect_urls,[runtime.base+'/api/integrations/slack/oauth/callback']);await popup.close();
+  const manifest=JSON.parse(new URL(popup.url()).searchParams.get('manifest_json'));inspectManifest(manifest);await popup.close();
   for(const [label,value] of [['App ID',fixture.appId],['App client ID',fixture.clientId],['App client secret',fixture.clientSecret],['App signing secret',fixture.signingSecret]])await manual.getByLabel(label,{exact:true}).fill(value);
   await receive('/slack/app',()=>manual.getByRole('button',{name:'Save Slack app credentials',exact:true}).click());await panel.getByRole('button',{name:'Install Slack app',exact:true}).waitFor();
   for(const label of ['App client secret','App signing secret'])assert.equal(await manual.getByLabel(label,{exact:true}).inputValue(),'');

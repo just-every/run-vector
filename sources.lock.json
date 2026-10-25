@@ -4501,7 +4501,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/install.ts": {
-      "sha256": "5b417c2bbfe751e36f1f014c7773768e154cdae914d9fe9e68b201f08ec9fca5",
+      "sha256": "eefc8149f7212e391e83390b167789746bc05ce23bce8db931d8f017811f7a8c",
       "executable": false
     },
     "src/core/features/integrations/slack-app/routes.ts": {
@@ -6781,7 +6781,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "c253d892c6155f91b0b8da39115681df475729e929a63063320221b72c775998",
+      "sha256": "752b7e2b533cefabcae5a33380068622bebb59eacbd0f48ed591076bf7f639df",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -6809,7 +6809,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
-      "sha256": "9c6f5304ab4b488dc6c690989a015f81286283ad7320d335b4c8cd56fce0b15f",
+      "sha256": "7eb408ee5f61efa69f31bd0d2a4803f160fa36f0a010020e32feecf9083e25fb",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
@@ -7729,7 +7729,7 @@
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "4cceb4bf645b46f1e7e8f6013fb1e3428140ef9c8f66df424540ed3f295cf171",
+      "sha256": "f5502c669ab512c383eaa9280664d14e0e80619d878ed915201238e4086156e0",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {

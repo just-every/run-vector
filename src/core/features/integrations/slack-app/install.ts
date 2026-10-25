@@ -8,8 +8,8 @@ import {slackCredentialWrites} from '../channels/settings';
 import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
 import {auditStatement} from '../../audit/producer';
 
-// Request only the capabilities Vector's channel/DM paths currently use.
-export const appScopes=['chat:write','channels:manage','channels:read','im:write','users:read.email'];
+// Capabilities for installation, channel/DM delivery and Slack intake/unfurls.
+export const appScopes=['chat:write','channels:manage','channels:read','im:write','users:read.email','app_mentions:read','channels:history','commands','links:read','links:write'];
 const profile=z.object({appId:z.string().min(1).max(100),clientId:z.string().min(1).max(100),clientSecret:z.string().min(10).max(500),signingSecret:z.string().min(20).max(128)});
 export const appCredentials=profile.strict();
 const identity=(workspace:string)=>'slack-app:'+workspace;
@@ -17,7 +17,7 @@ export function appManifest(origin:string){
  const base=new URL(origin);
  if(!['http:','https:'].includes(base.protocol)||(base.protocol==='http:'&&!['127.0.0.1','localhost','[::1]'].includes(base.hostname))||base.username||base.password)throw new IntegrationError(503,'slack_origin_invalid');
  const callback=new URL('/api/integrations/slack/oauth/callback',base).href;
- return {display_information:{name:'Vector',description:'Workspace issue notifications'},features:{bot_user:{display_name:'Vector',always_online:false}},oauth_config:{redirect_urls:[callback],scopes:{bot:appScopes}},settings:{interactivity:{is_enabled:true,request_url:new URL('/api/integrations/slack/interactive',base).href},org_deploy_enabled:true,socket_mode_enabled:false,token_rotation_enabled:false}};
+ return {display_information:{name:'Vector',description:'Workspace issue notifications'},features:{bot_user:{display_name:'Vector',always_online:false},slash_commands:[{command:'/vector',url:new URL('/api/integrations/slack/commands',base).href,description:'Create a Vector issue',should_escape:true}],unfurl_domains:[base.hostname]},oauth_config:{redirect_urls:[callback],scopes:{bot:appScopes}},settings:{event_subscriptions:{request_url:new URL('/api/integrations/slack/events',base).href,bot_events:['app_mention','message.channels','link_shared']},interactivity:{is_enabled:true,request_url:new URL('/api/integrations/slack/interactive',base).href},org_deploy_enabled:true,socket_mode_enabled:false,token_rotation_enabled:false}};
 }
 export async function appManager(env:WorkerBindings,request:Request){
  const owner=await integrationOwner(env,request);
