@@ -9,7 +9,7 @@
   border-radius: 1rem;
   background: var(--color-accent);
   color: var(--app-on-accent);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 750;
   margin-left: auto;
 }
@@ -22,7 +22,7 @@
     margin: 0;
     min-width: 1rem;
     height: 1rem;
-    font-size: .75rem;
+    font-size: var(--app-text-small);
   }
   .app-mobile-nav .app-nav-link {
     position: relative;

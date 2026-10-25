@@ -1,3 +1,4 @@
+import { MobileAccount } from './mobile-account'
 import { DeletionNotice } from '../../features/issue-deletion/receipt-notice'
 import { IssueUndoNotice } from '../../features/issue-undo/ui/notice'
 import { StreamPlanningProvider } from '../../features/streams/ui/stream-planning-state'
@@ -71,6 +72,7 @@ function AppShellContent({ children }: AppShellProps) {
   const { operator } = useRouteContext({ from: '/app' })
   const location = useLocation()
   const navigate = useNavigate()
+  const mobileNavigation = useRef<HTMLElement>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const [accountError, setAccountError] = useState('')
@@ -119,6 +121,21 @@ function AppShellContent({ children }: AppShellProps) {
     setPaletteOpen(false)
     window.setTimeout(() => paletteTrigger.current?.focus(), 0)
   }
+
+  useEffect(() => {
+    const nav = mobileNavigation.current
+    if (!nav) return
+    const revealCurrent = () => {
+      const current = nav.querySelector<HTMLElement>('.is-active')
+      if (!current || !nav.clientWidth) return
+      const left = current.getBoundingClientRect().left - nav.getBoundingClientRect().left + nav.scrollLeft
+      nav.scrollTo({ left: left - (nav.clientWidth - current.offsetWidth) / 2 })
+    }
+    revealCurrent()
+    const observer = new ResizeObserver(revealCurrent)
+    observer.observe(nav)
+    return () => observer.disconnect()
+  }, [location.pathname])
 
   useEffect(() => {
     const clearGo = () => {
@@ -243,23 +260,18 @@ function AppShellContent({ children }: AppShellProps) {
           <Link className="app-mobile-brand" to="/app" activeOptions={{ exact: true }}>
             <VectorMark label={productConfig.productName} />
           </Link>
-          <span title={operator.name}>{operator.name}</span>
-          <Link to="/app/search">Search</Link>
-          <Link
-            to="/app/settings"
-            aria-current={
-              location.pathname === '/app/settings' ? 'page' : undefined
+          <details className="app-mobile-views" onKeyDown={event => {
+            if (event.key === 'Escape') {
+              event.preventDefault()
+              event.currentTarget.open = false
+              event.currentTarget.querySelector('summary')?.focus()
             }
-          >
-            Settings
-          </Link>
-          <button
-            type="button"
-            disabled={signingOut}
-            onClick={() => void signOut()}
-          >
-            {signingOut ? 'Signing out…' : 'Sign out'}
-          </button>
+          }}>
+            <summary>Saved views</summary>
+            <SavedViewNavigation />
+          </details>
+          <MobileAccount name={operator.name} pathname={location.pathname} signingOut={signingOut}
+            onSignOut={() => void signOut()} />
         </div>
         {accountError && (
           <p className="app-account-error" role="alert">
@@ -281,33 +293,19 @@ function AppShellContent({ children }: AppShellProps) {
             </button>
           </div>
         )}
-        {/* Phone browsing pages carry the board and saved views; issue pages stay short. */}
-        {/^\/app\/(?:issues|board|releases|initiatives)$|^\/app\/views\/[^/]+$/.test(
-          location.pathname,
-        ) ? (
-          <details className="app-mobile-views">
-            <summary>Board, releases, initiatives and saved views</summary>
-            <Link className="app-nav-link" to="/app/releases">Releases</Link>
-            <Link className="app-nav-link" to="/app/initiatives">Initiatives</Link>
-            <Link className="app-nav-link" to="/app/board">
-              Board
-            </Link>
-            <SavedViewNavigation />
-          </details>
-        ) : null}
         <DeletionNotice />
         <IssueUndoNotice />
         {children}
       </div>
-      <nav className="app-mobile-nav" aria-label="Workspace">
+      <nav ref={mobileNavigation} className="app-mobile-nav" aria-label="Workspace">
         {navigation
-          .filter((item) => item.to !== '/app/board' && item.to !== '/app/releases' && item.to !== '/app/initiatives')
           .map((item) => (
             <NavLink key={item.to} item={item} pathname={location.pathname} />
           ))}
         <button
           type="button"
-          className="app-nav-link"
+          className={`app-nav-link${location.pathname === '/app/search' ? ' is-active' : ''}`}
+          aria-current={location.pathname === '/app/search' ? 'page' : undefined}
           aria-haspopup="dialog"
           aria-expanded={paletteOpen}
           onClick={(event) => openPalette(event.currentTarget)}
@@ -318,6 +316,7 @@ function AppShellContent({ children }: AppShellProps) {
         <Link
           className={`app-nav-link${location.pathname.startsWith('/app/new-issue') ? ' is-active' : ''}`}
           to="/app/new-issue"
+          aria-current={location.pathname.startsWith('/app/new-issue') ? 'page' : undefined}
         >
           <span aria-hidden="true">＋</span>
           <span>New issue</span>

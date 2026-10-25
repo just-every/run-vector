@@ -1,4 +1,4 @@
-import { ScopedTooltip } from '../../../ui/tooltip';
+import { Tooltip } from '../../../ui/tooltip';
 import { useEffect, useRef, useState } from "react";
 import type { Command } from "./commands";
 import type { TableAction } from "./table";
@@ -22,14 +22,14 @@ export function MarkdownToolbar({
       aria-label="Markdown formatting"
     >
       {[
-        ["bold", "Bold", "B"],
-        ["italic", "Italic", "I"],
-        ["strike", "Strikethrough", "S"],
+        ["bold", "Bold text", "B"],
+        ["italic", "Italic text", "I"],
+        ["strike", "Strikethrough text", "S"],
         ["inline-code", "Inline code", "Code"],
         ["link", "Insert link", "Link"],
         ["menu", "Insert Markdown", "+ Insert"],
       ].map(([id, label, text]) => (
-        <ScopedTooltip key={id} label={label}><button
+        <Tooltip key={id} label={label}><button
           type="button"
           disabled={disabled}
           aria-label={label}
@@ -40,7 +40,7 @@ export function MarkdownToolbar({
           }}
         >
           {text}
-        </button></ScopedTooltip>
+        </button></Tooltip>
       ))}
       {table && (
         <span

@@ -14,7 +14,7 @@
   gap: 0.35rem;
   overflow: hidden;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .issue-parent__label,
 .issue-parent__link strong { flex: 0 0 auto; }
@@ -31,7 +31,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.issue-parent__status { flex: 0 0 auto; font-size: .75rem; }
+.issue-parent__status { flex: 0 0 auto; font-size: var(--app-text-small); }
 .issue-parent__hint { color: var(--app-muted); }
 .issue-parent__edit,
 .issue-parent__actions > button:not(.decision-submit),
@@ -44,7 +44,7 @@
   padding: 0.35rem 0.55rem;
   color: var(--app-ink);
   background: var(--app-field);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
   text-decoration: none;
 }
@@ -71,7 +71,7 @@
   flex: 1 1 auto;
   gap: 0.25rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .issue-parent__search input {
@@ -107,16 +107,16 @@
 .issue-parent__matches button > span {
   min-width: 0;
   overflow: hidden;
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.issue-parent__matches small { color: var(--app-muted); font-size: .75rem; }
+.issue-parent__matches small { color: var(--app-muted); font-size: var(--app-text-small); }
 .issue-parent__hint,
 .issue-parent__selected,
 .issue-parent__message {
   margin: 0.4rem 0 0;
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
@@ -137,10 +137,10 @@
   .issue-parent__top,
   .issue-parent__current,
   .issue-parent__link { gap: 0.25rem; }
-  .issue-parent__current { font-size: .75rem; }
+  .issue-parent__current { font-size: var(--app-text-small); }
   .issue-parent__link .issue-parent__status,
   .issue-parent__matches small { display: none; }
-  .issue-parent__edit{ padding-inline: 0.4rem; font-size: .75rem; }
+  .issue-parent__edit{ padding-inline: 0.4rem; font-size: var(--app-text-small); }
   .issue-parent__matches button { grid-template-columns: auto minmax(0, 1fr); }
 }
 /* Labels and hierarchy share one wrapping row; an open editor or a set

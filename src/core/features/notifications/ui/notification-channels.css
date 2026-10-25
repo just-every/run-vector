@@ -41,7 +41,7 @@
   font: inherit;
 }
 .notification-channel-matrix .channel-inheritance {
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   width: 7rem;
 }
 .channel-inheritance button {
@@ -87,7 +87,7 @@
     display: block;
     margin-bottom: 0.4rem;
     color: var(--app-body);
-    font-size: 0.75rem;
+    font-size: var(--app-text-small);
   }
   .notification-channel-matrix .notification-checkbox {
     flex-direction: column;

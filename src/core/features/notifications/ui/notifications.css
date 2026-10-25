@@ -1,6 +1,6 @@
 .inbox-page {
   max-width: 66rem;
-  margin: 0 auto;
+  margin: 0;
   padding: 2rem;
   color: var(--app-ink);
 }
@@ -59,7 +59,7 @@
 .inbox-read-state {
   flex: 0 0 3.7rem;
   color: var(--app-cobalt-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   padding-top: 0.15rem;
 }
 .inbox-row-copy {
@@ -76,7 +76,7 @@
 }
 .inbox-row time {
   color: var(--app-body);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .inbox-empty {
   padding: 3rem 0;
@@ -94,7 +94,7 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: 0.5rem;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .issue-subscription button {
   min-height: 36px;
@@ -177,7 +177,7 @@
 .mention-suggestions small,
 .mention-help {
   color: var(--app-body);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .mention-help {
   padding: 0.4rem;
@@ -230,7 +230,7 @@
   padding: 0.03rem 0.4rem;
   color: var(--app-ink);
   background: var(--app-field);
-  font-size: 0.9em;
+  font-size: max(var(--app-text-small), 0.9em);
   line-height: 1.45;
   max-width: 100%;
   overflow-wrap: anywhere;

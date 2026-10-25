@@ -1,3 +1,4 @@
+import { openAccountMenu } from './ui-controls-checks.mjs';
 import { reviewDevelopmentImport } from './data-development-journey.mjs';
 import { finishFirstRun } from './first-run-fixture.mjs';
 import { openGate, readCheckoutKey } from './dev-gate.mjs';
@@ -159,6 +160,7 @@ try {
   await page.getByRole("link", { name: /FLW-842/ }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin, "search navigation remains hydrated");
   await settleReads(page);
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "Settings", exact: true }).filter({ visible: true }).first().click();
   await page.getByRole("heading", { name: "Settings", exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
@@ -254,6 +256,7 @@ try {
   await page.getByRole("heading", { name: "Inbox", exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   await settleReads(page);
+  await openAccountMenu(page);
   await page.getByRole("link", { name: "Settings", exact: true }).filter({ visible: true }).first().click();
   await page.getByRole("heading", { name: "Settings", exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);

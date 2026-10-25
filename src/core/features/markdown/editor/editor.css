@@ -15,7 +15,7 @@
   color: var(--app-ink);
   background: var(--app-field);
   font: inherit;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   cursor: pointer;
 }
 .markdown-toolbar button:disabled {
@@ -76,7 +76,7 @@
 .markdown-editor-notice {
   display: block;
   color: var(--app-body);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   padding: 0.4rem 0;
 }
 @media (pointer: coarse) {

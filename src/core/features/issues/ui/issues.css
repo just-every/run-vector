@@ -32,12 +32,12 @@
   padding: 0.35rem 0.65rem;
   color: var(--app-cobalt-ink);
   background: var(--app-field);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .evidence-metrics dt {
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -46,7 +46,7 @@
   overflow: hidden;
   margin: 0.25rem 0 0;
   color: var(--app-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -93,7 +93,7 @@
 }
 .evidence-heading > span {
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .evidence-metrics {
   display: grid;
@@ -125,7 +125,7 @@
 }
 .assertion-list span {
   color: var(--app-cobalt-ink);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 720;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -134,12 +134,12 @@
   display: block;
   margin-top: 0.25rem;
   color: var(--app-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 .assertion-list p {
   margin: 0.22rem 0 0;
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   line-height: 1.45;
 }
 .decision-panel {
@@ -166,7 +166,7 @@
   border-radius: 0.45rem;
   color: var(--app-body);
   background: rgb(var(--app-ink-rgb) / 4%);
-  font-size: 0.76rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .decision-tabs button.is-active {
@@ -181,7 +181,7 @@
   display: grid;
   gap: 0.35rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 660;
 }
 .decision-form label > span {
@@ -193,7 +193,7 @@
 .decision-form textarea {
   width: 100%;
   color-scheme: light;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .decision-form textarea {
   min-height: 4rem;
@@ -212,7 +212,7 @@
 }
 .decision-actions > span {
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .decision-submit {
   min-height: 2.8rem;
@@ -220,7 +220,7 @@
   border-radius: 999px;
   padding: 0.55rem 0.8rem;
   color: var(--app-on-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
   font-weight: 720;
   background: var(--app-ink);
 }
@@ -234,7 +234,7 @@
 .form-message {
   margin: 0.8rem 0 0;
   color: var(--app-cobalt-ink);
-  font-size: 0.76rem;
+  font-size: var(--app-text-small);
   line-height: 1.45;
 }
 .form-message--error {
@@ -254,7 +254,7 @@
   flex-wrap: wrap;
   gap: 0.35rem;
   color: var(--app-muted);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 .dependency-list span {
   color: var(--app-cobalt-ink);
@@ -351,7 +351,10 @@
 }
 .safe-markdown pre,
 .safe-markdown code {
-  font-size: 0.9em;
+  font-size: max(var(--app-text-small), 0.9em);
+}
+.safe-markdown pre code {
+  font-size: inherit;
 }
 .safe-markdown blockquote {
   margin-inline: 0;
@@ -379,12 +382,12 @@
 }
 .named-links h3 {
   color: var(--app-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .named-links summary {
   cursor: pointer;
   color: var(--app-cobalt-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 
 .issue-labels {
@@ -403,7 +406,7 @@
   border-radius: 999px;
   padding: 0.25rem 0.55rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .issue-labels i {
   width: 0.45rem;
@@ -413,7 +416,7 @@
 .issue-history > summary {
   cursor: pointer;
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 600;
 }
 .issue-history[open] > summary {
@@ -435,7 +438,7 @@
   min-height: 2.5rem;
   padding-block: 0.65rem;
   color: var(--app-cobalt-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 
 .decision-controls {
@@ -454,7 +457,7 @@
   padding: 0.65rem 0.8rem;
   color: var(--app-cobalt-ink);
   background: var(--app-field);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   cursor: pointer;
 }
 
@@ -466,7 +469,7 @@
   padding: 0.8rem 1rem;
   border-bottom: 1px solid color-mix(in srgb, var(--app-danger) 45%, transparent);
   color: var(--app-danger);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .issue-refresh-error button {
   margin-left: auto;
@@ -489,13 +492,13 @@
 .issue-property-bar label {
   display: grid;
   gap: 0.25rem;
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   color: var(--app-body);
 }
 .issue-property-bar select {
   width: 100%;
   min-height: 2.75rem;
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
   padding-inline: 0.4rem;
 }
 .issue-property-bar p {
@@ -523,22 +526,22 @@
 }
 .decision-confirmation p {
   margin: 0.3rem 0;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .decision-confirmation > div {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 0.6rem;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .recommended-label {
   color: var(--app-cobalt-ink);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .evidence-context > summary {
-  font-size: 0.76rem;
+  font-size: var(--app-text-small);
 }
 .safe-markdown ul {
   list-style: disc;
@@ -603,7 +606,7 @@
     gap: 0.25rem 0.5rem;
   }
   .issue-property-bar select {
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
   }
   .issue-property-wide {
     grid-column: 1 / -1;
@@ -676,7 +679,7 @@
     gap: 0.2rem;
   }
   .evidence-heading > span {
-    font-size: .75rem;
+    font-size: var(--app-text-small);
   }
   .evidence-heading .detail-kicker {
     margin-bottom: 0.2rem;
@@ -686,7 +689,7 @@
   }
   .detail-section p,
   .evidence-inspector > p {
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
     line-height: 1.4;
   }
 }
@@ -712,12 +715,12 @@
   .decision-mobile-summary p {
     flex: 1;
     margin: 0;
-    font-size: .75rem;
+    font-size: var(--app-text-small);
     line-height: 1.4;
   }
   .decision-mobile-summary button {
     flex: 0 0 7rem;
-    font-size: .75rem;
+    font-size: var(--app-text-small);
     padding: 0.35rem;
   }
   .issue-header .detail-back {
@@ -725,7 +728,7 @@
     margin: 0;
   }
   .issue-header .detail-kicker {
-    font-size: .75rem;
+    font-size: var(--app-text-small);
   }
   .issue-body > .detail-section,
   .issue-body > .secondary-section {
@@ -743,21 +746,21 @@
   }
   .comment-composer > button {
     min-height: 2.75rem;
-    font-size: .75rem;
+    font-size: var(--app-text-small);
   }
   .decision-confirmation {
     padding: 0.6rem;
   }
   .decision-confirmation strong {
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
   }
   .decision-confirmation p {
-    font-size: .75rem;
+    font-size: var(--app-text-small);
     line-height: 1.35;
   }
   .decision-confirmation > div {
     margin-top: 0.35rem;
-    font-size: .75rem;
+    font-size: var(--app-text-small);
   }
   .named-links {
     margin-block: 0.2rem;
@@ -772,7 +775,7 @@
   }
   .named-links .issue-mutation-form label {
     gap: 0.25rem;
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
   }
   .issue-body .dependency-editor {
     padding-top: 0.25rem;
@@ -792,7 +795,7 @@
   padding-block: 0;
 }
 .decision-confirmation--ended summary {
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 
 .comment-entry > button + button {
@@ -919,7 +922,7 @@
   width: 100%;
   padding: 0;
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .issue-label-create fieldset {
   display: grid;
@@ -983,7 +986,7 @@
 .issue-inspector button,
 .issue-inspector summary,
 .issue-inspector select {
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 600;
 }
 .issue-inspector summary {

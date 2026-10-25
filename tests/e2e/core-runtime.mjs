@@ -1,3 +1,4 @@
+import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
 import { requestLedger } from './core-request-ledger.mjs';
 import { intakePolicyJourney } from './core-intake-policy-journey.mjs';
@@ -1603,6 +1604,7 @@ try {
       response.url() === base + "/auth/signout" &&
       response.request().method() === "POST",
   );
+  await openAccountMenu(page);
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   const browserSignout = await browserSignoutPromise;
   assert.equal(browserSignout.status(), 204);

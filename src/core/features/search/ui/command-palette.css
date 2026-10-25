@@ -58,7 +58,7 @@
   color: var(--app-muted);
   background: rgb(var(--app-ink-rgb) / 6%);
   font-family: inherit;
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .command-palette__results {
   max-height: min(62vh, 32rem);
@@ -71,7 +71,7 @@
 .command-palette__results h3 {
   margin: 0.25rem 0.6rem 0.4rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 740;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -103,23 +103,23 @@
 }
 .command-palette__results button strong {
   overflow: hidden;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .command-palette__results button small {
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .command-palette__results button > span:last-child {
   color: var(--app-cobalt-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 .command-palette__message {
   margin: 0.8rem;
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .command-palette footer {
   display: flex;
@@ -128,7 +128,7 @@
   border-top: 1px solid rgb(var(--app-ink-rgb) / 12%);
   padding: 0.65rem 0.85rem;
   color: var(--app-muted);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 @media (max-width: 46rem) {
   .command-palette {

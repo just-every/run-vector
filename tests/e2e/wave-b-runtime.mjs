@@ -1,3 +1,4 @@
+import { openAccountMenu } from './ui-controls-checks.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile,rm} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
@@ -41,7 +42,8 @@ try {
       assert.equal(await editor.getByRole('textbox',{name:'Draft',exact:true}).inputValue(),'Unsaved local editing draft');report.leaseRetainsDraft=true;
     }
     await claim.getByRole('button',{name:'Close Run Edit Run',exact:true}).click();
-    await claim.getByRole('link',{name:'Settings',exact:true}).first().click();await claim.getByRole('heading',{name:'Settings',exact:true}).waitFor();
+    await openAccountMenu(claim);
+  await claim.getByRole('link',{name:'Settings',exact:true}).first().click();await claim.getByRole('heading',{name:'Settings',exact:true}).waitFor();
     await claim.getByRole('button',{name:'Open Run Edit Run',exact:true}).waitFor();
     await claim.goto(origin+'/app');report.widths.push(width);
   }
@@ -61,6 +63,7 @@ try {
     assert(!blockedFrame.url().startsWith(origin+'/'));await denied.close();
   }
   report.framingAllowed=true;report.untrustedFramingDenied=true;report.lobbyFramingDenied=true;
+  await openAccountMenu(claim);
   await claim.getByRole('button',{name:'Sign out',exact:true}).first().click();
   await claim.waitForURL(origin+'/signin');assert.equal(await claim.locator('[data-rer-editor]').count(),0);
   assert.equal((await claim.request.get(origin+'/api/editor/config')).status(),403);

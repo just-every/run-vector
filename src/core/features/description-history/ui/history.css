@@ -3,7 +3,7 @@
 .revision-selectors select { width: 100%; min-height: 44px; border: 1px solid var(--app-field-border); border-radius: 6px; padding: 8px; }
 .revision-comparison section { min-width: 0; }
 .revision-comparison h3 { font-size: 13px; }
-.revision-comparison pre { padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto; background: var(--app-code-surface); border: 1px solid var(--app-code-line); font-size: 12px; }
+.revision-comparison pre { padding: 12px; white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto; background: var(--app-code-surface); border: 1px solid var(--app-code-line); font-size: var(--app-text-small); }
 .revision-line-changed { background: var(--app-diff-changed); }
 .description-history > button { min-height: 44px; margin-top: 12px; }
 @media (max-width: 600px) { .revision-selectors,.revision-comparison { grid-template-columns: minmax(0,1fr); } }
