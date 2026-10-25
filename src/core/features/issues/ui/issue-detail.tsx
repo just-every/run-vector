@@ -1,5 +1,5 @@
 import {DocumentsSection} from '../../documents/ui/list';
-import {IssueSpecification,documentIssueDetailSchema} from '../../documents/ui/specification';
+import {IssueSpecification,documentIssueDetailSchema,type DocumentIssueDetailData} from '../../documents/ui/specification';
 import { TooltipScope } from '../../../ui/tooltip';
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
@@ -49,7 +49,7 @@ export function IssueDetail({
   const detail = useApiResource(`/api/issues/${identifier}`, documentIssueDetailSchema, undefined, { abortPendingOnDispose: false });
   const options = useApiResource("/api/options", optionsSchema);
   const navigate=useNavigate();
-  const [committed,setCommitted]=useState<IssueDetailData|null>(null);
+  const [committed,setCommitted]=useState<DocumentIssueDetailData|null>(null);
   const currentIdentifier = useRef(identifier);
   currentIdentifier.current = identifier;
   useEffect(() => {
@@ -87,15 +87,17 @@ export function IssueDetail({
     return isMissingResourceError(detail.error)
       ? <MissingResource kind="issue" back="/app/issues" list="Issues" />
       : <FailedResource kind="issue" retry={detail.reload} />;
+  const currentSpecification=detail.data.specification;
   const refresh = (receipt?: IssueDetailData) => {
     if (receipt) {
       if (receipt.identifier !== currentIdentifier.current) return;
-      // Share the committed version while the admitted detail read drains.
+      const received={...receipt,specification:currentSpecification};
+      // Issue field receipts retain the known specification while the read drains.
       setCommitted((current) =>
         current?.identifier === receipt.identifier &&
         current.version > receipt.version
           ? current
-          : receipt,
+          : received,
       );
     }
     detail.refreshAfterMutation();
@@ -325,7 +327,7 @@ function IssueInspector({
           onRefresh={onRefresh}
         />}
         {writable && <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>}
-        <IssueSpecification scope={options?{workspaceId:options.workspace.id,operatorId:options.operator.id}:null} key={issue.identifier} identifier={issue.identifier} writable={writable} current={documentIssueDetailSchema.parse(issue).specification??null}/><DocumentsSection inspector parentKind="issue" parentId={issue.id}/><GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
+        <IssueSpecification scope={options?{workspaceId:options.workspace.id,operatorId:options.operator.id}:null} key={issue.identifier} identifier={issue.identifier} writable={writable} current={documentIssueDetailSchema.parse(issue).specification}/><DocumentsSection inspector parentKind="issue" parentId={issue.id}/><GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
           key={issue.identifier + ":discussion"}
           identifier={issue.identifier}
           onRefresh={onRefresh}
