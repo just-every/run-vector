@@ -5404,6 +5404,10 @@
       "sha256": "651f008f786370b790585e7d93011568c31b62a93733a570fd0fbb5303be8117",
       "executable": false
     },
+    "src/core/features/notifications/ui/inbox-count.css": {
+      "sha256": "331f9dc38c25342c542bc60aa26bb5f6b7e13254273cf0cfa8eaf606184a82a9",
+      "executable": false
+    },
     "src/core/features/notifications/ui/inbox-page.tsx": {
       "sha256": "e39c4c8666b31f6594bb68fec9b00e1ed4b9b0fe5327261647eb95c376533944",
       "executable": false
@@ -5445,7 +5449,7 @@
       "executable": false
     },
     "src/core/features/notifications/ui/notification-context.tsx": {
-      "sha256": "9344f5ec1c257001fa46b457f78ca3badebdea4147881eb9f5880cba0b1d1cb5",
+      "sha256": "0b0969bf1b067e771d81c5cbe6acc52afbaaead6794132e422302d75eb501509",
       "executable": false
     },
     "src/core/features/notifications/ui/notifications-panel.tsx": {
@@ -5453,7 +5457,7 @@
       "executable": false
     },
     "src/core/features/notifications/ui/notifications.css": {
-      "sha256": "48d2060672731e292583cd22c1b8bf62d92e6ba9966d5366b48ea68c7c3c5ae0",
+      "sha256": "c53f229e4fbfea713c831cf8e5e490c9aec9c634309d567cb22701c33dc49523",
       "executable": false
     },
     "src/core/features/notifications/ui/personal-reminders.tsx": {
