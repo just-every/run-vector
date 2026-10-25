@@ -1,3 +1,4 @@
+import {issueSpecificationStatement,type SpecificationRow} from '../documents/projection';
 import { referenceSourceVisible } from "../issue-references/projection";
 import { relatedIssuesStatement } from '../related/repository';
 import { parseTasks } from "../description-history/tasks";
@@ -38,12 +39,13 @@ export function issueDetailReadStatements(binding: D1Database, issueId: string) 
     duplicateRelationsStatement(binding, issueId),
     importedFromStatement(binding, issueId),
     relatedIssuesStatement(binding, issueId),
+    issueSpecificationStatement(binding, issueId),
   ] as const;
 }
 
 export function enrichIssueDetail(
   detail: NonNullable<ReturnType<typeof buildIssueDetail>>,
-  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult, relatedResult]: readonly D1Result[],
+  [metadataResult, actorResult, parentResult, duplicateResult, provenanceResult, relatedResult, specificationResult]: readonly D1Result[],
 ) {
   const metadataRows = metadataResult.results as EvidenceMetadata[];
   const actorRows = actorResult.results as Array<{ id: string; actor_name: string }>;
@@ -77,7 +79,7 @@ export function enrichIssueDetail(
     ...row,
     actor: actors.get(row.id) ?? row.actor,
   }));
-  return { ...detail, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
+  return { ...detail, specification:(specificationResult.results[0] as SpecificationRow|undefined)??null, dependencies: [...detail.dependencies, ...(relatedResult.results as {identifier:string;title:string}[]).map(row=>({...row,direction:'related'}))], evidence, activity, ...parents, ...duplicates, importedFrom: provenance };
 }
 
 export function buildIssueDetail(

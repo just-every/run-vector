@@ -2961,7 +2961,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "cc62845914f4668ee505451b5fd8ee050e5ecf010c3a800540ac57dcff0fa729",
+      "sha256": "65ce6261cbc58471a6b51046084348d3f52fc48a1b6384b759253442ffe302eb",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3341,7 +3341,7 @@
       "executable": false
     },
     "src/core/app/stream-page-resources.server.ts": {
-      "sha256": "e70affc9f307fdf7429da30da14e888b2c9ce29c8dfd32f5fb7ae8b480207c9a",
+      "sha256": "77ba931637e310786b18acd493cfccf415b6802a9cbded270700dcbf128116c3",
       "executable": false
     },
     "src/core/app/theme.ts": {
@@ -4118,6 +4118,10 @@
     },
     "src/core/features/documents/authority.ts": {
       "sha256": "2bd448559a5403db843b5bcdf5b72739df848bcd9eea085c2febe536fecc4b3f",
+      "executable": false
+    },
+    "src/core/features/documents/projection.ts": {
+      "sha256": "54a76a4750d6f0a9f80bd663a4cd8f0c04d50f47f5051463a656d627d3836654",
       "executable": false
     },
     "src/core/features/documents/repository.ts": {
@@ -5009,7 +5013,7 @@
       "executable": false
     },
     "src/core/features/issues/service.ts": {
-      "sha256": "d29cffe03e65b39c59d65cd3a7a99b6f5b53173e7b817b0cb5d3aa6f6214d4ba",
+      "sha256": "efbf671162eff0ca53a00eec2f7a0409177dc969081a25670080ab1884d28076",
       "executable": false
     },
     "src/core/features/issues/ui/activity-changes.ts": {
