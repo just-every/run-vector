@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type FormHTMLAttributes } from 'react';
 import { useRouteContext } from '@tanstack/react-router';
 import type { z } from 'zod';
 import { fetchJson } from '../../../app/api-client';
+import { useHydrated } from '../../../app/initial-resources';
 import { SettingsSaveFeedback, withSettingsLabels, saveField, type SaveState, type SaveField } from './settings-save-feedback';
 
 type Draft = { revision: string; fields: [string, string][]; valid: boolean; confirmed: boolean; field?: SaveField };
@@ -35,6 +36,7 @@ type Props<S extends z.ZodType> = Omit<FormHTMLAttributes<HTMLFormElement>, 'onS
  * close cannot discard it. Only non-secret settings belong in this form. */
 export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', schema, read, onSaved, confirm, identity, initialize, onRestored, children, ...props }: Props<S>) {
   const { operator } = useRouteContext({ from: '/app' });
+  const hydrated = useHydrated();
   const key = `vector:settings-draft:${operator.id}:${identity ?? path}`;
   const form = useRef<HTMLFormElement>(null), draft = useRef<Draft | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -93,6 +95,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     status('dirty'); schedule();
   }
   useEffect(() => {
+    if (!hydrated) return;
     mounted.current = true; departing.current = false;
     const first = form.current?.querySelector('[name]');
     if (first instanceof HTMLInputElement || first instanceof HTMLSelectElement || first instanceof HTMLTextAreaElement) setField(saveField(first));
@@ -105,8 +108,8 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     window.addEventListener('beforeunload', leave);
     window.addEventListener('pagehide', leave);
     return () => { leave(); mounted.current = false; clearTimeout(timer.current); window.removeEventListener('beforeunload', leave); window.removeEventListener('pagehide', leave); };
-  }, [key]);
-  return <SettingsSaveFeedback.Provider value={{state, field, retry: () => void flush()}}><form {...props} ref={form} onChange={event => edit(event.target)} onSubmit={event => {
+  }, [key, hydrated]);
+  return <SettingsSaveFeedback.Provider value={{state, field, retry: () => void flush(), ready: hydrated}}><form {...props} ref={form} onChange={event => edit(event.target)} onSubmit={event => {
     event.preventDefault();
     if (draft.current && confirm) {
       draft.current.confirmed = true;
@@ -114,7 +117,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     }
     void flush();
   }}>
-    {withSettingsLabels(children)}
+    {withSettingsLabels(children, hydrated)}
     {confirm && state === 'dirty' && <button type="submit">{confirm}</button>}
     {(state === 'saving' || state === 'saved') && <span className="settings-save-announcement" role="status" aria-label="Save status">{state === 'saved' ? 'Saved' : 'Saving…'}</span>}
   </form></SettingsSaveFeedback.Provider>;

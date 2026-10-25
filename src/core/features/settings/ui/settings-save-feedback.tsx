@@ -3,7 +3,7 @@ import './settings-save-feedback.css';
 
 export type SaveState = 'idle' | 'dirty' | 'saving' | 'saved' | 'failed';
 export type SaveField = { name: string; id: string; choice?: string };
-type Feedback = { state: SaveState; field: SaveField | null; retry: () => void };
+type Feedback = { state: SaveState; field: SaveField | null; retry: () => void; ready: boolean };
 export const SettingsSaveFeedback = createContext<Feedback | null>(null);
 
 export function saveField(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): SaveField {
@@ -40,10 +40,11 @@ export function SettingsFieldLabel({ children, fieldName, ...props }: ComponentP
 }
 
 /** Existing native field markup shares the same feedback; custom controls use SettingsFieldLabel. */
-export function withSettingsLabels(children: ReactNode): ReactNode {
+export function withSettingsLabels(children: ReactNode, ready: boolean): ReactNode {
   return Children.map(children, child => {
-    if (!isValidElement<{ children?: ReactNode }>(child) || typeof child.type !== 'string') return child;
-    if (child.type === 'label') return <SettingsFieldLabel {...child.props}>{child.props.children}</SettingsFieldLabel>;
-    return cloneElement(child, {}, withSettingsLabels(child.props.children));
+    if (!isValidElement<{ children?: ReactNode; disabled?: boolean }>(child) || typeof child.type !== 'string') return child;
+    if (['input', 'select', 'textarea', 'button'].includes(child.type)) return cloneElement(child, {disabled: !ready || child.props.disabled});
+    if (child.type === 'label') return <SettingsFieldLabel {...child.props}>{withSettingsLabels(child.props.children, ready)}</SettingsFieldLabel>;
+    return cloneElement(child, {}, withSettingsLabels(child.props.children, ready));
   });
 }

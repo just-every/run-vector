@@ -1,6 +1,6 @@
-import { useEffect, useId, useRef, useState } from 'react';
+import { useContext, useEffect, useId, useRef, useState } from 'react';
 import './timezone-picker.css';
-import { SettingsFieldLabel } from './settings-save-feedback';
+import { SettingsFieldLabel, SettingsSaveFeedback } from './settings-save-feedback';
 
 export const browserTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 export function timezoneName(zone: string) {
@@ -11,6 +11,7 @@ export function timezoneName(zone: string) {
 /** Search narrows the places; the submitted control always holds an IANA id. */
 export function TimezonePicker({ id, name = 'timezone', label, value, follow }: { id?: string; name?: string; label: string; value: string; follow?: string }) {
   const generated = useId(), control = id ?? generated;
+  const ready = useContext(SettingsSaveFeedback)?.ready ?? true;
   const [search, setSearch] = useState('');
   const selection = useRef<HTMLSelectElement>(null), previous = useRef(value), edited = useRef(false);
   useEffect(() => {
@@ -23,9 +24,9 @@ export function TimezonePicker({ id, name = 'timezone', label, value, follow }: 
   const matches = (zone: string) => `${zone} ${timezoneName(zone)}`.toLowerCase().replaceAll('_', ' ').includes(search.toLowerCase());
   return <div className="timezone-picker">
     <label htmlFor={`${control}-search`}>Find a place</label>
-    <input id={`${control}-search`} type="search" value={search} onChange={event => { event.stopPropagation(); setSearch(event.target.value); }} placeholder="Search places" />
+    <input id={`${control}-search`} type="search" disabled={!ready} value={search} onChange={event => { event.stopPropagation(); setSearch(event.target.value); }} placeholder="Search places" />
     <SettingsFieldLabel htmlFor={control} fieldName={name}>{label}</SettingsFieldLabel>
-    <select ref={selection} id={control} aria-label={label} name={name} defaultValue={value} required={!follow} onChange={() => { edited.current = true; }}>
+    <select ref={selection} id={control} aria-label={label} disabled={!ready} name={name} defaultValue={value} required={!follow} onChange={() => { edited.current = true; }}>
       {follow && <option value="">Follow workspace ({timezoneName(follow)})</option>}
       {zones.map(zone => <option key={zone} value={zone} hidden={!matches(zone)}>{timezoneName(zone)} · {zone.replaceAll('_', ' ')}</option>)}
     </select>
