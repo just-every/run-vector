@@ -4113,19 +4113,19 @@
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
-      "sha256": "b515a0d597a840cefbaac9a86751040b9a0a24636f985f99a266d7757e5be2ac",
+      "sha256": "cb778b007cef440ef9b981d666141cdd030fc96905e1cd535a9547f3f60c39a5",
       "executable": false
     },
     "src/core/features/documents/ui/list.tsx": {
-      "sha256": "47aef8a39d8e480d53b27ca4805bd8ba5eeaa49fb76d77fa01934b732ea05223",
+      "sha256": "e677be9cdcda8bb468a0dafa4c976fdcc2e361083174c05338a08faf0da0f42e",
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
-      "sha256": "c6dc0544b88d9b28cfd10506cb4c71e1f559e87bc408ed6d982073c20ff7755a",
+      "sha256": "8795abbb5958f30e855374b94e7fe6763bdca01588c8cb5a268cc8163551fc4f",
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "d3fe2615b0d06424ccfb63c0efb7ef84a58ba7b7b9e453bb6da758f2da28e3d5",
+      "sha256": "353f74d502f42ca61606b0859ae2c20a712e4f9375d72c11c24e91d9d1deb411",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
@@ -5045,7 +5045,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "db30921b799d20400d0e7bf8004627093062368757e7b6085e61387306765695",
+      "sha256": "9c6f1ce83f3d911568ef554b463598f70f28a80f5383bd9ece85ed1fd8fde52f",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
