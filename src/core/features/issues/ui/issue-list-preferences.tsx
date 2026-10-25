@@ -5,6 +5,7 @@ import {
   changeIssueListFilters,
   defaultIssueListQuery,
   issueListSearch,
+  issueListLayoutQuery,
 } from "./issue-list-controls";
 
 export function issuePreferenceValues(query: IssueListQuery) {
@@ -44,15 +45,17 @@ export function StoredIssueControls({
   useEffect(() => {
     if (!preference.ready || initialized.current) return;
     initialized.current = true;
-    if (issueListSearch(initialQuery.current))
-      preference.update(issuePreferenceValues(initialQuery.current));
-    else {
-      const restored = changeIssueListFilters(initialQuery.current, {
+    if (issueListSearch(initialQuery.current)) {
+      const initial = issueListLayoutQuery(initialQuery.current, surface === "board" ? "board" : "list");
+      preference.update(issuePreferenceValues(initial));
+      if (issueListSearch(initial) !== issueListSearch(initialQuery.current)) onChange(initial);
+    } else {
+      const restored = issueListLayoutQuery(changeIssueListFilters(initialQuery.current, {
         ...preference.filters,
         sort: preference.sort,
         grouping: preference.grouping,
         offset: 0,
-      });
+      }), surface === "board" ? "board" : "list");
       if (issueListSearch(restored) !== issueListSearch(initialQuery.current)) onChange(restored);
     }
   }, [preference.ready, onChange]);
