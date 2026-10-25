@@ -5809,7 +5809,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/administration-action.ts": {
-      "sha256": "f651883d4dd57068f7fc41bad9566528c7febd8b6d2160a3ddcd0f2122f65aba",
+      "sha256": "eab39cc9face3d8bb77aa24db4993488c24884c5871009cb2be29f13e375c72b",
       "executable": false
     },
     "src/core/features/settings/ui/administration-feedback.tsx": {
@@ -5857,7 +5857,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
-      "sha256": "d6a4557cd009453b775c7bffc667ab71504dfbdce72aa2a71c9fff8044407647",
+      "sha256": "62d4444cfc14174a43676cafea2050727fe13ea6ec6583f41151358c54b5e4bd",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
@@ -6705,7 +6705,7 @@
       "executable": false
     },
     "tests/e2e/cycle-schedule-runtime.mjs": {
-      "sha256": "f363b91706a18c90975294106ed06c2c5292cebd1fe1a6da2ad6c4fb487d6717",
+      "sha256": "69ffb1122c4c60d2e2d92103fccfe8453090d11adce00dc542db1c520da75339",
       "executable": false
     },
     "tests/e2e/dashboards-journey.mjs": {
@@ -6797,7 +6797,7 @@
       "executable": false
     },
     "tests/e2e/housekeeping-runtime.mjs": {
-      "sha256": "cf96cddafc0a5e43996692f917fe4434f031c57b88d637103364985a829e83b3",
+      "sha256": "f570299cb79048a99f6d8374ff5be93bddcd4fa78feb3ea8e44d7498e30837b2",
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
@@ -6925,7 +6925,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-runtime.mjs": {
-      "sha256": "a2eada6c2fa4935dca9191b5387339b590cd74aa956bb8adda7ccccd3293a391",
+      "sha256": "3f561b2d0862e0f57d02f7d60c20f556820ee0260934d6efc5b936a021a8263b",
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {

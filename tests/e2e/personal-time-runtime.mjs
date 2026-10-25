@@ -56,7 +56,7 @@ try {
   await form.getByLabel('Working day starts').fill('08:30');
   await page.goto(runtime.base+'/app/issues');
   await page.goto(runtime.base+'/app/settings#personal-time');
-  await form.getByLabel('Working day starts').waitFor();
+  await page.waitForFunction(()=>document.querySelector('input[name="workingHoursStart"]')?.value==='08:30');
   assert.equal(await form.getByLabel('Working day starts').inputValue(),'08:30');
   await page.getByRole('heading',{name:'Your time and working hours'}).scrollIntoViewIfNeeded();
   await page.screenshot({path:`${output}/settings-${width}.png`});await form.getByLabel('Working day ends').scrollIntoViewIfNeeded();await page.screenshot({path:`${output}/working-hours-${width}.png`});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));

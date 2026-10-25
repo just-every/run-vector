@@ -104,8 +104,8 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
   }}>
     {children}
     {confirm && state === 'dirty' && <button type="submit">{confirm}</button>}
-    {state === 'saving' && <p role="status">Saving…</p>}
-    {state === 'saved' && <p role="status">Saved</p>}
+    {state === 'saving' && <p role="status" aria-label="Save status">Saving…</p>}
+    {state === 'saved' && <p role="status" aria-label="Save status">Saved</p>}
     {state === 'failed' && <p role="alert">Couldn’t save. <button type="button" onClick={() => void flush()}>Retry</button></p>}
   </form>;
 }
