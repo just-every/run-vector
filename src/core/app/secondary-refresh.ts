@@ -7,7 +7,7 @@ export function onSecondaryRefresh(refresh: () => void) {
     const tick = () => {
       if (document.visibilityState === 'visible') for (const listener of listeners) listener();
     };
-    const timer = window.setInterval(tick, 4000);
+    const timer = window.setInterval(tick, 3000);
     window.addEventListener('focus', tick);
     document.addEventListener('visibilitychange', tick);
     stop = () => {

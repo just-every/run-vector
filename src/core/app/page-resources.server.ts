@@ -1,3 +1,4 @@
+import { requestBindings } from './request-bindings.server'
 import { visibilityDatabase } from '../features/roles/visibility-database'
 import { createApiApp } from './api'
 import { Hono } from 'hono'
@@ -16,6 +17,7 @@ import type { StreamItem } from '../features/streams/ui/data'
 
 /** Run the normal read routes inside the document's native authorization fence. */
 export async function pageResources(env: WorkerBindings, request: Request, operator: import('./bindings').AppEnvironment['Variables']['operator'], href: string) {
+  env = requestBindings(env)
   env = {...env,DB:visibilityDatabase(env.DB,operator.id)}
   configureNotifications(env.DB, env)
   try { return await readPageResources(env, request, operator, href) }
@@ -30,6 +32,7 @@ export async function pageResources(env: WorkerBindings, request: Request, opera
 }
 
 export async function readPageResources(env: WorkerBindings, request: Request, operator: AppEnvironment['Variables']['operator'], href: string, initial: InitialResources = {}) {
+  env = requestBindings(env)
   env = {...env,DB:visibilityDatabase(env.DB,operator.id)}
   const url = new URL(href, env.APP_ORIGIN)
   if (url.origin !== env.APP_ORIGIN || !/^\/app(?:\/|$)/.test(url.pathname)) return {}
@@ -89,7 +92,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     }
     else await Promise.all([read('/api/issues'), read('/api/issues?category=completed')])
     await options
-  } else if (/^\/app\/issues\/[A-Z]{2,10}-[1-9][0-9]*$/.test(path)) {
+  } else if (/^\/app\/issues\/[^/]+$/.test(path) && path !== '/app/issues/backlog') {
     await Promise.all([read('/api/options'), detail(path.split('/').at(-1)!)])
   } else if (/^\/app\/(issues|board)(?:\/|$)/.test(path)) {
     const surface = path.startsWith('/app/board') ? 'board' : 'issues'

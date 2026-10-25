@@ -17,7 +17,7 @@ function NewProject() {
   const close = () => { void navigate({ to: '/app/projects' }); };
   if (decide(authority, { row: 'projects.write' }) !== 'allow')
     return <main className="projects-state"><p>Your workspace role cannot create projects.</p><a href="/app/projects">Back to Projects</a></main>;
-  return <main className="projects-workspace"><h1>New project</h1>
+  return <main className="projects-workspace"><header className="projects-header"><div><h1>New project</h1></div></header>
     <section className="administration-panel project-detail__section">
       <ProjectCreate operators={operators} labels={labels} channel={decide(authority, { row: 'channels.create' }) === 'allow'} onChanged={close} onCancel={close} />
     </section>

@@ -13,7 +13,7 @@ export const useIssueReferences = () => useContext(Context);
 export function IssueReferencesProvider({ identifier, revision, children }: {
   identifier: string; revision: number; children: ReactNode;
 }) {
-  const resource = useApiResource(`/api/issues/${identifier}/references`, schema, 4000, { abortPendingOnDispose: false });
+  const resource = useApiResource(`/api/issues/${identifier}/references`, schema, 3000, { abortPendingOnDispose: false });
   const previous = useRef({ identifier, revision });
   useEffect(() => {
     const changed = previous.current.identifier === identifier && previous.current.revision !== revision;

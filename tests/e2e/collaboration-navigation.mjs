@@ -77,7 +77,7 @@ export async function settleReads(page, limit = 10000) {
   state.settledAt = Date.now();
 }
 // A full-document navigation unmounts private polling. Wait for the current
-// native count request to finish so navigation does not abort legitimate I/O.
+// native refresh batch to finish so navigation does not abort legitimate I/O.
 export async function beforePrivateNavigation(page, target) {
   trackRequests(page);
   const current = new URL(page.url()),
@@ -87,15 +87,17 @@ export async function beforePrivateNavigation(page, target) {
     current.pathname.startsWith("/app")
   ) {
     const response = await page.waitForResponse(
-      (response) =>
-        response.url() === destination.origin + "/api/notifications/count" &&
-        response.request().method() === "GET" &&
-        response.status() === 200,
+      (response) => {
+        const url = new URL(response.url());
+        return url.origin === destination.origin && url.pathname === '/api/refresh' &&
+          url.searchParams.getAll('read').includes('/api/notifications/count') &&
+          response.request().method() === 'GET' && response.status() === 200;
+      },
     );
     assert.equal(
       await response.finished(),
       null,
-      "native count response finished before private document navigation",
+      "native refresh response finished before private document navigation",
     );
     await page.waitForLoadState("networkidle");
     await settleReads(page);

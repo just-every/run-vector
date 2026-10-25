@@ -19,7 +19,7 @@ export function usePersonalReminders(identifier: string) {
   const url = `/api/issues/${encodeURIComponent(identifier)}/reminders`;
   // Inspector selection can change while a poll is reading its response. Stop
   // polling on disposal, but let that admitted read finish without publishing.
-  const resource = useApiResource(url, remindersSchema, 4000, {
+  const resource = useApiResource(url, remindersSchema, 3000, {
     abortPendingOnDispose: false,
   });
   const [pending, setPending] = useState<string | null>(null);

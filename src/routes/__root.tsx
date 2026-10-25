@@ -15,7 +15,8 @@ import { fontLinks } from "../core/app/fonts";
 import { introCss, introGuardScript } from "../base/hydration/intro-guard";
 export const Route = createRootRoute({
   beforeLoad: async ({ matches, location }): Promise<{ doorSignedIn: boolean }> => ({
-    doorSignedIn: location.pathname !== '/' && matches.length === 1 ? await loadDoorSession() : false,
+    doorSignedIn: (matches.length === 1 && location.pathname !== '/') || matches.at(-1)?.pathname.replace(/\/$/, '') !== location.pathname.replace(/\/$/, '')
+      ? await loadDoorSession() : false,
   }),
   head: () => ({
     links: [

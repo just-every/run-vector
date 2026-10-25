@@ -10,7 +10,7 @@ export function IssueSubscriptionControls({
   const url = `/api/issues/${encodeURIComponent(identifier)}/subscription`;
   // Current can replace its default inspector during a fresh stream receipt.
   // Stop its poller while allowing an already admitted read to drain.
-  const resource = useApiResource(url, subscriptionSchema, 4000, {
+  const resource = useApiResource(url, subscriptionSchema, 3000, {
     abortPendingOnDispose: false,
   });
   const [own, setOwn] = useState<{ following: boolean; muted: boolean } | null>(

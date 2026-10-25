@@ -1,6 +1,11 @@
 import { ManualOrderBoundary, ManualOrderNotice } from '../../manual-order/ui/context';
+import { useLocation, useNavigate } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from "react";
-import { ApiError, useApiResource } from "../../../app/api-client";
+import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
+import { preferenceSchema } from '../../views/schema';
+import { issuePreferenceValues } from './issue-list-preferences';
+import { changeIssueListFilters } from './issue-list-controls';
+import { useHydrated } from '../../../app/initial-resources';
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import type { IssueListData, IssueListQuery } from "../list-schema";
 import { defaultIssueListQuery, issueListSearch } from "./issue-list-controls";
@@ -50,6 +55,23 @@ export function IssueListView({
   before,
   rowAction,
 }: Props) {
+  const hydrated = useHydrated();
+  const navigate = useNavigate(), pathname = useLocation({ select: location => location.pathname });
+  const [tabState, setTabState] = useState<'saving' | 'error' | null>(null);
+  const changeCategory = async (category: 'all' | 'backlog') => {
+    if (!/^\/app\/(issues|board)(?:\/|$)/.test(pathname)) { onChange({ category }); return; }
+    if (tabState === 'saving') return;
+    const search = changeIssueListFilters(query, { category });
+    setTabState('saving');
+    try {
+      // Commit the tab before its new route restores controls. Otherwise a
+      // saved Backlog can immediately send an All issues navigation back.
+      await fetchJson('/api/preferences/issues', preferenceSchema, { method: 'PUT',
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(issuePreferenceValues(search)) });
+      await navigate({ to: category === 'backlog' ? '/app/issues/backlog' : '/app/issues', search });
+      setTabState(null);
+    } catch { setTabState('error'); }
+  };
   const denied =
     error instanceof ApiError && [401, 403, 404, 410].includes(error.status);
   const invalidated =
@@ -124,22 +146,25 @@ export function IssueListView({
       <nav className="issues-modes" aria-label="Issue list">
         <button
           aria-pressed={query.category === "all"}
-          onClick={() => onChange({ category: "all" })}
+          disabled={!hydrated || tabState === 'saving'}
+          onClick={() => void changeCategory('all')}
         >
           All issues
         </button>
         <button
           aria-pressed={query.category === "backlog"}
-          onClick={() => onChange({ category: "backlog" })}
+          disabled={!hydrated || tabState === 'saving'}
+          onClick={() => void changeCategory('backlog')}
         >
           Backlog
         </button>
         {onSwitchLayout && (
-          <button onClick={onSwitchLayout}>
+          <button disabled={!hydrated || tabState === 'saving'} onClick={onSwitchLayout}>
             {layout === "board" ? "List" : "Board"}
           </button>
         )}
       </nav>
+      {tabState === 'error' && <p role="alert">This tab could not be opened. Choose it again to retry.</p>}
       {!denied && (
         <>
           {options ? (
