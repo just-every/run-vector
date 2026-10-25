@@ -5,6 +5,8 @@ import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/
 import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import {initiativeAuthority} from '../features/initiatives/authority';
+import {addDocumentRoutes} from '../features/documents/routes';
+import {issueSpecification} from '../features/documents/repository';
 import {addInitiativeRoutes} from '../features/initiatives/routes';
 import {addSubscriptionRoutes} from '../features/subscriptions/routes';
 import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
@@ -242,6 +244,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
 
   addSubscriptionRoutes(app);
   addInitiativeRoutes(app);
+  addDocumentRoutes(app);
   addReleaseRoutes(app);
   addGithubIssueProjection(app);
   addGithubRuleRoutes(app);
@@ -330,6 +333,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
         toNow(query.data.at),
         document?.workspace?.snapshot,
       );
+      const specification=await issueSpecification(context.env.DB,identifier);
       await requireIssueAccess(
         context.env.DB,
         identifier,
@@ -337,7 +341,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       );
       if (!issue)
         throw new IssueAccessError("not_found", "Issue is unavailable.", 404);
-      return context.json(issue);
+      return context.json({...issue,specification});
     } catch (error) {
       if (!(error instanceof IssueAccessError)) throw error;
       return context.json(

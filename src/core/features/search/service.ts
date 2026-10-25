@@ -14,6 +14,7 @@ export class SearchIndexError extends Error {
   }
 }
 type SearchResult = {
+  documents: {id:string;title:string}[];
   issues: { id: string; identifier: string; title: string }[];
   projects: { id: string; name: string }[];
   savedViews: { id: string; name: string; isShared: boolean }[];
@@ -57,9 +58,9 @@ export async function searchWorkspace(
       .bind(...admission.values)
       .first();
     if (!admitted) throw new SearchAccessError();
-    return { issues: [], projects: [], savedViews: [] };
+    return { issues: [], projects: [], savedViews: [], documents: [] };
   }
-  let row: { issues: string; projects: string; savedViews: string } | null;
+  let row: { issues: string; projects: string; savedViews: string; documents:string } | null;
   try {
     // One SQLite snapshot owns results AND final native/operator/workspace and
     // view-privacy admission. Only a bounded DTO crosses the D1 boundary.
@@ -98,7 +99,17 @@ export async function searchWorkspace(
         WHERE search_views MATCH ? AND v.workspace_id=actor.workspace_id
           AND (v.is_shared=1 OR v.owner_operator_id=actor.id)
         ORDER BY f.rank,v.name,v.id LIMIT ${SEARCH_RESULT_LIMIT}
-      )) AS savedViews
+      )) AS savedViews,
+      (SELECT json_group_array(json_object('id',id,'title',title)) FROM (
+        SELECT d.id,d.title FROM documents d WHERE d.workspace_id=actor.workspace_id
+          AND instr(lower(d.title||char(10)||d.body),lower(?))>0
+          AND (?=1 OR CASE d.parent_kind
+            WHEN 'team' THEN EXISTS(SELECT 1 FROM teams t WHERE t.id=d.parent_id AND t.archived_at IS NULL)
+            WHEN 'project' THEN EXISTS(SELECT 1 FROM projects p WHERE p.id=d.parent_id AND p.archived_at IS NULL)
+            WHEN 'issue' THEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id LEFT JOIN projects p ON p.id=i.project_id WHERE i.id=d.parent_id AND i.archived_at IS NULL AND t.archived_at IS NULL AND (p.id IS NULL OR p.archived_at IS NULL))
+            ELSE 1 END)
+        ORDER BY d.updated_at DESC,d.id DESC LIMIT ${SEARCH_RESULT_LIMIT}
+      )) AS documents
       FROM operators actor WHERE ${admission.sql}`,
       )
       .bind(
@@ -118,6 +129,8 @@ export async function searchWorkspace(
         expression,
         Number(includeArchived),
         expression,
+        term,
+        Number(includeArchived),
         ...admission.values,
       )
       .first<typeof row>();
@@ -140,7 +153,7 @@ export async function searchWorkspace(
       const { visible, ...issue } = JSON.parse(
         current.issue,
       ) as SearchResult["issues"][number] & { visible: number };
-      return { issues: visible ? [issue] : [], projects: [], savedViews: [] };
+      return { issues: visible ? [issue] : [], projects: [], savedViews: [], documents: [] };
     }
     const state = await db
       .prepare(
@@ -156,5 +169,6 @@ export async function searchWorkspace(
     issues: JSON.parse(row.issues),
     projects: JSON.parse(row.projects),
     savedViews: JSON.parse(row.savedViews),
+    documents: JSON.parse(row.documents),
   };
 }
