@@ -22,7 +22,7 @@
 .document-inspector>.secondary-section { margin:0; }
 .document-section.document-inspector summary { min-height:36px; }
 .document-section .document-link,.document-page .document-link,.document-list a { display:flex; align-items:center; min-height:44px; width:fit-content; max-width:100%; }
-.document-section summary { min-height:32px; align-content:center; }
+.document-section summary { min-height:32px; align-content:center; overflow-wrap:anywhere; }
 @media(max-width:600px) { .document-section summary,.document-section.document-inspector summary { min-height:44px; } }
 .document-section button { min-height:44px; }
 .document-team-link { display:inline-flex; align-items:center; min-height:44px; }
