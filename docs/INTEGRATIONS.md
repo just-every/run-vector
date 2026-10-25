@@ -368,7 +368,16 @@ mentions from acting as that member. Migration `0101_slack_event_receipts.sql`
 adds identifier-only, portable replay history, committed with the issue; keep
 it on rollback so retries cannot recreate previously accepted issues.
 
-This installation remains partial. Provider uninstall handling, app-credential
-archive/restore acceptance and the hosted real-workspace installation remain
-SLACK-001 work. A real workspace needs the owner's Slack console setup and
-reinstallation with the generated scopes and URLs; no hosted install is claimed.
+Signed `app_uninstalled` and `tokens_revoked` events retire the installation,
+remove its stored app, bot and signing credentials and member links, and disable
+its Slack destinations without another provider call. Reconnecting requires
+fresh app credentials and OAuth installation.
+
+App credentials, bot/signing secrets and member links are excluded from archives.
+An independent restored installation shows empty app credential fields, cannot
+start installation until credentials are re-entered, and retains event receipts
+so previously accepted mentions cannot recreate issues.
+
+This installation remains partial: the hosted real-workspace installation needs
+the owner's Slack console setup and reinstallation with the generated scopes and
+URLs. The recorded acceptance uses Slack API fixtures, not a hosted provider.

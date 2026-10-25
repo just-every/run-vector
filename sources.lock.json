@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "826532a97b8c8e1421a0cb4a275437c04c3b9831e6d15ae369cbe8611a17a4b7",
+      "sha256": "c718245dc271ed2de69f9a502a45a87a1c1718820b655eeda79ba706f6856a4f",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "bf385428d3715f9fe87e91663ced17e2d85b7f8f2c18cf0e96d5e25509270e28",
+      "sha256": "2dffcad0963a3947ad39dfaf5ca39fafeae74e0a4241a4a32252fbcf54ffbc76",
       "executable": false
     },
     "DEMO.md": {
@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "00253e66acaeeecacf7ecb6ef1555e73e0eb3f53cbec8bb35c65392c91682a73",
+      "sha256": "68724103b947019b4a1bb5558b705888b2ee783863856cfc3eef1ed72229d74b",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
