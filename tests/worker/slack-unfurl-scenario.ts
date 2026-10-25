@@ -37,7 +37,7 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  const documentUrl=bindings.APP_ORIGIN+'/app/documents/'+document.id,documentNative=await read(await request('/api/documents/'+document.id,'GET',undefined,member));
  const documentEvent=payload(documentUrl),documentCount=effects().length;await read(await send(documentEvent));expect(effects()).toHaveLength(documentCount+1);
  expect(effects().at(-1)!.body).toMatchObject({unfurl_id:documentEvent.event.unfurl_id,source:documentEvent.event.source});
- const documentText=effects().at(-1)!.body.unfurls[documentUrl].blocks[0].text;expect(documentText).toEqual({type:'plain_text',text:documentNative.id+'\n'+documentNative.title});expect(JSON.stringify(effects().at(-1)!.body)).not.toContain(documentNative.body);
+ const documentPreview=effects().at(-1)!.body.unfurls[documentUrl];expect(documentPreview).toEqual({blocks:[{type:'section',text:{type:'plain_text',text:documentNative.title},accessory:{type:'button',text:{type:'plain_text',text:'Open document'},url:documentUrl}}]});expect(JSON.stringify(effects().at(-1)!.body)).not.toContain(documentNative.body);
  await bare(payload(documentUrl,slackIntakeFixture.unlinked));
  await bare(payload(url,slackIntakeFixture.unlinked));
  const outsider=await invite('synthetic-vector-unfurl-outsider@vector.test',f.cookie),outsiderId=await actor(outsider);

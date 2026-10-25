@@ -49,7 +49,11 @@ export async function projectDocumentsJourney({page,base,api,output}){
     if(await editor.getAttribute('open')===null)await editor.locator('summary').click();
     const form=editor.getByRole('form',{name:'Edit document'});
     await form.getByLabel('Document body',{exact:true}).fill(body);
-    await form.getByRole('button',{name:'Save document',exact:true}).click();
+    await page.reload();
+    const restored=editor.getByRole('form',{name:'Edit document'});
+    await restored.getByLabel('Document body',{exact:true}).waitFor();
+    assert.equal(await restored.getByLabel('Document body',{exact:true}).inputValue(),body);
+    await restored.getByRole('button',{name:'Publish revision',exact:true}).click();
     await page.getByRole('region',{name:'Document content'}).getByText(body.split('\n').at(-1),{exact:true}).waitFor();
    }
    const comments=page.getByRole('region',{name:'Document comments',exact:true});
@@ -69,10 +73,22 @@ export async function projectDocumentsJourney({page,base,api,output}){
    await go('/app/issues/'+issue.identifier);
    const spec=page.getByRole('region',{name:'Issue specification',exact:true});
    await spec.locator('summary').click();
+   const specificationWrites=[];
+   const specificationRequest=request=>{if(new URL(request.url()).pathname==='/api/issues/'+issue.identifier+'/specification'&&request.method()!=='GET')specificationWrites.push(request.method());};
+   page.on('request',specificationRequest);
    await spec.getByLabel('Specification document',{exact:true}).selectOption(documentId);
-   await spec.getByRole('button',{name:'Save specification',exact:true}).click();
+   assert.equal(await spec.getByRole('button',{name:'Save specification',exact:true}).count(),0);
+   await spec.getByRole('status').filter({hasText:'Saved'}).waitFor();
+   page.off('request',specificationRequest);
+   assert.deepEqual(specificationWrites,['PUT']);
    await spec.getByRole('link',{name:title,exact:true}).waitFor();
-   await page.getByRole('region',{name:'Documents',exact:true}).getByRole('link',{name:issueDoc.title,exact:true}).waitFor();
+   const issueDocuments=page.getByRole('region',{name:'Documents',exact:true});
+   await issueDocuments.locator('summary').first().click();
+   await issueDocuments.getByRole('link',{name:issueDoc.title,exact:true}).waitFor();
+   await issueDocuments.getByRole('link',{name:team.name+' documents',exact:true}).click();
+   await page.getByRole('heading',{name:team.name,exact:true}).waitFor();
+   await go('/app/issues/'+issue.identifier);
+   await spec.locator('summary').click();
    assert.equal((await api('/issues/'+issue.identifier)).specification.id,documentId);
    await proof('issue-specification',width);
    await spec.getByRole('link',{name:title,exact:true}).click();

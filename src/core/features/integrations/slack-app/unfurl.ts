@@ -33,7 +33,7 @@ export async function unfurlSlackLinks(env:WorkerBindings,signer:{workspace:stri
     :await db.prepare('SELECT p.id identifier,p.name title,p.lifecycle status,o.name assignee,p.priority FROM projects p LEFT JOIN operators o ON o.id=p.lead_operator_id WHERE p.id=? AND p.archived_at IS NULL AND '+admission).bind(id,...values).first<Preview>();
    if(!preview)continue;
    // Plain text prevents titles and people names from becoming Slack markup.
-   unfurls[link.url]={blocks:[{type:'section',text:{type:'plain_text',text:(match[1]==='documents'?[preview.identifier,preview.title]:[preview.identifier,preview.title,'Status: '+preview.status,(match[1]==='issues'?'Assignee: ':'Lead: ')+(preview.assignee??'Unassigned'),'Priority: '+preview.priority]).join('\n')}}]};
+   unfurls[link.url]=match[1]==='documents'?{blocks:[{type:'section',text:{type:'plain_text',text:preview.title},accessory:{type:'button',text:{type:'plain_text',text:'Open document'},url:origin+'/app/documents/'+preview.identifier}}]}:{blocks:[{type:'section',text:{type:'plain_text',text:[preview.identifier,preview.title,'Status: '+preview.status,(match[1]==='issues'?'Assignee: ':'Lead: ')+(preview.assignee??'Unassigned'),'Priority: '+preview.priority].join('\n')}}]};
   }
  }
  if(Object.keys(unfurls).length&&token)await slackCall(token,'chat.unfurl',{unfurl_id:event.unfurl_id,source:event.source,unfurls});
