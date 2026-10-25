@@ -81,7 +81,7 @@ export function boardColumn(page, status) {
   return page.getByRole('region', { name: status.name + ' column', exact: true, includeHidden: true });
 }
 export function cardSelector(page, issue) {
-  return page.getByRole('combobox', { name: 'Status for ' + issue.identifier, exact: true });
+  return page.getByRole('combobox', { name: 'Status for ' + issue.identifier, exact: true, includeHidden: true });
 }
 export async function boardSnapshot(page, api, statuses) {
   const search = await page.locator('main[data-list-query]').getAttribute('data-list-query');
@@ -100,7 +100,9 @@ export async function boardSnapshot(page, api, statuses) {
     const column = boardColumn(page, status);
     const rows = data.issues.filter(row => row.status.id === status.id);
     const count = data.statusCounts.find(row => row.key === status.id)?.count ?? 0;
-    assert.deepEqual((await column.locator(':scope > p').first().textContent()).match(/\d+/g).map(Number), [rows.length, count]);
+    assert.equal(Number(await column.locator('h2 > span').innerText()), count);
+    if (rows.length < count) assert.deepEqual((await column.locator(':scope > p').first().textContent()).match(/\d+/g).map(Number), [rows.length, count]);
+    else assert.equal(await column.locator(':scope > p').count(), 0);
     assert.deepEqual(await column.locator('.board-card-open small:first-child').allTextContents(), rows.map(row => row.identifier));
   }
   return data;
@@ -121,9 +123,15 @@ async function recovered(page, issue, outside = false) {
   if (!outside) assert(await cardSelector(page, issue).isVisible(), 'Recovered focus is in the visible destination column');
 }
 
+export async function openCardMove(page, issue) {
+  const details = page.locator('.board-card-status').filter({has: cardSelector(page, issue)});
+  if (!(await details.evaluate(node => node.open))) await details.locator('summary').click();
+}
+
 export async function moveBoardCard(page, base, api, issue, target, width) {
   const before = await api('/issues/' + issue.identifier);
   await chooseSourceColumn(page, before, width);
+  await openCardMove(page, issue);
   const selector = cardSelector(page, issue);
   await page.waitForFunction(identifier => {
     const control = document.querySelector(`[data-status-identifier="${identifier}"]`);
@@ -152,6 +160,7 @@ export async function moveBoardCard(page, base, api, issue, target, width) {
 export async function rejectStaleBoardMove(page, base, api, issue, rejected, currentStatus, width, outside = false) {
   const before = await api('/issues/' + issue.identifier);
   await chooseSourceColumn(page, before, width);
+  await openCardMove(page, issue);
   const url = base + '/api/issues/' + issue.identifier;
   let release;
   const held = new Promise(resolve => { release = resolve; });

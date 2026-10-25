@@ -1308,12 +1308,12 @@ try {
   );
   assert.deepEqual(browserIntake.evidence[0].assertions, {});
   await page
-    .getByText("Operator report · Sarah Runtime SSR", { exact: true })
+    .getByText("Sarah Runtime SSR reported", { exact: true })
     .waitFor();
   assert.equal(
     await page
       .locator(".assertion-list")
-      .getByText("Policy recommendation", { exact: true })
+      .getByText("Suggested next step", { exact: true })
       .count(),
     0,
   );

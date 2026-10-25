@@ -104,7 +104,7 @@ async function selectedCommands(page, base, api, record) {
   }
   await page.locator('#issue-row-' + started.identifier).focus(); await page.keyboard.press('Shift+d');
   dialog = page.getByRole('dialog', { name: 'Duplicate decision', exact: true });
-  await dialog.getByRole('textbox', { name: 'Canonical issue identifier', exact: true }).fill(canonical.identifier);
+  await dialog.getByRole('textbox', { name: 'Original issue', exact: true }).fill(canonical.identifier);
   [response] = await Promise.all([
     page.waitForResponse(response => response.url() === base + '/api/issues/bulk/duplicate'),
     dialog.getByRole('button', { name: 'Mark selected as duplicates', exact: true }).press('Enter'),

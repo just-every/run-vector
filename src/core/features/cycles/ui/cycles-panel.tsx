@@ -14,7 +14,7 @@ export function CyclesPanel({
   onChanged: () => void;
   heading?: string;
 }) {
-  const { range, zone } = useDateFormat();
+  const { range } = useDateFormat();
   const action = useAdministrationAction(onChanged);
   const mayManage = data.viewer.role !== "guest";
   async function create(event: FormEvent<HTMLFormElement>) {

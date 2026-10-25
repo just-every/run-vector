@@ -31,7 +31,7 @@ export function IssueFilters({
           value={String(query[key])}
           onChange={(e) => onChange({ [key]: e.target.value })}
         >
-          <option value="all">{empty}</option>
+          {!(fixedGrouping && key === "team") && <option value="all">{empty}</option>}
           {none && (
             <option value={key === "assignee" ? "unassigned" : "none"}>
               {none}

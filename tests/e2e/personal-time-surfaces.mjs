@@ -34,8 +34,11 @@ export async function inspectTimeSurfaces(page,context,runtime,issue,records,wid
   ['/app/cycles', 'Cycles','cycles'],
   ['/app/cycles/'+records.cycle.id,'Billing close and reconciliation','cycle'],
  ]) {await page.goto(runtime.base+path);if(heading)await page.getByRole('heading',{name:heading,exact:true}).first().waitFor();await capture(name);if(name==='my-work'){
-   const expected=await page.evaluate(cycle=>{const format=new Intl.DateTimeFormat(undefined,{timeZone:'America/Los_Angeles',year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});return [format.format(new Date(cycle.startsAt)),format.format(new Date(cycle.endsAt))];},records.cycle);
-   assert.deepEqual(await page.locator('.cycle-dates time').allTextContents(),expected);
+   const dates=page.locator('.cycle-dates time');
+   assert.equal(await dates.getAttribute('datetime'),records.cycle.startsAt);
+   assert.equal(await dates.getAttribute('data-ends-at'),records.cycle.endsAt);
+   const inPersonalZone=await page.evaluate(cycle=>new Intl.DateTimeFormat(undefined,{timeZone:'America/Los_Angeles',hour:'numeric',minute:'2-digit'}).format(new Date(cycle.startsAt)),records.cycle);
+   assert((await dates.innerText()).includes(inPersonalZone),'The active cycle uses the viewer’s time zone and browser time format');
    assert.equal(await page.locator('.cycle-timezone').innerText(),'America/Los_Angeles');
   }if(name==='cycles'){await page.getByRole('link',{name:'Open '+records.cycle.name,exact:true}).scrollIntoViewIfNeeded();await capture('cycle-list-times');}if(name==='project'){for(const [heading,label] of [['Cycle capacity','project-cycle-times'],['Project activity','project-activity']]){await page.getByRole('heading',{name:heading,exact:true}).scrollIntoViewIfNeeded();await capture(label);}}}
  await page.goto(runtime.base+'/app/cycles/'+records.closedCycle.id);await page.getByRole('heading',{name:'Snapshot at close',exact:true}).scrollIntoViewIfNeeded();await capture('closed-cycle');
