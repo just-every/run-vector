@@ -4581,7 +4581,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "8ef7f6e75c16ea865c3361e247fd86eda050a0aee4a47212bc91a9c2b370bfeb",
+      "sha256": "e88dc994a28e4782e2ed1fb781856d9d5d03d96ef4e8d6878716d3415bf08967",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -4642,6 +4642,10 @@
     },
     "src/core/features/integrations/ui/project-channel.tsx": {
       "sha256": "5c0ab6233f4a5c90b5ed7d34524731050e8ad71b4425097120198518e72c44e7",
+      "executable": false
+    },
+    "src/core/features/integrations/ui/slack-app-settings.tsx": {
+      "sha256": "497b9b7ea88e1342e76537b1e660b7f859e9676390700da168cff6f7df61d5da",
       "executable": false
     },
     "src/core/features/integrations/ui/source-sender.ts": {
@@ -6769,7 +6773,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "9373970f37070f239b4845a2c674fa38e8f19ef36cf612ef1725158022288f9b",
+      "sha256": "c8401140d35c6cff702e22eb7a43c2ffc3d51ec067174b8da777d6bc61f1af74",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
@@ -6777,7 +6781,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "be36f7eab84a796d17c1fc4b4c14e1d3fab5c8003ae40fb256aa31b1513ca39b",
+      "sha256": "c253d892c6155f91b0b8da39115681df475729e929a63063320221b72c775998",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -6802,6 +6806,10 @@
     },
     "tests/e2e/integrations/register-loader.mjs": {
       "sha256": "e15233703812d69de83d774e1bfe37f3e1cd954378535ce428c9295254c8ea12",
+      "executable": false
+    },
+    "tests/e2e/integrations/slack-app-installation.mjs": {
+      "sha256": "9c6f5304ab4b488dc6c690989a015f81286283ad7320d335b4c8cd56fce0b15f",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {

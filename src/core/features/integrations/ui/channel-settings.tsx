@@ -1,3 +1,4 @@
+import {SlackAppSettings} from './slack-app-settings';
 import {useState,type FormEvent} from 'react';
 import {useApiResource} from '../../../app/api-client';
 import {channelConfiguration,channelEvents,channelEventLabels} from '../channels/schema';
@@ -5,10 +6,11 @@ import {acknowledged,send} from './client';
 import {CopyField} from './copy-field';
 export function ChannelSettings(){
  const config=useApiResource('/api/settings/integrations/channels',channelConfiguration);
+ const [appRevision,setAppRevision]=useState(0);
  const [provider,setProvider]=useState('slack'),[pending,setPending]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  async function run(path:string,body:unknown,method='POST'){
   setPending(true);setError('');setNotice('');
-  try{await send(path,acknowledged,body,method);config.reload();return true;}catch(error){setError(error instanceof Error?error.message:'Channel settings could not be saved.');return false;}finally{setPending(false);}
+  try{await send(path,acknowledged,body,method);config.reload();if(path==='/slack'&&method==='DELETE')setAppRevision(value=>value+1);return true;}catch(error){setError(error instanceof Error?error.message:'Channel settings could not be saved.');return false;}finally{setPending(false);}
  }
  async function connect(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget;
   if(await run('/slack',{botToken:new FormData(form).get('botToken')})){form.reset();setNotice('Slack connected. The bot token is stored securely.');}
@@ -26,6 +28,7 @@ export function ChannelSettings(){
  <p>Post selected changes from a team, project or saved view. Messages include the issue identifier, title, actor, status change and a sign-in link.</p>
  {config.error&&<p role="alert">{config.error.message}</p>}{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
  {config.data&&<>
+ <SlackAppSettings key={appRevision} onChanged={config.reload}/>
  <p>{config.data.slack.needsAttention?'Slack needs attention. Re-enter the bot token.':config.data.slack.connected?`Slack connected to ${config.data.slack.teamName}`:'Slack is not connected.'}</p>
  <details><summary>{config.data.slack.connected?'Replace Slack bot token':'Connect Slack'}</summary>
  <p>Use a Slack bot token with chat:write and channels:manage; Slack direct messages also need im:write and users:read.email. Only public channels can be created. Add the bot to an existing destination channel in Slack before binding it. Removing the connection revokes its bot token in Slack, deletes the signing secret and unlinks every member. Channels must be active, unshared and include the bot; Vector checks this when selected and before posting.</p>

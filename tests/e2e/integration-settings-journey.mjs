@@ -1,3 +1,4 @@
+import {exerciseSlackAppInstallation} from './integrations/slack-app-installation.mjs';
 import {eventSigner} from '../sendgrid-event-fixture.ts';
 import {exerciseChannels} from './integrations/channel-settings.mjs';
 import {exerciseSlackDirectMessages} from './integrations/slack-dm-settings.mjs';
@@ -28,6 +29,7 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  const revokeSource=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname==='/api/settings/integrations/sources/'+source.id);await panel.getByRole('button',{name:'Revoke Browser source '+width,exact:true}).click();assert.equal((await revokeSource).status(),200);assert.equal((await postPlain(replaced.webhookUrl)).status,401);
 
  await exerciseEmailIntake({page,runtime,cookie,team,evidence});
+ await exerciseSlackAppInstallation({page,runtime,width,evidence});
  await exerciseChannels({page,runtime,cookie,team,width,evidence});
  await exerciseSlackDirectMessages({page,runtime,width,evidence});
  await panel.getByLabel('Destination name',{exact:true}).fill('Browser receiver '+width);await panel.getByLabel('Public HTTPS destination',{exact:true}).fill('https://receiver.example.com/events');const destination=await receipt('/destinations',()=>panel.getByRole('button',{name:'Register destination',exact:true}).click());await reveal(destination.secret);

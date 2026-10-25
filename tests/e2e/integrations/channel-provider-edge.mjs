@@ -1,11 +1,14 @@
 // Synthetic Slack/Discord network edge for the built-Worker journey only.
 import {appendFileSync,readFileSync} from 'node:fs';
+export const slackAppFixture={appId:'synthetic-vector-32010',clientId:'synthetic-vector-32011',clientSecret:'synthetic-vector-32012',signingSecret:'synthetic-vector-32013',botToken:'synthetic-vector-32014'};
 export async function channelProviderEdge(request){
  const url=new URL(request.url);
  if(url.hostname==='api.sendgrid.com'&&url.pathname==='/v3/mail/send'){appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sendgrid',body:await request.json()})+'\n');return new Response(null,{status:202,headers:{'X-Message-Id':'synthetic-vector-'+crypto.randomUUID()}});}
- const body=request.method==='GET'?Object.fromEntries(url.searchParams):await request.json(),method=url.hostname==='slack.com'?url.pathname.slice(5):'discord';
- if(!['auth.test','auth.revoke','conversations.info','conversations.create','chat.postMessage','users.lookupByEmail','conversations.open','chat.update','discord'].includes(method))throw Error('Unexpected provider fixture endpoint');
+ const body=request.method==='GET'?Object.fromEntries(url.searchParams):request.headers.get('content-type')?.startsWith('application/x-www-form-urlencoded')?Object.fromEntries(new URLSearchParams(await request.text())):await request.json(),method=url.hostname==='slack.com'?url.pathname.slice(5):'discord';
+ if(!['apps.manifest.create','oauth.v2.access','auth.test','auth.revoke','conversations.info','conversations.create','chat.postMessage','users.lookupByEmail','conversations.open','chat.update','discord'].includes(method))throw Error('Unexpected provider fixture endpoint');
  appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method,body})+'\n');
+ if(method==='apps.manifest.create')return Response.json(request.headers.get('Authorization')==='Bearer synthetic-vector-32016'?{ok:false,error:'invalid_auth'}:{ok:true,app_id:slackAppFixture.appId,credentials:{client_id:slackAppFixture.clientId,client_secret:slackAppFixture.clientSecret,signing_secret:slackAppFixture.signingSecret}});
+ if(method==='oauth.v2.access')return Response.json({ok:true,token_type:'bot',app_id:slackAppFixture.appId,scope:'chat:write,channels:manage,channels:read,im:write,users:read.email',access_token:slackAppFixture.botToken});
  if(method==='auth.test')return Response.json({ok:true,team:'Delivery workspace'});
  if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
  if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'delivery',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});
