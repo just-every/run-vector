@@ -1,10 +1,12 @@
+import { useDateFormat } from "../../shared/date-format";
 import { BurnUp } from "./burn-up";
 import type { ProjectReport } from "./schema";
 import "./report.css";
 
 export function ProjectReportPanel({ report }: { report: ProjectReport }) {
   const { projection } = report;
-  const projectionLabel = projection.status === "projected" ? projection.date!
+  const { date } = useDateFormat();
+  const projectionLabel = projection.status === "projected" ? date(projection.date!)
     : projection.status === "not-enough-history" ? "Not enough history"
     : projection.status === "nothing-remaining" ? "Nothing remaining" : "Final state";
   return <section className="project-report" aria-label="Project report">
