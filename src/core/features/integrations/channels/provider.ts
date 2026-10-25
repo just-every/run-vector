@@ -11,7 +11,7 @@ export function discordUrl(value:string,allowWait=false) {
 /** The only destinations here are fixed provider hosts. Redirects are never followed. */
 export async function providerSend(wire:WireRequest,method:'POST'|'GET'='POST'):Promise<WireResponse> {
  const url=new URL(wire.url);
- if(!(url.origin==='https://slack.com'&&/^\/api\/[a-zA-Z.]+$/.test(url.pathname)))discordUrl(wire.url,true);
+ if(!(url.origin==='https://slack.com'&&(/^\/api\/[a-zA-Z.]+$/.test(url.pathname)||url.pathname==='/api/oauth.v2.access')))discordUrl(wire.url,true);
  if(method==='GET')for(const [key,value] of Object.entries(JSON.parse(wire.body)))url.searchParams.set(key,String(value));
  const response=await fetch(url.href,{method,headers:wire.headers,...(method==='POST'?{body:wire.body}:{}),redirect:'manual',signal:AbortSignal.timeout(15000)});
  return {status:response.status,headers:Object.fromEntries(response.headers),body:await response.text()};
