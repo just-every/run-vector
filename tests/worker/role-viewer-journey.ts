@@ -56,6 +56,9 @@ export async function viewerVisibilityJourney(w:Workspace){
  const milestone=milestoneState.milestones.find((m:any)=>m.name==='synthetic-vector-2004');
  const source=await json(await owner.call('/settings/integrations/sources','POST',{sourceId:'synthetic-vector-2019',name:'synthetic-vector-2020',teamId:w.team.id}),201);
  const token=await json(await owner.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-2021',scopes:['issues:read']}),201);
+ const workflowState=await json(await owner.call('/settings/teams/'+w.team.id+'/statuses','POST',{name:'synthetic-vector-2029',category:'unstarted'}));
+ const workflow=workflowState.teams.find((team:any)=>team.id===w.team.id).statuses;
+ const workflowStatus=workflow.find((status:any)=>status.name==='synthetic-vector-2029');
  const logicalId=ownComment.id;
  const registeredMutations=(registry:typeof doors)=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
  // These families use their own persisted subjects and schema-valid inputs.
@@ -96,13 +99,13 @@ export async function viewerVisibilityJourney(w:Workspace){
    else if(route.endsWith('/membership'))body={mode:'open',requestsEnabled:false};
    else if(route.includes('/members/')&&method==='PUT')body={role:'member'};
    else if(route.endsWith('/permissions'))body={settings:'team_owners',planning:'all_members'};
-   else if(route.endsWith('/statuses/order'))body={statusIds:w.team.statuses.map(status=>status.id)};
+   else if(route.endsWith('/statuses/order'))body={statusIds:workflow.map((status:any)=>status.id)};
    else if(route.endsWith('/statuses'))body={name:'synthetic-vector-2026',category:'started'};
    else if(route.includes('/statuses/')&&method==='PATCH')body={name:'synthetic-vector-2027'};
    else if(route.includes('/statuses/')&&method==='DELETE')body={destinationStatusId:w.team.statuses.find(status=>status.category==='unstarted')!.id};
    else if(method==='PATCH'&&route.endsWith('/:id'))body={name:'synthetic-vector-2028'};
   }
-  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?w.team.statuses.find(status=>status.category==='unstarted')!.id:id).replace(/\*$/,'exports');
+  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:id).replace(/\*$/,'exports');
   return {path,body};
  };
  // Each registered work mutation is reached through its actual native/bearer transport.
