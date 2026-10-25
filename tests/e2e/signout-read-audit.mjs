@@ -1,3 +1,4 @@
+import { openAccountMenu } from './ui-controls-checks.mjs';
 // Read-only instrumentation: a real DOM click defines the boundary in the
 // same JS context as genuine fetch invocation. Native arguments, timing,
 // responses and errors pass through unchanged; only paths reach the harness.
@@ -44,6 +45,7 @@ export async function auditSignOutReads(page) {
 }
 
 export async function clickSignOut(page) {
+  await openAccountMenu(page);
   await page
     .getByRole("button", { name: "Sign out", exact: true })
     .filter({ visible: true })

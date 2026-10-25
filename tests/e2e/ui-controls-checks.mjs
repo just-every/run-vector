@@ -10,6 +10,12 @@ export async function openDisclosures(page) {
 }
 
 export { openAdministrationForm } from "./ui-administration-form.mjs";
+export async function openAccountMenu(page) {
+  const trigger = page.locator('.app-mobile-account-trigger');
+  if (await trigger.isVisible() && await trigger.getAttribute('aria-expanded') === 'false')
+    await trigger.click();
+}
+
 export async function assertSettingsSections(page, label) {
   const sections = [
     "Workspace time",
@@ -42,6 +48,7 @@ export async function assertSettingsSections(page, label) {
     1,
     `${label}: named Notifications section`,
   );
+  await openAccountMenu(page);
   const settings = page
     .getByRole("link", { name: "Settings", exact: true })
     .filter({ visible: true })

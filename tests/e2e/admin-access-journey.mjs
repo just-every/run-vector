@@ -1,3 +1,4 @@
+import { openAccountMenu } from './ui-controls-checks.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {rolePrivateCells} from './role-private-cells.mjs';
 import {viewerRoleJourney} from './viewer-role-journey.mjs';
@@ -89,6 +90,7 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
     .getByText("No cycles yet. Create your first cycle below.", { exact: true })
     .waitFor();
   await capture("empty-cycles-create-cta");
+  await openAccountMenu(page);
   await page
     .getByRole("link", { name: "Settings", exact: true })
     .filter({ visible: true })
@@ -105,12 +107,14 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
     "OPS-003",
     "responsive signed operator settings access",
     async () => {
-      await page
+      await openAccountMenu(page);
+  await page
         .getByRole("link", { name: "Settings", exact: true })
         .filter({ visible: true })
         .first()
         .waitFor();
-      await page
+      await openAccountMenu(page);
+  await page
         .getByRole("button", { name: "Sign out", exact: true })
         .filter({ visible: true })
         .waitFor();
@@ -225,6 +229,7 @@ export async function assertSignOut({ page, runtime, capture }) {
   await assertSettingsSections(page, "final Settings");
   await capture("settings-final-signout-reachable");
   await settleReads(page);
+  await openAccountMenu(page);
   await page
     .getByRole("button", { name: "Sign out", exact: true })
     .filter({ visible: true })

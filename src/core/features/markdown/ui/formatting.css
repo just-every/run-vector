@@ -7,7 +7,7 @@
 .safe-markdown .task-list-item { min-height: 44px; padding: 8px 0; }
 .markdown-code { position: relative; margin: 1rem 0; border: 1px solid var(--app-code-line); border-radius: 8px; background: var(--app-code-surface); color: var(--app-code-text); }
 .markdown-code pre { overflow: auto; padding: 3rem 1rem 1rem; margin: 0; }
-.markdown-code > button { position: absolute; top: .25rem; right: .4rem; min-height: 44px; font-size: 12px; }
+.markdown-code > button { position: absolute; top: .25rem; right: .4rem; min-height: 44px; font-size: var(--app-text-small); }
 .safe-markdown .hljs-keyword,.safe-markdown .hljs-selector-tag,.safe-markdown .hljs-literal { color: var(--app-code-keyword); }
 .safe-markdown .hljs-string,.safe-markdown .hljs-attr { color: var(--app-code-string); }
 .safe-markdown .hljs-title,.safe-markdown .hljs-number { color: var(--app-code-title); }

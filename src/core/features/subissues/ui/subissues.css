@@ -4,7 +4,7 @@
 }
 .issue-subissues {
   min-width: 0;
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .issue-subissues > summary {
   display: flex;
@@ -85,7 +85,7 @@
   padding: 0.25rem 0.55rem;
   color: var(--app-ink);
   background: var(--app-field);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .issue-subissues__panel button:disabled {

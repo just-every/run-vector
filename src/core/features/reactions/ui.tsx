@@ -1,3 +1,4 @@
+import { Tooltip } from '../../ui/tooltip';
 import { createContext, useContext, useState, type ReactNode } from 'react';
 import { useApiResource } from '../../app/api-client';
 import { useHydrated } from '../../app/initial-resources';
@@ -34,7 +35,7 @@ export function Reactions({identifier,targetId='',writable=true}: {identifier:st
       const own=people.some(r=>r.own);
       if(!writable&&!people.length)return null;
       return <span className="issue-reaction" key={emoji}>
-        <button type="button" aria-label={`${own?'Remove':'Add'} ${emoji} reaction`} aria-pressed={own} disabled={!writable||!hydrated||busy} onClick={()=>void change(emoji,own)}>{emoji} {people.length||''}</button>
+        <Tooltip label={`${own?'Remove':'Add'} ${emoji} reaction`}><button type="button" aria-label={`${own?'Remove':'Add'} ${emoji} reaction`} aria-pressed={own} disabled={!writable||!hydrated||busy} onClick={()=>void change(emoji,own)}>{emoji} {people.length||''}</button></Tooltip>
         {people.length>0&&<details><summary aria-label={`Who reacted ${emoji}`}>Who</summary><ul>{people.map(person=><li key={person.actorId}>{person.actor}</li>)}</ul></details>}
       </span>;
     })}
