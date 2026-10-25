@@ -6829,11 +6829,11 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-archive.mjs": {
-      "sha256": "a329916204ef4ccc0a9d2e151f2f7a2a31b125c060fa3ebbd79dad9b532d82ea",
+      "sha256": "d2b347319ca01d29c968bb5c98b2ca1db45b4f1c9d2a6049fea4f55560f54ef4",
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
-      "sha256": "032be668eb11cfd08fb304b2079f9f69b15d61824ed12246d62f5daa304d2faa",
+      "sha256": "db9001f4e58121cc6debaa69cb1fe4f26bc1c0d911b09139aa672feaf8dd67af",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
