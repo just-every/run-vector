@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "8f3e04fb75c3a8c8183fe0143eb388da37aff10be13833f69a3684ea28b2a555",
+      "sha256": "fc7d1142bfa04d655379b8a50628c122d0043e66a3a35e78ded61c251ea4fec1",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "adff4e23b9397f2b004bdd400aed3ab6f0852a394af5127ceb6eba59fe7429e8",
+      "sha256": "4a056604fd4fac6828649e8063a679c37a8e2d06675b8657c8b902173953e10e",
       "executable": false
     },
     "DEMO.md": {
@@ -7885,7 +7885,7 @@
       "executable": false
     },
     "tests/worker/slack-unfurl-scenario.ts": {
-      "sha256": "68a0e6d137ed5355f87016e1c452523c1cfcb30973d1774f95fdc1a40f4163c5",
+      "sha256": "b29fb24772f3e02704f796f5d25df8dafd52eead5e8de8aa4fa3331b8aef3931",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {
