@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {confirmLink} from '../outbox-session.mjs';
-import {signIn,openAuthenticatedPage} from '../ui-runtime-auth.mjs';
+import {openAuthenticatedPage} from '../ui-runtime-auth.mjs';
 const require=createRequire(import.meta.url);
 /** The installed app is exported and restored through the real archive HTTP
  * doors into an independent runtime; no browser or credential state is copied. */
@@ -24,14 +24,17 @@ export async function exerciseSlackAppArchive({page,runtime,cookie,width,evidenc
   // Sign in through the target's own door without completing setup: restore
   // admission requires its untouched bootstrap graph.
   const email=target.sql('SELECT email FROM operators ORDER BY created_at LIMIT 1')[0].email;
-  const requested=await target.req('/auth/request',{method:'POST',headers:{Origin:target.base,'Content-Type':'application/json'},body:JSON.stringify({email,returnTo:'/app'})});assert.equal(requested.status,202);
-  const url=target.sql("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox ORDER BY sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
-  const confirmed=await confirmLink(url);assert.equal(confirmed.status,303);let authenticated={cookie:confirmed.headers.get('set-cookie').split(';')[0]};
+  const authenticate=async()=>{
+   const requested=await target.req('/auth/request',{method:'POST',headers:{Origin:target.base,'Content-Type':'application/json'},body:JSON.stringify({email,returnTo:'/app'})});assert.equal(requested.status,202,await requested.clone().text());
+   const url=target.sql("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox ORDER BY sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
+   const confirmed=await confirmLink(url);assert.equal(confirmed.status,303);return {cookie:confirmed.headers.get('set-cookie').split(';')[0]};
+  };
+  let authenticated=await authenticate();
   const targetApi=(path,method='GET',body)=>target.req('/api'+path,{method,headers:{Cookie:authenticated.cookie,Origin:target.base,'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
   const staged=await targetApi('/portability/imports','POST',{confirmed:true,manifest:records[0]});assert.equal(staged.status,201,await staged.clone().text());const job=(await staged.json()).id;
   for(const part of records.filter(row=>row.kind==='part'))assert.equal((await targetApi('/portability/imports/'+job+'/parts/'+part.index,'PUT',part)).status,200);
   const closing=records.at(-1),finalized=await targetApi('/portability/imports/'+job+'/finalize','POST',{contentHash:closing.contentHash,archiveHash:closing.archiveHash});assert.equal(finalized.status,200,await finalized.clone().text());
-  authenticated=await signIn(target);
+  authenticated=await authenticate();
   const app=await targetApi('/settings/integrations/slack/app');assert.equal(app.status,200);assert.equal((await app.json()).app,null);
   const channels=await targetApi('/settings/integrations/channels');assert.equal(channels.status,200);const slack=(await channels.json()).slack;assert.equal(slack.connected,false);assert.equal(slack.needsAttention,true);assert.equal(slack.signingSecret,false);
   assert.equal((await targetApi('/settings/integrations/slack/app/install','POST',{})).status,409);
