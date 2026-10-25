@@ -286,7 +286,7 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
       assert.equal(membership(), "member");
       await openDisclosures(peer);
       assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).getByLabel("Team name", {exact:true}).isDisabled(), true);
-      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).getByLabel("Who manages team settings", {exact:true}).isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).locator('select[name="settings"]').isDisabled(), true);
       assert.equal(await peer.getByRole("form", { name: `Add member to ${team.name}`, exact: true }).count(), 0);
       await peerTeams.getByText("Only this team's owners and Admins change its settings.", { exact: true }).first().waitFor();
     });
