@@ -10,3 +10,6 @@
  .stream-selectable { grid-template-columns: minmax(0, 1fr); }
  .stream-selection { display: none; }
 }
+.stream-row--condensed .stream-row-meta span::after { content: none; }
+.stream-row--condensed .stream-reason-summary { display: inline-flex; align-items: center; gap: .35rem; }
+.stream-row--condensed .stream-row-meta .stream-meta-details { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
