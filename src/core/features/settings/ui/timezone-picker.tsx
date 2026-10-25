@@ -1,4 +1,5 @@
 import { useId, useState } from 'react';
+import './timezone-picker.css';
 
 export const browserTimezone = () => Intl.DateTimeFormat().resolvedOptions().timeZone;
 export function timezoneName(zone: string) {
