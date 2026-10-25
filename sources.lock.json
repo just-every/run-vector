@@ -3381,7 +3381,7 @@
       "executable": false
     },
     "src/core/app/vite-development-path.ts": {
-      "sha256": "eed76889362040336ee1b77e37ab4c53c0b9c4c7d831b30ec0acdb186548130a",
+      "sha256": "41aa68e91c667a5a5221993dc822273cfce9c6f0fb4c8a775d3a29f8e4499f5a",
       "executable": false
     },
     "src/core/app/worker.dev.ts": {
