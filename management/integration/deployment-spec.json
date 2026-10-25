@@ -610,6 +610,12 @@
       "name": "0100_subscription_category_transitions.sql",
       "sha256": "7ae396e0a9e528adf0a9a76e532846be0b105b166a90ef1ed907ccd21e0f5e8c",
       "sql": "-- Forward-only: changing a terminal status identity within its category is\n-- a status change. Completion channels apply only on category transitions.\n-- Existing subscription events and delivery history remain unchanged.\nDROP TRIGGER capture_subscription_event;\nCREATE TRIGGER capture_subscription_event AFTER INSERT ON issue_activity\nWHEN NEW.kind<>'issue.imported'\n AND (NEW.kind='issue.created' OR (json_type(NEW.next_value_json,'$.statusId')='text' AND json_extract(NEW.next_value_json,'$.statusId') IS NOT json_extract(NEW.previous_value_json,'$.statusId')))\n AND NOT EXISTS(SELECT 1 FROM rer_portability_state WHERE applying=1)\n AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)\nBEGIN\n UPDATE subscription_clock SET revision=revision+1 WHERE id=1;\n INSERT INTO subscription_events(event_id,issue_id,revision,kind,created_at)\n SELECT NEW.id,NEW.issue_id,revision,\n CASE WHEN NEW.kind='issue.created' THEN 'status'\n  WHEN (SELECT category FROM workflow_statuses WHERE id=json_extract(NEW.next_value_json,'$.statusId')) IN ('completed','canceled','duplicate')\n   AND (SELECT category FROM workflow_statuses WHERE id=json_extract(NEW.next_value_json,'$.statusId'))\n    IS NOT (SELECT category FROM workflow_statuses WHERE id=json_extract(NEW.previous_value_json,'$.statusId'))\n   THEN (SELECT category FROM workflow_statuses WHERE id=json_extract(NEW.next_value_json,'$.statusId')) ELSE 'status' END,NEW.created_at FROM subscription_clock WHERE id=1;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0101_slack_event_receipts.sql",
+      "sha256": "09a5b234af9726b91efb6de6eead03833853a35377b8d65ba558c148b4c9b8c4",
+      "sql": "-- Durable identifier-only Slack intake receipts. Retain on archive/restore so\n-- a provider retry cannot recreate an issue after credentials are re-entered.\nCREATE TABLE vector_slack_event_receipts (\n workspace_id TEXT NOT NULL,\n event_key TEXT NOT NULL,\n identifier TEXT NOT NULL,\n received_at TEXT NOT NULL,\n PRIMARY KEY(workspace_id,event_key)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
