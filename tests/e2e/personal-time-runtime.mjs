@@ -29,9 +29,8 @@ try {
  for(const width of [1440,390]) {
   await page.setViewportSize({width,height:width===390?844:1000});await page.goto(runtime.base+'/app/settings#personal-time');
   const form=page.getByRole('form',{name:'Your time preferences'});
-  const brisbane=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.timezone==='Australia/Brisbane');
   await form.getByLabel('Personal timezone',{exact:true}).selectOption('Australia/Brisbane');
-  assert.equal((await brisbane).status(),200);
+  await page.waitForFunction(async()=>{const response=await fetch('/api/settings/personal-time');return response.ok&&(await response.json()).timezone==='Australia/Brisbane';},null,{polling:200});
   assert.equal((await(await api.get(runtime.base+'/api/settings/personal-time')).json()).effectiveTimezone,'Australia/Brisbane');
   assert.deepEqual(await persistedInstants(),originalInstants,'changing the display zone preserves reminder and cycle instants');
   const end=width===1440?'16:30':'16:45';
@@ -48,6 +47,7 @@ try {
   await form.getByRole('alert').waitFor();
   assert.equal(await form.getByLabel('Working day starts').inputValue(),'08:45');
   assert.ok(await form.getByLabel('Working day starts').isEnabled());
+  assert.ok(await form.getByLabel('Working day starts').evaluate(field=>field===document.activeElement));
   await context.setOffline(false);
   const retried=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.workingHoursStart==='08:45');
   await form.getByRole('button',{name:'Retry',exact:true}).click();assert.equal((await retried).status(),200);
