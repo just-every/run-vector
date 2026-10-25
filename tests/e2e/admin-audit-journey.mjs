@@ -16,9 +16,9 @@ export async function exerciseAuditView({ page, runtime, capture, clause, eviden
     await panel.getByRole('heading', { name: 'Audit log', exact: true }).waitFor();
     const inspect = roleScreens(evidence);
     await inspect(page, panel, 'workspace-audit');
-    await panel.getByLabel('Person or service', {exact:true}).selectOption(entry.actorRef);
-    await panel.getByRole('combobox', {name:'Activity by',exact:true}).selectOption(entry.actorKind);
-    await panel.getByLabel('Activity', {exact:true}).selectOption(entry.action);
+    await panel.locator('select[name="actor"]').selectOption(entry.actorRef);
+    await panel.locator('select[name="kind"]').selectOption(entry.actorKind);
+    await panel.locator('select[name="action"]').selectOption(entry.action);
     await panel.getByLabel('Item reference', {exact:true}).fill(entry.subjectRef);
     const [from,to]=await page.evaluate(at=>{const stamp=Date.parse(at),local=value=>{const d=new Date(value);const pad=n=>String(n).padStart(2,'0');return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes());};return [local(stamp-60000),local(stamp+60000)];},entry.at);
     await panel.getByLabel('From (your local time)',{exact:true}).fill(from);

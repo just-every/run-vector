@@ -3669,7 +3669,7 @@
       "executable": false
     },
     "src/core/features/cycle-report/burn-up.tsx": {
-      "sha256": "e12b9ac78c6b238fba5b2196299402021b8e84a8e392d1f8bd5ff04f5337f22a",
+      "sha256": "0b46ae5553d2c038ca46f6b8d98222705f163a43087c3fa79359aed410660e15",
       "executable": false
     },
     "src/core/features/cycle-report/facts-sql.ts": {
@@ -5573,7 +5573,7 @@
       "executable": false
     },
     "src/core/features/project-report/burn-up.tsx": {
-      "sha256": "fb5612500715cbdfd8f993973147320208df7223bedaed9669a674d1cb0b0789",
+      "sha256": "5e41eae616cc3acd9e610996cbc9205d1e185559221f43f0028e7d62a805f4ba",
       "executable": false
     },
     "src/core/features/project-report/capture.ts": {
@@ -6565,7 +6565,7 @@
       "executable": false
     },
     "tests/e2e/admin-audit-journey.mjs": {
-      "sha256": "ce021561eb697186399955fc981a722328633eadcd5b4f45e3d56781cbe00ae7",
+      "sha256": "97f1cacd8286710961eb4317b582bbf43870f2f07f438ddf6e8d5b003da675d6",
       "executable": false
     },
     "tests/e2e/admin-cycle-list-journey.mjs": {
@@ -6785,7 +6785,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "bf754970866ac616a791715834aac3f2370ef00a7a2912375deae30576c946c8",
+      "sha256": "82d4cf980ef94a20e58429c24f348c83adcff6d639ab0d5940828c7ad6a74d1b",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -6797,7 +6797,7 @@
       "executable": false
     },
     "tests/e2e/core-stream-controls-journey.mjs": {
-      "sha256": "04e2518b590e3fe8e6d47cb260bb065a56821b52c530812bedbbbde9e8ce58b1",
+      "sha256": "3c28a2cad43087387bfcaf2c8fd12cf72012664821fe54df9a34cae468676f03",
       "executable": false
     },
     "tests/e2e/core-stream-controls-ranking.mjs": {
@@ -6833,7 +6833,7 @@
       "executable": false
     },
     "tests/e2e/cycle-report-journey.mjs": {
-      "sha256": "7d21f05bc8b69353f56ce86fef6ebc03459255be4fcd0f9744154a2376035518",
+      "sha256": "56cf68a601e257e448bd2ab9f6425fb322f40810e4dcdfd6d0e0a6f24d513897",
       "executable": false
     },
     "tests/e2e/cycle-report-runtime.mjs": {
@@ -7081,7 +7081,7 @@
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
-      "sha256": "efc472548938d048936b12cbe1115fcba686bc0452fa5ddd61dfd182437363a2",
+      "sha256": "d3614c7cb3a910a27f1cb91fce62002c6f3ade80631f04ff681a3882d6412e06",
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
