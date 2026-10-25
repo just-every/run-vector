@@ -4137,7 +4137,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "a2eddfb158df29cbc51c520efc7e90d3b48866eb842f7b06447a9fd31fd53939",
+      "sha256": "9bea781860da812059a748576959066130e201e41cfcb586963ff89d48bd2dd2",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
@@ -4153,7 +4153,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "353f74d502f42ca61606b0859ae2c20a712e4f9375d72c11c24e91d9d1deb411",
+      "sha256": "ca1809e012063cc40d0e5efda73c41523bdf764d6d7a71bfa5f5d3aff5a8cd7c",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
@@ -5073,7 +5073,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "9345e680228a86cec5f801dad0f0bfad5085bcf0098d79b2238e3b7e8bce450b",
+      "sha256": "eaa2cce436f80388b65bbb41243106c372b84295f6efe3dc13c0c65b083b9754",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
