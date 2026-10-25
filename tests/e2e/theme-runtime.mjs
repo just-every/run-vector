@@ -98,8 +98,9 @@ try {
   // System follows a live device change without a reload.
   await page.setViewportSize({ width: 1440, height: 1000 });
   await show(page, '/app/settings#appearance');
+  const systemSaved = page.waitForResponse(r => r.url().endsWith('/api/settings/appearance') && r.request().method() === 'PATCH');
   await page.getByRole('radio', { name: /^System/ }).check();
-  await page.getByText('Your theme is saved for every browser you sign in to.').waitFor();
+  assert.equal((await systemSaved).status(), 200);
   await page.evaluate(() => { window.__sameDocument = true; });
   assert.ok(await isDark(page), 'System on a dark device');
   await page.emulateMedia({ colorScheme: 'light' });

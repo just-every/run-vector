@@ -10,7 +10,7 @@ const runtime=createAdminRuntime(1440,[],{port:15972,inspectorPort:15973});
 let browser,page;
 try {
  runtime.initialize();await runtime.start();browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
- const context=await browser.newContext({viewport:{width:1440,height:1000},timezoneId:'Asia/Tokyo',extraHTTPHeaders:{Connection:'close'}});page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
+ const context=await browser.newContext({viewport:{width:1440,height:1000},timezoneId:'Australia/Brisbane',extraHTTPHeaders:{Connection:'close'}});page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
  const api=context.request,headers={Origin:runtime.base};
  const settings=await api.patch(runtime.base+'/api/settings',{headers,data:{timezone:'America/New_York'}});assert.equal(settings.status(),200);
  const state=await(await api.get(runtime.base+'/api/settings/administration')).json(),team=state.teams[0];
@@ -20,13 +20,34 @@ try {
  for(const width of [1440,390]) {
   await page.setViewportSize({width,height:width===390?844:1000});await page.goto(runtime.base+'/app/settings#personal-time');
   const form=page.getByRole('form',{name:'Your time preferences'});
-  await form.getByLabel('Personal IANA timezone').fill('America/Los_Angeles');await form.getByLabel('Working day starts').fill('08:30');await form.getByLabel('Working day ends').fill('16:30');
-  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH');await form.getByRole('button',{name:'Save your time preferences'}).click();assert.equal((await saved).status(),200);
-  await page.getByText('Your time preferences are saved.',{exact:true}).waitFor();await page.getByRole('heading',{name:'Your time and working hours'}).scrollIntoViewIfNeeded();
-  await page.screenshot({path:`${output}/settings-${width}.png`});await form.getByRole('button',{name:'Save your time preferences'}).scrollIntoViewIfNeeded();await page.screenshot({path:`${output}/working-hours-${width}.png`});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.workingHoursEnd==='16:30');
+  await form.getByLabel('Personal timezone',{exact:true}).selectOption('America/Los_Angeles');await form.getByLabel('Working day starts').fill('08:30');await form.getByLabel('Working day ends').fill('16:30');
+  assert.equal((await saved).status(),200);
+  await form.getByRole('status').waitFor();
+  // The existing Settings journey now saves without a button and reads back on reload.
+  await page.reload();await form.getByLabel('Personal timezone',{exact:true}).waitFor();
+  assert.equal(await form.getByLabel('Personal timezone',{exact:true}).inputValue(),'America/Los_Angeles');
+  assert.equal(await form.getByLabel('Working day ends').inputValue(),'16:30');
+  await context.setOffline(true);
+  await form.getByLabel('Working day starts').fill('08:45');
+  await form.getByRole('alert').waitFor();
+  assert.equal(await form.getByLabel('Working day starts').inputValue(),'08:45');
+  assert.ok(await form.getByLabel('Working day starts').isEnabled());
+  await context.setOffline(false);
+  const retried=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.workingHoursStart==='08:45');
+  await form.getByRole('button',{name:'Retry',exact:true}).click();assert.equal((await retried).status(),200);
+  assert.equal((await(await api.get(runtime.base+'/api/settings/personal-time')).json()).workingHoursStart,'08:45');
+  // Leave within the debounce window: the draft survives, and the departure flush commits it.
+  await form.getByLabel('Working day starts').fill('08:30');
+  await page.goto(runtime.base+'/app/issues');
+  await page.goto(runtime.base+'/app/settings#personal-time');
+  await form.getByLabel('Working day starts').waitFor();
+  assert.equal(await form.getByLabel('Working day starts').inputValue(),'08:30');
+  await page.getByRole('heading',{name:'Your time and working hours'}).scrollIntoViewIfNeeded();
+  await page.screenshot({path:`${output}/settings-${width}.png`});await form.getByLabel('Working day ends').scrollIntoViewIfNeeded();await page.screenshot({path:`${output}/working-hours-${width}.png`});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await page.goto(runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:issue.title,exact:true}).waitFor();await page.getByRole('button',{name:'Remind me',exact:true}).click();
-  await page.getByLabel('Remind me at (America/Los_Angeles)').fill(local);const created=page.waitForResponse(r=>r.url().endsWith('/reminders')&&r.request().method()==='POST');await page.getByRole('button',{name:'Set personal reminder',exact:true}).click();assert.equal((await created).status(),200);
-  const reminders=await(await api.get(runtime.base+'/api/issues/'+issue.identifier+'/reminders')).json();assert.ok(reminders.reminders.some(r=>r.remindAt===future.toISOString()),'personal zone controls the instant although browser is Tokyo');
+  await page.getByLabel('Remind me at (Los Angeles time)').fill(local);const created=page.waitForResponse(r=>r.url().endsWith('/reminders')&&r.request().method()==='POST');await page.getByRole('button',{name:'Set personal reminder',exact:true}).click();assert.equal((await created).status(),200);
+  const reminders=await(await api.get(runtime.base+'/api/issues/'+issue.identifier+'/reminders')).json();assert.ok(reminders.reminders.some(r=>r.remindAt===future.toISOString()),'personal zone controls the instant although browser is Brisbane');
   await page.getByText(/Next personal reminder:/).waitFor();await page.locator('.personal-reminders').scrollIntoViewIfNeeded();await page.screenshot({path:`${output}/reminder-${width}.png`});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   // Reload reads the saved clock during SSR; browser timezone must not change it.
   await page.reload();await page.getByText(/Next personal reminder:/).waitFor();assert.ok((await page.locator('.personal-reminders').innerText()).includes('America/Los_Angeles'));

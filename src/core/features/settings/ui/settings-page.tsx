@@ -3,9 +3,10 @@ import { PersonalTimePanel } from './personal-time-panel';
 import { AppearancePanel } from './appearance-panel';
 import "./settings.css";
 import { IntegrationsPanel } from "../../integrations/ui/integrations-panel";
-import { useState, type FormEvent } from "react";
+import { SettingsSaveForm } from "./settings-save-form";
+import { TimezonePicker } from "./timezone-picker";
 import { Link } from "@tanstack/react-router";
-import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
+import { ApiError, useApiResource } from "../../../app/api-client";
 import { settingsSchema } from "../schema";
 import { administrationSchema } from "../../administration/schema";
 import { TeamsPanel } from "./teams-panel";
@@ -25,10 +26,6 @@ export function SettingsPage() {
     administrationSchema,
   );
   const resource = useApiResource("/api/settings", settingsSchema, 5000);
-  const [reminderTime, setReminderTime] = useState<string | null>(null);
-  const [timezone, setTimezone] = useState<string | null>(null);
-  const [pending, setPending] = useState(false);
-  const [message, setMessage] = useState("");
   // A Guest opens Account only; the member directory answers 403 (ROLE-008 row "Open Settings pages").
   const accountOnly = resource.error instanceof ApiError && resource.error.status === 403;
   const denied =
@@ -37,39 +34,6 @@ export function SettingsPage() {
   // Owners and Admins open every Settings page; a Member opens Account, the
   // member directory and their personal integrations and tokens.
   const workspace = resource.data ? openSettingsPages[resource.data.role] === "all" : false;
-  const fail = (error: unknown) => {
-    setMessage(
-      error instanceof Error ? error.message : "The change could not be saved.",
-    );
-    if (error instanceof ApiError && [401, 403, 404].includes(error.status))
-      resource.reload();
-  };
-  const saveTimezone = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!resource.data) return;
-    setPending(true);
-    setMessage("");
-    try {
-      const updated = await fetchJson("/api/settings", settingsSchema, {
-        method: "PATCH",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          timezone: timezone ?? resource.data.workspace.timezone,
-          reminderTime: reminderTime ?? resource.data.workspace.reminderTime,
-        }),
-      });
-      clock.publish({...updated.personalTime, workspaceTimezone:updated.workspace.timezone, reminderTime:updated.workspace.reminderTime});
-      setTimezone(updated.workspace.timezone);
-      setReminderTime(updated.workspace.reminderTime);
-      setMessage("Workspace time saved.");
-      resource.reload();
-      administration.reload();
-    } catch (error) {
-      fail(error);
-    } finally {
-      setPending(false);
-    }
-  };
   return (
     <main className="settings-page">
       <header>
@@ -110,7 +74,6 @@ export function SettingsPage() {
           )}
         </p>
       )}
-      {message && <p role="status">{message}</p>}
       {accountOnly && (
         <>
           <AppearancePanel />
@@ -128,20 +91,13 @@ export function SettingsPage() {
               Workspace calendar days and cycle boundaries use this timezone. Existing
               timestamps are retained.
             </p>
-            <form onSubmit={saveTimezone}>
-              <label htmlFor="workspace-timezone">IANA timezone</label>
-              <input
-                id="workspace-timezone"
-                required
-                maxLength={100}
-                value={timezone ?? resource.data.workspace.timezone}
-                disabled={pending}
-                onChange={(event) => setTimezone(event.target.value)}
-                aria-describedby="timezone-help"
-              />
-              <p id="timezone-help">
-                Timezone, for example Australia/Brisbane or Europe/London.
-              </p>
+            <SettingsSaveForm path="/api/settings" method="PATCH" schema={settingsSchema} aria-label="Workspace time"
+              read={fields => ({timezone:fields.get('timezone'), reminderTime:fields.get('reminderTime')})}
+              onSaved={updated => {
+                clock.publish({...updated.personalTime, workspaceTimezone:updated.workspace.timezone, reminderTime:updated.workspace.reminderTime,workspaceTimezoneDefault:false});
+                resource.reload(); administration.reload();
+              }}>
+              <TimezonePicker id="workspace-timezone" label="Workspace timezone" value={resource.data.workspace.timezone} />
               <label htmlFor="workspace-reminder-time">
                 Daily due reminder time
               </label>
@@ -149,19 +105,15 @@ export function SettingsPage() {
                 id="workspace-reminder-time"
                 type="time"
                 required
-                value={reminderTime ?? resource.data.workspace.reminderTime}
-                disabled={pending}
-                onChange={(event) => setReminderTime(event.target.value)}
+                name="reminderTime"
+                defaultValue={resource.data.workspace.reminderTime}
                 aria-describedby="reminder-time-help"
               />
               <p id="reminder-time-help">
                 Inbox reminders for assigned work use this time in each assignee’s timezone.
                 Overdue work is reminded once when the next day begins.
               </p>
-              <button disabled={pending || denied} type="submit">
-                Save workspace time
-              </button>
-            </form>
+            </SettingsSaveForm>
           </section>}
           <MembersPanel
             data={resource.data}

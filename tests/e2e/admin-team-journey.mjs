@@ -339,9 +339,8 @@ export async function teamCreationPermission({page,peer,runtime,clause,evidence}
   const set=async value=>{
     await navigate(page,base+"/app/settings");
     const form=page.getByRole("form",{name:"Team creation permission",exact:true});
-    await form.getByLabel("Who may create teams",{exact:true}).selectOption(value?"members":"admins");
     const receipt=page.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/teams/creation"&&r.request().method()==="PUT");
-    await form.getByRole("button",{name:"Save team creation permission",exact:true}).click();
+    await form.getByLabel("Who may create teams",{exact:true}).selectOption(value?"members":"admins");
     assert.equal((await receipt).status(),200);
   };
   const before=sql("SELECT count(*) n FROM audit_records WHERE action='workspace.team_creation_changed'")[0].n;

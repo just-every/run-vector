@@ -9,7 +9,7 @@ import type { AppEnvironment } from "../../app/bindings";
 import { readRequestJson } from "../../app/input";
 import { clearSessionCookie } from "../auth/service";
 import { timezoneSchema } from "../bootstrap/config";
-import { readSettings, SettingsError, updateWorkspaceTime } from "./repository";
+import { readSettings, SettingsError, updateWorkspaceTime, initializeWorkspaceTimezone } from "./repository";
 import { reminderTimeSchema } from "./schema";
 import { removeOperator } from "./removal";
 import { changeRole, guestTeams } from "./roles";
@@ -53,7 +53,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
     }
   });
   app.patch("/settings/personal-time", async (c) => {
-    const parsed = personalTimeInputSchema.safeParse(
+    const parsed = z.union([personalTimeInputSchema, z.object({initializeFromBrowser:timezoneSchema}).strict()]).safeParse(
       await readRequestJson(c.req.raw),
     );
     if (!parsed.success)
@@ -62,7 +62,8 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         400,
       );
     try {
-      await updatePersonalTime(c.env.DB, c.get("operatorId"), parsed.data);
+      if ("initializeFromBrowser" in parsed.data) await initializeWorkspaceTimezone(c.env.DB, c.get("operatorId"), parsed.data.initializeFromBrowser);
+      else await updatePersonalTime(c.env.DB, c.get("operatorId"), parsed.data);
       // Every role saves its own time; the answer is that time, never the directory.
       return c.json(await readPersonalTime(c.env.DB, c.get("operatorId")));
     } catch (error) {

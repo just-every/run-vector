@@ -167,9 +167,8 @@ export async function memberLabelCreation({page, peer, runtime, clause, evidence
   const permission=async (membersMayCreate) => {
     await navigate(page,base+"/app/settings");
     const form=page.getByRole("form",{name:"Label creation permission",exact:true});
-    await form.getByLabel("Who may create labels",{exact:true}).selectOption(membersMayCreate?"members":"admins");
     const receipt=page.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/labels/creation"&&r.request().method()==="PUT");
-    await form.getByRole("button",{name:"Save label permission",exact:true}).click();
+    await form.getByLabel("Who may create labels",{exact:true}).selectOption(membersMayCreate?"members":"admins");
     assert.equal((await receipt).status(),200);
   };
   const open=async()=>{

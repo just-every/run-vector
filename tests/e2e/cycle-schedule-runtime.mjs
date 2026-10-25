@@ -75,14 +75,9 @@ try {
       (r) =>
         r.url().endsWith("/cycle-schedule") && r.request().method() === "PUT",
     );
-    await form
-      .getByRole("button", { name: "Save cycle schedule", exact: true })
-      .click();
     assert.equal((await savedResponse).status(), 200);
     await savedSchedule({ weeks: "2", cooldown: "1", upcoming: "3" });
-    await form
-      .getByRole("button", { name: "Save cycle schedule", exact: true })
-      .waitFor({ state: "visible" });
+    await form.getByRole('status').waitFor();
     await page.waitForFunction(
       () => !document.querySelector('input[name="weeks"]')?.disabled,
     );
@@ -108,9 +103,6 @@ try {
       (r) =>
         r.url().endsWith("/cycle-schedule") && r.request().method() === "PUT",
     );
-    await form
-      .getByRole("button", { name: "Save cycle schedule", exact: true })
-      .click();
     assert.equal((await response).status(), 200);
     await savedSchedule({ weeks: "1", cooldown: "0" });
     await page.waitForFunction(
