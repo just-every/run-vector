@@ -17,11 +17,13 @@ export function PersonalTimePanel() {
         zone.value = browserTimezone();
         return true;
       }}>
+      <fieldset>
       <TimezonePicker label="Personal timezone" value={clock.timezone ?? ''} follow={clock.workspaceTimezone} />
       <div className="personal-time-hours"><label>Working day starts<input type="time" name="workingHoursStart" required defaultValue={clock.workingHoursStart}/></label>
       <label>Working day ends<input type="time" name="workingHoursEnd" required defaultValue={clock.workingHoursEnd}/></label></div>
       <fieldset className="personal-time-days"><legend>Working days</legend>{days.map((day,index)=><label key={day}><input type="checkbox" name="workingDays" value={index+1} defaultChecked={clock.workingDays.includes(index+1)}/>{day}</label>)}</fieldset>
       <p>Email digests follow your saved timezone, working days and working hours. Due reminders keep the reminder time above. Push quiet hours are not available yet.</p>
+      </fieldset>
     </SettingsSaveForm>
   </section>;
 }
