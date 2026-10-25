@@ -6,7 +6,7 @@ import './documents.css';
 const receipt=z.object({specification});
 export function IssueSpecification({identifier,writable}:{identifier:string;writable:boolean}){
  const id=useId();
- const path='/api/issues/'+identifier+'/specification',data=useApiResource(path,receipt),documents=useApiResource('/api/documents',documentList);
+ const path='/api/issues/'+identifier+'/specification',data=useApiResource(path,receipt,undefined,{abortPendingOnDispose:false}),documents=useApiResource('/api/documents',documentList,undefined,{abortPendingOnDispose:false});
  const [selected,setSelected]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState('');
  useEffect(()=>{if(data.data)setSelected(data.data.specification?.id??'');},[data.data]);
  async function save(){setBusy(true);setError('');try{const value=await fetchJson(path,receipt,{method:selected?'PUT':'DELETE',...(selected?{headers:{'Content-Type':'application/json'},body:JSON.stringify({documentId:selected})}:{})});data.publishReceipt(()=>value);data.refreshAfterMutation();}catch(cause){setError(cause instanceof Error?cause.message:'The specification could not be changed.');}finally{setBusy(false);}}

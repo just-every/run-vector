@@ -8,12 +8,12 @@ import {DocumentForm,type Document} from './form';
 import {documentWritable} from './list';
 import './documents.css';
 export function DocumentPage({documentId}:{documentId:string}){
- const data=useApiResource('/api/documents/'+documentId,documentDetail);
+ const data=useApiResource('/api/documents/'+documentId,documentDetail,undefined,{abortPendingOnDispose:false});
  if(!data.data)return <main className="document-page">{data.error?<p role="alert">{data.error.message}</p>:<p role="status">Loading document…</p>}</main>;
  return <DocumentContent document={data.data} onSaved={doc=>{data.publishReceipt(()=>doc);data.refreshAfterMutation();}}/>;
 }
 function DocumentContent({document,onSaved}:{document:Document;onSaved:(value:Document)=>void}){
- const id=useId(),options=useApiResource('/api/metadata',administrationSchema),parent=useApiResource('/api/documents?parentKind='+document.parentKind+'&parentId='+document.parentId,documentList),history=useApiResource('/api/documents/'+document.id+'/revisions',revisionList);
+ const id=useId(),options=useApiResource('/api/metadata',administrationSchema,undefined,{abortPendingOnDispose:false}),parent=useApiResource('/api/documents?parentKind='+document.parentKind+'&parentId='+document.parentId,documentList,undefined,{abortPendingOnDispose:false}),history=useApiResource('/api/documents/'+document.id+'/revisions',revisionList,undefined,{abortPendingOnDispose:false});
  const [comment,setComment]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(''),[older,setOlder]=useState<NonNullable<typeof history.data>['revisions']>([]),[cursor,setCursor]=useState<number|null|undefined>(undefined);
  const writable=documentWritable(options.data?.viewer.role,document.parentKind);
  useEffect(()=>{setOlder([]);setCursor(undefined);history.reload();},[document.version]);
