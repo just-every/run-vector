@@ -4609,7 +4609,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "5663bb8bf4746d476dbf220064af4fd72ac4d21780b488f24ea19c9cfeebad37",
+      "sha256": "56531de1617fe268fb580b827ef0077cabdc5c4daa8d7af75626f499c8868b8b",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -5821,7 +5821,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/appearance-panel.tsx": {
-      "sha256": "751a3c11689328c1734ab2e1427c677f164fe8ab0955fb753d4eebc9e52b97a1",
+      "sha256": "bf5a7d083668465e5c442fd748798e0b62433d874fd10677955f582945c34355",
       "executable": false
     },
     "src/core/features/settings/ui/appearance.css": {
@@ -5861,7 +5861,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
-      "sha256": "8a1ac8e22ae8f2e600fbd0ded95abc69068ed7516870515ed8cca6157c7bfb17",
+      "sha256": "d6a4557cd009453b775c7bffc667ab71504dfbdce72aa2a71c9fff8044407647",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
@@ -6925,7 +6925,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-runtime.mjs": {
-      "sha256": "21cce540ecb4f516ace2fb10ae65e9452996c9a0e828b02728df7dce5439f93c",
+      "sha256": "a2eada6c2fa4935dca9191b5387339b590cd74aa956bb8adda7ccccd3293a391",
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {

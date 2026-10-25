@@ -25,13 +25,13 @@ function restore(form: HTMLFormElement, draft: Draft) {
 
 type Props<S extends z.ZodType> = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange'> & {
   path: string; method?: string; schema: S; read: (fields: FormData) => unknown;
-  onSaved?: (receipt: z.output<S>) => void; confirm?: string; identity?: string; initialize?: (form: HTMLFormElement) => boolean;
+  onSaved?: (receipt: z.output<S>) => void; confirm?: string; identity?: string; initialize?: (form: HTMLFormElement) => boolean; onRestored?: (fields: FormData) => void;
 };
 
 /** Keep the actual field draft until the server acknowledges that revision.
  * It is stored synchronously on edit, so navigation and even an offline tab
  * close cannot discard it. Only non-secret settings belong in this form. */
-export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', schema, read, onSaved, confirm, identity, initialize, children, ...props }: Props<S>) {
+export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', schema, read, onSaved, confirm, identity, initialize, onRestored, children, ...props }: Props<S>) {
   const { operator } = useRouteContext({ from: '/app' });
   const key = `vector:settings-draft:${operator.id}:${identity ?? path}`;
   const form = useRef<HTMLFormElement>(null), draft = useRef<Draft | null>(null);
@@ -87,7 +87,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     mounted.current = true;
     try {
       const saved = readDraft(key);
-      if (saved && form.current) { draft.current = saved; restore(form.current, saved); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
+      if (saved && form.current) { draft.current = saved; restore(form.current, saved); onRestored?.(new FormData(form.current)); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
       else if (form.current && initialize?.(form.current)) edit();
     } catch { /* An unreadable device draft cannot replace current server values. */ }
     const leave = () => { if (!confirm) void flush(); };
