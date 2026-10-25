@@ -625,7 +625,9 @@
     gap: 0.15rem;
   }
   .issue-inspector--intake {
-    padding-bottom: calc(var(--decision-sheet-height, 12rem) + 1rem);
+    /* Compacting the fixed panel must not shrink the document under a hovered control. */
+    --decision-sheet-space: min(22rem, 48svh);
+    padding-bottom: calc(var(--decision-sheet-space) + 1rem);
   }
   .issue-inspector--intake > .decision-panel {
     position: fixed;
@@ -633,7 +635,7 @@
     left: 0.4rem;
     right: 0.4rem;
     bottom: var(--mobile-navigation-height);
-    max-height: min(22rem, 48svh);
+    max-height: var(--decision-sheet-space);
     overflow: hidden;
     display: flex;
     flex-direction: column;
