@@ -2,17 +2,20 @@ import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
 import type {IntegrationOwner} from '../authority';
 import {managed} from './install';
+import {credentialProblem} from '../channels/settings';
 import {IntegrationError} from '../errors';
 import {auditStatement} from '../../audit/producer';
 export const memberMapping=z.object({operatorId:z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/),slackTeamId:z.string().regex(/^[TE][A-Z0-9]{2,30}$/),slackUserId:z.string().regex(/^[UW][A-Z0-9]{2,30}$/)}).strict();
 export async function readMembers(env:WorkerBindings,owner:IntegrationOwner){
- const [members,mappings]=await managed(env,owner).batch([
+ const [members,installation,mappings]=await managed(env,owner).batch([
   {sql:"SELECT o.id,o.name FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE o.workspace_id=? AND o.removed_at IS NULL AND (o.role IN ('member','guest') OR o.id=?) ORDER BY o.name,o.id",params:[owner.workspace,owner.id]},
+  {sql:'SELECT enabled FROM vector_slack_installations WHERE workspace_id=?',params:[owner.workspace]},
   {sql:'SELECT l.operator_id operatorId,o.name,l.slack_team_id slackTeamId,l.slack_user_id slackUserId FROM vector_slack_member_links l JOIN operators o ON o.id=l.operator_id WHERE l.workspace_id=? ORDER BY o.name,o.id',params:[owner.workspace]},
  ]);
- return {members,mappings};
+ return {members,mappings,connected:Boolean(installation[0]?.enabled)&&!await credentialProblem(env,'slack:'+owner.workspace)};
 }
 export async function mapMember(env:WorkerBindings,owner:IntegrationOwner,input:z.infer<typeof memberMapping>){
+ if(!await env.DB.prepare('SELECT enabled FROM vector_slack_installations WHERE workspace_id=?').bind(owner.workspace).first<number>('enabled')||await credentialProblem(env,'slack:'+owner.workspace))throw new IntegrationError(409,'slack_needs_attention','Install Slack before mapping members.');
  const valid="EXISTS(SELECT 1 FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE o.id=? AND o.workspace_id=? AND o.removed_at IS NULL AND (o.role IN ('member','guest') OR o.id=?))";
  const params=[input.operatorId,owner.workspace,owner.id];
  if(!await env.DB.prepare('SELECT '+valid+' AS valid').bind(...params).first<number>('valid'))throw new IntegrationError(403,'slack_mapping_target_forbidden','Map an active Member or Guest, or your own account.');

@@ -45,6 +45,7 @@ export async function slackAppInstall(){
   const member=await invite('synthetic-vector-2004@vector.test',f.cookie),admin=await invite('synthetic-vector-2005@vector.test',f.cookie,'admin');
   for(const [path,method] of [['/slack/app','GET'],['/slack/app','POST'],['/slack/app/create','POST'],['/slack/app/install','POST']])expect((await request('/api/settings/integrations'+path,method,method==='GET'?undefined:{},member)).status).toBe(403);
   expect(calls).toHaveLength(0);
+  await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:f.owner,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}),409);
   const preview=await read(await f.call('/settings/integrations/slack/app'));
   expect(JSON.parse(new URL(preview.createUrl).searchParams.get('manifest_json')!)).toEqual(preview.manifest);
   manifestForInstallation(JSON.parse(new URL(preview.createUrl).searchParams.get('manifest_json')!));

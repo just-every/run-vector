@@ -4513,7 +4513,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/members.ts": {
-      "sha256": "6fb57737edfd56c8c2c3bfd241e55b65c7e87943f6dd52ae7a70cd4f00350d5e",
+      "sha256": "f5829aaab79b82f07cfb3d0752266ac33dd2dc91e1e8abfc73bb34c1304b1414",
       "executable": false
     },
     "src/core/features/integrations/slack-app/retire.ts": {
@@ -4665,7 +4665,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/slack-member-mappings.tsx": {
-      "sha256": "7b11055ca375380dd290e5ef558b15e9ce57d241e2c6178a455c935fabc6eca4",
+      "sha256": "21373e31ce8dc5acc3af43eb98a3b53fb173ea67e5372921be582434a1f8e62d",
       "executable": false
     },
     "src/core/features/integrations/ui/source-sender.ts": {
@@ -6833,7 +6833,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
-      "sha256": "db9001f4e58121cc6debaa69cb1fe4f26bc1c0d911b09139aa672feaf8dd67af",
+      "sha256": "14091f211a778986d25cb959f97dadb7a754da1cfc4a835f1c6c34a89210981d",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
@@ -7757,7 +7757,7 @@
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "b9cec1cd7367c4b1b82f5db17cb60ced20e0a676ca2fe4eb8caf3c96bd327deb",
+      "sha256": "6cf739173b91032db6322977030f38362aa008430cff423bd3c0ba6e6b9a1a57",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {

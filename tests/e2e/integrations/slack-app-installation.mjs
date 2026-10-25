@@ -105,6 +105,7 @@ export async function exerciseSlackAppInstallation({page,runtime,cookie,team,wid
   const oauthBefore=(await calls()).filter(row=>row.method==='oauth.v2.access').length;await install();assert.equal((await calls()).filter(row=>row.method==='oauth.v2.access').length,oauthBefore+1);
   await exerciseSlackAppArchive({page,runtime,cookie,width,evidence,fixture});await remove();
   // A fresh installation is then retired by a signed provider lifecycle event.
+  await panel.getByText('Use Slack’s prefilled page',{exact:true}).click();
   for(const [label,value] of [['App ID',fixture.appId],['App client ID',fixture.clientId],['App client secret',fixture.clientSecret],['App signing secret',fixture.signingSecret]])await manual.getByLabel(label,{exact:true}).fill(value);
   await receive('/slack/app',()=>manual.getByRole('button',{name:'Save Slack app credentials',exact:true}).click());await install();
   const lifecycle=JSON.stringify({type:'event_callback',event_id:'synthetic-vector-33030-'+width,event:{type:width===1440?'app_uninstalled':'tokens_revoked'}}),timestamp=String(Math.floor(Date.now()/1000)),beforeUninstall=(await calls()).length;
