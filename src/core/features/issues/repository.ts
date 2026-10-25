@@ -39,6 +39,7 @@ type CreateIssueRecordInput = {
   actorOperatorId: string
   input: CreateIssueInput
   now: Date
+  commitStatements?: (db: D1Database, identifier: string) => D1PreparedStatement[]
 }
 
 type IntakeDecisionRecordInput = {
@@ -133,7 +134,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
     [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
-    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event)]) } catch (error) { return creationError(binding, team.id, error) }
+    }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...(request.commitStatements?.(binding,identifier) ?? [])]) } catch (error) { return creationError(binding, team.id, error) }
   return { identifier }
 }
 

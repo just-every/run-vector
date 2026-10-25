@@ -1,3 +1,4 @@
+import {slackEventIntake,slackIntakeFixture} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
 import {expect,vi} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
@@ -20,7 +21,7 @@ export async function slackAppInstall(){
  const edge=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{
   const url=new URL(String(input));expect(url.origin).toBe('https://slack.com');expect(init?.redirect).toBe('manual');
   const method=url.pathname.slice(5),form=new Headers(init?.headers).get('content-type')?.startsWith('application/x-www-form-urlencoded');
-  const body=form?Object.fromEntries(new URLSearchParams(String(init?.body))):JSON.parse(String(init?.body??'{}'));calls.push({method,body});
+  const body=init?.method==='GET'?Object.fromEntries(url.searchParams):form?Object.fromEntries(new URLSearchParams(String(init?.body))):JSON.parse(String(init?.body??'{}'));calls.push({method,body});
   if(method==='apps.manifest.create'){
    expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+configToken);
    if(denied)return Response.json({ok:false,error:'invalid_auth'});
@@ -30,6 +31,8 @@ export async function slackAppInstall(){
   }
   if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:grant==='user'?'user':'bot',app_id:grant==='wrong-app'?'synthetic-vector-2099':'synthetic-vector-2000',scope:grant==='missing-scope'?'chat:write':'chat:write,channels:manage,channels:read,im:write,users:read.email,app_mentions:read,channels:history,commands,links:read,links:write',access_token:botToken});}
   if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002'});}
+  if(method==='users.lookupByEmail')return Response.json({ok:true,user:{id:slackIntakeFixture.user,team_id:slackIntakeFixture.team,real_name:'Synthetic member'}});
+  if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'synthetic-vector-33001',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});
   if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
   throw Error('Unexpected Slack installation edge '+method);
  });
@@ -81,6 +84,7 @@ export async function slackAppInstall(){
   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
   const manualState=await begin();expect((await callback(manualState)).status).toBe(303);
   expect((await callback(manualState)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(6);
+  await slackEventIntake(f,secret);
   await begin();await read(await f.call('/settings/integrations/slack','DELETE'));
   expect((await read(await f.call('/settings/integrations/slack/app'))).app).toBeNull();
   expect(await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").first<number>('n')).toBe(0);

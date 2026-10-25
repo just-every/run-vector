@@ -1911,5 +1911,11 @@
     "delivery_id",
     "outcome",
     "created_at"
+  ],
+  "vector_slack_event_receipts": [
+    "workspace_id",
+    "event_key",
+    "identifier",
+    "received_at"
   ]
 }

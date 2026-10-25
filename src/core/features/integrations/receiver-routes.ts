@@ -1,3 +1,4 @@
+import {receiveSlackEvent} from './slack-app/events';
 import {completeInstall} from './slack-app/install';
 import {receiveProviderEvents} from '../email-intake/provider-events';
 import { Hono } from 'hono';
@@ -14,6 +15,7 @@ export function createIntegrationReceivers(){
  app.post('/sources/:id/receive/:token',async c=>c.json(await receiveSourceWebhook(c.env,c.req.raw,c.req.param('id'),c.req.param('token')),200,{'Cache-Control':'no-store'}));
  app.post('/github/:id',async c=>c.json(await receiveGithub(c.env,c.req.raw,c.req.param('id'))));
  app.get('/slack/oauth/callback',async c=>{await completeInstall(c.env,c.req.raw);c.header('Referrer-Policy','no-referrer');c.header('Cache-Control','no-store');return c.redirect('/app/settings#integrations',303);});
+ app.post('/slack/events',async c=>c.json(await receiveSlackEvent(c.env,c.req.raw),200,{'Cache-Control':'no-store'}));
  app.post('/slack/interactive',async c=>{await receiveSlackAction(c.env,c.req.raw,work=>c.executionCtx.waitUntil(work));return c.body(null,200,{'Cache-Control':'no-store'});});
  app.post('/sendgrid/events/:teamId',c=>receiveProviderEvents(c.env,c.req.raw,c.req.param('teamId')));
  return app;
