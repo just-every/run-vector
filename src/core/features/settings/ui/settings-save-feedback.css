@@ -17,6 +17,7 @@
 .personal-time-days .settings-field-label { padding-inline-end: 0; }
 .personal-time-days .settings-field-status { position: static; margin-inline-start: .5rem; }
 .appearance-panel .settings-save-field { flex: 1 1 12rem; width: auto; }
+.appearance-panel .settings-save-field > label { height: 100%; box-sizing: border-box; }
 .appearance-panel .settings-field-status { top: .75rem; inset-inline-end: .9rem; }
 .settings-page .settings-field-error { margin: 0; }
 .settings-save-announcement {

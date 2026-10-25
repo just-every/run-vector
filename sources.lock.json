@@ -5861,7 +5861,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-feedback.css": {
-      "sha256": "56a77513b44422e9a7839bd6c2470c756ac4293ff386328693e895c171c571fc",
+      "sha256": "4868e180abe8afb108f62383793f6a40b8c7304c9d2efa3b3f89c52695832afd",
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-feedback.tsx": {

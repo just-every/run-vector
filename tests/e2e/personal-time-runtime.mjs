@@ -10,7 +10,7 @@ const runtime=createAdminRuntime(1440,[],{port:15972,inspectorPort:15973});
 let browser,page;
 try {
  runtime.initialize();await runtime.start();browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
- const context=await browser.newContext({viewport:{width:1440,height:1000},timezoneId:'Australia/Brisbane',extraHTTPHeaders:{Connection:'close'}});page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
+ const context=await browser.newContext({viewport:{width:1440,height:900},timezoneId:'Australia/Brisbane',extraHTTPHeaders:{Connection:'close'}});page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
  const api=context.request,headers={Origin:runtime.base};
  const settings=await api.patch(runtime.base+'/api/settings',{headers,data:{timezone:'America/New_York'}});assert.equal(settings.status(),200);
  const state=await(await api.get(runtime.base+'/api/settings/administration')).json(),team=state.teams[0];
@@ -27,7 +27,7 @@ try {
  const originalInstants=await persistedInstants();
  const future=new Date(Date.now()+3*86400000);future.setUTCHours(18,30,0,0);const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(future).map(p=>[p.type,p.value]));const local=`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
  for(const width of [1440,390]) {
-  await page.setViewportSize({width,height:width===390?844:1000});await page.goto(runtime.base+'/app/settings#personal-time');
+  await page.setViewportSize({width,height:width===390?844:900});await page.goto(runtime.base+'/app/settings#personal-time');
   const form=page.getByRole('form',{name:'Your time preferences'});
   await form.getByLabel('Personal timezone',{exact:true}).selectOption('Australia/Brisbane');
   await poll(async()=>(await api.get(runtime.base+'/api/settings/personal-time')).json(),clock=>clock.timezone==='Australia/Brisbane','personal timezone commits before read-back');
