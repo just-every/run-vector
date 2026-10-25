@@ -1,3 +1,4 @@
+import '../../documents/ui/documents.css';
 import {TeamJoinRules} from "./team-join-rules";
 import {TeamMetadata} from './team-metadata';
 import {TeamPrivacy} from './team-privacy';
@@ -175,6 +176,7 @@ function TeamEditor({
       {(data.viewer.role === 'owner' || data.viewer.role === 'admin') && <TeamPrivacy team={team} onChanged={onChanged}/>}
       {!team.canRead && data.viewer.role==='admin' && <TeamMetadata data={data} team={team}/>}
       {team.canRead && <>
+      <p><a className="document-team-link" href={'/app/teams/'+team.id}>Team documents</a></p>
       {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}
       {access.settings && !access.archive && <p>Only this team&apos;s owners and Admins archive or unarchive it.</p>}
       <form aria-label={`Edit ${team.name}`} onSubmit={save}>

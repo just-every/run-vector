@@ -32,7 +32,7 @@ export async function selectedStreamResources(db: D1Database, snapshot: Workspac
 
   const detail = buildIssueDetail(snapshot, identifier, new Date())
   if (!detail) return null
-  const [metadata, actors, parents, duplicates, provenance, related, comments, files, links, subscription, github, admission] = await db.batch([
+  const [metadata, actors, parents, duplicates, provenance, related, specification, comments, files, links, subscription, github, admission] = await db.batch([
     ...issueDetailReadStatements(db, issue.id),
     ...discussionReadStatements(db, issue.id, operator.id),
     subscriptionStatement(db, issue.id, operator.id),
@@ -51,7 +51,7 @@ export async function selectedStreamResources(db: D1Database, snapshot: Workspac
   }
   const base = '/api/issues/' + encodeURIComponent(identifier)
   return {
-    [base]: enrichIssueDetail(detail, [metadata, actors, parents, duplicates, provenance, related]),
+    [base]: enrichIssueDetail(detail, [metadata, actors, parents, duplicates, provenance, related, specification]),
     [base + '/discussion']: discussionProjection([comments, files, links]),
     [base + '/subscription']: subscriptionFromRow(subscription.results[0] as SubscriptionRow),
     [base + '/github']: githubIssueFromRows(github.results),

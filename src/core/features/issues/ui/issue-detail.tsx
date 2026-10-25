@@ -1,3 +1,5 @@
+import {DocumentsSection} from '../../documents/ui/list';
+import {IssueSpecification,documentIssueDetailSchema,type DocumentIssueDetailData} from '../../documents/ui/specification';
 import { TooltipScope } from '../../../ui/tooltip';
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
@@ -29,7 +31,7 @@ import { optionsSchema, type StreamOptions } from "../../streams/ui/data";
 import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
 import { activityChanges } from "./activity-changes";
-import { issueDetailSchema, type IssueDetailData } from "./data";
+import { type IssueDetailData } from "./data";
 import { useViewerTime } from "../../../app/viewer-time";
 
 type IssueDetailProps = {
@@ -43,10 +45,10 @@ export function IssueDetail({
   onBack,
   onChanged,
 }: IssueDetailProps) {
-  const detail = useApiResource(`/api/issues/${identifier}`, issueDetailSchema, undefined, { abortPendingOnDispose: false });
+  const detail = useApiResource(`/api/issues/${identifier}`, documentIssueDetailSchema, undefined, { abortPendingOnDispose: false });
   const options = useApiResource("/api/options", optionsSchema);
   const navigate=useNavigate();
-  const [committed,setCommitted]=useState<IssueDetailData|null>(null);
+  const [committed,setCommitted]=useState<DocumentIssueDetailData|null>(null);
   const currentIdentifier = useRef(identifier);
   currentIdentifier.current = identifier;
   useEffect(() => {
@@ -98,15 +100,17 @@ export function IssueDetail({
         )}
       </div>
     );
+  const currentSpecification=detail.data.specification;
   const refresh = (receipt?: IssueDetailData) => {
     if (receipt) {
       if (receipt.identifier !== currentIdentifier.current) return;
-      // Share the committed version while the admitted detail read drains.
+      const received={...receipt,specification:currentSpecification};
+      // Issue field receipts retain the known specification while the read drains.
       setCommitted((current) =>
         current?.identifier === receipt.identifier &&
         current.version > receipt.version
           ? current
-          : receipt,
+          : received,
       );
     }
     detail.refreshAfterMutation();
@@ -336,7 +340,7 @@ function IssueInspector({
           onRefresh={onRefresh}
         />}
         {writable && <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>}
-        <GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
+        <IssueSpecification scope={options?{workspaceId:options.workspace.id,operatorId:options.operator.id}:null} key={issue.identifier} identifier={issue.identifier} writable={writable} current={documentIssueDetailSchema.parse(issue).specification}/><DocumentsSection inspector parentKind="issue" parentId={issue.id}/><GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
           key={issue.identifier + ":discussion"}
           identifier={issue.identifier}
           onRefresh={onRefresh}
