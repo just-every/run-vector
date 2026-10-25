@@ -62,7 +62,7 @@ export async function viewerVisibilityJourney(w:Workspace){
  const workflow=workflowState.teams.find((team:any)=>team.id===w.team.id).statuses;
  const workflowStatus=workflow.find((status:any)=>status.name==='synthetic-vector-2029');
  const ownCommentVersion=(await json(await owner.api('/comments/'+ownComment.id))).version;
- const destination=await json(await owner.call('/settings/integrations/destinations','POST',{name:'synthetic-vector-2035',url:'https://synthetic-vector-2035.example.test/events'}),201);
+ const destination=await json(await owner.call('/settings/integrations/destinations','POST',{name:'synthetic-vector-2035',url:'https://synthetic-vector-2035.example.com/events'}),201);
  const github=await json(await owner.call('/settings/integrations/github','POST',{name:'synthetic-vector-2036',repository:'synthetic-vector-2036/synthetic-vector-2037'}),201);
  const edge=channelEdge(),channelId='CSYNTHETIC2038';
  let channelBinding:any;
@@ -133,7 +133,7 @@ export async function viewerVisibilityJourney(w:Workspace){
   }
   if(route.startsWith('/settings/integrations/destinations')){
    id=destination.id;
-   body=route==='/settings/integrations/destinations'?{name:'synthetic-vector-2039',url:'https://synthetic-vector-2039.example.test/events'}:{};
+   body=route==='/settings/integrations/destinations'?{name:'synthetic-vector-2039',url:'https://synthetic-vector-2039.example.com/events'}:{};
   }else if(route.startsWith('/settings/integrations/github')){
    id=github.id;
    body=route==='/settings/integrations/github'?{name:'synthetic-vector-2040',repository:'synthetic-vector-2040/synthetic-vector-2041'}:{};
