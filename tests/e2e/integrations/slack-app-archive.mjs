@@ -18,7 +18,7 @@ export async function exerciseSlackAppArchive({page,runtime,cookie,width,evidenc
  for(const value of [fixture.clientSecret,fixture.signingSecret,fixture.botToken,...sealed.map(row=>row.encrypted)])assert.ok(!bytes.includes(value),'Slack credential excluded from archive');
  // A separate module instance allocates a separate free port and persistence root.
  const {createUiRuntime}=await import('../ui-runtime-support.mjs?slackArchive='+width+'-'+crypto.randomUUID());
- const target=createUiRuntime({sampleData:false});let context;
+ const target=createUiRuntime({sampleData:false,bindings:{FIRST_OWNER_NAME:'synthetic-vector-33040',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'synthetic-vector-33041',DEFAULT_TEAM_PREFIX:'SYNARC'}});let context;
  try{
   target.initialize();target.start();await target.ready();
   // Sign in through the target's own door without completing setup: restore

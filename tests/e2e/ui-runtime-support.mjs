@@ -6,7 +6,7 @@ import { readLocalD1 } from "./local-d1-read.mjs";
 import { writeRuntimeD1 } from "./runtime-d1.mjs";
 import { freePort } from "@runeditrun/rer/adapter-settings";
 const runtimePort = await freePort();
-export function createUiRuntime({sampleData} = {}) {
+export function createUiRuntime({sampleData,bindings = {}} = {}) {
   const root = process.cwd(),
     base = "http://127.0.0.1:" + runtimePort,
     state = `.wrangler/vector-ui/runs/${Date.now()}-${process.pid}`;
@@ -53,6 +53,7 @@ export function createUiRuntime({sampleData} = {}) {
         "--var",
         "NOTIFICATION_EMAIL_ENABLED:true",
         ...(sampleData === undefined ? [] : ["--var", "SEED_SAMPLE_DATA:" + String(sampleData)]),
+        ...Object.entries(bindings).flatMap(([name,value]) => ["--var", name + ":" + value]),
       ],
       {
         cwd: root,
