@@ -25,21 +25,29 @@ export async function listDocuments(db:D1Database,actor:string,kind?:ParentKind,
  const access=await settingsActor(db,actor),subject=kind&&id?await parent(db,actor,kind,id):null;
  const rows=(await db.prepare('SELECT id,title,parent_kind parentKind,parent_id parentId,version,updated_at updatedAt FROM documents WHERE workspace_id=?'+(subject?' AND parent_kind=? AND parent_id=?':'')+' ORDER BY updated_at DESC,id DESC LIMIT 100').bind(access.workspace_id,...(subject?[subject.kind,subject.id]:[])).all()).results;
  if(subject)await parent(db,actor,subject.kind,subject.id);
- return {parent:subject?{id:subject.id,kind:subject.kind,name:subject.name,url:subject.url}:null,documents:rows};
+ const teams=subject&&subject.kind!=='team'?(await db.prepare('SELECT DISTINCT t.id,t.name FROM issues i JOIN teams t ON t.id=i.team_id WHERE '+(subject.kind==='issue'?'i.id=?':subject.kind==='project'?'i.project_id=?':'i.project_id IN (SELECT project_id FROM initiative_projects WHERE initiative_id=?)')+' ORDER BY t.name,t.id').bind(subject.id).all<{id:string;name:string}>()).results:[];
+ return {teams,parent:subject?{id:subject.id,kind:subject.kind,name:subject.name,url:subject.url}:null,documents:rows};
 }
 export async function readDocument(db:D1Database,actor:string,id:string){
  const access=await settingsActor(db,actor);
  const row=await db.prepare(`SELECT d.id,d.title,d.body,d.parent_kind parentKind,d.parent_id parentId,d.version,d.created_at createdAt,d.updated_at updatedAt,o.name authorName,
- (SELECT json_group_array(json_object('id',c.id,'body',c.body,'authorName',a.name,'createdAt',c.created_at)) FROM (SELECT * FROM document_comments WHERE document_id=d.id ORDER BY created_at DESC,id DESC LIMIT 10) c JOIN operators a ON a.id=c.author_operator_id) comments
+ (SELECT json_group_array(json_object('id',c.id,'body',c.body,'authorName',a.name,'createdAt',c.created_at)) FROM (SELECT * FROM document_comments WHERE document_id=d.id ORDER BY id DESC LIMIT 11) c JOIN operators a ON a.id=c.author_operator_id) comments
  FROM documents d JOIN operators o ON o.id=d.author_operator_id WHERE d.id=? AND d.workspace_id=?`).bind(id,access.workspace_id).first<{id:string;title:string;body:string;parentKind:ParentKind;parentId:string;version:number;createdAt:string;updatedAt:string;authorName:string;comments:string}>();
  if(!row)throw new IntegrationError(404,'document_not_found');
- return {...row,comments:JSON.parse(row.comments).reverse()};
+ const comments=JSON.parse(row.comments) as {id:string;body:string;authorName:string;createdAt:string}[];
+ return {...row,comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
 }
 export async function documentRevisions(db:D1Database,actor:string,id:string,before?:number){
  await readDocument(db,actor,id);
  const rows=(await db.prepare('SELECT r.id,r.version,r.title,r.body,r.created_at createdAt,o.name authorName FROM document_revisions r JOIN operators o ON o.id=r.author_operator_id WHERE r.document_id=? AND (? IS NULL OR r.version<?) ORDER BY r.version DESC LIMIT 5').bind(id,before??null,before??null).all<{id:string;version:number;title:string;body:string;createdAt:string;authorName:string}>()).results;
  await readDocument(db,actor,id);
  return {revisions:rows.reverse(),nextBeforeVersion:rows.length===5&&rows[0].version>1?rows[0].version:null};
+}
+export async function documentComments(db:D1Database,actor:string,id:string,before?:string){
+ await readDocument(db,actor,id);
+ const comments=(await db.prepare('SELECT c.id,c.body,o.name authorName,c.created_at createdAt FROM document_comments c JOIN operators o ON o.id=c.author_operator_id WHERE c.document_id=? AND (? IS NULL OR c.id<?) ORDER BY c.id DESC LIMIT 11').bind(id,before??null,before??null).all<{id:string;body:string;authorName:string;createdAt:string}>()).results;
+ await readDocument(db,actor,id);
+ return {comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
 }
 export async function createDocument(db:D1Database,actor:string,input:z.infer<typeof documentInput>){
  const subject=await parent(db,actor,input.parentKind,input.parentId),now=new Date(),at=now.toISOString(),id=createUlid(now);
