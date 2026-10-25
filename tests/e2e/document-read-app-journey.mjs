@@ -123,11 +123,12 @@ export async function assertDocumentReadRecovery({
         const reloaded = page.waitForResponse(
           (r) => r.url() === original && r.request().isNavigationRequest(),
         );
-        const resumed = page.waitForResponse(
-          (r) =>
-            new URL(r.url()).pathname === "/api/notifications/count" &&
-            r.status() === 200,
-        );
+        const resumed = page.waitForResponse((r) => {
+          const url = new URL(r.url());
+          return url.pathname === '/api/refresh' &&
+            url.searchParams.getAll('read').includes('/api/notifications/count') &&
+            r.status() === 200;
+        });
         admissionClosed = false;
         await page
           .getByRole("button", { name: "Reload this page", exact: true })
@@ -138,10 +139,18 @@ export async function assertDocumentReadRecovery({
           null,
           "authenticated reload document finishes natively",
         );
+        const resumedResponse = await resumed;
         assert.equal(
-          await (await resumed).finished(),
+          await resumedResponse.finished(),
           null,
           "resumed private response finishes natively",
+        );
+        assert.equal(
+          (await resumedResponse.json()).resources.find(
+            (resource) => resource.path === '/api/notifications/count',
+          )?.status,
+          200,
+          "newly authenticated document admits the count projection",
         );
         await settleReads(page);
         assert.equal(

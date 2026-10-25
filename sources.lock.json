@@ -6821,7 +6821,7 @@
       "executable": false
     },
     "tests/e2e/document-read-app-journey.mjs": {
-      "sha256": "b8dd61d74583395a18c4383ba9d93c6a5502a884f19b26ce6a93434ab537d0fa",
+      "sha256": "23ba444dbacfa0538c7ec2a2062f5afb42e63da0c491929f54229d17fd26145d",
       "executable": false
     },
     "tests/e2e/document-read-session.mjs": {
