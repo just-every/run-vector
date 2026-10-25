@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, type FormHTMLAttributes } from 'react';
 import { useRouteContext } from '@tanstack/react-router';
 import type { z } from 'zod';
-import { fetchJson } from '../../../app/api-client';
+import { ApiError, fetchJson } from '../../../app/api-client';
 import { useHydrated } from '../../../app/initial-resources';
-import { SettingsSaveFeedback, withSettingsLabels, saveField, type SaveState, type SaveField } from './settings-save-feedback';
+import { SettingsSaveFeedback, withSettingsLabels, saveField, type SaveState, type SaveField, type SaveFailure } from './settings-save-feedback';
 
 type Draft = { revision: string; fields: [string, string][]; valid: boolean; confirmed: boolean; field?: SaveField };
-const writes = new Map<string, Promise<unknown>>();
+const writes = new Map<string, { revision: string; request: Promise<unknown> }>();
 function readDraft(key: string): Draft | null {
   const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null');
   if (!value || typeof value !== 'object') return null;
@@ -25,6 +25,10 @@ function restore(form: HTMLFormElement, draft: Draft) {
     else field.value = String(fields.get(field.name) ?? '');
   }
 }
+function invalidField(form: HTMLFormElement) {
+  return Array.from(form.elements).find((field): field is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement =>
+    (field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) && !field.validity.valid);
+}
 
 type Props<S extends z.ZodType> = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange'> & {
   path: string; method?: string; schema: S; read: (fields: FormData) => unknown;
@@ -41,11 +45,11 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
   const form = useRef<HTMLFormElement>(null), draft = useRef<Draft | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const busy = useRef(false), mounted = useRef(false);
-  const departing = useRef(false);
   const current = useRef({ path, method, schema, read, onSaved });
   current.current = { path, method, schema, read, onSaved };
   const [state, setState] = useState<SaveState>('idle');
   const [field, setField] = useState<SaveField | null>(null);
+  const [failure, setFailure] = useState<SaveFailure | null>(null);
   function status(next: typeof state) { if (mounted.current) setState(next); }
   async function flush() {
     clearTimeout(timer.current);
@@ -54,27 +58,34 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     const fields = new FormData();
     for (const [name, value] of snapshot.fields) fields.append(name, value);
     const options = current.current, body = options.read(fields);
-    busy.current = true; status('saving');
+    busy.current = true; setFailure(null); status('saving');
     // A remount may join a still-running write. Serialize per setting so an
     // earlier receipt can never overtake a later edit in this document.
-    const request = (writes.get(key) ?? Promise.resolve()).catch(() => {}).then(() => fetchJson(options.path, options.schema, {
+    const previous = writes.get(key);
+    const request = previous?.revision === snapshot.revision ? previous.request : (previous?.request ?? Promise.resolve()).catch(() => {}).then(() => fetchJson(options.path, options.schema, {
       method: options.method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true,
     }));
-    writes.set(key, request);
+    writes.set(key, { revision: snapshot.revision, request });
     try {
       const receipt = await request;
       if (draft.current?.revision === snapshot.revision) {
         draft.current = null;
-        // The next document may already contain an older server read. Let its
-        // form restore this draft even when this outgoing write succeeds.
-        try { if (!departing.current && readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }
+        try { if (readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }
         status('saved');
       }
       options.onSaved?.(receipt);
-    } catch { status('failed'); }
+    } catch (cause) {
+      if (draft.current?.revision === snapshot.revision && mounted.current) {
+        const body = cause instanceof ApiError ? cause.body : null;
+        const message = body && typeof body === 'object' && 'message' in body && typeof body.message === 'string' ? body.message : 'Couldn’t save.';
+        setFailure({ message, retryable: cause instanceof TypeError }); status('failed');
+      }
+      // A failed request may be retried; an acknowledged revision keeps its
+      // receipt so a remount joining that revision cannot send it twice.
+      if (writes.get(key)?.request === request) writes.delete(key);
+    }
     finally {
       busy.current = false;
-      if (writes.get(key) === request) writes.delete(key);
       if (draft.current && draft.current.revision !== snapshot.revision) schedule();
     }
   }
@@ -85,31 +96,41 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
   function edit(target?: EventTarget | null) {
     const element = form.current;
     if (!element) return;
-    const changed = target ?? element.querySelector('[name]');
+    const invalid = invalidField(element);
+    const changed = invalid ?? target ?? element.querySelector('[name]');
     const editedField = changed instanceof HTMLInputElement || changed instanceof HTMLSelectElement || changed instanceof HTMLTextAreaElement ? saveField(changed) : undefined;
     if (editedField) setField(editedField);
     const fields: [string, string][] = [];
     for (const [name, value] of new FormData(element)) if (typeof value === 'string') fields.push([name, value]);
-    draft.current = { revision: crypto.randomUUID(), fields, valid:element.checkValidity(), confirmed: false, field: editedField };
+    draft.current = { revision: crypto.randomUUID(), fields, valid:!invalid, confirmed: false, field: editedField };
     try { localStorage.setItem(key, JSON.stringify(draft.current)); } catch { /* Keep the draft in this mounted form if device storage is unavailable. */ }
-    status('dirty'); schedule();
+    setFailure(invalid ? { message: invalid.validationMessage, retryable: false } : null);
+    status(invalid ? 'failed' : 'dirty'); schedule();
   }
   useEffect(() => {
     if (!hydrated) return;
-    mounted.current = true; departing.current = false;
+    mounted.current = true;
     const first = form.current?.querySelector('[name]');
     if (first instanceof HTMLInputElement || first instanceof HTMLSelectElement || first instanceof HTMLTextAreaElement) setField(saveField(first));
     try {
       const saved = readDraft(key);
-      if (saved && form.current) { draft.current = saved; restore(form.current, saved); if (saved.field) setField(saved.field); onRestored?.(new FormData(form.current)); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
+      if (saved && form.current) {
+        draft.current = saved; restore(form.current, saved);
+        const invalid = invalidField(form.current);
+        saved.valid = !invalid;
+        if (invalid) setField(saveField(invalid)); else if (saved.field) setField(saved.field);
+        setFailure(invalid ? { message: invalid.validationMessage, retryable: false } : null);
+        onRestored?.(new FormData(form.current)); status(invalid ? 'failed' : 'dirty');
+        if (writes.get(key)?.revision === saved.revision) void flush(); else schedule();
+      }
       else if (form.current && initialize?.(form.current)) edit();
     } catch { /* An unreadable device draft cannot replace current server values. */ }
-    const leave = () => { departing.current = true; if (!confirm) void flush(); };
+    const leave = () => { if (!confirm) void flush(); };
     window.addEventListener('beforeunload', leave);
     window.addEventListener('pagehide', leave);
     return () => { leave(); mounted.current = false; clearTimeout(timer.current); window.removeEventListener('beforeunload', leave); window.removeEventListener('pagehide', leave); };
   }, [key, hydrated]);
-  return <SettingsSaveFeedback.Provider value={{state, field, retry: () => void flush(), ready: hydrated}}><form {...props} ref={form} onChange={event => edit(event.target)} onSubmit={event => {
+  return <SettingsSaveFeedback.Provider value={{state, field, failure, retry: () => void flush(), ready: hydrated}}><form {...props} ref={form} onChange={event => edit(event.target)} onSubmit={event => {
     event.preventDefault();
     if (draft.current && confirm) {
       draft.current.confirmed = true;

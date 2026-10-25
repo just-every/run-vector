@@ -41,7 +41,7 @@ export function ViewerTimeProvider({ children }: { children: ReactNode }) {
     timezoneLabel: timezoneName(clock.effectiveTimezone),
     formatInstant: value => new Intl.DateTimeFormat(undefined, {
       dateStyle: 'medium', timeStyle: 'short', timeZone: clock.effectiveTimezone,
-    }).format(new Date(value)) + (clock.effectiveTimezone !== clock.workspaceTimezone ? ` (${clock.effectiveTimezone})` : ''),
+    }).format(new Date(value)) + (clock.effectiveTimezone !== clock.workspaceTimezone ? ` (${timezoneName(clock.effectiveTimezone)})` : ''),
     localValue: date => {
       const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', {
         timeZone: clock.effectiveTimezone, year: 'numeric', month: '2-digit', day: '2-digit',

@@ -3,7 +3,7 @@
   width: min(100%, 28rem);
   min-width: 0;
 }
-.settings-field-label { padding-inline-end: 4rem; }
+.settings-save-field:has(> .settings-field-status) .settings-field-label { padding-inline-end: 4rem; }
 .timezone-picker .settings-save-field > label { display: grid; gap: .6rem; }
 .settings-field-status {
   position: absolute;
@@ -17,10 +17,14 @@
 .personal-time-days > .settings-save-field { width: auto; }
 .personal-time-days .settings-field-label { padding-inline-end: 0; }
 .personal-time-days .settings-field-status { position: static; margin-inline-start: .5rem; }
+.housekeeping-panel .settings-save-field { flex: 1 1 14rem; width: auto; }
+.housekeeping-panel .settings-save-field:has(> .housekeeping-check) { flex-basis: 100%; }
+.settings-page .appearance-panel form { justify-items: stretch; }
 .appearance-panel .settings-save-field { flex: 1 1 12rem; width: auto; }
 .appearance-panel .settings-save-field > label { height: 100%; box-sizing: border-box; }
 .appearance-panel .settings-field-status { top: .75rem; inset-inline-end: .9rem; }
 .settings-page .settings-field-error { margin: 0; }
+.settings-page form:has(.settings-save-field) + form { margin-block-start: 1rem; }
 .settings-save-announcement {
   position: absolute;
   width: 1px;

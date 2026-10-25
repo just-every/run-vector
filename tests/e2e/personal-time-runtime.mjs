@@ -65,7 +65,7 @@ try {
   const reminders=await(await api.get(runtime.base+'/api/issues/'+issue.identifier+'/reminders')).json();assert.ok(reminders.reminders.some(r=>r.remindAt===future.toISOString()),'personal zone controls the instant although browser is Brisbane');
   await page.getByText(/Next personal reminder:/).waitFor();await page.locator('.personal-reminders').scrollIntoViewIfNeeded();await page.screenshot({path:`${output}/reminder-${width}.png`});assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   // Reload reads the saved clock during SSR; browser timezone must not change it.
-  await page.reload();await page.getByText(/Next personal reminder:/).waitFor();assert.ok((await page.locator('.personal-reminders').innerText()).includes('America/Los_Angeles'));
+  await page.reload();await page.getByText(/Next personal reminder:/).waitFor();assert.match(await page.locator('.personal-reminders').innerText(),/Next personal reminder:[^\n]*\(Los Angeles time\)/);
   await inspectTimeSurfaces(page,context,runtime,issue,records,width,output,local);
   console.log(`[NOTIFY-010] ${width}: save personal zone and working hours, schedule in viewer zone, reload`);
  }

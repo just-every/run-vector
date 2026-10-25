@@ -5,6 +5,7 @@ import { chromium } from "@playwright/test";
 import {
   createAdminRuntime,
   bootstrapOwner,
+  poll,
 } from "./admin-runtime-support.mjs";
 const evidence = resolve(".artifacts/verification/cycle-schedule");
 await mkdir(evidence, { recursive: true });
@@ -32,16 +33,27 @@ try {
   const team = state.teams[0];
   // Read the committed schedule through its public door; saving keeps the
   // existing form and the user's focus instead of remounting its defaults.
-  const savedSchedule = (values) =>
-    page.waitForFunction(async ({ name, teamId, values }) => {
-      const form = document.querySelector(`form[aria-label="${name}"]`);
-      const response = await fetch('/api/settings/administration');
-      if (!response.ok) return false;
-      const schedule = (await response.json()).cycleSchedules.find(item => item.teamId === teamId);
-      const fields = {weeks:'weeks',cooldown:'cooldownWeeks',upcoming:'upcomingCount'};
-      return !!form && !!schedule && Object.entries(values).every(([field,value]) =>
-        form.elements.namedItem(field).value === value && String(schedule[fields[field]]) === value);
-    }, {name:'Cycle schedule '+team.name,teamId:team.id,values}, {polling:200});
+  const savedSchedule = async (values) => {
+    await page.waitForFunction(
+      ({ name, values }) => {
+        const form = document.querySelector(`form[aria-label="${name}"]`);
+        return !!form && Object.entries(values).every(([field, value]) =>
+          form.elements.namedItem(field)?.value === value);
+      },
+      { name: "Cycle schedule " + team.name, values },
+      { polling: 200 },
+    );
+    const fields = { weeks: "weeks", cooldown: "cooldownWeeks", upcoming: "upcomingCount" };
+    await poll(
+      async () => (await context.request.get(runtime.base + "/api/settings/administration")).json(),
+      (administration) => {
+        const schedule = administration.cycleSchedules.find(item => item.teamId === team.id);
+        return !!schedule && Object.entries(values).every(([field, value]) =>
+          String(schedule[fields[field]]) === value);
+      },
+      "cycle schedule commits before read-back",
+    );
+  };
   const create = await context.request.post(runtime.base + "/api/issues", {
     headers: { Origin: runtime.base },
     data: {

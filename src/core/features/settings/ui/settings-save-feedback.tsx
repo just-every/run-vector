@@ -3,7 +3,8 @@ import './settings-save-feedback.css';
 
 export type SaveState = 'idle' | 'dirty' | 'saving' | 'saved' | 'failed';
 export type SaveField = { name: string; id: string; choice?: string };
-type Feedback = { state: SaveState; field: SaveField | null; retry: () => void; ready: boolean };
+export type SaveFailure = { message: string; retryable: boolean };
+type Feedback = { state: SaveState; field: SaveField | null; failure: SaveFailure | null; retry: () => void; ready: boolean };
 export const SettingsSaveFeedback = createContext<Feedback | null>(null);
 
 export function saveField(field: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement): SaveField {
@@ -35,7 +36,7 @@ export function SettingsFieldLabel({ children, fieldName, ...props }: ComponentP
   });
   return <div className="settings-save-field">
     <label {...props}>{content}</label>{status}
-    {active && feedback.state === 'failed' && <p className="settings-field-error" role="alert">Couldn’t save. <button type="button" onClick={feedback.retry}>Retry</button></p>}
+    {active && feedback.state === 'failed' && feedback.failure && <p className="settings-field-error" role="alert">{feedback.failure.message}{feedback.failure.retryable && <> <button type="button" onClick={feedback.retry}>Retry</button></>}</p>}
   </div>;
 }
 

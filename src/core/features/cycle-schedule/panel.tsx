@@ -1,5 +1,6 @@
 import type { Administration } from "../administration/schema";
 import { SettingsSaveForm } from "../settings/ui/settings-save-form";
+import { timezoneName } from "../settings/ui/timezone-picker";
 import { administrationSchema } from "../administration/schema";
 const weekdays = [
   "Sunday",
@@ -22,7 +23,7 @@ export function CycleSchedulePanel({
       <h3 id="schedule-heading">Automatic cycle schedule</h3>
       <p>
         Keep upcoming cycles ready for rollover. Cycles start at midnight in{" "}
-        {data.workspace.timezone}. Saving applies the cadence to future
+        {timezoneName(data.workspace.timezone)}. Saving applies the cadence to future
         automatic cycles; cycles already started keep their dates.
       </p>
       {data.teams
