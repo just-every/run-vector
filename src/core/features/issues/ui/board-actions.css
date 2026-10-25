@@ -4,3 +4,5 @@
  .board-card-status:not([open]) { opacity: 0; }
  .board-card:hover .board-card-status, .board-card:focus-within .board-card-status { opacity: 1; }
 }
+
+@media (max-width: 46rem) { .board-card-status { opacity: 1; } }
