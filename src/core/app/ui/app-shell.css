@@ -192,6 +192,7 @@
     white-space: nowrap;
   }
   .app-mobile-nav .app-nav-link > span:first-child { height: 1.2rem; }
+  .app-mobile-nav .app-nav-link:hover:not(.is-active) { box-shadow: none; background: rgb(var(--app-ink-rgb) / 8%); }
   .app-mobile-nav .app-nav-link.is-active { color: var(--app-ink); background: var(--app-cobalt-soft); }
   .app-settings-mobile {
     position: relative;

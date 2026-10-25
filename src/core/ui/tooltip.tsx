@@ -11,7 +11,7 @@ export function Tooltip({ label, children }: { label: string; children: ReactEle
   const [open, setOpen] = useState(false), [position, setPosition] = useState<{ left: number; top: number } | null>(null);
   const clear = useCallback(() => { if (timer.current) clearTimeout(timer.current); timer.current = null; }, []);
   const hide = useCallback(() => {
-    clear(); setOpen(false); setPosition(null);
+    clear(); setOpen(false);
     if (activeTooltip?.id === id) activeTooltip = null;
   }, [clear, id]);
   const show = () => {
@@ -25,6 +25,15 @@ export function Tooltip({ label, children }: { label: string; children: ReactEle
     hide();
   };
   useEffect(() => () => { clear(); if (activeTooltip?.id === id) activeTooltip = null; }, [clear, id]);
+  useEffect(() => {
+    if (!open) return;
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault(); event.stopPropagation(); hide();
+    };
+    document.addEventListener('keydown', escape, true);
+    return () => document.removeEventListener('keydown', escape, true);
+  }, [open, hide]);
   useLayoutEffect(() => {
     if (!open || !anchor.current || !popup.current) return;
     const place = () => {
@@ -44,7 +53,7 @@ export function Tooltip({ label, children }: { label: string; children: ReactEle
     onClick={hide}
     onFocusCapture={() => { clear(); if (!touch.current) show(); }}
     onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) hide(); }}
-    onKeyDown={event => { touch.current = false; if (event.key === 'Escape' && open) { event.stopPropagation(); hide(); } }}>
+    onKeyDown={() => { touch.current = false; }}>
     {cloneElement(children, { title: undefined, 'aria-describedby': open ? [children.props['aria-describedby'], id].filter(Boolean).join(' ') : children.props['aria-describedby'] })}
     {open && createPortal(<span ref={popup} id={id} role="tooltip" className="vector-tooltip"
       style={{ left: position?.left ?? 0, top: position?.top ?? 0, visibility: position ? 'visible' : 'hidden' }}
