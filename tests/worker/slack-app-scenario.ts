@@ -41,6 +41,9 @@ export async function slackAppInstall(){
  const callback=(state:string,cookie=f.cookie)=>request('/api/integrations/slack/oauth/callback?state='+encodeURIComponent(state)+'&code=synthetic-vector-2003','GET',undefined,cookie);
  const begin=async(cookie=f.cookie)=>new URL((await read(await request('/api/settings/integrations/slack/app/install','POST',{},cookie))).url).searchParams.get('state')!;
  try{
+  // This file also exercises the legacy paste path in an earlier registration.
+  // Begin this independent installation journey through its public removal door.
+  await read(await f.call('/settings/integrations/slack','DELETE'));calls.length=0;
   // A Member cannot create, inspect credentials, or start an installation.
   const member=await invite('synthetic-vector-2004@vector.test',f.cookie),admin=await invite('synthetic-vector-2005@vector.test',f.cookie,'admin');
   for(const [path,method] of [['/slack/app','GET'],['/slack/app','POST'],['/slack/app/create','POST'],['/slack/app/install','POST']])expect((await request('/api/settings/integrations'+path,method,method==='GET'?undefined:{},member)).status).toBe(403);

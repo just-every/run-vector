@@ -7757,7 +7757,7 @@
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "6cf739173b91032db6322977030f38362aa008430cff423bd3c0ba6e6b9a1a57",
+      "sha256": "52b9fc54b829d7c267512291f3592b23ebce1b1b7056342f4d8c16bf5c3dcc60",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {
