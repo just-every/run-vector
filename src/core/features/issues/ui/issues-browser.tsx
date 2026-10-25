@@ -4,8 +4,6 @@ import {SubscriptionFilters} from '../../subscriptions/ui/subscriptions';
 import {
   useMatch,
   useNavigate,
-  useRouteContext,
-  useRouter,
   useSearch,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -21,7 +19,6 @@ import { IssueListView } from "./issue-list-view";
 export { IssueListView } from "./issue-list-view";
 import { StoredIssueControls } from "./issue-list-preferences";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
-import { offerNavigationReceipt } from "../../../app/navigation-receipt";
 import "./issues-browser.css";
 
 export function IssuesBrowser() {
@@ -70,21 +67,7 @@ export function BoardBrowser() {
   const opened = detail?.params.identifier ?? null;
   const storedQuery = useSearch({ from: "/app/board" }),
     navigate = useNavigate();
-  const router = useRouter();
-  const { operator } = useRouteContext({ from: "/app" });
   const query = issueListLayoutQuery(storedQuery, "board");
-  useEffect(() => {
-    if (
-      storedQuery.pageSize !== query.pageSize ||
-      storedQuery.grouping !== query.grouping
-    ) {
-      // Only the URL representation changes: the document already read this
-      // exact board query. Hand that fresh receipt to this immediate replace.
-      const target = router.buildLocation({ to: ".", search: query });
-      const retire = offerNavigationReceipt(target.href, operator);
-      void navigate({ to: ".", search: query, replace: true }).finally(retire);
-    }
-  }, [storedQuery, query, navigate, router, operator]);
   const change = (changes: Partial<IssueListQuery>) =>
     void navigate({
       to: "/app/board",
