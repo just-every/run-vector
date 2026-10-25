@@ -1,6 +1,7 @@
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {doors,apiDoors} from '../../src/core/features/roles/doors';
+import {channelEdge} from './channel-edge-fixture';
 import {invite,actor} from './base-auth-fixture';
 import {resetLimits,snapshot,type roleWorkspace} from './role-fixture';
 type Workspace=Awaited<ReturnType<typeof roleWorkspace>>;
@@ -60,6 +61,16 @@ export async function viewerVisibilityJourney(w:Workspace){
  const workflow=workflowState.teams.find((team:any)=>team.id===w.team.id).statuses;
  const workflowStatus=workflow.find((status:any)=>status.name==='synthetic-vector-2029');
  const ownCommentVersion=(await json(await owner.api('/comments/'+ownComment.id))).version;
+ const destination=await json(await owner.call('/settings/integrations/destinations','POST',{name:'synthetic-vector-2035',url:'https://synthetic-vector-2035.example.test/events'}),201);
+ const github=await json(await owner.call('/settings/integrations/github','POST',{name:'synthetic-vector-2036',repository:'synthetic-vector-2036/synthetic-vector-2037'}),201);
+ const edge=channelEdge(),channelId='CSYNTHETIC2038';
+ let channelBinding:any;
+ try{
+  await json(await owner.call('/settings/integrations/slack','POST',{botToken:edge.token}));
+  await json(await owner.call('/settings/integrations/channels/allowed','POST',{channelId,channelName:'synthetic-vector-2038'}),201);
+  channelBinding=await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']}),201);
+ }finally{edge.restore();}
+ const signingSecret=Array.from(crypto.getRandomValues(new Uint8Array(16)),value=>value.toString(16).padStart(2,'0')).join('');
  const logicalId=ownComment.id;
  const registeredMutations=(registry:typeof doors)=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
  // These families use their own persisted subjects and schema-valid inputs.
@@ -106,6 +117,18 @@ export async function viewerVisibilityJourney(w:Workspace){
    else if(route.includes('/statuses/')&&method==='DELETE')body={destinationStatusId:w.team.statuses.find(status=>status.category==='unstarted')!.id};
    else if(method==='PATCH'&&route.endsWith('/:id'))body={name:'synthetic-vector-2028'};
   }
+  if(route.startsWith('/settings/integrations/destinations')){
+   id=destination.id;
+   body=route==='/settings/integrations/destinations'?{name:'synthetic-vector-2039',url:'https://synthetic-vector-2039.example.test/events'}:{};
+  }else if(route.startsWith('/settings/integrations/github')){
+   id=github.id;
+   body=route==='/settings/integrations/github'?{name:'synthetic-vector-2040',repository:'synthetic-vector-2040/synthetic-vector-2041'}:{};
+  }else if(route==='/settings/integrations/slack')body=method==='POST'?{botToken:edge.token}:{};
+  else if(route==='/settings/integrations/slack/signing-secret')body={signingSecret};
+  else if(route==='/settings/integrations/channels/allowed')body={channelId,channelName:'synthetic-vector-2038'};
+  else if(route==='/projects/:id/slack-channel')body={channelId};
+  else if(route==='/settings/integrations/channels')body={scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']};
+  else if(route==='/settings/integrations/channels/:id')id=channelBinding.id;
   if(route==='/issues'||route==='/intake')body={title:'synthetic-vector-2030',teamId:w.team.id,projectId:project.id,labelIds:[label.id]};
   else if(route==='/issues/:identifier'&&method==='PATCH')body={expectedVersion:issue.version,title:'synthetic-vector-2031'};
   else if(route==='/issues/:identifier'&&method==='DELETE')body={expectedVersion:issue.version,confirmed:true};
@@ -118,7 +141,7 @@ export async function viewerVisibilityJourney(w:Workspace){
   else if(route.endsWith('/reactions'))body={targetId:'',emoji:'👍'};
   else if(route.endsWith('/copy'))body={expectedVersion:issue.version,teamId:w.team.id};
   else if(route.endsWith('/subscription'))body={following:true};
-  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:id).replace(/\*$/,'exports');
+  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:name==='channelId'?channelId:id).replace(/\*$/,'exports');
   return {path,body};
  };
  // Each registered work mutation is reached through its actual native/bearer transport.
