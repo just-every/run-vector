@@ -50,6 +50,7 @@ try {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await go('/app/settings#housekeeping');
     const form = page.getByRole('form', { name: `Auto-close and auto-archive ${team.name}` });
+    const saved = page.waitForResponse(r => r.url().endsWith('/housekeeping') && r.request().method() === 'PUT');
     await form.getByLabel('Auto-close after (days without activity)').fill('30');
     await form.getByLabel('Auto-archive after (days since closed)').fill('90');
     await form.getByRole('button', { name: 'Preview', exact: true }).click();
@@ -57,9 +58,8 @@ try {
     await preview.getByRole('heading', { name: 'Would close 1' }).waitFor();
     await preview.getByRole('heading', { name: 'Would archive 1' }).waitFor();
     assert.ok((await preview.innerText()).includes(stale.identifier) && (await preview.innerText()).includes(done.identifier));
-    const saved = page.waitForResponse(r => r.url().endsWith('/housekeeping') && r.request().method() === 'PUT');
-    await form.getByRole('button', { name: 'Save automation' }).click(); assert.equal((await saved).status(), 200);
-    await page.locator('#housekeeping').getByText('Saved.', { exact: true }).waitFor(); await settleReads(page); await preview.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${output}/settings-preview-${width}.png` }); await overflow();
+    assert.equal((await saved).status(), 200);
+    await form.getByRole('status').waitFor(); await settleReads(page); await preview.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${output}/settings-preview-${width}.png` }); await overflow();
   }
   // Two scheduled runs: the second finds nothing left to change, so each change notifies once.
   for (let run = 0; run < 2; run++) {

@@ -9,7 +9,10 @@ import { SettingsError } from "./repository";
 export async function readPersonalTime(db: D1Database, actor: string) {
   const row = await db
     .prepare(
-      `SELECT p.timezone,COALESCE(p.timezone,w.timezone) effectiveTimezone,
+      `SELECT p.operator_id IS NOT NULL AS configured,
+    (w.timezone='UTC' AND w.created_at=w.updated_at AND EXISTS (
+      SELECT 1 FROM workspace_installation i WHERE i.workspace_id=w.id AND i.setup_operator_id=o.id AND o.role='owner'
+    )) AS workspaceTimezoneDefault,p.timezone,COALESCE(p.timezone,w.timezone) effectiveTimezone,
     COALESCE(p.working_hours_start,'09:00') workingHoursStart,
     COALESCE(p.working_hours_end,'17:00') workingHoursEnd,
     COALESCE(p.working_days_json,'[1,2,3,4,5]') workingDaysJson,
@@ -20,7 +23,8 @@ export async function readPersonalTime(db: D1Database, actor: string) {
     )
     .bind(actor)
     .first<
-      Omit<PersonalTime, "workingDays"> & {
+      Omit<PersonalTime, "workingDays" | "configured"> & {
+        configured: number; workspaceTimezoneDefault: number;
         workingDaysJson: string;
         workspaceTimezone: string;
         reminderTime: string;
@@ -32,8 +36,8 @@ export async function readPersonalTime(db: D1Database, actor: string) {
       "Sign in again to manage settings.",
       401,
     );
-  const { workingDaysJson, ...values } = row;
-  return { ...values, workingDays: JSON.parse(workingDaysJson) as number[] };
+  const { workingDaysJson, configured, workspaceTimezoneDefault, ...values } = row;
+  return { ...values, configured:configured === 1, workspaceTimezoneDefault:workspaceTimezoneDefault === 1, workingDays: JSON.parse(workingDaysJson) as number[] };
 }
 
 /** The caller cannot name another member; native identity is fenced in the write. */

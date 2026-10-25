@@ -17,6 +17,14 @@ contractWith(
   "personal clocks inherit workspace time, isolate settings and fence exactly-once scheduled reminders",
   async () => {
     const f = await reminderFixture();
+    const initialization = await f.call('/settings/personal-time', 'PATCH', {initializeFromBrowser:'Australia/Brisbane'});
+    expect(initialization.status).toBe(200);
+    expect(await initialization.json()).toMatchObject({workspaceTimezone:'Australia/Brisbane',effectiveTimezone:'Australia/Brisbane',configured:false});
+    // A second browser cannot reset a committed zone, including an explicit UTC choice.
+    await f.configure('UTC');
+    const repeat = await f.call('/settings/personal-time', 'PATCH', {initializeFromBrowser:'Europe/London'});
+    expect(repeat.status).toBe(200);
+    expect(await repeat.json()).toMatchObject({workspaceTimezone:'UTC'});
     await f.configure("America/New_York");
     const pacificCookie = await invite("pacific@personal-time.test", f.cookie);
     const pacific = await actor(pacificCookie);

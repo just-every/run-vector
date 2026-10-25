@@ -1,9 +1,9 @@
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import { z } from "zod";
 import { fetchJson } from "../../app/api-client";
 import type { Administration } from "../administration/schema";
-import { useAdministrationAction } from "../settings/ui/administration-action";
-import { AdministrationFeedback } from "../settings/ui/administration-feedback";
+import { SettingsSaveForm } from "../settings/ui/settings-save-form";
+import { administrationSchema } from "../administration/schema";
 import { housekeepingPreviewSchema, type Housekeeping } from "./schema";
 import "./housekeeping.css";
 
@@ -15,7 +15,6 @@ const read = (form: HTMLFormElement): Housekeeping => {
 };
 
 export function HousekeepingPanel({ data, onChanged }: { data: Administration; onChanged: () => void }) {
-  const action = useAdministrationAction(onChanged);
   const [previews, setPreviews] = useState<Record<string, Preview | string>>({});
   async function preview(form: HTMLFormElement, teamId: string) {
     if (!form.reportValidity()) return;
@@ -27,10 +26,6 @@ export function HousekeepingPanel({ data, onChanged }: { data: Administration; o
     } catch (cause) {
       setPreviews((all) => ({ ...all, [teamId]: cause instanceof Error ? cause.message : "The preview could not be loaded." }));
     }
-  }
-  async function save(event: FormEvent<HTMLFormElement>, teamId: string) {
-    event.preventDefault();
-    await action.run(`/api/settings/teams/${teamId}/housekeeping`, "PUT", read(event.currentTarget));
   }
   return (
     <section id="housekeeping" aria-labelledby="housekeeping-heading" className="housekeeping-panel">
@@ -45,9 +40,9 @@ export function HousekeepingPanel({ data, onChanged }: { data: Administration; o
         const rule = data.housekeeping.find((h) => h.teamId === team.id);
         const result = previews[team.id];
         return (
-          <form key={team.id + JSON.stringify(rule)} aria-label={`Auto-close and auto-archive ${team.name}`} onSubmit={(event) => save(event, team.id)}>
+          <SettingsSaveForm key={team.id} aria-label={`Auto-close and auto-archive ${team.name}`} path={`/api/settings/teams/${team.id}/housekeeping`} schema={administrationSchema} read={fields => ({closeAfterDays:period(fields.get("close")), archiveAfterDays:period(fields.get("archive")), exemptBugs:fields.get("bugs")==="on"})} onSaved={onChanged}>
             <h3>{team.name}</h3>
-            <fieldset disabled={action.pending}>
+            <fieldset>
               <label>Auto-close after (days without activity)
                 <input name="close" type="number" min={1} max={3650} defaultValue={rule?.closeAfterDays ?? ""} placeholder="Off" />
               </label>
@@ -60,7 +55,6 @@ export function HousekeepingPanel({ data, onChanged }: { data: Administration; o
               </label>
               <div className="housekeeping-actions">
                 <button type="button" onClick={(event) => preview(event.currentTarget.form!, team.id)}>Preview</button>
-                <button>Save automation</button>
               </div>
             </fieldset>
             {typeof result === "string" && <p role="alert">{result}</p>}
@@ -76,10 +70,9 @@ export function HousekeepingPanel({ data, onChanged }: { data: Administration; o
                 ))}
               </div>
             )}
-          </form>
+          </SettingsSaveForm>
         );
       })}
-      <AdministrationFeedback action={action} />
     </section>
   );
 }

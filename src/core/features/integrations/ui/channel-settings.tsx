@@ -1,5 +1,5 @@
 import {SlackAppSettings} from './slack-app-settings';
-import {useState,type FormEvent} from 'react';
+import {useRef,useState,type FormEvent} from 'react';
 import {useApiResource} from '../../../app/api-client';
 import {channelConfiguration,channelEvents,channelEventLabels} from '../channels/schema';
 import {acknowledged,send} from './client';
@@ -7,10 +7,11 @@ import {CopyField} from './copy-field';
 export function ChannelSettings(){
  const config=useApiResource('/api/settings/integrations/channels',channelConfiguration);
  const [appRevision,setAppRevision]=useState(0);
+ const retry=useRef<null|(()=>Promise<boolean>)>(null);
  const [provider,setProvider]=useState('slack'),[pending,setPending]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  async function run(path:string,body:unknown,method='POST'){
-  setPending(true);setError('');setNotice('');
-  try{await send(path,acknowledged,body,method);config.reload();if(path==='/slack'&&method==='DELETE')setAppRevision(value=>value+1);return true;}catch(error){setError(error instanceof Error?error.message:'Channel settings could not be saved.');return false;}finally{setPending(false);}
+  retry.current=()=>run(path,body,method);setPending(true);setError('');setNotice('');
+  try{await send(path,acknowledged,body,method);config.reload();if(path==='/slack'&&method==='DELETE')setAppRevision(value=>value+1);return true;}catch{setError('Couldn’t save.');return false;}finally{setPending(false);}
  }
  async function connect(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget;
   if(await run('/slack',{botToken:new FormData(form).get('botToken')})){form.reset();setNotice('Slack connected. The bot token is stored securely.');}
@@ -26,7 +27,7 @@ export function ChannelSettings(){
  }
  return <section className="channel-settings" aria-labelledby="channel-settings-heading"><h3 id="channel-settings-heading">Slack and Discord channels</h3>
  <p>Post selected changes from a team, project or saved view. Messages include the issue identifier, title, actor, status change and a sign-in link.</p>
- {config.error&&<p role="alert">{config.error.message}</p>}{error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}
+ {config.error&&<p role="alert">Channel settings could not be loaded. <button type="button" onClick={config.reload}>Retry</button></p>}{error&&<p role="alert">{error} <button type="button" onClick={()=>void retry.current?.()}>Retry</button></p>}{notice&&<p role="status">{notice}</p>}
  {config.data&&<>
  <SlackAppSettings key={appRevision} onChanged={config.reload}/>
  <p>{config.data.slack.needsAttention?'Slack needs attention. Re-enter the bot token.':config.data.slack.connected?`Slack connected to ${config.data.slack.teamName}`:'Slack is not connected.'}</p>
@@ -47,10 +48,10 @@ export function ChannelSettings(){
  <label>Channel service<select value={provider} onChange={event=>setProvider(event.target.value)}><option value="slack">Slack</option><option value="discord">Discord</option></select></label>
  <label>Channel display name<input name="channelName" required maxLength={120} placeholder="delivery-updates"/></label>
  {provider==='slack'?<label>Slack channel ID<input name="channelId" required pattern="[CG][A-Z0-9]{2,30}" placeholder="C0123456789"/><small>In Slack, open the channel details and copy its channel ID.</small></label>:<label>Discord webhook URL<input type="password" autoComplete="off" name="webhookUrl" required maxLength={2048}/><small>HTTPS on discord.com or discordapp.com, beginning /api/webhooks/. The URL is stored securely and never shown again.</small></label>}
- <fieldset><legend>Chosen events</legend>{channelEvents.map((event,index)=><label className="admin-checkbox" key={event}><input name="events" type="checkbox" value={event} defaultChecked={index<3}/>{channelEventLabels[event]}{index>2?' (when available)':''}</label>)}</fieldset>
+ {provider==='slack'&&!config.data.slack.connected?<p>Connect Slack to choose events for a channel.</p>:<fieldset><legend>Chosen events</legend>{channelEvents.map((event,index)=><label className="admin-checkbox" key={event}><input name="events" type="checkbox" value={event} defaultChecked={index<3}/>{channelEventLabels[event]}</label>)}</fieldset>}
  <button disabled={provider==='slack'&&!config.data.slack.connected}>Save channel binding</button></fieldset></form>
  <p>A new binding replaces this object’s previous channel. Removing a binding stops future posts. Messages already posted remain in Slack or Discord.</p>
- <ul>{config.data.bindings.map(binding=><li key={binding.id}><strong>{binding.objectName}</strong> → {binding.provider==='slack'?'Slack':'Discord'} #{binding.channelName}{binding.suspendedReason&&<p role="alert">Routing suspended ({binding.suspendedReason}). Choose this object and save its channel binding again to confirm access. Held events are not replayed.</p>}{binding.needsAttention&&!binding.suspendedReason&&<p role="status">Needs attention: re-enter {binding.provider==='slack'?'the Slack token':'this Discord webhook URL by saving the binding again'}.</p>}<p>{binding.events.map(event=>channelEventLabels[event]).join(', ')}</p><button type="button" disabled={pending} onClick={()=>void run('/channels/'+binding.id,undefined,'DELETE')}>Remove binding for {binding.objectName}</button></li>)}</ul>
+ <ul>{config.data.bindings.map(binding=><li key={binding.id}><strong>{binding.objectName}</strong> → {binding.provider==='slack'?'Slack':'Discord'} #{binding.channelName}{binding.suspendedReason&&<p role="alert">Routing suspended ({binding.suspendedReason}). Choose this object and save its channel binding again to confirm access. Held events are not replayed.</p>}{binding.needsAttention&&!binding.suspendedReason&&<p role="status">Needs attention: re-enter {binding.provider==='slack'?'the Slack token':'this Discord webhook URL by saving the binding again'}.</p>}<p>{binding.events.filter(event=>(channelEvents as readonly string[]).includes(event)).map(event=>channelEventLabels[event]).join(', ')}</p>{binding.events.some(event=>!(channelEvents as readonly string[]).includes(event))&&<p>This binding includes events Vector does not send. Choose new triage items, new issues or status changes when confirming it again.</p>}<button type="button" disabled={pending} onClick={()=>void run('/channels/'+binding.id,undefined,'DELETE')}>Remove binding for {binding.objectName}</button></li>)}</ul>
  </>}
  </section>;
 }

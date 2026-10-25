@@ -1,7 +1,6 @@
-import type { FormEvent } from "react";
 import type { Administration } from "../administration/schema";
-import { useAdministrationAction } from "../settings/ui/administration-action";
-import { AdministrationFeedback } from "../settings/ui/administration-feedback";
+import { SettingsSaveForm } from "../settings/ui/settings-save-form";
+import { administrationSchema } from "../administration/schema";
 const weekdays = [
   "Sunday",
   "Monday",
@@ -18,17 +17,6 @@ export function CycleSchedulePanel({
   data: Administration;
   onChanged: () => void;
 }) {
-  const action = useAdministrationAction(onChanged);
-  async function save(event: FormEvent<HTMLFormElement>, teamId: string) {
-    event.preventDefault();
-    const fields = new FormData(event.currentTarget);
-    await action.run(`/api/settings/teams/${teamId}/cycle-schedule`, "PUT", {
-      weeks: Number(fields.get("weeks")),
-      startWeekday: Number(fields.get("weekday")),
-      cooldownWeeks: Number(fields.get("cooldown")),
-      upcomingCount: Number(fields.get("upcoming")),
-    });
-  }
   return (
     <section aria-labelledby="schedule-heading">
       <h3 id="schedule-heading">Automatic cycle schedule</h3>
@@ -44,16 +32,17 @@ export function CycleSchedulePanel({
             (s) => s.teamId === team.id,
           );
           return (
-            <form
-              key={team.id + JSON.stringify(schedule)}
+            <SettingsSaveForm
+              key={team.id}
               aria-label={`Cycle schedule ${team.name}`}
-              onSubmit={(event) => save(event, team.id)}
+              path={`/api/settings/teams/${team.id}/cycle-schedule`} schema={administrationSchema} onSaved={onChanged}
+              read={fields => ({weeks:Number(fields.get("weeks")), startWeekday:Number(fields.get("weekday")), cooldownWeeks:Number(fields.get("cooldown")), upcomingCount:Number(fields.get("upcoming"))})}
             >
               <h4>
                 {team.name}
                 {schedule ? " · Scheduled" : ""}
               </h4>
-              <fieldset disabled={action.pending}>
+              <fieldset>
                 <label>
                   Cycle length (weeks)
                   <input
@@ -100,12 +89,10 @@ export function CycleSchedulePanel({
                     defaultValue={schedule?.upcomingCount ?? 3}
                   />
                 </label>
-                <button>Save cycle schedule</button>
               </fieldset>
-            </form>
+            </SettingsSaveForm>
           );
         })}
-      <AdministrationFeedback action={action} />
     </section>
   );
 }

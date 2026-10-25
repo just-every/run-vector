@@ -1,0 +1,109 @@
+import { useEffect, useRef, useState, type FormHTMLAttributes } from 'react';
+import { useRouteContext } from '@tanstack/react-router';
+import type { z } from 'zod';
+import { fetchJson } from '../../../app/api-client';
+
+type Draft = { revision: string; fields: [string, string][]; confirmed: boolean };
+const writes = new Map<string, Promise<unknown>>();
+function readDraft(key: string): Draft | null {
+  const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null');
+  if (!value || typeof value !== 'object') return null;
+  const draft = value as Draft;
+  return typeof draft.revision === 'string' && typeof draft.confirmed === 'boolean' && Array.isArray(draft.fields)
+    && draft.fields.every(pair => Array.isArray(pair) && pair.length === 2 && pair.every(value => typeof value === 'string')) ? draft : null;
+}
+function restore(form: HTMLFormElement, draft: Draft) {
+  const fields = new FormData();
+  for (const [name, value] of draft.fields) fields.append(name, value);
+  for (const field of Array.from(form.elements)) {
+    if (!(field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) || !field.name) continue;
+    if (field instanceof HTMLInputElement && ['password', 'file'].includes(field.type)) continue;
+    if (field instanceof HTMLInputElement && ['checkbox', 'radio'].includes(field.type)) field.checked = fields.getAll(field.name).includes(field.value);
+    else field.value = String(fields.get(field.name) ?? '');
+  }
+}
+
+type Props<S extends z.ZodType> = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange'> & {
+  path: string; method?: string; schema: S; read: (fields: FormData) => unknown;
+  onSaved?: (receipt: z.output<S>) => void; confirm?: string; identity?: string; initialize?: (form: HTMLFormElement) => boolean;
+};
+
+/** Keep the actual field draft until the server acknowledges that revision.
+ * It is stored synchronously on edit, so navigation and even an offline tab
+ * close cannot discard it. Only non-secret settings belong in this form. */
+export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', schema, read, onSaved, confirm, identity, initialize, children, ...props }: Props<S>) {
+  const { operator } = useRouteContext({ from: '/app' });
+  const key = `vector:settings-draft:${operator.id}:${identity ?? path}`;
+  const form = useRef<HTMLFormElement>(null), draft = useRef<Draft | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const busy = useRef(false), mounted = useRef(false);
+  const current = useRef({ path, method, schema, read, onSaved });
+  current.current = { path, method, schema, read, onSaved };
+  const [state, setState] = useState<'idle' | 'dirty' | 'saving' | 'saved' | 'failed'>('idle');
+  function status(next: typeof state) { if (mounted.current) setState(next); }
+  async function flush() {
+    clearTimeout(timer.current);
+    const element = form.current, snapshot = draft.current;
+    if (!element || !snapshot || busy.current || !element.checkValidity() || (confirm && !snapshot.confirmed)) return;
+    const options = current.current, body = options.read(new FormData(element));
+    busy.current = true; status('saving');
+    // A remount may join a still-running write. Serialize per setting so an
+    // earlier receipt can never overtake a later edit in this document.
+    const request = (writes.get(key) ?? Promise.resolve()).catch(() => {}).then(() => fetchJson(options.path, options.schema, {
+      method: options.method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive: true,
+    }));
+    writes.set(key, request);
+    try {
+      const receipt = await request;
+      if (draft.current?.revision === snapshot.revision) {
+        draft.current = null;
+        try { if (readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }
+        status('saved');
+      }
+      options.onSaved?.(receipt);
+    } catch { status('failed'); }
+    finally {
+      busy.current = false;
+      if (writes.get(key) === request) writes.delete(key);
+      if (draft.current && draft.current.revision !== snapshot.revision) schedule();
+    }
+  }
+  function schedule() {
+    clearTimeout(timer.current);
+    if (!confirm || draft.current?.confirmed) timer.current = setTimeout(() => void flush(), 600);
+  }
+  function edit() {
+    const element = form.current;
+    if (!element) return;
+    const fields: [string, string][] = [];
+    for (const [name, value] of new FormData(element)) if (typeof value === 'string') fields.push([name, value]);
+    draft.current = { revision: crypto.randomUUID(), fields, confirmed: false };
+    try { localStorage.setItem(key, JSON.stringify(draft.current)); } catch { /* Keep the draft in this mounted form if device storage is unavailable. */ }
+    status('dirty'); schedule();
+  }
+  useEffect(() => {
+    mounted.current = true;
+    try {
+      const saved = readDraft(key);
+      if (saved && form.current) { draft.current = saved; restore(form.current, saved); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
+      else if (form.current && initialize?.(form.current)) edit();
+    } catch { /* An unreadable device draft cannot replace current server values. */ }
+    const leave = () => { if (!confirm) void flush(); };
+    window.addEventListener('pagehide', leave);
+    return () => { leave(); mounted.current = false; clearTimeout(timer.current); window.removeEventListener('pagehide', leave); };
+  }, [key]);
+  return <form {...props} ref={form} onChange={edit} onSubmit={event => {
+    event.preventDefault();
+    if (draft.current && confirm) {
+      draft.current.confirmed = true;
+      try { localStorage.setItem(key, JSON.stringify(draft.current)); } catch { /* Retain the in-memory confirmation. */ }
+    }
+    void flush();
+  }}>
+    {children}
+    {confirm && state === 'dirty' && <button type="submit">{confirm}</button>}
+    {state === 'saving' && <p role="status">Saving…</p>}
+    {state === 'saved' && <p role="status">Saved</p>}
+    {state === 'failed' && <p role="alert">Couldn’t save. <button type="button" onClick={() => void flush()}>Retry</button></p>}
+  </form>;
+}

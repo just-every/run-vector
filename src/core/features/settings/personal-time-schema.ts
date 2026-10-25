@@ -26,6 +26,7 @@ export const personalTimeInputSchema = z
     path: ["workingHoursEnd"],
   });
 export const personalTimeSchema = z.object({
+  configured: z.boolean(),
   timezone: z.string().nullable(),
   effectiveTimezone: z.string(),
   workingHoursStart: reminderTimeSchema,

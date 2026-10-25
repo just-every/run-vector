@@ -63,6 +63,16 @@ export async function readSettings(db: D1Database, actor: string) {
   };
 }
 
+/** The recorded first owner can replace an untouched UTC bootstrap default once.
+ * The timestamp predicate is checked in the write, preserving every later choice. */
+export async function initializeWorkspaceTimezone(db: D1Database, actor: string, timezone: string) {
+  await db.prepare(`UPDATE workspace_settings SET timezone=?,updated_at=?
+    WHERE timezone='UTC' AND created_at=updated_at AND id IN (
+      SELECT i.workspace_id FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
+      WHERE i.setup_operator_id=? AND o.role='owner' AND o.removed_at IS NULL AND o.workspace_id=i.workspace_id
+    )`).bind(timezone, new Date().toISOString(), actor).run();
+}
+
 export async function updateWorkspaceTime(
   db: D1Database,
   actor: string,

@@ -10,23 +10,21 @@ export async function saveWorkspaceTime({ page, runtime, clause, capture }) {
     return settingsSchema.parse(await response.json()).workspace;
   };
   const initial = await read();
-  const timezone = page.getByLabel("IANA timezone", { exact: true });
+  const timezone = page.getByLabel("Workspace timezone", { exact: true });
   const reminder = page.getByLabel("Daily due reminder time", { exact: true });
   const changedTimezone = initial.timezone === "Europe/London" ? "UTC" : "Europe/London";
   async function submit(value) {
-    await timezone.fill(value);
     const [response] = await Promise.all([
       page.waitForResponse(response =>
         new URL(response.url()).pathname === "/api/settings" &&
         response.request().method() === "PATCH"),
-      page.locator('#workspace-time button[type="submit"]').click(),
+      timezone.selectOption(value),
     ]);
     assert.equal(response.status(), 200);
     const saved = settingsSchema.parse(await response.json()).workspace;
     assert.equal(saved.timezone, value);
     assert.equal(saved.reminderTime, initial.reminderTime);
-    await page.locator('#workspace-time button[type="submit"]:enabled').waitFor();
-    const feedback = page.locator("main.settings-page > p[role='status']").last();
+    const feedback = page.locator("#workspace-time [role='status']").last();
     await feedback.waitFor();
     assert.ok((await feedback.innerText()).trim());
     const current = await read();
