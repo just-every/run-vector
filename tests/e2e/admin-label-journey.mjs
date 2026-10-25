@@ -34,9 +34,6 @@ export async function authorLabel({ page, runtime, capture, clause }) {
         .getByLabel("Label name", { exact: true })
         .fill("Verified evidence");
       await edit.getByLabel("Label colour", { exact: true }).fill("#f5dd44");
-      await edit
-        .getByRole("button", { name: "Save label", exact: true })
-        .click();
       await poll(
         () => sql("SELECT * FROM labels WHERE name='Verified evidence'"),
         (rows) => rows[0]?.color === "#f5dd44",

@@ -50,7 +50,8 @@ try {
     await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
     await go('/app/settings#housekeeping');
     const form = page.getByRole('form', { name: `Auto-close and auto-archive ${team.name}` });
-    const saved = page.waitForResponse(r => r.url().endsWith('/housekeeping') && r.request().method() === 'PUT');
+    const saved = page.waitForResponse(r => r.url().endsWith('/housekeeping') && r.request().method() === 'PUT' && r.request().postDataJSON()?.closeAfterDays === 30 && r.request().postDataJSON()?.archiveAfterDays === 90);
+    await form.getByLabel('Auto-close after (days without activity)').fill('');
     await form.getByLabel('Auto-close after (days without activity)').fill('30');
     await form.getByLabel('Auto-archive after (days since closed)').fill('90');
     await form.getByRole('button', { name: 'Preview', exact: true }).click();

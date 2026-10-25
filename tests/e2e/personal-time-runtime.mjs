@@ -16,18 +16,33 @@ try {
  const state=await(await api.get(runtime.base+'/api/settings/administration')).json(),team=state.teams[0];
  const issueResponse=await api.post(runtime.base+'/api/issues',{headers,data:{title:'Reconcile October subscription invoices',teamId:team.id,description:'Check invoice totals and document the exceptions before the next billing cycle.',priority:'high',dueDate:'2026-10-30'}});assert.equal(issueResponse.status(),201);const issue=await issueResponse.json();
  const records=await prepareTimeSurfaces(context,runtime,issue,team);
+ const retainedInstant=new Date(Date.now()+2*86400000).toISOString();
+ assert.equal((await api.post(runtime.base+'/api/issues/'+issue.identifier+'/reminders',{headers,data:{remindAt:retainedInstant}})).status(),200);
+ const persistedInstants=async()=>{
+  const administration=await(await api.get(runtime.base+'/api/settings/administration')).json();
+  const cycle=administration.cycles.find(c=>c.id===records.cycle.id);
+  const reminders=await(await api.get(runtime.base+'/api/issues/'+issue.identifier+'/reminders')).json();
+  return {cycle:[cycle.startsAt,cycle.endsAt],reminder:reminders.reminders.find(r=>r.remindAt===retainedInstant)?.remindAt};
+ };
+ const originalInstants=await persistedInstants();
  const future=new Date(Date.now()+3*86400000);future.setUTCHours(18,30,0,0);const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(future).map(p=>[p.type,p.value]));const local=`${parts.year}-${parts.month}-${parts.day}T${parts.hour}:${parts.minute}`;
  for(const width of [1440,390]) {
   await page.setViewportSize({width,height:width===390?844:1000});await page.goto(runtime.base+'/app/settings#personal-time');
   const form=page.getByRole('form',{name:'Your time preferences'});
-  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.workingHoursEnd==='16:30');
-  await form.getByLabel('Personal timezone',{exact:true}).selectOption('America/Los_Angeles');await form.getByLabel('Working day starts').fill('08:30');await form.getByLabel('Working day ends').fill('16:30');
+  const brisbane=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.timezone==='Australia/Brisbane');
+  await form.getByLabel('Personal timezone',{exact:true}).selectOption('Australia/Brisbane');
+  assert.equal((await brisbane).status(),200);
+  assert.equal((await(await api.get(runtime.base+'/api/settings/personal-time')).json()).effectiveTimezone,'Australia/Brisbane');
+  assert.deepEqual(await persistedInstants(),originalInstants,'changing the display zone preserves reminder and cycle instants');
+  const end=width===1440?'16:30':'16:45';
+  const saved=page.waitForResponse(r=>r.url().endsWith('/settings/personal-time')&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.workingHoursEnd===end);
+  await form.getByLabel('Personal timezone',{exact:true}).selectOption('America/Los_Angeles');await form.getByLabel('Working day starts').fill('08:30');await form.getByLabel('Working day ends').fill(end);
   assert.equal((await saved).status(),200);
   await form.getByRole('status').waitFor();
   // The existing Settings journey now saves without a button and reads back on reload.
   await page.reload();await form.getByLabel('Personal timezone',{exact:true}).waitFor();
   assert.equal(await form.getByLabel('Personal timezone',{exact:true}).inputValue(),'America/Los_Angeles');
-  assert.equal(await form.getByLabel('Working day ends').inputValue(),'16:30');
+  assert.equal(await form.getByLabel('Working day ends').inputValue(),end);
   await context.setOffline(true);
   await form.getByLabel('Working day starts').fill('08:45');
   await form.getByRole('alert').waitFor();

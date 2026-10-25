@@ -63,9 +63,6 @@ export async function createTeamWorkflow({ page, runtime, capture, clause }) {
       await edit
         .getByLabel("Team name", { exact: true })
         .fill("Research delivery");
-      await edit
-        .getByRole("button", { name: "Save team", exact: true })
-        .click();
       await poll(
         () => sql(`SELECT name FROM teams WHERE id='${team.id}'`),
         (rows) => rows[0]?.name === "Research delivery",
@@ -288,8 +285,8 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
       await peerTeams.getByRole("button", { name: `Leave ${team.name}`, exact: true }).waitFor();
       assert.equal(membership(), "member");
       await openDisclosures(peer);
-      assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).getByRole("button", { name: "Save team", exact: true }).isDisabled(), true);
-      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).getByRole("button", { name: "Save permissions", exact: true }).isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Edit ${team.name}`, exact: true }).getByLabel("Team name", {exact:true}).isDisabled(), true);
+      assert.equal(await peer.getByRole("form", { name: `Permissions for ${team.name}`, exact: true }).getByLabel("Who manages team settings", {exact:true}).isDisabled(), true);
       assert.equal(await peer.getByRole("form", { name: `Add member to ${team.name}`, exact: true }).count(), 0);
       await peerTeams.getByText("Only this team's owners and Admins change its settings.", { exact: true }).first().waitFor();
     });
@@ -321,7 +318,7 @@ export async function exerciseTeamRoles({ page, runtime, clause, evidence, refus
     await poll(() => [membership()], ([role]) => role === "owner", "team owner named");
     const permissions = page.getByRole("form", { name: `Permissions for ${team.name}`, exact: true });
     await permissions.getByRole("combobox", { name: "Who manages team settings", exact: true }).selectOption("all_members");
-    await permissions.getByRole("button", { name: "Save permissions", exact: true }).click();
+    await permissions.getByRole("button", { name: "Confirm permissions", exact: true }).click();
     await poll(() => sql(`SELECT settings_permission AS value FROM teams WHERE id='${team.id}'`), (rows) => rows[0]?.value === "all_members", "settings permission");
     assert.equal(sql(`SELECT count(*) AS n FROM audit_records WHERE action='team.permission_changed' AND subject_id='${team.id}'`)[0].n, 1);
   });
@@ -410,7 +407,7 @@ export async function teamJoinPermissions({page,peer,browser,runtime,clause,evid
     await mode.getByLabel("Membership mode",{exact:true}).selectOption("invite_only");
     await mode.getByLabel("Accept membership requests",{exact:true}).check();
     const changed=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/membership`);
-    await mode.getByRole("button",{name:"Save membership mode",exact:true}).click();assert.equal((await changed).status(),200);
+    await mode.getByRole("button",{name:"Confirm membership mode",exact:true}).click();assert.equal((await changed).status(),200);
     assert.equal((await requester.request.post(base+`/api/teams/${team.id}/join`,{headers:{Origin:base},data:{}})).status(),403);
     await navigate(requester,base+"/app/settings");
     const requested=requester.waitForResponse(r=>new URL(r.url()).pathname===`/api/teams/${team.id}/requests`);
@@ -456,7 +453,7 @@ export async function privateTeamRequest({page,peer,memberId,runtime,team,clause
  await form.getByLabel('Membership mode',{exact:true}).selectOption('invite_only');
  await form.getByLabel('Accept membership requests',{exact:true}).check();
  let response=page.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/membership`);
- await form.getByRole('button',{name:'Save membership mode',exact:true}).click();assert.equal((await response).status(),200);
+ await form.getByRole('button',{name:'Confirm membership mode',exact:true}).click();assert.equal((await response).status(),200);
  await navigate(peer,base+'/app/settings');
  response=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/teams/${team.id}/requests`);
  await peer.getByRole('button',{name:'Request to join '+team.name,exact:true}).click();assert.equal((await response).status(),200);

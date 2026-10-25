@@ -86,21 +86,14 @@ function LabelEditor({
   const [color, setColor] = useState(label.color);
   const [confirm, setConfirm] = useState(false);
   const deleteTrigger = useRef<HTMLButtonElement>(null);
-  async function save(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    await action.run(`/api/settings/labels/${label.id}`, "PATCH", {
-      name: new FormData(event.currentTarget).get("name"),
-      color,
-      projectsEnabled: new FormData(event.currentTarget).get("projectsEnabled") === "on",
-    });
-  }
   return (
     <details>
       <summary>
         <LabelChip name={label.name} color={label.color} />
       </summary>
-      <form aria-label={`Edit label ${label.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending || !hydrated}>
+      <SettingsSaveForm aria-label={`Edit label ${label.name}`} path={`/api/settings/labels/${label.id}`} method="PATCH" schema={administrationSchema} onSaved={onChanged}
+        read={fields => ({name:fields.get('name'),color:fields.get('color'),projectsEnabled:fields.has('projectsEnabled')})}>
+        <fieldset disabled={!hydrated}>
           <label>
             Label name
             <input
@@ -113,14 +106,13 @@ function LabelEditor({
           <label>
             Label colour
             <input
-              type="color"
+              name="color" type="color"
               value={color}
               onChange={(event) => setColor(event.target.value)}
             />
           </label>
           <label><input type="checkbox" name="projectsEnabled" defaultChecked={label.projectsEnabled} />Use for projects</label>
           <LabelChip name={label.name} color={color} />
-          <button>Save label</button>
           <button
             ref={deleteTrigger}
             type="button"
@@ -129,7 +121,7 @@ function LabelEditor({
             Delete label
           </button>
         </fieldset>
-      </form>
+      </SettingsSaveForm>
       <form aria-label={`Merge label ${label.name}`} onSubmit={async event => {
         event.preventDefault();
         await action.run(`/api/settings/labels/${label.id}/merge`, "POST", {destinationLabelId: new FormData(event.currentTarget).get("destinationLabelId")});

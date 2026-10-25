@@ -64,7 +64,7 @@ export function SettingsPage() {
       {resource.loading && <p role="status">Loading settings…</p>}
       {resource.error && !accountOnly && (
         <p role="alert">
-          {resource.error.message}{" "}
+          Settings couldn’t be loaded.{" "}
           {denied ? (
             <Link to="/signin">Sign in again</Link>
           ) : (
@@ -128,7 +128,7 @@ export function SettingsPage() {
           )}
           {administration.error && (
             <p role="alert">
-              {administration.error.message}{" "}
+              Workspace administration couldn’t be loaded.{" "}
               <button type="button" onClick={administration.reload}>
                 Retry administration
               </button>
