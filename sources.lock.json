@@ -4117,15 +4117,15 @@
       "executable": false
     },
     "src/core/features/documents/ui/list.tsx": {
-      "sha256": "8dd029a27c56ca74ac386145155e976330806661a75426407c93d2dd947a5556",
+      "sha256": "ed06e157456ec3ffc73cb995a2f5a73b094570f7bdc046aaa223fe552d22de5f",
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
-      "sha256": "94fdb62e9daa0a2c24b968d1432e35ef4a5d5921f95507dd56cf0b98b2b4bb21",
+      "sha256": "4b7957667e12e6213cebeaadef17aed7c4774d4bcb25a68756ac6b23bf2d73f4",
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "e68a851a588e2b2cd49216e63993aad8d21813f59a72ba1a6a280693430f08b2",
+      "sha256": "ab7e70ae13bd1d2c64e2195907685cc6a9984693a580e2f6e86f7ee17d202c0e",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
