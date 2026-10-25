@@ -57,12 +57,12 @@ export const verificationShards = {
     browser: true,
     // The high-volume intake fixture has its own installation and operator;
     // sharing it with keyboard journeys spends their normal request budget.
-    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'test:wave-b', 'test:base-auth',
-      'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
+    commands: ['build', { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'test:wave-b', 'test:base-auth'],
   },
   'hosted-artifact': {
     browser: true,
-    commands: ['test:public-site', 'verify'],
+    // Own the former ownership tail; retain each fresh build boundary.
+    commands: ['test:public-site', 'verify', 'build', 'test:access', 'test:mutation-refresh', 'build', 'test:integrations'],
   },
   // Keep Vitest's complete six-file-partition wall, balanced across three
   // runners. Each invocation still gets its original isolated Vitest process.
