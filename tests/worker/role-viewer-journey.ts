@@ -105,7 +105,7 @@ export async function viewerVisibilityJourney(w:Workspace){
    id=source.id;
    body=route.endsWith('/rotate')?{overlapHours:1}:route==='/settings/integrations/sources'?{sourceId:'synthetic-vector-2022',name:'synthetic-vector-2023',teamId:w.team.id}:{};
   }else if(route.startsWith('/settings/integrations/tokens')){
-   id=token.record.id;
+   id=token.credential.id;
    body=method==='POST'?{name:'synthetic-vector-2024',scopes:['issues:read']}:{};
   }else if(/^\/(?:settings\/)?teams(?:\/|$)/.test(route)){
    id=w.team.id;
