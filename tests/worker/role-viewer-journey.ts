@@ -13,8 +13,8 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect(await env.DB.prepare('SELECT role FROM operators WHERE id=?').bind(viewerId).first('role')).toBe('viewer');
  const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:owner.id}),201);
  const label=(await json(await owner.call('/settings/labels','POST',{name:'synthetic-vector-1990',color:'#3355aa'}))).labels.find((l:any)=>l.name==='synthetic-vector-1990');
- const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id,labelIds:[label.id]}),201);
- const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1723'}),201);
+ const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id,labelIds:[label.id],description:'- [ ] synthetic-vector-2034'}),201);
+ const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'- [ ] synthetic-vector-1723'}),201);
  const reactionPath=`/issues/${issue.identifier}/reactions`;
  const quiet=await snapshot(['notifications','notification_events','notification_deliveries']);
  for(const targetId of ['',ownComment.id]) {
@@ -59,6 +59,7 @@ export async function viewerVisibilityJourney(w:Workspace){
  const workflowState=await json(await owner.call('/settings/teams/'+w.team.id+'/statuses','POST',{name:'synthetic-vector-2029',category:'unstarted'}));
  const workflow=workflowState.teams.find((team:any)=>team.id===w.team.id).statuses;
  const workflowStatus=workflow.find((status:any)=>status.name==='synthetic-vector-2029');
+ const ownCommentVersion=(await json(await owner.api('/comments/'+ownComment.id))).version;
  const logicalId=ownComment.id;
  const registeredMutations=(registry:typeof doors)=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
  // These families use their own persisted subjects and schema-valid inputs.
@@ -110,6 +111,10 @@ export async function viewerVisibilityJourney(w:Workspace){
   else if(route==='/issues/:identifier'&&method==='DELETE')body={expectedVersion:issue.version,confirmed:true};
   else if(route==='/issues/:identifier/comments')body={body:'synthetic-vector-2032'};
   else if((route==='/comments/:id'||route==='/issues/:identifier/comments/:itemId')&&method==='PATCH')body={body:'synthetic-vector-2033'};
+  else if(route==='/comments/:id')body=method==='PATCH'?{expectedVersion:ownCommentVersion,body:'synthetic-vector-2033'}:{expectedVersion:ownCommentVersion};
+  else if(route.endsWith('/comments/:itemId/resolution'))body={resolved:true};
+  else if(route.endsWith('/comments/:itemId/checklist'))body={expectedVersion:ownCommentVersion,index:0,text:'synthetic-vector-1723',checked:true};
+  else if(route.endsWith('/checklist'))body={expectedVersion:issue.version,index:0,text:'synthetic-vector-2034',checked:true};
   else if(route.endsWith('/reactions'))body={targetId:'',emoji:'👍'};
   else if(route.endsWith('/copy'))body={expectedVersion:issue.version,teamId:w.team.id};
   else if(route.endsWith('/subscription'))body={following:true};
