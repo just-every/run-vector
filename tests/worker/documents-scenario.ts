@@ -86,8 +86,9 @@ export async function documentRoles(){
  const outsideIssue=await f.create({teamId:outside.id,projectId:outsideProject.id});
  for(const [kind,id,status] of [['team',team.id,403],['initiative',initiative.id,403],['project',outsideProject.id,404],['issue',outsideIssue.id,404]] as const){
   const target=await create(f.cookie,kind,id);
-  const attempts:[string,string,unknown][]=[['/documents','POST',{parentKind:kind,parentId:id,title:'synthetic-vector-guest-refused',body:'synthetic-vector-refused'}],['/documents/'+target.id,'PATCH',{expectedVersion:target.version,body:'synthetic-vector-guest-refused'}],['/documents/'+target.id+'/comments','POST',{body:'synthetic-vector-guest-refused'}]];
-  for(const [path,method,body] of attempts){const before=await snapshot(tables);expect((await request('/api'+path,method,body,guest)).status).toBe(status);expect(await snapshot(tables)).toEqual(before);}
+  const mutationStatus=kind==='initiative'?404:status;
+  const attempts:[string,string,unknown,number][]=[['/documents','POST',{parentKind:kind,parentId:id,title:'synthetic-vector-guest-refused',body:'synthetic-vector-refused'},status],['/documents/'+target.id,'PATCH',{expectedVersion:target.version,body:'synthetic-vector-guest-refused'},mutationStatus],['/documents/'+target.id+'/comments','POST',{body:'synthetic-vector-guest-refused'},mutationStatus]];
+  for(const [path,method,body,expected] of attempts){const before=await snapshot(tables);expect((await request('/api'+path,method,body,guest)).status).toBe(expected);expect(await snapshot(tables)).toEqual(before);}
  }
  await read(await f.call('/issues/'+issue.identifier+'/specification','PUT',{documentId:visible.id}));
  expect((await read(await request('/api/documents/'+visible.id,'GET',undefined,viewer))).id).toBe(visible.id);

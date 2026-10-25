@@ -4089,7 +4089,7 @@
       "executable": false
     },
     "src/core/features/documents/authority.ts": {
-      "sha256": "9be0bb49403a98c7ed62d1478e71b047e46a40c54c605e7a5f4f0a76c05bfb68",
+      "sha256": "2bd448559a5403db843b5bcdf5b72739df848bcd9eea085c2febe536fecc4b3f",
       "executable": false
     },
     "src/core/features/documents/repository.ts": {
@@ -7417,7 +7417,7 @@
       "executable": false
     },
     "tests/worker/documents-scenario.ts": {
-      "sha256": "b42ef185b600d68b5e00d8c192df383771d577a9abc50d900e3229a017b562f1",
+      "sha256": "2a331f8d294011a09cff288ec5778d91b6791b18686d0b680514b67e2227d8f6",
       "executable": false
     },
     "tests/worker/due-reminders-fixture.ts": {
