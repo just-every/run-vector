@@ -15,7 +15,8 @@ export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrat
  };
  const snapshot=async()=>{
   const names=(await env.DB.prepare("SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' ORDER BY name").all<{name:string}>()).results;
-  const state:Record<string,unknown>={};for(const {name} of names)state[name]=(await env.DB.prepare('SELECT * FROM "'+name.replaceAll('"','""')+'"').all()).results.map(row=>JSON.stringify(row)).sort();
+  const rows=await env.DB.batch(names.map(({name})=>env.DB.prepare('SELECT * FROM "'+name.replaceAll('"','""')+'"')));
+  const state:Record<string,unknown>={};for(const [index,{name}] of names.entries())state[name]=rows[index].results.map(row=>JSON.stringify(row)).sort();
   return state;
  };
  const payload={type:'event_callback',team_id:slackIntakeFixture.team,event_id:'synthetic-vector-33002',event:{type:'app_mention',user:slackIntakeFixture.user,channel:slackIntakeFixture.channel,text:'<@'+slackIntakeFixture.bot+'> Fix the intake defect'}};

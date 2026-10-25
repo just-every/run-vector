@@ -7765,7 +7765,7 @@
       "executable": false
     },
     "tests/worker/slack-events-scenario.ts": {
-      "sha256": "ff426ab73fcfc6ca5b0b1c08277018295792f084ac131c726025150445f27468",
+      "sha256": "abc7fe3bc1681c25212e006abfd66e2f1d982f5a8ff348920a0648a0d820b2a1",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {
