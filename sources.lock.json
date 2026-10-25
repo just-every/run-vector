@@ -709,7 +709,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "7492a218f23352be0addcf9defd1e8d526052a9ac695fe56f5265e617e6cb9bf",
+      "sha256": "98051e0e5a7e169fec3ac61d67335228724d7e339ca71da7914160c3839c6031",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -5845,7 +5845,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/personal-time-panel.tsx": {
-      "sha256": "f58aa6810a2e3a9f9cb15da54610c9425ccf8d360554eb590adaa8b06eef9b5c",
+      "sha256": "01144a9c845b67063662ed0fd9b24f2229c2bb8c6c71acff9587e1ce1012ce0d",
       "executable": false
     },
     "src/core/features/settings/ui/personal-time.css": {
