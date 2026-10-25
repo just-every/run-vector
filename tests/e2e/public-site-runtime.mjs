@@ -9,7 +9,7 @@ import { inspectHome, serveSite, visitPublicPage } from './public-site-support.m
 const site = await serveSite('dist/site');
 let browser;
 try {
-  browser = await chromium.launch({ headless: true });
+  browser = await chromium.launch({ headless: true, args: ["--use-mock-keychain", "--password-store=basic"] });
   const raw = await fetch(site.origin);
   assert.equal(raw.status, 200);
   assert.equal(raw.headers.get('set-cookie'), null);

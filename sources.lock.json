@@ -6865,7 +6865,7 @@
       "executable": false
     },
     "tests/e2e/mutation-refresh-runtime.mjs": {
-      "sha256": "2ecd52ff785af51ce9675e717fdba3900489d3d473a03f31ca829fc7234b9700",
+      "sha256": "d81f0a82b9fe872f43473ea7a225a9caf125349a31f19799c4f3d06116f8bd39",
       "executable": false
     },
     "tests/e2e/operator-request.mjs": {
@@ -6909,7 +6909,7 @@
       "executable": false
     },
     "tests/e2e/public-site-runtime.mjs": {
-      "sha256": "1482bc85763ad36ec2114d6e37e634b779cfc574a72e21ad55b2f285db569f8a",
+      "sha256": "ca27e5d3bfb9d20f2f7cf1a4b6aa3fdc908e9eab0c15f651f6a7f1b87475b6b3",
       "executable": false
     },
     "tests/e2e/public-site-support.mjs": {

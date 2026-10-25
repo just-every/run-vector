@@ -13,7 +13,7 @@ try {
   const cookie=await signIn('owner@removal.test');
   const teamId=sql('SELECT id FROM teams')[0].id;
   const created=await api(cookie,'/issues','POST',{title:'Committed refresh authority',teamId});assert.equal(created.status,201);
-  const issue=await created.json();browser=await chromium.launch({headless:true});const context=await browser.newContext();
+  const issue=await created.json();browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const context=await browser.newContext();
   const split=cookie.indexOf('=');await context.addCookies([{name:cookie.slice(0,split),value:cookie.slice(split+1),url:origin,httpOnly:true,sameSite:'Lax'}]);
   const page=await context.newPage();await page.goto(origin+'/app/issues/'+issue.identifier);
   await page.getByRole('heading',{name:'Committed refresh authority',exact:true}).waitFor();
