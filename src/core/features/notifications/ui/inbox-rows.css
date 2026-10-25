@@ -4,3 +4,5 @@
  .inbox-entry .inbox-row-actions { opacity: 0; }
  .inbox-entry:hover .inbox-row-actions, .inbox-entry:focus-within .inbox-row-actions, .inbox-entry:has([aria-expanded="true"]) .inbox-row-actions { opacity: 1; }
 }
+
+@media (max-width: 46rem) { .inbox-entry .inbox-row-actions { opacity: 1; } }
