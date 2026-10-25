@@ -105,6 +105,14 @@ export async function viewerVisibilityJourney(w:Workspace){
    else if(route.includes('/statuses/')&&method==='DELETE')body={destinationStatusId:w.team.statuses.find(status=>status.category==='unstarted')!.id};
    else if(method==='PATCH'&&route.endsWith('/:id'))body={name:'synthetic-vector-2028'};
   }
+  if(route==='/issues'||route==='/intake')body={title:'synthetic-vector-2030',teamId:w.team.id,projectId:project.id,labelIds:[label.id]};
+  else if(route==='/issues/:identifier'&&method==='PATCH')body={expectedVersion:issue.version,title:'synthetic-vector-2031'};
+  else if(route==='/issues/:identifier'&&method==='DELETE')body={expectedVersion:issue.version,confirmed:true};
+  else if(route==='/issues/:identifier/comments')body={body:'synthetic-vector-2032'};
+  else if((route==='/comments/:id'||route==='/issues/:identifier/comments/:itemId')&&method==='PATCH')body={body:'synthetic-vector-2033'};
+  else if(route.endsWith('/reactions'))body={targetId:'',emoji:'👍'};
+  else if(route.endsWith('/copy'))body={expectedVersion:issue.version,teamId:w.team.id};
+  else if(route.endsWith('/subscription'))body={following:true};
   const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:id).replace(/\*$/,'exports');
   return {path,body};
  };
