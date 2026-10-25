@@ -12,7 +12,7 @@ export async function viewerVisibilityJourney(w:Workspace){
  const owner=w.people.owner,member=w.member;
  const viewerCookie=await invite('synthetic-vector-1720@vector.test',owner.cookie,'viewer'),viewerId=await actor(viewerCookie);
  expect(await env.DB.prepare('SELECT role FROM operators WHERE id=?').bind(viewerId).first('role')).toBe('viewer');
- const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:owner.id}),201);
+ const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:member.id}),201);
  const label=(await json(await owner.call('/settings/labels','POST',{name:'synthetic-vector-1990',color:'#3355aa'}))).labels.find((l:any)=>l.name==='synthetic-vector-1990');
  const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id,labelIds:[label.id],description:'- [ ] synthetic-vector-2034'}),201);
  const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'- [ ] synthetic-vector-1723'}),201);
@@ -58,6 +58,7 @@ export async function viewerVisibilityJourney(w:Workspace){
   for(const door of mutations){
    await resetLimits();
    const prepared=census.request(surface,door),path=prepared.path;
+   await census.beforeRequest(surface,door);
    const before=await stored(),providerCalls=census.edge.calls.length;
    const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
    const usageIds=new Set(usageBefore.map(row=>row.id));
@@ -71,11 +72,12 @@ export async function viewerVisibilityJourney(w:Workspace){
    const usage=usageAfter.filter(row=>!usageIds.has(row.id));
    if(surface==='bearer'){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
    else expect(usage).toHaveLength(0);
+   await census.afterRequest();
    attempts++;
   }
   expect(attempts,surface+' registered mutations from src/core/features/roles/doors.ts').toBe(mutations.length);
  }
- }finally{census.dispose();}
+ }finally{await census.afterRequest();census.dispose();}
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
  const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-1728',identifierPrefix:'SYNVIEW',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-1728');

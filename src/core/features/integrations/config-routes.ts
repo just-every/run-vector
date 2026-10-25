@@ -1,3 +1,4 @@
+import {addSlackAppRoutes} from './slack-app/routes';
 import {addChannelRoutes} from './channels/routes';
 import type { Hono } from 'hono';
 import { z } from 'zod';
@@ -25,6 +26,7 @@ const id=z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
 const personalTokens='SELECT namespace,token_id AS id,name,scopes,created_at AS createdAt,expires_at AS expiresAt,revoked_at AS revokedAt,NOT EXISTS(SELECT 1 FROM integration_tokens t WHERE t.namespace=b.namespace AND t.id=b.token_id) AS requiresReentry FROM vector_integration_tokens b WHERE workspace_id=? AND operator_id=? ORDER BY created_at DESC LIMIT 100';
 export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  addChannelRoutes(app);
+ addSlackAppRoutes(app);
  app.get('/settings/integrations',async c=>{
   const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined),sql=guardedSql(c.env.DB,ownerPredicate(owner));
   const rows=await sql.batch([

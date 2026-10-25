@@ -1,3 +1,4 @@
+import {slackAppInstall} from './slack-app-scenario';
 import {privateChannelRouting} from './private-channel-scenario';
 import {channelNotifications} from './channel-notifications-scenario';
 import {slackDirectMessages,slackActionsFollowCurrentAccess} from './slack-dm-scenario';
@@ -72,3 +73,5 @@ it('[SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cann
 it('a Slack action changes only issues its member can still edit after a role or team change',async()=>{
  await slackActionsFollowCurrentAccess(await setupIntegrations());
 },120000);
+
+it('[SLACK-001 SEC-001 ROLE-001] Owners install their own Slack app through generated or prefilled manifests, actor-bound one-use OAuth, sealed credentials and revocation',async()=>{await slackAppInstall();});

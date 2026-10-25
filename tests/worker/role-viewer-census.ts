@@ -24,7 +24,7 @@ import {importInputSchema,importApplySchema} from '../../src/core/features/data/
 type Workspace=Awaited<ReturnType<typeof roleWorkspace>>;
 type Surface='native'|'bearer';
 export type CensusRequest={path:string;body?:unknown;send?:()=>Promise<Response>};
-export const viewerMutations=(registry:Door[])=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
+export const viewerMutations=(registry:Door[])=>registry.filter(door=>(door.method!=='GET'||door.workMutation)&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
 const key=(door:Pick<Door,'method'|'path'>)=>door.method+' '+door.path;
 const read=async(response:Response)=>{expect(response.ok,await response.clone().text()).toBe(true);return response.json() as Promise<any>;};
 
@@ -61,7 +61,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
  expect(revision,'a real earlier description revision').toBeDefined();
  const app=createServerApp();
  await resetLimits();
- const file=await read(await app.request(origin+'/api/issues/'+issue.identifier+'/files',{method:'POST',headers:{cookie:owner.cookie,host:new URL(origin).host,Origin:origin,'content-type':'text/plain','x-file-name':'synthetic-vector-31014.txt'},body:'synthetic-vector-31014'},bindings));
+ const file=await read(await app.request(origin+'/api/issues/'+issue.identifier+'/files',{method:'POST',headers:{cookie:member.cookie,host:new URL(origin).host,Origin:origin,'content-type':'text/plain','x-file-name':'synthetic-vector-31014.txt'},body:'synthetic-vector-31014'},bindings));
  const remindAt=new Date(Date.now()+172800000).toISOString();
  const reminderState=await call(member,'/issues/'+issue.identifier+'/reminders','POST',{remindAt});
  const reminder=reminderState.reminders.find((row:any)=>row.remindAt===remindAt);
@@ -128,12 +128,20 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   edge.users(emailAddress!,slackUserId,'synthetic-vector-31036');
   await call(member,'/settings/notifications/slack/lookup','POST',{});
   await call(member,'/settings/notifications/slack/link','POST',{slackUserId});
+  const appProfile={appId:'synthetic-vector-31076',clientId:'synthetic-vector-31077',clientSecret:'synthetic-vector-31078-secret',signingSecret:'synthetic-vector-31079-secret'};
+  edge.app(appProfile);
+  await call(owner,'/settings/operators/'+member.id+'/role','PATCH',{role:'admin'});
+  await call(member,'/settings/integrations/slack/app','POST',appProfile);
+  const installUrl=new URL((await call(member,'/settings/integrations/slack/app/install','POST')).url);
+  await call(owner,'/settings/operators/'+member.id+'/role','PATCH',{role:'member'});
+  const oauthPath='/integrations/slack/oauth/callback?state='+encodeURIComponent(installUrl.searchParams.get('state')!)+'&code=synthetic-vector-31080';
   const signingSecret=Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join('');
   const plans={native:new Map<string,CensusRequest>(),bearer:new Map<string,CensusRequest>()};
   const bind=(route:string,params:Record<string,string>)=>route.replace(/:([A-Za-z]+)/g,(_,name)=>{expect(params[name],route+' parameter '+name).toBeTruthy();return params[name];});
   const add=(surface:Surface,method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>{const id=method+' '+route;expect(plans[surface].has(id),id+' duplicate fixture').toBe(false);plans[surface].set(id,{path:path??bind(route,params),body});};
   const native=(method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>add('native',method,route,body,params,path);
   const both=(method:Door['method'],nativePath:string,bearerPath:string,body:unknown,params:Record<string,string>={})=>{add('native',method,nativePath,body,params);add('bearer',method,bearerPath,body,params);};
+  native('POST','/settings/integrations/slack/app',appProfile);native('POST','/settings/integrations/slack/app/create',{configurationToken:'synthetic-vector-31081-token'});native('POST','/settings/integrations/slack/app/install',undefined);native('GET','/integrations/slack/oauth/callback',undefined,{},oauthPath);
   const ip={identifier:issue.identifier},cp={...ip,itemId:comment.id},pp={id:project.id},tp={id:w.team.id},teamId={teamId:w.team.id};
   for(const method of ['POST','PATCH','PUT'] as const){
    const path=method==='POST'?'/initiatives':method==='PATCH'?'/initiatives/:id':'/initiatives/:id/projects';
@@ -209,6 +217,39 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   };
   for(const [route,schema] of Object.entries(schemas))schema.parse(plans.native.get(route)!.body);
   for(const surface of ['native','bearer'] as const){const expected=viewerMutations(surface==='native'?doors:apiDoors).map(key).sort();expect([...plans[surface].keys()].sort(),surface+' fixture coverage from src/core/features/roles/doors.ts').toEqual(expected);}
-  return {edge,plans,request(surface:Surface,door:Door){const prepared=plans[surface].get(key(door));expect(prepared,key(door)+' needs a valid fixture').toBeDefined();return prepared!;},afterRoleChange:async()=>{await call(owner,'/settings/teams/'+w.team.id+'/members/'+member.id,'PUT',{role:'member'});},dispose:()=>edge.restore()};
+  // A completed destination restore is a seed precondition for the two
+  // destination-review doors. Exercise their Owner control publicly before
+  // comparing the Viewer's request, rather than accepting an unavailable 409.
+  const restoreHash=await digest('synthetic-vector-31075');let restoreJob='';
+  let restoreActive=false;
+  const beforeRequest=async(surface:Surface,door:Door)=>{
+   if(surface!=='native'||!door.path.startsWith('/data/restore/'))return;
+   restoreJob=createUlid(new Date());
+   expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_restore_status').first('n')).toBe(0);
+   expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_restore_operator_grants').first('n')).toBe(0);
+   await env.DB.batch([
+    env.DB.prepare("INSERT INTO rer_portability_jobs(id,kind,actor,phase,completed,metadata) VALUES(?,'import',?,'complete',1,?)").bind(restoreJob,owner.id,JSON.stringify({contentHash:restoreHash})),
+    env.DB.prepare('INSERT INTO vector_restore_status(id,import_id,effects_held) VALUES(1,?,1)').bind(restoreJob),
+    env.DB.prepare("INSERT INTO vector_restore_operator_grants(auth_id,approved_at) SELECT auth_id,strftime('%Y-%m-%dT%H:%M:%fZ','now') FROM vector_auth_operators WHERE operator_id IN (?,?)").bind(owner.id,member.id),
+   ]);
+   restoreActive=true;
+   const state=await call(owner,'/data/restore');expect(state).toMatchObject({restored:true,status:{effectsHeld:1,importId:restoreJob,phase:'complete'}});
+   expect(state.operators).toContainEqual(expect.objectContaining({id:w.lead.id,approved:0,eligible:1}));
+   const prepared=plans.native.get(key(door))!;
+   await call(owner,prepared.path,'POST',prepared.body);
+   if(door.path.includes('/operators/')){
+    expect(await env.DB.prepare('SELECT 1 FROM vector_restore_operator_grants g JOIN vector_auth_operators m ON m.auth_id=g.auth_id WHERE m.operator_id=?').bind(w.lead.id).first()).not.toBeNull();
+    await env.DB.prepare('DELETE FROM vector_restore_operator_grants WHERE auth_id IN(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)').bind(w.lead.id).run();
+   }else{
+    expect(await env.DB.prepare('SELECT effects_held FROM vector_restore_status WHERE id=1').first('effects_held')).toBe(0);
+    await env.DB.prepare('UPDATE vector_restore_status SET effects_held=1,reviewed_at=NULL WHERE id=1').run();
+   }
+  };
+  const afterRequest=async()=>{
+   if(!restoreActive)return;
+   await env.DB.batch([env.DB.prepare('DELETE FROM vector_restore_status WHERE id=1'),env.DB.prepare('DELETE FROM vector_restore_operator_grants'),env.DB.prepare('DELETE FROM rer_portability_jobs WHERE id=?').bind(restoreJob)]);
+   restoreActive=false;
+  };
+  return {edge,plans,beforeRequest,afterRequest,request(surface:Surface,door:Door){const prepared=plans[surface].get(key(door));expect(prepared,key(door)+' needs a valid fixture').toBeDefined();return prepared!;},afterRoleChange:async()=>{await call(owner,'/settings/teams/'+w.team.id+'/members/'+member.id,'PUT',{role:'member'});},dispose:()=>edge.restore()};
  }catch(error){edge.restore();throw error;}
 }
