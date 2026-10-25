@@ -151,8 +151,8 @@ export function IssueBrowserSurface({
   const navigate = useNavigate();
   const options = useApiResource("/api/options", workspaceOptionsSchema).data;
   const administration = useApiResource("/api/metadata", administrationSchema).data;
-  // A board shows one team's workflow. With a single team there is nothing to
-  // choose, so the board reads it directly instead of asking for it.
+  // A board reads the person's team until they explicitly choose another.
+  // Keep that default local so restoring controls cannot race their choice.
   const layoutQuery = issueListLayoutQuery(query, layout);
   const shownQuery =
     layout === "board" && layoutQuery.team === "all" && options && administration && preferredTeam(options, administration)
@@ -160,12 +160,10 @@ export function IssueBrowserSurface({
       : layoutQuery;
   useEffect(() => {
     if (
-      shownQuery.team !== query.team ||
       shownQuery.pageSize !== query.pageSize ||
       shownQuery.grouping !== query.grouping
     )
       onChange({
-        team: shownQuery.team,
         pageSize: shownQuery.pageSize,
         grouping: shownQuery.grouping,
         offset: query.offset,
