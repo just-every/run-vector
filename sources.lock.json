@@ -5857,7 +5857,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-page.tsx": {
-      "sha256": "81803bd30d228819712820ba40ce09c0f0e9c94c6dc227e6077431b8b21ace55",
+      "sha256": "4d485b85760d1b2abb53fe620ad39a85b6b4fe67e83ef15e0564dabcc93c4ce4",
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
@@ -5905,7 +5905,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/timezone-picker.tsx": {
-      "sha256": "c342252612e840b5e4eb0f19a40f6024c8af2da9818f5f4dc9c2758f969f73a9",
+      "sha256": "bb70d2e4db41eee3355d5a59659faba5ee81d7258e326a964b80ac8a23963c36",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
