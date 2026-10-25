@@ -3337,7 +3337,7 @@
       "executable": false
     },
     "src/core/app/ui/mobile-account.tsx": {
-      "sha256": "9635e91cfd79bcf48d1c17ce651b1d263415e4b3ee9c078d7e501ac21d477e5d",
+      "sha256": "b096d0e4c220c75bc87fb65fbfff2e883f063e467b02477a397ac86b0c5c3a28",
       "executable": false
     },
     "src/core/app/ui/palette.css": {
@@ -6417,7 +6417,7 @@
       "executable": false
     },
     "tests/e2e/admin-access-journey.mjs": {
-      "sha256": "68d60c765b33d1df223a4be8f2701a104293893a89f16fc5adfab1228e8b7a0f",
+      "sha256": "e282b0c2f7e044b64778e655fb068ca1e60ef911953f8c3f39e17fb163290e4d",
       "executable": false
     },
     "tests/e2e/admin-archive-team-journey.mjs": {
@@ -7037,7 +7037,7 @@
       "executable": false
     },
     "tests/e2e/ui-controls-checks.mjs": {
-      "sha256": "b0dac5806c7aa8588b8bedc8ed26982f568568a1c60168bcc82e14a06e297aa5",
+      "sha256": "6360a7375e19d6484a13615898c07dd92d4290589e4c26efbff4bba39b74ae38",
       "executable": false
     },
     "tests/e2e/ui-failure-diagnostics.mjs": {
