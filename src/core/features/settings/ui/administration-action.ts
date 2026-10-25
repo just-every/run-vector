@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { administrationSchema } from "../../administration/schema";
-import { fetchJson } from "../../../app/api-client";
+import { ApiError, fetchJson } from "../../../app/api-client";
 
 export function useAdministrationAction(onChanged: () => void) {
   const busy = useRef(false);
@@ -28,8 +28,11 @@ export function useAdministrationAction(onChanged: () => void) {
       setMessage("Saved");
       onChanged();
       return true;
-    } catch {
-      setError("Couldn’t save.");
+    } catch (cause) {
+      const body = cause instanceof ApiError ? cause.body : null;
+      // Keep the server's field guidance; transport errors never reach the page.
+      const detail = body && typeof body === 'object' && 'message' in body && typeof body.message === 'string' ? body.message : null;
+      setError(detail ?? "Couldn’t save.");
       return false;
     } finally {
       busy.current = false; setPending(false);

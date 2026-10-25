@@ -60,7 +60,7 @@ try {
     await preview.getByRole('heading', { name: 'Would archive 1' }).waitFor();
     assert.ok((await preview.innerText()).includes(stale.identifier) && (await preview.innerText()).includes(done.identifier));
     assert.equal((await saved).status(), 200);
-    await form.getByRole('status').waitFor(); await settleReads(page); await preview.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${output}/settings-preview-${width}.png` }); await overflow();
+    await form.getByRole('status', {name:'Save status',exact:true}).waitFor(); await settleReads(page); await preview.scrollIntoViewIfNeeded(); await page.screenshot({ path: `${output}/settings-preview-${width}.png` }); await overflow();
   }
   // Two scheduled runs: the second finds nothing left to change, so each change notifies once.
   for (let run = 0; run < 2; run++) {
