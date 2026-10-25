@@ -4125,7 +4125,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "55ad45d8576778ee50f2027d64e6b3fd7bcafe8441c9217836c0c2f2eaf52e82",
+      "sha256": "c587c0242222a885ca43ed08dc092d893006e9f8f64c2bfea535400dac3fe493",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
