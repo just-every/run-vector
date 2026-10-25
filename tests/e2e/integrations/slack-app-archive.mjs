@@ -34,6 +34,7 @@ export async function exerciseSlackAppArchive({page,runtime,cookie,width,evidenc
   const staged=await targetApi('/portability/imports','POST',{confirmed:true,manifest:records[0]});assert.equal(staged.status,201,await staged.clone().text());const job=(await staged.json()).id;
   for(const part of records.filter(row=>row.kind==='part'))assert.equal((await targetApi('/portability/imports/'+job+'/parts/'+part.index,'PUT',part)).status,200);
   const closing=records.at(-1),finalized=await targetApi('/portability/imports/'+job+'/finalize','POST',{contentHash:closing.contentHash,archiveHash:closing.archiveHash});assert.equal(finalized.status,200,await finalized.clone().text());
+  const initialized=await target.req('/health');assert.equal(initialized.status,200);await initialized.body.cancel();
   authenticated=await authenticate();
   const app=await targetApi('/settings/integrations/slack/app');assert.equal(app.status,200);assert.equal((await app.json()).app,null);
   const channels=await targetApi('/settings/integrations/channels');assert.equal(channels.status,200);const slack=(await channels.json()).slack;assert.equal(slack.connected,false);assert.equal(slack.needsAttention,true);assert.equal(slack.signingSecret,false);

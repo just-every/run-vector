@@ -6829,7 +6829,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-archive.mjs": {
-      "sha256": "15ecd696e3ef16686ace2ca89d5efc132bdab2d020adff00517b1b294dc2b0f8",
+      "sha256": "a329916204ef4ccc0a9d2e151f2f7a2a31b125c060fa3ebbd79dad9b532d82ea",
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
