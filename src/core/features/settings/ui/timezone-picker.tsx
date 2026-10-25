@@ -28,7 +28,7 @@ export function TimezonePicker({ id, name = 'timezone', label, value, follow }: 
     <SettingsFieldLabel htmlFor={control} fieldName={name}>{label}
     <select ref={selection} id={control} aria-label={label} disabled={!ready} name={name} defaultValue={value} required={!follow} onChange={() => { edited.current = true; }}>
       {follow && <option value="">Follow workspace ({timezoneName(follow)})</option>}
-      {zones.map(zone => <option key={zone} value={zone} hidden={!matches(zone)}>{timezoneName(zone)} · {zone.replaceAll('_', ' ')}</option>)}
+      {zones.map(zone => <option key={zone} value={zone} hidden={!matches(zone)}>{timezoneName(zone)}</option>)}
     </select>
     </SettingsFieldLabel>
   </div>;
