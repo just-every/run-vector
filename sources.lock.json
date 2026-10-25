@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "50a694271c8c84cfe5ad3e38234fd24ab8fec09d39c0f1acf3d7f5e695a5d6c2",
+      "sha256": "ed679386e44ac00c33e187995439b9e6f3176e3f3298f0c63484f8150dbbbd8f",
       "executable": false
     },
     "DEMO.md": {
@@ -7721,7 +7721,7 @@
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "38e35cea734ff7eabad32918cf809e190e26460ac01ab8a69fd594346898eca4",
+      "sha256": "1f86ad56a2fd3d906e0266ff31951212f9c158ba0e5b793b407d3b0a2a2b0f04",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {

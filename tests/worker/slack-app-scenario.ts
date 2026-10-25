@@ -36,10 +36,10 @@ export async function slackAppInstall(){
   await read(await f.call('/settings/integrations/slack/app/create','POST',{configurationToken:configToken}));
   const configured=await read(await f.call('/settings/integrations/slack/app'));
   expect(configured.app).toEqual({appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001'});
-  const stored=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack-app:%'").all();
-  expect(stored.results).toHaveLength(1);expect(JSON.stringify(stored)).not.toContain(clientSecret);expect(JSON.stringify(stored)).not.toContain(secret);expect(JSON.stringify(stored)).not.toContain(configToken);
+  const stored=(await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack-app:%'").all()).results;
+  expect(stored).toHaveLength(1);expect(JSON.stringify(stored)).not.toContain(clientSecret);expect(JSON.stringify(stored)).not.toContain(secret);expect(JSON.stringify(stored)).not.toContain(configToken);
   denied=true;await read(await f.call('/settings/integrations/slack/app/create','POST',{configurationToken:configToken}),400);denied=false;
-  expect(await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack-app:%'").all()).toEqual(stored);
+  expect((await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack-app:%'").all()).results).toEqual(stored);
   const discarded=await begin(),current=await begin();
   expect((await callback(discarded)).status).toBe(403);
   expect((await callback(current,member)).status).toBe(403);
