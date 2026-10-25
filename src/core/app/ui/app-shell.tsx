@@ -1,3 +1,4 @@
+import { useHydrated } from '../initial-resources'
 import { MobileAccount } from './mobile-account'
 import { DeletionNotice } from '../../features/issue-deletion/receipt-notice'
 import { IssueUndoNotice } from '../../features/issue-undo/ui/notice'
@@ -59,6 +60,7 @@ const navigation: NavigationItem[] = [
 
 export function AppShell({ children }: AppShellProps) {
   const { operator } = useRouteContext({ from: '/app' })
+  const hydrated = useHydrated()
   return (
     <SavedViewReceiptProvider key={operator.id}>
       <NotificationProvider>
@@ -70,6 +72,7 @@ export function AppShell({ children }: AppShellProps) {
 
 function AppShellContent({ children }: AppShellProps) {
   const { operator } = useRouteContext({ from: '/app' })
+  const hydrated = useHydrated()
   const location = useLocation()
   const navigate = useNavigate()
   const mobileNavigation = useRef<HTMLElement>(null)
@@ -248,7 +251,7 @@ function AppShellContent({ children }: AppShellProps) {
           <span>{operator.name}</span>
           <button
             type="button"
-            disabled={signingOut}
+            disabled={!hydrated || signingOut}
             onClick={() => void signOut()}
           >
             {signingOut ? 'Signing out…' : 'Sign out'}
