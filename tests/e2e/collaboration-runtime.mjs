@@ -177,15 +177,22 @@ await contract(
         assert.deepEqual(errors, [], "no browser page errors");
         assert.deepEqual(failed, [], "no browser request failures");
         assert.deepEqual(badModules, [], "no browser module failures");
+        const isRevokedProjection = (address) => {
+          const url = new URL(address);
+          const reads = url.pathname === '/api/refresh'
+            ? url.searchParams.getAll('read') : [url.pathname];
+          return reads.length > 0 && reads.every((read) =>
+            /^\/api\/(?:notifications(?:\/count)?|mentions\/options)$/.test(
+              new URL(read, runtime.base).pathname,
+            ));
+        };
         const expectedHttpErrors = consoleErrors.filter(
           (row) =>
             /^Failed to load resource:/.test(row.message) &&
             ((row.location.url === runtime.base + "/api/settings/cycles" &&
               /400/.test(row.message)) ||
               (/401/.test(row.message) &&
-                /^\/api\/(?:notifications(?:\/count)?|mentions\/options)$/.test(
-                  new URL(row.location.url).pathname,
-                ) &&
+                isRevokedProjection(row.location.url) &&
                 runtime.sql(
                   "SELECT count(*) n FROM operators WHERE removed_at IS NOT NULL",
                 )[0].n > 0)),

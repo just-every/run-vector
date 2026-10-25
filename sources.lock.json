@@ -6581,7 +6581,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-runtime.mjs": {
-      "sha256": "7536640a32101b8e5ef88b515ba67351766c84060f263363d71dceff9ddbdfc7",
+      "sha256": "b6cd09d076bf7e5878d9aa0982481ab92495909b9682013a5c8606e1678702ce",
       "executable": false
     },
     "tests/e2e/collaboration-support.mjs": {
