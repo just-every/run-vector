@@ -26,19 +26,28 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  const delivered=await snapshot();await read(await send(event),409);expect(await snapshot()).toEqual(delivered);expect(effects()).toHaveLength(count+1);
  const bare=async(event:ReturnType<typeof payload>)=>{
   const state=await snapshot(),prior=effects().length;await read(await send(event));const after=await snapshot();
-  expect(after.vector_slack_event_receipts).toHaveLength((state.vector_slack_event_receipts as string[]).length+1);
+  const oldReceipts=state.vector_slack_event_receipts as string[],newReceipts=after.vector_slack_event_receipts as string[];
+  expect(newReceipts).toHaveLength(oldReceipts.length+1);
+  for(const receipt of oldReceipts)expect(newReceipts).toContain(receipt);
+  const added=newReceipts.filter(receipt=>!oldReceipts.includes(receipt));expect(added).toHaveLength(1);expect(JSON.parse(added[0]).identifier).toBe(event.event.unfurl_id);
   delete state.vector_slack_event_receipts;delete after.vector_slack_event_receipts;
   expect(after).toEqual(state);expect(effects()).toHaveLength(prior);
  };
+ const document=await read(await f.call('/documents','POST',{parentKind:'team',parentId:team,title:'synthetic-vector-private-document',body:'synthetic-vector-private-document-body'}),201);
+ const documentUrl=bindings.APP_ORIGIN+'/app/documents/'+document.id,documentNative=await read(await request('/api/documents/'+document.id,'GET',undefined,member));
+ const documentEvent=payload(documentUrl),documentCount=effects().length;await read(await send(documentEvent));expect(effects()).toHaveLength(documentCount+1);
+ expect(effects().at(-1)!.body).toMatchObject({unfurl_id:documentEvent.event.unfurl_id,source:documentEvent.event.source});
+ const documentText=effects().at(-1)!.body.unfurls[documentUrl].blocks[0].text;expect(documentText).toEqual({type:'plain_text',text:documentNative.id+'\n'+documentNative.title});expect(JSON.stringify(effects().at(-1)!.body)).not.toContain(documentNative.body);
+ await bare(payload(documentUrl,slackIntakeFixture.unlinked));
  await bare(payload(url,slackIntakeFixture.unlinked));
  const outsider=await invite('synthetic-vector-unfurl-outsider@vector.test',f.cookie),outsiderId=await actor(outsider);
  // Re-map the same Slack user: the next event must use current target authority.
  await read(await f.call('/settings/integrations/slack/app/members/'+memberId,'DELETE'));
  await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:outsiderId,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}));
  expect((await request('/api/issues/'+issue.identifier,'GET',undefined,outsider)).status).toBe(404);
- await bare(payload(url));
+ await bare(payload(url));await bare(payload(documentUrl));
  await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'viewer'}));
- await bare(payload(url));
+ await bare(payload(url));await bare(payload(documentUrl));
  await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:false}));
  const viewerCount=effects().length;await read(await send(payload(url)));expect(effects()).toHaveLength(viewerCount+1);
  await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'member'}));

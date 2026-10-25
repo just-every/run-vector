@@ -1,3 +1,4 @@
+import {DocumentsSection} from '../../documents/ui/list';
 import {SubjectSubscribe} from '../../subscriptions/ui/subscriptions';
 import { ProjectChannel } from "../../integrations/ui/project-channel";
 import { ProjectReportPanel } from "../../project-report/panel";
@@ -153,6 +154,7 @@ function ProjectDetailContent({
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
       {milestones}
+      <DocumentsSection parentKind="project" parentId={project.id}/>
       {project.healthExplanation ? (
         <p className="project-health-explanation" role="status">
           {project.healthExplanation}
