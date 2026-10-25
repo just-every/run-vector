@@ -42,6 +42,7 @@ export const matrix = {
   'teams.settings': row('Change team settings: name and unused prefix, the sub-issue completion/reopening rule, triage, cycles and estimates on or off, estimate scale, default template, Git automation rules, auto-close and auto-archive (TEAM-001, ISSUE-019, TEAM-005, GITHUB-003, AUTO-003)', 'yes', 'yes', 'team-setting', 'no'),
   'teams.workflow': row('Add, rename, reorder or remove workflow statuses (TEAM-002, TEAM-004)', 'yes', 'yes', 'team-setting', 'no'),
   'teams.archive': row('Archive or unarchive a team, whatever its *Who manages team settings* permission (TEAM-003)', 'yes', 'yes', 'team-owner', 'no'),
+  'documents.write': row("Write, edit and comment on documents under projects, issues, initiatives and teams they can see (PROJ-013)", 'yes', 'yes', 'yes', 'invited-teams'),
   'issues.write': row('Create, edit and comment on issues in the member\'s teams (ISSUE-001, ISSUE-008)', 'yes', 'yes', 'yes', 'invited-teams'),
   'reactions.write': row('Add or remove reactions on issue descriptions and comments (ISSUE-017)', 'yes', 'yes', 'yes', 'invited-teams'),
   'issues.copy': row('Copy an issue (ROLE-003/ROLE-008; ISSUE-023 action)', 'yes', 'yes', 'teams', 'invited-teams'),
