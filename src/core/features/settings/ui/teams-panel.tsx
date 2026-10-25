@@ -1,3 +1,4 @@
+import { CreateSlackChannel } from "../../projects/ui/project-slack-choice";
 import {TeamJoinRules} from "./team-join-rules";
 import {TeamMetadata} from './team-metadata';
 import {TeamPrivacy} from './team-privacy';
@@ -116,8 +117,7 @@ export function TeamsPanel({
           </label>
           {(data.viewer.role === "owner" || data.viewer.role === "admin") && <>
             <label className="admin-checkbox"><input name="isPrivate" type="checkbox"/>Private team</label>
-            <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
-            <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
+            <CreateSlackChannel />
           </>}
           <button type="submit">Create team</button>
         </fieldset>

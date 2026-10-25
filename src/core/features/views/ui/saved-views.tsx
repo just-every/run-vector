@@ -18,15 +18,19 @@ export function SaveView({
   layout,
   canShare,
   limit,
+  ownerId,
   onCreated,
 }: {
   query: IssueListQuery;
   layout: "list" | "board";
   canShare:boolean;
   limit?: number;
+  ownerId?: string;
   onCreated: (id: string) => void;
 }) {
   const publishReceipt = useSavedViewReceiptPublisher();
+  const views = useSavedViewNavigation();
+  const owned = views.data?.views.filter(view => view.ownerOperatorId === ownerId).length;
   const [open, setOpen] = useState(false),
     [name, setName] = useState(""),
     [shared, setShared] = useState(false),
@@ -84,7 +88,7 @@ export function SaveView({
           </label>}
           <p>
             Private views are only visible to you.
-            {limit !== undefined && <> You can own up to {limit} views.</>}
+            {limit !== undefined && owned !== undefined && owned >= limit - 5 && <> {owned} of {limit} saved views used.</>}
           </p>
           <button disabled={busy || !name.trim()}>
             {busy ? "Saving…" : "Create view"}

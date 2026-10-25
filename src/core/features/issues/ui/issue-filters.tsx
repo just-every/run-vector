@@ -279,7 +279,6 @@ export function IssueFilters({
               </option>
             ))}
           </select>
-          {fixedGrouping && <small>Board groups by workflow status.</small>}
         </label>
       </div>
       <button className="issues-reset" onClick={onReset}>

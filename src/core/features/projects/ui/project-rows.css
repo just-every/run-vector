@@ -1,0 +1,7 @@
+.project-row.project-row--condensed { display: grid; grid-template-columns: minmax(0, 1fr); gap: .35rem; min-height: 0; }
+.project-row--condensed .project-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.project-row-meta { display: flex; min-width: 0; gap: .45rem; align-items: center; overflow: hidden; color: var(--app-muted); white-space: nowrap; }
+.project-row-meta > span { flex: none; }
+.project-row-meta > span:not(:first-child)::before { content: '·'; margin-right: .45rem; }
+.project-row-meta .project-row__progress { display: inline; }
+.project-row-meta .project-health::before, .project-row-meta .project-lifecycle::before { content: none; }

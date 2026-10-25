@@ -86,10 +86,7 @@ export function DeleteIssue({
           }}
         >
           <p>
-            Delete {issue.identifier}? This removes its discussion, attachments,
-            evidence, links and notifications. Children become root issues. Its
-            identifier and minimal audit history remain reserved. Any imported
-            original containing this issue is withdrawn in full.
+            Delete {issue.identifier}? Its children will become separate issues. This issue cannot be brought back.
           </p>
           {issue.duplicates.length > 0 && (
             <p role="alert">

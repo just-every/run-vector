@@ -1,0 +1,6 @@
+.inbox-row-copy .inbox-meta { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: var(--app-muted); }
+.inbox-row-copy .inbox-meta time { display: inline; }
+@media (hover: hover) {
+ .inbox-entry .inbox-row-actions { opacity: 0; }
+ .inbox-entry:hover .inbox-row-actions, .inbox-entry:focus-within .inbox-row-actions, .inbox-entry:has([aria-expanded="true"]) .inbox-row-actions { opacity: 1; }
+}

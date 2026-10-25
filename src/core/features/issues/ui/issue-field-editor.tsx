@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
-import { shortDate } from "../../streams/ui/helpers";
+import { useDateFormat } from "../../../shared/date-format";
 import { issueDetailSchema, type IssueDetailData } from "./data";
 import {
   issueFieldPayload,
@@ -28,6 +28,7 @@ export function IssueFieldEditor({
 }) {
   // `original` is the field's value when editing began: a newer version that
   // left this field alone (often the operator's own property change) is not a conflict.
+  const { date } = useDateFormat();
   const [snapshot, setSnapshot] = useState<{
     version: number;
     original: string;
@@ -52,7 +53,7 @@ export function IssueFieldEditor({
       : field === "estimate"
         ? `${value} points`
         : field === "dueDate"
-          ? shortDate(String(value))
+          ? date(String(value))
           : value;
 
   function open() {

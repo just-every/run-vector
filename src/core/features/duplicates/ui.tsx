@@ -73,7 +73,7 @@ export function IssueDuplicates({
         }}
       >
         <label>
-          Canonical issue identifier{" "}
+          Original issue{" "}
           <input
             value={target}
             onChange={(event) => setTarget(event.target.value)}

@@ -70,12 +70,3 @@ export function projectProgressLabel(project: ProjectSummaryData) {
     : `${project.progress.completed}/${project.progress.total} complete · ${project.progress.percentage}%`
 }
 
-export function shortProjectDate(value: string | null) {
-  if (value === null) return 'No target date'
-  return new Intl.DateTimeFormat(undefined, {
-    timeZone: 'UTC',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(`${value}T00:00:00Z`))
-}

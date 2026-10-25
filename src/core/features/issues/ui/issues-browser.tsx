@@ -1,3 +1,5 @@
+import { preferredTeam } from "./preferred-team";
+import { administrationSchema } from "../../administration/schema";
 import {SubscriptionFilters} from '../../subscriptions/ui/subscriptions';
 import {
   useMatch,
@@ -147,21 +149,23 @@ export function IssueBrowserSurface({
   switchLayout?: boolean;
 }) {
   const navigate = useNavigate();
-  const teams = useApiResource("/api/options", workspaceOptionsSchema).data
-    ?.teams;
+  const options = useApiResource("/api/options", workspaceOptionsSchema).data;
+  const administration = useApiResource("/api/metadata", administrationSchema).data;
   // A board shows one team's workflow. With a single team there is nothing to
   // choose, so the board reads it directly instead of asking for it.
   const layoutQuery = issueListLayoutQuery(query, layout);
   const shownQuery =
-    layout === "board" && layoutQuery.team === "all" && teams?.length === 1
-      ? { ...layoutQuery, team: teams[0]!.id }
+    layout === "board" && layoutQuery.team === "all" && options && administration && preferredTeam(options, administration)
+      ? { ...layoutQuery, team: preferredTeam(options, administration) }
       : layoutQuery;
   useEffect(() => {
     if (
+      shownQuery.team !== query.team ||
       shownQuery.pageSize !== query.pageSize ||
       shownQuery.grouping !== query.grouping
     )
       onChange({
+        team: shownQuery.team,
         pageSize: shownQuery.pageSize,
         grouping: shownQuery.grouping,
         offset: query.offset,
