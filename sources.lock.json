@@ -4097,35 +4097,35 @@
       "executable": false
     },
     "src/core/features/documents/repository.ts": {
-      "sha256": "d517ad714848e15dbc9270faa4bc7cb28f1d94851f4e05a4cec9b6beebdba91d",
+      "sha256": "8d2c8b1dea4a81214a89a8982f313191f86d9bc782c3012cdcd88cac3155d9aa",
       "executable": false
     },
     "src/core/features/documents/routes.ts": {
-      "sha256": "987d036150cefff7acb9339e8685315a4c3f5aa60458fbee7bb9da0462be3858",
+      "sha256": "aed49cdeba378ddfc54d56f29d0cade78f0a12a89d67ded6c1b4bce1cdf7a32f",
       "executable": false
     },
     "src/core/features/documents/schema.ts": {
-      "sha256": "820fa079247e50b4d01c6fa6d38609267552f59e250809287390ec8f6babcccb",
+      "sha256": "53ab5cb54b5d5b15112a4a79593a5a3d775d05d89da51e15f141584693639af4",
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "3a1bdb2d409c5f6cdb3e038b6818aae752057d9f26816b291b1b12c722e2d220",
+      "sha256": "228afd6abfa3d3443970ed239ccf732572aa22e7eff6cf1da82299a3cf222b6d",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
-      "sha256": "59c40f1ad4e9db9eade255cb43bfa7b00b9ebfa57dd06e1e62972113ce110186",
+      "sha256": "b515a0d597a840cefbaac9a86751040b9a0a24636f985f99a266d7757e5be2ac",
       "executable": false
     },
     "src/core/features/documents/ui/list.tsx": {
-      "sha256": "ed06e157456ec3ffc73cb995a2f5a73b094570f7bdc046aaa223fe552d22de5f",
+      "sha256": "47aef8a39d8e480d53b27ca4805bd8ba5eeaa49fb76d77fa01934b732ea05223",
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
-      "sha256": "4b7957667e12e6213cebeaadef17aed7c4774d4bcb25a68756ac6b23bf2d73f4",
+      "sha256": "9a83d1cdb0a197c5e643eb5a3b9b7b249feeba2561eab23f36fdd2f51b820c3d",
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "ab7e70ae13bd1d2c64e2195907685cc6a9984693a580e2f6e86f7ee17d202c0e",
+      "sha256": "1fd4e17059fcd1662a7f64cb82c4dc84ad256ac1d5706f02c11efce7e1ffdc56",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
@@ -4573,7 +4573,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/unfurl.ts": {
-      "sha256": "7f7875e07a7cba1e81543ad55c4f6f4e3557cf07892a7f36743832a95db44b4e",
+      "sha256": "a731704f58739940a8e9d6019444bcc414d11064e908281d5afa0509dbf188f8",
       "executable": false
     },
     "src/core/features/integrations/slack-dm/delivery.ts": {
@@ -5045,7 +5045,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "8e031976ec03e65f7f952d0c2d52ef8875f20c5b1d799df858264a2fb7e7027a",
+      "sha256": "db30921b799d20400d0e7bf8004627093062368757e7b6085e61387306765695",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -5933,7 +5933,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "3579a7ebf1e6d0bf6329b1e353f02aa4a8de31983f26b9acd514fd128019da75",
+      "sha256": "c4df6de9f8cd5e1ec4c71f6a65eda4d7363a8bac2ba36e8633dab766e6bcd58f",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
@@ -6981,7 +6981,7 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "1f9dfcacd774122f80824fada8097bd7b9e9aee4f068d018d62b13d2eb5e315b",
+      "sha256": "26b22a2bc57255eb26f465f395a7eda0cefea08e607546f0339aa05625e81c39",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
@@ -7837,7 +7837,7 @@
       "executable": false
     },
     "tests/worker/slack-unfurl-scenario.ts": {
-      "sha256": "b29fb24772f3e02704f796f5d25df8dafd52eead5e8de8aa4fa3331b8aef3931",
+      "sha256": "d0b874359f826e944da431c697bcb2630635f859c8029fb199ff2884ffae9dfe",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {
