@@ -5896,8 +5896,12 @@
       "sha256": "846ebf2902fde63f6b756d06f56993f5a3d9a89085dbc10f13183a6b8fc79609",
       "executable": false
     },
+    "src/core/features/settings/ui/timezone-picker.css": {
+      "sha256": "c23bd35241a805da7875d7d2c88d85e73ff3e82b950b9a5a28a5411ac52fc3e0",
+      "executable": false
+    },
     "src/core/features/settings/ui/timezone-picker.tsx": {
-      "sha256": "f3b94466307c3a2798eed593ab52dff3f918723c2ebbd98f98145a50fb181410",
+      "sha256": "c342252612e840b5e4eb0f19a40f6024c8af2da9818f5f4dc9c2758f969f73a9",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
