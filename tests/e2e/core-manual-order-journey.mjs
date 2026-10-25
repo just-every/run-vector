@@ -23,6 +23,7 @@ export async function manualOrderJourney(page, context, base, record=async()=>{}
   const backlog=listPath+'&category=backlog';
   for(const width of [1440,390]) {
     await page.setViewportSize({width,height:1000});await beforePrivateNavigation(page,base+backlog);await page.goto(base+backlog);
+    assert.equal(new URL(page.url()).pathname, '/app/issues/backlog', 'Legacy backlog query opens the canonical tab path');
     expected=(await api('/issues?team='+team.id+'&sort=manual&category=backlog')).issues.map(i=>i.identifier);await check(expected);
     await page.waitForFunction(identifier=>{const button=document.querySelector('[aria-label="Move '+identifier+' to top"]');return button&&!button.disabled;},expected[0]);
     const first=expected[0],second=expected[1];

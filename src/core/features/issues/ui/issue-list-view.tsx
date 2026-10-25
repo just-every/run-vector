@@ -119,7 +119,7 @@ export function IssueListView({
           </p>
           {query.scope !== "all" && !description ? <p className="issues-scope">{scopeNotes[query.scope]}</p> : null}
         </div>
-        <a href="/app/new">New issue</a>
+        <a href="/app/new-issue">New issue</a>
       </header>
       <nav className="issues-modes" aria-label="Issue list">
         <button
@@ -291,7 +291,7 @@ export function IssueListView({
               >
                 Reset filters and page
               </button>{" "}
-              <a href="/app/new">New issue</a>
+              <a href="/app/new-issue">New issue</a>
             </section>
           )}
           <nav className="issues-pagination" aria-label="Issue pages">

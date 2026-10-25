@@ -106,12 +106,12 @@ export async function assertSignOutReadLifecycle({
           if (path === "/auth/signout") signouts++;
         };
         page.on("request", observe);
-        await page.route("**/api/mentions/options", routeHandler);
+        await page.route("**/api/refresh?**", routeHandler);
         try {
           const request = await admittedRead(admitted);
           await assert.rejects(
             settleReads(page, 50),
-            /reads still pending before navigation:.*\/api\/mentions\/options/,
+            /reads still pending before navigation:.*\/api\/refresh/,
             "a native held GET fails navigation readiness at its deadline",
           );
           const firstAttempt = await clickSignOut(page);
@@ -126,7 +126,7 @@ export async function assertSignOutReadLifecycle({
             "",
             "pause capture completed while sign-out was still draining",
           );
-          // This exceeds the regular two-second poll period, proving admission is
+          // This exceeds the Current’s two-second poll period, proving admission is
           // fenced rather than merely relying on luck between polling ticks.
           await page.waitForTimeout(2200);
           assert.equal(signouts, 0, "revocation waits for admitted real GET");
@@ -138,7 +138,7 @@ export async function assertSignOutReadLifecycle({
           await page
             .getByRole("alert")
             .filter({
-              hasText: "reads are still pending: /api/mentions/options",
+              hasText: /reads are still pending:.*\/api\/refresh/,
             })
             .waitFor({ timeout: 12000 });
           assert.equal(
@@ -156,7 +156,7 @@ export async function assertSignOutReadLifecycle({
           await captureState("signout-read-deadline-retry");
           const resumed = page.waitForResponse(
             (r) =>
-              new URL(r.url()).pathname === "/api/notifications/count" &&
+              new URL(r.url()).pathname === "/api/current" &&
               r.status() === 200,
           );
           await resumed;
@@ -176,7 +176,7 @@ export async function assertSignOutReadLifecycle({
           const secondGate = new Promise((resolve) => {
             releaseSecond = resolve;
           });
-          await page.unroute("**/api/mentions/options", routeHandler);
+          await page.unroute("**/api/refresh?**", routeHandler);
           const secondHandler = async (route) => {
             if (holding) {
               holding = false;
@@ -185,7 +185,7 @@ export async function assertSignOutReadLifecycle({
             }
             await forward(route);
           };
-          await page.route("**/api/mentions/options", secondHandler);
+          await page.route("**/api/refresh?**", secondHandler);
           try {
             const secondRequest = await admittedRead(second);
             const secondAttempt = await clickSignOut(page);
@@ -232,12 +232,12 @@ export async function assertSignOutReadLifecycle({
             page.off("requestfinished", markFinished);
           } finally {
             releaseSecond();
-            await page.unroute("**/api/mentions/options", secondHandler);
+            await page.unroute("**/api/refresh?**", secondHandler);
           }
         } finally {
           release();
           page.off("request", observe);
-          await page.unroute("**/api/mentions/options", routeHandler);
+          await page.unroute("**/api/refresh?**", routeHandler);
         }
       },
     );
@@ -271,7 +271,7 @@ async function admittedRead(promise) {
         timer = setTimeout(
           () =>
             reject(
-              new Error("Native mention poll did not start within 15 seconds"),
+              new Error("Native refresh batch did not start within 15 seconds"),
             ),
           15000,
         );
@@ -291,7 +291,7 @@ async function assertUnexpectedReadFailure(page, base) {
   probe.on("console", (message) => {
     if (message.type() === "error") errors.push(message.text());
   });
-  await probe.route("**/api/notifications/count", async (route) => {
+  await probe.route("**/api/refresh?**", async (route) => {
     const response = await fetchHeld(route);
     assert.equal(
       response.status(),

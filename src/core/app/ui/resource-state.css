@@ -1,0 +1,11 @@
+.resource-state {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 1rem;
+  min-height: 45vh;
+  padding: 2rem;
+  color: var(--color-foreground);
+}
+.resource-state h1 { margin: 0; font-size: 1.25rem; }
+.resource-state p { margin: 0; }

@@ -4,7 +4,9 @@ import { useMatch, useNavigate, useParams } from "@tanstack/react-router";
 import {
   useApiResource,
   isUnavailableResourceError,
+  isMissingResourceError,
 } from "../../../app/api-client";
+import { MissingResource, FailedResource } from '../../../app/ui/resource-state';
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import { IssueBrowserPane } from "../../issues/ui/issue-browser-pane";
 import { IssueBrowserSurface } from "../../issues/ui/issues-browser";
@@ -41,20 +43,15 @@ export function SavedViewPage() {
     if (view) setLocal({ id: view.id, query: view.query, layout: view.layout });
     else if (unavailable) setLocal(null);
   }, [view?.id, storedControls, unavailable]);
+  if (isMissingResourceError(resource.error))
+    return <MissingResource kind="saved view" back="/app/views" list="saved views" />;
+  if (!view && resource.error)
+    return <FailedResource kind="saved view" retry={resource.reload} />;
   if (!view)
     return (
       <main className="issues-browser">
         <h1>Saved view</h1>
-        {resource.error ? (
-          <p role="alert">
-            {isUnavailableResourceError(resource.error)
-              ? "This view is unavailable."
-              : resource.error.message}{" "}
-            <button onClick={resource.reload}>Retry</button>
-          </p>
-        ) : (
-          <p>Loading saved view…</p>
-        )}
+        <p>Loading saved view…</p>
       </main>
     );
   const query = local?.id === view.id ? local.query : view.query,

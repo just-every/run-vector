@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { fetchJson } from "../../../app/api-client.ts";
+import { fetchJson, fetchBackgroundJson } from "../../../app/api-client.ts";
 import { notificationKinds } from "../schema.ts";
 import { slackDirectPreferences } from "../../integrations/slack-dm/schema.ts";
 import type { InboxPage } from "../schema.ts";
@@ -7,10 +7,10 @@ const kind = z.enum(notificationKinds);
 export const countSchema = z.object({
   unreadCount: z.number().int().nonnegative(),
 });
-export function fetchNotificationCount() {
+export function fetchNotificationCount(_signal?: AbortSignal, { background = false }: { background?: boolean } = {}) {
   // Count generations cancel publication, not this small read-only transport.
   // Mutations and access denials can retire a poll while its HTTP read finishes.
-  return fetchJson("/api/notifications/count", countSchema);
+  return background ? fetchBackgroundJson('/api/notifications/count', countSchema) : fetchJson("/api/notifications/count", countSchema);
 }
 export const subscriptionSchema = z.object({
   following: z.boolean(),
@@ -45,22 +45,24 @@ export function inboxUrl(cursor?: string, snoozed = false) {
 export function fetchNotificationInbox(
   cursor?: string,
   snoozed = false,
+  background = false,
 ): Promise<InboxPage> {
   // Retiring an Inbox generation suppresses publication while its read-only
   // HTTP request finishes, including ordinary navigation away from Inbox.
-  return fetchJson(inboxUrl(cursor, snoozed), inboxSchema);
+  return background ? fetchBackgroundJson(inboxUrl(cursor, snoozed), inboxSchema) : fetchJson(inboxUrl(cursor, snoozed), inboxSchema);
 }
 export async function fetchInboxPages(
   pageCount: number,
   snoozed: boolean,
   signal: AbortSignal,
+  background = false,
 ): Promise<InboxPage> {
   signal.throwIfAborted();
-  let page = await fetchNotificationInbox(undefined, snoozed);
+  let page = await fetchNotificationInbox(undefined, snoozed, background);
   let items = page.items;
   for (let index = 1; index < pageCount && page.nextCursor; index++) {
     signal.throwIfAborted();
-    page = await fetchNotificationInbox(page.nextCursor, snoozed);
+    page = await fetchNotificationInbox(page.nextCursor, snoozed, background);
     items = [...items, ...page.items];
   }
   signal.throwIfAborted();

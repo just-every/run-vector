@@ -3,12 +3,26 @@ import { z } from "zod";
 import { privateReads } from "./read-lifecycle.ts";
 import { resourceKey, useInitialResource } from './initial-resources';
 import { receiveUndoReceipt } from '../features/issue-undo/ui/receipt';
+import { isSecondaryRead, onSecondaryRefresh } from './secondary-refresh';
+import { createRefreshBatch, refreshBatchSchema } from './refresh-batch';
+
+const backgroundBatch = createRefreshBatch(url => fetchJson(url, refreshBatchSchema));
+export async function fetchBackgroundJson<S extends z.ZodType>(url: string, schema: S, signal?: AbortSignal): Promise<z.output<S>> {
+  return privateReads.read(url, async () => {
+    signal?.throwIfAborted();
+    const receipt = await backgroundBatch(url);
+    signal?.throwIfAborted();
+    if (receipt.status === 401 && typeof window !== 'undefined') window.dispatchEvent(new Event('vector:auth-lost'));
+    if (receipt.status < 200 || receipt.status >= 300) throw new ApiError(receipt.status, receipt.body);
+    return schema.parse(receipt.body);
+  });
+}
 
 export class ApiError extends Error {
   readonly status: number;
   readonly body: unknown;
   constructor(status: number, body: unknown) {
-    super(messageForBody(body, status));
+    super(messageForBody(body));
     this.status = status;
     this.body = body;
   }
@@ -47,6 +61,10 @@ export function isUnavailableResourceError(error: unknown): boolean {
   );
 }
 
+export function isMissingResourceError(error: unknown): boolean {
+  return error instanceof ApiError && [400, 403, 404, 410].includes(error.status);
+}
+
 // Identity is checked during render, before effects run, so changing an issue
 // URL cannot display the previous issue while its replacement is loading.
 export function resourceStateForIdentity<T>(
@@ -62,7 +80,7 @@ export function resourceStateForIdentity<T>(
 // A controller belongs to one effect/identity. Cancellation saves work; the
 // sequence guard also protects against transports that ignore AbortSignal.
 export function createApiResourceController<T>(
-  load: (signal: AbortSignal) => Promise<T>,
+  load: (signal: AbortSignal, options: { background: boolean }) => Promise<T>,
   publish: (state: ResourceState<T>) => void,
   initial: ResourceState<T> = { data: null, error: null, loading: true },
 ) {
@@ -81,7 +99,8 @@ export function createApiResourceController<T>(
   const resource = {
     async refresh({
       skipIfPending = false,
-    }: { skipIfPending?: boolean } = {}): Promise<void> {
+      background = false,
+    }: { skipIfPending?: boolean; background?: boolean } = {}): Promise<void> {
       if (!active) return;
       if (privateReads.paused) {
         // A newly mounted non-polling resource also needs its skipped read
@@ -105,7 +124,7 @@ export function createApiResourceController<T>(
       // still fail, and starting it must not briefly restore a healthy UI.
       write({ ...current, loading: current.data === null });
       try {
-        const data = await load(controller.signal);
+        const data = await load(controller.signal, { background });
         if (active && request === sequence)
           write({ data, error: null, loading: false });
       } catch (cause) {
@@ -200,7 +219,8 @@ export function useApiResource<S extends z.ZodType>(
 
   useEffect(() => {
     const controller = createApiResourceController(
-      (signal) => fetchJson(url, schema, { signal }),
+      (signal, { background }) => background && isSecondaryRead(url)
+        ? fetchBackgroundJson(url, schema, signal) : fetchJson(url, schema, { signal }),
       (state) => {
         const next = { ...state, url, schema };
         latestSnapshot.current = next;
@@ -218,6 +238,13 @@ export function useApiResource<S extends z.ZodType>(
     // transport; fetchJson keeps that read in the private-read lifecycle.
     if (latestInitial.current === null)
       queueMicrotask(() => { if (latestInitial.current === null) void controller.refresh(); });
+    if (isSecondaryRead(url)) {
+      const stop = onSecondaryRefresh(() => {
+        if (!isMissingResourceError(latestSnapshot.current.error))
+          void controller.refresh({ skipIfPending: true, background: true });
+      });
+      return () => { dispose(); stop(); };
+    }
     if (!pollMs) return dispose;
     const interval = window.setInterval(() => {
       if (document.visibilityState === "visible")
@@ -242,7 +269,7 @@ export function useApiResource<S extends z.ZodType>(
   return { ...resourceStateForIdentity(snapshot, url, schema), reload, refreshAfterMutation, publishReceipt };
 }
 
-function messageForBody(body: unknown, status: number) {
+function messageForBody(body: unknown) {
   if (
     typeof body === "object" &&
     body !== null &&
@@ -250,5 +277,5 @@ function messageForBody(body: unknown, status: number) {
     typeof body.message === "string"
   )
     return body.message;
-  return `The request could not be completed (${status}).`;
+  return 'The request could not be completed.';
 }

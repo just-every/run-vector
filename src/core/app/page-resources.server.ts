@@ -53,7 +53,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
   }
   const detail = async (identifier: string) => {
     const base = '/api/issues/' + encodeURIComponent(identifier)
-    await Promise.all([read(base), read(base + '/discussion'), read(base + '/subscription'), read(base + '/github')])
+    await Promise.all([read(base), read(base + '/discussion'), read(base + '/subscription'), read(base + '/github'), read(base + '/reminders'), read(base + '/references'), read(base + '/email-intake'), read(base + '/reactions')])
   }
   const shared = [read('/api/settings/personal-time'), read('/api/views'), read('/api/notifications/count'), read('/api/mentions/options')]
   const path = url.pathname
@@ -81,7 +81,10 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     const identifier = selected ?? items[0]?.identifier
     if (identifier) {
       const resources = snapshot && await selectedStreamResources(visibilityDatabase(env.DB,operator.id), snapshot, operator, identifier)
-      if (resources) Object.assign(values, resources)
+      if (resources) {
+        Object.assign(values, resources)
+        await Promise.all(['reminders', 'references', 'email-intake', 'reactions'].map(suffix => read('/api/issues/' + encodeURIComponent(identifier) + '/' + suffix)))
+      }
       else await detail(identifier)
     }
     else await Promise.all([read('/api/issues'), read('/api/issues?category=completed')])
@@ -91,7 +94,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
   } else if (/^\/app\/(issues|board)(?:\/|$)/.test(path)) {
     const surface = path.startsWith('/app/board') ? 'board' : 'issues'
     const [options, preference] = await Promise.all([read('/api/options'), read('/api/preferences/' + surface)])
-    const query = issueListQuerySchema.parse(url.search ? Object.fromEntries(url.searchParams)
+    const query = issueListQuerySchema.parse(path === '/app/issues/backlog' ? { ...Object.fromEntries(url.searchParams), category: 'backlog' } : url.search ? Object.fromEntries(url.searchParams)
       : { ...(preference as { filters?: object } | null)?.filters, ...(preference as object) })
     const shown = issueListLayoutQuery(query, surface === 'board' ? 'board' : 'list')
     const teams = (options as { teams: Array<{ id: string }> } | null)?.teams
@@ -100,8 +103,9 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
   } else if (path === '/app/projects') {
     const preference = await read('/api/preferences/projects') as { filters: { includeArchived?: boolean } } | null
     await Promise.all([read('/api/projects' + (preference?.filters.includeArchived ? '?includeArchived=true' : '')), read('/api/metadata')])
-  } else if (path === '/app/cycles') await read('/api/metadata')
-  else if (path === '/app/inbox') await read('/api/notifications')
+  } else if (path === '/app/projects/new') await read('/api/metadata')
+  else if (path === '/app/cycles') await read('/api/metadata')
+  else if (path === '/app/inbox' || path === '/app/inbox/snoozed') await read('/api/notifications' + (path.endsWith('/snoozed') ? '?snoozed=true' : ''))
   else if (path === '/app/settings/audit') await read('/api/settings/audit?')
   else if (path === '/app/settings') {
     const [, administration] = await Promise.all(['/api/settings', '/api/settings/administration', '/api/settings/notifications', '/api/settings/integrations', '/api/settings/integrations/tokens', '/api/settings/integrations/tokens/usage', '/api/data/import/runs', '/api/data/restore'].map(read)) as [unknown, { teams: Array<{ id: string, archivedAt: string | null }> } | null]

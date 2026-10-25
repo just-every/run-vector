@@ -12,6 +12,7 @@ import { fetchNotificationCount } from "./data";
 import { countSchema } from './data';
 import { useInitialResource } from '../../../app/initial-resources';
 import { createNotificationCountController } from "./count-controller";
+import { onSecondaryRefresh } from '../../../app/secondary-refresh';
 const Context = createContext<{
   state: ResourceState<{ unreadCount: number }>;
   accept: (count: number) => void;
@@ -38,15 +39,13 @@ export function NotificationProvider({ children }: { children: ReactNode }) {
     if (initial !== null) current.accept(initial.unreadCount);
     else void current.refresh();
     const refresh = () => {
-      if (document.visibilityState === "visible") void current.refresh();
+      if (document.visibilityState === "visible") void current.refresh({ background: true });
     };
-    const timer = window.setInterval(refresh, 2000);
-    document.addEventListener("visibilitychange", refresh);
+    const stop = onSecondaryRefresh(refresh);
     return () => {
       current.dispose();
       controller.current = null;
-      window.clearInterval(timer);
-      document.removeEventListener("visibilitychange", refresh);
+      stop();
     };
   }, [initial]);
   return (

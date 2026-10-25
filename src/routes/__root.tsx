@@ -1,4 +1,5 @@
 import { editorLeaf } from '../core/editor/leaf';
+import { loadDoorSession } from '../core/app/door-session';
 import {
   createRootRoute,
   HeadContent,
@@ -13,6 +14,9 @@ import "../core/app/app.css";
 import { fontLinks } from "../core/app/fonts";
 import { introCss, introGuardScript } from "../base/hydration/intro-guard";
 export const Route = createRootRoute({
+  beforeLoad: async ({ matches, location }): Promise<{ doorSignedIn: boolean }> => ({
+    doorSignedIn: location.pathname !== '/' && matches.length === 1 ? await loadDoorSession() : false,
+  }),
   head: () => ({
     links: [
       { rel: "icon", type: "image/svg+xml", sizes: "any", href: "/favicon.svg" },
@@ -30,8 +34,11 @@ export const Route = createRootRoute({
     ],
   }),
   component: Root,
-  notFoundComponent: editorLeaf(() => (
-    <Door signIn>
+  notFoundComponent: editorLeaf(PageNotFound),
+});
+function PageNotFound() {
+  const signedIn = Boolean(useMatch({ from: '/app', shouldThrow: false })?.context?.operator) || Route.useRouteContext().doorSignedIn;
+  return <Door>
       <p className="vx-door-kicker">404 · Page not found</p>
       <h1>This page is out of reach</h1>
       <p className="vx-door-lead">
@@ -39,14 +46,12 @@ export const Route = createRootRoute({
         work.
       </p>
       <div className="vx-door-actions">
-        <a className="vx-pill vx-pill--large" href="/app">
-          Back to workspace
+        <a className="vx-pill vx-pill--large" href={signedIn ? '/app' : '/signin'}>
+          {signedIn ? 'Back to workspace' : 'Back to sign in'}
         </a>
-        <a href="/">Return to welcome</a>
       </div>
-    </Door>
-  )),
-});
+    </Door>;
+}
 function Root() {
   // The member's saved choice is server-rendered on <html>, so CSS alone picks the palette before first paint.
   const theme = useMatch({ from: "/app", shouldThrow: false })?.context?.operator?.theme;

@@ -48,6 +48,19 @@ contractWith(it, 'NOTIFY-008', 'snoozes return once by time or issue change and 
   expect(created.status, await created.clone().text()).toBe(200);
   const reminders = (await created.json()) as { reminders: { id: string; remindAt: string }[] };
   expect(reminders.reminders).toMatchObject([{ remindAt }]);
+  const refresh = '/refresh?' + new URLSearchParams([
+    ['read', '/api/notifications/count'], ['read', '/api/mentions/options'], ['read', '/api' + path],
+  ]);
+  const batched = await call(refresh);
+  expect(batched.status).toBe(200);
+  const resources = (await batched.json()) as { resources: { path: string; status: number; body: unknown }[] };
+  expect(resources.resources.every(resource => resource.status === 200)).toBe(true);
+  expect(resources.resources.find(resource => resource.path === '/api' + path)?.body).toEqual(reminders);
+  const others = await f.call(refresh);
+  expect(others.status).toBe(200);
+  expect(((await others.json()) as typeof resources).resources.find(resource => resource.path === '/api' + path)?.body).toEqual({ reminders: [] });
+  expect((await call('/refresh?read=/api/settings')).status).toBe(400);
+  expect((await f.any('', refresh)).status).toBe(401);
   expect((await (await f.call(path)).json()) as unknown).toEqual({ reminders: [] });
   expect((await f.call(path + '/' + reminders.reminders[0].id, 'DELETE')).status).toBe(404);
   const canceled = await call(path, 'POST', { remindAt });

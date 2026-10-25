@@ -24,7 +24,8 @@ import { Dependencies } from "./dependencies";
 import { Discussion } from "./discussion";
 import { isSafeHttpsUrl } from "../../links/schema";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ApiError, useApiResource } from "../../../app/api-client";
+import { isMissingResourceError, useApiResource } from "../../../app/api-client";
+import { MissingResource, FailedResource } from '../../../app/ui/resource-state';
 import { optionsSchema, type StreamOptions } from "../../streams/ui/data";
 import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
@@ -81,23 +82,9 @@ export function IssueDetail({
       </div>
     );
   if (detail.data === null)
-    return (
-      <div className="issue-state issue-state--error" role="alert">
-        <strong>Unable to load {identifier}.</strong>
-        <span>{detail.error?.message}</span>
-        {detail.error instanceof ApiError && detail.error.status === 401 ? (
-          <a
-            href={`/signin?returnTo=${encodeURIComponent(`/app/issues/${identifier}`)}`}
-          >
-            Sign in again
-          </a>
-        ) : (
-          <button type="button" onClick={detail.reload}>
-            Try again
-          </button>
-        )}
-      </div>
-    );
+    return isMissingResourceError(detail.error)
+      ? <MissingResource kind="issue" back="/app/issues" list="Issues" />
+      : <FailedResource kind="issue" retry={detail.reload} />;
   const refresh = (receipt?: IssueDetailData) => {
     if (receipt) {
       if (receipt.identifier !== currentIdentifier.current) return;

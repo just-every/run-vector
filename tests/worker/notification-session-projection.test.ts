@@ -22,6 +22,7 @@ contractWith(
         "count",
         "preferences",
         "subscription",
+        "batch",
       ] as const) {
         // Scenario: `${hosted ? "hosted Base" : "local Base"} ${surface} retains authorized data and denies every invalidated session after final native authentication`
         await (async () => {
@@ -44,6 +45,8 @@ contractWith(
                   ? "/notifications"
                   : surface === "count"
                     ? "/notifications/count"
+                    : surface === 'batch'
+                      ? '/refresh?read=%2Fapi%2Fnotifications%2Fcount'
                     : surface === "preferences"
                       ? "/settings/notifications"
                       : `/issues/${issue.identifier}/subscription`;
@@ -62,6 +65,8 @@ contractWith(
                 });
               else if (surface === "count")
                 expect(projected).toEqual({ unreadCount: 1 });
+              else if (surface === 'batch')
+                expect(projected).toEqual({ resources: [{ path: '/api/notifications/count', status: 200, body: { unreadCount: 1 } }] });
               else if (surface === "preferences")
                 expect(projected).toMatchObject({
                   emailEnabled: true,

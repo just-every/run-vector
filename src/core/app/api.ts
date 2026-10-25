@@ -72,6 +72,7 @@ import { myActivity } from "../features/my-work/activity";
 import { addLinkRoutes } from "../features/links/routes";
 import { Hono, type Context } from "hono";
 import { z } from "zod";
+import { refreshResponse } from './refresh.server';
 import {
   acceptIssueRoute,
   createIssueRoute,
@@ -250,6 +251,9 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addDashboardRoutes(app);
   addFirstRunRoutes(app);
   addIssueUndoRoutes(app);
+
+  app.get('/refresh', context => refreshResponse(context,
+    new Hono<AppEnvironment>().route('/api', createApiApp({ operator: context.get('operator') }))));
 
   app.get("/metadata", async (context) => context.json(await readAdministration(context.env.DB,context.get("operatorId"))));
 

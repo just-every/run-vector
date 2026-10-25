@@ -13,7 +13,7 @@ export function MentionOperatorsProvider({
   const resource = useApiResource(
     "/api/mentions/options",
     mentionOptionsSchema,
-    2000,
+    4000,
   );
   return <Context.Provider value={resource}>{children}</Context.Provider>;
 }

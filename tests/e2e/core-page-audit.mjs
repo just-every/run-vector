@@ -7,9 +7,10 @@ const require = createRequire(import.meta.url);
 export async function pageAudit(page, base, issue, evidence, record) {
   const results = [];
   const source = await readFile(require.resolve('axe-core/axe.min.js'), 'utf8');
-  for (const path of ['/app', '/app/my-work', '/app/issues', '/app/board', '/app/projects', '/app/cycles', '/app/inbox', '/app/search', '/app/new-issue', '/app/issues/' + issue]) {
+  for (const path of ['/app', '/app/my-work', '/app/issues', '/app/issues/backlog', '/app/board', '/app/projects', '/app/projects/new', '/app/cycles', '/app/inbox', '/app/inbox/snoozed', '/app/views', '/app/settings/members', '/app/search', '/app/new-issue', '/app/new', '/app/issues/' + issue]) {
     await beforePrivateNavigation(page, base + path);
     await page.goto(base + path);
+    assert.equal((await page.reload()).status(), 200, path + ': destination survives a document reload');
     await page.locator('main:visible').first().waitFor();
     await settleReads(page);
     await page.evaluate(() => document.fonts.ready);
@@ -32,5 +33,5 @@ export async function pageAudit(page, base, issue, evidence, record) {
     assert.ok(geometry.every(g => g.documentWidth <= g.width), path + ': no horizontal overflow');
     await page.setViewportSize({ width: 1440, height: 1000 });
   }
-  record('RENDER-AUDIT', 'Ten meaningful app pages pass one serious/critical axe audit and desktop/mobile overflow checks.');
+  record('RENDER-AUDIT', 'App pages and plausible route aliases survive document reloads, a serious/critical axe audit and desktop/mobile overflow checks.');
 }

@@ -4,7 +4,7 @@ import {
 } from "../../../app/api-client.ts";
 /** A mutation invalidates every earlier count request, even if abort is ignored. */
 export function createNotificationCountController(
-  load: (signal: AbortSignal) => Promise<{ unreadCount: number }>,
+  load: (signal: AbortSignal, options: { background: boolean }) => Promise<{ unreadCount: number }>,
   publish: (state: ResourceState<{ unreadCount: number }>) => void,
 ) {
   let current: ResourceState<{ unreadCount: number }> = {
@@ -29,8 +29,8 @@ export function createNotificationCountController(
     );
   }
   return {
-    refresh() {
-      return controller.refresh({ skipIfPending: true });
+    refresh(options: { background?: boolean } = {}) {
+      return controller.refresh({ skipIfPending: true, ...options });
     },
     accept(unreadCount: number) {
       if (disposed) return;

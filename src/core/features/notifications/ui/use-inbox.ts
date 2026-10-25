@@ -17,6 +17,7 @@ import {
   fetchInboxPages,
 } from "./data";
 import { useNotifications } from "./notification-context";
+import { onSecondaryRefresh } from '../../../app/secondary-refresh';
 import type { SnoozeChoice } from "./inbox-snooze";
 
 export function useInbox(snoozed: boolean) {
@@ -45,7 +46,7 @@ export function useInbox(snoozed: boolean) {
   useEffect(() => {
     active.current = true;
     const current = createApiResourceController(
-      (signal) => fetchInboxPages(pageCount.current, snoozed, signal),
+      (signal, { background }) => fetchInboxPages(pageCount.current, snoozed, signal, background),
       (next) => {
         if (!active.current) return;
         if (next.data) {
@@ -71,16 +72,14 @@ export function useInbox(snoozed: boolean) {
     else void current.refresh();
     const refresh = () => {
       if (!mutation.current && document.visibilityState === "visible")
-        void current.refresh({ skipIfPending: true });
+        void current.refresh({ skipIfPending: true, background: true });
     };
-    const timer = window.setInterval(refresh, 2000);
-    document.addEventListener("visibilitychange", refresh);
+    const stop = onSecondaryRefresh(refresh);
     return () => {
       active.current = false;
       ++generation.current;
       current.dispose();
-      window.clearInterval(timer);
-      document.removeEventListener("visibilitychange", refresh);
+      stop();
       pageAbort.current?.abort();
     };
   }, [revision, snoozed]);

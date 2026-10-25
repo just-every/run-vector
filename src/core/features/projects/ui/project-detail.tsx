@@ -12,7 +12,8 @@ import { administrationSchema } from "../../administration/schema";
 import { ProjectAdministration } from "./project-administration";
 import type { ReactNode } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { useApiResource } from "../../../app/api-client";
+import { isMissingResourceError, useApiResource } from "../../../app/api-client";
+import { MissingResource, FailedResource } from '../../../app/ui/resource-state';
 import {
   activeHealthLabel,
   lifecycleLabel,
@@ -38,15 +39,9 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
       </main>
     );
   if (project.error || project.data === null)
-    return (
-      <main className="projects-state projects-state--error" role="alert">
-        <strong>Unable to load this project.</strong>
-        <span>{project.error?.message}</span>
-        <button type="button" onClick={project.reload}>
-          Try again
-        </button>
-      </main>
-    );
+    return isMissingResourceError(project.error)
+      ? <MissingResource kind="project" back="/app/projects" list="Projects" />
+      : <FailedResource kind="project" retry={project.reload} />;
   const record = administration.data?.projects.find(
     (item) => item.id === projectId,
   );

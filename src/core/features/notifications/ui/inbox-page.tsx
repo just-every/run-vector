@@ -1,5 +1,5 @@
 import { useHydrated } from '../../../app/initial-resources';
-import { useState } from "react";
+import { useMatch, useNavigate } from "@tanstack/react-router";
 import { InboxNotificationRow } from "./inbox-row";
 import { useInbox } from "./use-inbox";
 import "./notifications.css";
@@ -21,7 +21,9 @@ export function InboxEmptyState({ snoozed = false }: { snoozed?: boolean }) {
 }
 
 export function InboxPageView() {
-  const [snoozed, setSnoozed] = useState(false);
+  const snoozed = Boolean(useMatch({ from: '/app/inbox/snoozed', shouldThrow: false }));
+  const navigate = useNavigate();
+  const setSnoozed = (value: boolean) => { void navigate({ to: value ? '/app/inbox/snoozed' : '/app/inbox' }); };
   return (
     <main className="inbox-page">
       <InboxFeed
