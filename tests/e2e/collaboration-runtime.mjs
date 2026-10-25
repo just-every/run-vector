@@ -179,12 +179,14 @@ await contract(
         assert.deepEqual(badModules, [], "no browser module failures");
         const isRevokedProjection = (address) => {
           const url = new URL(address);
+          if (url.origin !== runtime.base) return false;
           const reads = url.pathname === '/api/refresh'
             ? url.searchParams.getAll('read') : [url.pathname];
-          return reads.length > 0 && reads.every((read) =>
-            /^\/api\/(?:notifications(?:\/count)?|mentions\/options)$/.test(
-              new URL(read, runtime.base).pathname,
-            ));
+          return reads.length > 0 && reads.every((read) => {
+            const projection = new URL(read, runtime.base);
+            return projection.origin === runtime.base &&
+              /^\/api\/(?:notifications(?:\/count)?|mentions\/options)$/.test(projection.pathname);
+          });
         };
         const expectedHttpErrors = consoleErrors.filter(
           (row) =>
