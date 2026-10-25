@@ -2,13 +2,15 @@ import { useEffect, useRef, useState, type FormHTMLAttributes } from 'react';
 import { useRouteContext } from '@tanstack/react-router';
 import type { z } from 'zod';
 import { fetchJson } from '../../../app/api-client';
+import { SettingsSaveFeedback, withSettingsLabels, saveField, type SaveState, type SaveField } from './settings-save-feedback';
 
-type Draft = { revision: string; fields: [string, string][]; valid: boolean; confirmed: boolean };
+type Draft = { revision: string; fields: [string, string][]; valid: boolean; confirmed: boolean; field?: SaveField };
 const writes = new Map<string, Promise<unknown>>();
 function readDraft(key: string): Draft | null {
   const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null');
   if (!value || typeof value !== 'object') return null;
   const draft = value as Draft;
+  if (draft.field && (typeof draft.field.name !== 'string' || typeof draft.field.id !== 'string' || (draft.field.choice !== undefined && typeof draft.field.choice !== 'string'))) return null;
   return typeof draft.revision === 'string' && typeof draft.confirmed === 'boolean' && typeof draft.valid === 'boolean' && Array.isArray(draft.fields)
     && draft.fields.every(pair => Array.isArray(pair) && pair.length === 2 && pair.every(value => typeof value === 'string')) ? draft : null;
 }
@@ -39,7 +41,8 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
   const busy = useRef(false), mounted = useRef(false);
   const current = useRef({ path, method, schema, read, onSaved });
   current.current = { path, method, schema, read, onSaved };
-  const [state, setState] = useState<'idle' | 'dirty' | 'saving' | 'saved' | 'failed'>('idle');
+  const [state, setState] = useState<SaveState>('idle');
+  const [field, setField] = useState<SaveField | null>(null);
   function status(next: typeof state) { if (mounted.current) setState(next); }
   async function flush() {
     clearTimeout(timer.current);
@@ -74,27 +77,32 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     clearTimeout(timer.current);
     if (!confirm || draft.current?.confirmed) timer.current = setTimeout(() => void flush(), 600);
   }
-  function edit() {
+  function edit(target?: EventTarget | null) {
     const element = form.current;
     if (!element) return;
+    const changed = target ?? element.querySelector('[name]');
+    const editedField = changed instanceof HTMLInputElement || changed instanceof HTMLSelectElement || changed instanceof HTMLTextAreaElement ? saveField(changed) : undefined;
+    if (editedField) setField(editedField);
     const fields: [string, string][] = [];
     for (const [name, value] of new FormData(element)) if (typeof value === 'string') fields.push([name, value]);
-    draft.current = { revision: crypto.randomUUID(), fields, valid:element.checkValidity(), confirmed: false };
+    draft.current = { revision: crypto.randomUUID(), fields, valid:element.checkValidity(), confirmed: false, field: editedField };
     try { localStorage.setItem(key, JSON.stringify(draft.current)); } catch { /* Keep the draft in this mounted form if device storage is unavailable. */ }
     status('dirty'); schedule();
   }
   useEffect(() => {
     mounted.current = true;
+    const first = form.current?.querySelector('[name]');
+    if (first instanceof HTMLInputElement || first instanceof HTMLSelectElement || first instanceof HTMLTextAreaElement) setField(saveField(first));
     try {
       const saved = readDraft(key);
-      if (saved && form.current) { draft.current = saved; restore(form.current, saved); onRestored?.(new FormData(form.current)); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
+      if (saved && form.current) { draft.current = saved; restore(form.current, saved); if (saved.field) setField(saved.field); onRestored?.(new FormData(form.current)); status('dirty'); if (!confirm || saved.confirmed) timer.current = setTimeout(() => void flush(), 600); }
       else if (form.current && initialize?.(form.current)) edit();
     } catch { /* An unreadable device draft cannot replace current server values. */ }
     const leave = () => { if (!confirm) void flush(); };
     window.addEventListener('pagehide', leave);
     return () => { leave(); mounted.current = false; clearTimeout(timer.current); window.removeEventListener('pagehide', leave); };
   }, [key]);
-  return <form {...props} ref={form} onChange={edit} onSubmit={event => {
+  return <SettingsSaveFeedback.Provider value={{state, field, retry: () => void flush()}}><form {...props} ref={form} onChange={event => edit(event.target)} onSubmit={event => {
     event.preventDefault();
     if (draft.current && confirm) {
       draft.current.confirmed = true;
@@ -102,10 +110,8 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     }
     void flush();
   }}>
-    {children}
+    {withSettingsLabels(children)}
     {confirm && state === 'dirty' && <button type="submit">{confirm}</button>}
-    {state === 'saving' && <p role="status" aria-label="Save status">Saving…</p>}
-    {state === 'saved' && <p role="status" aria-label="Save status">Saved</p>}
-    {state === 'failed' && <p role="alert">Couldn’t save. <button type="button" onClick={() => void flush()}>Retry</button></p>}
-  </form>;
+    {(state === 'saving' || state === 'saved') && <span className="settings-save-announcement" role="status" aria-label="Save status">{state === 'saved' ? 'Saved' : 'Saving…'}</span>}
+  </form></SettingsSaveFeedback.Provider>;
 }

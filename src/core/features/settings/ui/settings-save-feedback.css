@@ -1,0 +1,21 @@
+.settings-field-label {
+  display: inline-flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .35rem .75rem;
+}
+.settings-field-status {
+  color: var(--app-body);
+  font-size: .875rem;
+  font-weight: 400;
+}
+.settings-page .settings-field-error { margin: 0; }
+.settings-save-announcement {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

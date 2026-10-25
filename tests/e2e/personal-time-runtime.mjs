@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {chromium} from '@playwright/test';
-import {createAdminRuntime,bootstrapOwner} from './admin-runtime-support.mjs';
+import {createAdminRuntime,bootstrapOwner,poll} from './admin-runtime-support.mjs';
 const output=resolve(process.env.VECTOR_TIME_SHOTS??'.artifacts/verification/personal-time');
 await mkdir(output,{recursive:true});
 const runtime=createAdminRuntime(1440,[],{port:15972,inspectorPort:15973});
@@ -30,7 +30,7 @@ try {
   await page.setViewportSize({width,height:width===390?844:1000});await page.goto(runtime.base+'/app/settings#personal-time');
   const form=page.getByRole('form',{name:'Your time preferences'});
   await form.getByLabel('Personal timezone',{exact:true}).selectOption('Australia/Brisbane');
-  await page.waitForFunction(async()=>{const response=await fetch('/api/settings/personal-time');return response.ok&&(await response.json()).timezone==='Australia/Brisbane';},null,{polling:200});
+  await poll(async()=>(await api.get(runtime.base+'/api/settings/personal-time')).json(),clock=>clock.timezone==='Australia/Brisbane','personal timezone commits before read-back');
   assert.equal((await(await api.get(runtime.base+'/api/settings/personal-time')).json()).effectiveTimezone,'Australia/Brisbane');
   assert.deepEqual(await persistedInstants(),originalInstants,'changing the display zone preserves reminder and cycle instants');
   const end=width===1440?'16:30':'16:45';
