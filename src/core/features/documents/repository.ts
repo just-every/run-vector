@@ -24,8 +24,8 @@ async function parent(db:D1Database,actor:string,kind:ParentKind,id:string){
 export async function listDocuments(db:D1Database,actor:string,kind?:ParentKind,id?:string){
  const access=await settingsActor(db,actor),subject=kind&&id?await parent(db,actor,kind,id):null;
  const rows=(await db.prepare('SELECT id,title,parent_kind parentKind,parent_id parentId,version,updated_at updatedAt FROM documents WHERE workspace_id=?'+(subject?' AND parent_kind=? AND parent_id=?':'')+' ORDER BY updated_at DESC,id DESC LIMIT 100').bind(access.workspace_id,...(subject?[subject.kind,subject.id]:[])).all()).results;
- if(subject)await parent(db,actor,subject.kind,subject.id);
  const teams=subject&&subject.kind!=='team'?(await db.prepare('SELECT DISTINCT t.id,t.name FROM issues i JOIN teams t ON t.id=i.team_id WHERE '+(subject.kind==='issue'?'i.id=?':subject.kind==='project'?'i.project_id=?':'i.project_id IN (SELECT project_id FROM initiative_projects WHERE initiative_id=?)')+' ORDER BY t.name,t.id').bind(subject.id).all<{id:string;name:string}>()).results:[];
+ if(subject)await parent(db,actor,subject.kind,subject.id);
  return {teams,parent:subject?{id:subject.id,kind:subject.kind,name:subject.name,url:subject.url}:null,documents:rows};
 }
 export async function readDocument(db:D1Database,actor:string,id:string){
