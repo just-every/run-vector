@@ -1,5 +1,5 @@
 import {vi,expect} from 'vitest';
-export function channelEdge(){
+export function channelEdge(installationTeam?:string){
  let app:{appId:string;clientId:string;clientSecret:string;signingSecret:string}|undefined;
  let token=['synthetic','slack',crypto.randomUUID()].join('-'),revoked=false;const webhook='https://discord.com/api/webhooks/123/'+crypto.randomUUID();
  const calls:{method:string;body:any;redirect:RequestRedirect|undefined}[]=[];
@@ -12,7 +12,7 @@ export function channelEdge(){
   calls.push({method,body,redirect:init?.redirect});
   if(app&&method==='apps.manifest.create')return Response.json({ok:true,app_id:app.appId,credentials:{client_id:app.clientId,client_secret:app.clientSecret,signing_secret:app.signingSecret}});
   if(app&&method==='oauth.v2.access')return Response.json({ok:true,app_id:app.appId,token_type:'bot',scope:'chat:write,channels:manage,channels:read,im:write,users:read.email',access_token:token});
-  if(method==='auth.test')return Response.json(revoked?{ok:false,error:'token_revoked'}:{ok:true,team:'Fixture workspace',bot_id:'BOT'});
+  if(method==='auth.test')return Response.json(revoked?{ok:false,error:'token_revoked'}:{ok:true,team:'Fixture workspace',bot_id:'BOT',...(installationTeam?{team_id:installationTeam}:{})});
   if(method==='auth.revoke'){revoked=true;return Response.json({ok:true,revoked:true});}
   if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'delivery',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false,...safety}});
   if(method==='users.lookupByEmail'){const user=users.get(body.email);return Response.json(lookupError?{ok:false,error:lookupError}:user?{ok:true,user}:{ok:false,error:'users_not_found'});}

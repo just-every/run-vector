@@ -8,7 +8,7 @@ export const slackDirectPreferences=z.object({
  reason:z.string().nullable(),
  actionsEnabled:z.boolean(),
  email:z.string(),
- link:z.object({name:z.string(),teamName:z.string(),linkedAt:z.string(),kinds:z.array(z.enum(directKinds))}).nullable(),
+ link:z.object({slackTeamId:z.string(),slackUserId:z.string(),name:z.string(),teamName:z.string(),linkedAt:z.string(),kinds:z.array(z.enum(directKinds))}).nullable(),
  deliveries:z.array(z.object({id:z.string(),identifier:z.string(),title:z.string(),state:z.enum(['rejected','uncertain']),reason:z.string(),attempts:z.number().int().nonnegative()})),
 });
 export type SlackDirectPreferences=z.infer<typeof slackDirectPreferences>;

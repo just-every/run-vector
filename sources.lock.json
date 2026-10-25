@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "29cb8af2433473d7d3f7c66a11400d8ea54b7ca6e45c2945778a0e08132fe76d",
+      "sha256": "6353ff22c7c411d29ce0fe22f57aea1b11cc2539ee4d8eed7fd06644ddfc9afc",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "268c4d69cfe6b5b5524118af101ec1e12b82a99a8d4651ac259d4977d1956b36",
+      "sha256": "ebaaa6b1b68c2f9f3b60351086874491ca03817d459b94676b8b2d18aaabbe5c",
       "executable": false
     },
     "DEMO.md": {
@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "68724103b947019b4a1bb5558b705888b2ee783863856cfc3eef1ed72229d74b",
+      "sha256": "1dd114d64ac9ef94043f1c3c1e68604a85bf4bd39adeff98595af8d374b08ee6",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -2009,7 +2009,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "78e0adf24fe56c33bd43442223bca452120ffc54b330504ece1565df8f676110",
+      "sha256": "62c195f971a5e85b3e1cb04069ccbfdce613d8b9f51332cc0ee9abfd3cc2f60d",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2414,6 +2414,10 @@
     },
     "migrations/core/0101_slack_event_receipts.sql": {
       "sha256": "09a5b234af9726b91efb6de6eead03833853a35377b8d65ba558c148b4c9b8c4",
+      "executable": false
+    },
+    "migrations/core/0102_slack_installation_team.sql": {
+      "sha256": "0a459155fcfe4d575cf2e5a1dea6ba0cc2597a973da821f286c04df1909ac094",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -3729,7 +3733,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "f03b79e7674af9464712d7bf9ebe9fa7a083fda6382d5b9f6392d3d61c881a68",
+      "sha256": "234f2e089ee24fc133d29f2c52da3fdc7904a40335cd7ab93e8fc51ea217ff46",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -3741,7 +3745,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "7603ceaf6f8fbf0215c9ebfcc431e28013f94242ae64e5d3d4ac6e3ad3d47414",
+      "sha256": "1de6f630c9633645de8bbcfc28c2311f37251d694cc295e08f8a33806ae676e7",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -4349,7 +4353,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/provider.ts": {
-      "sha256": "d0fdeb8545fafb1cc7f2d5ae75c6d350f3924af2ed0968a35b0e3a8683aebb7a",
+      "sha256": "e4ef92e17ad277f4124fb1d52501fe9c0eda0b0b8d6d007a24968e60b92503ba",
       "executable": false
     },
     "src/core/features/integrations/channels/routes.ts": {
@@ -4361,7 +4365,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "0e9059701c3da4e4ead6a4acad48c980c7bb2436c2cc7dccf2bbdbe78d544465",
+      "sha256": "20170d2d8485fadf5f2e80e54c63493c881f47ecfb899d7991f3020fbf539d32",
       "executable": false
     },
     "src/core/features/integrations/comment-api.ts": {
@@ -4505,7 +4509,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/events.ts": {
-      "sha256": "0e695f10b1df38f3cd2dc02ba71fe23c25f5bb8e16f03d26e22c6d8328923f3a",
+      "sha256": "ef694502fda75ea61450c3ce71964716a17d3bce88f0199d5d599758708b7c6c",
       "executable": false
     },
     "src/core/features/integrations/slack-app/install.ts": {
@@ -4513,7 +4517,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/members.ts": {
-      "sha256": "f5829aaab79b82f07cfb3d0752266ac33dd2dc91e1e8abfc73bb34c1304b1414",
+      "sha256": "e4ac7ed0de470a2474148bfce1a75123e772de9d35abf020dd7740cf2ed60760",
       "executable": false
     },
     "src/core/features/integrations/slack-app/retire.ts": {
@@ -4537,7 +4541,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-dm/links.ts": {
-      "sha256": "4c9d73285b6afdc0b88d211c10645b50427ca5cc362db2a9f1fb32fcb63beb51",
+      "sha256": "465db7cc63a0d6ae367d87c3d88f3776a5528be0d4fbbefde44545c6fce7eb7a",
       "executable": false
     },
     "src/core/features/integrations/slack-dm/message.ts": {
@@ -4545,7 +4549,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-dm/schema.ts": {
-      "sha256": "01f4e07f47234d33b5d4732cf7ccdb738b75058e8779d889c447814aa9be393c",
+      "sha256": "fa1fa2d2e7625f5745254239d5e10f0f42d78b9d922a4d6f8e8f2985603b5ec9",
       "executable": false
     },
     "src/core/features/integrations/slack-dm/signing.ts": {
@@ -5669,7 +5673,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "9ba6bb500fd7d89dbdbd46b3441d82960ba8e7e172e95caf61aa4a785483d897",
+      "sha256": "287465ec718f75892235ad397d92b4ad21bad48de3c4b7a79ba9d38e382d0747",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6801,7 +6805,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "5212acd0ce66b074a249a2f61121ac41e0b4f81b3bc9701e9ad169e954a0e863",
+      "sha256": "11043cc47eeaacbef6a52a21ddd417b4a26841151a2dd0e4d9671a16120430bd",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -7213,7 +7217,7 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "ee93847fc52ba767e12c5cb4d3fad9f7476f71c9b574d3191aa526986e44737d",
+      "sha256": "d228c715c79cef12532542b9848a05fd632db4b7fac1ea6a5109cc663d1c2d14",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
@@ -7721,11 +7725,11 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "0d26cafb5261bdbc761e6edbffc0694fba4ec78336d66a53656e27b3c49f4c7b",
+      "sha256": "bd1ed5461274622319749f3b2004ea79a947175382bab98b19607a20abb3df01",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "748b048ace73af83b3c50ca07f954a3cb4e622c0d8e8c71acaa45bcbe69e9b43",
+      "sha256": "5b196a335326828fc89e5840002f1eed1bd835fd4b93b553a4462b9686c0367b",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
@@ -7757,7 +7761,7 @@
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "683b42d7c43c32d43e096f771ba354382deb2d1d798a7cacd4ac91a59460feda",
+      "sha256": "a9d27662081836c14e4575f91f6bfcf1375b5e307f7a97c9e6dbc23446d2831f",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {
@@ -7765,7 +7769,7 @@
       "executable": false
     },
     "tests/worker/slack-events-scenario.ts": {
-      "sha256": "44f849837b61a46cb887a900ee85f1af96b4ea4dbb17997503a7d697c5b779f6",
+      "sha256": "2d906820d373a729f44fb4063951092fd3b8a99cd340b8c0980927d9cc84e9be",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {

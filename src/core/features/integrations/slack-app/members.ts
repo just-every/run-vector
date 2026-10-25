@@ -16,13 +16,15 @@ export async function readMembers(env:WorkerBindings,owner:IntegrationOwner){
 }
 export async function mapMember(env:WorkerBindings,owner:IntegrationOwner,input:z.infer<typeof memberMapping>){
  if(!await env.DB.prepare('SELECT enabled FROM vector_slack_installations WHERE workspace_id=?').bind(owner.workspace).first<number>('enabled')||await credentialProblem(env,'slack:'+owner.workspace))throw new IntegrationError(409,'slack_needs_attention','Install Slack before mapping members.');
+ const installedTeam=await env.DB.prepare('SELECT slack_team_id FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(owner.workspace).first<string>('slack_team_id');
+ if(!installedTeam||installedTeam!==input.slackTeamId)throw new IntegrationError(403,'slack_workspace_mismatch','Map an identity from the connected Slack workspace. Reconnect Slack if its workspace has not been verified.');
  const valid="EXISTS(SELECT 1 FROM operators o JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE o.id=? AND o.workspace_id=? AND o.removed_at IS NULL AND (o.role IN ('member','guest') OR o.id=?))";
  const params=[input.operatorId,owner.workspace,owner.id];
  if(!await env.DB.prepare('SELECT '+valid+' AS valid').bind(...params).first<number>('valid'))throw new IntegrationError(403,'slack_mapping_target_forbidden','Map an active Member or Guest, or your own account.');
  if(await env.DB.prepare('SELECT 1 FROM vector_slack_member_links WHERE workspace_id=? AND slack_team_id=? AND slack_user_id=? AND operator_id<>?').bind(owner.workspace,input.slackTeamId,input.slackUserId,input.operatorId).first())throw new IntegrationError(409,'slack_account_linked');
  const at=new Date().toISOString();
  await managed(env,owner).batch([
-  {sql:"SELECT CASE WHEN "+valid+" AND EXISTS(SELECT 1 FROM vector_slack_installations WHERE workspace_id=? AND enabled=1) THEN 1 ELSE json('Slack mapping unavailable') END",params:[...params,owner.workspace]},
+  {sql:"SELECT CASE WHEN "+valid+" AND EXISTS(SELECT 1 FROM vector_slack_installations WHERE workspace_id=? AND enabled=1 AND slack_team_id=?) THEN 1 ELSE json('Slack mapping unavailable') END",params:[...params,owner.workspace,input.slackTeamId]},
   {sql:"INSERT INTO vector_slack_member_links(operator_id,workspace_id,slack_team_id,slack_user_id,slack_name,dm_kinds,linked_at) VALUES(?,?,?,?,?,'[]',?) ON CONFLICT(operator_id) DO UPDATE SET slack_team_id=excluded.slack_team_id,slack_user_id=excluded.slack_user_id,slack_name=excluded.slack_name,linked_at=excluded.linked_at",params:[input.operatorId,owner.workspace,input.slackTeamId,input.slackUserId,input.slackUserId,at]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'slack.member_mapped',subject:input.operatorId,at}),
  ]);

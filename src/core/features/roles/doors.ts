@@ -145,7 +145,7 @@ export const doors: Door[] = [
     .map(([method, path]): Door => ({ method, path, row: null, page: 'account', ...(/^(?:\/issues\/|\/workload)/.test(path) ? {workMutation:true} : {}) })),
   { method: 'POST', path: '/settings/notifications/slack/lookup', row: 'identity.personal' },
   { method: 'POST', path: '/settings/notifications/slack/link', row: 'identity.personal' },
-  { method: 'DELETE', path: '/settings/notifications/slack/link', row: 'identity.personal' },
+  { method: 'DELETE', path: '/settings/notifications/slack/link', row: null, page: 'account' },
   // Teams and workflows
   { method: 'PUT', path: '/settings/teams/creation', row: 'teams.creation-setting' },
   { method: 'POST', path: '/settings/teams', row: teamCreation },

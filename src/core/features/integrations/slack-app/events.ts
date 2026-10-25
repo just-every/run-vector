@@ -36,6 +36,7 @@ export async function receiveSlackEvent(env:WorkerBindings,request:Request){
  // Project/view destinations cannot grant a route into their teams.
  const mappings=(await env.DB.prepare("SELECT b.destination_id,b.object_id FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.enabled=1 AND d.revoked_at IS NULL JOIN teams t ON t.id=b.object_id AND t.archived_at IS NULL WHERE b.workspace_id=? AND b.channel_id=? AND b.scope='team' AND d.kind='slack' AND b.suspended_reason IS NULL").bind(signer.workspace,event.channel).all<{destination_id:string;object_id:string}>()).results;
  if(mappings.length!==1)throw new IntegrationError(403,'slack_channel_unmapped');
+ if(await env.DB.prepare('SELECT slack_team_id FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(signer.workspace).first<string>('slack_team_id')!==team_id)throw new IntegrationError(403,'slack_workspace_mismatch');
  const link=await env.DB.prepare("SELECT l.operator_id,l.linked_at FROM vector_slack_member_links l JOIN operators o ON o.id=l.operator_id AND o.workspace_id=l.workspace_id AND o.removed_at IS NULL JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE l.workspace_id=? AND l.slack_team_id=? AND l.slack_user_id=?").bind(signer.workspace,team_id,event.user).first<{operator_id:string;linked_at:string}>();
  if(!link)throw new IntegrationError(403,'slack_member_not_linked');
  const title=event.text.replace(/^\s*<@[A-Z0-9]+>\s*/,'').trim();

@@ -354,8 +354,15 @@ unfurl responses remain their own unbuilt integration work.
 Under **Slack member mapping**, an Owner or Admin explicitly maps a Slack
 workspace ID and member ID to an active Vector Member or Guest, or their own
 account. Another Owner or Admin cannot be selected as a target. Mapping and
-removal are audited; a Member or Viewer cannot manage them. Personal linking
-by a member's own email remains available in Settings → Notifications.
+removal are audited; only an Owner or Admin manages another person's mapping.
+The target can inspect their mapped Slack user and workspace and revoke their
+own mapping from Settings → Notifications, including after becoming a Guest or
+Viewer. Personal linking by a member's own email remains available there.
+Migration `0102_slack_installation_team.sql` retains the Slack team ID verified
+by `auth.test`. Explicit mappings and Events must match that installed workspace;
+older installations without a verified team ID need reconnection before new
+mappings or Events intake. The identifier remains portable; restored credentials
+still require re-entry. Apply it after 0101 and retain it on rollback.
 
 Bind the Slack channel to exactly one team with the existing channel-binding
 form. A signed `app_mention` at `/api/integrations/slack/events` creates one

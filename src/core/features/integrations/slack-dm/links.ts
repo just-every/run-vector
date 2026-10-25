@@ -79,7 +79,7 @@ function deliveryReason(state:string,outcome:string|null){
 }
 export async function directPreferences(env:WorkerBindings,operatorId:string):Promise<SlackDirectPreferences>{
  const current=await member(env,operatorId),slack=await installation(env,current.workspace);
- const link=await env.DB.prepare('SELECT slack_name AS name,linked_at AS linkedAt,dm_kinds AS kinds FROM vector_slack_member_links WHERE operator_id=? AND workspace_id=?').bind(operatorId,current.workspace).first<{name:string;linkedAt:string;kinds:string}>();
+ const link=await env.DB.prepare('SELECT slack_team_id AS slackTeamId,slack_user_id AS slackUserId,slack_name AS name,linked_at AS linkedAt,dm_kinds AS kinds FROM vector_slack_member_links WHERE operator_id=? AND workspace_id=?').bind(operatorId,current.workspace).first<{slackTeamId:string;slackUserId:string;name:string;linkedAt:string;kinds:string}>();
  const deliveries=(await env.DB.prepare(`SELECT d.id,i.identifier,i.title,d.state,d.attempts,(SELECT a.outcome FROM integration_attempts a WHERE a.namespace=d.namespace AND a.delivery_id=d.id ORDER BY a.number DESC LIMIT 1) AS outcome
   FROM notifications n JOIN issues i ON i.id=n.issue_id JOIN teams t ON t.id=i.team_id JOIN integration_deliveries d ON d.namespace=t.workspace_id AND d.id=n.id||':slack-dm'
   WHERE n.recipient_id=? AND t.workspace_id=? AND d.state IN('rejected','uncertain') ORDER BY d.created_at DESC,d.id DESC LIMIT 50`).bind(operatorId,current.workspace).all<{id:string;identifier:string;title:string;state:'rejected'|'uncertain';attempts:number;outcome:string|null}>()).results;
@@ -87,7 +87,7 @@ export async function directPreferences(env:WorkerBindings,operatorId:string):Pr
   available:slack.connected,
   reason:slack.connected?null:slack.needsAttention?'Slack needs attention: an Admin must re-enter the Slack bot token in Settings → Integrations.':'Slack is not connected: an Admin connects it in Settings → Integrations.',
   actionsEnabled:slack.actions,email:current.email,
-  link:link?{name:link.name,teamName:slack.teamName,linkedAt:link.linkedAt,kinds:(await channelPreferences(env.DB,operatorId)).channels.filter(row=>row.slack).map(row=>row.kind)}:null,
+  link:link?{slackTeamId:link.slackTeamId,slackUserId:link.slackUserId,name:link.name,teamName:slack.teamName,linkedAt:link.linkedAt,kinds:(await channelPreferences(env.DB,operatorId)).channels.filter(row=>row.slack).map(row=>row.kind)}:null,
   deliveries:deliveries.filter(row=>!String(row.outcome).includes('"slack_dm_suppressed"')).map(({outcome,...row})=>({...row,reason:deliveryReason(row.state,outcome)})),
  };
 }

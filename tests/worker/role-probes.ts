@@ -189,7 +189,15 @@ export function probes(w: Workspace): Record<RowId, Probe> {
         } finally { edge.restore(); }
       }; } },
     "tokens.personal": { session: async (_who, actor) => () => actor.call("/settings/integrations/tokens", "POST", { name: `Token ${unique()}`, scopes: ["issues:read"] }) },
-    "identity.personal": { session: async (_who, actor) => () => actor.call("/settings/notifications/slack/link", "DELETE") },
+    "identity.personal": { session: async (_who, actor) => {
+      const edge=channelEdge(),slackUserId='USYNTHETIC'+unique();
+      try {
+        expect((await owner.call('/settings/integrations/slack','POST',{botToken:edge.token})).status).toBe(200);
+        const own=await json<{slack:{email:string}}>(actor.call('/settings/notifications'));
+        edge.users(own.slack.email,slackUserId,'synthetic-vector-role-identity');
+      }catch(error){edge.restore();throw error;}
+      return async()=>{try{return await actor.call('/settings/notifications/slack/link','POST',{slackUserId});}finally{edge.restore();}};
+    } },
     "audit.read": { session: async (_who, actor) => () => actor.call("/settings/audit") },
     "data.export": { session: async (_who, actor) => async () => {
       const created = await actor.call("/portability/exports", "POST", {});

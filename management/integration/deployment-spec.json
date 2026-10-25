@@ -616,6 +616,12 @@
       "name": "0101_slack_event_receipts.sql",
       "sha256": "09a5b234af9726b91efb6de6eead03833853a35377b8d65ba558c148b4c9b8c4",
       "sql": "-- Durable identifier-only Slack intake receipts. Retain on archive/restore so\n-- a provider retry cannot recreate an issue after credentials are re-entered.\nCREATE TABLE vector_slack_event_receipts (\n workspace_id TEXT NOT NULL,\n event_key TEXT NOT NULL,\n identifier TEXT NOT NULL,\n received_at TEXT NOT NULL,\n PRIMARY KEY(workspace_id,event_key)\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0102_slack_installation_team.sql",
+      "sha256": "0a459155fcfe4d575cf2e5a1dea6ba0cc2597a973da821f286c04df1909ac094",
+      "sql": "-- Bind explicit Slack mappings to the workspace verified by auth.test.\nALTER TABLE vector_slack_installations ADD COLUMN slack_team_id TEXT;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

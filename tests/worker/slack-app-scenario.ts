@@ -34,7 +34,7 @@ export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'
    return Response.json({ok:true,app_id:'synthetic-vector-2000',credentials:{client_id:'synthetic-vector-2001',client_secret:clientSecret,signing_secret:secret}});
   }
   if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:grant==='user'?'user':'bot',app_id:grant==='wrong-app'?'synthetic-vector-2099':'synthetic-vector-2000',scope:grant==='missing-scope'?'chat:write':'chat:write,channels:manage,channels:read,im:write,users:read.email,app_mentions:read,channels:history,commands,links:read,links:write',access_token:botToken});}
-  if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002'});}
+  if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002',team_id:slackIntakeFixture.team});}
   if(method==='users.lookupByEmail')return Response.json({ok:true,user:{id:slackIntakeFixture.user,team_id:slackIntakeFixture.team,real_name:'Synthetic member'}});
   if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'synthetic-vector-33001',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});
   if(method==='auth.revoke')return Response.json({ok:true,revoked:true});

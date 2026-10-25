@@ -1,3 +1,4 @@
+// The verified Slack team ID is portable installation identity, never a credential; restored installations still require credential re-entry.
 // Slack event receipts are portable identifier-only replay history; secrets and member links remain excluded.
 // 0100 changes only the subscription capture trigger; inventory columns and portable event history stay unchanged.
 // issue_reactions retains description/comment targets, emoji, actor and creation time as portable domain data.

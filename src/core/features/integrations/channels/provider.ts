@@ -25,7 +25,7 @@ export async function slackCall(token:string,method:string,body:unknown,httpMeth
  let response:WireResponse;try{response=await providerSend({url:'https://slack.com/api/'+method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json; charset=utf-8'},body:JSON.stringify(body)},httpMethod);}catch{throw new IntegrationError(503,'slack_response_unknown','Slack did not return a known result. Check Slack before trying again.');}
  let result;try{result=JSON.parse(response.body);}catch{throw new IntegrationError(503,'slack_invalid_response');}
  if(response.status<200||response.status>=300||result.ok!==true){const code=typeof result.error==='string'&&/^[a-z_]{1,80}$/.test(result.error)?result.error:'request_failed';throw new IntegrationError(400,'slack_'+code,'Slack: '+code);}
- return result as {ok:true;team?:string;channel?:{id:string;name:string}};
+ return result as {ok:true;team?:string;team_id?:string;channel?:{id:string;name:string}};
 }
 export function classifyProvider(kind:string,response:WireResponse):Outcome {
  if(response.headers['vector-channel-refusal']==='channel_safety_refused')return {kind:'rejected',code:'channel_safety_refused'};

@@ -1591,7 +1591,8 @@
     "team_name",
     "created_by",
     "enabled",
-    "updated_at"
+    "updated_at",
+    "slack_team_id"
   ],
   "vector_channel_bindings": [
     "destination_id",
