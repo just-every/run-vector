@@ -46,12 +46,13 @@ export function ProjectCreate({
     const form = event.currentTarget;
     if (pending) return;
     setPending(true); setError("");
+    const submitted = fields(form);
     try {
       const result = await fetchJson("/api/settings/projects", administrationSchema, {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ ...fields(form), createSlackChannel: new FormData(form).has("createSlackChannel") }),
+        body: JSON.stringify({ ...submitted, createSlackChannel: new FormData(form).has("createSlackChannel") }),
       });
-      const created = result.projects.find(project => !projectIds.includes(project.id));
+      const created = result.projects.find(project => !projectIds.includes(project.id) && project.name === submitted.name);
       if (!created) throw new Error("The project was saved. Open Projects to find it.");
       onChanged();
       await navigate({ to: "/app/projects/$projectId", params: { projectId: created.id } });
