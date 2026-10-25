@@ -4605,7 +4605,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "56531de1617fe268fb580b827ef0077cabdc5c4daa8d7af75626f499c8868b8b",
+      "sha256": "a6e57d5329626d21a5ffc02ab2d028c36c204e659531a57e03cc3781379314d3",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -5809,7 +5809,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/administration-action.ts": {
-      "sha256": "8de2c7a1a09360b3b15f4662a75ac11fcb714bb7e6e178e10864dee7c0624c70",
+      "sha256": "f651883d4dd57068f7fc41bad9566528c7febd8b6d2160a3ddcd0f2122f65aba",
       "executable": false
     },
     "src/core/features/settings/ui/administration-feedback.tsx": {
