@@ -5,7 +5,7 @@ import {invite,request,bindings} from './base-auth-fixture';
 export async function slackAppInstall(){
  const f=await setupIntegrations(),secret='synthetic-vector-'+crypto.randomUUID(),clientSecret='synthetic-vector-'+crypto.randomUUID(),configToken='synthetic-vector-'+crypto.randomUUID(),botToken='synthetic-vector-'+crypto.randomUUID();
  const calls:{method:string;body:any}[]=[];
- let denied=false;
+ let denied=false,grant:'valid'|'wrong-app'|'missing-scope'|'user'='valid';
  const edge=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{
   const url=new URL(String(input));expect(url.origin).toBe('https://slack.com');expect(init?.redirect).toBe('manual');
   const method=url.pathname.slice(5),form=new Headers(init?.headers).get('content-type')?.startsWith('application/x-www-form-urlencoded');
@@ -17,7 +17,7 @@ export async function slackAppInstall(){
    expect(manifest.oauth_config.scopes.bot).toContain('chat:write');
    return Response.json({ok:true,app_id:'synthetic-vector-2000',credentials:{client_id:'synthetic-vector-2001',client_secret:clientSecret,signing_secret:secret}});
   }
-  if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:'bot',app_id:'synthetic-vector-2000',scope:'chat:write,channels:manage,channels:read,im:write,users:read.email',access_token:botToken});}
+  if(method==='oauth.v2.access'){expect(body.client_secret).toBe(clientSecret);expect(body.redirect_uri).toBe(bindings.APP_ORIGIN+'/api/integrations/slack/oauth/callback');return Response.json({ok:true,token_type:grant==='user'?'user':'bot',app_id:grant==='wrong-app'?'synthetic-vector-2099':'synthetic-vector-2000',scope:grant==='missing-scope'?'chat:write':'chat:write,channels:manage,channels:read,im:write,users:read.email',access_token:botToken});}
   if(method==='auth.test'){expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+botToken);return Response.json({ok:true,team:'synthetic-vector-2002'});}
   if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
   throw Error('Unexpected Slack installation edge '+method);
@@ -51,11 +51,20 @@ export async function slackAppInstall(){
   expect((await callback(current)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(1);
   const all=(await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").all()).results;
   expect(all).toHaveLength(3);expect(JSON.stringify(all)).not.toContain(botToken);expect(JSON.stringify(all)).not.toContain(clientSecret);expect(JSON.stringify(all)).not.toContain(secret);
+  const installedCredentials=async()=>(await env.DB.prepare("SELECT * FROM vector_integration_secret_keys WHERE identity LIKE 'slack%' AND identity NOT LIKE 'slack-oauth:%' ORDER BY identity,slot").all()).results;
+  const priorCredentials=await installedCredentials();
+  for(const refusedGrant of ['wrong-app','missing-scope','user'] as const){
+   grant=refusedGrant;const refusedState=await begin();
+   expect(await read(await callback(refusedState),400)).toMatchObject({error:'slack_oauth_grant_invalid'});
+   expect(await installedCredentials()).toEqual(priorCredentials);
+   const beforeReplay=calls.length;expect((await callback(refusedState)).status).toBe(403);expect(calls).toHaveLength(beforeReplay);
+  }
+  grant='valid';
   expect((await request('/api/settings/integrations/slack/app','GET',undefined,admin)).status).toBe(200);
   const adminState=await begin(admin);expect((await callback(adminState)).status).toBe(403);expect((await callback(adminState,admin)).status).toBe(303);
-  expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(2);
+  expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(5);
   const expiredState=await begin();await env.DB.prepare("UPDATE vector_integration_secret_keys SET valid_until=? WHERE identity LIKE 'slack-oauth:%'").bind(Date.now()-1).run();
-  const expired=await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack-oauth:%' AND valid_until<?").bind(Date.now()).first<number>('n');expect(expired).toBe(1);expect((await callback(expiredState)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(2);
+  const expired=await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack-oauth:%' AND valid_until<?").bind(Date.now()).first<number>('n');expect(expired).toBe(1);expect((await callback(expiredState)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(5);
   // The manual manifest path stores the same sealed profile, without a configuration token.
   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
   await begin();await read(await f.call('/settings/integrations/slack','DELETE'));
