@@ -7681,7 +7681,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "a977a16e301e308cffd782af9b4faa8ecf50d15507859f677755c142a03d3661",
+      "sha256": "ec29153196b21e75344d7e67539674aef887c72d5c9ce28c8c93f1d8d7dfe5d4",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
