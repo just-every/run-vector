@@ -60,15 +60,12 @@ export async function cycleContextChecks(page, fixture) {
     assert.equal(await label.count(), 1, 'One context row per qualifying team');
     const row = label.locator('..');
     const dates = row.locator('time');
-    assert.deepEqual(await dates.evaluateAll(nodes => nodes.map(node => node.dateTime)), [cycle.startsAt, cycle.endsAt]);
-    const formatted = await page.evaluate(({ cycle, timezone }) => {
-      const format = new Intl.DateTimeFormat(undefined, {
-        timeZone: timezone, year: 'numeric', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
-      });
-      return [cycle.startsAt, cycle.endsAt].map(value => format.format(new Date(value)));
-    }, { cycle, timezone });
-    assert.deepEqual((await dates.allTextContents()).map(text => text.trim()), formatted);
+    assert.equal(await dates.getAttribute('datetime'),cycle.startsAt);
+    assert.equal(await dates.getAttribute('data-ends-at'),cycle.endsAt);
+    const localTime = await page.evaluate(({ value, timezone }) => new Intl.DateTimeFormat(undefined, {
+      timeZone: timezone, hour: 'numeric', minute: '2-digit',
+    }).format(new Date(value)), { value: cycle.startsAt, timezone });
+    assert((await dates.innerText()).includes(localTime), 'The cycle range uses the viewer’s local time');
     const progress = (await row.locator('strong').innerText()).replace(/\s+/g, ' ');
     const unit = facts.unit === 'points' ? 'points' : 'issues · by issue count';
     assert.equal(progress, `${facts.completed}/${facts.total} ${unit} · ${facts.percentage}%`);

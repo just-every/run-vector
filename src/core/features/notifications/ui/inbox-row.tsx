@@ -34,12 +34,10 @@ export function InboxNotificationRow({
         disabled={!!pending || !hydrated}
         onClick={onOpen}
       >
-        <span className="inbox-read-state">
-          {item.readAt ? "Read" : "Unread"}
-        </span>
         <span className="inbox-row-copy">
           <span className="inbox-title">{item.title}</span>
           <span className="inbox-meta">
+            <span className="inbox-read-state">{item.readAt ? "Read" : "Unread"}</span>{" · "}
             {item.actor ?? "Someone"} {notificationAction(item)}{" "}
             <span className="inbox-identifier">{item.identifier}</span>{" · "}
             <time dateTime={item.visibleAt ?? item.createdAt}>{relativeTime(item.visibleAt ?? item.createdAt)}</time>

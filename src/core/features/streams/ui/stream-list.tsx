@@ -112,12 +112,10 @@ export function StreamList({
                       <strong>{item.title}</strong>
                       <span className="stream-row-meta">
                         <span className="issue-identifier">{item.identifier}</span>
-                        <span>{item.status.name}</span>
-                        {item.priority !== "none" && <span>{item.priority}</span>}
-                        {!hideAssignee && item.assignee && <span>{item.assignee.name}</span>}
-                        <span>{item.dueDate ? date(item.dueDate) : relativeTime(item.updatedAt)}</span>
-                        <span className="reason-pill reason-pill--primary">{reasonLabel(item.primaryReason)}</span>
-                        {item.contextReasons.length > 0 && <span aria-label={item.contextReasons.map(reasonLabel).join(", ")}>+{item.contextReasons.length}</span>}
+                        <span className="stream-reason-summary"><span className="reason-pill reason-pill--primary">{reasonLabel(item.primaryReason)}</span>
+                          {item.contextReasons.length > 0 && <span aria-label={item.contextReasons.map(reasonLabel).join(", ")}>+{item.contextReasons.length}</span>}
+                        </span>
+                        <span className="stream-meta-details">{[item.status.name, item.priority !== "none" ? item.priority : null, !hideAssignee ? item.assignee?.name : null, item.dueDate ? date(item.dueDate) : relativeTime(item.updatedAt)].filter(Boolean).join(" · ")}</span>
                       </span>
                     </button>
                     </div>

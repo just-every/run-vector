@@ -127,12 +127,12 @@ function ProjectRow({ project }: { project: ProjectSummaryData }) {
     <strong className="project-name"><ProjectAppearance color={project.color} icon={project.icon} />{project.name}</strong>
     <small className="project-row-meta">
       <span className="project-row__lead">{project.lead.name}</span>
+      {chips[0] && <span className={chips[0].className}>{chips[0].name}</span>}
+      {chips.length > 1 && <span aria-label={`${chips.length - 1} more labels and states`}>+{chips.length - 1}</span>}
       {project.priority !== "none" && <span>{lifecycleLabel(project.priority)}</span>}
       {project.startDate && <span>Starts {date(project.startDate)}</span>}
       {project.targetDate && <span>Target {date(project.targetDate)}</span>}
       <span className="project-row__progress">{projectProgressLabel(project)}</span>
-      {chips[0] && <span className={chips[0].className}>{chips[0].name}</span>}
-      {chips.length > 1 && <span aria-label={`${chips.length - 1} more labels and states`}>+{chips.length - 1}</span>}
     </small>
   </Link>;
 }
