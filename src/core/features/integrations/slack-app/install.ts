@@ -25,7 +25,7 @@ export async function appManager(env:WorkerBindings,request:Request){
  if(role!=='owner'&&role!=='admin')throw new IntegrationError(403,'forbidden');
  return owner;
 }
-function managed(env:WorkerBindings,owner:IntegrationOwner){
+export function managed(env:WorkerBindings,owner:IntegrationOwner){
  const native=ownerPredicate(owner);
  return guardedSql(env.DB,{sql:'('+native.sql+") AND EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND role IN ('owner','admin') AND removed_at IS NULL)",params:[...(native.params??[]),owner.id,owner.workspace]});
 }

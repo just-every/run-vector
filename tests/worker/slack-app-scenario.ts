@@ -1,4 +1,4 @@
-import {slackEventIntake,slackIntakeFixture} from './slack-events-scenario';
+import {slackEventIntake,slackIntakeFixture,slackMemberMapping} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
 import {expect,vi} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
@@ -84,7 +84,9 @@ export async function slackAppInstall(){
   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
   const manualState=await begin();expect((await callback(manualState)).status).toBe(303);
   expect((await callback(manualState)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(6);
-  await slackEventIntake(f,secret);
+  const viewer=await invite('synthetic-vector-33007@vector.test',f.cookie,'viewer');
+  const mappedMember=await slackMemberMapping(f,admin,member,viewer);
+  await slackEventIntake(f,secret,mappedMember);
   await begin();await read(await f.call('/settings/integrations/slack','DELETE'));
   expect((await read(await f.call('/settings/integrations/slack/app'))).app).toBeNull();
   expect(await env.DB.prepare("SELECT count(*) n FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").first<number>('n')).toBe(0);

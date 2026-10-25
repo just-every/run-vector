@@ -1,3 +1,4 @@
+import {createHmac} from 'node:crypto';
 import assert from 'node:assert/strict';
 import {mkdir,readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -5,7 +6,7 @@ import {createRequire} from 'node:module';
 import {slackAppFixture as fixture} from './channel-provider-edge.mjs';
 const require=createRequire(import.meta.url);
 /** SLACK-001's existing installation registration also reaches the real Settings UI. */
-export async function exerciseSlackAppInstallation({page,runtime,width,evidence}){
+export async function exerciseSlackAppInstallation({page,runtime,cookie,team,width,evidence}){
  await mkdir(evidence,{recursive:true});await page.setViewportSize({width,height:900});
  const errors=[];const onError=error=>errors.push(error.message),onConsole=message=>{if(message.type()==='error'&&/hydrat/i.test(message.text()))errors.push(message.text());};
  page.on('pageerror',onError);page.on('console',onConsole);
@@ -43,10 +44,40 @@ export async function exerciseSlackAppInstallation({page,runtime,width,evidence}
  await page.context().route('https://slack.com/oauth/v2/authorize**',provider);
  await page.context().route('https://api.slack.com/apps**',provider);
  const receive=async(path,action,status=200)=>{const pending=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations'+path&&r.request().method()==='POST');await action();const response=await pending;assert.equal(response.status(),status);return response;};
+ let eventNumber=0;
+ const exerciseMappingAndIntake=async()=>{
+  const mappings=panel.getByRole('form',{name:'Map Slack member',exact:true});
+  const owner=runtime.sql("SELECT id,name FROM operators WHERE role='owner' AND removed_at IS NULL ORDER BY created_at LIMIT 1")[0];
+  await mappings.getByLabel('Vector member',{exact:true}).selectOption(owner.id);
+  await mappings.getByLabel('Slack workspace ID',{exact:true}).fill(fixture.teamId);
+  await mappings.getByLabel('Slack member ID',{exact:true}).fill(fixture.memberId);
+  await receive('/slack/app/members',()=>mappings.getByRole('button',{name:'Map Slack member',exact:true}).click());
+  await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor();await inspect('member-mapped');
+  const binding=page.getByRole('form',{name:'Bind notification channel',exact:true});
+  await binding.getByLabel('Team, project or saved view',{exact:true}).selectOption('team:'+team.id);
+  await binding.getByLabel('Channel service',{exact:true}).selectOption('slack');
+  await binding.getByLabel('Channel display name',{exact:true}).fill('synthetic-vector-33010');
+  await binding.getByLabel('Slack channel ID',{exact:true}).fill(fixture.intakeChannel);
+  await receive('/channels',()=>binding.getByRole('button',{name:'Save channel binding',exact:true}).click(),201);
+  const title='synthetic-vector-33011-'+width+'-'+(++eventNumber),payload={type:'event_callback',team_id:fixture.teamId,event_id:'synthetic-vector-33012-'+width+'-'+eventNumber,event:{type:'app_mention',user:fixture.memberId,channel:fixture.intakeChannel,text:'<@'+fixture.botId+'> '+title}};
+  const body=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000));
+  const headers={'Content-Type':'application/json','x-slack-request-timestamp':timestamp,'x-slack-signature':'v0='+createHmac('sha256',fixture.signingSecret).update('v0:'+timestamp+':'+body).digest('hex')};
+  const created=await runtime.req('/api/integrations/slack/events',{method:'POST',headers,body});assert.equal(created.status,200);const issue=await created.json();
+  assert.equal((await runtime.req('/api/integrations/slack/events',{method:'POST',headers,body})).status,409);
+  await page.goto(runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:title,exact:true}).waitFor();
+  const recorded=runtime.sql("SELECT a.actor_operator_id FROM issue_activity a JOIN issues i ON i.id=a.issue_id WHERE i.identifier='"+issue.identifier+"' AND a.kind='issue.created'");assert.deepEqual(recorded,[{actor_operator_id:owner.id}]);
+  await page.goto(runtime.base+'/app/settings#integrations');await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor();
+  const removing=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations/slack/app/members/'+owner.id&&r.request().method()==='DELETE');
+  await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).click();assert.equal((await removing).status(),200);await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor({state:'hidden'});await inspect('member-unmapped');
+  const changed=JSON.stringify({...payload,event_id:payload.event_id+'-unmapped'}),changedHeaders={...headers,'x-slack-signature':'v0='+createHmac('sha256',fixture.signingSecret).update('v0:'+timestamp+':'+changed).digest('hex')};
+  assert.equal((await runtime.req('/api/integrations/slack/events',{method:'POST',headers:changedHeaders,body:changed})).status,403);
+  const channels=await(await runtime.req('/api/settings/integrations/channels',{headers:{Cookie:cookie}})).json(),saved=channels.bindings.find(row=>row.scope==='team'&&row.objectId===team.id);
+  assert.equal((await runtime.req('/api/settings/integrations/channels/'+saved.id,{method:'DELETE',headers:{Cookie:cookie,Origin:runtime.base}})).status,200);
+ };
  const install=async()=>{
   await panel.getByRole('button',{name:'Install Slack app',exact:true}).click();await page.getByRole('link',{name:'Approve fixture installation',exact:true}).click();
   await page.waitForURL(runtime.base+'/app/settings#integrations');await panel.getByText('App '+fixture.appId+' is configured. Stored secrets are never shown again.',{exact:true}).waitFor();
-  await page.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();await inspect('installed');
+  await page.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();await inspect('installed');await exerciseMappingAndIntake();
  };
  const remove=async(withinApp=true)=>{
   const refreshed=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations/slack/app'&&r.request().method()==='GET');

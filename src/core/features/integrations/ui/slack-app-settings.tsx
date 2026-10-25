@@ -1,3 +1,4 @@
+import {SlackMemberMappings} from './slack-member-mappings';
 import {useState,type FormEvent} from 'react';
 import {z} from 'zod';
 import {useApiResource} from '../../../app/api-client';
@@ -46,6 +47,7 @@ export function SlackAppSettings({onChanged}:{onChanged:()=>void}){
  <button>Save Slack app credentials</button></fieldset></form></details>
  {resource.data.app&&<><p>App {resource.data.app.appId} is configured. Stored secrets are never shown again.</p>
  <div className="integration-actions"><button type="button" disabled={pending} onClick={()=>void install()}>Install Slack app</button><button type="button" disabled={pending} onClick={()=>void remove()}>Remove Slack app</button></div>
+ <SlackMemberMappings/>
  <p>Removing the app revokes its bot token and removes stored app credentials and member links.</p></>}
  </>}
  </section>;
