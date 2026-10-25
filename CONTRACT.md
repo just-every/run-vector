@@ -582,7 +582,7 @@ Signed source ingestion implements INTAKE-001/002/003/008/009 and the source reg
 
 ## Status
 
-Judged baseline: `80cc4ea0dd865edc0687dd2e6cc7464f621bf55f` (25 October 2026); SLACK-005 below is an UNCOUNTED DONE proposal pending ct judgment. Accepted DONE remains 128 of 259.
+Judged from the code and tests at commit `80cc4ea0dd865edc0687dd2e6cc7464f621bf55f` (25 October 2026). SLACK-005 below is an UNCOUNTED DONE proposal pending ct judgment. Accepted DONE remains 128 of 259.
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
