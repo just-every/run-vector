@@ -4149,11 +4149,11 @@
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
-      "sha256": "9a83d1cdb0a197c5e643eb5a3b9b7b249feeba2561eab23f36fdd2f51b820c3d",
+      "sha256": "c6dc0544b88d9b28cfd10506cb4c71e1f559e87bc408ed6d982073c20ff7755a",
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "1fd4e17059fcd1662a7f64cb82c4dc84ad256ac1d5706f02c11efce7e1ffdc56",
+      "sha256": "d3fe2615b0d06424ccfb63c0efb7ef84a58ba7b7b9e453bb6da758f2da28e3d5",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
