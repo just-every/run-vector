@@ -26,8 +26,9 @@ function restore(form: HTMLFormElement, draft: Draft) {
   }
 }
 function invalidField(form: HTMLFormElement) {
-  return Array.from(form.elements).find((field): field is HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement =>
-    (field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) && !field.validity.valid);
+  for (const field of Array.from(form.elements)) {
+    if ((field instanceof HTMLInputElement || field instanceof HTMLSelectElement || field instanceof HTMLTextAreaElement) && !field.validity.valid) return field;
+  }
 }
 
 type Props<S extends z.ZodType> = Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit' | 'onChange'> & {
@@ -67,7 +68,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     }));
     writes.set(key, { revision: snapshot.revision, request });
     try {
-      const receipt = await request;
+      const receipt = await request as z.output<S>;
       if (draft.current?.revision === snapshot.revision) {
         draft.current = null;
         try { if (readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }

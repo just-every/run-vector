@@ -5869,7 +5869,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
-      "sha256": "e8ec527f9d85514ea5ff03f8a086934ee1b9263ec9a16edb1bf2924abdb96244",
+      "sha256": "227183e0e68635fad7218fd348e3b34e03eed666652aa7080b06dda6614f2a90",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
