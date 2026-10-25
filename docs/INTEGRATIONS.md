@@ -323,3 +323,31 @@ In Settings → Teams → the team's Email intake, save the intake address and a
 Callbacks verify SendGrid's P-256 signature over the timestamp and exact request body, require a timestamp within five minutes, and match the provider message ID and original recipient to an accepted reply from that team. Processed and delivered events show Accepted on the reply; bounce events show Bounced and cannot be overwritten by a later acceptance event. Replayed event IDs, unsigned or altered bodies, stale timestamps and foreign messages or recipients are refused without changing the reply. Callbacks send no mail.
 
 Archives retain outcomes and replay identities. Verification keys are excluded and intake stays disabled after restore; configure the destination's provider account and key again. Local signed fixtures prove these transitions; installation routing, sender-domain configuration and hosted provider receipt remain installation work. Customer/domain attachment remains unavailable until customer records exist.
+
+
+### Slack app installation API foundation
+
+Owners and Admins can configure a notification app through the authenticated
+Settings API. `GET /api/settings/integrations/slack/app` returns the generated
+notification manifest, its prefilled Slack creation URL and this installation's
+OAuth callback URL. `POST` to the same path accepts the app ID, client ID, client
+secret and signing secret; `/create` accepts a one-time configuration token for
+Slack's manifest API. The configuration token is used once and never stored.
+App credentials are sealed in the same archive-excluded custody as the existing
+Slack bot credential; reads expose only the app and client IDs.
+
+`POST /api/settings/integrations/slack/app/install` returns the Slack OAuth
+consent URL. The callback at `/api/integrations/slack/oauth/callback` requires
+the same current Owner/Admin who began it, a ten-minute state and a bot grant
+for the configured app. State is consumed once; reconfiguration invalidates it.
+Bot and signing credentials commit together under current authority. Removing
+the Slack connection revokes its bot token and removes app credentials, pending
+state, signing credentials and member links. It does not delete the Slack app
+definition.
+
+This API foundation is partial. A Settings install form, complete intake,
+slash-command and unfurl manifest, Events API, first `@Vector` issue creation,
+explicit Admin member mapping, provider uninstall handling, app-credential
+archive/restore acceptance and the hosted real-workspace installation remain
+SLACK-001 work. The current notification manifest configures only existing
+channel/DM capabilities and signed interactivity; no hosted install is claimed.

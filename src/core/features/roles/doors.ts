@@ -81,6 +81,9 @@ async function memberRole(db: D1Database, id: string) {
 }
 
 export const doors: Door[] = [
+  {method:'GET',path:'/integrations/slack/oauth/callback',row:'integrations.manage',workMutation:true},
+  {method:'GET',path:'/settings/integrations/slack/app',row:'integrations.manage'},
+  ...(['/settings/integrations/slack/app','/settings/integrations/slack/app/create','/settings/integrations/slack/app/install'] as const).map((path):Door=>({method:'POST',path,row:'integrations.manage'})),
   {method:'POST',path:'/initiatives',row:'initiatives.write'},
   {method:'PATCH',path:'/initiatives/:id',row:'initiatives.write'},
   {method:'PUT',path:'/initiatives/:id/projects',row:'initiatives.write'},
