@@ -1230,9 +1230,10 @@ try {
     .fill("https://example.test/customer");
   await page
     .locator(".new-issue-header")
-    .getByRole("link", { name: "← Current", exact: true })
+    .getByRole("button", { name: "← Back", exact: true })
     .click();
-  await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
+  await page.waitForURL(base + "/app/issues/" + browserCreated.identifier);
+  await page.getByRole("heading", { name: browserCreatedTitle, exact: true }).waitFor();
   await beforePrivateNavigation(page, base + "/app/new-issue");
   await page.goto(base + "/app/new-issue");
   await page

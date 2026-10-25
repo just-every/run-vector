@@ -43,7 +43,7 @@ export function BurnUp({ report }: { report: ProjectReport }) {
       <div className="project-report__table" role="region" aria-label="Daily burn-up data" tabIndex={0}>
         <table><caption>Daily burn-up · issues · {report.timezone}</caption>
           <thead><tr><th>Day</th><th>Scope</th><th>Completed</th><th>Added</th><th>Removed</th></tr></thead>
-          <tbody>{days.map(day => <tr key={day.date}><th scope="row">{date(day.date)}</th><td>{day.scope ?? "Not recorded"}</td><td>{day.completed ?? "Not recorded"}</td><td>{day.added.join(", ") || "—"}</td><td>{day.removed.join(", ") || "—"}</td></tr>)}</tbody>
+          <tbody>{days.map(day => <tr key={day.date}><th scope="row"><time dateTime={day.date}>{date(day.date)}</time></th><td>{day.scope ?? "Not recorded"}</td><td>{day.completed ?? "Not recorded"}</td><td>{day.added.join(", ") || "—"}</td><td>{day.removed.join(", ") || "—"}</td></tr>)}</tbody>
         </table>
       </div>
     </details>
