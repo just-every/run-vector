@@ -81,8 +81,10 @@ export async function streamControlsJourney(page, context, base, record, capture
     await page.waitForURL(base + '/app/current/' + items.primary.identifier);
     if (width === 390) await page.getByRole('button', { name: '← Back to list', exact: true }).click();
     else {
-      await page.locator('.stream-detail').focus();
-      await page.locator('.stream-detail').press('Escape');
+      const detail = page.locator('.stream-workspace.has-mobile-detail .stream-detail');
+      await detail.locator('.personal-reminders button:not(:disabled)').first().waitFor();
+      await detail.focus();
+      await detail.press('Escape');
     }
     await page.waitForURL(base + '/app');
     await streamControlsReady(page);
