@@ -664,6 +664,10 @@
       "sha256": "dcbdc2716d4fc94b05e07edb5aa7004475ed87165fb9276f175cbc5a1b909848",
       "executable": false
     },
+    "docs/LOCAL-MEMBERS.md": {
+      "sha256": "2e13edc960b7c12be2d2b4ab76b9b30498c61846a77f64b0e635254c5ab3c55b",
+      "executable": false
+    },
     "docs/LOCAL-RECOVERY.md": {
       "sha256": "dda4c4ebf4ec55d337826563340178c817b6ef2d7121858a22f0a06d4426f0ac",
       "executable": false
@@ -5825,7 +5829,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/invite-operator.tsx": {
-      "sha256": "0cc607ba3d5363b75b59f03a8bade096a65a0fd857fef13864730677820b78db",
+      "sha256": "be9c568d2d6aac119601a974263b1fa33c051eb38c44b338487b4d9efb55e5da",
       "executable": false
     },
     "src/core/features/settings/ui/labels-panel.tsx": {
