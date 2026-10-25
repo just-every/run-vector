@@ -58,7 +58,7 @@ export function NewIssueForm() {
       setStorageError("This browser could not read the unsent draft.");
     }
     const project = new URLSearchParams(window.location.search).get("project");
-    if (project && options.data.projects.some(choice => choice.id === project)) draft.projectId = project;
+    if (project && options.data.projects.some(choice => choice.id === project)) { draft.projectId = project; draft.mode = "issue"; }
     setValues(draft);
     setDraftReady(true);
   }, [draftReady, storageKey, options.data, administration.data]);
