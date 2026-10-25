@@ -21,6 +21,7 @@ export function useAdministrationAction(onChanged: () => void) {
     try {
       await fetchJson(path, administrationSchema, {
         method,
+        keepalive: true,
         headers: { "content-type": "application/json" },
         ...(body === undefined ? {} : { body: JSON.stringify(body) }),
       });

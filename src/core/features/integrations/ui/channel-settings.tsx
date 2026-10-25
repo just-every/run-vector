@@ -1,8 +1,8 @@
 import {SlackAppSettings} from './slack-app-settings';
 import {useRef,useState,type FormEvent} from 'react';
-import {useApiResource} from '../../../app/api-client';
+import {fetchJson,useApiResource} from '../../../app/api-client';
 import {channelConfiguration,channelEvents,channelEventLabels} from '../channels/schema';
-import {acknowledged,send} from './client';
+import {acknowledged} from './client';
 import {CopyField} from './copy-field';
 export function ChannelSettings(){
  const config=useApiResource('/api/settings/integrations/channels',channelConfiguration);
@@ -12,7 +12,7 @@ export function ChannelSettings(){
  const [provider,setProvider]=useState('slack'),[pending,setPending]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState('');
  async function run(path:string,body:unknown,method='POST'){
   retry.current=()=>run(path,body,method);setFailureScope(path);setPending(true);setError('');setNotice('');
-  try{await send(path,acknowledged,body,method);setNotice('Saved');config.reload();if(path==='/slack'&&method==='DELETE')setAppRevision(value=>value+1);return true;}catch{setError('Couldn’t save.');return false;}finally{setPending(false);}
+  try{await fetchJson('/api/settings/integrations'+path,acknowledged,{method,keepalive:true,headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});setNotice('Saved');config.reload();if(path==='/slack'&&method==='DELETE')setAppRevision(value=>value+1);return true;}catch{setError('Couldn’t save.');return false;}finally{setPending(false);}
  }
  async function connect(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget;
   if(await run('/slack',{botToken:new FormData(form).get('botToken')})){form.reset();setNotice('Slack connected. The bot token is stored securely.');}
