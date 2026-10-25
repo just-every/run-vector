@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "ed679386e44ac00c33e187995439b9e6f3176e3f3298f0c63484f8150dbbbd8f",
+      "sha256": "dbd7006959b9667248b014a0021344db4aa5f0d34a86cef52b2f7aeb7a113327",
       "executable": false
     },
     "DEMO.md": {
@@ -7693,7 +7693,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "aa05cb530b0a73f956b78c77f3aea0a4ebbf7f66158d390ec111f94f5a2b5164",
+      "sha256": "62799a3ed508828154f6606c1bdcfa3cf25ac893be3402339bf0aee52749f215",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

@@ -28,8 +28,8 @@ export const viewerMutations=(registry:Door[])=>registry.filter(door=>(door.meth
 const key=(door:Pick<Door,'method'|'path'>)=>door.method+' '+door.path;
 const read=async(response:Response)=>{expect(response.ok,await response.clone().text()).toBe(true);return response.json() as Promise<any>;};
 
-/** Every fixture identity comes from a public seed door, except the explicitly
- * uncertain delivery ledger fixture. No route may fall back to another resource. */
+/** Every fixture identity comes from a public seed door, except the explicit
+ * uncertain delivery ledger and destination-only restore context fixtures. No route may fall back to another resource. */
 export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:any;project:any;label:any}){
  const owner=w.people.owner,member=w.member,{issue,comment,project,label}=seed;
  const call=async(who:Person,path:string,method='GET',body?:unknown)=>{await resetLimits();return read(await who.call(path,method,body));};
@@ -128,7 +128,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   edge.users(emailAddress!,slackUserId,'synthetic-vector-31036');
   await call(member,'/settings/notifications/slack/lookup','POST',{});
   await call(member,'/settings/notifications/slack/link','POST',{slackUserId});
-  const appProfile={appId:'synthetic-vector-31076',clientId:'synthetic-vector-31077',clientSecret:'synthetic-vector-31078-secret',signingSecret:'synthetic-vector-31079-secret'};
+  const appProfile={appId:'synthetic-vector-31076',clientId:'synthetic-vector-31077',clientSecret:'synthetic-vector-31078-'+crypto.randomUUID(),signingSecret:'synthetic-vector-31079-'+crypto.randomUUID()};
   edge.app(appProfile);
   await call(owner,'/settings/operators/'+member.id+'/role','PATCH',{role:'admin'});
   await call(member,'/settings/integrations/slack/app','POST',appProfile);
