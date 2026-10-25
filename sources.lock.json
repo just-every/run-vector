@@ -6829,7 +6829,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-archive.mjs": {
-      "sha256": "52bd6efc7f2c12b3cb5ee8d1e11577e7fccbbfeba00c7486c33b4dffbc902721",
+      "sha256": "0c49e657058aa0a12ca3787bae341efbcea8345cad8b6704214a3bde1481a711",
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
@@ -7033,7 +7033,7 @@
       "executable": false
     },
     "tests/e2e/ui-runtime-support.mjs": {
-      "sha256": "9d866e907761aaf302a6509bf84ffcf62e00f68ca99aba2cb66e9b5500957ef0",
+      "sha256": "1af05279a5425781759c8154a44b2c438548f738b372f5fda78efa861cff5b35",
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
