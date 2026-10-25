@@ -1,10 +1,13 @@
+import { projectIcon } from "../appearance";
+
 type Appearance = { color: string | null; icon: string | null };
 
 export function ProjectAppearance({ color, icon }: Appearance) {
-  if (color === null && icon === null) return null;
+  const emoji = projectIcon.safeParse(icon);
+  if (color === null && !emoji.success) return null;
   return <span className="project-appearance">
     {color !== null && <span className="project-color" role="img" aria-label={`Project color ${color}`} style={{ backgroundColor: color }} />}
-    {icon !== null && <span role="img" aria-label={`Project icon ${icon}`}>{icon}</span>}
+    {emoji.success && <span role="img" aria-label={`Project icon ${emoji.data}`}>{emoji.data}</span>}
   </span>;
 }
 
