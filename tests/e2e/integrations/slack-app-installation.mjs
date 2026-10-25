@@ -57,7 +57,7 @@ export async function exerciseSlackAppInstallation({page,runtime,cookie,team,wid
   await binding.getByLabel('Team, project or saved view').selectOption('team:'+team.id);
   await binding.getByLabel('Channel service').selectOption('slack');
   await binding.getByLabel('Channel display name',{exact:true}).fill('synthetic-vector-33010');
-  await binding.getByLabel('Slack channel ID',{exact:true}).fill(fixture.intakeChannel);
+  await binding.getByLabel('Slack channel ID').fill(fixture.intakeChannel);
   await receive('/channels',()=>binding.getByRole('button',{name:'Save channel binding',exact:true}).click(),201);
   const title='synthetic-vector-33011-'+width+'-'+(++eventNumber),payload={type:'event_callback',team_id:fixture.teamId,event_id:'synthetic-vector-33012-'+width+'-'+eventNumber,event:{type:'app_mention',user:fixture.memberId,channel:fixture.intakeChannel,text:'<@'+fixture.botId+'> '+title}};
   const body=JSON.stringify(payload),timestamp=String(Math.floor(Date.now()/1000));
