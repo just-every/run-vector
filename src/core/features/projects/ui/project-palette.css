@@ -1,6 +1,8 @@
 .administration-panel .project-palette { display: flex; flex-wrap: wrap; gap: .4rem; }
 .administration-panel .project-palette label { display: inline-flex; align-items: center; gap: .35rem; min-height: 2.75rem; padding: .35rem .55rem; border: 1px solid var(--control-border); border-radius: .42rem; color: var(--app-body); background: var(--app-card); }
 .administration-panel .project-palette label:has(:checked) { background: var(--app-cobalt-soft); }
-.administration-panel .project-palette label:focus-within { outline: 2px solid var(--app-outline); outline-offset: 2px; }
+.administration-panel .project-palette label:focus-within { border-color: var(--app-outline); box-shadow: 0 0 0 1px var(--app-outline); }
 .administration-panel .project-palette input { width: auto; min-height: 0; margin: 0; }
 .project-label-pick { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+.administration-panel .project-palette input:focus-visible { outline: none; }
