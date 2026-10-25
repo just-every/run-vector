@@ -53,13 +53,14 @@ function DescriptionHistory({ issue, onRefresh, writable = true }: { writable?:b
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const left = revisions.find(revision => revision.id === from) ?? revisions[0];
-  const right = revisions.find(revision => revision.id === to) ?? revisions.at(-1);
+  const right = revisions.find(revision => revision.id === to && revision.id !== left?.id) ?? revisions.filter(revision => revision.id !== left?.id).at(-1);
   const option = (revision: typeof revisions[number], index: number) => `Revision ${index + 1} · ${revision.actor ?? 'Automation'} · ${formatInstant(revision.createdAt)}`;
   return <details className="secondary-section description-history"><summary>Description history{revisions.length ? ` · ${revisions.length}` : ''}</summary>
     {history.error ? <p role="alert">{history.error.message} <button onClick={history.reload}>Retry history</button></p> : null}
-    {revisions.length > 0 && <>
+    {revisions.length === 1 && <p>{option(revisions[0]!, 0)}</p>}
+    {revisions.length > 1 && <>
       <div className="revision-selectors"><label>Compare from<select aria-label="Compare from revision" value={left?.id ?? ''} onChange={event => setFrom(event.target.value)}>{revisions.map((revision, index) => <option key={revision.id} value={revision.id}>{option(revision, index)}</option>)}</select></label>
-      <label>Compare to<select aria-label="Compare to revision" value={right?.id ?? ''} onChange={event => setTo(event.target.value)}>{revisions.map((revision, index) => <option key={revision.id} value={revision.id}>{option(revision, index)}</option>)}</select></label></div>
+      <label>Compare to<select aria-label="Compare to revision" value={right?.id ?? ''} onChange={event => setTo(event.target.value)}>{revisions.map((revision, index) => revision.id !== left?.id && <option key={revision.id} value={revision.id}>{option(revision, index)}</option>)}</select></label></div>
       <p>Changed lines are highlighted. Restoring writes a new revision.</p>
       <div className="revision-comparison"><RevisionText title="Earlier Markdown" text={left?.description ?? ''} other={right?.description ?? ''} /><RevisionText title="Later Markdown" text={right?.description ?? ''} other={left?.description ?? ''} /></div>
       <button type="button" disabled={!writable || !hydrated || busy || !left} onClick={async () => {
