@@ -1,5 +1,6 @@
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
+import {prepareViewerCensus,viewerMutations} from './role-viewer-census';
 import {doors,apiDoors} from '../../src/core/features/roles/doors';
 import {invite,actor} from './base-auth-fixture';
 import {resetLimits,snapshot,type roleWorkspace} from './role-fixture';
@@ -11,10 +12,10 @@ export async function viewerVisibilityJourney(w:Workspace){
  const owner=w.people.owner,member=w.member;
  const viewerCookie=await invite('synthetic-vector-1720@vector.test',owner.cookie,'viewer'),viewerId=await actor(viewerCookie);
  expect(await env.DB.prepare('SELECT role FROM operators WHERE id=?').bind(viewerId).first('role')).toBe('viewer');
- const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:owner.id}),201);
+ const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-1721',leadOperatorId:member.id}),201);
  const label=(await json(await owner.call('/settings/labels','POST',{name:'synthetic-vector-1990',color:'#3355aa'}))).labels.find((l:any)=>l.name==='synthetic-vector-1990');
- const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id,labelIds:[label.id]}),201);
- const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-1723'}),201);
+ const issue=await json(await owner.call('/issues','POST',{title:'synthetic-vector-1722',teamId:w.team.id,projectId:project.id,labelIds:[label.id],description:'- [ ] synthetic-vector-2034'}),201);
+ const ownComment=await json(await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'- [ ] synthetic-vector-1723'}),201);
  const reactionPath=`/issues/${issue.identifier}/reactions`;
  const quiet=await snapshot(['notifications','notification_events','notification_deliveries']);
  for(const targetId of ['',ownComment.id]) {
@@ -36,7 +37,10 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect((await w.guest.call(reactionPath,'DELETE',{targetId:'',emoji:'🎉'})).status).toBe(200);
  expect(await snapshot(Object.keys(guestBefore))).toEqual(guestBefore);
  const shared=await json(await owner.call('/views','POST',{name:'synthetic-vector-1724',isShared:true,query:{team:w.team.id}}),201);
+ const census=await prepareViewerCensus(w,{issue,comment:ownComment,project,label});
+ try{
  expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
+ await census.afterRoleChange();
  expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  expect((await member.api(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${shared.id}`])expect((await member.call(path)).status,path).toBe(200);
@@ -49,24 +53,31 @@ export async function viewerVisibilityJourney(w:Workspace){
   const results=await env.DB.batch(tables.map(name=>env.DB.prepare('SELECT * FROM \"'+name+'\"')));
   return Object.fromEntries(tables.map((name,index)=>[name,results[index].results.map(row=>JSON.stringify(row)).sort()]));
  };
- const logicalId=ownComment.id;
- // Each registered work mutation is reached through its actual native/bearer transport.
- for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){
-  if(door.method==='GET'||door.page==='account'&&!door.workMutation||typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row))continue;
-  await resetLimits();
-  const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
-  const before=await stored();
-  const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
-  const usageIds=new Set(usageBefore.map(row=>row.id));
-  const response=await send(path,door.method==='ALL'?'POST':door.method,{});
-  expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
-  expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
-  const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
-  expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
-  const usage=usageAfter.filter(row=>!usageIds.has(row.id));
-  if(registry===apiDoors){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
-  else expect(usage).toHaveLength(0);
+ for(const [surface,registry,send] of [['native',doors,member.call],['bearer',apiDoors,member.api]] as const){
+  const mutations=viewerMutations(registry);let attempts=0;
+  for(const door of mutations){
+   await resetLimits();
+   const prepared=census.request(surface,door),path=prepared.path;
+   await census.beforeRequest(surface,door);
+   const before=await stored(),providerCalls=census.edge.calls.length;
+   const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
+   const usageIds=new Set(usageBefore.map(row=>row.id));
+   const response=prepared.send?await prepared.send():await send(path,door.method==='ALL'?'POST':door.method,prepared.body);
+   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
+   expect(census.edge.calls,door.method+' '+path+' refusal reached a provider').toHaveLength(providerCalls);
+   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
+   expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:'forbidden'});
+   const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
+   expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
+   const usage=usageAfter.filter(row=>!usageIds.has(row.id));
+   if(surface==='bearer'){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
+   else expect(usage).toHaveLength(0);
+   await census.afterRequest();
+   attempts++;
+  }
+  expect(attempts,surface+' registered mutations from src/core/features/roles/doors.ts').toBe(mutations.length);
  }
+ }finally{await census.afterRequest();census.dispose();}
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
  const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-1728',identifierPrefix:'SYNVIEW',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-1728');
