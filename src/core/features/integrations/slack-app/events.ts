@@ -1,3 +1,4 @@
+import {unfurlSlackLinks,linkSharedEvent} from './unfurl';
 import {providerUninstall} from './retire';
 import {z} from 'zod';
 import type {WorkerBindings} from '../../../app/bindings';
@@ -10,7 +11,7 @@ import {createIssueInputSchema} from '../../issues/input';
 import {signedInstallation} from '../slack-dm/signing';
 import {rawIntegrationBody} from '../raw-body';
 import {IntegrationError} from '../errors';
-const callback=z.object({type:z.literal('event_callback'),team_id:z.string().max(100),event_id:z.string().min(1).max(200),event:z.object({type:z.literal('app_mention'),user:z.string().max(100),channel:z.string().max(100),text:z.string().max(100_000),bot_id:z.string().optional(),subtype:z.string().optional()})});
+const callback=z.object({type:z.literal('event_callback'),team_id:z.string().max(100),event_id:z.string().min(1).max(200),event:z.union([linkSharedEvent,z.object({type:z.literal('app_mention'),user:z.string().max(100),channel:z.string().max(100),text:z.string().max(100_000),bot_id:z.string().optional(),subtype:z.string().optional()})])});
 /** The signature identifies the installation; neither an untrusted team ID nor
  * a browser session selects it. No request state is written before admission. */
 export async function receiveSlackEvent(env:WorkerBindings,request:Request){
@@ -29,9 +30,10 @@ export async function receiveSlackEvent(env:WorkerBindings,request:Request){
  const parsed=callback.safeParse(payload);
  if(!parsed.success)throw new IntegrationError(400,'slack_event_unsupported');
  const {event,event_id,team_id}=parsed.data;
- if(event.bot_id||event.subtype)throw new IntegrationError(400,'slack_event_unsupported');
+ if(event.type==='app_mention'&&(event.bot_id||event.subtype))throw new IntegrationError(400,'slack_event_unsupported');
  const key=await sha256(event_id),existing=()=>env.DB.prepare('SELECT identifier FROM vector_slack_event_receipts WHERE workspace_id=? AND event_key=?').bind(signer.workspace,key).first<{identifier:string}>();
  if(await existing())throw new IntegrationError(409,'slack_event_replayed');
+ if(event.type==='link_shared')return unfurlSlackLinks(env,signer,team_id,event,key);
  // Only an explicit, unambiguous team channel binding is an intake mapping.
  // Project/view destinations cannot grant a route into their teams.
  const mappings=(await env.DB.prepare("SELECT b.destination_id,b.object_id FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.enabled=1 AND d.revoked_at IS NULL JOIN teams t ON t.id=b.object_id AND t.archived_at IS NULL WHERE b.workspace_id=? AND b.channel_id=? AND b.scope='team' AND d.kind='slack' AND b.suspended_reason IS NULL").bind(signer.workspace,event.channel).all<{destination_id:string;object_id:string}>()).results;

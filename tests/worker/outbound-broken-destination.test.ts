@@ -79,3 +79,5 @@ it('[SLACK-001 ROLE-001] Owners and Admins explicitly map Slack members with aud
 it('[SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake',async()=>{await slackAppScenario('events');});
 it('[SLACK-001 SEC-001] Provider uninstall and local removal retire Slack credentials and revoke access',async()=>{await slackAppScenario('uninstall');});
 it('[SLACK-001 SEC-001] Slack archives exclude credentials and restore requires re-entry',async()=>{await slackAppScenario('archive');});
+
+it('[SLACK-005 OPS-001 ROLE-002] Slack link previews unfurl issues and projects only for linked members who can read them',async()=>{await slackAppScenario('unfurl');});

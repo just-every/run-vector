@@ -1,0 +1,54 @@
+import {expect} from 'vitest';
+import {setupSlackIntake,slackIntakeFixture} from './slack-events-scenario';
+import {request,bindings,invite,actor} from './base-auth-fixture';
+import type {setupIntegrations} from './integration-fixture';
+
+export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,member:string,memberId:string,calls:{method:string;body:any}[]){
+ const {send,read,snapshot}=await setupSlackIntake(f,secret,memberId);
+ const team=f.initial.teams[0].id;
+ const issue=await f.create({title:'synthetic-vector-private-spec',description:'synthetic-vector-private-description',priority:'high',assigneeOperatorId:memberId});
+ await read(await f.call(`/settings/teams/${team}/members/${memberId}`,'PUT',{role:'member'}));
+ await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:true}));
+ const native=await read(await request('/api/issues/'+issue.identifier,'GET',undefined,member));
+ let sequence=0;
+ const payload=(url:string,user=slackIntakeFixture.user)=>({type:'event_callback',team_id:slackIntakeFixture.team,event_id:'synthetic-vector-unfurl-'+(++sequence),event:{type:'link_shared',channel:slackIntakeFixture.channel,user,message_ts:'synthetic-vector-1',unfurl_id:'synthetic-vector-unfurl-'+sequence,source:'conversations_history',links:[{domain:new URL(bindings.APP_ORIGIN).hostname,url}]}});
+ const effects=()=>calls.filter(c=>c.method==='chat.unfurl');
+ const url=bindings.APP_ORIGIN+'/app/issues/'+issue.identifier,event=payload(url);
+ const before=await snapshot(),count=effects().length;
+ for(const options of [{unsigned:true},{secret:'synthetic-vector-wrong-secret'},{timestamp:String(Math.floor(Date.now()/1000)-301)}]){await read(await send(event,options),401);expect(await snapshot()).toEqual(before);expect(effects()).toHaveLength(count);}
+ await read(await send(event));expect(effects()).toHaveLength(count+1);
+ expect(effects().at(-1)!.body).toMatchObject({unfurl_id:event.event.unfurl_id,source:event.event.source});
+ const text=effects().at(-1)!.body.unfurls[url].blocks[0].text;
+ expect(text.type).toBe('plain_text');
+ for(const value of [native.identifier,native.title,native.status.name,native.assignee.name,native.priority])expect(text.text).toContain(value);
+ expect(JSON.stringify(effects().at(-1)!.body)).not.toContain('synthetic-vector-private-description');
+ const delivered=await snapshot();await read(await send(event),409);expect(await snapshot()).toEqual(delivered);expect(effects()).toHaveLength(count+1);
+ const bare=async(event:ReturnType<typeof payload>)=>{
+  const state=await snapshot(),prior=effects().length;await read(await send(event));const after=await snapshot();
+  delete state.vector_slack_event_receipts;delete after.vector_slack_event_receipts;
+  expect(after).toEqual(state);expect(effects()).toHaveLength(prior);
+ };
+ await bare(payload(url,slackIntakeFixture.unlinked));
+ const outsider=await invite('synthetic-vector-unfurl-outsider@vector.test',f.cookie),outsiderId=await actor(outsider);
+ // Re-map the same Slack user: the next event must use current target authority.
+ await read(await f.call('/settings/integrations/slack/app/members/'+memberId,'DELETE'));
+ await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:outsiderId,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}));
+ expect((await request('/api/issues/'+issue.identifier,'GET',undefined,outsider)).status).toBe(404);
+ await bare(payload(url));
+ await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'viewer'}));
+ await bare(payload(url));
+ await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'member'}));
+ await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:false}));
+ const state=await f.mutate('/settings/projects','POST',{name:'synthetic-vector-unfurl-project',leadOperatorId:f.owner,priority:'urgent'}),project=state.projects.find(p=>p.name==='synthetic-vector-unfurl-project')!;
+ await f.create({projectId:project.id});
+ const projectUrl=bindings.APP_ORIGIN+'/app/projects/'+project.id;
+ const projectNative=await read(await request('/api/projects/'+project.id,'GET',undefined,outsider));
+ const projectCount=effects().length;await read(await send(payload(projectUrl)));expect(effects()).toHaveLength(projectCount+1);
+ const projectText=effects().at(-1)!.body.unfurls[projectUrl].blocks[0].text.text;
+ for(const value of [projectNative.name,projectNative.lifecycle,projectNative.lead.name,projectNative.priority])expect(projectText).toContain(value);
+ await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:true}));
+ await bare(payload(projectUrl));
+ await bare(payload(bindings.APP_ORIGIN+'/app/issues/synthetic-vector-unknown'));
+ await bare(payload('https://example.test/app/issues/'+issue.identifier));
+ await bare(payload(bindings.APP_ORIGIN+'/app/documents/synthetic-vector-unbuilt'));
+}
