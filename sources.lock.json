@@ -4225,7 +4225,7 @@
       "executable": false
     },
     "src/core/features/housekeeping/panel.tsx": {
-      "sha256": "efe98640ed092474a6126e7552399fc6a511afb9cd16aea791dae64f92723ca2",
+      "sha256": "4b8f61c36e74c63f48e156e32245308f300377b7a51bd9d3e1cee4a2e338c1c8",
       "executable": false
     },
     "src/core/features/housekeeping/schema.ts": {
@@ -4365,7 +4365,7 @@
       "executable": false
     },
     "src/core/features/integrations/channels/schema.ts": {
-      "sha256": "0d730ddf0f4751a15b7636525c4a9d6faf5bceba2ba471978b57592bf34df7be",
+      "sha256": "c2a5d50d4856ce4f9de8e63d3ab1cdc234c8336372a34b68ecae1b48906dfede",
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
@@ -4609,7 +4609,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "f9a2a2d70b3ebaacdbb8d1b752e387a41b8bf9937fdf805ad575ee30047da30c",
+      "sha256": "5663bb8bf4746d476dbf220064af4fd72ac4d21780b488f24ea19c9cfeebad37",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -5797,7 +5797,7 @@
       "executable": false
     },
     "src/core/features/settings/repository.ts": {
-      "sha256": "3d062400b89d9fc8593100b9c1c08079b88ef3ec9d517b0ecd7d98a527f9ab4b",
+      "sha256": "4bccac00f7753541f2a4f6db7ccb493c6f9e1d7cdefa09d5779a2debd108401b",
       "executable": false
     },
     "src/core/features/settings/roles.ts": {
@@ -5805,7 +5805,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "2dba2a72c03a83c82f1a6ea6b4fbba77eefa7ba2588f6c0bcd25734cc3e00dae",
+      "sha256": "8cce37bc8ca38702beaaaab8cd882f55a503087257f65e4e709114525188c20a",
       "executable": false
     },
     "src/core/features/settings/schema.ts": {
@@ -5813,11 +5813,11 @@
       "executable": false
     },
     "src/core/features/settings/ui/administration-action.ts": {
-      "sha256": "af8092da6efd1a096b186950cd005ec6b5fb28d66fa65a34b6ef4fa27d968405",
+      "sha256": "8de2c7a1a09360b3b15f4662a75ac11fcb714bb7e6e178e10864dee7c0624c70",
       "executable": false
     },
     "src/core/features/settings/ui/administration-feedback.tsx": {
-      "sha256": "f8b6202637eeb4941e196f0a770439037e28ac6061d9fc0df3f030d7fcf2beff",
+      "sha256": "b9935cb9906c44bf3b921c630721b87ad9d99a961dd3a8538f6868b334d9db9f",
       "executable": false
     },
     "src/core/features/settings/ui/appearance-panel.tsx": {
@@ -5837,7 +5837,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/labels-panel.tsx": {
-      "sha256": "2121a04d0ca878620751363da9bf6e6c9569973a2aee2a66e3afa3e3512b0609",
+      "sha256": "a3f9208e6b63e6fc6874c66519f6b31ca1e8c29b2a096a66bcabda5ce4596c0f",
       "executable": false
     },
     "src/core/features/settings/ui/member-role-form.tsx": {
@@ -5845,7 +5845,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/members-panel.tsx": {
-      "sha256": "d82c39ec2117cc19470a24b64ddbcbe9590ac71254a8ec1169ce7e0ff508c1c1",
+      "sha256": "0829a1b647765d14f4f9202e548f0e16bbbbd3c28e4d1e2fa135b0a85558ba9e",
       "executable": false
     },
     "src/core/features/settings/ui/personal-time-panel.tsx": {
@@ -5857,11 +5857,11 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-page.tsx": {
-      "sha256": "84f5a69b80698caeda49bc70dd7c61e4af98730f881c61f2fc4fee06664350f5",
+      "sha256": "81803bd30d228819712820ba40ce09c0f0e9c94c6dc227e6077431b8b21ace55",
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
-      "sha256": "05680915920c357dca9ef4b1c4cd2531f7186a27c5b3631876f7e9ad91787575",
+      "sha256": "8a1ac8e22ae8f2e600fbd0ded95abc69068ed7516870515ed8cca6157c7bfb17",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
@@ -5873,7 +5873,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/team-join-rules.tsx": {
-      "sha256": "17c37348bc02b1b90d1438d55c2353926f5456d31aa5301772fd2d932c0f5226",
+      "sha256": "698edeb3961f8c341e87268fef52af58734385083ff2126015819384010e2a4e",
       "executable": false
     },
     "src/core/features/settings/ui/team-members.tsx": {
@@ -5889,7 +5889,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/team-permissions.tsx": {
-      "sha256": "564258bec81fccf172f1cd7c9c7ae4f93c89f7b96947cdb39fa4a69b2b6991bc",
+      "sha256": "356290ce6b7d71a2fec0d29a07acac79bca3a0d36e4c47b3f19f4f2c2369cd0b",
       "executable": false
     },
     "src/core/features/settings/ui/team-privacy.tsx": {
@@ -5897,7 +5897,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "cc8a4dd27c375f6e22f3805b45b952ac3c9d9eb511f548ba1a2b60b28b043486",
+      "sha256": "846ebf2902fde63f6b756d06f56993f5a3d9a89085dbc10f13183a6b8fc79609",
       "executable": false
     },
     "src/core/features/settings/ui/timezone-picker.tsx": {
@@ -6441,7 +6441,7 @@
       "executable": false
     },
     "tests/e2e/admin-label-journey.mjs": {
-      "sha256": "97b5f93a51d1ec975510a5f395f557550d03249e69f61d9222a8cd137078a3c7",
+      "sha256": "83b86305473730a4e962b6eaf192b312438a72dc01850653b8c256d54597fbec",
       "executable": false
     },
     "tests/e2e/admin-project-cycle-journey.mjs": {
@@ -6465,7 +6465,7 @@
       "executable": false
     },
     "tests/e2e/admin-team-journey.mjs": {
-      "sha256": "d5163fd234a36a57d51e90f2c8de953700e3b8ac243c7802260a74dd424694b6",
+      "sha256": "05736ad98a1480e1fdaffda1557b7ccea47c42e74476ab767d3012306b814c7f",
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
@@ -6705,7 +6705,7 @@
       "executable": false
     },
     "tests/e2e/cycle-schedule-runtime.mjs": {
-      "sha256": "596baaafc4aa224525ffac73e1c17dac443572925f7ee4fa2842907c41d4bb47",
+      "sha256": "f363b91706a18c90975294106ed06c2c5292cebd1fe1a6da2ad6c4fb487d6717",
       "executable": false
     },
     "tests/e2e/dashboards-journey.mjs": {
@@ -6797,7 +6797,7 @@
       "executable": false
     },
     "tests/e2e/housekeeping-runtime.mjs": {
-      "sha256": "e380c84d75457760a2a863e2835193a64b25bf3006ca05d6b24fcd2e4aa62bcb",
+      "sha256": "cf96cddafc0a5e43996692f917fe4434f031c57b88d637103364985a829e83b3",
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
@@ -6925,7 +6925,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-runtime.mjs": {
-      "sha256": "f2c1bd4d03c4dd318622d4327c6aaf27796a97d01abc1b077571b4daf53275b0",
+      "sha256": "21cce540ecb4f516ace2fb10ae65e9452996c9a0e828b02728df7dce5439f93c",
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {

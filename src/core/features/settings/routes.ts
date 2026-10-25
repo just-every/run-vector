@@ -164,7 +164,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   app.patch("/settings", async (c) => {
     const parsed = z
       .object({
-        timezone: timezoneSchema,
+        timezone: timezoneSchema.optional(),
         reminderTime: reminderTimeSchema.optional(),
         memberInvites: z.boolean().optional(),
       })

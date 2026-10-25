@@ -3,13 +3,13 @@ import { useRouteContext } from '@tanstack/react-router';
 import type { z } from 'zod';
 import { fetchJson } from '../../../app/api-client';
 
-type Draft = { revision: string; fields: [string, string][]; confirmed: boolean };
+type Draft = { revision: string; fields: [string, string][]; valid: boolean; confirmed: boolean };
 const writes = new Map<string, Promise<unknown>>();
 function readDraft(key: string): Draft | null {
   const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null');
   if (!value || typeof value !== 'object') return null;
   const draft = value as Draft;
-  return typeof draft.revision === 'string' && typeof draft.confirmed === 'boolean' && Array.isArray(draft.fields)
+  return typeof draft.revision === 'string' && typeof draft.confirmed === 'boolean' && typeof draft.valid === 'boolean' && Array.isArray(draft.fields)
     && draft.fields.every(pair => Array.isArray(pair) && pair.length === 2 && pair.every(value => typeof value === 'string')) ? draft : null;
 }
 function restore(form: HTMLFormElement, draft: Draft) {
@@ -43,9 +43,11 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
   function status(next: typeof state) { if (mounted.current) setState(next); }
   async function flush() {
     clearTimeout(timer.current);
-    const element = form.current, snapshot = draft.current;
-    if (!element || !snapshot || busy.current || !element.checkValidity() || (confirm && !snapshot.confirmed)) return;
-    const options = current.current, body = options.read(new FormData(element));
+    const snapshot = draft.current;
+    if (!snapshot || busy.current || !snapshot.valid || (confirm && !snapshot.confirmed)) return;
+    const fields = new FormData();
+    for (const [name, value] of snapshot.fields) fields.append(name, value);
+    const options = current.current, body = options.read(fields);
     busy.current = true; status('saving');
     // A remount may join a still-running write. Serialize per setting so an
     // earlier receipt can never overtake a later edit in this document.
@@ -77,7 +79,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     if (!element) return;
     const fields: [string, string][] = [];
     for (const [name, value] of new FormData(element)) if (typeof value === 'string') fields.push([name, value]);
-    draft.current = { revision: crypto.randomUUID(), fields, confirmed: false };
+    draft.current = { revision: crypto.randomUUID(), fields, valid:element.checkValidity(), confirmed: false };
     try { localStorage.setItem(key, JSON.stringify(draft.current)); } catch { /* Keep the draft in this mounted form if device storage is unavailable. */ }
     status('dirty'); schedule();
   }

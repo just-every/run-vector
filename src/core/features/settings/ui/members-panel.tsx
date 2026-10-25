@@ -111,7 +111,7 @@ export function MembersPanel({ data, denied, onChanged }: { data: Settings; deni
       )}
       {message && <p role="status">{message}</p>}
       {(controls.leads || controls.manages) && (
-        <SettingsSaveForm className="settings-member-invites" aria-label="Member invitations" path="/api/settings" identity="member-invitations" method="PATCH" schema={settingsSchema} confirm="Confirm invitation setting" read={fields => ({timezone:data.workspace.timezone, memberInvites:fields.has("memberInvites")})} onSaved={onChanged}>
+        <SettingsSaveForm className="settings-member-invites" aria-label="Member invitations" path="/api/settings" identity="member-invitations" method="PATCH" schema={settingsSchema} confirm="Confirm invitation setting" read={fields => ({memberInvites:fields.has("memberInvites")})} onSaved={onChanged}>
           <label>
             <input type="checkbox" name="memberInvites" defaultChecked={data.workspace.memberInvites} disabled={denied} />
             Members can invite other Members

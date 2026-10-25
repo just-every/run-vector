@@ -67,14 +67,14 @@ try {
       name: "Cycle schedule " + team.name,
       exact: true,
     });
-    await form.getByLabel("Cycle length (weeks)").fill("2");
-    await form.getByLabel("Start weekday").selectOption("1");
-    await form.getByLabel("Cooldown (weeks)").fill("1");
-    await form.getByLabel("Upcoming cycles to keep").fill("3");
     const savedResponse = page.waitForResponse(
       (r) =>
         r.url().endsWith("/cycle-schedule") && r.request().method() === "PUT",
     );
+    await form.getByLabel("Cycle length (weeks)").fill("2");
+    await form.getByLabel("Start weekday").selectOption("1");
+    await form.getByLabel("Cooldown (weeks)").fill("1");
+    await form.getByLabel("Upcoming cycles to keep").fill("3");
     assert.equal((await savedResponse).status(), 200);
     await savedSchedule({ weeks: "2", cooldown: "1", upcoming: "3" });
     await form.getByRole('status').waitFor();
@@ -97,12 +97,12 @@ try {
       Date.parse(cycles[1].startsAt) - Date.parse(cycles[0].endsAt),
       7 * 86400000,
     );
-    await form.getByLabel("Cycle length (weeks)").fill("1");
-    await form.getByLabel("Cooldown (weeks)").fill("0");
     const response = page.waitForResponse(
       (r) =>
         r.url().endsWith("/cycle-schedule") && r.request().method() === "PUT",
     );
+    await form.getByLabel("Cycle length (weeks)").fill("1");
+    await form.getByLabel("Cooldown (weeks)").fill("0");
     assert.equal((await response).status(), 200);
     await savedSchedule({ weeks: "1", cooldown: "0" });
     await page.waitForFunction(

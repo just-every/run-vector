@@ -139,18 +139,6 @@ function TeamEditor({
   const action = useAdministrationAction(onChanged);
   const hydrated = useHydrated();
   const access = teamAccess(data, team);
-  async function save(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const fields = new FormData(event.currentTarget);
-    await action.run(`/api/settings/teams/${team.id}`, "PATCH", {
-      name: fields.get("name"),
-      autoCycleStarted: fields.has("autoCycleStarted"),
-      autoCycleCompleted: fields.has("autoCycleCompleted"),
-      ...(team.prefixEditable
-        ? { identifierPrefix: fields.get("prefix") }
-        : {}),
-    });
-  }
   async function add(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -175,8 +163,9 @@ function TeamEditor({
       {team.canRead && <>
       {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}
       {access.settings && !access.archive && <p>Only this team&apos;s owners and Admins archive or unarchive it.</p>}
-      <form aria-label={`Edit ${team.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending || !hydrated || !access.settings}>
+      <SettingsSaveForm aria-label={`Edit ${team.name}`} path={`/api/settings/teams/${team.id}`} method="PATCH" schema={administrationSchema} onSaved={onChanged}
+        read={fields => ({name:fields.get('name'),autoCycleStarted:fields.has('autoCycleStarted'),autoCycleCompleted:fields.has('autoCycleCompleted'),...(team.prefixEditable?{identifierPrefix:fields.get('prefix')}:{})})}>
+        <fieldset disabled={!hydrated || !access.settings}>
           <label>
             Team name
             <input
@@ -211,7 +200,6 @@ function TeamEditor({
             Add uncommitted work to the active cycle when it completes
           </label>
           <p>These rules use this team’s current open cycle. Existing commitments stay in place. Turn either rule off here to stop it.</p>
-          <button type="submit">Save team</button>
           <button
             type="button"
             disabled={!access.archive}
@@ -224,7 +212,7 @@ function TeamEditor({
             {team.archivedAt ? "Unarchive team" : "Archive team"}
           </button>
         </fieldset>
-      </form>
+      </SettingsSaveForm>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
       <TeamJoinRules data={data} team={team} onChanged={onChanged}/>
       <TeamPermissions data={data} team={team} onChanged={onChanged} />

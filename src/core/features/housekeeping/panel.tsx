@@ -23,8 +23,8 @@ export function HousekeepingPanel({ data, onChanged }: { data: Administration; o
         method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(read(form)),
       });
       setPreviews((all) => ({ ...all, [teamId]: result }));
-    } catch (cause) {
-      setPreviews((all) => ({ ...all, [teamId]: cause instanceof Error ? cause.message : "The preview could not be loaded." }));
+    } catch {
+      setPreviews((all) => ({ ...all, [teamId]: "The preview could not be loaded. Try again." }));
     }
   }
   return (
