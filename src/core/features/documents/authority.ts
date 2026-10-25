@@ -3,8 +3,9 @@ import type {RowId} from '../roles/matrix';
 import {visibilityDatabase} from '../roles/visibility-database';
 
 async function subject(request:DoorRequest):Promise<{kind:string;id:string}|null>{
+ const db=visibilityDatabase(request.db,request.actor);
  if(request.params.identifier){const issue=await request.db.prepare('SELECT id FROM issues WHERE identifier=?').bind(request.params.identifier).first<{id:string}>();return issue?{kind:'issue',id:issue.id}:null;}
- if(request.params.documentId)return request.db.prepare('SELECT parent_kind kind,parent_id id FROM documents WHERE id=?').bind(request.params.documentId).first<{kind:string;id:string}>();
+ if(request.params.documentId)return db.prepare('SELECT parent_kind kind,parent_id id FROM documents WHERE id=?').bind(request.params.documentId).first<{kind:string;id:string}>();
  const body=await request.body();if(!body||typeof body!=='object')return null;
  const {parentKind:kind,parentId:id}=body as Record<string,unknown>;
  return typeof kind==='string'&&typeof id==='string'?{kind,id}:null;
