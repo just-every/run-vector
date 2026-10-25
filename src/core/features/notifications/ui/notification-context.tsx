@@ -1,3 +1,4 @@
+import "./inbox-count.css";
 import { MentionOperatorsProvider } from "./mention-operators";
 import {
   createContext,
