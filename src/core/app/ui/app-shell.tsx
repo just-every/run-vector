@@ -60,7 +60,6 @@ const navigation: NavigationItem[] = [
 
 export function AppShell({ children }: AppShellProps) {
   const { operator } = useRouteContext({ from: '/app' })
-  const hydrated = useHydrated()
   return (
     <SavedViewReceiptProvider key={operator.id}>
       <NotificationProvider>
