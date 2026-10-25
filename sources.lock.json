@@ -6465,7 +6465,7 @@
       "executable": false
     },
     "tests/e2e/admin-access-journey.mjs": {
-      "sha256": "e282b0c2f7e044b64778e655fb068ca1e60ef911953f8c3f39e17fb163290e4d",
+      "sha256": "d4925d633c9fb0c546f25a9d9da7d73bc2bd8e03389be2a480fbb456da999014",
       "executable": false
     },
     "tests/e2e/admin-archive-team-journey.mjs": {
@@ -7085,7 +7085,7 @@
       "executable": false
     },
     "tests/e2e/ui-controls-checks.mjs": {
-      "sha256": "6360a7375e19d6484a13615898c07dd92d4290589e4c26efbff4bba39b74ae38",
+      "sha256": "305c4388482989ac3c61bcfdb9840d592cbfe03f45df52df3fe9b143f6d100d8",
       "executable": false
     },
     "tests/e2e/ui-failure-diagnostics.mjs": {

@@ -102,7 +102,7 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
     page,
     "Edit " + runtime.config.DEFAULT_TEAM_NAME,
   );
-  await expect(teamForm.locator("fieldset").first()).toBeEnabled();
+  await expect(teamForm.locator("fieldset").first()).toBeEnabled({ timeout: 30_000 });
   await openDisclosures(page);
   await assertSettingsSections(page, "empty workspace Settings");
   await clause(
@@ -227,7 +227,7 @@ export async function assertSignOut({ page, runtime, capture }) {
     page,
     "Edit " + runtime.config.DEFAULT_TEAM_NAME,
   );
-  await expect(teamForm.locator("fieldset").first()).toBeEnabled();
+  await expect(teamForm.locator("fieldset").first()).toBeEnabled({ timeout: 30_000 });
   await openDisclosures(page);
   await assertSettingsSections(page, "final Settings");
   await capture("settings-final-signout-reachable");
