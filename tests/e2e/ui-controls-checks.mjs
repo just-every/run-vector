@@ -12,8 +12,10 @@ export async function openDisclosures(page) {
 export { openAdministrationForm } from "./ui-administration-form.mjs";
 export async function openAccountMenu(page) {
   const trigger = page.locator('.app-mobile-account-trigger');
-  if (await trigger.isVisible() && await trigger.getAttribute('aria-expanded') === 'false')
-    await trigger.click();
+  if (await trigger.isVisible() && await trigger.getAttribute('aria-expanded') === 'false') {
+    await trigger.focus();
+    await page.keyboard.press('Enter');
+  }
 }
 
 export async function assertSettingsSections(page, label) {

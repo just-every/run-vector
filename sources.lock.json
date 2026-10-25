@@ -7037,7 +7037,7 @@
       "executable": false
     },
     "tests/e2e/ui-controls-checks.mjs": {
-      "sha256": "a596a3fef479854e87f95a7d96bbb06988b36af375f7671a5b52a144fc9a931c",
+      "sha256": "6b3d9e0bb3b32cdaa21da7359e1ea5f3f06bdda9f694473cf3ca3026ef1ff86f",
       "executable": false
     },
     "tests/e2e/ui-failure-diagnostics.mjs": {
