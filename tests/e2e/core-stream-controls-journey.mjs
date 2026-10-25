@@ -79,7 +79,8 @@ export async function streamControlsJourney(page, context, base, record, capture
     await page.locator('#issue-row-' + items.primary.identifier).click();
     await page.getByRole('heading', { name: items.primary.title, exact: true }).waitFor();
     await page.waitForURL(base + '/app/current/' + items.primary.identifier);
-    await page.getByRole('button', { name: '← Back to list', exact: true }).click();
+    if (width === 390) await page.getByRole('button', { name: '← Back to list', exact: true }).click();
+    else await page.keyboard.press('Escape');
     await page.waitForURL(base + '/app');
     await streamControlsReady(page);
     assert.deepEqual((await api('/preferences/current')).filters, combination);

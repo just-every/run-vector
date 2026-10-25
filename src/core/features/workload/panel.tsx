@@ -55,7 +55,7 @@ export function WorkloadPanel({ cycleId }: { cycleId: string }) {
             Due through
             <input type="date" name="to" required />
           </label>
-          <details><summary>Which due dates count?</summary><p>Both dates are included. Issues without a due date are excluded.</p></details>
+          <details><summary>Which due dates count?</summary><p>Both dates are included. Issues without a due date are excluded.{data ? ` Calendar dates use ${data.timezone}.` : ""}</p></details>
           <button>Show workload</button>
         </form>
       )}

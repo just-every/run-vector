@@ -31,7 +31,7 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
   await create.getByRole('combobox',{name:'Project lead',exact:true}).selectOption(sql('SELECT id FROM operators WHERE removed_at IS NULL ORDER BY id LIMIT 1')[0].id);
   await capture(`project-create-${suffix}`);
   await create.getByRole('button',{name:'Create project',exact:true}).click();
-  await page.getByRole('link',{name:`Open ${name}`,exact:true}).click();
+  await page.waitForURL(url => url.pathname.startsWith('/app/projects/'));
   await page.getByRole('heading',{name,exact:true}).waitFor();
   await openAdministrationForm(page,`Edit project ${name}`);
   const edit=page.getByRole('form',{name:`Edit project ${name}`,exact:true});
@@ -39,7 +39,7 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
     await edit.getByLabel('Project start date',{exact:true}).fill('2027-02-01');
     await edit.getByLabel('Project target date',{exact:true}).fill('2027-02-20');
     await edit.getByRole('combobox',{name:'Project priority',exact:true}).selectOption('high');
-    await edit.getByLabel('Project labels',{exact:true}).selectOption(labelIds);
+    for (const label of labels) await edit.getByRole('checkbox',{name:label,exact:true}).check();
     await edit.getByRole('button',{name:'Save project',exact:true}).click();
     await poll(()=>sql(`SELECT id,start_date,target_date,priority FROM projects WHERE name='${name}'`),rows=>rows[0]?.start_date==='2027-02-01'&&rows[0]?.target_date==='2027-02-20'&&rows[0]?.priority==='high','planning fields saved');
     const project=sql(`SELECT id FROM projects WHERE name='${name}'`)[0];
@@ -61,7 +61,7 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
   });
   await clause('PROJ-001',"a project's color and icon save, appear on list and page and are one activity entry each",async()=>{
     await edit.getByLabel('Project target date',{exact:true}).fill('2027-02-20');
-    await edit.getByLabel('Project color',{exact:true}).fill('#A34F80');
+    await edit.getByRole('radio',{name:'Blue',exact:true}).check();
     await edit.getByLabel('Project icon',{exact:true}).fill('👩🏽‍💻');
     const project=sql(`SELECT id FROM projects WHERE name='${name}'`)[0];
     const detail=async()=>{
@@ -70,7 +70,7 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
       return response.json();
     };
     await edit.getByRole('button',{name:'Save project',exact:true}).click();
-    await poll(detail,value=>value.color==='#a34f80'&&value.icon==='👩🏽‍💻','project appearance saved');
+    await poll(detail,value=>value.color==='#60a5fa'&&value.icon==='👩🏽‍💻','project appearance saved');
     await settleReads(page);
     const saved=await detail();
     for(const field of ['color','icon']) {
@@ -79,9 +79,9 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
       assert.equal(entries[0].previousValue,null);
       assert.equal(entries[0].nextValue,saved[field]);
     }
-    const color=page.locator('.project-detail__header').getByRole('img',{name:'Project color #a34f80',exact:true});
+    const color=page.locator('.project-detail__header').getByRole('img',{name:'Project color #60a5fa',exact:true});
     await color.waitFor();
-    assert.equal(await color.evaluate(element=>getComputedStyle(element).backgroundColor),'rgb(163, 79, 128)');
+    assert.equal(await color.evaluate(element=>getComputedStyle(element).backgroundColor),'rgb(96, 165, 250)');
     await page.locator('.project-detail__header').getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
     assert.equal(await page.locator('.project-fact-list li').filter({has:page.getByText('Color changed',{exact:true})}).count(),1);
     assert.equal(await page.locator('.project-fact-list li').filter({has:page.getByText('Icon changed',{exact:true})}).count(),1);
@@ -113,7 +113,7 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
   await beforePrivateNavigation(page,base+'/app/projects');
   await page.goto(base+'/app/projects');
   const identityRow=page.getByRole('link',{name:`Open ${name}`,exact:true});
-  await identityRow.getByRole('img',{name:'Project color #a34f80',exact:true}).waitFor();
+  await identityRow.getByRole('img',{name:'Project color #60a5fa',exact:true}).waitFor();
   await identityRow.getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
   await capture(`project-appearance-list-${suffix}`);
   await clause('PROJ-007','every portfolio filter and combined filters keep rows and health/lifecycle counts aligned',async()=>{
@@ -157,32 +157,33 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
     await page.getByLabel('Target through',{exact:true}).fill('2027-02-20');
     await assertPortfolio({label:labelIds[0],sort:'priority',lifecycle:'active',health:'on-track',lead:project.lead_operator_id,team:team.id,targetFrom:'2027-02-01',targetTo:'2027-02-20'});
     assert.equal(await page.locator('.project-row').count(),1);
+    await identityRow.click();
     await openAdministrationForm(page,`Edit project ${name}`);
     const form=page.getByRole('form',{name:`Edit project ${name}`,exact:true});
     await form.getByRole('combobox',{name:'Project priority',exact:true}).selectOption('urgent');
     await form.getByRole('button',{name:'Save project',exact:true}).click();
     await poll(()=>sql(`SELECT priority FROM projects WHERE name='${name}'`),rows=>rows[0]?.priority==='urgent','portfolio edit persisted');
   });
-  await clause('PROJ-001','project appearance can be cleared and set from the projects list',async()=>{
+  await clause('PROJ-001','project appearance can be cleared and set from the project page',async()=>{
     await settleReads(page);
     await openAdministrationForm(page,`Edit project ${name}`);
     const form=page.getByRole('form',{name:`Edit project ${name}`,exact:true});
     const before=await (await page.request.get(base+'/api/projects/'+project.id)).json();
-    await form.getByLabel('Project color',{exact:true}).fill('');
+    await form.getByRole('radio',{name:'No colour',exact:true}).check();
     await form.getByLabel('Project icon',{exact:true}).fill('');
     await form.getByRole('button',{name:'Save project',exact:true}).click();
     await poll(async()=>await (await page.request.get(base+'/api/projects/'+project.id)).json(),value=>value.color===null&&value.icon===null,'project appearance cleared');
     await settleReads(page);
-    assert.equal(await identityRow.getByRole('img').count(),0);
+    assert.equal(await page.locator('.project-detail__header .project-appearance [role=img]').count(),0);
     const cleared=await (await page.request.get(base+'/api/projects/'+project.id)).json();
     assert.equal(cleared.activity.length,before.activity.length+2);
     for(const field of ['color','icon'])assert.equal(cleared.activity.filter(entry=>entry.kind===`project.${field}_changed`&&entry.nextValue===null).length,1);
     await openAdministrationForm(page,`Edit project ${name}`);
-    await form.getByLabel('Project color',{exact:true}).fill('#a34f80');
+    await form.getByRole('radio',{name:'Blue',exact:true}).check();
     await form.getByLabel('Project icon',{exact:true}).fill('👩🏽‍💻');
     await form.getByRole('button',{name:'Save project',exact:true}).click();
-    await identityRow.getByRole('img',{name:'Project color #a34f80',exact:true}).waitFor();
-    await identityRow.getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
+    await page.locator('.project-detail__header').getByRole('img',{name:'Project color #60a5fa',exact:true}).waitFor();
+    await page.locator('.project-detail__header').getByRole('img',{name:'Project icon 👩🏽‍💻',exact:true}).waitFor();
     const restored=await (await page.request.get(base+'/api/projects/'+project.id)).json();
     assert.equal(restored.activity.length,cleared.activity.length+2);
   });
