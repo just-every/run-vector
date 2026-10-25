@@ -6797,7 +6797,7 @@
       "executable": false
     },
     "tests/e2e/core-stream-controls-journey.mjs": {
-      "sha256": "3c28a2cad43087387bfcaf2c8fd12cf72012664821fe54df9a34cae468676f03",
+      "sha256": "438f8fbb3a71dc32504115dfd9395dd52524a891a76b4107d1491ef8c2334d06",
       "executable": false
     },
     "tests/e2e/core-stream-controls-ranking.mjs": {
