@@ -4,6 +4,7 @@
   min-width: 0;
 }
 .settings-field-label { padding-inline-end: 4rem; }
+.timezone-picker .settings-save-field > label { display: grid; gap: .6rem; }
 .settings-field-status {
   position: absolute;
   inset-inline-end: 0;
