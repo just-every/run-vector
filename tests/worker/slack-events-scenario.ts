@@ -3,7 +3,7 @@ import {expect} from 'vitest';
 import {bindings,origin,request,actor} from './base-auth-fixture';
 import type {setupIntegrations} from './integration-fixture';
 export const slackIntakeFixture={team:'TSYNTHETIC33',user:'USYNTHETIC33',bot:'USYNTHETIC34',channel:'CSYNTHETIC33',unlinked:'USYNTHETIC35',unmapped:'CSYNTHETIC36'};
-export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string){
+export async function setupSlackIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string){
  const read=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
  await read(await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:f.initial.teams[0].id,provider:'slack',channelId:slackIntakeFixture.channel,channelName:'synthetic-vector-33001',events:['issue.created']}),201);
  const send=async(payload:unknown,options:{timestamp?:string;secret?:string;unsigned?:boolean}={})=>{
@@ -20,6 +20,10 @@ export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrat
   return state;
  };
  const payload={type:'event_callback',team_id:slackIntakeFixture.team,event_id:'synthetic-vector-33002',event:{type:'app_mention',user:slackIntakeFixture.user,channel:slackIntakeFixture.channel,text:'<@'+slackIntakeFixture.bot+'> Fix the intake defect'}};
+ return {read,send,snapshot,payload};
+}
+export async function slackEventIntake(f:Awaited<ReturnType<typeof setupIntegrations>>,secret:string,operatorId:string){
+ const {read,send,snapshot,payload}=await setupSlackIntake(f,secret,operatorId);
  const before=await snapshot();
  expect(await read(await send({type:'url_verification',challenge:'synthetic-vector-33003'}))).toEqual({challenge:'synthetic-vector-33003'});
  for(const options of [{unsigned:true},{secret:'synthetic-vector-33004'},{timestamp:String(Math.floor(Date.now()/1000)-301)}]){await read(await send(payload,options),401);expect(await snapshot()).toEqual(before);}

@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "c718245dc271ed2de69f9a502a45a87a1c1718820b655eeda79ba706f6856a4f",
+      "sha256": "29cb8af2433473d7d3f7c66a11400d8ea54b7ca6e45c2945778a0e08132fe76d",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "2dffcad0963a3947ad39dfaf5ca39fafeae74e0a4241a4a32252fbcf54ffbc76",
+      "sha256": "268c4d69cfe6b5b5524118af101ec1e12b82a99a8d4651ac259d4977d1956b36",
       "executable": false
     },
     "DEMO.md": {
@@ -7585,7 +7585,7 @@
       "executable": false
     },
     "tests/worker/outbound-broken-destination.test.ts": {
-      "sha256": "65c01cf6a4535b8df4f40789cc9420189fc9c952a8b5f6c51a5db210cd2d0532",
+      "sha256": "0ff26acb370388b013dbcbdd3fbb0ca00c4e073140c2b4a4c08f2a94d3ffed28",
       "executable": false
     },
     "tests/worker/outbound-webhooks.test.ts": {
@@ -7753,11 +7753,11 @@
       "executable": false
     },
     "tests/worker/slack-app-recovery-scenario.ts": {
-      "sha256": "9b1a0e7b5deeea7f5d3bce779c1ae498e132ebef361f5a3a93818a22cdbaa1db",
+      "sha256": "f345b46da43bfff0f5a9b85bfb1c6fa9eb9c16f2d1429e1bf4c5e47ea2772b4a",
       "executable": false
     },
     "tests/worker/slack-app-scenario.ts": {
-      "sha256": "52b9fc54b829d7c267512291f3592b23ebce1b1b7056342f4d8c16bf5c3dcc60",
+      "sha256": "683b42d7c43c32d43e096f771ba354382deb2d1d798a7cacd4ac91a59460feda",
       "executable": false
     },
     "tests/worker/slack-dm-scenario.ts": {
@@ -7765,7 +7765,7 @@
       "executable": false
     },
     "tests/worker/slack-events-scenario.ts": {
-      "sha256": "abc7fe3bc1681c25212e006abfd66e2f1d982f5a8ff348920a0648a0d820b2a1",
+      "sha256": "44f849837b61a46cb887a900ee85f1af96b4ea4dbb17997503a7d697c5b779f6",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {

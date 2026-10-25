@@ -1,4 +1,4 @@
-import {slackAppInstall} from './slack-app-scenario';
+import {slackAppScenario} from './slack-app-scenario';
 import {privateChannelRouting} from './private-channel-scenario';
 import {channelNotifications} from './channel-notifications-scenario';
 import {slackDirectMessages,slackActionsFollowCurrentAccess} from './slack-dm-scenario';
@@ -74,4 +74,8 @@ it('a Slack action changes only issues its member can still edit after a role or
  await slackActionsFollowCurrentAccess(await setupIntegrations());
 },120000);
 
-it('[SLACK-001 SEC-001 ROLE-001] Owners install their own Slack app through generated or prefilled manifests, actor-bound one-use OAuth, sealed credentials and revocation',async()=>{await slackAppInstall();});
+it('[SLACK-001 SEC-001 ROLE-001] Owners create manifests and install Slack through actor-bound one-use OAuth with sealed credentials',async()=>{await slackAppScenario('installation');});
+it('[SLACK-001 ROLE-001] Owners and Admins explicitly map Slack members with audited changes',async()=>{await slackAppScenario('mapping');});
+it('[SLACK-001 SEC-001 ROLE-001] Signed Slack Events create one issue as the linked member and refuse invalid intake',async()=>{await slackAppScenario('events');});
+it('[SLACK-001 SEC-001] Provider uninstall and local removal retire Slack credentials and revoke access',async()=>{await slackAppScenario('uninstall');});
+it('[SLACK-001 SEC-001] Slack archives exclude credentials and restore requires re-entry',async()=>{await slackAppScenario('archive');});

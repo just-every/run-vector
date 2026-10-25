@@ -1,10 +1,13 @@
 import {slackAppArchive,slackProviderUninstall} from './slack-app-recovery-scenario';
-import {slackEventIntake,slackIntakeFixture,slackMemberMapping} from './slack-events-scenario';
+import {setupSlackIntake,slackEventIntake,slackIntakeFixture,slackMemberMapping} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
+import {reset} from 'cloudflare:test';
 import {expect,vi} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
-import {invite,request,bindings} from './base-auth-fixture';
-export async function slackAppInstall(){
+import {invite,request,bindings,actor} from './base-auth-fixture';
+export async function slackAppScenario(phase:'installation'|'mapping'|'events'|'archive'|'uninstall'){
+ // Each registration owns fresh bindings, identities and public-door setup.
+ await reset();
  const f=await setupIntegrations(),secret='synthetic-vector-'+crypto.randomUUID(),clientSecret='synthetic-vector-'+crypto.randomUUID(),configToken='synthetic-vector-'+crypto.randomUUID(),botToken='synthetic-vector-'+crypto.randomUUID();
  const manifestForInstallation=(manifest:any)=>{
   const at=(path:string)=>bindings.APP_ORIGIN+'/api/integrations/slack/'+path;
@@ -44,6 +47,7 @@ export async function slackAppInstall(){
   // This file also exercises the legacy paste path in an earlier registration.
   // Begin this independent installation journey through its public removal door.
   await read(await f.call('/settings/integrations/slack','DELETE'));calls.length=0;
+  if(phase==='installation'){
   // A Member cannot create, inspect credentials, or start an installation.
   const member=await invite('synthetic-vector-2004@vector.test',f.cookie),admin=await invite('synthetic-vector-2005@vector.test',f.cookie,'admin');
   for(const [path,method] of [['/slack/app','GET'],['/slack/app','POST'],['/slack/app/create','POST'],['/slack/app/install','POST']])expect((await request('/api/settings/integrations'+path,method,method==='GET'?undefined:{},member)).status).toBe(403);
@@ -89,10 +93,26 @@ export async function slackAppInstall(){
   await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));
   const manualState=await begin();expect((await callback(manualState)).status).toBe(303);
   expect((await callback(manualState)).status).toBe(403);expect(calls.filter(c=>c.method==='oauth.v2.access')).toHaveLength(6);
-  const viewer=await invite('synthetic-vector-33007@vector.test',f.cookie,'viewer');
-  const mappedMember=await slackMemberMapping(f,admin,member,viewer);
-  await slackEventIntake(f,secret,mappedMember);
-  await begin();await slackAppArchive(f,[secret,clientSecret,configToken,botToken]);
+   return;
+  }
+  // Every phase installs independently through the same public creation and OAuth doors.
+  await read(await f.call('/settings/integrations/slack/app/create','POST',{configurationToken:configToken}));
+  const state=await begin();expect((await callback(state)).status).toBe(303);
+  const member=phase==='archive'||phase==='uninstall'?f.cookie:await invite('synthetic-vector-'+phase+'@vector.test',f.cookie);
+  if(phase==='mapping'){
+   const admin=await invite('synthetic-vector-2005@vector.test',f.cookie,'admin'),viewer=await invite('synthetic-vector-33007@vector.test',f.cookie,'viewer');
+   await slackMemberMapping(f,admin,member,viewer);
+   return;
+  }
+  const mappedMember=await actor(member);
+  await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:mappedMember,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}));
+  if(phase==='events'){await slackEventIntake(f,secret,mappedMember);return;}
+  const intake=await setupSlackIntake(f,secret,mappedMember);
+  await intake.read(await intake.send(intake.payload));
+  if(phase==='archive'){
+   await begin();await slackAppArchive(f,[secret,clientSecret,configToken,botToken]);
+   return;
+  }
   for(const event of ['app_uninstalled','tokens_revoked'] as const){
    const priorCalls=calls.length;await slackProviderUninstall(f,secret,event);expect(calls).toHaveLength(priorCalls);
    await read(await f.call('/settings/integrations/slack/app','POST',{appId:'synthetic-vector-2000',clientId:'synthetic-vector-2001',clientSecret,signingSecret:secret}));

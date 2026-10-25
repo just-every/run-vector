@@ -1,3 +1,5 @@
+import {makePart,canonicalJson,sha256,readArchive} from '@runeditrun/rer/modules/portability';
+import type {ArchiveRecords,Part} from './http-archive-fixture';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {bindings,origin} from './base-auth-fixture';
@@ -7,7 +9,8 @@ export async function slackAppArchive(f:Awaited<ReturnType<typeof setupIntegrati
  const encrypted=(await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity LIKE 'slack%'").all<{encrypted:string}>()).results.map(row=>row.encrypted);
  expect(encrypted.length).toBeGreaterThan(0);
  const receipts=(await env.DB.prepare('SELECT * FROM vector_slack_event_receipts ORDER BY event_key').all()).results;
- const records=await httpExport(f.call),bytes=JSON.stringify(records);
+ const exported=await httpExport(f.call),bytes=JSON.stringify(exported);
+ const records=await compactSlackArchive(exported);
  for(const value of [...secrets,...encrypted])expect(bytes).not.toContain(value);
  const cookie=await freshTarget(),job=await stageArchive(records,cookie);
  const finalized=await targetCall('/api/portability/imports/'+job+'/finalize','POST',finalBody(records),cookie);expect(finalized.status,await finalized.clone().text()).toBe(200);
@@ -35,4 +38,18 @@ export async function slackProviderUninstall(f:Awaited<ReturnType<typeof setupIn
  expect(await env.DB.prepare("SELECT count(*) n FROM vector_webhook_destinations WHERE kind='slack' AND enabled=1").first<number>('n')).toBe(0);
  expect((await send()).status).toBe(401);
  expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(issues);
+}
+
+/** Keep every exported item and its original content digest. Native export emits
+ * a part per populated table; packing the same ordered items avoids repeating
+ * the full HTTP import admission for dozens of tiny parts in this Slack proof.
+ * The native reader verifies the original content digest before any upload. */
+async function compactSlackArchive(exported:ArchiveRecords):Promise<ArchiveRecords>{
+ const items=exported.filter((row):row is Part=>row.kind==='part').flatMap(part=>part.items),parts:Part[]=[];
+ for(let offset=0;offset<items.length;offset+=500)parts.push(await makePart(parts.length,items.slice(offset,offset+500)));
+ const manifest={...exported[0],partCount:parts.length};
+ const closing={...exported.at(-1),partCount:parts.length,archiveHash:await sha256(canonicalJson({manifest,parts:parts.map(part=>part.sha256)}))};
+ const source=new Response([manifest,...parts,closing].map(row=>JSON.stringify(row)).join('\n')+'\n').body!;
+ const checked:ArchiveRecords=[];for await(const record of readArchive(source))checked.push(record);
+ return checked;
 }
