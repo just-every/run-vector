@@ -1,3 +1,4 @@
+import '../../documents/ui/documents.css';
 import {TeamJoinRules} from "./team-join-rules";
 import {TeamMetadata} from './team-metadata';
 import {TeamPrivacy} from './team-privacy';
