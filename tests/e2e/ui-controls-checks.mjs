@@ -15,6 +15,12 @@ export async function openAccountMenu(page) {
   if (await trigger.isVisible() && await trigger.getAttribute('aria-expanded') === 'false') {
     await trigger.focus();
     await page.keyboard.press('Enter');
+    await page.locator('.app-mobile-account-menu').waitFor({ state: 'visible' });
+    await page.keyboard.press('Escape');
+    assert.equal(await trigger.evaluate(element => document.activeElement === element), true,
+      'Escape returns focus to the account control');
+    await page.keyboard.press('Space');
+    await page.locator('.app-mobile-account-menu').waitFor({ state: 'visible' });
   }
 }
 
