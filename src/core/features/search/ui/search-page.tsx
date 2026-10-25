@@ -57,14 +57,14 @@ export function SearchPage() {
   const count = visibleData
     ? visibleData.issues.length +
       visibleData.projects.length +
-      visibleData.savedViews.length
+      visibleData.savedViews.length + visibleData.documents.length
     : 0;
   return (
     <main className="issues-browser workspace-search">
       <header className="issues-heading">
         <div>
           <h1>Search</h1>
-          <p>Find issues, projects and saved views across your workspace.</p>
+          <p>Find issues, projects, documents and saved views across your workspace.</p>
         </div>
       </header>
       <div className="issues-filters">
@@ -132,6 +132,7 @@ export function SearchPage() {
                   </ul>
                 </section>
               )}
+              {visibleData.documents.length>0&&<section><h2>Documents</h2><ul className="search-results">{visibleData.documents.map(doc=><li key={doc.id}><a href={'/app/documents/'+doc.id}>{doc.title}</a></li>)}</ul></section>}
               {visibleData.projects.length > 0 && (
                 <section>
                   <h2>Projects</h2>
