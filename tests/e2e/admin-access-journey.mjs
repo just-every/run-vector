@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {rolePrivateCells} from './role-private-cells.mjs';
@@ -97,10 +98,11 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
     .first()
     .click();
   await page.waitForURL(base + "/app/settings");
-  await openAdministrationForm(
+  const teamForm = await openAdministrationForm(
     page,
     "Edit " + runtime.config.DEFAULT_TEAM_NAME,
   );
+  await expect(teamForm.locator("fieldset").first()).toBeEnabled();
   await openDisclosures(page);
   await assertSettingsSections(page, "empty workspace Settings");
   await clause(
@@ -108,13 +110,13 @@ export async function auditEmptyWorkspace({ page, runtime, capture, clause }) {
     "responsive signed operator settings access",
     async () => {
       await openAccountMenu(page);
-  await page
+      await page
         .getByRole("link", { name: "Settings", exact: true })
         .filter({ visible: true })
         .first()
         .waitFor();
       await openAccountMenu(page);
-  await page
+      await page
         .getByRole("button", { name: "Sign out", exact: true })
         .filter({ visible: true })
         .waitFor();
@@ -221,10 +223,11 @@ export async function inviteProjectLead({
 export async function assertSignOut({ page, runtime, capture }) {
   await beforePrivateNavigation(page, runtime.base + "/app/settings");
   await page.goto(runtime.base + "/app/settings");
-  await openAdministrationForm(
+  const teamForm = await openAdministrationForm(
     page,
     "Edit " + runtime.config.DEFAULT_TEAM_NAME,
   );
+  await expect(teamForm.locator("fieldset").first()).toBeEnabled();
   await openDisclosures(page);
   await assertSettingsSections(page, "final Settings");
   await capture("settings-final-signout-reachable");

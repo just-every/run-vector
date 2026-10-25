@@ -1,3 +1,4 @@
+import { expect } from '@playwright/test';
 import assert from "node:assert/strict";
 
 export async function openDisclosures(page) {
@@ -13,6 +14,7 @@ export { openAdministrationForm } from "./ui-administration-form.mjs";
 export async function openAccountMenu(page) {
   const trigger = page.locator('.app-mobile-account-trigger');
   if (await trigger.isVisible() && await trigger.getAttribute('aria-expanded') === 'false') {
+    await expect(trigger).toBeEnabled();
     await trigger.focus();
     await page.keyboard.press('Enter');
     await page.locator('.app-mobile-account-menu').waitFor({ state: 'visible' });

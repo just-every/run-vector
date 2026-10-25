@@ -1,3 +1,4 @@
+import { useHydrated } from '../initial-resources'
 import { Link } from '@tanstack/react-router'
 import { useEffect, useId, useRef, useState } from 'react'
 
@@ -7,6 +8,7 @@ export function MobileAccount({ name, pathname, signingOut, onSignOut }: {
   signingOut: boolean
   onSignOut: () => void
 }) {
+  const hydrated = useHydrated()
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
   const trigger = useRef<HTMLButtonElement>(null)
@@ -27,7 +29,7 @@ export function MobileAccount({ name, pathname, signingOut, onSignOut }: {
     }
   }}>
     <button ref={trigger} className="app-mobile-account-trigger" type="button"
-      aria-expanded={open} aria-controls={id} aria-label={`${name} account`}
+      disabled={!hydrated || signingOut} aria-expanded={open} aria-controls={id} aria-label={`${name} account`}
       onClick={() => setOpen(value => !value)}>
       <span>{name}</span><span aria-hidden="true">⌄</span>
     </button>
