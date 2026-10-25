@@ -5829,7 +5829,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/invite-operator.tsx": {
-      "sha256": "be9c568d2d6aac119601a974263b1fa33c051eb38c44b338487b4d9efb55e5da",
+      "sha256": "6008710927b35ae78d0fa5590229c2d766fc95e1df4f0039e323c1f2b500c226",
       "executable": false
     },
     "src/core/features/settings/ui/labels-panel.tsx": {
@@ -5841,7 +5841,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/members-panel.tsx": {
-      "sha256": "0829a1b647765d14f4f9202e548f0e16bbbbd3c28e4d1e2fa135b0a85558ba9e",
+      "sha256": "a5271f3d7558f6bb0beb78568ad938bb09ba4c814e154550b0a5afeecd157eaf",
       "executable": false
     },
     "src/core/features/settings/ui/personal-time-panel.tsx": {
