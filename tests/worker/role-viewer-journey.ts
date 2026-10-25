@@ -49,23 +49,63 @@ export async function viewerVisibilityJourney(w:Workspace){
   const results=await env.DB.batch(tables.map(name=>env.DB.prepare('SELECT * FROM \"'+name+'\"')));
   return Object.fromEntries(tables.map((name,index)=>[name,results[index].results.map(row=>JSON.stringify(row)).sort()]));
  };
+ const initiative=await json(await owner.call('/initiatives','POST',{name:'synthetic-vector-2001',ownerOperatorId:owner.id}),201);
+ const release=await json(await owner.call('/releases','POST',{name:'synthetic-vector-2002',teamId:w.team.id}),201);
+ const otherLabel=(await json(await owner.call('/settings/labels','POST',{name:'synthetic-vector-2003',color:'#3355aa'}))).labels.find((l:any)=>l.name==='synthetic-vector-2003');
+ const milestoneState=await json(await owner.call('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-2004'}));
+ const milestone=milestoneState.milestones.find((m:any)=>m.name==='synthetic-vector-2004');
  const logicalId=ownComment.id;
+ const registeredMutations=(registry:typeof doors)=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
+ // These families use their own persisted subjects and schema-valid inputs.
+ // Other families retain their existing probes until their fixtures are added.
+ const familyRequest=(door:typeof doors[number])=>{
+  const route=door.path,method=door.method;
+  let id=logicalId,body:unknown={};
+  if(/^\/(?:settings\/)?projects(?:\/|$)/.test(route)){
+   id=project.id;
+   if(method==='POST'&&/projects$/.test(route))body={name:'synthetic-vector-2005',leadOperatorId:owner.id};
+   else if(method==='PATCH'&&/projects\/:id$/.test(route))body={name:'synthetic-vector-2006'};
+   else if(route.endsWith('/milestones'))body={name:'synthetic-vector-2007'};
+   else if(route.endsWith('/milestones/order'))body={milestoneIds:[milestone.id]};
+   else if(method==='PATCH'&&route.includes('/milestones/'))body={name:'synthetic-vector-2008'};
+  }else if(route.startsWith('/initiatives')){
+   id=initiative.id;
+   body=method==='POST'?{name:'synthetic-vector-2009',ownerOperatorId:owner.id}:route.endsWith('/projects')?{expectedVersion:initiative.version,projectIds:[project.id]}:{expectedVersion:initiative.version,description:'synthetic-vector-2010'};
+  }else if(route.startsWith('/releases')){
+   id=release.id;
+   body=method==='POST'?{name:'synthetic-vector-2011',teamId:w.team.id}:route.endsWith('/scope')?{expectedVersion:release.version,issueIdentifiers:[issue.identifier],projectIds:[project.id]}:{expectedVersion:release.version,description:'synthetic-vector-2012'};
+  }else if(/^\/(?:settings\/)?labels(?:\/|$)/.test(route)){
+   id=label.id;
+   body=route.endsWith('/creation')?{membersMayCreate:true}:route.endsWith('/merge')?{destinationLabelId:otherLabel.id}:method==='POST'?{name:'synthetic-vector-2013',color:'#3355aa'}:method==='PATCH'?{name:'synthetic-vector-2014'}:{};
+  }else if(route.startsWith('/views')){
+   id=shared.id;
+   body=route.endsWith('/duplicate')?{name:'synthetic-vector-2015'}:method==='POST'?{name:'synthetic-vector-2016',isShared:true,query:{team:w.team.id}}:method==='PATCH'?{name:'synthetic-vector-2017'}:{};
+  }
+  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:id).replace(/\*$/,'exports');
+  return {path,body};
+ };
  // Each registered work mutation is reached through its actual native/bearer transport.
- for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const)for(const door of registry){
-  if(door.method==='GET'||door.page==='account'&&!door.workMutation||typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row))continue;
+ for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const){
+ let attempts=0;
+ const mutations=registeredMutations(registry);
+ for(const door of mutations){
+  attempts++;
   await resetLimits();
-  const path=door.path.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?owner.id:name==='teamId'?w.team.id:logicalId).replace(/\*$/,'exports');
+  const {path,body}=familyRequest(door);
   const before=await stored();
   const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
   const usageIds=new Set(usageBefore.map(row=>row.id));
-  const response=await send(path,door.method==='ALL'?'POST':door.method,{});
+  const response=await send(path,door.method==='ALL'?'POST':door.method,body);
   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
+  expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:'forbidden'});
   const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
   expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
   const usage=usageAfter.filter(row=>!usageIds.has(row.id));
   if(registry===apiDoors){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
   else expect(usage).toHaveLength(0);
+ }
+ expect(attempts,registry===doors?'native src/core/features/roles/doors.ts':'bearer src/core/features/roles/doors.ts').toBe(mutations.length);
  }
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
