@@ -97,7 +97,7 @@ export function SettingsPage() {
                 clock.publish({...updated.personalTime, workspaceTimezone:updated.workspace.timezone, reminderTime:updated.workspace.reminderTime,workspaceTimezoneDefault:false});
                 resource.reload(); administration.reload();
               }}>
-              <TimezonePicker id="workspace-timezone" label="Workspace timezone" value={resource.data.workspace.timezone} />
+              <TimezonePicker id="workspace-timezone" label="Workspace timezone" value={clock.workspaceTimezone} />
               <label htmlFor="workspace-reminder-time">
                 Daily due reminder time
               </label>
