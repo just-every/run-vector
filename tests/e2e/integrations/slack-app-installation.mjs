@@ -65,7 +65,7 @@ export async function exerciseSlackAppInstallation({page,runtime,cookie,team,wid
   const created=await runtime.req('/api/integrations/slack/events',{method:'POST',headers,body});assert.equal(created.status,200);const issue=await created.json();
   assert.equal((await runtime.req('/api/integrations/slack/events',{method:'POST',headers,body})).status,409);
   await page.goto(runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:title,exact:true}).waitFor();
-  const recorded=runtime.sql("SELECT a.actor_operator_id FROM issue_activity a JOIN issues i ON i.id=a.issue_id WHERE i.identifier='"+issue.identifier+"' AND a.kind='issue.created'");assert.deepEqual(recorded,[{actor_operator_id:owner.id}]);
+  const recorded=runtime.sql("SELECT a.actor_operator_id FROM issue_activity a JOIN issues i ON i.id=a.issue_id WHERE i.identifier='"+issue.identifier+"' AND a.kind='issue.created'");assert.deepEqual(recorded.map(row=>row.actor_operator_id),[owner.id]);
   await page.goto(runtime.base+'/app/settings#integrations');await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor();
   const removing=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations/slack/app/members/'+owner.id&&r.request().method()==='DELETE');
   await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).click();assert.equal((await removing).status(),200);await panel.getByRole('button',{name:'Remove mapping for '+owner.name,exact:true}).waitFor({state:'hidden'});await inspect('member-unmapped');

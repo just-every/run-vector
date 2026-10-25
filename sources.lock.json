@@ -6825,7 +6825,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
-      "sha256": "9884c6cdf80f8a5ab37c1b6bf3c11efa0ff92f51212343a6c5c6d43273de0cfc",
+      "sha256": "4e6bd25288192ab71c6d4ea21eab5d7a00864c09f10d1b6f9c3b07950b1fd957",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
