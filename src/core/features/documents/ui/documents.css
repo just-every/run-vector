@@ -1,0 +1,19 @@
+.document-page { max-width:1000px; min-width:0; margin:0 auto; padding:32px; font-size:14px; }
+.document-page header { margin-bottom:24px; }
+.document-page h1 { font-size:clamp(1.7rem,4vw,2.5rem); margin:12px 0; }
+.document-page h2,.document-section h2 { font-size:17px; margin:0 0 12px; }
+.document-page p,.document-page li,.document-page a,.document-section a { overflow-wrap:anywhere; }
+.document-section { min-width:0; margin:20px 0; padding:16px 0; font-size:14px; }
+.document-section summary { cursor:pointer; font-weight:600; }
+.document-section details[open]>summary,.document-section[open]>summary { margin-bottom:16px; }
+.document-list,.document-comments { list-style:none; padding:0; margin:0 0 12px; }
+.document-list li { padding:8px 0; }
+.document-comments li,.document-revisions li { padding:12px 0; }
+.document-revisions { padding-left:22px; }
+.document-form { min-width:0; margin-top:12px; }
+.document-form fieldset { display:grid; gap:12px; min-width:0; border:0; margin:0; padding:0; }
+.document-form label { display:grid; gap:6px; min-width:0; font-size:14px; }
+.document-form input,.document-form select,.document-form textarea { box-sizing:border-box; min-width:0; width:100%; padding:10px; border:1px solid var(--border); border-radius:6px; background:var(--surface); color:inherit; font:inherit; }
+.document-form textarea { resize:vertical; }
+.document-form button[type=submit],.document-page>details>button { justify-self:start; min-height:44px; padding:8px 14px; font:inherit; cursor:pointer; }
+@media(max-width:600px) { .document-page { padding:20px 16px 100px; } }
