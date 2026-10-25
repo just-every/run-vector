@@ -4121,7 +4121,7 @@
       "executable": false
     },
     "src/core/features/documents/repository.ts": {
-      "sha256": "27f20c1b0a389a64d42014d80b3a3cac5ada3f1e40e06a1b7150b55e0fee7afa",
+      "sha256": "d517ad714848e15dbc9270faa4bc7cb28f1d94851f4e05a4cec9b6beebdba91d",
       "executable": false
     },
     "src/core/features/documents/routes.ts": {
@@ -4129,7 +4129,7 @@
       "executable": false
     },
     "src/core/features/documents/schema.ts": {
-      "sha256": "23fb8e56ecb02ced2a791f1d8cab649d24d499ae88e4314451a09b1a715c52b9",
+      "sha256": "820fa079247e50b4d01c6fa6d38609267552f59e250809287390ec8f6babcccb",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
@@ -7433,7 +7433,7 @@
       "executable": false
     },
     "tests/worker/documents-scenario.ts": {
-      "sha256": "a6424429605a33ae4c2b8c495b6f39df86b1c55a1cf1996a78bb73a9815e7df3",
+      "sha256": "b42ef185b600d68b5e00d8c192df383771d577a9abc50d900e3229a017b562f1",
       "executable": false
     },
     "tests/worker/due-reminders-fixture.ts": {
