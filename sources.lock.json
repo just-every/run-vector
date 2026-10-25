@@ -6465,7 +6465,7 @@
       "executable": false
     },
     "tests/e2e/admin-team-journey.mjs": {
-      "sha256": "05736ad98a1480e1fdaffda1557b7ccea47c42e74476ab767d3012306b814c7f",
+      "sha256": "f96f09559796099b1d164eefb87d95b19ba01f7b9cb8dd171d595a219d0227c4",
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
@@ -6585,7 +6585,7 @@
       "executable": false
     },
     "tests/e2e/core-cycle-membership-journey.mjs": {
-      "sha256": "fde8d5f0ef2d1e96aa7152c7786a04065a6f0c4539f22429c9375b8a3713d57d",
+      "sha256": "a98efccd2800f8fefd7df16b206b021079dd04d39b5c23c8273a7eaa675b77f7",
       "executable": false
     },
     "tests/e2e/core-draft-journey.mjs": {
