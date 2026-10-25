@@ -1,3 +1,4 @@
+// 0100 changes only the subscription capture trigger; inventory columns and portable event history stay unchanged.
 import { policy } from '@runeditrun/rer/modules/portability/catalogue';
 import inventory from './archive-inventory.json' with {type:'json'};
 const excluded=policy({product:'just-every/vector-projects'}).excludeTables;

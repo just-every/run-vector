@@ -2009,7 +2009,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "ecd3b55056e05c75178408d09b9fc6d8a1e1d5fbcf91f076296ddaf022484b6a",
+      "sha256": "b6151740ebac4886c168f37ad521be4136e7681281c204ab1fd56f65098678fc",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2406,6 +2406,10 @@
     },
     "migrations/core/0099_email_provider_events.sql": {
       "sha256": "97b35a52dedab86b30dab07da265625e680f4818ed1fd08dcec3c2a6464762a7",
+      "executable": false
+    },
+    "migrations/core/0100_subscription_category_transitions.sql": {
+      "sha256": "7ae396e0a9e528adf0a9a76e532846be0b105b166a90ef1ed907ccd21e0f5e8c",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -3725,7 +3729,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
-      "sha256": "8c495149cff337dad36bb9be6e9eae383f7c7c029ba67f8ff32b0eb73905f745",
+      "sha256": "8296d3251b89c3404c495d8874edef89edd39d96554731d0eb4f90046b41c0cc",
       "executable": false
     },
     "src/core/features/data/archive-policy.d.mts": {
@@ -3733,7 +3737,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "d7859f14da88c53096ba9bbcf7de72c9a8c5a781060beaad3ca1725263dca8cb",
+      "sha256": "4ff09312bc28ed4b89f5b2cd552d32f44453b2739f236609b4be5ac789fd5e44",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -7733,7 +7737,7 @@
       "executable": false
     },
     "tests/worker/subscriptions-scenario.ts": {
-      "sha256": "9dc4f758682b6b4135db4b0b1bb266e9327476ad58f0e58018e6c67595bbc324",
+      "sha256": "8160d49a97eaaacd20346b344281a113224bcdae188cac1899a046acfb9676a1",
       "executable": false
     },
     "tests/worker/viewer-role-upgrade.ts": {
