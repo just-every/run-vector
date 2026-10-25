@@ -5860,8 +5860,16 @@
       "sha256": "4d485b85760d1b2abb53fe620ad39a85b6b4fe67e83ef15e0564dabcc93c4ce4",
       "executable": false
     },
+    "src/core/features/settings/ui/settings-save-feedback.css": {
+      "sha256": "4d774a5d8ac588502490fe4f1c2a628f90ae1bf887e00ba954aa872675346a8f",
+      "executable": false
+    },
+    "src/core/features/settings/ui/settings-save-feedback.tsx": {
+      "sha256": "f03d8285b8fbf0a94583671e7064ae2097e5b5dedd524ecab2c3e5b5caff988f",
+      "executable": false
+    },
     "src/core/features/settings/ui/settings-save-form.tsx": {
-      "sha256": "62d4444cfc14174a43676cafea2050727fe13ea6ec6583f41151358c54b5e4bd",
+      "sha256": "dc4ae80483004328b83492c93d10a2dfe6cf0fab6fba7b895a0b7c4346b2086f",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
@@ -5905,7 +5913,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/timezone-picker.tsx": {
-      "sha256": "bb70d2e4db41eee3355d5a59659faba5ee81d7258e326a964b80ac8a23963c36",
+      "sha256": "9680fc57631d111dc76a5dbd0a39748da613a09e2e367054db1b1ec88babcbc7",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
@@ -6929,7 +6937,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-runtime.mjs": {
-      "sha256": "3f561b2d0862e0f57d02f7d60c20f556820ee0260934d6efc5b936a021a8263b",
+      "sha256": "75767380ecb3caff83273e2b9464d8994b796671c598b5b0da60d2e2ca8c1b6b",
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {
