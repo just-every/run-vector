@@ -52,6 +52,10 @@ export async function projectDocumentsJourney({page,base,api,output}){
     await form.getByRole('button',{name:'Save document',exact:true}).click();
     await page.getByRole('region',{name:'Document content'}).getByText(body.split('\n').at(-1),{exact:true}).waitFor();
    }
+   const comments=page.getByRole('region',{name:'Document comments',exact:true});
+   await comments.getByLabel('Comment',{exact:true}).fill('Document review note '+width);
+   await comments.getByRole('button',{name:'Post comment',exact:true}).click();
+   await comments.getByText('Document review note '+width,{exact:true}).waitFor();
    const history=page.locator('details').filter({has:page.locator('summary').filter({hasText:'Revision history'})});
    await history.locator('summary').click();
    await history.getByRole('heading',{name:'Revision 2',exact:true}).waitFor();

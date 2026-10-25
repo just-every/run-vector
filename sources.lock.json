@@ -4149,7 +4149,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "3fd6339bfa7f6eafcbd0fcb1cb3677e08b97044004e734d0957c0059f2bdb49a",
+      "sha256": "e68a851a588e2b2cd49216e63993aad8d21813f59a72ba1a6a280693430f08b2",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
@@ -7025,7 +7025,7 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "9a9adee078a53933ca9532081672a3646585ccdfc94afc1f6a5075827ffccf81",
+      "sha256": "1f9dfcacd774122f80824fada8097bd7b9e9aee4f068d018d62b13d2eb5e315b",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
