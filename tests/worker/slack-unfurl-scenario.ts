@@ -45,6 +45,7 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  await read(await f.call('/settings/integrations/slack/app/members/'+memberId,'DELETE'));
  await read(await f.call('/settings/integrations/slack/app/members','POST',{operatorId:outsiderId,slackTeamId:slackIntakeFixture.team,slackUserId:slackIntakeFixture.user}));
  expect((await request('/api/issues/'+issue.identifier,'GET',undefined,outsider)).status).toBe(404);
+ expect((await request('/api/documents/'+document.id,'GET',undefined,outsider)).status).toBe(404);
  await bare(payload(url));await bare(payload(documentUrl));
  await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'viewer'}));
  await bare(payload(url));await bare(payload(documentUrl));
