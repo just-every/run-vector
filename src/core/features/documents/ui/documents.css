@@ -13,7 +13,7 @@
 .document-form { min-width:0; margin-top:12px; }
 .document-form fieldset { display:grid; gap:12px; min-width:0; border:0; margin:0; padding:0; }
 .document-form label { display:grid; gap:6px; min-width:0; font-size:14px; }
-.document-form input,.document-form select,.document-form textarea { box-sizing:border-box; min-width:0; width:100%; padding:10px; border:1px solid var(--control-border); border-radius:var(--control-radius); background:var(--control-surface); color:inherit; font:inherit; }
+.document-section .document-form input,.document-section .document-form select,.document-section .document-form textarea { box-sizing:border-box; min-width:0; width:100%; padding:10px; border:1px solid var(--control-border); border-radius:var(--control-radius); background:var(--control-surface); color:inherit; font:inherit; }
 .document-form textarea { resize:vertical; }
 .document-form button[type=submit],.document-page>details>button { justify-self:start; min-height:44px; padding:8px 14px; font:inherit; cursor:pointer; }
 @media(max-width:600px) { .document-page { padding:20px 16px 100px; } }
