@@ -3329,7 +3329,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
-      "sha256": "e2c22540235ca29342048646a544a266c017f352a43496c1f6ae1820f1e3e96f",
+      "sha256": "0aa01236f734581673b184567e8753413e7d28c238bd5ae4cf216655b2e8a758",
       "executable": false
     },
     "src/core/app/ui/label-chip.tsx": {
