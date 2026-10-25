@@ -219,7 +219,7 @@
   }
   .app-mobile-brand .vector-mark { display: inline-flex; align-items: center; gap: 0.4rem; }
   .app-mobile-brand .vector-mark svg { width: 0.811em; height: 0.73em; flex: none; }
-  .app-mobile-account { position: relative; margin-left: auto; }
+  .app-mobile-account { position: relative; min-width: 0; margin-left: auto; }
   .app-mobile-views { position: static; }
   .app-mobile-account-trigger, .app-mobile-views summary {
     display: flex;
@@ -234,7 +234,7 @@
     font-size: var(--app-text-small);
     font-weight: 500;
   }
-  .app-mobile-account-trigger > span:first-child { max-width: 8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .app-mobile-account-trigger > span:first-child { min-width: 0; max-width: 8rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .app-mobile-account-menu, .app-mobile-views .saved-view-navigation {
     position: absolute;
     z-index: 40;

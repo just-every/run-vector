@@ -3345,7 +3345,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.css": {
-      "sha256": "0f360885f7375d2724540d45867aea9148432c8999715ffb3e0c5b5c90b348e2",
+      "sha256": "a56b4e5796e2ae7efb2a26a74c6314df4f6657cae8626c9d14eed224bbc78d02",
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
