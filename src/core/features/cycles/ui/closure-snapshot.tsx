@@ -1,8 +1,8 @@
-import { useViewerTime } from '../../../app/viewer-time';
+import { useDateFormat } from '../../../shared/date-format';
 import type { CycleSnapshot } from "../../cycle-closure/schema";
 import "./closure-snapshot.css";
 export function ClosureSnapshot({ snapshot }: { snapshot: CycleSnapshot }) {
-  const { formatInstant } = useViewerTime();
+  const { dateTime: formatInstant } = useDateFormat();
   return (
     <section className="closure-snapshot" aria-label="Frozen cycle snapshot">
       <h2>Snapshot at close</h2>
