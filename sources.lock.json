@@ -4153,7 +4153,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
-      "sha256": "ca1809e012063cc40d0e5efda73c41523bdf764d6d7a71bfa5f5d3aff5a8cd7c",
+      "sha256": "55ad45d8576778ee50f2027d64e6b3fd7bcafe8441c9217836c0c2f2eaf52e82",
       "executable": false
     },
     "src/core/features/due-reminders/calendar.ts": {
