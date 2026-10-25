@@ -11,8 +11,8 @@ export const documentIssueDetailSchema=issueDetailSchema.extend({specification})
 export type DocumentIssueDetailData=z.infer<typeof documentIssueDetailSchema>;
 export function IssueSpecification({identifier,writable,current,scope}:{scope:DocumentDraftScope|null;identifier:string;writable:boolean;current:z.infer<typeof specification>}){
  const [open,setOpen]=useState(false),[committed,setCommitted]=useState(current),disclosure=useRef<HTMLDetailsElement>(null);
- useEffect(()=>{if(disclosure.current?.open)setOpen(true);},[]);
- return <section className="document-section document-inspector" aria-label="Issue specification"><details ref={disclosure} className="secondary-section" onToggle={e=>{if(e.currentTarget.open)setOpen(true);}}><summary>Specification · {committed?.title??'None'}</summary>{committed&&<a className="document-link" href={'/app/documents/'+committed.id}>{committed.title}</a>}{open&&writable&&scope&&<SpecificationPicker scope={scope} key={identifier} identifier={identifier} current={committed} onSaved={setCommitted}/>}</details></section>;
+ useEffect(()=>{const node=disclosure.current;if(!node)return;const opened=()=>{if(node.open)setOpen(true);};node.addEventListener('toggle',opened);opened();return ()=>node.removeEventListener('toggle',opened);},[]);
+ return <section className="document-section document-inspector" aria-label="Issue specification"><details ref={disclosure} className="secondary-section"><summary>Specification · {committed?.title??'None'}</summary>{committed&&<a className="document-link" href={'/app/documents/'+committed.id}>{committed.title}</a>}{open&&writable&&scope&&<SpecificationPicker scope={scope} key={identifier} identifier={identifier} current={committed} onSaved={setCommitted}/>}</details></section>;
 }
 function SpecificationPicker({identifier,current,onSaved,scope}:{scope:DocumentDraftScope;identifier:string;current:z.infer<typeof specification>;onSaved:(value:z.infer<typeof specification>)=>void}){
  const id=useId(),documents=useApiResource('/api/documents',documentList,undefined,{abortPendingOnDispose:false});
