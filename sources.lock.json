@@ -4137,7 +4137,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "228afd6abfa3d3443970ed239ccf732572aa22e7eff6cf1da82299a3cf222b6d",
+      "sha256": "a2eddfb158df29cbc51c520efc7e90d3b48866eb842f7b06447a9fd31fd53939",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
@@ -5961,7 +5961,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "c4df6de9f8cd5e1ec4c71f6a65eda4d7363a8bac2ba36e8633dab766e6bcd58f",
+      "sha256": "b6753ea0c0d98b296d758ac6209f0305195e8b943c81fcc5ae50b9514c62a3d2",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
