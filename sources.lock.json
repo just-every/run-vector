@@ -5121,7 +5121,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
-      "sha256": "cf769c994d01755f9aae0940216a6fe77862b24dbb6e0be96089cbf64906730d",
+      "sha256": "de49ef57e4f4720bce8ffe704f293930ded146a3ab951d808fa4cb239d94e234",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-draft.ts": {
