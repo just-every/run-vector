@@ -179,11 +179,11 @@ select:not([multiple], [size]:not([size="1"])):disabled {
 .app-shell :is(input:not([type="checkbox"], [type="radio"], [type="color"], [type="file"], [type="range"], [type="button"], [type="submit"], [type="reset"]), select, textarea):focus-visible {
   border-color: var(--app-focus);
   box-shadow: inset 0 0 0 1px var(--app-focus);
-  outline: none;
+  outline: 0;
   outline-offset: 0;
 }
 /* These page landmarks receive navigation focus, rather than keyboard control focus. */
 .direct-issue-page:focus,
 .stream-detail:focus {
-  outline: none;
+  outline: 0;
 }

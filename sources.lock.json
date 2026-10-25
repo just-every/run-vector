@@ -2961,7 +2961,7 @@
       "executable": false
     },
     "src/core/app/app.css": {
-      "sha256": "3a68be41f7bd0c3a4068bbddf252c6f611882f470ea8371f283c328931b8e06c",
+      "sha256": "fa833259c741af108f7588d999116e5c47e2474c57173939e5e2ea4e7a74e3df",
       "executable": false
     },
     "src/core/app/bindings.ts": {
@@ -3345,7 +3345,7 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.css": {
-      "sha256": "304eef0d0c401ca70c4fffdd46d2cbf453d04816daf1fa7129b6eb5ad6caa237",
+      "sha256": "0f360885f7375d2724540d45867aea9148432c8999715ffb3e0c5b5c90b348e2",
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
@@ -5281,7 +5281,7 @@
       "executable": false
     },
     "src/core/features/my-work/ui/my-work.css": {
-      "sha256": "367226ce1ee749f2a3a714102cc7dc6acb8d6bcda797cbeb632dbe697828dcb7",
+      "sha256": "1b2bb9b290b3b1d472813be57c8f6788c0829edd5c6be9d78106f5f0ddd45c55",
       "executable": false
     },
     "src/core/features/my-work/ui/scoped-issues.tsx": {
@@ -5977,7 +5977,7 @@
       "executable": false
     },
     "src/core/features/streams/ui/streams.css": {
-      "sha256": "2ffee0b6eeb4a50e6192f9e853ff3dbf0cb12c31b1c4e38f5d412d5a4d1ff25f",
+      "sha256": "1f63cc0e7d51c6796811e0e2883fe4ccd8add5dc4067e0b319ca90cc9961e8fb",
       "executable": false
     },
     "src/core/features/subissues/access.ts": {
@@ -6017,7 +6017,7 @@
       "executable": false
     },
     "src/core/features/subissues/ui/subissues.tsx": {
-      "sha256": "f28008328bb728fac9e391567427e9a9c798a801831e16f258569dd6c83393ae",
+      "sha256": "7214d66c721ceb01cd17510dd89985759170a3b55d43fd13af16f8daf0446be0",
       "executable": false
     },
     "src/core/features/subissues/ui/use-subissues.ts": {
@@ -6213,7 +6213,7 @@
       "executable": false
     },
     "src/core/ui/tooltip.tsx": {
-      "sha256": "0dff6d4ad38a7c2a3a6ade54224f3b9d14304a087a92f11c1f7a0423aecb0093",
+      "sha256": "416da56f4e62ec97bbe47c51c83b33b3a146fdf66736a40f76fe56efaa956c0a",
       "executable": false
     },
     "src/demo.ts": {
