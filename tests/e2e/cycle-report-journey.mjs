@@ -95,7 +95,7 @@ const response = await client.fetch(base + "/api" + path, {
     await panel.getByRole("img", { name: "Cycle burn-up of issue scope and completion by day" }).waitFor();
     await panel.getByText("Daily data and scope changes", { exact: true }).click();
     const daily = panel.getByRole("region", { name: "Daily burn-up data", exact: true });
-    const row = daily.getByRole("row").filter({ hasText: "2026-09-02" });
+    const row = daily.getByRole("row").filter({ has: page.locator('time[datetime="2026-09-02"]') });
     assert.equal(await row.getByRole("cell").nth(0).innerText(), "2");
     assert.equal(await row.getByRole("cell").nth(1).innerText(), "1");
     assert((await row.innerText()).includes(carried.identifier));
