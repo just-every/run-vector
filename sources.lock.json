@@ -5601,7 +5601,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-activity.tsx": {
-      "sha256": "78510e49b50143ee683ae08df6217cfd069d94ff804d1ac1a4933b946fd28a6a",
+      "sha256": "6825627e6bb98b83b3a46a7cf691373b062fcfde9a81d7e7e01302a8bbef75f6",
       "executable": false
     },
     "src/core/features/projects/ui/project-administration.tsx": {
@@ -5609,7 +5609,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-appearance.tsx": {
-      "sha256": "6a4b13c1c8d3319f2f2e62688068c0fed5a3703faee052cad8a15b60a501c5cc",
+      "sha256": "cbc0a4c2e8c82f082aa167a16c0e41806b465a4f322dc967541d1cf146a36d3d",
       "executable": false
     },
     "src/core/features/projects/ui/project-detail.tsx": {
