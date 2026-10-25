@@ -2509,7 +2509,7 @@
       "executable": false
     },
     "sample-data/vector.ts": {
-      "sha256": "319d6099f424657956b1afb03ef5d1151e94c04741e1ac03550423b520aa73d1",
+      "sha256": "c3825491db5e24526b296243894ca96304dd61ebbbfbafd2c1b9a553bc24b019",
       "executable": false
     },
     "schema/api-v1.json": {
@@ -5625,7 +5625,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-appearance.tsx": {
-      "sha256": "1658ae646f8e54fdaa403022516ebd225f58109d486d1cb33b417aa9b9a9451c",
+      "sha256": "b92275d0c7cff47fb97b22ce6d4fe6972bbc3bed9a6a5f288e2064a60169962d",
       "executable": false
     },
     "src/core/features/projects/ui/project-detail.tsx": {
