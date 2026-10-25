@@ -119,7 +119,7 @@ export function MembersPanel({ data, denied, onChanged }: { data: Settings; deni
         </SettingsSaveForm>
       )}
       {controls.inviteRoles.length ? (
-        <InviteOperator teams={data.teams} delivery={data.invitationDelivery} roles={controls.inviteRoles} disabled={pending || denied} onInvited={onChanged} />
+        <InviteOperator teams={data.teams} roles={controls.inviteRoles} disabled={pending || denied} onInvited={onChanged} />
       ) : (
         <p>Only Owners and Admins invite people{data.workspace.memberInvites ? "" : " unless they let Members invite Members"}.</p>
       )}

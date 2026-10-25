@@ -23,7 +23,7 @@ type StepUp = 'needed' | 'sending' | 'email'
 const roleNames: Record<AssignableRole, string> = { owner: 'Owner', admin: 'Admin', member: 'Member', guest:'Guest',viewer:'Viewer' }
 
 /** An invitation names the role it grants (ROLE-001); Member is the default. */
-export function InviteOperator({ disabled, roles, teams, onInvited }: { disabled: boolean; delivery: 'local' | 'email'; roles: AssignableRole[]; teams:{id:string;name:string}[]; onInvited: () => void }) {
+export function InviteOperator({ disabled, roles, teams, onInvited }: { disabled: boolean; roles: AssignableRole[]; teams:{id:string;name:string}[]; onInvited: () => void }) {
   const [email, setEmail] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [role, setRole] = useState<AssignableRole>('member')
