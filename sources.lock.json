@@ -4137,7 +4137,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "2becbeb2e09ccbdd79d17e153d2ca7ae024b2d20b5dfee3e01fa818d10a9c2d0",
+      "sha256": "72514aef3979638f799acf081b02759e3e71191e4b73d6ec963496f629e42611",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
