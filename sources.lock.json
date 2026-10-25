@@ -6785,7 +6785,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "158ae6522de632d8a74c9a709307b2ea78ed12e69316030a213196aa72173b3e",
+      "sha256": "c45e0712736ecc5ddcdafbf8ad381d127e4d5b4b27d35aadf6cd402062b40c55",
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
@@ -6813,7 +6813,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
-      "sha256": "e0ae77b5ea96c7bc4e7536b802e888daa19a3bccc328ee3cd6531479f36b0631",
+      "sha256": "eef2b485087577137fc557951dba97e2541e8c3347d3a2a005930cdce4380f15",
       "executable": false
     },
     "tests/e2e/integrations/typescript-loader.mjs": {

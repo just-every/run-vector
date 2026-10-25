@@ -60,7 +60,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  await chooseSlack(assignments,false);await chooseSlack(assignments,true);await chooseSlack(assignments,false);
  assert.equal(await mentions.isChecked(),true);await shot('linked',slack.locator('.slack-direct-link'));await axe('.notifications-panel');
  // The Admin enters a generated signing secret beside the bot token.
- const channels=page.locator('.channel-settings'),details=channels.locator('details');if(!await details.evaluate(element=>element.open))await details.locator('summary').click();
+ const channels=page.locator('.channel-settings'),details=channels.locator('details').filter({has:page.getByRole('form',{name:'Slack credential',exact:true,includeHidden:true})});if(!await details.evaluate(element=>element.open))await details.locator('summary').click();
  const secret=crypto.randomUUID().replaceAll('-',''),field=channels.getByLabel('Slack signing secret',{exact:true});await field.fill(secret);await shot('signing-secret',field);await axe('.channel-settings');
  await answered('/settings/integrations/slack/signing-secret','POST',()=>channels.getByRole('button',{name:'Save signing secret',exact:true}).click());
  const actions=channels.locator('.slack-direct-actions');await actions.getByText(/Assign to me and Change status are on/).waitFor();
