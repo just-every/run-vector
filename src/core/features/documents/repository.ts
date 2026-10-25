@@ -8,7 +8,7 @@ import type {ParentKind,documentInput,documentEdit} from './schema';
 export function parentSql(kind:ParentKind){
  switch(kind){
   case 'project':return 'SELECT p.id,p.name FROM projects p WHERE p.id=? AND p.workspace_id=?';
-  case 'issue':return 'SELECT i.id,i.title name FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=?';
+  case 'issue':return 'SELECT i.id,i.title name,i.identifier FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=?';
   case 'team':return 'SELECT t.id,t.name FROM teams t WHERE t.id=? AND t.workspace_id=?';
   case 'initiative':return "SELECT n.id,n.name FROM initiatives n WHERE n.id=? AND n.workspace_id=? AND (SELECT role FROM operators WHERE id=?)<>'guest'";
  }
@@ -16,15 +16,16 @@ export function parentSql(kind:ParentKind){
 async function parent(db:D1Database,actor:string,kind:ParentKind,id:string){
  const access=await settingsActor(db,actor);
  const values=kind==='initiative'?[id,access.workspace_id,actor]:[id,access.workspace_id];
- const row=await db.prepare(parentSql(kind)).bind(...values).first<{id:string;name:string}>();
+ const row=await db.prepare(parentSql(kind)).bind(...values).first<{id:string;name:string;identifier?:string}>();
  if(!row)throw new IntegrationError(404,'document_parent_not_found');
- return {...row,kind,workspace:access.workspace_id,values};
+ const url=kind==='issue'?'/app/issues/'+row.identifier:kind==='project'?'/app/projects/'+id:kind==='initiative'?'/app/initiatives/'+id:'/app/teams/'+id;
+ return {...row,kind,url,workspace:access.workspace_id,values};
 }
 export async function listDocuments(db:D1Database,actor:string,kind?:ParentKind,id?:string){
  const access=await settingsActor(db,actor),subject=kind&&id?await parent(db,actor,kind,id):null;
  const rows=(await db.prepare('SELECT id,title,parent_kind parentKind,parent_id parentId,version,updated_at updatedAt FROM documents WHERE workspace_id=?'+(subject?' AND parent_kind=? AND parent_id=?':'')+' ORDER BY updated_at DESC,id DESC LIMIT 100').bind(access.workspace_id,...(subject?[subject.kind,subject.id]:[])).all()).results;
  if(subject)await parent(db,actor,subject.kind,subject.id);
- return {parent:subject?{id:subject.id,kind:subject.kind,name:subject.name}:null,documents:rows};
+ return {parent:subject?{id:subject.id,kind:subject.kind,name:subject.name,url:subject.url}:null,documents:rows};
 }
 export async function readDocument(db:D1Database,actor:string,id:string){
  const access=await settingsActor(db,actor);
