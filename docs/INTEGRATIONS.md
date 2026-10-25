@@ -330,7 +330,7 @@ Archives retain outcomes and replay identities. Verification keys are excluded a
 Owners and Admins can configure a notification app in **Settings → Integrations → Slack app installation**. **Create an app automatically** uses a one-time app configuration token. Alternatively, **Use Slack’s prefilled page** opens Slack’s app setup with the manifest already filled in; create the app there, then save the app ID, client ID, client secret and signing secret in Vector. Submitted secret fields clear after a successful save. **Install Slack app** opens Slack’s consent screen; finish it in the same Owner/Admin session. **Remove Slack app** and the existing **Remove Slack connection** control both revoke the connection and remove the stored credentials and member links. They do not delete the app definition in Slack.
 
 The authenticated Settings API remains available. `GET /api/settings/integrations/slack/app` returns the generated
-notification manifest, its prefilled Slack creation URL and this installation's
+installation manifest, its prefilled Slack creation URL and this installation's
 OAuth callback URL. `POST` to the same path accepts the app ID, client ID, client
 secret and signing secret; `/create` accepts a one-time configuration token for
 Slack's manifest API. The configuration token is used once and never stored.
@@ -346,9 +346,29 @@ the Slack connection revokes its bot token and removes app credentials, pending
 state, signing credentials and member links. It does not delete the Slack app
 definition.
 
-This installation foundation is partial. Complete intake,
-slash-command and unfurl manifest, Events API, first `@Vector` issue creation,
-explicit Admin member mapping, provider uninstall handling, app-credential
+Both manifest paths include this installation's Events, interactivity, `/vector`
+command and OAuth callback URLs, its unfurl domain, and the channel/DM,
+mention, channel-history, command and unfurl scopes. Command execution and
+unfurl responses remain their own unbuilt integration work.
+
+Under **Slack member mapping**, an Owner or Admin explicitly maps a Slack
+workspace ID and member ID to an active Vector Member or Guest, or their own
+account. Another Owner or Admin cannot be selected as a target. Mapping and
+removal are audited; a Member or Viewer cannot manage them. Personal linking
+by a member's own email remains available in Settings → Notifications.
+
+Bind the Slack channel to exactly one team with the existing channel-binding
+form. A signed `app_mention` at `/api/integrations/slack/events` creates one
+issue in that team as the linked member, subject to that member's current
+permissions. The event text after its leading mention supplies the title.
+Unmapped users, unbound or ambiguous channels, invalid signatures, stale
+requests and repeated events create nothing. Slack URL verification is
+answered only with a valid installation signature. Unlinking prevents new
+mentions from acting as that member. Migration `0101_slack_event_receipts.sql`
+adds identifier-only, portable replay history, committed with the issue; keep
+it on rollback so retries cannot recreate previously accepted issues.
+
+This installation remains partial. Provider uninstall handling, app-credential
 archive/restore acceptance and the hosted real-workspace installation remain
-SLACK-001 work. The current notification manifest configures only existing
-channel/DM capabilities and signed interactivity; no hosted install is claimed.
+SLACK-001 work. A real workspace needs the owner's Slack console setup and
+reinstallation with the generated scopes and URLs; no hosted install is claimed.
