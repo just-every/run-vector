@@ -10,6 +10,7 @@ export async function pageAudit(page, base, issue, evidence, record) {
   for (const path of ['/app', '/app/my-work', '/app/issues', '/app/issues/backlog', '/app/board', '/app/projects', '/app/projects/new', '/app/cycles', '/app/inbox', '/app/inbox/snoozed', '/app/views', '/app/settings/members', '/app/search', '/app/new-issue', '/app/new', '/app/issues/' + issue]) {
     await beforePrivateNavigation(page, base + path);
     await page.goto(base + path);
+    await beforePrivateNavigation(page, page.url());
     assert.equal((await page.reload()).status(), 200, path + ': destination survives a document reload');
     await page.locator('main:visible').first().waitFor();
     await settleReads(page);

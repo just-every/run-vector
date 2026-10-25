@@ -6389,7 +6389,7 @@
       "executable": false
     },
     "src/routes/app.views.index.tsx": {
-      "sha256": "02cb4664c5dc8d52e634d5d77b3c558cca02dd323130dd5c07da6e3ab51d21b2",
+      "sha256": "b186965edce234d1ab3028fb9e4363b462e5f1c53f4580192511e4c857b1ffbb",
       "executable": false
     },
     "src/routes/docs.$slug.tsx": {
@@ -6653,7 +6653,7 @@
       "executable": false
     },
     "tests/e2e/core-page-audit.mjs": {
-      "sha256": "9c65d00808e3af6e5701e4f5b48b2a855270bf1aead24ef395e37778259bad66",
+      "sha256": "e399e651db315873d49afb7cfacdece57d81dd3a816012a39d4420721d3fbdbd",
       "executable": false
     },
     "tests/e2e/core-palette-journey.mjs": {
