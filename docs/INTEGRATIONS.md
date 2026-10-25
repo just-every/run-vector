@@ -325,10 +325,11 @@ Callbacks verify SendGrid's P-256 signature over the timestamp and exact request
 Archives retain outcomes and replay identities. Verification keys are excluded and intake stays disabled after restore; configure the destination's provider account and key again. Local signed fixtures prove these transitions; installation routing, sender-domain configuration and hosted provider receipt remain installation work. Customer/domain attachment remains unavailable until customer records exist.
 
 
-### Slack app installation API foundation
+### Slack app installation
 
-Owners and Admins can configure a notification app through the authenticated
-Settings API. `GET /api/settings/integrations/slack/app` returns the generated
+Owners and Admins can configure a notification app in **Settings → Integrations → Slack app installation**. **Create an app automatically** uses a one-time app configuration token. Alternatively, **Use Slack’s prefilled page** opens Slack’s app setup with the manifest already filled in; create the app there, then save the app ID, client ID, client secret and signing secret in Vector. Submitted secret fields clear after a successful save. **Install Slack app** opens Slack’s consent screen; finish it in the same Owner/Admin session. **Remove Slack app** and the existing **Remove Slack connection** control both revoke the connection and remove the stored credentials and member links. They do not delete the app definition in Slack.
+
+The authenticated Settings API remains available. `GET /api/settings/integrations/slack/app` returns the generated
 notification manifest, its prefilled Slack creation URL and this installation's
 OAuth callback URL. `POST` to the same path accepts the app ID, client ID, client
 secret and signing secret; `/create` accepts a one-time configuration token for
@@ -345,7 +346,7 @@ the Slack connection revokes its bot token and removes app credentials, pending
 state, signing credentials and member links. It does not delete the Slack app
 definition.
 
-This API foundation is partial. A Settings install form, complete intake,
+This installation foundation is partial. Complete intake,
 slash-command and unfurl manifest, Events API, first `@Vector` issue creation,
 explicit Admin member mapping, provider uninstall handling, app-credential
 archive/restore acceptance and the hosted real-workspace installation remain
