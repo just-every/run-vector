@@ -47,7 +47,7 @@ function InboxFeed({
     <>
       <header>
         <div>
-          <p className="settings-eyebrow">Your work</p>
+          <p className="settings-eyebrow">My work</p>
           <h1>Inbox</h1>
           <p>
             {count.error
@@ -57,7 +57,7 @@ function InboxFeed({
                 : "Loading unread count…"}
           </p>
         </div>
-        {!snoozed && (
+        {!snoozed && (count.data?.unreadCount ?? 0) > 0 && (
           <button
             type="button"
             disabled={

@@ -1,3 +1,7 @@
+import { useNavigate } from "@tanstack/react-router";
+import { fetchJson } from "../../../app/api-client";
+import { administrationSchema } from "../../administration/schema";
+import { CreateSlackChannel } from "./project-slack-choice";
 import {SaveProjectTemplate} from '../../project-templates/controls';
 import { ProjectAppearanceFields } from "./project-appearance";
 import { useHydrated } from "../../../app/initial-resources";
@@ -30,23 +34,35 @@ export function ProjectCreate({
   channel,
   onChanged,
   onCancel,
-}: Props & { channel: boolean; onCancel: () => void }) {
-  const action = useAdministrationAction(onChanged);
+  viewerId,
+  projectIds,
+}: Props & { channel: boolean; viewerId: string; projectIds: string[]; onCancel: () => void }) {
+  const navigate = useNavigate();
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState("");
   const hydrated = useHydrated();
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
-    if (await action.run("/api/settings/projects", "POST", {...fields(form),createSlackChannel:new FormData(form).has("createSlackChannel")}))
-      form.reset();
+    if (pending) return;
+    setPending(true); setError("");
+    try {
+      const result = await fetchJson("/api/settings/projects", administrationSchema, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...fields(form), createSlackChannel: new FormData(form).has("createSlackChannel") }),
+      });
+      const created = result.projects.find(project => !projectIds.includes(project.id));
+      if (!created) throw new Error("The project was saved. Open Projects to find it.");
+      onChanged();
+      await navigate({ to: "/app/projects/$projectId", params: { projectId: created.id } });
+    } catch (cause) { setError(cause instanceof Error ? cause.message : "The project could not be created."); }
+    finally { setPending(false); }
   }
   return (
     <form aria-label="Create project" onSubmit={create}>
-      <fieldset disabled={action.pending || !hydrated}>
-        <ProjectFields operators={operators} labels={labels} autoFocus />
-        {channel && <>
-          <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
-          <p>Creates a public channel from the project name and binds new issue, triage and status events. Connect Slack in Settings → Integrations first. A Slack error stops creation.</p>
-        </>}
+      <fieldset disabled={pending || !hydrated}>
+        <ProjectFields operators={operators} labels={labels} defaultLead={viewerId} autoFocus />
+        {channel && <CreateSlackChannel />}
         <div className="admin-actions">
           <button>Create project</button>
           <button type="button" onClick={onCancel}>
@@ -54,7 +70,7 @@ export function ProjectCreate({
           </button>
         </div>
       </fieldset>
-      <AdministrationFeedback action={action} />
+      {error && <p role="alert">{error}</p>}
     </form>
   );
 }
@@ -137,8 +153,10 @@ function ProjectFields({
   labels,
   project,
   autoFocus = false,
+  defaultLead,
 }: {
   autoFocus?: boolean;
+  defaultLead?: string;
   operators: Administration["operators"];
   labels: Administration["labels"];
   project?: Administration["projects"][number];
@@ -169,7 +187,7 @@ function ProjectFields({
         <select
           name="lead"
           required
-          defaultValue={project?.leadOperatorId ?? ""}
+          defaultValue={project?.leadOperatorId ?? defaultLead ?? ""}
         >
           <option value="">Choose one lead</option>
           {operators.map((operator) => (
@@ -198,13 +216,11 @@ function ProjectFields({
           {["urgent","high","medium","low","none"].map(priority => <option key={priority} value={priority}>{priority === "none" ? "No priority" : priority[0].toUpperCase()+priority.slice(1)}</option>)}
         </select>
       </label>
-      <label>
-        Project labels
-        <select name="labelIds" aria-label="Project labels" multiple defaultValue={project?.labelIds ?? []}>
-          {labels.filter(label=>label.projectsEnabled).map(label=><option key={label.id} value={label.id}>{label.name}</option>)}
-        </select>
-        <small>Choose any labels marked for projects in Settings. Use Command or Ctrl to select several.</small>
-      </label>
+      <fieldset><legend>Project labels</legend>
+        <div className="project-label-pick">{labels.filter(label => label.projectsEnabled).map(label =>
+          <label className="admin-checkbox" key={label.id}><input type="checkbox" name="labelIds" value={label.id} defaultChecked={project?.labelIds.includes(label.id)} />{label.name}</label>
+        )}</div>
+      </fieldset>
     </>
   );
 }

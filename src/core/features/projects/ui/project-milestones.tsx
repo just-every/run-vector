@@ -3,7 +3,7 @@ import { fetchJson } from "../../../app/api-client";
 import { useHydrated } from "../../../app/initial-resources";
 import { SafeMarkdown } from "../../markdown/ui/markdown";
 import { projectDetailSchema, type ProjectDetailData } from "./data";
-import { shortProjectDate } from "./helpers";
+import { useDateFormat } from "../../../shared/date-format";
 import "./project-milestones.css";
 
 type Milestone = ProjectDetailData["milestones"][number];
@@ -13,6 +13,7 @@ export function ProjectMilestones({ project, writable, onChanged }: {
   writable:boolean;
   onChanged: (project: ProjectDetailData) => void;
 }) {
+  const { date } = useDateFormat();
   const hydrated = useHydrated();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
@@ -66,7 +67,7 @@ export function ProjectMilestones({ project, writable, onChanged }: {
           {milestone.completed && milestone.slipped && <span>Completed milestone</span>}
         </div>
         {milestone.description && <SafeMarkdown>{milestone.description}</SafeMarkdown>}
-        <p className="project-milestones__facts">{milestone.targetDate ? `Target ${shortProjectDate(milestone.targetDate)}` : "No target date"}
+        <p className="project-milestones__facts">{milestone.targetDate ? `Target ${date(milestone.targetDate)}` : "No target date"}
           <span>{milestone.progress.total === 0 ? "No countable issues" : `${milestone.progress.completed}/${milestone.progress.total} issues complete · ${milestone.progress.percentage}%`}</span>
         </p>
         {milestone.progress.percentage !== null && <progress aria-label={`${milestone.name} progress`} value={milestone.progress.completed} max={milestone.progress.total} />}

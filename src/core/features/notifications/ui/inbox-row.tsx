@@ -1,3 +1,4 @@
+import "./inbox-rows.css";
 import { useViewerTime } from '../../../app/viewer-time';
 import { useHydrated } from '../../../app/initial-resources';
 import type { InboxItem } from "../schema";
@@ -37,14 +38,12 @@ export function InboxNotificationRow({
           {item.readAt ? "Read" : "Unread"}
         </span>
         <span className="inbox-row-copy">
-          <span>
-            {item.actor ?? "An operator"} {notificationAction(item)}{" "}
-            <strong className="inbox-identifier">{item.identifier}</strong>
-          </span>
           <span className="inbox-title">{item.title}</span>
-          <time dateTime={item.visibleAt ?? item.createdAt}>
-            {relativeTime(item.visibleAt ?? item.createdAt)}
-          </time>
+          <span className="inbox-meta">
+            {item.actor ?? "Someone"} {notificationAction(item)}{" "}
+            <span className="inbox-identifier">{item.identifier}</span>{" · "}
+            <time dateTime={item.visibleAt ?? item.createdAt}>{relativeTime(item.visibleAt ?? item.createdAt)}</time>
+          </span>
         </span>
         {pending === item.id && <span role="status">{pendingLabel}</span>}
       </button>

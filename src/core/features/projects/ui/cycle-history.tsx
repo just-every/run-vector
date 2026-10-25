@@ -6,13 +6,13 @@ export function ProjectCycleHistory({
 }: {
   history: ProjectDetailData["cycleHistory"];
 }) {
+  if (!history.length) return null;
   return (
     <section
       className="project-detail__section"
       aria-label="Closed cycle history"
     >
       <h2>Closed cycle history</h2>
-      {!history.length && <p>No closed cycles contained this project.</p>}
       {history.map((entry) => (
         <details key={entry.cycleId}>
           <summary>

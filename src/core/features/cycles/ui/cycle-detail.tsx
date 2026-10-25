@@ -1,6 +1,6 @@
+import { useDateFormat } from "../../../shared/date-format";
 import { WorkloadPanel } from '../../workload/panel';
 import { CycleReportPanel } from "../../cycle-report/panel";
-import { useViewerTime } from "../../../app/viewer-time";
 import { ClosureSnapshot } from "./closure-snapshot";
 import { remainingScopeCopy, capacityRiskCopy } from "./capacity-copy";
 import { canSelectCycle } from "./commitment-choices";
@@ -17,7 +17,7 @@ import { issueDetailSchema } from "../../issues/ui/data";
 import "../../settings/ui/settings.css";
 import "./cycles.css";
 export function CycleDetailPage({ cycleId }: { cycleId: string }) {
-  const { formatInstant } = useViewerTime();
+  const { range, zone } = useDateFormat();
   const detail = useApiResource(`/api/cycles/${cycleId}`, cycleDetailSchema);
   const administration = useApiResource(
     "/api/metadata",
@@ -79,7 +79,7 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
         )}
       </main>
     );
-  const { cycle, progress, workspaceTimezone } = detail.data;
+  const { cycle, progress } = detail.data;
   const choices =
     administration.data?.cycles.filter(
       (item) => item.teamId === cycle.teamId && !item.closedAt,
@@ -99,11 +99,10 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
             administration.data?.teams.find((team) => team.id === cycle.teamId)
               ?.name
           }{" "}
-          · Workspace time: {workspaceTimezone}
+          · {zone}
         </p>
         <p>
-          {formatInstant(cycle.startsAt)} –{" "}
-          {formatInstant(cycle.endsAt)}
+          {range(cycle.startsAt, cycle.endsAt)}
         </p>
       </header>
       <section aria-label="Cycle progress">

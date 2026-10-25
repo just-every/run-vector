@@ -99,6 +99,14 @@ export function IssueListView({
       return next;
     });
   }
+  const emptyPersonalScope = visible?.total === 0 && query.scope !== "all" &&
+    Object.entries(query).every(([key, value]) => key === "scope" || key === "sort" || key === "grouping" || key === "pageSize" || value === defaultIssueListQuery[key as keyof IssueListQuery]);
+  if (emptyPersonalScope) return <main ref={root} className="issues-browser">
+    {before}<header className="issues-heading"><h1>{title}</h1></header>
+    <section className="issues-empty"><p>{query.scope === "created" ? "You haven’t created any issues yet." : "You aren’t following any issues yet."}</p>
+      {query.scope === "created" ? <a href="/app/new">New issue</a> : <a href="/app/issues">Browse issues</a>}
+    </section>
+  </main>;
   return (
     <ManualOrderBoundary query={query} rows={visible?.issues ?? []} reload={reload}>
     <main
@@ -112,28 +120,29 @@ export function IssueListView({
       <header className="issues-heading">
         <div>
           <h1>{title ?? (layout === "board" ? "Board" : "Issues")}</h1>
-          <p>
+          {(!title || description) && <p>
             {description ?? (layout === "board"
               ? "Work through one team’s workflow."
               : "Browse issues beyond Current.")}
-          </p>
+          </p>}
           {query.scope !== "all" && !description ? <p className="issues-scope">{scopeNotes[query.scope]}</p> : null}
         </div>
         <a href="/app/new">New issue</a>
       </header>
       <nav className="issues-modes" aria-label="Issue list">
         <button
-          aria-pressed={query.category === "all"}
+          aria-pressed={layout === "list" && query.category === "all"}
           onClick={() => onChange({ category: "all" })}
         >
           All issues
         </button>
         <button
-          aria-pressed={query.category === "backlog"}
+          aria-pressed={layout === "list" && query.category === "backlog"}
           onClick={() => onChange({ category: "backlog" })}
         >
           Backlog
         </button>
+        {layout === "board" && <button aria-pressed={true}>Board</button>}
         {onSwitchLayout && (
           <button onClick={onSwitchLayout}>
             {layout === "board" ? "List" : "Board"}
@@ -162,6 +171,7 @@ export function IssueListView({
                 query={query}
                 layout={layout}
                 limit={options?.savedViewsPerOperator}
+                ownerId={options?.operator.id}
                 onCreated={onCreateView}
               />
             ))}
@@ -254,7 +264,6 @@ export function IssueListView({
                 statusCounts={visible.statusCounts!}
                 team={query.team}
                 options={options}
-                onChangeTeam={(team) => onChange({ team })}
                 onOpen={onOpen}
                 onRefresh={reload}
               />
@@ -294,8 +303,8 @@ export function IssueListView({
               <a href="/app/new">New issue</a>
             </section>
           )}
-          <nav className="issues-pagination" aria-label="Issue pages">
-            <button
+          {(layout !== "board" || visible.offset > 0 || visible.offset + visible.pageSize < visible.total) && <nav className="issues-pagination" aria-label="Issue pages">
+            {(layout !== "board" || visible.offset > 0) && <button
               disabled={visible.offset === 0}
               onClick={() =>
                 onChange({
@@ -305,13 +314,13 @@ export function IssueListView({
               }
             >
               Previous
-            </button>
+            </button>}
             <span>
               {visible.issues.length
                 ? `${visible.offset + 1}–${visible.offset + visible.issues.length} of ${visible.total}`
                 : `0 shown of ${visible.total}`}
             </span>
-            <button
+            {(layout !== "board" || visible.offset + visible.pageSize < visible.total) && <button
               disabled={visible.offset + visible.pageSize >= visible.total}
               onClick={() =>
                 onChange({
@@ -321,8 +330,8 @@ export function IssueListView({
               }
             >
               Next
-            </button>
-          </nav>
+            </button>}
+          </nav>}
         </>
       )}
     </main>

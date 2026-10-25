@@ -1,3 +1,5 @@
+import { preferredTeam } from "./preferred-team";
+import { administrationSchema } from "../../administration/schema";
 import { useViewerTime } from '../../../app/viewer-time';
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { Link, useNavigate } from "@tanstack/react-router";
@@ -30,6 +32,7 @@ export function NewIssueForm() {
   const { effectiveTimezone } = useViewerTime();
   const navigate = useNavigate();
   const options = useApiResource("/api/options", workspaceOptionsSchema);
+  const administration = useApiResource("/api/metadata", administrationSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
   const [draftReady, setDraftReady] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -41,20 +44,24 @@ export function NewIssueForm() {
     : null;
 
   useEffect(() => {
-    if (!storageKey || draftReady) return;
+    if (!storageKey || draftReady || !options.data || !administration.data) return;
+    let draft = { ...emptyNewIssueDraft, teamId: preferredTeam(options.data, administration.data) };
     try {
       const stored = window.localStorage.getItem(storageKey);
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
       if (restored) {
-        setValues(restored);
+        draft = { ...restored, teamId: restored.teamId || draft.teamId };
         setNotice("Restored your unsent draft from this browser.");
       }
     } catch {
       setStorageError("This browser could not read the unsent draft.");
     }
+    const project = new URLSearchParams(window.location.search).get("project");
+    if (project && options.data.projects.some(choice => choice.id === project)) draft.projectId = project;
+    setValues(draft);
     setDraftReady(true);
-  }, [draftReady, storageKey]);
+  }, [draftReady, storageKey, options.data, administration.data]);
 
   useEffect(() => {
     if (!draftReady || !storageKey) return;
@@ -194,9 +201,7 @@ export function NewIssueForm() {
         >
           <header className="new-issue-header">
             <div>
-              <Link className="detail-back" to="/app">
-                ← Current
-              </Link>
+              <button type="button" className="detail-back" onClick={() => window.history.length > 1 ? window.history.back() : void navigate({ to: "/app" })}>← Back</button>
               <h1 id="new-issue-title">
                 {values.mode === "intake" ? "New intake" : "New issue"}
               </h1>
@@ -486,7 +491,7 @@ export function NewIssueForm() {
                   </label>
                 </section>
                 <fieldset className="new-issue-labels">
-                  <legend>Labels · maximum {labelsPerIssue}</legend>
+                  <legend>Labels{values.labelIds.length >= labelsPerIssue - 1 ? ` · ${values.labelIds.length} of ${labelsPerIssue}` : ""}</legend>
                   {options.data.labels.length === 0 ? (
                     <span>No labels are available.</span>
                   ) : (

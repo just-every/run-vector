@@ -16,12 +16,12 @@ export function IssueKeyboardDuplicate({ targets, limit, onClose, onSuccess }: {
   const issues = session.rows.map(row => ({ identifier: row.identifier, expectedVersion: row.version }));
   return <IssueKeyboardModal title="Duplicate decision" busy={session.busy} onClose={onClose}>
     <p>{session.rows.length} {session.rows.length === 1 ? "issue" : "issues"}: {session.rows.map(row => row.identifier).join(", ")}</p>
-    <p>Choose one canonical issue for the entire selection. Descriptions, comments and history stay on their original issues.</p>
+    <p>Choose the original issue for the entire selection. Descriptions, comments and history stay on their original issues.</p>
     <form onSubmit={event => {
       event.preventDefault();
       if (!disabled) void session.submit("duplicate", { issues, canonicalIdentifier: canonical.trim().toUpperCase() });
     }}>
-      <label>Canonical issue identifier<input autoFocus aria-label="Canonical issue identifier" value={canonical}
+      <label>Original issue<input autoFocus aria-label="Original issue" value={canonical}
         onChange={event => setCanonical(event.target.value)} required pattern="[A-Za-z]{2,10}-[1-9][0-9]*" disabled={disabled} /></label>
       <button type="submit" disabled={disabled || !/^[A-Z]{2,10}-[1-9][0-9]*$/.test(canonical.trim().toUpperCase())}>Mark selected as duplicates</button>
     </form>

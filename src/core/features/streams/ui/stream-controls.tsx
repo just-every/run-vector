@@ -1,4 +1,4 @@
-import { useViewerTime } from '../../../app/viewer-time';
+import { useDateFormat } from "../../../shared/date-format";
 import { useHydrated } from "../../../app/initial-resources";
 import { ListPreferenceControls, type ListPreferenceControlsProps } from "../../views/ui/list-preference-controls";
 import { attentionReasons, reasonLabel, type StreamFilters } from "./helpers";
@@ -132,12 +132,8 @@ export function FilterBar({
 }
 
 export function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
-  const { effectiveTimezone } = useViewerTime();
+  const { range, zone: effectiveTimezone } = useDateFormat();
   if (cycles.length === 0) return null;
-  const date = new Intl.DateTimeFormat(undefined, {
-    timeZone: effectiveTimezone, year: "numeric", month: "short", day: "numeric",
-    hour: "2-digit", minute: "2-digit", hourCycle: "h23",
-  });
   const number = new Intl.NumberFormat(undefined, { maximumFractionDigits: 1 });
   return (
     <div className="cycle-context" aria-label="Active cycle context">
@@ -178,14 +174,8 @@ export function CycleContext({ cycles }: { cycles: CycleContextData[] }) {
               )}
             </strong>
             <small className="cycle-dates">
-              <time dateTime={cycle.startsAt}>
-                {date.format(new Date(cycle.startsAt))}
-              </time>{" "}
-              –{" "}
-              <time dateTime={cycle.endsAt}>
-                {date.format(new Date(cycle.endsAt))}
-              </time>
-              <span className="cycle-timezone">{effectiveTimezone}</span>
+              <time dateTime={cycle.startsAt} data-ends-at={cycle.endsAt}>{range(cycle.startsAt, cycle.endsAt)}</time>
+              {cycles[0]?.id === cycle.id && <span className="cycle-timezone">{effectiveTimezone}</span>}
             </small>
             <small className="cycle-capacity" data-risk={cycle.capacityRisk}>
               {capacityLabel} · {capacityFacts.join(" · ")}

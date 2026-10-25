@@ -1,3 +1,5 @@
+import { useDateFormat } from "../../../shared/date-format";
+import "./detail-context.css";
 import { TooltipScope } from '../../../ui/tooltip';
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
@@ -154,6 +156,7 @@ function IssueInspector({
 }) {
   const writable = !!options && options.operator.role !== 'viewer';
   const { formatInstant } = useViewerTime();
+  const { date } = useDateFormat();
   const [hierarchy, setHierarchy] = useState<HierarchyState & { id: string }>({
     id: issue.identifier,
     editing: false,
@@ -187,7 +190,7 @@ function IssueInspector({
             {onBack ? (
               <button
                 type="button"
-                className="detail-back"
+                className="detail-back issue-back-to-list"
                 onClick={() => {
                   onBack();
                   window.setTimeout(
@@ -355,7 +358,7 @@ function IssueInspector({
                         {activity.actor ?? "System"} ·{" "}
                         {relativeTime(activity.at)}
                       </span>
-                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options).map((change) => (
+                      {activityChanges(activity.kind, activity.previousValue, activity.nextValue, options, date).map((change) => (
                         <span className="activity-change" key={change.field}>
                           {change.from === undefined ? `${change.field} edited` : `${change.field}: ${change.from} → ${change.to}`}
                         </span>
@@ -419,7 +422,7 @@ function EvidenceInspector({
         <div>
           <p className="detail-kicker">
             {operatorReport
-              ? `Operator report · ${evidence.actor ?? "Operator"}`
+              ? `${evidence.actor ?? "Someone"} reported`
               : `Evidence · ${evidence.sourceName}`}
           </p>
           <h2 id={`evidence-${evidence.id}`}>Why this needs attention</h2>
@@ -459,10 +462,10 @@ function EvidenceInspector({
               <div key={assertion.key}>
                 <span>
                   {assertion.source === "policy"
-                    ? "Policy recommendation"
+                    ? "Suggested next step"
                     : operatorReport
-                      ? "Operator assertion"
-                      : "Source assertion"}
+                      ? "Reported by a person"
+                      : "Reported by the source"}
                 </span>
                 <strong>{humanize(assertion.key)}</strong>
                 <p>{assertion.value}</p>
