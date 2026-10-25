@@ -130,7 +130,7 @@ export function IssueBoard({
         ))}
       </div>
       {team === "all" ? (
-        <p>Choose one team to see its workflow board.</p>
+        <p role="status">Loading board…</p>
       ) : (
         <>
           <label className="board-column-picker">

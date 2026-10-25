@@ -26,6 +26,7 @@ export async function boardJourney(page, context, base, record, capture) {
 
   await page.setViewportSize({ width: 1440, height: 1000 });
   await openBoard(page, base, { q: marker });
+  await page.waitForFunction(() => document.querySelector('.board-column') && new URLSearchParams(document.querySelector('main[data-list-query]').dataset.listQuery).get('team') !== 'all');
   const metadata = await api('/metadata');
   const preferred = metadata.teams.find(team => !team.archivedAt && team.members.some(member => member.operatorId === metadata.viewer.id));
   assert.equal(await page.getByLabel('Team', { exact: true }).inputValue(), preferred.id);
