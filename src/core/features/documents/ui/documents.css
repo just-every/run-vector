@@ -26,3 +26,6 @@
 @media(max-width:600px) { .document-section summary,.document-section.document-inspector summary { min-height:44px; } }
 .document-section button { min-height:44px; }
 .document-team-link { display:inline-flex; align-items:center; min-height:44px; }
+.document-inspector-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); min-width:0; gap:0; }
+.document-inspector-pair>.document-inspector { margin:0; padding:0; }
+.document-inspector-pair>.document-inspector:has(>details[open]) { grid-column:1/-1; }
