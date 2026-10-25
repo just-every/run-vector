@@ -5109,7 +5109,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-list-view.tsx": {
-      "sha256": "944ea9b1c254c18f2be8c587ba01fa6717a839aac89e6adb666120e2dda35f2a",
+      "sha256": "2fdc1db128a5fc2b168e5efcd49b7ce0daadf31a15eb900fa6a0377c90436b37",
       "executable": false
     },
     "src/core/features/issues/ui/issue-parent-picker.tsx": {

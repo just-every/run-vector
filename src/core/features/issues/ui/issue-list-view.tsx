@@ -59,7 +59,7 @@ export function IssueListView({
   const navigate = useNavigate(), pathname = useLocation({ select: location => location.pathname });
   const [tabState, setTabState] = useState<'saving' | 'error' | null>(null);
   const changeCategory = async (category: 'all' | 'backlog') => {
-    if (!/^\/app\/(issues|board)(?:\/|$)/.test(pathname)) { onChange({ category }); return; }
+    if (!/^\/app\/issues(?:\/|$)/.test(pathname)) { onChange({ category }); return; }
     if (tabState === 'saving') return;
     const search = changeIssueListFilters(query, { category });
     setTabState('saving');
