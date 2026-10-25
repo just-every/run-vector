@@ -4137,7 +4137,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "9bea781860da812059a748576959066130e201e41cfcb586963ff89d48bd2dd2",
+      "sha256": "2becbeb2e09ccbdd79d17e153d2ca7ae024b2d20b5dfee3e01fa818d10a9c2d0",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
@@ -5073,7 +5073,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "eaa2cce436f80388b65bbb41243106c372b84295f6efe3dc13c0c65b083b9754",
+      "sha256": "9be3b38e45083f4c28ab7d31a46fb97c9706dc20a29e9224dc774d2806540ff7",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
