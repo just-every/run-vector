@@ -37,6 +37,7 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect((await w.guest.call(reactionPath,'DELETE',{targetId:'',emoji:'🎉'})).status).toBe(200);
  expect(await snapshot(Object.keys(guestBefore))).toEqual(guestBefore);
  const shared=await json(await owner.call('/views','POST',{name:'synthetic-vector-1724',isShared:true,query:{team:w.team.id}}),201);
+ const viewerSubscription=await json(await member.call('/subscriptions','POST',{subjectType:'label',subjectId:label.id}),201);
  expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
  expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  expect((await member.api(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
@@ -71,6 +72,10 @@ export async function viewerVisibilityJourney(w:Workspace){
   channelBinding=await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']}),201);
  }finally{edge.restore();}
  const signingSecret=Array.from(crypto.getRandomValues(new Uint8Array(16)),value=>value.toString(16).padStart(2,'0')).join('');
+ const templateInput={name:'synthetic-vector-2043',teamId:w.team.id,issues:[{title:'synthetic-vector-2044',offsetDays:null,milestonePosition:null}]};
+ const template=await json(await owner.call('/project-templates','POST',templateInput),201);
+ const dashboardInput={name:'synthetic-vector-2045',teamId:w.team.id,widgets:[{name:'synthetic-vector-2046',kind:'count',filters:{team:w.team.id},chart:{}}]};
+ const dashboard=await json(await owner.call('/dashboards','POST',dashboardInput),201);
  const logicalId=ownComment.id;
  const registeredMutations=(registry:typeof doors)=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
  // These families use their own persisted subjects and schema-valid inputs.
@@ -116,6 +121,15 @@ export async function viewerVisibilityJourney(w:Workspace){
    else if(route.includes('/statuses/')&&method==='PATCH')body={name:'synthetic-vector-2027'};
    else if(route.includes('/statuses/')&&method==='DELETE')body={destinationStatusId:w.team.statuses.find(status=>status.category==='unstarted')!.id};
    else if(method==='PATCH'&&route.endsWith('/:id'))body={name:'synthetic-vector-2028'};
+  }
+  if(route.startsWith('/project-templates')){
+   id=route.startsWith('/project-templates/from-project/')?project.id:template.id;
+   body=route.endsWith('/apply')?{name:'synthetic-vector-2047',teamId:w.team.id,startDate:'2032-01-05',expectedVersion:template.version}:route.startsWith('/project-templates/from-project/')?{name:'synthetic-vector-2048',teamId:w.team.id,referenceDate:'2032-01-05'}:method==='PUT'?{...templateInput,expectedVersion:template.version}:method==='DELETE'?{expectedVersion:template.version}:templateInput;
+  }else if(route.startsWith('/dashboards')){
+   id=dashboard.id;
+   body=method==='POST'?dashboardInput:method==='PUT'?{...dashboardInput,expectedVersion:dashboard.version}:{expectedVersion:dashboard.version};
+  }else if(route.startsWith('/subscriptions')){
+   id=viewerSubscription.id;body=method==='POST'?{subjectType:'label',subjectId:label.id}:{};
   }
   if(route.startsWith('/settings/integrations/destinations')){
    id=destination.id;
