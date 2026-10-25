@@ -1,7 +1,7 @@
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
+import {prepareViewerCensus,viewerMutations} from './role-viewer-census';
 import {doors,apiDoors} from '../../src/core/features/roles/doors';
-import {channelEdge} from './channel-edge-fixture';
 import {invite,actor} from './base-auth-fixture';
 import {resetLimits,snapshot,type roleWorkspace} from './role-fixture';
 type Workspace=Awaited<ReturnType<typeof roleWorkspace>>;
@@ -37,9 +37,10 @@ export async function viewerVisibilityJourney(w:Workspace){
  expect((await w.guest.call(reactionPath,'DELETE',{targetId:'',emoji:'🎉'})).status).toBe(200);
  expect(await snapshot(Object.keys(guestBefore))).toEqual(guestBefore);
  const shared=await json(await owner.call('/views','POST',{name:'synthetic-vector-1724',isShared:true,query:{team:w.team.id}}),201);
- const token=await json(await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-2021',scopes:['issues:read']}),201);
- const viewerSubscription=await json(await member.call('/subscriptions','POST',{subjectType:'label',subjectId:label.id}),201);
+ const census=await prepareViewerCensus(w,{issue,comment:ownComment,project,label});
+ try{
  expect((await w.admin.call(`/settings/operators/${member.id}/role`,'PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
+ await census.afterRoleChange();
  expect((await member.call(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  expect((await member.api(`/issues/${issue.identifier}`,'PATCH',{expectedVersion:issue.version,title:'synthetic-vector-1725'})).status).toBe(403);
  for(const path of [`/issues/${issue.identifier}`,`/projects/${project.id}`,`/views/${shared.id}`])expect((await member.call(path)).status,path).toBe(200);
@@ -52,141 +53,29 @@ export async function viewerVisibilityJourney(w:Workspace){
   const results=await env.DB.batch(tables.map(name=>env.DB.prepare('SELECT * FROM \"'+name+'\"')));
   return Object.fromEntries(tables.map((name,index)=>[name,results[index].results.map(row=>JSON.stringify(row)).sort()]));
  };
- const initiative=await json(await owner.call('/initiatives','POST',{name:'synthetic-vector-2001',ownerOperatorId:owner.id}),201);
- const release=await json(await owner.call('/releases','POST',{name:'synthetic-vector-2002',teamId:w.team.id}),201);
- const otherLabel=(await json(await owner.call('/settings/labels','POST',{name:'synthetic-vector-2003',color:'#3355aa'}))).labels.find((l:any)=>l.name==='synthetic-vector-2003');
- const milestoneState=await json(await owner.call('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-2004'}));
- const milestone=milestoneState.milestones.find((m:any)=>m.name==='synthetic-vector-2004');
- const source=await json(await owner.call('/settings/integrations/sources','POST',{sourceId:'synthetic-vector-2019',name:'synthetic-vector-2020',teamId:w.team.id}),201);
- const workflowState=await json(await owner.call('/settings/teams/'+w.team.id+'/statuses','POST',{name:'synthetic-vector-2029',category:'unstarted'}));
- const workflow=workflowState.teams.find((team:any)=>team.id===w.team.id).statuses;
- const workflowStatus=workflow.find((status:any)=>status.name==='synthetic-vector-2029');
- const ownCommentVersion=(await json(await owner.api('/comments/'+ownComment.id))).version;
- const destination=await json(await owner.call('/settings/integrations/destinations','POST',{name:'synthetic-vector-2035',url:'https://synthetic-vector-2035.example.com/events'}),201);
- const github=await json(await owner.call('/settings/integrations/github','POST',{name:'synthetic-vector-2036',repository:'synthetic-vector-2036/synthetic-vector-2037'}),201);
- const edge=channelEdge(),channelId='CSYNTHETIC2038';
- try{
- let channelBinding:any;
-  await json(await owner.call('/settings/integrations/slack','POST',{botToken:edge.token}));
-  await json(await owner.call('/settings/integrations/channels/allowed','POST',{channelId,channelName:'synthetic-vector-2038'}),201);
-  channelBinding=await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']}),201);
- const signingSecret=Array.from(crypto.getRandomValues(new Uint8Array(16)),value=>value.toString(16).padStart(2,'0')).join('');
- const templateInput={name:'synthetic-vector-2043',teamId:w.team.id,issues:[{title:'synthetic-vector-2044',offsetDays:null,milestonePosition:null}]};
- const template=await json(await owner.call('/project-templates','POST',templateInput),201);
- const dashboardInput={name:'synthetic-vector-2045',teamId:w.team.id,widgets:[{name:'synthetic-vector-2046',kind:'count',filters:{team:w.team.id},chart:{}}]};
- const dashboard=await json(await owner.call('/dashboards','POST',dashboardInput),201);
- const logicalId=ownComment.id;
- const registeredMutations=(registry:typeof doors)=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
- // These families use their own persisted subjects and schema-valid inputs.
- // Other families retain their existing probes until their fixtures are added.
- const familyRequest=(door:typeof doors[number])=>{
-  const route=door.path,method=door.method;
-  let id=logicalId,body:unknown={};
-  if(/^\/(?:settings\/)?projects(?:\/|$)/.test(route)){
-   id=project.id;
-   if(method==='POST'&&/projects$/.test(route))body={name:'synthetic-vector-2005',leadOperatorId:owner.id};
-   else if(method==='PATCH'&&/projects\/:id$/.test(route))body={name:'synthetic-vector-2006'};
-   else if(route.endsWith('/milestones'))body={name:'synthetic-vector-2007'};
-   else if(route.endsWith('/milestones/order'))body={milestoneIds:[milestone.id]};
-   else if(method==='PATCH'&&route.includes('/milestones/'))body={name:'synthetic-vector-2008'};
-  }else if(route.startsWith('/initiatives')){
-   id=initiative.id;
-   body=method==='POST'?{name:'synthetic-vector-2009',ownerOperatorId:owner.id}:route.endsWith('/projects')?{expectedVersion:initiative.version,projectIds:[project.id]}:{expectedVersion:initiative.version,description:'synthetic-vector-2010'};
-  }else if(route.startsWith('/releases')){
-   id=release.id;
-   body=method==='POST'?{name:'synthetic-vector-2011',teamId:w.team.id}:route.endsWith('/scope')?{expectedVersion:release.version,issueIdentifiers:[issue.identifier],projectIds:[project.id]}:{expectedVersion:release.version,description:'synthetic-vector-2012'};
-  }else if(/^\/(?:settings\/)?labels(?:\/|$)/.test(route)){
-   id=label.id;
-   body=route.endsWith('/creation')?{membersMayCreate:true}:route.endsWith('/merge')?{destinationLabelId:otherLabel.id}:method==='POST'?{name:'synthetic-vector-2013',color:'#3355aa'}:method==='PATCH'?{name:'synthetic-vector-2014'}:{};
-  }else if(route.startsWith('/views')){
-   id=shared.id;
-   body=route.endsWith('/duplicate')?{name:'synthetic-vector-2015'}:method==='POST'?{name:'synthetic-vector-2016',isShared:true,query:{team:w.team.id}}:method==='PATCH'?{name:'synthetic-vector-2017'}:{};
-  }else if(route.startsWith('/settings/integrations/sources')){
-   id=source.id;
-   body=route.endsWith('/rotate')?{overlapHours:1}:route==='/settings/integrations/sources'?{sourceId:'synthetic-vector-2022',name:'synthetic-vector-2023',teamId:w.team.id}:{};
-  }else if(route.startsWith('/settings/integrations/tokens')){
-   id=token.credential.id;
-   body=method==='POST'?{name:'synthetic-vector-2024',scopes:['issues:read']}:{};
-  }else if(/^\/(?:settings\/)?teams(?:\/|$)/.test(route)){
-   id=w.team.id;
-   if(route==='/teams'||route==='/settings/teams')body={name:'synthetic-vector-2025',identifierPrefix:'SYNCENS'};
-   else if(route.endsWith('/privacy'))body={isPrivate:false};
-   else if(route.endsWith('/creation'))body={membersMayCreate:false};
-   else if(route.endsWith('/membership'))body={mode:'open',requestsEnabled:false};
-   else if(route.includes('/members/')&&method==='PUT')body={role:'member'};
-   else if(route.endsWith('/permissions'))body={settings:'team_owners',planning:'all_members'};
-   else if(route.endsWith('/statuses/order'))body={statusIds:workflow.map((status:any)=>status.id)};
-   else if(route.endsWith('/statuses'))body={name:'synthetic-vector-2026',category:'started'};
-   else if(route.includes('/statuses/')&&method==='PATCH')body={name:'synthetic-vector-2027'};
-   else if(route.includes('/statuses/')&&method==='DELETE')body={destinationStatusId:w.team.statuses.find(status=>status.category==='unstarted')!.id};
-   else if(method==='PATCH'&&route.endsWith('/:id'))body={name:'synthetic-vector-2028'};
+ for(const [surface,registry,send] of [['native',doors,member.call],['bearer',apiDoors,member.api]] as const){
+  const mutations=viewerMutations(registry);let attempts=0;
+  for(const door of mutations){
+   await resetLimits();
+   const prepared=census.request(surface,door),path=prepared.path;
+   const before=await stored(),providerCalls=census.edge.calls.length;
+   const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
+   const usageIds=new Set(usageBefore.map(row=>row.id));
+   const response=prepared.send?await prepared.send():await send(path,door.method==='ALL'?'POST':door.method,prepared.body);
+   expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
+   expect(census.edge.calls,door.method+' '+path+' refusal reached a provider').toHaveLength(providerCalls);
+   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
+   expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:'forbidden'});
+   const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
+   expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
+   const usage=usageAfter.filter(row=>!usageIds.has(row.id));
+   if(surface==='bearer'){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
+   else expect(usage).toHaveLength(0);
+   attempts++;
   }
-  if(route.startsWith('/project-templates')){
-   id=route.startsWith('/project-templates/from-project/')?project.id:template.id;
-   body=route.endsWith('/apply')?{name:'synthetic-vector-2047',teamId:w.team.id,startDate:'2032-01-05',expectedVersion:template.version}:route.startsWith('/project-templates/from-project/')?{name:'synthetic-vector-2048',teamId:w.team.id,referenceDate:'2032-01-05'}:method==='PUT'?{...templateInput,expectedVersion:template.version}:method==='DELETE'?{expectedVersion:template.version}:templateInput;
-  }else if(route.startsWith('/dashboards')){
-   id=dashboard.id;
-   body=method==='POST'?dashboardInput:method==='PUT'?{...dashboardInput,expectedVersion:dashboard.version}:{expectedVersion:dashboard.version};
-  }else if(route.startsWith('/subscriptions')){
-   id=viewerSubscription.id;body=method==='POST'?{subjectType:'label',subjectId:label.id}:{};
-  }
-  if(route.startsWith('/settings/integrations/destinations')){
-   id=destination.id;
-   body=route==='/settings/integrations/destinations'?{name:'synthetic-vector-2039',url:'https://synthetic-vector-2039.example.com/events'}:{};
-  }else if(route.startsWith('/settings/integrations/github')){
-   id=github.id;
-   body=route==='/settings/integrations/github'?{name:'synthetic-vector-2040',repository:'synthetic-vector-2040/synthetic-vector-2041'}:{};
-  }else if(route==='/settings/integrations/slack')body=method==='POST'?{botToken:edge.token}:{};
-  else if(route==='/settings/integrations/slack/signing-secret')body={signingSecret};
-  else if(route==='/settings/integrations/channels/allowed')body={channelId,channelName:'synthetic-vector-2038'};
-  else if(route==='/projects/:id/slack-channel')body={channelId};
-  else if(route==='/settings/integrations/channels')body={scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-2038',events:['issue.created']};
-  else if(route==='/settings/integrations/channels/:id')id=channelBinding.id;
-  if(route==='/cycles'||route==='/settings/cycles')body={teamId:w.team.id,name:'synthetic-vector-2050',startsLocal:'2032-01-05T00:00',endsLocal:'2032-01-12T00:00',capacity:null};
-  else if(route==='/settings/operators/invite')body={email:'synthetic-vector-2051@vector.test',displayName:'synthetic-vector-2051',role:'member'};
-  else if(route==='/settings/operators/:operatorId/role')body={role:'member'};
-  else if(route==='/settings')body={timezone:'UTC'};
-  else if(route==='/issues'||route==='/intake')body={title:'synthetic-vector-2030',teamId:w.team.id,projectId:project.id,labelIds:[label.id]};
-  else if(route==='/issues/:identifier'&&method==='PATCH')body={expectedVersion:issue.version,title:'synthetic-vector-2031'};
-  else if(route==='/issues/:identifier'&&method==='DELETE')body={expectedVersion:issue.version,confirmed:true};
-  else if(route==='/issues/:identifier/comments')body={body:'synthetic-vector-2032'};
-  else if((route==='/comments/:id'||route==='/issues/:identifier/comments/:itemId')&&method==='PATCH')body={body:'synthetic-vector-2033'};
-  else if(route==='/comments/:id')body=method==='PATCH'?{expectedVersion:ownCommentVersion,body:'synthetic-vector-2033'}:{expectedVersion:ownCommentVersion};
-  else if(route.endsWith('/comments/:itemId/resolution'))body={resolved:true};
-  else if(route.endsWith('/comments/:itemId/checklist'))body={expectedVersion:ownCommentVersion,index:0,text:'synthetic-vector-1723',checked:true};
-  else if(route.endsWith('/checklist'))body={expectedVersion:issue.version,index:0,text:'synthetic-vector-2034',checked:true};
-  else if(route.endsWith('/reactions'))body={targetId:'',emoji:'👍'};
-  else if(route.endsWith('/copy'))body={expectedVersion:issue.version,teamId:w.team.id};
-  else if(route.endsWith('/subscription'))body={following:true};
-  const path=route.replace(/:([A-Za-z]+)/g,(_,name)=>name==='identifier'?issue.identifier:name==='operatorId'?w.lead.id:name==='teamId'?w.team.id:name==='milestoneId'?milestone.id:name==='statusId'?workflowStatus.id:name==='channelId'?channelId:id).replace(/\*$/,'exports');
-  return {path,body};
- };
- // Each registered work mutation is reached through its actual native/bearer transport.
- for(const [registry,send] of [[doors,member.call],[apiDoors,member.api]] as const){
- let attempts=0;
- const mutations=registeredMutations(registry);
- for(const door of mutations){
-  attempts++;
-  await resetLimits();
-  const {path,body}=familyRequest(door);
-  const providerCalls=edge.calls.length;
-  const before=await stored();
-  const usageBefore=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
-  const usageIds=new Set(usageBefore.map(row=>row.id));
-  const response=await send(path,door.method==='ALL'?'POST':door.method,body);
-  expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
-  expect(edge.calls,door.method+' '+path+' refusal reached a provider').toHaveLength(providerCalls);
-  expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
-  expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:'forbidden'});
-  const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
-  expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
-  const usage=usageAfter.filter(row=>!usageIds.has(row.id));
-  if(registry===apiDoors){expect(usage).toHaveLength(1);expect(usage[0]).toMatchObject({resource:(door.method==='ALL'?'POST':door.method)+':'+path,allowed:1});}
-  else expect(usage).toHaveLength(0);
+  expect(attempts,surface+' registered mutations from src/core/features/roles/doors.ts').toBe(mutations.length);
  }
- expect(attempts,registry===doors?'native src/core/features/roles/doors.ts':'bearer src/core/features/roles/doors.ts').toBe(mutations.length);
- }
- }finally{edge.restore();}
+ }finally{census.dispose();}
  expect((await member.call(`/issues/${issue.identifier}/comments/${ownComment.id}`,'PATCH',{body:'synthetic-vector-1726'})).status).toBe(403);
  expect((await member.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1727',scopes:['issues:read']})).status).toBe(403);
  const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-1728',identifierPrefix:'SYNVIEW',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-1728');

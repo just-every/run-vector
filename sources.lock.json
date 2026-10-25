@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "fd25c14a046312a22af94f2949a6b0a50279cd75b5c870b8b578406fe2982b62",
+      "sha256": "95e510310e3238bf9dad0520049cf1e47bc0216310429409ce7de2d1e7cc9b63",
       "executable": false
     },
     "DEMO.md": {
@@ -7684,8 +7684,12 @@
       "sha256": "0d26cafb5261bdbc761e6edbffc0694fba4ec78336d66a53656e27b3c49f4c7b",
       "executable": false
     },
+    "tests/worker/role-viewer-census.ts": {
+      "sha256": "171b5731737c5a7b51b28fb0a89752cc5f01c641b25cc4bf57966c6d89965278",
+      "executable": false
+    },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "6ff9335109aa412520158b9e367e0396e7fe276b25ec17ee517ac70f056cb1cf",
+      "sha256": "35fe9981ad025bcffab7b01d11953d3e0bdd6f8c1943d9551129b6b21618777f",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {
