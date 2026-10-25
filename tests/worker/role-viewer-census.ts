@@ -1,5 +1,11 @@
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
+import * as administrationInput from '../../src/core/features/administration/schema';
+import {housekeepingSchema} from '../../src/core/features/housekeeping/schema';
+import {channelDefaultsInputSchema} from '../../src/core/features/notifications/channel-schema';
+import {initiativeInput,initiativeEdit,initiativeProjects} from '../../src/core/features/initiatives/schema';
+import {releaseInput,releaseEdit,releaseScope} from '../../src/core/features/releases/schema';
+import {createViewSchema,updateViewSchema,duplicateViewSchema} from '../../src/core/features/views/schema';
 import {Buffer} from 'node:buffer';
 import {doors,apiDoors,type Door} from '../../src/core/features/roles/doors';
 import {createServerApp} from '../../src/core/app/server';
@@ -20,7 +26,7 @@ type Surface='native'|'bearer';
 export type CensusRequest={path:string;body?:unknown;send?:()=>Promise<Response>};
 export const viewerMutations=(registry:Door[])=>registry.filter(door=>door.method!=='GET'&&!(door.page==='account'&&!door.workMutation)&&!(typeof door.row==='string'&&['calendar.feeds','workspace.leave'].includes(door.row)));
 const key=(door:Pick<Door,'method'|'path'>)=>door.method+' '+door.path;
-const read=async(response:Response)=>{expect(response.ok(),await response.clone().text()).toBe(true);return response.json() as Promise<any>;};
+const read=async(response:Response)=>{expect(response.ok,await response.clone().text()).toBe(true);return response.json() as Promise<any>;};
 
 /** Every fixture identity comes from a public seed door, except the explicitly
  * uncertain delivery ledger fixture. No route may fall back to another resource. */
@@ -172,6 +178,36 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/settings/integrations/github',{name:'synthetic-vector-31071',repository:'synthetic-vector-31071/synthetic-vector-31072'});native('POST','/settings/integrations/github/:id/reenter',undefined,{id:github.id});native('DELETE','/settings/integrations/github/:id',undefined,{id:github.id});native('POST','/settings/integrations/deliveries/:id/resolve',{kind:'accepted',evidenceCode:'synthetic-vector-31073'},{id:deliveryId});native('POST','/settings/integrations/slack',{botToken:edge.token});native('DELETE','/settings/integrations/slack',undefined);native('POST','/settings/integrations/slack/signing-secret',{signingSecret});native('POST','/settings/integrations/channels',{scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-31035',events:['issue.created']});native('DELETE','/settings/integrations/channels/:id',undefined,{id:binding.id});
   native('POST','/settings/integrations/tokens',{name:'synthetic-vector-31074',scopes:['issues:read']});native('DELETE','/settings/integrations/tokens/:id',undefined,{id:personalToken.credential.id});native('ALL','/portability/*',{}, {},'/portability/exports');
   native('POST','/data/import/preview',importInput);native('POST','/data/import/apply',applyBody);native('POST','/data/import/runs/:id/resume',{}, {id:run.id});native('POST','/data/import/runs/:id/rollback',{confirmed:true},{id:run.id});native('POST','/data/erasure/preview',subject);native('POST','/data/erasure',{subject,confirmation:erasure.confirmation});
+  // Validate the administration/resource family bodies with the same schemas
+  // their handlers use, independently of the role gate's early refusal.
+  const schemas:Record<string,{parse(input:unknown):unknown}>={
+   'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,
+   'POST /settings/teams':administrationInput.teamCreateSchema,
+   'PUT /settings/teams/:id/privacy':administrationInput.teamPrivacySchema,
+   'PATCH /settings/teams/:id':administrationInput.teamUpdateSchema,
+   'POST /settings/teams/:id/statuses':administrationInput.statusCreateSchema,
+   'PUT /settings/teams/:id/statuses/order':administrationInput.statusReorderSchema,
+   'PATCH /settings/teams/:id/statuses/:statusId':administrationInput.statusRenameSchema,
+   'DELETE /settings/teams/:id/statuses/:statusId':administrationInput.statusRemoveSchema,
+   'PUT /settings/labels/creation':administrationInput.labelCreationPermissionSchema,
+   'POST /settings/labels':administrationInput.labelCreateSchema,
+   'PATCH /settings/labels/:id':administrationInput.labelUpdateSchema,
+   'POST /settings/labels/:id/merge':administrationInput.labelMergeSchema,
+   'POST /settings/projects':administrationInput.projectCreateSchema,
+   'PATCH /settings/projects/:id':administrationInput.projectUpdateSchema,
+   'POST /settings/projects/:id/milestones':administrationInput.projectMilestoneCreateSchema,
+   'PATCH /settings/projects/:id/milestones/:milestoneId':administrationInput.projectMilestoneUpdateSchema,
+   'PUT /settings/projects/:id/milestones/order':administrationInput.projectMilestoneOrderSchema,
+   'POST /settings/cycles':administrationInput.cycleCreateSchema,
+   'PUT /settings/teams/:id/cycle-schedule':administrationInput.cycleScheduleSchema,
+   'PUT /settings/teams/:id/housekeeping':housekeepingSchema,
+   'POST /settings/teams/:id/housekeeping/preview':housekeepingSchema,
+   'PUT /settings/notifications/channel-defaults':channelDefaultsInputSchema,
+   'POST /initiatives':initiativeInput,'PATCH /initiatives/:id':initiativeEdit,'PUT /initiatives/:id/projects':initiativeProjects,
+   'POST /releases':releaseInput,'PATCH /releases/:id':releaseEdit,'PUT /releases/:id/scope':releaseScope,
+   'POST /views':createViewSchema,'PATCH /views/:id':updateViewSchema,'POST /views/:id/duplicate':duplicateViewSchema,
+  };
+  for(const [route,schema] of Object.entries(schemas))schema.parse(plans.native.get(route)!.body);
   for(const surface of ['native','bearer'] as const){const expected=viewerMutations(surface==='native'?doors:apiDoors).map(key).sort();expect([...plans[surface].keys()].sort(),surface+' fixture coverage from src/core/features/roles/doors.ts').toEqual(expected);}
   return {edge,plans,request(surface:Surface,door:Door){const prepared=plans[surface].get(key(door));expect(prepared,key(door)+' needs a valid fixture').toBeDefined();return prepared!;},afterRoleChange:async()=>{await call(owner,'/settings/teams/'+w.team.id+'/members/'+member.id,'PUT',{role:'member'});},dispose:()=>edge.restore()};
  }catch(error){edge.restore();throw error;}

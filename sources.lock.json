@@ -7685,7 +7685,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "171b5731737c5a7b51b28fb0a89752cc5f01c641b25cc4bf57966c6d89965278",
+      "sha256": "6f0a7ffc48ab29aef209b47839cdd86eaa5ef9b3e27480025214a03195ca2b14",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
