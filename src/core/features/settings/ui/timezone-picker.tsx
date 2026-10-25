@@ -25,7 +25,7 @@ export function TimezonePicker({ id, name = 'timezone', label, value, follow }: 
     <label htmlFor={`${control}-search`}>Find a place</label>
     <input id={`${control}-search`} type="search" value={search} onChange={event => { event.stopPropagation(); setSearch(event.target.value); }} placeholder="Search places" />
     <SettingsFieldLabel htmlFor={control} fieldName={name}>{label}</SettingsFieldLabel>
-    <select ref={selection} id={control} name={name} defaultValue={value} required={!follow} onChange={() => { edited.current = true; }}>
+    <select ref={selection} id={control} aria-label={label} name={name} defaultValue={value} required={!follow} onChange={() => { edited.current = true; }}>
       {follow && <option value="">Follow workspace ({timezoneName(follow)})</option>}
       {zones.map(zone => <option key={zone} value={zone} hidden={!matches(zone)}>{timezoneName(zone)} · {zone.replaceAll('_', ' ')}</option>)}
     </select>

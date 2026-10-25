@@ -18,7 +18,7 @@ function control(children: ReactNode): { name?: string; choice?: string } | unde
   }
 }
 
-/** Keep feedback beside the edited label without changing its accessible name. */
+/** Keep feedback beside the edited label without making it part of that label. */
 export function SettingsFieldLabel({ children, fieldName, ...props }: ComponentProps<'label'> & { fieldName?: string }) {
   const feedback = useContext(SettingsSaveFeedback);
   const field = control(children);
@@ -29,14 +29,14 @@ export function SettingsFieldLabel({ children, fieldName, ...props }: ComponentP
   const content = Children.map(children, child => {
     if (!placed && typeof child === 'string' && child.trim()) {
       placed = true;
-      return <span className="settings-field-label">{child}{status}</span>;
+      return <span className="settings-field-label">{child}</span>;
     }
     return child;
   });
-  return <>
-    <label {...props}>{content}{!placed && status}</label>
+  return <div className="settings-save-field">
+    <label {...props}>{content}</label>{status}
     {active && feedback.state === 'failed' && <p className="settings-field-error" role="alert">Couldn’t save. <button type="button" onClick={feedback.retry}>Retry</button></p>}
-  </>;
+  </div>;
 }
 
 /** Existing native field markup shares the same feedback; custom controls use SettingsFieldLabel. */
