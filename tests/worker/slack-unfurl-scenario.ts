@@ -15,6 +15,7 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  const effects=()=>calls.filter(c=>c.method==='chat.unfurl');
  const url=bindings.APP_ORIGIN+'/app/issues/'+issue.identifier,event=payload(url);
  const before=await snapshot(),count=effects().length;
+ await read(await send({...event,team_id:slackIntakeFixture.otherTeam}),403);expect(await snapshot()).toEqual(before);expect(effects()).toHaveLength(count);
  for(const options of [{unsigned:true},{secret:'synthetic-vector-wrong-secret'},{timestamp:String(Math.floor(Date.now()/1000)-301)}]){await read(await send(event,options),401);expect(await snapshot()).toEqual(before);expect(effects()).toHaveLength(count);}
  await read(await send(event));expect(effects()).toHaveLength(count+1);
  expect(effects().at(-1)!.body).toMatchObject({unfurl_id:event.event.unfurl_id,source:event.event.source});
@@ -25,6 +26,7 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  const delivered=await snapshot();await read(await send(event),409);expect(await snapshot()).toEqual(delivered);expect(effects()).toHaveLength(count+1);
  const bare=async(event:ReturnType<typeof payload>)=>{
   const state=await snapshot(),prior=effects().length;await read(await send(event));const after=await snapshot();
+  expect(after.vector_slack_event_receipts).toHaveLength((state.vector_slack_event_receipts as string[]).length+1);
   delete state.vector_slack_event_receipts;delete after.vector_slack_event_receipts;
   expect(after).toEqual(state);expect(effects()).toHaveLength(prior);
  };
@@ -37,6 +39,8 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  await bare(payload(url));
  await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'viewer'}));
  await bare(payload(url));
+ await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:false}));
+ const viewerCount=effects().length;await read(await send(payload(url)));expect(effects()).toHaveLength(viewerCount+1);
  await read(await f.call('/settings/operators/'+outsiderId+'/role','PATCH',{role:'member'}));
  await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:false}));
  const state=await f.mutate('/settings/projects','POST',{name:'synthetic-vector-unfurl-project',leadOperatorId:f.owner,priority:'urgent'}),project=state.projects.find(p=>p.name==='synthetic-vector-unfurl-project')!;
@@ -48,7 +52,10 @@ export async function slackUnfurlScenario(f:Awaited<ReturnType<typeof setupInteg
  for(const value of [projectNative.name,projectNative.lifecycle,projectNative.lead.name,projectNative.priority])expect(projectText).toContain(value);
  await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:true}));
  await bare(payload(projectUrl));
+ await read(await f.call(`/settings/teams/${team}/privacy`,'PUT',{isPrivate:false}));
+ await read(await f.call('/settings/projects/'+project.id,'PATCH',{archived:true}));await bare(payload(projectUrl));
+ await read(await f.call('/issues/'+issue.identifier,'DELETE',{expectedVersion:issue.version,confirmed:true}));await bare(payload(url));
  await bare(payload(bindings.APP_ORIGIN+'/app/issues/synthetic-vector-unknown'));
- await bare(payload('https://example.test/app/issues/'+issue.identifier));
+ const foreign=new URL(url);foreign.port=String(Number(foreign.port)+1);await bare(payload(foreign.href));
  await bare(payload(bindings.APP_ORIGIN+'/app/documents/synthetic-vector-unbuilt'));
 }
