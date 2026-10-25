@@ -2009,7 +2009,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "62c195f971a5e85b3e1cb04069ccbfdce613d8b9f51332cc0ee9abfd3cc2f60d",
+      "sha256": "0559c8c870406b473c70ec6a3a1a6fe388d1a513b4590a091ab25c0254616fa8",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -4597,7 +4597,7 @@
       "executable": false
     },
     "src/core/features/integrations/slack-app/unfurl.ts": {
-      "sha256": "60071bde17d05990a97b91830be73ea4d373d42bca2eea1ea490f73b917aae29",
+      "sha256": "7f7875e07a7cba1e81543ad55c4f6f4e3557cf07892a7f36743832a95db44b4e",
       "executable": false
     },
     "src/core/features/integrations/slack-dm/delivery.ts": {
@@ -7024,8 +7024,12 @@
       "sha256": "50cb246a8d71a0b724d7bad072ce8dc843c201b8c8e8fe57aa1496c12730d153",
       "executable": false
     },
+    "tests/e2e/project-documents-journey.mjs": {
+      "sha256": "9a9adee078a53933ca9532081672a3646585ccdfc94afc1f6a5075827ffccf81",
+      "executable": false
+    },
     "tests/e2e/project-report-runtime.mjs": {
-      "sha256": "8972de94e9bacb16ea456523e39102e1473f11fe6c66cc9af2eb7d73be4488cb",
+      "sha256": "efc472548938d048936b12cbe1115fcba686bc0452fa5ddd61dfd182437363a2",
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
@@ -7877,7 +7881,7 @@
       "executable": false
     },
     "tests/worker/slack-unfurl-scenario.ts": {
-      "sha256": "2733564f15b68fcee8c069dffae71936700601926e6c28239d51202a34a5dc1c",
+      "sha256": "d48f704cf97e3cdfe0f4be1c6f54af590782605cce20eb1708fc84b87b68c1b8",
       "executable": false
     },
     "tests/worker/source-erasure-identity.test.ts": {
