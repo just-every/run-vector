@@ -140,6 +140,7 @@ it("[SEARCH-001 SEARCH-003 VIEW-002 OPS-001] view create/rename/privacy/delete a
       issues: [],
       projects: [],
       savedViews: [],
+      documents: [],
     });
     expect((await find(issue.identifier, true)).issues).toEqual([]);
     options = await getSearchOptions(env.DB, f.actor.id);

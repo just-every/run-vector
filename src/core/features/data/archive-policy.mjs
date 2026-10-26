@@ -1,3 +1,4 @@
+// Documents, revisions, comments and issue specifications are portable domain data, retained with their parent identities.
 // The verified Slack team ID is portable installation identity, never a credential; restored installations still require credential re-entry.
 // Slack event receipts are portable identifier-only replay history; secrets and member links remain excluded.
 // 0100 changes only the subscription capture trigger; inventory columns and portable event history stay unchanged.

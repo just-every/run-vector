@@ -1,6 +1,7 @@
 import { z } from 'zod'
 
 export const workspaceSearchSchema = z.object({
+  documents:z.array(z.object({id:z.string(),title:z.string()})),
   issues: z.array(
     z.object({ id: z.string(), identifier: z.string(), title: z.string() }),
   ),

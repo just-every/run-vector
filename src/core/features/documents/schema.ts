@@ -1,0 +1,17 @@
+import {z} from 'zod';
+export const parentKind=z.enum(['project','issue','initiative','team']);
+export type ParentKind=z.infer<typeof parentKind>;
+export const documentId=z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
+const content={title:z.string().trim().min(1).max(500),body:z.string().max(100000)};
+export const documentInput=z.object({parentKind,parentId:documentId,...content}).strict();
+export const documentEdit=z.object({expectedVersion:z.number().int().positive(),title:content.title.optional(),body:content.body.optional()}).strict().refine(v=>v.title!==undefined||v.body!==undefined,'An edit is required.');
+export const documentComment=z.object({body:z.string().trim().min(1).max(100000)}).strict();
+export const specificationInput=z.object({documentId}).strict();
+export const documentSummary=z.object({id:documentId,title:z.string(),parentKind,parentId:documentId,version:z.number(),updatedAt:z.string()});
+export const parentSummary=z.object({id:documentId,kind:parentKind,name:z.string(),url:z.string()});
+export const documentList=z.object({parent:parentSummary.nullable(),documents:z.array(documentSummary),teams:z.array(z.object({id:documentId,name:z.string()}))});
+export const commentSummary=z.object({id:documentId,body:z.string(),authorName:z.string(),createdAt:z.string()});
+export const commentList=z.object({comments:z.array(commentSummary),nextBeforeComment:documentId.nullable()});
+export const documentDetail=documentSummary.extend({body:z.string(),authorName:z.string(),createdAt:z.string(),comments:z.array(commentSummary),nextBeforeComment:documentId.nullable()});
+export const revisionList=z.object({revisions:z.array(z.object({id:documentId,version:z.number(),title:z.string(),body:z.string(),authorName:z.string(),createdAt:z.string()})),nextBeforeVersion:z.number().nullable()});
+export const specification=z.object({id:documentId,title:z.string()}).nullable();

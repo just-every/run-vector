@@ -1918,5 +1918,39 @@
     "event_key",
     "identifier",
     "received_at"
+  ],
+  "documents": [
+    "id",
+    "workspace_id",
+    "parent_kind",
+    "parent_id",
+    "title",
+    "body",
+    "author_operator_id",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "document_revisions": [
+    "id",
+    "document_id",
+    "version",
+    "title",
+    "body",
+    "author_operator_id",
+    "created_at"
+  ],
+  "document_comments": [
+    "id",
+    "document_id",
+    "body",
+    "author_operator_id",
+    "created_at"
+  ],
+  "issue_specifications": [
+    "issue_id",
+    "document_id",
+    "author_operator_id",
+    "updated_at"
   ]
 }

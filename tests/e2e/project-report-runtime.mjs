@@ -1,3 +1,4 @@
+import {projectDocumentsJourney} from './project-documents-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
@@ -119,5 +120,6 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Orig
   await capture(name,terminal);
  }
 
+ await projectDocumentsJourney({page,base:runtime.base,api,output:output+'/documents'});
 } catch(error) {if(page)await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
 finally {if(browser)await browser.close();await runtime.stop();}
