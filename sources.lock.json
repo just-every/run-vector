@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "fc7d1142bfa04d655379b8a50628c122d0043e66a3a35e78ded61c251ea4fec1",
+      "sha256": "5764f3ceebcf2ef5d6c27407ebd5f5f1344ac454598e5525dbefea88f3cc4169",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "4a056604fd4fac6828649e8063a679c37a8e2d06675b8657c8b902173953e10e",
+      "sha256": "37adae1247f4d49d92dbb001c5409765092ffa3a0ffbb612affff1adfd37851d",
       "executable": false
     },
     "DEMO.md": {
@@ -7329,7 +7329,7 @@
       "executable": false
     },
     "tests/worker/calendar-feed-proof.ts": {
-      "sha256": "376cb6ec942e963f42ee8a25da84f33c49746a14a98140854aa60994b8c33f15",
+      "sha256": "cdca8d9ec128b6eb9ad40216b39dc3a1b31d48029cc3ab2cd12409beb6b017b4",
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {

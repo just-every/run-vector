@@ -11,8 +11,12 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   const projectResult = await call('/settings/projects','POST',{name:'synthetic-vector-21',leadOperatorId:memberId});
   expect(projectResult.status).toBe(200);
   const project = (await projectResult.json() as Administration).projects.find(p=>p.name==='synthetic-vector-21')!;
-  expect((await call('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-22',targetDate:'2026-11-05'})).status).toBe(200);
-  expect((await call('/settings/cycles','POST',{teamId:team.id,name:'synthetic-vector-23',startsLocal:'2026-11-01T00:00',endsLocal:'2026-11-08T00:00'})).status).toBe(200);
+  const milestoneResult=await call('/settings/projects/'+project.id+'/milestones','POST',{name:'synthetic-vector-22',targetDate:'2026-11-05'});
+  expect(milestoneResult.status).toBe(200);
+  const milestone=(await milestoneResult.json() as {milestones:{id:string;name:string}[]}).milestones.find(m=>m.name==='synthetic-vector-22')!;
+  const cycleResult=await call('/settings/cycles','POST',{teamId:team.id,name:'synthetic-vector-23',startsLocal:'2026-11-01T00:00',endsLocal:'2026-11-08T00:00'});
+  expect(cycleResult.status).toBe(200);
+  const cycle=(await cycleResult.json() as Administration).cycles.find(c=>c.name==='synthetic-vector-23')!;
   const issueResult = await call('/issues','POST',{teamId:team.id,projectId:project.id,title:'synthetic-vector-24, café; '+ 'é'.repeat(70),description:'Never include this description',dueDate:'2026-11-04',assigneeOperatorId:memberId});
   expect(issueResult.status).toBe(201);const issue = await issueResult.json() as {id:string;identifier:string};
   const make = async (teamId: string | null, cookie=member) => {
@@ -62,7 +66,19 @@ export async function exerciseCalendarCapability(owner: string, member: string, 
   expect((await call('/calendar/feeds/'+feed.id,'DELETE',{expectedVersion:2},member)).status).toBe(200);
   expect((await request(new URL(rotated.url).pathname)).status).toBe(404);
   const teamFeed=await make(team.id);
-  expect((await request(new URL(teamFeed.url).pathname)).status).toBe(200);
+  const teamResponse=await request(new URL(teamFeed.url).pathname);expect(teamResponse.status).toBe(200);
+  const teamText=(await teamResponse.text()).replace(/\r\n /g,'');
+  const teamEvents=teamText.split('BEGIN:VEVENT\r\n').slice(1).map(event=>event.split('END:VEVENT')[0]);
+  for(const [uid,name,dates] of [
+    ['issue-'+issue.id+'-2026-11-04','synthetic-vector-24\\, café\\;','DTSTART;VALUE=DATE:20261104\r\nDTEND;VALUE=DATE:20261105'],
+    ['cycle-'+cycle.id,'synthetic-vector-23','DTSTART:20261101T000000Z\r\nDTEND:20261108T000000Z'],
+    ['milestone-'+milestone.id,'synthetic-vector-22','DTSTART;VALUE=DATE:20261105\r\nDTEND;VALUE=DATE:20261106'],
+  ]) {
+    const matching=teamEvents.filter(event=>event.startsWith('UID:'+uid+'@vector\r\n'));
+    expect(matching, 'team feed event '+uid).toHaveLength(1);
+    expect(matching[0]).toContain(name);expect(matching[0]).toContain(dates);
+  }
+  expect(teamText).toContain('UID:release-'+release.id+'@vector');
   expect((await call('/settings/teams/'+team.id+'/members/'+memberId,'DELETE')).status).toBe(200);
   expect((await request(new URL(teamFeed.url).pathname)).status).toBe(404);
   expect((await call('/calendar/feeds','POST',{teamId:team.id},member)).status).toBe(403);
