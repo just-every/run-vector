@@ -11,7 +11,7 @@
 .resource-state p { margin: 0; }
 
 @media (max-width: 46rem) {
-  .resource-state:has(> a) { padding: 2rem 1rem; }
+  .resource-state { padding: 2rem 1rem; }
   .resource-state > a {
     display: inline-flex;
     align-items: center;
