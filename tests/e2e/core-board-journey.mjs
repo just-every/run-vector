@@ -28,7 +28,9 @@ export async function boardJourney(page, context, base, record, capture) {
   await openBoard(page, base, { q: marker });
   await page.waitForFunction(() => document.querySelector('.board-column') && new URLSearchParams(document.querySelector('main[data-list-query]').dataset.listQuery).get('team') !== 'all');
   const metadata = await api('/metadata');
-  const preferred = metadata.teams.find(team => !team.archivedAt && team.members.some(member => member.operatorId === metadata.viewer.id));
+  const preferred = metadata.teams.find(team => !team.archivedAt && team.issueCount > 0 && team.members.some(member => member.operatorId === metadata.viewer.id)) ??
+    metadata.teams.find(team => !team.archivedAt && team.issueCount > 0) ??
+    metadata.teams.find(team => !team.archivedAt && team.members.some(member => member.operatorId === metadata.viewer.id)) ?? metadata.teams.find(team => !team.archivedAt);
   assert.equal(await page.getByLabel('Team', { exact: true }).inputValue(), preferred.id);
   assert((await page.locator('.board-column').count()) > 0, 'The default team opens its workflow board');
   const choices = await page.getByLabel('Team', { exact: true }).locator('option').evaluateAll(nodes => nodes.map(node => node.value));
