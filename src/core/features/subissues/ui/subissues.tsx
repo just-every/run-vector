@@ -1,3 +1,4 @@
+import { Tooltip } from '../../../ui/tooltip';
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import type { IssueDetailData } from "../../issues/ui/data";
@@ -98,22 +99,22 @@ function SubissuePanel({
                     {child.assignee?.name ?? "Unassigned"}
                   </span>
                   <div className="issue-subissues__actions">
-                    <button
+                    <Tooltip label={`Move ${child.identifier} up`}><button
                       type="button"
                       disabled={blocked || index === 0}
                       aria-label={`Move ${child.identifier} up`}
                       onClick={() => move(index, -1)}
                     >
                       ↑
-                    </button>
-                    <button
+                    </button></Tooltip>
+                    <Tooltip label={`Move ${child.identifier} down`}><button
                       type="button"
                       disabled={blocked || index === data.children.length - 1}
                       aria-label={`Move ${child.identifier} down`}
                       onClick={() => move(index, 1)}
                     >
                       ↓
-                    </button>
+                    </button></Tooltip>
                     <button
                       type="button"
                       disabled={blocked}

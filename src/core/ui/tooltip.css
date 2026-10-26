@@ -11,6 +11,6 @@
   border-radius: .35rem;
   background: #262626;
   color: #fff;
-  font: 500 .8rem/1.45 system-ui, sans-serif;
+  font: 500 var(--app-text-small)/1.45 var(--font-body);
   box-shadow: 0 2px 8px #0003;
 }

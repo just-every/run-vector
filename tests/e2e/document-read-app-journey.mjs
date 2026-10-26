@@ -1,3 +1,4 @@
+import { openAccountMenu } from './ui-controls-checks.mjs';
 import assert from "node:assert/strict";
 import {
   beforePrivateNavigation,
@@ -210,7 +211,8 @@ export async function assertDocumentReadRecovery({
             new URL(r.url()).pathname === "/auth/signout" &&
             r.request().method() === "POST",
         );
-        await page
+        await openAccountMenu(page);
+  await page
           .getByRole("button", { name: "Sign out", exact: true })
           .filter({ visible: true })
           .click();

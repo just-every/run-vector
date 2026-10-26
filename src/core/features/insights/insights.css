@@ -1,6 +1,6 @@
 .insights-page { max-width: 1180px; min-width: 0; }
 .insights-page h1 { margin-top: 6px; }
-.insights-eyebrow { color: var(--app-muted); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+.insights-eyebrow { color: var(--app-muted); font-size: var(--app-text-small); letter-spacing: .08em; text-transform: uppercase; }
 .insights-card { min-width: 0; padding: clamp(16px, 3vw, 26px); border: 1px solid var(--app-rule); border-radius: 12px; background: var(--app-card); margin: 20px 0; }
 .insights-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 12px 0; }
 .insights-controls label { display: grid; gap: 6px; font-size: .86rem; min-width: 0; }

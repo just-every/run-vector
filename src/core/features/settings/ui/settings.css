@@ -21,7 +21,7 @@
 .settings-page .settings-eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .settings-page section {
   margin-top: 1.5rem;
@@ -35,7 +35,7 @@
   gap: 0.6rem;
   justify-items: start;
 }
-.settings-page input {
+.settings-page input:not([type="checkbox"], [type="radio"]) {
   width: min(100%, 28rem);
   padding: 0.7rem;
   min-height: 44px;
@@ -43,6 +43,23 @@
   border-radius: 0.35rem;
   background: var(--app-field);
   color: var(--app-ink);
+}
+.settings-page label:has(> :is(input:not([type="checkbox"], [type="radio"]), select, textarea)) {
+  display: grid;
+  gap: 0.35rem;
+}
+.settings-page input:is([type="checkbox"], [type="radio"]) {
+  flex: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  min-height: 0;
+  padding: 0;
+}
+.administration-panel label:has(> input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
 }
 .settings-page button {
   border: 1px solid var(--control-border);

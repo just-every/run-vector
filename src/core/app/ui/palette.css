@@ -2,6 +2,7 @@
    hairline, and the installation's accent (cobalt by default) only for the current place, the chosen option and focus.
    Dark (VIEW-011) swaps the same tokens; only the signed-in app sets <html data-theme>, so other pages stay light. */
 :root {
+  --app-text-small: max(13px, 0.8125rem);
   --app-paper: #f4f0e6;
   --app-paper-deep: #ebe5d7;
   --app-card: #fbf9f3;

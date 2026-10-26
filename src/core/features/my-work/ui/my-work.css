@@ -5,9 +5,12 @@
   border-bottom: 1px solid var(--app-line-strong);
   overflow-x: auto;
 }
+.app-stage > .my-work-tabs {
+  margin-inline: 2rem;
+}
 .my-work-tabs a {
   flex: 0 0 auto;
-  padding: 0.55rem 0.8rem;
+  padding: 0.55rem clamp(0.35rem, 1.5vw, 0.8rem);
   color: var(--app-muted);
   font-weight: 600;
   text-decoration: none;
@@ -21,8 +24,7 @@
 .my-work-activity {
   display: grid;
   gap: 1rem;
-  padding: 1.5rem;
-  max-width: 68rem;
+  padding: 2rem;
 }
 .my-activity-list {
   list-style: none;
@@ -64,7 +66,7 @@
   grid-column: 3;
   grid-row: 1;
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   white-space: nowrap;
 }
 .issues-row-action {
@@ -81,7 +83,10 @@
 .issues-scope {
   font-weight: 600;
 }
-@media (max-width: 640px) {
+@media (max-width: 700px) {
+  .app-stage > .my-work-tabs {
+    margin-inline: 1rem;
+  }
   .my-work-activity {
     padding: 1rem;
   }

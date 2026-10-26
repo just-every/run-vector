@@ -1,16 +1,16 @@
-.cycle-report { min-width: 0; border: 1px solid var(--app-rule); border-radius: 12px; padding: clamp(14px, 3vw, 24px); background: var(--app-card); }
+.cycle-report { container-type: inline-size; min-width: 0; border: 1px solid var(--app-rule); border-radius: 12px; padding: clamp(14px, 3vw, 24px); background: var(--app-card); }
 .cycle-report__heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
 .cycle-report h2, .cycle-report h3 { margin: 0 0 8px; }
 .cycle-report h3 { margin-top: 24px; }
 .cycle-report__heading p, .cycle-report__note { color: var(--app-muted); font-size: .88rem; line-height: 1.6; }
 .cycle-report__heading p { margin: 0; }
-.cycle-report__badge { font-size: .75rem; padding: 5px 9px; border: 1px solid var(--app-rule); border-radius: 999px; white-space: nowrap; }
-.cycle-report__legend { display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: .8rem; margin-top: 18px; }
+.cycle-report__badge { font-size: var(--app-text-small); padding: 5px 9px; border: 1px solid var(--app-rule); border-radius: 999px; white-space: nowrap; }
+.cycle-report__legend { display: flex; flex-wrap: wrap; gap: 12px 20px; font-size: var(--app-text-small); margin-top: 18px; }
 .cycle-report__scope-key, .cycle-report__completed-key { display: inline-flex; align-items: center; gap: 6px; }
 .cycle-report__scope-key::before, .cycle-report__completed-key::before { content: ""; width: 18px; border-top: 3px solid var(--app-cobalt-ink); }
 .cycle-report__completed-key::before { border-color: var(--app-ok); border-top-style: dashed; }
 .cycle-report__chart { display: block; width: 100%; height: auto; margin-top: 12px; overflow: visible; }
-.cycle-report__chart text { fill: currentColor; font-size: 11px; }
+.cycle-report__chart text { fill: currentColor; font-size: max(var(--app-text-small), calc(var(--app-text-small) * 720px / 100cqw)); }
 .cycle-report__grid { stroke: var(--app-rule); stroke-width: 1; }
 .cycle-report__scope, .cycle-report__completed { fill: none; stroke-width: 2.5; stroke: var(--app-cobalt-ink); }
 .cycle-report__completed { stroke: var(--app-ok); stroke-dasharray: 6 3; }
@@ -33,5 +33,3 @@
 .cycle-report__metric > span { font-size: .82rem; }
 .cycle-report__notice { padding: 12px; border-left: 3px solid var(--app-cobalt-ink); background: var(--app-field); font-size: .88rem; line-height: 1.6; }
 @media (max-width: 540px) { .cycle-report__metrics { grid-template-columns: 1fr; } .cycle-report__metric { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 6px 12px; } .cycle-report__metric details { grid-column: 1 / -1; } .cycle-report__chart { min-height: 150px; } }
-
-@media (max-width: 540px) { .cycle-report__chart text { font-size: 24px; } .cycle-report__chart .cycle-report__marker { font-size: 22px; } }

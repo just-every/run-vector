@@ -31,7 +31,7 @@
 .new-issue-message {
   margin: 0 0 0.8rem;
   color: var(--app-cobalt-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 .new-issue-message--error,
 .new-issue-state--error {
@@ -53,7 +53,7 @@
   display: grid;
   gap: 0.35rem;
   color: var(--app-body);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
 }
 .new-issue-form label > span {
@@ -98,12 +98,12 @@
 .new-issue-labels legend {
   padding: 0 0.2rem;
   color: var(--app-body);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
 }
 .new-issue-labels > span {
   color: var(--app-muted);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 .new-issue-labels > div {
   display: flex;
@@ -120,7 +120,7 @@
   border-radius: 999px;
   padding: 0.35rem 0.65rem;
   color: var(--app-body);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 550;
 }
 .new-issue-labels input {
@@ -140,7 +140,7 @@
   min-height: 2rem;
   color: var(--app-ink);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
 }
 .new-issue-more > div {
@@ -159,7 +159,7 @@
   padding: 0.55rem 0.9rem;
   color: var(--app-on-ink);
   background: var(--app-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 740;
 }
 .new-issue-submit:disabled {
@@ -211,7 +211,7 @@
 .new-intake-row legend {
   padding: 0 0.2rem;
   color: var(--app-body);
-  font-size: .75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
 }
 .new-issue-mode label {
@@ -220,7 +220,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.45rem;
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
 }
 .new-issue-mode input {
   width: 1rem;
@@ -228,7 +228,7 @@
   accent-color: var(--color-accent);
 }
 .new-issue-mode label > span {
-  font-size: .75rem;
+  font-size: var(--app-text-small);
 }
 .new-intake-evidence {
   margin-top: 1rem;
@@ -258,7 +258,7 @@
   padding: 0.4rem 0.7rem;
   color: var(--app-cobalt-ink);
   background: transparent;
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .new-intake-row-action:disabled {
   opacity: 0.5;

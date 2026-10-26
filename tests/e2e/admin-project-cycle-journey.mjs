@@ -239,7 +239,7 @@ export async function milestonesJourney({page, runtime, capture, clause}) {
     await capture(`milestone-edit-${width}`);
     await edit.getByRole('button',{name:'Save milestone',exact:true}).click();
     await page.getByText('Release to the customer cohort after sign-off.',{exact:true}).waitFor();
-    await page.getByRole('button',{name:'Move Customer rollout up',exact:true}).click();
+    await page.locator('.project-milestones li').filter({has:page.getByRole('heading',{name:'Customer rollout',exact:true})}).getByRole('button',{name:/^Move milestone \d+ up$/}).click();
     await poll(()=>sql(`SELECT name FROM project_milestones WHERE project_id='${project.id}' ORDER BY position`),rows=>rows[0]?.name==='Customer rollout','milestone reordered');
     const milestones=sql(`SELECT * FROM project_milestones WHERE project_id='${project.id}' ORDER BY position`);
     const team=sql('SELECT id FROM teams WHERE archived_at IS NULL ORDER BY id LIMIT 1')[0];

@@ -2,7 +2,7 @@
   min-height: 2.75rem;
   cursor: pointer;
   color: var(--app-cobalt-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .dependency-editor > details > summary[aria-disabled="true"] {
@@ -43,7 +43,7 @@
   padding: 0.5rem 0.8rem;
   color: var(--app-ink);
   background: var(--app-field);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   font-weight: 650;
 }
 .dependency-editor button:disabled {

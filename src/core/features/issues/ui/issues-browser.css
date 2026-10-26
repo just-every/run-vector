@@ -98,7 +98,7 @@
 .issues-columns {
   padding: 0.75rem;
   color: var(--app-body);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .issues-browser .issues-row {
   background: transparent;
@@ -123,7 +123,7 @@
 .issues-identifier {
   color: var(--app-ink);
   font-family: var(--app-mono);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
   font-weight: 500;
   letter-spacing: 0.02em;
 }
@@ -241,7 +241,7 @@
   border: 1px solid var(--app-line-strong);
   border-radius: 4px;
   padding: 0.1rem 0.3rem;
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .issues-bulk {
   display: flex;
@@ -365,12 +365,12 @@
   color: var(--app-body);
 }
 .board-card p {
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .board-card label {
   display: grid;
   gap: 0.35rem;
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   margin-top: 0.8rem;
 }
 .board-card select {
@@ -446,13 +446,13 @@
   }
   .issues-filters label {
     gap: 0.25rem;
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
   }
   .issues-browser .issues-row {
     padding: 0.8rem 0.4rem;
   }
   .issues-pagination {
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
   }
 }
 .issue-parent-filter {
@@ -493,7 +493,7 @@
 .workspace-search section h2 {
   margin: 0.5rem 0 0;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }

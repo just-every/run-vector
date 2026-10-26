@@ -45,7 +45,7 @@
 }
 .issue-field-heading > span {
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .issue-field-heading button {
   flex: none;
@@ -75,13 +75,13 @@
     gap: 0.25rem;
   }
   .issue-field-heading > span {
-    font-size: .75rem;
+    font-size: var(--app-text-small);
   }
   .issue-field-heading button {
     padding-inline: 0.35rem;
   }
   .issue-field-editor--text h2 {
-    font-size: 0.8rem;
+    font-size: var(--app-text-small);
   }
   .issue-field-editor--text:not(:has(form)) {
     display: grid;

@@ -1,3 +1,4 @@
+import { Tooltip } from '../../../ui/tooltip';
 import type { IssueListData } from "../../issues/list-schema";
 import { useManualOrder } from "./context";
 const transfer = "text/x-vector-issue-order";
@@ -40,22 +41,22 @@ export function ManualOrderControls({
       >
         ⠿ Reorder
       </span>
-      <button
+      <Tooltip label={"Move " + issue.identifier + " up"}><button
         type="button"
         disabled={disabled || at === 0}
         aria-label={"Move " + issue.identifier + " up"}
         onClick={() => order.move(issue, "up")}
       >
         ↑
-      </button>
-      <button
+      </button></Tooltip>
+      <Tooltip label={"Move " + issue.identifier + " down"}><button
         type="button"
         disabled={disabled || at === rows.length - 1}
         aria-label={"Move " + issue.identifier + " down"}
         onClick={() => order.move(issue, "down")}
       >
         ↓
-      </button>
+      </button></Tooltip>
       <button
         type="button"
         disabled={disabled}

@@ -8,7 +8,7 @@
 .audit-table-scroll { overflow-x:auto; }
 .audit-panel table { width:100%; border-collapse:collapse; text-align:left; font-size:.875rem; }
 .audit-panel th,.audit-panel td { border-bottom:1px solid var(--app-line-strong); padding:.75rem; vertical-align:top; }
-.audit-panel code { font-size:.75rem; overflow-wrap:anywhere; }
+.audit-panel code { font-size: var(--app-text-small); overflow-wrap:anywhere; }
 .audit-panel time { white-space:nowrap; }
 @media(max-width:700px) {
  .settings-page form.audit-filters { grid-template-columns:minmax(0,1fr); }

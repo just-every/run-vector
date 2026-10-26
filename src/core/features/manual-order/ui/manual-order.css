@@ -12,7 +12,7 @@
 .manual-order-handle {
   cursor: grab;
   padding: 0.5rem;
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
 }
 .manual-order-controls[draggable="true"]:active {
   cursor: grabbing;

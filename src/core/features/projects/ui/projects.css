@@ -39,7 +39,7 @@
   border-radius: 999px;
   padding: 0.55rem 0.85rem;
   color: var(--app-on-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
   font-weight: 720;
   text-decoration: none;
   background: var(--app-ink);
@@ -60,7 +60,7 @@
 .project-metric span {
   display: block;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -95,7 +95,7 @@
   display: grid;
   gap: 0.22rem;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -107,7 +107,7 @@
   padding: 0.35rem 0.55rem;
   color: var(--app-body);
   background: var(--app-card);
-  font-size: 0.76rem;
+  font-size: var(--app-text-small);
   letter-spacing: normal;
   text-transform: none;
 }
@@ -118,7 +118,7 @@
   align-items: center;
   gap: 0.4rem;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .project-filters .list-preference-controls [role="alert"] {
   max-width: 32rem;
@@ -132,7 +132,7 @@
   padding: 0.35rem 0.55rem;
   color: var(--app-ink);
   background: var(--app-card);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .project-filters .list-preference-controls button:disabled {
   opacity: 0.55;
@@ -155,7 +155,7 @@
 .project-list-heading {
   padding: 0.65rem 0.85rem;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -193,17 +193,17 @@
 .project-row__name small {
   margin-top: 0.28rem;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .project-row__lead {
   color: var(--app-body);
-  font-size: 0.76rem;
+  font-size: var(--app-text-small);
 }
 .project-row__progress {
   display: grid;
   gap: 0.35rem;
   color: var(--app-body);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
 }
 .project-row__progress i {
   display: block;
@@ -234,7 +234,7 @@
   border-radius: 999px;
   padding: 0.13rem 0.45rem;
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 680;
   white-space: nowrap;
 }
@@ -261,7 +261,7 @@
   margin: 0;
   padding: 1rem;
   color: var(--app-muted);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   line-height: 1.5;
 }
 .projects-state {
@@ -292,8 +292,8 @@
   text-align: center;
 }
 .project-facts {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1px;
   overflow: hidden;
   margin: 1.15rem 0;
@@ -302,13 +302,14 @@
   background: rgb(var(--app-ink-rgb) / 12%);
 }
 .project-facts > div {
+  flex: 1 1 calc(25% - 1px);
   min-width: 0;
   padding: 0.75rem 0.8rem;
   background: var(--app-card);
 }
 .project-facts dt {
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -317,7 +318,7 @@
   overflow: hidden;
   margin: 0.25rem 0 0;
   color: var(--app-ink);
-  font-size: 0.78rem;
+  font-size: var(--app-text-small);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -354,7 +355,7 @@
 .project-risks p {
   margin: 0;
   color: var(--app-body);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   line-height: 1.45;
 }
 .project-risks li div {
@@ -366,7 +367,7 @@
 .project-risks a,
 .project-fact-list a {
   color: var(--app-cobalt-ink);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-weight: 700;
 }
 .project-detail__grid {
@@ -414,13 +415,13 @@
 .project-issues strong {
   flex: none;
   color: var(--app-cobalt-ink);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   letter-spacing: 0.07em;
 }
 .project-issues b {
   overflow: hidden;
   color: var(--app-ink);
-  font-size: 0.8rem;
+  font-size: var(--app-text-small);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -429,7 +430,7 @@
 .project-fact-list span,
 .project-fact-list small {
   color: var(--app-muted);
-  font-size: 0.75rem;
+  font-size: var(--app-text-small);
   font-style: normal;
   line-height: 1.4;
 }
@@ -451,7 +452,7 @@
 }
 .project-fact-list strong {
   color: var(--app-ink);
-  font-size: 0.76rem;
+  font-size: var(--app-text-small);
 }
 @media (max-width: 64rem) {
   .project-metrics {
@@ -480,7 +481,7 @@
   .projects-new-project {
     min-width: 2.75rem;
     padding-inline: 0.65rem;
-    font-size: 0.75rem;
+    font-size: var(--app-text-small);
   }
   .project-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -535,8 +536,8 @@
     justify-content: end;
     align-content: start;
   }
-  .project-facts {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .project-facts > div {
+    flex-basis: calc(50% - 1px);
   }
   .project-risks {
     grid-template-columns: 1fr;
@@ -595,13 +596,13 @@
     align-items: center;
   }
 }
-.project-lifecycle-counts { display:flex; flex-wrap:wrap; gap:1rem; font-size:.8rem; color:var(--app-muted); }
+.project-lifecycle-counts { display:flex; flex-wrap:wrap; gap:1rem; font-size: var(--app-text-small); color:var(--app-muted); }
 .project-list-management { margin:0; padding:.6rem 1rem; border:0; border-radius:0; }
 .project-list-item + .project-list-item { border-top:1px solid rgb(var(--app-ink-rgb) / 14%); }
-.project-list-management summary { font-size:.8rem; }
+.project-list-management summary { font-size: var(--app-text-small); }
 .project-list-management form { max-width:40rem; }
 .project-list-management select[multiple], .project-management select[multiple] { min-height:6rem; }
-.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid rgb(var(--app-ink-rgb) / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size:.76rem; }
+.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid rgb(var(--app-ink-rgb) / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size: var(--app-text-small); }
 
 .project-name { display: flex; align-items: center; gap: .5rem; }
 .project-appearance { display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; }
