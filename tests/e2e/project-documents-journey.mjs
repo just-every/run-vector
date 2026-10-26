@@ -34,8 +34,16 @@ export async function projectDocumentsJourney({page,base,api,output}){
    const issueDoc=await api('/documents','POST',{parentKind:'issue',parentId:issue.id,title:name+' issue notes',body:'Issue document body'});
    await go('/app/projects/'+project.id);
    const section=page.getByRole('region',{name:'Documents',exact:true});
-   await section.locator('summary').filter({hasText:'New document'}).click();
+   const newDocument=section.locator('summary').filter({hasText:'New document'});
+   await newDocument.click();
    const draft=section.getByRole('form',{name:'Document draft'}),title=name+' spec';
+   await draft.getByLabel('Document title',{exact:true}).fill(title);
+   await draft.getByLabel('Document title',{exact:true}).fill('');
+   await page.reload();
+   await section.locator('form[aria-label="Document draft"] fieldset:enabled').waitFor({state:'attached'});
+   assert.equal(await newDocument.evaluate(summary=>summary.parentElement.open),false);
+   assert.deepEqual(await page.evaluate(()=>Object.keys(localStorage).filter(key=>key.startsWith('vector:document-draft:'))),[]);
+   await newDocument.click();
    await draft.getByLabel('Document title',{exact:true}).fill(title);
    await draft.getByLabel('Document body',{exact:true}).fill('# Original plan\n\nOriginal spec body');
    await proof('project-document-draft',width);
