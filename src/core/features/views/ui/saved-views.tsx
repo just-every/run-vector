@@ -4,15 +4,24 @@ import {
   ApiError,
   fetchJson,
   isUnavailableResourceError,
+  useApiResource,
 } from "../../../app/api-client";
 import type { IssueListQuery } from "../../issues/list-schema";
 import { savedViewSchema, type SavedView } from "../schema";
 import {
+  savedViewsSchema,
   useSavedViewReceiptScope,
   useSavedViewReceiptPublisher,
   useSavedViewNavigation,
 } from "./saved-view-resource";
 export { savedViewsSchema } from "./saved-view-resource";
+// Read once while the form is open: a receipt-subscribed reader here would re-read on Create
+// and be cut off by the navigation to the new view.
+function ViewLimit({ limit, ownerId }: { limit: number; ownerId: string }) {
+  const views = useApiResource("/api/views", savedViewsSchema);
+  const owned = views.data?.views.filter((view) => view.ownerOperatorId === ownerId).length;
+  return owned !== undefined && owned >= limit - 5 ? <> {owned} of {limit} saved views used.</> : null;
+}
 export function SaveView({
   query,
   layout,
@@ -29,8 +38,6 @@ export function SaveView({
   onCreated: (id: string) => void;
 }) {
   const publishReceipt = useSavedViewReceiptPublisher();
-  const views = useSavedViewNavigation();
-  const owned = views.data?.views.filter(view => view.ownerOperatorId === ownerId).length;
   const [open, setOpen] = useState(false),
     [name, setName] = useState(""),
     [shared, setShared] = useState(false),
@@ -88,7 +95,7 @@ export function SaveView({
           </label>}
           <p>
             Private views are only visible to you.
-            {limit !== undefined && owned !== undefined && owned >= limit - 5 && <> {owned} of {limit} saved views used.</>}
+            {limit !== undefined && ownerId !== undefined && <ViewLimit limit={limit} ownerId={ownerId} />}
           </p>
           <button disabled={busy || !name.trim()}>
             {busy ? "Saving…" : "Create view"}
