@@ -1,8 +1,10 @@
 import { verificationDirectory } from './verification-paths.mjs';
 import { buildCommands, ciCommands, verificationShards } from './verification-plan.mjs';
 import { spawnSync, execFileSync } from "node:child_process";
-import { mkdir, writeFile, rm } from "node:fs/promises";
+import { mkdir, writeFile, rm, access } from "node:fs/promises";
 const args = process.argv.slice(2);
+const prebuiltSha = process.env.VECTOR_VERIFY_PREBUILT_SHA;
+delete process.env.VECTOR_VERIFY_PREBUILT_SHA;
 const shard = args.length === 3 && args[0] === '--ci' && args[1] === '--shard' ? args[2] : undefined;
 if (!(args.length === 0 || (args.length === 1 && args[0] === '--ci') ||
   (shard && Object.hasOwn(verificationShards, shard))))
@@ -25,7 +27,20 @@ if (shard) report.shard = shard;
 const reportPath = shard ? `${evidence}/shard-${shard}.json` : `${evidence}/check-results.json`;
 const save = () => writeFile(reportPath, JSON.stringify(report, null, 2));
 await save();
-const commands = shard ? verificationShards[shard].commands : ci ? ciCommands : buildCommands;
+let commands = shard ? verificationShards[shard].commands : ci ? ciCommands : buildCommands;
+// Only the named shard's initial build can reuse this run's immutable artifact.
+// Serial verification and the hosted-artifact fresh-build checks stay intact.
+if (prebuiltSha) {
+  if (!shard || shard === 'hosted-artifact' ||
+      prebuiltSha !== report.sourceCommit || !commands.includes('build'))
+    throw Error('Prebuilt output must belong to this SHA and a production-runtime shard.');
+  await access('dist/server/wrangler.json');
+  await access('dist/client');
+  const firstBuild = commands.indexOf('build');
+  commands = commands.filter((_, index) => index !== firstBuild);
+  report.reusedBuildSha = prebuiltSha;
+  await save();
+}
 for (const entry of commands) {
   const [script, ...scriptArgs] = typeof entry === 'string' ? [entry] : Array.isArray(entry) ? entry : [];
   const executable = script ? 'pnpm' : process.execPath;

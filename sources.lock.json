@@ -453,7 +453,7 @@
       "executable": false
     },
     ".github/workflows/installer-journeys.yml": {
-      "sha256": "e12db4f1b9856f324f663868a5d1381823d7893d41ace8062ef3847af5d09fbf",
+      "sha256": "48d26ac8f760619d6130dd071afa61bbcd1ac6c1e617ffabbcb4a727c9e77fda",
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {
@@ -469,7 +469,7 @@
       "executable": false
     },
     ".github/workflows/verify.yml": {
-      "sha256": "b362b6f88998fa273063d97c1565b41eb0a42ddd09522498931476a057e34c86",
+      "sha256": "c1a176aef036f3f0720060266ee48eaab2e331b3063c48131cd20ff06ca8caa2",
       "executable": false
     },
     ".gitignore": {
@@ -2536,6 +2536,14 @@
       "sha256": "2417e8d2780e4e4513c3db51cfa26e9cf158da2287df7438cb22438839cbc198",
       "executable": false
     },
+    "scripts/chromium-probe.mjs": {
+      "sha256": "2aa3741df7e9ff4ced3da0e3643d1e5dd2beec06e52909ad5eef4015f96f6c0c",
+      "executable": false
+    },
+    "scripts/ci/verification-reuse.sh": {
+      "sha256": "a681efca2e74d9cd925459d880203e09a6ff289f1a60dd7ad7f01b4bf632376d",
+      "executable": false
+    },
     "scripts/data/archive-upgrade-plan.mjs": {
       "sha256": "e3c60c46e401bb7752d19a696390be55788d7ee15b5c569285cf280ecc52884c",
       "executable": false
@@ -2780,6 +2788,10 @@
       "sha256": "54e7246025a618ed16ee042c22dc9a8dc27b06175c30f81c4c6568992ed04799",
       "executable": false
     },
+    "scripts/install-chromium-deps.py": {
+      "sha256": "02e2c1545c269bb594f410a31174a3afe87d8ef321ce6e97f2730de3a4543538",
+      "executable": false
+    },
     "scripts/installer-env.mjs": {
       "sha256": "b8bc0004c0de655d4ed62a32fbaa5f05950aa298778f3fe74e34663dada0f4b2",
       "executable": false
@@ -2837,11 +2849,11 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "9794b32346352992ad14f4d52f9c25699fdfc87320ac4d93a89ab5521a2123f3",
+      "sha256": "61c252a54332704eff9169edf51dc502c5bd944cf7541248549e1535713a025d",
       "executable": false
     },
     "scripts/verify.mjs": {
-      "sha256": "cf78a5bd78677e9059498a32cd2ee9450b5d1fec6be9673dea18b60be54325dd",
+      "sha256": "5d0ba994551e2e5a1ac9de0a0994fe808181324fdbd976e74ca15cb9e8513a75",
       "executable": false
     },
     "SEED-COMMAND-CONTRACT.md": {

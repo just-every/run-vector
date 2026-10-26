@@ -11,11 +11,11 @@ export const ciCommands = [
   'test:mutation-refresh', 'test:admin', 'test:collaboration',
 ];
 
-// Keep the longest journeys first and avoid a long tail of queued runners.
-// The 18-runner plan spent over six minutes queueing its nine-minute archive
-// journey. Ten runners retain every command and fresh build. Hosted artifact
-// checks have their own budget so the native runtime journey fits its limit.
-// Each runtime runner owns its own output, D1/R2 installations and browsers.
+// Keep long journeys first. CI shares the initial production build across the
+// runtime shards; each runner still owns its D1/R2 installations and browsers.
+// The hosted-artifact shard retains its fresh build/verification boundaries.
+// Keep these public-door flows until they can be rebalanced within their budget;
+// combining the current long shards would exceed the normal job cap.
 export const verificationShards = {
   // test:data is its two existing entry points, split without omitting either.
   imports: {
@@ -77,4 +77,5 @@ export const verificationShards = {
 // build checks and Base's hosted artifact and hydration boundaries.
 export const verificationMatrix = Object.entries(verificationShards).map(([shard, plan]) => ({
   shard, browser: plan.browser ?? false, native: plan.native ?? false,
+  prebuilt: plan.commands.includes('build') && shard !== 'hosted-artifact',
 }));
