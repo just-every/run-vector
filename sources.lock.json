@@ -4869,7 +4869,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/ui/notice.css": {
-      "sha256": "c2f97f6da17a2ef7b8bee76e31513c9a068666e116e2d43e70f10c775a8f2d96",
+      "sha256": "f9c87a23a8780fb7a0e3c855b5aed6afbacee069a0b8d82773ecaf099538c319",
       "executable": false
     },
     "src/core/features/issue-undo/ui/notice.tsx": {
