@@ -4137,11 +4137,11 @@
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "72514aef3979638f799acf081b02759e3e71191e4b73d6ec963496f629e42611",
+      "sha256": "2d619ded49e17e08db142f0301b664ddbebdcce42839c9513683fa86502d826d",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
-      "sha256": "91cba65122db94416d64e0a1a02ed69a5f2f400ed176ff8ef35edd719f323999",
+      "sha256": "12432c4bb6c5c7ae992f98c9e92e3b887076b30dea5a49b35d601e2a1f12f06e",
       "executable": false
     },
     "src/core/features/documents/ui/list.tsx": {
