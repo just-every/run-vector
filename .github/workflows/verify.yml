@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   plan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 2
     outputs:
       matrix: ${{ steps.plan.outputs.matrix }}
@@ -31,7 +31,7 @@ jobs:
 
   shards:
     needs: plan
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 14
     strategy:
       fail-fast: false
@@ -101,7 +101,7 @@ jobs:
   verify:
     needs: [plan, shards]
     if: always()
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 1
     steps:
       - name: Require the complete verification wall

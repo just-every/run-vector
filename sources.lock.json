@@ -453,7 +453,7 @@
       "executable": false
     },
     ".github/workflows/installer-journeys.yml": {
-      "sha256": "64739027e8bb86f38988cf53250db35863c1cb54614150d62216e394acbd5fb6",
+      "sha256": "e12db4f1b9856f324f663868a5d1381823d7893d41ace8062ef3847af5d09fbf",
       "executable": false
     },
     ".github/workflows/rer-managed.yml": {
@@ -469,7 +469,7 @@
       "executable": false
     },
     ".github/workflows/verify.yml": {
-      "sha256": "63bbfb0b1604d9cacbf820495d3a0278fa3490b810e22be382cc23b04ca395c2",
+      "sha256": "b362b6f88998fa273063d97c1565b41eb0a42ddd09522498931476a057e34c86",
       "executable": false
     },
     ".gitignore": {
