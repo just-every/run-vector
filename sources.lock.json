@@ -7029,7 +7029,7 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "26b22a2bc57255eb26f465f395a7eda0cefea08e607546f0339aa05625e81c39",
+      "sha256": "d8ef5a4628551fb8040ec57a9da7b05c4a34deabf3933750ab72e268a6a2c84a",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
