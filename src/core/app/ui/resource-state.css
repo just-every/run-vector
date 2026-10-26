@@ -9,3 +9,12 @@
 }
 .resource-state h1 { margin: 0; font-size: 1.25rem; }
 .resource-state p { margin: 0; }
+
+@media (max-width: 46rem) {
+  .resource-state:has(> a) { padding: 2rem 1rem; }
+  .resource-state > a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+}
