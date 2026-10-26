@@ -5713,7 +5713,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-rows.css": {
-      "sha256": "3cdab609d0b5011ac8e790460bf9ebb2a8aa1d9427f613edb7c73c49f792dd68",
+      "sha256": "513f36496c77a5b74d46cc58b2ae9f11fb0a1c14617ed243684aac0fbc4aa933",
       "executable": false
     },
     "src/core/features/projects/ui/project-slack-choice.tsx": {
