@@ -3581,7 +3581,7 @@
       "executable": false
     },
     "src/core/features/calendar-feeds/document.server.ts": {
-      "sha256": "72708f1c7eeda625f95516608c96331fec26ed1f7848892d05305585c47e81d5",
+      "sha256": "be0e653ebd195afea83bf41fff2286741b0b47304dbbcec8b595145450ce7d21",
       "executable": false
     },
     "src/core/features/calendar-feeds/events.ts": {
@@ -4349,7 +4349,7 @@
       "executable": false
     },
     "src/core/features/insights/document.server.ts": {
-      "sha256": "dcc66e8d97ceba23e3bc438b10868083161172e9934b636c1885933e5bb85239",
+      "sha256": "5b184056c6b46c53749d69b8519c3adf07583ddfe3bf60c323074b5801149c88",
       "executable": false
     },
     "src/core/features/insights/insights.css": {
