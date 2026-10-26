@@ -6573,7 +6573,7 @@
       "executable": false
     },
     "tests/e2e/calendar-access-cells.mjs": {
-      "sha256": "fc652ee2b896f7a237bd9fbcf653b429bd3c04b6bc6167cd68d0e84d92a6b7d5",
+      "sha256": "1c98ac18c514bbab9e6fdc556ad6025e40ed1e117dfa92e23d4d36197462562e",
       "executable": false
     },
     "tests/e2e/calendar-feeds-journey.mjs": {
