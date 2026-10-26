@@ -25,10 +25,13 @@ export async function cycleMembershipJourney(page, context, base, record = async
     const form=details.getByRole('form',{name:'Edit '+team.name});
     await page.waitForFunction(name=>[...document.querySelectorAll('form')].find(f=>f.getAttribute('aria-label')===name)?.querySelector('button')?.matches(':enabled'),'Edit '+team.name);
     await details.locator('summary').first().click();
+    const prior=(await api('/settings/administration')).teams.find(item=>item.id===team.id);
+    const saved=prior.autoCycleStarted&&prior.autoCycleCompleted?null:page.waitForResponse(r=>r.url()===base+'/api/settings/teams/'+team.id&&r.request().method()==='PATCH'&&r.request().postDataJSON()?.autoCycleStarted===true&&r.request().postDataJSON()?.autoCycleCompleted===true);
     await form.getByRole('checkbox',{name:'Add uncommitted work to the active cycle when it starts'}).check();
     await form.getByRole('checkbox',{name:'Add uncommitted work to the active cycle when it completes'}).check();
-    const saved=page.waitForResponse(r=>r.url()===base+'/api/settings/teams/'+team.id&&r.request().method()==='PATCH');
-    await form.getByRole('button',{name:'Save team',exact:true}).click(); assert.equal((await saved).status(),200);
+    if(saved)assert.equal((await saved).status(),200);
+    const persisted=(await api('/settings/administration')).teams.find(item=>item.id===team.id);
+    assert.equal(persisted.autoCycleStarted,true);assert.equal(persisted.autoCycleCompleted,true);
     await form.scrollIntoViewIfNeeded();
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     await record('CYCLE-008',`rules-${width}`,page);

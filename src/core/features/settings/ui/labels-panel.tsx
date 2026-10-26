@@ -1,3 +1,5 @@
+import { SettingsSaveForm } from "./settings-save-form";
+import { administrationSchema } from "../../administration/schema";
 import { useHydrated } from "../../../app/initial-resources";
 import { useRef, useState, type FormEvent } from "react";
 import type { Administration } from "../../administration/schema";
@@ -38,19 +40,15 @@ export function LabelsPanel({
     >
       <h2 id="labels-heading">Labels</h2>
       {readOnly && <p>Workspace labels are read-only here. Owners and Admins manage labels.</p>}
-      {!readOnly && <form aria-label="Label creation permission" onSubmit={async event => {
-        event.preventDefault();
-        await action.run("/api/settings/labels/creation", "PUT", {membersMayCreate: new FormData(event.currentTarget).get("membersMayCreate") === "members"});
-      }}>
-        <fieldset disabled={action.pending || !hydrated}>
+      {!readOnly && <SettingsSaveForm aria-label="Label creation permission" path="/api/settings/labels/creation" schema={administrationSchema} onSaved={onChanged} read={fields => ({membersMayCreate:fields.get("membersMayCreate")==="members"})}>
+        <fieldset disabled={!hydrated}>
           <label htmlFor="label-creation-permission">Who may create labels</label>
-            <select id="label-creation-permission" name="membersMayCreate" key={String(memberLabelCreation)} defaultValue={memberLabelCreation ? "members" : "admins"}>
+            <select id="label-creation-permission" name="membersMayCreate" defaultValue={memberLabelCreation ? "members" : "admins"}>
               <option value="members">Members too</option>
               <option value="admins">Owners and Admins only</option>
             </select>
-          <button>Save label permission</button>
         </fieldset>
-      </form>}
+      </SettingsSaveForm>}
       {!readOnly && <form aria-label="Create label" onSubmit={create}>
         <fieldset disabled={action.pending || !hydrated}>
           <label>
@@ -88,21 +86,14 @@ function LabelEditor({
   const [color, setColor] = useState(label.color);
   const [confirm, setConfirm] = useState(false);
   const deleteTrigger = useRef<HTMLButtonElement>(null);
-  async function save(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    await action.run(`/api/settings/labels/${label.id}`, "PATCH", {
-      name: new FormData(event.currentTarget).get("name"),
-      color,
-      projectsEnabled: new FormData(event.currentTarget).get("projectsEnabled") === "on",
-    });
-  }
   return (
     <details>
       <summary>
         <LabelChip name={label.name} color={label.color} />
       </summary>
-      <form aria-label={`Edit label ${label.name}`} onSubmit={save}>
-        <fieldset disabled={action.pending || !hydrated}>
+      <SettingsSaveForm aria-label={`Edit label ${label.name}`} path={`/api/settings/labels/${label.id}`} method="PATCH" schema={administrationSchema} onSaved={onChanged}
+        read={fields => ({name:fields.get('name'),color:fields.get('color'),projectsEnabled:fields.has('projectsEnabled')})}>
+        <fieldset disabled={!hydrated}>
           <label>
             Label name
             <input
@@ -115,14 +106,13 @@ function LabelEditor({
           <label>
             Label colour
             <input
-              type="color"
+              name="color" type="color"
               value={color}
               onChange={(event) => setColor(event.target.value)}
             />
           </label>
           <label><input type="checkbox" name="projectsEnabled" defaultChecked={label.projectsEnabled} />Use for projects</label>
           <LabelChip name={label.name} color={color} />
-          <button>Save label</button>
           <button
             ref={deleteTrigger}
             type="button"
@@ -131,7 +121,7 @@ function LabelEditor({
             Delete label
           </button>
         </fieldset>
-      </form>
+      </SettingsSaveForm>
       <form aria-label={`Merge label ${label.name}`} onSubmit={async event => {
         event.preventDefault();
         await action.run(`/api/settings/labels/${label.id}/merge`, "POST", {destinationLabelId: new FormData(event.currentTarget).get("destinationLabelId")});

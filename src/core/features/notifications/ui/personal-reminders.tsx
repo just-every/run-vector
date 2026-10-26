@@ -11,7 +11,7 @@ export function PersonalReminderControls({
 }: {
   identifier: string;
 }) {
-  const { formatInstant: followUpTime, localValue: localDateTimeValue, futureInstant: futureLocalInstant, effectiveTimezone } = useViewerTime();
+  const { formatInstant: followUpTime, localValue: localDateTimeValue, futureInstant: futureLocalInstant, timezoneLabel } = useViewerTime();
   const hydrated = useHydrated();
   const id = useId();
   const reminders = usePersonalReminders(identifier);
@@ -81,7 +81,7 @@ export function PersonalReminderControls({
       {open && (
         <div className="personal-reminder-panel" id={id}>
           <p>
-            A private Inbox reminder for you. Times use {effectiveTimezone}.
+            A private Inbox reminder for you. Times use {timezoneLabel}.
           </p>
           {reminders.reminders && (
             <>
@@ -92,7 +92,7 @@ export function PersonalReminderControls({
                 }}
               >
                 <label>
-                  Remind me at ({effectiveTimezone})
+                  Remind me at ({timezoneLabel})
                   <input
                     type="datetime-local"
                     required

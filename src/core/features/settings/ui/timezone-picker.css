@@ -1,0 +1,11 @@
+.timezone-picker {
+  display: grid;
+  gap: .6rem;
+  width: min(100%, 28rem);
+  min-width: 0;
+  max-width: 100%;
+}
+.personal-time-panel > form > fieldset:has(.timezone-picker) {
+  width: 100%;
+  min-width: 0;
+}

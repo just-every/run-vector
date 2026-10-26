@@ -170,19 +170,14 @@ try {
   const initialWorkspace = settingsSchema.parse(initialSettings.body).workspace;
   assert.equal(typeof initialWorkspace.timezone, "string");
   assert.match(initialWorkspace.reminderTime, /^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/);
-  const timezone = page.getByLabel("IANA timezone", { exact: true });
+  const timezone = page.getByLabel("Workspace timezone", { exact: true });
   const reminderTime = page.getByLabel("Daily due reminder time", { exact: true });
   assert.equal(await timezone.inputValue(), initialWorkspace.timezone);
   assert.equal(await reminderTime.inputValue(), initialWorkspace.reminderTime);
   const savedTimezone =
     initialWorkspace.timezone === "Australia/Brisbane" ? "UTC" : "Australia/Brisbane";
   assert.notEqual(savedTimezone, initialWorkspace.timezone);
-  await timezone.fill(savedTimezone);
   const workspaceTimeForm = page.locator("#workspace-time form");
-  const saveWorkspaceTime = workspaceTimeForm.getByRole("button", {
-    name: "Save workspace time",
-    exact: true,
-  });
   const settingsActionDeadline = Date.now() + settingsActionBudgetMs;
   const settingsSave = page
     .waitForResponse(
@@ -202,7 +197,7 @@ try {
       };
     });
   const settingsSaveClick = Promise.resolve().then(() =>
-    saveWorkspaceTime.click({
+    timezone.selectOption(savedTimezone, {
       timeout: remainingSettingsActionMs(settingsActionDeadline),
     }),
   );
@@ -221,11 +216,8 @@ try {
   assert.equal(saveReceipt.response.status(), 200);
   assert.equal(saveReceipt.body.workspace.timezone, savedTimezone);
   assert.equal(saveReceipt.body.workspace.reminderTime, initialWorkspace.reminderTime);
-  await workspaceTimeForm
-    .locator('button[type="submit"]:enabled')
-    .waitFor({ timeout: remainingSettingsActionMs(settingsActionDeadline) });
   const settingsFeedback = page
-    .locator("main.settings-page > p[role='status']")
+    .locator("#workspace-time [role='status']")
     .filter({ hasNotText: /^Loading/ });
   await settingsFeedback
     .last()
@@ -257,8 +249,8 @@ try {
   await page.getByRole("link", { name: "Settings", exact: true }).filter({ visible: true }).first().click();
   await page.getByRole("heading", { name: "Settings", exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
-  await page.getByLabel("IANA timezone", { exact: true }).waitFor();
-  assert.equal(await page.getByLabel("IANA timezone", { exact: true }).inputValue(), savedTimezone);
+  await page.getByLabel("Workspace timezone", { exact: true }).waitFor();
+  assert.equal(await page.getByLabel("Workspace timezone", { exact: true }).inputValue(), savedTimezone);
   assert.equal(await page.getByLabel("Daily due reminder time", { exact: true }).inputValue(), initialWorkspace.reminderTime);
   await settleReads(page);
   await page.getByRole("link", { name: "All cycles", exact: true }).click();

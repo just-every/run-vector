@@ -34,9 +34,6 @@ export async function authorLabel({ page, runtime, capture, clause }) {
         .getByLabel("Label name", { exact: true })
         .fill("Verified evidence");
       await edit.getByLabel("Label colour", { exact: true }).fill("#f5dd44");
-      await edit
-        .getByRole("button", { name: "Save label", exact: true })
-        .click();
       await poll(
         () => sql("SELECT * FROM labels WHERE name='Verified evidence'"),
         (rows) => rows[0]?.color === "#f5dd44",
@@ -167,9 +164,8 @@ export async function memberLabelCreation({page, peer, runtime, clause, evidence
   const permission=async (membersMayCreate) => {
     await navigate(page,base+"/app/settings");
     const form=page.getByRole("form",{name:"Label creation permission",exact:true});
-    await form.getByLabel("Who may create labels",{exact:true}).selectOption(membersMayCreate?"members":"admins");
     const receipt=page.waitForResponse(r=>new URL(r.url()).pathname==="/api/settings/labels/creation"&&r.request().method()==="PUT");
-    await form.getByRole("button",{name:"Save label permission",exact:true}).click();
+    await form.getByLabel("Who may create labels",{exact:true}).selectOption(membersMayCreate?"members":"admins");
     assert.equal((await receipt).status(),200);
   };
   const open=async()=>{
