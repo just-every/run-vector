@@ -20,6 +20,8 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   await beforePrivateNavigation(page, page.url());
   await page.reload();
   await page.getByRole('textbox', { name: /^Title/ }).waitFor();
+  // The form restores the draft once its options and team metadata load, and only then enables its fields.
+  await page.getByRole('textbox', { name: /^Title/, disabled: false }).waitFor();
   await page.getByText('Optional context', { exact: true }).click();
   for (const [name, value] of fields) assert.equal(await page.getByLabel(name).inputValue(), value);
   for (const [name, value] of [[/^Team/, teamId], [/^Assignee/, operatorId], [/^Priority/, 'high']])
