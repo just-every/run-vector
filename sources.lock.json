@@ -5137,7 +5137,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-form.tsx": {
-      "sha256": "e390e3621e3e0f2637df615b58fd2f331a618e7db43e3e1765dd626271b97773",
+      "sha256": "50e609ef28646d5fca4712819a02c07c829037c1bce135547c393027324bf8db",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue.css": {
@@ -6677,7 +6677,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "bcfb6f6688ec9f4c3ac2c5dd54c43bd1eed55f77e1f2a89f94a3ff49fb7345d1",
+      "sha256": "7a1671d35d37b760c4a547d0b86f90986ba67e5132395aa9e12738a3b89625cc",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {

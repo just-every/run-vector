@@ -1231,7 +1231,7 @@ try {
     .locator(".new-issue-header")
     .getByRole("button", { name: "← Back", exact: true })
     .click();
-  await page.waitForURL(base + "/app/issues/" + browserCreated.identifier);
+  await page.waitForURL((url) => url.pathname === "/app/issues/" + browserCreated.identifier);
   await page.getByRole("heading", { name: browserCreatedTitle, exact: true }).waitFor();
   await beforePrivateNavigation(page, base + "/app/new-issue");
   await page.goto(base + "/app/new-issue");
