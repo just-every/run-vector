@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "5764f3ceebcf2ef5d6c27407ebd5f5f1344ac454598e5525dbefea88f3cc4169",
+      "sha256": "6fac59314983ec03d0ec1a5377345d1711d39b71f6123a52ab588dedc5e91d7f",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "37adae1247f4d49d92dbb001c5409765092ffa3a0ffbb612affff1adfd37851d",
+      "sha256": "729bc76c377d79997415987aefb14eb4665233fb7ca2bda9a84629d1f1a5d568",
       "executable": false
     },
     "DEMO.md": {
@@ -6581,7 +6581,7 @@
       "executable": false
     },
     "tests/e2e/calendar-access-cells.mjs": {
-      "sha256": "1c98ac18c514bbab9e6fdc556ad6025e40ed1e117dfa92e23d4d36197462562e",
+      "sha256": "43037c6363d607d50a5cac5fe230286c4e268c242e3357d82c1236a3deda0ec0",
       "executable": false
     },
     "tests/e2e/calendar-feeds-journey.mjs": {
