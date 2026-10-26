@@ -6445,7 +6445,7 @@
       "executable": false
     },
     "src/routes/app.projects.new.tsx": {
-      "sha256": "26d5b34e3f9fb951b5c9e698a79beae5e68b3b38d39cec098984ec0c20a7c574",
+      "sha256": "e9752d64e5082420f599e9d62fdc9abf4e180b95172adae8ab0f34980f79d121",
       "executable": false
     },
     "src/routes/app.releases.$releaseId.tsx": {

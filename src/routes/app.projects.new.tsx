@@ -12,14 +12,14 @@ function NewProject() {
   const navigate = useNavigate();
   if (metadata.error) return <FailedResource kind="project form" retry={metadata.reload} />;
   if (!metadata.data) return <main className="projects-state" aria-live="polite">Loading project…</main>;
-  const { viewer, operators, labels } = metadata.data;
+  const { viewer, operators, labels, projects } = metadata.data;
   const authority = { role: viewer.role, memberInvites: false, teams: new Map() };
   const close = () => { void navigate({ to: '/app/projects' }); };
   if (decide(authority, { row: 'projects.write' }) !== 'allow')
     return <main className="projects-state"><p>Your workspace role cannot create projects.</p><a href="/app/projects">Back to Projects</a></main>;
   return <main className="projects-workspace"><header className="projects-header"><div><h1>New project</h1></div></header>
     <section className="administration-panel project-detail__section">
-      <ProjectCreate operators={operators} labels={labels} channel={decide(authority, { row: 'channels.create' }) === 'allow'} onChanged={close} onCancel={close} />
+      <ProjectCreate operators={operators} labels={labels} viewerId={viewer.id} projectIds={projects.map(project => project.id)} channel={decide(authority, { row: 'channels.create' }) === 'allow'} onChanged={close} onCancel={close} />
     </section>
   </main>;
 }
