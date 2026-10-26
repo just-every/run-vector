@@ -99,6 +99,7 @@ export async function projectDocumentsJourney({page,base,api,output}){
    await page.getByRole('region',{name:'Documents',exact:true}).getByRole('link',{name:initiativeDoc.title,exact:true}).waitFor();
    await proof('initiative-documents',width);
    await go('/app/settings#teams');
+   await page.waitForFunction(label=>[...document.querySelectorAll('form')].find(f=>f.getAttribute('aria-label')===label)?.querySelector('button')?.matches(':enabled'),'Edit '+name+' team');
    const teamSummary=page.locator('summary').filter({hasText:name+' team'});
    await teamSummary.click();
    const teamCard=teamSummary.locator('..');
