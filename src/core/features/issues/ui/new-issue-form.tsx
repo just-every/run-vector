@@ -2,7 +2,7 @@ import { preferredTeam } from "./preferred-team";
 import { administrationSchema } from "../../administration/schema";
 import { useViewerTime } from '../../../app/viewer-time';
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
-import { useNavigate } from "@tanstack/react-router";
+import { useCanGoBack, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
@@ -27,10 +27,15 @@ const allowedStatusCategories = new Set([
   "canceled",
 ]);
 const createdIssueSchema = issueDetailSchema.extend({ page: navigationPageSchema.optional() });
+// Back stays in Vector: the Navigation API knows whether the entry behind this tab's form is one
+// of this site's pages; without it, the router knows the entries it made itself.
+const vectorPageBehind = (routerCanGoBack: boolean) =>
+  (window as Window & { navigation?: { canGoBack: boolean } }).navigation?.canGoBack ?? routerCanGoBack;
 
 export function NewIssueForm() {
   const { effectiveTimezone } = useViewerTime();
   const navigate = useNavigate();
+  const canGoBack = useCanGoBack();
   const options = useApiResource("/api/options", workspaceOptionsSchema);
   const administration = useApiResource("/api/metadata", administrationSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
@@ -201,7 +206,7 @@ export function NewIssueForm() {
         >
           <header className="new-issue-header">
             <div>
-              <button type="button" className="detail-back" onClick={() => window.history.length > 1 ? window.history.back() : void navigate({ to: "/app" })}>← Back</button>
+              <button type="button" className="detail-back" onClick={() => vectorPageBehind(canGoBack) ? window.history.back() : void navigate({ to: "/app" })}>← Back</button>
               <h1 id="new-issue-title">
                 {values.mode === "intake" ? "New intake" : "New issue"}
               </h1>
