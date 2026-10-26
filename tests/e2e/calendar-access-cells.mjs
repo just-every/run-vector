@@ -15,6 +15,7 @@ export async function calendarAccessCells(page,context,runtime,output){
   const feed=await reader.api('/calendar/feeds','POST',{},201);
   assert.ok((await(await context.request.get(feed.url)).text()).includes(hidden.identifier));
   const teamFeed=await reader.api('/calendar/feeds','POST',{teamId:team.id},201);
+  const teamReleases=await(await context.request.get(teamFeed.url)).text();assert.ok(teamReleases.includes('synthetic-vector-2303'));assert.ok(!teamReleases.includes('synthetic-vector-2305'));assert.ok(!teamReleases.includes('synthetic-vector-2304'));
   let releaseFeed=await(await context.request.get(feed.url)).text();assert.ok(releaseFeed.includes('synthetic-vector-2303'));assert.ok(releaseFeed.includes('synthetic-vector-2305'));assert.ok(!releaseFeed.includes('synthetic-vector-2304'));
   await owner(`/settings/teams/${team.id}/members/${reader.id}`,'DELETE');
   assert.ok(!(await(await context.request.get(feed.url)).text()).includes('synthetic-vector-2303'));assert.equal((await context.request.get(teamFeed.url)).status(),404);
