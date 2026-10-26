@@ -5221,7 +5221,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/preferred-team.ts": {
-      "sha256": "be849a492b06703a51a0feb474a0dcc989623f01b9e3105c73530f1572063370",
+      "sha256": "21d3bdc5bf18edc93a635a79baa81de143aab4dede93ccd8c90f7634bb0faa28",
       "executable": false
     },
     "src/core/features/issues/ui/team-move.css": {
@@ -6689,7 +6689,7 @@
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
-      "sha256": "6a86f3151f90a2fbdbbe39504d669cb331d4f1508434abdcc96b6496ec3abf89",
+      "sha256": "d72c662de955bf37b2e9852536b50b518c4fc06f66c616432b26afeb63112e19",
       "executable": false
     },
     "tests/e2e/core-board-support.mjs": {
