@@ -16,15 +16,21 @@
 @media (max-width: 46rem) {
   .app-mobile-nav .inbox-count,
   .app-mobile-nav .inbox-count-error {
-    position: absolute;
-    top: 0;
-    right: 0;
+    position: static;
     margin: 0;
     min-width: 1rem;
     height: 1rem;
     font-size: var(--app-text-small);
   }
-  .app-mobile-nav .app-nav-link {
-    position: relative;
+  .app-mobile-daily .app-nav-link:has(.inbox-count, .inbox-count-error) {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: center;
+    column-gap: 0.25rem;
+    overflow: hidden;
+  }
+  .app-mobile-daily .app-nav-link:has(.inbox-count, .inbox-count-error) > span:first-child {
+    grid-column: 1 / -1;
+    justify-self: center;
   }
 }

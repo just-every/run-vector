@@ -74,7 +74,8 @@ function AppShellContent({ children }: AppShellProps) {
   const hydrated = useHydrated()
   const location = useLocation()
   const navigate = useNavigate()
-  const mobileNavigation = useRef<HTMLElement>(null)
+  const mobileNavigation = useRef<HTMLDivElement>(null)
+  const mobileViews = useRef<HTMLDetailsElement>(null)
   const [paletteOpen, setPaletteOpen] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
   const [accountError, setAccountError] = useState('')
@@ -123,6 +124,19 @@ function AppShellContent({ children }: AppShellProps) {
     setPaletteOpen(false)
     window.setTimeout(() => paletteTrigger.current?.focus(), 0)
   }
+
+  useEffect(() => {
+    if (mobileViews.current) mobileViews.current.open = false
+  }, [location.pathname])
+
+  useEffect(() => {
+    const outside = (event: PointerEvent) => {
+      const views = mobileViews.current
+      if (views?.open && event.target instanceof Node && !views.contains(event.target)) views.open = false
+    }
+    document.addEventListener('pointerdown', outside)
+    return () => document.removeEventListener('pointerdown', outside)
+  }, [])
 
   useEffect(() => {
     const nav = mobileNavigation.current
@@ -247,7 +261,7 @@ function AppShellContent({ children }: AppShellProps) {
               .join('')
               .slice(0, 2)}
           </span>
-          <span>{operator.name}</span>
+          <span className="app-owner-name">{operator.name}</span>
           <button
             type="button"
             disabled={!hydrated || signingOut}
@@ -262,7 +276,9 @@ function AppShellContent({ children }: AppShellProps) {
           <Link className="app-mobile-brand" to="/app" activeOptions={{ exact: true }}>
             <VectorMark label={productConfig.productName} />
           </Link>
-          <details className="app-mobile-views" onKeyDown={event => {
+          <details ref={mobileViews} className="app-mobile-views" onClick={event => {
+            if (event.target instanceof Element && event.target.closest('.saved-view-navigation a')) event.currentTarget.open = false
+          }} onKeyDown={event => {
             if (event.key === 'Escape') {
               event.preventDefault()
               event.currentTarget.open = false
@@ -299,11 +315,16 @@ function AppShellContent({ children }: AppShellProps) {
         <IssueUndoNotice />
         {children}
       </div>
-      <nav ref={mobileNavigation} className="app-mobile-nav" aria-label="Workspace">
-        {navigation
-          .map((item) => (
-            <NavLink key={item.to} item={item} pathname={location.pathname} />
-          ))}
+      <nav className="app-mobile-nav" aria-label="Workspace">
+        <div className="app-mobile-places-row">
+          <NavLink item={navigation[0]!} pathname={location.pathname} />
+          <div ref={mobileNavigation} className="app-mobile-places">
+            {navigation.filter(item => item.to !== '/app' && item.to !== '/app/inbox').map(item => (
+              <NavLink key={item.to} item={item} pathname={location.pathname} />
+            ))}
+          </div>
+        </div>
+        <div className="app-mobile-daily">
         <button
           type="button"
           className={`app-nav-link${location.pathname === '/app/search' ? ' is-active' : ''}`}
@@ -315,6 +336,7 @@ function AppShellContent({ children }: AppShellProps) {
           <span aria-hidden="true">⌕</span>
           <span>Search</span>
         </button>
+        <NavLink item={navigation.find(item => item.to === '/app/inbox')!} pathname={location.pathname} />
         <Link
           className={`app-nav-link${location.pathname.startsWith('/app/new-issue') ? ' is-active' : ''}`}
           to="/app/new-issue"
@@ -323,6 +345,7 @@ function AppShellContent({ children }: AppShellProps) {
           <span aria-hidden="true">＋</span>
           <span>New issue</span>
         </Link>
+        </div>
       </nav>
       {paletteOpen ? <CommandPalette onDismiss={dismissPalette} /> : null}
     </div>

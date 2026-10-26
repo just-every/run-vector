@@ -3345,11 +3345,11 @@
       "executable": false
     },
     "src/core/app/ui/app-shell.css": {
-      "sha256": "77ef8d5eea5ba722faefc56515fa2c957b21da301a3fff2744119bb9e77e531a",
+      "sha256": "0343341a45d49d913d440f9288ac65004f6773fc896e471ba4c457dac3f13393",
       "executable": false
     },
     "src/core/app/ui/app-shell.tsx": {
-      "sha256": "572f2a0e80448ab3604b788722d6c288b9bb3393df44a76b4ee45168236e41ac",
+      "sha256": "34bd2387b065ca3592d977bf67a1012576d9a5a8a82952933de835aa2fa7511f",
       "executable": false
     },
     "src/core/app/ui/label-chip.tsx": {
@@ -5149,7 +5149,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
-      "sha256": "de49ef57e4f4720bce8ffe704f293930ded146a3ab951d808fa4cb239d94e234",
+      "sha256": "cf769c994d01755f9aae0940216a6fe77862b24dbb6e0be96089cbf64906730d",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-draft.ts": {
@@ -5409,7 +5409,7 @@
       "executable": false
     },
     "src/core/features/notifications/ui/inbox-count.css": {
-      "sha256": "939e324bbdf2794bcbdb16de1ce693ffd660a75cc73e4cfda383b5f51e2a8721",
+      "sha256": "50259235b8fd07d493d0f88b955672aff468a4d7a1aa23f2da5a115d5dc94943",
       "executable": false
     },
     "src/core/features/notifications/ui/inbox-page.tsx": {
@@ -5641,7 +5641,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-milestones.tsx": {
-      "sha256": "33d6a7f130a51618a1ead5030b0caa5abed7015d6579a539836f0e23486b9112",
+      "sha256": "fa7ff959c708be2a7ea99bf0b97f6ab638ea546d406cb90ee24ffa0b016d0867",
       "executable": false
     },
     "src/core/features/projects/ui/projects-workspace.tsx": {
@@ -6489,7 +6489,7 @@
       "executable": false
     },
     "tests/e2e/admin-project-cycle-journey.mjs": {
-      "sha256": "e9d36bac7c427720727957b7ee2ee04c741e3fba8f683e8ff0c6f277160c17b5",
+      "sha256": "b41a504128000c0470eefb453e209299b4e452b6dcca5485f8bbe699cfa05053",
       "executable": false
     },
     "tests/e2e/admin-request-diagnostics.mjs": {

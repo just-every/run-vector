@@ -74,8 +74,8 @@ export function ProjectMilestones({ project, writable, onChanged }: {
         {writable && <div className="project-milestones__actions">
           <button type="button" disabled={disabled} onClick={() => setEditing(milestone.id)}>Edit {milestone.name}</button>
           <button type="button" disabled={disabled} onClick={() => void run(`/${milestone.id}`, "PATCH", {completed:!milestone.completed})}>{milestone.completed ? "Reopen" : "Complete"} {milestone.name}</button>
-          <Tooltip label="Move milestone up"><button type="button" aria-label="Move milestone up" disabled={disabled || index === 0} onClick={() => void move(index, -1)}>↑</button></Tooltip>
-          <Tooltip label="Move milestone down"><button type="button" aria-label="Move milestone down" disabled={disabled || index === project.milestones.length - 1} onClick={() => void move(index, 1)}>↓</button></Tooltip>
+          <Tooltip label={`Move milestone ${index + 1} up`}><button type="button" aria-label={`Move milestone ${index + 1} up`} disabled={disabled || index === 0} onClick={() => void move(index, -1)}>↑</button></Tooltip>
+          <Tooltip label={`Move milestone ${index + 1} down`}><button type="button" aria-label={`Move milestone ${index + 1} down`} disabled={disabled || index === project.milestones.length - 1} onClick={() => void move(index, 1)}>↓</button></Tooltip>
           <button type="button" disabled={disabled} onClick={() => setDeleting(milestone.id)}>Delete {milestone.name}</button>
         </div>}
         {deleting === milestone.id && <div className="project-milestones__delete" role="group" aria-label={`Delete ${milestone.name}`}>
