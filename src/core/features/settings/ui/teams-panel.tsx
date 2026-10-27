@@ -13,6 +13,8 @@ import { TeamPermissions } from "./team-permissions";
 import { decide } from "../../roles/policy";
 import { TeamEmailIntake } from "../../email-intake/ui/team-email-intake";
 
+import { GithubRules } from "../../integrations/ui/github-rules";
+
 import type { Administration } from "../../administration/schema";
 type Team = Administration["teams"][number];
 type Status = Team["statuses"][number];
@@ -175,6 +177,7 @@ function TeamEditor({
       </summary>
       {(data.viewer.role === 'owner' || data.viewer.role === 'admin') && <TeamPrivacy team={team} onChanged={onChanged}/>}
       {!team.canRead && data.viewer.role==='admin' && <TeamMetadata data={data} team={team}/>}
+      {access.settings && !team.archivedAt && <GithubRules teamId={team.id} />}
       {team.canRead && <>
       <p><a className="document-team-link" href={'/app/teams/'+team.id}>Team documents</a></p>
       {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}

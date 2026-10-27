@@ -213,9 +213,23 @@ export function probes(w: Workspace): Record<RowId, Probe> {
 /** Additional doors carried by existing matrix rows. Kept separate so another
  * campaign's team-settings probes remain intact. */
 export function githubRuleProbes(w:Workspace):{row:RowId;probe:Probe}[]{
- return [{row:'teams.settings',probe:{permission:'settings',session:async(_who,actor,team)=>{
+ return [{row:'teams.settings',probe:{permission:'settings',session:async(who,actor,team)=>{
+  const settings=(await w.state()).teams.find(t=>t.id===team)!.settingsPermission;
+  const admitted=who==='owner'||who==='admin'||who==='lead'||(who==='member'&&settings==='all_members');
+  const listed=await actor.call('/github/automation');
+  expect(listed.status,who+' Git rules read').toBe(who==='guest'?403:200);
+  if(listed.ok){
+   const visible=await listed.json() as {teams:{id:string}[]};
+   expect(visible.teams.some(t=>t.id===team),who+' '+settings+' Git rules visibility').toBe(admitted);
+  }
   const state=await json<{teams:{id:string;rules:{trigger:string;version:number}[]}[]}>(w.people.owner.call('/github/automation'));
   const version=state.teams.find(t=>t.id===team)!.rules.find(r=>r.trigger==='draft')!.version;
+  if(who==='guest'){
+   const viewer=await w.fresh('member');
+   expect((await w.people.owner.call('/settings/operators/'+viewer.id+'/role','PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
+   expect((await viewer.call('/github/automation')).status,'Viewer cannot read Git rules').toBe(403);
+   expect((await viewer.call('/settings/teams/'+team,'PATCH',{githubAutomation:{trigger:'draft',statusId:null,allowReopen:false,expectedVersion:version}})).status).toBe(403);
+  }
   return ()=>actor.call('/settings/teams/'+team,'PATCH',{githubAutomation:{trigger:'draft',statusId:null,allowReopen:false,expectedVersion:version}});
  }}}];
 }

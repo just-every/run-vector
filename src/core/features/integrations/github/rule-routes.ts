@@ -12,7 +12,7 @@ export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
  app.get('/github/automation',async c=>{
   const actor=c.get('operatorId'),workspace=c.get('operator').workspaceId;
   const teams=(await c.env.DB.prepare('SELECT id,name FROM teams WHERE workspace_id=? AND archived_at IS NULL ORDER BY name,id').bind(workspace).all<{id:string;name:string}>()).results;
-  const authority=await loadAuthority(c.env.DB,actor,teams.map(t=>t.id));if(!authority||authority.role==='guest')throw new IntegrationError(403,'forbidden');
+  const authority=await loadAuthority(c.env.DB,actor,teams.map(t=>t.id));if(!authority||authority.role==='guest'||authority.role==='viewer')throw new IntegrationError(403,'forbidden');
   const result=[];
   for(const team of teams){
    if(decide(authority,{row:'teams.settings',teams:[team.id]})!=='allow')continue;
