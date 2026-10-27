@@ -4,6 +4,7 @@ import {join} from 'node:path';
 // The built Worker uses the existing provider network edge, never a product mock.
 process.env.VECTOR_CHANNEL_EDGE??=join(mkdtempSync(join(tmpdir(),'vector-initiative-edge-')),'calls.jsonl');
 import { withOperatorClient } from './operator-request.mjs';
+import {confirmInviter} from './core-operator-journey.mjs';
 import assert from 'node:assert/strict';
 import {roleScreens} from './role-ui-support.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
@@ -16,7 +17,7 @@ export async function initiativesJourney({page:shared,runtime,evidence}){
  const page=await shared.context().newPage();trackRequests(page);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(/hydration|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());});
  const inspect=roleScreens(evidence),base=runtime.base;
- const call=async(path,method='GET',data,status=200)=>{return withOperatorClient(page.context(), async client => {
+ const call=async(path,method='GET',data,status=200)=>{if(path.startsWith('/settings/operators/')&&method!=='GET')await confirmInviter(page,page.context(),base,runtime.state);return withOperatorClient(page.context(), async client => {
 const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data});assert.equal(r.status(),status,await r.text());return await r.json();
 });};
  try{
@@ -60,8 +61,10 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await capture('initiative-three-level-hierarchy');
   await navigate(page,base+'/app/settings#integrations');
   const panel=page.locator('.channel-settings');await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
-  await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1820'});
-  await page.reload();await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();
+  const credentials=panel.getByRole('form',{name:'Slack credential',exact:true,includeHidden:true});
+  await credentials.locator('xpath=ancestor::details').locator('summary').click();await credentials.getByLabel('Slack bot token',{exact:true}).fill('synthetic-vector-1820');
+  const connection=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/settings/integrations/slack');
+  await credentials.getByRole('button',{name:'Validate and save Slack token',exact:true}).click();assert.equal((await connection).status(),200);await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();
   const binding=panel.getByRole('form',{name:'Bind notification channel',exact:true});
   // The offered events and their defaults follow the chosen object.
   const object=binding.getByRole('combobox').first(),chosen=()=>binding.locator('input[name="events"]').evaluateAll(inputs=>({values:inputs.map(input=>input.value).sort(),checked:inputs.filter(input=>input.checked).map(input=>input.value).sort()}));
@@ -159,8 +162,16 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
  const configuration=()=>call('/settings/integrations/channels');
  const posts=()=>readFileSync(process.env.VECTOR_CHANNEL_EDGE,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse).filter(c=>(c.method==='chat.postMessage'&&c.body.text.includes(root.name))||(c.method==='discord'&&c.body.content.includes(root.name)));
  const dispatch=async()=>{for(const tick of [1,2]){const response=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(response.status,200,'scoped dispatch '+tick);await response.arrayBuffer();}};
- const openPanel=async(target)=>{await navigate(target,base+'/app/initiatives/'+root.id);await target.getByText('Channel notifications',{exact:true}).click();const form=target.getByRole('form',{name:'Initiative channel',exact:true});await form.waitFor();await settleReads(target);return form;};
- const openSettings=async(target=page)=>{await navigate(target,base+'/app/settings#integrations');const settings=target.locator('.channel-settings');await settings.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();await settleReads(target);return settings;};
+ const openPanel=async(target)=>{
+  if(target.url()==='about:blank')await target.goto(base+'/app/initiatives');else await target.locator('a[href="/app/initiatives"]:visible').first().click();
+  const link=target.locator('.initiative-list a[href="/app/initiatives/'+root.id+'"]');await link.waitFor();await settleReads(target);await link.click();
+  await target.getByText('Channel notifications',{exact:true}).click();const form=target.getByRole('form',{name:'Initiative channel',exact:true});await form.waitFor();await settleReads(target);return form;
+ };
+ const openSettings=async(target=page)=>{
+  if(new URL(target.url()).pathname!=='/app/initiatives/'+root.id)await openPanel(target);
+  await settleReads(target);await target.locator('main header a[href="/app/settings#integrations"]').click();
+  const settings=target.locator('.channel-settings');await settings.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();return settings;
+ };
  const concealed=async(region)=>{
   const shown=await region.evaluate(element=>element.textContent+' '+[...element.querySelectorAll('[title],[aria-label],[data-tooltip]')].map(node=>[node.getAttribute('title'),node.getAttribute('aria-label'),node.getAttribute('data-tooltip')].join(' ')).join(' '));
   for(const id of identities)assert.equal(shown.includes(id),false,'technical channel identity is not displayed');
@@ -168,7 +179,7 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
  const reasonText=async(region,code)=>code==='live'?'':(await region.locator('[data-not-posting="'+code+'"]').innerText()).trim();
  const holdUpdate=async(code)=>{const current=await call('/initiatives/'+root.id);const before=posts().length;await call('/initiatives/'+root.id,'PATCH',{expectedVersion:current.version,description:'synthetic-vector-held-'+code+'-'+width});await dispatch();assert.equal(posts().length,before,'an unusable channel sends no update');recordChannelEvidence({kind:'channel-held',scenarioWidth:width,state:code,postsBefore:before,postsAfter:posts().length});};
  const render=async(code,{viewer=reader,read=member,sourceAvailable}={})=>{
-  const memberState=await read(door),ownerState=await call(door),adminState=await adminRead(door),config=await configuration();
+  const memberState=await read(door),ownerState=await call(door),adminState=await adminRead(door),config=await configuration(),people=await call('/settings');
   const binding=config.bindings.find(b=>b.id===ownerState.binding.id),approval=config.approvals.find(a=>a.initiativeId===root.id&&a.provider===binding.provider&&a.channelId===binding.channelId);
   assert.ok(binding);identities.add(binding.id);if(approval)identities.add(approval.id);
   for(const state of [memberState,ownerState,adminState]){assert.equal(state.binding.live,code==='live');assert.equal(state.binding.notPosting?.code??'live',code);}
@@ -177,7 +188,7 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
   assert.deepEqual(binding.notPosting,ownerState.binding.notPosting);
   if(approval)assert.equal(approval.notPosting?.code??'live',code);
   if(sourceAvailable!==undefined){assert.equal(binding.notPosting.sourceAvailable,sourceAvailable);assert.equal(approval.usable,false);}
-  const server={live:Number(ownerState.binding.live),code,approvalPresent:Number(Boolean(approval)),approvalUsable:approval?Number(approval.usable):'',sourceAvailable:binding.notPosting?.sourceAvailable===undefined?'':Number(binding.notPosting.sourceAvailable),currentWorkspace:binding.notPosting?.currentWorkspace??'',binderName:binding.notPosting?.binderName??'',destinations:memberState.destinations.length,provider:binding.provider,channel:binding.channelName};
+  const server={live:Number(ownerState.binding.live),code,bindingPresent:1,slackConnected:Number(config.slack.connected),slackTeamName:config.slack.teamName??'',binderRole:people.operators.find(operator=>operator.id===session.operatorId).role,approvalPresent:Number(Boolean(approval)),approvalUsable:approval?Number(approval.usable):'',sourceAvailable:binding.notPosting?.sourceAvailable===undefined?'':Number(binding.notPosting.sourceAvailable),currentWorkspace:binding.notPosting?.currentWorkspace??'',binderName:binding.notPosting?.binderName??'',destinations:memberState.destinations.length,provider:binding.provider,channel:binding.channelName};
   const surfaces=new Map();
   for(const [role,target] of [['member',viewer],['owner',page],['admin',admin]]){
    const form=await openPanel(target),rows=[];
@@ -216,7 +227,7 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
   return ownerState;
  };
  const renderDisconnected=async()=>{
-  const memberState=await member(door),ownerState=await call(door),adminState=await adminRead(door),config=await configuration();
+  const memberState=await member(door),ownerState=await call(door),adminState=await adminRead(door),config=await configuration(),people=await call('/settings');
   for(const state of [memberState,ownerState,adminState]){assert.equal(state.binding,null);assert.equal(state.destinations.some(d=>d.provider==='slack'),false);}
   assert.equal(config.slack.connected,false);const approval=config.approvals.find(a=>a.initiativeId===root.id&&a.provider==='slack');assert.ok(approval);assert.equal(approval.usable,false);assert.equal(approval.notPosting.code,'slack_disconnected');
   for(const [role,target] of [['member',reader],['owner',page],['admin',admin]]){
@@ -224,7 +235,7 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
    for(const viewport of [1440,390,320]){
     await target.setViewportSize({width:viewport,height:1000});await form.scrollIntoViewIfNeeded();await concealed(form);assert.ok(await target.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     const header=role==='member'?null:target.locator('main header [data-channel-state="unbound"]');if(header)await header.waitFor();
-    collected.push({kind:'channel-reason',scenarioWidth:width,width:viewport,role,live:0,code:'slack_disconnected',bindingPresent:0,approvalPresent:1,approvalUsable:0,currentWorkspace:approval.notPosting.currentWorkspace??'',panel:await form.locator('[data-channel-state]').innerText(),header:header?await header.innerText():''});
+    collected.push({kind:'channel-reason',scenarioWidth:width,width:viewport,role,live:0,code:'slack_disconnected',bindingPresent:0,approvalPresent:1,approvalUsable:0,slackConnected:Number(config.slack.connected),slackTeamName:config.slack.teamName??'',binderRole:people.operators.find(operator=>operator.id===session.operatorId).role,currentWorkspace:approval.notPosting.currentWorkspace??'',panel:await form.locator('[data-channel-state]').innerText(),header:header?await header.innerText():''});
    }
    const manager=role==='member'?page:target,settings=await openSettings(manager),row=settings.locator('[data-approval-id="'+approval.id+'"]');await row.locator('[data-not-posting="slack_disconnected"]').waitFor();
    assert.equal(await settings.getByLabel('Existing channel',{exact:true}).locator('option[value^="slack:"]').count(),0);
@@ -255,8 +266,8 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
   adminRead=async(path)=>{const response=await runtime.req('/api'+path,{headers:{Cookie:adminCookie}});assert.equal(response.status,200);return response.json();};
   await render('live');
   const approval=(await configuration()).approvals.find(a=>a.initiativeId===root.id&&a.provider==='slack');
-  await call('/settings/integrations/channels/initiative-approvals/'+approval.id,'DELETE');await render('approval_withdrawn');
-  await call('/settings/integrations/channels/initiative-approvals','POST',{provider:'slack',initiativeId:root.id,channelId:'CSCOPED'+width,audience:'workspace'},201);await render('approved_again');
+  await call('/settings/integrations/channels/initiative-approvals/'+approval.id,'DELETE');await render('approval_withdrawn');await holdUpdate('slack_withdrawn');
+  await call('/settings/integrations/channels/initiative-approvals','POST',{provider:'slack',initiativeId:root.id,channelId:'CSCOPED'+width,audience:'workspace'},201);await render('approved_again');await holdUpdate('slack_approved_again');
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'viewer',teamIds:[]});
   const refused=await runtime.req('/api'+door,{headers});assert.equal(refused.status,403);await refused.body.cancel();
   const observerEmail='synthetic-vector-1862-'+width+String.fromCharCode(64)+'vector.test';
@@ -264,9 +275,9 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
   const observerSignIn=await confirmLink(await readDevelopmentLink(base,null,observerEmail,runtime.state)),observerCookie=observerSignIn.headers.get('set-cookie').split(';')[0];
   observer=await openAuthenticatedPage(page.context().browser(),observerCookie,base);
   const observerRead=async(path)=>{const response=await runtime.req('/api'+path,{headers:{Cookie:observerCookie}});assert.equal(response.status,200);return response.json();};
-  await render('binder_cannot_edit',{viewer:observer,read:observerRead});
+  await render('binder_cannot_edit',{viewer:observer,read:observerRead});await holdUpdate('slack_binder_demoted');
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});await saveMember('slack','CSCOPED'+width);
-  await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1850'});await render('workspace_changed');
+  await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1850'});await render('workspace_changed');await holdUpdate('workspace_changed');
   // Disconnect while a different workspace is installed: disconnected must take precedence.
   const settings=page.locator('.channel-settings'),removed=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/integrations/slack'));
   await settings.getByRole('button',{name:'Remove Slack connection',exact:true}).click();assert.equal((await removed).status(),200);await settleReads(page);

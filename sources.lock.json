@@ -6949,7 +6949,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "3960ff7df777397b3f5d57ac79d4b50cbbd73e41eb4baf6cc9bc08aa113700a9",
+      "sha256": "d6544d5e918804133fb1b759783a255a048a30f301cd30a196cf93fa928f416a",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
