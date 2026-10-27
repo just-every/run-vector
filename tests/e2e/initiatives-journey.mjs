@@ -59,12 +59,18 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1820'});
   await page.reload();await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();
   const binding=panel.getByRole('form',{name:'Bind notification channel',exact:true});
-  await binding.getByRole('combobox').first().selectOption('initiative:'+root.id);
+  // The offered events and their defaults follow the chosen object.
+  const object=binding.getByRole('combobox').first(),chosen=()=>binding.locator('input[name="events"]').evaluateAll(inputs=>({values:inputs.map(input=>input.value).sort(),checked:inputs.filter(input=>input.checked).map(input=>input.value).sort()}));
+  await object.selectOption('initiative:'+root.id);await binding.locator('input[name="events"][value="initiative.updated"]').waitFor();
+  assert.deepEqual(await chosen(),{values:['initiative.created','initiative.projects_changed','initiative.updated'],checked:['initiative.updated']});
+  for(const issueObject of ['team:'+team.id,'project:'+projects[0].id]){
+   await object.selectOption(issueObject);await binding.locator('input[name="events"][value="triage.created"]').waitFor();const offered=await chosen();
+   assert.ok(offered.values.length>0&&offered.values.every(value=>!value.startsWith('initiative.')),issueObject+' offers no initiative event');assert.deepEqual(offered.checked,['issue.created','issue.status_changed','triage.created']);
+  }
+  await object.selectOption('initiative:'+root.id);await binding.locator('input[name="events"][value="initiative.updated"]').waitFor();
   await binding.getByLabel('Channel service').selectOption('slack');
   await binding.getByLabel('Channel display name',{exact:true}).fill('initiative-direction-'+width);
   await binding.getByLabel('Slack channel ID').fill('CINITIATIVE'+width);
-  for(const checkbox of await binding.getByRole('checkbox').all())await checkbox.uncheck();
-  await binding.getByRole('checkbox',{name:'Initiative update',exact:true}).check();
   await inspect(page,binding,'initiative-channel-choice-'+width);await page.setViewportSize({width,height:1000});
   const bound=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/settings/integrations/channels');
   await binding.getByRole('button',{name:'Save channel binding',exact:true}).click();assert.equal((await bound).status(),201);const destination=(await(await bound).json()).id;

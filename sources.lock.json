@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "0a6c3b86444fae12d6eb6e155ae78f8209eae57a126013af4f27936ecd9f100b",
+      "sha256": "525bd7356b7afcecf366d9b47999a912d8d6c5d231b09f34f73906f22d679e1b",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4457,11 +4457,11 @@
       "executable": false
     },
     "src/core/features/integrations/channels/schema.ts": {
-      "sha256": "ae80106adf884c1ec63584ed6597a0eaac585842a7485f6856545df47bce2990",
+      "sha256": "dfd318f5034cbeb82beb2f0fc2b05e339fc5e7b0d973a764c41c6b7253a64823",
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "0e81744d21795b7ffa8499f8717c9afef72ba01e8170762724c6fec3752e0c8b",
+      "sha256": "10ea474ed7e5bf1e95aff58952f06192127517c75014c4115ea832b9f2a1158b",
       "executable": false
     },
     "src/core/features/integrations/channels/subjects.ts": {
@@ -4705,7 +4705,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "de6e4366d186d349e318b0955d4926567358db38a84d7425234f71eff783b94d",
+      "sha256": "67ef0f1fb3ca42fc4d671c5096a18dab5067c484e5d57072d0e8eadc25e92c18",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -6921,7 +6921,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "db16d44af919204f89c3d6b190a7769b663015fb41506b37cc434bd2f0d13dd5",
+      "sha256": "31d2f6c5079273718812baf597451f03cb8a355af843531fd7290582b63364e5",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
@@ -6945,7 +6945,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "c45e0712736ecc5ddcdafbf8ad381d127e4d5b4b27d35aadf6cd402062b40c55",
+      "sha256": "697722a5e739395fd8ebcf04a9eba13e46498db2cc44e937f4ea5877f838483c",
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
@@ -6977,7 +6977,7 @@
       "executable": false
     },
     "tests/e2e/integrations/slack-app-installation.mjs": {
-      "sha256": "14091f211a778986d25cb959f97dadb7a754da1cfc4a835f1c6c34a89210981d",
+      "sha256": "041e8f4d774118e8beb7139911b9826983db8e72a6a11a0435683d8074f9f82b",
       "executable": false
     },
     "tests/e2e/integrations/slack-dm-settings.mjs": {
@@ -7365,7 +7365,7 @@
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "d121c8023aec213e5e14d6ca1bf242378672c0c37fa0fd3f7b917516e1ab928a",
+      "sha256": "6ac44b131b5b0f35814b74dcb34df9f92bf9787d6e0ce63100d34ff37163492b",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {

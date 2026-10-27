@@ -193,6 +193,8 @@ at dispatch. Project updates, releases, SLA warnings and agent completions
 retain their receiving clauses. Initiative updates and project membership
 changes use this same durable dispatcher. Private-team issue content only posts
 to channels an Admin bound to that team.
+Teams, projects and saved views post only issue events and initiatives only
+initiative events: the form offers just those, and Vector refuses any other event.
 
 Owners and Admins bind initiatives under these same Settings controls; Members
 cannot bind initiatives. Choose Initiative created, Initiative update or Initiative
