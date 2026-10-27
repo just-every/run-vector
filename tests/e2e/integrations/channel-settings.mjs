@@ -56,24 +56,68 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  await send('/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:team.statuses.find(s=>s.category==='started').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
  const posts=(await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(issue.identifier));assert.equal(posts.length,2);assert.ok(posts.every(post=>post.body.channel==='CALLOWED'+width));assert.ok(posts[1].body.text.includes(team.statuses.find(s=>s.category==='unstarted').name+' → '+team.statuses.find(s=>s.category==='started').name));
- const form=panel.getByRole('form',{name:'Bind notification channel'});await form.getByLabel('Team, project or saved view').selectOption('project:'+project.id);await form.getByLabel('Channel service').selectOption('discord');await form.getByLabel('Channel display name').fill('checkout-discord');await form.getByLabel('Discord webhook URL').fill('https://discord.com/api/webhooks/123/synthetic-browser-discord');
+ const form=panel.getByRole('form',{name:'Bind notification channel'});await form.getByLabel('Team, project, saved view or initiative').selectOption('project:'+project.id);await form.getByLabel('Channel service').selectOption('discord');await form.getByLabel('Channel display name').fill('checkout-discord');await form.getByLabel('Discord webhook URL').fill('https://discord.com/api/webhooks/123/synthetic-browser-discord');
  await form.getByLabel('Discord webhook URL').evaluate(element=>element.scrollIntoView({block:'center'}));await shot('discord-form');const bindingResponse=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels')&&r.request().method()==='POST');await form.getByRole('button',{name:'Save channel binding'}).click();assert.equal((await bindingResponse).status(),201);
  const discordIssue=await send('/issues','POST',{title:'Discord rollout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
  assert.equal((await calls()).filter(c=>c.method==='discord'&&c.body.content.includes(discordIssue.identifier)).length,1);
  await page.reload();await panel.getByText('Discord #checkout-discord',{exact:false}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-discord');await axe();
  const removed=page.waitForResponse(r=>r.url().includes('/settings/integrations/channels/')&&r.request().method()==='DELETE');await panel.getByRole('button',{name:'Remove binding for '+name,exact:true}).click();assert.equal((await removed).status(),200);await panel.getByRole('button',{name:'Remove binding for '+name,exact:true}).waitFor({state:'hidden'});await panel.getByText('A new binding replaces',{exact:false}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('unbound');
- await form.getByLabel('Team, project or saved view').selectOption('team:'+team.id);await form.getByLabel('Channel service').selectOption('slack');await form.getByLabel('Channel display name').fill('needs-channel-membership');await form.getByLabel('Slack channel ID').fill('CREFUSED');
+ await form.getByLabel('Team, project, saved view or initiative').selectOption('team:'+team.id);await form.getByLabel('Channel service').selectOption('slack');await form.getByLabel('Channel display name').fill('needs-channel-membership');await form.getByLabel('Slack channel ID').fill('CREFUSED');
  const refusalBinding=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels')&&r.request().method()==='POST');await form.getByRole('button',{name:'Save channel binding'}).click();assert.equal((await refusalBinding).status(),201);
  await send('/issues','POST',{title:'Check channel membership '+width,teamId:team.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
  const refusalTick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(refusalTick.status(),200);await refusalTick.body();
  await page.reload();const failure=page.getByText(/Slack refused this message \(not_in_channel\)/).first();await failure.waitFor();await panel.getByRole('alert').filter({hasText:'Routing suspended'}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('routing-suspended');await failure.evaluate(element=>element.scrollIntoView({block:'center'}));await shot('delivery-failure');
- await form.getByLabel('Team, project or saved view').selectOption('team:'+team.id);await form.getByLabel('Channel display name').fill('confirmed-delivery');await form.getByLabel('Slack channel ID').fill('CDELIVERY');
+ await form.getByLabel('Team, project, saved view or initiative').selectOption('team:'+team.id);await form.getByLabel('Channel display name').fill('confirmed-delivery');await form.getByLabel('Slack channel ID').fill('CDELIVERY');
  const confirmed=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels')&&r.request().method()==='POST');await form.getByRole('button',{name:'Save channel binding'}).click();assert.equal((await confirmed).status(),201);
  const resumed=await send('/issues','POST',{title:'Confirm delivery access '+width,teamId:team.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
  const resumedTick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(resumedTick.status(),200);await resumedTick.body();assert.equal((await calls()).filter(c=>c.method==='chat.postMessage'&&c.body.text.includes(resumed.identifier)).length,1);
  const failedBinding=(await send('/settings/integrations/channels','GET')).bindings.find(b=>b.scope==='team'&&b.objectId===team.id);await send('/settings/integrations/channels/'+failedBinding.id,'DELETE');
  const teamForm=page.getByRole('form',{name:'Create team',exact:true});await teamForm.getByLabel('Team name',{exact:true}).fill('Customer operations');await teamForm.getByLabel('Identifier prefix',{exact:true}).fill('CUST');await teamForm.getByLabel('Create Slack channel',{exact:true}).check();await teamForm.getByLabel('Create Slack channel',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('create-team');await axe('form[aria-label="Create team"]');
  await page.goto(runtime.base+'/app/settings');const removedSlack=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/slack')&&r.request().method()==='DELETE');await panel.getByRole('button',{name:'Remove Slack connection',exact:true}).click();assert.equal((await removedSlack).status(),200);await panel.getByText('Slack is not connected.',{exact:true}).waitFor();await panel.getByText('Slack is not connected.',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('connection-removed');
+ await initiativeApprovalOutcomes({page,runtime,send,width});
 }
 
+
+/** Outcomes remain next to the control and truthful through a stale list and a repeated approval. */
+export async function initiativeApprovalOutcomes({page,runtime,send,width}){
+ await page.setViewportSize({width,height:width===390?844:1000});
+ const panel=page.locator('.channel-settings'),approval=panel.getByRole('form',{name:'Approve initiative channel',exact:true});
+ const owner=(await send('/settings/administration','GET')).viewer.id;
+ const initiative=await send('/initiatives','POST',{name:'synthetic-vector-1851-'+width,ownerOperatorId:owner});
+ const project=(await send('/settings/projects','POST',{name:'synthetic-vector-1852-'+width,leadOperatorId:owner})).projects.find(p=>p.name==='synthetic-vector-1852-'+width);
+ const source=await send('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'discord',channelName:'gate-c45p-src-south',webhookUrl:'https://discord.com/api/webhooks/1853/synthetic-vector-1854',events:['issue.created']});
+ await page.reload();await approval.waitFor();
+ const select=approval.getByLabel('Existing channel',{exact:true}),choose=async()=>{await approval.getByLabel('Initiative to approve for',{exact:true}).selectOption(initiative.id);await select.selectOption('discord:'+source.id);};
+ const submit=async(status,changed)=>{
+  const response=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/channels/initiative-approvals'));
+  await approval.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();const result=await response;assert.equal(result.status(),status);if(changed!==undefined)assert.equal((await result.json()).changed,changed);
+  const outcome=panel.locator('.initiative-approval-outcome');await outcome.waitFor();
+  await page.waitForFunction(()=>document.activeElement?.classList.contains('initiative-approval-outcome'));
+  const measured=await outcome.evaluate(element=>{const box=element.getBoundingClientRect();return {text:element.textContent,top:box.top,bottom:innerHeight-box.bottom,focused:document.activeElement===element};});
+  assert.ok(measured.top>=0&&measured.bottom>=0,'approval outcome is in the viewport');assert.ok(measured.focused);
+  console.log('INIT-001 approval outcome',JSON.stringify({width,status,...measured}));
+ };
+ await choose();await submit(201,true);
+ const rows=runtime.sql("SELECT * FROM vector_initiative_destination_approvals WHERE initiative_id='"+initiative.id+"'"),audits=runtime.sql("SELECT id FROM audit_records WHERE action='channel.initiative_destination_approved' AND subject_id='"+initiative.id+"'");
+ await choose();await submit(201,false);
+ assert.deepEqual(runtime.sql("SELECT * FROM vector_initiative_destination_approvals WHERE initiative_id='"+initiative.id+"'"),rows);
+ assert.deepEqual(runtime.sql("SELECT id FROM audit_records WHERE action='channel.initiative_destination_approved' AND subject_id='"+initiative.id+"'"),audits);
+ const scoped=await send('/initiatives/'+initiative.id+'/channel-binding','PUT',{provider:'discord',channelId:'1853',events:['initiative.updated'],expectedVersion:null});
+ await page.reload();await approval.waitFor();
+ assert.equal(await select.locator('option[value="discord:'+scoped.id+'"]').count(),0);
+ assert.equal(await select.locator('option[value="discord:'+source.id+'"]').count(),1);
+ console.log('INIT-001 approval options',JSON.stringify({width,unfilteredDiscord:(await send('/settings/integrations/channels','GET')).bindings.filter(b=>b.provider==='discord').length,offeredDiscord:await select.locator('option[value^="discord:"]').count(),kept:source.id,excluded:scoped.id}));
+ // A concurrent withdrawal leaves this browser's row stale; its response must reload that list.
+ const row=(await send('/settings/integrations/channels','GET')).approvals.find(a=>a.initiativeId===initiative.id);
+ await send('/settings/integrations/channels/initiative-approvals/'+row.id,'DELETE');
+ const withdraw=panel.getByRole('button',{name:'Withdraw approval for '+initiative.name+' #gate-c45p-src-south',exact:true});
+ const withdrawn=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/initiative-approvals/'+row.id));await withdraw.click();assert.equal((await withdrawn).status(),404);
+ await panel.locator('.initiative-approval-outcome').waitFor();await withdraw.waitFor({state:'detached'});
+ assert.ok(!(await page.locator('body').innerText()).includes('approval_not_found'));
+ console.log('INIT-001 concurrent withdrawal',JSON.stringify({width,text:await panel.locator('.initiative-approval-outcome').innerText(),remaining:await withdraw.count()}));
+ await choose();
+ console.log('INIT-001 approval geometry',JSON.stringify(await approval.evaluate((form)=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,fields:[...form.querySelectorAll('select')].map(select=>({label:select.getAttribute('aria-label'),width:select.clientWidth,scrollWidth:select.scrollWidth,border:getComputedStyle(select).borderWidth,height:select.getBoundingClientRect().height,options:[...select.options].map(option=>{const style=getComputedStyle(select),canvas=document.createElement('canvas'),context=canvas.getContext('2d');context.font=style.font;return {text:option.text,scrollWidth:option.scrollWidth,clientWidth:option.clientWidth,textWidth:context.measureText(option.text).width,availableWidth:select.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)};})})),detail:form.querySelector('#approval-destination-detail').textContent}))));
+ await send('/settings/integrations/channels/'+source.id,'DELETE');
+ await submit(404);
+}

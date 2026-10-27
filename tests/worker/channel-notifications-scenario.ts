@@ -83,5 +83,168 @@ export async function channelNotifications(f:Awaited<ReturnType<typeof setupInte
 
   const archivedBefore=slack().length;edge.postMode('archived');await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(archivedBefore+1);expect((await state()).bindings.find((b:any)=>b.scope==='team').suspendedReason).not.toBeNull();
   await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(archivedBefore+1);edge.postMode('accepted');await bind('team',team.id);await dispatchWebhooks(current);expect(slack()).toHaveLength(archivedBefore+1);await f.create();await dispatchWebhooks(current);expect(slack()).toHaveLength(archivedBefore+2);
+  await initiativeChannels(f,current,edge);
+  await scopedInitiativeChannels(f,current,edge);
  }finally{edge.restore();}
+}
+
+/** Both real provider edges receive only the bound initiative's selected writes. */
+export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegrations>>,current:WorkerBindings,edge:ReturnType<typeof channelEdge>){
+ const json=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
+ const workspace=(await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id'))!;
+ const root=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-1810',description:'synthetic-vector-1811 confidential direction',ownerOperatorId:f.owner}),201);
+ const other=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-1812',ownerOperatorId:f.owner}),201);
+ const project=(await f.mutate('/settings/projects','POST',{name:'synthetic-vector-1813 secret project',leadOperatorId:f.owner})).projects.find(p=>p.name==='synthetic-vector-1813 secret project')!;
+ const team=f.initial.teams[0];await f.create({projectId:project.id,teamId:team.id});
+ const bind=async(provider:string,events=['initiative.updated'])=>(await json(await f.call('/settings/integrations/channels','POST',{scope:'initiative',objectId:root.id,provider,channelName:'initiative-delivery',events,...(provider==='slack'?{channelId:'CINITIATIVE'}:{webhookUrl:edge.webhook})}),201)).id as string;
+ const update=async(id=root.id)=>{const old=await json(await f.call('/initiatives/'+id));return json(await f.call('/initiatives/'+id,'PATCH',{expectedVersion:old.version,description:'synthetic-vector-1814 confidential update'}));};
+ const posts=()=>edge.calls.filter(c=>(c.method==='chat.postMessage'||c.method==='discord')&&(String(c.body.text??c.body.content).includes('/app/initiatives/'+root.id)||String(c.body.text??c.body.content).includes('Private work changed. Sign in to Vector to view it.')));
+ const events=async(destination:string)=>(await env.DB.prepare('SELECT id,body FROM vector_webhook_events WHERE destination_id=? ORDER BY created_at,id').bind(destination).all<{id:string;body:string}>()).results;
+ // An object posts only the events it produces; a mismatch is refused before any provider call, seal or write.
+ const stored=()=>Promise.all(['vector_channel_bindings','vector_initiative_channel_bindings','vector_webhook_destinations','vector_integration_secret_keys','audit_records'].map(table=>env.DB.prepare('SELECT COUNT(*) n FROM '+table).first<number>('n')));
+ for(const [scope,objectId,mismatched] of [['initiative',root.id,['issue.created']],['team',team.id,['initiative.updated']]] as const)for(const provider of ['slack','discord']){
+  const before=await stored(),calls=edge.calls.length,refused=await f.call('/settings/integrations/channels','POST',{scope,objectId,provider,channelName:'synthetic-vector-1817',events:mismatched,...(provider==='slack'?{channelId:'CMISMATCH'}:{webhookUrl:edge.webhook})});
+  expect(refused.status,scope+' '+provider+' mismatch').toBe(400);expect(((await refused.json()) as {error:string}).error).toBe('channel_event_scope');
+  expect(await stored(),'refused binding writes nothing').toEqual(before);expect(edge.calls,'refused binding calls no provider').toHaveLength(calls);
+ }
+ await json(await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:team.id,provider:'slack',channelId:'CDELIVERY',channelName:'delivery',events:['triage.created','issue.created','issue.status_changed']}),201);
+ for(const provider of ['slack','discord']){
+  const creationBefore=posts().length,creationBinding=await bind(provider,['initiative.created']);
+  const creationEvents=await events(creationBinding);expect(creationEvents,'selected creation is enqueued by the public binding door').toHaveLength(1);
+  expect(JSON.parse(creationEvents[0].body)).toMatchObject({initiativeId:root.id,actorId:f.owner,change:'Initiative created'});
+  await dispatchWebhooks(current);await dispatchWebhooks(current);await outboundService(current,workspace).dispatch(creationEvents[0].id);
+  expect(posts(),'selected creation posts exactly once per provider after repeated dispatch').toHaveLength(creationBefore+1);
+  const creationMessage=posts().at(-1)!;expect(creationMessage.method).toBe(provider==='slack'?'chat.postMessage':'discord');
+  expect(creationMessage.body.text??creationMessage.body.content).toBe(root.name+'\n'+f.initial.operators.find(o=>o.id===f.owner)!.name+': Initiative created\n'+current.APP_ORIGIN+'/app/initiatives/'+root.id);
+  await json(await f.call('/settings/integrations/channels/'+creationBinding,'DELETE'));
+  let binding=await bind(provider),before=posts().length;
+  const state=await json(await f.call('/settings/integrations/channels'));expect(state.objects).toContainEqual({id:root.id,name:root.name,scope:'initiative'});expect(state.bindings.find((b:any)=>b.id===binding)).toMatchObject({scope:'initiative',objectName:root.name,events:['initiative.updated']});
+  const old=await json(await f.call('/initiatives/'+root.id));
+  await json(await f.call('/initiatives/'+root.id+'/projects','PUT',{expectedVersion:old.version,projectIds:[project.id]}));
+  await update(other.id);await dispatchWebhooks(current);
+  expect(await events(binding),'unselected project change and another initiative enqueue nothing').toHaveLength(0);expect(posts()).toHaveLength(before);
+  const updated=await update();const queued=await events(binding);expect(queued).toHaveLength(1);expect(JSON.parse(queued[0].body)).toMatchObject({initiativeId:root.id,initiativeName:root.name,actorId:f.owner,change:expect.stringContaining('Initiative updated')});
+  expect((await f.call('/initiatives/'+root.id,'PATCH',{expectedVersion:old.version,status:'active'})).status).toBe(409);expect(await events(binding),'stale writes enqueue nothing').toEqual(queued);
+  await dispatchWebhooks(current);await dispatchWebhooks(current);
+  await outboundService(current,workspace).dispatch(queued[0].id);await outboundService(current,workspace).dispatch(queued[0].id);
+  expect(posts(),'re-dispatch never repeats an accepted initiative event').toHaveLength(before+1);
+  const message=posts().at(-1)!.body,text=message.text??message.content;expect(text).toContain(root.name);expect(text).toContain(f.initial.operators.find(o=>o.id===f.owner)!.name+': Initiative updated');expect(text).toContain(current.APP_ORIGIN+'/app/initiatives/'+root.id);expect(text).not.toContain('confidential');expect(text).not.toContain(project.name);expect(message).not.toHaveProperty('identifier');
+  if(provider==='slack')expect(message).toMatchObject({channel:'CINITIATIVE',unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false});else expect(message).toMatchObject({allowed_mentions:{parse:[]},flags:4});
+  const retired=binding;binding=await bind(provider,['initiative.projects_changed']);expect(await env.DB.prepare('SELECT 1 FROM vector_integration_secret_keys WHERE identity=?').bind('destination:'+retired).first()).toBeNull();
+  // Visibility changes after production are checked at dispatch, with no project names projected.
+  await json(await f.call('/initiatives/'+root.id+'/projects','PUT',{expectedVersion:updated.version,projectIds:[project.id]}));
+  await f.mutate('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:true});await dispatchWebhooks(current);expect(posts()).toHaveLength(before+2);expect(posts().at(-1)!.body,'complete private notice at '+provider+' edge').toEqual(provider==='slack'?{channel:'CINITIATIVE',text:'Private work changed. Sign in to Vector to view it.',unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:'Private work changed. Sign in to Vector to view it.',allowed_mentions:{parse:[]},flags:4});expect(JSON.stringify(posts())).not.toContain(project.name);
+  await f.mutate('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:false});
+  binding=await bind(provider);await update();edge.postMode('uncertain');await dispatchWebhooks(current);edge.postMode('accepted');
+  const unknown=(await events(binding))[0];expect((await outboundService(current,workspace).get(unknown.id))?.state).toBe('uncertain');await outboundService(current,workspace).dispatch(unknown.id);expect(posts(),'uncertain initiative send is never retried').toHaveLength(before+3);
+  await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));
+  binding=await bind(provider);await update();edge.postMode('redirect');await dispatchWebhooks(current);edge.postMode('accepted');
+  const rejected=(await events(binding))[0];expect((await outboundService(current,workspace).get(rejected.id))?.state).toBe('rejected');await outboundService(current,workspace).dispatch(rejected.id);expect(posts(),'terminal initiative refusal stays terminal').toHaveLength(before+4);
+  await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));
+  binding=await bind(provider);await update();await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));await dispatchWebhooks(current);expect(posts(),'revoked pending destination posts nothing').toHaveLength(before+4);
+  binding=await bind(provider);await update();
+  await env.DB.prepare('INSERT OR REPLACE INTO vector_restore_status(id,import_id,effects_held) VALUES(1,?,1)').bind('synthetic-vector-1815').run();
+  await dispatchWebhooks(current);expect(posts(),'restore-held effects post nothing').toHaveLength(before+4);
+  await env.DB.prepare('DELETE FROM vector_restore_status').run();
+  await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));
+  binding=await bind(provider);
+  const cookie=await invite('synthetic-vector-1816-'+provider+'@vector.test',f.cookie),memberId=await actor(cookie),oldMember=await json(await f.call('/initiatives/'+root.id));
+  await json(await request('/api/initiatives/'+root.id,'PATCH',{expectedVersion:oldMember.version,status:'active'},cookie));
+  await json(await f.call('/settings/operators/'+memberId+'/role','PATCH',{role:'guest',teamIds:[team.id]}));
+  await dispatchWebhooks(current);expect(posts(),'actor lost initiative access before dispatch').toHaveLength(before+4);
+  await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));
+ }
+}
+
+/** ct 27 Oct (INIT-001): a Member binds only to an Owner- or Admin-approved destination, rechecked before every post. */
+export async function scopedInitiativeChannels(f:Awaited<ReturnType<typeof setupIntegrations>>,current:WorkerBindings,edge:ReturnType<typeof channelEdge>){
+ const json=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
+ const workspace=(await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id'))!;
+ edge.workspace('TSYNTHETICA');await json(await f.call('/settings/integrations/slack','POST',{botToken:edge.token}));
+ const root=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-1830',ownerOperatorId:f.owner}),201);
+ const other=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-1831',ownerOperatorId:f.owner}),201);
+ const approve=async(body:Record<string,string>)=>json(await f.call('/settings/integrations/channels/initiative-approvals','POST',{audience:'workspace',...body}),201);
+ const source=(await json(await f.call('/settings/integrations/channels','POST',{scope:'initiative',objectId:other.id,provider:'discord',channelName:'synthetic-vector-1832',events:['initiative.projects_changed'],webhookUrl:edge.webhook}),201)).id as string;
+ const ownerProject=(await f.mutate('/settings/projects','POST',{name:'synthetic-vector-1833',leadOperatorId:f.owner})).projects.find(p=>p.name==='synthetic-vector-1833')!;
+ await json(await f.call('/settings/integrations/channels','POST',{scope:'project',objectId:ownerProject.id,provider:'slack',channelId:'COWNERONLY',channelName:'delivery',events:['issue.created']}),201);
+ const approvalRows=async()=>(await env.DB.prepare('SELECT * FROM vector_initiative_destination_approvals ORDER BY id').all()).results;
+ const approvalAudits=async()=>(await env.DB.prepare("SELECT * FROM audit_records WHERE action='channel.initiative_destination_approved' ORDER BY id").all()).results;
+ const firstRows=await approvalRows(),firstAudits=await approvalAudits();
+ expect(await approve({provider:'slack',initiativeId:root.id,channelId:'CSCOPED'})).toMatchObject({approved:true,changed:true});
+ expect(await approvalRows()).toHaveLength(firstRows.length+1);expect(await approvalAudits()).toHaveLength(firstAudits.length+1);
+ const usableRows=await approvalRows(),usableAudits=await approvalAudits();
+ expect(await approve({provider:'slack',initiativeId:root.id,channelId:'CSCOPED'})).toMatchObject({changed:false});
+ expect(await approvalRows(),'usable approval writes no row').toEqual(usableRows);expect(await approvalAudits(),'usable approval writes no audit').toEqual(usableAudits);
+ await approve({provider:'discord',initiativeId:root.id,destinationId:source});await approve({provider:'slack',initiativeId:other.id,channelId:'COTHERINIT'});
+ const webhook=new URL(edge.webhook).pathname.split('/')[3];
+ const cookie=await invite('synthetic-vector-1834@vector.test',f.cookie),memberId=await actor(cookie),member=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
+ const door='/initiatives/'+root.id+'/channel-binding',bindingState=async()=>json(await member(door));
+ const slackPosts=()=>edge.calls.filter(c=>c.method==='chat.postMessage'&&c.body.channel==='CSCOPED'),discordPosts=()=>edge.calls.filter(c=>c.method==='discord'&&String(c.body.content).includes('/app/initiatives/'+root.id));
+ const edit=async(by:(path:string,method?:string,body?:unknown)=>Promise<Response>)=>{const old=await json(await f.call('/initiatives/'+root.id));return json(await by('/initiatives/'+root.id,'PATCH',{expectedVersion:old.version,description:'synthetic-vector-1835 confidential '+old.version}));};
+ const custody=async()=>Promise.all(['vector_initiative_channel_bindings','vector_initiative_scoped_bindings','vector_webhook_destinations','vector_webhook_events'].map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY 1').all()).results));
+ let state=await bindingState();
+ expect(state.destinations.map((d:any)=>d.provider+':'+d.channelId).sort(),'only destinations approved for this initiative').toEqual(['discord:'+webhook,'slack:CSCOPED']);
+ // (b) Approval for another initiative, an Owner's unrelated binding and a borrowed display name all refuse with no row and no provider call.
+ const refusedBefore=await custody(),callsBefore=edge.calls.length;
+ for(const channelId of ['COTHERINIT','COWNERONLY','CDISPLAYNAME'])expect((await member(door,'PUT',{provider:'slack',channelId,channelName:'delivery',events:['initiative.updated'],expectedVersion:null})).status,'unapproved '+channelId).toBe(403);
+ expect(await custody()).toEqual(refusedBefore);expect(edge.calls).toHaveLength(callsBefore);
+ // (a) The Member binds each approved destination, edits, and each provider edge receives exactly one post.
+ let saved=await json(await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:null}));
+ await edit(member);await dispatchWebhooks(current);await dispatchWebhooks(current);
+ for(const event of (await env.DB.prepare('SELECT id FROM vector_webhook_events WHERE destination_id=?').bind(saved.id).all<{id:string}>()).results)await outboundService(current,workspace).dispatch(event.id);
+ expect(slackPosts(),'one Slack post through the scoped binding; replay adds none').toHaveLength(1);
+ expect(slackPosts()[0].body.text).toBe(root.name+'\nsynthetic-vector-1834: Initiative updated · Description changed\n'+current.APP_ORIGIN+'/app/initiatives/'+root.id);
+ saved=await json(await member(door,'PUT',{provider:'discord',channelId:webhook,events:['initiative.updated','initiative.projects_changed'],expectedVersion:saved.version}));
+ await edit(member);await dispatchWebhooks(current);await dispatchWebhooks(current);
+ expect(discordPosts(),'one Discord post through the scoped binding; replay adds none').toHaveLength(1);expect(slackPosts()).toHaveLength(1);
+ expect((await bindingState()).binding).toMatchObject({provider:'discord',channelId:webhook,events:['initiative.updated','initiative.projects_changed'],live:true});
+ // (c) A demoted binder is refused at the door and their saved binding posts nothing; removal does the same.
+ await json(await f.call('/settings/operators/'+memberId+'/role','PATCH',{role:'guest',teamIds:[f.initial.teams[0].id]}));
+ expect((await member(door,'PUT',{provider:'discord',channelId:webhook,events:['initiative.updated'],expectedVersion:saved.version})).status).toBe(403);
+ expect((await json(await f.call(door))).binding).toMatchObject({live:false,notPosting:{code:'binder_cannot_edit'}});
+ expect((await json(await f.call('/settings/integrations/channels'))).bindings.find((b:any)=>b.id===saved.id)).toMatchObject({needsAttention:false,scoped:true,notPosting:{code:'binder_cannot_edit'}});
+ await edit(f.call);await dispatchWebhooks(current);expect(discordPosts(),'demoted binder posts nothing').toHaveLength(1);
+ await json(await f.call('/settings/operators/'+memberId+'/role','PATCH',{role:'member',teamIds:[]}));
+ // (e) Withdrawal stops the pending and later events; re-approval replays nothing until the Member binds again.
+ saved=await json(await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:saved.version}));
+ await edit(f.call);expect((await env.DB.prepare('SELECT count(*) n FROM vector_webhook_events WHERE destination_id=?').bind(saved.id).first<number>('n')),'pending event').toBe(1);
+ const settings=await json(await f.call('/settings/integrations/channels')),approval=settings.approvals.find((a:any)=>a.initiativeId===root.id&&a.channelId==='CSCOPED');
+ await json(await f.call('/settings/integrations/channels/initiative-approvals/'+approval.id,'DELETE'));
+ await dispatchWebhooks(current);await edit(f.call);await dispatchWebhooks(current);expect(slackPosts(),'withdrawn approval: pending and later events post nothing').toHaveLength(1);
+ expect((await bindingState()).binding).toMatchObject({provider:'slack',channelId:'CSCOPED',live:false,notPosting:{code:'approval_withdrawn'}});
+ await approve({provider:'slack',initiativeId:root.id,channelId:'CSCOPED'});await dispatchWebhooks(current);await edit(f.call);await dispatchWebhooks(current);
+ expect(slackPosts(),'re-approval never replays or revives the withdrawn binding').toHaveLength(1);
+ expect((await bindingState()).binding).toMatchObject({live:false,notPosting:{code:'approved_again'}});
+ state=await bindingState();saved=await json(await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:state.version}));
+ await edit(f.call);await dispatchWebhooks(current);expect(slackPosts(),'fresh binding posts only the new event').toHaveLength(2);
+ expect((await env.DB.prepare("SELECT action,count(*) n FROM audit_records WHERE action IN('channel.initiative_destination_approved','channel.initiative_destination_withdrawn') GROUP BY action ORDER BY action").all()).results).toEqual([{action:'channel.initiative_destination_approved',n:4},{action:'channel.initiative_destination_withdrawn',n:1}]);
+ // Workspace identity is part of approval: reconnecting to B cannot carry A's approval across.
+ await edit(f.call);
+ expect(await env.DB.prepare('SELECT count(*) n FROM vector_webhook_events WHERE destination_id=? AND enqueued_at IS NULL').bind(saved.id).first<number>('n'),'workspace A has a pending event').toBe(1);
+ edge.workspace('TSYNTHETICB','Harbor Slack');edge.safety({name:'checkout-updates'});await json(await f.call('/settings/integrations/slack','POST',{botToken:edge.token}));
+ const beforeWorkspaceSave=await custody(),beforeWorkspaceCalls=edge.calls.length;
+ expect((await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:saved.version})).status,'workspace B refuses workspace A approval').toBe(403);
+ expect(await custody(),'refused workspace change preserves custody').toEqual(beforeWorkspaceSave);expect(edge.calls).toHaveLength(beforeWorkspaceCalls);
+ expect((await bindingState()).binding).toMatchObject({live:false,notPosting:{code:'workspace_changed',currentWorkspace:'Harbor Slack'}});
+ expect((await json(await f.call('/settings/integrations/channels'))).bindings.find((b:any)=>b.id===saved.id)).toMatchObject({needsAttention:false,notPosting:{code:'workspace_changed'}});
+ expect((await bindingState()).destinations.some((d:any)=>d.provider==='slack'),'workspace A approval is no longer offered').toBe(false);
+ await dispatchWebhooks(current);await edit(f.call);await dispatchWebhooks(current);
+ expect(slackPosts(),'changed workspace stops pending and future posts').toHaveLength(2);
+ const oldApproval=(await json(await f.call('/settings/integrations/channels'))).approvals.find((a:any)=>a.initiativeId===root.id&&a.channelId==='CSCOPED');
+ const staleRow=await env.DB.prepare('SELECT * FROM vector_initiative_destination_approvals WHERE id=?').bind(oldApproval.id).first();
+ const staleCount=(await approvalRows()).length,staleAudits=(await approvalAudits()).length;
+ expect(await approve({provider:'slack',initiativeId:root.id,channelId:'CSCOPED'})).toMatchObject({changed:true});
+ const freshRow=await env.DB.prepare('SELECT * FROM vector_initiative_destination_approvals WHERE initiative_id=? AND provider=? AND channel_id=?').bind(root.id,'slack','CSCOPED').first();
+ expect(freshRow?.id,'stale approval is replaced').not.toBe(staleRow?.id);
+ expect(freshRow).toMatchObject({provider_workspace:'TSYNTHETICB',channel_name:'checkout-updates'});
+ expect(await approvalRows()).toHaveLength(staleCount);expect(await approvalAudits()).toHaveLength(staleAudits+1);
+ expect((await bindingState()).destinations).toContainEqual({provider:'slack',channelId:'CSCOPED',channelName:'checkout-updates'});
+ expect((await bindingState()).binding).toMatchObject({live:false,notPosting:{code:'approved_again'}});
+ await dispatchWebhooks(current);await edit(f.call);await dispatchWebhooks(current);
+ expect(slackPosts(),'fresh workspace B approval alone never replays or revives held events').toHaveLength(2);
+ state=await bindingState();saved=await json(await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:state.version}));
+ await dispatchWebhooks(current);expect(slackPosts(),'explicit binding still does not replay held events').toHaveLength(2);
+ await edit(f.call);await dispatchWebhooks(current);await dispatchWebhooks(current);
+ expect(slackPosts(),'explicit workspace B binding posts subsequent work once').toHaveLength(3);expect(slackPosts()[2].workspace).toBe('TSYNTHETICB');
+ await json(await f.call('/settings/operators/'+memberId,'DELETE'));await edit(f.call);await dispatchWebhooks(current);expect(slackPosts(),'removed binder posts nothing').toHaveLength(3);
 }

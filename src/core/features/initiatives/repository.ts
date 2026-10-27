@@ -1,3 +1,4 @@
+import {initiativeEvent,initiativeChange} from './events';
 import {createUlid} from '../../shared/ids';
 import {settingsActor} from '../settings/repository';
 import {IntegrationError} from '../integrations/errors';
@@ -43,7 +44,8 @@ export async function createInitiative(db:D1Database,actor:string,input:z.infer<
  const g=await graph(db,actor),id=createUlid(new Date()),at=new Date().toISOString();validateHierarchy(g.nodes,id,input.parentId);
  await db.batch([...graphWrites(db,g),await ownerGuard(db,g.workspace,input.ownerOperatorId),
  db.prepare('INSERT INTO initiatives(id,workspace_id,parent_id,owner_operator_id,name,description,target_date,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(id,g.workspace,input.parentId,input.ownerOperatorId,input.name,input.description,input.targetDate,input.status,at,at),
- ...audit({db,actor,workspace:g.workspace,at},'initiative.created',id,input.name,null,input)]);
+ ...audit({db,actor,workspace:g.workspace,at},'initiative.created',id,input.name,null,input),
+ initiativeEvent(db,{workspace:g.workspace,actor,id,name:input.name,at,event:'initiative.created',change:'Initiative created'})]);
  return readInitiative(db,actor,id);
 }
 export async function editInitiative(db:D1Database,actor:string,id:string,input:z.infer<typeof initiativeEdit>){
@@ -51,7 +53,8 @@ export async function editInitiative(db:D1Database,actor:string,id:string,input:
  const {expectedVersion:_,...changes}=input,next={...old,...changes},at=new Date().toISOString();validateHierarchy(g.nodes,id,next.parentId);
  await db.batch([...graphWrites(db,g),await ownerGuard(db,g.workspace,next.ownerOperatorId),gitGuard(db,'EXISTS(SELECT 1 FROM initiatives WHERE id=? AND version=?)',id,old.version),
  db.prepare('UPDATE initiatives SET parent_id=?,owner_operator_id=?,name=?,description=?,target_date=?,status=?,version=version+1,updated_at=? WHERE id=?').bind(next.parentId,next.ownerOperatorId,next.name,next.description,next.targetDate,next.status,at,id),
- ...audit({db,actor,workspace:g.workspace,at},'initiative.updated',id,next.name,old,next)]);
+ ...audit({db,actor,workspace:g.workspace,at},'initiative.updated',id,next.name,old,next),
+ initiativeEvent(db,{workspace:g.workspace,actor,id,name:next.name,at,event:'initiative.updated',change:initiativeChange(old,next)})]);
  return readInitiative(db,actor,id);
 }
 export async function replaceInitiativeProjects(db:D1Database,actor:string,id:string,input:z.infer<typeof initiativeProjects>){
@@ -62,7 +65,8 @@ export async function replaceInitiativeProjects(db:D1Database,actor:string,id:st
  db.prepare('DELETE FROM initiative_projects WHERE initiative_id=?').bind(id),
  db.prepare('INSERT INTO initiative_projects(initiative_id,project_id) SELECT ?,id FROM projects WHERE workspace_id=? AND id IN(SELECT value FROM json_each(?))').bind(id,g.workspace,JSON.stringify(ids)),
  db.prepare('UPDATE initiatives SET version=version+1,updated_at=? WHERE id=?').bind(at,id),
- ...audit({db,actor,workspace:g.workspace,at},'initiative.projects_changed',id,old.name,null,{projectIds:ids})]);
+ ...audit({db,actor,workspace:g.workspace,at},'initiative.projects_changed',id,old.name,null,{projectIds:ids}),
+ initiativeEvent(db,{workspace:g.workspace,actor,id,name:old.name,at,event:'initiative.projects_changed',change:'Initiative projects changed'})]);
  return readInitiative(db,actor,id);
 }
 export async function readInitiative(db:D1Database,actor:string,id:string){

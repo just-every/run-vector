@@ -1,3 +1,6 @@
+import {initiativeCreationBinding} from '../../initiatives/events';
+import {channelBindingSource} from './subjects';
+import {initiativeApprovals,bindingNotPosting} from './initiative-approval';
 import {retireSlackWrites} from '../slack-app/retire';
 import {auditStatement} from '../../audit/producer';
 import {requireSlackChannel} from './channel-safety';
@@ -7,7 +10,7 @@ import {createUlid} from '../../../shared/ids';
 import {guardedSql,ownerPredicate,type IntegrationOwner} from '../authority';
 import {sealSecret,openSecret} from '../secrets';
 import {IntegrationError} from '../errors';
-import {bindingInput} from './schema';
+import {bindingInput,scopeEvents} from './schema';
 import {discordUrl,slackCall,slackToken} from './provider';
 type Binding=z.infer<typeof bindingInput>;
 export async function credentialProblem(env:WorkerBindings,identity:string){
@@ -33,19 +36,23 @@ export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
  await guardedSql(env.DB,ownerPredicate(owner)).batch(retireSlackWrites(owner.workspace,owner.id));return {removed:true};
 }
 export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,input:Binding,skipObjectCheck=false){
+ // Refused before any provider call, seal or write: an object posts only the events it produces.
+ if(input.events.some(event=>!scopeEvents(input.scope).events.includes(event)))throw new IntegrationError(400,'channel_event_scope','Initiatives post only initiative events; teams, projects and saved views post issue events.');
  if(input.provider==='slack'&&!input.channelId)throw new IntegrationError(400,'slack_channel_required');
  if(input.provider==='slack')await requireSlackChannel(env,owner.workspace,input.channelId!);
  const id=createUlid(new Date()),at=new Date().toISOString(),identity='destination:'+id;
  const encrypted=input.provider==='discord'?await sealSecret(env,identity,discordUrl(input.webhookUrl??'')):null;
- const table={team:'teams',project:'projects',view:'saved_views'}[input.scope];
+ const bindingTable=input.scope==='initiative'?'vector_initiative_channel_bindings':'vector_channel_bindings';
+ const table={team:'teams',project:'projects',view:'saved_views',initiative:'initiatives'}[input.scope];
  return {id,writes:[
   ...(!skipObjectCheck?[{sql:`SELECT CASE WHEN EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=?${input.scope==='view'?' AND (owner_operator_id=? OR is_shared=1)':''}) THEN 1 ELSE json('channel object unavailable') END`,params:[input.objectId,owner.workspace,...(input.scope==='view'?[owner.id]:[])]}]:[]),
-  {sql:'UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE id IN(SELECT destination_id FROM vector_channel_bindings WHERE workspace_id=? AND scope=? AND object_id=?)',params:[at,owner.workspace,input.scope,input.objectId]},
-  {sql:"DELETE FROM vector_integration_secret_keys WHERE identity IN(SELECT 'destination:'||destination_id FROM vector_channel_bindings WHERE workspace_id=? AND scope=? AND object_id=?)",params:[owner.workspace,input.scope,input.objectId]},
-  {sql:'DELETE FROM vector_channel_bindings WHERE workspace_id=? AND scope=? AND object_id=?',params:[owner.workspace,input.scope,input.objectId]},
+  {sql:`UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE id IN(SELECT destination_id FROM ${bindingTable} WHERE workspace_id=? AND scope=? AND object_id=?)`,params:[at,owner.workspace,input.scope,input.objectId]},
+  {sql:`DELETE FROM vector_integration_secret_keys WHERE identity IN(SELECT 'destination:'||destination_id FROM ${bindingTable} WHERE workspace_id=? AND scope=? AND object_id=?)`,params:[owner.workspace,input.scope,input.objectId]},
+  {sql:`DELETE FROM ${bindingTable} WHERE workspace_id=? AND scope=? AND object_id=?`,params:[owner.workspace,input.scope,input.objectId]},
   {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,kind,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',params:[id,owner.workspace,input.channelName,input.provider==='slack'?'https://slack.com/api/chat.postMessage':'https://discord.com/api/webhooks/',input.provider,at,at]},
-  {sql:'INSERT INTO vector_channel_bindings(destination_id,workspace_id,scope,object_id,channel_id,channel_name,events,created_by) VALUES(?,?,?,?,?,?,?,?)',params:[id,owner.workspace,input.scope,input.objectId,input.channelId??'',input.channelName,JSON.stringify(input.events),owner.id]},
+  {sql:`INSERT INTO ${bindingTable}(destination_id,workspace_id,scope,object_id,channel_id,channel_name,events,created_by) VALUES(?,?,?,?,?,?,?,?)`,params:[id,owner.workspace,input.scope,input.objectId,input.channelId??'',input.channelName,JSON.stringify(input.events),owner.id]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'channel.bound',subject:input.objectId,at}),
+  ...(input.scope==='initiative'&&input.events.includes('initiative.created')?[initiativeCreationBinding(owner.workspace,input.objectId,id,at)]:[]),
   ...(encrypted?[{sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]}]:[]),
  ]};
 }
@@ -58,6 +65,7 @@ export async function removeBinding(env:WorkerBindings,owner:IntegrationOwner,id
   {sql:"UPDATE vector_webhook_destinations SET enabled=0,revoked_at=COALESCE(revoked_at,?) WHERE id=? AND workspace_id=? AND kind<>'webhook'",params:[new Date().toISOString(),id,owner.workspace]},
   {sql:"DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_webhook_destinations WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)",params:['destination:'+id,id,owner.workspace]},
   {sql:'DELETE FROM vector_channel_bindings WHERE destination_id=? AND workspace_id=?',params:[id,owner.workspace]},
+  {sql:'DELETE FROM vector_initiative_channel_bindings WHERE destination_id=? AND workspace_id=?',params:[id,owner.workspace]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'channel.unbound',subject:id}),
  ]);return {removed:true};
 }
@@ -73,11 +81,11 @@ export async function createSlackChannel(env:WorkerBindings,owner:IntegrationOwn
 export async function readChannels(env:WorkerBindings,owner:IntegrationOwner){
  const [install,bindings,objects]=await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:'SELECT * FROM vector_slack_installations WHERE workspace_id=?',params:[owner.workspace]},
-  {sql:`SELECT b.destination_id id,b.scope,b.object_id objectId,b.channel_id channelId,b.channel_name channelName,b.events,b.suspended_reason suspendedReason,d.kind provider,COALESCE(t.name,p.name,v.name,'Removed object') objectName FROM vector_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.revoked_at IS NULL LEFT JOIN teams t ON b.scope='team' AND t.id=b.object_id LEFT JOIN projects p ON b.scope='project' AND p.id=b.object_id LEFT JOIN saved_views v ON b.scope='view' AND v.id=b.object_id WHERE b.workspace_id=? AND (b.scope<>'view' OR v.owner_operator_id=? OR v.is_shared=1) ORDER BY b.scope,b.channel_name`,params:[owner.workspace,owner.id]},
-  {sql:"SELECT id,name,'team' scope FROM teams WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'project' scope FROM projects WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'view' scope FROM saved_views WHERE workspace_id=? AND (owner_operator_id=? OR is_shared=1)",params:[owner.workspace,owner.workspace,owner.workspace,owner.id]},
+  {sql:`SELECT b.destination_id id,b.scope,b.object_id objectId,b.channel_id channelId,b.channel_name channelName,b.events,b.suspended_reason suspendedReason,EXISTS(SELECT 1 FROM vector_initiative_scoped_bindings s WHERE s.destination_id=b.destination_id) scoped,d.kind provider,COALESCE(t.name,p.name,v.name,n.name,'Removed object') objectName FROM ${channelBindingSource} b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.revoked_at IS NULL LEFT JOIN teams t ON b.scope='team' AND t.id=b.object_id LEFT JOIN projects p ON b.scope='project' AND p.id=b.object_id LEFT JOIN saved_views v ON b.scope='view' AND v.id=b.object_id LEFT JOIN initiatives n ON b.scope='initiative' AND n.id=b.object_id WHERE b.workspace_id=? AND (b.scope<>'view' OR v.owner_operator_id=? OR v.is_shared=1) ORDER BY b.scope,b.channel_name`,params:[owner.workspace,owner.id]},
+  {sql:"SELECT id,name,'team' scope FROM teams WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'project' scope FROM projects WHERE workspace_id=? AND archived_at IS NULL UNION ALL SELECT id,name,'view' scope FROM saved_views WHERE workspace_id=? AND (owner_operator_id=? OR is_shared=1) UNION ALL SELECT id,name,'initiative' scope FROM initiatives WHERE workspace_id=?",params:[owner.workspace,owner.workspace,owner.workspace,owner.id,owner.workspace]},
  ]);
  const needsAttention=Boolean(install[0]?.enabled)&&await credentialProblem(env,'slack:'+owner.workspace);
  const connected=Boolean(install[0]?.enabled)&&!needsAttention;
  const allowedChannels=(await env.DB.prepare('SELECT channel_id channelId,channel_name channelName FROM vector_slack_allowed_channels WHERE workspace_id=? ORDER BY channel_name,channel_id').bind(owner.workspace).all()).results;
- return {allowedChannels,slack:{connected,needsAttention,teamName:install[0]?.team_name??null,signingSecret:connected&&!await credentialProblem(env,'slack-signing:'+owner.workspace),interactivityUrl:env.APP_ORIGIN.replace(/\/$/,'')+'/api/integrations/slack/interactive'},bindings:await Promise.all(bindings.map(async row=>({...row,events:JSON.parse(String(row.events)),needsAttention:row.provider==='slack'?(needsAttention||Boolean(row.suspendedReason)):await credentialProblem(env,'destination:'+row.id)}))),objects};
+ return {approvals:await initiativeApprovals(env.DB,owner.workspace),allowedChannels,slack:{connected,needsAttention,teamName:install[0]?.team_name??null,signingSecret:connected&&!await credentialProblem(env,'slack-signing:'+owner.workspace),interactivityUrl:env.APP_ORIGIN.replace(/\/$/,'')+'/api/integrations/slack/interactive'},bindings:await Promise.all(bindings.map(async row=>({...row,scoped:Boolean(row.scoped),notPosting:await bindingNotPosting(env.DB,String(row.id)),events:JSON.parse(String(row.events)),needsAttention:(row.provider==='slack'?needsAttention:await credentialProblem(env,'destination:'+row.id))}))),objects};
 }
