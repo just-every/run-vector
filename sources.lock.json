@@ -5185,7 +5185,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-list-view.tsx": {
-      "sha256": "14dfe08a4b06c12c988475d71a0cd61c79ae57abe475dc23b65fd357ec080ae3",
+      "sha256": "cc20bd8dfb790589e08629ca8a6e0a989d6341128baf6f61bb41fe068f1e0588",
       "executable": false
     },
     "src/core/features/issues/ui/issue-parent-picker.tsx": {
@@ -5213,7 +5213,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.css": {
-      "sha256": "f23422fbe42f75c0e119d087352090c1418f9c722f9da9d2094373c66d0a22d8",
+      "sha256": "b6a8b0af438ef964b821d1c6321042d11a9127dd01e20a322d33eb3830c71718",
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.tsx": {
