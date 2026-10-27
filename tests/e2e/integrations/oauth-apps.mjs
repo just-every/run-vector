@@ -58,10 +58,11 @@ export async function seedOAuthArchive(installation,cookie){
  assert.equal(installation.sql('SELECT COUNT(*) AS n FROM vector_oauth_apps')[0].n,1);assert.equal(installation.sql('SELECT COUNT(*) AS n FROM vector_oauth_grants')[0].n,1);
  const namespace=installation.sql('SELECT namespace FROM vector_oauth_grants')[0].namespace;
  const quote=value=>"'"+String(value).replaceAll("'","''")+"'";
+ const rows=query=>installation.sql(query).map(row=>({...row}));
  const history={
-  vector_integration_tokens:installation.sql('SELECT * FROM vector_integration_tokens WHERE namespace='+quote(namespace)),
-  integration_token_usage:installation.sql('SELECT * FROM integration_token_usage WHERE namespace='+quote(namespace)+' ORDER BY id'),
-  audit_records:installation.sql('SELECT * FROM audit_records WHERE subject_id IN ('+quote(client.id)+','+quote(token.grant_id)+') ORDER BY id'),
+  vector_integration_tokens:rows('SELECT * FROM vector_integration_tokens WHERE namespace='+quote(namespace)),
+  integration_token_usage:rows('SELECT * FROM integration_token_usage WHERE namespace='+quote(namespace)+' ORDER BY id'),
+  audit_records:rows('SELECT * FROM audit_records WHERE subject_id IN ('+quote(client.id)+','+quote(token.grant_id)+') ORDER BY id'),
  };
  assert.equal(history.vector_integration_tokens.length,1);assert.equal(history.integration_token_usage.length,1);
  for(const action of ['oauth.app.registered','oauth.consent.approved','oauth.grant.issued'])assert(history.audit_records.some(row=>row.action===action),'Seeded OAuth audit action: '+action);
@@ -76,7 +77,7 @@ export async function verifyOAuthArchive(installation,cookie,fixture,records){
  for(const [table,expected] of Object.entries(fixture.history)){
   const ids=new Set(expected.map(row=>row.id??row.token_id));
   assert.deepEqual(rows.filter(item=>item.table===table&&ids.has(item.row.id??item.row.token_id)).map(item=>item.row).sort((a,b)=>String(a.id??a.token_id).localeCompare(String(b.id??b.token_id))),expected.slice().sort((a,b)=>String(a.id??a.token_id).localeCompare(String(b.id??b.token_id))),'Archive retains the specific OAuth history: '+table);
-  const restored=installation.sql('SELECT * FROM '+table).filter(row=>ids.has(row.id??row.token_id));
+  const restored=installation.sql('SELECT * FROM '+table).map(row=>({...row})).filter(row=>ids.has(row.id??row.token_id));
   assert.deepEqual(restored.sort((a,b)=>String(a.id??a.token_id).localeCompare(String(b.id??b.token_id))),expected.slice().sort((a,b)=>String(a.id??a.token_id).localeCompare(String(b.id??b.token_id))),'Restore retains the specific OAuth history: '+table);
  }
  // A restored member must authorize a freshly registered app before new authority exists.
