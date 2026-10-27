@@ -126,7 +126,7 @@ export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegr
   await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));
   binding=await bind(provider);await update();await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));await dispatchWebhooks(current);expect(posts(),'revoked pending destination posts nothing').toHaveLength(before+4);
   binding=await bind(provider);await update();
-  await env.DB.prepare('INSERT OR REPLACE INTO vector_restore_status(id,import_id,effects_held) VALUES(1,'synthetic-vector-1815',1)').run();
+  await env.DB.prepare('INSERT OR REPLACE INTO vector_restore_status(id,import_id,effects_held) VALUES(1,?,1)').bind('synthetic-vector-1815').run();
   await dispatchWebhooks(current);expect(posts(),'restore-held effects post nothing').toHaveLength(before+4);
   await env.DB.prepare('DELETE FROM vector_restore_status').run();
   await json(await f.call('/settings/integrations/channels/'+binding,'DELETE'));
