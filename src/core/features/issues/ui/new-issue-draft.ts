@@ -160,28 +160,9 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
   }
 }
 
-export function hasUnsavedDraft(values: NewIssueDraft) {
-  return (
-    values.mode !== 'issue' ||
-    values.intakeObservedAt !== '' ||
-    values.intakeSummary !== '' ||
-    values.intakeLink !== '' ||
-    values.intakeMeasurements.length > 0 ||
-    values.intakeCustomerReports.length > 0 ||
-    values.title !== '' ||
-    values.teamId !== '' ||
-    values.description !== '' ||
-    values.statusId !== '' ||
-    values.assigneeOperatorId !== '' ||
-    values.projectId !== '' ||
-    values.milestoneId !== '' ||
-    values.cycleId !== '' ||
-    values.priority !== 'none' ||
-    values.labelIds.length > 0 ||
-    values.estimate !== '' ||
-    values.dueDate !== '' ||
-    values.expectedOutcome !== '' ||
-    values.customerImpact !== ''
+export function hasUnsavedDraft(values: NewIssueDraft, defaults: NewIssueDraft = emptyNewIssueDraft) {
+  return (Object.keys(defaults) as (keyof NewIssueDraft)[]).some(
+    key => JSON.stringify(values[key]) !== JSON.stringify(defaults[key]),
   )
 }
 

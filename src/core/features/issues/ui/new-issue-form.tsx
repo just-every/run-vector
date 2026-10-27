@@ -3,7 +3,7 @@ import { administrationSchema } from "../../administration/schema";
 import { useViewerTime } from '../../../app/viewer-time';
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useCanGoBack, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import { issueDetailSchema } from "./data";
@@ -39,6 +39,7 @@ export function NewIssueForm() {
   const options = useApiResource("/api/options", workspaceOptionsSchema);
   const administration = useApiResource("/api/metadata", administrationSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
+  const openingDefaults = useRef(emptyNewIssueDraft);
   const [draftReady, setDraftReady] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
@@ -50,20 +51,24 @@ export function NewIssueForm() {
 
   useEffect(() => {
     if (!storageKey || draftReady || !options.data || !administration.data) return;
-    let draft = { ...emptyNewIssueDraft, teamId: preferredTeam(options.data, administration.data) };
+    const defaults = { ...emptyNewIssueDraft, teamId: preferredTeam(options.data, administration.data) };
+    const project = new URLSearchParams(window.location.search).get("project");
+    if (project && options.data.projects.some(choice => choice.id === project)) defaults.projectId = project;
+    openingDefaults.current = defaults;
+    let draft = defaults;
     try {
       const stored = window.localStorage.getItem(storageKey);
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
-      if (restored) {
+      // Choosing Issue or Intake alone is not unsent content.
+      if (restored && hasUnsavedDraft(restored, { ...defaults, mode: restored.mode })) {
         draft = { ...restored, teamId: restored.teamId || draft.teamId };
         setNotice("Restored your unsent draft from this browser.");
       }
     } catch {
       setStorageError("This browser could not read the unsent draft.");
     }
-    const project = new URLSearchParams(window.location.search).get("project");
-    if (project && options.data.projects.some(choice => choice.id === project)) { draft.projectId = project; draft.mode = "issue"; }
+    if (defaults.projectId) draft = { ...draft, projectId: defaults.projectId, mode: "issue" };
     setValues(draft);
     setDraftReady(true);
   }, [draftReady, storageKey, options.data, administration.data]);
@@ -71,7 +76,7 @@ export function NewIssueForm() {
   useEffect(() => {
     if (!draftReady || !storageKey) return;
     try {
-      if (hasUnsavedDraft(values))
+      if (hasUnsavedDraft(values, { ...openingDefaults.current, mode: values.mode }))
         window.localStorage.setItem(storageKey, JSON.stringify(values));
       else window.localStorage.removeItem(storageKey);
     } catch {
