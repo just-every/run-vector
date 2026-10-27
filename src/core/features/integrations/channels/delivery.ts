@@ -41,8 +41,7 @@ export async function channelMessage(env:WorkerBindings,kind:string,channelId:st
  const event=JSON.parse(body);
  if(event.initiativeId){
   const privateWork=await env.DB.prepare('SELECT 1 FROM initiative_projects ip JOIN issues i ON i.project_id=ip.project_id JOIN teams t ON t.id=i.team_id WHERE ip.initiative_id=? AND t.is_private=1').bind(event.initiativeId).first();
-  const change=event.changeKind==='projects'&&privateWork?'Private work changed. Sign in to Vector to view it.':event.change;
-  const text=`${event.initiativeName}\n${event.actor}: ${change}\n${env.APP_ORIGIN}/app/initiatives/${encodeURIComponent(event.initiativeId)}`;
+  const text=privateWork?'Private work changed. Sign in to Vector to view it.':`${event.initiativeName}\n${event.actor}: ${event.change}\n${env.APP_ORIGIN}/app/initiatives/${encodeURIComponent(event.initiativeId)}`;
   return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]},flags:4});
  }
  const link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);

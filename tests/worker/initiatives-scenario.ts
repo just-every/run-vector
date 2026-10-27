@@ -23,6 +23,7 @@ export async function exerciseInitiatives(w:Awaited<ReturnType<typeof roleWorksp
  expect(detail.nodes[0].projects.map((p:any)=>p.id)).toEqual([projects[0].id]);
  expect(new Set(detail.nodes[1].projects.map((p:any)=>p.id))).toEqual(new Set(projects.map(p=>p.id)));
  expect(new Set(detail.nodes.flatMap((n:any)=>n.projects.flatMap((p:any)=>p.teams)))).toEqual(new Set([w.team.name,w.initial.teams[0].name]));
+ expect(detail.status,'persisted Planned initiative readback').toBe('planned');
  expect(detail).toMatchObject({ownerOperatorId:w.member.id,targetDate:'2027-04-01',description:'Across two teams'});
  expect((await api(readToken,'/initiatives/'+root.id,'PATCH',{expectedVersion:linked.version,status:'completed'})).status).toBe(401);
  const updated=await json(await api(token,'/initiatives/'+root.id,'PATCH',{expectedVersion:linked.version,status:'completed',description:'Updated direction'}));expect(updated.status).toBe('completed');

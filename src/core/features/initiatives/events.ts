@@ -21,3 +21,16 @@ export function initiativeChange(previous:Initiative,next:Initiative){
  if(previous.status!==next.status)changes.push('Status: '+previous.status+' → '+next.status);
  return 'Initiative updated'+(changes.length?' · '+changes.join('; '):'');
 }
+
+/** Selecting creation on a new binding delivers the recorded creation once to that destination. */
+export function initiativeCreationBinding(workspace:string,initiative:string,destination:string,at:string){
+ return {sql:`INSERT INTO vector_webhook_events(id,workspace_id,destination_id,event,body,created_at)
+ SELECT 'initiative-created:'||a.id||':'||d.id,n.workspace_id,d.id,'initiative.created',
+ json_object('initiativeId',n.id,'initiativeName',n.name,'actorId',o.id,'actor',o.name,'change','Initiative created','changeKind','initiative'),?
+ FROM initiatives n JOIN audit_records a ON a.subject_id=n.id AND a.workspace_id=n.workspace_id AND a.action='initiative.created'
+ JOIN operators o ON o.id=a.actor_operator_id AND o.workspace_id=n.workspace_id AND o.removed_at IS NULL
+ JOIN vector_webhook_destinations d ON d.id=? AND d.workspace_id=n.workspace_id AND d.enabled=1 AND d.revoked_at IS NULL
+ WHERE n.workspace_id=? AND n.id=?
+ AND (NOT EXISTS(SELECT 1 FROM vector_restore_status) OR EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=0))
+ ON CONFLICT(id) DO NOTHING`,params:[at,destination,workspace,initiative]};
+}

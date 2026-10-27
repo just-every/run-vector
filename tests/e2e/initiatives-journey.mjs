@@ -52,6 +52,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await hierarchy.getByText(team.name,{exact:false}).first().waitFor();await hierarchy.getByText(other.name,{exact:false}).first().waitFor();
   const subscribed=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/subscriptions');
   await page.getByRole('button',{name:'Subscribe to initiative',exact:true}).click();assert.equal((await subscribed).status(),201);await page.getByRole('button',{name:'Unsubscribe from initiative',exact:true}).waitFor();
+  if(width===1440){await page.locator('header').getByText('Planned · Owner:',{exact:false}).waitFor();await capture('initiative-planned');}
   await capture('initiative-three-level-hierarchy');
   await navigate(page,base+'/app/settings#integrations');
   const panel=page.locator('.channel-settings');await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
