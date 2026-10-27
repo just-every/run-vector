@@ -65,7 +65,13 @@ async function scopedInitiativeDoors(w:Awaited<ReturnType<typeof roleWorkspace>>
  const custody=()=>snapshot(['vector_initiative_destination_approvals','vector_initiative_scoped_bindings','vector_initiative_channel_bindings','vector_webhook_destinations','vector_integration_secret_keys','vector_webhook_events','audit_records']);
  const sources:string[]=[];
  for(const [i,project] of projects.entries())sources.push((await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'discord',channelName:'synthetic-vector-184'+i,events:['issue.created'],webhookUrl:'https://discord.com/api/webhooks/184'+i+'/synthetic-vector-1845'}),201)).id);
- await json(await owner.call(approvals,'POST',{provider:'discord',initiativeId:root.id,destinationId:sources[0],audience:'workspace'}),201);
+ const approvalInput={provider:'discord',initiativeId:root.id,destinationId:sources[0],audience:'workspace'};
+ const first=await snapshot(['vector_initiative_destination_approvals','audit_records']);
+ expect(await json(await owner.call(approvals,'POST',approvalInput),201)).toMatchObject({changed:true});
+ const approved=await snapshot(['vector_initiative_destination_approvals','audit_records']);
+ expect(approved).not.toEqual(first);
+ expect(await json(await owner.call(approvals,'POST',approvalInput),201)).toMatchObject({changed:false});
+ expect(await snapshot(['vector_initiative_destination_approvals','audit_records'])).toEqual(approved);
  await json(await w.admin.call(approvals,'POST',{provider:'discord',initiativeId:child.id,destinationId:sources[1],audience:'workspace'}),201);
  const approval=(await json(await owner.call('/settings/integrations/channels'))).approvals.find((a:any)=>a.initiativeId===root.id).id;
  const viewer=await w.fresh('member');expect((await owner.call('/settings/operators/'+viewer.id+'/role','PATCH',{role:'viewer',teamIds:[]})).status).toBe(200);
@@ -94,7 +100,13 @@ async function scopedInitiativeDoors(w:Awaited<ReturnType<typeof roleWorkspace>>
  unchanged=await custody();
  expect((await editor.call(door,'PUT',{provider:'discord',channelId:'1840',events:['initiative.updated'],expectedVersion:saved.version})).status).toBe(403);
  expect(await custody()).toEqual(unchanged);
- expect((await json(await second.call(door))).binding).toMatchObject({id:saved.version,live:false});
+ expect((await json(await second.call(door))).binding).toMatchObject({id:saved.version,live:false,notPosting:{code:'binder_cannot_edit'}});
+ expect((await json(await owner.call(door))).binding).toMatchObject({live:false,notPosting:{code:'binder_cannot_edit'}});
+ expect((await owner.call('/settings/operators/'+editor.id+'/role','PATCH',{role:'member',teamIds:[]})).status).toBe(200);
+ await json(await owner.call(approvals+'/'+approval,'DELETE'));
+ for(const person of [second,owner])expect((await json(await person.call(door))).binding).toMatchObject({live:false,notPosting:{code:'approval_withdrawn'}});
+ expect(await json(await owner.call(approvals,'POST',approvalInput),201)).toMatchObject({changed:true});
+ for(const person of [second,owner])expect((await json(await person.call(door))).binding).toMatchObject({live:false,notPosting:{code:'approved_again'}});
  expect(await json(await second.call(door,'DELETE',{expectedVersion:saved.version}))).toEqual({removed:true,version:null});
  expect((await json(await second.call(door))).binding).toBeNull();
 }

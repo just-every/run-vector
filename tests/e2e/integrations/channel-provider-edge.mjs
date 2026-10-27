@@ -9,7 +9,7 @@ export async function channelProviderEdge(request){
  appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method,body})+'\n');
  if(method==='apps.manifest.create')return Response.json(request.headers.get('Authorization')==='Bearer synthetic-vector-32016'?{ok:false,error:'invalid_auth'}:{ok:true,app_id:slackAppFixture.appId,credentials:{client_id:slackAppFixture.clientId,client_secret:slackAppFixture.clientSecret,signing_secret:slackAppFixture.signingSecret}});
  if(method==='oauth.v2.access')return Response.json({ok:true,token_type:'bot',app_id:slackAppFixture.appId,scope:'chat:write,channels:manage,channels:read,im:write,users:read.email,app_mentions:read,channels:history,commands,links:read,links:write',access_token:slackAppFixture.botToken});
- if(method==='auth.test')return Response.json({ok:true,team:'Delivery workspace',team_id:slackAppFixture.teamId});
+ if(method==='auth.test')return Response.json(request.headers.get('Authorization')==='Bearer synthetic-vector-1850'?{ok:true,team:'Harbor Slack',team_id:'TSYNTHETICB'}:{ok:true,team:'Delivery workspace',team_id:slackAppFixture.teamId});
  if(method==='auth.revoke')return Response.json({ok:true,revoked:true});
  if(method==='conversations.info')return Response.json({ok:true,channel:{id:body.channel,name:'delivery',is_channel:true,is_member:true,is_archived:false,is_shared:false,is_ext_shared:false,is_org_shared:false,is_pending_ext_shared:false}});
  // The journey lists the Slack accounts that exist for an email; any other email has none.

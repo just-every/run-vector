@@ -55,19 +55,21 @@ export async function approveInitiativeDestination(env:WorkerBindings,actor:Inte
   identity={providerWorkspace:null,channelId:source.webhook,channelName:source.name,source:input.destinationId};
  }
  const id=createUlid(new Date()),at=new Date().toISOString();
- await guardedSql(env.DB,ownerPredicate(actor)).batch([
+ const result=await guardedSql(env.DB,ownerPredicate(actor)).batch([
   approverGuard(actor),
   {sql:`INSERT INTO vector_initiative_destination_approvals(id,workspace_id,initiative_id,provider,provider_workspace,channel_id,channel_name,source_destination_id,audience,approved_by,approved_at)
-  SELECT ?,?,?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM initiatives WHERE id=? AND workspace_id=?) ON CONFLICT(workspace_id,initiative_id,provider,channel_id) DO NOTHING`,
+  SELECT ?,?,?,?,?,?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM initiatives WHERE id=? AND workspace_id=?) ON CONFLICT(workspace_id,initiative_id,provider,channel_id) DO UPDATE SET
+  id=excluded.id,provider_workspace=excluded.provider_workspace,channel_name=excluded.channel_name,source_destination_id=excluded.source_destination_id,audience=excluded.audience,approved_by=excluded.approved_by,approved_at=excluded.approved_at
+  WHERE NOT ${approvalUsable('vector_initiative_destination_approvals')} RETURNING id`,
   params:[id,actor.workspace,input.initiativeId,input.provider,identity.providerWorkspace,identity.channelId,identity.channelName,identity.source,input.audience,actor.id,at,input.initiativeId,actor.workspace]},
-  auditStatement({workspace:actor.workspace,actor:actor.id,action:'channel.initiative_destination_approved',subject:input.initiativeId,at}),
+  auditStatement({workspace:actor.workspace,actor:actor.id,action:'channel.initiative_destination_approved',subject:input.initiativeId,at,condition:{sql:'changes()>0'}}),
  ]);
- return {approved:true};
+ return {approved:true,changed:result[1].length>0};
 }
 export async function withdrawInitiativeDestination(env:WorkerBindings,actor:IntegrationOwner,id:string){
  await approver(env,actor);
  const approval=await env.DB.prepare('SELECT initiative_id FROM vector_initiative_destination_approvals WHERE id=? AND workspace_id=?').bind(id,actor.workspace).first<string>('initiative_id');
- if(!approval)throw new IntegrationError(404,'approval_not_found');
+ if(!approval)throw new IntegrationError(404,'approval_not_found','This approval was already withdrawn.');
  await guardedSql(env.DB,ownerPredicate(actor)).batch([
   approverGuard(actor),
   {sql:'DELETE FROM vector_initiative_destination_approvals WHERE id=? AND workspace_id=?',params:[id,actor.workspace]},
@@ -77,5 +79,22 @@ export async function withdrawInitiativeDestination(env:WorkerBindings,actor:Int
 }
 /** Settings lists every approval; a withdrawn approval is deleted, so a fresh one has a new identity. */
 export async function initiativeApprovals(db:D1Database,workspace:string){
- return (await db.prepare(`SELECT a.id,a.initiative_id initiativeId,n.name initiativeName,a.provider,a.channel_id channelId,a.channel_name channelName,a.audience,${approvalUsable('a')} usable FROM vector_initiative_destination_approvals a JOIN initiatives n ON n.id=a.initiative_id WHERE a.workspace_id=? ORDER BY n.name,a.channel_name,a.id`).bind(workspace).all<{id:string;initiativeId:string;initiativeName:string;provider:'slack'|'discord';channelId:string;channelName:string;audience:'workspace';usable:number}>()).results.map(row=>({...row,usable:Boolean(row.usable)}));
+ return (await db.prepare(`SELECT a.id,a.initiative_id initiativeId,n.name initiativeName,a.provider,a.channel_id channelId,a.channel_name channelName,a.audience,a.provider_workspace approvedWorkspace,(SELECT team_name FROM vector_slack_installations WHERE workspace_id=a.workspace_id) currentWorkspace,${approvalUsable('a')} usable FROM vector_initiative_destination_approvals a JOIN initiatives n ON n.id=a.initiative_id WHERE a.workspace_id=? ORDER BY n.name,a.channel_name,a.id`).bind(workspace).all<{id:string;initiativeId:string;initiativeName:string;provider:'slack'|'discord';channelId:string;channelName:string;audience:'workspace';usable:number;approvedWorkspace:string|null;currentWorkspace:string|null}>()).results.map(row=>({...row,usable:Boolean(row.usable),notPosting:row.usable?null:{code:row.provider==='slack'?'workspace_changed' as const:'approval_withdrawn' as const,approvedWorkspace:row.approvedWorkspace,currentWorkspace:row.currentWorkspace,binderName:null}}));
+}
+
+/** Explain a scoped refusal without treating valid credentials as broken. Posting authority stays in scopedBindingLive. */
+export async function bindingNotPosting(db:D1Database,destination:string){
+ const row=await db.prepare(`SELECT s.approval_id,o.name binderName,a.provider_workspace approvedWorkspace,
+ si.team_name currentWorkspace,${editorSql('s.bound_by','s.workspace_id')} editor,
+ ${scopedBindingLive('s.destination_id')} live,a.id approvalId,a.provider,
+ ${approvalUsable('a')} usable,
+ EXISTS(SELECT 1 FROM vector_initiative_destination_approvals fresh WHERE fresh.workspace_id=s.workspace_id AND fresh.initiative_id=s.initiative_id AND fresh.provider=d.kind AND fresh.channel_id=b.channel_id AND ${approvalUsable('fresh')}) approvedAgain
+ FROM vector_initiative_scoped_bindings s JOIN vector_initiative_channel_bindings b ON b.destination_id=s.destination_id
+ JOIN vector_webhook_destinations d ON d.id=s.destination_id
+ LEFT JOIN vector_initiative_destination_approvals a ON a.id=s.approval_id
+ LEFT JOIN operators o ON o.id=s.bound_by LEFT JOIN vector_slack_installations si ON si.workspace_id=s.workspace_id
+ WHERE s.destination_id=?`).bind(destination).first<{binderName:string|null;approvedWorkspace:string|null;currentWorkspace:string|null;editor:number;live:number;approvalId:string|null;provider:string|null;usable:number;approvedAgain:number}>();
+ if(!row||row.live)return null;
+ const code=row.approvalId&&row.provider==='slack'&&!row.usable?'workspace_changed' as const:!row.editor?'binder_cannot_edit' as const:row.approvedAgain?'approved_again' as const:'approval_withdrawn' as const;
+ return {code,binderName:row.binderName,approvedWorkspace:row.approvedWorkspace,currentWorkspace:row.currentWorkspace};
 }

@@ -4,7 +4,7 @@ import {settingsActor} from '../../settings/repository';
 import {guardedSql,ownerPredicate,type IntegrationOwner} from '../authority';
 import {IntegrationError} from '../errors';
 import {bindingWrites} from './settings';
-import {admits,approvalUsable,discordSource,editorSql,scopedBindingLive} from './initiative-approval';
+import {admits,approvalUsable,bindingNotPosting,discordSource,editorSql,scopedBindingLive} from './initiative-approval';
 import type {initiativeBindingInput} from './schema';
 import type {z} from 'zod';
 
@@ -28,7 +28,7 @@ export async function readInitiativeBinding(env:WorkerBindings,actor:Integration
  const destinations=(await env.DB.prepare(`SELECT a.provider,a.channel_id channelId,a.channel_name channelName FROM vector_initiative_destination_approvals a
  WHERE a.workspace_id=? AND a.initiative_id=? AND ${approvalUsable('a')} ORDER BY a.channel_name,a.provider,a.channel_id`).bind(actor.workspace,initiative).all<{provider:'slack'|'discord';channelId:string;channelName:string}>()).results;
  const live=binding?Boolean(await env.DB.prepare('SELECT 1 AS live WHERE '+scopedBindingLive('?')).bind(binding.id,binding.id).first()):false;
- return {destinations,binding:binding?{...binding,events:JSON.parse(binding.events) as string[],live}:null,version:binding?.id??null};
+ return {destinations,binding:binding?{...binding,events:JSON.parse(binding.events) as string[],live,notPosting:await bindingNotPosting(env.DB,binding.id)}:null,version:binding?.id??null};
 }
 export async function saveInitiativeBinding(env:WorkerBindings,actor:IntegrationOwner,initiative:string,input:z.infer<typeof initiativeBindingInput>){
  const binding=await editable(env,actor,initiative);
