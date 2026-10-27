@@ -8,6 +8,7 @@ import assert from 'node:assert/strict';
 import {roleScreens} from './role-ui-support.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
 import {confirmLink,readDevelopmentLink} from './outbox-session.mjs';
+import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 export async function initiativesJourney({page:shared,runtime,evidence}){
  const page=await shared.context().newPage();trackRequests(page);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(/hydration|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());});
@@ -108,15 +109,10 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await approval.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();assert.equal((await approved).status(),201);
   await panel.getByRole('button',{name:'Withdraw approval for '+root.name+' #delivery',exact:true}).waitFor();
   await inspect(page,approval,'initiative-approval-saved-'+width);await page.setViewportSize({width,height:1000});
-  const memberBrowser=await page.context().browser().newContext({extraHTTPHeaders:{Connection:'close'}});
+  // The Member's own confirmed session, in a browser of its own.
+  const memberPage=await openAuthenticatedPage(page.context().browser(),headers.Cookie,base);
   try{
-   const memberPage=await memberBrowser.newPage();trackRequests(memberPage);memberPage.on('pageerror',e=>errors.push(e.message));
-   await memberPage.setViewportSize({width,height:1000});await navigate(memberPage,base+'/signin');
-   await memberPage.getByRole('textbox',{name:'Email',exact:true}).fill('synthetic-vector-1798@example.test');
-   const requested=memberPage.waitForResponse(r=>new URL(r.url()).pathname==='/auth/request'&&r.request().method()==='POST');
-   await memberPage.getByRole('button',{name:'Send sign-in link',exact:true}).click();assert.equal((await requested).status(),202);
-   await memberPage.goto(await readDevelopmentLink(base,null,'synthetic-vector-1798@example.test',runtime.state));
-   await memberPage.getByRole('button',{name:'Confirm',exact:true}).click();await memberPage.waitForURL(base+'/app');await settleReads(memberPage);
+   trackRequests(memberPage);memberPage.on('pageerror',e=>errors.push(e.message));await memberPage.setViewportSize({width,height:1000});
    await navigate(memberPage,base+'/app/initiatives/'+root.id);await memberPage.getByRole('heading',{name:root.name,exact:true,level:1}).waitFor();
    await memberPage.getByText('Channel notifications',{exact:true}).click();
    const scoped=memberPage.getByRole('form',{name:'Initiative channel',exact:true});
@@ -132,7 +128,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
    const edited=memberPage.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);
    await memberEdit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await edited).status(),200);
    await memberPage.locator('header').getByText('Completed · Owner:',{exact:false}).waitFor();await settleReads(memberPage);
-  }finally{await memberBrowser.close();}
+  }finally{await memberPage.context().close();}
   for(const tick of [1,2]){const scheduled=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(scheduled.status,200,'dispatch '+tick);await scheduled.arrayBuffer();}
   const scopedPosts=readFileSync(process.env.VECTOR_CHANNEL_EDGE,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse).filter(c=>c.method==='chat.postMessage'&&c.body.channel==='CSCOPED'+width);
   assert.equal(scopedPosts.length,1,'one post through the Member’s scoped binding; replay adds none');

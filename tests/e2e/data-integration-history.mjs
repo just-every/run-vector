@@ -27,6 +27,12 @@ export async function populateIntegrationHistory(installation,cookie,identifier)
  assert.equal((await signedGithub(installation,github,pr,delivery)).status,200);
  const destination=await api('/destinations',{name:'Retained receiver',url:'https://receiver.example.com/events'});
  const created=await installation.req('/api/issues','POST',{teamId:team.id,title:'Retained native webhook queue'},cookie);assert.equal(created.status,201);await created.body.cancel();
+ // INIT-001: an Owner-approved destination and the initiative binding saved through the scoped door are portable custody; the sealed webhook copy is not.
+ const initiative=async name=>{const response=await installation.req('/api/initiatives','POST',{name,ownerOperatorId:admin.viewer.id},cookie);assert.equal(response.status,201);return response.json();};
+ const directed=await initiative('Retained initiative channel'),sourceInitiative=await initiative('Retained initiative source');
+ const discord=await api('/channels',{scope:'initiative',objectId:sourceInitiative.id,provider:'discord',channelName:'retained-initiative-discord',events:['initiative.projects_changed'],webhookUrl:'https://discord.com/api/webhooks/1850/synthetic-vector-1850'});
+ await api('/channels/initiative-approvals',{provider:'discord',initiativeId:directed.id,destinationId:discord.id,audience:'workspace'});
+ const scoped=await installation.req('/api/initiatives/'+directed.id+'/channel-binding','PUT',{provider:'discord',channelId:'1850',events:['initiative.projects_changed'],expectedVersion:null},cookie);assert.equal(scoped.status,200);await scoped.body.cancel();
  // Paid-edge historical outcomes are fixture data in the real Base tables.
  // Native queueing and transport outcomes are independently exercised by the TLS journey.
  const at=Date.now(),namespace=admin.workspace.id,sql=[];
@@ -40,7 +46,7 @@ export async function populateIntegrationHistory(installation,cookie,identifier)
  return {source,input,signal,github,pr,delivery,token,destination};
 }
 export function verifyIntegrationCategories(records){
- const names=['vector_integration_tokens','integration_token_usage','integration_token_events','vector_integration_sources','vector_source_records','vector_source_receipts','vector_webhook_destinations','vector_webhook_events','integration_deliveries','integration_attempts','integration_replays','vector_github_repositories','vector_github_deliveries','vector_github_pull_requests','vector_github_issue_links'];
+ const names=['vector_initiative_destination_approvals','vector_initiative_scoped_bindings','vector_initiative_channel_bindings','vector_integration_tokens','integration_token_usage','integration_token_events','vector_integration_sources','vector_source_records','vector_source_receipts','vector_webhook_destinations','vector_webhook_events','integration_deliveries','integration_attempts','integration_replays','vector_github_repositories','vector_github_deliveries','vector_github_pull_requests','vector_github_issue_links'];
  for(const name of names)assert(records[0].tables.find(row=>row.name===name)?.count>0,'Retained integration history: '+name);
  const items=JSON.stringify(records.filter(row=>row.kind==='part').flatMap(row=>row.items));
  assert(!items.includes('token_hash'));assert(!items.includes('encrypted'));return names;
