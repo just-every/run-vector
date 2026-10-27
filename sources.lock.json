@@ -4725,7 +4725,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "e546a02443cec3811d8cf953976e3f5614f80f7e8bf1ad288c6c75198d333606",
+      "sha256": "2e68fd5563c9838bc5ff3e71f55ed51bd72aac868d5794e9c11d549fd55f956d",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
