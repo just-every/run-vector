@@ -128,7 +128,7 @@ export function createServerApp() {
   addGithubIssueProjection(app,true);
   app.route("/api/v1",createInitiativeApi());
   app.route("/api/v1",createReleaseApi());
-  app.route("/oauth",createOAuthPublicApp());
+  app.route("/api/oauth",createOAuthPublicApp());
   app.route("/api/v1",createIntegrationApi());
   app.route("/api", createApiApp());
 

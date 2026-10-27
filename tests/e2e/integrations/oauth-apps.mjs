@@ -28,10 +28,10 @@ export async function exerciseOAuthApps({page,runtime,cookie,evidence}){
   await member.setViewportSize({width:1440,height:1000});trackRequests(member);await navigate(member,runtime.base+'/app/settings');assert.equal(await member.getByRole('button',{name:'Register application',exact:true}).count(),0);
   const verifier=randomBytes(32).toString('hex'),challenge=createHash('sha256').update(verifier).digest('base64url'),state='synthetic-vector-4544';
   const query=new URLSearchParams({response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state,code_challenge:challenge,code_challenge_method:'S256'});
-  await navigate(member,runtime.base+'/oauth/authorize?'+query);const consent=member.getByRole('region',{name:'Authorize an application',exact:true});await consent.getByRole('heading',{name,exact:true}).waitFor();await consent.getByText('issues:read',{exact:true}).waitFor();await inspect(member,consent,'oauth-consent');await member.setViewportSize({width:1440,height:1000});
+  await navigate(member,runtime.base+'/api/oauth/authorize?'+query);await settleReads(member);assert.equal(new URL(member.url()).pathname,'/app/settings/oauth-consent');assert.deepEqual(await member.getByRole('alert').allTextContents(),[],'The consent request loads without an authorization error');const consent=member.getByRole('region',{name:'Authorize an application',exact:true});await consent.getByRole('heading',{name,exact:true}).waitFor();await consent.getByText('issues:read',{exact:true}).waitFor();await inspect(member,consent,'oauth-consent');await member.setViewportSize({width:1440,height:1000});
   await Promise.all([member.waitForURL(url=>url.pathname==='/oauth-test-client/callback'),consent.getByRole('button',{name:'Approve access',exact:true}).click()]);
   const returned=new URL(member.url());assert.equal(returned.searchParams.get('state'),state);const code=returned.searchParams.get('code');assert.ok(code);
-  const exchange=await runtime.req('/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier})});assert.equal(exchange.status,200);const token=await exchange.json();
+  const exchange=await runtime.req('/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier})});assert.equal(exchange.status,200);const token=await exchange.json();
   const api=(path,method='GET',body)=>runtime.req('/api/v1'+path,{method,headers:{Authorization:'Bearer '+token.access_token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
   assert.equal((await api('/issues')).status,200);
   const before=runtime.sql('SELECT COUNT(*) AS n FROM issues')[0].n;
@@ -49,8 +49,8 @@ export async function seedOAuthArchive(installation,cookie){
  const redirect=installation.origin+'/oauth-test-client/callback';
  const client=await call('/api/settings/oauth-apps',{name:'synthetic-vector-4551',redirectUris:[redirect],scopes:['issues:read']},201);
  const request={response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state:'synthetic-vector-4552'};
- const consent=await call('/api/oauth/authorize',{request,decision:'approve'},200);
- const token=await call('/oauth/token',{grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:new URL(consent.redirect).searchParams.get('code'),redirect_uri:redirect},200);
+ const consent=await call('/api/oauth/consent',{request,decision:'approve'},200);
+ const token=await call('/api/oauth/token',{grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:new URL(consent.redirect).searchParams.get('code'),redirect_uri:redirect},200);
  assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+token.access_token})).status,200);
  assert.equal(installation.sql('SELECT COUNT(*) AS n FROM vector_oauth_apps')[0].n,1);assert.equal(installation.sql('SELECT COUNT(*) AS n FROM vector_oauth_grants')[0].n,1);
  return token.access_token;

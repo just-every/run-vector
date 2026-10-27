@@ -285,7 +285,7 @@ Save the generated client secret once. Vector stores only its hash and never
 returns it in the application inventory. Members, Guests and Viewers cannot
 register applications or open the administrative inventory.
 
-Send the member to `GET /oauth/authorize` with `response_type=code`, `client_id`,
+Send the member to `GET /api/oauth/authorize` with `response_type=code`, `client_id`,
 `redirect_uri`, a space-separated `scope` and an unpredictable `state`. Requested
 scopes must be a subset of the registered scopes. For PKCE, send a base64url
 SHA-256 `code_challenge` and `code_challenge_method=S256`. Plain PKCE is refused.
@@ -294,14 +294,14 @@ The member signs into Vector and reviews the application's name, permissions
 and destination at `/app/settings/oauth-consent`. Owners, Admins and Members
 may approve access for themselves; Guests and Viewers receive 403.
 
-The consent screen reads `GET /api/oauth/authorize` with those same parameters.
-Its same-origin `POST /api/oauth/authorize` sends `{request, decision}` where
+The consent screen reads `GET /api/oauth/consent` with those same parameters.
+Its same-origin `POST /api/oauth/consent` sends `{request, decision}` where
 `request` holds those parameters and `decision` is `approve` or `deny`. Approval
 returns an exact redirect with a five-minute authorization code and the original
 state. Denial returns `error=access_denied` with that state. Clients must verify
 the returned state before exchanging a code.
 
-Exchange at `POST /oauth/token` using a form body or JSON with
+Exchange at `POST /api/oauth/token` using a form body or JSON with
 `grant_type=authorization_code`, `client_id`, `client_secret`, `code`, the same
 `redirect_uri`, and `code_verifier` when PKCE was requested. HTTP Basic client
 authentication is also accepted in place of body credentials. The response

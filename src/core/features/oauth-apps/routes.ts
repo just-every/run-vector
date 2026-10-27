@@ -20,11 +20,11 @@ export function addOAuthRoutes(app:Hono<AppEnvironment>){
  app.delete('/settings/oauth-apps/grants/:id',async c=>{
   const owner=await integrationOwner(c.env,c.req.raw);await revokeGrant(c.env.DB,owner.workspace,owner.id,c.req.param('id'),guardedSql(c.env.DB,ownerPredicate(owner)));return c.json({revoked:true});
  });
- app.get('/oauth/authorize',async c=>{
+ app.get('/oauth/consent',async c=>{
   const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined),input=parse(authorizationInput,c.req.query());
   const {app,scopes}=await authorization(c.env.DB,input,owner.workspace);return c.json({name:app.name,scopes,redirectUri:input.redirect_uri});
  });
- app.post('/oauth/authorize',async c=>{
+ app.post('/oauth/consent',async c=>{
   const owner=await integrationOwner(c.env,c.req.raw),input=parse(consentInput,await readRequestJson(c.req.raw));
   return c.json(await consent(c.env.DB,owner,input.request,input.decision));
  });
