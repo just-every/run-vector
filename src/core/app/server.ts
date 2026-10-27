@@ -1,3 +1,4 @@
+import {createOAuthPublicApp} from '../features/oauth-apps/routes';
 import {createInitiativeApi} from '../features/initiatives/api';
 import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
 import {createReleaseApi} from '../features/releases/api';
@@ -127,6 +128,7 @@ export function createServerApp() {
   addGithubIssueProjection(app,true);
   app.route("/api/v1",createInitiativeApi());
   app.route("/api/v1",createReleaseApi());
+  app.route("/oauth",createOAuthPublicApp());
   app.route("/api/v1",createIntegrationApi());
   app.route("/api", createApiApp());
 

@@ -1,3 +1,4 @@
+import {OAuthAppsPanel} from '../../oauth-apps/ui/settings-panel';
 import { useViewerTime } from '../../../app/viewer-time';
 import { PersonalTimePanel } from './personal-time-panel';
 import { AppearancePanel } from './appearance-panel';
@@ -91,6 +92,7 @@ export function SettingsPage() {
             <a href="#cycles">Cycles</a>
           </>}
           {resource.data && opensSettingsPage(resource.data.role,'personal-integrations') && <a href="#integrations">Integrations</a>}
+          {workspace && <a href="#oauth-apps">OAuth apps</a>}
           <a href="#notifications">Notifications</a>
           {workspace && <a href="/app/settings/audit">Audit log</a>}
           {workspace && <a href="#data">Data / Move in</a>}
@@ -221,6 +223,7 @@ export function SettingsPage() {
               />
             </>
           )}
+          {workspace && <OAuthAppsPanel />}
           {workspace && <DataPanel />}
           {/* Restore review has no role-matrix row, so it is the Owners' (ROLE-008). */}
           {resource.data.role === "owner" && <RestorePanel />}
