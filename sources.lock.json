@@ -5229,7 +5229,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-form.tsx": {
-      "sha256": "b39e76c6b5bbe5df2d194c5bcb73872e670e88bf47b415eb36e083b8d573747e",
+      "sha256": "e837d3c2a78ef72deb82fb2eafaea9cd71e22d4a5e9b8900432f00296d8fea35",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue.css": {
