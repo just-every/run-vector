@@ -122,6 +122,10 @@ export const doors: Door[] = [
   { method: 'GET', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
   { method: 'POST', path: '/projects/:id/slack-channel', row: 'channels.bind-project' },
   { method: 'POST', path: '/settings/integrations/channels/allowed', row: 'integrations.manage' },
+  { method: 'POST', path: '/settings/integrations/channels/initiative-approvals', row: 'integrations.manage' },
+  { method: 'DELETE', path: '/settings/integrations/channels/initiative-approvals/:id', row: 'integrations.manage' },
+  // The scoped initiative capability reads, saves and withdraws one initiative's binding (INIT-001).
+  ...(['GET', 'PUT', 'DELETE'] as const).map((method): Door => ({ method, path: '/initiatives/:id/channel-binding', row: 'channels.bind-initiative' })),
   { method: 'DELETE', path: '/settings/integrations/channels/allowed/:channelId', row: 'integrations.manage' },
   { method: 'GET', path: '/settings/audit', row: 'audit.read' },
   { method: 'GET', path: '/settings/audit.csv', row: 'audit.read' },

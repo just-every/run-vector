@@ -21,7 +21,8 @@ export async function projectMembershipJourney(page, context, base, capture = as
   const email = `synthetic-vector-${Date.now()}@vector.test`;
   await api('/settings/operators/invite', 'POST', { email, displayName: 'Project lead', role: 'member' });
   const link = await readDevelopmentLink(base, context.request, email, state);
-  const memberContext = await context.browser().newContext({ storageState: await context.storageState() });
+  // Like the owner context, never reuse a socket the local Worker closed after its 5 s idle lifetime.
+  const memberContext = await context.browser().newContext({ storageState: await context.storageState(), extraHTTPHeaders: { Connection: 'close' } });
   try {
     const memberPage = await memberContext.newPage();
     await memberPage.goto(link);

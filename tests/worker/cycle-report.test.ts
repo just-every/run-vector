@@ -111,6 +111,9 @@ it("[REPORT-003 REPORT-001 REPORT-002 CYCLE-005] Insights, shared dashboards and
   const csv = await f.call("/insights.csv?" + params + "&bucket=" + encodeURIComponent(cycle.rows[0].key));
   expect(csv.status).toBe(200);
   expect(await csv.text()).toContain("'=synthetic-vector-1");
+  // Historical report assertions are complete. Invitations must share the real
+  // clock used by the outbox's SQL expiry guard.
+  vi.useRealTimers();
   const memberCookie = await invite("synthetic-vector-5@example.test",f.cookie);
   const memberId = await actor(memberCookie);
   expect((await request("/api/insights?" + params,"GET",undefined,memberCookie)).status).toBe(200);

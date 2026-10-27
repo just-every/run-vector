@@ -1605,6 +1605,17 @@
     "created_by",
     "suspended_reason"
   ],
+  "vector_initiative_channel_bindings": [
+    "destination_id",
+    "workspace_id",
+    "scope",
+    "object_id",
+    "channel_id",
+    "channel_name",
+    "events",
+    "created_by",
+    "suspended_reason"
+  ],
   "vector_slack_member_links": [
     "operator_id",
     "workspace_id",
@@ -1952,5 +1963,25 @@
     "document_id",
     "author_operator_id",
     "updated_at"
+  ],
+  "vector_initiative_destination_approvals": [
+    "id",
+    "workspace_id",
+    "initiative_id",
+    "provider",
+    "provider_workspace",
+    "channel_id",
+    "channel_name",
+    "source_destination_id",
+    "audience",
+    "approved_by",
+    "approved_at"
+  ],
+  "vector_initiative_scoped_bindings": [
+    "destination_id",
+    "workspace_id",
+    "initiative_id",
+    "approval_id",
+    "bound_by"
   ]
 }

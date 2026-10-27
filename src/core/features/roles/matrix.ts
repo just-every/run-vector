@@ -14,8 +14,10 @@ export type AssignableRole = typeof assignableRoles[number]
  *   team's ROLE-009 permission is All team members
  * - member-invites: only while the workspace lets Members invite Members
  * - own: the feature itself admits only the subject's owner
- * - lead: the subject project's lead */
-export type Cell = 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'member-team-creation' | 'own' | 'lead'
+ * - lead: the subject project's lead
+ * - approved-initiative: the feature admits only an initiative the member may edit, bound to a
+ *   destination an Owner or Admin approved for that initiative (INIT-001) */
+export type Cell = 'yes' | 'no' | 'teams' | 'invited-teams' | 'team-owner' | 'team-setting' | 'planning-setting' | 'member-invites' | 'member-team-creation' | 'own' | 'lead' | 'approved-initiative'
 type Row = { action: string; cells: Record<Role, Cell> }
 const row = (action: string, owner: Cell, admin: Cell, member: Cell, guest: Cell, viewer: Cell = 'no'): Row => ({ action, cells: { owner, admin, member, guest, viewer } })
 
@@ -71,6 +73,7 @@ export const matrix = {
   'views.edit-shared': row('Update or delete a shared view (VIEW-002)', 'own', 'own', 'own', 'no'),
   'integrations.manage': row('Connect, repair or remove integrations; manage OAuth apps, agents, their budgets and model providers (ROLE-001, INTEG-001, INTEG-002, API-004, AGENT-004, AGENT-009, SEC-002)', 'yes', 'yes', 'no', 'no'),
   'channels.bind-project': row('Bind a project to a Slack channel an Owner or Admin already bound or allowed, and post to it (SLACK-003)', 'yes', 'yes', 'yes', 'no'),
+  'channels.bind-initiative': row('Bind an editable initiative to an eligible Owner- or Admin-approved destination and manage only that initiative’s selected events (INIT-001)', 'yes', 'yes', 'approved-initiative', 'no'),
   'channels.create': row('Have the Slack bot create a channel in the customer\'s Slack workspace for a new team or project (SLACK-003)', 'yes', 'yes', 'no', 'no'),
   'tokens.personal': row('Create personal API tokens (API-001)', 'yes', 'yes', 'yes', 'no'),
   'identity.personal': row('Authorize an OAuth app for oneself; link one\'s own Slack or Teams identity (API-004, SLACK-001, SLACK-004, TEAMS-001)', 'yes', 'yes', 'yes', 'no'),
