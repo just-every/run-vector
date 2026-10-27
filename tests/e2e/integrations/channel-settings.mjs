@@ -75,5 +75,48 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  const failedBinding=(await send('/settings/integrations/channels','GET')).bindings.find(b=>b.scope==='team'&&b.objectId===team.id);await send('/settings/integrations/channels/'+failedBinding.id,'DELETE');
  const teamForm=page.getByRole('form',{name:'Create team',exact:true});await teamForm.getByLabel('Team name',{exact:true}).fill('Customer operations');await teamForm.getByLabel('Identifier prefix',{exact:true}).fill('CUST');await teamForm.getByLabel('Create Slack channel',{exact:true}).check();await teamForm.getByLabel('Create Slack channel',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('create-team');await axe('form[aria-label="Create team"]');
  await page.goto(runtime.base+'/app/settings');const removedSlack=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/slack')&&r.request().method()==='DELETE');await panel.getByRole('button',{name:'Remove Slack connection',exact:true}).click();assert.equal((await removedSlack).status(),200);await panel.getByText('Slack is not connected.',{exact:true}).waitFor();await panel.getByText('Slack is not connected.',{exact:true}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('connection-removed');
+ await initiativeApprovalOutcomes({page,runtime,send,width});
 }
 
+
+/** Outcomes remain next to the control and truthful through a stale list and a repeated approval. */
+export async function initiativeApprovalOutcomes({page,runtime,send,width}){
+ const panel=page.locator('.channel-settings'),approval=panel.getByRole('form',{name:'Approve initiative channel',exact:true});
+ const owner=(await send('/settings/administration','GET')).viewer.id;
+ const initiative=await send('/initiatives','POST',{name:'synthetic-vector-1851-'+width,ownerOperatorId:owner});
+ const project=(await send('/settings/projects','POST',{name:'synthetic-vector-1852-'+width,leadOperatorId:owner})).projects.find(p=>p.name==='synthetic-vector-1852-'+width);
+ const source=await send('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'discord',channelName:'gate-c45p-src-south',webhookUrl:'https://discord.com/api/webhooks/1853/synthetic-vector-1854',events:['issue.created']});
+ await page.reload();await approval.waitFor();
+ const select=approval.getByLabel('Existing channel',{exact:true}),choose=async()=>{await approval.getByLabel('Initiative to approve for',{exact:true}).selectOption(initiative.id);await select.selectOption('discord:'+source.id);};
+ const submit=async(status,changed)=>{
+  const response=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/channels/initiative-approvals'));
+  await approval.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();const result=await response;assert.equal(result.status(),status);if(changed!==undefined)assert.equal((await result.json()).changed,changed);
+  const outcome=panel.locator('.initiative-approval-outcome');await outcome.waitFor();
+  await page.waitForFunction(()=>document.activeElement?.classList.contains('initiative-approval-outcome'));
+  const measured=await outcome.evaluate(element=>{const box=element.getBoundingClientRect();return {text:element.textContent,top:box.top,bottom:innerHeight-box.bottom,focused:document.activeElement===element};});
+  assert.ok(measured.top>=0&&measured.bottom>=0,'approval outcome is in the viewport');assert.ok(measured.focused);
+  console.log('INIT-001 approval outcome',JSON.stringify({width,status,...measured}));
+ };
+ await choose();await submit(201,true);
+ const rows=runtime.sql("SELECT * FROM vector_initiative_destination_approvals WHERE initiative_id='"+initiative.id+"'"),audits=runtime.sql("SELECT id FROM audit_records WHERE action='channel.initiative_destination_approved' AND subject_id='"+initiative.id+"'");
+ await choose();await submit(201,false);
+ assert.deepEqual(runtime.sql("SELECT * FROM vector_initiative_destination_approvals WHERE initiative_id='"+initiative.id+"'"),rows);
+ assert.deepEqual(runtime.sql("SELECT id FROM audit_records WHERE action='channel.initiative_destination_approved' AND subject_id='"+initiative.id+"'"),audits);
+ const scoped=await send('/initiatives/'+initiative.id+'/channel-binding','PUT',{provider:'discord',channelId:'1853',events:['initiative.updated'],expectedVersion:null});
+ await page.reload();await approval.waitFor();
+ assert.equal(await select.locator('option[value="discord:'+scoped.id+'"]').count(),0);
+ assert.equal(await select.locator('option[value="discord:'+source.id+'"]').count(),1);
+ console.log('INIT-001 approval options',JSON.stringify({width,unfilteredDiscord:(await send('/settings/integrations/channels','GET')).bindings.filter(b=>b.provider==='discord').length,offeredDiscord:await select.locator('option[value^="discord:"]').count(),kept:source.id,excluded:scoped.id}));
+ // A concurrent withdrawal leaves this browser's row stale; its response must reload that list.
+ const row=(await send('/settings/integrations/channels','GET')).approvals.find(a=>a.initiativeId===initiative.id);
+ await send('/settings/integrations/channels/initiative-approvals/'+row.id,'DELETE');
+ const withdraw=panel.getByRole('button',{name:'Withdraw approval for '+initiative.name+' #gate-c45p-src-south',exact:true});
+ const withdrawn=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/initiative-approvals/'+row.id));await withdraw.click();assert.equal((await withdrawn).status(),404);
+ await panel.locator('.initiative-approval-outcome').waitFor();await withdraw.waitFor({state:'detached'});
+ assert.ok(!(await page.locator('body').innerText()).includes('approval_not_found'));
+ console.log('INIT-001 concurrent withdrawal',JSON.stringify({width,text:await panel.locator('.initiative-approval-outcome').innerText(),remaining:await withdraw.count()}));
+ await choose();
+ console.log('INIT-001 approval geometry',JSON.stringify(await approval.evaluate((form)=>({width:innerWidth,fields:[...form.querySelectorAll('select')].map(select=>({label:select.getAttribute('aria-label'),width:select.clientWidth,scrollWidth:select.scrollWidth,border:getComputedStyle(select).borderWidth,height:select.getBoundingClientRect().height,options:[...select.options].map(option=>({text:option.text,scrollWidth:option.scrollWidth,clientWidth:option.clientWidth}))})),detail:form.querySelector('#approval-destination-detail').textContent}))));
+ await send('/settings/integrations/channels/'+source.id,'DELETE');
+ await submit(404);
+}
