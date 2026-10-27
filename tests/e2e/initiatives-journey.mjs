@@ -91,6 +91,46 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
    memberFixture={headers,session};
   }else await call('/settings/operators/'+memberFixture.session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});
   const {headers,session}=memberFixture;
+  // INIT-001 scoped capability: an Owner approves an existing channel in Settings; the Member binds it on the initiative page.
+  await call('/settings/integrations/channels/allowed','POST',{channelId:'CSCOPED'+width,channelName:'scoped-'+width},201);
+  await navigate(page,base+'/app/settings#integrations');await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
+  const approval=panel.getByRole('form',{name:'Approve initiative channel',exact:true});
+  await approval.getByLabel('Initiative to approve for',{exact:true}).selectOption(root.id);
+  await approval.getByLabel('Existing channel',{exact:true}).selectOption('slack:CSCOPED'+width);
+  await inspect(page,approval,'initiative-approval-choice-'+width);await page.setViewportSize({width,height:1000});
+  const approved=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/settings/integrations/channels/initiative-approvals');
+  await approval.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();assert.equal((await approved).status(),201);
+  await panel.getByRole('button',{name:'Withdraw approval for '+root.name+' #delivery',exact:true}).waitFor();
+  await inspect(page,approval,'initiative-approval-saved-'+width);await page.setViewportSize({width,height:1000});
+  const memberBrowser=await page.context().browser().newContext({extraHTTPHeaders:{Connection:'close'}});
+  try{
+   const memberPage=await memberBrowser.newPage();trackRequests(memberPage);memberPage.on('pageerror',e=>errors.push(e.message));
+   await memberPage.setViewportSize({width,height:1000});await navigate(memberPage,base+'/signin');
+   await memberPage.getByRole('textbox',{name:'Email',exact:true}).fill('synthetic-vector-1798@example.test');
+   const requested=memberPage.waitForResponse(r=>new URL(r.url()).pathname==='/auth/request'&&r.request().method()==='POST');
+   await memberPage.getByRole('button',{name:'Send sign-in link',exact:true}).click();assert.equal((await requested).status(),202);
+   await memberPage.goto(await readDevelopmentLink(base,null,'synthetic-vector-1798@example.test',runtime.state));
+   await memberPage.getByRole('button',{name:'Confirm',exact:true}).click();await memberPage.waitForURL(base+'/app');await settleReads(memberPage);
+   await navigate(memberPage,base+'/app/initiatives/'+root.id);await memberPage.getByRole('heading',{name:root.name,exact:true,level:1}).waitFor();
+   await memberPage.getByText('Channel notifications',{exact:true}).click();
+   const scoped=memberPage.getByRole('form',{name:'Initiative channel',exact:true});
+   await scoped.getByLabel('Approved channel',{exact:true}).selectOption('slack:CSCOPED'+width);
+   await scoped.getByRole('checkbox',{name:'Initiative update',exact:true}).check();
+   await inspect(memberPage,scoped,'initiative-member-channel-choice-'+width);await memberPage.setViewportSize({width,height:1000});
+   const bound=memberPage.waitForResponse(r=>r.request().method()==='PUT'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id+'/channel-binding');
+   await scoped.getByRole('button',{name:'Save initiative channel',exact:true}).click();assert.equal((await bound).status(),200);
+   await scoped.getByRole('button',{name:'Withdraw initiative channel',exact:true}).waitFor();
+   await inspect(memberPage,scoped,'initiative-member-channel-saved-'+width);await memberPage.setViewportSize({width,height:1000});
+   await memberPage.getByText('Edit initiative',{exact:true}).click();
+   const memberEdit=memberPage.getByRole('form',{name:'Edit initiative',exact:true});await memberEdit.getByLabel('Initiative status',{exact:true}).selectOption('completed');
+   const edited=memberPage.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);
+   await memberEdit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await edited).status(),200);
+   await memberPage.locator('header').getByText('Completed · Owner:',{exact:false}).waitFor();await settleReads(memberPage);
+  }finally{await memberBrowser.close();}
+  for(const tick of [1,2]){const scheduled=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(scheduled.status,200,'dispatch '+tick);await scheduled.arrayBuffer();}
+  const scopedPosts=readFileSync(process.env.VECTOR_CHANNEL_EDGE,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse).filter(c=>c.method==='chat.postMessage'&&c.body.channel==='CSCOPED'+width);
+  assert.equal(scopedPosts.length,1,'one post through the Member’s scoped binding; replay adds none');
+  assert.equal(scopedPosts[0].body.text,root.name+'\nsynthetic-vector-1798: Initiative updated · Status: active → completed\n'+base+'/app/initiatives/'+root.id);
   const tokenResponse=await runtime.req('/api/settings/integrations/tokens',{method:'POST',headers,body:JSON.stringify({name:'synthetic-vector-1799',scopes:['initiatives:read','initiatives:write']})});assert.equal(tokenResponse.status,201);const {token}=await tokenResponse.json();
   const added=await runtime.req('/api/issues',{method:'POST',headers,body:JSON.stringify({teamId:other.id,projectId:projects[1].id,title:'synthetic-vector-1800-'+width})});assert.equal(added.status,201);const issue=await added.json();
   const notices=(await call('/notifications?limit=50')).items.filter(n=>n.identifier===issue.identifier);assert.equal(notices.length,1);assert.equal((await call('/notifications?limit=50')).items.filter(n=>n.identifier===issue.identifier).length,1);

@@ -194,8 +194,20 @@ retain their receiving clauses. Initiative updates and project membership
 changes use this same durable dispatcher. Private-team issue content only posts
 to channels an Admin bound to that team.
 
-Owners and Admins bind initiatives under these same Settings controls; Members
-cannot bind initiatives. Choose Initiative created, Initiative update or Initiative
+Owners and Admins bind initiatives under these same Settings controls. They also
+decide where Members may post: **Approve a channel for an initiative** in Settings →
+Integrations names one initiative and one existing channel, either a Slack channel
+already bound or allowed or a configured Discord webhook, for this workspace’s
+members. Owners and Admins withdraw an approval in the same list. A Member who can
+edit an initiative binds it on the initiative page under **Channel notifications**,
+choosing only a channel approved for that initiative and the events to post; they
+can save or withdraw that initiative’s binding and nothing else. Guests and Viewers
+cannot bind. Vector identifies an approved channel by its service, workspace and
+channel ID, never by its name or another binding. It rechecks the Member’s role, the
+approval, the binding version and the channel when saving and again before every
+post. Withdrawing an approval stops pending and later posts from Member bindings
+that use it; approving the channel again replays nothing until the Member saves the
+binding again. Choose Initiative created, Initiative update or Initiative
 projects changed. Create the initiative first, then bind it with Initiative created
 selected to deliver its recorded creation once to that destination. Replacing a
 binding creates a new destination and may deliver that creation there too.
@@ -207,7 +219,8 @@ comments and project names. An initiative involving private work sends only
 Dispatch checks the current initiative and active actor membership. Replacing or
 removing a binding stops its old destination. Restored bindings retain their
 configuration but need credentials re-entered and effects reviewed before posting.
-Apply `0104_initiative_channel_bindings.sql` additively; keep terminal delivery history.
+Apply `0104_initiative_channel_bindings.sql` and `0105_initiative_destination_approvals.sql`
+additively; keep terminal delivery history.
 
 Owners and Admins see **Create Slack channel** on a team or project creation form. Members who may create a project can instead choose a Slack channel an Owner or Admin already bound or allowed. Vector calls
 `conversations.create` once, for a public channel named from the identifier or
