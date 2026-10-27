@@ -59,9 +59,9 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await page.reload();await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();
   const binding=panel.getByRole('form',{name:'Bind notification channel',exact:true});
   await binding.getByRole('combobox').first().selectOption('initiative:'+root.id);
-  await binding.getByLabel('Channel service',{exact:true}).selectOption('slack');
+  await binding.getByLabel('Channel service').selectOption('slack');
   await binding.getByLabel('Channel display name',{exact:true}).fill('initiative-direction-'+width);
-  await binding.getByLabel('Slack channel ID',{exact:true}).fill('CINITIATIVE'+width);
+  await binding.getByLabel('Slack channel ID').fill('CINITIATIVE'+width);
   for(const checkbox of await binding.getByRole('checkbox').all())await checkbox.uncheck();
   await binding.getByRole('checkbox',{name:'Initiative update',exact:true}).check();
   await inspect(page,binding,'initiative-channel-choice-'+width);await page.setViewportSize({width,height:1000});

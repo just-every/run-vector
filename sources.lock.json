@@ -4705,7 +4705,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "b0fc73fe571f7e7a86e63776626f4cc3c38a1c2ac86488a32541623de5ed48a0",
+      "sha256": "de6e4366d186d349e318b0955d4926567358db38a84d7425234f71eff783b94d",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -6921,7 +6921,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "32efe313fcbc47fdc977a05539448a735fd3bd864b0ab7faac88fb0e84e355f3",
+      "sha256": "c56f5a3df6923e01b26379a03e40d5d82168818751972d4070f88862f7a0454d",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
