@@ -4361,7 +4361,7 @@
       "executable": false
     },
     "src/core/features/initiatives/ui/initiatives.css": {
-      "sha256": "e19d9930c922ef4ff879d1313151df3a16e4eb9b893802d554d06b9e2c3eebf2",
+      "sha256": "da4c80c56e216463b754f93213596d9524fdc0ece970d4337aa520ad534f6599",
       "executable": false
     },
     "src/core/features/initiatives/ui/initiatives.tsx": {
