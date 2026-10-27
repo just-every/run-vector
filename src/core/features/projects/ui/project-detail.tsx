@@ -128,7 +128,7 @@ function ProjectDetailContent({
           ) : null}
         </div>
       </header>
-      {project.issues.length === 0 && <section className="project-detail__section"><h2>Issues</h2>{management ? <a href={`/app/new-issue?project=${project.id}`}>Add the first issue</a> : <p>No issues belong to this project.</p>}</section>}
+      {project.issues.length === 0 && <section className="project-detail__section"><h2>Issues</h2>{management ? <a className="project-first-issue" href={`/app/new-issue?project=${project.id}`}>Add the first issue</a> : <p>No issues belong to this project.</p>}</section>}
       {management}
       <dl className="project-facts">
         <Fact label="Lead" value={project.lead.name} />
