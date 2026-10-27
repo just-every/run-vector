@@ -239,35 +239,35 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  const verifier=Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join('');
  const auth={response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state:'synthetic-vector-4507',code_challenge:await pkce(verifier),code_challenge_method:'S256'};
  const authorize=async(cookie:string,extra:Record<string,string>={},decision='approve',status=200)=>{
-  const r=await call(cookie,'/oauth/authorize','POST',{request:{...auth,...extra},decision});expect(r.status).toBe(status);return r.json() as Promise<{redirect:string}>;
+  const r=await call(cookie,'/oauth/consent','POST',{request:{...auth,...extra},decision});expect(r.status).toBe(status);return r.json() as Promise<{redirect:string}>;
  };
  for(const cookie of [f.cookie,admin,member]){
-  expect((await call(cookie,'/oauth/authorize?'+new URLSearchParams(auth))).status).toBe(200);
+  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(200);
   const approved=await authorize(cookie);expect(new URL(approved.redirect).searchParams.get('code')).toBeTruthy();expect(new URL(approved.redirect).searchParams.get('state')).toBe(auth.state);
  }
  for(const cookie of [guest,viewer]){
   const before=await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_codes').first('n');
-  expect((await call(cookie,'/oauth/authorize?'+new URLSearchParams(auth))).status).toBe(403);await authorize(cookie,{},'approve',403);
+  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(403);await authorize(cookie,{},'approve',403);
   expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_codes').first('n')).toBe(before);
  }
  for(const change of [{client_id:crypto.randomUUID()},{redirect_uri:'https://synthetic-vector-4508.example.test/callback'},{scope:'metadata:read'}]){
-  const r=await f.app.request(origin+'/oauth/authorize?'+new URLSearchParams({...auth,...change}),{},bindings);expect(r.status).toBe(400);expect(r.headers.has('location')).toBe(false);
+  const r=await f.app.request(origin+'/api/oauth/authorize?'+new URLSearchParams({...auth,...change}),{},bindings);expect(r.status).toBe(400);expect(r.headers.has('location')).toBe(false);
  }
- const publicEntry=await f.app.request(origin+'/oauth/authorize?'+new URLSearchParams(auth),{},bindings);expect(publicEntry.status).toBe(303);expect(new URL(publicEntry.headers.get('location')!).pathname).toBe('/app/settings/oauth-consent');
+ const publicEntry=await f.app.request(origin+'/api/oauth/authorize?'+new URLSearchParams(auth),{},bindings);expect(publicEntry.status).toBe(303);expect(new URL(publicEntry.headers.get('location')!).pathname).toBe('/app/settings/oauth-consent');
  const denied=await authorize(member,{},'deny');expect(new URL(denied.redirect).searchParams.get('error')).toBe('access_denied');expect(new URL(denied.redirect).searchParams.has('code')).toBe(false);
  const getCode=async()=>new URL((await authorize(member)).redirect).searchParams.get('code')!;
- const exchange=(code:string,extra:Record<string,string>={})=>f.app.request(origin+'/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier,...extra})},bindings);
+ const exchange=(code:string,extra:Record<string,string>={})=>f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier,...extra})},bindings);
  const code=await getCode();
  expect((await exchange(code,{client_secret:'synthetic-vector-4509'})).status).toBe(401);
  expect((await exchange(code,{code_verifier:verifier.split('').reverse().join('')})).status).toBe(400);
  expect((await exchange(code,{redirect_uri:'https://synthetic-vector-4510.example.test/callback'})).status).toBe(400);
  const other=await(await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4511'})).json() as {id:string;secret:string};
  expect((await exchange(code,{client_id:other.id,client_secret:other.secret})).status).toBe(400);
- const issued=await exchange(code);expect(issued.status).toBe(200);const token=await issued.json() as {access_token:string;grant_id:string;scope:string};expect(token.scope).toBe('issues:read');
+ const issued=await exchange(code);expect(issued.status).toBe(200);const token=await issued.json() as {access_token:string;grant_id:string;scope:string};
  f.restart();expect((await f.api(token.access_token,'/issues')).status).toBe(200);
  const before=await env.DB.prepare('SELECT * FROM issues ORDER BY id').all();
  expect((await f.api(token.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4512'})).status).toBe(403);
- expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(before.results);
+ expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(before.results);expect(token.scope).toBe('issues:read');
  const grants=await(await call(admin,'/settings/oauth-apps')).json() as {grants:{id:string;member:string;lastUsed:number;scopes:string}[]};expect(grants.grants).toContainEqual(expect.objectContaining({id:token.grant_id,lastUsed:expect.any(Number)}));
  expect((await call(member,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(403);
  expect((await call(admin,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(200);
