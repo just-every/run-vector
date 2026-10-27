@@ -1,3 +1,4 @@
+import {initiativeCreationBinding} from '../../initiatives/events';
 import {channelBindingSource} from './subjects';
 import {retireSlackWrites} from '../slack-app/retire';
 import {auditStatement} from '../../audit/producer';
@@ -48,6 +49,7 @@ export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,in
   {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,kind,created_at,updated_at) VALUES(?,?,?,?,?,?,?)',params:[id,owner.workspace,input.channelName,input.provider==='slack'?'https://slack.com/api/chat.postMessage':'https://discord.com/api/webhooks/',input.provider,at,at]},
   {sql:`INSERT INTO ${bindingTable}(destination_id,workspace_id,scope,object_id,channel_id,channel_name,events,created_by) VALUES(?,?,?,?,?,?,?,?)`,params:[id,owner.workspace,input.scope,input.objectId,input.channelId??'',input.channelName,JSON.stringify(input.events),owner.id]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'channel.bound',subject:input.objectId,at}),
+  ...(input.scope==='initiative'&&input.events.includes('initiative.created')?[initiativeCreationBinding(owner.workspace,input.objectId,id,at)]:[]),
   ...(encrypted?[{sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]}]:[]),
  ]};
 }

@@ -97,9 +97,17 @@ export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegr
  const team=f.initial.teams[0];await f.create({projectId:project.id,teamId:team.id});
  const bind=async(provider:string,events=['initiative.updated'])=>(await json(await f.call('/settings/integrations/channels','POST',{scope:'initiative',objectId:root.id,provider,channelName:'initiative-delivery',events,...(provider==='slack'?{channelId:'CINITIATIVE'}:{webhookUrl:edge.webhook})}),201)).id as string;
  const update=async(id=root.id)=>{const old=await json(await f.call('/initiatives/'+id));return json(await f.call('/initiatives/'+id,'PATCH',{expectedVersion:old.version,description:'synthetic-vector-1814 confidential update'}));};
- const posts=()=>edge.calls.filter(c=>(c.method==='chat.postMessage'||c.method==='discord')&&String(c.body.text??c.body.content).includes('/app/initiatives/'+root.id));
+ const posts=()=>edge.calls.filter(c=>(c.method==='chat.postMessage'||c.method==='discord')&&(String(c.body.text??c.body.content).includes('/app/initiatives/'+root.id)||(c.body.text??c.body.content)==='Private work changed. Sign in to Vector to view it.'));
  const events=async(destination:string)=>(await env.DB.prepare('SELECT id,body FROM vector_webhook_events WHERE destination_id=? ORDER BY created_at,id').bind(destination).all<{id:string;body:string}>()).results;
  for(const provider of ['slack','discord']){
+  const creationBefore=posts().length,creationBinding=await bind(provider,['initiative.created']);
+  const creationEvents=await events(creationBinding);expect(creationEvents,'selected creation is enqueued by the public binding door').toHaveLength(1);
+  expect(JSON.parse(creationEvents[0].body)).toMatchObject({initiativeId:root.id,actorId:f.owner,change:'Initiative created'});
+  await dispatchWebhooks(current);await dispatchWebhooks(current);await outboundService(current,workspace).dispatch(creationEvents[0].id);
+  expect(posts(),'selected creation posts exactly once per provider after repeated dispatch').toHaveLength(creationBefore+1);
+  const creationMessage=posts().at(-1)!;expect(creationMessage.method).toBe(provider==='slack'?'chat.postMessage':'discord');
+  expect(creationMessage.body.text??creationMessage.body.content).toBe(root.name+'\n'+f.initial.operators.find(o=>o.id===f.owner)!.name+': Initiative created\n'+current.APP_ORIGIN+'/app/initiatives/'+root.id);
+  await json(await f.call('/settings/integrations/channels/'+creationBinding,'DELETE'));
   let binding=await bind(provider),before=posts().length;
   const state=await json(await f.call('/settings/integrations/channels'));expect(state.objects).toContainEqual({id:root.id,name:root.name,scope:'initiative'});expect(state.bindings.find((b:any)=>b.id===binding)).toMatchObject({scope:'initiative',objectName:root.name,events:['initiative.updated']});
   const old=await json(await f.call('/initiatives/'+root.id));
@@ -116,7 +124,7 @@ export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegr
   const retired=binding;binding=await bind(provider,['initiative.projects_changed']);expect(await env.DB.prepare('SELECT 1 FROM vector_integration_secret_keys WHERE identity=?').bind('destination:'+retired).first()).toBeNull();
   // Visibility changes after production are checked at dispatch, with no project names projected.
   await json(await f.call('/initiatives/'+root.id+'/projects','PUT',{expectedVersion:updated.version,projectIds:[project.id]}));
-  await f.mutate('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:true});await dispatchWebhooks(current);expect(posts()).toHaveLength(before+2);expect(posts().at(-1)!.body.text??posts().at(-1)!.body.content).toContain('Private work changed. Sign in to Vector to view it.');expect(JSON.stringify(posts())).not.toContain(project.name);
+  await f.mutate('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:true});await dispatchWebhooks(current);expect(posts()).toHaveLength(before+2);expect(posts().at(-1)!.body,'complete private notice at '+provider+' edge').toEqual(provider==='slack'?{channel:'CINITIATIVE',text:'Private work changed. Sign in to Vector to view it.',unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:'Private work changed. Sign in to Vector to view it.',allowed_mentions:{parse:[]},flags:4});expect(JSON.stringify(posts())).not.toContain(project.name);
   await f.mutate('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:false});
   binding=await bind(provider);await update();edge.postMode('uncertain');await dispatchWebhooks(current);edge.postMode('accepted');
   const unknown=(await events(binding))[0];expect((await outboundService(current,workspace).get(unknown.id))?.state).toBe('uncertain');await outboundService(current,workspace).dispatch(unknown.id);expect(posts(),'uncertain initiative send is never retried').toHaveLength(before+3);

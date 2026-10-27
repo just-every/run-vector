@@ -196,10 +196,14 @@ to channels an Admin bound to that team.
 
 Owners and Admins bind initiatives under these same Settings controls; Members
 cannot bind initiatives. Choose Initiative created, Initiative update or Initiative
-projects changed. Each selected initiative write records its event in the same
+projects changed. Create the initiative first, then bind it with Initiative created
+selected to deliver its recorded creation once to that destination. Replacing a
+binding creates a new destination and may deliver that creation there too.
+Each selected initiative write records its event in the same
 transaction and uses the existing durable queue. Messages contain only the
 initiative name, actor, change and canonical initiative link. They omit descriptions,
-comments and project names; changes involving private work use a generic notice.
+comments and project names. An initiative involving private work sends only
+“Private work changed. Sign in to Vector to view it.”, without actor, name or link.
 Dispatch checks the current initiative and active actor membership. Replacing or
 removing a binding stops its old destination. Restored bindings retain their
 configuration but need credentials re-entered and effects reviewed before posting.
