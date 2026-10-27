@@ -219,6 +219,8 @@ function promised(cell: string, who: Kind, c: Context) {
   if (text.startsWith("no (yes when the invite setting is on")) return c.memberInvites ? "allow" : "forbidden";
   if (text.startsWith("where request is visible")) return "allow";
   if (text.startsWith("yes") || text === "own" || text.startsWith("member's teams")) return "allow";
+  // The probe gives every Member an editable initiative and an Owner-approved destination (INIT-001).
+  if (text === "editable initiative and approved destination only") return "allow";
   if (text.startsWith("no") || text === "apply only") return "forbidden";
   if (text.startsWith("team owner only") || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
   if (text === "team setting") return who === "lead" || c.settings === "all_members" ? "allow" : "forbidden";
@@ -231,7 +233,7 @@ const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : st
 const watched = ["documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "issue_reactions", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
-  "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
+  "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_initiative_destination_approvals", "vector_initiative_scoped_bindings", "vector_initiative_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];
 
 // Driven from the registry, this case grows with every row; its time limit is not a product assertion.
 it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing", { timeout: 120_000 }, async () => {
