@@ -1,3 +1,4 @@
+import {exerciseOAuthApps} from './integrations/oauth-apps.mjs';
 import {exerciseGithubChain} from './integrations/github-chain.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -11,8 +12,9 @@ const runtime=createUiRuntime(),evidence=resolve(process.env.VECTOR_EVIDENCE_DIR
 const proof={passed:false,widths:[],credentialsCaptured:false,liveProvider:false};
 try{
  await mkdir(resolve('.artifacts/verification'),{recursive:true});
- await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
+ await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,...(process.env.VECTOR_CHROMIUM_PATH?{executablePath:process.env.VECTOR_CHROMIUM_PATH}:{}),args:[...(process.env.VECTOR_CHROMIUM_PATH?['--no-sandbox']:[]),"--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const admin=await(await runtime.req('/api/settings/administration',{headers:{Cookie:cookie}})).json(),team=admin.teams.find(row=>!row.archivedAt);
+ await exerciseOAuthApps({page,runtime,cookie,evidence});
  for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});await exerciseGithubChain({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
  proof.passed=true;
 }finally{await browser?.close();await runtime.stop();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'browser-proof.json'),JSON.stringify(proof,null,2)+'\n');}

@@ -1,3 +1,4 @@
+import {addOAuthRoutes} from '../features/oauth-apps/routes';
 import {addMonthCalendarRoutes} from '../features/calendar-view/routes';
 import {addProjectTemplateRoutes} from '../features/project-templates/routes';
 import { addDashboardRoutes } from "../features/dashboards/routes";
@@ -242,6 +243,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
   });
 
+  addOAuthRoutes(app);
   addSubscriptionRoutes(app);
   addInitiativeRoutes(app);
   addDocumentRoutes(app);

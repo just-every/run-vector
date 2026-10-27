@@ -64,7 +64,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     return created.teams.find((t) => t.name === name)!.id;
   };
 
-  return {
+  const result:Record<RowId,Probe> = {
     "documents.write": {outside:true,session:async(_who,actor,team)=>{const target=await issue(team);return()=>actor.call('/documents','POST',{parentKind:'issue',parentId:target.id,title:'synthetic-vector-document-probe-'+unique(),body:'synthetic-vector-document-body'});}},
     "work.read": {outside:true,session:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.call('/issues/'+made.identifier+'/references');},api:async(_who,actor,teamId)=>{const made=await issue(teamId);return()=>actor.api('/issues/'+made.identifier);}},
     "viewers.manage": {session:async(_who,actor)=>()=>actor.call('/settings/operators/invite','POST',{email:`synthetic-vector-${1100+unique()}@vector.test`,displayName:'synthetic-vector-1100',role:'viewer'})},
@@ -208,6 +208,31 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "data.restore": { session: async (_who, actor) => () => actor.call("/data/restore") },
     "data.erase-imported": { session: async (_who, actor) => () => actor.call("/data/erasure/journal") },
   };
+  // Keep the existing row probe and assert each new OAuth door under its cells.
+  let oauthFixture:Promise<{app:{id:string;secret:string};request:Record<string,string>;grantId:string}>|undefined;
+  const prepareOAuth=()=>oauthFixture??=(async()=>{
+    const app=await json<{id:string;secret:string}>(owner.call('/settings/oauth-apps','POST',{name:'synthetic-vector-4521',redirectUris:['https://synthetic-vector-4521.example.test/callback'],scopes:['issues:read']}));
+    const request={response_type:'code',client_id:app.id,redirect_uri:'https://synthetic-vector-4521.example.test/callback',scope:'issues:read',state:'synthetic-vector-4522'};
+    const approved=await json<{redirect:string}>(owner.call('/oauth/authorize','POST',{request,decision:'approve'}));
+    const granted=await json<{grant_id:string}>(createServerApp().request(origin+'/oauth/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grant_type:'authorization_code',client_id:app.id,client_secret:app.secret,code:new URL(approved.redirect).searchParams.get('code'),redirect_uri:request.redirect_uri})},bindings));
+    return {app,request,grantId:granted.grant_id};
+  })();
+  for(const row of ['integrations.manage','identity.personal'] as const){
+    const previous=result[row].session;
+    result[row].session=async(who,actor,team)=>{
+      const send=await previous(who,actor,team);
+      const {request,grantId}=await prepareOAuth();
+      return async()=>{
+        const response=await send(),allowed=row==='integrations.manage'?who==='owner'||who==='admin':who!=='guest';
+        const targets=row==='integrations.manage'?
+          [await actor.call('/settings/oauth-apps'),await actor.call('/settings/oauth-apps','POST',{name:'synthetic-vector-4523',redirectUris:[request.redirect_uri],scopes:['issues:read']}),await actor.call('/settings/oauth-apps/grants/'+grantId,'DELETE')]:
+          [await actor.call('/oauth/authorize?'+new URLSearchParams(request)),await actor.call('/oauth/authorize','POST',{request,decision:'approve'})];
+        for(const [index,target] of targets.entries())expect(target.status,'OAuth '+row+' '+who).toBe(allowed?(row==='integrations.manage'&&index===1?201:200):403);
+        return response;
+      };
+    };
+  }
+  return result;
 }
 
 /** Additional doors carried by existing matrix rows. Kept separate so another
