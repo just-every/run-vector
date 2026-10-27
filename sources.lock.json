@@ -6729,7 +6729,7 @@
       "executable": false
     },
     "tests/e2e/core-draft-journey.mjs": {
-      "sha256": "a39ee42c4a92d4da18eba1e61cffb3d46fd8f93476ee3634f24d124eef2b9441",
+      "sha256": "56a8119cf5f70f063fa32da15249cb6b98d7061d726486344fbe8f51ea0902c9",
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
@@ -6789,7 +6789,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "59e530e134fe387f71fe671aa04b877b4a3baacffb95e7d9716953776929d641",
+      "sha256": "024cbd09ea80e22a60425ed11cc79e030d70489210b3980195f561a29145e08b",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
