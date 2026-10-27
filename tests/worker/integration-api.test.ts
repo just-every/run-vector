@@ -292,13 +292,10 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  expect(grants.apps.map(row=>({id:row.id,scopes:JSON.parse(row.scopes)})).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
   {id:client.id,scopes:['issues:read','issues:write']},{id:adminClient.id,scopes:['issues:read','issues:write']},{id:other.id,scopes:['issues:write','metadata:read']},
  ].sort((a,b)=>a.id.localeCompare(b.id)));
- const memberName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(memberId).first<string>('name');
- const ownerName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(await actor(f.cookie)).first<string>('name');
- const adminName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(await actor(admin)).first<string>('name');
  expect(grants.grants.map(row=>({id:row.id,app:row.app,member:row.member,scopes:JSON.parse(row.scopes),createdAt:row.createdAt,lastUsed:row.lastUsed})).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
-  {id:token.grant_id,app:'synthetic-vector-4501',member:memberName,scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
-  {id:ownerGrant.grant_id,app:'synthetic-vector-4506',member:ownerName,scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
-  {id:adminGrant.grant_id,app:'synthetic-vector-4511',member:adminName,scopes:['issues:write','metadata:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+  {id:token.grant_id,app:'synthetic-vector-4501',member:'synthetic-vector-4503',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+  {id:ownerGrant.grant_id,app:'synthetic-vector-4506',member:'Owner',scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+  {id:adminGrant.grant_id,app:'synthetic-vector-4511',member:'synthetic-vector-4502',scopes:['issues:write','metadata:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
  ].sort((a,b)=>a.id.localeCompare(b.id)));
  const ownerInventory=await(await call(f.cookie,'/settings/oauth-apps')).json() as Inventory;
  expect(ownerInventory).toEqual(grants);
