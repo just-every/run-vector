@@ -1,5 +1,6 @@
 import type {Initiative} from './schema';
 import {createUlid} from '../../shared/ids';
+import {scopedBindingLive} from '../integrations/channels/initiative-approval';
 type InitiativeEvent={workspace:string;actor:string;id:string;name:string;at:string;event:'initiative.created'|'initiative.updated'|'initiative.projects_changed';change:string};
 /** Joined to the source write batch, never published before its version fences commit. */
 export function initiativeEvent(db:D1Database,input:InitiativeEvent){
@@ -9,7 +10,7 @@ export function initiativeEvent(db:D1Database,input:InitiativeEvent){
  FROM vector_initiative_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id
  JOIN operators o ON o.id=? AND o.workspace_id=b.workspace_id AND o.removed_at IS NULL
  WHERE b.workspace_id=? AND b.object_id=? AND d.enabled=1 AND d.revoked_at IS NULL
- AND EXISTS(SELECT 1 FROM json_each(b.events) WHERE value=?)
+ AND EXISTS(SELECT 1 FROM json_each(b.events) WHERE value=?) AND ${scopedBindingLive('d.id')}
  AND (NOT EXISTS(SELECT 1 FROM vector_restore_status) OR EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=0))
  ON CONFLICT(id) DO NOTHING`).bind(eventId,input.event,input.id,input.name,input.actor,input.change,input.event==='initiative.projects_changed'?'projects':'initiative',input.at,input.actor,input.workspace,input.id,input.event);
 }

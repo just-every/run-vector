@@ -1,9 +1,16 @@
 import {SlackAppSettings} from './slack-app-settings';
 import {useState,type FormEvent} from 'react';
+import type {z} from 'zod';
 import {useApiResource} from '../../../app/api-client';
 import {channelConfiguration,channelEventLabels,scopeEvents} from '../channels/schema';
 import {acknowledged,send} from './client';
 import {CopyField} from './copy-field';
+type Configuration=z.infer<typeof channelConfiguration>;
+/** Existing destinations only: Slack channels already bound or allowed, and configured Discord webhooks. */
+function approvable(config:Configuration){
+ const slack=new Map<string,string>([...config.allowedChannels.map(c=>[c.channelId,c.channelName] as const),...config.bindings.filter(b=>b.provider==='slack').map(b=>[b.channelId,b.channelName] as const)]);
+ return [...[...slack].map(([id,name])=>({value:'slack:'+id,label:'Slack #'+name+' ('+id+')'})),...config.bindings.filter(b=>b.provider==='discord').map(b=>({value:'discord:'+b.id,label:'Discord #'+b.channelName+' ('+b.objectName+')'}))];
+}
 export function ChannelSettings(){
  const config=useApiResource('/api/settings/integrations/channels',channelConfiguration);
  const [appRevision,setAppRevision]=useState(0);
@@ -22,6 +29,9 @@ export function ChannelSettings(){
  }
  async function allow(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,data=new FormData(form);
   if(await run('/channels/allowed',{channelId:data.get('channelId'),channelName:data.get('channelName')})){form.reset();setNotice('Channel allowed for project creators.');}
+ }
+ async function approve(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,data=new FormData(form),[kind,value]=String(data.get('destination')).split(':');
+  if(await run('/channels/initiative-approvals',{provider:kind,initiativeId:data.get('initiativeId'),audience:'workspace',...(kind==='slack'?{channelId:value}:{destinationId:value})})){form.reset();setNotice('Channel approved. Members who can edit that initiative may now bind it there.');}
  }
  async function bind(event:FormEvent<HTMLFormElement>){event.preventDefault();const form=event.currentTarget,data=new FormData(form),[scope,objectId]=String(data.get('object')).split(':');
   if(await run('/channels',{scope,objectId,provider,channelName:data.get('channelName'),events:data.getAll('events'),...(provider==='slack'?{channelId:data.get('channelId')}:{webhookUrl:data.get('webhookUrl')})})){form.reset();setChosen('');setNotice('Channel binding saved. Future selected events will be posted.');}
@@ -51,6 +61,12 @@ export function ChannelSettings(){
  {provider==='slack'?<label>Slack channel ID<input name="channelId" required pattern="[CG][A-Z0-9]{2,30}" placeholder="C0123456789"/><small>In Slack, open the channel details and copy its channel ID.</small></label>:<label>Discord webhook URL<input type="password" autoComplete="off" name="webhookUrl" required maxLength={2048}/><small>HTTPS on discord.com or discordapp.com, beginning /api/webhooks/. The URL is stored securely and never shown again.</small></label>}
  <fieldset key={chosen}><legend>Chosen events</legend>{offered.events.map(event=><label className="admin-checkbox" key={event}><input name="events" type="checkbox" value={event} defaultChecked={offered.checked.includes(event)}/>{channelEventLabels[event]}{offered.hedged.includes(event)?' (when available)':''}</label>)}</fieldset>
  <button disabled={provider==='slack'&&!config.data.slack.connected}>Save channel binding</button></fieldset></form>
+ <form aria-label="Approve initiative channel" onSubmit={approve}><fieldset disabled={pending}><legend>Approve a channel for an initiative</legend>
+ <p>Members who can edit an initiative may bind it only to an existing channel approved here for that initiative. Its audience is this workspace’s members; Vector never infers approval from a channel name or another binding.</p>
+ <label>Initiative to approve for<select name="initiativeId" required defaultValue=""><option value="">Choose an initiative</option>{config.data.objects.filter(object=>object.scope==='initiative').map(object=><option key={object.id} value={object.id}>{object.name}</option>)}</select></label>
+ <label>Existing channel<select name="destination" required defaultValue=""><option value="">Choose an existing channel</option>{approvable(config.data).map(option=><option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
+ <button>Approve channel for initiative</button></fieldset></form>
+ <ul>{config.data.approvals.map(approval=><li key={approval.id}><strong>{approval.initiativeName}</strong> → {approval.provider==='slack'?'Slack':'Discord'} #{approval.channelName}, approved for workspace members{!approval.usable&&<p role="status">Needs attention: this channel’s connection changed, so Members cannot use this approval.</p>}<button type="button" disabled={pending} onClick={()=>void run('/channels/initiative-approvals/'+approval.id,undefined,'DELETE')}>Withdraw approval for {approval.initiativeName} #{approval.channelName}</button></li>)}</ul>
  <p>A new binding replaces this object’s previous channel. Removing a binding stops future posts. Messages already posted remain in Slack or Discord.</p>
  <ul>{config.data.bindings.map(binding=><li key={binding.id}><strong>{binding.objectName}</strong> → {binding.provider==='slack'?'Slack':'Discord'} #{binding.channelName}{binding.suspendedReason&&<p role="alert">Routing suspended ({binding.suspendedReason}). Choose this object and save its channel binding again to confirm access. Held events are not replayed.</p>}{binding.needsAttention&&!binding.suspendedReason&&<p role="status">Needs attention: re-enter {binding.provider==='slack'?'the Slack token':'this Discord webhook URL by saving the binding again'}.</p>}<p>{binding.events.map(event=>channelEventLabels[event]).join(', ')}</p><button type="button" disabled={pending} onClick={()=>void run('/channels/'+binding.id,undefined,'DELETE')}>Remove binding for {binding.objectName}</button></li>)}</ul>
  </>}

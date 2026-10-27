@@ -178,6 +178,21 @@ export function probes(w: Workspace): Record<RowId, Probe> {
         return await actor.call(`/projects/${id}/slack-channel`,"POST",{channelId:"CAPPROVED"});
       }finally{edge.restore();}};
     } },
+    // An Owner approves one Slack channel for the initiative; an unapproved one is refused before Slack is asked.
+    "channels.bind-initiative": { session: async (_who, actor) => {
+      const edge=channelEdge();let initiative:string;
+      try {
+        expect((await owner.call("/settings/integrations/slack","POST",{botToken:edge.token})).status).toBe(200);
+        initiative=(await json<{id:string}>(owner.call("/initiatives","POST",{name:`synthetic-vector-${1500+unique()}`,ownerOperatorId:owner.id}))).id;
+        expect((await owner.call("/settings/integrations/channels/initiative-approvals","POST",{provider:"slack",initiativeId:initiative,channelId:"CAPPROVED",audience:"workspace"})).status).toBe(201);
+      } catch(error){edge.restore();throw error;}
+      return async()=>{try{
+        const before=edge.calls.length,path=`/initiatives/${initiative}/channel-binding`;
+        const denied=await actor.call(path,"PUT",{provider:"slack",channelId:"CUNAPPROVED",events:["initiative.updated"],expectedVersion:null});
+        expect(denied.status).toBe(403);expect(edge.calls.length).toBe(before);
+        return await actor.call(path,"PUT",{provider:"slack",channelId:"CAPPROVED",events:["initiative.updated"],expectedVersion:null});
+      }finally{edge.restore();}};
+    } },
     "channels.create": { session: async (_who, actor) => {
       const edge = channelEdge(), name = `Channel project ${unique()}`;
       try { expect((await owner.call("/settings/integrations/slack", "POST", { botToken: edge.token })).status).toBe(200); }
