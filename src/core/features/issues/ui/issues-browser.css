@@ -524,7 +524,7 @@
 }
 
 @media (max-width: 46rem) {
-  .issues-empty > a {
+  .issues-empty > .personal-empty-action {
     display: inline-flex;
     align-items: center;
     min-height: 2.75rem;

@@ -126,7 +126,7 @@ export function IssueListView({
   if (emptyPersonalScope) return <main ref={root} className="issues-browser">
     {before}<header className="issues-heading"><h1>{title}</h1></header>
     <section className="issues-empty"><p>{query.scope === "created" ? "You haven’t created any issues yet." : "You aren’t following any issues yet."}</p>
-      {query.scope === "created" ? <a href="/app/new-issue">New issue</a> : <a href="/app/issues">Browse issues</a>}
+      {query.scope === "created" ? <a className="personal-empty-action" href="/app/new-issue">New issue</a> : <a className="personal-empty-action" href="/app/issues">Browse issues</a>}
     </section>
   </main>;
   return (
