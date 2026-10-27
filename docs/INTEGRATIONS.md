@@ -129,8 +129,10 @@ Draft opening, review requests and merges use each team's configured status.
 Defaults match In Progress, In Review and Done by name; an absent name means no
 move. Explicitly disabling a rule also means no move. Completed work is never
 reopened unless that rule permits it. Team-rule writes use Who manages team settings,
-with Owners/Admins admitted and Guests refused. The editor currently appears in
-Owners/Admins' GitHub settings. The same-origin native team PATCH door accepts
+with Owners and Admins always admitted. Settings → Teams shows each team's editor
+to its owners and, when All team members is selected, its ordinary Members.
+Guests and Viewers cannot read or change the rules. Workspace GitHub settings
+links to the same Teams editor. The same-origin native team PATCH door accepts
 `githubAutomation: {trigger, statusId, allowReopen, expectedVersion, environment?}`.
 
 Signed branch push events retain the author string, first message line and validated

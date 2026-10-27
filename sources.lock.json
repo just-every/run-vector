@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "efd52f9ffe8e6e29af01ab435377e67d7af55a73c1f6506ed4efd8628b9ac490",
+      "sha256": "2677f47614f5b9a2bb33e89dd80184c90125d99ade0f7c4e2f4e6da6b581d205",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e7c4fc9138ae239077f8d69c5252d5051f70a803121527452fb49c335b7fc3e6",
+      "sha256": "b1348ec27ea6b5d5e23e9ea365e4401625ebe4344a7454790065c6b6488172c5",
       "executable": false
     },
     "DEMO.md": {
@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "1dd114d64ac9ef94043f1c3c1e68604a85bf4bd39adeff98595af8d374b08ee6",
+      "sha256": "81091b2113ff9bc786a868fa1b042d47cfe95bd2b7bb67479db81fbeb06d8098",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4537,7 +4537,7 @@
       "executable": false
     },
     "src/core/features/integrations/github/rule-routes.ts": {
-      "sha256": "e6e9310095cfb60ee4e45880dc3d01a0a3d81ee636a7b50479a135e3272cf4d7",
+      "sha256": "3d40afc556082c6c1b8b8855d418b238de845593a5b4807c3d638044d1af9050",
       "executable": false
     },
     "src/core/features/integrations/github/rule-schema.ts": {
@@ -4721,11 +4721,11 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.css": {
-      "sha256": "0bf6f74fc946af4ac10187a78af48cd4f354df08d79bcf0c496774ca4bd47852",
+      "sha256": "f81246c3be95278110e544a7e6b97475ca8bc1036c32c6c1bfae8f7cc25d9dc6",
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.tsx": {
-      "sha256": "5dfdcf2f1ab6f8c6077bbc0c8fbb0e3004eb2bbdaca03a66ae505ac868d00b6e",
+      "sha256": "4235ae3621d44edf7e321e1f39865db3f2659c79aef130500bf386e9c343a3f0",
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
@@ -5981,7 +5981,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "b6753ea0c0d98b296d758ac6209f0305195e8b943c81fcc5ae50b9514c62a3d2",
+      "sha256": "644aa363282bad90a4ea4eeb59932aa366e68cdb972bb570af20de7f0534a796",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
@@ -6937,7 +6937,11 @@
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
-      "sha256": "b78f5ff72fc99f3fb066bfaead908bb273a7a91713841252cd4632d6bc264fd0",
+      "sha256": "70b012f8e219944c000a70e61f5a2a1c33be50d77e5e33d7c7caa01db0d8f2ff",
+      "executable": false
+    },
+    "tests/e2e/integrations/github-team-permissions.mjs": {
+      "sha256": "e38c15348996d6412fd221d9f027348473569b0c4786033240e79953131af988",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
@@ -7857,7 +7861,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "844db6ed9da745cf4c5e4d70ee55da342449e0577e14790f8b3cfb68c350828b",
+      "sha256": "a994d322eb9b2273f9b7ced55fc8b047435b4692c25675c123602a0b28cba829",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {

@@ -1,3 +1,5 @@
+import {openAdministrationForm} from '../ui-administration-form.mjs';
+import {exerciseGithubTeamPermissions} from './github-team-permissions.mjs';
 import assert from 'node:assert/strict';
 import {createHmac,randomUUID} from 'node:crypto';
 import {roleScreens} from '../role-ui-support.mjs';
@@ -16,8 +18,15 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   const shipped=statuses.find(s=>s.name==='Shipped'),review=statuses.find(s=>s.name==='In Review'),started=statuses.find(s=>s.category==='started'),done=statuses.find(s=>s.category==='completed');
   const fixtureRepository='synthetic-vector-1710/chain-'+width;
   const config=await call('/settings/integrations/github','POST',{name:'synthetic-vector-1710 '+width,repository:fixtureRepository},201);
-  await page.setViewportSize({width,height:900});await navigate(page,runtime.base+'/app/settings');
-  const rules=page.getByRole('region',{name:'Git automation rules',exact:true});await rules.getByText(team.name+' Git automation',{exact:true}).click();
+  await page.setViewportSize({width,height:900});await navigate(page,runtime.base+'/app/settings#integrations');
+  const integrations=page.getByRole('region',{name:'Integrations',exact:true});
+  await integrations.getByRole('link',{name:'Manage Git automation rules in Teams',exact:true}).waitFor();
+  await inspect(page,integrations,'github-owner-integrations-'+width);
+  await page.setViewportSize({width,height:900});
+  await integrations.getByRole('link',{name:'Manage Git automation rules in Teams',exact:true}).click();
+  const teams=page.getByRole('region',{name:'Teams',exact:true});
+  await openAdministrationForm(page,'Edit '+team.name);
+  const rules=teams.getByRole('region',{name:'Git automation rules',exact:true});await rules.getByText(team.name+' Git automation',{exact:true}).click();
   const saveMessages=[];
   for(const [trigger,label,status] of [['draft','Draft PR opened',review.id],['review','Review requested',review.id],['merged','PR merged',done.id],['deploy','Production deployed',shipped.id]]){
    await rules.getByLabel(team.name+' '+label+' status',{exact:true}).selectOption(status);
@@ -46,6 +55,7 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   assert.equal(afterRace.version,versioned.version+1,'the losing save commits no rule update');
   for(const response of staleSaves)await response.body.cancel();
   console.log('Git concurrent stale saves '+width+': 200/409 PASS');
+  if(width===1440)await exerciseGithubTeamPermissions({page,runtime,call,team,started,review,evidence});
   const issue=await call('/issues','POST',{teamId:team.id,title:'synthetic-vector-1711 Fix checkout '+width},201);
   await navigate(page,runtime.base+'/app/issues/'+issue.identifier);
   const branch=page.getByRole('region',{name:'Git branch',exact:true});const expected=issue.identifier.toLowerCase()+'-synthetic-vector-1711-fix-checkout-'+width;
