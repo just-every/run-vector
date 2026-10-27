@@ -9,7 +9,7 @@ import {createUlid} from '../../../shared/ids';
 import {guardedSql,ownerPredicate,type IntegrationOwner} from '../authority';
 import {sealSecret,openSecret} from '../secrets';
 import {IntegrationError} from '../errors';
-import {bindingInput} from './schema';
+import {bindingInput,scopeEvents} from './schema';
 import {discordUrl,slackCall,slackToken} from './provider';
 type Binding=z.infer<typeof bindingInput>;
 export async function credentialProblem(env:WorkerBindings,identity:string){
@@ -35,6 +35,8 @@ export async function removeSlack(env:WorkerBindings,owner:IntegrationOwner){
  await guardedSql(env.DB,ownerPredicate(owner)).batch(retireSlackWrites(owner.workspace,owner.id));return {removed:true};
 }
 export async function bindingWrites(env:WorkerBindings,owner:IntegrationOwner,input:Binding,skipObjectCheck=false){
+ // Refused before any provider call, seal or write: an object posts only the events it produces.
+ if(input.events.some(event=>!scopeEvents(input.scope).events.includes(event)))throw new IntegrationError(400,'channel_event_scope','Initiatives post only initiative events; teams, projects and saved views post issue events.');
  if(input.provider==='slack'&&!input.channelId)throw new IntegrationError(400,'slack_channel_required');
  if(input.provider==='slack')await requireSlackChannel(env,owner.workspace,input.channelId!);
  const id=createUlid(new Date()),at=new Date().toISOString(),identity='destination:'+id;

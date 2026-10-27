@@ -99,6 +99,14 @@ export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegr
  const update=async(id=root.id)=>{const old=await json(await f.call('/initiatives/'+id));return json(await f.call('/initiatives/'+id,'PATCH',{expectedVersion:old.version,description:'synthetic-vector-1814 confidential update'}));};
  const posts=()=>edge.calls.filter(c=>(c.method==='chat.postMessage'||c.method==='discord')&&(String(c.body.text??c.body.content).includes('/app/initiatives/'+root.id)||String(c.body.text??c.body.content).includes('Private work changed. Sign in to Vector to view it.')));
  const events=async(destination:string)=>(await env.DB.prepare('SELECT id,body FROM vector_webhook_events WHERE destination_id=? ORDER BY created_at,id').bind(destination).all<{id:string;body:string}>()).results;
+ // An object posts only the events it produces; a mismatch is refused before any provider call, seal or write.
+ const stored=()=>Promise.all(['vector_channel_bindings','vector_initiative_channel_bindings','vector_webhook_destinations','vector_integration_secret_keys','audit_records'].map(table=>env.DB.prepare('SELECT COUNT(*) n FROM '+table).first<number>('n')));
+ for(const [scope,objectId,mismatched] of [['initiative',root.id,['issue.created']],['team',team.id,['initiative.updated']]] as const)for(const provider of ['slack','discord']){
+  const before=await stored(),calls=edge.calls.length,refused=await f.call('/settings/integrations/channels','POST',{scope,objectId,provider,channelName:'synthetic-vector-1817',events:mismatched,...(provider==='slack'?{channelId:'CMISMATCH'}:{webhookUrl:edge.webhook})});
+  expect(refused.status,scope+' '+provider+' mismatch').toBe(400);expect(((await refused.json()) as {error:string}).error).toBe('channel_event_scope');
+  expect(await stored(),'refused binding writes nothing').toEqual(before);expect(edge.calls,'refused binding calls no provider').toHaveLength(calls);
+ }
+ await json(await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:team.id,provider:'slack',channelId:'CDELIVERY',channelName:'delivery',events:['triage.created','issue.created','issue.status_changed']}),201);
  for(const provider of ['slack','discord']){
   const creationBefore=posts().length,creationBinding=await bind(provider,['initiative.created']);
   const creationEvents=await events(creationBinding);expect(creationEvents,'selected creation is enqueued by the public binding door').toHaveLength(1);
