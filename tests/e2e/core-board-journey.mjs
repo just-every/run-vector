@@ -35,6 +35,54 @@ export async function boardJourney(page, context, base, record, capture) {
   assert((await page.locator('.board-column').count()) > 0, 'The default team opens its workflow board');
   const choices = await page.getByLabel('Team', { exact: true }).locator('option').evaluateAll(nodes => nodes.map(node => node.value));
   assert(choices.includes(team.id) && choices.includes(empty.id));
+  // A first-time Board resolves its default team without persisting a choice.
+  // Moving a loaded card must not depend on re-reading team resources.
+  const defaultStatuses = (await api('/options')).statuses.filter(row => row.teamId === preferred.id);
+  const defaultTitle = 'Default-team refresh ' + Date.now();
+  const defaultMover = await api('/issues', 'POST', {
+    teamId: preferred.id, title: defaultTitle,
+    statusId: defaultStatuses.find(row => row.category === 'backlog').id,
+  });
+  await page.getByLabel('Title or identifier', { exact: true }).fill(defaultTitle);
+  await readyBoard(page, { q: defaultTitle, team: preferred.id });
+  await page.locator('#issue-row-' + defaultMover.identifier).waitFor();
+  const loadedCards = await page.locator('.board-card').count();
+  const loadedColumns = await page.locator('.board-column').count();
+  for (const [index, path] of ['/api/options', '/api/metadata'].entries()) {
+    let teamReads = 0;
+    const failTeamRead = route => {
+      ++teamReads;
+      return route.fulfill({ status: 500, contentType: 'application/json',
+        body: JSON.stringify({ error: 'unavailable' }) });
+    };
+    await page.route('**' + path, failTeamRead);
+    try {
+      const destination = defaultStatuses.find(row => row.category === (index ? 'backlog' : 'started'));
+      const beforeMove = await api('/issues/' + defaultMover.identifier);
+      await openCardMove(page, defaultMover);
+      const [saved] = await Promise.all([
+        page.waitForResponse(response => response.url() === base + '/api/issues/' + defaultMover.identifier && response.request().method() === 'PATCH'),
+        cardSelector(page, defaultMover).selectOption(destination.id),
+      ]);
+      assert.equal(saved.status(), 200);
+      await boardColumn(page, destination).locator('#issue-row-' + defaultMover.identifier).waitFor();
+      const persisted = await api('/issues/' + defaultMover.identifier);
+      assert.equal(persisted.status.id, destination.id);
+      assert.equal(persisted.version, beforeMove.version + 1);
+      await readyBoard(page, { team: preferred.id });
+      assert.equal(await page.locator('.board-card').count(), loadedCards, 'A Move keeps every loaded card');
+      assert.equal(await page.locator('.board-column').count(), loadedColumns, 'A Move keeps every workflow column');
+      assert.equal(await page.getByRole('alert').filter({ hasText: 'Could not refresh issues.' }).count(), 0);
+      assert(await page.getByRole('button', { name: 'Undo', exact: true }).isVisible());
+      assert.equal(teamReads, 0, 'A resolved default team needs no read during a Move');
+    } finally {
+      await page.unroute('**' + path, failTeamRead);
+    }
+    await readyBoard(page, { team: preferred.id });
+    assert.equal(await page.locator('.board-card').count(), loadedCards, 'Recovery keeps the loaded Board');
+  }
+  await page.getByLabel('Title or identifier', { exact: true }).fill(marker);
+  await readyBoard(page, { q: marker, team: preferred.id });
   await shot('board-choose-team', 1440);
   await page.getByLabel('Team', { exact: true }).selectOption(team.id);
   await readyBoard(page, { team: team.id, pageSize: 100, grouping: 'status' });

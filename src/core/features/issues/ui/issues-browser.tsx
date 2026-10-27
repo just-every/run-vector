@@ -165,8 +165,9 @@ export function IssueBrowserSurface({
     return () => window.removeEventListener("vector:issues-changed", changed);
   }, [resource.refreshAfterMutation]);
   const needsTeam = layout === "board" && layoutQuery.team === "all";
-  const teamError = needsTeam ? optionResource.error || administrationResource.error : null;
-  const waitingForTeam = needsTeam && (!options || !administration);
+  const teamResolved = !!(options && administration);
+  const teamError = needsTeam && !teamResolved ? optionResource.error || administrationResource.error : null;
+  const waitingForTeam = needsTeam && !teamResolved;
   return (
     <IssueListView
       query={shownQuery}
@@ -177,7 +178,10 @@ export function IssueBrowserSurface({
       // Row mutations also publish issues-changed. Join that draining refresh
       // instead of canceling its read with a second explicit reload.
       reload={() => {
-        if (needsTeam) { optionResource.reload(); administrationResource.reload(); }
+        if (needsTeam) {
+          if (!options || optionResource.error) optionResource.reload();
+          if (!administration || administrationResource.error) administrationResource.reload();
+        }
         void resource.refreshAfterMutation();
       }}
       layout={layout}
