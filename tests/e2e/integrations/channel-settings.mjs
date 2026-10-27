@@ -81,6 +81,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
 
 /** Outcomes remain next to the control and truthful through a stale list and a repeated approval. */
 export async function initiativeApprovalOutcomes({page,runtime,send,width}){
+ await page.setViewportSize({width,height:width===390?844:1000});
  const panel=page.locator('.channel-settings'),approval=panel.getByRole('form',{name:'Approve initiative channel',exact:true});
  const owner=(await send('/settings/administration','GET')).viewer.id;
  const initiative=await send('/initiatives','POST',{name:'synthetic-vector-1851-'+width,ownerOperatorId:owner});
@@ -116,7 +117,7 @@ export async function initiativeApprovalOutcomes({page,runtime,send,width}){
  assert.ok(!(await page.locator('body').innerText()).includes('approval_not_found'));
  console.log('INIT-001 concurrent withdrawal',JSON.stringify({width,text:await panel.locator('.initiative-approval-outcome').innerText(),remaining:await withdraw.count()}));
  await choose();
- console.log('INIT-001 approval geometry',JSON.stringify(await approval.evaluate((form)=>({width:innerWidth,fields:[...form.querySelectorAll('select')].map(select=>({label:select.getAttribute('aria-label'),width:select.clientWidth,scrollWidth:select.scrollWidth,border:getComputedStyle(select).borderWidth,height:select.getBoundingClientRect().height,options:[...select.options].map(option=>({text:option.text,scrollWidth:option.scrollWidth,clientWidth:option.clientWidth}))})),detail:form.querySelector('#approval-destination-detail').textContent}))));
+ console.log('INIT-001 approval geometry',JSON.stringify(await approval.evaluate((form)=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,fields:[...form.querySelectorAll('select')].map(select=>({label:select.getAttribute('aria-label'),width:select.clientWidth,scrollWidth:select.scrollWidth,border:getComputedStyle(select).borderWidth,height:select.getBoundingClientRect().height,options:[...select.options].map(option=>{const style=getComputedStyle(select),canvas=document.createElement('canvas'),context=canvas.getContext('2d');context.font=style.font;return {text:option.text,scrollWidth:option.scrollWidth,clientWidth:option.clientWidth,textWidth:context.measureText(option.text).width,availableWidth:select.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)};})})),detail:form.querySelector('#approval-destination-detail').textContent}))));
  await send('/settings/integrations/channels/'+source.id,'DELETE');
  await submit(404);
 }
