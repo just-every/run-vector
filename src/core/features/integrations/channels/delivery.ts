@@ -1,3 +1,4 @@
+import {channelBindingSource} from './subjects';
 import {checkBoundChannel,suspendChannel,suspendedSlackResponses} from './channel-safety';
 import type {WorkerBindings} from '../../../app/bindings';
 import type {DeliveryProtocol,Envelope,WireRequest} from '../../../../../vendor/base/integrations';
@@ -10,13 +11,18 @@ import {workspaceDate} from '../../issues/browse-access';
 import {restoredEffectsHeld} from '../../data/restore-authority';
 type Channel={id:string;kind:'slack'|'discord';scope:string;object_id:string;created_by:string;channel_id:string;channel_name:string};
 async function currentChannel(env:WorkerBindings,workspace:string,id:string){
- const row=await env.DB.prepare(`SELECT d.id,d.kind,b.scope,b.object_id,b.created_by,b.channel_id,b.channel_name FROM vector_webhook_destinations d JOIN vector_channel_bindings b ON b.destination_id=d.id JOIN operators o ON o.id=b.created_by AND o.removed_at IS NULL JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE d.id=? AND d.workspace_id=? AND d.enabled=1 AND d.revoked_at IS NULL`).bind(id,workspace).first<Channel>();
+ const row=await env.DB.prepare(`SELECT d.id,d.kind,b.scope,b.object_id,b.created_by,b.channel_id,b.channel_name FROM vector_webhook_destinations d JOIN ${channelBindingSource} b ON b.destination_id=d.id JOIN operators o ON o.id=b.created_by AND o.removed_at IS NULL JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE d.id=? AND d.workspace_id=? AND d.enabled=1 AND d.revoked_at IS NULL`).bind(id,workspace).first<Channel>();
  if(!row||await restoredEffectsHeld(env.DB))throw new IntegrationError(409,'channel_disabled');
  return row;
 }
 /** Saved views use the same browse predicates as the member's list, at dispatch. */
 export async function channelMatches(env:WorkerBindings,workspace:string,id:string,body:string){
  const channel=await currentChannel(env,workspace,id),event=JSON.parse(body);
+ if(channel.scope==='initiative'){
+  if(!event.initiativeId||event.initiativeId!==channel.object_id||!event.actorId)return false;
+  return Boolean(await env.DB.prepare("SELECT 1 FROM initiatives n JOIN operators o ON o.workspace_id=n.workspace_id JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE n.id=? AND n.workspace_id=? AND o.id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member')").bind(event.initiativeId,workspace,event.actorId).first());
+ }
+ if(event.initiativeId)return false;
  if(event.actorId&&!await env.DB.prepare('SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL').bind(event.actorId,workspace).first())return false;
  const issue=await env.DB.prepare('SELECT i.id,i.team_id,i.project_id,t.is_private FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.workspace_id=?').bind(event.identifier,workspace).first<{id:string;team_id:string;project_id:string|null;is_private:number}>();
  if(!issue)return false;
@@ -32,7 +38,14 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
 }
 const escapeSlack=(text:string)=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 export async function channelMessage(env:WorkerBindings,kind:string,channelId:string,body:string){
- const event=JSON.parse(body),link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);
+ const event=JSON.parse(body);
+ if(event.initiativeId){
+  const privateWork=await env.DB.prepare('SELECT 1 FROM initiative_projects ip JOIN issues i ON i.project_id=ip.project_id JOIN teams t ON t.id=i.team_id WHERE ip.initiative_id=? AND t.is_private=1').bind(event.initiativeId).first();
+  const change=event.changeKind==='projects'&&privateWork?'Private work changed. Sign in to Vector to view it.':event.change;
+  const text=`${event.initiativeName}\n${event.actor}: ${change}\n${env.APP_ORIGIN}/app/initiatives/${encodeURIComponent(event.initiativeId)}`;
+  return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]},flags:4});
+ }
+ const link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);
  const privateItem=await env.DB.prepare('SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.identifier=? AND t.is_private=1').bind(event.identifier).first();
  const text=privateItem?'Private work changed. Sign in to Vector to view it.':`${event.identifier} · ${event.title}\n${event.actor}: ${event.change}\n${link}`;
  return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]},flags:4});

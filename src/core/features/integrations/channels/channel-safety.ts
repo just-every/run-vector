@@ -12,6 +12,7 @@ export async function requireSlackChannel(env:WorkerBindings,workspace:string,ch
 export async function suspendChannel(env:WorkerBindings,workspace:string,id:string,reason:string){
  await env.DB.batch([
   env.DB.prepare('UPDATE vector_channel_bindings SET suspended_reason=? WHERE destination_id=? AND workspace_id=?').bind(reason,id,workspace),
+  env.DB.prepare('UPDATE vector_initiative_channel_bindings SET suspended_reason=? WHERE destination_id=? AND workspace_id=?').bind(reason,id,workspace),
   env.DB.prepare("UPDATE vector_webhook_destinations SET enabled=0 WHERE id=? AND workspace_id=? AND kind='slack' AND revoked_at IS NULL").bind(id,workspace),
  ]);
 }
