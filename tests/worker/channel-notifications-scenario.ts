@@ -160,6 +160,7 @@ export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegr
 export async function scopedInitiativeChannels(f:Awaited<ReturnType<typeof setupIntegrations>>,current:WorkerBindings,edge:ReturnType<typeof channelEdge>){
  const json=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
  const workspace=(await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id'))!;
+ edge.workspace('TSYNTHETICA');await json(await f.call('/settings/integrations/slack','POST',{botToken:edge.token}));
  const root=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-1830',ownerOperatorId:f.owner}),201);
  const other=await json(await f.call('/initiatives','POST',{name:'synthetic-vector-1831',ownerOperatorId:f.owner}),201);
  const approve=async(body:Record<string,string>)=>json(await f.call('/settings/integrations/channels/initiative-approvals','POST',{audience:'workspace',...body}),201);
@@ -206,5 +207,24 @@ export async function scopedInitiativeChannels(f:Awaited<ReturnType<typeof setup
  state=await bindingState();saved=await json(await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:state.version}));
  await edit(f.call);await dispatchWebhooks(current);expect(slackPosts(),'fresh binding posts only the new event').toHaveLength(2);
  expect((await env.DB.prepare("SELECT action,count(*) n FROM audit_records WHERE action IN('channel.initiative_destination_approved','channel.initiative_destination_withdrawn') GROUP BY action ORDER BY action").all()).results).toEqual([{action:'channel.initiative_destination_approved',n:4},{action:'channel.initiative_destination_withdrawn',n:1}]);
- await json(await f.call('/settings/operators/'+memberId,'DELETE'));await edit(f.call);await dispatchWebhooks(current);expect(slackPosts(),'removed binder posts nothing').toHaveLength(2);
+ // Workspace identity is part of approval: reconnecting to B cannot carry A's approval across.
+ await edit(f.call);
+ expect(await env.DB.prepare('SELECT count(*) n FROM vector_webhook_events WHERE destination_id=? AND enqueued_at IS NULL').bind(saved.id).first<number>('n'),'workspace A has a pending event').toBe(1);
+ edge.workspace('TSYNTHETICB');await json(await f.call('/settings/integrations/slack','POST',{botToken:edge.token}));
+ const beforeWorkspaceSave=await custody(),beforeWorkspaceCalls=edge.calls.length;
+ expect((await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:saved.version})).status,'workspace B refuses workspace A approval').toBe(403);
+ expect(await custody(),'refused workspace change preserves custody').toEqual(beforeWorkspaceSave);expect(edge.calls).toHaveLength(beforeWorkspaceCalls);
+ expect((await bindingState()).destinations.some((d:any)=>d.provider==='slack'),'workspace A approval is no longer offered').toBe(false);
+ await dispatchWebhooks(current);await edit(f.call);await dispatchWebhooks(current);
+ expect(slackPosts(),'changed workspace stops pending and future posts').toHaveLength(2);
+ const oldApproval=(await json(await f.call('/settings/integrations/channels'))).approvals.find((a:any)=>a.initiativeId===root.id&&a.channelId==='CSCOPED');
+ await json(await f.call('/settings/integrations/channels/initiative-approvals/'+oldApproval.id,'DELETE'));
+ await approve({provider:'slack',initiativeId:root.id,channelId:'CSCOPED'});
+ await dispatchWebhooks(current);await edit(f.call);await dispatchWebhooks(current);
+ expect(slackPosts(),'fresh workspace B approval alone never replays or revives held events').toHaveLength(2);
+ state=await bindingState();saved=await json(await member(door,'PUT',{provider:'slack',channelId:'CSCOPED',events:['initiative.updated'],expectedVersion:state.version}));
+ await dispatchWebhooks(current);expect(slackPosts(),'explicit binding still does not replay held events').toHaveLength(2);
+ await edit(f.call);await dispatchWebhooks(current);await dispatchWebhooks(current);
+ expect(slackPosts(),'explicit workspace B binding posts subsequent work once').toHaveLength(3);
+ await json(await f.call('/settings/operators/'+memberId,'DELETE'));await edit(f.call);await dispatchWebhooks(current);expect(slackPosts(),'removed binder posts nothing').toHaveLength(3);
 }
