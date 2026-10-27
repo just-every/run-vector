@@ -1,9 +1,20 @@
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
+import {invite,actor,request} from './base-auth-fixture';
+import type {InboxPage} from '../../src/core/features/notifications/schema';
 import type {setupIntegrations} from './integration-fixture';
 type Send=(value:unknown,delivery?:string,tamper?:boolean,event?:string)=>Promise<Response>;
 export async function exerciseGithubAutomation(f:Awaited<ReturnType<typeof setupIntegrations>>,send:Send){
  const team=f.initial.teams[0],target=await f.create({title:'synthetic-vector-1701 checkout'}),contributing=await f.create({title:'synthetic-vector-1702 contributing work'});
+ const followerCookie=await invite('synthetic-vector-1740@example.test',f.cookie),follower=await actor(followerCookie);
+ const outsiderCookie=await invite('synthetic-vector-1741@example.test',f.cookie);
+ expect((await request('/api/issues/'+target.identifier+'/subscription','PATCH',{following:true},followerCookie)).status).toBe(200);
+ expect((await f.call('/issues/'+target.identifier+'/subscription','PATCH',{following:false})).status).toBe(200);
+ const inbox=async(cookie:string)=>{
+  const response=await request('/api/notifications?limit=50','GET',undefined,cookie);
+  expect(response.status,await response.clone().text()).toBe(200);
+  return ((await response.json()) as InboxPage).items.filter(item=>item.identifier===target.identifier);
+ };
  const created=await f.call('/settings/teams/'+team.id+'/statuses','POST',{name:'In Review',category:'started'});
  expect(created.status,await created.clone().text()).toBe(200);
  const state=await f.state(),review=state.teams[0].statuses.find(s=>s.name==='In Review')!,done=team.statuses.find(s=>s.category==='completed')!,started=team.statuses.find(s=>s.category==='started')!;
@@ -12,10 +23,17 @@ export async function exerciseGithubAutomation(f:Awaited<ReturnType<typeof setup
  expect((await f.call('/settings/teams/'+team.id,'PATCH',{githubAutomation:{trigger:'review',statusId:review.id,allowReopen:false,expectedVersion:0}})).status).toBe(409);
  const fixture=(action:string,at:string,merged=false)=>({action,number:43,repository:{full_name:'octocat/test-repo1'},pull_request:{number:43,title:'Fixes '+target.identifier,body:'Part of '+contributing.identifier,head:{ref:target.identifier.toLowerCase()+'-checkout'},draft:!merged,state:merged?'closed':'open',merged,merge_commit_sha:merged?'a'.repeat(40):null,updated_at:at,html_url:'https://github.com/octocat/test-repo1/pull/43'}});
  const receipts=[];
+ const inboxOutcomes:string[]=[];
  for(const [action,at,status] of [['opened','2026-10-05T01:00:00.000Z',started.id],['review_requested','2026-10-05T02:00:00.000Z',review.id],['closed','2026-10-05T03:00:00.000Z',done.id]]){
   const body=fixture(action,at,action==='closed'),id=crypto.randomUUID();receipts.push({body,id});
   expect((await send(body,id)).status).toBe(200);
   expect((await (await f.call('/issues/'+target.identifier)).json()) as object).toMatchObject({status:{id:status}});
+  inboxOutcomes.push(action==='closed'?'completed':'status');
+  expect((await inbox(followerCookie)).map(item=>({actor:item.actor,causes:item.causes}))).toEqual([...inboxOutcomes].reverse().map(cause=>({actor:'Git automation',causes:[cause]})));
+  expect(await inbox(f.cookie)).toEqual([]);
+  expect(await inbox(outsiderCookie)).toEqual([]);
+  const recipients=(await env.DB.prepare('SELECT DISTINCT recipient_id FROM notifications WHERE issue_id=?').bind(target.id).all()).results;
+  expect(recipients).toEqual([{recipient_id:follower}]);
  }
  const moves=async()=> (await env.DB.prepare("SELECT actor_operator_id,actor_name,next_value_json FROM issue_activity WHERE issue_id=? AND kind='issue.status_changed'").bind(target.id).all()).results;
  expect(await moves()).toHaveLength(3);
@@ -24,8 +42,16 @@ export async function exerciseGithubAutomation(f:Awaited<ReturnType<typeof setup
  expect(await notices()).toHaveLength(3);
  expect((await notices()).filter(n=>JSON.parse(String(n.causes_json)).includes('completed'))).toHaveLength(1);
  for(const notice of await notices())expect(notice).toMatchObject({actor_id:null,actor_name:'Git automation'});
- for(const {body,id} of receipts)expect((await send(body,id)).status).toBe(200);
+ const followerInbox=await inbox(followerCookie);
+ for(const {body,id} of receipts){
+  expect((await send(body,id)).status).toBe(200);
+  expect((await send(body,crypto.randomUUID())).status).toBe(200);
+  expect(await inbox(followerCookie)).toEqual(followerInbox);
+  expect(await inbox(f.cookie)).toEqual([]);
+  expect(await inbox(outsiderCookie)).toEqual([]);
+ }
  expect(await moves()).toHaveLength(3);expect(await notices()).toHaveLength(3);
+ expect((await (await f.call('/issues/'+contributing.identifier+'/github')).json()) as object).toMatchObject({pullRequests:[{number:43,url:'https://github.com/octocat/test-repo1/pull/43',state:'merged'}]});
  expect(await env.DB.prepare('SELECT status_id FROM issues WHERE id=?').bind(contributing.id).first<string>('status_id')).not.toBe(done.id);
  const completed=await f.create({title:'synthetic-vector-1703 completed',statusId:done.id});
  const back={...fixture('opened','2026-10-05T04:00:00.000Z'),number:44,pull_request:{...fixture('opened','2026-10-05T04:00:00.000Z').pull_request,number:44,title:completed.identifier,body:null,head:{ref:completed.identifier.toLowerCase()},html_url:'https://github.com/octocat/test-repo1/pull/44'}};
@@ -33,6 +59,53 @@ export async function exerciseGithubAutomation(f:Awaited<ReturnType<typeof setup
  const branch=await f.create({title:'synthetic-vector-1704 branch only'});
  expect((await send({...back,number:45,pull_request:{...back.pull_request,number:45,title:'synthetic-vector-1705 branch reference',head:{ref:branch.identifier.toLowerCase()+'-work'},html_url:'https://github.com/octocat/test-repo1/pull/45'}})).status).toBe(200);
  expect((await (await f.call('/issues/'+branch.identifier+'/github')).json()) as object).toMatchObject({pullRequests:[{number:45}]});
+ await exerciseConfiguredPrIsolation(f,send);
+ // Keep the following commit and deployment scenarios on their original rules.
+ for(const [trigger,statusId,expectedVersion] of [['draft',started.id,1],['review',review.id,2],['merged',done.id,1]]){
+  expect((await f.call('/settings/teams/'+team.id,'PATCH',{githubAutomation:{trigger,statusId,allowReopen:false,expectedVersion}})).status).toBe(200);
+ }
+}
+
+async function exerciseConfiguredPrIsolation(f:Awaited<ReturnType<typeof setupIntegrations>>,send:Send){
+ const teamA=f.initial.teams[0];
+ expect((await f.call('/settings/teams','POST',{name:'synthetic-vector-1750',identifierPrefix:'SYNB'})).status).toBe(200);
+ expect((await f.call('/settings/teams','POST',{name:'synthetic-vector-1751',identifierPrefix:'SYNC'})).status).toBe(200);
+ const teams=(await f.state()).teams,teamB=teams.find(t=>t.identifierPrefix==='SYNB')!,unconfigured=teams.find(t=>t.identifierPrefix==='SYNC')!;
+ const targets=[];
+ for(const team of [teamA,teamB]){
+  const statuses=[];
+  for(const [name,category] of [['Draft selected','started'],['Review selected','started'],['Merge selected','completed']]){
+   expect((await f.call('/settings/teams/'+team.id+'/statuses','POST',{name,category})).status).toBe(200);
+   statuses.push((await f.state()).teams.find(t=>t.id===team.id)!.statuses.find(s=>s.name===name)!);
+  }
+  targets.push(statuses);
+ }
+ const a=await f.create({title:'synthetic-vector-1752',teamId:teamA.id}),b=await f.create({title:'synthetic-vector-1753',teamId:teamB.id}),c=await f.create({title:'synthetic-vector-1754',teamId:unconfigured.id});
+ const read=async(key:string)=>{const response=await f.call('/issues/'+key);expect(response.status).toBe(200);return response.json() as Promise<{status:{id:string};version:number}>;};
+ const bBefore=await read(b.identifier),cBefore=await read(c.identifier);
+ // Issues require a team through the public create door; no team-less record can be admitted.
+ expect((await f.call('/issues','POST',{title:'synthetic-vector-1755',teamId:null})).status).toBe(400);
+ expect((await f.call('/issues','POST',{title:'synthetic-vector-1756'})).status).toBe(400);
+ const pr=(issue:string,number:number,action:string,index:number)=>({action,number,repository:{full_name:'octocat/test-repo1'},pull_request:{number,title:'Fixes '+issue,body:null,head:{ref:'synthetic-vector-1757'},draft:index===0,state:index===2?'closed':'open',merged:index===2,updated_at:`2026-10-06T0${index}:00:00.000Z`,html_url:'https://github.com/octocat/test-repo1/pull/'+number}});
+ for(const [index,trigger] of ['draft','review','merged'].entries()){
+  for(const [teamIndex,team] of [teamA,teamB].entries()){
+   expect((await f.call('/settings/teams/'+team.id,'PATCH',{githubAutomation:{trigger,statusId:targets[teamIndex][index].id,allowReopen:false,expectedVersion:trigger==='review'&&teamIndex===0?1:0}})).status).toBe(200);
+  }
+  expect(await read(b.identifier)).toEqual(bBefore);
+  expect(await read(c.identifier)).toEqual(cBefore);
+ }
+ let bPrevious=bBefore;
+ for(const [index,action] of ['opened','review_requested','closed'].entries()){
+  expect((await send(pr(a.identifier,46,action,index))).status).toBe(200);
+  expect((await read(a.identifier)).status.id).toBe(targets[0][index].id);
+  expect(await read(b.identifier)).toEqual(index===0?bBefore:bPrevious);
+  expect(await read(c.identifier)).toEqual(cBefore);
+  expect((await send(pr(b.identifier,47,action,index))).status).toBe(200);
+  expect((await read(b.identifier)).status.id).toBe(targets[1][index].id);
+  expect((await read(a.identifier)).status.id).toBe(targets[0][index].id);
+  expect(await read(c.identifier)).toEqual(cBefore);
+  bPrevious=await read(b.identifier);
+ }
 }
 
 export async function exerciseGithubCommits(f:Awaited<ReturnType<typeof setupIntegrations>>,send:Send){

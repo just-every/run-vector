@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2677f47614f5b9a2bb33e89dd80184c90125d99ade0f7c4e2f4e6da6b581d205",
+      "sha256": "278e8e5546ed72c14d1e875fb6dee2a4f8a3c8057f543d22445898a62cf1adb3",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b1348ec27ea6b5d5e23e9ea365e4401625ebe4344a7454790065c6b6488172c5",
+      "sha256": "a1146e623ef379f52ff80873f3737de8f95bd4234b25cb0d2d98d8123ef69385",
       "executable": false
     },
     "DEMO.md": {
@@ -7541,7 +7541,7 @@
       "executable": false
     },
     "tests/worker/github-automation-scenario.ts": {
-      "sha256": "d5eadb5f712516efa2b1ab9d14f1d228569b40937822911f2e3bde6f0239bdec",
+      "sha256": "4e1f07cca41ac02e8db2627ef8f4e6805f77f0d0d3ff77868c08e6202dab2488",
       "executable": false
     },
     "tests/worker/github-links.test.ts": {
