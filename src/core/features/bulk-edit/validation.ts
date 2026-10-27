@@ -28,6 +28,8 @@ export function bulkValidation(
       json_extract(c.body,'$.cycleId') IS NOT NULL AND json_extract(c.body,'$.cycleId') IS NOT i.cycle_id AND
         (NOT EXISTS(SELECT 1 FROM cycles cy WHERE cy.id=json_extract(c.body,'$.cycleId') AND cy.team_id=i.team_id AND cy.closed_at IS NULL) OR
          NOT EXISTS(SELECT 1 FROM workflow_statuses n WHERE n.id=COALESCE(json_extract(c.body,'$.statusId'),i.status_id) AND n.team_id=i.team_id AND n.category NOT IN ('completed','canceled','duplicate'))) AS cycle,
+      (CASE WHEN json_type(c.body,'$.startDate') IS NULL THEN i.start_date ELSE json_extract(c.body,'$.startDate') END) >
+        (CASE WHEN json_type(c.body,'$.dueDate') IS NULL THEN i.due_date ELSE json_extract(c.body,'$.dueDate') END) AS dateOrder,
       json_type(c.body,'$.labelIds') IS NOT NULL AND (json_array_length(c.body,'$.labelIds')>${seed.limits.labelsPerIssue} OR json_array_length(c.body,'$.labelIds')<>(SELECT count(DISTINCT value) FROM json_each(c.body,'$.labelIds'))) AS labelLimit,
       json_type(c.body,'$.labelIds') IS NOT NULL AND EXISTS(SELECT 1 FROM json_each(c.body,'$.labelIds') selected
         WHERE NOT EXISTS(SELECT 1 FROM labels l WHERE l.id=selected.value AND (l.workspace_id=t.workspace_id OR EXISTS(SELECT 1 FROM issue_labels il WHERE il.issue_id=i.id AND il.label_id=l.id)))) AS labels
@@ -40,12 +42,13 @@ export function bulkValidation(
     statement: db.prepare(sql).bind(...values),
     admission: db
       .prepare(
-        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit) THEN 1 ELSE json('bulk edit admission denied') END`,
+        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit OR dateOrder) THEN 1 ELSE json('bulk edit admission denied') END`,
       )
       .bind(...values),
   };
 }
 const reasons = {
+  dateOrder: "Start date must be on or before due date.",
   unavailable: "Issue is unavailable.",
   stale: "The issue version is stale.",
   status: "The workflow status transition is unavailable for this issue.",

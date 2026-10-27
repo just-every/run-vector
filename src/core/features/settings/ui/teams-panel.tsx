@@ -1,4 +1,5 @@
 import '../../documents/ui/documents.css';
+import { CreateSlackChannel } from "../../projects/ui/project-slack-choice";
 import {TeamJoinRules} from "./team-join-rules";
 import {TeamMetadata} from './team-metadata';
 import {TeamPrivacy} from './team-privacy';
@@ -12,7 +13,7 @@ import { TeamPermissions } from "./team-permissions";
 import { decide } from "../../roles/policy";
 import { TeamEmailIntake } from "../../email-intake/ui/team-email-intake";
 
-import { GithubRules } from "../../integrations/ui/github-rules";
+import { GithubRules, useGithubRules, type GithubRulesResource } from "../../integrations/ui/github-rules";
 
 import type { Administration } from "../../administration/schema";
 type Team = Administration["teams"][number];
@@ -33,7 +34,12 @@ export function TeamsPanel({
   data: Administration;
   onChanged: () => void;
 }) {
-  const action = useAdministrationAction(onChanged);
+  const githubRules = useGithubRules();
+  const handleChanged = () => {
+    onChanged();
+    githubRules.reload();
+  };
+  const action = useAdministrationAction(handleChanged);
   const creates = decide({ role: data.viewer.role, memberInvites: false, memberTeamCreation: data.workspace.memberTeamCreation, teams: new Map() }, { row: "teams.create" }) === "allow";
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -119,15 +125,14 @@ export function TeamsPanel({
           </label>
           {(data.viewer.role === "owner" || data.viewer.role === "admin") && <>
             <label className="admin-checkbox"><input name="isPrivate" type="checkbox"/>Private team</label>
-            <label className="admin-checkbox"><input name="createSlackChannel" type="checkbox"/>Create Slack channel</label>
-            <p>Creates a public channel from the identifier prefix and binds new issue, triage and status events. Connect Slack in Integrations first.</p>
+            <CreateSlackChannel />
           </>}
           <button type="submit">Create team</button>
         </fieldset>
       </form>}
       <AdministrationFeedback action={action} />
       {data.teams.filter((team) => teamAccess(data, team).opens).map((team) => (
-        <TeamEditor key={team.id} data={data} team={team} onChanged={onChanged} />
+        <TeamEditor key={team.id} data={data} team={team} onChanged={handleChanged} githubRules={githubRules} />
       ))}
     </section>
   );
@@ -136,10 +141,12 @@ function TeamEditor({
   data,
   team,
   onChanged,
+  githubRules,
 }: {
   data: Administration;
   team: Team;
   onChanged: () => void;
+  githubRules: GithubRulesResource;
 }) {
   const action = useAdministrationAction(onChanged);
   const hydrated = useHydrated();
@@ -177,7 +184,7 @@ function TeamEditor({
       </summary>
       {(data.viewer.role === 'owner' || data.viewer.role === 'admin') && <TeamPrivacy team={team} onChanged={onChanged}/>}
       {!team.canRead && data.viewer.role==='admin' && <TeamMetadata data={data} team={team}/>}
-      {access.settings && !team.archivedAt && <GithubRules teamId={team.id} />}
+      {access.settings && !team.archivedAt && <GithubRules teamId={team.id} resource={githubRules} />}
       {team.canRead && <>
       <p><a className="document-team-link" href={'/app/teams/'+team.id}>Team documents</a></p>
       {!access.settings && <p>Only this team&apos;s owners and Admins change its settings.</p>}

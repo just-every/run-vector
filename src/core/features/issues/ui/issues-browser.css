@@ -522,3 +522,11 @@
   padding: 0;
   font-size: 0.875rem;
 }
+
+@media (max-width: 46rem) {
+  .issues-empty > .personal-empty-action {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+}

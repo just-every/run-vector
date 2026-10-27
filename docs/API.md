@@ -50,6 +50,15 @@ The native Worker tests exercise scopes, stale writes, revocation/removal,
 issuance/commit races, usage-write failure and restart. Local proof does not
 establish hosted token commissioning or a live client integration.
 
+## Issue dates
+
+Issue creation and version-checked edits accept optional `startDate` and `dueDate`
+as `YYYY-MM-DD` or null. When both are set, start must be on or before due;
+invalid intervals return 400 without a write. Each successful change appears in
+activity. Lists accept `start=this_week`, `start=range` with `startFrom` and
+`startTo`, `start=none`, or `start=overdue` (before today), and `sort=start`.
+Week boundaries use the workspace timezone, Monday through Sunday.
+
 ## Project planning
 
 Project create accepts `name`, `description`, `leadOperatorId`, `startDate`,
@@ -274,3 +283,68 @@ without access to any private team receives 404 at that archive door; an Owner
 can export it. Scoped counted-issue CSV exports remain available for visible work.
 
 Viewer is the fifth stored workspace role. Owners and Admins invite Viewers and change Member, Guest and Viewer roles; only Owners change leadership roles. Viewer reads use current team visibility and every registered work mutation returns 403. Viewer assignments may name private teams explicitly. Personal account preferences, leaving the workspace and personal calendar capabilities follow their own matrix rows. Viewer role values survive portable archive restore; invitation credentials and feed capabilities remain excluded.
+
+## OAuth applications (API-004)
+
+An Owner or Admin opens **Settings → OAuth apps**, gives an application a name,
+registers one or more exact redirect URLs, and chooses its maximum permissions
+from the existing API scope list. Redirects require HTTPS; loopback HTTP is
+allowed for development. Wildcards, URL credentials and fragments are refused.
+Save the generated client secret once. Vector stores only its hash and never
+returns it in the application inventory. Members, Guests and Viewers cannot
+register applications or open the administrative inventory.
+
+Send the member to `GET /api/oauth/authorize` with `response_type=code`, `client_id`,
+`redirect_uri`, a space-separated `scope` and an unpredictable `state`. Requested
+scopes must be a subset of the registered scopes. For PKCE, send a base64url
+SHA-256 `code_challenge` and `code_challenge_method=S256`. Plain PKCE is refused.
+An unknown client, mismatched redirect or malformed request returns JSON 400
+without a Location header to API clients. Browser navigation instead returns
+303 to Vector’s own consent error page, where the member can return to the app
+and restart. An unverified redirect URL is never used for an error.
+The member signs into Vector and reviews the application's name, permissions
+and destination at `/app/settings/oauth-consent`. Owners, Admins and Members
+may approve access for themselves; Guests and Viewers receive 403.
+
+The consent screen reads `GET /api/oauth/consent` with those same parameters.
+Its same-origin `POST /api/oauth/consent` sends `{request, decision}` where
+`request` holds those parameters and `decision` is `approve` or `deny`. Approval
+returns an exact redirect with a five-minute authorization code and the original
+state. Denial returns `error=access_denied` with that state. Clients must verify
+the returned state before exchanging a code.
+
+Exchange at `POST /api/oauth/token` using a form body or JSON with
+`grant_type=authorization_code`, `client_id`, `client_secret`, `code`, the same
+`redirect_uri`, and `code_verifier` when PKCE was requested. HTTP Basic client
+authentication is also accepted in place of body credentials. The response
+contains `access_token`, `token_type=Bearer`, `scope` and `grant_id`. Client
+credentials are required even when PKCE is used. There are no refresh tokens.
+An incorrect client returns 401; a mismatched, expired or previously used code
+returns 400. Reusing an exchanged code also revokes the grant issued from it.
+
+Use the access token on the existing `/api/v1` endpoints. OAuth grants are
+member-owned Base tokens, stored as hashes in an independent grant namespace.
+A read-only grant reads issues with 200 and receives 403 for a write scope it
+was not granted. Native role and team visibility checks still apply on every
+request and transaction. Removing the member, losing their eligible role or
+suspending their underlying identity ends admission on the next call. A grant
+never supplies authority for a separate application actor.
+
+Owners and Admins use `GET /api/settings/oauth-apps` to inventory applications
+and every member grant, with scopes, creation time and last successful use.
+`POST /api/settings/oauth-apps` accepts `{name, redirectUris, scopes}` and
+returns the generated client ID and show-once secret. To revoke a grant, use
+`DELETE /api/settings/oauth-apps/grants/ID` or its Settings control. The next
+API call returns 401. OAuth grants are separate from the member’s personal
+API-token list; the personal token DELETE returns 404 for a grant’s token ID
+without changing its authority. A member who wants an app removed asks an Admin
+to revoke it in OAuth apps. Registration, consent, issuance and revocation are audited
+without credentials or request bodies.
+
+Archives exclude application registrations, client-secret hashes, authorization
+codes, OAuth grants and Base access-token hashes. Safe token profiles, usage
+receipts and audit history follow the existing archive policy. A restored
+installation has no working OAuth credential and requires fresh application
+registration and member consent. Excluding the entire registration avoids
+implying that a restored client secret or old redirect relationship remains
+trusted at a new installation.

@@ -23,8 +23,10 @@ export async function getIssueDetail(
     now,
   );
   if (!detail) return null;
-  const rows = await Promise.all(issueDetailReadStatements(binding, detail.id).map(statement => statement.all()));
-  return enrichIssueDetail(detail, rows);
+  const [metadata, actors, ...relations] = issueDetailReadStatements(binding, detail.id);
+  const [metadataResult, ...relationResults] = await binding.batch([metadata, ...relations]);
+  const actorResult = await actors.all();
+  return enrichIssueDetail(detail, [metadataResult, actorResult, ...relationResults]);
 }
 
 export function issueDetailReadStatements(binding: D1Database, issueId: string) {
@@ -221,6 +223,7 @@ export function buildIssueDetail(
     checklist: { completed: parseTasks(issue.description).filter(task => task.checked).length, total: parseTasks(issue.description).length },
     status: { id: status.id, name: status.name, category: status.category },
     priority: issue.priority,
+    startDate: issue.startDate,
     dueDate: issue.dueDate,
     estimate: issue.estimate,
     version: issue.version,

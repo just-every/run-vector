@@ -1,10 +1,10 @@
 import {DocumentsSection} from '../../documents/ui/list';
+import { useDateFormat } from "../../../shared/date-format";
 import {SubjectSubscribe} from '../../subscriptions/ui/subscriptions';
 import { ProjectChannel } from "../../integrations/ui/project-channel";
 import { ProjectReportPanel } from "../../project-report/panel";
 import { ProjectAppearance } from "./project-appearance";
 import { ProjectMilestones } from "./project-milestones";
-import { useViewerTime } from '../../../app/viewer-time';
 import { ProjectActivity } from "./project-activity";
 import { RiskEvidence } from "./risk-evidence";
 import { ProjectCycleHistory } from "./cycle-history";
@@ -19,7 +19,6 @@ import {
   activeHealthLabel,
   lifecycleLabel,
   projectProgressLabel,
-  shortProjectDate,
 } from "./helpers";
 import { projectDetailSchema, type ProjectDetailData } from "./data";
 
@@ -99,6 +98,7 @@ function ProjectDetailContent({
   milestones: ReactNode;
 }) {
   const health = activeHealthLabel(project.health);
+  const { date } = useDateFormat();
   return (
     <main className="project-detail" aria-labelledby="project-title">
       <header className="project-detail__header">
@@ -128,15 +128,16 @@ function ProjectDetailContent({
           ) : null}
         </div>
       </header>
+      {project.issues.length === 0 && <section className="project-detail__section"><h2>Issues</h2>{management ? <a className="project-first-issue" href={`/app/new-issue?project=${project.id}`}>Add the first issue</a> : <p>No issues belong to this project.</p>}</section>}
       {management}
       <dl className="project-facts">
         <Fact label="Lead" value={project.lead.name} />
-        <Fact label="Start date" value={project.startDate ? shortProjectDate(project.startDate) : "No start date"} />
+        <Fact label="Start date" value={project.startDate ? date(project.startDate) : "No start date"} />
         <Fact label="Priority" value={project.priority === "none" ? "No priority" : lifecycleLabel(project.priority)} />
         <Fact label="Labels" value={project.labels.map(label=>label.name).join(", ") || "No labels"} />
         <Fact
           label="Target date"
-          value={shortProjectDate(project.targetDate)}
+          value={project.targetDate ? date(project.targetDate) : "No target date"}
         />
         <Fact
           label="Teams"
@@ -158,19 +159,19 @@ function ProjectDetailContent({
       {project.health === "blocked" || project.health === "at-risk" ? (
         <RiskEvidence project={project} />
       ) : null}
-      <ProjectReportPanel report={project.report} />
-      <ProjectCycleHistory history={project.cycleHistory} />
+      {project.issues.length > 0 && <ProjectReportPanel report={project.report} />}
+      {project.issues.length > 0 && <ProjectCycleHistory history={project.cycleHistory} />}
       <ProjectActivity activity={project.activity} />
-      <div className="project-detail__grid">
+      {project.issues.length > 0 && <div className="project-detail__grid">
         <section className="project-detail__section">
           <h2>Issues</h2>
           <ProjectIssues issues={project.issues} />
         </section>
         <aside className="project-detail__aside">
-          <CycleFacts project={project} />
-          <DependencyFacts project={project} />
+          {project.issues.length > 0 && <CycleFacts project={project} />}
+          {project.issues.length > 0 && <DependencyFacts project={project} />}
         </aside>
-      </div>
+      </div>}
     </main>
   );
 }
@@ -229,7 +230,7 @@ function ProjectIssues({ issues }: { issues: ProjectDetailData["issues"] }) {
 }
 
 function CycleFacts({ project }: { project: ProjectDetailData }) {
-  const { formatInstant } = useViewerTime();
+  const { range } = useDateFormat();
   return (
     <section className="project-detail__section">
       <h2>Cycle capacity</h2>
@@ -254,9 +255,7 @@ function CycleFacts({ project }: { project: ProjectDetailData }) {
                   ? "Capacity is not recorded."
                   : `${cycle.capacity} point capacity`}{" "}
                 ·{" "}
-                {formatInstant(cycle.startsAt)}
-                –
-                {formatInstant(cycle.endsAt)}
+                {range(cycle.startsAt, cycle.endsAt)}
               </small>
             </li>
           ))}

@@ -38,6 +38,7 @@ const columns = {
   milestoneId: "milestone_id",
   cycleId: "cycle_id",
   estimate: "estimate",
+  startDate: "start_date",
   dueDate: "due_date",
   expectedOutcome: "expected_outcome",
   customerImpact: "customer_impact",
@@ -91,6 +92,10 @@ export async function planIssueUpdate(
     issue = await requireIssue(db, identifier),
     now = new Date().toISOString();
   if (issue.version !== input.expectedVersion) return null;
+  const startDate = input.startDate === undefined ? issue.startDate : input.startDate;
+  const dueDate = input.dueDate === undefined ? issue.dueDate : input.dueDate;
+  if (startDate && dueDate && startDate > dueDate)
+    throw new IssueMutationError("invalid_option", "Start date must be on or before due date.");
   const values: Record<string, unknown> = {},
     previous: Record<string, unknown> = {};
   for (const key of [
@@ -103,6 +108,7 @@ export async function planIssueUpdate(
     "milestoneId",
     "cycleId",
     "estimate",
+    "startDate",
     "dueDate",
     "expectedOutcome",
     "customerImpact",

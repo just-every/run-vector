@@ -1,9 +1,9 @@
+import { preferredTeam } from "./preferred-team";
+import { administrationSchema } from "../../administration/schema";
 import {SubscriptionFilters} from '../../subscriptions/ui/subscriptions';
 import {
   useMatch,
   useNavigate,
-  useRouteContext,
-  useRouter,
   useSearch,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -19,7 +19,6 @@ import { IssueListView } from "./issue-list-view";
 export { IssueListView } from "./issue-list-view";
 import { StoredIssueControls } from "./issue-list-preferences";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
-import { offerNavigationReceipt } from "../../../app/navigation-receipt";
 import "./issues-browser.css";
 
 export function IssuesBrowser() {
@@ -68,21 +67,7 @@ export function BoardBrowser() {
   const opened = detail?.params.identifier ?? null;
   const storedQuery = useSearch({ from: "/app/board" }),
     navigate = useNavigate();
-  const router = useRouter();
-  const { operator } = useRouteContext({ from: "/app" });
   const query = issueListLayoutQuery(storedQuery, "board");
-  useEffect(() => {
-    if (
-      storedQuery.pageSize !== query.pageSize ||
-      storedQuery.grouping !== query.grouping
-    ) {
-      // Only the URL representation changes: the document already read this
-      // exact board query. Hand that fresh receipt to this immediate replace.
-      const target = router.buildLocation({ to: ".", search: query });
-      const retire = offerNavigationReceipt(target.href, operator);
-      void navigate({ to: ".", search: query, replace: true }).finally(retire);
-    }
-  }, [storedQuery, query, navigate, router, operator]);
   const change = (changes: Partial<IssueListQuery>) =>
     void navigate({
       to: "/app/board",
@@ -147,14 +132,15 @@ export function IssueBrowserSurface({
   switchLayout?: boolean;
 }) {
   const navigate = useNavigate();
-  const teams = useApiResource("/api/options", workspaceOptionsSchema).data
-    ?.teams;
-  // A board shows one team's workflow. With a single team there is nothing to
-  // choose, so the board reads it directly instead of asking for it.
+  const optionResource = useApiResource("/api/options", workspaceOptionsSchema);
+  const administrationResource = useApiResource("/api/metadata", administrationSchema);
+  const options = optionResource.data, administration = administrationResource.data;
+  // A board reads the person's team until they explicitly choose another.
+  // Keep that default local so restoring controls cannot race their choice.
   const layoutQuery = issueListLayoutQuery(query, layout);
   const shownQuery =
-    layout === "board" && layoutQuery.team === "all" && teams?.length === 1
-      ? { ...layoutQuery, team: teams[0]!.id }
+    layout === "board" && layoutQuery.team === "all" && options && administration && preferredTeam(options, administration)
+      ? { ...layoutQuery, team: preferredTeam(options, administration) }
       : layoutQuery;
   useEffect(() => {
     if (
@@ -178,13 +164,26 @@ export function IssueBrowserSurface({
     window.addEventListener("vector:issues-changed", changed);
     return () => window.removeEventListener("vector:issues-changed", changed);
   }, [resource.refreshAfterMutation]);
+  const needsTeam = layout === "board" && layoutQuery.team === "all";
+  const teamResolved = !!(options && administration);
+  const teamError = needsTeam && !teamResolved ? optionResource.error || administrationResource.error : null;
+  const waitingForTeam = needsTeam && !teamResolved;
   return (
     <IssueListView
       query={shownQuery}
       {...resource}
+      data={waitingForTeam || teamError ? null : resource.data}
+      error={teamError || resource.error}
+      loading={!teamError && (waitingForTeam || resource.loading)}
       // Row mutations also publish issues-changed. Join that draining refresh
       // instead of canceling its read with a second explicit reload.
-      reload={resource.refreshAfterMutation}
+      reload={() => {
+        if (needsTeam) {
+          if (!options || optionResource.error) optionResource.reload();
+          if (!administration || administrationResource.error) administrationResource.reload();
+        }
+        void resource.refreshAfterMutation();
+      }}
       layout={layout}
       title={title}
       viewActions={viewActions}

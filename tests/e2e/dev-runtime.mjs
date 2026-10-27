@@ -123,7 +123,7 @@ try {
   await settleReads(page);
   await page.getByRole("link", { name: "Board", exact: true }).filter({ visible: true }).first().click();
   await page.getByRole("heading", { name: "Board", exact: true }).waitFor();
-  await page.getByLabel("Board team", { exact: true }).waitFor();
+  await page.getByLabel("Team", { exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   await page.getByRole("button", { name: "Save view", exact: true }).click();
   await page.getByLabel("View name", { exact: true }).fill(`Development navigation ${Date.now()}`);

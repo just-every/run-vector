@@ -1,4 +1,4 @@
-import { useViewerTime } from '../../../app/viewer-time';
+import { useDateFormat } from "../../../shared/date-format";
 import { CycleSchedulePanel } from "../../cycle-schedule/panel";
 import { Link } from "@tanstack/react-router";
 import type { FormEvent } from "react";
@@ -14,7 +14,7 @@ export function CyclesPanel({
   onChanged: () => void;
   heading?: string;
 }) {
-  const { formatInstant } = useViewerTime();
+  const { range } = useDateFormat();
   const action = useAdministrationAction(onChanged);
   const mayManage = data.viewer.role !== "guest";
   async function create(event: FormEvent<HTMLFormElement>) {
@@ -100,9 +100,7 @@ export function CyclesPanel({
           </Link>
           <p>
             {data.teams.find((team) => team.id === cycle.teamId)?.name} ·{" "}
-            {formatInstant(cycle.startsAt)}{" "}
-            –{" "}
-            {formatInstant(cycle.endsAt)}
+            {range(cycle.startsAt, cycle.endsAt)}
             {cycle.closedAt ? " · Closed" : ""}
           </p>
         </div>

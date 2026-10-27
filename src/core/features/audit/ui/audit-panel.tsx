@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react';
+import { auditAction, auditActor, actorLabels } from "./audit-labels";
+import { useEffect, useState, type FormEvent } from 'react';
 import { useApiResource } from '../../../app/api-client';
 import { useViewerTime } from '../../../app/viewer-time';
 import { actorKinds, auditSchema, auditSearch, type AuditQuery } from '../schema';
@@ -17,15 +18,23 @@ export function AuditPanel() {
     setFilters({ ...draft, from: draft.from ? new Date(draft.from).toISOString() : '', to: draft.to ? new Date(draft.to).toISOString() : '' });
   };
   const entries = resource.data?.entries;
+  const [choices, setChoices] = useState({ actors: [] as Array<{ value: string; label: string }>, actions: [] as string[] });
+  useEffect(() => {
+    if (!entries || Object.values(filters).some(Boolean)) return;
+    setChoices({
+      actors: [...new Map(entries.map(entry => [entry.actorRef, { value: entry.actorRef, label: auditActor(entry) }])).values()],
+      actions: [...new Set(entries.map(entry => entry.action))],
+    });
+  }, [entries, filters]);
   return <section id="audit" className="audit-panel" aria-labelledby="audit-heading">
-    <div className="audit-heading"><div><h2 id="audit-heading">Audit log</h2><p>Workspace activity, retained with opaque subject references after deletion.</p></div>
+    <div className="audit-heading"><div><h2 id="audit-heading">Audit log</h2><p>Who changed things in this workspace. Deleted people’s names are removed.</p></div>
       {resource.data && <a className="audit-export" href={'/api/settings/audit.csv?' + auditSearch({ ...filters, through: String(resource.data.through) })}>Export filtered CSV</a>}
     </div>
     <form className="audit-filters" onSubmit={apply}>
-      <label>Actor reference<input name="actor" placeholder="person:… or auth:…" value={draft.actor ?? ''} onChange={e => update('actor', e.target.value)} /></label>
-      <label>Actor kind<select name="kind" value={draft.kind ?? ''} onChange={e => update('kind', e.target.value)}><option value="">All actor kinds</option>{actorKinds.map(kind => <option key={kind} value={kind}>{kind === 'unknown' ? 'Unknown (historical)' : kind}</option>)}</select></label>
-      <label>Action kind<input name="action" placeholder="operator.role_changed" value={draft.action ?? ''} onChange={e => update('action', e.target.value)} /></label>
-      <label>Subject reference<input name="subject" value={draft.subject ?? ''} onChange={e => update('subject', e.target.value)} /></label>
+      <label>Person or service<select name="actor" value={draft.actor ?? ''} onChange={e => update('actor', e.target.value)}><option value="">Anyone</option>{choices.actors.map(actor => <option key={actor.value} value={actor.value}>{actor.label}</option>)}</select></label>
+      <label>Activity by<select name="kind" value={draft.kind ?? ''} onChange={e => update('kind', e.target.value)}><option value="">Anyone</option>{actorKinds.map(kind => <option key={kind} value={kind}>{actorLabels[kind]}</option>)}</select></label>
+      <label>Activity<select name="action" value={draft.action ?? ''} onChange={e => update('action', e.target.value)}><option value="">All activity</option>{choices.actions.map(action => <option key={action} value={action}>{auditAction(action)}</option>)}</select></label>
+      <label>Item reference<input name="subject" placeholder="Copy from an entry’s details" value={draft.subject ?? ''} onChange={e => update('subject', e.target.value)} /></label>
       <label>From (your local time)<input name="from" type="datetime-local" value={draft.from ?? ''} onChange={e => update('from', e.target.value)} /></label>
       <label>To (your local time)<input name="to" type="datetime-local" value={draft.to ?? ''} min={draft.from || undefined} onChange={e => update('to', e.target.value)} /></label>
       <div className="audit-filter-actions"><button type="submit">Apply filters</button><button type="button" onClick={() => { setDraft({}); setFilters({}); resource.reload(); }}>Clear filters</button><button type="button" onClick={resource.reload}>Refresh</button></div>
@@ -33,9 +42,9 @@ export function AuditPanel() {
     {resource.loading && <p role="status">Loading audit log…</p>}
     {resource.error && <p role="alert">{resource.error.message} <button type="button" onClick={resource.reload}>Retry</button></p>}
     {entries && <><p role="status">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
-      {entries.length ? <div className="audit-table-scroll"><table><thead><tr><th scope="col">Time</th><th scope="col">Actor</th><th scope="col">Action</th><th scope="col">Subject reference</th></tr></thead>
+      {entries.length ? <div className="audit-table-scroll"><table><thead><tr><th scope="col">Time</th><th scope="col">Person or service</th><th scope="col">Activity</th><th scope="col">Item</th></tr></thead>
         <tbody>{entries.map(entry => <tr key={entry.id}><td data-label="Time"><time dateTime={entry.at}>{formatInstant(entry.at)}</time></td>
-          <td data-label="Actor"><div className="audit-value">{entry.actorName && <span>{entry.actorName}<br /></span>}<small>{entry.actorKind}</small><br /><code>{entry.actorRef}</code></div></td><td data-label="Action"><span>{entry.action}</span></td><td data-label="Subject"><code>{entry.subjectRef}</code></td></tr>)}</tbody></table></div> : <p>No audit entries match these filters.</p>}
+          <td data-label="Person or service">{auditActor(entry)}</td><td data-label="Activity"><span>{auditAction(entry.action)}</span></td><td data-label="Item"><details><summary>Record details</summary><code>{entry.subjectRef}</code></details></td></tr>)}</tbody></table></div> : <p>No audit entries match these filters.</p>}
     </>}
   </section>;
 }

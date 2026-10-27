@@ -83,7 +83,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Orig
    await panel.getByRole('img',{name:'Project burn-up of issue scope and completion by day',exact:true}).waitFor();
    await panel.getByText('Daily data and scope changes',{exact:true}).click();
    const rows=panel.getByRole('region',{name:'Daily burn-up data',exact:true}).getByRole('row');
-   const final=rows.filter({hasText:today});
+   const final=rows.filter({has:page.locator(`time[datetime="${today}"]`)});
    assert.equal(await final.getByRole('cell').nth(0).innerText(),String(report.days.at(-1).scope));
    assert.equal(await final.getByRole('cell').nth(1).innerText(),String(report.days.at(-1).completed));
    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);

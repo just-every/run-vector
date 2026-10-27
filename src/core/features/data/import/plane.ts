@@ -2,7 +2,7 @@ import type { Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import type { ImportMapping } from './types';
 import { profileCalendar,profileNonempty,profileRow } from './profile-values';
 
-export const planeMapping:ImportMapping={sourceId:'ID',title:'Name',description:'Description',status:'State',priority:'Priority',project:'Project',assignee:'Assignees',labels:'Labels',estimate:'Estimate',dueDate:'Target Date',parent:'Parent',cycle:'Cycle Name'};
+export const planeMapping:ImportMapping={sourceId:'ID',title:'Name',description:'Description',status:'State',priority:'Priority',project:'Project',assignee:'Assignees',labels:'Labels',estimate:'Estimate',startDate:'Start Date',dueDate:'Target Date',parent:'Parent',cycle:'Cycle Name'};
 const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const weekdays=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function planeDate(value:Json):string|null {
@@ -17,7 +17,7 @@ export function preparePlane(raw:Record<string,Json>,row:number) {
   for(const field of ['Target Date','Start Date'])if(profileNonempty(raw[field])) {
     const date=planeDate(raw[field]);
     if(!date)error(field,'plane_invalid_calendar','Expected a valid English weekday, day, abbreviated month and four-digit year, such as Fri, 30 Oct 2026.');
-    else if(field==='Target Date')payload[field]=date;
+    else payload[field]=date;
   }
   if(profileNonempty(raw.Labels)&&typeof raw.Labels==='string')payload.Labels=raw.Labels.split(', ').map(value=>value.trim());
   if(profileNonempty(raw.Assignees)&&typeof raw.Assignees==='string'&&raw.Assignees.split(', ').length>1)
@@ -33,6 +33,5 @@ export function planeOmission(field:string):{code:string;message:string}|undefin
   if(['Attachment Links','Attachment Count'].includes(field))return {code:'plane_attachment_bytes_absent',message:'Attachment metadata contains no file bytes. Files and links are not imported or fetched.'};
   if(field==='Comments')return {code:'plane_comments_unsupported',message:'Plane comments are retained without importing bodies, authors or dates.'};
   if(field==='Relations')return {code:'plane_relations_unsupported',message:'Plane relation kinds are retained without creating links or dependencies. Parent is handled separately.'};
-  if(field==='Start Date')return {code:'plane_start_date_unsupported',message:'The source calendar day is valid, but Vector has no issue start-date field.'};
   return undefined;
 }

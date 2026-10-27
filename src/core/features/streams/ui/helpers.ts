@@ -71,15 +71,6 @@ export function moveRowFocus(
   return Math.max(0, currentIndex - 1);
 }
 
-export function shortDate(value: string | null) {
-  if (value === null) return "No due date";
-  return new Intl.DateTimeFormat(undefined, {
-    timeZone: "UTC",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(`${value}T00:00:00Z`));
-}
-
 export function relativeTime(value: string) {
   const seconds = Math.max(
     0,

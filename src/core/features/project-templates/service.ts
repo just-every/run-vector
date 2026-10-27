@@ -33,7 +33,7 @@ export async function readTemplate(source:D1Database,actor:string,id:string):Pro
  if(!row)throw new SettingsError('not_found','Template is unavailable.',404);
  const milestones=(await db.prepare('SELECT name,description,offset_days offsetDays FROM project_template_milestones WHERE template_id=? ORDER BY position').bind(id).all<TemplateInput['milestones'][number]>()).results;
  const labels=(await db.prepare('SELECT name FROM project_template_labels WHERE template_id=? ORDER BY name').bind(id).all<{name:string}>()).results.map(l=>l.name);
- const issues=(await db.prepare('SELECT title,description,priority,offset_days offsetDays,milestone_position milestonePosition FROM project_template_issues WHERE template_id=? ORDER BY position').bind(id).all<TemplateInput['issues'][number]>()).results;
+ const issues=(await db.prepare('SELECT title,description,priority,offset_days offsetDays,start_offset_days startOffsetDays,milestone_position milestonePosition FROM project_template_issues WHERE template_id=? ORDER BY position').bind(id).all<TemplateInput['issues'][number]>()).results;
  await access(db,actor);
  if(!await db.prepare(`SELECT t.id FROM project_templates t WHERE t.id=? AND t.version=? AND ${visible}`).bind(id,row.version,actor).first())throw new SettingsError('conflict','Template access or content changed. Refresh.',409);
  return {...templateInputSchema.parse({name:row.name,teamId:row.team_id,description:row.description,cadence:row.cadence,milestones,labels,issues}),id,version:row.version,canEdit:await editable(db,actor,row.team_id)};
@@ -54,7 +54,7 @@ export async function saveTemplate(db:D1Database,actor:string,input:TemplateInpu
  for(const table of ['project_template_milestones','project_template_labels','project_template_issues'])writes.push(ctx.db.prepare(`DELETE FROM ${table} WHERE template_id=?`).bind(id));
  input.milestones.forEach((m,i)=>writes.push(ctx.db.prepare('INSERT INTO project_template_milestones VALUES(?,?,?,?,?)').bind(id,i,m.name,m.description,m.offsetDays)));
  for(const name of new Set(input.labels))writes.push(ctx.db.prepare('INSERT INTO project_template_labels VALUES(?,?)').bind(id,name));
- input.issues.forEach((v,i)=>writes.push(ctx.db.prepare('INSERT INTO project_template_issues VALUES(?,?,?,?,?,?,?)').bind(id,i,v.title,v.description,v.priority,v.offsetDays,v.milestonePosition)));
+ input.issues.forEach((v,i)=>writes.push(ctx.db.prepare('INSERT INTO project_template_issues(template_id,position,title,description,priority,offset_days,milestone_position,start_offset_days) VALUES(?,?,?,?,?,?,?,?)').bind(id,i,v.title,v.description,v.priority,v.offsetDays,v.milestonePosition,v.startOffsetDays??null)));
  await commit(ctx,writes);return readTemplate(db,actor,id);
 }
 export async function deleteTemplate(db:D1Database,actor:string,id:string,version:number){
@@ -66,9 +66,9 @@ export async function captureTemplate(source:D1Database,actor:string,projectId:s
  const project=await db.prepare('SELECT description FROM projects WHERE id=?').bind(projectId).first<{description:string}>();if(!project)throw new SettingsError('not_found','Project is unavailable.',404);
  const offset=(date:string|null)=>date===null?null:Math.round((Date.parse(date+'T00:00:00Z')-Date.parse(input.referenceDate+'T00:00:00Z'))/86400000);
  const milestones=(await db.prepare('SELECT id,name,description,target_date FROM project_milestones WHERE project_id=? ORDER BY position,id').bind(projectId).all<{id:string;name:string;description:string;target_date:string|null}>()).results;
- const issues=(await db.prepare('SELECT title,description,priority,due_date,milestone_id FROM issues WHERE project_id=? ORDER BY created_at,id LIMIT 101').bind(projectId).all<{title:string;description:string;priority:string;due_date:string|null;milestone_id:string|null}>()).results;
+ const issues=(await db.prepare('SELECT title,description,priority,start_date,due_date,milestone_id FROM issues WHERE project_id=? ORDER BY created_at,id LIMIT 101').bind(projectId).all<{title:string;description:string;priority:string;start_date:string|null;due_date:string|null;milestone_id:string|null}>()).results;
  const labels=(await db.prepare('SELECT l.name FROM project_labels p JOIN labels l ON l.id=p.label_id WHERE p.project_id=? ORDER BY l.name').bind(projectId).all<{name:string}>()).results;
- return saveTemplate(source,actor,templateInputSchema.parse({name:input.name,teamId:input.teamId,cadence:input.cadence,description:project.description,milestones:milestones.map(m=>({name:m.name,description:m.description,offsetDays:offset(m.target_date)})),labels:labels.map(l=>l.name),issues:issues.map(i=>({title:i.title,description:i.description,priority:i.priority,offsetDays:offset(i.due_date),milestonePosition:i.milestone_id?milestones.findIndex(m=>m.id===i.milestone_id):null}))}));
+ return saveTemplate(source,actor,templateInputSchema.parse({name:input.name,teamId:input.teamId,cadence:input.cadence,description:project.description,milestones:milestones.map(m=>({name:m.name,description:m.description,offsetDays:offset(m.target_date)})),labels:labels.map(l=>l.name),issues:issues.map(i=>({title:i.title,description:i.description,priority:i.priority,offsetDays:offset(i.due_date),startOffsetDays:offset(i.start_date),milestonePosition:i.milestone_id?milestones.findIndex(m=>m.id===i.milestone_id):null}))}));
 }
 export async function applyTemplate(db:D1Database,actor:string,id:string,input:z.infer<typeof applySchema>){
  const template=await readTemplate(db,actor,id),a=await access(db,actor);
@@ -76,7 +76,7 @@ export async function applyTemplate(db:D1Database,actor:string,id:string,input:z
  if(!await db.prepare('SELECT id FROM teams WHERE id=? AND workspace_id=?').bind(input.teamId,a.workspace_id).first())throw new SettingsError('not_found','Team is unavailable.',404);
  const date=(offset:number|null)=>offset===null?null:addDays(input.startDate,offset);
  // Validate every derived date before creating any records.
- const planned=template.issues.map(i=>createIssueInputSchema.parse({title:i.title,description:i.description,priority:i.priority,dueDate:date(i.offsetDays),teamId:input.teamId}));
+ const planned=template.issues.map(i=>createIssueInputSchema.parse({title:i.title,description:i.description,priority:i.priority,startDate:date(i.startOffsetDays??null),dueDate:date(i.offsetDays),teamId:input.teamId}));
  for(const m of template.milestones)if(m.offsetDays!==null&&!/^\d{4}-\d{2}-\d{2}$/.test(date(m.offsetDays)!))throw new SettingsError('invalid_request','Choose a start date whose offsets fit calendar dates.',400);
  const labels:string[]=[],skippedLabels:string[]=[];
  for(const name of template.labels){const found=await db.prepare('SELECT id,projects_enabled FROM labels WHERE name=? AND workspace_id=?').bind(name,a.workspace_id).first<{id:string;projects_enabled:number}>();if(found?.projects_enabled)labels.push(found.id);else if(!found&&['owner','admin'].includes(a.role))labels.push(await createLabel(db,actor,{name,color:'#52637a',projectsEnabled:true}));else skippedLabels.push(name);}

@@ -6,7 +6,7 @@ export function RiskEvidence({ project }: { project: ProjectDetailData }) {
   return (
     <section className="project-risks" aria-labelledby="project-risk-heading">
       <div>
-        <p className="stream-overline">Explainable health</p>
+        <p className="stream-overline">Project health</p>
         <h2 id="project-risk-heading">
           Why this project is{" "}
           {activeHealthLabel(project.health)?.toLocaleLowerCase()}

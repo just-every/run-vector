@@ -8,10 +8,6 @@ type Change = { field: string; from?: string; to?: string };
 
 const name = (list: Named[] | undefined, id: unknown, none: string, gone: string) =>
   id === null || id === undefined || id === "" ? none : list?.find((item) => item.id === id)?.name ?? gone;
-const date = (value: unknown) =>
-  typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value)
-    ? new Date(value.slice(0, 10) + "T00:00:00Z").toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
-    : "Not set";
 const priority = (value: unknown) =>
   typeof value !== "string" || value === "none" ? "No priority" : value[0]!.toUpperCase() + value.slice(1);
 
@@ -23,7 +19,8 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
   projectId: { label: "Project", show: (v, o) => name(o?.projects, v, "No project", "an archived project") },
   milestoneId: { label: "Milestone", show: (v, o) => name(o?.milestones, v, "No milestone", "a removed milestone") },
   cycleId: { label: "Cycle", show: (v, o) => name(o?.cycles, v, "No cycle", "an earlier cycle") },
-  dueDate: { label: "Due date", show: date },
+  startDate: { label: "Start date" },
+  dueDate: { label: "Due date" },
   estimate: { label: "Estimate", show: (v) => (v === null || v === undefined ? "None" : String(v)) },
   labelIds: { label: "Labels", show: (v, o) => (Array.isArray(v) && v.length ? v.map((id) => name(o?.labels, id, "", "a deleted label")).join(", ") : "None") },
   parentIdentifier: { label: "Parent", show: (v) => (typeof v === "string" && v ? v : "None") },
@@ -39,7 +36,7 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
 const record = (value: unknown): Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 
-export function activityChanges(kind: string, previousValue: unknown, nextValue: unknown, options: StreamOptions | null): Change[] {
+export function activityChanges(kind: string, previousValue: unknown, nextValue: unknown, options: StreamOptions | null, formatDate: (value: string) => string): Change[] {
   // A created or imported issue's values are the issue itself, not a change.
   if (kind === "issue.created" || kind === "issue.imported") return [];
   const before = record(previousValue), after = record(nextValue);
@@ -47,8 +44,9 @@ export function activityChanges(kind: string, previousValue: unknown, nextValue:
     .filter((key) => key in after || key in before)
     .map((key) => {
       const field = FIELDS[key]!;
-      return field.show
-        ? { field: field.label, from: field.show(before[key], options), to: field.show(after[key], options) }
+      const show = (key === "dueDate" || key === "startDate") ? (value: unknown) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value) ? formatDate(value.slice(0, 10)) : "Not set" : field.show;
+      return show
+        ? { field: field.label, from: show(before[key], options), to: show(after[key], options) }
         : { field: field.label };
     })
     .filter((change) => change.from === undefined || change.from !== change.to);

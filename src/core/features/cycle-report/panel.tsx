@@ -7,8 +7,8 @@ export function CycleReportPanel({ report, closed, rolloverFailed }: {
 }) {
   const carriedLabel = rolloverFailed ? "Unfinished · uncommitted" : closed ? "Carried over" : "Unfinished";
   return <section className="cycle-report" aria-label="Cycle report">
-    <header className="cycle-report__heading"><div><h2>Cycle burn-up</h2><p>Scope and completion by day · issue count · {report.timezone}</p></div><span className="cycle-report__badge">{closed ? "Frozen at close" : "Live"}</span></header>
-    <p className="cycle-report__note">Canceled and Duplicate work is excluded from the lines. Scope markers include every recorded addition and removal. Each day shows its closing balance; the last day shows {closed ? "the closure snapshot" : "the latest balance"}.</p>
+    <header className="cycle-report__heading"><div><h2>Cycle burn-up</h2><p>Scope and completion by day · issue count</p></div><span className="cycle-report__badge">{closed ? "Frozen at close" : "Live"}</span></header>
+    <details><summary>How this is worked out</summary><p className="cycle-report__note">Canceled and Duplicate work is excluded from the lines. Scope markers include every recorded addition and removal. Each day shows its closing balance; the last day shows {closed ? "the closure snapshot" : "the latest balance"}.</p></details>
     <BurnUp report={report} />
     {report.limitations.map(text => <p className="cycle-report__notice" key={text}>{text}</p>)}
     <h3>{closed ? "Final report" : "Current scope report"}</h3>

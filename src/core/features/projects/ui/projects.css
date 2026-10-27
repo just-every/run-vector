@@ -607,3 +607,11 @@
 .project-name { display: flex; align-items: center; gap: .5rem; }
 .project-appearance { display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; }
 .project-color { display: inline-block; width: .85rem; height: .85rem; border-radius: 50%; border: 1px solid var(--app-muted); }
+
+@media (max-width: 46rem) {
+  .project-first-issue {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+}

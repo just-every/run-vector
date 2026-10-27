@@ -1,7 +1,10 @@
+import { preferenceSchema } from "../../views/schema";
+import { lastCreatedTeamKey, preferredTeam } from "./preferred-team";
+import { administrationSchema } from "../../administration/schema";
 import { useViewerTime } from '../../../app/viewer-time';
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useCanGoBack, useNavigate } from "@tanstack/react-router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import { issueDetailSchema } from "./data";
@@ -25,12 +28,20 @@ const allowedStatusCategories = new Set([
   "canceled",
 ]);
 const createdIssueSchema = issueDetailSchema.extend({ page: navigationPageSchema.optional() });
+// Back stays in Vector: the Navigation API knows whether the entry behind this tab's form is one
+// of this site's pages; without it, the router knows the entries it made itself.
+const vectorPageBehind = (routerCanGoBack: boolean) =>
+  (window as Window & { navigation?: { canGoBack: boolean } }).navigation?.canGoBack ?? routerCanGoBack;
 
 export function NewIssueForm() {
   const { effectiveTimezone } = useViewerTime();
   const navigate = useNavigate();
+  const canGoBack = useCanGoBack();
   const options = useApiResource("/api/options", workspaceOptionsSchema);
+  const administration = useApiResource("/api/metadata", administrationSchema);
+  const boardPreference = useApiResource("/api/preferences/board", preferenceSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
+  const openingDefaults = useRef(emptyNewIssueDraft);
   const [draftReady, setDraftReady] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
@@ -41,25 +52,41 @@ export function NewIssueForm() {
     : null;
 
   useEffect(() => {
-    if (!storageKey || draftReady) return;
+    if (!storageKey || draftReady || !options.data || !administration.data || !boardPreference.data) return;
+    const defaults = { ...emptyNewIssueDraft, teamId: preferredTeam(options.data, administration.data,
+      [boardPreference.data.filters.team]) };
+    const project = new URLSearchParams(window.location.search).get("project");
+    if (project && options.data.projects.some(choice => choice.id === project)) defaults.projectId = project;
+    openingDefaults.current = defaults;
+    let draft = defaults;
     try {
+      defaults.teamId = preferredTeam(options.data, administration.data, [
+        window.localStorage.getItem(lastCreatedTeamKey(options.data.workspace.id, options.data.operator.id)),
+        boardPreference.data.filters.team,
+      ]);
       const stored = window.localStorage.getItem(storageKey);
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
+      // Choosing Issue or Intake alone is not unsent content.
       if (restored) {
-        setValues(restored);
-        setNotice("Restored your unsent draft from this browser.");
+        const candidate = { ...restored, teamId: restored.teamId || defaults.teamId };
+        if (defaults.projectId) { candidate.projectId = defaults.projectId; candidate.mode = "issue"; }
+        if (hasUnsavedDraft(candidate, { ...defaults, mode: candidate.mode })) {
+          draft = candidate;
+          setNotice("Restored your unsent draft from this browser.");
+        }
       }
     } catch {
       setStorageError("This browser could not read the unsent draft.");
     }
+    setValues(draft);
     setDraftReady(true);
-  }, [draftReady, storageKey]);
+  }, [draftReady, storageKey, options.data, administration.data, boardPreference.data]);
 
   useEffect(() => {
     if (!draftReady || !storageKey) return;
     try {
-      if (hasUnsavedDraft(values))
+      if (hasUnsavedDraft(values, { ...openingDefaults.current, mode: values.mode }))
         window.localStorage.setItem(storageKey, JSON.stringify(values));
       else window.localStorage.removeItem(storageKey);
     } catch {
@@ -138,6 +165,12 @@ export function NewIssueForm() {
           "The issue was created, but this browser could not clear its draft.",
         );
       }
+      try {
+        if (options.data) window.localStorage.setItem(
+          lastCreatedTeamKey(options.data.workspace.id, options.data.operator.id), values.teamId);
+      } catch {
+        setStorageError("The issue was created, but this browser could not remember its team.");
+      }
       const retire = issue.page ? offerNavigationReceipt('/app/issues/' + issue.identifier, issue.page) : undefined;
       try {
         await navigate({ to: "/app/issues/$identifier", params: { identifier: issue.identifier } });
@@ -153,20 +186,24 @@ export function NewIssueForm() {
     }
   };
 
-  if (options.loading && options.data === null)
-    return (
-      <main className="new-issue-state" aria-live="polite">
-        Loading issue options…
-      </main>
-    );
-  if (options.error || options.data === null)
+  const back = <button type="button" className="detail-back" onClick={() => vectorPageBehind(canGoBack) ? window.history.back() : void navigate({ to: "/app" })}>← Back</button>;
+  const loadError = options.error || administration.error || boardPreference.error;
+  if (loadError)
     return (
       <main className="new-issue-state new-issue-state--error" role="alert">
+        {back}
         <strong>Unable to load issue options.</strong>
-        <span>{options.error?.message}</span>
-        <button type="button" onClick={options.reload}>
+        <span>{loadError.message}</span>
+        <button type="button" onClick={() => { options.reload(); administration.reload(); boardPreference.reload(); }}>
           Try again
         </button>
+      </main>
+    );
+  if (!options.data || !administration.data || !boardPreference.data)
+    return (
+      <main className="new-issue-state" aria-live="polite">
+        {back}
+        Loading issue options…
       </main>
     );
 
@@ -194,9 +231,7 @@ export function NewIssueForm() {
         >
           <header className="new-issue-header">
             <div>
-              <Link className="detail-back" to="/app">
-                ← Current
-              </Link>
+              {back}
               <h1 id="new-issue-title">
                 {values.mode === "intake" ? "New intake" : "New issue"}
               </h1>
@@ -475,6 +510,11 @@ export function NewIssueForm() {
                     />
                   </label>
                   <label>
+                    Start date
+                    <input type="date" value={values.startDate}
+                      onChange={(event) => setValues({ ...values, startDate: event.target.value })} />
+                  </label>
+                  <label>
                     Due date
                     <input
                       type="date"
@@ -486,7 +526,7 @@ export function NewIssueForm() {
                   </label>
                 </section>
                 <fieldset className="new-issue-labels">
-                  <legend>Labels · maximum {labelsPerIssue}</legend>
+                  <legend>Labels{values.labelIds.length >= labelsPerIssue - 1 ? ` · ${values.labelIds.length} of ${labelsPerIssue}` : ""}</legend>
                   {options.data.labels.length === 0 ? (
                     <span>No labels are available.</span>
                   ) : (

@@ -1,3 +1,4 @@
+import { useDateFormat } from "../../../shared/date-format";
 import { Link } from "@tanstack/react-router";
 import { useApiResource } from "../../../app/api-client";
 import { activityChanges, activityTitle } from "../../issues/ui/activity-changes";
@@ -8,6 +9,7 @@ import { MyWorkTabs } from "./my-work-tabs";
 
 /** WORK-004 Activity: the member's own recent changes and comments, newest first. */
 export function MyActivity() {
+  const { date } = useDateFormat();
   const activity = useApiResource("/api/my-work/activity", myActivitySchema, 5000);
   const options = useApiResource("/api/options", optionsSchema);
   return (
@@ -35,7 +37,7 @@ export function MyActivity() {
       {activity.data?.entries.length ? (
         <ol className="my-activity-list">
           {activity.data.entries.map((entry) => {
-            const changes = activityChanges(entry.kind, entry.previousValue, entry.nextValue, options.data);
+            const changes = activityChanges(entry.kind, entry.previousValue, entry.nextValue, options.data, date);
             return (
               <li key={entry.id}>
                 <Link to="/app/issues/$identifier" params={{ identifier: entry.issue.identifier }} search={{}}>

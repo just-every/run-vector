@@ -65,6 +65,7 @@ export type ProjectIssue = {
     capacity: number | null;
   } | null;
   estimate: number | null;
+  startDate: string | null;
   dueDate: string | null;
   blockedBy: Array<{
     identifier: string;
@@ -328,6 +329,7 @@ function projectIssue(
         }
       : null,
     estimate: issue.estimate,
+    startDate: issue.startDate,
     dueDate: issue.dueDate,
     blockedBy,
   };

@@ -20,7 +20,7 @@ import { expectedBoardConflicts } from './core-board-support.mjs';
 import { expectedUndoConflicts } from './core-undo-properties.mjs';
 import { followerJourney } from './core-follower-journey.mjs';
 import { keyboardJourney } from './core-keyboard-journey.mjs';
-import { draftJourney } from './core-draft-journey.mjs';
+import { draftJourney, expectedDraftFailures } from './core-draft-journey.mjs';
 import { currentJourney } from './core-current-journey.mjs';
 import { threadsJourney } from './core-threads-journey.mjs';
 import { myWorkTabsJourney } from './core-my-work-tabs-journey.mjs';
@@ -610,6 +610,7 @@ try {
     classifiedConsole = [];
   let expectedConflictUrl = null;
   let expectedBulkConflictUrl = null;
+  const classifiedDraftConsole = [];
   const classifiedBulkConsole = [];
   const classifiedBoardConsole = [];
   const classifiedUndoConsole = [];
@@ -636,6 +637,11 @@ try {
   page.on("pageerror", (e) => errors.push(e.message));
   page.on("console", (m) => {
     if (m.type() !== "error") return;
+    if (expectedDraftFailures.has(m.location().url) && classifiedDraftConsole.length === 0 &&
+        /^Failed to load resource: the server responded with a status of 500(?: \([^)]*\))?$/.test(m.text())) {
+      classifiedDraftConsole.push({ url: m.location().url, text: m.text(), expected: "Deliberate metadata GET500 with visible error and recovery asserted" });
+      return;
+    }
     if (expectedUndoConflicts.has(m.location().url) &&
         /^Failed to load resource: the server responded with a status of 409(?: \([^)]*\))?$/.test(m.text())) {
       classifiedUndoConsole.push({ url: m.location().url, text: m.text(), expected: "Deliberate stale Undo POST409, with unchanged issue and activity asserted" });
@@ -667,7 +673,7 @@ try {
         text: m.text(),
         expected: "Deliberate stale edit PATCH409",
       });
-    } else errors.push(m.text());
+    } else errors.push(m.text() + ' at ' + m.location().url);
   });
   page.on("requestfailed", (r) => {
     failed.push(r.url() + ":" + r.failure()?.errorText);
@@ -738,7 +744,7 @@ try {
   const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
   const followerPage = await followerContext.newPage();
   followerPage.on('pageerror', error => errors.push(error.message));
-  followerPage.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  followerPage.on('console', message => { if (message.type() === 'error') errors.push(message.text() + ' at ' + message.location().url); });
   try {
     await followerPage.goto(base + '/app');
     await withInvitedOperator(followerPage, followerContext, base, state,
@@ -1230,9 +1236,10 @@ try {
     .fill("https://example.test/customer");
   await page
     .locator(".new-issue-header")
-    .getByRole("link", { name: "← Current", exact: true })
+    .getByRole("button", { name: "← Back", exact: true })
     .click();
-  await page.getByRole("heading", { name: "Current", exact: true }).waitFor();
+  await page.waitForURL((url) => url.pathname === "/app/issues/" + browserCreated.identifier);
+  await page.getByRole("heading", { name: browserCreatedTitle, exact: true }).waitFor();
   await beforePrivateNavigation(page, base + "/app/new-issue");
   await page.goto(base + "/app/new-issue");
   await page
@@ -1309,12 +1316,12 @@ try {
   );
   assert.deepEqual(browserIntake.evidence[0].assertions, {});
   await page
-    .getByText("Operator report · Sarah Runtime SSR", { exact: true })
+    .getByText("Sarah Runtime SSR reported", { exact: true })
     .waitFor();
   assert.equal(
     await page
       .locator(".assertion-list")
-      .getByText("Policy recommendation", { exact: true })
+      .getByText("Suggested next step", { exact: true })
       .count(),
     0,
   );
@@ -1591,12 +1598,13 @@ try {
     ),
     "No horizontal overflow on mobile",
   );
+  assert.equal(classifiedDraftConsole.length, journeyGroup === 'current' ? 0 : 1, 'Exactly the injected metadata failure is classified');
   assert.deepEqual(errors, []);
   assert.deepEqual(failed, []);
   assert.deepEqual(externalRequests, []);
   record(
     "RENDER-BROWSER",
-    "Hydration and internal navigation retain performance.timeOrigin; UI issue/comment/link persistence works; raw HTML is removed; only the intentional stale-edit PATCH409 and stale-bulk POST409 resource console events are classified; no unexpected page/console/request errors or external URL fetches; desktop/mobile screenshots captured.",
+    "Hydration and internal navigation retain performance.timeOrigin; UI issue/comment/link persistence works; raw HTML is removed; only the intentional metadata GET500 and stale-edit PATCH409 and stale-bulk POST409 resource console events are classified; no unexpected page/console/request errors or external URL fetches; desktop/mobile screenshots captured.",
   );
   await page.setViewportSize({ width: 1440, height: 1000 });
   const browserSignoutPromise = page.waitForResponse(

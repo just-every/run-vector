@@ -99,10 +99,6 @@ export function ProjectsWorkspace() {
         <div>
           <p className="stream-overline">Portfolio</p>
           <h1 id="projects-title">Projects</h1>
-          <p>
-            Health is calculated from current scope, dependencies, target dates,
-            and cycle capacity.
-          </p>
         </div>
         {canCreate && <button
           ref={createTrigger}
@@ -126,6 +122,8 @@ export function ProjectsWorkspace() {
           <ProjectCreate
             operators={administration.data.operators}
             labels={administration.data.labels}
+            viewerId={administration.data.viewer.id}
+            projectIds={administration.data.projects.map(project => project.id)}
             channel={decide({ role: administration.data.viewer.role, memberInvites: false, teams: new Map() }, { row: "channels.create" }) === "allow"}
             onChanged={() => {
               changed();

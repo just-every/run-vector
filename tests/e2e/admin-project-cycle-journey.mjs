@@ -54,9 +54,7 @@ export async function authorProject({ page, runtime, capture, clause }) {
   const created = sql(
     "SELECT * FROM projects WHERE name='Administration launch'",
   )[0];
-  await page
-    .getByRole("link", { name: "Open Administration launch", exact: true })
-    .waitFor();
+  await page.getByRole("heading", { name: "Administration launch", exact: true }).waitFor();
   await beforePrivateNavigation(page, base + "/app/projects/" + created.id);
   await page.goto(base + "/app/projects/" + created.id);
   await openAdministrationForm(page, "Edit project Administration launch");

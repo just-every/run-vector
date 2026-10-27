@@ -613,7 +613,8 @@
     "created_at",
     "updated_at",
     "archived_at",
-    "milestone_id"
+    "milestone_id",
+    "start_date"
   ],
   "labels": [
     "id",
@@ -1908,7 +1909,8 @@
     "description",
     "priority",
     "offset_days",
-    "milestone_position"
+    "milestone_position",
+    "start_offset_days"
   ],
   "issue_reactions": [
     "issue_id",
@@ -1963,5 +1965,60 @@
     "document_id",
     "author_operator_id",
     "updated_at"
+  ],
+  "vector_initiative_destination_approvals": [
+    "id",
+    "workspace_id",
+    "initiative_id",
+    "provider",
+    "provider_workspace",
+    "channel_id",
+    "channel_name",
+    "source_destination_id",
+    "audience",
+    "approved_by",
+    "approved_at"
+  ],
+  "vector_initiative_scoped_bindings": [
+    "destination_id",
+    "workspace_id",
+    "initiative_id",
+    "approval_id",
+    "bound_by"
+  ],
+  "vector_oauth_apps": [
+    "id",
+    "workspace_id",
+    "name",
+    "redirect_uris",
+    "scopes",
+    "secret_hash",
+    "created_by",
+    "created_at"
+  ],
+  "vector_oauth_codes": [
+    "code_hash",
+    "app_id",
+    "workspace_id",
+    "operator_id",
+    "redirect_uri",
+    "scopes",
+    "challenge",
+    "created_at",
+    "expires_at",
+    "used_at",
+    "grant_id",
+    "session_id"
+  ],
+  "vector_oauth_grants": [
+    "id",
+    "app_id",
+    "workspace_id",
+    "operator_id",
+    "scopes",
+    "namespace",
+    "token_id",
+    "created_at",
+    "revoked_at"
   ]
 }

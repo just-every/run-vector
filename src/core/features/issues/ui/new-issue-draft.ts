@@ -30,6 +30,7 @@ export type NewIssueDraft = {
   priority: 'urgent' | 'high' | 'medium' | 'low' | 'none'
   labelIds: string[]
   estimate: string
+  startDate: string
   dueDate: string
   expectedOutcome: string
   customerImpact: string
@@ -53,6 +54,7 @@ export const emptyNewIssueDraft: NewIssueDraft = {
   priority: 'none',
   labelIds: [],
   estimate: '',
+  startDate: '',
   dueDate: '',
   expectedOutcome: '',
   customerImpact: '',
@@ -106,6 +108,7 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
   )
     return null
   if (value.milestoneId !== undefined && typeof value.milestoneId !== 'string') return null
+  if (value.startDate !== undefined && typeof value.startDate !== 'string') return null
   const priority = value.priority
   if (!['urgent', 'high', 'medium', 'low', 'none'].includes(String(priority)))
     return null
@@ -154,34 +157,16 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
     priority: priority as NewIssueDraft['priority'],
     labelIds: value.labelIds as string[],
     estimate: value.estimate as string,
+    startDate: (value.startDate as string | undefined) ?? '',
     dueDate: value.dueDate as string,
     expectedOutcome: value.expectedOutcome as string,
     customerImpact: value.customerImpact as string,
   }
 }
 
-export function hasUnsavedDraft(values: NewIssueDraft) {
-  return (
-    values.mode !== 'issue' ||
-    values.intakeObservedAt !== '' ||
-    values.intakeSummary !== '' ||
-    values.intakeLink !== '' ||
-    values.intakeMeasurements.length > 0 ||
-    values.intakeCustomerReports.length > 0 ||
-    values.title !== '' ||
-    values.teamId !== '' ||
-    values.description !== '' ||
-    values.statusId !== '' ||
-    values.assigneeOperatorId !== '' ||
-    values.projectId !== '' ||
-    values.milestoneId !== '' ||
-    values.cycleId !== '' ||
-    values.priority !== 'none' ||
-    values.labelIds.length > 0 ||
-    values.estimate !== '' ||
-    values.dueDate !== '' ||
-    values.expectedOutcome !== '' ||
-    values.customerImpact !== ''
+export function hasUnsavedDraft(values: NewIssueDraft, defaults: NewIssueDraft = emptyNewIssueDraft) {
+  return (Object.keys(defaults) as (keyof NewIssueDraft)[]).some(
+    key => JSON.stringify(values[key]) !== JSON.stringify(defaults[key]),
   )
 }
 
@@ -198,6 +183,7 @@ export function createIssuePayload(values: NewIssueDraft) {
     priority: values.priority,
     labelIds: values.labelIds,
     estimate: values.estimate === '' ? null : Number(values.estimate),
+    startDate: values.startDate || null,
     dueDate: values.dueDate || null,
     expectedOutcome: values.expectedOutcome || null,
     customerImpact: values.customerImpact || null,

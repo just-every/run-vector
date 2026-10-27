@@ -1,7 +1,8 @@
+import { useDateFormat } from "../../../shared/date-format";
 import {ProjectTemplateLauncher} from '../../project-templates/controls';
 import { ProjectAppearance } from "./project-appearance";
 import type { Administration } from "../../administration/schema";
-import { ProjectAdministration } from "./project-administration";
+import "./project-rows.css";
 import { useHydrated } from "../../../app/initial-resources";
 import { Link } from "@tanstack/react-router";
 import type { PortfolioFilters } from "./helpers";
@@ -99,12 +100,6 @@ export function ProjectList({
         <ListPreferenceControls {...preferenceControls} ready={ready} />
       </div>
       <section className="project-list" aria-label="Projects">
-        <div className="project-list-heading" aria-hidden="true">
-          <span>Project</span>
-          <span>Lead</span>
-          <span>Progress</span>
-          <span>Health</span>
-        </div>
         {!hasProjects ? (
           <div className="projects-empty">
             <h2>{["guest","viewer"].includes(administration.viewer.role) ? "No visible projects" : "Create your first project"}</h2>
@@ -113,14 +108,7 @@ export function ProjectList({
         ) : projects.length === 0 ? (
           <p className="projects-empty">No projects match these filters.</p>
         ) : (
-          projects.map((project) => {
-            const record=administration.projects.find(record=>record.id===project.id);
-            return (
-            <div key={project.id} className="project-list-item">
-              <ProjectRow project={project} />
-              {!["guest","viewer"].includes(administration.viewer.role) && <div className="administration-panel project-list-management">{record ? <ProjectAdministration project={record} viewer={administration.viewer} operators={administration.operators} labels={administration.labels} onChanged={onChanged} onDeleted={onChanged} /> : <p role="status">Refreshing project management…</p>}</div>}
-            </div>
-          );})
+          projects.map((project) => <div key={project.id} className="project-list-item"><ProjectRow project={project} /></div>)
         )}
       </section>
     </>
@@ -129,36 +117,22 @@ export function ProjectList({
 
 function ProjectRow({ project }: { project: ProjectSummaryData }) {
   const health = activeHealthLabel(project.health);
-  return (
-    <Link
-      className="project-row"
-      to="/app/projects/$projectId"
-      params={{ projectId: project.id }}
-      aria-label={`Open ${project.name}`}
-    >
-      <span className="project-row__name">
-        <strong className="project-name"><ProjectAppearance color={project.color} icon={project.icon} />{project.name}</strong>
-        <small>{project.description || "No description"}</small>
-        <small>{project.priority === "none" ? "No priority" : lifecycleLabel(project.priority)}{project.startDate ? ` · Starts ${project.startDate}` : ""}{project.targetDate ? ` · Target ${project.targetDate}` : ""}</small>
-        {project.labels.length > 0 && <small>{project.labels.map(label=>label.name).join(" · ")}</small>}
-      </span>
+  const { date } = useDateFormat();
+  const chips = [
+    ...(health ? [{ name: health, className: `project-health project-health--${project.health}` }] : []),
+    ...(project.lifecycle !== "active" ? [{ name: lifecycleLabel(project.lifecycle), className: "project-lifecycle" }] : []),
+    ...project.labels.map(label => ({ name: label.name, className: "project-lifecycle" })),
+  ];
+  return <Link className="project-row project-row--condensed" to="/app/projects/$projectId" params={{ projectId: project.id }} aria-label={`Open ${project.name}`}>
+    <strong className="project-name"><ProjectAppearance color={project.color} icon={project.icon} />{project.name}</strong>
+    <small className="project-row-meta">
       <span className="project-row__lead">{project.lead.name}</span>
-      <span className="project-row__progress">
-        <span>{projectProgressLabel(project)}</span>
-        <i aria-hidden="true">
-          <b style={{ width: `${project.progress.percentage ?? 0}%` }} />
-        </i>
-      </span>
-      <span className="project-row__state">
-        <span className="project-lifecycle">
-          {lifecycleLabel(project.lifecycle)}
-        </span>
-        {health ? (
-          <span className={`project-health project-health--${project.health}`}>
-            {health}
-          </span>
-        ) : null}
-      </span>
-    </Link>
-  );
+      {chips[0] && <span className={chips[0].className}>{chips[0].name}</span>}
+      {chips.length > 1 && <span aria-label={`${chips.length - 1} more labels and states`}>+{chips.length - 1}</span>}
+      {project.priority !== "none" && <span>{lifecycleLabel(project.priority)}</span>}
+      {project.startDate && <span>Starts {date(project.startDate)}</span>}
+      {project.targetDate && <span>Target {date(project.targetDate)}</span>}
+      <span className="project-row__progress">{projectProgressLabel(project)}</span>
+    </small>
+  </Link>;
 }

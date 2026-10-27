@@ -37,6 +37,7 @@ export const issueDetailSchema = z.object({
   checklist: z.object({ completed: z.number(), total: z.number() }).optional(),
   status: z.object({ id: z.string(), name: z.string(), category: z.string() }),
   priority: z.enum(["urgent", "high", "medium", "low", "none"]),
+  startDate: z.string().nullable(),
   dueDate: z.string().nullable(),
   estimate: z.number().nullable(),
   version: z.number(),

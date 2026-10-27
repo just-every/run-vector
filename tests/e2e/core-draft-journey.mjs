@@ -1,9 +1,21 @@
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
+export const expectedDraftFailures = new Set();
+
 export async function draftJourney(page, context, base, teamId, operatorId, record) {
+  expectedDraftFailures.add(base + '/api/metadata');
+  // A failed team-metadata read must expose recovery through the same form door.
+  await page.route('**/api/metadata', route => route.fulfill({ status: 500,
+    contentType: 'application/json', body: JSON.stringify({ error: 'unavailable' }) }));
   await beforePrivateNavigation(page, base + '/app/new-issue');
   await page.goto(base + '/app/new-issue');
+  await page.getByRole('alert').filter({ hasText: 'Unable to load issue options.' }).waitFor();
+  assert.equal(await page.getByRole('button', { name: '← Back', exact: true }).isEnabled(), true);
+  await page.unroute('**/api/metadata');
+  await page.getByRole('button', { name: 'Try again', exact: true }).click();
+  await page.getByRole('textbox', { name: /^Title/, disabled: false }).waitFor();
+  expectedDraftFailures.delete(base + '/api/metadata');
   const title = `Unsent browser draft ${Date.now()}`;
   const fields = [
     [/^Title/, title], ['Description', 'First unsent line\nSecond unsent line\nThird line'],
@@ -20,6 +32,8 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   await beforePrivateNavigation(page, page.url());
   await page.reload();
   await page.getByRole('textbox', { name: /^Title/ }).waitFor();
+  // The form restores the draft once its options and team metadata load, and only then enables its fields.
+  await page.getByRole('textbox', { name: /^Title/, disabled: false }).waitFor();
   await page.getByText('Optional context', { exact: true }).click();
   for (const [name, value] of fields) assert.equal(await page.getByLabel(name).inputValue(), value);
   for (const [name, value] of [[/^Team/, teamId], [/^Assignee/, operatorId], [/^Priority/, 'high']])

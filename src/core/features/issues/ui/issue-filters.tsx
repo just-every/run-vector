@@ -31,7 +31,7 @@ export function IssueFilters({
           value={String(query[key])}
           onChange={(e) => onChange({ [key]: e.target.value })}
         >
-          <option value="all">{empty}</option>
+          {!(fixedGrouping && key === "team") && <option value="all">{empty}</option>}
           {none && (
             <option value={key === "assignee" ? "unassigned" : "none"}>
               {none}
@@ -142,6 +142,16 @@ export function IssueFilters({
           "No cycle",
         )}
         {choice("label", "Label", options?.labels ?? [], "All", "No labels")}
+        {choice("start", "Start date", [
+          { id: "this_week", name: "Starts this week" },
+          { id: "overdue", name: "Before today" },
+          { id: "range", name: "Date range" },
+          { id: "none", name: "No start date" },
+        ])}
+        {query.start === "range" && <>
+          <label>Start from<input type="date" value={query.startFrom} onChange={e => onChange({ startFrom: e.target.value, ...(query.startTo && e.target.value > query.startTo ? {startTo: e.target.value} : {}) })}/></label>
+          <label>Start to<input type="date" value={query.startTo} onChange={e => onChange({ startTo: e.target.value, ...(query.startFrom && e.target.value && e.target.value < query.startFrom ? {startFrom: e.target.value} : {}) })}/></label>
+        </>}
         {choice("due", "Due date", [
           { id: "overdue", name: "Overdue" },
           { id: "range", name: "Date range" },
@@ -243,6 +253,7 @@ export function IssueFilters({
               ["oldest", "Oldest"],
               ["priority", "Urgent to no priority"],
               ["status", "Workflow order"],
+              ["start", "Start date"],
               ["due", "Due date"],
               ["updated", "Last update"],
               ["manual", "Manual order"],
@@ -279,7 +290,6 @@ export function IssueFilters({
               </option>
             ))}
           </select>
-          {fixedGrouping && <small>Board groups by workflow status.</small>}
         </label>
       </div>
       <button className="issues-reset" onClick={onReset}>

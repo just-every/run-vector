@@ -1,24 +1,31 @@
+import "./project-palette.css";
+import { projectIcon } from "../appearance";
+
 type Appearance = { color: string | null; icon: string | null };
 
 export function ProjectAppearance({ color, icon }: Appearance) {
-  if (color === null && icon === null) return null;
+  const emoji = projectIcon.safeParse(icon);
+  if (color === null && !emoji.success) return null;
   return <span className="project-appearance">
     {color !== null && <span className="project-color" role="img" aria-label={`Project color ${color}`} style={{ backgroundColor: color }} />}
-    {icon !== null && <span role="img" aria-label={`Project icon ${icon}`}>{icon}</span>}
+    {emoji.success && <span role="img" aria-label={`Project icon ${emoji.data}`}>{emoji.data}</span>}
   </span>;
 }
 
 export function ProjectAppearanceFields({ project }: { project?: Appearance }) {
+  const emoji = projectIcon.safeParse(project?.icon);
   return <>
+    <fieldset className="project-palette">
+      <legend>Project color</legend>
+      {[["", "No colour"], ["#2446dc", "Cobalt"], ["#f59e0b", "Amber"], ["#60a5fa", "Blue"], ["#a78bfa", "Violet"], ["#22c55e", "Green"], ["#ef4444", "Red"],
+        ...(project?.color && !["#2446dc", "#f59e0b", "#60a5fa", "#a78bfa", "#22c55e", "#ef4444"].includes(project.color) ? [[project.color, "Current colour"]] : [])].map(([color, name]) =>
+        <label key={color}><input type="radio" name="color" value={color} defaultChecked={(project?.color ?? "") === color} />
+          {color && <span aria-hidden="true" className="project-color" style={{ backgroundColor: color }} />}{name}
+        </label>)}
+    </fieldset>
     <label>
-      Project color
-      <input aria-label="Project color" name="color" placeholder="#405080" pattern="#[0-9a-fA-F]{6}" maxLength={7} defaultValue={project?.color ?? ""} />
-      <small>Six-digit hex color, or leave empty for no color.</small>
-    </label>
-    <label>
-      Project icon
-      <input aria-label="Project icon" name="icon" placeholder="🚀" defaultValue={project?.icon ?? ""} />
-      <small>One emoji, or leave empty for no icon.</small>
+      Project icon (optional)
+      <input aria-label="Project icon" name="icon" placeholder="🚀" defaultValue={emoji.success ? emoji.data : ""} />
     </label>
   </>;
 }

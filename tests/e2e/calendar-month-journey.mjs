@@ -1,3 +1,4 @@
+import {timelineJourney} from './timeline-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -50,6 +51,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
   await form.getByRole('button',{name:'Save due date',exact:true}).click();await panel.getByRole('alert').filter({hasText:'Your date change was not saved'}).waitFor();await ready();const after=await api('/issues/'+identifier);assert.equal(after.dueDate,'2026-11-06');assert.equal(after.version,raced.version);assert.equal(after.activity.length,raced.activity.length);await proof(theme,width,'stale');
   console.log('VIEW-007 '+theme+' '+width+': shared due/cycle/milestone reader, drag, keyboard, Undo, stale rejection, activity, axe and overflow PASS');
  }
+ await timelineJourney(page,context,runtime,output);
  assert.deepEqual(errors,[],'no calendar hydration mismatch or page errors');
  }finally{page.off('pageerror',onError);page.off('console',onConsole);}
 }

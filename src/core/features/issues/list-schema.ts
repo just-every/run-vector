@@ -30,6 +30,9 @@ export const issueListQuerySchema = z
     project: nullableTarget,
     cycle: nullableTarget,
     label: nullableTarget,
+    start: z.enum(["all", "overdue", "range", "none", "this_week"]).default("all"),
+    startFrom: date,
+    startTo: date,
     due: z.enum(["all", "overdue", "range", "none"]).default("all"),
     dueFrom: date,
     dueTo: date,
@@ -42,7 +45,7 @@ export const issueListQuerySchema = z
       .default("all"),
     orderView: z.union([z.literal(""), id]).default(""),
     sort: z
-      .enum(["newest", "oldest", "priority", "status", "due", "updated", "manual"])
+      .enum(["newest", "oldest", "priority", "status", "start", "due", "updated", "manual"])
       .default("newest"),
     grouping: z
       .enum([
@@ -65,6 +68,8 @@ export const issueListQuerySchema = z
   .refine((q) => !q.dueFrom || !q.dueTo || q.dueFrom <= q.dueTo, {
     message: "The due date range must be in order.",
     path: ["dueTo"],
+  }).refine((q) => !q.startFrom || !q.startTo || q.startFrom <= q.startTo, {
+    message: "The start date range must be in order.", path: ["startTo"],
   });
 export type IssueListQuery = z.output<typeof issueListQuerySchema>;
 const named = z.object({ id: z.string(), name: z.string() });
@@ -91,6 +96,7 @@ export const issueListRowSchema = z.object({
   parent: z.object({ identifier: z.string(), title: z.string() }).nullable(),
   labels: z.array(named.extend({ color: z.string() })),
   blocked: z.boolean(),
+  startDate: z.string().nullable(),
   dueDate: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),

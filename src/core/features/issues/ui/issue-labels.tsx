@@ -120,7 +120,7 @@ export function IssueLabels({
           aria-busy={pending}
         >
           <fieldset disabled={!writable || pending || !options}>
-            <legend>Issue labels · maximum {options?.labelsPerIssue}</legend>
+            <legend>Issue labels{options && selected.length >= options.labelsPerIssue - 1 ? ` · ${selected.length} of ${options.labelsPerIssue}` : ""}</legend>
             <div className="issue-label-choices">
               {availableLabels.map((label) => (
                 <label key={label.id}>

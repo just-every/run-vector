@@ -10,6 +10,7 @@ import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import type { IssueListData, IssueListQuery } from "../list-schema";
 import { defaultIssueListQuery, issueListSearch } from "./issue-list-controls";
 import { IssueFilters } from "./issue-filters";
+import { IssueTimeline } from "../../calendar-view/timeline";
 import { IssueBoard } from "./issue-board";
 import { IssueTable } from "./issue-table";
 import { IssueBulk } from "./issue-bulk";
@@ -55,6 +56,7 @@ export function IssueListView({
   before,
   rowAction,
 }: Props) {
+  const [timeline,setTimeline]=useState(false);
   const hydrated = useHydrated();
   const navigate = useNavigate(), pathname = useLocation({ select: location => location.pathname });
   const [tabState, setTabState] = useState<'saving' | 'error' | null>(null);
@@ -121,6 +123,14 @@ export function IssueListView({
       return next;
     });
   }
+  const emptyPersonalScope = visible?.total === 0 && query.scope !== "all" &&
+    Object.entries(query).every(([key, value]) => key === "scope" || key === "sort" || key === "grouping" || key === "pageSize" || value === defaultIssueListQuery[key as keyof IssueListQuery]);
+  if (emptyPersonalScope) return <main ref={root} className="issues-browser">
+    {before}<header className="issues-heading"><h1>{title}</h1></header>
+    <section className="issues-empty"><p>{query.scope === "created" ? "You haven’t created any issues yet." : "You aren’t following any issues yet."}</p>
+      {query.scope === "created" ? <a className="personal-empty-action" href="/app/new-issue">New issue</a> : <a className="personal-empty-action" href="/app/issues">Browse issues</a>}
+    </section>
+  </main>;
   return (
     <ManualOrderBoundary query={query} rows={visible?.issues ?? []} reload={reload}>
     <main
@@ -134,35 +144,37 @@ export function IssueListView({
       <header className="issues-heading">
         <div>
           <h1>{title ?? (layout === "board" ? "Board" : "Issues")}</h1>
-          <p>
+          {(!title || description) && <p>
             {description ?? (layout === "board"
               ? "Work through one team’s workflow."
               : "Browse issues beyond Current.")}
-          </p>
+          </p>}
           {query.scope !== "all" && !description ? <p className="issues-scope">{scopeNotes[query.scope]}</p> : null}
         </div>
         <a href="/app/new-issue">New issue</a>
       </header>
       <nav className="issues-modes" aria-label="Issue list">
         <button
-          aria-pressed={query.category === "all"}
+          aria-pressed={layout === "list" && query.category === "all"}
           disabled={!hydrated || tabState === 'saving'}
           onClick={() => void changeCategory('all')}
         >
           All issues
         </button>
         <button
-          aria-pressed={query.category === "backlog"}
+          aria-pressed={layout === "list" && query.category === "backlog"}
           disabled={!hydrated || tabState === 'saving'}
           onClick={() => void changeCategory('backlog')}
         >
           Backlog
         </button>
+        {layout === "board" && <button aria-pressed={true}>Board</button>}
         {onSwitchLayout && (
           <button disabled={!hydrated || tabState === 'saving'} onClick={onSwitchLayout}>
             {layout === "board" ? "List" : "Board"}
           </button>
         )}
+        {options?.operator.role!=="guest"&&<button aria-pressed={timeline} disabled={!hydrated} onClick={()=>setTimeline(!timeline)}>Timeline</button>}
       </nav>
       {tabState === 'error' && <p role="alert">This tab could not be opened. Choose it again to retry.</p>}
       {!denied && (
@@ -187,6 +199,7 @@ export function IssueListView({
                 query={query}
                 layout={layout}
                 limit={options?.savedViewsPerOperator}
+                ownerId={options?.operator.id}
                 onCreated={onCreateView}
               />
             ))}
@@ -246,7 +259,7 @@ export function IssueListView({
             }
             onSuccess={updatedSelection}
           />
-          {layout === "board" ? (
+          {timeline ? <IssueTimeline query={query}/> : layout === "board" ? (
             options ? (
               <IssueBoard
                 column={boardColumn}
@@ -279,7 +292,6 @@ export function IssueListView({
                 statusCounts={visible.statusCounts!}
                 team={query.team}
                 options={options}
-                onChangeTeam={(team) => onChange({ team })}
                 onOpen={onOpen}
                 onRefresh={reload}
               />
@@ -319,8 +331,8 @@ export function IssueListView({
               <a href="/app/new-issue">New issue</a>
             </section>
           )}
-          <nav className="issues-pagination" aria-label="Issue pages">
-            <button
+          {(layout !== "board" || visible.offset > 0 || visible.offset + visible.pageSize < visible.total) && <nav className="issues-pagination" aria-label="Issue pages">
+            {(layout !== "board" || visible.offset > 0) && <button
               disabled={visible.offset === 0}
               onClick={() =>
                 onChange({
@@ -330,13 +342,13 @@ export function IssueListView({
               }
             >
               Previous
-            </button>
+            </button>}
             <span>
               {visible.issues.length
                 ? `${visible.offset + 1}–${visible.offset + visible.issues.length} of ${visible.total}`
                 : `0 shown of ${visible.total}`}
             </span>
-            <button
+            {(layout !== "board" || visible.offset + visible.pageSize < visible.total) && <button
               disabled={visible.offset + visible.pageSize >= visible.total}
               onClick={() =>
                 onChange({
@@ -346,8 +358,8 @@ export function IssueListView({
               }
             >
               Next
-            </button>
-          </nav>
+            </button>}
+          </nav>}
         </>
       )}
     </main>

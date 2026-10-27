@@ -116,9 +116,9 @@ export function buildVectorSample(now: Date) {
       id: statusId, teamId: id.platform, name, category, position, ...timestamps(now, { days: -30 }),
     }))],
     projects: [
-      { id: id.reliability, workspaceId: id.workspace, name: 'Customer Reliability', description: 'Protect reliable webhook delivery for customers.', leadOperatorId: id.alex, targetDate: workspaceDate(now, 14), lifecycle: 'active', color: '#f59e0b', icon: 'shield', archivedAt: null, ...timestamps(now, { days: -12 }) },
-      { id: id.hardening, workspaceId: id.workspace, name: 'Platform Hardening', description: 'Improve platform delivery confidence.', leadOperatorId: id.sarah, targetDate: workspaceDate(now, 21), lifecycle: 'active', color: '#60a5fa', icon: 'wrench', archivedAt: null, ...timestamps(now, { days: -10 }) },
-      { id: id.discovery, workspaceId: id.workspace, name: 'Discovery Notes', description: 'Explore future platform work.', leadOperatorId: id.maya, targetDate: null, lifecycle: 'active', color: '#a78bfa', icon: 'compass', archivedAt: null, ...timestamps(now, { days: -8 }) },
+      { id: id.reliability, workspaceId: id.workspace, name: 'Customer Reliability', description: 'Protect reliable webhook delivery for customers.', leadOperatorId: id.alex, targetDate: workspaceDate(now, 14), lifecycle: 'active', color: '#f59e0b', icon: '🛡️', archivedAt: null, ...timestamps(now, { days: -12 }) },
+      { id: id.hardening, workspaceId: id.workspace, name: 'Platform Hardening', description: 'Improve platform delivery confidence.', leadOperatorId: id.sarah, targetDate: workspaceDate(now, 21), lifecycle: 'active', color: '#60a5fa', icon: '🔧', archivedAt: null, ...timestamps(now, { days: -10 }) },
+      { id: id.discovery, workspaceId: id.workspace, name: 'Discovery Notes', description: 'Explore future platform work.', leadOperatorId: id.maya, targetDate: null, lifecycle: 'active', color: '#a78bfa', icon: '🧭', archivedAt: null, ...timestamps(now, { days: -8 }) },
       { id: id.legacy, workspaceId: id.workspace, name: 'Legacy Migration', description: 'Archived historical migration work.', leadOperatorId: id.alex, targetDate: workspaceDate(now, -30), lifecycle: 'completed', color: null, icon: null, archivedAt: null, ...timestamps(now, { days: -60 }) },
     ],
     cycles: [

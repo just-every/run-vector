@@ -22,3 +22,8 @@
 .channel-settings label.admin-checkbox{display:flex;align-items:center;gap:8px;min-height:44px}
 .channel-settings input[type=checkbox]{width:18px;height:18px;min-height:0;flex:none;accent-color:var(--app-cobalt-ink)}
 .slack-direct-actions{display:grid;gap:10px;min-width:0}.slack-direct-actions h4{margin:0}
+
+.initiative-approval-form,.initiative-approval-form fieldset,.initiative-approval-form label{width:100%;box-sizing:border-box;min-width:0}
+.settings-page .initiative-approval-form select{width:100%;min-height:44px;border:1px solid var(--control-field-border);box-shadow:none}
+.initiative-approval-outcome{scroll-margin-block:120px;overflow-wrap:anywhere}
+@media(max-width:700px){.settings-page .initiative-approval-form{margin-inline:-16px;width:calc(100% + 32px)}.settings-page .initiative-approval-form fieldset{padding:0;border:0}.settings-page .initiative-approval-form select{font-size:14px;padding-inline:10px 30px}.initiative-approval-form button{min-height:44px}}

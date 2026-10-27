@@ -3,7 +3,7 @@ import { settleReads } from './collaboration-navigation.mjs';
 import {
   boardApi, boardFixture, boardColumn, boardSnapshot, cardSelector,
   chooseSourceColumn, moveBoardCard, openBoard, ordinaryCategories, priorities,
-  readyBoard, rejectStaleBoardMove,
+  readyBoard, rejectStaleBoardMove, openCardMove,
 } from './core-board-support.mjs';
 
 export async function boardJourney(page, context, base, record, capture) {
@@ -26,13 +26,69 @@ export async function boardJourney(page, context, base, record, capture) {
 
   await page.setViewportSize({ width: 1440, height: 1000 });
   await openBoard(page, base, { q: marker });
-  assert.equal(await page.getByLabel('Board team', { exact: true }).inputValue(), 'all');
-  assert.equal(await page.locator('.board-column').count(), 0, 'A multi-team board does not guess a team');
-  const choices = await page.getByLabel('Board team', { exact: true }).locator('option').evaluateAll(nodes => nodes.map(node => node.value));
+  await page.waitForFunction(() => document.querySelector('.board-column') && new URLSearchParams(document.querySelector('main[data-list-query]').dataset.listQuery).get('team') !== 'all');
+  const metadata = await api('/metadata');
+  const preferred = metadata.teams.find(team => !team.archivedAt && team.issueCount > 0 && team.members.some(member => member.operatorId === metadata.viewer.id)) ??
+    metadata.teams.find(team => !team.archivedAt && team.issueCount > 0) ??
+    metadata.teams.find(team => !team.archivedAt && team.members.some(member => member.operatorId === metadata.viewer.id)) ?? metadata.teams.find(team => !team.archivedAt);
+  assert.equal(await page.getByLabel('Team', { exact: true }).inputValue(), preferred.id);
+  assert((await page.locator('.board-column').count()) > 0, 'The default team opens its workflow board');
+  const choices = await page.getByLabel('Team', { exact: true }).locator('option').evaluateAll(nodes => nodes.map(node => node.value));
   assert(choices.includes(team.id) && choices.includes(empty.id));
+  // A first-time Board resolves its default team without persisting a choice.
+  // Moving a loaded card must not depend on re-reading team resources.
+  const defaultStatuses = (await api('/options')).statuses.filter(row => row.teamId === preferred.id);
+  const defaultTitle = 'Default-team refresh ' + Date.now();
+  const defaultMover = await api('/issues', 'POST', {
+    teamId: preferred.id, title: defaultTitle,
+    statusId: defaultStatuses.find(row => row.category === 'backlog').id,
+  });
+  await page.getByLabel('Title or identifier', { exact: true }).fill(defaultTitle);
+  await readyBoard(page, { q: defaultTitle, team: preferred.id });
+  await page.locator('#issue-row-' + defaultMover.identifier).waitFor();
+  const loadedCards = await page.locator('.board-card').count();
+  const loadedColumns = await page.locator('.board-column').count();
+  for (const [index, path] of ['/api/options', '/api/metadata'].entries()) {
+    let teamReads = 0;
+    const failTeamRead = route => {
+      ++teamReads;
+      return route.fulfill({ status: 500, contentType: 'application/json',
+        body: JSON.stringify({ error: 'unavailable' }) });
+    };
+    await page.route('**' + path, failTeamRead);
+    try {
+      const destination = defaultStatuses.find(row => row.category === (index ? 'backlog' : 'started'));
+      const beforeMove = await api('/issues/' + defaultMover.identifier);
+      await openCardMove(page, defaultMover);
+      const [saved] = await Promise.all([
+        page.waitForResponse(response => response.url() === base + '/api/issues/' + defaultMover.identifier && response.request().method() === 'PATCH'),
+        cardSelector(page, defaultMover).selectOption(destination.id),
+      ]);
+      assert.equal(saved.status(), 200);
+      await boardColumn(page, destination).locator('#issue-row-' + defaultMover.identifier).waitFor();
+      const persisted = await api('/issues/' + defaultMover.identifier);
+      assert.equal(persisted.status.id, destination.id);
+      assert.equal(persisted.version, beforeMove.version + 1);
+      await readyBoard(page, { team: preferred.id });
+      assert.equal(await page.locator('.board-card').count(), loadedCards, 'A Move keeps every loaded card');
+      assert.equal(await page.locator('.board-column').count(), loadedColumns, 'A Move keeps every workflow column');
+      assert.equal(await page.getByRole('alert').filter({ hasText: 'Could not refresh issues.' }).count(), 0);
+      assert(await page.getByRole('button', { name: 'Undo', exact: true }).isVisible());
+      assert.equal(teamReads, 0, 'A resolved default team needs no read during a Move');
+    } finally {
+      await page.unroute('**' + path, failTeamRead);
+    }
+    await readyBoard(page, { team: preferred.id });
+    assert.equal(await page.locator('.board-card').count(), loadedCards, 'Recovery keeps the loaded Board');
+  }
+  await page.getByLabel('Title or identifier', { exact: true }).fill(marker);
+  await readyBoard(page, { q: marker, team: preferred.id });
   await shot('board-choose-team', 1440);
-  await page.getByLabel('Board team', { exact: true }).selectOption(team.id);
+  await page.getByLabel('Team', { exact: true }).selectOption(team.id);
   await readyBoard(page, { team: team.id, pageSize: 100, grouping: 'status' });
+  await openBoard(page, base, { q: marker });
+  await readyBoard(page, { team: team.id, pageSize: 100, grouping: 'status' });
+  assert.equal(await page.getByLabel('Team', { exact: true }).inputValue(), team.id, 'Reopening Board restores the last selected team');
   const first = await boardSnapshot(page, api, statuses);
   assert.equal(first.total, fixture.issues.length);
   assert(first.total > first.pageSize, 'Public fixture reaches beyond the first 100 cards');
@@ -47,13 +103,13 @@ export async function boardJourney(page, context, base, record, capture) {
   assert.equal(second.total, first.total);
   assert.equal(second.issues.length, first.total - first.pageSize);
   assert.deepEqual(new Set([...first.issues, ...second.issues].map(row => row.identifier)), new Set(fixture.issues.map(row => row.identifier)));
-  assert(await page.getByRole('navigation', { name: 'Issue pages', exact: true }).getByRole('button', { name: 'Next', exact: true }).isDisabled());
+  assert.equal(await page.getByRole('navigation', { name: 'Issue pages', exact: true }).getByRole('button', { name: 'Next', exact: true }).count(), 0);
   await shot('board-page-beyond-100', 1440);
   await page.getByRole('navigation', { name: 'Issue pages', exact: true }).getByRole('button', { name: 'Previous', exact: true }).click();
   await readyBoard(page, { offset: 0 });
 
-  // Both team controls share the filter reducer, including its status reset.
-  for (const control of ['Board team', 'Team']) {
+  // The team control shares the filter reducer, including its status reset.
+  for (const control of ['Team']) {
     await page.getByLabel('Status', { exact: true }).selectOption(status('backlog').id);
     await readyBoard(page, { status: status('backlog').id });
     await page.getByLabel(control, { exact: true }).selectOption(empty.id);
@@ -151,6 +207,8 @@ export async function boardJourney(page, context, base, record, capture) {
   await readyBoard(page, { category: 'completed' });
   const explicit = await boardSnapshot(page, api, statuses);
   assert.deepEqual(new Set(explicit.issues.map(row => row.identifier)), new Set([completed.identifier, hidden.identifier]));
+  await openCardMove(page, completed);
+  await openCardMove(page, hidden);
   assert(await cardSelector(page, completed).isVisible());
   assert(await cardSelector(page, hidden).isVisible());
   await shot('board-completed-explicitly-shown', 390);
