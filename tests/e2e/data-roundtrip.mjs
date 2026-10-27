@@ -1,3 +1,4 @@
+import {seedOAuthArchive,verifyOAuthArchive} from './integrations/oauth-apps.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,writeFile,readFile,rm,stat,copyFile,unlink} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
@@ -16,12 +17,12 @@ const records=async path=>{const result=[];for await(const row of readArchive(ne
 try{
  await mkdir(evidence,{recursive:true});source=await dataInstallation(work,'source');destination=await dataInstallation(work,'destination');await source.configure(true);
  await unlink(join(source.root,'node_modules'));await source.installDependencies();await source.start();const cookie=await source.signIn();
- browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const ordinary=await openAuthenticatedPage(browser,cookie,source.origin);
+ browser=await chromium.launch({headless:true,...(process.env.VECTOR_CHROMIUM_PATH?{executablePath:process.env.VECTOR_CHROMIUM_PATH}:{}),args:[...(process.env.VECTOR_CHROMIUM_PATH?['--no-sandbox']:[]),"--use-mock-keychain","--password-store=basic"]});const ordinary=await openAuthenticatedPage(browser,cookie,source.origin);
  await ordinary.goto(source.origin+'/app/settings#after-restore');const ordinaryPanel=ordinary.getByRole('region',{name:'After a restore'});
  await expect(ordinaryPanel).toBeVisible();await expect(ordinaryPanel.getByRole('status')).toHaveCount(0);await expect(ordinaryPanel.getByRole('button')).toHaveCount(0);await expect(ordinaryPanel.getByRole('list')).toHaveCount(0);
  for(const width of [1440,390]){await ordinary.setViewportSize({width,height:1000});await ordinaryPanel.scrollIntoViewIfNeeded();await ordinary.screenshot({path:join(evidence,'settings-ordinary-'+width+'.png')});}
  await ordinary.context().close();
- const fixture=await populateRoundtrip(source,cookie),reviewPerson=await createRestoreReviewPerson(source,cookie);const integrations=await populateIntegrationHistory(source,cookie,fixture.identifier);await source.stop();
+ const fixture=await populateRoundtrip(source,cookie),reviewPerson=await createRestoreReviewPerson(source,cookie);const integrations=await populateIntegrationHistory(source,cookie,fixture.identifier);const oauth=await seedOAuthArchive(source,cookie);await source.stop();
  // rer keeps archives in the unserved exports/ folder.
  const first=join(source.root,'exports/first.jsonl'),repeat=join(source.root,'exports/repeat.jsonl'),input=join(destination.root,'input.jsonl'),second=join(destination.root,'exports/second.jsonl');
  await source.run('Export source archive',['export','--','--target','local','--output','exports/first.jsonl','--non-interactive']);proof.commands.push('pnpm run export -- --target local');
@@ -47,7 +48,7 @@ try{
  const runCron=()=>destination.scheduledRun();
  const history=destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),attempts=destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id');
  await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);
- await verifyRestoredIntegrations(destination,restored,integrations,fixture.identifier,reviewEffects);await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);proof.heldAfterCron=true;
+ await verifyOAuthArchive(destination,restored,oauth,before);await verifyRestoredIntegrations(destination,restored,integrations,fixture.identifier,reviewEffects);await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);proof.heldAfterCron=true;
  proof.restoreSettings={widths:[1440,390],initialProjection:true,pending:true,refusal:true,refreshedAdmission:true,refreshedEffects:true,historicalDeliveriesQuarantined:true};
  await destination.stop();proof.passed=true;
 }finally{await browser?.close();await source?.close();await destination?.close();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'roundtrip-proof.json'),JSON.stringify(proof,null,2)+'\n');await rm(work,{recursive:true,force:true});}

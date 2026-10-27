@@ -230,7 +230,8 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  expect((await f.call('/settings/teams/'+f.initial.teams[0].id+'/members/'+memberId,'PUT',{role:'member'})).status).toBe(200);
  expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[f.initial.teams[0].id]})).status).toBe(200);
  const call=(cookie:string,path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
- expect((await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4506'})).status).toBe(201);
+ const adminRegistered=await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4506'});expect(adminRegistered.status).toBe(201);
+ const adminClient=await adminRegistered.json() as {id:string;secret:string};
  for(const cookie of [member,guest,viewer]){
   const before=await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_apps').first('n');
   expect((await call(cookie,'/settings/oauth-apps','POST',input)).status).toBe(403);
@@ -262,14 +263,45 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  expect((await exchange(code,{client_secret:'synthetic-vector-4509'})).status).toBe(401);
  expect((await exchange(code,{code_verifier:verifier.split('').reverse().join('')})).status).toBe(400);
  expect((await exchange(code,{redirect_uri:'https://synthetic-vector-4510.example.test/callback'})).status).toBe(400);
- const other=await(await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4511'})).json() as {id:string;secret:string};
+ const selectedScopes=['issues:write','metadata:read'];
+ const other=await(await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4511',scopes:selectedScopes})).json() as {id:string;secret:string};
  expect((await exchange(code,{client_id:other.id,client_secret:other.secret})).status).toBe(400);
  const issued=await exchange(code);expect(issued.status).toBe(200);const token=await issued.json() as {access_token:string;grant_id:string;scope:string};
  f.restart();expect((await f.api(token.access_token,'/issues')).status).toBe(200);
  const before=await env.DB.prepare('SELECT * FROM issues ORDER BY id').all();
  expect((await f.api(token.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4512'})).status).toBe(403);
  expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(before.results);expect(token.scope).toBe('issues:read');
- const grants=await(await call(admin,'/settings/oauth-apps')).json() as {grants:{id:string;member:string;lastUsed:number;scopes:string}[]};expect(grants.grants).toContainEqual(expect.objectContaining({id:token.grant_id,lastUsed:expect.any(Number)}));
+ // Explicit independent expectations cover all applications and three authorizing members.
+ const grantFor=async(cookie:string,app:{id:string;secret:string},scopes:string[])=>{
+  const request={...auth,client_id:app.id,scope:scopes.join(' ')};
+  const consent=await call(cookie,'/oauth/consent?'+new URLSearchParams(request));expect(consent.status).toBe(200);
+  expect((await consent.json() as {scopes:string[]}).scopes).toEqual(scopes);
+  const approval=await call(cookie,'/oauth/consent','POST',{request,decision:'approve'});expect(approval.status).toBe(200);
+  const code=new URL((await approval.json() as {redirect:string}).redirect).searchParams.get('code')!;
+  const response=await exchange(code,{client_id:app.id,client_secret:app.secret});expect(response.status).toBe(200);
+  const issued=await response.json() as {access_token:string;grant_id:string;scope:string};expect(issued.scope.split(' ')).toEqual(scopes);
+  return issued;
+ };
+ const ownerGrant=await grantFor(f.cookie,adminClient,['issues:read','issues:write']);
+ const adminGrant=await grantFor(admin,other,['issues:write','metadata:read']);
+ expect((await f.api(ownerGrant.access_token,'/issues')).status).toBe(200);
+ expect((await f.api(adminGrant.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4513'})).status).toBe(201);
+ expect((await f.api(adminGrant.access_token,'/issues')).status).toBe(403);
+ type Inventory={apps:{id:string;scopes:string}[];grants:{id:string;app:string;member:string;createdAt:number;lastUsed:number|null;scopes:string}[]};
+ const grants=await(await call(admin,'/settings/oauth-apps')).json() as Inventory;
+ expect(grants.apps.map(row=>({id:row.id,scopes:JSON.parse(row.scopes)})).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
+  {id:client.id,scopes:['issues:read','issues:write']},{id:adminClient.id,scopes:['issues:read','issues:write']},{id:other.id,scopes:['issues:write','metadata:read']},
+ ].sort((a,b)=>a.id.localeCompare(b.id)));
+ const memberName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(memberId).first<string>('name');
+ const ownerName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(await actor(f.cookie)).first<string>('name');
+ const adminName=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(await actor(admin)).first<string>('name');
+ expect(grants.grants.map(row=>({id:row.id,app:row.app,member:row.member,scopes:JSON.parse(row.scopes),createdAt:row.createdAt,lastUsed:row.lastUsed})).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
+  {id:token.grant_id,app:'synthetic-vector-4501',member:memberName,scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+  {id:ownerGrant.grant_id,app:'synthetic-vector-4506',member:ownerName,scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+  {id:adminGrant.grant_id,app:'synthetic-vector-4511',member:adminName,scopes:['issues:write','metadata:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+ ].sort((a,b)=>a.id.localeCompare(b.id)));
+ const ownerInventory=await(await call(f.cookie,'/settings/oauth-apps')).json() as Inventory;
+ expect(ownerInventory).toEqual(grants);
  expect((await call(member,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(403);
  expect((await call(admin,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(200);
  expect((await f.api(token.access_token,'/issues')).status).toBe(401);
