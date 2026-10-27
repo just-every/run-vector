@@ -1,3 +1,4 @@
+import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import {documentInput,documentEdit,documentComment,specificationInput} from '../../src/core/features/documents/schema';
 import {slackIntakeFixture} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
@@ -197,7 +198,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const oauthApp=await call(owner,'/settings/oauth-apps','POST',{name:'synthetic-vector-4531',redirectUris:['https://synthetic-vector-4531.example.test/callback'],scopes:['issues:read']});
   const oauthRequest={response_type:'code',client_id:oauthApp.id,redirect_uri:'https://synthetic-vector-4531.example.test/callback',scope:'issues:read',state:'synthetic-vector-4532'};
   const oauthConsent=await call(member,'/oauth/consent','POST',{request:oauthRequest,decision:'approve'});
-  const oauthGrant=await read(await app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grant_type:'authorization_code',client_id:oauthApp.id,client_secret:oauthApp.secret,code:new URL(oauthConsent.redirect).searchParams.get('code'),redirect_uri:oauthRequest.redirect_uri})},bindings));
+  const oauthGrant=await read(await app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:oauthApp.id,client_secret:oauthApp.secret,code:new URL(oauthConsent.redirect).searchParams.get('code'),redirect_uri:oauthRequest.redirect_uri})},bindings));
   native('POST','/settings/oauth-apps',{name:'synthetic-vector-4533',redirectUris:[oauthRequest.redirect_uri],scopes:['issues:read']});
   native('DELETE','/settings/oauth-apps/grants/:id',undefined,{id:oauthGrant.grant_id});
   native('POST','/oauth/consent',{request:oauthRequest,decision:'approve'});

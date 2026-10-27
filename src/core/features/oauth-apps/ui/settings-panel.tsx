@@ -1,3 +1,4 @@
+import {jsonMediaType} from '../media-types';
 import {useState,type FormEvent} from 'react';
 import {z} from 'zod';
 import {fetchJson,useApiResource} from '../../../app/api-client';
@@ -10,7 +11,7 @@ export function OAuthAppsPanel(){
  const data=useApiResource('/api/settings/oauth-apps',inventory),[name,setName]=useState(''),[redirects,setRedirects]=useState(''),[scopes,setScopes]=useState<string[]>(['issues:read']),[secret,setSecret]=useState<string|null>(null),[busy,setBusy]=useState(false),[message,setMessage]=useState('');
  const fail=(error:unknown)=>setMessage(error instanceof Error?error.message:'The change could not be saved.');
  const register=async(event:FormEvent)=>{event.preventDefault();setBusy(true);setMessage('');setSecret(null);try{
-  const created=await fetchJson('/api/settings/oauth-apps',z.object({id:z.string(),secret:z.string()}),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,redirectUris:redirects.split('\n').map(s=>s.trim()).filter(Boolean),scopes})});
+  const created=await fetchJson('/api/settings/oauth-apps',z.object({id:z.string(),secret:z.string()}),{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({name,redirectUris:redirects.split('\n').map(s=>s.trim()).filter(Boolean),scopes})});
   setSecret(created.secret);setName('');setRedirects('');data.reload();
  }catch(error){fail(error);}finally{setBusy(false);}};
  const revoke=async(id:string)=>{setBusy(true);try{await fetchJson('/api/settings/oauth-apps/grants/'+id,z.object({revoked:z.boolean()}),{method:'DELETE'});setMessage('Authorization revoked. Its next API call will be refused.');data.reload();}catch(error){fail(error);}finally{setBusy(false);}};

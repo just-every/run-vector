@@ -1,3 +1,4 @@
+import {jsonMediaType,formMediaType} from '../../src/core/features/oauth-apps/media-types';
 import {createOAuthPublicApp} from '../../src/core/features/oauth-apps/routes';
 import {pkce} from '../../src/core/features/oauth-apps/repository';
 import { mentionToken } from '../../src/core/features/notifications/mention-token';
@@ -32,7 +33,7 @@ it('[API-001 API-002 API-004] Base scoped token authority drives native routes, 
  ]);
  // Exercise the real mounted API router against this otherwise unsupported
  // multi-workspace fixture, independently of installation bootstrap refusal.
- const router=createIntegrationApi(),foreign=(token:string,path:string,method='GET',body?:unknown)=>router.request(origin+path,{method,headers:{Authorization:'Bearer '+token,'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+ const router=createIntegrationApi(),foreign=(token:string,path:string,method='GET',body?:unknown)=>router.request(origin+path,{method,headers:{Authorization:'Bearer '+token,'content-type':jsonMediaType},body:body===undefined?undefined:JSON.stringify(body)},bindings);
  const foreignBefore=await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first();
  expect((await foreign(read.token,'/issues/'+issue.identifier)).status).toBe(404);
  expect((await foreign(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version+1,title:'Foreign mutation'})).status).toBe(404);
@@ -65,7 +66,7 @@ it('[API-003] the versioned schema is published through the real app',async()=>{
   ['/projects/{id}/milestones/{milestoneId}','patch',planning.projectMilestoneUpdateSchema],
   ['/projects/{id}/milestones/order','put',planning.projectMilestoneOrderSchema],
   ['/cycles','post',planning.cycleCreateSchema],
- ] as const){const generated=z.toJSONSchema(validator,{io:'input'});delete generated.$schema;expect(schema.paths[path][method].requestBody.content['application/json'].schema).toEqual(generated);}
+ ] as const){const generated=z.toJSONSchema(validator,{io:'input'});delete generated.$schema;expect(schema.paths[path][method].requestBody.content[jsonMediaType].schema).toEqual(generated);}
  const mounted=f.app.routes.filter(r=>r.method!=='ALL'&&r.path.startsWith('/api/v1/')).map(r=>r.method+' '+r.path.slice('/api/v1'.length).replace(/:([A-Za-z]+)/g,'{$1}')).sort();
  expect(mounted).toEqual(apiRoutes.map(r=>r.method+' '+r.path).sort());
  const required='issues,comments,attachments,relations,labels,teams,workflow states,cycles,projects,milestones,initiatives,releases,documents,views,customers,customer requests,notifications,members'.split(',');
@@ -256,7 +257,7 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  const publicEntry=await f.app.request(origin+'/api/oauth/authorize?'+new URLSearchParams(auth),{},bindings);expect(publicEntry.status).toBe(303);expect(new URL(publicEntry.headers.get('location')!).pathname).toBe('/app/settings/oauth-consent');
  const denied=await authorize(member,{},'deny');expect(new URL(denied.redirect).searchParams.get('error')).toBe('access_denied');expect(new URL(denied.redirect).searchParams.has('code')).toBe(false);
  const getCode=async()=>new URL((await authorize(member)).redirect).searchParams.get('code')!;
- const exchange=(code:string,extra:Record<string,string>={})=>f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier,...extra})},bindings);
+ const exchange=(code:string,extra:Record<string,string>={})=>f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':formMediaType},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier,...extra})},bindings);
  const code=await getCode();
  expect((await exchange(code,{client_secret:'synthetic-vector-4509'})).status).toBe(401);
  expect((await exchange(code,{code_verifier:verifier.split('').reverse().join('')})).status).toBe(400);
@@ -276,7 +277,7 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  expect((await f.api(reused.access_token,'/issues')).status).toBe(200);expect((await exchange(reuseCode)).status).toBe(400);expect((await f.api(reused.access_token,'/issues')).status).toBe(401);
  const expired=await getCode(),expiry=await env.DB.prepare('SELECT MAX(expires_at) AS expiry FROM vector_oauth_codes').first<number>('expiry');
  const controlled=createOAuthPublicApp(()=>expiry!+1);
- expect((await controlled.request(origin+'/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:expired,redirect_uri:redirect,code_verifier:verifier})},bindings)).status).toBe(400);
+ expect((await controlled.request(origin+'/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:expired,redirect_uri:redirect,code_verifier:verifier})},bindings)).status).toBe(400);
  const currentCode=await getCode(),current=await exchange(currentCode);expect(current.status).toBe(200);const last=await current.json() as {access_token:string};
  expect((await f.api(last.access_token,'/issues')).status).toBe(200);
  expect((await f.call('/settings/operators/'+memberId,'DELETE')).status).toBe(200);expect((await f.api(last.access_token,'/issues')).status).toBe(401);

@@ -1,3 +1,4 @@
+import {jsonMediaType,formMediaType} from './media-types';
 import {z} from 'zod';
 import {Hono} from 'hono';
 import type {AppEnvironment} from '../../app/bindings';
@@ -45,8 +46,8 @@ export function createOAuthPublicApp(now:()=>number=Date.now){
   if(!await admitRate(c.env.DB,'oauth-exchange:'+(c.req.header('CF-Connecting-IP')??'unknown'),120,60000))throw new IntegrationError(429,'rate_limited');
   const type=c.req.header('Content-Type')?.split(';')[0];
   let body:Record<string,unknown>;
-  if(type==='application/json')body=await readRequestJson(c.req.raw) as Record<string,unknown>;
-  else if(type==='application/x-www-form-urlencoded')body=Object.fromEntries(new URLSearchParams(await c.req.text()));
+  if(type===jsonMediaType)body=await readRequestJson(c.req.raw) as Record<string,unknown>;
+  else if(type===formMediaType)body=Object.fromEntries(new URLSearchParams(await c.req.text()));
   else throw new IntegrationError(400,'invalid_request');
   const auth=c.req.header('Authorization');
   if(auth){

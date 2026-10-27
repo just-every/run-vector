@@ -1,3 +1,4 @@
+import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import {createServerApp} from '../../src/core/app/server';
 import {bindings,origin} from './base-auth-fixture';
 import { seedIntakeForTeam, recordedReply } from './email-intake-fixture';
@@ -214,7 +215,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     const app=await json<{id:string;secret:string}>(owner.call('/settings/oauth-apps','POST',{name:'synthetic-vector-4521',redirectUris:['https://synthetic-vector-4521.example.test/callback'],scopes:['issues:read']}));
     const request={response_type:'code',client_id:app.id,redirect_uri:'https://synthetic-vector-4521.example.test/callback',scope:'issues:read',state:'synthetic-vector-4522'};
     const approved=await json<{redirect:string}>(owner.call('/oauth/consent','POST',{request,decision:'approve'}));
-    const granted=await json<{grant_id:string}>(createServerApp().request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grant_type:'authorization_code',client_id:app.id,client_secret:app.secret,code:new URL(approved.redirect).searchParams.get('code'),redirect_uri:request.redirect_uri})},bindings));
+    const granted=await json<{grant_id:string}>(createServerApp().request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:app.id,client_secret:app.secret,code:new URL(approved.redirect).searchParams.get('code'),redirect_uri:request.redirect_uri})},bindings));
     return {app,request,grantId:granted.grant_id};
   })();
   for(const row of ['integrations.manage','identity.personal'] as const){
@@ -271,7 +272,7 @@ export function releaseMatrixProbes(w:Workspace){
    if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'member'})).status).toBe(200);
    const minted=await json<{token:string}>(actor.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1759',scopes:['releases:read','releases:write']}));
    if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'guest',teamIds:[team]})).status).toBe(200);
-   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':jsonMediaType},body:body===undefined?undefined:JSON.stringify(body)},bindings);
    return prepare(who,actor,team,send);
   }
  };
@@ -310,7 +311,7 @@ export function initiativeMatrixProbes(w:Workspace){
    if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'member'})).status).toBe(200);
    const minted=await json<{token:string}>(actor.call('/settings/integrations/tokens','POST',{name:'synthetic-vector-1759',scopes:['initiatives:read','initiatives:write']}));
    if(who==='guest')expect((await w.people.owner.call('/settings/operators/'+actor.id+'/role','PATCH',{role:'guest',teamIds:[team]})).status).toBe(200);
-   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)},bindings);
+   const send=(path:string,method='GET',body?:unknown)=>app.request(origin+'/api/v1'+path,{method,headers:{Authorization:'Bearer '+minted.token,Origin:origin,'Content-Type':jsonMediaType},body:body===undefined?undefined:JSON.stringify(body)},bindings);
    return prepare(who,actor,team,send);
   }
  };
