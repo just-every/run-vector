@@ -32,12 +32,13 @@ export async function exerciseInitiatives(w:Awaited<ReturnType<typeof roleWorksp
  const scoped=await json(await api(readToken,'/initiatives?parent='+root.id));expect(scoped.initiatives.map((n:any)=>n.id)).toEqual([child.id]);
  const guest=await w.fresh('member'),guestToken=await mint(guest);
  expect((await owner.call('/settings/operators/'+guest.id+'/role','PATCH',{role:'guest',teamIds:[w.team.id]})).status).toBe(200);
- const before=await snapshot(['initiatives','initiative_projects','initiative_graph','audit_records']);
+ expect((await w.member.call('/settings/integrations/channels','POST',{scope:'initiative',objectId:root.id,provider:'slack',channelId:'CINITIATIVE',channelName:'refused',events:['initiative.updated']})).status).toBe(403);
+ const before=await snapshot(['initiatives','initiative_projects','initiative_graph','audit_records','vector_webhook_events']);
  for(const send of [guest.call,(p:string,m?:string,b?:unknown)=>api(guestToken,p,m,b)])for(const [path,method,body] of [
   ['/initiatives','GET',undefined],['/initiatives','POST',{name:'Guest initiative',ownerOperatorId:guest.id}],['/initiatives/'+root.id,'GET',undefined],
   ['/initiatives/'+root.id,'PATCH',{expectedVersion:updated.version,status:'active'}],['/initiatives/'+root.id+'/projects','PUT',{expectedVersion:updated.version,projectIds:[]}]
  ] as const)expect((await send(path,method,body)).status).toBe(403);
- expect(await snapshot(['initiatives','initiative_projects','initiative_graph','audit_records'])).toEqual(before);
+ expect(await snapshot(['initiatives','initiative_projects','initiative_graph','audit_records','vector_webhook_events'])).toEqual(before);
  expect((await guest.call('/subscriptions','POST',{subjectType:'initiative',subjectId:root.id})).status).toBe(404);
  // A fresh recipient follows only the initiative: project/team/view matches cannot carry this proof.
  const recipient=await w.fresh('member');

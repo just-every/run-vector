@@ -27,7 +27,7 @@ export function channelEdge(installationTeam?:string){
    if(postMode==='retry')return new Response(null,{status:429,headers:{'Retry-After':'1'}});
    return Response.json({ok:true,ts:'123.456'});
   }
-  if(method==='discord'){expect(url.origin+url.pathname).toBe(webhook);expect(url.searchParams.get('wait')).toBe('true');return postMode==='redirect'?new Response(null,{status:302,headers:{Location:'https://forbidden.example.test'}}):Response.json({id:'fixture-message',content:body.content});}
+  if(method==='discord'){if(postMode==='uncertain')throw Error('Lost provider acknowledgement');expect(url.origin+url.pathname).toBe(webhook);expect(url.searchParams.get('wait')).toBe('true');return postMode==='redirect'?new Response(null,{status:302,headers:{Location:'https://forbidden.example.test'}}):Response.json({id:'fixture-message',content:body.content});}
   throw Error('Unexpected network edge '+url.hostname+url.pathname);
  });
  return {app:(profile:{appId:string;clientId:string;clientSecret:string;signingSecret:string})=>{app=profile;},users:(email:string,id:string,name:string)=>{users.set(email,{id,team_id:'TFIXTURE',name:name.toLowerCase(),real_name:name+' Fixture',profile:{display_name:name,real_name:name+' Fixture'}});},lookupError:(value:string|null)=>{lookupError=value;},get token(){return token;},renew(){token=['synthetic','slack',crypto.randomUUID()].join('-');revoked=false;},webhook,calls,safety:(value:Record<string,unknown>={})=>{safety=value;},restore:()=>network.mockRestore(),createError:(value:string|null)=>{createError=value;},postMode:(value:string)=>{postMode=value;}};

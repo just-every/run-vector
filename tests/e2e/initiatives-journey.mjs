@@ -1,3 +1,8 @@
+import {mkdtempSync,readFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+// The built Worker uses the existing provider network edge, never a product mock.
+process.env.VECTOR_CHANNEL_EDGE??=join(mkdtempSync(join(tmpdir(),'vector-initiative-edge-')),'calls.jsonl');
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {roleScreens} from './role-ui-support.mjs';
@@ -48,10 +53,34 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   const subscribed=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/subscriptions');
   await page.getByRole('button',{name:'Subscribe to initiative',exact:true}).click();assert.equal((await subscribed).status(),201);await page.getByRole('button',{name:'Unsubscribe from initiative',exact:true}).waitFor();
   await capture('initiative-three-level-hierarchy');
+  await navigate(page,base+'/app/settings#integrations');
+  const panel=page.locator('.channel-settings');await panel.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
+  await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1820'});
+  await page.reload();await panel.getByText('Slack connected to Delivery workspace',{exact:true}).waitFor();
+  const binding=panel.getByRole('form',{name:'Bind notification channel',exact:true});
+  await binding.getByRole('combobox').first().selectOption('initiative:'+root.id);
+  await binding.getByLabel('Channel service',{exact:true}).selectOption('slack');
+  await binding.getByLabel('Channel display name',{exact:true}).fill('initiative-direction-'+width);
+  await binding.getByLabel('Slack channel ID',{exact:true}).fill('CINITIATIVE'+width);
+  for(const checkbox of await binding.getByRole('checkbox').all())await checkbox.uncheck();
+  await binding.getByRole('checkbox',{name:'Initiative update',exact:true}).check();
+  await inspect(page,binding,'initiative-channel-choice-'+width);await page.setViewportSize({width,height:1000});
+  const bound=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/settings/integrations/channels');
+  await binding.getByRole('button',{name:'Save channel binding',exact:true}).click();assert.equal((await bound).status(),201);const destination=(await(await bound).json()).id;
+  await panel.getByRole('button',{name:'Remove binding for '+root.name,exact:true}).waitFor();
+  await inspect(page,binding,'initiative-channel-bound-'+width);await page.setViewportSize({width,height:1000});
+  const config=await call('/settings/integrations/channels');assert.deepEqual(config.bindings.find(b=>b.id===destination).events,['initiative.updated']);
+  await navigate(page,base+'/app/initiatives/'+root.id);
+
   await page.getByText('Edit initiative',{exact:true}).click();
   const edit=page.getByRole('form',{name:'Edit initiative',exact:true});await edit.getByLabel('Initiative status',{exact:true}).selectOption('active');
   const saved=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);
   await edit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await saved).status(),200);await page.locator('header').getByText('Active · Owner:',{exact:false}).waitFor();await capture('initiative-active');
+  const cron=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(cron.status,200);await cron.arrayBuffer();
+  const replay=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(replay.status,200);await replay.arrayBuffer();
+  const posts=readFileSync(process.env.VECTOR_CHANNEL_EDGE,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse).filter(c=>c.method==='chat.postMessage'&&c.body.channel==='CINITIATIVE'+width);
+  assert.equal(posts.length,1,'one bound initiative update through the durable dispatcher');assert.ok(posts[0].body.text.includes(root.name));assert.ok(posts[0].body.text.includes(base+'/app/initiatives/'+root.id));assert.ok(!posts[0].body.text.includes('synthetic-vector-1793'));
+  await call('/settings/integrations/channels/'+destination,'DELETE');
   if(!memberFixture){
    const email='synthetic-vector-1798@example.test';
    await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1798',email,role:'member'},202);

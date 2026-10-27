@@ -183,14 +183,25 @@ revocation error is shown and refuses removal; a restored connection with no
 usable token can still be removed locally. Owners and Admins connect, bind and
 remove Slack (role matrix, ROLE-001); teams are workspace-visible until ROLE-002.
 
-Choose a team, project or saved view, a Slack channel ID and display name, and
+Choose a team, project, saved view or initiative, a Slack channel ID and display name, and
 chosen events. Each object has one destination; saving again replaces its
 binding. Add the Slack bot to an existing channel first. New triage, new issue
 and status changes post now. Saved views use the member’s current browse filters
-at dispatch. Project updates, releases, SLA warnings, agent completions and
-initiatives inherit their posts in PROJ-010, RELEASE-001/003, AUTO-004,
-AGENT-002/003 and INIT-001 before those objects ship. ROLE-002 must enforce that
-private-team content only posts to channels an Admin bound to that team.
+at dispatch. Project updates, releases, SLA warnings and agent completions
+retain their receiving clauses. Initiative updates and project membership
+changes use this same durable dispatcher. Private-team issue content only posts
+to channels an Admin bound to that team.
+
+Owners and Admins bind initiatives under these same Settings controls; Members
+cannot bind initiatives. Choose Initiative created, Initiative update or Initiative
+projects changed. Each selected initiative write records its event in the same
+transaction and uses the existing durable queue. Messages contain only the
+initiative name, actor, change and canonical initiative link. They omit descriptions,
+comments and project names; changes involving private work use a generic notice.
+Dispatch checks the current initiative and active actor membership. Replacing or
+removing a binding stops its old destination. Restored bindings retain their
+configuration but need credentials re-entered and effects reviewed before posting.
+Apply `0104_initiative_channel_bindings.sql` additively; keep terminal delivery history.
 
 Owners and Admins see **Create Slack channel** on a team or project creation form. Members who may create a project can instead choose a Slack channel an Owner or Admin already bound or allowed. Vector calls
 `conversations.create` once, for a public channel named from the identifier or

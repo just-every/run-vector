@@ -1,3 +1,5 @@
+// Initiative channel bindings are portable domain configuration, like vector_channel_bindings.
+// Destination credentials remain excluded in vector_integration_secret_keys and require re-entry.
 // Documents, revisions, comments and issue specifications are portable domain data, retained with their parent identities.
 // The verified Slack team ID is portable installation identity, never a credential; restored installations still require credential re-entry.
 // Slack event receipts are portable identifier-only replay history; secrets and member links remain excluded.
