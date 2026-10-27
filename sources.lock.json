@@ -4737,11 +4737,11 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.css": {
-      "sha256": "f81246c3be95278110e544a7e6b97475ca8bc1036c32c6c1bfae8f7cc25d9dc6",
+      "sha256": "228873bdf8ac34c38f4861b8301a8df23cfd45133e490af32515c96ec32ddca1",
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.tsx": {
-      "sha256": "4235ae3621d44edf7e321e1f39865db3f2659c79aef130500bf386e9c343a3f0",
+      "sha256": "75587c2b6329e97cd53a7a74b0b56e37ad545d65dddb9bdb8583f86456cac6cc",
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
@@ -6953,7 +6953,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
-      "sha256": "70b012f8e219944c000a70e61f5a2a1c33be50d77e5e33d7c7caa01db0d8f2ff",
+      "sha256": "159473bf8721099db146bdc0911c0f1a333dd37ec7f08d30a73c5666c9fc8db1",
       "executable": false
     },
     "tests/e2e/integrations/github-team-permissions.mjs": {

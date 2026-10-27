@@ -12,7 +12,7 @@ function Rule({team,rule,onSaved}:{team:z.infer<typeof teamSchema>;rule:z.infer<
  return <form onSubmit={event=>{event.preventDefault();void save();}}><fieldset disabled={busy}><legend>{names[rule.trigger]}</legend><label htmlFor={team.id+'-'+rule.trigger}>{team.name} {names[rule.trigger]} status</label><select id={team.id+'-'+rule.trigger} value={status} onChange={e=>setStatus(e.target.value)}><option value="">Do not move</option>{team.statuses.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select>{rule.trigger==='deploy'&&<label>{team.name} production environment<input value={environment} required maxLength={200} onChange={e=>setEnvironment(e.target.value)}/></label>}<label className="github-rule-reopen"><input type="checkbox" checked={reopen} onChange={e=>setReopen(e.target.checked)}/>Allow this rule to reopen completed issues</label><button type="submit">Save {names[rule.trigger]} rule</button>{message&&<p role="status">{message}</p>}</fieldset></form>;
 }
 export function GithubRules({teamId}:{teamId?:string}){
- return teamId?<TeamGithubRules teamId={teamId}/>:<p><a href="#teams">Manage Git automation rules in Teams</a></p>;
+ return teamId?<TeamGithubRules teamId={teamId}/>:<p><a className="github-rules-teams-link" href="#teams">Manage Git automation rules in Teams</a></p>;
 }
 function TeamGithubRules({teamId}:{teamId:string}){
  const data=useApiResource('/api/github/automation',schema);
