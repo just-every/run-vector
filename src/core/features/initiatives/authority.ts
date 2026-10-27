@@ -2,7 +2,8 @@ import type {Context} from 'hono';
 import type {AppEnvironment,WorkerBindings} from '../../app/bindings';
 import {settingsActor,SettingsError} from '../settings/repository';
 export const initiativeRoleAction='Create and edit initiatives; add projects to them (INIT-001)';
-const resource=(path:string)=>/^\/api\/(?:v1\/)?initiatives(?:\/|$)/.test(path);
+// The channel binding read is the scoped capability's own role-matrix door.
+const resource=(path:string)=>/^\/api\/(?:v1\/)?initiatives(?:\/|$)/.test(path)&&!/^\/api\/initiatives\/[^/]+\/channel-binding$/.test(path);
 export async function initiativeAuthority(c:Context<AppEnvironment>,actor:string,db:D1Database){
  if(!resource(c.req.path)||!['GET','HEAD'].includes(c.req.method))return;
  const access=await settingsActor(db,actor);

@@ -1,4 +1,5 @@
 import {channelBindingSource} from './subjects';
+import {scopedBindingLive} from './initiative-approval';
 import {checkBoundChannel,suspendChannel,suspendedSlackResponses} from './channel-safety';
 import type {WorkerBindings} from '../../../app/bindings';
 import type {DeliveryProtocol,Envelope,WireRequest} from '../../../../../vendor/base/integrations';
@@ -20,6 +21,8 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
  const channel=await currentChannel(env,workspace,id),event=JSON.parse(body);
  if(channel.scope==='initiative'){
   if(!event.initiativeId||event.initiativeId!==channel.object_id||!event.actorId)return false;
+  // A scoped binding's approval and its binder's editor authority are rechecked here, before every post.
+  if(!await env.DB.prepare('SELECT 1 WHERE '+scopedBindingLive('?')).bind(id,id).first())return false;
   return Boolean(await env.DB.prepare("SELECT 1 FROM initiatives n JOIN operators o ON o.workspace_id=n.workspace_id JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE n.id=? AND n.workspace_id=? AND o.id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member')").bind(event.initiativeId,workspace,event.actorId).first());
  }
  if(event.initiativeId)return false;
@@ -41,8 +44,7 @@ export async function channelMessage(env:WorkerBindings,kind:string,channelId:st
  const event=JSON.parse(body);
  if(event.initiativeId){
   const privateWork=await env.DB.prepare('SELECT 1 FROM initiative_projects ip JOIN issues i ON i.project_id=ip.project_id JOIN teams t ON t.id=i.team_id WHERE ip.initiative_id=? AND t.is_private=1').bind(event.initiativeId).first();
-  const change=event.changeKind==='projects'&&privateWork?'Private work changed. Sign in to Vector to view it.':event.change;
-  const text=`${event.initiativeName}\n${event.actor}: ${change}\n${env.APP_ORIGIN}/app/initiatives/${encodeURIComponent(event.initiativeId)}`;
+  const text=privateWork?'Private work changed. Sign in to Vector to view it.':`${event.initiativeName}\n${event.actor}: ${event.change}\n${env.APP_ORIGIN}/app/initiatives/${encodeURIComponent(event.initiativeId)}`;
   return JSON.stringify(kind==='slack'?{channel:channelId,text:escapeSlack(text),unfurl_links:false,unfurl_media:false,parse:'none',mrkdwn:false}:{content:text,allowed_mentions:{parse:[]},flags:4});
  }
  const link=env.APP_ORIGIN+'/app/issues/'+encodeURIComponent(event.identifier);

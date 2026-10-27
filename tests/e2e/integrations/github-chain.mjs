@@ -21,6 +21,7 @@ export async function exerciseGithubChain({page:shared,runtime,cookie,team,width
   await page.setViewportSize({width,height:900});await navigate(page,runtime.base+'/app/settings#integrations');
   const integrations=page.getByRole('region',{name:'Integrations',exact:true});
   await integrations.getByRole('link',{name:'Manage Git automation rules in Teams',exact:true}).waitFor();
+  assert.ok((await integrations.getByRole('link',{name:'Manage Git automation rules in Teams',exact:true}).boundingBox()).height>=44,'the Git automation link is a 44px touch target');
   await inspect(page,integrations,'github-owner-integrations-'+width);
   await page.setViewportSize({width,height:900});
   await integrations.getByRole('link',{name:'Manage Git automation rules in Teams',exact:true}).click();
