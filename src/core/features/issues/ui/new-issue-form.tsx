@@ -183,20 +183,24 @@ export function NewIssueForm() {
     }
   };
 
-  if (options.loading && options.data === null)
-    return (
-      <main className="new-issue-state" aria-live="polite">
-        Loading issue options…
-      </main>
-    );
-  if (options.error || options.data === null)
+  const back = <button type="button" className="detail-back" onClick={() => vectorPageBehind(canGoBack) ? window.history.back() : void navigate({ to: "/app" })}>← Back</button>;
+  const loadError = options.error || administration.error || boardPreference.error;
+  if (loadError)
     return (
       <main className="new-issue-state new-issue-state--error" role="alert">
+        {back}
         <strong>Unable to load issue options.</strong>
-        <span>{options.error?.message}</span>
-        <button type="button" onClick={options.reload}>
+        <span>{loadError.message}</span>
+        <button type="button" onClick={() => { options.reload(); administration.reload(); boardPreference.reload(); }}>
           Try again
         </button>
+      </main>
+    );
+  if (!options.data || !administration.data || !boardPreference.data)
+    return (
+      <main className="new-issue-state" aria-live="polite">
+        {back}
+        Loading issue options…
       </main>
     );
 
@@ -224,7 +228,7 @@ export function NewIssueForm() {
         >
           <header className="new-issue-header">
             <div>
-              <button type="button" className="detail-back" onClick={() => vectorPageBehind(canGoBack) ? window.history.back() : void navigate({ to: "/app" })}>← Back</button>
+              {back}
               <h1 id="new-issue-title">
                 {values.mode === "intake" ? "New intake" : "New issue"}
               </h1>

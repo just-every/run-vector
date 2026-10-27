@@ -132,8 +132,9 @@ export function IssueBrowserSurface({
   switchLayout?: boolean;
 }) {
   const navigate = useNavigate();
-  const options = useApiResource("/api/options", workspaceOptionsSchema).data;
-  const administration = useApiResource("/api/metadata", administrationSchema).data;
+  const optionResource = useApiResource("/api/options", workspaceOptionsSchema);
+  const administrationResource = useApiResource("/api/metadata", administrationSchema);
+  const options = optionResource.data, administration = administrationResource.data;
   // A board reads the person's team until they explicitly choose another.
   // Keep that default local so restoring controls cannot race their choice.
   const layoutQuery = issueListLayoutQuery(query, layout);
@@ -163,13 +164,22 @@ export function IssueBrowserSurface({
     window.addEventListener("vector:issues-changed", changed);
     return () => window.removeEventListener("vector:issues-changed", changed);
   }, [resource.refreshAfterMutation]);
+  const needsTeam = layout === "board" && layoutQuery.team === "all";
+  const teamError = needsTeam ? optionResource.error || administrationResource.error : null;
+  const waitingForTeam = needsTeam && (!options || !administration);
   return (
     <IssueListView
       query={shownQuery}
       {...resource}
+      data={waitingForTeam || teamError ? null : resource.data}
+      error={teamError || resource.error}
+      loading={!teamError && (waitingForTeam || resource.loading)}
       // Row mutations also publish issues-changed. Join that draining refresh
       // instead of canceling its read with a second explicit reload.
-      reload={resource.refreshAfterMutation}
+      reload={() => {
+        if (needsTeam) { optionResource.reload(); administrationResource.reload(); }
+        void resource.refreshAfterMutation();
+      }}
       layout={layout}
       title={title}
       viewActions={viewActions}
