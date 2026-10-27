@@ -1,3 +1,4 @@
+import {jsonMediaType,formMediaType} from '../../../src/core/features/oauth-apps/media-types.ts';
 import assert from 'node:assert/strict';
 import {randomBytes,createHash} from 'node:crypto';
 import {roleScreens} from '../role-ui-support.mjs';
@@ -8,7 +9,7 @@ import {navigate,settleReads,trackRequests} from '../collaboration-navigation.mj
 /** The network-edge client owns only generated credentials held in memory. */
 export async function exerciseOAuthApps({page,runtime,cookie,evidence}){
  const inspect=roleScreens(evidence),name='synthetic-vector-4541',redirect=runtime.base+'/oauth-test-client/callback';
- const headers={Cookie:cookie,Origin:runtime.base,'Content-Type':'application/json'};
+ const headers={Cookie:cookie,Origin:runtime.base,'Content-Type':jsonMediaType};
  const call=async(path,method='GET',body,status=200)=>{const r=await runtime.req('/api'+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});assert.equal(r.status,status);return r.json();};
  const person=async(n,role)=>{
   const email='synthetic-vector-'+n+'@vector.test';await call('/settings/operators/invite','POST',{email,displayName:'synthetic-vector-'+n,role},202);
@@ -31,8 +32,8 @@ export async function exerciseOAuthApps({page,runtime,cookie,evidence}){
   await navigate(member,runtime.base+'/api/oauth/authorize?'+query);await settleReads(member);assert.equal(new URL(member.url()).pathname,'/app/settings/oauth-consent');assert.deepEqual(await member.getByRole('alert').allTextContents(),[],'The consent request loads without an authorization error');const consent=member.getByRole('region',{name:'Authorize an application',exact:true});await consent.getByRole('heading',{name,exact:true}).waitFor();await consent.getByText('issues:read',{exact:true}).waitFor();await inspect(member,consent,'oauth-consent');await member.setViewportSize({width:1440,height:1000});
   await Promise.all([member.waitForURL(url=>url.pathname==='/oauth-test-client/callback'),consent.getByRole('button',{name:'Approve access',exact:true}).click()]);
   const returned=new URL(member.url());assert.equal(returned.searchParams.get('state'),state);const code=returned.searchParams.get('code');assert.ok(code);
-  const exchange=await runtime.req('/api/oauth/token',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier})});assert.equal(exchange.status,200);const token=await exchange.json();
-  const api=(path,method='GET',body)=>runtime.req('/api/v1'+path,{method,headers:{Authorization:'Bearer '+token.access_token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});
+  const exchange=await runtime.req('/api/oauth/token',{method:'POST',headers:{'Content-Type':formMediaType},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier})});assert.equal(exchange.status,200);const token=await exchange.json();
+  const api=(path,method='GET',body)=>runtime.req('/api/v1'+path,{method,headers:{Authorization:'Bearer '+token.access_token,'Content-Type':jsonMediaType},body:body===undefined?undefined:JSON.stringify(body)});
   assert.equal((await api('/issues')).status,200);
   const before=runtime.sql('SELECT COUNT(*) AS n FROM issues')[0].n;
   const team=runtime.sql('SELECT id FROM teams ORDER BY created_at LIMIT 1')[0].id;assert.equal((await api('/issues','POST',{teamId:team,title:'synthetic-vector-4545'})).status,403);assert.equal(runtime.sql('SELECT COUNT(*) AS n FROM issues')[0].n,before);
