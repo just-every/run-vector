@@ -284,6 +284,8 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  };
  const ownerGrant=await grantFor(f.cookie,adminClient,['issues:read','issues:write']);
  const adminGrant=await grantFor(admin,other,['issues:write','metadata:read']);
+ const ownerSameApp=await grantFor(f.cookie,client,['issues:read']),adminSameApp=await grantFor(admin,client,['issues:read']);
+ const memberSecondApp=await grantFor(member,adminClient,['issues:read','issues:write']);
  expect((await f.api(ownerGrant.access_token,'/issues')).status).toBe(200);
  expect((await f.api(adminGrant.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4513'})).status).toBe(201);
  expect((await f.api(adminGrant.access_token,'/issues')).status).toBe(403);
@@ -296,6 +298,9 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
   {id:token.grant_id,app:'synthetic-vector-4501',member:'synthetic-vector-4503',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
   {id:ownerGrant.grant_id,app:'synthetic-vector-4506',member:'Owner',scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
   {id:adminGrant.grant_id,app:'synthetic-vector-4511',member:'synthetic-vector-4502',scopes:['issues:write','metadata:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
+  {id:ownerSameApp.grant_id,app:'synthetic-vector-4501',member:'Owner',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:null},
+  {id:adminSameApp.grant_id,app:'synthetic-vector-4501',member:'synthetic-vector-4502',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:null},
+  {id:memberSecondApp.grant_id,app:'synthetic-vector-4506',member:'synthetic-vector-4503',scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:null},
  ].sort((a,b)=>a.id.localeCompare(b.id)));
  const ownerInventory=await(await call(f.cookie,'/settings/oauth-apps')).json() as Inventory;
  expect(ownerInventory).toEqual(grants);
