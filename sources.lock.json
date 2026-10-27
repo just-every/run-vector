@@ -5217,7 +5217,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.tsx": {
-      "sha256": "3843999f4bbec8f3faf18de237acad7426c285896981052b68a865215d5413bc",
+      "sha256": "9012b9d423645dc05d2aa2f5c1883e8e504b7b125c0768e659155423a95739bb",
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
@@ -6705,7 +6705,7 @@
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
-      "sha256": "d72c662de955bf37b2e9852536b50b518c4fc06f66c616432b26afeb63112e19",
+      "sha256": "5def8bd706f060669622150700e853aa43a6314228c7b632bcd7e2dfd6cc3a66",
       "executable": false
     },
     "tests/e2e/core-board-support.mjs": {
