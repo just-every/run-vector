@@ -78,7 +78,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   await inspect(page,binding,'initiative-channel-bound-'+width);await page.setViewportSize({width,height:1000});
   const config=await call('/settings/integrations/channels');assert.deepEqual(config.bindings.find(b=>b.id===destination).events,['initiative.updated']);
   await navigate(page,base+'/app/initiatives/'+root.id);
-
+  const header=page.locator('main header');await header.locator('a[href="/app/settings#integrations"]').waitFor();await header.getByText('initiative-direction-'+width,{exact:false}).waitFor();
   await page.getByText('Edit initiative',{exact:true}).click();
   const edit=page.getByRole('form',{name:'Edit initiative',exact:true});await edit.getByLabel('Initiative status',{exact:true}).selectOption('active');
   const saved=page.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);

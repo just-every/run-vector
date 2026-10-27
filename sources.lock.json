@@ -4356,12 +4356,16 @@
       "sha256": "edfe3dd52af58003934897fdf40217ca8a9812d910ad05cd2222c5f15e12f77d",
       "executable": false
     },
+    "src/core/features/initiatives/ui/initiative-channel-line.tsx": {
+      "sha256": "6c4cc79fa1adf0af3a7a72db37efd603fe61388dc49a133199678efc43ed5de0",
+      "executable": false
+    },
     "src/core/features/initiatives/ui/initiatives.css": {
       "sha256": "e19d9930c922ef4ff879d1313151df3a16e4eb9b893802d554d06b9e2c3eebf2",
       "executable": false
     },
     "src/core/features/initiatives/ui/initiatives.tsx": {
-      "sha256": "6d1a6da6c432adccc32a315c0973ecc9a2c3100ed1b4bbccfe2fd2e671ff06ef",
+      "sha256": "5ff0e255373d89ac2f052224b873e6089ae0d1bc56734cb8f804a62ebba75299",
       "executable": false
     },
     "src/core/features/insights/build.ts": {
@@ -6921,7 +6925,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "31d2f6c5079273718812baf597451f03cb8a355af843531fd7290582b63364e5",
+      "sha256": "4379753ab7e7a3d7b3be3cde87b5bf5df8f755108f72c90e87a953a2cc4e48ca",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
