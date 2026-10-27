@@ -87,6 +87,8 @@ export async function verifyOAuthArchive(installation,cookie,fixture,records){
  const screen=await installation.req('/api/oauth/consent?'+new URLSearchParams(request),'GET',undefined,member);assert.equal(screen.status,200);assert.deepEqual((await screen.json()).scopes,['issues:read']);
  const approved=await installation.req('/api/oauth/consent','POST',{request,decision:'approve'},member);assert.equal(approved.status,200,'Fresh member consent after restore');const consent=await approved.json();
  const exchanged=await installation.req('/api/oauth/token','POST',{grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:new URL(consent.redirect).searchParams.get('code'),redirect_uri:redirect});assert.equal(exchanged.status,200);const token=await exchanged.json();assert.equal(token.scope,'issues:read');
+ const session=await installation.req('/api/session','GET',undefined,member);assert.equal(session.status,200);const identity=await session.json();
+ const grant=installation.sql("SELECT operator_id FROM vector_oauth_grants WHERE id='"+token.grant_id.replaceAll("'","''")+"'")[0];assert.equal(grant.operator_id,identity.operatorId,'Fresh restored consent belongs to the consenting member');
  assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+token.access_token})).status,200,'Fresh restored OAuth grant reads through the public API');
  assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+fixture.token})).status,401,'Fresh consent never revives the old token');
  console.log('API-004 archive door excludes registration, codes and grants; specific OAuth history survives, the old token is refused and fresh member consent restores access.');
