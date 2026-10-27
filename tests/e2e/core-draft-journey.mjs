@@ -1,7 +1,10 @@
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
+export const expectedDraftFailures = new Set();
+
 export async function draftJourney(page, context, base, teamId, operatorId, record) {
+  expectedDraftFailures.add(base + '/api/metadata');
   // A failed team-metadata read must expose recovery through the same form door.
   await page.route('**/api/metadata', route => route.fulfill({ status: 500,
     contentType: 'application/json', body: JSON.stringify({ error: 'unavailable' }) }));
@@ -12,6 +15,7 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   await page.unroute('**/api/metadata');
   await page.getByRole('button', { name: 'Try again', exact: true }).click();
   await page.getByRole('textbox', { name: /^Title/, disabled: false }).waitFor();
+  expectedDraftFailures.delete(base + '/api/metadata');
   const title = `Unsent browser draft ${Date.now()}`;
   const fields = [
     [/^Title/, title], ['Description', 'First unsent line\nSecond unsent line\nThird line'],
