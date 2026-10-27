@@ -21,11 +21,11 @@ export function InitiativeChannel({initiativeId,onChanged}:{initiativeId:string;
  return <details className="initiative-section"><summary>Channel notifications</summary>
  {state.error&&<p role="alert">{state.error.message}</p>}
  {data&&<form aria-label="Initiative channel" onSubmit={save}><fieldset disabled={pending}>
-  <p>{binding?binding.live?`Posting to ${service[binding.provider]} #${binding.channelName}: ${binding.events.map(e=>channelEventLabels[e]).join(', ')}.`:`Not posting: ${binding.notPosting?notPostingMessage(binding.notPosting,binding.channelName):'Save the channel again to resume posting.'}`:'No channel posts this initiative’s changes.'}</p>
+  <p data-channel-state={binding?.notPosting?.code??(binding?'live':'unbound')}>{binding?binding.live?`Posting to ${service[binding.provider]} #${binding.channelName}: ${binding.events.map(e=>channelEventLabels[e]).join(', ')}.`:<>Not posting: {binding.notPosting?<span data-not-posting={binding.notPosting.code}>{notPostingMessage(binding.notPosting,binding.channelName,data.canManage)}</span>:'Save the channel again to resume posting.'}</>:'No channel posts this initiative’s changes.'}</p>
   {data.destinations.length?<>
    <label>Approved channel<select aria-label="Approved channel" required value={choice} onChange={e=>setSelected(e.target.value)}><option value="">Choose an approved channel</option>{data.destinations.map(d=><option key={d.provider+d.channelId} value={d.provider+':'+d.channelId}>{service[d.provider]} #{d.channelName}</option>)}</select></label>
    <fieldset><legend>Events to post</legend>{initiativeChannelEvents.map(e=><label className="initiative-checkbox" key={e}><input type="checkbox" checked={events.includes(e)} onChange={x=>setPicked(x.target.checked?[...events,e]:events.filter(v=>v!==e))}/>{channelEventLabels[e]}</label>)}</fieldset>
-  </>:<p>An Owner or Admin must approve a channel for this initiative.</p>}
+  </>:!binding?.notPosting&&<p>An Owner or Admin must approve a channel for this initiative.</p>}
   <div className="initiative-actions">{data.destinations.length>0&&<button disabled={!choice||!events.length}>Save initiative channel</button>}{binding&&<button type="button" onClick={()=>void send('DELETE',{expectedVersion:data.version},'Initiative channel withdrawn.')}>Withdraw initiative channel</button>}</div>
  </fieldset></form>}
  {error&&<p role="alert">{error}</p>}{notice&&<p role="status">{notice}</p>}

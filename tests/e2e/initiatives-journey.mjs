@@ -1,4 +1,4 @@
-import {mkdtempSync,readFileSync} from 'node:fs';
+import {appendFileSync,mkdtempSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 // The built Worker uses the existing provider network edge, never a product mock.
@@ -9,6 +9,9 @@ import {roleScreens} from './role-ui-support.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
 import {confirmLink,readDevelopmentLink} from './outbox-session.mjs';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
+function recordChannelEvidence(row){
+ if(process.env.VECTOR_REASON_EVIDENCE)appendFileSync(process.env.VECTOR_REASON_EVIDENCE,JSON.stringify(row)+'\n');
+}
 export async function initiativesJourney({page:shared,runtime,evidence}){
  const page=await shared.context().newPage();trackRequests(page);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(/hydration|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());});
@@ -90,7 +93,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
   assert.equal(posts.length,1,'one bound initiative update through the durable dispatcher');assert.ok(posts[0].body.text.includes(root.name));assert.ok(posts[0].body.text.includes(base+'/app/initiatives/'+root.id));assert.ok(!posts[0].body.text.includes('synthetic-vector-1793'));
   await call('/settings/integrations/channels/'+destination,'DELETE');
   if(!memberFixture){
-   const email='synthetic-vector-1798@example.test';
+   const email='synthetic-vector-1798'+String.fromCharCode(64)+'example.test';
    await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1798',email,role:'member'},202);
    const signed=await confirmLink(await readDevelopmentLink(base,null,email,runtime.state));assert.equal(signed.status,303);
    const headers={Cookie:signed.headers.get('set-cookie').split(';')[0],Origin:base,'Content-Type':'application/json'};
@@ -147,58 +150,162 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
  }finally{await settleReads(page);await page.close();}
 }
 
-/** Keep the existing role and provider doors while reading the changed surfaces in each refusal state. */
+/** Read the actual server state before comparing each role's rendered reasons. */
 async function scopedChannelReasons({page,runtime,call,root,width,headers,session,projects}){
  const door='/initiatives/'+root.id+'/channel-binding',base=runtime.base;
  const member=async(path,method='GET',body)=>{const response=await runtime.req('/api'+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});assert.equal(response.status,200);return response.json();};
- const reader=await openAuthenticatedPage(page.context().browser(),headers.Cookie,base);let observer;
- try{
-  await reader.setViewportSize({width,height:1000});
-  const render=async(code)=>{
-   const memberState=await member(door),ownerState=await call(door);
-   assert.equal(memberState.binding.notPosting.code,code);assert.equal(ownerState.binding.notPosting.code,code);
-   const text=[];
-   for(const target of [reader,page]){
-    await navigate(target,base+'/app/initiatives/'+root.id);await target.getByText('Channel notifications',{exact:true}).click();
-    const panel=target.getByRole('form',{name:'Initiative channel',exact:true});await panel.waitFor();await settleReads(target);
-    text.push({role:target===reader?'member':'owner',panel:await panel.locator('p').first().innerText(),header:target===page?await target.locator('main header').innerText():null});
+ const reader=await openAuthenticatedPage(page.context().browser(),headers.Cookie,base);let observer,admin,adminRead;
+ const identities=new Set(['CSCOPED'+width,'TSYNTHETICB','TSYNTHETIC33001']);
+ const configuration=()=>call('/settings/integrations/channels');
+ const posts=()=>readFileSync(process.env.VECTOR_CHANNEL_EDGE,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse).filter(c=>(c.method==='chat.postMessage'&&c.body.text.includes(root.name))||(c.method==='discord'&&c.body.content.includes(root.name)));
+ const dispatch=async()=>{for(const tick of [1,2]){const response=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(response.status,200,'scoped dispatch '+tick);await response.arrayBuffer();}};
+ const openPanel=async(target)=>{await navigate(target,base+'/app/initiatives/'+root.id);await target.getByText('Channel notifications',{exact:true}).click();const form=target.getByRole('form',{name:'Initiative channel',exact:true});await form.waitFor();await settleReads(target);return form;};
+ const openSettings=async(target=page)=>{await navigate(target,base+'/app/settings#integrations');const settings=target.locator('.channel-settings');await settings.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();await settleReads(target);return settings;};
+ const concealed=async(region)=>{
+  const shown=await region.evaluate(element=>element.textContent+' '+[...element.querySelectorAll('[title],[aria-label],[data-tooltip]')].map(node=>[node.getAttribute('title'),node.getAttribute('aria-label'),node.getAttribute('data-tooltip')].join(' ')).join(' '));
+  for(const id of identities)assert.equal(shown.includes(id),false,'technical channel identity is not displayed');
+ };
+ const reasonText=async(region,code)=>code==='live'?'':(await region.locator('[data-not-posting="'+code+'"]').innerText()).trim();
+ const holdUpdate=async(code)=>{const current=await call('/initiatives/'+root.id);const before=posts().length;await call('/initiatives/'+root.id,'PATCH',{expectedVersion:current.version,description:'synthetic-vector-held-'+code+'-'+width});await dispatch();assert.equal(posts().length,before,'an unusable channel sends no update');recordChannelEvidence({kind:'channel-held',scenarioWidth:width,state:code,postsBefore:before,postsAfter:posts().length});};
+ const render=async(code,{viewer=reader,read=member,sourceAvailable}={})=>{
+  const memberState=await read(door),ownerState=await call(door),adminState=await adminRead(door),config=await configuration();
+  const binding=config.bindings.find(b=>b.id===ownerState.binding.id),approval=config.approvals.find(a=>a.initiativeId===root.id&&a.provider===binding.provider&&a.channelId===binding.channelId);
+  assert.ok(binding);identities.add(binding.id);if(approval)identities.add(approval.id);
+  for(const state of [memberState,ownerState,adminState]){assert.equal(state.binding.live,code==='live');assert.equal(state.binding.notPosting?.code??'live',code);}
+  assert.equal(memberState.canManage,false);assert.equal(ownerState.canManage,true);assert.equal(adminState.canManage,true);
+  assert.deepEqual(memberState.binding.notPosting,ownerState.binding.notPosting);assert.deepEqual(adminState.binding.notPosting,ownerState.binding.notPosting);
+  assert.deepEqual(binding.notPosting,ownerState.binding.notPosting);
+  if(approval)assert.equal(approval.notPosting?.code??'live',code);
+  if(sourceAvailable!==undefined){assert.equal(binding.notPosting.sourceAvailable,sourceAvailable);assert.equal(approval.usable,false);}
+  const server={live:Number(ownerState.binding.live),code,approvalPresent:Number(Boolean(approval)),approvalUsable:approval?Number(approval.usable):'',sourceAvailable:binding.notPosting?.sourceAvailable===undefined?'':Number(binding.notPosting.sourceAvailable),currentWorkspace:binding.notPosting?.currentWorkspace??'',binderName:binding.notPosting?.binderName??'',destinations:memberState.destinations.length,provider:binding.provider,channel:binding.channelName};
+  const surfaces=new Map();
+  for(const [role,target] of [['member',viewer],['owner',page],['admin',admin]]){
+   const form=await openPanel(target),rows=[];
+   await form.locator('[data-channel-state="'+code+'"]').waitFor();
+   if(code==='approved_again')assert.equal(await form.getByLabel('Approved channel',{exact:true}).inputValue(),binding.provider+':'+binding.channelId);
+   for(const viewport of [1440,390,320]){
+    await target.setViewportSize({width:viewport,height:1000});await form.scrollIntoViewIfNeeded();
+    assert.ok(await target.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'initiative channel fits viewport');await concealed(form);
+    const text=await reasonText(form,code),header=role!=='member'?target.locator('main header'):null;
+    if(header){await header.locator('[data-channel-state="'+code+'"]').waitFor();await concealed(header);if(code!=='live')assert.equal(await reasonText(header,code),text);}
+    rows.push({kind:'channel-reason',scenarioWidth:width,width:viewport,role,...server,panel:await form.locator('[data-channel-state]').innerText(),reason:text,header:header?await header.locator('[data-channel-state]').innerText():''});
    }
-   await navigate(page,base+'/app/settings#integrations');const settings=page.locator('.channel-settings');await settings.getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
-   const row=settings.locator('li').filter({has:page.getByRole('button',{name:'Remove binding for '+root.name,exact:true})});
-   console.log('INIT-001 reason',JSON.stringify({width,code,door:memberState.binding.notPosting,text,settings:await row.innerText()}));
-  };
-  const approval=(await call('/settings/integrations/channels')).approvals.find(a=>a.initiativeId===root.id&&a.provider==='slack');
+   surfaces.set(role,rows);
+  }
+  for(const [manager,target] of [['owner',page],['admin',admin]]){
+   const settings=await openSettings(target),bindingRow=settings.locator('[data-binding-id="'+binding.id+'"]'),approvalRow=approval?settings.locator('[data-approval-id="'+approval.id+'"]'):null;
+   await bindingRow.waitFor();
+   for(const viewport of [1440,390,320]){
+    await target.setViewportSize({width:viewport,height:1000});await bindingRow.scrollIntoViewIfNeeded();
+    assert.ok(await target.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'channel settings fits viewport');await concealed(bindingRow);if(approvalRow)await concealed(approvalRow);
+    const managerRow=surfaces.get(manager).find(row=>row.width===viewport),memberRow=surfaces.get('member').find(row=>row.width===viewport),reason=await reasonText(bindingRow,code);
+    if(code!=='live'){
+     assert.equal(managerRow.reason,reason,'manager reason agrees across the public doors');
+     if(approvalRow)assert.equal(await reasonText(approvalRow,code),reason,'approval reason agrees with the binding');
+    }
+    if(approvalRow)assert.equal(await approvalRow.getAttribute('data-usable'),String(approval.usable));
+    const existing=settings.getByLabel('Existing channel',{exact:true});
+    if(code==='slack_disconnected')assert.equal(await existing.locator('option[value^="slack:"]').count(),0);
+    if(sourceAvailable===false){assert.equal(await existing.locator('option[value^="discord:"]').filter({hasText:binding.channelName}).count(),0);assert.equal(memberState.destinations.some(d=>d.provider===binding.provider&&d.channelId===binding.channelId),false);}
+    const slackChoice=existing.locator('option[value="slack:CSCOPED'+width+'"]');if(await slackChoice.count())await existing.selectOption('slack:CSCOPED'+width);
+    await concealed(settings.getByRole('form',{name:'Approve initiative channel',exact:true}));
+    for(const row of manager==='owner'?[memberRow,managerRow]:[managerRow])recordChannelEvidence({...row,settingsBinding:await bindingRow.innerText(),settingsApproval:approvalRow?await approvalRow.innerText():'',settingsReason:reason});
+   }
+  }
+  await page.setViewportSize({width,height:1000});await viewer.setViewportSize({width,height:1000});await admin.setViewportSize({width,height:1000});
+  return ownerState;
+ };
+ const renderDisconnected=async()=>{
+  const memberState=await member(door),ownerState=await call(door),adminState=await adminRead(door),config=await configuration();
+  for(const state of [memberState,ownerState,adminState]){assert.equal(state.binding,null);assert.equal(state.destinations.some(d=>d.provider==='slack'),false);}
+  assert.equal(config.slack.connected,false);const approval=config.approvals.find(a=>a.initiativeId===root.id&&a.provider==='slack');assert.ok(approval);assert.equal(approval.usable,false);assert.equal(approval.notPosting.code,'slack_disconnected');
+  for(const [role,target] of [['member',reader],['owner',page],['admin',admin]]){
+   const form=await openPanel(target),collected=[];await form.locator('[data-channel-state="unbound"]').waitFor();
+   for(const viewport of [1440,390,320]){
+    await target.setViewportSize({width:viewport,height:1000});await form.scrollIntoViewIfNeeded();await concealed(form);assert.ok(await target.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    const header=role==='member'?null:target.locator('main header [data-channel-state="unbound"]');if(header)await header.waitFor();
+    collected.push({kind:'channel-reason',scenarioWidth:width,width:viewport,role,live:0,code:'slack_disconnected',bindingPresent:0,approvalPresent:1,approvalUsable:0,currentWorkspace:approval.notPosting.currentWorkspace??'',panel:await form.locator('[data-channel-state]').innerText(),header:header?await header.innerText():''});
+   }
+   const manager=role==='member'?page:target,settings=await openSettings(manager),row=settings.locator('[data-approval-id="'+approval.id+'"]');await row.locator('[data-not-posting="slack_disconnected"]').waitFor();
+   assert.equal(await settings.getByLabel('Existing channel',{exact:true}).locator('option[value^="slack:"]').count(),0);
+   for(const entry of collected){
+    await manager.setViewportSize({width:entry.width,height:1000});await row.scrollIntoViewIfNeeded();await concealed(row);assert.ok(await manager.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    recordChannelEvidence({...entry,settingsApproval:await row.innerText(),settingsReason:await reasonText(row,'slack_disconnected'),settingsBinding:''});
+   }
+  }
+  await page.setViewportSize({width,height:1000});await reader.setViewportSize({width,height:1000});
+ };
+ const saveMember=async(provider,channelId)=>{
+  const form=await openPanel(reader);await form.getByLabel('Approved channel',{exact:true}).selectOption(provider+':'+channelId);
+  const saved=reader.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith(door));await form.getByRole('button',{name:'Save initiative channel',exact:true}).click();assert.equal((await saved).status(),200);
+  await form.locator('[data-channel-state="live"]').waitFor();await settleReads(reader);
+ };
+ const approveSource=async(source)=>{
+  const settings=await openSettings(),form=settings.getByRole('form',{name:'Approve initiative channel',exact:true});
+  await form.getByLabel('Initiative to approve for',{exact:true}).selectOption(root.id);await form.getByLabel('Existing channel',{exact:true}).selectOption('discord:'+source.id);
+  const approved=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/channels/initiative-approvals'));
+  await form.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();const response=await approved;assert.equal(response.status(),201);assert.equal((await response.json()).changed,true);
+  await page.locator('.initiative-approval-outcome').waitFor();await settleReads(page);
+ };
+ try{
+  const adminEmail='synthetic-vector-1864-'+width+String.fromCharCode(64)+'vector.test';
+  await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1864-'+width,email:adminEmail,role:'admin'},202);
+  const adminSignIn=await confirmLink(await readDevelopmentLink(base,null,adminEmail,runtime.state)),adminCookie=adminSignIn.headers.get('set-cookie').split(';')[0];
+  admin=await openAuthenticatedPage(page.context().browser(),adminCookie,base);
+  adminRead=async(path)=>{const response=await runtime.req('/api'+path,{headers:{Cookie:adminCookie}});assert.equal(response.status,200);return response.json();};
+  await render('live');
+  const approval=(await configuration()).approvals.find(a=>a.initiativeId===root.id&&a.provider==='slack');
   await call('/settings/integrations/channels/initiative-approvals/'+approval.id,'DELETE');await render('approval_withdrawn');
   await call('/settings/integrations/channels/initiative-approvals','POST',{provider:'slack',initiativeId:root.id,channelId:'CSCOPED'+width,audience:'workspace'},201);await render('approved_again');
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'viewer',teamIds:[]});
-  // The demoted binder cannot read the scoped door; another current Member can. The Owner's read remains admitted.
-  const ownerState=await call(door);assert.equal(ownerState.binding.notPosting.code,'binder_cannot_edit');
-  await navigate(page,base+'/app/initiatives/'+root.id);await page.getByText('Channel notifications',{exact:true}).click();await settleReads(page);
-  const observerEmail='synthetic-vector-1862-'+width+'@vector.test';
+  const refused=await runtime.req('/api'+door,{headers});assert.equal(refused.status,403);await refused.body.cancel();
+  const observerEmail='synthetic-vector-1862-'+width+String.fromCharCode(64)+'vector.test';
   await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1862-'+width,email:observerEmail,role:'member'},202);
   const observerSignIn=await confirmLink(await readDevelopmentLink(base,null,observerEmail,runtime.state)),observerCookie=observerSignIn.headers.get('set-cookie').split(';')[0];
-  const observerRead=await runtime.req('/api'+door,{headers:{Cookie:observerCookie}});assert.equal(observerRead.status,200);assert.equal((await observerRead.json()).binding.notPosting.code,'binder_cannot_edit');
-  observer=await openAuthenticatedPage(page.context().browser(),observerCookie,base);await observer.setViewportSize({width,height:1000});
-  await navigate(observer,base+'/app/initiatives/'+root.id);await observer.getByText('Channel notifications',{exact:true}).click();
-  console.log('INIT-001 reason',JSON.stringify({width,code:'binder_cannot_edit',door:ownerState.binding.notPosting,memberPanel:await observer.getByRole('form',{name:'Initiative channel',exact:true}).innerText(),panel:await page.getByRole('form',{name:'Initiative channel',exact:true}).innerText(),header:await page.locator('main header').innerText()}));
-  await navigate(page,base+'/app/settings#integrations');await page.locator('.channel-settings').getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
-  console.log('INIT-001 binder settings',JSON.stringify({width,text:await page.locator('.channel-settings li').filter({has:page.getByRole('button',{name:'Remove binding for '+root.name,exact:true})}).innerText()}));
-  await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});
-  let state=await member(door);await member(door,'PUT',{provider:'slack',channelId:'CSCOPED'+width,events:['initiative.updated'],expectedVersion:state.version});
+  observer=await openAuthenticatedPage(page.context().browser(),observerCookie,base);
+  const observerRead=async(path)=>{const response=await runtime.req('/api'+path,{headers:{Cookie:observerCookie}});assert.equal(response.status,200);return response.json();};
+  await render('binder_cannot_edit',{viewer:observer,read:observerRead});
+  await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});await saveMember('slack','CSCOPED'+width);
   await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1850'});await render('workspace_changed');
-  await navigate(page,base+'/app/settings#integrations');await page.locator('.channel-settings').getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
-  console.log('INIT-001 approval reason',JSON.stringify({width,text:await page.locator('.channel-settings li').filter({has:page.getByRole('button',{name:'Withdraw approval for '+root.name+' #delivery',exact:true})}).innerText()}));
-  // Save a different approved destination through the panel and compare the header's destination without a reload.
-  const source=await call('/settings/integrations/channels','POST',{scope:'project',objectId:projects[2].id,provider:'discord',channelName:'synthetic-vector-1860-'+width,webhookUrl:'https://discord.com/api/webhooks/1860/synthetic-vector-1861',events:['issue.created']},201);
-  await call('/settings/integrations/channels/initiative-approvals','POST',{provider:'discord',initiativeId:root.id,destinationId:source.id,audience:'workspace'},201);
-  await navigate(page,base+'/app/initiatives/'+root.id);await page.getByText('Channel notifications',{exact:true}).click();
-  const panel=page.getByRole('form',{name:'Initiative channel',exact:true});await panel.getByLabel('Approved channel',{exact:true}).selectOption('discord:1860');
-  const saved=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith(door));await panel.getByRole('button',{name:'Save initiative channel',exact:true}).click();assert.equal((await saved).status(),200);
-  await page.locator('main header').getByText('synthetic-vector-1860-'+width,{exact:false}).waitFor();
-  console.log('INIT-001 header saved',JSON.stringify({width,panel:await panel.locator('p').first().innerText(),header:await page.locator('main header').innerText()}));
-  const withdrawn=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith(door));await panel.getByRole('button',{name:'Withdraw initiative channel',exact:true}).click();assert.equal((await withdrawn).status(),200);
-  await page.waitForFunction(()=>!document.querySelector('main header')?.textContent.includes('synthetic-vector-1860-'));
-  console.log('INIT-001 header withdrawn',JSON.stringify({width,panel:await panel.locator('p').first().innerText(),header:await page.locator('main header').innerText()}));
-  await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1820'});
- }finally{await observer?.context().close();await reader.context().close();}
+  // Disconnect while a different workspace is installed: disconnected must take precedence.
+  const settings=page.locator('.channel-settings'),removed=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/integrations/slack'));
+  await settings.getByRole('button',{name:'Remove Slack connection',exact:true}).click();assert.equal((await removed).status(),200);await settleReads(page);
+  await renderDisconnected();await holdUpdate('slack_disconnected');
+  const credentials=settings.getByRole('form',{name:'Slack credential',exact:true,includeHidden:true});await credentials.locator('xpath=ancestor::details').locator('summary').click();
+  await credentials.getByLabel('Slack bot token',{exact:true}).fill('synthetic-vector-1820');
+  const connected=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/integrations/slack'));await credentials.getByRole('button',{name:'Validate and save Slack token',exact:true}).click();assert.equal((await connected).status(),200);await settleReads(page);await saveMember('slack','CSCOPED'+width);await render('live');
+  const channelId='7300000000000'+width,sourceName='synthetic-vector-1860-'+width;
+  identities.add(channelId);
+  let source=await call('/settings/integrations/channels','POST',{scope:'project',objectId:projects[2].id,provider:'discord',channelName:sourceName,webhookUrl:'https://discord.com/api/webhooks/'+channelId+'/synthetic-vector-1861',events:['issue.created']},201);identities.add(source.id);
+  await approveSource(source);
+  // Keep the existing immediate header refresh proof for an Owner save.
+  let form=await openPanel(page);await form.getByLabel('Approved channel',{exact:true}).selectOption('discord:'+channelId);
+  let saved=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith(door));await form.getByRole('button',{name:'Save initiative channel',exact:true}).click();assert.equal((await saved).status(),200);
+  await page.locator('main header [data-channel-state="live"]').filter({hasText:sourceName}).waitFor();
+  await saveMember('discord',channelId);await render('live');
+  const staleApproval=(await configuration()).approvals.find(a=>a.initiativeId===root.id&&a.provider==='discord');
+  // Rebinding the same source object creates a new identity even with the same display name.
+  const rebind=page.locator('.channel-settings').getByRole('form',{name:'Bind notification channel',exact:true});
+  await rebind.getByLabel('Team, project, saved view or initiative').selectOption('project:'+projects[2].id);await rebind.getByLabel('Channel service').selectOption('discord');await rebind.getByLabel('Channel display name').fill(sourceName);await rebind.getByLabel('Discord webhook URL').fill('https://discord.com/api/webhooks/'+channelId+'/synthetic-vector-1863');
+  const rebound=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/integrations/channels'));await rebind.getByRole('button',{name:'Save channel binding',exact:true}).click();const reboundResponse=await rebound;assert.equal(reboundResponse.status(),201);source=await reboundResponse.json();identities.add(source.id);await settleReads(page);
+  await render('source_changed',{sourceAvailable:true});
+  const options=page.locator('.channel-settings').getByLabel('Existing channel',{exact:true});assert.equal(await options.locator('option[value="discord:'+source.id+'"]').count(),1);
+  const beforeRepair=posts().length;await holdUpdate('source_changed');
+  await approveSource(source);
+  const freshApproval=(await configuration()).approvals.find(a=>a.initiativeId===root.id&&a.provider==='discord');assert.notEqual(freshApproval.id,staleApproval.id);assert.equal(freshApproval.usable,true);
+  await render('approved_again');await saveMember('discord',channelId);await render('live');
+  form=await openPanel(reader);await reader.getByText('Edit initiative',{exact:true}).click();const edit=reader.getByRole('form',{name:'Edit initiative',exact:true});await edit.getByLabel('Initiative status',{exact:true}).selectOption('active');
+  saved=reader.waitForResponse(r=>r.request().method()==='PATCH'&&new URL(r.url()).pathname==='/api/initiatives/'+root.id);await edit.getByRole('button',{name:'Save initiative',exact:true}).click();assert.equal((await saved).status(),200);await settleReads(reader);
+  await dispatch();const delivered=posts().slice(beforeRepair);assert.equal(delivered.length,1,'explicit Member save resumes exactly one future post');assert.equal(delivered[0].method,'discord');
+  recordChannelEvidence({kind:'channel-delivery',scenarioWidth:width,state:'repaired',postsBefore:beforeRepair,postsAfter:posts().length,newPosts:delivered.length,provider:delivered[0].method});
+  await call('/settings/integrations/channels/initiative-approvals/'+freshApproval.id,'DELETE');await render('approval_withdrawn');await holdUpdate('discord_withdrawn');
+  await approveSource(source);await render('approved_again');await holdUpdate('discord_approved_again');
+  await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'viewer',teamIds:[]});await render('binder_cannot_edit',{viewer:observer,read:observerRead});await holdUpdate('discord_binder_demoted');
+  await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});await saveMember('discord',channelId);await render('live');
+  await openSettings();const removedSource=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/channels/'+source.id));await settings.locator('[data-binding-id="'+source.id+'"]').getByRole('button').click();assert.equal((await removedSource).status(),200);await settleReads(page);
+  await render('source_changed',{sourceAvailable:false});await holdUpdate('source_removed');
+  form=await openPanel(page);const withdrawn=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith(door));await form.getByRole('button',{name:'Withdraw initiative channel',exact:true}).click();assert.equal((await withdrawn).status(),200);
+  await page.waitForFunction(name=>!document.querySelector('main header')?.textContent.includes(name),sourceName);assert.equal((await call(door)).binding,null);
+  recordChannelEvidence({kind:'channel-withdrawn',scenarioWidth:width,panel:await form.locator('p').first().innerText(),header:await page.locator('main header').innerText(),bindingPresent:0});
+ }finally{await admin?.context().close();await observer?.context().close();await reader.context().close();}
 }

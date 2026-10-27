@@ -8,6 +8,7 @@ import {IntegrationError} from '../errors';
 import {openSecret} from '../secrets';
 import {requireSlackChannel} from './channel-safety';
 import type {approvalInput} from './schema';
+import {approvalNotPosting,sourceAvailableSql,type ApprovalState} from './initiative-not-posting';
 import type {z} from 'zod';
 
 /** Roles a role-matrix row admits at all; subject conditions are the feature's own. */
@@ -77,24 +78,30 @@ export async function withdrawInitiativeDestination(env:WorkerBindings,actor:Int
  ]);
  return {withdrawn:true};
 }
-/** Settings lists every approval; a withdrawn approval is deleted, so a fresh one has a new identity. */
+/** Settings retains approvals whose source changed, with the same reason as the scoped door. */
 export async function initiativeApprovals(db:D1Database,workspace:string){
- return (await db.prepare(`SELECT a.id,a.initiative_id initiativeId,n.name initiativeName,a.provider,a.channel_id channelId,a.channel_name channelName,a.audience,a.provider_workspace approvedWorkspace,(SELECT team_name FROM vector_slack_installations WHERE workspace_id=a.workspace_id) currentWorkspace,${approvalUsable('a')} usable FROM vector_initiative_destination_approvals a JOIN initiatives n ON n.id=a.initiative_id WHERE a.workspace_id=? ORDER BY n.name,a.channel_name,a.id`).bind(workspace).all<{id:string;initiativeId:string;initiativeName:string;provider:'slack'|'discord';channelId:string;channelName:string;audience:'workspace';usable:number;approvedWorkspace:string|null;currentWorkspace:string|null}>()).results.map(row=>({...row,usable:Boolean(row.usable),notPosting:row.usable?null:{code:row.provider==='slack'?'workspace_changed' as const:'approval_withdrawn' as const,approvedWorkspace:row.approvedWorkspace,currentWorkspace:row.currentWorkspace,binderName:null}}));
+ const rows=(await db.prepare(`SELECT a.id,a.initiative_id initiativeId,n.name initiativeName,a.provider,a.channel_id channelId,a.channel_name channelName,a.audience,
+ si.enabled slackEnabled,si.team_name currentWorkspace,${approvalUsable('a')} usable,${sourceAvailableSql('a')} sourceAvailable,
+ (SELECT b.destination_id FROM vector_initiative_channel_bindings b JOIN vector_webhook_destinations d ON d.id=b.destination_id AND d.kind=a.provider AND d.revoked_at IS NULL WHERE b.workspace_id=a.workspace_id AND b.object_id=a.initiative_id AND b.channel_id=a.channel_id) bindingId
+ FROM vector_initiative_destination_approvals a JOIN initiatives n ON n.id=a.initiative_id
+ LEFT JOIN vector_slack_installations si ON si.workspace_id=a.workspace_id WHERE a.workspace_id=? ORDER BY n.name,a.channel_name,a.id`).bind(workspace).all<ApprovalState&{id:string;initiativeId:string;initiativeName:string;channelId:string;channelName:string;audience:'workspace';bindingId:string|null}>()).results;
+ return Promise.all(rows.map(async({slackEnabled,sourceAvailable,bindingId,...row})=>({...row,usable:Boolean(row.usable),notPosting:approvalNotPosting({...row,slackEnabled,sourceAvailable})??(bindingId?await bindingNotPosting(db,bindingId):null)})));
 }
 
-/** Explain a scoped refusal without treating valid credentials as broken. Posting authority stays in scopedBindingLive. */
+/** Explain a scoped refusal from its current approval, installation and binder rows. */
 export async function bindingNotPosting(db:D1Database,destination:string){
- const row=await db.prepare(`SELECT s.approval_id,o.name binderName,a.provider_workspace approvedWorkspace,
- si.team_name currentWorkspace,${editorSql('s.bound_by','s.workspace_id')} editor,
- ${scopedBindingLive('s.destination_id')} live,a.id approvalId,a.provider,
- ${approvalUsable('a')} usable,
+ const row=await db.prepare(`SELECT o.name binderName,si.enabled slackEnabled,si.team_name currentWorkspace,
+ ${editorSql('s.bound_by','s.workspace_id')} editor,${scopedBindingLive('s.destination_id')} live,a.id approvalId,d.kind provider,
+ ${approvalUsable('a')} usable,${sourceAvailableSql('a')} sourceAvailable,
  EXISTS(SELECT 1 FROM vector_initiative_destination_approvals fresh WHERE fresh.workspace_id=s.workspace_id AND fresh.initiative_id=s.initiative_id AND fresh.provider=d.kind AND fresh.channel_id=b.channel_id AND ${approvalUsable('fresh')}) approvedAgain
  FROM vector_initiative_scoped_bindings s JOIN vector_initiative_channel_bindings b ON b.destination_id=s.destination_id
  JOIN vector_webhook_destinations d ON d.id=s.destination_id
- LEFT JOIN vector_initiative_destination_approvals a ON a.id=s.approval_id
+ LEFT JOIN vector_initiative_destination_approvals a ON a.workspace_id=s.workspace_id AND a.initiative_id=s.initiative_id AND a.provider=d.kind AND a.channel_id=b.channel_id
  LEFT JOIN operators o ON o.id=s.bound_by LEFT JOIN vector_slack_installations si ON si.workspace_id=s.workspace_id
- WHERE s.destination_id=?`).bind(destination).first<{binderName:string|null;approvedWorkspace:string|null;currentWorkspace:string|null;editor:number;live:number;approvalId:string|null;provider:string|null;usable:number;approvedAgain:number}>();
+ WHERE s.destination_id=?`).bind(destination).first<ApprovalState&{binderName:string|null;editor:number;live:number;approvalId:string|null;approvedAgain:number}>();
  if(!row||row.live)return null;
- const code=row.approvalId&&row.provider==='slack'&&!row.usable?'workspace_changed' as const:!row.editor?'binder_cannot_edit' as const:row.approvedAgain?'approved_again' as const:'approval_withdrawn' as const;
- return {code,binderName:row.binderName,approvedWorkspace:row.approvedWorkspace,currentWorkspace:row.currentWorkspace};
+ const approvalReason=row.approvalId?approvalNotPosting(row):null;
+ if(approvalReason)return approvalReason;
+ const code=!row.editor?'binder_cannot_edit' as const:row.approvedAgain?'approved_again' as const:'approval_withdrawn' as const;
+ return {code,binderName:row.binderName,currentWorkspace:row.currentWorkspace,sourceAvailable:Boolean(row.sourceAvailable)};
 }

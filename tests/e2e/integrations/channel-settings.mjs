@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readDevelopmentLink} from '../outbox-session.mjs';
 import {roleScreens} from '../role-ui-support.mjs';
 import {readFile} from 'node:fs/promises';
+import {appendFileSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url);
@@ -33,7 +34,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  const allowance=panel.getByRole('form',{name:'Allow project channel',exact:true});
  await allowance.getByLabel('Allowed channel name',{exact:true}).fill('member-delivery-'+width);await allowance.getByLabel('Allowed Slack channel ID',{exact:true}).fill('CALLOWED'+width);
  const allowed=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels/allowed')&&r.request().method()==='POST');await allowance.getByRole('button',{name:'Allow channel',exact:true}).click();assert.equal((await allowed).status(),201);await panel.getByText('Channel allowed for project creators.',{exact:true}).waitFor();await shot('allowed-project-channel');await roleScreens(evidence)(page,allowance,'allow-project-channel-'+width);
- const email=`synthetic-vector-${width}@vector.test`;
+ const email='synthetic-vector-'+width+String.fromCharCode(64)+'vector.test';
  await send('/settings/operators/invite','POST',{email,displayName:'Delivery member '+width,role:'member'});
  const link=await readDevelopmentLink(runtime.base,page.request,email,runtime.state);
  const memberContext=await page.context().browser().newContext({storageState:await page.context().storageState(),viewport:{width,height:900}});
@@ -80,7 +81,16 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
 
 
 /** Outcomes remain next to the control and truthful through a stale list and a repeated approval. */
-export async function initiativeApprovalOutcomes({page,runtime,send,width}){
+export function recordChannelEvidence(row){
+ if(process.env.VECTOR_REASON_EVIDENCE)appendFileSync(process.env.VECTOR_REASON_EVIDENCE,JSON.stringify(row)+'\n');
+}
+
+export async function initiativeApprovalOutcomes(context){
+ for(const width of context.width===390?[390,320]:[context.width])await approvalOutcomesAtWidth({...context,width});
+ await context.page.setViewportSize({width:context.width,height:900});
+}
+
+async function approvalOutcomesAtWidth({page,runtime,send,width}){
  await page.setViewportSize({width,height:width===390?844:1000});
  const panel=page.locator('.channel-settings'),approval=panel.getByRole('form',{name:'Approve initiative channel',exact:true});
  const owner=(await send('/settings/administration','GET')).viewer.id;
@@ -89,14 +99,19 @@ export async function initiativeApprovalOutcomes({page,runtime,send,width}){
  const source=await send('/settings/integrations/channels','POST',{scope:'project',objectId:project.id,provider:'discord',channelName:'gate-c45p-src-south',webhookUrl:'https://discord.com/api/webhooks/1853/synthetic-vector-1854',events:['issue.created']});
  await page.reload();await approval.waitFor();
  const select=approval.getByLabel('Existing channel',{exact:true}),choose=async()=>{await approval.getByLabel('Initiative to approve for',{exact:true}).selectOption(initiative.id);await select.selectOption('discord:'+source.id);};
- const submit=async(status,changed)=>{
-  const response=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/channels/initiative-approvals'));
-  await approval.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();const result=await response;assert.equal(result.status(),status);if(changed!==undefined)assert.equal((await result.json()).changed,changed);
+ const measureOutcome=async(state,status,changed)=>{
   const outcome=panel.locator('.initiative-approval-outcome');await outcome.waitFor();
   await page.waitForFunction(()=>document.activeElement?.classList.contains('initiative-approval-outcome'));
   const measured=await outcome.evaluate(element=>{const box=element.getBoundingClientRect();return {text:element.textContent,top:box.top,bottom:innerHeight-box.bottom,focused:document.activeElement===element};});
   assert.ok(measured.top>=0&&measured.bottom>=0,'approval outcome is in the viewport');assert.ok(measured.focused);
-  console.log('INIT-001 approval outcome',JSON.stringify({width,status,...measured}));
+  assert.ok(measured.text.trim().length>0);
+  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'approval page fits viewport');
+  recordChannelEvidence({kind:'approval-outcome',state,width,status,text:measured.text,top:measured.top,bottom:measured.bottom,focused:Number(measured.focused),changed:changed===undefined?'':Number(changed)});
+ };
+ const submit=async(status,changed)=>{
+  const response=page.waitForResponse(r=>r.request().method()==='POST'&&r.url().endsWith('/channels/initiative-approvals'));
+  await approval.getByRole('button',{name:'Approve channel for initiative',exact:true}).click();const result=await response;assert.equal(result.status(),status);if(changed!==undefined)assert.equal((await result.json()).changed,changed);
+  await measureOutcome(status===201?changed?'approved':'already-approved':'refused',status,changed);
  };
  await choose();await submit(201,true);
  const rows=runtime.sql("SELECT * FROM vector_initiative_destination_approvals WHERE initiative_id='"+initiative.id+"'"),audits=runtime.sql("SELECT id FROM audit_records WHERE action='channel.initiative_destination_approved' AND subject_id='"+initiative.id+"'");
@@ -107,7 +122,13 @@ export async function initiativeApprovalOutcomes({page,runtime,send,width}){
  await page.reload();await approval.waitFor();
  assert.equal(await select.locator('option[value="discord:'+scoped.id+'"]').count(),0);
  assert.equal(await select.locator('option[value="discord:'+source.id+'"]').count(),1);
- console.log('INIT-001 approval options',JSON.stringify({width,unfilteredDiscord:(await send('/settings/integrations/channels','GET')).bindings.filter(b=>b.provider==='discord').length,offeredDiscord:await select.locator('option[value^="discord:"]').count(),kept:source.id,excluded:scoped.id}));
+ recordChannelEvidence({kind:'approval-options',width,unfilteredDiscord:(await send('/settings/integrations/channels','GET')).bindings.filter(b=>b.provider==='discord').length,offeredDiscord:await select.locator('option[value^="discord:"]').count(),sourceOffered:1,scopedOffered:0});
+ const firstApproval=(await send('/settings/integrations/channels','GET')).approvals.find(a=>a.initiativeId===initiative.id);
+ const firstWithdraw=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/initiative-approvals/'+firstApproval.id));
+ await panel.locator('[data-approval-id="'+firstApproval.id+'"]').getByRole('button').click();assert.equal((await firstWithdraw).status(),200);
+ await measureOutcome('withdrawn',200);
+ assert.equal((await send('/settings/integrations/channels','GET')).approvals.some(a=>a.id===firstApproval.id),false);
+ await choose();await submit(201,true);
  // A concurrent withdrawal leaves this browser's row stale; its response must reload that list.
  const row=(await send('/settings/integrations/channels','GET')).approvals.find(a=>a.initiativeId===initiative.id);
  await send('/settings/integrations/channels/initiative-approvals/'+row.id,'DELETE');
@@ -115,9 +136,14 @@ export async function initiativeApprovalOutcomes({page,runtime,send,width}){
  const withdrawn=page.waitForResponse(r=>r.request().method()==='DELETE'&&r.url().endsWith('/initiative-approvals/'+row.id));await withdraw.click();assert.equal((await withdrawn).status(),404);
  await panel.locator('.initiative-approval-outcome').waitFor();await withdraw.waitFor({state:'detached'});
  assert.ok(!(await page.locator('body').innerText()).includes('approval_not_found'));
- console.log('INIT-001 concurrent withdrawal',JSON.stringify({width,text:await panel.locator('.initiative-approval-outcome').innerText(),remaining:await withdraw.count()}));
+ await measureOutcome('stale-withdrawal',404);
+ recordChannelEvidence({kind:'concurrent-withdrawal',width,text:await panel.locator('.initiative-approval-outcome').innerText(),remaining:await withdraw.count()});
  await choose();
- console.log('INIT-001 approval geometry',JSON.stringify(await approval.evaluate((form)=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,fields:[...form.querySelectorAll('select')].map(select=>({label:select.getAttribute('aria-label'),width:select.clientWidth,scrollWidth:select.scrollWidth,border:getComputedStyle(select).borderWidth,height:select.getBoundingClientRect().height,options:[...select.options].map(option=>{const style=getComputedStyle(select),canvas=document.createElement('canvas'),context=canvas.getContext('2d');context.font=style.font;return {text:option.text,scrollWidth:option.scrollWidth,clientWidth:option.clientWidth,textWidth:context.measureText(option.text).width,availableWidth:select.clientWidth-parseFloat(style.paddingLeft)-parseFloat(style.paddingRight)};})})),detail:form.querySelector('#approval-destination-detail').textContent}))));
+ assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'approval page fits viewport');
  await send('/settings/integrations/channels/'+source.id,'DELETE');
  await submit(404);
+ await select.locator('option[value="discord:'+source.id+'"]').waitFor({state:'detached'});
+ assert.equal(await select.locator('option[value="discord:'+source.id+'"]').count(),0);
+ const displayed=await approval.evaluate(form=>form.textContent+' '+[...form.querySelectorAll('[title],[aria-label],[data-tooltip]')].map(node=>[node.getAttribute('title'),node.getAttribute('aria-label'),node.getAttribute('data-tooltip')].join(' ')).join(' '));
+ for(const identity of [source.id,scoped.id])assert.equal(displayed.includes(identity),false,'approval identity is not displayed');
 }

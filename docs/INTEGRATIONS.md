@@ -209,7 +209,9 @@ channel ID, never by its name or another binding. It rechecks the Member’s rol
 approval, the binding version and the channel when saving and again before every
 post. Withdrawing an approval stops pending and later posts from Member bindings
 that use it; approving the channel again replays nothing until the Member saves the
-binding again. Approving again after a Slack workspace change replaces the stale approval; the panel explains why posting stopped and asks the Member to save again. An already usable approval changes nothing. Choose Initiative created, Initiative update or Initiative
+binding again. Approving again after a Slack workspace change replaces the stale approval; the panel explains why posting stopped and asks the Member to save again. An already usable approval changes nothing.
+A changed or removed Discord source keeps its approval with a `source_changed` reason: approve from the current binding, or bind the channel first if none remains.
+A disabled or missing Slack installation gives `slack_disconnected`: connect Slack before approving or saving again. Choose Initiative created, Initiative update or Initiative
 projects changed. Create the initiative first, then bind it with Initiative created
 selected to deliver its recorded creation once to that destination. Replacing a
 binding creates a new destination and may deliver that creation there too.

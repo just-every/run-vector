@@ -645,7 +645,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "93f70d9d1f813d379c19e569cbbb2e92f6b6a49305cd916979211640e4c5d9f9",
+      "sha256": "1fea9ae107a9e665111a888df22570085c147296e184039b948db481d8e1a774",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4365,11 +4365,11 @@
       "executable": false
     },
     "src/core/features/initiatives/ui/initiative-channel-line.tsx": {
-      "sha256": "8debd9614eb25dca39aa2745a1d1b41f3abfe178ad36084e76d83d936e128640",
+      "sha256": "824e1497bf1f95b08180eb818c5f92615449e4938673cdea350bbb84915533a0",
       "executable": false
     },
     "src/core/features/initiatives/ui/initiative-channel.tsx": {
-      "sha256": "524bfe38ef8561fb6c140f00f58f8e34e3a50e2afb528ee6bff915dc95bf6f5b",
+      "sha256": "fd9e98096de92a54d56eec51fcdcfaf360284e87c90f22f2021e139b4e10bbbc",
       "executable": false
     },
     "src/core/features/initiatives/ui/initiatives.css": {
@@ -4461,11 +4461,15 @@
       "executable": false
     },
     "src/core/features/integrations/channels/initiative-approval.ts": {
-      "sha256": "af28abb3c6aa38a4eaa0b214e25dca283b4616276ce1f600294edfba4a6ae2d2",
+      "sha256": "6288192be8cfd2e36e0bc09aca7c7c88f61f43bad00d06ccd877695024b4a64e",
       "executable": false
     },
     "src/core/features/integrations/channels/initiative-binding.ts": {
-      "sha256": "4904fcdeee41c56b237ea5984c1128468877f282c15d05dc74d0d6a071fe530f",
+      "sha256": "d59bff46d343b27b7ca7c853b1e1a53a22df16889dd5b71b5b6ba4f95c404a39",
+      "executable": false
+    },
+    "src/core/features/integrations/channels/initiative-not-posting.ts": {
+      "sha256": "eafbb6efe72fe2dd74e65cd5dbd1c858f9c605adc42de069255e57f9c7a2775e",
       "executable": false
     },
     "src/core/features/integrations/channels/project-binding.ts": {
@@ -4481,11 +4485,11 @@
       "executable": false
     },
     "src/core/features/integrations/channels/schema.ts": {
-      "sha256": "2ea95cc103066f8659f8539993cb6c42c07473e8d877d8cdecb5e58e10f26f1d",
+      "sha256": "a47f21668bdc8b92166da9aa08ecd7e13e62e473bf806034dcf7e716ee9b2452",
       "executable": false
     },
     "src/core/features/integrations/channels/settings.ts": {
-      "sha256": "d32f6a1dc0e28c8eaddd3ae04e3d046c50ef93fbe0be19321361e517c6dd169e",
+      "sha256": "8336bc3b05369f9322c52c34124a3003d48ce9025125a88960bcbb568339d445",
       "executable": false
     },
     "src/core/features/integrations/channels/subjects.ts": {
@@ -4729,7 +4733,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
-      "sha256": "d7218f3f2a345ccf21be381e231a6e0b7f21ccd2d926318b6f23f9d031f0f1a7",
+      "sha256": "0701130299ea0298ccf96e653b99defd0d5c4bf89d94804c7c24b3963a7a1c01",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
@@ -6945,7 +6949,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "56999c30af5d43e2a1078864682ddaa8d2fea302e438cd32469ef7544da8c22b",
+      "sha256": "3960ff7df777397b3f5d57ac79d4b50cbbd73e41eb4baf6cc9bc08aa113700a9",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
@@ -6969,7 +6973,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "c3a72dd0a2e4b034efdb3388217e267a0213de360f913efbaa8a57c3607f9f6c",
+      "sha256": "cab98249e60b2bce784118fe411ad7c71aace9df772bd8096045b5d428de0dcc",
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {
@@ -7389,7 +7393,7 @@
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
-      "sha256": "883167ec1b956e2768e35f0579399a0b08e64158de8662906d02edcbe7796eda",
+      "sha256": "f7eccb28f1d61d6e3bbcad15825d6c39a2c2239d46a495cd01aa3197dce3c0cc",
       "executable": false
     },
     "tests/worker/collaboration-atomicity.test.ts": {
@@ -7629,7 +7633,7 @@
       "executable": false
     },
     "tests/worker/initiatives-scenario.ts": {
-      "sha256": "46c135bd980a03a0578f1e698abd5893b4514472b197e57f5fed0f6b25de04e7",
+      "sha256": "621a99945bc2d5c257c83c28bc638496a88299034928ce23d3d9b3df05eada37",
       "executable": false
     },
     "tests/worker/intake-policy.test.ts": {

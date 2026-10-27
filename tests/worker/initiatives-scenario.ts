@@ -1,4 +1,5 @@
 import {expect} from 'vitest';
+import {env} from 'cloudflare:workers';
 import type {roleWorkspace} from './role-fixture';
 import {snapshot,resetLimits,type Person} from './role-fixture';
 import {createServerApp} from '../../src/core/app/server';
@@ -86,8 +87,8 @@ async function scopedInitiativeDoors(w:Awaited<ReturnType<typeof roleWorkspace>>
  expect(await custody()).toEqual(unchanged);
  // (a) An editing Member sees only this initiative's approvals and binds one with chosen events.
  const editor=await w.fresh('member'),second=await w.fresh('member'),state=await json(await editor.call(door));
- expect(state).toEqual({destinations:[{provider:'discord',channelId:'1840',channelName:'synthetic-vector-1840'}],binding:null,version:null});
- const saved=await json(await editor.call(door,'PUT',{provider:'discord',channelId:'1840',events:['initiative.created','initiative.updated'],expectedVersion:null}));
+ expect(state).toEqual({destinations:[{provider:'discord',channelId:'1840',channelName:'synthetic-vector-1840'}],binding:null,version:null,canManage:false});
+ let saved=await json(await editor.call(door,'PUT',{provider:'discord',channelId:'1840',events:['initiative.created','initiative.updated'],expectedVersion:null}));
  expect((await json(await editor.call(door))).binding).toMatchObject({id:saved.version,provider:'discord',channelId:'1840',events:['initiative.created','initiative.updated'],live:true});
  // (b) Unapproved identities and (e) stale versions refuse with no row.
  unchanged=await custody();
@@ -109,4 +110,53 @@ async function scopedInitiativeDoors(w:Awaited<ReturnType<typeof roleWorkspace>>
  for(const person of [second,owner])expect((await json(await person.call(door))).binding).toMatchObject({live:false,notPosting:{code:'approved_again'}});
  expect(await json(await second.call(door,'DELETE',{expectedVersion:saved.version}))).toEqual({removed:true,version:null});
  expect((await json(await second.call(door))).binding).toBeNull();
+ // A source replacement preserves the approval row while removing its posting authority.
+ const settings=async()=>json(await owner.call('/settings/integrations/channels'));
+ const approvalRows=async()=>(await env.DB.prepare('SELECT * FROM vector_initiative_destination_approvals ORDER BY id').all()).results;
+ const approvalAudits=()=>snapshot(['audit_records']);
+ const destinationRow=(id:string)=>env.DB.prepare('SELECT enabled,revoked_at FROM vector_webhook_destinations WHERE id=?').bind(id).first();
+ const oldApproval=(await approvalRows()).find(row=>row.initiative_id===root.id)!;
+ saved=await json(await second.call(door,'PUT',{provider:'discord',channelId:'1840',events:['initiative.updated'],expectedVersion:null}));
+ let replacement=(await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:projects[0].id,provider:'discord',channelName:'synthetic-vector-1840',events:['issue.created'],webhookUrl:'https://discord.com/api/webhooks/1840/synthetic-vector-1845'}),201)).id;
+ expect(await destinationRow(sources[0])).toMatchObject({enabled:0,revoked_at:expect.any(String)});
+ expect(await destinationRow(replacement)).toMatchObject({enabled:1,revoked_at:null});
+ expect(await destinationRow(saved.id)).toMatchObject({enabled:1,revoked_at:null});
+ expect((await approvalRows()).find(row=>row.id===oldApproval.id)).toEqual(oldApproval);
+ const sourceChanged=async(approvalId:unknown,sourceAvailable:boolean)=>{
+  const reason={code:'source_changed',sourceAvailable};
+  for(const person of [second,owner])expect(await json(await person.call(door))).toMatchObject({destinations:[],binding:{id:saved.id,live:false,notPosting:reason}});
+  const current=await settings();
+  expect(current.approvals.find((a:any)=>a.id===approvalId)).toMatchObject({usable:false,notPosting:reason});
+  expect(current.bindings.find((b:any)=>b.id===saved.id)).toMatchObject({scoped:true,needsAttention:false,notPosting:reason});
+  unchanged=await custody();
+  expect((await second.call(door,'PUT',{provider:'discord',channelId:'1840',events:['initiative.updated'],expectedVersion:saved.version})).status).toBe(403);
+  expect(await custody()).toEqual(unchanged);
+ };
+ await sourceChanged(oldApproval.id,true);
+ const beforeRows=await approvalRows(),beforeAudits=await approvalAudits();
+ expect(await json(await owner.call(approvals,'POST',{...approvalInput,destinationId:replacement}),201)).toMatchObject({changed:true});
+ let freshApproval=(await approvalRows()).find(row=>row.initiative_id===root.id)!;
+ expect(freshApproval.id).not.toBe(oldApproval.id);expect(freshApproval.source_destination_id).toBe(replacement);
+ expect(await approvalRows()).toHaveLength(beforeRows.length);expect((await approvalAudits()).audit_records).toHaveLength(beforeAudits.audit_records.length+1);
+ for(const person of [second,owner])expect((await json(await person.call(door))).binding).toMatchObject({live:false,notPosting:{code:'approved_again'}});
+ expect((await settings()).approvals.find((a:any)=>a.id===freshApproval.id)).toMatchObject({usable:true,notPosting:{code:'approved_again'}});
+ // Before the Member saves, a second source change is explained by the current approval.
+ expect(await env.DB.prepare('SELECT approval_id FROM vector_initiative_scoped_bindings WHERE destination_id=?').bind(saved.id).first()).toEqual({approval_id:oldApproval.id});
+ expect((await approvalRows()).find(row=>row.id===oldApproval.id)).toBeUndefined();
+ await json(await owner.call('/settings/integrations/channels/'+replacement,'DELETE'));
+ expect(await destinationRow(replacement)).toMatchObject({enabled:0,revoked_at:expect.any(String)});
+ expect((await approvalRows()).find(row=>row.id===freshApproval.id)).toEqual(freshApproval);
+ await sourceChanged(freshApproval.id,false);
+ replacement=(await json(await owner.call('/settings/integrations/channels','POST',{scope:'project',objectId:projects[0].id,provider:'discord',channelName:'synthetic-vector-1840',events:['issue.created'],webhookUrl:'https://discord.com/api/webhooks/1840/synthetic-vector-1845'}),201)).id;
+ await sourceChanged(freshApproval.id,true);
+ expect(await json(await owner.call(approvals,'POST',{...approvalInput,destinationId:replacement}),201)).toMatchObject({changed:true});
+ const pendingApproval=freshApproval;freshApproval=(await approvalRows()).find(row=>row.initiative_id===root.id)!;
+ expect(freshApproval.id).not.toBe(pendingApproval.id);expect(freshApproval.source_destination_id).toBe(replacement);
+ saved=await json(await second.call(door,'PUT',{provider:'discord',channelId:'1840',events:['initiative.updated'],expectedVersion:saved.version}));
+ expect((await json(await second.call(door))).binding).toMatchObject({id:saved.id,live:true,notPosting:null});
+ await json(await owner.call('/settings/integrations/channels/'+replacement,'DELETE'));
+ expect(await destinationRow(replacement)).toMatchObject({enabled:0,revoked_at:expect.any(String)});
+ expect((await approvalRows()).find(row=>row.id===freshApproval.id)).toEqual(freshApproval);
+ await sourceChanged(freshApproval.id,false);
+ await json(await second.call(door,'DELETE',{expectedVersion:saved.version}));
 }
