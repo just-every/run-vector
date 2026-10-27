@@ -6941,7 +6941,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-team-permissions.mjs": {
-      "sha256": "e38c15348996d6412fd221d9f027348473569b0c4786033240e79953131af988",
+      "sha256": "9f9959d31df80b9c195a7fdce0182db69da2e2de1ba2f4f1807afcba0ca9d705",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {

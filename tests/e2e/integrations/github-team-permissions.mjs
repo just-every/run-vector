@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';
+import {strict as assert} from 'node:assert';
 import {navigate,settleReads,trackRequests} from '../collaboration-navigation.mjs';
 import {confirmLink,readDevelopmentLink} from '../outbox-session.mjs';
 import {openAuthenticatedPage} from '../ui-runtime-auth.mjs';
