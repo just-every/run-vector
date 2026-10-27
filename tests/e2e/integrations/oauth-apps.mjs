@@ -68,10 +68,10 @@ export async function seedOAuthArchive(installation,cookie){
  return {token:token.access_token,history};
 }
 export async function verifyOAuthArchive(installation,cookie,fixture,records){
+ assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+fixture.token})).status,401,'The restored installation refuses the pre-restore OAuth token');
  for(const table of ['vector_oauth_apps','vector_oauth_codes','vector_oauth_grants','integration_tokens']){
   assert.equal(records[0].tables.some(row=>row.name===table),false,'OAuth credential tables are excluded');assert.equal(installation.sql('SELECT COUNT(*) AS n FROM '+table)[0].n,0);
  }
- assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+fixture.token})).status,401,'The restored installation refuses the pre-restore OAuth token');
  const rows=records.filter(row=>row.kind==='part').flatMap(part=>part.items).filter(item=>item.kind==='row');
  for(const [table,expected] of Object.entries(fixture.history)){
   const ids=new Set(expected.map(row=>row.id??row.token_id));
