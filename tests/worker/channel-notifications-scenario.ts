@@ -97,7 +97,7 @@ export async function initiativeChannels(f:Awaited<ReturnType<typeof setupIntegr
  const team=f.initial.teams[0];await f.create({projectId:project.id,teamId:team.id});
  const bind=async(provider:string,events=['initiative.updated'])=>(await json(await f.call('/settings/integrations/channels','POST',{scope:'initiative',objectId:root.id,provider,channelName:'initiative-delivery',events,...(provider==='slack'?{channelId:'CINITIATIVE'}:{webhookUrl:edge.webhook})}),201)).id as string;
  const update=async(id=root.id)=>{const old=await json(await f.call('/initiatives/'+id));return json(await f.call('/initiatives/'+id,'PATCH',{expectedVersion:old.version,description:'synthetic-vector-1814 confidential update'}));};
- const posts=()=>edge.calls.filter(c=>(c.method==='chat.postMessage'||c.method==='discord')&&(String(c.body.text??c.body.content).includes('/app/initiatives/'+root.id)||(c.body.text??c.body.content)==='Private work changed. Sign in to Vector to view it.'));
+ const posts=()=>edge.calls.filter(c=>(c.method==='chat.postMessage'||c.method==='discord')&&(String(c.body.text??c.body.content).includes('/app/initiatives/'+root.id)||String(c.body.text??c.body.content).includes('Private work changed. Sign in to Vector to view it.')));
  const events=async(destination:string)=>(await env.DB.prepare('SELECT id,body FROM vector_webhook_events WHERE destination_id=? ORDER BY created_at,id').bind(destination).all<{id:string;body:string}>()).results;
  for(const provider of ['slack','discord']){
   const creationBefore=posts().length,creationBinding=await bind(provider,['initiative.created']);
