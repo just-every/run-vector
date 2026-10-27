@@ -4725,7 +4725,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-rules.tsx": {
-      "sha256": "4235ae3621d44edf7e321e1f39865db3f2659c79aef130500bf386e9c343a3f0",
+      "sha256": "230abe91ce2168055f9248a5821a52687664f20d51bc79a12df1113116490a9b",
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
@@ -5981,7 +5981,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "644aa363282bad90a4ea4eeb59932aa366e68cdb972bb570af20de7f0534a796",
+      "sha256": "01aba0132b224a0de465932c8552b4061be5582193d6ebb590ac6198ef892044",
       "executable": false
     },
     "src/core/features/streams/index.ts": {
