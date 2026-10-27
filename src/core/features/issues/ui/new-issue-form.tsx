@@ -68,14 +68,17 @@ export function NewIssueForm() {
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
       // Choosing Issue or Intake alone is not unsent content.
-      if (restored && hasUnsavedDraft(restored, { ...defaults, mode: restored.mode })) {
-        draft = { ...restored, teamId: restored.teamId || draft.teamId };
-        setNotice("Restored your unsent draft from this browser.");
+      if (restored) {
+        const candidate = { ...restored, teamId: restored.teamId || defaults.teamId };
+        if (defaults.projectId) { candidate.projectId = defaults.projectId; candidate.mode = "issue"; }
+        if (hasUnsavedDraft(candidate, { ...defaults, mode: candidate.mode })) {
+          draft = candidate;
+          setNotice("Restored your unsent draft from this browser.");
+        }
       }
     } catch {
       setStorageError("This browser could not read the unsent draft.");
     }
-    if (defaults.projectId) draft = { ...draft, projectId: defaults.projectId, mode: "issue" };
     setValues(draft);
     setDraftReady(true);
   }, [draftReady, storageKey, options.data, administration.data, boardPreference.data]);
