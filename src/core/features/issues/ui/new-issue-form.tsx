@@ -1,4 +1,5 @@
-import { preferredTeam } from "./preferred-team";
+import { preferenceSchema } from "../../views/schema";
+import { lastCreatedTeamKey, preferredTeam } from "./preferred-team";
 import { administrationSchema } from "../../administration/schema";
 import { useViewerTime } from '../../../app/viewer-time';
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
@@ -38,6 +39,7 @@ export function NewIssueForm() {
   const canGoBack = useCanGoBack();
   const options = useApiResource("/api/options", workspaceOptionsSchema);
   const administration = useApiResource("/api/metadata", administrationSchema);
+  const boardPreference = useApiResource("/api/preferences/board", preferenceSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
   const openingDefaults = useRef(emptyNewIssueDraft);
   const [draftReady, setDraftReady] = useState(false);
@@ -50,13 +52,18 @@ export function NewIssueForm() {
     : null;
 
   useEffect(() => {
-    if (!storageKey || draftReady || !options.data || !administration.data) return;
-    const defaults = { ...emptyNewIssueDraft, teamId: preferredTeam(options.data, administration.data) };
+    if (!storageKey || draftReady || !options.data || !administration.data || !boardPreference.data) return;
+    const defaults = { ...emptyNewIssueDraft, teamId: preferredTeam(options.data, administration.data,
+      [boardPreference.data.filters.team]) };
     const project = new URLSearchParams(window.location.search).get("project");
     if (project && options.data.projects.some(choice => choice.id === project)) defaults.projectId = project;
     openingDefaults.current = defaults;
     let draft = defaults;
     try {
+      defaults.teamId = preferredTeam(options.data, administration.data, [
+        window.localStorage.getItem(lastCreatedTeamKey(options.data.workspace.id, options.data.operator.id)),
+        boardPreference.data.filters.team,
+      ]);
       const stored = window.localStorage.getItem(storageKey);
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
@@ -71,7 +78,7 @@ export function NewIssueForm() {
     if (defaults.projectId) draft = { ...draft, projectId: defaults.projectId, mode: "issue" };
     setValues(draft);
     setDraftReady(true);
-  }, [draftReady, storageKey, options.data, administration.data]);
+  }, [draftReady, storageKey, options.data, administration.data, boardPreference.data]);
 
   useEffect(() => {
     if (!draftReady || !storageKey) return;
@@ -154,6 +161,12 @@ export function NewIssueForm() {
         setStorageError(
           "The issue was created, but this browser could not clear its draft.",
         );
+      }
+      try {
+        if (options.data) window.localStorage.setItem(
+          lastCreatedTeamKey(options.data.workspace.id, options.data.operator.id), values.teamId);
+      } catch {
+        setStorageError("The issue was created, but this browser could not remember its team.");
       }
       const retire = issue.page ? offerNavigationReceipt('/app/issues/' + issue.identifier, issue.page) : undefined;
       try {
