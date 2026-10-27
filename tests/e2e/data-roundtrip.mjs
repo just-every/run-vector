@@ -48,7 +48,7 @@ try{
  const runCron=()=>destination.scheduledRun();
  const history=destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),attempts=destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id');
  await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);
- await verifyOAuthArchive(destination,restored,oauth,before);await verifyRestoredIntegrations(destination,restored,integrations,fixture.identifier,reviewEffects);await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);proof.heldAfterCron=true;
+ await verifyRestoredIntegrations(destination,restored,integrations,fixture.identifier,reviewEffects);await verifyOAuthArchive(destination,restored,oauth,before);await runCron();assert.deepEqual(destination.sql('SELECT * FROM notification_deliveries ORDER BY id'),history);assert.deepEqual(destination.sql('SELECT * FROM notification_delivery_attempts ORDER BY id'),attempts);proof.heldAfterCron=true;
  proof.restoreSettings={widths:[1440,390],initialProjection:true,pending:true,refusal:true,refreshedAdmission:true,refreshedEffects:true,historicalDeliveriesQuarantined:true};
  await destination.stop();proof.passed=true;
 }finally{await browser?.close();await source?.close();await destination?.close();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'roundtrip-proof.json'),JSON.stringify(proof,null,2)+'\n');await rm(work,{recursive:true,force:true});}
