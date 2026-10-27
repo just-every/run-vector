@@ -4781,7 +4781,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/integrations.css": {
-      "sha256": "f768236c9e56104fd3ec8aebb3918c1b946cc925cab901cda6614f7a18af0017",
+      "sha256": "21ab1f50a17a1ad8193f1df144a033d32807b4e209fbe0c50666744f4580a13a",
       "executable": false
     },
     "src/core/features/integrations/ui/one-time-secret.tsx": {
@@ -6945,7 +6945,7 @@
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
-      "sha256": "dd8ce7f204faf627ce001ac3a8d357c0d822298b7421776c4b98cbecbb381e88",
+      "sha256": "56999c30af5d43e2a1078864682ddaa8d2fea302e438cd32469ef7544da8c22b",
       "executable": false
     },
     "tests/e2e/insights-journey.mjs": {
@@ -6965,11 +6965,11 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "4795d19e5099ef97a718272921af1db5e914fdb9768a5d8ee7794e3c87673170",
+      "sha256": "24cebd6a904630dd3a5015ffeee264e9239a3272dbd4f0bd5e532b9d2d8b0fa5",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
-      "sha256": "abe708053fe31ce7299be88c895f140e0f885f108d164dad879965c0c04fa6c4",
+      "sha256": "c3a72dd0a2e4b034efdb3388217e267a0213de360f913efbaa8a57c3607f9f6c",
       "executable": false
     },
     "tests/e2e/integrations/github-chain.mjs": {

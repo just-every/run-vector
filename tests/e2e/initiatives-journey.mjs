@@ -151,7 +151,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data})
 async function scopedChannelReasons({page,runtime,call,root,width,headers,session,projects}){
  const door='/initiatives/'+root.id+'/channel-binding',base=runtime.base;
  const member=async(path,method='GET',body)=>{const response=await runtime.req('/api'+path,{method,headers,body:body===undefined?undefined:JSON.stringify(body)});assert.equal(response.status,200);return response.json();};
- const reader=await openAuthenticatedPage(page.context().browser(),headers.Cookie,base);
+ const reader=await openAuthenticatedPage(page.context().browser(),headers.Cookie,base);let observer;
  try{
   await reader.setViewportSize({width,height:1000});
   const render=async(code)=>{
@@ -174,7 +174,15 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
   // The demoted binder cannot read the scoped door; another current Member can. The Owner's read remains admitted.
   const ownerState=await call(door);assert.equal(ownerState.binding.notPosting.code,'binder_cannot_edit');
   await navigate(page,base+'/app/initiatives/'+root.id);await page.getByText('Channel notifications',{exact:true}).click();await settleReads(page);
-  console.log('INIT-001 reason',JSON.stringify({width,code:'binder_cannot_edit',door:ownerState.binding.notPosting,panel:await page.getByRole('form',{name:'Initiative channel',exact:true}).innerText(),header:await page.locator('main header').innerText()}));
+  const observerEmail='synthetic-vector-1862-'+width+'@vector.test';
+  await call('/settings/operators/invite','POST',{displayName:'synthetic-vector-1862-'+width,email:observerEmail,role:'member'},202);
+  const observerSignIn=await confirmLink(await readDevelopmentLink(base,null,observerEmail,runtime.state)),observerCookie=observerSignIn.headers.get('set-cookie').split(';')[0];
+  const observerRead=await runtime.req('/api'+door,{headers:{Cookie:observerCookie}});assert.equal(observerRead.status,200);assert.equal((await observerRead.json()).binding.notPosting.code,'binder_cannot_edit');
+  observer=await openAuthenticatedPage(page.context().browser(),observerCookie,base);await observer.setViewportSize({width,height:1000});
+  await navigate(observer,base+'/app/initiatives/'+root.id);await observer.getByText('Channel notifications',{exact:true}).click();
+  console.log('INIT-001 reason',JSON.stringify({width,code:'binder_cannot_edit',door:ownerState.binding.notPosting,memberPanel:await observer.getByRole('form',{name:'Initiative channel',exact:true}).innerText(),panel:await page.getByRole('form',{name:'Initiative channel',exact:true}).innerText(),header:await page.locator('main header').innerText()}));
+  await navigate(page,base+'/app/settings#integrations');await page.locator('.channel-settings').getByRole('heading',{name:'Slack and Discord channels',exact:true}).waitFor();
+  console.log('INIT-001 binder settings',JSON.stringify({width,text:await page.locator('.channel-settings li').filter({has:page.getByRole('button',{name:'Remove binding for '+root.name,exact:true})}).innerText()}));
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'member',teamIds:[]});
   let state=await member(door);await member(door,'PUT',{provider:'slack',channelId:'CSCOPED'+width,events:['initiative.updated'],expectedVersion:state.version});
   await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1850'});await render('workspace_changed');
@@ -192,5 +200,5 @@ async function scopedChannelReasons({page,runtime,call,root,width,headers,sessio
   await page.waitForFunction(()=>!document.querySelector('main header')?.textContent.includes('synthetic-vector-1860-'));
   console.log('INIT-001 header withdrawn',JSON.stringify({width,panel:await panel.locator('p').first().innerText(),header:await page.locator('main header').innerText()}));
   await call('/settings/integrations/slack','POST',{botToken:'synthetic-vector-1820'});
- }finally{await reader.context().close();}
+ }finally{await observer?.context().close();await reader.context().close();}
 }
