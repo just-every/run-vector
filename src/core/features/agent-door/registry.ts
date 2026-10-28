@@ -43,7 +43,10 @@ export function vectorReadTools(env: WorkerBindings): ToolDefinition[] {
 
 export function vectorReadResources(env: WorkerBindings): ResourceDefinition[] {
   const resource = (uriTemplate: string, scope: string, name: string, read: (person: Person, key: string) => Promise<unknown>): ResourceDefinition => ({
-    uriTemplate, name, scope, classes: ['standard'], classify: classification,
+    uriTemplate, name, scope, classes: ['standard'],
+    classify(record) {
+      return [{ class: 'standard', facts: { measure: record.json == null ? 0 : 1 } }];
+    },
     async read(uri, ctx) {
       try { return { json: await read(ctx.person, decodeURIComponent(uri.split('/').at(-1)!)), untrusted: true }; }
       catch (error) {
