@@ -140,6 +140,14 @@
       "to": "clause",
       "ids": [
         "HOME-001"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-1"
+          ]
+        }
       ]
     },
     {
@@ -8428,7 +8436,15 @@
       "file": "CONTRACT.md",
       "line": 363,
       "text": "*Status:* partial \u2014 `tests/worker/project-fields.test.ts` (project planning and ordered milestones; exerciseProjectTemplates), `tests/worker/data-http.test.ts` (portable template structure), `tests/worker/project-fields-upgrade.test.ts` (populated upgrade), `tests/e2e/admin-project-cycle-journey.mjs` (`tests/e2e/project-templates-journey.mjs`: projectTemplatesJourney and nativeProjectTemplatesJourney at 1440 and 390; configured and zero-membership native Owners use native issue-team choices, and created projects retain milestones/issues after template deletion). Gap: Update cadence is stored and shown; its effect awaits PROJ-010/AUTO-005. Issue templates await ISSUE-016. `tests/e2e/admin-project-cycle-journey.mjs` (projectTemplateAccessCells) exercises current private-template visibility and Viewer creation/edit/application refusals at 1440/390 and HTTP. Default ADOPTED: team templates are visible only to their members; deletion preserves created projects. Member applications skip unavailable project labels and report their names. Application uses native services in order; an interrupted creation names the partial project for inspection before retry.",
-      "to": "changelog"
+      "to": "changelog",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-4"
+          ]
+        }
+      ]
     },
     {
       "file": "CONTRACT.md",
@@ -9055,7 +9071,15 @@
       "file": "CONTRACT.md",
       "line": 381,
       "text": "*Gap:* Slack/Discord release bindings are absent: the existing durable channel model binds issue-bearing team/project/view subjects. Jira fix versions import remains DATA-013. Conservative default: reopen a Released release before changing its scope.",
-      "to": "changelog"
+      "to": "changelog",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-5"
+          ]
+        }
+      ]
     },
     {
       "file": "CONTRACT.md",
@@ -10144,7 +10168,15 @@
       "file": "CONTRACT.md",
       "line": 428,
       "text": "*Gap:* Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; `tests/e2e/insights-journey.mjs` (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused.",
-      "to": "changelog"
+      "to": "changelog",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-6"
+          ]
+        }
+      ]
     },
     {
       "file": "CONTRACT.md",
@@ -11099,6 +11131,14 @@
       "to": "clause",
       "ids": [
         "SLACK-007"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-7"
+          ]
+        }
       ]
     },
     {
@@ -11126,6 +11166,14 @@
       "to": "clause",
       "ids": [
         "SLACK-007"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-3"
+          ]
+        }
       ]
     },
     {
@@ -11166,6 +11214,14 @@
       "to": "clause",
       "ids": [
         "SLACK-004"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-3"
+          ]
+        }
       ]
     },
     {
@@ -13470,6 +13526,14 @@
       "to": "gap",
       "ids": [
         "PROJ-012"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-4"
+          ]
+        }
       ]
     },
     {
@@ -13571,6 +13635,14 @@
       "to": "gap",
       "ids": [
         "RELEASE-001"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-5"
+          ]
+        }
       ]
     },
     {
@@ -13811,6 +13883,14 @@
       "to": "gap",
       "ids": [
         "REPORT-001"
+      ],
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-6"
+          ]
+        }
       ]
     },
     {
@@ -15484,7 +15564,15 @@
       "line": 233,
       "text": "**PROJ-012 \u2014 Project templates** (partial). A journey that creates a launch project from a template with two milestones and four issues offset from a chosen start date, and a Member's workspace project template refused 403. Evidence: `tests/worker/project-fields.test.ts` (project planning and ordered milestones; exerciseProjectTemplates), `tests/worker/data-http.test.ts` (portable template structure), `tests/worker/project-fields-upgrade.test.ts` (populated upgrade), `tests/e2e/admin-project-cycle-journey.mjs` (`tests/e2e/project-templates-journey.mjs`: projectTemplatesJourney and nativeProjectTemplatesJourney at 1440 and 390; configured and zero-membership native Owners use native issue-team choices, and created projects retain milestones/issues after template deletion). Gap: Update cadence is stored and shown; its effect awaits PROJ-010/AUTO-005. Issue templates await ISSUE-016. Private-team and Viewer cells: `tests/e2e/admin-project-cycle-journey.mjs` (projectTemplateAccessCells at 1440/390 and HTTP). Default ADOPTED: team templates are visible only to their members; deletion preserves created projects. Member applications skip unavailable project labels and report their names. Application uses native services in order; an interrupted creation names the partial project for inspection before retry.",
       "to": "generated",
-      "note": "The contract generator writes this status or count."
+      "note": "The contract generator writes this status or count.",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-4"
+          ]
+        }
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -15624,7 +15712,15 @@
       "line": 262,
       "text": "**RELEASE-001 \u2014 Releases** (partial). A journey that creates release 2.4, adds five issues, marks it Released and sees release state on each issue, and a Guest's release creation refused 403. Inherited from SLACK-003: a release posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post. Evidence: `tests/worker/project-membership.test.ts` (only Owners and Admins delete a project; removal, archive and deletion preserve its issues; exerciseReleases), `tests/worker/role-matrix.test.ts` (every role-matrix row with a door), `tests/worker/integration-api.test.ts` (the versioned schema is published through the real app), `tests/e2e/releases-journey.mjs` (releasesJourney, 1440/390). Gap: Slack/Discord release bindings are absent: the existing durable channel model binds issue-bearing team/project/view subjects. Jira fix versions import remains DATA-013. Conservative default: reopen a Released release before changing its scope.",
       "to": "generated",
-      "note": "The contract generator writes this status or count."
+      "note": "The contract generator writes this status or count.",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-5"
+          ]
+        }
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -15953,7 +16049,15 @@
       "line": 324,
       "text": "**REPORT-001 \u2014 Insights** (partial). A journey on a seeded data set whose cycle-time median and throughput per week match hand-computed values, and whose drill-down lists the counted issues. Inherited from VIEW-011: the same journey in Light and Dark finds every chart's text and marks free of AA contrast failures (axe `color-contrast`) and its series distinguishable. Evidence: `tests/worker/cycle-report.test.ts` (Insights, shared dashboards and daily burn-up); `tests/e2e/insights-journey.mjs` (insightsJourney), run by `tests/e2e/cycle-report-runtime.mjs`. Gap: Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; private-team and Viewer chart/count/drill/CSV cells are exercised by insightsAccessCells in the existing journey. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused.",
       "to": "generated",
-      "note": "The contract generator writes this status or count."
+      "note": "The contract generator writes this status or count.",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-6"
+          ]
+        }
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -16107,7 +16211,15 @@
       "line": 357,
       "text": "**SLACK-003 \u2014 Channel notifications** (done). A journey that binds a project to a channel and finds one formatted Slack message per update, a project created with \"create Slack channel\" that finds one `conversations.create` call and the binding, and a Discord webhook fixture that receives one message per bound event. [SLACK-003] in `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts` and `tests/e2e/integrations/channel-settings.mjs` proves the bot-token paste path, project/team/saved-view bindings, one minimal formatted message per selected existing event, single public channel creation, Discord fixed-host/no-redirect delivery, removal, failure visibility and credential-free archives with binding retention. Owners and Admins connect Slack and bind channels in Settings \u2192 Integrations, and only they may have the Slack bot create a channel in the customer's Slack workspace, which a team or project created with it binds automatically; a Member who may create a project may bind it to a channel an Owner or Admin already bound or allowed, and post to it (role matrix, ROLE-001); ROLE-002 inherits private-team restrictions. PROJ-010, RELEASE-001/003, AUTO-004, AGENT-002/003 and INIT-001 inherit the future bound-channel event cells before shipping. Strict channel-safety fixtures, the built settings and create-channel journey at 1440/390, and the real-provider run passed; dated provider and cleanup transcripts are in evidence/slack-003/SAFE_PROVIDER.md, REAL_PROVIDER.md and CHANNEL_SAFETY.md. Slack channel selection and each post explicitly check conversations.info: bot membership and is_channel true, archived/shared/external-shared/org-shared/pending-external-shared false, and not frozen; the held Slack conversation object omits is_frozen, recorded as an assumption that an absent is_frozen means not frozen (revisable if a provider run contradicts it). Unsafe channels and archived/frozen/not-joined post refusals suspend routing visibly until an Admin confirms a fresh binding; held events are not replayed. Channel IDs are explicitly mapped by the Admin, never inferred from email or name. Actor display names are allowed for current workspace-visible items (ct, 20 Oct 19:12Z); ROLE-002 inherits generic notices without actor or text, or a DM to a permitted explicitly mapped member, for private/restricted items before they ship.",
       "to": "generated",
-      "note": "The contract generator writes this status or count."
+      "note": "The contract generator writes this status or count.",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-3"
+          ]
+        }
+      ]
     },
     {
       "file": "ACCEPTANCE.md",
@@ -16642,7 +16754,15 @@
       "file": "docs/CLAIMS.md",
       "line": 24,
       "text": "| RELEASE-001 | partial | Team/workspace releases show scope, progress, blockers, PRs, state chips and read-only sharing. Gap: Slack/Discord release bindings are absent: the existing durable channel model binds issue-bearing team/project/view subjects. Jira fix versions import remains DATA-013. Conservative default: reopen a Released release before changing its scope. | `tests/worker/project-membership.test.ts` (only Owners and Admins delete a project; removal, archive and deletion preserve its issues; exerciseReleases), `tests/worker/role-matrix.test.ts` (every role-matrix row with a door), `tests/worker/integration-api.test.ts` (the versioned schema is published through the real app), `tests/e2e/releases-journey.mjs` (releasesJourney, 1440/390) |",
-      "to": "changelog"
+      "to": "changelog",
+      "also": [
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-5"
+          ]
+        }
+      ]
     },
     {
       "file": "docs/CLAIMS.md",

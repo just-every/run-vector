@@ -37,3 +37,9 @@ A Released release is reopened before its scope is edited.
 Date: 28 October 2026 (carry-forward record). Ruled by: fleet builder carrying the source builder’s adopted default under the owner-authorized cleanup; the original decision date and individual ruler were not recorded. Governs: REPORT-001.
 
 Owners, Admins and Members read only visible issues; Guests are refused.
+
+### RL-7 — Omitted Slack frozen indicator
+
+Date: 28 October 2026 (carry-forward record). Ruled by: fleet builder preserving the source contract’s provider assumption under the cleanup default; its original ruler and decision date were not recorded. Governs: SLACK-009.
+
+The held provider conversation object omits the frozen indicator. Absence is treated as not frozen; a contradictory provider result reopens this assumption. This records the old behavior without promoting status.

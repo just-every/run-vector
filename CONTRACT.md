@@ -517,13 +517,12 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-004 — Inspectable assessment
 
-**Requirement.** An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, suggested priority, suggested labels and likely duplicates.
+**Requirement.** An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, suggested priority, suggested labels and likely duplicates. TRIAGE-003 inherits the agent provenance sentence and the agent-suggestion triage journey.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, suggested priority, suggested labels and likely duplicates.
 2. Each assertion names whether it came from a source, an operator, a policy or an agent; an agent assertion also names the model, the records it read and when, and carries the standard class for internal triage or external when it exposes information outside the business; the company's policy decides whether it fills fields or waits for a triager.
-3. TRIAGE-003 inherits the agent provenance sentence and the agent-suggestion triage journey before agent suggestions ship.
-4. Vector never presents an inferred assertion as a fact; the company's policy decides how its class is handled.
+3. Vector never presents an inferred assertion as a fact; the company's policy decides how its class is handled.
 
 #### INTAKE-005 — Accept
 
@@ -1180,7 +1179,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map.
+**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map. A row with no door yet is checked by the clause it names when that clause builds the door.
 
 | Action | Owner | Admin | Member | Guest | Viewer (ROLE-013 target) |
 |---|---|---|---|---|---|
@@ -1290,7 +1289,6 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 4. Each action's permitted roles are exactly those in the role matrix below, every clause that names a permission states the same rule, and *operator* in any clause is resolved by ROLE-008.
 5. The role-matrix journey carries the cells it inherited from INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-011, PROJ-002, CYCLE-001, CYCLE-002, VIEW-002, DATA-002, DATA-003, DATA-006, DATA-010, DATA-011: Guest accept, defer, end-deferral, decline and project lifecycle changes are refused 403; a Guest commits only in invited teams (404 elsewhere) and cannot share views; another member cannot edit a shared view they do not own; Member/Guest source registration, rotation and revocation, import preflight/apply/start/resume/repeat/rollback and imported-person erasure preview/confirmation are refused 403 with no writes, while Owners/Admins succeed.
 6. CYCLE-001 creation/edit/completion/deletion also checks team owners and both ROLE-009 planning permissions, with Guests refused.
-7. A row with no door yet is checked by the clause it names when that clause builds the door.
 
 #### ROLE-002 — Private teams
 
@@ -1311,16 +1309,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door.
+**Requirement.** ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door. ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door. PROJ-001 inherits Guest project visibility only through invited contributing teams and 403 refusal of Guest project creation and every project edit.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door.
-2. A Guest (a contractor, agency or customer engineer) is invited to named teams only, sees only those teams' issues and projects, cannot see the member directory beyond those teams, cannot create API tokens or integrations, and is labeled as a guest wherever they appear.
-3. Before Guests ship, inherit INTAKE-005/006/007, PROJ-002, CYCLE-002 and VIEW-002: accept, defer, end-deferral, decline and project lifecycle changes are refused 403; cycle commitment is allowed only in invited teams and refused 404 elsewhere; shared-view creation is refused, and view visibility is limited to invited teams.
-4. INTAKE-011 and DATA-002/003/006/010/011 source management, import management and erasure are refused 403 with no writes.
-5. CYCLE-001 cycle management is refused under both planning permissions.
-6. PROJ-001 inherits Guest project visibility only through invited contributing teams and 403 refusal of Guest project creation and every project edit before Guests ship.
-7. Inherited from ROLE-007: a Guest's access follows the teams an Admin added them to.
+1. A Guest (a contractor, agency or customer engineer) is invited to named teams only, sees only those teams' issues and projects, cannot see the member directory beyond those teams, cannot create API tokens or integrations, and is labeled as a guest wherever they appear.
+2. Before Guests ship, inherit INTAKE-005/006/007, PROJ-002, CYCLE-002 and VIEW-002: accept, defer, end-deferral, decline and project lifecycle changes are refused 403; cycle commitment is allowed only in invited teams and refused 404 elsewhere; shared-view creation is refused, and view visibility is limited to invited teams.
+3. INTAKE-011 and DATA-002/003/006/010/011 source management, import management and erasure are refused 403 with no writes.
+4. CYCLE-001 cycle management is refused under both planning permissions.
+5. Inherited from ROLE-007: a Guest's access follows the teams an Admin added them to.
 
 #### ROLE-004 — Single sign-on and provisioning
 
@@ -1763,25 +1759,23 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Vector provides custom field definitions for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Vector provides custom field definitions for the permitted workspace actors, with the records, outcomes and refusals below. PROJ-001 inherits project custom-field definitions, typed values, validation on every door and per-value project activity.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins define workspace custom fields, and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — define fields for that team (role matrix, ROLE-001), each with a name unique in its scope, an optional description and one type: text, number (with optional unit and decimals), single-select, multi-select (options with colors, reorderable, archivable), date, person (a workspace member), URL or checkbox.
 2. A field applies to issues, projects or both, can be required for chosen issue types (ISSUE-021) or templates, and can be restricted to chosen teams.
 3. An issue or project shows its applicable fields in the detail pane; values are validated by type on every door (browser, the public API, import, Slack forms, automation), and every change is an activity entry (ISSUE-007) with the previous and new value.
 4. Renaming a field or option changes no stored value; archiving an option keeps it on issues that have it but removes it from pickers; deleting a field (Owners and Admins only) removes its values after a confirmation that counts affected issues and is recorded in the audit log.
-5. PROJ-001 inherits project custom-field definitions, typed values, validation on every door and per-value project activity before project fields ship.
 
 #### FIELD-002 — Custom fields in views, search, API and imports
 
 *Tier:* Core
 
-**Requirement.** Vector provides custom fields in views, search, api and imports for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Vector provides custom fields in views, search, api and imports for the permitted workspace actors, with the records, outcomes and refusals below. PROJ-001 inherits project custom-field columns, filters, search, API, exports and reviewed import mapping.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every custom field is available as a list column, a board card property (VIEW-008), a filter with type-appropriate operators (text contains, number ranges, select is / is not / any of, date ranges, person is me, checkbox), a group-by for single-select, person and checkbox fields, and a sort; it is searchable (SEARCH-004), included in exports (DATA-001, REPORT-005), webhooks (WEBHOOK-002) and the API (API-003) with its definition, and usable in automation conditions and actions (AUTO-002).
 2. Imports map source fields onto custom fields with an explicit mapping and create missing select options only after review: GitHub Projects single-select, iteration, number, text and date fields (DATA-012), Jira custom fields of select, multi-select, number, text, date, user and URL types (DATA-013), and Linear custom properties where present (DATA-014); unmappable types and values are reported as omissions (DATA-007).
-3. PROJ-001 inherits project custom-field columns, filters, search, API, exports and reviewed import mapping before those project capabilities ship.
 
 ### Target: Relations
 
@@ -1956,12 +1950,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue).
+**Requirement.** Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue). ROLE-002 inherits private-team narrowing and its lost-access acceptance cell for private teams; MOBILE-001 inherits the mobile-app tabs journey.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue).
 2. Created and Subscribed take the same filters and display options as issue views and can be saved as views (VIEW-002); every tab applies OPS-001 and ROLE-002, has a 390px layout and appears in the mobile apps (MOBILE-001).
-3. ROLE-002 inherits private-team narrowing and its lost-access acceptance cell for private teams; MOBILE-001 inherits the mobile-app tabs journey.
 
 ### Target: Projects, initiatives and roadmaps
 
@@ -2020,13 +2013,12 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** A project lists its lead, members and contributing teams; members follow it, appear in its filters, and receive its updates.
+**Requirement.** A project lists its lead, members and contributing teams; members follow it, appear in its filters, and receive its updates. PROJ-001 inherits choosing and changing a primary team, defaulting to the lead's first contributing team, with explicit same-category status mapping under PROJ-016, PROJ-046.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A project lists its lead, members and contributing teams; members follow it, appear in its filters, and receive its updates.
 2. Projects can span teams, and a team's project list shows every project with that team's issues.
-3. PROJ-001 inherits choosing and changing a primary team, defaulting to the lead's first contributing team, with explicit same-category status mapping under PROJ-016, PROJ-046 before primary teams ship.
-4. Inherited from ROLE-007: a project's contributing teams follow team membership; Owners, Admins and Members edit its members and contributing teams, Guests never (role matrix).
+3. Inherited from ROLE-007: a project's contributing teams follow team membership; Owners, Admins and Members edit its members and contributing teams, Guests never (role matrix).
 
 #### PROJ-015 — Project dependencies
 
@@ -2104,7 +2096,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ACCESSIBILITY-001
 
-**Requirement.** A roadmap view shows initiatives and projects on a timeline by their start and target dates (PROJ-001) with milestones, dependencies between projects (set directly under PROJ-015, and derived from issue dependencies), marker and zoom by week, month and quarter.
+**Requirement.** A roadmap view shows initiatives and projects on a timeline by their start and target dates (PROJ-001) with milestones, dependencies between projects (set directly under PROJ-015, and derived from issue dependencies), marker and zoom by week, month and quarter. PROJ-001 inherits editing project start/target dates, priority and labels on the roadmap, with one activity entry per change,.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A roadmap view shows initiatives and projects on a timeline by their start and target dates (PROJ-001) with milestones, dependencies between projects (set directly under PROJ-015, and derived from issue dependencies), marker and zoom by week, month and quarter.
@@ -2114,7 +2106,6 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 5. Leads drag a bar's body to move both dates, drag either end to change one date, and drag an Unscheduled project onto the timeline to set both; each drag is recorded as a project change.
 6. The view is keyboard-operable (arrow keys move a focused bar by one zoom unit) and has a list equivalent at 390px.
 7. The timeline inherits VIEW-011: it follows the member's Light, Dark or System theme, bars by status category, the Paused hatch, connectors and the marker stay distinguishable in both, and its text and marks meet WCAG 2.2 AA contrast in both.
-8. PROJ-001 inherits editing project start/target dates, priority and labels on the roadmap, with one activity entry per change, before the roadmap ships.
 
 #### INIT-004 — Leadership digest
 
@@ -2223,12 +2214,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Vector provides display options for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Vector provides display options for the permitted workspace actors, with the records, outcomes and refusals below. VIEW-008 inherits PROJ-011's milestone grouping in saved views.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members choose the properties shown on rows and cards, show sub-issues nested or flat, group lists and add board swimlanes by assignee, project, priority, cycle, label (one label group at a time, ISSUE-014), project milestone (PROJ-011), parent issue (REL-006) or a single-select or person custom field (FIELD-002), and drag cards between columns and lanes (the labeled selector of VIEW-005 remains the keyboard path).
 2. Display options save with a view.
-3. VIEW-008 inherits PROJ-011's milestone grouping in saved views.
 
 #### VIEW-009 — Workspace-wide views
 
@@ -2749,8 +2739,8 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 **Requirement.** Vector provides channel safety and explicit mapping for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Slack channel selection and each post explicitly check the channel safety check: bot membership and a channel type, no archived or shared state, and not frozen; the held Slack conversation object omits the frozen flag, recorded as an assumption that an absent the frozen flag means not frozen (revisable if a provider run contradicts it).
-2. Unsafe channels and archived/frozen/not-joined post refusals suspend routing visibly until an Admin confirms a fresh binding; held events are not replayed.
+1. At channel selection and before each post, the provider channel read confirms bot membership, a channel rather than a direct message, no archived/shared/external-shared/organization-shared/pending-share state and no frozen state. An omitted frozen indicator is treated as not frozen under RL-7.
+2. An unsafe, archived, frozen or unjoined channel suspends routing visibly; held events are not replayed. A fresh eligible binding restores routing; an agent renewing it carries external and access, and the company's policy decides the call.
 3. Channel IDs are explicitly mapped by the Admin, never inferred from email or name.
 
 #### SLACK-004 — Link and unlink your Slack identity
@@ -2885,11 +2875,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Each member and team has a private calendar feed (ICS) of due dates, cycles, milestones and releases for Google Calendar, Outlook and Apple Calendar; revoking the feed URL stops it.
+**Requirement.** Each member and team has a private calendar feed (ICS) of due dates, cycles, milestones and releases for Google Calendar, Outlook and Apple Calendar; revoking the feed URL stops it. CAL-001 inherits PROJ-011's milestone events in calendar feeds.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each member and team has a private calendar feed (ICS) of due dates, cycles, milestones and releases for Google Calendar, Outlook and Apple Calendar; revoking the feed URL stops it.
-2. CAL-001 inherits PROJ-011's milestone events in calendar feeds.
 
 #### CONNECT-001 — Zapier and Make
 
@@ -3002,11 +2991,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ACCESS-004
 
-**Requirement.** Vector provides complete public api for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Vector provides complete public api for the permitted workspace actors, with the records, outcomes and refusals below. API-003 inherits PROJ-011's milestone field and complete public milestone object operations.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A documented, versioned API covers every object a member can see or change — issues, comments, attachments, relations, labels, teams, workflow states, cycles, projects, milestones, initiatives, releases, documents, views, customers, customer requests, notifications and members — with cursor pagination, filtering, idempotency keys, rate limits with a retry delay, and the same version checks and access rules as the app.
-2. API-003 inherits PROJ-011's milestone field and complete public milestone object operations.
 
 #### API-004 — OAuth apps
 
@@ -3052,22 +3040,19 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Vector provides jira cloud and data center api import for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Vector provides jira cloud and data center api import for the permitted workspace actors, with the records, outcomes and refusals below. DATA-013 inherits PROJ-011's sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping": the Jira importer reviews that choice, assignments and reconciliation.ping.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin imports directly from Jira Cloud (API token or OAuth) or Jira Data Center: projects, issue types, workflows mapped to statuses, epics to projects (their Jira status category To Do, In Progress or Done mapped onto project statuses in an explicit step, PROJ-016, PROJ-046) or parents, sprints to cycles, fix versions to releases, components to labels, story points, custom fields, comments, worklogs reported as omissions, attachments with bytes, links (Blocks, Duplicates, Relates) and users matched by email, through the same reviewed staged runs as one migration (DATA-017), re-runnable so a second pass imports only issues created or changed in Jira since the first.
-2. DATA-013 inherits PROJ-011's sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping": the Jira importer reviews that choice, assignments and reconciliation before shipping.
 
 #### DATA-014 — Linear API import
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Vector provides linear api import for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Vector provides linear api import for the permitted workspace actors, with the records, outcomes and refusals below. PROJ-001 inherits Linear project start and target dates, priority and project labels onto the native fields, checked in reconciliation,. DATA-014 inherits PROJ-011's sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping": the Linear importer reviews that choice, assignments and reconciliation.ping.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin imports directly from Linear with an API key: teams, workflow states, issues, comments, attachments with bytes, projects, project updates, milestones, initiatives, cycles, labels, relations, customers with their domains, owners, statuses, tiers, sizes and revenue, customer requests, project statuses mapped by category (PROJ-016, PROJ-046) and templates, through the same reviewed staged runs as one migration (DATA-017), paging Linear's GraphQL API within its rate limits and resuming after a limit or interruption.
-2. PROJ-001 inherits Linear project start and target dates, priority and project labels onto the native fields, checked in reconciliation, before Linear project import ships.
-3. DATA-014 inherits PROJ-011's sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping": the Linear importer reviews that choice, assignments and reconciliation before shipping.
 
 #### DATA-015 — Plane, Huly and Shortcut import
 
