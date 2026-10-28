@@ -15,6 +15,7 @@ An archive is a complete, private copy of your Vector: everything you need to ca
 
 - Sign-in sessions and sign-in links: everyone signs in again after a restore.
 - Every secret: API tokens and the secrets for sources, webhooks and GitHub repositories. You make or re-enter them afterwards.
+- Company bindings, agent policy and pending approvals. Reconnect your company and apply its policy before agents resume.
 
 An archive is still a full copy of your workspace, so keep it somewhere private.
 
@@ -35,6 +36,17 @@ An archive is still a full copy of your workspace, so keep it somewhere private.
    ```
 
 A restore only goes into an empty installation; it never overwrites one that holds data.
+
+Some older backups lack a complete record of the database's rules. Prefer a fresh
+export from the original installation when it is available. If only the older
+backup remains, you can explicitly accept that unverified part when restoring:
+
+```sh
+rer import --input exports/vector.jsonl --yes --acknowledge-unverified-schema-objects
+```
+
+The acknowledgment keeps the empty-installation and data-integrity checks. The
+result retains a receipt describing what could not be verified.
 
 ## Before your team starts again
 

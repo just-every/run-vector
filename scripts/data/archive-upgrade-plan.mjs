@@ -14,7 +14,7 @@ import {canonicalJson} from '@runeditrun/rer/internal/modules/portability/hash.m
 /** Locate authenticated history using this product's unchanged migration files.
  * No database bindings or filesystem writes precede complete input verification.
  */
-export async function archiveUpgradePlan({root,path,journal,policy}) {
+export async function archiveUpgradePlan({root,path,journal,policy,acknowledgeUnverifiedSchemaObjects=false}) {
  let manifest,closing,journalClosing;const ledger=ledgerReader();
  for await(const record of fileRecords(path)) {
   ledger.add(record);
@@ -34,6 +34,10 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
   return {name,sha256:createHash('sha256').update(bytes).digest('hex'),aliases:[prefix+name],statements:migrationStatements(bytes.toString('utf8'),split)};
  }));
  const source=await restorableManifest(manifest),history=archivedHistory(manifest,ledger.ledgers());
+ // Only the owner's explicit recovery acknowledgment permits placing a backup
+ // by tables alone. Base still verifies its original bytes and records the
+ // missing schema-object inventory when restoring at this proven source point.
+ const schemaOptions=source.schemaObjects===undefined && acknowledgeUnverifiedSchemaObjects===true?{tablesOnly:true}:undefined;
  const recorded=manifest.migrations?.map(name=>history?.find(entry=>entry.name===name)??{name})??history;
  const replay=migrationReplay(files,policy);
  let names;
@@ -44,12 +48,12 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
   const matches=[];
   for(let count=0;count<=files.length;count++) {
    const candidate=files.slice(0,count).map(file=>file.name);
-   if(await replay.schemaAfter(candidate)===source.schema)matches.push(candidate);
+   if(await replay.schemaAfter(candidate,schemaOptions)===source.schema)matches.push(candidate);
   }
   insist(matches.length===1,'archive_migration_history_required',409);[names]=matches;
  }
  insist(new Set(names).size===names.length && names.every((name,index)=>files[index]?.name===name),'archive_migration_order',409);
- insist(await replay.schemaAfter(names)===source.schema,'schema_mismatch',409);
+ insist(await replay.schemaAfter(names,schemaOptions)===source.schema,'schema_mismatch',409);
  // Apply current secrecy requirements only to columns that existed at the
  // proven source schema. The archive cannot select its own redactions: its
  // authenticated inventory must exactly equal this projection, and Base's
