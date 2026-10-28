@@ -8065,7 +8065,7 @@
       "text": "Owners and Admins merge two customers in one action after a counts preview: every request, domain, external ID, contact and favorite moves to the surviving customer, the actor chooses each conflicting field's value, every issue and project still counts the survivor once (CUST-001), the merged customer's page and API ID redirect to the survivor, and one audit entry records it.",
       "to": "clause",
       "ids": [
-        "CUST-006"
+        "CUST-009"
       ]
     },
     {
@@ -9638,7 +9638,7 @@
       "text": "**MOBILE-004 \u2014 Distributed apps and push relay.** Run Edit Run's release lane builds, signs and publishes the iOS app to the App Store and the Android app to Google Play under Run Edit Run's developer accounts, and the macOS and Windows apps of MOBILE-005, on every Vector release whose API version they support; each app declares the oldest installation version it works with and tells the member to upgrade an older installation rather than failing silently.",
       "to": "clause",
       "ids": [
-        "MOBILE-004"
+        "MOBILE-006"
       ]
     },
     {
@@ -9647,7 +9647,7 @@
       "text": "Run Edit Run operates the push relay those apps need: an installation registers with the relay once from Settings \u2192 Mobile (an Owner confirms; the relay issues an installation key, stored encrypted under SEC-001), devices register through the installation, and the relay accepts sends only signed with a registered installation key and only for devices registered to that installation.",
       "to": "clause",
       "ids": [
-        "MOBILE-004"
+        "MOBILE-006"
       ]
     },
     {
@@ -9656,7 +9656,7 @@
       "text": "The relay stores device registrations and installation keys, and keeps no notification payload after forwarding; its terms, data list and status page are linked from Settings \u2192 Mobile.",
       "to": "clause",
       "ids": [
-        "MOBILE-004"
+        "MOBILE-006"
       ]
     },
     {
@@ -9665,7 +9665,7 @@
       "text": "An Owner can turn push off for the whole installation, and a buyer who wants their own branded build publishes it under their own Apple and Google accounts with their own push credentials, pointing their installation at their own relay deployment from the same source (docs).",
       "to": "clause",
       "ids": [
-        "MOBILE-004"
+        "MOBILE-006"
       ]
     },
     {
@@ -13465,7 +13465,8 @@
       "text": "No implementation yet",
       "to": "gap",
       "ids": [
-        "CUST-006"
+        "CUST-006",
+        "CUST-009"
       ]
     },
     {
@@ -13792,7 +13793,8 @@
       "text": "No implementation yet",
       "to": "gap",
       "ids": [
-        "MOBILE-004"
+        "MOBILE-004",
+        "MOBILE-006"
       ]
     },
     {

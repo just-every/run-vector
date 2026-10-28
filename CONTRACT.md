@@ -34,7 +34,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-ACCESS-002 | Sessions | SETUP-001, EDITOR-001 | not run |
 | BASE-ACCESS-003 | Public endpoints | none | not run |
 | BASE-ACCESS-004 | Server-side authorisation | OPS-001, OPS-002, OPS-003, OPS-004, API-001, API-002, OWNER-CLAIM-001, API-003, API-004, API-005 | not run |
-| BASE-INPUT-001 | Validation | ISSUE-001, ISSUE-002, ISSUE-003, ISSUE-004, ISSUE-005, ISSUE-006, ISSUE-007, ISSUE-008, ISSUE-029, ISSUE-030, ISSUE-009, ISSUE-010, ISSUE-011, ISSUE-012, ISSUE-013, ISSUE-014, ISSUE-015, REL-001, REL-002, REL-003, REL-004, REL-005, REL-006, INTAKE-001, INTAKE-002, INTAKE-003, INTAKE-004, INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-008, INTAKE-009, INTAKE-010, INTAKE-011, PROJ-001, PROJ-002, PROJ-003, PROJ-004, PROJ-005, PROJ-006, PROJ-007, PROJ-008, PROJ-009, API-001, API-002, ISSUE-016, ISSUE-017, ISSUE-018, ISSUE-019, ISSUE-020, ISSUE-031, ISSUE-032, ISSUE-021, ISSUE-022, ISSUE-023, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036, ISSUE-025, ISSUE-026, ISSUE-027, ISSUE-028, REL-007, TRIAGE-001, TRIAGE-002, TRIAGE-003, TRIAGE-004, TRIAGE-005, CUST-001, CUST-002, CUST-003, CUST-004, CUST-005, CUST-006, CUST-007, CUST-008, PROJ-010, PROJ-011, PROJ-012, PROJ-013, PROJ-014, PROJ-015, PROJ-016, PROJ-046, PROJ-017, API-003, API-004, API-005 | not run |
+| BASE-INPUT-001 | Validation | ISSUE-001, ISSUE-002, ISSUE-003, ISSUE-004, ISSUE-005, ISSUE-006, ISSUE-007, ISSUE-008, ISSUE-029, ISSUE-030, ISSUE-009, ISSUE-010, ISSUE-011, ISSUE-012, ISSUE-013, ISSUE-014, ISSUE-015, REL-001, REL-002, REL-003, REL-004, REL-005, REL-006, INTAKE-001, INTAKE-002, INTAKE-003, INTAKE-004, INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-008, INTAKE-009, INTAKE-010, INTAKE-011, PROJ-001, PROJ-002, PROJ-003, PROJ-004, PROJ-005, PROJ-006, PROJ-007, PROJ-008, PROJ-009, API-001, API-002, ISSUE-016, ISSUE-017, ISSUE-018, ISSUE-019, ISSUE-020, ISSUE-031, ISSUE-032, ISSUE-021, ISSUE-022, ISSUE-023, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036, ISSUE-025, ISSUE-026, ISSUE-027, ISSUE-028, REL-007, TRIAGE-001, TRIAGE-002, TRIAGE-003, TRIAGE-004, TRIAGE-005, CUST-001, CUST-002, CUST-003, CUST-004, CUST-005, CUST-006, CUST-009, CUST-007, CUST-008, PROJ-010, PROJ-011, PROJ-012, PROJ-013, PROJ-014, PROJ-015, PROJ-016, PROJ-046, PROJ-017, API-003, API-004, API-005 | not run |
 | BASE-INPUT-002 | HTML | ISSUE-033 | not run |
 | BASE-INPUT-003 | Uploads | ISSUE-024, ISSUE-033, ISSUE-034 | not run |
 | BASE-SECRET-001 | No leakage | INTEG-001, INTEG-002, SEC-001, SEC-002, SEC-003 | not run |
@@ -52,7 +52,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-OPS-003 | Idempotency | INTAKE-001, INTAKE-002, INTAKE-003, INTAKE-004, INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-008, INTAKE-009, INTAKE-010, INTAKE-011, CYCLE-001, CYCLE-002, CYCLE-003, CYCLE-004, CYCLE-005, CYCLE-006, NOTIFY-001, NOTIFY-002, NOTIFY-003, NOTIFY-004, NOTIFY-005, NOTIFY-006, GITHUB-001, GITHUB-002, WEBHOOK-001, CYCLE-007, CYCLE-008, NOTIFY-007, NOTIFY-008, NOTIFY-009, NOTIFY-010, AUTO-001, AUTO-002, AUTO-003, AUTO-004, AUTO-005, AUTO-006, GITHUB-003, GITHUB-004, GITHUB-005, GITHUB-006, GITHUB-007, GITHUB-008, GITLAB-001, GITLAB-002, BITBUCKET-001, SLACK-001, SLACK-002, SLACK-003, SLACK-006, SLACK-007, SLACK-008, SLACK-009, SLACK-004, SLACK-010, SLACK-011, SLACK-012, SLACK-005, TEAMS-001, WEBHOOK-002 | not run |
 | BASE-OPS-004 | Failure is visible | none | not run |
 | BASE-OPS-005 | Audit | AUTO-001, AUTO-002, AUTO-003, AUTO-004, AUTO-005, AUTO-006 | not run |
-| BASE-ROLE-001 | Roles through every door | OPS-001, OPS-002, OPS-003, OPS-004, TEAM-001, TEAM-002, TEAM-003, TEAM-004, ISSUE-001, ISSUE-002, ISSUE-003, ISSUE-004, ISSUE-005, ISSUE-006, ISSUE-007, ISSUE-008, ISSUE-029, ISSUE-030, ISSUE-009, ISSUE-010, ISSUE-011, ISSUE-012, ISSUE-013, ISSUE-014, ISSUE-015, PROJ-001, PROJ-002, PROJ-003, PROJ-004, PROJ-005, PROJ-006, PROJ-007, PROJ-008, PROJ-009, CYCLE-001, CYCLE-002, CYCLE-003, CYCLE-004, CYCLE-005, CYCLE-006, SEARCH-001, SEARCH-002, SEARCH-003, VIEW-001, VIEW-002, VIEW-003, VIEW-004, VIEW-005, EDITOR-001, ROLE-001, ROLE-002, ROLE-003, ROLE-004, ROLE-005, ROLE-006, ROLE-007, ROLE-008, ROLE-009, ROLE-010, ROLE-014, ROLE-011, ROLE-015, ROLE-016, ROLE-017, ROLE-012, ROLE-013, TEAM-005, TEAM-006, TEAM-007, TEAM-008, ISSUE-016, ISSUE-017, ISSUE-018, ISSUE-019, ISSUE-020, ISSUE-031, ISSUE-032, ISSUE-021, ISSUE-022, ISSUE-023, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036, ISSUE-025, ISSUE-026, ISSUE-027, ISSUE-028, TRIAGE-001, TRIAGE-002, TRIAGE-003, TRIAGE-004, TRIAGE-005, CUST-001, CUST-002, CUST-003, CUST-004, CUST-005, CUST-006, CUST-007, CUST-008, PROJ-010, PROJ-011, PROJ-012, PROJ-013, PROJ-014, PROJ-015, PROJ-016, PROJ-046, PROJ-017, CYCLE-007, CYCLE-008, SEARCH-004, SEARCH-005, VIEW-006, VIEW-007, VIEW-008, VIEW-009, VIEW-010, VIEW-011, SYNC-001, SYNC-002, SYNC-003, MOBILE-001, MOBILE-002, MOBILE-003, MOBILE-004, MOBILE-005, REPORT-001, REPORT-002, REPORT-006, REPORT-003, REPORT-004, REPORT-005, INTEG-001, INTEG-002, SLACK-001, SLACK-002, SLACK-003, SLACK-006, SLACK-007, SLACK-008, SLACK-009, SLACK-004, SLACK-010, SLACK-011, SLACK-012, SLACK-005, TEAMS-001 | not run |
+| BASE-ROLE-001 | Roles through every door | OPS-001, OPS-002, OPS-003, OPS-004, TEAM-001, TEAM-002, TEAM-003, TEAM-004, ISSUE-001, ISSUE-002, ISSUE-003, ISSUE-004, ISSUE-005, ISSUE-006, ISSUE-007, ISSUE-008, ISSUE-029, ISSUE-030, ISSUE-009, ISSUE-010, ISSUE-011, ISSUE-012, ISSUE-013, ISSUE-014, ISSUE-015, PROJ-001, PROJ-002, PROJ-003, PROJ-004, PROJ-005, PROJ-006, PROJ-007, PROJ-008, PROJ-009, CYCLE-001, CYCLE-002, CYCLE-003, CYCLE-004, CYCLE-005, CYCLE-006, SEARCH-001, SEARCH-002, SEARCH-003, VIEW-001, VIEW-002, VIEW-003, VIEW-004, VIEW-005, EDITOR-001, ROLE-001, ROLE-002, ROLE-003, ROLE-004, ROLE-005, ROLE-006, ROLE-007, ROLE-008, ROLE-009, ROLE-010, ROLE-014, ROLE-011, ROLE-015, ROLE-016, ROLE-017, ROLE-012, ROLE-013, TEAM-005, TEAM-006, TEAM-007, TEAM-008, ISSUE-016, ISSUE-017, ISSUE-018, ISSUE-019, ISSUE-020, ISSUE-031, ISSUE-032, ISSUE-021, ISSUE-022, ISSUE-023, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036, ISSUE-025, ISSUE-026, ISSUE-027, ISSUE-028, TRIAGE-001, TRIAGE-002, TRIAGE-003, TRIAGE-004, TRIAGE-005, CUST-001, CUST-002, CUST-003, CUST-004, CUST-005, CUST-006, CUST-009, CUST-007, CUST-008, PROJ-010, PROJ-011, PROJ-012, PROJ-013, PROJ-014, PROJ-015, PROJ-016, PROJ-046, PROJ-017, CYCLE-007, CYCLE-008, SEARCH-004, SEARCH-005, VIEW-006, VIEW-007, VIEW-008, VIEW-009, VIEW-010, VIEW-011, SYNC-001, SYNC-002, SYNC-003, MOBILE-001, MOBILE-002, MOBILE-003, MOBILE-004, MOBILE-006, MOBILE-005, REPORT-001, REPORT-002, REPORT-006, REPORT-003, REPORT-004, REPORT-005, INTEG-001, INTEG-002, SLACK-001, SLACK-002, SLACK-003, SLACK-006, SLACK-007, SLACK-008, SLACK-009, SLACK-004, SLACK-010, SLACK-011, SLACK-012, SLACK-005, TEAMS-001 | not run |
 | BASE-AUDIT-001 | Searchable, durable audit | WEBHOOK-001, ROLE-005, WEBHOOK-002 | not run |
 | BASE-BACKUP-001 | Independent backup, restore and rollback | none | not run |
 | BASE-DATA-006 | Erasure respects retention and legal hold | DATA-011, ROLE-012 | not run |
@@ -60,7 +60,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-SIGNIN-002 | Native multi-factor authentication | ROLE-014 | not run |
 | BASE-INSTALL-001 | Free self-host and removal | HOME-001 | not run |
 | BASE-MAIL-001 | Truthful mail outcomes | NOTIFY-006 | not run |
-| BASE-ACCESSIBILITY-001 | One accessibility bar | INIT-003, VIEW-011, MOBILE-001, MOBILE-002, MOBILE-003, MOBILE-004, MOBILE-005, REPORT-001 | not run |
+| BASE-ACCESSIBILITY-001 | One accessibility bar | INIT-003, VIEW-011, MOBILE-001, MOBILE-002, MOBILE-003, MOBILE-004, MOBILE-006, MOBILE-005, REPORT-001 | not run |
 | BASE-DOCS-001 | On-site docs from one contract | none | not run |
 | BASE-AGENT-001 | One MCP door per seed | AGENT-005 | not run |
 | BASE-AGENT-002 | The seed's jobs are tools, through the UI's own actions | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008, SURFACE-009, SURFACE-010, SURFACE-011, SURFACE-012, SURFACE-013 | not run |
@@ -1906,18 +1906,26 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 5. Customers and their requests are in the portable export (DATA-001) and restore exactly (DATA-005), are served by the public API (API-003) and webhooks (WEBHOOK-002), and Linear customers with their domains, owners, statuses, tiers, sizes, revenue and requests import through DATA-014.
 6. A customer record is internal and never sent to the customer.
 
-#### CUST-006 — Customer identity and merging
+#### CUST-006 — Resolve customer identity
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Vector provides customer identity and merging for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Linked requests resolve to one customer through source account identity, then domain, then the workspace's company-domain rule.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every request from a linked source, Slack (SLACK-002), email intake (TRIAGE-005) or a request form (TRIAGE-004) is attached to a customer by one rule, in this order: (1) the source's account ID where the source has one — an Orbit account, Salesforce Account, HubSpot company, Zendesk organization, Intercom company, Front account or HappyToHelp organization ID — matching an external ID stored on a customer; (2) otherwise the requester's email domain, lower-cased, matching one of a customer's domains exactly or as a subdomain of it (`eu.acme.example` matches `acme.example`), with a Slack author's email read through `users.info` under the `users:read.email` scope; (3) otherwise, while the workspace setting Create customers from new company domains is on (the default), a new customer named after the domain, holding that domain and the source's account ID.
 2. Free-mail and consumer domains never match or create a customer — a maintained list covering at least gmail.com, googlemail.com, outlook.com, hotmail.com, live.com, msn.com, yahoo.com, icloud.com, me.com, aol.com, proton.me, protonmail.com, gmx.com and zoho.com — and neither does any domain on the Admin's block list (for example the workspace's own domain or a reseller's); such a request keeps its requester as a contact under No customer, and a member can assign it to a customer by hand.
 3. A request whose rule-1 ID and rule-2 domain point at different customers attaches by the ID and is flagged for review.
-4. Owners and Admins merge two customers in one action after a counts preview: every request, domain, external ID, contact and favorite moves to the surviving customer, the actor chooses each conflicting field's value, every issue and project still counts the survivor once (CUST-001), the merged customer's page and API ID redirect to the survivor, and one audit entry records it.
-5. Inherited from ROLE-001: only Owners and Admins define customer status and tier values, map customer fields, set the domain block list and new-domain setting, and merge or delete customers (role matrix).
+4. Inherited from ROLE-001: only Owners and Admins define customer status and tier values, map customer fields, set the domain block list and new-domain setting, and merge or delete customers (role matrix).
+
+#### CUST-009 — Merge customer records
+
+*Tier:* Core · *From:* CUST-006 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
+
+**Requirement.** Owners and Admins consolidate two customer identities after a counts preview without losing or double-counting their requests.
+
+**Acceptance.** Through the native product door and its declared counterpart:
+1. Owners and Admins merge two customers in one action after a counts preview: every request, domain, external ID, contact and favorite moves to the surviving customer, the actor chooses each conflicting field's value, every issue and project still counts the survivor once (CUST-001), the merged customer's page and API ID redirect to the survivor, and one audit entry records it.
 
 #### CUST-007 — Customers list and customer pages
 
@@ -2313,7 +2321,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Working hours gate every time-of-day push delivery under NOTIFY-010.
 2. The mobile apps receive real-time push notifications through Apple Push Notification service and Firebase Cloud Messaging for the events a member enabled (NOTIFY-007), with quick actions (mark read, snooze, assign to me) that call the member's installation directly.
-3. The installation never holds Apple or Google push credentials: it sends each push to the Run Edit Run push relay (MOBILE-004), which forwards it to APNs or FCM.
+3. The installation never holds Apple or Google push credentials: it sends each push to the Run Edit Run push relay (MOBILE-006), which forwards it to APNs or FCM.
 4. The payload the relay receives and forwards carries only the opaque device registration, the issue identifier, its title, the actor's display name, the notification kind and an installation-scoped notification ID — never descriptions, comments, customer data or attachments — and a member can choose "ID only", in which the title and actor are omitted and the app fetches them from the installation after it wakes.
 5. A push is sent within 5 seconds of the inbox notification (NOTIFY-001), except during the member's push quiet hours: outside their working hours and working days in their personal time zone (NOTIFY-010), unless they turn quiet hours off, the inbox entry appears at once and the push is held and sent once when their working hours resume; revoking the device token or signing out deregisters the device at the relay.
 
@@ -2326,17 +2334,25 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every web page works at 390px width with no horizontal scroll, touch targets of at least 44px and the same actions as desktop.
 
-#### MOBILE-004 — Distributed apps and push relay
+#### MOBILE-004 — Compatible app distribution
 
-*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-5, R-6
+*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-5
 
-**Requirement.** Vector provides distributed apps and push relay for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
+**Requirement.** App builds declare compatible installation versions and are distributed through the recorded release paths. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Release packages build the iOS, Android, macOS and Windows apps from source, declare the oldest supported installation API, and tell the member to upgrade an older installation rather than failing silently. Run Edit Run store and signed-distribution receipts are recorded in the register.
-2. Run Edit Run operates the push relay those apps need: an installation registers with the relay once from Settings → Mobile (an Owner confirms; the relay issues an installation key, stored encrypted under SEC-001), devices register through the installation, and the relay accepts sends only signed with a registered installation key and only for devices registered to that installation.
-3. The relay stores device registrations and installation keys, and keeps no notification payload after forwarding; its terms, data list and status page are linked from Settings → Mobile.
-4. An Owner can turn push off for the whole installation, and a buyer who wants their own branded build publishes it under their own Apple and Google accounts with their own push credentials, pointing their installation at their own relay deployment from the same source (docs).
+
+#### MOBILE-006 — Installation push relay
+
+*Tier:* Core · *From:* MOBILE-004 · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-6
+
+**Requirement.** Each installation registers and uses an authenticated push relay without holding Apple or Google delivery credentials. The listed register rows hold the external proof.
+
+**Acceptance.** Through the native product door and its declared counterpart:
+1. Run Edit Run operates the push relay those apps need: an installation registers with the relay once from Settings → Mobile (an Owner confirms; the relay issues an installation key, stored encrypted under SEC-001), devices register through the installation, and the relay accepts sends only signed with a registered installation key and only for devices registered to that installation.
+2. The relay stores device registrations and installation keys, and keeps no notification payload after forwarding; its terms, data list and status page are linked from Settings → Mobile.
+3. An Owner can turn push off for the whole installation, and a buyer who wants their own branded build publishes it under their own Apple and Google accounts with their own push credentials, pointing their installation at their own relay deployment from the same source (docs).
 
 #### MOBILE-005 — Desktop apps and desktop notifications
 
@@ -3288,7 +3304,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.cust.customer_weighted_planning` | Customer-weighted planning | CUST-002 | standard | not implemented |
 | `vector.cust.close_the_loop_with_requesters` | Close the loop with requesters | CUST-003 | standard or external | not implemented |
 | `vector.cust.customer_records` | Customer records | CUST-005 | standard | not implemented |
-| `vector.cust.customer_identity_and_merging` | Customer identity and merging | CUST-006 | standard | not implemented |
+| `vector.cust.resolve_customer_identity` | Resolve customer identity | CUST-006 | standard | not implemented |
 | `vector.cust.customers_list_and_customer_pages` | Customers list and customer pages | CUST-007 | standard | not implemented |
 | `vector.cust.adding_customer_requests_by_hand` | Adding customer requests by hand | CUST-008 | standard | not implemented |
 | `vector.work.created_subscribed_and_activity_tabs` | Created, Subscribed and Activity tabs | WORK-004 | standard | not implemented |
@@ -3375,6 +3391,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.push.incident_follow_up_loop` | Incident follow-up loop | PUSH-008 | standard or external | not implemented |
 | `vector.push.standups_and_cycle_summaries` | Standups and cycle summaries | PUSH-009 | standard or external | not implemented |
 | `vector.push.agent_accountability_ledger` | Agent accountability ledger | PUSH-010 | standard | not implemented |
+| `vector.cust.merge_customer_records` | Merge customer records | CUST-009 | destructive | not implemented |
 
 **Resources.** Vector URI templates use `vector://{installation}/{kind}/{id}` for issues, comments, files, evidence, intake decisions, projects, milestones, documents, cycles, initiatives, releases, customers, requests, views, notifications and delegated sessions.
 
@@ -3440,6 +3457,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 - DATA-016: the import/export door and its archive format.
 - DATA-017: the import/export door and its archive format.
 - DATA-018: the import/export door and its archive format.
+- MOBILE-006: the push connector transport and its installation registration.
 
 **Limits.** Request rate, body and attachment capacities are installation capacities documented in the product limits. Business thresholds and provider spend caps are the company's policy.
 
@@ -3693,7 +3711,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | R-3 | Actual Okta, Entra and Google Workspace tenant interoperability | ROLE-004 | not run | | |
 | R-4 | Real Slack and GitHub installation connection | INTEG-001, SLACK-001, SLACK-005 | not run | | |
 | R-5 | App Store and Google Play listing and distributed-build receipt | MOBILE-001, MOBILE-004 | not run | | |
-| R-6 | Real device push through the production relay | MOBILE-002, MOBILE-004 | not run | | |
+| R-6 | Real device push through the production relay | MOBILE-002, MOBILE-006 | not run | | |
 | R-7 | Signed and notarized macOS and Windows distribution | MOBILE-005 | not run | | |
 | R-8 | Real Claude Code, Codex, Cursor and Copilot delegation accounts | AGENT-009 | not run | | |
 | R-9 | Published Zapier and Make directory listings | CONNECT-001 | not run | | |
@@ -3743,8 +3761,8 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 21 | 84 | 1 | 106 |
-| Target and push further | 2 | 89 | 96 | 187 |
-| All | 23 | 173 | 97 | 293 |
+| Target and push further | 2 | 89 | 98 | 189 |
+| All | 23 | 173 | 99 | 295 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -3907,7 +3925,8 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `CUST-003` | Close the loop with requesters | target | missing |  | No implementation yet |
 | `CUST-004` | Penny keeps the board | target | partial | `tests/e2e/core-runtime.mjs` | The cited inventory is a product boundary record. Missing a public-door linked Penny request journey reading Penny-owned text, votes and status; inventory alone does not prove that link. |
 | `CUST-005` | Customer records | target | missing |  | No implementation yet |
-| `CUST-006` | Customer identity and merging | target | missing |  | No implementation yet |
+| `CUST-006` | Resolve customer identity | target | missing |  | No implementation yet |
+| `CUST-009` | Merge customer records | target | missing |  | No implementation yet |
 | `CUST-007` | Customers list and customer pages | target | missing |  | No implementation yet |
 | `CUST-008` | Adding customer requests by hand | target | missing |  | No implementation yet |
 | `WORK-004` | Created, Subscribed and Activity tabs | target | partial | `tests/worker/my-work-tabs.test.ts`, `tests/e2e/core-my-work-tabs-journey.mjs`, `evidence/my-work-tabs/WORK-004/` | The cited evidence exercises the existing created, subscribed and activity tabs behavior. Missing an audited "complete created, subscribed and activity tabs through its public doors" journey that performs and reads the full retained outcome: ROLE-002 inherits private-team narrowing and its lost-access acceptance cell for private teams; MOBILE-001 inherits the mobile-app tabs journey. |
@@ -3944,7 +3963,8 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `MOBILE-001` | iOS and Android apps | target | missing |  | No implementation yet |
 | `MOBILE-002` | Push notifications | target | missing |  | No implementation yet; the new inherited NOTIFY-007 acceptance point for mobile push (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet |
 | `MOBILE-003` | Responsive web | target | partial | `tests/e2e/dev-runtime.mjs` | 390px checks exist for current pages; new pages in this contract are open |
-| `MOBILE-004` | Distributed apps and push relay | target | missing |  | No implementation yet |
+| `MOBILE-004` | Compatible app distribution | target | missing |  | No implementation yet |
+| `MOBILE-006` | Installation push relay | target | missing |  | No implementation yet |
 | `MOBILE-005` | Desktop apps and desktop notifications | target | missing |  | No implementation yet; the new inherited NOTIFY-007 acceptance point for desktop notification (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet |
 | `NOTIFY-007` | Channels and digests | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/personal-time.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/e2e/integrations/notification-channel-controls.mjs`, `tests/e2e/integrations/slack-dm-settings.mjs` | The cited evidence exercises the existing channels and digests behavior. Missing an audited "complete channels and digests through its public doors" journey that performs and reads the full retained outcome: the per-event choice for push, desktop notifications and Teams direct messages is delivered with MOBILE-002, MOBILE-005 and TEAMS-001. |
 | `NOTIFY-008` | Snooze and reminders | target | done | `tests/worker/notification-followups.test.ts` — "snoozes return once by time or issue change and personal reminders deliver privately once" |  |

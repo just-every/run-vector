@@ -525,9 +525,10 @@
       ]
     },
     "CUST-006": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "CUST-006"
+        "CUST-006",
+        "CUST-009"
       ]
     },
     "CUST-007": {
@@ -970,9 +971,10 @@
       ]
     },
     "MOBILE-004": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "MOBILE-004"
+        "MOBILE-004",
+        "MOBILE-006"
       ]
     },
     "MOBILE-005": {

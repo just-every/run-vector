@@ -8,10 +8,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 23 | 173 | 84 | 280 |
+| Core | 23 | 173 | 86 | 282 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 23 | 173 | 97 | 293 |
+| Full target | 23 | 173 | 99 | 295 |
 
 Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5a8` (27 October 2026). Field proof register: 10 rows; 0 passed, 0 failed, 10 not run.
 
@@ -2424,18 +2424,29 @@ Core · target · **missing** · Cites BASE-INPUT-001, BASE-ROLE-001
 **Evidence.** None.
 **Gap.** No implementation yet
 
-#### CUST-006 — Customer identity and merging
+#### CUST-006 — Resolve customer identity
 
 Core · target · **missing** · Cites BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Vector provides customer identity and merging for the permitted workspace actors, with the records, outcomes and refusals below.
+**Requirement.** Linked requests resolve to one customer through source account identity, then domain, then the workspace's company-domain rule.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every request from a linked source, Slack (SLACK-002), email intake (TRIAGE-005) or a request form (TRIAGE-004) is attached to a customer by one rule, in this order: (1) the source's account ID where the source has one — an Orbit account, Salesforce Account, HubSpot company, Zendesk organization, Intercom company, Front account or HappyToHelp organization ID — matching an external ID stored on a customer; (2) otherwise the requester's email domain, lower-cased, matching one of a customer's domains exactly or as a subdomain of it (`eu.acme.example` matches `acme.example`), with a Slack author's email read through `users.info` under the `users:read.email` scope; (3) otherwise, while the workspace setting Create customers from new company domains is on (the default), a new customer named after the domain, holding that domain and the source's account ID.
 2. Free-mail and consumer domains never match or create a customer — a maintained list covering at least gmail.com, googlemail.com, outlook.com, hotmail.com, live.com, msn.com, yahoo.com, icloud.com, me.com, aol.com, proton.me, protonmail.com, gmx.com and zoho.com — and neither does any domain on the Admin's block list (for example the workspace's own domain or a reseller's); such a request keeps its requester as a contact under No customer, and a member can assign it to a customer by hand.
 3. A request whose rule-1 ID and rule-2 domain point at different customers attaches by the ID and is flagged for review.
-4. Owners and Admins merge two customers in one action after a counts preview: every request, domain, external ID, contact and favorite moves to the surviving customer, the actor chooses each conflicting field's value, every issue and project still counts the survivor once (CUST-001), the merged customer's page and API ID redirect to the survivor, and one audit entry records it.
-5. Inherited from ROLE-001: only Owners and Admins define customer status and tier values, map customer fields, set the domain block list and new-domain setting, and merge or delete customers (role matrix).
+4. Inherited from ROLE-001: only Owners and Admins define customer status and tier values, map customer fields, set the domain block list and new-domain setting, and merge or delete customers (role matrix).
+
+**Evidence.** None.
+**Gap.** No implementation yet
+
+#### CUST-009 — Merge customer records
+
+Core · target · **missing** · From CUST-006 · Cites BASE-INPUT-001, BASE-ROLE-001
+
+**Requirement.** Owners and Admins consolidate two customer identities after a counts preview without losing or double-counting their requests.
+
+**Acceptance.** Through the native product door and its declared counterpart:
+1. Owners and Admins merge two customers in one action after a counts preview: every request, domain, external ID, contact and favorite moves to the surviving customer, the actor chooses each conflicting field's value, every issue and project still counts the survivor once (CUST-001), the merged customer's page and API ID redirect to the survivor, and one audit entry records it.
 
 **Evidence.** None.
 **Gap.** No implementation yet
@@ -2936,7 +2947,7 @@ Core · target · **missing** · Cites BASE-ROLE-001, BASE-ACCESSIBILITY-001 · 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Working hours gate every time-of-day push delivery under NOTIFY-010.
 2. The mobile apps receive real-time push notifications through Apple Push Notification service and Firebase Cloud Messaging for the events a member enabled (NOTIFY-007), with quick actions (mark read, snooze, assign to me) that call the member's installation directly.
-3. The installation never holds Apple or Google push credentials: it sends each push to the Run Edit Run push relay (MOBILE-004), which forwards it to APNs or FCM.
+3. The installation never holds Apple or Google push credentials: it sends each push to the Run Edit Run push relay (MOBILE-006), which forwards it to APNs or FCM.
 4. The payload the relay receives and forwards carries only the opaque device registration, the issue identifier, its title, the actor's display name, the notification kind and an installation-scoped notification ID — never descriptions, comments, customer data or attachments — and a member can choose "ID only", in which the title and actor are omitted and the app fetches them from the installation after it wakes.
 5. A push is sent within 5 seconds of the inbox notification (NOTIFY-001), except during the member's push quiet hours: outside their working hours and working days in their personal time zone (NOTIFY-010), unless they turn quiet hours off, the inbox entry appears at once and the push is held and sent once when their working hours resume; revoking the device token or signing out deregisters the device at the relay.
 
@@ -2955,17 +2966,28 @@ Core · target · **partial** · Cites BASE-ROLE-001, BASE-ACCESSIBILITY-001 · 
 **Evidence.** `tests/e2e/dev-runtime.mjs`
 **Gap.** 390px checks exist for current pages; new pages in this contract are open
 
-#### MOBILE-004 — Distributed apps and push relay
+#### MOBILE-004 — Compatible app distribution
 
-Core · target · **missing** · Cites BASE-ROLE-001, BASE-ACCESSIBILITY-001 · Register R-5, R-6
+Core · target · **missing** · Cites BASE-ROLE-001, BASE-ACCESSIBILITY-001 · Register R-5
 
-**Requirement.** Vector provides distributed apps and push relay for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
+**Requirement.** App builds declare compatible installation versions and are distributed through the recorded release paths. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Release packages build the iOS, Android, macOS and Windows apps from source, declare the oldest supported installation API, and tell the member to upgrade an older installation rather than failing silently. Run Edit Run store and signed-distribution receipts are recorded in the register.
-2. Run Edit Run operates the push relay those apps need: an installation registers with the relay once from Settings → Mobile (an Owner confirms; the relay issues an installation key, stored encrypted under SEC-001), devices register through the installation, and the relay accepts sends only signed with a registered installation key and only for devices registered to that installation.
-3. The relay stores device registrations and installation keys, and keeps no notification payload after forwarding; its terms, data list and status page are linked from Settings → Mobile.
-4. An Owner can turn push off for the whole installation, and a buyer who wants their own branded build publishes it under their own Apple and Google accounts with their own push credentials, pointing their installation at their own relay deployment from the same source (docs).
+
+**Evidence.** None.
+**Gap.** No implementation yet
+
+#### MOBILE-006 — Installation push relay
+
+Core · target · **missing** · From MOBILE-004 · Cites BASE-ROLE-001, BASE-ACCESSIBILITY-001 · Register R-6
+
+**Requirement.** Each installation registers and uses an authenticated push relay without holding Apple or Google delivery credentials. The listed register rows hold the external proof.
+
+**Acceptance.** Through the native product door and its declared counterpart:
+1. Run Edit Run operates the push relay those apps need: an installation registers with the relay once from Settings → Mobile (an Owner confirms; the relay issues an installation key, stored encrypted under SEC-001), devices register through the installation, and the relay accepts sends only signed with a registered installation key and only for devices registered to that installation.
+2. The relay stores device registrations and installation keys, and keeps no notification payload after forwarding; its terms, data list and status page are linked from Settings → Mobile.
+3. An Owner can turn push off for the whole installation, and a buyer who wants their own branded build publishes it under their own Apple and Google accounts with their own push credentials, pointing their installation at their own relay deployment from the same source (docs).
 
 **Evidence.** None.
 **Gap.** No implementation yet
@@ -4304,7 +4326,7 @@ None.
 | R-3 | Actual Okta, Entra and Google Workspace tenant interoperability | ROLE-004 | not run | | |
 | R-4 | Real Slack and GitHub installation connection | INTEG-001, SLACK-001, SLACK-005 | not run | | |
 | R-5 | App Store and Google Play listing and distributed-build receipt | MOBILE-001, MOBILE-004 | not run | | |
-| R-6 | Real device push through the production relay | MOBILE-002, MOBILE-004 | not run | | |
+| R-6 | Real device push through the production relay | MOBILE-002, MOBILE-006 | not run | | |
 | R-7 | Signed and notarized macOS and Windows distribution | MOBILE-005 | not run | | |
 | R-8 | Real Claude Code, Codex, Cursor and Copilot delegation accounts | AGENT-009 | not run | | |
 | R-9 | Published Zapier and Make directory listings | CONNECT-001 | not run | | |
