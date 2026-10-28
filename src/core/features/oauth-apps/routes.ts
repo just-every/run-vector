@@ -33,7 +33,12 @@ export function addOAuthRoutes(app:Hono<AppEnvironment>){
 export function createOAuthPublicApp(now:()=>number=Date.now){
  const app=new Hono<AppEnvironment>();
  app.onError((error,c)=>{
-  if(error instanceof IntegrationError)return c.json({error:error.code,message:error.message},error.status);
+  if(error instanceof IntegrationError){
+   const navigation=c.req.header('Sec-Fetch-Mode')==='navigate'||c.req.header('Accept')?.includes('text/html');
+   if(error.status===400&&new URL(c.req.url).pathname==='/api/oauth/authorize'&&navigation)
+    return c.redirect(c.env.APP_ORIGIN+'/app/settings/oauth-consent?'+new URLSearchParams({error:error.code}),303);
+   return c.json({error:error.code,message:error.message},error.status);
+  }
   if(error instanceof Error&&error.name==='ZodError')return c.json({error:'invalid_request'},400);
   console.error('OAuth request storage failed.');return c.json({error:'temporarily_unavailable'},503);
  });
