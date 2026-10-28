@@ -33,8 +33,10 @@ async function migrationFiles(context,root,files,configuration) {
  * the destination keeps its own migration runner and ledger throughout.
  */
 export async function withArchiveUpgrade(context,policy,transport,restore) {
- // Acknowledged v1 recovery retains Base's separate unverified-metadata door.
- if(context.legacyRecovery)return restore(context,policy);
+ // Explicitly acknowledged recovery retains Base's own integrity, emptiness,
+ // migration and receipt checks. The product upgrader cannot attest the
+ // trigger/view/index inventory that an older backup never recorded.
+ if(context.legacyRecovery || context.acknowledgeUnverifiedSchemaObjects)return restore(context,policy);
  const plan=await planUpgrade(context,policy);
  if(!plan.needed)return restore(context,policy);
  const root=await mkdtemp(join(tmpdir(),'vector-archive-upgrade-'));

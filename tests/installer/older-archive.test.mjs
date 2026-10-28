@@ -34,7 +34,9 @@ test('[BASE-DATA-001 DATA-001] a backup from the listed version restores through
     try {await platformMigrations(root,proxy.env.DB);}
     finally {await proxy.dispose();}
    }
-   run(root,process.execPath,[join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),'import','--input',archive,'--yes']);
+   const importer=join(root,'node_modules/@runeditrun/rer/bin/rer.mjs');
+   assert.throws(()=>run(root,process.execPath,[importer,'import','--input',archive,'--yes']),/schema_mismatch/);
+   run(root,process.execPath,[importer,'import','--input',archive,'--yes','--acknowledge-unverified-schema-objects']);
    // The restored installation backs up again through the same door.
    run(root,process.execPath,[join(root,'node_modules/@runeditrun/rer/bin/rer.mjs'),'export','--output',join(work,(platform?'platform':'native')+'.rer')]);
    const proxy=await getPlatformProxy(options);
