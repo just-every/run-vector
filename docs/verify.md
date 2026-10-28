@@ -15,7 +15,7 @@ Use Node 22.20.0 and the published `rer` command. `rer install` provisions the p
 Exact Base copy/schema/source checks, installer, settings, automatic owner entry and hosting tests, populated previous-head migrations and native 1440/390 journeys form local acceptance. CI slow startup and literal README clone/own-frozen-install proof retain only safe receipts and captures. These do not establish hosted acceptance. Preserve 0001–0021, apply 0022/0023, keep additive schema and terminal delivery/migration ledgers on compatible-source rollback, and validate isolated recovery with matching source and D1/R2 backups. See docs/BASE-ADOPTION.md. Local archives preserve native records and FILES bytes with destination access/effect review. Mapped imports and native integrations are described below; authenticated HTTP restore into a pristine bootstrap is locally proven with fresh native authority after commit. Hosted HTTPS acceptance remains separate.
 
 
-Wave B source preparation: see [managed source and recovery](docs/MANAGED-SOURCE.md). The generated private-source descriptor/workflow, Base delivery producer, signed native owner claim and owner-gated editor are source adoption; hosted installation/service acceptance, live accounts and public publishing remain owner work. Apply 0024 additively and retain permanent admission ledgers. Native/browser verification status is recorded in the current task evidence, not inferred from packaging.
+Wave B source preparation: see [managed source and recovery](MANAGED-SOURCE.md). The generated private-source descriptor/workflow, Base delivery producer, signed native owner claim and owner-gated editor are source adoption; hosted installation/service acceptance, live accounts and public publishing remain owner work. Apply 0024 additively and retain permanent admission ledgers. Native/browser verification status is recorded in the current task evidence, not inferred from packaging.
 
 
 ## Mapped imports and local archives
@@ -34,8 +34,8 @@ CLI run. The current commands are `rer dev` with automatic owner entry through
 `rer build` for a build; Jira imports still use `pnpm run import:issues`
 with `--format jira-csv`.
 Jira reuses the existing import storage, imported-comment schema and source
-identities; it adds no migration. See [JIRA-CSV.md](docs/JIRA-CSV.md) and
-[IMPORT-EVIDENCE.md](docs/IMPORT-EVIDENCE.md) for the measured public-route
+identities; it adds no migration. See [JIRA-CSV.md](JIRA-CSV.md) and
+[IMPORT-EVIDENCE.md](IMPORT-EVIDENCE.md) for the measured public-route
 checks, exact-head CLI evidence and limits. Browser capture, held-out proof,
 full verification and exact-head CI evidence belong to the external
 public-port REPORT; earlier private checkpoint results are not acceptance
