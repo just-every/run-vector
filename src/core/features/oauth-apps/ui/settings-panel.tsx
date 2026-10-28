@@ -56,8 +56,8 @@ export function OAuthAppsPanel(){
    <form onSubmit={event=>void register(event)}><fieldset disabled={busy}>
     <legend>Register an application</legend>
     <label>Application name<input required maxLength={200} value={name} onChange={e=>setName(e.target.value)}/></label>
-    <label>Redirect URLs<textarea required value={redirects} onChange={e=>setRedirects(e.target.value)}
-     aria-invalid={registerError?.redirect||undefined} aria-describedby={'oauth-redirect-help'+(registerError?.redirect?' oauth-redirect-error':'')}/></label>
+    <label htmlFor="oauth-redirects">Redirect URLs</label><textarea id="oauth-redirects" required value={redirects} onChange={e=>setRedirects(e.target.value)}
+     aria-invalid={registerError?.redirect||undefined} aria-describedby={'oauth-redirect-help'+(registerError?.redirect?' oauth-redirect-error':'')}/>
     <p id="oauth-redirect-help">One exact HTTPS URL per line. Loopback HTTP is allowed for local development.</p>
     {registerError?.redirect&&<p id="oauth-redirect-error">{registerError.message}</p>}
     <div className="integration-scopes">{tokenScopes.map(scope=><label key={scope}><input type="checkbox" checked={scopes.includes(scope)} onChange={e=>setScopes(current=>e.target.checked?[...current,scope]:current.filter(s=>s!==scope))}/>{scopeLabels[scope]}</label>)}</div>

@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "558a79007691b63007e8d4ba59b7cb96b5b52c70908977936e83bb43c962fefc",
+      "sha256": "951e7120ab30a69c2488bc37e0a9838b6d4da6bc5b0887c869639abc784d2738",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "abae09c08f4272129a294f33f0e1174399466d00d2bd40516846acf7b1057090",
+      "sha256": "8c5a3203811b6c4a2ebc5460f143d65d96ed49367fd4a3bb876c46784e4a5763",
       "executable": false
     },
     "DEMO.md": {
@@ -5621,7 +5621,7 @@
       "executable": false
     },
     "src/core/features/oauth-apps/ui/settings-panel.tsx": {
-      "sha256": "5283a41ed047c00185e7cc7dbd0f97eba8c1585787c053ab936433af3c8c2b4f",
+      "sha256": "976068128999397dea7a7890d5f2624dfaf5858575fdbdcd9f1c9b59f122ff0f",
       "executable": false
     },
     "src/core/features/operator-intake/input.ts": {
@@ -6957,7 +6957,7 @@
       "executable": false
     },
     "tests/e2e/data-roundtrip.mjs": {
-      "sha256": "a67a3213bf46717c1a53ff635638c4387ba0be2bfcee5226920bf9959f1da398",
+      "sha256": "db307f3651d2aa6ec7403484e8ece3ff66651616e477e2f5e52f1ecbc572cf9b",
       "executable": false
     },
     "tests/e2e/data-runtime.mjs": {
@@ -7057,7 +7057,7 @@
       "executable": false
     },
     "tests/e2e/integrations/oauth-apps.mjs": {
-      "sha256": "493a19edf1d579a9dda5b3ed344ebdf9c80c0b284082a1b808b2272840c680e5",
+      "sha256": "c4d0e200773afe1fd79cd851f04096b711aa1e287257ec53380ffd46dfcfbef2",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {

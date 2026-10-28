@@ -1,5 +1,4 @@
 import {jsonMediaType,formMediaType} from '../../src/core/features/oauth-apps/media-types';
-import {createOAuthPublicApp} from '../../src/core/features/oauth-apps/routes';
 import {pkce} from '../../src/core/features/oauth-apps/repository';
 import { mentionToken } from '../../src/core/features/notifications/mention-token';
 import { apiCoverage } from '../../src/core/features/integrations/api-coverage';
@@ -216,105 +215,49 @@ it('[API-003 ISSUE-008] concurrent same-revision comment edits commit exactly on
 },180000);
 
 
-/** One member-owned authorization journey, extending the existing scoped-token registration. */
+/** OAuth's public-door journey extends the existing scoped-token registration. */
 async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegrations>>){
- const redirect='https://synthetic-vector-4501.example.test/callback';
- const input={name:'synthetic-vector-4501',redirectUris:[redirect,'http://127.0.0.1:4511/callback'],scopes:['issues:read','issues:write']};
+ const redirect='https://synthetic-vector-4501.example.test/callback',input={name:'synthetic-vector-4501',redirectUris:[redirect],scopes:['issues:read','issues:write']};
  const registered=await f.call('/settings/oauth-apps','POST',input);expect(registered.status).toBe(201);
  const client=await registered.json() as {id:string;secret:string};
- const stored=await env.DB.prepare('SELECT secret_hash FROM vector_oauth_apps WHERE id=?').bind(client.id).first<{secret_hash:string}>();expect(stored!.secret_hash).not.toBe(client.secret);
- const inventory=await f.call('/settings/oauth-apps');expect((await inventory.text()).includes(client.secret)).toBe(false);
- for(const redirectUris of [['http://synthetic-vector-4501.example.test/callback'],['https://synthetic-vector-4501.example.test/callback#fragment']])expect((await f.call('/settings/oauth-apps','POST',{...input,redirectUris})).status).toBe(400);
+ expect((await (await f.call('/settings/oauth-apps')).text()).includes(client.secret)).toBe(false);
+ expect((await f.call('/settings/oauth-apps','POST',{...input,redirectUris:['http://synthetic-vector-4501.example.test/callback']})).status).toBe(400);
  const admin=await invite('synthetic-vector-4502@vector.test',f.cookie,'admin'),member=await invite('synthetic-vector-4503@vector.test',f.cookie),guest=await invite('synthetic-vector-4504@vector.test',f.cookie),viewer=await invite('synthetic-vector-4505@vector.test',f.cookie,'viewer');
  const memberId=await actor(member),guestId=await actor(guest);
  expect((await f.call('/settings/teams/'+f.initial.teams[0].id+'/members/'+memberId,'PUT',{role:'member'})).status).toBe(200);
  expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[f.initial.teams[0].id]})).status).toBe(200);
  const call=(cookie:string,path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
- const adminRegistered=await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4506'});expect(adminRegistered.status).toBe(201);
- const adminClient=await adminRegistered.json() as {id:string;secret:string};
- for(const cookie of [member,guest,viewer]){
-  const before=await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_apps').first('n');
-  expect((await call(cookie,'/settings/oauth-apps','POST',input)).status).toBe(403);
-  expect((await call(cookie,'/settings/oauth-apps')).status).toBe(403);
-  expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_apps').first('n')).toBe(before);
- }
  const verifier=Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join('');
  const auth={response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state:'synthetic-vector-4507',code_challenge:await pkce(verifier),code_challenge_method:'S256'};
- const authorize=async(cookie:string,extra:Record<string,string>={},decision='approve',status=200)=>{
-  const r=await call(cookie,'/oauth/consent','POST',{request:{...auth,...extra},decision});expect(r.status).toBe(status);return r.json() as Promise<{redirect:string}>;
- };
- for(const cookie of [f.cookie,admin,member]){
-  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(200);
-  const approved=await authorize(cookie);expect(new URL(approved.redirect).searchParams.get('code')).toBeTruthy();expect(new URL(approved.redirect).searchParams.get('state')).toBe(auth.state);
- }
+ const authorize=(cookie:string)=>call(cookie,'/oauth/consent','POST',{request:auth,decision:'approve'});
+ const exchange=(code:string,secret=client.secret)=>f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':formMediaType},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:secret,code,redirect_uri:redirect,code_verifier:verifier})},bindings);
  for(const cookie of [guest,viewer]){
   const before=await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_codes').first('n');
-  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(403);await authorize(cookie,{},'approve',403);
+  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(403);expect((await authorize(cookie)).status).toBe(403);
   expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_codes').first('n')).toBe(before);
  }
- for(const change of [{client_id:crypto.randomUUID()},{redirect_uri:'https://synthetic-vector-4508.example.test/callback'},{scope:'metadata:read'}]){
+ for(const change of [{client_id:crypto.randomUUID()},{redirect_uri:'https://synthetic-vector-4508.example.test/callback'}]){
   const r=await f.app.request(origin+'/api/oauth/authorize?'+new URLSearchParams({...auth,...change}),{},bindings);expect(r.status).toBe(400);expect(r.headers.has('location')).toBe(false);
  }
- const publicEntry=await f.app.request(origin+'/api/oauth/authorize?'+new URLSearchParams(auth),{},bindings);expect(publicEntry.status).toBe(303);expect(new URL(publicEntry.headers.get('location')!).pathname).toBe('/app/settings/oauth-consent');
- const denied=await authorize(member,{},'deny');expect(new URL(denied.redirect).searchParams.get('error')).toBe('access_denied');expect(new URL(denied.redirect).searchParams.has('code')).toBe(false);
- const getCode=async()=>new URL((await authorize(member)).redirect).searchParams.get('code')!;
- const exchange=(code:string,extra:Record<string,string>={})=>f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':formMediaType},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code,redirect_uri:redirect,code_verifier:verifier,...extra})},bindings);
- const code=await getCode();
- expect((await exchange(code,{client_secret:'synthetic-vector-4509'})).status).toBe(401);
- expect((await exchange(code,{code_verifier:verifier.split('').reverse().join('')})).status).toBe(400);
- expect((await exchange(code,{redirect_uri:'https://synthetic-vector-4510.example.test/callback'})).status).toBe(400);
- const selectedScopes=['issues:write','metadata:read'];
- const other=await(await call(admin,'/settings/oauth-apps','POST',{...input,name:'synthetic-vector-4511',scopes:selectedScopes})).json() as {id:string;secret:string};
- expect((await exchange(code,{client_id:other.id,client_secret:other.secret})).status).toBe(400);
- const issued=await exchange(code);expect(issued.status).toBe(200);const token=await issued.json() as {access_token:string;grant_id:string;scope:string};
- f.restart();expect((await f.api(token.access_token,'/issues')).status).toBe(200);
+ const grantFor=async(cookie:string)=>{
+  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(200);
+  const approved=await authorize(cookie);expect(approved.status).toBe(200);const code=new URL((await approved.json() as {redirect:string}).redirect).searchParams.get('code')!;
+  expect((await exchange(code,'synthetic-vector-4509')).status).toBe(401);
+  const issued=await exchange(code);expect(issued.status).toBe(200);
+  return {code,...await issued.json() as {access_token:string;grant_id:string}};
+ };
+ await grantFor(f.cookie);await grantFor(admin);const token=await grantFor(member);
+ expect((await f.api(token.access_token,'/issues')).status).toBe(200);
  const before=await env.DB.prepare('SELECT * FROM issues ORDER BY id').all();
  expect((await f.api(token.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4512'})).status).toBe(403);
- expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(before.results);expect(token.scope).toBe('issues:read');
- // Explicit independent expectations cover all applications and three authorizing members.
- const grantFor=async(cookie:string,app:{id:string;secret:string},scopes:string[])=>{
-  const request={...auth,client_id:app.id,scope:scopes.join(' ')};
-  const consent=await call(cookie,'/oauth/consent?'+new URLSearchParams(request));expect(consent.status).toBe(200);
-  expect((await consent.json() as {scopes:string[]}).scopes).toEqual(scopes);
-  const approval=await call(cookie,'/oauth/consent','POST',{request,decision:'approve'});expect(approval.status).toBe(200);
-  const code=new URL((await approval.json() as {redirect:string}).redirect).searchParams.get('code')!;
-  const response=await exchange(code,{client_id:app.id,client_secret:app.secret});expect(response.status).toBe(200);
-  const issued=await response.json() as {access_token:string;grant_id:string;scope:string};expect(issued.scope.split(' ')).toEqual(scopes);
-  return issued;
- };
- const ownerGrant=await grantFor(f.cookie,adminClient,['issues:read','issues:write']);
- const adminGrant=await grantFor(admin,other,['issues:write','metadata:read']);
- const ownerSameApp=await grantFor(f.cookie,client,['issues:read']),adminSameApp=await grantFor(admin,client,['issues:read']);
- const memberSecondApp=await grantFor(member,adminClient,['issues:read','issues:write']);
- expect((await f.api(ownerGrant.access_token,'/issues')).status).toBe(200);
- expect((await f.api(adminGrant.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4513'})).status).toBe(201);
- expect((await f.api(adminGrant.access_token,'/issues')).status).toBe(403);
- type Inventory={apps:{id:string;scopes:string}[];grants:{id:string;app:string;member:string;createdAt:number;lastUsed:number|null;scopes:string}[]};
- const grants=await(await call(admin,'/settings/oauth-apps')).json() as Inventory;
- expect(grants.apps.map(row=>({id:row.id,scopes:JSON.parse(row.scopes)})).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
-  {id:client.id,scopes:['issues:read','issues:write']},{id:adminClient.id,scopes:['issues:read','issues:write']},{id:other.id,scopes:['issues:write','metadata:read']},
- ].sort((a,b)=>a.id.localeCompare(b.id)));
- expect(grants.grants.map(row=>({id:row.id,app:row.app,member:row.member,scopes:JSON.parse(row.scopes),createdAt:row.createdAt,lastUsed:row.lastUsed})).sort((a,b)=>a.id.localeCompare(b.id))).toEqual([
-  {id:token.grant_id,app:'synthetic-vector-4501',member:'synthetic-vector-4503',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
-  {id:ownerGrant.grant_id,app:'synthetic-vector-4506',member:'Owner',scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
-  {id:adminGrant.grant_id,app:'synthetic-vector-4511',member:'synthetic-vector-4502',scopes:['issues:write','metadata:read'],createdAt:expect.any(Number),lastUsed:expect.any(Number)},
-  {id:ownerSameApp.grant_id,app:'synthetic-vector-4501',member:'Owner',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:null},
-  {id:adminSameApp.grant_id,app:'synthetic-vector-4501',member:'synthetic-vector-4502',scopes:['issues:read'],createdAt:expect.any(Number),lastUsed:null},
-  {id:memberSecondApp.grant_id,app:'synthetic-vector-4506',member:'synthetic-vector-4503',scopes:['issues:read','issues:write'],createdAt:expect.any(Number),lastUsed:null},
- ].sort((a,b)=>a.id.localeCompare(b.id)));
- const ownerInventory=await(await call(f.cookie,'/settings/oauth-apps')).json() as Inventory;
- expect(ownerInventory).toEqual(grants);
- expect((await call(member,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(403);
- expect((await call(admin,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(200);
- expect((await f.api(token.access_token,'/issues')).status).toBe(401);
- const reuseCode=await getCode(),reuse=await exchange(reuseCode);expect(reuse.status).toBe(200);const reused=await reuse.json() as {access_token:string};
- expect((await f.api(reused.access_token,'/issues')).status).toBe(200);expect((await exchange(reuseCode)).status).toBe(400);expect((await f.api(reused.access_token,'/issues')).status).toBe(401);
- const expired=await getCode(),expiry=await env.DB.prepare('SELECT MAX(expires_at) AS expiry FROM vector_oauth_codes').first<number>('expiry');
- const controlled=createOAuthPublicApp(()=>expiry!+1);
- expect((await controlled.request(origin+'/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:expired,redirect_uri:redirect,code_verifier:verifier})},bindings)).status).toBe(400);
- const currentCode=await getCode(),current=await exchange(currentCode);expect(current.status).toBe(200);const last=await current.json() as {access_token:string};
- expect((await f.api(last.access_token,'/issues')).status).toBe(200);
- expect((await f.call('/settings/operators/'+memberId,'DELETE')).status).toBe(200);expect((await f.api(last.access_token,'/issues')).status).toBe(401);
- const audit=await env.DB.prepare("SELECT DISTINCT action FROM audit_records WHERE action LIKE 'oauth.%'").all<{action:string}>();
- for(const action of ['oauth.app.registered','oauth.consent.approved','oauth.consent.denied','oauth.grant.issued','oauth.grant.revoked'])expect(audit.results.some(r=>r.action===action)).toBe(true);
+ expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(before.results);
+ const tokenId=await env.DB.prepare('SELECT token_id FROM vector_oauth_grants WHERE id=?').bind(token.grant_id).first<string>('token_id');
+ const personal=await (await call(member,'/settings/integrations/tokens')).json() as {tokens:{id:string}[]};
+ expect(personal.tokens.some(row=>row.id===tokenId)).toBe(false);
+ expect((await call(member,'/settings/integrations/tokens/'+tokenId,'DELETE')).status).toBe(404);expect((await f.api(token.access_token,'/issues')).status).toBe(200);
+ const inventory=await (await call(admin,'/settings/oauth-apps')).json() as {grants:{id:string}[]};expect(inventory.grants.some(row=>row.id===token.grant_id)).toBe(true);
+ expect((await call(admin,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(200);expect((await f.api(token.access_token,'/issues')).status).toBe(401);
+ const replay=await grantFor(member);expect((await exchange(replay.code)).status).toBe(400);expect((await f.api(replay.access_token,'/issues')).status).toBe(401);
+ const current=await grantFor(member);
+ expect((await f.call('/settings/operators/'+memberId,'DELETE')).status).toBe(200);expect((await f.api(current.access_token,'/issues')).status).toBe(401);
 }

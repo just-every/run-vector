@@ -1,4 +1,3 @@
-import {seedOAuthArchive,verifyOAuthArchive} from './integrations/oauth-apps.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,mkdtemp,writeFile,readFile,rm,stat,copyFile,unlink} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
@@ -53,3 +52,51 @@ try{
  await destination.stop();proof.passed=true;
 }finally{await browser?.close();await source?.close();await destination?.close();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'roundtrip-proof.json'),JSON.stringify(proof,null,2)+'\n');await rm(work,{recursive:true,force:true});}
 console.log('Independent native installations: complete public archive command equality, restored privacy and no historical Cron replay passed.');
+
+/** Seed and check the same archive door without retaining credentials in evidence. */
+export async function seedOAuthArchive(installation,cookie){
+ const call=async(path,body,status)=>{const r=await installation.req(path,'POST',body,cookie);assert.equal(r.status,status);return r.json();};
+ const redirect=installation.origin+'/oauth-test-client/callback';
+ const client=await call('/api/settings/oauth-apps',{name:'synthetic-vector-4551',redirectUris:[redirect],scopes:['issues:read']},201);
+ const request={response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state:'synthetic-vector-4552'};
+ const member=await installation.signIn('maya@vector.test');
+ const approval=await installation.req('/api/oauth/consent','POST',{request,decision:'approve'},member);assert.equal(approval.status,200);const consent=await approval.json();
+ const token=await call('/api/oauth/token',{grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:new URL(consent.redirect).searchParams.get('code'),redirect_uri:redirect},200);
+ assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+token.access_token})).status,200);
+ assert.equal(installation.sql('SELECT COUNT(*) AS n FROM vector_oauth_apps')[0].n,1);assert.equal(installation.sql('SELECT COUNT(*) AS n FROM vector_oauth_grants')[0].n,1);
+ const namespace=installation.sql('SELECT namespace FROM vector_oauth_grants')[0].namespace;
+ const quote=value=>"'"+String(value).replaceAll("'","''")+"'";
+ const rows=query=>installation.sql(query).map(row=>row.id??row.token_id);
+ const history={
+  vector_integration_tokens:rows('SELECT * FROM vector_integration_tokens WHERE namespace='+quote(namespace)),
+  integration_token_usage:rows('SELECT * FROM integration_token_usage WHERE namespace='+quote(namespace)+' ORDER BY id'),
+  audit_records:rows('SELECT * FROM audit_records WHERE subject_id IN ('+quote(client.id)+','+quote(token.grant_id)+') ORDER BY id'),
+ };
+ assert.equal(history.vector_integration_tokens.length,1);assert.equal(history.integration_token_usage.length,1);
+ assert.ok(history.audit_records.length);
+ return {token:token.access_token,history};
+}
+export async function verifyOAuthArchive(installation,cookie,fixture,records){
+ assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+fixture.token})).status,401,'The restored installation refuses the pre-restore OAuth token');
+ for(const table of ['vector_oauth_apps','vector_oauth_codes','vector_oauth_grants','integration_tokens']){
+  assert.equal(records[0].tables.some(row=>row.name===table),false,'OAuth credential tables are excluded');assert.equal(installation.sql('SELECT COUNT(*) AS n FROM '+table)[0].n,0);
+ }
+ const rows=records.filter(row=>row.kind==='part').flatMap(part=>part.items).filter(item=>item.kind==='row');
+ for(const [table,ids] of Object.entries(fixture.history)){
+  assert.ok(ids.every(id=>rows.some(item=>item.table===table&&(item.row.id??item.row.token_id)===id)),'Archive retains safe OAuth history: '+table);
+  const restored=installation.sql('SELECT '+(table==='vector_integration_tokens'?'token_id':'id')+' FROM '+table);
+  assert.ok(ids.every(id=>restored.some(row=>(row.id??row.token_id)===id)),'Restore retains safe OAuth history: '+table);
+ }
+ // A restored member must authorize a freshly registered app before new authority exists.
+ const redirect=installation.origin+'/oauth-test-client/callback';
+ const registered=await installation.req('/api/settings/oauth-apps','POST',{name:'synthetic-vector-4553',redirectUris:[redirect],scopes:['issues:read']},cookie);assert.equal(registered.status,201,'Fresh registration after restore');const client=await registered.json();
+ const member=await installation.signIn('maya@vector.test'),request={response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state:'synthetic-vector-4554'};
+ const screen=await installation.req('/api/oauth/consent?'+new URLSearchParams(request),'GET',undefined,member);assert.equal(screen.status,200);assert.deepEqual((await screen.json()).scopes,['issues:read']);
+ const approved=await installation.req('/api/oauth/consent','POST',{request,decision:'approve'},member);assert.equal(approved.status,200,'Fresh member consent after restore');const consent=await approved.json();
+ const exchanged=await installation.req('/api/oauth/token','POST',{grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,code:new URL(consent.redirect).searchParams.get('code'),redirect_uri:redirect});assert.equal(exchanged.status,200);const token=await exchanged.json();assert.equal(token.scope,'issues:read');
+ const session=await installation.req('/api/session','GET',undefined,member);assert.equal(session.status,200);const identity=await session.json();
+ const grant=installation.sql("SELECT operator_id FROM vector_oauth_grants WHERE id='"+token.grant_id.replaceAll("'","''")+"'")[0];assert.equal(grant.operator_id,identity.operatorId,'Fresh restored consent belongs to the consenting member');
+ assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+token.access_token})).status,200,'Fresh restored OAuth grant reads through the public API');
+ assert.equal((await installation.req('/api/v1/issues','GET',undefined,'',{Authorization:'Bearer '+fixture.token})).status,401,'Fresh consent never revives the old token');
+ console.log('API-004 archive door excludes registration, codes and grants; specific OAuth history survives, the old token is refused and fresh member consent restores access.');
+}
