@@ -3112,7 +3112,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "2443267bff4d40b1cc48e560c8cf833da1dd937a06e9aa6bdc032a88de076c24",
+      "sha256": "e498a926cc8e7d2bbbc7639e63386abbf00662618712444f3f30d19903a6e3eb",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3664,7 +3664,7 @@
       "executable": false
     },
     "src/core/features/agent-door/person-events.ts": {
-      "sha256": "b0054ec27b338d7cb240ed51c6c71f1676b5af1cb38a0cdcf4a619cb3d490844",
+      "sha256": "ee65db15ac88acda8eb6228e35484abc1c5c61d778a2ed7969bd260b2d038eb4",
       "executable": false
     },
     "src/core/features/agent-door/planning-cycles.ts": {
