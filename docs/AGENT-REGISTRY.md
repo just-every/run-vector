@@ -42,8 +42,8 @@
 | `vector.issue.reorder_sub_issues` | standard | ISSUE-019, REL-006 |
 | `vector.issue.read_sub_issue_rule` | standard | ISSUE-019 |
 | `vector.issue.set_sub_issue_rule` | standard | ISSUE-019 |
-| `vector.issue.read_discussion` | standard | ISSUE-008, ISSUE-008, ISSUE-009 |
-| `vector.issue.comments_and_safe_comment_removal` | standard | ISSUE-008, ISSUE-008, ISSUE-013 |
+| `vector.issue.read_discussion` | standard | ISSUE-008, ISSUE-009 |
+| `vector.issue.comments_and_safe_comment_removal` | standard | ISSUE-008, ISSUE-013 |
 | `vector.issue.edit_comment` | standard | ISSUE-008 |
 | `vector.issue.remove_comment` | destructive | ISSUE-008 |
 | `vector.issue.discussion_threads_and_resolution` | standard | ISSUE-008 |
