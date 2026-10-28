@@ -11122,7 +11122,7 @@
       "text": "PROJ-010, RELEASE-001/RELEASE-003, AUTO-004, AGENT-002/AGENT-003 and INIT-001 inherit their future objects\u2019 bound-channel events and acceptance before shipping.",
       "to": "clause",
       "ids": [
-        "SLACK-003"
+        "SLACK-007"
       ]
     },
     {
@@ -13495,9 +13495,15 @@
       "line": 699,
       "cell": "gap",
       "text": "Gap PROJ-003: current deletion is irreversible and must remain Owner/Admin only; Member lead deletion is conditional on PROJ-017 recoverable deletion, Undo and restore. Membership preservation is proven independently",
-      "to": "gap",
-      "ids": [
-        "PROJ-003"
+      "to": "changelog",
+      "also": [
+        {
+          "to": "clause",
+          "ids": [
+            "PROJ-003",
+            "PROJ-017"
+          ]
+        }
       ]
     },
     {

@@ -745,6 +745,8 @@ Signed source ingestion implements INTAKE-001/002/003/008/009 and the source reg
 
 *Status:* done — `tests/worker/editor.test.ts`.
 
+Gap PROJ-003: current deletion is irreversible and must remain Owner/Admin only; Member lead deletion is conditional on PROJ-017 recoverable deletion, Undo and restore. Membership preservation is proven independently
+
 These rows state the implemented planning behavior; CONTRACT.md defines the full product target.
 
 | Clause | Status | Proven behavior | Evidence |

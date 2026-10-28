@@ -15,7 +15,7 @@ A claim is done when every clause behind it is done, missing when every one is m
 | 7 | Recently done contains work finished in the last seven days. | `CURR-005` done | done |
 | 8 | MIT licensed: free to use, change and run, with no seats, plans or product fees. | `HOME-001` partial | partial |
 | 9 | Defer to a date and time; it returns to Needs decision and Inbox then, or sooner with new evidence. | `INTAKE-006` partial; `CURR-002` done; `NOTIFY-001` partial | partial |
-| 10 | My work, Issues, Board, Projects, Cycles, saved views, Search and Inbox are in the same free code. | `WORK-001` partial; `VIEW-005` partial; `PROJ-001` partial; `CYCLE-001` partial; `VIEW-002` partial; `SEARCH-001` partial; `NOTIFY-001` partial | partial |
+| 10 | My work, Issues, Board, Projects, Cycles, saved views, Search and Inbox are in the same free code. | `WORK-001` partial; `VIEW-005` done; `PROJ-001` partial; `CYCLE-001` partial; `VIEW-002` partial; `SEARCH-001` partial; `NOTIFY-001` partial | partial |
 | 11 | Project health names the exact issue putting the project at risk. | `PROJ-005` partial; `PROJ-006` done | partial |
 | 12 | When a cycle ends, unfinished work rolls into the next one. | `CYCLE-004` done; `CYCLE-006` done | done |
 | 13 | Every change and decision is kept with who made it and when. | `ISSUE-007` partial; `INTAKE-005` partial; `INTAKE-006` partial; `INTAKE-007` partial | partial |
