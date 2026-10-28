@@ -12,7 +12,6 @@ import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
- console.info('TEMP_ARCHIVE_STEP_0');
  const f=await populatedHttpSource();const peer=f.peerCookie;
  const {seedIntakeForTeam,recordedReply,mailBindings}=await import('./email-intake-fixture'),{eventSigner}=await import('../sendgrid-event-fixture');
  const mail=await seedIntakeForTeam(f.team.id,f.cookie),reply=await recordedReply(f.cookie,mail.identifier,'synthetic-vector-2401');expect(reply.response.status).toBe(201);
@@ -22,7 +21,6 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const providerEvent=await signer.sign([{sg_event_id:'synthetic-vector-2402',sg_message_id:provider,email:'synthetic-vector-712@example.test',event:'bounce'}]);
  expect((await createServerApp().request(mailBindings.APP_ORIGIN+`/api/integrations/sendgrid/events/${f.team.id}`,{method:'POST',...providerEvent},mailBindings)).status).toBe(200);
 
- console.info('TEMP_ARCHIVE_STEP_1');
  const calendarCreated=await f.call('/calendar/feeds','POST',{});expect(calendarCreated.status).toBe(201);const calendarFeed=await calendarCreated.json() as {id:string;url:string};
  expect((await request(new URL(calendarFeed.url).pathname)).status).toBe(200);
  const dashboardCreated=await f.call('/dashboards','POST',{name:'synthetic-vector-35',widgets:[{name:'Portable count',kind:'count',filters:{q:f.issue.identifier},chart:{}}]});expect(dashboardCreated.status).toBe(201);const portableDashboard=await dashboardCreated.json() as {id:string;widgets:unknown[]};
@@ -83,11 +81,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const roles=(db:D1Database)=>db.prepare('SELECT id,email,role FROM operators ORDER BY id').all().then(rows=>rows.results);
  const archivedRoles=await roles(env.DB);
  expect(new Set(archivedRoles.map(row=>row.role))).toEqual(new Set(['owner','admin','member','viewer']));
- console.info('TEMP_ARCHIVE_STEP_2');
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
- console.info('TEMP_ARCHIVE_STEP_3');
  const download=await f.call('/portability/exports/'+id+'/download');expect(download.status).toBe(200);const records=[];for await(const row of readArchive(download.body!))records.push(row);
  const exportedIssue=records.flatMap(record=>record.kind==='part'?record.items:[]).find(item=>item.kind==='row'&&item.table==='issues'&&item.row.id===f.issue.id);
  expect(exportedIssue).toMatchObject({row:{start_date:'2026-09-01',due_date:'2026-09-07'}});
@@ -102,18 +98,15 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(archiveText.includes(calendarFeed.url)).toBe(false);
  expect(archiveText.includes((await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(calendarFeed.id).first<string>('token_hash'))!)).toBe(false);
  for(const credential of [slackEdge.token,slackEdge.webhook,signingSecret,'UARCHIVE1',source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
- console.info('TEMP_ARCHIVE_STEP_4');
  const cookie=await freshTarget();
  await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
  const ledgerBefore=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results;
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]})).status).toBe(401);
  const refusedOrigin=await createServerApp().request(targetBindings.APP_ORIGIN+'/api/portability/imports',{method:'POST',headers:{Origin:'https://untrusted.example',cookie,'content-type':'application/json'},body:JSON.stringify({confirmed:true,manifest:records[0]})},targetBindings);expect(refusedOrigin.status).toBe(403);
  const retainedClaim=await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM oa_bootstrap').all();
- console.info('TEMP_ARCHIVE_STEP_5');
  const job=await reserveWithRacingWriter(records,cookie);
  const targetTeam=await destination.ARCHIVE_TARGET_DB.prepare('SELECT id FROM teams LIMIT 1').first<{id:string}>();
  expect((await targetCall('/api/issues','POST',{title:'Reserved target',teamId:targetTeam!.id},cookie)).status).toBe(409);
- console.info('TEMP_ARCHIVE_STEP_6');
  const finalized=await targetCall('/api/portability/imports/'+job+'/finalize','POST',finalBody(records),cookie);
  expect(finalized.status,await finalized.clone().text()).toBe(200);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results).toEqual(ledgerBefore);
@@ -127,7 +120,6 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  // ROLE-001: every member's role restores with them; no session or link comes along.
  expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
- console.info('TEMP_ARCHIVE_STEP_7');
  const historical=await targetSignIn();
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
  const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
@@ -171,7 +163,6 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
   expect(refused.status).toBe(403);
  }
  expect((await restoreStatus()).status.effectsHeld).toBe(1);
- console.info('TEMP_ARCHIVE_STEP_8');
  const again=await httpExport((path,method,body)=>targetCall('/api'+path,method,body,historical));
  // Import deliberately retires the source team's delegated sending authority.
  // Keep exact equality for every other field and every replay/outcome row.
@@ -191,7 +182,6 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT count(*) AS n FROM search_issues WHERE search_issues MATCH 'searchable'").first())?.n).toBe(1);
  const cycle=await targetCall('/api/cycles/'+f.closing.id,'GET',undefined,historical);expect(cycle.status).toBe(200);expect((await cycle.json() as {snapshot:unknown}).snapshot).toEqual(f.closed.snapshot);
  const historicalWebhooks=async()=>Promise.all(['vector_webhook_events','integration_deliveries','integration_attempts'].map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
- console.info('TEMP_ARCHIVE_STEP_9');
  const webhookHistory=await historicalWebhooks();let sent=0;
  const dispatchBindings={...targetBindings,INTEGRATION_EGRESS_POLICY:'public-dns-pinned-tls-v1',INTEGRATION_EGRESS:{send:async()=>{sent++;return {status:200,headers:{},body:''};}}};
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM vector_integration_secret_keys').first())?.n).toBe(0);
@@ -199,7 +189,6 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await targetCall('/api/settings/integrations/sources/'+source.id+'/rotate','POST',{overlapHours:0},historical)).status).toBe(200);
  expect((await targetCall('/api/settings/integrations/sources/'+source.id+'/webhook-url','POST',{},historical)).status).toBe(201);
  expect((await targetCall('/api/settings/integrations/github/'+github.id+'/reenter','POST',{},historical)).status).toBe(201);
- console.info('TEMP_ARCHIVE_STEP_10');
  const replacement=await targetCall('/api/settings/integrations/tokens','POST',{name:'Restored archive reader',scopes:['issues:read']},historical);expect(replacement.status).toBe(201);
  const replacementToken=await replacement.json() as {token:string};expect(replacementToken.token).not.toBe(token.token);
  expect((await createServerApp().request(targetBindings.APP_ORIGIN+'/api/v1/issues',{headers:{Authorization:'Bearer '+replacementToken.token}},targetBindings)).status).toBe(200);
