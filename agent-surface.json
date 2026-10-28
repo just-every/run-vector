@@ -1605,6 +1605,17 @@
       ]
     },
     {
+      "name": "vector.view.saved_views.delete",
+      "scope": "views:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
       "name": "vector.view.issue_controls",
       "scope": "views:read",
       "readOnly": true,
@@ -2026,6 +2037,17 @@
       ]
     },
     {
+      "name": "vector.report.dashboards.delete",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "REPORT-003"
+      ]
+    },
+    {
       "name": "vector.report.insights",
       "scope": "reports:read",
       "readOnly": true,
@@ -2147,6 +2169,28 @@
       ]
     },
     {
+      "name": "vector.role.audit_log",
+      "scope": "audit:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-005"
+      ]
+    },
+    {
+      "name": "vector.role.audit_log.export",
+      "scope": "audit:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-005"
+      ]
+    },
+    {
       "name": "vector.events.list",
       "scope": "events:read",
       "readOnly": true,
@@ -2176,6 +2220,7 @@
     "vector://labels/{id}",
     "vector://statuses/{id}",
     "vector://milestones/{id}",
+    "vector://audit/{id}",
     "vector://views/{id}",
     "vector://notifications/{id}",
     "vector://reminders/{id}",
@@ -3002,6 +3047,24 @@
       ]
     },
     {
+      "id": "issue-relation-version",
+      "tool": "vector.issue.stable_identifiers",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
       "id": "issue-dependency",
       "tool": "vector.rel.dependencies",
       "args": {
@@ -3011,7 +3074,7 @@
         },
         "input": {
           "expectedVersion": {
-            "$from": "issue-restore-description",
+            "$from": "issue-relation-version",
             "pointer": "/version"
           },
           "relatedIdentifier": {
@@ -6810,6 +6873,72 @@
           "class": "standard",
           "facts": {
             "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-audit",
+      "tool": "vector.role.audit_log",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-audit-csv",
+      "tool": "vector.role.audit_log.export",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-delete",
+      "tool": "vector.view.saved_views.delete",
+      "args": {
+        "id": {
+          "$from": "workspace-view-create",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-dashboard-delete",
+      "tool": "vector.report.dashboards.delete",
+      "args": {
+        "id": {
+          "$from": "workspace-dashboard-create",
+          "pointer": "/id"
+        },
+        "expectedVersion": {
+          "$from": "workspace-dashboard-edit",
+          "pointer": "/version"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 2
           }
         }
       ]

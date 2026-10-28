@@ -97,6 +97,10 @@ export function workspaceSteps({ teamId = from('options', '/teams/0/id'),
     step('workspace-capacity-restore', 'vector.report.workload.set_capacity', { query: capacityWindow,
       input: { capacity: from('workspace-capacity', '/capacity'), expectedVersion: from('workspace-capacity-current', '/version') } }),
     step('workspace-csv', 'vector.report.warehouse_and_spreadsheet_export', {}),
+    step('workspace-audit', 'vector.role.audit_log', {}),
+    step('workspace-audit-csv', 'vector.role.audit_log.export', {}),
+    { id: 'workspace-view-delete', tool: 'vector.view.saved_views.delete', args: { id: view }, expect: [{ class: 'destructive', facts: { measure: 1 } }] },
+    { id: 'workspace-dashboard-delete', tool: 'vector.report.dashboards.delete', args: { id: from('workspace-dashboard-create'), expectedVersion: from('workspace-dashboard-edit', '/version') }, expect: [{ class: 'destructive', facts: { measure: 2 } }] },
   ];
 }
 

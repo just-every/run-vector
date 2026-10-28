@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { workspaceAuditResource } from './workspace-audit.ts';
 import { ToolRefusal, type Person, type ResourceDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { getView } from '../views/service';
@@ -34,6 +35,7 @@ export function vectorWorkspaceResources(env: WorkerBindings): ResourceDefinitio
   });
   const preferenceKey = z.union([preferenceSurfaceSchema, z.enum(['appearance', 'personal-time', 'notifications', 'channels'])]);
   return [
+    workspaceAuditResource(env),
     resource('views', 'Visible saved view definition', 'views:read', nativeId, (db, p, id) => getView(db, p.id, id)),
     resource('notifications', 'Your visible notification and snooze state', 'notifications:read', notificationId, workspaceNotification),
     resource('reminders', 'Your personal issue reminder', 'notifications:read', notificationId, workspaceReminder),

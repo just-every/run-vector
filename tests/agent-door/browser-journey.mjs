@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { chromium } from '@playwright/test';
 import { createProtocol } from '../../vendor/base/agent-door/conformance/protocol.mjs';
@@ -55,7 +55,9 @@ export async function browserJourney({ request, origin, surface, signer, person,
         await page.waitForLoadState('networkidle');
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
         if (overflow) throw new Error(`${name} has horizontal overflow at ${width}`);
-        await page.screenshot({ path: `../screens-final/${name}-${width}.png`, fullPage: true });
+        const path = `../screens-final/${name}-${width}.png`;
+        await page.screenshot({ path, fullPage: true });
+        console.log(`VECTOR_SCREEN ${name}-${width}.png ${(await readFile(path)).toString('base64')}`);
         captured.push({ name, width, heading: await page.locator('h1').allTextContents(), overflow });
       }
     };
@@ -67,7 +69,7 @@ export async function browserJourney({ request, origin, surface, signer, person,
     await page.getByRole('button', { name: 'Pause agents', exact: true }).click();
     await page.waitForFunction(() => document.body.textContent.includes('Agents are paused'));
     await capture('agents-paused', '/agents');
-    await page.getByRole('button', { name: 'Resume agents', exact: true }).click();
+    await page.getByRole('button', { name: 'Resume local agents', exact: true }).click();
     const blocked = autonomousPolicy(); blocked.rules.push({ id: 'retain-records', class: 'destructive', do: 'blocked' });
     await c.adopt(blocked);
     const refusal = await tool('vector.issue.remove_comment', { identifier: issue.identifier, itemId: comment.id, input: { expectedVersion: 0 } });

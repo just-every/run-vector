@@ -7,7 +7,7 @@ import { insightCsv } from '../insights/routes';
 import { issueListQuerySchema } from '../issues/list-schema';
 import { readCycle } from '../administration/read';
 import { projectDetail } from '../projects/read';
-import { listDashboards, readDashboard, saveDashboard } from '../dashboards/service';
+import { listDashboards, readDashboard, saveDashboard, deleteDashboard } from '../dashboards/service';
 import { dashboardInputSchema, dashboardFiltersSchema } from '../dashboards/schema';
 import { readWorkload, setCapacity } from '../workload/service';
 import { workloadQuerySchema, capacityInputSchema } from '../workload/schema';
@@ -23,6 +23,14 @@ const privateDashboard = dashboardInputSchema.extend({ isShared: z.literal(false
 
 export function workspaceReportTools(env: WorkerBindings): ToolDefinition[] {
   return [
+    nativeMutation(env, { name: 'vector.report.dashboards.delete', title: 'Permanently remove an editable native dashboard',
+      scope: 'reports:write', clauses: ['REPORT-003'], schema: idArgs.extend({ expectedVersion: z.number().int().positive() }),
+      method: 'DELETE', path: '/dashboards/:id', params: args => ({ id: args.id }), body: args => ({ expectedVersion: args.expectedVersion }),
+      classes: ['destructive'], classify: async (db, person, args) => [{ class: 'destructive', facts: { measure: 1 + (await readDashboard(db, person.id, args.id, dashboardFiltersSchema.parse({}))).dashboard.widgets.length } }],
+      revision: async (db, person, args) => JSON.stringify((await readDashboard(db, person.id, args.id, dashboardFiltersSchema.parse({}))).dashboard),
+      summary: async (db, person, args) => ({ target: { id: args.id, name: (await readDashboard(db, person.id, args.id, dashboardFiltersSchema.parse({}))).dashboard.name } }),
+      run: (db, person, args) => deleteDashboard(db, person.id, args.id, args.expectedVersion), resource: false,
+      uri: (_result, args) => `vector://dashboards/${args.id}` }),
     workspaceRead(env, { name: 'report.insights', title: 'Read native Insights and chart drill-downs', scope: 'reports:read',
       clauses: ['REPORT-001'], schema: insightsArgs, path: '/insights',
       read: (db, p, a) => readInsights(db, p.id, a.filters, a.chart) }),
