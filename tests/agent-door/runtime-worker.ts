@@ -13,7 +13,8 @@ export default class NativeInvocation extends WorkerEntrypoint<WorkerBindings> {
   fetch(request: Request) { return app.fetch(request, this.env); }
   catalogue() {
     const tools = vectorAgentTools(this.env);
-    return { tools: tools.map(({ name, scope, readOnly, classes, clauses }) => ({ name, scope, readOnly, classes, clauses })),
+    return { tools: tools.map(({ name, scope, readOnly, classes, clauses, widens, narrowing, inputSchema }) => ({ name, scope, readOnly, classes, clauses,
+        ...(widens === false ? { widens, narrowing, inputSchema } : {}) })),
       invalidSchemas: tools.filter(tool => !schemaValid(tool.inputSchema)).map(tool => ({ name: tool.name, inputSchema: tool.inputSchema })),
       resources: vectorAgentResources(this.env).map(resource => resource.uriTemplate) };
   }
