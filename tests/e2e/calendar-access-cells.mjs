@@ -21,11 +21,13 @@ export async function calendarAccessCells(page,context,runtime,output){
   assert.ok(!(await(await context.request.get(feed.url)).text()).includes('synthetic-vector-2303'));assert.equal((await context.request.get(teamFeed.url)).status(),404);
   await owner(`/settings/teams/${team.id}/privacy`,'PUT',{isPrivate:true});
   assert.ok(!JSON.stringify(await reader.api('/calendar/events?month=2026-11')).includes(hidden.identifier));
+  assert.ok(!JSON.stringify(await reader.api('/calendar/timeline')).includes(hidden.identifier));
   assert.ok(!(await(await context.request.get(feed.url)).text()).includes(hidden.identifier));
   await owner(`/settings/operators/${reader.id}/role`,'PATCH',{role:'viewer',teamIds:[]});
   await owner(`/settings/teams/${team.id}/members/${reader.id}`,'PUT',{role:'member'});
   releaseFeed=await(await context.request.get(feed.url)).text();assert.ok(releaseFeed.includes('synthetic-vector-2303'));assert.ok(releaseFeed.includes('synthetic-vector-2305'));
   const events=await reader.api('/calendar/events?month=2026-11');assert.ok(JSON.stringify(events).includes(hidden.identifier));
+  const timeline=await reader.api('/calendar/timeline');assert.equal(timeline.canEdit,false);assert.ok(JSON.stringify(timeline).includes(hidden.identifier));
   const bytes=await(await context.request.get(feed.url)).text();assert.ok(bytes.includes(visible.identifier));assert.ok(!bytes.includes(hidden.identifier));
   const before=runtime.sql(`SELECT version,due_date FROM issues WHERE id='${visible.id}'`)[0];
   for(const width of [1440,390]){
@@ -36,11 +38,16 @@ export async function calendarAccessCells(page,context,runtime,output){
   }
   await inspect(reader.page,reader.page.getByRole('region',{name:'Selected day events',exact:true}),'calendar-viewer-agenda');
   await inspect(reader.page,reader.page.getByRole('region',{name:'Create calendar feed',exact:true}),'calendar-viewer-own-feed');
+  await reader.page.getByRole('button',{name:'Timeline',exact:true}).click();await reader.page.locator('[data-timeline-ready="true"]').waitFor();
+  assert.equal(await reader.page.getByRole('button',{name:'Change dates for '+visible.identifier,exact:true}).count(),0);
+  assert.equal(await reader.page.locator('.timeline-handle').count(),0);
+  await inspect(reader.page,reader.page.getByRole('region',{name:'Issue timeline',exact:true}),'calendar-viewer-timeline');
   await reader.api('/issues/'+visible.identifier,'PATCH',{expectedVersion:before.version,dueDate:'2026-11-05'},403);assert.deepEqual(runtime.sql(`SELECT version,due_date FROM issues WHERE id='${visible.id}'`)[0],before);
   const own=await reader.api('/calendar/feeds','POST',{},201),rotated=await reader.api(`/calendar/feeds/${own.id}/rotate`,'POST',{expectedVersion:own.version});
   assert.equal((await context.request.get(own.url)).status(),404);assert.equal((await context.request.get(rotated.url)).status(),200);
   await reader.api(`/calendar/feeds/${own.id}`,'DELETE',{expectedVersion:rotated.version});assert.equal((await context.request.get(rotated.url)).status(),404);
   await owner(`/settings/teams/${team.id}/members/${reader.id}`,'DELETE');assert.ok(!JSON.stringify(await reader.api('/calendar/events?month=2026-11')).includes(hidden.identifier));
+  assert.ok(!JSON.stringify(await reader.api('/calendar/timeline')).includes(hidden.identifier));
   await reader.api('/releases/'+privateRelease.id,'GET',undefined,404);
   const personalFeed=await context.request.get(feed.url);assert.equal(personalFeed.status(),200,'personal feed remains readable after private-team membership removal');
   releaseFeed=await personalFeed.text();
@@ -48,6 +55,7 @@ export async function calendarAccessCells(page,context,runtime,output){
   assert.ok(!releaseFeed.includes('synthetic-vector-2303'),'personal feed excludes the unreadable release name');
   assert.ok(!releaseFeed.includes('synthetic-vector-2304'),'personal feed excludes the unreadable release description');
   await owner(`/settings/operators/${reader.id}/role`,'PATCH',{role:'guest',teamIds:[team.id]});assert.equal((await context.request.get(feed.url)).status(),404);
+  await reader.api('/calendar/timeline','GET',undefined,403);
   console.log('CAL-001 VIEW-007 private exclusion, current creator authority, Viewer month read-only and own feed rotation/revocation passed at 1440/390');
  }finally{await reader.context.close();}
 }

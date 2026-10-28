@@ -5,11 +5,13 @@ import * as planning from '../../src/core/features/administration/schema';
 import { apiRoutes } from '../../src/core/features/integrations/api-schema';
 import { tokenScopes } from '../../src/core/features/integrations/scopes';
 import {env} from 'cloudflare:workers';
-import {it,expect} from 'vitest';
+import {it,expect,vi,afterEach} from 'vitest';
+afterEach(()=>vi.useRealTimers());
 import {setupIntegrations} from './integration-fixture';
 import {invite,actor,request,origin,bindings} from './base-auth-fixture';
 import {createIntegrationApi} from '../../src/core/features/integrations/api';
 it('[API-001 API-002] Base scoped token authority drives native routes, usage, stale writes and revocation without HTML or file admission',async()=>{
+ vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date());
  const f=await setupIntegrations(),read=await f.issueToken(['issues:read','metadata:read']),write=await f.issueToken(['issues:read','issues:write','comments:write']);
  expect((await f.api('', '/issues')).status).toBe(401);expect((await f.api('int_'+'a'.repeat(64),'/issues')).status).toBe(401);
  f.restart();
@@ -28,6 +30,13 @@ it('[API-001 API-002] Base scoped token authority drives native routes, usage, s
  expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,title:'Updated through native rule',startDate:'2035-01-02'})).status).toBe(200);
  expect((await readIssue()).activity.filter((entry:any)=>entry.kind==='issue.updated'&&entry.nextValue?.startDate==='2035-01-02')).toHaveLength(1);
  expect((await f.api(write.token,'/issues/'+issue.identifier+'/comments','POST',{body:'API comment'})).status).toBe(201);
+ const day=new Date(),monday=new Date(day);monday.setUTCDate(day.getUTCDate()-(day.getUTCDay()+6)%7);
+ const weekStart=monday.toISOString().slice(0,10),outsideWeek=new Date(monday);outsideWeek.setUTCDate(monday.getUTCDate()-1);
+ const weekly=await (await f.api(write.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Starts this week',startDate:weekStart})).json() as any;
+ const other=await (await f.api(write.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Starts last week',startDate:outsideWeek.toISOString().slice(0,10)})).json() as any;
+ const thisWeek=await (await f.api(read.token,'/issues?start=this_week&sort=start')).json() as any;
+ expect(thisWeek.issues.map((row:any)=>row.identifier)).toContain(weekly.identifier);
+ expect(thisWeek.issues.map((row:any)=>row.identifier)).not.toContain(other.identifier);
  expect((await f.api(read.token,'/issues?workspaceId=spoof')).status).toBe(400);expect((await f.api(read.token,'/issues/'+issue.identifier)).status).toBe(200);
  // Foreign native records are test data only; the token cannot widen its issuer workspace.
  const foreignWorkspace='01K00000000000000000000110',foreignTeam='01K00000000000000000000111',foreignStatus='01K00000000000000000000112';

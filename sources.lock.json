@@ -493,7 +493,7 @@
       "executable": false
     },
     "AGENTS.md": {
-      "sha256": "71330c2fd1b678eee7d31fda06c6ce53696089b6a8b45bb9d1fb9a5b40b66f60",
+      "sha256": "2c2b6deb4265725b4f856001095e1657c8698cc7ebc3a9f97580f1eedb51724a",
       "executable": false
     },
     "base-copies.json": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "4947b3a336d03628f7a7f6c8cd6a651a6c4936a5be115f13baa1f62baba770f6",
+      "sha256": "3ef87dc5d5f9f8b5817fda4f0e4a8dbd42b2133b743770942fed237024e63479",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -2560,6 +2560,10 @@
       "sha256": "a681efca2e74d9cd925459d880203e09a6ff289f1a60dd7ad7f01b4bf632376d",
       "executable": false
     },
+    "scripts/contract-docs.mjs": {
+      "sha256": "63506458c26f5b444587cd6e27a5246d70ddd798c0453691e3265ae3495d3d57",
+      "executable": false
+    },
     "scripts/data/archive-upgrade-plan.mjs": {
       "sha256": "e3c60c46e401bb7752d19a696390be55788d7ee15b5c569285cf280ecc52884c",
       "executable": false
@@ -3681,7 +3685,7 @@
       "executable": false
     },
     "src/core/features/calendar-view/timeline-schema.ts": {
-      "sha256": "108c329b555844f6fd5c9305e4fe8520c13ec1f6dd909954bc7e83f32abcf4d0",
+      "sha256": "59ea4c52c8e9e816bf40894d65edd3bdef623ef7b6a1c5781e9ec13dc99812ef",
       "executable": false
     },
     "src/core/features/calendar-view/timeline.css": {
@@ -3957,7 +3961,7 @@
       "executable": false
     },
     "src/core/features/data/import/native-snapshot.ts": {
-      "sha256": "be85a94435e30d5f75a52a32cbc868688b338cdcc95aaf22507029536498411d",
+      "sha256": "148b718b64c644e72ac9f73bce05d92ef93053ba02830c0a590b7eddbda3fac3",
       "executable": false
     },
     "src/core/features/data/import/native-targets.ts": {
@@ -6693,7 +6697,7 @@
       "executable": false
     },
     "tests/e2e/calendar-access-cells.mjs": {
-      "sha256": "43037c6363d607d50a5cac5fe230286c4e268c242e3357d82c1236a3deda0ec0",
+      "sha256": "79b14abd948d678c6f275f4fbca248160d00d53b5a72d1e6f179d3b75a50930a",
       "executable": false
     },
     "tests/e2e/calendar-feeds-journey.mjs": {
@@ -6701,7 +6705,7 @@
       "executable": false
     },
     "tests/e2e/calendar-month-journey.mjs": {
-      "sha256": "f425ceb615d7e2ecec61ef48aa8030a6896be0c57886fa32e9a7500c5d27760c",
+      "sha256": "0bfb1743b3aa59d5044ef0bdd1190fb54e3da1a768ff23ad14f79eb56dd49ee3",
       "executable": false
     },
     "tests/e2e/collaboration-delivery-fixture.mjs": {
@@ -7252,6 +7256,10 @@
       "sha256": "3c65d2a8ad4ef04f63d3264b7f14d1ba9b1c225c7b02df9dfbf197241f70f88d",
       "executable": false
     },
+    "tests/e2e/timeline-journey.mjs": {
+      "sha256": "06ab74820b31daca929677db8263c09a75d6e859fd1d8a8973ddca259b78c0a9",
+      "executable": false
+    },
     "tests/e2e/ui-administration-form.mjs": {
       "sha256": "47b072e9cabd11e85ad393671600d74d3b73b75f3897b162b6df63d490dac73e",
       "executable": false
@@ -7701,7 +7709,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "207a7c25ebedb26c222addb16671236a686938626ff607f35ff2e055e09960c6",
+      "sha256": "24052ee4359f7d245c4082de94834250100988dc8d6b492ad4cf2280d1898566",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {
@@ -7765,7 +7773,7 @@
       "executable": false
     },
     "tests/worker/jira-import.test.ts": {
-      "sha256": "bb968be32849f8df2101b3d7eb7f1dde2afb54326bca7caed5dfced467ff62cb",
+      "sha256": "c164358edd1a25eb2f49969914689d33d10834708b951bf29e9a3a8dcc4312db",
       "executable": false
     },
     "tests/worker/jira-loss-review-fixture.ts": {

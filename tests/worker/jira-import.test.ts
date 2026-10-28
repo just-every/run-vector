@@ -129,13 +129,13 @@ it(contractTitle('DATA-009','Jira loss review counts every source concept and re
  const invalidReview=await f.preview(invalidDates);expect(invalidReview.ready).toBe(false);
  expect((await f.apply(invalidDates,invalidReview)).status).toBe(400);
  const datedRun=await f.publish(datedInput);
- expect(await env.DB.prepare('SELECT start_date,due_date FROM issues').first()).toEqual({start_date:'2026-10-26',due_date:'2026-10-30'});
+ expect(await env.DB.prepare('SELECT start_date,due_date FROM issues WHERE id IN (SELECT target_id FROM ik_provenance WHERE job_id=?)').bind(datedRun.id).first()).toEqual({start_date:'2026-10-26',due_date:'2026-10-30'});
  const datedRollback=await f.call('/data/import/runs/'+datedRun.id+'/rollback','POST',{confirmed:true});expect(datedRollback.status).toBe(200);await f.finish(await datedRollback.json());
  // An explicitly mapped date column (including a Projects-export date) lands on the same native field.
  const mapped=f.input([f.row('mapped-start',{'Project start':'2026-10-27','Project due':'2026-10-30'})],'mapped-project-start');
  mapped.mapping.startDate='Project start';mapped.mapping.dueDate='Project due';
  const mappedRun=await f.publish(mapped);
- expect(await env.DB.prepare('SELECT start_date,due_date FROM issues').first()).toEqual({start_date:'2026-10-27',due_date:'2026-10-30'});
+ expect(await env.DB.prepare('SELECT start_date,due_date FROM issues WHERE id IN (SELECT target_id FROM ik_provenance WHERE job_id=?)').bind(mappedRun.id).first()).toEqual({start_date:'2026-10-27',due_date:'2026-10-30'});
  const mappedRollback=await f.call('/data/import/runs/'+mappedRun.id+'/rollback','POST',{confirmed:true});expect(mappedRollback.status).toBe(200);await f.finish(await mappedRollback.json());
 
  // Exact originals, source identity, native effects and rollback are asserted above.

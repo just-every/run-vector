@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {issueListSchema} from '../issues/list-schema';
 
-export const timelineSchema=issueListSchema.extend({
+export const timelineSchema=issueListSchema.safeExtend({
   today:z.string().date(),
   timezone:z.string(),
   canEdit:z.boolean(),
