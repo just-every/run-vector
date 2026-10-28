@@ -49,6 +49,13 @@ export async function handleRequest(
     return env.ASSETS.fetch(request);
   if (
     isDependencyPath(url.pathname) ||
+    url.pathname === '/mcp' ||
+    url.pathname === '/agents' ||
+    url.pathname.startsWith('/agents/') ||
+    url.pathname === '/.well-known/oauth-protected-resource' ||
+    url.pathname === '/.well-known/oauth-protected-resource/mcp' ||
+    url.pathname === '/rer-business-logo' ||
+    url.pathname === '/rer-business.css' ||
     url.pathname === "/" ||
     url.pathname === "/setup/state" ||
     url.pathname === "/health" ||
