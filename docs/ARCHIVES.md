@@ -19,8 +19,9 @@ Older version 2 backups can lack the authenticated trigger, view and index
 inventory. Ordinary import refuses these backups. If the original installation
 cannot export a current backup, use `rer import --input FILE --yes
 --acknowledge-unverified-schema-objects` to accept that specific limitation.
-This goes through Base's recovery checks and records its unverified-schema
-receipt; it still requires an empty destination and valid migration history.
+This goes through Base's recovery checks and retains its unverified-schema
+receipt in the returned result, including when native forward migrations are
+needed; it still requires an empty destination and valid migration history.
 It does not accept version 1 metadata or bypass native restore authority.
 
 A local export or import first reads the database's migration ledger. A database

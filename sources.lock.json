@@ -640,7 +640,7 @@
       "executable": false
     },
     "docs/ARCHIVES.md": {
-      "sha256": "91d3597eb155be6a104ecca3248c7c80ec364b5422101034692ed5c2f0a507e7",
+      "sha256": "95b170bf097d352ca59e8179e29ba178e8a0de64a0fde5b53b3bf5a0d05a10d1",
       "executable": false
     },
     "docs/AUTHENTICATION.md": {
@@ -2624,7 +2624,7 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "7822c3a8b54df8255f6bc26741201360ba5201f9a88b73b5ff3d8457c28eb3df",
+      "sha256": "77c02501a1a5358e7196d4413fda1d7ff45aaa8db0c50cebb8018c6e0ef94c09",
       "executable": false
     },
     "rer-setup.json": {
@@ -2668,7 +2668,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
-      "sha256": "e3c60c46e401bb7752d19a696390be55788d7ee15b5c569285cf280ecc52884c",
+      "sha256": "ddc29c058f73d44d39eebd801919b9a86db6fbaa6d9b72ed1c0ae8d61daf9899",
       "executable": false
     },
     "scripts/data/archive-upgrade-worker.mjs": {
@@ -2676,7 +2676,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade.mjs": {
-      "sha256": "141d9667e6ec7b8ff2216c1423bd6e45669cacdc264c26389fbdf75ea212ad1c",
+      "sha256": "e86e3c62eb788e0096ff89ca88712311ecc76d581c4293e4ef66ff05a4075e96",
       "executable": false
     },
     "scripts/data/import-issues.mjs": {
