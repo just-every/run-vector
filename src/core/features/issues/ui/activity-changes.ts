@@ -19,6 +19,7 @@ const FIELDS: Record<string, { label: string; show?: (value: unknown, options: S
   projectId: { label: "Project", show: (v, o) => name(o?.projects, v, "No project", "an archived project") },
   milestoneId: { label: "Milestone", show: (v, o) => name(o?.milestones, v, "No milestone", "a removed milestone") },
   cycleId: { label: "Cycle", show: (v, o) => name(o?.cycles, v, "No cycle", "an earlier cycle") },
+  startDate: { label: "Start date" },
   dueDate: { label: "Due date" },
   estimate: { label: "Estimate", show: (v) => (v === null || v === undefined ? "None" : String(v)) },
   labelIds: { label: "Labels", show: (v, o) => (Array.isArray(v) && v.length ? v.map((id) => name(o?.labels, id, "", "a deleted label")).join(", ") : "None") },
@@ -43,7 +44,7 @@ export function activityChanges(kind: string, previousValue: unknown, nextValue:
     .filter((key) => key in after || key in before)
     .map((key) => {
       const field = FIELDS[key]!;
-      const show = key === "dueDate" ? (value: unknown) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value) ? formatDate(value.slice(0, 10)) : "Not set" : field.show;
+      const show = (key === "dueDate" || key === "startDate") ? (value: unknown) => typeof value === "string" && /^\d{4}-\d{2}-\d{2}/.test(value) ? formatDate(value.slice(0, 10)) : "Not set" : field.show;
       return show
         ? { field: field.label, from: show(before[key], options), to: show(after[key], options) }
         : { field: field.label };

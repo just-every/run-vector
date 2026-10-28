@@ -16,7 +16,7 @@ export const streamItemSchema = z.object({
   labels: z.array(z.object({ id: z.string(), name: z.string(), color: z.string() })),
   status: z.object({ id: z.string(), name: z.string(), category: z.string() }),
   priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']),
-  dueDate: z.string().nullable(),
+  startDate: z.string().nullable(), dueDate: z.string().nullable(),
   updatedAt: z.string(),
   assignee: z.object({ id: z.string(), name: z.string() }).nullable(),
   project: z

@@ -29,13 +29,14 @@ it('[ISSUE-020] single-issue Undo restores status timestamps, assignment, labels
     const action = receipt(changed);
     await body(await f.call('/issues/undo', 'POST', { actionId: action.actionId }));
     const after = await read();
-    for (const field of ['status', 'priority', 'assignee', 'labels', 'cycle', 'team', 'completedAt', 'canceledAt'])
+    for (const field of ['status', 'priority', 'assignee', 'labels', 'cycle', 'team', 'completedAt', 'canceledAt', 'startDate', 'dueDate'])
       expect(after[field]).toEqual(before[field]);
     expect(after.version).toBe(before.version + 2);
     expect(after.activity.filter((row: any) => row.nextValue?.undoOf === action.actionId)).toHaveLength(1);
   }
   for (const category of ['completed', 'canceled'])
     await roundTrip('', 'PATCH', { statusId: status(category), priority: 'urgent', assigneeOperatorId: f.bob, labelIds: [label.id] });
+  await roundTrip('', 'PATCH', { startDate: '2035-01-01', dueDate: '2035-01-10' });
   await roundTrip('', 'PATCH', { cycleId: cycle.id });
   await body(await f.call('/issues/' + issue.identifier, 'PATCH', { expectedVersion: (await read()).version, cycleId: cycle.id }));
   const teams = await body(await f.call('/settings/teams', 'POST', { name: 'Undo planning', identifierPrefix: 'UNDO' }));
@@ -48,13 +49,15 @@ it('[ISSUE-020 VIEW-004] native Undo reverses one atomic action and refuses stal
   const read = (identifier: string) => f.data(f.cookie, '/issues/' + identifier);
   const undo = (actionId: string, cookie = f.cookie) => f.any(cookie, '/issues/undo', 'POST', { actionId });
   const a = await f.create({ description: 'Retain payment reproduction', priority: 'low' });
-  const b = await f.create({ priority: 'medium' });
+  const b = await f.create({ priority: 'medium', startDate: '2035-02-01', dueDate: '2035-02-10' });
   const selected = async () => Promise.all([a, b].map(async issue => {
     const current = await read(issue.identifier);
     return { identifier: current.identifier, expectedVersion: current.version };
   }));
   const original = await Promise.all([a, b].map(issue => read(issue.identifier)));
-  const changed = await f.call('/issues/bulk', 'POST', { issues: await selected(), changes: { priority: 'high', estimate: 8 } });
+  await body(await f.call('/issues/bulk', 'POST', { issues: await selected(), changes: { dueDate: '2035-01-10', priority: 'urgent' } }), 400);
+  expect(await Promise.all([a, b].map(issue => read(issue.identifier)))).toEqual(original);
+  const changed = await f.call('/issues/bulk', 'POST', { issues: await selected(), changes: { priority: 'high', estimate: 8, startDate: '2035-02-02' } });
   await body(changed); const action = receipt(changed);
   expect(action.identifiers.toSorted()).toEqual([a.identifier, b.identifier].toSorted());
   await body(await undo(action.actionId, f.bobCookie), 409);
@@ -63,7 +66,7 @@ it('[ISSUE-020 VIEW-004] native Undo reverses one atomic action and refuses stal
   for (const [index, issue] of [a, b].entries()) {
     const current = await read(issue.identifier);
     expect(current).toMatchObject({ priority: original[index].priority, estimate: original[index].estimate,
-      description: original[index].description, status: original[index].status, version: original[index].version + 2 });
+      description: original[index].description, startDate: original[index].startDate, dueDate: original[index].dueDate, status: original[index].status, version: original[index].version + 2 });
     expect(current.activity.filter((row: any) => row.nextValue?.undoOf)).toHaveLength(1);
   }
   const restored = await Promise.all([a, b].map(issue => read(issue.identifier)));

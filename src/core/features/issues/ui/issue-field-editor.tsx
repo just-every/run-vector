@@ -10,6 +10,7 @@ import "./issue-editor.css";
 
 const fieldLabels = {
   estimate: "Estimate",
+  startDate: "Start date",
   dueDate: "Due date",
   expectedOutcome: "Expected outcome",
   customerImpact: "Customer impact",
@@ -52,7 +53,7 @@ export function IssueFieldEditor({
       ? "Not set"
       : field === "estimate"
         ? `${value} points`
-        : field === "dueDate"
+        : field === "dueDate" || field === "startDate"
           ? date(String(value))
           : value;
 

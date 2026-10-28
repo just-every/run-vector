@@ -26,7 +26,7 @@ export function IssueKeyboardFields({ field, rows, options, value, setValue, lab
       <small>No labels selected clears labels.</small>
     </fieldset>
   );
-  if (field === "estimate" || field === "dueDate") return (
+  if (field === "estimate" || field === "dueDate" || field === "startDate") return (
     <label>{issueEditFields[field]}
       <input autoFocus aria-label={issueEditFields[field]} type={field === "estimate" ? "number" : "date"}
         min={field === "estimate" ? 1 : undefined} max={field === "estimate" ? 100 : undefined}

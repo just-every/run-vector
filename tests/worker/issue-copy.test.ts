@@ -45,6 +45,8 @@ it("[PROJ-011 ISSUE-023] native and scoped API copies preserve fields and ordere
   )!;
   const issue = await f.create({
     title: "Copy a complete issue",
+    startDate: "2035-01-01",
+    dueDate: "2035-01-10",
     description: "Keep **this** description",
     priority: "high",
     estimate: 8,
@@ -132,6 +134,8 @@ it("[PROJ-011 ISSUE-023] native and scoped API copies preserve fields and ordere
     "description",
     "priority",
     "estimate",
+    "startDate",
+    "dueDate",
     "customFields",
     "project",
     "milestoneId",

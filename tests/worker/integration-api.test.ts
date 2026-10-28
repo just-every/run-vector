@@ -14,10 +14,19 @@ it('[API-001 API-002] Base scoped token authority drives native routes, usage, s
  expect((await f.api('', '/issues')).status).toBe(401);expect((await f.api('int_'+'a'.repeat(64),'/issues')).status).toBe(401);
  f.restart();
  expect((await f.api(read.token,'/metadata')).status).toBe(200);expect((await f.api(read.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Denied'})).status).toBe(401);
- const created=await f.api(write.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Native API issue'});expect(created.status).toBe(201);const issue=await created.json() as {identifier:string;id:string;version:number};
+ const created=await f.api(write.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Native API issue',startDate:'2035-01-01',dueDate:'2035-01-10'});expect(created.status).toBe(201);const issue=await created.json() as {identifier:string;id:string;version:number};
  const before=(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first());
+ const readIssue=async()=>await (await f.api(read.token,'/issues/'+issue.identifier)).json() as any;
+ expect(await readIssue()).toMatchObject({startDate:'2035-01-01',dueDate:'2035-01-10'});
+ expect((await f.api(write.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Invalid dates',startDate:'2035-01-11',dueDate:'2035-01-10'})).status).toBe(400);
+ expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,startDate:'2035-01-11',title:'Must not change'})).status).toBe(400);
+ expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,dueDate:'2034-12-31'})).status).toBe(400);
+ expect(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first()).toEqual(before);
+ const filtered=await (await f.api(read.token,'/issues?start=range&startFrom=2035-01-01&startTo=2035-01-02&sort=start')).json() as any;
+ expect(filtered.issues.map((row:any)=>({identifier:row.identifier,startDate:row.startDate}))).toEqual([{identifier:issue.identifier,startDate:'2035-01-01'}]);
  expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version+1,title:'Stale'})).status).toBe(409);expect(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first()).toEqual(before);
- expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,title:'Updated through native rule'})).status).toBe(200);
+ expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,title:'Updated through native rule',startDate:'2035-01-02'})).status).toBe(200);
+ expect((await readIssue()).activity.filter((entry:any)=>entry.kind==='issue.updated'&&entry.nextValue?.startDate==='2035-01-02')).toHaveLength(1);
  expect((await f.api(write.token,'/issues/'+issue.identifier+'/comments','POST',{body:'API comment'})).status).toBe(201);
  expect((await f.api(read.token,'/issues?workspaceId=spoof')).status).toBe(400);expect((await f.api(read.token,'/issues/'+issue.identifier)).status).toBe(200);
  // Foreign native records are test data only; the token cannot widen its issuer workspace.

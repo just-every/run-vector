@@ -73,6 +73,8 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
     if(!Number.isSafeInteger(value) || value<1 || value>100)throw Error('Estimate must be an integer from 1 to 100, or empty.');
     return value;
   });
+  const startDate=take('startDate',()=>{const value=text('startDate');if(!value)return null;
+    if(!/^\d{4}-\d\d-\d\d$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0,10)!==value)throw Error('Start date must be a valid YYYY-MM-DD date.');return value;});
   const dueDate=take('dueDate',()=>{const value=text('dueDate');if(!value)return null;
     if(!/^\d{4}-\d\d-\d\d$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0,10)!==value)throw Error('Due date must be a valid YYYY-MM-DD date.');return value;});
   const expectedOutcome=take('expectedOutcome',()=>text('expectedOutcome')||null),customerImpact=take('customerImpact',()=>text('customerImpact')||null);
@@ -91,11 +93,11 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   // Finished work's past cycle stays in the original; Vector commits only open work to a cycle.
   const terminal=['completed','canceled','duplicate'].includes(String(status?.category));
   if(cycle && terminal)omissions.push({row,field:'cycle',code:'terminal_cycle_omitted',message:'Finished issues are not committed to a cycle. The cycle stays in the original.'});
-  const validation=createIssueInputSchema.safeParse({title,description,teamId:team?.id,statusId:status?.id,assigneeOperatorId:assignee?.id??null,projectId:project?.id??null,cycleId:terminal?null:cycle?.id??null,priority,labelIds,estimate,dueDate,expectedOutcome,customerImpact,customFields:{}});
+  const validation=createIssueInputSchema.safeParse({title,description,teamId:team?.id,statusId:status?.id,assigneeOperatorId:assignee?.id??null,projectId:project?.id??null,cycleId:terminal?null:cycle?.id??null,priority,labelIds,estimate,startDate,dueDate,expectedOutcome,customerImpact,customFields:{}});
   if(!validation.success)errors.push(...importValidationErrors(validation.error.issues,row,errors));
   if(errors.length || !validation.success || !team || !status || !createdAt || !updatedAt)return result;
   const data=validation.data,id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
-  const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
+  const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,...(data.startDate?{start_date:data.startDate}:{}),due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
   value.labels=data.labelIds.sort().map(label_id=>({issue_id:id,label_id,created_at:createdAt}));
   value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(input.format==='jira-csv'?{format:input.format,sourceKey:jiraValue(record,'issue key').trim()}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
   const activity=value.activity[0];

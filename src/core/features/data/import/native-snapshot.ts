@@ -35,7 +35,7 @@ const columns = (table: string) => {
 };
 // New nullable columns join an issue's value only once set, preserving the
 // exact shape and hashes of retained pre-feature import snapshots.
-const optional: Record<string,string[]> = { issues:['archived_at','milestone_id'] };
+const optional: Record<string,string[]> = { issues:['archived_at','milestone_id','start_date'] };
 const object = (table: string,alias: string) => {
   const extra=optional[table]??[];
   const base='json_object('+columns(table).filter(name=>!extra.includes(name)).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';

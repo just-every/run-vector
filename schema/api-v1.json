@@ -115,7 +115,44 @@
         "x-operation": "list",
         "responses": {
           "200": {
-            "description": "Native result; see docs/API.md"
+            "description": "Native result; see docs/API.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "issues": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "startDate",
+                          "dueDate"
+                        ],
+                        "properties": {
+                          "startDate": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "date",
+                            "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                          },
+                          "dueDate": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "format": "date",
+                            "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -156,6 +193,9 @@
           "project",
           "cycle",
           "label",
+          "start",
+          "startFrom",
+          "startTo",
           "due",
           "dueFrom",
           "dueTo",
@@ -299,7 +339,17 @@
             "name": "sort",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "enum": [
+                "newest",
+                "oldest",
+                "priority",
+                "status",
+                "start",
+                "due",
+                "updated",
+                "manual"
+              ]
             }
           },
           {
@@ -307,6 +357,38 @@
             "in": "query",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "start",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "all",
+                "overdue",
+                "range",
+                "none",
+                "this_week"
+              ],
+              "default": "all"
+            },
+            "description": "this_week uses the workspace calendar week, Monday through Sunday."
+          },
+          {
+            "name": "startFrom",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "startTo",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           }
         ]
@@ -360,7 +442,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                  "startDate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date",
+                    "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                  },
+                  "dueDate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date",
+                    "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                  }
+                },
+                "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue."
               }
             }
           },
@@ -423,9 +524,29 @@
                           }
                         }
                       }
+                    },
+                    "startDate": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date",
+                      "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                    },
+                    "dueDate": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date",
+                      "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
                     }
                   },
-                  "additionalProperties": true
+                  "additionalProperties": true,
+                  "required": [
+                    "startDate",
+                    "dueDate"
+                  ]
                 }
               }
             }
@@ -484,7 +605,71 @@
         "x-operation": "update",
         "responses": {
           "200": {
-            "description": "Native result; see docs/API.md"
+            "description": "Native result; see docs/API.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "branchName": {
+                      "type": "string"
+                    },
+                    "deployments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "repository",
+                          "deploymentId",
+                          "sha",
+                          "environment",
+                          "deployedAt"
+                        ],
+                        "properties": {
+                          "repository": {
+                            "type": "string"
+                          },
+                          "deploymentId": {
+                            "type": "integer"
+                          },
+                          "sha": {
+                            "type": "string"
+                          },
+                          "environment": {
+                            "type": "string"
+                          },
+                          "deployedAt": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        }
+                      }
+                    },
+                    "startDate": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date",
+                      "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                    },
+                    "dueDate": {
+                      "type": [
+                        "string",
+                        "null"
+                      ],
+                      "format": "date",
+                      "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                    }
+                  },
+                  "additionalProperties": true,
+                  "required": [
+                    "startDate",
+                    "dueDate"
+                  ]
+                }
+              }
+            }
           },
           "400": {
             "description": "Invalid input"
@@ -529,7 +714,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object"
+                "type": "object",
+                "properties": {
+                  "startDate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date",
+                    "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                  },
+                  "dueDate": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "format": "date",
+                    "description": "Calendar date (YYYY-MM-DD). When startDate and dueDate are both set, startDate must be on or before dueDate."
+                  }
+                },
+                "description": "Optional nullable startDate and dueDate use calendar dates. Invalid date order returns 400 without changing the issue."
               }
             }
           },

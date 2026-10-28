@@ -56,7 +56,7 @@ export function IssueKeyboardDialog({ field, targets, options, onClose, onSucces
     let changes;
     try {
       if (field === "labelIds") changes = { labelIds: labels };
-      else if (field === "estimate" || field === "dueDate") {
+      else if (field === "estimate" || field === "dueDate" || field === "startDate") {
         const { expectedVersion: _version, ...change } = issueFieldPayload(rows[0]!.version, field, value);
         changes = change;
       } else changes = { [field]: value || null };

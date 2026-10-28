@@ -10,6 +10,7 @@ import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import type { IssueListData, IssueListQuery } from "../list-schema";
 import { defaultIssueListQuery, issueListSearch } from "./issue-list-controls";
 import { IssueFilters } from "./issue-filters";
+import { IssueTimeline } from "../../calendar-view/timeline";
 import { IssueBoard } from "./issue-board";
 import { IssueTable } from "./issue-table";
 import { IssueBulk } from "./issue-bulk";
@@ -55,6 +56,7 @@ export function IssueListView({
   before,
   rowAction,
 }: Props) {
+  const [timeline,setTimeline]=useState(false);
   const hydrated = useHydrated();
   const navigate = useNavigate(), pathname = useLocation({ select: location => location.pathname });
   const [tabState, setTabState] = useState<'saving' | 'error' | null>(null);
@@ -172,6 +174,7 @@ export function IssueListView({
             {layout === "board" ? "List" : "Board"}
           </button>
         )}
+        {options?.operator.role!=="guest"&&<button aria-pressed={timeline} disabled={!hydrated} onClick={()=>setTimeline(!timeline)}>Timeline</button>}
       </nav>
       {tabState === 'error' && <p role="alert">This tab could not be opened. Choose it again to retry.</p>}
       {!denied && (
@@ -256,7 +259,7 @@ export function IssueListView({
             }
             onSuccess={updatedSelection}
           />
-          {layout === "board" ? (
+          {timeline ? <IssueTimeline query={query}/> : layout === "board" ? (
             options ? (
               <IssueBoard
                 column={boardColumn}

@@ -3,7 +3,7 @@ import { ImportError,type ImportDiagnostic,type ImportInput,type ImportMapping }
 import { readJiraDates,type JiraDateCell } from './jira-dates';
 
 export const jiraPayloadKey='$jiraColumns';
-const scalar:Record<string,string>={'issue id':'sourceId',summary:'title',description:'description',status:'status',priority:'priority',assignee:'assignee',created:'createdAt',updated:'updatedAt','due date':'dueDate','story point estimate':'estimate'};
+const scalar:Record<string,string>={'issue id':'sourceId',summary:'title',description:'description',status:'status',priority:'priority',assignee:'assignee',created:'createdAt',updated:'updatedAt','start date':'startDate','due date':'dueDate','story point estimate':'estimate'};
 const scalarField=(header:string)=>Object.hasOwn(scalar,header)?scalar[header]:undefined;
 const mapping:ImportMapping={...Object.fromEntries(Object.values(scalar).map(field=>[field,field])),labels:'labels',cycle:'cycle'};
 export const jiraHeader=(header:string)=>header.trim().toLowerCase();
@@ -23,7 +23,7 @@ export function readJiraCsv(csv:{headers:string[];rows:{row:number;values:string
   for(const name of new Set(headers))if((scalarField(name)||['issue key','original estimate','issue type','status category','resolved'].includes(name))&&headers.filter(header=>header===name).length>1)errors.push({row:1,field:name,code:'jira_repeated_scalar',message:'This scalar column occurs more than once. Retain only the intended scalar column; multivalue columns retain every position.'});
   for(const row of csv.rows)for(let column=0;column<headers.length;column++) {
     const field=headers[column],rawValue=row.values[column]??'',value=rawValue.trim();if(!value)continue;
-    if(['created','updated','due date','resolved'].includes(field))dates.push({row:row.row,column,field:csv.headers[column],value,rawValue});
+    if(['created','updated','start date','due date','resolved'].includes(field))dates.push({row:row.row,column,field:csv.headers[column],value,rawValue});
     if(field==='comment'||field==='attachment') {
       const count=field==='comment'?2:3,segments=value.split(';');
       if(segments.length<=count||!segments.slice(0,count).every(segment=>segment.trim())||!segments.slice(count).join(';').trim())errors.push({row:row.row,column:column+1,field:`${csv.headers[column]} [column ${column+1}]`,value:rawValue,code:'jira_invalid_metadata',message:`Expected ${field==='comment'?'date;author;body':'date;author;filename;URL'}; this occurrence cannot be read.`});

@@ -15,6 +15,7 @@ type Row = {
   priority: IssueListData["issues"][number]["priority"];
   createdAt: string;
   updatedAt: string;
+  startDate: string | null;
   dueDate: string | null;
   statusId: string;
   statusName: string;
@@ -66,7 +67,7 @@ export async function listIssues(
       db.prepare(`SELECT COUNT(*) total ${relation}`).bind(...values),
       db
         .prepare(
-          `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.due_date dueDate,
+          `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.start_date startDate,i.due_date dueDate,
  s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,p.id projectId,p.name projectName,c.name cycleName,
  i.milestone_id milestoneId,(SELECT m.name FROM project_milestones m WHERE m.id=i.milestone_id AND m.project_id=i.project_id) milestoneName,
  parent.identifier parentIdentifier,parent.title parentTitle,${blockedSql} blocked,${group.key} groupKey,
@@ -127,6 +128,7 @@ export async function listIssues(
       cycleId: row.cycleId,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
+      startDate: row.startDate,
       dueDate: row.dueDate,
       milestoneId: row.milestoneId,
       milestone: row.milestoneId ? { id: row.milestoneId, name: row.milestoneName!, projectId: row.projectId! } : null,
