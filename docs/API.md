@@ -289,7 +289,10 @@ Send the member to `GET /api/oauth/authorize` with `response_type=code`, `client
 `redirect_uri`, a space-separated `scope` and an unpredictable `state`. Requested
 scopes must be a subset of the registered scopes. For PKCE, send a base64url
 SHA-256 `code_challenge` and `code_challenge_method=S256`. Plain PKCE is refused.
-An unknown client or mismatched redirect returns an error without redirecting.
+An unknown client, mismatched redirect or malformed request returns JSON 400
+without a Location header to API clients. Browser navigation instead returns
+303 to Vector’s own consent error page, where the member can return to the app
+and restart. An unverified redirect URL is never used for an error.
 The member signs into Vector and reviews the application's name, permissions
 and destination at `/app/settings/oauth-consent`. Owners, Admins and Members
 may approve access for themselves; Guests and Viewers receive 403.
@@ -323,7 +326,10 @@ and every member grant, with scopes, creation time and last successful use.
 `POST /api/settings/oauth-apps` accepts `{name, redirectUris, scopes}` and
 returns the generated client ID and show-once secret. To revoke a grant, use
 `DELETE /api/settings/oauth-apps/grants/ID` or its Settings control. The next
-API call returns 401. Registration, consent, issuance and revocation are audited
+API call returns 401. OAuth grants are separate from the member’s personal
+API-token list; the personal token DELETE returns 404 for a grant’s token ID
+without changing its authority. A member who wants an app removed asks an Admin
+to revoke it in OAuth apps. Registration, consent, issuance and revocation are audited
 without credentials or request bodies.
 
 Archives exclude application registrations, client-secret hashes, authorization

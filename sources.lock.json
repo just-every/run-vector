@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "82eb3f69eeec3a592745f1234690b375996d4daaa5a75d14412dd89185a4c0f7",
+      "sha256": "2ad8a883a12f60f2ae10a34c9607f6556174ba65f3271e26572601ca628cb358",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -7057,7 +7057,7 @@
       "executable": false
     },
     "tests/e2e/integrations/oauth-apps.mjs": {
-      "sha256": "c4d0e200773afe1fd79cd851f04096b711aa1e287257ec53380ffd46dfcfbef2",
+      "sha256": "77f8df5ad2faaced9b38ecb4ffcb964a475fbfa65cfbda82ae87f0a3acb62ce7",
       "executable": false
     },
     "tests/e2e/integrations/outbound-loopback.mjs": {

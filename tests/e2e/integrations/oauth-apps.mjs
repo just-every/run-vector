@@ -1,5 +1,6 @@
 import {jsonMediaType,formMediaType} from '../../../src/core/features/oauth-apps/media-types.ts';
 import assert from 'node:assert/strict';
+import {expect} from '@playwright/test';
 import {randomBytes,randomUUID,createHash} from 'node:crypto';
 import {mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -14,7 +15,13 @@ export async function exerciseOAuthApps({page,runtime,cookie,evidence}){
   await mkdir(evidence,{recursive:true});
   for(const width of [1440,390]){
    await page.setViewportSize({width,height:1000});await region.scrollIntoViewIfNeeded();
-   await region.screenshot({path:join(evidence,name+'-'+width+'.png')});
+   await region.evaluate(root=>{
+    for(const element of document.querySelectorAll('body *'))
+     if(['fixed','sticky'].includes(getComputedStyle(element).position)&&!root.contains(element)&&!element.contains(root))
+      element.setAttribute('data-oauth-capture-hidden','');
+   });
+   await region.screenshot({path:join(evidence,name+'-'+width+'.png'),style:'[data-oauth-capture-hidden] { visibility:hidden !important; }'});
+   await page.evaluate(()=>document.querySelectorAll('[data-oauth-capture-hidden]').forEach(element=>element.removeAttribute('data-oauth-capture-hidden')));
   }
   await page.setViewportSize({width:1440,height:1000});
  };
@@ -31,7 +38,7 @@ export async function exerciseOAuthApps({page,runtime,cookie,evidence}){
  await panel.getByLabel('Application name',{exact:true}).fill(name);await panel.getByLabel('Redirect URLs',{exact:true}).fill('http://example.com/callback');
  let response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/oauth-apps'&&r.request().method()==='POST');
  await panel.getByRole('button',{name:'Register application',exact:true}).click();assert.equal((await response).status(),400);
- const alert=panel.getByRole('alert');await alert.waitFor();assert.ok(await alert.isVisible());assert.ok(await alert.evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight;}));
+ const alert=panel.getByRole('alert');await alert.waitFor();assert.ok(await alert.isVisible());await expect(alert).toBeInViewport();
  await capture(page,panel.locator('form'),'oauth-register-refused');
  await panel.getByLabel('Redirect URLs',{exact:true}).fill(redirect);
  await panel.getByRole('checkbox',{name:'Create and update issues',exact:true}).check();await panel.getByRole('checkbox',{name:'Read projects you can access',exact:true}).check();
