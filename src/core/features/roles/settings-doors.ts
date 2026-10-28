@@ -12,6 +12,7 @@ export const settingsFormDoors: Record<string, readonly string[]> = {
   'integrations/ui/slack-app-settings.tsx#SlackAppSettings': ['POST /settings/integrations/slack/app/create', 'POST /settings/integrations/slack/app'],
   'integrations/ui/slack-member-mappings.tsx#SlackMemberMappings': ['POST /settings/integrations/slack/app/members'],
   'integrations/ui/token-settings.tsx#TokenSettings': ['POST /settings/integrations/tokens'],
+  'oauth-apps/ui/settings-panel.tsx#OAuthAppsPanel': ['POST /settings/oauth-apps'],
   'integrations/ui/source-settings.tsx#SourceSettings': ['POST /settings/integrations/sources'],
   'integrations/ui/webhook-settings.tsx#WebhookSettings': ['POST /settings/integrations/destinations'],
   'integrations/ui/delivery-setup.tsx#DeliverySetup': ['POST /settings/integrations/delivery'],

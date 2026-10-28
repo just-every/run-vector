@@ -5897,7 +5897,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "5ad51df9530661c4ff12e53366825b2033d25ae854816c4e0a5a3983fe8bab06",
+      "sha256": "bdf446c5a3289e68cba8f4d050509c5d929f064f0f06ab125469aaa2fa8d2c3e",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -5913,7 +5913,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "9c460e00ae1b3abdaa9081c241b435585ef8d2a38c053d6a6da52de1af9f0e89",
+      "sha256": "e25f0f78f24090e5b57c57adf005a705e1e82741769b17e5c73c84b32134e3c8",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
@@ -8029,11 +8029,11 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "d2ecfc2fafddfb2e2798c9dfa0163ba6e8db451f89a5a4ebc928419009f25822",
+      "sha256": "f2eec81a8989c3826c0c7b61569d0a66fa08975b27bd0f49a1333514468fcb54",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
-      "sha256": "11ff8dc19d4ef99b06036ab77712528e7c6d55ca34e6f6281fa50aa3614df98d",
+      "sha256": "373cd1e5fa836756c279af2073ef659ed6946d26579763ee8074b9eb55686ac3",
       "executable": false
     },
     "tests/worker/sample-auth-fixture.ts": {

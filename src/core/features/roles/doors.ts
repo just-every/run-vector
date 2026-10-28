@@ -91,6 +91,7 @@ export const doors: Door[] = [
   {method:'DELETE',path:'/settings/oauth-apps/grants/:id',row:'integrations.manage'},
   {method:'GET',path:'/oauth/consent',row:'identity.personal'},
   {method:'POST',path:'/oauth/consent',row:'identity.personal'},
+  {method:'POST',path:'/oauth/token',row:'identity.personal'},
   {method:'GET',path:'/integrations/slack/oauth/callback',row:'integrations.manage',workMutation:true},
   {method:'GET',path:'/settings/integrations/slack/app',row:'integrations.manage'},
   {method:'GET',path:'/settings/integrations/slack/app/members',row:'integrations.manage'},

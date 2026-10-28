@@ -1,4 +1,5 @@
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
+import {exchangeInput} from '../../src/core/features/oauth-apps/schema';
 import {documentInput,documentEdit,documentComment,specificationInput} from '../../src/core/features/documents/schema';
 import {slackIntakeFixture} from './slack-events-scenario';
 import {env} from 'cloudflare:workers';
@@ -201,6 +202,12 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const oauthRequest={response_type:'code',client_id:oauthApp.id,redirect_uri:'https://synthetic-vector-4531.example.test/callback',scope:'issues:read',state:'synthetic-vector-4532'};
   const oauthConsent=await call(member,'/oauth/consent','POST',{request:oauthRequest,decision:'approve'});
   const oauthGrant=await read(await app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:oauthApp.id,client_secret:oauthApp.secret,code:new URL(oauthConsent.redirect).searchParams.get('code'),redirect_uri:oauthRequest.redirect_uri})},bindings));
+  // Keep a fresh Member consent unused until the same person becomes a Viewer.
+  // The public token exchange must recheck the consenting person's current role.
+  const pendingConsent=await call(member,'/oauth/consent','POST',{request:oauthRequest,decision:'approve'});
+  const pendingCode=new URL(pendingConsent.redirect).searchParams.get('code');
+  expect(pendingCode).toBeTruthy();
+  native('POST','/oauth/token',exchangeInput.parse({grant_type:'authorization_code',client_id:oauthApp.id,client_secret:oauthApp.secret,code:pendingCode,redirect_uri:oauthRequest.redirect_uri}));
   native('POST','/settings/oauth-apps',{name:'synthetic-vector-4533',redirectUris:[oauthRequest.redirect_uri],scopes:['issues:read']});
   native('DELETE','/settings/oauth-apps/grants/:id',undefined,{id:oauthGrant.grant_id});
   native('POST','/oauth/consent',{request:oauthRequest,decision:'approve'});
