@@ -23,7 +23,7 @@ import { githubIssueProjection } from './github-read';
 const inputHelp:Record<string,string>={name:'Enter a name for this connection.',sourceId:'Use a source ID with letters, numbers, dots, underscores or hyphens.',teamId:'Choose a team for new reports.',repository:'Enter the GitHub owner and repository separated by /, for example just-every/run-vector.',overlapHours:'Choose a whole number of hours from 0 to 24.',accountId:'Enter the 32-character Cloudflare account ID.',apiToken:'Enter the Cloudflare read-only API token.',scopes:'Choose at least one API permission.',expiresAt:'Choose a valid future expiry date.'};
 function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_integration_input',inputHelp[String(result.error.issues[0]?.path[0])]??'Check the form values and try again.');return result.data;}
 const id=z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
-const personalTokens='SELECT namespace,token_id AS id,name,scopes,created_at AS createdAt,expires_at AS expiresAt,revoked_at AS revokedAt,NOT EXISTS(SELECT 1 FROM integration_tokens t WHERE t.namespace=b.namespace AND t.id=b.token_id) AS requiresReentry FROM vector_integration_tokens b WHERE workspace_id=? AND operator_id=? ORDER BY created_at DESC LIMIT 100';
+const personalTokens='SELECT namespace,token_id AS id,name,scopes,created_at AS createdAt,expires_at AS expiresAt,revoked_at AS revokedAt,NOT EXISTS(SELECT 1 FROM integration_tokens t WHERE t.namespace=b.namespace AND t.id=b.token_id) AS requiresReentry FROM vector_integration_tokens b WHERE workspace_id=? AND operator_id=? AND namespace NOT LIKE \'oauth:%\' ORDER BY created_at DESC LIMIT 100';
 export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  addChannelRoutes(app);
  addSlackAppRoutes(app);
@@ -46,7 +46,15 @@ export function addIntegrationConfigRoutes(app:Hono<AppEnvironment>){
  // A member's own tokens: the personal half of Settings → Integrations (ROLE-008 row "Open Settings pages").
  app.get('/settings/integrations/tokens',async c=>{const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined);const [tokens]=await guardedSql(c.env.DB,ownerPredicate(owner)).batch([{sql:personalTokens,params:[owner.workspace,owner.id]}]);return c.json({tokens});});
  app.get('/settings/integrations/tokens/usage',async c=>{const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined);return c.json({usage:await ownerTokens(c.env.DB,owner).usage(owner)});});
- app.delete('/settings/integrations/tokens/:id',async c=>{const owner=await integrationOwner(c.env,c.req.raw),selected=c.req.param('id');if(!/^[a-f0-9-]{36}$/.test(selected))throw new IntegrationError(400,'invalid_token_id');return c.json(await ownerTokens(c.env.DB,owner).revoke(owner,selected));});
+ app.delete('/settings/integrations/tokens/:id',async c=>{
+  const owner=await integrationOwner(c.env,c.req.raw),selected=c.req.param('id');
+  const [tokens]=await guardedSql(c.env.DB,ownerPredicate(owner)).batch([{
+   sql:'SELECT t.id FROM integration_tokens t JOIN vector_integration_tokens b ON b.namespace=t.namespace AND b.token_id=t.id WHERE t.namespace=? AND t.id=? AND b.workspace_id=? AND b.operator_id=?',
+   params:['vector:'+owner.workspace+':'+owner.id,selected,owner.workspace,owner.id],
+  }]);
+  if(!tokens.length)throw new IntegrationError(404,'token_not_found');
+  return c.json(await ownerTokens(c.env.DB,owner).revoke(owner,selected));
+ });
  app.post('/settings/integrations/sources',async c=>c.json(await registerSource(c.env,await integrationOwner(c.env,c.req.raw),parse(sourceConfigInput,await readRequestJson(c.req.raw))),201));
  app.post('/settings/integrations/sources/:id/rotate',async c=>{const input=parse(rotationInput,await readRequestJson(c.req.raw));return c.json(await rotateSource(c.env,await integrationOwner(c.env,c.req.raw),parse(id,c.req.param('id')),input.overlapHours));});
  app.post('/settings/integrations/sources/:id/webhook-url',async c=>c.json(await replaceSourceWebhook(c.env,await integrationOwner(c.env,c.req.raw),parse(id,c.req.param('id'))),201));

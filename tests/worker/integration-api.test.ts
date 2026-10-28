@@ -1,3 +1,5 @@
+import {jsonMediaType,formMediaType} from '../../src/core/features/oauth-apps/media-types';
+import {pkce} from '../../src/core/features/oauth-apps/repository';
 import { mentionToken } from '../../src/core/features/notifications/mention-token';
 import { apiCoverage } from '../../src/core/features/integrations/api-coverage';
 import { z } from 'zod';
@@ -10,9 +12,8 @@ afterEach(()=>vi.useRealTimers());
 import {setupIntegrations} from './integration-fixture';
 import {invite,actor,request,origin,bindings} from './base-auth-fixture';
 import {createIntegrationApi} from '../../src/core/features/integrations/api';
-it('[API-001 API-002 ISSUE-022] Base scoped token authority drives native routes, usage, stale writes and revocation without HTML or file admission',async()=>{
- vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date());
- const f=await setupIntegrations(),read=await f.issueToken(['issues:read','metadata:read']),write=await f.issueToken(['issues:read','issues:write','comments:write']);
+it('[API-001 API-002 API-004 ISSUE-022] Base scoped token authority drives native routes, usage, stale writes and revocation without HTML or file admission',async()=>{
+ const f=await setupIntegrations();await oauthAuthorizationJourney(f);const read=await f.issueToken(['issues:read','metadata:read']),write=await f.issueToken(['issues:read','issues:write','comments:write']);
  expect((await f.api('', '/issues')).status).toBe(401);expect((await f.api('int_'+'a'.repeat(64),'/issues')).status).toBe(401);
  f.restart();
  expect((await f.api(read.token,'/metadata')).status).toBe(200);expect((await f.api(read.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Denied'})).status).toBe(401);
@@ -30,6 +31,7 @@ it('[API-001 API-002 ISSUE-022] Base scoped token authority drives native routes
  expect((await f.api(write.token,'/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,title:'Updated through native rule',startDate:'2035-01-02'})).status).toBe(200);
  expect((await readIssue()).activity.filter((entry:any)=>entry.kind==='issue.updated'&&entry.nextValue?.startDate==='2035-01-02')).toHaveLength(1);
  expect((await f.api(write.token,'/issues/'+issue.identifier+'/comments','POST',{body:'API comment'})).status).toBe(201);
+ vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date());
  const day=new Date(),monday=new Date(day);monday.setUTCDate(day.getUTCDate()-(day.getUTCDay()+6)%7);
  const weekStart=monday.toISOString().slice(0,10),outsideWeek=new Date(monday);outsideWeek.setUTCDate(monday.getUTCDate()-1);
  const weekly=await (await f.api(write.token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'Starts this week',startDate:weekStart})).json() as any;
@@ -231,3 +233,51 @@ it('[API-003 ISSUE-008] concurrent same-revision comment edits commit exactly on
  expect((await env.DB.prepare('SELECT id FROM notifications WHERE event_id=? AND recipient_id=?').bind(edits[0].id,peer).all()).results).toHaveLength(1);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);
+
+
+/** OAuth's public-door journey extends the existing scoped-token registration. */
+async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegrations>>){
+ const redirect='https://synthetic-vector-4501.example.test/callback',input={name:'synthetic-vector-4501',redirectUris:[redirect],scopes:['issues:read','issues:write']};
+ const registered=await f.call('/settings/oauth-apps','POST',input);expect(registered.status).toBe(201);
+ const client=await registered.json() as {id:string;secret:string};
+ expect((await (await f.call('/settings/oauth-apps')).text()).includes(client.secret)).toBe(false);
+ expect((await f.call('/settings/oauth-apps','POST',{...input,redirectUris:['http://synthetic-vector-4501.example.test/callback']})).status).toBe(400);
+ const admin=await invite('synthetic-vector-4502@vector.test',f.cookie,'admin'),member=await invite('synthetic-vector-4503@vector.test',f.cookie),guest=await invite('synthetic-vector-4504@vector.test',f.cookie),viewer=await invite('synthetic-vector-4505@vector.test',f.cookie,'viewer');
+ const memberId=await actor(member),guestId=await actor(guest);
+ expect((await f.call('/settings/teams/'+f.initial.teams[0].id+'/members/'+memberId,'PUT',{role:'member'})).status).toBe(200);
+ expect((await f.call('/settings/operators/'+guestId+'/role','PATCH',{role:'guest',teamIds:[f.initial.teams[0].id]})).status).toBe(200);
+ const call=(cookie:string,path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,cookie);
+ const verifier=Array.from(crypto.getRandomValues(new Uint8Array(32)),n=>n.toString(16).padStart(2,'0')).join('');
+ const auth={response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'issues:read',state:'synthetic-vector-4507',code_challenge:await pkce(verifier),code_challenge_method:'S256'};
+ const authorize=(cookie:string)=>call(cookie,'/oauth/consent','POST',{request:auth,decision:'approve'});
+ const exchange=(code:string,secret=client.secret)=>f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':formMediaType},body:new URLSearchParams({grant_type:'authorization_code',client_id:client.id,client_secret:secret,code,redirect_uri:redirect,code_verifier:verifier})},bindings);
+ for(const cookie of [guest,viewer]){
+  const before=await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_codes').first('n');
+  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(403);expect((await authorize(cookie)).status).toBe(403);
+  expect(await env.DB.prepare('SELECT COUNT(*) AS n FROM vector_oauth_codes').first('n')).toBe(before);
+ }
+ for(const change of [{client_id:crypto.randomUUID()},{redirect_uri:'https://synthetic-vector-4508.example.test/callback'}]){
+  const r=await f.app.request(origin+'/api/oauth/authorize?'+new URLSearchParams({...auth,...change}),{},bindings);expect(r.status).toBe(400);expect(r.headers.has('location')).toBe(false);
+ }
+ const grantFor=async(cookie:string)=>{
+  expect((await call(cookie,'/oauth/consent?'+new URLSearchParams(auth))).status).toBe(200);
+  const approved=await authorize(cookie);expect(approved.status).toBe(200);const code=new URL((await approved.json() as {redirect:string}).redirect).searchParams.get('code')!;
+  expect((await exchange(code,'synthetic-vector-4509')).status).toBe(401);
+  const issued=await exchange(code);expect(issued.status).toBe(200);
+  return {code,...await issued.json() as {access_token:string;grant_id:string}};
+ };
+ await grantFor(f.cookie);await grantFor(admin);const token=await grantFor(member);
+ expect((await f.api(token.access_token,'/issues')).status).toBe(200);
+ const before=await env.DB.prepare('SELECT * FROM issues ORDER BY id').all();
+ expect((await f.api(token.access_token,'/issues','POST',{teamId:f.initial.teams[0].id,title:'synthetic-vector-4512'})).status).toBe(403);
+ expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(before.results);
+ const tokenId=await env.DB.prepare('SELECT token_id FROM vector_oauth_grants WHERE id=?').bind(token.grant_id).first<string>('token_id');
+ const personal=await (await call(member,'/settings/integrations/tokens')).json() as {tokens:{id:string}[]};
+ expect(personal.tokens.some(row=>row.id===tokenId)).toBe(false);
+ expect((await call(member,'/settings/integrations/tokens/'+tokenId,'DELETE')).status).toBe(404);expect((await f.api(token.access_token,'/issues')).status).toBe(200);
+ const inventory=await (await call(admin,'/settings/oauth-apps')).json() as {grants:{id:string}[]};expect(inventory.grants.some(row=>row.id===token.grant_id)).toBe(true);
+ expect((await call(admin,'/settings/oauth-apps/grants/'+token.grant_id,'DELETE')).status).toBe(200);expect((await f.api(token.access_token,'/issues')).status).toBe(401);
+ const replay=await grantFor(member);expect((await exchange(replay.code)).status).toBe(400);expect((await f.api(replay.access_token,'/issues')).status).toBe(401);
+ const current=await grantFor(member);
+ expect((await f.call('/settings/operators/'+memberId,'DELETE')).status).toBe(200);expect((await f.api(current.access_token,'/issues')).status).toBe(401);
+}

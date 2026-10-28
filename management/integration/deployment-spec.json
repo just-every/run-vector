@@ -643,7 +643,13 @@
     },
     {
       "binding": "DB",
-      "name": "0106_issue_start_date.sql",
+      "name": "0106_oauth_apps.sql",
+      "sha256": "c222942a27a8cd7afa73af8e0599d6a456fa184e870f2538dd15b7644cb58be5",
+      "sql": "-- OAuth credentials and consent are local to this installation and excluded from archives.\nCREATE TABLE vector_oauth_apps (\n id TEXT PRIMARY KEY, workspace_id TEXT NOT NULL, name TEXT NOT NULL,\n redirect_uris TEXT NOT NULL, scopes TEXT NOT NULL, secret_hash TEXT NOT NULL,\n created_by TEXT NOT NULL, created_at INTEGER NOT NULL\n);\nCREATE TABLE vector_oauth_codes (\n code_hash TEXT PRIMARY KEY, app_id TEXT NOT NULL, workspace_id TEXT NOT NULL,\n operator_id TEXT NOT NULL, redirect_uri TEXT NOT NULL, scopes TEXT NOT NULL,\n challenge TEXT, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL,\n used_at INTEGER, grant_id TEXT, session_id TEXT NOT NULL\n);\nCREATE TABLE vector_oauth_grants (\n id TEXT PRIMARY KEY, app_id TEXT NOT NULL, workspace_id TEXT NOT NULL,\n operator_id TEXT NOT NULL, scopes TEXT NOT NULL, namespace TEXT NOT NULL UNIQUE,\n token_id TEXT, created_at INTEGER NOT NULL, revoked_at INTEGER\n);\nCREATE INDEX vector_oauth_grants_inventory ON vector_oauth_grants(workspace_id,created_at);\nDROP TRIGGER vector_integration_token_profile;\nCREATE TRIGGER vector_integration_token_profile AFTER INSERT ON integration_tokens BEGIN\n INSERT INTO vector_integration_tokens(namespace,token_id,workspace_id,operator_id,name,scopes,created_at,expires_at,revoked_at)\n SELECT NEW.namespace,NEW.id,o.workspace_id,o.id,NEW.name,NEW.scopes,NEW.created_at,NEW.expires_at,NEW.revoked_at\n FROM operators o WHERE o.removed_at IS NULL AND (\n NEW.namespace='vector:'||o.workspace_id||':'||o.id OR EXISTS(\n SELECT 1 FROM vector_oauth_grants g WHERE g.namespace=NEW.namespace AND g.operator_id=o.id AND g.workspace_id=o.workspace_id AND g.revoked_at IS NULL));\n SELECT CASE WHEN EXISTS(SELECT 1 FROM vector_integration_tokens WHERE namespace=NEW.namespace AND token_id=NEW.id)\n THEN 1 ELSE json('native token issuer unavailable') END;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0107_issue_start_date.sql",
       "sha256": "e5437ba35933e55715b6673a61cbfa12c444033bcd756f8512366687deeea84e",
       "sql": "ALTER TABLE issues ADD COLUMN start_date TEXT;\n\nCREATE INDEX issues_start_date ON issues(start_date) WHERE start_date IS NOT NULL;\n\nCREATE TRIGGER issues_start_date_insert BEFORE INSERT ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nCREATE TRIGGER issues_start_date_update BEFORE UPDATE OF start_date,due_date ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nALTER TABLE project_template_issues ADD COLUMN start_offset_days INTEGER;\n"
     }
