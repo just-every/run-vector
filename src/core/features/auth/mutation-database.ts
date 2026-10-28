@@ -1,3 +1,6 @@
+import { prepareMutationAttribution, type MutationAttribution } from '../agent-door/attribution';
+export type { MutationAttribution } from '../agent-door/attribution';
+
 /** An API request is admitted before its body is read. Bind its repositories to
  * the same native identity and assert it inside each D1 transaction, including
  * single statements and ORM RETURNING queries. A failed guard aborts the batch,
@@ -30,7 +33,7 @@ export function isMutationAccessError(error: unknown): boolean {
 
 type BaseFence = { sessionId: string; operatorVersion: number };
 export type NativeAccessFence = { sql: string; values: (string|number|null)[]; workspace?:string; visibility?:NativeAccessFence };
-type Identity = { actor: string; sessionHash?: BaseFence; accessFence?: NativeAccessFence; authorityFence?: NativeAccessFence };
+type Identity = { actor: string; sessionHash?: BaseFence; accessFence?: NativeAccessFence; authorityFence?: NativeAccessFence; attributionKey?: string };
 const scopes = new WeakMap<
   D1Database,
   { source: D1Database; identity: Identity }
@@ -48,13 +51,17 @@ export function mutationDatabase(
   sessionHash?: BaseFence,
   accessFence?: NativeAccessFence,
   authorityFence?: NativeAccessFence,
+  attribution?: MutationAttribution,
 ): D1Database {
+  const preparedAttribution = prepareMutationAttribution(actor, attribution);
   const existing = scopes.get(source);
   if (existing) {
     if (existing.identity.actor !== actor) throw new MutationAccessError();
+    if (preparedAttribution && existing.identity.attributionKey !== preparedAttribution.key)
+      throw new Error('A native mutation database cannot change agent attribution.');
     return source; // Keep the stronger native-session fence on repository calls.
   }
-  const identity = { actor, sessionHash, accessFence, authorityFence };
+  const identity = { actor, sessionHash, accessFence, authorityFence, attributionKey: preparedAttribution?.key };
   const base = sessionHash;
   const sessionClause = base
     ? ` AND EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_sessions s ON s.operator_id=m.auth_id JOIN oa_operators a ON a.id=m.auth_id
@@ -89,13 +96,21 @@ export function mutationDatabase(
       )
       .bind(...values);
     try {
+      // D1 batches are SQLite transactions. The singleton exists only inside
+      // this transaction, including trigger effects; rollback removes it too.
+      const beginAttribution = preparedAttribution ? [source.prepare(`INSERT INTO vector_agent_context
+        (id,agent_id,agent_name,person_id,person_name,consent_reference,approvers_json,prepared_by)
+        VALUES(1,?,?,?,?,?,?,?)`).bind(...preparedAttribution.values)] : [];
+      const endAttribution = preparedAttribution ? [source.prepare('DELETE FROM vector_agent_context WHERE id=1')] : [];
       return (
         await source.batch<T>([
           guard,
+          ...beginAttribution,
           ...items.map((item) => statements.get(item) ?? item),
           ...(accessFence ? [guard] : []),
+          ...endAttribution,
         ])
-      ).slice(1,accessFence ? -1 : undefined);
+      ).slice(1 + beginAttribution.length, 1 + beginAttribution.length + items.length);
     } catch (error) {
       if (authorityFence && await active()) {
         if(authorityFence.workspace && !await source.prepare('SELECT 1 FROM operators WHERE id=? AND workspace_id=?').bind(actor,authorityFence.workspace).first())throw new VisibilityChangedError();

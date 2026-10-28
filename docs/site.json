@@ -55,12 +55,6 @@
           "title": "Notifications and email",
           "source": "docs/guide/notifications.md",
           "summary": "What reaches your Inbox, what is also emailed, and how follows, mutes and preferences work."
-        },
-        {
-          "slug": "agents",
-          "title": "Agents and MCP",
-          "source": "docs/AGENT-DOOR.md",
-          "summary": "Read permitted issue evidence and planning through the company policy door, with its current limits."
         }
       ]
     },
@@ -495,6 +489,14 @@
     {
       "source": "vendor/base/business-settings/README.md",
       "reason": "Pinned Base module integration reference for maintainers; the Vector agent guide documents the supported product surface."
+    },
+    {
+      "source": "docs/AGENT-DOOR.md",
+      "reason": "Native agent door integration and limits; kept outside the owner-approved public documentation navigation."
+    },
+    {
+      "source": "docs/AGENT-REGISTRY.md",
+      "reason": "Executable native agent registry reference; retained outside the owner-approved public navigation."
     }
   ]
 }

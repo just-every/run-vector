@@ -6,6 +6,7 @@ import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/
 import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import {initiativeAuthority} from '../features/initiatives/authority';
+import { mirrorPersonIssueEvents } from '../features/agent-door/person-events';
 import {addDocumentRoutes} from '../features/documents/routes';
 import {addInitiativeRoutes} from '../features/initiatives/routes';
 import {addSubscriptionRoutes} from '../features/subscriptions/routes';
@@ -181,6 +182,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     )
       return context.json({ error: "rate_limited" }, 429);
     const admittedWorkspace = operator.workspaceId;
+    const nativeBindings = context.env;
     context.set("operatorId", operator.id);
     context.set("operator", operator);
     // ROLE-001: the door's role-matrix row, on the actor's current role.
@@ -238,6 +240,8 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       }
     }
     const undo = committedUndoReceipt(context.env.DB);
+    if (!["GET", "HEAD"].includes(context.req.method) && context.res.ok)
+      await mirrorPersonIssueEvents(nativeBindings, operator, notificationEventIds(context.env.DB));
     if (undo && context.res.status >= 200 && context.res.status < 300)
       context.header('x-vector-undo', JSON.stringify(undo));
     }
