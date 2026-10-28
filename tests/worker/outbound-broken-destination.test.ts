@@ -10,7 +10,7 @@ import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
 import {verifyWebhook} from '../../vendor/base/integrations';
 type Destination={id:string;secret:string};
 type Listed={destinations:{id:string;signingProblem:string|null;requiresReentry:number;waitingEvents:number}[]};
-it('[SLACK-003 SLACK-004 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed; member choices route private Slack mentions and daily comment email once with signed actions',async()=>{
+it('[SLACK-003 SLACK-006 SLACK-007 SLACK-008 SLACK-009 SLACK-004 SLACK-010 SLACK-011 SLACK-012 NOTIFY-007 SEC-001 WEBHOOK-003] a destination that cannot sign is shown as needing attention and holds its events; the healthy destination still receives every event, signed; member choices route private Slack mentions and daily comment email once with signed actions',async()=>{
  const f=await setupIntegrations(),workspace=(await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id'))!;
  const register=async(name:string)=>{const r=await f.call('/settings/integrations/destinations','POST',{name,url:'https://'+name+'.example.com/events'});expect(r.status).toBe(201);return r.json() as Promise<Destination>;};
  const healthy=await register('healthy'),broken=await register('broken'),keys=new Map([[healthy.id,healthy.secret]]);

@@ -55,7 +55,7 @@ export async function dispatchWebhooks(env:WorkerBindings){
   const genericConfigured=await deliveryConfigured(env,workspace);
   configured ||= genericConfigured;
   const destinations=(await env.DB.prepare("SELECT id,kind FROM vector_webhook_destinations WHERE workspace_id=? AND enabled=1 AND revoked_at IS NULL").bind(workspace).all<{id:string;kind:string}>()).results;
-  // Slack direct messages (SLACK-004) share this queue under one per-workspace destination label.
+  // Slack direct messages (SLACK-010) share this queue under one per-workspace destination label.
   const direct=Boolean(await env.DB.prepare('SELECT 1 FROM vector_slack_installations WHERE workspace_id=? AND enabled=1').bind(workspace).first()),directHeld=direct&&await credentialProblem(env,'slack:'+workspace);
   if(!genericConfigured&&!destinations.some(d=>d.kind!=='webhook')&&!direct)continue;
   const blocked=[...(await destinationSigningProblems(env,workspace)).keys(),...(directHeld?[directDestination]:[])];

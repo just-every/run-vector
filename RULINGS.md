@@ -17,3 +17,23 @@ Local development opens the configured owner through the private checkout key wi
 Date: 20 October 2026 19:12Z. Ruled by: ct. Governs: SLACK-003, SLACK-004, ROLE-002.
 
 A member links their own Slack identity through an explicit own-sign-in-email lookup and confirmation; no silent lookup, directory read or name match. Current workspace-visible items may show actor display names. Private or restricted items use a generic notice without actor or text, or a DM to an explicitly mapped permitted member.
+
+### RL-4 — Project template visibility and partial application
+
+Date: 28 October 2026 (carry-forward record). Ruled by: fleet builder carrying the source builder’s adopted default under the owner-authorized cleanup; the original decision date and individual ruler were not recorded. Governs: PROJ-012.
+
+Team templates are visible only to their members; deletion preserves already-created projects. Member applications skip unavailable project labels and report their names. An interrupted sequential application identifies the partial project for inspection before retry.
+
+
+### RL-5 — Released scope is edited after reopening
+
+Date: 28 October 2026 (carry-forward record). Ruled by: fleet builder carrying the source builder’s adopted default under the owner-authorized cleanup; the original decision date and individual ruler were not recorded. Governs: RELEASE-001.
+
+A Released release is reopened before its scope is edited.
+
+
+### RL-6 — Insights visibility
+
+Date: 28 October 2026 (carry-forward record). Ruled by: fleet builder carrying the source builder’s adopted default under the owner-authorized cleanup; the original decision date and individual ruler were not recorded. Governs: REPORT-001.
+
+Owners, Admins and Members read only visible issues; Guests are refused.

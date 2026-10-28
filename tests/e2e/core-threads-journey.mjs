@@ -4,7 +4,7 @@ import { withInvitedOperator } from './core-operator-journey.mjs';
 
 const teammate = 'Thread teammate';
 
-/** ISSUE-008: a teammate replies twice and resolves; the author reopens with a reply. */
+/** ISSUE-029: a teammate replies twice and resolves; the author reopens with a reply. */
 export async function threadsJourney(page, context, base, state, teamId, evidence, record) {
   const created = await context.request.post(base + '/api/issues', { headers: { Origin: base }, data: { title: `Thread journey ${Date.now()}`, teamId } });
   assert.equal(created.status(), 201);
@@ -71,5 +71,5 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   const activity = (await (await context.request.get(base + `/api/issues/${identifier}`)).json()).activity.map((entry) => entry.kind);
   assert.deepEqual(activity.filter((kind) => kind.startsWith('thread.')), ['thread.resolved', 'thread.reopened']);
   await settleReads(page);
-  record('ISSUE-008', 'At 1440px and 390px a teammate replies twice in order under a top-level comment, cannot edit it (no control; PATCH 403), resolves the thread and sees it collapse to one line naming them; the author expands it, replies, and the thread reopens with resolve/reopen activity recorded.');
+  record('ISSUE-029', 'At 1440px and 390px a teammate replies twice in order under a top-level comment, cannot edit it (no control; PATCH 403), resolves the thread and sees it collapse to one line naming them; the author expands it, replies, and the thread reopens with resolve/reopen activity recorded.');
 }

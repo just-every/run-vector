@@ -91,7 +91,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Orig
    await page.screenshot({path:`${output}/${name}-${width}-chart.png`});
    await panel.getByRole('heading',{name:report.source==='snapshot'?'Final report':'Completion projection',exact:true}).evaluate(el=>el.scrollIntoView({block:'start'}));
    await page.screenshot({path:`${output}/${name}-${width}-projection.png`});
-   console.log(`[REPORT-002] ${name}-${width}: daily scope, completions, scope markers, projection and history limitations`);
+   console.log(`[REPORT-002 REPORT-006] ${name}-${width}: daily scope, completions, scope markers, projection and history limitations`);
   }
  }
  await capture('live-project-report',live);

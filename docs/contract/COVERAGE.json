@@ -5405,9 +5405,9 @@
       "file": "CONTRACT.md",
       "line": 288,
       "text": "Every role change is audited (ROLE-005) and takes effect on the member's next request, including open sessions and API tokens.",
-      "to": "clause",
+      "to": "base",
       "ids": [
-        "ROLE-001"
+        "BASE-ROLE-001"
       ]
     },
     {
@@ -5626,10 +5626,19 @@
     {
       "file": "CONTRACT.md",
       "line": 291,
-      "text": "**ROLE-004 \u2014 Single sign-on and provisioning.** Owners can require SAML 2.0 or OpenID Connect sign-in through Okta, Microsoft Entra ID or Google Workspace, restrict sign-up to verified company domains, and provision and deprovision members through SCIM 2.0; deprovisioning \u2014 SCIM `active: false` or `DELETE` \u2014 suspends the member under ROLE-011, revoking their sessions and credentials within one request and keeping their name on their work, and never erases them (ROLE-012); SCIM `active: true` reactivates the same member.",
+      "text": "**ROLE-004 \u2014 Single sign-on and provisioning.**",
       "to": "clause",
       "ids": [
         "ROLE-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 291,
+      "text": "Owners can require SAML 2.0 or OpenID Connect sign-in through Okta, Microsoft Entra ID or Google Workspace, restrict sign-up to verified company domains, and provision and deprovision members through SCIM 2.0; deprovisioning \u2014 SCIM `active: false` or `DELETE` \u2014 suspends the member under ROLE-011, revoking their sessions and credentials within one request and keeping their name on their work, and never erases them (ROLE-012); SCIM `active: true` reactivates the same member.",
+      "to": "base",
+      "ids": [
+        "BASE-SIGNIN-001"
       ]
     },
     {
@@ -5666,10 +5675,19 @@
     {
       "file": "CONTRACT.md",
       "line": 292,
-      "text": "sign-ins, role and membership changes, suspensions, reactivations and erasures (ROLE-011, ROLE-012), team privacy changes, integration and token changes, automation and agent runs, exports, imports and deletions, each with actor (person, automation, integration or agent), time, action and subject.",
+      "text": "sign-ins, role and membership changes, suspensions, reactivations and erasures (ROLE-011, ROLE-012), team privacy changes, integration and token changes, automation and agent runs, exports, imports and deletions,",
       "to": "clause",
       "ids": [
         "ROLE-005"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 292,
+      "text": "each with actor (person, automation, integration or agent), time, action and subject.",
+      "to": "base",
+      "ids": [
+        "BASE-AUDIT-001"
       ]
     },
     {
@@ -5707,9 +5725,9 @@
       "file": "CONTRACT.md",
       "line": 293,
       "text": "Their changes show the app or agent name with the person who installed or delegated to it, and they can be paused or revoked by an Admin at once.",
-      "to": "clause",
+      "to": "base",
       "ids": [
-        "ROLE-006"
+        "BASE-AGENT-008"
       ]
     },
     {
@@ -5895,9 +5913,9 @@
       "file": "CONTRACT.md",
       "line": 295,
       "text": "Integrations, automations and agents act under their own identities and scopes (ROLE-006), never under a person's row.",
-      "to": "clause",
+      "to": "base",
       "ids": [
-        "ROLE-008"
+        "BASE-AGENT-008"
       ]
     },
     {
@@ -6046,7 +6064,25 @@
     {
       "file": "CONTRACT.md",
       "line": 297,
-      "text": "A Google sign-in admits only an email Google reports as verified that already belongs to a member or an open invitation, or that is in a domain the Owner allows for sign-up (ROLE-004); it links to the existing member by that email, stores no password, and never creates a second account for the same person.",
+      "text": "A Google sign-in admits only an email Google reports as verified that already belongs to a member or an open invitation, or that is in a domain the Owner allows for sign-up (ROLE-004); it links to the existing member by that email",
+      "to": "clause",
+      "ids": [
+        "ROLE-010"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 297,
+      "text": ", stores no password",
+      "to": "base",
+      "ids": [
+        "BASE-ACCESS-001"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 297,
+      "text": ", and never creates a second account for the same person.",
       "to": "clause",
       "ids": [
         "ROLE-010"
@@ -7122,9 +7158,9 @@
       "file": "CONTRACT.md",
       "line": 321,
       "text": "Each is still served by the authorized same-origin file route with its declared content type, `Content-Disposition: attachment`, `X-Content-Type-Options: nosniff`, `Cache-Control: private, no-store` and the session and team checks BASE-INPUT-003 requires.",
-      "to": "clause",
+      "to": "base",
       "ids": [
-        "ISSUE-033"
+        "BASE-INPUT-003"
       ]
     },
     {
@@ -11686,7 +11722,25 @@
     {
       "file": "CONTRACT.md",
       "line": 499,
-      "text": "**AGENT-004 \u2014 Agent permissions and budgets.** Admins choose which agents may be delegated to, by which teams, on which repositories, with monthly cost and session budgets and a concurrency cap; every agent call uses a scoped token (ROLE-006), and a budget or permission stop is visible on the issue and to the delegating member.",
+      "text": "**AGENT-004 \u2014 Agent permissions and budgets.** Admins choose which agents may be delegated to, by which teams, on which repositories, with monthly cost and session budgets and a concurrency cap;",
+      "to": "clause",
+      "ids": [
+        "AGENT-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 499,
+      "text": "every agent call uses a scoped token (ROLE-006), and ",
+      "to": "base",
+      "ids": [
+        "BASE-AGENT-005"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 499,
+      "text": "a budget or permission stop is visible on the issue and to the delegating member.",
       "to": "clause",
       "ids": [
         "AGENT-004"
@@ -11717,7 +11771,25 @@
     {
       "file": "CONTRACT.md",
       "line": 500,
-      "text": "**AGENT-005 \u2014 MCP server.** Vector exposes a Model Context Protocol server (streamable HTTP, OAuth 2.1) so Claude, ChatGPT, Cursor, VS Code and other clients can search, read, create and update issues, comments, projects, cycles and documents as the signed-in member, with the same access rules and audit attribution as the app.",
+      "text": "**AGENT-005 \u2014 MCP server.**",
+      "to": "clause",
+      "ids": [
+        "AGENT-005"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 500,
+      "text": "Vector exposes a Model Context Protocol server (streamable HTTP, OAuth 2.1)",
+      "to": "base",
+      "ids": [
+        "BASE-AGENT-001"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 500,
+      "text": "so Claude, ChatGPT, Cursor, VS Code and other clients can search, read, create and update issues, comments, projects, cycles and documents as the signed-in member, with the same access rules and audit attribution as the app.",
       "to": "clause",
       "ids": [
         "AGENT-005"
@@ -12621,7 +12693,7 @@
     {
       "file": "CONTRACT.md",
       "line": 550,
-      "text": "**PUSH-010 \u2014 Agent accountability ledger.** Every agent action \u2014 suggestion, question, draft, delegation step, verification proposal \u2014 is recorded with the agent, model, inputs read, the person accountable, cost in USD and outcome (accepted, edited, rejected).",
+      "text": "**PUSH-010 \u2014 Agent accountability ledger.**",
       "to": "clause",
       "ids": [
         "PUSH-010"
@@ -12630,7 +12702,34 @@
     {
       "file": "CONTRACT.md",
       "line": 550,
-      "text": "Admins see per-team acceptance rates and cost, and can pause any agent everywhere at once.",
+      "text": "Every agent action \u2014 suggestion, question, draft, delegation step, verification proposal \u2014 is recorded with the agent, model, inputs read, the person accountable, cost in USD and outcome (accepted, edited, rejected).",
+      "to": "base",
+      "ids": [
+        "BASE-AGENT-009"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 550,
+      "text": "Admins see per-team acceptance rates and cost,",
+      "to": "clause",
+      "ids": [
+        "PUSH-010"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 550,
+      "text": "and can pause any agent everywhere at once",
+      "to": "base",
+      "ids": [
+        "BASE-AGENT-011"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 550,
+      "text": ".",
       "to": "clause",
       "ids": [
         "PUSH-010"

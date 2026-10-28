@@ -27,7 +27,7 @@ function fields(form: HTMLFormElement) {
     labelIds: data.getAll("labelIds"),
   };
 }
-/** `channel`: whether the viewer may have the Slack bot create a channel (SLACK-003). */
+/** `channel`: whether the viewer may have the Slack bot create a channel (SLACK-008). */
 export function ProjectCreate({
   operators,
   labels,

@@ -43,7 +43,7 @@ const issue: Resolve<string[] | null> = ({ db, actor, params }) => teamsOf(db, a
 const project: Resolve<string | null> = async ({ db, actor, params }) => (await db.prepare(`SELECT p.id FROM projects p
   JOIN operators o ON o.workspace_id=p.workspace_id AND o.id=? WHERE p.id=?`).bind(actor, params.id ?? '').first<{ id: string }>())?.id ?? null
 /** A create that asks the Slack bot for a channel acts under the channel row,
- * which admits no one the create row refuses (SLACK-003). */
+ * which admits no one the create row refuses (SLACK-008). */
 const channelOr = (row: RowId): Resolve<RowId> => async request => await field(request, 'createSlackChannel') === true ? 'channels.create' : row
 const teamCreation: Resolve<RowId> = async request => await field(request, 'isPrivate') === true ? 'teams.privacy' : channelOr('teams.create')(request)
 /** A move or copy acts on its issue's team and on the destination team. */

@@ -174,7 +174,7 @@ attempts and terminal results on compatible-source rollback. Recover D1/FILES
 and matching source together in isolation. Hosted egress, stage installation,
 live accounts, the public site and publication remain owner work.
 
-## Slack and Discord channel notifications (SLACK-003)
+## Slack and Discord channel notifications (SLACK-003, SLACK-006, SLACK-007, SLACK-008, SLACK-009)
 
 In Settings → Integrations → Slack and Discord channels, an Admin pastes a Slack
 bot token with `chat:write`, `channels:manage` and `channels:read`. Vector validates it with `auth.test` and seals it with AES-GCM using
@@ -277,9 +277,9 @@ mentions, and retains only the transport result. Provider response bodies are
 not retained. Removed native operators’ queued actor display snapshots are
 anonymized locally while their events remain ineligible to post.
 
-## Slack direct messages (SLACK-004)
+## Slack direct messages (SLACK-004, SLACK-010, SLACK-011, SLACK-012)
 
-Slack direct messages reuse the SLACK-003 bot token. The token also needs `im:write`
+Slack direct messages reuse the SLACK-006 bot token. The token also needs `im:write`
 (to open the direct message) and `users:read.email` (to find a member's own account).
 
 **Members link themselves.** In Settings → Notifications a signed-in member chooses

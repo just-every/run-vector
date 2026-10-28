@@ -30,7 +30,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 | Base duty | Duty | Delta clauses | Base journey |
 | --- | --- | --- | --- |
-| BASE-ACCESS-001 | Sign-in | SETUP-001, OWNER-CLAIM-001 | not run |
+| BASE-ACCESS-001 | Sign-in | SETUP-001, OWNER-CLAIM-001, ROLE-010 | not run |
 | BASE-ACCESS-002 | Sessions | SETUP-001, EDITOR-001 | not run |
 | BASE-ACCESS-003 | Public endpoints | none | not run |
 | BASE-ACCESS-004 | Server-side authorisation | OPS-001, OPS-002, OPS-003, OPS-004, API-001, API-002, OWNER-CLAIM-001, API-003, API-004, API-005 | not run |
@@ -60,16 +60,16 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-SIGNIN-002 | Native multi-factor authentication | ROLE-014 | not run |
 | BASE-INSTALL-001 | Free self-host and removal | HOME-001 | not run |
 | BASE-MAIL-001 | Truthful mail outcomes | NOTIFY-006 | not run |
-| BASE-ACCESSIBILITY-001 | One accessibility bar | VIEW-011, MOBILE-001, MOBILE-002, MOBILE-003, MOBILE-004, MOBILE-005 | not run |
+| BASE-ACCESSIBILITY-001 | One accessibility bar | INIT-003, VIEW-011, MOBILE-001, MOBILE-002, MOBILE-003, MOBILE-004, MOBILE-005, REPORT-001 | not run |
 | BASE-DOCS-001 | On-site docs from one contract | none | not run |
-| BASE-AGENT-001 | One MCP door per seed | none | not run |
+| BASE-AGENT-001 | One MCP door per seed | AGENT-005 | not run |
 | BASE-AGENT-002 | The seed's jobs are tools, through the UI's own actions | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008, SURFACE-009, SURFACE-010, SURFACE-011, SURFACE-012, SURFACE-013 | not run |
-| BASE-AGENT-003 | Records are resources | none | not run |
-| BASE-AGENT-004 | Business identity and short-lived, audience-bound tokens | none | not run |
+| BASE-AGENT-003 | Records are resources | AGENT-005 | not run |
+| BASE-AGENT-004 | Business identity and short-lived, audience-bound tokens | AGENT-005 | not run |
 | BASE-AGENT-005 | An agent acts as a person in a role, never more | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
 | BASE-AGENT-006 | Every action declares its risk class | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008, SURFACE-009, SURFACE-010, SURFACE-011, SURFACE-012, SURFACE-013 | not run |
 | BASE-AGENT-007 | The company's policy decides, at one chokepoint | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
-| BASE-AGENT-008 | Truthful attribution | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
+| BASE-AGENT-008 | Truthful attribution | ROLE-006, ROLE-008, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
 | BASE-AGENT-009 | Every agent action is audited with its class and decision | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
 | BASE-AGENT-010 | Agents can follow changes | none | not run |
 | BASE-AGENT-011 | Limits are policy, and Pause stops everything | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
@@ -189,7 +189,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### HOME-001 — Public homepage
 
-**Requirement.** Public homepage. The outcomes below apply through the product doors for this capability. The installed-root choice follows RL-1.
+**Requirement.** The owner-approved public marketing homepage at `/` remains exactly as approved, including its copy and assets and the line “100% free, open source alternative to Linear, Jira and Asana.” That line is product positioning; it does not promise feature parity or importer coverage for every named product. The installed-root choice follows RL-1.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The owner-approved public marketing homepage at `/` remains exactly as approved, including its copy and assets and the line “100% free, open source alternative to Linear, Jira and Asana.” That line is product positioning; it does not promise feature parity or importer coverage for every named product.
@@ -202,7 +202,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### OPS-001 — Workspace access
 
-**Requirement.** Workspace access. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every workspace member sees every public team's issues, intake items, cycles, projects, initiatives, labels and shared saved views, and every notification addressed to them, and acts on them as the role matrix (ROLE-001, ROLE-008) allows; team membership organizes work and, for a public team, never restricts access.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every workspace member sees every public team's issues, intake items, cycles, projects, initiatives, labels and shared saved views, and every notification addressed to them, and acts on them as the role matrix (ROLE-001, ROLE-008) allows; team membership organizes work and, for a public team, never restricts access.
@@ -210,7 +210,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### SETUP-001 — First workspace review
 
-**Requirement.** First workspace review. The outcomes below apply through the product doors for this capability. Local entry follows RL-2.
+**Requirement.** Fresh configured owners review their workspace at `/setup` before entering an app route. Local entry follows RL-2.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Fresh configured owners review their workspace at `/setup` before entering an app route.
@@ -221,17 +221,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### OPS-002 — Member management
 
-**Requirement.** Member management. The outcomes below apply through the product doors for this capability.
+**Requirement.** Members are invited, removed by suspension (OPS-004, ROLE-011), reactivated and erased (ROLE-012) in Settings → Members, and every invitation names the invitee's role (ROLE-001) and, for a Guest, the teams they join (ROLE-003).
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Members are invited, removed by suspension (OPS-004, ROLE-011), reactivated and erased (ROLE-012) in Settings → Members, and every invitation names the invitee's role (ROLE-001) and, for a Guest, the teams they join (ROLE-003).
+1. Members are invited, removed by suspension (OPS-004, ROLE-011), reactivated (ROLE-016) and erased (ROLE-012) in Settings → Members, and every invitation names the invitee's role (ROLE-001) and, for a Guest, the teams they join (ROLE-003).
 2. Owners and Admins invite and remove Members and Guests; only Owners invite, promote to or remove Owners and Admins.
 3. The installation owner can be removed only by themselves, and never while they are the last Owner (ROLE-001).
 4. Members and Guests cannot remove anyone but themselves.
 
 #### OPS-003 — Workspace time
 
-**Requirement.** Workspace time. The outcomes below apply through the product doors for this capability.
+**Requirement.** Settings hold one IANA workspace timezone.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Settings hold one IANA workspace timezone.
@@ -240,7 +240,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### OPS-004 — Safe removal
 
-**Requirement.** Safe removal. The outcomes below apply through the product doors for this capability.
+**Requirement.** Removing a member from the workspace — by an Owner or Admin in Settings → Members (role matrix), by the member leaving themselves, or by SCIM deprovisioning (ROLE-004) — suspends them under ROLE-011 and never erases them; erasing their personal data is the separate, explicit action of ROLE-012.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Removing a member from the workspace — by an Owner or Admin in Settings → Members (role matrix), by the member leaving themselves, or by SCIM deprovisioning (ROLE-004) — suspends them under ROLE-011 and never erases them; erasing their personal data is the separate, explicit action of ROLE-012.
@@ -252,7 +252,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### TEAM-001 — Team identity
 
-**Requirement.** Team identity. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team has a name and an identifier prefix, each unique across archived and non-archived teams.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team has a name and an identifier prefix, each unique across archived and non-archived teams.
@@ -261,7 +261,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### TEAM-002 — Team workflow
 
-**Requirement.** Team workflow. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every team has an ordered list of workflow statuses with at least one status in each of the Intake, Backlog, Unstarted, Started, Completed, Canceled, and Duplicate categories, and status names unique within the team.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every team has an ordered list of workflow statuses with at least one status in each of the Intake, Backlog, Unstarted, Started, Completed, Canceled, and Duplicate categories, and status names unique within the team.
@@ -271,7 +271,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### TEAM-003 — Team archiving
 
-**Requirement.** Team archiving. The outcomes below apply through the product doors for this capability.
+**Requirement.** Archiving a team stops new issues, intake, and issue moves from targeting it while preserving its issues, cycles, projects, identifiers, and history; a signal source request naming an archived team creates nothing and returns 409.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Archiving a team stops new issues, intake, and issue moves from targeting it while preserving its issues, cycles, projects, identifiers, and history; a signal source request naming an archived team creates nothing and returns 409.
@@ -280,7 +280,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### TEAM-004 — Status removal
 
-**Requirement.** Status removal. The outcomes below apply through the product doors for this capability.
+**Requirement.** Removing a workflow status requires a destination status in the same category and atomically moves every issue to it.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Removing a workflow status requires a destination status in the same category and atomically moves every issue to it.
@@ -290,15 +290,15 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-001 — Creation
 
-**Requirement.** Creation. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides creation for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. An operator can create an issue with a required title and team plus an optional Markdown description (written in the ISSUE-026 editor, with inline images and video under ISSUE-024 and checklists under ISSUE-025), assignee, project, cycle, priority, labels, estimate, due date, expected outcome, customer impact, and values for the custom fields defined for its team (FIELD-001, which carries their types and acceptance).
+1. An operator can create an issue with a required title and team plus an optional Markdown description (written in the ISSUE-026 editor, with inline images and video under ISSUE-033, ISSUE-034 and checklists under ISSUE-025), assignee, project, cycle, priority, labels, estimate, due date, expected outcome, customer impact, and values for the custom fields defined for its team (FIELD-001, which carries their types and acceptance).
 2. It starts in the team's default Backlog status unless another non-Intake status is explicitly chosen.
 
 #### ISSUE-002 — Stable identifiers
 
-**Requirement.** Stable identifiers. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue identifier is its team's prefix, a hyphen, and an integer one higher than the highest ever allocated under that prefix, so a number is never reused after an issue is deleted.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue identifier is its team's prefix, a hyphen, and an integer one higher than the highest ever allocated under that prefix, so a number is never reused after an issue is deleted.
@@ -306,7 +306,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-003 — Priority
 
-**Requirement.** Priority. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue has exactly one priority: Urgent, High, Medium, Low, or No priority.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue has exactly one priority: Urgent, High, Medium, Low, or No priority.
@@ -314,7 +314,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-004 — Status transitions
 
-**Requirement.** Status transitions. The outcomes below apply through the product doors for this capability.
+**Requirement.** A version-checked operator mutation (ISSUE-006) can move an issue in any direction among the Backlog, Unstarted, Started, Completed, and Canceled statuses of its team's workflow.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A version-checked operator mutation (ISSUE-006) can move an issue in any direction among the Backlog, Unstarted, Started, Completed, and Canceled statuses of its team's workflow.
@@ -324,7 +324,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-005 — Assignment
 
-**Requirement.** Assignment. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue has at most one assignee.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue has at most one assignee.
@@ -332,7 +332,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-006 — Concurrent edits
 
-**Requirement.** Concurrent edits. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every issue carries an integer version that increases by one on each mutation that appends an activity entry under ISSUE-007.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every issue carries an integer version that increases by one on each mutation that appends an activity entry under ISSUE-007.
@@ -341,24 +341,24 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-007 — Activity history
 
-**Requirement.** Activity history. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides activity history for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Creation and every change to title, description, team, status, priority, assignee, project, milestone (PROJ-011), cycle, estimate, due date, labels, expected outcome, customer impact, custom fields, duplicate target, parent, or dependency append an immutable activity entry recording the time, the previous value, the new value, and the actor — the operator, or the named automation when a cycle closure, deferral return, or import acted.
 
 #### ISSUE-008 — Comments and safe comment removal
 
-**Requirement.** Comments and safe comment removal. The outcomes below apply through the product doors for this capability.
+**Requirement.** Any member who can see an issue (a Guest only in invited teams) can add a Markdown comment in the ISSUE-026 editor, with inline images and video (ISSUE-033, ISSUE-034) and checklists (ISSUE-025).
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Any member who can see an issue (a Guest only in invited teams) can add a Markdown comment in the ISSUE-026 editor, with inline images and video (ISSUE-024) and checklists (ISSUE-025).
+1. Any member who can see an issue (a Guest only in invited teams) can add a Markdown comment in the ISSUE-026 editor, with inline images and video (ISSUE-033, ISSUE-034) and checklists (ISSUE-025).
 2. Only a comment's author edits it; an edited comment shows its edit time.
 3. Authors delete their own comments; Owners, Admins and the team's owners delete anyone's (role matrix, ROLE-001); the entry records who acted.
 4. Deleting a comment removes its body, attachments, links, and search entry, leaves a tombstone and an activity entry in the thread, keeps its replies, and does not remove the follower state it created.
 
 #### ISSUE-029 — Discussion threads and resolution
 
-**Requirement.** Discussion threads and resolution. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each top-level comment starts a thread: members reply to it, and replies show under it in order.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each top-level comment starts a thread: members reply to it, and replies show under it in order.
@@ -367,14 +367,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-030 — Anchored inline comments
 
-**Requirement.** Anchored inline comments. The outcomes below apply through the product doors for this capability.
+**Requirement.** A comment can also quote highlighted text of the issue description or a document (PROJ-013) as an inline comment, which anchors the thread to that text and shows it in the margin; if the text is later removed, the thread stays in the issue with the quoted text shown as removed.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A comment can also quote highlighted text of the issue description or a document (PROJ-013) as an inline comment, which anchors the thread to that text and shows it in the margin; if the text is later removed, the thread stays in the issue with the quoted text shown as removed.
 
 #### ISSUE-009 — Attachments and links
 
-**Requirement.** Attachments and links. The outcomes below apply through the product doors for this capability.
+**Requirement.** Operators can attach files and named HTTPS links to an issue or a comment.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Operators can attach files and named HTTPS links to an issue or a comment.
@@ -383,17 +383,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-010 — Deletion
 
-**Requirement.** Deletion. The outcomes below apply through the product doors for this capability.
+**Requirement.** Deleting an issue first moves it to Recently deleted (ISSUE-031, ISSUE-032), from which it can be undone or restored intact for 30 days.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Deleting an issue first moves it to Recently deleted (ISSUE-020), from which it can be undone or restored intact for 30 days.
+1. Deleting an issue first moves it to Recently deleted (ISSUE-031, ISSUE-032), from which it can be undone or restored intact for 30 days.
 2. Permanent deletion happens when that retention ends, or at once when an Owner or Admin chooses "Delete permanently" (for erasure under SEC-003 and DATA-011): it removes the issue's comments, attachments, links, evidence revisions, dependencies, parent link, follower state, notifications, activity, and search entry; its children become root issues, and a duplicate is removed from its canonical issue's list.
 3. Vector rejects deleting a canonical issue that still has duplicates.
 4. Closed cycle snapshots (CYCLE-005) and audit entries keep only its identifier, and its source idempotency records (INTAKE-002) are retained so a re-delivery cannot resurrect it.
 
 #### ISSUE-011 — Estimates
 
-**Requirement.** Estimates. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue estimate is absent or an integer from 1 through 100 points.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue estimate is absent or an integer from 1 through 100 points.
@@ -401,7 +401,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-012 — Moving teams
 
-**Requirement.** Moving teams. The outcomes below apply through the product doors for this capability.
+**Requirement.** Moving an issue requires a non-archived target team and an explicit target status in the same category as its current status, including Intake so a misrouted intake item reaches the right team without a decision.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Moving an issue requires a non-archived target team and an explicit target status in the same category as its current status, including Intake so a misrouted intake item reaches the right team without a decision.
@@ -411,7 +411,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-013 — Mentions
 
-**Requirement.** Mentions. The outcomes below apply through the product doors for this capability.
+**Requirement.** Typing `@` in an issue description or comment offers matching operators, and choosing one records a mention of that operator.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Typing `@` in an issue description or comment offers matching operators, and choosing one records a mention of that operator.
@@ -420,7 +420,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-014 — Labels
 
-**Requirement.** Labels. The outcomes below apply through the product doors for this capability.
+**Requirement.** A label belongs to the workspace or to one team, has a name unique among the labels visible in that scope and a color, and can sit in a label group (for example Area, Type) whose labels are mutually exclusive on an issue.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A label belongs to the workspace or to one team, has a name unique among the labels visible in that scope and a color, and can sit in a label group (for example Area, Type) whose labels are mutually exclusive on an issue.
@@ -431,7 +431,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-015 — Unsent drafts
 
-**Requirement.** Unsent drafts. The outcomes below apply through the product doors for this capability.
+**Requirement.** An unsubmitted new-issue form is retained in the operator's browser and restored the next time they open new issue there.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An unsubmitted new-issue form is retained in the operator's browser and restored the next time they open new issue there.
@@ -441,7 +441,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### REL-001 — Dependencies
 
-**Requirement.** Dependencies. The outcomes below apply through the product doors for this capability.
+**Requirement.** An operator can record that one issue blocks another, across teams, and can remove the link.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An operator can record that one issue blocks another, across teams, and can remove the link.
@@ -449,7 +449,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### REL-002 — Blocked state
 
-**Requirement.** Blocked state. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue is shown as blocked while any issue that blocks it is outside a Completed, Canceled, or Duplicate category.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue is shown as blocked while any issue that blocks it is outside a Completed, Canceled, or Duplicate category.
@@ -457,14 +457,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### REL-003 — Duplicate decision
 
-**Requirement.** Duplicate decision. The outcomes below apply through the product doors for this capability.
+**Requirement.** Marking an issue as a duplicate requires one canonical issue that is neither itself nor already a duplicate, moves it to the team's default Duplicate status, and preserves its description, comments, evidence, attachments, and activity under the duplicate issue.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Marking an issue as a duplicate requires one canonical issue that is neither itself nor already a duplicate, moves it to the team's default Duplicate status, and preserves its description, comments, evidence, attachments, and activity under the duplicate issue.
 
 #### REL-004 — Canonical duplicates
 
-**Requirement.** Canonical duplicates. The outcomes below apply through the product doors for this capability.
+**Requirement.** A canonical issue lists every direct duplicate.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A canonical issue lists every direct duplicate.
@@ -472,14 +472,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### REL-005 — Undo duplicate
 
-**Requirement.** Undo duplicate. The outcomes below apply through the product doors for this capability.
+**Requirement.** Undoing a duplicate decision removes the canonical link and restores the issue's most recent non-terminal status, or its team's default Backlog status if it has none, while preserving both decision activity entries.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Undoing a duplicate decision removes the canonical link and restores the issue's most recent non-terminal status, or its team's default Backlog status if it has none, while preserving both decision activity entries.
 
 #### REL-006 — Parent and child
 
-**Requirement.** Parent and child. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue has at most one parent.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue has at most one parent.
@@ -491,7 +491,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-001 — Intake creation
 
-**Requirement.** Intake creation. The outcomes below apply through the product doors for this capability.
+**Requirement.** A registered signal source (INTAKE-011) creates an intake issue with a title, team, observed time, its source ID, source display name, source record identifier, source revision identifier, summary, link, and optional structured measurements and customer reports.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A registered signal source (INTAKE-011) creates an intake issue with a title, team, observed time, its source ID, source display name, source record identifier, source revision identifier, summary, link, and optional structured measurements and customer reports.
@@ -500,7 +500,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-002 — Idempotent sources
 
-**Requirement.** Idempotent sources. The outcomes below apply through the product doors for this capability.
+**Requirement.** Re-delivery of the same source ID, source record identifier, source revision identifier, and normalized payload returns the original result and creates nothing.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Re-delivery of the same source ID, source record identifier, source revision identifier, and normalized payload returns the original result and creates nothing.
@@ -509,7 +509,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-003 — Evidence revisions
 
-**Requirement.** Evidence revisions. The outcomes below apply through the product doors for this capability.
+**Requirement.** A new source revision identifier for an existing source record appends immutable dated evidence even when revisions arrive out of order.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A new source revision identifier for an existing source record appends immutable dated evidence even when revisions arrive out of order.
@@ -517,7 +517,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-004 — Inspectable assessment
 
-**Requirement.** Inspectable assessment. The outcomes below apply through the product doors for this capability.
+**Requirement.** An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, suggested priority, suggested labels and likely duplicates.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An intake issue shows the evidence behind its attention reason, impact measurements, likely cause, recommended assignee, suggested priority, suggested labels and likely duplicates.
@@ -527,7 +527,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-005 — Accept
 
-**Requirement.** Accept. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners, Admins and Members who can see an intake item's team accept, defer and decline it; Guests cannot (role matrix).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners, Admins and Members who can see an intake item's team accept, defer and decline it; Guests cannot (role matrix).
@@ -536,7 +536,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-006 — Defer
 
-**Requirement.** Defer. The outcomes below apply through the product doors for this capability.
+**Requirement.** Deferring an intake issue (by an Owner, Admin or Member who can see its team; Guests cannot, role matrix) records who deferred it, an absolute return time strictly in the future, and an optional reason, and removes it from Needs decision.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Deferring an intake issue (by an Owner, Admin or Member who can see its team; Guests cannot, role matrix) records who deferred it, an absolute return time strictly in the future, and an optional reason, and removes it from Needs decision.
@@ -545,21 +545,21 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-007 — Decline
 
-**Requirement.** Decline. The outcomes below apply through the product doors for this capability.
+**Requirement.** Declining an intake issue — open to Owners, Admins and Members who can see its team, never to Guests (role matrix) — requires a reason, moves it to the team's default Canceled status, and removes it from Needs decision without deleting its evidence or decision history.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Declining an intake issue — open to Owners, Admins and Members who can see its team, never to Guests (role matrix) — requires a reason, moves it to the team's default Canceled status, and removes it from Needs decision without deleting its evidence or decision history.
 
 #### INTAKE-008 — Evidence after a terminal decision
 
-**Requirement.** Evidence after a terminal decision. The outcomes below apply through the product doors for this capability.
+**Requirement.** Evidence received after an issue is Canceled or Duplicate is appended and visible but never reopens, reassigns, reprioritizes, or resurfaces the issue.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Evidence received after an issue is Canceled or Duplicate is appended and visible but never reopens, reassigns, reprioritizes, or resurfaces the issue.
 
 #### INTAKE-009 — Source failure
 
-**Requirement.** Source failure. The outcomes below apply through the product doors for this capability.
+**Requirement.** A signal source request from an unknown or revoked source, or carrying a wrong signature, returns 401; one whose body fails validation returns 400; one naming an archived team returns 409 (TEAM-003).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A signal source request from an unknown or revoked source, or carrying a wrong signature, returns 401; one whose body fails validation returns 400; one naming an archived team returns 409 (TEAM-003).
@@ -569,14 +569,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### INTAKE-010 — Decision policy
 
-**Requirement.** Decision policy. The outcomes below apply through the product doors for this capability.
+**Requirement.** Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance.
 
 #### INTAKE-011 — Source registration
 
-**Requirement.** Source registration. The outcomes below apply through the product doors for this capability.
+**Requirement.** An Owner or Admin registers a signal source (integration management in the role matrix; Members and Guests are refused 403) with a display name, a source ID unique in the workspace, and a signing secret; the `signal.source.v1` adapter normalizes that source's signed request into INTAKE-001.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin registers a signal source (integration management in the role matrix; Members and Guests are refused 403) with a display name, a source ID unique in the workspace, and a signing secret; the `signal.source.v1` adapter normalizes that source's signed request into INTAKE-001.
@@ -588,7 +588,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CURR-001 — Disjoint stream
 
-**Requirement.** Disjoint stream. The outcomes below apply through the product doors for this capability.
+**Requirement.** Current places an issue in at most one section using this precedence: Needs decision, Now, Next, then Recently done.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Current places an issue in at most one section using this precedence: Needs decision, Now, Next, then Recently done.
@@ -596,7 +596,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CURR-002 — Needs decision
 
-**Requirement.** Needs decision. The outcomes below apply through the product doors for this capability.
+**Requirement.** Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Needs decision contains every Intake-category issue whose deferral has expired or is absent and which has not been accepted, declined, or marked duplicate.
@@ -604,7 +604,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CURR-003 — Now
 
-**Requirement.** Now. The outcomes below apply through the product doors for this capability.
+**Requirement.** Now contains non-terminal issues outside the Intake category that are overdue or in a Started status, excluding anything already in Needs decision.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Now contains non-terminal issues outside the Intake category that are overdue or in a Started status, excluding anything already in Needs decision.
@@ -612,28 +612,28 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CURR-004 — Next
 
-**Requirement.** Next. The outcomes below apply through the product doors for this capability.
+**Requirement.** Next contains non-terminal issues in an Unstarted status that are committed to their team's active or next cycle (CYCLE-001) or due within the next seven calendar days, excluding anything already in a higher-precedence section.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Next contains non-terminal issues in an Unstarted status that are committed to their team's active or next cycle (CYCLE-001) or due within the next seven calendar days, excluding anything already in a higher-precedence section.
 
 #### CURR-005 — Recently done
 
-**Requirement.** Recently done. The outcomes below apply through the product doors for this capability.
+**Requirement.** Recently done contains issues moved to a Completed category in the previous seven calendar days, ordered by the completion-time exception in CURR-007.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Recently done contains issues moved to a Completed category in the previous seven calendar days, ordered by the completion-time exception in CURR-007.
 
 #### CURR-006 — Explainable attention
 
-**Requirement.** Explainable attention. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every issue in Current shows one primary inclusion reason — Awaiting decision, Started work, Overdue, Cycle commitment, Due within seven days, or Completed within seven days — and every applicable context reason from Customer escalation, Unresolved dependency, Unassigned urgent work, Project risk, and New evidence since the most recent intake decision.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every issue in Current shows one primary inclusion reason — Awaiting decision, Started work, Overdue, Cycle commitment, Due within seven days, or Completed within seven days — and every applicable context reason from Customer escalation, Unresolved dependency, Unassigned urgent work, Project risk, and New evidence since the most recent intake decision.
 
 #### CURR-007 — Ranking
 
-**Requirement.** Ranking. The outcomes below apply through the product doors for this capability.
+**Requirement.** Within every Current section except Recently done, the default order sorts by priority (Urgent first, No priority last), then by due date (overdue first, then earliest first, then issues with no due date), then by most recent update, and finally by stable identifier, so the order is total and stable.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Within every Current section except Recently done, the default order sorts by priority (Urgent first, No priority last), then by due date (overdue first, then earliest first, then issues with no due date), then by most recent update, and finally by stable identifier, so the order is total and stable.
@@ -641,14 +641,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CURR-008 — Freshness
 
-**Requirement.** Freshness. The outcomes below apply through the product doors for this capability.
+**Requirement.** A decision or issue mutation that changes an issue's Current membership, section, or reasons is reflected in an already open Current view within 5 seconds without an operator-initiated reload, and in the next response to any other request.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A decision or issue mutation that changes an issue's Current membership, section, or reasons is reflected in an already open Current view within 5 seconds without an operator-initiated reload, and in the next response to any other request.
 
 #### CURR-009 — Stream controls
 
-**Requirement.** Stream controls. The outcomes below apply through the product doors for this capability.
+**Requirement.** Operators can filter Current by team, project, priority, item type, assignee, and attention reason.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Operators can filter Current by team, project, priority, item type, assignee, and attention reason.
@@ -658,7 +658,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### WORK-001 — Personal queue
 
-**Requirement.** Personal queue. The outcomes below apply through the product doors for this capability.
+**Requirement.** My work contains every non-terminal issue assigned to the signed-in operator outside the Intake category, grouped disjointly in this precedence: Waiting for issues blocked under REL-002, Now for those the CURR-003 rule would place in Now, and Next for every issue still remaining, each group ordered by CURR-007.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. My work contains every non-terminal issue assigned to the signed-in operator outside the Intake category, grouped disjointly in this precedence: Waiting for issues blocked under REL-002, Now for those the CURR-003 rule would place in Now, and Next for every issue still remaining, each group ordered by CURR-007.
@@ -666,7 +666,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### WORK-002 — Personal defaults
 
-**Requirement.** Personal defaults. The outcomes below apply through the product doors for this capability.
+**Requirement.** Completed, Canceled, Duplicate, and actively deferred issues never appear in My work; an operator reads their finished work from Current's Recently done filtered to themselves (CURR-005, CURR-009).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Completed, Canceled, Duplicate, and actively deferred issues never appear in My work; an operator reads their finished work from Current's Recently done filtered to themselves (CURR-005, CURR-009).
@@ -674,7 +674,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### WORK-003 — Cycle context
 
-**Requirement.** Cycle context. The outcomes below apply through the product doors for this capability.
+**Requirement.** My work shows one row for each team that has an active cycle containing an issue assigned to the operator, giving that cycle's name, start and end dates, and progress, with completed and total committed scope labeled in the unit CYCLE-003 used.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. My work shows one row for each team that has an active cycle containing an issue assigned to the operator, giving that cycle's name, start and end dates, and progress, with completed and total committed scope labeled in the unit CYCLE-003 used.
@@ -684,18 +684,18 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### PROJ-001 — Project record
 
-**Requirement.** Project record. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides project record for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A project has a name unique in the workspace, a Markdown description, exactly one lead who is a workspace member, an optional start date, an optional target date that is on or after the start date when both are set, a priority (Urgent, High, Medium, Low or No priority, as ISSUE-003), project labels (workspace labels marked for projects, filterable by PROJ-007), a status (PROJ-016), an optional color (`#rrggbb`, canonical lowercase), an optional icon (one Unicode emoji, default none), and values for the custom fields that apply to projects (FIELD-001).
-2. Its status is one of the project statuses of its primary team or the workspace (PROJ-016), each in one of the categories Backlog, Planned, Started, Paused, Completed and Canceled, and a new project starts in the default Planned status unless another is chosen.
+2. Its status is one of the project statuses of its primary team or the workspace (PROJ-016, PROJ-046), each in one of the categories Backlog, Planned, Started, Paused, Completed and Canceled, and a new project starts in the default Planned status unless another is chosen.
 3. Start date, target date, priority and labels are set in the project page, the projects list, the roadmap timeline (INIT-003) and the public API, and each change is a project activity entry.
 4. Linear project start and target dates, priority and labels import onto these fields (DATA-014).
 5. Owners, Admins and Members create projects and edit these fields; Guests see the projects their invited teams contribute to and cannot create or edit one (role matrix).
 
 #### PROJ-002 — Manual lifecycle
 
-**Requirement.** Manual lifecycle. The outcomes below apply through the product doors for this capability.
+**Requirement.** A project's status (PROJ-016) is changed explicitly by an Owner, Admin or Member, or their sponsored agent under the company's policy for standard; Guests are refused by the role matrix.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A project's status (PROJ-016) is changed explicitly by an Owner, Admin or Member, or their sponsored agent under the company's policy for standard; Guests are refused by the role matrix.
@@ -703,7 +703,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### PROJ-003 — Project membership
 
-**Requirement.** Project membership. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue belongs to at most one project.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue belongs to at most one project.
@@ -711,7 +711,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### PROJ-004 — Progress
 
-**Requirement.** Progress. The outcomes below apply through the product doors for this capability.
+**Requirement.** Project progress counts issues: completed project issues divided by all project issues outside the Canceled and Duplicate categories.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Project progress counts issues: completed project issues divided by all project issues outside the Canceled and Duplicate categories.
@@ -719,7 +719,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### PROJ-005 — Health
 
-**Requirement.** Health. The outcomes below apply through the product doors for this capability.
+**Requirement.** Health is reported only for projects whose status is in the Started category (PROJ-016); a project in any other category, Paused included, reports no health and is excluded from health filters and counts.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Health is reported only for projects whose status is in the Started category (PROJ-016); a project in any other category, Paused included, reports no health and is excluded from health filters and counts.
@@ -730,14 +730,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### PROJ-006 — Risk explanation
 
-**Requirement.** Risk explanation. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every Blocked or At risk project shows the exact issues and measurements that triggered its health, including unresolved dependencies, unowned urgent work, target-date exposure, and committed scope against capacity.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every Blocked or At risk project shows the exact issues and measurements that triggered its health, including unresolved dependencies, unowned urgent work, target-date exposure, and committed scope against capacity.
 
 #### PROJ-007 — Portfolio
 
-**Requirement.** Portfolio. The outcomes below apply through the product doors for this capability.
+**Requirement.** The Projects view shows the count of projects in each health and lifecycle state and can filter by lifecycle, health, lead, team, target date, and label.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The Projects view shows the count of projects in each health and lifecycle state and can filter by lifecycle, health, lead, team, target date, and label.
@@ -747,14 +747,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### PROJ-008 — Historical truth
 
-**Requirement.** Historical truth. The outcomes below apply through the product doors for this capability.
+**Requirement.** Later issue edits update live project progress and health but never rewrite a closed cycle snapshot shown in that project's history.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Later issue edits update live project progress and health but never rewrite a closed cycle snapshot shown in that project's history.
 
 #### PROJ-009 — Project archiving
 
-**Requirement.** Project archiving. The outcomes below apply through the product doors for this capability.
+**Requirement.** Archiving a project removes it from the default portfolio and stops new issues from joining it while preserving its lifecycle, issues, history, and closed-cycle snapshots.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Archiving a project removes it from the default portfolio and stops new issues from joining it while preserving its lifecycle, issues, history, and closed-cycle snapshots.
@@ -764,7 +764,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CYCLE-001 — Time box
 
-**Requirement.** Time box. The outcomes below apply through the product doors for this capability.
+**Requirement.** A cycle belongs to one team and has a name unique within that team, a start instant, an end instant after the start, and an optional capacity in estimate points, all interpreted in the workspace timezone (OPS-003).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A cycle belongs to one team and has a name unique within that team, a start instant, an end instant after the start, and an optional capacity in estimate points, all interpreted in the workspace timezone (OPS-003).
@@ -773,7 +773,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CYCLE-002 — Commitment
 
-**Requirement.** Commitment. The outcomes below apply through the product doors for this capability.
+**Requirement.** A non-terminal issue can be committed to at most one cycle, and only to a cycle of its own team.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A non-terminal issue can be committed to at most one cycle, and only to a cycle of its own team.
@@ -782,7 +782,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CYCLE-003 — Progress and capacity
 
-**Requirement.** Progress and capacity. The outcomes below apply through the product doors for this capability.
+**Requirement.** Cycle progress is completed committed estimate points divided by all non-Canceled, non-Duplicate committed estimate points when every included issue is estimated; otherwise it uses issue counts and labels the result `by issue count`.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Cycle progress is completed committed estimate points divided by all non-Canceled, non-Duplicate committed estimate points when every included issue is estimated; otherwise it uses issue counts and labels the result `by issue count`.
@@ -791,7 +791,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CYCLE-004 — Closure and rollover
 
-**Requirement.** Closure and rollover. The outcomes below apply through the product doors for this capability.
+**Requirement.** Within 5 minutes of a cycle's end instant Vector closes it exactly once however many times the closing job runs, and by default moves committed issues in an Unstarted or Started status to the team's next cycle (CYCLE-001) and uncommits committed issues in an Intake, Backlog, Completed, Canceled, or Duplicate status.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Within 5 minutes of a cycle's end instant Vector closes it exactly once however many times the closing job runs, and by default moves committed issues in an Unstarted or Started status to the team's next cycle (CYCLE-001) and uncommits committed issues in an Intake, Backlog, Completed, Canceled, or Duplicate status.
@@ -799,7 +799,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CYCLE-005 — Closure snapshot
 
-**Requirement.** Closure snapshot. The outcomes below apply through the product doors for this capability.
+**Requirement.** Closing a cycle records committed and completed issue IDs, each issue's project ID at close, estimate totals, capacity, progress, additions and removals during the cycle, and the close time.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Closing a cycle records committed and completed issue IDs, each issue's project ID at close, estimate totals, capacity, progress, additions and removals during the cycle, and the close time.
@@ -807,7 +807,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CYCLE-006 — Missing next cycle
 
-**Requirement.** Missing next cycle. The outcomes below apply through the product doors for this capability.
+**Requirement.** If rollover is required and no next cycle exists, the cycle still closes, its unfinished issues become uncommitted, and one visible failed-operation entry names the affected issues; creating a later cycle does not move them.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. If rollover is required and no next cycle exists, the cycle still closes, its unfinished issues become uncommitted, and one visible failed-operation entry names the affected issues; creating a later cycle does not move them.
@@ -816,7 +816,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### SEARCH-001 — Global search
 
-**Requirement.** Global search. The outcomes below apply through the product doors for this capability.
+**Requirement.** Search covers issue identifiers, titles, descriptions, expected outcomes, customer impact, comments, evidence summaries, project names, label names, and saved-view names visible to the operator, and returns within 500ms.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Search covers issue identifiers, titles, descriptions, expected outcomes, customer impact, comments, evidence summaries, project names, label names, and saved-view names visible to the operator, and returns within 500ms.
@@ -824,7 +824,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### SEARCH-002 — Exact identifier
 
-**Requirement.** Exact identifier. The outcomes below apply through the product doors for this capability.
+**Requirement.** An exact issue identifier lookup reads the primary record and returns it even while full-text indexing is delayed or unavailable, subject to the archive choice in SEARCH-001.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An exact issue identifier lookup reads the primary record and returns it even while full-text indexing is delayed or unavailable, subject to the archive choice in SEARCH-001.
@@ -833,28 +833,28 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### SEARCH-003 — Index freshness
 
-**Requirement.** Index freshness. The outcomes below apply through the product doors for this capability.
+**Requirement.** Created or changed searchable text appears in full-text results within 10 seconds.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Created or changed searchable text appears in full-text results within 10 seconds.
-2. Database triggers maintain the full-text entries in the same transaction as searchable source changes, so a committed source change cannot leave its corresponding entry behind.
+2. A committed searchable-text change is atomic with its index entry, so a committed source change cannot leave its corresponding entry behind.
 3. If an index query fails, the exact primary-record lookup remains available under SEARCH-002; other searches are reported unavailable with the last successful index time; Vector never presents a known index failure as a complete empty result.
 
 #### VIEW-001 — Issue controls
 
-**Requirement.** Issue controls. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides issue controls for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Issue lists can filter by status, status category, priority, assignee, team, project, cycle, label, due date, blocked state, and parent (all issues, root issues, or children of one exact parent identifier); sort by newest, oldest, Urgent-to-No-priority, workflow status order, due date, or last update; and group by none, status, assignee, priority, project, cycle, or team.
 2. Completed issues are hidden by default outside Current.
 3. Grouped pages order by the group key before the selected sort and stable identifier.
 4. Only groups with rows on the page are rendered, with counts for the complete filtered result; a group may continue onto another page.
-5. The issue-list HTTP response exposes page-present `groups` with full filtered counts and `allGroups` with the complete filtered grouping aggregate.
-6. Positive offsets require the response `revision` for the same query and workspace calendar date; invalidated or missing identity returns HTTP 409 `pagination_invalidated` without mixed rows, and browsing restarts visibly at offset zero.
+5. The issue-list HTTP response exposes page-present page-present groups with full filtered counts and the complete grouping aggregate with the complete filtered grouping aggregate.
+6. Positive offsets require the response the query revision for the same query and workspace calendar date; invalidated or missing identity returns a visible pagination conflict without mixed rows, and browsing restarts visibly at offset zero.
 
 #### VIEW-002 — Saved views
 
-**Requirement.** Saved views. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides saved views for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Anyone signed in can save a named combination of filters, sort, grouping, and list or board layout as a private view, then update, duplicate, or delete it; Owners, Admins and Members can also save a view as shared with the workspace or a team or switch it to shared, and a Guest's views are always private (role matrix).
@@ -863,7 +863,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### VIEW-003 — Control persistence
 
-**Requirement.** Control persistence. The outcomes below apply through the product doors for this capability.
+**Requirement.** The filters, sort, and grouping an operator last applied to Current, My work, the Projects portfolio, the issue list, and the board are stored for that operator and restored on their next visit from any browser, and one visible control resets them to the defaults.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The filters, sort, and grouping an operator last applied to Current, My work, the Projects portfolio, the issue list, and the board are stored for that operator and restored on their next visit from any browser, and one visible control resets them to the defaults.
@@ -872,7 +872,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### VIEW-004 — Bulk edit
 
-**Requirement.** Bulk edit. The outcomes below apply through the product doors for this capability.
+**Requirement.** An operator can select several issues in a list and set status, assignee, priority, project, cycle, or labels on all of them in one operation, up to the batch limit in `seed.json → limits`.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An operator can select several issues in a list and set status, assignee, priority, project, cycle, or labels on all of them in one operation, up to the batch limit in `seed.json → limits`.
@@ -881,7 +881,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### VIEW-005 — Team board
 
-**Requirement.** Team board. The outcomes below apply through the product doors for this capability.
+**Requirement.** The board shows one explicitly selected team's workflow at a time; it never guesses a team in a multi-team workspace.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The board shows one explicitly selected team's workflow at a time; it never guesses a team in a multi-team workspace.
@@ -889,13 +889,13 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 3. Each card has a labeled, keyboard-operable status selector.
 4. A status change uses the existing version-checked issue mutation (ISSUE-004, ISSUE-006); intake and duplicate decision rules cannot be bypassed, and a stale conflict shows the current server issue and refreshes the board without applying the rejected move.
 5. At 390px, a labeled column selector lets the operator choose which status column to view.
-6. Board pages explicitly request `pageSize=100` and `grouping=status` through the same issue-list URL and API; ordinary list requests default to 50 and the accepted page sizes are bounded to 50 or 100.
+6. Board pages explicitly request a 100-card page grouped by status through the same issue-list URL and API; ordinary list requests default to 50 and the accepted page sizes are bounded to 50 or 100.
 7. Status counts use the same SQL filters as cards across the complete result, with page counts distinguished from totals.
 8. Paging reaches cards beyond the first page; completed work remains hidden until explicitly requested.
 
 #### CMD-001 — Command palette
 
-**Requirement.** Command palette. The outcomes below apply through the product doors for this capability.
+**Requirement.** The command palette searches issues, projects, saved views, and available commands from one input.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The command palette searches issues, projects, saved views, and available commands from one input.
@@ -903,7 +903,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CMD-002 — Keyboard navigation
 
-**Requirement.** Keyboard navigation. The outcomes below apply through the product doors for this capability.
+**Requirement.** Outside editable controls, Command/Ctrl-K opens the palette, C opens new issue, G then M opens My work, G then C opens Current, G then P opens Projects, and Escape closes the topmost transient surface.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Outside editable controls, Command/Ctrl-K opens the palette, C opens new issue, G then M opens My work, G then C opens Current, G then P opens Projects, and Escape closes the topmost transient surface.
@@ -911,7 +911,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### CMD-003 — Focus and selection
 
-**Requirement.** Focus and selection. The outcomes below apply through the product doors for this capability.
+**Requirement.** The up and down arrows move a visible focus indicator through the rows of the active list, Enter opens the focused row, X adds or removes it from the selection VIEW-004 acts on, and Escape returns focus from an open detail pane to the row it was opened from.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The up and down arrows move a visible focus indicator through the rows of the active list, Enter opens the focused row, X adds or removes it from the selection VIEW-004 acts on, and Escape returns focus from an open detail pane to the row it was opened from.
@@ -921,11 +921,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### NOTIFY-001 — Inbox events
 
-**Requirement.** Inbox events. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides inbox events for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Vector creates an in-app notification, visible within 5 seconds, for assignment of an issue to the member, a direct mention (ISSUE-013), a comment on an issue they follow, the return of an intake item they deferred, the resolution of the last blocker on an issue assigned to them, a due reminder (NOTIFY-005), a triage item they are responsible for (TRIAGE-001), a project or initiative update they follow (PROJ-010), a delegated agent's question or completion (AGENT-002), a review request or status change from Git (GITHUB-005) and an SLA warning (AUTO-004).
-2. Members who follow an issue (NOTIFY-002) — its creator, assignee, commenters, mentioned members and explicit followers — are also notified when it is completed, when it is canceled or marked duplicate, when its status changes to another status (one notification per change, grouped with any other change made in the same mutation), when its priority is raised to Urgent, when it becomes blocked by a newly added blocker or a blocking relation on it is added or removed, when its due date changes, and when a resolved thread they took part in is reopened (ISSUE-008).
+2. Members who follow an issue (NOTIFY-002) — its creator, assignee, commenters, mentioned members and explicit followers — are also notified when it is completed, when it is canceled or marked duplicate, when its status changes to another status (one notification per change, grouped with any other change made in the same mutation), when its priority is raised to Urgent, when it becomes blocked by a newly added blocker or a blocking relation on it is added or removed, when its due date changes, and when a resolved thread they took part in is reopened (ISSUE-029).
 3. Each event notifies each follower once, never the actor (NOTIFY-003), and a completion caused by automation or Git (GITHUB-003) names that automation as actor.
 4. The inbox is always delivered; email, Slack, Teams, mobile push and desktop follow NOTIFY-006 and NOTIFY-007.
 5. A thread-reopened event reaches current issue followers who authored its top-level comment or any reply, excludes the reopener, and emits once for each actual resolved-to-open transition; reopening an already open thread emits nothing.
@@ -935,14 +935,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### NOTIFY-002 — Followers
 
-**Requirement.** Followers. The outcomes below apply through the product doors for this capability.
+**Requirement.** Issue creators, assignees, commenters, and directly mentioned operators follow the issue automatically; an operator can follow or unfollow it explicitly without changing anyone else's following.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Issue creators, assignees, commenters, and directly mentioned operators follow the issue automatically; an operator can follow or unfollow it explicitly without changing anyone else's following.
 
 #### NOTIFY-003 — No self-notification
 
-**Requirement.** No self-notification. The outcomes below apply through the product doors for this capability.
+**Requirement.** An action never notifies its actor.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An action never notifies its actor.
@@ -950,7 +950,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### NOTIFY-004 — Read and mute
 
-**Requirement.** Read and mute. The outcomes below apply through the product doors for this capability.
+**Requirement.** Opening a notification marks it read, an operator can mark all of theirs read in one action, and the interface shows their unread count.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Opening a notification marks it read, an operator can mark all of theirs read in one action, and the interface shows their unread count.
@@ -958,7 +958,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### NOTIFY-005 — Due reminders
 
-**Requirement.** Due reminders. The outcomes below apply through the product doors for this capability.
+**Requirement.** Within 5 minutes of the configured daily reminder time — 09:00 in the workspace timezone by default — Vector notifies the assignee once for each incomplete issue assigned to them that is due that day, and once more on the first run after it becomes overdue.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Within 5 minutes of the configured daily reminder time — 09:00 in the workspace timezone by default — Vector notifies the assignee once for each incomplete issue assigned to them that is due that day, and once more on the first run after it becomes overdue.
@@ -966,7 +966,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### NOTIFY-006 — Assignment and mention email
 
-**Requirement.** Assignment and mention email. The outcomes below apply through the product doors for this capability.
+**Requirement.** A qualifying assignment or direct mention creates at most one durable email intent per event, recipient and issue in the same transaction as its source mutation.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A qualifying assignment or direct mention creates at most one durable email intent per event, recipient and issue in the same transaction as its source mutation.
@@ -981,7 +981,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### GITHUB-001 — Signed PR links
 
-**Requirement.** Signed PR links. The outcomes below apply through the product doors for this capability.
+**Requirement.** A current registered repository receiver verifies exact GitHub HMAC bytes before parsing an allowlisted pull_request delivery.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A current registered repository receiver verifies exact GitHub HMAC bytes before parsing an allowlisted pull_request delivery.
@@ -991,7 +991,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### GITHUB-002 — Durable latest PR state
 
-**Requirement.** Durable latest PR state. The outcomes below apply through the product doors for this capability.
+**Requirement.** Delivery replay identity and native version/configuration fences commit with PR/link history.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Delivery replay identity and native version/configuration fences commit with PR/link history.
@@ -1003,29 +1003,29 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### API-001 — Native scoped API
 
-**Requirement.** Native scoped API. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides native scoped api for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Named reveal-once Base tokens admit only the explicit the public API routes under route-selected scopes: issue list/detail and description history use `issues:read`; issue create/version-checked update, description restore and description checklist mutations use `issues:write`; comment creation and author-only comment checklist mutations use `comments:write`; metadata uses `metadata:read`; project list/detail use `projects:read`; and project create/update use `projects:write`.
 2. The project list applies portfolio filters and returns matching counts; create and update accept native project fields, validate dates and record planning-field activity.
-3. Project lists currently return the complete workspace list without pagination (API-003).
+3. Project lists  return the complete workspace list without pagination (API-003).
 4. Token expiry, revocation, active issuer/workspace and resource authority are checked on every request; bearer tokens never admit documents, generated functions, private files or token administration.
 5. Existing native mutation and notification rules apply; no deletion API or product role is added.
 
 #### API-002 — Token authority and usage
 
-**Requirement.** Token authority and usage. The outcomes below apply through the product doors for this capability.
+**Requirement.** Settings exposes safe metadata/usage and revocation.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Settings exposes safe metadata/usage and revocation.
-2. Issuance and each mutation retain current authority inside the same SQL transaction.
+2. Issuance and each mutation retain current authority inside the same atomic transaction.
 3. Usage-write failure denies admission.
 4. Removal revokes issued tokens.
 5. Stale writes and authority races publish no unauthorized changes; committed native notification intent remains durable after a response denial.
 
 #### WEBHOOK-001 — Durable native delivery
 
-**Requirement.** Durable native delivery. The outcomes below apply through the product doors for this capability.
+**Requirement.** Registered public HTTPS destinations receive minimal native created/updated/completed issue events under stable business identities.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Registered public HTTPS destinations receive minimal native created/updated/completed issue events under stable business identities.
@@ -1040,7 +1040,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-001 — Export contents
 
-**Requirement.** Export contents. The outcomes below apply through the product doors for this capability.
+**Requirement.** The portable export contains a manifest, original attachment bytes, and every operator, team, workflow status, issue, comment, attachment metadata, link, relation, evidence revision, intake decision, project, cycle and snapshot, label, saved view, notification, custom field, non-secret setting, idempotency record, failed operation, and audit entry.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The portable export contains a manifest, original attachment bytes, and every operator, team, workflow status, issue, comment, attachment metadata, link, relation, evidence revision, intake decision, project, cycle and snapshot, label, saved view, notification, custom field, non-secret setting, idempotency record, failed operation, and audit entry.
@@ -1048,7 +1048,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-002 — Mapped import preflight
 
-**Requirement.** Mapped import preflight. The outcomes below apply through the product doors for this capability.
+**Requirement.** Separately from portable restore, an Owner or Admin (role matrix; Members and Guests are refused 403) can preflight an import of issues supplied as CSV rows or as a JSON array of objects with the same field names, before anything is written.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Separately from portable restore, an Owner or Admin (role matrix; Members and Guests are refused 403) can preflight an import of issues supplied as CSV rows or as a JSON array of objects with the same field names, before anything is written.
@@ -1058,7 +1058,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-003 — Atomic mapped import
 
-**Requirement.** Atomic mapped import. The outcomes below apply through the product doors for this capability.
+**Requirement.** An Owner or Admin (role matrix) applying a successful preflight records an import-run identifier and publishes the run in batches, each written atomically, preserving supplied creation and update times.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin (role matrix) applying a successful preflight records an import-run identifier and publishes the run in batches, each written atomically, preserving supplied creation and update times.
@@ -1066,7 +1066,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-004 — Idempotent mapped import
 
-**Requirement.** Idempotent mapped import. The outcomes below apply through the product doors for this capability.
+**Requirement.** Reapplying the same import-run identifier and source record identifiers creates no duplicates and returns the first run's result.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Reapplying the same import-run identifier and source record identifiers creates no duplicates and returns the first run's result.
@@ -1074,18 +1074,18 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-005 — Exact portable restore
 
-**Requirement.** Exact portable restore. The outcomes below apply through the product doors for this capability.
+**Requirement.** The local restore command restores a portable DATA-001 archive without synthesizing activity, audit entries, notifications, or new timestamps.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The local restore command restores a portable DATA-001 archive without synthesizing activity, audit entries, notifications, or new timestamps.
 
 #### DATA-006 — Staged import run
 
-**Requirement.** Staged import run. The outcomes below apply through the product doors for this capability.
+**Requirement.** Only an Owner or Admin starts, resumes or repeats a run (role matrix).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Only an Owner or Admin starts, resumes or repeats a run (role matrix).
-2. One reviewed run of up to the measured limits in docs/MOVE-IN.md (tested at 2,000 issues; larger sources are split into the runs of one migration under DATA-017, never truncated) previews once and publishes in staged batches under one run identifier.
+2. One reviewed run of up to the measured limits in docs/MOVE-IN.md (including a seeded 2,000-issue run; larger sources are split into the runs of one migration under DATA-017, never truncated) previews once and publishes in staged batches under one run identifier.
 3. Status says truthfully how many of its batches are applied and whether the last batch failed.
 4. An interrupted run (a stopped client or a failed batch) resumes from its last committed batch, and every source record lands exactly once.
 5. Issues already published are visible and marked as part of an unfinished run.
@@ -1094,7 +1094,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-007 — Reconciliation report
 
-**Requirement.** Reconciliation report. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides reconciliation report for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. For a finished or partial run, Settings and the terminal give one report and one CSV: source rows read against Vector issues written, by team, status, project, cycle and assignee; every omitted nonempty field with its count; every unresolved or ignored reference with its row; what the source file does not contain at all; and a mapping of each source ID to its Vector identifier.
@@ -1102,7 +1102,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-008 — Linear API enrichment file
 
-**Requirement.** Linear API enrichment file. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** A JSON file the owner produces with Linear's GraphQL API (docs/LINEAR-API-FILE.md) merges with a Linear CSV run by source ID. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A JSON file the owner produces with Linear's GraphQL API (docs/LINEAR-API-FILE.md) merges with a Linear CSV run by source ID.
@@ -1112,7 +1112,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-009 — Jira CSV preflight and loss review
 
-**Requirement.** Jira CSV preflight and loss review. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** A Jira All Fields file is reviewed before any write through the same staged import service. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A Jira All Fields file is reviewed before any write through the same staged import service.
@@ -1123,7 +1123,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### DATA-010 — Jira staged apply and reconciliation
 
-**Requirement.** Jira staged apply and reconciliation. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** The reviewed Jira CSV imports preserved issue times (Resolved for completion, or an explicitly confirmed fallback), due dates, estimates, exact labels, confirmed status/priority/operator/sprint mappings, in-file parents and Blocks, canonical Duplicate links and original-author/time comments. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The reviewed Jira CSV imports preserved issue times (Resolved for completion, or an explicitly confirmed fallback), due dates, estimates, exact labels, confirmed status/priority/operator/sprint mappings, in-file parents and Blocks, canonical Duplicate links and original-author/time comments.
@@ -1131,17 +1131,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 3. Outside-file and Relates targets are omissions and never bind a same-key native issue.
 4. Attachment bytes are never fetched; named HTTPS links require explicit opt-in.
 5. Preview, CLI review and stored report share one loss review and configuration fingerprint.
-6. Staged apply/replay, SQL reconciliation and whole-run rollback use the existing lifecycle; later native edits refuse the entire rollback without changes.
+6. Staged apply/replay, record reconciliation and whole-run rollback use the existing lifecycle; later native edits refuse the entire rollback without changes.
 7. Historical imports dispatch no notifications, mail, webhooks or agents.
 8. The public route requires a current Owner or Admin session (role matrix) and same origin; API tokens are not admitted.
 
 #### DATA-011 — Erasing an imported person
 
-**Requirement.** Erasing an imported person. The outcomes below apply through the product doors for this capability.
+**Requirement.** An Owner or Admin (role matrix; Members and Guests are refused 403) can erase a person that imports carried, by exact email and/or up to five exact display names, after a counts-only preview and a typed confirmation.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin (role matrix; Members and Guests are refused 403) can erase a person that imports carried, by exact email and/or up to five exact display names, after a counts-only preview and a typed confirmation.
-2. One D1 batch removes the person from every import run, applied or still pending: records that hold them become permanent tombstones that never publish or replay, runs labeled with their email are retired, originals holding them are withdrawn, imported comments they wrote read as deleted with no author name, reconciliation reports lose those cells, and development mail naming them is dropped.
+2. One atomic operation removes the person from every import run, applied or still pending: records that hold them become permanent tombstones that never publish or replay, runs labeled with their email are retired, originals holding them are withdrawn, imported comments they wrote read as deleted with no author name, reconciliation reports lose those cells, and development mail naming them is dropped.
 3. Issues already written stay; a pending run still finishes, without the erased records and without links to them.
 4. A current or suspended member, or an open invitation, is refused here; a member's native and imported records are erased together by ROLE-012.
 5. The erasure journal is append-only, and an archive made before the erasure is refused on restore when a later archive's journal is supplied.
@@ -1150,7 +1150,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### OWNER-CLAIM-001 — Signed owner claim
 
-**Requirement.** Signed owner claim. The outcomes below apply through the product doors for this capability.
+**Requirement.** An explicitly configured signed installation claims its initial owner through Base native operator-auth using a five-minute signed claim bound to trusted issuer, installation, app origin and canonical owner email.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An explicitly configured signed installation claims its initial owner through Base native operator-auth using a five-minute signed claim bound to trusted issuer, installation, app origin and canonical owner email.
@@ -1161,7 +1161,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### EDITOR-001 — Owner-gated editor
 
-**Requirement.** Owner-gated editor. The outcomes below apply through the product doors for this capability.
+**Requirement.** The optional same-origin Base editor is admitted only for a recorded installation owner with a current native Base owner session, active mapped Vector identity and restored-installation grant where applicable.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The optional same-origin Base editor is admitted only for a recorded installation owner with a current native Base owner session, active mapped Vector identity and restored-installation grant where applicable.
@@ -1180,7 +1180,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Workspace roles. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map.
 
 | Action | Owner | Admin | Member | Guest | Viewer (ROLE-013 target) |
 |---|---|---|---|---|---|
@@ -1284,35 +1284,34 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | Browse and export the audit log (ROLE-005) | yes | yes | no | no | no |
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Each member has exactly one role: Owner, Admin, Member or Guest today; ROLE-013 adds the read-only Viewer target.
+1. Each member has exactly one role: Owner, Admin, Member or Guest; ROLE-013 adds the read-only Viewer target.
 2. Owners and Admins invite and remove members, create teams, manage integrations, API tokens, workspace automations, agents and workspace settings; Owners change any role, Admins change Member and Guest roles (Guest assignment follows ROLE-003) and never to or from Owner or Admin; Members create and change work in the teams they can see, manage the teams they own (ROLE-007) and, where a team's permissions allow it (ROLE-009), that team's settings, cycles and templates; Guests act only inside the teams they were invited to (ROLE-003).
 3. The installation owner is an Owner and the last Owner cannot be demoted or removed.
-4. Every role change is audited (ROLE-005) and takes effect on the member's next request, including open sessions and API tokens.
-5. Each action's permitted roles are exactly those in the role matrix below, every clause that names a permission states the same rule, and *operator* in any clause is resolved by ROLE-008.
-6. The role-matrix journey carries the cells it inherited from INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-011, PROJ-002, CYCLE-001, CYCLE-002, VIEW-002, DATA-002, DATA-003, DATA-006, DATA-010, DATA-011: Guest accept, defer, end-deferral, decline and project lifecycle changes are refused 403; a Guest commits only in invited teams (404 elsewhere) and cannot share views; another member cannot edit a shared view they do not own; Member/Guest source registration, rotation and revocation, import preflight/apply/start/resume/repeat/rollback and imported-person erasure preview/confirmation are refused 403 with no writes, while Owners/Admins succeed.
-7. CYCLE-001 creation/edit/completion/deletion also checks team owners and both ROLE-009 planning permissions, with Guests refused.
-8. A row with no door yet is checked by the clause it names when that clause builds the door.
+4. Each action's permitted roles are exactly those in the role matrix below, every clause that names a permission states the same rule, and *operator* in any clause is resolved by ROLE-008.
+5. The role-matrix journey carries the cells it inherited from INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-011, PROJ-002, CYCLE-001, CYCLE-002, VIEW-002, DATA-002, DATA-003, DATA-006, DATA-010, DATA-011: Guest accept, defer, end-deferral, decline and project lifecycle changes are refused 403; a Guest commits only in invited teams (404 elsewhere) and cannot share views; another member cannot edit a shared view they do not own; Member/Guest source registration, rotation and revocation, import preflight/apply/start/resume/repeat/rollback and imported-person erasure preview/confirmation are refused 403 with no writes, while Owners/Admins succeed.
+6. CYCLE-001 creation/edit/completion/deletion also checks team owners and both ROLE-009 planning permissions, with Guests refused.
+7. A row with no door yet is checked by the clause it names when that clause builds the door.
 
 #### ROLE-002 — Private teams
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Private teams. The outcomes below apply through the product doors for this capability. Slack identity and private notices follow RL-3.
+**Requirement.** An Admin can make a team private. Slack identity and private notices follow RL-3.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Admin can make a team private.
 2. Its issues, comments, attachments, cycles, triage, project memberships and search entries are visible only to its members and to Owners; a project or initiative that spans a private team shows other viewers only the counts they may see, never titles.
 3. Making a team public or private is audited and re-evaluates notifications, followers, Slack channel routes and webhooks.
 4. Inherited from WORK-004: after a member loses access to a private-team issue, it is absent from Created, Subscribed and Activity; the private-team journey checks every tab.
-5. Inherited from SLACK-003: private-team content posts only to channels an Admin bound to that team; its acceptance journey verifies that project and saved-view bindings cannot bypass this rule.
-6. SLACK-003 channel posts and SLACK-004 direct messages for private/restricted items use only a generic notice without actor or text, or a DM to a permitted explicitly mapped member; its acceptance proves this for private teams.
+5. Inherited from SLACK-003, SLACK-007: private-team content posts only to channels an Admin bound to that team; its acceptance journey verifies that project and saved-view bindings cannot bypass this rule.
+6. SLACK-003, SLACK-007 channel posts and SLACK-004 direct messages for private/restricted items use only a generic notice without actor or text, or a DM to a permitted explicitly mapped member; its acceptance proves this for private teams.
 7. Inherited from ROLE-007: a Member's self-join of a private team is refused 403, and once its team owner or an Admin adds them they see its issues; the private-team journey checks both.
 
 #### ROLE-003 — Guests
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Guests. The outcomes below apply through the product doors for this capability.
+**Requirement.** ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door.
@@ -1327,35 +1326,35 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-SIGNIN-001 · *Register:* R-3
 
-**Requirement.** Single sign-on and provisioning. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Owners can require SAML or OpenID Connect, allow verified company domains and select Okta, Microsoft Entra ID or Google Workspace. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Owners can require SAML 2.0 or OpenID Connect sign-in through Okta, Microsoft Entra ID or Google Workspace, restrict sign-up to verified company domains, and provision and deprovision members through SCIM 2.0; deprovisioning — SCIM `active: false` or `DELETE` — suspends the member under ROLE-011, revoking their sessions and credentials within one request and keeping their name on their work, and never erases them (ROLE-012); SCIM `active: true` reactivates the same member.
+1. Owners can require SAML or OpenID Connect, allow verified company domains and select Okta, Microsoft Entra ID or Google Workspace.
+2. Run-auth proves the standards sign-in and SCIM paths against Vector membership; SCIM deactivation invokes ROLE-011 suspension without erasure, and reactivation keeps the member identity.
 
 #### ROLE-005 — Audit log
 
-*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-AUDIT-001
+*Tier:* Core · *Cites:* BASE-AUDIT-001, BASE-ROLE-001
 
-**Requirement.** Audit log. The outcomes below apply through the product doors for this capability.
+**Requirement.** The Vector audit covers sign-ins, roles and memberships, suspension, reactivation, erasure, team privacy, integrations, tokens, automation and agent runs, exports, imports and deletions, with person, automation, integration or agent as actor and the action subject.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The Vector audit covers sign-ins, roles and memberships, suspension, reactivation, erasure, team privacy, integrations, tokens, automation and agent runs, exports, imports and deletions, with person, automation, integration or agent as actor and the action subject.
 
 #### ROLE-006 — Apps and agents as actors
 
-*Tier:* Core · *Cites:* BASE-ROLE-001
+*Tier:* Core · *Cites:* BASE-AGENT-008, BASE-ROLE-001
 
-**Requirement.** Apps and agents as actors. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector names its integrations, automations and coding-provider delegates as distinct actors on issue changes.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Integrations, automations and coding agents act under their own named identities with explicit scopes, never as a person.
-2. Their changes show the app or agent name with the person who installed or delegated to it, and they can be paused or revoked by an Admin at once.
+1. Vector names its integrations, automations and coding-provider delegates as distinct actors on issue changes.
 
 #### ROLE-007 — Team membership and team owners
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Team membership and team owners. The outcomes below apply through the product doors for this capability. CYCLE-007 inherits the cycle-schedule role rule: team owners, or all team members while the planning permission is All team members, may set their own team's schedule; workspace Owners and Admins may always act. Team membership decides triage rotations (TRIAGE-001), team notifications and subscriptions (NOTIFY-009), My work's team rows, a project's contributing teams (PROJ-014) and, for private teams and Guests, access; for a public team it never restricts what a workspace Member can see (OPS-001). CYCLE-001 inherits team-owner cycle creation, edit, completion and deletion permission: Owners/Admins and team owners succeed; other team members follow ROLE-009 and Guests are refused, checked through browser and HTTP doors. 
+**Requirement.** Every team has a member list and one or more team owners. CYCLE-001 and CYCLE-007 carry cycle permissions; TRIAGE-001, NOTIFY-009, WORK-003 and PROJ-014 carry their membership-dependent behavior.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every team has a member list and one or more team owners.
@@ -1367,25 +1366,24 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ROLE-008 — Operator and permission coverage
 
-*Tier:* Core · *Cites:* BASE-ROLE-001
+*Tier:* Core · *Cites:* BASE-AGENT-008, BASE-ROLE-001
 
-**Requirement.** Operator and permission coverage. The outcomes below apply through the product doors for this capability. ISSUE-023 inherits the Guest cell: copying requires source visibility and creation permission in the destination, and Guests may copy only within invited teams, through every browser and API door. Where a clause says *operator*, it means a signed-in person of the workspace, of any role, acting in their own session or through a token they own. The word grants nothing by itself: an operator may take an action only when the role-matrix row naming that action's clause allows their role (and, for a team row, their team ownership and the team's ROLE-009 permission), and only on subjects they can see (OPS-001, ROLE-002, ROLE-003). Every browser, HTTP, API and command door of INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-011, PROJ-002, CYCLE-001, CYCLE-002, VIEW-002, DATA-002, DATA-003, DATA-006, DATA-010, DATA-011 is registered and tested under the inherited ROLE-001 matrix cells: Guest intake decisions and project lifecycle refused; Guest commitment scoped to invited teams; Guest view sharing refused and edits owner-only; source/import/erasure management Owner/Admin only; CYCLE-001 management follows team ownership and both ROLE-009 values.
+**Requirement.** An operator is a signed-in workspace person using their session or their own token. The word grants no additional permission: the role matrix, team permissions and subject visibility decide the action.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every state-changing door — each mutation route under the native API and the public API, each private server function, each Settings form and each terminal command that writes — is registered against exactly one role-matrix row.
 2. A door with no row is refused to every role but Owner and the refusal is audited (ROLE-005), so a new feature cannot ship open to Members or Guests by omission.
 3. Settings pages are reachable as the matrix's "Open Settings pages" row states, and every other Settings page and route returns 403.
-4. Integrations, automations and agents act under their own identities and scopes (ROLE-006), never under a person's row.
 
 #### ROLE-009 — Team-managed permissions
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Team-managed permissions. The outcomes below apply through the product doors for this capability. CYCLE-007 inherits the cycle-schedule role rule: team owners, or all team members while the planning permission is All team members, may set their own team's schedule; workspace Owners and Admins may always act. Objects not built yet follow the permission in the clauses that build them: team labels (ISSUE-014), team custom fields (FIELD-001), triage responsibility, routing rules, request forms and email intake (TRIAGE-001, TRIAGE-002, TRIAGE-004, TRIAGE-005), Git automation rules (GITHUB-003), the team's project statuses (PROJ-016), automation rules and SLAs (AUTO-002, AUTO-004), TEAM-005's remaining settings, issue and project templates (ISSUE-016, PROJ-012) and sub-team inheritance (TEAM-006); the acceptance's template and routing-rule cells are ISSUE-016's, PROJ-012's and TRIAGE-002's.
+**Requirement.** Each team has two permissions, each either *All team members* or *Team owners only*, set by its team owners or an Owner or Admin. The permissions apply to the named settings and planning objects as their own clauses define them.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each team has two permissions, each either *All team members* or *Team owners only*, set by its team owners or an Owner or Admin.
-2. *Who manages team settings* governs workflow statuses (TEAM-002, TEAM-004), team settings (TEAM-005), team labels (ISSUE-014), team custom fields (FIELD-001), triage responsibility, routing rules, request forms and email intake (TRIAGE-001, TRIAGE-002, TRIAGE-004, TRIAGE-005), Git automation rules (GITHUB-003), the team's project statuses (PROJ-016), and the team's automation rules, SLAs, auto-close and auto-archive (AUTO-002, AUTO-003, AUTO-004).
+2. *Who manages team settings* governs workflow statuses (TEAM-002, TEAM-004), team settings (TEAM-005), team labels (ISSUE-014), team custom fields (FIELD-001), triage responsibility, routing rules, request forms and email intake (TRIAGE-001, TRIAGE-002, TRIAGE-004, TRIAGE-005), Git automation rules (GITHUB-003), the team's project statuses (PROJ-016, PROJ-046), and the team's automation rules, SLAs, auto-close and auto-archive (AUTO-002, AUTO-003, AUTO-004).
 3. *Who manages cycles and templates* governs creating, editing, completing and deleting cycles (CYCLE-001), the cycle schedule (CYCLE-007), and the team's issue and project templates (ISSUE-016, PROJ-012).
 4. Owners and Admins pass both permissions whatever their value; Guests fail both whatever their value; a sub-team (TEAM-006) inherits its parent's values unless it sets its own.
 5. A change is audited (ROLE-005) and takes effect on the next request.
@@ -1393,14 +1391,14 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ROLE-010 — Offer Google sign-in
 
-*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-SIGNIN-001
+*Tier:* Core · *Cites:* BASE-ACCESS-001, BASE-ROLE-001, BASE-SIGNIN-001
 
-**Requirement.** Offer Google sign-in. The outcomes below apply through the product doors for this capability.
+**Requirement.** Beside the magic link (BASE-ACCESS-001), an Owner can offer "Continue with Google" and passkeys on the sign-in page without requiring either.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Beside the magic link (BASE-ACCESS-001), an Owner can offer "Continue with Google" and passkeys on the sign-in page without requiring either.
 2. Google sign-in is OpenID Connect with Google as the identity provider: Settings → Sign-in shows this installation's exact authorized redirect URI and JavaScript origin to enter in a Google Cloud OAuth client, the Owner pastes its client ID and secret, and Vector runs a test sign-in before turning it on.
-3. A Google sign-in admits only an email Google reports as verified that already belongs to a member or an open invitation, or that is in a domain the Owner allows for sign-up (ROLE-004); it links to the existing member by that email, stores no password, and never creates a second account for the same person.
+3. A Google sign-in admits only an email Google reports as verified that already belongs to a member or an open invitation, or that is in a domain the Owner allows for sign-up (ROLE-004); it links to the existing member by that email, and never creates a second account for the same person.
 4. Enabling, disabling and each sign-in by either method are audited (ROLE-005).
 5. The magic link stays available unless an Owner requires SSO under ROLE-004, which then overrides both methods.
 6. The mobile apps (MOBILE-001) offer the same methods in the system browser.
@@ -1409,7 +1407,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ROLE-010 · *Cites:* BASE-ROLE-001, BASE-SIGNIN-002
 
-**Requirement.** Member passkeys. The outcomes below apply through the product doors for this capability.
+**Requirement.** Once an Owner offers passkeys, every member, Guests included, can register one or more passkeys (WebAuthn, on the device or a security key) under Account and sign in with any of them; removing a passkey, or suspending the member (ROLE-011), revokes it.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Once an Owner offers passkeys, every member, Guests included, can register one or more passkeys (WebAuthn, on the device or a security key) under Account and sign in with any of them; removing a passkey, or suspending the member (ROLE-011), revokes it.
@@ -1419,11 +1417,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Suspend a member and withdraw access. The outcomes below apply through the product doors for this capability.
+**Requirement.** Suspension is the default offboarding: Settings → Members' Suspend action (Owners and Admins; only an Owner suspends an Owner or Admin), a member's own Leave workspace, and SCIM `PATCH` with `active: false` or `DELETE` on the user (ROLE-004) all produce the same suspended state, which takes effect on the member's next request.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Suspension is the default offboarding: Settings → Members' Suspend action (Owners and Admins; only an Owner suspends an Owner or Admin), a member's own Leave workspace, and SCIM `PATCH` with `active: false` or `DELETE` on the user (ROLE-004) all produce the same suspended state, which takes effect on the member's next request.
-2. It revokes every session on every device, every personal API token (API-001), every OAuth grant they authorized (API-004) and the MCP sessions under them (AGENT-005), every passkey (ROLE-010), every mobile, desktop and Web Push registration (MOBILE-002, MOBILE-005), and their linked Slack, Teams and GitHub identities (SLACK-001, SLACK-004, TEAMS-001, GITHUB-006), so a suspended member's SLACK-004 link is deleted, no Slack direct message reaches them and a signed Slack action from their account is refused; magic-link, Google and SSO sign-in for that email are refused while they are suspended.
+2. It revokes every session on every device, every personal API token (API-001), every OAuth grant they authorized (API-004) and the MCP sessions under them (AGENT-005), every passkey (ROLE-014), every mobile, desktop and Web Push registration (MOBILE-002, MOBILE-005), and their linked Slack, Teams and GitHub identities (SLACK-001, SLACK-004, TEAMS-001, GITHUB-006), so a suspended member's SLACK-004 link is deleted, no Slack direct message reaches them and a signed Slack action from their account is refused; magic-link, Google and SSO sign-in for that email are refused while they are suspended.
 3. A suspended member no longer counts in the member count or any seat limit, cannot be mentioned, assigned, added to a team or project, or delegated work, and receives no notification or digest; their team memberships and team ownerships are kept but inactive, and a team left with no active team owner is managed by Admins until one is named (ROLE-007).
 4. Suspension, leaving and reactivation each write one audit entry with the actor and the method (Settings, self or SCIM), and neither suspension nor any SCIM call anonymizes anything (ROLE-012).
 5. Viewers may leave the workspace themselves but cannot suspend or reactivate another member.
@@ -1432,7 +1430,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ROLE-011 · *Cites:* BASE-ROLE-001
 
-**Requirement.** Suspended work and member directory. The outcomes below apply through the product doors for this capability.
+**Requirement.** Their name stays, labeled "Suspended", on every comment, description revision, activity entry, audit entry (ROLE-005), project update and customer request they wrote and on their profile, which Owners and Admins open from the member directory's Suspended filter to see their issue activity; the directory lists suspended members apart from active ones.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Their name stays, labeled "Suspended", on every comment, description revision, activity entry, audit entry (ROLE-005), project update and customer request they wrote and on their profile, which Owners and Admins open from the member directory's Suspended filter to see their issue activity; the directory lists suspended members apart from active ones.
@@ -1442,7 +1440,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ROLE-011 · *Cites:* BASE-ROLE-001
 
-**Requirement.** Reactivate the same member. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides reactivate the same member for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Reactivation — by an Owner or Admin from the Suspended filter (only an Owner reactivates a former Owner or Admin), by SCIM `active: true`, or by inviting the same email again — restores the same member record and ID with its role, history, team memberships and private views; it never restores a revoked session, token, OAuth grant, passkey, push registration or linked identity, so the member signs in afresh.
@@ -1451,7 +1449,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ROLE-011 · *Cites:* BASE-ROLE-001
 
-**Requirement.** Portable suspended-member state. The outcomes below apply through the product doors for this capability.
+**Requirement.** The portable export (DATA-001) carries each member's state with the suspension time and actor, and a restore (DATA-005) brings a suspended member back suspended, with no session or credential.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The portable export (DATA-001) carries each member's state with the suspension time and actor, and a restore (DATA-005) brings a suspended member back suspended, with no session or credential.
@@ -1460,7 +1458,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-DATA-003, BASE-DATA-006
 
-**Requirement.** Erase a member's personal data. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides erase a member's personal data for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Erasure is a separate, deliberate action, offered only on a suspended member (an active member is suspended first, ROLE-011), to Owners and Admins (only an Owner erases a former Owner or Admin), from the member's profile or the public API — for example to honor a departed employee's or contractor's deletion request under the CCPA.
@@ -1474,7 +1472,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Read-only Viewers. The outcomes below apply through the product doors for this capability.
+**Requirement.** A Viewer is a stakeholder who reads public teams' work and shared views, and private-team work only after an Owner or Admin explicitly adds them.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A Viewer is a stakeholder who reads public teams' work and shared views, and private-team work only after an Owner or Admin explicitly adds them.
@@ -1489,7 +1487,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Team settings. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each team chooses whether it uses triage, cycles and estimates; its estimate scale (points 1–100 as ISSUE-011, Fibonacci, exponential or T-shirt sizes mapped to points); its default issue template; its triage responsibility (TRIAGE-001); its Git automation rules (GITHUB-003); and its auto-close and auto-archive periods (AUTO-003).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each team chooses whether it uses triage, cycles and estimates; its estimate scale (points 1–100 as ISSUE-011, Fibonacci, exponential or T-shirt sizes mapped to points); its default issue template; its triage responsibility (TRIAGE-001); its Git automation rules (GITHUB-003); and its auto-close and auto-archive periods (AUTO-003).
@@ -1500,7 +1498,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Sub-teams. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team can have sub-teams up to three levels deep (for example Platform → Infrastructure, Developer Experience).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team can have sub-teams up to three levels deep (for example Platform → Infrastructure, Developer Experience).
@@ -1515,7 +1513,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Team join permissions. The outcomes below apply through the product doors for this capability.
+**Requirement.** Team membership is separate from visibility: a public team can allow open joining or require an invitation; private teams always require approval (ROLE-002).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Team membership is separate from visibility: a public team can allow open joining or require an invitation; private teams always require approval (ROLE-002).
@@ -1530,7 +1528,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Who may create teams. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners and Admins set the workspace permission *Who may create teams* to *Owners and Admins only* or *Members too*.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins set the workspace permission *Who may create teams* to *Owners and Admins only* or *Members too*.
@@ -1545,7 +1543,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Issue templates. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners and Admins create, edit and delete workspace templates.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins create, edit and delete workspace templates.
@@ -1559,7 +1557,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Reactions. The outcomes below apply through the product doors for this capability.
+**Requirement.** Members react to issue descriptions and comments with emoji; reactions show who reacted, never notify by default, sync with Slack thread reactions (SLACK-002) and are included in export.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members react to issue descriptions and comments with emoji; reactions show who reacted, never notify by default, sync with Slack thread reactions (SLACK-002) and are included in export.
@@ -1569,7 +1567,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Description history. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every saved description revision is kept with author and time, including the single revision each checklist tick writes (ISSUE-025); members can compare any two revisions and restore one, which writes a new revision and activity entry rather than rewriting history.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every saved description revision is kept with author and time, including the single revision each checklist tick writes (ISSUE-025); members can compare any two revisions and restore one, which writes a new revision and activity entry rather than rewriting history.
@@ -1578,7 +1576,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Sub-issue progress. The outcomes below apply through the product doors for this capability.
+**Requirement.** A parent issue shows its sub-issues in order with status, assignee and a completed-of-total count; members create, reorder and convert sub-issues inline.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A parent issue shows its sub-issues in order with status, assignee and a completed-of-total count; members create, reorder and convert sub-issues inline.
@@ -1588,7 +1586,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Undo an issue change. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides undo an issue change for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every member action that changes issues — a deletion, a property or status change, a bulk edit (VIEW-004), a move between teams or cycles, a duplicate decision — shows an Undo control for 10 seconds, and Command/Ctrl-Z outside an editable control undoes the member's most recent such action within that window, writing the reversal as a new activity entry under ISSUE-006 version checks (a stale undo shows the conflict and changes nothing).
@@ -1597,7 +1595,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ISSUE-020 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Recently deleted issues and restore. The outcomes below apply through the product doors for this capability.
+**Requirement.** A deleted issue leaves every list, board, search result, Current and My work at once and appears in Settings → Recently deleted (and the team's Recently deleted list) for 30 days with who deleted it and when; members permitted by `issue.can-delete.v1` and its deleter restore it from there or by Undo.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A deleted issue leaves every list, board, search result, Current and My work at once and appears in Settings → Recently deleted (and the team's Recently deleted list) for 30 days with who deleted it and when; members permitted by `issue.can-delete.v1` and its deleter restore it from there or by Undo.
@@ -1609,7 +1607,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ISSUE-020 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Issue deletion retention and purge. The outcomes below apply through the product doors for this capability.
+**Requirement.** After 30 days the scheduled purge runs the ISSUE-010 cascade exactly once, after which the identifier answers 404 and is never reused (ISSUE-002).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. After 30 days the scheduled purge runs the ISSUE-010 cascade exactly once, after which the identifier answers 404 and is never reused (ISSUE-002).
@@ -1619,7 +1617,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Issue types. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team can enable issue types (default Bug, Feature, Task and Epic; renameable, with icons) so an issue has at most one type; a type can carry its own template (ISSUE-016), required custom fields (FIELD-001) and request form (TRIAGE-004), and lists, boards, filters, insights and SLAs (AUTO-004) can use it.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team can enable issue types (default Bug, Feature, Task and Epic; renameable, with icons) so an issue has at most one type; a type can carry its own template (ISSUE-016), required custom fields (FIELD-001) and request form (TRIAGE-004), and lists, boards, filters, insights and SLAs (AUTO-004) can use it.
@@ -1631,7 +1629,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Issue start date. The outcomes below apply through the product doors for this capability.
+**Requirement.** An issue has an optional start date, which must be on or before its due date when both are set.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue has an optional start date, which must be on or before its due date when both are set.
@@ -1642,7 +1640,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Copy issue. The outcomes below apply through the product doors for this capability. Its role-matrix cells, Guests copying only within invited teams, are enforced on every door and proven by the role-matrix journey (the covering journey) with a Guest assigned through the native ROLE-003 role door. Typed and team-scoped custom-field definitions (FIELD-001) and team labels (ISSUE-014) must participate in this mapping before those capabilities ship. Embedded-file copying remains an inherited obligation of ISSUE-024 for embedded files. Native team moves (ISSUE-012) select an explicit same-category status and preserve labels and custom-field values unchanged.
+**Requirement.** From an issue's menu, the command palette (CMD-001) and the public API, anyone who can create issues in a team copies an issue into it. Guests copy only within invited teams. FIELD-001 and ISSUE-014 govern typed or team-scoped mapping; ISSUE-024 governs copying embedded files; ISSUE-012 governs native team moves.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. From an issue's menu, the command palette (CMD-001) and the public API, anyone who can create issues in a team copies an issue into it.
@@ -1656,7 +1654,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003
 
-**Requirement.** Put files into issue text. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides put files into issue text for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A member puts a screenshot, photo or screen recording into an issue description, a comment, a template (ISSUE-016) or a document (PROJ-013) by pasting it from the clipboard, dragging and dropping it onto the editor, choosing `/file` or `/image` from the slash menu (ISSUE-026), or pressing Command/Ctrl-Shift-U, one file or several at once (role matrix: anyone who can edit that text).
@@ -1667,42 +1665,41 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-002, BASE-INPUT-003
 
-**Requirement.** Inline image display. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides inline image display for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Images (PNG, JPEG, GIF, WebP) show inline where they were placed with no click to load: at most the editor's width, with their stored intrinsic size reserved so the text does not jump, GIFs animated, and editable alt text; clicking one opens a full-size viewer with zoom, arrow keys through the issue's images, Escape to close, and Download.
-2. *Baseline reconciliation (BASE-INPUT-002, BASE-INPUT-003).* Inline display applies only to the installation's own uploads of the allow-listed image and video types, referenced by attachment ID.
+2. Inline display applies only to the installation's own uploads of the allow-listed image and video types, referenced by attachment ID.
 3. The page shows it through an `<img>` or `<video>` element, which a browser renders without acting on the download disposition, so opening the file's URL directly still downloads it and BASE-INPUT-003 holds unchanged.
-4. The application CSP allows `img-src` and `media-src` only from `'self'` and `blob:` (the local preview of a file being pasted).
-5. SVG, HTML and every other type are never shown inline.
-6. Every image reference that is not one of the installation's own attachments of the same issue or document — an external URL, another issue's attachment, another origin — is a remote image and keeps BASE-INPUT-002's load-on-request button.
-7. A member who cannot see the issue (a Guest outside the team, a non-member of a private team under ROLE-002) gets 404 from the file route, so a copied embed URL reveals nothing.
+4. SVG, HTML and every other type are never shown inline.
+5. Every image reference that is not one of the installation's own attachments of the same issue or document — an external URL, another issue's attachment, another origin — is a remote image and keeps BASE-INPUT-002's load-on-request button.
+6. A member who cannot see the issue (a Guest outside the team, a non-member of a private team under ROLE-002) gets 404 from the file route, so a copied embed URL reveals nothing.
 
 #### ISSUE-034 — Inline video and resumable upload
 
 *Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-INPUT-001, BASE-ROLE-001, BASE-INPUT-003
 
-**Requirement.** Inline video and resumable upload. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides inline video and resumable upload for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Videos (MP4, WebM, MOV) show as an inline player with a poster frame, play, pause, seek, full screen and Download; seeking works because the file route answers HTTP `Range` requests with 206; a video whose codec the viewer's browser cannot play shows its name, size and Download in place of the player, never a broken element.
-2. `video/mp4`, `video/webm` and `video/quicktime` join `seed.json → limits.attachmentMimeTypes`, and a video may be up to 250 MB, uploaded in resumable parts (R2 multipart) so a dropped connection resumes rather than restarts.
+1. Videos (MP4, WebM, MOV) show as an inline player with a poster frame, play, pause, seek, full screen and Download; seeking works because the file route answers HTTP byte ranges requests with 206; a video whose codec the viewer's browser cannot play shows its name, size and Download in place of the player, never a broken element.
+2. MP4, WebM and QuickTime video types join the supported attachment type list, and a video may be up to 250 MB, uploaded in resumable parts (R2 multipart) so a dropped connection resumes rather than restarts.
 
 #### ISSUE-035 — Draft files and removed embeds
 
 *Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Draft files and removed embeds. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides draft files and removed embeds for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. On a new issue not yet created, files stage with the member's draft (ISSUE-015) and attach when the issue is created; discarding the draft deletes them; staged files whose draft is gone are listed under Settings → Account → Unattached uploads, where the member attaches or deletes them, and they are never deleted automatically (BASE-DATA-002).
+1. On a new issue not created, files stage with the member's draft (ISSUE-015) and attach when the issue is created; discarding the draft deletes them; staged files whose draft is gone are listed under Settings → Account → Unattached uploads, where the member attaches or deletes them, and they are never deleted automatically (BASE-DATA-002).
 2. Removing an embed from the text keeps the attachment (removing the file is an ISSUE-009 action), and an embed whose attachment was removed shows "File removed"; restoring an older revision (ISSUE-018) that embeds a removed file shows the same marker.
 
 #### ISSUE-036 — Embeds across clients and archives
 
 *Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Embeds across clients and archives. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides embeds across clients and archives for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The same embeds are captured, pasted and shown inline in the mobile apps (MOBILE-001), whose camera and photo picker remove location metadata before upload unless the member keeps it; synced Slack and Teams threads carry them both ways (SLACK-002, TEAMS-001); notification email links the issue and never attaches or hotlinks the file (NOTIFY-006); the API (API-003) returns embeds with their attachment IDs; and the portable export (DATA-001) keeps each embed as an archive-relative reference to the original bytes, so a restore (DATA-005) shows the same images.
@@ -1711,7 +1708,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Checklists. The outcomes below apply through the product doors for this capability.
+**Requirement.** A description, comment, template or document can hold checklists: typing `[]` or `- [ ]` at the start of a line, pressing Command/Ctrl-Shift-7, or choosing `/checklist` (ISSUE-026) starts one, and items nest and reorder like list items.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A description, comment, template or document can hold checklists: typing `[]` or `- [ ]` at the start of a line, pressing Command/Ctrl-Shift-7, or choosing `/checklist` (ISSUE-026) starts one, and items nest and reorder like list items.
@@ -1726,7 +1723,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Editor formatting and slash commands. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides editor formatting and slash commands for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Descriptions, comments, templates and documents share one editor that writes GitHub-flavored Markdown: three heading levels, bold, italic, strikethrough, inline code, links, bulleted, numbered and check lists (ISSUE-025), quotes, dividers, tables (insert, then add and remove rows and columns), collapsible sections, and fenced code blocks with a language picker, copy button and syntax highlighting for at least TypeScript, JavaScript, Python, Go, Rust, Java, Kotlin, Swift, Ruby, PHP, C, C++, C#, SQL, shell, YAML, JSON, HTML, CSS and diff.
@@ -1740,7 +1737,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Issue references and backlinks. The outcomes below apply through the product doors for this capability.
+**Requirement.** Typing an issue identifier such as `VEC-123` in a description, comment, project update or document (PROJ-013) links it when it names an issue the reader can see, with its title and status on hover; an identifier that names no visible issue stays plain text.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Typing an issue identifier such as `VEC-123` in a description, comment, project update or document (PROJ-013) links it when it names an issue the reader can see, with its title and status on hover; an identifier that names no visible issue stays plain text.
@@ -1752,7 +1749,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Drafts across devices. The outcomes below apply through the product doors for this capability.
+**Requirement.** A new-issue draft and an unsent comment are saved to the member's account as they type and are offered on their other browsers and in the desktop and mobile apps (MOBILE-001, MOBILE-005); a Drafts list shows each open draft with its team and last edit, opens it and discards it.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A new-issue draft and an unsent comment are saved to the member's account as they type and are offered on their other browsers and in the desktop and mobile apps (MOBILE-001, MOBILE-005); a Drafts list shows each open draft with its team and last edit, opens it and discards it.
@@ -1766,7 +1763,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Custom field definitions. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides custom field definitions for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins define workspace custom fields, and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — define fields for that team (role matrix, ROLE-001), each with a name unique in its scope, an optional description and one type: text, number (with optional unit and decimals), single-select, multi-select (options with colors, reorderable, archivable), date, person (a workspace member), URL or checkbox.
@@ -1779,7 +1776,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Custom fields in views, search, API and imports. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides custom fields in views, search, api and imports for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every custom field is available as a list column, a board card property (VIEW-008), a filter with type-appropriate operators (text contains, number ranges, select is / is not / any of, date ranges, person is me, checkbox), a group-by for single-select, person and checkbox fields, and a sort; it is searchable (SEARCH-004), included in exports (DATA-001, REPORT-005), webhooks (WEBHOOK-002) and the API (API-003) with its definition, and usable in automation conditions and actions (AUTO-002).
@@ -1792,7 +1789,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001
 
-**Requirement.** Related issues. The outcomes below apply through the product doors for this capability.
+**Requirement.** Members can mark two issues as related across teams, with no blocking effect; the link shows on both issues, survives team moves, imports from Jira "Relates" and Linear "related" links when both issues are in the same migration (DATA-017), and is removed when either issue is deleted.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members can mark two issues as related across teams, with no blocking effect; the link shows on both issues, survives team moves, imports from Jira "Relates" and Linear "related" links when both issues are in the same migration (DATA-017), and is removed when either issue is deleted.
@@ -1803,7 +1800,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Triage responsibility. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each team names who triages (set under its *Who manages team settings* permission, ROLE-009): a fixed person, a weekly rotation, or the current on-call person from Oncall or PagerDuty.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each team names who triages (set under its *Who manages team settings* permission, ROLE-009): a fixed person, a weekly rotation, or the current on-call person from Oncall or PagerDuty.
@@ -1814,7 +1811,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Triage routing rules. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners and Admins define workspace-wide routing rules, and a team's rules are defined by its team owners or, while its *Who manages team settings* permission is All team members (ROLE-009), by all its members; Guests never do (role matrix).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins define workspace-wide routing rules, and a team's rules are defined by its team owners or, while its *Who manages team settings* permission is All team members (ROLE-009), by all its members; Guests never do (role matrix).
@@ -1825,7 +1822,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001 · *Rules:* D-2
 
-**Requirement.** Agent triage suggestions. The outcomes below apply through the product doors for this capability.
+**Requirement.** When an item enters triage, a triage agent proposes likely duplicates and related issues (by meaning, not only words), team, assignee, labels and priority, each with a one-line reason and the records it compared.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. When an item enters triage, a triage agent proposes likely duplicates and related issues (by meaning, not only words), team, assignee, labels and priority, each with a one-line reason and the records it compared.
@@ -1839,7 +1836,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Request forms. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners, Admins and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — publish structured request forms for that team (bug report, feature request, access request) with required fields, help text and a template (ISSUE-016).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners, Admins and a team's owners — or all its members while its *Who manages team settings* permission is All team members (ROLE-009) — publish structured request forms for that team (bug report, feature request, access request) with required fields, help text and a template (ISSUE-016).
@@ -1850,7 +1847,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Email intake. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides email intake for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each team can enable a private intake address (under its *Who manages team settings* permission, ROLE-009); mail forwarded from Gmail, Outlook or a shared inbox becomes a triage item with the sender, subject, body, inline images and attachments (within BASELINE file limits), threading later replies as comments and refusing senders outside an allow-list.
@@ -1865,7 +1862,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Customer requests on issues. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides customer requests on issues for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue's Customers section lists each customer (CUST-005) who asked for it, with every request: its source and link — a manual request (CUST-008), a Penny request, a HappyToHelp conversation, a Zendesk, Intercom or Front ticket, a Salesforce or HubSpot opportunity, an Orbit account, a Gong call excerpt, a Slack message (SLACK-002), an intake email (TRIAGE-005) or a Spool error — the requester, and the requester's own words, with the customer's tier, status and annual revenue in USD from the customer record, whether entered by hand or synced from a linked source.
@@ -1877,7 +1874,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Customer-weighted planning. The outcomes below apply through the product doors for this capability.
+**Requirement.** Issue lists, projects and the roadmap can filter, sort and group by requesting-customer count, total revenue of the requesting customers (CUST-005, each customer counted once per issue or project), customer tier and newest request, and show these as columns; a saved view such as "Most-requested bugs from Enterprise" is shareable.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Issue lists, projects and the roadmap can filter, sort and group by requesting-customer count, total revenue of the requesting customers (CUST-005, each customer counted once per issue or project), customer tier and newest request, and show these as columns; a saved view such as "Most-requested bugs from Enterprise" is shareable.
@@ -1886,7 +1883,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Close the loop with requesters. The outcomes below apply through the product doors for this capability.
+**Requirement.** When an issue with customer requests completes, ships in a release (RELEASE-001) or is verified (PUSH-004), Vector notifies each linked source: it marks Penny requests shipped with the release, adds an internal note to the HappyToHelp, Zendesk, Intercom or Front ticket, and offers the support owner a drafted customer reply (PUSH-005).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. When an issue with customer requests completes, ships in a release (RELEASE-001) or is verified (PUSH-004), Vector notifies each linked source: it marks Penny requests shipped with the release, adds an internal note to the HappyToHelp, Zendesk, Intercom or Front ticket, and offers the support owner a drafted customer reply (PUSH-005).
@@ -1896,7 +1893,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Penny keeps the board. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector never hosts a public feedback board, voting portal, public roadmap or public changelog; it links to Penny for those, and a Penny request linked to an issue keeps Penny as its source of truth for the customer's text, votes and status.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Vector never hosts a public feedback board, voting portal, public roadmap or public changelog; it links to Penny for those, and a Penny request linked to an issue keeps Penny as its source of truth for the customer's text, votes and status.
@@ -1905,7 +1902,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Customer records. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides customer records for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A customer is a record of the workspace with a name, one or more domains (each belonging to at most one customer), a logo (uploaded, or taken from a linked source), an owner who is a workspace member, a status and a tier chosen from ordered, colored select values the workspace defines (defaults: status Active, Trial and Churned; tier Enterprise, Growth and Starter), a size (employee count), annual revenue in whole US dollars, the external account IDs of linked sources (CUST-006), contacts (name and email, gathered from requests or added by hand), and values for workspace custom fields that apply to customers (FIELD-001).
@@ -1919,7 +1916,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Customer identity and merging. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides customer identity and merging for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every request from a linked source, Slack (SLACK-002), email intake (TRIAGE-005) or a request form (TRIAGE-004) is attached to a customer by one rule, in this order: (1) the source's account ID where the source has one — an Orbit account, Salesforce Account, HubSpot company, Zendesk organization, Intercom company, Front account or HappyToHelp organization ID — matching an external ID stored on a customer; (2) otherwise the requester's email domain, lower-cased, matching one of a customer's domains exactly or as a subdomain of it (`eu.acme.example` matches `acme.example`), with a Slack author's email read through `users.info` under the `users:read.email` scope; (3) otherwise, while the workspace setting Create customers from new company domains is on (the default), a new customer named after the domain, holding that domain and the source's account ID.
@@ -1932,7 +1929,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Customers list and customer pages. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides customers list and customer pages for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A Customers list, opened from the sidebar, the palette or the shortcut G then Q, shows every customer with name, logo, domains, owner, status, tier, size, revenue, request count, open-issue count and newest request, and sorts and filters by revenue, tier, status, owner, size, request count and newest request, with the same save, share and display model as issue views (VIEW-002, VIEW-009).
@@ -1944,7 +1941,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Adding customer requests by hand. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides adding customer requests by hand for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners, Admins and Members add a request to an issue or a project from its Customers section, from a customer page, from the palette (Add customer request) or with the shortcut Control-R (Alt-Shift-R on Windows and Linux): they pick a customer or create one inline (CUST-005), paste or write the requester's words (required, Markdown), and may name a contact by name and email and add a source link (a call recording, a Gong or Zoom link, a document).
@@ -1959,7 +1956,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Created, Subscribed and Activity tabs. The outcomes below apply through the product doors for this capability.
+**Requirement.** Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Beside the assigned queue of WORK-001, My work has three tabs: Created (every issue the member created, newest first), Subscribed (every issue the member follows, NOTIFY-001, with an Unfollow action on each row) and Activity (the member's own recent changes and comments, newest first, each linking to its issue).
@@ -1972,27 +1969,27 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Project updates. The outcomes below apply through the product doors for this capability.
+**Requirement.** The project's lead and members (PROJ-014), Owners and Admins post dated updates (Guests cannot, role matrix) with a status of On track, At risk or Off track and a Markdown body; Vector prefills the draft with computed health (PROJ-005), progress since the last update, completed and newly added scope, and slipped milestones.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The project's lead and members (PROJ-014), Owners and Admins post dated updates (Guests cannot, role matrix) with a status of On track, At risk or Off track and a Markdown body; Vector prefills the draft with computed health (PROJ-005), progress since the last update, completed and newly added scope, and slipped milestones.
-2. Updates appear in the project, roll up into initiatives (INIT-002), notify project followers, and post to the project's Slack or Teams channel (SLACK-003).
+2. Updates appear in the project, roll up into initiatives (INIT-002), notify project followers, and post to the project's Slack or Teams channel (SLACK-003, SLACK-007).
 3. Leads are reminded on the project's cadence (AUTO-005).
 4. Computed health and the lead's stated status are shown side by side, never merged.
 5. Inherited from NOTIFY-001: a followed project or initiative update notifies once in the inbox, never the actor; the receiving journey verifies this for that event.
-6. Inherited from SLACK-003: each project update posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
+6. Inherited from SLACK-003, SLACK-007: each project update posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
 
 #### PROJ-011 — Milestones
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Milestones. The outcomes below apply through the product doors for this capability. Milestones hold no person data, so erasure is unchanged. DATA-013 and DATA-014 inherit the sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping" in their source importers and acceptance journeys. VIEW-008 inherits grouping by milestone, API-003 inherits the API field and milestone object coverage, and CAL-001 inherits the feed events.
+**Requirement.** A project has ordered milestones with names, optional target dates and descriptions; issues belong to at most one milestone of their own project. Source import mapping belongs to DATA-013 and DATA-014, milestone grouping to VIEW-008, public API operations to API-003 and feed events to CAL-001.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A project has ordered milestones with names, optional target dates and descriptions; issues belong to at most one milestone of their own project.
 2. Members create, edit, reorder, complete, reopen and delete milestones on the project page.
 3. A milestone shows count-based progress by PROJ-004 (Canceled and Duplicate excluded).
-4. It slips when its target date is before today in the workspace timezone and it has open countable issues, including when the milestone itself was marked complete.
+4. It slips when its target date is before in the workspace timezone and it has open countable issues, including when the milestone itself was marked complete.
 5. Changing an issue's milestone records one activity entry under ISSUE-007; leaving its project clears the milestone in that same issue change.
 6. Copy, persisted Undo, bulk project changes, deletion preimages and native archive restore carry the assignment; deleting a milestone keeps its issues and clears their assignment.
 
@@ -2000,7 +1997,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Project templates. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners and Admins save a project as a workspace template, and a team's own project templates are saved by its team owners or, while its *Who manages cycles and templates* permission is All team members (ROLE-009), by all its members; Guests never do (role matrix). Team templates are visible only to their members; deletion preserves already-created projects. Member applications skip unavailable project labels and report their names. An interrupted sequential application identifies the partial project for inspection before retry. This carries RL-4.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins save a project as a workspace template, and a team's own project templates are saved by its team owners or, while its *Who manages cycles and templates* permission is All team members (ROLE-009), by all its members; Guests never do (role matrix).
@@ -2010,10 +2007,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Project documents and specs. The outcomes below apply through the product doors for this capability.
+**Requirement.** Projects, issues, initiatives (INIT-001) and teams can hold Markdown documents (specs, PRDs, decision records, team handbooks and runbooks) written in the ISSUE-026 editor, with inline images and video (ISSUE-033, ISSUE-034), checklists (ISSUE-025), revision history, mentions, comments, attachments and search; a spec document can be linked as an issue's specification (PUSH-001).
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Projects, issues, initiatives (INIT-001) and teams can hold Markdown documents (specs, PRDs, decision records, team handbooks and runbooks) written in the ISSUE-026 editor, with inline images and video (ISSUE-024), checklists (ISSUE-025), revision history, mentions, comments, attachments and search; a spec document can be linked as an issue's specification (PUSH-001).
+1. Projects, issues, initiatives (INIT-001) and teams can hold Markdown documents (specs, PRDs, decision records, team handbooks and runbooks) written in the ISSUE-026 editor, with inline images and video (ISSUE-033, ISSUE-034), checklists (ISSUE-025), revision history, mentions, comments, attachments and search; a spec document can be linked as an issue's specification (PUSH-001).
 2. A team's documents are listed on the team's page and an initiative's on the initiative; a document under a private team (ROLE-002) is visible only to its members.
 3. Documents export with their project, issue, initiative or team.
 4. Inherited from ROLE-001: Owners, Admins and Members write, edit and comment on documents under what they can see, and Guests only under invited teams' issues and projects (role matrix); this clause's journey checks those cells.
@@ -2023,19 +2020,19 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Project members and teams. The outcomes below apply through the product doors for this capability.
+**Requirement.** A project lists its lead, members and contributing teams; members follow it, appear in its filters, and receive its updates.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A project lists its lead, members and contributing teams; members follow it, appear in its filters, and receive its updates.
 2. Projects can span teams, and a team's project list shows every project with that team's issues.
-3. PROJ-001 inherits choosing and changing a primary team, defaulting to the lead's first contributing team, with explicit same-category status mapping under PROJ-016 before primary teams ship.
+3. PROJ-001 inherits choosing and changing a primary team, defaulting to the lead's first contributing team, with explicit same-category status mapping under PROJ-016, PROJ-046 before primary teams ship.
 4. Inherited from ROLE-007: a project's contributing teams follow team membership; Owners, Admins and Members edit its members and contributing teams, Guests never (role matrix).
 
 #### PROJ-015 — Project dependencies
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Project dependencies. The outcomes below apply through the product doors for this capability.
+**Requirement.** A project can be marked *blocked by* or *blocking* another project directly, from the project page, the projects list, the roadmap timeline (INIT-003) and the public API, independently of issue dependencies; a project cannot block itself and a dependency that would close a cycle is refused.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A project can be marked *blocked by* or *blocking* another project directly, from the project page, the projects list, the roadmap timeline (INIT-003) and the public API, independently of issue dependencies; a project cannot block itself and a dependency that would close a cycle is refused.
@@ -2047,7 +2044,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Define project status categories. The outcomes below apply through the product doors for this capability. Where a clause says a project's *lifecycle*, it means its status. PROJ-001 inherits configurable project statuses, the default Planned status, workspace/team status sets and explicit same-category mapping when a primary team changes for configurable statuses.
+**Requirement.** Project statuses are named, ordered, colored values, each with an optional description, inside six fixed categories in this order: Backlog, Planned, Started, Paused, Completed and Canceled.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Project statuses are named, ordered, colored values, each with an optional description, inside six fixed categories in this order: Backlog, Planned, Started, Paused, Completed and Canceled.
@@ -2059,7 +2056,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* PROJ-016 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Team project status mapping. The outcomes below apply through the product doors for this capability. Where a clause says a project's *lifecycle*, it means its status. PROJ-001 inherits configurable project statuses, the default Planned status, workspace/team status sets and explicit same-category mapping when a primary team changes for configurable statuses.
+**Requirement.** Vector provides team project status mapping for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team can instead use its own project status set, managed under its *Who manages team settings* permission (ROLE-009); a project uses the set of its primary team (chosen on the project, defaulting to the lead's first contributing team, PROJ-014) or the workspace set when that team has none, and changing the primary team to one with another set maps the project's status, in an explicit step, to the first status of the same category.
@@ -2070,60 +2067,60 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 
-**Requirement.** Recoverable project deletion. The outcomes below apply through the product doors for this capability.
+**Requirement.** Mirroring ISSUE-031, ISSUE-032, a confirmed project deletion removes it from active lists, search and roadmaps and places it in Recently deleted projects for 30 days with actor and time; the deleting session gets Undo for 10 seconds, including Command/Ctrl-Z outside editable controls.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Mirroring ISSUE-020, a confirmed project deletion removes it from active lists, search and roadmaps and places it in Recently deleted projects for 30 days with actor and time; the deleting session gets Undo for 10 seconds, including Command/Ctrl-Z outside editable controls.
+1. Mirroring ISSUE-031, ISSUE-032, a confirmed project deletion removes it from active lists, search and roadmaps and places it in Recently deleted projects for 30 days with actor and time; the deleting session gets Undo for 10 seconds, including Command/Ctrl-Z outside editable controls.
 2. Restore through Undo or Recently deleted keeps the same project ID, fields, milestones, updates, documents, relations and history, and reattaches surviving issues only where their membership has not since been replaced; issues are never deleted (PROJ-003).
 3. Restore is version-checked, refuses stale Undo without writes and records one restore activity entry.
 4. Owners/Admins delete or restore any project; after this recoverable flow ships the project's Member lead may delete it and restore their own deletion.
 5. Until then deletion remains Owner/Admin only because it is irreversible.
 6. Guests and Viewers never delete or restore.
 7. Only Owners/Admins delete permanently before retention ends; the scheduled purge completes a person-started deletion once after retention, never deletes its issues, and leaves an opaque audit reference.
-8. Owners alone configure retention from 7 to 90 days, default 30, as for ISSUE-020.
+8. Owners alone configure retention from 7 to 90 days, default 30, as for ISSUE-031, ISSUE-032.
 
 #### INIT-001 — Initiatives
 
 *Tier:* Core
 
-**Requirement.** Initiatives. The outcomes below apply through the product doors for this capability.
+**Requirement.** An initiative groups projects (and sub-initiatives up to three levels) under an owner, description, target date and status (Planned, Active, Completed), across teams.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An initiative groups projects (and sub-initiatives up to three levels) under an owner, description, target date and status (Planned, Active, Completed), across teams.
 2. A project can belong to several initiatives.
 3. Owners, Admins and Members create and edit initiatives and add projects to them; Guests cannot (role matrix).
-4. Inherited from SLACK-003: initiatives bind chosen events to a Slack or Discord channel and each event posts to its bound channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the binding and bound post.
+4. Inherited from SLACK-003, SLACK-007: initiatives bind chosen events to a Slack or Discord channel and each event posts to its bound channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the binding and bound post.
 
 #### INIT-002 — Initiative roll-up
 
 *Tier:* Core
 
-**Requirement.** Initiative roll-up. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides initiative roll-up for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An initiative shows each project's latest update status, computed health, progress, target date and slip since the last update, and its own owner-written updates on a cadence; a Paused project (PROJ-016) shows as paused with no health and no slip, and the roll-up counts its projects by status category; the initiatives list sorts and filters by these for leadership.
 
 #### INIT-003 — Roadmap timeline
 
-*Tier:* Core
+*Tier:* Core · *Cites:* BASE-ACCESSIBILITY-001
 
-**Requirement.** Roadmap timeline. The outcomes below apply through the product doors for this capability.
+**Requirement.** A roadmap view shows initiatives and projects on a timeline by their start and target dates (PROJ-001) with milestones, dependencies between projects (set directly under PROJ-015, and derived from issue dependencies), marker and zoom by week, month and quarter.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. A roadmap view shows initiatives and projects on a timeline by their start and target dates (PROJ-001) with milestones, dependencies between projects (set directly under PROJ-015, and derived from issue dependencies), today marker and zoom by week, month and quarter.
+1. A roadmap view shows initiatives and projects on a timeline by their start and target dates (PROJ-001) with milestones, dependencies between projects (set directly under PROJ-015, and derived from issue dependencies), marker and zoom by week, month and quarter.
 2. Bars are styled by project status category (PROJ-016): a Paused project's bar is hatched with a pause marker and is never flagged as slipping.
-3. Placement is fixed for every combination of dates: a project with both dates is a bar from start to target; one with only a target date is a diamond on its target date; one with only a start date is a bar from its start to today (or to the start date when that is in the future) with an open, faded end; one with neither is listed in an Unscheduled group beside the timeline, never drawn at an invented date.
+3. Placement is fixed for every combination of dates: a project with both dates is a bar from start to target; one with only a target date is a diamond on its target date; one with only a start date is a bar from its start to (or to the start date when that is in the future) with an open, faded end; one with neither is listed in an Unscheduled group beside the timeline, never drawn at an invented date.
 4. An initiative spans the earliest start to the latest target of its projects, or shows its own target date as a diamond when none of them has dates.
 5. Leads drag a bar's body to move both dates, drag either end to change one date, and drag an Unscheduled project onto the timeline to set both; each drag is recorded as a project change.
 6. The view is keyboard-operable (arrow keys move a focused bar by one zoom unit) and has a list equivalent at 390px.
-7. The timeline inherits VIEW-011: it follows the member's Light, Dark or System theme, bars by status category, the Paused hatch, connectors and the today marker stay distinguishable in both, and its text and marks meet WCAG 2.2 AA contrast in both.
+7. The timeline inherits VIEW-011: it follows the member's Light, Dark or System theme, bars by status category, the Paused hatch, connectors and the marker stay distinguishable in both, and its text and marks meet WCAG 2.2 AA contrast in both.
 8. PROJ-001 inherits editing project start/target dates, priority and labels on the roadmap, with one activity entry per change, before the roadmap ships.
 
 #### INIT-004 — Leadership digest
 
 *Tier:* Core
 
-**Requirement.** Leadership digest. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners of initiatives and anyone subscribed receive a weekly digest by email, Slack or Teams of initiative and project status, slipped dates, new risks and shipped milestones (a Paused project is reported as paused, never as slipped, PROJ-016), linking back to the source records and respecting ROLE-002.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners of initiatives and anyone subscribed receive a weekly digest by email, Slack or Teams of initiative and project status, slipped dates, new risks and shipped milestones (a Paused project is reported as paused, never as slipped, PROJ-016), linking back to the source records and respecting ROLE-002.
@@ -2134,18 +2131,18 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Automatic cycle schedule. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners, Admins and the team's owners set a team's cycle cadence, and so do all its members while its *Who manages cycles and templates* permission is All team members.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners, Admins and the team's owners set a team's cycle cadence, and so do all its members while its *Who manages cycles and templates* permission is All team members.
 2. The cadence comprises a duration of one to eight weeks, a start weekday, optional cooldown between cycles and the number of upcoming cycles to keep; Vector creates future cycles on schedule so rollover (CYCLE-004) always has a next cycle, and records each creation as automation.
-3. Changing the cadence affects only cycles not yet started.
+3. Changing the cadence affects only cycles not started.
 
 #### CYCLE-008 — Automatic cycle membership
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Automatic cycle membership. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team can choose to add issues to the active cycle when they move to Started, and when they complete without a cycle, so the cycle reflects real work; each addition is recorded as an automation change.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team can choose to add issues to the active cycle when they move to Started, and when they complete without a cycle, so the cycle reflects real work; each addition is recorded as an automation change.
@@ -2156,18 +2153,18 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Releases. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides releases for the permitted workspace actors, with the records, outcomes and refusals below. A Released release is reopened before its scope is edited. This carries RL-5.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners, Admins and Members define team or workspace releases (versions) — a Member a team's releases only for teams they can see, and Guests none (role matrix) — each with name, target date, status (Planned, In progress, Released) and description; issues and projects join a release; a release page shows scope, progress, blockers and linked PRs, and can be shared read-only inside the workspace.
 2. Jira fix versions import as releases.
-3. Inherited from SLACK-003: a release posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
+3. Inherited from SLACK-003, SLACK-007: a release posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
 
 #### RELEASE-002 — Deployment tracking
 
 *Tier:* Core
 
-**Requirement.** Deployment tracking. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector receives deployment events from GitHub Deployments, GitLab environments, CircleCI, Vercel, Netlify and Cloudflare Workers/Pages through signed webhooks or the API, and attaches to each issue whose merged commits are included which environments it has reached (for example staging, production) and when.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Vector receives deployment events from GitHub Deployments, GitLab environments, CircleCI, Vercel, Netlify and Cloudflare Workers/Pages through signed webhooks or the API, and attaches to each issue whose merged commits are included which environments it has reached (for example staging, production) and when.
@@ -2177,11 +2174,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Release notes. The outcomes below apply through the product doors for this capability.
+**Requirement.** For a release or a date range, Vector drafts internal release notes from completed issues grouped by label or project, using each issue's title and an optional "release note" field, which the release owner edits and publishes to the workspace, Slack, or hands to Penny as a changelog draft.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. For a release or a date range, Vector drafts internal release notes from completed issues grouped by label or project, using each issue's title and an optional "release note" field, which the release owner edits and publishes to the workspace, Slack, or hands to Penny as a changelog draft.
-2. Inherited from SLACK-003: publishing release notes posts the release event to its bound Slack or Discord channel once, without duplicating RELEASE-001’s post; its acceptance journey verifies the bound post.
+2. Inherited from SLACK-003, SLACK-007: publishing release notes posts the release event to its bound Slack or Discord channel once, without duplicating RELEASE-001’s post; its acceptance journey verifies the bound post.
 
 ### Target: Search, views and commands
 
@@ -2189,7 +2186,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Advanced filters. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides advanced filters for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Filters combine with AND/OR groups and negation over every issue field, custom field (FIELD-002), relation, customer request (CUST-002), Git state (GITHUB-005), release, milestone and date expressions ("due before next Friday", "updated in the last 7 days"); a typed filter bar accepts the same expressions with autocomplete, and any filter can be saved as a view.
@@ -2199,7 +2196,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Meaning-based search. The outcomes below apply through the product doors for this capability.
+**Requirement.** Search also returns issues, documents and comments that match the meaning of a query, labeled as semantic matches and ranked after exact identifier and full-text hits, under the same access rules.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Search also returns issues, documents and comments that match the meaning of a query, labeled as semantic matches and ranked after exact identifier and full-text hits, under the same access rules.
@@ -2208,7 +2205,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Manual order. The outcomes below apply through the product doors for this capability.
+**Requirement.** Besides the derived orders, lists and boards offer a Manual order that members set by dragging or keyboard (move up, move down, move to top); the order is shared per team and view, imported from Jira rank and Linear sort order, and never changes Current's derived ranking (CURR-007).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Besides the derived orders, lists and boards offer a Manual order that members set by dragging or keyboard (move up, move down, move to top); the order is shared per team and view, imported from Jira rank and Linear sort order, and never changes Current's derived ranking (CURR-007).
@@ -2217,16 +2214,16 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Timeline and calendar views. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides timeline and calendar views for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Issue lists can be shown as a timeline (by the issue start date (ISSUE-022) and the due date, with dependencies drawn; an issue with only a due date is a diamond, one with only a start date is open-ended to today, and one with neither is listed as Unscheduled beside the timeline) and as a month calendar of due dates, cycles and milestones; dragging changes dates through the version-checked mutation.
+1. Issue lists can be shown as a timeline (by the issue start date (ISSUE-022) and the due date, with dependencies drawn; an issue with only a due date is a diamond, one with only a start date is open-ended to, and one with neither is listed as Unscheduled beside the timeline) and as a month calendar of due dates, cycles and milestones; dragging changes dates through the version-checked mutation.
 
 #### VIEW-008 — Display options
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Display options. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides display options for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members choose the properties shown on rows and cards, show sub-issues nested or flat, group lists and add board swimlanes by assignee, project, priority, cycle, label (one label group at a time, ISSUE-014), project milestone (PROJ-011), parent issue (REL-006) or a single-select or person custom field (FIELD-002), and drag cards between columns and lanes (the labeled selector of VIEW-005 remains the keyboard path).
@@ -2237,7 +2234,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Workspace-wide views. The outcomes below apply through the product doors for this capability.
+**Requirement.** Views can span all teams the member can see, and also exist for projects, initiatives, releases, customers (CUST-007) and customer requests with the same filter, sort, group and save model.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Views can span all teams the member can see, and also exist for projects, initiatives, releases, customers (CUST-007) and customer requests with the same filter, sort, group and save model.
@@ -2246,19 +2243,19 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Sidebar favorites. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides sidebar favorites for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members pin issues, projects, initiatives, cycles, releases, documents, customers (CUST-007), saved views and teams to a Favorites section of the sidebar, reorder them by drag or keyboard, group them in named folders, and see each favorite's unread or count badge; favorites are per member, sync across browsers and the mobile apps (MOBILE-001), and a favorite whose subject is deleted or becomes invisible (ROLE-002) disappears without revealing its title.
 
 #### VIEW-011 — Light, dark and system themes
 
-*Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001
+*Tier:* Core · *Cites:* BASE-ACCESSIBILITY-001, BASE-ROLE-001
 
-**Requirement.** Light, dark and system themes. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each member chooses Light, Dark or System under Settings → Appearance; System, the default, follows the device's the device color-scheme preference and switches live when it changes.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Each member chooses Light, Dark or System under Settings → Appearance; System, the default, follows the device's `prefers-color-scheme` and switches live when it changes.
+1. Each member chooses Light, Dark or System under Settings → Appearance; System, the default, follows the device's the device color-scheme preference and switches live when it changes.
 2. The choice is stored per member on the installation, so every browser the member signs in to applies it, and the server renders it on the document so it applies before first paint, without a script and with no flash of the other theme.
 3. status, priority, label, project-status and health colors and code highlighting (ISSUE-026) stay distinguishable in both.
 4. Signed-out pages, sign-in and the public homepage (HOME-001) keep the light palette and are unchanged.
@@ -2268,7 +2265,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Keyboard-first editing. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every issue property has a single-key shortcut on a focused or selected issue (S status, A assignee, P priority, L labels, E estimate, D due date, M move team, Shift-D duplicate decision, Command/Ctrl-. copy branch name), shortcuts work on multiple selected issues, and a shortcut help sheet (?) lists them.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every issue property has a single-key shortcut on a focused or selected issue (S status, A assignee, P priority, L labels, E estimate, D due date, M move team, Shift-D duplicate decision, Command/Ctrl-. copy branch name), shortcuts work on multiple selected issues, and a shortcut help sheet (?) lists them.
@@ -2279,7 +2276,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Real-time sync. The outcomes below apply through the product doors for this capability.
+**Requirement.** Changes by any member, automation, integration or agent appear in every open view of every other member within one second (p95, measured) without a reload, through a live connection (Cloudflare Durable Objects WebSocket) scoped to what each member may see; the five-second CURR-008 window remains the worst case after a dropped connection.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Changes by any member, automation, integration or agent appear in every open view of every other member within one second (p95, measured) without a reload, through a live connection (Cloudflare Durable Objects WebSocket) scoped to what each member may see; the five-second CURR-008 window remains the worst case after a dropped connection.
@@ -2288,7 +2285,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Local-first speed. The outcomes below apply through the product doors for this capability.
+**Requirement.** The web app keeps a permission-scoped local cache of the member's teams so issue lists, issue detail, filters and the palette open from local data in under 100ms (p95) and edits apply optimistically, reconciling with server versions (ISSUE-006) and showing a conflict when one is rejected.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. The web app keeps a permission-scoped local cache of the member's teams so issue lists, issue detail, filters and the palette open from local data in under 100ms (p95) and edits apply optimistically, reconciling with server versions (ISSUE-006) and showing a conflict when one is rejected.
@@ -2298,7 +2295,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Collaborative editing. The outcomes below apply through the product doors for this capability.
+**Requirement.** Two members editing the same description or document see each other's cursors and changes live and never lose text; the result is one revision per editing session in ISSUE-018 history.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Two members editing the same description or document see each other's cursors and changes live and never lose text; the result is one revision per editing session in ISSUE-018 history.
@@ -2307,20 +2304,21 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-5
 
-**Requirement.** iOS and Android apps. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Vector provides ios and android apps for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Native apps for iPhone and Android, built by Run Edit Run for the store distribution tracked in MOBILE-004, so a member installs them from the store with no developer account and no build step; on first launch the member enters their installation's URL (or scans a QR code from Settings → Mobile, or opens an invitation link), signs in through that installation's own sign-in (email link, SSO under ROLE-004) in the system browser, and may add several installations and switch between them.
-2. The apps let members read and act on their inbox, triage (accept, defer, decline, duplicate), view My work, Current, projects and cycles, create issues with photos, screenshots, screen recordings and voice-to-text, with the images and video shown inline (ISSUE-024), tick checklists (ISSUE-025), comment with mentions, change properties and search.
+2. The apps let members read and act on their inbox, triage (accept, defer, decline, duplicate), view My work, Current, projects and cycles, create issues with photos, screenshots, screen recordings and voice-to-text, with the images and video shown inline (ISSUE-033, ISSUE-034), tick checklists (ISSUE-025), comment with mentions, change properties and search.
 3. They use the same the public API and permission rules, through a per-device OAuth token (API-004) that the member or an Admin can revoke from Settings.
 4. The apps inherit VIEW-011: they apply the member's saved Light, Dark or System choice from the installation.
 5. Inherited from WORK-004: the mobile-app journey exercises Created, Subscribed with row Unfollow and Activity using the same visibility, filters and display rules.
+6. The iOS and Android simulator builds sign in to a local installation by URL, accept a triage item, create an issue with a photo and read both from the web, with the photo rendered inline in both clients. Store-distributed build receipts are R-5.
 
 #### MOBILE-002 — Push notifications
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-6
 
-**Requirement.** Push notifications. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Working hours gate every time-of-day push delivery under NOTIFY-010. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Working hours gate every time-of-day push delivery under NOTIFY-010.
@@ -2333,7 +2331,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-1, R-2
 
-**Requirement.** Responsive web. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Every web page works at 390px width with no horizontal scroll, touch targets of at least 44px and the same actions as desktop. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every web page works at 390px width with no horizontal scroll, touch targets of at least 44px and the same actions as desktop.
@@ -2342,10 +2340,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-5, R-6
 
-**Requirement.** Distributed apps and push relay. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Vector provides distributed apps and push relay for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Run Edit Run's release lane builds, signs and publishes the iOS app to the App Store and the Android app to Google Play under Run Edit Run's developer accounts, and the macOS and Windows apps of MOBILE-005, on every Vector release whose API version they support; each app declares the oldest installation version it works with and tells the member to upgrade an older installation rather than failing silently.
+1. Release packages build the iOS, Android, macOS and Windows apps from source, declare the oldest supported installation API, and tell the member to upgrade an older installation rather than failing silently. Run Edit Run store and signed-distribution receipts are recorded in the register.
 2. Run Edit Run operates the push relay those apps need: an installation registers with the relay once from Settings → Mobile (an Owner confirms; the relay issues an installation key, stored encrypted under SEC-001), devices register through the installation, and the relay accepts sends only signed with a registered installation key and only for devices registered to that installation.
 3. The relay stores device registrations and installation keys, and keeps no notification payload after forwarding; its terms, data list and status page are linked from Settings → Mobile.
 4. An Owner can turn push off for the whole installation, and a buyer who wants their own branded build publishes it under their own Apple and Google accounts with their own push credentials, pointing their installation at their own relay deployment from the same source (docs).
@@ -2354,7 +2352,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001, BASE-ACCESSIBILITY-001 · *Register:* R-7
 
-**Requirement.** Desktop apps and desktop notifications. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Vector provides desktop apps and desktop notifications for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Signed and notarized desktop apps for macOS and Windows (MOBILE-004 publishes them), and the installable web app (PWA) for any browser, open the member's installation by URL with its own window, keyboard shortcuts, a dock or taskbar unread badge and native operating-system notifications in real time for the events the member routes to desktop under NOTIFY-007.
@@ -2368,7 +2366,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Channels and digests. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each member chooses per event type whether it reaches them in the inbox only, by email, in a Slack direct message, and can take email as an immediate message or an hourly or daily digest; Admins set workspace defaults.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each member chooses per event type whether it reaches them in the inbox only, by email, in a Slack direct message, and can take email as an immediate message or an hourly or daily digest; Admins set workspace defaults.
@@ -2381,7 +2379,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Snooze and reminders. The outcomes below apply through the product doors for this capability.
+**Requirement.** A member can snooze an inbox item until a chosen time or until the issue changes, and set a personal reminder on any issue; snoozed items return once at that time.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A member can snooze an inbox item until a chosen time or until the issue changes, and set a personal reminder on any issue; snoozed items return once at that time.
@@ -2390,7 +2388,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Subscriptions. The outcomes below apply through the product doors for this capability.
+**Requirement.** Members can subscribe to a team, project, initiative, label or saved view and receive notifications for new matching issues and status changes, with the same channel rules.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members can subscribe to a team, project, initiative, label or saved view and receive notifications for new matching issues and status changes, with the same channel rules.
@@ -2400,7 +2398,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Personal time zone and working hours. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each member can set a personal IANA time zone (defaulting to the workspace time zone of OPS-003) and working hours.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each member can set a personal IANA time zone (defaulting to the workspace time zone of OPS-003) and working hours.
@@ -2413,7 +2411,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-OPS-005
 
-**Requirement.** Recurring issues. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides recurring issues for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A member creates a recurring issue from a template on a cadence (daily, weekdays, weekly, monthly on a date or weekday, every N weeks) in the workspace timezone, with assignee, team, project and due offset; a series can skip creation while the previous occurrence is still open, and can be paused, edited or ended.
@@ -2423,7 +2421,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-OPS-005
 
-**Requirement.** Workflow rules. The outcomes below apply through the product doors for this capability.
+**Requirement.** Owners and Admins build workspace rules, and a team's rules are built by its team owners or, while its *Who manages team settings* permission is All team members (ROLE-009), by all its members; other Members and all Guests cannot (role matrix).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Owners and Admins build workspace rules, and a team's rules are built by its team owners or, while its *Who manages team settings* permission is All team members (ROLE-009), by all its members; other Members and all Guests cannot (role matrix).
@@ -2434,7 +2432,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-OPS-005
 
-**Requirement.** Auto-close and auto-archive. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides auto-close and auto-archive for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Per team, under Settings → Auto-close and auto-archive, an Owner, an Admin or the team's owners (and every team member while its *Who manages team settings* permission is All team members, ROLE-009) set an auto-close period (days without activity: no issue change, activity entry or comment) and an auto-archive period (days since the issue closed), each 1 to 3650 days or off, and preview exactly which issues the next scheduled run would close and archive.
@@ -2448,19 +2446,19 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-OPS-005
 
-**Requirement.** SLAs. The outcomes below apply through the product doors for this capability.
+**Requirement.** Teams set SLA targets by priority, label or customer tier (for example: Urgent bugs from Enterprise customers resolved in 24 hours, triage within 4 business hours in the workspace timezone); issues show time remaining, warn the assignee and triage owner before breach, and record breaches for reporting (REPORT-001).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Teams set SLA targets by priority, label or customer tier (for example: Urgent bugs from Enterprise customers resolved in 24 hours, triage within 4 business hours in the workspace timezone); issues show time remaining, warn the assignee and triage owner before breach, and record breaches for reporting (REPORT-001).
 2. Inherited from NOTIFY-001: an SLA warning notifies once in the inbox, never the actor; the receiving journey verifies this for that event.
-3. Inherited from SLACK-003: an SLA warning posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
+3. Inherited from SLACK-003, SLACK-007: an SLA warning posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
 4. Inherited from ROLE-009: a team's SLAs change under its *Who manages team settings* permission; Owners and Admins always may and Guests never (role matrix).
 
 #### AUTO-005 — Update reminders
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-OPS-005
 
-**Requirement.** Update reminders. The outcomes below apply through the product doors for this capability.
+**Requirement.** Project leads and initiative owners are reminded on the chosen cadence (weekly on a weekday, every two weeks) to post an update, with a prefilled draft (PROJ-010); missing updates are flagged on the project and in the initiative roll-up.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Project leads and initiative owners are reminded on the chosen cadence (weekly on a weekday, every two weeks) to post an update, with a prefilled draft (PROJ-010); missing updates are flagged on the project and in the initiative roll-up.
@@ -2469,7 +2467,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-OPS-005
 
-**Requirement.** Due-soon rules. The outcomes below apply through the product doors for this capability.
+**Requirement.** Rules on due dates can act before the due day (for example two days before: notify the assignee and move to the active cycle), complementing the fixed due-today and overdue reminders of NOTIFY-005.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Rules on due dates can act before the due day (for example two days before: notify the assignee and move to the active cycle), complementing the fixed due-today and overdue reminders of NOTIFY-005.
@@ -2479,9 +2477,9 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### REPORT-001 — Insights
 
-*Tier:* Core · *Cites:* BASE-ROLE-001
+*Tier:* Core · *Cites:* BASE-ACCESSIBILITY-001, BASE-ROLE-001
 
-**Requirement.** Insights. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides insights for the permitted workspace actors, with the records, outcomes and refusals below. Owners, Admins and Members read only visible issues; Guests are refused. This carries RL-6.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members chart any filtered set of issues by count or estimate over time and by any field: created vs completed, throughput, cycle time and lead time (from Started or created to Completed, with percentiles), time in each status, triage time, SLA breaches, bug inflow and open bug age, grouped by team, project, label, assignee, priority or customer tier.
@@ -2492,7 +2490,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Cycle and project charts. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each cycle shows a burn-up of scope and completion by day, with added and removed scope marked, and a final report (completed, carried over, added mid-cycle, by assignee).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each cycle shows a burn-up of scope and completion by day, with added and removed scope marked, and a final report (completed, carried over, added mid-cycle, by assignee).
@@ -2504,7 +2502,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* REPORT-002 · *Cites:* BASE-ROLE-001
 
-**Requirement.** Project completion forecast. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each project shows scope and completion over time with the projected completion date.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each project shows scope and completion over time with the projected completion date.
@@ -2518,7 +2516,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Dashboards. The outcomes below apply through the product doors for this capability.
+**Requirement.** Members compose dashboards of saved charts, counts and issue lists for a team or for leadership, share them inside the workspace, and filter the whole dashboard by team, date range or project.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members compose dashboards of saved charts, counts and issue lists for a team or for leadership, share them inside the workspace, and filter the whole dashboard by team, date range or project.
@@ -2527,7 +2525,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Workload. The outcomes below apply through the product doors for this capability.
+**Requirement.** For a cycle or date range, a workload view shows each person's assigned estimate and issue count against their stated capacity, including delegated agent work, so a lead can rebalance; it never ranks people by output.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. For a cycle or date range, a workload view shows each person's assigned estimate and issue count against their stated capacity, including delegated agent work, so a lead can rebalance; it never ranks people by output.
@@ -2536,10 +2534,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Warehouse and spreadsheet export. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides warehouse and spreadsheet export for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Owners and Admins (role matrix) schedule incremental exports of issues, history, cycles, projects and customer links as CSV or JSON to an S3-compatible bucket (Amazon S3, Cloudflare R2), expose a read-only export API that Fivetran and Airbyte connectors can page through, and sync a saved view to a Google Sheets spreadsheet through the Sheets API (`spreadsheets.values.batchUpdate`), refreshed on a schedule of at least hourly with one row per issue and one column per visible view property.
+1. Owners and Admins (role matrix) schedule incremental exports of issues, history, cycles, projects and customer links as CSV or JSON to an S3-compatible bucket (Amazon S3, Cloudflare R2), expose a read-only export API that Fivetran and Airbyte connectors can page through, and sync a saved view to a Google Sheets spreadsheet through the Sheets API (batch value updates), refreshed on a schedule of at least hourly with one row per issue and one column per visible view property.
 
 ### Connecting integrations
 
@@ -2547,24 +2545,25 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-SECRET-001, BASE-ROLE-001 · *Register:* R-4
 
-**Requirement.** Guided connection from Settings. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Settings → Integrations lists every integration with its state (not connected, connecting, connected, needs attention). The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Settings → Integrations lists every integration with its state (not connected, connecting, connected, needs attention).
-2. An Owner or Admin connects one through the setup path in the table below: Vector generates every value the provider needs — this installation's request, event, OAuth redirect and sidebar URLs, least-privilege scopes, event subscriptions, a fresh signing secret, and any app package or plugin manifest — and either submits them through the provider's app-creation API or manifest flow, or prefills the provider's creation page, so the Admin never types or edits a scope, URL or manifest by hand; the only values an Admin copies are the credentials a provider shows once, which Vector stores encrypted (SEC-001).
+2. An Owner or Admin connects one through the provider setup path documented in docs/contract/MECHANISMS.md: Vector generates every value the provider needs — this installation's request, event, OAuth redirect and sidebar URLs, least-privilege scopes, event subscriptions, a fresh signing secret, and any app package or plugin manifest — and either submits them through the provider's app-creation API or manifest flow, or prefills the provider's creation page, so the Admin never types or edits a scope, URL or manifest by hand; the only values an Admin copies are the credentials a provider shows once, which Vector stores encrypted (SEC-001).
 3. Each path ends with a live check: Vector calls the provider with the new credentials and asks the Admin to perform one real action (send `@Vector` a message, open a PR), and marks the integration connected only when that event arrives signed.
 4. From then on every member uses it without further setup, linking their own provider identity where the integration acts as them (SLACK-001, DOCS-001).
 5. Disconnecting revokes tokens, deletes the provider webhook where the provider's API allows it, and lists anything the Admin must remove in the provider.
+6. For every provider in the documented setup table, an official-schema provider-edge fixture completes Settings setup without hand-entered scopes, URLs or manifest text, receives the first signed business event and refuses a Member opening setup. The real Slack and GitHub connection receipts remain in R-4.
 
 #### INTEG-002 — Integration health and repair
 
 *Tier:* Core · *Cites:* BASE-SECRET-001, BASE-ROLE-001
 
-**Requirement.** Integration health and repair. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each connected integration shows its last received event, last successful call, failure count and token expiry; a failing integration notifies the Admins who connected it and shows the provider's error.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each connected integration shows its last received event, last successful call, failure count and token expiry; a failing integration notifies the Admins who connected it and shows the provider's error.
-2. When the installation's origin changes or a provider rotates a secret, Settings repairs the integration in place — updating the request URLs through the provider's API where one exists (Slack `apps.manifest.update`, GitHub `PATCH /app/hook/config`, GitLab hook update) or re-running the setup path with the existing app otherwise — without losing links, synced threads or identity mappings.
+2. When the installation's origin changes or a provider rotates a secret, Settings repairs the integration in place — updating the request URLs through the provider's API where one exists (Slack Slack manifest repair, GitHub GitHub webhook repair, GitLab hook update) or re-running the setup path with the existing app otherwise — without losing links, synced threads or identity mappings.
 3. After a restore (SEC-001) each integration shows "needs attention" until its credentials are re-entered.
 
 ### Target: Code host and delivery
@@ -2573,7 +2572,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Branches and status automation. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides branches and status automation for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each issue offers a copyable branch name (for example `vec-123-fix-checkout`); Vector links a PR whose branch, title or body names an issue, understands closing words ("Fixes VEC-123") and contributing words ("Part of VEC-123"), and moves the issue by team rules: draft PR opened → In Progress, review requested → In Review, merged → Done (or the status chosen per rule, including on deploy with RELEASE-002).
@@ -2587,7 +2586,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Commits. The outcomes below apply through the product doors for this capability.
+**Requirement.** Push events link commits whose message names an issue, showing author, message and link on the issue; closing words in a commit on the default branch act like a merged PR under the team rules.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Push events link commits whose message names an issue, showing author, message and link on the issue; closing words in a commit on the default branch act like a merged PR under the team rules.
@@ -2596,7 +2595,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Review and checks on the issue. The outcomes below apply through the product doors for this capability.
+**Requirement.** A linked PR shows its review state (review requested, approved, changes requested, with reviewers), required check status from GitHub Actions or other CI, mergeability and stacked-PR parent; issue lists can filter by these, and reviewers get a notification in Vector when their review is requested on a linked PR.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A linked PR shows its review state (review requested, approved, changes requested, with reviewers), required check status from GitHub Actions or other CI, mergeability and stacked-PR parent; issue lists can filter by these, and reviewers get a notification in Vector when their review is requested on a linked PR.
@@ -2606,10 +2605,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** GitHub App. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides github app for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Each installation creates its own GitHub App through the GitHub App manifest flow from Settings → Integrations → GitHub (INTEG-001's table): the Admin chooses a personal account or organization (or a GitHub Enterprise Server host), approves the prefilled app on GitHub, and Vector converts the returned code into the app's ID, private key and webhook secret, then sends the Admin to choose repositories.
+1. Each installation creates its own GitHub App through the GitHub App manifest flow from Settings → Integrations → GitHub (the INTEG-001 setup table in docs/contract/MECHANISMS.md): the Admin chooses a personal account or organization (or a GitHub Enterprise Server host), approves the prefilled app on GitHub, and Vector converts the returned code into the app's ID, private key and webhook secret, then sends the Admin to choose repositories.
 2. The app has least-privilege scopes on chosen repositories (GitHub.com and GitHub Enterprise Server), posts a linkback comment on linked PRs, reads PR and check state for enrichment, and maps GitHub users to members; tokens are short-lived installation tokens stored encrypted, and uninstalling stops all calls.
 3. The webhook-only mode of GITHUB-001 remains available without a token.
 4. Inherited from SEC-001: credentials are sealed, shown once, least-scoped, excluded from archives, re-entered on restore, rotated on demand and revoked on removal; an archive-then-restore journey proves no credential is exported and the restored connection needs re-entry.
@@ -2618,7 +2617,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** GitHub Issues sync. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team can sync with one or more GitHub repositories' Issues: new GitHub issues appear in triage (or Backlog by rule), and title, description, state, labels, assignee and comments sync both ways with stable source identity; conflicts take the latest change and are shown in activity.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team can sync with one or more GitHub repositories' Issues: new GitHub issues appear in triage (or Backlog by rule), and title, description, state, labels, assignee and comments sync both ways with stable source identity; conflicts take the latest change and are shown in activity.
@@ -2628,7 +2627,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Provider-backed create branch. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each issue offers a copyable branch name (for example `vec-123-fix-checkout`) and a "create branch" action.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each issue offers a copyable branch name (for example `vec-123-fix-checkout`) and a "create branch" action.
@@ -2637,7 +2636,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** GitLab. The outcomes below apply through the product doors for this capability.
+**Requirement.** For GitLab.com and self-managed GitLab, Vector links merge requests, branches and commits that name issues, moves status by the same team rules as GITHUB-003, shows approvals and pipeline status, and receives environment deployments for RELEASE-002, through signed webhooks and a least-privilege access token.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. For GitLab.com and self-managed GitLab, Vector links merge requests, branches and commits that name issues, moves status by the same team rules as GITHUB-003, shows approvals and pipeline status, and receives environment deployments for RELEASE-002, through signed webhooks and a least-privilege access token.
@@ -2647,7 +2646,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** GitLab Issues sync. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team can sync with GitLab project issues with the same behavior as GITHUB-007.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team can sync with GitLab project issues with the same behavior as GITHUB-007.
@@ -2656,7 +2655,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003
 
-**Requirement.** Bitbucket. The outcomes below apply through the product doors for this capability.
+**Requirement.** Bitbucket Cloud pull requests, branches, commits and pipelines link to issues and drive the same team rules.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Bitbucket Cloud pull requests, branches, commits and pipelines link to issues and drive the same team rules.
@@ -2665,7 +2664,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** CI and deploy providers. The outcomes below apply through the product doors for this capability.
+**Requirement.** CircleCI, GitHub Actions, GitLab CI, Vercel, Netlify and Cloudflare deployments report build and deploy results for linked commits through signed webhooks or the API, shown on the issue and usable as rule triggers.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. CircleCI, GitHub Actions, GitLab CI, Vercel, Netlify and Cloudflare deployments report build and deploy results for linked commits through signed webhooks or the API, shown on the issue and usable as rule triggers.
@@ -2674,12 +2673,12 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### SLACK-001 — Slack app
 
-*Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
+*Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001 · *Register:* R-4
 
-**Requirement.** Slack app. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides slack app for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Each installation has its own Slack app, created from Settings → Integrations → Slack through Slack's app manifest (INTEG-001's table): with a one-time app configuration token Vector calls `apps.manifest.create` with the generated manifest (this installation's event, interactivity, slash-command, unfurl and OAuth redirect URLs and least scopes) and receives the app's credentials; without a token, Vector opens Slack's create-from-manifest page prefilled and the Admin pastes the signing secret, client ID and client secret Slack shows.
+1. Each installation has its own Slack app, created from Settings → Integrations → Slack through Slack's app manifest (the INTEG-001 setup table in docs/contract/MECHANISMS.md): with a one-time app configuration token Vector calls app creation from a generated manifest with the generated manifest (this installation's event, interactivity, slash-command, unfurl and OAuth redirect URLs and least scopes) and receives the app's credentials; without a token, Vector opens Slack's create-from-manifest page prefilled and the Admin pastes the signing secret, client ID and client secret Slack shows.
 2. The Admin then clicks Install, which completes OAuth v2 to the company's Slack workspace (or an Enterprise Grid org) and stores the bot token encrypted.
 3. Members link their Slack identity to their Vector member; uninstalling or unlinking stops all calls and removes stored tokens.
 4. Inherited from SEC-001: credentials are sealed, shown once, least-scoped, excluded from archives, re-entered on restore, rotated on demand and revoked on removal; an archive-then-restore journey proves no credential is exported and the restored connection needs re-entry.
@@ -2689,13 +2688,13 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Issues from Slack with synced threads. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides issues from slack with synced threads for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. From any message, a shortcut, an emoji reaction or `@Vector` creates an issue (or adds the message to an existing one) with the message, author, attachments and a link, using a template or request form (TRIAGE-004), with a Customer picker prefilled from the message author's email domain so the message becomes that customer's request (CUST-006, CUST-008); the Slack thread then syncs both ways with exactly one Vector comment thread (ISSUE-008): the originating message becomes that thread's root comment, each Slack reply becomes a reply in it, a Vector reply in that thread posts once to the Slack thread, resolving the Vector thread adds a resolved marker in Slack, and comments outside that thread never post to Slack; a second Slack thread linked to the same issue maps to its own comment thread.
+1. From any message, a shortcut, an emoji reaction or `@Vector` creates an issue (or adds the message to an existing one) with the message, author, attachments and a link, using a template or request form (TRIAGE-004), with a Customer picker prefilled from the message author's email domain so the message becomes that customer's request (CUST-006, CUST-008); the Slack thread then syncs both ways with exactly one Vector comment thread (ISSUE-029): the originating message becomes that thread's root comment, each Slack reply becomes a reply in it, a Vector reply in that thread posts once to the Slack thread, resolving the Vector thread adds a resolved marker in Slack, and comments outside that thread never post to Slack; a second Slack thread linked to the same issue maps to its own comment thread.
 2. Status changes post into every linked Slack thread.
 3. Request channels can be configured so every top-level message becomes a triage item.
-4. Files in Slack messages and replies become attachments shown inline in the mapped comment (ISSUE-024); an image or video embedded in a Vector reply in that thread is uploaded into the Slack thread once through Slack's external upload API (`files.getUploadURLExternal`, then `files.completeUploadExternal`), and a checklist (ISSUE-025) posts as text.
+4. Files in Slack messages and replies become attachments shown inline in the mapped comment (ISSUE-033, ISSUE-034); an image or video embedded in a Vector reply in that thread is uploaded into the Slack thread once through Slack's external upload API (an external upload allocation, then completion of an external upload), and a checklist (ISSUE-025) posts as text.
 5. A Slack user with no Vector seat and no linked identity (SLACK-001) — someone in sales or support — can file in the same ways in any channel the Vector app is in: Vector records them as the issue's requester by Slack user ID and display name (and as a contact of the customer their email domain maps to under CUST-006), never as a member, and gives them no sign-in and no access to Vector; they receive the confirmation with the identifier and title, and the issue's status changes and the Vector replies in the mapped thread reach them in that Slack thread like anyone in it.
 6. For an issue in a private team (ROLE-002), the thread receives only the identifier and status changes.
 
@@ -2703,7 +2702,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Slack and Discord channel bindings. The outcomes below apply through the product doors for this capability. Slack identity and private notices follow RL-3.
+**Requirement.** Teams, projects, initiatives and saved views can post chosen events (new triage item, new issue, status change, project update, release, SLA warning, agent completion) to a Slack channel, respecting ROLE-002 so private-team content only posts to channels the Admin bound to that team. Slack identity and private notices follow RL-3.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Teams, projects, initiatives and saved views can post chosen events (new triage item, new issue, status change, project update, release, SLA warning, agent completion) to a Slack channel, respecting ROLE-002 so private-team content only posts to channels the Admin bound to that team.
@@ -2715,7 +2714,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* SLACK-003 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Connect and remove channel credentials. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides connect and remove channel credentials for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Admin enters a Slack bot token in Settings → Integrations once; a provider credential check validates it, per-workspace encryption seal it per workspace, settings never reveal it again, archives exclude it, restored installations need attention until re-entry, and removal calls provider credential revocation, deletes local custody and disables bindings (a provider error refuses removal visibly).
@@ -2724,7 +2723,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* SLACK-003 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Durable minimal channel posts. The outcomes below apply through the product doors for this capability.
+**Requirement.** Existing new-triage, new-issue and status-change events post through the shared native outbound claim, bounded-retry, uncertain-result and visible Settings failure machinery, once per event per binding.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Existing new-triage, new-issue and status-change events post through the shared native outbound claim, bounded-retry, uncertain-result and visible Settings failure machinery, once per event per binding.
@@ -2736,7 +2735,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* SLACK-003 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Create and bind a Slack channel. The outcomes below apply through the product doors for this capability.
+**Requirement.** A team or project can create its own Slack channel when it is created (`channel creation`, named from its identifier or name) and bind it automatically, and a Discord channel can receive the same events through a Discord webhook URL.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A team or project can create its own Slack channel when it is created (`channel creation`, named from its identifier or name) and bind it automatically, and a Discord channel can receive the same events through a Discord webhook URL.
@@ -2747,7 +2746,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* SLACK-003 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Channel safety and explicit mapping. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides channel safety and explicit mapping for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Slack channel selection and each post explicitly check the channel safety check: bot membership and a channel type, no archived or shared state, and not frozen; the held Slack conversation object omits the frozen flag, recorded as an assumption that an absent the frozen flag means not frozen (revisable if a provider run contradicts it).
@@ -2758,7 +2757,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Link and unlink your Slack identity. The outcomes below apply through the product doors for this capability. Slack identity and private notices follow RL-3.
+**Requirement.** Vector provides link and unlink your slack identity for the permitted workspace actors, with the records, outcomes and refusals below. Slack identity and private notices follow RL-3.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A signed-in member chooses Link Slack in Settings → Notifications; Vector calls an own-email provider lookup (scope users:read.email) with that member's own Vector sign-in email, shows the Slack account it found and links it only when the member confirms; no match shows "No Slack account found for this email" and stores nothing, and a lookup error is shown and not retried.
@@ -2769,20 +2768,20 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* SLACK-004 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Personal Slack delivery. The outcomes below apply through the product doors for this capability.
+**Requirement.** Members can receive their notifications as Slack direct messages under NOTIFY-007 with actions (assign to me, change status, open).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members can receive their notifications as Slack direct messages under NOTIFY-007 with actions (assign to me, change status, open).
 2. A linked member turns on Slack direct messages separately for assignments and for direct mentions, the assignment and mention events (NOTIFY-006); the option is unavailable, with the reason shown, while the workspace has no valid Slack credential or the member has no link, and NOTIFY-007 keeps the choice for every other event.
 3. Each qualifying notification creates at most one direct-message intent per recipient in the same transaction as its source mutation, in the native outbound ledger (no second queue); immediately after commit, like immediate mail, and before every later attempt Vector rechecks mutes (NOTIFY-004), actor exclusion (NOTIFY-003), the active recipient, issue access (OPS-001) and the member's link and choice, then calls opening a direct conversation (im:write) and posting the direct message.
 4. A delivered message is never repeated: rate limits and an unanswered opening a direct conversation (which posts nothing) retry at most three attempts, after one and then five minutes; an unknown posting the direct message result is uncertain and never resent; failed and uncertain messages are listed to the recipient in Settings → Notifications.
-5. A message carries only the event kind, issue identifier and title, actor display name, status change, due date and the authenticated canonical `canonical issue` link, in plain-text blocks with automatic link and media previews disabled — never a description, comment or mention body, free text or AI output; private or restricted items  get a generic notice with no actor or text under ROLE-002.
+5. A message carries only the event kind, issue identifier and title, actor display name, status change, due date and the authenticated canonical `canonical issue` link, in plain-text blocks with automatic link and media previews disabled — never a description, comment or mention body, free text or AI output; private or restricted items get a generic notice with no actor or text under ROLE-002.
 
 #### SLACK-011 — Signed Slack notification actions
 
 *Tier:* Core · *From:* SLACK-004 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Signed Slack notification actions. The outcomes below apply through the product doors for this capability.
+**Requirement.** Open is the canonical link button; Assign to me and Change status (an inline select of the team's workflow states the issue-edit door accepts) appear only while the workspace's Slack signing secret is stored, and Settings says they are off until it is entered .
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Open is the canonical link button; Assign to me and Change status (an inline select of the team's workflow states the issue-edit door accepts) appear only while the workspace's Slack signing secret is stored, and Settings says they are off until it is entered .
@@ -2795,7 +2794,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *From:* SLACK-004 · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Slack interactivity secret custody. The outcomes below apply through the product doors for this capability.
+**Requirement.** An Admin enters the Slack app's signing secret beside the bot token in Settings → Integrations; it is sealed with per-workspace encryption per workspace, never shown again, excluded from archives with the member links (SEC-001: after a restore it is entered again and members re-link) and removed with the credential.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Admin enters the Slack app's signing secret beside the bot token in Settings → Integrations; it is sealed with per-workspace encryption per workspace, never shown again, excluded from archives with the member links (SEC-001: after a restore it is entered again and members re-link) and removed with the credential.
@@ -2803,9 +2802,9 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### SLACK-005 — Link previews
 
-*Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
+*Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001 · *Register:* R-4
 
-**Requirement.** Link previews. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector issue, project and document links pasted in Slack unfurl with title, status, assignee and priority only for linked members allowed to see them; others see the link alone. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Vector issue, project and document links pasted in Slack unfurl with title, status, assignee and priority only for linked members allowed to see them; others see the link alone.
@@ -2814,11 +2813,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-ROLE-001
 
-**Requirement.** Microsoft Teams. The outcomes below apply through the product doors for this capability.
+**Requirement.** A Microsoft Teams app offers SLACK-001 to SLACK-005's behavior in Teams: install and identity linking, issues from messages with synced threads, channel notifications, personal notifications and link previews.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A Microsoft Teams app offers SLACK-001 to SLACK-005's behavior in Teams: install and identity linking, issues from messages with synced threads, channel notifications, personal notifications and link previews.
-2. Each installation has its own bot and Teams app (INTEG-001's table): the Admin creates a bot in the Teams Developer Portal with the messaging endpoint Vector shows and pastes its app ID and client secret, Vector generates the complete Teams app package with that bot ID, valid domains and resource-specific consent permissions, and the Admin uploads it in the Teams admin center as a custom app for the organization; no manifest is edited by hand.
+2. Each installation has its own bot and Teams app (the INTEG-001 setup table in docs/contract/MECHANISMS.md): the Admin creates a bot in the Teams Developer Portal with the messaging endpoint Vector shows and pastes its app ID and client secret, Vector generates the complete Teams app package with that bot ID, valid domains and resource-specific consent permissions, and the Admin uploads it in the Teams admin center as a custom app for the organization; no manifest is edited by hand.
 
 ### Support, errors, design and knowledge
 
@@ -2826,19 +2825,19 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Zendesk, Intercom and Front. The outcomes below apply through the product doors for this capability.
+**Requirement.** Support agents create or link a Vector issue from a Zendesk ticket, Intercom conversation or Front message through the provider's app sidebar; the ticket shows the issue's status and release, and the issue shows the ticket and customer as a customer request (CUST-001).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Support agents create or link a Vector issue from a Zendesk ticket, Intercom conversation or Front message through the provider's app sidebar; the ticket shows the issue's status and release, and the issue shows the ticket and customer as a customer request (CUST-001).
 2. Status changes add internal notes on the ticket (CUST-003).
-3. Setup follows INTEG-001's table: Vector generates a private Zendesk app package (a ticket-sidebar app pointing at this installation) for upload in Zendesk Admin Center and creates the Zendesk webhook and trigger through the Zendesk API with an API token the Admin pastes; for Intercom and Front the Admin creates an app in the provider's developer settings from the copy fields Vector shows (Intercom Inbox app URLs and webhook topics; Front plugin and webhook URLs) and pastes its token and signing secret.
+3. Setup follows the INTEG-001 setup table in docs/contract/MECHANISMS.md: Vector generates a private Zendesk app package (a ticket-sidebar app pointing at this installation) for upload in Zendesk Admin Center and creates the Zendesk webhook and trigger through the Zendesk API with an API token the Admin pastes; for Intercom and Front the Admin creates an app in the provider's developer settings from the copy fields Vector shows (Intercom Inbox app URLs and webhook topics; Front plugin and webhook URLs) and pastes its token and signing secret.
 4. Support agents then use the sidebar with no setup of their own, linking their Vector identity on first use.
 
 #### SUPPORT-002 — HappyToHelp
 
 *Tier:* Core
 
-**Requirement.** HappyToHelp. The outcomes below apply through the product doors for this capability.
+**Requirement.** HappyToHelp conversations link to Vector issues with the same behavior as SUPPORT-001 through the sibling's API, so a team running Run Edit Run products needs no third-party support tool.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. HappyToHelp conversations link to Vector issues with the same behavior as SUPPORT-001 through the sibling's API, so a team running Run Edit Run products needs no third-party support tool.
@@ -2847,17 +2846,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Sentry and Datadog. The outcomes below apply through the product doors for this capability.
+**Requirement.** A Sentry issue or Datadog case or monitor alert can create or link a Vector issue with the error, frequency, affected users, release and stack-trace link; resolving the Vector issue can resolve the Sentry issue, and a regression reopens or comments on the Vector issue by team rule.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A Sentry issue or Datadog case or monitor alert can create or link a Vector issue with the error, frequency, affected users, release and stack-trace link; resolving the Vector issue can resolve the Sentry issue, and a regression reopens or comments on the Vector issue by team rule.
-2. Setup follows INTEG-001's table: a Sentry internal integration created from the webhook URL, scopes and subscriptions Vector shows, and a Datadog webhook Vector registers through the Datadog API.
+2. Setup follows the INTEG-001 setup table in docs/contract/MECHANISMS.md: a Sentry internal integration created from the webhook URL, scopes and subscriptions Vector shows, and a Datadog webhook Vector registers through the Datadog API.
 
 #### ERROR-002 — Spool
 
 *Tier:* Core
 
-**Requirement.** Spool. The outcomes below apply through the product doors for this capability.
+**Requirement.** Spool error groups link to Vector issues with live counts, first and last seen, affected users and releases, and a Spool regression after the issue's fix deploys reopens it for PUSH-004.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Spool error groups link to Vector issues with live counts, first and last seen, affected users and releases, and a Spool regression after the issue's fix deploys reopens it for PUSH-004.
@@ -2866,17 +2865,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Figma. The outcomes below apply through the product doors for this capability.
+**Requirement.** Figma files, frames and prototypes linked in an issue or document show a live preview and last-modified time; a Figma comment can create an issue through the Figma plugin with a link back.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Figma files, frames and prototypes linked in an issue or document show a live preview and last-modified time; a Figma comment can create an issue through the Figma plugin with a link back.
-2. Setup follows INTEG-001's table: the Admin registers the installation's Figma OAuth app from the callback URL Vector shows and members connect their own Figma accounts for previews; Vector generates the plugin manifest with this installation in its allowed network domains, published by an Admin as a private organization plugin or imported by members from the manifest.
+2. Setup follows the INTEG-001 setup table in docs/contract/MECHANISMS.md: the Admin registers the installation's Figma OAuth app from the callback URL Vector shows and members connect their own Figma accounts for previews; Vector generates the plugin manifest with this installation in its allowed network domains, published by an Admin as a private organization plugin or imported by members from the manifest.
 
 #### DOCS-001 — Notion, Confluence and Google Drive
 
 *Tier:* Core
 
-**Requirement.** Notion, Confluence and Google Drive. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides notion, confluence and google drive for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Links to Notion pages, Confluence pages, Google Docs and Drive files, Microsoft OneDrive and SharePoint, and Dropbox files (through OAuth clients the Admin registers from the redirect URLs Vector shows, INTEG-001) show title, owner and last-updated previews for members who connected that account, and specs written there can be linked as an issue's specification (PUSH-001).
@@ -2886,7 +2885,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core
 
-**Requirement.** Calendar feeds. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each member and team has a private calendar feed (ICS) of due dates, cycles, milestones and releases for Google Calendar, Outlook and Apple Calendar; revoking the feed URL stops it.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each member and team has a private calendar feed (ICS) of due dates, cycles, milestones and releases for Google Calendar, Outlook and Apple Calendar; revoking the feed URL stops it.
@@ -2896,7 +2895,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Register:* R-9
 
-**Requirement.** Zapier and Make. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** A Zapier app and a Make app expose triggers (issue created, status changed, comment added, project update) and actions (create issue, update issue, comment) over API-003 and WEBHOOK-002 so buyers can connect tools Vector does not integrate natively. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A Zapier app and a Make app expose triggers (issue created, status changed, comment added, project update) and actions (create issue, update issue, comment) over API-003 and WEBHOOK-002 so buyers can connect tools Vector does not integrate natively.
@@ -2908,7 +2907,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Delegate an issue to an agent. The outcomes below apply through the product doors for this capability.
+**Requirement.** A member can delegate an issue to a coding agent — Claude Code, OpenAI Codex, Cursor's background agent, GitHub Copilot coding agent or any agent registered through AGENT-006 — from the issue, a shortcut, Slack or a rule (AUTO-002).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A member can delegate an issue to a coding agent — Claude Code, OpenAI Codex, Cursor's background agent, GitHub Copilot coding agent or any agent registered through AGENT-006 — from the issue, a shortcut, Slack or a rule (AUTO-002).
@@ -2920,59 +2919,59 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Agent session on the issue. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides agent session on the issue for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each delegation opens an agent session shown on the issue, fed by the provider mechanism of AGENT-009, with live progress (plan, steps, files touched, commands run, elapsed time and cost in USD when the provider reports it), questions the agent asks a person (answered in the issue or Slack), and a cancel action that stops the session within one minute and records who stopped it.
 2. Where a provider has no mid-run question channel, the session says so and a member's answer starts a follow-up run on the same branch (AGENT-009).
 3. Inherited from NOTIFY-001: a delegated agent question or completion notifies once in the inbox, never the actor; the receiving journey verifies this for that event.
-4. Inherited from SLACK-003: agent completion posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
+4. Inherited from SLACK-003, SLACK-007: agent completion posts to its bound Slack or Discord channel once, using the shared durable delivery and minimal-message rules; its acceptance journey verifies the bound post.
 
-#### AGENT-003 — Reviewable output, human completion
+#### AGENT-003 — Reviewable agent output and policy-decided completion
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Reviewable output, human completion. The outcomes below apply through the product doors for this capability.
+**Requirement.** An agent's work lands as a branch and pull request linked to the issue (GITHUB-003), with the tests it added or ran and a summary; the issue moves to In Review; subsequent review, merge and completion follow the team rules and the company's policy for each call's classes.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An agent's work lands as a branch and pull request linked to the issue (GITHUB-003), with the tests it added or ran and a summary; the issue moves to In Review; subsequent review, merge and completion follow the team rules and the company's policy for each call's classes.
 2. Merging and deploying carry live, customer messages carry external, and reversible priority, due-date and assignee changes carry standard; the company's policy decides every call.
-3. Inherited from SLACK-003: reviewable agent completion posts to its bound Slack or Discord channel once, without duplicating AGENT-002’s completion event; its acceptance journey verifies the bound post.
+3. Inherited from SLACK-003, SLACK-007: reviewable agent completion posts to its bound Slack or Discord channel once, without duplicating AGENT-002’s completion event; its acceptance journey verifies the bound post.
 
 #### AGENT-004 — Agent permissions and budgets
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Agent permissions and budgets. The outcomes below apply through the product doors for this capability.
+**Requirement.** Admins choose which agents may be delegated to, by which teams, on which repositories, with company-set monthly cost and session budgets and an installation concurrency limit; every agent call uses a scoped token (ROLE-006), and a budget or permission stop is visible on the issue and to the delegating member.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Admins choose which agents may be delegated to, by which teams, on which repositories, with company-set monthly cost and session budgets and an installation concurrency limit; every agent call uses a scoped token (ROLE-006), and a budget or permission stop is visible on the issue and to the delegating member.
+1. Admins choose which agents may be delegated to, by which teams, on which repositories, with company-set monthly cost and session budgets and an installation concurrency limit; a budget or permission stop is visible on the issue and to the delegating member.
 2. Inherited from SEC-001: credentials are sealed, shown once, least-scoped, excluded from archives, re-entered on restore, rotated on demand and revoked on removal; an archive-then-restore journey proves no credential is exported and the restored connection needs re-entry.
 
 #### AGENT-005 — MCP server
 
-*Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
+*Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011, BASE-AGENT-001, BASE-AGENT-003, BASE-AGENT-004 · *Rules:* D-2
 
-**Requirement.** MCP server. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector exposes a Model Context Protocol server (streamable HTTP, OAuth 2.1) so Claude, ChatGPT, Cursor, VS Code and other clients can search, read, create and update issues, comments, projects, cycles and documents for the sponsoring member on the Vector records named here.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Vector exposes a Model Context Protocol server (streamable HTTP, OAuth 2.1) so Claude, ChatGPT, Cursor, VS Code and other clients can search, read, create and update issues, comments, projects, cycles and documents for the sponsoring member on the Vector records named here.
+1. The Vector MCP jobs search and read, create and update issues, comments, projects, cycles and documents for the sponsoring workspace member.
 
 #### AGENT-006 — Agent platform
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Agent platform. The outcomes below apply through the product doors for this capability.
+**Requirement.** Third-party agents register as Vector apps (OAuth with an application actor), receive delegation and mention events by signed webhook, post session activities (thought, action, question, result) and request input through a documented API, so new coding or ops agents plug in without changes to Vector.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Third-party agents register as Vector apps (OAuth with an `app` actor), receive delegation and mention events by signed webhook, post session activities (thought, action, question, result) and request input through a documented API, so new coding or ops agents plug in without changes to Vector.
+1. Third-party agents register as Vector apps (OAuth with an application actor), receive delegation and mention events by signed webhook, post session activities (thought, action, question, result) and request input through a documented API, so new coding or ops agents plug in without changes to Vector.
 2. The same API is the callback channel for the runner-based providers of AGENT-009 (Claude Code and Codex on the buyer's runners), each run holding a token scoped to its one session.
 
 #### AGENT-007 — Ask Vector
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Ask Vector. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides ask vector for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Members ask questions in plain English ("what is blocking the 2.4 release?", "which Enterprise customers asked for SSO?") and get answers with cited issues, projects and comments drawn only from records they can see; when the answer implies a change (create issues, update statuses), the assistant declares the exact changes and their computed classes; the company's policy decides whether they run, enter review, wait for approval or are refused.
@@ -2981,7 +2980,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Agent guidance. The outcomes below apply through the product doors for this capability.
+**Requirement.** Teams and members keep reusable agent instructions (repository, coding conventions, test commands, definition of done) and saved prompts that apply to delegations and triage agents in their scope, versioned and audited.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Teams and members keep reusable agent instructions (repository, coding conventions, test commands, definition of done) and saved prompts that apply to delegations and triage agents in their scope, versioned and audited.
@@ -2990,11 +2989,12 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2 · *Register:* R-8
 
-**Requirement.** Provider delegation protocols. The outcomes below apply through the product doors for this capability. The listed register rows hold the external proof.
+**Requirement.** Vector provides provider delegation protocols for the permitted workspace actors, with the records, outcomes and refusals below. The listed register rows hold the external proof.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Vector delegates to each named coding agent through the mechanism below, configured by an Admin in Settings → Agents with the buyer's own provider account, keys and runners (INTEG-001); every mechanism supports the same five steps — start with the AGENT-001 context, progress into the AGENT-002 session, a question and its answer, cancel, and a PR returned and linked (GITHUB-003) — and the session records which provider call carried each step.
+1. Vector delegates to each named coding agent through the provider protocol documented in docs/contract/MECHANISMS.md, configured by an Admin in Settings → Agents with the buyer's own provider account, keys and runners (INTEG-001); every mechanism supports the same five steps — start with the AGENT-001 context, progress into the AGENT-002 session, a question and its answer, cancel, and a PR returned and linked (GITHUB-003) — and the session records which provider call carried each step.
 2. Repositories must be connected through GITHUB-006 or GITLAB-001 first.
+3. For each named provider, a protocol-faithful provider-edge fixture drives start, progress, question and answer, cancel and linked PR end to end; it accepts the signed callback and refuses an unsigned callback without changes. Real-account delegation is R-8.
 
 ### Target: API and platform
 
@@ -3002,17 +3002,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ACCESS-004
 
-**Requirement.** Complete public API. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides complete public api for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. A documented, versioned API covers every object a member can see or change — issues, comments, attachments, relations, labels, teams, workflow states, cycles, projects, milestones, initiatives, releases, documents, views, customers, customer requests, notifications and members — with cursor pagination, filtering, idempotency keys, rate limits with `Retry-After`, and the same version checks and access rules as the app.
+1. A documented, versioned API covers every object a member can see or change — issues, comments, attachments, relations, labels, teams, workflow states, cycles, projects, milestones, initiatives, releases, documents, views, customers, customer requests, notifications and members — with cursor pagination, filtering, idempotency keys, rate limits with a retry delay, and the same version checks and access rules as the app.
 2. API-003 inherits PROJ-011's milestone field and complete public milestone object operations.
 
 #### API-004 — OAuth apps
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ACCESS-004
 
-**Requirement.** OAuth apps. The outcomes below apply through the product doors for this capability.
+**Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.
@@ -3022,7 +3022,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ACCESS-004
 
-**Requirement.** SDK and docs. The outcomes below apply through the product doors for this capability.
+**Requirement.** A TypeScript SDK generated from the API schema and public developer documentation with examples for intake, sync and agents ship with each release.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. A TypeScript SDK generated from the API schema and public developer documentation with examples for intake, sync and agents ship with each release.
@@ -3031,7 +3031,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-OPS-003, BASE-AUDIT-001
 
-**Requirement.** Webhooks for every object. The outcomes below apply through the product doors for this capability.
+**Requirement.** Webhook destinations can subscribe to create, update and delete events for issues, comments, reactions, projects, project updates, cycles, initiatives, releases, labels, customers, customer requests and agent sessions, filtered by team, with the delivery guarantees of WEBHOOK-001.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Webhook destinations can subscribe to create, update and delete events for issues, comments, reactions, projects, project updates, cycles, initiatives, releases, labels, customers, customer requests and agent sessions, filtered by team, with the delivery guarantees of WEBHOOK-001.
@@ -3042,7 +3042,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** GitHub Issues and Projects import. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides github issues and projects import for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin imports from GitHub through a fine-grained token or the GitHub App (GITHUB-006): issues and pull-request references, comments with authors and times, labels, assignees, milestones (to milestones or cycles by mapping), Projects (v2) items, single-select, iteration and number fields (to status, cycles and custom fields), sub-issues and issue types, with attachment bytes fetched from GitHub's asset hosts, the same preflight, loss review, staged apply, reconciliation and rollback as DATA-006 and DATA-007, and an optional continuing sync (GITHUB-007).
@@ -3052,20 +3052,20 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Jira Cloud and Data Center API import. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides jira cloud and data center api import for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. An Owner or Admin imports directly from Jira Cloud (API token or OAuth) or Jira Data Center: projects, issue types, workflows mapped to statuses, epics to projects (their Jira status category To Do, In Progress or Done mapped onto project statuses in an explicit step, PROJ-016) or parents, sprints to cycles, fix versions to releases, components to labels, story points, custom fields, comments, worklogs reported as omissions, attachments with bytes, links (Blocks, Duplicates, Relates) and users matched by email, through the same reviewed staged runs as one migration (DATA-017), re-runnable so a second pass imports only issues created or changed in Jira since the first.
+1. An Owner or Admin imports directly from Jira Cloud (API token or OAuth) or Jira Data Center: projects, issue types, workflows mapped to statuses, epics to projects (their Jira status category To Do, In Progress or Done mapped onto project statuses in an explicit step, PROJ-016, PROJ-046) or parents, sprints to cycles, fix versions to releases, components to labels, story points, custom fields, comments, worklogs reported as omissions, attachments with bytes, links (Blocks, Duplicates, Relates) and users matched by email, through the same reviewed staged runs as one migration (DATA-017), re-runnable so a second pass imports only issues created or changed in Jira since the first.
 2. DATA-013 inherits PROJ-011's sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping": the Jira importer reviews that choice, assignments and reconciliation before shipping.
 
 #### DATA-014 — Linear API import
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Linear API import. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides linear api import for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. An Owner or Admin imports directly from Linear with an API key: teams, workflow states, issues, comments, attachments with bytes, projects, project updates, milestones, initiatives, cycles, labels, relations, customers with their domains, owners, statuses, tiers, sizes and revenue, customer requests, project statuses mapped by category (PROJ-016) and templates, through the same reviewed staged runs as one migration (DATA-017), paging Linear's GraphQL API within its rate limits and resuming after a limit or interruption.
+1. An Owner or Admin imports directly from Linear with an API key: teams, workflow states, issues, comments, attachments with bytes, projects, project updates, milestones, initiatives, cycles, labels, relations, customers with their domains, owners, statuses, tiers, sizes and revenue, customer requests, project statuses mapped by category (PROJ-016, PROJ-046) and templates, through the same reviewed staged runs as one migration (DATA-017), paging Linear's GraphQL API within its rate limits and resuming after a limit or interruption.
 2. PROJ-001 inherits Linear project start and target dates, priority and project labels onto the native fields, checked in reconciliation, before Linear project import ships.
 3. DATA-014 inherits PROJ-011's sentence "Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping": the Linear importer reviews that choice, assignments and reconciliation before shipping.
 
@@ -3073,7 +3073,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Plane, Huly and Shortcut import. The outcomes below apply through the product doors for this capability.
+**Requirement.** Exports from Plane (CSV or API), Huly (JSON export) and Shortcut (CSV or API) import with documented field mappings through the reviewed staged run.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Exports from Plane (CSV or API), Huly (JSON export) and Shortcut (CSV or API) import with documented field mappings through the reviewed staged run.
@@ -3082,7 +3082,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Transition sync. The outcomes below apply through the product doors for this capability.
+**Requirement.** During a migration, a team can keep a Jira project or Linear team in one-way or two-way sync for issues, status, comments and assignee for a bounded period, with every unsynced field listed and an explicit end that freezes the source mapping.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. During a migration, a team can keep a Jira project or Linear team in one-way or two-way sync for issues, status, comments and assignee for a bounded period, with every unsynced field listed and an explicit end that freezes the source mapping.
@@ -3091,7 +3091,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Whole-workspace migration. The outcomes below apply through the product doors for this capability.
+**Requirement.** An Owner or Admin starts one migration per source workspace (a Linear workspace, a Jira site, a GitHub organization, or a set of files from one of them).
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An Owner or Admin starts one migration per source workspace (a Linear workspace, a Jira site, a GitHub organization, or a set of files from one of them).
@@ -3099,16 +3099,17 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 3. Across every run of a migration: a relation (blocks, duplicate, related, parent, epic) whose other end is in an earlier or later run is held as pending and bound as soon as both issues exist, in whichever order the runs arrive, so no cross-run relation is lost; source people, teams, statuses, labels, projects, cycles, milestones and custom-field options are mapped once for the migration and reused by every run; and a source record lands exactly once even when it appears in two runs.
 4. Re-running the migration (or adding a newer export) imports only records that are new or changed at the source since the last run and skips everything already imported, with no duplicates.
 5. The migration has one reconciliation report and CSV (DATA-007's contents for all runs together) that also lists every relation still pending because its other end was never supplied, and an Owner or Admin finishes the migration only by explicitly accepting that list, which converts each into a reported omission.
-6. Rollback acts per run as today or on the whole migration.
+6. Rollback acts per run as or on the whole migration.
+7. A seeded Linear fixture imports 50,000 issues across six teams with comments, attachment bytes and 5,000 blocking, duplicate and parent links, at least 2,000 crossing run boundaries, in at least thirteen out-of-order runs. One report reconciles team, status, project, cycle and assignee counts and zero pending links; changing 100 source issues imports exactly those 100 on repeat, and a file migration missing its last run finishes only after the owner accepts the pending list.
 
 #### DATA-018 — Old identifiers and links after a move
 
 *Tier:* Core · *Cites:* BASE-DATA-001 · *Rules:* D-1
 
-**Requirement.** Old identifiers and links after a move. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides old identifiers and links after a move for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Every imported issue keeps its source key (for example `ENG-123` from Linear or `PROJ-45` from Jira) as an alias that stays resolvable after cutover: pasting a source URL (`linear.app/<workspace>/issue/ENG-123/...`, `<site>.atlassian.net/browse/PROJ-45`, a GitHub issue URL) into search, the command palette or a Vector link opens the imported issue; `/alias/ENG-123` redirects to it for bookmarks; and a branch name, PR title or body, or commit message that names an old key ("Fixes ENG-123") links and moves the imported issue under GITHUB-003 and GITHUB-004 exactly as its Vector identifier would, while the owner keeps the alias active for each source prefix.
+1. Every imported issue keeps its source key (for example `ENG-123` from Linear or `PROJ-45` from Jira) as an alias that stays resolvable after cutover: pasting a source URL (`linear.app/<workspace>/issue/ENG-123/...`, `<site>.atlassian.net/browse/PROJ-45`, a GitHub issue URL) into search, the command palette or a Vector link opens the imported issue; the imported-key bookmark redirect redirects to it for bookmarks; and a branch name, PR title or body, or commit message that names an old key ("Fixes ENG-123") links and moves the imported issue under GITHUB-003 and GITHUB-004 exactly as its Vector identifier would, while the owner keeps the alias active for each source prefix.
 2. An alias that collides with a native Vector identifier never shadows it: the native issue wins and the alias is reported in the migration report.
 
 ### Security, privacy and agents' data
@@ -3117,7 +3118,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-SECRET-001
 
-**Requirement.** Integration credentials. The outcomes below apply through the product doors for this capability.
+**Requirement.** Every integration and agent credential (GitHub App keys, Slack and Teams tokens, provider API tokens, OAuth refresh tokens) is stored encrypted, shown once, scoped to the least access the feature needs, excluded from archives, re-entered on restore, rotated on demand and revoked when the integration is removed.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Every integration and agent credential (GitHub App keys, Slack and Teams tokens, provider API tokens, OAuth refresh tokens) is stored encrypted, shown once, scoped to the least access the feature needs, excluded from archives, re-entered on restore, rotated on demand and revoked when the integration is removed.
@@ -3129,17 +3130,18 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-SECRET-001
 
-**Requirement.** Model and agent data handling. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides model and agent data handling for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Admins choose the model provider for triage suggestions, semantic search, Ask Vector and drafting (for example Anthropic, OpenAI, Amazon Bedrock, Google Vertex AI or a self-hosted model), see exactly which data categories each feature sends (declared in `seed.json` externals), can turn each feature off per workspace or team, and private-team content is never sent for members who cannot see it.
 2. Every model provider entry in `seed.json` externals names the provider's commercial or API terms URL, states that customer content is not used for training under those terms, and lists the data categories and retention; Settings shows that entry beside the provider choice, and a provider with no such entry (including a self-hosted model the Admin adds) cannot be enabled until an Owner records its terms URL and confirms its no-training status, which is audited (ROLE-005).
+3. An agent changing model configuration carries security, with commitment or gated when the provider step meets those definitions; the company's policy decides the call and a person's confirmation is never fabricated.
 
 #### SEC-003 — Erasure across integrations
 
 *Tier:* Core · *Cites:* BASE-SECRET-001, BASE-DATA-003
 
-**Requirement.** Erasure across integrations. The outcomes below apply through the product doors for this capability.
+**Requirement.** Erasing a member or an issue (ROLE-012, ISSUE-010, DATA-011) also unlinks their Slack, Teams, GitHub and agent identities, removes their content from synced threads Vector posted, deletes cached previews and embeddings, and records which external copies (in GitHub, Slack or a ticketing tool) Vector cannot recall.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Erasing a member or an issue (ROLE-012, ISSUE-010, DATA-011) also unlinks their Slack, Teams, GitHub and agent identities, removes their content from synced threads Vector posted, deletes cached previews and embeddings, and records which external copies (in GitHub, Slack or a ticketing tool) Vector cannot recall.
@@ -3167,9 +3169,9 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | Tool | Does | Core clauses | Risk class | Today |
 | --- | --- | --- | --- | --- |
 | `vector.ops.workspace_access` | Workspace access | OPS-001 | standard | not implemented |
-| `vector.ops.member_management` | Member management | OPS-002 | destructive | not implemented |
+| `vector.ops.member_management` | Member management | OPS-002 | standard | not implemented |
 | `vector.ops.workspace_time` | Workspace time | OPS-003 | standard | not implemented |
-| `vector.ops.safe_removal` | Safe removal | OPS-004 | destructive | not implemented |
+| `vector.ops.safe_removal` | Safe removal | OPS-004 | security | not implemented |
 | `vector.team.team_identity` | Team identity | TEAM-001 | standard | not implemented |
 | `vector.team.team_workflow` | Team workflow | TEAM-002 | standard | not implemented |
 | `vector.team.team_archiving` | Team archiving | TEAM-003 | standard | not implemented |
@@ -3185,7 +3187,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.issue.discussion_threads_and_resolution` | Discussion threads and resolution | ISSUE-029 | standard | not implemented |
 | `vector.issue.anchored_inline_comments` | Anchored inline comments | ISSUE-030 | standard | not implemented |
 | `vector.issue.attachments_and_links` | Attachments and links | ISSUE-009 | standard | not implemented |
-| `vector.issue.deletion` | Deletion | ISSUE-010 | destructive | not implemented |
+| `vector.issue.deletion` | Deletion | ISSUE-010 | standard | not implemented |
 | `vector.issue.estimates` | Estimates | ISSUE-011 | standard | not implemented |
 | `vector.issue.moving_teams` | Moving teams | ISSUE-012 | standard | not implemented |
 | `vector.issue.mentions` | Mentions | ISSUE-013 | standard | not implemented |
@@ -3250,23 +3252,23 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.notify.assignment_and_mention_email` | Assignment and mention email | NOTIFY-006 | standard | not implemented |
 | `vector.api.native_scoped_api` | Native scoped API | API-001 | standard | not implemented |
 | `vector.api.token_authority_and_usage` | Token authority and usage | API-002 | security | not implemented |
-| `vector.role.workspace_roles` | Workspace roles | ROLE-001 | access | not implemented |
-| `vector.role.private_teams` | Private teams | ROLE-002 | access | not implemented |
-| `vector.role.guests` | Guests | ROLE-003 | access | not implemented |
-| `vector.role.single_sign_on_and_provisioning` | Single sign-on and provisioning | ROLE-004 | access | not implemented |
-| `vector.role.audit_log` | Audit log | ROLE-005 | access | not implemented |
-| `vector.role.apps_and_agents_as_actors` | Apps and agents as actors | ROLE-006 | standard | not implemented |
-| `vector.role.team_membership_and_team_owners` | Team membership and team owners | ROLE-007 | access | not implemented |
-| `vector.role.operator_and_permission_coverage` | Operator and permission coverage | ROLE-008 | access | not implemented |
-| `vector.role.team_managed_permissions` | Team-managed permissions | ROLE-009 | access | not implemented |
-| `vector.role.offer_google_sign_in` | Offer Google sign-in | ROLE-010 | access | not implemented |
-| `vector.role.member_passkeys` | Member passkeys | ROLE-014 | access | not implemented |
-| `vector.role.suspend_a_member_and_withdraw_access` | Suspend a member and withdraw access | ROLE-011 | access | not implemented |
-| `vector.role.suspended_work_and_member_directory` | Suspended work and member directory | ROLE-015 | access | not implemented |
-| `vector.role.reactivate_the_same_member` | Reactivate the same member | ROLE-016 | access | not implemented |
-| `vector.role.portable_suspended_member_state` | Portable suspended-member state | ROLE-017 | access | not implemented |
-| `vector.role.erase_a_member_s_personal_data` | Erase a member's personal data | ROLE-012 | access | not implemented |
-| `vector.role.read_only_viewers` | Read-only Viewers | ROLE-013 | access | not implemented |
+| `vector.role.workspace_roles` | Workspace roles | ROLE-001 | access (+ security) | not implemented |
+| `vector.role.private_teams` | Private teams | ROLE-002 | access (+ security) | not implemented |
+| `vector.role.guests` | Guests | ROLE-003 | access (+ security) | not implemented |
+| `vector.role.single_sign_on_and_provisioning` | Single sign-on and provisioning | ROLE-004 | security | not implemented |
+| `vector.role.audit_log` | Audit log | ROLE-005 | standard | not implemented |
+| `vector.role.apps_and_agents_as_actors` | Apps and agents as actors | ROLE-006 | access (+ security) | not implemented |
+| `vector.role.team_membership_and_team_owners` | Team membership and team owners | ROLE-007 | access (+ security) | not implemented |
+| `vector.role.operator_and_permission_coverage` | Operator and permission coverage | ROLE-008 | standard | not implemented |
+| `vector.role.team_managed_permissions` | Team-managed permissions | ROLE-009 | access (+ security) | not implemented |
+| `vector.role.offer_google_sign_in` | Offer Google sign-in | ROLE-010 | access (+ security) | not implemented |
+| `vector.role.member_passkeys` | Member passkeys | ROLE-014 | access (+ security) | not implemented |
+| `vector.role.suspend_a_member_and_withdraw_access` | Suspend a member and withdraw access | ROLE-011 | security | not implemented |
+| `vector.role.suspended_work_and_member_directory` | Suspended work and member directory | ROLE-015 | security | not implemented |
+| `vector.role.reactivate_the_same_member` | Reactivate the same member | ROLE-016 | security | not implemented |
+| `vector.role.portable_suspended_member_state` | Portable suspended-member state | ROLE-017 | security | not implemented |
+| `vector.role.erase_a_member_s_personal_data` | Erase a member's personal data | ROLE-012 | destructive (+ sensitive) | not implemented |
+| `vector.role.read_only_viewers` | Read-only Viewers | ROLE-013 | access (+ security) | not implemented |
 | `vector.team.team_settings` | Team settings | TEAM-005 | standard | not implemented |
 | `vector.team.sub_teams` | Sub-teams | TEAM-006 | standard | not implemented |
 | `vector.team.team_join_permissions` | Team join permissions | TEAM-007 | standard | not implemented |
@@ -3277,7 +3279,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.issue.sub_issue_progress` | Sub-issue progress | ISSUE-019 | standard | not implemented |
 | `vector.issue.undo_an_issue_change` | Undo an issue change | ISSUE-020 | standard | not implemented |
 | `vector.issue.recently_deleted_issues_and_restore` | Recently deleted issues and restore | ISSUE-031 | standard | not implemented |
-| `vector.issue.issue_deletion_retention_and_purge` | Issue deletion retention and purge | ISSUE-032 | standard | not implemented |
+| `vector.issue.issue_deletion_retention_and_purge` | Issue deletion retention and purge | ISSUE-032 | destructive (+ sensitive) | not implemented |
 | `vector.issue.issue_types` | Issue types | ISSUE-021 | standard | not implemented |
 | `vector.issue.issue_start_date` | Issue start date | ISSUE-022 | standard | not implemented |
 | `vector.issue.copy_issue` | Copy issue | ISSUE-023 | standard | not implemented |
@@ -3346,12 +3348,29 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.report.dashboards` | Dashboards | REPORT-003 | standard | not implemented |
 | `vector.report.workload` | Workload | REPORT-004 | standard | not implemented |
 | `vector.report.warehouse_and_spreadsheet_export` | Warehouse and spreadsheet export | REPORT-005 | standard | not implemented |
-| `vector.agent.delegate_an_issue_to_an_agent` | Delegate an issue to an agent | AGENT-001 | standard (+ external, money, gated) | not implemented |
+| `vector.integ.guided_connection_from_settings` | Guided connection from Settings | INTEG-001 | security (+ access, accounts, gated, external) | not implemented |
+| `vector.integ.integration_health_and_repair` | Integration health and repair | INTEG-002 | security (+ access, accounts, gated, external) | not implemented |
+| `vector.github.github_app` | GitHub App | GITHUB-006 | security (+ access, accounts, gated, external) | not implemented |
+| `vector.github.provider_backed_create_branch` | Provider-backed create branch | GITHUB-008 | standard (+ external) | not implemented |
+| `vector.slack.slack_app` | Slack app | SLACK-001 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.issues_from_slack_with_synced_threads` | Issues from Slack with synced threads | SLACK-002 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.slack_and_discord_channel_bindings` | Slack and Discord channel bindings | SLACK-003 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.connect_and_remove_channel_credentials` | Connect and remove channel credentials | SLACK-006 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.durable_minimal_channel_posts` | Durable minimal channel posts | SLACK-007 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.create_and_bind_a_slack_channel` | Create and bind a Slack channel | SLACK-008 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.channel_safety_and_explicit_mapping` | Channel safety and explicit mapping | SLACK-009 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.link_and_unlink_your_slack_identity` | Link and unlink your Slack identity | SLACK-004 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.personal_slack_delivery` | Personal Slack delivery | SLACK-010 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.signed_slack_notification_actions` | Signed Slack notification actions | SLACK-011 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.slack_interactivity_secret_custody` | Slack interactivity secret custody | SLACK-012 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.slack.link_previews` | Link previews | SLACK-005 | external (+ access, security, accounts, gated) | not implemented |
+| `vector.cal.calendar_feeds` | Calendar feeds | CAL-001 | external (+ access) | not implemented |
+| `vector.agent.delegate_an_issue_to_an_agent` | Delegate an issue to an agent | AGENT-001 | standard (+ external, money, accounts, gated, sensitive, security) | not implemented |
 | `vector.agent.agent_session_on_the_issue` | Agent session on the issue | AGENT-002 | standard | not implemented |
-| `vector.agent.reviewable_output_human_completion` | Reviewable output, human completion | AGENT-003 | standard (+ commitment, external, live) | not implemented |
-| `vector.agent.agent_permissions_and_budgets` | Agent permissions and budgets | AGENT-004 | standard | not implemented |
+| `vector.agent.reviewable_agent_output_and_policy_decided_completion` | Reviewable agent output and policy-decided completion | AGENT-003 | standard (+ commitment, external, live) | not implemented |
+| `vector.agent.agent_permissions_and_budgets` | Agent permissions and budgets | AGENT-004 | security | not implemented |
 | `vector.agent.mcp_server` | MCP server | AGENT-005 | standard | not implemented |
-| `vector.agent.agent_platform` | Agent platform | AGENT-006 | standard (+ external, money, gated) | not implemented |
+| `vector.agent.agent_platform` | Agent platform | AGENT-006 | standard (+ external, money, accounts, gated, sensitive, security) | not implemented |
 | `vector.agent.ask_vector` | Ask Vector | AGENT-007 | standard | not implemented |
 | `vector.agent.agent_guidance` | Agent guidance | AGENT-008 | standard | not implemented |
 | `vector.agent.provider_delegation_protocols` | Provider delegation protocols | AGENT-009 | standard | not implemented |
@@ -3359,8 +3378,8 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | `vector.api.oauth_apps` | OAuth apps | API-004 | standard | not implemented |
 | `vector.api.sdk_and_docs` | SDK and docs | API-005 | standard | not implemented |
 | `vector.sec.integration_credentials` | Integration credentials | SEC-001 | security | not implemented |
-| `vector.sec.model_and_agent_data_handling` | Model and agent data handling | SEC-002 | security | not implemented |
-| `vector.sec.erasure_across_integrations` | Erasure across integrations | SEC-003 | destructive | not implemented |
+| `vector.sec.model_and_agent_data_handling` | Model and agent data handling | SEC-002 | standard (+ external, money, accounts, gated, sensitive, security) | not implemented |
+| `vector.sec.erasure_across_integrations` | Erasure across integrations | SEC-003 | security | not implemented |
 | `vector.push.issue_to_spec` | Issue to spec | PUSH-001 | standard (+ commitment) | not implemented |
 | `vector.push.spec_to_tested_pr` | Spec to tested PR | PUSH-002 | standard (+ commitment, external, live) | not implemented |
 | `vector.push.verified_deployment` | Verified deployment | PUSH-003 | standard (+ commitment, external, live) | not implemented |
@@ -3412,30 +3431,14 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 - MOBILE-003: a person’s interactive screen or device capability.
 - MOBILE-004: a person’s interactive screen or device capability.
 - MOBILE-005: a person’s interactive screen or device capability.
-- INTEG-001: a provider connector and its configured event door.
-- INTEG-002: a provider connector and its configured event door.
 - GITHUB-003: a provider connector and its configured event door.
 - GITHUB-004: a provider connector and its configured event door.
 - GITHUB-005: a provider connector and its configured event door.
-- GITHUB-006: a provider connector and its configured event door.
 - GITHUB-007: a provider connector and its configured event door.
-- GITHUB-008: a provider connector and its configured event door.
 - GITLAB-001: a provider connector and its configured event door.
 - GITLAB-002: a provider connector and its configured event door.
 - BITBUCKET-001: a provider connector and its configured event door.
 - CI-001: a provider connector and its configured event door.
-- SLACK-001: a provider connector and its configured event door.
-- SLACK-002: a provider connector and its configured event door.
-- SLACK-003: a provider connector and its configured event door.
-- SLACK-006: a provider connector and its configured event door.
-- SLACK-007: a provider connector and its configured event door.
-- SLACK-008: a provider connector and its configured event door.
-- SLACK-009: a provider connector and its configured event door.
-- SLACK-004: a provider connector and its configured event door.
-- SLACK-010: a provider connector and its configured event door.
-- SLACK-011: a provider connector and its configured event door.
-- SLACK-012: a provider connector and its configured event door.
-- SLACK-005: a provider connector and its configured event door.
 - TEAMS-001: a provider connector and its configured event door.
 - SUPPORT-001: a provider connector and its configured event door.
 - SUPPORT-002: a provider connector and its configured event door.
@@ -3443,7 +3446,6 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 - ERROR-002: a provider connector and its configured event door.
 - DESIGN-001: a provider connector and its configured event door.
 - DOCS-001: a provider connector and its configured event door.
-- CAL-001: a provider connector and its configured event door.
 - CONNECT-001: a provider connector and its configured event door.
 - WEBHOOK-002: a provider connector and its configured event door.
 - DATA-012: the import/export door and its archive format.
@@ -3567,7 +3569,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. The installation documents request, body and attachment capacities separately from company-set business thresholds and spend caps.
+1. A bulk issue call exercises the documented 250-issue operation size and one-MiB request-body boundary on Vector issue records; those capacities limit each call rather than daily business volume.
 2. An expensive delegation shows its provider estimate and recorded cost against the company-set budget, without making customer revenue into a payment.
 
 #### SURFACE-012 — Recoverable planning and safe removal
@@ -3601,7 +3603,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Issue to spec. The outcomes below apply through the product doors for this capability.
+**Requirement.** For an accepted issue, an agent drafts a spec: the problem in the reporter's and customers' words (CUST-001), the evidence (Spool errors, tickets, measurements), acceptance criteria written as checkable statements, the code areas likely affected (from repository search through GITHUB-006 or GITLAB-001), open questions and a test plan.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. For an accepted issue, an agent drafts a spec: the problem in the reporter's and customers' words (CUST-001), the evidence (Spool errors, tickets, measurements), acceptance criteria written as checkable statements, the code areas likely affected (from repository search through GITHUB-006 or GITLAB-001), open questions and a test plan.
@@ -3612,7 +3614,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Spec to tested PR. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides spec to tested pr for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. When an issue with a specification accepted under the company's policy is delegated (AGENT-001), the agent must return a PR whose tests map to the spec's acceptance criteria; Vector shows each criterion with the test that covers it, the CI result (GITHUB-005) and any criterion left uncovered, and refuses to mark the session done while required checks fail.
@@ -3622,7 +3624,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Verified deployment. The outcomes below apply through the product doors for this capability.
+**Requirement.** After merge, Vector follows the merged commit through CI and deployments (RELEASE-002, CI-001) and records when it reached production; if it does not deploy within the team's expected window, the assignee is asked why.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. After merge, Vector follows the merged commit through CI and deployments (RELEASE-002, CI-001) and records when it reached production; if it does not deploy within the team's expected window, the assignee is asked why.
@@ -3631,7 +3633,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Outcome verification before close. The outcomes below apply through the product doors for this capability.
+**Requirement.** After production deploy, a verification agent watches the issue's evidence for a team-set window (default 72 hours): linked Spool or Sentry error groups (rate and regressions in the new release), Uptime checks, HappyToHelp, Zendesk or Intercom tickets reopening, Penny requests and the spec's measurable criteria.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. After production deploy, a verification agent watches the issue's evidence for a team-set window (default 72 hours): linked Spool or Sentry error groups (rate and regressions in the new release), Uptime checks, HappyToHelp, Zendesk or Intercom tickets reopening, Penny requests and the spec's measurable criteria.
@@ -3643,7 +3645,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Customer follow-through. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides customer follow-through for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. When an issue with customer requests is verified, an agent drafts a reply for each linked ticket and request, in the customer's context and without private engineering details, and classifies each customer-visible send as external; the company's policy decides whether it runs or is held for the support owner to edit, approve or skip; sends go through HappyToHelp, Zendesk, Intercom, Front or Penny, never directly from Vector, and are never sent twice.
@@ -3652,7 +3654,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Blocked-work follow-up. The outcomes below apply through the product doors for this capability.
+**Requirement.** An agent watches dependencies, overdue work, stale reviews and unanswered questions; it identifies the missing decision or evidence, asks the accountable person a precise question in Vector or Slack, and revisits at the time they promise, within the team's reminder budget.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An agent watches dependencies, overdue work, stale reviews and unanswered questions; it identifies the missing decision or evidence, asks the accountable person a precise question in Vector or Slack, and revisits at the time they promise, within the team's reminder budget.
@@ -3662,7 +3664,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Plans with uncertainty. The outcomes below apply through the product doors for this capability.
+**Requirement.** For a project, release or cycle, an agent uses historical throughput (REPORT-001), current scope, dependencies, unestimated work and people's capacity to propose two or three feasible scope/date options with confidence ranges and the assumptions behind them.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. For a project, release or cycle, an agent uses historical throughput (REPORT-001), current scope, dependencies, unestimated work and people's capacity to propose two or three feasible scope/date options with confidence ranges and the assumptions behind them.
@@ -3673,7 +3675,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Incident follow-up loop. The outcomes below apply through the product doors for this capability.
+**Requirement.** Vector provides incident follow-up loop for the permitted workspace actors, with the records, outcomes and refusals below.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. When an Oncall incident or a PagerDuty incident resolves, an agent drafts follow-up issues from the timeline and postmortem, links them to the incident, declares proposed owners and due dates as standard and a channel post as external where it reaches outsiders; the company's policy decides, and the held run has the incident commander approve the exact changes, and tracks them to completion with weekly status in the incident channel.
@@ -3682,7 +3684,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Standups and cycle summaries. The outcomes below apply through the product doors for this capability.
+**Requirement.** Each morning and at cycle end, an agent writes a short summary per team of what moved, what is blocked, what slipped and what shipped, citing issues and PRs, posted to the team's inbox and Slack channel; members can correct it, and corrections are kept.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Each morning and at cycle end, an agent writes a short summary per team of what moved, what is blocked, what slipped and what shipped, citing issues and PRs, posted to the team's inbox and Slack channel; members can correct it, and corrections are kept.
@@ -3691,11 +3693,11 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 *Tier:* Core · *Cites:* BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-008, BASE-AGENT-009, BASE-AGENT-011 · *Rules:* D-2
 
-**Requirement.** Agent accountability ledger. The outcomes below apply through the product doors for this capability.
+**Requirement.** The coding-work ledger links suggestions, drafts, delegation steps and verification proposals to their source issue or spec, model, consulted records and cost in USD.
 
 **Acceptance.** Through the native product door and its declared counterpart:
-1. Every agent action — suggestion, question, draft, delegation step, verification proposal — is recorded with the agent, model, inputs read, the person accountable, cost in USD and outcome (accepted, edited, rejected).
-2. Admins see per-team acceptance rates and cost, and can pause any agent everywhere at once.
+1. The coding-work ledger links suggestions, drafts, delegation steps and verification proposals to their source issue or spec, model, consulted records and cost in USD.
+2. Admins see per-team acceptance rates and cost, .
 
 ## Field proof register
 
@@ -3704,7 +3706,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 | R-1 | Human screen-reader review | MOBILE-003 | not run | | |
 | R-2 | Accessibility VPAT | MOBILE-003 | not run | | |
 | R-3 | Actual Okta, Entra and Google Workspace tenant interoperability | ROLE-004 | not run | | |
-| R-4 | Real Slack and GitHub installation connection | INTEG-001 | not run | | |
+| R-4 | Real Slack and GitHub installation connection | INTEG-001, SLACK-001, SLACK-005 | not run | | |
 | R-5 | App Store and Google Play listing and distributed-build receipt | MOBILE-001, MOBILE-004 | not run | | |
 | R-6 | Real device push through the production relay | MOBILE-002, MOBILE-004 | not run | | |
 | R-7 | Signed and notarized macOS and Windows distribution | MOBILE-005 | not run | | |
@@ -3755,161 +3757,161 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 0 | 106 | 0 | 106 |
-| Target and push further | 0 | 102 | 85 | 187 |
-| All | 0 | 208 | 85 | 293 |
+| Published | 21 | 84 | 1 | 106 |
+| Target and push further | 2 | 89 | 96 | 187 |
+| All | 23 | 173 | 97 | 293 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
-| `HOME-001` | Public homepage | published | partial | `tests/e2e/core-runtime.mjs` | Missing a covering public homepage journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `HOME-001` | Public homepage | published | partial | `tests/e2e/core-runtime.mjs` | The cited core runtime exercises installed entry and public pages. Missing the full approved-marketing-page journey that reads the complete fixed copy/assets, installation action and exclusions; the public-site journey is outside this old Evidence set. |
 | `OPS-001` | Workspace access | published | partial | `tests/worker/search-access.test.ts`, `tests/worker/removal-boundary.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-access-journey.mjs`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/project-report.test.ts` | Mobile payloads (MOBILE-001/002) and agent contexts (AGENT-001/005) inherit this rule when built; complete registered-door coverage remains ROLE-008. A receiving-clause browser census of Viewer exports/notifications, attachment bytes and webhook privacy transitions is not proved here. |
-| `SETUP-001` | First workspace review | published | partial | `tests/worker/first-run.test.ts` | Missing a covering first workspace review journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `SETUP-001` | First workspace review | published | partial | `tests/worker/first-run.test.ts` | The first-run journey covers owner-only completion, refusal, repeat, persisted sign-in and additive upgrade. Missing the first workspace review through local archive restore and a real runtime restart. |
 | `OPS-002` | Member management | published | partial | `tests/worker/base-auth.test.ts`, `tests/worker/role-matrix.test.ts` | Role-restricted invitation and removal are enforced; removal is not yet a suspension (ROLE-011), reactivation and erasure are ROLE-011's and ROLE-012's, and native Guest invitations name their allowed teams (ROLE-003) |
-| `OPS-003` | Workspace time | published | partial | `tests/e2e/admin-workspace-time-journey.mjs` | Missing a covering workspace time journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `OPS-003` | Workspace time | published | partial | `tests/e2e/admin-workspace-time-journey.mjs` | The cited workspace-time journey saves and restarts the setting without changing reminder configuration. Missing a timezone-change journey reading delivered reminder history and closed-cycle snapshots alongside calendar windows. |
 | `OPS-004` | Safe removal | published | partial | `tests/worker/removal-boundary.test.ts`, `tests/worker/role-matrix.test.ts` | Removal revokes sessions, unassigns, transfers and rolls back as one unit, refuses the last Owner and transfers to the longest-standing remaining Owner when a member leaves, but today every removal also deletes the member's private views and anonymizes their references at once; suspension that keeps the name is open with ROLE-011 and the separate erase with ROLE-012 |
-| `TEAM-001` | Team identity | published | partial | `tests/e2e/admin-team-journey.mjs` | Missing a covering team identity journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `TEAM-002` | Team workflow | published | partial | `tests/e2e/admin-team-journey.mjs`, `tests/worker/role-matrix.test.ts` | Missing a covering team workflow journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `TEAM-003` | Team archiving | published | partial | `tests/e2e/admin-archive-team-journey.mjs` | Missing a covering team archiving journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `TEAM-004` | Status removal | published | partial | `tests/e2e/admin-team-journey.mjs` | Missing a covering status removal journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-001` | Creation | published | partial | `tests/e2e/core-runtime.mjs` | Missing a covering creation journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-002` | Stable identifiers | published | partial | `tests/worker/issue-deletion-relations.test.ts` | Missing a covering stable identifiers journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-003` | Priority | published | partial | `tests/e2e/core-board-journey.mjs`, `evidence/keyboard-board/ISSUE-003/` | Missing a covering priority journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-004` | Status transitions | published | partial | `tests/worker/issue-session-projection.test.ts` | Missing a covering status transitions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-005` | Assignment | published | partial | `tests/worker/removal-assignment.test.ts` | Missing a covering assignment journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-006` | Concurrent edits | published | partial | `tests/e2e/core-runtime.mjs` | Missing a covering concurrent edits journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-007` | Activity history | published | partial | `tests/worker/dependencies.test.ts` | Missing a covering activity history journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-008` | Comments and safe comment removal | published | partial | `tests/worker/discussion-threads.test.ts`, `tests/worker/discussion-access.test.ts`, `tests/e2e/core-threads-journey.mjs`, `evidence/comment-threads/ISSUE-008/` | Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-024, Slack threads on SLACK-002 |
-| `ISSUE-029` | Discussion threads and resolution | published | partial | `tests/worker/discussion-threads.test.ts`, `tests/worker/discussion-access.test.ts`, `tests/e2e/core-threads-journey.mjs`, `evidence/comment-threads/ISSUE-008/` | Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-024, Slack threads on SLACK-002 |
-| `ISSUE-030` | Anchored inline comments | published | partial | `tests/worker/discussion-threads.test.ts`, `tests/worker/discussion-access.test.ts`, `tests/e2e/core-threads-journey.mjs`, `evidence/comment-threads/ISSUE-008/` | Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-024, Slack threads on SLACK-002 |
-| `ISSUE-009` | Attachments and links | published | partial | `tests/worker/discussion-file-admission.test.ts` | Missing a covering attachments and links journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-010` | Deletion | published | partial | `tests/worker/issue-deletion-cascade.test.ts`, `tests/worker/role-matrix.test.ts` | Release debt: until ISSUE-020's Recently deleted lands, Members cannot delete issues, their own included (only Owners and Admins delete, and only permanently; no creator exception); deletion by an issue's creator or, with the setting, its team's Members, Recently deleted and undo are open with ISSUE-020 |
-| `ISSUE-011` | Estimates | published | partial | `tests/worker/cycle-closure.test.ts` | Missing a covering estimates journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-012` | Moving teams | published | partial | `tests/worker/bulk-commands.test.ts`, `tests/e2e/core-stream-planning-journey.mjs`, `evidence/keyboard-planning/ISSUE-012/` | Missing a covering moving teams journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-013` | Mentions | published | partial | `tests/e2e/collaboration-events.mjs` | Missing a covering mentions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `TEAM-001` | Team identity | published | partial | `tests/e2e/admin-team-journey.mjs` | The cited authoring journey creates a team, reads its prefix and freezes the prefix after issue creation. Missing the team identity journey that attempts duplicate names and prefixes against both archived and active teams. |
+| `TEAM-002` | Team workflow | published | partial | `tests/e2e/admin-team-journey.mjs`, `tests/worker/role-matrix.test.ts` | The cited evidence exercises the existing team workflow behavior. Missing an audited "complete team workflow through its public doors" journey that performs and reads the full retained outcome: A team's *default status* in a category is the first status of that category in workflow order, and every clause naming a category as a destination moves the issue there. |
+| `TEAM-003` | Team archiving | published | partial | `tests/e2e/admin-archive-team-journey.mjs` | The cited archive journey refuses authoring/intake and preserves a populated issue, then unarchives. Missing an archive journey with populated cycles, projects and history that reads them after archive and attempts a team move and signed source delivery. |
+| `TEAM-004` | Status removal | published | partial | `tests/e2e/admin-team-journey.mjs` | The cited status-removal journey reads issue mapping and its durable audit, and shows the last-status control disabled. Missing a public-door attempted last-category removal that reads the refusal and unchanged records. |
+| `ISSUE-001` | Creation | published | partial | `tests/e2e/core-runtime.mjs` | The cited core runtime creates native issues. Missing the creation journey with typed team custom fields, inline media and checklist outcomes now named in the full issue record; the fields are carried without narrowing. |
+| `ISSUE-002` | Stable identifiers | published | partial | `tests/worker/issue-deletion-relations.test.ts` | The cited duplicate/deletion journey proves non-reuse after deleting the highest identifier. Missing the same stable-identifier journey that then moves that issue across teams and reads the preserved identifier. |
+| `ISSUE-003` | Priority | published | partial | `tests/e2e/core-board-journey.mjs`, `evidence/keyboard-board/ISSUE-003/` | The cited evidence exercises the existing priority behavior. Missing an audited "complete priority through its public doors" journey that performs and reads the full retained outcome: No priority is the default and sorts after Low. |
+| `ISSUE-004` | Status transitions | published | partial | `tests/worker/issue-session-projection.test.ts` | The cited evidence exercises the existing status transitions behavior. Missing an audited "complete status transitions through its public doors" journey that performs and reads the full retained outcome: Entering Completed records the completion time and entering Canceled records the cancellation time; leaving one of those categories clears the time it recorded and removes no activity. |
+| `ISSUE-005` | Assignment | published | partial | `tests/worker/removal-assignment.test.ts` | The cited assignment file exercises removal races during create, accept and edit. Missing a positive assignment journey that assigns, reassigns and unassigns and reads actor plus old/new assignees. |
+| `ISSUE-006` | Concurrent edits | published | partial | `tests/e2e/core-runtime.mjs` | The cited evidence exercises the existing concurrent edits behavior. Missing an audited "complete concurrent edits through its public doors" journey that performs and reads the full retained outcome: Adding a comment, evidence revision, follower, or notification does not change the version and is never rejected as stale. |
+| `ISSUE-007` | Activity history | published | partial | `tests/worker/dependencies.test.ts` | The cited dependency journey reads versioned dependency activity. Missing an issue-history journey that covers the other named field kinds, parent/duplicate changes and the named import/cycle/deferral actors with the previous and new values read. |
+| `ISSUE-008` | Comments and safe comment removal | published | partial | `tests/worker/discussion-threads.test.ts`, `tests/worker/discussion-access.test.ts`, `tests/e2e/core-threads-journey.mjs`, `evidence/comment-threads/ISSUE-008/` | Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-033, ISSUE-034, Slack threads on SLACK-002 |
+| `ISSUE-029` | Discussion threads and resolution | published | partial | `tests/worker/discussion-threads.test.ts`, `tests/worker/discussion-access.test.ts`, `tests/e2e/core-threads-journey.mjs`, `evidence/comment-threads/ISSUE-008/` | Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-033, ISSUE-034, Slack threads on SLACK-002 |
+| `ISSUE-030` | Anchored inline comments | published | missing | `tests/worker/discussion-threads.test.ts`, `tests/worker/discussion-access.test.ts`, `tests/e2e/core-threads-journey.mjs`, `evidence/comment-threads/ISSUE-008/` | Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-033, ISSUE-034, Slack threads on SLACK-002 |
+| `ISSUE-009` | Attachments and links | published | partial | `tests/worker/discussion-file-admission.test.ts` | The cited file-admission journeys cover attachment boundaries. Missing the combined attach/remove journey for named links and comment files, with the new inline embedding door exercised; that door remains a separate retained obligation. |
+| `ISSUE-010` | Deletion | published | partial | `tests/worker/issue-deletion-cascade.test.ts`, `tests/worker/role-matrix.test.ts` | Release debt: until ISSUE-031, ISSUE-032's Recently deleted lands, Members cannot delete issues, their own included (only Owners and Admins delete, and only permanently; no creator exception); deletion by an issue's creator or, with the setting, its team's Members, Recently deleted and undo are open with ISSUE-031, ISSUE-032 |
+| `ISSUE-011` | Estimates | published | partial | `tests/worker/cycle-closure.test.ts` | The cited evidence exercises the existing estimates behavior. Missing an audited "complete estimates through its public doors" journey that performs and reads the full retained outcome: Changing an estimate never rewrites a closed cycle snapshot. |
+| `ISSUE-012` | Moving teams | published | partial | `tests/worker/bulk-commands.test.ts`, `tests/e2e/core-stream-planning-journey.mjs`, `evidence/keyboard-planning/ISSUE-012/` | The cited evidence exercises the existing moving teams behavior. Missing an audited "complete moving teams through its public doors" journey that performs and reads the full retained outcome: All of it happens or none of it does. |
+| `ISSUE-013` | Mentions | published | partial | `tests/e2e/collaboration-events.mjs` | The cited evidence exercises the existing mentions behavior. Missing an audited "complete mentions through its public doors" journey that performs and reads the full retained outcome: A mention adds a follower (NOTIFY-002) and notifies once (NOTIFY-001); editing text to add a mention notifies only the newly mentioned operator, and removing a mention notifies nobody and withdraws no delivered notification. |
 | `ISSUE-014` | Labels | published | partial | `tests/e2e/admin-label-journey.mjs`, `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-access-journey.mjs` | Workspace labels follow the role matrix; Settings → Labels is Owner/Admin write and Member read-only. Inline issue-picker creation and session/scoped API creation enforce the audited workspace permission on the next request. Workspace merge rewrites issues, projects and saved-view filters atomically. Team labels and groups remain absent |
-| `ISSUE-015` | Unsent drafts | published | partial | `tests/e2e/core-draft-journey.mjs` | Missing a covering unsent drafts journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REL-001` | Dependencies | published | partial | `tests/worker/dependencies.test.ts` | Missing a covering dependencies journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REL-002` | Blocked state | published | partial | `tests/worker/dependencies.test.ts` | Missing a covering blocked state journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REL-003` | Duplicate decision | published | partial | `tests/worker/issue-deletion-relations.test.ts` | Missing a covering duplicate decision journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REL-004` | Canonical duplicates | published | partial | `tests/worker/issue-deletion-relations.test.ts` | Missing a covering canonical duplicates journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REL-005` | Undo duplicate | published | partial | `tests/worker/issue-deletion-relations.test.ts` | Missing a covering undo duplicate journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REL-006` | Parent and child | published | partial | `tests/worker/issue-deletion-preimage.test.ts` | Missing a covering parent and child journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-001` | Intake creation | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering intake creation journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-002` | Idempotent sources | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering idempotent sources journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-003` | Evidence revisions | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering evidence revisions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-004` | Inspectable assessment | published | partial | `tests/e2e/core-runtime.mjs` | Missing a covering inspectable assessment journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-005` | Accept | published | partial | `tests/e2e/core-runtime.mjs` | Missing a covering accept journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-006` | Defer | published | partial | `tests/worker/source-ingest.test.ts`, `tests/e2e/core-runtime.mjs`, `evidence/issue-follow-up/INTAKE-006/` | Missing a covering defer journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-007` | Decline | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering decline journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-008` | Evidence after a terminal decision | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering evidence after a terminal decision journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-009` | Source failure | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering source failure journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-010` | Decision policy | published | partial | `tests/worker/intake-policy.test.ts`, `tests/e2e/core-intake-policy-journey.mjs` | Missing a covering decision policy journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `INTAKE-011` | Source registration | published | partial | `tests/worker/source-ingest.test.ts` | Missing a covering source registration journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-001` | Disjoint stream | published | partial | `tests/worker/current-disjoint.test.ts`, `tests/e2e/core-current-disjoint-journey.mjs` | Missing a covering disjoint stream journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-002` | Needs decision | published | partial | `tests/worker/current-intake-pagination.test.ts`, `tests/e2e/core-current-intake-pagination-journey.mjs` | Missing a covering needs decision journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-003` | Now | published | partial | `tests/worker/current-now.test.ts`, `tests/e2e/core-current-now-journey.mjs` | Missing a covering now journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-004` | Next | published | partial | `tests/worker/current-next.test.ts`, `tests/e2e/core-current-next-journey.mjs` | Missing a covering next journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-005` | Recently done | published | partial | `tests/worker/current-recently-done.test.ts`, `tests/e2e/core-current-recently-done-journey.mjs` | Missing a covering recently done journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-006` | Explainable attention | published | partial | `tests/worker/dependencies.test.ts` | Missing a covering explainable attention journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-007` | Ranking | published | partial | `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/` | Missing a covering ranking journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-008` | Freshness | published | partial | `tests/e2e/core-current-journey.mjs` | Missing a covering freshness journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CURR-009` | Stream controls | published | partial | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/CURR-009/` | Missing a covering stream controls journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `WORK-001` | Personal queue | published | partial | `tests/worker/dependencies.test.ts` | Missing a covering personal queue journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `WORK-002` | Personal defaults | published | partial | `tests/worker/dependencies.test.ts` | Missing a covering personal defaults journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `WORK-003` | Cycle context | published | partial | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/WORK-003/` | Missing a covering cycle context journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-001` | Project record | published | partial | `tests/worker/project-fields.test.ts`, `tests/e2e/core-project-fields-journey.mjs`, `tests/worker/project-fields-upgrade.test.ts`, `tests/worker/data-http.test.ts` | Missing a covering project record journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-002` | Manual lifecycle | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Missing a covering manual lifecycle journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-003` | Project membership | published | partial | `tests/worker/project-membership.test.ts`, `tests/e2e/core-project-membership-journey.mjs` | Missing a covering project membership journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-004` | Progress | published | partial | `tests/e2e/core-runtime.mjs` | Missing a covering progress journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-005` | Health | published | partial | `tests/worker/project-health.test.ts`, `tests/e2e/core-project-health-journey.mjs` | Missing a covering health journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-006` | Risk explanation | published | partial | `tests/worker/project-risk.test.ts`, `tests/e2e/core-project-risk-journey.mjs` | Missing a covering risk explanation journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-007` | Portfolio | published | partial | `tests/worker/project-fields.test.ts`, `tests/e2e/core-project-fields-journey.mjs` | Missing a covering portfolio journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-008` | Historical truth | published | partial | `tests/worker/cycle-closure.test.ts` | Missing a covering historical truth journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-009` | Project archiving | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Missing a covering project archiving journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-001` | Time box | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | Missing a covering time box journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-002` | Commitment | published | partial | `tests/e2e/admin-cycle-list-journey.mjs` | Missing a covering commitment journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-003` | Progress and capacity | published | partial | `tests/worker/cycle-closure.test.ts` | Missing a covering progress and capacity journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-004` | Closure and rollover | published | partial | `tests/worker/cycle-closure.test.ts` | Missing a covering closure and rollover journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-005` | Closure snapshot | published | partial | `tests/worker/cycle-closure.test.ts` | Missing a covering closure snapshot journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-006` | Missing next cycle | published | partial | `tests/worker/cycle-closure.test.ts` | Missing a covering missing next cycle journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SEARCH-001` | Global search | published | partial | `tests/worker/search-access.test.ts` | Missing a covering global search journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SEARCH-002` | Exact identifier | published | partial | `tests/worker/search-exact-admission.test.ts` | Missing a covering exact identifier journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SEARCH-003` | Index freshness | published | partial | `tests/worker/search-access.test.ts` | Missing a covering index freshness journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `VIEW-001` | Issue controls | published | partial | `tests/e2e/dev-runtime.mjs` | Missing a covering issue controls journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `VIEW-002` | Saved views | published | partial | `tests/worker/views-removal.test.ts` | Missing a covering saved views journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `VIEW-003` | Control persistence | published | partial | `tests/worker/views-removal.test.ts` | Missing a covering control persistence journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `VIEW-004` | Bulk edit | published | partial | `tests/e2e/core-keyboard-journey.mjs`, `tests/e2e/core-undo-journey.mjs`, `tests/worker/issue-undo.test.ts`, `evidence/issue-undo/VIEW-004/` | Missing a covering bulk edit journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `VIEW-005` | Team board | published | partial | `tests/e2e/core-board-journey.mjs`, `evidence/keyboard-board/VIEW-005/` | Missing a covering team board journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CMD-001` | Command palette | published | partial | `tests/e2e/core-palette-journey.mjs`, `evidence/keyboard-board/CMD-001/` | Missing a covering command palette journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CMD-002` | Keyboard navigation | published | partial | `tests/e2e/core-keyboard-journey.mjs` | Missing a covering keyboard navigation journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CMD-003` | Focus and selection | published | partial | `tests/e2e/core-stream-planning-journey.mjs`, `tests/e2e/core-keyboard-journey.mjs`, `evidence/keyboard-planning/CMD-003/` | Missing a covering focus and selection journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-001` | Inbox events | published | partial | `tests/worker/follower-events.test.ts`, `tests/worker/follower-last-blocker.test.ts`, `tests/e2e/core-follower-journey.mjs`, `tests/worker/source-ingest.test.ts`, `tests/e2e/collaboration-events.mjs`, `evidence/issue-follow-up/NOTIFY-001/` | Missing a covering inbox events journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-002` | Followers | published | partial | `tests/e2e/collaboration-events.mjs` | Missing a covering followers journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-003` | No self-notification | published | partial | `tests/worker/due-reminders.test.ts` | Missing a covering no self-notification journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-004` | Read and mute | published | partial | `tests/e2e/collaboration-preferences.mjs` | Missing a covering read and mute journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-005` | Due reminders | published | partial | `tests/worker/due-reminders.test.ts` | Missing a covering due reminders journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-006` | Assignment and mention email | published | partial | `tests/e2e/collaboration-delivery-ui.mjs` | Missing a covering assignment and mention email journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `GITHUB-001` | Signed PR links | published | partial | `tests/worker/github-links.test.ts` | Missing a covering signed pr links journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `GITHUB-002` | Durable latest PR state | published | partial | `tests/worker/github-links.test.ts` | Missing a covering durable latest pr state journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `API-001` | Native scoped API | published | partial | `tests/worker/integration-api.test.ts` | Missing a covering native scoped api journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `API-002` | Token authority and usage | published | partial | `tests/worker/integration-authority.test.ts` | Missing a covering token authority and usage journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `WEBHOOK-001` | Durable native delivery | published | partial | `tests/worker/outbound-webhooks.test.ts` | Missing a covering durable native delivery journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-001` | Export contents | published | partial | `tests/worker/data-http.test.ts` | Missing a covering export contents journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-002` | Mapped import preflight | published | partial | `tests/worker/linear-import.test.ts` | Missing a covering mapped import preflight journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-003` | Atomic mapped import | published | partial | `tests/worker/data-import-atomic.test.ts` | Missing a covering atomic mapped import journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-004` | Idempotent mapped import | published | partial | `tests/worker/data-import-atomic.test.ts` | Missing a covering idempotent mapped import journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-005` | Exact portable restore | published | partial | `tests/worker/data-archive-failure.test.ts` | Missing a covering exact portable restore journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-006` | Staged import run | published | partial | `tests/e2e/data-staged-cli.mjs` | Missing a covering staged import run journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ISSUE-015` | Unsent drafts | published | partial | `tests/e2e/core-draft-journey.mjs` | The cited evidence exercises the existing unsent drafts behavior. Missing an audited "complete unsent drafts through its public doors" journey that performs and reads the full retained outcome: A draft is not a record: it appears in no list, search result, notification, or export, and becomes an issue only when that operator creates it. |
+| `REL-001` | Dependencies | published | partial | `tests/worker/dependencies.test.ts` | The cited evidence exercises the existing dependencies behavior. Missing an audited "complete dependencies through its public doors" journey that performs and reads the full retained outcome: Vector rejects self-links, a link that already exists in either direction, and any link that would create a directed cycle. |
+| `REL-002` | Blocked state | published | partial | `tests/worker/dependencies.test.ts` | The cited evidence exercises the existing blocked state behavior. Missing an audited "complete blocked state through its public doors" journey that performs and reads the full retained outcome: Blocking never changes the issue's workflow status by itself. |
+| `REL-003` | Duplicate decision | published | partial | `tests/worker/issue-deletion-relations.test.ts` | The cited duplicate journey retains a description and comment discussion and refuses unsafe canonical choices. Missing a duplicate decision on an issue populated with evidence and attachment bytes that reads those retained artifacts afterwards. |
+| `REL-004` | Canonical duplicates | published | done | `tests/worker/issue-deletion-relations.test.ts` — "[REL-003 REL-004 REL-005 ISSUE-010 ISSUE-002] public duplicate decisions repoint atomically, retain content and history, undo status and protect canonical deletion" |  |
+| `REL-005` | Undo duplicate | published | done | `tests/worker/issue-deletion-relations.test.ts` — "[REL-003 REL-004 REL-005 ISSUE-010 ISSUE-002] public duplicate decisions repoint atomically, retain content and history, undo status and protect canonical deletion" |  |
+| `REL-006` | Parent and child | published | partial | `tests/worker/issue-deletion-preimage.test.ts` | The cited evidence exercises the existing parent and child behavior. Missing an audited "complete parent and child through its public doors" journey that performs and reads the full retained outcome: Issue lists can filter to roots or to children of one exact parent (VIEW-001). |
+| `INTAKE-001` | Intake creation | published | partial | `tests/worker/source-ingest.test.ts` | The cited evidence exercises the existing intake creation behavior. Missing an audited "complete intake creation through its public doors" journey that performs and reads the full retained outcome: Either way it starts in the team's default Intake status and appears in Needs decision (CURR-002) within 5 seconds. |
+| `INTAKE-002` | Idempotent sources | published | done | `tests/worker/source-ingest.test.ts` — "[INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe" |  |
+| `INTAKE-003` | Evidence revisions | published | done | `tests/worker/source-ingest.test.ts` — "[INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe" |  |
+| `INTAKE-004` | Inspectable assessment | published | partial | `tests/e2e/core-runtime.mjs` | The cited native provenance journey covers source/operator information. Missing the agent-provenance and company-policy journey showing model, consulted records, observation time and policy-decided application. |
+| `INTAKE-005` | Accept | published | partial | `tests/e2e/core-runtime.mjs` | The cited evidence exercises the existing accept behavior. Missing an audited "complete accept through its public doors" journey that performs and reads the full retained outcome: It leaves Needs decision and reaches its new Current and My work sections within the CURR-008 window. |
+| `INTAKE-006` | Defer | published | partial | `tests/worker/source-ingest.test.ts`, `tests/e2e/core-runtime.mjs`, `evidence/issue-follow-up/INTAKE-006/` | The cited evidence exercises the existing defer behavior. Missing an audited "complete defer through its public doors" journey that performs and reads the full retained outcome: The same roles can defer it again or end a deferral early. |
+| `INTAKE-007` | Decline | published | partial | `tests/worker/source-ingest.test.ts` | The cited decline journey refuses absent reasons and retains evidence/history after restart. Missing decline reason readback and the destination Current membership after the decision; entering a reason alone is not readback. |
+| `INTAKE-008` | Evidence after a terminal decision | published | done | `tests/worker/source-ingest.test.ts` — "[INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe" |  |
+| `INTAKE-009` | Source failure | published | done | `tests/worker/source-ingest.test.ts` — "[INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe" |  |
+| `INTAKE-010` | Decision policy | published | partial | `tests/worker/intake-policy.test.ts`, `tests/e2e/core-intake-policy-journey.mjs` | The cited evidence exercises the existing decision policy behavior. Missing an audited "complete decision policy through its public doors" journey that performs and reads the full retained outcome: Suggested assignee, priority, and start state are selected by the intake recommendation policy and are always editable before acceptance. |
+| `INTAKE-011` | Source registration | published | done | `tests/worker/source-ingest.test.ts` — "[INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe" |  |
+| `CURR-001` | Disjoint stream | published | done | `tests/worker/current-disjoint.test.ts` — "[CURR-001] Current assigns overlapping work to one section and excludes canceled, duplicate, deferred and deleted issues" |  |
+| `CURR-002` | Needs decision | published | done | `tests/worker/current-intake-pagination.test.ts` — "[CURR-002] Current exposes every expired deferral in ranked order before the bounded return job has drained" |  |
+| `CURR-003` | Now | published | done | `tests/worker/current-now.test.ts` — "[CURR-003] Now uses workspace midnight, includes overdue backlog and started work, and excludes intake, terminal and deferred work" |  |
+| `CURR-004` | Next | published | done | `tests/worker/current-next.test.ts` — "[CURR-004] Next uses seven workspace calendar days and each team's active or next cycle, with Now and Intake taking precedence" |  |
+| `CURR-005` | Recently done | published | done | `tests/worker/current-recently-done.test.ts` — "[CURR-005] Recently done includes the whole seventh workspace date, excludes future completions, and expires at local midnight across DST"; `tests/worker/current-recently-done.test.ts` — "[CURR-005] Recently done ranks by completion then identifier while Now keeps priority order; later edits and reopening do not fake completion" |  |
+| `CURR-006` | Explainable attention | published | partial | `tests/worker/dependencies.test.ts` | The cited evidence exercises the existing explainable attention behavior. Missing an audited "complete explainable attention through its public doors" journey that performs and reads the full retained outcome: Every issue in Current shows one primary inclusion reason — Awaiting decision, Started work, Overdue, Cycle commitment, Due within seven days, or Completed within seven days — and every applicable context reason from Customer escalation, Unresolved dependency, Unassigned urgent work, Project risk, and New evidence since the most recent intake decision. |
+| `CURR-007` | Ranking | published | partial | `tests/e2e/core-stream-controls-ranking.mjs`, `evidence/current-controls/CURR-007/` | The cited evidence exercises the existing ranking behavior. Missing an audited "complete ranking through its public doors" journey that performs and reads the full retained outcome: Recently done (CURR-005) instead sorts by completion time, newest first, with stable identifier as the tiebreak; priority, due date and last update do not affect that section. |
+| `CURR-008` | Freshness | published | done | `tests/e2e/core-current-journey.mjs` — "currentJourney" |  |
+| `CURR-009` | Stream controls | published | partial | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/CURR-009/` | The cited evidence exercises the existing stream controls behavior. Missing an audited "complete stream controls through its public doors" journey that performs and reads the full retained outcome: The default includes all teams and all operators and shows Recently done. |
+| `WORK-001` | Personal queue | published | partial | `tests/worker/dependencies.test.ts` | The cited evidence exercises the existing personal queue behavior. Missing an audited "complete personal queue through its public doors" journey that performs and reads the full retained outcome: An issue assigned to the operator while in an Intake status appears in Current's Needs decision, not here. |
+| `WORK-002` | Personal defaults | published | partial | `tests/worker/dependencies.test.ts` | The cited evidence exercises the existing personal defaults behavior. Missing an audited "complete personal defaults through its public doors" journey that performs and reads the full retained outcome: When no issue qualifies, the view states the operator is caught up and offers new issue and Current as next actions. |
+| `WORK-003` | Cycle context | published | partial | `tests/e2e/core-stream-controls-journey.mjs`, `evidence/current-controls/WORK-003/` | The cited evidence exercises the existing cycle context behavior. Missing an audited "complete cycle context through its public doors" journey that performs and reads the full retained outcome: Inherited from ROLE-007: My work's team rows follow team membership when this clause changes them. |
+| `PROJ-001` | Project record | published | partial | `tests/worker/project-fields.test.ts`, `tests/e2e/core-project-fields-journey.mjs`, `tests/worker/project-fields-upgrade.test.ts`, `tests/worker/data-http.test.ts` | The cited native project field journeys cover dates, priority, labels and activity. Missing the full project record journey with typed project fields, primary-team configurable statuses, roadmap edits and Linear field import. |
+| `PROJ-002` | Manual lifecycle | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | The cited lifecycle and role journeys change status explicitly. Missing a lifecycle journey that completes or cancels all project issues and reads the project still unchanged; agent calls also need the company-policy path. |
+| `PROJ-003` | Project membership | published | partial | `tests/worker/project-membership.test.ts`, `tests/e2e/core-project-membership-journey.mjs` | The cited evidence exercises the existing project membership behavior. Missing an audited "complete project membership through its public doors" journey that performs and reads the full retained outcome: Removing an issue from a project or archiving a project never deletes the issue; deleting a project detaches all of its issues but deletes none of them. |
+| `PROJ-004` | Progress | published | partial | `tests/e2e/core-runtime.mjs` | The cited evidence exercises the existing progress behavior. Missing an audited "complete progress through its public doors" journey that performs and reads the full retained outcome: The interface shows the completed and total counts beside the percentage and reports no progress when the denominator is zero. |
+| `PROJ-005` | Health | published | partial | `tests/worker/project-health.test.ts`, `tests/e2e/core-project-health-journey.mjs` | The cited evidence exercises the existing health behavior. Missing an audited "complete health through its public doors" journey that performs and reads the full retained outcome: Remaining scope exactly equal to capacity is not At risk. |
+| `PROJ-006` | Risk explanation | published | done | `tests/e2e/core-project-risk-journey.mjs` — "projectRiskJourney" |  |
+| `PROJ-007` | Portfolio | published | partial | `tests/worker/project-fields.test.ts`, `tests/e2e/core-project-fields-journey.mjs` | The cited evidence exercises the existing portfolio behavior. Missing an audited "complete portfolio through its public doors" journey that performs and reads the full retained outcome: The label filter selects workspace labels marked for projects (PROJ-001). |
+| `PROJ-008` | Historical truth | published | done | `tests/worker/cycle-closure.test.ts` — "scheduled closure rolls every category once and preserves frozen public project history after edits" |  |
+| `PROJ-009` | Project archiving | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | The cited evidence exercises the existing project archiving behavior. Missing an audited "complete project archiving through its public doors" journey that performs and reads the full retained outcome: Operators can include archived projects in filters or unarchive one. |
+| `CYCLE-001` | Time box | published | partial | `tests/e2e/admin-project-cycle-journey.mjs` | The cited journeys cover creating a time box and role-matrix creation cells. Missing the complete time-box journey exercising the retained edit, completion and deletion doors under both planning permissions. |
+| `CYCLE-002` | Commitment | published | partial | `tests/e2e/admin-cycle-list-journey.mjs` | The cited evidence exercises the existing commitment behavior. Missing an audited "complete commitment through its public doors" journey that performs and reads the full retained outcome: Committing, moving, and uncommitting record both cycle identifiers and update both cycles atomically. |
+| `CYCLE-003` | Progress and capacity | published | partial | `tests/worker/cycle-closure.test.ts` | The cited evidence exercises the existing progress and capacity behavior. Missing an audited "complete progress and capacity through its public doors" journey that performs and reads the full retained outcome: Capacity risk is Unknown unless capacity and every remaining estimate exist, At risk when remaining points exceed capacity, and Within capacity otherwise. |
+| `CYCLE-004` | Closure and rollover | published | done | `tests/worker/cycle-closure.test.ts` — "scheduled closure rolls every category once and preserves frozen public project history after edits" |  |
+| `CYCLE-005` | Closure snapshot | published | done | `tests/worker/cycle-closure.test.ts` — "scheduled closure rolls every category once and preserves frozen public project history after edits"; `tests/worker/cycle-closure.test.ts` — "snapshot records scope additions and removals in the interval and empty scope remains explicit" |  |
+| `CYCLE-006` | Missing next cycle | published | done | `tests/worker/cycle-closure.test.ts` — "concurrent first closure without a next cycle records one visible failure and never retroactively moves issues" |  |
+| `SEARCH-001` | Global search | published | partial | `tests/worker/search-access.test.ts` | The cited evidence exercises the existing global search behavior. Missing an audited "complete global search through its public doors" journey that performs and reads the full retained outcome: Issues of archived teams and projects are excluded unless the operator asks for them. |
+| `SEARCH-002` | Exact identifier | published | partial | `tests/worker/search-exact-admission.test.ts` | The cited evidence exercises the existing exact identifier behavior. Missing an audited "complete exact identifier through its public doors" journey that performs and reads the full retained outcome: Primary identity, archive choice and operator/session/workspace admission are rechecked before returning results, including after an index failure. |
+| `SEARCH-003` | Index freshness | published | partial | `tests/worker/search-access.test.ts` | The cited evidence exercises the existing index freshness behavior. Missing an audited "complete index freshness through its public doors" journey that performs and reads the full retained outcome: If an index query fails, the exact primary-record lookup remains available under SEARCH-002; other searches are reported unavailable with the last successful index time; Vector never presents a known index failure as a complete empty result. |
+| `VIEW-001` | Issue controls | published | partial | `tests/e2e/dev-runtime.mjs` | The cited evidence exercises the existing issue controls behavior. Missing an audited "complete issue controls through its public doors" journey that performs and reads the full retained outcome: Positive offsets require the response the query revision for the same query and workspace calendar date; invalidated or missing identity returns a visible pagination conflict without mixed rows, and browsing restarts visibly at offset zero. |
+| `VIEW-002` | Saved views | published | partial | `tests/worker/views-removal.test.ts` | The cited evidence exercises the existing saved views behavior. Missing an audited "complete saved views through its public doors" journey that performs and reads the full retained outcome: Deleting a view never changes an issue. |
+| `VIEW-003` | Control persistence | published | partial | `tests/worker/views-removal.test.ts` | The cited evidence exercises the existing control persistence behavior. Missing an audited "complete control persistence through its public doors" journey that performs and reads the full retained outcome: Opening a saved view never changes the stored controls of the list or board it was opened from. |
+| `VIEW-004` | Bulk edit | published | partial | `tests/e2e/core-keyboard-journey.mjs`, `tests/e2e/core-undo-journey.mjs`, `tests/worker/issue-undo.test.ts`, `evidence/issue-undo/VIEW-004/` | The cited evidence exercises the existing bulk edit behavior. Missing an audited "complete bulk edit through its public doors" journey that performs and reads the full retained outcome: A successful operation writes one activity entry per issue and is undone as one action by Undo or Command/Ctrl-Z within the ISSUE-020 window. |
+| `VIEW-005` | Team board | published | partial | `tests/e2e/core-board-journey.mjs`, `evidence/keyboard-board/VIEW-005/` | The cited evidence exercises the existing team board behavior. Missing an audited "complete team board through its public doors" journey that performs and reads the full retained outcome: Paging reaches cards beyond the first page; completed work remains hidden until explicitly requested. |
+| `CMD-001` | Command palette | published | done | `tests/e2e/core-palette-journey.mjs` — "paletteJourney" |  |
+| `CMD-002` | Keyboard navigation | published | done | `tests/e2e/core-keyboard-journey.mjs` — "keyboardJourney" |  |
+| `CMD-003` | Focus and selection | published | partial | `tests/e2e/core-stream-planning-journey.mjs`, `tests/e2e/core-keyboard-journey.mjs`, `evidence/keyboard-planning/CMD-003/` | The cited evidence exercises the existing focus and selection behavior. Missing an audited "complete focus and selection through its public doors" journey that performs and reads the full retained outcome: Changing a filter, sort, or grouping keeps the focused row focused while it remains in the list and focuses the first row when it does not. |
+| `NOTIFY-001` | Inbox events | published | partial | `tests/worker/follower-events.test.ts`, `tests/worker/follower-last-blocker.test.ts`, `tests/e2e/core-follower-journey.mjs`, `tests/worker/source-ingest.test.ts`, `tests/e2e/collaboration-events.mjs`, `evidence/issue-follow-up/NOTIFY-001/` | The cited follower journeys cover current native issue notifications. Missing the complete inbox-events journey for inherited triage responsibility, project/initiative updates, delegated-agent questions, Git review requests and SLA warnings. |
+| `NOTIFY-002` | Followers | published | partial | `tests/e2e/collaboration-events.mjs` | The cited evidence exercises the existing followers behavior. Missing an audited "complete followers through its public doors" journey that performs and reads the full retained outcome: Issue creators, assignees, commenters, and directly mentioned operators follow the issue automatically; an operator can follow or unfollow it explicitly without changing anyone else's following. |
+| `NOTIFY-003` | No self-notification | published | partial | `tests/worker/due-reminders.test.ts` | The cited evidence exercises the existing no self-notification behavior. Missing an audited "complete no self-notification through its public doors" journey that performs and reads the full retained outcome: One event creates at most one notification per recipient and issue even when the recipient qualifies through several follower rules. |
+| `NOTIFY-004` | Read and mute | published | partial | `tests/e2e/collaboration-preferences.mjs` | The cited evidence exercises the existing read and mute behavior. Missing an audited "complete read and mute through its public doors" journey that performs and reads the full retained outcome: An operator can mute an issue or an event type, which suppresses only their own later matching notifications and alters neither activity history nor another operator's notifications. |
+| `NOTIFY-005` | Due reminders | published | partial | `tests/worker/due-reminders.test.ts` | The cited evidence exercises the existing due reminders behavior. Missing an audited "complete due reminders through its public doors" journey that performs and reads the full retained outcome: Changing a due date makes the new date eligible and never repeats a reminder already delivered for the same issue and date. |
+| `NOTIFY-006` | Assignment and mention email | published | partial | `tests/e2e/collaboration-delivery-ui.mjs` | The cited evidence exercises the existing assignment and mention email behavior. Missing an audited "complete assignment and mention email through its public doors" journey that performs and reads the full retained outcome: Erasure removes addressed delivery state and anonymizes retained actors; a request already in flight cannot be recalled. |
+| `GITHUB-001` | Signed PR links | published | partial | `tests/worker/github-links.test.ts` | The cited evidence exercises the existing signed pr links behavior. Missing an audited "complete signed pr links through its public doors" journey that performs and reads the full retained outcome: A PR event changes issue status only through the team's Git automation rules (GITHUB-003), recorded as automation activity. |
+| `GITHUB-002` | Durable latest PR state | published | partial | `tests/worker/github-links.test.ts` | The cited evidence exercises the existing durable latest pr state behavior. Missing an audited "complete durable latest pr state through its public doors" journey that performs and reads the full retained outcome: Safe histories are portable; credentials require destination re-entry and restored historical deliveries never replay. |
+| `API-001` | Native scoped API | published | partial | `tests/worker/integration-api.test.ts` | The cited evidence exercises the existing native scoped api behavior. Missing an audited "complete native scoped api through its public doors" journey that performs and reads the full retained outcome: Existing native mutation and notification rules apply; no deletion API or product role is added. |
+| `API-002` | Token authority and usage | published | partial | `tests/worker/integration-authority.test.ts` | The cited evidence exercises the existing token authority and usage behavior. Missing an audited "complete token authority and usage through its public doors" journey that performs and reads the full retained outcome: Stale writes and authority races publish no unauthorized changes; committed native notification intent remains durable after a response denial. |
+| `WEBHOOK-001` | Durable native delivery | published | partial | `tests/worker/outbound-webhooks.test.ts` | The cited evidence exercises the existing durable native delivery behavior. Missing an audited "complete durable native delivery through its public doors" journey that performs and reads the full retained outcome: Failed sends never switch transports. |
+| `DATA-001` | Export contents | published | partial | `tests/worker/data-http.test.ts` | The cited evidence exercises the existing export contents behavior. Missing an audited "complete export contents through its public doors" journey that performs and reads the full retained outcome: It never contains a session, signing, source, or provider secret. |
+| `DATA-002` | Mapped import preflight | published | partial | `tests/worker/linear-import.test.ts` | The cited evidence exercises the existing mapped import preflight behavior. Missing an audited "complete mapped import preflight through its public doors" journey that performs and reads the full retained outcome: One preflight covers the whole file of a run, up to the measured run limits in docs/MOVE-IN.md. |
+| `DATA-003` | Atomic mapped import | published | partial | `tests/worker/data-import-atomic.test.ts` | The cited evidence exercises the existing atomic mapped import behavior. Missing an audited "complete atomic mapped import through its public doors" journey that performs and reads the full retained outcome: A failed batch writes none of that batch and leaves earlier batches of the run in place for resume (DATA-006). |
+| `DATA-004` | Idempotent mapped import | published | partial | `tests/worker/data-import-atomic.test.ts` | The cited evidence exercises the existing idempotent mapped import behavior. Missing an audited "complete idempotent mapped import through its public doors" journey that performs and reads the full retained outcome: A mapped import creates normal activity and one audit entry for the run, and no operator notifications. |
+| `DATA-005` | Exact portable restore | published | partial | `tests/worker/data-archive-failure.test.ts` | The cited evidence exercises the existing exact portable restore behavior. Missing an audited "complete exact portable restore through its public doors" journey that performs and reads the full retained outcome: The local restore command restores a portable DATA-001 archive without synthesizing activity, audit entries, notifications, or new timestamps. |
+| `DATA-006` | Staged import run | published | partial | `tests/e2e/data-staged-cli.mjs` | The cited evidence exercises the existing staged import run behavior. Missing an audited "complete staged import run through its public doors" journey that performs and reads the full retained outcome: No notification, mail or webhook is sent for an imported issue. |
 | `DATA-007` | Reconciliation report | published | partial | `tests/e2e/jira-public-journey.mjs` | tests/e2e/jira-public-journey.mjs registers no tests and no push/pull_request Verify job or named scheduled job reaches it |
-| `DATA-008` | Linear API enrichment file | published | partial | `tests/worker/linear-api-import.test.ts` | Missing a covering linear api enrichment file journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-009` | Jira CSV preflight and loss review | published | partial | `tests/worker/jira-import.test.ts` | Missing a covering jira csv preflight and loss review journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-010` | Jira staged apply and reconciliation | published | partial | `tests/worker/jira-apply.test.ts` | Missing a covering jira staged apply and reconciliation journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `DATA-011` | Erasing an imported person | published | partial | `tests/worker/imported-person-erasure.test.ts` | Missing a covering erasing an imported person journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `OWNER-CLAIM-001` | Signed owner claim | published | partial | `tests/worker/owner-claim.test.ts` | Missing a covering signed owner claim journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `EDITOR-001` | Owner-gated editor | published | partial | `tests/worker/editor.test.ts` | Missing a covering owner-gated editor journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `DATA-008` | Linear API enrichment file | published | done | `tests/worker/linear-api-import.test.ts` — "[DATA-008 REL-007] a Linear CSV and API file pair imports comments with original times and authors, safe links, dependencies and duplicates with no outbound effect; a malformed file is refused row by row" |  |
+| `DATA-009` | Jira CSV preflight and loss review | published | partial | `tests/worker/jira-import.test.ts` | The cited evidence exercises the existing jira csv preflight and loss review behavior. Missing an audited "complete jira csv preflight and loss review through its public doors" journey that performs and reads the full retained outcome: Every unsupported occurrence remains visible as an omission; mappings must be confirmed and row errors fixed before apply. |
+| `DATA-010` | Jira staged apply and reconciliation | published | partial | `tests/worker/jira-apply.test.ts` | The cited evidence exercises the existing jira staged apply and reconciliation behavior. Missing an audited "complete jira staged apply and reconciliation through its public doors" journey that performs and reads the full retained outcome: The public route requires a current Owner or Admin session (role matrix) and same origin; API tokens are not admitted. |
+| `DATA-011` | Erasing an imported person | published | partial | `tests/worker/imported-person-erasure.test.ts` | The cited evidence exercises the existing erasing an imported person behavior. Missing an audited "complete erasing an imported person through its public doors" journey that performs and reads the full retained outcome: The erasure journal is append-only, and an archive made before the erasure is refused on restore when a later archive's journal is supplied. |
+| `OWNER-CLAIM-001` | Signed owner claim | published | partial | `tests/worker/owner-claim.test.ts` | The cited evidence exercises the existing signed owner claim behavior. Missing an audited "complete signed owner claim through its public doors" journey that performs and reads the full retained outcome: Ordinary local configured-owner setup remains the default without RER claim configuration. |
+| `EDITOR-001` | Owner-gated editor | published | partial | `tests/worker/editor.test.ts` | The cited evidence exercises the existing owner-gated editor behavior. Missing an audited "complete owner-gated editor through its public doors" journey that performs and reads the full retained outcome: A hosted management session and independently registered frame-ancestors remain required; source adoption is not hosted acceptance. |
 | `ROLE-001` | Workspace roles | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-access-journey.mjs` | Complete coverage remains ROLE-008; unbuilt matrix doors inherit their source clauses. Private 404 evidence is this clause's own case, separate from ROLE-002. |
 | `ROLE-002` | Private teams | target | partial | `tests/worker/role-matrix.test.ts`, `tests/worker/search-access.test.ts`, `tests/worker/outbound-broken-destination.test.ts`, `tests/e2e/admin-access-journey.mjs`, `tests/e2e/admin-team-journey.mjs` | Private reads, membership withdrawal, identifier/search/Current/Created/Subscribed/Activity, counted CSV, exposed requests and team-only generic Slack delivery are implemented. The existing calendar, dashboard, Insights, template and reference journeys exercise their own private/Viewer cells. Browser attachment bytes and webhook privacy transitions remain unproved; their current network-edge and HTTP checks do not establish every-door browser acceptance. Unbuilt Slack unfurls inherit SLACK-005, mobile payloads MOBILE-001/002, documents PROJ-013 and agent contexts AGENT-001/005. Non-member Admins see private-team metadata, owners, membership, counts and privacy controls in Settings without content access; saved definitions re-evaluate current visibility without edits. Ruled archive behavior: Admin archives must exclude unreadable private-team rows and carry only an excluded-team count; Owner archives carry everything. BLOCKED ROLE-002(c): Base portability per-export row scope and manifest count are unavailable in rer 0.2.77; the safe Admin refusal remains until Base supplies them. |
-| `ROLE-003` | Guests | target | partial | `tests/worker/role-matrix.test.ts`, `tests/worker/role-guest-journey.ts`, `tests/e2e/role-ui-support.mjs`, `tests/e2e/admin-access-journey.mjs` | Missing a covering guests journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ROLE-003` | Guests | target | partial | `tests/worker/role-matrix.test.ts`, `tests/worker/role-guest-journey.ts`, `tests/e2e/role-ui-support.mjs`, `tests/e2e/admin-access-journey.mjs` | The cited evidence exercises the existing guests behavior. Missing an audited "complete guests through its public doors" journey that performs and reads the full retained outcome: Inherited from ROLE-007: a Guest's access follows the teams an Admin added them to. |
 | `ROLE-004` | Single sign-on and provisioning | target | missing |  | No implementation yet |
-| `ROLE-005` | Audit log | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-audit-journey.mjs` | Missing a covering audit log journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ROLE-005` | Audit log | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-audit-journey.mjs` | The cited evidence exercises the existing audit log behavior. Missing an audited "complete audit log through its public doors" journey that performs and reads the full retained outcome: The Vector audit covers sign-ins, roles and memberships, suspension, reactivation, erasure, team privacy, integrations, tokens, automation and agent runs, exports, imports and deletions, with person, automation, integration or agent as actor and the action subject. |
 | `ROLE-006` | Apps and agents as actors | target | missing |  | No implementation yet |
-| `ROLE-007` | Team membership and team owners | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | Missing a covering team membership and team owners journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ROLE-007` | Team membership and team owners | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | The cited evidence exercises the existing team membership and team owners behavior. Missing an audited "complete team membership and team owners through its public doors" journey that performs and reads the full retained outcome: Every change is audited (ROLE-005). |
 | `ROLE-008` | Operator and permission coverage | target | partial | `src/core/features/roles/doors.ts`, `tests/worker/role-matrix.test.ts` | Every state-changing door is registered against one role-matrix row, a door with no row admits Owners only and Settings pages open as the matrix row says; the coverage check, auditing of refusals, the Guest Settings sweep and agents' own identities (ROLE-006) are open |
-| `ROLE-009` | Team-managed permissions | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | Missing a covering team-managed permissions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ROLE-009` | Team-managed permissions | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | The cited evidence exercises the existing team-managed permissions behavior. Missing an audited "complete team-managed permissions through its public doors" journey that performs and reads the full retained outcome: The default for team settings is Team owners only and for cycles and templates is All team members. CYCLE-001 inherits cycle creation, edit, completion and deletion under both planning permissions: non-owner Members succeed under All team members and are refused 403 under Team owners only; Owners/Admins and team owners succeed, Guests are refused under both. |
 | `ROLE-010` | Offer Google sign-in | target | missing |  | No implementation yet |
 | `ROLE-014` | Member passkeys | target | missing |  | No implementation yet |
-| `ROLE-011` | Suspend a member and withdraw access | target | partial | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
-| `ROLE-015` | Suspended work and member directory | target | partial | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
-| `ROLE-016` | Reactivate the same member | target | partial | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
-| `ROLE-017` | Portable suspended-member state | target | partial | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
+| `ROLE-011` | Suspend a member and withdraw access | target | missing | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
+| `ROLE-015` | Suspended work and member directory | target | missing | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
+| `ROLE-016` | Reactivate the same member | target | missing | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
+| `ROLE-017` | Portable suspended-member state | target | missing | `src/core/features/settings/removal.ts`, `tests/worker/removal-boundary.test.ts` | Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent |
 | `ROLE-012` | Erase a member's personal data | target | partial | `src/core/features/settings/removal.ts`, `src/core/features/settings/removal-history.ts`, `tests/worker/removal-boundary.test.ts` | Today's removal anonymizes the member's references in comments, activity and audit and deletes their private views as part of every removal; a separate erase action on a suspended member, its preview, the typed confirmation and the single audit entry are absent |
 | `ROLE-013` | Read-only Viewers | target | partial | `tests/worker/role-matrix.test.ts`, `tests/worker/project-fields-upgrade.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/admin-access-journey.mjs`, `tests/worker/role-matrix.test.ts`, `tests/e2e/viewer-role-journey.mjs`, `tests/e2e/admin-runtime.mjs`, `tests/worker/role-viewer-journey.ts`, `tests/worker/role-viewer-census.ts`, `tests/worker/role-matrix.test.ts`, `tests/worker/role-viewer-journey.ts`, `tests/worker/project-report.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/worker/role-viewer-census.ts` | Unresolved: (b) agent contexts apply Viewer visibility: a duty of AGENT-001/005 (missing, unbuilt), no Viewer assertion yet; (c) own passkey management for Viewers has no asserting test (carried by ROLE-010, missing). ROLE-013 re-proposes DONE only after PROJ-013 and agent-context Viewer assertions exist, or when ROLE-010 and those clauses name the inheritance in both documents and are asserted. |
 | `TEAM-005` | Team settings | target | missing |  | No implementation yet |
 | `TEAM-006` | Sub-teams | target | missing |  | No implementation yet |
-| `TEAM-007` | Team join permissions | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | Missing a covering team join permissions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `TEAM-008` | Who may create teams | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | Missing a covering who may create teams journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `TEAM-007` | Team join permissions | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | The cited evidence exercises the existing team join permissions behavior. Missing an audited "complete team join permissions through its public doors" journey that performs and reads the full retained outcome: Public-team reads remain workspace-wide regardless of membership mode (OPS-001). |
+| `TEAM-008` | Who may create teams | target | partial | `tests/worker/role-matrix.test.ts`, `tests/e2e/admin-team-journey.mjs` | The cited evidence exercises the existing who may create teams behavior. Missing an audited "complete who may create teams through its public doors" journey that performs and reads the full retained outcome: Enforcement is identical through browser, HTTP and API, takes effect on the next request and records each permission change in audit (ROLE-005). |
 | `ISSUE-016` | Issue templates | target | missing |  | No implementation yet |
 | `ISSUE-017` | Reactions | target | partial | `src/core/features/reactions/`, `tests/worker/role-matrix.test.ts`, `tests/e2e/collaboration-runtime.mjs`, `tests/e2e/data-roundtrip.mjs` | Slack thread reaction synchronization awaits SLACK-002. |
-| `ISSUE-018` | Description history | target | partial | `tests/worker/description-history.test.ts`, `evidence/issue-writing/ISSUE-018/` | Missing a covering description history journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `ISSUE-019` | Sub-issue progress | target | partial | `tests/worker/subissues.test.ts`, `tests/worker/subissues-access.test.ts`, `tests/worker/subissues-import.test.ts`, `tests/e2e/core-subissues-journey.mjs` | Missing a covering sub-issue progress journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ISSUE-018` | Description history | target | partial | `tests/worker/description-history.test.ts`, `evidence/issue-writing/ISSUE-018/` | The cited evidence exercises the existing description history behavior. Missing an audited "complete description history through its public doors" journey that performs and reads the full retained outcome: Every saved description revision is kept with author and time, including the single revision each checklist tick writes (ISSUE-025); members can compare any two revisions and restore one, which writes a new revision and activity entry rather than rewriting history. |
+| `ISSUE-019` | Sub-issue progress | target | partial | `tests/worker/subissues.test.ts`, `tests/worker/subissues-access.test.ts`, `tests/worker/subissues-import.test.ts`, `tests/e2e/core-subissues-journey.mjs` | The cited evidence exercises the existing sub-issue progress behavior. Missing an audited "complete sub-issue progress through its public doors" journey that performs and reads the full retained outcome: An optional team rule completes the parent when every sub-issue completes and reopens it when one reopens, recorded as automation activity. |
 | `ISSUE-020` | Undo an issue change | target | partial | `tests/worker/issue-undo.test.ts`, `tests/e2e/core-undo-journey.mjs`, `tests/e2e/core-undo-properties.mjs`, `evidence/issue-undo/ISSUE-020/` | Native property, bulk, team/cycle and duplicate changes offer session-bound, version-checked Undo for ten seconds and append reversal activity. The 1440/390 journeys exercise status timestamps, assignee, priority, labels, cycle/team restoration, stale refusal and expiry; selectors wait for hydration and reversed team confirmations clear. Deletion/Recently deleted, intake decisions and other issue relation actions still lack Undo; retention, restore and purge remain unbuilt |
-| `ISSUE-031` | Recently deleted issues and restore | target | partial | `tests/worker/issue-undo.test.ts`, `tests/e2e/core-undo-journey.mjs`, `tests/e2e/core-undo-properties.mjs`, `evidence/issue-undo/ISSUE-020/` | Native property, bulk, team/cycle and duplicate changes offer session-bound, version-checked Undo for ten seconds and append reversal activity. The 1440/390 journeys exercise status timestamps, assignee, priority, labels, cycle/team restoration, stale refusal and expiry; selectors wait for hydration and reversed team confirmations clear. Deletion/Recently deleted, intake decisions and other issue relation actions still lack Undo; retention, restore and purge remain unbuilt |
-| `ISSUE-032` | Issue deletion retention and purge | target | partial | `tests/worker/issue-undo.test.ts`, `tests/e2e/core-undo-journey.mjs`, `tests/e2e/core-undo-properties.mjs`, `evidence/issue-undo/ISSUE-020/` | Native property, bulk, team/cycle and duplicate changes offer session-bound, version-checked Undo for ten seconds and append reversal activity. The 1440/390 journeys exercise status timestamps, assignee, priority, labels, cycle/team restoration, stale refusal and expiry; selectors wait for hydration and reversed team confirmations clear. Deletion/Recently deleted, intake decisions and other issue relation actions still lack Undo; retention, restore and purge remain unbuilt |
+| `ISSUE-031` | Recently deleted issues and restore | target | missing | `tests/worker/issue-undo.test.ts`, `tests/e2e/core-undo-journey.mjs`, `tests/e2e/core-undo-properties.mjs`, `evidence/issue-undo/ISSUE-020/` | Native property, bulk, team/cycle and duplicate changes offer session-bound, version-checked Undo for ten seconds and append reversal activity. The 1440/390 journeys exercise status timestamps, assignee, priority, labels, cycle/team restoration, stale refusal and expiry; selectors wait for hydration and reversed team confirmations clear. Deletion/Recently deleted, intake decisions and other issue relation actions still lack Undo; retention, restore and purge remain unbuilt |
+| `ISSUE-032` | Issue deletion retention and purge | target | missing | `tests/worker/issue-undo.test.ts`, `tests/e2e/core-undo-journey.mjs`, `tests/e2e/core-undo-properties.mjs`, `evidence/issue-undo/ISSUE-020/` | Native property, bulk, team/cycle and duplicate changes offer session-bound, version-checked Undo for ten seconds and append reversal activity. The 1440/390 journeys exercise status timestamps, assignee, priority, labels, cycle/team restoration, stale refusal and expiry; selectors wait for hydration and reversed team confirmations clear. Deletion/Recently deleted, intake decisions and other issue relation actions still lack Undo; retention, restore and purge remain unbuilt |
 | `ISSUE-021` | Issue types | target | missing |  | No implementation yet |
 | `ISSUE-022` | Issue start date | target | missing |  | No implementation yet |
-| `ISSUE-023` | Copy issue | target | partial | `tests/worker/issue-copy.test.ts`, `tests/e2e/issue-copy-runtime.mjs` | Missing a covering copy issue journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `ISSUE-023` | Copy issue | target | partial | `tests/worker/issue-copy.test.ts`, `tests/e2e/issue-copy-runtime.mjs` | The cited evidence exercises the existing copy issue behavior. Missing an audited "complete copy issue through its public doors" journey that performs and reads the full retained outcome: Cross-team cycle commitments are omitted and reported. |
 | `ISSUE-024` | Put files into issue text | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
-| `ISSUE-033` | Inline image display | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
-| `ISSUE-034` | Inline video and resumable upload | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
-| `ISSUE-035` | Draft files and removed embeds | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
-| `ISSUE-036` | Embeds across clients and archives | target | partial | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
+| `ISSUE-033` | Inline image display | target | missing | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
+| `ISSUE-034` | Inline video and resumable upload | target | missing | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
+| `ISSUE-035` | Draft files and removed embeds | target | missing | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
+| `ISSUE-036` | Embeds across clients and archives | target | missing | `src/core/features/discussion/routes.ts`, `tests/worker/discussion-file-admission.test.ts` | PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and nosniff; paste, drop, the upload command, inline display, the viewer, video types, Range responses and resumable upload are absent, and src/core/features/markdown/ui/markdown.tsx refuses image paths on the installation itself |
 | `ISSUE-025` | Checklists | target | partial | `tests/worker/description-history.test.ts`, `tests/markdown-rendering.test.tsx`, `evidence/issue-writing/ISSUE-025/` | Browser description and author-only comment ticks, independent stale description ticks, revision/activity attribution and list/board/API counts implemented; comment ticks use body checks; templates, documents, native mobile, live editing and role/private-team enforcement remain open |
 | `ISSUE-026` | Editor formatting and slash commands | target | partial | `tests/markdown-rendering.test.tsx`, `src/core/features/markdown/editor/`, `evidence/issue-writing/ISSUE-026/` | Shared browser editor has slash/formatting commands, shortcuts, safe rich paste, tables, collapsible sections, highlighting and copy; inline file/image commands, provider previews, templates/documents and native mobile editing remain open |
 | `ISSUE-027` | Issue references and backlinks | target | partial | `tests/worker/description-history.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/e2e/collaboration-references.mjs`, `tests/worker/data-http.test.ts`, `tests/e2e/data-roundtrip.mjs` | Project updates (PROJ-010), documents (PROJ-013), mobile links (MOBILE-001), DATA-018 aliases and historical/provider backlink backfill remain. tests/e2e/collaboration-references.mjs (referenceAccessCells at 1440/390 and HTTP) exercises private-source backlinks for Member/Viewer before membership, after addition and after withdrawal. |
 | `ISSUE-028` | Drafts across devices | target | missing |  | No implementation yet |
 | `FIELD-001` | Custom field definitions | target | partial | `src/core/features/issues/repository.ts`, `src/core/features/issues/input.ts` | Issues store an untyped key/value custom-field map and its changes reach activity through src/core/features/issue-edit/plan.ts; typed definitions, scopes, project fields, validation and the role rule are absent |
 | `FIELD-002` | Custom fields in views, search, API and imports | target | missing |  | No implementation yet |
-| `REL-007` | Related issues | target | partial | `tests/worker/related-issues.test.ts`, `tests/worker/jira-apply.test.ts`, `tests/worker/linear-api-import.test.ts`, `tests/e2e/core-related-journey.mjs` | Missing a covering related issues journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `REL-007` | Related issues | target | partial | `tests/worker/related-issues.test.ts`, `tests/worker/jira-apply.test.ts`, `tests/worker/linear-api-import.test.ts`, `tests/e2e/core-related-journey.mjs` | The cited evidence exercises the existing related issues behavior. Missing an audited "complete related issues through its public doors" journey that performs and reads the full retained outcome: Members can mark two issues as related across teams, with no blocking effect; the link shows on both issues, survives team moves, imports from Jira "Relates" and Linear "related" links when both issues are in the same migration (DATA-017), and is removed when either issue is deleted. |
 | `TRIAGE-001` | Triage responsibility | target | missing |  | No implementation yet |
 | `TRIAGE-002` | Triage routing rules | target | partial | `src/core/features/issues/mutations.ts` | Manual acceptance chooses team, status and assignee; rules are absent |
 | `TRIAGE-003` | Agent triage suggestions | target | missing |  | No implementation yet |
@@ -3918,39 +3920,39 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `CUST-001` | Customer requests on issues | target | missing |  | No implementation yet |
 | `CUST-002` | Customer-weighted planning | target | missing |  | No implementation yet |
 | `CUST-003` | Close the loop with requesters | target | missing |  | No implementation yet |
-| `CUST-004` | Penny keeps the board | target | partial | `tests/e2e/core-runtime.mjs` | Missing a covering penny keeps the board journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `CUST-004` | Penny keeps the board | target | partial | `tests/e2e/core-runtime.mjs` | The cited inventory is a product boundary record. Missing a public-door linked Penny request journey reading Penny-owned text, votes and status; inventory alone does not prove that link. |
 | `CUST-005` | Customer records | target | missing |  | No implementation yet |
 | `CUST-006` | Customer identity and merging | target | missing |  | No implementation yet |
 | `CUST-007` | Customers list and customer pages | target | missing |  | No implementation yet |
 | `CUST-008` | Adding customer requests by hand | target | missing |  | No implementation yet |
-| `WORK-004` | Created, Subscribed and Activity tabs | target | partial | `tests/worker/my-work-tabs.test.ts`, `tests/e2e/core-my-work-tabs-journey.mjs`, `evidence/my-work-tabs/WORK-004/` | Missing a covering created, subscribed and activity tabs journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `WORK-004` | Created, Subscribed and Activity tabs | target | partial | `tests/worker/my-work-tabs.test.ts`, `tests/e2e/core-my-work-tabs-journey.mjs`, `evidence/my-work-tabs/WORK-004/` | The cited evidence exercises the existing created, subscribed and activity tabs behavior. Missing an audited "complete created, subscribed and activity tabs through its public doors" journey that performs and reads the full retained outcome: ROLE-002 inherits private-team narrowing and its lost-access acceptance cell for private teams; MOBILE-001 inherits the mobile-app tabs journey. |
 | `PROJ-010` | Project updates | target | missing |  | No implementation yet |
-| `PROJ-011` | Milestones | target | partial | `tests/e2e/admin-project-cycle-journey.mjs`, `tests/worker/project-fields.test.ts`, `tests/worker/issue-copy.test.ts`, `tests/worker/data-http.test.ts` | Missing a covering milestones journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `PROJ-012` | Project templates | target | partial | `tests/worker/project-fields.test.ts`, `tests/worker/data-http.test.ts`, `tests/worker/project-fields-upgrade.test.ts`, `tests/e2e/admin-project-cycle-journey.mjs`, `tests/e2e/project-templates-journey.mjs` | Update cadence is stored and shown; its effect awaits PROJ-010/AUTO-005. Issue templates await ISSUE-016. tests/e2e/admin-project-cycle-journey.mjs (projectTemplateAccessCells) exercises current private-template visibility and Viewer creation/edit/application refusals at 1440/390 and HTTP. Default ADOPTED: team templates are visible only to their members; deletion preserves created projects. Member applications skip unavailable project labels and report their names. Application uses native services in order; an interrupted creation names the partial project for inspection before retry. |
-| `PROJ-013` | Project documents and specs | target | partial | `tests/worker/project-report.test.ts`, `tests/worker/documents-scenario.ts`, `tests/worker/role-matrix.test.ts`, `tests/worker/role-viewer-census.ts`, `tests/e2e/project-documents-journey.mjs`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-unfurl-scenario.ts` | Unproved parts of "Projects, issues, initiatives (INIT-001) and teams can hold Markdown documents (specs, PRDs, decision records, team handbooks and runbooks) written in the ISSUE-026 editor, with inline images and video (ISSUE-024), checklists (ISSUE-025), revision history, mentions, comments, attachments and search; a spec document can be linked as an issue's specification (PUSH-001).": "inline images and video (ISSUE-024)" needs document media integration/assertions; "checklists (ISSUE-025)" needs a document checklist mutation/assertion; "mentions" needs document-specific ISSUE-013 integration/assertions; "attachments" needs a document ISSUE-009 attachment door/assertion; "a spec document can be linked as an issue's specification (PUSH-001)" has native linking asserted, while PUSH-001 checkout consumption remains unbuilt. Native create/read/edit/comments, revision history, parent lists, search, visibility, role cells and parent export are asserted; this is PARTIAL, not a DONE proposal. |
+| `PROJ-011` | Milestones | target | partial | `tests/e2e/admin-project-cycle-journey.mjs`, `tests/worker/project-fields.test.ts`, `tests/worker/issue-copy.test.ts`, `tests/worker/data-http.test.ts` | The cited evidence exercises the existing milestones behavior. Missing an audited "complete milestones through its public doors" journey that performs and reads the full retained outcome: Copy, persisted Undo, bulk project changes, deletion preimages and native archive restore carry the assignment; deleting a milestone keeps its issues and clears their assignment. |
+| `PROJ-012` | Project templates | target | partial | `tests/worker/project-fields.test.ts`, `tests/worker/data-http.test.ts`, `tests/worker/project-fields-upgrade.test.ts`, `tests/e2e/admin-project-cycle-journey.mjs`, `tests/e2e/project-templates-journey.mjs` | Update cadence is stored and shown; its effect awaits PROJ-010/AUTO-005. Issue templates await ISSUE-016. tests/e2e/admin-project-cycle-journey.mjs (projectTemplateAccessCells) exercises current private-template visibility and Viewer creation/edit/application refusals at 1440/390 and HTTP.  Member applications skip unavailable project labels and report their names. Application uses native services in order; an interrupted creation names the partial project for inspection before retry. |
+| `PROJ-013` | Project documents and specs | target | partial | `tests/worker/project-report.test.ts`, `tests/worker/documents-scenario.ts`, `tests/worker/role-matrix.test.ts`, `tests/worker/role-viewer-census.ts`, `tests/e2e/project-documents-journey.mjs`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-unfurl-scenario.ts` | Unproved parts of "Projects, issues, initiatives (INIT-001) and teams can hold Markdown documents (specs, PRDs, decision records, team handbooks and runbooks) written in the ISSUE-026 editor, with inline images and video (ISSUE-033, ISSUE-034), checklists (ISSUE-025), revision history, mentions, comments, attachments and search; a spec document can be linked as an issue's specification (PUSH-001).": "inline images and video (ISSUE-033, ISSUE-034)" needs document media integration/assertions; "checklists (ISSUE-025)" needs a document checklist mutation/assertion; "mentions" needs document-specific ISSUE-013 integration/assertions; "attachments" needs a document ISSUE-009 attachment door/assertion; "a spec document can be linked as an issue's specification (PUSH-001)" has native linking asserted, while PUSH-001 checkout consumption remains unbuilt. Native create/read/edit/comments, revision history, parent lists, search, visibility, role cells and parent export are asserted; this is PARTIAL, not a DONE proposal. |
 | `PROJ-014` | Project members and teams | target | partial | `src/core/features/administration/projects.ts` | Lead and cross-team issues exist; members, contributing teams and following are absent |
 | `PROJ-015` | Project dependencies | target | missing |  | No implementation yet |
 | `PROJ-016` | Define project status categories | target | partial | `src/core/features/administration/schema.ts`, `tests/e2e/admin-project-cycle-journey.mjs` | A fixed lifecycle of Planned, Active, Completed and Canceled set by hand; named, ordered and colored statuses, the Backlog and Paused categories, team sets, removal with a destination and status import are absent |
-| `PROJ-046` | Team project status mapping | target | partial | `src/core/features/administration/schema.ts`, `tests/e2e/admin-project-cycle-journey.mjs` | A fixed lifecycle of Planned, Active, Completed and Canceled set by hand; named, ordered and colored statuses, the Backlog and Paused categories, team sets, removal with a destination and status import are absent |
+| `PROJ-046` | Team project status mapping | target | missing | `src/core/features/administration/schema.ts`, `tests/e2e/admin-project-cycle-journey.mjs` | A fixed lifecycle of Planned, Active, Completed and Canceled set by hand; named, ordered and colored statuses, the Backlog and Paused categories, team sets, removal with a destination and status import are absent |
 | `PROJ-017` | Recoverable project deletion | target | missing |  | Recently deleted projects, deletion Undo, retention, restore and purge are not implemented; current deletion remains Owner/Admin only |
 | `INIT-001` | Initiatives | target | partial | `tests/worker/project-membership.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/e2e/initiatives-journey.mjs`, `tests/worker/channel-notifications-scenario.ts`, `tests/e2e/initiatives-journey.mjs`, `tests/worker/initiatives-scenario.ts`, `tests/worker/channel-notifications-scenario.ts`, `tests/worker/role-probes.ts`, `tests/e2e/initiatives-journey.mjs`, `tests/e2e/data-integration-history.mjs`, `tests/e2e/data-roundtrip.mjs` | INIT-001 unproved: assertion sensitivity for approval refusal when the connected Slack workspace changes. Candidate landing, exact-SHA Run site and complete clean publication-scan proof remain outstanding. INIT-002 roll-ups remain separately assigned. |
 | `INIT-002` | Initiative roll-up | target | missing |  | No implementation yet |
 | `INIT-003` | Roadmap timeline | target | missing |  | No implementation yet |
 | `INIT-004` | Leadership digest | target | missing |  | No implementation yet |
-| `CYCLE-007` | Automatic cycle schedule | target | partial | `tests/worker/cycle-schedule.test.ts`, `tests/e2e/cycle-schedule-runtime.mjs` | Missing a covering automatic cycle schedule journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CYCLE-008` | Automatic cycle membership | target | partial | `tests/worker/cycle-membership.test.ts`, `tests/e2e/core-cycle-membership-journey.mjs` | Missing a covering automatic cycle membership journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `RELEASE-001` | Releases | target | partial | `tests/worker/project-membership.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/worker/integration-api.test.ts`, `tests/e2e/releases-journey.mjs` | Slack/Discord release bindings are absent: the existing durable channel model binds issue-bearing team/project/view subjects. Jira fix versions import remains DATA-013. Conservative default: reopen a Released release before changing its scope. |
+| `CYCLE-007` | Automatic cycle schedule | target | partial | `tests/worker/cycle-schedule.test.ts`, `tests/e2e/cycle-schedule-runtime.mjs` | The cited evidence exercises the existing automatic cycle schedule behavior. Missing an audited "complete automatic cycle schedule through its public doors" journey that performs and reads the full retained outcome: Changing the cadence affects only cycles not started. |
+| `CYCLE-008` | Automatic cycle membership | target | partial | `tests/worker/cycle-membership.test.ts`, `tests/e2e/core-cycle-membership-journey.mjs` | The cited evidence exercises the existing automatic cycle membership behavior. Missing an audited "complete automatic cycle membership through its public doors" journey that performs and reads the full retained outcome: A team can choose to add issues to the active cycle when they move to Started, and when they complete without a cycle, so the cycle reflects real work; each addition is recorded as an automation change. |
+| `RELEASE-001` | Releases | target | partial | `tests/worker/project-membership.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/worker/integration-api.test.ts`, `tests/e2e/releases-journey.mjs` | Slack/Discord release bindings are absent: the existing durable channel model binds issue-bearing team/project/view subjects. Jira fix versions import remains DATA-013. |
 | `RELEASE-002` | Deployment tracking | target | partial | `tests/worker/github-links.test.ts`, `tests/e2e/integrations/github-chain.mjs` | GitLab environments, CircleCI, Vercel, Netlify and Cloudflare Workers/Pages have no receiver or signed fixture. Unrecorded ancestry, missing non-forced push proof and unknown SHAs remain unproven and never attach an issue. |
 | `RELEASE-003` | Release notes | target | missing |  | No implementation yet |
 | `SEARCH-004` | Advanced filters | target | partial | `src/core/features/issues/list.ts` | Single-value filters per field; grouped and negated expressions are absent |
 | `SEARCH-005` | Meaning-based search | target | missing |  | No implementation yet |
-| `VIEW-006` | Manual order | target | partial | `tests/worker/manual-order.test.ts`, `tests/worker/manual-order-import.test.ts`, `tests/e2e/core-manual-order-journey.mjs`, `tests/worker/data-http.test.ts` | Missing a covering manual order journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `VIEW-006` | Manual order | target | partial | `tests/worker/manual-order.test.ts`, `tests/worker/manual-order-import.test.ts`, `tests/e2e/core-manual-order-journey.mjs`, `tests/worker/data-http.test.ts` | The cited evidence exercises the existing manual order behavior. Missing an audited "complete manual order through its public doors" journey that performs and reads the full retained outcome: Besides the derived orders, lists and boards offer a Manual order that members set by dragging or keyboard (move up, move down, move to top); the order is shared per team and view, imported from Jira rank and Linear sort order, and never changes Current's derived ranking (CURR-007). |
 | `VIEW-007` | Timeline and calendar views | target | partial | `tests/worker/base-auth.test.ts`, `tests/e2e/calendar-month-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs` | Timeline, dependency drawing and start-date combinations await ISSUE-022. Target-dated releases are included by current creator visibility: personal feeds carry own-team and readable workspace releases, and private-team releases require membership at each request. tests/e2e/calendar-access-cells.mjs (calendarAccessCells) asserts the readable team release in its team feed and excludes workspace releases and release descriptions. Team feed authority loss returns 404. Release channel binding remains RELEASE-001. tests/e2e/calendar-feeds-journey.mjs (calendarAccessCells at 1440/390 and HTTP) exercises current private-team omission and Viewer read-only month access. Calendar uses the feed event reader, workspace-local cycle days, native version-checked due-date edits and Undo. Guests retain the Calendar page refusal adopted for CAL-001. |
 | `VIEW-008` | Display options | target | partial | `src/core/features/issues/ui/issue-board.tsx` | Columns by status with a keyboard selector; swimlanes, drag and property choices are absent |
 | `VIEW-009` | Workspace-wide views | target | partial | `src/core/features/views/service.ts` | Saved issue views; project, initiative and request views are absent |
 | `VIEW-010` | Sidebar favorites | target | missing |  | No implementation yet |
-| `VIEW-011` | Light, dark and system themes | target | partial | `tests/e2e/theme-runtime.mjs`, `tests/e2e/theme-contrast.mjs`, `tests/e2e/theme-control-contrast.mjs`, `src/core/app/ui/palette.css`, `src/core/app/app.css`, `src/core/features/settings/appearance.ts` | Missing a covering light, dark and system themes journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `CMD-004` | Keyboard-first editing | target | partial | `tests/e2e/core-stream-planning-journey.mjs`, `tests/worker/bulk-commands.test.ts`, `evidence/keyboard-planning/CMD-004/` | Missing a covering keyboard-first editing journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `VIEW-011` | Light, dark and system themes | target | partial | `tests/e2e/theme-runtime.mjs`, `tests/e2e/theme-contrast.mjs`, `tests/e2e/theme-control-contrast.mjs`, `src/core/app/ui/palette.css`, `src/core/app/app.css`, `src/core/features/settings/appearance.ts` | The cited evidence exercises the existing light, dark and system themes behavior. Missing an audited "complete light, dark and system themes through its public doors" journey that performs and reads the full retained outcome: Charts (REPORT-001), the roadmap timeline (INIT-003) and the desktop and mobile apps (MOBILE-001, MOBILE-005) inherit this choice and its contrast rule for those capabilities. |
+| `CMD-004` | Keyboard-first editing | target | partial | `tests/e2e/core-stream-planning-journey.mjs`, `tests/worker/bulk-commands.test.ts`, `evidence/keyboard-planning/CMD-004/` | The cited evidence exercises the existing keyboard-first editing behavior. Missing an audited "complete keyboard-first editing through its public doors" journey that performs and reads the full retained outcome: Every issue property has a single-key shortcut on a focused or selected issue (S status, A assignee, P priority, L labels, E estimate, D due date, M move team, Shift-D duplicate decision, Command/Ctrl-. copy branch name), shortcuts work on multiple selected issues, and a shortcut help sheet (?) lists them. |
 | `SYNC-001` | Real-time sync | target | partial | `tests/e2e/core-current-journey.mjs` | Refresh within five seconds without reload; a live connection is absent |
 | `SYNC-002` | Local-first speed | target | missing |  | No implementation yet |
 | `SYNC-003` | Collaborative editing | target | missing |  | No implementation yet |
@@ -3959,26 +3961,26 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `MOBILE-003` | Responsive web | target | partial | `tests/e2e/dev-runtime.mjs` | 390px checks exist for current pages; new pages in this contract are open |
 | `MOBILE-004` | Distributed apps and push relay | target | missing |  | No implementation yet |
 | `MOBILE-005` | Desktop apps and desktop notifications | target | missing |  | No implementation yet; the new inherited NOTIFY-007 acceptance point for desktop notification (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet |
-| `NOTIFY-007` | Channels and digests | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/personal-time.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/e2e/integrations/notification-channel-controls.mjs`, `tests/e2e/integrations/slack-dm-settings.mjs` | Missing a covering channels and digests journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-008` | Snooze and reminders | target | partial | `tests/worker/notification-followups.test.ts`, `evidence/issue-follow-up/NOTIFY-008/` | Missing a covering snooze and reminders journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-009` | Subscriptions | target | partial | `tests/worker/follower-events.test.ts`, `tests/worker/subscriptions-scenario.ts`, `tests/e2e/subscriptions-journey.mjs`, `tests/worker/project-membership.test.ts`, `tests/worker/initiatives-scenario.ts`, `tests/worker/follower-events.test.ts`, `tests/worker/subscriptions-scenario.ts`, `tests/worker/follower-events.test.ts`, `tests/worker/subscriptions-scenario.ts` | Missing a covering subscriptions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `NOTIFY-010` | Personal time zone and working hours | target | partial | `tests/worker/personal-time.test.ts`, `tests/e2e/personal-time-runtime.mjs`, `src/core/app/viewer-time.tsx` | Missing a covering personal time zone and working hours journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `NOTIFY-007` | Channels and digests | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/personal-time.test.ts`, `tests/worker/role-matrix.test.ts`, `tests/e2e/integrations/notification-channel-controls.mjs`, `tests/e2e/integrations/slack-dm-settings.mjs` | The cited evidence exercises the existing channels and digests behavior. Missing an audited "complete channels and digests through its public doors" journey that performs and reads the full retained outcome: the per-event choice for push, desktop notifications and Teams direct messages is delivered with MOBILE-002, MOBILE-005 and TEAMS-001. |
+| `NOTIFY-008` | Snooze and reminders | target | done | `tests/worker/notification-followups.test.ts` — "snoozes return once by time or issue change and personal reminders deliver privately once" |  |
+| `NOTIFY-009` | Subscriptions | target | partial | `tests/worker/follower-events.test.ts`, `tests/worker/subscriptions-scenario.ts`, `tests/e2e/subscriptions-journey.mjs`, `tests/worker/project-membership.test.ts`, `tests/worker/initiatives-scenario.ts`, `tests/worker/follower-events.test.ts`, `tests/worker/subscriptions-scenario.ts`, `tests/worker/follower-events.test.ts`, `tests/worker/subscriptions-scenario.ts` | The cited evidence exercises the existing subscriptions behavior. Missing an audited "complete subscriptions through its public doors" journey that performs and reads the full retained outcome: Inherited from ROLE-007: a member's team notifications and team subscriptions follow team membership. |
+| `NOTIFY-010` | Personal time zone and working hours | target | partial | `tests/worker/personal-time.test.ts`, `tests/e2e/personal-time-runtime.mjs`, `src/core/app/viewer-time.tsx` | The cited evidence exercises the existing personal time zone and working hours behavior. Missing an audited "complete personal time zone and working hours through its public doors" journey that performs and reads the full retained outcome: Dates and times in the interface show in the viewer's time zone with the zone named where it differs from the workspace's. |
 | `AUTO-001` | Recurring issues | target | missing |  | No implementation yet |
 | `AUTO-002` | Workflow rules | target | partial | `src/core/features/due-reminders/service.ts`, `src/core/features/intake-return/service.ts` | Fixed due reminders and deferral return; configurable rules are absent |
-| `AUTO-003` | Auto-close and auto-archive | target | partial | `tests/worker/housekeeping.test.ts`, `tests/e2e/housekeeping-runtime.mjs`, `src/core/features/housekeeping/`, `src/core/features/notifications/events.ts` | Missing a covering auto-close and auto-archive journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `AUTO-003` | Auto-close and auto-archive | target | partial | `tests/worker/housekeeping.test.ts`, `tests/e2e/housekeeping-runtime.mjs`, `src/core/features/housekeeping/`, `src/core/features/notifications/events.ts` | The cited evidence exercises the existing auto-close and auto-archive behavior. Missing an audited "complete auto-close and auto-archive through its public doors" journey that performs and reads the full retained outcome: The automation entry is the comment: it sits in the issue's own activity with its reason ("Closed automatically after 30 days without activity", "Archived automatically 90 days after it closed") for everyone who can read the issue, and the issue's followers (NOTIFY-002) receive the notification a manual status change gives them, once per automated change, naming the automation as actor: a cancellation for an auto-close and an archive notification (its own kind, mutable like the others) for an auto-archive. |
 | `AUTO-004` | SLAs | target | missing |  | No implementation yet |
 | `AUTO-005` | Update reminders | target | missing |  | No implementation yet |
 | `AUTO-006` | Due-soon rules | target | partial | `src/core/features/due-reminders/service.ts` | Due-today and overdue notifications only |
-| `REPORT-001` | Insights | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/insights-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs` | Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; tests/e2e/insights-journey.mjs (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused. |
-| `REPORT-002` | Cycle and project charts | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | Missing a covering cycle and project charts journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REPORT-006` | Project completion forecast | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | Missing a covering project completion forecast journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REPORT-003` | Dashboards | target | partial | `tests/e2e/dashboards-journey.mjs` | Missing a covering dashboards journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `REPORT-004` | Workload | target | partial | `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` | Missing a covering workload journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `REPORT-001` | Insights | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/insights-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs` | Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; tests/e2e/insights-journey.mjs (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. |
+| `REPORT-002` | Cycle and project charts | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | The cited evidence exercises the existing cycle and project charts behavior. Missing an audited "complete cycle and project charts through its public doors" journey that performs and reads the full retained outcome: Membership events retain identifiers and timestamps only, and erasure is unchanged. |
+| `REPORT-006` | Project completion forecast | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | The cited evidence exercises the existing project completion forecast behavior. Missing an audited "complete project completion forecast through its public doors" journey that performs and reads the full retained outcome: Completed, canceled and archived projects retain their last aggregate state; reopening resumes live history. |
+| `REPORT-003` | Dashboards | target | partial | `tests/e2e/dashboards-journey.mjs` | The cited evidence exercises the existing dashboards behavior. Missing an audited "complete dashboards through its public doors" journey that performs and reads the full retained outcome: Members compose dashboards of saved charts, counts and issue lists for a team or for leadership, share them inside the workspace, and filter the whole dashboard by team, date range or project. |
+| `REPORT-004` | Workload | target | partial | `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` | The cited workload journey reads three people, estimates, issue counts and capacities. Missing the workload journey populated by a delegated agent session which verifies the accountable person retains that work; delegation is unbuilt. |
 | `REPORT-005` | Warehouse and spreadsheet export | target | missing |  | No implementation yet |
 | `INTEG-001` | Guided connection from Settings | target | partial | `src/core/features/integrations/ui/github-setup.tsx`, `src/core/features/integrations/ui/source-setup.tsx`, `src/core/features/integrations/ui/copy-field.tsx`, `src/core/features/integrations/test-webhook.ts` | Settings → Integrations exists for signed sources, GitHub repository webhooks and outbound destinations, with copyable payload URLs, reveal-once secrets and a test delivery; provider app creation, manifest flows, OAuth installs and the live first-event check are absent |
 | `INTEG-002` | Integration health and repair | target | partial | `src/core/features/integrations/reenter.ts`, `src/core/features/integrations/ui/delivery-setup.tsx` | Credential re-entry after restore and outbound delivery state; health for inbound providers and in-place repair are absent |
-| `GITHUB-003` | Branches and status automation | target | partial | `tests/worker/github-links.test.ts`, `tests/e2e/integrations/github-chain.mjs`, `tests/e2e/integrations/github-team-permissions.mjs`, `tests/worker/role-probes.ts` | Missing a covering branches and status automation journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `GITHUB-004` | Commits | target | partial | `tests/worker/github-links.test.ts`, `tests/e2e/integrations/github-chain.mjs` | Missing a covering commits journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `GITHUB-003` | Branches and status automation | target | partial | `tests/worker/github-links.test.ts`, `tests/e2e/integrations/github-chain.mjs`, `tests/e2e/integrations/github-team-permissions.mjs`, `tests/worker/role-probes.ts` | The cited evidence exercises the existing branches and status automation behavior. Missing an audited "complete branches and status automation through its public doors" journey that performs and reads the full retained outcome: Provider-backed "create branch" is tracked in GITHUB-008. |
+| `GITHUB-004` | Commits | target | partial | `tests/worker/github-links.test.ts`, `tests/e2e/integrations/github-chain.mjs` | The cited evidence exercises the existing commits behavior. Missing an audited "complete commits through its public doors" journey that performs and reads the full retained outcome: Push events link commits whose message names an issue, showing author, message and link on the issue; closing words in a commit on the default branch act like a merged PR under the team rules. |
 | `GITHUB-005` | Review and checks on the issue | target | missing |  | No implementation yet |
 | `GITHUB-006` | GitHub App | target | missing |  | No implementation yet |
 | `GITHUB-007` | GitHub Issues sync | target | missing |  | No implementation yet |
@@ -3987,18 +3989,18 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `GITLAB-002` | GitLab Issues sync | target | missing |  | No implementation yet |
 | `BITBUCKET-001` | Bitbucket | target | missing |  | No implementation yet |
 | `CI-001` | CI and deploy providers | target | missing |  | No implementation yet |
-| `SLACK-001` | Slack app | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-app-scenario.ts`, `tests/e2e/integration-runtime.mjs`, `tests/e2e/integrations/slack-app-installation.mjs`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-app-scenario.ts`, `tests/worker/slack-events-scenario.ts`, `tests/worker/slack-app-recovery-scenario.ts`, `tests/e2e/integration-runtime.mjs`, `tests/e2e/integrations/slack-app-installation.mjs`, `tests/e2e/integrations/slack-app-archive.mjs`, `tests/worker/role-matrix.test.ts`, `tests/worker/role-viewer-census.ts` | Hosted real-workspace installation remains unproved, pending the owner's Slack app console steps. |
+| `SLACK-001` | Slack app | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-app-scenario.ts`, `tests/e2e/integration-runtime.mjs`, `tests/e2e/integrations/slack-app-installation.mjs`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-app-scenario.ts`, `tests/worker/slack-events-scenario.ts`, `tests/worker/slack-app-recovery-scenario.ts`, `tests/e2e/integration-runtime.mjs`, `tests/e2e/integrations/slack-app-installation.mjs`, `tests/e2e/integrations/slack-app-archive.mjs`, `tests/worker/role-matrix.test.ts`, `tests/worker/role-viewer-census.ts` | Carried partial without promotion; a fresh judgment must assess the cited setup or unfurl journeys against all native outcomes. Real-workspace proof is tracked separately in R-4 and does not gate DONE. |
 | `SLACK-002` | Issues from Slack with synced threads | target | missing |  | No implementation yet |
-| `SLACK-003` | Slack and Discord channel bindings | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | Missing a covering slack and discord channel bindings journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-006` | Connect and remove channel credentials | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | Missing a covering connect and remove channel credentials journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-007` | Durable minimal channel posts | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | Missing a covering durable minimal channel posts journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-008` | Create and bind a Slack channel | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | Missing a covering create and bind a slack channel journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-009` | Channel safety and explicit mapping | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | Missing a covering channel safety and explicit mapping journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-004` | Link and unlink your Slack identity | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | Missing a covering link and unlink your slack identity journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-010` | Personal Slack delivery | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | Missing a covering personal slack delivery journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-011` | Signed Slack notification actions | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | Missing a covering signed slack notification actions journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-012` | Slack interactivity secret custody | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | Missing a covering slack interactivity secret custody journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
-| `SLACK-005` | Link previews | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-unfurl-scenario.ts` | Hosted real-workspace unfurl pending the owner's Slack app console steps. |
+| `SLACK-003` | Slack and Discord channel bindings | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | The cited journeys cover current team/project/view bindings and role refusals. Missing channel bindings for initiatives and the inherited project-update/release/SLA/agent events, with private-team routing read at dispatch. |
+| `SLACK-006` | Connect and remove channel credentials | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | The cited evidence exercises the existing connect and remove channel credentials behavior. Missing an audited "complete connect and remove channel credentials through its public doors" journey that performs and reads the full retained outcome: An Admin enters a Slack bot token in Settings → Integrations once; a provider credential check validates it, per-workspace encryption seal it per workspace, settings never reveal it again, archives exclude it, restored installations need attention until re-entry, and removal calls provider credential revocation, deletes local custody and disables bindings (a provider error refuses removal visibly). |
+| `SLACK-007` | Durable minimal channel posts | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | The cited journeys show minimal current native channel posts and held failures. Missing the private-team notice journey reading no actor or text across every bound target after a privacy transition. |
+| `SLACK-008` | Create and bind a Slack channel | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | The cited evidence exercises the existing create and bind a slack channel behavior. Missing an audited "complete create and bind a slack channel through its public doors" journey that performs and reads the full retained outcome: Discord accepts only HTTPS discord.com or discordapp.com URLs whose path starts the provider webhook prefix, seals the URL and refuses redirects; this fixed-host rule does not depend on arbitrary resolved-address egress. |
+| `SLACK-009` | Channel safety and explicit mapping | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs`, `tests/worker/role-matrix.test.ts`, `src/core/features/integrations/channels/`, `evidence/slack-003/SAFE_PROVIDER.md`, `evidence/slack-003/REAL_PROVIDER.md`, `evidence/slack-003/CHANNEL_SAFETY.md` | The cited evidence exercises the existing channel safety and explicit mapping behavior. Missing an audited "complete channel safety and explicit mapping through its public doors" journey that performs and reads the full retained outcome: Channel IDs are explicitly mapped by the Admin, never inferred from email or name. |
+| `SLACK-004` | Link and unlink your Slack identity | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | The cited evidence exercises the existing link and unlink your slack identity behavior. Missing an audited "complete link and unlink your slack identity through its public doors" journey that performs and reads the full retained outcome: The link is shown, audited (`slack.member_linked`, `slack.member_unlinked`) and revocable with Unlink; unlinking, member removal, suspension (ROLE-011 inherits) and removal of the workspace's Slack credential delete it and stop every direct message. |
+| `SLACK-010` | Personal Slack delivery | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | The cited evidence exercises the existing personal slack delivery behavior. Missing an audited "complete personal slack delivery through its public doors" journey that performs and reads the full retained outcome: A message carries only the event kind, issue identifier and title, actor display name, status change, due date and the authenticated canonical `canonical issue` link, in plain-text blocks with automatic link and media previews disabled — never a description, comment or mention body, free text or AI output; private or restricted items get a generic notice with no actor or text under ROLE-002. |
+| `SLACK-011` | Signed Slack notification actions | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | The cited evidence exercises the existing signed slack notification actions behavior. Missing an audited "complete signed slack notification actions through its public doors" journey that performs and reads the full retained outcome: An unlinked, removed or suspended Slack user, a bad or missing signature, a stale timestamp and a replay change nothing. |
+| `SLACK-012` | Slack interactivity secret custody | target | partial | `src/core/features/integrations/slack-dm/`, `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/integrations/slack-dm-settings.mjs`, `evidence/slack-004/REAL_PROVIDER.md` | The cited evidence exercises the existing slack interactivity secret custody behavior. Missing an audited "complete slack interactivity secret custody through its public doors" journey that performs and reads the full retained outcome: docs/INTEGRATIONS.md names the Interactivity Request URL the Admin sets in their Slack app until SLACK-001's manifest sets it, and what leaves the deployment in a direct message. |
+| `SLACK-005` | Link previews | target | partial | `tests/worker/outbound-broken-destination.test.ts`, `tests/worker/slack-unfurl-scenario.ts` | Carried partial without promotion; a fresh judgment must assess the cited setup or unfurl journeys against all native outcomes. Real-workspace proof is tracked separately in R-4 and does not gate DONE. |
 | `TEAMS-001` | Microsoft Teams | target | missing |  | No implementation yet; the new inherited NOTIFY-007 acceptance point for Teams direct message (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet |
 | `SUPPORT-001` | Zendesk, Intercom and Front | target | partial | `src/core/features/integrations/source-ingest.ts` | Signed generic source intake with replay identity; provider apps, linking and status sync are absent |
 | `SUPPORT-002` | HappyToHelp | target | missing |  | No implementation yet |
@@ -4006,11 +4008,11 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `ERROR-002` | Spool | target | missing |  | No implementation yet |
 | `DESIGN-001` | Figma | target | missing |  | No implementation yet |
 | `DOCS-001` | Notion, Confluence and Google Drive | target | partial | `src/core/features/links/repository.ts` | Named HTTPS links; previews and provider connections are absent |
-| `CAL-001` | Calendar feeds | target | partial | `tests/worker/base-auth.test.ts`, `tests/worker/calendar-feed-proof.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/calendar-feeds-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs`, `tests/e2e/calendar-access-cells.mjs`, `tests/e2e/calendar-feeds-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/calendar-feed-proof.ts`, `tests/worker/base-auth.test.ts` | Missing a covering calendar feeds journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `CAL-001` | Calendar feeds | target | partial | `tests/worker/base-auth.test.ts`, `tests/worker/calendar-feed-proof.ts`, `tests/worker/data-http.test.ts`, `tests/e2e/calendar-feeds-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs`, `tests/e2e/calendar-access-cells.mjs`, `tests/e2e/calendar-feeds-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/calendar-feed-proof.ts`, `tests/worker/base-auth.test.ts` | The cited feed journeys cover native due dates, cycles and milestones and revocation. Missing the complete feed journey reading release events in the same exported calendar. |
 | `CONNECT-001` | Zapier and Make | target | partial | `src/core/features/integrations/api.ts`, `src/core/features/integrations/outbound.ts` | The API and webhooks they need exist in part; the apps are absent |
 | `AGENT-001` | Delegate an issue to an agent | target | missing |  | No implementation yet |
 | `AGENT-002` | Agent session on the issue | target | missing |  | No implementation yet |
-| `AGENT-003` | Reviewable output, human completion | target | missing |  | No implementation yet |
+| `AGENT-003` | Reviewable agent output and policy-decided completion | target | missing |  | No implementation yet |
 | `AGENT-004` | Agent permissions and budgets | target | missing |  | No implementation yet |
 | `AGENT-005` | MCP server | target | missing |  | No implementation yet |
 | `AGENT-006` | Agent platform | target | partial | `src/core/features/integrations/api.ts`, `src/core/features/integrations/outbound.ts` | Scoped tokens and signed outbound events; app actors, delegation events and activity types are absent |
@@ -4024,11 +4026,11 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `DATA-012` | GitHub Issues and Projects import | target | missing |  | No implementation yet |
 | `DATA-013` | Jira Cloud and Data Center API import | target | partial | `src/core/features/data/import/jira.ts` | All Fields CSV file profile; the live API, attachment bytes, versions and Data Center are absent |
 | `DATA-014` | Linear API import | target | partial | `src/core/features/data/import/linear.ts`, `src/core/features/data/import/api-file.ts` | Workspace CSV plus an owner-produced API file; direct API, bytes, initiatives and updates are absent |
-| `DATA-015` | Plane, Huly and Shortcut import | target | partial | `tests/worker/plane-huly-shortcut-import.test.ts`, `tests/e2e/data-staged-cli.mjs`, `tests/e2e/data-profile-journey.mjs` | Missing a covering plane, huly and shortcut import journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `DATA-015` | Plane, Huly and Shortcut import | target | done | `tests/worker/plane-huly-shortcut-import.test.ts` — "[DATA-015] $format imports its source fixture through reviewed staged runs and reconciles mapped fields and explicit losses" |  |
 | `DATA-016` | Transition sync | target | missing |  | No implementation yet |
 | `DATA-017` | Whole-workspace migration | target | partial | `src/core/features/data/import/ids.ts`, `src/core/features/data/import/runs.ts`, `tests/e2e/data-staged-cli.mjs` | Stable per-source import identities, staged runs with resume, repeat and rollback, and in-run relations; migrations, cross-run relation binding, the migration report, incremental re-runs and the 50,000-issue run are absent |
 | `DATA-018` | Old identifiers and links after a move | target | partial | `tests/e2e/jira-public-journey.mjs` | Imported issues show and find their source ID in search under DATA-007; URL resolution, alias redirects and Git magic words on old keys are absent |
-| `SEC-001` | Integration credentials | target | partial | `tests/worker/data-http.test.ts`, `tests/worker/outbound-broken-destination.test.ts` | Missing a covering integration credentials journey through the product door that reads every outcome below; the cited source journeys show only part of that behavior. |
+| `SEC-001` | Integration credentials | target | partial | `tests/worker/data-http.test.ts`, `tests/worker/outbound-broken-destination.test.ts` | The cited archive journeys cover the current native integration secrets and Slack paste path. Missing the credential-custody journey for the future coding-provider accounts, GitHub App and complete connected-provider set, including rotation and removal. |
 | `SEC-002` | Model and agent data handling | target | missing |  | No implementation yet |
 | `SEC-003` | Erasure across integrations | target | partial | `src/core/features/issue-deletion/service.ts` | Native, file and webhook erasure; posted Slack channel messages, already-sent Slack direct messages and Discord messages cannot be recalled by local erasure; member removal deletes SLACK-004 Slack links; synced-thread erasure, other external identities and embeddings are absent |
 | `PUSH-001` | Issue to spec | push-further | missing |  | No implementation yet |

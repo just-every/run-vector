@@ -48,7 +48,7 @@ Issue deletion snapshots current Inbox state, finalized events, candidates, mail
 
 ## Bound Slack and Discord channels
 
-SLACK-003 channel posts use the native integration outbound ledger, rather than
+SLACK-007 channel posts use the native integration outbound ledger, rather than
 personal email intents. The configured team/project/saved-view destination gets
 one minimal post per selected new-triage, new-issue or status-change event.
 Messages include identifier, title, actor, change and canonical issue link only.
@@ -61,7 +61,7 @@ initiative clauses inherit the same once-per-bound-event rule.
 
 ## Slack direct messages
 
-SLACK-004 adds a Slack direct message beside assignment and mention mail. A member who
+SLACK-010 adds a Slack direct message beside assignment and mention mail. A member who
 linked their own Slack account in Settings → Notifications chooses it separately for
 assignments and for mentions; mutes, actor exclusion, active-recipient and access checks
 apply exactly as they do to mail, at the source transaction and again before each send.

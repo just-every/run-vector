@@ -28,7 +28,7 @@ async function threadFixture() {
 
 contractWith(
   it,
-  "ISSUE-008",
+  "ISSUE-029",
   "replies form ordered threads; resolving names who and when; a new reply or reopen clears it",
   async () => {
     const { f, issue, post, comments, kinds, names } = await threadFixture();
@@ -66,7 +66,7 @@ contractWith(
 
 contractWith(
   it,
-  "ISSUE-008 OPS-001",
+  "ISSUE-008 ISSUE-029 OPS-001",
   "only the author edits a comment; authors, Owners and Admins delete it and a Member cannot delete another's",
   async () => {
     const { f, issue, post, comments } = await threadFixture();

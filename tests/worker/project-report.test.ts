@@ -8,7 +8,7 @@ import { projectDetailSchema } from "../../src/core/features/projects/ui/data";
 
 afterEach(() => vi.useRealTimers());
 
-it("[REPORT-002] a project's scope and completion by day follow adds, moves, deletions and reopenings and project a completion date by the stated rule", async () => {
+it("[REPORT-002 REPORT-006] a project's scope and completion by day follow adds, moves, deletions and reopenings and project a completion date by the stated rule", async () => {
   const f = await setupAdministration();
   vi.useFakeTimers({ toFake: ["Date"] });
   const at = (date: string) => vi.setSystemTime(new Date(date));
