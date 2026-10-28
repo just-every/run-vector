@@ -16,13 +16,23 @@ export async function runNativePhases({ fetch, invoke, origin, surface, signer, 
   const points = [];
   const c = createProtocol({ fetch, origin, surface, signer, person, business: 'rer-agent-conformance',
     consent: randomUUID(), agentId: `rer-conformance-${randomUUID()}`, seq: 0, revision: 0, listed: new Map(), points });
+  // Unproved lifecycle calls remain failed declarations. Negative admission
+  // phases can still check every registered tool with inert arguments, just
+  // as Base uses unresolved record references before policy is available.
+  const negativeSurface = { ...surface, journey: [...surface.journey,
+    ...surface.tools.filter(tool => !surface.journey.some(step => step.tool === tool.name))
+      .map(tool => ({ id: 'pending-lifecycle-' + tool.name, tool: tool.name, args: {} }))] };
+  const negative = async run => {
+    c.surface = negativeSurface;
+    try { await run(); } finally { c.surface = surface; }
+  };
   await c.phase('BASE-AGENT-001.transport', () => discoverDoor(c));
-  await c.phase('BASE-AGENT-007.phase0', () => unsetPolicy(c, true));
-  await c.phase('BASE-AGENT-007.phase1', () => removalPhase(c));
+  await c.phase('BASE-AGENT-007.phase0', () => negative(() => unsetPolicy(c, true)));
+  await c.phase('BASE-AGENT-007.phase1', () => negative(() => removalPhase(c)));
   await c.phase('BASE-AGENT-013.phase2', async () => { await c.adopt(autonomousPolicy()); await listedDoor(c); await runJourney(c, 'autonomous', { injections: true, replay: true }); });
   await c.phase('BASE-AGENT-013.phase3', async () => { await c.adopt(heldPolicy()); await runJourney(c, 'held', { held: true }); });
   await c.phase('BASE-AGENT-007.phase4', () => blockedPhases(c));
-  await c.phase('BASE-AGENT-011.phase5', () => pausePhase(c));
+  await c.phase('BASE-AGENT-011.phase5', () => negative(() => pausePhase(c)));
   await c.phase('BASE-AGENT-004.phase6', () => negativePhase(c));
   await c.phase('BASE-AGENT-004.consent', () => consentRevocationPhase(c));
   await c.phase('BASE-AGENT-012.invocation', () => invocationPhase(c, invoke));
