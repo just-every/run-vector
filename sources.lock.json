@@ -632,7 +632,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "50b25563013ce5b312f19d1c97171b5d8ffd2027da811aa4823ce845c04bfe1a",
+      "sha256": "f104096c3d4f151d1d6834c89a9fa1de8222ff0f0f7664fa254140421616bef7",
       "executable": false
     },
     "docs/AGENT-REGISTRY.md": {
@@ -6944,7 +6944,7 @@
       "executable": false
     },
     "tests/agent-door/browser-journey.mjs": {
-      "sha256": "9bd02441bf30fb4ad034eb4df903776ecfee13ae06de951543f159ed8bc3ed0b",
+      "sha256": "a55b8c0fd16ffd336e4130dcccaf34b50c32ba944d593ad3f255c02a83ef6beb",
       "executable": false
     },
     "tests/agent-door/consent-probe.mjs": {

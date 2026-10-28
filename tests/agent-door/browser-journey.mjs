@@ -32,8 +32,8 @@ export async function browserJourney({ request, origin, surface, signer, person,
     body: JSON.stringify({ expectedVersion: currentIssue.version, title: 'Checkout stalls after selecting a saved address — reviewed by Morgan' }) });
   if (!humanEdit.ok) throw new Error('Native person edit failed');
   await humanEdit.body?.cancel();
-  const personEvents = await db.prepare("SELECT count(*) n FROM agent_door_events WHERE json_extract(event,'$.actor.kind')='person' AND json_extract(event,'$.actor.person.id')=?")
-    .bind(session.operatorId).first('n');
+  const personEvents = await db.prepare("SELECT count(*) n FROM agent_door_events WHERE uri=? AND json_extract(event,'$.actor.kind')='person' AND json_extract(event,'$.actor.person.id')=?")
+    .bind('vector://issues/' + issue.identifier, session.operatorId).first('n');
   if (!personEvents) throw new Error('Native person edit was not mirrored through door.emit');
   console.log('Native person event mirror: ' + personEvents);
   for (const [path, body, uri] of [
