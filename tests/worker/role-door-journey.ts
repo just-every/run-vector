@@ -20,14 +20,15 @@ export async function unregisteredAndSettingsJourney(w:Workspace){
  }
  expect((await owner.call('/synthetic-vector-32001','POST',{})).status).toBe(404);
  expect(await snapshot(business)).toEqual(before);
- const routes=createServerApp().routes.filter(route=>route.method==='GET'&&(route.path==='/api/settings'||route.path.startsWith('/api/settings/')));
+ const routes=createServerApp().routes.filter(route=>route.method!=='ALL'&&(route.path==='/api/settings'||route.path.startsWith('/api/settings/')));
  expect(routes.length).toBeGreaterThan(0);
  for(const route of routes){
   await resetLimits();
-  const path=route.path.slice(4).replace(/:teamId|:id/g,w.team.id).replace(/:operatorId/g,w.guest.id);
-  const registration=doors.find(door=>door.method==='GET'&&'/api'+door.path===route.path);
+  const path=route.path.slice(4).replace(/:teamId|:id/g,w.team.id).replace(/:operatorId/g,w.member.id);
+  const registration=doors.find(door=>door.method===route.method&&'/api'+door.path===route.path);
   expect(registration,route.path+' Settings page has a permission declaration').toBeDefined();
-  const response=await w.guest.call(path);
-  expect(response.status,'Guest '+route.path+' '+await response.clone().text()).toBe(registration?.page==='account'?200:403);
+  if(registration?.page==='account'&&route.method!=='GET')continue; // Own Account mutations have their populated journey.
+  const response=await w.guest.call(path,route.method,route.method==='GET'?undefined:{});
+  expect(response.status,'Guest '+route.method+' '+route.path+' '+await response.clone().text()).toBe(registration?.page==='account'?200:403);
  }
 }

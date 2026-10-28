@@ -70,11 +70,17 @@ export async function assertRoleDoorCoverage(){
  function sources(folder){for(const item of readdirSync(folder,{withFileTypes:true})){
   const file=resolve(folder,item.name);if(item.isDirectory()){sources(file);continue;}if(!/\.tsx?$/.test(file))continue;
   const source=ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
-  function walk(node){if(ts.isCallExpression(node)&&node.expression.getText(source)==='createServerFn'){
+  const factoryNames=new Set(['createServerFn']);
+  for(const node of source.statements)if(ts.isImportDeclaration(node)&&node.moduleSpecifier.text==='@tanstack/react-start'){
+   for(const item of node.importClause?.namedBindings?.elements??[])if((item.propertyName??item.name).text==='createServerFn')factoryNames.add(item.name.text);
+  }
+  function walk(node,name='module'){
+   if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name))name=node.name.text;
+   if(ts.isCallExpression(node)&&(factoryNames.has(node.expression.getText(source))||ts.isPropertyAccessExpression(node.expression)&&node.expression.name.text==='createServerFn')){
    const method=node.arguments[0]?.properties?.find(property=>property.name?.text==='method')?.initializer?.text;
    assert.ok(method,'Server function must declare its method: '+file);
-   if(method!=='GET'){const id=relative(process.cwd(),file);assertDoor(serverFunctionDoors[id],id);functions.add(id);}
-  }ts.forEachChild(node,walk);}walk(source);
+   if(method!=='GET'){const id=relative(process.cwd(),file)+'#'+name;assertDoor(serverFunctionDoors[id],id);assert.ok(!functions.has(id),'Duplicate server function registration '+id);functions.add(id);}
+  }ts.forEachChild(node,child=>walk(child,name));}walk(source);
  }}sources(resolve('src'));
  for(const file of Object.keys(serverFunctionDoors))assert.ok(functions.has(file),'Stale server function registration '+file);
  const scripts=JSON.parse(readFileSync('package.json','utf8')).scripts;
@@ -83,12 +89,18 @@ export async function assertRoleDoorCoverage(){
   const source=readFileSync(file,'utf8');
   // Workspace command transport; build, deployment and checkout-resource commands
   // do not carry a member session and cannot act as one.
-  if(!source.includes('cookieFile')||!source.includes('fetch('))continue;
+  if(!/cookieFile|Authorization/.test(source)||!source.includes('fetch('))continue;
   assert.ok(commandDoors[file],file+' has no command permission registration');
+  const syntax=ts.createSourceFile(file,source,ts.ScriptTarget.Latest,true),admitted=[];
+  function commands(node){if(ts.isVariableDeclaration(node)&&node.name.getText(syntax)==='commands'&&ts.isArrayLiteralExpression(node.initializer)){
+   for(const item of node.initializer.elements){assert.ok(ts.isStringLiteral(item),file+' command must have an explicit name');admitted.push(item.text);}
+  }ts.forEachChild(node,commands);}commands(syntax);
+  assert.ok(admitted.length,file+' must enumerate its public commands for permission coverage');
+  assert.deepEqual(Object.keys(commandDoors[file]).sort(),admitted.sort(),file+' command census differs from its permission declarations');
  }
- for(const [file,references] of Object.entries(commandDoors)){
+ for(const [file,commands] of Object.entries(commandDoors)){
   assert.ok(existsSync(file),'Command registration has no implementation '+file);
-  for(const reference of references)assertDoor(reference,file);
+  for(const [name,references] of Object.entries(commands))for(const reference of references)assertDoor(reference,file+' '+name);
  }
  return {routes:routes.length,forms:[...forms.values()].reduce((a,b)=>a+b,0)};
 }

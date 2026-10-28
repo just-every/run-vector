@@ -42,9 +42,13 @@ export const serverFunctionDoors: Record<string, string> = {}
 
 /** Seed-owned write commands carry the caller's native session to these doors.
  * Base resource setup, reset and local restore have no workspace actor. */
-export const commandDoors: Record<string, readonly string[]> = {
-  'scripts/data/import-issues.mjs': [
-    'POST /data/import/preview', 'POST /data/import/apply',
-    'POST /data/import/runs/:id/resume', 'POST /data/import/runs/:id/rollback',
-  ],
+export const commandDoors: Record<string, Record<string, readonly string[]>> = {
+  'scripts/data/import-issues.mjs': {
+    preview: ['POST /data/import/preview'],
+    apply: ['POST /data/import/preview', 'POST /data/import/apply'],
+    status: ['GET /data/import/runs/:id'],
+    resume: ['POST /data/import/runs/:id/resume'],
+    rollback: ['GET /data/import/runs/:id/rollback', 'POST /data/import/runs/:id/rollback'],
+    report: ['GET /data/import/runs/:id/report', 'GET /data/import/runs/:id/report.csv'],
+  },
 }
