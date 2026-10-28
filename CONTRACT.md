@@ -36,11 +36,11 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-ACCESS-004 | Server-side authorisation | OPS-001, OPS-002, OPS-003, OPS-004, API-001, API-002, OWNER-CLAIM-001, API-003, API-004, API-005 | not run |
 | BASE-INPUT-001 | Validation | ISSUE-001, ISSUE-002, ISSUE-003, ISSUE-004, ISSUE-005, ISSUE-006, ISSUE-007, ISSUE-008, ISSUE-029, ISSUE-030, ISSUE-009, ISSUE-010, ISSUE-011, ISSUE-012, ISSUE-013, ISSUE-014, ISSUE-015, REL-001, REL-002, REL-003, REL-004, REL-005, REL-006, INTAKE-001, INTAKE-002, INTAKE-003, INTAKE-004, INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-008, INTAKE-009, INTAKE-010, INTAKE-011, PROJ-001, PROJ-002, PROJ-003, PROJ-004, PROJ-005, PROJ-006, PROJ-007, PROJ-008, PROJ-009, API-001, API-002, ISSUE-016, ISSUE-017, ISSUE-018, ISSUE-019, ISSUE-020, ISSUE-031, ISSUE-032, ISSUE-021, ISSUE-022, ISSUE-023, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036, ISSUE-025, ISSUE-026, ISSUE-027, ISSUE-028, REL-007, TRIAGE-001, TRIAGE-002, TRIAGE-003, TRIAGE-004, TRIAGE-005, CUST-001, CUST-002, CUST-003, CUST-004, CUST-005, CUST-006, CUST-009, CUST-007, CUST-008, PROJ-010, PROJ-011, PROJ-012, PROJ-013, PROJ-014, PROJ-015, PROJ-016, PROJ-046, PROJ-017, API-003, API-004, API-005 | not run |
 | BASE-INPUT-002 | HTML | ISSUE-033 | not run |
-| BASE-INPUT-003 | Uploads | ISSUE-024, ISSUE-033, ISSUE-034 | not run |
+| BASE-INPUT-003 | Uploads | ISSUE-009, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036 | not run |
 | BASE-SECRET-001 | No leakage | INTEG-001, INTEG-002, SEC-001, SEC-002, SEC-003 | not run |
 | BASE-SECRET-002 | Startup | none | not run |
-| BASE-DATA-001 | Export and import | DATA-001, DATA-002, DATA-003, DATA-004, DATA-005, DATA-006, DATA-007, DATA-008, DATA-009, DATA-010, DATA-011, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017, DATA-018 | not run |
-| BASE-DATA-002 | Retention | none | not run |
+| BASE-DATA-001 | Export and import | DATA-001, DATA-002, DATA-003, DATA-004, DATA-005, DATA-006, DATA-007, DATA-008, DATA-009, DATA-010, DATA-011, ISSUE-036, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017, DATA-018 | not run |
+| BASE-DATA-002 | Retention | ISSUE-035 | not run |
 | BASE-DATA-003 | Erasure | ISSUE-009, DATA-011, ROLE-012, SEC-003 | not run |
 | BASE-DATA-004 | Outbound flows | none | not run |
 | BASE-DATA-005 | Independence | none | not run |
@@ -64,16 +64,16 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-DOCS-001 | On-site docs from one contract | none | not run |
 | BASE-AGENT-001 | One MCP door per seed | AGENT-005 | not run |
 | BASE-AGENT-002 | The seed's jobs are tools, through the UI's own actions | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008, SURFACE-009, SURFACE-010, SURFACE-011, SURFACE-012, SURFACE-013 | not run |
-| BASE-AGENT-003 | Records are resources | AGENT-005 | not run |
+| BASE-AGENT-003 | Records are resources | AGENT-005, SURFACE-005, SURFACE-007 | not run |
 | BASE-AGENT-004 | Business identity and short-lived, audience-bound tokens | AGENT-005 | not run |
-| BASE-AGENT-005 | An agent acts as a person in a role, never more | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
+| BASE-AGENT-005 | An agent acts as a person in a role, never more | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010, SURFACE-004 | not run |
 | BASE-AGENT-006 | Every action declares its risk class | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010, SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008, SURFACE-009, SURFACE-010, SURFACE-011, SURFACE-012, SURFACE-013 | not run |
-| BASE-AGENT-007 | The company's policy decides, at one chokepoint | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
-| BASE-AGENT-008 | Truthful attribution | ROLE-006, ROLE-008, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
+| BASE-AGENT-007 | The company's policy decides, at one chokepoint | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010, SURFACE-010 | not run |
+| BASE-AGENT-008 | Truthful attribution | ROLE-006, ROLE-008, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010, SURFACE-006 | not run |
 | BASE-AGENT-009 | Every agent action is audited with its class and decision | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
-| BASE-AGENT-010 | Agents can follow changes | none | not run |
-| BASE-AGENT-011 | Limits are policy, and Pause stops everything | AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010 | not run |
-| BASE-AGENT-012 | Writes are idempotent and conflict-safe | none | not run |
+| BASE-AGENT-010 | Agents can follow changes | SURFACE-008 | not run |
+| BASE-AGENT-011 | Limits are policy, and Pause stops everything | ROLE-006, AGENT-001, AGENT-002, AGENT-003, AGENT-004, AGENT-005, AGENT-006, AGENT-007, AGENT-008, AGENT-009, PUSH-001, PUSH-002, PUSH-003, PUSH-004, PUSH-005, PUSH-006, PUSH-007, PUSH-008, PUSH-009, PUSH-010, SURFACE-003, SURFACE-011 | not run |
+| BASE-AGENT-012 | Writes are idempotent and conflict-safe | SURFACE-012 | not run |
 | BASE-AGENT-013 | Manifest, docs and the conformance journey | SURFACE-001, SURFACE-002, SURFACE-003, SURFACE-004, SURFACE-005, SURFACE-006, SURFACE-007, SURFACE-008, SURFACE-009, SURFACE-010, SURFACE-011, SURFACE-012, SURFACE-013 | not run |
 
 ## Published clauses
@@ -98,7 +98,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 - `ISSUE-008`: *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 - `ISSUE-029`: *Tier:* Core · *From:* ISSUE-008 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 - `ISSUE-030`: *Tier:* Core · *From:* ISSUE-008 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
-- `ISSUE-009`: *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001, BASE-DATA-003
+- `ISSUE-009`: *Tier:* Core · *Cites:* BASE-DATA-003, BASE-INPUT-001, BASE-INPUT-003, BASE-ROLE-001
 - `ISSUE-010`: *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 - `ISSUE-011`: *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
 - `ISSUE-012`: *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ROLE-001
@@ -1339,7 +1339,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ROLE-006 — Apps and agents as actors
 
-*Tier:* Core · *Cites:* BASE-AGENT-008, BASE-ROLE-001
+*Tier:* Core · *Cites:* BASE-AGENT-008, BASE-AGENT-011, BASE-ROLE-001
 
 **Requirement.** Vector names its integrations, automations and coding-provider delegates as distinct actors on issue changes.
 
@@ -1683,7 +1683,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-035 — Draft files and removed embeds
 
-*Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
+*Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-DATA-002, BASE-INPUT-001, BASE-INPUT-003, BASE-ROLE-001
 
 **Requirement.** Vector provides draft files and removed embeds for the permitted workspace actors, with the records, outcomes and refusals below.
 
@@ -1693,7 +1693,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### ISSUE-036 — Embeds across clients and archives
 
-*Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-INPUT-001, BASE-ROLE-001
+*Tier:* Core · *From:* ISSUE-024 · *Cites:* BASE-DATA-001, BASE-INPUT-001, BASE-INPUT-003, BASE-ROLE-001
 
 **Requirement.** Vector provides embeds across clients and archives for the permitted workspace actors, with the records, outcomes and refusals below.
 
@@ -3486,7 +3486,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-003 — Provider spend and resources
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-011, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3497,7 +3497,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-004 — Membership and credentials
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3507,7 +3507,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-005 — Irreversible work and regulated records
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-006, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3517,7 +3517,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-006 — Sign-off and running services
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-008, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3527,7 +3527,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-007 — Vector record resources
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-006, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3537,7 +3537,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-008 — Vector event handoffs
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-010, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3557,7 +3557,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-010 — Embedded and external specialist parity
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3567,7 +3567,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-011 — Capacity and provider costs
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-011, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -3577,7 +3577,7 @@ Inherits BASE-AGENT-001 to BASE-AGENT-013. The company's policy decides every ca
 
 #### SURFACE-012 — Recoverable planning and safe removal
 
-*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+*Tier:* Agent surface · *From:* new · *Cites:* BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-012, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 

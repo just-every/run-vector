@@ -306,7 +306,7 @@ Core · published · **missing** · From ISSUE-008 · Cites BASE-INPUT-001, BASE
 
 #### ISSUE-009 — Attachments and links
 
-Core · published · **partial** · Cites BASE-INPUT-001, BASE-ROLE-001, BASE-DATA-003
+Core · published · **partial** · Cites BASE-DATA-003, BASE-INPUT-001, BASE-INPUT-003, BASE-ROLE-001
 
 **Requirement.** Operators can attach files and named HTTPS links to an issue or a comment.
 
@@ -1713,7 +1713,7 @@ Core · target · **partial** · Cites BASE-AUDIT-001, BASE-ROLE-001
 
 #### ROLE-006 — Apps and agents as actors
 
-Core · target · **missing** · Cites BASE-AGENT-008, BASE-ROLE-001
+Core · target · **missing** · Cites BASE-AGENT-008, BASE-AGENT-011, BASE-ROLE-001
 
 **Requirement.** Vector names its integrations, automations and coding-provider delegates as distinct actors on issue changes.
 
@@ -2144,7 +2144,7 @@ Core · target · **missing** · From ISSUE-024 · Cites BASE-INPUT-001, BASE-RO
 
 #### ISSUE-035 — Draft files and removed embeds
 
-Core · target · **missing** · From ISSUE-024 · Cites BASE-INPUT-001, BASE-ROLE-001
+Core · target · **missing** · From ISSUE-024 · Cites BASE-DATA-002, BASE-INPUT-001, BASE-INPUT-003, BASE-ROLE-001
 
 **Requirement.** Vector provides draft files and removed embeds for the permitted workspace actors, with the records, outcomes and refusals below.
 
@@ -2157,7 +2157,7 @@ Core · target · **missing** · From ISSUE-024 · Cites BASE-INPUT-001, BASE-RO
 
 #### ISSUE-036 — Embeds across clients and archives
 
-Core · target · **missing** · From ISSUE-024 · Cites BASE-INPUT-001, BASE-ROLE-001
+Core · target · **missing** · From ISSUE-024 · Cites BASE-DATA-001, BASE-INPUT-001, BASE-INPUT-003, BASE-ROLE-001
 
 **Requirement.** Vector provides embeds across clients and archives for the permitted workspace actors, with the records, outcomes and refusals below.
 
@@ -4169,7 +4169,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-003 — Provider spend and resources
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-011, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4183,7 +4183,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-004 — Membership and credentials
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-005, BASE-AGENT-006, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4196,7 +4196,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-005 — Irreversible work and regulated records
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-006, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4209,7 +4209,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-006 — Sign-off and running services
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-008, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4222,7 +4222,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-007 — Vector record resources
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-003, BASE-AGENT-006, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4235,7 +4235,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-008 — Vector event handoffs
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-010, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4261,7 +4261,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-010 — Embedded and external specialist parity
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-007, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4274,7 +4274,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-011 — Capacity and provider costs
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-011, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 
@@ -4287,7 +4287,7 @@ Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE
 
 #### SURFACE-012 — Recoverable planning and safe removal
 
-Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-013
+Agent surface · target · **missing** · From new · Cites BASE-AGENT-002, BASE-AGENT-006, BASE-AGENT-012, BASE-AGENT-013
 
 **Requirement.** The software delivery specialist performs this Vector-specific job through the shared agent door.
 

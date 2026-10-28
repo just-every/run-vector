@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "56790950484c39c776bd62ecb7a236b452190f5d7a01d06a4d7ab9ea9aa76c51",
+      "sha256": "a26fb87cdf2148ddfb1a072a8740104e339bcf4d8ee7a798225c111d1e3eda7f",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "17ef21be40675fb86926e50029e70af6716e67eb750a14a26950524a3cdaf3d6",
+      "sha256": "586ebf767d81a12c34d89910c3d1e7cef2ce9415ecb65e8ac2cfe06dde1ffb23",
       "executable": false
     },
     "DEMO.md": {
@@ -569,7 +569,7 @@
       "executable": false
     },
     "docs/contract/COVERAGE.json": {
-      "sha256": "187176507af87b407d9051b0053d26d97e2e15c87afa5e0d0038816b4bab0ac8",
+      "sha256": "b62a01bb25480d69dd25f326ad3c09d7e7094bb7dfb4901662253da16ba951e3",
       "executable": false
     },
     "docs/contract/DONE-AUDIT.md": {

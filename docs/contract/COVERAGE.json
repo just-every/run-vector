@@ -5735,7 +5735,8 @@
       "text": "Their changes show the app or agent name with the person who installed or delegated to it, and they can be paused or revoked by an Admin at once.",
       "to": "base",
       "ids": [
-        "BASE-AGENT-008"
+        "BASE-AGENT-008",
+        "BASE-AGENT-011"
       ]
     },
     {
