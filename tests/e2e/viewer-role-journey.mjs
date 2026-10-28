@@ -1,3 +1,4 @@
+import {viewerAccessCensus} from './role-access-census.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -65,6 +66,9 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
     assert.equal(await labels.getByRole('form',{name:'Create label',exact:true}).count(),0);
     await inspect(reader,labels,'viewer-labels-'+width);
    }
+  });
+  await clause('OPS-001','Viewer CSV exports, addressed notifications and attachment bytes follow privacy and membership changes',async()=>{
+   await viewerAccessCensus({owner,page,reader:invited,runtime,evidence});
   });
   await clause('ROLE-013','private lookup/search stay hidden until an Admin adds the Viewer; they stay read-only there',async()=>{
    await invited.api('/issues/'+hidden.identifier,'GET',undefined,404);assert.ok(!JSON.stringify(await invited.api('/search?q='+encodeURIComponent(hidden.title))).includes(hidden.identifier));

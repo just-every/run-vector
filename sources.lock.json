@@ -7033,7 +7033,11 @@
       "executable": false
     },
     "tests/e2e/integrations/outbound-native.mjs": {
-      "sha256": "7bba0e611208e66c8ee30c762764a0d32fb31da0af197f115cc9e7dd17a1aa33",
+      "sha256": "62823ac3ac21ecf2a5de59389657eaa51bc0d3cca5fa061ae6a3614ce200a2b3",
+      "executable": false
+    },
+    "tests/e2e/integrations/outbound-privacy-journey.mjs": {
+      "sha256": "66254737c638f490b203f3646e635165f668e5bb0c53efde0904122b3da8cb0b",
       "executable": false
     },
     "tests/e2e/integrations/register-loader.mjs": {
@@ -7180,6 +7184,10 @@
       "sha256": "922c3cb21976edfbede379067997628e251aba02c24f87042a56157cccead1fa",
       "executable": false
     },
+    "tests/e2e/role-access-census.mjs": {
+      "sha256": "5ff7c480c7579e85371a057b997627a7e155227afc9e099b4b1e8f36943f2b51",
+      "executable": false
+    },
     "tests/e2e/role-door-coverage.mjs": {
       "sha256": "04607ec6ce7c3487aa319a9cd18efc0d60f89271d253fdfefac5c16c2680392c",
       "executable": false
@@ -7257,7 +7265,7 @@
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
-      "sha256": "49f54191b1de3701bca4e82c30abaf3cf5e6b99f46600a9dbdebecc0de0d5c29",
+      "sha256": "580a6024e58ff65ee9f2180ae8da728c4be778cea48bfd1d1c9518204b11b000",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {

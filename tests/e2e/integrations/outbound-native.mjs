@@ -1,3 +1,4 @@
+import {outboundPrivacyJourney} from './outbound-privacy-journey.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm,writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
@@ -53,6 +54,7 @@ try{
  await dispatchWebhooks(env);const delivery=await db.prepare('SELECT id,envelope,state FROM integration_deliveries ORDER BY created_at LIMIT 1').first();assert.equal(delivery.state,'accepted');assert.equal(received,1);
  const service=outboundService(env,admin.workspace.id),envelope=JSON.parse(delivery.envelope),protocol=(await import('../../../vendor/base/integrations/core/webhook.ts')).createWebhookProtocol({resolveDestination:async()=>retainedDestination.url,signingKey:async()=>new Uint8Array(key)}),wire=await protocol.prepare(envelope,Date.now());
  assert.equal((await transport.send(wire)).status,204);assert.equal(received,1);assert.equal((await transport.send({...wire,body:wire.body+' '})).status,401);proof.replaySafe=true;
+ await outboundPrivacyJourney({call,cookie,db,env,workspace:admin.workspace.id,transport,setMode:value=>{mode=value;}});
  mode='uncertain';await call('/api/issues','POST',{teamId:team.id,title:'Lost receiver acknowledgement'},cookie);await dispatchWebhooks(env);const unknown=await db.prepare("SELECT id FROM integration_deliveries WHERE state='uncertain'").first();assert(unknown);const attempts=transport.connects.length;await dispatchWebhooks(env);assert.equal(transport.connects.length,attempts);proof.uncertain=true;
  mode='retry';await call('/api/issues','POST',{teamId:team.id,title:'Rate-limited receiver'},cookie);await dispatchWebhooks(env);let pending=await db.prepare("SELECT id,next_at,max_attempts,attempts FROM integration_deliveries WHERE state='queued'").first();assert(pending);
  for(let i=0;i<pending.max_attempts;i++){receiverNow=pending.next_at+1;await outboundService(env,admin.workspace.id,()=>receiverNow).dispatch(pending.id);pending=await db.prepare('SELECT id,next_at,max_attempts,attempts,state FROM integration_deliveries WHERE id=?').bind(pending.id).first();if(pending.state!=='queued')break;}
