@@ -18,7 +18,7 @@ export async function assertRoleDoorCoverage(){
  const routes=createServerApp().routes;
  const allEndpoints=new Set();
  function endpoints(folder){for(const item of readdirSync(folder,{withFileTypes:true})){
-  const file=resolve(folder,item.name);if(item.isDirectory()){endpoints(file);continue;}if(!/\.tsx?$/.test(file))continue;
+  const file=resolve(folder,item.name);if(item.isDirectory()){endpoints(file);continue;}if(!/\.[cm]?[jt]sx?$/.test(file))continue;
   const source=ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
   function walk(node){if(ts.isCallExpression(node)&&ts.isPropertyAccessExpression(node.expression)&&node.expression.name.text==='all'){
    const argument=node.arguments[0];if(argument&&ts.isStringLiteral(argument))allEndpoints.add(argument.text);
@@ -61,14 +61,14 @@ export async function assertRoleDoorCoverage(){
   }walk(source);
   for(const node of source.statements)if(ts.isImportDeclaration(node)&&node.moduleSpecifier.text.startsWith('.')){
    const target=resolve(dirname(file),node.moduleSpecifier.text);
-   for(const suffix of ['.tsx','.ts','/index.tsx','/index.ts'])if(existsSync(target+suffix)){settingsModule(target+suffix);break;}
+   for(const suffix of ['.tsx','.ts','.jsx','.js','.mjs','/index.tsx','/index.ts','/index.jsx','/index.js'])if(existsSync(target+suffix)){settingsModule(target+suffix);break;}
   }
  }
  settingsModule(resolve(root,'settings/ui/settings-page.tsx'));
  for(const [id,references] of Object.entries(settingsFormDoors))assert.equal(forms.get(id),references.length,'Stale Settings form registration '+id);
  const functions=new Set();
  function sources(folder){for(const item of readdirSync(folder,{withFileTypes:true})){
-  const file=resolve(folder,item.name);if(item.isDirectory()){sources(file);continue;}if(!/\.tsx?$/.test(file))continue;
+  const file=resolve(folder,item.name);if(item.isDirectory()){sources(file);continue;}if(!/\.[cm]?[jt]sx?$/.test(file))continue;
   const source=ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
   const factoryNames=new Set(['createServerFn']);
   for(const node of source.statements)if(ts.isImportDeclaration(node)&&node.moduleSpecifier.text==='@tanstack/react-start'){

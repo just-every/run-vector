@@ -40,4 +40,4 @@ Vector owns its fonts: `public/fonts/fonts.css`, linked by `src/core/app/fonts.t
 
 ## Lander-Regenerate
 
-The legacy contract views adopt touched clauses incrementally. After changing a clause, run `node scripts/contract-docs.mjs write CLAUSE-ID...` with its actual IDs, then `node scripts/contract-docs.mjs check` to check all adopted clauses. Keep unrelated legacy narratives intact. Stage the complete result, then run `node scripts/edition-authoring/cli.mjs lock` and `node scripts/edition-authoring/cli.mjs check` last.
+The legacy contract views adopt touched clauses incrementally. After changing a clause, run `node scripts/contract-docs.mjs write ROLE-008 OPS-001` for these adopted clauses (name another actual ID when adopting it), then `node scripts/contract-docs.mjs check` to check all adopted clauses. Keep unrelated legacy narratives intact. Stage the complete result, then run `node scripts/edition-authoring/cli.mjs lock` and `node scripts/edition-authoring/cli.mjs check` last.

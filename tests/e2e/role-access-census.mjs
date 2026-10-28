@@ -6,7 +6,7 @@ const raw=(page,base,path)=>page.evaluate(async url=>{
  const response=await fetch(url);return {status:response.status,text:await response.text(),cache:response.headers.get('cache-control')};
 },base+'/api'+path);
 async function download(page,link){
- const waiting=page.waitForEvent('download');await link.click();const result=await waiting;
+ const [result]=await Promise.all([page.waitForEvent('download'),link.click()]);
  assert.equal(await result.failure(),null);const stream=await result.createReadStream(),chunks=[];
  for await(const chunk of stream)chunks.push(chunk);return Buffer.concat(chunks).toString('utf8');
 }
@@ -14,7 +14,8 @@ async function download(page,link){
 /** A populated notification, CSV row and real R2 object cross the same current
  * visibility boundary. An empty result alone can never satisfy the safe case. */
 export async function viewerAccessCensus({owner,page,reader,runtime,evidence}){
- const {base}=runtime,api=reader.api,inspect=roleScreens(evidence);
+ const {base}=runtime,api=reader.api,screens=roleScreens(evidence);
+ const inspect=async(actor,region,name)=>{const viewport=actor.viewportSize();await screens(actor,region,name);await actor.setViewportSize(viewport);};
  const name='synthetic-vector-32010';
  const team=(await owner('/settings/teams','POST',{name,identifierPrefix:'SYNVCEN'})).teams.find(team=>team.name===name);
  const issue=await owner('/issues','POST',{title:'synthetic-vector-32011',teamId:team.id,statusId:team.statuses.find(status=>status.category==='started').id,assigneeOperatorId:reader.id},201);
@@ -50,7 +51,9 @@ export async function viewerAccessCensus({owner,page,reader,runtime,evidence}){
   assert.ok((await download(actor,actor.getByRole('link',{name:'Export counted issues CSV',exact:true}))).includes(issue.identifier));
   await inspect(actor,actor.locator('main:visible').first(),'viewer-access-export-'+width);
   await navigate(actor,base+'/app/issues/'+issue.identifier);await actor.getByRole('heading',{name:issue.title,exact:true}).waitFor();
-  assert.equal(await download(actor,actor.locator('a[href="/api'+filePath+'"]').first()),bytes);
+  const files=actor.locator('main:visible details.issue-files');
+  await files.locator('summary').click();
+  assert.equal(await download(actor,files.getByRole('link',{name:'synthetic-vector-32012.txt',exact:true})),bytes);
   await inspect(actor,actor.locator('main:visible').first(),'viewer-access-attachment-'+width);
   await owner(`/settings/teams/${team.id}/privacy`,'PUT',{isPrivate:true});await check(false);
   await inspect(actor,actor.locator('main:visible').first(),'viewer-private-inbox-'+width);

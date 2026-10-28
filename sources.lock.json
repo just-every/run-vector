@@ -493,7 +493,7 @@
       "executable": false
     },
     "AGENTS.md": {
-      "sha256": "f0757436989f5dfd54a4b91db94d2044615475b49d054b39f6b3b3b0773a4515",
+      "sha256": "9ba136e2f8c7ffaeedf7dcc4191149ca7c0e627a804244ec1d157d75380be101",
       "executable": false
     },
     "base-copies.json": {
@@ -7189,11 +7189,11 @@
       "executable": false
     },
     "tests/e2e/role-access-census.mjs": {
-      "sha256": "5ff7c480c7579e85371a057b997627a7e155227afc9e099b4b1e8f36943f2b51",
+      "sha256": "8276bf77b84e74442c90f00cae38badeb9b4870e19532d50718f863576512c48",
       "executable": false
     },
     "tests/e2e/role-door-coverage.mjs": {
-      "sha256": "403cba8ea47ebb63061c24712a79802f37253587c215208870eaa830cc645ae8",
+      "sha256": "cbdc0700d67965769da8b460f1826d9a52ca3c60c51ac3a0e281afb0b5687ad9",
       "executable": false
     },
     "tests/e2e/role-private-cells.mjs": {
