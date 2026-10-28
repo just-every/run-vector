@@ -640,7 +640,7 @@
       "executable": false
     },
     "docs/ARCHIVES.md": {
-      "sha256": "5e6eecd601774efd1f8bc0411c399c0d3b1c916a26ff68ae8d495814c0e83ae0",
+      "sha256": "91d3597eb155be6a104ecca3248c7c80ec364b5422101034692ed5c2f0a507e7",
       "executable": false
     },
     "docs/AUTHENTICATION.md": {
@@ -2676,7 +2676,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade.mjs": {
-      "sha256": "1068332ec24f62978a9e919cc19ab96873aaae0f0f1787db3a3c1c765ec99599",
+      "sha256": "141d9667e6ec7b8ff2216c1423bd6e45669cacdc264c26389fbdf75ea212ad1c",
       "executable": false
     },
     "scripts/data/import-issues.mjs": {
@@ -7508,7 +7508,7 @@
       "executable": false
     },
     "tests/installer/older-archive.test.mjs": {
-      "sha256": "ca38235cdb52fc6e111bba3f23219afca8ea798ea7887366f6e5212580f7cd03",
+      "sha256": "a4ef5ca964035527634100d313a34aae77395a146f3b4cf02bf3aac3357c7d3b",
       "executable": false
     },
     "tests/installer/outbox.test.ts": {
@@ -7696,7 +7696,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "dcbe75f377591ac13d91531558af8195d00f105dbcc855fb125feaeb957a13f2",
+      "sha256": "d099c140b24d41d306dc6a24184c4ca9525d6ac5a09a31280122c62f56382c67",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
@@ -7808,7 +7808,7 @@
       "executable": false
     },
     "tests/worker/http-archive-fixture.ts": {
-      "sha256": "3e6ccce998811eb1675fa4168182432c4b183d2d827d05c540ccdd252975ca39",
+      "sha256": "fd1113fe77a20f7ef14dbdc3c73741e199ed9bf1e1ec0a554c5a01a21463e229",
       "executable": false
     },
     "tests/worker/http-archive-interrupt.ts": {
@@ -10548,7 +10548,7 @@
       "executable": false
     },
     "vite.config.ts": {
-      "sha256": "641522844141f2ae83c8a015a3cc8d5fd2d17c27f19a1aec285c8502587af4f5",
+      "sha256": "534be63bdcc0365b1761e408fcb97b4e35d743e1aad660a768c2936131411ad5",
       "executable": false
     },
     "vite.site.config.ts": {
@@ -10556,7 +10556,7 @@
       "executable": false
     },
     "vitest.config.ts": {
-      "sha256": "f5d0adc93986f00270a2b81188b6d38e6bac1eba3f40ee905c9246be4773c9af",
+      "sha256": "e37d63b717bf9786a1b319719c60cc1f0bb0ef263c718dc0dfd8ee6eff731d4d",
       "executable": false
     },
     "vitest.markdown.config.ts": {
