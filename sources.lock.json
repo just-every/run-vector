@@ -7561,7 +7561,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "fbcdab35dc905f30b4d2224349a322368070378f06f5ed3366c8942079e082e4",
+      "sha256": "c81f2464e7ed3228d0124ac0d68ee956e3e4589df6016d175025c5b71116ac39",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
