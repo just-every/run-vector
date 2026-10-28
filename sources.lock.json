@@ -3112,7 +3112,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "e498a926cc8e7d2bbbc7639e63386abbf00662618712444f3f30d19903a6e3eb",
+      "sha256": "be0ba9aa5c64c3c5a82eade205dda12ad127e8ae6db8dc56804a056faca5095f",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -3664,7 +3664,7 @@
       "executable": false
     },
     "src/core/features/agent-door/person-events.ts": {
-      "sha256": "ee65db15ac88acda8eb6228e35484abc1c5c61d778a2ed7969bd260b2d038eb4",
+      "sha256": "43daea1006ed5a73930c035930c177ee9e92689845c671bc0595c01033ee65c8",
       "executable": false
     },
     "src/core/features/agent-door/planning-cycles.ts": {
@@ -6916,7 +6916,7 @@
       "executable": false
     },
     "tests/agent-door/browser-journey.mjs": {
-      "sha256": "23d245de850cac07c8b2fb305cee2313511a69b7e1a17ab0e9e03d12fef463d7",
+      "sha256": "9bd02441bf30fb4ad034eb4df903776ecfee13ae06de951543f159ed8bc3ed0b",
       "executable": false
     },
     "tests/agent-door/consent-probe.mjs": {
