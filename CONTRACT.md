@@ -1179,7 +1179,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-ROLE-001
 
-**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map. A row with no door yet is checked by the clause it names when that clause builds the door.
+**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map. A row with no door yet is checked by the clause it names when that clause builds the door. The legacy customer-merge label CUST-006 is now CUST-009.
 
 | Action | Owner | Admin | Member | Guest | Viewer (ROLE-013 target) |
 |---|---|---|---|---|---|
@@ -1861,7 +1861,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue's Customers section lists each customer (CUST-005) who asked for it, with every request: its source and link — a manual request (CUST-008), a Penny request, a HappyToHelp conversation, a Zendesk, Intercom or Front ticket, a Salesforce or HubSpot opportunity, an Orbit account, a Gong call excerpt, a Slack message (SLACK-002), an intake email (TRIAGE-005) or a Spool error — the requester, and the requester's own words, with the customer's tier, status and annual revenue in USD from the customer record, whether entered by hand or synced from a linked source.
 2. Each request is attached to a customer by the identity rule of CUST-006, and one customer is counted once per issue however many requests or requesters link it.
-3. Requests move with duplicates (REL-003) and survive merges of issues and of customers (CUST-006).
+3. Requests move with duplicates (REL-003) and survive merges of issues and of customers (CUST-009).
 4. Owners, Admins and Members see customers and requests; Guests see neither (role matrix).
 
 #### CUST-002 — Customer-weighted planning
@@ -3730,7 +3730,7 @@ Vector does not do these jobs, and buyers get them as follows (US-first):
 - **Timesheets, billing and capitalized-labor reports.** Not provided; buyers use Harvest, Toggl or Clockify linked by issue identifier, and REPORT-005 exports for finance.
 - **Enterprise service management (help-desk ITSM, change approval boards) and regulated validation.** Not provided; an issue status is not a legal approval or a compliance record. Buyers use Jira Service Management or ServiceNow alongside.
 - **Perpetual parity with every incumbent field and app.** Imports report every omission, and transition syncs (DATA-016) are bounded; Vector does not promise ongoing two-way parity with Jira or Linear.
-- **Buyer-branded mobile apps.** Members install Run Edit Run's store-listed apps and receive push through Run Edit Run's relay (MOBILE-001, MOBILE-002, MOBILE-004). A buyer who wants apps under their own name and developer accounts builds them from source and publishes them with their own Apple and Google push credentials; Vector does not publish to a buyer's store accounts for them (Linear does not offer branded apps either).
+- **Buyer-branded mobile apps.** Members install Run Edit Run's store-listed apps and receive push through Run Edit Run's relay (MOBILE-001, MOBILE-002, MOBILE-004, MOBILE-006). A buyer who wants apps under their own name and developer accounts builds them from source and publishes them with their own Apple and Google push credentials; Vector does not publish to a buyer's store accounts for them (Linear does not offer branded apps either).
 
 ## Homepage claims
 
@@ -3761,8 +3761,8 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 21 | 84 | 1 | 106 |
-| Target and push further | 2 | 89 | 98 | 189 |
-| All | 23 | 173 | 99 | 295 |
+| Target and push further | 3 | 88 | 98 | 189 |
+| All | 24 | 172 | 99 | 295 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -3978,7 +3978,7 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `AUTO-006` | Due-soon rules | target | partial | `src/core/features/due-reminders/service.ts` | Due-today and overdue notifications only |
 | `REPORT-001` | Insights | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/insights-journey.mjs`, `tests/e2e/cycle-report-runtime.mjs` | Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; tests/e2e/insights-journey.mjs (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. |
 | `REPORT-002` | Cycle and project charts | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | The cited evidence exercises the existing cycle and project charts behavior. Missing an audited "complete cycle and project charts through its public doors" journey that performs and reads the full retained outcome: Membership events retain identifiers and timestamps only, and erasure is unchanged. |
-| `REPORT-006` | Project completion forecast | target | partial | `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts` | The cited evidence exercises the existing project completion forecast behavior. Missing an audited "complete project completion forecast through its public doors" journey that performs and reads the full retained outcome: Completed, canceled and archived projects retain their last aggregate state; reopening resumes live history. |
+| `REPORT-006` | Project completion forecast | target | done | `tests/worker/project-report.test.ts` — "[REPORT-002 REPORT-006] a project's scope and completion by day follow adds, moves, deletions and reopenings and project a completion date by the stated rule" |  |
 | `REPORT-003` | Dashboards | target | partial | `tests/e2e/dashboards-journey.mjs` | The cited evidence exercises the existing dashboards behavior. Missing an audited "complete dashboards through its public doors" journey that performs and reads the full retained outcome: Members compose dashboards of saved charts, counts and issue lists for a team or for leadership, share them inside the workspace, and filter the whole dashboard by team, date range or project. |
 | `REPORT-004` | Workload | target | partial | `tests/worker/workload.test.ts`, `tests/e2e/core-workload-journey.mjs` | The cited workload journey reads three people, estimates, issue counts and capacities. Missing the workload journey populated by a delegated agent session which verifies the accountable person retains that work; delegation is unbuilt. |
 | `REPORT-005` | Warehouse and spreadsheet export | target | missing |  | No implementation yet |

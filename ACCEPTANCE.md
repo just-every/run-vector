@@ -8,10 +8,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 23 | 173 | 86 | 282 |
+| Core | 24 | 172 | 86 | 282 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 23 | 173 | 99 | 295 |
+| Full target | 24 | 172 | 99 | 295 |
 
 Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5a8` (27 October 2026). Field proof register: 10 rows; 0 passed, 0 failed, 10 not run.
 
@@ -1538,7 +1538,7 @@ Core · published · **partial** · Cites BASE-ACCESS-002, BASE-ROLE-001, BASE-P
 
 Core · target · **partial** · Cites BASE-ROLE-001
 
-**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map. A row with no door yet is checked by the clause it names when that clause builds the door.
+**Requirement.** Each member has one workspace role. The following matrix defines the permitted actors for every named job; ROLE-013 adds Viewer. Administrative role alone does not supply private-team content membership. Matrix cell wording stays verbatim for its reader. The legacy channel-creation label SLACK-003 is now SLACK-008; comment-thread resolution labelled ISSUE-029 is now ISSUE-029. The other split destinations are recorded in the ID map. A row with no door yet is checked by the clause it names when that clause builds the door. The legacy customer-merge label CUST-006 is now CUST-009.
 
 | Action | Owner | Admin | Member | Guest | Viewer (ROLE-013 target) |
 |---|---|---|---|---|---|
@@ -2364,7 +2364,7 @@ Core · target · **missing** · Cites BASE-INPUT-001, BASE-ROLE-001
 **Acceptance.** Through the native product door and its declared counterpart:
 1. An issue's Customers section lists each customer (CUST-005) who asked for it, with every request: its source and link — a manual request (CUST-008), a Penny request, a HappyToHelp conversation, a Zendesk, Intercom or Front ticket, a Salesforce or HubSpot opportunity, an Orbit account, a Gong call excerpt, a Slack message (SLACK-002), an intake email (TRIAGE-005) or a Spool error — the requester, and the requester's own words, with the customer's tier, status and annual revenue in USD from the customer record, whether entered by hand or synced from a linked source.
 2. Each request is attached to a customer by the identity rule of CUST-006, and one customer is counted once per issue however many requests or requesters link it.
-3. Requests move with duplicates (REL-003) and survive merges of issues and of customers (CUST-006).
+3. Requests move with duplicates (REL-003) and survive merges of issues and of customers (CUST-009).
 4. Owners, Admins and Members see customers and requests; Guests see neither (role matrix).
 
 **Evidence.** None.
@@ -3183,7 +3183,7 @@ Core · target · **partial** · Cites BASE-ROLE-001
 
 #### REPORT-006 — Project completion forecast
 
-Core · target · **partial** · From REPORT-002 · Cites BASE-ROLE-001
+Core · target · **done** · From REPORT-002 · Cites BASE-ROLE-001
 
 **Requirement.** Each project shows scope and completion over time with the projected completion date.
 
@@ -3195,8 +3195,8 @@ Core · target · **partial** · From REPORT-002 · Cites BASE-ROLE-001
 5. Fewer than three recorded completions shows Not enough history; zero remaining issues has no projected date.
 6. Completed, canceled and archived projects retain their last aggregate state; reopening resumes live history.
 
-**Evidence.** `tests/worker/cycle-report.test.ts`, `tests/e2e/cycle-report-runtime.mjs`, `tests/worker/project-report.test.ts`, `tests/e2e/project-report-runtime.mjs`, `tests/worker/data-http.test.ts`
-**Gap.** The cited evidence exercises the existing project completion forecast behavior. Missing an audited "complete project completion forecast through its public doors" journey that performs and reads the full retained outcome: Completed, canceled and archived projects retain their last aggregate state; reopening resumes live history.
+**Evidence.** `tests/worker/project-report.test.ts` — "[REPORT-002 REPORT-006] a project's scope and completion by day follow adds, moves, deletions and reopenings and project a completion date by the stated rule"
+**Gap.** None.
 
 #### REPORT-003 — Dashboards
 
