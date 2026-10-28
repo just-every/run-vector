@@ -20,6 +20,7 @@ export const updateIssueSchema = z
     milestoneId: z.string().length(26).nullable().optional(),
     cycleId: z.string().length(26).nullable().optional(),
     estimate: z.number().int().min(1).max(100).nullable().optional(),
+    startDate: z.string().date().nullable().optional(),
     dueDate: z.string().date().nullable().optional(),
     labelIds: z
       .array(z.string().length(26))

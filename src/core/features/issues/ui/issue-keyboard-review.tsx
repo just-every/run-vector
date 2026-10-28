@@ -32,7 +32,7 @@ export function IssueKeyboardReview({ submitted, onUse }: {
         <ul>{current.map((row) => <li key={row.identifier}>
           <strong>{row.identifier} · {row.title}</strong>
           <span>Current version {row.version} · {row.team.name} · {row.status.name} · {row.assignee?.name ?? "Unassigned"} · {row.priority}</span>
-          <span>Labels: {row.labels.map((label) => label.name).join(", ") || "None"} · Estimate: {row.estimate ?? "None"} · Due: {row.dueDate ?? "None"}</span>
+          <span>Labels: {row.labels.map((label) => label.name).join(", ") || "None"} · Estimate: {row.estimate ?? "None"} · Start: {row.startDate ?? "None"} · Due: {row.dueDate ?? "None"}</span>
           <span>Project: {row.project?.name ?? "None"} · Cycle: {row.cycle?.name ?? "None"}</span>
         </li>)}</ul>
         <button type="button" disabled={busy} onClick={() => onUse(current)}>Use reviewed versions</button>

@@ -183,6 +183,7 @@ export function IssueTable({
                     <span>
                       <span className="issues-mobile-label">Assignee: </span>
                       {issue.assignee?.name ?? "Unassigned"}
+                      {issue.startDate && <small className="issues-due">Starts {date(issue.startDate)}</small>}
                       {issue.dueDate && (
                         <small className="issues-due">
                           Due {date(issue.dueDate)}

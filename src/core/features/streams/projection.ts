@@ -37,6 +37,7 @@ export type StreamItem = {
   labels: Array<{ id: string; name: string; color: string }>;
   status: { id: string; name: string; category: string };
   priority: string;
+  startDate: string | null;
   dueDate: string | null;
   updatedAt: string;
   assignee: { id: string; name: string } | null;
@@ -297,6 +298,7 @@ function toStreamItem(
     }),
     status: { id: status.id, name: status.name, category: status.category },
     priority: issue.priority,
+    startDate: issue.startDate,
     dueDate: issue.dueDate,
     updatedAt: issue.updatedAt,
     assignee: assignee && { id: assignee.id, name: assignee.name },

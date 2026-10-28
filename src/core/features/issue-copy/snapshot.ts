@@ -9,6 +9,7 @@ export type CopySource = {
   project_id: string | null;
   milestone_id: string | null;
   cycle_id: string | null;
+  start_date: string | null;
   due_date: string | null;
   estimate: number | null;
   expected_outcome: string | null;
@@ -31,6 +32,7 @@ const fields = [
   "project_id",
   "milestone_id",
   "cycle_id",
+  "start_date",
   "due_date",
   "estimate",
   "expected_outcome",

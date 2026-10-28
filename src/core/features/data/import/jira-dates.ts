@@ -43,16 +43,16 @@ export function readJiraDates(cells:JiraDateCell[],sourceOffset?:string,shortYea
   for(const {cell,parts:p} of valid) {
     const date=calendar(p,order);
     if(!date){fail(cell,'jira_invalid_date','The date is not a possible calendar day.');continue;}
-    // Due dates alone are calendar days. Every other field represents an instant.
-    if(cell.field.trim().toLowerCase()==='due date'&&!p.timed){values.set(cell.row+':'+cell.column,date);continue;}
+    // Start and due dates are calendar days. Every other field represents an instant.
+    if(['start date','due date'].includes(cell.field.trim().toLowerCase())&&!p.timed){values.set(cell.row+':'+cell.column,date);continue;}
     const offset=p.offset||sourceOffset;
     if(!offset){fail(cell,'jira_source_offset_required','This timestamp has no offset. Supply the exporting user’s source offset explicitly; Vector never guesses UTC or the machine timezone.');continue;}
     if(!validOffset(offset)){fail(cell,'jira_invalid_offset','Supply Z or an explicit offset between -14:00 and +14:00.');continue;}
     const time=[p.hour,p.minute,p.secondOfMinute].map(value=>String(value).padStart(2,'0')).join(':');
     const instant=new Date(date+'T'+time+offset).toISOString();
-    values.set(cell.row+':'+cell.column,cell.field.trim().toLowerCase()==='due date'?date:instant);
+    values.set(cell.row+':'+cell.column,['start date','due date'].includes(cell.field.trim().toLowerCase())?date:instant);
   }
   const family=valid[0]?.parts.family,pattern=family==='ISO'?'YYYY-MM-DD':family==='month'?'D/Mon/YYYY':numeric.length?(dmy!==mdy?(order==='DMY'?'D/M/YYYY':'M/D/YYYY'):'undetermined numeric order'):'no dates';
-  const review:JiraDateReview={pattern:valid[0]?.parts.shortYear?pattern.replace('YYYY','YY'):pattern,shortYearCentury:shortYearCentury??null,sample:cells[0]?.value??'',sourceOffset:sourceOffset??'none supplied',policy:'Explicit cell offsets take precedence. Offsetless instants require the supplied fixed offset; due dates remain calendar days. No timezone or DST inference.',cells:cells.length};
+  const review:JiraDateReview={pattern:valid[0]?.parts.shortYear?pattern.replace('YYYY','YY'):pattern,shortYearCentury:shortYearCentury??null,sample:cells[0]?.value??'',sourceOffset:sourceOffset??'none supplied',policy:'Explicit cell offsets take precedence. Offsetless instants require the supplied fixed offset; start and due dates remain calendar days. No timezone or DST inference.',cells:cells.length};
   return {errors,values,review};
 }

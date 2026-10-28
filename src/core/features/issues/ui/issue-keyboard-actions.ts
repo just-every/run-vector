@@ -8,6 +8,7 @@ export const issueEditFields = {
   priority: "Priority",
   labelIds: "Labels",
   estimate: "Estimate",
+  startDate: "Start date",
   dueDate: "Due date",
   projectId: "Project",
   milestoneId: "Milestone",
@@ -16,7 +17,7 @@ export const issueEditFields = {
 export type IssueEditField = keyof typeof issueEditFields;
 export type IssueEditTarget = Pick<IssueRow,
   "identifier" | "title" | "version" | "team" | "status" | "priority" |
-  "assignee" | "project" | "milestone" | "cycle" | "labels" | "dueDate"
+  "assignee" | "project" | "milestone" | "cycle" | "labels" | "startDate" | "dueDate"
 > & { estimate?: number | null };
 export const issueEditShortcuts: Record<string, IssueEditField> = {
   s: "statusId", a: "assigneeOperatorId", p: "priority", l: "labelIds",
@@ -59,7 +60,7 @@ export function initialIssueEditValue(field: IssueEditField, rows: IssueEditTarg
     field === "projectId" ? row.project?.id ?? "" :
     field === "milestoneId" ? row.milestone?.id ?? "" :
     field === "cycleId" ? row.cycle?.id ?? "" :
-    field === "priority" ? row.priority : field === "dueDate" ? row.dueDate ?? "" :
+    field === "priority" ? row.priority : (field === "dueDate" || field === "startDate") ? row[field] ?? "" :
     field === "estimate" ? String(row.estimate ?? "") : "");
   return values.every((value) => value === values[0]) ? values[0] ?? "" : "";
 }

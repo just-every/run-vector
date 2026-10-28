@@ -261,6 +261,12 @@ function IssueInspector({
             onRefresh={onRefresh}
           />
           <IssueFieldEditor writable={writable}
+            key={issue.identifier + ":start-date"}
+            issue={issue}
+            field="startDate"
+            onRefresh={onRefresh}
+          />
+          <IssueFieldEditor writable={writable}
             key={issue.identifier + ":due-date"}
             issue={issue}
             field="dueDate"

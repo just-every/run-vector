@@ -34,12 +34,13 @@ const columns = (table: string) => {
   return [...value].sort();
 };
 // New nullable columns join an issue's value only once set, preserving the
-// exact shape and hashes of retained pre-feature import snapshots.
-const optional: Record<string,string[]> = { issues:['archived_at','milestone_id'] };
+// exact shape of retained pre-feature snapshots. Build keys in canonical order
+// before removing absent fields so a set date matches the publication guard.
+const optional: Record<string,string[]> = { issues:['archived_at','milestone_id','start_date'] };
 const object = (table: string,alias: string) => {
   const extra=optional[table]??[];
-  const base='json_object('+columns(table).filter(name=>!extra.includes(name)).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';
-  return extra.reduce((value,name)=>`CASE WHEN ${alias}.${quote(name)} IS NULL THEN ${value} ELSE json_set(${value},'$.${name}',${alias}.${quote(name)}) END`,base);
+  const base='json_object('+columns(table).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';
+  return extra.reduce((value,name)=>`CASE WHEN ${alias}.${quote(name)} IS NULL THEN json_remove(${value},'$.${name}') ELSE ${value} END`,base);
 };
 const relation = (table: string,key: string,order: string) => `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table,'r')} AS value FROM ${quote(table)} r WHERE r.${quote(key)}=i.id ORDER BY r.${quote(order)}))`;
 export const legacySnapshotExpression = 'json_object('+[

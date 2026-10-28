@@ -17,11 +17,14 @@ export const createIssueInputSchema = z.object({
   priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']).optional().default('none'),
   labelIds: z.array(id).max(seed.limits.labelsPerIssue).default([]).refine((values) => new Set(values).size === values.length, 'Label IDs must be unique.'),
   estimate: z.number().int().min(1).max(100).nullable().optional().default(null),
+  startDate: z.string().date().nullable().optional().default(null),
   dueDate: z.string().date().nullable().optional().default(null),
   expectedOutcome: optionalText.default(null),
   customerImpact: optionalText.default(null),
   customFields: z.record(z.string(), z.unknown()).default({}),
-}).strict()
+}).strict().refine((value) => !value.startDate || !value.dueDate || value.startDate <= value.dueDate, {
+  message: 'Start date must be on or before due date.', path: ['startDate'],
+})
 
 const decisionBase = z.object({
   expectedVersion: z.number().int().positive(),

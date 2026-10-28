@@ -117,8 +117,8 @@ export async function copyIssue(
     writes.push(
       db
         .prepare(
-          `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,project_id,milestone_id,cycle_id,due_date,estimate,expected_outcome,customer_impact,custom_fields_json,version,created_at,updated_at)
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`,
+          `INSERT INTO issues(id,identifier,origin_prefix,sequence_number,team_id,title,description,status_id,priority,project_id,milestone_id,cycle_id,start_date,due_date,estimate,expected_outcome,customer_impact,custom_fields_json,version,created_at,updated_at)
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,?,?)`,
         )
         .bind(
           id,
@@ -133,6 +133,7 @@ export async function copyIssue(
           mapped.projectId,
           mapped.milestoneId,
           mapped.cycleId,
+          row.start_date,
           row.due_date,
           row.estimate,
           row.expected_outcome,

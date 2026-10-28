@@ -20,6 +20,7 @@ export const browseSort: Record<IssueListQuery["sort"], string> = {
   oldest: "i.created_at ASC",
   priority: priorityOrder,
   status: "s.position ASC",
+  start: "i.start_date IS NULL ASC,i.start_date ASC",
   due: "i.due_date IS NULL ASC,i.due_date ASC",
   updated: "i.updated_at DESC",
   manual: "i.identifier ASC",
@@ -117,6 +118,24 @@ export function browseWhere(
       "EXISTS(SELECT 1 FROM issue_labels il JOIN labels l ON l.id=il.label_id AND l.workspace_id=t.workspace_id WHERE il.issue_id=i.id AND il.label_id=?)",
     );
     values.push(query.label);
+  }
+  if (query.start === "none") conditions.push("i.start_date IS NULL");
+  if (query.start === "overdue") {
+    conditions.push("i.start_date<?");
+    values.push(today);
+  }
+  if (query.start === "range" || query.start === "this_week") {
+    conditions.push("i.start_date IS NOT NULL");
+    let from = query.startFrom, to = query.startTo;
+    if (query.start === "this_week") {
+      const day = new Date(today + "T00:00:00Z");
+      day.setUTCDate(day.getUTCDate() - (day.getUTCDay() + 6) % 7);
+      from = day.toISOString().slice(0, 10);
+      day.setUTCDate(day.getUTCDate() + 6);
+      to = day.toISOString().slice(0, 10);
+    }
+    if (from) { conditions.push("i.start_date>=?"); values.push(from); }
+    if (to) { conditions.push("i.start_date<=?"); values.push(to); }
   }
   if (query.due === "none") conditions.push("i.due_date IS NULL");
   if (query.due === "overdue") {
