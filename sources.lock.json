@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "39d305238ce7e6cb6d3b5cd7cfe943f02f1641ac4b2f356cb3bf421d5755d27b",
+      "sha256": "6cc994f0a823b792a2f8c8977fd785c6eda39e0634bde7a705b6de792bf2680a",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -505,7 +505,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "422e5fc68114d32430900bef03e1ff2d75a4622d65ec3066519d3ca616aae053",
+      "sha256": "4c5188390402330e99575be3dfc1d8f32207dad2d24cc96d08d15ad6248787ff",
       "executable": false
     },
     "CLAUDE.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8066be805a1795e1b1f132f64aef047af5ce1b9d80819365db016bb8c31218ee",
+      "sha256": "5144be26a3820dadb952e3aa11e13db71662a124b18ac3a83ec0dcf5d626dff9",
       "executable": false
     },
     "DEMO.md": {
@@ -565,15 +565,23 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "98d5be64587fee9f73c375176a52961b2f23e3dca7375130b725619b99d47a78",
+      "sha256": "fb3a4140720dbf8a47d3db1d1b8df5c20ae99f2f5da8203a343fe48d79c1beef",
       "executable": false
     },
     "docs/contract/COVERAGE.json": {
-      "sha256": "178b8ce679edc0615cf7a37118f12d9ed12cd987605404098f4100ce60cb11dc",
+      "sha256": "78f0933a253502e78e4924ae588baf340ab137ca9527f76c526b994263a97af7",
+      "executable": false
+    },
+    "docs/contract/DONE-AUDIT.md": {
+      "sha256": "6bc10ba57fbd1fe7ba5ebd0d7ea5322c52a23a4b4be896a67ae2d68383099eb3",
       "executable": false
     },
     "docs/contract/ID-MAP.json": {
-      "sha256": "8b272ea33d83d040ca2a2493a79a1fd9281a0c14bb5e4714e0af482ae68ecc45",
+      "sha256": "4cf01fb3218e0860e4dec8f1d69132f40ca27983dfc6ee53006008bc88a335cd",
+      "executable": false
+    },
+    "docs/contract/MECHANISMS.md": {
+      "sha256": "60e31c44bf1ad5f69876f6b1d7cb6f68d82462c486a7af2e80bb729b2189d3ef",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -713,7 +721,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "6e55468be773a67a0e10033938324ad00281c9c196b121929ff2dbb92006f661",
+      "sha256": "b714656407b7016528e54fc8c7a58e1b1749fdcbf5c2caa99bcaf84e5dd90711",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -2530,6 +2538,10 @@
     },
     "rer-setup.json": {
       "sha256": "9fd813a1b304c4184c3e206afd55c7c9c32f492de4c6f4585dd7ff805d34e4fc",
+      "executable": false
+    },
+    "RULINGS.md": {
+      "sha256": "25c7d3d4f520bcba568413a914d654057a3b88f31f51bc100bb6051dffbf2a50",
       "executable": false
     },
     "RUN-LOCALLY.md": {

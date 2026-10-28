@@ -473,6 +473,18 @@
     {
       "source": "docs/verify.md",
       "reason": "Maintainer verification, recovery and acceptance command guide"
+    },
+    {
+      "source": "RULINGS.md",
+      "reason": "Owner and ct product rulings"
+    },
+    {
+      "source": "docs/contract/DONE-AUDIT.md",
+      "reason": "Journey coverage for carried contract statuses"
+    },
+    {
+      "source": "docs/contract/MECHANISMS.md",
+      "reason": "Provider mechanisms and verification recipes moved from contract prose"
     }
   ]
 }

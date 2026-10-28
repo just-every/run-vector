@@ -93,15 +93,19 @@
       ]
     },
     "ROLE-010": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "ROLE-010"
+        "ROLE-010",
+        "ROLE-014"
       ]
     },
     "ROLE-011": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "ROLE-011"
+        "ROLE-011",
+        "ROLE-015",
+        "ROLE-016",
+        "ROLE-017"
       ]
     },
     "ROLE-012": {
@@ -207,9 +211,11 @@
       ]
     },
     "ISSUE-008": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "ISSUE-008"
+        "ISSUE-008",
+        "ISSUE-029",
+        "ISSUE-030"
       ]
     },
     "ISSUE-009": {
@@ -279,9 +285,11 @@
       ]
     },
     "ISSUE-020": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "ISSUE-020"
+        "ISSUE-020",
+        "ISSUE-031",
+        "ISSUE-032"
       ]
     },
     "ISSUE-021": {
@@ -303,9 +311,13 @@
       ]
     },
     "ISSUE-024": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "ISSUE-024"
+        "ISSUE-024",
+        "ISSUE-033",
+        "ISSUE-034",
+        "ISSUE-035",
+        "ISSUE-036"
       ]
     },
     "ISSUE-025": {
@@ -699,9 +711,10 @@
       ]
     },
     "PROJ-016": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "PROJ-016"
+        "PROJ-016",
+        "PROJ-046"
       ]
     },
     "PROJ-017": {
@@ -1071,9 +1084,10 @@
       ]
     },
     "REPORT-002": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "REPORT-002"
+        "REPORT-002",
+        "REPORT-006"
       ]
     },
     "REPORT-003": {
@@ -1191,15 +1205,22 @@
       ]
     },
     "SLACK-003": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "SLACK-003"
+        "SLACK-003",
+        "SLACK-006",
+        "SLACK-007",
+        "SLACK-008",
+        "SLACK-009"
       ]
     },
     "SLACK-004": {
-      "how": "kept",
+      "how": "split",
       "to": [
-        "SLACK-004"
+        "SLACK-004",
+        "SLACK-010",
+        "SLACK-011",
+        "SLACK-012"
       ]
     },
     "SLACK-005": {
