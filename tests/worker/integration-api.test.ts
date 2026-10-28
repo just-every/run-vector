@@ -10,7 +10,7 @@ afterEach(()=>vi.useRealTimers());
 import {setupIntegrations} from './integration-fixture';
 import {invite,actor,request,origin,bindings} from './base-auth-fixture';
 import {createIntegrationApi} from '../../src/core/features/integrations/api';
-it('[API-001 API-002] Base scoped token authority drives native routes, usage, stale writes and revocation without HTML or file admission',async()=>{
+it('[API-001 API-002 ISSUE-022] Base scoped token authority drives native routes, usage, stale writes and revocation without HTML or file admission',async()=>{
  vi.useFakeTimers({toFake:['Date']});vi.setSystemTime(new Date());
  const f=await setupIntegrations(),read=await f.issueToken(['issues:read','metadata:read']),write=await f.issueToken(['issues:read','issues:write','comments:write']);
  expect((await f.api('', '/issues')).status).toBe(401);expect((await f.api('int_'+'a'.repeat(64),'/issues')).status).toBe(401);

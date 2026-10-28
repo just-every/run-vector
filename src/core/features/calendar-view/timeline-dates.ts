@@ -1,7 +1,7 @@
 import type {TimelineIssue} from './timeline-schema';
 
 const milliseconds=86400000;
-export const dayNumber=(day:string)=>Date.parse(day+'T12:00:00Z')/milliseconds;
+export const dayNumber=(day:string)=>Date.parse(day+'T00:00:00Z')/milliseconds;
 export const dayAt=(day:number)=>new Date(day*milliseconds).toISOString().slice(0,10);
 export function timelineGeometry(issues:TimelineIssue[],today:string){
   const dates=[today,...issues.flatMap(issue=>[issue.startDate,issue.dueDate].filter((date):date is string=>!!date))].map(dayNumber);

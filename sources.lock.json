@@ -2009,7 +2009,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "901da8403a8071cbae5682c077b2a7a40789d2cb3c47bebe36e814d3943fffbe",
+      "sha256": "0fad8560ae21359e4680ee537c22fa6cdf7c95cb1c99794c6d98b28dcf4d0882",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -3677,7 +3677,7 @@
       "executable": false
     },
     "src/core/features/calendar-view/timeline-dates.ts": {
-      "sha256": "7d1ca2f1fa09f55dc111166afc6e3d3b8fb34b2d67252104215b2a8b9b0f4301",
+      "sha256": "bbba6a3c95b8813e7e2eae3018e531324ec22bea5296aeb4648980ee37ce4214",
       "executable": false
     },
     "src/core/features/calendar-view/timeline-read.ts": {
@@ -5865,7 +5865,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "29dd92ec8b0331f48423210cd8624d485e9bf4152b60f289e021b98cd7027f66",
+      "sha256": "60c47e455fe6ee88207811d5525dc5f570bebd510a0f62c0c8ccb9c35b457295",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -7257,7 +7257,7 @@
       "executable": false
     },
     "tests/e2e/timeline-journey.mjs": {
-      "sha256": "06ab74820b31daca929677db8263c09a75d6e859fd1d8a8973ddca259b78c0a9",
+      "sha256": "6ea7deec0db32c24c3e14c443c02e67bed641727fddfccce914b2133a83bad28",
       "executable": false
     },
     "tests/e2e/ui-administration-form.mjs": {
@@ -7709,7 +7709,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "24052ee4359f7d245c4082de94834250100988dc8d6b492ad4cf2280d1898566",
+      "sha256": "bd76c8f4c76a6868fc50be609a46d32aa607dfde4863534d66a33f4b0f20eae7",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {

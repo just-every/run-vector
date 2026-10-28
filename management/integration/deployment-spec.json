@@ -640,6 +640,12 @@
       "name": "0105_initiative_destination_approvals.sql",
       "sha256": "3aa22fac33c75b219a14cc77fde0fac9c74c6b65b3f55ef69dfc1c7c6d8c2af9",
       "sql": "-- An Owner or Admin approves one existing destination for one initiative and audience (INIT-001).\n-- Identity is the provider, its workspace and the immutable channel identity, never a display name.\nCREATE TABLE vector_initiative_destination_approvals (\n id TEXT PRIMARY KEY,\n workspace_id TEXT NOT NULL,\n initiative_id TEXT NOT NULL REFERENCES initiatives(id),\n provider TEXT NOT NULL CHECK(provider IN('slack','discord')),\n provider_workspace TEXT,\n channel_id TEXT NOT NULL,\n channel_name TEXT NOT NULL,\n source_destination_id TEXT REFERENCES vector_webhook_destinations(id),\n audience TEXT NOT NULL CHECK(audience='workspace'),\n approved_by TEXT NOT NULL,\n approved_at TEXT NOT NULL,\n CHECK((provider='discord')=(source_destination_id IS NOT NULL)),\n UNIQUE(workspace_id,initiative_id,provider,channel_id)\n);\n-- A binding saved through the scoped initiative capability names the approval that admitted it.\nCREATE TABLE vector_initiative_scoped_bindings (\n destination_id TEXT PRIMARY KEY REFERENCES vector_webhook_destinations(id),\n workspace_id TEXT NOT NULL,\n initiative_id TEXT NOT NULL REFERENCES initiatives(id),\n approval_id TEXT NOT NULL,\n bound_by TEXT NOT NULL\n);\nCREATE TRIGGER vector_initiative_scoped_binding_removed AFTER DELETE ON vector_initiative_channel_bindings BEGIN\n DELETE FROM vector_initiative_scoped_bindings WHERE destination_id=OLD.destination_id;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0106_issue_start_date.sql",
+      "sha256": "e5437ba35933e55715b6673a61cbfa12c444033bcd756f8512366687deeea84e",
+      "sql": "ALTER TABLE issues ADD COLUMN start_date TEXT;\n\nCREATE INDEX issues_start_date ON issues(start_date) WHERE start_date IS NOT NULL;\n\nCREATE TRIGGER issues_start_date_insert BEFORE INSERT ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nCREATE TRIGGER issues_start_date_update BEFORE UPDATE OF start_date,due_date ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nALTER TABLE project_template_issues ADD COLUMN start_offset_days INTEGER;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
