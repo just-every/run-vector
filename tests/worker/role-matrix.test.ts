@@ -1,3 +1,4 @@
+import {unregisteredAndSettingsJourney} from './role-door-journey';
 import {viewerVisibilityJourney} from './role-viewer-journey';
 import {privateVisibilityJourney} from './role-private-journey';
 import { exerciseAudit } from './audit-scenario';
@@ -240,6 +241,7 @@ it("[ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-
   const w = await roleWorkspace();
   const outside = (await w.mutate("/settings/teams", "POST", { name: "Roles outside", identifierPrefix: "ROLEOUT" })).teams.find((t) => t.name === "Roles outside")!.id;
   const table = probes(w);
+  await unregisteredAndSettingsJourney(w);
   // Driven from the registry: each row a door is registered against has a probe.
   expect(Object.keys(table).sort()).toEqual(Object.keys(matrix).sort());
   const set = async (settings: string, planning: string, memberInvites: boolean, memberTeamCreation = false) => {

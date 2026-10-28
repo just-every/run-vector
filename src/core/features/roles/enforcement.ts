@@ -7,6 +7,7 @@ import { authorityFence, loadAuthority } from './authority'
 import { apiDoors, doors, type Door, type DoorRequest } from './doors'
 import { decide, decisionInputs, type Decision } from './policy'
 import {visibleTeam,requestableTeam} from './visibility-sql'
+import { administrationContext, audit, commit } from '../administration/transaction'
 
 const surfaces = { api: doors, v1: apiDoors }
 const pattern = (path: string) => new RegExp('^' + path.replace(/[.]/g, '\\.').replace(/:([A-Za-z]+)/g, '(?<$1>[^/]+)').replace(/\*$/, '(?<rest>.*)') + '$')
@@ -40,6 +41,12 @@ export async function doorAuthority(c: Context<AppEnvironment>, surface: keyof t
     body: () => body ??= read ? Promise.resolve(undefined) : readRequestJson(c.req.raw.clone() as unknown as Request).catch(() => undefined),
   }
   const { decision, fence } = await decideDoor(door, request)
+  if (!door && !read && decision === 'forbidden') {
+    const context = await administrationContext(source, actor)
+    // Do not retain arbitrary request paths or bodies: either can contain private data.
+    await commit(context, audit(context, 'permission.unregistered_refused', 'unregistered',
+      'Unregistered write', null, { method: c.req.method, surface }))
+  }
   if (decision === 'unauthenticated') return { denied: c.json({ error: 'unauthenticated', message: 'Sign in again to continue.' }, 401, { 'Cache-Control': 'no-store' }) }
   if (decision === 'hidden') return { denied: c.json({ error: 'not_found', message: 'The selected record is unavailable.' }, 404, { 'Cache-Control': 'no-store' }) }
   if (decision === 'forbidden') return { denied: c.json({ error: 'forbidden', message: 'Your workspace role does not allow this action.' }, 403, { 'Cache-Control': 'no-store' }) }

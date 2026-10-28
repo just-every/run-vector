@@ -5837,11 +5837,11 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "29dd92ec8b0331f48423210cd8624d485e9bf4152b60f289e021b98cd7027f66",
+      "sha256": "991660029b79175b37c48e1478c6625ad65e2958b33703dfa386c2ab019c6c65",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
-      "sha256": "378e222c00489bc2cdc9c8df37f8f8cf731016e8460511b65595e21bd01cab85",
+      "sha256": "99cb4b9393949b9570acec04896166693b367af4d3907471b38694f09b39273f",
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
@@ -5850,6 +5850,10 @@
     },
     "src/core/features/roles/policy.ts": {
       "sha256": "fdae88d22bef465a020759eb58b114038875a4d20393091569062bc3bfb388fc",
+      "executable": false
+    },
+    "src/core/features/roles/settings-doors.ts": {
+      "sha256": "d3f3efda977cbb71e6133229a6a363f7a711d14b68b2f1cfb29d6db8e92c36b2",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
@@ -6641,7 +6645,7 @@
       "executable": false
     },
     "tests/e2e/admin-runtime.mjs": {
-      "sha256": "b2fc92fbc562d045e6a70df008ee2c558145f5f514cc4588a6f2954465d2eeca",
+      "sha256": "52aa1b1d7a150cc13d2554d5a7c0288734c548e47f62ba4f50d33e96a6853fed",
       "executable": false
     },
     "tests/e2e/admin-saved-view-fixture.mjs": {
@@ -7174,6 +7178,10 @@
     },
     "tests/e2e/restore-ui-journey.mjs": {
       "sha256": "922c3cb21976edfbede379067997628e251aba02c24f87042a56157cccead1fa",
+      "executable": false
+    },
+    "tests/e2e/role-door-coverage.mjs": {
+      "sha256": "04607ec6ce7c3487aa319a9cd18efc0d60f89271d253fdfefac5c16c2680392c",
       "executable": false
     },
     "tests/e2e/role-private-cells.mjs": {
@@ -7920,6 +7928,10 @@
       "sha256": "0c26194376375009c7c575620726d3bb29452a03684dd97952f4989cb572bc76",
       "executable": false
     },
+    "tests/worker/role-door-journey.ts": {
+      "sha256": "b730e48fbcb38865ab607aa1b26168bc5cc00a9d0cc12a755426f3a19e0f1768",
+      "executable": false
+    },
     "tests/worker/role-fixture.ts": {
       "sha256": "fb16aac9f80dc0dc83dafaef2372579c1a3c0a3fc663fa9c894276f9cb041a76",
       "executable": false
@@ -7929,7 +7941,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "5ab03b12384e053725babfe023c3913cd6ec2ef6bb0a82d501c62f7c32d340db",
+      "sha256": "7f1d675257335de3ae39661a544af36e90af401ae605884d29c1e97cf9815012",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
