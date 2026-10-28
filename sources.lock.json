@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "73d9b0b9b58d3238914f2a8b034ee723b045a4b482ae270d64ace8cac3772834",
+      "sha256": "771421d0bd302d6ee5849306440acceee8e87509ce56cbdad76e9f31e8c90d6f",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "820c12ea459467275975ae726fbd3c6c178d908aa65301f5a4a7d707af46e236",
+      "sha256": "933a5b648304c2d3473179db6ec79524b77455ed5767ad78779f6dadc68a2915",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "14f072b46550af6166333f242b1d3239a8741a54667fdfd4b5e954ac3f0f345c",
+      "sha256": "bc840af9afae414ae93f71ae682977469a0bbb50d226c7b49fe529b1ecc3c0ce",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -7193,7 +7193,7 @@
       "executable": false
     },
     "tests/e2e/role-door-coverage.mjs": {
-      "sha256": "cbdc0700d67965769da8b460f1826d9a52ca3c60c51ac3a0e281afb0b5687ad9",
+      "sha256": "21d6259aaa192270c60895b4c9472d00839545257ee6738aa3ecb1f2729618f2",
       "executable": false
     },
     "tests/e2e/role-private-cells.mjs": {

@@ -4,6 +4,7 @@ import {resolve,dirname,relative} from 'node:path';
 import {register} from 'node:module';
 import {execFileSync} from 'node:child_process';
 import ts from 'typescript';
+import {parseContract} from '../../src/base/seed-contract.mjs';
 
 /** This census begins at the real Hono app and Settings module graph, rather
  * than iterating the declarations it is meant to check. It runs in the existing
@@ -25,11 +26,11 @@ export async function assertRoleDoorCoverage(){
   }ts.forEachChild(node,walk);}walk(source);
  }}endpoints(resolve('src'));
  const key=door=>door.method+' '+door.path;
- const contract=readFileSync('CONTRACT.md','utf8');
+ const contractIds=new Set(parseContract(readFileSync('CONTRACT.md','utf8')).clauses.map(clause=>clause.id));
  for(const [id,row] of Object.entries(matrix)){
   const clauses=row.action.match(/[A-Z]+-[0-9]{3}/g)??[];
   assert.ok(clauses.length,id+' has no contract clause');
-  for(const clause of clauses)assert.ok(contract.includes('**'+clause+' —'),id+' names an absent clause '+clause);
+  for(const clause of clauses)assert.ok(contractIds.has(clause),id+' names an absent clause '+clause);
  }
  for(const [base,registry] of [['/api',doors],['/api/v1',apiDoors]]){
   const declared=new Map();
