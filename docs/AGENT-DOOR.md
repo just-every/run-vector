@@ -50,3 +50,9 @@ HTTP API retain their current credentials; those credentials are not currently
 accepted at MCP. This door does not enforce provider spending caps and registers
 no cost estimate. It makes no claim of full software-delivery autonomy or full
 Agent surface acceptance.
+
+The retained door event feed covers this surface's policy and agent activity.
+Ordinary person edits are still recorded in Vector's native activity; they are
+not yet mirrored into the door feed. Archives retain historical activity but
+exclude active company bindings, policy and pending approvals. After restore,
+apply fresh signed Business settings and policy before agent work resumes.
