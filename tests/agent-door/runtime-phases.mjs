@@ -1,0 +1,31 @@
+import { randomUUID } from 'node:crypto';
+import { createProtocol } from '../../vendor/base/agent-door/conformance/protocol.mjs';
+import { autonomousPolicy, heldPolicy } from '../../vendor/base/agent-door/conformance/crypto.mjs';
+import { discoverDoor, listedDoor } from '../../vendor/base/agent-door/conformance/discovery.mjs';
+import { runJourney } from '../../vendor/base/agent-door/conformance/journey.mjs';
+import { unsetPolicy, removalPhase, blockedPhases, pausePhase, consentRevocationPhase } from '../../vendor/base/agent-door/conformance/policy-phases.mjs';
+import { negativePhase } from '../../vendor/base/agent-door/conformance/negative.mjs';
+import { invocationPhase } from '../../vendor/base/agent-door/conformance/invocation.mjs';
+import { auditPhase } from '../../vendor/base/agent-door/conformance/audit.mjs';
+
+/** Run the pinned Base phases on the full real registry even when a declaration
+ * is pending. The caller prints every declaration and retains its failure exit;
+ * this gives runtime results instead of stopping at the declaration gate. All
+ * assertions and native journey calls remain the pin's actual implementations. */
+export async function runNativePhases({ fetch, invoke, origin, surface, signer, person }) {
+  const points = [];
+  const c = createProtocol({ fetch, origin, surface, signer, person, business: 'rer-agent-conformance',
+    consent: randomUUID(), agentId: `rer-conformance-${randomUUID()}`, seq: 0, revision: 0, listed: new Map(), points });
+  await c.phase('BASE-AGENT-001.transport', () => discoverDoor(c));
+  await c.phase('BASE-AGENT-007.phase0', () => unsetPolicy(c, true));
+  await c.phase('BASE-AGENT-007.phase1', () => removalPhase(c));
+  await c.phase('BASE-AGENT-013.phase2', async () => { await c.adopt(autonomousPolicy()); await listedDoor(c); await runJourney(c, 'autonomous', { injections: true, replay: true }); });
+  await c.phase('BASE-AGENT-013.phase3', async () => { await c.adopt(heldPolicy()); await runJourney(c, 'held', { held: true }); });
+  await c.phase('BASE-AGENT-007.phase4', () => blockedPhases(c));
+  await c.phase('BASE-AGENT-011.phase5', () => pausePhase(c));
+  await c.phase('BASE-AGENT-004.phase6', () => negativePhase(c));
+  await c.phase('BASE-AGENT-004.consent', () => consentRevocationPhase(c));
+  await c.phase('BASE-AGENT-012.invocation', () => invocationPhase(c, invoke));
+  await c.phase('BASE-AGENT-009.phase7', () => auditPhase(c));
+  return { ok: points.every(point => point.ok), points };
+}

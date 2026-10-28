@@ -2189,6 +2189,267 @@
       ]
     },
     {
+      "name": "vector.role.team_membership",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "TEAM-007"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.grants",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-009"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.join",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "TEAM-007"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.leave",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "TEAM-007"
+      ],
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "vector.role.team_membership.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-003",
+        "ROLE-013"
+      ]
+    },
+    {
+      "name": "vector.team.join_permissions.request",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-007",
+        "ROLE-002"
+      ]
+    },
+    {
+      "name": "vector.team.join_permissions.decide",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "TEAM-007",
+        "ROLE-002"
+      ]
+    },
+    {
+      "name": "vector.role.team_permissions.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "ROLE-009",
+        "ROLE-007"
+      ]
+    },
+    {
+      "name": "vector.team.join_permissions.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "TEAM-007",
+        "ROLE-002"
+      ]
+    },
+    {
+      "name": "vector.role.private_teams.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "ROLE-002",
+        "OPS-001"
+      ]
+    },
+    {
+      "name": "vector.ops.member_management",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OPS-002",
+        "ROLE-001",
+        "OPS-003"
+      ]
+    },
+    {
+      "name": "vector.ops.member_management.grants",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OPS-002",
+        "ROLE-001",
+        "ROLE-007"
+      ]
+    },
+    {
+      "name": "vector.ops.workspace_time.set",
+      "scope": "settings:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OPS-003",
+        "NOTIFY-005"
+      ]
+    },
+    {
+      "name": "vector.ops.member_management.invitation_permission",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "OPS-002",
+        "ROLE-001"
+      ]
+    },
+    {
+      "name": "vector.team.creation_permission.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "TEAM-008"
+      ]
+    },
+    {
+      "name": "vector.issue.labels.creation_permission",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.role.workspace_roles.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-001",
+        "ROLE-003",
+        "ROLE-013"
+      ]
+    },
+    {
+      "name": "vector.ops.safe_removal",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "destructive"
+      ],
+      "clauses": [
+        "OPS-002",
+        "OPS-004"
+      ],
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "vector.events.list",
       "scope": "events:read",
       "readOnly": true,
@@ -6953,6 +7214,503 @@
           "class": "destructive",
           "facts": {
             "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-workspace",
+      "tool": "vector.ops.member_management",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-member-grants",
+      "tool": "vector.ops.member_management.grants",
+      "args": {
+        "id": {
+          "$sponsor": "id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team",
+      "tool": "vector.role.team_membership",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-grants",
+      "tool": "vector.role.team_membership.grants",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-time",
+      "tool": "vector.ops.workspace_time.set",
+      "args": {
+        "timezone": "Australia/Brisbane",
+        "reminderTime": "08:45"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-time-restore",
+      "tool": "vector.ops.workspace_time.set",
+      "args": {
+        "timezone": {
+          "$from": "access-workspace",
+          "pointer": "/workspace/timezone"
+        },
+        "reminderTime": {
+          "$from": "access-workspace",
+          "pointer": "/workspace/reminderTime"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-role-current",
+      "tool": "vector.role.workspace_roles.set",
+      "args": {
+        "id": {
+          "$sponsor": "id"
+        },
+        "role": "owner"
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-current",
+      "tool": "vector.role.team_membership.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "operatorId": {
+          "$sponsor": "id"
+        },
+        "role": "owner"
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-join-current",
+      "tool": "vector.role.team_membership.join",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "widens"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-permissions-narrow",
+      "tool": "vector.role.team_permissions.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "settings": "team_owners",
+          "planning": "team_owners"
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.permissions"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-requests-expose",
+      "tool": "vector.team.join_permissions.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "mode": "invite_only",
+          "requestsEnabled": true
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.membership"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-request-current",
+      "tool": "vector.team.join_permissions.request",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-requests-restore",
+      "tool": "vector.team.join_permissions.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "mode": {
+            "$from": "access-team",
+            "pointer": "/team/membershipMode"
+          },
+          "requestsEnabled": {
+            "$from": "access-team",
+            "pointer": "/team/requestsEnabled"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "widens"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.membership"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-private",
+      "tool": "vector.role.private_teams.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "isPrivate": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.privacy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-public",
+      "tool": "vector.role.private_teams.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "isPrivate": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.privacy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-invitations-off",
+      "tool": "vector.ops.member_management.invitation_permission",
+      "args": {
+        "memberInvites": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.member_invitations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-invitations-on",
+      "tool": "vector.ops.member_management.invitation_permission",
+      "args": {
+        "memberInvites": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.member_invitations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-invitations-restore",
+      "tool": "vector.ops.member_management.invitation_permission",
+      "args": {
+        "memberInvites": {
+          "$from": "access-workspace",
+          "pointer": "/workspace/memberInvites"
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.member_invitations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-creation-on",
+      "tool": "vector.team.creation_permission.set",
+      "args": {
+        "membersMayCreate": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.team_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-creation-off",
+      "tool": "vector.team.creation_permission.set",
+      "args": {
+        "membersMayCreate": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.team_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-label-creation-off",
+      "tool": "vector.issue.labels.creation_permission",
+      "args": {
+        "membersMayCreate": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.label_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-label-creation-on",
+      "tool": "vector.issue.labels.creation_permission",
+      "args": {
+        "membersMayCreate": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.label_creation"
           }
         }
       ]

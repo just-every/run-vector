@@ -197,6 +197,24 @@
 | `vector.report.warehouse_and_spreadsheet_export` | standard | REPORT-005 |
 | `vector.role.audit_log` | standard | ROLE-005 |
 | `vector.role.audit_log.export` | standard | ROLE-005 |
+| `vector.role.team_membership` | standard | ROLE-007, TEAM-007 |
+| `vector.role.team_membership.grants` | standard | ROLE-007, ROLE-009 |
+| `vector.role.team_membership.join` | access | ROLE-007, TEAM-007 |
+| `vector.role.team_membership.leave` | access | ROLE-007, TEAM-007 |
+| `vector.role.team_membership.set` | access | ROLE-007, ROLE-003, ROLE-013 |
+| `vector.team.join_permissions.request` | standard | TEAM-007, ROLE-002 |
+| `vector.team.join_permissions.decide` | access | TEAM-007, ROLE-002 |
+| `vector.role.team_permissions.set` | access, security | ROLE-009, ROLE-007 |
+| `vector.team.join_permissions.set` | access, security | TEAM-007, ROLE-002 |
+| `vector.role.private_teams.set` | access, security | ROLE-002, OPS-001 |
+| `vector.ops.member_management` | standard | OPS-002, ROLE-001, OPS-003 |
+| `vector.ops.member_management.grants` | standard | OPS-002, ROLE-001, ROLE-007 |
+| `vector.ops.workspace_time.set` | standard | OPS-003, NOTIFY-005 |
+| `vector.ops.member_management.invitation_permission` | access, security | OPS-002, ROLE-001 |
+| `vector.team.creation_permission.set` | access, security | TEAM-008 |
+| `vector.issue.labels.creation_permission` | access, security | ISSUE-014 |
+| `vector.role.workspace_roles.set` | access | ROLE-001, ROLE-003, ROLE-013 |
+| `vector.ops.safe_removal` | access, destructive | OPS-002, OPS-004 |
 | `vector.events.list` | standard | BASE-AGENT-010 |
 
 ## Resources
