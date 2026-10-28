@@ -4,6 +4,7 @@ import {IntegrationError} from '../integrations/errors';
 import {gitGuard} from '../integrations/github/rules';
 import type {z} from 'zod';
 import type {ParentKind,documentInput,documentEdit} from './schema';
+import {attributionJsonSql,projectAttribution} from '../agent-door/attribution-projection';
 
 export function parentSql(kind:ParentKind){
  switch(kind){
@@ -30,22 +31,25 @@ export async function listDocuments(db:D1Database,actor:string,kind?:ParentKind,
 }
 export async function readDocument(db:D1Database,actor:string,id:string){
  const access=await settingsActor(db,actor);
- const row=await db.prepare(`SELECT d.id,d.title,d.body,d.parent_kind parentKind,d.parent_id parentId,d.version,d.created_at createdAt,d.updated_at updatedAt,o.name authorName,
- (SELECT json_group_array(json_object('id',c.id,'body',c.body,'authorName',a.name,'createdAt',c.created_at)) FROM (SELECT * FROM document_comments WHERE document_id=d.id ORDER BY id DESC LIMIT 11) c JOIN operators a ON a.id=c.author_operator_id) comments
- FROM documents d JOIN operators o ON o.id=d.author_operator_id WHERE d.id=? AND d.workspace_id=?`).bind(id,access.workspace_id).first<{id:string;title:string;body:string;parentKind:ParentKind;parentId:string;version:number;createdAt:string;updatedAt:string;authorName:string;comments:string}>();
+ const row=await db.prepare(`SELECT d.id,d.title,d.body,d.parent_kind parentKind,d.parent_id parentId,d.version,d.created_at createdAt,d.updated_at updatedAt,COALESCE(attribution.prepared_by,o.name) authorName,${attributionJsonSql('attribution')} attributionJson,
+ (SELECT json_group_array(json_object('id',c.id,'body',c.body,'authorName',COALESCE(comment_attribution.prepared_by,a.name),'createdAt',c.created_at,'attributionJson',${attributionJsonSql('comment_attribution')})) FROM (SELECT * FROM document_comments WHERE document_id=d.id ORDER BY id DESC LIMIT 11) c JOIN operators a ON a.id=c.author_operator_id LEFT JOIN vector_agent_document_comment_attribution comment_attribution ON comment_attribution.comment_id=c.id) comments
+ FROM documents d JOIN operators o ON o.id=d.author_operator_id
+ LEFT JOIN document_revisions creation ON creation.document_id=d.id AND creation.version=1
+ LEFT JOIN vector_agent_document_revision_attribution attribution ON attribution.revision_id=creation.id
+ WHERE d.id=? AND d.workspace_id=?`).bind(id,access.workspace_id).first<{id:string;title:string;body:string;parentKind:ParentKind;parentId:string;version:number;createdAt:string;updatedAt:string;authorName:string;comments:string;attributionJson:string|null}>();
  if(!row)throw new IntegrationError(404,'document_not_found');
- const comments=JSON.parse(row.comments) as {id:string;body:string;authorName:string;createdAt:string}[];
- return {...row,comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
+ const comments=(JSON.parse(row.comments) as {id:string;body:string;authorName:string;createdAt:string;attributionJson:unknown}[]).map(projectAttribution);
+ return {...projectAttribution(row),comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
 }
 export async function documentRevisions(db:D1Database,actor:string,id:string,before?:number){
  await readDocument(db,actor,id);
- const rows=(await db.prepare('SELECT r.id,r.version,r.title,r.body,r.created_at createdAt,o.name authorName FROM document_revisions r JOIN operators o ON o.id=r.author_operator_id WHERE r.document_id=? AND (? IS NULL OR r.version<?) ORDER BY r.version DESC LIMIT 5').bind(id,before??null,before??null).all<{id:string;version:number;title:string;body:string;createdAt:string;authorName:string}>()).results;
+ const rows=(await db.prepare(`SELECT r.id,r.version,r.title,r.body,r.created_at createdAt,COALESCE(attribution.prepared_by,o.name) authorName,${attributionJsonSql('attribution')} attributionJson FROM document_revisions r JOIN operators o ON o.id=r.author_operator_id LEFT JOIN vector_agent_document_revision_attribution attribution ON attribution.revision_id=r.id WHERE r.document_id=? AND (? IS NULL OR r.version<?) ORDER BY r.version DESC LIMIT 5`).bind(id,before??null,before??null).all<{id:string;version:number;title:string;body:string;createdAt:string;authorName:string;attributionJson:string|null}>()).results;
  await readDocument(db,actor,id);
- return {revisions:rows.reverse(),nextBeforeVersion:rows.length===5&&rows[0].version>1?rows[0].version:null};
+ return {revisions:rows.reverse().map(projectAttribution),nextBeforeVersion:rows.length===5&&rows[0].version>1?rows[0].version:null};
 }
 export async function documentComments(db:D1Database,actor:string,id:string,before?:string){
  await readDocument(db,actor,id);
- const comments=(await db.prepare('SELECT c.id,c.body,o.name authorName,c.created_at createdAt FROM document_comments c JOIN operators o ON o.id=c.author_operator_id WHERE c.document_id=? AND (? IS NULL OR c.id<?) ORDER BY c.id DESC LIMIT 11').bind(id,before??null,before??null).all<{id:string;body:string;authorName:string;createdAt:string}>()).results;
+ const comments=(await db.prepare(`SELECT c.id,c.body,COALESCE(attribution.prepared_by,o.name) authorName,c.created_at createdAt,${attributionJsonSql('attribution')} attributionJson FROM document_comments c JOIN operators o ON o.id=c.author_operator_id LEFT JOIN vector_agent_document_comment_attribution attribution ON attribution.comment_id=c.id WHERE c.document_id=? AND (? IS NULL OR c.id<?) ORDER BY c.id DESC LIMIT 11`).bind(id,before??null,before??null).all<{id:string;body:string;authorName:string;createdAt:string;attributionJson:string|null}>()).results.map(projectAttribution);
  await readDocument(db,actor,id);
  return {comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
 }

@@ -469,6 +469,34 @@
     {
       "source": "src/core/features/insights/README.md",
       "reason": "Metric definitions, nearest-rank percentiles and recorded-history limits for Insights maintainers."
+    },
+    {
+      "source": "vendor/base/agent-door/ADOPTING.md",
+      "reason": "Pinned Base module integration reference for maintainers; the Vector agent guide documents the supported product surface."
+    },
+    {
+      "source": "vendor/base/agent-door/README.md",
+      "reason": "Pinned Base module integration reference for maintainers; the Vector agent guide documents the supported product surface."
+    },
+    {
+      "source": "vendor/base/agent-door/policy/PROVENANCE.md",
+      "reason": "Pinned Base module integration reference for maintainers; the Vector agent guide documents the supported product surface."
+    },
+    {
+      "source": "vendor/base/business-settings/ADOPTING.md",
+      "reason": "Pinned Base module integration reference for maintainers; the Vector agent guide documents the supported product surface."
+    },
+    {
+      "source": "vendor/base/business-settings/README.md",
+      "reason": "Pinned Base module integration reference for maintainers; the Vector agent guide documents the supported product surface."
+    },
+    {
+      "source": "docs/AGENT-DOOR.md",
+      "reason": "Native agent door integration and limits; kept outside the owner-approved public documentation navigation."
+    },
+    {
+      "source": "docs/AGENT-REGISTRY.md",
+      "reason": "Executable native agent registry reference; retained outside the owner-approved public navigation."
     }
   ]
 }

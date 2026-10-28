@@ -6,6 +6,7 @@ import { addCalendarFeedPublicRoutes, addCalendarFeedRoutes } from "../features/
 import { addInsightRoutes } from "../features/insights/routes";
 import { addIssueReferenceRoutes } from '../features/issue-references/routes';
 import {initiativeAuthority} from '../features/initiatives/authority';
+import { mirrorPersonActivity, personActivityPosition } from '../features/agent-door/person-events';
 import {addDocumentRoutes} from '../features/documents/routes';
 import {addInitiativeRoutes} from '../features/initiatives/routes';
 import {addSubscriptionRoutes} from '../features/subscriptions/routes';
@@ -181,21 +182,26 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     )
       return context.json({ error: "rate_limited" }, 429);
     const admittedWorkspace = operator.workspaceId;
+    const nativeBindings = context.env;
     context.set("operatorId", operator.id);
     context.set("operator", operator);
     // ROLE-001: the door's role-matrix row, on the actor's current role.
     const authority = await initiativeAuthority(context,operator.id,context.env.DB) ?? await releaseAuthority(context,operator.id,context.env.DB) ?? await doorAuthority(context, 'api', operator.id, context.env.DB);
     if (authority.denied) return authority.denied;
-    // Archive and imported-person erasure operate on physical schema inventory.
-    // Their matrix doors admit only Owners/Admins; retain the mutation fence below.
+    // Custody erasure compares the complete physical graph after native issue
+    // access and the route's role/visibility decision. Prefixing those bounded
+    // kit guards with row-projection CTEs exceeds D1's statement capacity.
+    // The native session and authority transaction fences remain below.
     const archiveDoor = context.req.path.startsWith('/api/portability/') || context.req.path.startsWith('/api/data/erasure');
-    context.env = { ...context.env, DB: archiveDoor ? context.env.DB : visibilityDatabase(context.env.DB, operator.id) };
+    const issueErasure = context.req.method === 'DELETE' && /^\/api\/issues\/[^/]+$/.test(context.req.path);
+    context.env = { ...context.env, DB: archiveDoor || issueErasure ? context.env.DB : visibilityDatabase(context.env.DB, operator.id) };
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
       context.env = { ...context.env, DB: mutationDatabase(context.env.DB, operator.id, operator.fence, undefined, authority.fence) };
       configureUndoSession(context.env.DB, operator.fence.sessionId);
     }
     configureNotifications(context.env.DB,context.env);
+    const personActivity = archiveDoor || ["GET", "HEAD"].includes(context.req.method) ? null : await personActivityPosition(nativeBindings.DB);
     let pendingDrain: Promise<boolean> | undefined;
     const drain = () => pendingDrain ??= (async () => {
       const drained = await needsNotificationDrain(context.env.DB);
@@ -238,6 +244,8 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       }
     }
     const undo = committedUndoReceipt(context.env.DB);
+    if (!archiveDoor && !["GET", "HEAD"].includes(context.req.method) && context.res.ok)
+      await mirrorPersonActivity(nativeBindings, operator, directMessageEventIds(context.env.DB), context.req.raw, personActivity);
     if (undo && context.res.status >= 200 && context.res.status < 300)
       context.header('x-vector-undo', JSON.stringify(undo));
     }

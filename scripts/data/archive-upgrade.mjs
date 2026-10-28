@@ -8,7 +8,7 @@ import {RerError} from '@runeditrun/rer/errors';
 
 async function planUpgrade(context,policy) {
  const worker=fileURLToPath(new URL('./archive-upgrade-worker.mjs',import.meta.url));
- const child=context.store.spawn('Verifying archive migration history',process.execPath,[worker,JSON.stringify({root:context.root,path:context.path,journal:context.journal,policy})],
+ const child=context.store.spawn('Verifying archive migration history',process.execPath,[worker,JSON.stringify({root:context.root,path:context.path,journal:context.journal,policy,acknowledgeUnverifiedSchemaObjects:context.acknowledgeUnverifiedSchemaObjects})],
   {cwd:context.root,signal:context.signal,env:{...process.env,WRANGLER_SEND_METRICS:'false'},stdio:['ignore','pipe','pipe','ipc']});
  let reply;child.on('message',message=>{reply=message;});
  await new Promise(resolve=>{child.once('exit',resolve);child.once('error',resolve);});
@@ -59,7 +59,7 @@ export async function withArchiveUpgrade(context,policy,transport,restore) {
   context.store.report('Restoring the verified archive in isolated resources, then applying unchanged forward product migrations.');
   const scratch={...context,root,path:original,journal};
   const historicalPolicy={...policy,secretColumns:plan.sourceSecretColumns,replaceableTables:plan.sourceReplaceableTables};
-  await transport(historicalPolicy,{prefix:plan.prefix}).import(scratch);
+  const historical=await transport(historicalPolicy,{prefix:plan.prefix}).import(scratch);
   await migrationFiles(context,root,plan.files.slice(plan.sourceCount),config);
   // Keep the source's declared configuration inventory. No manifest or
   // authenticated source bytes are edited.
@@ -68,6 +68,6 @@ export async function withArchiveUpgrade(context,policy,transport,restore) {
   // Base export authenticates that complete journal in the converted manifest.
   // Passing the older journal again can reject a newer migrated checkpoint.
   const result=await restore({...context,path:upgraded,journal:undefined},policy);
-  return {...result,input:relative(context.root,context.path),upgraded:{fromSchema:plan.sourceSchema,toSchema:plan.currentSchema,migrations:plan.files.slice(plan.sourceCount).map(file=>file.name),sourceArchiveHash:plan.archiveHash}};
+  return {...result,...(historical.schemaUnverified?{schemaUnverified:historical.schemaUnverified}:{}),input:relative(context.root,context.path),upgraded:{fromSchema:plan.sourceSchema,toSchema:plan.currentSchema,migrations:plan.files.slice(plan.sourceCount).map(file=>file.name),sourceArchiveHash:plan.archiveHash}};
  } finally {await rm(root,{recursive:true,force:true});}
 }

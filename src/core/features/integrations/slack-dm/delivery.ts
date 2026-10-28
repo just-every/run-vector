@@ -16,7 +16,7 @@ const routed=(kind:string)=>`EXISTS(SELECT 1 FROM json_each(n.causes_json) cause
  AND NOT EXISTS(SELECT 1 FROM notification_type_mutes mute WHERE mute.operator_id=o.id AND mute.kind=cause.value))`;
 /** NOTIFY-006's admission rules, with the member's Slack link and choice in place of the email preference. */
 export async function directTarget(env:WorkerBindings,workspace:string,id:string):Promise<Target|null>{
- const row=await env.DB.prepare(`SELECT t.is_private AS isPrivate,i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,COALESCE((SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=n.actor_id),n.actor_name) AS actor,l.slack_user_id AS slackUserId,
+ const row=await env.DB.prepare(`SELECT t.is_private AS isPrivate,i.identifier,i.title,i.version,i.due_date AS dueDate,i.status_id AS statusId,st.category AS statusCategory,i.team_id AS teamId,COALESCE((SELECT prepared_by FROM vector_agent_activity_attribution WHERE event_id=n.event_id),(SELECT CASE WHEN person.role='guest' THEN person.name||' (Guest)' ELSE person.name END FROM main.operators person WHERE person.id=n.actor_id),n.actor_name) AS actor,l.slack_user_id AS slackUserId,
   ${routed('assignment')} AS assignment,${routed('mention')} AS mention,
   (SELECT json_group_array(cause.value) FROM json_each(n.causes_json) cause WHERE ${effectiveSlackSql()}=1 AND ${unmutedCauseSql}) kindsJson
   FROM vector_webhook_events e JOIN notifications n ON n.id=json_extract(e.body,'$.notificationId') AND n.recipient_id=json_extract(e.body,'$.recipientId')
