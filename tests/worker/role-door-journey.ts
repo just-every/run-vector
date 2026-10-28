@@ -17,6 +17,11 @@ export async function unregisteredAndSettingsJourney(w:Workspace){
   expect(audit.results).toHaveLength(count!+1);
   expect(JSON.parse(String(audit.results[0].next_value_json))).toEqual({method:'POST',surface:'api'});
   expect(JSON.stringify(audit.results)).not.toContain('synthetic-vector-32002');
+  const visible=await owner.call('/settings/audit?'+new URLSearchParams({action:'permission.unregistered_refused',actor:'person:'+person.id}));
+  expect(visible.status).toBe(200);
+  const entries=(await visible.json() as {entries:{action:string;actorRef:string;subjectRef:string}[]}).entries;
+  expect(entries).toHaveLength(count!+1);
+  expect(entries.every(entry=>entry.action==='permission.unregistered_refused'&&entry.actorRef==='person:'+person.id&&entry.subjectRef==='unregistered')).toBe(true);
  }
  expect((await owner.call('/synthetic-vector-32001','POST',{})).status).toBe(404);
  expect(await snapshot(business)).toEqual(before);

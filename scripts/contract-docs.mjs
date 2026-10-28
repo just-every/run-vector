@@ -15,7 +15,7 @@ const parsed=parseContract(withoutSummary);
 const tally=clauses=>['done','partial','missing'].map(status=>clauses.filter(clause=>clause.status===status).length).concat(clauses.length);
 const rows=[['Published',parsed.clauses.filter(clause=>clause.kind==='published')],['Target and push further',parsed.clauses.filter(clause=>clause.kind!=='published')],['All',parsed.clauses]];
 lines.splice(summary+2,end-summary-2,...rows.map(([label,clauses])=>'| '+[label,...tally(clauses)].join(' | ')+' |'));
-const contract=lines.join('\n');parseContract(contract);
+const contract=lines.join('\n').replace(/Accepted DONE is \d+ of \d+/g,'Accepted DONE is '+parsed.counts.done+' of '+parsed.counts.total);parseContract(contract);
 const acceptance=read('ACCEPTANCE.md'),claims=read('docs/CLAIMS.md');
 const inherited=[...acceptance.matchAll(/<!-- contract-docs:([A-Z][A-Z0-9-]+) -->/g)].map(match=>match[1]);
 const ids=[...new Set(requested.length?requested:inherited)].sort();

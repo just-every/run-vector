@@ -3,9 +3,12 @@ import assert from 'node:assert/strict';
 import {navigate} from './collaboration-navigation.mjs';
 import {openDisclosures} from './ui-controls-checks.mjs';
 
+// Use the browser's own connection pool and same-origin credentials, as the UI does.
+export function readerResponse(page,base,path,method='GET',data){
+ return page.evaluate(async({url,method,data})=>{const response=await fetch(url,{method,...(data===undefined?{}:{headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})});return {status:response.status,text:await response.text()};},{url:base+'/api'+path,method,data});
+}
 export function readerApi(page,base){return async(path,method='GET',data,status=200)=>{
- // Use the browser's own connection pool and same-origin credentials, as the UI does.
- const response=await page.evaluate(async({url,method,data})=>{const response=await fetch(url,{method,...(data===undefined?{}:{headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})});return {status:response.status,text:await response.text()};},{url:base+'/api'+path,method,data});
+ const response=await readerResponse(page,base,path,method,data);
  assert.equal(response.status,status,method+' '+path+' '+response.text);return response.text?JSON.parse(response.text):undefined;
 };}
 /** Native invitation, with no credentials retained in browser proof. */

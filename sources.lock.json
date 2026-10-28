@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "448d43c775a8675d36804ba8b3c7f83269e48b882d2c64c08aebac5175e7b1d0",
+      "sha256": "73d9b0b9b58d3238914f2a8b034ee723b045a4b482ae270d64ace8cac3772834",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "abae09c08f4272129a294f33f0e1174399466d00d2bd40516846acf7b1057090",
+      "sha256": "820c12ea459467275975ae726fbd3c6c178d908aa65301f5a4a7d707af46e236",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "761e7f5cd4a479fc17721b513ab6d443fc40a5070ba74448320368c50121498b",
+      "sha256": "14f072b46550af6166333f242b1d3239a8741a54667fdfd4b5e954ac3f0f345c",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2557,7 +2557,7 @@
       "executable": false
     },
     "scripts/contract-docs.mjs": {
-      "sha256": "725ff557b9ff59a7f990eecc1ed3165561474a6ad603d9c33e1c931d0c7751f3",
+      "sha256": "48fb1d22cce8d1d6b0283d5dd0ea5fb587cf00dd22e3957cb99300e0819200ed",
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
@@ -6657,7 +6657,7 @@
       "executable": false
     },
     "tests/e2e/admin-team-journey.mjs": {
-      "sha256": "4a715c8689c3082d7d1458343b1361ab4566c9f6f7d33beaa527f5b283add9c0",
+      "sha256": "9ad3f1ca9f984e8d99fbec7902de9242377a87eb8c381606e0b48de987621b91",
       "executable": false
     },
     "tests/e2e/admin-workspace-time-journey.mjs": {
@@ -7133,7 +7133,7 @@
       "executable": false
     },
     "tests/e2e/private-team-journey.mjs": {
-      "sha256": "e84fc8f29682e6a443f6cbe5fe88c83cae04a2356c5bc8775d85619156ad2d1d",
+      "sha256": "71f18b47ff93a7fe5190416a1c8bfe7c3b05990ee95dafbc081c3ec5ee84e4bc",
       "executable": false
     },
     "tests/e2e/profile-runtime.mjs": {
@@ -7201,7 +7201,7 @@
       "executable": false
     },
     "tests/e2e/role-reader-support.mjs": {
-      "sha256": "26b32250bfc13ac38bb1120f137f82294ca1f74bf215efdf59af1af22a814c62",
+      "sha256": "ba08ff9a22174cee7f1679c41f8e92aa450210fa1551add2c150582d4a3e7783",
       "executable": false
     },
     "tests/e2e/role-ui-support.mjs": {
@@ -7269,7 +7269,7 @@
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
-      "sha256": "580a6024e58ff65ee9f2180ae8da728c4be778cea48bfd1d1c9518204b11b000",
+      "sha256": "71b3d3437ccdd049270a84aac01b90f68b5359e4bbbf94f410ff0a66025e5724",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
@@ -7941,7 +7941,7 @@
       "executable": false
     },
     "tests/worker/role-door-journey.ts": {
-      "sha256": "a7ddedd9b26f737148032a3687ea37e91dca69d650451e7964a5539c38ffacc1",
+      "sha256": "04bdd2b9f044865a33591df868c16298efefc897345d310aa520620faf269213",
       "executable": false
     },
     "tests/worker/role-fixture.ts": {
