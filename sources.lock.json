@@ -5609,7 +5609,7 @@
       "executable": false
     },
     "src/core/features/oauth-apps/routes.ts": {
-      "sha256": "a5a6a9bfe5f956f90c0f254123f44e18e912c4eee74ff80c41d6a343ed3e69fe",
+      "sha256": "dcacf203586ac1b7d19b420bf6020f9f201c4b8d67a1f6ec5c42b866e1da2585",
       "executable": false
     },
     "src/core/features/oauth-apps/schema.ts": {
@@ -5621,7 +5621,7 @@
       "executable": false
     },
     "src/core/features/oauth-apps/ui/settings-panel.tsx": {
-      "sha256": "c91a0a0af9fb5e9a3bceeb0528808f8d5d42f2155f4ab859d279577ca962688e",
+      "sha256": "5283a41ed047c00185e7cc7dbd0f97eba8c1585787c053ab936433af3c8c2b4f",
       "executable": false
     },
     "src/core/features/operator-intake/input.ts": {
@@ -6045,7 +6045,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-page.tsx": {
-      "sha256": "6236bf9e57b8ef1e4b72b8ec83b230f7e7ed2e3ff980ebfdd6246bd967dd13d9",
+      "sha256": "bd151fe54bb3cc5ed467f55497cc4e988b77a6713acf250b14ad15375f841cd0",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {
@@ -6541,7 +6541,7 @@
       "executable": false
     },
     "src/routes/app.settings_.$section.tsx": {
-      "sha256": "d701b38648e2d9f110b47448d79ec5c43cb1c06f78d7c81863a51696104c4b85",
+      "sha256": "28e29781840a553b07b7fdd76875ed82d6b8a3f2b159243e15dede24d6dfa899",
       "executable": false
     },
     "src/routes/app.settings_.audit.tsx": {
@@ -7713,7 +7713,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "96dde497a4d541b382cf8a0d12cee1ba6d7b34754a76ed3d2f659ed6d593bcc7",
+      "sha256": "70f981c04ec696fd336e92e4657b7d8fb96fdae48c64815b811f31ab2a1738c3",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {

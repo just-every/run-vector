@@ -1,9 +1,9 @@
-import {OAuthAppsPanel} from '../../oauth-apps/ui/settings-panel';
 import { useViewerTime } from '../../../app/viewer-time';
 import { PersonalTimePanel } from './personal-time-panel';
 import { AppearancePanel } from './appearance-panel';
 import "./settings.css";
 import { IntegrationsPanel } from "../../integrations/ui/integrations-panel";
+import {OAuthAppsPanel} from '../../oauth-apps/ui/settings-panel';
 import { useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { ApiError, fetchJson, useApiResource } from "../../../app/api-client";

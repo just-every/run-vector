@@ -8,7 +8,7 @@ import {IntegrationError} from '../integrations/errors';
 import {admitRate} from '../auth/repository';
 import {applicationInput,authorizationInput,consentInput,exchangeInput} from './schema';
 import {authorization,consent,exchange,registerApplication,revokeGrant} from './repository';
-function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_request',result.error.issues[0]?.message??'Check the application request.');return result.data;}
+function parse<T>(schema:z.ZodType<T>,value:unknown,redirectHelp=false){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,redirectHelp&&result.error.issues[0]?.path[0]==='redirectUris'?'invalid_redirect':'invalid_request',result.error.issues[0]?.message??'Check the application request.');return result.data;}
 export function addOAuthRoutes(app:Hono<AppEnvironment>){
  app.get('/settings/oauth-apps',async c=>{
   const owner=await integrationOwner(c.env,c.req.raw,c.get('documentProjection')?c.get('operator'):undefined);
@@ -17,7 +17,7 @@ export function addOAuthRoutes(app:Hono<AppEnvironment>){
    {sql:`SELECT g.id,a.name AS app,o.name AS member,g.scopes,g.created_at AS createdAt,g.revoked_at AS revokedAt,(SELECT MAX(at) FROM integration_token_usage u WHERE u.namespace=g.namespace AND u.token_id=g.token_id AND u.allowed=1) AS lastUsed FROM vector_oauth_grants g JOIN vector_oauth_apps a ON a.id=g.app_id JOIN operators o ON o.id=g.operator_id WHERE g.workspace_id=? ORDER BY g.created_at DESC`,params:[owner.workspace]},
   ]);return c.json({apps,grants});
  });
- app.post('/settings/oauth-apps',async c=>c.json(await registerApplication(c.env.DB,await integrationOwner(c.env,c.req.raw),parse(applicationInput,await readRequestJson(c.req.raw))),201));
+ app.post('/settings/oauth-apps',async c=>c.json(await registerApplication(c.env.DB,await integrationOwner(c.env,c.req.raw),parse(applicationInput,await readRequestJson(c.req.raw),true)),201));
  app.delete('/settings/oauth-apps/grants/:id',async c=>{
   const owner=await integrationOwner(c.env,c.req.raw);await revokeGrant(c.env.DB,owner.workspace,owner.id,c.req.param('id'),guardedSql(c.env.DB,ownerPredicate(owner)));return c.json({revoked:true});
  });
