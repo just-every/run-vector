@@ -2,7 +2,7 @@
   "schema": 1,
   "seed": "contract-md-vector",
   "old": {
-    "commit": "e5196aa74d481d09fbc793b748cab366d7d0ee1d",
+    "commit": "7137342c5b1632e97fe5bee942c6cacdc63b94a6",
     "files": [
       "CONTRACT.md",
       "ACCEPTANCE.md",
@@ -12052,37 +12052,6 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 517,
-      "text": "**API-004 \u2014 OAuth apps.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.",
-      "to": "clause",
-      "ids": [
-        "API-004"
-      ]
-    },
-    {
-      "file": "CONTRACT.md",
-      "line": 517,
-      "text": "Inherited from ROLE-001: Owners, Admins and Members authorize an OAuth app for themselves; Guests are refused (role matrix).",
-      "to": "clause",
-      "ids": [
-        "API-004"
-      ]
-    },
-    {
-      "file": "CONTRACT.md",
-      "line": 517,
-      "text": "*Acceptance:* an authorization-code journey that grants read-only scope, a refused write, and an Admin revocation that ends the next call.",
-      "to": "docs",
-      "path": "docs/contract/MECHANISMS.md"
-    },
-    {
-      "file": "CONTRACT.md",
-      "line": 517,
-      "text": "*Status:* missing.",
-      "to": "changelog"
-    },
-    {
-      "file": "CONTRACT.md",
       "line": 518,
       "text": "**API-005 \u2014 SDK and docs.** A TypeScript SDK generated from the API schema and public developer documentation with examples for intake, sync and agents ship with each release.",
       "to": "clause",
@@ -13029,7 +12998,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 597,
+      "line": 599,
       "cell": "gap",
       "text": "Mobile payloads (MOBILE-001/002) and agent contexts (AGENT-001/005) inherit this rule when built; complete registered-door coverage remains ROLE-008. A receiving-clause browser census of Viewer exports/notifications, attachment bytes and webhook privacy transitions is not proved here.",
       "to": "gap",
@@ -13039,7 +13008,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 599,
+      "line": 601,
       "cell": "gap",
       "text": "Role-restricted invitation and removal are enforced; removal is not yet a suspension (ROLE-011), reactivation and erasure are ROLE-011's and ROLE-012's, and native Guest invitations name their allowed teams (ROLE-003)",
       "to": "gap",
@@ -13049,7 +13018,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 601,
+      "line": 603,
       "cell": "gap",
       "text": "Removal revokes sessions, unassigns, transfers and rolls back as one unit, refuses the last Owner and transfers to the longest-standing remaining Owner when a member leaves, but today every removal also deletes the member's private views and anonymizes their references at once; suspension that keeps the name is open with ROLE-011 and the separate erase with ROLE-012",
       "to": "gap",
@@ -13059,7 +13028,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 602,
+      "line": 604,
       "cell": "gap",
       "text": "Complete coverage remains ROLE-008; unbuilt matrix doors inherit their source clauses. Private 404 evidence is this clause's own case, separate from ROLE-002.",
       "to": "gap",
@@ -13069,7 +13038,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 603,
+      "line": 605,
       "cell": "gap",
       "text": "Private reads, membership withdrawal, identifier/search/Current/Created/Subscribed/Activity, counted CSV, exposed requests and team-only generic Slack delivery are implemented. The existing calendar, dashboard, Insights, template and reference journeys exercise their own private/Viewer cells. Browser attachment bytes and webhook privacy transitions remain unproved; their current network-edge and HTTP checks do not establish every-door browser acceptance. Unbuilt Slack unfurls inherit SLACK-005, mobile payloads MOBILE-001/002, documents PROJ-013 and agent contexts AGENT-001/005. Non-member Admins see private-team metadata, owners, membership, counts and privacy controls in Settings without content access; saved definitions re-evaluate current visibility without edits. Ruled archive behavior: Admin archives must exclude unreadable private-team rows and carry only an excluded-team count; Owner archives carry everything. BLOCKED ROLE-002(c): Base portability per-export row scope and manifest count are unavailable in rer 0.2.77; the safe Admin refusal remains until Base supplies them.",
       "to": "gap",
@@ -13079,7 +13048,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 604,
+      "line": 606,
       "cell": "gap",
       "text": "Private-team permissions remain ROLE-002. Guests cannot read indivisible historical aggregates or frozen snapshots containing currently hidden references; visible live facts are used by their live reports, and stored historical records are unchanged.",
       "to": "gap",
@@ -13089,7 +13058,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 605,
+      "line": 607,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13099,7 +13068,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 606,
+      "line": 608,
       "cell": "gap",
       "text": "Team privacy changes inherit ROLE-002; suspension/reactivation doors inherit ROLE-011, separate full-person erasure ROLE-012, agent runs AGENT-001 and the automation-run framework AUTO-001. Existing automation and imported-person erasure doors are audited now. Previously erased legacy actors retain explicitly unknown opaque references; new events retain actor provenance.",
       "to": "gap",
@@ -13109,7 +13078,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 607,
+      "line": 609,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13119,7 +13088,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 609,
+      "line": 611,
       "cell": "gap",
       "text": "Every state-changing door is registered against one role-matrix row, a door with no row admits Owners only and Settings pages open as the matrix row says; the coverage check, auditing of refusals, the Guest Settings sweep and agents' own identities (ROLE-006) are open",
       "to": "gap",
@@ -13129,7 +13098,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 611,
+      "line": 613,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13140,7 +13109,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 612,
+      "line": 614,
       "cell": "gap",
       "text": "Removal revokes sessions and invitations, transfers led projects and owned shared views, and unassigns issues; the suspended state, kept names, the assignment choice, token, OAuth, passkey and push revocation, and reactivation are absent",
       "to": "gap",
@@ -13153,7 +13122,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 613,
+      "line": 615,
       "cell": "gap",
       "text": "Today's removal anonymizes the member's references in comments, activity and audit and deletes their private views as part of every removal; a separate erase action on a suspended member, its preview, the typed confirmation and the single audit entry are absent",
       "to": "gap",
@@ -13163,7 +13132,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 614,
+      "line": 616,
       "cell": "gap",
       "text": "Unresolved: (b) agent contexts apply Viewer visibility: a duty of AGENT-001/005 (missing, unbuilt), no Viewer assertion yet; (c) own passkey management for Viewers has no asserting test (carried by ROLE-010, missing). ROLE-013 re-proposes DONE only after PROJ-013 and agent-context Viewer assertions exist, or when ROLE-010 and those clauses name the inheritance in both documents and are asserted.",
       "to": "gap",
@@ -13173,7 +13142,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 619,
+      "line": 621,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13183,7 +13152,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 620,
+      "line": 622,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13193,7 +13162,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 621,
+      "line": 623,
       "cell": "gap",
       "text": "Private/Viewer cells proved by this clause's own journey; source clauses retain independent evidence.",
       "to": "gap",
@@ -13203,7 +13172,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 622,
+      "line": 624,
       "cell": "gap",
       "text": "None.",
       "to": "gap",
@@ -13213,7 +13182,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 630,
+      "line": 632,
       "cell": "gap",
       "text": "Threads, ordered replies, resolve/reopen, reopen on reply, author-only editing and author/Owner/Admin deletion are implemented; inline quoted-text comments are not built; team-owner deletion waits on ROLE-007, Guests on ROLE-003, inline images and video on ISSUE-024, Slack threads on SLACK-002",
       "to": "gap",
@@ -13225,7 +13194,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 632,
+      "line": 634,
       "cell": "gap",
       "text": "Release debt: until ISSUE-020's Recently deleted lands, Members cannot delete issues, their own included (only Owners and Admins delete, and only permanently; no creator exception); deletion by an issue's creator or, with the setting, its team's Members, Recently deleted and undo are open with ISSUE-020",
       "to": "gap",
@@ -13235,7 +13204,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 636,
+      "line": 638,
       "cell": "gap",
       "text": "Workspace labels follow the role matrix; Settings \u2192 Labels is Owner/Admin write and Member read-only. Inline issue-picker creation and session/scoped API creation enforce the audited workspace permission on the next request. Workspace merge rewrites issues, projects and saved-view filters atomically. Team labels and groups remain absent",
       "to": "gap",
@@ -13245,7 +13214,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 638,
+      "line": 640,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13255,7 +13224,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 639,
+      "line": 641,
       "cell": "gap",
       "text": "Slack thread reaction synchronization awaits SLACK-002.",
       "to": "gap",
@@ -13265,7 +13234,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 642,
+      "line": 644,
       "cell": "gap",
       "text": "Native property, bulk, team/cycle and duplicate changes offer session-bound, version-checked Undo for ten seconds and append reversal activity. The 1440/390 journeys exercise status timestamps, assignee, priority, labels, cycle/team restoration, stale refusal and expiry; selectors wait for hydration and reversed team confirmations clear. Deletion/Recently deleted, intake decisions and other issue relation actions still lack Undo; retention, restore and purge remain unbuilt",
       "to": "gap",
@@ -13277,7 +13246,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 643,
+      "line": 645,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13287,7 +13256,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 644,
+      "line": 646,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13297,7 +13266,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 646,
+      "line": 648,
       "cell": "gap",
       "text": "PNG, JPEG, WebP and GIF attachments upload and are served same-origin with an attachment disposition and `nosniff`; paste, drop, the upload command, inline display, the viewer, video types, `Range` responses and resumable upload are absent, and `src/core/features/markdown/ui/markdown.tsx` refuses image paths on the installation itself",
       "to": "gap",
@@ -13311,7 +13280,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 647,
+      "line": 649,
       "cell": "gap",
       "text": "Browser description and author-only comment ticks, independent stale description ticks, revision/activity attribution and list/board/API counts implemented; comment ticks use body checks; templates, documents, native mobile, live editing and role/private-team enforcement remain open",
       "to": "gap",
@@ -13321,7 +13290,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 648,
+      "line": 650,
       "cell": "gap",
       "text": "Shared browser editor has slash/formatting commands, shortcuts, safe rich paste, tables, collapsible sections, highlighting and copy; inline file/image commands, provider previews, templates/documents and native mobile editing remain open",
       "to": "gap",
@@ -13331,7 +13300,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 649,
+      "line": 651,
       "cell": "gap",
       "text": "Project updates (PROJ-010), documents (PROJ-013), mobile links (MOBILE-001), DATA-018 aliases and historical/provider backlink backfill remain. `tests/e2e/collaboration-references.mjs` (referenceAccessCells at 1440/390 and HTTP) exercises private-source backlinks for Member/Viewer before membership, after addition and after withdrawal.",
       "to": "gap",
@@ -13341,7 +13310,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 650,
+      "line": 652,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13351,7 +13320,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 651,
+      "line": 653,
       "cell": "gap",
       "text": "Issues store an untyped key/value custom-field map and its changes reach activity through `src/core/features/issue-edit/plan.ts`; typed definitions, scopes, project fields, validation and the role rule are absent",
       "to": "gap",
@@ -13361,7 +13330,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 652,
+      "line": 654,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13371,7 +13340,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 671,
+      "line": 673,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13381,7 +13350,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 672,
+      "line": 674,
       "cell": "gap",
       "text": "Manual acceptance chooses team, status and assignee; rules are absent",
       "to": "gap",
@@ -13391,7 +13360,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 673,
+      "line": 675,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13401,7 +13370,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 674,
+      "line": 676,
       "cell": "gap",
       "text": "One fixed internal intake form; configurable forms are absent",
       "to": "gap",
@@ -13411,7 +13380,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 675,
+      "line": 677,
       "cell": "gap",
       "text": "Customer/contact/domain mapping and customer-request records under CUST-006 (patterns 1/2) are unbuilt: requesters remain unmapped email senders until CUST-006 exists. Signed SendGrid Event Webhooks update reply comments with accepted or bounced outcomes; unsigned, altered, stale, replayed and foreign events write nothing. Customer-domain attachment at the email door remains BLOCKED TRIAGE-005 (DONE): CUST-005 customer records. Cloudflare routing, SendGrid sender-domain and signed Event Webhook installation remain deployment steps; no hosted inbox receipt is claimed. Provider-edge proof covers attachments within BASELINE limits, allow-list rejection, In-Reply-To reply threading, once-only replies, internal-comment isolation, Guest denial and acknowledgement opt-in. Intake is disabled by default. Cloudflare routing and SendGrid sender-domain configuration remain installation steps; no hosted mailbox receipt is claimed.",
       "to": "gap",
@@ -13421,7 +13390,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 676,
+      "line": 678,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13431,7 +13400,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 677,
+      "line": 679,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13441,7 +13410,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 678,
+      "line": 680,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13451,7 +13420,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 680,
+      "line": 682,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13461,7 +13430,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 681,
+      "line": 683,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13472,7 +13441,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 682,
+      "line": 684,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13482,7 +13451,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 683,
+      "line": 685,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13492,7 +13461,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 699,
+      "line": 701,
       "cell": "gap",
       "text": "Gap PROJ-003: current deletion is irreversible and must remain Owner/Admin only; Member lead deletion is conditional on PROJ-017 recoverable deletion, Undo and restore. Membership preservation is proven independently",
       "to": "changelog",
@@ -13508,7 +13477,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 706,
+      "line": 708,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13518,7 +13487,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 707,
+      "line": 709,
       "cell": "gap",
       "text": "Ordered project milestones, issue assignment and activity, progress/slip, copy/Undo/bulk, exact archive restore; source imports, grouping, complete API and feeds inherited by DATA-013/014, VIEW-008, API-003 and CAL-001",
       "to": "gap",
@@ -13528,7 +13497,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 708,
+      "line": 710,
       "cell": "gap",
       "text": "Update cadence is stored and shown; its effect awaits PROJ-010/AUTO-005. Issue templates await ISSUE-016. `tests/e2e/admin-project-cycle-journey.mjs` (projectTemplateAccessCells) exercises current private-template visibility and Viewer creation/edit/application refusals at 1440/390 and HTTP. Default ADOPTED: team templates are visible only to their members; deletion preserves created projects. Member applications skip unavailable project labels and report their names. Application uses native services in order; an interrupted creation names the partial project for inspection before retry.",
       "to": "gap",
@@ -13546,7 +13515,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 709,
+      "line": 711,
       "cell": "gap",
       "text": "Unproved parts of \"Projects, issues, initiatives (INIT-001) and teams can hold Markdown documents (specs, PRDs, decision records, team handbooks and runbooks) written in the ISSUE-026 editor, with inline images and video (ISSUE-024), checklists (ISSUE-025), revision history, mentions, comments, attachments and search; a spec document can be linked as an issue's specification (PUSH-001).\": \"inline images and video (ISSUE-024)\" needs document media integration/assertions; \"checklists (ISSUE-025)\" needs a document checklist mutation/assertion; \"mentions\" needs document-specific ISSUE-013 integration/assertions; \"attachments\" needs a document ISSUE-009 attachment door/assertion; \"a spec document can be linked as an issue's specification (PUSH-001)\" has native linking asserted, while PUSH-001 checkout consumption remains unbuilt. Native create/read/edit/comments, revision history, parent lists, search, visibility, role cells and parent export are asserted; this is PARTIAL, not a DONE proposal.",
       "to": "gap",
@@ -13556,7 +13525,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 710,
+      "line": 712,
       "cell": "gap",
       "text": "Lead and cross-team issues exist; members, contributing teams and following are absent",
       "to": "gap",
@@ -13566,7 +13535,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 711,
+      "line": 713,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13576,7 +13545,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 712,
+      "line": 714,
       "cell": "gap",
       "text": "A fixed lifecycle of Planned, Active, Completed and Canceled set by hand; named, ordered and colored statuses, the Backlog and Paused categories, team sets, removal with a destination and status import are absent",
       "to": "gap",
@@ -13587,7 +13556,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 713,
+      "line": 715,
       "cell": "gap",
       "text": "Recently deleted projects, deletion Undo, retention, restore and purge are not implemented; current deletion remains Owner/Admin only",
       "to": "gap",
@@ -13597,7 +13566,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 714,
+      "line": 716,
       "cell": "gap",
       "text": "**INIT-001 unproved:** assertion sensitivity for approval refusal when the connected Slack workspace changes. Candidate landing, exact-SHA Run site and complete clean publication-scan proof remain outstanding. INIT-002 roll-ups remain separately assigned.",
       "to": "gap",
@@ -13607,7 +13576,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 715,
+      "line": 717,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13617,7 +13586,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 716,
+      "line": 718,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13627,7 +13596,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 717,
+      "line": 719,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13637,7 +13606,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 726,
+      "line": 728,
       "cell": "gap",
       "text": "Slack/Discord release bindings are absent: the existing durable channel model binds issue-bearing team/project/view subjects. Jira fix versions import remains DATA-013. Conservative default: reopen a Released release before changing its scope.",
       "to": "gap",
@@ -13655,7 +13624,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 727,
+      "line": 729,
       "cell": "gap",
       "text": "GitLab environments, CircleCI, Vercel, Netlify and Cloudflare Workers/Pages have no receiver or signed fixture. Unrecorded ancestry, missing non-forced push proof and unknown SHAs remain unproven and never attach an issue.",
       "to": "gap",
@@ -13665,7 +13634,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 728,
+      "line": 730,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13675,7 +13644,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 732,
+      "line": 734,
       "cell": "gap",
       "text": "Single-value filters per field; grouped and negated expressions are absent",
       "to": "gap",
@@ -13685,7 +13654,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 733,
+      "line": 735,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13695,7 +13664,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 740,
+      "line": 742,
       "cell": "gap",
       "text": "Timeline, dependency drawing and start-date combinations await ISSUE-022. Target-dated releases are included by current creator visibility: personal feeds carry own-team and readable workspace releases, and private-team releases require membership at each request. `tests/e2e/calendar-access-cells.mjs` (calendarAccessCells) asserts the readable team release in its team feed and excludes workspace releases and release descriptions. Team feed authority loss returns 404. Release channel binding remains RELEASE-001. `tests/e2e/calendar-feeds-journey.mjs` (calendarAccessCells at 1440/390 and HTTP) exercises current private-team omission and Viewer read-only month access. Calendar uses the feed event reader, workspace-local cycle days, native version-checked due-date edits and Undo. Guests retain the Calendar page refusal adopted for CAL-001.",
       "to": "gap",
@@ -13705,7 +13674,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 741,
+      "line": 743,
       "cell": "gap",
       "text": "Columns by status with a keyboard selector; swimlanes, drag and property choices are absent",
       "to": "gap",
@@ -13715,7 +13684,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 742,
+      "line": 744,
       "cell": "gap",
       "text": "Saved issue views; project, initiative and request views are absent",
       "to": "gap",
@@ -13725,7 +13694,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 743,
+      "line": 745,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13735,7 +13704,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 749,
+      "line": 751,
       "cell": "gap",
       "text": "Refresh within five seconds without reload; a live connection is absent",
       "to": "gap",
@@ -13745,7 +13714,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 750,
+      "line": 752,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13755,7 +13724,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 751,
+      "line": 753,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13765,7 +13734,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 752,
+      "line": 754,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13775,7 +13744,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 753,
+      "line": 755,
       "cell": "gap",
       "text": "No implementation yet; the new inherited NOTIFY-007 acceptance point for mobile push (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet",
       "to": "gap",
@@ -13785,7 +13754,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 754,
+      "line": 756,
       "cell": "gap",
       "text": "390px checks exist for current pages; new pages in this contract are open",
       "to": "gap",
@@ -13795,7 +13764,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 755,
+      "line": 757,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13806,7 +13775,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 756,
+      "line": 758,
       "cell": "gap",
       "text": "No implementation yet; the new inherited NOTIFY-007 acceptance point for desktop notification (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet",
       "to": "gap",
@@ -13816,7 +13785,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 763,
+      "line": 765,
       "cell": "gap",
       "text": "Mobile push inherits MOBILE-002; desktop notifications inherit MOBILE-005; Teams direct messages inherit TEAMS-001.",
       "to": "gap",
@@ -13826,7 +13795,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 765,
+      "line": 767,
       "cell": "gap",
       "text": "None",
       "to": "gap",
@@ -13836,7 +13805,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 767,
+      "line": 769,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13846,7 +13815,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 768,
+      "line": 770,
       "cell": "gap",
       "text": "Fixed due reminders and deferral return; configurable rules are absent",
       "to": "gap",
@@ -13856,7 +13825,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 770,
+      "line": 772,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13866,7 +13835,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 771,
+      "line": 773,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13876,7 +13845,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 772,
+      "line": 774,
       "cell": "gap",
       "text": "Due-today and overdue notifications only",
       "to": "gap",
@@ -13886,7 +13855,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 773,
+      "line": 775,
       "cell": "gap",
       "text": "Triage time (TRIAGE-001), SLA breaches (AUTO-004), customer tier (CUST-*), issue types and unavailable historical data; `tests/e2e/insights-journey.mjs` (insightsAccessCells at 1440/390 and HTTP) exercises Member omission and Viewer chart/count/drill/CSV reads after explicit membership. Bug series require a current Bug label. No /api/v1 series read. Default ADOPTED: Owners, Admins and Members read only visible issues; Guests refused.",
       "to": "gap",
@@ -13904,7 +13873,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 775,
+      "line": 777,
       "cell": "gap",
       "text": "None.",
       "to": "gap",
@@ -13914,7 +13883,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 777,
+      "line": 779,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13924,7 +13893,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 778,
+      "line": 780,
       "cell": "gap",
       "text": "Settings \u2192 Integrations exists for signed sources, GitHub repository webhooks and outbound destinations, with copyable payload URLs, reveal-once secrets and a test delivery; provider app creation, manifest flows, OAuth installs and the live first-event check are absent",
       "to": "gap",
@@ -13934,7 +13903,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 779,
+      "line": 781,
       "cell": "gap",
       "text": "Credential re-entry after restore and outbound delivery state; health for inbound providers and in-place repair are absent",
       "to": "gap",
@@ -13944,7 +13913,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 782,
+      "line": 784,
       "cell": "gap",
       "text": "Provider-backed create branch is tracked in GITHUB-008.",
       "to": "gap",
@@ -13954,7 +13923,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 784,
+      "line": 786,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13964,7 +13933,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 785,
+      "line": 787,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13974,7 +13943,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 786,
+      "line": 788,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -13984,7 +13953,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 787,
+      "line": 789,
       "cell": "gap",
       "text": "Requires GITHUB-006 and a provider write credential; carved verbatim from GITHUB-003.",
       "to": "gap",
@@ -13994,7 +13963,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 788,
+      "line": 790,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14004,7 +13973,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 789,
+      "line": 791,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14014,7 +13983,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 790,
+      "line": 792,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14024,7 +13993,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 791,
+      "line": 793,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14034,7 +14003,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 792,
+      "line": 794,
       "cell": "gap",
       "text": "Hosted real-workspace installation remains unproved, pending the owner's Slack app console steps.",
       "to": "gap",
@@ -14044,7 +14013,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 793,
+      "line": 795,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14054,7 +14023,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 794,
+      "line": 796,
       "cell": "gap",
       "text": "Existing credential, channel safety, creation, delivery, failure/removal and archive points: [SLACK-003] `tests/worker/outbound-broken-destination.test.ts` and `tests/worker/data-http.test.ts`, `tests/e2e/integrations/channel-settings.mjs` (`exerciseChannels`); Member approved/bound choice, unapproved 403 with no Slack call and Guest 403: registry-driven `tests/worker/role-matrix.test.ts` ([ROLE-001 ROLE-007 ROLE-009 NOTIFY-007 OPS-002 INTAKE-005 INTAKE-006 INTAKE-007 INTAKE-011 PROJ-002 CYCLE-001 CYCLE-002 CYCLE-007 VIEW-002 DATA-002 DATA-003 DATA-006 DATA-010 DATA-011] every role-matrix row with a door gives an Owner, an Admin, a Member who owns the team, one who does not and a Guest exactly their cell, through the browser door and /api/v1, and refusals write nothing); Member event posting once: outbound channel-notifications scenario; UI choice and bound state: exerciseChannels at 1440/390 with axe/overflow checks. Future object events and private-team routing inherited by their named clauses",
       "to": "gap",
@@ -14068,7 +14037,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 796,
+      "line": 798,
       "cell": "gap",
       "text": "Hosted real-workspace unfurl pending the owner's Slack app console steps.",
       "to": "gap",
@@ -14078,7 +14047,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 797,
+      "line": 799,
       "cell": "gap",
       "text": "No implementation yet; the new inherited NOTIFY-007 acceptance point for Teams direct message (per-event member choice, Admin defaults, working hours/digests, mutes, actor exclusion, access and no repeated delivery) is unbuilt: this channel door does not exist yet",
       "to": "gap",
@@ -14088,7 +14057,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 798,
+      "line": 800,
       "cell": "gap",
       "text": "Signed generic source intake with replay identity; provider apps, linking and status sync are absent",
       "to": "gap",
@@ -14098,7 +14067,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 799,
+      "line": 801,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14108,7 +14077,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 800,
+      "line": 802,
       "cell": "gap",
       "text": "Generic signed source intake; Sentry and Datadog adapters, resolution sync and regression handling are absent",
       "to": "gap",
@@ -14118,7 +14087,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 801,
+      "line": 803,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14128,7 +14097,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 802,
+      "line": 804,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14138,7 +14107,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 803,
+      "line": 805,
       "cell": "gap",
       "text": "Named HTTPS links; previews and provider connections are absent",
       "to": "gap",
@@ -14148,7 +14117,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 805,
+      "line": 807,
       "cell": "gap",
       "text": "The API and webhooks they need exist in part; the apps are absent",
       "to": "gap",
@@ -14158,7 +14127,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 806,
+      "line": 808,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14168,7 +14137,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 807,
+      "line": 809,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14178,7 +14147,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 808,
+      "line": 810,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14188,7 +14157,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 809,
+      "line": 811,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14198,7 +14167,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 810,
+      "line": 812,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14208,7 +14177,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 811,
+      "line": 813,
       "cell": "gap",
       "text": "Scoped tokens and signed outbound events; app actors, delegation events and activity types are absent",
       "to": "gap",
@@ -14218,7 +14187,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 812,
+      "line": 814,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14228,7 +14197,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 813,
+      "line": 815,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14238,7 +14207,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 814,
+      "line": 816,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14248,7 +14217,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 817,
+      "line": 819,
       "cell": "gap",
       "text": "Idempotency keys and their concurrency/retention proofs; issue deletion through the native receipt/policy door; cycle update/delete; complete list/get/create/update/delete coverage for attachments, relations, labels, teams, workflow states, views, notifications and members; attachment bytes excluded by API-001; initiative and release deletion; documents PROJ-013, customers CUST-005 and customer requests CUST-001 not built; real private-team refusal under ROLE-002; full schema-coverage acceptance. API-001 published wording is retained pending a valid next-release amendment representation: the issued RELEASE.json fails its pinned validator and the schema has no NEXT envelope.",
       "to": "gap",
@@ -14258,17 +14227,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 818,
-      "cell": "gap",
-      "text": "No implementation yet",
-      "to": "gap",
-      "ids": [
-        "API-004"
-      ]
-    },
-    {
-      "file": "CONTRACT.md",
-      "line": 819,
+      "line": 821,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14278,7 +14237,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 821,
+      "line": 823,
       "cell": "gap",
       "text": "Issue created, updated and completed events",
       "to": "gap",
@@ -14288,7 +14247,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 828,
+      "line": 830,
       "cell": "gap",
       "text": "tests/e2e/jira-public-journey.mjs registers no tests and no push/pull_request Verify job or named scheduled job reaches it",
       "to": "gap",
@@ -14298,7 +14257,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 833,
+      "line": 835,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14308,7 +14267,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 834,
+      "line": 836,
       "cell": "gap",
       "text": "All Fields CSV file profile; the live API, attachment bytes, versions and Data Center are absent",
       "to": "gap",
@@ -14318,7 +14277,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 835,
+      "line": 837,
       "cell": "gap",
       "text": "Workspace CSV plus an owner-produced API file; direct API, bytes, initiatives and updates are absent",
       "to": "gap",
@@ -14328,7 +14287,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 837,
+      "line": 839,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14338,7 +14297,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 838,
+      "line": 840,
       "cell": "gap",
       "text": "Stable per-source import identities, staged runs with resume, repeat and rollback, and in-run relations; migrations, cross-run relation binding, the migration report, incremental re-runs and the 50,000-issue run are absent",
       "to": "gap",
@@ -14348,7 +14307,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 839,
+      "line": 841,
       "cell": "gap",
       "text": "Imported issues show and find their source ID in search under DATA-007; URL resolution, alias redirects and Git magic words on old keys are absent",
       "to": "gap",
@@ -14358,7 +14317,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 841,
+      "line": 843,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14368,7 +14327,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 842,
+      "line": 844,
       "cell": "gap",
       "text": "Native, file and webhook erasure; posted Slack channel messages, already-sent Slack direct messages and Discord messages cannot be recalled by local erasure; member removal deletes SLACK-004 Slack links; synced-thread erasure, other external identities and embeddings are absent",
       "to": "gap",
@@ -14378,7 +14337,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 843,
+      "line": 845,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14388,7 +14347,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 844,
+      "line": 846,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14398,7 +14357,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 845,
+      "line": 847,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14408,7 +14367,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 846,
+      "line": 848,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14418,7 +14377,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 847,
+      "line": 849,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14428,7 +14387,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 848,
+      "line": 850,
       "cell": "gap",
       "text": "Waiting state and due reminders; questions, promised times and Slack are absent",
       "to": "gap",
@@ -14438,7 +14397,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 849,
+      "line": 851,
       "cell": "gap",
       "text": "Explainable health and capacity risk; forecasts and options are absent",
       "to": "gap",
@@ -14448,7 +14407,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 850,
+      "line": 852,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14458,7 +14417,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 851,
+      "line": 853,
       "cell": "gap",
       "text": "Numeric closed-cycle summaries; written summaries are absent",
       "to": "gap",
@@ -14468,7 +14427,7 @@
     },
     {
       "file": "CONTRACT.md",
-      "line": 852,
+      "line": 854,
       "cell": "gap",
       "text": "No implementation yet",
       "to": "gap",
@@ -14767,20 +14726,6 @@
       "file": "ACCEPTANCE.md",
       "line": 83,
       "text": "| Published | 97 | 7 | 0 | 104 |",
-      "to": "generated",
-      "note": "The contract generator writes this status or count."
-    },
-    {
-      "file": "ACCEPTANCE.md",
-      "line": 84,
-      "text": "| Target and push further | 33 | 51 | 71 | 155 |",
-      "to": "generated",
-      "note": "The contract generator writes this status or count."
-    },
-    {
-      "file": "ACCEPTANCE.md",
-      "line": 85,
-      "text": "| All | 130 | 58 | 71 | 259 |",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
@@ -16400,259 +16345,252 @@
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 391,
-      "text": "**API-004 \u2014 OAuth apps** (missing). An authorization-code journey that grants read-only scope, a refused write, and an Admin revocation that ends the next call. Inherited from ROLE-001: Owners, Admins and Members authorize an OAuth app for themselves; Guests are refused (role matrix).",
-      "to": "generated",
-      "note": "The contract generator writes this status or count."
-    },
-    {
-      "file": "ACCEPTANCE.md",
-      "line": 392,
+      "line": 394,
       "text": "**API-005 \u2014 SDK and docs** (missing). The SDK's example scripts run against a local installation in CI.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 393,
+      "line": 395,
       "text": "**WEBHOOK-001 \u2014 Durable native delivery** (done). `tests/worker/outbound-webhooks.test.ts`, `tests/worker/issue-deletion-webhooks.test.ts` (tests tagged WEBHOOK-001).",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 394,
+      "line": 396,
       "text": "**WEBHOOK-002 \u2014 Webhooks for every object** (partial). A destination subscribed to project updates and comments receives exactly those signed events.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 398,
+      "line": 400,
       "text": "**DATA-001 \u2014 Export contents** (done). `tests/worker/data-http.test.ts`, `tests/worker/data-archive-failure.test.ts`, `tests/worker/data-http-collision.test.ts` (tests tagged DATA-001).",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 399,
+      "line": 401,
       "text": "**DATA-002 \u2014 Mapped import preflight** (done). `tests/worker/linear-import.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-002). Role-matrix cells: `tests/worker/role-matrix.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 400,
+      "line": 402,
       "text": "**DATA-003 \u2014 Atomic mapped import** (done). `tests/worker/data-import-atomic.test.ts` (tests tagged DATA-003). Role-matrix cells: `tests/worker/role-matrix.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 401,
+      "line": 403,
       "text": "**DATA-004 \u2014 Idempotent mapped import** (done). `tests/worker/data-import-atomic.test.ts`, `tests/worker/imported-person-erasure.test.ts`, `tests/worker/issue-deletion-import.test.ts` (tests tagged DATA-004).",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 402,
+      "line": 404,
       "text": "**DATA-005 \u2014 Exact portable restore** (done). `tests/worker/data-archive-failure.test.ts`, `tests/worker/data-http-collision.test.ts`, `tests/worker/data-http-concurrency.test.ts` (tests tagged DATA-005).",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 403,
+      "line": 405,
       "text": "**DATA-006 \u2014 Staged import run** (done). `tests/e2e/data-staged-cli.mjs` (tests tagged DATA-006). Role-matrix cells: `tests/worker/role-matrix.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 404,
+      "line": 406,
       "text": "**DATA-007 \u2014 Reconciliation report** (partial). Evidence: `tests/e2e/jira-public-journey.mjs`. Gap: tests/e2e/jira-public-journey.mjs registers no tests and no push/pull_request Verify job or named scheduled job reaches it.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 405,
+      "line": 407,
       "text": "**DATA-008 \u2014 Linear API enrichment file** (done). `tests/worker/linear-api-import.test.ts` (tests tagged DATA-008).",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 406,
+      "line": 408,
       "text": "**DATA-009 \u2014 Jira CSV preflight and loss review** (done). `tests/worker/jira-import.test.ts`, `tests/worker/jira-loss-review-fixture.ts` (tests tagged DATA-009).",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 407,
+      "line": 409,
       "text": "**DATA-010 \u2014 Jira staged apply and reconciliation** (done). `tests/worker/jira-apply.test.ts` (tests tagged DATA-010). Role-matrix cells: `tests/worker/role-matrix.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 408,
+      "line": 410,
       "text": "**DATA-011 \u2014 Erasing an imported person** (done). `tests/worker/imported-person-erasure.test.ts`, `tests/worker/base-refresh-upgrade.test.ts` (tests tagged DATA-011). Role-matrix cells: `tests/worker/role-matrix.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 409,
+      "line": 411,
       "text": "**DATA-012 \u2014 GitHub Issues and Projects import** (missing). A run against a GitHub API fixture of a repository with a Project, milestones and comments whose reconciliation report matches source counts, and the DATA-017 scale run for a GitHub fixture of 50,000 issues across five repositories.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 410,
+      "line": 412,
       "text": "**DATA-013 \u2014 Jira Cloud and Data Center API import** (partial). A run against a Jira REST fixture with two projects, sprints and attachments whose reconciliation matches, and the DATA-017 scale run for a Jira fixture of 50,000 issues across six projects with cross-project Blocks and epic links. DATA-013 inherits PROJ-011's sentence \"Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping\": the Jira importer reviews that choice, assignments and reconciliation before shipping.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 411,
+      "line": 413,
       "text": "**DATA-014 \u2014 Linear API import** (partial). A run against a Linear GraphQL fixture whose reconciliation includes projects, initiatives, attachment bytes, customers with their requests and each project's mapped status, and the DATA-017 scale run. PROJ-001 inherits Linear project start and target dates, priority and project labels onto the native fields, checked in reconciliation, before Linear project import ships. DATA-014 inherits PROJ-011's sentence \"Jira fix versions and Linear milestones import to milestones or releases (RELEASE-001) by explicit mapping\": the Linear importer reviews that choice, assignments and reconciliation before shipping.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 412,
+      "line": 414,
       "text": "**DATA-015 \u2014 Plane, Huly and Shortcut import** (done). `tests/worker/plane-huly-shortcut-import.test.ts`, `tests/e2e/data-staged-cli.mjs`, `tests/e2e/data-profile-journey.mjs`: one fixture per source whose reconciliation report matches.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 413,
+      "line": 415,
       "text": "**DATA-016 \u2014 Transition sync** (missing). A Jira fixture sync that mirrors a status change each way and stops at the configured end.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 414,
+      "line": 416,
       "text": "**DATA-017 \u2014 Whole-workspace migration** (partial). A Linear GraphQL fixture of 50,000 issues across six teams with comments, attachment bytes and 5,000 blocks, duplicate and parent links of which at least 2,000 cross run boundaries, imported as a migration of at least thirteen runs delivered out of order, whose single reconciliation report matches source counts by team, status, project, cycle and assignee, binds every cross-run relation and reports zero pending; a second pass after the fixture changes 100 issues imports exactly those 100; and a file-based migration whose last run is never supplied finishes only after the owner accepts the pending list.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 415,
+      "line": 417,
       "text": "**DATA-018 \u2014 Old identifiers and links after a move** (partial). After a Linear fixture migration, a journey that pastes a `linear.app` issue URL into search and opens the imported issue, follows `/alias/ENG-123` to it, and a signed GitHub fixture for a PR on branch `eng-123-fix-login` with \"Fixes ENG-123\" in its body that links and completes the imported issue once; plus a native `VEC-1` whose number collides with an alias and is never shadowed.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 419,
+      "line": 421,
       "text": "**SEC-001 \u2014 Integration credentials** (done). Evidence: `tests/worker/data-http.test.ts`, `tests/worker/outbound-broken-destination.test.ts`. the SEC-001 archive-then-restore HTTP journey excludes source signing and webhook URL secrets, repository and outbound webhook secrets and API tokens; restored settings require credential re-entry or token replacement. The manifest/OAuth Slack install, Events API, @Vector issue creation and explicit identity linking remain SLACK-001\u2019s; GitHub App and agent cells belong to GITHUB-006 and AGENT-004. The Slack bot-token paste path, the Slack signing secret, member-confirmed Slack links (SLACK-004) and Discord webhook URL are covered now by the same archive-then-restore and broken-credential tests. SLACK-001 retains the manifest/OAuth installation, Events API, @Vector issue creation and explicit identity-linking cells.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 420,
+      "line": 422,
       "text": "**SEC-002 \u2014 Model and agent data handling** (missing). A journey that turns off triage suggestions for one team and finds no model call for that team's items at the provider fixture; a check that every enabled model provider in `seed.json` externals carries a terms URL, a no-training statement and data categories; and a journey in which enabling a self-hosted model provider is refused until an Owner records its terms and confirms no-training, with the confirmation found in the audit log.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 421,
+      "line": 423,
       "text": "**SEC-003 \u2014 Erasure across integrations** (partial). An issue deletion with a synced Slack thread and an embedding that removes both and lists the GitHub comment it cannot recall. Posted Slack channel messages, already-sent Slack direct messages and Discord messages cannot be recalled by local erasure; member removal deletes SLACK-004 Slack links; synced-thread erasure, other external identities and embeddings remain open.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 425,
+      "line": 427,
       "text": "**PUSH-001 \u2014 Issue to spec** (missing). A journey on a seeded bug with two Spool errors and a Zendesk ticket where the draft cites both, the assignee edits one criterion and approves, and the approved revision is attached.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 426,
+      "line": 428,
       "text": "**PUSH-002 \u2014 Spec to tested PR** (missing). An agent fixture that returns a PR covering two of three criteria with passing checks, and the issue shows one uncovered criterion and the session not done.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 427,
+      "line": 429,
       "text": "**PUSH-003 \u2014 Verified deployment** (missing). A merge fixture followed by a production deployment fixture that marks the issue deployed, and a second merge with no deployment that raises one question after the window.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 428,
+      "line": 430,
       "text": "**PUSH-004 \u2014 Outcome verification before close** (missing). A journey with a linked Spool error group whose rate drops to zero after the deploy fixture, producing a Verified proposal that the assignee confirms, and a second issue whose error persists and is proposed Not fixed.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 429,
+      "line": 431,
       "text": "**PUSH-005 \u2014 Customer follow-through** (missing). A verified issue with two tickets yields two drafts; approving one sends one fixture message, skipping the other sends none.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 430,
+      "line": 432,
       "text": "**PUSH-006 \u2014 Blocked-work follow-up** (partial). A blocked issue whose blocker owner is asked once, answers \"Friday\", and is asked again only after Friday; a stop instruction ends follow-ups.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 431,
+      "line": 433,
       "text": "**PUSH-007 \u2014 Plans with uncertainty** (partial). A seeded project where the forecast's 50% and 85% dates match a reference calculation, and the chosen option is recorded with its assumptions.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 432,
+      "line": 434,
       "text": "**PUSH-008 \u2014 Incident follow-up loop** (missing). A resolved-incident fixture that yields drafted follow-ups; approving two creates two linked issues and a weekly status post.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 433,
+      "line": 435,
       "text": "**PUSH-009 \u2014 Standups and cycle summaries** (partial). A seeded day of activity whose summary cites every completed and newly blocked issue and no private-team issue in a public channel.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 434,
+      "line": 436,
       "text": "**PUSH-010 \u2014 Agent accountability ledger** (missing). A journey that runs a triage suggestion and a spec draft, finds both in the ledger with costs, then pauses all agents and sees the next suggestion skipped.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 438,
+      "line": 440,
       "text": "**OWNER-CLAIM-001 \u2014 Signed owner claim** (done). `tests/worker/owner-claim.test.ts`, `tests/worker/owner-claim-upgrade.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
     },
     {
       "file": "ACCEPTANCE.md",
-      "line": 439,
+      "line": 441,
       "text": "**EDITOR-001 \u2014 Owner-gated editor** (done). `tests/worker/editor.test.ts`.",
       "to": "generated",
       "note": "The contract generator writes this status or count."
@@ -16832,6 +16770,178 @@
       "line": 39,
       "text": "| GITHUB-008 | missing | Provider-backed create branch carved verbatim from GITHUB-003. Copyable names, signed linking, closing/contributing words, attributed replay-safe status moves, follower notifications and the Member-facing rules screen remain GITHUB-003 duties. | Requires GITHUB-006 and a provider write credential. |",
       "to": "changelog"
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "**API-004 \u2014 OAuth apps.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "Archives exclude vector_oauth_apps, vector_oauth_codes, vector_oauth_grants and integration_tokens.",
+      "to": "docs",
+      "path": "docs/API.md",
+      "also": [
+        {
+          "to": "clause",
+          "ids": [
+            "API-004"
+          ]
+        },
+        {
+          "to": "rulings",
+          "ids": [
+            "RL-8"
+          ]
+        }
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "Safe token profiles, usage receipts and audit history remain portable as history only and confer no authority.",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "After restore, an Owner or Admin registers the application again and each member consents again; a pre-restore OAuth token returns 401.",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "Inherited from ROLE-001: Owners, Admins and Members authorize an OAuth app for themselves; Guests are refused (role matrix).",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "*Acceptance:* an authorization-code journey that grants read-only scope, a refused write, and an Admin revocation that ends the next call.",
+      "to": "docs",
+      "path": "docs/contract/MECHANISMS.md"
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "*Status:* partial.",
+      "to": "section",
+      "section": "Status"
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "*Evidence:* `tests/worker/integration-api.test.ts` (oauthAuthorizationJourney: registration and private secret, Owner/Admin/Member consent, Guest/Viewer refusal, exact redirect and PKCE exchange, read-only access, personal-token isolation, Admin revocation, replay and member removal); `tests/worker/role-probes.ts` (probes: OAuth management and personal-consent role cells); `tests/worker/role-viewer-census.ts` (prepareViewerCensus: the three OAuth mutation doors); `tests/e2e/integrations/oauth-apps.mjs` (exerciseOAuthApps: show-once secret, Member consent, read-only access, personal-token isolation, browser recovery, in-view registration refusal, Settings section route and Admin revocation); `tests/e2e/data-roundtrip.mjs` (seedOAuthArchive and verifyOAuthArchive: credential exclusion, retained safe history, pre-restore token refusal and fresh registration/member consent restoring access).",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 517,
+      "text": "*Gap:* ct\u2019s exact-head re-judgment and the independent UI gate remain outstanding. Follow-ups: a Member-owned authorized-app revoke surface, and uip\u2019s untouched N1\u2013N4 and Observations. API-004 stays PARTIAL.",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 588,
+      "text": "API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27 October 2026 and kept it PARTIAL. The archive policy rider is adopted from that ct review; exact-head ct re-judgment and guarded landing remain outstanding.",
+      "to": "changelog"
+    },
+    {
+      "file": "CONTRACT.md",
+      "line": 820,
+      "cell": "gap",
+      "text": "ct\u2019s exact-head re-judgment and the independent UI gate remain outstanding. Follow-ups: a Member-owned authorized-app revoke surface, and uip\u2019s untouched N1\u2013N4 and Observations. API-004 stays PARTIAL.",
+      "to": "gap",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 84,
+      "text": "| Target and push further | 33 | 52 | 70 | 155 |",
+      "to": "generated",
+      "note": "The contract generator writes this status count."
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 85,
+      "text": "| All | 130 | 59 | 70 | 259 |",
+      "to": "generated",
+      "note": "The contract generator writes this status count."
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 391,
+      "text": "**API-004 \u2014 OAuth apps** (partial).",
+      "to": "generated",
+      "note": "The contract generator writes the clause heading and carried status."
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 391,
+      "text": "An authorization-code journey that grants read-only scope, a refused write, and an Admin revocation that ends the next call.",
+      "to": "docs",
+      "path": "docs/contract/MECHANISMS.md"
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 391,
+      "text": "Inherited from ROLE-001: Owners, Admins and Members authorize an OAuth app for themselves; Guests are refused (role matrix).",
+      "to": "copy",
+      "of": 517
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 391,
+      "text": "Archives exclude vector_oauth_apps, vector_oauth_codes, vector_oauth_grants and integration_tokens. Safe token profiles, usage receipts and audit history remain portable as history only and confer no authority. After restore, an Owner or Admin registers the application again and each member consents again; a pre-restore OAuth token returns 401.",
+      "to": "copy",
+      "of": 517
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 391,
+      "text": "Evidence: `tests/worker/integration-api.test.ts` (oauthAuthorizationJourney: registration and private secret, Owner/Admin/Member consent, Guest/Viewer refusal, exact redirect and PKCE exchange, read-only access, personal-token isolation, Admin revocation, replay and member removal); `tests/worker/role-probes.ts` (probes: OAuth management and personal-consent role cells); `tests/worker/role-viewer-census.ts` (prepareViewerCensus: the three OAuth mutation doors); `tests/e2e/integrations/oauth-apps.mjs` (exerciseOAuthApps: show-once secret, Member consent, read-only access, personal-token isolation, browser recovery, in-view registration refusal, Settings section route and Admin revocation); `tests/e2e/data-roundtrip.mjs` (seedOAuthArchive and verifyOAuthArchive: credential exclusion, retained safe history, pre-restore token refusal and fresh registration/member consent restoring access).",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 391,
+      "text": "Gap: ct\u2019s exact-head re-judgment and the independent UI gate remain outstanding. Follow-ups: a Member-owned authorized-app revoke surface, and uip\u2019s untouched N1\u2013N4 and Observations. API-004 stays PARTIAL.",
+      "to": "clause",
+      "ids": [
+        "API-004"
+      ]
+    },
+    {
+      "file": "ACCEPTANCE.md",
+      "line": 393,
+      "text": "API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27 October 2026 and kept it PARTIAL. The archive policy rider is adopted from that ct review; exact-head ct re-judgment and guarded landing remain outstanding.",
+      "to": "copy",
+      "of": 588
     }
   ]
 }

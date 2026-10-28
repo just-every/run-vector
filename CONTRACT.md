@@ -3010,11 +3010,13 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 *Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ACCESS-004
 
-**Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.
+**Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app. OAuth archive recovery follows RL-8; docs/API.md names the excluded credential stores.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.
 2. Inherited from ROLE-001: Owners, Admins and Members authorize an OAuth app for themselves; Guests are refused (role matrix).
+3. Archives exclude application registrations, authorization codes, OAuth grants and access-token credentials. Safe token profiles, usage receipts and audit history remain portable as history only and confer no authority.
+4. After restore, an Owner or Admin registers the application again and each member consents again; a pre-restore OAuth token is refused as unauthenticated.
 
 #### API-005 — SDK and docs
 
@@ -3755,8 +3757,8 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 28 | 77 | 1 | 106 |
-| Target and push further | 3 | 88 | 98 | 189 |
-| All | 31 | 165 | 99 | 295 |
+| Target and push further | 3 | 89 | 97 | 189 |
+| All | 31 | 166 | 98 | 295 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -4019,7 +4021,7 @@ Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5
 | `AGENT-008` | Agent guidance | target | missing |  | No implementation yet |
 | `AGENT-009` | Provider delegation protocols | target | missing |  | No implementation yet |
 | `API-003` | Complete public API | target | partial | `tests/worker/integration-api.test.ts`, `tests/worker/api-rate-limit.test.ts`, `schema/api-v1.json` | Idempotency keys and their concurrency/retention proofs; issue deletion through the native receipt/policy door; cycle update/delete; complete list/get/create/update/delete coverage for attachments, relations, labels, teams, workflow states, views, notifications and members; attachment bytes excluded by API-001; initiative and release deletion; documents PROJ-013, customers CUST-005 and customer requests CUST-001 not built; real private-team refusal under ROLE-002; full schema-coverage acceptance. API-001 published wording is retained pending a valid next-release amendment representation: the issued RELEASE.json fails its pinned validator and the schema has no NEXT envelope. |
-| `API-004` | OAuth apps | target | missing |  | No implementation yet |
+| `API-004` | OAuth apps | target | partial | `tests/worker/integration-api.test.ts` (oauthAuthorizationJourney: registration and private secret, Owner/Admin/Member consent, Guest/Viewer refusal, exact redirect and PKCE exchange, read-only access, personal-token isolation, Admin revocation, replay and member removal); `tests/worker/role-probes.ts` (probes: OAuth management and personal-consent role cells); `tests/worker/role-viewer-census.ts` (prepareViewerCensus: the three OAuth mutation doors); `tests/e2e/integrations/oauth-apps.mjs` (exerciseOAuthApps: show-once secret, Member consent, read-only access, personal-token isolation, browser recovery, in-view registration refusal, Settings section route and Admin revocation); `tests/e2e/data-roundtrip.mjs` (seedOAuthArchive and verifyOAuthArchive: credential exclusion, retained safe history, pre-restore token refusal and fresh registration/member consent restoring access) | ct’s exact-head re-judgment and the independent UI gate remain outstanding. Follow-ups: a Member-owned authorized-app revoke surface, and uip’s untouched N1–N4 and Observations. API-004 stays PARTIAL. |
 | `API-005` | SDK and docs | target | missing |  | No implementation yet |
 | `WEBHOOK-002` | Webhooks for every object | target | partial | `src/core/features/integrations/outbound.ts` | Issue created, updated and completed events |
 | `DATA-012` | GitHub Issues and Projects import | target | missing |  | No implementation yet |

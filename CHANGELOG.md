@@ -1,5 +1,9 @@
 # Changelog
 
+## Contract reconciliation — 2026-10-28
+
+API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27 October 2026 and kept it PARTIAL. The archive policy rider is adopted from that ct review; exact-head ct re-judgment and guarded landing remain outstanding.
+
 ## 0.4.1 — 2026-10-21
 
 - Backups restore into an installation whose database Run Edit Run Platform migrated. Platform's runner records each migration in its own `rer_migrations` ledger, which Wrangler cannot read; `rer import` (and `rer export`) ran `wrangler d1 migrations apply` regardless, which re-applied every migration and stopped at "Preparing archive schema" with `table workspace_settings already exists`. A local transfer now reads the migration ledger first: on a Platform-migrated database it leaves migrations to Platform's runner, refuses with `migration_ledger:unapplied:<file>` (or `migration_ledger:multiple`) unless every migration file is already applied, and never runs Wrangler; other databases are prepared by Wrangler as before. The listed version's backups and this version's own restore with every archived row, cell and file intact into Platform-migrated and native installations. Uses rer 0.2.77; recorded Base copies are unchanged.

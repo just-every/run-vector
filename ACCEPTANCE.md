@@ -8,10 +8,10 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 | Tier | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Core | 31 | 165 | 86 | 282 |
+| Core | 31 | 166 | 85 | 282 |
 | Agent surface | 0 | 0 | 13 | 13 |
 | Later | 0 | 0 | 0 | 0 |
-| Full target | 31 | 165 | 99 | 295 |
+| Full target | 31 | 166 | 98 | 295 |
 
 Judged from the code and tests at commit `bdcd9599eb64411a48657fc8394a438a3675f5a8` (27 October 2026). Field proof register: 10 rows; 0 passed, 0 failed, 10 not run.
 
@@ -3826,16 +3826,18 @@ Core · target · **partial** · Cites BASE-INPUT-001, BASE-ACCESS-004
 
 #### API-004 — OAuth apps
 
-Core · target · **missing** · Cites BASE-INPUT-001, BASE-ACCESS-004
+Core · target · **partial** · Cites BASE-INPUT-001, BASE-ACCESS-004
 
-**Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.
+**Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app. OAuth archive recovery follows RL-8; docs/API.md names the excluded credential stores.
 
 **Acceptance.** Through the native product door and its declared counterpart:
 1. Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app.
 2. Inherited from ROLE-001: Owners, Admins and Members authorize an OAuth app for themselves; Guests are refused (role matrix).
+3. Archives exclude application registrations, authorization codes, OAuth grants and access-token credentials. Safe token profiles, usage receipts and audit history remain portable as history only and confer no authority.
+4. After restore, an Owner or Admin registers the application again and each member consents again; a pre-restore OAuth token is refused as unauthenticated.
 
-**Evidence.** None.
-**Gap.** No implementation yet
+**Evidence.** `tests/worker/integration-api.test.ts` (oauthAuthorizationJourney: registration and private secret, Owner/Admin/Member consent, Guest/Viewer refusal, exact redirect and PKCE exchange, read-only access, personal-token isolation, Admin revocation, replay and member removal); `tests/worker/role-probes.ts` (probes: OAuth management and personal-consent role cells); `tests/worker/role-viewer-census.ts` (prepareViewerCensus: the three OAuth mutation doors); `tests/e2e/integrations/oauth-apps.mjs` (exerciseOAuthApps: show-once secret, Member consent, read-only access, personal-token isolation, browser recovery, in-view registration refusal, Settings section route and Admin revocation); `tests/e2e/data-roundtrip.mjs` (seedOAuthArchive and verifyOAuthArchive: credential exclusion, retained safe history, pre-restore token refusal and fresh registration/member consent restoring access)
+**Gap.** ct’s exact-head re-judgment and the independent UI gate remain outstanding. Follow-ups: a Member-owned authorized-app revoke surface, and uip’s untouched N1–N4 and Observations. API-004 stays PARTIAL.
 
 #### API-005 — SDK and docs
 

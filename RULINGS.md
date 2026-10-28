@@ -43,3 +43,11 @@ Owners, Admins and Members read only visible issues; Guests are refused.
 Date: 28 October 2026 (carry-forward record). Ruled by: fleet builder preserving the source contract’s provider assumption under the cleanup default; its original ruler and decision date were not recorded. Governs: SLACK-009.
 
 The held provider conversation object omits the frozen indicator. Absence is treated as not frozen; a contradictory provider result reopens this assumption. This records the old behavior without promoting status.
+
+### RL-8 — OAuth archive authority
+
+Date: 27 October 2026. Ruled by: ct. Governs: API-004.
+
+Archives exclude vector_oauth_apps, vector_oauth_codes, vector_oauth_grants and integration_tokens. Safe token profiles, usage receipts and audit history remain portable as history only and confer no authority. After restore, an Owner or Admin registers the application again and each member consents again; a pre-restore OAuth token returns 401.
+
+The ruling is carried from main's API-004 row and its review of `93ab66269b4f8fc4109d91504ccfe5233b563c5c`; API-004 remains partial.
