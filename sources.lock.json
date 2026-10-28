@@ -7709,7 +7709,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "bd76c8f4c76a6868fc50be609a46d32aa607dfde4863534d66a33f4b0f20eae7",
+      "sha256": "6a35735c18b94d3b71086878724c7e182907edf6cdcff7a7162188531e1d3513",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {

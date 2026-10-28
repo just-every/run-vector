@@ -37,6 +37,8 @@ it('[API-001 API-002 ISSUE-022] Base scoped token authority drives native routes
  const thisWeek=await (await f.api(read.token,'/issues?start=this_week&sort=start')).json() as any;
  expect(thisWeek.issues.map((row:any)=>row.identifier)).toContain(weekly.identifier);
  expect(thisWeek.issues.map((row:any)=>row.identifier)).not.toContain(other.identifier);
+ const ordered=await (await f.api(read.token,'/issues?start=range&startFrom='+outsideWeek.toISOString().slice(0,10)+'&startTo='+weekStart+'&sort=start')).json() as any;
+ expect(ordered.issues.map((row:any)=>row.identifier)).toEqual([other.identifier,weekly.identifier]);
  expect((await f.api(read.token,'/issues?workspaceId=spoof')).status).toBe(400);expect((await f.api(read.token,'/issues/'+issue.identifier)).status).toBe(200);
  // Foreign native records are test data only; the token cannot widen its issuer workspace.
  const foreignWorkspace='01K00000000000000000000110',foreignTeam='01K00000000000000000000111',foreignStatus='01K00000000000000000000112';
