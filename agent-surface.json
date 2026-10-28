@@ -478,7 +478,6 @@
       ],
       "clauses": [
         "ISSUE-008",
-        "ISSUE-008",
         "ISSUE-009"
       ]
     },
@@ -490,7 +489,6 @@
         "standard"
       ],
       "clauses": [
-        "ISSUE-008",
         "ISSUE-008",
         "ISSUE-013"
       ]
@@ -3950,12 +3948,28 @@
       ]
     },
     {
+      "id": "native-file-issue",
+      "tool": "vector.issues.list",
+      "args": {
+        "q": "Investigate a reported checkout failure",
+        "sort": "oldest"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
       "id": "native-files",
       "tool": "vector.issue.read_discussion",
       "args": {
         "identifier": {
-          "$from": "issue",
-          "pointer": "/identifier"
+          "$from": "native-file-issue",
+          "pointer": "/issues/0/identifier"
         }
       },
       "expect": [
@@ -3972,8 +3986,8 @@
       "tool": "vector.issue.remove_file",
       "args": {
         "identifier": {
-          "$from": "issue",
-          "pointer": "/identifier"
+          "$from": "native-file-issue",
+          "pointer": "/issues/0/identifier"
         },
         "itemId": {
           "$from": "native-files",

@@ -576,7 +576,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "f8cfe40e7ef39677925676cbd233147266fc0393cb504865960706d8692667cd",
+      "sha256": "afe14327434130f335ddd345616066468b897ca6e98f558752243f556e44903b",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -3632,7 +3632,7 @@
       "executable": false
     },
     "src/core/features/agent-door/issues-discussion.ts": {
-      "sha256": "51cec8f0fcbfd3a2a8fe66e431512811fc0d61d0147f44e41921f6161839afc4",
+      "sha256": "51265b74922065c20d9ca4ccb70fa797911ed837822158c5e9c51773cce323f9",
       "executable": false
     },
     "src/core/features/agent-door/issues-operations.ts": {
@@ -3656,7 +3656,7 @@
       "executable": false
     },
     "src/core/features/agent-door/native.ts": {
-      "sha256": "771f75cbcb138d5322a7f05bcfa174ae8766a40949d419dce6c4cc70166139c7",
+      "sha256": "dc5abec49eab5a9635ce02babbf060e12473a80089aba9878616667478c5ee92",
       "executable": false
     },
     "src/core/features/agent-door/people.ts": {
@@ -6916,7 +6916,7 @@
       "executable": false
     },
     "tests/agent-door/browser-journey.mjs": {
-      "sha256": "392fed6f31a8520aa9d435f214c1674f22bf9b843c01926f24c1187b028aceb4",
+      "sha256": "23d245de850cac07c8b2fb305cee2313511a69b7e1a17ab0e9e03d12fef463d7",
       "executable": false
     },
     "tests/agent-door/consent-probe.mjs": {
@@ -6944,7 +6944,7 @@
       "executable": false
     },
     "tests/agent-door/runtime.mjs": {
-      "sha256": "b27446ac71c8d80b3c15bef2b15d59cf6eddf71fd38a2f8c3c100788b1e259d5",
+      "sha256": "4592f7a1408a4e22cc0143a851b470f855b664f41e3fc21cbd88fd4e2590860c",
       "executable": false
     },
     "tests/agent-door/verify-pin.mjs": {

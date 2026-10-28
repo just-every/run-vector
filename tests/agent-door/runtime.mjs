@@ -49,8 +49,9 @@ try {
       notTools: [...surface.notTools.filter(item => !item.clauses.includes('ROLE-014')), { clauses: ['API-004', 'ROLE-010'], reason: 'screen' },
         { clauses: ['GITHUB-001', 'GITHUB-002', 'WEBHOOK-001'], reason: 'connector' }, { clauses: ['ISSUE-009'], reason: 'device' }],
       journey: [...surface.journey.slice(0, 6), ...issues.journey,
-        { id: 'native-files', tool: 'vector.issue.read_discussion', args: { identifier: { $from: 'issue', pointer: '/identifier' } }, expect: [{ class: 'standard', facts: { measure: 1 } }] },
-        { id: 'native-file-remove', tool: 'vector.issue.remove_file', args: { identifier: { $from: 'issue', pointer: '/identifier' }, itemId: { $from: 'native-files', pointer: '/files/0/id' } }, expect: [{ class: 'destructive', facts: { measure: 1 } }] },
+        { id: 'native-file-issue', tool: 'vector.issues.list', args: { q: 'Investigate a reported checkout failure', sort: 'oldest' }, expect: [{ class: 'standard', facts: { measure: 1 } }] },
+        { id: 'native-files', tool: 'vector.issue.read_discussion', args: { identifier: { $from: 'native-file-issue', pointer: '/issues/0/identifier' } }, expect: [{ class: 'standard', facts: { measure: 1 } }] },
+        { id: 'native-file-remove', tool: 'vector.issue.remove_file', args: { identifier: { $from: 'native-file-issue', pointer: '/issues/0/identifier' }, itemId: { $from: 'native-files', pointer: '/files/0/id' } }, expect: [{ class: 'destructive', facts: { measure: 1 } }] },
         ...planning, ...workspace, surface.journey.find(step => step.id === 'events')],
       witness: { tool: 'vector.issues.list', args: { sort: 'oldest', pageSize: 100 } },
     };
