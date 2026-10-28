@@ -39,7 +39,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 | BASE-INPUT-003 | Uploads | ISSUE-009, ISSUE-024, ISSUE-033, ISSUE-034, ISSUE-035, ISSUE-036 | not run |
 | BASE-SECRET-001 | No leakage | INTEG-001, INTEG-002, SEC-001, SEC-002, SEC-003 | not run |
 | BASE-SECRET-002 | Startup | none | not run |
-| BASE-DATA-001 | Export and import | DATA-001, DATA-002, DATA-003, DATA-004, DATA-005, DATA-006, DATA-007, DATA-008, DATA-009, DATA-010, DATA-011, ISSUE-036, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017, DATA-018 | not run |
+| BASE-DATA-001 | Export and import | DATA-001, DATA-002, DATA-003, DATA-004, DATA-005, DATA-006, DATA-007, DATA-008, DATA-009, DATA-010, DATA-011, ISSUE-036, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017, DATA-018, API-004 | not run |
 | BASE-DATA-002 | Retention | ISSUE-035 | not run |
 | BASE-DATA-003 | Erasure | ISSUE-009, DATA-011, ROLE-012, SEC-003 | not run |
 | BASE-DATA-004 | Outbound flows | none | not run |
@@ -3008,7 +3008,7 @@ The primary journey: Connect a report source, inspect the evidence, accept, defe
 
 #### API-004 — OAuth apps
 
-*Tier:* Core · *Cites:* BASE-INPUT-001, BASE-ACCESS-004
+*Tier:* Core · *Cites:* BASE-INPUT-001, BASE-DATA-001, BASE-ACCESS-004
 
 **Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app. OAuth archive recovery follows RL-8; docs/API.md names the excluded credential stores.
 

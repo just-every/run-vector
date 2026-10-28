@@ -3826,7 +3826,7 @@ Core · target · **partial** · Cites BASE-INPUT-001, BASE-ACCESS-004
 
 #### API-004 — OAuth apps
 
-Core · target · **partial** · Cites BASE-INPUT-001, BASE-ACCESS-004
+Core · target · **partial** · Cites BASE-INPUT-001, BASE-DATA-001, BASE-ACCESS-004
 
 **Requirement.** Developers register OAuth 2.0 applications with chosen scopes; members authorize them from a consent screen; Admins can see and revoke every authorized app. OAuth archive recovery follows RL-8; docs/API.md names the excluded credential stores.
 
