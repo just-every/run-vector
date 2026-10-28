@@ -3112,7 +3112,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "a3be2c81a05851f5d0bdd7d0b763c2f1b2639e558128f02a1bf1b4176f266265",
+      "sha256": "166f8e7411f506f8bfff12143c2486802504989062109e1bde4d8d0885bfbe26",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -8144,7 +8144,7 @@
       "executable": false
     },
     "tests/worker/jira-apply.test.ts": {
-      "sha256": "309f9b9e0c6d3f27caa294341ab017be5fc64fd543d498bc09c2f264ee737fe7",
+      "sha256": "a367e019683de78f0032e885cc85137fcb8765cabd74dca3cb70ba129e60a548",
       "executable": false
     },
     "tests/worker/jira-import.test.ts": {
