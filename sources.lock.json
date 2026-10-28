@@ -3693,7 +3693,7 @@
       "executable": false
     },
     "src/core/features/calendar-view/timeline.tsx": {
-      "sha256": "70e08e2031e18c587a5684f5a9a3fe4af1c5f6821288f0cbbaace918c8403f04",
+      "sha256": "dcf3b586c5c0a5937eb01a16389ba6035d7ba84d0b6d08dd991eded91f342cec",
       "executable": false
     },
     "src/core/features/cycle-closure/read.ts": {
@@ -7257,7 +7257,7 @@
       "executable": false
     },
     "tests/e2e/timeline-journey.mjs": {
-      "sha256": "6ea7deec0db32c24c3e14c443c02e67bed641727fddfccce914b2133a83bad28",
+      "sha256": "52de681a477cf2c02c579ce6e28e2a0228068624e9f834240ee374b8a64878e8",
       "executable": false
     },
     "tests/e2e/ui-administration-form.mjs": {

@@ -44,7 +44,7 @@ export function IssueTimeline({query=defaultIssueListQuery}:{query?:IssueListQue
     void move(drag,dayAt(Math.round(geometry.first+fraction*geometry.span)));
   }
   function open(issue:TimelineIssue,field:DateField){setEditing({issue,field});setDate(issue[field]??'');setError('');}
-  return <section className="issue-timeline" aria-label="Issue timeline" data-timeline-ready={current&&!data.loading&&!busy?'true':'false'}>
+  return <section className="issue-timeline" aria-label="Issue timeline" data-timeline-ready={current&&!data.loading&&!busy&&!data.error?'true':'false'}>
     <div className="insights-heading"><h2>Timeline</h2>{current&&<span>{current.timezone}</span>}</div>
     {data.error&&<p role="alert">{data.error.message} <button onClick={data.reload}>Retry timeline</button></p>}
     {!current&&!data.error&&<p role="status">Loading timeline…</p>}
@@ -72,7 +72,7 @@ export function IssueTimeline({query=defaultIssueListQuery}:{query?:IssueListQue
                 <div className="timeline-label"><a href={'/app/issues/'+issue.identifier}>{issue.identifier} · {issue.title}</a>{current.canEdit&&<button disabled={busy} onClick={()=>open(issue,issue.startDate?'startDate':'dueDate')} aria-label={'Change dates for '+issue.identifier}>Change dates</button>}</div>
                 <div className="timeline-track" onDragOver={event=>{if(drag&&!busy){event.preventDefault();event.dataTransfer.dropEffect='move';}}} onDrop={drop}>
                   <span className="timeline-today" style={{left:geometry.position(current.today)+'%'}}/>
-                  <div className={'timeline-bar timeline-bar--'+interval.kind} style={{left:left+'%',width:interval.kind==='diamond'?undefined:Math.max(1,right-left)+'%'}} aria-label={issue.identifier+(issue.startDate?' starts '+issue.startDate:'')+(issue.dueDate?' due '+issue.dueDate:' open to today '+current.today)}>
+                  <div className={'timeline-bar timeline-bar--'+interval.kind} style={{left:left+'%',width:interval.kind==='diamond'?undefined:Math.max(1,right-left)+'%',flexDirection:interval.kind==='open'&&issue.startDate!>current.today?'row-reverse':undefined}} aria-label={issue.identifier+(issue.startDate?' starts '+issue.startDate:'')+(issue.dueDate?' due '+issue.dueDate:' open to today '+current.today)}>
                     {interval.kind==='diamond'?<span className="timeline-diamond">◆</span>:null}
                     {current.canEdit?<>
                       {issue.startDate&&<Tooltip label="Drag start date"><button className="timeline-handle timeline-handle--start" draggable={!busy} disabled={busy} aria-label={'Drag start date for '+issue.identifier} onDragStart={event=>begin(event,{issue,field:'startDate'})} onDragEnd={()=>setDrag(null)} onClick={()=>open(issue,'startDate')}>Start</button></Tooltip>}
