@@ -204,6 +204,8 @@
 | `vector.role.team_membership.set` | access | ROLE-007, ROLE-003, ROLE-013 |
 | `vector.team.join_permissions.request` | standard | TEAM-007, ROLE-002 |
 | `vector.team.join_permissions.decide` | access | TEAM-007, ROLE-002 |
+| `vector.role.team_membership.member_grants` | standard | ROLE-007, ROLE-009 |
+| `vector.role.team_membership.remove` | access | ROLE-007, ROLE-003, ROLE-013 |
 | `vector.role.team_permissions.set` | access, security | ROLE-009, ROLE-007 |
 | `vector.team.join_permissions.set` | access, security | TEAM-007, ROLE-002 |
 | `vector.role.private_teams.set` | access, security | ROLE-002, OPS-001 |
@@ -243,3 +245,4 @@
 - `vector://subscriptions/{id}`
 - `vector://dashboards/{id}`
 - `vector://preferences/{id}`
+- `vector://teams/{teamId}/members/{operatorId}`
