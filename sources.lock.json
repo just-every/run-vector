@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "558a79007691b63007e8d4ba59b7cb96b5b52c70908977936e83bb43c962fefc",
+      "sha256": "81402646939d08956f52d34bcc738a7b50b80c2f5507e7448a956d306a316aaa",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -497,7 +497,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "14f79c91459ac7dc79e6ca057b98a3971e656a56f1d09cbf1ec688653bd5ba92",
+      "sha256": "a06b6b51569e0a4758609eba634f373eb959cd97292ce516a22ddc75be7a09bc",
       "executable": false
     },
     "BASELINE.md": {
@@ -505,7 +505,7 @@
       "executable": false
     },
     "CHANGELOG.md": {
-      "sha256": "99bcb6d3fa3653df93b2e3e4a3e7eed01cb5269f50467c58e66ebf6cca118682",
+      "sha256": "422e5fc68114d32430900bef03e1ff2d75a4622d65ec3066519d3ca616aae053",
       "executable": false
     },
     "CLAUDE.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "abae09c08f4272129a294f33f0e1174399466d00d2bd40516846acf7b1057090",
+      "sha256": "a7c74592651acf4df2c8de4e67bf461fb51437604e5e7c0bba7f32810522ab7d",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,15 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "20ad56282c953a433b085608f6320e1de0ae8a575c00e61ac7f4e6a233d45bfc",
+      "sha256": "98d5be64587fee9f73c375176a52961b2f23e3dca7375130b725619b99d47a78",
+      "executable": false
+    },
+    "docs/contract/COVERAGE.json": {
+      "sha256": "b0906811e56b05affb24a1f9468ea53257810b80de45094b015570dc6c380056",
+      "executable": false
+    },
+    "docs/contract/ID-MAP.json": {
+      "sha256": "8b272ea33d83d040ca2a2493a79a1fd9281a0c14bb5e4714e0af482ae68ecc45",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2874,6 +2882,10 @@
     },
     "seed.json": {
       "sha256": "92d3e7aa08aef13eedfeceda727525398ab062cb7cb27e18ad6798a0aba02d98",
+      "executable": false
+    },
+    "src/base/contract-docs.mjs": {
+      "sha256": "d98e14f489c57f60446c2cc68310db09f298f7974d77026dbaa2c62868cc4838",
       "executable": false
     },
     "src/base/contract-filter.ts": {
