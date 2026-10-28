@@ -11,7 +11,11 @@ export default async function initialize({ request, origin, claim, displayName, 
       headers: { Cookie: cookie, Origin: origin, 'Content-Type': 'application/json' },
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
-    if (!result.ok) throw new Error(`Native fixture ${path} returned HTTP ${result.status}`);
+    if (!result.ok) {
+      let code;
+      try { const error = await result.json(); code = error.code ?? error.error; } catch {}
+      throw new Error(`Native fixture ${path} returned HTTP ${result.status}${typeof code === 'string' && /^[a-zA-Z0-9_]+$/.test(code) ? ` (${code})` : ''}`);
+    }
     return result.json();
   };
   await call('/api/setup/complete', { confirmed: true });

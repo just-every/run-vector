@@ -36,7 +36,8 @@ the Business owner; a signed team admin is a Business editor, and a signed team
 member has no policy-editing role. Promoting a local member does not grant a
 Business role. Team members must first complete Vector's native invitation and
 sign-in, with their intended native role; an unadmitted roster entry returns
-`native_member_required`. Import, restoration, installation and sign-in methods
+`native_member_required`. A Business member linked to an existing Guest or
+Viewer keeps that narrower native role and team visibility. Import, restoration, installation and sign-in methods
 retain their own doors.
 
 This is an initial read surface. Editing, deletion, membership or credential

@@ -632,7 +632,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "7cc7ad860dcaca578afc12917f59ffc466d9a60f19579eec94e069de26e32f10",
+      "sha256": "b15e917788a2fd381af395f21bcbd1bd72dd787d0398a6186ca5c4d838aaef16",
       "executable": false
     },
     "docs/API.md": {
@@ -3588,7 +3588,7 @@
       "executable": false
     },
     "src/core/features/agent-door/business.ts": {
-      "sha256": "82809f69030211e84f45c158be7015cd80cc164c52c689061960ef06c4020d80",
+      "sha256": "4330b2fc6074862123023a9ee8c4fa32567be38e10fd2c5f8c883426e4d0083b",
       "executable": false
     },
     "src/core/features/agent-door/index.server.ts": {
@@ -6716,7 +6716,7 @@
       "executable": false
     },
     "tests/agent-door/initialize-owner.mjs": {
-      "sha256": "7930c27af025d28dc378e497644955fe56933979c5739d604a8707f0198d9462",
+      "sha256": "9e9c1bed494851a8faf1ac3a1cc78f996f96a93210b253147b93af9040b20b36",
       "executable": false
     },
     "tests/contract-tags.ts": {

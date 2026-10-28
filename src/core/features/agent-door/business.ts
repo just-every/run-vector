@@ -25,7 +25,8 @@ function nativeTeam(env: WorkerBindings): TeamAdapter {
           .bind(bound ?? member.email).first<{ id: string; role: string }>();
         // The native invitation, sign-in and role doors own provisioning. Never
         // silently promote a Member, Guest or Viewer while adopting a roster.
-        if (!native || native.role !== member.role) throw new SettingsError('native_member_required', 409);
+        const matches = native && (member.role === 'admin' ? native.role === 'admin' : ['member', 'guest', 'viewer'].includes(native.role));
+        if (!matches) throw new SettingsError('native_member_required', 409);
         rows.push({ email: member.email, operatorId: native.id, state: 'active', invite: member.invite });
       }
       for (const previous of managed) if (!rows.some(row => row.operatorId === previous.operatorId)) {
