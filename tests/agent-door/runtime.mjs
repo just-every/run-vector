@@ -40,6 +40,7 @@ try {
   }
   if (process.argv.includes('--write-surface')) {
     const catalogue = await native.catalogue();
+    if (catalogue.invalidSchemas.length) throw new Error('Unsupported native schemas: ' + JSON.stringify(catalogue.invalidSchemas));
     const { default: issues } = await import('./issue-steps.mjs');
     const { default: planning } = await import('./planning-steps.mjs');
     const { default: workspace } = await import('./workspace-steps.mjs');
@@ -87,6 +88,9 @@ try {
   await native.scheduledReminders();
   if (process.argv.includes('--bootstrap-only')) {
     console.log('Native bootstrap and scheduled reminder fixture completed.');
+  } else if (process.argv.includes('--screens')) {
+    const { browserJourney } = await import('./browser-journey.mjs');
+    await browserJourney({ request, origin, surface, signer, person: { email, cookie, sub }, db });
   } else {
   const result = await runAgentDoorConformance({ fetch: request, origin, surface, signer, person: { email, cookie, sub } });
   for (const point of declarations.points) console.log(`${point.ok ? 'PASS' : 'FAIL'} ${point.id}${point.detail ? ': ' + point.detail : ''}`);

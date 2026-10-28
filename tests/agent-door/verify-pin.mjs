@@ -22,6 +22,7 @@ try {
   // Its failure stays intact; the separate real installation still runs.
   const build = await run(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', 'build']);
   const runtime = build === 0 ? await run(process.execPath, ['tests/agent-door/runtime.mjs']) : build;
+  const browser = build === 0 && process.argv.includes('--screens') ? await run(process.execPath, ['tests/agent-door/runtime.mjs', '--screens']) : 0;
   console.log(`Specialist installation journey exit=${runtime}; normal CLI exit=${normal}.`);
-  process.exitCode = normal || runtime;
+  process.exitCode = normal || runtime || browser;
 } finally { await rm(scratch, { recursive: true, force: true }); }

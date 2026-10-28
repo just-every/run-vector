@@ -1,0 +1,86 @@
+import { mkdir } from 'node:fs/promises';
+import { randomUUID } from 'node:crypto';
+import { chromium } from '@playwright/test';
+import { createProtocol } from '../../vendor/base/agent-door/conformance/protocol.mjs';
+import { accessToken, autonomousPolicy, heldPolicy } from '../../vendor/base/agent-door/conformance/crypto.mjs';
+
+/** A person uses the actual built pages, native decisions and native records.
+ * Browser routing supplies only the disposable installation's hosted origin. */
+export async function browserJourney({ request, origin, surface, signer, person, db }) {
+  const stored = await db.prepare("SELECT json_extract(envelope,'$.seq') seq,json_extract(envelope,'$.revision') revision FROM agent_door_state WHERE id=1").first();
+  const c = createProtocol({ fetch: request, origin, surface, signer, person, business: 'rer-agent-conformance',
+    consent: randomUUID(), agentId: randomUUID(), seq: stored?.seq ?? 0, revision: stored?.revision ?? 0, listed: new Map(), points: [] });
+  const session = await c.personJson('/api/session'); c.sponsor.id = session.operatorId;
+  const options = await c.personJson('/api/metadata');
+  const token = () => accessToken(c, { act: { sub: c.agentId, name: 'Riley Delivery', specialist: surface.specialist } });
+  const tool = async (name, args) => c.tool(name, { ...args, idempotency_key: randomUUID() }, { token: await token() });
+  const done = async (name, args) => {
+    const answer = await tool(name, args);
+    if (answer.result?.isError || !answer.result?.structuredContent) throw new Error(`Browser preparation ${name} failed (${answer.result?._meta?.['com.runeditrun/error']?.code ?? answer.status})`);
+    return answer.result.structuredContent;
+  };
+  await c.adopt(autonomousPolicy());
+  const project = await done('vector.proj.project_record', { name: 'Checkout reliability', leadOperatorId: session.operatorId });
+  const issue = await done('vector.issue.creation', { teamId: options.teams[0].id, projectId: project.id,
+    title: 'Checkout stalls after selecting a saved address', description: 'Investigate the customer report, retain reproduction evidence and inspect the proposed fix.' });
+  const comment = await done('vector.issue.comments_and_safe_comment_removal', { identifier: issue.identifier,
+    input: { body: 'Reproduced against the native checkout. Morgan will review the retained evidence before anything is removed.' } });
+  const document = await done('vector.proj.project_documents_and_specs', { parentKind: 'project', parentId: project.id,
+    title: 'Checkout investigation', body: 'Reproduction, implementation notes and the named reviewer’s decision remain separate facts.' });
+  const milestone = await done('vector.proj.milestones', { id: project.id, input: { name: 'Old investigation checkpoint' } });
+  await c.adopt(heldPolicy());
+  const pending = await tool('vector.proj.milestones.delete', { id: project.id, milestoneId: milestone.id });
+  const approval = pending.result?._meta?.['com.runeditrun/approval'];
+  if (!approval?.url) throw new Error('Browser preparation did not create a native approval');
+  await mkdir('../screens-final', { recursive: true });
+  const browser = await chromium.launch({ headless: true });
+  const captured = [];
+  try {
+    const context = await browser.newContext();
+    await context.addCookies(person.cookie.split('; ').map(entry => {
+      const equals = entry.indexOf('='); return { name: entry.slice(0, equals), value: entry.slice(equals + 1), url: origin, secure: true, httpOnly: true };
+    }));
+    await context.route('**/*', async route => {
+      if (new URL(route.request().url()).origin !== origin) return route.abort();
+      const incoming = route.request();
+      const response = await request(incoming.url(), { method: incoming.method(), headers: incoming.headers(),
+        ...(incoming.postDataBuffer() ? { body: incoming.postDataBuffer() } : {}) });
+      const headers = Object.fromEntries(response.headers); delete headers['content-encoding']; delete headers['content-length'];
+      await route.fulfill({ status: response.status, headers, body: Buffer.from(await response.arrayBuffer()) });
+    });
+    const page = await context.newPage();
+    const capture = async (name, path) => {
+      for (const width of [1440, 390]) {
+        await page.setViewportSize({ width, height: 1000 }); await page.goto(new URL(path, origin).href);
+        await page.waitForLoadState('networkidle');
+        const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+        if (overflow) throw new Error(`${name} has horizontal overflow at ${width}`);
+        await page.screenshot({ path: `../screens-final/${name}-${width}.png`, fullPage: true });
+        captured.push({ name, width, heading: await page.locator('h1').allTextContents(), overflow });
+      }
+    };
+    await capture('approval-pending', approval.url);
+    await page.getByRole('button', { name: 'Approve', exact: true }).click();
+    await page.waitForFunction(() => document.querySelector('[data-approval-state]')?.textContent !== 'pending');
+    await capture('approval-final', approval.url);
+    await capture('agents-review', '/agents');
+    await page.getByRole('button', { name: 'Pause agents', exact: true }).click();
+    await page.waitForFunction(() => document.body.textContent.includes('Agents are paused'));
+    await capture('agents-paused', '/agents');
+    await page.getByRole('button', { name: 'Resume agents', exact: true }).click();
+    const blocked = autonomousPolicy(); blocked.rules.push({ id: 'retain-records', class: 'destructive', do: 'blocked' });
+    await c.adopt(blocked);
+    const refusal = await tool('vector.issue.remove_comment', { identifier: issue.identifier, itemId: comment.id, input: { expectedVersion: 0 } });
+    if (refusal.decision?.disposition !== 'blocked') throw new Error('Browser blocked policy did not refuse before native arguments');
+    await capture('agents-blocked', '/agents');
+    await capture('approval-error', '/agents/approvals/unavailable');
+    await capture('native-issue', '/app/issues/' + issue.identifier);
+    await capture('native-project', '/app/projects/' + project.id);
+    await capture('native-document', '/app/documents/' + document.id);
+    await capture('native-audit', '/app/settings/audit');
+    await capture('native-inbox', '/app/inbox');
+    await context.close();
+  } finally { await browser.close(); }
+  for (const row of captured) console.log('BROWSER ' + JSON.stringify(row));
+  console.log(`Browser product path: ${captured.length} screens at 1440 and 390.`);
+}

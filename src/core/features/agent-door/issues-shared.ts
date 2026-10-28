@@ -1,5 +1,6 @@
+import { nativeInputSchema } from './schema.ts';
 import { z } from 'zod';
-import { ToolRefusal, type Person, type ToolDefinition, type JsonSchemaObject } from '../../../../vendor/base/agent-door/index.ts';
+import { ToolRefusal, type Person, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { requireIssueAccess } from '../issues/access';
 import { getIssueDetail } from '../issues/service';
@@ -36,7 +37,7 @@ export function issueRead(env: WorkerBindings, name: string, title: string, clau
   return {
     name: `vector.${name}`, title, description: title, scope: 'issues:read', readOnly: true,
     clauses, classes: ['standard'], classify: () => [{ class: 'standard', facts: { measure: 1 } }],
-    inputSchema: z.toJSONSchema(schema, { io: 'input', unrepresentable: 'any' }) as JsonSchemaObject,
+    inputSchema: nativeInputSchema(schema),
     outputSchema: { type: 'object', additionalProperties: true }, untrusted: true,
     async summary(args, ctx) {
       const parsed = schema.parse(args) as any;
