@@ -1,4 +1,5 @@
 import {MonthCalendar} from '../calendar-view/page';
+import {IssueTimeline} from '../calendar-view/timeline';
 import { useState } from "react";
 import { z } from "zod";
 import { fetchJson, useApiResource } from "../../app/api-client";
@@ -7,6 +8,7 @@ import "../insights/insights.css";
 import "../settings/ui/settings.css";
 const revokedSchema = z.object({ revoked: z.literal(true) });
 export function CalendarPage() {
+  const [view,setView]=useState<'month'|'timeline'>('month');
   const data = useApiResource("/api/calendar/feeds", feedListSchema);
   const [team, setTeam] = useState("");
   const [url, setUrl] = useState("");
@@ -36,7 +38,10 @@ export function CalendarPage() {
   }
   return <main className="settings-page insights-page calendar-page" aria-labelledby="calendar-title" data-calendar-ready={data.data && !data.loading && !data.error ? "true" : "false"}>
     <header><p className="insights-eyebrow">Workspace planning</p><h1 id="calendar-title">Calendar</h1><p>Keep due dates, cycles and milestones in your calendar.</p></header>
-    <MonthCalendar />
+    <section className="insights-card" aria-label="Calendar views">
+      <nav className="calendar-view-modes" aria-label="Calendar view"><button aria-pressed={view==='month'} onClick={()=>setView('month')}>Month calendar</button><button aria-pressed={view==='timeline'} onClick={()=>setView('timeline')}>Timeline</button></nav>
+      {view==='month'?<MonthCalendar />:<IssueTimeline />}
+    </section>
     {data.error && <p role="alert">{data.error.message} <button onClick={data.reload}>Retry feeds</button></p>}
     {!data.data && !data.error && <p role="status">Loading calendar feeds…</p>}
     {data.data && !data.error && <>

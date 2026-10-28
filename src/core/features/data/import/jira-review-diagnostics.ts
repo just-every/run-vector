@@ -4,7 +4,7 @@ import { ownEntry } from './lookup';
 import type { ImportReferences } from './references';
 import type { ImportDiagnostic } from './types';
 
-const nativeFields:Record<string,string>={'issue id':'sourceId',summary:'title',description:'description',status:'status',priority:'priority',assignee:'assignee',created:'createdAt',updated:'updatedAt','due date':'dueDate',labels:'labels',sprint:'cycle','story point estimate':'estimate','original estimate':'estimate','issue type':'labels',resolved:'resolved',parent:'parent','parent id':'parent','outward issue link (blocks)':'blocks','outward issue link (duplicate)':'duplicateOf','outward issue link (relates)':'related'};
+const nativeFields:Record<string,string>={'issue id':'sourceId',summary:'title',description:'description',status:'status',priority:'priority',assignee:'assignee',created:'createdAt',updated:'updatedAt','start date':'startDate','due date':'dueDate',labels:'labels',sprint:'cycle','story point estimate':'estimate','original estimate':'estimate','issue type':'labels',resolved:'resolved',parent:'parent','parent id':'parent','outward issue link (blocks)':'blocks','outward issue link (duplicate)':'duplicateOf','outward issue link (relates)':'related'};
 const position=(column:JiraColumn)=>`${column.header} [column ${column.column}]`;
 
 /** Native diagnostics belong to the selected source inputs, not every column

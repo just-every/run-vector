@@ -221,6 +221,7 @@ export function buildIssueDetail(
     checklist: { completed: parseTasks(issue.description).filter(task => task.checked).length, total: parseTasks(issue.description).length },
     status: { id: status.id, name: status.name, category: status.category },
     priority: issue.priority,
+    startDate: issue.startDate,
     dueDate: issue.dueDate,
     estimate: issue.estimate,
     version: issue.version,

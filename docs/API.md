@@ -50,6 +50,15 @@ The native Worker tests exercise scopes, stale writes, revocation/removal,
 issuance/commit races, usage-write failure and restart. Local proof does not
 establish hosted token commissioning or a live client integration.
 
+## Issue dates
+
+Issue creation and version-checked edits accept optional `startDate` and `dueDate`
+as `YYYY-MM-DD` or null. When both are set, start must be on or before due;
+invalid intervals return 400 without a write. Each successful change appears in
+activity. Lists accept `start=this_week`, `start=range` with `startFrom` and
+`startTo`, `start=none`, or `start=overdue` (before today), and `sort=start`.
+Week boundaries use the workspace timezone, Monday through Sunday.
+
 ## Project planning
 
 Project create accepts `name`, `description`, `leadOperatorId`, `startDate`,

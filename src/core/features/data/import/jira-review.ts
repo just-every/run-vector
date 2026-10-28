@@ -17,7 +17,7 @@ const actions:Record<string,string>={
  summary:'Vector title.',description:'Vector description.',status:'Explicit confirmed Vector status; category only suggests.',
  'status category':'Suggestion only; never resolves a status.',priority:'Explicit confirmed Vector priority; source names only suggest.',
  assignee:'Explicit active existing operator mapping; blank is unassigned; unmapped tokens are omitted.',
- created:'Vector created time.',updated:'Vector updated time.', 'due date':'Vector calendar due date.',resolved:'Source Resolved supplies Vector completion time for Completed issues; missing values require an explicit fallback policy.',
+ created:'Vector created time.',updated:'Vector updated time.', 'start date':'Vector calendar start date.', 'due date':'Vector calendar due date.',resolved:'Source Resolved supplies Vector completion time for Completed issues; missing values require an explicit fallback policy.',
  labels:'Exact existing label name, once per issue; missing labels are errors. No automatic creation.',
  'issue type':'Epic becomes an ordinary issue labelled epic (existing label required); every other type is retained only. In-file Parent references become parent relationships in Vector, including subtasks.',
  sprint:'Last NONEMPTY listed occurrence may map to an exact-name existing open cycle in the same team. Earlier occurrences are rolled over in Jira. Terminal issues cannot join cycles.',

@@ -510,6 +510,11 @@ export function NewIssueForm() {
                     />
                   </label>
                   <label>
+                    Start date
+                    <input type="date" value={values.startDate}
+                      onChange={(event) => setValues({ ...values, startDate: event.target.value })} />
+                  </label>
+                  <label>
                     Due date
                     <input
                       type="date"

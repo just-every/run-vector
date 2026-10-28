@@ -276,6 +276,7 @@ function BoardCard({
         {current.priority === "none" ? "No priority" : current.priority} ·{" "}
         {current.assignee?.name ?? "Unassigned"}
       </p>
+      {(current.startDate||current.dueDate)&&<p>{current.startDate?`Starts ${current.startDate}`:""}{current.startDate&&current.dueDate?" · ":""}{current.dueDate?`Due ${current.dueDate}`:""}</p>}
       {row.blocked && <span className="issue-blocked">Blocked</span>}
       <div className="issue-labels">
         {row.labels.map((label) => (

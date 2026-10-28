@@ -130,6 +130,7 @@ export const issues = sqliteTable('issues', {
   projectId: text('project_id'),
   milestoneId: text('milestone_id').references(() => projectMilestones.id, { onDelete: 'set null' }),
   cycleId: text('cycle_id'),
+  startDate: text('start_date'),
   dueDate: text('due_date'),
   estimate: integer('estimate'),
   expectedOutcome: text('expected_outcome'),

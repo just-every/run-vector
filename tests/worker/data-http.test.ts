@@ -11,7 +11,7 @@ import {request,bindings,invite} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings,trackedLedger} from './http-archive-fixture';
-it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
  const {seedIntakeForTeam,recordedReply,mailBindings}=await import('./email-intake-fixture'),{eventSigner}=await import('../sendgrid-event-fixture');
  const mail=await seedIntakeForTeam(f.team.id,f.cookie),reply=await recordedReply(f.cookie,mail.identifier,'synthetic-vector-2401');expect(reply.response.status).toBe(201);
@@ -24,13 +24,13 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  const calendarCreated=await f.call('/calendar/feeds','POST',{});expect(calendarCreated.status).toBe(201);const calendarFeed=await calendarCreated.json() as {id:string;url:string};
  expect((await request(new URL(calendarFeed.url).pathname)).status).toBe(200);
  const dashboardCreated=await f.call('/dashboards','POST',{name:'synthetic-vector-35',widgets:[{name:'Portable count',kind:'count',filters:{q:f.issue.identifier},chart:{}}]});expect(dashboardCreated.status).toBe(201);const portableDashboard=await dashboardCreated.json() as {id:string;widgets:unknown[]};
- const templateCreated=await f.call('/project-templates','POST',{name:'synthetic-vector-69',description:'Portable structure',cadence:'Weekly',milestones:[{name:'Launch',offsetDays:7}],labels:['synthetic-vector-70'],issues:[{title:'synthetic-vector-71',offsetDays:3,milestonePosition:0}]});expect(templateCreated.status).toBe(201);const portableTemplate=await templateCreated.json() as {id:string};
+ const templateCreated=await f.call('/project-templates','POST',{name:'synthetic-vector-69',description:'Portable structure',cadence:'Weekly',milestones:[{name:'Launch',offsetDays:7}],labels:['synthetic-vector-70'],issues:[{title:'synthetic-vector-71',startOffsetDays:1,offsetDays:3,milestonePosition:0}]});expect(templateCreated.status).toBe(201);const portableTemplate=await templateCreated.json() as {id:string};
  const referenceResponse=await f.call('/issues','POST',{teamId:f.team.id,title:'Portable reference source',description:'See '+f.issue.identifier});expect(referenceResponse.status).toBe(201);const referenceSource=await referenceResponse.json() as {identifier:string};
  const referenceBefore=await (await f.call('/issues/'+referenceSource.identifier+'/references')).json();
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
  const milestone=(await milestoneResponse.json() as any).milestones[0];
  const issueBefore=await (await f.call('/issues/'+f.issue.identifier)).json() as {version:number};
- const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:issueBefore.version,milestoneId:milestone.id});expect(assigned.status,await assigned.clone().text()).toBe(200);
+ const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:issueBefore.version,milestoneId:milestone.id,startDate:'2026-09-01'});expect(assigned.status,await assigned.clone().text()).toBe(200);
  const sourceResponse=await f.call('/settings/integrations/sources','POST',{name:'Archive source',sourceId:'archive-source',teamId:f.team.id});expect(sourceResponse.status).toBe(201);
  const source=await sourceResponse.json() as {id:string;secret:string;webhookUrl:string};
  const githubResponse=await f.call('/settings/integrations/github','POST',{name:'Archive repository',repository:'just-every/run-vector'});expect(githubResponse.status).toBe(201);
@@ -85,6 +85,8 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
  const download=await f.call('/portability/exports/'+id+'/download');expect(download.status).toBe(200);const records=[];for await(const row of readArchive(download.body!))records.push(row);
+ const exportedIssue=records.flatMap(record=>record.kind==='part'?record.items:[]).find(item=>item.kind==='row'&&item.table==='issues'&&item.row.id===f.issue.id);
+ expect(exportedIssue).toMatchObject({row:{start_date:'2026-09-01',due_date:'2026-09-07'}});
  expect(JSON.stringify(records)).not.toContain(signer.publicKey);expect(JSON.stringify(records)).toContain('bounced');
  for(const name of ['_rer_deploy_migrations','d1_migrations','oa_sessions','oa_tokens','integration_tokens','vector_integration_secret_keys','rer_mail_development_outbox','vector_http_bootstrap','vector_http_restore','vector_slack_member_links','vector_slack_request_keys'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(false);
  expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name==='project_milestones')?.count).toBe(1);
@@ -146,7 +148,7 @@ it('[ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-
  expect(restoredProject.status).toBe(200);
  const restoredProjectBody=await restoredProject.json();
  expect(restoredProjectBody).toMatchObject({milestones:[expect.objectContaining({id:milestone.id,name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'})]});
- expect(await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json()).toMatchObject({milestoneId:milestone.id,milestone:{name:'Archive delivery'}});
+ expect(await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json()).toMatchObject({milestoneId:milestone.id,milestone:{name:'Archive delivery'},startDate:'2026-09-01',dueDate:'2026-09-07'});
  expect(restoredProjectBody).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});
  expect(restoredProjectBody).toMatchObject({report:expect.objectContaining({days:(projectReportBefore.report as {days:unknown}).days})});
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all()).results).toEqual(projectHistoryBefore.results);

@@ -118,6 +118,7 @@ export const doors: Door[] = [
   { method: 'PUT', path: '/dashboards/:id', row: 'dashboards.write' },
   { method: 'DELETE', path: '/dashboards/:id', row: 'dashboards.write' },
   { method: 'GET', path: '/calendar/events', row: 'work.read' },
+  { method: 'GET', path: '/calendar/timeline', row: 'work.read' },
   { method: 'GET', path: '/calendar/feeds', row: 'calendar.feeds' },
   { method: 'POST', path: '/calendar/feeds', row: 'calendar.feeds' },
   { method: 'POST', path: '/calendar/feeds/:id/rotate', row: 'calendar.feeds' },

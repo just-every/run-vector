@@ -37,3 +37,14 @@ Mapped CSV/JSON issue imports, Linear's documented workspace CSV importer with o
 Scoped API tokens use native Base authority and existing issue/comment mutations. Signed source ingest commits issue/evidence/replay together; signed GitHub pull-request events persist links without a provider token or API call. Outbound webhooks retain accepted, rejected and uncertain states with finite retries and use Base’s enforcing transport after Settings → Integrations identifies the hosting account’s excluded domains. An enforcing INTEGRATION_EGRESS service binding remains supported. Setup uses a read-only Cloudflare token once and retains no token; refresh hosting domains after account changes. Restore excludes credentials and quarantines historical effects; re-enter secrets and review future effects. See docs/API.md and docs/INTEGRATIONS.md. Apply 0027/0028 additively and retain every replay and terminal-delivery ledger.
 
 Vector owns its fonts: `public/fonts/fonts.css`, linked by `src/core/app/fonts.ts` from the root head, holds the app's system stack and the public site's self-hosted brand faces (Instrument Sans and IBM Plex Mono, OFL, in `public/fonts/brand/` with their licences); native auth documents keep their own system stack. The public site's brand tokens are defined once in `src/core/app/site/brand/` and documented in docs/BRAND.md. Both are outside Base's copy records, so a Base refresh must not bring back Base's Outfit default or its `public/fonts` copy.
+
+## Lander-Regenerate
+
+After editing clause definitions and Status rows in CONTRACT.md, synchronize only the touched clause IDs and the summary counts, then check them:
+
+```sh
+node scripts/contract-docs.mjs write CLAUSE...
+node scripts/contract-docs.mjs check CLAUSE...
+```
+
+Replace `CLAUSE...` with one or more actual clause IDs. The check also runs the Base contract parser. Untouched clause narratives remain intact.

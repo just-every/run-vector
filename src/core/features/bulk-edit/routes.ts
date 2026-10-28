@@ -37,7 +37,7 @@ export function addBulkIssueRoutes(app: Hono<AppEnvironment>) {
             message: error.message,
             failures: error.failures,
           },
-          409,
+          error.failures.some((failure) => failure.reasons.includes("Start date must be on or before due date.")) ? 400 : 409,
         );
       throw error;
     }

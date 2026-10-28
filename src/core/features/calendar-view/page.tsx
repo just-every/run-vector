@@ -46,6 +46,5 @@ export function MonthCalendar(){
   </>}
   {editing&&<form className="calendar-date-editor" aria-label={'Change due date for '+editing.identifier} onSubmit={e=>{e.preventDefault();void move(editing,date);}}><fieldset disabled={busy}><legend>Change due date · {editing.identifier}</legend><label>New due date<input aria-label="New due date" type="date" value={date} required onChange={e=>setDate(e.target.value)}/></label><button type="submit" disabled={date===editing.start}>Save due date</button><button type="button" onClick={()=>setEditing(null)}>Cancel date change</button></fieldset></form>}
   {busy&&<p role="status">Saving due date…</p>}{error&&<p role="alert">{error}</p>}{message&&<p role="status">{message}</p>}
-  <p className="insights-note">Timeline view and dependency lines are not available yet.</p>
  </section>;
 }
