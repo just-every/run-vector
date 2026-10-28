@@ -40,6 +40,9 @@ sign-in, with their intended native role; an unadmitted roster entry returns
 Viewer keeps that narrower native role and team visibility. Import, restoration, installation and sign-in methods
 retain their own doors.
 
+Removing a Business roster binding stops held reads as well as new agent calls.
+The person's native browser session remains available for account management.
+
 This is an initial read surface. Editing, deletion, membership or credential
 changes, agent delegation, outbound messages, merge and deployment are not
 available through this registry. Native browser actions and the existing scoped

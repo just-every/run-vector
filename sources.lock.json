@@ -632,7 +632,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "b15e917788a2fd381af395f21bcbd1bd72dd787d0398a6186ca5c4d838aaef16",
+      "sha256": "c8dee2d6d8cba8d32c9cb97b6b1285910f961e3bbf6fe8ca5bba9b0ebade9c82",
       "executable": false
     },
     "docs/API.md": {
@@ -3588,7 +3588,7 @@
       "executable": false
     },
     "src/core/features/agent-door/business.ts": {
-      "sha256": "4330b2fc6074862123023a9ee8c4fa32567be38e10fd2c5f8c883426e4d0083b",
+      "sha256": "c379cc17bfb621cb74133e71751d3456c19295f97e6d4e38e78b3d2ccb3b9dbd",
       "executable": false
     },
     "src/core/features/agent-door/index.server.ts": {
@@ -3596,7 +3596,7 @@
       "executable": false
     },
     "src/core/features/agent-door/people.ts": {
-      "sha256": "436b9cd2dfdb12315e4588383a280f489077cddbb579a650231e188271249ea2",
+      "sha256": "5cfc621b93d7ba485913e5d74371746001043bfc746c80d4b94b4f7ac55111d5",
       "executable": false
     },
     "src/core/features/agent-door/reads.ts": {

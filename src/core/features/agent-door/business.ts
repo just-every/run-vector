@@ -27,6 +27,10 @@ function nativeTeam(env: WorkerBindings): TeamAdapter {
         // silently promote a Member, Guest or Viewer while adopting a roster.
         const matches = native && (member.role === 'admin' ? native.role === 'admin' : ['member', 'guest', 'viewer'].includes(native.role));
         if (!matches) throw new SettingsError('native_member_required', 409);
+        const businessId = member.id ?? previous?.businessId;
+        if (managed.some(row => row.operatorId === native.id && row.businessId && row.businessId !== businessId)) {
+          throw new SettingsError('business_member_binding_mismatch', 409);
+        }
         rows.push({ email: member.email, operatorId: native.id, state: 'active', invite: member.invite });
       }
       for (const previous of managed) if (!rows.some(row => row.operatorId === previous.operatorId)) {
