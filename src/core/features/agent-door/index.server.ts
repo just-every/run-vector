@@ -1,6 +1,7 @@
 import { createAgentDoor, type Trust } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { vectorAccessTools } from './access-tools.ts';
+import { vectorMembershipResources } from './access-membership-record.ts';
 import { vectorPeople } from './people.ts';
 import { vectorReadResources, vectorReadTools } from './registry.ts';
 import { vectorIssueTools, vectorIssueResources } from './issues-tools.ts';
@@ -12,7 +13,7 @@ export const vectorAgentTools = (env: WorkerBindings) => [
   ...vectorReadTools(env), ...vectorIssueTools(env), ...vectorPlanningTools(env), ...vectorWorkspaceTools(env), ...vectorAccessTools(env),
 ];
 export const vectorAgentResources = (env: WorkerBindings) => [
-  ...vectorReadResources(env), ...vectorIssueResources(env), ...vectorPlanningResources(env), ...vectorWorkspaceResources(env),
+  ...vectorReadResources(env), ...vectorIssueResources(env), ...vectorPlanningResources(env), ...vectorWorkspaceResources(env), ...vectorMembershipResources(env),
 ];
 
 function installationTrust(env: WorkerBindings): Trust | null {

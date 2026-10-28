@@ -26,7 +26,7 @@ The normal pinned `rer verify` result retains the missing `BASE-AGENT-010` contr
 
 ## Pending native authority contract
 
-The native team-member removal route requires both the team `id` and `operatorId`. At the pin, `conformance/narrowing.mjs:8–9` accepts only one required string field. This distinct narrowing operation cannot be registered honestly. The new gap is reported to Base; no combined identifier or invented widening mode stands in for the native action.
+Native membership resources use `vector://teams/{teamId}/members/{operatorId}` to identify the actual composite-key row. The narrowing-only removal tool accepts that resource URI, checks the native subject and role decision, and calls the existing team-member removal service. Its grant witness reads the same native row. This satisfies the pin’s single-target contract without adding a stored identifier or changing Base. Its positive removal and strict-subset proof need a second admitted native person, so remain pending G12.
 
 G7 remains the missing `BASE-AGENT-010` citation for `vector.events.list`. G12/G14 retain the missing escalation/narrowing declarations and lifecycle calls for native access tools. The installation owner cannot be used as a lower-role sponsor or a second admitted person. The Base captured-mail reader returns only that owner's mailbox. Provider queues, native reviewer lifecycle and durable operation identity/key remain pending hooks-7; admission before idempotent replay remains G11 (hooks-6). Native-target door audit attribution and resource refusal error data remain hooks-8 limits.
 

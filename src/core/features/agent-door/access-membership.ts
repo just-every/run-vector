@@ -7,6 +7,7 @@ import { requestMembership, decideMembership } from '../team-membership/join-rul
 import { accessMutation, accessRead, type AccessChange } from './access-native.ts';
 import { nativeMutation } from './native.ts';
 import { nativeId } from './reads.ts';
+import { membershipUri } from './access-membership-record.ts';
 
 const teamArgs = z.object({ id: nativeId }).strict();
 const memberArgs = teamArgs.extend({ operatorId: nativeId }).strict();
@@ -29,7 +30,11 @@ export function vectorMembershipTools(env: WorkerBindings) {
   return [
     accessRead(env, { name: 'vector.role.team_membership', title: 'Read native team membership and join requests',
       scope: 'access:read', path: '/settings/administration', clauses: ['ROLE-007', 'TEAM-007'], schema: teamArgs,
-      read: async (db, person, args) => ({ team: await team(db, person, args.id) }) }),
+      async read(db, person, args) {
+        const value = await team(db, person, args.id);
+        return { team: value, memberships: value.members.map(member => ({ ...member,
+          id: membershipUri(value.id, member.operatorId), teamId: value.id })) };
+      } }),
     accessRead(env, { name: 'vector.role.team_membership.grants', title: 'Read the sponsor’s current native standing in a team',
       scope: 'access:read', path: '/settings/administration', clauses: ['ROLE-007', 'ROLE-009'], schema: teamArgs,
       async read(db, person, args) {

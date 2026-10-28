@@ -632,7 +632,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "45bd6e3b0dc8f6d1230b34e8d74767526d2d52df2438f01969cf87bb45f5c15e",
+      "sha256": "642614e2df38a1514d356fcc86202a1206f7f92a9bbf797b412464d9e20e1572",
       "executable": false
     },
     "docs/AGENT-REGISTRY.md": {
@@ -3607,12 +3607,16 @@
       "sha256": "693b9f7d4e95c395c5fa3b8f2b15a290772da6775823b66e6557e3a1c2d929ca",
       "executable": false
     },
+    "src/core/features/agent-door/access-membership-record.ts": {
+      "sha256": "fbf271d557c0e682da187172a406127525790e5dd0e09f8f631f40e7434aa007",
+      "executable": false
+    },
     "src/core/features/agent-door/access-membership.ts": {
-      "sha256": "53d81833d0e62446dca2eb003a68f55fd24d9cc650d545f796ea6d4d707170ec",
+      "sha256": "92fa9f364bd9123287472807b3ee52cbe9ca6814ac4af9ba0b94c702037ba4f2",
       "executable": false
     },
     "src/core/features/agent-door/access-native.ts": {
-      "sha256": "7835fbd302cf7736c255be17e23898e9509f3076f7039bcb4c523271ce2e75ad",
+      "sha256": "878405d06e95a07c7803a5675bef6665e18e71467478e463cec7da3ce4e72015",
       "executable": false
     },
     "src/core/features/agent-door/access-permissions.ts": {
@@ -3628,7 +3632,7 @@
       "executable": false
     },
     "src/core/features/agent-door/access-tools.ts": {
-      "sha256": "8d27d6ed8d64ed90ef40a5f7755dd7dcbcc3e27e06966dbab93380120d54fe7a",
+      "sha256": "9398d0959bdcca0099207760cdbf8a5dd7dd04c47f7ebcd6c9c42b31c775ef55",
       "executable": false
     },
     "src/core/features/agent-door/attribution-projection.ts": {
@@ -3648,7 +3652,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.server.ts": {
-      "sha256": "108acc6cb75cc3a824fd9ab151d6d4fcc813a63624131a6f5549377c1dbccfa3",
+      "sha256": "746fe410727a16f54d50a6e5f46cc84fa8e830b1c077c0860eb73cffc820f759",
       "executable": false
     },
     "src/core/features/agent-door/issues-content.ts": {
@@ -6940,7 +6944,7 @@
       "executable": false
     },
     "tests/agent-door/access-steps.mjs": {
-      "sha256": "be0d68cbfa6b76fffbd4526dd4e9c04c8e32a648f0673cd8ed3c8d3bd22ca75d",
+      "sha256": "742c04fa6bedbc2cb862560c458b552e919dc81ff0e1c5567a58fb6256d54015",
       "executable": false
     },
     "tests/agent-door/browser-journey.mjs": {
