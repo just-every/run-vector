@@ -23,7 +23,8 @@ const scratch = await mkdtemp(join(tmpdir(), 'vector-agent-runtime-'));
 let mf;
 try {
   const bindings = {
-    APP_ORIGIN: origin, FIRST_OWNER_EMAIL: email, WORKSPACE_NAME: 'Delivery workspace', WORKSPACE_TIMEZONE: 'UTC',
+    APP_ORIGIN: origin, FIRST_OWNER_EMAIL: email, FIRST_OWNER_NAME: 'Morgan Delivery',
+    WORKSPACE_NAME: 'Delivery workspace', WORKSPACE_TIMEZONE: 'UTC', DEFAULT_TEAM_NAME: 'Delivery', DEFAULT_TEAM_PREFIX: 'DEL',
     SETUP_TOKEN: randomBytes(32).toString('hex'), SESSION_SECRET: randomBytes(32).toString('hex'),
     MAIL_MODE: 'hosted', MAIL_PROVIDER: 'resend', MAIL_API_KEY: randomBytes(32).toString('hex'), MAIL_FROM: email,
     NOTIFICATION_EMAIL_ENABLED: 'false',
@@ -56,13 +57,21 @@ try {
     await writeFile('agent-surface.json', JSON.stringify(surface, null, 2) + '\n');
     console.log('Wrote native registry declaration: ' + catalogue.tools.length + ' tools plus events; ' + catalogue.resources.length + ' resources.');
   } else {
-  const request = (url, init = {}) => mf.dispatchFetch(url, { redirect: 'manual', ...init });
+  let requests = 0;
+  const request = (url, init = {}) => {
+    if (++requests % 100 === 0) console.log(`Native conformance requests: ${requests}`);
+    return mf.dispatchFetch('http://localhost' + new URL(url).pathname + new URL(url).search, { redirect: 'manual', ...init,
+      headers: { 'x-native-origin-url': url, 'CF-Connecting-IP': '192.0.2.1', ...Object.fromEntries(new Headers(init.headers)) } });
+  };
   const iat = Math.floor(Date.now() / 1000);
   const claim = await signJws(pair.privateKey, kid, 'rer-owner-claim+jwt', {
     v: 1, iss: issuer, aud: origin, installationId, email, jti: randomUUID(), iat, exp: iat + 300,
   });
   const owner = await initialize({ request, origin, displayName: 'Morgan Delivery', returnTo: '/app', claim: { mode: 'signed', path: '/auth/owner-claim', token: claim } });
-  if (owner.status !== 303) throw new Error('Signed native owner bootstrap returned HTTP ' + owner.status);
+  if (owner.status !== 303) {
+    const body = await owner.json().catch(() => ({}));
+    throw new Error('Signed native owner bootstrap returned HTTP ' + owner.status + ' (' + (body.code ?? body.error ?? 'unknown') + ')');
+  }
   const cookie = owner.headers.getSetCookie().map(value => value.split(';', 1)[0]).join('; ');
   await owner.body?.cancel();
   const settings = await signJws(pair.privateKey, kid, 'rer-business-settings+jwt', {
@@ -76,6 +85,9 @@ try {
   await adopted.body?.cancel();
   console.log('PASS signed-owner-claim and native first-run lifecycle');
   await native.scheduledReminders();
+  if (process.argv.includes('--bootstrap-only')) {
+    console.log('Native bootstrap and scheduled reminder fixture completed.');
+  } else {
   const result = await runAgentDoorConformance({ fetch: request, origin, surface, signer, person: { email, cookie, sub } });
   for (const point of declarations.points) console.log(`${point.ok ? 'PASS' : 'FAIL'} ${point.id}${point.detail ? ': ' + point.detail : ''}`);
   for (const point of result.points.filter(point => !point.id.includes('.surface.'))) console.log(`${point.ok ? 'PASS' : 'FAIL'} ${point.id}${point.detail ? ': ' + point.detail : ''}`);
@@ -84,6 +96,7 @@ try {
   const probe = await consentProbe({ request, origin, surface, signer, person: { email, cookie, sub }, db, invoke: (...args) => native.invoke(...args) });
   console.log('Native embedded consent probe: ' + JSON.stringify(probe));
   if (!result.ok || !declarations.ok || !probe.ok) process.exitCode = 1;
+  }
   }
 } finally {
   await mf?.dispose();

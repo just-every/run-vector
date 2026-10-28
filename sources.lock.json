@@ -6924,7 +6924,7 @@
       "executable": false
     },
     "tests/agent-door/runtime-installation.mjs": {
-      "sha256": "5a9c4c8ea6bb9460cd01b5c0eac843c96aeb92dfac4fdbf7f08f2469227efcf0",
+      "sha256": "f5160aac3222afe25ac2ded6bd3a534290b9fa68a4cab73f3be0ba25028f7fe5",
       "executable": false
     },
     "tests/agent-door/runtime-worker.ts": {
@@ -6932,7 +6932,7 @@
       "executable": false
     },
     "tests/agent-door/runtime.mjs": {
-      "sha256": "df9f4daaa8289de9e8d7f5a0722e8e5f2fa68c77cb80fc884795db5997686648",
+      "sha256": "21d98507cec0e3056c73eff7b6bb5f3323a01786d15d47e1436e54e0b7756959",
       "executable": false
     },
     "tests/agent-door/verify-pin.mjs": {

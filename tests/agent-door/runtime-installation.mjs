@@ -47,7 +47,9 @@ export async function nativeRuntime({ root, bindings, scratch, generationOnly })
       assets: { directory: client, binding: config.assets?.binding ?? 'ASSETS', routerConfig: { has_user_worker: true, invoke_user_worker_ahead_of_assets: true } },
     }, native];
   }
-  const mf = new Miniflare(convertV4MiniflareOptions({ host: '127.0.0.1', port: 0, cf: false, defaultPersistRoot: scratch, workers }));
+  const ingress = { name: 'ingress', modules: true, serviceBindings: { APP: generationOnly ? 'native' : 'app' },
+    script: `export default {fetch(request,env){const target=new URL(request.headers.get('x-native-origin-url')),headers=new Headers(request.headers);headers.delete('x-native-origin-url');headers.set('host',target.host);return env.APP.fetch(new Request(target,{method:request.method,headers,redirect:'manual',...(!['GET','HEAD'].includes(request.method)?{body:request.body}:{})}))}}` };
+  const mf = new Miniflare(convertV4MiniflareOptions({ host: '127.0.0.1', port: 0, cf: false, defaultPersistRoot: scratch, workers: [ingress, ...workers] }));
   try { await mf.ready; } catch (error) { await mf.dispose(); throw error; }
   return { mf, native: await mf.getWorker('native'), db: await mf.getD1Database('DB', generationOnly ? 'native' : 'app') };
 }
