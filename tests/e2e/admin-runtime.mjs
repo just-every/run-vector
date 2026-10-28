@@ -1,3 +1,4 @@
+import {assertRoleDoorCoverage} from './role-door-coverage.mjs';
 import { exerciseAuditView, exerciseAuditAccess } from './admin-audit-journey.mjs';
 import { projectFieldsJourney } from './core-project-fields-journey.mjs';
 import assert from "node:assert/strict";
@@ -55,6 +56,7 @@ await contract(
   "empty workspace administration through real mobile browser",
   async () => {
     try {
+      await assertRoleDoorCoverage();
       browser = await chromium.launch({ headless: true, args: ["--use-mock-keychain", "--password-store=basic"] });
       for (const viewport of [
         { width: 390, height: 844 },

@@ -1,4 +1,4 @@
-import {inviteReader} from './role-reader-support.mjs';
+import {inviteReader,readerResponse} from './role-reader-support.mjs';
 import {teamCreationReaderCell,teamJoinReaderCells,privateTeamCreationCells} from './team-reader-cells.mjs';
 // Settle native polling before replacing an authorized private document.
 import { beforePrivateNavigation, navigate } from "./collaboration-navigation.mjs";
@@ -451,7 +451,7 @@ export async function teamJoinPermissions({page,peer,browser,runtime,clause,evid
 
 /** An explicitly exposed private request grants metadata only until approval. */
 export async function privateTeamRequest({page,peer,memberId,runtime,team,clause}) {
- const {base}=runtime,headers={Origin:base};
+ const {base}=runtime;
  await navigate(page,base+'/app/settings');await openDisclosures(page);
  const form=page.getByRole('form',{name:'Membership mode for '+team.name,exact:true});
  await form.getByLabel('Membership mode',{exact:true}).selectOption('invite_only');
@@ -462,12 +462,12 @@ export async function privateTeamRequest({page,peer,memberId,runtime,team,clause
  response=peer.waitForResponse(r=>new URL(r.url()).pathname===`/api/teams/${team.id}/requests`);
  await peer.getByRole('button',{name:'Request to join '+team.name,exact:true}).click();assert.equal((await response).status(),200);
  await peer.getByRole('button',{name:'Request pending for '+team.name,exact:true}).waitFor();
- assert.equal((await peer.request.get(base+'/api/issues/'+team.identifier)).status(),404);
+ assert.equal((await readerResponse(peer,base,'/issues/'+team.identifier)).status,404);
  assert.equal(runtime.sql(`SELECT count(*) n FROM team_members WHERE team_id='${team.id}' AND operator_id='${memberId}'`)[0].n,0);
  await navigate(page,base+'/app/settings');await openDisclosures(page);
  response=page.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/teams/${team.id}/requests/${memberId}/decision`);
  await page.getByRole('button',{name:'Approve Role member',exact:true}).click();assert.equal((await response).status(),200);
- assert.equal((await peer.request.get(base+'/api/issues/'+team.identifier)).status(),200);
+ assert.equal((await readerResponse(peer,base,'/issues/'+team.identifier)).status,200);
 }
 
 /** ROLE-002(a): non-member Admin metadata has counts and membership, with no work form. */

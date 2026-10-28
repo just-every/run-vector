@@ -148,7 +148,7 @@ export const doors: Door[] = [
   { method: 'PUT', path: '/settings/notifications/channels', row: null, page: 'account' },
   { method: 'GET', path: '/settings', row: null, page: 'directory' },
   { method: 'GET', path: '/settings/administration', row: null, page: 'labels' },
-  { method: 'POST', path: '/setup/complete', row: null },
+  { method: 'POST', path: '/setup/complete', row: 'leaders.manage' },
   { method: 'POST', path: '/data/restore/operators/:id', row: 'data.restore' },
   { method: 'POST', path: '/data/restore/review-effects', row: 'data.restore' },
   { method: 'GET', path: '/data/restore', row: 'data.restore' },

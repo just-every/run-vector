@@ -31,6 +31,7 @@ import {
 
 export const savedViewsSchema = z.object({ views: z.array(savedViewSchema) });
 const ReceiptScope = createContext<SavedViewReceiptScope | null>(null);
+const NavigationResource = createContext<ReturnType<typeof useNavigationResource> | null>(null);
 
 export function SavedViewReceiptProvider({
   children,
@@ -42,7 +43,13 @@ export function SavedViewReceiptProvider({
     scope.activate();
     return () => scope.retire();
   }, [scope]);
-  return createElement(ReceiptScope.Provider, { value: scope }, children);
+  return createElement(ReceiptScope.Provider, { value: scope },
+    createElement(SavedViewNavigationProvider, { children }));
+}
+
+function SavedViewNavigationProvider({ children }: { children: ReactNode }) {
+  const resource = useNavigationResource();
+  return createElement(NavigationResource.Provider, { value: resource }, children);
 }
 
 export function useSavedViewReceiptScope() {
@@ -76,6 +83,12 @@ export function useSavedViewResource(viewId: string) {
 }
 
 export function useSavedViewNavigation() {
+  const resource = useContext(NavigationResource);
+  if (!resource) throw new Error("Saved view navigation requires the operator app scope.");
+  return resource;
+}
+
+function useNavigationResource() {
   return useReceiptResource(
     "/api/views",
     savedViewsSchema,

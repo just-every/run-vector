@@ -1,3 +1,4 @@
+import {viewerAccessCensus} from './role-access-census.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
@@ -66,7 +67,8 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
     await inspect(reader,labels,'viewer-labels-'+width);
    }
   });
-  await clause('ROLE-013','private lookup/search stay hidden until an Admin adds the Viewer; they stay read-only there',async()=>{
+  await clause('ROLE-013 OPS-001','Viewer Inbox, counted exports, attachment bytes and private lookup follow current privacy and membership; admitted Viewers remain read-only',async()=>{
+   await viewerAccessCensus({owner,page,reader:invited,runtime,evidence});
    await invited.api('/issues/'+hidden.identifier,'GET',undefined,404);assert.ok(!JSON.stringify(await invited.api('/search?q='+encodeURIComponent(hidden.title))).includes(hidden.identifier));
    await owner(`/settings/operators/${memberId}/role`,'PATCH',{role:'admin'});
    await readerApi(peer,base)(`/settings/teams/${privateTeam.id}/members/${invited.id}`,'PUT',{role:'member'});
