@@ -926,6 +926,107 @@ The primary journey: Exercise the capabilities and acceptance journeys below.
 
 **Requirement.** Each member has exactly one role: Owner, Admin, Member or Guest today; ROLE-013 adds the read-only Viewer target. Owners and Admins invite and remove members, create teams, manage integrations, API tokens, workspace automations, agents and workspace settings; Owners change any role, Admins change Member and Guest roles (Guest assignment follows ROLE-003) and never to or from Owner or Admin; Members create and change work in the teams they can see, manage the teams they own (ROLE-007) and, where a team's permissions allow it (ROLE-009), that team's settings, cycles and templates; Guests act only inside the teams they were invited to (ROLE-003). The installation owner is an Owner and the last Owner cannot be demoted or removed. Every role change is audited (ROLE-005) and takes effect on the member's next request, including open sessions and API tokens. Each action's permitted roles are exactly those in the role matrix below, every clause that names a permission states the same rule, and *operator* in any clause is resolved by ROLE-008. The role-matrix journey carries the cells it inherited from INTAKE-005, INTAKE-006, INTAKE-007, INTAKE-011, PROJ-002, CYCLE-001, CYCLE-002, VIEW-002, DATA-002, DATA-003, DATA-006, DATA-010, DATA-011: Guest accept, defer, end-deferral, decline and project lifecycle changes are refused 403; a Guest commits only in invited teams (404 elsewhere) and cannot share views; another member cannot edit a shared view they do not own; Member/Guest source registration, rotation and revocation, import preflight/apply/start/resume/repeat/rollback and imported-person erasure preview/confirmation are refused 403 with no writes, while Owners/Admins succeed. CYCLE-001 creation/edit/completion/deletion also checks team owners and both ROLE-009 planning permissions, with Guests refused. A row with no door yet is checked by the clause it names when that clause builds the door.
 
+| Action | Owner | Admin | Member | Guest | Viewer (ROLE-013 target) |
+|---|---|---|---|---|---|
+| Read visible work (OPS-001, ROLE-002, ROLE-003, ROLE-013) | yes | public teams and private teams they belong to | public teams and private teams they belong to | invited teams only | public teams and private teams an Owner/Admin added them to |
+| Invite or suspend Viewers; change between Member, Guest and Viewer (ROLE-013) | yes | yes | no | no | no |
+| Invite, or remove by suspension, Members and Guests (OPS-002, OPS-004, ROLE-011) | yes | yes | no (yes when the invite setting is on, Members only) | no | no |
+| Invite, promote to, or remove by suspension Owners and Admins (OPS-002, ROLE-001, ROLE-011) | yes | no | no | no | no |
+| Leave the workspace oneself, which suspends (OPS-004, ROLE-011) | yes (not the last Owner) | yes | yes | yes | yes (own account only) |
+| Open suspended members and their activity; reactivate a suspended Member or Guest (ROLE-011) | yes | yes | no | no | no |
+| Reactivate a suspended former Owner or Admin (ROLE-011) | yes | no | no | no | no |
+| Erase a suspended Member's or Guest's personal data (ROLE-012) | yes | yes | no | no | no |
+| Erase a suspended former Owner's or Admin's personal data (ROLE-012) | yes | no | no | no | no |
+| Change workspace settings: timezone, the invite, label-creation and deletion settings, notification defaults (OPS-003, OPS-002, ISSUE-014, ISSUE-010, NOTIFY-007) | yes | yes | no | no | no |
+| Require SSO, restrict sign-up domains, connect SCIM (ROLE-004) | yes | no | no | no | no |
+| Offer or withdraw Google sign-in and passkey sign-in (ROLE-010) | yes | no | no | no | no |
+| Register or remove one's own passkey (ROLE-010) | yes | yes | yes | yes | yes (own account only) |
+| Write, edit and comment on documents under projects, issues, initiatives and teams they can see (PROJ-013) | yes | yes | yes | under invited teams' issues and projects only | no |
+| Set the Recently deleted retention for issues and projects (ISSUE-020, PROJ-017) | yes | no | no | no | no |
+| Open Settings pages (ROLE-008) | every page | every page | Account, the member directory and Labels (read-only), the teams they belong to (writable only where a row allows), their personal integrations and tokens | Account only | Account and read-only directory and Labels only |
+| Set who may create teams (TEAM-008) | yes | yes | no | no | no |
+| Create a team (TEAM-008) | yes | yes | no (yes when the workspace permits Members; TEAM-008) | no | no |
+| Make a team private or public (ROLE-002) | yes | yes | no | no | no |
+| Manage a team's members and team owners (ROLE-007, TEAM-007, ROLE-013) | yes | yes | team owner only; adding Guests/Viewers requires Owner/Admin | no | no |
+| Set a team's two permissions, *Who manages team settings* and *Who manages cycles and templates* (ROLE-009) | yes | yes | team owner only | no | no |
+| Join an open public team or leave one's team (ROLE-007, TEAM-007) | yes | yes | yes (last-team-owner guard applies) | no | no |
+| Set open or invite-only membership; approve join requests; add Members to an invite-only or private team (TEAM-007) | yes | yes | team owner only | no | no |
+| Request membership of an invite-only or private team (TEAM-007) | yes (where request is visible) | yes (where request is visible) | where request is visible; no access until approved | no | no |
+| Self-join an invite-only or private team without approval (TEAM-007) | no | no | no | no | no |
+| Create or reparent a sub-team; change its inherited settings or overrides (TEAM-006) | yes | yes | team setting for both child and parent, plus TEAM-008 for creation | no | no |
+| Change team settings: name and unused prefix, the sub-issue completion/reopening rule, triage, cycles and estimates on or off, estimate scale, default template, Git automation rules, auto-close and auto-archive (TEAM-001, ISSUE-019, TEAM-005, GITHUB-003, AUTO-003) | yes | yes | team setting | no | no |
+| Add, rename, reorder or remove workflow statuses (TEAM-002, TEAM-004) | yes | yes | team setting | no | no |
+| Archive or unarchive a team, whatever its *Who manages team settings* permission (TEAM-003) | yes | yes | team owner only | no | no |
+| See customers, customer pages and customer requests (CUST-001, CUST-007) | yes | yes | yes | no | visible work only |
+| Create and edit customers; add, edit their own or move customer requests (CUST-005, CUST-008) | yes | yes | yes | no | no |
+| Delete another member's customer request (CUST-008) | yes | yes | no | no | no |
+| Define customer status and tier values; map customer fields to a linked source; set the domain block list and new-domain setting (CUST-005, CUST-006) | yes | yes | no | no | no |
+| Merge or delete customers (CUST-005, CUST-006) | yes | yes | no | no | no |
+| Create, edit and comment on issues in the member's teams (ISSUE-001, ISSUE-008) | yes | yes | yes | invited teams only | no |
+| Add or remove reactions on issue descriptions and comments (ISSUE-017) | yes | yes | yes | invited teams only | no |
+| Copy an issue (ROLE-003/ROLE-008; ISSUE-023 action) | yes | yes | member's teams | invited teams only | no |
+| Edit own comment; resolve or reopen any thread (ISSUE-008) | yes | yes | yes | invited teams only | no |
+| Paste, drop or upload images and video into a description, comment or document they can edit, and tick its checklists (ISSUE-024, ISSUE-025) | yes | yes | yes | invited teams only | no |
+| Edit another member's comment, including ticking its checklists (ISSUE-008, ISSUE-025) | no | no | no | no | no |
+| Delete own comment (ISSUE-008) | yes | yes | yes | yes | no |
+| Delete another member's comment (ISSUE-008) | yes | yes | team owner only | no | no |
+| Delete an issue to Recently deleted (ISSUE-010, ISSUE-020) | yes | yes | own issues (any issue in the member's teams when the setting is on) | no | no |
+| Restore from Recently deleted (ISSUE-020) | yes | yes | issues they deleted | no | no |
+| Permanently delete an issue before retention ends (ISSUE-010) | yes | yes | no | no | no |
+| Create and apply labels (ISSUE-014) | yes | yes | yes (unless creation is restricted to Admins) | apply only | no |
+| Rename, recolor, merge or delete a workspace label (ISSUE-014) | yes | yes | no | no | no |
+| Rename, recolor, merge or delete a team label (ISSUE-014) | yes | yes | team setting | no | no |
+| Define, change or remove workspace custom fields (FIELD-001) | yes | yes | no | no | no |
+| Define or change a team's custom fields (FIELD-001) | yes | yes | team setting | no | no |
+| Create an intake item by hand or submit a request form (INTAKE-001, TRIAGE-004) | yes | yes | yes | invited teams only | no |
+| Reply by email to an intake sender (TRIAGE-005) | yes | yes | member's teams | no | no |
+| Accept, defer, end a deferral or decline an intake item (INTAKE-005, INTAKE-006, INTAKE-007) | yes | yes | member's teams | no | no |
+| Accept, edit or dismiss an agent's triage suggestion (TRIAGE-003) | yes | yes | member's teams | no | no |
+| Set a team's triage responsibility, routing rules, request forms and email intake (TRIAGE-001, TRIAGE-002, TRIAGE-004, TRIAGE-005) | yes | yes | team setting | no | no |
+| Create or change workspace-wide routing rules (TRIAGE-002) | yes | yes | no | no | no |
+| Register, rotate or revoke a signal source and its signing secret (INTAKE-011) | yes | yes | no | no | no |
+| Create, edit or delete workspace issue and project templates (ISSUE-016, PROJ-012) | yes | yes | no | no | no |
+| Create, edit or delete a team's issue and project templates (ISSUE-016, PROJ-012) | yes | yes | planning setting | no | no |
+| Start an issue or project from a template (ISSUE-016, PROJ-012) | yes | yes | yes | issue templates in invited teams only | no |
+| Create, edit, complete or delete a cycle (CYCLE-001) | yes | yes | planning setting | no | no |
+| Set a team's cycle schedule (ROLE-007/ROLE-009; CYCLE-007 action) | yes | yes | planning setting | no | no |
+| Commit, move or uncommit an issue in a cycle (CYCLE-002) | yes | yes | member's teams | invited teams only | no |
+| Create a project and edit its fields, members and contributing teams (PROJ-001, PROJ-014) | yes | yes | yes | no | no |
+| Change a project's status; archive or unarchive it (PROJ-002, PROJ-009, PROJ-016) | yes | yes | yes | no | no |
+| Delete a project after its confirmation, keeping its issues (PROJ-003, PROJ-017) | yes | yes | the project's lead only after recoverable delete (PROJ-017); otherwise no | no | no |
+| Restore a project from Recently deleted or Undo its deletion (PROJ-017) | yes | yes | the project's lead who deleted it | no | no |
+| Permanently delete a project before retention ends (PROJ-017) | yes | yes | no | no | no |
+| Add, rename, recolor, describe, reorder or remove workspace project statuses (PROJ-016) | yes | yes | no | no | no |
+| Add, rename, recolor, describe, reorder or remove a team's project statuses (PROJ-016) | yes | yes | team setting | no | no |
+| Set or remove project dependencies (PROJ-015) | yes | yes | yes | no | no |
+| Create and edit milestones (PROJ-011) | yes | yes | yes | no | no |
+| Post a project update (PROJ-010) | yes | yes | the project's lead and members | no | no |
+| Create and edit initiatives; add projects to them (INIT-001) | yes | yes | yes | no | no |
+| Create, edit or release a release (RELEASE-001) | yes | yes | member's teams and workspace releases | no | no |
+| Save, update or delete a private view (VIEW-002) | yes | yes | yes | yes | no |
+| Share a saved view with the workspace or a team (VIEW-002) | yes | yes | yes | no | no |
+| Open or duplicate a shared view (VIEW-002) | yes | yes | yes | only views covering only invited teams | open visible views only; no saved duplicate |
+| Update or delete a shared view (VIEW-002) | own | own | own | no | no |
+| Create, pause or end a recurring issue (AUTO-001) | yes | yes | member's teams | no | no |
+| Build or change workspace automation rules (AUTO-002, AUTO-006) | yes | yes | no | no | no |
+| Build or change a team's automation rules and SLAs (AUTO-002, AUTO-004) | yes | yes | team setting | no | no |
+| Connect, repair or remove integrations; manage OAuth apps, agents, their budgets and model providers (ROLE-001, INTEG-001, INTEG-002, API-004, AGENT-004, AGENT-009, SEC-002) | yes | yes | no | no | no |
+| Have the Slack bot create a channel in the customer's Slack workspace for a new team or project (SLACK-003) | yes | yes | no | no | no |
+| Bind a project to a Slack channel an Owner or Admin already bound or allowed, and post to it (SLACK-003) | yes | yes | yes | no | no |
+| Bind an editable initiative to an eligible Owner- or Admin-approved destination and manage only that initiative’s selected events (INIT-001) | yes | yes | editable initiative and approved destination only | no | no |
+| Create personal API tokens (API-001) | yes | yes | yes | no | no |
+| Authorize an OAuth app for oneself; link one's own Slack or Teams identity (API-004, SLACK-001, SLACK-004, TEAMS-001) | yes | yes | yes | no | no |
+| Delegate an issue to a coding agent (AGENT-001) | yes | yes | member's teams, for agents allowed under AGENT-004 | no | no |
+| Open Insights and shared dashboards (REPORT-001) | yes | yes | yes (only what they can read) | no | yes |
+| Create, edit or share a dashboard (REPORT-003) | yes | yes | yes (own dashboards) | no | no |
+| Create, rotate or revoke a calendar feed (CAL-001) | yes | yes | yes (own feed and own teams’ feeds) | no | yes (own feed) |
+| Export the portable archive (DATA-001) | yes | yes | no | no | no |
+| Restore an archive over HTTP and review the restored workspace (DATA-005) | yes | no | no | no | no |
+| Preflight, apply, resume, repeat or roll back an import run or migration (DATA-002, DATA-003, DATA-006, DATA-008, DATA-009, DATA-010, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017) | yes | yes | no | no | no |
+| Erase an imported person (DATA-011) | yes | yes | no | no | no |
+| Schedule warehouse exports and Google Sheets syncs (REPORT-005) | yes | yes | no | no | no |
+| Browse and export the audit log (ROLE-005) | yes | yes | no | no | no |
+
 **Acceptance.**
 1. a browser and HTTP journey in which an Owner promotes a Member to Admin and demotes them, an Admin's attempt to promote to Admin or Owner is refused 403, the demoted member's next settings request returns 403, and last-Owner demotion is refused; plus a role-matrix journey that signs in as an Owner, an Admin, a Member who owns a team, a Member who does not, and a Guest, attempts every row of the role matrix through the browser and through `/api/v1`, and gets exactly the allowed (2xx) or refused (403, or 404 where the subject is invisible under ROLE-002) result in each cell, checking every "team setting" and "planning setting" cell under both values of the team's ROLE-009 permission.
 

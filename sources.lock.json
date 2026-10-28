@@ -469,7 +469,7 @@
       "executable": false
     },
     ".github/workflows/verify.yml": {
-      "sha256": "af31d374d1bf42687a9b8b5f8296ba69bae941ce7d3a74c9c904d2a92611bbc0",
+      "sha256": "81c83581ac5af213bc5735d7f787a8bafc02c290c85dfc87a95cef0f8870b9bb",
       "executable": false
     },
     ".gitignore": {
@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "81402646939d08956f52d34bcc738a7b50b80c2f5507e7448a956d306a316aaa",
+      "sha256": "39d305238ce7e6cb6d3b5cd7cfe943f02f1641ac4b2f356cb3bf421d5755d27b",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -493,7 +493,7 @@
       "executable": false
     },
     "AGENTS.md": {
-      "sha256": "71330c2fd1b678eee7d31fda06c6ce53696089b6a8b45bb9d1fb9a5b40b66f60",
+      "sha256": "fb9c3b1ec87656c94df6b75b24b509f5dc3ffc3b7e48bc7fd9982de409bb45cd",
       "executable": false
     },
     "base-copies.json": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a7c74592651acf4df2c8de4e67bf461fb51437604e5e7c0bba7f32810522ab7d",
+      "sha256": "8066be805a1795e1b1f132f64aef047af5ce1b9d80819365db016bb8c31218ee",
       "executable": false
     },
     "DEMO.md": {
@@ -569,7 +569,7 @@
       "executable": false
     },
     "docs/contract/COVERAGE.json": {
-      "sha256": "b0906811e56b05affb24a1f9468ea53257810b80de45094b015570dc6c380056",
+      "sha256": "178b8ce679edc0615cf7a37118f12d9ed12cd987605404098f4100ce60cb11dc",
       "executable": false
     },
     "docs/contract/ID-MAP.json": {
@@ -713,11 +713,15 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "7492a218f23352be0addcf9defd1e8d526052a9ac695fe56f5265e617e6cb9bf",
+      "sha256": "6e55468be773a67a0e10033938324ad00281c9c196b121929ff2dbb92006f661",
       "executable": false
     },
     "docs/VERIFICATION.md": {
       "sha256": "3c03aa5778bbd893e2a751beaf0669f31dffbf4d3ee11c2a79dbcba5719c90e1",
+      "executable": false
+    },
+    "docs/verify.md": {
+      "sha256": "11c85d8c552452b2cb63a935ec39223ed0b43cd1f2f403a34f296587486b0ffc",
       "executable": false
     },
     "edition.json": {

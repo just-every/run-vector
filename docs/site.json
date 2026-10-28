@@ -469,6 +469,10 @@
     {
       "source": "src/core/features/insights/README.md",
       "reason": "Metric definitions, nearest-rank percentiles and recorded-history limits for Insights maintainers."
+    },
+    {
+      "source": "docs/verify.md",
+      "reason": "Maintainer verification, recovery and acceptance command guide"
     }
   ]
 }

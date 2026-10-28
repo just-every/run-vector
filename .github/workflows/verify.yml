@@ -30,6 +30,8 @@ jobs:
         with:
           fetch-depth: 2
           persist-credentials: false
+      - name: Check generated contract documents
+        run: node src/base/contract-docs.mjs check
       - id: reuse
         name: Reuse only a green push of this workflow
         env:
