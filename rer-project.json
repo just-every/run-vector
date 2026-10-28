@@ -20,9 +20,12 @@
       "src/core/features/auth/**",
       "src/core/features/data/**",
       "src/core/features/bootstrap/**",
+      "src/core/features/agent-door/**",
       "src/core/editor/**",
       "vendor/base/operator-auth/**",
       "vendor/base/owner-claim/**",
+      "vendor/base/agent-door/**",
+      "vendor/base/business-settings/**",
       "vendor/base/editor/**",
       "vendor/base/portability/**",
       "scripts/installer/**",
@@ -52,6 +55,6 @@
   },
   "setup": {
     "path": "rer-setup.json",
-    "sha256": "9fd813a1b304c4184c3e206afd55c7c9c32f492de4c6f4585dd7ff805d34e4fc"
+    "sha256": "a33ff8502ddcb5113815af8cbb5c167becf1bc631635e422c87b184a41831a00"
   }
 }
