@@ -7293,7 +7293,7 @@
       "executable": false
     },
     "tests/e2e/timeline-journey.mjs": {
-      "sha256": "52de681a477cf2c02c579ce6e28e2a0228068624e9f834240ee374b8a64878e8",
+      "sha256": "2edb34be86e0f7fb0ab33996a761bbafa3b42848b93ce624c723cd7563346993",
       "executable": false
     },
     "tests/e2e/ui-administration-form.mjs": {
