@@ -55,9 +55,9 @@ export async function browserJourney({ request, origin, surface, signer, person,
         await page.waitForLoadState('networkidle');
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth);
         if (overflow) throw new Error(`${name} has horizontal overflow at ${width}`);
-        const path = `../screens-final/${name}-${width}.png`;
-        await page.screenshot({ path, fullPage: true });
-        console.log(`VECTOR_SCREEN ${name}-${width}.png ${(await readFile(path)).toString('base64')}`);
+        const outputPath = `../screens-final/${name}-${width}.png`;
+        await page.screenshot({ path: outputPath, fullPage: true });
+        console.log(`VECTOR_SCREEN ${name}-${width}.png ${(await readFile(outputPath)).toString('base64')}`);
         captured.push({ name, width, heading: await page.locator('h1').allTextContents(), overflow });
       }
     };

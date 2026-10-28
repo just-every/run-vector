@@ -15,8 +15,8 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   };
   await adopt();
   const tool = surface.tools.find(tool => tool.name === 'vector.issue.creation');
-  const who = { person: { id: session.operatorId }, agent: { id: context.agentId, name: 'Delivery agent', specialist: surface.specialist },
-    scopes: [tool.scope], clientId: 'native-delivery-worker', consent: context.consent };
+  const who = { person: { id: session.operatorId }, agent: { id: context.agentId, name: 'Agent door conformance', specialist: surface.specialist },
+    scopes: [tool.scope], clientId: 'rer-agent-conformance', consent: context.consent };
   const count = () => db.prepare('SELECT count(*) AS n FROM issues').first('n');
   const call = async (name, args, credential) => {
     const response = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + credential,
