@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "c0a2afd4a418cbac37724f186132c670e75217a2e910a9e1a019899da991b3c9",
+      "sha256": "e4b2a2797caa85fca8d73ded60416956a0d12af26b6978a3404d5bfeb799e694",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2541,7 +2541,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "ac981db4dd57a793414222ba57eff0898f72f3e027a41204f9f6e1adb48ecfda",
+      "sha256": "b1b01eb6725f5e3b7258a9154f65b2d000389a8e83c521198a67ef05482a28c9",
       "executable": false
     },
     "rer-project.json": {
