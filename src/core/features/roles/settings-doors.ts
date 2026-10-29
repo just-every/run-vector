@@ -3,6 +3,7 @@
  * Keys are source modules and their enclosing component; values follow form order. */
 export const settingsFormDoors: Record<string, readonly string[]> = {
   'settings/ui/settings-page.tsx#SettingsPage': ['PATCH /settings'],
+  'settings/ui/appearance-panel.tsx#AppearancePanel': ['PATCH /settings/appearance'],
   'settings/ui/personal-time-panel.tsx#PersonalTimePanel': ['PATCH /settings/personal-time'],
   'integrations/ui/channel-settings.tsx#ChannelSettings': [
     'POST /settings/integrations/slack', 'POST /settings/integrations/slack/signing-secret',

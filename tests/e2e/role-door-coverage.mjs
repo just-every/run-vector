@@ -49,14 +49,26 @@ export async function assertRoleDoorCoverage(){
  const native=new Map(doors.map(door=>[key(door),door]));
  const assertDoor=(reference,label)=>assert.ok(native.has(reference),label+' names an unregistered door '+reference);
  const root=resolve('src/core/features'),seen=new Set(),forms=new Map();
+ // A SettingsSaveForm submits its own path and method: each use is a form of the component
+ // that renders it, checked against those props; its shared <form> is not a form of its own.
+ const saveForm=resolve(root,'settings/ui/settings-save-form.tsx');
+ function submittedDoor(node,source){
+  const value=name=>node.attributes.properties.find(property=>ts.isJsxAttribute(property)&&property.name.getText(source)===name)?.initializer;
+  const text=initializer=>!initializer?undefined:ts.isStringLiteral(initializer)?initializer.text
+   :ts.isJsxExpression(initializer)&&initializer.expression&&(ts.isNoSubstitutionTemplateLiteral(initializer.expression)||ts.isTemplateExpression(initializer.expression))
+    ?initializer.expression.getText(source).slice(1,-1).replace(/\$\{[^}]*\}/g,':'):null;
+  return (text(value('method'))??'PUT')+' '+text(value('path'))?.replace(/^\/api(?=\/)/,'');
+ }
  function settingsModule(file){
   if(seen.has(file))return;seen.add(file);
   const source=ts.createSourceFile(file,readFileSync(file,'utf8'),ts.ScriptTarget.Latest,true,ts.ScriptKind.TSX);
   function walk(node,component='module'){
    if((ts.isFunctionDeclaration(node)||ts.isVariableDeclaration(node))&&node.name&&ts.isIdentifier(node.name))component=node.name.text;
-   if(ts.isJsxOpeningElement(node)&&node.tagName.getText(source)==='form'){
-    const id=relative(root,file)+'#'+component,index=forms.get(id)??0;
-    assertDoor(settingsFormDoors[id]?.[index],id+' form '+(index+1));forms.set(id,index+1);
+   const tag=ts.isJsxOpeningElement(node)?node.tagName.getText(source):null;
+   if(tag==='form'&&file!==saveForm||tag==='SettingsSaveForm'){
+    const id=relative(root,file)+'#'+component,index=forms.get(id)??0,reference=settingsFormDoors[id]?.[index];
+    assertDoor(reference,id+' form '+(index+1));forms.set(id,index+1);
+    if(tag==='SettingsSaveForm')assert.equal(submittedDoor(node,source),reference.replace(/:[A-Za-z]+/g,':'),id+' form '+(index+1)+' submits another door than it registers');
    }
    ts.forEachChild(node,child=>walk(child,component));
   }walk(source);

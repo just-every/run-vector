@@ -5917,7 +5917,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "e25f0f78f24090e5b57c57adf005a705e1e82741769b17e5c73c84b32134e3c8",
+      "sha256": "fc432ab641d1275202de3ecfe4f29b6bc9eb708ebedf03306d578711bbbc8731",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
@@ -7277,7 +7277,7 @@
       "executable": false
     },
     "tests/e2e/role-door-coverage.mjs": {
-      "sha256": "21d6259aaa192270c60895b4c9472d00839545257ee6738aa3ecb1f2729618f2",
+      "sha256": "b0eb5d6a585969eb39141417dc5e1139316430d345f8f7d10c9de3db3f5dcaae",
       "executable": false
     },
     "tests/e2e/role-private-cells.mjs": {
