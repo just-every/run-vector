@@ -36,7 +36,7 @@ export function visibilityCtes(actor: string) {
     scoped('team_join_requests', `${team()} OR r.requester_id=${literal}`),
     ...['issue_labels', 'evidence_revisions', 'intake_decisions', 'issue_comments', 'issue_reactions', 'issue_files', 'issue_links', 'issue_followers', 'issue_mentions', 'issue_notification_mutes', 'issue_reminders', 'notification_snoozes', 'issue_description_revisions'].map(t => scoped(t, issue())),
     `notifications AS (SELECT r.id,r.event_id,r.issue_id,r.recipient_id,r.actor_id,
-      COALESCE((SELECT name FROM operators o WHERE o.id=r.actor_id),r.actor_name) actor_name,
+      COALESCE((SELECT prepared_by FROM vector_agent_activity_attribution WHERE event_id=r.event_id),(SELECT name FROM operators o WHERE o.id=r.actor_id),r.actor_name) actor_name,
       r.causes_json,r.created_at,r.read_at FROM main.notifications r WHERE ${issue()})`,
     scoped('issue_parents', `${issue()} AND ${issue('parent_issue_id')}`),
     scoped('issue_dependencies', `${issue('blocked_issue_id')} AND ${issue('blocking_issue_id')}`),

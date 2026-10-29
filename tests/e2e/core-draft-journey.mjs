@@ -4,13 +4,24 @@ import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 export const expectedDraftFailures = new Set();
 
 export async function draftJourney(page, context, base, teamId, operatorId, record) {
+  await beforePrivateNavigation(page, base + '/app/new-issue');
   expectedDraftFailures.add(base + '/api/metadata');
   // A failed team-metadata read must expose recovery through the same form door.
-  await page.route('**/api/metadata', route => route.fulfill({ status: 500,
-    contentType: 'application/json', body: JSON.stringify({ error: 'unavailable' }) }));
-  await beforePrivateNavigation(page, base + '/app/new-issue');
+  // Fault one form read, after the preceding document's real reads settle.
+  // Background reads must never turn this single-failure fixture into an outage.
+  let injected = 0;
+  const faultConsole = page.waitForEvent('console', { predicate: message =>
+    message.type() === 'error' && message.location().url === base + '/api/metadata' &&
+    /^Failed to load resource: the server responded with a status of 500(?: \([^)]*\))?$/.test(message.text()) });
+  await page.route('**/api/metadata', route => {
+    injected++;
+    return route.fulfill({ status: 500,
+      contentType: 'application/json', body: JSON.stringify({ error: 'unavailable' }) });
+  }, { times: 1 });
   await page.goto(base + '/app/new-issue');
   await page.getByRole('alert').filter({ hasText: 'Unable to load issue options.' }).waitFor();
+  await faultConsole;
+  assert.equal(injected, 1, 'Exactly one metadata response is faulted');
   assert.equal(await page.getByRole('button', { name: '← Back', exact: true }).isEnabled(), true);
   await page.unroute('**/api/metadata');
   await page.getByRole('button', { name: 'Try again', exact: true }).click();
