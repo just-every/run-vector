@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "parent": null,
   "edition": "just-every/vector-projects",
-  "manifest": "639d9b93db6be6eb6a187ddc6f74f65429b16858c08d03cc8600cdd558b92895",
+  "manifest": "63f0c7fe3b79123c8b2366aeb1bce6b45b66a26bdcbb528e9091fd27153b7006",
   "toolchain": {
     "id": "runeditrun/edition-authoring",
     "version": "1.1.0",
@@ -431,7 +431,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
+          "revision": "114ef7a61f080da053af783c5fbe06f625d692cc",
           "paths": [
             "modules/agent-door"
           ]
@@ -444,9 +444,9 @@
         ]
       },
       "baseline": {
-        "key": "12066ecd4309a0b32adafcc8dbcf993c62c0c10684dea25ffb42d3432311629f",
-        "digest": "09766abcb9a08171d52b2a5e6c65f72b09d2d72fc423f1d5bde63e23b54a6de9",
-        "sha256": "7f45aef7c1213f70be217b9b6b355f7aad75a10e0be3bbc5dbd9bc610a6cb3bc"
+        "key": "de2d8e5c4ab847e11711f56a96e471c871fc6fc7630f23319df782376b4e1c07",
+        "digest": "0df7532bd25c2ed8a9b2d1d6bd1693240047f3f51b9d388583e61ae818c8d633",
+        "sha256": "044267c722b24261bbea03594982ffdbb867c311fa83fb1ef5f35b76c0508514"
       }
     },
     {
@@ -458,7 +458,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
+          "revision": "114ef7a61f080da053af783c5fbe06f625d692cc",
           "paths": [
             "modules/business-settings"
           ]
@@ -471,9 +471,9 @@
         ]
       },
       "baseline": {
-        "key": "3113fe8374c27e85a25b7d1badd65757df9230eda4b8e05fa078b7d4dfec9274",
+        "key": "1a0dd05c0ffdd375b6dd7363d546eb99c4b12b12b9810c554fdf13a07f45df13",
         "digest": "41941bf0b18865ae66ce363c451d990814baad2e84a2b7086ab8f9f787fb29e5",
-        "sha256": "abf61869b027d027ef19f9f3607d19d9c17b06e2bf82641c37504146d25b5f85"
+        "sha256": "55f045eef8c97ab38e06c5fc03e053ee89650eb4475ddb6bee9eb6cc5cd2419d"
       }
     },
     {
@@ -812,7 +812,7 @@
       "executable": false
     },
     "edition.json": {
-      "sha256": "639d9b93db6be6eb6a187ddc6f74f65429b16858c08d03cc8600cdd558b92895",
+      "sha256": "63f0c7fe3b79123c8b2366aeb1bce6b45b66a26bdcbb528e9091fd27153b7006",
       "executable": false
     },
     "evidence/comment-threads/ISSUE-008/thread-reopened-1440.png": {
