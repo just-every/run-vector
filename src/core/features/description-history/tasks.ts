@@ -47,16 +47,16 @@ export function toggleTask(source: string, index: number, text: string, checked:
 
 /** A parent's source includes its nested items, whose ticks are independent. */
 function unchangedText(source: string, tasks: MarkdownTask[], parent: MarkdownTask): string {
-  let text = parent.text;
-  const start = parent.end - text.length;
+  const text = parent.text.split("");
+  const start = parent.end - parent.text.length;
   for (const child of tasks) {
     if (child.start <= parent.start || child.end > parent.end) continue;
     const marker = /^(?:[*+-]|\d+[.)])[\t ]+\[/.exec(source.slice(child.start, child.end));
     if (!marker) throw new Error("Task source marker is missing.");
     const offset = child.start + marker[0].length - start;
-    text = text.slice(0, offset) + " " + text.slice(offset + 1);
+    text[offset] = " ";
   }
-  return text;
+  return text.join("");
 }
 
 /** A stale click may change only the task the caller actually read. */

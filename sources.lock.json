@@ -4141,7 +4141,7 @@
       "executable": false
     },
     "src/core/features/description-history/tasks.ts": {
-      "sha256": "e3aa022adec7b54ea8f6d317fcc5e381bab827eb3a53985582eeb8a7829eee6c",
+      "sha256": "cea9c3ba0e136982cfd8bd66a90d29f2690aee0a3abde1b2de7c731fbb554e0c",
       "executable": false
     },
     "src/core/features/description-history/ui/description.tsx": {
@@ -6801,7 +6801,7 @@
       "executable": false
     },
     "tests/e2e/comment-checklist-journey.mjs": {
-      "sha256": "12e6bde806ce9109e6f204e51ba8016d1de14780614899f4b6de8b661bc73eac",
+      "sha256": "7cf70744c600b0d769186961289f3a9817d504f7db55cd59e7ef7eff6c38b0fe",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {

@@ -153,6 +153,16 @@ export async function commentChecklistJourney(page, context, base, state, teamId
       await page.screenshot({ path: `${evidence}/comment-checklist-nested-${width}.png` });
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
+    await page.getByRole('region', { name: /^Thread started by/ }).filter({ hasText: 'Release' }).getByRole('button', { name: 'Edit comment', exact: true }).click();
+    await page.getByRole('textbox', { name: 'Edit comment', exact: true }).fill('- [x] Release\n  - [x] Revised draft');
+    await page.getByRole('button', { name: 'Save comment', exact: true }).click();
+    await nestedRegion(page).getByRole('checkbox', { name: 'Revised draft', exact: true }).waitFor();
+    await settleReads(page);
+    const beforeNestedConflict = storage();
+    const nestedConflict = await peerContext.request.post(`${base}${path}/comments/${nested.id}/checklist`, { headers: { Origin: base }, data: { expectedBody: nestedBody, expectedVersion: 0, index: 0, text: 'Release\n  - [ ] Review draft', checked: false } });
+    assert.equal(nestedConflict.status(), 409);
+    assert.deepEqual((await nestedConflict.json()).comment, { id: nested.id, body: '- [x] Release\n  - [x] Revised draft', version: 3 });
+    assert.deepEqual(storage(), beforeNestedConflict);
     record('ISSUE-025', 'Two genuine author sessions tick independent unchanged flat and nested comment items from revision zero; both changes and two native-member attributed revision and item activity receipts persist. A changed item returns current text with 409; another Owner and a Member see read-only boxes and are refused 403 through the scoped API, refused writes change no product storage, and ticks preserve issue status. Screens at 1440 and 390.');
   } finally { await peerContext.close(); }
 }
