@@ -2,6 +2,13 @@
   "schema": "rer-agent-surface/1",
   "seed": "vector",
   "specialist": "software delivery",
+  "capabilities": [
+    "tools",
+    "policy",
+    "pause",
+    "audit",
+    "idempotency"
+  ],
   "tools": [
     {
       "name": "vector.issues.list",

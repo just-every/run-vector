@@ -44,7 +44,9 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const missing = await request(origin + '/mcp', { method: 'POST', headers: {
     Authorization: 'Bearer ' + await accessToken(context), 'Content-Type': 'application/json', 'MCP-Protocol-Version': '2025-11-25' },
     body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'resources/read', params: { uri: 'vector://issues/' + randomUUID() } }) });
-  const resourceRefusal = (await missing.json()).error?.data?.code;
+  const resourceError = (await missing.json()).error?.data;
+  const resourceRefusal = resourceError?.code;
+  const resourceCapability = resourceError?.capability;
   const minted = await request(origin + '/api/settings/integrations/tokens', { method: 'POST',
     headers: { Cookie: person.cookie, Origin: origin, 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: 'Purpose separation probe', scopes: ['issues:read'] }) });
@@ -77,8 +79,8 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const mcp = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json',
     'MCP-Protocol-Version': '2025-11-25' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: saved.name, arguments: saved.args } }) });
   await mcp.body?.cancel();
-  return { ok: nativeTarget && resourceRefusal === 'resource_unavailable' && nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
+  return { ok: nativeTarget && resourceRefusal === 'capability_not_declared' && resourceCapability === 'resources' && nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
       && live.outcome === 'done' && afterLive === before + 1 && replay.outcome === 'done' && afterReplay === afterLive && conflict.code === 'idempotency_conflict' && durableIdentity && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
-    scoped, insufficient, resourceRefusal, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi, nativeArgumentRefusals: invalidCodes, nativeArguments,
+    scoped, insufficient, resourceRefusal, resourceCapability, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi, nativeArgumentRefusals: invalidCodes, nativeArguments,
     before, afterLive, afterReplay, afterRevoked, durableIdentity, nativeTarget, changedArguments: conflict.code, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'undeclared queued lifecycle and mail edges; refuses before native outbox work' };
 }

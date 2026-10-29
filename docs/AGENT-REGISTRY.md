@@ -1,6 +1,6 @@
 # Native agent registry
 
-The declared capability set is **core only**: tools, policy, pause, audit and idempotency. Principal authorization and owner-bound tokens always apply. Events/subscriptions, multi-sponsor, mail edges, resource refresh, timed lifecycle, dual host, queued lifecycle and owner-native administration are undeclared. Existing native tools remain registered; multi-person lifecycle assertions remain pending the undeclared multi-sponsor family. Released rer 0.2.87 has no capability-subset manifest key; a later Base re-pin adds that declaration.
+The declared capability set is **core only**: tools, policy, pause, audit and idempotency, in both `agent-surface.json` and the production door. Principal authorization and owner-bound tokens always apply. Released rer 0.2.88 withholds MCP events, resources, prompts and subscriptions, returning `capability_not_declared` with the capability name. The retained native registry below has 215 tools and 25 resource adapters; the built-in event tool and its journey remain in the descriptor as historical input, outside the effective core surface. Resource adapters still govern internal retained-event visibility. Multi-sponsor, mail edges, resource refresh, timed lifecycle, dual host, queued lifecycle and owner-native administration remain unscoped by this release and unproved here. Native tools remain registered with their complete security requirements; missing multi-person authority fixtures remain failing assertions.
 
 | Tool | Classes | Current clauses |
 | --- | --- | --- |

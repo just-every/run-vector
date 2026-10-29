@@ -1,3 +1,4 @@
+import { scopedSurface, refusalPhase } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/subset.mjs';
 import { randomUUID } from 'node:crypto';
 import { createProtocol } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/protocol.mjs';
 import { autonomousPolicy, heldPolicy } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/crypto.mjs';
@@ -14,6 +15,7 @@ import { auditPhase } from '../../node_modules/@runeditrun/rer/modules/agent-doo
  * this gives runtime results instead of stopping at the declaration gate. All
  * assertions and native journey calls remain the installed CLI's actual implementations. */
 export async function runNativePhases({ fetch, invoke, origin, surface, signer, person }) {
+  surface = scopedSurface(surface);
   const points = [];
   const c = createProtocol({ fetch, origin, surface, signer, person, business: 'rer-agent-conformance',
     consent: randomUUID(), agentId: `rer-conformance-${randomUUID()}`, seq: 0, revision: 0, listed: new Map(), points });
@@ -38,6 +40,7 @@ export async function runNativePhases({ fetch, invoke, origin, surface, signer, 
   await c.phase('BASE-AGENT-004.consent', () => consentRevocationPhase(c));
   await c.phase('BASE-AGENT-012.invocation', () => invocationPhase(c, invoke));
   if (surface.verification?.replayAdmission) await c.phase('BASE-AGENT-012.replay', () => replayAdmissionPhase(c, surface.verification.replayAdmission));
+  await c.phase('BASE-AGENT-subset.refusals', () => refusalPhase(c));
   await c.phase('BASE-AGENT-009.phase7', () => auditPhase(c));
   return { ok: points.every(point => point.ok), points };
 }
