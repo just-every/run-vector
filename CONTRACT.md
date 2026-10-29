@@ -139,6 +139,7 @@ Vector is the issue tracker and software project-management workspace a US softw
 | Create, rotate or revoke a calendar feed (CAL-001) | yes | yes | yes (own feed and own teams’ feeds) | no | yes (own feed) |
 | Export the portable archive (DATA-001) | yes | yes | no | no | no |
 | Restore an archive over HTTP and review the restored workspace (DATA-005) | yes | no | no | no | no |
+| Manage active imported source prefixes (DATA-018) | yes | no | no | no | no |
 | Preflight, apply, resume, repeat or roll back an import run or migration (DATA-002, DATA-003, DATA-006, DATA-008, DATA-009, DATA-010, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017) | yes | yes | no | no | no |
 | Erase an imported person (DATA-011) | yes | yes | no | no | no |
 | Schedule warehouse exports and Google Sheets syncs (REPORT-005) | yes | yes | no | no | no |

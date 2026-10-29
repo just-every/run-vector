@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "38c9cf16c73d6d421439f140de850d6930798e4ff17400f7eaccdef1c7821907",
+      "sha256": "2750cd8cbb025b9831cf0eae6a2351a45f4423b8cb0057b5471e3cb01378d053",
       "executable": false
     },
     "DEMO.md": {
@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "6fcd94121aad72459b87c7341900ef596306d261e74cb2871a13e039445751a9",
+      "sha256": "516c9c66ae617ec33a2c7e5144710566fd14ff7303b51fb8e1b3b53a8a330106",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -4037,7 +4037,7 @@
       "executable": false
     },
     "src/core/features/data/import/rollback.ts": {
-      "sha256": "6de472cfa78fda2352f3f16824c7144081c55220a87eef7dab7b187003a4c062",
+      "sha256": "7e7d21ddbc13134f351384fcdc0ba6cab8c513e631be5516b48a9de24d5b5adb",
       "executable": false
     },
     "src/core/features/data/import/routes.ts": {
@@ -5933,7 +5933,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "6519f02f48428a8db3b597ffdb0cc6bc8e2610ce4c429c59dd22879a9ff84251",
+      "sha256": "1998c65df04107305aca1484f9418b1167a36cee2c13ffb43e6b733c2c929350",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -5941,7 +5941,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "cb5187f1526b2de6411e97e4839a9d315f74ec91e581223f198df226d2ffc4b2",
+      "sha256": "73772ff6fe0d294e7fdaf40adb01343cf278ebdd25449c846120885170c36197",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -8061,7 +8061,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "7f1d675257335de3ae39661a544af36e90af401ae605884d29c1e97cf9815012",
+      "sha256": "ee898132715c60f822e6cb3920927369f4c3704050ceaebd16eb832002e18fe1",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
@@ -8069,11 +8069,11 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "1f569a50e0627bd8371c9fc848e8d8321f0446f852531cb27793deae6f46b2b4",
+      "sha256": "c0dfd03838a14e6d6e84423a882fa8ab224f3e934b719cc35b50bfed47ca5f9d",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "f2eec81a8989c3826c0c7b61569d0a66fa08975b27bd0f49a1333514468fcb54",
+      "sha256": "b690da1eb4daa0de3d7f9c838a39f4f6335ddd8c9bd4368de2a46c386e27a744",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

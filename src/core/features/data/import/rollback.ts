@@ -60,6 +60,13 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
   if(relatedCount)counts.issue_relations=relatedCount;
   const aliasCount=await db.prepare('SELECT count(*) n FROM issue_aliases WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
   if(aliasCount)counts.issue_aliases=aliasCount;
+  // Removal cleans up unused active defaults, while explicit Owner choices
+  // survive. Include that shared-prefix effect in the reviewed row totals.
+  const prefixCount=ids.length?await db.prepare(`SELECT count(*) n FROM issue_alias_prefixes p
+    WHERE p.workspace_id=? AND p.active=1 AND p.owner_configured=0
+      AND NOT EXISTS(SELECT 1 FROM issue_aliases a WHERE a.workspace_id=p.workspace_id AND a.prefix=p.prefix
+        AND a.issue_id NOT IN (SELECT value FROM json_each(?)))`).bind(workspace,inRun).first<number>('n'):0;
+  if(prefixCount)counts.issue_alias_prefixes=prefixCount;
   const orderCount=await db.prepare('SELECT count(*) n FROM manual_order_entries WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
   if(orderCount)counts.manual_order_entries=orderCount;
   return {runId:id,state:job.state,issues:ids.length,rows:counts,conflicts,detachedIssues:detached.length,detachedIdentifiers:detached.map(row=>row.identifier)};
