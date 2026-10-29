@@ -230,6 +230,32 @@
       "adapters": [
         "vector.discord-webhook.v1"
       ]
+    },
+    {
+      "id": "sentry-error-tracking",
+      "required": false,
+      "why": "ERROR-001: an Owner or Admin explicitly connects a Sentry internal integration, reads release metadata for its signed issue events and can resolve a linked Sentry issue after native completion.",
+      "data": [
+        "provider issue identifier",
+        "provider integration token",
+        "resolution state"
+      ],
+      "adapters": [
+        "vector.sentry-api.v1"
+      ]
+    },
+    {
+      "id": "datadog-error-tracking",
+      "required": false,
+      "why": "ERROR-001: an Owner or Admin explicitly registers a Datadog US1 webhook with pasted API and application keys; registration keys are discarded after the request.",
+      "data": [
+        "installation webhook URL",
+        "webhook authentication header",
+        "provider registration keys"
+      ],
+      "adapters": [
+        "vector.datadog-webhooks.v1"
+      ]
     }
   ],
   "env": [
@@ -335,7 +361,8 @@
       "/auth/oidc/auth/callback",
       "/auth/oidc/auth/logout",
       "/.well-known/rer-dependencies",
-      "/.well-known/rer-link/"
+      "/.well-known/rer-link/",
+      "/api/integrations/errors/"
     ]
   },
   "customFields": [

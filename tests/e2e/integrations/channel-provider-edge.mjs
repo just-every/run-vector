@@ -4,6 +4,15 @@ export const slackAppFixture={appId:'synthetic-vector-32010',clientId:'synthetic
 export async function channelProviderEdge(request){
  const url=new URL(request.url);
  if(url.hostname==='api.sendgrid.com'&&url.pathname==='/v3/mail/send'){appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sendgrid',body:await request.json()})+'\n');return new Response(null,{status:202,headers:{'X-Message-Id':'synthetic-vector-'+crypto.randomUUID()}});}
+ if(url.hostname==='sentry.io'&&/^\/api\/0\/issues\/[0-9]+\/events\/latest\/$/.test(url.pathname)&&request.method==='GET'){if(request.headers.get('Authorization')!=='Bearer synthetic-vector-8201')return new Response(null,{status:401});return Response.json({release:{version:'synthetic-vector-8203'}});}
+ if(url.hostname==='sentry.io'&&/^\/api\/0\/issues\/[0-9]+\/$/.test(url.pathname)&&request.method==='PUT'){
+  if(request.headers.get('Authorization')!=='Bearer synthetic-vector-8201')return new Response(null,{status:401});
+  const body=await request.json();appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sentry.resolve',record:url.pathname.split('/')[4],body})+'\n');return Response.json({status:'resolved'});
+ }
+ if(url.hostname==='api.datadoghq.com'&&url.pathname==='/api/v1/integration/webhooks/configuration/webhooks'&&request.method==='POST'){
+  if(request.headers.get('DD-API-KEY')!=='synthetic-vector-8211'||request.headers.get('DD-APPLICATION-KEY')!=='synthetic-vector-8212')return new Response(null,{status:403});
+  const {custom_headers,...body}=await request.json();appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'datadog.register',body})+'\n');return Response.json({});
+ }
  const body=request.method==='GET'?Object.fromEntries(url.searchParams):request.headers.get('content-type')?.startsWith('application/x-www-form-urlencoded')?Object.fromEntries(new URLSearchParams(await request.text())):await request.json(),method=url.hostname==='slack.com'?url.pathname.slice(5):'discord';
  if(!['apps.manifest.create','oauth.v2.access','auth.test','auth.revoke','conversations.info','conversations.create','chat.postMessage','users.lookupByEmail','conversations.open','chat.update','discord'].includes(method))throw Error('Unexpected provider fixture endpoint');
  appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method,body})+'\n');

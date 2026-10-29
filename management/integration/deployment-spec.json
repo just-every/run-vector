@@ -658,6 +658,12 @@
       "name": "0108_document_checklists.sql",
       "sha256": "2a94b76eaee4088ff9708ba7b4aac907ed28a68c7d3bb7cb14d01ce551e6827f",
       "sql": "-- A checklist activity belongs to its retained, attributed document revision.\nALTER TABLE document_revisions ADD COLUMN checklist_json TEXT;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0108_error_connections.sql",
+      "sha256": "145331217d8d5753f7e171d2e6339b14fbc06f263e12bc799d2c5105034b0e99",
+      "sql": "-- Provider profiles and replay history are portable; credentials use the excluded secret store.\nCREATE TABLE vector_error_connections (\n source_id TEXT PRIMARY KEY REFERENCES vector_integration_sources(id),\n provider TEXT NOT NULL CHECK(provider IN ('sentry','datadog')),\n regression_rule TEXT NOT NULL CHECK(regression_rule IN ('reopen','comment','ignore')),\n actor_id TEXT NOT NULL REFERENCES operators(id),\n UNIQUE(source_id,provider)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

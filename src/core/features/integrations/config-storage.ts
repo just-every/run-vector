@@ -60,6 +60,6 @@ export async function revokeConfiguration(env:WorkerBindings,owner:IntegrationOw
   {sql:`UPDATE ${table} SET enabled=0,revoked_at=COALESCE(revoked_at,?),updated_at=? WHERE id=? AND workspace_id=? RETURNING id`,params:[at,at,id,owner.workspace]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.'+kind+'_revoked',subject:id,at,condition:{sql:`EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=? AND revoked_at=?)`,params:[id,owner.workspace,at]}}),
   {sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:[kind+':'+id,id,owner.workspace]},
-  ...(kind==='source'?[{sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_integration_sources WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:['source-url:'+id,id,owner.workspace]}]:[]),
+  ...(kind==='source'?[{sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_integration_sources WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:['source-url:'+id,id,owner.workspace]},{sql:`DELETE FROM vector_integration_secret_keys WHERE identity=? AND EXISTS(SELECT 1 FROM vector_integration_sources WHERE id=? AND workspace_id=? AND revoked_at IS NOT NULL)`,params:['source-error:'+id,id,owner.workspace]}]:[]),
  ]);if(!rows[0].length)throw new IntegrationError(404,'configuration_unavailable');return {revoked:true};
 }
