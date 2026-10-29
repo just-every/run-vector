@@ -2,6 +2,9 @@ import {createUlid} from '../../shared/ids';
 import {settingsActor} from '../settings/repository';
 import {IntegrationError} from '../integrations/errors';
 import {gitGuard} from '../integrations/github/rules';
+import {documentReferenceStatements} from '../issue-references/documents';
+import {extractIssueIdentifiers} from '../issue-references/identifiers.server';
+import {readIssueReferences} from '../issue-references/repository';
 import type {z} from 'zod';
 import type {ParentKind,documentInput,documentEdit} from './schema';
 
@@ -35,7 +38,10 @@ export async function readDocument(db:D1Database,actor:string,id:string){
  FROM documents d JOIN operators o ON o.id=d.author_operator_id WHERE d.id=? AND d.workspace_id=?`).bind(id,access.workspace_id).first<{id:string;title:string;body:string;parentKind:ParentKind;parentId:string;version:number;createdAt:string;updatedAt:string;authorName:string;comments:string}>();
  if(!row)throw new IntegrationError(404,'document_not_found');
  const comments=JSON.parse(row.comments) as {id:string;body:string;authorName:string;createdAt:string}[];
- return {...row,comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
+ const references=await readIssueReferences(db,actor,extractIssueIdentifiers(row.body));
+ // Recheck the source after resolving target metadata, before returning either.
+ if(!await db.prepare('SELECT id FROM documents WHERE id=? AND workspace_id=?').bind(id,access.workspace_id).first())throw new IntegrationError(404,'document_not_found');
+ return {...row,references,comments:comments.slice(0,10).reverse(),nextBeforeComment:comments.length>10?comments[9].id:null};
 }
 export async function documentRevisions(db:D1Database,actor:string,id:string,before?:number){
  await readDocument(db,actor,id);
@@ -55,6 +61,7 @@ export async function createDocument(db:D1Database,actor:string,input:z.infer<ty
   gitGuard(db,'EXISTS('+parentSql(subject.kind)+')',...subject.values),
   db.prepare('INSERT INTO documents(id,workspace_id,parent_kind,parent_id,title,body,author_operator_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,subject.workspace,subject.kind,subject.id,input.title,input.body,actor,at,at),
   db.prepare('INSERT INTO document_revisions(id,document_id,version,title,body,author_operator_id,created_at) VALUES(?,?,1,?,?,?,?)').bind(createUlid(now),id,input.title,input.body,actor,at),
+  ...documentReferenceStatements(db,{documentId:id,actor,version:1,at},input.body),
  ]);
  return readDocument(db,actor,id);
 }
@@ -65,6 +72,7 @@ export async function editDocument(db:D1Database,actor:string,id:string,input:z.
   gitGuard(db,'EXISTS(SELECT 1 FROM documents WHERE id=? AND version=?)',id,old.version),
   db.prepare('INSERT INTO document_revisions(id,document_id,version,title,body,author_operator_id,created_at) VALUES(?,?,?,?,?,?,?)').bind(createUlid(now),id,old.version+1,title,body,actor,at),
   db.prepare('UPDATE documents SET title=?,body=?,version=version+1,updated_at=? WHERE id=? AND version=?').bind(title,body,at,id,old.version),
+  ...documentReferenceStatements(db,{documentId:id,actor,version:old.version+1,at},body),
  ]);
  return readDocument(db,actor,id);
 }

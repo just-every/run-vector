@@ -14,7 +14,7 @@ const runtime=createAdminRuntime(1440,[],{port:15976,inspectorPort:15977});
 let browser,page;
 try {
  runtime.initialize();await runtime.start();
- browser=await chromium.launch({headless:true,args:['--use-mock-keychain','--password-store=basic']});
+ browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH,args:['--use-mock-keychain','--password-store=basic',...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?['--no-sandbox']:[])]});
  const context=await browser.newContext({viewport:{width:1440,height:1000}});
  page=await context.newPage();page.setDefaultTimeout(20000);await bootstrapOwner(page,runtime);
  async function api(path,method='GET',data) {
@@ -120,6 +120,6 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Orig
   await capture(name,terminal);
  }
 
- await projectDocumentsJourney({page,base:runtime.base,api,output:output+'/documents'});
+ await projectDocumentsJourney({page,base:runtime.base,api,output:output+'/documents',runtime});
 } catch(error) {if(page)await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
 finally {if(browser)await browser.close();await runtime.stop();}
