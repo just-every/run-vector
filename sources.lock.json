@@ -6085,11 +6085,11 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-feedback.css": {
-      "sha256": "518eae0186441dd5745295d6bce10810734203aa175d9fefddf687080d167af2",
+      "sha256": "0b4473455cda02c67b51b79ebe23c556296d629af82c41cb7488dcb0ae5f6f47",
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-feedback.tsx": {
-      "sha256": "bdd5028e670dc1f6941f5c27f8bc2ddd9c1f88853081fb733b27d15ccc2ccc0f",
+      "sha256": "a7028cb48c34da81febb2aed1ca44f5217d512093cf6dc4148e61c8dab0c713d",
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
