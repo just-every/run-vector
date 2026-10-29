@@ -22,6 +22,7 @@ export function issueSteps({ teamId = from('options', '/teams/0/id'),
   step('issue-create', 'vector.issue.creation', { teamId, title: 'Investigate a native issue report', description: '- [ ] Inspect native evidence' });
   read('issue-key', 'vector.issue.stable_identifiers');
   edit('issue-priority', 'vector.issue.priority', 'issue-create', { priority: 'high' });
+  journey.at(-1).target = { kind: 'issue', id: from('issue-create', '/id') };
   edit('issue-status', 'vector.issue.status_transitions', 'issue-priority', { statusId: startedStatusId });
   edit('issue-assignment', 'vector.issue.assignment', 'issue-status', { assigneeOperatorId: { $sponsor: 'id' } });
   edit('issue-estimate', 'vector.issue.estimates', 'issue-assignment', { estimate: 3 });
