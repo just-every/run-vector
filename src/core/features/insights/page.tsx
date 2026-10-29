@@ -1,8 +1,9 @@
 import {DashboardsPage} from "../dashboards/page";
 import {InsightChart} from "./chart";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useApiResource } from "../../app/api-client";
+import { useDateFormat } from "../../shared/date-format";
 import { workspaceOptionsSchema } from "../../shared/workspace-options";
 import { issueListQuerySchema, type IssueListQuery } from "../issues/list-schema";
 import { changeIssueListFilters } from "../issues/ui/issue-list-controls";
@@ -12,7 +13,9 @@ import "../settings/ui/settings.css";
 
 const number = (n: number | null) => n === null ? "—" : new Intl.NumberFormat("en", { maximumFractionDigits: 2 }).format(n);
 export function InsightsPage() {
-  const [tab, setTab] = useState("charts");
+  const { date } = useDateFormat();
+  const tab = useSearch({ strict: false }).tab === "dashboards" ? "dashboards" : "charts", navigate = useNavigate();
+  const setTab = (next: "charts" | "dashboards") => void navigate({ to: "/app/insights", search: next === "dashboards" ? { tab: next } : {} });
   const [filters, setFilters] = useState(() => issueListQuerySchema.parse({}));
   const [chart, setChart] = useState(() => insightQuerySchema.parse({}));
   const [bucket, setBucket] = useState("");
@@ -80,9 +83,9 @@ export function InsightsPage() {
         <div className="insights-table" role="region" aria-label="Chart data" tabIndex={0}>
           <table><caption>{metricNames[chart.metric]} · text equivalent</caption><thead><tr><th>Week</th><th>Group</th><th>Series</th><th>Issues</th><th>{report.data.duration ? "Total days" : chart.unit === "estimate" ? "Points" : "Count"}</th>
             {report.data.duration && <><th>Median days</th><th>75th percentile</th><th>90th percentile</th></>}<th>Drill down</th></tr></thead>
-          <tbody>{report.data.rows.map(row => <tr key={row.key}><th scope="row">{row.week}</th><td>{row.group}</td><td>{row.series.split(" · ")[0]}</td><td>{row.count}</td><td>{number(row.value)}</td>
+          <tbody>{report.data.rows.map(row => <tr key={row.key}><th scope="row">{date(row.week)}</th><td>{row.group}</td><td>{row.series.split(" · ")[0]}</td><td>{row.count}</td><td>{number(row.value)}</td>
             {report.data?.duration && <><td>{number(row.median)}</td><td>{number(row.p75)}</td><td>{number(row.p90)}</td></>}
-            <td><button onClick={() => setBucket(row.key)} aria-label={`View ${row.count} issues for ${row.week} ${row.group} ${row.series}`}>View issues</button></td></tr>)}</tbody></table>
+            <td><button onClick={() => setBucket(row.key)} aria-label={`View ${row.count} issues for ${date(row.week)} ${row.group} ${row.series}`}>View issues</button></td></tr>)}</tbody></table>
         </div>
         {!report.data.rows.length && <p>No issues match this chart and date range.</p>}
         {report.data.limitations.map(text => <p key={text} className="insights-note">{text}</p>)}

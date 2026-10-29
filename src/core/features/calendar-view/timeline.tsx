@@ -1,6 +1,7 @@
 import {useEffect,useId,useState,type DragEvent} from 'react';
 import {z} from 'zod';
 import {ApiError,fetchJson,useApiResource} from '../../app/api-client';
+import {useDateFormat} from '../../shared/date-format';
 import {Tooltip} from '../../ui/tooltip';
 import type {IssueListQuery} from '../issues/list-schema';
 import {defaultIssueListQuery,issueListSearch} from '../issues/ui/issue-list-controls';
@@ -12,6 +13,7 @@ type DateField='startDate'|'dueDate';
 type Change={issue:TimelineIssue;field:DateField};
 const receipt=z.object({identifier:z.string(),version:z.number()});
 export function IssueTimeline({query=defaultIssueListQuery}:{query?:IssueListQuery}){
+  const {date:shortDate}=useDateFormat();
   const data=useApiResource('/api/calendar/timeline'+issueListSearch(query),timelineSchema,5000);
   const [drag,setDrag]=useState<Change|null>(null),[editing,setEditing]=useState<Change|null>(null),[date,setDate]=useState('');
   const [busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
@@ -53,7 +55,7 @@ export function IssueTimeline({query=defaultIssueListQuery}:{query?:IssueListQue
       <div className="timeline-layout">
         <div className="timeline-scroll" role="region" aria-label="Scheduled issues" tabIndex={0}>
           <div className="timeline-canvas">
-            <div className="timeline-axis"><span>Issue</span><div>{geometry.ticks.map((tick,index)=><time key={index} dateTime={tick} style={{left:index/6*100+'%'}}>{tick.slice(5)}</time>)}</div></div>
+            <div className="timeline-axis"><span>Issue</span><div>{geometry.ticks.map((tick,index)=><time key={index} dateTime={tick} style={{left:index/6*100+'%'}}>{shortDate(tick)}</time>)}</div></div>
             <div className="timeline-lines" style={{height:scheduled.length*88}} aria-hidden={undefined}>
               <svg viewBox={'0 0 1000 '+Math.max(1,scheduled.length*88)} preserveAspectRatio="none" role="img" aria-label="Issue dependencies">
                 <defs><marker id={marker} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z"/></marker></defs>

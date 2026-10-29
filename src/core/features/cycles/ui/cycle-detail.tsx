@@ -7,7 +7,8 @@ import { canSelectCycle } from "./commitment-choices";
 import { CommitIssueForm } from "./commit-issue-form";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { fetchJson, useApiResource } from "../../../app/api-client";
+import { fetchJson, isMissingResourceError, useApiResource } from "../../../app/api-client";
+import { FailedResource, MissingResource } from "../../../app/ui/resource-state";
 import {
   administrationSchema,
   cycleDetailSchema,
@@ -66,17 +67,16 @@ export function CycleDetailPage({ cycleId }: { cycleId: string }) {
       setPending(false);
     }
   }
+  if (!detail.data && detail.error)
+    return isMissingResourceError(detail.error) ? (
+      <MissingResource kind="cycle" back="/app/cycles" list="Cycles" />
+    ) : (
+      <FailedResource kind="cycle" retry={detail.reload} />
+    );
   if (!detail.data)
     return (
       <main className="settings-page">
-        {detail.error ? (
-          <p role="alert">
-            {detail.error.message}
-            <button onClick={detail.reload}>Retry cycle</button>
-          </p>
-        ) : (
-          <p role="status">Loading cycle…</p>
-        )}
+        <p role="status">Loading cycle…</p>
       </main>
     );
   const { cycle, progress } = detail.data;

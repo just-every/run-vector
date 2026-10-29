@@ -1,8 +1,8 @@
 // Section 3. The licence strings are the LICENSE file and package.json verbatim.
 
 export const free = {
-  title: 'Not just clearer. Free.',
-  body: "Vector is 100% free and open source. Everything on this page is in the code you get. It's MIT licensed, so it's yours to use, change and run however you like.",
+  title: 'Not just clearer. Open.',
+  body: "Vector is open source. Everything on this page is in the code you get. It's MIT licensed, so it's yours to use, change and run however you like.",
   proof: ['No seats.', 'No plans.', 'No fees.'],
   action: 'Get the code',
   licence: {

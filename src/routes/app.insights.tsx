@@ -3,6 +3,7 @@ import { editorLeaf } from "../core/editor/leaf";
 import { InsightsPage } from "../core/features/insights/page";
 import { requireInsightsPage } from "../core/features/insights/page-access";
 export const Route = createFileRoute("/app/insights")({
+  validateSearch: (search: Record<string, unknown>) => (search.tab === "dashboards" ? { tab: "dashboards" as const } : {}),
   server: { handlers: { GET: async ({ request, next }) => {
     const { admitInsightDocument } = await import("../core/features/insights/document.server");
     return await admitInsightDocument(request) ?? next();

@@ -1,5 +1,6 @@
 import {MonthCalendar} from '../calendar-view/page';
 import {IssueTimeline} from '../calendar-view/timeline';
+import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 import { fetchJson, useApiResource } from "../../app/api-client";
@@ -8,7 +9,8 @@ import "../insights/insights.css";
 import "../settings/ui/settings.css";
 const revokedSchema = z.object({ revoked: z.literal(true) });
 export function CalendarPage() {
-  const [view,setView]=useState<'month'|'timeline'>('month');
+  const view=useSearch({strict:false}).view==='timeline'?'timeline':'month',navigate=useNavigate();
+  const setView=(next:'month'|'timeline')=>void navigate({to:'/app/calendar',search:next==='timeline'?{view:next}:{}});
   const data = useApiResource("/api/calendar/feeds", feedListSchema);
   const [team, setTeam] = useState("");
   const [url, setUrl] = useState("");

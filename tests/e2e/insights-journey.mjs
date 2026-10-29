@@ -68,7 +68,7 @@ const response = await client.fetch(base + "/api" + path, { method, headers: { O
       await select("Chart", metric);
       if (metric === "cycle-time") {
         const table = page.getByRole("region", { name: "Chart data", exact: true });
-        const row = table.getByRole("row").filter({ hasText: "2026-09-07" });
+        const row = table.getByRole("row").filter({ hasText: /Sep 7/ });
         const values = await row.getByRole("cell").allTextContents();
         assert.deepEqual(values.slice(2, 7), ["3", "9", "3", "5", "5"]);
         const loaded = page.waitForResponse(r => new URL(r.url()).pathname === "/api/insights" && new URL(r.url()).searchParams.get("bucket"));
