@@ -2,7 +2,7 @@ import { auditSchema } from '../../src/core/features/audit/schema';
 import { expectAuditArchiveHistory } from './audit-archive';
 import {channelEdge} from './channel-edge-fixture';
 import {env} from 'cloudflare:workers';
-import {it,expect} from 'vitest';
+import {it,expect,inject} from 'vitest';
 import {reserveWithRacingWriter} from './http-archive-reservation';
 import {populatedHttpSource} from './http-archive-source';
 import {dispatchWebhooks} from '../../src/core/features/integrations/outbound';
@@ -13,6 +13,7 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const migrationDigests=inject('migrationDigests') as Record<string,string>;
  const {seedIntakeForTeam,recordedReply,mailBindings}=await import('./email-intake-fixture'),{eventSigner}=await import('../sendgrid-event-fixture');
  const mail=await seedIntakeForTeam(f.team.id,f.cookie),reply=await recordedReply(f.cookie,mail.identifier,'synthetic-vector-2401');expect(reply.response.status).toBe(201);
  const signer=await eventSigner();expect((await f.call(`/settings/teams/${f.team.id}/email-intake/event-key`,'PUT',{key:signer.publicKey})).status).toBe(200);
@@ -71,7 +72,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current
  // state-bearing D1 ledger. Neither ledger is application data in the archive.
- await env.DB.exec("CREATE TABLE _rer_deploy_migrations(name TEXT PRIMARY KEY,sha256 TEXT NOT NULL,state TEXT NOT NULL); INSERT INTO _rer_deploy_migrations SELECT name,'test-only-ledger-hash','applied' FROM d1_migrations; DROP TABLE d1_migrations;");
+ await env.DB.exec("CREATE TABLE _rer_deploy_migrations(name TEXT PRIMARY KEY,sha256 TEXT NOT NULL,state TEXT NOT NULL)");
+ await env.DB.batch(Object.entries(migrationDigests).map(([name,digest])=>env.DB.prepare("INSERT INTO _rer_deploy_migrations(name,sha256,state) SELECT name,?,'applied' FROM d1_migrations WHERE name=?").bind(digest,name)));
+ await env.DB.exec('DROP TABLE d1_migrations');
  expect(await (await f.call('/data/restore')).json()).toMatchObject({restored:false,status:null});
  expect((await f.call('/data/restore/operators/'+f.peer,'POST',{})).status).toBe(409);
  expect((await f.call('/data/restore/review-effects','POST',{})).status).toBe(409);
@@ -101,7 +104,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(archiveText.includes((await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(calendarFeed.id).first<string>('token_hash'))!)).toBe(false);
  for(const credential of [errorInput.token,errorInput.secret,slackEdge.token,slackEdge.webhook,signingSecret,'UARCHIVE1',source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
- await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
+ await destination.ARCHIVE_TARGET_DB.exec('ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT;');
+ await destination.ARCHIVE_TARGET_DB.batch(Object.entries(migrationDigests).map(([name,digest])=>destination.ARCHIVE_TARGET_DB.prepare("UPDATE d1_migrations SET sha256=?,state='applied' WHERE name=?").bind(digest,name)));
  const ledgerBefore=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results;
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]})).status).toBe(401);
  const refusedOrigin=await createServerApp().request(targetBindings.APP_ORIGIN+'/api/portability/imports',{method:'POST',headers:{Origin:'https://untrusted.example',cookie,'content-type':'application/json'},body:JSON.stringify({confirmed:true,manifest:records[0]})},targetBindings);expect(refusedOrigin.status).toBe(403);

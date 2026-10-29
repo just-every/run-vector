@@ -325,8 +325,8 @@ export async function planIssueUpdate(
   const writes = [
     binding
       .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
-    SELECT ?,issues.id,?,'issue.updated',?,?,?,? FROM issues WHERE ${where}`,
+        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json)
+    SELECT ?,issues.id,?,'issue.updated',?,?,?,?,?,?,?,? FROM issues WHERE ${where}`,
       )
       .bind(
         activity.id,
@@ -335,6 +335,10 @@ export async function planIssueUpdate(
         activity.nextValueJson,
         now,
         now,
+        activity.actorName,
+        activity.agentId,
+        activity.agentOperationId,
+        activity.agentApproversJson,
         ...guardValues,
       ),
   ];

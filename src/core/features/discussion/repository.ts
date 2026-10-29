@@ -1,4 +1,5 @@
 import { issueReferenceStatements } from "../issue-references/repository";
+import { currentAgentActor, agentActivity } from '../agent-door/attribution';
 import { commentStatements, mentionStatements, finalizeEvent } from '../notifications/events';
 import { IssueAccessError, requireIssueAccess } from '../issues/access';
 import { MutationAccessError, RestoreReservationError, isMutationAccessError, mutationDatabase } from "../auth/mutation-database";
@@ -38,7 +39,7 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
   return [
     db
       .prepare(
-        `SELECT c.id,c.parent_comment_id AS parentId,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
+        `SELECT c.id,c.parent_comment_id AS parentId,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE((SELECT a.actor_name FROM issue_activity a WHERE a.issue_id=c.issue_id AND json_extract(a.next_value_json,'$.id')=c.id ORDER BY a.created_at DESC,a.id DESC LIMIT 1),c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
  c.resolved_at AS resolvedAt,r.name AS resolvedBy,
  (c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit,
  (c.deleted_at IS NULL AND ((c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL) OR ${moderatorSql})) AS canDelete
@@ -73,7 +74,7 @@ function activity(
 ) {
   return db
     .prepare(
-      "INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at) VALUES(?,?,?,?,NULL,?,?,?)",
+      "INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json) VALUES(?,?,?,?,NULL,?,?,?,?,?,?,?)",
     )
     .bind(
       activityId,
@@ -83,6 +84,10 @@ function activity(
       JSON.stringify({ id }),
       now,
       now,
+      currentAgentActor()?.actor.label ?? null,
+      agentActivity().agentId,
+      agentActivity().agentOperationId,
+      agentActivity().agentApproversJson,
     );
 }
 export async function addComment(

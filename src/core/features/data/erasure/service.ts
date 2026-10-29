@@ -18,6 +18,10 @@ async function refuseActive(db: D1Database, values: string[]) {
     UNION ALL SELECT 1 FROM oa_operators WHERE status<>'inactive' AND (lower(email) IN (SELECT value FROM json_each(?)) OR lower(trim(display_name)) IN (SELECT value FROM json_each(?))) LIMIT 1`)
     .bind(...Array(4).fill(JSON.stringify(values))).first();
   if (active) throw new ImportError(409, 'operator_active', 'This email or name belongs to a current operator or invitation. Remove them in Settings first; removal transfers their work.');
+  // Door outcomes, reviews and pending arguments can retain imported text.
+  // Admission precedes capture, so an admitted agent also covers in-flight work.
+  if(await db.prepare('SELECT 1 FROM agent_door_agents LIMIT 1').first())
+    throw new ImportError(409,'agent_custody_unavailable','Personal-data erasure is held while agent records may retain this data. Retained agent artifacts need a reviewed redaction and execution fence before erasure can proceed.');
 }
 
 /** Base 479094f drops a job's erasure-index receipt when an erasure moves its
@@ -52,7 +56,7 @@ export async function erasePerson(db: D1Database, files: R2Bucket, actor: Import
   await reindex(context);
   try {
     const { nativeResults: _, ...journal } = await retireD1ImportCustody({ target: { kind: 'person', id: 'erased:' + values.join('\u0000') }, values: subject.email ? [subject.email] : [], related: relatedMatchers(values) },
-      [...product.statements, auditStatement({workspace:actor.workspace,actor:actor.id,action:'person.erased',subject:'erasure:'+crypto.randomUUID()})], context, checkpoint);
+      [{sql:"SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM agent_door_agents) THEN 1 ELSE json('IMPORT_ATOMIC_GUARD') END",params:[]},...product.statements, auditStatement({workspace:actor.workspace,actor:actor.id,action:'person.erased',subject:'erasure:'+crypto.randomUUID()})], context, checkpoint);
     await reindex(context);
     return { journal, imported: product.counts };
   } catch (error) {
