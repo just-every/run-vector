@@ -6,7 +6,7 @@ import { SplitSection } from './section'
 
 const proofIcons = [<NoSeatsIcon key="seats" />, <NoPlansIcon key="plans" />, <NoFeesIcon key="fees" />]
 
-/** 3. Free: 100% free and open source, said plainly, beside the licence itself drawn as a sheet. */
+/** 3. Open: open source and MIT licensed, said plainly, beside the licence itself drawn as a sheet. */
 export function Free({ site = false }: { site?: boolean }) {
   return (
     <SplitSection id="free" title={c.title} art={<LicenceSheet />} artLabel={c.licence.label} band>

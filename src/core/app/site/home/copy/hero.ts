@@ -7,7 +7,7 @@ export const hero = {
   sub: "Every report gets a clear decision. Your team sees what's now, what's next, and why.",
   primary: 'Get the code',
   secondary: 'Read the docs',
-  alternative: '100% free, open source alternative to Linear, Jira and Asana',
+  alternative: 'Open source alternative to Linear, Jira and Asana',
   // The names inside `alternative` that the page sets in bold; each appears there exactly once.
   alternativeNames: ['Linear', 'Jira', 'Asana'],
 }
@@ -22,5 +22,5 @@ export const flow = {
 } as const
 
 export const meta = {
-  description: `${hero.alternative}. Know what happens next. Every report gets a clear decision, and Current shows your team what's now, what's next and why. 100% free and open source, MIT licensed.`,
+  description: `${hero.alternative}. Know what happens next. Every report gets a clear decision, and Current shows your team what's now, what's next and why. Open source, MIT licensed.`,
 }

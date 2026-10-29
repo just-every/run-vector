@@ -100,7 +100,7 @@ The homepage, top to bottom: hero · Current (`#current`) · Free (`#free`, band
 ## Do and don't
 
 - Do: ink on paper, one cobalt, square construction, real labels, generous paper around the hero, the same header and buttons on every public page, a different drawing instrument in every section.
-- Do: say "100% free and open source." (the closing) or the hero's "100% free, open source alternative to Linear, Jira and Asana", and nothing about hosting or costs.
+- Do: say the hero's "Open source alternative to Linear, Jira and Asana"; "free" is only a footnote ("You can also have all the source for free.", the closing), never the headline, the lead or the call to action (owner, 28 Oct 2026); and nothing about hosting or costs.
 - Don't: dark sections, gradients on buttons or text, a second accent colour, emoji, stock illustration, people or mascots, AI imagery, approval or permission steps in drawings, invented metrics or testimonials.
 - Don't: tilt anything that has been decided, draw construction lines crooked, or repeat one section's device in the next.
 

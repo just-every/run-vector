@@ -50,7 +50,7 @@ Public writer handoff: "Linear importer: documented CSV format plus an
 owner-made API file for comments, links and relations; tested at 2,000 issues
 with generated files, up to 4,000 issues per reviewed run, with a reconciliation
 report and whole-run undo; no owner export supplied." Do not describe Vector or
-its importers as replacing Linear. The homepage says only "100% free, open source
+its importers as replacing Linear. The homepage says only "Open source
 alternative to Linear, Jira and Asana", with no comparative claim.
 
 ## Jira Cloud CSV
