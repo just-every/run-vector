@@ -502,7 +502,8 @@
     "imported_author_name",
     "parent_comment_id",
     "resolved_at",
-    "resolved_by_operator_id"
+    "resolved_by_operator_id",
+    "description_anchor"
   ],
   "issue_deferral_origins": [
     "issue_id",
