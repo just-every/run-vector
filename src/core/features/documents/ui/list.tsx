@@ -1,5 +1,6 @@
 import {useNavigate} from '@tanstack/react-router';
-import {useApiResource} from '../../../app/api-client';
+import {isMissingResourceError,useApiResource} from '../../../app/api-client';
+import {MissingResource} from '../../../app/ui/resource-state';
 import {administrationSchema} from '../../administration/schema';
 import {documentList,type ParentKind} from '../schema';
 import {DocumentForm,DocumentUnavailable,documentError} from './form';
@@ -12,5 +13,6 @@ export function DocumentsSection({parentKind,parentId,inspector=false}:{parentKi
 }
 export function TeamDocumentsPage({teamId}:{teamId:string}){
  const data=useApiResource('/api/documents?parentKind=team&parentId='+teamId,documentList,undefined,{abortPendingOnDispose:false});
+ if(isMissingResourceError(data.error))return <MissingResource kind="team" back="/app/settings/teams" list="Teams"/>;
  return <main className="document-page">{data.error?<DocumentUnavailable/>:data.data?<><header><h1>{data.data.parent?.name}</h1></header><DocumentsSection parentKind="team" parentId={teamId}/></>:<p role="status">Loading team…</p>}</main>;
 }

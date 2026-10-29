@@ -32,12 +32,14 @@ import { Route as AppCurrentIndexRouteImport } from './routes/app.current.index'
 import { Route as AppCurrentIdentifierRouteImport } from './routes/app.current.$identifier'
 import { Route as AppCyclesIndexRouteImport } from './routes/app.cycles.index'
 import { Route as AppCyclesCycleIdRouteImport } from './routes/app.cycles.$cycleId'
+import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
 import { Route as AppDocumentsDocumentIdRouteImport } from './routes/app.documents.$documentId'
 import { Route as AppInboxSnoozedRouteImport } from './routes/app.inbox.snoozed'
 import { Route as AppInitiativesIndexRouteImport } from './routes/app.initiatives.index'
 import { Route as AppInitiativesInitiativeIdRouteImport } from './routes/app.initiatives.$initiativeId'
 import { Route as AppIssuesIndexRouteImport } from './routes/app.issues.index'
 import { Route as AppIssuesIdentifierRouteImport } from './routes/app.issues.$identifier'
+import { Route as AppIssuesNewRouteImport } from './routes/app.issues.new'
 import { Route as AppIssuesBacklogRouteImport } from './routes/app.issues_.backlog'
 import { Route as AppMyWorkIndexRouteImport } from './routes/app.my-work.index'
 import { Route as AppMyWorkIdentifierRouteImport } from './routes/app.my-work.$identifier'
@@ -51,6 +53,7 @@ import { Route as AppReleasesIndexRouteImport } from './routes/app.releases.inde
 import { Route as AppReleasesReleaseIdRouteImport } from './routes/app.releases.$releaseId'
 import { Route as AppSettingsSectionRouteImport } from './routes/app.settings_.$section'
 import { Route as AppSettingsAuditRouteImport } from './routes/app.settings_.audit'
+import { Route as AppTeamsIndexRouteImport } from './routes/app.teams.index'
 import { Route as AppTeamsTeamIdRouteImport } from './routes/app.teams.$teamId'
 import { Route as AppViewsIndexRouteImport } from './routes/app.views.index'
 import { Route as AppViewsViewIdRouteImport } from './routes/app.views.$viewId'
@@ -173,6 +176,11 @@ const AppCyclesCycleIdRoute = AppCyclesCycleIdRouteImport.update({
   path: '/cycles/$cycleId',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDocumentsIndexRoute = AppDocumentsIndexRouteImport.update({
+  id: '/documents/',
+  path: '/documents/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppDocumentsDocumentIdRoute = AppDocumentsDocumentIdRouteImport.update({
   id: '/documents/$documentId',
   path: '/documents/$documentId',
@@ -202,6 +210,11 @@ const AppIssuesIndexRoute = AppIssuesIndexRouteImport.update({
 const AppIssuesIdentifierRoute = AppIssuesIdentifierRouteImport.update({
   id: '/$identifier',
   path: '/$identifier',
+  getParentRoute: () => AppIssuesRoute,
+} as any)
+const AppIssuesNewRoute = AppIssuesNewRouteImport.update({
+  id: '/new',
+  path: '/new',
   getParentRoute: () => AppIssuesRoute,
 } as any)
 const AppIssuesBacklogRoute = AppIssuesBacklogRouteImport.update({
@@ -269,6 +282,11 @@ const AppSettingsAuditRoute = AppSettingsAuditRouteImport.update({
   path: '/settings/audit',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTeamsIndexRoute = AppTeamsIndexRouteImport.update({
+  id: '/teams/',
+  path: '/teams/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTeamsTeamIdRoute = AppTeamsTeamIdRouteImport.update({
   id: '/teams/$teamId',
   path: '/teams/$teamId',
@@ -329,6 +347,7 @@ export interface FileRoutesByFullPath {
   '/app/inbox/snoozed': typeof AppInboxSnoozedRoute
   '/app/initiatives/$initiativeId': typeof AppInitiativesInitiativeIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
+  '/app/issues/new': typeof AppIssuesNewRoute
   '/app/issues/backlog': typeof AppIssuesBacklogRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/my-work/activity': typeof AppMyWorkActivityRoute
@@ -343,11 +362,13 @@ export interface FileRoutesByFullPath {
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
   '/app/cycles/': typeof AppCyclesIndexRoute
+  '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/initiatives/': typeof AppInitiativesIndexRoute
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
   '/app/releases/': typeof AppReleasesIndexRoute
+  '/app/teams/': typeof AppTeamsIndexRoute
   '/app/views/': typeof AppViewsIndexRoute
   '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
   '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
@@ -375,6 +396,7 @@ export interface FileRoutesByTo {
   '/app/inbox/snoozed': typeof AppInboxSnoozedRoute
   '/app/initiatives/$initiativeId': typeof AppInitiativesInitiativeIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
+  '/app/issues/new': typeof AppIssuesNewRoute
   '/app/issues/backlog': typeof AppIssuesBacklogRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/my-work/activity': typeof AppMyWorkActivityRoute
@@ -389,11 +411,13 @@ export interface FileRoutesByTo {
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current': typeof AppCurrentIndexRoute
   '/app/cycles': typeof AppCyclesIndexRoute
+  '/app/documents': typeof AppDocumentsIndexRoute
   '/app/initiatives': typeof AppInitiativesIndexRoute
   '/app/issues': typeof AppIssuesIndexRoute
   '/app/my-work': typeof AppMyWorkIndexRoute
   '/app/projects': typeof AppProjectsIndexRoute
   '/app/releases': typeof AppReleasesIndexRoute
+  '/app/teams': typeof AppTeamsIndexRoute
   '/app/views': typeof AppViewsIndexRoute
   '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
   '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
@@ -426,6 +450,7 @@ export interface FileRoutesById {
   '/app/inbox/snoozed': typeof AppInboxSnoozedRoute
   '/app/initiatives/$initiativeId': typeof AppInitiativesInitiativeIdRoute
   '/app/issues/$identifier': typeof AppIssuesIdentifierRoute
+  '/app/issues/new': typeof AppIssuesNewRoute
   '/app/issues_/backlog': typeof AppIssuesBacklogRoute
   '/app/my-work/$identifier': typeof AppMyWorkIdentifierRoute
   '/app/my-work/activity': typeof AppMyWorkActivityRoute
@@ -440,11 +465,13 @@ export interface FileRoutesById {
   '/app/views/$viewId': typeof AppViewsViewIdRouteWithChildren
   '/app/current/': typeof AppCurrentIndexRoute
   '/app/cycles/': typeof AppCyclesIndexRoute
+  '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/initiatives/': typeof AppInitiativesIndexRoute
   '/app/issues/': typeof AppIssuesIndexRoute
   '/app/my-work/': typeof AppMyWorkIndexRoute
   '/app/projects/': typeof AppProjectsIndexRoute
   '/app/releases/': typeof AppReleasesIndexRoute
+  '/app/teams/': typeof AppTeamsIndexRoute
   '/app/views/': typeof AppViewsIndexRoute
   '/app/my-work/created/$identifier': typeof AppMyWorkCreatedIdentifierRoute
   '/app/my-work/subscribed/$identifier': typeof AppMyWorkSubscribedIdentifierRoute
@@ -478,6 +505,7 @@ export interface FileRouteTypes {
     | '/app/inbox/snoozed'
     | '/app/initiatives/$initiativeId'
     | '/app/issues/$identifier'
+    | '/app/issues/new'
     | '/app/issues/backlog'
     | '/app/my-work/$identifier'
     | '/app/my-work/activity'
@@ -492,11 +520,13 @@ export interface FileRouteTypes {
     | '/app/views/$viewId'
     | '/app/current/'
     | '/app/cycles/'
+    | '/app/documents/'
     | '/app/initiatives/'
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
     | '/app/releases/'
+    | '/app/teams/'
     | '/app/views/'
     | '/app/my-work/created/$identifier'
     | '/app/my-work/subscribed/$identifier'
@@ -524,6 +554,7 @@ export interface FileRouteTypes {
     | '/app/inbox/snoozed'
     | '/app/initiatives/$initiativeId'
     | '/app/issues/$identifier'
+    | '/app/issues/new'
     | '/app/issues/backlog'
     | '/app/my-work/$identifier'
     | '/app/my-work/activity'
@@ -538,11 +569,13 @@ export interface FileRouteTypes {
     | '/app/views/$viewId'
     | '/app/current'
     | '/app/cycles'
+    | '/app/documents'
     | '/app/initiatives'
     | '/app/issues'
     | '/app/my-work'
     | '/app/projects'
     | '/app/releases'
+    | '/app/teams'
     | '/app/views'
     | '/app/my-work/created/$identifier'
     | '/app/my-work/subscribed/$identifier'
@@ -574,6 +607,7 @@ export interface FileRouteTypes {
     | '/app/inbox/snoozed'
     | '/app/initiatives/$initiativeId'
     | '/app/issues/$identifier'
+    | '/app/issues/new'
     | '/app/issues_/backlog'
     | '/app/my-work/$identifier'
     | '/app/my-work/activity'
@@ -588,11 +622,13 @@ export interface FileRouteTypes {
     | '/app/views/$viewId'
     | '/app/current/'
     | '/app/cycles/'
+    | '/app/documents/'
     | '/app/initiatives/'
     | '/app/issues/'
     | '/app/my-work/'
     | '/app/projects/'
     | '/app/releases/'
+    | '/app/teams/'
     | '/app/views/'
     | '/app/my-work/created/$identifier'
     | '/app/my-work/subscribed/$identifier'
@@ -771,6 +807,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCyclesCycleIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/documents/': {
+      id: '/app/documents/'
+      path: '/documents'
+      fullPath: '/app/documents/'
+      preLoaderRoute: typeof AppDocumentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/documents/$documentId': {
       id: '/app/documents/$documentId'
       path: '/documents/$documentId'
@@ -811,6 +854,13 @@ declare module '@tanstack/react-router' {
       path: '/$identifier'
       fullPath: '/app/issues/$identifier'
       preLoaderRoute: typeof AppIssuesIdentifierRouteImport
+      parentRoute: typeof AppIssuesRoute
+    }
+    '/app/issues/new': {
+      id: '/app/issues/new'
+      path: '/new'
+      fullPath: '/app/issues/new'
+      preLoaderRoute: typeof AppIssuesNewRouteImport
       parentRoute: typeof AppIssuesRoute
     }
     '/app/issues_/backlog': {
@@ -904,6 +954,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsAuditRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/teams/': {
+      id: '/app/teams/'
+      path: '/teams'
+      fullPath: '/app/teams/'
+      preLoaderRoute: typeof AppTeamsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/teams/$teamId': {
       id: '/app/teams/$teamId'
       path: '/teams/$teamId'
@@ -989,11 +1046,13 @@ const AppInboxRouteWithChildren = AppInboxRoute._addFileChildren(
 
 interface AppIssuesRouteChildren {
   AppIssuesIdentifierRoute: typeof AppIssuesIdentifierRoute
+  AppIssuesNewRoute: typeof AppIssuesNewRoute
   AppIssuesIndexRoute: typeof AppIssuesIndexRoute
 }
 
 const AppIssuesRouteChildren: AppIssuesRouteChildren = {
   AppIssuesIdentifierRoute: AppIssuesIdentifierRoute,
+  AppIssuesNewRoute: AppIssuesNewRoute,
   AppIssuesIndexRoute: AppIssuesIndexRoute,
 }
 
@@ -1080,9 +1139,11 @@ interface AppRouteChildren {
   AppTeamsTeamIdRoute: typeof AppTeamsTeamIdRoute
   AppViewsViewIdRoute: typeof AppViewsViewIdRouteWithChildren
   AppCyclesIndexRoute: typeof AppCyclesIndexRoute
+  AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
   AppInitiativesIndexRoute: typeof AppInitiativesIndexRoute
   AppProjectsIndexRoute: typeof AppProjectsIndexRoute
   AppReleasesIndexRoute: typeof AppReleasesIndexRoute
+  AppTeamsIndexRoute: typeof AppTeamsIndexRoute
   AppViewsIndexRoute: typeof AppViewsIndexRoute
 }
 
@@ -1111,9 +1172,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppTeamsTeamIdRoute: AppTeamsTeamIdRoute,
   AppViewsViewIdRoute: AppViewsViewIdRouteWithChildren,
   AppCyclesIndexRoute: AppCyclesIndexRoute,
+  AppDocumentsIndexRoute: AppDocumentsIndexRoute,
   AppInitiativesIndexRoute: AppInitiativesIndexRoute,
   AppProjectsIndexRoute: AppProjectsIndexRoute,
   AppReleasesIndexRoute: AppReleasesIndexRoute,
+  AppTeamsIndexRoute: AppTeamsIndexRoute,
   AppViewsIndexRoute: AppViewsIndexRoute,
 }
 

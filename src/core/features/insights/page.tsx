@@ -1,7 +1,7 @@
 import {DashboardsPage} from "../dashboards/page";
 import {InsightChart} from "./chart";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useApiResource } from "../../app/api-client";
 import { useDateFormat } from "../../shared/date-format";
 import { workspaceOptionsSchema } from "../../shared/workspace-options";
@@ -14,7 +14,8 @@ import "../settings/ui/settings.css";
 const number = (n: number | null) => n === null ? "—" : new Intl.NumberFormat("en", { maximumFractionDigits: 2 }).format(n);
 export function InsightsPage() {
   const { date } = useDateFormat();
-  const [tab, setTab] = useState("charts");
+  const tab = useSearch({ strict: false }).tab === "dashboards" ? "dashboards" : "charts", navigate = useNavigate();
+  const setTab = (next: "charts" | "dashboards") => void navigate({ to: "/app/insights", search: next === "dashboards" ? { tab: next } : {} });
   const [filters, setFilters] = useState(() => issueListQuerySchema.parse({}));
   const [chart, setChart] = useState(() => insightQuerySchema.parse({}));
   const [bucket, setBucket] = useState("");
