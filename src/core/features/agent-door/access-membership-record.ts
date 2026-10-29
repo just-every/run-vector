@@ -10,7 +10,9 @@ import { nativeRead, nativeId } from './reads.ts';
 // that exact row; it neither creates another identity nor changes its key.
 export const membershipUri = (teamId: string, operatorId: string) => `vector://teams/${teamId}/members/${operatorId}`;
 const membershipId = z.string().regex(/^vector:\/\/teams\/[0-9A-HJKMNP-TV-Z]{26}\/members\/[0-9A-HJKMNP-TV-Z]{26}$/);
-const argsSchema = z.object({ id: nativeId, operatorId: nativeId }).strict();
+// Keep the native composite key. The shared narrowing contract names each
+// identifier explicitly; map its wire spelling to the native operatorId below.
+const argsSchema = z.object({ id: nativeId, operator_id: nativeId }).strict();
 const key = (id: string) => {
   const [, , , teamId, , operatorId] = membershipId.parse(id).split('/');
   return { teamId, operatorId };
@@ -30,29 +32,27 @@ export function vectorMembershipRecordTools(env: WorkerBindings) {
       scope: 'access:read', path: '/settings/administration', clauses: ['ROLE-007', 'ROLE-009'], schema: argsSchema,
       uri: result => result.role ? result.id : undefined,
       async read(db, person, args) {
-        const { teamId, operatorId, member } = await record(db, person, membershipUri(args.id, args.operatorId));
+        const { teamId, operatorId, member } = await record(db, person, membershipUri(args.id, args.operator_id));
         return { id: membershipUri(teamId, operatorId), teamId, operatorId, role: member?.role ?? null,
           grants: member ? [`team:${teamId}:member`, ...(member.role === 'owner' ? [`team:${teamId}:owner`] : [])] : [] };
       } }),
     accessMutation(env, { name: 'vector.role.team_membership.remove', title: 'Remove a native team membership',
       scope: 'access:write', clauses: ['ROLE-007', 'ROLE-003', 'ROLE-013'], schema: argsSchema,
       method: 'DELETE', path: '/settings/teams/:id/members/:operatorId',
-      params: args => ({ id: args.id, operatorId: args.operatorId }),
-      // Released 0.2.86 rejects checked narrowing metadata for a two-key row.
-      // Keep both native identifiers and the real authority callback; the
-      // surface retains its failing checked-contract assertion for the re-pin.
-      resource: false, uri: (_result, args) => membershipUri(args.id, args.operatorId),
+      params: args => ({ id: args.id, operatorId: args.operator_id }),
+      narrowing: { effect: 'revoke', target: ['id', 'operator_id'] },
+      resource: false, uri: (_result, args) => membershipUri(args.id, args.operator_id),
       async change(db, person, args) {
-        const { member, operatorId } = await record(db, person, membershipUri(args.id, args.operatorId));
+        const { member, operatorId } = await record(db, person, membershipUri(args.id, args.operator_id));
         return { subjects: member ? [operatorId] : [], widens: false };
       },
       async summary(db, person, args) {
-        const { team, member, operatorId } = await record(db, person, membershipUri(args.id, args.operatorId));
-        return { target: { id: membershipUri(args.id, args.operatorId), name: `${operatorId} in ${team.name}` },
+        const { team, member, operatorId } = await record(db, person, membershipUri(args.id, args.operator_id));
+        return { target: { id: membershipUri(args.id, args.operator_id), name: `${operatorId} in ${team.name}` },
           items: [`Remove ${member?.role ?? 'absent'} membership from ${team.name}`] };
       },
       async run(db, person, args) {
-        const teamId = args.id, operatorId = args.operatorId;
+        const teamId = args.id, operatorId = args.operator_id;
         await removeTeamMember(db, person.id, teamId, operatorId);
         return { id: membershipUri(teamId, operatorId), teamId, operatorId, removed: true };
       } }),
