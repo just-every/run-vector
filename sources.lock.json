@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "ca4da54cf7cf6ac6a06d38f317310db24f5b530bf5023b8abb85e4931e34fe5b",
+      "sha256": "509636bb2ffd0ab947322d45f16932261babe25f2da9b11f166346b1f4fff5dd",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e61448aec238fb35e078b61ea6384c53a351c16d747ac5adfa9b31ef744db3a4",
+      "sha256": "375080846033c1dd0243c54067bfc22619e42f9e72a8d231bec758c77f24fbf1",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "3a09fcf3e11d5d06e0e15804a944b160b4011f41dfb3018b3bd6b3e3e5218c1d",
+      "sha256": "b38997073b4a4a75dc583c6560ce5f8ded356679cd6a484ff23c207f4641631c",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -5929,7 +5929,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "1da0ba25a967cd6be309232d6f3de15f8614fb5537122573a5f841f67ced3e10",
+      "sha256": "ab3adb8c4e551599b038968de787b58ff7e7cd1194c62e3c5606ed3336310e51",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -5937,7 +5937,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "cb5187f1526b2de6411e97e4839a9d315f74ec91e581223f198df226d2ffc4b2",
+      "sha256": "3d4c53521e26f8e2ebda38220321432d90e03695309c978e4d35773b0b30ac5a",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -5945,7 +5945,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "e25f0f78f24090e5b57c57adf005a705e1e82741769b17e5c73c84b32134e3c8",
+      "sha256": "ac30f868ab95952db3daa7a89ff2e481eb5e6ddd365c4be0d9119d4217e83292",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
@@ -8057,7 +8057,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "7f1d675257335de3ae39661a544af36e90af401ae605884d29c1e97cf9815012",
+      "sha256": "03dc42ecec3de4db506a679fe5c8bac7af3d2035222c3b6a12c67474dafb2ae6",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
@@ -8065,7 +8065,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "1f569a50e0627bd8371c9fc848e8d8321f0446f852531cb27793deae6f46b2b4",
+      "sha256": "73d578d4f18adfbd899cfaf028016ada34da227970a278cb221e658fcedee48f",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {

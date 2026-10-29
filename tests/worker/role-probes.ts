@@ -165,6 +165,14 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "views.open-shared": { outside: true, session: async (_who, actor, id) => { const shared = await view(owner, true, id); return () => actor.call(`/views/${shared}/duplicate`, "POST", { name: `Copied view ${unique()}` }); } },
     "views.edit-shared": { session: async (who, actor) => { const shared = await view(who === "guest" ? owner : actor, true, w.team.id); return () => actor.call(`/views/${shared}`, "PATCH", { name: `Renamed view ${unique()}` }); } },
     "integrations.manage": { session: async (_who, actor) => () => actor.call("/settings/integrations") },
+    "models.confirm-terms": { session: async (_who, actor) => {
+      const provider = await json<{id:string}>(owner.call('/settings/models/providers', 'POST', {
+        name:'synthetic-vector-4831',kind:'self-hosted',endpoint:'https://synthetic-vector-4831.example.test/messages',model:'synthetic-vector-4831',credential:'synthetic-vector-4831',
+      }));
+      return () => actor.call(`/settings/models/providers/${provider.id}/confirm`, 'POST', {
+        termsUrl:'https://synthetic-vector-4831.example.test/terms',retention:'No retention',noTraining:true,
+      });
+    } },
     // Slack is faked at the network edge; a refused request never reaches it.
     "channels.bind-project": { session: async (_who, actor) => {
       const edge=channelEdge(),id=await project();

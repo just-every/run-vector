@@ -84,7 +84,7 @@ async function memberRole(db: D1Database, id: string) {
 export const doors: Door[] = [
   {method:'GET',path:'/settings/models',row:'integrations.manage'},
   {method:'POST',path:'/settings/models/providers',row:'integrations.manage'},
-  {method:'POST',path:'/settings/models/providers/:id/confirm',row:null},
+  {method:'POST',path:'/settings/models/providers/:id/confirm',row:'models.confirm-terms'},
   {method:'DELETE',path:'/settings/models/providers/:id',row:'integrations.manage'},
   {method:'PUT',path:'/settings/models/providers/:id/credential',row:'integrations.manage'},
   {method:'PUT',path:'/settings/models/policy',row:'integrations.manage'},
