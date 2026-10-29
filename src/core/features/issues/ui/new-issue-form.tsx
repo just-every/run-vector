@@ -43,6 +43,9 @@ export function NewIssueForm() {
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
   const openingDefaults = useRef(emptyNewIssueDraft);
   const [draftReady, setDraftReady] = useState(false);
+  const titleInput = useRef<HTMLInputElement>(null);
+  // The controls are disabled until the draft is read, and a disabled input cannot take focus on mount.
+  useEffect(() => { if (draftReady) titleInput.current?.focus(); }, [draftReady]);
   const [notice, setNotice] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -304,7 +307,7 @@ export function NewIssueForm() {
                 }
                 required
                 maxLength={500}
-                autoFocus
+                ref={titleInput}
               />
             </label>
             <label>
