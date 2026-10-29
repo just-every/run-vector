@@ -47,6 +47,11 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  expect((await redirect('ENG-123')).status).toBe(404);expect(await search(url)).toEqual([]);
  const disabledDelivery=crypto.randomUUID();expect((await send(pr(181),disabledDelivery)).status).toBe(200);expect(await read()).toEqual(before);
  expect((await f.call('/data/aliases/prefixes/ENG','PATCH',{active:true})).status).toBe(200);
+ const auditResponse=await f.call('/settings/audit?action=data.alias_prefix_changed');expect(auditResponse.status).toBe(200);
+ const prefixAudit=await auditResponse.json() as {entries:{id:string;actorKind:string;actorName:string;subjectRef:string}[]};
+ expect(prefixAudit.entries).toHaveLength(2);expect(prefixAudit.entries.every(entry=>entry.actorKind==='person'&&entry.actorName==='Owner')).toBe(true);
+ expect(prefixAudit.entries[0].subjectRef).toBe(prefixAudit.entries[1].subjectRef);
+
  expect((await send(pr(181),disabledDelivery)).status).toBe(200);expect(await read()).toEqual(before);
  const delivery=crypto.randomUUID();expect((await send(pr(182),delivery)).status).toBe(200);
  const completed=await read();expect(completed.status.id).toBe(done.id);expect(completed.version).toBe(before.version+1);
@@ -70,6 +75,7 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  const prefixBefore=(await env.DB.prepare('SELECT * FROM issue_alias_prefixes ORDER BY prefix').all()).results;
  expect((await request('/api/data/aliases/prefixes/ENG','PATCH',{active:false},memberCookie)).status).toBe(403);
  expect((await env.DB.prepare('SELECT * FROM issue_alias_prefixes ORDER BY prefix').all()).results).toEqual(prefixBefore);
+ expect((await (await f.call('/settings/audit?action=data.alias_prefix_changed')).json() as typeof prefixAudit).entries).toEqual(prefixAudit.entries);
  // Current privacy, membership withdrawal and revoked sessions fence bookmarks and search.
  expect((await f.call('/settings/teams/'+f.team.id+'/privacy','PUT',{isPrivate:true})).status).toBe(200);
  expect((await redirect('ENG-123',memberCookie)).status).toBe(404);expect(await search(url,memberCookie)).toEqual([]);
