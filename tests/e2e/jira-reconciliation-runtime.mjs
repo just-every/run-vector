@@ -9,6 +9,7 @@ import {startDataUiInstallation} from './data-ui-installation.mjs';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {generateJiraFixture} from '../fixtures/import/jira/generate.mjs';
 import {prepareJiraNativeRecords} from './jira-native-setup.mjs';
+import {exerciseMappedReconciliation} from './mapped-reconciliation-journey.mjs';
 const execute=promisify(execFile);
 
 export async function runReconciliationJourney(exercise) {
@@ -36,6 +37,7 @@ export async function runReconciliationJourney(exercise) {
    terminalReport.csv=await readFile(csv,'utf8');return JSON.parse(stdout.trim());
   };
   await exercise({page,runtime:installation.runtime,native,directory,proof,terminalReport});
+  await exerciseMappedReconciliation({page,runtime:installation.runtime,native,terminalReport,directory,proof});
   assert.equal(proof.externalRequests,0,'No provider or attachment requests');
   proof.passed=true;
  } catch(error) {

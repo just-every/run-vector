@@ -7157,7 +7157,7 @@
       "executable": false
     },
     "tests/e2e/jira-reconciliation-runtime.mjs": {
-      "sha256": "2722fe45db9326219b0d139fece1afac7daed59736d2b3872d897dcdc82d2ffe",
+      "sha256": "d7d89d2e2ec1bc9dd80de10c971ddaa3c00d3c406b8c6235dab5676a5c3cf465",
       "executable": false
     },
     "tests/e2e/jira-review-checks.mjs": {
@@ -7174,6 +7174,10 @@
     },
     "tests/e2e/local-d1-write.mjs": {
       "sha256": "31d830eda6226a8ce41696f99848f78c84d5e915a84854c8f9379c4118eab8dc",
+      "executable": false
+    },
+    "tests/e2e/mapped-reconciliation-journey.mjs": {
+      "sha256": "fa8b1385db3b28ae975d41c96b6764706bda991077796dd3cd043ce043d9f268",
       "executable": false
     },
     "tests/e2e/mutation-refresh-runtime.mjs": {
