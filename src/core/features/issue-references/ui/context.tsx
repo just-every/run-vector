@@ -10,6 +10,10 @@ const schema = z.object({ references: z.array(z.object({
 const Context = createContext<readonly IssueReference[]>([]);
 export const useIssueReferences = () => useContext(Context);
 
+export function DocumentIssueReferences({references,children}:{references:readonly IssueReference[];children:ReactNode}){
+  return <Context.Provider value={references}>{children}</Context.Provider>;
+}
+
 export function IssueReferencesProvider({ identifier, revision, children }: {
   identifier: string; revision: number; children: ReactNode;
 }) {
