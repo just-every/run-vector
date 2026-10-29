@@ -652,6 +652,12 @@
       "name": "0107_issue_start_date.sql",
       "sha256": "e5437ba35933e55715b6673a61cbfa12c444033bcd756f8512366687deeea84e",
       "sql": "ALTER TABLE issues ADD COLUMN start_date TEXT;\n\nCREATE INDEX issues_start_date ON issues(start_date) WHERE start_date IS NOT NULL;\n\nCREATE TRIGGER issues_start_date_insert BEFORE INSERT ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nCREATE TRIGGER issues_start_date_update BEFORE UPDATE OF start_date,due_date ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nALTER TABLE project_template_issues ADD COLUMN start_offset_days INTEGER;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0108_error_connections.sql",
+      "sha256": "145331217d8d5753f7e171d2e6339b14fbc06f263e12bc799d2c5105034b0e99",
+      "sql": "-- Provider profiles and replay history are portable; credentials use the excluded secret store.\nCREATE TABLE vector_error_connections (\n source_id TEXT PRIMARY KEY REFERENCES vector_integration_sources(id),\n provider TEXT NOT NULL CHECK(provider IN ('sentry','datadog')),\n regression_rule TEXT NOT NULL CHECK(regression_rule IN ('reopen','comment','ignore')),\n actor_id TEXT NOT NULL REFERENCES operators(id),\n UNIQUE(source_id,provider)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

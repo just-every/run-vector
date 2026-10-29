@@ -69,7 +69,9 @@ error link are retained when supplied by the provider.
 For Sentry, copy the generated webhook URL into an internal integration, grant
 Issue & Event read and write, subscribe to Issue events, then paste its token and
 client secret. Vector verifies the raw body's Sentry signature and retains the
-request ID as a content-bound replay receipt. Resolve the native issue through
+request ID as a content-bound replay receipt. Sentry issue webhooks omit release
+metadata; Vector reads the latest event through the integration token at Sentry's
+fixed API endpoint. Accepted replays reuse their receipt without another read. Resolve the native issue through
 its normal intake and completion flow, then use Resolve linked Sentry issue with
 its provider record ID. This explicit administrator action sends only the
 resolved status to the fixed Sentry API endpoint; unknown results require
@@ -85,7 +87,7 @@ its custom header; it does not supply Sentry's body signature.
 
 Regression rules retain evidence alone, reopen Completed work, or add a comment.
 Canceled and duplicate work stays terminal. A replay never repeats a move or
-comment; evidence, regression effects and receipt commit together. Revoking a
+comment, including a captured signed body with a different request ID; evidence, regression effects and receipt commit together. Revoking a
 connection rejects new and replayed deliveries. Deleting the native issue keeps
 anonymous replay guards and refuses resurrection. Archives retain safe connection
 profiles and history, exclude encrypted credentials, and require fresh credential

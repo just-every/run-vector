@@ -8,14 +8,15 @@ export async function exerciseErrorProviders(f:Awaited<ReturnType<typeof setupIn
  let registered:any;
  const network=vi.spyOn(globalThis,'fetch'),calls:{url:string;body:any;headers:Headers}[]=[];
  network.mockImplementation(async(input,init)=>{
-  const url=String(input),body=JSON.parse(String(init?.body)),headers=new Headers(init?.headers);expect(init?.redirect).toBe('manual');calls.push({url,body,headers});
+  const url=String(input),body=JSON.parse(String(init?.body??'{}')),headers=new Headers(init?.headers);expect(init?.redirect).toBe('manual');calls.push({url,body,headers});
+  if(/^https:\/\/sentry\.io\/api\/0\/issues\/[0-9]+\/events\/latest\/$/.test(url)){expect(init?.method).toBe('GET');expect(headers.get('Authorization')).toBe('Bearer '+token);return Response.json({release:{version:'synthetic-vector-8103'}});}
   if(url==='https://sentry.io/api/0/issues/8101/'){expect(init?.method).toBe('PUT');expect(headers.get('Authorization')).toBe('Bearer '+token);expect(body).toEqual({status:'resolved'});return Response.json({status:'resolved'});}
   if(url.startsWith('https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks')){expect(headers.get('DD-API-KEY')).toBe(token);expect(headers.get('DD-APPLICATION-KEY')).toBe(secret);registered=body;return Response.json({});}
   throw Error('Unexpected error-provider request');
  });
  try{
  const connection=await read(await f.call('/settings/integrations/errors','POST',{provider:'sentry',teamId:team.id,regressionRule:'reopen',token,secret}),201);
- const payload=(action='created',substatus='ongoing')=>({action,data:{issue:{id:'8101',title:'Checkout error',permalink:'https://sentry.io/organizations/synthetic-vector/issues/8101/',count:'17',userCount:4,lastSeen:'2026-10-28T00:00:00Z',release:{version:'synthetic-vector-8103'},substatus,metadata:{value:'Checkout stack trace'}}}});
+ const payload=(action='created',substatus='ongoing')=>({action,data:{issue:{id:'8101',title:'Checkout error',permalink:'https://sentry.io/organizations/synthetic-vector/issues/8101/',count:'17',userCount:4,lastSeen:'2026-10-28T00:00:00Z',substatus,metadata:{value:'Checkout stack trace'}}}});
  const send=async(value:unknown,delivery:string,tamper=false)=>{
   const body=JSON.stringify(value),key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']),signature=Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(body))),byte=>byte.toString(16).padStart(2,'0')).join('');
   return f.app.request(connection.receiver,{method:'POST',headers:{'Content-Type':'application/json','Sentry-Hook-Signature':signature,'Sentry-Hook-Resource':'issue','Request-ID':delivery},body:tamper?body+' ':body},bindings);
@@ -39,9 +40,11 @@ export async function exerciseErrorProviders(f:Awaited<ReturnType<typeof setupIn
  await read(await send(payload('unresolved','regressed'),'synthetic-vector-8105'));
  const reopened=await detail();expect(reopened.status.category).toBe('started');expect(reopened.completedAt).toBeNull();expect(reopened.activity.filter((row:any)=>row.nextValue?.automation==='error_regression')).toHaveLength(1);
  f.restart();expect(await read(await send(payload('unresolved','regressed'),'synthetic-vector-8105'))).toMatchObject({reused:true});expect(await detail()).toEqual(reopened);
+ expect(await read(await send(payload('unresolved','regressed'),'synthetic-vector-8120'))).toMatchObject({reused:true});expect(await detail()).toEqual(reopened);
  expect((await send({...payload('unresolved','regressed'),action:'created'},'synthetic-vector-8105')).status).toBe(409);
  await read(await f.call('/settings/integrations/errors','POST',{provider:'sentry',teamId:team.id,regressionRule:'comment',token,secret}),201);
- await read(await send(payload('unresolved','regressed'),'synthetic-vector-8106'));await read(await send(payload('unresolved','regressed'),'synthetic-vector-8106'));
+ const commentPayload=payload('unresolved','regressed');commentPayload.data.issue.lastSeen='2026-10-28T00:01:00Z';
+ await read(await send(commentPayload,'synthetic-vector-8106'));await read(await send(commentPayload,'synthetic-vector-8106'));await read(await send(commentPayload,'synthetic-vector-8123'));
  const discussion=await read(await f.call(path+'/discussion'));expect(discussion.comments.filter((row:any)=>row.body==='Regression reported by Sentry.')).toHaveLength(1);
  const config=await read(await f.call('/settings/integrations/errors'));expect(JSON.stringify(config)).not.toContain(secret);expect(JSON.stringify(config)).not.toContain(token);
  // Link an existing native issue before its first provider event.
@@ -69,6 +72,6 @@ export async function exerciseErrorProviders(f:Awaited<ReturnType<typeof setupIn
  await read(await ddSend({...event,eventId:'synthetic-vector-8117'},rotatedSecret));
  expect((await read(await f.call('/issues/'+ddIssue.identifier+'/discussion'))).comments).toHaveLength(1);
 
- expect(calls.filter(row=>row.url.startsWith('https://sentry.io'))).toHaveLength(1);
+ expect(calls.filter(row=>row.url==='https://sentry.io/api/0/issues/8101/')).toHaveLength(1);
  }finally{network.mockRestore();}
 }

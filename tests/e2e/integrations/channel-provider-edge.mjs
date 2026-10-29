@@ -4,6 +4,7 @@ export const slackAppFixture={appId:'synthetic-vector-32010',clientId:'synthetic
 export async function channelProviderEdge(request){
  const url=new URL(request.url);
  if(url.hostname==='api.sendgrid.com'&&url.pathname==='/v3/mail/send'){appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sendgrid',body:await request.json()})+'\n');return new Response(null,{status:202,headers:{'X-Message-Id':'synthetic-vector-'+crypto.randomUUID()}});}
+ if(url.hostname==='sentry.io'&&/^\/api\/0\/issues\/[0-9]+\/events\/latest\/$/.test(url.pathname)&&request.method==='GET'){if(request.headers.get('Authorization')!=='Bearer synthetic-vector-8201')return new Response(null,{status:401});return Response.json({release:{version:'synthetic-vector-8203'}});}
  if(url.hostname==='sentry.io'&&/^\/api\/0\/issues\/[0-9]+\/$/.test(url.pathname)&&request.method==='PUT'){
   if(request.headers.get('Authorization')!=='Bearer synthetic-vector-8201')return new Response(null,{status:401});
   const body=await request.json();appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sentry.resolve',record:url.pathname.split('/')[4],body})+'\n');return Response.json({status:'resolved'});

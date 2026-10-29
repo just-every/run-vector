@@ -224,7 +224,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const eventBody=JSON.stringify({action:'created',data:{issue:{id:'8135',title:'Restored error connection',permalink:'https://sentry.io/organizations/synthetic-vector/issues/8135/',lastSeen:'2026-10-28T00:00:00Z'}}});
  const sign=async(secret:string)=>{const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(eventBody))),byte=>byte.toString(16).padStart(2,'0')).join('');};
  const restoredEvent=async(secret:string)=>createServerApp().request(targetBindings.APP_ORIGIN+new URL(errorConnection.receiver).pathname,{method:'POST',headers:{'Sentry-Hook-Signature':await sign(secret),'Sentry-Hook-Resource':'issue','Request-ID':'synthetic-vector-8135'},body:eventBody},targetBindings);
- expect((await restoredEvent(errorInput.secret)).status).toBe(401);expect((await restoredEvent(freshError.secret)).status).toBe(200);
+ expect((await restoredEvent(errorInput.secret)).status).toBe(401);
+ const {vi}=await import('vitest'),eventEdge=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{expect(String(input)).toBe('https://sentry.io/api/0/issues/8135/events/latest/');expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+freshError.token);return Response.json({release:'synthetic-vector-8136'});});
+ try{expect((await restoredEvent(freshError.secret)).status).toBe(200);}finally{eventEdge.mockRestore();}
 
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]},historical)).status).toBe(409);
  expect((await targetCall('/api/data/restore/operators/'+f.peer,'POST',{},historical)).status).toBe(200);
