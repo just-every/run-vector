@@ -15,7 +15,7 @@ const bodySchema=versionSchema.extend({body:z.string().trim().min(1).max(100000)
 type Row={id:string;issueId:string;issueIdentifier:string;body:string;version:number;authorId:string;authorName:string;createdAt:string;editedAt:string|null};
 async function read(db:D1Database,actor:string,filters:{id?:string;issue?:string;createdFrom?:string;createdTo?:string}){
  const owner=await settingsActor(db,actor);
- const result=await db.prepare(`SELECT c.id,c.issue_id AS issueId,i.identifier AS issueIdentifier,c.body,${commentVersionSql} AS version,c.actor_operator_id AS authorId,COALESCE(c.imported_author_name,o.name) AS authorName,c.created_at AS createdAt,c.edited_at AS editedAt
+ const result=await db.prepare(`SELECT c.id,c.issue_id AS issueId,i.identifier AS issueIdentifier,c.body,${commentVersionSql} AS version,c.actor_operator_id AS authorId,COALESCE((SELECT prepared_by FROM vector_agent_comment_attribution WHERE comment_id=c.id),c.imported_author_name,o.name) AS authorName,c.created_at AS createdAt,c.edited_at AS editedAt
  FROM issue_comments c JOIN issues i ON i.id=c.issue_id JOIN teams t ON t.id=i.team_id JOIN operators o ON o.id=c.actor_operator_id
  WHERE t.workspace_id=? AND c.deleted_at IS NULL AND (? IS NULL OR c.id=?) AND (? IS NULL OR i.identifier=?) AND (? IS NULL OR c.created_at>=?) AND (? IS NULL OR c.created_at<=?) ORDER BY c.created_at,c.id`).bind(owner.workspace_id,filters.id??null,filters.id??null,filters.issue??null,filters.issue??null,filters.createdFrom??null,filters.createdFrom??null,filters.createdTo??null,filters.createdTo??null).all<Row>();
  for(const identifier of new Set(result.results.map(row=>row.issueIdentifier)))await requireIssueAccess(db,identifier,actor);

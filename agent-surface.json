@@ -1,0 +1,7827 @@
+{
+  "schema": "rer-agent-surface/1",
+  "seed": "vector",
+  "specialist": "software delivery",
+  "tools": [
+    {
+      "name": "vector.issues.list",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "OPS-001",
+        "VIEW-001"
+      ]
+    },
+    {
+      "name": "vector.issues.read",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "OPS-001",
+        "ISSUE-001"
+      ]
+    },
+    {
+      "name": "vector.projects.list",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "PROJ-001"
+      ]
+    },
+    {
+      "name": "vector.projects.read",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "PROJ-001"
+      ]
+    },
+    {
+      "name": "vector.metadata.read",
+      "scope": "metadata:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "OPS-001"
+      ]
+    },
+    {
+      "name": "vector.cycles.read",
+      "scope": "cycles:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "CYCLE-001"
+      ]
+    },
+    {
+      "name": "vector.issue.creation",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-001",
+        "ISSUE-002"
+      ]
+    },
+    {
+      "name": "vector.issue.stable_identifiers",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-002"
+      ]
+    },
+    {
+      "name": "vector.issue.concurrent_edits",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-001",
+        "ISSUE-006",
+        "ISSUE-013",
+        "ISSUE-025",
+        "ISSUE-026"
+      ]
+    },
+    {
+      "name": "vector.issue.priority",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-003"
+      ]
+    },
+    {
+      "name": "vector.issue.status_transitions",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-004"
+      ]
+    },
+    {
+      "name": "vector.issue.assignment",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-005"
+      ]
+    },
+    {
+      "name": "vector.issue.estimates",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-011"
+      ]
+    },
+    {
+      "name": "vector.issue.labels",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.proj.project_membership",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-003"
+      ]
+    },
+    {
+      "name": "vector.cycle.commitment",
+      "scope": "cycles:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-002"
+      ]
+    },
+    {
+      "name": "vector.issue.set_due_date",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-001",
+        "CURR-003",
+        "CURR-004"
+      ]
+    },
+    {
+      "name": "vector.issue.activity_history",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-007"
+      ]
+    },
+    {
+      "name": "vector.intake.intake_creation",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-001",
+        "INTAKE-003"
+      ]
+    },
+    {
+      "name": "vector.intake.evidence_revisions",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-003",
+        "INTAKE-008"
+      ]
+    },
+    {
+      "name": "vector.intake.inspectable_assessment",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-004"
+      ]
+    },
+    {
+      "name": "vector.intake.decision_policy",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-010"
+      ]
+    },
+    {
+      "name": "vector.intake.accept",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-005",
+        "INTAKE-010"
+      ]
+    },
+    {
+      "name": "vector.intake.defer",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-006",
+        "INTAKE-010"
+      ]
+    },
+    {
+      "name": "vector.intake.decline",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-007",
+        "INTAKE-010"
+      ]
+    },
+    {
+      "name": "vector.intake.return",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INTAKE-006"
+      ]
+    },
+    {
+      "name": "vector.rel.dependencies",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-001",
+        "REL-002"
+      ]
+    },
+    {
+      "name": "vector.rel.remove_dependency",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-001",
+        "REL-002"
+      ]
+    },
+    {
+      "name": "vector.rel.related_issues",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-007"
+      ]
+    },
+    {
+      "name": "vector.rel.remove_related_issue",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-007"
+      ]
+    },
+    {
+      "name": "vector.rel.duplicate_decision",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-003",
+        "REL-004"
+      ]
+    },
+    {
+      "name": "vector.rel.undo_duplicate",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-005"
+      ]
+    },
+    {
+      "name": "vector.rel.canonical_duplicates",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-004"
+      ]
+    },
+    {
+      "name": "vector.rel.blocked_state",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-002"
+      ]
+    },
+    {
+      "name": "vector.rel.parent_and_child",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-006"
+      ]
+    },
+    {
+      "name": "vector.issue.sub_issue_progress",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-019",
+        "REL-006"
+      ]
+    },
+    {
+      "name": "vector.issue.create_sub_issue",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-019",
+        "REL-006"
+      ]
+    },
+    {
+      "name": "vector.issue.reorder_sub_issues",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-019",
+        "REL-006"
+      ]
+    },
+    {
+      "name": "vector.issue.read_sub_issue_rule",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-019"
+      ]
+    },
+    {
+      "name": "vector.issue.set_sub_issue_rule",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-019"
+      ]
+    },
+    {
+      "name": "vector.issue.read_discussion",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-008",
+        "ISSUE-009"
+      ]
+    },
+    {
+      "name": "vector.issue.comments_and_safe_comment_removal",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-008",
+        "ISSUE-013"
+      ]
+    },
+    {
+      "name": "vector.issue.edit_comment",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-008"
+      ]
+    },
+    {
+      "name": "vector.issue.remove_comment",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "ISSUE-008"
+      ]
+    },
+    {
+      "name": "vector.issue.discussion_threads_and_resolution",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-008"
+      ]
+    },
+    {
+      "name": "vector.issue.read_reactions",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-017"
+      ]
+    },
+    {
+      "name": "vector.issue.reactions",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-017"
+      ]
+    },
+    {
+      "name": "vector.issue.remove_reaction",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-017"
+      ]
+    },
+    {
+      "name": "vector.issue.read_links",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-009"
+      ]
+    },
+    {
+      "name": "vector.issue.attachments_and_links",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-009"
+      ]
+    },
+    {
+      "name": "vector.issue.remove_link",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "ISSUE-009"
+      ]
+    },
+    {
+      "name": "vector.issue.description_history",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-018"
+      ]
+    },
+    {
+      "name": "vector.issue.restore_description",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-018"
+      ]
+    },
+    {
+      "name": "vector.issue.checklists",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-025"
+      ]
+    },
+    {
+      "name": "vector.issue.tick_comment_checklist",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-025"
+      ]
+    },
+    {
+      "name": "vector.issue.issue_references_and_backlinks",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-027"
+      ]
+    },
+    {
+      "name": "vector.issue.remove_file",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "ISSUE-009"
+      ]
+    },
+    {
+      "name": "vector.issue.moving_teams",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-012"
+      ]
+    },
+    {
+      "name": "vector.issue.copy_issue",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-023"
+      ]
+    },
+    {
+      "name": "vector.issue.bulk_edit",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-006",
+        "VIEW-004"
+      ]
+    },
+    {
+      "name": "vector.issue.bulk_move_teams",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-012",
+        "VIEW-004"
+      ]
+    },
+    {
+      "name": "vector.issue.bulk_duplicate",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REL-003",
+        "REL-004",
+        "REL-005",
+        "VIEW-004"
+      ]
+    },
+    {
+      "name": "vector.issue.read_manual_order",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-001"
+      ]
+    },
+    {
+      "name": "vector.issue.reorder",
+      "scope": "issues:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-001"
+      ]
+    },
+    {
+      "name": "vector.proj.project_record",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-001"
+      ]
+    },
+    {
+      "name": "vector.proj.project_record.edit",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-001",
+        "PROJ-002",
+        "PROJ-009"
+      ]
+    },
+    {
+      "name": "vector.proj.manual_lifecycle",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-002"
+      ]
+    },
+    {
+      "name": "vector.proj.project_archiving",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-009"
+      ]
+    },
+    {
+      "name": "vector.proj.project_record.delete",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "PROJ-001"
+      ]
+    },
+    {
+      "name": "vector.proj.milestones",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-011"
+      ]
+    },
+    {
+      "name": "vector.proj.milestones.edit",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-011"
+      ]
+    },
+    {
+      "name": "vector.proj.milestones.order",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-011"
+      ]
+    },
+    {
+      "name": "vector.proj.milestones.delete",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "PROJ-011"
+      ]
+    },
+    {
+      "name": "vector.proj.progress",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-004"
+      ]
+    },
+    {
+      "name": "vector.proj.health",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-005"
+      ]
+    },
+    {
+      "name": "vector.proj.risk_explanation",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-006"
+      ]
+    },
+    {
+      "name": "vector.proj.historical_truth",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-008"
+      ]
+    },
+    {
+      "name": "vector.proj.portfolio",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-007"
+      ]
+    },
+    {
+      "name": "vector.team.team_identity",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-001"
+      ]
+    },
+    {
+      "name": "vector.team.team_archiving",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-003"
+      ]
+    },
+    {
+      "name": "vector.team.team_settings",
+      "scope": "teams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-005"
+      ]
+    },
+    {
+      "name": "vector.team.team_workflow",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-002"
+      ]
+    },
+    {
+      "name": "vector.team.team_workflow.rename",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-002"
+      ]
+    },
+    {
+      "name": "vector.team.team_workflow.order",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-002"
+      ]
+    },
+    {
+      "name": "vector.team.status_removal",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "TEAM-004"
+      ]
+    },
+    {
+      "name": "vector.issue.labels.create",
+      "scope": "labels:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.issue.labels.edit",
+      "scope": "labels:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.issue.labels.merge",
+      "scope": "labels:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.issue.labels.delete",
+      "scope": "labels:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.cycles.next_window",
+      "scope": "cycles:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-001"
+      ]
+    },
+    {
+      "name": "vector.cycle.time_box",
+      "scope": "cycles:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-001"
+      ]
+    },
+    {
+      "name": "vector.cycle.automatic_cycle_schedule",
+      "scope": "cycles:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-007"
+      ]
+    },
+    {
+      "name": "vector.cycle.automatic_cycle_membership",
+      "scope": "teams:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-008"
+      ]
+    },
+    {
+      "name": "vector.cycle.progress_and_capacity",
+      "scope": "cycles:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-003"
+      ]
+    },
+    {
+      "name": "vector.cycle.closure_snapshot",
+      "scope": "cycles:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-005"
+      ]
+    },
+    {
+      "name": "vector.cycle.missing_next_cycle",
+      "scope": "cycles:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CYCLE-006"
+      ]
+    },
+    {
+      "name": "vector.init.initiatives",
+      "scope": "initiatives:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INIT-001"
+      ]
+    },
+    {
+      "name": "vector.init.initiatives.edit",
+      "scope": "initiatives:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INIT-001"
+      ]
+    },
+    {
+      "name": "vector.init.initiatives.projects",
+      "scope": "initiatives:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INIT-001",
+        "INIT-002"
+      ]
+    },
+    {
+      "name": "vector.init.initiatives.list",
+      "scope": "initiatives:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INIT-001"
+      ]
+    },
+    {
+      "name": "vector.init.initiative_roll_up",
+      "scope": "initiatives:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "INIT-002"
+      ]
+    },
+    {
+      "name": "vector.release.releases",
+      "scope": "releases:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RELEASE-001"
+      ]
+    },
+    {
+      "name": "vector.release.releases.edit",
+      "scope": "releases:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RELEASE-001"
+      ]
+    },
+    {
+      "name": "vector.release.releases.scope",
+      "scope": "releases:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RELEASE-001"
+      ]
+    },
+    {
+      "name": "vector.release.releases.list",
+      "scope": "releases:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RELEASE-001"
+      ]
+    },
+    {
+      "name": "vector.release.releases.read",
+      "scope": "releases:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "RELEASE-001"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs",
+      "scope": "documents:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.edit",
+      "scope": "documents:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.comment",
+      "scope": "documents:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.link",
+      "scope": "documents:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.unlink",
+      "scope": "documents:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.list",
+      "scope": "documents:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.read",
+      "scope": "documents:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.revisions",
+      "scope": "documents:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.comments",
+      "scope": "documents:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_documents_and_specs.specification",
+      "scope": "documents:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-013"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates.edit",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates.capture",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates.apply",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates.delete",
+      "scope": "projects:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates.list",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.proj.project_templates.read",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-012"
+      ]
+    },
+    {
+      "name": "vector.curr.disjoint_stream",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-001"
+      ]
+    },
+    {
+      "name": "vector.curr.needs_decision",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-002"
+      ]
+    },
+    {
+      "name": "vector.curr.now",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-003"
+      ]
+    },
+    {
+      "name": "vector.curr.next",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-004"
+      ]
+    },
+    {
+      "name": "vector.curr.recently_done",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-005"
+      ]
+    },
+    {
+      "name": "vector.curr.explainable_attention",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-006"
+      ]
+    },
+    {
+      "name": "vector.curr.ranking",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-007"
+      ]
+    },
+    {
+      "name": "vector.curr.freshness",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-008"
+      ]
+    },
+    {
+      "name": "vector.curr.stream_controls",
+      "scope": "streams:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "CURR-009"
+      ]
+    },
+    {
+      "name": "vector.work.personal_queue",
+      "scope": "work:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "WORK-001"
+      ]
+    },
+    {
+      "name": "vector.work.personal_defaults",
+      "scope": "work:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "WORK-002"
+      ]
+    },
+    {
+      "name": "vector.work.cycle_context",
+      "scope": "work:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "WORK-003"
+      ]
+    },
+    {
+      "name": "vector.work.created",
+      "scope": "work:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "WORK-004"
+      ]
+    },
+    {
+      "name": "vector.work.subscribed",
+      "scope": "work:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "WORK-004"
+      ]
+    },
+    {
+      "name": "vector.work.activity",
+      "scope": "work:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "WORK-004"
+      ]
+    },
+    {
+      "name": "vector.search.global_search",
+      "scope": "search:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SEARCH-001"
+      ]
+    },
+    {
+      "name": "vector.search.exact_identifier",
+      "scope": "search:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SEARCH-002"
+      ]
+    },
+    {
+      "name": "vector.search.index_freshness",
+      "scope": "search:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SEARCH-003"
+      ]
+    },
+    {
+      "name": "vector.search.options",
+      "scope": "search:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SEARCH-001",
+        "SEARCH-004"
+      ]
+    },
+    {
+      "name": "vector.view.saved_views.delete",
+      "scope": "views:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
+      "name": "vector.view.issue_controls",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-001"
+      ]
+    },
+    {
+      "name": "vector.search.advanced_filters",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "SEARCH-004"
+      ]
+    },
+    {
+      "name": "vector.view.team_board",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-005"
+      ]
+    },
+    {
+      "name": "vector.view.workspace_wide_views",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-009"
+      ]
+    },
+    {
+      "name": "vector.view.saved_views",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
+      "name": "vector.view.saved_views.read",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
+      "name": "vector.view.saved_views.create",
+      "scope": "views:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
+      "name": "vector.view.saved_views.edit",
+      "scope": "views:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
+      "name": "vector.view.saved_views.duplicate",
+      "scope": "views:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-002"
+      ]
+    },
+    {
+      "name": "vector.view.control_persistence",
+      "scope": "preferences:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-003"
+      ]
+    },
+    {
+      "name": "vector.view.control_persistence.save",
+      "scope": "preferences:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-003"
+      ]
+    },
+    {
+      "name": "vector.view.control_persistence.reset",
+      "scope": "preferences:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-003"
+      ]
+    },
+    {
+      "name": "vector.view.timeline_and_calendar_views",
+      "scope": "views:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-007"
+      ]
+    },
+    {
+      "name": "vector.view.appearance",
+      "scope": "preferences:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-011"
+      ]
+    },
+    {
+      "name": "vector.view.appearance.save",
+      "scope": "preferences:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "VIEW-011"
+      ]
+    },
+    {
+      "name": "vector.notify.inbox_events",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-001"
+      ]
+    },
+    {
+      "name": "vector.notify.inbox_events.read",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-001"
+      ]
+    },
+    {
+      "name": "vector.notify.inbox_events.count",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-001"
+      ]
+    },
+    {
+      "name": "vector.notify.followers",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-002"
+      ]
+    },
+    {
+      "name": "vector.notify.no_self_notification",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-003"
+      ]
+    },
+    {
+      "name": "vector.notify.read_and_mute",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-002",
+        "NOTIFY-004"
+      ]
+    },
+    {
+      "name": "vector.notify.read_and_mute.read",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-004"
+      ]
+    },
+    {
+      "name": "vector.notify.read_and_mute.read_all",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-004"
+      ]
+    },
+    {
+      "name": "vector.notify.due_reminders",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-005",
+        "NOTIFY-008"
+      ]
+    },
+    {
+      "name": "vector.notify.assignment_and_mention_email",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-006"
+      ]
+    },
+    {
+      "name": "vector.notify.assignment_and_mention_email.save",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-004",
+        "NOTIFY-006"
+      ]
+    },
+    {
+      "name": "vector.notify.snooze_and_reminders",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-008"
+      ]
+    },
+    {
+      "name": "vector.notify.snooze_and_reminders.cancel",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-008"
+      ]
+    },
+    {
+      "name": "vector.notify.snooze_and_reminders.snooze",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-008"
+      ]
+    },
+    {
+      "name": "vector.notify.snooze_and_reminders.unsnooze",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-008"
+      ]
+    },
+    {
+      "name": "vector.notify.channels_and_digests",
+      "scope": "notifications:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-007"
+      ]
+    },
+    {
+      "name": "vector.notify.channels_and_digests.save",
+      "scope": "notifications:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-007"
+      ]
+    },
+    {
+      "name": "vector.notify.subscriptions",
+      "scope": "subscriptions:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-009"
+      ]
+    },
+    {
+      "name": "vector.notify.subscriptions.read",
+      "scope": "subscriptions:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-009"
+      ]
+    },
+    {
+      "name": "vector.notify.subscriptions.subscribe",
+      "scope": "subscriptions:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-009"
+      ]
+    },
+    {
+      "name": "vector.notify.subscriptions.unsubscribe",
+      "scope": "subscriptions:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-009"
+      ]
+    },
+    {
+      "name": "vector.notify.personal_time_zone_and_working_hours",
+      "scope": "preferences:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-010"
+      ]
+    },
+    {
+      "name": "vector.notify.personal_time_zone_and_working_hours.save",
+      "scope": "preferences:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "NOTIFY-010"
+      ]
+    },
+    {
+      "name": "vector.report.dashboards.delete",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "destructive"
+      ],
+      "clauses": [
+        "REPORT-003"
+      ]
+    },
+    {
+      "name": "vector.report.insights",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-001"
+      ]
+    },
+    {
+      "name": "vector.report.cycle_and_project_charts",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-002"
+      ]
+    },
+    {
+      "name": "vector.report.project_completion_forecast",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-002"
+      ]
+    },
+    {
+      "name": "vector.report.dashboards",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-003"
+      ]
+    },
+    {
+      "name": "vector.report.dashboards.read",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-003"
+      ]
+    },
+    {
+      "name": "vector.report.dashboards.create",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-003"
+      ]
+    },
+    {
+      "name": "vector.report.dashboards.edit",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-003"
+      ]
+    },
+    {
+      "name": "vector.report.workload",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-004"
+      ]
+    },
+    {
+      "name": "vector.report.workload.personal_capacity",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-004"
+      ]
+    },
+    {
+      "name": "vector.report.workload.set_capacity",
+      "scope": "reports:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-004"
+      ]
+    },
+    {
+      "name": "vector.report.warehouse_and_spreadsheet_export",
+      "scope": "reports:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "REPORT-005"
+      ]
+    },
+    {
+      "name": "vector.role.audit_log",
+      "scope": "audit:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-005"
+      ]
+    },
+    {
+      "name": "vector.role.audit_log.export",
+      "scope": "audit:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-005"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "TEAM-007"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.grants",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-009"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.join",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "TEAM-007"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.leave",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "TEAM-007"
+      ],
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "vector.role.team_membership.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-003",
+        "ROLE-013"
+      ]
+    },
+    {
+      "name": "vector.team.join_permissions.request",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "TEAM-007",
+        "ROLE-002"
+      ]
+    },
+    {
+      "name": "vector.team.join_permissions.decide",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "TEAM-007",
+        "ROLE-002"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.member_grants",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-009"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.remove",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-003",
+        "ROLE-013"
+      ],
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          },
+          "operatorId": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          }
+        },
+        "required": [
+          "id",
+          "operatorId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "vector.role.team_permissions.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "ROLE-009",
+        "ROLE-007"
+      ]
+    },
+    {
+      "name": "vector.team.join_permissions.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "TEAM-007",
+        "ROLE-002"
+      ]
+    },
+    {
+      "name": "vector.role.private_teams.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "ROLE-002",
+        "OPS-001"
+      ]
+    },
+    {
+      "name": "vector.ops.member_management",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OPS-002",
+        "ROLE-001",
+        "OPS-003"
+      ]
+    },
+    {
+      "name": "vector.ops.member_management.grants",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OPS-002",
+        "ROLE-001",
+        "ROLE-007"
+      ]
+    },
+    {
+      "name": "vector.ops.workspace_time.set",
+      "scope": "settings:write",
+      "readOnly": false,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "OPS-003",
+        "NOTIFY-005"
+      ]
+    },
+    {
+      "name": "vector.ops.member_management.invitation_permission",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "OPS-002",
+        "ROLE-001"
+      ]
+    },
+    {
+      "name": "vector.team.creation_permission.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "TEAM-008"
+      ]
+    },
+    {
+      "name": "vector.issue.labels.creation_permission",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "security"
+      ],
+      "clauses": [
+        "ISSUE-014"
+      ]
+    },
+    {
+      "name": "vector.role.workspace_roles.set",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-001",
+        "ROLE-003",
+        "ROLE-013"
+      ]
+    },
+    {
+      "name": "vector.ops.safe_removal",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access",
+        "destructive"
+      ],
+      "clauses": [
+        "OPS-002",
+        "OPS-004"
+      ],
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "vector.events.list",
+      "scope": "events:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BASE-AGENT-010"
+      ]
+    }
+  ],
+  "resources": [
+    "vector://issues/{identifier}",
+    "vector://projects/{id}",
+    "vector://cycles/{id}",
+    "vector://workspace/planning",
+    "vector://issues/{identifier}/discussion",
+    "vector://issues/{identifier}/description-history",
+    "vector://issues/{identifier}/subissues",
+    "vector://issues/{identifier}/references",
+    "vector://issues/{identifier}/reactions",
+    "vector://documents/{id}",
+    "vector://releases/{id}",
+    "vector://initiatives/{id}",
+    "vector://project-templates/{id}",
+    "vector://teams/{id}",
+    "vector://labels/{id}",
+    "vector://statuses/{id}",
+    "vector://milestones/{id}",
+    "vector://audit/{id}",
+    "vector://views/{id}",
+    "vector://notifications/{id}",
+    "vector://reminders/{id}",
+    "vector://subscriptions/{id}",
+    "vector://dashboards/{id}",
+    "vector://preferences/{id}",
+    "vector://teams/{teamId}/members/{operatorId}"
+  ],
+  "notTools": [
+    {
+      "clauses": [
+        "DATA-007",
+        "DATA-001",
+        "DATA-005"
+      ],
+      "reason": "import-door"
+    },
+    {
+      "clauses": [
+        "SETUP-001"
+      ],
+      "reason": "installation"
+    },
+    {
+      "clauses": [
+        "ROLE-010"
+      ],
+      "reason": "screen"
+    },
+    {
+      "clauses": [
+        "GITHUB-001",
+        "GITHUB-002",
+        "WEBHOOK-001"
+      ],
+      "reason": "connector"
+    },
+    {
+      "clauses": [
+        "ISSUE-009"
+      ],
+      "reason": "device"
+    },
+    {
+      "clauses": [
+        "API-004",
+        "ROLE-010"
+      ],
+      "reason": "screen"
+    }
+  ],
+  "verification": {
+    "owner": {
+      "initializer": "tests/agent-door/initialize-owner.mjs"
+    },
+    "replayAdmission": {
+      "prepare": [
+        "options",
+        "issue-create"
+      ]
+    }
+  },
+  "journey": [
+    {
+      "id": "options",
+      "tool": "vector.metadata.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issues",
+      "tool": "vector.issues.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue",
+      "tool": "vector.issues.read",
+      "args": {
+        "identifier": {
+          "$from": "issues",
+          "pointer": "/issues/0/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirm": true,
+        "classes": [
+          "standard"
+        ],
+        "approved": true
+      }
+    },
+    {
+      "id": "projects",
+      "tool": "vector.projects.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "project",
+      "tool": "vector.projects.read",
+      "args": {
+        "id": {
+          "$from": "projects",
+          "pointer": "/projects/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "cycle",
+      "tool": "vector.cycles.read",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/cycles/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-create",
+      "tool": "vector.issue.creation",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "title": "Investigate a native issue report",
+        "description": "- [ ] Inspect native evidence"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-key",
+      "tool": "vector.issue.stable_identifiers",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-priority",
+      "tool": "vector.issue.priority",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-create",
+            "pointer": "/version"
+          },
+          "priority": "high"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "target": {
+        "kind": "issue",
+        "id": {
+          "$from": "issue-create",
+          "pointer": "/id"
+        }
+      }
+    },
+    {
+      "id": "issue-status",
+      "tool": "vector.issue.status_transitions",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-priority",
+            "pointer": "/version"
+          },
+          "statusId": {
+            "$from": "options",
+            "pointer": "/teams/0/statuses/3/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-assignment",
+      "tool": "vector.issue.assignment",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-status",
+            "pointer": "/version"
+          },
+          "assigneeOperatorId": {
+            "$sponsor": "id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-estimate",
+      "tool": "vector.issue.estimates",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-assignment",
+            "pointer": "/version"
+          },
+          "estimate": 3
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-labels",
+      "tool": "vector.issue.labels",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-estimate",
+            "pointer": "/version"
+          },
+          "labelIds": []
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-project",
+      "tool": "vector.proj.project_membership",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-labels",
+            "pointer": "/version"
+          },
+          "projectId": {
+            "$from": "options",
+            "pointer": "/projects/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-cycle",
+      "tool": "vector.cycle.commitment",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-project",
+            "pointer": "/version"
+          },
+          "cycleId": {
+            "$from": "options",
+            "pointer": "/cycles/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-due",
+      "tool": "vector.issue.set_due_date",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-cycle",
+            "pointer": "/version"
+          },
+          "dueDate": "2030-01-15"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-edit",
+      "tool": "vector.issue.concurrent_edits",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-due",
+            "pointer": "/version"
+          },
+          "title": "Investigate and verify a native issue report"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-history",
+      "tool": "vector.issue.description_history",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-checklist",
+      "tool": "vector.issue.checklists",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-edit",
+            "pointer": "/version"
+          },
+          "index": 0,
+          "text": "Inspect native evidence",
+          "checked": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-restore-description",
+      "tool": "vector.issue.restore_description",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-checklist",
+            "pointer": "/version"
+          },
+          "revisionId": {
+            "$from": "issue-history",
+            "pointer": "/revisions/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-comment",
+      "tool": "vector.issue.comments_and_safe_comment_removal",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "body": "- [ ] Check discussion evidence"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-discussion",
+      "tool": "vector.issue.read_discussion",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-comment-edit",
+      "tool": "vector.issue.edit_comment",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "itemId": {
+          "$from": "issue-comment",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-comment",
+            "pointer": "/version"
+          },
+          "body": "- [ ] Check revised discussion evidence"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-comment-checklist",
+      "tool": "vector.issue.tick_comment_checklist",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "itemId": {
+          "$from": "issue-comment",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedBody": "- [ ] Check revised discussion evidence",
+          "index": 0,
+          "text": "Check revised discussion evidence",
+          "checked": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-thread-resolution",
+      "tool": "vector.issue.discussion_threads_and_resolution",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "itemId": {
+          "$from": "issue-comment",
+          "pointer": "/id"
+        },
+        "input": {
+          "resolved": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-thread-reply",
+      "tool": "vector.issue.comments_and_safe_comment_removal",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "parentId": {
+            "$from": "issue-comment",
+            "pointer": "/id"
+          },
+          "body": "Retained evidence needs another inspection."
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-reaction",
+      "tool": "vector.issue.reactions",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "targetId": {
+            "$from": "issue-comment",
+            "pointer": "/id"
+          },
+          "emoji": "\ud83d\udc40"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "classes": [
+          "destructive"
+        ],
+        "approved": true
+      }
+    },
+    {
+      "id": "issue-reactions-read",
+      "tool": "vector.issue.read_reactions",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-remove-reaction",
+      "tool": "vector.issue.remove_reaction",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "targetId": {
+            "$from": "issue-comment",
+            "pointer": "/id"
+          },
+          "emoji": "\ud83d\udc40"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-link",
+      "tool": "vector.issue.attachments_and_links",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "name": "Evidence reference",
+          "url": "https://example.test/evidence"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-links-read",
+      "tool": "vector.issue.read_links",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-copy",
+      "tool": "vector.issue.copy_issue",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-restore-description",
+            "pointer": "/version"
+          },
+          "includeLinks": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-references",
+      "tool": "vector.issue.issue_references_and_backlinks",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-other",
+      "tool": "vector.issue.creation",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "title": "A second native issue"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-relation-version",
+      "tool": "vector.issue.stable_identifiers",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-dependency",
+      "tool": "vector.rel.dependencies",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-relation-version",
+            "pointer": "/version"
+          },
+          "relatedIdentifier": {
+            "$from": "issue-other",
+            "pointer": "/identifier"
+          },
+          "relatedVersion": {
+            "$from": "issue-other",
+            "pointer": "/version"
+          },
+          "direction": "blocked-by"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-blocked",
+      "tool": "vector.rel.blocked_state",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-remove-dependency",
+      "tool": "vector.rel.remove_dependency",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-dependency",
+            "pointer": "/issue/version"
+          },
+          "relatedIdentifier": {
+            "$from": "issue-other",
+            "pointer": "/identifier"
+          },
+          "relatedVersion": {
+            "$from": "issue-dependency",
+            "pointer": "/relatedIssue/version"
+          },
+          "direction": "blocked-by"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-related",
+      "tool": "vector.rel.related_issues",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-remove-dependency",
+            "pointer": "/issue/version"
+          },
+          "relatedIdentifier": {
+            "$from": "issue-other",
+            "pointer": "/identifier"
+          },
+          "relatedVersion": {
+            "$from": "issue-remove-dependency",
+            "pointer": "/relatedIssue/version"
+          },
+          "direction": "related"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-remove-related",
+      "tool": "vector.rel.remove_related_issue",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-related",
+            "pointer": "/issue/version"
+          },
+          "relatedIdentifier": {
+            "$from": "issue-other",
+            "pointer": "/identifier"
+          },
+          "relatedVersion": {
+            "$from": "issue-related",
+            "pointer": "/relatedIssue/version"
+          },
+          "direction": "related"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-parent",
+      "tool": "vector.rel.parent_and_child",
+      "args": {
+        "identifier": {
+          "$from": "issue-other",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-remove-related",
+            "pointer": "/relatedIssue/version"
+          },
+          "parentIdentifier": {
+            "$from": "issue-create",
+            "pointer": "/identifier"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-unparent",
+      "tool": "vector.rel.parent_and_child",
+      "args": {
+        "identifier": {
+          "$from": "issue-other",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-parent",
+            "pointer": "/version"
+          },
+          "parentIdentifier": null
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-duplicate",
+      "tool": "vector.rel.duplicate_decision",
+      "args": {
+        "identifier": {
+          "$from": "issue-other",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-unparent",
+            "pointer": "/version"
+          },
+          "canonicalIdentifier": {
+            "$from": "issue-create",
+            "pointer": "/identifier"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-duplicates-read",
+      "tool": "vector.rel.canonical_duplicates",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-duplicate-undo",
+      "tool": "vector.rel.undo_duplicate",
+      "args": {
+        "identifier": {
+          "$from": "issue-other",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-duplicate",
+            "pointer": "/version"
+          },
+          "canonicalIdentifier": null
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-before-subissue",
+      "tool": "vector.issue.stable_identifiers",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-subissue-create",
+      "tool": "vector.issue.create_sub_issue",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-before-subissue",
+            "pointer": "/version"
+          },
+          "title": "Verify the reported behavior"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-subissues-read",
+      "tool": "vector.issue.sub_issue_progress",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-subissues-order",
+      "tool": "vector.issue.reorder_sub_issues",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-subissues-read",
+            "pointer": "/version"
+          },
+          "identifiers": [
+            {
+              "$from": "issue-subissues-read",
+              "pointer": "/children/0/identifier"
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-rule-read",
+      "tool": "vector.issue.read_sub_issue_rule",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-rule-set",
+      "tool": "vector.issue.set_sub_issue_rule",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-rule-read",
+            "pointer": "/version"
+          },
+          "enabled": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-before-bulk",
+      "tool": "vector.issue.stable_identifiers",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-bulk-edit",
+      "tool": "vector.issue.bulk_edit",
+      "args": {
+        "issues": [
+          {
+            "identifier": {
+              "$from": "issue-create",
+              "pointer": "/identifier"
+            },
+            "expectedVersion": {
+              "$from": "issue-before-bulk",
+              "pointer": "/version"
+            }
+          }
+        ],
+        "changes": {
+          "priority": "urgent"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-team-move",
+      "tool": "vector.issue.moving_teams",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-bulk-edit",
+            "pointer": "/issues/0/version"
+          },
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          },
+          "statusId": {
+            "$from": "options",
+            "pointer": "/teams/0/statuses/3/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-bulk-team-move",
+      "tool": "vector.issue.bulk_move_teams",
+      "args": {
+        "issues": [
+          {
+            "identifier": {
+              "$from": "issue-create",
+              "pointer": "/identifier"
+            },
+            "expectedVersion": {
+              "$from": "issue-team-move",
+              "pointer": "/version"
+            },
+            "statusId": {
+              "$from": "options",
+              "pointer": "/teams/0/statuses/3/id"
+            }
+          }
+        ],
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-bulk-duplicate",
+      "tool": "vector.issue.bulk_duplicate",
+      "args": {
+        "issues": [
+          {
+            "identifier": {
+              "$from": "issue-other",
+              "pointer": "/identifier"
+            },
+            "expectedVersion": {
+              "$from": "issue-duplicate-undo",
+              "pointer": "/version"
+            }
+          }
+        ],
+        "canonicalIdentifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-bulk-duplicate-undo",
+      "tool": "vector.issue.bulk_duplicate",
+      "args": {
+        "issues": [
+          {
+            "identifier": {
+              "$from": "issue-other",
+              "pointer": "/identifier"
+            },
+            "expectedVersion": {
+              "$from": "issue-bulk-duplicate",
+              "pointer": "/issues/0/version"
+            }
+          }
+        ],
+        "canonicalIdentifier": null
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-order-read",
+      "tool": "vector.issue.read_manual_order",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-order",
+      "tool": "vector.issue.reorder",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "action": "top",
+        "expectedVersion": {
+          "$from": "issue-order-read",
+          "pointer": "/version"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-activity",
+      "tool": "vector.issue.activity_history",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-remove-link",
+      "tool": "vector.issue.remove_link",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "linkId": {
+          "$from": "issue-link",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue-remove-comment",
+      "tool": "vector.issue.remove_comment",
+      "args": {
+        "identifier": {
+          "$from": "issue-create",
+          "pointer": "/identifier"
+        },
+        "itemId": {
+          "$from": "issue-comment",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "issue-comment-checklist",
+            "pointer": "/discussion/comments/0/version"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-create",
+      "tool": "vector.intake.intake_creation",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "title": "Operator report awaiting a decision",
+        "summary": "Observed a failure in the native journey."
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-evidence",
+      "tool": "vector.intake.evidence_revisions",
+      "args": {
+        "identifier": {
+          "$from": "intake-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-assessment",
+      "tool": "vector.intake.inspectable_assessment",
+      "args": {
+        "identifier": {
+          "$from": "intake-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-policy",
+      "tool": "vector.intake.decision_policy",
+      "args": {
+        "identifier": {
+          "$from": "intake-create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-defer",
+      "tool": "vector.intake.defer",
+      "args": {
+        "identifier": {
+          "$from": "intake-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "intake-create",
+            "pointer": "/version"
+          },
+          "reason": "Await the next inspection.",
+          "returnAt": "2099-01-01T00:00:00.000Z"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-return",
+      "tool": "vector.intake.return",
+      "args": {
+        "identifier": {
+          "$from": "intake-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "intake-defer",
+            "pointer": "/version"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-accept",
+      "tool": "vector.intake.accept",
+      "args": {
+        "identifier": {
+          "$from": "intake-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "intake-return",
+            "pointer": "/version"
+          },
+          "reason": "Evidence was inspected."
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-decline-create",
+      "tool": "vector.intake.intake_creation",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "title": "Operator report to decline",
+        "summary": "An additional report remains retained after its decision."
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "intake-decline",
+      "tool": "vector.intake.decline",
+      "args": {
+        "identifier": {
+          "$from": "intake-decline-create",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "intake-decline-create",
+            "pointer": "/version"
+          },
+          "reason": "The evidence does not justify planned work."
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "native-file-issue",
+      "tool": "vector.issues.list",
+      "args": {
+        "q": "Investigate a reported checkout failure",
+        "sort": "oldest"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "native-files",
+      "tool": "vector.issue.read_discussion",
+      "args": {
+        "identifier": {
+          "$from": "native-file-issue",
+          "pointer": "/issues/0/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "native-file-remove",
+      "tool": "vector.issue.remove_file",
+      "args": {
+        "identifier": {
+          "$from": "native-file-issue",
+          "pointer": "/issues/0/identifier"
+        },
+        "itemId": {
+          "$from": "native-files",
+          "pointer": "/files/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-project",
+      "tool": "vector.proj.project_record",
+      "args": {
+        "name": "Door delivery",
+        "leadOperatorId": {
+          "$sponsor": "id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-project-edit",
+      "tool": "vector.proj.project_record.edit",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "description": "Evidence-led delivery plan",
+          "priority": "high"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-project-lifecycle",
+      "tool": "vector.proj.manual_lifecycle",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "lifecycle": "active"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-project-archive",
+      "tool": "vector.proj.project_archiving",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "archived": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-project-unarchive",
+      "tool": "vector.proj.project_archiving",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "archived": false
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-progress",
+      "tool": "vector.proj.progress",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-health",
+      "tool": "vector.proj.health",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-risks",
+      "tool": "vector.proj.risk_explanation",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "proposedClass": "external",
+        "verified": true,
+        "policyOverride": "autonomous"
+      }
+    },
+    {
+      "id": "plan-history",
+      "tool": "vector.proj.historical_truth",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-portfolio",
+      "tool": "vector.proj.portfolio",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-milestone",
+      "tool": "vector.proj.milestones",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "name": "Delivery review",
+          "targetDate": "2031-01-15"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-milestone-edit",
+      "tool": "vector.proj.milestones.edit",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "milestoneId": {
+          "$from": "plan-milestone",
+          "pointer": "/id"
+        },
+        "input": {
+          "description": "Review evidence is retained",
+          "completed": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-milestone-order",
+      "tool": "vector.proj.milestones.order",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "milestoneIds": [
+            {
+              "$from": "plan-milestone",
+              "pointer": "/id"
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-team-identity",
+      "tool": "vector.team.team_identity",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "name": "Native planning team"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-team-archive",
+      "tool": "vector.team.team_archiving",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "archived": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-team-unarchive",
+      "tool": "vector.team.team_archiving",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "archived": false
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-workflow",
+      "tool": "vector.team.team_workflow",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "name": "Planning review",
+          "category": "backlog"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-workflow-rename",
+      "tool": "vector.team.team_workflow.rename",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "statusId": {
+          "$from": "plan-workflow",
+          "pointer": "/id"
+        },
+        "input": {
+          "name": "Planning reviewed"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-team-settings",
+      "tool": "vector.team.team_settings",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-workflow-order",
+      "tool": "vector.team.team_workflow.order",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "statusIds": {
+            "$from": "plan-team-settings",
+            "pointer": "/statusIds"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard"
+        }
+      ]
+    },
+    {
+      "id": "plan-workflow-remove",
+      "tool": "vector.team.status_removal",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "statusId": {
+          "$from": "plan-workflow",
+          "pointer": "/id"
+        },
+        "input": {
+          "destinationStatusId": {
+            "$from": "plan-team-settings",
+            "pointer": "/statusDestinations/backlog"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-label",
+      "tool": "vector.issue.labels.create",
+      "args": {
+        "name": "Door planning",
+        "color": "#52637a",
+        "projectsEnabled": true
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-label-edit",
+      "tool": "vector.issue.labels.edit",
+      "args": {
+        "id": {
+          "$from": "plan-label",
+          "pointer": "/id"
+        },
+        "input": {
+          "color": "#152637"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-label-target",
+      "tool": "vector.issue.labels.create",
+      "args": {
+        "name": "Door planning merged",
+        "color": "#52637a",
+        "projectsEnabled": true
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-label-merge",
+      "tool": "vector.issue.labels.merge",
+      "args": {
+        "id": {
+          "$from": "plan-label",
+          "pointer": "/id"
+        },
+        "input": {
+          "destinationLabelId": {
+            "$from": "plan-label-target",
+            "pointer": "/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-label-delete",
+      "tool": "vector.issue.labels.delete",
+      "args": {
+        "id": {
+          "$from": "plan-label-target",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-window",
+      "tool": "vector.cycles.next_window",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle",
+      "tool": "vector.cycle.time_box",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "name": {
+          "$from": "plan-cycle-window",
+          "pointer": "/startsLocal"
+        },
+        "startsLocal": {
+          "$from": "plan-cycle-window",
+          "pointer": "/startsLocal"
+        },
+        "endsLocal": {
+          "$from": "plan-cycle-window",
+          "pointer": "/endsLocal"
+        },
+        "capacity": 20
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-schedule",
+      "tool": "vector.cycle.automatic_cycle_schedule",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "weeks": 2,
+          "startWeekday": 1,
+          "cooldownWeeks": 0,
+          "upcomingCount": 1
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-membership",
+      "tool": "vector.cycle.automatic_cycle_membership",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "autoCycleStarted": true,
+          "autoCycleCompleted": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-membership-restore",
+      "tool": "vector.cycle.automatic_cycle_membership",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "autoCycleStarted": {
+            "$from": "options",
+            "pointer": "/teams/0/autoCycleStarted"
+          },
+          "autoCycleCompleted": {
+            "$from": "options",
+            "pointer": "/teams/0/autoCycleCompleted"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-progress",
+      "tool": "vector.cycle.progress_and_capacity",
+      "args": {
+        "id": {
+          "$from": "plan-cycle",
+          "pointer": "/cycle/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-snapshot",
+      "tool": "vector.cycle.closure_snapshot",
+      "args": {
+        "id": {
+          "$from": "plan-cycle",
+          "pointer": "/cycle/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-cycle-failure",
+      "tool": "vector.cycle.missing_next_cycle",
+      "args": {
+        "id": {
+          "$from": "plan-cycle",
+          "pointer": "/cycle/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-initiative",
+      "tool": "vector.init.initiatives",
+      "args": {
+        "name": "Door delivery initiative",
+        "ownerOperatorId": {
+          "$sponsor": "id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-initiative-edit",
+      "tool": "vector.init.initiatives.edit",
+      "args": {
+        "id": {
+          "$from": "plan-initiative",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "plan-initiative",
+            "pointer": "/version"
+          },
+          "description": "Native initiative planning",
+          "status": "active"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-initiative-projects",
+      "tool": "vector.init.initiatives.projects",
+      "args": {
+        "id": {
+          "$from": "plan-initiative",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "plan-initiative-edit",
+            "pointer": "/version"
+          },
+          "projectIds": [
+            {
+              "$from": "plan-project",
+              "pointer": "/id"
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-initiatives",
+      "tool": "vector.init.initiatives.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-initiative-rollup",
+      "tool": "vector.init.initiative_roll_up",
+      "args": {
+        "id": {
+          "$from": "plan-initiative",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-release",
+      "tool": "vector.release.releases",
+      "args": {
+        "name": "Door delivery release",
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-release-edit",
+      "tool": "vector.release.releases.edit",
+      "args": {
+        "id": {
+          "$from": "plan-release",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "plan-release",
+            "pointer": "/version"
+          },
+          "description": "Release planning evidence"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-release-scope",
+      "tool": "vector.release.releases.scope",
+      "args": {
+        "id": {
+          "$from": "plan-release",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "plan-release-edit",
+            "pointer": "/version"
+          },
+          "issueIdentifiers": [],
+          "projectIds": [
+            {
+              "$from": "plan-project",
+              "pointer": "/id"
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-releases",
+      "tool": "vector.release.releases.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-release-read",
+      "tool": "vector.release.releases.read",
+      "args": {
+        "id": {
+          "$from": "plan-release",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-document",
+      "tool": "vector.proj.project_documents_and_specs",
+      "args": {
+        "parentKind": "project",
+        "parentId": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "title": "Delivery specification",
+        "body": "Draft implementation evidence and acceptance criteria."
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-document-edit",
+      "tool": "vector.proj.project_documents_and_specs.edit",
+      "args": {
+        "id": {
+          "$from": "plan-document",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "plan-document",
+            "pointer": "/version"
+          },
+          "body": "Revised draft with retained history."
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-document-comment",
+      "tool": "vector.proj.project_documents_and_specs.comment",
+      "args": {
+        "id": {
+          "$from": "plan-document",
+          "pointer": "/id"
+        },
+        "input": {
+          "body": "Review the acceptance evidence."
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-documents",
+      "tool": "vector.proj.project_documents_and_specs.list",
+      "args": {
+        "parentKind": "project",
+        "parentId": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-document-read",
+      "tool": "vector.proj.project_documents_and_specs.read",
+      "args": {
+        "id": {
+          "$from": "plan-document",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-document-revisions",
+      "tool": "vector.proj.project_documents_and_specs.revisions",
+      "args": {
+        "id": {
+          "$from": "plan-document",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-document-comments",
+      "tool": "vector.proj.project_documents_and_specs.comments",
+      "args": {
+        "id": {
+          "$from": "plan-document",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-visible-issues",
+      "tool": "vector.issues.list",
+      "args": {
+        "sort": "oldest"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-spec-link",
+      "tool": "vector.proj.project_documents_and_specs.link",
+      "args": {
+        "identifier": {
+          "$from": "plan-visible-issues",
+          "pointer": "/issues/0/identifier"
+        },
+        "input": {
+          "documentId": {
+            "$from": "plan-document",
+            "pointer": "/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-spec-read",
+      "tool": "vector.proj.project_documents_and_specs.specification",
+      "args": {
+        "identifier": {
+          "$from": "plan-visible-issues",
+          "pointer": "/issues/0/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-spec-unlink",
+      "tool": "vector.proj.project_documents_and_specs.unlink",
+      "args": {
+        "identifier": {
+          "$from": "plan-visible-issues",
+          "pointer": "/issues/0/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-template",
+      "tool": "vector.proj.project_templates",
+      "args": {
+        "name": "Delivery template",
+        "teamId": null,
+        "description": "Native planning template",
+        "milestones": [
+          {
+            "name": "Ready for review",
+            "description": "Review the implementation",
+            "offsetDays": 7
+          }
+        ],
+        "issues": [
+          {
+            "title": "Review the implementation",
+            "description": "Retain the review evidence",
+            "priority": "medium",
+            "offsetDays": 7,
+            "milestonePosition": 0
+          }
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-template-edit",
+      "tool": "vector.proj.project_templates.edit",
+      "args": {
+        "id": {
+          "$from": "plan-template",
+          "pointer": "/id"
+        },
+        "expectedVersion": {
+          "$from": "plan-template",
+          "pointer": "/version"
+        },
+        "input": {
+          "name": "Delivery template",
+          "teamId": null,
+          "description": "Revised native template",
+          "milestones": [
+            {
+              "name": "Ready for review",
+              "description": "Review the implementation",
+              "offsetDays": 7
+            }
+          ],
+          "issues": [
+            {
+              "title": "Review the implementation",
+              "description": "Retain the review evidence",
+              "priority": "medium",
+              "offsetDays": 7,
+              "milestonePosition": 0
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-template-capture",
+      "tool": "vector.proj.project_templates.capture",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "input": {
+          "name": "Captured delivery plan",
+          "teamId": null,
+          "referenceDate": "2031-01-01"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-template-read",
+      "tool": "vector.proj.project_templates.read",
+      "args": {
+        "id": {
+          "$from": "plan-template",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-templates",
+      "tool": "vector.proj.project_templates.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-template-apply",
+      "tool": "vector.proj.project_templates.apply",
+      "args": {
+        "id": {
+          "$from": "plan-template",
+          "pointer": "/id"
+        },
+        "input": {
+          "expectedVersion": {
+            "$from": "plan-template-edit",
+            "pointer": "/version"
+          },
+          "name": "Door template delivery",
+          "startDate": "2031-01-01",
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 3
+          }
+        }
+      ]
+    },
+    {
+      "id": "plan-template-delete",
+      "tool": "vector.proj.project_templates.delete",
+      "args": {
+        "id": {
+          "$from": "plan-template",
+          "pointer": "/id"
+        },
+        "expectedVersion": {
+          "$from": "plan-template-edit",
+          "pointer": "/version"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-captured-template-delete",
+      "tool": "vector.proj.project_templates.delete",
+      "args": {
+        "id": {
+          "$from": "plan-template-capture",
+          "pointer": "/id"
+        },
+        "expectedVersion": {
+          "$from": "plan-template-capture",
+          "pointer": "/version"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-milestone-delete",
+      "tool": "vector.proj.milestones.delete",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        },
+        "milestoneId": {
+          "$from": "plan-milestone",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-template-project-delete",
+      "tool": "vector.proj.project_record.delete",
+      "args": {
+        "id": {
+          "$from": "plan-template-apply",
+          "pointer": "/projectId"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-project-delete",
+      "tool": "vector.proj.project_record.delete",
+      "args": {
+        "id": {
+          "$from": "plan-project",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive"
+        }
+      ]
+    },
+    {
+      "id": "plan-team-identity-restore",
+      "tool": "vector.team.team_identity",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "name": {
+            "$from": "options",
+            "pointer": "/teams/0/name"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-issue",
+      "tool": "vector.issue.creation",
+      "args": {
+        "teamId": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "title": "Review workspace delivery evidence",
+        "statusId": {
+          "$from": "options",
+          "pointer": "/teams/0/statuses/3/id"
+        },
+        "assigneeOperatorId": {
+          "$sponsor": "id"
+        },
+        "estimate": 3
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-disjoint_stream",
+      "tool": "vector.curr.disjoint_stream",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-needs_decision",
+      "tool": "vector.curr.needs_decision",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-now",
+      "tool": "vector.curr.now",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-next",
+      "tool": "vector.curr.next",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-recently_done",
+      "tool": "vector.curr.recently_done",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-explainable_attention",
+      "tool": "vector.curr.explainable_attention",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-ranking",
+      "tool": "vector.curr.ranking",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-freshness",
+      "tool": "vector.curr.freshness",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-current-stream_controls",
+      "tool": "vector.curr.stream_controls",
+      "args": {
+        "filters": {
+          "teamId": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-work-personal_queue",
+      "tool": "vector.work.personal_queue",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-work-personal_defaults",
+      "tool": "vector.work.personal_defaults",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-work-cycle_context",
+      "tool": "vector.work.cycle_context",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-created",
+      "tool": "vector.work.created",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-follow",
+      "tool": "vector.notify.read_and_mute",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "following": true,
+          "muted": false
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-subscribed",
+      "tool": "vector.work.subscribed",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-activity",
+      "tool": "vector.work.activity",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-search",
+      "tool": "vector.search.global_search",
+      "args": {
+        "q": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-exact",
+      "tool": "vector.search.exact_identifier",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-index",
+      "tool": "vector.search.index_freshness",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-search-options",
+      "tool": "vector.search.options",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-issue_controls",
+      "tool": "vector.view.issue_controls",
+      "args": {
+        "team": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "priority": "all"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-search-advanced_filters",
+      "tool": "vector.search.advanced_filters",
+      "args": {
+        "team": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "priority": "all"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-team_board",
+      "tool": "vector.view.team_board",
+      "args": {
+        "team": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "priority": "all"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-workspace_wide_views",
+      "tool": "vector.view.workspace_wide_views",
+      "args": {
+        "team": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "priority": "all"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-create",
+      "tool": "vector.view.saved_views.create",
+      "args": {
+        "name": "Door workspace view",
+        "query": {
+          "team": {
+            "$from": "options",
+            "pointer": "/teams/0/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-edit",
+      "tool": "vector.view.saved_views.edit",
+      "args": {
+        "id": {
+          "$from": "workspace-view-create",
+          "pointer": "/id"
+        },
+        "input": {
+          "name": {
+            "$from": "workspace-view-create",
+            "pointer": "/id"
+          },
+          "layout": "board"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-duplicate",
+      "tool": "vector.view.saved_views.duplicate",
+      "args": {
+        "id": {
+          "$from": "workspace-view-create",
+          "pointer": "/id"
+        },
+        "input": {
+          "name": "Door workspace duplicate"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-duplicate-rename",
+      "tool": "vector.view.saved_views.edit",
+      "args": {
+        "id": {
+          "$from": "workspace-view-duplicate",
+          "pointer": "/id"
+        },
+        "input": {
+          "name": {
+            "$from": "workspace-view-duplicate",
+            "pointer": "/id"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-read",
+      "tool": "vector.view.saved_views.read",
+      "args": {
+        "id": {
+          "$from": "workspace-view-create",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-views",
+      "tool": "vector.view.saved_views",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-preferences",
+      "tool": "vector.view.control_persistence",
+      "args": {
+        "surface": "current"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-preferences-save",
+      "tool": "vector.view.control_persistence.save",
+      "args": {
+        "surface": "current",
+        "input": {
+          "filters": {
+            "teamId": {
+              "$from": "options",
+              "pointer": "/teams/0/id"
+            }
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-preferences-reset",
+      "tool": "vector.view.control_persistence.reset",
+      "args": {
+        "surface": "current"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-preferences-restore",
+      "tool": "vector.view.control_persistence.save",
+      "args": {
+        "surface": "current",
+        "input": {
+          "filters": {
+            "$from": "workspace-preferences",
+            "pointer": "/filters"
+          },
+          "sort": {
+            "$from": "workspace-preferences",
+            "pointer": "/sort"
+          },
+          "grouping": {
+            "$from": "workspace-preferences",
+            "pointer": "/grouping"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-calendar",
+      "tool": "vector.view.timeline_and_calendar_views",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-appearance",
+      "tool": "vector.view.appearance",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-appearance-save",
+      "tool": "vector.view.appearance.save",
+      "args": {
+        "theme": "dark"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-appearance-restore",
+      "tool": "vector.view.appearance.save",
+      "args": {
+        "theme": {
+          "$from": "workspace-appearance",
+          "pointer": "/theme"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-inbox",
+      "tool": "vector.notify.inbox_events",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-inbox-count",
+      "tool": "vector.notify.inbox_events.count",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-inbox-read",
+      "tool": "vector.notify.inbox_events.read",
+      "args": {
+        "id": {
+          "$from": "workspace-inbox",
+          "pointer": "/items/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-mark-read",
+      "tool": "vector.notify.read_and_mute.read",
+      "args": {
+        "id": {
+          "$from": "workspace-inbox",
+          "pointer": "/items/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-snooze",
+      "tool": "vector.notify.snooze_and_reminders.snooze",
+      "args": {
+        "id": {
+          "$from": "workspace-inbox",
+          "pointer": "/items/0/id"
+        },
+        "input": {
+          "untilChange": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-snoozed",
+      "tool": "vector.notify.inbox_events",
+      "args": {
+        "snoozed": true
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-unsnooze",
+      "tool": "vector.notify.snooze_and_reminders.unsnooze",
+      "args": {
+        "id": {
+          "$from": "workspace-inbox",
+          "pointer": "/items/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-mark-all",
+      "tool": "vector.notify.read_and_mute.read_all",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-no-self",
+      "tool": "vector.notify.no_self_notification",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-followers",
+      "tool": "vector.notify.followers",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-mute",
+      "tool": "vector.notify.read_and_mute",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "muted": true
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-unfollow",
+      "tool": "vector.notify.read_and_mute",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        },
+        "input": {
+          "following": false,
+          "muted": false
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-email",
+      "tool": "vector.notify.assignment_and_mention_email",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-email-save",
+      "tool": "vector.notify.assignment_and_mention_email.save",
+      "args": {
+        "emailEnabled": false,
+        "mutedKinds": [
+          "comment"
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-email-restore",
+      "tool": "vector.notify.assignment_and_mention_email.save",
+      "args": {
+        "emailEnabled": {
+          "$from": "workspace-email",
+          "pointer": "/emailEnabled"
+        },
+        "mutedKinds": {
+          "$from": "workspace-email",
+          "pointer": "/mutedKinds"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-reminder",
+      "tool": "vector.notify.snooze_and_reminders",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        },
+        "remindAt": "2099-01-15T12:00:00.000Z"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-reminders",
+      "tool": "vector.notify.due_reminders",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-reminder-cancel",
+      "tool": "vector.notify.snooze_and_reminders.cancel",
+      "args": {
+        "identifier": {
+          "$from": "workspace-issue",
+          "pointer": "/identifier"
+        },
+        "id": {
+          "$from": "workspace-reminder",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-channels",
+      "tool": "vector.notify.channels_and_digests",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-channels-save",
+      "tool": "vector.notify.channels_and_digests.save",
+      "args": {
+        "channels": [
+          {
+            "kind": "assignment",
+            "emailMode": "off",
+            "slack": false
+          }
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-channels-inherit",
+      "tool": "vector.notify.channels_and_digests.save",
+      "args": {
+        "channels": [
+          {
+            "kind": "assignment",
+            "inherit": true
+          }
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-subscribe",
+      "tool": "vector.notify.subscriptions.subscribe",
+      "args": {
+        "subjectType": "view",
+        "subjectId": {
+          "$from": "workspace-view-create",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-subscription-read",
+      "tool": "vector.notify.subscriptions.read",
+      "args": {
+        "id": {
+          "$from": "workspace-subscribe",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-subscriptions",
+      "tool": "vector.notify.subscriptions",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-unsubscribe",
+      "tool": "vector.notify.subscriptions.unsubscribe",
+      "args": {
+        "id": {
+          "$from": "workspace-subscribe",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-time",
+      "tool": "vector.notify.personal_time_zone_and_working_hours",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-time-save",
+      "tool": "vector.notify.personal_time_zone_and_working_hours.save",
+      "args": {
+        "timezone": "America/New_York",
+        "workingHoursStart": "08:30",
+        "workingHoursEnd": "16:30",
+        "workingDays": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-time-restore",
+      "tool": "vector.notify.personal_time_zone_and_working_hours.save",
+      "args": {
+        "timezone": {
+          "$from": "workspace-time",
+          "pointer": "/timezone"
+        },
+        "workingHoursStart": {
+          "$from": "workspace-time",
+          "pointer": "/workingHoursStart"
+        },
+        "workingHoursEnd": {
+          "$from": "workspace-time",
+          "pointer": "/workingHoursEnd"
+        },
+        "workingDays": {
+          "$from": "workspace-time",
+          "pointer": "/workingDays"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-insights",
+      "tool": "vector.report.insights",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-cycle-chart",
+      "tool": "vector.report.cycle_and_project_charts",
+      "args": {
+        "kind": "cycle",
+        "id": {
+          "$from": "options",
+          "pointer": "/cycles/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-project-chart",
+      "tool": "vector.report.cycle_and_project_charts",
+      "args": {
+        "kind": "project",
+        "id": {
+          "$from": "options",
+          "pointer": "/projects/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-forecast",
+      "tool": "vector.report.project_completion_forecast",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/projects/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-dashboard-create",
+      "tool": "vector.report.dashboards.create",
+      "args": {
+        "name": "Door workspace dashboard",
+        "widgets": [
+          {
+            "name": "Visible work",
+            "kind": "count",
+            "filters": {},
+            "chart": {}
+          }
+        ]
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-dashboard-read",
+      "tool": "vector.report.dashboards.read",
+      "args": {
+        "id": {
+          "$from": "workspace-dashboard-create",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-dashboard-edit",
+      "tool": "vector.report.dashboards.edit",
+      "args": {
+        "id": {
+          "$from": "workspace-dashboard-create",
+          "pointer": "/id"
+        },
+        "expectedVersion": {
+          "$from": "workspace-dashboard-read",
+          "pointer": "/dashboard/version"
+        },
+        "input": {
+          "name": "Door delivery dashboard",
+          "widgets": [
+            {
+              "name": "Visible work",
+              "kind": "count",
+              "filters": {},
+              "chart": {}
+            }
+          ]
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-dashboards",
+      "tool": "vector.report.dashboards",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-workload",
+      "tool": "vector.report.workload",
+      "args": {
+        "from": "2031-01-01",
+        "to": "2031-01-31"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-capacity",
+      "tool": "vector.report.workload.personal_capacity",
+      "args": {
+        "from": "2031-01-01",
+        "to": "2031-01-31"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-capacity-set",
+      "tool": "vector.report.workload.set_capacity",
+      "args": {
+        "query": {
+          "from": "2031-01-01",
+          "to": "2031-01-31"
+        },
+        "input": {
+          "capacity": 20,
+          "expectedVersion": {
+            "$from": "workspace-capacity",
+            "pointer": "/version"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-capacity-current",
+      "tool": "vector.report.workload.personal_capacity",
+      "args": {
+        "from": "2031-01-01",
+        "to": "2031-01-31"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-capacity-restore",
+      "tool": "vector.report.workload.set_capacity",
+      "args": {
+        "query": {
+          "from": "2031-01-01",
+          "to": "2031-01-31"
+        },
+        "input": {
+          "capacity": {
+            "$from": "workspace-capacity",
+            "pointer": "/capacity"
+          },
+          "expectedVersion": {
+            "$from": "workspace-capacity-current",
+            "pointer": "/version"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-csv",
+      "tool": "vector.report.warehouse_and_spreadsheet_export",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-audit",
+      "tool": "vector.role.audit_log",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-audit-csv",
+      "tool": "vector.role.audit_log.export",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-view-delete",
+      "tool": "vector.view.saved_views.delete",
+      "args": {
+        "id": {
+          "$from": "workspace-view-create",
+          "pointer": "/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "workspace-dashboard-delete",
+      "tool": "vector.report.dashboards.delete",
+      "args": {
+        "id": {
+          "$from": "workspace-dashboard-create",
+          "pointer": "/id"
+        },
+        "expectedVersion": {
+          "$from": "workspace-dashboard-edit",
+          "pointer": "/version"
+        }
+      },
+      "expect": [
+        {
+          "class": "destructive",
+          "facts": {
+            "measure": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-workspace",
+      "tool": "vector.ops.member_management",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-member-grants",
+      "tool": "vector.ops.member_management.grants",
+      "args": {
+        "id": {
+          "$sponsor": "id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team",
+      "tool": "vector.role.team_membership",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-membership-grants",
+      "tool": "vector.role.team_membership.member_grants",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "operatorId": {
+          "$from": "access-team",
+          "pointer": "/memberships/0/operatorId"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-grants",
+      "tool": "vector.role.team_membership.grants",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-time",
+      "tool": "vector.ops.workspace_time.set",
+      "args": {
+        "timezone": "Australia/Brisbane",
+        "reminderTime": "08:45"
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-time-restore",
+      "tool": "vector.ops.workspace_time.set",
+      "args": {
+        "timezone": {
+          "$from": "access-workspace",
+          "pointer": "/workspace/timezone"
+        },
+        "reminderTime": {
+          "$from": "access-workspace",
+          "pointer": "/workspace/reminderTime"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-role-current",
+      "tool": "vector.role.workspace_roles.set",
+      "args": {
+        "id": {
+          "$sponsor": "id"
+        },
+        "role": "owner"
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-current",
+      "tool": "vector.role.team_membership.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "operatorId": {
+          "$sponsor": "id"
+        },
+        "role": "owner"
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-join-current",
+      "tool": "vector.role.team_membership.join",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "widens"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-permissions-narrow",
+      "tool": "vector.role.team_permissions.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "settings": "team_owners",
+          "planning": "team_owners"
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.permissions"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-requests-expose",
+      "tool": "vector.team.join_permissions.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "mode": "invite_only",
+          "requestsEnabled": true
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.membership"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-request-current",
+      "tool": "vector.team.join_permissions.request",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-requests-restore",
+      "tool": "vector.team.join_permissions.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "input": {
+          "mode": {
+            "$from": "access-team",
+            "pointer": "/team/membershipMode"
+          },
+          "requestsEnabled": {
+            "$from": "access-team",
+            "pointer": "/team/requestsEnabled"
+          }
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "widens"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.membership"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-private",
+      "tool": "vector.role.private_teams.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "isPrivate": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.privacy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-public",
+      "tool": "vector.role.private_teams.set",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "isPrivate": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "team.privacy"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-invitations-off",
+      "tool": "vector.ops.member_management.invitation_permission",
+      "args": {
+        "memberInvites": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.member_invitations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-invitations-on",
+      "tool": "vector.ops.member_management.invitation_permission",
+      "args": {
+        "memberInvites": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.member_invitations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-invitations-restore",
+      "tool": "vector.ops.member_management.invitation_permission",
+      "args": {
+        "memberInvites": {
+          "$from": "access-workspace",
+          "pointer": "/workspace/memberInvites"
+        }
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.member_invitations"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-creation-on",
+      "tool": "vector.team.creation_permission.set",
+      "args": {
+        "membersMayCreate": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.team_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-team-creation-off",
+      "tool": "vector.team.creation_permission.set",
+      "args": {
+        "membersMayCreate": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.team_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-label-creation-off",
+      "tool": "vector.issue.labels.creation_permission",
+      "args": {
+        "membersMayCreate": false
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.label_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-label-creation-on",
+      "tool": "vector.issue.labels.creation_permission",
+      "args": {
+        "membersMayCreate": true
+      },
+      "expect": [
+        {
+          "class": "access",
+          "facts": {
+            "measure": 0,
+            "direction": "narrows"
+          }
+        },
+        {
+          "class": "security",
+          "facts": {
+            "measure": 1,
+            "setting": "workspace.label_creation"
+          }
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "tool": "vector.events.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    }
+  ],
+  "witness": {
+    "tool": "vector.issues.list",
+    "args": {
+      "sort": "oldest",
+      "pageSize": 100
+    }
+  },
+  "escalations": [],
+  "spend": {
+    "none": true
+  }
+}
