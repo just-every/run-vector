@@ -6,7 +6,7 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const session = await (await request(origin + '/api/session', { headers: { Cookie: person.cookie } })).json();
   const metadata = await (await request(origin + '/api/metadata', { headers: { Cookie: person.cookie } })).json();
   const state = await db.prepare("SELECT json_extract(envelope,'$.seq') AS seq,json_extract(envelope,'$.revision') AS revision FROM agent_door_state WHERE id=1").first();
-  const context = { origin, surface, signer, person, business: 'rer-agent-conformance', consent: randomUUID(), agentId: randomUUID(), seq: state.seq, revision: state.revision };
+  const context = { origin, surface, signer, person, business: 'rer-agent-conformance', consent: randomUUID(), agentId: randomUUID(), seq: state?.seq ?? 0, revision: state?.revision ?? 0 };
   const adopt = async options => {
     const envelope = await policyEnvelope(context, autonomousPolicy(), options);
     const response = await request(origin + '/api/rer/agent-policy', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ policy: envelope.policy }) });
@@ -65,6 +65,11 @@ export async function consentProbe({ request, origin, surface, signer, person, d
     FROM vector_agent_activity_attribution WHERE operation_id=? LIMIT 1`).bind(live.decision?.id).first();
   const durableIdentity = durable?.idempotency_key === first.args.idempotency_key
     && durable.client_id === who.clientId && JSON.stringify(JSON.parse(durable.scopes_json)) === JSON.stringify(who.scopes);
+  const created = live.result;
+  const targetCall = await invoke('vector.issue.priority', { identifier: created.identifier,
+    input: { expectedVersion: created.version, priority: 'high' }, idempotency_key: randomUUID() }, who);
+  const targetAudit = await db.prepare('SELECT row FROM agent_door_audit WHERE id=?').bind(targetCall.decision?.id).first('row');
+  const nativeTarget = targetCall.outcome === 'done' && JSON.stringify(JSON.parse(targetAudit).resource) === JSON.stringify({ kind: 'issue', id: created.id });
   const saved = job();
   const token = await accessToken(context);
   await adopt({ revoked: { agents: [], consents: [context.consent] } });
@@ -72,8 +77,8 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const mcp = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json',
     'MCP-Protocol-Version': '2025-11-25' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: saved.name, arguments: saved.args } }) });
   await mcp.body?.cancel();
-  return { ok: resourceRefusal === 'resource_unavailable' && nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
+  return { ok: nativeTarget && resourceRefusal === 'resource_unavailable' && nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
       && live.outcome === 'done' && afterLive === before + 1 && replay.outcome === 'done' && afterReplay === afterLive && conflict.code === 'idempotency_conflict' && durableIdentity && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
     scoped, insufficient, resourceRefusal, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi, nativeArgumentRefusals: invalidCodes, nativeArguments,
-    before, afterLive, afterReplay, afterRevoked, durableIdentity, changedArguments: conflict.code, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'undeclared queued lifecycle and mail edges; refuses before native outbox work' };
+    before, afterLive, afterReplay, afterRevoked, durableIdentity, nativeTarget, changedArguments: conflict.code, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'undeclared queued lifecycle and mail edges; refuses before native outbox work' };
 }
