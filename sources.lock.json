@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "9f66c9c0bf978e1a14eeefdb8a74bd563323a6728b68ae3848f4fd29b82c0935",
+      "sha256": "e4d3370ddd77dd9ba8394dda157b2adcb589a4e83503287e11084e0a605b1388",
       "executable": false
     },
     "agent-surface.json": {
@@ -517,7 +517,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0feae378aef1bc1849346800973caeb689abddf66f78400602e14286e692b975",
+      "sha256": "38297fbb08e4a9f2f53085c43fb6e5e9d9155da7e239b583aa47dcc0d5dad504",
       "executable": false
     },
     "DEMO.md": {
@@ -573,7 +573,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "d98198e02116ab81b6a54627dd0f122f04c728ee2b78bd9662ca4cd4fd1226c0",
+      "sha256": "64c79dbddcb00d0de73d11dafbe85a28f01080a16391d8efc7e2293769678a00",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
