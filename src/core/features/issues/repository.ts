@@ -9,6 +9,7 @@ import { mutationDatabase } from "../auth/mutation-database";
 import { and, asc, eq, inArray, sql } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 import { createUlid } from '../../shared/ids'
+import { currentAgentActor, agentActivity } from '../agent-door/attribution'
 import {
   cycles,
   intakeDecisions,
@@ -219,6 +220,10 @@ function activitySelection(db: Database, identifier: string, request: IntakeDeci
     id: sql<string>`${activityId}`.as('id'),
     issueId: issues.id,
     actorOperatorId: sql<string>`${activity.actorOperatorId}`.as('actor_operator_id'),
+    actorName: sql<string | null>`${activity.actorName}`.as('actor_name'),
+    agentId: sql<string | null>`${activity.agentId}`.as('agent_id'),
+    agentOperationId: sql<string | null>`${activity.agentOperationId}`.as('agent_operation_id'),
+    agentApproversJson: sql<string | null>`${activity.agentApproversJson}`.as('agent_approvers_json'),
     kind: sql<string>`${activity.kind}`.as('kind'),
     previousValueJson: sql<string | null>`${activity.previousValueJson}`.as('previous_value_json'),
     nextValueJson: sql<string | null>`${activity.nextValueJson}`.as('next_value_json'),
@@ -372,6 +377,8 @@ export function activityRow(entry: {
     id: createUlid(new Date(entry.now)),
     issueId: entry.issueId,
     actorOperatorId: entry.actorOperatorId,
+    actorName: currentAgentActor()?.actor.label ?? null,
+    ...agentActivity(),
     kind: entry.kind,
     previousValueJson: entry.previousValue === null ? null : JSON.stringify(entry.previousValue),
     nextValueJson: entry.nextValue === null ? null : JSON.stringify(entry.nextValue),

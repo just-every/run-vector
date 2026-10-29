@@ -475,6 +475,38 @@
     {
       "source": "src/core/features/insights/README.md",
       "reason": "Metric definitions, nearest-rank percentiles and recorded-history limits for Insights maintainers."
+    },
+    {
+      "source": "docs/AGENT-DOOR.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/ADOPTING.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/CLAUSES.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/README.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/policy/PROVENANCE.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/business-settings/ADOPTING.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/business-settings/README.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/operator-auth/SCHEDULED-POLICY.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
     }
   ]
 }
