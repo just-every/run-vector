@@ -1,3 +1,4 @@
+import { ModelPolicyPanel } from '../../model-policy/panel';
 import { useViewerTime } from '../../../app/viewer-time';
 import { PersonalTimePanel } from './personal-time-panel';
 import { AppearancePanel } from './appearance-panel';
@@ -93,6 +94,7 @@ export function SettingsPage() {
           </>}
           {resource.data && opensSettingsPage(resource.data.role,'personal-integrations') && <a href="#integrations">Integrations</a>}
           {workspace && <a href="#oauth-apps">OAuth apps</a>}
+          {workspace && <a href="#models">Models and data</a>}
           <a href="#notifications">Notifications</a>
           {workspace && <a href="/app/settings/audit">Audit log</a>}
           {workspace && <a href="#data">Data / Move in</a>}
@@ -223,6 +225,7 @@ export function SettingsPage() {
               />
             </>
           )}
+          {workspace && <ModelPolicyPanel teams={administration.data?.teams ?? []}/>}
           {workspace && <OAuthAppsPanel />}
           {workspace && <DataPanel />}
           {/* Restore review has no role-matrix row, so it is the Owners' (ROLE-008). */}

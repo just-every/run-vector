@@ -1,3 +1,4 @@
+import { addModelRoutes } from '../features/model-policy/routes';
 import {addOAuthRoutes} from '../features/oauth-apps/routes';
 import {addMonthCalendarRoutes} from '../features/calendar-view/routes';
 import {addProjectTemplateRoutes} from '../features/project-templates/routes';
@@ -398,6 +399,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addMonthCalendarRoutes(app);
   addProjectTemplateRoutes(app);
   addSettingsRoutes(app);
+  addModelRoutes(app);
   addAuditRoutes(app);
   addIntegrationConfigRoutes(app);
   addRestoreRoutes(app);

@@ -230,6 +230,24 @@
       "adapters": [
         "vector.discord-webhook.v1"
       ]
+    },
+    {
+      "id": "anthropic-model-api",
+      "required": false,
+      "enabledByDefault": false,
+      "why": "SEC-002: an Owner or Admin explicitly selects a model for a feature and requests a preview. No model is enabled on installation.",
+      "termsUrl": "https://www.anthropic.com/legal/commercial-terms",
+      "noTraining": true,
+      "noTrainingStatement": "Customer content is not used to train models under the commercial API terms.",
+      "retention": "Standard API inputs and outputs are retained by the provider for up to 30 days, subject to its abuse-prevention and legal exceptions. A separately agreed zero-retention arrangement is not assumed.",
+      "data": [
+        "issue identifier",
+        "issue title",
+        "issue description"
+      ],
+      "adapters": [
+        "vector.model-messages.v1"
+      ]
     }
   ],
   "env": [

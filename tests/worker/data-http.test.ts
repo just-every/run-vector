@@ -31,6 +31,11 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const milestone=(await milestoneResponse.json() as any).milestones[0];
  const issueBefore=await (await f.call('/issues/'+f.issue.identifier)).json() as {version:number};
  const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:issueBefore.version,milestoneId:milestone.id,startDate:'2026-09-01'});expect(assigned.status,await assigned.clone().text()).toBe(200);
+ const modelCredential='synthetic-vector-4831';
+ const modelResponse=await f.call('/settings/models/providers','POST',{name:'synthetic-vector-4831',kind:'self-hosted',endpoint:'https://synthetic-vector-4831.example.test/messages',model:'synthetic-vector-4831',credential:modelCredential});expect(modelResponse.status).toBe(201);
+ const modelProvider=await modelResponse.json() as {id:string};
+ expect((await f.call('/settings/models/providers/'+modelProvider.id+'/confirm','POST',{termsUrl:'https://synthetic-vector-4831.example.test/terms',retention:'No retention',noTraining:true})).status).toBe(200);
+ expect((await f.call('/settings/models/policy','PUT',{feature:'triage',teamId:null,enabled:true,providerId:modelProvider.id})).status).toBe(200);
  const sourceResponse=await f.call('/settings/integrations/sources','POST',{name:'Archive source',sourceId:'archive-source',teamId:f.team.id});expect(sourceResponse.status).toBe(201);
  const source=await sourceResponse.json() as {id:string;secret:string;webhookUrl:string};
  const githubResponse=await f.call('/settings/integrations/github','POST',{name:'Archive repository',repository:'just-every/run-vector'});expect(githubResponse.status).toBe(201);
@@ -94,6 +99,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  for(const name of ['project_templates','project_template_milestones','project_template_labels','project_template_issues'])expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name===name)?.count).toBe(1);
  for(const name of ['dashboards','dashboard_widgets'])expect(records[0].kind==='manifest' && records[0].tables.find(t=>t.name===name)?.count).toBe(1);
  const archiveText=JSON.stringify(records);
+ expect(archiveText).not.toContain(modelCredential);
+ for(const name of ['vector_model_providers','vector_model_policies'])expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name===name)).toBe(true);
  expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name==='calendar_feed_tokens')).toBe(false);
  expect(archiveText.includes(calendarFeed.url)).toBe(false);
  expect(archiveText.includes((await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(calendarFeed.id).first<string>('token_hash'))!)).toBe(false);
@@ -121,6 +128,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ const restoredModels=await targetCall('/api/settings/models','GET',undefined,historical);expect(restoredModels.status).toBe(200);expect(await restoredModels.json()).toMatchObject({providers:[expect.objectContaining({id:modelProvider.id,ready:false,noTraining:true,termsUrl:'https://synthetic-vector-4831.example.test/terms'})],policies:[expect.objectContaining({feature:'triage',enabled:true,providerId:modelProvider.id})]});
+ const restoredModelPreview=await targetCall('/api/issues/'+f.issue.identifier+'/triage-suggestion','POST',{},historical);expect(restoredModelPreview.status).toBe(200);expect(await restoredModelPreview.json()).toEqual({enabled:false});
+ const modelReentered=await targetCall('/api/settings/models/providers/'+modelProvider.id+'/credential','PUT',{credential:'synthetic-vector-4832'},historical);expect(modelReentered.status).toBe(200);
+ const replaced=await targetCall('/api/settings/models','GET',undefined,historical);expect(await replaced.json()).toMatchObject({providers:[expect.objectContaining({ready:true})],policies:[expect.objectContaining({enabled:false})]});
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
  const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
  expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);

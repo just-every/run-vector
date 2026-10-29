@@ -420,3 +420,14 @@ so previously accepted mentions cannot recreate issues.
 This installation remains partial: the hosted real-workspace installation needs
 the owner's Slack console setup and reinstallation with the generated scopes and
 URLs. The recorded acceptance uses Slack API fixtures, not a hosted provider.
+
+
+## Model controls
+
+Settings → Models and data connects an Anthropic Messages API provider or an explicitly configured self-hosted Messages-compatible endpoint. All four feature policies start disabled. A workspace switch is the upper bound: a team cannot override workspace off. Team off blocks previews for its items before any provider request. The provider choice displays the terms, no-training declaration, retention and exact data categories. The optional Anthropic API declaration is in `seed.json`; it does not enable a model on installation.
+
+An unlisted provider requires an Owner to record its HTTPS terms URL, retention and explicit no-training confirmation. Admins may register it, but cannot confirm its terms or enable it before that confirmation. Confirmation is recorded as `model.terms_confirmed` in the native audit log. Revising that confirmation turns off affected policies until they are explicitly enabled again. Provider removal deletes sealed credential custody and associated policies.
+
+The native triage preview button sends only the current issue identifier, title and description after current session, workspace policy, team policy and issue visibility checks. It returns a visibly attributed suggestion, model, timestamp and source identifier; it never applies an issue change, retains an output or automatically retries a request. Semantic search, Ask Vector and drafting inherit this same gateway before their own feature journeys ship; those clauses retain their current gaps. No background model request is enabled by these controls.
+
+Self-hosted endpoints use the existing enforcing outbound transport and require Settings → Integrations outbound setup or its enforcing service binding. Private addresses and provider redirects are refused by that transport. The fixed Anthropic API endpoint also refuses redirects. Credentials are sealed with native integration custody, never returned by Settings, and excluded from archives. Non-secret registrations, terms, feature selections and immutable audit history remain portable. Restored provider rows visibly require credential re-entry and cannot send content. Replacing any provider credential disables its feature policies until explicitly enabled again. Provider terms and retention are recorded declarations; fixture journeys establish local enforcement and make no live-provider retention claim.

@@ -2020,5 +2020,24 @@
     "token_id",
     "created_at",
     "revoked_at"
+  ],
+  "vector_model_providers": [
+    "id",
+    "workspace_id",
+    "name",
+    "kind",
+    "endpoint",
+    "model",
+    "terms_url",
+    "retention",
+    "confirmed_at",
+    "created_at"
+  ],
+  "vector_model_policies": [
+    "workspace_id",
+    "feature",
+    "team_id",
+    "enabled",
+    "provider_id"
   ]
 }

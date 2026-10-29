@@ -1,3 +1,4 @@
+import { ModelPreview } from '../../model-policy/preview';
 import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useHydrated } from "../../../app/initial-resources";
@@ -176,6 +177,7 @@ export function DecisionPanel({
       className={`decision-panel${routingExpanded ? " is-routing-expanded" : ""}${compact && kind === "accept" ? " is-compact" : ""}`}
       aria-labelledby="decision-heading"
     >
+      <ModelPreview identifier={issue.identifier}/>
       <div className="decision-heading">
         <div>
           <h2 id="decision-heading">Make the triage call</h2>

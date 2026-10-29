@@ -211,6 +211,13 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/settings/oauth-apps',{name:'synthetic-vector-4533',redirectUris:[oauthRequest.redirect_uri],scopes:['issues:read']});
   native('DELETE','/settings/oauth-apps/grants/:id',undefined,{id:oauthGrant.grant_id});
   native('POST','/oauth/consent',{request:oauthRequest,decision:'approve'});
+  const modelProvider=await call(owner,'/settings/models/providers','POST',{name:'synthetic-vector-4810',kind:'self-hosted',endpoint:'https://synthetic-vector-4810.example.test/messages',model:'synthetic-vector-4810',credential:'synthetic-vector-4810'});
+  native('POST','/settings/models/providers',{name:'synthetic-vector-4811',kind:'self-hosted',endpoint:'https://synthetic-vector-4811.example.test/messages',model:'synthetic-vector-4811',credential:'synthetic-vector-4811'});
+  native('POST','/settings/models/providers/:id/confirm',{termsUrl:'https://synthetic-vector-4810.example.test/terms',retention:'No retention',noTraining:true},{id:modelProvider.id});
+  native('DELETE','/settings/models/providers/:id',undefined,{id:modelProvider.id});
+  native('PUT','/settings/models/providers/:id/credential',{credential:'synthetic-vector-4812'},{id:modelProvider.id});
+  native('PUT','/settings/models/policy',{feature:'triage',teamId:null,enabled:false,providerId:null});
+  native('POST','/issues/:identifier/triage-suggestion',{},ip);
   native('POST','/settings/integrations/tokens',{name:'synthetic-vector-31074',scopes:['issues:read']});native('DELETE','/settings/integrations/tokens/:id',undefined,{id:personalToken.credential.id});native('ALL','/portability/*',{}, {},'/portability/exports');
   native('POST','/data/import/preview',importInput);native('POST','/data/import/apply',applyBody);native('POST','/data/import/runs/:id/resume',{}, {id:run.id});native('POST','/data/import/runs/:id/rollback',{confirmed:true},{id:run.id});native('POST','/data/erasure/preview',subject);native('POST','/data/erasure',{subject,confirmation:erasure.confirmation});
   // Validate the administration/resource family bodies with the same schemas
