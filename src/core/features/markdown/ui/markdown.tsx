@@ -100,7 +100,7 @@ function containsImage(node: MarkdownNode): boolean {
 
 function MarkdownLink({href,children,title,node}:ComponentProps<'a'> & ExtraProps) {
     const references=useIssueReferences();
-    const reference=references.find(row=>href===`/app/issues/${row.identifier}`);
+    const reference=references.find(row=>href===`/app/issues/${row.canonicalIdentifier??row.identifier}`);
     const safe = safeUrl(href);
     if (!safe) return <span>{children}</span>;
     const external = safe.startsWith("https://");

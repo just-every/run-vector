@@ -27,6 +27,13 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const templateCreated=await f.call('/project-templates','POST',{name:'synthetic-vector-69',description:'Portable structure',cadence:'Weekly',milestones:[{name:'Launch',offsetDays:7}],labels:['synthetic-vector-70'],issues:[{title:'synthetic-vector-71',startOffsetDays:1,offsetDays:3,milestonePosition:0}]});expect(templateCreated.status).toBe(201);const portableTemplate=await templateCreated.json() as {id:string};
  const referenceResponse=await f.call('/issues','POST',{teamId:f.team.id,title:'Portable reference source',description:'See '+f.issue.identifier});expect(referenceResponse.status).toBe(201);const referenceSource=await referenceResponse.json() as {identifier:string};
  const referenceBefore=await (await f.call('/issues/'+referenceSource.identifier+'/references')).json();
+ const documentSource=await f.call('/documents','POST',{parentKind:'project',parentId:f.project.id,title:'synthetic-vector-35110',body:'See '+f.issue.identifier});expect(documentSource.status).toBe(201);
+ const document=await documentSource.json() as {id:string;version:number;references:unknown[]};
+ const removedDocumentSource=await f.call('/documents','POST',{parentKind:'project',parentId:f.project.id,title:'synthetic-vector-35111',body:'See '+f.issue.identifier});expect(removedDocumentSource.status).toBe(201);
+ const removedDocument=await removedDocumentSource.json() as typeof document;
+ expect((await f.call('/documents/'+removedDocument.id,'PATCH',{expectedVersion:removedDocument.version,body:'Reference removed.'})).status).toBe(200);
+ const documentBacklinks=(await (await f.call('/issues/'+f.issue.identifier)).json() as {activity:{id:string;nextValue:{sourceDocumentId?:string;removed:boolean}}[]}).activity.filter(row=>row.nextValue?.sourceDocumentId===document.id||row.nextValue?.sourceDocumentId===removedDocument.id);
+ expect(documentBacklinks).toHaveLength(2);expect(documentBacklinks.find(row=>row.nextValue.sourceDocumentId===removedDocument.id)?.nextValue.removed).toBe(true);
  const milestoneResponse=await f.call('/settings/projects/'+f.project.id+'/milestones','POST',{name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'});expect(milestoneResponse.status).toBe(200);
  const milestone=(await milestoneResponse.json() as any).milestones[0];
  const issueBefore=await (await f.call('/issues/'+f.issue.identifier)).json() as {version:number};
@@ -132,6 +139,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
 
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM calendar_feed_tokens').first<number>('n')).toBe(0);
  const restoredReferences=await targetCall('/api/issues/'+referenceSource.identifier+'/references','GET',undefined,historical);expect(restoredReferences.status).toBe(200);expect(await restoredReferences.json()).toEqual(referenceBefore);
+ const restoredDocument=await targetCall('/api/documents/'+document.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject({id:document.id,body:'See '+f.issue.identifier,references:document.references});
+ const restoredRemovedDocument=await targetCall('/api/documents/'+removedDocument.id,'GET',undefined,historical);expect(restoredRemovedDocument.status).toBe(200);expect(await restoredRemovedDocument.json()).toMatchObject({id:removedDocument.id,body:'Reference removed.',references:[]});
+ const restoredDocumentBacklinks=(await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json() as {activity:{nextValue:{sourceDocumentId?:string}}[]}).activity.filter(row=>row.nextValue?.sourceDocumentId===document.id||row.nextValue?.sourceDocumentId===removedDocument.id);
+ expect(restoredDocumentBacklinks).toEqual(documentBacklinks);
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
  const credentialState=async()=>await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json() as CredentialState;
  const restoredErrors=await (await targetCall('/api/settings/integrations/errors','GET',undefined,historical)).json() as any;expect(restoredErrors.connections).toContainEqual(expect.objectContaining({id:errorConnection.id,regressionRule:'reopen',requiresReentry:1}));
