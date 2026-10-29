@@ -146,6 +146,11 @@ async function contributingTeamsJourney({page, memberPage, memberContext, base, 
     await page.getByRole('heading',{name,exact:true}).waitFor();
     const detailTeams = await page.locator('.project-facts').innerText();
     for (const contributor of teams) assert.ok(detailTeams.includes(contributor.name));
+    await page.locator('.project-facts').getByRole('link',{name:team.name,exact:true}).click();
+    await page.getByRole('heading',{name:team.name,exact:true}).waitFor();
+    await page.getByRole('region',{name:'Projects',exact:true}).getByRole('link',{name:'Open '+name,exact:true}).waitFor();
+    await navigate('/app/projects/'+project.id);
+    await page.getByRole('heading',{name,exact:true}).waitFor();
   }
   await screens('project-both-contributing-teams',page);
   const restricted = async label => {

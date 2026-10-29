@@ -5801,7 +5801,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-detail.tsx": {
-      "sha256": "43b1dd7190d2aebc9f57684e1f8c37747a80b1039c2e7ed3d1befc2e5729bf7b",
+      "sha256": "1681c9ed48b95e1b37a204a6748835a769b283aba56920d2df16c2f34081720c",
       "executable": false
     },
     "src/core/features/projects/ui/project-list.tsx": {
@@ -5821,7 +5821,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-rows.css": {
-      "sha256": "072cce008c4cf83ba35aded022e83cbdc6c474dae0c06e69cce505b830264d01",
+      "sha256": "bc595376150c7c634458404c2c2730a96eb639cc910d8507d8344deee0b3f6e7",
       "executable": false
     },
     "src/core/features/projects/ui/project-slack-choice.tsx": {
@@ -6885,7 +6885,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "a6f7f2d44c776f7a4de5c29fb74fc5068fa8f7ab107901bb5cb7d2c9e78447c8",
+      "sha256": "de74bd46ea803fa2f5a648566eb997cfac35e5b7d5c485a04e41994af9e6e589",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
