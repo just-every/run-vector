@@ -641,7 +641,7 @@
       "executable": false
     },
     "docs/IMPORTED-ALIASES.md": {
-      "sha256": "85343d81898b158070689a76873816c1ee48539e088987e49990df564d9edafa",
+      "sha256": "de252cf30379245fc489a4cecc0472f4417f463807b5ee101311b0edbc343b50",
       "executable": false
     },
     "docs/INSTALLER.md": {
@@ -4045,7 +4045,7 @@
       "executable": false
     },
     "src/core/features/data/import/row-values.ts": {
-      "sha256": "566b2cc4286d6da7c7a67c395383b1c40cd0e2a3ed186a3ed6119be8cd143051",
+      "sha256": "6677b102e666bcd5af97945878923d43a0c9cdeb3b874fecd6ebbf28e0581b3e",
       "executable": false
     },
     "src/core/features/data/import/runs.ts": {
@@ -7785,7 +7785,7 @@
       "executable": false
     },
     "tests/worker/import-alias-scenario.ts": {
-      "sha256": "a48bf3d83b36fac074ac281fae54075db991f63dfaf6065ad299bb93bdcc8333",
+      "sha256": "70603bca08086f8b80528700a13c536bca12d5a3692335281f86e0c90db8178d",
       "executable": false
     },
     "tests/worker/import-recovery-checks.ts": {

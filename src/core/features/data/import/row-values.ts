@@ -79,7 +79,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const dueDate=take('dueDate',()=>{const value=text('dueDate');if(!value)return null;
     if(!/^\d{4}-\d\d-\d\d$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0,10)!==value)throw Error('Due date must be a valid YYYY-MM-DD date.');return value;});
   const expectedOutcome=take('expectedOutcome',()=>text('expectedOutcome')||null),customerImpact=take('customerImpact',()=>text('customerImpact')||null);
-  const sourceUrl=take('sourceUrl',()=>{const value=text('sourceUrl',2000);if(value&&!aliasKey(value))throw Error('Use a supported Linear, Jira Cloud or GitHub issue URL.');return value||null;});
+  const sourceUrl=take('sourceUrl',()=>{const value=text('sourceUrl',2000);if(!value)return null;if(!aliasKey(value))throw Error('Use a supported Linear, Jira Cloud or GitHub issue URL.');const url=new URL(value);url.search='';url.hash='';return url.href;});
   const createdAt=take('createdAt',()=>instant(text('createdAt')||effectiveAt,'Created'));
   const updatedAt=take('updatedAt',()=>instant(text('updatedAt')||createdAt||effectiveAt,'Updated'));
   if(createdAt && updatedAt && Date.parse(updatedAt)<Date.parse(createdAt))errors.push({row,field:'updatedAt',code:'timestamp_order',message:'Updated cannot precede Created.'});

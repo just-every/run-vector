@@ -23,9 +23,10 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  const reportCsv=await (await f.call('/data/import/runs/'+run.id+'/report.csv')).text();expect(reportCsv).toContain(native.identifier+': native '+native.identifier+' wins');
  expect((await f.publish(input)).id).toBe(run.id);expect(await search(url)).toEqual(results);
  const app=createServerApp();expect((await app.request(bindings.APP_ORIGIN+'/alias/ENG-123',{headers:{Cookie:f.cookie,host:new URL(bindings.APP_ORIGIN).host,origin:bindings.APP_ORIGIN}},bindings)).headers.get('Location')).toBe('/app/issues/'+imported.identifier);
- const urls=f.input([f.row('GH-42',{title:'synthetic-vector-1810 source URL',sourceUrl:'https://github.com/octocat/test-repo1/issues/42'}),f.row('PROJ-45',{title:'synthetic-vector-1811 Jira source'})],'synthetic-vector-1812');
+ const urls=f.input([f.row('GH-42',{title:'synthetic-vector-1810 source URL',sourceUrl:'https://github.com/octocat/test-repo1/issues/42?private=synthetic-vector-1816#private'}),f.row('PROJ-45',{title:'synthetic-vector-1811 Jira source'})],'synthetic-vector-1812');
  urls.mapping.sourceUrl='sourceUrl';await f.publish(urls);
  const githubSource=(await search('https://github.com/octocat/test-repo1/issues/42'))[0];expect(githubSource.title).toBe('synthetic-vector-1810 source URL');
+ expect(JSON.stringify(await (await f.call('/issues/'+githubSource.identifier)).json())).not.toContain('synthetic-vector-1816');
  expect((await search('https://synthetic-vector-1812.atlassian.net/browse/PROJ-45'))[0].title).toBe('synthetic-vector-1811 Jira source');
  expect((await f.call('/issues/ENG-123')).status).toBe(200);
  const referring=await f.create({title:'synthetic-vector-1813 references',description:'See ENG-123 and GH-42'});
