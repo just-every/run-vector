@@ -5025,7 +5025,7 @@
       "executable": false
     },
     "src/core/features/issue-deletion/postcondition-sql.ts": {
-      "sha256": "4f17a3c50ed7c4ee0875bd369fd1776dae7f6e0967bdd29a03ca51897c149646",
+      "sha256": "39f7064b468d25f48b3155bc3b5c9b4629ca5d5a78ba79912f80046b6d024f20",
       "executable": false
     },
     "src/core/features/issue-deletion/postcondition.ts": {
