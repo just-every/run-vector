@@ -44,3 +44,9 @@ export function toggleTask(source: string, index: number, text: string, checked:
   const offset = task.start + marker[0].length;
   return source.slice(0, offset) + (checked ? "x" : " ") + source.slice(offset + 1);
 }
+
+/** A stale click may change only the task the caller actually read. */
+export function mergeTask(source: string, expectedSource: string, index: number, text: string, checked: boolean): string | null {
+  if (parseTasks(expectedSource)[index]?.text !== text) return null;
+  return toggleTask(source, index, text, checked);
+}

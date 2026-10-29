@@ -5,6 +5,8 @@ import { contractWith } from "../contract-tags";
 import { collaborationFixture } from "./collaboration-fixture";
 import { setupIntegrations } from "./integration-fixture";
 import { heldBody } from "./removal-fixture";
+import { createServerApp } from "../../src/core/app/server";
+import { signIn } from "./base-auth-fixture";
 import { bindings, origin } from "./base-auth-fixture";
 import { parseTasks } from "../../src/core/features/description-history/tasks";
 
@@ -46,17 +48,56 @@ async function nativeJourney() {
   expect(repeatedHistory.revisions).toHaveLength(after.revisions.length + 1);
   expect(repeatedHistory.revisions.at(-1)?.version).toBe(repeated.version);
 
-  const body = "> 1. [ ] **Review**\n>    - [ ] Child\n\n    - [ ] code";
+  const body = "> 1. [ ] **Review**\n> 2. [ ] Child\n\n    - [ ] code";
   const comment = await receipt<{ id: string }>(await f.call(path + "/comments", "POST", { body }), 201);
+  const route = `${path}/comments/${comment.id}/checklist`;
   const task = parseTasks(body)[1];
-  const input = { expectedBody: body, index: task.index, text: task.text, checked: true };
-  expect((await f.any(f.bobCookie, `${path}/comments/${comment.id}/checklist`, "POST", input)).status).toBe(403);
-  const discussion = await receipt<{ comments: { id: string; canEdit: number }[] }>(await f.call(path + "/discussion"));
+  const input = { expectedBody: body, expectedVersion: 0, index: task.index, text: task.text, checked: true };
+  const snapshot = async () => Promise.all(["issues", "issue_comments", "issue_activity", "audit_records", "issue_description_revisions", "issue_mentions", "issue_reference_subjects", "notifications", "notification_events"]
+    .map(async table => [table, (await env.DB.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results]));
+  const beforeRefusal = await snapshot();
+  expect((await f.any(f.bobCookie, route, "POST", input)).status).toBe(403);
+  expect(await snapshot()).toEqual(beforeRefusal);
+  const bobToken = await receipt<{ token: string }>(await f.any(f.bobCookie, "/settings/integrations/tokens", "POST", { name: "synthetic-vector-2501", scopes: ["comments:write"] }), 201);
+  const afterMint = await snapshot();
+  const refused = await createServerApp().request(origin + "/api/v1" + route, {
+    method: "POST", headers: { Authorization: "Bearer " + bobToken.token, Origin: origin, "content-type": "application/json" }, body: JSON.stringify(input),
+  }, bindings);
+  expect(refused.status, await refused.clone().text()).toBe(403);
+  expect(await snapshot()).toEqual(afterMint);
+  const discussion = await receipt<{ comments: { id: string; body: string; canEdit: number; version: number }[] }>(await f.call(path + "/discussion"));
   expect(Boolean(discussion.comments.find(row => row.id === comment.id)?.canEdit)).toBe(true);
-  await receipt(await f.call(`${path}/comments/${comment.id}/checklist`, "POST", input));
-  expect((await f.call(`${path}/comments/${comment.id}/checklist`, "POST", input)).status).toBe(409);
-  const saved = await env.DB.prepare("SELECT body FROM issue_comments WHERE id=?").bind(comment.id).first<string>("body");
-  expect(saved).toBe(body.replace("[ ] Child", "[x] Child"));
+  expect(discussion.comments.find(row => row.id === comment.id)?.version).toBe(0);
+  const peerView = await receipt<typeof discussion>(await f.any(f.bobCookie, path + "/discussion"));
+  expect(Boolean(peerView.comments.find(row => row.id === comment.id)?.canEdit)).toBe(false);
+  // A genuine second sign-in, rather than reusing the first session's cookie.
+  const secondSession = await signIn();
+  expect(secondSession).not.toBe(f.cookie);
+  await receipt(await f.call(route, "POST", input));
+  await receipt(await f.any(secondSession, route, "POST", { ...input, index: 0, text: parseTasks(body)[0].text }));
+  const saved = body.replace("[ ] Child", "[x] Child").replace("[ ] **Review**", "[x] **Review**");
+  const read = await receipt<typeof discussion>(await f.call(path + "/discussion"));
+  expect(read.comments.find(row => row.id === comment.id)).toMatchObject({ body: saved, version: 2 });
+  const revisions = (await env.DB.prepare("SELECT actor_operator_id actor,next_value_json value FROM issue_activity WHERE issue_id=? AND kind='comment.edited' ORDER BY rowid").bind(issue.id).all<{ actor: string; value: string }>()).results;
+  expect(revisions.map(row => ({ actor: row.actor, ...JSON.parse(row.value) }))).toEqual([
+    { actor: f.owner, id: comment.id, revision: 1, checklist: { index: 1, text: task.text, checked: true } },
+    { actor: f.owner, id: comment.id, revision: 2, checklist: { index: 0, text: parseTasks(body)[0].text, checked: true } },
+  ]);
+  expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE subject_id=? AND action='comment.edited'").bind(comment.id).first<number>("n")).toBe(2);
+  const unchanged = await snapshot();
+  await receipt(await f.call(route, "POST", input));
+  expect(await snapshot()).toEqual(unchanged);
+  // A changed target keeps its 409 contract and exposes the current text.
+  await receipt(await f.call(`${path}/comments/${comment.id}`, "PATCH", { body: saved.replace("Child", "Guides") }));
+  const changedTarget = await snapshot();
+  const conflict = await receipt<{ comment: { id: string; body: string; version: number } }>(await f.call(route, "POST", input), 409);
+  expect(conflict.comment).toEqual({ id: comment.id, body: saved.replace("Child", "Guides"), version: 3 });
+  expect(await snapshot()).toEqual(changedTarget);
+  const finalIssue = await receipt<Issue & { status: { id: string } }>(await f.call(path));
+  expect(finalIssue.status.id).toBe(issue.status.id);
+  expect(finalIssue.description).toBe(source);
+  expect(finalIssue.version).toBe(repeated.version);
+  expect((await receipt<History>(await f.call(path + "/description-history"))).revisions).toEqual(repeatedHistory.revisions);
   await receipt(await f.call(path, "DELETE", { expectedVersion: repeated.version, confirmed: true }));
   expect(await env.DB.prepare("SELECT count(*) n FROM issue_description_revisions WHERE issue_id=?").bind(issue.id).first<number>("n")).toBe(0);
 }

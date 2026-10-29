@@ -6,7 +6,7 @@ const item = {
   checked: z.boolean(),
 };
 export const checklistSchema = z.object({ expectedVersion: z.number().int().positive(), ...item }).strict();
-export const commentChecklistSchema = z.object({ expectedBody: z.string().max(100000), ...item }).strict();
+export const commentChecklistSchema = z.object({ expectedBody: z.string().max(100000), expectedVersion: z.number().int().nonnegative().optional(), ...item }).strict();
 export const descriptionRestoreSchema = z.object({
   expectedVersion: z.number().int().positive(),
   revisionId: z.string().min(1).max(200),
