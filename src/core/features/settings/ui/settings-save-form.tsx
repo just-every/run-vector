@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormHTMLAttributes } from 'react';
+import { startTransition, useEffect, useRef, useState, type FormHTMLAttributes } from 'react';
 import { useRouteContext } from '@tanstack/react-router';
 import type { z } from 'zod';
 import { ApiError, fetchJson } from '../../../app/api-client';
@@ -94,7 +94,8 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
         later.bases = [snapshot.fields];
         try { if (readDraft(key)?.revision === later.revision) localStorage.setItem(key, JSON.stringify(later)); } catch { /* Keep the new base in memory. */ }
       }
-      options.onSaved?.(receipt);
+      // "Saved" renders first; what the save changes elsewhere on the page follows it.
+      startTransition(() => options.onSaved?.(receipt));
     } catch (cause) {
       if (draft.current?.revision === snapshot.revision && mounted.current) {
         const body = cause instanceof ApiError ? cause.body : null;
