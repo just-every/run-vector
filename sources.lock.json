@@ -6801,7 +6801,7 @@
       "executable": false
     },
     "tests/e2e/comment-checklist-journey.mjs": {
-      "sha256": "1121b2bc3afe8e952d4fd122edded9b84644ca58c9a711796c07f0a04bd6935c",
+      "sha256": "1942b0a686704e574e834016c9136a9a3393d8b299dbecf1e5133e3617d5cd27",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {

@@ -9,6 +9,9 @@ export async function commentChecklistJourney(page, context, base, state, teamId
   const actorResponse = await context.request.get(base + '/auth/session');
   assert.equal(actorResponse.status(), 200);
   const actor = (await actorResponse.json()).operator;
+  const metadata = await (await context.request.get(base + '/api/metadata')).json();
+  const authorName = metadata.operators.find(row => row.id === actor.id)?.name;
+  assert.ok(authorName, 'The current product directory identifies the signed-in author');
   const created = await context.request.post(base + '/api/issues', { headers: { Origin: base }, data: { title: 'synthetic-vector-2502', teamId } });
   assert.equal(created.status(), 201);
   const issue = await created.json(), path = `/api/issues/${issue.identifier}`, url = base + '/app/issues/' + issue.identifier;
@@ -67,9 +70,10 @@ export async function commentChecklistJourney(page, context, base, state, teamId
     assert.equal(changed.version, issue.version);
     const edits = changed.activity.filter(row => row.kind === 'comment.edited' && row.nextValue.id === comment.id);
     assert.deepEqual(edits.map(row => ({ actor: row.actor, revision: row.nextValue.revision, task: row.nextValue.checklist })), [
-      { actor: actor.displayName, revision: 1, task: { index: 0, text: 'Review draft', checked: true } },
-      { actor: actor.displayName, revision: 2, task: { index: 1, text: 'Publish notes', checked: true } },
+      { actor: authorName, revision: 1, task: { index: 0, text: 'Review draft', checked: true } },
+      { actor: authorName, revision: 2, task: { index: 1, text: 'Publish notes', checked: true } },
     ]);
+    assert.deepEqual(readLocalD1(state, `SELECT actor_operator_id actor FROM issue_activity WHERE issue_id='${issue.id}' AND kind='comment.edited' ORDER BY rowid`).map(row => row.actor), [actor.id, actor.id]);
     assert.equal(readLocalD1(state, `SELECT count(*) n FROM audit_records WHERE subject_id='${comment.id}' AND action='comment.edited'`)[0].n, 2);
     // One assertion width; both release widths get a screen of the changed state.
     for (const width of [1440, 390]) {
