@@ -235,6 +235,25 @@
       ]
     },
     {
+      "id": "read_local",
+      "tool": "vector.issue.activity_history",
+      "client": "local",
+      "args": {
+        "identifier": {
+          "$from": "create",
+          "pointer": "/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
       "id": "edit",
       "tool": "vector.issue.concurrent_edits",
       "args": {
@@ -531,6 +550,9 @@
         },
         "WORKSPACE_TIMEZONE": {
           "module": "tests/agent-door/timezone.mjs"
+        },
+        "MAIL_FROM": {
+          "module": "tests/agent-door/sender.mjs"
         }
       }
     },
@@ -539,6 +561,10 @@
         "metadata",
         "create"
       ]
-    }
+    },
+    "fixtures": {
+      "module": "tests/agent-door/clients.mjs"
+    },
+    "journey": "tests/agent-door/native-journey.mjs"
   }
 }
