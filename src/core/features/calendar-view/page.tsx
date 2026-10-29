@@ -2,6 +2,7 @@ import './release-calendar.css';
 import {useEffect,useState} from 'react';
 import {z} from 'zod';
 import {ApiError,fetchJson,useApiResource} from '../../app/api-client';
+import {useDateFormat} from '../../shared/date-format';
 import {monthCalendarSchema,type MonthEvent} from './schema';
 import './calendar.css';
 const dayLabel=(day:string)=>new Intl.DateTimeFormat('en',{weekday:'long',month:'long',day:'numeric',year:'numeric',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z'));
@@ -10,6 +11,7 @@ function days(month:string){const date=new Date(month+'-01T12:00:00Z');date.setU
 const onDay=(event:MonthEvent,day:string)=>event.firstDay<=day&&event.lastDay>=day;
 const kindName={issue:'Due issue',cycle:'Cycle',milestone:'Milestone',release:'Release'};
 export function MonthCalendar(){
+ const {date:shortDate}=useDateFormat();
  const [month,setMonth]=useState(''),[selected,setSelected]=useState(''),[editing,setEditing]=useState<MonthEvent|null>(null),[date,setDate]=useState(''),[dragged,setDragged]=useState<MonthEvent|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
  const data=useApiResource('/api/calendar/events'+(month?'?month='+month:''),monthCalendarSchema);
  useEffect(()=>{const changed=()=>data.reload();window.addEventListener('vector:issues-changed',changed);return()=>window.removeEventListener('vector:issues-changed',changed);},[data.reload]);
@@ -39,7 +41,7 @@ export function MonthCalendar(){
    </div>
    <div className="calendar-agenda" role="region" aria-label="Selected day events"><h3>{dayLabel(selectedDay)}</h3>{!events.length&&<p>No events on this day.</p>}
     {events.map(event=><article key={event.id} className={'calendar-event calendar-kind--'+event.kind} data-calendar-event={event.identifier??event.id} draggable={current.canEdit&&event.kind==='issue'&&!busy} onDragStart={e=>{if(!current.canEdit||event.kind!=='issue')return;setDragged(event);e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',event.identifier!);}} onDragEnd={()=>setDragged(null)}>
-     <p className="insights-note">{kindName[event.kind]}{event.kind==='cycle'?' · '+event.firstDay+' to '+event.lastDay:''}</p><a draggable={false} href={new URL(event.url).pathname}>{event.title}</a>
+     <p className="insights-note">{kindName[event.kind]}{event.kind==='cycle'?' · '+shortDate(event.firstDay)+' to '+shortDate(event.lastDay):''}</p><a draggable={false} href={new URL(event.url).pathname}>{event.title}</a>
      {current.canEdit&&event.kind==='issue'&&<button type="button" disabled={busy} aria-label={'Change due date for '+event.identifier} onClick={()=>{setEditing(event);setDate(event.start);setError('');}}>Change due date</button>}
     </article>)}
    </div>
