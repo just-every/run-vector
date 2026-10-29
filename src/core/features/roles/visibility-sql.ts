@@ -44,7 +44,8 @@ export function visibilityCtes(actor: string) {
     scoped('issue_deletions', `r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND ((SELECT role FROM __vector_reader)='owner' OR ${team()})`),
     scoped('issue_duplicates', `${issue()} AND ${issue('canonical_issue_id')}`),
     `issue_activity AS (SELECT r.rowid AS rowid,r.* FROM main.issue_activity r WHERE
-      (r.kind<>'issue.mentioned' OR EXISTS(SELECT 1 FROM issues source WHERE source.id=json_extract(r.next_value_json,'$.sourceIssueId')))
+      (r.kind<>'issue.mentioned' OR EXISTS(SELECT 1 FROM issues source WHERE source.id=json_extract(r.next_value_json,'$.sourceIssueId'))
+        OR EXISTS(SELECT 1 FROM documents source WHERE source.id=json_extract(r.next_value_json,'$.sourceDocumentId')))
       AND ${issue()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')})`,
     ...['project_labels', 'project_milestones'].map(t => scoped(t, project())),
     scoped('project_activity', `${project()} AND ${safeHistory('previous_value_json')} AND ${safeHistory('next_value_json')}`),
@@ -70,6 +71,7 @@ export function visibilityCtes(actor: string) {
       (r.parent_kind='team' AND r.parent_id IN(SELECT id FROM teams)) OR
       (r.parent_kind='initiative' AND NOT (${guest}) AND r.parent_id IN(SELECT id FROM main.initiatives WHERE workspace_id=(SELECT workspace_id FROM __vector_reader))))`),
     ...['document_revisions','document_comments'].map(t=>scoped(t,'r.document_id IN(SELECT id FROM documents)')),
+    scoped('document_issue_references', 'r.document_id IN(SELECT id FROM documents) AND r.target_issue_id IN(SELECT id FROM issues)'),
     scoped('issue_specifications', 'r.issue_id IN(SELECT id FROM issues) AND r.document_id IN(SELECT id FROM documents)'),
   ].join(',\n')
 }

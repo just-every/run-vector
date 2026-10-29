@@ -2,10 +2,12 @@ type ReferenceActivity = { kind: string; nextValueJson: string | null };
 
 /** A snapshot can be supplied by document rendering. Scope its retained
  * backlinks against the visible live sources before exposing activity JSON. */
-export function referenceSourceVisible(activity: ReferenceActivity, visibleIssues: ReadonlySet<string>): boolean {
+export function referenceSourceVisible(activity: ReferenceActivity, visibleIssues: ReadonlySet<string>, visibleDocuments: ReadonlySet<string>): boolean {
   if (activity.kind !== "issue.mentioned") return true;
   if (activity.nextValueJson === null) return false;
   const value: unknown = JSON.parse(activity.nextValueJson);
+  if(typeof value === 'object' && value !== null && 'sourceDocumentId' in value)
+    return typeof value.sourceDocumentId === 'string' && visibleDocuments.has(value.sourceDocumentId);
   return typeof value === "object" && value !== null && "sourceIssueId" in value
     && typeof value.sourceIssueId === "string" && visibleIssues.has(value.sourceIssueId);
 }
