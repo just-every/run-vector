@@ -134,30 +134,32 @@ export function remarkMentions(
               let at = -1;
               for (let n = 0; n <= preceding; n++)
                 at = original.indexOf(token, at + 1);
-              return { at, token, label: "@" + span.name };
+              return { at, token, label: "@" + span.name, start: span.start, end: span.end };
             })
             .filter((replacement) => replacement.at >= 0)
             .sort((a, b) => a.at - b.at);
           if (replacements.length) {
             const children = [];
-            let cursor = 0;
+            let cursor = 0, rawCursor = start;
             node.value = "";
             for (const replacement of replacements) {
               const before = original.slice(cursor, replacement.at);
               children.push(
-                { type: "text", value: before },
+                { type: "text", value: before, position: { start: { offset: rawCursor }, end: { offset: replacement.start } } },
                 {
                   type: "element",
                   tagName: "span",
                   properties: { className: ["mention-chip"] },
+                  position: { start: { offset: replacement.start }, end: { offset: replacement.end } },
                   children: [{ type: "text", value: replacement.label }],
                 },
               );
               node.value += before + replacement.label;
               cursor = replacement.at + replacement.token.length;
+              rawCursor = replacement.end;
             }
             const after = original.slice(cursor);
-            children.push({ type: "text", value: after });
+            children.push({ type: "text", value: after, position: { start: { offset: rawCursor }, end: { offset: end } } });
             node.value += after;
             // Preserve the readable mdast value for text consumers. Only these
             // validated source spans receive element metadata; labels stay

@@ -5,6 +5,7 @@ import { decodeString } from 'micromark-util-decode-string';
 import { z } from 'zod';
 
 type TextNode = { type: string; value?: string; position?: { start: { offset?: number }; end: { offset?: number } }; children?: TextNode[]; data?: unknown };
+type RenderedNode = TextNode & { properties?: Record<string, unknown> };
 export const descriptionAnchorSchema = z.object({
   quote: z.string().min(1).max(100000),
   start: z.number().int().nonnegative().max(100000),
@@ -73,11 +74,26 @@ export function remarkDescriptionAnchors({ enabled = false } = {}) {
     function visit(node: TextNode) {
       if (!node.children) return;
       node.children = node.children.map(child => {
-        if (child.type === 'text' && child.position?.start.offset !== undefined && child.position.end.offset !== undefined)
+        if (child.type === 'text' && child.position?.start.offset !== undefined && child.position.end.offset !== undefined) {
+          const data = child.data as { hChildren?: RenderedNode[] } | undefined;
+          if (data?.hChildren) {
+            // Rendered replacements carry their own source runs. A renamed
+            // chip is atomic; the surrounding prose still maps characterwise.
+            data.hChildren = data.hChildren.map(part => {
+              const start = part.position?.start.offset, end = part.position?.end.offset;
+              if (start === undefined || end === undefined) return part;
+              const properties = { 'data-description-start': start, 'data-description-end': end };
+              return part.type === 'text'
+                ? { type: 'element', tagName: 'span', properties, children: [part] }
+                : { ...part, properties: { ...part.properties, ...properties, 'data-description-atomic': true } };
+            });
+            return child;
+          }
           return { type: 'descriptionText', data: { hName: 'span', hProperties: {
             'data-description-start': child.position.start.offset,
             'data-description-end': child.position.end.offset,
           } }, children: [child] };
+        }
         if ((child.type === 'inlineCode' || child.type === 'code') && child.value) {
           const a = child.position?.start.offset, b = child.position?.end.offset;
           const start = a === undefined ? -1 : source.indexOf(child.value, a);
