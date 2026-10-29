@@ -2,7 +2,8 @@ import {DocumentsSection} from '../../documents/ui/list';
 import {InitiativeChannel} from './initiative-channel';
 import {useState} from 'react';
 import {Link,useNavigate} from '@tanstack/react-router';
-import {fetchJson,useApiResource} from '../../../app/api-client';
+import {fetchJson,isMissingResourceError,useApiResource} from '../../../app/api-client';
+import {FailedResource,MissingResource} from '../../../app/ui/resource-state';
 import {administrationSchema} from '../../administration/schema';
 import {SafeMarkdown} from '../../markdown/ui/markdown';
 import {SubjectSubscribe} from '../../subscriptions/ui/subscriptions';
@@ -32,6 +33,7 @@ export function InitiativePage({id}:{id:string}){
  const [channelRevision,setChannelRevision]=useState(0);
  const writable=!!options.data && options.data.viewer.role!=='viewer';
  const saved=(value:Detail)=>{data.publishReceipt(()=>value);data.refreshAfterMutation();};
- if(!node)return <main className="initiative-page">{data.error?<p role="alert">{data.error.message}</p>:<p role="status">Loading initiative…</p>}</main>;
+ if(!node&&data.error)return isMissingResourceError(data.error)?<MissingResource kind="initiative" back="/app/initiatives" list="Initiatives"/>:<FailedResource kind="initiative" retry={data.reload}/>;
+ if(!node)return <main className="initiative-page"><p role="status">Loading initiative…</p></main>;
  return <main className="initiative-page"><header><Link to="/app/initiatives">← Initiatives</Link><h1>{node.name}</h1><p>{initiativeNames[node.status]} · Owner: {node.ownerName} · Target: {node.targetDate??'Not scheduled'}</p>{(options.data?.viewer.role==='owner'||options.data?.viewer.role==='admin')&&<InitiativeChannelLine id={id} revision={channelRevision}/>}<SubjectSubscribe subjectType="initiative" subjectId={id}/><SafeMarkdown>{node.description||'No description recorded.'}</SafeMarkdown></header>{data.error&&<p role="alert">{data.error.message}</p>}{writable && <details className="initiative-section"><summary>Edit initiative</summary><InitiativeForm key={node.version} existing={node} onSaved={saved}/></details>}{writable && <ProjectEditor key={'projects:'+node.version} initiative={node} onSaved={saved}/>}{writable && <InitiativeChannel initiativeId={id} onChanged={()=>setChannelRevision(value=>value+1)}/>}<DocumentsSection parentKind="initiative" parentId={id}/><section className="initiative-section" aria-label="Nested initiative projects"><h2>Initiative hierarchy</h2>{node.nodes.map(n=><section key={n.id} className="initiative-node" data-depth={n.depth} aria-label={'Initiative '+n.name}><h3><Link to="/app/initiatives/$initiativeId" params={{initiativeId:n.id}}>{n.name}</Link></h3><p>Level {n.depth} · {initiativeNames[n.status]} · {n.ownerName}</p>{n.projects.length?<ul>{n.projects.map(p=><li key={p.id}><a href={'/app/projects/'+p.id}>{p.name}</a>{p.teams.length?' · '+p.teams.join(', '):''} · Visible issues: {p.issueCount}</li>)}</ul>:<p>No direct projects.</p>}</section>)}</section></main>;
 }

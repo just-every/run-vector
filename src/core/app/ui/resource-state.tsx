@@ -1,8 +1,8 @@
 import './resource-state.css';
 
 export function MissingResource({ kind, back, list }: {
-  kind: 'project' | 'saved view' | 'issue';
-  back: '/app/projects' | '/app/views' | '/app/issues';
+  kind: 'project' | 'saved view' | 'issue' | 'initiative' | 'release' | 'cycle';
+  back: '/app/projects' | '/app/views' | '/app/issues' | '/app/initiatives' | '/app/releases' | '/app/cycles';
   list: string;
 }) {
   return <main className="resource-state">
