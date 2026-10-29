@@ -664,6 +664,10 @@
       "sha256": "dcbdc2716d4fc94b05e07edb5aa7004475ed87165fb9276f175cbc5a1b909848",
       "executable": false
     },
+    "docs/LOCAL-MEMBERS.md": {
+      "sha256": "2e13edc960b7c12be2d2b4ab76b9b30498c61846a77f64b0e635254c5ab3c55b",
+      "executable": false
+    },
     "docs/LOCAL-RECOVERY.md": {
       "sha256": "dda4c4ebf4ec55d337826563340178c817b6ef2d7121858a22f0a06d4426f0ac",
       "executable": false
@@ -705,7 +709,7 @@
       "executable": false
     },
     "docs/site.json": {
-      "sha256": "7492a218f23352be0addcf9defd1e8d526052a9ac695fe56f5265e617e6cb9bf",
+      "sha256": "98051e0e5a7e169fec3ac61d67335228724d7e339ca71da7914160c3839c6031",
       "executable": false
     },
     "docs/VERIFICATION.md": {
@@ -6053,7 +6057,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/invite-operator.tsx": {
-      "sha256": "0cc607ba3d5363b75b59f03a8bade096a65a0fd857fef13864730677820b78db",
+      "sha256": "6008710927b35ae78d0fa5590229c2d766fc95e1df4f0039e323c1f2b500c226",
       "executable": false
     },
     "src/core/features/settings/ui/labels-panel.tsx": {
@@ -6065,7 +6069,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/members-panel.tsx": {
-      "sha256": "c43366d630c06ffe8f6a6ae0f49fda93fc452e48f910045fb70498a7808543d4",
+      "sha256": "375d0d2678ffb16d939c28b76935c928696f7c5a1b1d58b28ec2ef5262ade4d3",
       "executable": false
     },
     "src/core/features/settings/ui/personal-time-panel.tsx": {

@@ -23,7 +23,7 @@ type StepUp = 'needed' | 'sending' | 'email'
 const roleNames: Record<AssignableRole, string> = { owner: 'Owner', admin: 'Admin', member: 'Member', guest:'Guest',viewer:'Viewer' }
 
 /** An invitation names the role it grants (ROLE-001); Member is the default. */
-export function InviteOperator({ disabled, delivery, roles, teams, onInvited }: { disabled: boolean; delivery: 'local' | 'email'; roles: AssignableRole[]; teams:{id:string;name:string}[]; onInvited: () => void }) {
+export function InviteOperator({ disabled, roles, teams, onInvited }: { disabled: boolean; roles: AssignableRole[]; teams:{id:string;name:string}[]; onInvited: () => void }) {
   const [email, setEmail] = useState('')
   const [displayName, setDisplayName] = useState('')
   const [role, setRole] = useState<AssignableRole>('member')
@@ -41,12 +41,10 @@ export function InviteOperator({ disabled, delivery, roles, teams, onInvited }: 
   async function invite(event: FormEvent) {
     event.preventDefault(); setPending(true); setMessage(''); setFailed(false); setStepUp(null)
     try {
-      const result = await fetchJson('/api/settings/operators/invite', z.object({ status: z.literal('accepted'), delivery: z.enum(['local', 'email']) }), {
+      await fetchJson('/api/settings/operators/invite', z.object({ status: z.literal('accepted'), delivery: z.enum(['local', 'email']) }), {
         method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email, displayName, role, ...(['guest','viewer'].includes(role) ? {teamIds} : {}) }),
       })
-      setMessage(result.delivery === 'local'
-        ? 'Invitation saved locally. No email was sent. Use the teammate steps above to try another member.'
-        : `Invitation submitted for delivery. The new ${roleNames[role]} appears here after accepting it.`)
+      setMessage(`Invitation submitted for delivery. The new ${roleNames[role]} appears here after accepting it.`)
       setEmail(''); setDisplayName(''); setRole('member'); setTeamIds([]); saveDraft(null); onInvited()
     } catch (error) {
       if (error instanceof ApiError && (error.body as { error?: unknown } | null)?.error === 'step_up_required') {
@@ -67,7 +65,6 @@ export function InviteOperator({ disabled, delivery, roles, teams, onInvited }: 
   }
   return <form onSubmit={invite} aria-label="Invite member">
     <h3>Invite a member</h3>
-    {delivery === 'local' && <p>No email is sent from this local copy. To try a teammate, open the owner’s <code>RER_OPEN</code> link first, then run <code>rer dev --as teammate</code> and open its link in the same browser. This switches to a separate local Member; it does not accept an invitation for the email below. Deploy Vector to invite someone by email.</p>}
     <label htmlFor="invite-name">Name</label>
     <input id="invite-name" required maxLength={120} value={displayName} onChange={event => setDisplayName(event.target.value)} />
     <label htmlFor="invite-email">Email</label>
