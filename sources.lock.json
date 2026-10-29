@@ -588,7 +588,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "d8c2aa2f77815698cad262e260aa87fed271703b230f8bbade71ec1a02abea5a",
+      "sha256": "73f6e869015b5fd9e91cf54ce2897dacab974b54a54443ba11d016c7ff4ac88a",
       "executable": false
     },
     "BASELINE.md": {
@@ -8753,6 +8753,10 @@
     },
     "vendor/base/agent-door/tests/seed.ts": {
       "sha256": "e390e19782dc2b2abfbec6ed1d37d126856e86c425f34c168d17ab15301ba061",
+      "executable": false
+    },
+    "vendor/base/agent-door/tests/sponsor-tools.ts": {
+      "sha256": "53cb783d2fed4474fe913586225e1ff0c1560c49937d367c7c62f31e4e9eda90",
       "executable": false
     },
     "vendor/base/agent-door/transport.ts": {
