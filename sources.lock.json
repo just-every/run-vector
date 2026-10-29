@@ -6929,7 +6929,7 @@
       "executable": false
     },
     "tests/e2e/core-draft-journey.mjs": {
-      "sha256": "56a8119cf5f70f063fa32da15249cb6b98d7061d726486344fbe8f51ea0902c9",
+      "sha256": "d23da82e48f695cbe1caab477de541ae7ba52ad6a32004fbec96cdf7229c6546",
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
