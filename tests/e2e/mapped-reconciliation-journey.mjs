@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {expect} from '@playwright/test';
 import {join} from 'node:path';
 
 /** Nonempty source values in every dimension, including a missing person. */
@@ -31,8 +32,11 @@ export async function exerciseMappedReconciliation({page,runtime,native,terminal
  assert.equal(report.run.state,'completed');assert.equal(report.totals.issuesWritten,4);
  assert.deepEqual(await terminalReport(run.id),report);
  await page.setViewportSize({width:1440,height:900});await page.goto(runtime.base+'/app/settings');
+ await expect(page.getByLabel('File format',{exact:true})).toBeEnabled();
  const row=page.locator('.import-runs > li').filter({has:page.getByText(run.id,{exact:true})});
+ const shown=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/data/import/runs/'+run.id+'/report');
  await row.getByRole('button',{name:'Reconciliation report',exact:true}).click();
+ assert.equal((await shown).status(),200);
  const section=row.locator('.import-report');
  await section.getByRole('heading',{name:'Reconciliation report: synthetic-vector-dimensions',exact:true}).waitFor();
  const dimensions={
