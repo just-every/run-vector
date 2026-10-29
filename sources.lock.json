@@ -553,7 +553,7 @@
       "executable": false
     },
     "docs/ARCHIVES.md": {
-      "sha256": "5e6eecd601774efd1f8bc0411c399c0d3b1c916a26ff68ae8d495814c0e83ae0",
+      "sha256": "3c594f752edb33838022ea8f1319a4be26748e541594a261313a92562377954b",
       "executable": false
     },
     "docs/AUTHENTICATION.md": {
@@ -3561,7 +3561,7 @@
       "executable": false
     },
     "src/core/features/agent-door/read-tools.ts": {
-      "sha256": "d34bb1f12b03dc12a8f188571108bdd112e9eabcb8fe3f048082db0a64683681",
+      "sha256": "53579c8ab65a5d7c79215fa2bdc9b23d70371e16b3d1e16cf44f7d389d019f4f",
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
