@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "577e707f9674472714c28d981a89519347d7d7fbaa300163a986ea5f11e5158c",
+      "sha256": "f9573f7e69c2d1c15bda6df32b8249d7aac53e638e676c4bc61d200ec11c65e0",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -6801,7 +6801,7 @@
       "executable": false
     },
     "tests/e2e/comment-checklist-journey.mjs": {
-      "sha256": "e79f7085cd34248c409d77cdd5472409ea6525b7370c2ef1026d8e6b77e84cd5",
+      "sha256": "1121b2bc3afe8e952d4fd122edded9b84644ca58c9a711796c07f0a04bd6935c",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
@@ -7633,7 +7633,7 @@
       "executable": false
     },
     "tests/worker/description-history.test.ts": {
-      "sha256": "da9bf5907f96ab507382335308199eca7a592725e11ba6dd2d3bf53c8522ebe9",
+      "sha256": "0a057c8489d6a2b8da88c95e45af9965f2c3ead527cc46eb5c53b3e1da09dd3b",
       "executable": false
     },
     "tests/worker/dev-credentials.test.ts": {
