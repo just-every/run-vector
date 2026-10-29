@@ -67,7 +67,7 @@ export async function clearDeferral(
   ];
   const activityId = createUlid(new Date(now));
   const event = { id: activityId, issueId: issue.id, actor, actorName, at: now };
-  const writes = await db.batch([
+  await db.batch([
     db
       .prepare(
         `INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at)
@@ -92,7 +92,7 @@ export async function clearDeferral(
     db.prepare('DELETE FROM issue_deferral_origins WHERE issue_id=? AND EXISTS(SELECT 1 FROM issue_activity WHERE id=?)').bind(issue.id,activityId),
     ...finalizeEvent(db,event),
   ]);
-  return writes[0].meta.changes === 1;
+  return Boolean(await db.prepare("SELECT 1 FROM issue_activity WHERE id=? AND issue_id=? AND kind='intake.returned'").bind(activityId, issue.id).first());
 }
 
 export async function guardReturnedNoop(db: D1Database, issue: DeferredIntake, actor: string) {

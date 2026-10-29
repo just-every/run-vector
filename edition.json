@@ -379,6 +379,81 @@
           }
         ]
       }
+    },
+    {
+      "id": "runeditrun/agent-door",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/agent-door"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
+          "paths": [
+            "modules/agent-door"
+          ]
+        },
+        "mappings": [
+          {
+            "path": "vendor/base/agent-door",
+            "originPath": "modules/agent-door"
+          }
+        ]
+      }
+    },
+    {
+      "id": "runeditrun/business-settings",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/base/business-settings"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
+          "paths": [
+            "modules/business-settings"
+          ]
+        },
+        "mappings": [
+          {
+            "path": "vendor/base/business-settings",
+            "originPath": "modules/business-settings"
+          }
+        ]
+      }
+    },
+    {
+      "id": "runeditrun/agent-theme",
+      "role": "module",
+      "source": {
+        "kind": "local",
+        "paths": [
+          "vendor/foundation/runtime/theme-frame.ts",
+          "vendor/foundation/runtime/icon-head.ts"
+        ],
+        "origin": {
+          "repository": "https://github.com/runeditrun/base.git",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
+          "paths": [
+            "foundation/runtime/theme-frame.ts",
+            "foundation/runtime/icon-head.ts"
+          ]
+        },
+        "mappings": [
+          {
+            "path": "vendor/foundation/runtime/theme-frame.ts",
+            "originPath": "foundation/runtime/theme-frame.ts"
+          },
+          {
+            "path": "vendor/foundation/runtime/icon-head.ts",
+            "originPath": "foundation/runtime/icon-head.ts"
+          }
+        ]
+      }
     }
   ]
 }

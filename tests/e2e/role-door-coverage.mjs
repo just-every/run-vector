@@ -17,6 +17,18 @@ export async function assertRoleDoorCoverage(){
   import('../../src/core/features/roles/matrix.ts'),import('../../src/core/features/roles/settings-doors.ts'),
  ]);
  const routes=createServerApp().routes;
+ const {agentDoorRoutes,businessDoorRoutes}=await import('../../src/core/features/agent-door/routes.ts');
+ const agentDoors=new Map();
+ for(const door of [...agentDoorRoutes,...businessDoorRoutes]){
+  const reference='ALL '+door.path;
+  assert.ok(!agentDoors.has(reference),'Duplicate agent permission door '+reference);
+  assert.ok(['agent.owner-bound','business.signed-policy','business.signed-settings','person.session','public.metadata','public.brand-assets'].includes(door.identity),'Unknown agent identity class '+reference);
+  assert.ok(door.authority.trim(),'Agent door lacks native authority '+reference);
+  assert.ok(routes.some(route=>route.method==='ALL'&&route.path===door.path),'Agent permission declaration has no actual door '+reference);
+  agentDoors.set(reference,door);
+ }
+ for(const route of routes)if(route.path==='/mcp'||route.path.startsWith('/agents')||route.path.startsWith('/.well-known/oauth-protected-resource')||route.path==='/api/rer/agent-policy'||route.path==='/api/rer/business-settings'||route.path==='/rer-business-logo'||route.path==='/rer-business.css')
+  assert.ok(agentDoors.has(route.method+' '+route.path),'Unregistered actual agent door '+route.method+' '+route.path);
  const allEndpoints=new Set();
  function endpoints(folder){for(const item of readdirSync(folder,{withFileTypes:true})){
   const file=resolve(folder,item.name);if(item.isDirectory()){endpoints(file);continue;}if(!/\.[cm]?[jt]sx?$/.test(file))continue;
@@ -41,9 +53,9 @@ export async function assertRoleDoorCoverage(){
   }
   for(const route of routes){
    if(!route.path.startsWith(base+'/')||base==='/api'&&/^\/api\/(?:v1|integrations|editor)(?:\/|$)/.test(route.path))continue;
-   if(route.method==='ALL'&&!allEndpoints.has(route.path.slice(base.length)))continue; // Hono middleware
+   if(route.method==='ALL'&&!allEndpoints.has(route.path.slice(base.length))&&!agentDoors.has(route.method+' '+route.path))continue; // Hono middleware
    if(route.method==='GET'&&!route.path.startsWith(base+'/settings'))continue;
-   assert.ok(declared.has(route.method+' '+route.path.slice(base.length)),'Unregistered actual door: '+route.method+' '+route.path);
+   assert.ok(declared.has(route.method+' '+route.path.slice(base.length))||agentDoors.has(route.method+' '+route.path),'Unregistered actual door: '+route.method+' '+route.path);
   }
  }
  const native=new Map(doors.map(door=>[key(door),door]));

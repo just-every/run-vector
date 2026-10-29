@@ -38,7 +38,7 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
   return [
     db
       .prepare(
-        `SELECT c.id,c.parent_comment_id AS parentId,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
+        `SELECT c.id,c.parent_comment_id AS parentId,c.body,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE((SELECT prepared_by FROM vector_agent_comment_attribution WHERE comment_id=c.id),c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
  c.resolved_at AS resolvedAt,r.name AS resolvedBy,
  (c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit,
  (c.deleted_at IS NULL AND ((c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL) OR ${moderatorSql})) AS canDelete

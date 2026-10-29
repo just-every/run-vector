@@ -30,6 +30,19 @@ export async function freshTarget() {
  await applyD1Migrations(destination.ARCHIVE_TARGET_DB,inject('migrations'));
  return targetSignIn();
 }
+/** Use the actual migration bytes when modeling either production ledger. */
+export async function trackedLedger(db:D1Database,legacy=false) {
+ const digests=inject('migrationDigests') as Record<string,string>;
+ const rows=(await db.prepare('SELECT name FROM d1_migrations ORDER BY id').all<{name:string}>()).results;
+ if(legacy) {
+  await db.exec('CREATE TABLE _rer_deploy_migrations(name TEXT PRIMARY KEY,sha256 TEXT NOT NULL,state TEXT NOT NULL)');
+  await db.batch(rows.map(({name})=>db.prepare("INSERT INTO _rer_deploy_migrations VALUES(?,?,'applied')").bind(name,digests[name])));
+  await db.exec('DROP TABLE d1_migrations');
+ } else {
+  await db.exec('ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT;');
+  await db.batch(rows.map(({name})=>db.prepare("UPDATE d1_migrations SET sha256=?,state='applied' WHERE name=?").bind(digests[name],name)));
+ }
+}
 export type ArchiveRecords=(Manifest|Part|Closing)[];
 export async function httpExport(call:(path:string,method?:string,body?:unknown)=>Promise<Response>) {
  const create=await call('/portability/exports','POST',{});expect(create.status).toBe(201);

@@ -181,7 +181,7 @@ export async function mutateDependencyRecord(
   // versions. Its unique activity ID authorizes all subsequent writes, so adding
   // the edge or incrementing one endpoint cannot invalidate the other guard.
   const event = { id: primary.id, issueId: issue.id, actor, at: timestamp };
-  const writes = await binding.batch([
+  await binding.batch([
     binding
       .prepare(
         `${operation === "add" ? reachable : ""}
@@ -245,7 +245,10 @@ export async function mutateDependencyRecord(
       .bind(timestamp, relatedIssue.id, ...receiptParams),
     ...finalizeEvent(binding,event),
   ]);
-  if (writes[0].meta.changes === 1) return "written";
+  // Native attribution may append auxiliary rows in the same transaction.
+  // The unique activity receipt, also used by every guarded write above,
+  // proves this operation committed independently of trigger change counts.
+  if (await binding.prepare(`SELECT 1 AS written WHERE ${receipt}`).bind(...receiptParams).first()) return "written";
   const current = await requireDependencyPair(
     binding,
     identifier,

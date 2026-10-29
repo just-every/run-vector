@@ -40,6 +40,8 @@ Vector owns its fonts: `public/fonts/fonts.css`, linked by `src/core/app/fonts.t
 
 ## Lander-Regenerate
 
+Lander-Regenerate: node scripts/contract-docs.mjs write BASE-AGENT-001 BASE-AGENT-002 BASE-AGENT-003 BASE-AGENT-004 BASE-AGENT-005 BASE-AGENT-006 BASE-AGENT-007 BASE-AGENT-008 BASE-AGENT-009 BASE-AGENT-010 BASE-AGENT-011 BASE-AGENT-012 BASE-AGENT-013
+
 After editing clause definitions and Status rows in CONTRACT.md, synchronize only the touched clause IDs and the summary counts, then check them:
 
 ```sh

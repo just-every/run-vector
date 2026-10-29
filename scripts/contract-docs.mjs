@@ -25,15 +25,21 @@ const escape=value=>value.replaceAll('|','\\|').replaceAll('\n',' ');
 for(const id of ids){
  const clause=parsed.clauses.find(clause=>clause.id===id);if(!clause)throw Error('No contract clause '+id);
  const source=clause.text.split(/\*Status:\*/)[0].trim();
- const acceptanceIndex=source.indexOf('*Acceptance:*');if(acceptanceIndex<0)throw Error(id+' has no acceptance text.');
- const requirement=source.slice(0,acceptanceIndex).trim(),points=source.slice(acceptanceIndex+'*Acceptance:*'.length).trim();
+ const markerText=source.includes('**Acceptance.**')?'**Acceptance.**':'*Acceptance:*';
+ const acceptanceIndex=source.indexOf(markerText);if(acceptanceIndex<0)throw Error(id+' has no acceptance text.');
+ const requirement=source.slice(0,acceptanceIndex).trim(),points=source.slice(acceptanceIndex+markerText.length).trim();
  const row=withoutSummary.split('\n')[clause.row-1];
  const cells=row.split(/(?<!\\)\|/).slice(1,-1).map(cell=>cell.trim());
  const evidence=cells[4],gap=cells[5];
  const marker='<!-- contract-docs:'+id+' -->';
  const generated=`- **${id} — ${clause.title}** (${clause.status}). Requirement: ${requirement} Acceptance: ${points} Evidence: ${evidence}${gap?' Gap: '+gap:''} ${marker}`;
  const acceptanceLines=nextAcceptance.split('\n'),index=acceptanceLines.findIndex(line=>line.startsWith('- **'+id+' — '));
- if(index<0)throw Error('No legacy acceptance entry for '+id);acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\n');
+ if(index<0){
+  if(!id.startsWith('BASE-AGENT-')||!original.split('\n')[clause.line-1].startsWith('#### '))throw Error('No legacy acceptance entry for '+id);
+  while(acceptanceLines.at(-1)==='')acceptanceLines.pop();
+  acceptanceLines.push('',generated,'');
+ }else acceptanceLines[index]=generated;
+ nextAcceptance=acceptanceLines.join('\n');
  const claim=`| ${id} | ${clause.status} | ${escape(requirement)}${gap?' Gap: '+escape(gap):''} | ${evidence} |`;
  const claimLines=nextClaims.split('\n'),claimIndex=claimLines.findIndex(line=>line.startsWith('| '+id+' |'));
  if(claimIndex>=0)claimLines[claimIndex]=claim;else{while(claimLines.at(-1)==='')claimLines.pop();claimLines.push(claim,'');}

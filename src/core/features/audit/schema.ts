@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { storedAttributionSchema } from '../agent-door/attribution-schema';
 
 export const actorKinds = ['person', 'automation', 'integration', 'agent', 'unknown'] as const;
 export const auditQuerySchema = z.object({
@@ -14,6 +15,7 @@ export type AuditQuery = z.infer<typeof auditQuerySchema>;
 export const auditEntrySchema = z.object({
   id: z.string(), actorRef: z.string(), actorKind: z.enum(actorKinds),
   actorName: z.string().nullable(), action: z.string(), subjectRef: z.string(), at: z.string(),
+  attribution: storedAttributionSchema.optional(),
 });
 export type AuditEntry = z.infer<typeof auditEntrySchema>;
 export const auditSchema = z.object({ entries: z.array(auditEntrySchema), through: z.number().int().nonnegative() });

@@ -43,6 +43,7 @@ it(contractTitle('DATA-010 REL-007','Jira 300-issue staged apply preserves relat
  await checkJiraReconciliation(f,untouched.id,true,generateJiraFixture({sourceKeyPrefix:'VJ2'}));
  const removable=await (await f.call('/data/import/runs/'+untouched.id+'/rollback')).json() as RollbackPreview;expect(removable.conflicts).toEqual([]);expect(removable.issues).toBe(300);
  const auditBeforeUndo=(await env.DB.prepare('SELECT * FROM audit_records ORDER BY rowid').all()).results;
+ const eventBeforeUndo=(await env.DB.prepare('SELECT event FROM agent_door_events ORDER BY sequence').all<{event:string}>()).results;
  const beforeUndo=await f.counts(),cycleCount=await env.DB.prepare('SELECT count(*) n FROM issues WHERE id IN (SELECT target_id FROM ik_provenance WHERE job_id=?) AND cycle_id IS NOT NULL').bind(untouched.id).first<number>('n');
  const undo=await f.call('/data/import/runs/'+untouched.id+'/rollback','POST',{confirmed:true});expect(undo.status,await undo.clone().text()).toBe(200);expect((await f.finish(await undo.json())).state).toBe('rolled_back');
  const afterUndo=await f.counts(),deltas=Object.fromEntries(Object.keys(beforeUndo).filter(name=>beforeUndo[name]!==afterUndo[name]).map(name=>[name,beforeUndo[name]-afterUndo[name]]));
@@ -50,9 +51,18 @@ it(contractTitle('DATA-010 REL-007','Jira 300-issue staged apply preserves relat
  expect(auditAfterUndo.slice(0,auditBeforeUndo.length)).toEqual(auditBeforeUndo);
  expect(auditAfterUndo.slice(auditBeforeUndo.length)).toEqual(['import.rolling_back','import.rolled_back'].map(action=>expect.objectContaining({action,actor_operator_id:f.owner,actor_kind:'person',actor_reference:'person:'+f.owner,subject_id:untouched.id,subject_identifier:untouched.id})));
  expect(deltas.audit_records).toBe(-2);
+ // The shared door mirrors ordinary-person native audit changes. Whole-run
+ // Undo retains prior history and adds exactly those two committed mirrors.
+ const eventAfterUndo=(await env.DB.prepare('SELECT event FROM agent_door_events ORDER BY sequence').all<{event:string}>()).results;
+ expect(eventAfterUndo.slice(0,eventBeforeUndo.length)).toEqual(eventBeforeUndo);
+ const retainedAudit=auditAfterUndo.slice(auditBeforeUndo.length);
+ expect(eventAfterUndo.slice(eventBeforeUndo.length).map(row=>JSON.parse(row.event))).toEqual(retainedAudit.map(row=>expect.objectContaining({
+  type:row.action,uri:'vector://audit/'+row.id,nativeEventId:row.id,actor:{kind:'person',person:{id:f.owner,name:expect.any(String)}}
+ })));
+ expect(deltas.agent_door_events).toBe(-retainedAudit.length);
  const custody=(name:string)=>name.startsWith('ik_')||name==='vector_import_runs';
  const derived=(name:string)=>name.startsWith('search_issues')||name==='cycle_membership_events';
- expect(Object.fromEntries(Object.entries(deltas).filter(([name])=>!custody(name)&&!derived(name)&&name!=='audit_records'))).toEqual(Object.fromEntries(Object.entries(removable.rows).filter(([,n])=>n>0)));
+ expect(Object.fromEntries(Object.entries(deltas).filter(([name])=>!custody(name)&&!derived(name)&&!['audit_records','agent_door_events'].includes(name)))).toEqual(Object.fromEntries(Object.entries(removable.rows).filter(([,n])=>n>0)));
  expect(deltas.cycle_membership_events).toBe(-cycleCount!);
  expect((await f.report(untouched.id)).totals.issuesWritten).toBe(0);for(const count of Object.values((await f.report(untouched.id)).effects!.counts))expect(count.written).toBe(0);
  expect(await f.native(run.id)).toHaveLength(300);

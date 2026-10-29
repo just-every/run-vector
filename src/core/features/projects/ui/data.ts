@@ -1,6 +1,7 @@
 import { projectReportSchema } from "../../project-report/schema";
 import { historicalCycleSchema } from "../../cycle-closure/schema";
 import { z } from "zod";
+import { storedAttributionSchema } from '../../agent-door/attribution-schema';
 
 const healthSchema = z.enum([
   "blocked",
@@ -77,7 +78,7 @@ export const projectDetailSchema = projectSummarySchema.extend({
   })),
   report: projectReportSchema,
   cycleHistory: z.array(historicalCycleSchema),
-  activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable()})),
+  activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable(),attribution:storedAttributionSchema.optional()})),
   teams: z.array(personSchema),
   cycles: z.array(
     z.object({
