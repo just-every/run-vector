@@ -1,3 +1,4 @@
+// Comment description anchors are portable domain data; deletion clears their retained quotes.
 // Initiative channel bindings are portable domain configuration, like vector_channel_bindings.
 // Initiative destination approvals and scoped binding custody are portable domain configuration; approvals name
 // provider identities, never credentials, and a restored Discord copy still needs its webhook re-entered.
