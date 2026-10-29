@@ -6,7 +6,7 @@ import { collaborationFixture } from "./collaboration-fixture";
 import { setupIntegrations } from "./integration-fixture";
 import { heldBody } from "./removal-fixture";
 import { createServerApp } from "../../src/core/app/server";
-import { signIn } from "./base-auth-fixture";
+import { signIn, request } from "./base-auth-fixture";
 import { bindings, origin } from "./base-auth-fixture";
 import { parseTasks } from "../../src/core/features/description-history/tasks";
 
@@ -99,6 +99,18 @@ async function nativeJourney() {
   expect(finalIssue.description).toBe(source);
   expect(finalIssue.version).toBe(repeated.version);
   expect((await receipt<History>(await f.call(path + "/description-history"))).revisions).toEqual(repeatedHistory.revisions);
+  const endingSession = await signIn(), heldConflict = heldBody();
+  const pendingConflict = createServerApp().request(origin + "/api" + route, {
+    method: "POST", headers: { Host: new URL(origin).host, Cookie: endingSession, Origin: origin, "content-type": "application/json" }, body: heldConflict.body,
+  }, bindings);
+  await Promise.race([heldConflict.reading, pendingConflict.then(response => { throw new Error("Conflict request ended before its body was read: " + response.status); })]);
+  expect((await request("/auth/signout", "POST", {}, endingSession)).status).toBe(204);
+  const signedOut = await snapshot();
+  heldConflict.release(JSON.stringify(input));
+  const deniedConflict = await pendingConflict;
+  expect(deniedConflict.status).toBe(401);
+  expect(await deniedConflict.text()).not.toContain("Guides");
+  expect(await snapshot()).toEqual(signedOut);
   await receipt(await f.call(`${path}/comments/${comment.id}`, "DELETE"));
   const erased = await snapshot();
   expect((await f.any(secondSession, route, "POST", input)).status).toBe(404);

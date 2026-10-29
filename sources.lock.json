@@ -4133,7 +4133,7 @@
       "executable": false
     },
     "src/core/features/description-history/routes.ts": {
-      "sha256": "835bbf4962268961a97cf75f0cf5599bc19017827a6cb4e5259040a7be8f4879",
+      "sha256": "007ce477f2e6ac067039687b615fb9f68125a7f4b269115aa93db5d9d39296c5",
       "executable": false
     },
     "src/core/features/description-history/schema.ts": {
@@ -7633,7 +7633,7 @@
       "executable": false
     },
     "tests/worker/description-history.test.ts": {
-      "sha256": "0a057c8489d6a2b8da88c95e45af9965f2c3ead527cc46eb5c53b3e1da09dd3b",
+      "sha256": "99b9d6da4a51b1af090f06ea6160b39db080a264e3e18bd53e70b07161e9d9c7",
       "executable": false
     },
     "tests/worker/dev-credentials.test.ts": {
