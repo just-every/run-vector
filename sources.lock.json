@@ -576,7 +576,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "0b46c89964c9baa616d6c1c7a7e40dbf6f0952e0d7d9b3747711c951ef39ae59",
+      "sha256": "e1d995cc6727abd0738b7563c05b6775738061ece29454a0834e26849eaa5d54",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -632,7 +632,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "7ea6089ae6da4e81956fcf8b5fe02e9970be55e6467ced87cc369fb33e86274a",
+      "sha256": "96430852264de2ff9f7f08b1f658262ca3d87842c8e999411de1f48592e2c04e",
       "executable": false
     },
     "docs/AGENT-REGISTRY.md": {

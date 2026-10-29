@@ -2360,7 +2360,8 @@
       "clauses": [
         "ROLE-009",
         "ROLE-007"
-      ]
+      ],
+      "sponsorEscalation": false
     },
     {
       "name": "vector.team.join_permissions.set",
@@ -2437,7 +2438,8 @@
       "clauses": [
         "OPS-002",
         "ROLE-001"
-      ]
+      ],
+      "sponsorEscalation": false
     },
     {
       "name": "vector.team.creation_permission.set",
@@ -2449,7 +2451,8 @@
       ],
       "clauses": [
         "TEAM-008"
-      ]
+      ],
+      "sponsorEscalation": false
     },
     {
       "name": "vector.issue.labels.creation_permission",
@@ -2461,7 +2464,8 @@
       ],
       "clauses": [
         "ISSUE-014"
-      ]
+      ],
+      "sponsorEscalation": false
     },
     {
       "name": "vector.role.workspace_roles.set",
