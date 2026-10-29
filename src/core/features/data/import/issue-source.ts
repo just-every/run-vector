@@ -1,3 +1,4 @@
+import {aliasTargetSql} from '../aliases/identity';
 import { IssueAccessError } from "../../issues/access";
 
 /** The import that created an issue, by its source record ID (for example
@@ -16,15 +17,13 @@ export function importedFromProjection(row:ImportedFromRow|null|undefined):Impor
  * current workspace membership in the same SQL snapshot. */
 export async function requireIssueSourceAccess(db:D1Database,operatorId:string,identifier:string) {
   const row=await db.prepare(`SELECT actor.removed_at,i.id,i.identifier,i.version
-    FROM operators actor LEFT JOIN issues i ON i.identifier=COALESCE(
-      (SELECT n.identifier FROM issues n JOIN teams t ON t.id=n.team_id WHERE n.identifier=?1 AND t.workspace_id=actor.workspace_id),
-      (SELECT CASE WHEN count(*)=1 THEN min(imported.identifier) END
+    FROM operators actor LEFT JOIN issues i ON i.id=COALESCE(${aliasTargetSql('actor.workspace_id','?1')},
+      (SELECT CASE WHEN count(DISTINCT imported.id)=1 THEN min(imported.id) END
        FROM ik_provenance p JOIN issues imported ON imported.id=p.target_id
        JOIN teams t ON t.id=imported.team_id AND t.workspace_id=actor.workspace_id
        WHERE p.destination=actor.workspace_id AND p.target_kind='issue' AND p.reversed=0
-       AND (json_extract(p.record_json,'$.sourceId')=?1 COLLATE NOCASE OR EXISTS(
-         SELECT 1 FROM issue_activity a WHERE a.issue_id=imported.id AND a.kind='issue.imported'
-         AND json_extract(a.next_value_json,'$.sourceKey')=?1 COLLATE NOCASE))), ?1)
+       AND NOT EXISTS(SELECT 1 FROM issue_aliases a WHERE a.issue_id=imported.id)
+       AND json_extract(p.record_json,'$.sourceId')=?1 COLLATE NOCASE))
       AND EXISTS(SELECT 1 FROM teams t WHERE t.id=i.team_id AND t.workspace_id=actor.workspace_id)
     WHERE actor.id=?2`).bind(identifier,operatorId)
     .first<{removed_at:string|null;id:string|null;identifier:string;version:number}>();

@@ -2020,5 +2020,17 @@
     "token_id",
     "created_at",
     "revoked_at"
+  ],
+  "issue_alias_prefixes": [
+    "workspace_id",
+    "prefix",
+    "active"
+  ],
+  "issue_aliases": [
+    "workspace_id",
+    "source",
+    "source_key",
+    "prefix",
+    "issue_id"
   ]
 }

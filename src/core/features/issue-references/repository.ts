@@ -1,3 +1,4 @@
+import {aliasTargetSql} from '../data/aliases/identity';
 import { visibleTeam } from "../roles/visibility-sql";
 import { extractIssueIdentifiers } from "./identifiers.server";
 import type { IssueReference } from "./schema";
@@ -24,24 +25,24 @@ export function issueReferenceStatements(db: D1Database, event: ReferenceEvent, 
     SELECT source.id,target.id,?,?,? FROM issues source JOIN teams st ON st.id=source.team_id
     JOIN operators actor ON actor.workspace_id=st.workspace_id AND actor.id=? AND actor.removed_at IS NULL
     JOIN teams tt ON tt.workspace_id=st.workspace_id JOIN issues target ON target.team_id=tt.id
-    WHERE source.id=? AND target.id<>source.id AND target.identifier IN(SELECT value FROM json_each(?))
+    WHERE source.id=? AND target.id<>source.id AND target.id IN(SELECT ${aliasTargetSql('actor.workspace_id','keys.value')} FROM json_each(?) keys)
     AND ${visibleTeam('actor', 'source.team_id')} AND ${visibleTeam('actor', 'target.team_id')}
     AND ${stored} AND ${receipt}`)
     .bind(subject.kind, subject.id, event.at, event.actor, event.issueId, JSON.stringify(identifiers), ...storedValues, event.id, event.issueId, event.actor));
   return statements;
 }
 
-/** Uses current identifiers only. No source-identity or alias lookup. */
+/** Links retain the typed key and name the currently visible native target. */
 export async function readIssueReferences(db: D1Database, actor: string, identifiers: readonly string[]): Promise<IssueReference[]> {
   if (!identifiers.length) return [];
-  const rows = await db.prepare(`SELECT i.identifier,i.title,s.id statusId,s.name statusName,s.category statusCategory
-    FROM issues i JOIN teams t ON t.id=i.team_id JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=i.team_id
-    JOIN operators actor ON actor.workspace_id=t.workspace_id AND actor.id=? AND actor.removed_at IS NULL
-    WHERE i.identifier IN(SELECT value FROM json_each(?)) AND ${visibleTeam('actor', 'i.team_id')}
-    ORDER BY i.identifier`).bind(actor, JSON.stringify(identifiers)).all<{
-      identifier: string; title: string; statusId: string; statusName: string; statusCategory: string;
+  const rows = await db.prepare(`SELECT keys.value identifier,i.identifier canonicalIdentifier,i.title,s.id statusId,s.name statusName,s.category statusCategory
+    FROM json_each(?) keys JOIN operators actor ON actor.id=? AND actor.removed_at IS NULL
+    JOIN issues i ON i.id=${aliasTargetSql('actor.workspace_id','keys.value')} JOIN teams t ON t.id=i.team_id JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=i.team_id
+    WHERE actor.workspace_id=t.workspace_id AND ${visibleTeam('actor', 'i.team_id')}
+    ORDER BY i.identifier`).bind(JSON.stringify(identifiers), actor).all<{
+      identifier: string; canonicalIdentifier:string; title: string; statusId: string; statusName: string; statusCategory: string;
     }>();
-  return rows.results.map(row => ({ identifier: row.identifier, title: row.title,
+  return rows.results.map(row => ({ identifier: row.identifier, ...(row.canonicalIdentifier!==row.identifier?{canonicalIdentifier:row.canonicalIdentifier}:{}), title: row.title,
     status: { id: row.statusId, name: row.statusName, category: row.statusCategory } }));
 }
 

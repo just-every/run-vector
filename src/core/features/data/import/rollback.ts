@@ -58,6 +58,8 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
     counts[table]=(counts[table]??0)+((await db.prepare(`SELECT count(*) AS n FROM "${table}" WHERE "${key}" IN (SELECT value FROM json_each(?))`).bind(inRun).first<number>('n'))??0);
   const relatedCount=await db.prepare('SELECT count(*) n FROM issue_relations WHERE first_issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
   if(relatedCount)counts.issue_relations=relatedCount;
+  const aliasCount=await db.prepare('SELECT count(*) n FROM issue_aliases WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
+  if(aliasCount)counts.issue_aliases=aliasCount;
   const orderCount=await db.prepare('SELECT count(*) n FROM manual_order_entries WHERE issue_id IN (SELECT value FROM json_each(?))').bind(inRun).first<number>('n');
   if(orderCount)counts.manual_order_entries=orderCount;
   return {runId:id,state:job.state,issues:ids.length,rows:counts,conflicts,detachedIssues:detached.length,detachedIdentifiers:detached.map(row=>row.identifier)};

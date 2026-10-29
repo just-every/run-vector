@@ -252,6 +252,8 @@ export const doors: Door[] = [
   { method: 'GET', path: '/settings/integrations/tokens/usage', row: null, page: 'personal-integrations' },
   { method: 'POST', path: '/settings/integrations/tokens', row: 'tokens.personal' },
   { method: 'DELETE', path: '/settings/integrations/tokens/:id', row: 'tokens.personal' },
+  {method:'GET',path:'/data/aliases/prefixes',row:null},
+  {method:'PATCH',path:'/data/aliases/prefixes/:prefix',row:null},
   // Import, export and portability
   { method: 'ALL', path: '/portability/*', row: ({ path }) => /^\/api\/portability\/imports(?:\/|$)/.test(path) ? 'data.restore' : 'data.export', teams:({db,actor})=>teamsOf(db,actor,'all') },
   ...([['GET', '/data/import/options'], ['GET', '/data/import/runs'], ['GET', '/data/import/runs/:id'], ['GET', '/data/import/runs/:id/originals'], ['GET', '/data/import/runs/:id/report'],

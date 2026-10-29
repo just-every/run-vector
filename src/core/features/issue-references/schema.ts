@@ -1,5 +1,6 @@
 export type IssueReference = {
   identifier: string;
+  canonicalIdentifier?:string;
   title: string;
   status: { id: string; name: string; category: string };
 };

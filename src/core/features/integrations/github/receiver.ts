@@ -1,3 +1,4 @@
+import {githubAliasIssues,aliasReferenceKind,githubAliasGuard} from '../../data/aliases/github';
 import { sha256 } from '../../../../../vendor/base/integrations/core/crypto';
 import type { WorkerBindings } from '../../../app/bindings';
 import { createUlid } from '../../../shared/ids';
@@ -7,7 +8,7 @@ import { rawIntegrationBody } from '../raw-body';
 import { recordPushProof,receiveDeployment } from './deployments';
 import { receivePush } from './push';
 import { gitMove } from './rules';
-import { githubPayload,githubReferences,githubReferenceKind } from './input';
+import { githubPayload,githubReferences } from './input';
 import { admitted } from '../authority';
 const encoder=new TextEncoder();
 type Repository={id:string;workspace_id:string;repository:string;enabled:number;revoked_at:string|null};
@@ -47,19 +48,19 @@ export async function receiveGithub(env:WorkerBindings,request:Request,id:string
  const at=new Date().toISOString(),updatedAt=new Date(pr.updated_at).toISOString(),state=pr.merged?'merged':pr.state;
  const current=await env.DB.prepare('SELECT updated_at,state,title FROM vector_github_pull_requests WHERE repository_id=? AND number=?').bind(id,pr.number).first<{updated_at:string;state:string;title:string}>();
  const refs=githubReferences(pr.title,pr.body,pr.head?.ref);if(refs.length>20)throw new IntegrationError(413,'github_reference_limit');
- const issues=(await env.DB.prepare(`SELECT i.id,i.identifier,i.version FROM issues i JOIN teams t ON t.id=i.team_id WHERE t.workspace_id=? AND i.identifier IN (SELECT value FROM json_each(?))`).bind(repository.workspace_id,JSON.stringify(refs)).all<{id:string;identifier:string;version:number}>()).results;
+ const issues=await githubAliasIssues(env.DB,repository.workspace_id,refs);
  const stale=current&&updatedAt<current.updated_at,ambiguous=current&&updatedAt===current.updated_at&&(state!==current.state||pr.title!==current.title),terminal=current?.state==='merged'&&state!=='merged';
  const diagnostic=stale?'older_pull_request_state':ambiguous?'same_time_state_conflict':terminal?'merged_state_retained':!refs.length?'no_issue_reference':issues.length!==refs.length?'unknown_issue_reference':'linked';
  const guard=(sql:string,...params:(string|number|null)[])=>env.DB.prepare(`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('github transaction denied') END`).bind(...params);
  const statements=[guard(authority,...authValues),guard('NOT EXISTS(SELECT 1 FROM vector_github_deliveries WHERE repository_id=? AND delivery_id=?)',id,delivery),
  current?guard('EXISTS(SELECT 1 FROM vector_github_pull_requests WHERE repository_id=? AND number=? AND updated_at=? AND state=? AND title=?)',id,pr.number,current.updated_at,current.state,current.title):guard('NOT EXISTS(SELECT 1 FROM vector_github_pull_requests WHERE repository_id=? AND number=?)',id,pr.number)];
  if(!stale&&!ambiguous&&!terminal){
-  for(const issue of issues)statements.push(guard('EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND i.version=? AND t.workspace_id=?)',issue.id,issue.version,repository.workspace_id));
+  for(const issue of issues)statements.push(githubAliasGuard(env.DB,repository.workspace_id,issue.matchedKeys,issue.id),guard('EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND i.version=? AND t.workspace_id=?)',issue.id,issue.version,repository.workspace_id));
   statements.push(env.DB.prepare(`INSERT INTO vector_github_pull_requests(repository_id,number,title,url,state,updated_at,received_at,merge_sha) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(repository_id,number) DO UPDATE SET title=excluded.title,url=excluded.url,state=excluded.state,updated_at=excluded.updated_at,received_at=excluded.received_at,merge_sha=COALESCE(excluded.merge_sha,vector_github_pull_requests.merge_sha)`).bind(id,pr.number,pr.title,url.href,state,updatedAt,at,pr.merged?pr.merge_commit_sha?.toLowerCase()??null:null));
-  for(const issue of issues){statements.push(env.DB.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?,?,NULL,?,'github.pr_linked',NULL,?,?,? WHERE NOT EXISTS(SELECT 1 FROM vector_github_issue_links WHERE repository_id=? AND number=? AND issue_id=?)`).bind(createUlid(new Date(at)),issue.id,'GitHub '+repository.repository,JSON.stringify({repository:repository.repository,number:pr.number,state}),at,at,id,pr.number,issue.id),env.DB.prepare('INSERT INTO vector_github_issue_links(repository_id,number,issue_id,created_at,relation) VALUES(?,?,?,?,?) ON CONFLICT(repository_id,number,issue_id) DO UPDATE SET relation=excluded.relation').bind(id,pr.number,issue.id,at,githubReferenceKind(issue.identifier,pr.title,pr.body)));}
+  for(const issue of issues){statements.push(env.DB.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?,?,NULL,?,'github.pr_linked',NULL,?,?,? WHERE NOT EXISTS(SELECT 1 FROM vector_github_issue_links WHERE repository_id=? AND number=? AND issue_id=?)`).bind(createUlid(new Date(at)),issue.id,'GitHub '+repository.repository,JSON.stringify({repository:repository.repository,number:pr.number,state}),at,at,id,pr.number,issue.id),env.DB.prepare('INSERT INTO vector_github_issue_links(repository_id,number,issue_id,created_at,relation) VALUES(?,?,?,?,?) ON CONFLICT(repository_id,number,issue_id) DO UPDATE SET relation=excluded.relation').bind(id,pr.number,issue.id,at,aliasReferenceKind(issue.matchedKeys,pr.title,pr.body)));}
   const trigger=input.action==='opened'&&pr.draft?'draft':input.action==='review_requested'?'review':input.action==='closed'&&pr.merged?'merged':null;
   if(trigger)for(const issue of issues){
-   if(trigger==='merged'&&githubReferenceKind(issue.identifier,pr.title,pr.body)==='contributes')continue;
+   if(trigger==='merged'&&aliasReferenceKind(issue.matchedKeys,pr.title,pr.body)==='contributes')continue;
    statements.push(...await gitMove(env.DB,issue.id,trigger,at));
   }
  }

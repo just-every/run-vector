@@ -1,3 +1,4 @@
+import {importAlias} from '../aliases/import';
 import type { D1TargetAdapter, TargetRow, D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { nativeRelations,snapshotExpression,legacySnapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
@@ -43,7 +44,7 @@ export const nativeTargets: D1TargetAdapter = {
   write(row:TargetRow) {
     if (row.targetKind !== 'issue') throw Error('unsupported_import_target');
     const value=row.value as unknown as NativeIssueValue,issue=value.issue;
-    const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string};
+    const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string;source:string;sourceId:string;sourceKey?:string;sourceUrl?:string};
     const statements=[
       guard(`EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND identifier_prefix=? COLLATE BINARY AND archived_at IS NULL)
         AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)`,issue.team_id,row.destination,issue.origin_prefix,issue.status_id,issue.team_id,imported.statusCategory),
@@ -69,6 +70,7 @@ export const nativeTargets: D1TargetAdapter = {
     for (const entry of value.manualOrder ?? []) {
       statements.push({sql:'INSERT INTO manual_order_scopes(workspace_id,scope_key,version) VALUES(?,?,0) ON CONFLICT DO NOTHING',params:[entry.workspace_id,entry.scope_key]}, insertNative('manual_order_entries',entry));
     }
+    statements.push(...importAlias(row.destination,imported.source,imported.sourceKey||imported.sourceId,row.targetId,imported.sourceUrl,String(value.activity[0].actor_operator_id)));
     // A due date already past at import is history, not news: its one overdue
     // reminder is consumed for the assignee, as a mute would. Due today or later
     // still reminds. The row cascades away with the issue on rollback.

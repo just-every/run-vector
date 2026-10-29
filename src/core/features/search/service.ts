@@ -1,3 +1,4 @@
+import {aliasKey,aliasTargetSql} from '../data/aliases/identity';
 import { searchAdmission, SearchAccessError, type SearchFence } from "./access";
 export { getSearchOptions } from "./options";
 
@@ -38,13 +39,14 @@ export async function searchWorkspace(
   fence?: SearchFence,
 ): Promise<SearchResult> {
   const admission = await searchAdmission(db, operatorId, fence);
-  const term = query.trim().slice(0, 1000);
+  const term = aliasKey(query) ?? query.trim().slice(0, 1000);
   // Primary lookup intentionally precedes touching any FTS table. It also applies
   // the same archive and workspace admission as full-text results.
   const exact = await db
     .prepare(
       `SELECT i.id,i.identifier,i.title, ${archiveIssue} AS visible FROM operators actor
-    JOIN issues i ON i.identifier=? COLLATE NOCASE
+    CROSS JOIN (SELECT ? AS key) lookup
+    JOIN issues i ON i.id=${aliasTargetSql("actor.workspace_id","lookup.key")}
     JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
     LEFT JOIN projects p ON p.id=i.project_id
     WHERE ${admission.sql}`,
@@ -71,21 +73,23 @@ export async function searchWorkspace(
         SELECT i.id,i.identifier,i.title,0 AS placement,0 AS score
         FROM issues i JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
-        WHERE i.id=? AND i.identifier=? COLLATE NOCASE AND ${archiveIssue}
+        WHERE i.id=? AND i.id=${aliasTargetSql("actor.workspace_id","(SELECT ?)")} AND ${archiveIssue}
         UNION ALL
         SELECT i.id,i.identifier,i.title,1 AS placement,0 AS score FROM ik_provenance s
         JOIN issues i ON i.id=s.target_id
         JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
         WHERE s.destination=actor.workspace_id AND s.target_kind='issue' AND s.reversed=0
-          AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)) AND i.identifier<>? COLLATE NOCASE AND ${archiveIssue}
+          AND NOT EXISTS(SELECT 1 FROM issue_aliases a JOIN issue_alias_prefixes ap ON ap.workspace_id=a.workspace_id AND ap.prefix=a.prefix WHERE a.issue_id=i.id AND ap.active=0)
+          AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)) AND i.id<>COALESCE(${aliasTargetSql('actor.workspace_id','(SELECT ?)')},'') AND ${archiveIssue}
         UNION ALL
         SELECT i.id,i.identifier,i.title,2 AS placement,f.rank AS score FROM search_issues f
         JOIN issues i ON i.id=f.id
         JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
-        WHERE search_issues MATCH ? AND i.identifier<>? COLLATE NOCASE AND ${archiveIssue}
-          AND NOT EXISTS(SELECT 1 FROM ik_provenance s WHERE s.target_id=i.id AND s.target_kind='issue' AND s.reversed=0 AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)))
+        WHERE search_issues MATCH ? AND i.id<>COALESCE(${aliasTargetSql('actor.workspace_id','(SELECT ?)')},'') AND ${archiveIssue}
+          AND NOT EXISTS(SELECT 1 FROM ik_provenance s WHERE s.target_id=i.id AND s.target_kind='issue' AND s.reversed=0 AND NOT EXISTS(SELECT 1 FROM issue_aliases a JOIN issue_alias_prefixes ap ON ap.workspace_id=a.workspace_id AND ap.prefix=a.prefix WHERE a.issue_id=i.id AND ap.active=0)
+          AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)))
         ORDER BY placement,score,identifier LIMIT ${SEARCH_RESULT_LIMIT}
       )) AS issues,
       (SELECT json_group_array(json_object('id',id,'name',name)) FROM (
@@ -143,7 +147,7 @@ export async function searchWorkspace(
         SELECT json_object('id',i.id,'identifier',i.identifier,'title',i.title,'visible',${archiveIssue})
         FROM issues i JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
-        WHERE i.identifier=? COLLATE NOCASE
+        WHERE i.id=${aliasTargetSql("actor.workspace_id","(SELECT ?)")}
       ) AS issue FROM operators actor WHERE ${admission.sql}`,
       )
       .bind(Number(includeArchived), term, ...admission.values)
