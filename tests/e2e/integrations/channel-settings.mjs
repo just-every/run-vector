@@ -28,7 +28,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  const createdResponse=page.waitForResponse(r=>r.url().endsWith('/settings/projects')&&r.request().method()==='POST');await create.getByRole('button',{name:'Create project',exact:true}).click();assert.equal((await createdResponse).status(),200);
  const project=(await send('/settings/administration','GET')).projects.find(p=>p.name===name);assert.ok(project);
  assert.equal((await calls()).filter(c=>c.method==='conversations.create'&&c.body.name==='checkout-delivery-'+width).length,1);
- await page.goto(runtime.base+'/app/settings#integrations');await panel.getByText(name,{exact:true}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-slack');await axe();
+ await page.goto(runtime.base+'/app/settings#integrations');await panel.locator('strong',{hasText:name}).waitFor();await panel.locator('strong',{hasText:name}).scrollIntoViewIfNeeded();await shot('bound-slack');await axe();
  const config=await send('/settings/integrations/channels','GET');assert.equal(config.bindings.find(b=>b.objectId===project.id).channelName,'checkout-delivery-'+width);
  const allowance=panel.getByRole('form',{name:'Allow project channel',exact:true});
  await allowance.getByLabel('Allowed channel name',{exact:true}).fill('member-delivery-'+width);await allowance.getByLabel('Allowed Slack channel ID',{exact:true}).fill('CALLOWED'+width);
@@ -61,7 +61,7 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers,data}
  const discordIssue=await send('/issues','POST',{title:'Discord rollout '+width,teamId:team.id,projectId:project.id,statusId:team.statuses.find(s=>s.category==='unstarted').id});
  for(let i=0;i<2;i++){const tick=await page.request.get(runtime.base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status(),200);await tick.body();}
  assert.equal((await calls()).filter(c=>c.method==='discord'&&c.body.content.includes(discordIssue.identifier)).length,1);
- await page.reload();await panel.getByText('Discord #checkout-discord',{exact:false}).waitFor();await panel.getByText(name,{exact:true}).scrollIntoViewIfNeeded();await shot('bound-discord');await axe();
+ await page.reload();await panel.getByText('Discord #checkout-discord',{exact:false}).waitFor();await panel.locator('strong',{hasText:name}).scrollIntoViewIfNeeded();await shot('bound-discord');await axe();
  const removed=page.waitForResponse(r=>r.url().includes('/settings/integrations/channels/')&&r.request().method()==='DELETE');await panel.getByRole('button',{name:'Remove binding for '+name,exact:true}).click();assert.equal((await removed).status(),200);await panel.getByRole('button',{name:'Remove binding for '+name,exact:true}).waitFor({state:'hidden'});await panel.getByText('A new binding replaces',{exact:false}).evaluate(element=>element.scrollIntoView({block:'center'}));await shot('unbound');
  await form.getByLabel('Team, project, saved view or initiative').selectOption('team:'+team.id);await form.getByLabel('Channel service').selectOption('slack');await form.getByLabel('Channel display name').fill('needs-channel-membership');await form.getByLabel('Slack channel ID').fill('CREFUSED');
  const refusalBinding=page.waitForResponse(r=>r.url().endsWith('/settings/integrations/channels')&&r.request().method()==='POST');await form.getByRole('button',{name:'Save channel binding'}).click();assert.equal((await refusalBinding).status(),201);
