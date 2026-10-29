@@ -2,10 +2,12 @@ import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {setupAdministration} from './administration-fixture';
-import {invite,actor,request} from './base-auth-fixture';
+import {invite,actor,request,signIn,bindings,origin} from './base-auth-fixture';
 import {snapshot} from './role-fixture';
+import {heldBody} from './removal-fixture';
+import {createServerApp} from '../../src/core/app/server';
 const read=async(response:Response,status=200)=>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<any>;};
-const tables=['documents','document_revisions','document_comments','issue_specifications','issues','projects','teams'];
+const tables=['documents','document_revisions','document_comments','issue_specifications','issues','projects','teams','audit_records'];
 export async function documentJourney(){
  const f=await setupAdministration();
  const project=(await f.mutate('/settings/projects','POST',{name:'synthetic-vector-35001',leadOperatorId:f.owner})).projects.find(p=>p.name==='synthetic-vector-35001')!;
@@ -40,6 +42,7 @@ export async function documentJourney(){
  expect((await read(await request('/api/documents?parentKind=team&parentId='+team.id,'GET',undefined,member))).documents.map((d:any)=>d.id)).toContain(teamDoc.id);
  expect((await read(await request('/api/search?q='+encodeURIComponent(teamDoc.title),'GET',undefined,member))).documents).toContainEqual({id:teamDoc.id,title:teamDoc.title});
  const issueDoc=await read(await f.call('/documents','POST',{parentKind:'issue',parentId:issue.id,title:'synthetic-vector-issue-runbook',body:'synthetic-vector-issue-runbook-body'}),201);
+ await documentChecklist(f,issue,issueDoc,outsider);
  await read(await f.call('/documents/'+doc.id+'/comments','POST',{body:'synthetic-vector-exported-comment'}),201);
  await read(await f.call('/issues/'+issue.identifier+'/specification','PUT',{documentId:teamDoc.id}));
  expect((await read(await request('/api/issues/'+issue.identifier,'GET',undefined,outsider))).specification).toBeNull();
@@ -53,6 +56,7 @@ export async function documentJourney(){
  const items:any[]=[];for await(const record of readArchive(download.body!))if(record.kind==='part')items.push(...record.items);
  const rows=(table:string)=>items.filter(item=>item.kind==='row'&&item.table===table).map(item=>item.row);
  expect(rows('documents')).toContainEqual(expect.objectContaining({id:issueDoc.id,parent_kind:'issue',parent_id:issue.id}));
+ expect(rows('document_revisions').filter(r=>r.document_id===issueDoc.id&&r.checklist_json!==null).map(r=>JSON.parse(r.checklist_json).checked)).toEqual([true,true,false]);
  expect(rows('issues')).toContainEqual(expect.objectContaining({id:issue.id}));
  expect(rows('document_comments')).toContainEqual(expect.objectContaining({document_id:doc.id,body:'synthetic-vector-exported-comment'}));
  expect(rows('projects')).toContainEqual(expect.objectContaining({id:project.id}));
@@ -66,6 +70,12 @@ export async function documentJourney(){
  await read(await f.call('/issues/'+issue.identifier+'/specification','DELETE'));
  expect((await read(await f.call('/issues/'+issue.identifier))).specification).toBeNull();
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+ await read(await f.call('/issues/'+issue.identifier,'DELETE',{expectedVersion:issue.version,confirmed:true}));
+ const erased=await snapshot(tables);
+ expect((await f.call('/documents/'+issueDoc.id+'/checklist','POST',{expectedVersion:2,index:1,text:'Verify',checked:true})).status).toBe(404);
+ expect(await snapshot(tables)).toEqual(erased);
+ expect(await env.DB.prepare('SELECT count(*) n FROM document_revisions WHERE document_id=?').bind(issueDoc.id).first<number>('n')).toBe(0);
+
 }
 export async function documentRoles(){
  const f=await setupAdministration(),team=f.initial.teams[0];
@@ -78,16 +88,16 @@ export async function documentRoles(){
  for(const cookie of [f.cookie,admin,member])for(const [kind,id] of [['project',project.id],['issue',issue.id],['initiative',initiative.id],['team',team.id]]){
   const doc=await create(cookie,kind,id),edited=await read(await request('/api/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'synthetic-vector-role-edited'},cookie));
   const commented=await read(await request('/api/documents/'+doc.id+'/comments','POST',{body:'synthetic-vector-role-comment'},cookie),201);
-  expect(edited.body).toBe('synthetic-vector-role-edited');expect(commented.comments.map((c:any)=>c.body)).toContain('synthetic-vector-role-comment');visible=doc;
+  expect(edited.body).toBe('synthetic-vector-role-edited');expect(commented.comments.map((c:any)=>c.body)).toContain('synthetic-vector-role-comment');visible=doc;await roleTick(cookie,doc.id,edited.version);
  }
- for(const [kind,id] of [['project',project.id],['issue',issue.id]]){const doc=await create(guest,kind,id);await read(await request('/api/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'synthetic-vector-guest-edited'},guest));expect((await read(await request('/api/documents/'+doc.id+'/comments','POST',{body:'synthetic-vector-guest-comment'},guest),201)).comments.map((c:any)=>c.body)).toContain('synthetic-vector-guest-comment');}
+ for(const [kind,id] of [['project',project.id],['issue',issue.id]]){const doc=await create(guest,kind,id);await read(await request('/api/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'synthetic-vector-guest-edited'},guest));expect((await read(await request('/api/documents/'+doc.id+'/comments','POST',{body:'synthetic-vector-guest-comment'},guest),201)).comments.map((c:any)=>c.body)).toContain('synthetic-vector-guest-comment');await roleTick(guest,doc.id,doc.version+1);}
  const outside=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-35016',identifierPrefix:'SYNDOUT'})).teams.find(t=>t.name==='synthetic-vector-35016')!;
  const outsideProject=(await f.mutate('/settings/projects','POST',{name:'synthetic-vector-35017',leadOperatorId:f.owner})).projects.find(p=>p.name==='synthetic-vector-35017')!;
  const outsideIssue=await f.create({teamId:outside.id,projectId:outsideProject.id});
  for(const [kind,id,status] of [['team',team.id,403],['initiative',initiative.id,403],['project',outsideProject.id,404],['issue',outsideIssue.id,404]] as const){
   const target=await create(f.cookie,kind,id);
   const mutationStatus=kind==='initiative'?404:status;
-  const attempts:[string,string,unknown,number][]=[['/documents','POST',{parentKind:kind,parentId:id,title:'synthetic-vector-guest-refused',body:'synthetic-vector-refused'},status],['/documents/'+target.id,'PATCH',{expectedVersion:target.version,body:'synthetic-vector-guest-refused'},mutationStatus],['/documents/'+target.id+'/comments','POST',{body:'synthetic-vector-guest-refused'},mutationStatus]];
+  const attempts:[string,string,unknown,number][]=[['/documents','POST',{parentKind:kind,parentId:id,title:'synthetic-vector-guest-refused',body:'synthetic-vector-refused'},status],['/documents/'+target.id,'PATCH',{expectedVersion:target.version,body:'synthetic-vector-guest-refused'},mutationStatus],['/documents/'+target.id+'/comments','POST',{body:'synthetic-vector-guest-refused'},mutationStatus],['/documents/'+target.id+'/checklist','POST',{expectedVersion:target.version,index:0,text:'Verify',checked:true},mutationStatus]];
   for(const [path,method,body,expected] of attempts){const before=await snapshot(tables);expect((await request('/api'+path,method,body,guest)).status).toBe(expected);expect(await snapshot(tables)).toEqual(before);}
  }
  await read(await f.call('/issues/'+issue.identifier+'/specification','PUT',{documentId:visible.id}));
@@ -95,9 +105,57 @@ export async function documentRoles(){
  expect((await read(await request('/api/documents/'+visible.id+'/revisions','GET',undefined,viewer))).revisions.length).toBeGreaterThan(0);
  expect((await read(await request('/api/documents?parentKind=team&parentId='+team.id,'GET',undefined,viewer))).documents.map((d:any)=>d.id)).toContain(visible.id);
  expect((await read(await request('/api/issues/'+issue.identifier+'/specification','GET',undefined,viewer))).specification.id).toBe(visible.id);
- const attempts:[string,string,unknown][]=[['/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-viewer-refused',body:'synthetic-vector-refused'}],['/documents/'+visible.id,'PATCH',{expectedVersion:visible.version+1,body:'synthetic-vector-viewer-refused'}],['/documents/'+visible.id+'/comments','POST',{body:'synthetic-vector-viewer-refused'}],['/issues/'+issue.identifier+'/specification','PUT',{documentId:visible.id}],['/issues/'+issue.identifier+'/specification','DELETE',undefined]];
+ const attempts:[string,string,unknown][]=[['/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-viewer-refused',body:'synthetic-vector-refused'}],['/documents/'+visible.id,'PATCH',{expectedVersion:visible.version+1,body:'synthetic-vector-viewer-refused'}],['/documents/'+visible.id+'/comments','POST',{body:'synthetic-vector-viewer-refused'}],['/documents/'+visible.id+'/checklist','POST',{expectedVersion:visible.version,index:0,text:'Verify',checked:true}],['/issues/'+issue.identifier+'/specification','PUT',{documentId:visible.id}],['/issues/'+issue.identifier+'/specification','DELETE',undefined]];
  for(const [path,method,body] of attempts){const before=await snapshot(tables);expect((await request('/api'+path,method,body,viewer)).status).toBe(403);expect(await snapshot(tables)).toEqual(before);}
+ async function roleTick(cookie:string,id:string,version:number){
+  const checklist=await read(await request('/api/documents/'+id,'PATCH',{expectedVersion:version,body:'- [ ] Verify'},cookie));
+  const changed=await read(await request('/api/documents/'+id+'/checklist','POST',{expectedVersion:checklist.version,index:0,text:'Verify',checked:true},cookie));
+  expect(changed.body).toBe('- [x] Verify');
+  const history=await read(await request('/api/documents/'+id+'/revisions','GET',undefined,cookie));
+  expect(history.revisions.at(-1)).toMatchObject({version:changed.version,body:'- [x] Verify',checklist:{index:0,text:'Verify',checked:true}});
+ }
  // The next request from an already-open Member session sees a demotion too.
  await read(await f.call('/settings/operators/'+await actor(member)+'/role','PATCH',{role:'viewer'}));
  const before=await snapshot(tables);expect((await request('/api/documents/'+visible.id+'/comments','POST',{body:'synthetic-vector-demoted-refused'},member)).status).toBe(403);expect(await snapshot(tables)).toEqual(before);
+ const demoted=await snapshot(tables);expect((await request('/api/documents/'+visible.id+'/checklist','POST',{expectedVersion:visible.version,index:0,text:'Verify',checked:false},member)).status).toBe(403);expect(await snapshot(tables)).toEqual(demoted);
+}
+
+async function documentChecklist(f:Awaited<ReturnType<typeof setupAdministration>>,issue:{id:string;identifier:string;status:{id:string};version:number},document:{id:string;version:number},outsider:string){
+ const path='/documents/'+document.id,source='- [ ] Release\n  - [ ] Verify';
+ const original=await read(await f.call(path,'PATCH',{expectedVersion:document.version,body:source}));
+ const peer=await signIn();expect(peer).not.toBe(f.cookie);
+ const tick={expectedVersion:original.version,index:1,text:'Verify',checked:true};
+ const first=await read(await f.call(path+'/checklist','POST',tick));
+ const second=await read(await request('/api'+path+'/checklist','POST',{...tick,index:0,text:'Release\n  - [ ] Verify'},peer));
+ expect(first.body).toBe('- [ ] Release\n  - [x] Verify');
+ expect(second).toMatchObject({version:original.version+2,body:'- [x] Release\n  - [x] Verify'});
+ const history=await read(await f.call(path+'/revisions'));
+ const author=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.owner).first<string>('name');
+ expect(history.revisions.slice(-2).map((r:any)=>({version:r.version,body:r.body,authorName:r.authorName,checklist:r.checklist}))).toEqual([
+  {version:original.version+1,body:first.body,authorName:author,checklist:{index:1,text:'Verify',checked:true}},
+  {version:original.version+2,body:second.body,authorName:author,checklist:{index:0,text:'Release\n  - [ ] Verify',checked:true}},
+ ]);
+ const revisions=history.revisions.slice(-2).map((r:any)=>r.id);
+ expect((await env.DB.prepare("SELECT actor_operator_id actor,subject_id revision FROM audit_records WHERE action='document.checklist_toggled' AND subject_identifier=? ORDER BY rowid").bind(document.id).all()).results).toEqual(revisions.map((revision:string)=>({actor:f.owner,revision})));
+ const duplicate=await snapshot(tables);await read(await f.call(path+'/checklist','POST',tick));expect(await snapshot(tables)).toEqual(duplicate);
+ const unticked=await read(await f.call(path+'/checklist','POST',{...tick,expectedVersion:second.version,checked:false}));
+ expect(unticked.body).toBe('- [x] Release\n  - [ ] Verify');
+ const renamed=await read(await f.call(path,'PATCH',{expectedVersion:unticked.version,body:'- [x] Release\n  - [ ] Review'}));
+ const before=await snapshot(tables),conflict=await read(await request('/api'+path+'/checklist','POST',tick,peer),409);
+ expect(conflict.document).toMatchObject({id:document.id,body:renamed.body,version:renamed.version});expect(await snapshot(tables)).toEqual(before);
+ const final=await read(await f.call('/issues/'+issue.identifier));expect(final.status.id).toBe(issue.status.id);expect(final.version).toBe(issue.version);
+ // Current private-team visibility protects both the write and its conflict text.
+ const team=(await read(await f.call('/issues/'+issue.identifier))).team.id;
+ await read(await f.call('/settings/teams/'+team+'/privacy','PUT',{isPrivate:true}));
+ const hidden=await snapshot(tables),denied=await request('/api'+path+'/checklist','POST',tick,outsider);
+ expect(denied.status).toBe(404);expect(await denied.text()).not.toContain('Review');expect(await snapshot(tables)).toEqual(hidden);
+ await read(await f.call('/settings/teams/'+team+'/privacy','PUT',{isPrivate:false}));
+ const ending=await signIn(),held=heldBody();
+ const pending=createServerApp().request(origin+'/api'+path+'/checklist',{
+  method:'POST',headers:{Host:new URL(origin).host,Cookie:ending,Origin:origin,'content-type':'application/json'},body:held.body,
+ },bindings);
+ await held.reading;expect((await request('/auth/signout','POST',{},ending)).status).toBe(204);
+ const signedOut=await snapshot(tables);held.release(JSON.stringify({...tick,expectedVersion:renamed.version,text:'Review'}));
+ const revoked=await pending;expect(revoked.status).toBe(401);expect(await revoked.text()).not.toContain('Review');expect(await snapshot(tables)).toEqual(signedOut);
+
 }

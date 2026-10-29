@@ -20,6 +20,7 @@ export async function commentChecklistJourney(page, context, base, state, teamId
   const issue = await created.json(), path = `/api/issues/${issue.identifier}`, url = base + '/app/issues/' + issue.identifier;
   const body = '- [ ] Review draft\n- [ ] Publish notes';
   async function open(target) {
+    await target.bringToFront();
     await beforePrivateNavigation(target, url);
     await target.goto(url);
     await target.getByRole('heading', { name: 'Discussion', exact: true }).waitFor();

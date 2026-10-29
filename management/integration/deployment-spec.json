@@ -652,6 +652,12 @@
       "name": "0107_issue_start_date.sql",
       "sha256": "e5437ba35933e55715b6673a61cbfa12c444033bcd756f8512366687deeea84e",
       "sql": "ALTER TABLE issues ADD COLUMN start_date TEXT;\n\nCREATE INDEX issues_start_date ON issues(start_date) WHERE start_date IS NOT NULL;\n\nCREATE TRIGGER issues_start_date_insert BEFORE INSERT ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nCREATE TRIGGER issues_start_date_update BEFORE UPDATE OF start_date,due_date ON issues\nWHEN NEW.start_date IS NOT NULL AND NEW.due_date IS NOT NULL AND NEW.start_date > NEW.due_date\nBEGIN\n  SELECT RAISE(ABORT, 'issue_start_after_due');\nEND;\n\nALTER TABLE project_template_issues ADD COLUMN start_offset_days INTEGER;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0108_document_checklists.sql",
+      "sha256": "2a94b76eaee4088ff9708ba7b4aac907ed28a68c7d3bb7cb14d01ce551e6827f",
+      "sql": "-- A checklist activity belongs to its retained, attributed document revision.\nALTER TABLE document_revisions ADD COLUMN checklist_json TEXT;\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

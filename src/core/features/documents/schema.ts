@@ -13,5 +13,5 @@ export const documentList=z.object({parent:parentSummary.nullable(),documents:z.
 export const commentSummary=z.object({id:documentId,body:z.string(),authorName:z.string(),createdAt:z.string()});
 export const commentList=z.object({comments:z.array(commentSummary),nextBeforeComment:documentId.nullable()});
 export const documentDetail=documentSummary.extend({body:z.string(),authorName:z.string(),createdAt:z.string(),comments:z.array(commentSummary),nextBeforeComment:documentId.nullable()});
-export const revisionList=z.object({revisions:z.array(z.object({id:documentId,version:z.number(),title:z.string(),body:z.string(),authorName:z.string(),createdAt:z.string()})),nextBeforeVersion:z.number().nullable()});
+export const revisionList=z.object({revisions:z.array(z.object({id:documentId,version:z.number(),title:z.string(),body:z.string(),authorName:z.string(),createdAt:z.string(),checklist:z.object({index:z.number().int().nonnegative(),text:z.string(),checked:z.boolean()}).nullable()})),nextBeforeVersion:z.number().nullable()});
 export const specification=z.object({id:documentId,title:z.string()}).nullable();
