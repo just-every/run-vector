@@ -8,6 +8,7 @@ export async function documentChecklistJourney(page,context,base,teamId,evidence
  await go('/app/teams/'+teamId);
  const section=page.getByRole('region',{name:'Documents',exact:true});
  const draft=section.getByRole('form',{name:'Document draft',exact:true});
+ await draft.locator('fieldset:enabled').waitFor({state:'attached'});
  if(!await draft.isVisible())await section.locator('summary').filter({hasText:'New document'}).click();
  await draft.getByLabel('Document title',{exact:true}).fill('synthetic-vector-2513');
  const editor=draft.getByRole('textbox',{name:'Document body',exact:true});
@@ -18,8 +19,8 @@ export async function documentChecklistJourney(page,context,base,teamId,evidence
  await editor.pressSequentially('Archive notes');
  assert.equal(await editor.inputValue(),'- [ ] Review draft\n- [ ] Publish notes\n- [ ] Archive notes');
  // Icon controls keep the shared focus tooltip on this document screen.
- await draft.getByRole('button',{name:'Checklist',exact:true}).focus();
- await page.getByRole('tooltip',{name:'Checklist',exact:true}).waitFor();
+ await draft.getByRole('button',{name:'Bold text',exact:true}).focus();
+ await page.getByRole('tooltip',{name:'Bold text',exact:true}).waitFor();
  await draft.getByRole('button',{name:'Create document',exact:true}).click();
  await page.getByRole('heading',{name:'synthetic-vector-2513',exact:true}).waitFor();
  const id=new URL(page.url()).pathname.split('/').at(-1),path='/api/documents/'+id;
@@ -44,6 +45,7 @@ export async function documentChecklistJourney(page,context,base,teamId,evidence
  assert.deepEqual(revisions.revisions[1].checklist,{index:0,text:'Review draft',checked:true});
  await page.locator('summary').filter({hasText:'Revision history'}).click();
  await page.getByText('Checked “Review draft”',{exact:true}).waitFor();
+ assert.equal(await page.getByRole('heading',{name:'Revision 2',exact:true}).locator('..').locator('time').getAttribute('datetime'),revisions.revisions[1].createdAt);
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:width===390?844:1000});
   await content.scrollIntoViewIfNeeded();
