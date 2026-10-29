@@ -67,6 +67,14 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  // A commit carrying the old key completes the same retained issue once.
  const push={ref:'refs/heads/main',repository:{full_name:'octocat/test-repo1',default_branch:'main'},commits:[{id:'a'.repeat(40),message:'Fixes ENG-124',author:{name:'synthetic-vector-1807'},url:'https://github.com/octocat/test-repo1/commit/'+'a'.repeat(40)}]};
  expect((await send(push,crypto.randomUUID(),false,'push')).status).toBe(200);
+ const commitBefore=await (await f.call('/issues/'+githubSource.identifier)).json() as {version:number;status:{id:string}};expect(commitBefore.status.id).not.toBe(done.id);
+ const closingPush={...push,commits:[{...push.commits[0],id:'b'.repeat(40),message:'Fixes GH-42',url:'https://github.com/octocat/test-repo1/commit/'+'b'.repeat(40)}]},commitDelivery=crypto.randomUUID();
+ expect((await send(closingPush,commitDelivery,false,'push')).status).toBe(200);
+ const committed=await (await f.call('/issues/'+githubSource.identifier)).json() as typeof commitBefore;expect(committed.status.id).toBe(done.id);expect(committed.version).toBe(commitBefore.version+1);
+ expect((await (await f.call('/issues/'+githubSource.identifier+'/github')).json()) as object).toMatchObject({commits:[expect.objectContaining({sha:'b'.repeat(40),subject:'Fixes GH-42'})]});
+ for(const replay of [commitDelivery,crypto.randomUUID()])expect((await send(closingPush,replay,false,'push')).status).toBe(200);
+ expect((await (await f.call('/issues/'+githubSource.identifier)).json()) as object).toMatchObject({version:committed.version,status:{id:done.id}});
+
  expect((await send(pr(185,native.identifier))).status).toBe(200);
  expect((await (await f.call('/issues/'+native.identifier+'/github')).json()) as object).toMatchObject({pullRequests:[{number:185}]});
  const memberCookie=await invite('synthetic-vector-1808'+'@'+'example.test',f.cookie),member=await actor(memberCookie);

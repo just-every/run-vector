@@ -7781,7 +7781,7 @@
       "executable": false
     },
     "tests/worker/import-alias-scenario.ts": {
-      "sha256": "8c8394e7d8b47ccbef810aa5d95fbe99183e923eaabed87a36669e02d26da38a",
+      "sha256": "a48bf3d83b36fac074ac281fae54075db991f63dfaf6065ad299bb93bdcc8333",
       "executable": false
     },
     "tests/worker/import-recovery-checks.ts": {
