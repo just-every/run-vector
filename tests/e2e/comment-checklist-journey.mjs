@@ -113,6 +113,46 @@ export async function commentChecklistJourney(page, context, base, state, teamId
       assert.equal(denied.status(), 403);
       assert.deepEqual(storage(), beforeRefusal);
     }, 'synthetic-vector-2504-' + role, role);
-    record('ISSUE-025', 'Two genuine author sessions tick independent unchanged comment items from revision zero; both changes and two native-member attributed revision and item activity receipts persist. A changed item returns current text with 409; another Owner and a Member see read-only boxes and are refused 403 through the scoped API, refused writes change no product storage, and ticks preserve issue status. Screens at 1440 and 390.');
+    const nestedBody = '- [ ] Release\n  - [ ] Review draft';
+    await open(page);
+    await page.getByRole('textbox', { name: 'Add a comment', exact: true }).fill(nestedBody);
+    await page.getByRole('button', { name: 'Add comment', exact: true }).click();
+    const nestedRegion = target => target.getByRole('region', { name: /^Thread started by/ }).filter({ hasText: 'Release' }).locator('.comment-body');
+    await nestedRegion(page).getByRole('checkbox', { name: 'Review draft', exact: true }).waitFor();
+    await settleReads(page);
+    const nestedDiscussion = await (await context.request.get(base + path + '/discussion')).json();
+    const nested = nestedDiscussion.comments.find(row => row.body === nestedBody);
+    assert.equal(nested.version, 0);
+    await open(peer);
+    for (const [target, index] of [[page, 1], [peer, 0]]) {
+      const pending = target.waitForResponse(response => response.url() === `${base}${path}/comments/${nested.id}/checklist` && response.request().method() === 'POST');
+      await nestedRegion(target).getByRole('checkbox').nth(index).check();
+      const response = await pending;
+      assert.equal(response.status(), 200);
+      assert.equal(response.request().postDataJSON().expectedBody, nestedBody);
+      assert.equal(response.request().postDataJSON().expectedVersion, 0);
+      await settleReads(target);
+    }
+    await open(page);
+    const nestedCurrent = await (await context.request.get(base + path + '/discussion')).json();
+    assert.deepEqual(nestedCurrent.comments.filter(row => row.id === nested.id).map(row => [row.body, row.version]), [['- [x] Release\n  - [x] Review draft', 2]]);
+    assert.equal(await nestedRegion(page).getByRole('checkbox').nth(0).isChecked(), true);
+    assert.equal(await nestedRegion(page).getByRole('checkbox').nth(1).isChecked(), true);
+    const nestedIssue = await readIssue();
+    const nestedEdits = nestedIssue.activity.filter(row => row.kind === 'comment.edited' && row.nextValue.id === nested.id);
+    assert.deepEqual(nestedEdits.map(row => ({ actor: row.actor, revision: row.nextValue.revision, task: row.nextValue.checklist })), [
+      { actor: nativeActor.name, revision: 1, task: { index: 1, text: 'Review draft', checked: true } },
+      { actor: nativeActor.name, revision: 2, task: { index: 0, text: 'Release\n  - [ ] Review draft', checked: true } },
+    ]);
+    assert.equal(readLocalD1(state, `SELECT count(*) n FROM audit_records WHERE subject_id='${nested.id}' AND action='comment.edited'`)[0].n, 2);
+    assert.equal(nestedIssue.status.id, issue.status.id);
+    assert.equal(nestedIssue.version, issue.version);
+    for (const width of [1440, 390]) {
+      await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+      await nestedRegion(page).scrollIntoViewIfNeeded();
+      await page.screenshot({ path: `${evidence}/comment-checklist-nested-${width}.png` });
+    }
+    await page.setViewportSize({ width: 1440, height: 1000 });
+    record('ISSUE-025', 'Two genuine author sessions tick independent unchanged flat and nested comment items from revision zero; both changes and two native-member attributed revision and item activity receipts persist. A changed item returns current text with 409; another Owner and a Member see read-only boxes and are refused 403 through the scoped API, refused writes change no product storage, and ticks preserve issue status. Screens at 1440 and 390.');
   } finally { await peerContext.close(); }
 }

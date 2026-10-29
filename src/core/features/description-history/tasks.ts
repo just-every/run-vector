@@ -45,8 +45,25 @@ export function toggleTask(source: string, index: number, text: string, checked:
   return source.slice(0, offset) + (checked ? "x" : " ") + source.slice(offset + 1);
 }
 
+/** A parent's source includes its nested items, whose ticks are independent. */
+function unchangedText(source: string, tasks: MarkdownTask[], parent: MarkdownTask): string {
+  let text = parent.text;
+  const start = parent.end - text.length;
+  for (const child of tasks) {
+    if (child.start <= parent.start || child.end > parent.end) continue;
+    const marker = /^(?:[*+-]|\d+[.)])[\t ]+\[/.exec(source.slice(child.start, child.end));
+    if (!marker) throw new Error("Task source marker is missing.");
+    const offset = child.start + marker[0].length - start;
+    text = text.slice(0, offset) + " " + text.slice(offset + 1);
+  }
+  return text;
+}
+
 /** A stale click may change only the task the caller actually read. */
 export function mergeTask(source: string, expectedSource: string, index: number, text: string, checked: boolean): string | null {
-  if (parseTasks(expectedSource)[index]?.text !== text) return null;
-  return toggleTask(source, index, text, checked);
+  const expectedTasks = parseTasks(expectedSource), tasks = parseTasks(source);
+  const expected = expectedTasks[index], current = tasks[index];
+  if (!expected || !current || expected.text !== text ||
+      unchangedText(source, tasks, current) !== unchangedText(expectedSource, expectedTasks, expected)) return null;
+  return toggleTask(source, index, current.text, checked);
 }

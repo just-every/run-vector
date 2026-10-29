@@ -101,6 +101,41 @@ async function nativeJourney() {
   expect(finalIssue.description).toBe(source);
   expect(finalIssue.version).toBe(repeated.version);
   expect((await receipt<History>(await f.call(path + "/description-history"))).revisions).toEqual(repeatedHistory.revisions);
+  // Nested checkboxes are independent items even though their source spans overlap.
+  const nestedBody = "- [ ] Release\n  - [ ] Review draft";
+  const nested = await receipt<{ id: string }>(await f.call(path + "/comments", "POST", { body: nestedBody }), 201);
+  const nestedRoute = `${path}/comments/${nested.id}/checklist`;
+  const nestedTasks = parseTasks(nestedBody);
+  for (const [cookie, index] of [[f.cookie, 1], [secondSession, 0]] as const) {
+    await receipt(await f.any(cookie, nestedRoute, "POST", {
+      expectedBody: nestedBody, expectedVersion: 0, index, text: nestedTasks[index].text, checked: true,
+    }));
+  }
+  const nestedView = await receipt<typeof discussion>(await f.call(path + "/discussion"));
+  expect(nestedView.comments.find(row => row.id === nested.id)).toMatchObject({
+    body: "- [x] Release\n  - [x] Review draft", version: 2,
+  });
+  const nestedEdits = (await env.DB.prepare("SELECT actor_operator_id actor,next_value_json value FROM issue_activity WHERE issue_id=? AND kind='comment.edited' AND json_extract(next_value_json,'$.id')=? ORDER BY rowid").bind(issue.id, nested.id).all<{ actor: string; value: string }>()).results;
+  expect(nestedEdits.map(row => ({ actor: row.actor, ...JSON.parse(row.value) }))).toEqual([
+    { actor: f.owner, id: nested.id, revision: 1, checklist: { index: 1, text: nestedTasks[1].text, checked: true } },
+    { actor: f.owner, id: nested.id, revision: 2, checklist: { index: 0, text: nestedTasks[0].text, checked: true } },
+  ]);
+  expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE subject_id=? AND action='comment.edited'").bind(nested.id).first<number>("n")).toBe(2);
+  const nestedUnchanged = await snapshot();
+  await receipt(await f.any(secondSession, nestedRoute, "POST", {
+    expectedBody: nestedBody, expectedVersion: 0, index: 0, text: nestedTasks[0].text, checked: true,
+  }));
+  expect(await snapshot()).toEqual(nestedUnchanged);
+  await receipt(await f.call(`${path}/comments/${nested.id}`, "PATCH", {
+    body: "- [x] Release\n  - [x] Revised draft",
+  }));
+  const nestedChanged = await snapshot();
+  const nestedConflict = await receipt<{ comment: { id: string; body: string; version: number } }>(await f.any(secondSession, nestedRoute, "POST", {
+    expectedBody: nestedBody, expectedVersion: 0, index: 0, text: nestedTasks[0].text, checked: false,
+  }), 409);
+  expect(nestedConflict.comment).toEqual({ id: nested.id, body: "- [x] Release\n  - [x] Revised draft", version: 3 });
+  expect(await snapshot()).toEqual(nestedChanged);
+  expect((await receipt<Issue & { status: { id: string } }>(await f.call(path))).status.id).toBe(issue.status.id);
   const endingSession = await signIn(), heldConflict = heldBody();
   const pendingConflict = createServerApp().request(origin + "/api" + route, {
     method: "POST", headers: { Host: new URL(origin).host, Cookie: endingSession, Origin: origin, "content-type": "application/json" }, body: heldConflict.body,
