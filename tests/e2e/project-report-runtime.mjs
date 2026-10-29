@@ -1,5 +1,5 @@
 import {projectDocumentsJourney} from './project-documents-journey.mjs';
-import {documentChecklistJourney} from './document-checklist-journey.mjs';
+import {documentChecklistJourney,templateChecklistJourney} from './document-checklist-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {mkdir} from 'node:fs/promises';
@@ -123,5 +123,6 @@ const response=await client.fetch(runtime.base+'/api'+path,{method,headers:{Orig
 
  await projectDocumentsJourney({page,base:runtime.base,api,output:output+'/documents'});
  await documentChecklistJourney({page,base:runtime.base,api,state:runtime.state,output:output+'/checklists'});
+ await templateChecklistJourney({page,base:runtime.base,api,output:output+'/checklists'});
 } catch(error) {if(page)await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
 finally {if(browser)await browser.close();await runtime.stop();}

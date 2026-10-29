@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "57fb0583525afa3afddfc9246c7128aab10900496a70d8076208ec64d3626af1",
+      "sha256": "9c2ac166f5b4c590306cbdf5618780f1f4019f24e472651287aa302155a808f6",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9203aa7eb9cb30e599d3d686e079bb8f1e58b0fb55bb208281905143c922aa48",
+      "sha256": "59652f2e61f98181dda28a6bbea9ca80fd002d222df4bb0881a40008f5dab851",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "56c139bdd6cdac204c52064f495e7a94ac42159feb66fc762fdab275e6a05b50",
+      "sha256": "f3182d193c298b1d3db3984a306ecf0cd0ce13d95f60ca11d7831f646708992f",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -5765,7 +5765,7 @@
       "executable": false
     },
     "src/core/features/project-templates/controls.tsx": {
-      "sha256": "fc5975b8bde8834beb1ca085885db438c9c451c08a006811aec2eac2e5177033",
+      "sha256": "128599618972eaace8a027355dbe1a9805a3cfcf8a60827aee0a0cb593f1b018",
       "executable": false
     },
     "src/core/features/project-templates/routes.ts": {
@@ -7077,7 +7077,7 @@
       "executable": false
     },
     "tests/e2e/document-checklist-journey.mjs": {
-      "sha256": "22b75f0193d3469687610bfc02c06e9693a86186fb973c5607fcbf581b312d82",
+      "sha256": "f86cf6b58308703b88c270e942a1546bfd874a1593b127e6a5c502cfcfe71427",
       "executable": false
     },
     "tests/e2e/document-read-app-journey.mjs": {
@@ -7257,7 +7257,7 @@
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
-      "sha256": "4c52d4071e2318ba62592c4009f4b266c69fd3ea232f7f875942f2e81e84327b",
+      "sha256": "3372e36bc4609b756bac652a5d0daa63e9f3de33de14bc14efe4002c87c6d663",
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
@@ -8013,7 +8013,7 @@
       "executable": false
     },
     "tests/worker/project-template-proof.ts": {
-      "sha256": "234f8f58973fbcbd7b143ef6b4aa7c526811411ee8ad9d4d68d76e92b9375988",
+      "sha256": "3130485ab62e74dc0c6de68b2a91c92c213fbd49a9db1a9da859d0d47c7db05d",
       "executable": false
     },
     "tests/worker/recovery.test.ts": {

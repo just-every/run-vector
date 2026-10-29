@@ -53,3 +53,49 @@ export async function documentChecklistJourney({page,base,api,state,output}){
   console.log('[ISSUE-025] document tasks: independent stale sessions, nested ticks, untick, attributed revisions, item activity, current-text conflict and unchanged issue status PASS; screens 1440 and 390');
  }finally{await peerContext.close();}
 }
+
+/** Existing project templates share native checklist authoring and Markdown. */
+export async function templateChecklistJourney({page,base,api,output}){
+ const metadata=await api('/metadata'),teamId=metadata.teams[0].id;
+ const template=await api('/project-templates','POST',{name:'synthetic-vector-2520-'+Date.now(),description:'',milestones:[{name:'synthetic-vector-2521',offsetDays:null}],issues:[{title:'synthetic-vector-2522',offsetDays:null,milestonePosition:0}]});
+ await page.setViewportSize({width:1440,height:1000});await page.bringToFront();
+ await beforePrivateNavigation(page,base+'/app/projects');await page.goto(base+'/app/projects');
+ await page.getByRole('button',{name:'New project from template',exact:true}).click();
+ await page.locator('[data-project-templates-ready="true"]').waitFor();
+ await page.getByLabel('Choose project template',{exact:true}).selectOption(template.id);
+ await page.getByRole('button',{name:'Edit project template',exact:true}).click();
+ const editor=page.getByRole('form',{name:'Edit project template',exact:true});
+ const description=editor.getByLabel('Template description',{exact:true});
+ await description.pressSequentially('[] Prepare');assert.equal(await description.inputValue(),'- [ ] Prepare');
+ const milestone=editor.getByLabel('Milestone description',{exact:true});
+ await milestone.fill('Review');await milestone.press('ControlOrMeta+Shift+7');assert.equal(await milestone.inputValue(),'- [ ] Review');
+ const issue=editor.getByLabel('Issue Markdown description',{exact:true});
+ await issue.pressSequentially('/checklist');await page.getByRole('option',{name:'Checklist',exact:true}).click();
+ await issue.pressSequentially('Verify');assert.equal(await issue.inputValue(),'- [ ] Verify');
+ // The inherited toolbar gives each compact control its keyboard tooltip.
+ const bold=editor.getByRole('button',{name:'Bold text',exact:true}).first();await bold.focus();
+ await page.getByRole('tooltip',{name:'Bold text',exact:true}).waitFor();
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:width===390?844:1000});await editor.scrollIntoViewIfNeeded();
+  await page.screenshot({path:output+'/template-checklist-editor-'+width+'.png',fullPage:true});
+ }
+ await page.setViewportSize({width:1440,height:1000});
+ await editor.getByRole('button',{name:'Save template changes',exact:true}).click();
+ await editor.waitFor({state:'hidden'});
+ const current=await api('/project-templates/'+template.id);
+ assert.equal(current.description,'- [ ] Prepare');assert.equal(current.milestones[0].description,'- [ ] Review');assert.equal(current.issues[0].description,'- [ ] Verify');
+ await page.getByText('Preview project structure',{exact:true}).click();
+ const preview=page.locator('details').filter({has:page.locator('summary').filter({hasText:'Preview project structure'})});
+ assert.equal(await preview.getByRole('checkbox',{name:'Prepare',exact:true}).isDisabled(),true);
+ assert.equal(await preview.getByRole('checkbox',{name:'Verify',exact:true}).isDisabled(),true);
+ for(const width of [1440,390]){
+  await page.setViewportSize({width,height:width===390?844:1000});await preview.scrollIntoViewIfNeeded();
+  await page.screenshot({path:output+'/template-checklist-preview-'+width+'.png',fullPage:true});
+ }
+ await page.setViewportSize({width:1440,height:1000});
+ const applied=await api('/project-templates/'+template.id+'/apply','POST',{name:'synthetic-vector-2523',teamId,startDate:'2027-03-01',expectedVersion:current.version});
+ assert.equal((await api('/projects/'+applied.projectId)).description,current.description);
+ const created=(await api('/issues?project='+applied.projectId)).issues.find(row=>row.title==='synthetic-vector-2522');assert.ok(created);
+ const detail=await api('/issues/'+created.identifier);assert.equal(detail.description,'- [ ] Verify');assert.deepEqual(detail.checklist,{completed:0,total:1});
+ console.log('[ISSUE-025] project template checklist shortcuts, slash command, Markdown preservation, read-only previews and created issue progress PASS; screens 1440 and 390');
+}
