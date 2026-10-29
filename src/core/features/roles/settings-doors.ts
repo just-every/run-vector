@@ -14,6 +14,7 @@ export const settingsFormDoors: Record<string, readonly string[]> = {
   'integrations/ui/token-settings.tsx#TokenSettings': ['POST /settings/integrations/tokens'],
   'oauth-apps/ui/settings-panel.tsx#OAuthAppsPanel': ['POST /settings/oauth-apps'],
   'integrations/ui/source-settings.tsx#SourceSettings': ['POST /settings/integrations/sources'],
+  'integrations/ui/error-settings.tsx#ErrorSettings': ['POST /settings/integrations/errors'],
   'integrations/ui/webhook-settings.tsx#WebhookSettings': ['POST /settings/integrations/destinations'],
   'integrations/ui/delivery-setup.tsx#DeliverySetup': ['POST /settings/integrations/delivery'],
   'integrations/ui/github-settings.tsx#GithubSettings': ['POST /settings/integrations/github'],

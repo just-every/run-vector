@@ -69,6 +69,10 @@
     {
       "id": "0074_slack_direct_messages.sql",
       "buyerSteps": "Apply after all earlier migrations, without rewriting them. Adds member-confirmed Slack links and signed-request replay keys; both stay out of archives, and a restored installation re-links. Removing the Slack credential or a member deletes the affected links."
+    },
+    {
+      "id": "0109_description_thread_anchors.sql",
+      "buyerSteps": "Apply after all earlier migrations, including 0108_error_connections.sql, without rewriting them. Adds persisted quoted-description comment anchors and retains their quoted text when the description changes; deleting a comment removes its source anchor."
     }
   ],
   "breaking": false,
