@@ -48,3 +48,5 @@ node scripts/contract-docs.mjs check CLAUSE...
 ```
 
 Replace `CLAUSE...` with one or more actual clause IDs. The check also runs the Base contract parser. Untouched clause narratives remain intact.
+
+Lander-Regenerate: node scripts/contract-docs.mjs write

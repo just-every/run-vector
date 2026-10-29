@@ -4,6 +4,7 @@ import { mutationDatabase, isMutationAccessError } from '../auth/mutation-databa
 import { creationGuard, creationError, allocateIssueSequence } from '../issues/create-guard'
 import { drizzle } from "drizzle-orm/d1";
 import { createUlid } from "../../shared/ids";
+import { currentAgentActor, agentActivity } from '../agent-door/attribution';
 import {
   defaultStatus,
   requireActiveTeam,
@@ -91,8 +92,8 @@ export async function createOperatorIntake(
   const activity = db
     .prepare(
       `INSERT INTO issue_activity
-    (id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
-    SELECT ?,id,?,'issue.created',NULL,?,?,? FROM issues WHERE id=?`,
+    (id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json)
+    SELECT ?,id,?,'issue.created',NULL,?,?,?,?,?,?,? FROM issues WHERE id=?`,
     )
     .bind(
       activityId,
@@ -107,6 +108,10 @@ export async function createOperatorIntake(
       }),
       at,
       at,
+      currentAgentActor()?.actor.label??null,
+      agentActivity().agentId,
+      agentActivity().agentOperationId,
+      agentActivity().agentApproversJson,
       issueId,
     );
   const event = { id: activityId, issueId, actor, at };

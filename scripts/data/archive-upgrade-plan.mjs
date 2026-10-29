@@ -36,6 +36,10 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
  const source=await restorableManifest(manifest),history=archivedHistory(manifest,ledger.ledgers());
  const recorded=manifest.migrations?.map(name=>history?.find(entry=>entry.name===name)??{name})??history;
  const replay=migrationReplay(files,policy);
+ // Historical v2 archives authenticate tables without a schema-object inventory.
+ // Locate that exact projection; Base still verifies the complete destination
+ // and recorded historical replay before its native import accepts the archive.
+ const sourceSchema=names=>replay.schemaAfter(names,source.schemaObjects===undefined?{tablesOnly:true}:undefined);
  let names;
  if(recorded)names=matchMigrationLedger(recorded,files);
  else {
@@ -44,12 +48,12 @@ export async function archiveUpgradePlan({root,path,journal,policy}) {
   const matches=[];
   for(let count=0;count<=files.length;count++) {
    const candidate=files.slice(0,count).map(file=>file.name);
-   if(await replay.schemaAfter(candidate)===source.schema)matches.push(candidate);
+   if(await sourceSchema(candidate)===source.schema)matches.push(candidate);
   }
   insist(matches.length===1,'archive_migration_history_required',409);[names]=matches;
  }
  insist(new Set(names).size===names.length && names.every((name,index)=>files[index]?.name===name),'archive_migration_order',409);
- insist(await replay.schemaAfter(names)===source.schema,'schema_mismatch',409);
+ insist(await sourceSchema(names)===source.schema,'schema_mismatch',409);
  // Apply current secrecy requirements only to columns that existed at the
  // proven source schema. The archive cannot select its own redactions: its
  // authenticated inventory must exactly equal this projection, and Base's
