@@ -6,7 +6,8 @@ import seed from '../../seed.json';
 /** Current native Settings, issue, audit and session doors; only the provider edge is synthetic. */
 export async function modelPolicyJourney(f:Awaited<ReturnType<typeof setupIntegrations>>) {
   const calls:{url:string;body:any}[]=[];
-  const edge={async send(wire:{url:string;body:string}){calls.push({url:wire.url,body:JSON.parse(wire.body)});return {status:200,headers:{},body:JSON.stringify({content:[{type:'text',text:'synthetic-vector-4801: review this intake before accepting.'}]})};}};
+  let beforeReply:(()=>Promise<void>)|undefined;
+  const edge={async send(wire:{url:string;body:string}){calls.push({url:wire.url,body:JSON.parse(wire.body)});if(beforeReply){const run=beforeReply;beforeReply=undefined;await run();}return {status:200,headers:{},body:JSON.stringify({content:[{type:'text',text:'synthetic-vector-4801: review this intake before accepting.'}]})};}};
   const overrides={INTEGRATION_EGRESS:edge,INTEGRATION_EGRESS_POLICY:'public-dns-pinned-tls-v1'};
   const call=(path:string,method='GET',body?:unknown,cookie=f.cookie)=>request('/api'+path,method,body,cookie,overrides);
   const read=async(path:string,method='GET',body?:unknown,cookie=f.cookie,status=200)=>{
@@ -52,6 +53,8 @@ export async function modelPolicyJourney(f:Awaited<ReturnType<typeof setupIntegr
   expect(await preview(otherIssue.identifier)).toEqual({enabled:false});expect(calls).toHaveLength(2);
   await read('/settings/models/policy','PUT',policy,admin);
   expect((await preview(otherIssue.identifier,member)).enabled).toBe(true);expect(calls).toHaveLength(3);
+  beforeReply=async()=>{const changed=await f.call('/issues/'+otherIssue.identifier,'PATCH',{expectedVersion:otherIssue.version,description:'synthetic-vector-4807 corrected source'});expect(changed.status).toBe(200);};
+  const stale=await read('/issues/'+otherIssue.identifier+'/triage-suggestion','POST',{},f.cookie,409);expect(stale.error).toBe('model_source_changed');otherIssue.version++;
   await f.mutate('/settings/teams/'+other.id+'/privacy','PUT',{isPrivate:true});
   const count=calls.length;
   await read('/issues/'+otherIssue.identifier+'/triage-suggestion','POST',{},member,404);expect(calls).toHaveLength(count);
@@ -79,5 +82,9 @@ export async function modelPolicyJourney(f:Awaited<ReturnType<typeof setupIntegr
   try{expect((await preview(otherIssue.identifier)).suggestion).toBe('synthetic-vector-4806');expect(network).toHaveBeenCalledTimes(1);}
   finally{network.mockRestore();}
   await read('/settings/models/providers/'+native.id,'DELETE');
+  const removed=await f.call('/issues/'+otherIssue.identifier,'DELETE',{expectedVersion:otherIssue.version,confirmed:true});expect(removed.status).toBe(200);
+  await read('/issues/'+otherIssue.identifier+'/triage-suggestion','POST',{},f.cookie,404);
+  await read('/issues/'+otherIssue.identifier+'/triage-suggestion','POST',{},f.cookie,404);
+  expect(calls).toHaveLength(count+1);
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 }

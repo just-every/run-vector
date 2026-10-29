@@ -37,7 +37,7 @@ export function ModelPolicyPanel({teams}:{teams:{id:string;name:string}[]}) {
         }}><label>New provider credential<input name="credential" type="password" required autoComplete="off" maxLength={4096}/></label><p>Replacing a credential disables affected policies until explicitly enabled again.</p><button type="submit" disabled={pending}>Replace credential</button></form></details>
         <button type="button" disabled={pending} onClick={()=>void submit(()=>send('/providers/'+provider.id,undefined,'DELETE'))}>Remove {provider.name}</button>
       </div>)}
-      <PolicyForm key={JSON.stringify(resource.data.policies)+resource.data.providers.map(p=>p.id).join('')} data={resource.data} teams={teams} pending={pending} submit={submit}/>
+      <PolicyForm data={resource.data} teams={teams} pending={pending} submit={submit}/>
     </>}
   </section>;
 }
@@ -49,7 +49,7 @@ function ProviderForm({pending,submit}:Actions) {
     void submit(async()=>{await send('/providers',{kind,name:values.get('name'),model:values.get('model'),endpoint:kind==='anthropic'?'https://api.anthropic.com/v1/messages':values.get('endpoint'),credential:values.get('credential')});form.reset();setKind('anthropic');});
   };
   return <details><summary>Connect a model provider</summary><form onSubmit={save} aria-label="Connect model provider"><fieldset disabled={pending}>
-    <label>Provider type<select value={kind} onChange={event=>setKind(event.target.value as typeof kind)}><option value="anthropic">Anthropic API</option><option value="self-hosted">Self-hosted Messages API</option></select></label>
+    <label>Provider type<select aria-label="Provider type" value={kind} onChange={event=>setKind(event.target.value as typeof kind)}><option value="anthropic">Anthropic API</option><option value="self-hosted">Self-hosted Messages API</option></select></label>
     <p>Messages API format. Self-hosted providers require explicit Owner terms and an enforcing outbound connection.</p>
     <label>Provider name<input name="name" required maxLength={100}/></label>
     <label>Model name<input name="model" required maxLength={120}/></label>
@@ -78,10 +78,10 @@ function PolicyForm({data,teams,pending,submit}:Actions&{data:ModelSettings;team
     event.preventDefault();const values=new FormData(event.currentTarget);
     void submit(()=>send('/policy',{feature,teamId:team||null,enabled:values.get('enabled')==='on',providerId:String(values.get('providerId')||'')||null},'PUT'));
   }}><h3>Feature controls</h3><fieldset disabled={pending}>
-    <label>Model feature<select value={feature} onChange={event=>{setFeature(event.target.value as typeof feature);setSelected(null);}}>{features.map(id=><option key={id} value={id}>{featureNames[id]}</option>)}</select></label>
-    <label>Policy scope<select value={team} onChange={event=>{setTeam(event.target.value);setSelected(null);}}><option value="">Workspace</option>{teams.map(row=><option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
-    <div key={feature+team}>
-      <label>Selected provider<select name="providerId" value={choice} onChange={event=>setSelected(event.target.value)}><option value="">Choose a provider</option>{data.providers.map(provider=><option key={provider.id} value={provider.id}>{provider.name}</option>)}</select></label>
+    <label>Model feature<select aria-label="Model feature" value={feature} onChange={event=>{setFeature(event.target.value as typeof feature);setSelected(null);}}>{features.map(id=><option key={id} value={id}>{featureNames[id]}</option>)}</select></label>
+    <label>Policy scope<select aria-label="Policy scope" value={team} onChange={event=>{setTeam(event.target.value);setSelected(null);}}><option value="">Workspace</option>{teams.map(row=><option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
+    <div key={feature+team+JSON.stringify(current)}>
+      <label>Selected provider<select aria-label="Selected provider" name="providerId" value={choice} onChange={event=>setSelected(event.target.value)}><option value="">Choose a provider</option>{data.providers.map(provider=><option key={provider.id} value={provider.id}>{provider.name}</option>)}</select></label>
       <label><input name="enabled" type="checkbox" defaultChecked={current?.enabled??false}/>Enable this feature for this scope</label>
     </div>
     {provider&&<p>{provider.name}: {provider.termsUrl?<a href={provider.termsUrl} rel="noreferrer" target="_blank">Provider terms</a>:'Owner terms required'}. {provider.noTraining?'No customer-content training.':'Training status unconfirmed.'} Retention: {provider.retention??'Not recorded.'} Data: {provider.data.join(', ')}.</p>}

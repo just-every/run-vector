@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "edefd8cda622becbdaf1db05701d829cf32b193234732720083efba440eac2fd",
+      "sha256": "ca4da54cf7cf6ac6a06d38f317310db24f5b530bf5023b8abb85e4931e34fe5b",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "8072112827f173f8acfed5ec0c23c6bcd4ebd461e3160e1911c6c82258131a78",
+      "sha256": "e61448aec238fb35e078b61ea6384c53a351c16d747ac5adfa9b31ef744db3a4",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "b2f8d9ac913ee466f50128725dadd57e44dfee2fa67b51100cb5136f358754ce",
+      "sha256": "3a09fcf3e11d5d06e0e15804a944b160b4011f41dfb3018b3bd6b3e3e5218c1d",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -5417,11 +5417,11 @@
       "executable": false
     },
     "src/core/features/model-policy/gateway.ts": {
-      "sha256": "c88d00141e5e4fdedbdcfc59ae906cc25d390854cc2f8656390c970df9290fd7",
+      "sha256": "07933631e54d0a1e5a966f40a8996812a52be144a2311e1162a27a7dbd745741",
       "executable": false
     },
     "src/core/features/model-policy/panel.tsx": {
-      "sha256": "e09a6e6ea0ef1e1dc5a99dc8d5bcf51752b56d2893c64fb7b9e242ce5ec35238",
+      "sha256": "d063f6c03b5f5450c24d3e79294d032a236eda941675db081e5597116b24c2cd",
       "executable": false
     },
     "src/core/features/model-policy/preview.tsx": {
@@ -5429,7 +5429,7 @@
       "executable": false
     },
     "src/core/features/model-policy/routes.ts": {
-      "sha256": "a801eda6d30a1ff53ae0ef62444fd132ab1d8b06160099e714793d3406e21033",
+      "sha256": "ce49a1a0c740cba2a5b4b6542bf1f389f42e3abf7fe2f615d01f008030936644",
       "executable": false
     },
     "src/core/features/model-policy/schema.ts": {
@@ -7089,7 +7089,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "c92e57a43ef6b569873c855224717a45b61c113b7cfc3f3daa3a631e4ec7880d",
+      "sha256": "29debfc1476e2ca7cafb95a80b5b17bbcddbc466a5c211238aca5e9e666c8725",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -7117,7 +7117,7 @@
       "executable": false
     },
     "tests/e2e/integrations/model-policy.mjs": {
-      "sha256": "9db78e968c2a6e49ae4da6b0daa331ebe932c803fda65e36f118751d6f148521",
+      "sha256": "ad7c47fb8014e8a57ec3ae19cd9d9b7b240742cccda8105224aae5869de302ae",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
@@ -7649,7 +7649,7 @@
       "executable": false
     },
     "tests/worker/data-http.test.ts": {
-      "sha256": "55766f56d69e9e2dd745592c34dc3b8875c5f5e679db3fc15afef37a68781e2c",
+      "sha256": "9c0b2e5da82c6bb66a43200ff82b0efd452f7ad4699eb837c84b12b5341d8319",
       "executable": false
     },
     "tests/worker/data-import-atomic.test.ts": {
@@ -7897,7 +7897,7 @@
       "executable": false
     },
     "tests/worker/model-policy-journey.ts": {
-      "sha256": "f7f0f3592e4c824e86e0819f33c9ab3c7ccc25e008e26a64c5985ea16dc18ab9",
+      "sha256": "f743774af5b74e7a10538a1bfffbde89ed498f16065c6d9ca7e44bdc9c830f9e",
       "executable": false
     },
     "tests/worker/my-work-tabs.test.ts": {

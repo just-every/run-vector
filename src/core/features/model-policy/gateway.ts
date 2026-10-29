@@ -11,9 +11,9 @@ import type { features } from './schema';
 /** All model features inherit this fail-closed admission. No model output is a command. */
 export async function modelPreview(env:WorkerBindings,actor:string,identifier:string,feature:typeof features[number]='triage') {
   const read=async()=>{
-    const issue=await env.DB.prepare(`SELECT i.identifier,i.title,i.description,i.team_id AS teamId,o.workspace_id AS workspace
+    const issue=await env.DB.prepare(`SELECT i.identifier,i.title,i.description,i.version,i.team_id AS teamId,o.workspace_id AS workspace
       FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id
-      WHERE o.id=? AND o.removed_at IS NULL AND i.identifier=? AND ${visibleTeam('o','t.id')}`).bind(actor,identifier).first<{identifier:string;title:string;description:string;teamId:string;workspace:string}>();
+      WHERE o.id=? AND o.removed_at IS NULL AND i.identifier=? AND ${visibleTeam('o','t.id')}`).bind(actor,identifier).first<{identifier:string;title:string;description:string;version:number;teamId:string;workspace:string}>();
     if(!issue)throw new IntegrationError(404,'model_issue_unavailable');
     const global=await env.DB.prepare("SELECT enabled,provider_id FROM vector_model_policies WHERE workspace_id=? AND feature=? AND team_id=''").bind(issue.workspace,feature).first<{enabled:number;provider_id:string|null}>();
     const local=await env.DB.prepare('SELECT enabled,provider_id FROM vector_model_policies WHERE workspace_id=? AND feature=? AND team_id=?').bind(issue.workspace,feature,issue.teamId).first<{enabled:number;provider_id:string|null}>();
@@ -53,5 +53,6 @@ export async function modelPreview(env:WorkerBindings,actor:string,identifier:st
   const final=await read();
   if(!final)return {enabled:false};
   if(final.provider.id!==current.provider.id || final.key.encrypted!==current.key.encrypted)throw new IntegrationError(409,'model_configuration_changed');
+  if(final.issue.version!==current.issue.version || final.issue.description!==current.issue.description || final.issue.title!==current.issue.title)throw new IntegrationError(409,'model_source_changed','This issue changed while the provider was responding. Request a fresh preview.');
   return {enabled:true,suggestion,model:current.provider.model,records:[current.issue.identifier],at:new Date().toISOString()};
 }

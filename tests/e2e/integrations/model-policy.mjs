@@ -1,3 +1,5 @@
+import {createRequire} from 'node:module';
+const require=createRequire(import.meta.url);
 import assert from 'node:assert/strict';
 import {expect} from '@playwright/test';
 import {mkdir,readFile} from 'node:fs/promises';
@@ -22,7 +24,6 @@ export async function exerciseModelPolicy({page,runtime,cookie,team,evidence}) {
     await panel.getByText('Connect a model provider',{exact:true}).click();
     const form=panel.getByRole('form',{name:'Connect model provider'});
     await expect(form).toBeVisible();
-    console.log('Model provider labels',await form.locator('label').allTextContents());
     await form.getByLabel('Provider type',{exact:true}).selectOption(kind);
     await form.getByLabel('Provider name',{exact:true}).fill(name);
     await form.getByLabel('Model name',{exact:true}).fill(name);
@@ -69,7 +70,7 @@ export async function exerciseModelPolicy({page,runtime,cookie,team,evidence}) {
     }
     await page.setViewportSize({width:1440,height:1000});
   };
-  await capture(page.getByRole('heading',{name:'Make the triage call',exact:true}),'model-team-disabled');
+  await capture(page.locator('.decision-panel'),'model-team-disabled');
   await navigate(page,runtime.base+'/app/settings#models');
   const custom=await connect('self-hosted','synthetic-vector-4822');
   assert.equal((await save('',custom.id,true)).status(),409);
@@ -87,6 +88,9 @@ export async function exerciseModelPolicy({page,runtime,cookie,team,evidence}) {
   assert.equal(current.policies.find(row=>row.feature==='triage'&&row.teamId===null).providerId,custom.id);
   assert.equal(current.providers.find(row=>row.id===custom.id).noTraining,true);
   const audit=await call('/settings/audit?action=model.terms_confirmed');assert.ok(audit.entries.some(row=>row.subjectRef===custom.id&&row.action==='model.terms_confirmed'));
+  await page.addScriptTag({path:require.resolve('axe-core/axe.min.js')});
+  const findings=await page.evaluate(async()=> (await axe.run(document.getElementById('models'))).violations.filter(row=>['serious','critical'].includes(row.impact)));
+  assert.deepEqual(findings,[]);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   await capture(card,'model-owner-terms');
   await capture(policy,'model-feature-controls');
   // Remove both credentials through the native Settings door so later integration journeys inherit no model setup.

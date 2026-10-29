@@ -22,4 +22,4 @@ try{
  }
  proof.passed=true;
 }finally{await browser?.close();await runtime.stop();await mkdir(evidence,{recursive:true});await writeFile(join(evidence,'browser-proof.json'),JSON.stringify(proof,null,2)+'\n');}
-console.log('[SLACK-003 SLACK-004 NOTIFY-007] Native channel bindings, Slack creation and delivery, Discord, member-linked Slack direct messages, per-event email choices and workspace defaults passed at 1440 and 390.');
+console.log(process.argv.includes('--models')?'[SEC-002] Model provider Settings, team off, Owner confirmation and audit passed; screens captured at 1440 and 390.':'[SLACK-003 SLACK-004 NOTIFY-007] Native channel bindings, Slack creation and delivery, Discord, member-linked Slack direct messages, per-event email choices and workspace defaults passed at 1440 and 390.');

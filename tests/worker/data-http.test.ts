@@ -31,7 +31,7 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const milestone=(await milestoneResponse.json() as any).milestones[0];
  const issueBefore=await (await f.call('/issues/'+f.issue.identifier)).json() as {version:number};
  const assigned=await f.call('/issues/'+f.issue.identifier,'PATCH',{expectedVersion:issueBefore.version,milestoneId:milestone.id,startDate:'2026-09-01'});expect(assigned.status,await assigned.clone().text()).toBe(200);
- const modelCredential='synthetic-vector-4831';
+ const modelCredential='synthetic-vector-4831-credential';
  const modelResponse=await f.call('/settings/models/providers','POST',{name:'synthetic-vector-4831',kind:'self-hosted',endpoint:'https://synthetic-vector-4831.example.test/messages',model:'synthetic-vector-4831',credential:modelCredential});expect(modelResponse.status).toBe(201);
  const modelProvider=await modelResponse.json() as {id:string};
  expect((await f.call('/settings/models/providers/'+modelProvider.id+'/confirm','POST',{termsUrl:'https://synthetic-vector-4831.example.test/terms',retention:'No retention',noTraining:true})).status).toBe(200);
@@ -130,8 +130,7 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const historical=await targetSignIn();
  const restoredModels=await targetCall('/api/settings/models','GET',undefined,historical);expect(restoredModels.status).toBe(200);expect(await restoredModels.json()).toMatchObject({providers:[expect.objectContaining({id:modelProvider.id,ready:false,noTraining:true,termsUrl:'https://synthetic-vector-4831.example.test/terms'})],policies:[expect.objectContaining({feature:'triage',enabled:true,providerId:modelProvider.id})]});
  const restoredModelPreview=await targetCall('/api/issues/'+f.issue.identifier+'/triage-suggestion','POST',{},historical);expect(restoredModelPreview.status).toBe(200);expect(await restoredModelPreview.json()).toEqual({enabled:false});
- const modelReentered=await targetCall('/api/settings/models/providers/'+modelProvider.id+'/credential','PUT',{credential:'synthetic-vector-4832'},historical);expect(modelReentered.status).toBe(200);
- const replaced=await targetCall('/api/settings/models','GET',undefined,historical);expect(await replaced.json()).toMatchObject({providers:[expect.objectContaining({ready:true})],policies:[expect.objectContaining({enabled:false})]});
+
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
  const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
  expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);
@@ -180,6 +179,7 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT enabled,acknowledgement,actor_operator_id,revision,event_verification_key FROM team_email_intake WHERE team_id=?').bind(f.team.id).first()).toEqual({enabled:0,acknowledgement:0,actor_operator_id:null,revision:intakeRevision!+1,event_verification_key:null});
  const expectedAfterMailRestore=records.map(record=>record.kind==='part'?{...record,items:record.items.map(item=>item.kind==='row'&&item.table==='team_email_intake'&&item.row.team_id===f.team.id?{...item,row:{...item.row,enabled:0,acknowledgement:0,actor_operator_id:null,revision:intakeRevision!+1}}:item)}:record);
  expectAuditArchiveHistory(expectedAfterMailRestore,again);
+
  const auditResponse=await targetCall('/api/settings/audit','GET',undefined,historical);expect(auditResponse.status).toBe(200);
  const restoredAudit=auditSchema.parse(await auditResponse.json());
  expect((await targetCall('/api/settings/audit.csv?through='+restoredAudit.through,'GET',undefined,historical)).status).toBe(200);
@@ -196,6 +196,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const webhookHistory=await historicalWebhooks();let sent=0;
  const dispatchBindings={...targetBindings,INTEGRATION_EGRESS_POLICY:'public-dns-pinned-tls-v1',INTEGRATION_EGRESS:{send:async()=>{sent++;return {status:200,headers:{},body:''};}}};
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM vector_integration_secret_keys').first())?.n).toBe(0);
+ const modelReentered=await targetCall('/api/settings/models/providers/'+modelProvider.id+'/credential','PUT',{credential:'synthetic-vector-4832'},historical);expect(modelReentered.status).toBe(200);
+ const replaced=await targetCall('/api/settings/models','GET',undefined,historical);expect(await replaced.json()).toMatchObject({providers:[expect.objectContaining({ready:true})],policies:[expect.objectContaining({enabled:false})]});
  expect((await targetCall('/api/settings/integrations/destinations/'+f.webhook+'/reenter','POST',{},historical)).status).toBe(201);
  expect((await targetCall('/api/settings/integrations/sources/'+source.id+'/rotate','POST',{overlapHours:0},historical)).status).toBe(200);
  expect((await targetCall('/api/settings/integrations/sources/'+source.id+'/webhook-url','POST',{},historical)).status).toBe(201);
