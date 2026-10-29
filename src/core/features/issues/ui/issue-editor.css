@@ -25,7 +25,8 @@
 .issue-header-actions button,
 .issue-field-editor button,
 .issue-editor-actions button {
-  min-height: 2rem;
+  min-width: var(--tap-min);
+  min-height: max(2rem, var(--tap-min));
   padding: 0.25rem 0.6rem;
   border: 1px solid var(--control-border);
   border-radius: 0.35rem;

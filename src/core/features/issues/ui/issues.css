@@ -435,7 +435,7 @@
 }
 .named-links > details > summary {
   cursor: pointer;
-  min-height: 2.5rem;
+  min-height: max(2.5rem, var(--tap-min));
   padding-block: 0.65rem;
   color: var(--app-cobalt-ink);
   font-size: var(--app-text-small);
@@ -766,7 +766,7 @@
     margin-block: 0.2rem;
   }
   .named-links > details > summary {
-    min-height: 2rem;
+    min-height: max(2rem, var(--tap-min));
     padding-block: 0.4rem;
   }
   .named-links .issue-mutation-form {
@@ -879,7 +879,7 @@
   }
   .issue-description > summary,
   .issue-outcome > summary {
-    min-height: 1.5rem;
+    min-height: max(1.5rem, var(--tap-min));
   }
   .issue-outcome .detail-section--two {
     gap: 0.25rem;
@@ -903,7 +903,7 @@
   margin-bottom: 0.5rem;
 }
 .issue-label-control button {
-  min-height: 32px;
+  min-height: max(32px, var(--tap-min));
   padding: 0.25rem 0.6rem;
   color: var(--app-ink);
   background: var(--app-field);
@@ -990,7 +990,7 @@
   font-weight: 600;
 }
 .issue-inspector summary {
-  min-height: 2.25rem;
+  min-height: max(2.25rem, var(--tap-min));
   align-content: center;
   cursor: pointer;
   color: var(--app-cobalt-ink);
@@ -1046,11 +1046,11 @@
     order: 3;
   }
   .issue-inspector summary {
-    min-height: 2rem;
+    min-height: max(2rem, var(--tap-min));
   }
   .issue-inspector .team-move > details > summary,
   .issue-inspector .dependency-editor > details > summary {
-    min-height: 2rem;
+    min-height: max(2rem, var(--tap-min));
   }
   .issue-label-control {
     margin-bottom: 0.15rem;

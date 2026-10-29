@@ -64,7 +64,7 @@ export function InsightsPage() {
           <option value="all">All visible issues</option><option value="created">Created by me</option><option value="subscribed">Followed by me</option></select></label>
         <label>Parent<input value={parent} placeholder="All, none or identifier" onChange={e => setParent(e.target.value)} /><button type="button" onClick={() => change({ parent: parent || "all" })}>Apply parent</button></label>
         <label>Completed issues<select aria-label="Completed issues" value={chart.includeCompleted} onChange={e => configure({ includeCompleted: e.target.value as "true" | "false" })}>
-          <option value="true">Include when category is All</option><option value="false">Use issue list default</option></select></label>
+          <option value="true">Include with All</option><option value="false">List default</option></select></label>
       </div><button type="button" onClick={() => { setFilters(issueListQuerySchema.parse({})); setBucket(""); }}>Reset filters</button></details>
       {filterError && <p role="alert">{filterError}</p>}
       {options.error && <p role="alert">{options.error.message} <button onClick={options.reload}>Retry filter choices</button></p>}

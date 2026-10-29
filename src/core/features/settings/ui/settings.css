@@ -344,3 +344,12 @@
   gap: 0.5rem;
   min-height: 44px;
 }
+/* A link alone on its line is a 44px target at phone width (TMPL-001, OC16). */
+a.admin-link,
+.audit-export,
+.settings-page > header > a,
+.admin-record > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-min);
+}

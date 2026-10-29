@@ -9,7 +9,7 @@ rer demo
 rer demo --stop
 ```
 
-Open the private `RER_OPEN` link to enter as the saved owner. Vector supplies two teams, eight issues, projects, cycles, labels, evidence, dependencies and a saved view. Sample references to Sarah resolve to that owner, and the sample teammates take the owner's email domain; sample sessions are never inserted. The nav and title read **Vector Demo**, or **Vector Dev** under `rer dev`. There is no demo bar or captured-mail viewer.
+Open the private `RER_OPEN` link to enter as the saved owner. Vector supplies two teams, eight issues, projects, cycles, labels, evidence, dependencies and a saved view, plus a sample initiative over the demo projects, a release with scope, a team document and an Insights dashboard. Sample references to Sarah resolve to that owner, and the sample teammates take the owner's email domain; sample sessions are never inserted. The nav and title read **Vector Demo**, or **Vector Dev** under `rer dev`. There is no demo bar or captured-mail viewer.
 
 Demo data lives under `.rer/demo/<start-time>/` and disappears on stop. `RER_STATE_DIR` isolates it from `.wrangler/state`. The verbatim `vendor/base/demo` module comes from Base `rer-v0.2.40` (`9eb83c85a9088c16ffe94a3af43e8a2e95acc377`), refreshed together with every other recorded Base copy. `withDemo` is the Worker's first import; `demoSockets()` is Vite's first plugin. `base-copies.json`, `edition.json` and the source lock record the selection. The sample-data hook is unchanged.
 

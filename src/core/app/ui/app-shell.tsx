@@ -142,10 +142,14 @@ function AppShellContent({ children }: AppShellProps) {
     const nav = mobileNavigation.current
     if (!nav) return
     const revealCurrent = () => {
-      const current = nav.querySelector<HTMLElement>('.is-active')
-      if (!current || !nav.clientWidth) return
-      const left = current.getBoundingClientRect().left - nav.getBoundingClientRect().left + nav.scrollLeft
-      nav.scrollTo({ left: left - (nav.clientWidth - current.offsetWidth) / 2 })
+      const links = Array.from(nav.querySelectorAll<HTMLElement>('.app-nav-link'))
+      const index = links.findIndex(link => link.classList.contains('is-active'))
+      if (index < 0 || links.length < 2 || !nav.clientWidth) return
+      // Entries are whole and snap in pages, so the strip never shows one cut at its edge.
+      const pitch = links[1].getBoundingClientRect().left - links[0].getBoundingClientRect().left
+      const perPage = Math.max(1, Math.round(nav.clientWidth / pitch))
+      const first = links[Math.floor(index / perPage) * perPage]!
+      nav.scrollTo({ left: first.getBoundingClientRect().left - nav.getBoundingClientRect().left + nav.scrollLeft })
     }
     revealCurrent()
     const observer = new ResizeObserver(revealCurrent)
@@ -317,9 +321,8 @@ function AppShellContent({ children }: AppShellProps) {
       </div>
       <nav className="app-mobile-nav" aria-label="Workspace">
         <div className="app-mobile-places-row">
-          <NavLink item={navigation[0]!} pathname={location.pathname} />
           <div ref={mobileNavigation} className="app-mobile-places">
-            {navigation.filter(item => item.to !== '/app' && item.to !== '/app/inbox').map(item => (
+            {navigation.filter(item => item.to !== '/app/inbox').map(item => (
               <NavLink key={item.to} item={item} pathname={location.pathname} />
             ))}
           </div>

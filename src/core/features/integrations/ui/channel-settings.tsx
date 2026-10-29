@@ -6,6 +6,11 @@ import {channelConfiguration,channelEventLabels,notPostingMessage,scopeEvents} f
 import {acknowledged,send} from './client';
 import {CopyField} from './copy-field';
 type Configuration=z.infer<typeof channelConfiguration>;
+const sourceKinds=[['team','Team'],['project','Project'],['view','Saved view'],['initiative','Initiative']] as const;
+/** One group per kind, so a chosen source reads as its own name and still fits a phone-width select. */
+function sourceGroups(objects:Configuration['objects']){
+ return sourceKinds.map(([scope,kind])=>{const own=objects.filter(object=>object.scope===scope);return own.length>0&&<optgroup key={scope} label={kind}>{own.map(object=><option key={object.id} value={scope+':'+object.id}>{object.name}</option>)}</optgroup>;});
+}
 /** Existing destinations only: Slack channels already bound or allowed, and configured Discord webhooks. */
 function approvable(config:Configuration){
  const slack=new Map<string,string>([...config.allowedChannels.map(c=>[c.channelId,c.channelName] as const),...config.bindings.filter(b=>b.provider==='slack').map(b=>[b.channelId,b.channelName] as const)]);
@@ -66,7 +71,7 @@ export function ChannelSettings(){
  <label>Allowed channel name<input name="channelName" required maxLength={120}/></label><label>Allowed Slack channel ID<input name="channelId" required pattern="[CG][A-Z0-9]{2,30}"/></label><button>Allow channel</button></fieldset></form>
  <ul>{config.data.allowedChannels.map(channel=><li key={channel.channelId}>#{channel.channelName} <button type="button" disabled={pending} onClick={()=>void run('/channels/allowed/'+channel.channelId,undefined,'DELETE')}>Remove allowance for {channel.channelName}</button></li>)}</ul>
  <form aria-label="Bind notification channel" onSubmit={bind}><fieldset disabled={pending}><legend>Bind a channel</legend>
- <label>Team, project, saved view or initiative<select name="object" required defaultValue="" onChange={event=>setChosen(event.target.value)}><option value="">Choose where events come from</option>{config.data.objects.map(object=><option key={object.scope+object.id} value={object.scope+':'+object.id}>{object.scope==='view'?'Saved view':object.scope==='team'?'Team':object.scope==='initiative'?'Initiative':'Project'} · {object.name}</option>)}</select></label>
+ <label>Team, project, saved view or initiative<select name="object" required defaultValue="" onChange={event=>setChosen(event.target.value)}><option value="">Choose a source</option>{sourceGroups(config.data.objects)}</select></label>
  <label>Channel service<select value={provider} onChange={event=>setProvider(event.target.value)}><option value="slack">Slack</option><option value="discord">Discord</option></select></label>
  <label>Channel display name<input name="channelName" required maxLength={120} placeholder="delivery-updates"/></label>
  {provider==='slack'?<label>Slack channel ID<input name="channelId" required pattern="[CG][A-Z0-9]{2,30}" placeholder="C0123456789"/><small>In Slack, open the channel details and copy its channel ID.</small></label>:<label>Discord webhook URL<input type="password" autoComplete="off" name="webhookUrl" required maxLength={2048}/><small>HTTPS on discord.com or discordapp.com, beginning /api/webhooks/. The URL is stored securely and never shown again.</small></label>}

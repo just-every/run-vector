@@ -81,6 +81,11 @@ a {
   --control-text: var(--app-ink);
   --control-radius: 0.5rem;
   --control-height: 2.75rem;
+  /* Phone floor for every tap target; features raise their own small controls to it. */
+  --tap-min: 0px;
+}
+@media (max-width: 46rem) {
+  :root { --tap-min: 2.75rem; }
 }
 :where(button, [role="button"]) {
   min-height: var(--control-height);

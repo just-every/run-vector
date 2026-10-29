@@ -1,7 +1,8 @@
-import { buildVectorSample } from '../sample-data/vector'
+import { buildVectorSample, vectorSampleIds } from '../sample-data/vector'
 import type { WorkerBindings } from './core/app/bindings'
 import { bootstrapWorkspace } from './core/features/bootstrap/repository'
 import { insertSampleData } from './core/features/sample-data/repository'
+import { seedNewerSections } from './core/features/sample-data/newer-sections'
 import { sampleDataSchema } from './core/features/sample-data/schema'
 
 /** Real owner admission precedes this hook. Sample sessions never enter demo storage. */
@@ -40,4 +41,10 @@ export async function seedDemo(env: WorkerBindings, { ownerEmail, now }: { owner
   await insertSampleData(env.DB, data)
   await env.DB.prepare(`UPDATE workspace_installation SET setup_completed_at=COALESCE(setup_completed_at,?),updated_at=?
     WHERE workspace_id=? AND setup_operator_id=?`).bind(now.toISOString(), now.toISOString(), owner.workspace_id, owner.id).run()
+  const real = (sampleId: string) => ids.get(sampleId) ?? sampleId
+  await seedNewerSections(env.DB, {
+    owner: owner.id, now,
+    teams: { flow: real(vectorSampleIds.flow), platform: real(vectorSampleIds.platform) },
+    projects: { reliability: vectorSampleIds.reliability, hardening: vectorSampleIds.hardening },
+  })
 }

@@ -2,7 +2,7 @@
 .insights-page h1 { margin-top: 6px; }
 .insights-eyebrow { color: var(--app-muted); font-size: var(--app-text-small); letter-spacing: .08em; text-transform: uppercase; }
 .insights-card { min-width: 0; padding: clamp(16px, 3vw, 26px); border: 1px solid var(--app-rule); border-radius: 12px; background: var(--app-card); margin: 20px 0; }
-.insights-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin: 12px 0; }
+.insights-controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; align-items: start; margin: 12px 0; }
 .insights-controls label { display: grid; gap: 6px; font-size: .86rem; min-width: 0; }
 .insights-controls input, .insights-controls select { width: 100%; min-width: 0; padding: 9px; color: var(--app-ink); background: var(--app-field); border: 1px solid var(--app-field-border); border-radius: 6px; }
 .insights-heading { display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: start; }
