@@ -1,3 +1,5 @@
+import { createServerApp } from '../../src/core/app/server';
+import { bindings } from './base-auth-fixture';
 import {exerciseInitiatives} from './initiatives-scenario';
 import {exerciseReleases} from './releases-scenario';
 import { expect, it } from 'vitest';
@@ -54,8 +56,21 @@ it('[PROJ-014 ROLE-002 ROLE-003] spanning projects appear in each contributing t
   const privateName = 'synthetic-vector-740';
   const privateTeam = (await f.mutate('/settings/teams', 'POST', {name: privateName, identifierPrefix: 'SYNPROJ', isPrivate: true})).teams.find(t => t.name === privateName)!;
   const project = (await f.mutate('/settings/projects', 'POST', {name: 'synthetic-vector-741', leadOperatorId: f.lead.id})).projects.find(p => p.name === 'synthetic-vector-741')!;
-  const publicIssue = await f.create({teamId: f.team.id, projectId: project.id});
   const privateIssue = await f.create({teamId: privateTeam.id});
+  const created = await createServerApp().request(bindings.APP_ORIGIN + '/api/issues', {
+    method: 'POST',
+    headers: { host: new URL(bindings.APP_ORIGIN).host, origin: bindings.APP_ORIGIN,
+      Cookie: f.member.cookie, 'content-type': 'application/json', 'x-vector-page': 'issue' },
+    body: JSON.stringify({title: 'synthetic-vector-743', teamId: f.team.id, projectId: project.id}),
+  }, bindings);
+  expect(created.status, await created.clone().text()).toBe(201);
+  const publicIssue = await created.json() as any;
+  const resources = publicIssue.page.resources;
+  for (const path of ['/api/options', '/api/notifications/count', '/api/mentions/options',
+    '/api/issues/' + publicIssue.identifier + '/subscription'])
+    expect(resources[path], path + ' is readable in the creation receipt').toBeTruthy();
+  expect(JSON.stringify(resources)).not.toContain(privateName);
+  expect(JSON.stringify(resources)).not.toContain(privateIssue.identifier);
   expect((await f.call('/issues/'+privateIssue.identifier, 'PATCH', {expectedVersion: privateIssue.version, projectId: project.id})).status).toBe(200);
   const privateProject = (await f.mutate('/settings/projects', 'POST', {name: 'synthetic-vector-742', leadOperatorId: f.lead.id})).projects.find(p => p.name === 'synthetic-vector-742')!;
   await f.create({teamId: privateTeam.id, projectId: privateProject.id});

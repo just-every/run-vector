@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "9abb43d808aded63d5e9ef94fb020b553079175014bf035672a742ba15732692",
+      "sha256": "419027800a357d76e8bc59b096f8fa72a3fa9340b0fa65995c90f69ffef80d52",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "43754f3bf41448cdcb7ed87c8d892d53781024c78253057f47d3380db6622431",
+      "sha256": "d9011168dd04dd5a398d99f3a4200762020469e62c4073d42102ccadccc0ac7e",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "356cb8d2b7c9b26aa9f964fd211006b4902d69356c12ad3e8fef25fbb617be07",
+      "sha256": "2e2bbac97fbbb16a155d7574e043a243ce13e32344190deb248b681c2bb066e8",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -5921,7 +5921,7 @@
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
-      "sha256": "03f36fe2eb99e4112b8a32df530e32917d7c4d63e23b19ff8128f72d096ec434",
+      "sha256": "0099c326dafbefd288ffbbabfd5fdb91a32a3f751ff8340793f0776880920a9a",
       "executable": false
     },
     "src/core/features/roles/visibility-sql.ts": {
@@ -7945,7 +7945,7 @@
       "executable": false
     },
     "tests/worker/project-membership.test.ts": {
-      "sha256": "f0d0e7836ff6a1d95b6edb6e86b74b985e39268811321de539fb79112bd9b74d",
+      "sha256": "883f63fc51c10cf187ecbe001ea22b948ae1b4eea2e365c402b299e9705673c7",
       "executable": false
     },
     "tests/worker/project-milestone-flow.ts": {

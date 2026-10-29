@@ -1,6 +1,7 @@
 import { visibilityCtes } from './visibility-sql'
 
 const scoped = new WeakMap<D1Database,string>()
+const visibilityActor = Symbol('Vector admitted visibility')
 /** Every native/API/document repository receives this database. CTE shadowing
  * is SQLite row projection, not string replacement of table references: nested
  * queries, recursive copy graphs and Drizzle see exactly the same policy.
@@ -8,7 +9,8 @@ const scoped = new WeakMap<D1Database,string>()
  * The native transaction/session wrapper remains outside this adapter.
  */
 export function visibilityDatabase(source: D1Database, actor: string): D1Database {
-  const reader=scoped.get(source)
+  // Request adapters forward the private brand while retaining their fences.
+  const reader=scoped.get(source) ?? (source as D1Database & { [visibilityActor]?: string })[visibilityActor]
   if (reader) {
     if (reader !== actor) throw new Error('A visibility database belongs to one admitted actor.')
     return source
@@ -16,6 +18,7 @@ export function visibilityDatabase(source: D1Database, actor: string): D1Databas
   const ctes = visibilityCtes(actor)
   const db = new Proxy(source, {
     get(target, key) {
+      if (key === visibilityActor) return actor
       if (key === 'prepare') return (sql: string) => {
         if (/^\s*(?:SELECT|INSERT|UPDATE|DELETE)\b/i.test(sql)) return target.prepare(`WITH ${ctes}\n${sql}`)
         if (/^\s*WITH\s+RECURSIVE\b/i.test(sql)) return target.prepare(sql.replace(/^(\s*WITH\s+RECURSIVE)\b/i, `$1 ${ctes},`))
