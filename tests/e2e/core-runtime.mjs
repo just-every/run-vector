@@ -673,7 +673,7 @@ try {
         text: m.text(),
         expected: "Deliberate stale edit PATCH409",
       });
-    } else errors.push(m.text());
+    } else errors.push(m.text() + ' at ' + m.location().url);
   });
   page.on("requestfailed", (r) => {
     failed.push(r.url() + ":" + r.failure()?.errorText);
@@ -744,7 +744,7 @@ try {
   const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
   const followerPage = await followerContext.newPage();
   followerPage.on('pageerror', error => errors.push(error.message));
-  followerPage.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+  followerPage.on('console', message => { if (message.type() === 'error') errors.push(message.text() + ' at ' + message.location().url); });
   try {
     await followerPage.goto(base + '/app');
     await withInvitedOperator(followerPage, followerContext, base, state,

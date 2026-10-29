@@ -65,8 +65,11 @@ export async function viewerVisibilityJourney(w:Workspace){
    const response=prepared.send?await prepared.send():await send(path,door.method==='ALL'?'POST':door.method,prepared.body);
    expect(await stored(),door.method+' '+path+' refusal changed storage').toEqual(before);
    expect(census.edge.calls,door.method+' '+path+' refusal reached a provider').toHaveLength(providerCalls);
-   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(403);
-   expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:'forbidden'});
+   // OAuth authenticates the client and code, then refuses issuance for the
+   // consenting person's current Viewer role with its native grant error.
+   const tokenExchange=surface==='native'&&door.method==='POST'&&door.path==='/oauth/token';
+   expect(response.status,door.method+' '+path+' '+await response.clone().text()).toBe(tokenExchange?400:403);
+   expect(await response.clone().json(),door.method+' '+path+' role refusal').toMatchObject({error:tokenExchange?'invalid_grant':'forbidden'});
    const usageAfter=(await env.DB.prepare('SELECT * FROM integration_token_usage ORDER BY id').all()).results;
    expect(usageAfter.filter(row=>usageIds.has(row.id))).toEqual(usageBefore);
    const usage=usageAfter.filter(row=>!usageIds.has(row.id));
