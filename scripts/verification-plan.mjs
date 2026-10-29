@@ -7,7 +7,7 @@ export const ciCommands = [
   'sources:verify-base', 'check', 'test:installer', 'test:archive-upgrade', 'test:markdown',
   'test:worker', 'test:deployment', 'test:public-site', 'build',
   'integration:check', 'test:runtime', { node: ['tests/e2e/cycle-schedule-runtime.mjs'] }, { node: ['tests/e2e/personal-time-runtime.mjs'] }, { node: ['tests/e2e/cycle-report-runtime.mjs'] }, { node: ['tests/e2e/project-report-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/current-intake-runtime.mjs'] }, { node: ['tests/e2e/theme-runtime.mjs'] }, { node: ['tests/e2e/housekeeping-runtime.mjs'] }, 'artifact:delivery', 'test:wave-b',
-  'test:data', 'test:integrations', 'test:base-auth', 'test:access',
+  'test:data', { node: ['tests/e2e/jira-public-journey.mjs'] }, 'test:integrations', 'test:base-auth', 'test:access',
   'test:mutation-refresh', 'test:admin', 'test:collaboration',
 ];
 
@@ -20,7 +20,7 @@ export const verificationShards = {
   // test:data is its two existing entry points, split without omitting either.
   imports: {
     browser: true, native: true,
-    commands: ['build', { node: ['tests/e2e/data-runtime.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }],
+    commands: ['build', { node: ['tests/e2e/data-runtime.mjs'] }, { node: ['tests/e2e/jira-public-journey.mjs'] }, { node: ['tests/e2e/related-runtime.mjs'] }, { node: ['tests/e2e/issue-copy-runtime.mjs'] }],
   },
   portability: {
     browser: true, native: true,

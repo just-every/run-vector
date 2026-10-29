@@ -77,8 +77,8 @@ export async function verifyReport(panel, report, fixture) {
  assert(report.mapping.every(row=>row.identifier));
  assert.deepEqual(report.mapping.map(row=>row.sourceId),fixture.expected.sourceIds);
  assert.equal(new Set(report.mapping.map(row=>row.identifier)).size,fixture.expected.issueCount);
- const expectedEffects={labels:173,parents:5,dependencies:2,duplicates:2,comments:102,links:2,files:0};
- const effects=panel.getByRole('table',{name:'Planned effects and current native rows',exact:true});
+ const expectedEffects={labels:173,parents:5,dependencies:2,related:1,duplicates:2,comments:102,links:2,files:0};
+ const effects=panel.getByRole('table',{name:'Planned changes and current Vector records',exact:true});
  assert.equal(await effects.locator('tbody > tr').count(),Object.keys(expectedEffects).length);
  for(const [name,count] of Object.entries(expectedEffects)) {
   assert.deepEqual(report.effects.counts[name],{planned:count,written:count},name+' native effects');

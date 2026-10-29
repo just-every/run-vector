@@ -2873,7 +2873,7 @@
       "executable": false
     },
     "scripts/verification-plan.mjs": {
-      "sha256": "61c252a54332704eff9169edf51dc502c5bd944cf7541248549e1535713a025d",
+      "sha256": "e346586c2fbf82f430b9ba473d65bff5b1a644fed4a037d415d57aaa44d95bb7",
       "executable": false
     },
     "scripts/verify.mjs": {
@@ -7129,7 +7129,7 @@
       "executable": false
     },
     "tests/e2e/jira-capture-support.mjs": {
-      "sha256": "715f535b53595c4ac7a8dde12bc5cccdef1d76ecdfaf887fe2a50e33bc1f4b2f",
+      "sha256": "be47d86800bbc180416b88be7df3b091135dfff1a54b3bccea6c6afc993dd447",
       "executable": false
     },
     "tests/e2e/jira-captures.mjs": {
@@ -7149,11 +7149,19 @@
       "executable": false
     },
     "tests/e2e/jira-public-journey.mjs": {
-      "sha256": "f8e68cf37b9fff4c27b98346f77f7532cd399c01bfff2587c97acbfddfe34a53",
+      "sha256": "a68d49615758e254945e8ab84572fbf716743943d270c3bafd0a404cb1570488",
+      "executable": false
+    },
+    "tests/e2e/jira-reconciliation-doors.mjs": {
+      "sha256": "2499e7fb37ab472e851486448777ebd55014dfd930c10fc409218f47a543740a",
+      "executable": false
+    },
+    "tests/e2e/jira-reconciliation-runtime.mjs": {
+      "sha256": "2722fe45db9326219b0d139fece1afac7daed59736d2b3872d897dcdc82d2ffe",
       "executable": false
     },
     "tests/e2e/jira-review-checks.mjs": {
-      "sha256": "04732fb0d6520b8bd13a47ef944617f73ede3448c10659920f949e76ea6288b0",
+      "sha256": "07cd9e32aae9c6bd6ddce7483576bc6ac785f68ba5430e4d99eafdd4c65f3233",
       "executable": false
     },
     "tests/e2e/jira-status-controls.mjs": {

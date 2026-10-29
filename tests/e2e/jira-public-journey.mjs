@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
+import {test} from 'node:test';
+import {pathToFileURL} from 'node:url';
+import {verifyReconciliationDoors,verifyImportedLookup} from './jira-reconciliation-doors.mjs';
 import {tableCounts,verifyJiraReview,verifyReport} from './jira-review-checks.mjs';
 import {generateJiraFixture} from '../fixtures/import/jira/generate.mjs';
 import {captureJiraState} from './jira-capture-support.mjs';
 import {verifyQualifiedStatusControls} from './jira-status-controls.mjs';
 
-export async function exerciseJiraPublicJourney({page,runtime,native,directory,proof}) {
+export async function exerciseJiraPublicJourney({page,runtime,native,directory,proof,terminalReport}) {
  const panel=page.locator('#data'),baseline=generateJiraFixture();
  const capture=(state,focus)=>captureJiraState({page,panel,directory,state,proof,focus});
  const apply=panel.getByRole('button',{name:'Apply reviewed run',exact:true});
@@ -76,6 +79,14 @@ export async function exerciseJiraPublicJourney({page,runtime,native,directory,p
  await panel.getByLabel('I reviewed these omissions.',{exact:true}).check();
  assert.equal(await apply.isEnabled(),true);
  const snapshots=[],reads=[];
+ let resumes=0,interrupted;
+ const interruption=new Promise(resolve=>{interrupted=resolve;});
+ const pause=async route=>{
+  if(++resumes===2){await route.abort('connectionreset');interrupted();}
+  else await route.continue();
+ };
+ const resumePattern='**/api/data/import/runs/*/resume';
+ if(terminalReport)await page.route(resumePattern,pause);
  const observe=response=>{
   const path=new URL(response.url()).pathname;
   if(response.request().method()==='POST'&&(path==='/api/data/import/apply'||/^\/api\/data\/import\/runs\/[^/]+\/resume$/.test(path))) {
@@ -88,6 +99,24 @@ export async function exerciseJiraPublicJourney({page,runtime,native,directory,p
   const applied=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/data/import/apply'&&r.request().method()==='POST');
   await apply.click();const created=await(await applied).json();runId=created.id;
   const row=panel.locator('.import-runs > li').filter({has:page.getByText(runId,{exact:true})});
+  if(terminalReport) {
+   await interruption;
+   await row.getByRole('button',{name:'Reconciliation report',exact:true}).waitFor();
+   await page.waitForFunction(()=>!document.querySelector('.import-runs button')?.disabled);
+   const partialResponse=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/data/import/runs/'+runId+'/report');
+   await row.getByRole('button',{name:'Reconciliation report',exact:true}).click();
+   const partialReceipt=await partialResponse;assert.equal(partialReceipt.status(),200);
+   const partial=await partialReceipt.json();
+   assert.equal(partial.run.state,'applying');
+   assert(partial.totals.issuesWritten>0&&partial.totals.issuesWritten<300);
+   assert.equal(partial.totals.rowsRead,300);
+   assert.equal(partial.totals.rowsNotWritten,300-partial.totals.issuesWritten);
+   proof.partial=await verifyReconciliationDoors({page,section:row.locator('.import-report'),report:partial,fixture:baseline,terminalReport});
+   await capture('partial-reconciliation',row.locator('.import-report'));
+   await row.getByRole('button',{name:'Close report',exact:true}).click();
+   await page.unroute(resumePattern,pause);
+   await row.getByRole('button',{name:'Read / resume',exact:true}).click();
+  }
   await row.getByText(/Completed · .*300 source records/).waitFor({timeout:180000});
   await Promise.all(reads);
   const completed=snapshots.at(-1);assert.equal(completed.state,'completed');assert.equal(completed.checkpoint,300);
@@ -99,9 +128,10 @@ export async function exerciseJiraPublicJourney({page,runtime,native,directory,p
   const receipt=await response;assert.equal(receipt.status(),200);const report=await receipt.json();
   const section=panel.locator('.import-report');await section.getByRole('heading',{name:'Reconciliation report: jira-public-300',exact:true}).waitFor();
   proof.report=await verifyReport(section,report,baseline);
+  if(terminalReport)proof.completed=await verifyReconciliationDoors({page,section,report,fixture:baseline,terminalReport});
   await capture('completed-reconciliation',section);
   await section.getByRole('button',{name:'Close report',exact:true}).click();
- } finally {page.off('response',observe);}
+ } finally {page.off('response',observe);await page.unroute(resumePattern,pause);}
  const ambiguous=generateJiraFixture({variant:'ambiguous-numeric-dates'});
  await panel.getByLabel('Import source name',{exact:true}).fill('jira-ambiguous-refusal');
  await file(ambiguous);const refusal=await preview(ambiguous);
@@ -111,4 +141,12 @@ export async function exerciseJiraPublicJourney({page,runtime,native,directory,p
  assert.equal(await apply.isDisabled(),true);
  await panel.getByText(/Day\/month order is ambiguous across the whole file/).waitFor();
  await capture('ambiguous-date-refusal',panel.locator('.import-review'));
+ if(terminalReport)await verifyImportedLookup({page,runtime,fixture:baseline,report:await terminalReport(runId),directory,proof});
+}
+
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href) {
+ test('DATA-007 reconciles interrupted and completed imports through Settings, terminal, CSV and source lookup',{timeout:1200000},async()=>{
+  const {runReconciliationJourney}=await import('./jira-reconciliation-runtime.mjs');
+  await runReconciliationJourney(exerciseJiraPublicJourney);
+ });
 }

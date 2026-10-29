@@ -49,7 +49,7 @@ export async function captureJiraState({page,panel,directory,state,proof,focus=p
  // Close the native disclosure controls so 300 raw rows stay available without
  // making an unbounded open-detail screenshot. No DOM or stylesheet mutation.
  for(const summary of await panel.locator('details[open] > summary').all())await summary.click();
- for(const width of [1440,390]) {
+ for(const width of proof.captureWidths??[1440,390]) {
   await page.setViewportSize({width,height:900});
   const name=state+'-'+width;
   const mobileTables=width===390?await checkMobileReviewTables({page,panel:focus,directory,name}):[];
