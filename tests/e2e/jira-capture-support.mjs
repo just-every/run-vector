@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {join} from 'node:path';
-import {assertControls} from './ui-controls-checks.mjs';
+import {expect} from '@playwright/test';
+
+async function assertControls(page) {
+ const controls=await page.locator('#data button:visible, #data input:visible, #data select:visible').all();
+ for(const control of controls)await expect(control).toHaveAccessibleName(/\S/);
+ return controls;
+}
 
 async function checkMobileReviewTables({page,panel,directory,name}) {
  const checks=[];

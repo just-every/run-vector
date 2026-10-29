@@ -7129,7 +7129,7 @@
       "executable": false
     },
     "tests/e2e/jira-capture-support.mjs": {
-      "sha256": "be47d86800bbc180416b88be7df3b091135dfff1a54b3bccea6c6afc993dd447",
+      "sha256": "fb10ac1b62d161c75d120d0624dc9cdcec2152b3961511b96f62ff85182b552e",
       "executable": false
     },
     "tests/e2e/jira-captures.mjs": {
