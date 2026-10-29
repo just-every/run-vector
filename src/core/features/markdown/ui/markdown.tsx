@@ -159,7 +159,8 @@ export function SafeMarkdown({
   const tasks = parseTasks(children);
   const rendered: Components = { ...components,
     pre: ({ children }) => <CodeBlock>{children}</CodeBlock>,
-    code: ({ className, children }) => <HighlightedCode className={className}>{children}</HighlightedCode>,
+    code: ({ className, children: code, node }) => <HighlightedCode className={className}
+      sourceAttributes={descriptionAnchors && node?.properties ? Object.fromEntries(Object.entries(node.properties).filter(([key]) => key.startsWith('data-description-'))) : undefined}>{code}</HighlightedCode>,
     input: TaskCheckbox,
   };
   return (

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { codePointOffset, textBoundaries, type DescriptionAnchorInput } from '../../discussion/anchors';
+import { codePointOffset, quoteAt, textBoundaries, type DescriptionAnchor, type DescriptionAnchorInput } from '../../discussion/anchors';
 import { MentionTextarea } from '../../notifications/ui/mention-textarea';
 import { ReactionProvider } from '../../reactions/ui';
 import { useHydrated } from '../../../app/initial-resources';
@@ -19,11 +19,42 @@ function selectionAnchor(container: HTMLElement, source: string): DescriptionAnc
     prefix.selectNodeContents(element);
     prefix.setEnd(node, offset);
     const start = Number(element.dataset.descriptionStart), end = Number(element.dataset.descriptionEnd);
-    return textBoundaries(source, start, end, element.textContent ?? '')?.[prefix.toString().length] ?? null;
+    const literalLength = element.dataset.descriptionLiteral === undefined ? null : Number(element.dataset.descriptionLiteral);
+    const text = literalLength === null ? element.textContent ?? '' : (element.textContent ?? '').slice(0, literalLength);
+    return textBoundaries(source, start, end, text, literalLength !== null)?.[Math.min(prefix.toString().length, text.length)] ?? null;
   }
   const a = boundary(range.startContainer, range.startOffset), b = boundary(range.endContainer, range.endOffset);
   if (a === null || b === null || a >= b || !range.toString().trim()) return null;
-  return { quote: range.toString(), start: codePointOffset(source, a), end: codePointOffset(source, b), expectedDescription: source };
+  const start = codePointOffset(source, a), end = codePointOffset(source, b), quote = quoteAt(source, start, end);
+  return quote.trim() ? { quote, start, end, expectedDescription: source } : null;
+}
+
+function locateQuote(container: HTMLElement, source: string, anchor: DescriptionAnchor) {
+  const points = Array.from(source), start = points.slice(0, anchor.start).join('').length, end = points.slice(0, anchor.end).join('').length;
+  function boundary(offset: number) {
+    for (const element of container.querySelectorAll<HTMLElement>('[data-description-start]')) {
+      const a = Number(element.dataset.descriptionStart), b = Number(element.dataset.descriptionEnd);
+      const literal = element.dataset.descriptionLiteral;
+      const text = literal === undefined ? element.textContent ?? '' : (element.textContent ?? '').slice(0, Number(literal));
+      const index = textBoundaries(source, a, b, text, literal !== undefined)?.indexOf(offset) ?? -1;
+      if (index < 0) continue;
+      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+      let remaining = index, node: Node | null;
+      while ((node = walker.nextNode())) {
+        const length = node.textContent?.length ?? 0;
+        if (remaining <= length) return {node, offset:remaining, element};
+        remaining -= length;
+      }
+    }
+    return null;
+  }
+  const a = boundary(start), b = boundary(end);
+  if (!a || !b) return;
+  const range = document.createRange();
+  range.setStart(a.node, a.offset); range.setEnd(b.node, b.offset);
+  const selection = window.getSelection();
+  selection?.removeAllRanges(); selection?.addRange(range);
+  a.element.scrollIntoView({block:'center'});
 }
 
 export function DescriptionDiscussion({ identifier, description, version, writable, onRefresh, children }: {
@@ -61,6 +92,7 @@ export function DescriptionDiscussion({ identifier, description, version, writab
     {(threads.length > 0 || draft || error || resource.error) && <aside className="description-thread-margin" aria-label="Description threads">
       <h2>Description threads</h2>
       <ReactionProvider identifier={identifier}>{threads.map(({ root, replies }) => <CommentThread key={root.id} root={root} replies={replies}
+        onLocateQuote={anchor => { if(container.current) locateQuote(container.current, description, anchor); }}
         writable={writable} identifier={identifier} data={resource.data!} busy={busy} mutate={mutate}
         onLinksChanged={() => { resource.refreshAfterMutation(); onRefresh(); }} />)}</ReactionProvider>
       {draft && <form className="issue-mutation-form comment-composer" onSubmit={event => {
