@@ -42,6 +42,7 @@ export function reportInput(input:ImportInput,headers:string[],records:SourceRec
 }
 type Written = { source_id:string; identifier:string; team:string; status:string; project:string|null; cycle:string|null; assignee:string|null };
 export type ImportReport = {
+  aliasCollisions: {alias:string;importedIdentifier:string;nativeIdentifier:string;reason:string}[];
   effects?: EffectReport;
   jiraReview?: JiraReview;
   run: { id:string; source:string; fileName:string; format:string; state:string };
@@ -74,7 +75,13 @@ export async function buildReport(db:D1Database,job:{id:string;namespace:string;
     const row=sourceOf.get(number),index=reportFields.indexOf(group.field as ReportField);
     return {row:number,sourceId:row?.[1]??'',field:group.field,value:index>=0?String(row?.[2+index]??''):'',code:group.code,message:group.message};
   }));
+  const aliasCollisions=(await db.prepare(`SELECT a.source_key AS alias,i.identifier AS importedIdentifier,n.identifier AS nativeIdentifier,'native_identifier_wins' AS reason
+    FROM issue_aliases a JOIN issues i ON i.id=a.issue_id JOIN issues n ON n.identifier=a.source_key COLLATE NOCASE AND n.id<>i.id
+    JOIN teams nt ON nt.id=n.team_id AND nt.workspace_id=a.workspace_id
+    WHERE EXISTS(SELECT 1 FROM ik_provenance p WHERE p.job_id=? AND p.target_id=i.id AND p.target_kind='issue' AND p.reversed=0)
+    ORDER BY a.source_key,i.identifier`).bind(job.id).all<ImportReport['aliasCollisions'][number]>()).results;
   return {
+    aliasCollisions,
     ...(input.effects?{effects:await effectReport(db,job.id,input.effects)}:{}),
     ...(input.jiraReview?{jiraReview:input.jiraReview}:{}),
     run:{id:job.id,source:job.namespace.replace(/^vector-import:/,''),fileName:input.fileName,format:input.format,state:job.state},
@@ -89,7 +96,7 @@ export function reportCsv(report:ImportReport,input:ReportInput) {
   const omitted=new Map<number,string[]>();
   for(const group of input.omissions)for(const row of group.rows)omitted.set(row,[...(omitted.get(row)??[]),group.field??group.code]);
   const identifiers=new Map(report.mapping.map(row=>[row.sourceId,row.identifier]));
-  const lines=[['source_row','source_id','vector_identifier','written',...reportFields.map(field=>'source_'+field),'not_imported_fields'].join(',')];
-  for(const row of input.rows)lines.push([row[0],row[1],identifiers.get(row[1])??null,identifiers.get(row[1])?'yes':'no',...row.slice(2) as string[],(omitted.get(row[0])??[]).join('; ')].map(cell).join(','));
+  const lines=[['source_row','source_id','vector_identifier','written',...reportFields.map(field=>'source_'+field),'not_imported_fields','alias_collisions'].join(',')];
+  for(const row of input.rows)lines.push([row[0],row[1],identifiers.get(row[1])??null,identifiers.get(row[1])?'yes':'no',...row.slice(2) as string[],(omitted.get(row[0])??[]).join('; '),report.aliasCollisions.filter(item=>item.importedIdentifier===identifiers.get(row[1])).map(item=>item.alias+': native '+item.nativeIdentifier+' wins').join('; ')].map(cell).join(','));
   return lines.join('\r\n')+'\r\n';
 }

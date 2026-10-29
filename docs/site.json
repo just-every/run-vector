@@ -51,6 +51,12 @@
           "summary": "Bring issues from a CSV or JSON file or a Linear export, review the mapping, then apply or roll back."
         },
         {
+          "slug": "imported-identifiers",
+          "title": "Imported identifiers and bookmarks",
+          "source": "docs/IMPORTED-ALIASES.md",
+          "summary": "Keep old issue links and Git references working, manage source prefixes, and review native identifier collisions."
+        },
+        {
           "slug": "notifications",
           "title": "Notifications and email",
           "source": "docs/guide/notifications.md",

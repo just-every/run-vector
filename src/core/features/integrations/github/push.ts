@@ -1,6 +1,7 @@
+import {githubAliasIssues,aliasReferenceKind,githubAliasGuard} from '../../data/aliases/github';
 import {z} from 'zod';
 import {IntegrationError} from '../errors';
-import {githubReferences,githubReferenceKind} from './input';
+import {githubReferences} from './input';
 import {githubDelivery,type GithubDelivery} from './delivery';
 import {gitGuard,gitMove} from './rules';
 export const gitSha=z.string().regex(/^[a-f0-9]{40}$/i).transform(s=>s.toLowerCase());
@@ -24,13 +25,13 @@ export async function receivePush(raw:unknown,context:GithubDelivery,extra?:(inp
    const url=githubCommitUrl(commit.url,repository,commit.id),subject=commit.message.split(/\r?\n/)[0]!;
    if(subject.length>2000)throw new IntegrationError(413,'github_commit_subject_limit');
    const refs=githubReferences(commit.message);if(refs.length>20)throw new IntegrationError(413,'github_reference_limit');
-   const issues=(await db.prepare('SELECT i.id,i.identifier,i.version FROM issues i JOIN teams t ON t.id=i.team_id WHERE t.workspace_id=? AND i.identifier IN (SELECT value FROM json_each(?))').bind(workspace,JSON.stringify(refs)).all<{id:string;identifier:string;version:number}>()).results;
+   const issues=await githubAliasIssues(db,workspace,refs);
    for(const issue of issues){
     if(++linked>200)throw new IntegrationError(413,'github_link_limit');
     const previous=await db.prepare('SELECT author,subject,url,closing_applied FROM github_commit_links WHERE repository_id=? AND sha=? AND issue_id=?').bind(id,commit.id,issue.id).first<{author:string;subject:string;url:string;closing_applied:number}>();
     if(previous&&(previous.author!==commit.author.name||previous.subject!==subject||previous.url!==url))throw new IntegrationError(409,'github_commit_conflict');
-    const closes=input.ref==='refs/heads/'+input.repository.default_branch&&githubReferenceKind(issue.identifier,commit.message)==='closes';
-    statements.push(gitGuard(db,'EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND i.version=? AND t.workspace_id=?)',issue.id,issue.version,workspace),
+    const closes=input.ref==='refs/heads/'+input.repository.default_branch&&aliasReferenceKind(issue.matchedKeys,commit.message)==='closes';
+    statements.push(githubAliasGuard(db,workspace,issue.matchedKeys,issue.id),gitGuard(db,'EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND i.version=? AND t.workspace_id=?)',issue.id,issue.version,workspace),
      db.prepare('INSERT INTO github_commit_links(repository_id,sha,issue_id,author,subject,url,closing_applied,received_at) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(repository_id,sha,issue_id) DO UPDATE SET closing_applied=MAX(github_commit_links.closing_applied,excluded.closing_applied)').bind(id,commit.id,issue.id,commit.author.name,subject,url,Number(closes),at));
     if(closes&&!previous?.closing_applied)closing.add(issue.id);
    }

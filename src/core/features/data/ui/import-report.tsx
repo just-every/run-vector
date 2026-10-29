@@ -14,6 +14,7 @@ export function ImportReport({report,onDownload,onClose}:{report:ImportReportDat
    <li><strong>Not resolved:</strong> {totals.unresolvedReferences} references, listed below with their rows.</li>
    <li><strong>Not in this file at all:</strong> {report.notInFile.join('; ')}.</li>
   </ul>
+  {report.aliasCollisions.length>0&&<><h4>Alias collisions</h4><ul>{report.aliasCollisions.map(item=><li key={item.alias+item.importedIdentifier}>{item.alias}: native {item.nativeIdentifier} wins. The imported issue remains {item.importedIdentifier}.</li>)}</ul></>}
   {report.effects&&<><table><caption>Planned changes and current Vector records</caption><thead><tr><th>Effect</th><th>Planned</th><th>Written</th></tr></thead><tbody>{Object.entries(report.effects.counts).map(([name,count])=><tr key={name}><td>{name}</td><td>{count.planned}</td><td>{count.written}</td></tr>)}</tbody></table><table><caption>Label assignments</caption><thead><tr><th>Label</th><th>Planned</th><th>Written</th></tr></thead><tbody>{report.effects.labels.map(label=><tr key={label.name}><td>{label.name}</td><td>{label.planned}</td><td>{label.written}</td></tr>)}</tbody></table></>}
   {report.jiraReview&&<JiraLossReview review={report.jiraReview}/>}
   <button type="button" onClick={onDownload}>Download report CSV (source ID to Vector identifier)</button><button type="button" onClick={onClose}>Close report</button>

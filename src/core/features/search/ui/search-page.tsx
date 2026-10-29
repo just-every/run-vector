@@ -73,7 +73,7 @@ export function SearchPage() {
           <input
             type="search"
             disabled={!ready}
-            maxLength={200}
+            maxLength={1000}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Identifier, title, description, comment…"

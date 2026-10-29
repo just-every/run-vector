@@ -2026,5 +2026,18 @@
     "provider",
     "regression_rule",
     "actor_id"
+  ],
+  "issue_alias_prefixes": [
+    "workspace_id",
+    "prefix",
+    "active",
+    "owner_configured"
+  ],
+  "issue_aliases": [
+    "workspace_id",
+    "source",
+    "source_key",
+    "prefix",
+    "issue_id"
   ]
 }

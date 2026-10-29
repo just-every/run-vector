@@ -222,6 +222,7 @@ export function probes(w: Workspace): Record<RowId, Probe> {
       return created; } },
     "data.import": { session: async (_who, actor) => () => actor.call("/data/import/runs") },
     "data.restore": { session: async (_who, actor) => () => actor.call("/data/restore") },
+    "data.aliases": { session: async (_who, actor) => () => actor.call("/data/aliases/prefixes") },
     "data.erase-imported": { session: async (_who, actor) => () => actor.call("/data/erasure/journal") },
   };
   // Keep the existing row probe and assert each new OAuth door under its cells.

@@ -658,6 +658,24 @@
       "name": "0108_error_connections.sql",
       "sha256": "145331217d8d5753f7e171d2e6339b14fbc06f263e12bc799d2c5105034b0e99",
       "sql": "-- Provider profiles and replay history are portable; credentials use the excluded secret store.\nCREATE TABLE vector_error_connections (\n source_id TEXT PRIMARY KEY REFERENCES vector_integration_sources(id),\n provider TEXT NOT NULL CHECK(provider IN ('sentry','datadog')),\n regression_rule TEXT NOT NULL CHECK(regression_rule IN ('reopen','comment','ignore')),\n actor_id TEXT NOT NULL REFERENCES operators(id),\n UNIQUE(source_id,provider)\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0109_import_aliases.sql",
+      "sha256": "f56fafb68c735cc4105cb015f3a21bc890f1b083b92972881ad76d9f5aa6b3f0",
+      "sql": "-- Imported aliases are identities, never a second issue or a credential.\nCREATE TABLE issue_alias_prefixes (\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id) ON DELETE CASCADE,\n  prefix TEXT NOT NULL COLLATE NOCASE,\n  active INTEGER NOT NULL DEFAULT 1 CHECK(active IN (0,1)),\n  PRIMARY KEY(workspace_id,prefix)\n);\nCREATE TABLE issue_aliases (\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id) ON DELETE CASCADE,\n  source TEXT NOT NULL,\n  source_key TEXT NOT NULL COLLATE NOCASE,\n  prefix TEXT NOT NULL COLLATE NOCASE,\n  issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n  PRIMARY KEY(workspace_id,source,source_key,issue_id),\n  FOREIGN KEY(workspace_id,prefix) REFERENCES issue_alias_prefixes(workspace_id,prefix)\n);\nCREATE INDEX issue_aliases_target ON issue_aliases(issue_id);\n\n-- Backfill retained import history without changing any native issue.\nINSERT OR IGNORE INTO issue_alias_prefixes(workspace_id,prefix)\nSELECT t.workspace_id,upper(substr(COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId')),1,instr(COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId')),'-')-1))\nFROM issue_activity a JOIN issues i ON i.id=a.issue_id JOIN teams t ON t.id=i.team_id\nWHERE a.kind='issue.imported' AND COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId')) GLOB '*-[0-9]*';\nINSERT OR IGNORE INTO issue_aliases(workspace_id,source,source_key,prefix,issue_id)\nSELECT t.workspace_id,json_extract(a.next_value_json,'$.source'),upper(COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId'))),upper(substr(COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId')),1,instr(COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId')),'-')-1)),i.id\nFROM issue_activity a JOIN issues i ON i.id=a.issue_id JOIN teams t ON t.id=i.team_id\nWHERE a.kind='issue.imported' AND json_extract(a.next_value_json,'$.source') IS NOT NULL\nAND COALESCE(json_extract(a.next_value_json,'$.sourceKey'),json_extract(a.next_value_json,'$.sourceId')) GLOB '*-[0-9]*';\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0110_alias_prefix_owner_choice.sql",
+      "sha256": "587340a663e9cede30cefafa5406f65ae81c99861dc3c6b28b28e354d4950d19",
+      "sql": "-- Explicit Owner choices outlive whole-run rollback without retaining raw\n-- source labels in the immutable audit trail.\nALTER TABLE issue_alias_prefixes ADD COLUMN owner_configured INTEGER NOT NULL DEFAULT 0 CHECK(owner_configured IN (0,1));\nUPDATE issue_alias_prefixes SET owner_configured=1 WHERE EXISTS(\n  SELECT 1 FROM audit_records a WHERE a.workspace_id=issue_alias_prefixes.workspace_id\n  AND a.action='data.alias_prefix_changed' AND a.subject_identifier=issue_alias_prefixes.prefix COLLATE NOCASE\n);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0111_import_alias_source_ids.sql",
+      "sha256": "945a5e01b7ef447c70fff9246c056a50394262a62bd70982700067311d171671",
+      "sql": "-- Retain the stable provider record ID alongside its human issue key.\n-- Both identities use the same Owner-controlled prefix.\nINSERT OR IGNORE INTO issue_aliases(workspace_id,source,source_key,prefix,issue_id)\nSELECT a.workspace_id,a.source,trim(json_extract(h.next_value_json,'$.sourceId')),a.prefix,a.issue_id\nFROM issue_activity h JOIN issue_aliases a ON a.issue_id=h.issue_id\n AND a.source=json_extract(h.next_value_json,'$.source')\n AND a.source_key=upper(json_extract(h.next_value_json,'$.sourceKey')) COLLATE NOCASE\nWHERE h.kind='issue.imported' AND json_type(h.next_value_json,'$.sourceId')='text'\n AND trim(json_extract(h.next_value_json,'$.sourceId'))<>'';\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

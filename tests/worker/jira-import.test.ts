@@ -103,6 +103,10 @@ it(contractTitle('DATA-009','Jira loss review counts every source concept and re
  expect(await counts()).toEqual(publishedCounts);
  expect((await f.apply(input,review)).status).toBe(200);expect((await counts()).issues).toBe(1);
  const status=await f.call('/data/import/runs/'+run.id);expect(status.status).toBe(200);
+ const oldKey=await f.call('/issues/OLD-7');expect(oldKey.status).toBe(200);const retained=await oldKey.json() as {id:string};
+ expect((await f.call('/issues/10001')).status).toBe(200);
+ const stableSearch=await f.call('/search?q=10001');expect(stableSearch.status).toBe(200);expect((await stableSearch.json() as {issues:{id:string}[]}).issues.some(issue=>issue.id===retained.id)).toBe(true);
+
  const report=await (await f.call('/data/import/runs/'+run.id+'/report')).json() as {totals:{issuesWritten:number};omitted:{field:string;count:number}[];jiraReview:unknown};
  expect(report.totals.issuesWritten).toBe(1);expect(report.omitted.filter(item=>item.field?.startsWith('Comment [column '))).toHaveLength(0);
  expect(await env.DB.prepare('SELECT count(*) n FROM issue_comments').first<number>('n')).toBe(2);

@@ -1,3 +1,4 @@
+import {addAliasRoutes} from '../features/data/aliases/routes';
 import {addOAuthRoutes} from '../features/oauth-apps/routes';
 import {addMonthCalendarRoutes} from '../features/calendar-view/routes';
 import {addProjectTemplateRoutes} from '../features/project-templates/routes';
@@ -403,6 +404,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addRestoreRoutes(app);
   addArchiveRoutes(app);
   addImportRoutes(app);
+  addAliasRoutes(app);
   addErasureRoutes(app);
   addLinkRoutes(app);
   return app;

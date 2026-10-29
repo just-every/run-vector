@@ -1,3 +1,4 @@
+import {importAliasScenario} from './import-alias-scenario';
 import { env } from 'cloudflare:workers';
 import { expect,it } from 'vitest';
 import { Buffer } from 'node:buffer';
@@ -24,4 +25,5 @@ it('[DATA-002 DATA-004] documented-format Linear CSV imports through reviewed na
  const originals=await (await f.call('/data/import/runs/'+job.id+'/originals')).json() as {name:string;original:{base64:string}}[];expect(originals.find(row=>row.name==='workspace.csv')?.original.base64).toBe(input.base64);
  const repeated=await f.publish(input);expect(repeated.id).toBe(job.id);expect((await env.DB.prepare('SELECT * FROM issues ORDER BY title').all()).results).toEqual(rows);expect(await f.effects()).toEqual(before);
  const ambiguous={...input,source:'linear-bad',base64:Buffer.from(csv.replace('owner@base.test','uninvited@example.test')).toString('base64')};const unassigned=await f.preview(ambiguous);expect(unassigned.errors).toEqual([]);expect(unassigned.omissions.some(row=>row.row===2&&row.field==='assignee'&&row.code==='unresolved_assignee')).toBe(true);
+ await importAliasScenario(f);
 },180_000);
