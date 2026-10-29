@@ -8,7 +8,8 @@ import type {setupImport} from './data-import-fixture';
 export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImport>>) {
  const native=await f.create({title:'synthetic-vector-1800 native collision'});
  const csv=[['ID','Title','Description','Team','Status'],['ENG-123','synthetic-vector-1801 imported login','Imported text',f.team.name,f.status.name],['ENG-124','synthetic-vector-1802 branch work','',f.team.name,f.status.name],[native.identifier,'synthetic-vector-1803 colliding import','',f.team.name,f.status.name]].map((row,index)=>index===0?[...row,'Estimate','Priority','Project','Assignee','Labels','Cycle Name','Created','Updated','Due Date','Parent issue','Archived']:[...row,...Array(11).fill('')]).map(row=>row.map(value=>'"'+value.replaceAll('"','""')+'"').join(',')).join('\n');
- const input={format:'linear-csv' as const,source:'synthetic-vector-1804',name:'linear.csv',base64:Buffer.from(csv).toString('base64'),mapping:{}},run=await f.publish(input);
+ const input={format:'linear-csv' as const,source:'synthetic-vector-1804',name:'linear.csv',base64:Buffer.from(csv).toString('base64'),mapping:{}},originalReview=await f.preview(input);
+ const created=await f.apply(input,originalReview);expect(created.status).toBe(200);const run=await f.finish(await created.json() as Parameters<typeof f.finish>[0]);
  const search=async(value:string,cookie=f.cookie)=>{const response=await request('/api/search?q='+encodeURIComponent(value),'GET',undefined,cookie);expect(response.status,await response.clone().text()).toBe(200);return (await response.json() as {issues:{id:string;identifier:string;title:string}[]}).issues;};
  const url='https://linear.app/synthetic-vector-1804/issue/ENG-123/login';
  const results=await search(url);expect(results).toHaveLength(1);const imported=results[0];expect(imported.title).toBe('synthetic-vector-1801 imported login');
@@ -64,6 +65,8 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  expect((await send(pr(185,native.identifier))).status).toBe(200);
  expect((await (await f.call('/issues/'+native.identifier+'/github')).json()) as object).toMatchObject({pullRequests:[{number:185}]});
  const memberCookie=await invite('synthetic-vector-1808'+'@'+'example.test',f.cookie),member=await actor(memberCookie);
+ const adminCookie=await invite('synthetic-vector-1809'+'@'+'example.test',f.cookie,'admin');
+ expect((await request('/api/data/aliases/prefixes/ENG','PATCH',{active:false},adminCookie)).status).toBe(403);
  const prefixBefore=(await env.DB.prepare('SELECT * FROM issue_alias_prefixes ORDER BY prefix').all()).results;
  expect((await request('/api/data/aliases/prefixes/ENG','PATCH',{active:false},memberCookie)).status).toBe(403);
  expect((await env.DB.prepare('SELECT * FROM issue_alias_prefixes ORDER BY prefix').all()).results).toEqual(prefixBefore);
@@ -74,13 +77,13 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  expect((await redirect('ENG-123',memberCookie)).status).toBe(302);
  expect((await f.call('/settings/teams/'+f.team.id+'/members/'+member,'DELETE')).status).toBe(200);
  expect((await redirect('ENG-123',memberCookie)).status).toBe(404);
- expect((await request('/auth/signout','POST',{},memberCookie)).status).toBe(303);
+ expect((await request('/auth/signout','POST',{},memberCookie)).status).toBe(204);
  expect((await redirect('ENG-123',memberCookie)).status).toBe(401);
  // Erasure destroys aliases with custody; replay cannot resurrect the imported issue.
  const current=await read();expect((await f.call('/issues/'+imported.identifier,'DELETE',{expectedVersion:current.version,confirmed:true})).status).toBe(200);
  expect((await redirect('ENG-123')).status).toBe(404);expect(await search(url)).toEqual([]);
  expect((await send(pr(186))).status).toBe(200);expect((await redirect('ENG-123')).status).toBe(404);
- await f.publish(input);expect((await redirect('ENG-123')).status).toBe(404);expect(await env.DB.prepare('SELECT count(*) n FROM issue_aliases WHERE issue_id=?').bind(imported.id).first<number>('n')).toBe(0);
+ expect((await f.apply(input,originalReview)).status).toBe(400);expect((await redirect('ENG-123')).status).toBe(404);expect(await env.DB.prepare('SELECT count(*) n FROM issue_aliases WHERE issue_id=?').bind(imported.id).first<number>('n')).toBe(0);
  expect((await f.call('/settings/integrations/github/'+config.id,'DELETE')).status).toBe(200);
  expect((await send(pr(187))).status).toBe(401);
 }

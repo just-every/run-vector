@@ -46,13 +46,19 @@ export async function searchWorkspace(
     .prepare(
       `SELECT i.id,i.identifier,i.title, ${archiveIssue} AS visible FROM operators actor
     CROSS JOIN (SELECT ? AS key) lookup
-    JOIN issues i ON i.id=${aliasTargetSql("actor.workspace_id","lookup.key")}
-    JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
+    LEFT JOIN issues i ON i.id=${aliasTargetSql("actor.workspace_id","lookup.key")}
+    LEFT JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
     LEFT JOIN projects p ON p.id=i.project_id
     WHERE ${admission.sql}`,
     )
     .bind(Number(includeArchived), term, ...admission.values)
     .first<SearchResult["issues"][number] & { visible: number }>();
+  // A pasted source URL is an identity lookup, not a full-text query for other
+  // issues whose prose happens to mention the old key.
+  if(aliasKey(query)&&/^https:/i.test(query.trim())){
+    if(!exact)throw new SearchAccessError();
+    return {issues:exact.id&&exact.visible?[{id:exact.id,identifier:exact.identifier,title:exact.title}]:[],projects:[],savedViews:[],documents:[]};
+  }
   const expression = searchExpression(term);
   if (!expression) {
     const admitted = await db
@@ -80,6 +86,7 @@ export async function searchWorkspace(
         JOIN teams t ON t.id=i.team_id AND t.workspace_id=actor.workspace_id
         LEFT JOIN projects p ON p.id=i.project_id
         WHERE s.destination=actor.workspace_id AND s.target_kind='issue' AND s.reversed=0
+          AND NOT EXISTS(SELECT 1 FROM issue_aliases a WHERE a.issue_id=i.id)
           AND NOT EXISTS(SELECT 1 FROM issue_aliases a JOIN issue_alias_prefixes ap ON ap.workspace_id=a.workspace_id AND ap.prefix=a.prefix WHERE a.issue_id=i.id AND ap.active=0)
           AND (json_extract(s.record_json,'$.sourceId')=? COLLATE NOCASE OR EXISTS(SELECT 1 FROM issue_activity a WHERE a.issue_id=i.id AND a.kind='issue.imported' AND json_extract(a.next_value_json,'$.sourceKey')=? COLLATE NOCASE)) AND i.id<>COALESCE(${aliasTargetSql('actor.workspace_id','(SELECT ?)')},'') AND ${archiveIssue}
         UNION ALL

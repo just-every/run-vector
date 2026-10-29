@@ -640,6 +640,10 @@
       "sha256": "3b8d88ee476dfe48e6b942fdad47133c03b9e938ae90d0e6ff589d6309faa4d1",
       "executable": false
     },
+    "docs/IMPORTED-ALIASES.md": {
+      "sha256": "85343d81898b158070689a76873816c1ee48539e088987e49990df564d9edafa",
+      "executable": false
+    },
     "docs/INSTALLER.md": {
       "sha256": "b1cd9f829891bdfbe72ac80655288c8b91733057f531be605b6385b1c6c2efd5",
       "executable": false
@@ -681,7 +685,7 @@
       "executable": false
     },
     "docs/MOVE-IN.md": {
-      "sha256": "2d140b2d77c21bcec057130103daad55696bc4dae7950ba91b44c756481863b0",
+      "sha256": "88eb3e71214e6020e5f7b3c5c4581193d152bebf06ee7da55a94a6c9e5142bf6",
       "executable": false
     },
     "docs/NOTIFICATIONS.md": {
@@ -2444,6 +2448,10 @@
       "sha256": "f56fafb68c735cc4105cb015f3a21bc890f1b083b92972881ad76d9f5aa6b3f0",
       "executable": false
     },
+    "migrations/core/0109_alias_prefix_owner_choice.sql": {
+      "sha256": "587340a663e9cede30cefafa5406f65ae81c99861dc3c6b28b28e354d4950d19",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -3841,7 +3849,7 @@
       "executable": false
     },
     "src/core/features/data/aliases/routes.ts": {
-      "sha256": "0a15352a21e180a2ca562d950d09a582cc95476e278bae79b9ced81912d26493",
+      "sha256": "99a3aa51ca947f1dae33ed2bc8eda38cdcaac9b214db62ffacf30a4f3f2858a6",
       "executable": false
     },
     "src/core/features/data/archive-inventory.d.mts": {
@@ -3849,7 +3857,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "c7fd39c854bc52f010c44047845bc5e9a965249c42055bb51f07839de2875cdd",
+      "sha256": "43dbe20cc27ea8407af4a6fceb025b626eb3029a1e609edf3d1970e06e24cebc",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -3877,7 +3885,7 @@
       "executable": false
     },
     "src/core/features/data/erasure/imported.ts": {
-      "sha256": "ac6e9fa326687e47ded0997062148ce2b1608b71f6619e1eb874e09195741423",
+      "sha256": "d1ea798362156fc9cf12bd35a7673ae8b02ee341356e7e8c1c621940c9cbee2d",
       "executable": false
     },
     "src/core/features/data/erasure/routes.ts": {
@@ -3989,7 +3997,7 @@
       "executable": false
     },
     "src/core/features/data/import/native-targets.ts": {
-      "sha256": "8094169ff8a7f3c5cb139c2234cfb00d4383c36924c49dfeb9d870eac0add878",
+      "sha256": "23541bcf7efd85464c75504a4409e41af105d959768aa845067cc5af203504ef",
       "executable": false
     },
     "src/core/features/data/import/plane.ts": {
@@ -4077,11 +4085,11 @@
       "executable": false
     },
     "src/core/features/data/ui/alias-prefixes.tsx": {
-      "sha256": "77e2e0f4a30b02b261cb762fc79bbce395cbd8bf70f318950e818c5953cdd201",
+      "sha256": "e23ff80975bf40c84abf8a965596da96b1779c9461d69d356efa6ab74db6fbe9",
       "executable": false
     },
     "src/core/features/data/ui/data-panel.tsx": {
-      "sha256": "b411909db919edd8532f8fafe51f3f3435eb6f3ccaac708d08bc198bc035e23d",
+      "sha256": "356f57b0c1beaafa2f6e60b3672aa5768e502b663a1e90d1b4160b34f060a3ca",
       "executable": false
     },
     "src/core/features/data/ui/data.css": {
@@ -4629,7 +4637,7 @@
       "executable": false
     },
     "src/core/features/integrations/github/receiver.ts": {
-      "sha256": "bc7caba6516ac318c8acf136924abc9ece5e1e5d6b5ca3d2a6ce7fc831ddbb60",
+      "sha256": "abde76e1ffb4a91ad41d584e7cd70ad07bb3dc92f3ed8edcea918b64d221158f",
       "executable": false
     },
     "src/core/features/integrations/github/rule-routes.ts": {
@@ -5977,7 +5985,7 @@
       "executable": false
     },
     "src/core/features/search/service.ts": {
-      "sha256": "d758ced033a8624911a2d2052a7f529c81275ef08b08472dcc46dc26cdea67a9",
+      "sha256": "57740394d90b4da1fb943ca8682c2c879335f0c5452565a0880b931df4336d64",
       "executable": false
     },
     "src/core/features/search/ui/command-helpers.ts": {
@@ -7073,7 +7081,7 @@
       "executable": false
     },
     "tests/e2e/import-alias-journey.mjs": {
-      "sha256": "c7b05072432d5b5014762591733fa0369aaa32a88adfc7d2c2cb7eda7fc295f2",
+      "sha256": "e7b3563a89c1f1da6262a1a24d165908524a4684a9ff154669a49fc0240d6958",
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
@@ -7773,7 +7781,7 @@
       "executable": false
     },
     "tests/worker/import-alias-scenario.ts": {
-      "sha256": "e6ba195e34713a694b5869630c4034f21323d816e434e4fb404726dadf5c7dcb",
+      "sha256": "ccdfa53a0911ee15bb2bdcce22f1d0c0c998e4bc97948c31ea6264838af7d2a1",
       "executable": false
     },
     "tests/worker/import-recovery-checks.ts": {

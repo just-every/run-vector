@@ -23,6 +23,12 @@ export async function exerciseImportAliases({page,runtime,cookie,evidence}) {
  const found=(await call('/search?q='+encodeURIComponent(url))).issues;assert.equal(found.length,1);const imported=found[0];
  for(const [sourceUrl,title] of [['https://github.com/octocat/test-repo1/issues/42','synthetic-vector-1825 GitHub source'],['https://synthetic-vector-1823.atlassian.net/browse/PROJ-45','synthetic-vector-1826 Jira source']]) {
   const target=(await call('/search?q='+encodeURIComponent(sourceUrl))).issues;assert.equal(target.length,1);assert.equal(target[0].title,title);
+  await navigate(page,runtime.base+'/app/search');await page.getByRole('searchbox',{name:'Search workspace',exact:true}).fill(sourceUrl);
+  await page.getByRole('link',{name:target[0].identifier+' '+title,exact:true}).click();await page.waitForURL('**/app/issues/'+target[0].identifier);
+  await page.locator('h1:visible').first().click();await page.keyboard.press('Control+k');
+  const sourcePalette=page.getByRole('dialog',{name:'Command palette',exact:true});await sourcePalette.getByRole('textbox').fill(sourceUrl);
+  await sourcePalette.getByRole('option').filter({hasText:target[0].identifier}).waitFor();await page.keyboard.press('Enter');await page.waitForURL('**/app/issues/'+target[0].identifier);
+  await page.goto(runtime.base+'/app/issues/'+(title.includes('GitHub')?'GH-42':'PROJ-45'));await page.waitForURL('**/app/issues/'+target[0].identifier);
  }
  await navigate(page,runtime.base+'/app/search');await page.getByRole('searchbox',{name:'Search workspace',exact:true}).fill(url);
  const result=page.getByRole('link',{name:imported.identifier+' '+imported.title,exact:true});await result.waitFor();

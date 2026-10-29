@@ -2024,7 +2024,8 @@
   "issue_alias_prefixes": [
     "workspace_id",
     "prefix",
-    "active"
+    "active",
+    "owner_configured"
   ],
   "issue_aliases": [
     "workspace_id",

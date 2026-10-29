@@ -50,7 +50,7 @@ export async function receiveGithub(env:WorkerBindings,request:Request,id:string
  const refs=githubReferences(pr.title,pr.body,pr.head?.ref);if(refs.length>20)throw new IntegrationError(413,'github_reference_limit');
  const issues=await githubAliasIssues(env.DB,repository.workspace_id,refs);
  const stale=current&&updatedAt<current.updated_at,ambiguous=current&&updatedAt===current.updated_at&&(state!==current.state||pr.title!==current.title),terminal=current?.state==='merged'&&state!=='merged';
- const diagnostic=stale?'older_pull_request_state':ambiguous?'same_time_state_conflict':terminal?'merged_state_retained':!refs.length?'no_issue_reference':issues.length!==refs.length?'unknown_issue_reference':'linked';
+ const diagnostic=stale?'older_pull_request_state':ambiguous?'same_time_state_conflict':terminal?'merged_state_retained':!refs.length?'no_issue_reference':issues.reduce((count,issue)=>count+issue.matchedKeys.length,0)!==refs.length?'unknown_issue_reference':'linked';
  const guard=(sql:string,...params:(string|number|null)[])=>env.DB.prepare(`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('github transaction denied') END`).bind(...params);
  const statements=[guard(authority,...authValues),guard('NOT EXISTS(SELECT 1 FROM vector_github_deliveries WHERE repository_id=? AND delivery_id=?)',id,delivery),
  current?guard('EXISTS(SELECT 1 FROM vector_github_pull_requests WHERE repository_id=? AND number=? AND updated_at=? AND state=? AND title=?)',id,pr.number,current.updated_at,current.state,current.title):guard('NOT EXISTS(SELECT 1 FROM vector_github_pull_requests WHERE repository_id=? AND number=?)',id,pr.number)];

@@ -1,3 +1,4 @@
+import {sha256} from '../../../../../vendor/base/integrations/core/crypto';
 import type {Hono} from 'hono';
 import {z} from 'zod';
 import type {AppEnvironment,WorkerBindings} from '../../../app/bindings';
@@ -31,11 +32,11 @@ export function addAliasRoutes(app:Hono<AppEnvironment>) {
   const input=z.object({active:z.boolean()}).strict().safeParse(await readRequestJson(c.req.raw));
   const prefix=c.req.param('prefix').toUpperCase();
   if(!input.success||!/^[A-Z0-9][A-Z0-9._:-]{0,99}$/i.test(prefix))throw new SettingsError('invalid_alias_prefix','Choose an imported prefix.',400);
-  const at=new Date().toISOString();
+  const at=new Date().toISOString(),subject=await sha256(actor.workspace_id+'\u0000'+prefix);
   await c.env.DB.batch([
-   c.env.DB.prepare('UPDATE issue_alias_prefixes SET active=? WHERE workspace_id=? AND prefix=?').bind(Number(input.data.active),actor.workspace_id,prefix),
+   c.env.DB.prepare('UPDATE issue_alias_prefixes SET active=?,owner_configured=1 WHERE workspace_id=? AND prefix=?').bind(Number(input.data.active),actor.workspace_id,prefix),
    c.env.DB.prepare(`INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at)
-    VALUES(?,?,'data.alias_prefix_changed',?,?,?,?)`).bind(createUlid(new Date(at)),c.get('operatorId'),prefix,String(input.data.active),at,at),
+    VALUES(?,?,'data.alias_prefix_changed',?,?,?,?)`).bind(createUlid(new Date(at)),c.get('operatorId'),'Imported aliases '+(input.data.active?'enabled':'disabled'),subject,at,at),
   ]);
   return c.json({prefix,active:input.data.active});
  });

@@ -1,0 +1,11 @@
+# Imported identifiers and bookmarks
+
+A reviewed issue import keeps the original issue identifier as an alias of the same native issue. An alias survives cutover and later native edits; it does not create a second issue. Repeating an unchanged import preserves its identity. Rolling back an unchanged import removes its aliases with the imported issues. Deleting an issue removes its aliases and retains the import erasure fence against replay.
+
+An Owner-reviewed import activates a new source prefix. Imports reviewed by another role require the Owner to activate the prefix under **Settings → Data → Imported aliases**. The Owner can turn a prefix off and on there. Explicit choices are audited and retained for future imports. Turning a prefix off disables its bookmark redirects, source URL lookup and future Git automation. A delivery already recorded while a prefix was disabled stays recorded; enabling the prefix does not replay it.
+
+Paste a Linear issue URL or a Jira Cloud browse URL into Search or the command palette. Vector extracts the old issue key and opens the imported issue. When mapping a CSV or JSON export, map **Original issue URL** to retain a GitHub issue URL too. Supported URLs are resolved locally; Vector does not fetch the source provider. A Vector issue bookmark containing an old key redirects to the current native identifier. The dedicated `/alias/ENG-123` bookmark works the same way.
+
+Descriptions and comments containing a visible old issue key render a link to its native issue, with its title and status, and retain the ordinary backlink. Signed GitHub pull request branches, titles and bodies resolve active old keys through the same identity lookup. Commit messages also resolve old keys. Existing team automation rules decide the resulting status; delivery replay does not duplicate completion or links.
+
+Native identifiers always take precedence. The reconciliation report and downloaded report CSV list aliases that collide with native identifiers and show the imported issue separately. If multiple imported issues claim the same old key, Vector refuses to choose one. Bookmarks, search results and rendered references apply the reader's current workspace and private-team access. A revoked session cannot use a retained bookmark.

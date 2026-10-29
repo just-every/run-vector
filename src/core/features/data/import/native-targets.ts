@@ -92,6 +92,10 @@ export const nativeTargets: D1TargetAdapter = {
       {sql:'DELETE FROM issue_relations WHERE first_issue_id=?',params:[id]},
       {sql:'DELETE FROM manual_order_entries WHERE issue_id=?',params:[id]},
       {sql:'DELETE FROM issues WHERE id=?',params:[id]},
+      // Remove unused defaults on rollback; a prefix the Owner explicitly
+      // configured remains a durable choice for future imports.
+      {sql:`DELETE FROM issue_alias_prefixes WHERE workspace_id=? AND active=1 AND owner_configured=0
+        AND NOT EXISTS(SELECT 1 FROM issue_aliases a WHERE a.workspace_id=issue_alias_prefixes.workspace_id AND a.prefix=issue_alias_prefixes.prefix)`,params:[destination]},
       {sql:'DELETE FROM manual_order_scopes WHERE workspace_id=? AND version=0 AND NOT EXISTS(SELECT 1 FROM manual_order_entries e WHERE e.workspace_id=manual_order_scopes.workspace_id AND e.scope_key=manual_order_scopes.scope_key)',params:[destination]}];
   },
   async list(db,destination) {
