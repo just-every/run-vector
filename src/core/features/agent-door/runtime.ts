@@ -18,11 +18,16 @@ function trust(env:WorkerBindings):Trust|null {
   if(!issuer||!installationId||!appOrigin||!keys||appOrigin!==env.APP_ORIGIN)throw new Error('Incomplete agent trust');
   return {issuer,installationId,appOrigin,publicKeys:JSON.parse(keys)};
 }
-export function businessSettings(env:WorkerBindings) {
-  return createBusinessSettings({db:env.DB,trust:env.RER_BUSINESS_TRUST,business:{settings:1,values:['display_name']},
-    team:{async ownerEmail(){return (await env.DB.prepare(`SELECT o.email FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id WHERE o.removed_at IS NULL`).first<{email:string}>())?.email??null;},
-      async prepare(){throw new Error('Business team reconciliation is not declared');}},
-  });
+export async function businessSettings(env:WorkerBindings) {
+  let config:import('../../../../vendor/base/business-settings/index.ts').Trust|null=null;
+  if(env.RER_BUSINESS_TRUST){
+    config=JSON.parse(env.RER_BUSINESS_TRUST);
+    const owner=await env.DB.prepare(`SELECT o.email FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
+      JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id WHERE o.removed_at IS NULL AND a.status='active'`).first<{email:string}>();
+    if(!config)throw new Error('Business trust unavailable');
+    if(owner)config={...config,email:owner.email};
+  }
+  return createBusinessSettings({db:env.DB,trust:config,business:{settings:1,values:['display_name']}});
 }
 export function vectorAgentDoor(env:WorkerBindings) {
   return createAgentDoor({seed:'vector',name:'Vector',specialist:'software delivery coordinator',db:env.DB,origin:env.APP_ORIGIN,trust:trust(env),capabilities,people:nativePeople(env),tools:[...readTools,...issueTools],resources:[issueResource],notTools,...nativeCredentials(env.DB)});
@@ -31,6 +36,9 @@ export function vectorAgentDoor(env:WorkerBindings) {
 export async function agentResponse(env:WorkerBindings,request:Request):Promise<Response|null> {
   const path=new URL(request.url).pathname;
   if(!['/mcp','/agents','/agent.json','/llms.txt','/rer-business-logo','/rer-business.css'].includes(path) && !path.startsWith('/.well-known/') && !path.startsWith('/api/rer/') && !path.startsWith('/agents/'))return null;
-  try {return await businessSettings(env).handle(request) ?? await vectorAgentDoor(env).handle(request);}
+  try {
+    if(path==='/api/rer/business-settings' && !await env.DB.prepare(`SELECT 1 FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
+      JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id WHERE o.removed_at IS NULL AND a.status='active'`).first())return Response.json({code:'native_owner_required'},{status:403});
+    return await (await businessSettings(env)).handle(request) ?? await vectorAgentDoor(env).handle(request);}
   catch {return Response.json({code:'agent_door_unavailable'},{status:503,headers:{'Cache-Control':'no-store'}});}
 }
