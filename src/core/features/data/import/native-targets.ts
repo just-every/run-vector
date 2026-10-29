@@ -70,7 +70,7 @@ export const nativeTargets: D1TargetAdapter = {
     for (const entry of value.manualOrder ?? []) {
       statements.push({sql:'INSERT INTO manual_order_scopes(workspace_id,scope_key,version) VALUES(?,?,0) ON CONFLICT DO NOTHING',params:[entry.workspace_id,entry.scope_key]}, insertNative('manual_order_entries',entry));
     }
-    statements.push(...importAlias(row.destination,imported.source,imported.sourceKey||imported.sourceId,row.targetId,imported.sourceUrl,String(value.activity[0].actor_operator_id)));
+    statements.push(...importAlias(row.destination,imported.source,imported.sourceKey||imported.sourceId,row.targetId,imported.sourceUrl,String(value.activity[0].actor_operator_id),imported.sourceId));
     // A due date already past at import is history, not news: its one overdue
     // reminder is consumed for the assignee, as a mute would. Due today or later
     // still reminds. The row cascades away with the issue on rollback.

@@ -2452,6 +2452,10 @@
       "sha256": "587340a663e9cede30cefafa5406f65ae81c99861dc3c6b28b28e354d4950d19",
       "executable": false
     },
+    "migrations/core/0110_import_alias_source_ids.sql": {
+      "sha256": "945a5e01b7ef447c70fff9246c056a50394262a62bd70982700067311d171671",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -3845,7 +3849,7 @@
       "executable": false
     },
     "src/core/features/data/aliases/import.ts": {
-      "sha256": "5032ccc486beaa97caef75c6e284fea9c01e4696f935b2333bc94091a2bb4f41",
+      "sha256": "96b5c6329a88f4a689d8f9e235c3f0fe3c1a3ffe41df9df52a859652e5399bfe",
       "executable": false
     },
     "src/core/features/data/aliases/routes.ts": {
@@ -3997,7 +4001,7 @@
       "executable": false
     },
     "src/core/features/data/import/native-targets.ts": {
-      "sha256": "23541bcf7efd85464c75504a4409e41af105d959768aa845067cc5af203504ef",
+      "sha256": "4cabfaa64638e473944ed3ec34f2828d73d8cb9d7797cba5f666934cd98b77f5",
       "executable": false
     },
     "src/core/features/data/import/plane.ts": {
@@ -7081,7 +7085,7 @@
       "executable": false
     },
     "tests/e2e/import-alias-journey.mjs": {
-      "sha256": "e7b3563a89c1f1da6262a1a24d165908524a4684a9ff154669a49fc0240d6958",
+      "sha256": "4cded998d9e6e0e5bb1e37ff5f9a2d5342cc1406397590522027ad4062716697",
       "executable": false
     },
     "tests/e2e/initiatives-journey.mjs": {
@@ -7865,7 +7869,7 @@
       "executable": false
     },
     "tests/worker/jira-import.test.ts": {
-      "sha256": "c164358edd1a25eb2f49969914689d33d10834708b951bf29e9a3a8dcc4312db",
+      "sha256": "ee6528caca331babdaecce02ce989adec45446be51673443b3302f56932a6115",
       "executable": false
     },
     "tests/worker/jira-loss-review-fixture.ts": {

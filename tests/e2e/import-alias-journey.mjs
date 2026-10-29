@@ -14,14 +14,14 @@ export async function exerciseImportAliases({page,runtime,cookie,evidence}) {
  await page.setViewportSize({width:1440,height:1000});
  const options=await call('/data/import/options'),team=options.references.teams.find(row=>!row.archived_at),status=options.references.statuses.find(row=>row.team_id===team.id&&row.category==='unstarted');
  const native=await call('/issues','POST',{teamId:team.id,title:'synthetic-vector-1820 native collision'},201);
- const csv=[['ID','Title','Description','Team','Status','Original URL'],['ENG-123','synthetic-vector-1821 imported login','',team.name,status.name,''],[native.identifier,'synthetic-vector-1822 collision','',team.name,status.name,''],['GH-42','synthetic-vector-1825 GitHub source','',team.name,status.name,'https://github.com/octocat/test-repo1/issues/42'],['PROJ-45','synthetic-vector-1826 Jira source','',team.name,status.name,'']].map((row,index)=>index===0?[...row,'Estimate','Priority','Project','Assignee','Labels','Cycle Name','Created','Updated','Due Date','Parent issue','Archived']:[...row,...Array(11).fill('')]).map(row=>row.map(value=>'"'+value.replaceAll('"','""')+'"').join(',')).join('\n');
+ const csv=[['ID','Title','Description','Team','Status','Original URL'],['ENG-123','synthetic-vector-1821 imported login','',team.name,status.name,''],[native.identifier,'synthetic-vector-1822 collision','',team.name,status.name,''],['GH-42','synthetic-vector-1825 GitHub source','',team.name,status.name,'https://github.com/octocat/hello-world/issues/42'],['PROJ-45','synthetic-vector-1826 Jira source','',team.name,status.name,'']].map((row,index)=>index===0?[...row,'Estimate','Priority','Project','Assignee','Labels','Cycle Name','Created','Updated','Due Date','Parent issue','Archived']:[...row,...Array(11).fill('')]).map(row=>row.map(value=>'"'+value.replaceAll('"','""')+'"').join(',')).join('\n');
  const input={format:'linear-csv',source:'synthetic-vector-1823',name:'linear.csv',base64:Buffer.from(csv).toString('base64'),mapping:{sourceUrl:'Original URL'}};
  const review=await call('/data/import/preview','POST',input);assert.equal(review.ready,true);
  let run=await call('/data/import/apply','POST',{input:{...input,effectiveAt:review.effectiveAt},reviewedFingerprint:review.fingerprint,operationKey:'review:'+review.fingerprint,acknowledgeOmissions:true});
  for(let n=0;run.state!=='completed';n++){assert(n<20);run=await call('/data/import/runs/'+run.id+'/resume','POST',{});}
  const url='https://linear.app/synthetic-vector-1823/issue/ENG-123/login';
  const found=(await call('/search?q='+encodeURIComponent(url))).issues;assert.equal(found.length,1);const imported=found[0];
- for(const [sourceUrl,title] of [['https://github.com/octocat/test-repo1/issues/42','synthetic-vector-1825 GitHub source'],['https://synthetic-vector-1823.atlassian.net/browse/PROJ-45','synthetic-vector-1826 Jira source']]) {
+ for(const [sourceUrl,title] of [['https://github.com/octocat/hello-world/issues/42','synthetic-vector-1825 GitHub source'],['https://synthetic-vector-1823.atlassian.net/browse/PROJ-45','synthetic-vector-1826 Jira source']]) {
   const target=(await call('/search?q='+encodeURIComponent(sourceUrl))).issues;assert.equal(target.length,1);assert.equal(target[0].title,title);
   await navigate(page,runtime.base+'/app/search');await page.getByRole('searchbox',{name:'Search workspace',exact:true}).fill(sourceUrl);
   await page.getByRole('link',{name:target[0].identifier+' '+title,exact:true}).click();await page.waitForURL('**/app/issues/'+target[0].identifier);
@@ -40,14 +40,14 @@ export async function exerciseImportAliases({page,runtime,cookie,evidence}) {
  await page.locator('h1:visible').first().click();await page.keyboard.press('Control+k');
  const palette=page.getByRole('dialog',{name:'Command palette',exact:true});await palette.getByRole('textbox').fill(url);
  await palette.getByRole('option').filter({hasText:imported.identifier}).waitFor();await page.keyboard.press('Enter');await page.waitForURL('**/app/issues/'+imported.identifier);
- const config=await call('/settings/integrations/github','POST',{name:'synthetic-vector-1824',repository:'octocat/test-repo1'},201);
+ const config=await call('/settings/integrations/github','POST',{name:'synthetic-vector-1824',repository:'octocat/hello-world'},201);
  const admin=await call('/settings/administration'),targetTeam=admin.teams.find(row=>row.id===team.id),done=targetTeam.statuses.find(row=>row.category==='completed');
  const rules=await call('/github/automation'),rule=rules.teams.find(row=>row.id===team.id).rules.find(row=>row.trigger==='merged');
  await call('/settings/teams/'+team.id,'PATCH',{githubAutomation:{trigger:'merged',statusId:done.id,allowReopen:false,expectedVersion:rule.version}});
- const body={action:'closed',number:188,repository:{full_name:'octocat/test-repo1'},pull_request:{number:188,title:'Fixes ENG-123',body:'Fixes ENG-123',head:{ref:'eng-123-fix-login'},state:'closed',merged:true,updated_at:'2026-10-12T00:00:00.000Z',html_url:'https://github.com/octocat/test-repo1/pull/188'}},text=JSON.stringify(body),delivery=randomUUID();
+ const body={action:'closed',number:188,repository:{full_name:'octocat/hello-world'},pull_request:{number:188,title:'Fixes ENG-123',body:'Fixes ENG-123',head:{ref:'eng-123-fix-login'},state:'closed',merged:true,updated_at:'2026-10-12T00:00:00.000Z',html_url:'https://github.com/octocat/hello-world/pull/188'}},text=JSON.stringify(body),delivery=randomUUID();
  const send=async()=>{const response=await runtime.req(new URL(config.receiver).pathname,{method:'POST',headers:{'Content-Type':'application/json','X-Hub-Signature-256':'sha256='+createHmac('sha256',config.secret).update(text).digest('hex'),'X-GitHub-Delivery':delivery,'X-GitHub-Event':'pull_request'},body:text});assert.equal(response.status,200,await response.clone().text());return response.json();};
  await send();const completed=await call('/issues/'+imported.identifier);assert.equal(completed.status.id,done.id);await send();assert.equal((await call('/issues/'+imported.identifier)).version,completed.version);
- await navigate(page,runtime.base+'/app/issues/'+imported.identifier);await page.getByRole('link',{name:'Fixes ENG-123 · octocat/test-repo1 #188',exact:true}).waitFor();
+ await navigate(page,runtime.base+'/app/issues/'+imported.identifier);await page.getByRole('link',{name:'Fixes ENG-123 · octocat/hello-world #188',exact:true}).waitFor();
  await inspect(page,page.locator('.issue-inspector'),'alias-linked-issue');await page.setViewportSize({width:1440,height:1000});
  await navigate(page,runtime.base+'/app/settings#data');
  const aliases=page.getByRole('region',{name:'Imported aliases',exact:true});await aliases.getByLabel('ENG aliases active',{exact:true}).waitFor();
