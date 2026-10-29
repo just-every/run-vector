@@ -24,6 +24,6 @@ Members can open **Settings → Labels** to read workspace label names and colou
 
 Each person chooses which notifications reach their Inbox and whether assignments and mentions also arrive by email. See [Notifications and email](notifications.md).
 
-Owners and Admins choose **Who may create teams** in Settings → Teams. The default is **Owners and Admins only**. With **Members too**, a Member can create a public team and becomes its first team owner. Restoring the default refuses their next creation request without changing teams already created. Guests cannot create teams. The browser, session and scoped API doors use the same current permission.
+Owners and Admins choose **Who may create teams** in Settings → Teams. The default is **Owners and Admins only**. With **Members too**, a Member can create a public team and becomes its first team owner. Restoring the default refuses their next creation request without changing teams already created. Guests cannot create teams. The app, its sessions and the API use the same current permission.
 
 A public team can use **Open** membership or **Invite only**. Owners, Admins and that team’s owners choose the mode and can explicitly enable membership requests. An invite-only team refuses immediate self-joining; requesting creates a pending request without membership. The team’s owners and Admins approve or decline requests, and repeated approval has no further effect. Public work remains workspace-visible under either mode. Guests never self-join or request.
