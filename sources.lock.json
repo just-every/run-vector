@@ -501,7 +501,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "2c891ae0cc05fba78dd3d15cc4ec1fa25384d2f2a2d734acb75c740aa368b831",
+      "sha256": "1b165ede71b1e68606bb9eb77f25700243395fd674d75dda50b0528686ae205f",
       "executable": false
     },
     "BASELINE.md": {
@@ -2021,7 +2021,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "12338f1f8e1ade067e2f87c870c986263b5a3950ee97b8011264179c4b833ced",
+      "sha256": "d65c6c4f7646d8a978fd2708a4722421a7df92a08b97575d475f13c55d53715d",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2565,7 +2565,7 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "9823f49d20886bc2d93e149a3f9e87c5d8d3388c2089645fb9f596baca6151cb",
+      "sha256": "e4f59ef18257ee1fef90fa06e7a2820251fa51d5a5ba78cb1ca3ebca29eceab6",
       "executable": false
     },
     "rer-setup.json": {
@@ -2716,20 +2716,24 @@
       "sha256": "da3a9d09860c33bdd0b287bca9abc6210b12d13439e569d178a5b31fec563ee5",
       "executable": false
     },
+    "scripts/delivery/base/schema/business-field-inputs.mjs": {
+      "sha256": "b028b576bc85758c4ed400d059d4aae4fdda7a29eeb290fd1032ea15aaf957d1",
+      "executable": false
+    },
     "scripts/delivery/base/schema/dependencies.mjs": {
       "sha256": "4bfc30fa75029db2727a9d1fb095d4969dc756c5317ac55ce768202bb869e2b7",
       "executable": false
     },
     "scripts/delivery/base/schema/json-schema.mjs": {
-      "sha256": "ed601a8f68d25769ff3706a90f69f1a9e18dd6eb4b3b5f81a18b7cd0dcfc8fa3",
+      "sha256": "f964a1f8bab23bfad0c8b6552d8e717091619fa438e0d6e65a9801e1d97782bc",
       "executable": false
     },
     "scripts/delivery/base/schema/setup-validation.mjs": {
-      "sha256": "7ee1a46a742570cd5d3df605732c0777473f419f7b63b6c5ad1c238406a1625f",
+      "sha256": "89327f524f2e7cfcaf9c750e9a5aa7249c91199a9afd0c14afe9efcf444ad14a",
       "executable": false
     },
     "scripts/delivery/base/schema/SETUP.schema.json": {
-      "sha256": "946adc2e484ace3dfee960a58a6215fa55a600079aa7e2cf52264704ece74998",
+      "sha256": "ac52bac39e7e7e4dace1c22dce370f76df52e7f5bb167730ecfd96b0b7961c86",
       "executable": false
     },
     "scripts/delivery/base/setup-manifest.mjs": {
