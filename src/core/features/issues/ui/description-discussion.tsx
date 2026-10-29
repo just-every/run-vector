@@ -7,23 +7,42 @@ import { CommentThread, commentThreads } from './discussion-thread';
 import { useDiscussion } from './discussion-client';
 import './description-discussion.css';
 
+function sourceBoundaries(element: HTMLElement, source: string) {
+  const start = Number(element.dataset.descriptionStart), end = Number(element.dataset.descriptionEnd);
+  const literal = element.dataset.descriptionLiteral;
+  const text = literal === undefined ? element.textContent ?? '' : (element.textContent ?? '').slice(0, Number(literal));
+  if (element.dataset.descriptionAtomic !== undefined)
+    return Array.from({length:text.length+1}, (_, i) => i === 0 ? start : i === text.length ? end : null);
+  return textBoundaries(source, start, end, text, literal !== undefined);
+}
+
 /** Read only a selection wholly inside annotated description text. */
 function selectionAnchor(container: HTMLElement, source: string): DescriptionAnchorInput | null {
   const selection = window.getSelection();
   if (!selection || selection.rangeCount !== 1 || selection.isCollapsed) return null;
   const range = selection.getRangeAt(0);
-  function boundary(node: Node, offset: number) {
+  function boundary(node: Node, offset: number, edge: 'start' | 'end'): number | null {
     const element = (node.nodeType === Node.ELEMENT_NODE ? node as Element : node.parentElement)?.closest<HTMLElement>('[data-description-start]');
-    if (!element || !container.contains(element)) return null;
+    if (!container.contains(node)) return null;
+    if (!element) {
+      // Browser ranges can end on a link or paragraph rather than its text.
+      const child = node.childNodes[offset - (edge === 'end' ? 1 : 0)];
+      if (!child) return null;
+      const walker = document.createTreeWalker(child, NodeFilter.SHOW_TEXT);
+      let text = child.nodeType === Node.TEXT_NODE ? child : walker.nextNode();
+      if (edge === 'end') { let next; while ((next = walker.nextNode())) text = next; }
+      return text ? boundary(text, edge === 'start' ? 0 : text.textContent?.length ?? 0, edge) : null;
+    }
+    if (!container.contains(element)) return null;
     const prefix = document.createRange();
     prefix.selectNodeContents(element);
     prefix.setEnd(node, offset);
-    const start = Number(element.dataset.descriptionStart), end = Number(element.dataset.descriptionEnd);
-    const literalLength = element.dataset.descriptionLiteral === undefined ? null : Number(element.dataset.descriptionLiteral);
-    const text = literalLength === null ? element.textContent ?? '' : (element.textContent ?? '').slice(0, literalLength);
-    return textBoundaries(source, start, end, text, literalLength !== null)?.[Math.min(prefix.toString().length, text.length)] ?? null;
+    const boundaries = sourceBoundaries(element, source);
+    const index = Math.min(prefix.toString().length, (boundaries?.length ?? 1) - 1);
+    return boundaries?.[index] ?? (element.dataset.descriptionAtomic !== undefined
+      ? Number(edge === 'start' ? element.dataset.descriptionStart : element.dataset.descriptionEnd) : null);
   }
-  const a = boundary(range.startContainer, range.startOffset), b = boundary(range.endContainer, range.endOffset);
+  const a = boundary(range.startContainer, range.startOffset, 'start'), b = boundary(range.endContainer, range.endOffset, 'end');
   if (a === null || b === null || a >= b || !range.toString().trim()) return null;
   const start = codePointOffset(source, a), end = codePointOffset(source, b), quote = quoteAt(source, start, end);
   return quote.trim() ? { quote, start, end, expectedDescription: source } : null;
@@ -33,10 +52,7 @@ function locateQuote(container: HTMLElement, source: string, anchor: Description
   const points = Array.from(source), start = points.slice(0, anchor.start).join('').length, end = points.slice(0, anchor.end).join('').length;
   function boundary(offset: number) {
     for (const element of container.querySelectorAll<HTMLElement>('[data-description-start]')) {
-      const a = Number(element.dataset.descriptionStart), b = Number(element.dataset.descriptionEnd);
-      const literal = element.dataset.descriptionLiteral;
-      const text = literal === undefined ? element.textContent ?? '' : (element.textContent ?? '').slice(0, Number(literal));
-      const index = textBoundaries(source, a, b, text, literal !== undefined)?.indexOf(offset) ?? -1;
+      const index = sourceBoundaries(element, source)?.indexOf(offset) ?? -1;
       if (index < 0) continue;
       const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
       let remaining = index, node: Node | null;

@@ -23,7 +23,7 @@ export function remarkIssueReferences({references=[]}:{references?:readonly Issu
           if(at<decodedCursor)continue;
           if(at>decodedCursor)parts.push({type:'text',value:original.slice(decodedCursor,at),position:{start:{offset:rawCursor},end:{offset:span.start}}});
           const reference=visible.get(token)!;
-          parts.push({type:'link',url:`/app/issues/${reference.canonicalIdentifier??token}`,title:`${reference.title} · ${reference.status.name}`,children:[{type:'text',value:token}]});
+          parts.push({type:'link',url:`/app/issues/${reference.canonicalIdentifier??token}`,title:`${reference.title} · ${reference.status.name}`,children:[{type:'text',value:token,position:{start:{offset:span.start},end:{offset:span.end}}}]});
           rawCursor=span.end;decodedCursor=at+token.length;
         }
         if(decodedCursor<original.length)parts.push({type:'text',value:original.slice(decodedCursor),position:{start:{offset:rawCursor},end:{offset:end}}});

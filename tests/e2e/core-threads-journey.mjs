@@ -94,6 +94,7 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await page.getByRole('button', {name:'Comment on selection',exact:true}).click();
   await page.getByRole('textbox', {name:'Comment on quoted text',exact:true}).fill('Can we confirm these totals?');
   await page.getByRole('button', {name:'Start thread',exact:true}).click();
+  await page.locator('.description-thread-margin form.comment-composer').waitFor({state:'detached'});
   const margin = () => page.getByRole('complementary',{name:'Description threads',exact:true});
   await margin().getByText('Can we confirm these totals?',{exact:true}).waitFor();
   const persisted = (await (await context.request.get(base + `/api/issues/${identifier}/discussion`)).json()).comments.find(c=>c.anchor);
@@ -139,4 +140,27 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await settleReads(page);
   record('ISSUE-008','Highlighting formatted issue-description text starts a quoted thread in the margin. Its quote and source positions survive reload; removing the source retains the thread, marks the quote removed and keeps replies after reload. Desktop and phone screens recorded.');
 
+  const { operators } = await (await context.request.get(base + '/api/mentions/options')).json();
+  const operator = operators[0];
+  const linked = await (await context.request.post(base + '/api/issues', {headers:{Origin:base},data:{teamId,title:'Release review checklist'}})).json();
+  const name = encodeURIComponent(operator.name).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  const selectedSource = `Ask @{${operator.id}|${name}} to review ${linked.identifier}`;
+  const current = await (await context.request.get(base + `/api/issues/${identifier}`)).json();
+  await context.request.patch(base + `/api/issues/${identifier}`, {headers:{Origin:base},data:{expectedVersion:current.version,description:selectedSource}});
+  await open();
+  await page.locator('.issue-description .mention-chip').waitFor();
+  await page.locator(`.issue-description a[href="/app/issues/${linked.identifier}"]`).waitFor();
+  await page.locator('.issue-description p').evaluate(element => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const selected = window.getSelection();
+    selected.removeAllRanges(); selected.addRange(range);
+  });
+  await page.getByRole('button',{name:'Comment on selection',exact:true}).click();
+  await page.getByRole('textbox',{name:'Comment on quoted text',exact:true}).fill('Please confirm the release review.');
+  await page.getByRole('button',{name:'Start thread',exact:true}).click();
+  await page.locator('.description-thread-margin form.comment-composer').waitFor({state:'detached'});
+  await margin().getByText('Please confirm the release review.',{exact:true}).waitFor();
+  const selectedThread = (await (await context.request.get(base + `/api/issues/${identifier}/discussion`)).json()).comments.find(c=>c.body==='Please confirm the release review.');
+  assert.deepEqual(selectedThread.anchor,{quote:selectedSource,start:0,end:Array.from(selectedSource).length,removed:false});
 }
