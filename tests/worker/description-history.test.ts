@@ -57,6 +57,8 @@ async function nativeJourney() {
   const snapshot = async () => Object.fromEntries(await Promise.all(tables.map(async ({ name }) => [name,
     (await env.DB.prepare('SELECT * FROM "' + name.replaceAll('"', '""') + '"').all()).results.map(row => JSON.stringify(row)).sort()])));
   const beforeRefusal = await snapshot();
+  const peerSession = await receipt<{ role: string }>(await f.any(f.bobCookie, "/session"));
+  expect(peerSession.role).toBe("member");
   expect((await f.any(f.bobCookie, route, "POST", input)).status).toBe(403);
   expect(await snapshot()).toEqual(beforeRefusal);
   const bobToken = await receipt<{ token: string }>(await f.any(f.bobCookie, "/settings/integrations/tokens", "POST", { name: "synthetic-vector-2501", scopes: ["comments:write"] }), 201);

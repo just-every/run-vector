@@ -9,6 +9,12 @@ export async function commentChecklistJourney(page, context, base, state, teamId
   const actorResponse = await context.request.get(base + '/auth/session');
   assert.equal(actorResponse.status(), 200);
   const actor = (await actorResponse.json()).operator;
+  const settingsResponse = await context.request.get(base + '/api/settings');
+  assert.equal(settingsResponse.status(), 200);
+  const settings = await settingsResponse.json();
+  const nativeActor = settings.operators.find(row => row.id === settings.operatorId);
+  assert.ok(nativeActor, 'The signed-in author has a current native member record');
+  assert.equal(nativeActor.email, actor.email);
   const created = await context.request.post(base + '/api/issues', { headers: { Origin: base }, data: { title: 'synthetic-vector-2502', teamId } });
   assert.equal(created.status(), 201);
   const issue = await created.json(), path = `/api/issues/${issue.identifier}`, url = base + '/app/issues/' + issue.identifier;
@@ -67,8 +73,8 @@ export async function commentChecklistJourney(page, context, base, state, teamId
     assert.equal(changed.version, issue.version);
     const edits = changed.activity.filter(row => row.kind === 'comment.edited' && row.nextValue.id === comment.id);
     assert.deepEqual(edits.map(row => ({ actor: row.actor, revision: row.nextValue.revision, task: row.nextValue.checklist })), [
-      { actor: actor.displayName, revision: 1, task: { index: 0, text: 'Review draft', checked: true } },
-      { actor: actor.displayName, revision: 2, task: { index: 1, text: 'Publish notes', checked: true } },
+      { actor: nativeActor.name, revision: 1, task: { index: 0, text: 'Review draft', checked: true } },
+      { actor: nativeActor.name, revision: 2, task: { index: 1, text: 'Publish notes', checked: true } },
     ]);
     assert.equal(readLocalD1(state, `SELECT count(*) n FROM audit_records WHERE subject_id='${comment.id}' AND action='comment.edited'`)[0].n, 2);
     // One assertion width; both release widths get a screen of the changed state.
@@ -91,7 +97,10 @@ export async function commentChecklistJourney(page, context, base, state, teamId
     assert.equal(conflict.status(), 409);
     assert.deepEqual((await conflict.json()).comment, { id: comment.id, body: '- [x] Review draft\n- [x] Revised notes', version: 3 });
     assert.deepEqual(storage(), beforeConflict);
-    await withInvitedOperator(page, context, base, state, async () => {
+    for (const role of ['owner', 'member']) await withInvitedOperator(page, context, base, state, async () => {
+      const session = await context.request.get(base + '/api/session');
+      assert.equal(session.status(), 200);
+      assert.equal((await session.json()).role, role);
       await open(page);
       const readOnly = page.locator('.comment-body').getByRole('checkbox');
       assert.equal(await readOnly.count(), 2);
@@ -103,7 +112,7 @@ export async function commentChecklistJourney(page, context, base, state, teamId
       const denied = await context.request.post(checklist.replace('/api/issues/', '/api/v1/issues/'), { headers: { Origin: base, Authorization: 'Bearer ' + token }, data: { expectedBody: body, expectedVersion: 0, index: 0, text: 'Review draft', checked: false } });
       assert.equal(denied.status(), 403);
       assert.deepEqual(storage(), beforeRefusal);
-    }, 'synthetic-vector-2504');
-    record('ISSUE-025', 'Two genuine author sessions tick independent unchanged comment items from revision zero; both changes and two attributed revision and item activity receipts persist. A changed item returns current text with 409, another author sees read-only boxes and is refused 403 through the scoped API, refused writes change no product storage, and ticks preserve issue status. Screens at 1440 and 390.');
+    }, 'synthetic-vector-2504-' + role, role);
+    record('ISSUE-025', 'Two genuine author sessions tick independent unchanged comment items from revision zero; both changes and two native-member attributed revision and item activity receipts persist. A changed item returns current text with 409; another Owner and a Member see read-only boxes and are refused 403 through the scoped API, refused writes change no product storage, and ticks preserve issue status. Screens at 1440 and 390.');
   } finally { await peerContext.close(); }
 }
