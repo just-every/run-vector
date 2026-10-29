@@ -35,6 +35,7 @@ export async function projectMembershipJourney(page, context, base, capture = as
     });
     assert.equal(minted.status(), 201);
     const { token } = await minted.json();
+    await contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId:member.operatorId});
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: 1000 });
       await memberPage.setViewportSize({ width, height: 1000 });
@@ -101,4 +102,82 @@ export async function projectMembershipJourney(page, context, base, capture = as
   } finally {
     await memberContext.close();
   }
+}
+
+
+async function contributingTeamsJourney({page, memberPage, memberContext, base, api, navigate, capture, memberId}) {
+  const suffix = String(Date.now());
+  const letters = suffix.slice(-7).replaceAll(/\d/g, digit => String.fromCharCode(65+Number(digit)));
+  const teams = [];
+  for (const [index, isPrivate] of [false, true].entries()) {
+    const name = 'synthetic-vector-'+(750+index)+'-'+suffix;
+    teams.push((await api('/settings/teams','POST',{name,identifierPrefix:'P'+String.fromCharCode(65+index)+letters,isPrivate})).teams.find(team=>team.name===name));
+  }
+  const [publicTeam,privateTeam] = teams;
+  const name = 'synthetic-vector-752-'+suffix;
+  const project = (await api('/settings/projects','POST',{name,leadOperatorId:memberId})).projects.find(project=>project.name===name);
+  const publicIssue = await api('/issues','POST',{title:'synthetic-vector-753',teamId:publicTeam.id,projectId:project.id});
+  const privateIssue = await api('/issues','POST',{title:'synthetic-vector-754',teamId:privateTeam.id});
+  await api('/issues/'+privateIssue.identifier,'PATCH',{expectedVersion:privateIssue.version,projectId:project.id});
+  const memberApi = (path) => withOperatorClient(memberContext,async client=>{
+    const response = await client.get(base+'/api'+path);
+    assert.equal(response.status(),200); return response.json();
+  });
+  const goMember = async path => { await beforePrivateNavigation(memberPage,base+path); await memberPage.goto(base+path); };
+  const screens = async (label,currentPage) => {
+    for (const width of [1440,390]) {
+      await currentPage.setViewportSize({width,height:1000});
+      await capture('PROJ-014',label+'-'+width,currentPage);
+    }
+    await currentPage.setViewportSize({width:1440,height:1000});
+  };
+  await page.setViewportSize({width:1440,height:1000});
+  await memberPage.setViewportSize({width:1440,height:1000});
+  for (const team of teams) {
+    await navigate('/app/teams/'+team.id);
+    await page.getByRole('heading',{name:team.name,exact:true}).waitFor();
+    const row = page.getByRole('region',{name:'Projects',exact:true}).getByRole('link',{name:'Open '+name,exact:true});
+    await row.waitFor();
+    const contribution = await row.locator('.project-row__teams').innerText();
+    for (const contributor of teams) assert.ok(contribution.includes(contributor.name));
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await screens('contributing-project-'+(team===publicTeam?'public':'private')+'-team',page);
+    await row.click();
+    await page.getByRole('heading',{name,exact:true}).waitFor();
+    const detailTeams = await page.locator('.project-facts').innerText();
+    for (const contributor of teams) assert.ok(detailTeams.includes(contributor.name));
+    await page.locator('.project-facts').getByRole('link',{name:team.name,exact:true}).click();
+    await page.getByRole('heading',{name:team.name,exact:true}).waitFor();
+    await page.getByRole('region',{name:'Projects',exact:true}).getByRole('link',{name:'Open '+name,exact:true}).waitFor();
+    await navigate('/app/projects/'+project.id);
+    await page.getByRole('heading',{name,exact:true}).waitFor();
+  }
+  await screens('project-both-contributing-teams',page);
+  const restricted = async label => {
+    await goMember('/app/teams/'+publicTeam.id);
+    const row = memberPage.getByRole('region',{name:'Projects',exact:true}).getByRole('link',{name:'Open '+name,exact:true});
+    await row.waitFor();
+    assert.ok((await row.innerText()).includes(publicTeam.name));
+    assert.ok(!(await memberPage.locator('main').innerText()).includes(privateTeam.name));
+    assert.deepEqual((await memberApi('/projects?team='+privateTeam.id)).projects,[]);
+    const detail = await memberApi('/projects/'+project.id);
+    assert.deepEqual(detail.teams,[{id:publicTeam.id,name:publicTeam.name}]);
+    assert.deepEqual(detail.issues.map(issue=>issue.identifier),[publicIssue.identifier]);
+    await screens(label+'-public-team',memberPage);
+    await goMember('/app/teams/'+privateTeam.id);
+    await memberPage.getByRole('heading',{name:'This page is out of reach',exact:true}).waitFor();
+    assert.equal(await memberPage.getByRole('region',{name:'Projects',exact:true}).count(),0);
+    assert.ok(!(await memberPage.locator('main').innerText()).includes(name));
+    await screens(label+'-private-team-unavailable',memberPage);
+  };
+  await restricted('nonmember');
+  await api('/settings/teams/'+privateTeam.id+'/members/'+memberId,'PUT',{role:'member'});
+  await goMember('/app/teams/'+privateTeam.id);
+  const granted = memberPage.getByRole('region',{name:'Projects',exact:true}).getByRole('link',{name:'Open '+name,exact:true});
+  await granted.waitFor();
+  for(const team of teams)assert.ok((await granted.innerText()).includes(team.name));
+  await screens('member-private-team',memberPage);
+  await api('/settings/teams/'+privateTeam.id+'/members/'+memberId,'DELETE');
+  await restricted('withdrawn-member');
+  console.log('[PROJ-014] two actual team project lists and contributor names; same Member session observes current private-team membership and withdrawal');
 }

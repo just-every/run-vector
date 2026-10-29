@@ -1,3 +1,4 @@
+import {TeamProjectsSection} from '../../projects/ui/team-projects';
 import {useNavigate} from '@tanstack/react-router';
 import {useApiResource} from '../../../app/api-client';
 import {administrationSchema} from '../../administration/schema';
@@ -12,5 +13,5 @@ export function DocumentsSection({parentKind,parentId,inspector=false}:{parentKi
 }
 export function TeamDocumentsPage({teamId}:{teamId:string}){
  const data=useApiResource('/api/documents?parentKind=team&parentId='+teamId,documentList,undefined,{abortPendingOnDispose:false});
- return <main className="document-page">{data.error?<DocumentUnavailable/>:data.data?<><header><h1>{data.data.parent?.name}</h1></header><DocumentsSection parentKind="team" parentId={teamId}/></>:<p role="status">Loading team…</p>}</main>;
+ return <main className="document-page">{data.error?<DocumentUnavailable/>:data.data?<><header><h1>{data.data.parent?.name}</h1></header><TeamProjectsSection teamId={teamId}/><DocumentsSection parentKind="team" parentId={teamId}/></>:<p role="status">Loading team…</p>}</main>;
 }

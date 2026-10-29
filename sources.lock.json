@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "aee76a40d8fa4d8572b9d034daf25a18e52b667ed82edef82c0b646b479bb883",
+      "sha256": "9abb43d808aded63d5e9ef94fb020b553079175014bf035672a742ba15732692",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "2a596b63d268ad84900ab3bd7ad934c8d86df0524f2b0d1107b7727125b0bd3a",
+      "sha256": "43754f3bf41448cdcb7ed87c8d892d53781024c78253057f47d3380db6622431",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "5f2f2aae9824493c8b314384b364193fd6ed9e13b272a104f3e6574a46ec47cb",
+      "sha256": "356cb8d2b7c9b26aa9f964fd211006b4902d69356c12ad3e8fef25fbb617be07",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4209,7 +4209,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/list.tsx": {
-      "sha256": "e677be9cdcda8bb468a0dafa4c976fdcc2e361083174c05338a08faf0da0f42e",
+      "sha256": "13ac6fa163eae89dbff5dd4d4f9a7789c2e6791a1e10dbc061b2ed0651660192",
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
@@ -5773,7 +5773,7 @@
       "executable": false
     },
     "src/core/features/projects/service.ts": {
-      "sha256": "de3a5da88d347a7d0e380d07c2b6028ee9ea7b48b7161cd7a38f948b3885b992",
+      "sha256": "f8edfdacf0ba881b6db80aaf8aacc410662127a8bc5e033980e9a0f07c284038",
       "executable": false
     },
     "src/core/features/projects/ui/cycle-history.tsx": {
@@ -5781,7 +5781,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/data.ts": {
-      "sha256": "33172342fb93028ab8a9556966841f487598dcd3c630a7cda2088a616a9a1b1a",
+      "sha256": "fc1ceb603ff5c323b9d01d4a8888e6e5f90e278e294e37a4d6e7e8dea2c776e1",
       "executable": false
     },
     "src/core/features/projects/ui/helpers.ts": {
@@ -5801,11 +5801,11 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-detail.tsx": {
-      "sha256": "43b1dd7190d2aebc9f57684e1f8c37747a80b1039c2e7ed3d1befc2e5729bf7b",
+      "sha256": "1681c9ed48b95e1b37a204a6748835a769b283aba56920d2df16c2f34081720c",
       "executable": false
     },
     "src/core/features/projects/ui/project-list.tsx": {
-      "sha256": "40690ff91564d60618d4dce5609e17d31d2c8f87c377d4255d0a614c81986578",
+      "sha256": "2aa3bf254dcf20e917965c980cd2195a4cb4265d7f53f735c1779a36b5974f80",
       "executable": false
     },
     "src/core/features/projects/ui/project-milestones.css": {
@@ -5821,7 +5821,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/project-rows.css": {
-      "sha256": "edf8de59990d50021a57d7113ff613eb32d4ecc91cb9934d04df77ac86a66bb1",
+      "sha256": "bc595376150c7c634458404c2c2730a96eb639cc910d8507d8344deee0b3f6e7",
       "executable": false
     },
     "src/core/features/projects/ui/project-slack-choice.tsx": {
@@ -5838,6 +5838,10 @@
     },
     "src/core/features/projects/ui/risk-evidence.tsx": {
       "sha256": "d998d124ec03deb056a6eaa186b08fd4c8b22cc86839431bbb811d0a6afed215",
+      "executable": false
+    },
+    "src/core/features/projects/ui/team-projects.tsx": {
+      "sha256": "7d068a83218b1104dd9a02cedde290c359f9e21987d23e3d3d85041cfdbeddd0",
       "executable": false
     },
     "src/core/features/reactions/reactions.css": {
@@ -6881,7 +6885,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "5d3707c4125c7914f5b47e2ccd9268efc0c91e8c903d65174ba48d8e5cf7052f",
+      "sha256": "de74bd46ea803fa2f5a648566eb997cfac35e5b7d5c485a04e41994af9e6e589",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {
@@ -7941,7 +7945,7 @@
       "executable": false
     },
     "tests/worker/project-membership.test.ts": {
-      "sha256": "0f1c186462b4dee7a2f1ef49b6275f087daaee3119240880203b0570a20bb8d0",
+      "sha256": "f0d0e7836ff6a1d95b6edb6e86b74b985e39268811321de539fb79112bd9b74d",
       "executable": false
     },
     "tests/worker/project-milestone-flow.ts": {
