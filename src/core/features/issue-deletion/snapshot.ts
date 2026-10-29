@@ -19,7 +19,7 @@ const capturedIds = (name: string, key: string) =>
   `(SELECT json_group_array(json_extract(x.value,'$.${key}')) FROM b,json_each(b.value,'$.${name}') x)`;
 const ids = (name: string, arrays: string[]) =>
   `${name} AS MATERIALIZED (SELECT DISTINCT ${restoreValueSql("v.value")} id FROM json_each(json_array(${arrays.join(",")})) groups,json_each(groups.value) v)`;
-const scopes = [
+const scopeDefinitions = [
   ids("erasure_event_ids", [
     `(SELECT json_group_array(${storedValueSql("a.id")}) FROM issue_activity a,c WHERE a.issue_id=c.id)`,
     capturedIds("notification_events", "event_id"),
@@ -45,7 +45,8 @@ const scopes = [
     capturedIds("integration_deliveries", "id"),
     capturedIds("integration_replays", "id"),
   ]),
-].join(",");
+];
+const scopes=scopeDefinitions.join(",");
 
 // This inventory is specific to erasure. Incoming edges and every local copy
 // participate, even when import ownership is absent. Captured keys continue to
@@ -100,6 +101,14 @@ Object.assign(relations, {
   issue_reference_subjects: {
     table: "issue_reference_subjects",
     where: "r.source_issue_id=c.id OR r.target_issue_id=c.id",
+  },
+  document_issue_references: {
+    table: 'document_issue_references',
+    where: "r.target_issue_id=c.id OR r.document_id IN(SELECT id FROM main.documents WHERE parent_kind='issue' AND parent_id=c.id) OR r.document_id IN(" + captured('document_issue_references','document_id') + ") AND r.target_issue_id IN(" + captured('document_issue_references','target_issue_id') + ")",
+  },
+  document_reference_activity: {
+    table: 'issue_activity',
+    where: "(r.kind='issue.mentioned' AND json_extract(r.next_value_json,'$.sourceDocumentId') IN(SELECT id FROM main.documents WHERE parent_kind='issue' AND parent_id=c.id)) OR r.id IN(" + captured('document_reference_activity','id') + ")",
   },
   reference_source_activity: {
     table: "issue_activity",
@@ -197,11 +206,24 @@ const object = (table: string, fields?: string[]) => {
 };
 // Canonicalize arrays with SQLite's own binary ordering, also for arbitrary
 // Unicode external IDs. Every full row and cardinality must match.
+const contextBase="WITH c AS (SELECT ? id,? identifier,? workspace), b AS (SELECT ? value)";
+// Packed erasure guards also receive the visibility CTEs. Include only the
+// supporting scopes a relation uses, preserving every complete-row predicate
+// while keeping the final statement below D1's SQL byte limit.
+function relationContext(expression:string){
+  const needed=new Set<string>();
+  const names=scopeDefinitions.map(definition=>definition.split(' ')[0]);
+  const visit=(sql:string)=>{for(const name of names)if(sql.includes(name)&&!needed.has(name)){
+    needed.add(name);visit(scopeDefinitions[names.indexOf(name)]);
+  }};
+  visit(expression);
+  const selected=scopeDefinitions.filter((_,index)=>needed.has(names[index]));
+  return contextBase+(selected.length?','+selected.join(','):'');
+}
 export const snapshotParts = Object.keys(relations).sort().map((name) => {
   const { table, where, columns } = relations[name];
-  return {
-    name,
-    current: `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table, columns)} value FROM main.${quote(table)} r WHERE ${where} ORDER BY value))`,
+  const current= `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table, columns)} value FROM main.${quote(table)} r WHERE ${where} ORDER BY value))`;
+  return {name,current,context:relationContext(current),
     expected: `(SELECT json_group_array(json(value)) FROM (SELECT value FROM json_each(e.value,'$.${name}') ORDER BY value))`,
   };
 });
@@ -214,5 +236,4 @@ export const expectedExpression =
   snapshotParts.flatMap(({ name, expected }) => ["'" + name + "'", `json(${expected})`]).join(",") +
   ")";
 export const snapshotContext =
-  "WITH c AS (SELECT ? id,? identifier,? workspace), b AS (SELECT ? value), " +
-  scopes;
+  contextBase+", "+scopes;

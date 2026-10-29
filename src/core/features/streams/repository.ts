@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import { drizzle } from 'drizzle-orm/d1'
 import { dueIntakeQuery } from '../intake-return/repository'
 import {
@@ -50,8 +50,9 @@ async function readWorkspaceSnapshot(binding: D1Database, dueAt?: string) {
     db.select().from(listPreferences),
     db.select().from(projectLabels),
     db.select().from(projectMilestones),
+    db.select({id:sql<string>`id`}).from(sql`documents`),
   ] as const
-  const [workspace, operatorRows, teamRows, statusRows, projectRows, cycleRows, labelRows, issueRows, issueLabelRows, dependencyRows, evidenceRows, decisionRows, activityRows, savedViewRows, preferenceRows, projectLabelRows, projectMilestoneRows, candidates = []] = dueAt === undefined
+  const [workspace, operatorRows, teamRows, statusRows, projectRows, cycleRows, labelRows, issueRows, issueLabelRows, dependencyRows, evidenceRows, decisionRows, activityRows, savedViewRows, preferenceRows, projectLabelRows, projectMilestoneRows, documentRows, candidates = []] = dueAt === undefined
     ? await db.batch(queries)
     : await db.batch([...queries, dueIntakeQuery(db, dueAt)])
 
@@ -73,6 +74,7 @@ async function readWorkspaceSnapshot(binding: D1Database, dueAt?: string) {
     preferences: preferenceRows,
     projectLabels: projectLabelRows,
     projectMilestones: projectMilestoneRows,
+    documents: documentRows,
   }
   return { snapshot, candidates }
 }

@@ -1,10 +1,12 @@
+import {inviteReader,readerResponse} from './role-reader-support.mjs';
+import {roleScreens} from './role-ui-support.mjs';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {mkdir} from 'node:fs/promises';
 import {beforePrivateNavigation} from './collaboration-navigation.mjs';
 const require=createRequire(import.meta.url);
 
-export async function projectDocumentsJourney({page,base,api,output}){
+export async function projectDocumentsJourney({page,base,api,output,runtime}){
  await mkdir(output,{recursive:true});
  const errors=[];
  const pageError=error=>errors.push(String(error));
@@ -45,13 +47,23 @@ export async function projectDocumentsJourney({page,base,api,output}){
    assert.deepEqual(await page.evaluate(()=>Object.keys(localStorage).filter(key=>key.startsWith('vector:document-draft:'))),[]);
    await newDocument.click();
    await draft.getByLabel('Document title',{exact:true}).fill(title);
-   await draft.getByLabel('Document body',{exact:true}).fill('# Original plan\n\nOriginal spec body');
+   await draft.getByLabel('Document body',{exact:true}).fill('# Original plan\n\nOriginal spec body\n\nSee '+issue.identifier+'; unknown SYNTHETIC_VECTOR-999999.');
    await proof('project-document-draft',width);
    await draft.getByRole('button',{name:'Create document',exact:true}).click();
    await page.getByRole('heading',{name:title,exact:true}).waitFor();
    const documentId=new URL(page.url()).pathname.split('/').at(-1);
    assert.match(documentId,/^[0-9A-HJKMNP-TV-Z]{26}$/);
-   const bodies=['## First review\n\nFirst edited specification','## Approved plan\n\nSecond edited specification'];
+   const documentLink=page.getByRole('region',{name:'Document content'}).getByRole('link',{name:issue.identifier,exact:true});
+   if(width===1440){
+    await documentLink.waitFor();await documentLink.focus();
+    assert.equal(await page.getByRole('tooltip').filter({hasText:issue.title}).isVisible(),true);
+    assert.ok((await page.getByRole('tooltip').innerText()).includes(issue.status.name));
+    await page.getByRole('heading',{name:title,exact:true}).click();await documentLink.hover();
+    await page.getByRole('tooltip').filter({hasText:issue.title}).waitFor();
+    assert.equal(await page.getByRole('region',{name:'Document content'}).getByRole('link',{name:'SYNTHETIC_VECTOR-999999',exact:true}).count(),0);
+   }
+   await proof('document-reference-links',width);
+   const bodies=['## First review\n\nFirst edited specification\n\nSee '+issue.identifier,'## Approved plan\n\nSecond edited specification'];
    for(const body of bodies){
     const editor=page.locator('details').filter({has:page.locator('summary').filter({hasText:'Edit document'})});
     if(await editor.getAttribute('open')===null)await editor.locator('summary').click();
@@ -75,6 +87,10 @@ export async function projectDocumentsJourney({page,base,api,output}){
    assert.equal(await history.getByText('First edited specification',{exact:true}).count(),1);
    assert.equal(await history.getByText('Second edited specification',{exact:true}).count(),1);
    await proof('document-revisions',width);
+   if(width===1440){
+    const retained=(await api('/issues/'+issue.identifier)).activity.filter(row=>row.kind==='issue.mentioned'&&row.nextValue.sourceDocumentId===documentId);
+    assert.equal(retained.length,1);assert.equal(retained[0].nextValue.removed,true);
+   }
    await go('/app/projects/'+project.id);
    await page.getByRole('region',{name:'Documents',exact:true}).getByRole('link',{name:title,exact:true}).waitFor();
    await proof('project-documents-list',width);
@@ -123,5 +139,65 @@ export async function projectDocumentsJourney({page,base,api,output}){
    await proof('document-search',width);
    console.log('[PROJ-013] '+width+': UI project creation, two editor revisions, ordered history, issue specification, initiative/team lists, search, overflow, serious/critical axe and hydration PASS');
   }
+  await documentReferenceAccessJourney({page,base,api,output,runtime,proof});
  }finally{page.off('pageerror',pageError);page.off('console',consoleError);}
+}
+
+
+async function documentReferenceAccessJourney({page,base,api,output,runtime}){
+ const suffix=String(Date.now()),publicTeam=(await api('/settings/administration')).teams.find(t=>!t.isPrivate&&!t.archivedAt);
+ const privateTeam=(await api('/settings/teams','POST',{name:'synthetic-vector-document-reference-'+suffix,identifierPrefix:'DR'+suffix.slice(-5).replaceAll(/\d/g,d=>String.fromCharCode(65+Number(d))),isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-document-reference-'+suffix);
+ const target=await api('/issues','POST',{teamId:publicTeam.id,title:'synthetic-vector-visible-reference-'+suffix});
+ // A second private team keeps the target invisible after source access is granted.
+ const hiddenTeam=(await api('/settings/teams','POST',{name:'synthetic-vector-hidden-target-'+suffix,identifierPrefix:'DH'+suffix.slice(-5).replaceAll(/\d/g,d=>String.fromCharCode(65+Number(d))),isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-hidden-target-'+suffix);
+ const privateTarget=await api('/issues','POST',{teamId:hiddenTeam.id,title:'synthetic-vector-unavailable-title-'+suffix});
+ let doc=await api('/documents','POST',{parentKind:'team',parentId:privateTeam.id,title:'synthetic-vector-reference-document-'+suffix,body:'See '+target.identifier+' and '+privateTarget.identifier+'; unknown SYNTHETIC_VECTOR-999999.'});
+ const reader=await inviteReader({owner:page,browser:page.context().browser(),runtime,email:['synthetic-vector-document-reader-'+suffix,'vector.test'].join('@'),name:'synthetic-vector-document-reader',role:'member'});
+ const go=async path=>{await beforePrivateNavigation(reader.page,base+path);await reader.page.goto(base+path);};
+ const targetHistory=async()=>{await go('/app/issues/'+target.identifier);await reader.page.getByRole('heading',{name:target.title,exact:true}).waitFor();await reader.page.getByText('History',{exact:true}).click();};
+ const backlink=()=>reader.page.getByRole('link',{name:'Mentioned in '+doc.title,exact:true});
+ const inspect=roleScreens(output);
+ try{
+  for(const role of ['member','viewer']){
+   await reader.page.setViewportSize({width:1440,height:1000});
+   if(role==='viewer')await api('/settings/operators/'+reader.id+'/role','PATCH',{role:'viewer',teamIds:[]});
+   await targetHistory();assert.equal(await backlink().count(),0);
+   assert.ok(!JSON.stringify(await reader.api('/issues/'+target.identifier)).includes(doc.id));
+   await reader.api('/documents/'+doc.id,'GET',undefined,404);
+   await api('/settings/teams/'+privateTeam.id+'/members/'+reader.id,'PUT',{role:'member'});
+   await go('/app/documents/'+doc.id);await reader.page.getByRole('heading',{name:doc.title,exact:true}).waitFor();
+   const content=reader.page.getByRole('region',{name:'Document content',exact:true}),link=content.getByRole('link',{name:target.identifier,exact:true});
+   await link.waitFor();await link.focus();assert.equal(await reader.page.getByRole('tooltip').filter({hasText:target.title}).isVisible(),true);
+   assert.ok((await reader.page.getByRole('tooltip').innerText()).includes(target.status.name));
+   assert.equal(await content.getByRole('link',{name:privateTarget.identifier,exact:true}).count(),0);
+   assert.equal(await content.getByRole('link',{name:'SYNTHETIC_VECTOR-999999',exact:true}).count(),0);
+   const projection=await reader.api('/documents/'+doc.id);assert.deepEqual(projection.references.map(r=>r.identifier),[target.identifier]);
+   assert.ok(!JSON.stringify(projection.references).includes(privateTarget.title));
+   await inspect(reader.page,content,'document-reference-'+role);
+   await reader.page.setViewportSize({width:1440,height:1000});
+   await targetHistory();await backlink().waitFor();assert.equal(await backlink().count(),1);
+   await backlink().click();await reader.page.getByRole('heading',{name:doc.title,exact:true}).waitFor();
+   if(role==='viewer'){
+    const before=await api('/documents/'+doc.id);
+    const refused=await readerResponse(reader.page,base,'/documents/'+doc.id,'PATCH',{expectedVersion:before.version,body:'synthetic-vector-refused'});assert.equal(refused.status,403);
+    assert.deepEqual(await api('/documents/'+doc.id),before);
+   }
+   doc=await api('/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'Still see '+target.identifier+' and '+privateTarget.identifier});
+   doc=await api('/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'Reference removed.'});
+   await targetHistory();await backlink().waitFor();assert.equal(await backlink().count(),1);
+   await reader.page.getByText('· reference removed',{exact:false}).waitFor();
+   const retained=(await reader.api('/issues/'+target.identifier)).activity.filter(row=>row.nextValue?.sourceDocumentId===doc.id);assert.equal(retained.length,1);assert.equal(retained[0].nextValue.removed,true);
+   await inspect(reader.page,reader.page.locator('.issue-history'),'document-backlink-removed-'+role);
+   await reader.page.setViewportSize({width:1440,height:1000});
+   doc=await api('/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'Again '+target.identifier+' and '+privateTarget.identifier});
+   await api('/settings/teams/'+privateTeam.id+'/members/'+reader.id,'DELETE');
+   await backlink().waitFor({state:'hidden'});
+   assert.ok(!JSON.stringify(await reader.api('/issues/'+target.identifier)).includes(doc.id));
+   await reader.api('/documents/'+doc.id,'GET',undefined,404);
+   await reader.api('/documents/'+doc.id+'/revisions','GET',undefined,404);
+   await inspect(reader.page,reader.page.locator('.issue-history'),'document-backlink-withdrawn-'+role);
+  }
+  assert.deepEqual(reader.errors,[]);
+  console.log('ISSUE-027 document links, visible metadata, one retained backlink, removal and current Member and Viewer withdrawal PASS');
+ }finally{await reader.context.close();}
 }

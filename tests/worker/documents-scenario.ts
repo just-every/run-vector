@@ -1,3 +1,4 @@
+import {documentReferenceScenario} from './reference-scenario';
 import {env} from 'cloudflare:workers';
 import {expect} from 'vitest';
 import {readArchive} from '@runeditrun/rer/modules/portability';
@@ -46,12 +47,14 @@ export async function documentJourney(){
  expect((await read(await request('/api/issues/'+issue.identifier+'/specification','GET',undefined,outsider))).specification).toBeNull();
  expect((await read(await request('/api/issues/'+issue.identifier+'/specification','GET',undefined,member))).specification).toEqual({id:teamDoc.id,title:teamDoc.title});
  await read(await f.call('/issues/'+issue.identifier+'/specification','PUT',{documentId:doc.id}));
+ const reference=await documentReferenceScenario(f);
  // A native archive retains the document, parent identity, both edits and issue link.
  const exported=await read(await f.call('/portability/exports','POST',{}),201);
  let state={phase:'building'};while(state.phase==='building')state=await read(await f.call('/portability/exports/'+exported.id+'/advance','POST',{maxParts:16}));
  const download=await f.call('/portability/exports/'+exported.id+'/download');expect(download.status).toBe(200);
  const items:any[]=[];for await(const record of readArchive(download.body!))if(record.kind==='part')items.push(...record.items);
  const rows=(table:string)=>items.filter(item=>item.kind==='row'&&item.table===table).map(item=>item.row);
+ expect(rows('document_issue_references')).toContainEqual(expect.objectContaining({document_id:reference.doc.id,target_issue_id:reference.target.id,removed:0}));
  expect(rows('documents')).toContainEqual(expect.objectContaining({id:issueDoc.id,parent_kind:'issue',parent_id:issue.id}));
  expect(rows('issues')).toContainEqual(expect.objectContaining({id:issue.id}));
  expect(rows('document_comments')).toContainEqual(expect.objectContaining({document_id:doc.id,body:'synthetic-vector-exported-comment'}));
