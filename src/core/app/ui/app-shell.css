@@ -191,7 +191,6 @@
     min-width: 0;
     gap: 0.25rem;
   }
-  .app-mobile-places-row > .app-nav-link { flex: 0 0 5.5rem; }
   .app-mobile-places {
     display: flex;
     flex: 1;
@@ -199,9 +198,10 @@
     gap: 0.25rem;
     overflow-x: auto;
     overflow-y: hidden;
+    scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
-  .app-mobile-places .app-nav-link { flex: 0 0 calc((100% - 0.5rem) / 2.5); min-width: 5.5rem; }
+  .app-mobile-places .app-nav-link { flex: 0 0 calc((100% - 0.5rem) / 3); min-width: 5.5rem; scroll-snap-align: start; }
   .app-mobile-daily > .app-nav-link { flex: 1 1 0; }
   .app-mobile-nav .app-nav-link {
     min-width: 44px;
