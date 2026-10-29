@@ -2613,7 +2613,7 @@
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
-      "sha256": "e3c60c46e401bb7752d19a696390be55788d7ee15b5c569285cf280ecc52884c",
+      "sha256": "efd60be92427de2e8874d51ef0e0d2abdf48e8a108f1646d484ace9a4eca6921",
       "executable": false
     },
     "scripts/data/archive-upgrade-worker.mjs": {
