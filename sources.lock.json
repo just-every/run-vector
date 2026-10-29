@@ -5945,7 +5945,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "e25f0f78f24090e5b57c57adf005a705e1e82741769b17e5c73c84b32134e3c8",
+      "sha256": "3c9038a787863da740c539c19eca46dae8f3ebaaada9b60aac913d3f48d41f2e",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
