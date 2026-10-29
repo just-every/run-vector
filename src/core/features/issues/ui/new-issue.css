@@ -64,7 +64,7 @@
 .new-issue-form select,
 .new-issue-form textarea {
   width: 100%;
-  min-height: 2.65rem;
+  min-height: max(2.65rem, var(--tap-min));
   border: 1px solid rgb(var(--app-ink-rgb) / 18%);
   border-radius: 0.45rem;
   padding: 0.5rem 0.6rem;
@@ -113,7 +113,7 @@
 }
 .new-issue-labels label {
   display: inline-flex;
-  min-height: 2.65rem;
+  min-height: max(2.65rem, var(--tap-min));
   align-items: center;
   gap: 0.4rem;
   border: 1px solid rgb(var(--app-ink-rgb) / 16%);
@@ -137,7 +137,7 @@
   margin-top: 1rem;
 }
 .new-issue-more summary {
-  min-height: 2rem;
+  min-height: max(2rem, var(--tap-min));
   color: var(--app-ink);
   cursor: pointer;
   font-size: var(--app-text-small);
@@ -216,7 +216,7 @@
 }
 .new-issue-mode label {
   display: inline-flex;
-  min-height: 2rem;
+  min-height: max(2rem, var(--tap-min));
   align-items: center;
   flex-wrap: wrap;
   gap: 0.45rem;

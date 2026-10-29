@@ -3,7 +3,7 @@
 .subject-subscriptions form { display:flex; flex-wrap:wrap; align-items:end; gap:12px; }
 .subject-subscriptions label { display:grid; gap:6px; min-width:0; flex:1 1 220px; }
 .subject-subscriptions select { width:100%; min-width:0; padding:10px; color:inherit; background:var(--surface); border:1px solid var(--border); border-radius:6px; font:inherit; }
-.subject-subscriptions button,.subject-subscribe button { min-height:40px; padding:8px 12px; cursor:pointer; }
+.subject-subscriptions button,.subject-subscribe button { min-height:max(40px,var(--tap-min)); padding:8px 12px; cursor:pointer; }
 .subject-subscriptions li { margin:10px 0; overflow-wrap:anywhere; }
 .subject-subscriptions li button { margin:5px 0 5px 12px; }
 .subject-context-subscriptions { display:flex; flex-wrap:wrap; gap:10px; margin:12px 0; }

@@ -3,5 +3,5 @@
 .personal-time-hours { display: flex; flex-wrap: wrap; gap: 1rem; }
 .personal-time-hours label { flex: 1 1 10rem; }
 .personal-time-days { display: flex; flex-wrap: wrap; gap: .6rem 1rem; margin: 1rem 0; }
-.personal-time-days label { display: inline-flex; align-items: center; gap: .4rem; }
+.personal-time-days label { display: inline-flex; align-items: center; gap: .4rem; min-height: var(--tap-min); }
 .personal-time-days input[type=checkbox] { width: auto; margin: 0; }
