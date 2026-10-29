@@ -69,7 +69,7 @@ contractWith(
     expect((await comments())[0].anchor).toEqual({quote:anchor.quote,start:anchor.start,end:anchor.end,removed:false});
     let current = await f.data(f.cookie, `/issues/${issue.identifier}`);
     const prefix = "🧭 New context. ";
-    let updated = await f.call(`/issues/${issue.identifier}`, "PATCH", {expectedVersion:current.version,description:prefix+source});
+    let updated = await f.call(`/issues/${issue.identifier}`, "PATCH", {expectedVersion:current.version,description:prefix+source+" Extra context."});
     expect(updated.status,await updated.clone().text()).toBe(200);
     current = await updated.json();
     expect((await comments())[0].anchor).toEqual({quote:anchor.quote,start:anchor.start+Array.from(prefix).length,end:anchor.end+Array.from(prefix).length,removed:false});

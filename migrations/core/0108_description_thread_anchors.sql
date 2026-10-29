@@ -25,12 +25,20 @@ BEGIN
       FROM suffix WHERE lo<hi
     ),
     bounds(a,b,delta) AS (SELECT p.n,length(OLD.description)-suffix.lo,length(NEW.description)-length(OLD.description) FROM p,suffix WHERE suffix.lo=suffix.hi)
+    , quote(source,at) AS (SELECT substr(OLD.description,json_extract(description_anchor,'$.start')+1,json_extract(description_anchor,'$.end')-json_extract(description_anchor,'$.start')),json_extract(description_anchor,'$.start')+1),
+    located(source,oldAt,newAt) AS (SELECT source,at,instr(NEW.description,source) FROM quote)
     SELECT CASE
       WHEN json_extract(description_anchor,'$.end')<=a THEN description_anchor
       WHEN json_extract(description_anchor,'$.start')>=b THEN json_set(description_anchor,
         '$.start',json_extract(description_anchor,'$.start')+delta,
         '$.end',json_extract(description_anchor,'$.end')+delta)
-      ELSE json_set(description_anchor,'$.removed',json('true')) END FROM bounds
+      -- An unchanged, unique source quote can survive edits on both sides.
+      -- Ambiguous repeated text never jumps to another occurrence.
+      WHEN newAt>0 AND instr(OLD.description,source)=oldAt
+        AND instr(substr(OLD.description,oldAt+length(source)),source)=0
+        AND instr(substr(NEW.description,newAt+length(source)),source)=0
+      THEN json_set(description_anchor,'$.start',newAt-1,'$.end',newAt-1+length(source))
+      ELSE json_set(description_anchor,'$.removed',json('true')) END FROM bounds,located
   ) WHERE issue_id=NEW.id AND description_anchor IS NOT NULL AND json_extract(description_anchor,'$.removed')=0;
 END;
 

@@ -6,7 +6,7 @@ const teammate = 'Thread teammate';
 
 /** ISSUE-008: a teammate replies twice and resolves; the author reopens with a reply. */
 export async function threadsJourney(page, context, base, state, teamId, evidence, record) {
-  const description = 'Review the **report summary** before shipping. This text stays.';
+  const description = 'Review the **report summary** before shipping. Use `synthetic-vector-1`.\n\n```txt\nsynthetic-vector-2\n```\n\nThis text stays.';
   const created = await context.request.post(base + '/api/issues', { headers: { Origin: base }, data: { title: `Thread journey ${Date.now()}`, teamId, description } });
   assert.equal(created.status(), 201);
   const { identifier } = await created.json();
@@ -76,6 +76,15 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
 
   // Use the browser selection in the rendered description, including Markdown
   // formatting. The resulting thread belongs in the adjacent margin.
+  for (const literal of ['synthetic-vector-1','synthetic-vector-2']) {
+    await page.locator('.issue-description code[data-description-start]').filter({hasText:literal}).evaluate(element => {
+      const range=document.createRange();range.selectNodeContents(element);
+      const selected=window.getSelection();selected.removeAllRanges();selected.addRange(range);
+    });
+    await page.getByRole('button',{name:'Comment on selection',exact:true}).click();
+    assert.equal(await page.locator('.description-thread-margin form blockquote').innerText(),literal);
+    await page.getByRole('complementary',{name:'Description threads',exact:true}).getByRole('button',{name:'Cancel',exact:true}).click();
+  }
   await page.locator('.issue-description [data-description-start]').filter({hasText:'report summary'}).evaluate(element => {
     const range = document.createRange();
     range.selectNodeContents(element);
@@ -92,6 +101,12 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await open();
   await margin().getByRole('blockquote',{name:'Quoted description text'}).getByText('report summary',{exact:true}).waitFor();
   await margin().getByText('Can we confirm these totals?',{exact:true}).waitFor();
+  await margin().getByRole('button',{name:'Show quoted text',exact:true}).click();
+  assert.equal(await page.evaluate(()=>window.getSelection().toString()),'report summary');
+  const reaction = margin().getByRole('button',{name:'Add 👍 reaction',exact:true});
+  await reaction.focus();
+  await page.getByRole('tooltip',{name:'Add 👍 reaction',exact:true}).waitFor();
+  await reaction.blur();
   const sourceBox = await page.locator('.description-source').boundingBox(), marginBox = await margin().boundingBox();
   assert.ok(marginBox.x >= sourceBox.x + sourceBox.width, 'The quote is shown in the description margin on desktop');
   for (const width of [1440,390]) {
