@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "8a4debb567a754182ebedc5d1d04f77df5504ecb6183e83c7dcdbeca90489cce",
+      "sha256": "de1843c2ff7109b206f138d0f71f7238be2aac925ccd78bdc5872972f00fdecc",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "552a9451dc4894389c7ed9b161cae6d882a9f78c51171cd39464342982611020",
+      "sha256": "75c9cd83293e17095f6d3e4f26840e8d43b91941e50858715e6b81b448d20b86",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "e640c15f67f8e0b146c0d26b3a0ee566f94e7b93904e6c659fed43fcfdf83ada",
+      "sha256": "375ac62ae964988dd4fdd708e682699570ba715cad93b6f7c593181c16622109",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -6937,7 +6937,7 @@
       "executable": false
     },
     "tests/e2e/core-threads-journey.mjs": {
-      "sha256": "bd035ab4e7eefc85dca54015770c29230080d9917f4a8bdb2d6e69948dea3a99",
+      "sha256": "888caa10d3cf6ff0bdd2ffb0fd72b29f6f28ea25f7f5688825318409c6c84095",
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
@@ -7028,6 +7028,10 @@
       "sha256": "0dbb78372cbb311680779d5eaed9bf89d3ed6d9ddd38f278bf30ef7d665f4479",
       "executable": false
     },
+    "tests/e2e/description-checklist-journey.mjs": {
+      "sha256": "0e06bd9d2494abd307ca9ed6bd289e47928715b53592001c33f0c2ca23b1105c",
+      "executable": false
+    },
     "tests/e2e/dev-ci.mjs": {
       "sha256": "2fd81857934bacc7d662004ee1415505a8774eabad9ea9dde73428d7d80b7677",
       "executable": false
@@ -7045,7 +7049,7 @@
       "executable": false
     },
     "tests/e2e/document-checklist-journey.mjs": {
-      "sha256": "d5cf72fdd704651fbe5481a2fb5bf8d061eb7e3e0daef9b74033c02c4ee0b8d6",
+      "sha256": "b17f801718f6d0f3687a9fbe3dcc14540d79e026aa4fb060ebf1b4377ca18f63",
       "executable": false
     },
     "tests/e2e/document-read-app-journey.mjs": {
