@@ -1,4 +1,5 @@
 import { commentChecklistJourney } from './comment-checklist-journey.mjs';
+import { documentChecklistJourney } from './document-checklist-journey.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { withInvitedOperator } from './core-operator-journey.mjs';
@@ -73,5 +74,6 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   assert.deepEqual(activity.filter((kind) => kind.startsWith('thread.')), ['thread.resolved', 'thread.reopened']);
   await settleReads(page);
   await commentChecklistJourney(page, context, base, state, teamId, evidence, record);
+  await documentChecklistJourney(page, context, base, teamId, evidence, record);
   record('ISSUE-008', 'At 1440px and 390px a teammate replies twice in order under a top-level comment, cannot edit it (no control; PATCH 403), resolves the thread and sees it collapse to one line naming them; the author expands it, replies, and the thread reopens with resolve/reopen activity recorded.');
 }

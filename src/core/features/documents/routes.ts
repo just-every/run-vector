@@ -3,6 +3,8 @@ import {z} from 'zod';
 import type {AppEnvironment} from '../../app/bindings';
 import {readRequestJson} from '../../app/input';
 import {IntegrationError} from '../integrations/errors';
+import {checklistSchema} from '../description-history/schema';
+import {DocumentChecklistConflict,tickDocumentTask} from './checklist';
 import {parentKind,documentId,documentInput,documentEdit,documentComment,specificationInput} from './schema';
 import {listDocuments,issueSpecification,readDocument,documentRevisions,documentComments,createDocument,editDocument,commentDocument,setSpecification} from './repository';
 function parse<T>(schema:z.ZodType<T>,value:unknown){const result=schema.safeParse(value);if(!result.success)throw new IntegrationError(400,'invalid_document_input');return result.data;}
@@ -14,6 +16,12 @@ export function addDocumentRoutes(app:Hono<AppEnvironment>){
  app.post('/documents',async c=>c.json(await createDocument(c.env.DB,c.get('operatorId'),parse(documentInput,await readRequestJson(c.req.raw))),201));
  app.get('/documents/:documentId',async c=>c.json(await readDocument(c.env.DB,c.get('operatorId'),parse(documentId,c.req.param('documentId')))));
  app.patch('/documents/:documentId',async c=>c.json(await editDocument(c.env.DB,c.get('operatorId'),parse(documentId,c.req.param('documentId')),parse(documentEdit,await readRequestJson(c.req.raw)))));
+ app.post('/documents/:documentId/checklist',async c=>{
+  c.set('mutationPageProjection',true);
+  const id=parse(documentId,c.req.param('documentId')),input=parse(checklistSchema,await readRequestJson(c.req.raw));
+  try{return c.json(await tickDocumentTask(c.env.DB,c.get('operatorId'),id,input));}
+  catch(error){if(error instanceof DocumentChecklistConflict)return c.json({error:error.code,message:error.message,document:await readDocument(c.env.DB,c.get('operatorId'),id)},409);throw error;}
+ });
  app.get('/documents/:documentId/revisions',async c=>c.json(await documentRevisions(c.env.DB,c.get('operatorId'),parse(documentId,c.req.param('documentId')),parse(historyQuery,c.req.query()).beforeVersion)));
  app.get('/documents/:documentId/comments',async c=>c.json(await documentComments(c.env.DB,c.get('operatorId'),parse(documentId,c.req.param('documentId')),parse(z.object({beforeComment:documentId.optional()}).strict(),c.req.query()).beforeComment)));
  app.post('/documents/:documentId/comments',async c=>c.json(await commentDocument(c.env.DB,c.get('operatorId'),parse(documentId,c.req.param('documentId')),parse(documentComment,await readRequestJson(c.req.raw)).body),201));

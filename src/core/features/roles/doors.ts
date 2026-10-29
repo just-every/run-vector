@@ -83,7 +83,7 @@ async function memberRole(db: D1Database, id: string) {
 
 export const doors: Door[] = [
   ...([
-    ['POST','/documents'],['PATCH','/documents/:documentId'],['POST','/documents/:documentId/comments'],
+    ['POST','/documents'],['PATCH','/documents/:documentId'],['POST','/documents/:documentId/comments'],['POST','/documents/:documentId/checklist'],
     ['PUT','/issues/:identifier/specification'],['DELETE','/issues/:identifier/specification'],
   ] as const).map(([method,path])=>({method,path,row:documentDoorRow,teams:documentDoorTeams,workMutation:true as const})),
   {method:'GET',path:'/settings/oauth-apps',row:'integrations.manage'},

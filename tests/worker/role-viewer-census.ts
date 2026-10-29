@@ -82,7 +82,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
  const template=await call(member,'/project-templates','POST',templateInput);
  const dashboardInput={name:'synthetic-vector-31019',teamId:w.team.id,widgets:[{name:'synthetic-vector-31020',kind:'count',filters:{team:w.team.id},chart:{}}]};
  const dashboard=await call(member,'/dashboards','POST',dashboardInput);
- const document=await call(owner,'/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31100',body:'synthetic-vector-31100'});
+ const document=await call(owner,'/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31100',body:'- [ ] synthetic-vector-31100'});
  const otherDocument=await call(owner,'/documents','POST',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31101',body:'synthetic-vector-31101'});
  await call(owner,'/issues/'+issue.identifier+'/specification','PUT',{documentId:document.id});
  const initiative=await call(owner,'/initiatives','POST',{name:'synthetic-vector-31021',ownerOperatorId:owner.id});
@@ -157,6 +157,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    both(method,releasePath,releasePath,method==='POST'?{name:'synthetic-vector-31039',teamId:w.team.id}:method==='PATCH'?{expectedVersion:release.version,description:'synthetic-vector-31040'}:{expectedVersion:release.version,issueIdentifiers:[issue.identifier],projectIds:[project.id]},{id:release.id});
   }
   native('POST','/documents',{parentKind:'project',parentId:project.id,title:'synthetic-vector-31102',body:'synthetic-vector-31102'});
+  native('POST','/documents/:documentId/checklist',{expectedVersion:document.version,index:0,text:'synthetic-vector-31100',checked:true},{documentId:document.id});
   native('PATCH','/documents/:documentId',{expectedVersion:document.version,body:'synthetic-vector-31103'},{documentId:document.id});
   native('POST','/documents/:documentId/comments',{body:'synthetic-vector-31104'},{documentId:document.id});
   native('PUT','/issues/:identifier/specification',{documentId:otherDocument.id},ip);
@@ -238,7 +239,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
    'PUT /settings/teams/:id/housekeeping':housekeepingSchema,
    'POST /settings/teams/:id/housekeeping/preview':housekeepingSchema,
    'PUT /settings/notifications/channel-defaults':channelDefaultsInputSchema,
-   'POST /documents':documentInput,'PATCH /documents/:documentId':documentEdit,'POST /documents/:documentId/comments':documentComment,'PUT /issues/:identifier/specification':specificationInput,
+   'POST /documents':documentInput,'PATCH /documents/:documentId':documentEdit,'POST /documents/:documentId/comments':documentComment,'POST /documents/:documentId/checklist':checklistSchema,'PUT /issues/:identifier/specification':specificationInput,
    'POST /initiatives':initiativeInput,'PATCH /initiatives/:id':initiativeEdit,'PUT /initiatives/:id/projects':initiativeProjects,
    'POST /releases':releaseInput,'PATCH /releases/:id':releaseEdit,'PUT /releases/:id/scope':releaseScope,
    'POST /views':createViewSchema,'PATCH /views/:id':updateViewSchema,'POST /views/:id/duplicate':duplicateViewSchema,

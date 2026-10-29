@@ -39,7 +39,7 @@ export async function readDocument(db:D1Database,actor:string,id:string){
 }
 export async function documentRevisions(db:D1Database,actor:string,id:string,before?:number){
  await readDocument(db,actor,id);
- const rows=(await db.prepare('SELECT r.id,r.version,r.title,r.body,r.created_at createdAt,o.name authorName FROM document_revisions r JOIN operators o ON o.id=r.author_operator_id WHERE r.document_id=? AND (? IS NULL OR r.version<?) ORDER BY r.version DESC LIMIT 5').bind(id,before??null,before??null).all<{id:string;version:number;title:string;body:string;createdAt:string;authorName:string}>()).results;
+ const rows=(await db.prepare('SELECT r.id,r.version,r.title,r.body,r.created_at createdAt,o.name authorName,r.checklist_json checklist FROM document_revisions r JOIN operators o ON o.id=r.author_operator_id WHERE r.document_id=? AND (? IS NULL OR r.version<?) ORDER BY r.version DESC LIMIT 5').bind(id,before??null,before??null).all<{id:string;version:number;title:string;body:string;createdAt:string;authorName:string;checklist:string|null}>()).results.map(row=>({...row,checklist:row.checklist?JSON.parse(row.checklist) as {index:number;text:string;checked:boolean}:null}));
  await readDocument(db,actor,id);
  return {revisions:rows.reverse(),nextBeforeVersion:rows.length===5&&rows[0].version>1?rows[0].version:null};
 }
