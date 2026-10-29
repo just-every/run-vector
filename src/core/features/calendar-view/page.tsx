@@ -3,12 +3,15 @@ import {useEffect,useState} from 'react';
 import {z} from 'zod';
 import {ApiError,fetchJson,useApiResource} from '../../app/api-client';
 import {monthCalendarSchema,type MonthEvent} from './schema';
+import {layoutWeek} from './month-layout';
 import './calendar.css';
 const dayLabel=(day:string)=>new Intl.DateTimeFormat('en',{weekday:'long',month:'long',day:'numeric',year:'numeric',timeZone:'UTC'}).format(new Date(day+'T12:00:00Z'));
 function shifted(month:string,delta:number){const d=new Date(month+'-01T12:00:00Z');d.setUTCMonth(d.getUTCMonth()+delta);return d.toISOString().slice(0,7);}
 function days(month:string){const date=new Date(month+'-01T12:00:00Z');date.setUTCDate(1-(date.getUTCDay()+6)%7);return Array.from({length:42},(_,i)=>{const d=new Date(date);d.setUTCDate(d.getUTCDate()+i);return d.toISOString().slice(0,10);}).filter(day=>/^\d{4}-\d{2}-\d{2}$/.test(day));}
+const weeks=(all:string[])=>Array.from({length:Math.ceil(all.length/7)},(_,i)=>all.slice(i*7,i*7+7));
 const onDay=(event:MonthEvent,day:string)=>event.firstDay<=day&&event.lastDay>=day;
 const kindName={issue:'Due issue',cycle:'Cycle',milestone:'Milestone',release:'Release'};
+const countWord=(n:number)=>n===1?'event':'events';
 export function MonthCalendar(){
  const [month,setMonth]=useState(''),[selected,setSelected]=useState(''),[editing,setEditing]=useState<MonthEvent|null>(null),[date,setDate]=useState(''),[dragged,setDragged]=useState<MonthEvent|null>(null),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState('');
  const data=useApiResource('/api/calendar/events'+(month?'?month='+month:''),monthCalendarSchema);
@@ -32,9 +35,12 @@ export function MonthCalendar(){
    <ul className="calendar-legend" aria-label="Event kinds">{(['issue','cycle','milestone','release'] as const).map(kind=><li className={'calendar-kind calendar-kind--'+kind} key={kind}>{kindName[kind]}</li>)}</ul>
    <div className="calendar-weekdays" aria-hidden="true">{['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day=><span key={day}>{day}</span>)}</div>
    <div className="month-grid" aria-label={'Dates in '+current.month}>
-    {days(current.month).map(day=>{const items=current.events.filter(e=>onDay(e,day)),inside=day.startsWith(current.month);return <div key={day} className={'month-day'+(!inside?' month-day--outside':'')+(day===selectedDay?' month-day--selected':'')} data-calendar-day={day} onDragOver={e=>{if(dragged&&!busy&&inside){e.preventDefault();e.dataTransfer.dropEffect='move';}}} onDrop={e=>{e.preventDefault();if(dragged&&inside)void move(dragged,day);}}>
-     <button type="button" disabled={!inside||busy} aria-label={dayLabel(day)+', '+items.length+' events'} aria-pressed={day===selectedDay} aria-current={day===current.today?'date':undefined} onClick={()=>setSelected(day)}><span>{Number(day.slice(-2))}</span><span className="calendar-event-count">{items.length?<>{items.length}<span className="calendar-count-word"> events</span></>:'—'}</span></button>
-     <ul className="calendar-day-preview" aria-hidden="true">{items.slice(0,3).map(e=><li key={e.id} className={'calendar-kind calendar-kind--'+e.kind}>{kindName[e.kind]} · {e.title}</li>)}{items.length>3&&<li>+{items.length-3} more</li>}</ul>
+    {weeks(days(current.month)).map(week=>{const layout=layoutWeek(week,current.events),lanes=layout[0].lanes.length;return <div key={week[0]} className="month-week" style={{gridTemplateRows:'auto'+' auto'.repeat(lanes)+' 1fr'}}>
+     {week.map((day,column)=>{const items=current.events.filter(e=>onDay(e,day)),inside=day.startsWith(current.month),{lanes:bars,singles,more}=layout[column];return <div key={day} className={'month-day'+(!inside?' month-day--outside':'')+(day===selectedDay?' month-day--selected':'')} style={{gridColumn:column+1,gridRow:'1 / -1'}} data-calendar-day={day} onDragOver={e=>{if(dragged&&!busy&&inside){e.preventDefault();e.dataTransfer.dropEffect='move';}}} onDrop={e=>{e.preventDefault();if(dragged&&inside)void move(dragged,day);}}>
+      <button type="button" disabled={!inside||busy} aria-label={dayLabel(day)+', '+items.length+' '+countWord(items.length)} aria-pressed={day===selectedDay} aria-current={day===current.today?'date':undefined} onClick={()=>setSelected(day)}><span>{Number(day.slice(-2))}</span><span className="calendar-event-count">{items.length>0&&<>{items.length}<span className="calendar-count-word"> {countWord(items.length)}</span></>}</span></button>
+      <ul className="calendar-day-lanes" aria-hidden="true">{bars.map((bar,lane)=>bar&&<li key={bar.event.id} className={'calendar-kind calendar-kind--'+bar.event.kind+' calendar-bar'} style={{gridRow:lane+2,width:`calc(${bar.span*100}% + ${(bar.span-1)*11}px)`}}>{bar.event.title}</li>)}</ul>
+      <ul className="calendar-day-preview" style={{gridRow:bars.length+2}} aria-hidden="true">{singles.map(e=><li key={e.id} className={'calendar-kind calendar-kind--'+e.kind}>{e.title}</li>)}{more>0&&<li>+{more} more</li>}</ul>
+     </div>;})}
     </div>;})}
    </div>
    <div className="calendar-agenda" role="region" aria-label="Selected day events"><h3>{dayLabel(selectedDay)}</h3>{!events.length&&<p>No events on this day.</p>}

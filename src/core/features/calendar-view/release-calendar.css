@@ -1,2 +1,2 @@
 .month-calendar .calendar-kind--release { border: 1px solid var(--app-line-strong); border-radius: 5px; padding: 4px 8px; }
-.month-calendar .calendar-kind--release,.month-calendar .calendar-event-count,.month-calendar .calendar-weekdays span,.month-calendar .calendar-day-preview li { font-size: 13px; }
+.month-calendar .calendar-kind--release,.month-calendar .calendar-event-count,.month-calendar .calendar-weekdays span,.month-calendar .calendar-day-preview li,.month-calendar .calendar-day-lanes li { font-size: 13px; }
