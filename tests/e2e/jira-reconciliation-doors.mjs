@@ -52,6 +52,15 @@ export async function verifyReconciliationDoors({page,section,report,fixture,ter
   assert(body.includes('Row '+reference.row),reference.code+' source row is visible');
  }
  assert(report.references.some(row=>row.code==='jira_reference_outside_file'),'The ignored external relation is reported');
+ let physicalRow=2;
+ const sourceRows=new Map();
+ for(const row of fixture.rows) {
+  sourceRows.set(row[0],physicalRow);
+  physicalRow+=1+row.reduce((n,value)=>n+(value.match(/\n|\r(?!\n)/g)?.length??0),0);
+ }
+ assert.deepEqual(report.references.filter(row=>row.code==='jira_reference_outside_file').map(({row,sourceId,value})=>({row,sourceId,value})),
+  fixture.expected.relations.externalLinks.map(({sourceIssueId,targetKey})=>({row:sourceRows.get(sourceIssueId),sourceId:sourceIssueId,value:targetKey})),
+  'The ignored reference names its actual physical CSV row and source issue');
  assert(report.references.some(row=>row.code==='unresolved_assignee'),'The unmapped person is reported');
  const plugin=fixture.headers.indexOf('Plugin Rollout Tag');
  const pluginRows=fixture.rows.filter(row=>row[plugin].trim()).length;

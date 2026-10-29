@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "aee76a40d8fa4d8572b9d034daf25a18e52b667ed82edef82c0b646b479bb883",
+      "sha256": "caa253c86782c80d34ce6dfdd6cc721f7d8226217d46712441ff6232f8056a57",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "2a596b63d268ad84900ab3bd7ad934c8d86df0524f2b0d1107b7727125b0bd3a",
+      "sha256": "3294c6b7b2c85a16a57102344b48a215fa6f3187610e49961881fda7a2607491",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "5f2f2aae9824493c8b314384b364193fd6ed9e13b272a104f3e6574a46ec47cb",
+      "sha256": "7e9b581bfaedf198199d7ea34f85f987efc56dcf7e0b336622bc43c9dfe6041d",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -7153,7 +7153,7 @@
       "executable": false
     },
     "tests/e2e/jira-reconciliation-doors.mjs": {
-      "sha256": "2499e7fb37ab472e851486448777ebd55014dfd930c10fc409218f47a543740a",
+      "sha256": "f10fc797f9a25812bef479a40207143e72833730740a9e8fdea6676868f802af",
       "executable": false
     },
     "tests/e2e/jira-reconciliation-runtime.mjs": {
