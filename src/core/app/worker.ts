@@ -1,4 +1,5 @@
 import {aliasRedirect} from '../features/data/aliases/routes';
+import { agentResponse } from '../features/agent-door/runtime';
 import {initiativePageDenial} from '../features/initiatives/authority';
 import {releasePageDenial} from '../features/releases/authority';
 import { auditAuthority } from '../features/audit/repository';
@@ -28,6 +29,8 @@ export async function handleRequest(
   const url = new URL(request.url);
   if (env.APP_ORIGIN && url.host !== new URL(env.APP_ORIGIN).host)
     return new Response("Not found", { status: 404 });
+  const agent = await agentResponse(env, request);
+  if (agent) return agent;
   const asset = await staticAssetResponse(request, env);
   if (asset) {
     // Vite embeds the content hash in these URLs; a new build gets a new URL.
