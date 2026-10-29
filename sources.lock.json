@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "aee76a40d8fa4d8572b9d034daf25a18e52b667ed82edef82c0b646b479bb883",
+      "sha256": "2083cfe595273a4ba458846bf0583cd6e47dc9672e703362e7878e188793c2c0",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "2a596b63d268ad84900ab3bd7ad934c8d86df0524f2b0d1107b7727125b0bd3a",
+      "sha256": "80c1949d3079b70aeba35187674a971c8ea4e3c668b842e91464ab038f86058c",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "5f2f2aae9824493c8b314384b364193fd6ed9e13b272a104f3e6574a46ec47cb",
+      "sha256": "423a6d0b794565bc062c6896a98ae023dc6c8daf12b335a767391c4e36ae7f9b",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4925,7 +4925,7 @@
       "executable": false
     },
     "src/core/features/issue-deletion/snapshot.ts": {
-      "sha256": "48f104d9075b407fd44ee0dc79f65dcf67d1ab1dbb945f31c6965f64be8f0731",
+      "sha256": "315a5df6d3945e0271d398533a3963a63d5187e03a9629fc6423c39b86ae4b38",
       "executable": false
     },
     "src/core/features/issue-deletion/source-erasure.ts": {
@@ -4937,7 +4937,7 @@
       "executable": false
     },
     "src/core/features/issue-deletion/target.ts": {
-      "sha256": "341650e84fa696d4b89faffbe091c3c9b884ecc5f137fc1414c6cc9888ee5a1b",
+      "sha256": "6f1fcdfdcf7064001ea5d8ba2368e0647b0ed4b4132ff7f515e9a7abc00657f3",
       "executable": false
     },
     "src/core/features/issue-deletion/ui.tsx": {
@@ -7209,11 +7209,11 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "9f4bd654f3d8db8147f0eddbe31d5ecbe3a29af792fa6441f941b4811a977409",
+      "sha256": "d2f6eddbb0180acf57e137b33490fda0b301cd8dd4e494b1ece51ded72cbea86",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
-      "sha256": "d3614c7cb3a910a27f1cb91fce62002c6f3ade80631f04ff681a3882d6412e06",
+      "sha256": "ad973e57f3bc4b5d1249b12ff1f12b39ca7fd816f575eb0d4a19785a3d382c63",
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
