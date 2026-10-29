@@ -632,7 +632,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "6a8266da1baa9fd0fbf36c5a611042d1b2138c0d020bc413a95fba093619126a",
+      "sha256": "7ed896e4cdbcf58cec890732e0ec7f81d87f04a9cc33c291cbfcb65a6b6b6161",
       "executable": false
     },
     "docs/AGENT-REGISTRY.md": {
@@ -3220,7 +3220,7 @@
       "executable": false
     },
     "src/core/app/server.ts": {
-      "sha256": "b1abfa2c8dfc1797d5d42d154f6eae2a8f0216c2be8a589b829a0de3c3f00b0c",
+      "sha256": "05ceb0d0da273390de0c1eb9efc543e2ea9fbb8fbf3775638591e8293d766028",
       "executable": false
     },
     "src/core/app/site/brand/chrome.css": {
@@ -3748,7 +3748,7 @@
       "executable": false
     },
     "src/core/features/agent-door/routes.ts": {
-      "sha256": "17ccabe74d82f5f3bef8f84e844a443355c7cc6366da677841cd9a58677adafc",
+      "sha256": "e4cab864cbd8ccdbfc4de5e73cabea0ee08ed67cf26112f66e3b7297e0616878",
       "executable": false
     },
     "src/core/features/agent-door/schema.ts": {
@@ -7608,7 +7608,7 @@
       "executable": false
     },
     "tests/e2e/role-door-coverage.mjs": {
-      "sha256": "ee68ce3eb04abc74b7446b5a043f37c774abd7110f252a4606eb94596bb0615f",
+      "sha256": "3d98db704a534ce62bd8f673f9784eb398be1509f2f3e9676e52405fbc057f0a",
       "executable": false
     },
     "tests/e2e/role-private-cells.mjs": {

@@ -17,17 +17,17 @@ export async function assertRoleDoorCoverage(){
   import('../../src/core/features/roles/matrix.ts'),import('../../src/core/features/roles/settings-doors.ts'),
  ]);
  const routes=createServerApp().routes;
- const {agentDoorRoutes}=await import('../../src/core/features/agent-door/routes.ts');
+ const {agentDoorRoutes,businessDoorRoutes}=await import('../../src/core/features/agent-door/routes.ts');
  const agentDoors=new Map();
- for(const door of agentDoorRoutes){
+ for(const door of [...agentDoorRoutes,...businessDoorRoutes]){
   const reference='ALL '+door.path;
   assert.ok(!agentDoors.has(reference),'Duplicate agent permission door '+reference);
-  assert.ok(['agent.owner-bound','business.signed-policy','person.session','public.metadata'].includes(door.identity),'Unknown agent identity class '+reference);
+  assert.ok(['agent.owner-bound','business.signed-policy','business.signed-settings','person.session','public.metadata','public.brand-assets'].includes(door.identity),'Unknown agent identity class '+reference);
   assert.ok(door.authority.trim(),'Agent door lacks native authority '+reference);
   assert.ok(routes.some(route=>route.method==='ALL'&&route.path===door.path),'Agent permission declaration has no actual door '+reference);
   agentDoors.set(reference,door);
  }
- for(const route of routes)if(route.path==='/mcp'||route.path.startsWith('/agents')||route.path.startsWith('/.well-known/oauth-protected-resource')||route.path==='/api/rer/agent-policy')
+ for(const route of routes)if(route.path==='/mcp'||route.path.startsWith('/agents')||route.path.startsWith('/.well-known/oauth-protected-resource')||route.path==='/api/rer/agent-policy'||route.path==='/api/rer/business-settings'||route.path==='/rer-business-logo'||route.path==='/rer-business.css')
   assert.ok(agentDoors.has(route.method+' '+route.path),'Unregistered actual agent door '+route.method+' '+route.path);
  const allEndpoints=new Set();
  function endpoints(folder){for(const item of readdirSync(folder,{withFileTypes:true})){
