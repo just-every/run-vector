@@ -25,7 +25,7 @@ export async function saveErrorConnection(env:WorkerBindings,request:Request,val
  const signingSecret=input.provider==='sentry'?input.secret:newSigningSecret(),receiver=errorReceiver(env.APP_ORIGIN,input.provider,input.teamId);
  if(input.provider==='datadog'){
   // Re-entry updates the same named webhook; registration conflicts are visible, never silently accepted.
-  const response=await errorProviderRequest('https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks','POST',{'DD-API-KEY':input.token,'DD-APPLICATION-KEY':input.secret},{name:'vector-'+id.toLowerCase(),url:receiver,custom_headers:JSON.stringify({'X-Vector-Secret':signingSecret}),encode_as:'json',payload:datadogPayload});await response.body?.cancel();
+  const response=await errorProviderRequest('https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks'+(existing?'/vector-'+id.toLowerCase():''),existing?'PUT':'POST',{'DD-API-KEY':input.token,'DD-APPLICATION-KEY':input.secret},{name:'vector-'+id.toLowerCase(),url:receiver,custom_headers:JSON.stringify({'X-Vector-Secret':signingSecret}),encode_as:'json',payload:datadogPayload});await response.body?.cancel();
  }
  const encrypted=await sealSecret(env,identity,JSON.stringify({token:input.provider==='sentry'?input.token:null,signingSecret}));
  await sql.batch([

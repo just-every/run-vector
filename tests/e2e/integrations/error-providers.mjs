@@ -1,0 +1,38 @@
+import assert from 'node:assert/strict';
+import {createHmac} from 'node:crypto';
+import {resolve} from 'node:path';
+import {mkdir,readFile} from 'node:fs/promises';
+export async function exerciseErrorProviders({page,runtime,cookie,team,evidence}){
+ await runtime.freshRequestWindow();
+ await page.setViewportSize({width:1440,height:1000});await page.goto(runtime.base+'/app/settings');
+ const region=page.getByRole('region',{name:'Error tracking',exact:true});await region.waitFor();
+ const token='synthetic-vector-8201',secret='synthetic-vector-8202';
+ await region.getByLabel('Error intake team',{exact:true}).selectOption(team.id);await region.getByLabel('Regression rule',{exact:true}).selectOption('reopen');
+ const receiver=await region.getByLabel('Error webhook URL',{exact:true}).inputValue();
+ await region.getByLabel('Sentry integration token',{exact:true}).fill(token);await region.getByLabel('Sentry client secret',{exact:true}).fill(secret);
+ const save=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname==='/api/settings/integrations/errors');
+ await region.getByRole('button',{name:'Save error connection',exact:true}).click();const saved=await save;assert.equal(saved.status(),201);const connection=await saved.json();assert.equal(connection.receiver,receiver);
+ await region.getByLabel('Sentry client secret',{exact:true}).waitFor();assert.equal(await region.getByLabel('Sentry client secret',{exact:true}).inputValue(),'');
+ const headers={Cookie:cookie,Origin:runtime.base,'Content-Type':'application/json'};
+ const api=async(path,method='GET',body,status=200)=>{const response=await runtime.req('/api'+path,{method,headers,...(body===undefined?{}:{body:JSON.stringify(body)})});assert.equal(response.status,status,await response.clone().text());return response.json();};
+ const payload=(action='created',substatus='ongoing')=>({action,data:{issue:{id:'8201',title:'Payment request failure',count:'23',userCount:6,release:{version:'synthetic-vector-8203'},metadata:{value:'Payment request stack trace'},lastSeen:'2026-10-28T01:00:00Z',permalink:'https://sentry.io/organizations/synthetic-vector/issues/8201/',substatus}}});
+ const send=async(value,delivery)=>{const body=JSON.stringify(value);const response=await runtime.req(new URL(receiver).pathname,{method:'POST',headers:{'Content-Type':'application/json','Sentry-Hook-Signature':createHmac('sha256',secret).update(body).digest('hex'),'Sentry-Hook-Resource':'issue','Request-ID':delivery},body});assert.equal(response.status,200,await response.clone().text());return response.json();};
+ const issue=await send(payload(),'synthetic-vector-8204'),path='/issues/'+issue.identifier;
+ const detail=await api(path);assert.equal(detail.evidence[0].measurements.frequency,23);assert.equal(detail.evidence[0].measurements.affectedUsers,6);assert.equal(detail.evidence[0].measurements.release,'synthetic-vector-8203');assert.equal(detail.evidence[0].link,payload().data.issue.permalink);
+ const active=team.statuses.find(row=>row.category==='unstarted'),done=team.statuses.find(row=>row.category==='completed');
+ const accepted=await api(path+'/accept','POST',{expectedVersion:detail.version,statusId:active.id});await api(path,'PATCH',{expectedVersion:accepted.version,statusId:done.id});
+ await region.getByLabel('Vector issue identifier',{exact:true}).fill(issue.identifier);await region.getByLabel('Provider record ID',{exact:true}).fill('8201');
+ const resolveResponse=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname.endsWith('/errors/'+connection.id+'/resolve'));
+ await region.getByRole('button',{name:'Resolve linked Sentry issue',exact:true}).click();assert.equal((await resolveResponse).status(),200);
+ const calls=(await readFile(process.env.VECTOR_CHANNEL_EDGE,'utf8')).trim().split('\n').map(line=>JSON.parse(line));assert.equal(calls.filter(row=>row.method==='sentry.resolve'&&row.record==='8201'&&row.body.status==='resolved').length,1);
+ await send(payload('unresolved','regressed'),'synthetic-vector-8205');assert.equal((await api(path)).status.category,'started');
+ assert.equal((await send(payload('unresolved','regressed'),'synthetic-vector-8205')).reused,true);assert.equal((await api(path)).activity.filter(row=>row.nextValue?.automation==='error_regression').length,1);
+ const capture=async(name,locator)=>{await mkdir(resolve(evidence,'errors'),{recursive:true});for(const width of [1440,390]){await page.setViewportSize({width,height:1000});await locator.scrollIntoViewIfNeeded();await locator.evaluate(root=>{for(const node of document.querySelectorAll('body *'))if(['fixed','sticky'].includes(getComputedStyle(node).position)&&!root.contains(node)&&!node.contains(root))node.setAttribute('data-error-capture-hidden','');});await locator.screenshot({path:resolve(evidence,'errors',name+'-'+width+'.png'),mask:[page.locator('[data-rer-private]')],style:'[data-error-capture-hidden] {visibility:hidden!important}'});await page.evaluate(()=>document.querySelectorAll('[data-error-capture-hidden]').forEach(node=>node.removeAttribute('data-error-capture-hidden')));}await page.setViewportSize({width:1440,height:1000});};
+ await region.getByLabel('Error provider',{exact:true}).selectOption('datadog');await region.getByLabel('Regression rule',{exact:true}).selectOption('comment');await region.getByLabel('Datadog API key',{exact:true}).fill('synthetic-vector-8211');await region.getByLabel('Datadog application key',{exact:true}).fill('synthetic-vector-8212');
+ const ddSave=page.waitForResponse(response=>response.request().method()==='POST'&&new URL(response.url()).pathname==='/api/settings/integrations/errors');await region.getByRole('button',{name:'Save error connection',exact:true}).click();assert.equal((await ddSave).status(),201);
+ await region.getByRole('button',{name:'Revoke datadog connection',exact:true}).waitFor();await capture('error-connections',region);
+ await page.goto(runtime.base+'/app/issues/'+issue.identifier);await page.getByRole('heading',{name:payload().data.issue.title,exact:true}).waitFor();const firstEvidence=page.locator('.evidence-inspector').first();await firstEvidence.getByText('Measurements and assessment',{exact:true}).click();await firstEvidence.getByText('23',{exact:true}).waitFor();await firstEvidence.getByText('6',{exact:true}).waitFor();await firstEvidence.getByRole('link',{name:'Open evidence link ↗',exact:true}).waitFor();
+ await capture('regressed-sentry-issue',page.locator('.evidence-inspector').first());
+ const configuration=await api('/settings/integrations/errors');assert.ok(!JSON.stringify(configuration).includes(token));assert.ok(!JSON.stringify(configuration).includes(secret));
+ console.log('ERROR-001 browser setup, signed first webhook, explicit provider resolution and one regression passed; screens at 1440 and 390.');
+}
