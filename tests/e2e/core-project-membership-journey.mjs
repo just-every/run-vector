@@ -97,6 +97,12 @@ export async function projectMembershipJourney(page, context, base, capture = as
       assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await capture('PROJ-003', `retained-issue-${width}`, page);
     }
+    // These independent journeys open their own pages. Park the completed
+    // project pages so their native refreshes do not compete with active readers.
+    for (const completed of [page, memberPage]) {
+      await beforePrivateNavigation(completed, base + '/');
+      await completed.goto(base + '/');
+    }
     await initiativesJourney({page,runtime:{base,state,req:(path,init={})=>fetch(base+path,init)},evidence:process.env.VECTOR_EVIDENCE_DIR??'.artifacts/verification/initiatives'});
     await releasesJourney({page,runtime:{base,state,req:(path,init={})=>fetch(base+path,init)},evidence:process.env.VECTOR_EVIDENCE_DIR??'.artifacts/verification/releases'});
   } finally {
@@ -146,6 +152,7 @@ async function contributingTeamsJourney({page, memberPage, memberContext, base, 
     await page.getByRole('heading',{name,exact:true}).waitFor();
     const detailTeams = await page.locator('.project-facts').innerText();
     for (const contributor of teams) assert.ok(detailTeams.includes(contributor.name));
+    await beforePrivateNavigation(page, base+'/app/teams/'+team.id);
     await page.locator('.project-facts').getByRole('link',{name:team.name,exact:true}).click();
     await page.getByRole('heading',{name:team.name,exact:true}).waitFor();
     await page.getByRole('region',{name:'Projects',exact:true}).getByRole('link',{name:'Open '+name,exact:true}).waitFor();

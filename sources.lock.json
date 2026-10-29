@@ -5901,7 +5901,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/projects.css": {
-      "sha256": "5c071e887ac9673b8ce5198677a91002ec4f2aa8ce3617022d9d7486a82f1ae5",
+      "sha256": "9018f630ac56a072688cedeae2c82d7534956edbb64fff6394a8835c1e4bcad5",
       "executable": false
     },
     "src/core/features/projects/ui/risk-evidence.tsx": {
@@ -6953,7 +6953,7 @@
       "executable": false
     },
     "tests/e2e/core-project-membership-journey.mjs": {
-      "sha256": "de74bd46ea803fa2f5a648566eb997cfac35e5b7d5c485a04e41994af9e6e589",
+      "sha256": "79e86fa4e65a6e0bfcee7d27d7e8d87c1a8529409bc903a8f2c1d60a30632495",
       "executable": false
     },
     "tests/e2e/core-project-risk-journey.mjs": {

@@ -602,7 +602,7 @@
 .project-list-management summary { font-size: var(--app-text-small); }
 .project-list-management form { max-width:40rem; }
 .project-list-management select[multiple], .project-management select[multiple] { min-height:6rem; }
-.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid rgb(var(--app-ink-rgb) / 18%); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size: var(--app-text-small); }
+.project-filters input[type="date"] { min-height:44px; max-width:100%; border:1px solid var(--control-border); border-radius:.45rem; padding:.35rem .55rem; color:var(--app-body); background:var(--app-card); font-size: var(--app-text-small); }
 
 .project-name { display: flex; align-items: center; gap: .5rem; }
 .project-appearance { display: inline-flex; align-items: center; gap: .35rem; flex-shrink: 0; }
