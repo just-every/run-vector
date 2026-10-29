@@ -177,6 +177,41 @@ async function documentReferenceAccessJourney({page,base,api,output,runtime}){
    await reader.page.setViewportSize({width:1440,height:1000});
    await targetHistory();await backlink().waitFor();assert.equal(await backlink().count(),1);
    await backlink().click();await reader.page.getByRole('heading',{name:doc.title,exact:true}).waitFor();
+   if(role==='member'){
+    const hiddenLinks=async()=>(await api('/issues/'+privateTarget.identifier)).activity.filter(row=>row.nextValue?.sourceDocumentId===doc.id);
+    const original=(await hiddenLinks())[0];
+    const editor=reader.page.locator('details').filter({has:reader.page.locator('summary').filter({hasText:'Edit document'})});
+    await editor.locator('summary').click();
+    const form=editor.getByRole('form',{name:'Edit document',exact:true});
+    const body='Member reviewed '+target.identifier+' and '+privateTarget.identifier;
+    await form.getByLabel('Document body',{exact:true}).fill(body);
+    const saved=reader.page.waitForResponse(response=>new URL(response.url()).pathname==='/api/documents/'+doc.id&&response.request().method()==='PATCH');
+    await form.getByRole('button',{name:'Publish revision',exact:true}).click();
+    assert.equal((await saved).status(),200);
+    await content.getByText('Member reviewed',{exact:false}).waitFor();
+    const memberDoc=await reader.api('/documents/'+doc.id);
+    assert.deepEqual(memberDoc.references.map(r=>r.identifier),[target.identifier]);
+    assert.ok(!JSON.stringify(memberDoc.references).includes(privateTarget.title));
+    assert.deepEqual(await hiddenLinks(),[original]);
+    doc=await api('/documents/'+doc.id);
+    doc=await reader.api('/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body:'Reviewed again '+target.identifier+' and '+privateTarget.identifier});
+    assert.deepEqual(await hiddenLinks(),[original]);
+    await beforePrivateNavigation(page,base+'/app/documents/'+doc.id);await page.goto(base+'/app/documents/'+doc.id);
+    const ownerContent=page.getByRole('region',{name:'Document content',exact:true});
+    const ownerLink=ownerContent.getByRole('link',{name:privateTarget.identifier,exact:true});
+    await ownerLink.waitFor();await ownerLink.focus();
+    await page.getByRole('tooltip').filter({hasText:privateTarget.title}).waitFor();
+    await inspect(page,ownerContent,'document-owner-after-member-edit');
+    await page.setViewportSize({width:1440,height:1000});
+    await beforePrivateNavigation(page,base+'/app/issues/'+privateTarget.identifier);await page.goto(base+'/app/issues/'+privateTarget.identifier);
+    await page.getByRole('heading',{name:privateTarget.title,exact:true}).waitFor();
+    await page.getByText('History',{exact:true}).click();
+    await page.getByRole('link',{name:'Mentioned in '+doc.title,exact:true}).waitFor();
+    assert.equal(await page.getByText('· reference removed',{exact:false}).count(),0);
+    await inspect(page,page.locator('.issue-history'),'document-private-backlink-after-member-edit');
+    await page.setViewportSize({width:1440,height:1000});
+    doc=await api('/documents/'+doc.id);
+   }
    if(role==='viewer'){
     const before=await api('/documents/'+doc.id);
     const refused=await readerResponse(reader.page,base,'/documents/'+doc.id,'PATCH',{expectedVersion:before.version,body:'synthetic-vector-refused'});assert.equal(refused.status,403);

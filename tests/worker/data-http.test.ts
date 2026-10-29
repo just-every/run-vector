@@ -46,6 +46,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const bound=await f.call('/settings/integrations/channels','POST',{scope:'project',objectId:f.project.id,provider:'slack',channelId:'CARCHIVE',channelName:'archive-delivery',events:['issue.created','issue.status_changed']});expect(bound.status).toBe(201);
  const channelBinding=await bound.json() as {id:string};
  const discordBound=await f.call('/settings/integrations/channels','POST',{scope:'team',objectId:f.team.id,provider:'discord',channelName:'archive-discord',events:['issue.created'],webhookUrl:slackEdge.webhook});expect(discordBound.status).toBe(201);const discordBinding=await discordBound.json() as {id:string};
+ const errorInput={provider:'sentry',teamId:f.team.id,regressionRule:'reopen',token:'synthetic-vector-8131',secret:'synthetic-vector-8132'};
+ const errorSaved=await f.call('/settings/integrations/errors','POST',errorInput);expect(errorSaved.status).toBe(201);const errorConnection=await errorSaved.json() as {id:string;receiver:string};
  const sealed=(await env.DB.prepare('SELECT encrypted FROM vector_integration_secret_keys').all<{encrypted:string}>()).results;
 
  // Synthetic aggregate history tests archive custody; day-close behavior is exercised
@@ -97,7 +99,7 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(records[0].kind==='manifest' && records[0].tables.some(t=>t.name==='calendar_feed_tokens')).toBe(false);
  expect(archiveText.includes(calendarFeed.url)).toBe(false);
  expect(archiveText.includes((await env.DB.prepare('SELECT token_hash FROM calendar_feed_tokens WHERE id=?').bind(calendarFeed.id).first<string>('token_hash'))!)).toBe(false);
- for(const credential of [slackEdge.token,slackEdge.webhook,signingSecret,'UARCHIVE1',source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
+ for(const credential of [errorInput.token,errorInput.secret,slackEdge.token,slackEdge.webhook,signingSecret,'UARCHIVE1',source.secret,source.webhookUrl.split('/').at(-1)!,github.secret,token.token,...sealed.map(row=>row.encrypted)])expect(archiveText).not.toContain(credential);
  const cookie=await freshTarget();
  await destination.ARCHIVE_TARGET_DB.exec("ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT; UPDATE d1_migrations SET sha256='test-only-ledger-hash',state='applied';");
  const ledgerBefore=(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results;
@@ -132,6 +134,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const restoredReferences=await targetCall('/api/issues/'+referenceSource.identifier+'/references','GET',undefined,historical);expect(restoredReferences.status).toBe(200);expect(await restoredReferences.json()).toEqual(referenceBefore);
  type CredentialState={sources:{id:string;requiresReentry:number;webhookRequiresReentry:number}[];destinations:{id:string;requiresReentry:number}[];github:{id:string;requiresReentry:number}[];tokens:{id:string;requiresReentry:number}[]};
  const credentialState=async()=>await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json() as CredentialState;
+ const restoredErrors=await (await targetCall('/api/settings/integrations/errors','GET',undefined,historical)).json() as any;expect(restoredErrors.connections).toContainEqual(expect.objectContaining({id:errorConnection.id,regressionRule:'reopen',requiresReentry:1}));
+ expect((await createServerApp().request(targetBindings.APP_ORIGIN+new URL(errorConnection.receiver).pathname,{method:'POST',body:'{}'},targetBindings)).status).toBe(401);
  const restoredCredentials=await credentialState();
  const restoredChannels=await (await targetCall('/api/settings/integrations/channels','GET',undefined,historical)).json() as any;expect(restoredChannels.slack).toMatchObject({connected:false,needsAttention:true,signingSecret:false});
  expect((await (await targetCall('/api/settings/notifications','GET',undefined,historical)).json() as any).slack).toMatchObject({available:false,link:null,actionsEnabled:false});expect(restoredChannels.bindings).toEqual(expect.arrayContaining([expect.objectContaining({id:channelBinding.id,objectId:f.project.id,channelId:'CARCHIVE'}),expect.objectContaining({id:discordBinding.id,objectId:f.team.id,provider:'discord',needsAttention:true})]));
@@ -214,6 +218,16 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const restoredSubscriptionInbox=await targetCall('/api/notifications?limit=50','GET',undefined,historical);expect(restoredSubscriptionInbox.status).toBe(200);expect((await restoredSubscriptionInbox.json() as {items:{identifier:string}[]}).items.some(item=>item.identifier===pendingSubscriptionIssue.identifier)).toBe(false);
  const recovered=await targetCall('/api/data/restore','GET',undefined,historical);expect(recovered.status).toBe(200);
  expect((await recovered.json() as {status:unknown}).status).toMatchObject({importId:job,phase:'complete',contentHash:finalHash(records),effectsHeld:0});
+ const freshError={...errorInput,token:'synthetic-vector-8133',secret:'synthetic-vector-8134'};
+ expect((await targetCall('/api/settings/integrations/errors','POST',freshError,historical)).status).toBe(201);
+ const activeErrors=await (await targetCall('/api/settings/integrations/errors','GET',undefined,historical)).json() as any;expect(activeErrors.connections).toContainEqual(expect.objectContaining({id:errorConnection.id,requiresReentry:0}));
+ const eventBody=JSON.stringify({action:'created',data:{issue:{id:'8135',title:'Restored error connection',permalink:'https://sentry.io/organizations/synthetic-vector/issues/8135/',lastSeen:'2026-10-28T00:00:00Z'}}});
+ const sign=async(secret:string)=>{const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']);return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(eventBody))),byte=>byte.toString(16).padStart(2,'0')).join('');};
+ const restoredEvent=async(secret:string)=>createServerApp().request(targetBindings.APP_ORIGIN+new URL(errorConnection.receiver).pathname,{method:'POST',headers:{'Sentry-Hook-Signature':await sign(secret),'Sentry-Hook-Resource':'issue','Request-ID':'synthetic-vector-8135'},body:eventBody},targetBindings);
+ expect((await restoredEvent(errorInput.secret)).status).toBe(401);
+ const {vi}=await import('vitest'),eventEdge=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{expect(String(input)).toBe('https://sentry.io/api/0/issues/8135/events/latest/');expect(new Headers(init?.headers).get('Authorization')).toBe('Bearer '+freshError.token);return Response.json({release:'synthetic-vector-8136'});});
+ try{expect((await restoredEvent(freshError.secret)).status).toBe(200);}finally{eventEdge.mockRestore();}
+
  expect((await targetCall('/api/portability/imports','POST',{confirmed:true,manifest:records[0]},historical)).status).toBe(409);
  expect((await targetCall('/api/data/restore/operators/'+f.peer,'POST',{},historical)).status).toBe(200);
  expect((await restoreStatus()).operators.find(row=>row.id===f.peer)).toMatchObject({approved:1,eligible:1});

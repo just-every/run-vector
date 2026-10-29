@@ -43,7 +43,7 @@ export async function documentReferenceScenario(f:Awaited<ReturnType<typeof impo
  const hiddenTeam=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-35102',identifierPrefix:'SYNHREF',isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-35102')!;
  const target=await f.create({title:'synthetic-vector-35103'}),hidden=await f.create({teamId:hiddenTeam.id,title:'synthetic-vector-35104'});
  const path='/issues/'+target.identifier,body=`See ${target.identifier} and ${hidden.identifier}; unknown SYNTHETIC_VECTOR-999999. Code \`${target.identifier}\` stays literal.`;
- const doc=await json<any>(await f.call('/documents','POST',{parentKind:'team',parentId:sourceTeam.id,title:'synthetic-vector-35105',body}),201);
+ let doc=await json<any>(await f.call('/documents','POST',{parentKind:'team',parentId:sourceTeam.id,title:'synthetic-vector-35105',body}),201);
  const docPath='/documents/'+doc.id;
  const links=async()=>{const issue=await json<Issue>(await f.call(path));expect(issue.version).toBe(target.version);return issue.activity.filter(a=>a.kind==='issue.mentioned'&&a.nextValue.sourceDocumentId===doc.id);};
  expect(doc.references.map((r:any)=>r.identifier).sort()).toEqual([target.identifier,hidden.identifier].sort());
@@ -64,6 +64,20 @@ export async function documentReferenceScenario(f:Awaited<ReturnType<typeof impo
   expect(visible.references).toEqual([expect.objectContaining({identifier:target.identifier,title:'synthetic-vector-35103',status:expect.objectContaining({name:expect.any(String)})})]);
   expect((await json<Issue>(await call(path))).activity.filter(a=>a.nextValue?.sourceDocumentId===doc.id)).toHaveLength(1);
   if(role==='member'){
+   const hiddenLinks=async()=>(await json<Issue>(await f.call('/issues/'+hidden.identifier))).activity.filter(a=>a.nextValue?.sourceDocumentId===doc.id);
+   const hiddenOriginal=(await hiddenLinks())[0];
+   for(const prose of ['Still see ','Reviewed again: ']){
+    const saved=await json<any>(await call(docPath,'PATCH',{expectedVersion:doc.version,body:prose+target.identifier+' and '+hidden.identifier}));
+    expect(saved.references.map((r:any)=>r.identifier)).toEqual([target.identifier]);
+    expect(JSON.stringify(saved.references)).not.toContain(hidden.title);
+    doc=await json<any>(await f.call(docPath));
+    expect(doc.references.map((r:any)=>r.identifier).sort()).toEqual([target.identifier,hidden.identifier].sort());
+    expect(await hiddenLinks()).toEqual([hiddenOriginal]);
+   }
+   doc=await json<any>(await call(docPath,'PATCH',{expectedVersion:doc.version,body:'Keep only '+target.identifier}));
+   expect(await hiddenLinks()).toEqual([expect.objectContaining({id:(hiddenOriginal as any).id,nextValue:expect.objectContaining({removed:true})})]);
+   doc=await json<any>(await f.call(docPath,'PATCH',{expectedVersion:doc.version,body}));
+   expect(await hiddenLinks()).toEqual([hiddenOriginal]);
    const authored=await json<any>(await call('/documents','POST',{parentKind:'team',parentId:sourceTeam.id,title:'synthetic-vector-35107',body}),201);
    expect(authored.references.map((r:any)=>r.identifier)).toEqual([target.identifier]);
    expect((await json<Issue>(await f.call('/issues/'+hidden.identifier))).activity.filter(a=>a.nextValue?.sourceDocumentId===authored.id)).toHaveLength(0);

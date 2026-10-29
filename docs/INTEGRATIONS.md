@@ -58,6 +58,42 @@ original result across restart. Observed and receipt times remain distinct;
 out-of-order evidence is visible with field changes and source identity. Evidence
 does not reopen terminal decisions. Native issue deletion replaces external record/revision identifiers with domain-separated hashes in retained source identity rows, preserving payload-hash conflict precedence and 410 replay refusal. The explicit live/erased discriminator participates in source-record and revision-receipt primary keys, so any raw input remains distinct from an anonymized digest. These anonymous identities survive secret rotation and archive credential exclusion. No external provider is contacted.
 
+## Sentry and Datadog
+
+Owners and Admins connect error tracking in Settings → Integrations → Error tracking.
+Choose the intake team and a regression rule. New records enter Needs decision;
+link an existing Vector issue and provider record ID before the first event to
+append its evidence instead. Counts, affected users, release and the original
+error link are retained when supplied by the provider.
+
+For Sentry, copy the generated webhook URL into an internal integration, grant
+Issue & Event read and write, subscribe to Issue events, then paste its token and
+client secret. Vector verifies the raw body's Sentry signature and retains the
+request ID as a content-bound replay receipt. Sentry issue webhooks omit release
+metadata; Vector reads the latest event through the integration token at Sentry's
+fixed API endpoint. Accepted replays reuse their receipt without another read. Resolve the native issue through
+its normal intake and completion flow, then use Resolve linked Sentry issue with
+its provider record ID. This explicit administrator action sends only the
+resolved status to the fixed Sentry API endpoint; unknown results require
+checking Sentry before another attempt.
+
+For Datadog US1, paste API and application keys with webhook integration write
+permission. Vector registers a named webhook with this installation's URL and a
+generated secret header, then discards both registration keys. Add that webhook
+to the monitor notification. The registered template maps alert identity, event
+identity, transition, title, message, link and observation time. Custom case
+payloads can include frequency, affected users and release. Datadog authenticates
+its custom header; it does not supply Sentry's body signature.
+
+Regression rules retain evidence alone, reopen Completed work, or add a comment.
+Canceled and duplicate work stays terminal. A replay never repeats a move or
+comment, including a captured signed body with a different request ID; evidence, regression effects and receipt commit together. Revoking a
+connection rejects new and replayed deliveries. Deleting the native issue keeps
+anonymous replay guards and refuses resurrection. Archives retain safe connection
+profiles and history, exclude encrypted credentials, and require fresh credential
+entry before ingress or Sentry resolution. Tests use provider network fixtures;
+no live provider acceptance is claimed.
+
 ## Outbound delivery
 
 Destinations accept public HTTPS addresses. Issue-created, issue-updated and

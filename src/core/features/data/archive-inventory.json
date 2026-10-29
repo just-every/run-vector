@@ -2027,5 +2027,11 @@
     "removed",
     "created_at",
     "updated_at"
+  ],
+  "vector_error_connections": [
+    "source_id",
+    "provider",
+    "regression_rule",
+    "actor_id"
   ]
 }
