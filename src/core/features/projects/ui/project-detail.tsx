@@ -141,9 +141,10 @@ function ProjectDetailContent({
         />
         <Fact
           label="Teams"
+          className="project-contributing-teams"
           value={
             project.teams.length
-              ? project.teams.map((team) => team.name).join(", ")
+              ? project.teams.map((team, index) => <span key={team.id}>{index > 0 && ", "}<Link to="/app/teams/$teamId" params={{teamId:team.id}}>{team.name}</Link></span>)
               : "No project issues yet"
           }
         />
@@ -176,9 +177,9 @@ function ProjectDetailContent({
   );
 }
 
-function Fact({ label, value }: { label: string; value: string }) {
+function Fact({ label, value, className }: { label: string; value: ReactNode; className?: string }) {
   return (
-    <div>
+    <div className={className}>
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>

@@ -42,6 +42,7 @@ export type ProjectSummary = {
   icon: string | null;
   labels: Array<{id:string;name:string;color:string}>;
   teamIds: string[];
+  teams: Array<{ id: string; name: string }>;
   lead: { id: string; name: string };
   health: ProjectHealth;
   healthExplanation: string | null;
@@ -77,7 +78,6 @@ export type ProjectIssue = {
 
 export type ProjectDetail = ProjectSummary & {
   milestones: ProjectMilestone[];
-  teams: Array<{ id: string; name: string }>;
   cycles: Array<{
     id: string;
     name: string;
@@ -143,13 +143,6 @@ export function getProjectDetail(
   const issueDetail = (issue: WorkspaceSnapshot["issues"][number]) =>
     projectIssue(snapshot, issue, categories, issueById);
   const projectIssueIds = new Set(projectIssues.map((issue) => issue.id));
-  const teams = uniqueById(
-    projectIssues.map((issue) =>
-      requiredTeam(snapshot, issue.teamId, issue.identifier),
-    ),
-  )
-    .map((team) => ({ id: team.id, name: team.name }))
-    .sort((left, right) => left.name.localeCompare(right.name));
   const cycles = cycleFacts(snapshot, projectIssues, categories);
   const dependencies = snapshot.dependencies
     .filter(
@@ -182,7 +175,6 @@ export function getProjectDetail(
   return {
     ...summary,
     milestones: projectMilestones(snapshot, projectId, now),
-    teams,
     cycles,
     dependencies,
     // Progress counts every issue; the list leaves archived issues out (AUTO-003).
@@ -247,6 +239,9 @@ function buildProjectSummary(
     lifecycle: project.lifecycle,
     archived: project.archivedAt !== null,
     teamIds: [...new Set(projectIssues.map(issue=>issue.teamId))],
+    teams: uniqueById(projectIssues.map(issue => requiredTeam(snapshot, issue.teamId, issue.identifier)))
+      .map(team => ({ id: team.id, name: team.name }))
+      .sort((left, right) => left.name.localeCompare(right.name)),
     startDate: project.startDate,
     targetDate: project.targetDate,
     priority: project.priority,
