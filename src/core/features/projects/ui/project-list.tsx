@@ -115,7 +115,7 @@ export function ProjectList({
   );
 }
 
-function ProjectRow({ project }: { project: ProjectSummaryData }) {
+export function ProjectRow({ project }: { project: ProjectSummaryData }) {
   const health = activeHealthLabel(project.health);
   const { date } = useDateFormat();
   const chips = [
@@ -134,5 +134,6 @@ function ProjectRow({ project }: { project: ProjectSummaryData }) {
       {project.targetDate && <span>Target {date(project.targetDate)}</span>}
       <span className="project-row__progress">{projectProgressLabel(project)}</span>
     </small>
+    {project.teams.length > 0 && <span className="project-row__teams">Contributing teams: {project.teams.map(team => team.name).join(", ")}</span>}
   </Link>;
 }

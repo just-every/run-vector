@@ -8,3 +8,5 @@
 @media (max-width: 46rem) {
   .project-row-meta { flex-wrap: wrap; white-space: normal; }
 }
+
+.project-row__teams { min-width: 0; overflow-wrap: anywhere; color: var(--app-muted); font-size: var(--app-text-small); }

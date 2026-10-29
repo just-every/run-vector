@@ -29,6 +29,7 @@ export const projectSummarySchema = z.object({
   priority: z.string(),
   labels: z.array(z.object({id:z.string(),name:z.string(),color:z.string()})),
   teamIds: z.array(z.string()),
+  teams: z.array(personSchema),
   lead: personSchema,
   health: healthSchema,
   healthExplanation: z.string().nullable(),
@@ -78,7 +79,6 @@ export const projectDetailSchema = projectSummarySchema.extend({
   report: projectReportSchema,
   cycleHistory: z.array(historicalCycleSchema),
   activity: z.array(z.object({id:z.string(),kind:z.string(),previousValue:z.json(),nextValue:z.json(),createdAt:z.string(),actorName:z.string().nullable()})),
-  teams: z.array(personSchema),
   cycles: z.array(
     z.object({
       id: z.string(),
