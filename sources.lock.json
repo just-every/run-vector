@@ -6093,7 +6093,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/settings-save-form.tsx": {
-      "sha256": "227183e0e68635fad7218fd348e3b34e03eed666652aa7080b06dda6614f2a90",
+      "sha256": "9cbd6d7be4b79f4e74b9816ff3e7ead697494310c85a6bb5304955a0874b04d7",
       "executable": false
     },
     "src/core/features/settings/ui/settings.css": {

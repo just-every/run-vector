@@ -5,15 +5,25 @@ import { ApiError, fetchJson } from '../../../app/api-client';
 import { useHydrated } from '../../../app/initial-resources';
 import { SettingsSaveFeedback, withSettingsLabels, saveField, type SaveState, type SaveField, type SaveFailure } from './settings-save-feedback';
 
-type Draft = { revision: string; fields: [string, string][]; valid: boolean; confirmed: boolean; field?: SaveField };
+type Fields = [string, string][];
+/** `bases` are the server values the draft was edited from: the form at its first
+ * edit, and a write of this form still in flight when it was edited. */
+type Draft = { revision: string; bases: Fields[]; fields: Fields; valid: boolean; confirmed: boolean; field?: SaveField };
 const writes = new Map<string, { revision: string; request: Promise<unknown> }>();
+function isFields(value: unknown): value is Fields {
+  return Array.isArray(value) && value.every(pair => Array.isArray(pair) && pair.length === 2 && pair.every(part => typeof part === 'string'));
+}
+function formFields(form: HTMLFormElement): Fields {
+  return Array.from(new FormData(form)).filter((pair): pair is [string, string] => typeof pair[1] === 'string');
+}
+const sameFields = (left: Fields, right: Fields) => JSON.stringify(left) === JSON.stringify(right);
 function readDraft(key: string): Draft | null {
   const value: unknown = JSON.parse(localStorage.getItem(key) ?? 'null');
   if (!value || typeof value !== 'object') return null;
   const draft = value as Draft;
   if (draft.field && (typeof draft.field.name !== 'string' || typeof draft.field.id !== 'string' || (draft.field.choice !== undefined && typeof draft.field.choice !== 'string'))) return null;
-  return typeof draft.revision === 'string' && typeof draft.confirmed === 'boolean' && typeof draft.valid === 'boolean' && Array.isArray(draft.fields)
-    && draft.fields.every(pair => Array.isArray(pair) && pair.length === 2 && pair.every(value => typeof value === 'string')) ? draft : null;
+  return typeof draft.revision === 'string' && typeof draft.confirmed === 'boolean' && typeof draft.valid === 'boolean'
+    && Array.isArray(draft.bases) && draft.bases.every(isFields) && isFields(draft.fields) ? draft : null;
 }
 function restore(form: HTMLFormElement, draft: Draft) {
   const fields = new FormData();
@@ -38,12 +48,16 @@ type Props<S extends z.ZodType> = Omit<FormHTMLAttributes<HTMLFormElement>, 'onS
 
 /** Keep the actual field draft until the server acknowledges that revision.
  * It is stored synchronously on edit, so navigation and even an offline tab
- * close cannot discard it. Only non-secret settings belong in this form. */
+ * close cannot discard it. A kept draft is sent again only while the server
+ * still holds a value it was edited from, so it never writes over a newer
+ * value. Only non-secret settings belong in this form. */
 export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', schema, read, onSaved, confirm, identity, initialize, onRestored, children, ...props }: Props<S>) {
   const { operator } = useRouteContext({ from: '/app' });
   const hydrated = useHydrated();
   const key = `vector:settings-draft:${operator.id}:${identity ?? path}`;
   const form = useRef<HTMLFormElement>(null), draft = useRef<Draft | null>(null);
+  // The server values this form shows, the values of the write in flight, and the setting already restored.
+  const base = useRef<Fields>([]), sending = useRef<Fields | null>(null), restored = useRef<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const busy = useRef(false), mounted = useRef(false);
   const current = useRef({ path, method, schema, read, onSaved });
@@ -59,7 +73,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     const fields = new FormData();
     for (const [name, value] of snapshot.fields) fields.append(name, value);
     const options = current.current, body = options.read(fields);
-    busy.current = true; setFailure(null); status('saving');
+    busy.current = true; sending.current = snapshot.fields; setFailure(null); status('saving');
     // A remount may join a still-running write. Serialize per setting so an
     // earlier receipt can never overtake a later edit in this document.
     const previous = writes.get(key);
@@ -69,10 +83,16 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     writes.set(key, { revision: snapshot.revision, request });
     try {
       const receipt = await request as z.output<S>;
+      base.current = snapshot.fields;
       if (draft.current?.revision === snapshot.revision) {
         draft.current = null;
         try { if (readDraft(key)?.revision === snapshot.revision) localStorage.removeItem(key); } catch { /* The in-memory draft is still acknowledged. */ }
         status('saved');
+      } else if (draft.current) {
+        // An edit made during this write now starts from the value it saved.
+        const later = draft.current;
+        later.bases = [snapshot.fields];
+        try { if (readDraft(key)?.revision === later.revision) localStorage.setItem(key, JSON.stringify(later)); } catch { /* Keep the new base in memory. */ }
       }
       options.onSaved?.(receipt);
     } catch (cause) {
@@ -86,7 +106,7 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
       if (writes.get(key)?.request === request) writes.delete(key);
     }
     finally {
-      busy.current = false;
+      busy.current = false; sending.current = null;
       if (draft.current && draft.current.revision !== snapshot.revision) schedule();
     }
   }
@@ -101,31 +121,46 @@ export function SettingsSaveForm<S extends z.ZodType>({ path, method = 'PUT', sc
     const changed = invalid ?? target ?? element.querySelector('[name]');
     const editedField = changed instanceof HTMLInputElement || changed instanceof HTMLSelectElement || changed instanceof HTMLTextAreaElement ? saveField(changed) : undefined;
     if (editedField) setField(editedField);
-    const fields: [string, string][] = [];
-    for (const [name, value] of new FormData(element)) if (typeof value === 'string') fields.push([name, value]);
-    draft.current = { revision: crypto.randomUUID(), fields, valid:!invalid, confirmed: false, field: editedField };
+    const bases = draft.current ? [...draft.current.bases] : [base.current];
+    // A write still in flight may land after this document closes.
+    const inFlight = sending.current;
+    if (inFlight && !bases.some(server => sameFields(server, inFlight))) bases.push(inFlight);
+    draft.current = { revision: crypto.randomUUID(), bases, fields: formFields(element), valid:!invalid, confirmed: false, field: editedField };
     try { localStorage.setItem(key, JSON.stringify(draft.current)); } catch { /* Keep the draft in this mounted form if device storage is unavailable. */ }
     setFailure(invalid ? { message: invalid.validationMessage, retryable: false } : null);
     status(invalid ? 'failed' : 'dirty'); schedule();
   }
   useEffect(() => {
+    if (hydrated && form.current && !draft.current) base.current = formFields(form.current);
+  });
+  useEffect(() => {
     if (!hydrated) return;
     mounted.current = true;
-    const first = form.current?.querySelector('[name]');
-    if (first instanceof HTMLInputElement || first instanceof HTMLSelectElement || first instanceof HTMLTextAreaElement) setField(saveField(first));
-    try {
-      const saved = readDraft(key);
-      if (saved && form.current) {
-        draft.current = saved; restore(form.current, saved);
-        const invalid = invalidField(form.current);
-        saved.valid = !invalid;
-        if (invalid) setField(saveField(invalid)); else if (saved.field) setField(saved.field);
-        setFailure(invalid ? { message: invalid.validationMessage, retryable: false } : null);
-        onRestored?.(new FormData(form.current)); status(invalid ? 'failed' : 'dirty');
-        if (writes.get(key)?.revision === saved.revision) void flush(); else schedule();
-      }
-      else if (form.current && initialize?.(form.current)) edit();
-    } catch { /* An unreadable device draft cannot replace current server values. */ }
+    // Development remounts run this effect twice on one form; restore once.
+    if (form.current && restored.current !== key) {
+      restored.current = key;
+      const first = form.current.querySelector('[name]');
+      if (first instanceof HTMLInputElement || first instanceof HTMLSelectElement || first instanceof HTMLTextAreaElement) setField(saveField(first));
+      base.current = formFields(form.current);
+      try {
+        const saved = readDraft(key);
+        // A departure write can land without its receipt reaching the closing
+        // document, and another device can save after it. Either way the
+        // server no longer holds this draft's base, and its value wins.
+        if (saved && saved.bases.some(server => sameFields(server, base.current))) {
+          draft.current = saved; restore(form.current, saved);
+          const invalid = invalidField(form.current);
+          saved.valid = !invalid;
+          if (invalid) setField(saveField(invalid)); else if (saved.field) setField(saved.field);
+          setFailure(invalid ? { message: invalid.validationMessage, retryable: false } : null);
+          onRestored?.(new FormData(form.current)); status(invalid ? 'failed' : 'dirty');
+          if (writes.get(key)?.revision === saved.revision) void flush(); else schedule();
+        } else {
+          localStorage.removeItem(key);
+          if (initialize?.(form.current)) edit();
+        }
+      } catch { /* An unreadable device draft cannot replace current server values. */ }
+    }
     const leave = () => { if (!confirm) void flush(); };
     window.addEventListener('beforeunload', leave);
     window.addEventListener('pagehide', leave);
