@@ -3,11 +3,11 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { randomBytes, randomUUID, webcrypto } from 'node:crypto';
-import { validateAgentSurface } from '../../vendor/base/agent-door/conformance/index.mjs';
-import { signJws } from '../../vendor/base/agent-door/conformance/crypto.mjs';
+import { validateAgentSurface } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/index.mjs';
+import { signJws } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/crypto.mjs';
 import initialize from './initialize-owner.mjs';
 import { runNativePhases } from './runtime-phases.mjs';
-import { resolveArgs } from '../../vendor/base/agent-door/conformance/protocol.mjs';
+import { resolveArgs } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/protocol.mjs';
 import { consentProbe } from './consent-probe.mjs';
 import { nativeRuntime } from './runtime-installation.mjs';
 

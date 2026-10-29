@@ -1,8 +1,8 @@
 import { mkdir, readFile } from 'node:fs/promises';
 import { randomUUID } from 'node:crypto';
 import { chromium } from '@playwright/test';
-import { createProtocol } from '../../vendor/base/agent-door/conformance/protocol.mjs';
-import { accessToken, autonomousPolicy, heldPolicy } from '../../vendor/base/agent-door/conformance/crypto.mjs';
+import { createProtocol } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/protocol.mjs';
+import { accessToken, autonomousPolicy, heldPolicy } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/crypto.mjs';
 
 /** A person uses the actual built pages, native decisions and native records.
  * Browser routing supplies only the disposable installation's hosted origin. */

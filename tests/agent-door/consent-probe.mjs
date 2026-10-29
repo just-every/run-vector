@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { accessToken, autonomousPolicy, policyEnvelope } from '../../vendor/base/agent-door/conformance/crypto.mjs';
+import { accessToken, autonomousPolicy, policyEnvelope } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/crypto.mjs';
 
 /** Saved native arguments enter the real embedded door; no production test route. */
 export async function consentProbe({ request, origin, surface, signer, person, db, invoke }) {
