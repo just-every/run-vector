@@ -34,6 +34,7 @@ export async function exerciseMappedReconciliation({page,runtime,native,terminal
  const row=page.locator('.import-runs > li').filter({has:page.getByText(run.id,{exact:true})});
  await row.getByRole('button',{name:'Reconciliation report',exact:true}).click();
  const section=row.locator('.import-report');
+ await section.getByRole('heading',{name:'Reconciliation report: synthetic-vector-dimensions',exact:true}).waitFor();
  const dimensions={
   team:[['Source team alpha',native.team.name],['Source team beta',native.otherTeam.name]],
   status:[['Source ready',native.statuses.unstarted.name],['Source backlog',native.otherStatus.name]],

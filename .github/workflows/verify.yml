@@ -148,6 +148,7 @@ jobs:
             .artifacts/verification/ui-runtime-failure-safe.json
             .artifacts/verification/issue-controls/manifest.json
             .artifacts/verification/check-results.json
+            .artifacts/verification/jira/
             .artifacts/verification/shard-*.json
             .artifacts/verification/dev-runtime-results.json
             .artifacts/verification/dev-runtime-failure-safe.json
