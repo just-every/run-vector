@@ -4,7 +4,7 @@ import { useApiResource } from '../../../app/api-client';
 import type { IssueReference } from '../schema';
 
 const schema = z.object({ references: z.array(z.object({
-  identifier: z.string(), title: z.string(),
+  identifier: z.string(), canonicalIdentifier:z.string().optional(), title: z.string(),
   status: z.object({ id: z.string(), name: z.string(), category: z.string() }),
 })) });
 const Context = createContext<readonly IssueReference[]>([]);

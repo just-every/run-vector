@@ -276,3 +276,5 @@ preview route recovers them without overwriting native work.
 The reconciliation CSV prefixes spreadsheet-active cells (`=`, `+`, `-`, `@`,
 tab or carriage return) with an apostrophe before normal CSV quoting. The JSON
 report and downloaded originals retain their exact source values.
+
+Imported issue identifiers remain available through [imported aliases](IMPORTED-ALIASES.md), with Owner prefix controls and native identifier precedence.

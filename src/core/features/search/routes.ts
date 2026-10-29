@@ -5,7 +5,7 @@ import { SearchAccessError } from "./access";
 import { getSearchOptions, searchWorkspace, SearchIndexError } from "./service";
 
 const querySchema = z.object({
-  q: z.string().trim().min(1).max(200),
+  q: z.string().trim().min(1).max(1000),
   includeArchived: z.enum(["true", "false"]).default("false"),
   at: z.string().datetime({ offset: true }).optional(),
 });

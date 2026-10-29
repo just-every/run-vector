@@ -1,3 +1,4 @@
+import {importAlias} from '../aliases/import';
 import type { D1TargetAdapter, TargetRow, D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { nativeRelations,snapshotExpression,legacySnapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
@@ -43,7 +44,7 @@ export const nativeTargets: D1TargetAdapter = {
   write(row:TargetRow) {
     if (row.targetKind !== 'issue') throw Error('unsupported_import_target');
     const value=row.value as unknown as NativeIssueValue,issue=value.issue;
-    const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string};
+    const imported=JSON.parse(String(value.activity[0].next_value_json)) as {statusCategory:string;format?:string;source:string;sourceId:string;sourceKey?:string;sourceUrl?:string};
     const statements=[
       guard(`EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND identifier_prefix=? COLLATE BINARY AND archived_at IS NULL)
         AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND team_id=? AND category=?)`,issue.team_id,row.destination,issue.origin_prefix,issue.status_id,issue.team_id,imported.statusCategory),
@@ -69,6 +70,7 @@ export const nativeTargets: D1TargetAdapter = {
     for (const entry of value.manualOrder ?? []) {
       statements.push({sql:'INSERT INTO manual_order_scopes(workspace_id,scope_key,version) VALUES(?,?,0) ON CONFLICT DO NOTHING',params:[entry.workspace_id,entry.scope_key]}, insertNative('manual_order_entries',entry));
     }
+    statements.push(...importAlias(row.destination,imported.source,imported.sourceKey||imported.sourceId,row.targetId,imported.sourceUrl,String(value.activity[0].actor_operator_id),imported.sourceId));
     // A due date already past at import is history, not news: its one overdue
     // reminder is consumed for the assignee, as a mute would. Due today or later
     // still reminds. The row cascades away with the issue on rollback.
@@ -90,6 +92,10 @@ export const nativeTargets: D1TargetAdapter = {
       {sql:'DELETE FROM issue_relations WHERE first_issue_id=?',params:[id]},
       {sql:'DELETE FROM manual_order_entries WHERE issue_id=?',params:[id]},
       {sql:'DELETE FROM issues WHERE id=?',params:[id]},
+      // Remove unused defaults on rollback; a prefix the Owner explicitly
+      // configured remains a durable choice for future imports.
+      {sql:`DELETE FROM issue_alias_prefixes WHERE workspace_id=? AND active=1 AND owner_configured=0
+        AND NOT EXISTS(SELECT 1 FROM issue_aliases a WHERE a.workspace_id=issue_alias_prefixes.workspace_id AND a.prefix=issue_alias_prefixes.prefix)`,params:[destination]},
       {sql:'DELETE FROM manual_order_scopes WHERE workspace_id=? AND version=0 AND NOT EXISTS(SELECT 1 FROM manual_order_entries e WHERE e.workspace_id=manual_order_scopes.workspace_id AND e.scope_key=manual_order_scopes.scope_key)',params:[destination]}];
   },
   async list(db,destination) {

@@ -47,6 +47,7 @@ export async function readImportFile(file:File,format:ImportInput['format'],rows
 const effectCount=z.object({planned:z.number(),written:z.number()});
 const dimension=z.array(z.object({source:z.string(),read:z.number(),written:z.number(),vector:z.array(z.object({name:z.string(),count:z.number()}))}));
 export const reportSchema=z.object({
+ aliasCollisions:z.array(z.object({alias:z.string(),importedIdentifier:z.string(),nativeIdentifier:z.string(),reason:z.string()})),
  effects:z.object({counts:z.object({labels:effectCount,parents:effectCount,dependencies:effectCount,related:effectCount,duplicates:effectCount,comments:effectCount,links:effectCount,files:effectCount}),labels:z.array(z.object({name:z.string(),planned:z.number(),written:z.number()}))}).optional(),
  jiraReview:jiraReviewSchema.optional(),
  run:z.object({id:z.string(),source:z.string(),fileName:z.string(),format:z.string(),state:z.string()}),

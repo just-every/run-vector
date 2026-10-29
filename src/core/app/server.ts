@@ -1,3 +1,4 @@
+import {aliasRedirect} from '../features/data/aliases/routes';
 import {createOAuthPublicApp} from '../features/oauth-apps/routes';
 import {createInitiativeApi} from '../features/initiatives/api';
 import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
@@ -122,6 +123,7 @@ export function createServerApp() {
         );
   });
   app.all("/__dev/key", async c => await developmentKeyResponse(c.env, c.req.raw) ?? c.notFound());
+  app.get("/alias/:key",async c=>(await aliasRedirect(c.env,c.req.raw,c.req.param("key")))!);
   app.route("/auth", createAuthApp());
   app.all("/api/editor/config",async c=>editorConfigResponse(c.env,c.req.raw));
   app.route("/api/integrations",createIntegrationReceivers());

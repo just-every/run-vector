@@ -18,6 +18,12 @@ export async function importedStatements(db: D1Database, values: string[], at: s
       WHERE lower(trim(imported_author_name)) IN (SELECT value FROM json_each(?))`,
     params: [ERASED_AUTHOR, at, at, list],
   }];
+  // Alias identity cannot retain a source ID or source label that is itself
+  // the erased person's exact value. Ordinary opaque issue keys remain valid.
+  statements.push({sql:`DELETE FROM issue_aliases WHERE lower(trim(source_key)) IN(SELECT value FROM json_each(?))
+    OR lower(replace(source,'vector-import:','')) IN(SELECT value FROM json_each(?))`,params:[list,list]});
+  statements.push({sql:`DELETE FROM issue_alias_prefixes WHERE lower(prefix) IN(SELECT value FROM json_each(?))
+    AND NOT EXISTS(SELECT 1 FROM issue_aliases a WHERE a.workspace_id=issue_alias_prefixes.workspace_id AND a.prefix=issue_alias_prefixes.prefix)`,params:[list]});
   let reports = 0, reportRows = 0;
   for (const row of (await db.prepare('SELECT job_id,report_json FROM vector_import_reports ORDER BY job_id').all<{ job_id: string; report_json: string }>()).results) {
     const report = JSON.parse(row.report_json) as { rows: Json[][]; erasedRows?: number[] } & Record<string, Json>;

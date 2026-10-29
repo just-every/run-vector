@@ -1,3 +1,4 @@
+import {aliasRedirect} from '../features/data/aliases/routes';
 import {initiativePageDenial} from '../features/initiatives/authority';
 import {releasePageDenial} from '../features/releases/authority';
 import { auditAuthority } from '../features/audit/repository';
@@ -54,9 +55,15 @@ export async function handleRequest(
     url.pathname === "/health" ||
     url.pathname === "/api" ||
     url.pathname.startsWith("/api/") ||
+    url.pathname.startsWith("/alias/") ||
     url.pathname.startsWith("/auth/")
   )
     return app.fetch(request, env, execution);
+  const aliasPath=url.pathname.match(/^\/app\/issues\/([^/]+)\/?$/);
+  if(aliasPath&&request.method==='GET'){
+    const redirect=await aliasRedirect(env,request,decodeURIComponent(aliasPath[1]),true);
+    if(redirect)return redirect;
+  }
   const privateRequest = url.pathname === "/setup" || url.pathname === "/app" || url.pathname.startsWith("/app/") || url.pathname.startsWith("/_serverFn/");
   const timings: string[] = [];
   const timed = async <T>(name: string, run: () => T | Promise<T>) => {

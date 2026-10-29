@@ -1,3 +1,4 @@
+import {aliasKey} from '../aliases/identity';
 import type { Json,SourceRecord } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { stableImportId } from './ids';
@@ -78,6 +79,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const dueDate=take('dueDate',()=>{const value=text('dueDate');if(!value)return null;
     if(!/^\d{4}-\d\d-\d\d$/.test(value) || !Number.isFinite(Date.parse(value)) || new Date(value).toISOString().slice(0,10)!==value)throw Error('Due date must be a valid YYYY-MM-DD date.');return value;});
   const expectedOutcome=take('expectedOutcome',()=>text('expectedOutcome')||null),customerImpact=take('customerImpact',()=>text('customerImpact')||null);
+  const sourceUrl=take('sourceUrl',()=>{const value=text('sourceUrl',2000);if(!value)return null;if(!aliasKey(value))throw Error('Use a supported Linear, Jira Cloud or GitHub issue URL.');const url=new URL(value);url.search='';url.hash='';return url.href;});
   const createdAt=take('createdAt',()=>instant(text('createdAt')||effectiveAt,'Created'));
   const updatedAt=take('updatedAt',()=>instant(text('updatedAt')||createdAt||effectiveAt,'Updated'));
   if(createdAt && updatedAt && Date.parse(updatedAt)<Date.parse(createdAt))errors.push({row,field:'updatedAt',code:'timestamp_order',message:'Updated cannot precede Created.'});
@@ -99,7 +101,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
   const data=validation.data,id=stableImportId(actor.workspace,input.source,record.sourceId,'issue');
   const value=emptyIssueValue({id,identifier:`${team.identifier_prefix}-${sequence}`,origin_prefix:team.identifier_prefix,sequence_number:sequence,team_id:team.id,title:data.title,description:data.description,status_id:status.id,priority:data.priority,assignee_operator_id:data.assigneeOperatorId,project_id:data.projectId,cycle_id:data.cycleId,...(data.startDate?{start_date:data.startDate}:{}),due_date:data.dueDate,estimate:data.estimate,expected_outcome:data.expectedOutcome,customer_impact:data.customerImpact,custom_fields_json:'{}',deferred_until:null,version:1,completed_at:completedAt??null,canceled_at:status.category==='canceled'?updatedAt:null,created_at:createdAt,updated_at:updatedAt});
   value.labels=data.labelIds.sort().map(label_id=>({issue_id:id,label_id,created_at:createdAt}));
-  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(input.format==='jira-csv'?{format:input.format,sourceKey:jiraValue(record,'issue key').trim()}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
+  value.activity=[{id:stableImportId(actor.workspace,input.source,record.sourceId,'activity'),issue_id:id,actor_operator_id:actor.id,actor_name:null,kind:'issue.imported',previous_value_json:null,next_value_json:canonicalJson({source:input.source,sourceId:record.sourceId,...(sourceUrl?{sourceUrl}:{}),...(input.format==='jira-csv'?{format:input.format,sourceKey:jiraValue(record,'issue key').trim()}:{}),statusCategory:status.category,omissions:omissions.map(item=>item.field)}),created_at:effectiveAt,updated_at:effectiveAt}];
   const activity=value.activity[0];
   value.descriptionRevisions=[{id:activity.id,issue_id:id,description:data.description,actor_operator_id:activity.actor_operator_id,actor_name:activity.actor_name,created_at:activity.created_at,version:value.issue.version}];
   // Snapshot order: native relations are read back ordered by id.

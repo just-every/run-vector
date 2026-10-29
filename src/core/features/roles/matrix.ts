@@ -80,6 +80,7 @@ export const matrix = {
   'audit.read': row('Browse and export the audit log (ROLE-005)', 'yes', 'yes', 'no', 'no'),
   'data.export': row('Export the portable archive (DATA-001)', 'yes', 'yes', 'no', 'no'),
   'data.restore': row('Restore an archive over HTTP and review the restored workspace (DATA-005)', 'yes', 'no', 'no', 'no'),
+  'data.aliases': row('Manage active imported source prefixes (DATA-018)', 'yes', 'no', 'no', 'no'),
   'data.import': row('Preflight, apply, resume, repeat or roll back an import run or migration (DATA-002, DATA-003, DATA-006, DATA-008, DATA-009, DATA-010, DATA-012, DATA-013, DATA-014, DATA-015, DATA-016, DATA-017)', 'yes', 'yes', 'no', 'no'),
   'data.erase-imported': row('Erase an imported person (DATA-011)', 'yes', 'yes', 'no', 'no'),
 } satisfies Record<string, Row>
