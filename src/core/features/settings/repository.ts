@@ -63,14 +63,24 @@ export async function readSettings(db: D1Database, actor: string) {
   };
 }
 
+/** The recorded first owner can replace an untouched UTC bootstrap default once.
+ * The timestamp predicate is checked in the write, preserving every later choice. */
+export async function initializeWorkspaceTimezone(db: D1Database, actor: string, timezone: string) {
+  await db.prepare(`UPDATE workspace_settings SET timezone=?,updated_at=?
+    WHERE timezone='UTC' AND created_at=updated_at AND id IN (
+      SELECT i.workspace_id FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
+      WHERE i.setup_operator_id=? AND o.role='owner' AND o.removed_at IS NULL AND o.workspace_id=i.workspace_id
+    )`).bind(timezone, new Date().toISOString(), actor).run();
+}
+
 export async function updateWorkspaceTime(
   db: D1Database,
   actor: string,
-  timezone: string,
+  timezone?: string,
   reminderTime?: string,
   memberInvites?: boolean,
 ) {
-  if (!timezoneSchema.safeParse(timezone).success)
+  if (timezone !== undefined && !timezoneSchema.safeParse(timezone).success)
     throw new SettingsError(
       "invalid_timezone",
       "Choose a valid IANA timezone.",
@@ -89,10 +99,10 @@ export async function updateWorkspaceTime(
   const invites = memberInvites === undefined ? null : Number(memberInvites);
   const [result] = await db.batch<{ id: string }>([
     db.prepare(
-      `UPDATE workspace_settings SET timezone=?,reminder_time=COALESCE(?,reminder_time),member_invites=COALESCE(?,member_invites),updated_at=?
+      `UPDATE workspace_settings SET timezone=COALESCE(?,timezone),reminder_time=COALESCE(?,reminder_time),member_invites=COALESCE(?,member_invites),updated_at=?
     WHERE id=(SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL)
     RETURNING id`,
-    ).bind(timezone, reminderTime ?? null, invites, at, actor),
+    ).bind(timezone ?? null, reminderTime ?? null, invites, at, actor),
     // Turning Member invitations off stops the links Members already sent.
     db.prepare(
       `UPDATE oa_tokens SET revoked_at=? WHERE ?=0 AND kind='invite' AND consumed_at IS NULL AND revoked_at IS NULL

@@ -54,7 +54,7 @@ export async function exerciseGithubTeamPermissions({page,runtime,call,team,star
   const form=teams.getByRole('form',{name:'Permissions for '+team.name,exact:true});
   await form.getByRole('combobox',{name:'Who manages team settings',exact:true}).selectOption(settings);
   const response=page.waitForResponse(r=>r.request().method()==='PUT'&&new URL(r.url()).pathname===`/api/settings/teams/${team.id}/permissions`);
-  await form.getByRole('button',{name:'Save permissions',exact:true}).click();
+  await form.getByRole('button',{name:'Confirm permissions',exact:true}).click();
   assert.equal((await response).status(),200);await settleReads(page);
  };
  try{

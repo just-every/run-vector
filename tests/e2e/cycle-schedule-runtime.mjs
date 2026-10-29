@@ -5,6 +5,7 @@ import { chromium } from "@playwright/test";
 import {
   createAdminRuntime,
   bootstrapOwner,
+  poll,
 } from "./admin-runtime-support.mjs";
 const evidence = resolve(".artifacts/verification/cycle-schedule");
 await mkdir(evidence, { recursive: true });
@@ -30,25 +31,29 @@ try {
     await context.request.get(runtime.base + "/api/settings/administration")
   ).json();
   const team = state.teams[0];
-  // The schedule form is keyed on the saved schedule, so the read that follows
-  // a save remounts it with the saved values as its defaults. Wait for that
-  // render: the filled values, and at 390 the "Scheduled" heading left by the
-  // 1440 save, are already on the form it replaces.
-  const savedSchedule = (values) =>
-    page.waitForFunction(
+  // Read the committed schedule through its public door; saving keeps the
+  // existing form and the user's focus instead of remounting its defaults.
+  const savedSchedule = async (values) => {
+    await page.waitForFunction(
       ({ name, values }) => {
         const form = document.querySelector(`form[aria-label="${name}"]`);
-        return (
-          !!form &&
-          !form.querySelector("fieldset").disabled &&
-          Object.entries(values).every(
-            ([field, value]) =>
-              form.elements.namedItem(field).defaultValue === value,
-          )
-        );
+        return !!form && Object.entries(values).every(([field, value]) =>
+          form.elements.namedItem(field)?.value === value);
       },
       { name: "Cycle schedule " + team.name, values },
+      { polling: 200 },
     );
+    const fields = { weeks: "weeks", cooldown: "cooldownWeeks", upcoming: "upcomingCount" };
+    await poll(
+      async () => (await context.request.get(runtime.base + "/api/settings/administration")).json(),
+      (administration) => {
+        const schedule = administration.cycleSchedules.find(item => item.teamId === team.id);
+        return !!schedule && Object.entries(values).every(([field, value]) =>
+          String(schedule[fields[field]]) === value);
+      },
+      "cycle schedule commits before read-back",
+    );
+  };
   const create = await context.request.post(runtime.base + "/api/issues", {
     headers: { Origin: runtime.base },
     data: {
@@ -67,22 +72,21 @@ try {
       name: "Cycle schedule " + team.name,
       exact: true,
     });
-    await form.getByLabel("Cycle length (weeks)").fill("2");
-    await form.getByLabel("Start weekday").selectOption("1");
-    await form.getByLabel("Cooldown (weeks)").fill("1");
-    await form.getByLabel("Upcoming cycles to keep").fill("3");
+    await form.evaluate(element => { window.__scheduleForm = element; });
     const savedResponse = page.waitForResponse(
       (r) =>
         r.url().endsWith("/cycle-schedule") && r.request().method() === "PUT",
     );
-    await form
-      .getByRole("button", { name: "Save cycle schedule", exact: true })
-      .click();
+    await form.getByLabel("Cycle length (weeks)").fill("2");
+    await form.getByLabel("Start weekday").selectOption("1");
+    await form.getByLabel("Cooldown (weeks)").fill("1");
+    await form.getByLabel("Upcoming cycles to keep").fill("3");
+    await page.evaluate(() => { window.__scheduleFocus = document.activeElement; });
     assert.equal((await savedResponse).status(), 200);
     await savedSchedule({ weeks: "2", cooldown: "1", upcoming: "3" });
-    await form
-      .getByRole("button", { name: "Save cycle schedule", exact: true })
-      .waitFor({ state: "visible" });
+    assert.ok(await form.evaluate(element => element === window.__scheduleForm), "saving retains the schedule form");
+    assert.ok(await page.evaluate(() => document.activeElement === window.__scheduleFocus), "saving retains field focus");
+    await form.getByRole('status').waitFor();
     await page.waitForFunction(
       () => !document.querySelector('input[name="weeks"]')?.disabled,
     );
@@ -102,17 +106,17 @@ try {
       Date.parse(cycles[1].startsAt) - Date.parse(cycles[0].endsAt),
       7 * 86400000,
     );
-    await form.getByLabel("Cycle length (weeks)").fill("1");
-    await form.getByLabel("Cooldown (weeks)").fill("0");
     const response = page.waitForResponse(
       (r) =>
         r.url().endsWith("/cycle-schedule") && r.request().method() === "PUT",
     );
-    await form
-      .getByRole("button", { name: "Save cycle schedule", exact: true })
-      .click();
+    await form.getByLabel("Cycle length (weeks)").fill("1");
+    await form.getByLabel("Cooldown (weeks)").fill("0");
+    await page.evaluate(() => { window.__scheduleFocus = document.activeElement; });
     assert.equal((await response).status(), 200);
     await savedSchedule({ weeks: "1", cooldown: "0" });
+    assert.ok(await form.evaluate(element => element === window.__scheduleForm), "cadence edits retain the schedule form");
+    assert.ok(await page.evaluate(() => document.activeElement === window.__scheduleFocus), "cadence edits retain field focus");
     await page.waitForFunction(
       () =>
         document.querySelector('input[name="weeks"]')?.value === "1" &&

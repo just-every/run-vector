@@ -13,9 +13,9 @@ export function AdministrationFeedback({
           <button
             type="button"
             disabled={action.pending}
-            onClick={action.reload}
+            onClick={action.retry}
           >
-            Reload administration
+            Retry
           </button>
         </p>
       )}

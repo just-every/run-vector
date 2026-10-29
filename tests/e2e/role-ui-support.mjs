@@ -110,7 +110,7 @@ export async function exerciseGuestRoles({page,browser,runtime,clause,evidence})
       await navigate(guest,base+'/app/cycles');
       await guest.getByRole('link',{name:'Open '+cycle.name,exact:true}).waitFor();
       assert.equal(await guest.getByRole('form',{name:'Create cycle',exact:true}).count(),0);
-      assert.equal(await guest.getByRole('button',{name:'Save cycle schedule',exact:true}).count(),0);
+      assert.equal(await guest.getByRole('form',{name:/^Cycle schedule /}).count(),0);
       await navigate(guest,base+'/app/settings');
       await guest.getByRole('heading',{name:'Appearance',exact:true}).waitFor();
       assert.equal(await guest.getByRole('region',{name:'Members',exact:true}).count(),0);
