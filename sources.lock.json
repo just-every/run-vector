@@ -7097,7 +7097,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "9ce23453e918032c590ff9e776133db9150cc07ea256d495edab14eba96fecd0",
+      "sha256": "3f17bc99f064228f4f1c6b33b099b6827c9a1b39b982ccb0f78aab92451890ea",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
