@@ -23,7 +23,7 @@ export function addDescriptionHistoryRoutes(app: Hono<AppEnvironment>, native = 
       return await handler(c, identifier);
     } catch (error) {
       if (error instanceof IssueAccessError || error instanceof DescriptionMutationError)
-        return c.json({ error: error.code, message: error.message }, error.status);
+        return c.json({ error: error.code, message: error.message, ...(error instanceof DescriptionMutationError && error.comment ? { comment: error.comment } : {}) }, error.status);
       throw error;
     }
   };
