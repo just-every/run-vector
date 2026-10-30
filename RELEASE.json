@@ -72,7 +72,7 @@
     },
     {
       "id": "0113_description_thread_anchors.sql",
-      "buyerSteps": "Apply after all earlier migrations, including 0111_import_alias_source_ids.sql, without rewriting them. Adds persisted quoted-description comment anchors and retains their quoted text when the description changes; deleting a comment removes its source anchor."
+      "buyerSteps": "Apply after all earlier migrations, including 0112_document_issue_references.sql, without rewriting them. Adds persisted quoted-description comment anchors and retains their quoted text when the description changes; deleting a comment removes its source anchor."
     }
   ],
   "breaking": false,

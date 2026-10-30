@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "d08ef587a1e16bf8eb302a4fdd57676ce20e0792c1a3231a19bc90741b0679d3",
+      "sha256": "24dcefb6040f3333882fc2ebaa0140fbd50aed3b648259cfbf4cdfa724653ac1",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "90bac548a6b94213dd61450ad90138dd536f79807075b7e4ee98ad4525ae7018",
+      "sha256": "dad8898c3303a82053148279885d9d9e2b68ef9c8d19c1da928293a513043556",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "f01c0aec0aa607a5aed319fb2da837111107f8920c7db20f7bfedf3908ba561a",
+      "sha256": "2913b8e712d0101d6efd3e77666e146d6c98784ff11c68566226703896829ccd",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2545,7 +2545,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "f62dbc1ce2c2b9c22aab2a254a4e76dfae5daf6f27a695dfb72a7a37aace9fcf",
+      "sha256": "5a8d092539034244bfc8cad61cb49d26daae3f1e305f13f67ddd036dc0000582",
       "executable": false
     },
     "rer-project.json": {
@@ -2593,7 +2593,7 @@
       "executable": false
     },
     "scripts/contract-docs.mjs": {
-      "sha256": "48fb1d22cce8d1d6b0283d5dd0ea5fb587cf00dd22e3957cb99300e0819200ed",
+      "sha256": "b57e1a99241da5a0652968a81126a7f2dd67e4fde342cfd6521c30355dc94864",
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
