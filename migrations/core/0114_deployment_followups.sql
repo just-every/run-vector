@@ -1,10 +1,12 @@
 -- PUSH-003. Forward-only: a team's explicit production follow-up window and one
 -- durable watch per recorded merge SHA and linked issue. Both are portable
 -- domain data; the Inbox kind below is admitted without changing prior rows.
+-- Comments stay outside statement bodies: Wrangler strips them and the
+-- platform runner keeps them, so either would change the stored table SQL.
+-- Only merges received at or after enabled_at are followed; NULL is off.
 CREATE TABLE team_deployment_followups (
  team_id TEXT PRIMARY KEY REFERENCES teams(id) ON DELETE CASCADE,
  window_hours INTEGER CHECK(window_hours IS NULL OR window_hours BETWEEN 1 AND 720),
- -- Only merges received at or after this instant are followed; NULL is off.
  enabled_at TEXT,
  configured_by TEXT REFERENCES operators(id) ON DELETE SET NULL,
  version INTEGER NOT NULL,

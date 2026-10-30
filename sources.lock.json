@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "8c9770c9a4fd80fd902020a163e5af3cd8d19175fb0e24fcaaef2ec29ac8b053",
+      "sha256": "b8c7d9e83e10bcf5ea2289718ab11e304d56b6a74f4f905b37ed4369565c0d09",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2469,7 +2469,7 @@
       "executable": false
     },
     "migrations/core/0114_deployment_followups.sql": {
-      "sha256": "24b58c154428b95623aae9a1eb22eadbc6dba3fbda4b49629f3d15033ef7e979",
+      "sha256": "75ebaf2cc7888dbb1bda222d658d649dd6752ca4368b6ebaf589c053f53bfe85",
       "executable": false
     },
     "OPERATIONS.json": {
