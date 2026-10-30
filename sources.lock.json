@@ -4253,7 +4253,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/list.tsx": {
-      "sha256": "aa81d306caa668a859bee68e8f7f758f1072229eda33643f74d13d18f7dff586",
+      "sha256": "13ac6fa163eae89dbff5dd4d4f9a7789c2e6791a1e10dbc061b2ed0651660192",
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
