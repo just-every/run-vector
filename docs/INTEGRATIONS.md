@@ -158,6 +158,10 @@ Pull requests, Pushes and Deployment statuses in the repository's webhook settin
 Vector validates the exact raw-byte HMAC, repository, delivery UUID and payload.
 See [signature validation](https://docs.github.com/en/webhooks/using-webhooks/validating-webhook-deliveries)
 and [payload documentation](https://docs.github.com/en/webhooks/webhook-events-and-payloads).
+Settings → Integrations shows each repository's last durably accepted pull request,
+push or deployment delivery in the viewer's time, or that none has arrived yet.
+Signed pings and connection tests are not recorded, and the time reports GitHub's
+deliveries to Vector, not a call Vector made to GitHub.
 
 PR branches, titles and bodies name native issue keys without creating members or
 issues. Closing and contributing phrases distinguish completion from contribution.
