@@ -25,6 +25,19 @@ export function namedLinksStatement(db: D1Database, issueId: string) {
     .bind(issueId);
 }
 
+/** Read only the current source URL needed for one explicitly loaded player. */
+export function namedVideoSource(db: D1Database, issueId: string, id: string) {
+  return db
+    .prepare(
+      `SELECT l.id,l.url FROM issue_links l
+    WHERE l.issue_id=? AND l.id=? AND l.deleted_at IS NULL
+      AND (l.comment_id IS NULL OR EXISTS(SELECT 1 FROM issue_comments c
+        WHERE c.id=l.comment_id AND c.issue_id=l.issue_id AND c.deleted_at IS NULL))`,
+    )
+    .bind(issueId, id)
+    .first<{ id: string; url: string }>();
+}
+
 export async function addNamedLink(
   db: D1Database,
   issue: Issue,
