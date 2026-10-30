@@ -22,6 +22,12 @@ export function addDescriptionHistoryRoutes(app: Hono<AppEnvironment>, native = 
       if (native) c.set("concealWorkspaceChange", true);
       return await handler(c, identifier);
     } catch (error) {
+      if (error instanceof DescriptionMutationError && error.comment) {
+        // A conflict includes current private text and needs the same final
+        // session and visibility admission as a successful discussion receipt.
+        if (native) c.set("mutationPageProjection", true);
+        await admit(c, identifier);
+      }
       if (error instanceof IssueAccessError || error instanceof DescriptionMutationError)
         return c.json({ error: error.code, message: error.message, ...(error instanceof DescriptionMutationError && error.comment ? { comment: error.comment } : {}) }, error.status);
       throw error;
