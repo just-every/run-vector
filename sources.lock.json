@@ -6917,7 +6917,7 @@
       "executable": false
     },
     "tests/e2e/core-cross-team-view-journey.mjs": {
-      "sha256": "39473f283b52e1986e4ea72957ecf247b9be529087b420dfaa516de266c5fb92",
+      "sha256": "66757efe988cc7766fda93736f8aac494eccc5d1d5588c1f1aeb42fbeb043ec1",
       "executable": false
     },
     "tests/e2e/core-current-disjoint-journey.mjs": {
