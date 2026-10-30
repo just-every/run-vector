@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "f1c90fba01d40428a17900f62fd5317f2d71c9fb6ba4bac2cb02ceb143ed02ae",
+      "sha256": "80e593ec7be5db1391f556027d09a81c484a028dde48c2b32c898603399f2464",
       "executable": false
     },
     "DEMO.md": {
@@ -6801,7 +6801,7 @@
       "executable": false
     },
     "tests/e2e/admin-project-cycle-journey.mjs": {
-      "sha256": "158495086e0620d9762dcbc768f9d572c65c7bb3c5e839f157828aa119990e74",
+      "sha256": "f885053f01175edf84c59eb390fb19710a83808a260e77a1c6fa0f511eb54ca3",
       "executable": false
     },
     "tests/e2e/admin-request-diagnostics.mjs": {
@@ -6813,7 +6813,7 @@
       "executable": false
     },
     "tests/e2e/admin-runtime.mjs": {
-      "sha256": "52aa1b1d7a150cc13d2554d5a7c0288734c548e47f62ba4f50d33e96a6853fed",
+      "sha256": "85f99f1544029701d37016d82d4152ee4874f1a4a349d2c259a1a068adb6cc65",
       "executable": false
     },
     "tests/e2e/admin-saved-view-fixture.mjs": {
@@ -7341,7 +7341,7 @@
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
-      "sha256": "4d868b845287100ec32af351c67e8110012105f085e43c804150face3ec93656",
+      "sha256": "5129a932cc0aeacc67112422c1a0e5851db75228ea481278f61b95eb563cb6a3",
       "executable": false
     },
     "tests/e2e/public-development.mjs": {
@@ -8105,7 +8105,7 @@
       "executable": false
     },
     "tests/worker/project-template-proof.ts": {
-      "sha256": "52810b884472bd9ec1174d98b9ae0bc2d9013d49ad066431463a2384fa1c8d7c",
+      "sha256": "2cbbefe998c338b56c9fe5083cbe71812b62cfa08ff9a746d0158cbb724ac36a",
       "executable": false
     },
     "tests/worker/recovery.test.ts": {
