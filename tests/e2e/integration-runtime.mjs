@@ -2,6 +2,7 @@ import {exerciseErrorProviders} from './integrations/error-providers.mjs';
 import {exerciseImportAliases} from './import-alias-journey.mjs';
 import {exerciseOAuthApps} from './integrations/oauth-apps.mjs';
 import {exerciseGithubChain} from './integrations/github-chain.mjs';
+import {exerciseDeploymentFollowup} from './integrations/deployment-followup.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
@@ -19,6 +20,7 @@ try{
  await exerciseErrorProviders({page,runtime,cookie,team,evidence});
  await exerciseOAuthApps({page,runtime,cookie,evidence});
  for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});await exerciseGithubChain({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
+ await exerciseDeploymentFollowup({page,runtime,cookie,team,evidence});
  const aliasSession=await signIn(runtime),aliasPage=await openAuthenticatedPage(browser,aliasSession.cookie,runtime.base);
  try{await exerciseImportAliases({page:aliasPage,runtime,cookie:aliasSession.cookie,evidence});}finally{await aliasPage.context().close();}
  proof.passed=true;

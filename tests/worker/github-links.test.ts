@@ -4,7 +4,7 @@ import {setupIntegrations} from './integration-fixture';
 import {exerciseGithubAutomation,exerciseGithubCommits,exerciseGithubDeployments} from './github-automation-scenario';
 import {exerciseDeploymentFollowups} from './deployment-followup-scenario';
 import {bindings} from './base-auth-fixture';
-it('[GITHUB-001 GITHUB-002 GITHUB-003 GITHUB-004 RELEASE-002 PUSH-003] signed deliveries preserve links, automate team statuses, follow merges to production and notify exactly once',async()=>{
+it('[GITHUB-001 GITHUB-002 GITHUB-003 GITHUB-004 RELEASE-002 PUSH-003] signed deliveries preserve links, automate team statuses and notify followers exactly once',async()=>{
  const f=await setupIntegrations(),issue=await f.create(),second=await f.create({title:'Second referenced work'}),res=await f.call('/settings/integrations/github','POST',{name:'Owned repository',repository:'octocat/test-repo1'});expect(res.status).toBe(201);
  expect(await (await f.call('/issues/'+issue.identifier)).json()).toMatchObject({branchName:issue.identifier.toLowerCase()+'-authored-work'});
  const config=await res.json() as {id:string;secret:string;receiver:string};
