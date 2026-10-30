@@ -3,9 +3,11 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { randomBytes, randomUUID, webcrypto } from 'node:crypto';
-import { runAgentDoorConformance, validateAgentSurface } from '../../vendor/base/agent-door/conformance/index.mjs';
+import { validateAgentSurface } from '../../vendor/base/agent-door/conformance/index.mjs';
 import { signJws } from '../../vendor/base/agent-door/conformance/crypto.mjs';
 import initialize from './initialize-owner.mjs';
+import { runNativePhases } from './runtime-phases.mjs';
+import { resolveArgs } from '../../vendor/base/agent-door/conformance/protocol.mjs';
 import { consentProbe } from './consent-probe.mjs';
 import { nativeRuntime } from './runtime-installation.mjs';
 
@@ -94,7 +96,18 @@ try {
     const { browserJourney } = await import('./browser-journey.mjs');
     await browserJourney({ request, origin, surface, signer, person: { email, cookie, sub }, db });
   } else {
-  const result = await runAgentDoorConformance({ fetch: request, origin, surface, signer, person: { email, cookie, sub } });
+  // The pin's optional invocation phase starts with no journey output map.
+  // Materialize its first native metadata reference from this installation;
+  // these are the same values the ordinary journey's options step returns.
+  const optionsResponse = await request(origin + '/api/metadata', { headers: { Cookie: cookie } });
+  const options = await optionsResponse.json();
+  const sessionResponse = await request(origin + '/api/session', { headers: { Cookie: cookie } });
+  const session = await sessionResponse.json();
+  const installedSurface = structuredClone(surface);
+  const firstMutation = installedSurface.journey.find(step => !surface.tools.find(tool => tool.name === step.tool).readOnly);
+  firstMutation.args = resolveArgs(firstMutation.args, new Map([['options', options]]), { sponsor: { id: session.operatorId, email } });
+  const result = await runNativePhases({ fetch: request, origin, surface: installedSurface, signer, person: { email, cookie, sub },
+    invoke: (name, args, who) => native.invoke(name, args, { ...who, clientId: 'rer-agent-conformance' }) });
   for (const point of declarations.points) console.log(`${point.ok ? 'PASS' : 'FAIL'} ${point.id}${point.detail ? ': ' + point.detail : ''}`);
   for (const point of result.points.filter(point => !point.id.includes('.surface.'))) console.log(`${point.ok ? 'PASS' : 'FAIL'} ${point.id}${point.detail ? ': ' + point.detail : ''}`);
   const runtime = result.points.filter(point => !point.id.includes('.surface.'));
