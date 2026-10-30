@@ -1,3 +1,4 @@
+import { withOperatorClient } from './operator-request.mjs';
 import { randomBytes } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
@@ -118,9 +119,11 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
   await capture(`project-appearance-list-${suffix}`);
   await clause('PROJ-007','every portfolio filter and combined filters keep rows and health/lifecycle counts aligned',async()=>{
     const assertPortfolio=async(query={})=>{
-      const response=await page.request.get(base+'/api/projects?'+new URLSearchParams(query));
-      assert.equal(response.status(),200);
-      const expected=await response.json();
+      const expected=await withOperatorClient(page.context(),async client=>{
+        const response=await client.get(base+'/api/projects?'+new URLSearchParams(query));
+        assert.equal(response.status(),200);
+        return response.json();
+      });
       await poll(()=>page.locator('.project-row').evaluateAll(rows=>rows.map(row=>row.getAttribute('aria-label'))),rows=>JSON.stringify(rows)===JSON.stringify(expected.projects.map(project=>'Open '+project.name)),'portfolio rows match active filters');
       const values=await page.locator('.project-metric strong').allTextContents();
       assert.deepEqual(values,[expected.projects.length,expected.counts.blocked??0,expected.counts['at-risk']??0,expected.counts['on-track']??0,expected.counts.unknown??0].map(String));
