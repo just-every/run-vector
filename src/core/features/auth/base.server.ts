@@ -27,6 +27,7 @@ function productRoles(db: D1Database): RolePolicy {
 /** The operator-auth configuration; the local-only dev entry builds the same one. */
 export function authConfig(env: WorkerBindings) {
   return { origin: env.APP_ORIGIN, OWNER_EMAIL: env.FIRST_OWNER_EMAIL!, SESSION_SECRET: env.SESSION_SECRET!, SETUP_TOKEN: env.SETUP_TOKEN, dependencies: true, MAIL_FROM: env.MAIL_FROM,
+    INSTALLATION_KEY: env.INSTALLATION_KEY, INSTALLATION_KEY_PREVIOUS: env.INSTALLATION_KEY_PREVIOUS,
     local: localMailEnabled(env), branding: { productName: branding.name, accentColor: branding.color, signInPath: '/signin', theme: '/brand/confirmation.css' } }
 }
 

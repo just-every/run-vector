@@ -18,7 +18,7 @@ lines.splice(summary+2,end-summary-2,...rows.map(([label,clauses])=>'| '+[label,
 const contract=lines.join('\n').replace(/Accepted DONE is \d+ of \d+/g,'Accepted DONE is '+parsed.counts.done+' of '+parsed.counts.total);parseContract(contract);
 const acceptance=read('ACCEPTANCE.md'),claims=read('docs/CLAIMS.md');
 const inherited=[...acceptance.matchAll(/<!-- contract-docs:([A-Z][A-Z0-9-]+) -->/g)].map(match=>match[1]);
-const ids=[...new Set(requested.length?requested:inherited)].sort();
+const ids=[...new Set(requested.length?requested:[...inherited,...parsed.clauses.filter(c=>c.id.startsWith('BASE-AGENT-')).map(c=>c.id)])].sort();
 if(!ids.length)throw Error('Name the touched clauses for initial view generation.');
 const acceptanceLines=acceptance.split('\n');
 const acceptanceSummary=acceptanceLines.findIndex(line=>line==='| Clauses | Done | Partial | Missing | Total |');
@@ -30,15 +30,16 @@ const escape=value=>value.replaceAll('|','\\|').replaceAll('\n',' ');
 for(const id of ids){
  const clause=parsed.clauses.find(clause=>clause.id===id);if(!clause)throw Error('No contract clause '+id);
  const source=clause.text.split(/\*Status:\*/)[0].trim();
- const acceptanceIndex=source.indexOf('*Acceptance:*');if(acceptanceIndex<0)throw Error(id+' has no acceptance text.');
- const requirement=source.slice(0,acceptanceIndex).trim(),points=source.slice(acceptanceIndex+'*Acceptance:*'.length).trim();
+ const acceptanceMark=source.includes('*Acceptance:*')?'*Acceptance:*':'**Acceptance.**';
+ const acceptanceIndex=source.indexOf(acceptanceMark);if(acceptanceIndex<0)throw Error(id+' has no acceptance text.');
+ const requirement=source.slice(0,acceptanceIndex).trim(),points=source.slice(acceptanceIndex+acceptanceMark.length).trim();
  const row=withoutSummary.split('\n')[clause.row-1];
  const cells=row.split(/(?<!\\)\|/).slice(1,-1).map(cell=>cell.trim());
  const evidence=cells[4],gap=cells[5];
  const marker='<!-- contract-docs:'+id+' -->';
- const generated=`- **${id} — ${clause.title}** (${clause.status}). Requirement: ${requirement} Acceptance: ${points} Evidence: ${evidence}${gap?' Gap: '+gap:''} ${marker}`;
+ const generated=`- **${id} — ${clause.title}** (${clause.status}). Requirement: ${escape(requirement)} Acceptance: ${escape(points)} Evidence: ${evidence}${gap?' Gap: '+gap:''} ${marker}`;
  const acceptanceLines=nextAcceptance.split('\n'),index=acceptanceLines.findIndex(line=>line.startsWith('- **'+id+' — '));
- if(index<0)throw Error('No legacy acceptance entry for '+id);acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\n');
+ if(index<0){if(!id.startsWith('BASE-AGENT-'))throw Error('No legacy acceptance entry for '+id);acceptanceLines.push(generated);}else acceptanceLines[index]=generated;nextAcceptance=acceptanceLines.join('\n');
  const claim=`| ${id} | ${clause.status} | ${escape(requirement)}${gap?' Gap: '+escape(gap):''} | ${evidence} |`;
  const claimLines=nextClaims.split('\n'),claimIndex=claimLines.findIndex(line=>line.startsWith('| '+id+' |'));
  if(claimIndex>=0)claimLines[claimIndex]=claim;else{while(claimLines.at(-1)==='')claimLines.pop();claimLines.push(claim,'');}
