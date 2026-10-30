@@ -7011,6 +7011,10 @@
       "sha256": "df9f4daaa8289de9e8d7f5a0722e8e5f2fa68c77cb80fc884795db5997686648",
       "executable": false
     },
+    "tests/agent-door/verify-pin.mjs": {
+      "sha256": "9ee0f777133239129fd0931d1987d2be80f44aa37a3e98f0deaaaed38afa8084",
+      "executable": false
+    },
     "tests/agent-door/workspace-steps.mjs": {
       "sha256": "319e76699cc8d28a165346ff907be0a822273b45b6058aff715275edfa2bf8cb",
       "executable": false
