@@ -390,7 +390,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "d555e789cffb744a9f83d76ebe42a2e3bdd7a055",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
           "paths": [
             "modules/agent-door"
           ]
@@ -413,7 +413,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "d555e789cffb744a9f83d76ebe42a2e3bdd7a055",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
           "paths": [
             "modules/business-settings"
           ]
@@ -437,7 +437,7 @@
         ],
         "origin": {
           "repository": "https://github.com/runeditrun/base.git",
-          "revision": "d555e789cffb744a9f83d76ebe42a2e3bdd7a055",
+          "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
           "paths": [
             "foundation/runtime/theme-frame.ts",
             "foundation/runtime/icon-head.ts"
