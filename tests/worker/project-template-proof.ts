@@ -3,7 +3,7 @@ import {env} from 'cloudflare:workers';
 import {invite,actor,request} from './base-auth-fixture';
 import type {setupIntegrations} from './integration-fixture';
 export async function exerciseProjectTemplates(f:Awaited<ReturnType<typeof setupIntegrations>>){
- const markdown='## Template plan\n\n> Retain the launch plan\n\n---\n\n| Step | Owner |\n| --- | --- |\n| Build | Team |\n\n```typescript\nconst ready: boolean = true;\n```\n\n## Pasted plan\n\n- Plan item\n\n[Guide](https://example.test/guide)';
+ const markdown='## Template plan\n\n> Retain the launch plan\n\n---\n\n| Step | Owner |\n| --- | --- |\n| Build | Team |\n\n```typescript\nconst ready: boolean = true;\n```\n\n## Pasted plan\n\n- Plan item\n\n[Guide](https://example.test/guide)\n\n| Phase | Decision |\n| --- | --- |\n| Review | Ready |\n\n```javascript\nconst pasted = true;\n```';
  const team=f.initial.teams[0],member=await invite('synthetic-vector-51@example.test',f.cookie,'member'),memberId=await actor(member);
  const call=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,member);
  expect((await f.call('/settings/teams/'+team.id+'/members/'+memberId,'PUT',{role:'member'})).status).toBe(200);
@@ -21,6 +21,14 @@ export async function exerciseProjectTemplates(f:Awaited<ReturnType<typeof setup
  expect(issues.map(i=>i.description)).toEqual(input.issues.map(i=>i.description));
  const stored=await(await f.call('/project-templates/'+template.id)).json() as any;
  expect(stored).toMatchObject({description:markdown,milestones:input.milestones,issues:input.issues});
+ for(const oversized of [
+  {...input,description:'x'.repeat(100001)},
+  {...input,milestones:input.milestones.map((m,i)=>i===0?{...m,description:'x'.repeat(100001)}:m)},
+  {...input,issues:input.issues.map((issue,i)=>i===0?{...issue,description:'x'.repeat(100001)}:issue)},
+ ]){
+  expect((await f.call('/project-templates/'+template.id,'PUT',{...oversized,expectedVersion:stored.version})).status).toBe(400);
+  expect(await(await f.call('/project-templates/'+template.id)).json()).toEqual(stored);
+ }
  expect(detail.activity.filter((a:any)=>a.kind==='project.template_applied')).toHaveLength(1);
  expect(detail.activity.find((a:any)=>a.kind==='project.template_applied').nextValue.templateName).toBe(input.name);
  const captured=await f.call('/project-templates/from-project/'+result.projectId,'POST',{name:'synthetic-vector-61',teamId:team.id,referenceDate:'2027-03-01',cadence:'Weekly'});expect(captured.status,await captured.clone().text()).toBe(201);const teamTemplate=await captured.json() as any;

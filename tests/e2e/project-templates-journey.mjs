@@ -13,6 +13,7 @@ import {beforePrivateNavigation} from './collaboration-navigation.mjs';
 const require=createRequire(import.meta.url),axe=await readFile(require.resolve('axe-core/axe.min.js'),'utf8');
 export async function projectTemplatesJourney(page,context,runtime,capture){
  const viewport=page.viewportSize(),base=runtime.base,errors=[];const onError=e=>errors.push(e.message),onConsole=m=>{if(/hydrat|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());};page.on('pageerror',onError);page.on('console',onConsole);
+ const trackingRequests=[],onRequest=request=>{if(request.url().includes('synthetic-vector-tracking'))trackingRequests.push(request.url());};page.on('request',onRequest);
  const api=async(path,method='GET',data)=>{return withOperatorClient(context, async client => {
 const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});assert(r.ok(),method+' '+path+' '+r.status());return await r.json();
 });};
@@ -61,7 +62,8 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
   console.log('PROJ-012 '+width+': save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS');
  }
  assert.deepEqual(errors,[],'no template hydration mismatch or page errors');
- }finally{page.off('pageerror',onError);page.off('console',onConsole);if(viewport)await page.setViewportSize(viewport);}
+ assert.deepEqual(trackingRequests,[],'rich paste and every receiving screen make no tracking image request');
+ }finally{page.off('pageerror',onError);page.off('console',onConsole);page.off('request',onRequest);if(viewport)await page.setViewportSize(viewport);}
 }
 
 // Keep the historical native sample installation distinct from configured-owner
@@ -81,8 +83,23 @@ export async function nativeProjectTemplatesJourney(browser){
 // Exercise formatting at desktop width; capture the same changed screens on a
 // phone without registering another permanent test or duplicating assertions.
 async function templateFormattingJourney(page,api,id,check){
+ const initial=await api('/project-templates/'+id);
  await page.getByRole('button',{name:'Edit project template',exact:true}).click();
  const edit=page.getByRole('form',{name:'Edit project template',exact:true});
+ for(const label of ['Template description','Milestone description','Issue Markdown description']){
+  const field=edit.getByLabel(label,{exact:true}).first(),limit='x'.repeat(100000);
+  await field.fill(limit);await field.press('ControlOrMeta+End');await field.press('ControlOrMeta+b');
+  await field.locator('..').getByRole('status').filter({hasText:'character limit'}).waitFor();
+  assert.equal(await field.inputValue(),limit,'formatting refuses an oversized edit without losing the controlled draft');
+  await pasteHtml(field,'<p>synthetic-vector-overflow</p>');
+  assert.equal(await field.inputValue(),limit,'rich paste refuses an oversized edit without truncating the draft');
+  await field.press('Backspace');await field.press('z');await field.press('y');
+  assert.equal(await field.inputValue(),limit.slice(0,-1)+'z','native typing retains the same field limit');
+ }
+ await edit.getByRole('button',{name:'Cancel template edit',exact:true}).click();
+ assert.deepEqual(await api('/project-templates/'+id),initial,'canceling all three controlled drafts leaves the template unchanged');
+ await page.getByRole('button',{name:'Edit project template',exact:true}).click();
+ for(const [label,body] of [['Template description',initial.description],['Milestone description',initial.milestones[0].description],['Issue Markdown description',initial.issues[0].description]])assert.equal(await edit.getByLabel(label,{exact:true}).first().inputValue(),body,'cancelled drafts do not leak into reopened fields');
  const bodies=[];
  for(const [label,title] of [['Template description','Template plan'],['Milestone description','Milestone plan'],['Issue Markdown description','Issue plan']]){
   const field=edit.getByLabel(label,{exact:true}).first();
@@ -92,23 +109,34 @@ async function templateFormattingJourney(page,api,id,check){
    await field.pressSequentially('/'+query);await field.press('Enter');
   }
   await insert('quote');await field.pressSequentially('Retain the launch plan');
-  await insert('divider');await insert('table');await insert('code');
+  await insert('divider');await insert('table');
+  const tableDraft=await field.inputValue(),tableStart=tableDraft.indexOf('| Column 1 |');
+  await selectCaret(field,tableStart+2);
+  const tableControls=field.locator('..').getByRole('group',{name:'Edit selected table',exact:true});
+  await tableControls.getByRole('button',{name:'Add row',exact:true}).click();
+  assert.equal(markdownTable(await field.inputValue()).children.length,3,'table row insertion works in the controlled template draft');
+  await tableControls.getByRole('button',{name:'Delete row',exact:true}).click();
+  assert.equal(await field.inputValue(),tableDraft,'removing the inserted row preserves the original table');
+  await tableControls.getByRole('button',{name:'Add column',exact:true}).click();
+  assert(markdownTable(await field.inputValue()).children.every(row=>row.children.length===3),'column insertion extends the header and every row');
+  const expanded=await field.inputValue();await selectCaret(field,expanded.indexOf('|',tableStart+1)+2);
+  await tableControls.getByRole('button',{name:'Delete column',exact:true}).click();
+  assert.equal(await field.inputValue(),tableDraft,'removing the inserted column preserves the original table');
+  await insert('code');
   await edit.getByRole('option',{name:'typescript',exact:true}).click();
   await field.pressSequentially('const ready: boolean = true;');
   await field.press('ControlOrMeta+End');await field.press('Enter');await field.press('Enter');
-  await field.evaluate(element=>{
-   const data=new DataTransfer();
-   data.setData('text/html','<h2>Pasted plan</h2><ul><li>Plan item</li></ul><p><a href="https://example.test/guide">Guide</a></p><script>window.syntheticTemplateScript=true</script>');
-   data.setData('text/plain','Pasted plan Plan item Guide');
-   element.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:data}));
-  });
+  await pasteHtml(field,'<h2>Pasted plan</h2><ul><li>Plan item</li></ul><p><a href="https://example.test/guide">Guide</a></p><table><tr><th>Phase</th><th>Decision</th></tr><tr><td>Review</td><td>Ready</td></tr></table><pre><code class="language-javascript">const pasted = true;</code></pre><script>window.syntheticTemplateScript=true</script><style>.syntheticTemplateStyle { display: none; }</style><form>syntheticTemplateForm<input value="syntheticTemplateInput"></form><img src="https://example.test/synthetic-vector-tracking.png" onerror="window.syntheticTemplateScript=true">');
   const body=await field.inputValue();bodies.push(body);
   assert(!/<script\b/i.test(body)&&!body.includes('syntheticTemplateScript'),'rich paste drops script and its content');
+  for(const dropped of ['syntheticTemplateStyle','syntheticTemplateForm','syntheticTemplateInput','synthetic-vector-tracking'])assert(!body.includes(dropped),'rich paste drops '+dropped);
   const nodes=fromMarkdown(body,{extensions:[gfm()],mdastExtensions:[gfmFromMarkdown()]}).children;
-  assert.deepEqual(nodes.map(node=>node.type),['heading','blockquote','thematicBreak','table','code','heading','list','paragraph']);
+  assert.deepEqual(nodes.map(node=>node.type),['heading','blockquote','thematicBreak','table','code','heading','list','paragraph','table','code']);
   assert.equal(nodes[0].children[0].value,title);assert.equal(nodes[4].lang,'typescript');assert.equal(nodes[4].value,'const ready: boolean = true;');
   assert.equal(nodes[3].children.length,2);assert(nodes[3].children.every(row=>row.children.length===2));
   assert.equal(nodes[6].children[0].children[0].children[0].value,'Plan item');assert.equal(nodes[7].children[0].url,'https://example.test/guide');
+  assert.deepEqual(nodes[8].children.map(row=>row.children.map(cell=>cell.children[0].value)),[['Phase','Decision'],['Review','Ready']]);
+  assert.equal(nodes[9].lang,'javascript');assert.equal(nodes[9].value,'const pasted = true;');
   const bold=field.locator('..').getByRole('button',{name:'Bold text',exact:true});
   await bold.focus();await page.getByRole('tooltip',{name:'Bold text',exact:true}).waitFor();await field.focus();
  }
@@ -122,25 +150,52 @@ async function templateFormattingJourney(page,api,id,check){
  await page.getByRole('button',{name:'Edit project template',exact:true}).click();
  const reopened=page.getByRole('form',{name:'Edit project template',exact:true});
  for(const [index,label] of ['Template description','Milestone description','Issue Markdown description'].entries())assert.equal(await reopened.getByLabel(label,{exact:true}).first().inputValue(),bodies[index],'reopened controlled draft');
+ const staleBody=bodies[0]+'\n\nUnsaved local revision';
+ await reopened.getByLabel('Template description',{exact:true}).fill(staleBody);
+ const {id:storedId,version,canEdit,...input}=stored;
+ const newer=await api('/project-templates/'+id,'PUT',{...input,cadence:'Every Tuesday',expectedVersion:version});
+ const [staleResponse]=await Promise.all([
+  page.waitForResponse(response=>new URL(response.url()).pathname==='/api/project-templates/'+id&&response.request().method()==='PUT'),
+  reopened.getByRole('button',{name:'Save template changes',exact:true}).click(),
+ ]);
+ assert.equal(staleResponse.status(),409,'an open editor cannot overwrite a newer template');
+ await page.getByRole('alert').waitFor();
+ assert.equal(await reopened.getByLabel('Template description',{exact:true}).inputValue(),staleBody,'stale save retains the local draft for recovery');
+ assert.deepEqual(await api('/project-templates/'+id),newer,'stale save leaves every stored field unchanged');
  await reopened.getByRole('button',{name:'Cancel template edit',exact:true}).click();
+ await page.reload();await page.getByRole('button',{name:'New project from template',exact:true}).click();
+ await page.locator('[data-project-templates-ready="true"]').waitFor();await page.getByLabel('Choose project template',{exact:true}).selectOption(id);
  await page.getByText('Preview project structure',{exact:true}).click();
  const previews=page.locator('.template-preview .safe-markdown');
  await assertFormatting(previews.nth(0),'Template plan');await assertFormatting(previews.nth(1),'Milestone plan');await assertFormatting(previews.nth(3),'Issue plan');
  assert.equal(await page.evaluate(()=>window.syntheticTemplateScript),undefined);
  await formattingScreens(page,check,'project-template-markdown-preview');
- console.log('PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, safe previews and tooltips');
+ console.log('PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content');
  return bodies;
 }
+async function pasteHtml(field,html){
+ await field.evaluate((element,html)=>{
+  const data=new DataTransfer();data.setData('text/html',html);data.setData('text/plain','Pasted plan Plan item Guide');
+  element.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:data}));
+ },html);
+}
+function markdownTable(body){return fromMarkdown(body,{extensions:[gfm()],mdastExtensions:[gfmFromMarkdown()]}).children.find(node=>node.type==='table');}
+async function selectCaret(field,position){await field.focus();await field.evaluate((element,position)=>element.setSelectionRange(position,position),position);}
 async function assertFormatting(root,title){
  await root.getByRole('heading',{name:title,exact:true}).waitFor();
  assert.equal((await root.locator('blockquote').textContent()).trim(),'Retain the launch plan');
- assert.equal(await root.locator('hr').count(),1);assert.equal(await root.getByRole('table').count(),1);
- assert.equal(await root.locator('th').count(),2);assert.equal(await root.locator('td').count(),2);
+ assert.equal(await root.locator('hr').count(),1);assert.equal(await root.getByRole('table').count(),2);
+ const tables=root.getByRole('table');
+ assert.equal(await tables.first().locator('th').count(),2);assert.equal(await tables.first().locator('td').count(),2);
+ assert.deepEqual(await tables.nth(1).locator('th,td').allTextContents(),['Phase','Decision','Review','Ready']);
  assert.equal((await root.locator('code.language-typescript').textContent()).trim(),'const ready: boolean = true;');
  assert(await root.locator('code.language-typescript .hljs-keyword').count()>0,'TypeScript syntax highlighting');
+ assert.equal((await root.locator('code.language-javascript').textContent()).trim(),'const pasted = true;');
+ assert(await root.locator('code.language-javascript .hljs-keyword').count()>0,'pasted code syntax highlighting');
  await root.getByRole('heading',{name:'Pasted plan',exact:true}).waitFor();assert.equal((await root.locator('li').textContent()).trim(),'Plan item');
  assert.equal(await root.getByRole('link',{name:'Guide',exact:true}).getAttribute('href'),'https://example.test/guide');
  assert.equal(await root.locator('script').count(),0);assert(!(await root.textContent()).includes('syntheticTemplateScript'));
+ assert.equal(await root.locator('style,form,input,img').count(),0,'pasted active content and tracking images never render');
 }
 async function formattingScreens(page,check,name){
  const viewport=page.viewportSize();
