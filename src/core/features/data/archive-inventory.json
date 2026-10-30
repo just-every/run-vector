@@ -2047,5 +2047,26 @@
     "removed",
     "created_at",
     "updated_at"
+  ],
+  "team_deployment_followups": [
+    "team_id",
+    "window_hours",
+    "enabled_at",
+    "configured_by",
+    "version",
+    "updated_at"
+  ],
+  "deployment_followup_watches": [
+    "repository_id",
+    "sha",
+    "issue_id",
+    "pull_number",
+    "merged_at",
+    "recorded_at",
+    "production_deployment_id",
+    "production_at",
+    "asked_at",
+    "question_id",
+    "recipient_id"
   ]
 }

@@ -7,6 +7,7 @@ import {loadAuthority} from '../../roles/authority';
 import {decide} from '../../roles/policy';
 import {IntegrationError} from '../errors';
 import {gitRule,gitTriggers,gitGuard} from './rules';
+import {followupWindow} from '../../deployment-followup/settings';
 const input=z.object({githubAutomation:z.object({trigger:z.enum(gitTriggers),statusId:z.string().length(26).nullable(),allowReopen:z.boolean(),expectedVersion:z.number().int().min(0),environment:z.string().trim().min(1).max(200).optional()}).strict()}).strict();
 export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
  app.get('/github/automation',async c=>{
@@ -18,7 +19,7 @@ export function addGithubRuleRoutes(app:Hono<AppEnvironment>){
    if(decide(authority,{row:'teams.settings',teams:[team.id]})!=='allow')continue;
    const statuses=(await c.env.DB.prepare("SELECT id,name FROM workflow_statuses WHERE team_id=? AND category IN ('backlog','unstarted','started','completed','canceled') ORDER BY position,id").bind(team.id).all<{id:string;name:string}>()).results;
    const rules=await Promise.all(gitTriggers.map(trigger=>gitRule(c.env.DB,team.id,trigger)));
-   result.push({...team,statuses,rules});
+   result.push({...team,statuses,rules,followup:await followupWindow(c.env.DB,team.id)});
   }
   return c.json({teams:result});
  });

@@ -35,4 +35,5 @@ export const channelLabels = {
   blocking: "Followed blocking changes",
   due_changed: "Followed due date changes",
   reminder: "Personal reminders",
+  deployment_question: "Deployment follow-up questions",
 };

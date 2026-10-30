@@ -2,8 +2,9 @@ import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
 import {exerciseGithubAutomation,exerciseGithubCommits,exerciseGithubDeployments} from './github-automation-scenario';
+import {exerciseDeploymentFollowups} from './deployment-followup-scenario';
 import {bindings} from './base-auth-fixture';
-it('[GITHUB-001 GITHUB-002 GITHUB-003 GITHUB-004 RELEASE-002] signed deliveries preserve links, automate team statuses and notify followers exactly once',async()=>{
+it('[GITHUB-001 GITHUB-002 GITHUB-003 GITHUB-004 RELEASE-002 PUSH-003] signed deliveries preserve links, automate team statuses, follow merges to production and notify exactly once',async()=>{
  const f=await setupIntegrations(),issue=await f.create(),second=await f.create({title:'Second referenced work'}),res=await f.call('/settings/integrations/github','POST',{name:'Owned repository',repository:'octocat/test-repo1'});expect(res.status).toBe(201);
  expect(await (await f.call('/issues/'+issue.identifier)).json()).toMatchObject({branchName:issue.identifier.toLowerCase()+'-authored-work'});
  const config=await res.json() as {id:string;secret:string;receiver:string};
@@ -27,6 +28,7 @@ it('[GITHUB-001 GITHUB-002 GITHUB-003 GITHUB-004 RELEASE-002] signed deliveries 
  await exerciseGithubAutomation(f,send);
  await exerciseGithubCommits(f,send);
  await exerciseGithubDeployments(f,send);
+ await exerciseDeploymentFollowups(f,send);
  expect((await f.call('/settings/integrations/github/'+config.id,'DELETE')).status).toBe(200);expect((await send(payload())).status).toBe(401);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 },180000);
