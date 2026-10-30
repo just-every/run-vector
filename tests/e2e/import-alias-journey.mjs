@@ -40,6 +40,15 @@ export async function exerciseImportAliases({page,runtime,cookie,evidence}) {
  await page.locator('h1:visible').first().click();await page.keyboard.press('Control+k');
  const palette=page.getByRole('dialog',{name:'Command palette',exact:true});await palette.getByRole('textbox').fill(url);
  await palette.getByRole('option').filter({hasText:imported.identifier}).waitFor();await page.keyboard.press('Enter');await page.waitForURL('**/app/issues/'+imported.identifier);
+ const document=await call('/documents','POST',{parentKind:'issue',parentId:native.id,title:'synthetic-vector-1827 alias document',body:'See ENG-123'},201);
+ await navigate(page,runtime.base+'/app/documents/'+document.id);
+ const documentContent=page.getByRole('region',{name:'Document content',exact:true}),documentLink=documentContent.getByRole('link',{name:'ENG-123',exact:true});
+ await documentLink.waitFor();assert.equal(await documentLink.getAttribute('href'),'/app/issues/'+imported.identifier);
+ await documentLink.focus();await page.getByRole('tooltip').filter({hasText:imported.title}).waitFor();
+ assert.ok((await page.getByRole('tooltip').innerText()).includes((await call('/issues/'+imported.identifier)).status.name));
+ await inspect(page,documentContent,'document-alias-reference');await page.setViewportSize({width:1440,height:1000});
+ await documentLink.click();await page.waitForURL('**/app/issues/'+imported.identifier);
+ assert.equal((await call('/issues/'+imported.identifier)).activity.filter(row=>row.nextValue?.sourceDocumentId===document.id).length,1);
  const config=await call('/settings/integrations/github','POST',{name:'synthetic-vector-1824',repository:'octocat/hello-world'},201);
  const admin=await call('/settings/administration'),targetTeam=admin.teams.find(row=>row.id===team.id),done=targetTeam.statuses.find(row=>row.category==='completed');
  const rules=await call('/github/automation'),rule=rules.teams.find(row=>row.id===team.id).rules.find(row=>row.trigger==='merged');

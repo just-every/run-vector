@@ -32,6 +32,16 @@ export async function importAliasScenario(f:Awaited<ReturnType<typeof setupImpor
  const referring=await f.create({title:'synthetic-vector-1813 references',description:'See ENG-123 and GH-42'});
  expect((await (await f.call('/issues/'+referring.identifier+'/references')).json()) as object).toMatchObject({references:expect.arrayContaining([expect.objectContaining({identifier:'ENG-123',canonicalIdentifier:imported.identifier}),expect.objectContaining({identifier:'GH-42',canonicalIdentifier:githubSource.identifier})])});
  expect(await env.DB.prepare('SELECT count(*) n FROM issue_reference_subjects WHERE source_issue_id=? AND target_issue_id=?').bind(referring.id,imported.id).first<number>('n')).toBe(1);
+ // Native document subjects keep old and canonical keys on one retained edge.
+ let document=await (await f.call('/documents','POST',{parentKind:'issue',parentId:native.id,title:'synthetic-vector-1817',body:'See ENG-123'})).json() as {id:string;version:number;references:{identifier:string;canonicalIdentifier?:string}[]};
+ expect(document.references).toEqual([expect.objectContaining({identifier:'ENG-123',canonicalIdentifier:imported.identifier})]);
+ const documentLinks=async()=>((await (await f.call('/issues/'+imported.identifier)).json()) as {activity:{id:string;nextValue:{sourceDocumentId?:string;removed:boolean}}[]}).activity.filter(row=>row.nextValue?.sourceDocumentId===document.id);
+ expect(await documentLinks()).toHaveLength(1);const documentLink=(await documentLinks())[0];
+ for(const body of ['Again ENG-123 and '+imported.identifier,'Removed.','See ENG-123']){
+  const response=await f.call('/documents/'+document.id,'PATCH',{expectedVersion:document.version,body});expect(response.status,await response.clone().text()).toBe(200);
+  document=await response.json() as typeof document;
+  expect(await documentLinks()).toEqual([expect.objectContaining({id:documentLink.id,nextValue:expect.objectContaining({removed:body==='Removed.'})})]);
+ }
  const configured=await f.call('/settings/integrations/github','POST',{name:'synthetic-vector-1805',repository:'octocat/test-repo1'});expect(configured.status).toBe(201);
  const config=await configured.json() as {id:string;secret:string;receiver:string};
  const done=f.team.statuses.find(s=>s.category==='completed')!;
