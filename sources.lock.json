@@ -4209,7 +4209,7 @@
       "executable": false
     },
     "src/core/features/discussion/anchors.ts": {
-      "sha256": "4595af8882fce73aac774d371a1f3c1850318170e0a81dfa0f8dbdecd9d1983b",
+      "sha256": "02507b4549c8ac46105fed10dea0e38708e2760f7669085e7dc3fc4c727ef1a9",
       "executable": false
     },
     "src/core/features/discussion/permissions.ts": {
@@ -5073,7 +5073,7 @@
       "executable": false
     },
     "src/core/features/issue-references/ui/remark.ts": {
-      "sha256": "8502b92ecf42235adb7db568f111a64f115a271633efb3275186fb4018f0f7e6",
+      "sha256": "80d0a733faf1d946e7bf8e47b0d33920f14e39b29ef7ddbe0e287ce6ec43b588",
       "executable": false
     },
     "src/core/features/issue-undo/admission.ts": {
@@ -5229,7 +5229,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/description-discussion.tsx": {
-      "sha256": "c8288e642c9eab0539d0fd4885f798a7ca6a462df201f45a3c5b63863d712802",
+      "sha256": "468fafe5ea63fa05691525471acd285339614a0314697a3ef721c72c8c5dd84a",
       "executable": false
     },
     "src/core/features/issues/ui/detail-context.css": {
@@ -5593,7 +5593,7 @@
       "executable": false
     },
     "src/core/features/notifications/mention-markdown.ts": {
-      "sha256": "1dfcd151a5606353b7560eabb50e494dd4e1a6088774a39eb5844aef3317bfa7",
+      "sha256": "679f224218998f074c8157bedb3e906f604ba670c1fbdfb4553d74a50c564a85",
       "executable": false
     },
     "src/core/features/notifications/mention-token.ts": {
@@ -7029,7 +7029,7 @@
       "executable": false
     },
     "tests/e2e/core-threads-journey.mjs": {
-      "sha256": "95867bed0d06a95f15e3efdac7ce1d9e804964199da6c85747ff5f118f627772",
+      "sha256": "f2c86f6128702a02e6718354811dd4a4a232365ecc736fd7af3f43525907fa9d",
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
