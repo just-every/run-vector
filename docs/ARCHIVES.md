@@ -23,6 +23,11 @@ the transfer runs no Wrangler migrations there and refuses with
 file (or `migration_ledger:multiple` when a Wrangler ledger sits beside it). Any
 other database is migrated by Wrangler before the transfer, as before.
 
+Older version 2 archives without a schema-object inventory use their authenticated
+table projection to locate the recorded migration history. Base still checks the
+complete destination schema and historical replay before native restore; forward
+migrations run in isolated resources without changing the source archive.
+
 Sessions, sign-in links, mail outboxes, provider/signing secrets, transient rate
 limits and destination-only grants/holds are excluded. Safe Base operator
 identity is included because native foreign keys depend on it. The configured
@@ -30,6 +35,12 @@ historical owner signs in freshly after restore. Other historical operators need
 explicit destination approval; uninvited emails gain no access. Imported pending,
 accepted and uncertain deliveries retain their historical state and remain held.
 Review restores access for future work; it never replays historical sends.
+
+Company-agent policy, credentials, pending reviews and door operation ledgers are
+installation state and are excluded. Native issue activity retains its agent
+attribution. Reconnect Business and adopt policy at the destination before agents
+act there. Complete custody and restoration of retained door artifacts remain
+unscoped; see [Company agent access](AGENT-DOOR.md).
 
 The native `/api/portability` HTTP transport uses current cookie authority,
 same-origin writes and per-operator job ownership. The pinned `rer export`

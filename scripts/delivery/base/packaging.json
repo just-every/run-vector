@@ -54,7 +54,7 @@
     }
   },
   "managed": {
-    "workflowRef": "runeditrun/delivery/.github/workflows/trusted-build.yml@86c8b37399c901bffd9a240dbd1148a65ec83b34",
+    "workflowRef": "runeditrun/delivery/.github/workflows/trusted-build.yml@ff70d729948753ffdcceeca94aad063af2dcd979",
     "artifactFile": "rer-worker-artifact.json",
     "buildProfile": "project",
     "verificationProfiles": [
@@ -87,15 +87,18 @@
         "RER_OWNER_CLAIM_INSTALLATION_ID",
         "RER_OWNER_CLAIM_APP_ORIGIN",
         "RER_OWNER_CLAIM_PUBLIC_KEYS",
+        "RER_BUSINESS_TRUST",
         "INTEGRATION_EGRESS_POLICY",
         "IDENTITY_PROVIDER"
       ],
       "secretNames": [
         "SESSION_SECRET",
-        "SETUP_TOKEN"
+        "SETUP_TOKEN",
+        "INSTALLATION_KEY"
       ],
       "optionalSecretNames": [
-        "MAIL_API_KEY"
+        "MAIL_API_KEY",
+        "INSTALLATION_KEY_PREVIOUS"
       ],
       "providerEffects": [
         "outbound-mail"

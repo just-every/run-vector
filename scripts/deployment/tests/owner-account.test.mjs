@@ -1,3 +1,4 @@
+import {randomBytes} from 'node:crypto';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtemp,rm,readFile,mkdir,writeFile,realpath} from 'node:fs/promises';
@@ -15,7 +16,7 @@ const artifact={version:1,source:{sha:'5'.repeat(40),tree:'6'.repeat(40)},run:{i
 async function fixture(t) {
  const provider=ownerProvider(),root=await mkdtemp(join(await realpath(tmpdir()),'vector-owner-'));t.after(async()=>{provider.close();await rm(root,{recursive:true,force:true})});
  const api=cloudflare(provider),target=await ownerTarget(api,{project:declaration.project,environment:'production'}),plan=ownerPlan(target,declaration,artifact),statePath=join(root,'production.json');
- return {...provider,target,plan,statePath,args:{api,target,plan,artifact,statePath,env:{SESSION_SECRET:'test-only-auth-secret',SETUP_TOKEN:'test-only-setup-token-at-least-32-bytes',SENDGRID_API_KEY:'test-only-sendgrid-key'},fetch:provider.fetch}};
+ return {...provider,target,plan,statePath,args:{api,target,plan,artifact,statePath,env:{INSTALLATION_KEY:randomBytes(32).toString('hex'),SESSION_SECRET:'test-only-auth-secret',SETUP_TOKEN:'test-only-setup-token-at-least-32-bytes',SENDGRID_API_KEY:'test-only-sendgrid-key'},fetch:provider.fetch}};
 }
 test('actual Vector owner plan preserves native data, secrets and state on exact repeat',async t=>{
  const f=await fixture(t);assert.equal(f.target.worker,'vector-projects-production');assert.deepEqual(f.plan.crons,['* * * * *']);
@@ -26,7 +27,7 @@ test('actual Vector owner plan preserves native data, secrets and state on exact
  const before=await readFile(f.statePath),writes=f.state.writes.length,secretWrites=JSON.stringify(f.state.secrets);
  const repeat=await ownerDeploy(f.args);assert.equal(repeat.receipt.changed,false);assert.deepEqual(await readFile(f.statePath),before);
  assert.equal(repeat.receipt.durableObjects.find(row=>row.binding==='RESTORE_COORDINATOR').id,namespace.id);
- assert.equal(f.state.writes.length,writes);assert.equal(JSON.stringify(f.state.secrets),secretWrites);assert.equal(f.state.databases[0].db.prepare('SELECT body FROM notes').get().body,'retained');assert.equal(f.state.objects.get('retained.txt').toString(),'retained object');
+ assert.equal(f.state.writes.length,writes);assert.equal(JSON.stringify(f.state.secrets)===secretWrites,true,'repeat retains private secret bindings');assert.equal(f.state.databases[0].db.prepare('SELECT body FROM notes').get().body,'retained');assert.equal(f.state.objects.get('retained.txt').toString(),'retained object');
 });
 test('missing owner secrets refuse before resource writes',async t=>{
  const f=await fixture(t),before=f.state.writes.length;await assert.rejects(ownerDeploy({...f.args,env:{}}),/secret/);assert.equal(f.state.writes.length,before);
@@ -57,10 +58,10 @@ test('real owner CLI packages the Vector declaration, maps mail credentials and 
  await writeFile(join(root,'migrations/core/0001_notes.sql'),sql);
  await writeFile(join(root,'deploy.json'),JSON.stringify({...declaration,vars:{...declaration.vars,FIRST_OWNER_EMAIL:'owner@cli.test',FIRST_OWNER_NAME:'Owner',WORKSPACE_NAME:'CLI fixture',WORKSPACE_TIMEZONE:'UTC',DEFAULT_TEAM_NAME:'Delivery',DEFAULT_TEAM_PREFIX:'VEC',MAIL_FROM:'signin@cli.test'}}));
  await writeFile(join(root,'.gitignore'),'dist/\n.rer/\n');
- const git=(...args)=>execFileSync('git',['-c','user.name=Vector fixture','-c','user.email=fixture@example.test','-c','commit.gpgsign=false',...args],{cwd:root,stdio:'pipe'});
+ const git=(...args)=>execFileSync('env',['GIT_AUTHOR_NAME=Vector fixture','GIT_AUTHOR_EMAIL=fixture@example.test','GIT_COMMITTER_NAME=Vector fixture','GIT_COMMITTER_EMAIL=fixture@example.test','git','-c','commit.gpgsign=false',...args],{cwd:root,stdio:'pipe'});
  git('init','-q');git('add','.');git('commit','-qm','Owner CLI protocol fixture');
  const argv=['deploy','--declaration','deploy.json','--environment','production'],options={cwd:root,fetch:provider.fetch};
- const env={CLOUDFLARE_ACCOUNT_ID:provider.accountId,CLOUDFLARE_API_TOKEN:provider.token,SESSION_SECRET:'test-only-session-secret',SETUP_TOKEN:'test-only-setup-token-at-least-32-bytes',SENDGRID_API_KEY:'test-only-sendgrid-key'};
+ const env={INSTALLATION_KEY:randomBytes(32).toString('hex'),CLOUDFLARE_ACCOUNT_ID:provider.accountId,CLOUDFLARE_API_TOKEN:provider.token,SESSION_SECRET:'test-only-session-secret',SETUP_TOKEN:'test-only-setup-token-at-least-32-bytes',SENDGRID_API_KEY:'test-only-sendgrid-key'};
  await assert.rejects(ownerCli(argv,{},options),error=>error.message==='missing-input');assert.equal(provider.state.writes.length,0);
  const first=await ownerCli(argv,env,options);assert.equal(first.changed,true);assert.equal(first.worker,'vector-projects-production');
  assert.equal(provider.state.secrets.find(row=>row.name==='MAIL_API_KEY').value,env.SENDGRID_API_KEY);assert.equal(provider.state.secrets.some(row=>row.name==='SENDGRID_API_KEY'),false);

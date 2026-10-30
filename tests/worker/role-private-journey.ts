@@ -4,6 +4,7 @@ import {afterNativeStatement} from './notification-session-fixture';
 import {request,bindings,origin} from './base-auth-fixture';
 import {createServerApp} from '../../src/core/app/server';
 import {resetLimits,type roleWorkspace} from './role-fixture';
+import {agentResourceClient} from './agent-resource-journey';
 type Workspace=Awaited<ReturnType<typeof roleWorkspace>>;
 async function json<T=any>(response:Response,status=200):Promise<T>{expect(response.status,await response.clone().text()).toBe(status);return response.json() as Promise<T>;}
 
@@ -21,6 +22,8 @@ export async function privateVisibilityJourney(w:Workspace) {
  const project=await json(await owner.api('/projects','POST',{name:'synthetic-vector-961',leadOperatorId:owner.id}),201);
  const publicIssue=await json(await owner.call('/issues','POST',{teamId:w.team.id,projectId:project.id,title:'synthetic-vector-962'}),201);
  const issue=await json(await owner.call('/issues','POST',{teamId:team.id,projectId:project.id,title:'synthetic-vector-963',statusId:team.statuses.find((s:any)=>s.category==='started').id,dueDate:'2026-11-04',assigneeOperatorId:member.id}),201);
+ const door=await agentResourceClient(member,owner),uri='vector://issue/'+issue.id;
+ await door.hidden(uri,issue.title);
  const upload=await createServerApp().request(origin+'/api/issues/'+issue.identifier+'/files',{method:'POST',headers:{cookie:owner.cookie,host:new URL(origin).host,Origin:origin,'content-type':'text/plain','x-file-name':'synthetic-vector-987.txt'},body:'synthetic-vector-988'},bindings);
  const file=await json(upload,201);
  const view=await json(await owner.call('/views','POST',{name:'synthetic-vector-964',isShared:true,query:{team:team.id}}),201);
@@ -70,6 +73,8 @@ export async function privateVisibilityJourney(w:Workspace) {
  const insights=await json(await member.call('/insights'+query));expect(insights.total).toBe(1);
  const bucket=insights.rows[0].key;
  expect(await(await member.call('/insights.csv'+query+'&bucket='+encodeURIComponent(bucket))).text()).toContain(issue.identifier);
+ await door.visible(uri,issue.identifier);
+ const writtenUris=await door.write(team.id);
  // Capability feeds never carry private-team items, even for their permitted creator.
  const feed=await json(await member.call('/calendar/feeds','POST',{teamId:null}),201);
  expect(await(await request(new URL(feed.url).pathname)).text()).not.toContain(issue.identifier);
@@ -79,6 +84,8 @@ export async function privateVisibilityJourney(w:Workspace) {
  expect((await member.call(`/issues/${issue.identifier}/comments`,'POST',{body:'synthetic-vector-972'})).status).toBe(201);
  for(const path of ['/issues?scope=created','/issues?scope=subscribed','/my-work/activity'])expect(JSON.stringify(await json(await member.call(path)))).toContain(path.includes('created')?mine.identifier:issue.identifier);
  expect((await owner.call(`/settings/teams/${team.id}/members/${member.id}`,'DELETE')).status).toBe(200);
+ await door.hidden(uri,issue.title);
+ for(const writtenUri of writtenUris)await door.hidden(writtenUri,'synthetic-vector-330');
  for(const path of ['/issues?scope=created','/issues?scope=subscribed','/my-work/activity']){const body=JSON.stringify(await json(await member.call(path)));expect(body).not.toContain(issue.identifier);expect(body).not.toContain(mine.identifier);}
  await hidden();
  // Existing definitions immediately re-evaluate when privacy changes, without data edits.

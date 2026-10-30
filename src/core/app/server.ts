@@ -1,4 +1,5 @@
 import {aliasRedirect} from '../features/data/aliases/routes';
+import { businessSettings } from '../features/agent-door/runtime';
 import {createOAuthPublicApp} from '../features/oauth-apps/routes';
 import {createInitiativeApi} from '../features/initiatives/api';
 import {addGithubIssueProjection} from '../features/integrations/github/issue-projection';
@@ -57,7 +58,7 @@ export function createServerApp() {
       // the first request initializes their owner. Signed claims stay explicit.
       try { isClaimed = await claimed(context.env.DB) || Boolean(context.env.FIRST_OWNER_EMAIL && !context.env.SETUP_TOKEN && !signedOwnerClaimConfigured(context.env)); }
       catch { return context.json({ error: 'setup_unavailable' }, 503, { 'Cache-Control': 'no-store' }); }
-      const workspaceName = context.env.WORKSPACE_NAME?.trim();
+      const workspaceName = (await (await businessSettings(context.env)).publicBrand()).displayName ?? context.env.WORKSPACE_NAME?.trim();
       if (isClaimed && !workspaceName) return context.json({ error: 'configuration_missing', message: 'WORKSPACE_NAME is required.' }, 503, { 'Cache-Control': 'no-store' });
       // Use one admission snapshot for both the state and installation name.
       const lobby = await lobbyResponse(context.req.raw, lobbyBindings, { ...identity, deployment: workspaceName || identity.product }, async () => isClaimed);

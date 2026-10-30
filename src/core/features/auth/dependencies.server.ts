@@ -13,6 +13,7 @@ export async function dependencyResponse(env: WorkerBindings, request: Request) 
     clientIp: () => config.local ? 'loopback' : request.headers.get('CF-Connecting-IP') ?? '' })
   return createDependencies({ db: env.DB, origin: config.origin, name: 'Vector',
     provider: env.IDENTITY_PROVIDER, local: config.local, auth: baseAuth(env),
+    INSTALLATION_KEY: env.INSTALLATION_KEY, INSTALLATION_KEY_PREVIOUS: env.INSTALLATION_KEY_PREVIOUS,
     claimOwner: token => claim(new Request(config.origin + '/auth/owner-claim', {
       method: 'POST', headers: { Host: new URL(config.origin).host, Origin: config.origin, 'Content-Type': 'application/json' },
       body: JSON.stringify({ token }),
