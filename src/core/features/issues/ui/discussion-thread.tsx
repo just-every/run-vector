@@ -69,7 +69,7 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
             <time dateTime={root.resolvedAt}>{relativeTime(root.resolvedAt)}</time>
           </span>
           <span className="comment-thread-count">
-            {root.actor} · {replies.length} {replies.length === 1 ? "reply" : "replies"}
+            {root.anchor ? `${root.anchor.removed ? "Quoted text removed" : "Quoted text"}: ${root.anchor.quote} · ` : ""}{root.actor} · {replies.length} {replies.length === 1 ? "reply" : "replies"}
           </span>
           <button type="button" disabled={busy} onClick={() => setExpanded(true)}>Show thread</button>
           <button type="button" disabled={shared.writable === false || busy} onClick={() => void resolve(false)}>Reopen</button>
@@ -78,6 +78,10 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
     );
   return (
     <section className="comment-thread" aria-label={`Thread started by ${root.actor}`}>
+      {root.anchor && <blockquote className="comment-source-quote" aria-label="Quoted description text">
+        {root.anchor.removed ? <del>{root.anchor.quote}</del> : root.anchor.quote}
+        <p>{root.anchor.removed ? "Quoted text removed" : "From the issue description"}</p>
+      </blockquote>}
       <CommentEntry comment={root} {...shared} />
       {replies.length ? (
         <ol className="comment-replies" aria-label="Replies">
