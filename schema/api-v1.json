@@ -2861,6 +2861,129 @@
             }
           }
         }
+      },
+      "get": {
+        "operationId": "labels_list",
+        "summary": "List workspace labels",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "labels:read"
+        ],
+        "x-object": "labels",
+        "x-operation": "list",
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "labels",
+                    "total",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Label"
+                      }
+                    },
+                    "total": {
+                      "type": "integer",
+                      "minimum": 0
+                    },
+                    "nextCursor": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "x-pagination": "cursor",
+        "x-filters": [
+          "name",
+          "projectsEnabled"
+        ],
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 2048
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Case-insensitive substring of the native label name.",
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "projectsEnabled",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ]
       }
     },
     "/teams": {
@@ -3817,6 +3940,71 @@
           }
         }
       }
+    },
+    "/labels/{id}": {
+      "get": {
+        "operationId": "labels_get",
+        "summary": "Read one workspace label",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "labels:read"
+        ],
+        "x-object": "labels",
+        "x-operation": "get",
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Label"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3895,6 +4083,40 @@
             "description": "Comment revision; changes on every native body edit, including checklist edits."
           }
         }
+      },
+      "Label": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "color",
+          "projectsEnabled",
+          "textColor"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "color": {
+            "type": "string",
+            "pattern": "^#[0-9a-fA-F]{6}$"
+          },
+          "projectsEnabled": {
+            "type": "boolean"
+          },
+          "textColor": {
+            "type": "string",
+            "enum": [
+              "#000000",
+              "#ffffff"
+            ]
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
@@ -4012,12 +4234,14 @@
       "status": "partial",
       "operations": {
         "list": {
-          "status": "owed",
-          "reason": "Native object API operation remains required by API-003."
+          "routes": [
+            "GET /labels"
+          ]
         },
         "get": {
-          "status": "owed",
-          "reason": "Native object API operation remains required by API-003."
+          "routes": [
+            "GET /labels/{id}"
+          ]
         },
         "create": {
           "routes": [
