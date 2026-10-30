@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "b65b19d05d466887cb110994e575ac6b85499537197cf2295bf9320b9b2d805e",
+      "sha256": "87bda2448c998e2951580f1fb88472a9381c5955eaf9cf3b101a13463b1dbf74",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d6d3e0abd6e3a867c94907f9597aef7cd776fb8c635fc0c751239ef168b2928a",
+      "sha256": "46bde727cd0abf55ddc1b2cb26818e58fa861feb5a2d806f52f0e4ad155ab616",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "2cf2f96061e97dab8a1e8f18dcd5542c1e8b0ca22f01a6290a8284b82634682f",
+      "sha256": "70ee422c0ad5f3d4fa74f7bacab7710188a2712dec5b3dcd879722d32adec3e6",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -6916,6 +6916,10 @@
       "sha256": "3c1cf6e2a4531c40d3f55ede755ee85b8f043d9f816a1cf3680828d57a62e38a",
       "executable": false
     },
+    "tests/e2e/core-cross-team-view-journey.mjs": {
+      "sha256": "66757efe988cc7766fda93736f8aac494eccc5d1d5588c1f1aeb42fbeb043ec1",
+      "executable": false
+    },
     "tests/e2e/core-current-disjoint-journey.mjs": {
       "sha256": "031bcba46eb50c15036acfc4096eaa06e0a3f82d3ef5edb7cf713ab961e247a3",
       "executable": false
@@ -6957,7 +6961,7 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "37903f1bc52738ef66e2abf8c7d6e39a38dba80bd4be6dddebdd8e7a1b0faeb8",
+      "sha256": "e6c26e6ffcc7866947b7e494028b8e1c88ce5c2f40dd0131a0475a20d67c177f",
       "executable": false
     },
     "tests/e2e/core-manual-order-journey.mjs": {
@@ -6977,7 +6981,7 @@
       "executable": false
     },
     "tests/e2e/core-palette-journey.mjs": {
-      "sha256": "2da8ae142cfb24b35abb46abcf9554baedaeaa6c30d5ea81603214d4f8088fc2",
+      "sha256": "e003b9f6c9946551f8e4ffa842caeb2b5313a0d0c9f4298a3ebe08ca21f6a35c",
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
@@ -7005,7 +7009,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "013ee0c15dd7635b5d1746d346d951f075dc4c9b8c4266f0b4ac479fd744ea29",
+      "sha256": "769533876586cd2002c8c21bed6589fbd544de787afb8b74bab7f47d824dabb1",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
