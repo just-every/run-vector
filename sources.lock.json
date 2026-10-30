@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "1e1088c0f371092cfe2de39122b80d11e63f62913bb09a14b786e9cdd5f77f6d",
+      "sha256": "25a0a651ce3df785800fecbf08bd260b60bfaa957337b318e483a2776a6631ce",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
