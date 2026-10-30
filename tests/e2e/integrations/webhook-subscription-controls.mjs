@@ -102,6 +102,8 @@ export async function adminChangesFromSettings({ browser, runtime, cookie, name,
     assert.equal((await sent).status(), 200);
     await section.getByRole('status').filter({ hasText: name }).waitFor();
     assert.equal(await editor.count(), 0);
+    // Keyboard focus returns to the row's own control rather than the page.
+    assert.equal(await section.getByRole('button', { name: 'Change events and teams for ' + name, exact: true }).evaluate(node => node === document.activeElement), true);
     await settleReads(page);
     assert.deepEqual(errors, []);
   } finally { await page.context().close(); }

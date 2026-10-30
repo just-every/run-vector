@@ -33,6 +33,7 @@
 .integrations-panel .webhook-subscription fieldset{gap:0;border:0;border-radius:0;padding:0}
 .webhook-subscription legend{padding:0;margin-bottom:4px;font-weight:600}
 .webhook-choice-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px}
+.webhook-choice-groups legend{font-weight:400;color:var(--muted)}
 .webhook-subscription label.admin-checkbox{display:flex;align-items:center;gap:8px;min-height:44px}
 .webhook-choice-teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:0 14px;padding-left:26px}
 .webhook-subscription-editor{margin-top:12px}

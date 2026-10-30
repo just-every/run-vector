@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "751a800e8582445bd35779ea21c04b1218737d1d82ebbc363b5ed8def21fdfb5",
+      "sha256": "60a9a45a37653619e7ac6f77ef83e14fae1994a48f3280f26932eaa6119000d0",
       "executable": false
     },
     "DEMO.md": {
@@ -649,7 +649,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "c76647768ff55aef0248db2eba42814a284b968b2889e23114d7d18c913bf774",
+      "sha256": "c98aed4e838858d98c184960228eac45d0ed3633f516772677077fa90b6e7061",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4593,15 +4593,15 @@
       "executable": false
     },
     "src/core/features/integrations/config-input.ts": {
-      "sha256": "b67017b50373f8b275f177220de835fc427ceb318c5a7ce93eb0c44056ea0dc9",
+      "sha256": "05507404c2338ea850fc6a7042f17570483f51927387b735709123e8a3f4ced1",
       "executable": false
     },
     "src/core/features/integrations/config-routes.ts": {
-      "sha256": "b566f5d6784a466220c4ba58488c88786892c4bb49db13ee33f749d36b8aa7d7",
+      "sha256": "61abb1af8c2794c9d6b01f5144be66fb0ef4acd9eeca911f488a95eae461280e",
       "executable": false
     },
     "src/core/features/integrations/config-storage.ts": {
-      "sha256": "a45be3113a2d6261e1c4aa4722343924225890e57e62cbdfa523e768acff25ad",
+      "sha256": "f764d3b1f79afda9f99ccd0d5b0697c3e22fb16d82d4a2692267554849fe9e1d",
       "executable": false
     },
     "src/core/features/integrations/cycle-api.ts": {
@@ -4844,8 +4844,12 @@
       "sha256": "0ef5659e279a5c730b441f3071a9560ae8a9702f824f88d5d08a24406716adfe",
       "executable": false
     },
+    "src/core/features/integrations/subscription-schema.ts": {
+      "sha256": "a74cee17304fdd8201230d67ce35e349b809a4283bd16aeb87dac8149c630666",
+      "executable": false
+    },
     "src/core/features/integrations/subscriptions.ts": {
-      "sha256": "1bace047ae5401327aee4b51f0208b61aaff2d00747ff1667c3507f4d940344f",
+      "sha256": "7d56677e4c674ddc16122b1942158bca5a6c66ff7762a88c0cd25ae806ccdae7",
       "executable": false
     },
     "src/core/features/integrations/test-webhook.ts": {
@@ -4909,11 +4913,11 @@
       "executable": false
     },
     "src/core/features/integrations/ui/integrations-panel.tsx": {
-      "sha256": "685b63efce04eb786bdba7ad24a5db8e068e4d290ad7653156897aa7ebcca548",
+      "sha256": "16219812f7b785a5d5f9f7f5eebc85c953c57bbb082505ba88e6968f045df9ef",
       "executable": false
     },
     "src/core/features/integrations/ui/integrations.css": {
-      "sha256": "21ab1f50a17a1ad8193f1df144a033d32807b4e209fbe0c50666744f4580a13a",
+      "sha256": "714c6d199cfb0efdf6f146b8e6cb9f506981d82e7eed0e0bb361b03e63d7581e",
       "executable": false
     },
     "src/core/features/integrations/ui/one-time-secret.tsx": {
@@ -4957,7 +4961,11 @@
       "executable": false
     },
     "src/core/features/integrations/ui/webhook-settings.tsx": {
-      "sha256": "0874bf946c4f1348475db9578b1e0e56f3feae11bbbd3579155c8f59a4877f6b",
+      "sha256": "0f122609f7c7a3ad42279ca13af571f32a081f19b4e1ca34d27641db43f83213",
+      "executable": false
+    },
+    "src/core/features/integrations/ui/webhook-subscription.tsx": {
+      "sha256": "76a440880b6f9ef485a3f5c706ef691a45e20e016dc4fa85b4783277dcbe7913",
       "executable": false
     },
     "src/core/features/issue-copy/mapping.ts": {
@@ -7185,7 +7193,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "c61d75d9d85cdd6f16e3d9b55e762b4a659b2a238e88927007d9acc1e7ea0ea7",
+      "sha256": "822c09a635cbf87f341539a5e5971811d3992ec44bb8c41d62c9ace790183ed0",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
@@ -7257,7 +7265,11 @@
       "executable": false
     },
     "tests/e2e/integrations/webhook-comments.mjs": {
-      "sha256": "6459c4355657862f885c0f8e00a6930b6ba1fb0075c9049ab31fbb5464f3c99c",
+      "sha256": "edd9ceaf7f71ea4ad1122094401084d1fe906c2bdd63cfe148e68647fa7f0168",
+      "executable": false
+    },
+    "tests/e2e/integrations/webhook-subscription-controls.mjs": {
+      "sha256": "5db0f60c6dd7de9e20bb1b2e8e19bcdde77fdb9050253e84a47bb49bd6b717d9",
       "executable": false
     },
     "tests/e2e/issue-copy-runtime.mjs": {
@@ -8181,7 +8193,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "e95803bd36a2a73ea2160b8b0814405b0c110627cebeabd7f3eff3028fc482f4",
+      "sha256": "54df9c33cae9787eebf52847f3582f00502e992cfdc3ec46980320542b2768d5",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
