@@ -256,6 +256,32 @@
       "adapters": [
         "vector.datadog-webhooks.v1"
       ]
+    },
+    {
+      "id": "loom-public-video",
+      "required": false,
+      "why": "DOCS-001: a reader explicitly loads a public Loom named video link; no account connection or provider credential.",
+      "data": [
+        "canonical public video URL",
+        "player request IP address",
+        "application origin for player playback"
+      ],
+      "adapters": [
+        "vector.loom-oembed.v1"
+      ]
+    },
+    {
+      "id": "youtube-public-video",
+      "required": false,
+      "why": "DOCS-001: a reader explicitly loads a public YouTube named video link; no account connection or provider credential.",
+      "data": [
+        "canonical public video URL",
+        "player request IP address",
+        "application origin for player playback"
+      ],
+      "adapters": [
+        "vector.youtube-oembed.v1"
+      ]
     }
   ],
   "env": [

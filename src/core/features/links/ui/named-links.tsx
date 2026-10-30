@@ -1,3 +1,4 @@
+import { VideoPlayer } from "./video-player";
 import { useId, useState } from "react";
 import { createLinkSchema, type NamedLink } from "../schema";
 
@@ -82,57 +83,62 @@ export function NamedLinks({
           {links.length ? ` · ${links.length} links` : ""}
         </summary>
         {links?.map((link) => (
-          <div className="file-entry" key={link.id}>
-            <a
-              href={link.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              referrerPolicy="no-referrer"
-            >
-              {link.name}
-            </a>
-            <small>{link.actor}</small>
-            <button
-              type="button"
-              disabled={!writable || busy}
-              onClick={() => void mutate("DELETE", link.id)}
-            >
-              Remove link
-            </button>
+          <div key={link.id}>
+            <div className="file-entry">
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                referrerPolicy="no-referrer"
+              >
+                {link.name}
+              </a>
+              <small>{link.actor}</small>
+              <button
+                type="button"
+                disabled={!writable || busy}
+                onClick={() => void mutate("DELETE", link.id)}
+              >
+                Remove link
+              </button>
+            </div>
+            <VideoPlayer identifier={identifier} link={link} />
           </div>
         ))}
-        {writable && <form
-          className="issue-mutation-form"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void mutate("POST");
-          }}
-        >
-          <label>
-            Name
-            <input
-              required
-              maxLength={200}
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              disabled={!writable || busy}
-            />
-          </label>
-          <label>
-            HTTPS URL
-            <input
-              required
-              type="url"
-              maxLength={2000}
-              value={url}
-              onChange={(event) => setUrl(event.target.value)}
-              disabled={!writable || busy}
-            />
-          </label>
-          <button type="submit" disabled={!writable || busy}>
-            Add link
-          </button>
-        </form>}
+        {writable && (
+          <form
+            className="issue-mutation-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void mutate("POST");
+            }}
+          >
+            <label>
+              Name
+              <input
+                required
+                maxLength={200}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                disabled={!writable || busy}
+              />
+            </label>
+            <label>
+              HTTPS URL
+              <input
+                required
+                type="url"
+                maxLength={2000}
+                value={url}
+                onChange={(event) => setUrl(event.target.value)}
+                disabled={!writable || busy}
+              />
+            </label>
+            <button type="submit" disabled={!writable || busy}>
+              Add link
+            </button>
+          </form>
+        )}
       </details>
       {error ? <p role="alert">{error}</p> : null}
     </section>

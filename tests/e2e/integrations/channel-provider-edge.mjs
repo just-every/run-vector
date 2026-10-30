@@ -1,7 +1,9 @@
+import {videoProviderEdge} from "./video-provider-edge.mjs";
 // Synthetic Slack/Discord network edge for the built-Worker journey only.
 import {appendFileSync,readFileSync} from 'node:fs';
 export const slackAppFixture={appId:'synthetic-vector-32010',clientId:'synthetic-vector-32011',clientSecret:'synthetic-vector-32012',signingSecret:'synthetic-vector-32013',botToken:'synthetic-vector-32014',teamId:'TSYNTHETIC33001',memberId:'USYNTHETIC33001',intakeChannel:'CSYNTHETIC33001',botId:'USYNTHETIC33002'};
 export async function channelProviderEdge(request){
+ const video=await videoProviderEdge(request);if(video)return video;
  const url=new URL(request.url);
  if(url.hostname==='api.sendgrid.com'&&url.pathname==='/v3/mail/send'){appendFileSync(process.env.VECTOR_CHANNEL_EDGE,JSON.stringify({method:'sendgrid',body:await request.json()})+'\n');return new Response(null,{status:202,headers:{'X-Message-Id':'synthetic-vector-'+crypto.randomUUID()}});}
  if(url.hostname==='sentry.io'&&/^\/api\/0\/issues\/[0-9]+\/events\/latest\/$/.test(url.pathname)&&request.method==='GET'){if(request.headers.get('Authorization')!=='Bearer synthetic-vector-8201')return new Response(null,{status:401});return Response.json({release:{version:'synthetic-vector-8203'}});}
