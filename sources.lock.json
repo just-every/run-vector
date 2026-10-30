@@ -4593,7 +4593,7 @@
       "executable": false
     },
     "src/core/features/integrations/config-routes.ts": {
-      "sha256": "8257618e7977a32679b6abe2821c818b4aed25d8521d328c5c0aae9fc1f8e486",
+      "sha256": "09e954c42feadc76479d00b5895787c874c184624c6cf8d18b6106685e7118a9",
       "executable": false
     },
     "src/core/features/integrations/config-storage.ts": {
@@ -4853,7 +4853,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
-      "sha256": "73b1a36b7cca1bdd6b60ece4445e590cdaf78adfbe597e7fbef0e6414c4c2498",
+      "sha256": "fb42eaeee2aff53fcb596a2210d4e4a76f89442faafa0654cef5b37986e86650",
       "executable": false
     },
     "src/core/features/integrations/ui/copy-field.tsx": {
@@ -7824,8 +7824,12 @@
       "sha256": "4e1f07cca41ac02e8db2627ef8f4e6805f77f0d0d3ff77868c08e6202dab2488",
       "executable": false
     },
+    "tests/worker/github-health-scenario.ts": {
+      "sha256": "17b3f7a829f835141862475da84d68c671b625dd6df5bea919493a0dfb95c8ab",
+      "executable": false
+    },
     "tests/worker/github-links.test.ts": {
-      "sha256": "69897180ba16e7a54d542ff54b440b91367e1c23414dfc382abf1d698e378e67",
+      "sha256": "cae604a23c20f48972af2efc4fcbf0677ac539be4086616c7e64a3638e158081",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {
