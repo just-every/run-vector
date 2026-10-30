@@ -53,8 +53,9 @@ async function nativeJourney() {
   const route = `${path}/comments/${comment.id}/checklist`;
   const task = parseTasks(body)[1];
   const input = { expectedBody: body, expectedVersion: 0, index: task.index, text: task.text, checked: true };
-  const snapshot = async () => Promise.all(["issues", "issue_comments", "issue_activity", "audit_records", "issue_description_revisions", "issue_mentions", "issue_reference_subjects", "notifications", "notification_events"]
-    .map(async table => [table, (await env.DB.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results]));
+  const tables = (await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' AND name NOT IN ('integration_token_usage','access_rate_limits') ORDER BY name").all<{ name: string }>()).results;
+  const snapshot = async () => Object.fromEntries(await Promise.all(tables.map(async ({ name }) => [name,
+    (await env.DB.prepare('SELECT * FROM "' + name.replaceAll('"', '""') + '"').all()).results.map(row => JSON.stringify(row)).sort()])));
   const beforeRefusal = await snapshot();
   expect((await f.any(f.bobCookie, route, "POST", input)).status).toBe(403);
   expect(await snapshot()).toEqual(beforeRefusal);
@@ -98,6 +99,10 @@ async function nativeJourney() {
   expect(finalIssue.description).toBe(source);
   expect(finalIssue.version).toBe(repeated.version);
   expect((await receipt<History>(await f.call(path + "/description-history"))).revisions).toEqual(repeatedHistory.revisions);
+  await receipt(await f.call(`${path}/comments/${comment.id}`, "DELETE"));
+  const erased = await snapshot();
+  expect((await f.any(secondSession, route, "POST", input)).status).toBe(404);
+  expect(await snapshot()).toEqual(erased);
   await receipt(await f.call(path, "DELETE", { expectedVersion: repeated.version, confirmed: true }));
   expect(await env.DB.prepare("SELECT count(*) n FROM issue_description_revisions WHERE issue_id=?").bind(issue.id).first<number>("n")).toBe(0);
 }
@@ -105,7 +110,7 @@ async function nativeJourney() {
 async function scopedJourney() {
   const f = await setupIntegrations(), source = "- [ ] Publish";
   const issue = await f.create({ description: source }), path = `/issues/${issue.identifier}`;
-  const reader = await f.issueToken(["issues:read"]), writer = await f.issueToken(["issues:write"], "Description writer"), commenter = await f.issueToken(["comments:write"]);
+  const reader = await f.issueToken(["issues:read"]), writer = await f.issueToken(["issues:write"], "Description writer"), commenter = await f.issueToken(["comments:write"], "Comment writer");
   const history = await receipt<History>(await f.api(reader.token, path + "/description-history"));
   const tick = { expectedVersion: issue.version, index: 0, text: "Publish", checked: true };
   expect((await f.api(reader.token, path + "/checklist", "POST", tick)).status).toBe(401);
@@ -117,6 +122,18 @@ async function scopedJourney() {
   const comment = await receipt<{ id: string }>(await f.api(commenter.token, path + "/comments", "POST", { body: source }), 201);
   await receipt(await f.api(commenter.token, `${path}/comments/${comment.id}/checklist`, "POST", { expectedBody: source, index: 0, text: "Publish", checked: true }));
   const config = await receipt<{ tokens: { id: string; name: string }[] }>(await f.call("/settings/integrations"));
+  const commenterId = config.tokens.find(token => token.name === "Comment writer")!.id;
+  const heldComment = heldBody();
+  const pendingComment = f.app.request(origin + "/api/v1" + `${path}/comments/${comment.id}/checklist`, {
+    method: "POST", headers: { Authorization: "Bearer " + commenter.token, Origin: origin, "content-type": "application/json" }, body: heldComment.body,
+  }, bindings);
+  await heldComment.reading;
+  await receipt(await f.call(`/settings/integrations/tokens/${commenterId}`, "DELETE"));
+  const beforeRelease = (await env.DB.prepare("SELECT * FROM issue_activity WHERE issue_id=? ORDER BY rowid").bind(issue.id).all()).results;
+  heldComment.release(JSON.stringify({ expectedBody: "- [x] Publish", expectedVersion: 1, index: 0, text: "Publish", checked: false }));
+  expect((await pendingComment).status).toBe(401);
+  expect(await env.DB.prepare("SELECT body FROM issue_comments WHERE id=?").bind(comment.id).first<string>("body")).toBe("- [x] Publish");
+  expect((await env.DB.prepare("SELECT * FROM issue_activity WHERE issue_id=? ORDER BY rowid").bind(issue.id).all()).results).toEqual(beforeRelease);
   const writerId = config.tokens.find(token => token.name === "Description writer")!.id;
   const held = heldBody();
   const pending = f.app.request(origin + "/api/v1" + path + "/checklist", {

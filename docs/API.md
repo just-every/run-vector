@@ -199,6 +199,22 @@ product state does not yet exist; its safe display behavior remains inherited
 under ROLE-012/OPS-004. Only comments on readable issues appear; deleted
 comments are absent from list and get, never content-bearing tombstones.
 
+### Comment checklist ticks
+
+`POST /api/v1/issues/IDENTIFIER/comments/ID/checklist` requires
+`comments:write` and the comment's own author. Send the last-read `expectedBody`,
+optional nonnegative comment `expectedVersion`, zero-based task `index`, exact
+Markdown item `text` and desired Boolean `checked`. Native discussion responses
+also include the comment `version`.
+
+An independent edit elsewhere in the body can merge when the selected item's
+text is unchanged. A changed or missing target returns 409 with the current
+`comment` containing `id`, `body` and `version`. Another author receives 403.
+Each changed tick records one attributed comment revision and one item-naming
+activity entry atomically; repeating an already-applied tick adds no receipt.
+The containing issue's status and version stay unchanged. Full-body comment
+edits retain their stricter revision check described above.
+
 ### Pagination and limits
 
 Comments, projects, milestones and cycles accept `limit` and `cursor`; responses
