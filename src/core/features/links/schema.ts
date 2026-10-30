@@ -3,7 +3,7 @@ import { z } from "zod";
 export const issueIdentifier = z.string().regex(/^[A-Z]{2,10}-[1-9][0-9]*$/);
 export const linkId = z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/);
 
-/** HTTPS navigation only: never dereferenced by the server. */
+/** HTTPS navigation; video previews separately require a fixed provider allowlist. */
 export function isSafeHttpsUrl(value: string): boolean {
   if (
     !/^https:\/\//i.test(value) ||

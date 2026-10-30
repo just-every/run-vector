@@ -195,7 +195,28 @@ export async function exerciseVideoPlayers({
       "A redirect never reaches another destination",
     );
     // Assert outcomes at desktop width; capture the same changed screen at both widths.
-    await inspect(page, region, "docs-public-video-players");
+    for (const provider of ["Loom", "YouTube"])
+      await inspect(
+        page,
+        region.getByRole("group", {
+          name:
+            provider +
+            " video: " +
+            (provider === "Loom"
+              ? "Loom walkthrough"
+              : "YouTube demonstration"),
+          exact: true,
+        }),
+        "docs-" + provider.toLowerCase() + "-player",
+      );
+    await inspect(
+      page,
+      region.getByRole("group", {
+        name: "YouTube video: Unavailable recording",
+        exact: true,
+      }),
+      "docs-video-provider-failure",
+    );
     await page.setViewportSize({ width: 1440, height: 1000 });
     await region
       .getByRole("button", {
@@ -220,9 +241,7 @@ export async function exerciseVideoPlayers({
     const rejected = await runtime.req(
       "/api" + path + "/links/" + links[0].id + "/preview",
       {
-        method: "POST",
-        headers: { Origin: runtime.base, "Content-Type": "application/json" },
-        body: "{}",
+        headers: { "X-Vector-Load-Player": "true" },
       },
     );
     assert.equal(rejected.status, 401);
@@ -261,9 +280,8 @@ export async function exerciseVideoPlayers({
       const previewPath =
         runtime.base + "/api" + path + "/links/" + links[0].id + "/preview";
       const ask = () =>
-        reader.request.post(previewPath, {
-          headers: { Origin: runtime.base },
-          data: {},
+        reader.request.get(previewPath, {
+          headers: { "X-Vector-Load-Player": "true" },
         });
       let result = await ask();
       assert.equal(result.status(), 200);
@@ -295,13 +313,7 @@ export async function exerciseVideoPlayers({
       result = await runtime.req(
         "/api" + path + "/links/" + links[0].id + "/preview",
         {
-          method: "POST",
-          headers: {
-            Cookie: readerCookie,
-            Origin: runtime.base,
-            "Content-Type": "application/json",
-          },
-          body: "{}",
+          headers: { Cookie: readerCookie, "X-Vector-Load-Player": "true" },
         },
       );
       assert.equal(result.status, 401);
