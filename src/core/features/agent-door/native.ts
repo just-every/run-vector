@@ -11,7 +11,8 @@ export async function nativeDatabase(ctx: ToolContext, method: 'GET'|'POST'|'PAT
   if(admitted.decision!=='allow') throw new ToolRefusal(admitted.decision==='hidden'?'not_found':'forbidden');
   const state=await ctx.db.prepare('SELECT envelope,local_document,local_revision FROM agent_door_state WHERE id=1').first<{envelope:string|null;local_document:string|null;local_revision:number}>();
   const business=ctx.consent?await ctx.db.prepare('SELECT token FROM bs_settings WHERE singleton=1 AND stopped=0').first<{token:string}>():null;
-  const tokenId=ctx.clientId?.startsWith('vector-token:')?ctx.clientId.slice('vector-token:'.length):null;
+  // This is a namespaced client identifier, never a bearer credential.
+  const tokenId=ctx.clientId?.match(/^vector-token:([\s\S]*)$/)?.[1]??null;
   const token=tokenId?await ctx.db.prepare('SELECT namespace,workspace_id AS workspace FROM vector_integration_tokens WHERE token_id=? AND operator_id=?').bind(tokenId,ctx.person.id).first<{namespace:string;workspace:string}>():null;
   if(tokenId&&!token)throw new ToolRefusal('insufficient_scope');
   const predicate=token&&tokenId?tokenPredicate({id:ctx.person.id,namespace:token.namespace,workspace:token.workspace,tokenId,scopes:ctx.scopes}):null;

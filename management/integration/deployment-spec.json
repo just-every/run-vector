@@ -706,6 +706,12 @@
       "name": "0116_agent_activity.sql",
       "sha256": "59d2e98e12e926d4319f8cb8f7c9e28583e702b8a00d7d3c82d0e5fc8be0f70b",
       "sql": "-- Native activity and workspace audit retain both sponsor and preparer.\nALTER TABLE issue_activity ADD COLUMN agent_id TEXT;\nALTER TABLE issue_activity ADD COLUMN agent_operation_id TEXT;\nALTER TABLE issue_activity ADD COLUMN agent_approvers_json TEXT CHECK(agent_approvers_json IS NULL OR json_valid(agent_approvers_json));\nCREATE TRIGGER vector_agent_activity_audit AFTER INSERT ON issue_activity\nWHEN NEW.agent_id IS NOT NULL BEGIN\n INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)\n SELECT 'agent:'||NEW.id,NEW.actor_operator_id,NEW.kind,i.identifier,i.id,NEW.created_at,NEW.updated_at,t.workspace_id,'agent','agent:'||NEW.agent_id\n FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=NEW.issue_id;\nEND;\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0117_dependency_key_sealing.sql",
+      "sha256": "9c8fa5f94c48a230f326cd4d666cbc2bd1e7d5a18327b89e65b339ac6a533d9a",
+      "sql": "ALTER TABLE rer_dependency_installation ADD COLUMN keys_sealed INTEGER NOT NULL DEFAULT 0 CHECK(keys_sealed IN (0,1));\n-- Nonsecret version history lets restored rows name an unavailable retired key\n-- without confusing ciphertext tampering or a wrong current secret with restore.\nALTER TABLE rer_dependency_installation ADD COLUMN key_ids TEXT NOT NULL DEFAULT '[]' CHECK(json_valid(key_ids) AND json_type(key_ids)='array');\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
@@ -736,10 +742,12 @@
   },
   "secretNames": [
     "SESSION_SECRET",
-    "SETUP_TOKEN"
+    "SETUP_TOKEN",
+    "INSTALLATION_KEY"
   ],
   "optionalSecretNames": [
-    "MAIL_API_KEY"
+    "MAIL_API_KEY",
+    "INSTALLATION_KEY_PREVIOUS"
   ],
   "schedules": [
     "* * * * *"
