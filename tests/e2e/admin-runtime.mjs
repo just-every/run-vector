@@ -69,6 +69,7 @@ await contract(
         page = await context.newPage();
         requestDiagnostics.observe(page, viewport.width);
         const expectedProjectRejections = new Set();
+        const expectedTemplateConflicts = new Set();
         const roleRefusals = new Set();
         const errors = [],
           consoleErrors = [],
@@ -124,6 +125,7 @@ await contract(
           runtime,
           capture: scopedCapture,
           clause,
+          expectedTemplateConflicts,
         };
         await bootstrapOwner(page, runtime);
         await auditEmptyWorkspace(shared);
@@ -218,8 +220,11 @@ await contract(
               (row.location.url === runtime.base + "/api/intake" &&
                 /409/.test(row.message)) ||
               (expectedProjectRejections.has(row.location.url) && /400/.test(row.message)) ||
-              (roleRefusals.has(row.location.url) && /409/.test(row.message))),
+              (roleRefusals.has(row.location.url) && /409/.test(row.message)) ||
+              (expectedTemplateConflicts.has(row.location.url) && /409/.test(row.message))),
         );
+        for (const url of expectedTemplateConflicts)
+          assert.equal(expectedHttpErrors.filter(row => row.location.url === url).length, 1, "exactly one asserted stale template refusal");
         assert.equal(expectedHttpErrors.filter(row => expectedProjectRejections.has(row.location.url)).length, 2, "one refused date range per viewport");
         assert.deepEqual(errors, [], "browser page errors");
         assert.deepEqual(
