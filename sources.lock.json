@@ -6977,7 +6977,7 @@
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
-      "sha256": "55da33f6301b6fa9154cca04090c31933fd3758f3466c82b1c1aca7325cd7db3",
+      "sha256": "b4d07bbad3bf7b1e11f90c36180928200c0fce80149e2497fa77bf242e46c255",
       "executable": false
     },
     "tests/e2e/core-project-health-journey.mjs": {

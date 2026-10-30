@@ -118,7 +118,10 @@ export async function projectFieldsJourney({page,runtime,capture,clause,expected
   await capture(`project-appearance-list-${suffix}`);
   await clause('PROJ-007','every portfolio filter and combined filters keep rows and health/lifecycle counts aligned',async()=>{
     const assertPortfolio=async(query={})=>{
-      const response=await page.request.get(base+'/api/projects?'+new URLSearchParams(query));
+      // workerd can close a reused socket at its five-second idle boundary.
+      // Retry this idempotent read once on ECONNRESET; HTTP errors still reach
+      // the status assertion, and persistent connection failures still throw.
+      const response=await page.request.get(base+'/api/projects?'+new URLSearchParams(query),{maxRetries:1});
       assert.equal(response.status(),200);
       const expected=await response.json();
       await poll(()=>page.locator('.project-row').evaluateAll(rows=>rows.map(row=>row.getAttribute('aria-label'))),rows=>JSON.stringify(rows)===JSON.stringify(expected.projects.map(project=>'Open '+project.name)),'portfolio rows match active filters');
