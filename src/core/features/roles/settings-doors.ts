@@ -16,6 +16,7 @@ export const settingsFormDoors: Record<string, readonly string[]> = {
   'integrations/ui/source-settings.tsx#SourceSettings': ['POST /settings/integrations/sources'],
   'integrations/ui/error-settings.tsx#ErrorSettings': ['POST /settings/integrations/errors'],
   'integrations/ui/webhook-settings.tsx#WebhookSettings': ['POST /settings/integrations/destinations'],
+  'integrations/ui/webhook-subscription.tsx#SubscriptionEditor': ['PUT /settings/integrations/destinations/:id/subscriptions'],
   'integrations/ui/delivery-setup.tsx#DeliverySetup': ['POST /settings/integrations/delivery'],
   'integrations/ui/github-settings.tsx#GithubSettings': ['POST /settings/integrations/github'],
   'integrations/ui/github-rules.tsx#Rule': ['PATCH /settings/teams/:id'],

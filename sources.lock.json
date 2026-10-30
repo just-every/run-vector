@@ -6033,7 +6033,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "3c9038a787863da740c539c19eca46dae8f3ebaaada9b60aac913d3f48d41f2e",
+      "sha256": "219a4f06a21e521e91a460a78cd40d2f2096fbbfc8e987fd8ffa2856fb0ae4bf",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
