@@ -27,6 +27,15 @@ export async function browserJourney({ request, origin, surface, signer, person,
     input: { body: 'Reproduced against the native checkout. Morgan will review the retained evidence before anything is removed.' } });
   const document = await done('vector.proj.project_documents_and_specs', { parentKind: 'project', parentId: project.id,
     title: 'Checkout investigation', body: 'Reproduction, implementation notes and the named reviewer’s decision remain separate facts.' });
+  const currentIssue = await c.personJson('/api/issues/' + issue.identifier);
+  const humanEdit = await c.personRequest('/api/issues/' + issue.identifier, { method: 'PATCH',
+    body: JSON.stringify({ expectedVersion: currentIssue.version, title: 'Checkout stalls after selecting a saved address — reviewed by Morgan' }) });
+  if (!humanEdit.ok) throw new Error('Native person edit failed');
+  await humanEdit.body?.cancel();
+  const personEvents = await db.prepare("SELECT count(*) n FROM agent_door_events WHERE json_extract(event,'$.actor.kind')='person' AND json_extract(event,'$.actor.person.id')=?")
+    .bind(session.operatorId).first('n');
+  if (!personEvents) throw new Error('Native person edit was not mirrored through door.emit');
+  console.log('Native person event mirror: ' + personEvents);
   const milestone = await done('vector.proj.milestones', { id: project.id, input: { name: 'Old investigation checkpoint' } });
   await c.adopt(heldPolicy());
   const pending = await tool('vector.proj.milestones.delete', { id: project.id, milestoneId: milestone.id });
@@ -70,6 +79,7 @@ export async function browserJourney({ request, origin, surface, signer, person,
     await page.waitForFunction(() => document.body.textContent.includes('Agents are paused'));
     await capture('agents-paused', '/agents');
     await page.getByRole('button', { name: 'Resume local agents', exact: true }).click();
+    await page.waitForFunction(() => document.body.textContent.includes('Agents are not paused'));
     const blocked = autonomousPolicy(); blocked.rules.push({ id: 'retain-records', class: 'destructive', do: 'blocked' });
     await c.adopt(blocked);
     const refusal = await tool('vector.issue.remove_comment', { identifier: issue.identifier, itemId: comment.id, input: { expectedVersion: 0 } });

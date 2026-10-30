@@ -33,7 +33,7 @@ async function admitted<A>(env: WorkerBindings, spec: NativeMutation<A>, args: A
   return authority.fence;
 }
 
-function refusal(error: unknown): never {
+function refusal(error: unknown, tool?: string): never {
   if (error instanceof ToolRefusal) throw error;
   if (error instanceof z.ZodError) throw new ToolRefusal('invalid_arguments');
   if (isMutationAccessError(error)) throw new ToolRefusal('unauthenticated');
@@ -42,6 +42,8 @@ function refusal(error: unknown): never {
   if (error && typeof error === 'object' && 'code' in error && typeof error.code === 'string') {
     throw new ToolRefusal(error.code.endsWith('not_found') ? 'not_found' : error.code);
   }
+  if (error instanceof Error) console.error('Native agent tool failure', tool, error.name,
+    error.stack?.split('\n').filter(line => line.trimStart().startsWith('at ')).join('\n'));
   throw error;
 }
 
@@ -58,9 +60,10 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
         await requireAgentProviderBoundary(env, ctx.person.id);
         return spec.classify ? await nativeRead(env, ctx.person, db => spec.classify!(db, ctx.person, input))
           : [{ class: 'standard', facts: { measure: 1 } }];
-      } catch (error) { return refusal(error); }
+      } catch (error) { return refusal(error, spec.name); }
     },
     async summary(args, ctx) {
+      try {
       const input = parse(args);
       if (spec.summary) return nativeRead(env, ctx.person, db => spec.summary!(db, ctx.person, input));
       const value = input as Record<string, unknown>;
@@ -71,6 +74,7 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
         return { target: { id: issue.id, name: issue.identifier + ': ' + issue.title }, items };
       }
       return { ...(typeof value.id === 'string' ? { target: { id: value.id } } : {}), items: [spec.title, ...items] };
+      } catch (error) { return refusal(error, spec.name); }
     },
     ...(spec.revision ? {
       revisionType: 'string' as const,
@@ -92,7 +96,7 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
         if (uri) ctx.emit(spec.name.slice(7), uri, { approvers: ctx.approvers });
         return { result: result !== null && typeof result === 'object' ? result : result === undefined ? { written: true } : { id: result },
           ...(uri && spec.resource !== false ? { resources: [{ uri, name: spec.title }] } : {}) };
-      } catch (error) { return refusal(error); }
+      } catch (error) { return refusal(error, spec.name); }
     },
   };
 }

@@ -27,9 +27,9 @@ async function commentRevision(db: D1Database, person: Person, args: any) {
 export function vectorIssueDiscussion(env: WorkerBindings): ToolDefinition[] {
   const commentArgs = (input: z.ZodType) => z.object({ identifier, itemId: nativeId, input }).strict();
   return [
-    issueRead(env, 'issue.read_discussion', 'Read issue discussion, files and links', ['ISSUE-008', 'ISSUE-008', 'ISSUE-009'], z.object({ identifier }).strict(),
+    issueRead(env, 'issue.read_discussion', 'Read issue discussion, files and links', ['ISSUE-008', 'ISSUE-009'], z.object({ identifier }).strict(),
       (db, person, args) => discussionView(db, person, args.identifier)),
-    issueMutation(env, { name: 'issue.comments_and_safe_comment_removal', title: 'Add an issue comment or thread reply', clauses: ['ISSUE-008', 'ISSUE-008', 'ISSUE-013'],
+    issueMutation(env, { name: 'issue.comments_and_safe_comment_removal', title: 'Add an issue comment or thread reply', clauses: ['ISSUE-008', 'ISSUE-013'],
       schema: issueInput(z.object({ body: z.string().trim().min(1).max(100000), parentId: nativeId.optional() }).strict()), method: 'POST', path: '/issues/:identifier/comments',
       async run(db, person, args) {
         const issue = await requireIssueAccess(db, args.identifier, person.id);
