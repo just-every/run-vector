@@ -485,11 +485,11 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "3aac4bcd644690734a3a5c5e9792417855bc8e7c81b4c79ab835e41125a47a2a",
+      "sha256": "9062fbeae2c686b63036bcd95a5ee4d5c5d56036fb40fb203ef3a3eb55ede367",
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "836b0b8cc5b842f03be57db2ca05caa004147c9aedab2a2d7f63191cbab15db1",
+      "sha256": "8bb1d097d826ef3175b745faa522bc0fdcd49a88c2223b8e151771a52f2b05ae",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -517,7 +517,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b077f4ad44c97f09594688484606c4dff1cc5fec0b1d172c78dc56a79fa2ce9d",
+      "sha256": "f7db4f5ec6f133df0aee64a19b10e59bdc1ef92b4732884006aa54ca0cac7ca4",
       "executable": false
     },
     "DEMO.md": {
@@ -573,7 +573,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "95ab946a660548efa64a8fdbb5e391dc6f17b37a6456f3523d5709e095ace01a",
+      "sha256": "87c3bb171bc846ce22aa6c1fe74fcdb909823c992a53efd4ed38eb1c31dbd3bc",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
