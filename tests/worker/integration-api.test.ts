@@ -356,6 +356,27 @@ async function labelReadJourney(f:Awaited<ReturnType<typeof setupIntegrations>>)
  expect((await f.call('/settings/labels/'+labels[1].id,'PATCH',{name:'synthetic-vector-1133 B'})).status).toBe(200);
  await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(fresh.nextCursor),'GET',undefined,409);
  expect((await call(read.token,filtered)).labels.map((row:any)=>row.id)).toEqual([labels[0].id,labels[2].id]);
+ // Changes to the filtered set must restart traversal; unrelated labels must
+ // not disturb it. Removal also makes the stable detail identity unavailable.
+ const beforeAddition=await call(read.token,filtered+'&limit=1');
+ const added=await call(legacy.token,'/labels','POST',{name:'synthetic-vector-1132 E',color:'#ffffff',projectsEnabled:true},201);
+ await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(beforeAddition.nextCursor),'GET',undefined,409);
+ const beforeRemoval=await call(read.token,filtered+'&limit=1');
+ expect((await call(read.token,filtered)).labels.map((row:any)=>row.id)).toEqual([labels[0].id,labels[2].id,added.id]);
+ expect((await f.call('/settings/labels/'+added.id,'DELETE')).status).toBe(200);
+ await call(read.token,'/labels/'+added.id,'GET',undefined,404);
+ await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(beforeRemoval.nextCursor),'GET',undefined,409);
+ const beforeAvailability=await call(read.token,filtered+'&limit=1');
+ expect((await f.call('/settings/labels/'+labels[2].id,'PATCH',{projectsEnabled:false})).status).toBe(200);
+ await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(beforeAvailability.nextCursor),'GET',undefined,409);
+ expect(await call(read.token,'/labels/'+labels[2].id)).toEqual({...labels[2],projectsEnabled:false});
+ expect((await call(read.token,filtered)).labels.map((row:any)=>row.id)).toEqual([labels[0].id]);
+ expect((await f.call('/settings/labels/'+labels[2].id,'PATCH',{projectsEnabled:true})).status).toBe(200);
+ const stable=await call(read.token,filtered+'&limit=1');
+ const unrelated=await call(legacy.token,'/labels','POST',{name:'synthetic-vector-1170',color:'#ffffff'},201);
+ expect(await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(stable.nextCursor))).toEqual({labels:[labels[2]],total:2,nextCursor:null});
+ expect((await f.call('/settings/labels/'+unrelated.id,'DELETE')).status).toBe(200);
+ expect(await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(stable.nextCursor))).toEqual({labels:[labels[2]],total:2,nextCursor:null});
  // A foreign label is seeded only to exercise the installed API mount. The
  // installation itself supports one workspace, so bypass only its bootstrap.
  const workspace='01K00000000000000000000113',foreignId='01K00000000000000000000114';
@@ -376,10 +397,18 @@ async function labelReadJourney(f:Awaited<ReturnType<typeof setupIntegrations>>)
  const redirect='https://synthetic-vector-1139.example.test/callback';
  const registered=await f.call('/settings/oauth-apps','POST',{name:'synthetic-vector-1140',redirectUris:[redirect],scopes:['labels:read','labels:write']});
  expect(registered.status).toBe(201);const client=await registered.json() as any;
- const approved=await request('/api/oauth/consent','POST',{request:{response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'labels:read',state:'synthetic-vector-1141'},decision:'approve'},peerCookie);
- expect(approved.status).toBe(200);const code=new URL((await approved.json() as any).redirect).searchParams.get('code');
- const exchanged=await f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,redirect_uri:redirect,code})},bindings);
- expect(exchanged.status).toBe(200);const grant=await exchanged.json() as any;
+ const grantFor=async(scope:string)=>{
+  const approved=await request('/api/oauth/consent','POST',{request:{response_type:'code',client_id:client.id,redirect_uri:redirect,scope,state:'synthetic-vector-1141'},decision:'approve'},peerCookie);
+  expect(approved.status).toBe(200);const code=new URL((await approved.json() as any).redirect).searchParams.get('code');
+  const exchanged=await f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,redirect_uri:redirect,code})},bindings);
+  expect(exchanged.status).toBe(200);return await exchanged.json() as any;
+ };
+ const writeGrant=await grantFor('labels:write');
+ const labelStorage=await env.DB.prepare('SELECT * FROM labels ORDER BY id').all();
+ for(const path of ['/labels','/labels/'+labels[0].id])await call(writeGrant.access_token,path,'GET',undefined,403);
+ expect((await env.DB.prepare('SELECT * FROM labels ORDER BY id').all()).results).toEqual(labelStorage.results);
+ expect((await f.call('/settings/oauth-apps/grants/'+writeGrant.grant_id,'DELETE')).status).toBe(200);
+ const grant=await grantFor('labels:read');
  for(const path of ['/labels','/labels/'+labels[0].id])await call(grant.access_token,path);
  // Read-only credentials must change no product state when used as writers.
  const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' AND name NOT IN ('integration_token_usage','access_rate_limits') ORDER BY name").all<{name:string}>()).results;
@@ -394,6 +423,6 @@ async function labelReadJourney(f:Awaited<ReturnType<typeof setupIntegrations>>)
  for(const path of ['/labels','/labels/'+labels[0].id])await call(read.token,path,'GET',undefined,401);
  expect((await f.call('/settings/operators/'+peer,'DELETE')).status).toBe(200);
  for(const path of ['/labels','/labels/'+labels[0].id])await call(peerToken,path,'GET',undefined,401);
- console.log('PROBE API-003 label-list: GET /api/v1/labels with name, projectsEnabled and limit=1 -> three native labels once each; changed actor, filters, limit or projection -> 409; invalid query -> 400.');
- console.log('PROBE API-003 label-detail: GET /api/v1/labels/:id -> stable native projection; foreign workspace -> 404; Guest -> 403; revoked grant -> 401; read-only mutation -> 403 with unchanged storage.');
+ console.log('PROBE API-003 label-list: GET /api/v1/labels with name, projectsEnabled and limit=1 -> three native labels once each; changed actor, filters, limit, projection or result membership -> 409; unrelated label changes retain the cursor; invalid query -> 400.');
+ console.log('PROBE API-003 label-detail: GET /api/v1/labels/:id -> stable native projection; removed or foreign workspace label -> 404; Guest or insufficient OAuth scope -> 403; revoked grant -> 401; read-only mutation -> 403 with unchanged storage.');
 }

@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "05d0f878d9491323de1f01e0f441f86e2646107b4f4bbec133bdcd42ccfe1693",
+      "sha256": "de097d2385ada2b570ec193ec44fe82395d9679ff4bf6d6794f1ff9ca41edbae",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "32314fe13e8782f47e54703002b4a82314b2447d4677e18288639ef8e3adae08",
+      "sha256": "3839a0006f177910a899cb8c1f144ea6c8876e032bff928062e96b3965974af7",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -7889,7 +7889,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "5a2c863fcbf9ca2389d887770726cd3f9ba3e62f8930dda0abca07654e11007d",
+      "sha256": "0b320ee68e1a3da184ade76dbe2ec4321b5b88e31cc919b83254fdff5318c15a",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {

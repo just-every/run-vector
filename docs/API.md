@@ -238,7 +238,11 @@ Expired or revoked access and removed issuers cannot read either operation.
 A read grant cannot create a label. Label update and deletion remain owed;
 these two reads qualify no other object operation. Pagination uses the same
 actor-bound snapshot protocol below, including invalidation after a native
-rename, recolor or change to project availability in the filtered result.
+rename, recolor, addition, removal or change to project availability in the
+filtered result. Changes outside that result retain the cursor. Removing a
+label through Settings also makes its detail read return 404. Personal tokens
+without the read scope return 401; an otherwise valid OAuth grant without it
+returns 403 with `insufficient_scope`.
 
 ### Pagination and limits
 
