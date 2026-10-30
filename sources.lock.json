@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0a75edefa813a9b64ecb1192dc5e16d0ee249581123315c724670182581653bf",
+      "sha256": "684f731bcf884374ecf13e549d8fc45f8583ee958f02244ff9b7271a4ac0b70b",
       "executable": false
     },
     "DEMO.md": {
@@ -649,7 +649,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "7f31f5f0c45259fa9588a1fa6c97dcc59fb9d45475ec45efc904b17d4c83e7e0",
+      "sha256": "76f2e2bb726be6d980e786f7e88c0ba271665dc626b986e1ca00cae9fbf8fcf8",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4880,6 +4880,10 @@
       "sha256": "4902fa3258b50db181fe632bb6c3ef015963251d98ed0cee9625185cd34a2ed1",
       "executable": false
     },
+    "src/core/features/integrations/ui/github-receipt.tsx": {
+      "sha256": "5458817d7fff68d7e694b846dae2808b0678691c8c934636c7feb34ec4ecea4a",
+      "executable": false
+    },
     "src/core/features/integrations/ui/github-rules.css": {
       "sha256": "228873bdf8ac34c38f4861b8301a8df23cfd45133e490af32515c96ec32ddca1",
       "executable": false
@@ -4889,7 +4893,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
-      "sha256": "d5bdf1007a536ac062a06c354cbd85b9466f0d385191e8d77c3b2a8d7ecf4ecc",
+      "sha256": "3a1716a6e2b8d2a956ba5014ffdb7ef20b622064a701935492c8792903b3bbd2",
       "executable": false
     },
     "src/core/features/integrations/ui/github-setup.tsx": {
@@ -7177,11 +7181,11 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "a28abe8715d429a32e4d4f7d46578161d7f1a16a69181f80af55215ae9a81225",
+      "sha256": "3acef120d29314513b5af22db9228d0bac28fde5a8682f9c71481e595005efc2",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
-      "sha256": "f0842dc32dedf673fc3a7bd8af37d1b96a35e4d9219d1bbfbd09cf3baa9af3fd",
+      "sha256": "a8be14e69c248a083a4af26807d62a1527580451b8bb1f1cf700a47bb78874b3",
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
@@ -7200,8 +7204,12 @@
       "sha256": "159473bf8721099db146bdc0911c0f1a333dd37ec7f08d30a73c5666c9fc8db1",
       "executable": false
     },
+    "tests/e2e/integrations/github-receipts.mjs": {
+      "sha256": "51834c512bd918dd150ae2538a9634f6c04bd2331f573c71cd11f7040281414c",
+      "executable": false
+    },
     "tests/e2e/integrations/github-team-permissions.mjs": {
-      "sha256": "9f9959d31df80b9c195a7fdce0182db69da2e2de1ba2f4f1807afcba0ca9d705",
+      "sha256": "0d721235e0586737e257d3e4048cfef9bfca66727cf2558056e4c443fe8a934a",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {

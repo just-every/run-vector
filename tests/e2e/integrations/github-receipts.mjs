@@ -18,6 +18,7 @@ export function githubReceipts({page,panel,runtime,cookie,width,evidence}){
    await row(name).getByText('No GitHub event received yet',{exact:true}).waitFor();
    const before=await shown();assert.deepEqual(before[name],{at:null,text:'No GitHub event received yet'});
    if(width===390){await inspect(page,section,'github-receipts-'+width);await page.setViewportSize({width,height:900});}
+   console.log(`PROBE INTEG-002 no-event ${width}: ${name} reads "${before[name].text}" with no time beside ${Object.keys(before).length-1} other GitHub rows`);
    return before;
   },
   /** After signed deliveries and a reload: the row shows the recorded receipt in the viewer's time;
@@ -41,6 +42,7 @@ export function githubReceipts({page,panel,runtime,cookie,width,evidence}){
    await page.keyboard.press('Enter');await own.getByLabel('GitHub payload URL',{exact:true}).waitFor();
    await page.keyboard.press('Enter');assert.equal(await setup.evaluate(details=>details.open),false);
    if(width===1440){await inspect(page,section,'github-receipt-'+width);await page.setViewportSize({width,height:900});}
+   console.log(`PROBE INTEG-002 receipt ${width}: ${name} reads "${first[name].text}" for ${at}; replay 200, wrong signature 401, reload and ${Object.keys(before).length-1} other rows unchanged, Tab and Enter reach its setup, no hydration errors`);
    return first[name];
   },
   /** A revoked receiver refuses a correctly signed delivery, and the row keeps its last receipt. */
@@ -51,6 +53,7 @@ export function githubReceipts({page,panel,runtime,cookie,width,evidence}){
    await page.reload();assert.match(await row(name).textContent(),/ · Revoked/,'the row shows its revoked state');
    assert.equal(await row(name).getByRole('button',{name:'Revoke '+name,exact:true}).count(),0);
    assert.deepEqual((await shown())[name],receipt,'the revoked row keeps its last receipt');
+   console.log(`PROBE INTEG-002 revoked ${width}: ${name} refused a signed delivery with 401 and still reads "${receipt.text}"`);
   },
  };
 }
