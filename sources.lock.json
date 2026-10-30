@@ -4261,7 +4261,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/documents.css": {
-      "sha256": "2d619ded49e17e08db142f0301b664ddbebdcce42839c9513683fa86502d826d",
+      "sha256": "19f84722dc5bc6d0855412c92ddc52a85dbda84c9bbddf16f1bab4fe2a7215cc",
       "executable": false
     },
     "src/core/features/documents/ui/form.tsx": {
@@ -7321,7 +7321,7 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "1ced2057079c71e3f981c9a96103e8c1d2603403c1b9e54d4575fd625d26b278",
+      "sha256": "f537af8aa4e128d6e72dbe1bea7f7c7419ceb7c454b2da4ad2fda92786fb8423",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
@@ -7773,7 +7773,7 @@
       "executable": false
     },
     "tests/worker/document-thread-scenario.ts": {
-      "sha256": "283d62b9095c051d3b52a0aecd56f5c278ba01adf9771c935c889d411feec780",
+      "sha256": "d764d27328fc0baadab42e0888c41f1aa16ca577060ac18572095101a416d7c9",
       "executable": false
     },
     "tests/worker/documents-scenario.ts": {
@@ -8081,7 +8081,7 @@
       "executable": false
     },
     "tests/worker/project-report.test.ts": {
-      "sha256": "e63cf6a49011a4113f6bc9c9734a4bd286161f0496a318b0f75a643b3ab997ca",
+      "sha256": "d8f1dbaaaa79b57184fc1c55f116a4b8aaf932e2797527200b4a4ead52ab66ca",
       "executable": false
     },
     "tests/worker/project-risk.test.ts": {
