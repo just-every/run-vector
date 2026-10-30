@@ -6,7 +6,7 @@ import { issueTools } from './issue-tools';
 import { nativeCredentials } from './local-credentials';
 import type { WorkerBindings } from '../../app/bindings';
 
-export const capabilities=['tools','policy','pause','audit','idempotency'] as const;
+export const capabilities=['tools','policy','pause','audit','idempotency','resources'] as const;
 export const notTools=[
   {clauses:['DATA-002','DATA-003'],reason:'import-door' as const},
   {clauses:['INTEG-001','SEC-001'],reason:'connector' as const},

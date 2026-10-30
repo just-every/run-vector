@@ -7,7 +7,8 @@
     "policy",
     "pause",
     "audit",
-    "idempotency"
+    "idempotency",
+    "resources"
   ],
   "tools": [
     {
@@ -144,7 +145,9 @@
       ]
     }
   ],
-  "resources": [],
+  "resources": [
+    "vector://issue/{id}"
+  ],
   "notTools": [
     {
       "clauses": [

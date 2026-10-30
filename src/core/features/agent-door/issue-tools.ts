@@ -14,7 +14,7 @@ import { nativeInputSchema as json } from './schemas';
 const output={type:'object',properties:{id:{type:'string'},identifier:{type:'string'}},required:['id','identifier'],additionalProperties:true} as const;
 const identifier=z.string().regex(/^[A-Z]{2,10}-[1-9][0-9]*$/);
 const proposedItems=(value:Record<string,unknown>)=>Object.keys(value).filter(key=>key!=='expectedVersion').sort().map(key=>`${key}: ${typeof value[key]==='string'?value[key]:JSON.stringify(value[key])}`);
-const link=(issue:{id:string;identifier:string;version?:number},extra:Record<string,unknown>={})=>({result:{id:issue.id,identifier:issue.identifier,version:issue.version,...extra},resources:[{uri:issueUri(issue.identifier),name:issue.identifier}]});
+const link=(issue:{id:string;identifier:string;version?:number},extra:Record<string,unknown>={})=>({result:{id:issue.id,identifier:issue.identifier,version:issue.version,...extra},resources:[{uri:issueUri(issue.id),name:issue.identifier}]});
 export const issueTools:ToolDefinition[]=[
   defineTool({name:'vector.intake.intake_creation',title:'Create intake report',description:'Create an internal native intake item with evidence for an explicit triage decision.',scope:'issues:write',readOnly:false,classes:['standard'],clauses:['INTAKE-001','INTAKE-003'],inputSchema:json(operatorIntakeInputSchema),outputSchema:output,
     async classify(args,ctx){await nativeDatabase(ctx,'POST','/intake',{},args);return standard();},summary:args=>({target:{id:String(args.teamId)},items:[String(args.title)]}),

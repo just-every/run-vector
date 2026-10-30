@@ -4,7 +4,7 @@ import surface from '../../agent-surface.json' with {type:'json'};
 export default async function ({request,origin,cookie}) {
   const response=await request(new URL('/api/settings/integrations/tokens',origin).href,{
     method:'POST',headers:{Origin:origin,Cookie:cookie,'Content-Type':'application/json'},
-    body:JSON.stringify({name:'Native read client',scopes:['issues:read']}),
+    body:JSON.stringify({name:'Native read client',scopes:['issues:read','evidence:read']}),
   });
   if(response.status!==201)throw new Error('Native client issuance failed');
   const issued=await response.json(),id=`vector-token:${issued.credential.id}`;
