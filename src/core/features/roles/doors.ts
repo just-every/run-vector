@@ -208,6 +208,7 @@ export const doors: Door[] = [
   ...(['/issues/:identifier/dependencies', '/issues/:identifier/links', '/issues/:identifier/subissues', '/issues/:identifier/duplicate', '/issues/:identifier/description-restore'] as const)
     .map((path): Door => ({ method: 'POST', path, row: 'issues.write', teams: issue })),
   { method: 'DELETE', path: '/issues/:identifier/dependencies', row: 'issues.write', teams: issue },
+  { method: 'POST', path: '/issues/:identifier/links/:linkId/preview', row: 'work.read', teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/links/:linkId', row: 'issues.write', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/parent', row: 'issues.write', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/subissues', row: 'issues.write', teams: issue },
