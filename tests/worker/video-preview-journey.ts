@@ -16,7 +16,12 @@ export async function exerciseVideoPreviews() {
       origin + "/api" + path,
       {
         method,
-        headers: { cookie, origin, "Content-Type": "application/json" },
+        headers: {
+          cookie,
+          origin,
+          "Content-Type": "application/json",
+          "X-Vector-Load-Player": "true",
+        },
         body: body === undefined ? undefined : JSON.stringify(body),
       },
       { ...env, APP_ORIGIN: origin },
@@ -57,7 +62,7 @@ export async function exerciseVideoPreviews() {
       201,
     );
   const load = (id: string, cookie = member) =>
-    req(base + "/links/" + id + "/preview", "POST", {}, cookie);
+    req(base + "/links/" + id + "/preview", "GET", undefined, cookie);
   const loom = "https://www.loom.com/share/1234567890abcdef1234567890abcdef",
     youtube = "https://www.youtube.com/watch?v=synthetic01";
   let mode = "success",
@@ -178,11 +183,57 @@ export async function exerciseVideoPreviews() {
       await json(await load(link.id), 422);
       assert.equal(calls.length, before);
     }
-    const beforeInvalid = calls.length;
     await json(
-      await req(base + "/links/" + links[0].id + "/preview", "POST", {
-        url: youtube,
+      await req(`/settings/operators/${ids.maya}/role`, "PATCH", {
+        role: "viewer",
       }),
+    );
+    const storedBefore = await env.DB.prepare(
+      "SELECT * FROM issue_links ORDER BY id",
+    ).all();
+    await json(await load(links[0].id));
+    assert.deepEqual(
+      (await env.DB.prepare("SELECT * FROM issue_links ORDER BY id").all()).results,
+      storedBefore.results,
+    );
+    await json(
+      await req(`/settings/operators/${ids.maya}/role`, "PATCH", {
+        role: "member",
+      }),
+    );
+    const beforeInvalid = calls.length;
+    const endpoint =
+      origin + "/api" + base + "/links/" + links[0].id + "/preview";
+    await json(
+      await app.request(
+        endpoint,
+        { headers: { cookie: member, origin } },
+        { ...env, APP_ORIGIN: origin },
+      ),
+      403,
+    );
+    await json(
+      await app.request(
+        endpoint,
+        {
+          headers: {
+            cookie: member,
+            origin: "https://foreign.invalid",
+            "X-Vector-Load-Player": "true",
+          },
+        },
+        { ...env, APP_ORIGIN: origin },
+      ),
+      403,
+    );
+    await json(
+      await req(
+        base +
+          "/links/" +
+          links[0].id +
+          "/preview?url=" +
+          encodeURIComponent(youtube),
+      ),
       400,
     );
     await json(await load(links[0].id, ""), 401);
@@ -238,7 +289,7 @@ export async function exerciseVideoPreviews() {
         .bind(Date.now(), ids.maya)
         .run();
     };
-    await json(await load(links[0].id, transient), 404);
+    assert.equal((await json(await load(links[0].id, transient), 401)).error, "unauthenticated");
     const replay = calls.length;
     await json(await load(links[0].id, transient), 401);
     assert.equal(calls.length, replay);
