@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "7f8d5549b448b57464448bb6dd2576d2320c0402c5a5a9a42069f97ca99694f1",
+      "sha256": "635fe7a2e8e8abf90c500fd2432c02ec4a1a76b0ad1fe973cb1c18b0e172231e",
       "executable": false
     },
     "DEMO.md": {
@@ -7173,7 +7173,7 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "c61d75d9d85cdd6f16e3d9b55e762b4a659b2a238e88927007d9acc1e7ea0ea7",
+      "sha256": "a28abe8715d429a32e4d4f7d46578161d7f1a16a69181f80af55215ae9a81225",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
