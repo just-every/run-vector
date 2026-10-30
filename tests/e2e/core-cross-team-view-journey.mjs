@@ -3,11 +3,17 @@ import { navigate, settleReads, trackRequests, beforePrivateNavigation } from '.
 import { inviteReader, readerApi } from './role-reader-support.mjs';
 import { roleScreens } from './role-ui-support.mjs';
 import { openSavedViewFromPalette } from './core-palette-journey.mjs';
+import { withOperatorClient } from './operator-request.mjs';
 
 // The saved definition is shared; issue rows and aggregates always belong to
 // the current reader. All fixtures and authority changes use native HTTP doors.
 export async function crossTeamViewJourney({ page, context, base, state, sql, evidence, record }) {
   const owner = readerApi(page, base), browser = context.browser();
+  const nativeSession = reader => withOperatorClient(reader.context, async client => {
+    const response = await client.get(base + '/auth/session');
+    assert.equal(response.status(), 200);
+    return response.json();
+  });
   const marker = 'synthetic-vector-' + Date.now();
   const prefix = marker.slice(-7).replaceAll(/\d/g, digit => String.fromCharCode(65 + Number(digit)));
   const teams = [];
@@ -55,9 +61,10 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
   try {
     const author = await invite('member');
     const member = await invite('member');
-    const session = await member.api('/session');
+    const session = await nativeSession(member);
+    assert.ok(session.id);
     assert.notEqual(author.id, member.id, 'Author and reader are different Members');
-    assert.notEqual((await author.api('/session')).id, session.id, 'The reader has an independent genuine session');
+    assert.notEqual((await nativeSession(author)).id, session.id, 'The reader has an independent genuine session');
     const target = base + '/app/issues?' + new URLSearchParams({ q: marker, priority: 'urgent', team: 'all', sort: 'oldest', grouping: 'team' });
     await navigate(author.page, target);
     await author.page.locator('.issues-browser[data-list-state="ready"]').waitFor();
@@ -113,6 +120,10 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
       const result = await reader.api('/issues?' + new URLSearchParams({ ...view.query, orderView: view.id }));
       assert.equal(result.total, expected.length);
       assert.deepEqual(result.issues.map(issue => issue.identifier).sort(), expected.map(issue => issue.identifier).sort());
+      const counts = expectedTeams.map(team => ({ key: team.id, name: team.name,
+        count: expected.filter(issue => issue.team.id === team.id).length })).sort((a, b) => a.key.localeCompare(b.key));
+      for (const groups of [result.groups, result.allGroups])
+        assert.deepEqual([...groups].sort((a, b) => a.key.localeCompare(b.key)), counts, 'Both group aggregates use current visibility and the stored filter');
       for (const issue of hidden) assert.ok(!JSON.stringify(result).includes(issue.identifier));
     };
     const publicIssues = issues.slice(0, 3), privateIssue = issues[4];
@@ -134,7 +145,7 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     // The same mounted view must shed withdrawn work on its next native refresh.
     await member.page.waitForFunction(id => !document.querySelector(`[data-issue-identifier="${id}"]`), privateIssue.identifier);
     await assertRows(member, publicIssues, [issues[3], privateIssue]);
-    assert.equal((await member.api('/session')).id, session.id);
+    assert.equal((await nativeSession(member)).id, session.id);
     await capture(member.page, 'private-membership-withdrawn');
     await beforePrivateNavigation(member.page, member.page.url());
     await member.page.reload();
