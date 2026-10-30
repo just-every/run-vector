@@ -613,7 +613,8 @@
     "created_at",
     "updated_at",
     "archived_at",
-    "milestone_id"
+    "milestone_id",
+    "start_date"
   ],
   "labels": [
     "id",
@@ -1908,7 +1909,8 @@
     "description",
     "priority",
     "offset_days",
-    "milestone_position"
+    "milestone_position",
+    "start_offset_days"
   ],
   "issue_reactions": [
     "issue_id",

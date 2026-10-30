@@ -572,7 +572,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "f21ddb55e9a18d3047519cc9369a1612c8a1fa9c513b1f5688c5e38121366d09",
+      "sha256": "141cc2b28509de7dc64808e7982a1f0d1974129471c6c7614f651fe80a9e2f6d",
       "executable": false
     },
     "agent-surface.json": {
@@ -664,7 +664,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "a87db3bb436b92ef111358071c983ad8576d5cf15846d1ecfe68827c368ce076",
+      "sha256": "76a9e7d31d04bb2490db14958c0d62598e6951c8a0ac2edc1bd12e5602ca28d4",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4120,7 +4120,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "f89dd35bd7d1ad8e90c710c6d9430633aafbaefb9328c59d0fb23d417172a0a2",
+      "sha256": "2b5327f0f74c28803852e4cd9a3d46eb0a5dc865dff8ce9fe710affc4c5b8c1a",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
