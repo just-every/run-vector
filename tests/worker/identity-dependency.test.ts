@@ -10,7 +10,7 @@ let legacyKey: Awaited<ReturnType<typeof keyPair>>
 
 beforeAll(async () => {
   const migrations = inject('migrations')
-  const boundary = migrations.findIndex(row => row.name === '0117_dependency_key_sealing.sql')
+  const boundary = migrations.findIndex(row => row.name === '0118_dependency_key_sealing.sql')
   expect(boundary).toBeGreaterThan(0)
   await applyD1Migrations(env.DB, migrations.slice(0, boundary))
   legacyKey = await keyPair()

@@ -1,6 +1,6 @@
 # Installation-key adoption
 
-Apply `0117_dependency_key_sealing.sql` after the unchanged 0001–0116 migration
+Apply `0118_dependency_key_sealing.sql` after the unchanged 0001–0116 migration
 sequence, including on populated installations. The additive columns retain the
 installation sector and existing dependency rows. Base upgrades legacy signing
 keys to authenticated envelopes when read; full rekey seals all interfaces.

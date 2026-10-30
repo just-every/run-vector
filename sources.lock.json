@@ -489,7 +489,7 @@
       "executable": false
     },
     "ADOPTING.md": {
-      "sha256": "52974f809238930ad0c166904afbdcaca02cec3d11a86d5e353259e148576b71",
+      "sha256": "788242a0d01e2f78e9375f9b40636835d0d7ac8464c84ae616f1f837b2d8b5f9",
       "executable": false
     },
     "agent-surface.json": {
@@ -549,7 +549,7 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "f757c6432346783fbce588dc2725548235f330d7240b881ff3b726783bd55f23",
+      "sha256": "3ca20c011371a53e8c0ea50d7e7d80317aa3eef18d6399b6229b59e3c75683df",
       "executable": false
     },
     "docs/API.md": {
@@ -2496,7 +2496,7 @@
       "sha256": "59d2e98e12e926d4319f8cb8f7c9e28583e702b8a00d7d3c82d0e5fc8be0f70b",
       "executable": false
     },
-    "migrations/core/0117_dependency_key_sealing.sql": {
+    "migrations/core/0118_dependency_key_sealing.sql": {
       "sha256": "9c8fa5f94c48a230f326cd4d666cbc2bd1e7d5a18327b89e65b339ac6a533d9a",
       "executable": false
     },
@@ -2577,7 +2577,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "5a8d092539034244bfc8cad61cb49d26daae3f1e305f13f67ddd036dc0000582",
+      "sha256": "a4002a65745b8e17d062787a529f0112b5fcad05092c553513c5d556ac7476b3",
       "executable": false
     },
     "rer-project.json": {
@@ -4869,7 +4869,7 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "e26d245b40849df6958f81d14a0e85e9a10c5b68f3a76794590b877bcf9b3cfa",
+      "sha256": "69c5997efc90929915549b4fd8df94496b6ee71c6c311c8aa48295889eb6b1d0",
       "executable": false
     },
     "src/core/features/discussion/revision.ts": {
@@ -8549,7 +8549,7 @@
       "executable": false
     },
     "tests/worker/identity-dependency.test.ts": {
-      "sha256": "37608d961702d0b8b5b710b36170c7cda98f9e6f2049e7c035d96ed951fb68f8",
+      "sha256": "8d4e0435498bfad1bc3b2df7fd67aebc313c5d88e5fbfae7c93b853e27758242",
       "executable": false
     },
     "tests/worker/import-alias-scenario.ts": {

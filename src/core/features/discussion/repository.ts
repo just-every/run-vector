@@ -60,7 +60,7 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
 
 export function discussionProjection([comments, files, links]: readonly D1Result[]) {
   return {
-    comments: (comments.results as Record<string, unknown>[]).map(row => ({ ...row, anchor: typeof row.anchor === "string" ? JSON.parse(row.anchor) : null })),
+    comments: (comments.results as Record<string, unknown>[]).map((row): Record<string, unknown> => ({ ...row, anchor: typeof row.anchor === "string" ? JSON.parse(row.anchor) : null })),
     files: files.results as Record<string, unknown>[],
     links: links.results as NamedLink[],
   };
