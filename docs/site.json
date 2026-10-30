@@ -519,6 +519,10 @@
     {
       "source": "scripts/edition-authoring/vendor/yaml/README.md",
       "reason": "Upstream YAML reference shipped with the Base authoring tool; not Vector owner documentation."
+    },
+    {
+      "source": "ADOPTING.md",
+      "reason": "Contributor instructions for dependency-key schema and private installation custody; not an installed application guide."
     }
   ]
 }
