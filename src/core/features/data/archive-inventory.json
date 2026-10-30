@@ -2153,7 +2153,11 @@
     "person_name",
     "consent_reference",
     "approvers_json",
-    "prepared_by"
+    "prepared_by",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ],
   "vector_agent_activity_attribution": [
     "event_id",
@@ -2164,7 +2168,11 @@
     "consent_reference",
     "approvers_json",
     "prepared_by",
-    "created_at"
+    "created_at",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ],
   "vector_agent_comment_attribution": [
     "comment_id",
@@ -2175,7 +2183,11 @@
     "consent_reference",
     "approvers_json",
     "prepared_by",
-    "created_at"
+    "created_at",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ],
   "vector_agent_project_activity_attribution": [
     "event_id",
@@ -2186,7 +2198,11 @@
     "consent_reference",
     "approvers_json",
     "prepared_by",
-    "created_at"
+    "created_at",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ],
   "vector_agent_document_revision_attribution": [
     "revision_id",
@@ -2197,7 +2213,11 @@
     "consent_reference",
     "approvers_json",
     "prepared_by",
-    "created_at"
+    "created_at",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ],
   "vector_agent_document_comment_attribution": [
     "comment_id",
@@ -2208,7 +2228,11 @@
     "consent_reference",
     "approvers_json",
     "prepared_by",
-    "created_at"
+    "created_at",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ],
   "vector_agent_audit_attribution": [
     "audit_id",
@@ -2219,6 +2243,10 @@
     "consent_reference",
     "approvers_json",
     "prepared_by",
-    "created_at"
+    "created_at",
+    "operation_id",
+    "idempotency_key",
+    "scopes_json",
+    "client_id"
   ]
 }

@@ -9,6 +9,7 @@ import { configureNotifications } from '../notifications/context';
 import { nativeRead, readIssue } from './reads.ts';
 import { vectorPeople } from './people.ts';
 import { requireAgentProviderBoundary } from './provider-boundary.ts';
+import { mutationTarget } from './targets.ts';
 
 export interface NativeMutation<A = any> {
   name: string; title: string; scope: string; clauses: string[]; schema: z.ZodType<A>;
@@ -54,6 +55,7 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
     clauses: spec.clauses, readOnly: false, untrusted: true,
     inputSchema: nativeInputSchema(spec.schema),
     outputSchema: { type: 'object', additionalProperties: true }, classes: spec.classes ?? ['standard'],
+    target: (args, ctx) => mutationTarget(env, spec, parse(args), ctx),
     async classify(args, ctx) {
       try {
         const input = parse(args); await admitted(env, spec, input, ctx);
@@ -90,7 +92,8 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
         const nativeFence = fence ? { ...fence, sql: `(${fence.sql}) AND (${providerFence.sql})`,
           values: [...fence.values, ...providerFence.values] } : providerFence;
         const db = visibilityDatabase(mutationDatabase(env.DB, ctx.person.id, undefined,
-          undefined, nativeFence, { agent: ctx.agent, person: ctx.person, consent: ctx.consent, approvers: ctx.approvers }), ctx.person.id);
+          undefined, nativeFence, { agent: ctx.agent, person: ctx.person, consent: ctx.consent, approvers: ctx.approvers,
+            operationId: ctx.operationId, idempotencyKey: ctx.idempotencyKey, scopes: ctx.scopes, clientId: ctx.clientId }), ctx.person.id);
         configureNotifications(db, env);
         const result = await spec.run(db, ctx.person, input);
         if (!(await vectorPeople(env).person(ctx.person.id))) throw new ToolRefusal('unauthenticated');

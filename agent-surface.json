@@ -2325,11 +2325,16 @@
         "properties": {
           "id": {
             "type": "string",
-            "pattern": "^vector:\\/\\/teams\\/[0-9A-HJKMNP-TV-Z]{26}\\/members\\/[0-9A-HJKMNP-TV-Z]{26}$"
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+          },
+          "operatorId": {
+            "type": "string",
+            "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
           }
         },
         "required": [
-          "id"
+          "id",
+          "operatorId"
         ],
         "additionalProperties": false
       }
@@ -2577,6 +2582,12 @@
   "verification": {
     "owner": {
       "initializer": "tests/agent-door/initialize-owner.mjs"
+    },
+    "replayAdmission": {
+      "prepare": [
+        "options",
+        "issue-create"
+      ]
     }
   },
   "journey": [
@@ -2741,7 +2752,14 @@
             "measure": 1
           }
         }
-      ]
+      ],
+      "target": {
+        "kind": "issue",
+        "id": {
+          "$from": "issue-create",
+          "pointer": "/id"
+        }
+      }
     },
     {
       "id": "issue-status",
@@ -3186,7 +3204,7 @@
             "$from": "issue-comment",
             "pointer": "/id"
           },
-          "emoji": "👀"
+          "emoji": "\ud83d\udc40"
         }
       },
       "expect": [
@@ -3235,7 +3253,7 @@
             "$from": "issue-comment",
             "pointer": "/id"
           },
-          "emoji": "👀"
+          "emoji": "\ud83d\udc40"
         }
       },
       "expect": [
@@ -7315,8 +7333,12 @@
       "tool": "vector.role.team_membership.member_grants",
       "args": {
         "id": {
+          "$from": "options",
+          "pointer": "/teams/0/id"
+        },
+        "operatorId": {
           "$from": "access-team",
-          "pointer": "/memberships/0/id"
+          "pointer": "/memberships/0/operatorId"
         }
       },
       "expect": [

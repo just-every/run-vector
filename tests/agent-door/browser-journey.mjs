@@ -55,7 +55,7 @@ export async function browserJourney({ request, origin, surface, signer, person,
   const approval = pending.result?._meta?.['com.runeditrun/approval'];
   if (!approval?.url) throw new Error('Browser preparation did not create a native approval');
   await mkdir('../screens-final', { recursive: true });
-  const browser = await chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true, executablePath: '/usr/bin/chromium', args: ['--no-sandbox'] });
   const captured = [];
   try {
     const context = await browser.newContext();

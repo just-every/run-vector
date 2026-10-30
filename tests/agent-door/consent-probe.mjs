@@ -41,6 +41,10 @@ export async function consentProbe({ request, origin, surface, signer, person, d
     const body = await response.json(); invalidCodes.push(body.result?._meta?.['com.runeditrun/error']?.code);
   }
   const nativeArguments = invalidCodes.every(code => code === 'invalid_arguments') && beforeInvalid === await counts();
+  const missing = await request(origin + '/mcp', { method: 'POST', headers: {
+    Authorization: 'Bearer ' + await accessToken(context), 'Content-Type': 'application/json', 'MCP-Protocol-Version': '2025-11-25' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'resources/read', params: { uri: 'vector://issues/' + randomUUID() } }) });
+  const resourceRefusal = (await missing.json()).error?.data?.code;
   const minted = await request(origin + '/api/settings/integrations/tokens', { method: 'POST',
     headers: { Cookie: person.cookie, Origin: origin, 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: 'Purpose separation probe', scopes: ['issues:read'] }) });
@@ -55,6 +59,12 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const job = () => JSON.parse(JSON.stringify({ name: tool.name, args: { teamId: metadata.teams.find(team => team.canRead !== false).id,
     title: 'Investigate retained native work', idempotency_key: randomUUID() }, who }));
   const before = await count(), first = job(), live = await invoke(first.name, first.args, first.who), afterLive = await count();
+  const replay = await invoke(first.name, first.args, first.who), afterReplay = await count();
+  const conflict = await invoke(first.name, { ...first.args, title: 'Changed retained native work' }, first.who);
+  const durable = await db.prepare(`SELECT operation_id,idempotency_key,scopes_json,client_id
+    FROM vector_agent_activity_attribution WHERE operation_id=? LIMIT 1`).bind(live.decision?.id).first();
+  const durableIdentity = durable?.idempotency_key === first.args.idempotency_key
+    && durable.client_id === who.clientId && JSON.stringify(JSON.parse(durable.scopes_json)) === JSON.stringify(who.scopes);
   const saved = job();
   const token = await accessToken(context);
   await adopt({ revoked: { agents: [], consents: [context.consent] } });
@@ -62,8 +72,8 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const mcp = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json',
     'MCP-Protocol-Version': '2025-11-25' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: saved.name, arguments: saved.args } }) });
   await mcp.body?.cancel();
-  return { ok: nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
-      && live.outcome === 'done' && afterLive === before + 1 && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
-    scoped, insufficient, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi, nativeArgumentRefusals: invalidCodes, nativeArguments,
-    before, afterLive, afterRevoked, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'pending hooks-7 durable operation context' };
+  return { ok: resourceRefusal === 'resource_unavailable' && nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
+      && live.outcome === 'done' && afterLive === before + 1 && replay.outcome === 'done' && afterReplay === afterLive && conflict.code === 'idempotency_conflict' && durableIdentity && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
+    scoped, insufficient, resourceRefusal, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi, nativeArgumentRefusals: invalidCodes, nativeArguments,
+    before, afterLive, afterReplay, afterRevoked, durableIdentity, changedArguments: conflict.code, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'undeclared queued lifecycle and mail edges; refuses before native outbox work' };
 }

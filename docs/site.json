@@ -503,6 +503,10 @@
     {
       "source": "docs/AGENT-REGISTRY.md",
       "reason": "Executable native agent registry reference; retained outside the owner-approved public navigation."
+    },
+    {
+      "source": "vendor/base/agent-door/CLAUSES.md",
+      "reason": "Canonical Base-delivered agent requirements for contract synchronization and maintainer judgment"
     }
   ]
 }

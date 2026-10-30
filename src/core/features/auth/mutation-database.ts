@@ -99,8 +99,9 @@ export function mutationDatabase(
       // D1 batches are SQLite transactions. The singleton exists only inside
       // this transaction, including trigger effects; rollback removes it too.
       const beginAttribution = preparedAttribution ? [source.prepare(`INSERT INTO vector_agent_context
-        (id,agent_id,agent_name,person_id,person_name,consent_reference,approvers_json,prepared_by)
-        VALUES(1,?,?,?,?,?,?,?)`).bind(...preparedAttribution.values)] : [];
+        (id,agent_id,agent_name,person_id,person_name,consent_reference,approvers_json,prepared_by,
+          operation_id,idempotency_key,scopes_json,client_id)
+        VALUES(1,?,?,?,?,?,?,?,?,?,?,?)`).bind(...preparedAttribution.values)] : [];
       const endAttribution = preparedAttribution ? [source.prepare('DELETE FROM vector_agent_context WHERE id=1')] : [];
       return (
         await source.batch<T>([

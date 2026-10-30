@@ -6,6 +6,7 @@ import { runJourney } from '../../vendor/base/agent-door/conformance/journey.mjs
 import { unsetPolicy, removalPhase, blockedPhases, pausePhase, consentRevocationPhase } from '../../vendor/base/agent-door/conformance/policy-phases.mjs';
 import { negativePhase } from '../../vendor/base/agent-door/conformance/negative.mjs';
 import { invocationPhase } from '../../vendor/base/agent-door/conformance/invocation.mjs';
+import { replayAdmissionPhase } from '../../vendor/base/agent-door/conformance/replay.mjs';
 import { auditPhase } from '../../vendor/base/agent-door/conformance/audit.mjs';
 
 /** Run the pinned Base phases on the full real registry even when a declaration
@@ -36,6 +37,7 @@ export async function runNativePhases({ fetch, invoke, origin, surface, signer, 
   await c.phase('BASE-AGENT-004.phase6', () => negativePhase(c));
   await c.phase('BASE-AGENT-004.consent', () => consentRevocationPhase(c));
   await c.phase('BASE-AGENT-012.invocation', () => invocationPhase(c, invoke));
+  if (surface.verification?.replayAdmission) await c.phase('BASE-AGENT-012.replay', () => replayAdmissionPhase(c, surface.verification.replayAdmission));
   await c.phase('BASE-AGENT-009.phase7', () => auditPhase(c));
   return { ok: points.every(point => point.ok), points };
 }

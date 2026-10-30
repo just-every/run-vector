@@ -2,7 +2,7 @@ import type { WorkerBindings } from '../../app/bindings';
 import { notificationEmailAvailable } from '../notifications/context';
 import { ToolRefusal } from '../../../../vendor/base/agent-door/index.ts';
 
-/** Until Base supplies the native operation identity and key, an agent cannot
+/** Queued lifecycle and mail edges are undeclared. An agent cannot
  * prepare provider work that would outlive this invocation. The existing human
  * provider path remains authoritative; refusing here creates no outbox intent. */
 export function agentProviderFence(env: WorkerBindings, person: string) {
