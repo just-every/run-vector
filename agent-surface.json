@@ -146,7 +146,8 @@
     }
   ],
   "resources": [
-    "vector://issue/{id}"
+    "vector://issue/{id}",
+    "vector://comment/{id}"
   ],
   "notTools": [
     {
