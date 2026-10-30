@@ -153,3 +153,29 @@ export async function paletteJourney(page, context, base, record, capture) {
   record('CMD-001', 'Up/down wrap and scroll overflowing real results while input focus stays put; query changes reset selection, asynchronous results preserve the selected command, Enter opens an issue/project/view and executes a command, and Escape leaves the URL unchanged.');
   record('VIEW-002-PALETTE', 'A real newly created private saved view is found by palette search and Enter opens its persisted view page.');
 }
+
+export async function openSavedViewFromPalette(page, base, view, capture) {
+  await settleReads(page);
+  await page.locator('h1:visible').first().click();
+  const origin = await page.evaluate(() => performance.timeOrigin);
+  await page.keyboard.press('Control+k');
+  const palette = page.getByRole('dialog', { name: 'Command palette', exact: true });
+  await palette.waitFor();
+  const search = palette.getByRole('textbox');
+  await search.fill(view.name);
+  await palette.locator('.command-palette__results[aria-busy="false"]').waitFor();
+  const id = `palette-view:${view.id}`;
+  await palette.locator(`[id="${id}"]`).waitFor();
+  const count = await palette.getByRole('option').count();
+  for (let step = 0; step < count && await search.getAttribute('aria-activedescendant') !== id; step++)
+    await search.press('ArrowDown');
+  assert.equal(await search.getAttribute('aria-activedescendant'), id);
+  assert.equal(await search.evaluate(node => document.activeElement === node), true);
+  assert.equal(await palette.locator(`[id="${id}"]`).getAttribute('aria-selected'), 'true');
+  await capture?.(page, palette);
+  await search.press('Enter');
+  await page.waitForURL(base + '/app/views/' + view.id);
+  await page.getByRole('heading', { name: view.name, exact: true }).waitFor();
+  await palette.waitFor({ state: 'detached' });
+  assert.equal(await page.evaluate(() => performance.timeOrigin), origin, 'Palette opens the saved view through hydrated navigation');
+}

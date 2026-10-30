@@ -730,7 +730,7 @@ try {
   let keyboardFixture = 1910;
   await withInvitedOperator(page, context, base, state, () =>
     keyboardJourney(page, context, base, record, journey =>
-      withInvitedOperator(page, context, base, state, journey, `synthetic-vector-${++keyboardFixture}`)), 'synthetic-vector-1910');
+      withInvitedOperator(page, context, base, state, journey, `synthetic-vector-${++keyboardFixture}`), { state, sql, evidence }), 'synthetic-vector-1910');
   expectedBulkConflictUrl = null;
   await withInvitedOperator(page, context, base, state, () => boardJourney(page, context, base, record), 'synthetic-vector-1920');
   // Each viewport proves the complete persisted-preference flow for its own Owner.
