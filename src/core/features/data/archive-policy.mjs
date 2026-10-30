@@ -1,3 +1,5 @@
+// Team production follow-up windows and merge watches are portable domain data; a completed restore
+// restarts each enabled window, so restored merges are never asked about (PUSH-003).
 // Document issue references retain live and removed backlinks as portable domain data.
 // Comment description anchors are portable domain data; deletion clears their retained quotes.
 // Initiative channel bindings are portable domain configuration, like vector_channel_bindings.

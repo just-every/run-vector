@@ -3,7 +3,9 @@ import {useState} from 'react';
 import {z} from 'zod';
 import {ApiError,fetchJson,useApiResource} from '../../../app/api-client';
 import {gitRuleSchema as ruleSchema} from '../github/rule-schema';
-const teamSchema=z.object({id:z.string(),name:z.string(),statuses:z.array(z.object({id:z.string(),name:z.string()})),rules:z.array(ruleSchema)});
+import {followupWindowSchema} from '../../deployment-followup/schema';
+import {FollowupWindowForm} from '../../deployment-followup/ui/window-form';
+const teamSchema=z.object({id:z.string(),name:z.string(),statuses:z.array(z.object({id:z.string(),name:z.string()})),rules:z.array(ruleSchema),followup:followupWindowSchema});
 const schema=z.object({teams:z.array(teamSchema)});
 const names={draft:'Draft PR opened',review:'Review requested',merged:'PR merged',deploy:'Production deployed'};
 function Rule({team,rule,onSaved}:{team:z.infer<typeof teamSchema>;rule:z.infer<typeof ruleSchema>;onSaved:()=>void}){
@@ -21,5 +23,5 @@ export function GithubRules(props:{teamId:string;resource:GithubRulesResource}|{
 }
 function TeamGithubRules({teamId,data}:{teamId:string;data:GithubRulesResource}){
  const team=data.data?.teams.find(team=>team.id===teamId);
- return <section className="github-rules" aria-label="Git automation rules"><h4>Team automation</h4><p>Rules act as Git automation. Completed issues stay completed unless their rule explicitly allows reopening. Production defaults to an environment named production; a team can choose another name below.</p>{data.error&&<p role="alert">{data.error.message}</p>}{team&&<details><summary>{team.name} Git automation</summary>{team.rules.map(rule=><Rule key={rule.trigger} team={team} rule={rule} onSaved={data.reload}/>)}</details>}</section>;
+ return <section className="github-rules" aria-label="Git automation rules"><h4>Team automation</h4><p>Rules act as Git automation. Completed issues stay completed unless their rule explicitly allows reopening. Production defaults to an environment named production; a team can choose another name below.</p>{data.error&&<p role="alert">{data.error.message}</p>}{team&&<details><summary>{team.name} Git automation</summary>{team.rules.map(rule=><Rule key={rule.trigger} team={team} rule={rule} onSaved={data.reload}/>)}<FollowupWindowForm teamId={team.id} teamName={team.name} followup={team.followup} onSaved={data.reload}/></details>}</section>;
 }

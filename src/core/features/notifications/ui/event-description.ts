@@ -17,6 +17,7 @@ const actions: Record<NotificationKind, string> = {
   blocking: "changed a blocking relation on",
   due_changed: "changed the due date of",
   reminder: "has a reminder for",
+  deployment_question: "asks why the merge has not reached production for",
 };
 
 export function notificationAction(item: InboxItem): string {

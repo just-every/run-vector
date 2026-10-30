@@ -256,6 +256,22 @@ export function returnStatements(db: D1Database, event: CollaborationEvent) {
     ),
   ];
 }
+/** PUSH-003: the issue's current assignee, asked why a merge has not reached production. */
+export function deploymentQuestionStatements(
+  db: D1Database,
+  event: CollaborationEvent,
+  assignee: string,
+) {
+  return [
+    candidate(
+      db,
+      event,
+      "deployment_question",
+      "i.id=? AND o.id=i.assignee_operator_id AND o.id=?",
+      [event.issueId, assignee],
+    ),
+  ];
+}
 export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
   const context = notificationContext(db);
   if (context?.available) context.eventIds.add(event.id);

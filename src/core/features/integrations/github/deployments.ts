@@ -3,6 +3,7 @@ import {IntegrationError} from '../errors';
 import {gitSha,pushPayload} from './push';
 import {githubDelivery,type GithubDelivery} from './delivery';
 import {gitMove,gitRule,gitGuard} from './rules';
+import {productionStatement} from '../../deployment-followup/watches';
 const payload=z.object({
  repository:z.object({full_name:z.string().min(1).max(200)}),
  deployment:z.object({id:z.number().int().positive(),sha:gitSha,environment:z.string().min(1).max(200)}),
@@ -43,6 +44,7 @@ export async function receiveDeployment(raw:unknown,context:GithubDelivery){
    statements.push(gitGuard(db,'COALESCE((SELECT version FROM github_automation_rules WHERE team_id=? AND trigger=\'deploy\'),0)=?',issue.team_id,rule.version));
    if(deployment.environment.toLowerCase()===rule.environment.toLowerCase())statements.push(...await gitMove(db,issue.id,'deploy',new Date().toISOString()));
   }
+  statements.push(productionStatement(db,id,deployment,at));
   return {statements,linked:issues.length,diagnostic:issues.length?'deployment_linked':'deployment_inclusion_unproven_or_recorded'};
  });
 }

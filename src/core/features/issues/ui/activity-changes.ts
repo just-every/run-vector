@@ -59,6 +59,7 @@ export function activityTitle(kind: string, nextValue?: unknown) {
   if (typeof record(nextValue).undoOf === 'string') return 'Undid the previous change';
   if (kind === "issue.auto_closed") return `Closed automatically after ${String(record(nextValue).days ?? "")} days without activity`;
   if (kind === "issue.auto_archived") return `Archived automatically ${String(record(nextValue).days ?? "")} days after it closed`;
+  if (kind === "deployment.followup_asked") return `Asked the assignee why PR #${String(record(nextValue).pullNumber ?? "")} has not reached production within ${String(record(nextValue).windowHours ?? "")} hours`;
   const titles: Record<string, string> = {
     "issue.created": "Created the issue",
     "issue.updated": "Changed the issue",

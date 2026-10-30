@@ -19,6 +19,7 @@ export const settingsFormDoors: Record<string, readonly string[]> = {
   'integrations/ui/delivery-setup.tsx#DeliverySetup': ['POST /settings/integrations/delivery'],
   'integrations/ui/github-settings.tsx#GithubSettings': ['POST /settings/integrations/github'],
   'integrations/ui/github-rules.tsx#Rule': ['PATCH /settings/teams/:id'],
+  'deployment-followup/ui/window-form.tsx#FollowupWindowForm': ['PATCH /settings/teams/:id'],
   'settings/ui/teams-panel.tsx#TeamsPanel': ['PUT /settings/teams/creation', 'POST /settings/teams'],
   'settings/ui/teams-panel.tsx#TeamEditor': ['PATCH /settings/teams/:id', 'POST /settings/teams/:id/statuses'],
   'settings/ui/teams-panel.tsx#StatusEditor': ['PATCH /settings/teams/:id/statuses/:statusId'],

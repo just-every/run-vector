@@ -17,6 +17,7 @@ export const notificationKinds = [
   "blocking",
   "due_changed",
   "reminder",
+  "deployment_question",
 ] as const;
 export type NotificationKind = (typeof notificationKinds)[number];
 export type InboxItem = {

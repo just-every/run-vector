@@ -14,6 +14,7 @@ import {addGithubIssueProjection} from '../features/integrations/github/issue-pr
 import {addReleaseRoutes} from '../features/releases/routes';
 import {releaseAuthority} from '../features/releases/authority';
 import { addGithubRuleRoutes } from '../features/integrations/github/rule-routes';
+import { addFollowupRoutes } from '../features/deployment-followup/settings';
 import { addAuditRoutes } from '../features/audit/routes';
 import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
@@ -251,6 +252,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addReleaseRoutes(app);
   addGithubIssueProjection(app);
   addGithubRuleRoutes(app);
+  addFollowupRoutes(app);
   addCalendarFeedRoutes(app);
   addInsightRoutes(app);
   addDashboardRoutes(app);
