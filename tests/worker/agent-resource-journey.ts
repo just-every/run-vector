@@ -23,7 +23,7 @@ export async function agentResourceClient(member:Person,owner:Person) {
     expect(response.status).toBe(201);
     return (await response.json() as {token:string}).token;
   };
-  const evidence=await issue(['evidence:read','issues:write']),noEvidence=await issue(['issues:read']);
+  const evidence=await issue(['evidence:read','issues:write','comments:write']),noEvidence=await issue(['issues:read']);
   let id=0;
   const rpc=async(method:string,params:object,token=evidence)=>{
     const response=await send('/mcp',{
@@ -61,12 +61,23 @@ export async function agentResourceClient(member:Person,owner:Person) {
       const record=JSON.parse(returned.body.result.contents[0].text);
       expect(record).toMatchObject({id:result.id,identifier:result.identifier,title:'synthetic-vector-3302'});
       expect(record.evidence).toEqual(expect.arrayContaining([expect.objectContaining({summary:'synthetic-vector-3303',originKind:'operator'})]));
-      const refused=await rpc('resources/read',{uri:link.uri},noEvidence);
-      expect(refused.status).toBe(403);
-      expect(refused.body.error.data.code).toBe('insufficient_scope');
-      expect(refused.challenge).toContain('evidence:read');
-      expect(refused.body.result).toBeUndefined();
-      return link.uri as string;
+      const commented=await rpc('tools/call',{name:'vector.issue.comment',arguments:{identifier:result.identifier,body:'synthetic-vector-3305',idempotency_key:crypto.randomUUID()}});
+      expect(commented.status).toBe(200);
+      expect(commented.body.result?.isError).not.toBe(true);
+      const commentLink=commented.body.result.content.find((item:any)=>item.uri==='vector://comment/'+commented.body.result.structuredContent.commentId);
+      expect(commentLink).toMatchObject({type:'resource_link',name:result.identifier+' comment'});
+      const commentRead=await read(commentLink.uri);
+      expect(commentRead.status).toBe(200);
+      expect(JSON.parse(commentRead.body.result.contents[0].text)).toMatchObject({id:commented.body.result.structuredContent.commentId,body:'synthetic-vector-3305',canEdit:1});
+      expect(commentRead.body.result.contents[0]._meta['com.runeditrun/untrusted']).toBe(true);
+      for(const uri of [link.uri,commentLink.uri]){
+        const refused=await rpc('resources/read',{uri},noEvidence);
+        expect(refused.status).toBe(403);
+        expect(refused.body.error.data.code).toBe('insufficient_scope');
+        expect(refused.challenge).toContain('evidence:read');
+        expect(refused.body.result).toBeUndefined();
+      }
+      return [link.uri,commentLink.uri] as string[];
     },
   };
 }

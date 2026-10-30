@@ -7,6 +7,7 @@ import { listIssues, issueListResponse } from '../issues/list';
 import { issueListQuerySchema } from '../issues/list-schema';
 import { nativeIssue, standard, issueUri } from './native';
 import { requireIssueAccess } from '../issues/access';
+import { discussion } from '../discussion/repository';
 
 const output={type:'object',additionalProperties:true} as const;
 const identifier={type:'string',pattern:'^[A-Z]{2,10}-[1-9][0-9]*$'};
@@ -35,4 +36,20 @@ export const issueResource:ResourceDefinition={uriTemplate:'vector://issue/{id}'
     if(!value)return null;
     await requireIssueAccess(db,issue.identifier,ctx.person.id);
     return {json:value,untrusted:true};
+  }};
+
+/** Comments keep the UI's body, attribution and per-person action projection. */
+export const commentResource:ResourceDefinition={uriTemplate:'vector://comment/{id}',name:'Comment',mimeType:'application/json',scope:'evidence:read',classes:['standard'],classify:standard,
+  async read(uri,ctx){
+    const match=/^vector:\/\/comment\/([A-Za-z0-9_-]+)$/.exec(uri);
+    if(!match)return null;
+    const db=visibilityDatabase(ctx.db,ctx.person.id);
+    const issue=await db.prepare('SELECT i.id,i.identifier FROM issues i JOIN issue_comments c ON c.issue_id=i.id WHERE c.id=?').bind(match[1]).first<{id:string;identifier:string}>();
+    if(!issue)return null;
+    await requireIssueAccess(db,issue.identifier,ctx.person.id);
+    const projection=await discussion(db,issue.id,ctx.person.id);
+    const comment=projection.comments.find(comment=>comment.id===match[1]);
+    if(!comment)return null;
+    await requireIssueAccess(db,issue.identifier,ctx.person.id);
+    return {json:comment,untrusted:true};
   }};

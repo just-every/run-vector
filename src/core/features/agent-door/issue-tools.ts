@@ -5,7 +5,7 @@ import { createIssue, acceptIssue, deferIssue, declineIssue } from '../issues/mu
 import { updateIssueSchema } from '../issue-edit/routes';
 import { updateIssueRecord } from '../issue-edit/repository';
 import { addComment } from '../discussion/repository';
-import { nativeDatabase, nativeIssue, nativeResult, standard, issueUri } from './native';
+import { nativeDatabase, nativeIssue, nativeResult, standard, issueUri, commentUri } from './native';
 import { asAgent } from './attribution';
 import { operatorIntakeInputSchema } from '../operator-intake/input';
 import { createOperatorIntake } from '../operator-intake/repository';
@@ -30,7 +30,12 @@ export const issueTools:ToolDefinition[]=[
   defineTool({name:'vector.issue.comment',title:'Add comment',description:'Add an internal native issue comment as the agent for the sponsor. This does not send a customer reply.',scope:'comments:write',readOnly:false,classes:['standard'],clauses:['ISSUE-008'],inputSchema:json(z.object({identifier,body:z.string().trim().min(1).max(100000)})),outputSchema:output,
     async classify(args,ctx){await nativeIssue(ctx,String(args.identifier));await nativeDatabase(ctx,'POST','/issues/:identifier/comments',{identifier:String(args.identifier)},args);return standard();},async target(args,ctx){return {kind:'issue',id:(await nativeIssue(ctx,String(args.identifier))).id};},
     summary:args=>({target:{id:String(args.identifier)},items:['Add internal comment',String(args.body)]}),
-    async run(args,ctx){const id=String(args.identifier),issue=await nativeIssue(ctx,id),db=await nativeDatabase(ctx,'POST','/issues/:identifier/comments',{identifier:id},args);return nativeResult(()=>asAgent(ctx,async()=>link({...issue,identifier:id},{commentId:await addComment(db,issue.id,ctx.person.id,String(args.body))})));}}),
+    async run(args,ctx){const id=String(args.identifier),issue=await nativeIssue(ctx,id),db=await nativeDatabase(ctx,'POST','/issues/:identifier/comments',{identifier:id},args);return nativeResult(()=>asAgent(ctx,async()=>{
+      const commentId=await addComment(db,issue.id,ctx.person.id,String(args.body));
+      const value=link({...issue,identifier:id},{commentId});
+      value.resources.push({uri:commentUri(commentId),name:`${id} comment`});
+      return value;
+    }));}}),
   ...([
     ['accept',acceptIssueInputSchema,acceptIssue,'INTAKE-005'],
     ['defer',deferIssueInputSchema,deferIssue,'INTAKE-006'],
