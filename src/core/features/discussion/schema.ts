@@ -8,6 +8,7 @@ export const discussionSchema = z.object({
       id: z.string(),
       parentId: z.string().nullable(),
       body: z.string().nullable(),
+      version: z.number().int().nonnegative(),
       actor: z.string(),
       imported: z.union([z.boolean(), z.number()]).transform(Boolean).optional(),
       canEdit: z.union([z.boolean(), z.number()]).transform(Boolean),

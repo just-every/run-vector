@@ -154,7 +154,7 @@ function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChang
           <div className="comment-body">
             <SafeMarkdown
               taskBusy={busy}
-              onTaskChange={writable && c.canEdit ? (task) => mutate(`comments/${c.id}/checklist`, json("POST", { expectedBody: c.body, ...task })) : undefined}
+              onTaskChange={writable && c.canEdit ? (task) => mutate(`comments/${c.id}/checklist`, json("POST", { expectedBody: c.body, expectedVersion: c.version, ...task })) : undefined}
             >
               {c.body ?? ""}
             </SafeMarkdown>
