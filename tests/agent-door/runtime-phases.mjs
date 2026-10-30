@@ -1,18 +1,18 @@
 import { randomUUID } from 'node:crypto';
-import { createProtocol } from '../../vendor/base/agent-door/conformance/protocol.mjs';
-import { autonomousPolicy, heldPolicy } from '../../vendor/base/agent-door/conformance/crypto.mjs';
-import { discoverDoor, listedDoor } from '../../vendor/base/agent-door/conformance/discovery.mjs';
-import { runJourney } from '../../vendor/base/agent-door/conformance/journey.mjs';
-import { unsetPolicy, removalPhase, blockedPhases, pausePhase, consentRevocationPhase } from '../../vendor/base/agent-door/conformance/policy-phases.mjs';
-import { negativePhase } from '../../vendor/base/agent-door/conformance/negative.mjs';
-import { invocationPhase } from '../../vendor/base/agent-door/conformance/invocation.mjs';
-import { replayAdmissionPhase } from '../../vendor/base/agent-door/conformance/replay.mjs';
-import { auditPhase } from '../../vendor/base/agent-door/conformance/audit.mjs';
+import { createProtocol } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/protocol.mjs';
+import { autonomousPolicy, heldPolicy } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/crypto.mjs';
+import { discoverDoor, listedDoor } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/discovery.mjs';
+import { runJourney } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/journey.mjs';
+import { unsetPolicy, removalPhase, blockedPhases, pausePhase, consentRevocationPhase } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/policy-phases.mjs';
+import { negativePhase } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/negative.mjs';
+import { invocationPhase } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/invocation.mjs';
+import { replayAdmissionPhase } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/replay.mjs';
+import { auditPhase } from '../../node_modules/@runeditrun/rer/modules/agent-door/conformance/audit.mjs';
 
 /** Run the pinned Base phases on the full real registry even when a declaration
  * is pending. The caller prints every declaration and retains its failure exit;
  * this gives runtime results instead of stopping at the declaration gate. All
- * assertions and native journey calls remain the pin's actual implementations. */
+ * assertions and native journey calls remain the installed CLI's actual implementations. */
 export async function runNativePhases({ fetch, invoke, origin, surface, signer, person }) {
   const points = [];
   const c = createProtocol({ fetch, origin, surface, signer, person, business: 'rer-agent-conformance',
