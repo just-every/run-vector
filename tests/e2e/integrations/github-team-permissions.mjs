@@ -101,6 +101,7 @@ export async function exerciseGithubTeamPermissions({page,runtime,call,team,star
   assert.equal(await personal.getByRole('heading',{name:'GitHub pull request webhooks',exact:true}).count(),0);
   assert.equal(await personal.getByRole('region',{name:'Git automation rules',exact:true}).count(),0);
   assert.equal(await personal.getByRole('button',{name:'Register repository',exact:true}).count(),0);
+  assert.equal(await personal.getByText('GitHub event received',{exact:false}).count(),0,'Members see no GitHub receipt state');
   await request(member,'/settings/integrations','GET',undefined,403);
   console.log('Git Teams cell e: Member Integrations has personal API controls and no workspace setup');
   await inspect(member.page,personal,'github-member-integrations');
