@@ -242,7 +242,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
     const undo = committedUndoReceipt(context.env.DB);
     if (!["GET", "HEAD"].includes(context.req.method) && context.res.ok)
-      await mirrorPersonIssueEvents(nativeBindings, operator, notificationEventIds(context.env.DB));
+      await mirrorPersonIssueEvents(nativeBindings, operator, directMessageEventIds(context.env.DB));
     if (undo && context.res.status >= 200 && context.res.status < 300)
       context.header('x-vector-undo', JSON.stringify(undo));
     }

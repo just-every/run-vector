@@ -15,14 +15,14 @@ try {
     'https://github.com/runeditrun/base.git', scratch])) throw new Error('Cannot acquire the declared Base verifier');
   if (await run('git', ['-C', scratch, 'fetch', '--depth', '1', 'origin', pin])) throw new Error('Cannot fetch the exact declared Base pin');
   if (await run('git', ['-C', scratch, 'checkout', '--detach', pin])) throw new Error('Cannot select the exact declared Base pin');
+  await rm('dist', { recursive: true, force: true });
   console.log(`Normal conformance command: node ${scratch}/bin/rer.mjs verify`);
   const normal = await run(process.execPath, [join(scratch, 'bin/rer.mjs'), 'verify']);
   console.log(`Normal rer verify exit=${normal}; Base=${pin}.`);
   // A missing contract citation stops normal verification before the runtime.
   // Its failure stays intact; the separate real installation still runs.
-  const build = await run(process.execPath, ['node_modules/@runeditrun/rer/bin/rer.mjs', 'build']);
-  const runtime = build === 0 ? await run(process.execPath, ['tests/agent-door/runtime.mjs']) : build;
-  const browser = build === 0 && process.argv.includes('--screens') ? await run(process.execPath, ['tests/agent-door/runtime.mjs', '--screens']) : 0;
+  const runtime = await run(process.execPath, ['tests/agent-door/runtime.mjs']);
+  const browser = process.argv.includes('--screens') ? await run(process.execPath, ['tests/agent-door/runtime.mjs', '--screens']) : 0;
   console.log(`Specialist installation journey exit=${runtime}; normal CLI exit=${normal}.`);
   process.exitCode = normal || runtime || browser;
 } finally { await rm(scratch, { recursive: true, force: true }); }

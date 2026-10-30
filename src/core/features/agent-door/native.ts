@@ -87,8 +87,8 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
       try {
         const input = parse(args), fence = await admitted(env, spec, input, ctx);
         const providerFence = await requireAgentProviderBoundary(env, ctx.person.id);
-        const db = mutationDatabase(visibilityDatabase(env.DB, ctx.person.id), ctx.person.id, undefined,
-          providerFence, fence, { agent: ctx.agent, person: ctx.person, consent: ctx.consent, approvers: ctx.approvers });
+        const db = visibilityDatabase(mutationDatabase(env.DB, ctx.person.id, undefined,
+          providerFence, fence, { agent: ctx.agent, person: ctx.person, consent: ctx.consent, approvers: ctx.approvers }), ctx.person.id);
         configureNotifications(db, env);
         const result = await spec.run(db, ctx.person, input);
         if (!(await vectorPeople(env).person(ctx.person.id))) throw new ToolRefusal('unauthenticated');
