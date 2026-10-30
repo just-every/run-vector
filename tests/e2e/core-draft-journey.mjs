@@ -8,10 +8,10 @@ export async function draftJourney(page, context, base, teamId, operatorId, reco
   await beforePrivateNavigation(page, target);
   expectedDraftFailures.add(base + '/api/metadata');
   // A failed team-metadata read must expose recovery through the same form door.
-  // Do not inject into a late read from the departing Current document.
+  // Arm one failure after draining Current, for the destination form alone.
   let failedMetadataReads = 0;
   const failMetadata = route => {
-    if (route.request().headers().referer !== target) return route.fallback();
+    if (failedMetadataReads || route.request().headers().referer !== target) return route.fallback();
     ++failedMetadataReads;
     return route.fulfill({ status: 500, contentType: 'application/json',
       body: JSON.stringify({ error: 'unavailable' }) });
