@@ -22,3 +22,9 @@ export const agentDoorRoutes = [
   ...(['reviewed', 'flag', 'undo'] as const).map(action => ({ path: `/agents/api/reviews/:id/${action}`,
     identity: 'person.session' as const, authority: 'Current native reviewer, same Origin and retained decision; Undo requires a real native reversal.' })),
 ] as const;
+
+export const businessDoorRoutes = [
+  { path: '/api/rer/business-settings', identity: 'business.signed-settings', authority: 'Installation-bound signed Business settings, current sequence and durable native person bindings.' },
+  { path: '/rer-business-logo', identity: 'public.brand-assets', authority: 'Public installation logo only; no native person or workspace records.' },
+  { path: '/rer-business.css', identity: 'public.brand-assets', authority: 'Public installation theme only; no native person or workspace records.' },
+] as const;

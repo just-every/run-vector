@@ -24,7 +24,7 @@ import { lobbyResponse } from '../../base/lobby';
 import { claimedWhen, setupStateResponse } from '../../base/setup-state';
 import { identity } from './identity';
 import { vectorAgentDoor } from '../features/agent-door/index.server';
-import { agentDoorRoutes } from '../features/agent-door/routes';
+import { agentDoorRoutes, businessDoorRoutes } from '../features/agent-door/routes';
 import { vectorBusiness } from '../features/agent-door/business';
 
 const claimed = claimedWhen('SELECT 1 FROM oa_bootstrap WHERE singleton = 1');
@@ -51,17 +51,16 @@ export function createServerApp() {
     if (!context.env.APP_ORIGIN) return context.json({ error: 'configuration_missing', message: 'APP_ORIGIN is required.' }, 503);
     return await vectorAgentDoor(context.env).handle(context.req.raw) ?? context.notFound();
   });
+  for (const door of businessDoorRoutes) app.all(door.path, async context => {
+    if (!context.env.APP_ORIGIN) return context.json({ error: 'configuration_missing', message: 'APP_ORIGIN is required.' }, 503);
+    return await vectorBusiness(context.env).handle(context.req.raw) ?? context.notFound();
+  });
   app.use("*", async (context, next) => {
     if (!context.env.APP_ORIGIN)
       return context.json(
         { error: "configuration_missing", message: "APP_ORIGIN is required." },
         503,
       );
-    const path = context.req.path;
-    if (['/api/rer/business-settings', '/rer-business-logo', '/rer-business.css'].includes(path)) {
-      const response = await vectorBusiness(context.env).handle(context.req.raw);
-      if (response) return response;
-    }
     const lobbyBindings = { DB: context.env.DB, AUTH_ORIGIN: context.env.APP_ORIGIN };
     const state = await setupStateResponse(context.req.raw, lobbyBindings, claimed);
     if (state) return state;
