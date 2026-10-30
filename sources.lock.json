@@ -7489,7 +7489,7 @@
       "executable": false
     },
     "tests/e2e/admin-runtime-support.mjs": {
-      "sha256": "5c13f9396ece3d9bb199980636357b7f42fae42911e2dca01c041b9e348bd9ce",
+      "sha256": "b4e11be6c50b715cd2d391d7a09e0d4d2f31db8ccbdd86130e523bdee41a5668",
       "executable": false
     },
     "tests/e2e/admin-runtime.mjs": {
@@ -7665,7 +7665,7 @@
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
-      "sha256": "b4d07bbad3bf7b1e11f90c36180928200c0fce80149e2497fa77bf242e46c255",
+      "sha256": "8ade956029e99212f106b24352963ab61e5c3f7af8bc2900dd3b0b2dc65c0cdc",
       "executable": false
     },
     "tests/e2e/core-project-health-journey.mjs": {

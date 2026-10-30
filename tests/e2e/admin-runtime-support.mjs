@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { finishFirstRun } from './first-run-fixture.mjs';
 import assert from "node:assert/strict";
 import { createWorkerExceptionDiagnostics } from "./worker-exception-diagnostics.mjs";
@@ -33,6 +34,7 @@ export function createAdminRuntime(width, sourceFiles = [], { port = 15944, insp
     WORKSPACE_TIMEZONE: "Australia/Brisbane",
     DEFAULT_TEAM_NAME: "Delivery",
     DEFAULT_TEAM_PREFIX: "BOOT",
+    INSTALLATION_KEY: randomBytes(32).toString('hex'),
     SESSION_SECRET: "synthetic-fixture-admin-runtime-local-secret-32-characters",
     MAIL_FROM: "Vector <signin@admin-runtime.test>",
   };
