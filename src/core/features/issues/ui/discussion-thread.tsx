@@ -1,3 +1,4 @@
+import type { DescriptionAnchor } from "../../discussion/anchors";
 import { Reactions } from "../../reactions/ui";
 import { useState } from "react";
 import { useHydrated } from "../../../app/initial-resources";
@@ -49,7 +50,7 @@ export function commentThreads(comments: Comment[]) {
   return [...roots.values()];
 }
 
-type Shared = { writable?:boolean; identifier: string; data: DiscussionData; busy: boolean; mutate: Mutate; onLinksChanged: () => void; email?: IssueEmail | null; onEmailSent?: () => void };
+type Shared = { onLocateQuote?: (anchor: DescriptionAnchor) => void; writable?:boolean; identifier: string; data: DiscussionData; busy: boolean; mutate: Mutate; onLinksChanged: () => void; email?: IssueEmail | null; onEmailSent?: () => void };
 
 export function CommentThread({ root, replies, ...shared }: Shared & { root: Comment; replies: Comment[] }) {
   const [expanded, setExpanded] = useState(false),
@@ -79,8 +80,9 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
   return (
     <section className="comment-thread" aria-label={`Thread started by ${root.actor}`}>
       {root.anchor && <blockquote className="comment-source-quote" aria-label="Quoted description text">
-        {root.anchor.removed ? <del>{root.anchor.quote}</del> : root.anchor.quote}
+        {root.anchor.removed ? <del>{root.anchor.quote}</del> : <span>{root.anchor.quote}</span>}
         <p>{root.anchor.removed ? "Quoted text removed" : "From the issue description"}</p>
+        {!root.anchor.removed && shared.onLocateQuote && <button type="button" onClick={() => shared.onLocateQuote?.(root.anchor!)}>Show quoted text</button>}
       </blockquote>}
       <CommentEntry comment={root} {...shared} />
       {replies.length ? (
