@@ -90,9 +90,9 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     // Park completed pages so only the reader under test owns live polling.
     await navigate(author.page, base + '/');
 
-    const assertRows = async (reader, expected, hidden = []) => {
+    const assertRows = async (reader, expected, hidden = [], saved = true) => {
       const current = reader.page;
-      await current.getByRole('heading', { name: viewName, exact: true }).waitFor();
+      await current.getByRole('heading', { name: saved ? viewName : 'Issues', exact: true }).waitFor();
       await current.locator('.issues-browser[data-list-state="ready"]').waitFor();
       await settleReads(current);
       const rows = await current.locator('.issues-row').evaluateAll(nodes => nodes.map(node => node.dataset.issueIdentifier));
@@ -115,9 +115,8 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
         assert.equal(await current.getByRole('combobox', { name: label, exact: true }).inputValue(), value);
       const text = await current.locator('main:visible').first().innerText();
       for (const issue of hidden) { assert.ok(!text.includes(issue.identifier)); assert.ok(!text.includes(issue.title)); }
-      const stored = await reader.api('/views/' + view.id);
-      assert.deepEqual(stored, view, 'Changing reader authority never edits the shared definition');
-      const result = await reader.api('/issues?' + new URLSearchParams({ ...view.query, orderView: view.id }));
+      if (saved) assert.deepEqual(await reader.api('/views/' + view.id), view, 'Changing reader authority never edits the shared definition');
+      const result = await reader.api('/issues?' + new URLSearchParams({ ...view.query, orderView: saved ? view.id : '' }));
       assert.equal(result.total, expected.length);
       assert.deepEqual(result.issues.map(issue => issue.identifier).sort(), expected.map(issue => issue.identifier).sort());
       const counts = expectedTeams.map(team => ({ key: team.id, name: team.name,
@@ -155,8 +154,21 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     await navigate(member.page, base + '/');
 
     const guest = await invite('guest', [firstTeam.id]);
-    await openSavedViewFromPalette(guest.page, base, view);
-    await assertRows(guest, issues.slice(0, 2), [issues[2], issues[3], privateIssue]);
+    expectedDenials.add(base + '/api/views/' + view.id);
+    await guest.api('/views/' + view.id, 'GET', undefined, 404);
+    assert.ok(!(await guest.api('/views')).views.some(candidate => candidate.id === view.id));
+    await settleReads(guest.page);
+    await guest.page.locator('h1:visible').first().click();
+    await guest.page.keyboard.press('Control+k');
+    const palette = guest.page.getByRole('dialog', { name: 'Command palette', exact: true });
+    await palette.getByRole('textbox').fill(viewName);
+    await palette.getByText('No available records or commands match', { exact: false }).waitFor();
+    assert.equal(await palette.locator(`[id="palette-view:${view.id}"]`).count(), 0);
+    await capture(guest.page, 'guest-shared-view-omitted', palette);
+    await palette.getByRole('textbox').press('Escape');
+    await palette.waitFor({ state: 'detached' });
+    await navigate(guest.page, target);
+    await assertRows(guest, issues.slice(0, 2), [issues[2], issues[3], privateIssue], false);
     assert.deepEqual((await guest.api('/options')).teams.map(team => team.id), [firstTeam.id]);
     expectedDenials.add(base + '/api/issues/' + issues[2].identifier);
     await guest.api('/issues/' + issues[2].identifier, 'GET', undefined, 404);
@@ -184,9 +196,9 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     assert.deepEqual(consoleErrors, []);
     assert.deepEqual(failedRequests, []);
     assert.deepEqual(externalRequests, []);
-    record('VIEW-009', 'Member saves a shared filtered cross-team issue view; a second Member opens it by keyboard palette and reloads with both public teams, exact identifiers, totals, group counts and query retained. Current private membership grants and withdraws rows without changing the definition or session. An invited Guest remains scoped and a Viewer is read-only with unchanged storage. Palette and view screens pass accessibility and overflow proof at 1440 and 390.');
+    record('VIEW-009', 'Member saves a shared filtered cross-team issue view; a second Member opens it by keyboard palette and reloads with both public teams, exact identifiers, totals, group counts and query retained. Current private membership grants and withdraws rows without changing the definition or session. An invited Guest cannot open the workspace-wide shared view and their equivalent issue query stays scoped; a Viewer is read-only with unchanged storage. Palette and view screens pass accessibility and overflow proof at 1440 and 390.');
     console.log('PROBE VIEW-009 shared-cross-team: saved view and second Member palette -> two public teams, 3 filtered issues, counts and query retained after reload');
-    console.log('PROBE VIEW-009 visibility: same saved view and Member session -> 3 public, 4 with private membership, 3 after withdrawal; Guest 2; Viewer mutations 403 with unchanged views');
+    console.log('PROBE VIEW-009 visibility: same saved view and Member session -> 3 public, 4 with private membership, 3 after withdrawal; Guest shared view 404 and scoped query 2; Viewer mutations 403 with unchanged views');
   } finally {
     for (const reader of invited) await reader.context.close();
   }
