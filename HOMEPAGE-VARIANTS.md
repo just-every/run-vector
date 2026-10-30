@@ -4,7 +4,7 @@ Every seed has two versions of its homepage (owner, 12 October 2026):
 
 1. **The run site**, `run-<seed>.com`: the seed's owner-approved marketing
    homepage, whose primary action reads **Run <Seed>** and opens `/run`, a page
-   with the two commands that run the seed for free on your own computer. It is
+   with one command that runs the seed for free on your own computer. It is
    static, built by `rer build --site`.
 2. **The installed instance**, the app someone runs or deploys: its `/` is the
    **Lobby**, a minimal page whose one action is **Sign in**, or **Finish
@@ -20,9 +20,11 @@ integration as `@runeditrun/rer/deploy`.
 
 ## Rules for every seed
 
-- **The approved homepage is final.** Change only its primary call to action:
-  it reads `Run <Seed>` and links to `/run`. Do not redraw, reword or restyle
-  anything else, and keep the "100% free" hero line. The run site omits links
+- **Lead with the owner's product.** The hero says what the product does for
+  its owner. Keep "free" and open-source copy to a short footnote or secondary
+  line, never the hero line. Preserve the approved homepage's other copy and
+  design. Its primary call to action reads `Run <Seed>` and links to `/run`.
+  The run site omits links
   to instance-only routes (`/signin`, `/login`, `/sign-in`, `/setup`, `/app`,
   `/auth/*`), so render the approved page's header Sign in pill only on the
   installed instance (a prop, as Vector's and Oncall's headers already have).
@@ -141,35 +143,54 @@ export default defineConfig({ plugins: [docsSite(), react()] })
 ```
 
 and add `deploy-site.json` (`{"version": 1, "domain": "run-<seed>.com"}`); list
-it in `vite.config.ts` `server.fs.allow` when the Worker imports it. Keep every
-Run page string and command in one `RunData` value (`src/site/run.ts` or
+it in `vite.config.ts` `server.fs.allow` when the Worker imports it. Keep the seed-specific
+Run page data in one `RunData` value (`src/site/run.ts` or
 `run.json`):
 
 | Field | Cradle | Uptime |
 | --- | --- | --- |
 | `name` | `Cradle` | `Uptime` |
-| `repository` | `https://github.com/just-every/cradle` | `https://github.com/just-every/uptime-monitor` |
-| `clone` | `npx -y @runeditrun/rer dev just-every/cradle` | `npx -y @runeditrun/rer dev just-every/uptime-monitor --dir uptime` |
-| `folder` | `cradle` | `uptime` |
-| `requirements` | `Runs on macOS, Linux or Windows with WSL2, with git. The installer brings Node when it is missing, and rer brings pnpm.` | same |
+| `leadLine` (optional) | `Your records and business apps in one workspace.` | `Know when your services need attention.` |
+| `repository` | `https://github.com/just-every/run-cradle` | `https://github.com/just-every/run-uptime` |
+| `clone` | `npx -y @runeditrun/rer dev just-every/run-cradle` | `npx -y @runeditrun/rer dev just-every/run-uptime` |
 | `licence` | `MIT` | `MIT` |
 | `docs` | `true` once `/docs` is built | `true` |
-| `hosted` | `[]` | `[]` |
+| `paths` | `{ product: "cradle" }` | `{ product: "uptime" }` |
 
-The Run page then reads, exactly: "Run <Seed> on your computer."; "100% free and
-open source. Two lines, and <Seed> opens in your browser."; step 1 **Install rer**,
-`curl -fsSL https://runeditrun.com/install.sh | sh`, "It installs rer for you
-alone, with its own Node if you have no Node 22 or later. It changes no shell
-settings: if its last line puts rer on your PATH, run that line before step 2.";
-step 2 **Start <Seed>**, the `clone` line without `npx -y @runeditrun/` (`rer dev
-just-every/cradle`), "rer gets <Seed>, installs everything, makes you the owner
-and prints a link that opens <Seed> signed in. To start it again later: `cd
-<folder> && rer dev`", and "Already have Node 22 or later? <clone> does both steps
-in one line."; then the requirements line and "Source: <repository> · MIT
-license". Step 2 runs on what the installer put on PATH alone, without npx. A
-README's "Run locally" shows the same two lines, so the Run page and the README
-agree. `hosted` is the slot for hosted options, shown as cards under step 2
-when RER hosting opens; leave it empty until then.
+`leadLine` is a plain string: Base escapes it as text, uses it as the composed
+homepage's heading and repeats it below the `/run` heading. Lead with what the
+product does for its owner; "free" and open-source stay secondary. An approved
+custom homepage can read the same field in its own renderer. Omit `leadLine`
+to keep the existing homepage and Run page byte-for-byte, including the
+identity tagline as the composed homepage heading. This optional field needs
+no edition migration, consent flag or edit to existing seed data on
+`rer refresh-base`; the earlier `run-data-paths` and `run-data-pricing`
+migrations retain their existing requirements.
+
+The Run page shows the three-way chooser and one copyable command:
+`curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev <owner/repo>` for
+the seed's repository. It gets the seed, installs everything, makes you the
+owner and prints a link that opens it signed in. A README's “Run locally” uses
+the same installer command and Node alternative,
+`npx -y @runeditrun/rer dev <owner/repo>`. Base supplies the operating-system
+and Git requirements and the qualified local-only/email note.
+
+When adopting this renderer, remove the old `requirements`, `hosted` and
+`folder` fields and add `paths`. The validator refuses missing `paths` or
+retained `hosted`/`requirements` with “Run data needs paths; migrate the old
+RunData to paths.” Set `paths.product` to the seed's listing id, or `null`
+when it has no listing. Put any seed-specific requirement sentence in
+`paths.requirementsExtra` (without “free” or “$0”); Base supplies the common
+requirements. The renderer derives the local repository name from `clone`,
+so `folder` has no replacement field.
+
+The shared chooser supplies Assisted and Managed doors from `paths`, replacing
+the old hosted-options array. Both doors stay closed when `paths.product` is
+`null` or the shared `PATHS.signups` is `'request'`; with sign-ups open, either
+can remain closed via `paths.assisted = { open: false }` or
+`paths.managed = { open: false }`. The hosting guide uses the same sign-up
+switch; wire it through `sitePages({ hosting })` as described in
+`SEED-COMMAND-CONTRACT.md`.
 
 `src/site/pages.tsx` exports `sitePages({ styles })`. Every CSS file your
 components import (Landing's `import './styles'`, the docs styles) compiles into
@@ -212,6 +233,20 @@ export function sitePages({ styles }: SiteContext): SiteBuild {
     assets: ['rer-theme.css', 'fonts', 'brand', 'design-assets', 'favicon.svg'],
   }
 }
+```
+
+**One header across the site.** `/run`, `/contract` and the not-found page carry
+Base's header, the one Base's own homepage carries. A seed with an approved
+homepage passes that homepage's header as their last argument instead,
+`{ html, styles }` (`HomepageHeader` in `src/base/run-site.ts`): `html` rendered
+from the homepage's own header component in its site variant, marking the current
+page the way it does on the docs, and `styles` the `styles` that `sitePages`
+receives. Base's pages then wear the homepage's header exactly: the same logo
+position, wordmark and links.
+
+```tsx
+const homepageHeader = { html: renderToStaticMarkup(<SiteHeader variant="site" />), styles }
+{ path: '/run', html: runPageHtml(identity, run, contract, homepageHeader) },
 ```
 
 The pages must work without JavaScript and load nothing from another origin.
@@ -290,3 +325,22 @@ are checked. The SVG is the seed's small icon artwork, not its full mark.
 Only when none of those icons exists is `brand/mark.svg` linked, and only if
 that file exists too. The site export includes every selected icon even when
 its asset list omits it. Keep the plugin when adopting these Base copies.
+
+### Shared Run chooser entry and local recipe
+
+`PATHS.business` in `foundation/runtime/run-site.ts` is the single shared entry:
+lead `Setting up several tools?`, action `Set up your business once`, and href
+`https://app.runeditrun.com/business`. Today that hosted door requires sign-in;
+it is not an anonymous local Business setup. When the Business journey publishes
+at that same address, the chooser needs no destination change. The working CLI
+pairing command is `rer business connect --code CODE`; obtain the code in the
+hosted Business journey and approve the pairing there.
+
+The primary local recipe is `startLine(run)`, derived from the repository in
+`RunData.clone`, not from setup form fields in `rer-setup.json`. Use this same
+helper for homepage and getting-started snippets when adopting the shared Run
+renderer. Node and separate-install instructions live in the collapsed “Other
+ways to run locally” disclosure; PATH setup is optional for future terminals,
+not a step in the primary launch. Re-sync the shared `run-site.ts` and
+`run-chooser-style.ts` runtime copies and update any homepage/docs recipe
+template to consume `startLine(run)`. Approved homepages remain seed-owned.
