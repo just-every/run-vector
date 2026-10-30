@@ -1,28 +1,29 @@
 import type { Hono } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
-import { readRequestJson } from "../../app/input";
 import { requireOperator } from "../auth/service";
 import { IssueAccessError, requireIssueAccess } from "../issues/access";
 import { issueIdentifier, linkId } from "./schema";
-import { listNamedLinks } from "./repository";
+import { namedVideoSource } from "./repository";
 import { publicVideo } from "./public-video";
 import { videoPreview } from "./video-preview";
 
 export function addVideoPreviewRoute(app: Hono<AppEnvironment>) {
-  app.post("/issues/:identifier/links/:linkId/preview", async (c) => {
+  app.get("/issues/:identifier/links/:linkId/preview", async (c) => {
     if (
       !z
         .object({ identifier: issueIdentifier, linkId })
         .strict()
         .safeParse(c.req.param()).success ||
-      Object.keys(c.req.query()).length ||
-      !z
-        .object({})
-        .strict()
-        .safeParse(await readRequestJson(c.req.raw)).success
+      Object.keys(c.req.query()).length
     )
       return c.json({ error: "invalid_request" }, 400);
+    // A custom same-origin fetch header excludes navigations and passive embeds.
+    if (
+      c.req.header("X-Vector-Load-Player") !== "true" ||
+      (c.req.header("Origin") && c.req.header("Origin") !== c.env.APP_ORIGIN)
+    )
+      return c.json({ error: "explicit_load_required" }, 403);
     const current = async () => {
       const actor = await requireOperator(c.env, c.req.raw);
       if (!actor || actor.id !== c.get("operatorId")) return null;
@@ -32,9 +33,7 @@ export function addVideoPreviewRoute(app: Hono<AppEnvironment>) {
           c.req.param("identifier"),
           actor.id,
         );
-        return (await listNamedLinks(c.env.DB, issue.id)).find(
-          (link) => link.id === c.req.param("linkId"),
-        );
+        return namedVideoSource(c.env.DB, issue.id, c.req.param("linkId"));
       } catch (error) {
         if (error instanceof IssueAccessError) return null;
         throw error;

@@ -79,8 +79,8 @@ export async function videoPreview(video: PublicVideo) {
       playerUrl: video.playerUrl,
     };
   } finally {
+    controller.abort();
     clearTimeout(timer);
     await reader?.cancel().catch(() => {});
-    controller.abort();
   }
 }

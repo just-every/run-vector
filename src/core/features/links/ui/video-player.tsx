@@ -22,9 +22,7 @@ export function VideoPlayer({
       const response = await fetch(
         `/api/issues/${encodeURIComponent(identifier)}/links/${link.id}/preview`,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: "{}",
+          headers: { "X-Vector-Load-Player": "true" },
         },
       );
       const result = (await response.json()) as { preview: Preview };
