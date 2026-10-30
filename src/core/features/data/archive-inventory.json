@@ -2142,5 +2142,81 @@
     "state",
     "business_id",
     "business_role"
+  ],
+  "vector_agent_context": [
+    "id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by"
+  ],
+  "vector_agent_activity_attribution": [
+    "event_id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by",
+    "created_at"
+  ],
+  "vector_agent_comment_attribution": [
+    "comment_id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by",
+    "created_at"
+  ],
+  "vector_agent_project_activity_attribution": [
+    "event_id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by",
+    "created_at"
+  ],
+  "vector_agent_document_revision_attribution": [
+    "revision_id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by",
+    "created_at"
+  ],
+  "vector_agent_document_comment_attribution": [
+    "comment_id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by",
+    "created_at"
+  ],
+  "vector_agent_audit_attribution": [
+    "audit_id",
+    "agent_id",
+    "agent_name",
+    "person_id",
+    "person_name",
+    "consent_reference",
+    "approvers_json",
+    "prepared_by",
+    "created_at"
   ]
 }
