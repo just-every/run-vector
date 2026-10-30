@@ -572,7 +572,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "c4dd7dd6e41d8cf84bc696e6a83608a63b13275a667eb9ec7c05dacb8e28de8f",
+      "sha256": "6dd776eca84328e9aac0d10b4b164893f2fae4b96ee87817be92396b84a15cf3",
       "executable": false
     },
     "agent-surface.json": {
@@ -2704,7 +2704,7 @@
       "executable": false
     },
     "scripts/contract-docs.mjs": {
-      "sha256": "9dd443b869f5d680bcf189583f9dafd06f5c2b4dd297806d6a6bd6a5abafd27c",
+      "sha256": "4ca0b66bb0d22859f294a5ea3d3c55456e2ae4227cef77b4a974b1f072ed0e5e",
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {

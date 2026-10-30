@@ -20,7 +20,13 @@ const acceptance=read('ACCEPTANCE.md'),claims=read('docs/CLAIMS.md');
 const inherited=[...acceptance.matchAll(/<!-- contract-docs:([A-Z][A-Z0-9-]+) -->/g)].map(match=>match[1]);
 const ids=[...new Set(requested.length?requested:inherited)].sort();
 if(!ids.length)throw Error('Name the touched clauses for initial view generation.');
-let nextAcceptance=acceptance,nextClaims=claims;
+// Both published count tables derive from the same parsed Status inventory.
+const acceptanceLines=acceptance.split('\n');
+const acceptanceSummary=acceptanceLines.findIndex(line=>line===lines[summary]);
+if(acceptanceSummary<0)throw Error('ACCEPTANCE.md needs its Status summary table.');
+let acceptanceEnd=acceptanceSummary+2;while(acceptanceLines[acceptanceEnd]?.startsWith('|'))acceptanceEnd++;
+acceptanceLines.splice(acceptanceSummary+2,acceptanceEnd-acceptanceSummary-2,...lines.slice(summary+2,summary+2+rows.length));
+let nextAcceptance=acceptanceLines.join('\n'),nextClaims=claims;
 const escape=value=>value.replaceAll('|','\\|').replaceAll('\n',' ');
 for(const id of ids){
  const clause=parsed.clauses.find(clause=>clause.id===id);if(!clause)throw Error('No contract clause '+id);
