@@ -778,8 +778,8 @@ API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
 | Published | 98 | 6 | 0 | 104 |
-| Target and push further | 38 | 61 | 69 | 168 |
-| All | 136 | 67 | 69 | 272 |
+| Target and push further | 38 | 60 | 70 | 168 |
+| All | 136 | 66 | 70 | 272 |
 
 | Clause | Title | Kind | Status | Evidence | Gap |
 | --- | --- | --- | --- | --- | --- |
@@ -1044,14 +1044,14 @@ API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27
 | `EDITOR-001` | Owner-gated editor | published | done | `tests/worker/editor.test.ts` |  |
 | `BASE-AGENT-001` | One MCP door per seed | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Declared CORE door; complete native job coverage and optional families are not claimed. |
 | `BASE-AGENT-002` | The seed's jobs are tools, through the UI's own actions | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Declared issue/triage subset only; remaining native jobs await adapters and journeys. |
-| `BASE-AGENT-003` | Records are resources | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Undeclared resources family; rer 0.2.91 withholds write-result resource links. |
+| `BASE-AGENT-003` | Records are resources | target | partial | `tests/worker/agent-resource-journey.ts` (agentResourceClient, called by privateVisibilityJourney in `tests/worker/role-matrix.test.ts`: native intake resource link, evidence projection, missing evidence scope and current private-team membership); `tests/agent-door/native-journey.mjs` (native write link); `agent-surface.json` (autonomous and held write-link reads) | Issue records only; full two-role UI field parity, identical out-of-scope/missing responses and file-byte budget proof remain incomplete. |
 | `BASE-AGENT-004` | Business identity and short-lived, audience-bound tokens | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Owner-bound tokens only; multi-sponsor and Business teammate reconciliation are undeclared. |
 | `BASE-AGENT-005` | An agent acts as a person in a role, never more | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Native role/team authorization for the declared subset; access/security mutation tools are not offered. |
 | `BASE-AGENT-006` | Every action declares its risk class | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Standard internal record effects only; no other risk-class tool is declared. |
 | `BASE-AGENT-007` | The company's policy decides, at one chokepoint | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Shared policy pipeline adopted; independent named-approver and timed lifecycle proof remain unscoped. |
 | `BASE-AGENT-008` | Truthful attribution | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Native agent activity and audit adopted; outbound mail and native Undo are not declared. |
 | `BASE-AGENT-009` | Every agent action is audited with its class and decision | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Shared door audit adopted; broader native job and retained-artifact custody coverage remain incomplete. |
-| `BASE-AGENT-010` | Agents can follow changes | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Undeclared events and subscriptions families. |
+| `BASE-AGENT-010` | Agents can follow changes | target | missing |  | No implementation yet |
 | `BASE-AGENT-011` | Limits are policy, and Pause stops everything | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Pause is declared; spend, capacity reservations and provider costs are not offered. |
 | `BASE-AGENT-012` | Writes are idempotent and conflict-safe | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Declared record writes use shared idempotency and native revisions; durable queued execution is not offered. |
-| `BASE-AGENT-013` | Manifest, docs and the conformance journey | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Declared CORE journey only; resources, events, prompts, subscriptions and the wider specialist week are incomplete. |
+| `BASE-AGENT-013` | Manifest, docs and the conformance journey | target | partial | `src/core/features/agent-door/`, `agent-surface.json` | Declared CORE and issue-resource journey only; events, prompts, subscriptions and the wider specialist week are incomplete. |
