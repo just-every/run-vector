@@ -507,6 +507,18 @@
     {
       "source": "vendor/base/operator-auth/SCHEDULED-POLICY.md",
       "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "scripts/edition-authoring/ADOPTING.md",
+      "reason": "Base source-authoring adoption instructions for contributors; not an installed application guide."
+    },
+    {
+      "source": "scripts/edition-authoring/vendor/babel-parser/README.md",
+      "reason": "Upstream parser reference shipped with the Base authoring tool; not Vector owner documentation."
+    },
+    {
+      "source": "scripts/edition-authoring/vendor/yaml/README.md",
+      "reason": "Upstream YAML reference shipped with the Base authoring tool; not Vector owner documentation."
     }
   ]
 }
