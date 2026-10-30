@@ -78,8 +78,9 @@ export async function commentChecklistJourney(page, context, base, state, teamId
       await page.screenshot({ path: `${evidence}/comment-checklist-merged-${width}.png` });
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
-    const storage = () => Object.fromEntries(['issues', 'issue_comments', 'issue_activity', 'audit_records', 'issue_description_revisions', 'issue_mentions', 'issue_reference_subjects', 'notifications', 'notification_events']
-      .map(table => [table, readLocalD1(state, `SELECT * FROM ${table} ORDER BY rowid`)]));
+    const tables = readLocalD1(state, "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' AND name NOT IN ('integration_token_usage','access_rate_limits') ORDER BY name");
+    const storage = () => Object.fromEntries(tables.map(({ name }) => [name,
+      readLocalD1(state, 'SELECT * FROM "' + name.replaceAll('"', '""') + '"').map(row => JSON.stringify(row)).sort()]));
     await page.getByRole('button', { name: 'Edit comment', exact: true }).click();
     await page.getByRole('textbox', { name: 'Edit comment', exact: true }).fill('- [x] Review draft\n- [x] Revised notes');
     await page.getByRole('button', { name: 'Save comment', exact: true }).click();
