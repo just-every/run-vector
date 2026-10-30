@@ -1,0 +1,30 @@
+.description-discussion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  min-width: 0;
+  font-size: 14px;
+}
+.description-source, .description-thread-margin { min-width: 0; }
+.description-thread-margin {
+  padding: 0.8rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 8px;
+  background: var(--app-card);
+}
+.description-thread-margin h2 { margin-top: 0; font-size: 15px; }
+.description-thread-margin .comment-replies { margin-left: 0; padding-left: 0.5rem; border: 0; }
+.description-thread-margin .comment-thread { border: 0; padding: 0.5rem 0; }
+.description-thread-margin blockquote, .comment-source-quote {
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  border: 1px solid var(--app-line-strong);
+  border-radius: 6px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  font-size: 14px;
+}
+.comment-source-quote p { margin: 0.3rem 0 0; color: var(--app-muted); }
+@media (min-width: 1100px) {
+  .description-discussion:has(.description-thread-margin) { grid-template-columns: minmax(0, 3fr) minmax(260px, 2fr); }
+}

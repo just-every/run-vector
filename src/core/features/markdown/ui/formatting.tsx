@@ -55,11 +55,11 @@ export function CodeBlock({ children }: { children: ReactNode }) {
     try { await navigator.clipboard.writeText(code); setCopied(true); } catch { setCopied(false); }
   }}>{copied ? 'Copied' : 'Copy code'}</button><pre>{children}</pre></div>;
 }
-export function HighlightedCode({ className, children }: { className?: string; children: ReactNode }) {
+export function HighlightedCode({ className, children, sourceAttributes }: { className?: string; children: ReactNode; sourceAttributes?: Record<string, unknown> }) {
   const language = className?.match(/language-([\w#+-]+)/)?.[1];
   const text = String(children ?? '');
-  if (!language || !hljs.getLanguage(language)) return <code className={className}>{children}</code>;
+  if (!language || !hljs.getLanguage(language)) return <code {...sourceAttributes} className={className}>{children}</code>;
   // highlight.js escapes source before adding its own fixed span classes.
   const html = hljs.highlight(text, { language, ignoreIllegals: true }).value;
-  return <code className={className} dangerouslySetInnerHTML={{ __html: html }} />;
+  return <code {...sourceAttributes} className={className} dangerouslySetInnerHTML={{ __html: html }} />;
 }
