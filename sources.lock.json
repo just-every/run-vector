@@ -2829,7 +2829,7 @@
       "executable": false
     },
     "scripts/deployment/tests/owner-account.test.mjs": {
-      "sha256": "2c2dcb4a45578401f7b5e8dae13faaf3548e2aa962da9ccf4e078ab155b4b9b0",
+      "sha256": "0df9274e9c3b9f577d9a5d61e7b97102eed40e4ce088bb1ec906100296e0c93d",
       "executable": false
     },
     "scripts/development-origin.mjs": {
