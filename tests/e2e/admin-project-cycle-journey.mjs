@@ -9,7 +9,7 @@ import {
   openDisclosures,
   openAdministrationForm,
 } from "./ui-controls-checks.mjs";
-export async function authorProject({ page, runtime, capture, clause }) {
+export async function authorProject({ page, runtime, capture, clause, expectedTemplateConflicts }) {
   const { base, sql } = runtime;
   await beforePrivateNavigation(page, base + "/app/projects");
   await page.goto(base + "/app/projects");
@@ -111,7 +111,7 @@ export async function authorProject({ page, runtime, capture, clause }) {
   );
   await capture("project-markdown-detail");
 
-  await clause("PROJ-012", "save project structure, launch native issue teams and retain projects after template deletion", async()=>{await projectTemplatesJourney(page,page.context(),runtime,async name=>capture(name));await nativeProjectTemplatesJourney(page.context().browser());await projectTemplateAccessCells(page,runtime,process.cwd()+'/.artifacts/verification/admin-browser');});
+  await clause("PROJ-012", "save project structure, launch native issue teams and retain projects after template deletion", async()=>{await projectTemplatesJourney(page,page.context(),runtime,async name=>capture(name),expectedTemplateConflicts);await nativeProjectTemplatesJourney(page.context().browser());await projectTemplateAccessCells(page,runtime,process.cwd()+'/.artifacts/verification/admin-browser');});
   await beforePrivateNavigation(page, base + "/app/settings");
   await page.goto(base + "/app/settings");
   await openDisclosures(page);

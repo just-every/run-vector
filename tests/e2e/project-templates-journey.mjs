@@ -11,7 +11,7 @@ import {signIn,openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import {createRequire} from 'node:module';
 import {beforePrivateNavigation} from './collaboration-navigation.mjs';
 const require=createRequire(import.meta.url),axe=await readFile(require.resolve('axe-core/axe.min.js'),'utf8');
-export async function projectTemplatesJourney(page,context,runtime,capture){
+export async function projectTemplatesJourney(page,context,runtime,capture,expectedConflicts=new Set()){
  const viewport=page.viewportSize(),base=runtime.base,errors=[];const onError=e=>errors.push(e.message),onConsole=m=>{if(/hydrat|did not match|Minified React error #(418|423|425)/i.test(m.text()))errors.push(m.text());};page.on('pageerror',onError);page.on('console',onConsole);
  const trackingRequests=[],onRequest=request=>{if(request.url().includes('synthetic-vector-tracking'))trackingRequests.push(request.url());};page.on('request',onRequest);
  const api=async(path,method='GET',data)=>{return withOperatorClient(context, async client => {
@@ -40,7 +40,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
   const template=(await api('/project-templates')).templates.find(t=>t.name==='synthetic-vector-79-'+width);assert.equal(template.issues.length,4);assert.equal(template.milestones.length,2);
   await beforePrivateNavigation(page,base+'/app/projects');await page.goto(base+'/app/projects');await page.getByRole('button',{name:'New project from template',exact:true}).click();await page.locator('[data-project-templates-ready="true"]').waitFor();
   await page.getByLabel('Choose project template',{exact:true}).selectOption(template.id);await page.getByText('Preview project structure',{exact:true}).click();
-  const formatted=width===1440?await templateFormattingJourney(page,api,template.id,check):null;
+  const formatted=width===1440?await templateFormattingJourney(page,api,template.id,check,expectedConflicts):null;
   await page.getByRole('button',{name:'Edit project template',exact:true}).click();const edit=page.getByRole('form',{name:'Edit project template',exact:true});await edit.getByLabel('Update cadence',{exact:true}).fill('Every Monday');await check('project-template-editor-'+width);await edit.getByRole('button',{name:'Save template changes',exact:true}).click();await page.getByText(/Update cadence: Every Monday/).waitFor();
   const launch=page.getByRole('form',{name:'Create project from template',exact:true});await launch.getByLabel('New project name',{exact:true}).fill('synthetic-vector-80-'+width);await launch.getByLabel('New project start date',{exact:true}).fill('2027-05-01');assert.deepEqual(await launch.getByLabel('Default issue team',{exact:true}).locator('option').evaluateAll(nodes=>nodes.filter(n=>n.value).map(n=>n.value).sort()),options.teams.map(t=>t.id).sort(),'launch offers the native issue teams even without memberships');await launch.getByLabel('Default issue team',{exact:true}).selectOption(team.id);await launch.getByRole('button',{name:'Create project from template',exact:true}).click();await page.getByRole('link',{name:'Open created project',exact:true}).waitFor();await check('project-template-launch-'+width);
   const id=(await page.getByRole('link',{name:'Open created project',exact:true}).getAttribute('href')).split('/').at(-1),result=await api('/projects/'+id);
@@ -82,7 +82,7 @@ export async function nativeProjectTemplatesJourney(browser){
 
 // Exercise formatting at desktop width; capture the same changed screens on a
 // phone without registering another permanent test or duplicating assertions.
-async function templateFormattingJourney(page,api,id,check){
+async function templateFormattingJourney(page,api,id,check,expectedConflicts){
  const initial=await api('/project-templates/'+id);
  await page.getByRole('button',{name:'Edit project template',exact:true}).click();
  const edit=page.getByRole('form',{name:'Edit project template',exact:true});
@@ -162,6 +162,7 @@ async function templateFormattingJourney(page,api,id,check){
  await page.getByRole('alert').waitFor();
  assert.equal(await reopened.getByLabel('Template description',{exact:true}).inputValue(),staleBody,'stale save retains the local draft for recovery');
  assert.deepEqual(await api('/project-templates/'+id),newer,'stale save leaves every stored field unchanged');
+ expectedConflicts.add(staleResponse.url());
  await reopened.getByRole('button',{name:'Cancel template edit',exact:true}).click();
  await page.reload();await page.getByRole('button',{name:'New project from template',exact:true}).click();
  await page.locator('[data-project-templates-ready="true"]').waitFor();await page.getByLabel('Choose project template',{exact:true}).selectOption(id);
