@@ -13,7 +13,7 @@ async function subject(request:DoorRequest):Promise<{kind:string;id:string}|null
 export async function documentDoorRow(request:DoorRequest):Promise<RowId|null>{
  const parent=await subject(request);
  const role=await request.db.prepare('SELECT role FROM operators WHERE id=?').bind(request.actor).first<string>('role');
- return role==='guest'&&parent&&['team','initiative'].includes(parent.kind)?null:'documents.write';
+ return role==='guest'&&parent&&['team','initiative'].includes(parent.kind)?null:request.path.endsWith('/checklist')?'media.write':'documents.write';
 }
 export async function documentDoorTeams(request:DoorRequest):Promise<string[]|null>{
  const parent=await subject(request);if(!parent)return null;

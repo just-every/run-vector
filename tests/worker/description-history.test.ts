@@ -1,4 +1,5 @@
 import { referenceScenario } from './reference-scenario';
+import { documentChecklistScenario } from './document-checklist-scenario';
 import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
@@ -163,5 +164,6 @@ async function scopedJourney() {
 contractWith(it, "ISSUE-018 ISSUE-025 BASE-ACCESS-004", "description history and checklists preserve native and scoped authority through revision, restore and concurrent edits", async () => {
   await nativeJourney();
   await scopedJourney();
+  await documentChecklistScenario();
   await referenceScenario();
 });

@@ -1951,7 +1951,8 @@
     "title",
     "body",
     "author_operator_id",
-    "created_at"
+    "created_at",
+    "checklist_json"
   ],
   "document_comments": [
     "id",
