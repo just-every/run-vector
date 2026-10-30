@@ -36,6 +36,19 @@ export async function browserJourney({ request, origin, surface, signer, person,
     .bind(session.operatorId).first('n');
   if (!personEvents) throw new Error('Native person edit was not mirrored through door.emit');
   console.log('Native person event mirror: ' + personEvents);
+  for (const [path, body, uri] of [
+    ['/api/settings/projects/' + project.id, { description: 'Morgan reviewed the retained investigation evidence.' }, 'vector://projects/' + project.id],
+    ['/api/documents/' + document.id, { expectedVersion: document.version, body: 'Morgan reviewed the retained reproduction notes; the agent prepared the original document.' }, 'vector://documents/' + document.id],
+  ]) {
+    const response = await c.personRequest(path, { method: 'PATCH', body: JSON.stringify(body) });
+    if (!response.ok) throw new Error('Native person planning edit failed: ' + response.status);
+    await response.body?.cancel();
+    const mirrored = await db.prepare("SELECT count(*) n FROM agent_door_events WHERE uri=? AND json_extract(event,'$.actor.kind')='person' AND json_extract(event,'$.actor.person.id')=?")
+      .bind(uri, session.operatorId).first('n');
+    if (!mirrored) throw new Error('Native person planning edit was not mirrored through door.emit');
+    console.log('Native person planning event mirror: ' + uri + ' count=' + mirrored);
+  }
+
   const milestone = await done('vector.proj.milestones', { id: project.id, input: { name: 'Old investigation checkpoint' } });
   await c.adopt(heldPolicy());
   const pending = await tool('vector.proj.milestones.delete', { id: project.id, milestoneId: milestone.id });
