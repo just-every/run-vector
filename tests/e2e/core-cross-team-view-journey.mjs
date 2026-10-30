@@ -123,12 +123,44 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
         count: expected.filter(issue => issue.team.id === team.id).length })).sort((a, b) => a.key.localeCompare(b.key));
       for (const groups of [result.groups, result.allGroups])
         assert.deepEqual([...groups].sort((a, b) => a.key.localeCompare(b.key)), counts, 'Both group aggregates use current visibility and the stored filter');
-      for (const issue of hidden) assert.ok(!JSON.stringify(result).includes(issue.identifier));
+      for (const issue of hidden) {
+        assert.ok(!JSON.stringify(result).includes(issue.identifier));
+        assert.ok(!JSON.stringify(result).includes(issue.title));
+      }
     };
     const publicIssues = issues.slice(0, 3), privateIssue = issues[4];
     await openSavedViewFromPalette(member.page, base, view, (current, palette) => capture(current, 'member-palette', palette));
     await assertRows(member, publicIssues, [issues[3], privateIssue]);
     await capture(member.page, 'member-public-teams');
+    // The second team's result is a usable issue, with keyboard return to the
+    // same persisted view rather than a separate unfiltered issue list.
+    const secondTeamRow = member.page.locator(`[data-issue-identifier="${issues[2].identifier}"]`);
+    await secondTeamRow.focus();
+    await member.page.keyboard.press('Enter');
+    await member.page.waitForURL(base + '/app/views/' + view.id + '/' + issues[2].identifier);
+    await member.page.getByRole('heading', { name: issues[2].title, exact: true }).waitFor();
+    await settleReads(member.page);
+    await member.page.keyboard.press('Escape');
+    await member.page.waitForURL(base + '/app/views/' + view.id);
+    await member.page.waitForFunction(id => document.activeElement?.id === 'issue-row-' + id, issues[2].identifier);
+    await assertRows(member, publicIssues, [issues[3], privateIssue]);
+
+    // Reader-local exploration must neither mutate the author's definition
+    // nor replace its saved controls on the next document load.
+    await member.page.getByRole('combobox', { name: 'Priority', exact: true }).selectOption('low');
+    await member.page.waitForFunction(id => {
+      const rows = document.querySelectorAll('.issues-row');
+      return rows.length === 1 && rows[0].dataset.issueIdentifier === id;
+    }, issues[3].identifier);
+    assert.equal(await member.page.locator('.issues-count').innerText(), '1 issue');
+    assert.deepEqual(await member.api('/views/' + view.id), view);
+    for (const name of ['Update saved controls', 'Delete view'])
+      assert.equal(await member.page.getByRole('button', { name, exact: true }).count(), 0);
+    const sharedBefore = sql('SELECT * FROM saved_views ORDER BY id');
+    expectedDenials.add(base + '/api/views/' + view.id);
+    await member.api('/views/' + view.id, 'PATCH', { query: { ...view.query, priority: 'low' } }, 403);
+    await member.api('/views/' + view.id, 'DELETE', undefined, 403);
+    assert.deepEqual(sql('SELECT * FROM saved_views ORDER BY id'), sharedBefore, 'Another Member cannot change or delete the shared definition');
     await beforePrivateNavigation(member.page, member.page.url());
     assert.equal((await member.page.reload()).status(), 200);
     await assertRows(member, publicIssues, [issues[3], privateIssue]);
@@ -151,6 +183,10 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     await assertRows(member, publicIssues, [issues[3], privateIssue]);
     await member.api('/issues/' + privateIssue.identifier, 'GET', undefined, 404);
     assert.ok(!JSON.stringify(await member.api('/search?q=' + encodeURIComponent(marker))).includes(privateIssue.identifier));
+    await navigate(member.page, base + '/app/issues');
+    await openSavedViewFromPalette(member.page, base, view);
+    await assertRows(member, publicIssues, [issues[3], privateIssue]);
+    assert.equal((await nativeSession(member)).id, session.id, 'Palette reopening retains the same current Member session');
     await navigate(member.page, base + '/');
 
     const guest = await invite('guest', [firstTeam.id]);
@@ -196,9 +232,10 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     assert.deepEqual(consoleErrors, []);
     assert.deepEqual(failedRequests, []);
     assert.deepEqual(externalRequests, []);
-    record('VIEW-009', 'Member saves a shared filtered cross-team issue view; a second Member opens it by keyboard palette and reloads with both public teams, exact identifiers, totals, group counts and query retained. Current private membership grants and withdraws rows without changing the definition or session. An invited Guest cannot open the workspace-wide shared view and their equivalent issue query stays scoped; a Viewer is read-only with unchanged storage. Palette and view screens pass accessibility and overflow proof at 1440 and 390.');
+    record('VIEW-009', 'Member saves a shared filtered cross-team issue view; a second Member opens it by keyboard palette, opens a second-team issue and returns by keyboard, explores a local filter, and reloads with both public teams, exact identifiers, totals, group counts and stored query restored. Non-owner writes are refused without changing saved definitions. Current private membership grants and withdraws rows without changing the definition or session, including reopening from the palette after withdrawal. An invited Guest cannot open the workspace-wide shared view and their equivalent issue query stays scoped; a Viewer is read-only with unchanged storage. Palette and view screens pass accessibility and overflow proof at 1440 and 390.');
     console.log('PROBE VIEW-009 shared-cross-team: saved view and second Member palette -> two public teams, 3 filtered issues, counts and query retained after reload');
     console.log('PROBE VIEW-009 visibility: same saved view and Member session -> 3 public, 4 with private membership, 3 after withdrawal; Guest shared view 404 and scoped query 2; Viewer mutations 403 with unchanged views');
+    console.log('PROBE VIEW-009 persisted-controls: second Member keyboard detail and return, then local low-priority filter -> 1 issue; shared PATCH and DELETE 403 with unchanged views; reload restores 3 urgent issues and saved query; palette reopening after withdrawal remains scoped');
   } finally {
     for (const reader of invited) await reader.context.close();
   }
