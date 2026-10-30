@@ -1056,3 +1056,8 @@
     margin-bottom: 0.15rem;
   }
 }
+
+.named-video { min-width: 0; display: grid; gap: 8px; margin-block: 8px 16px; font-size: 13px; }
+.named-video p { margin: 0; }
+.named-video button { justify-self: start; text-align: start; overflow-wrap: anywhere; max-width: 100%; }
+.named-video iframe { width: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 6px; background: var(--app-card); }
