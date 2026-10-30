@@ -124,6 +124,7 @@ function MarkdownLink({href,children,title,node}:ComponentProps<'a'> & ExtraProp
 }
 
 const components: Components = {
+  table: ({ children }) => <table tabIndex={0}>{children}</table>,
   a: MarkdownLink,
   img({ src, alt, title }) {
     const safe = safeUrl(typeof src === "string" ? src : undefined, true);

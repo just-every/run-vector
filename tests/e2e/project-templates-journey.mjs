@@ -1,5 +1,8 @@
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
+import {fromMarkdown} from 'mdast-util-from-markdown';
+import {gfm} from 'micromark-extension-gfm';
+import {gfmFromMarkdown} from 'mdast-util-gfm';
 import {readFile,mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {verificationDirectory} from '../../scripts/verification-paths.mjs';
@@ -36,6 +39,7 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
   const template=(await api('/project-templates')).templates.find(t=>t.name==='synthetic-vector-79-'+width);assert.equal(template.issues.length,4);assert.equal(template.milestones.length,2);
   await beforePrivateNavigation(page,base+'/app/projects');await page.goto(base+'/app/projects');await page.getByRole('button',{name:'New project from template',exact:true}).click();await page.locator('[data-project-templates-ready="true"]').waitFor();
   await page.getByLabel('Choose project template',{exact:true}).selectOption(template.id);await page.getByText('Preview project structure',{exact:true}).click();
+  const formatted=width===1440?await templateFormattingJourney(page,api,template.id,check):null;
   await page.getByRole('button',{name:'Edit project template',exact:true}).click();const edit=page.getByRole('form',{name:'Edit project template',exact:true});await edit.getByLabel('Update cadence',{exact:true}).fill('Every Monday');await check('project-template-editor-'+width);await edit.getByRole('button',{name:'Save template changes',exact:true}).click();await page.getByText(/Update cadence: Every Monday/).waitFor();
   const launch=page.getByRole('form',{name:'Create project from template',exact:true});await launch.getByLabel('New project name',{exact:true}).fill('synthetic-vector-80-'+width);await launch.getByLabel('New project start date',{exact:true}).fill('2027-05-01');assert.deepEqual(await launch.getByLabel('Default issue team',{exact:true}).locator('option').evaluateAll(nodes=>nodes.filter(n=>n.value).map(n=>n.value).sort()),options.teams.map(t=>t.id).sort(),'launch offers the native issue teams even without memberships');await launch.getByLabel('Default issue team',{exact:true}).selectOption(team.id);await launch.getByRole('button',{name:'Create project from template',exact:true}).click();await page.getByRole('link',{name:'Open created project',exact:true}).waitFor();await check('project-template-launch-'+width);
   const id=(await page.getByRole('link',{name:'Open created project',exact:true}).getAttribute('href')).split('/').at(-1),result=await api('/projects/'+id);
@@ -43,6 +47,17 @@ const r=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},...(da
   const issues=runtime.sql(`SELECT due_date,assignee_operator_id FROM issues WHERE project_id='${id}' ORDER BY title`);assert.deepEqual(issues.map(i=>i.due_date),['2027-05-03','2027-05-04','2027-05-05','2027-05-06']);assert(issues.every(i=>i.assignee_operator_id===null));
   await page.getByRole('button',{name:'Delete project template',exact:true}).click();await page.getByRole('button',{name:'Delete template and keep projects',exact:true}).click();await page.getByRole('group',{name:'Confirm template deletion',exact:true}).waitFor({state:'hidden'});const retained=await api('/projects/'+id);assert.equal(retained.name,'synthetic-vector-80-'+width);assert.deepEqual(retained.milestones.map(m=>m.targetDate),['2027-05-04','2027-05-11']);assert.deepEqual(runtime.sql(`SELECT due_date,assignee_operator_id FROM issues WHERE project_id='${id}' ORDER BY title`),issues);
   await beforePrivateNavigation(page,base+'/app/projects/'+id);await page.goto(base+'/app/projects/'+id);await page.getByRole('heading',{name:'synthetic-vector-80-'+width,exact:true}).waitFor();await check('project-template-retained-'+width);
+  if(formatted){
+   assert.deepEqual([retained.description,retained.milestones[0].description],formatted.slice(0,2),'application and deletion preserve descriptions');
+   await assertFormatting(page.locator('.project-detail__header .safe-markdown').first(),'Template plan');
+   await assertFormatting(page.locator('.project-milestones .safe-markdown').first(),'Milestone plan');
+   await formattingScreens(page,check,'project-template-markdown-project');
+   const issue=runtime.sql(`SELECT identifier,description FROM issues WHERE project_id='${id}' AND title='synthetic-vector-75'`)[0];assert.equal(issue.description,formatted[2]);
+   await beforePrivateNavigation(page,base+'/app/issues/'+issue.identifier);await page.goto(base+'/app/issues/'+issue.identifier);
+   await assertFormatting(page.locator('.description-source .safe-markdown').first(),'Issue plan');
+   await formattingScreens(page,check,'project-template-markdown-issue');
+   console.log('PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives');
+  }
   console.log('PROJ-012 '+width+': save structure, edit cadence, launch two milestones/four issues with offsets, delete keeps projects, axe and overflow PASS');
  }
  assert.deepEqual(errors,[],'no template hydration mismatch or page errors');
@@ -61,4 +76,74 @@ export async function nativeProjectTemplatesJourney(browser){
   await projectTemplatesJourney(page,page.context(),runtime,(name,current)=>current.screenshot({path:resolve(output,name+'.png'),fullPage:true}));
   assert.equal(runtime.sql('SELECT count(*) count FROM team_members')[0].count,0,'template launch never backfills membership');
  }finally{await page?.context().close();await runtime.stop();}
+}
+
+// Exercise formatting at desktop width; capture the same changed screens on a
+// phone without registering another permanent test or duplicating assertions.
+async function templateFormattingJourney(page,api,id,check){
+ await page.getByRole('button',{name:'Edit project template',exact:true}).click();
+ const edit=page.getByRole('form',{name:'Edit project template',exact:true});
+ const bodies=[];
+ for(const [label,title] of [['Template description','Template plan'],['Milestone description','Milestone plan'],['Issue Markdown description','Issue plan']]){
+  const field=edit.getByLabel(label,{exact:true}).first();
+  await field.fill('/h2');await field.press('Enter');await field.pressSequentially(title);
+  async function insert(query){
+   await field.press('ControlOrMeta+End');await field.press('Enter');await field.press('Enter');
+   await field.pressSequentially('/'+query);await field.press('Enter');
+  }
+  await insert('quote');await field.pressSequentially('Retain the launch plan');
+  await insert('divider');await insert('table');await insert('code');
+  await edit.getByRole('option',{name:'typescript',exact:true}).click();
+  await field.pressSequentially('const ready: boolean = true;');
+  await field.press('ControlOrMeta+End');await field.press('Enter');await field.press('Enter');
+  await field.evaluate(element=>{
+   const data=new DataTransfer();
+   data.setData('text/html','<h2>Pasted plan</h2><ul><li>Plan item</li></ul><p><a href="https://example.test/guide">Guide</a></p><script>window.syntheticTemplateScript=true</script>');
+   data.setData('text/plain','Pasted plan Plan item Guide');
+   element.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:data}));
+  });
+  const body=await field.inputValue();bodies.push(body);
+  assert(!/<script\b/i.test(body)&&!body.includes('syntheticTemplateScript'),'rich paste drops script and its content');
+  const nodes=fromMarkdown(body,{extensions:[gfm()],mdastExtensions:[gfmFromMarkdown()]}).children;
+  assert.deepEqual(nodes.map(node=>node.type),['heading','blockquote','thematicBreak','table','code','heading','list','paragraph']);
+  assert.equal(nodes[0].children[0].value,title);assert.equal(nodes[4].lang,'typescript');assert.equal(nodes[4].value,'const ready: boolean = true;');
+  assert.equal(nodes[3].children.length,2);assert(nodes[3].children.every(row=>row.children.length===2));
+  assert.equal(nodes[6].children[0].children[0].children[0].value,'Plan item');assert.equal(nodes[7].children[0].url,'https://example.test/guide');
+  const bold=field.locator('..').getByRole('button',{name:'Bold text',exact:true});
+  await bold.focus();await page.getByRole('tooltip',{name:'Bold text',exact:true}).waitFor();await field.focus();
+ }
+ await formattingScreens(page,check,'project-template-markdown-editor');
+ await edit.getByRole('button',{name:'Save template changes',exact:true}).click();
+ await page.getByRole('button',{name:'Edit project template',exact:true}).waitFor();
+ await page.reload();await page.getByRole('button',{name:'New project from template',exact:true}).click();
+ await page.locator('[data-project-templates-ready="true"]').waitFor();await page.getByLabel('Choose project template',{exact:true}).selectOption(id);
+ const stored=await api('/project-templates/'+id);
+ assert.deepEqual([stored.description,stored.milestones[0].description,stored.issues[0].description],bodies,'all three drafts persist as GFM');
+ await page.getByRole('button',{name:'Edit project template',exact:true}).click();
+ const reopened=page.getByRole('form',{name:'Edit project template',exact:true});
+ for(const [index,label] of ['Template description','Milestone description','Issue Markdown description'].entries())assert.equal(await reopened.getByLabel(label,{exact:true}).first().inputValue(),bodies[index],'reopened controlled draft');
+ await reopened.getByRole('button',{name:'Cancel template edit',exact:true}).click();
+ await page.getByText('Preview project structure',{exact:true}).click();
+ const previews=page.locator('.template-preview .safe-markdown');
+ await assertFormatting(previews.nth(0),'Template plan');await assertFormatting(previews.nth(1),'Milestone plan');await assertFormatting(previews.nth(3),'Issue plan');
+ assert.equal(await page.evaluate(()=>window.syntheticTemplateScript),undefined);
+ await formattingScreens(page,check,'project-template-markdown-preview');
+ console.log('PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, safe previews and tooltips');
+ return bodies;
+}
+async function assertFormatting(root,title){
+ await root.getByRole('heading',{name:title,exact:true}).waitFor();
+ assert.equal((await root.locator('blockquote').textContent()).trim(),'Retain the launch plan');
+ assert.equal(await root.locator('hr').count(),1);assert.equal(await root.getByRole('table').count(),1);
+ assert.equal(await root.locator('th').count(),2);assert.equal(await root.locator('td').count(),2);
+ assert.equal((await root.locator('code.language-typescript').textContent()).trim(),'const ready: boolean = true;');
+ assert(await root.locator('code.language-typescript .hljs-keyword').count()>0,'TypeScript syntax highlighting');
+ await root.getByRole('heading',{name:'Pasted plan',exact:true}).waitFor();assert.equal((await root.locator('li').textContent()).trim(),'Plan item');
+ assert.equal(await root.getByRole('link',{name:'Guide',exact:true}).getAttribute('href'),'https://example.test/guide');
+ assert.equal(await root.locator('script').count(),0);assert(!(await root.textContent()).includes('syntheticTemplateScript'));
+}
+async function formattingScreens(page,check,name){
+ const viewport=page.viewportSize();
+ try{await check(name+'-1440');await page.setViewportSize({width:390,height:844});await check(name+'-390');}
+ finally{await page.setViewportSize(viewport);}
 }

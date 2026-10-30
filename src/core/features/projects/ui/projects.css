@@ -22,6 +22,11 @@
   line-height: 1.06;
   letter-spacing: -0.03em;
 }
+.project-detail__header > div:first-child {
+  min-width: 0;
+  flex: 1;
+  overflow-wrap: anywhere;
+}
 .projects-header p:last-child,
 .project-detail__header > div:first-child > p:last-child {
   max-width: 46rem;
@@ -466,6 +471,10 @@
   }
 }
 @media (max-width: 46rem) {
+  .project-detail__header {
+    flex-direction: column;
+    align-items: stretch;
+  }
   .projects-workspace,
   .project-detail {
     min-height: calc(100svh - 4.8rem);
