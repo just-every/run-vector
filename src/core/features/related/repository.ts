@@ -21,7 +21,7 @@ export async function mutateRelatedRecord(db:D1Database,identifier:string,actor:
   const pair='((first_issue_id=? AND second_issue_id=?) OR (first_issue_id=? AND second_issue_id=?))';
   const pairValues=[issue.id,relatedIssue.id,relatedIssue.id,issue.id];
   const receipt='EXISTS(SELECT 1 FROM issue_activity WHERE id=?)';
-  const writes=await db.batch([
+  await db.batch([
     db.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
       SELECT ?,i.id,?,?,?,?,?,? FROM issues i JOIN teams it ON it.id=i.team_id
       JOIN issues r ON r.id=? JOIN teams rt ON rt.id=r.team_id JOIN operators actor ON actor.id=?
@@ -36,7 +36,7 @@ export async function mutateRelatedRecord(db:D1Database,identifier:string,actor:
       .bind(other.id,relatedIssue.id,actor,kind,other.previousValueJson,other.nextValueJson,at,at,event.id),
     db.prepare(`UPDATE issues SET version=version+1,updated_at=? WHERE id IN (?,?) AND ${receipt}`).bind(at,issue.id,relatedIssue.id,event.id),
   ]);
-  if(writes[0].meta.changes===1)return 'written';
+  if(await db.prepare('SELECT 1 FROM issue_activity WHERE id=? AND issue_id=? AND actor_operator_id=? AND kind=?').bind(event.id,issue.id,actor,kind).first())return 'written';
   const current=await requireDependencyPair(db,identifier,input.relatedIdentifier,actor);
   if(current.issue.version!==input.expectedVersion||current.relatedIssue.version!==input.relatedVersion)return 'stale';
   throw new DependencyError(operation==='add'?'related_exists':'related_not_found',operation==='add'?'These issues are already related.':'This related link no longer exists.',409);
