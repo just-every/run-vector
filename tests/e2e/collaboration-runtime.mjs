@@ -53,6 +53,7 @@ await contract(
           failed = [],
           badModules = [],
           consoleErrors = [];
+        const expectedTemplateConflicts = new Set();
         const observe = (p) => {
           observeLifecycle(p, `${viewport.width}-${p === page ? "actor" : "recipient"}`);
           p.on("console", (message) => {
@@ -131,7 +132,7 @@ await contract(
           });
           if (failure) throw failure;
         }
-        const shared = { page, runtime, capture: scopedCapture, clause };
+        const shared = { page, runtime, capture: scopedCapture, clause, expectedTemplateConflicts };
         await bootstrapOwner(page, runtime);
         const team = await createTeamWorkflow(shared);
         const label = await authorLabel(shared);
@@ -193,12 +194,15 @@ await contract(
             /^Failed to load resource:/.test(row.message) &&
             ((row.location.url === runtime.base + "/api/settings/cycles" &&
               /400/.test(row.message)) ||
+              (expectedTemplateConflicts.has(row.location.url) && /409/.test(row.message)) ||
               (/401/.test(row.message) &&
                 isRevokedProjection(row.location.url) &&
                 runtime.sql(
                   "SELECT count(*) n FROM operators WHERE removed_at IS NOT NULL",
                 )[0].n > 0)),
         );
+        for (const url of expectedTemplateConflicts)
+          assert.equal(expectedHttpErrors.filter(row => row.location.url === url).length, 1, "exactly one asserted stale template refusal");
         assert.deepEqual(
           consoleErrors.filter((row) => !expectedHttpErrors.includes(row)),
           [],
