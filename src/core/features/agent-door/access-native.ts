@@ -97,6 +97,7 @@ export function accessMutation(env: WorkerBindings, spec: AccessSpec): ToolDefin
 export function accessRead(env: WorkerBindings, spec: {
   name: string; title: string; path: string; scope: string; clauses: string[]; schema: z.ZodType;
   read(db: D1Database, person: Person, args: any): Promise<unknown>;
+  uri?(result: any, args: any): string | undefined;
 }): ToolDefinition {
   return { name: spec.name, title: spec.title, description: spec.title, scope: spec.scope,
     clauses: spec.clauses, classes: ['standard'], readOnly: true, untrusted: true,
@@ -108,11 +109,13 @@ export function accessRead(env: WorkerBindings, spec: {
         if (error instanceof z.ZodError) throw new ToolRefusal('invalid_arguments');
         throw error;
       }
-      return { result: await nativeRead(env, ctx.person, async db => {
+      const result = await nativeRead(env, ctx.person, async db => {
         const grant = await actionAuthority(env.DB, ctx.person.id, 'GET', spec.path, {}, undefined);
         if (grant.decision !== 'allow') throw new ToolRefusal(grant.decision === 'hidden' ? 'not_found' : grant.decision);
         return spec.read(db, ctx.person, args);
-      }) };
+      });
+      const uri = spec.uri?.(result, args);
+      return { result, ...(uri ? { resources: [{ uri, name: spec.title }] } : {}) };
     },
   };
 }
