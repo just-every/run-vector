@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "4eb4da5dc097b4c9d0613529add71232b93ed8070c556ee780fec2829c4552f7",
+      "sha256": "049a353ddaceddd60301b80bf4397c9d354908c632ee1e19a4051c69f49ccbb7",
       "executable": false
     },
     "DEMO.md": {
@@ -7321,7 +7321,7 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "7395e91369df0b77acc5cfea03079a8447457a48e71872a600455c5019a56f10",
+      "sha256": "905501603f6c6aff8fdd3d205a73cb0fa6a945ac30e7bd92384acef02bbbeb0c",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
@@ -7773,7 +7773,7 @@
       "executable": false
     },
     "tests/worker/document-thread-scenario.ts": {
-      "sha256": "dc4b66ca5078715e3bddae4490b7293e3d192de8a28cf39f043aa8ab75a3abdd",
+      "sha256": "c26844d46ec6a2477f4a08d8445e1d413de14eee36184033629fbfcdfddde221",
       "executable": false
     },
     "tests/worker/documents-scenario.ts": {

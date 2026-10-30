@@ -228,8 +228,11 @@ export async function documentQuoteJourney({page,base,api,proof}){
  await expect(select).toBeEnabled();await select.focus();await select.press('Enter');
  const margin=()=>page.getByRole('complementary',{name:'Document threads',exact:true});
  await margin().getByRole('textbox',{name:'Comment on quoted text',exact:true}).fill('Please confirm the second occurrence.');
+ const created=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/issues/'+issue.identifier+'/comments'&&response.request().method()==='POST');
  await margin().getByRole('button',{name:'Start thread',exact:true}).click();
- await margin().getByText('Please confirm the second occurrence.',{exact:true}).waitFor();
+ assert.equal((await created).status(),201);
+ await margin().locator('form.comment-composer').waitFor({state:'detached'});
+ await margin().locator('.comment-body').getByText('Please confirm the second occurrence.',{exact:true}).waitFor();
  const root=(await api('/issues/'+issue.identifier+'/discussion')).comments.find(c=>c.body==='Please confirm the second occurrence.');
  const start=Array.from(body.slice(0,body.lastIndexOf(quote))).length;
  assert.deepEqual(root.anchor,{documentId:doc.id,quote,start,end:start+Array.from(quote).length,removed:false});
@@ -281,8 +284,18 @@ export async function documentQuoteJourney({page,base,api,proof}){
  assert.deepEqual(await retainedThread.locator('.comment-replies .comment-body').allInnerTexts(),['First document reply.','Second document reply.','Reply reopens the document thread.']);
  const deleted=(await api('/issues/'+issue.identifier+'/discussion')).comments.find(c=>c.id===root.id);
  assert.equal(deleted.body,null);assert.equal(deleted.anchor,null);assert.equal(deleted.deletedBy,'Administration owner');
+ await retainedThread.getByRole('button',{name:'Reply',exact:true}).click();
+ await retainedThread.getByRole('textbox',{name:'Reply to thread',exact:true}).fill('Continue after the source comment was deleted.');
+ await retainedThread.getByRole('button',{name:'Post reply',exact:true}).click();
+ await retainedThread.getByText('Continue after the source comment was deleted.',{exact:true}).waitFor();
+ await retainedThread.getByRole('button',{name:'Resolve thread',exact:true}).click();
+ const resolved=page.getByRole('region',{name:'Resolved thread started by Administration owner',exact:true});
+ await expect(resolved).toContainText('Resolved by Administration owner');
+ await resolved.getByRole('button',{name:'Reopen',exact:true}).click();
+ await retainedThread.getByText('Comment deleted by Administration owner',{exact:true}).waitFor();
+ assert.deepEqual(await retainedThread.locator('.comment-replies .comment-body').allInnerTexts(),['First document reply.','Second document reply.','Reply reopens the document thread.','Continue after the source comment was deleted.']);
  for(const width of [1440,390]){await page.setViewportSize({width,height:width===390?844:1000});await retainedThread.scrollIntoViewIfNeeded();await proof('issue-document-thread-tombstone',width);}
  await page.setViewportSize({width:1440,height:1000});
  console.log('PROBE ISSUE-008 document selection: issue Documents → rendered second Unicode occurrence → persisted source and margin; replies, resolution, reload, source removal and issue retention PASS at 1440 and 390');
- console.log('PROBE ISSUE-008 attributed tombstone: native Delete comment → deleter named after reload, source quote erased, three ordered replies retained at 1440 and 390');
+ console.log('PROBE ISSUE-008 attributed tombstone: native Delete comment → deleter named after reload, source quote erased, ordered replies retained, new reply and resolve then reopen remain usable at 1440 and 390');
 }

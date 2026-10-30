@@ -52,6 +52,16 @@ export async function documentThreadScenario(){
   before=await snapshot(changedTables);const denied=await f.call(path+'/comments','POST',{body:'synthetic-vector-refused',anchor});
   expect(denied.status,await denied.clone().text()).toBe(status);expect(await snapshot(changedTables)).toEqual(before);
  }
+ for(const input of [
+  {body:'synthetic-vector-reply-anchor',parentId:root,anchor:current},
+  {body:'synthetic-vector-invalid-offset',anchor:{...current,end:current.start}},
+  {body:'synthetic-vector-stale-body',anchor:{...current,expectedBody:body+' stale'}},
+ ]){
+  before=await snapshot(changedTables);
+  const denied=await f.call(path+'/comments','POST',input);
+  expect(denied.status,await denied.clone().text()).toBe(input.body==='synthetic-vector-stale-body'?409:400);
+  expect(await snapshot(changedTables)).toEqual(before);
+ }
  before=await snapshot(changedTables);
  let raced=false;
  const racing=new Proxy(env.DB,{get(target,key){
@@ -95,6 +105,8 @@ export async function documentThreadScenario(){
  for(const url of [path+'/discussion','/documents/'+doc.id,'/documents/'+doc.id+'/revisions']){
   const denied=await f.any(f.bobCookie,url);expect(denied.status).toBe(404);expect(await denied.text()).not.toContain(unicode);
  }
+ expect((await f.any(f.bobCookie,path+'/comments','POST',{body:'synthetic-vector-withdrawn-reply',parentId:unicodeRoot})).status).toBe(404);
+ expect((await f.any(f.bobCookie,path+'/comments/'+unicodeRoot+'/resolution','POST',{resolved:true})).status).toBe(404);
  expect(await snapshot(changedTables)).toEqual(before);
  await read(await f.call('/settings/operators/'+f.bob,'DELETE'));before=await snapshot(changedTables);
  expect((await f.any(f.bobCookie,path+'/comments','POST',{body:'Refused revoked session',anchor:current})).status).toBe(401);expect(await snapshot(changedTables)).toEqual(before);
