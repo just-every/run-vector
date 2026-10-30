@@ -20,14 +20,14 @@ it("ISSUE-001 ISSUE-008 ISSUE-025 ISSUE-026 BASE-INPUT-002 safe Markdown display
     expect(html).toContain(
       "<code>&lt;script&gt;alert(1)&lt;/script&gt;</code>",
     );
-    expect(html).toContain('<pre><code class="language-js">');
+    expect(html).toContain('<pre tabindex="0"><code class="language-js">');
     expect(html).toContain('class="hljs-keyword">const</span>');
     expect(html).toContain('class="hljs-number">42</span>');
   }
   {
     const html = render("~~Old~~\n\n| Step | Result |\n| --- | --- |\n| Repro | Fixed |\n\n- [ ] Repro on iOS\n- [x] Add regression coverage\n\n:::details Investigation\n\nEvidence kept here.\n\n:::");
     expect(html).toContain("<del>Old</del>");
-    expect(html).toContain("<table>");
+    expect(html).toContain('<table tabindex="0">');
     expect(html).toContain("<td>Fixed</td>");
     expect(html).toContain('type="checkbox"');
     expect(html).toContain('aria-label="Repro on iOS"');

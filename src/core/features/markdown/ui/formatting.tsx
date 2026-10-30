@@ -53,7 +53,7 @@ export function CodeBlock({ children }: { children: ReactNode }) {
     const code = event.currentTarget.parentElement?.querySelector('code')?.textContent;
     if (code === undefined) return;
     try { await navigator.clipboard.writeText(code); setCopied(true); } catch { setCopied(false); }
-  }}>{copied ? 'Copied' : 'Copy code'}</button><pre>{children}</pre></div>;
+  }}>{copied ? 'Copied' : 'Copy code'}</button><pre tabIndex={0}>{children}</pre></div>;
 }
 export function HighlightedCode({ className, children, sourceAttributes }: { className?: string; children: ReactNode; sourceAttributes?: Record<string, unknown> }) {
   const language = className?.match(/language-([\w#+-]+)/)?.[1];

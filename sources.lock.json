@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "09ae084c5311593826fb016c40bab151c1cb09344305a9597363f8e7bcd3ef10",
+      "sha256": "7f8d5549b448b57464448bb6dd2576d2320c0402c5a5a9a42069f97ca99694f1",
       "executable": false
     },
     "DEMO.md": {
@@ -5493,15 +5493,15 @@
       "executable": false
     },
     "src/core/features/markdown/ui/formatting.css": {
-      "sha256": "0fbf7dd3f46b7d756a02b85ec0bd27a96e8758a00179435b5881d36aa3f1afe8",
+      "sha256": "ca08e3e389a721c8955c96ad89ce61c8a6756c6b085dc42fd2202f4887f23534",
       "executable": false
     },
     "src/core/features/markdown/ui/formatting.tsx": {
-      "sha256": "6223b4c60eb26a7f016a3e94de28c371ed0da2191556b4cd508f383ffaad95ad",
+      "sha256": "32a7cc49a3bcb46ca443334a40132289ae5256afdeb9e166d077bd65f95a7054",
       "executable": false
     },
     "src/core/features/markdown/ui/markdown.tsx": {
-      "sha256": "b6a74bfb8c92a316f982db412848d0482eba35de49ec0050b241cf70cf450926",
+      "sha256": "9627a4b36978e6e6e97a89c7ef5b4ef0e8af27af03c831bb0cf6ff71efc18a9f",
       "executable": false
     },
     "src/core/features/markdown/ui/task-checkbox.tsx": {
@@ -5933,7 +5933,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/projects.css": {
-      "sha256": "9018f630ac56a072688cedeae2c82d7534956edbb64fff6394a8835c1e4bcad5",
+      "sha256": "e9bedef1f7cb7ffde9852bff4a0a1f776ef313f2f66e90962c36e43bd872423c",
       "executable": false
     },
     "src/core/features/projects/ui/risk-evidence.tsx": {
@@ -7325,7 +7325,7 @@
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
-      "sha256": "c477c82a1c23d18486150703417bf13173c4ee692c90885ff6fa3772fb8b1f26",
+      "sha256": "4d868b845287100ec32af351c67e8110012105f085e43c804150face3ec93656",
       "executable": false
     },
     "tests/e2e/public-development.mjs": {
@@ -7569,7 +7569,7 @@
       "executable": false
     },
     "tests/markdown-rendering.test.tsx": {
-      "sha256": "763eb43e2139d9617ec50abacb430ff7d054eae44616dd755803a1fda418113b",
+      "sha256": "5ae1596b244577fd0c61cb74607ab51137ceb62f3c8a45cc47aaed3038b8f014",
       "executable": false
     },
     "tests/sendgrid-event-fixture.ts": {

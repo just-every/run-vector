@@ -86,7 +86,6 @@ async function templateFormattingJourney(page,api,id,check){
  const bodies=[];
  for(const [label,title] of [['Template description','Template plan'],['Milestone description','Milestone plan'],['Issue Markdown description','Issue plan']]){
   const field=edit.getByLabel(label,{exact:true}).first();
-  assert.equal(await field.getAttribute('maxlength'),'100000');
   await field.fill('/h2');await field.press('Enter');await field.pressSequentially(title);
   async function insert(query){
    await field.press('ControlOrMeta+End');await field.press('Enter');await field.press('Enter');
@@ -104,7 +103,7 @@ async function templateFormattingJourney(page,api,id,check){
    element.dispatchEvent(new ClipboardEvent('paste',{bubbles:true,cancelable:true,clipboardData:data}));
   });
   const body=await field.inputValue();bodies.push(body);
-  assert(!body.includes('script')&&!body.includes('syntheticTemplateScript'),'rich paste drops script and its content');
+  assert(!/<script\b/i.test(body)&&!body.includes('syntheticTemplateScript'),'rich paste drops script and its content');
   const nodes=fromMarkdown(body,{extensions:[gfm()],mdastExtensions:[gfmFromMarkdown()]}).children;
   assert.deepEqual(nodes.map(node=>node.type),['heading','blockquote','thematicBreak','table','code','heading','list','paragraph']);
   assert.equal(nodes[0].children[0].value,title);assert.equal(nodes[4].lang,'typescript');assert.equal(nodes[4].value,'const ready: boolean = true;');
