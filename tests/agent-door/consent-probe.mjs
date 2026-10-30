@@ -18,6 +18,27 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const who = { person: { id: session.operatorId }, agent: { id: context.agentId, name: 'Delivery agent', specialist: surface.specialist },
     scopes: [tool.scope], clientId: 'native-delivery-worker', consent: context.consent };
   const count = () => db.prepare('SELECT count(*) AS n FROM issues').first('n');
+  const call = async (name, args, credential) => {
+    const response = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + credential,
+      'Content-Type': 'application/json', 'MCP-Protocol-Version': '2025-11-25' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: args } }) });
+    await response.body?.cancel(); return response.status;
+  };
+  const scoped = await call('vector.issues.list', {}, await accessToken(context, { scope: 'issues:read' }));
+  const insufficient = await call(tool.name, { teamId: metadata.teams[0].id, title: 'A scope refusal', idempotency_key: randomUUID() },
+    await accessToken(context, { scope: 'metadata:read' }));
+  const unknown = await call('vector.issues.list', {}, await accessToken(context, { sub: randomUUID(), email: person.email }));
+  const minted = await request(origin + '/api/settings/integrations/tokens', { method: 'POST',
+    headers: { Cookie: person.cookie, Origin: origin, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'Purpose separation probe', scopes: ['issues:read'] }) });
+  if (!minted.ok) throw new Error('Native API token purpose fixture failed');
+  const personal = await minted.json();
+  const personalMcp = await call('vector.issues.list', {}, personal.token);
+  const api = await request(origin + '/api/v1/issues', { headers: { Authorization: 'Bearer ' + personal.token } });
+  const personalApi = api.status; await api.body?.cancel();
+  const revoked = await request(origin + '/api/settings/integrations/tokens/' + personal.credential.id, { method: 'DELETE', headers: { Cookie: person.cookie, Origin: origin } });
+  if (!revoked.ok) throw new Error('Native API token cleanup failed');
+  await revoked.body?.cancel();
   const job = () => JSON.parse(JSON.stringify({ name: tool.name, args: { teamId: metadata.teams.find(team => team.canRead !== false).id,
     title: 'Investigate retained native work', idempotency_key: randomUUID() }, who }));
   const before = await count(), first = job(), live = await invoke(first.name, first.args, first.who), afterLive = await count();
@@ -28,6 +49,8 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const mcp = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json',
     'MCP-Protocol-Version': '2025-11-25' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: saved.name, arguments: saved.args } }) });
   await mcp.body?.cancel();
-  return { ok: live.outcome === 'done' && afterLive === before + 1 && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
+  return { ok: scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
+      && live.outcome === 'done' && afterLive === before + 1 && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
+    scoped, insufficient, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi,
     before, afterLive, afterRevoked, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'pending hooks-7 durable operation context' };
 }

@@ -1,5 +1,6 @@
+import { nativeInputSchema } from './schema.ts';
 import { z } from 'zod';
-import { ToolRefusal, type ClassAndFacts, type JsonSchemaObject, type Person, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
+import { ToolRefusal, type ClassAndFacts, type Person, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { actionAuthority } from '../roles/enforcement';
 import { nativeRead } from './reads.ts';
@@ -18,7 +19,7 @@ export function workspaceRead(env: WorkerBindings, spec: {
   return {
     name: `vector.${spec.name}`, title: spec.title, description: spec.title, scope: spec.scope,
     readOnly: true, untrusted: true, classes: ['standard'], clauses: spec.clauses,
-    inputSchema: z.toJSONSchema(spec.schema, { io: 'input', unrepresentable: 'any' }) as JsonSchemaObject,
+    inputSchema: nativeInputSchema(spec.schema),
     outputSchema: { type: 'object', additionalProperties: true }, classify: workspaceStandard,
     async run(args, ctx) {
       const parsed = spec.schema.parse(args);

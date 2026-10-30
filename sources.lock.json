@@ -3668,7 +3668,7 @@
       "executable": false
     },
     "src/core/features/agent-door/issues-shared.ts": {
-      "sha256": "3e8e0fccf9c87f8e63a1595195a3016297667c3fd1ae088d4327a8b510eceb17",
+      "sha256": "2d527f5636ced2a13958032d9928a877daeaef4395b045a1e8a8f15ea40694f0",
       "executable": false
     },
     "src/core/features/agent-door/issues-tools.ts": {
@@ -3676,11 +3676,11 @@
       "executable": false
     },
     "src/core/features/agent-door/native.ts": {
-      "sha256": "5f55c26e7285187fcf8851adeb20d281588fa55e4595f5ceced7e29a46180558",
+      "sha256": "771f75cbcb138d5322a7f05bcfa174ae8766a40949d419dce6c4cc70166139c7",
       "executable": false
     },
     "src/core/features/agent-door/people.ts": {
-      "sha256": "5cfc621b93d7ba485913e5d74371746001043bfc746c80d4b94b4f7ac55111d5",
+      "sha256": "add40c5582771f26e30b4e5a41126b483fcf60b09a18c8fa745ea63e0700c2a2",
       "executable": false
     },
     "src/core/features/agent-door/person-events.ts": {
@@ -3708,7 +3708,7 @@
       "executable": false
     },
     "src/core/features/agent-door/planning-shared.ts": {
-      "sha256": "e6016cfab29d0f37f0006da74c6beb2f8a11608025dddab481c2ab1c91e000cd",
+      "sha256": "b621dd96ae67e1f45de9562876fbb8ca469eb2a8c6c6c76f858ba7ec34609ac6",
       "executable": false
     },
     "src/core/features/agent-door/planning-teams.ts": {
@@ -3732,7 +3732,11 @@
       "executable": false
     },
     "src/core/features/agent-door/registry.ts": {
-      "sha256": "8b1adaa70bb69018c03620f121374af745e31ffb926207a10ef0a84a8cc1e9df",
+      "sha256": "901b87532c479c6657365309781ada70ed40c5f9db96a746a3a858c0b678f886",
+      "executable": false
+    },
+    "src/core/features/agent-door/schema.ts": {
+      "sha256": "f52d8c64c40f4d14c13b4aaebd015a45b3caf132bdf20525139039fad3f8311b",
       "executable": false
     },
     "src/core/features/agent-door/workspace-notifications.ts": {
@@ -3752,7 +3756,7 @@
       "executable": false
     },
     "src/core/features/agent-door/workspace-shared.ts": {
-      "sha256": "6fe82aa867e475a0ee860167d964472de464a81babc6ff90f6e1d0faa05d125b",
+      "sha256": "b17e17ce8532073434447428639a9ec57a20de7e1a650cbf368173550a0a940f",
       "executable": false
     },
     "src/core/features/agent-door/workspace-streams.ts": {
@@ -6983,8 +6987,12 @@
       "sha256": "a38fe57c726b3f87d25790930cda40e7a769c91ed6f8ce02d997c46fcb878222",
       "executable": false
     },
+    "tests/agent-door/browser-journey.mjs": {
+      "sha256": "e67ccea97bd1d5431cbd5d13a2b46b0881e24b610c636c26868fe3f398ab6954",
+      "executable": false
+    },
     "tests/agent-door/consent-probe.mjs": {
-      "sha256": "695708d52387dc50d52183106874f58efae728a3ce79b41b04adbdef5c30d674",
+      "sha256": "92db3dcb710c7c38d7e233d42b7116d92a5eac88ddbf811a208b3a9093550658",
       "executable": false
     },
     "tests/agent-door/initialize-owner.mjs": {
@@ -7004,15 +7012,15 @@
       "executable": false
     },
     "tests/agent-door/runtime-worker.ts": {
-      "sha256": "a2667fc0730d5c24f029d1a9817ba455eef83bff14bbea58378fd358d0bc3ea1",
+      "sha256": "c8ee0289e6be81f9e67dc05dd279fd60b76a3d2aa6a6fd85b5d9f45ea34c9b7c",
       "executable": false
     },
     "tests/agent-door/runtime.mjs": {
-      "sha256": "21d98507cec0e3056c73eff7b6bb5f3323a01786d15d47e1436e54e0b7756959",
+      "sha256": "b27446ac71c8d80b3c15bef2b15d59cf6eddf71fd38a2f8c3c100788b1e259d5",
       "executable": false
     },
     "tests/agent-door/verify-pin.mjs": {
-      "sha256": "9ee0f777133239129fd0931d1987d2be80f44aa37a3e98f0deaaaed38afa8084",
+      "sha256": "e16c3691fb02d12a1dcc328bbb5ca99beec302d133214efd714930d7bd74e489",
       "executable": false
     },
     "tests/agent-door/workspace-steps.mjs": {

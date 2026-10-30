@@ -1,5 +1,6 @@
+import { nativeInputSchema } from './schema.ts';
 import { z } from 'zod';
-import { ToolRefusal, type ClassAndFacts, type JsonSchemaObject, type Person, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
+import { ToolRefusal, type ClassAndFacts, type Person, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { nativeRead } from './reads.ts';
 
@@ -17,7 +18,7 @@ export function planningRead(env: WorkerBindings, spec: {
 }): ToolDefinition {
   return { name: spec.name, title: spec.title, description: spec.title, scope: spec.scope,
     readOnly: true, untrusted: true, classes: ['standard'], clauses: spec.clauses,
-    inputSchema: z.toJSONSchema(spec.schema, { io: 'input', unrepresentable: 'any' }) as JsonSchemaObject,
+    inputSchema: nativeInputSchema(spec.schema),
     outputSchema: { type: 'object', additionalProperties: true }, classify: () => standard(),
     async run(args, ctx) {
       const parsed = spec.schema.parse(args);

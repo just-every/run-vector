@@ -4,6 +4,7 @@ import { requireOperator } from '../auth/service';
 
 /** Vector's product identity, never the implementation-level OA owner role. */
 export function vectorPeople(env: WorkerBindings): PeopleAdapter {
+  const policyRoles = new Map<string, 'owner' | 'editor' | null>();
   const nativePerson = async (id: string): Promise<Person | null> => {
     const row = await env.DB.prepare(`SELECT o.id,o.email,o.name,o.role FROM operators o
       JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id
@@ -11,7 +12,16 @@ export function vectorPeople(env: WorkerBindings): PeopleAdapter {
       AND (NOT EXISTS(SELECT 1 FROM vector_restore_status)
         OR EXISTS(SELECT 1 FROM vector_restore_operator_grants WHERE auth_id=a.id))`)
       .bind(id).first<Omit<Person, 'active'>>();
-    return row ? { ...row, active: true } : null;
+    if (!row) return null;
+    if (env.RER_OWNER_CLAIM_ISSUER) {
+      const role = await env.DB.prepare(`SELECT CASE
+        WHEN s.owner_id IS NOT NULL AND EXISTS(SELECT 1 FROM workspace_installation WHERE setup_operator_id=?) THEN 'owner'
+        WHEN EXISTS(SELECT 1 FROM bs_team WHERE operator_id=? AND state='active' AND business_id IS NOT NULL AND business_role='admin') THEN 'editor'
+        ELSE NULL END AS role FROM bs_settings s WHERE s.singleton=1 AND s.stopped=0`)
+        .bind(id, id).first<'owner' | 'editor' | null>('role');
+      policyRoles.set(id, role ?? null);
+    } else policyRoles.set(id, row.role === 'owner' ? 'owner' : row.role === 'admin' ? 'editor' : null);
+    return { ...row, active: true };
   };
   const person = async (id: string): Promise<Person | null> => {
     const current = await nativePerson(id);
@@ -46,7 +56,7 @@ export function vectorPeople(env: WorkerBindings): PeopleAdapter {
         WHERE business_id=? AND state='active'`).bind(sub).first<{ operator_id: string | null }>();
       return member?.operator_id ? person(member.operator_id) : null;
     },
-    businessRole: current => current.role === 'owner' ? 'owner' : current.role === 'admin' ? 'editor' : null,
+    businessRole: current => policyRoles.get(current.id) ?? null,
     async businessMember(current) {
       if (!(await person(current.id))) return null;
       const state = await settings();

@@ -1,5 +1,6 @@
+import { nativeInputSchema } from './schema.ts';
 import { z } from 'zod';
-import { ToolRefusal, type ApprovalSummary, type ClassAndFacts, type ClassId, type JsonSchemaObject, type Person, type ToolContext, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
+import { ToolRefusal, type ApprovalSummary, type ClassAndFacts, type ClassId, type Person, type ToolContext, type ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { actionAuthority } from '../roles/enforcement';
 import { visibilityDatabase } from '../roles/visibility-database';
@@ -49,7 +50,7 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
   return {
     name: spec.name, title: spec.title, description: spec.title, scope: spec.scope,
     clauses: spec.clauses, readOnly: false, untrusted: true,
-    inputSchema: z.toJSONSchema(spec.schema, { io: 'input', unrepresentable: 'any' }) as JsonSchemaObject,
+    inputSchema: nativeInputSchema(spec.schema),
     outputSchema: { type: 'object', additionalProperties: true }, classes: spec.classes ?? ['standard'],
     async classify(args, ctx) {
       try {

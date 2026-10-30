@@ -1,5 +1,6 @@
+import { nativeInputSchema } from './schema.ts';
 import { z } from 'zod';
-import type { Person, ToolDefinition, ResourceDefinition, JsonSchemaObject } from '../../../../vendor/base/agent-door/index.ts';
+import type { Person, ToolDefinition, ResourceDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import { ToolRefusal } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
 import { issueListQuerySchema } from '../issues/list-schema';
@@ -12,7 +13,7 @@ const objectOutput = { type: 'object', additionalProperties: true };
 type Read = (person: Person, args: Record<string, unknown>) => Promise<unknown>;
 function readTool(name: string, description: string, scope: string, clauses: string[], schema: z.ZodType, read: Read,
   link?: (args: Record<string, unknown>) => string): ToolDefinition {
-  const inputSchema = z.toJSONSchema(schema, { io: 'input', unrepresentable: 'any' }) as JsonSchemaObject;
+  const inputSchema = nativeInputSchema(schema);
   // The shared door records and discards undeclared injection arguments. Native
   // query schemas remain authoritative for every declared parameter.
   return { name: `vector.${name}`, title: description, description, scope, readOnly: true,
