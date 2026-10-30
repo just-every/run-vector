@@ -9,6 +9,13 @@ export async function commentChecklistJourney(page, context, base, state, teamId
   const actorResponse = await context.request.get(base + '/auth/session');
   assert.equal(actorResponse.status(), 200);
   const actor = (await actorResponse.json()).operator;
+  const sessionResponse = await context.request.get(base + '/api/session');
+  assert.equal(sessionResponse.status(), 200);
+  const { operatorId } = await sessionResponse.json();
+  const metadataResponse = await context.request.get(base + '/api/metadata');
+  assert.equal(metadataResponse.status(), 200);
+  const productActor = (await metadataResponse.json()).operators.find(row => row.id === operatorId);
+  assert.ok(productActor, 'The current product member supplies the activity attribution name');
   const created = await context.request.post(base + '/api/issues', { headers: { Origin: base }, data: { title: 'synthetic-vector-2502', teamId } });
   assert.equal(created.status(), 201);
   const issue = await created.json(), path = `/api/issues/${issue.identifier}`, url = base + '/app/issues/' + issue.identifier;
@@ -67,8 +74,8 @@ export async function commentChecklistJourney(page, context, base, state, teamId
     assert.equal(changed.version, issue.version);
     const edits = changed.activity.filter(row => row.kind === 'comment.edited' && row.nextValue.id === comment.id);
     assert.deepEqual(edits.map(row => ({ actor: row.actor, revision: row.nextValue.revision, task: row.nextValue.checklist })), [
-      { actor: actor.displayName, revision: 1, task: { index: 0, text: 'Review draft', checked: true } },
-      { actor: actor.displayName, revision: 2, task: { index: 1, text: 'Publish notes', checked: true } },
+      { actor: productActor.name, revision: 1, task: { index: 0, text: 'Review draft', checked: true } },
+      { actor: productActor.name, revision: 2, task: { index: 1, text: 'Publish notes', checked: true } },
     ]);
     assert.equal(readLocalD1(state, `SELECT count(*) n FROM audit_records WHERE subject_id='${comment.id}' AND action='comment.edited'`)[0].n, 2);
     // One assertion width; both release widths get a screen of the changed state.

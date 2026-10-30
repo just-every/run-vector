@@ -6873,7 +6873,7 @@
       "executable": false
     },
     "tests/e2e/comment-checklist-journey.mjs": {
-      "sha256": "1121b2bc3afe8e952d4fd122edded9b84644ca58c9a711796c07f0a04bd6935c",
+      "sha256": "8d36210c129ac7ca11e44b6dd562491ffae7ba4ac8015aab3d7b10aa4eea9fea",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
