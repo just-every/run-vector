@@ -8,6 +8,11 @@ export default async function ({request,origin,cookie,tool}) {
   const record=created.result?.structuredContent;
   const link=created.result?.content?.find(item=>item.type==='resource_link');
   if(created.result?.isError||!record?.id||link?.uri!==`vector://issue/${record.id}`||link?.name!==record.identifier)throw new Error('Native issue write did not return its named resource link');
+  const commented=await tool('vector.issue.comment',{
+    identifier:record.identifier,body:'synthetic-vector-3306',idempotency_key:crypto.randomUUID(),
+  });
+  const commentLink=commented.result?.content?.find(item=>item.uri===`vector://comment/${commented.result?.structuredContent?.commentId}`);
+  if(commented.result?.isError||commentLink?.type!=='resource_link'||commentLink?.name!==`${record.identifier} comment`)throw new Error('Native comment write did not return its named resource link');
   const response=await request(new URL('/api/data/erasure/preview',origin).href,{
     method:'POST',headers:{Origin:origin,Cookie:cookie,'Content-Type':'application/json'},
     body:JSON.stringify({email:'retained-import-person@example.invalid'}),

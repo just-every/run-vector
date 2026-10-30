@@ -74,7 +74,7 @@ export async function privateVisibilityJourney(w:Workspace) {
  const bucket=insights.rows[0].key;
  expect(await(await member.call('/insights.csv'+query+'&bucket='+encodeURIComponent(bucket))).text()).toContain(issue.identifier);
  await door.visible(uri,issue.identifier);
- const writtenUri=await door.write(team.id);
+ const writtenUris=await door.write(team.id);
  // Capability feeds never carry private-team items, even for their permitted creator.
  const feed=await json(await member.call('/calendar/feeds','POST',{teamId:null}),201);
  expect(await(await request(new URL(feed.url).pathname)).text()).not.toContain(issue.identifier);
@@ -85,7 +85,7 @@ export async function privateVisibilityJourney(w:Workspace) {
  for(const path of ['/issues?scope=created','/issues?scope=subscribed','/my-work/activity'])expect(JSON.stringify(await json(await member.call(path)))).toContain(path.includes('created')?mine.identifier:issue.identifier);
  expect((await owner.call(`/settings/teams/${team.id}/members/${member.id}`,'DELETE')).status).toBe(200);
  await door.hidden(uri,issue.title);
- await door.hidden(writtenUri,'synthetic-vector-3302');
+ for(const writtenUri of writtenUris)await door.hidden(writtenUri,'synthetic-vector-330');
  for(const path of ['/issues?scope=created','/issues?scope=subscribed','/my-work/activity']){const body=JSON.stringify(await json(await member.call(path)));expect(body).not.toContain(issue.identifier);expect(body).not.toContain(mine.identifier);}
  await hidden();
  // Existing definitions immediately re-evaluate when privacy changes, without data edits.

@@ -41,3 +41,4 @@ export async function nativeResult<T>(run:()=>Promise<T>):Promise<T> {
 }
 export const standard = () => [{class:'standard' as const,facts:{measure:1}}];
 export const issueUri = (id:string) => `vector://issue/${id}`;
+export const commentUri = (id:string) => `vector://comment/${id}`;
