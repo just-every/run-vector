@@ -92,6 +92,10 @@ try {
   await native.scheduledReminders();
   if (process.argv.includes('--bootstrap-only')) {
     console.log('Native bootstrap and scheduled reminder fixture completed.');
+  } else if (process.argv.includes('--consent-only')) {
+    const probe = await consentProbe({ request, origin, surface, signer, person: { email, cookie, sub }, db, invoke: (...args) => native.invoke(...args) });
+    console.log('Native embedded consent probe: ' + JSON.stringify(probe));
+    if (!probe.ok) process.exitCode = 1;
   } else if (process.argv.includes('--screens')) {
     const { browserJourney } = await import('./browser-journey.mjs');
     await browserJourney({ request, origin, surface, signer, person: { email, cookie, sub }, db });

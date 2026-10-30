@@ -55,7 +55,10 @@ export function nativeMutation(env: WorkerBindings, spec: NativeMutation): ToolD
     clauses: spec.clauses, readOnly: false, untrusted: true,
     inputSchema: nativeInputSchema(spec.schema),
     outputSchema: { type: 'object', additionalProperties: true }, classes: spec.classes ?? ['standard'],
-    target: (args, ctx) => mutationTarget(env, spec, parse(args), ctx),
+    async target(args, ctx) {
+      try { return await mutationTarget(env, spec, parse(args), ctx); }
+      catch (error) { return refusal(error, spec.name); }
+    },
     async classify(args, ctx) {
       try {
         const input = parse(args); await admitted(env, spec, input, ctx);
