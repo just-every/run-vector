@@ -195,7 +195,6 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     // The native session and authority transaction fences remain below.
     const archiveDoor = context.req.path.startsWith('/api/portability/') || context.req.path.startsWith('/api/data/erasure');
     const issueErasure = context.req.method === 'DELETE' && /^\/api\/issues\/[^/]+$/.test(context.req.path);
-    const importDoor = context.req.path.startsWith('/api/data/');
     context.env = { ...context.env, DB: archiveDoor || issueErasure ? context.env.DB : visibilityDatabase(context.env.DB, operator.id) };
     if (!["GET", "HEAD"].includes(context.req.method)) {
       // Context owns this bindings object; never change the shared Worker env.
@@ -203,7 +202,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       configureUndoSession(context.env.DB, operator.fence.sessionId);
     }
     configureNotifications(context.env.DB,context.env);
-    const personActivity = archiveDoor || importDoor || ["GET", "HEAD"].includes(context.req.method) ? null : await personActivityPosition(nativeBindings.DB);
+    const personActivity = archiveDoor || ["GET", "HEAD"].includes(context.req.method) ? null : await personActivityPosition(nativeBindings.DB);
     let pendingDrain: Promise<boolean> | undefined;
     const drain = () => pendingDrain ??= (async () => {
       const drained = await needsNotificationDrain(context.env.DB);
@@ -246,7 +245,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
       }
     }
     const undo = committedUndoReceipt(context.env.DB);
-    if (!archiveDoor && !importDoor && !["GET", "HEAD"].includes(context.req.method) && context.res.ok)
+    if (!archiveDoor && !["GET", "HEAD"].includes(context.req.method) && context.res.ok)
       await mirrorPersonActivity(nativeBindings, operator, directMessageEventIds(context.env.DB), context.req.raw, personActivity);
     if (undo && context.res.status >= 200 && context.res.status < 300)
       context.header('x-vector-undo', JSON.stringify(undo));
