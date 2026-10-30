@@ -1,3 +1,4 @@
+import { undoPrivateParentJourney } from './core-undo-parent-member.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -6,7 +7,7 @@ import { beforePrivateNavigation, settleReads } from './collaboration-navigation
 import { verificationDirectory } from '../../scripts/verification-paths.mjs';
 const require = createRequire(import.meta.url);
 
-export async function undoParentJourney(page, context, base, record) {
+export async function undoParentJourney(page, context, base, record, runtime) {
   const viewport = page.viewportSize();
   await page.setViewportSize({ width: 1440, height: 1000 });
   const api = (path, method = 'GET', data) => withOperatorClient(context, async client => {
@@ -94,10 +95,23 @@ export async function undoParentJourney(page, context, base, record) {
   await reverse(receipt, parent.identifier, 'Control+z');
   assert.deepEqual((await children(parent.identifier)).children.map(row => row.identifier), [child.identifier, sibling.identifier]);
   assert.equal((await children(other.identifier)).total, 0);
+  const rule = await api('/teams/' + team.id + '/subissue-rule');
+  await api('/teams/' + team.id + '/subissue-rule', 'PATCH', { expectedVersion: rule.version, enabled: true });
+  const status = options.statuses.find(row => row.teamId === team.id && row.category === 'completed');
+  await api('/issues/' + parent.identifier, 'PATCH', { expectedVersion: (await read(parent.identifier)).version, statusId: status.id });
+  const beforeParent = await read(parent.identifier);
+  assert(beforeParent.completedAt);
   receipt = await save(null);
+  const clearedParent = await read(parent.identifier);
+  assert.equal(clearedParent.status.category, 'unstarted'); assert.equal(clearedParent.completedAt, null);
   await reverse(receipt, parent.identifier, 'Meta+z');
   assert.deepEqual((await children(parent.identifier)).children.map(row => row.identifier), [child.identifier, sibling.identifier]);
+  const restoredParent = await read(parent.identifier);
+  assert.deepEqual(restoredParent.status, beforeParent.status); assert.equal(restoredParent.completedAt, beforeParent.completedAt);
+  assert.equal(restoredParent.activity.filter(row => row.nextValue?.undoOf === receipt.actionId).length, 1);
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin, 'The explicit proof reload is the only document replacement');
   record('ISSUE-020', 'Native parent set, change and clear offer the current Undo control; the control and both keyboard shortcuts restore the previous relation and first sibling position with one attributed reversal. Editable text owns its Undo; parent and Undo controls are inspected at 1440 and 390.');
+  record('ISSUE-020', 'After manual completion with two unfinished children, clear reopens the parent and Undo restores its exact previous status and completedAt.');
+  await undoPrivateParentJourney(page, context, base, record, runtime, api);
   await page.setViewportSize(viewport);
 }

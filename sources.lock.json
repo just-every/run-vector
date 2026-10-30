@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "463871cf995ef024a65975f126dd48ed2fbb3a9a6e816119741f19ab527aeec6",
+      "sha256": "f1c90fba01d40428a17900f62fd5317f2d71c9fb6ba4bac2cb02ceb143ed02ae",
       "executable": false
     },
     "DEMO.md": {
@@ -5081,7 +5081,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/capture.ts": {
-      "sha256": "21227b607f0cea316b5f69f057c28a49b53f2931e0456a3d75bac4d8898e5db1",
+      "sha256": "4878f229c31de97a6d5767d5416fa8f94f9a09a550ccde6fec6178db445fe17a",
       "executable": false
     },
     "src/core/features/issue-undo/context.ts": {
@@ -5093,7 +5093,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/parent-state.ts": {
-      "sha256": "bd84134da4471ce27325de69fa924106e4dee48b9da177680ab288aca862e43b",
+      "sha256": "1c486a6f42e5ec31b0f66bfad288a240bf1198ddb00ada019965ff9bbd307027",
       "executable": false
     },
     "src/core/features/issue-undo/public-activity.ts": {
@@ -5101,7 +5101,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/reversal.ts": {
-      "sha256": "c06215ef731458cc85640b223027ba4dfd5241b97d647398b1fa9f5dd9e7b787",
+      "sha256": "d2ccfb9413ac51103f2c861dad4cdcbf23b32d148ed0692b83a502b91f05eb73",
       "executable": false
     },
     "src/core/features/issue-undo/routes.ts": {
@@ -5109,7 +5109,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/schema.ts": {
-      "sha256": "ba8bdd398230c3454ccb00b0c8a84d5c8fd0ea056844bb728d7e3545749460d2",
+      "sha256": "83edbd40d1f424fdba83d00a427f0b467e715d46eebb072cb0e8d7a0f6d6eb4f",
       "executable": false
     },
     "src/core/features/issue-undo/service.ts": {
@@ -5117,7 +5117,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/snapshot.ts": {
-      "sha256": "f6dc8feb7705f25e66ffff77e8ca7a4afa71f8aa975a05594f292ba7968bd904",
+      "sha256": "72b1a0170205538a15754afd4ec546c961f63398e8849706d0507ab7dbff238b",
       "executable": false
     },
     "src/core/features/issue-undo/ui/notice.css": {
@@ -6965,7 +6965,7 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "e6c26e6ffcc7866947b7e494028b8e1c88ce5c2f40dd0131a0475a20d67c177f",
+      "sha256": "e4e54a756f6c68fedf9812fe7de7a1be74f5519ae1a506c6035cbf4bf5d02c18",
       "executable": false
     },
     "tests/e2e/core-manual-order-journey.mjs": {
@@ -7045,11 +7045,15 @@
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
-      "sha256": "991c89b519a3aa143c2ce83c9d8dd6cf6ec10ea6b40686d23cb7ae98e46a8d87",
+      "sha256": "ffa22bf0195b56c9fedea2e370b16a49ce0caf09822115003248dbf27e474268",
+      "executable": false
+    },
+    "tests/e2e/core-undo-parent-member.mjs": {
+      "sha256": "a0257cb4bceab523a3041705cc7c16849aae56ab7b23b7f6ef411850d67ff46e",
       "executable": false
     },
     "tests/e2e/core-undo-parent.mjs": {
-      "sha256": "bc77c3ac1f58eca5ddee46fee3b512373372f974f20012ffdd4a520d3ad7868f",
+      "sha256": "640296325fd3cd99d44fce5aa6622dcf38a788723c53533f532d7012c371a6e4",
       "executable": false
     },
     "tests/e2e/core-undo-properties.mjs": {
@@ -8048,8 +8052,12 @@
       "sha256": "171f4930c72e6ce0b8b0bcaa44da94eba550030df3df4ab045a8167e594b25ec",
       "executable": false
     },
+    "tests/worker/parent-undo-blockers.ts": {
+      "sha256": "8561e7b0753dc68f34bad4135892495b3c820c89b395cb0c6b8f4a9d6c3901af",
+      "executable": false
+    },
     "tests/worker/parent-undo-scenario.ts": {
-      "sha256": "2787dafbc255871d5b1983c0ceb7dd812e29dfdc1444a491892dd7255ce0e355",
+      "sha256": "4eccc9f0d4f79661ce285ae0a92702e7008ce617141f337279158d30c0cad8d2",
       "executable": false
     },
     "tests/worker/personal-time.test.ts": {

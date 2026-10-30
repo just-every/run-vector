@@ -1,3 +1,4 @@
+import { parentUndoBlockers } from './parent-undo-blockers';
 import { env } from 'cloudflare:workers';
 import { expect } from 'vitest';
 import type { collaborationFixture } from './collaboration-fixture';
@@ -18,6 +19,7 @@ const storage = () => snapshot(['issues', 'issue_parents', 'issue_activity', 'au
 
 /** One mounted native journey, with actual ordered relations and progress rules. */
 export async function parentUndoScenario(f: Fixture) {
+  await parentUndoBlockers(f);
   await resetLimits();
   const team = f.initial.teams[0], read = (id: string) => f.data(f.cookie, '/issues/' + id);
   const progress = (id: string) => f.data(f.cookie, '/issues/' + id + '/subissues');
@@ -43,6 +45,8 @@ export async function parentUndoScenario(f: Fixture) {
     expect(receipt.identifiers).toEqual([child.identifier]);
     expect(receipt.expiresAt - Date.now()).toBeGreaterThan(0);
     expect(receipt.expiresAt - Date.now()).toBeLessThanOrEqual(10_000);
+    // Previously stored parent commands used an object without visibleIds.
+    if (destination) await env.DB.prepare("UPDATE issue_activity SET next_value_json=json_set(next_value_json,'$.undo.parents',json_remove(json_extract(next_value_json,'$.undo.parents.retained'),'$.visibleIds')) WHERE id=?").bind(receipt.actionId).run();
     await body(await undo(receipt.actionId));
     expect(await edge()).toEqual(original);
     expect((await read(child.identifier)).parent.identifier).toBe(parent.identifier);

@@ -61,8 +61,16 @@ export async function commitUndoable(db: D1Database, actor: string, capture: Cap
   const guard = db.prepare(`SELECT CASE WHEN admitted THEN 1 ELSE json('undo capture changed') END FROM (${admissionSql(capture)})`)
     .bind(...admissionValues(actor, capture));
   const parentIds = parentIdsSql(capture.parents?.ids ?? []);
-  const parents = capture.parents ? `json_object('ids',json(${parentIds}),'before',json(?),
-    'after',json(${parentSnapshotSql(parentIds)}),'graph',substr(${parentGraphSql(parentIds)},1),'rules',substr(${parentRulesSql(parentIds)},1))` : "NULL";
+  // Readable parent subjects still feed the native role/team admission. Keep
+  // the complete automation preimage opaque to scoped history filtering.
+  // publicActivityValue strips the entire undo member from every projection.
+  const retained = capture.parents ? `substr(json_object('ids',json(${parentIds}),
+    'visibleIds',json(${parentIdsSql(capture.parents.visibleIds)}),'before',json(?),
+    'after',json(${parentSnapshotSql(parentIds)}),'graph',substr(${parentGraphSql(parentIds)},1),'rules',substr(${parentRulesSql(parentIds)},1)),1)` : "NULL";
+  const visibleIds = parentIdsSql(capture.parents?.visibleIds ?? []);
+  const parents = capture.parents ? `json_object('ids',json(${visibleIds}),
+    'before',json((SELECT json_group_array(json(value)) FROM json_each(?) WHERE json_extract(value,'$.id') IN(SELECT value FROM json_each(${visibleIds})))),
+    'after',json(${parentSnapshotSql(visibleIds)}),'retained',${retained})` : "NULL";
   const metadata = db.prepare(`WITH ${memberCte}, pre AS (SELECT value body FROM json_each(?)),
       post AS (SELECT value body FROM json_each(${snapshot}))
     UPDATE issue_activity SET next_value_json=json_set(COALESCE(next_value_json,'{}'),'$.undo',json_object(
@@ -74,7 +82,7 @@ export async function commitUndoable(db: D1Database, actor: string, capture: Cap
       WHERE json_remove(pre.body,'$.version','$.canonicalCreatedAt')<>json_remove(post.body,'$.version','$.canonicalCreatedAt'))`)
     .bind(capture.ids, capture.before, capture.actionId, capture.workspaceId, capture.sessionHash, capture.kind,
       JSON.stringify(capture.fields), capture.before, JSON.stringify(postVersions),
-      ...(capture.parents ? [JSON.stringify(capture.parents.before)] : []), capture.actionId, actor);
+      ...(capture.parents ? [JSON.stringify(capture.parents.before), JSON.stringify(capture.parents.before)] : []), capture.actionId, actor);
   const postGuard = db.prepare(`WITH ${memberCte}, pre AS (SELECT value body FROM json_each(?))
     SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM issue_activity WHERE id=?) OR NOT EXISTS(
       SELECT 1 FROM pre WHERE NOT EXISTS(SELECT 1 FROM issues i WHERE i.id=json_extract(pre.body,'$.id')
@@ -109,7 +117,8 @@ function admissionSql(capture: Capture) {
     AND ${issueSnapshotSql(capture.fields)}=?
     AND ${capture.kind === "duplicate" ? duplicateGraphSql : "'[]'"}=?
     ${capture.parents ? `AND ${parentSnapshotSql(parentIdsSql(capture.parents.ids))}=?
-      AND ${parentGraphSql(parentIdsSql(capture.parents.ids))}=? AND ${parentRulesSql(parentIdsSql(capture.parents.ids))}=?` : ""}
+      AND ${parentGraphSql(parentIdsSql(capture.parents.ids))}=? AND ${parentRulesSql(parentIdsSql(capture.parents.ids))}=?
+      AND (SELECT count(*) FROM issues WHERE id IN(SELECT value FROM json_each(${parentIdsSql(capture.parents.visibleIds)})))=${capture.parents.visibleIds.length}` : ""}
     AND NOT EXISTS(SELECT 1 FROM issues i WHERE (i.id IN(SELECT id FROM undo_sources) ${incoming}) AND i.id NOT IN(SELECT id FROM undo_members))
     AND NOT EXISTS(SELECT 1 FROM undo_members m WHERE m.id NOT IN(SELECT id FROM undo_sources)
       ${capture.cascade ? "AND NOT EXISTS(SELECT 1 FROM issue_duplicates d WHERE d.issue_id=m.id AND d.canonical_issue_id IN(SELECT id FROM undo_sources))" : ""}) admitted`;

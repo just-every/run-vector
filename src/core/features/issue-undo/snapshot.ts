@@ -39,11 +39,11 @@ const expressions: Record<SnapshotField, string> = {
 };
 
 /** Caller supplies a CTE undo_members(id); all dynamic fields are enum validated. */
-export function issueSnapshotSql(fields: readonly SnapshotField[]) {
+export function issueSnapshotSql(fields: readonly SnapshotField[], physical = false) {
   const pairs = fields.map((field) => `'${field}',${expressions[field]}`).join(",");
   return `(SELECT json_group_array(json(snapshot)) FROM (
-    SELECT json_object(${pairs}) snapshot FROM issues i
-    JOIN workflow_statuses s ON s.id=i.status_id AND s.team_id=i.team_id
+    SELECT json_object(${pairs}) snapshot FROM ${physical ? "main." : ""}issues i
+    JOIN ${physical ? "main." : ""}workflow_statuses s ON s.id=i.status_id AND s.team_id=i.team_id
     WHERE i.id IN(SELECT id FROM undo_members) ORDER BY i.id))`;
 }
 export const duplicateGraphSql = `(SELECT json_group_array(json(edge)) FROM (

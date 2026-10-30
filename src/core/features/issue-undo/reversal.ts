@@ -1,4 +1,3 @@
-import { reconcileParentChanges } from "../subissues/reconcile";
 import { issueReferenceStatements } from "../issue-references/repository";
 import { activityRow } from "../issues/repository";
 import { assignmentStatements, blockerStatements, followerChangeStatements, finalizeEvent, mentionStatements } from "../notifications/events";
@@ -58,7 +57,6 @@ export function planUndoReversal(db: D1Database, actor: string, action: UndoActi
       .bind(...fields.map((key) => columnValue(original, key)), at, original.id));
     if (fields.includes("description")) finalize.push(...issueReferenceStatements(db, event, original.description ?? ""));
     finalize.push(...finalizeEvent(db, event));
-    if (action.kind === "parent") finalize.push(reconcileParentChanges(db, activity.id));
   }
   const relations: D1PreparedStatement[] = [];
   if (action.kind === "duplicate") {
@@ -73,19 +71,39 @@ export function planUndoReversal(db: D1Database, actor: string, action: UndoActi
     relations.push(db.prepare("DELETE FROM issue_parents WHERE issue_id=?").bind(original.id));
     if (original.parentId) relations.push(db.prepare("INSERT INTO issue_parents(issue_id,parent_issue_id,created_at,position) VALUES(?,?,?,?)")
       .bind(original.id, original.parentId, original.parentCreatedAt, original.parentPosition));
-    // Restore only progress fields this action changed. The admission fence
-    // checked every affected parent and ancestor before any reversal writes.
+    // Restore deepest parents first, then their ancestors. A status restore can
+    // itself trigger progress automation, including on an ancestor whose saved
+    // before/after values were equal. Inspect its live state inside the batch.
+    // Do not reconcile again afterward: a saved manual status is authoritative.
     for (const id of action.parents.ids) {
       const before = action.parents.before.find(row => row.id === id)!;
-      const after = action.parents.after.find(row => row.id === id)!;
-      if (["statusId", "cycleId", "completedAt", "canceledAt", "deferredUntil", "deferralOrigin"].some(key => !same(before[key as keyof IssueSnapshot], after[key as keyof IssueSnapshot]))) {
-        const plan = planUndoReversal(db, actor, { ...action, kind: "property", parents: null, before: [before], after: [after] });
-        updates.push(...plan.writes);
-      }
+      updates.push(...restoreParentProgress(db, actor, action.actionId, before, at));
     }
   }
   return { writes: [...capture, ...relations, ...updates, ...finalize],
     result: { issues: action.after.map((row) => ({ identifier: row.identifier, version: row.version + 1 })), changed: action.after.length } };
+}
+function restoreParentProgress(db: D1Database, actor: string, actionId: string, before: IssueSnapshot, at: string) {
+  const fields = ["statusId", "cycleId", "completedAt", "canceledAt", "deferredUntil"] as const;
+  const origin = "(SELECT decision_id FROM issue_deferral_origins WHERE issue_id=i.id)";
+  const previous = `json_object(${fields.map(key => `'${key}',i.${issueColumns[key]}`).join(",")},'deferralOrigin',${origin})`;
+  const next = { ...Object.fromEntries(fields.map(key => [key, before[key]])), deferralOrigin: before.deferralOrigin, undoOf: actionId };
+  const activity = activityRow({ issueId: before.id, actorOperatorId: actor, kind: "issue.updated", previousValue: {}, nextValue: next, now: at });
+  const event = { id: activity.id, issueId: before.id, actor, at };
+  const recorded = "EXISTS(SELECT 1 FROM main.issue_activity WHERE id=?)";
+  return [
+    db.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
+      SELECT ?,i.id,?,'issue.updated',${previous},?,?,? FROM main.issues i WHERE i.id=? AND (
+        ${fields.map(key => `i.${issueColumns[key]} IS NOT ?`).join(" OR ")} OR ${origin} IS NOT ?)`)
+      .bind(activity.id, actor, activity.nextValueJson, at, at, before.id, ...fields.map(key => before[key]), before.deferralOrigin ?? null),
+    ...blockerStatements(db, event), ...followerChangeStatements(db, event),
+    db.prepare(`DELETE FROM issue_deferral_origins WHERE issue_id=? AND ${recorded}`).bind(before.id, activity.id),
+    ...(before.deferralOrigin ? [db.prepare(`INSERT INTO issue_deferral_origins(issue_id,decision_id) SELECT ?,? WHERE ${recorded}`)
+      .bind(before.id, before.deferralOrigin, activity.id)] : []),
+    db.prepare(`UPDATE issues SET ${fields.map(key => issueColumns[key] + "=?").join(",")},version=version+1,updated_at=? WHERE id=? AND ${recorded}`)
+      .bind(...fields.map(key => before[key]), at, before.id, activity.id),
+    ...finalizeEvent(db, event),
+  ];
 }
 function columnValue(row: IssueSnapshot, key: Column) {
   return key === "customFields" ? JSON.stringify(row[key]) : row[key] as string | number | null;

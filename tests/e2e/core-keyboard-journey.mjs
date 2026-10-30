@@ -54,7 +54,7 @@ export async function keyboardJourney(page, context, base, record, independent =
   await independent(() => crossTeamViewJourney({ page, context, base, record, ...runtime }));
   await independent(() => issueEditingJourney(page, context, base, record));
   await independent(() => streamPlanningJourney(page, context, base, record));
-  await undoJourney(page, context, base, record, independent);
+  await undoJourney(page, context, base, record, independent, runtime);
 }
 
 // One native journey covers list focus, keyboard bulk editing, and an atomic

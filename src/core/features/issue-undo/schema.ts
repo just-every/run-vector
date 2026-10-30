@@ -16,14 +16,18 @@ export const issueSnapshotSchema = z.object({
 });
 export type IssueSnapshot = z.output<typeof issueSnapshotSchema>;
 export const fieldSchema = z.enum(snapshotFields);
+const parentStateSchema = z.object({ ids: z.array(z.string()), visibleIds: z.array(z.string()).optional(),
+  before: z.array(issueSnapshotSchema), after: z.array(issueSnapshotSchema), graph: z.string(), rules: z.string() });
 export const undoActionSchema = z.object({
   actionId: z.string(), workspaceId: z.string(), sessionHash: z.string(),
   kind: z.enum(["property", "team", "duplicate", "parent"]), expiresAt: z.string().datetime(),
   fields: z.array(fieldSchema).min(identityFields.length),
   before: z.array(issueSnapshotSchema).min(1), after: z.array(issueSnapshotSchema).min(1),
   postVersions: z.array(z.object({ identifier: z.string(), version: z.number().int().positive() })).default([]),
-  parents: z.object({ ids: z.array(z.string()), before: z.array(issueSnapshotSchema), after: z.array(issueSnapshotSchema),
-    graph: z.string(), rules: z.string() }).nullish(),
+  parents: z.preprocess(value => {
+    if (!value || typeof value !== "object" || !("retained" in value)) return value;
+    try { return JSON.parse(String(value.retained)); } catch { return null; }
+  }, parentStateSchema).nullish(),
   graph: z.array(z.object({ issueId: z.string(), canonicalId: z.string(), createdAt: z.string() })),
 }).superRefine((action, context) => {
   if ((action.kind === "parent" && (!action.parents || action.parents.ids.length !== action.parents.before.length || action.parents.ids.length !== action.parents.after.length)) || new Set(action.fields).size !== action.fields.length || identityFields.some((field) => !action.fields.includes(field)) ||
