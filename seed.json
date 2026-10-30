@@ -362,7 +362,16 @@
       "/auth/oidc/auth/logout",
       "/.well-known/rer-dependencies",
       "/.well-known/rer-link/",
-      "/api/integrations/errors/"
+      "/api/integrations/errors/",
+      "/mcp",
+      "/agents",
+      "/agents/",
+      "/.well-known/oauth-protected-resource",
+      "/.well-known/oauth-protected-resource/mcp",
+      "/api/rer/agent-policy",
+      "/api/rer/business-settings",
+      "/rer-business-logo",
+      "/rer-business.css"
     ]
   },
   "customFields": [

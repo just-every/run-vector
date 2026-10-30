@@ -23,6 +23,8 @@ import type { AppEnvironment } from "./bindings";
 import { lobbyResponse } from '../../base/lobby';
 import { claimedWhen, setupStateResponse } from '../../base/setup-state';
 import { identity } from './identity';
+import { vectorAgentDoor } from '../features/agent-door/index.server';
+import { vectorBusiness } from '../features/agent-door/business';
 
 const claimed = claimedWhen('SELECT 1 FROM oa_bootstrap WHERE singleton = 1');
 
@@ -48,6 +50,17 @@ export function createServerApp() {
         { error: "configuration_missing", message: "APP_ORIGIN is required." },
         503,
       );
+    const path = context.req.path;
+    if (['/api/rer/business-settings', '/rer-business-logo', '/rer-business.css'].includes(path)) {
+      const response = await vectorBusiness(context.env).handle(context.req.raw);
+      if (response) return response;
+    }
+    if (path === '/mcp' || path === '/agents' || path.startsWith('/agents/') ||
+      path === '/api/rer/agent-policy' || path === '/.well-known/oauth-protected-resource' ||
+      path === '/.well-known/oauth-protected-resource/mcp') {
+      const response = await vectorAgentDoor(context.env).handle(context.req.raw);
+      if (response) return response;
+    }
     const lobbyBindings = { DB: context.env.DB, AUTH_ORIGIN: context.env.APP_ORIGIN };
     const state = await setupStateResponse(context.req.raw, lobbyBindings, claimed);
     if (state) return state;
@@ -57,7 +70,7 @@ export function createServerApp() {
       // the first request initializes their owner. Signed claims stay explicit.
       try { isClaimed = await claimed(context.env.DB) || Boolean(context.env.FIRST_OWNER_EMAIL && !context.env.SETUP_TOKEN && !signedOwnerClaimConfigured(context.env)); }
       catch { return context.json({ error: 'setup_unavailable' }, 503, { 'Cache-Control': 'no-store' }); }
-      const workspaceName = context.env.WORKSPACE_NAME?.trim();
+      const workspaceName = await vectorBusiness(context.env).resolve('display_name', context.env.WORKSPACE_NAME?.trim()) as string | undefined;
       if (isClaimed && !workspaceName) return context.json({ error: 'configuration_missing', message: 'WORKSPACE_NAME is required.' }, 503, { 'Cache-Control': 'no-store' });
       // Use one admission snapshot for both the state and installation name.
       const lobby = await lobbyResponse(context.req.raw, lobbyBindings, { ...identity, deployment: workspaceName || identity.product }, async () => isClaimed);

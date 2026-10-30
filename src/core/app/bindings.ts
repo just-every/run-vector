@@ -15,6 +15,7 @@ export type WorkerBindings = Pick<VectorBindings, 'DB' | 'FILES' | 'APP_ORIGIN'>
   RER_OWNER_CLAIM_INSTALLATION_ID?: string
   RER_OWNER_CLAIM_APP_ORIGIN?: string
   RER_OWNER_CLAIM_PUBLIC_KEYS?: string
+  RER_BUSINESS_TRUST?: string
   SESSION_SECRET?: string
   NOTIFICATION_EMAIL_ENABLED?: string
   MAIL_PROVIDER?: string

@@ -1,0 +1,248 @@
+{
+  "schema": "rer-agent-surface/1",
+  "seed": "vector",
+  "specialist": "software delivery",
+  "tools": [
+    {
+      "name": "vector.issues.list",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "OPS-001",
+        "VIEW-001"
+      ]
+    },
+    {
+      "name": "vector.issues.read",
+      "scope": "issues:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "OPS-001",
+        "ISSUE-001"
+      ]
+    },
+    {
+      "name": "vector.projects.list",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "PROJ-001"
+      ]
+    },
+    {
+      "name": "vector.projects.read",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "PROJ-001"
+      ]
+    },
+    {
+      "name": "vector.metadata.read",
+      "scope": "metadata:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "OPS-001"
+      ]
+    },
+    {
+      "name": "vector.cycles.read",
+      "scope": "cycles:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "AGENT-005",
+        "CYCLE-001"
+      ]
+    },
+    {
+      "name": "vector.events.list",
+      "scope": "events:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "BASE-AGENT-010"
+      ]
+    }
+  ],
+  "resources": [
+    "vector://issues/{identifier}",
+    "vector://projects/{id}",
+    "vector://cycles/{id}",
+    "vector://workspace/planning"
+  ],
+  "notTools": [
+    {
+      "clauses": [
+        "DATA-007",
+        "DATA-001",
+        "DATA-005"
+      ],
+      "reason": "import-door"
+    },
+    {
+      "clauses": [
+        "SETUP-001"
+      ],
+      "reason": "installation"
+    },
+    {
+      "clauses": [
+        "ROLE-010"
+      ],
+      "reason": "screen"
+    }
+  ],
+  "verification": {
+    "owner": {
+      "initializer": "tests/agent-door/initialize-owner.mjs"
+    }
+  },
+  "journey": [
+    {
+      "id": "options",
+      "tool": "vector.metadata.read",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issues",
+      "tool": "vector.issues.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "issue",
+      "tool": "vector.issues.read",
+      "args": {
+        "identifier": {
+          "$from": "issues",
+          "pointer": "/issues/0/identifier"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ],
+      "inject": {
+        "confirm": true,
+        "classes": [
+          "standard"
+        ],
+        "approved": true
+      }
+    },
+    {
+      "id": "projects",
+      "tool": "vector.projects.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "project",
+      "tool": "vector.projects.read",
+      "args": {
+        "id": {
+          "$from": "projects",
+          "pointer": "/projects/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "cycle",
+      "tool": "vector.cycles.read",
+      "args": {
+        "id": {
+          "$from": "options",
+          "pointer": "/cycles/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "tool": "vector.events.list",
+      "args": {},
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    }
+  ],
+  "witness": {
+    "tool": "vector.metadata.read",
+    "args": {}
+  },
+  "escalations": [],
+  "spend": {
+    "none": true
+  }
+}
