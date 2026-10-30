@@ -1,4 +1,4 @@
-import { appendFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
 /** Only the built Worker's outbound edge; the application has no fixture seam. */
 export async function videoProviderEdge(request) {
   const url = new URL(request.url);
@@ -26,8 +26,12 @@ export async function videoProviderEdge(request) {
       url: url.href,
     }) + "\n",
   );
-  if (video.searchParams.get("v") === "synthetic02")
-    return new Response(null, { status: 503 });
+  if (video.searchParams.get("v") === "synthetic02") {
+    const attempts = readFileSync(process.env.VECTOR_CHANNEL_EDGE, "utf8")
+      .trim().split("\n").map((line) => JSON.parse(line))
+      .filter((row) => row.method === "video.oembed" && row.url === url.href);
+    if (attempts.length === 1) return new Response(null, { status: 503 });
+  }
   if (video.searchParams.get("v") === "synthetic03")
     return new Response(null, {
       status: 302,

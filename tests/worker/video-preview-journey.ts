@@ -299,10 +299,14 @@ export async function exerciseVideoPreviews() {
     );
     const attached = await attach(loom, comment.id);
     await json(await load(attached.id, owner));
-    assert.equal(
-      (await req(base + "/comments/" + comment.id, "DELETE")).status,
-      200,
-    );
+    during = async () => {
+      assert.equal(
+        (await req(base + "/comments/" + comment.id, "DELETE")).status,
+        200,
+      );
+    };
+    const removedComment = await json(await load(attached.id, owner), 404);
+    assert.equal(removedComment.preview, undefined);
     const erased = calls.length;
     await json(await load(attached.id, owner), 404);
     assert.equal(calls.length, erased);
@@ -314,6 +318,22 @@ export async function exerciseVideoPreviews() {
       ).url,
       null,
     );
+    const standalone = await attach(youtube);
+    await json(await load(standalone.id, owner));
+    during = async () => {
+      await json(await req(base + "/links/" + standalone.id, "DELETE"));
+    };
+    const removedLink = await json(await load(standalone.id, owner), 404);
+    assert.equal(removedLink.preview, undefined);
+    const withdrawn = calls.length;
+    await json(await load(standalone.id, owner), 404);
+    assert.equal(calls.length, withdrawn, "Deleted sources cannot be replayed");
+    const tombstone = await env.DB.prepare(
+      "SELECT name,url,deleted_at FROM issue_links WHERE id=?",
+    ).bind(standalone.id).first<any>();
+    assert.equal(tombstone.name, null);
+    assert.equal(tombstone.url, null);
+    assert.ok(tombstone.deleted_at);
   } finally {
     network.mockRestore();
   }

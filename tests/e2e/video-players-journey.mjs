@@ -188,6 +188,11 @@ export async function exerciseVideoPlayers({
       .getByRole("alert")
       .filter({ hasText: "The video provider could not load this player." })
       .waitFor();
+    const unavailable = region.getByRole("group", {
+      name: "YouTube video: Unavailable recording", exact: true,
+    });
+    assert.equal(await unavailable.locator("iframe").count(), 0);
+    assert.equal((await calls()).length, before + 3, "Failure is not retried automatically");
     await load("YouTube", "Redirected recording", 3, 502);
     assert.equal(
       (await calls()).length,
@@ -218,6 +223,14 @@ export async function exerciseVideoPlayers({
       "docs-video-provider-failure",
     );
     await page.setViewportSize({ width: 1440, height: 1000 });
+    await load("YouTube", "Unavailable recording", 2);
+    const recovered = unavailable.locator("iframe");
+    await recovered.waitFor();
+    assert.equal(await recovered.getAttribute("src"), "https://www.youtube-nocookie.com/embed/synthetic02");
+    assert.equal(await unavailable.getByRole("alert").count(), 0, "Explicit retry clears the provider failure");
+    await recovered.contentFrame().getByRole("button", { name: "Play video", exact: true }).click();
+    await recovered.contentFrame().getByRole("button", { name: "Playing", exact: true }).waitFor();
+    assert.equal((await calls()).length, before + 5, "Only the requested video is retried");
     await region
       .getByRole("button", {
         name: "Unload Loom player for Loom walkthrough",
@@ -237,7 +250,7 @@ export async function exerciseVideoPlayers({
       0,
       "Reload requires renewed explicit load",
     );
-    assert.equal((await calls()).length, before + 4);
+    assert.equal((await calls()).length, before + 5);
     const rejected = await runtime.req(
       "/api" + path + "/links/" + links[0].id + "/preview",
       {
@@ -248,7 +261,7 @@ export async function exerciseVideoPlayers({
     await rejected.body.cancel();
     assert.equal(
       (await calls()).length,
-      before + 4,
+      before + 5,
       "Signed-out requests make no provider call",
     );
     const email = ["synthetic-vector-11510", "example.test"].join("@");

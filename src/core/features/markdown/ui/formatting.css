@@ -1,4 +1,5 @@
 .safe-markdown { overflow-wrap: anywhere; min-width: 0; }
+.safe-markdown p > a:only-child { display: inline-block; min-width: 24px; min-height: 24px; }
 .safe-markdown table { border-collapse: collapse; display: block; max-width: 100%; overflow-x: auto; }
 .safe-markdown th,.safe-markdown td { border: 1px solid var(--app-code-line); padding: .6rem .8rem; min-width: 80px; }
 .safe-markdown th { background: var(--app-paper-deep); text-align: left; }
