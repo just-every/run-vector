@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { ToolDefinition } from '../../../../vendor/base/agent-door/index.ts';
 import type { WorkerBindings } from '../../app/bindings';
-import { listViews, getView, createView, updateView, duplicateView } from '../views/service';
+import { listViews, getView, createView, updateView, duplicateView, deleteView } from '../views/service';
 import { getPreference, putPreference, resetPreference } from '../views/preferences';
 import { createViewSchema, updateViewSchema, duplicateViewSchema, preferenceInputSchema, preferenceSurfaceSchema } from '../views/schema';
 import { listIssues, issueListResponse } from '../issues/list';
@@ -20,6 +20,14 @@ const preferenceUri = (_r: unknown, a: any) => `vector://preferences/${a.surface
 
 export function workspaceViewTools(env: WorkerBindings): ToolDefinition[] {
   return [
+    nativeMutation(env, { name: 'vector.view.saved_views.delete', title: 'Permanently remove your saved view',
+      scope: 'views:write', clauses: ['VIEW-002'], schema: idArgs, method: 'DELETE', path: '/views/:id',
+      params: args => ({ id: args.id }), classes: ['destructive'],
+      classify: async (db, person, args) => { await getView(db, person.id, args.id); return [{ class: 'destructive', facts: { measure: 1 } }]; },
+      revision: async (db, person, args) => JSON.stringify(await getView(db, person.id, args.id)),
+      summary: async (db, person, args) => ({ target: { id: args.id, name: (await getView(db, person.id, args.id)).name } }),
+      run: (db, person, args) => deleteView(db, person.id, args.id), resource: false,
+      uri: (_result, args) => `vector://views/${args.id}` }),
     ...([
       ['view.issue_controls', 'Read issues using native list controls', 'VIEW-001'],
       ['search.advanced_filters', 'Read issues matching native advanced filters', 'SEARCH-004'],

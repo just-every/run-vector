@@ -28,6 +28,19 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const insufficient = await call(tool.name, { teamId: metadata.teams[0].id, title: 'A scope refusal', idempotency_key: randomUUID() },
     await accessToken(context, { scope: 'metadata:read' }));
   const unknown = await call('vector.issues.list', {}, await accessToken(context, { sub: randomUUID(), email: person.email }));
+  const counts = () => db.prepare('SELECT (SELECT count(*) FROM projects)+(SELECT count(*) FROM issues) AS n').first('n');
+  const beforeInvalid = await counts();
+  const invalidCodes = [];
+  for (const [name, args] of [
+    ['vector.proj.project_record', { name: 'Invalid native icon', leadOperatorId: session.operatorId, icon: 'not an emoji' }],
+    ['vector.intake.intake_creation', { teamId: metadata.teams[0].id, title: 'Invalid native measurement key', measurements: { '': 1 } }],
+  ]) {
+    const response = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + await accessToken(context),
+      'Content-Type': 'application/json', 'MCP-Protocol-Version': '2025-11-25' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name, arguments: { ...args, idempotency_key: randomUUID() } } }) });
+    const body = await response.json(); invalidCodes.push(body.result?._meta?.['com.runeditrun/error']?.code);
+  }
+  const nativeArguments = invalidCodes.every(code => code === 'invalid_arguments') && beforeInvalid === await counts();
   const minted = await request(origin + '/api/settings/integrations/tokens', { method: 'POST',
     headers: { Cookie: person.cookie, Origin: origin, 'Content-Type': 'application/json' },
     body: JSON.stringify({ name: 'Purpose separation probe', scopes: ['issues:read'] }) });
@@ -49,8 +62,8 @@ export async function consentProbe({ request, origin, surface, signer, person, d
   const mcp = await request(origin + '/mcp', { method: 'POST', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json',
     'MCP-Protocol-Version': '2025-11-25' }, body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: saved.name, arguments: saved.args } }) });
   await mcp.body?.cancel();
-  return { ok: scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
+  return { ok: nativeArguments && scoped === 200 && insufficient === 403 && unknown === 401 && personalMcp === 401 && personalApi === 200
       && live.outcome === 'done' && afterLive === before + 1 && refused.code === 'consent_revoked' && afterRevoked === afterLive && mcp.status === 401,
-    scoped, insufficient, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi,
+    scoped, insufficient, unknownSponsorWithOwnerEmail: unknown, personalMcp, personalApi, nativeArgumentRefusals: invalidCodes, nativeArguments,
     before, afterLive, afterRevoked, refused: refused.code, mcpStatus: mcp.status, queuedNativePath: 'pending hooks-7 durable operation context' };
 }

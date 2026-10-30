@@ -144,6 +144,7 @@
 | `vector.search.exact_identifier` | standard | SEARCH-002 |
 | `vector.search.index_freshness` | standard | SEARCH-003 |
 | `vector.search.options` | standard | SEARCH-001, SEARCH-004 |
+| `vector.view.saved_views.delete` | destructive | VIEW-002 |
 | `vector.view.issue_controls` | standard | VIEW-001 |
 | `vector.search.advanced_filters` | standard | SEARCH-004 |
 | `vector.view.team_board` | standard | VIEW-005 |
@@ -182,6 +183,7 @@
 | `vector.notify.subscriptions.unsubscribe` | standard | NOTIFY-009 |
 | `vector.notify.personal_time_zone_and_working_hours` | standard | NOTIFY-010 |
 | `vector.notify.personal_time_zone_and_working_hours.save` | standard | NOTIFY-010 |
+| `vector.report.dashboards.delete` | destructive | REPORT-003 |
 | `vector.report.insights` | standard | REPORT-001 |
 | `vector.report.cycle_and_project_charts` | standard | REPORT-002 |
 | `vector.report.project_completion_forecast` | standard | REPORT-002 |
@@ -193,6 +195,8 @@
 | `vector.report.workload.personal_capacity` | standard | REPORT-004 |
 | `vector.report.workload.set_capacity` | standard | REPORT-004 |
 | `vector.report.warehouse_and_spreadsheet_export` | standard | REPORT-005 |
+| `vector.role.audit_log` | standard | ROLE-005 |
+| `vector.role.audit_log.export` | standard | ROLE-005 |
 | `vector.events.list` | standard | BASE-AGENT-010 |
 
 ## Resources
@@ -214,6 +218,7 @@
 - `vector://labels/{id}`
 - `vector://statuses/{id}`
 - `vector://milestones/{id}`
+- `vector://audit/{id}`
 - `vector://views/{id}`
 - `vector://notifications/{id}`
 - `vector://reminders/{id}`

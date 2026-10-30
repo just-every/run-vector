@@ -50,7 +50,8 @@ export function issueSteps({ teamId = from('options', '/teams/0/id'),
   read('issue-references', 'vector.issue.issue_references_and_backlinks');
   step('issue-other', 'vector.issue.creation', { teamId, title: 'A second native issue' });
   const other = key('issue-other');
-  step('issue-dependency', 'vector.rel.dependencies', { identifier: issue, input: input('issue-restore-description', { relatedIdentifier: other, relatedVersion: from('issue-other', '/version'), direction: 'blocked-by' }) }, standard(2));
+  read('issue-relation-version', 'vector.issue.stable_identifiers');
+  step('issue-dependency', 'vector.rel.dependencies', { identifier: issue, input: input('issue-relation-version', { relatedIdentifier: other, relatedVersion: from('issue-other', '/version'), direction: 'blocked-by' }) }, standard(2));
   read('issue-blocked', 'vector.rel.blocked_state');
   step('issue-remove-dependency', 'vector.rel.remove_dependency', { identifier: issue, input: input('issue-dependency', { relatedIdentifier: other, relatedVersion: from('issue-dependency', '/relatedIssue/version'), direction: 'blocked-by' }, '/issue/version') }, standard(2));
   step('issue-related', 'vector.rel.related_issues', { identifier: issue, input: input('issue-remove-dependency', { relatedIdentifier: other, relatedVersion: from('issue-remove-dependency', '/relatedIssue/version'), direction: 'related' }, '/issue/version') }, standard(2));
