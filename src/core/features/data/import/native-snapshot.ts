@@ -36,7 +36,7 @@ const columns = (table: string) => {
 // New nullable columns join an issue's value only once set, preserving the
 // exact shape of retained pre-feature snapshots. Build keys in canonical order
 // before removing absent fields so a set date matches the publication guard.
-const optional: Record<string,string[]> = { issues:['archived_at','milestone_id','start_date'] };
+const optional: Record<string,string[]> = { issues:['archived_at','milestone_id','start_date'], issue_comments:['description_anchor'] };
 const object = (table: string,alias: string) => {
   const extra=optional[table]??[];
   const base='json_object('+columns(table).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';

@@ -1,11 +1,10 @@
 import { Reactions, ReactionProvider } from "../../reactions/ui";
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useRef, useState } from "react";
-import { z } from "zod";
 import { useApiResource } from "../../../app/api-client";
 import { useHydrated } from '../../../app/initial-resources';
 import { NamedLinks } from "../../links/ui/named-links";
-import { discussionSchema } from "../../discussion/schema";
+import { useDiscussion } from "./discussion-client";
 import { CommentThread, commentThreads } from "./discussion-thread";
 import { issueEmailSchema } from "../../email-intake/ui/schema";
 import { EmailRequester } from "../../email-intake/ui/email-discussion";
@@ -37,50 +36,9 @@ function DiscussionContents({
     resource.refreshAfterMutation();
     onRefresh();
   }
-  const resource = useApiResource(
-      `/api/issues/${identifier}/discussion`,
-      discussionSchema,
-      undefined,
-      { abortPendingOnDispose: false },
-    ),
-    [filesOpen, setFilesOpen] = useState(false),
-    [body, setBody] = useState(""),
-    [busy, setBusy] = useState(false),
-    [error, setError] = useState("");
-  async function mutate(
-    path: string,
-    init: RequestInit,
-    onSuccess?: () => void,
-  ) {
-    setBusy(true);
-    setError("");
-    try {
-      const comment = (path === "comments" || /^comments\/[^/]+\/checklist$/.test(path)) && init.method === "POST";
-      const headers = new Headers(init.headers);
-      if (comment) headers.set("x-vector-projection", "discussion");
-      const response = await fetch(`/api/issues/${identifier}/${path}`, { ...init, headers });
-      if (!response.ok) {
-        const data = z
-          .object({ message: z.string().optional() })
-          .parse(await response.json());
-        throw new Error(data.message ?? `Action failed (${response.status}).`);
-      }
-      if (comment) {
-        const receipt = z.object({ discussion: discussionSchema }).parse(await response.json());
-        resource.publishReceipt(() => receipt.discussion);
-      } else {
-        await response.arrayBuffer();
-        resource.refreshAfterMutation();
-      }
-      onSuccess?.();
-      onRefresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Action failed.");
-      resource.reload();
-    } finally {
-      setBusy(false);
-    }
-  }
+  const { resource, busy, error, mutate } = useDiscussion(identifier, onRefresh);
+  const [filesOpen, setFilesOpen] = useState(false), [body, setBody] = useState("");
+  const [uploadError, setUploadError] = useState("");
   const json = (method: string, body: unknown) => ({
     method,
     headers: { "Content-Type": "application/json" },
@@ -99,7 +57,7 @@ function DiscussionContents({
         </p>
       ) : null}
       {resource.data
-        ? commentThreads(resource.data.comments).map(({ root, replies }) => (
+        ? commentThreads(resource.data.comments).filter(({ root }) => !root.anchor).map(({ root, replies }) => (
             <CommentThread writable={writable}
               key={root.id}
               root={root}
@@ -192,7 +150,7 @@ function DiscussionContents({
             const file = e.target.files?.[0];
             if (!file) return;
             if (file.size > 26214400) {
-              setError("Files must be 25 MB or smaller.");
+              setUploadError("Files must be 25 MB or smaller.");
               return;
             }
             setFilesOpen(true);
@@ -217,7 +175,7 @@ function DiscussionContents({
           Attach file
         </button>
       </details>
-      {error ? <p role="alert">{error}</p> : null}
+      {error || uploadError ? <p role="alert">{error || uploadError}</p> : null}
     </section>
   );
 }

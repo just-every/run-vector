@@ -1,3 +1,4 @@
+import { remarkDescriptionAnchors } from "../../discussion/anchors";
 import { useIssueReferences } from '../../issue-references/ui/context';
 import { remarkIssueReferences } from '../../issue-references/ui/remark';
 import { Tooltip } from '../../../ui/tooltip';
@@ -141,11 +142,13 @@ export function SafeMarkdown({
   activeOperatorIds,
   onTaskChange,
   taskBusy = false,
+  descriptionAnchors = false,
 }: {
   children: string;
   activeOperatorIds?: readonly string[];
   onTaskChange?: (task: { index: number; text: string; checked: boolean }) => void | Promise<void>;
   taskBusy?: boolean;
+  descriptionAnchors?: boolean;
 }) {
   const references = useIssueReferences();
   const operators = useMentionOperators();
@@ -162,7 +165,7 @@ export function SafeMarkdown({
   return (
     <MarkdownTasks.Provider value={{ tasks, busy: taskBusy, onChange: onTaskChange }}><div className="safe-markdown">
       <Markdown
-        remarkPlugins={[remarkGfm, remarkDetails, [remarkIssueReferences, { references }], [remarkMentions, { operatorIds }]]}
+        remarkPlugins={[remarkGfm, remarkDetails, [remarkIssueReferences, { references }], [remarkMentions, { operatorIds }], [remarkDescriptionAnchors, { enabled: descriptionAnchors }]]}
         rehypePlugins={[rehypeTaskIndices]}
         skipHtml
         components={rendered}
