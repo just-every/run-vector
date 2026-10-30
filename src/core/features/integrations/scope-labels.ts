@@ -16,6 +16,7 @@ export const scopeLabels:Record<(typeof tokenScopes)[number],string>={
  'milestones:delete':'Delete milestones',
  'cycles:read':'Read cycles',
  'cycles:write':'Create cycles',
+ 'labels:read':'Read workspace labels',
  'labels:write':'Manage labels',
  'teams:write':'Manage teams',
  'releases:read':'Read releases you can access',
