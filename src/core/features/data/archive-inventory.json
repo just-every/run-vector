@@ -1944,6 +1944,13 @@
     "created_at",
     "updated_at"
   ],
+  "document_issue_references": [
+    "document_id",
+    "target_issue_id",
+    "removed",
+    "created_at",
+    "updated_at"
+  ],
   "document_revisions": [
     "id",
     "document_id",

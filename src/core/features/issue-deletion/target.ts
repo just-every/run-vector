@@ -66,8 +66,8 @@ export function deletionTargets(operation: ErasureOperation): D1TargetAdapter {
       // Visibility CTEs and the kit's custody guards share this SQL statement.
       // Compare each complete relation separately to bound expression depth;
       // Base requires every part in the same atomic erasure transaction.
-      return snapshotParts.map(({ name, current, expected: expression }) => ({
-        sql: `(${snapshotContext}, e AS (SELECT ? value) SELECT ${current}=${expression} FROM c,b,e)`,
+      return snapshotParts.map(({ name, current, expected: expression, context:partContext }) => ({
+        sql: `(${partContext}, e AS (SELECT ? value) SELECT ${current}=${expression} FROM c,b,e)`,
         params: [...context(before), canonicalJson({ [name]: expected[name] })],
       }));
     },
