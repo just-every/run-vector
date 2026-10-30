@@ -2292,6 +2292,49 @@
       ]
     },
     {
+      "name": "vector.role.team_membership.member_grants",
+      "scope": "access:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-009"
+      ]
+    },
+    {
+      "name": "vector.role.team_membership.remove",
+      "scope": "access:write",
+      "readOnly": false,
+      "classes": [
+        "access"
+      ],
+      "clauses": [
+        "ROLE-007",
+        "ROLE-003",
+        "ROLE-013"
+      ],
+      "widens": false,
+      "narrowing": {
+        "effect": "revoke",
+        "target": "id"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^vector:\\/\\/teams\\/[0-9A-HJKMNP-TV-Z]{26}\\/members\\/[0-9A-HJKMNP-TV-Z]{26}$"
+          }
+        },
+        "required": [
+          "id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "name": "vector.role.team_permissions.set",
       "scope": "access:write",
       "readOnly": false,
@@ -2485,7 +2528,8 @@
     "vector://reminders/{id}",
     "vector://subscriptions/{id}",
     "vector://dashboards/{id}",
-    "vector://preferences/{id}"
+    "vector://preferences/{id}",
+    "vector://teams/{teamId}/members/{operatorId}"
   ],
   "notTools": [
     {
@@ -7255,6 +7299,24 @@
         "id": {
           "$from": "options",
           "pointer": "/teams/0/id"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "access-membership-grants",
+      "tool": "vector.role.team_membership.member_grants",
+      "args": {
+        "id": {
+          "$from": "access-team",
+          "pointer": "/memberships/0/id"
         }
       },
       "expect": [
