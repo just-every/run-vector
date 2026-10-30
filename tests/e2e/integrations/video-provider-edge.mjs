@@ -28,7 +28,9 @@ export async function videoProviderEdge(request) {
   );
   if (video.searchParams.get("v") === "synthetic02") {
     const attempts = readFileSync(process.env.VECTOR_CHANNEL_EDGE, "utf8")
-      .trim().split("\n").map((line) => JSON.parse(line))
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line))
       .filter((row) => row.method === "video.oembed" && row.url === url.href);
     if (attempts.length === 1) return new Response(null, { status: 503 });
   }

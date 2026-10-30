@@ -7257,7 +7257,7 @@
       "executable": false
     },
     "tests/e2e/integrations/video-provider-edge.mjs": {
-      "sha256": "a1c71e25186dc270894084f1d32fb808b825a7b576de9d11efba24f4767e77da",
+      "sha256": "77db7121e2e80bc6e98645043ac79eca77826f8c3dfad4d9b01e8545ebf55eca",
       "executable": false
     },
     "tests/e2e/issue-copy-runtime.mjs": {
@@ -7469,7 +7469,7 @@
       "executable": false
     },
     "tests/e2e/video-players-journey.mjs": {
-      "sha256": "609d211c0e24b5ed5fbd7825138d6ad395c5aeeb8ebb33bf2aae6232fb8c6fc0",
+      "sha256": "e5f07bd17d137d2570f5cae44837c7578c6a5424ab8d13838d7ca0d35edf19d1",
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
@@ -8253,7 +8253,7 @@
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {
-      "sha256": "3ee6b3f02d226243740a3703fe2ca3b1f9c4d542486582f4772d2ae0212eff6c",
+      "sha256": "033349735b47e46444e34877d4c660d64561f4c1720ac3539aa4ef089cfc5a04",
       "executable": false
     },
     "tests/worker/viewer-role-upgrade.ts": {

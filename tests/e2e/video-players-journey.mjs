@@ -189,10 +189,15 @@ export async function exerciseVideoPlayers({
       .filter({ hasText: "The video provider could not load this player." })
       .waitFor();
     const unavailable = region.getByRole("group", {
-      name: "YouTube video: Unavailable recording", exact: true,
+      name: "YouTube video: Unavailable recording",
+      exact: true,
     });
     assert.equal(await unavailable.locator("iframe").count(), 0);
-    assert.equal((await calls()).length, before + 3, "Failure is not retried automatically");
+    assert.equal(
+      (await calls()).length,
+      before + 3,
+      "Failure is not retried automatically",
+    );
     await load("YouTube", "Redirected recording", 3, 502);
     assert.equal(
       (await calls()).length,
@@ -226,11 +231,28 @@ export async function exerciseVideoPlayers({
     await load("YouTube", "Unavailable recording", 2);
     const recovered = unavailable.locator("iframe");
     await recovered.waitFor();
-    assert.equal(await recovered.getAttribute("src"), "https://www.youtube-nocookie.com/embed/synthetic02");
-    assert.equal(await unavailable.getByRole("alert").count(), 0, "Explicit retry clears the provider failure");
-    await recovered.contentFrame().getByRole("button", { name: "Play video", exact: true }).click();
-    await recovered.contentFrame().getByRole("button", { name: "Playing", exact: true }).waitFor();
-    assert.equal((await calls()).length, before + 5, "Only the requested video is retried");
+    assert.equal(
+      await recovered.getAttribute("src"),
+      "https://www.youtube-nocookie.com/embed/synthetic02",
+    );
+    assert.equal(
+      await unavailable.getByRole("alert").count(),
+      0,
+      "Explicit retry clears the provider failure",
+    );
+    await recovered
+      .contentFrame()
+      .getByRole("button", { name: "Play video", exact: true })
+      .click();
+    await recovered
+      .contentFrame()
+      .getByRole("button", { name: "Playing", exact: true })
+      .waitFor();
+    assert.equal(
+      (await calls()).length,
+      before + 5,
+      "Only the requested video is retried",
+    );
     await region
       .getByRole("button", {
         name: "Unload Loom player for Loom walkthrough",

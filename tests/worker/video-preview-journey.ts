@@ -106,6 +106,21 @@ export async function exerciseVideoPreviews() {
         return new Response(" ".repeat(32769), {
           headers: { "Content-Type": "application/json" },
         });
+      if (mode === "stream-large")
+        return new Response(
+          new ReadableStream({
+            start(controller) {
+              for (let i = 0; i < 5; i++)
+                controller.enqueue(new Uint8Array(8192));
+              controller.close();
+            },
+          }),
+          { headers: { "Content-Type": "application/json" } },
+        );
+      if (mode === "invalid-utf8")
+        return new Response(new Uint8Array([0xff]), {
+          headers: { "Content-Type": "application/json" },
+        });
       if (mode === "html")
         return new Response("<script>bad()</script>", {
           headers: { "Content-Type": "text/html" },
@@ -149,25 +164,28 @@ export async function exerciseVideoPreviews() {
       assert.ok(!JSON.stringify(result).includes("html"));
       assert.ok(!JSON.stringify(result).includes("foreign.invalid"));
     }
-    for (const next of [
-      "redirect",
-      "failure",
-      "large",
-      "html",
-      "foreign",
-      "invalid",
-    ]) {
-      mode = next;
-      const before = calls.length;
-      assert.equal(
-        (await json(await load(links[0].id), 502)).error,
-        "provider_unavailable",
-      );
-      assert.equal(
-        calls.length,
-        before + 1,
-        "No redirect request or automatic retry",
-      );
+    for (const link of links) {
+      for (const next of [
+        "redirect",
+        "failure",
+        "large",
+        "stream-large",
+        "invalid-utf8",
+        "html",
+        "foreign",
+        "invalid",
+      ]) {
+        mode = next;
+        const before = calls.length;
+        const rejected = await json(await load(link.id), 502);
+        assert.equal(rejected.error, "provider_unavailable");
+        assert.equal(rejected.preview, undefined);
+        assert.equal(
+          calls.length,
+          before + 1,
+          "No redirect request or automatic retry",
+        );
+      }
     }
     mode = "success";
     for (const url of [
@@ -193,7 +211,8 @@ export async function exerciseVideoPreviews() {
     ).all();
     await json(await load(links[0].id));
     assert.deepEqual(
-      (await env.DB.prepare("SELECT * FROM issue_links ORDER BY id").all()).results,
+      (await env.DB.prepare("SELECT * FROM issue_links ORDER BY id").all())
+        .results,
       storedBefore.results,
     );
     await json(
@@ -289,7 +308,10 @@ export async function exerciseVideoPreviews() {
         .bind(Date.now(), ids.maya)
         .run();
     };
-    assert.equal((await json(await load(links[0].id, transient), 401)).error, "unauthenticated");
+    assert.equal(
+      (await json(await load(links[0].id, transient), 401)).error,
+      "unauthenticated",
+    );
     const replay = calls.length;
     await json(await load(links[0].id, transient), 401);
     assert.equal(calls.length, replay);
@@ -330,7 +352,9 @@ export async function exerciseVideoPreviews() {
     assert.equal(calls.length, withdrawn, "Deleted sources cannot be replayed");
     const tombstone = await env.DB.prepare(
       "SELECT name,url,deleted_at FROM issue_links WHERE id=?",
-    ).bind(standalone.id).first<any>();
+    )
+      .bind(standalone.id)
+      .first<any>();
     assert.equal(tombstone.name, null);
     assert.equal(tombstone.url, null);
     assert.ok(tombstone.deleted_at);
