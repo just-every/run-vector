@@ -488,8 +488,12 @@
       "sha256": "9062fbeae2c686b63036bcd95a5ee4d5c5d56036fb40fb203ef3a3eb55ede367",
       "executable": false
     },
+    "ADOPTING.md": {
+      "sha256": "52974f809238930ad0c166904afbdcaca02cec3d11a86d5e353259e148576b71",
+      "executable": false
+    },
     "agent-surface.json": {
-      "sha256": "8bb1d097d826ef3175b745faa522bc0fdcd49a88c2223b8e151771a52f2b05ae",
+      "sha256": "a765b18d548f2dd7c0cc1a7ef63fcd36525c79e68685d6e55eeff4611f1f305c",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -533,7 +537,7 @@
       "executable": false
     },
     "deploy.json": {
-      "sha256": "8a35c4183ac074446abb8a831ec73a35a86170d355c361f2485a9c104b0dade6",
+      "sha256": "925c9a13b2bafecca3de6503de3436dea63f352374f62e1241025efbf0c7457e",
       "executable": false
     },
     "DEPLOY.md": {
@@ -2492,6 +2496,10 @@
       "sha256": "59d2e98e12e926d4319f8cb8f7c9e28583e702b8a00d7d3c82d0e5fc8be0f70b",
       "executable": false
     },
+    "migrations/core/0117_dependency_key_sealing.sql": {
+      "sha256": "9c8fa5f94c48a230f326cd4d666cbc2bd1e7d5a18327b89e65b339ac6a533d9a",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -2573,11 +2581,11 @@
       "executable": false
     },
     "rer-project.json": {
-      "sha256": "e4f59ef18257ee1fef90fa06e7a2820251fa51d5a5ba78cb1ca3ebca29eceab6",
+      "sha256": "a6768f4d9af14e48a085c3104c48f78d9a2f7b59f96867c72456ed55a3af1937",
       "executable": false
     },
     "rer-setup.json": {
-      "sha256": "89483c8d8abcdd111bbf73a845963cada5018f2c4d974553e225b02db0528020",
+      "sha256": "14330643c06bb384b45522d133f1c7d73929786f37549771664a4f821f6aeab6",
       "executable": false
     },
     "RUN-LOCALLY.md": {
@@ -2713,7 +2721,7 @@
       "executable": false
     },
     "scripts/delivery/base/packaging.json": {
-      "sha256": "a98a2cdc954b33ddb7c41fa735877ac008609d66b68c40f065002bbd92787ee6",
+      "sha256": "e0b4b06e967979b059abf987b0857090a9c91cc824b32e80d3f6a10403364397",
       "executable": false
     },
     "scripts/delivery/base/paths.mjs": {
@@ -3641,7 +3649,7 @@
       "executable": false
     },
     "src/core/app/bindings.ts": {
-      "sha256": "f44d9ddc0702ccddd20d017d85ee2599baa8566417378110c352921fd549754e",
+      "sha256": "d8cd641751d501748ca6ea5689182278bdbae9b7e8d7c34a194dc85a053f82a1",
       "executable": false
     },
     "src/core/app/config.ts": {
@@ -4141,7 +4149,7 @@
       "executable": false
     },
     "src/core/features/agent-door/native.ts": {
-      "sha256": "562ea8b3a16e0460f630807c4873057995f488b2df5810d18503e287ae9ff6de",
+      "sha256": "cb281ed7c886473318283de294059385e42617380b7242fa95af54b7ca8ec744",
       "executable": false
     },
     "src/core/features/agent-door/people.ts": {
@@ -4197,7 +4205,7 @@
       "executable": false
     },
     "src/core/features/auth/base.server.ts": {
-      "sha256": "3334c61f352a8b8d95ff72b31fde3c1415f8f98b031050211d469d8fcd95e80c",
+      "sha256": "600e6bdb0ad02779177a973b26f739a5829d19e56d83bbddeac835c51ee58fc7",
       "executable": false
     },
     "src/core/features/auth/bootstrap.server.ts": {
@@ -4205,7 +4213,7 @@
       "executable": false
     },
     "src/core/features/auth/dependencies.server.ts": {
-      "sha256": "4bffac65b753b4a258cd15e271b31960d7578308e4be8bf5d3b1ab1f7ad58068",
+      "sha256": "189d8a59292858405c92c016b588c7f93b4ab9b81863958ac3be0c9157dbf5a2",
       "executable": false
     },
     "src/core/features/auth/dev-personas.ts": {
@@ -4517,7 +4525,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "6eb2e26af60cf3f0312f8b8d9c1d261eca48820edae9903e4049105ed0bcec92",
+      "sha256": "e3d2dab4ac2fcb78e266252aec1489f54c866fafcc145cf3824e45feb3915b75",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -7404,6 +7412,10 @@
       "sha256": "79ed9867286cca34db06f5394d285a990667a5207f88c79ba21263e51b44c892",
       "executable": false
     },
+    "tests/agent-door/installation-key.mjs": {
+      "sha256": "5bad3c342827238210afdcc663d1ab512b22eca307619ec6623295e46161af70",
+      "executable": false
+    },
     "tests/agent-door/native-journey.mjs": {
       "sha256": "0b2e0aa2e07c20f030a8f2dad1263dd7e6d67deb747bdcc8649a90030378c9a6",
       "executable": false
@@ -8537,7 +8549,7 @@
       "executable": false
     },
     "tests/worker/identity-dependency.test.ts": {
-      "sha256": "76a30fd82a9080d71220ec06fdac1e86db738e918065b232b456b6d2944491e7",
+      "sha256": "37608d961702d0b8b5b710b36170c7cda98f9e6f2049e7c035d96ed951fb68f8",
       "executable": false
     },
     "tests/worker/import-alias-scenario.ts": {
@@ -11509,7 +11521,7 @@
       "executable": false
     },
     "vitest.config.ts": {
-      "sha256": "b98c1196e8ecfed3761a9e4cfe3539bc63c00b92b98275e89c441aeea2073171",
+      "sha256": "20b9d07141765b221ba12d82311ba4a4393c31a6f385dee58e13fc4668bf964e",
       "executable": false
     },
     "vitest.markdown.config.ts": {

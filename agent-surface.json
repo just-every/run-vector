@@ -588,6 +588,9 @@
         },
         "MAIL_FROM": {
           "module": "tests/agent-door/sender.mjs"
+        },
+        "INSTALLATION_KEY": {
+          "module": "tests/agent-door/installation-key.mjs"
         }
       }
     },
