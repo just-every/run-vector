@@ -7033,7 +7033,7 @@
       "executable": false
     },
     "tests/e2e/core-threads-journey.mjs": {
-      "sha256": "525793130fa8a85487d83188d8ad1f20ffc135fb705fd69fa01e25feef2cf470",
+      "sha256": "3764ed5c248cd98bd3792985810904032447291f42291270316a126333fa90b9",
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {

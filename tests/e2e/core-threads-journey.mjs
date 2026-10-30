@@ -76,6 +76,9 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await commentChecklistJourney(page, context, base, state, teamId, evidence, record);
   record('ISSUE-008', 'At 1440px and 390px a teammate replies twice in order under a top-level comment, cannot edit it (no control; PATCH 403), resolves the thread and sees it collapse to one line naming them; the author expands it, replies, and the thread reopens with resolve/reopen activity recorded.');
 
+  // The inherited checklist journey opens its own issue; return to this
+  // thread's description before selecting source text.
+  await open();
   // Use the browser selection in the rendered description, including Markdown
   // formatting. The resulting thread belongs in the adjacent margin.
   for (const literal of ['synthetic-vector-1','synthetic-vector-2']) {
