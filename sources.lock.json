@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "69bc91496cb1f8e02bfb924d75aa667f5963efa0ce129b1da25af029f449f19a",
+      "sha256": "ba810a876d51496a75edbddc97ba8d079f4b11ddb3b953715fd8ca49305273c9",
       "executable": false
     },
     "DEMO.md": {
@@ -4177,7 +4177,7 @@
       "executable": false
     },
     "src/core/features/deployment-followup/service.ts": {
-      "sha256": "25ee9ef5f0a0a710a552efa90f26b6163056aebb54ea5760c6a375c843345135",
+      "sha256": "07aedb9beef350cc89b0eeb24b96bc16f3c9404b976a562a381721ec6b1eab9c",
       "executable": false
     },
     "src/core/features/deployment-followup/settings.ts": {
@@ -4193,7 +4193,7 @@
       "executable": false
     },
     "src/core/features/deployment-followup/watches.ts": {
-      "sha256": "2cc72e2f037934a3f80dababc1fedf8b36316cd34b771e62a0d6ea1c180e69a6",
+      "sha256": "59d323bc04cdc368449e8e8830388203352725a3fe38898e795bd8d24a635389",
       "executable": false
     },
     "src/core/features/description-history/comments.ts": {
@@ -4713,7 +4713,7 @@
       "executable": false
     },
     "src/core/features/integrations/github/receiver.ts": {
-      "sha256": "762e2593a3cb02a674100e7400637be91d14f8faa720618902c534e791e24c29",
+      "sha256": "abbc2d8ff765a00d357404becf564f96bd9870c8aaf2ff66590dcdb607640032",
       "executable": false
     },
     "src/core/features/integrations/github/rule-routes.ts": {
@@ -7221,7 +7221,7 @@
       "executable": false
     },
     "tests/e2e/integrations/deployment-followup.mjs": {
-      "sha256": "b4727afaab00fde1be3c8d0640f5f2fd6e8315a48dc590edf590a1e6a9535531",
+      "sha256": "46c016e18b6ae35261f63d2226bd34d4123d5357b4d9e0c534d1a6899b1e7a5e",
       "executable": false
     },
     "tests/e2e/integrations/error-providers.mjs": {
@@ -7781,7 +7781,7 @@
       "executable": false
     },
     "tests/worker/deployment-followup-scenario.ts": {
-      "sha256": "7011ea91024ad4274d3ef1ee9731ade5e9e1589b8b7896a6a2790a1469f92465",
+      "sha256": "29636b93ff5f1858fa111953cdc1b52a95ea884751616f645f584cf4cabc2f4b",
       "executable": false
     },
     "tests/worker/deployment-followup-upgrade.ts": {

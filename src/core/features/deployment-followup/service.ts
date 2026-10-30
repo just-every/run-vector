@@ -1,6 +1,6 @@
 import {createUlid} from '../../shared/ids';
 import {deploymentQuestionStatements,finalizeEvent,visibleRecipient} from '../notifications/events';
-import {provenStatement} from './watches';
+import {provenStatement,reconcileProductionStatement} from './watches';
 
 // Restores, held restore effects and archive application ask nothing.
 const quiet=`NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1) AND NOT EXISTS(SELECT 1 FROM vector_http_restore)
@@ -26,7 +26,7 @@ type Due={repository:string;sha:string;issueId:string;pullNumber:number;mergedAt
  * watch, Inbox notification and feature audit commit together, and nothing
  * else on the issue changes. */
 export async function askDeploymentFollowups(env:{DB:D1Database},now=new Date()){
- const db=env.DB,at=now.toISOString(),result={asked:0,deployed:0};
+ const db=env.DB,at=now.toISOString(),result={asked:0,deployed:(await reconcileProductionStatement(env.DB,quiet).run()).meta.changes};
  const rows=(await db.prepare(`SELECT w.repository_id AS repository,w.sha,w.issue_id AS issueId,w.pull_number AS pullNumber,w.merged_at AS mergedAt,
   f.window_hours AS windowHours,f.version AS followupVersion,i.assignee_operator_id AS assignee ${watched}
   WHERE ${visibleRecipient} AND ${due} ORDER BY w.merged_at,w.issue_id LIMIT 100`).bind(at).all<Due>()).results;

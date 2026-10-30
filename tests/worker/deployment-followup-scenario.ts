@@ -139,10 +139,62 @@ export async function exerciseDeploymentFollowups(f:Fixture,send:Send){
  await tick(askedAt+27*hour);
  expect(await projection(waiting)).toEqual([expect.objectContaining({askedAt:iso(askedAt),productionAt:iso(mergedAt+30*hour),answeredAt:expect.any(String)})]);
  expect(await questions()).toHaveLength(3);
+ await exerciseLateEvidence(f,send,{member,other,memberCookie,otherCookie,withdrawn});
 }
 
 async function read(f:Fixture,issue:Issue){
  const response=await f.call('/issues/'+issue.identifier);expect(response.status).toBe(200);
  const body=await response.json() as {version:number;priority:string;dueDate:string|null;assignee:unknown;status:{id:string};completedAt?:string|null};
  return {version:body.version,priority:body.priority,dueDate:body.dueDate,assignee:body.assignee,status:body.status.id,completedAt:body.completedAt??null};
+}
+
+/** Retained PR links and late ancestry use the same signed receiver, scheduled
+ * export, issue projection and recipient Inbox as the original journey. */
+async function exerciseLateEvidence(f:Fixture,send:Send,people:{member:string;other:string;memberCookie:string;otherCookie:string;withdrawn:Issue}){
+ const {member,other,memberCookie,otherCookie,withdrawn}=people,team=f.initial.teams[0];
+ const create=(title:string)=>f.create({title,teamId:team.id,assigneeOperatorId:member});
+ const dropped=await create('synthetic-vector-1960 removed PR reference'),late=await create('synthetic-vector-1961 late ancestry');
+ const erased=await create('synthetic-vector-1962 erased retained link'),never=await create('synthetic-vector-1963 never linked');
+ const now=Date.now(),mergedAt=now-25*hour,productionAt=iso(mergedAt+2*hour);
+ const pr=(number:number,issue:Issue|null,action:string,at:number,merged=false)=>({action,number,repository,pull_request:{number,
+  title:issue?'Fixes '+issue.identifier:'synthetic-vector-1964 reference removed',body:null,state:merged?'closed':'open',merged,
+  merge_commit_sha:merged?sha(number):null,merged_at:merged?iso(mergedAt):null,updated_at:iso(at),html_url:'https://github.com/octocat/test-repo1/pull/'+number}});
+ const ok=async(body:unknown,event='pull_request',delivery=crypto.randomUUID())=>{const r=await send(body,delivery,false,event);expect(r.status,await r.clone().text()).toBe(200);};
+ const receipts=[];
+ for(const [number,issue] of [[101,dropped],[102,dropped],[103,withdrawn],[104,erased]] as const){
+  await ok(pr(number,issue,'opened',mergedAt-2*hour));
+  await ok(pr(number,null,'edited',mergedAt-hour));
+  const body=pr(number,null,'closed',mergedAt,true),delivery=crypto.randomUUID();receipts.push({body,delivery});
+  if(issue===erased)expect((await f.call('/issues/'+erased.identifier,'DELETE',{expectedVersion:(await read(f,erased)).version,confirmed:true})).status).toBe(200);
+  await ok(body,'pull_request',delivery);
+ }
+ await ok(pr(105,null,'closed',mergedAt,true));
+ expect((await f.call('/issues/'+dropped.identifier,'PATCH',{assigneeOperatorId:other,expectedVersion:(await read(f,dropped)).version})).status).toBe(200);
+ await ok(pr(106,late,'closed',mergedAt,true));
+ const deployment={repository,deployment:{id:1961,sha:sha(108),environment:'production'},deployment_status:{state:'success',created_at:productionAt}},deploymentId=crypto.randomUUID();
+ await ok(deployment,'deployment_status',deploymentId);
+ const projection=async(issue:Issue)=>((await (await f.call('/issues/'+issue.identifier+'/github')).json()) as {productionFollowups:{sha:string;askedAt:string|null;productionAt:string|null}[]}).productionFollowups;
+ const inbox=async(cookie:string,issue:Issue)=>((await (await request('/api/notifications?limit=50','GET',undefined,cookie)).json()) as InboxPage).items.filter(n=>n.identifier===issue.identifier&&n.causes.includes('deployment_question'));
+ await scheduled({scheduledTime:now},bindings);
+ expect(await projection(dropped)).toEqual([expect.objectContaining({sha:sha(101),askedAt:iso(now),productionAt:null}),expect.objectContaining({sha:sha(102),askedAt:iso(now),productionAt:null})]);
+ expect(await inbox(otherCookie,dropped)).toHaveLength(2);expect(await inbox(memberCookie,dropped)).toHaveLength(0);
+ expect(await projection(never)).toEqual([]);expect(await inbox(memberCookie,never)).toEqual([]);
+ expect(await env.DB.prepare('SELECT count(*) AS n FROM deployment_followup_watches WHERE issue_id=?').bind(erased.id).first<number>('n')).toBe(0);
+ expect(await env.DB.prepare("SELECT count(*) AS n FROM issue_activity WHERE issue_id=? AND kind='deployment.followup_asked'").bind(withdrawn.id).first<number>('n')).toBe(0);
+ expect(await projection(late)).toEqual([expect.objectContaining({askedAt:iso(now),productionAt:null})]);expect(await inbox(memberCookie,late)).toHaveLength(1);
+ const push=(before:string,after:string,forced=false)=>({ref:'refs/heads/main',before,after,forced,repository:{...repository,default_branch:'main'},commits:[]});
+ await ok(push(sha(106),sha(108),true),'push');await scheduled({scheduledTime:now+hour},bindings);
+ expect((await projection(late))[0]!.productionAt).toBeNull();
+ // Both non-forced ancestry edges arrive after the question and deployment.
+ const proof=push(sha(107),sha(108)),proofId=crypto.randomUUID();
+ await ok(push(sha(106),sha(107)),'push');await ok(proof,'push',proofId);
+ await scheduled({scheduledTime:now+2*hour},bindings);
+ const settled=await projection(late);expect(settled).toEqual([expect.objectContaining({askedAt:iso(now),productionAt})]);
+ const before=await read(f,late);
+ for(const {body,delivery} of receipts){await ok(body,'pull_request',delivery);await ok(body);}
+ await ok(proof,'push',proofId);await ok(proof,'push');await ok(deployment,'deployment_status',deploymentId);
+ for(const at of [now+3*hour,now+4*hour])await scheduled({scheduledTime:at},bindings);
+ expect(await projection(late)).toEqual(settled);expect(await read(f,late)).toEqual(before);
+ expect(await inbox(memberCookie,late)).toHaveLength(1);expect(await inbox(otherCookie,dropped)).toHaveLength(2);
+ expect(await env.DB.prepare("SELECT count(*) AS n FROM issue_activity WHERE issue_id=? AND kind='deployment.followup_asked'").bind(late.id).first<number>('n')).toBe(1);
 }

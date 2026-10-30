@@ -44,7 +44,12 @@ export async function exerciseDeploymentFollowup({page:shared,runtime,cookie,tea
   await send(merge(81,deployed,sha(201),iso(-2*3600_000)));
   await send({repository:{full_name:repository},deployment:{id:1931,sha:sha(201),environment:'production'},deployment_status:{state:'success',created_at:iso(-3600_000)}},'deployment_status');
   // Past the one-hour window with no production deployment, and a merge still inside it.
-  await send(merge(82,waiting,sha(202),iso(-2*3600_000)));
+  // Keep the historical link when the author removes its reference before merging.
+  const waitingMerge=merge(82,waiting,sha(202),iso(-2*3600_000));
+  await send({...waitingMerge,action:'opened',pull_request:{...waitingMerge.pull_request,state:'open',merged:false,merge_commit_sha:null,merged_at:null,updated_at:iso(-4*3600_000)}});
+  const removedReference={...waitingMerge,pull_request:{...waitingMerge.pull_request,title:'synthetic-vector-1935 reference removed'}};
+  await send({...removedReference,action:'edited',pull_request:{...removedReference.pull_request,state:'open',merged:false,merge_commit_sha:null,merged_at:null,updated_at:iso(-3*3600_000)}});
+  await send(removedReference);
   await send(merge(83,recent,sha(203),iso(-60_000)));
   for(let run=0;run<2;run++){const tick=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(tick.status,200);await tick.body?.cancel();}
   const questions=runtime.sql("SELECT i.identifier FROM notifications n JOIN issues i ON i.id=n.issue_id WHERE n.causes_json LIKE '%deployment_question%' AND i.identifier IN ('"+[deployed,waiting,recent].map(i=>i.identifier).join("','")+"')");
@@ -80,6 +85,27 @@ export async function exerciseDeploymentFollowup({page:shared,runtime,cookie,tea
   assert.equal(await github.getByRole('note').count(),0);
   await inspect(page,github,'deployment-followup-production');
   assert.deepEqual(errors,[],'deployment follow-up screens have no browser or hydration errors');
-  console.log('[PUSH-003] Settings window, production record, one Inbox question past the window and none inside it, discussion answer at 1440 and 390');
+  // Deployment first, overdue question second, ancestry proof last: the next
+  // real Cron records production while preserving the single original question.
+  const late=await create('synthetic-vector-1936 late ancestry'),mergedAt=iso(-2*3600_000),productionAt=iso(-3600_000);
+  await send(merge(84,late,sha(204),mergedAt));
+  await send({repository:{full_name:repository},deployment:{id:1936,sha:sha(205),environment:'production'},deployment_status:{state:'success',created_at:productionAt}},'deployment_status');
+  const tick=async()=>{const response=await runtime.req('/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *'));assert.equal(response.status,200);await response.body?.cancel();};
+  await tick();
+  const projection=async()=>(await call('/issues/'+late.identifier+'/github')).productionFollowups;
+  const asked=await projection();assert.equal(asked.length,1);assert.ok(asked[0].askedAt);assert.equal(asked[0].productionAt,null);
+  await navigate(page,runtime.base+'/app/issues/'+late.identifier);await github.getByRole('note').waitFor();
+  await send({ref:'refs/heads/main',before:sha(204),after:sha(205),forced:false,repository:{full_name:repository,default_branch:'main'},commits:[]},'push');
+  await tick();await tick();
+  assert.deepEqual(await projection(),[{...asked[0],productionAt}]);
+  await navigate(page,runtime.base+'/app/issues/'+late.identifier);
+  await github.locator('.production-followups li > span').filter({hasText:'· reached production'}).waitFor();
+  assert.equal(await github.getByRole('note').count(),1);
+  await inspect(page,github,'deployment-followup-late-ancestry');
+  await page.setViewportSize({width:1440,height:900});
+  await navigate(page,runtime.base+'/app/inbox');
+  assert.equal(await page.locator('.inbox-row').filter({hasText:late.identifier}).filter({hasText:'Deployment follow-up'}).count(),1);
+  assert.deepEqual(errors,[],'late ancestry has no browser or hydration errors');
+  console.log('[PUSH-003] Settings window, retained dropped reference, production record, one Inbox question past the window and none inside it, discussion answer and late ancestry at 1440 and 390');
  }finally{await settleReads(page);await page.close();}
 }

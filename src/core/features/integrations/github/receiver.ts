@@ -59,8 +59,13 @@ export async function receiveGithub(env:WorkerBindings,request:Request,id:string
   for(const issue of issues)statements.push(githubAliasGuard(env.DB,repository.workspace_id,issue.matchedKeys,issue.id),guard('EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND i.version=? AND t.workspace_id=?)',issue.id,issue.version,repository.workspace_id));
   statements.push(env.DB.prepare(`INSERT INTO vector_github_pull_requests(repository_id,number,title,url,state,updated_at,received_at,merge_sha) VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(repository_id,number) DO UPDATE SET title=excluded.title,url=excluded.url,state=excluded.state,updated_at=excluded.updated_at,received_at=excluded.received_at,merge_sha=COALESCE(excluded.merge_sha,vector_github_pull_requests.merge_sha)`).bind(id,pr.number,pr.title,url.href,state,updatedAt,at,pr.merged?pr.merge_commit_sha?.toLowerCase()??null:null));
   for(const issue of issues){statements.push(env.DB.prepare(`INSERT INTO issue_activity(id,issue_id,actor_operator_id,actor_name,kind,previous_value_json,next_value_json,created_at,updated_at) SELECT ?,?,NULL,?,'github.pr_linked',NULL,?,?,? WHERE NOT EXISTS(SELECT 1 FROM vector_github_issue_links WHERE repository_id=? AND number=? AND issue_id=?)`).bind(createUlid(new Date(at)),issue.id,'GitHub '+repository.repository,JSON.stringify({repository:repository.repository,number:pr.number,state}),at,at,id,pr.number,issue.id),env.DB.prepare('INSERT INTO vector_github_issue_links(repository_id,number,issue_id,created_at,relation) VALUES(?,?,?,?,?) ON CONFLICT(repository_id,number,issue_id) DO UPDATE SET relation=excluded.relation').bind(id,pr.number,issue.id,at,aliasReferenceKind(issue.matchedKeys,pr.title,pr.body)));}
-  // PUSH-003: the recorded merge SHA starts each linked issue's production watch once.
-  if(state==='merged'&&pr.merge_commit_sha)statements.push(...mergeStatements(env.DB,id,pr.number,pr.merge_commit_sha.toLowerCase(),new Date(pr.merged_at??pr.updated_at).toISOString(),at,issues.map(issue=>issue.id)));
+  // Links persist when a later PR edit removes its references. Follow every
+  // retained link at merge, including links added by this delivery's batch.
+  if(state==='merged'&&pr.merge_commit_sha){
+   const retainedLinks=(await env.DB.prepare('SELECT issue_id FROM vector_github_issue_links WHERE repository_id=? AND number=?').bind(id,pr.number).all<{issue_id:string}>()).results;
+   const linked=[...new Set([...retainedLinks.map(link=>link.issue_id),...issues.map(issue=>issue.id)])];
+   statements.push(...mergeStatements(env.DB,id,pr.number,pr.merge_commit_sha.toLowerCase(),new Date(pr.merged_at??pr.updated_at).toISOString(),at,linked));
+  }
   const trigger=input.action==='opened'&&pr.draft?'draft':input.action==='review_requested'?'review':input.action==='closed'&&pr.merged?'merged':null;
   if(trigger)for(const issue of issues){
    if(trigger==='merged'&&aliasReferenceKind(issue.matchedKeys,pr.title,pr.body)==='contributes')continue;

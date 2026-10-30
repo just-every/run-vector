@@ -39,3 +39,28 @@ export function productionStatement(db:D1Database,repository:string,deployment:{
  WHERE repository_id=? AND production_at IS NULL AND sha IN (SELECT sha FROM included) AND lower(?)=${environmentOf('deployment_followup_watches.issue_id')}`)
   .bind(deployment.sha,repository,deployment.id,at,repository,deployment.environment);
 }
+
+/** Reconcile production independently of question eligibility. An already asked,
+ * unassigned or disabled-window watch can still acquire ancestry proof later.
+ * Only current repository connections in the issue's workspace may settle it. */
+export function reconcileProductionStatement(db:D1Database,quiet:string){
+ return db.prepare(`WITH RECURSIVE descendants(repository_id,merge_sha,sha) AS (
+  SELECT DISTINCT repository_id,sha,sha FROM deployment_followup_watches WHERE production_at IS NULL
+  UNION SELECT d.repository_id,d.merge_sha,p.after_sha FROM descendants d
+   JOIN github_push_proofs p ON p.repository_id=d.repository_id JOIN json_each(p.ancestors_json) j ON j.value=d.sha
+ ), proof AS (
+  SELECT w.repository_id,w.sha,w.issue_id,g.deployment_id,g.deployed_at
+  FROM deployment_followup_watches w JOIN descendants d ON d.repository_id=w.repository_id AND d.merge_sha=w.sha
+   JOIN github_deployments g ON g.repository_id=d.repository_id AND g.sha=d.sha
+   JOIN issues i ON i.id=w.issue_id JOIN teams t ON t.id=i.team_id
+   JOIN vector_github_repositories r ON r.id=w.repository_id AND r.workspace_id=t.workspace_id
+  WHERE w.production_at IS NULL AND r.enabled=1 AND r.revoked_at IS NULL AND ${quiet}
+   AND lower(g.environment)=${environmentOf('w.issue_id')}
+ )
+ UPDATE deployment_followup_watches SET (production_deployment_id,production_at)=(
+  SELECT p.deployment_id,p.deployed_at FROM proof p WHERE p.repository_id=deployment_followup_watches.repository_id
+   AND p.sha=deployment_followup_watches.sha AND p.issue_id=deployment_followup_watches.issue_id
+  ORDER BY p.deployed_at,p.deployment_id LIMIT 1
+ ) WHERE production_at IS NULL AND EXISTS(SELECT 1 FROM proof p WHERE p.repository_id=deployment_followup_watches.repository_id
+  AND p.sha=deployment_followup_watches.sha AND p.issue_id=deployment_followup_watches.issue_id)`);
+}
