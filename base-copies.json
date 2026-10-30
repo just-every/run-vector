@@ -373,7 +373,7 @@
     {
       "path": "scripts/delivery/base/schema/json-schema.mjs",
       "originPath": "schema/json-schema.mjs",
-      "revision": "d555e789cffb744a9f83d76ebe42a2e3bdd7a055",
+      "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
       "files": {
         "scripts/delivery/base/schema/json-schema.mjs": "f964a1f8bab23bfad0c8b6552d8e717091619fa438e0d6e65a9801e1d97782bc"
       },
@@ -398,7 +398,7 @@
     {
       "path": "scripts/delivery/base/schema/SETUP.schema.json",
       "originPath": "schema/SETUP.schema.json",
-      "revision": "d555e789cffb744a9f83d76ebe42a2e3bdd7a055",
+      "revision": "7ce44fa5b70b68b21d270ba54760dae28b4a37a7",
       "files": {
         "scripts/delivery/base/schema/SETUP.schema.json": "ac52bac39e7e7e4dace1c22dce370f76df52e7f5bb167730ecfd96b0b7961c86"
       },

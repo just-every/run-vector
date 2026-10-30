@@ -588,7 +588,7 @@
       "executable": false
     },
     "base-copies.json": {
-      "sha256": "394c198e8bcbcbaae9d381692d5173a88232b3a055d7d081a61146a7f60f8518",
+      "sha256": "5a0e809456da040a5063b50a7ac80840f669445915fa5c106f244012a3843e48",
       "executable": false
     },
     "BASELINE.md": {
@@ -3668,7 +3668,7 @@
       "executable": false
     },
     "src/core/features/agent-door/index.server.ts": {
-      "sha256": "80ac9d2ec8737be5a3c914e3bf7f4b31602fcfdc9d36c342613a967014301803",
+      "sha256": "108acc6cb75cc3a824fd9ab151d6d4fcc813a63624131a6f5549377c1dbccfa3",
       "executable": false
     },
     "src/core/features/agent-door/issues-content.ts": {
@@ -7044,7 +7044,7 @@
       "executable": false
     },
     "tests/agent-door/runtime-phases.mjs": {
-      "sha256": "6be81d79e5555f7a2df6a3a42812bcb56eae6bea8e5b35041de81af8a403fdfe",
+      "sha256": "861717f0d530619f29038bef44badf9dc48507ac97edfa5bb2bcc6b5c6b66354",
       "executable": false
     },
     "tests/agent-door/runtime-worker.ts": {
