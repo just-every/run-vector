@@ -122,6 +122,12 @@ Their durable event IDs survive retries and restart; deleting a root retains
 the identity of its replies. Subscriptions are portable configuration; signing
 credentials are excluded and restored historical events never replay.
 
+Apply `0115_comment_webhook_author_labels.sql` after unchanged 0114. Native
+comment events remain eligible when the comment has an external author label,
+including email-intake replies deleted by an Owner. The migration replaces only
+the event trigger and preserves queued events, delivery history and restore holds.
+Retain the forward migration on compatible-source rollback.
+
 Enable delivery in Settings → Integrations → Outbound webhooks. The page asks
 for the Cloudflare account ID and a token with Account / Workers Scripts / Read
 and Zone / Zone / Read for the hosting account and all its zones. Vector reads

@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "751a800e8582445bd35779ea21c04b1218737d1d82ebbc363b5ed8def21fdfb5",
+      "sha256": "565270c027653ad48ca276ebc2a2592c57d7d9b2d564cf0c3d0b91603fe38a95",
       "executable": false
     },
     "DEMO.md": {
@@ -649,7 +649,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "c76647768ff55aef0248db2eba42814a284b968b2889e23114d7d18c913bf774",
+      "sha256": "6677f8b0e61dfbe057f535e7d138f37d00c5c2bf8264f07a3289035bb2abd226",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "a12a9254650174cbe081889f6224b49c01fe072b30fac73e4961c7392c0351e8",
+      "sha256": "fa645e2732a1a743856fa990df2c0c3d2de066a87bff05931197180f19461443",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2470,6 +2470,10 @@
     },
     "migrations/core/0114_webhook_subscriptions.sql": {
       "sha256": "4dfdc71ff551e9363482308d8e9be64b5ce5311a252b106b925c2cde7b723954",
+      "executable": false
+    },
+    "migrations/core/0115_comment_webhook_author_labels.sql": {
+      "sha256": "e9f8589ed601a32d8c693910f9778e64ebd3cb1af509735756664a39ed1ee32f",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -8036,12 +8040,16 @@
       "sha256": "e602a03e0970b8dc996aac801fb64788c66d08c3d6a634d59ac889bfed1d9f1b",
       "executable": false
     },
+    "tests/worker/outbound-email-comment-journey.ts": {
+      "sha256": "298e8cfe30cfe3a0f80bc3cca34ad60a4112c67ca5e282ca48f1addca384d422",
+      "executable": false
+    },
     "tests/worker/outbound-subscription-upgrade.ts": {
       "sha256": "791da9564488821cfcdb283b5afabe468c8fcef4855768ed3297f08e959f8cf0",
       "executable": false
     },
     "tests/worker/outbound-webhooks.test.ts": {
-      "sha256": "199b9b2745af0b85838128a7cb5b6a957c4fcbc6dbad466e48f06b9a0c14559d",
+      "sha256": "2baa67405bcc7198ea6a8980947ac188293ca3fc579f2e927b22d2e454b2a562",
       "executable": false
     },
     "tests/worker/owner-claim-upgrade.test.ts": {
