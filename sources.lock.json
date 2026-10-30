@@ -572,7 +572,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "2209fea41de65bebbf0c08be273d0a903790b908e50d0f4ec109cd09866979bb",
+      "sha256": "c4dd7dd6e41d8cf84bc696e6a83608a63b13275a667eb9ec7c05dacb8e28de8f",
       "executable": false
     },
     "agent-surface.json": {
@@ -664,7 +664,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "a5b8e8e192ccbe3c20cd3bebc44c37f38251dc79af4eb7fdc635fae06c3772ec",
+      "sha256": "0e0cc731cfd9054455096229d7b8b9af825516136cea766cf025755d44a7f3ef",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2112,7 +2112,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "12338f1f8e1ade067e2f87c870c986263b5a3950ee97b8011264179c4b833ced",
+      "sha256": "db471e53a8a59c9d7a7a08eeea57a1237d8004e64d2377b94ca95684bce4de1e",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
