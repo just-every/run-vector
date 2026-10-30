@@ -20,7 +20,12 @@ const acceptance=read('ACCEPTANCE.md'),claims=read('docs/CLAIMS.md');
 const inherited=[...acceptance.matchAll(/<!-- contract-docs:([A-Z][A-Z0-9-]+) -->/g)].map(match=>match[1]);
 const ids=[...new Set(requested.length?requested:inherited)].sort();
 if(!ids.length)throw Error('Name the touched clauses for initial view generation.');
-let nextAcceptance=acceptance,nextClaims=claims;
+const acceptanceLines=acceptance.split('\n');
+const acceptanceSummary=acceptanceLines.findIndex(line=>line==='| Clauses | Done | Partial | Missing | Total |');
+if(acceptanceSummary<0)throw Error('The acceptance view needs its Status summary table.');
+let acceptanceEnd=acceptanceSummary+2;while(acceptanceLines[acceptanceEnd]?.startsWith('|'))acceptanceEnd++;
+acceptanceLines.splice(acceptanceSummary+2,acceptanceEnd-acceptanceSummary-2,...rows.map(([label,clauses])=>'| '+[label,...tally(clauses)].join(' | ')+' |'));
+let nextAcceptance=acceptanceLines.join('\n'),nextClaims=claims;
 const escape=value=>value.replaceAll('|','\\|').replaceAll('\n',' ');
 for(const id of ids){
  const clause=parsed.clauses.find(clause=>clause.id===id);if(!clause)throw Error('No contract clause '+id);

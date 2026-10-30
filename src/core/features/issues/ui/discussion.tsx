@@ -153,6 +153,7 @@ function DiscussionContents({
               setUploadError("Files must be 25 MB or smaller.");
               return;
             }
+            setUploadError("");
             setFilesOpen(true);
             void mutate("files", {
               method: "POST",

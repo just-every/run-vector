@@ -7,7 +7,7 @@ const teammate = 'Thread teammate';
 
 /** ISSUE-008: a teammate replies twice and resolves; the author reopens with a reply. */
 export async function threadsJourney(page, context, base, state, teamId, evidence, record) {
-  const description = 'Review the **report summary** before shipping. This text stays.';
+  const description = 'Review the **report summary** before shipping. Use `synthetic-vector-1`.\n\n```txt\nsynthetic-vector-2\n```\n\nThis text stays.';
   const created = await context.request.post(base + '/api/issues', { headers: { Origin: base }, data: { title: `Thread journey ${Date.now()}`, teamId, description } });
   assert.equal(created.status(), 201);
   const { identifier } = await created.json();
@@ -78,6 +78,15 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
 
   // Use the browser selection in the rendered description, including Markdown
   // formatting. The resulting thread belongs in the adjacent margin.
+  for (const literal of ['synthetic-vector-1','synthetic-vector-2']) {
+    await page.locator('.issue-description code[data-description-start]').filter({hasText:literal}).evaluate(element => {
+      const range=document.createRange();range.selectNodeContents(element);
+      const selected=window.getSelection();selected.removeAllRanges();selected.addRange(range);
+    });
+    await page.getByRole('button',{name:'Comment on selection',exact:true}).click();
+    assert.equal(await page.locator('.description-thread-margin form blockquote').innerText(),literal);
+    await page.getByRole('complementary',{name:'Description threads',exact:true}).getByRole('button',{name:'Cancel',exact:true}).click();
+  }
   await page.locator('.issue-description [data-description-start]').filter({hasText:'report summary'}).evaluate(element => {
     const range = document.createRange();
     range.selectNodeContents(element);
@@ -87,6 +96,7 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await page.getByRole('button', {name:'Comment on selection',exact:true}).click();
   await page.getByRole('textbox', {name:'Comment on quoted text',exact:true}).fill('Can we confirm these totals?');
   await page.getByRole('button', {name:'Start thread',exact:true}).click();
+  await page.locator('.description-thread-margin form.comment-composer').waitFor({state:'detached'});
   const margin = () => page.getByRole('complementary',{name:'Description threads',exact:true});
   await margin().getByText('Can we confirm these totals?',{exact:true}).waitFor();
   const persisted = (await (await context.request.get(base + `/api/issues/${identifier}/discussion`)).json()).comments.find(c=>c.anchor);
@@ -94,6 +104,12 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await open();
   await margin().getByRole('blockquote',{name:'Quoted description text'}).getByText('report summary',{exact:true}).waitFor();
   await margin().getByText('Can we confirm these totals?',{exact:true}).waitFor();
+  await margin().getByRole('button',{name:'Show quoted text',exact:true}).click();
+  assert.equal(await page.evaluate(()=>window.getSelection().toString()),'report summary');
+  const reaction = margin().getByRole('button',{name:'Add 👍 reaction',exact:true});
+  await reaction.focus();
+  await page.getByRole('tooltip',{name:'Add 👍 reaction',exact:true}).waitFor();
+  await reaction.blur();
   const sourceBox = await page.locator('.description-source').boundingBox(), marginBox = await margin().boundingBox();
   assert.ok(marginBox.x >= sourceBox.x + sourceBox.width, 'The quote is shown in the description margin on desktop');
   for (const width of [1440,390]) {
@@ -126,4 +142,27 @@ export async function threadsJourney(page, context, base, state, teamId, evidenc
   await settleReads(page);
   record('ISSUE-008','Highlighting formatted issue-description text starts a quoted thread in the margin. Its quote and source positions survive reload; removing the source retains the thread, marks the quote removed and keeps replies after reload. Desktop and phone screens recorded.');
 
+  const { operators } = await (await context.request.get(base + '/api/mentions/options')).json();
+  const operator = operators[0];
+  const linked = await (await context.request.post(base + '/api/issues', {headers:{Origin:base},data:{teamId,title:'Release review checklist'}})).json();
+  const name = encodeURIComponent(operator.name).replace(/[!'()*]/g, c => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  const selectedSource = `Ask @{${operator.id}|${name}} to review ${linked.identifier}`;
+  const current = await (await context.request.get(base + `/api/issues/${identifier}`)).json();
+  await context.request.patch(base + `/api/issues/${identifier}`, {headers:{Origin:base},data:{expectedVersion:current.version,description:selectedSource}});
+  await open();
+  await page.locator('.issue-description .mention-chip').waitFor();
+  await page.locator(`.issue-description a[href="/app/issues/${linked.identifier}"]`).waitFor();
+  await page.locator('.issue-description p').evaluate(element => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const selected = window.getSelection();
+    selected.removeAllRanges(); selected.addRange(range);
+  });
+  await page.getByRole('button',{name:'Comment on selection',exact:true}).click();
+  await page.getByRole('textbox',{name:'Comment on quoted text',exact:true}).fill('Please confirm the release review.');
+  await page.getByRole('button',{name:'Start thread',exact:true}).click();
+  await page.locator('.description-thread-margin form.comment-composer').waitFor({state:'detached'});
+  await margin().getByText('Please confirm the release review.',{exact:true}).waitFor();
+  const selectedThread = (await (await context.request.get(base + `/api/issues/${identifier}/discussion`)).json()).comments.find(c=>c.body==='Please confirm the release review.');
+  assert.deepEqual(selectedThread.anchor,{quote:selectedSource,start:0,end:Array.from(selectedSource).length,removed:false});
 }

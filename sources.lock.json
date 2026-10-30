@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "61cfad02184ec264b2f782de017cf45a1fa830751121798c68059286bb377fda",
+      "sha256": "554d7b440d80caeac4660fbc7d2e686bbb758346d2b11219946f0063b8d78a19",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -2013,7 +2013,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "976867172be074ab25048fbe5e60ce813a02bbdcb5f6a5aefe19fc78db0dbf60",
+      "sha256": "1e1088c0f371092cfe2de39122b80d11e63f62913bb09a14b786e9cdd5f77f6d",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -2465,7 +2465,7 @@
       "executable": false
     },
     "migrations/core/0113_description_thread_anchors.sql": {
-      "sha256": "920462e5d9785380225e7cda97a2429961090131725bfc300ec651690b918ba2",
+      "sha256": "c851f3cd2696c5594c7079d4f0a4536739ce4ba7553c46b32f90ca350ef21ebc",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -2545,7 +2545,7 @@
       "executable": false
     },
     "RELEASE.json": {
-      "sha256": "1b5a54539714a91f9d1c82ef261e042895aaad0cec461f0e1a5ebfa0ef94309f",
+      "sha256": "5a8d092539034244bfc8cad61cb49d26daae3f1e305f13f67ddd036dc0000582",
       "executable": false
     },
     "rer-project.json": {
@@ -2593,7 +2593,7 @@
       "executable": false
     },
     "scripts/contract-docs.mjs": {
-      "sha256": "48fb1d22cce8d1d6b0283d5dd0ea5fb587cf00dd22e3957cb99300e0819200ed",
+      "sha256": "b57e1a99241da5a0652968a81126a7f2dd67e4fde342cfd6521c30355dc94864",
       "executable": false
     },
     "scripts/data/archive-upgrade-plan.mjs": {
@@ -4209,7 +4209,7 @@
       "executable": false
     },
     "src/core/features/discussion/anchors.ts": {
-      "sha256": "a60fe60005ada549fbc3793cdc3a2dea88dc7aa41df70d74452fafc2d969fa52",
+      "sha256": "02507b4549c8ac46105fed10dea0e38708e2760f7669085e7dc3fc4c727ef1a9",
       "executable": false
     },
     "src/core/features/discussion/permissions.ts": {
@@ -5073,7 +5073,7 @@
       "executable": false
     },
     "src/core/features/issue-references/ui/remark.ts": {
-      "sha256": "8502b92ecf42235adb7db568f111a64f115a271633efb3275186fb4018f0f7e6",
+      "sha256": "80d0a733faf1d946e7bf8e47b0d33920f14e39b29ef7ddbe0e287ce6ec43b588",
       "executable": false
     },
     "src/core/features/issue-undo/admission.ts": {
@@ -5229,7 +5229,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/description-discussion.tsx": {
-      "sha256": "4a9fd058efabe63af0c0a7939c97dd8754cda544b74020cd559ef9fc0cb7327b",
+      "sha256": "468fafe5ea63fa05691525471acd285339614a0314697a3ef721c72c8c5dd84a",
       "executable": false
     },
     "src/core/features/issues/ui/detail-context.css": {
@@ -5245,11 +5245,11 @@
       "executable": false
     },
     "src/core/features/issues/ui/discussion-thread.tsx": {
-      "sha256": "1c6b31ffcc8439c1325242b385bd5a5ccb4da8bf8efea81ea05ab530b35e7ea9",
+      "sha256": "b60ef71fd1e55186703c5f17cc2d347553338e9577df68d357431487835b1f48",
       "executable": false
     },
     "src/core/features/issues/ui/discussion.tsx": {
-      "sha256": "c931299f260fc3f0971df7cdd5d5023869bc02d92b40f2b4eb5621485c5c74ce",
+      "sha256": "edd3220edf24ef892b6f8a5ee333d4d91e565f28cecae1ebdf4c3d3dcb0017fe",
       "executable": false
     },
     "src/core/features/issues/ui/intake-recommendation.ts": {
@@ -5497,11 +5497,11 @@
       "executable": false
     },
     "src/core/features/markdown/ui/formatting.tsx": {
-      "sha256": "0edcbf2b703034a3bf192b744134fef90082842fe6d246cb41f3583e4926c1aa",
+      "sha256": "6223b4c60eb26a7f016a3e94de28c371ed0da2191556b4cd508f383ffaad95ad",
       "executable": false
     },
     "src/core/features/markdown/ui/markdown.tsx": {
-      "sha256": "dfdfb688b54892a77cf27fb6deee6e804e38089cb504bc2d00889d47a2d25b9d",
+      "sha256": "b6a74bfb8c92a316f982db412848d0482eba35de49ec0050b241cf70cf450926",
       "executable": false
     },
     "src/core/features/markdown/ui/task-checkbox.tsx": {
@@ -5593,7 +5593,7 @@
       "executable": false
     },
     "src/core/features/notifications/mention-markdown.ts": {
-      "sha256": "1dfcd151a5606353b7560eabb50e494dd4e1a6088774a39eb5844aef3317bfa7",
+      "sha256": "679f224218998f074c8157bedb3e906f604ba670c1fbdfb4553d74a50c564a85",
       "executable": false
     },
     "src/core/features/notifications/mention-token.ts": {
@@ -6945,7 +6945,7 @@
       "executable": false
     },
     "tests/e2e/core-draft-journey.mjs": {
-      "sha256": "56a8119cf5f70f063fa32da15249cb6b98d7061d726486344fbe8f51ea0902c9",
+      "sha256": "d23da82e48f695cbe1caab477de541ae7ba52ad6a32004fbec96cdf7229c6546",
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
@@ -6981,7 +6981,7 @@
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
-      "sha256": "55da33f6301b6fa9154cca04090c31933fd3758f3466c82b1c1aca7325cd7db3",
+      "sha256": "b4d07bbad3bf7b1e11f90c36180928200c0fce80149e2497fa77bf242e46c255",
       "executable": false
     },
     "tests/e2e/core-project-health-journey.mjs": {
@@ -7033,7 +7033,7 @@
       "executable": false
     },
     "tests/e2e/core-threads-journey.mjs": {
-      "sha256": "55509816a68114fe27c76ecfaaf559f1ed257220996580e9aaece6168e41e358",
+      "sha256": "525793130fa8a85487d83188d8ad1f20ffc135fb705fd69fa01e25feef2cf470",
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
@@ -7765,7 +7765,7 @@
       "executable": false
     },
     "tests/worker/discussion-threads.test.ts": {
-      "sha256": "0b7e9e43337509d6219f677e63a213aa425803964981277d1b4ea579cacc185e",
+      "sha256": "6531ce46097262f37aff5ff3a6d744e65172ac5b76987789c86d077e0b439bb8",
       "executable": false
     },
     "tests/worker/documents-scenario.ts": {

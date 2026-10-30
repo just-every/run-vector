@@ -80,9 +80,9 @@ The counts below are computed from CONTRACT.md's Status rows; they describe reco
 
 | Clauses | Done | Partial | Missing | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Published | 97 | 7 | 0 | 104 |
-| Target and push further | 35 | 51 | 69 | 155 |
-| All | 132 | 58 | 69 | 259 |
+| Published | 98 | 6 | 0 | 104 |
+| Target and push further | 38 | 48 | 69 | 155 |
+| All | 136 | 54 | 69 | 259 |
 
 ### Public homepage
 

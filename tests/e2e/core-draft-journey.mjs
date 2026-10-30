@@ -4,17 +4,26 @@ import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 export const expectedDraftFailures = new Set();
 
 export async function draftJourney(page, context, base, teamId, operatorId, record) {
+  const target = base + '/app/new-issue';
+  await beforePrivateNavigation(page, target);
   expectedDraftFailures.add(base + '/api/metadata');
   // A failed team-metadata read must expose recovery through the same form door.
-  await page.route('**/api/metadata', route => route.fulfill({ status: 500,
-    contentType: 'application/json', body: JSON.stringify({ error: 'unavailable' }) }));
-  await beforePrivateNavigation(page, base + '/app/new-issue');
-  await page.goto(base + '/app/new-issue');
+  // Do not inject into a late read from the departing Current document.
+  let failedMetadataReads = 0;
+  const failMetadata = route => {
+    if (route.request().headers().referer !== target) return route.fallback();
+    ++failedMetadataReads;
+    return route.fulfill({ status: 500, contentType: 'application/json',
+      body: JSON.stringify({ error: 'unavailable' }) });
+  };
+  await page.route('**/api/metadata', failMetadata);
+  await page.goto(target);
   await page.getByRole('alert').filter({ hasText: 'Unable to load issue options.' }).waitFor();
   assert.equal(await page.getByRole('button', { name: '← Back', exact: true }).isEnabled(), true);
-  await page.unroute('**/api/metadata');
+  await page.unroute('**/api/metadata', failMetadata);
   await page.getByRole('button', { name: 'Try again', exact: true }).click();
   await page.getByRole('textbox', { name: /^Title/, disabled: false }).waitFor();
+  assert.equal(failedMetadataReads, 1, 'Only the issue form metadata read receives the injected failure');
   expectedDraftFailures.delete(base + '/api/metadata');
   const title = `Unsent browser draft ${Date.now()}`;
   const fields = [
