@@ -140,7 +140,7 @@ function CommentEntry({ comment: c, identifier, data, busy, mutate, onLinksChang
       {c.imported ? <span> (imported)</span> : null}
       <CommentTimestamp createdAt={c.createdAt} editedAt={c.editedAt} />
       {c.deletedAt ? (
-        <p>Comment deleted</p>
+        <p>Comment deleted{c.deletedBy ? <> by <strong>{c.deletedBy}</strong></> : null}</p>
       ) : editing ? (
         <form
           onSubmit={(event) => {

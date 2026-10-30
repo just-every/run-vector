@@ -74,7 +74,8 @@ export async function documentThreadScenario(){
  await read(await f.call('/settings/teams/'+team.id+'/members/'+f.cara,'PUT',{role:'owner'}));
  before=await snapshot(changedTables);expect((await f.any(f.caraCookie,path+'/comments/'+root,'PATCH',{body:'Refused moderator edit'})).status).toBe(403);expect(await snapshot(changedTables)).toEqual(before);
  await read(await f.any(f.caraCookie,path+'/comments/'+root,'DELETE'));
- expect((await comments()).find(c=>c.id===root)).toMatchObject({body:null,anchor:null,deletedAt:expect.any(String)});
+ const moderator=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.cara).first<string>('name');
+ expect((await comments()).find(c=>c.id===root)).toMatchObject({body:null,anchor:null,deletedAt:expect.any(String),deletedBy:moderator});
  expect((await comments()).filter(c=>c.parentId===root).map(c=>c.id)).toEqual([first,second,third]);
  expect(await env.DB.prepare("SELECT actor_operator_id actor FROM audit_records WHERE action='comment.deleted' AND subject_id=?").bind(root).first()).toEqual({actor:f.cara});
  const deletion=(await read(await f.call(path))).activity.find((entry:any)=>entry.kind==='comment.deleted'&&entry.nextValue.id===root);

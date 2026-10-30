@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0b51b4b605af2e9a332f927939fca55693229c8cce037edebd62f40d066f5488",
+      "sha256": "4eb4da5dc097b4c9d0613529add71232b93ed8070c556ee780fec2829c4552f7",
       "executable": false
     },
     "DEMO.md": {
@@ -4221,7 +4221,7 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "0fb3b22e92d34dcb744b37991cf0ff272f58d824e8e0fca9ea912782147d65d7",
+      "sha256": "a8cdd979160e871edbf9e9bdffb0933887adf60b7f9bdf6c8f4ea3e3e3747faa",
       "executable": false
     },
     "src/core/features/discussion/revision.ts": {
@@ -4233,7 +4233,7 @@
       "executable": false
     },
     "src/core/features/discussion/schema.ts": {
-      "sha256": "ae1d6bb8fb1fd28d71f83c77f6fc18529d0d899ce095f7a50bf256de702fe8a4",
+      "sha256": "3f3f65233e6797ef9d81e867bf1eb10aebb45a92fbaac70b230c6793bfd9c3f0",
       "executable": false
     },
     "src/core/features/discussion/threads.ts": {
@@ -5249,7 +5249,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/discussion-thread.tsx": {
-      "sha256": "233dfeac7f82b64e6ccdbaba25a886f30e09d990d941f4ee06add754733e7537",
+      "sha256": "09b38060174b4a3a9b16795d5ec5260288d99161c0bbf4eed6d485a5d763bae9",
       "executable": false
     },
     "src/core/features/issues/ui/discussion.tsx": {
@@ -7321,7 +7321,7 @@
       "executable": false
     },
     "tests/e2e/project-documents-journey.mjs": {
-      "sha256": "f537af8aa4e128d6e72dbe1bea7f7c7419ceb7c454b2da4ad2fda92786fb8423",
+      "sha256": "7395e91369df0b77acc5cfea03079a8447457a48e71872a600455c5019a56f10",
       "executable": false
     },
     "tests/e2e/project-report-runtime.mjs": {
@@ -7773,11 +7773,11 @@
       "executable": false
     },
     "tests/worker/document-thread-scenario.ts": {
-      "sha256": "d764d27328fc0baadab42e0888c41f1aa16ca577060ac18572095101a416d7c9",
+      "sha256": "dc4b66ca5078715e3bddae4490b7293e3d192de8a28cf39f043aa8ab75a3abdd",
       "executable": false
     },
     "tests/worker/documents-scenario.ts": {
-      "sha256": "219abeaf6d9610989a45b704a3246ad80b73c586d2390062fa0f66a4c5b4ae66",
+      "sha256": "90f4f9ebc3a174689f5cb3e998202343cfece4671afbd210a12c9498b5d982e5",
       "executable": false
     },
     "tests/worker/due-reminders-fixture.ts": {
@@ -8061,7 +8061,7 @@
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
-      "sha256": "5e4ecc46412151f8b41b8f229a1819f06d8d193d791f680de9c68d5a0cdc8318",
+      "sha256": "59d582dedaed11b1955970fa2cebbfe793ab99af16c90fd6bdcb189032d9afbf",
       "executable": false
     },
     "tests/worker/project-fields.test.ts": {

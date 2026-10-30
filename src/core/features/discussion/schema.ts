@@ -18,6 +18,7 @@ export const discussionSchema = z.object({
       resolvedBy: z.string().nullable(),
       editedAt: z.string().nullable(),
       deletedAt: z.string().nullable(),
+      deletedBy: z.string().nullable(),
       createdAt: z.string(),
     }),
   ),

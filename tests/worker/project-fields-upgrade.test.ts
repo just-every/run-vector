@@ -1,7 +1,9 @@
 import {env} from 'cloudflare:workers';
 import {proveViewerRoleUpgrade} from './viewer-role-upgrade';
-import { it } from 'vitest';
+import { expect,it } from 'vitest';
 import { provePopulatedUpgrade } from './populated-upgrade';
+import {sampleOwner,sampleBindings} from './sample-auth-fixture';
+import {request} from './base-auth-fixture';
 
 it('[PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrades preserve records and export the extended planning inventory',async()=>{
   await proveViewerRoleUpgrade();
@@ -16,4 +18,24 @@ it('[PROJ-001 DATA-005 BASE-OPS-002] populated project and previous-head upgrade
     await env.DB.prepare("INSERT INTO document_revisions(id,document_id,version,title,body,author_operator_id,created_at) SELECT '01K00000000000000000000032',id,version,title,body,author_operator_id,created_at FROM documents WHERE id='01K00000000000000000000031'").run();
     await env.DB.prepare("UPDATE issue_comments SET description_anchor=? WHERE id='01K00000000000000000000011'").bind(JSON.stringify({quote:'retained legacy quote',start:0,end:21,removed:true})).run();
   });
+  // Exercise the added source identity through native doors on the populated upgrade.
+  const cookie=await sampleOwner();
+  const read=async(path:string,method='GET',body?:unknown,status=200)=>{
+    const response=await request('/api'+path,method,body,cookie,sampleBindings);
+    expect(response.status,await response.clone().text()).toBe(status);
+    return response.json() as Promise<any>;
+  };
+  const documentId='01K00000000000000000000031',doc=await read('/documents/'+documentId);
+  const issue=(await env.DB.prepare('SELECT identifier FROM issues WHERE id=?').bind(doc.parentId).first<{identifier:string}>())!;
+  const path='/issues/'+issue.identifier,quote='café 🧪';
+  const root=await read(path+'/comments','POST',{body:'synthetic-vector-upgraded-thread',anchor:{documentId,quote,start:2,end:8,expectedVersion:doc.version,expectedBody:doc.body}},201);
+  const reply=await read(path+'/comments','POST',{body:'synthetic-vector-upgraded-reply',parentId:root.id},201);
+  let comments=(await read(path+'/discussion')).comments;
+  expect(comments.find((c:any)=>c.id===root.id).anchor).toEqual({documentId,quote,start:2,end:8,removed:false});
+  expect(comments.find((c:any)=>c.id==='01K00000000000000000000011').anchor).toEqual({quote:'retained legacy quote',start:0,end:21,removed:true});
+  await read('/documents/'+documentId,'PATCH',{expectedVersion:doc.version,body:'synthetic-vector-removed-upgrade-source'});
+  comments=(await read(path+'/discussion')).comments;
+  expect(comments.find((c:any)=>c.id===root.id).anchor).toMatchObject({documentId,quote,removed:true});
+  expect(comments.find((c:any)=>c.id===reply.id)).toMatchObject({parentId:root.id,body:'synthetic-vector-upgraded-reply'});
+  console.log('PROBE ISSUE-008 populated upgrade: previous populated schema → native document quote and reply → source removal retains the new thread and legacy description anchor');
 },180000);

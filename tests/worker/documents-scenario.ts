@@ -56,7 +56,12 @@ export async function documentJourney(){
  await read(await f.call('/documents/'+issueDoc.id,'PATCH',{expectedVersion:issueDoc.version,body:'synthetic-vector-source-removed'}));
  const portable=await read(await f.call('/documents','POST',{parentKind:'issue',parentId:issue.id,title:'synthetic-vector-live-quote',body:'🧭 café 🧪'}),201);
  const live=await read(await f.call('/issues/'+issue.identifier+'/comments','POST',{body:'synthetic-vector-live-thread',anchor:{documentId:portable.id,quote:'café 🧪',start:2,end:8,expectedVersion:portable.version,expectedBody:portable.body}}),201);
+ const deleted=await read(await f.call('/issues/'+issue.identifier+'/comments','POST',{body:'synthetic-vector-deleted-portable-thread',anchor:{documentId:portable.id,quote:'café 🧪',start:2,end:8,expectedVersion:portable.version,expectedBody:portable.body}}),201);
+ const retained=await read(await f.call('/issues/'+issue.identifier+'/comments','POST',{body:'synthetic-vector-retained-portable-reply',parentId:deleted.id}),201);
+ await read(await f.call('/issues/'+issue.identifier+'/comments/'+deleted.id,'DELETE'));
  const beforeThreads=(await read(await f.call('/issues/'+issue.identifier+'/discussion'))).comments;
+ const deleter=await env.DB.prepare('SELECT name FROM operators WHERE id=?').bind(f.owner).first<string>('name');
+ expect(beforeThreads.find((c:any)=>c.id===deleted.id)).toMatchObject({body:null,anchor:null,deletedBy:deleter,deletedAt:expect.any(String)});
  expect(beforeThreads.find((c:any)=>c.id===anchored.id).anchor).toEqual({documentId:issueDoc.id,quote,start,end:Array.from(quote).length,removed:true});
  expect(beforeThreads.find((c:any)=>c.id===live.id).anchor).toMatchObject({documentId:portable.id,quote:'café 🧪',removed:false});
  const native=await env.DB.prepare('SELECT '+(await import('../../src/core/features/data/import/native-snapshot')).snapshotExpression+' value FROM issues i WHERE id=?').bind(issue.id).first<string>('value');
@@ -88,6 +93,8 @@ export async function documentJourney(){
  const restored=await read(await targetCall('/api/issues/'+issue.identifier+'/discussion','GET',undefined,historical));
  expect(restored.comments).toEqual(beforeThreads);
  expect(restored.comments.find((c:any)=>c.id===reply.id)).toMatchObject({parentId:anchored.id,body:'synthetic-vector-portable-reply'});
+ expect(restored.comments.find((c:any)=>c.id===deleted.id)).toMatchObject({body:null,anchor:null,deletedBy:deleter});
+ expect(restored.comments.find((c:any)=>c.id===retained.id)).toMatchObject({parentId:deleted.id,body:'synthetic-vector-retained-portable-reply'});
  expect(await read(await targetCall('/api/documents/'+portable.id,'GET',undefined,historical))).toMatchObject({id:portable.id,body:portable.body,parentId:issue.id});
  const restoredDoc=await read(await targetCall('/api/documents/'+issueDoc.id,'GET',undefined,historical));
  await read(await targetCall('/api/documents/'+issueDoc.id,'PATCH',{expectedVersion:restoredDoc.version,body:issueDoc.body},historical));

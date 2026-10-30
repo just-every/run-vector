@@ -273,5 +273,16 @@ export async function documentQuoteJourney({page,base,api,proof}){
  doc=await api('/documents/'+doc.id);await api('/documents/'+doc.id,'PATCH',{expectedVersion:doc.version,body});
  assert.equal((await api('/issues/'+issue.identifier+'/discussion')).comments.find(c=>c.id===root.id).anchor.removed,true);
  await page.setViewportSize({width:1440,height:1000});
+ await go('/app/issues/'+issue.identifier);
+ const retainedThread=page.getByRole('region',{name:/^Thread started by/}).filter({hasText:'First document reply.'});
+ await retainedThread.locator('.comment-entry').first().getByRole('button',{name:'Delete comment',exact:true}).click();
+ await retainedThread.getByText('Comment deleted by Administration owner',{exact:true}).waitFor();
+ await page.reload();await retainedThread.getByText('Comment deleted by Administration owner',{exact:true}).waitFor();
+ assert.deepEqual(await retainedThread.locator('.comment-replies .comment-body').allInnerTexts(),['First document reply.','Second document reply.','Reply reopens the document thread.']);
+ const deleted=(await api('/issues/'+issue.identifier+'/discussion')).comments.find(c=>c.id===root.id);
+ assert.equal(deleted.body,null);assert.equal(deleted.anchor,null);assert.equal(deleted.deletedBy,'Administration owner');
+ for(const width of [1440,390]){await page.setViewportSize({width,height:width===390?844:1000});await retainedThread.scrollIntoViewIfNeeded();await proof('issue-document-thread-tombstone',width);}
+ await page.setViewportSize({width:1440,height:1000});
  console.log('PROBE ISSUE-008 document selection: issue Documents → rendered second Unicode occurrence → persisted source and margin; replies, resolution, reload, source removal and issue retention PASS at 1440 and 390');
+ console.log('PROBE ISSUE-008 attributed tombstone: native Delete comment → deleter named after reload, source quote erased, three ordered replies retained at 1440 and 390');
 }

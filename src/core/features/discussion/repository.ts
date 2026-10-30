@@ -42,6 +42,11 @@ export function discussionReadStatements(db: D1Database, issueId: string, actor?
       .prepare(
         `SELECT c.id,c.parent_comment_id AS parentId,c.body,${commentVersionSql} AS version,c.edited_at AS editedAt,c.deleted_at AS deletedAt,c.created_at AS createdAt,COALESCE(c.imported_author_name,o.name) AS actor,c.imported_author_name IS NOT NULL AS imported,
  c.resolved_at AS resolvedAt,r.name AS resolvedBy,COALESCE(c.document_anchor,c.description_anchor) AS anchor,
+ CASE WHEN c.deleted_at IS NOT NULL THEN (
+   SELECT deleter.name FROM audit_records deletion JOIN operators deleter ON deleter.id=deletion.actor_operator_id
+   WHERE deletion.action='comment.deleted' AND deletion.subject_id=c.id
+   ORDER BY deletion.created_at DESC,deletion.id DESC LIMIT 1
+ ) END AS deletedBy,
  (c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL AND c.deleted_at IS NULL) AS canEdit,
  (c.deleted_at IS NULL AND ((c.actor_operator_id=? AND o.role<>'viewer' AND c.imported_author_name IS NULL) OR ${moderatorSql})) AS canDelete
  FROM issue_comments c JOIN operators o ON o.id=c.actor_operator_id LEFT JOIN operators r ON r.id=c.resolved_by_operator_id
