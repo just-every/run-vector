@@ -1,3 +1,4 @@
+// Document issue references retain live and removed backlinks as portable domain data.
 // Initiative channel bindings are portable domain configuration, like vector_channel_bindings.
 // Initiative destination approvals and scoped binding custody are portable domain configuration; approvals name
 // provider identities, never credentials, and a restored Discord copy still needs its webhook re-entered.

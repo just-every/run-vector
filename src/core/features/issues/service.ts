@@ -160,9 +160,10 @@ export function buildIssueDetail(
       ),
     }));
   const visibleIssueIds = new Set(snapshot.issues.map(item => item.id));
+  const visibleDocumentIds = new Set(snapshot.documents.map(item => item.id));
   const activity = snapshot.activity
     .filter((item) => item.issueId === issue.id)
-    .filter((item) => referenceSourceVisible(item, visibleIssueIds))
+    .filter((item) => referenceSourceVisible(item, visibleIssueIds, visibleDocumentIds))
     .sort((left, right) => left.createdAt.localeCompare(right.createdAt))
     .map((item) => ({
       id: item.id,
