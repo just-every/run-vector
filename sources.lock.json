@@ -3636,7 +3636,7 @@
       "executable": false
     },
     "src/core/features/agent-door/access-membership.ts": {
-      "sha256": "92fa9f364bd9123287472807b3ee52cbe9ca6814ac4af9ba0b94c702037ba4f2",
+      "sha256": "bac768d525ee973983376a9a8ac109d72066a0d4e9fc2c02a376a3be5cdb9b77",
       "executable": false
     },
     "src/core/features/agent-door/access-native.ts": {

@@ -71,4 +71,3 @@ export function vectorMembershipTools(env: WorkerBindings) {
       run: async (db, person, args) => { await decideMembership(db, person.id, args.id, args.requesterId, args.decision); return { id: args.id, requesterId: args.requesterId, decision: args.decision }; } }),
   ];
 }
-
