@@ -1,3 +1,4 @@
+import { parentStateMatches } from "./parent-state";
 import type { UndoAction, UndoFailure } from "./schema";
 import { duplicateGraphSql, issueSnapshotObjectSql } from "./snapshot";
 
@@ -6,6 +7,7 @@ const reasons = {
   state: "The issue or its retained property data changed.",
   latest: "A newer action is available; this is no longer the most recent action.",
   graph: "The duplicate relations changed after this action.",
+  parents: "The parent relation, ordering or progress changed after this action.",
   team: "The original team is unavailable or archived.",
   status: "The original workflow status is unavailable or changed category.",
   assignee: "The original assignee is unavailable in this workspace.",
@@ -45,6 +47,7 @@ export function undoAdmission(db: D1Database, actor: string, sessionHash: string
         WHERE newer.rowid>(SELECT sequence FROM eligible)
           AND json_extract(newer.next_value_json,'$.undo.workspaceId')=actor.workspace_id) latest,
       ${action.kind === "duplicate" ? `${duplicateGraphSql} IS NOT json_extract(command.body,'$.graph')` : "0"} graph,
+      ${action.kind === "parent" ? `NOT ${parentStateMatches(action, "after")}` : "0"} parents,
       (${changed("teamId")}) AND NOT EXISTS(SELECT 1 FROM teams original JOIN actor ON actor.workspace_id=original.workspace_id
         WHERE original.id=${before("teamId")} AND original.archived_at IS NULL) team,
       NOT EXISTS(SELECT 1 FROM workflow_statuses original WHERE original.id=${before("statusId")}

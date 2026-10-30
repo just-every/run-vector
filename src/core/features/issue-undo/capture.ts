@@ -1,3 +1,4 @@
+import { parentGraphSql, parentIdsSql, parentRulesSql, parentSnapshotSql, prepareParentState } from "./parent-state";
 import { isMutationAccessError } from "../auth/mutation-database";
 import { IssueAccessError } from "../issues/access";
 import { recordCommittedUndo, undoSessionHash } from "./context";
@@ -14,9 +15,10 @@ export class UndoCaptureConflict extends Error {
 type Capture = {
   actionId: string; workspaceId: string; sessionHash: string; kind: UndoAction["kind"];
   fields: SnapshotField[]; ids: string; sources: string; cascade: boolean; before: string; graph: string; identifiers: string[];
+  parents?: Awaited<ReturnType<typeof prepareParentState>>;
 };
 export async function prepareUndoCapture(db: D1Database, actor: string, input: {
-  actionId: string | null; identifiers: string[]; fields: string[]; kind: UndoAction["kind"]; cascade?: boolean;
+  actionId: string | null; identifiers: string[]; fields: string[]; kind: UndoAction["kind"]; cascade?: boolean; parentId?: string | null;
 }): Promise<Capture | null> {
   const sessionHash = await undoSessionHash(db);
   if (!sessionHash || !input.actionId || !input.identifiers.length) return null;
@@ -39,7 +41,10 @@ export async function prepareUndoCapture(db: D1Database, actor: string, input: {
     ${input.kind === "duplicate" ? duplicateGraphSql : "'[]'"} graph`).bind(ids).first<{ snapshot: string; graph: string }>();
   if (!snapshot || issueSnapshotSchema.array().parse(JSON.parse(snapshot.snapshot)).length !== rows.length)
     throw new IssueAccessError("not_found", "An issue is unavailable.", 404);
-  return { actionId: input.actionId, workspaceId: workspace, sessionHash, kind: input.kind, fields, ids,
+  const parents = input.kind === "parent" ? await prepareParentState(db, rows[0].id, input.parentId ?? null) : undefined;
+  if (parents && parents.ids.length !== parents.before.length)
+    throw new IssueAccessError("not_found", "An issue is unavailable.", 404);
+  return { parents, actionId: input.actionId, workspaceId: workspace, sessionHash, kind: input.kind, fields, ids,
     sources: JSON.stringify(rows.filter((row) => input.identifiers.includes(row.identifier)).map((row) => row.id)), cascade: Boolean(input.cascade),
     before: snapshot.snapshot, graph: snapshot.graph, identifiers: rows.map((row) => row.identifier) };
 }
@@ -55,17 +60,21 @@ export async function commitUndoable(db: D1Database, actor: string, capture: Cap
   const admission = captureAdmission(db, actor, capture);
   const guard = db.prepare(`SELECT CASE WHEN admitted THEN 1 ELSE json('undo capture changed') END FROM (${admissionSql(capture)})`)
     .bind(...admissionValues(actor, capture));
+  const parentIds = parentIdsSql(capture.parents?.ids ?? []);
+  const parents = capture.parents ? `json_object('ids',json(${parentIds}),'before',json(?),
+    'after',json(${parentSnapshotSql(parentIds)}),'graph',substr(${parentGraphSql(parentIds)},1),'rules',substr(${parentRulesSql(parentIds)},1))` : "NULL";
   const metadata = db.prepare(`WITH ${memberCte}, pre AS (SELECT value body FROM json_each(?)),
       post AS (SELECT value body FROM json_each(${snapshot}))
     UPDATE issue_activity SET next_value_json=json_set(COALESCE(next_value_json,'{}'),'$.undo',json_object(
       'actionId',?,'workspaceId',?,'sessionHash',?,'kind',?,'fields',json(?),
       'before',json(?),'after',json(${snapshot}),'postVersions',json(?),'graph',json(${capture.kind === "duplicate" ? duplicateGraphSql : "'[]'"}),
-      'expiresAt',strftime('%Y-%m-%dT%H:%M:%fZ','now','+10 seconds')))
+      'parents',${parents},'expiresAt',strftime('%Y-%m-%dT%H:%M:%fZ','now','+10 seconds')))
     WHERE id=? AND actor_operator_id=? AND EXISTS(
       SELECT 1 FROM pre JOIN post ON json_extract(pre.body,'$.id')=json_extract(post.body,'$.id')
       WHERE json_remove(pre.body,'$.version','$.canonicalCreatedAt')<>json_remove(post.body,'$.version','$.canonicalCreatedAt'))`)
     .bind(capture.ids, capture.before, capture.actionId, capture.workspaceId, capture.sessionHash, capture.kind,
-      JSON.stringify(capture.fields), capture.before, JSON.stringify(postVersions), capture.actionId, actor);
+      JSON.stringify(capture.fields), capture.before, JSON.stringify(postVersions),
+      ...(capture.parents ? [JSON.stringify(capture.parents.before)] : []), capture.actionId, actor);
   const postGuard = db.prepare(`WITH ${memberCte}, pre AS (SELECT value body FROM json_each(?))
     SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM issue_activity WHERE id=?) OR NOT EXISTS(
       SELECT 1 FROM pre WHERE NOT EXISTS(SELECT 1 FROM issues i WHERE i.id=json_extract(pre.body,'$.id')
@@ -90,7 +99,8 @@ export async function commitUndoable(db: D1Database, actor: string, capture: Cap
   return results.slice(1, 1 + writes.length);
 }
 function admissionValues(actor: string, capture: Capture) {
-  return [capture.ids, capture.sources, actor, capture.workspaceId, capture.before, capture.graph];
+  return [capture.ids, capture.sources, actor, capture.workspaceId, capture.before, capture.graph,
+    ...(capture.parents ? [JSON.stringify(capture.parents.before), capture.parents.graph, capture.parents.rules] : [])];
 }
 function admissionSql(capture: Capture) {
   const incoming = capture.cascade ? "OR EXISTS(SELECT 1 FROM issue_duplicates d WHERE d.issue_id=i.id AND d.canonical_issue_id IN(SELECT id FROM undo_sources))" : "";
@@ -98,6 +108,8 @@ function admissionSql(capture: Capture) {
     EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL)
     AND ${issueSnapshotSql(capture.fields)}=?
     AND ${capture.kind === "duplicate" ? duplicateGraphSql : "'[]'"}=?
+    ${capture.parents ? `AND ${parentSnapshotSql(parentIdsSql(capture.parents.ids))}=?
+      AND ${parentGraphSql(parentIdsSql(capture.parents.ids))}=? AND ${parentRulesSql(parentIdsSql(capture.parents.ids))}=?` : ""}
     AND NOT EXISTS(SELECT 1 FROM issues i WHERE (i.id IN(SELECT id FROM undo_sources) ${incoming}) AND i.id NOT IN(SELECT id FROM undo_members))
     AND NOT EXISTS(SELECT 1 FROM undo_members m WHERE m.id NOT IN(SELECT id FROM undo_sources)
       ${capture.cascade ? "AND NOT EXISTS(SELECT 1 FROM issue_duplicates d WHERE d.issue_id=m.id AND d.canonical_issue_id IN(SELECT id FROM undo_sources))" : ""}) admitted`;

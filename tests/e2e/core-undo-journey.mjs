@@ -1,3 +1,4 @@
+import { undoParentJourney } from './core-undo-parent.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mjs';
@@ -12,6 +13,8 @@ export async function undoJourney(page,context,base,record,independent=journey=>
   await undoPropertiesJourney(page,context,base,record);
   });
  }
+ await page.setViewportSize({width:1440,height:1000});
+ await independent(()=>undoParentJourney(page,context,base,record));
  await page.setViewportSize(originalViewport);
 }
 

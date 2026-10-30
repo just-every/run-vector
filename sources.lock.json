@@ -5077,11 +5077,11 @@
       "executable": false
     },
     "src/core/features/issue-undo/admission.ts": {
-      "sha256": "cfa1c215db9adc0401f840993613b31a10c4c78d2488c58d67944b4e8c20a2b9",
+      "sha256": "b0aa02d08d03308c39d1988713d0698cb2f0cc858dbf59572a84e6f0872e572f",
       "executable": false
     },
     "src/core/features/issue-undo/capture.ts": {
-      "sha256": "e05e4764d492b8efcce77a007f52ef638b259fbd1ccc36d1710ba9e000a1eb1d",
+      "sha256": "21227b607f0cea316b5f69f057c28a49b53f2931e0456a3d75bac4d8898e5db1",
       "executable": false
     },
     "src/core/features/issue-undo/context.ts": {
@@ -5092,12 +5092,16 @@
       "sha256": "d0f9bc50f966bf6930d9d587a4c8eb874cae39843fffdf194ec2d509403fdf88",
       "executable": false
     },
+    "src/core/features/issue-undo/parent-state.ts": {
+      "sha256": "bd84134da4471ce27325de69fa924106e4dee48b9da177680ab288aca862e43b",
+      "executable": false
+    },
     "src/core/features/issue-undo/public-activity.ts": {
       "sha256": "e4b27fb4583c8bebda3db29ca0791fc27bbb21d14af2c1ede40ccd0dff536f6d",
       "executable": false
     },
     "src/core/features/issue-undo/reversal.ts": {
-      "sha256": "542033f956f510cc8755f908ee93f4816067d1036469304e208770ef93dc11af",
+      "sha256": "c06215ef731458cc85640b223027ba4dfd5241b97d647398b1fa9f5dd9e7b787",
       "executable": false
     },
     "src/core/features/issue-undo/routes.ts": {
@@ -5105,7 +5109,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/schema.ts": {
-      "sha256": "d3a4d2adca1ba1b01eb3b90ce39ac323466dd1b0f8395334975dff3da104ab38",
+      "sha256": "ba8bdd398230c3454ccb00b0c8a84d5c8fd0ea056844bb728d7e3545749460d2",
       "executable": false
     },
     "src/core/features/issue-undo/service.ts": {
@@ -5113,7 +5117,7 @@
       "executable": false
     },
     "src/core/features/issue-undo/snapshot.ts": {
-      "sha256": "9dbad96943d13b242bc27d6b8e870dd0f29a4b8398054b9dd2f4284401e085f5",
+      "sha256": "f6dc8feb7705f25e66ffff77e8ca7a4afa71f8aa975a05594f292ba7968bd904",
       "executable": false
     },
     "src/core/features/issue-undo/ui/notice.css": {
@@ -5769,7 +5773,7 @@
       "executable": false
     },
     "src/core/features/parents/repository.ts": {
-      "sha256": "2425e66e423e1a4affcae38dca3bc2519bc11926cbbae7a927cb8b1df1666a0b",
+      "sha256": "b94b7ac6f08c797c9889ca1df98485df9639e783d7e4b6700f6044681f3c0304",
       "executable": false
     },
     "src/core/features/parents/routes.ts": {
@@ -6001,7 +6005,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "69b667e7b764f501ae9376e35fab4c6df27c637768cb6f7e9885852911747da8",
+      "sha256": "761176ff5f34e723d4665cb309b3ef48e036f49e48f14c16c36c2a9483523c4d",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -7041,7 +7045,11 @@
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
-      "sha256": "0cb883e76c268ce1570b9a61e9c3d7d0c08a7f3161c84b1c97bf972cd834dc0a",
+      "sha256": "991c89b519a3aa143c2ce83c9d8dd6cf6ec10ea6b40686d23cb7ae98e46a8d87",
+      "executable": false
+    },
+    "tests/e2e/core-undo-parent.mjs": {
+      "sha256": "4eabca14ee5162b1b6a0e16defae7048b77b205c4ab20df57db3ff90ba5ff328",
       "executable": false
     },
     "tests/e2e/core-undo-properties.mjs": {
@@ -7941,7 +7949,7 @@
       "executable": false
     },
     "tests/worker/issue-undo.test.ts": {
-      "sha256": "038c627664fccc451e69f9112ef5a0daea676d7113598fb91b32f9ce7d46c6d1",
+      "sha256": "9a2ed6c234d93cc2ce01c4f5ec3547490ca0ae1f3f0ab0fabbf964f090432098",
       "executable": false
     },
     "tests/worker/jira-apply-fixture.ts": {
@@ -8038,6 +8046,10 @@
     },
     "tests/worker/parent-deletion-fixture.ts": {
       "sha256": "171f4930c72e6ce0b8b0bcaa44da94eba550030df3df4ab045a8167e594b25ec",
+      "executable": false
+    },
+    "tests/worker/parent-undo-scenario.ts": {
+      "sha256": "a58b68068739ae854605bdb31e6c7dc80192d04cc186a29c0ee6d780d8613d48",
       "executable": false
     },
     "tests/worker/personal-time.test.ts": {

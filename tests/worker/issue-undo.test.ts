@@ -1,3 +1,4 @@
+import { parentUndoScenario } from './parent-undo-scenario';
 import { expect, it } from 'vitest';
 import { env } from 'cloudflare:workers';
 import { collaborationFixture } from './collaboration-fixture';
@@ -27,6 +28,8 @@ it('[ISSUE-020] single-issue Undo restores status timestamps, assignment, labels
     const changed = await f.call('/issues/' + issue.identifier + path, method, { expectedVersion: before.version, ...changes });
     await body(changed);
     const action = receipt(changed);
+    // Stored actions from before parent Undo have no parent-state member.
+    await env.DB.prepare("UPDATE issue_activity SET next_value_json=json_remove(next_value_json,'$.undo.parents') WHERE id=?").bind(action.actionId).run();
     await body(await f.call('/issues/undo', 'POST', { actionId: action.actionId }));
     const after = await read();
     for (const field of ['status', 'priority', 'assignee', 'labels', 'cycle', 'team', 'completedAt', 'canceledAt', 'startDate', 'dueDate'])
@@ -42,6 +45,7 @@ it('[ISSUE-020] single-issue Undo restores status timestamps, assignment, labels
   const teams = await body(await f.call('/settings/teams', 'POST', { name: 'Undo planning', identifierPrefix: 'UNDO' }));
   const destination = teams.teams.find((row: any) => row.identifierPrefix === 'UNDO');
   await roundTrip('/team', 'POST', { teamId: destination.id, statusId: destination.statuses.find((row: any) => row.category === 'started').id });
+  await parentUndoScenario(f);
 });
 
 it('[ISSUE-020 VIEW-004] native Undo reverses one atomic action and refuses stale, replayed, expired or foreign actions', async () => {

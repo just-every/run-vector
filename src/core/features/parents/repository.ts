@@ -1,3 +1,4 @@
+import { commitUndoable, prepareUndoCapture, UndoCaptureConflict } from "../issue-undo/capture";
 import { reconcileParentChanges } from "../subissues/reconcile";
 import {
   mutationDatabase,
@@ -30,9 +31,11 @@ export async function updateIssueParent(
     );
   const now = new Date().toISOString(),
     activity = createUlid(new Date(now));
+  const capture = await prepareUndoCapture(db, actor, { actionId: activity, identifiers: [identifier],
+    kind: "parent", fields: ["parentId", "parentIdentifier", "parentCreatedAt", "parentPosition"], parentId: parent?.id ?? null });
   const admission = `EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND i.version=? AND o.id=? AND o.removed_at IS NULL)`;
   try {
-    await db.batch([
+    await commitUndoable(db, actor, capture, [
       db
         .prepare(
           `SELECT CASE WHEN ${admission} THEN 1 ELSE json('parent admission denied') END`,
@@ -85,6 +88,7 @@ export async function updateIssueParent(
     ]);
   } catch (error) {
     if (isMutationAccessError(error)) throw error;
+    if (error instanceof UndoCaptureConflict) return "stale" as const;
     const current = await requireIssueAccess(db, identifier, actor);
     if (current.version !== input.expectedVersion) return "stale" as const;
     if (parent) await requireIssueAccess(db, input.parentIdentifier!, actor);

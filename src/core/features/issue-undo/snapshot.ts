@@ -5,6 +5,7 @@ export const snapshotFields = [
   "startDate", "dueDate", "estimate", "expectedOutcome", "customerImpact", "customFields",
   "completedAt", "canceledAt", "archivedAt", "deferredUntil", "labelIds", "deferralOrigin",
   "canonicalId", "canonicalIdentifier", "canonicalCreatedAt",
+  "parentId", "parentIdentifier", "parentCreatedAt", "parentPosition",
 ] as const;
 export type SnapshotField = typeof snapshotFields[number];
 export const identityFields: SnapshotField[] = ["id", "identifier", "version", "teamId", "statusId", "statusCategory"];
@@ -28,6 +29,10 @@ const expressions: Record<SnapshotField, string> = {
   canceledAt: "i.canceled_at", archivedAt: "i.archived_at", deferredUntil: "i.deferred_until",
   labelIds: "json((SELECT json_group_array(label_id) FROM (SELECT label_id FROM issue_labels WHERE issue_id=i.id ORDER BY label_id)))",
   deferralOrigin: "(SELECT decision_id FROM issue_deferral_origins WHERE issue_id=i.id)",
+  parentId: "(SELECT parent_issue_id FROM issue_parents WHERE issue_id=i.id)",
+  parentIdentifier: "(SELECT p.identifier FROM issue_parents r JOIN issues p ON p.id=r.parent_issue_id WHERE r.issue_id=i.id)",
+  parentCreatedAt: "(SELECT created_at FROM issue_parents WHERE issue_id=i.id)",
+  parentPosition: "(SELECT position FROM issue_parents WHERE issue_id=i.id)",
   canonicalId: "(SELECT canonical_issue_id FROM issue_duplicates WHERE issue_id=i.id)",
   canonicalIdentifier: "(SELECT c.identifier FROM issue_duplicates d JOIN issues c ON c.id=d.canonical_issue_id WHERE d.issue_id=i.id)",
   canonicalCreatedAt: "(SELECT created_at FROM issue_duplicates WHERE issue_id=i.id)",
