@@ -4,6 +4,7 @@ import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mj
 /** Document authoring and in-place ticks use the shared Markdown editor. */
 export async function documentChecklistJourney(page,context,base,teamId,evidence,record){
  const go=async path=>{await beforePrivateNavigation(page,base+path);await page.goto(base+path);};
+ const reload=async()=>{await beforePrivateNavigation(page,page.url());await page.reload();};
  await page.setViewportSize({width:1440,height:1000});
  await go('/app/teams/'+teamId);
  const section=page.getByRole('region',{name:'Documents',exact:true});
@@ -24,7 +25,7 @@ export async function documentChecklistJourney(page,context,base,teamId,evidence
  await draft.getByRole('button',{name:'Create document',exact:true}).click();
  await page.getByRole('heading',{name:'synthetic-vector-2513',exact:true}).waitFor();
  const id=new URL(page.url()).pathname.split('/').at(-1),path='/api/documents/'+id;
- await page.reload();
+ await reload();
  const content=page.getByRole('region',{name:'Document content',exact:true});
  await content.getByRole('checkbox',{name:'Review draft',exact:true}).waitFor();
  assert.equal(await content.getByRole('checkbox').count(),3);
@@ -34,7 +35,7 @@ export async function documentChecklistJourney(page,context,base,teamId,evidence
   assert.equal((await response).status(),200);await settleReads(page);
  };
  await tick('Review draft',true);
- await page.reload();
+ await reload();
  await content.getByRole('checkbox',{name:'Review draft',exact:true}).waitFor();
  assert.equal(await content.getByRole('checkbox',{name:'Review draft',exact:true}).isChecked(),true);
  const current=await (await context.request.get(base+path)).json();

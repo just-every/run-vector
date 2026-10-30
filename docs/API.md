@@ -381,5 +381,5 @@ time and checked or unchecked item. Independent stale ticks retain both
 changes; a changed target returns 409 with the current authorized document in
 `document`. A session revoked while the request is pending receives no current
 text. The document, GFM body and revision metadata remain portable domain data.
-Migration `0108_document_checklists.sql` adds nullable metadata to retained
+Migration `0113_document_checklists.sql` adds nullable metadata to retained
 revisions without rewriting their bodies or attribution.

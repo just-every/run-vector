@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "e0fec0d9f8c5f1f5b6aa6b55501ba4572073c31ff8c080e1af174f0af43a7ab8",
+      "sha256": "933a02e09e6de1f76be45725ef1d288151c42810d375cf0b2881d74182d77c1d",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "3da5f32c5b2d5955a3ac67c48ba40886349fd378ad1d3d6bcc9f0b18841fd485",
+      "sha256": "65778a9f198d811d00d01a7d26fba730f215590c79da4203afde6c6335fc1005",
       "executable": false
     },
     "DEMO.md": {
@@ -541,7 +541,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "e34d24e1263ecc25058374fd976dc280e630b397db2f6f30e1b236f44de62067",
+      "sha256": "ad3d2bc6080891cfde2e06a8ddc849b3d083bf0779809a4489cbbc7eed650ba9",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "79878b55e86b485ec97f4731384ac71270320116885553de81d28c8a7ba9ba0f",
+      "sha256": "771107819077bb8d75e1b4ef81822037fe75bc5da6e3adea2f2714832d85cdcc",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4265,7 +4265,7 @@
       "executable": false
     },
     "src/core/features/documents/ui/page.tsx": {
-      "sha256": "3fd6b81c14f8bcce4b3551806fa753bb6af81d3b652b6ae55852c6597e33e318",
+      "sha256": "4912ef8d90c1a573cc5299218e72c967f0b7c36ea7fff2f68b1ee9f1090c7fa3",
       "executable": false
     },
     "src/core/features/documents/ui/specification.tsx": {
@@ -7017,7 +7017,7 @@
       "executable": false
     },
     "tests/e2e/core-threads-journey.mjs": {
-      "sha256": "bd035ab4e7eefc85dca54015770c29230080d9917f4a8bdb2d6e69948dea3a99",
+      "sha256": "888caa10d3cf6ff0bdd2ffb0fd72b29f6f28ea25f7f5688825318409c6c84095",
       "executable": false
     },
     "tests/e2e/core-undo-journey.mjs": {
@@ -7108,6 +7108,10 @@
       "sha256": "0dbb78372cbb311680779d5eaed9bf89d3ed6d9ddd38f278bf30ef7d665f4479",
       "executable": false
     },
+    "tests/e2e/description-checklist-journey.mjs": {
+      "sha256": "0e06bd9d2494abd307ca9ed6bd289e47928715b53592001c33f0c2ca23b1105c",
+      "executable": false
+    },
     "tests/e2e/dev-ci.mjs": {
       "sha256": "2fd81857934bacc7d662004ee1415505a8774eabad9ea9dde73428d7d80b7677",
       "executable": false
@@ -7125,7 +7129,7 @@
       "executable": false
     },
     "tests/e2e/document-checklist-journey.mjs": {
-      "sha256": "d5cf72fdd704651fbe5481a2fb5bf8d061eb7e3e0daef9b74033c02c4ee0b8d6",
+      "sha256": "b17f801718f6d0f3687a9fbe3dcc14540d79e026aa4fb060ebf1b4377ca18f63",
       "executable": false
     },
     "tests/e2e/document-read-app-journey.mjs": {
