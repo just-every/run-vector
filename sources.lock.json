@@ -485,7 +485,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "b65b19d05d466887cb110994e575ac6b85499537197cf2295bf9320b9b2d805e",
+      "sha256": "3ec51e5799566e63d14164c505bafbd41c8f6979f68a4000318720f1b4e4a062",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "7f8d5549b448b57464448bb6dd2576d2320c0402c5a5a9a42069f97ca99694f1",
+      "sha256": "43ed6ca4db57e4ce2e308c30467d1bd9513bdb0df6cb43ee69adcfa656ac58f9",
       "executable": false
     },
     "DEMO.md": {
@@ -565,7 +565,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "2cf2f96061e97dab8a1e8f18dcd5542c1e8b0ca22f01a6290a8284b82634682f",
+      "sha256": "74e81ab22392084816c51e0622cce4668f21f2d940d333de8155944a6d1dd73c",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -2913,7 +2913,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "38af994e7385a6a7e2e9b7753fdd673bb74afadc01e84a80b8555e49e765a86d",
+      "sha256": "262e256cb82631152e3f1e65f1ee49e27288955cec8dd63930b580916b76aa9c",
       "executable": false
     },
     "src/base/contract-filter.ts": {
@@ -3461,7 +3461,7 @@
       "executable": false
     },
     "src/core/editor/config.server.ts": {
-      "sha256": "c7d751929bf8e80c581a81318796a14a750c1ef5c979aae0c7f6ab8361f514a1",
+      "sha256": "42379b5f19bbc234358d2fb570098126f5cc5114ab956e658d54fa0d16eac33e",
       "executable": false
     },
     "src/core/editor/leaf.tsx": {
@@ -5389,7 +5389,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues.css": {
-      "sha256": "cf769c994d01755f9aae0940216a6fe77862b24dbb6e0be96089cbf64906730d",
+      "sha256": "1a0be607b93c8de3d7d405353331a3742b2b32d45108710f257476ee365baa99",
       "executable": false
     },
     "src/core/features/issues/ui/new-issue-draft.ts": {
@@ -5416,12 +5416,20 @@
       "sha256": "1479c0f929bc98082896233acb7764f39b76adb0c602066a0fe6f5b9668959cf",
       "executable": false
     },
+    "src/core/features/links/preview-route.ts": {
+      "sha256": "05162465239eade95ab8c0135a68fbb5110c626c2647e865664c3a6adefbb468",
+      "executable": false
+    },
+    "src/core/features/links/public-video.ts": {
+      "sha256": "9b1b9231f65ac54d4429b02e15f6644977dc02f83ca45bf9367e5e342297875d",
+      "executable": false
+    },
     "src/core/features/links/repository.ts": {
       "sha256": "96983944cfadbbccf976e62b6bd3f2d40ac47464931a229d8b4ec06501e072de",
       "executable": false
     },
     "src/core/features/links/routes.ts": {
-      "sha256": "a6170715dbfbe30ff59b6a5e8bb6e70a3d8a1437aebb09e4af9407845e05ca57",
+      "sha256": "2686636a8135c23eb88c6d544c6ca9d1dd1716026096a3e2c84f28e5a00e8076",
       "executable": false
     },
     "src/core/features/links/schema.ts": {
@@ -5429,7 +5437,15 @@
       "executable": false
     },
     "src/core/features/links/ui/named-links.tsx": {
-      "sha256": "f6c8457926b9d055c2a2e83e204cec18fa48d008865bff50d375a8a05a98c149",
+      "sha256": "c577fd4c67591b1be8cfef81b8674ed12edaaf808eba3f67f73433f5ae795e18",
+      "executable": false
+    },
+    "src/core/features/links/ui/video-player.tsx": {
+      "sha256": "54c1c76e9ceaa9c7a081619938c6c7b5a2d8b756fb896340e9fc835dfb711b17",
+      "executable": false
+    },
+    "src/core/features/links/video-preview.ts": {
+      "sha256": "1b398f06698fccd4dd865124b9352fa98c20301b29caaff10cf8988af8955733",
       "executable": false
     },
     "src/core/features/manual-order/access.ts": {
@@ -6001,7 +6017,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "69b667e7b764f501ae9376e35fab4c6df27c637768cb6f7e9885852911747da8",
+      "sha256": "6192e6217b03d9a2ae8f1e0f53f7668e7a335f902ce2ef37981b0c4d46dbea40",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -7169,7 +7185,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "cfe5ccfc27cb85d77a0896c52aa42698372c5a691cc3db4e2da8fe3257bbaa8b",
+      "sha256": "f5ae2be164e1a48865751b1bf6a3ed236c0dbb2c82a192fd9612d272f1e6cfec",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -7181,7 +7197,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "d743dbd64f1f4b7af1792e6d45a9ed0d1149e61576cc07a17619dc4b328157eb",
+      "sha256": "d6112f0c101247c5ecd2252235d68b45c534b914fe95e6063def033337b2841d",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -7238,6 +7254,10 @@
     },
     "tests/e2e/integrations/typescript-loader.mjs": {
       "sha256": "e89cc60f1007bba53689a32f974b01aba3bedcce9b44e90f0bd1a5834182ebe2",
+      "executable": false
+    },
+    "tests/e2e/integrations/video-provider-edge.mjs": {
+      "sha256": "2aa15ef99f14a7f675e5329de424ee171253897bfc3f8f0e7c299b4566654ffa",
       "executable": false
     },
     "tests/e2e/issue-copy-runtime.mjs": {
@@ -7446,6 +7466,10 @@
     },
     "tests/e2e/ui-runtime-support.mjs": {
       "sha256": "80f3a35928bb90c8944e4067e6b11de9fea16341d31c159ab9e18ab2d0748281",
+      "executable": false
+    },
+    "tests/e2e/video-players-journey.mjs": {
+      "sha256": "b56873584910443508cfdfdbc752fa6c16c4d50bf9f3357e5809cd6af6d74dfe",
       "executable": false
     },
     "tests/e2e/viewer-role-journey.mjs": {
@@ -7969,7 +7993,7 @@
       "executable": false
     },
     "tests/worker/link-cascade.test.ts": {
-      "sha256": "dc819b34483ca1f687c062c218e148afd0ac005ad0a9cbf9f6ef4a4e644b70ad",
+      "sha256": "52ff4b31a67ea11b7c7aba38b55e93b0816a2230b002242c379a2f599f475392",
       "executable": false
     },
     "tests/worker/managed-mail.test.ts": {
@@ -8226,6 +8250,10 @@
     },
     "tests/worker/subscriptions-scenario.ts": {
       "sha256": "8160d49a97eaaacd20346b344281a113224bcdae188cac1899a046acfb9676a1",
+      "executable": false
+    },
+    "tests/worker/video-preview-journey.ts": {
+      "sha256": "b58a7eb65edb0c38b8aa164d7d52cd7c72248b8276c3286baf10e741016b2c82",
       "executable": false
     },
     "tests/worker/viewer-role-upgrade.ts": {
