@@ -17,7 +17,7 @@ export function accessSteps({ teamId = from('options', '/teams/0/id'), memberCou
     step('access-workspace', 'vector.ops.member_management', {}),
     step('access-member-grants', 'vector.ops.member_management.grants', { id: sponsor }),
     step('access-team', 'vector.role.team_membership', { id: teamId }),
-    step('access-membership-grants', 'vector.role.team_membership.member_grants', { id: teamId, operatorId: from('access-team', '/memberships/0/operatorId') }),
+    step('access-membership-grants', 'vector.role.team_membership.member_grants', { id: teamId, operator_id: from('access-team', '/memberships/0/operatorId') }),
     step('access-team-grants', 'vector.role.team_membership.grants', { id: teamId }),
     step('access-time', 'vector.ops.workspace_time.set', { timezone: 'Australia/Brisbane', reminderTime: '08:45' }),
     step('access-time-restore', 'vector.ops.workspace_time.set', {
@@ -56,7 +56,7 @@ export function accessLifecycleSteps({ memberId, leaveTeamId, requestedTeamId, r
     step('access-approve-member', 'vector.team.join_permissions.decide', { id: requestedTeamId, requesterId: memberId, decision: 'approved' }, access(1, 'widens')),
     step('access-leave', 'vector.role.team_membership.leave', { id: leaveTeamId }, access(1)),
     step('access-left-request', 'vector.team.join_permissions.request', { id: leaveTeamId }),
-    step('access-membership-remove', 'vector.role.team_membership.remove', { id: removedTeamId, operatorId: removedMemberId }, access(1)),
+    step('access-membership-remove', 'vector.role.team_membership.remove', { id: removedTeamId, operator_id: removedMemberId }, access(1)),
     step('access-member-demote', 'vector.role.workspace_roles.set', { id: memberId, role: 'viewer', teamIds: [leaveTeamId, requestedTeamId] }, access(1)),
     step('access-member-remove', 'vector.ops.safe_removal', { id: memberId }, [
       ...access(1), { class: 'destructive' }]),
@@ -68,7 +68,7 @@ export function accessNarrowings({ leaveTeamId, removedMemberId, removedTeamId }
     { tool: 'vector.role.team_membership.leave', step: 'access-leave', witness: {
       tool: 'vector.role.team_membership.grants', args: { id: leaveTeamId }, pointer: '/grants' } },
     { tool: 'vector.role.team_membership.remove', step: 'access-membership-remove', witness: {
-      tool: 'vector.role.team_membership.member_grants', args: { id: removedTeamId, operatorId: removedMemberId }, pointer: '/grants' } },
+      tool: 'vector.role.team_membership.member_grants', args: { id: removedTeamId, operator_id: removedMemberId }, pointer: '/grants' } },
     { tool: 'vector.ops.safe_removal', step: 'access-member-remove', witness: {
       tool: 'vector.ops.member_management.grants', args: { id: removedMemberId }, pointer: '/grants' } },
   ];

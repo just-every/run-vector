@@ -576,7 +576,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "060231700e7c050e7a11f3e6fbb22f36218fab7320a7b3dc1b8c90cea43ff3fc",
+      "sha256": "55efeb0bc05a042b3bc192b990f6f5281389d8f9650bc88e9d388678e0a4ff95",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -632,11 +632,11 @@
       "executable": false
     },
     "docs/AGENT-DOOR.md": {
-      "sha256": "7ed896e4cdbcf58cec890732e0ec7f81d87f04a9cc33c291cbfcb65a6b6b6161",
+      "sha256": "c754b1e05d34c6245bea498ef37363f0237a18401f3179e15e6721599a754bbf",
       "executable": false
     },
     "docs/AGENT-REGISTRY.md": {
-      "sha256": "e668906ad3e42410ec688c46cb0d3c7f2aa1909421c5f1ec60c740636ea8dd4a",
+      "sha256": "3cdcd155f8b8f2db040b5099309d8faa393ab1be46cef1204c2dd1d225e13238",
       "executable": false
     },
     "docs/API.md": {
@@ -3632,7 +3632,7 @@
       "executable": false
     },
     "src/core/features/agent-door/access-membership-record.ts": {
-      "sha256": "9fa12e3bfd1e55ecd722745bb41eaf1b716f56ded15582903e2344d00e47bb3a",
+      "sha256": "f2b377723d4f24505f4475baa73e069ff0f4e2c57406433abf67995618616bd2",
       "executable": false
     },
     "src/core/features/agent-door/access-membership.ts": {
@@ -7032,7 +7032,7 @@
       "executable": false
     },
     "tests/agent-door/access-steps.mjs": {
-      "sha256": "97c9ff9c0f910d676da1b081fd4eff2e39952e74f2416ab5f63517ca48025433",
+      "sha256": "9194ff8a1f092b536f9c87b9c52dc2ea028fd39f0e97644f4fe54c27e44a8746",
       "executable": false
     },
     "tests/agent-door/browser-journey.mjs": {

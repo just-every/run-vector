@@ -2318,7 +2318,10 @@
       "widens": false,
       "narrowing": {
         "effect": "revoke",
-        "target": "id"
+        "target": [
+          "id",
+          "operator_id"
+        ]
       },
       "inputSchema": {
         "type": "object",
@@ -2327,14 +2330,14 @@
             "type": "string",
             "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
           },
-          "operatorId": {
+          "operator_id": {
             "type": "string",
             "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
           }
         },
         "required": [
           "id",
-          "operatorId"
+          "operator_id"
         ],
         "additionalProperties": false
       }
@@ -7336,7 +7339,7 @@
           "$from": "options",
           "pointer": "/teams/0/id"
         },
-        "operatorId": {
+        "operator_id": {
           "$from": "access-team",
           "pointer": "/memberships/0/operatorId"
         }

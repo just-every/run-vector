@@ -1,6 +1,6 @@
 # Native agent registry
 
-The declared capability set is **core only**: tools, policy, pause, audit and idempotency. Principal authorization and owner-bound tokens always apply. Events/subscriptions, multi-sponsor, mail edges, resource refresh, timed lifecycle, dual host, queued lifecycle and owner-native administration are undeclared. Existing native tools remain registered; multi-person lifecycle assertions remain pending the undeclared multi-sponsor family. Released rer 0.2.86 has no capability-subset manifest key; a later Base re-pin adds that declaration.
+The declared capability set is **core only**: tools, policy, pause, audit and idempotency. Principal authorization and owner-bound tokens always apply. Events/subscriptions, multi-sponsor, mail edges, resource refresh, timed lifecycle, dual host, queued lifecycle and owner-native administration are undeclared. Existing native tools remain registered; multi-person lifecycle assertions remain pending the undeclared multi-sponsor family. Released rer 0.2.87 has no capability-subset manifest key; a later Base re-pin adds that declaration.
 
 | Tool | Classes | Current clauses |
 | --- | --- | --- |
