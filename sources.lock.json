@@ -5825,7 +5825,7 @@
       "executable": false
     },
     "src/core/features/project-templates/controls.tsx": {
-      "sha256": "fc5975b8bde8834beb1ca085885db438c9c451c08a006811aec2eac2e5177033",
+      "sha256": "53547abefbb8ca3c0f15a82f4c4d3b895ecb34972e62058faed42555603dcba0",
       "executable": false
     },
     "src/core/features/project-templates/routes.ts": {
@@ -5841,7 +5841,7 @@
       "executable": false
     },
     "src/core/features/project-templates/templates.css": {
-      "sha256": "2d45993ebdce0dd616b57e1ab3aa176b4435d667a68b5d5b8e2892ce6a033f13",
+      "sha256": "673a182b101d2f4c1bfaed4655b02fe66ec566817e3df9224da8e5ba2e810c28",
       "executable": false
     },
     "src/core/features/projects/appearance.ts": {
@@ -7325,7 +7325,7 @@
       "executable": false
     },
     "tests/e2e/project-templates-journey.mjs": {
-      "sha256": "ea1d5a7020efdd03ddccf8b76013888a50f31e0391ae9d97d8c7865d2222faa5",
+      "sha256": "c477c82a1c23d18486150703417bf13173c4ee692c90885ff6fa3772fb8b1f26",
       "executable": false
     },
     "tests/e2e/public-development.mjs": {
@@ -8081,7 +8081,7 @@
       "executable": false
     },
     "tests/worker/project-template-proof.ts": {
-      "sha256": "234f8f58973fbcbd7b143ef6b4aa7c526811411ee8ad9d4d68d76e92b9375988",
+      "sha256": "52810b884472bd9ec1174d98b9ae0bc2d9013d49ad066431463a2384fa1c8d7c",
       "executable": false
     },
     "tests/worker/recovery.test.ts": {
