@@ -1,17 +1,9 @@
-import { z } from 'zod';
 import type { WorkerBindings } from '../../app/bindings';
 import type { IntegrationOwner } from './authority';
 import { guardedSql, ownerPredicate } from './authority';
 import { auditStatement } from '../audit/producer';
 import { IntegrationError } from './errors';
-
-export const webhookEvents = ['issue.created', 'issue.updated', 'issue.completed', 'comment.created', 'comment.updated', 'comment.deleted'] as const;
-export const legacyWebhookEvents = ['issue.created', 'issue.updated', 'issue.completed'] as const;
-export const subscriptionInput = z.object({
-  events: z.array(z.enum(webhookEvents)).min(1).max(webhookEvents.length).refine(values => new Set(values).size === values.length),
-  teamIds: z.array(z.string().regex(/^[0-7][0-9A-HJKMNP-TV-Z]{25}$/)).max(100).refine(values => new Set(values).size === values.length),
-}).strict();
-export type WebhookSubscription = z.infer<typeof subscriptionInput>;
+import type { WebhookSubscription } from './subscription-schema';
 
 /** An empty team selection means all public teams; it never grants private access. */
 export function subscriptionGuard(owner: IntegrationOwner, input: WebhookSubscription) {

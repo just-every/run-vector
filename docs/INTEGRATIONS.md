@@ -107,12 +107,18 @@ a destination through `POST /api/settings/integrations/destinations`, or replace
 those choices through `PUT /api/settings/integrations/destinations/:id/subscriptions`.
 The JSON selection is `{events, teamIds}`. Supported kinds are `issue.created`,
 `issue.updated`, `issue.completed`, `comment.created`, `comment.updated` and
-`comment.deleted`. The existing Settings form retains the issue-event defaults;
-subscription controls remain outstanding. Omitting selections at registration,
-and upgrading an existing destination, preserves its three issue-event kinds.
-An empty `teamIds` selects all public teams. A selected private team never
-authorizes export. Current selections, destination revocation, issue visibility,
-erasure and restore holds are checked again before signing and transport.
+`comment.deleted`. In Settings → Integrations → Outbound webhooks, the
+registration form and each destination's "Change events and teams" control
+choose the same selection: event checkboxes for issues and comments, and either
+all public teams or only selected public teams. The form starts with the three
+issue events and all public teams, and refuses to save without an event or,
+for selected teams, without a team. Each destination lists its current events
+and teams. Omitting selections at registration, and upgrading an existing
+destination, preserves its three issue-event kinds. An empty `teamIds` selects
+all public teams. Settings offers only public, active teams, and a private team
+selected through the API never authorizes export. Current selections,
+destination revocation, issue visibility, erasure and restore holds are checked
+again before signing and transport.
 
 Native issue-comment creation, editing and deletion publish transactionally with
 their activity. Root comments and replies retain stable `commentId`,

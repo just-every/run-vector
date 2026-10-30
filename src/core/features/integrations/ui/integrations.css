@@ -27,3 +27,12 @@
 .settings-page .initiative-approval-form select{width:100%;min-height:44px;border:1px solid var(--control-field-border);box-shadow:none}
 .initiative-approval-outcome{scroll-margin-block:120px;overflow-wrap:anywhere}
 @media(max-width:700px){.settings-page .initiative-approval-form{margin-inline:-16px;width:calc(100% + 32px)}.settings-page .initiative-approval-form fieldset{padding:0;border:0}.settings-page .initiative-approval-form select{font-size:14px;padding-inline:10px 30px}.initiative-approval-form button{min-height:44px}}
+
+/* Destination events and teams: one bordered form, unbordered choice groups inside it. */
+.webhook-subscription{display:grid;gap:14px;min-width:0}
+.integrations-panel .webhook-subscription fieldset{gap:0;border:0;border-radius:0;padding:0}
+.webhook-subscription legend{padding:0;margin-bottom:4px;font-weight:600}
+.webhook-choice-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:4px 14px}
+.webhook-subscription label.admin-checkbox{display:flex;align-items:center;gap:8px;min-height:44px}
+.webhook-choice-teams{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:0 14px;padding-left:26px}
+.webhook-subscription-editor{margin-top:12px}

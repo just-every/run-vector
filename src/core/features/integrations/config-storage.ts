@@ -1,6 +1,7 @@
 import { auditStatement } from '../audit/producer';
 import { deliveryConfigured } from './outbound';
-import { legacyWebhookEvents, subscriptionGuard } from './subscriptions';
+import { subscriptionGuard } from './subscriptions';
+import { legacyWebhookEvents } from './subscription-schema';
 import type { WorkerBindings } from '../../app/bindings';
 import { createUlid } from '../../shared/ids';
 import { validateDestination } from '../../../../vendor/base/integrations';

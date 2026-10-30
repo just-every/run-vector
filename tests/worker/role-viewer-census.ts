@@ -1,5 +1,5 @@
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
-import {subscriptionInput} from '../../src/core/features/integrations/subscriptions';
+import {subscriptionInput} from '../../src/core/features/integrations/subscription-schema';
 import {exchangeInput} from '../../src/core/features/oauth-apps/schema';
 import {documentInput,documentEdit,documentComment,specificationInput} from '../../src/core/features/documents/schema';
 import {slackIntakeFixture} from './slack-events-scenario';

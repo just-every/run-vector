@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict';
 import { join } from 'node:path';
 import { settleReads } from '../collaboration-navigation.mjs';
+import { roleScreens } from '../role-ui-support.mjs';
+import { adminChangesFromSettings, memberSeesNoControls, registerFromSettings, signedInPerson } from './webhook-subscription-controls.mjs';
 
-/** Subscription API and browser comment mutations use the same native queue.
- * Subscription controls remain a separate, unimplemented Settings obligation. */
+/** Settings subscription controls decide what the native queue keeps: browser comment
+ * mutations reach only the Owner's comment and team choice, a Member has no controls,
+ * and an Admin's change governs later mutations without exporting private work. */
 export async function exerciseWebhookComments({ page, runtime, cookie, team, evidence }) {
   await runtime.freshRequestWindow();
   const errors = [], onError = error => errors.push(error.message);
@@ -13,11 +16,19 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
     assert.equal(response.status, status, await response.clone().text());
     return response.json();
   };
-  const events = ['comment.created', 'comment.updated', 'comment.deleted'];
-  const destination = await call('/settings/integrations/destinations', 'POST', { name: 'synthetic-vector-9080', url: 'https://receiver.example.com/comments', events, teamIds: [team.id] }, 201);
+  const createIssue = (teamId, title) => call('/issues', 'POST', { teamId, title }, 201);
+  const comment = (issue, body) => call('/issues/' + issue.identifier + '/comments', 'POST', { body }, 201);
+  const queued = (destination, where = '') => runtime.sql('SELECT event,body FROM vector_webhook_events WHERE destination_id=\'' + destination.id + '\'' + where + ' ORDER BY id');
+  const events = ['comment.created', 'comment.updated', 'comment.deleted'], inspect = roleScreens(evidence), name = 'synthetic-vector-9080';
+  const other = (await call('/settings/teams', 'POST', { name: 'synthetic-vector-9086', identifierPrefix: 'WHUI' })).teams.find(t => t.name === 'synthetic-vector-9086');
+  const hidden = (await call('/settings/teams', 'POST', { name: 'synthetic-vector-9087', identifierPrefix: 'WHPRIV', isPrivate: true })).teams.find(t => t.name === 'synthetic-vector-9087');
+  let destination;
   try {
-    const issue = await call('/issues', 'POST', { teamId: team.id, title: 'synthetic-vector-9081' }, 201);
-    await page.setViewportSize({ width: 1440, height: 1000 });
+    destination = await registerFromSettings({ page, runtime, name, url: 'https://receiver.example.com/comments', team, hidden, inspect });
+    const config = await call('/settings/integrations');
+    assert.deepEqual(config.destinations.find(d => d.id === destination.id).events, events);
+    assert.deepEqual(config.destinations.find(d => d.id === destination.id).teamIds, [team.id]);
+    const issue = await createIssue(team.id, 'synthetic-vector-9081');
     await page.goto(runtime.base + '/app/issues/' + issue.identifier);
     await page.getByRole('heading', { name: 'Discussion', exact: true }).waitFor();
     await settleReads(page);
@@ -34,9 +45,6 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
     await thread.getByText(rootText, { exact: true }).waitFor();
     await thread.getByText(replyText, { exact: true }).waitFor();
     await settleReads(page);
-    const config = await call('/settings/integrations');
-    assert.deepEqual(config.destinations.find(d => d.id === destination.id).events, events);
-    assert.deepEqual(config.destinations.find(d => d.id === destination.id).teamIds, [team.id]);
     const discussion = await call('/issues/' + issue.identifier + '/discussion');
     const root = discussion.comments.find(c => c.body === rootText), reply = discussion.comments.find(c => c.body === replyText);
     assert.equal(reply.parentId, root.id);
@@ -44,13 +52,15 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
       await call('/issues/' + issue.identifier + '/comments/' + id, 'PATCH', { body: 'synthetic-vector-9084' });
       await call('/issues/' + issue.identifier + '/comments/' + id, 'DELETE');
     }
+    // Another public team's comment is outside the chosen team.
+    await comment(await createIssue(other.id, 'synthetic-vector-9088'), 'synthetic-vector-9089');
     await page.reload();
     await page.getByRole('heading', { name: 'Discussion', exact: true }).waitFor();
     await settleReads(page);
     assert.equal(await thread.getByText('Comment deleted', { exact: true }).count(), 2);
     assert.equal(await thread.getByText(rootText, { exact: true }).count(), 0);
     assert.equal(await thread.getByText(replyText, { exact: true }).count(), 0);
-    const captured = runtime.sql('SELECT event,body FROM vector_webhook_events WHERE destination_id=\'' + destination.id + '\' ORDER BY id');
+    const captured = queued(destination);
     assert.equal(captured.length, 6);
     assert.deepEqual(captured.map(e => e.event).sort(), [...events, ...events].sort());
     for (const event of captured) {
@@ -68,8 +78,21 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
       await page.screenshot({ path: join(evidence, 'webhook-comment-history-' + width + '.png') });
     }
     await page.setViewportSize({ width: 1440, height: 1000 });
+    const browser = page.context().browser();
+    await memberSeesNoControls({ browser, runtime, cookie: await signedInPerson(runtime, cookie, 9090, 'member') });
+    await adminChangesFromSettings({ browser, runtime, cookie: await signedInPerson(runtime, cookie, 9091, 'admin'), name, destination, team, hidden, inspect });
+    const changed = (await call('/settings/integrations')).destinations.find(d => d.id === destination.id);
+    assert.deepEqual([changed.events, changed.teamIds], [['issue.created', 'comment.created'], []]);
+    // Every public team now sends issue creation and new comments; edits and private work stay out.
+    const next = await createIssue(other.id, 'synthetic-vector-9092'), posted = await comment(next, 'synthetic-vector-9093');
+    await call('/issues/' + next.identifier + '/comments/' + posted.id, 'PATCH', { body: 'synthetic-vector-9094' });
+    const closed = await createIssue(hidden.id, 'synthetic-vector-9095');
+    await comment(closed, 'synthetic-vector-9096');
+    const later = queued(destination, ' AND json_extract(body,\'$.identifier\') IN (\'' + next.identifier + '\',\'' + closed.identifier + '\')');
+    assert.deepEqual(later.map(e => [e.event, JSON.parse(e.body).identifier]).sort(), [['comment.created', next.identifier], ['issue.created', next.identifier]]);
+    assert.equal(queued(destination).length, captured.length + 2);
   } finally {
     page.off('pageerror', onError);
-    await call('/settings/integrations/destinations/' + destination.id, 'DELETE');
+    if (destination) await call('/settings/integrations/destinations/' + destination.id, 'DELETE');
   }
 }
