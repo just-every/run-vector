@@ -806,6 +806,7 @@
         "vendor/base/agent-door/tests/runtime.mjs": "b2651541158bc28bf6c5f33a75ed7839c90e600d4082f55d0bc8cf5f275021cd",
         "vendor/base/agent-door/tests/schema.test.ts": "99beb7bad64492ae63b02ac15797d535a62f425e66570b1da3504fe37797c29d",
         "vendor/base/agent-door/tests/seed.ts": "e390e19782dc2b2abfbec6ed1d37d126856e86c425f34c168d17ab15301ba061",
+        "vendor/base/agent-door/tests/sponsor-tools.ts": "53cb783d2fed4474fe913586225e1ff0c1560c49937d367c7c62f31e4e9eda90",
         "vendor/base/agent-door/transport.ts": "7e2b93ae7858eb1a78d87c865930f3798d7ea124271b000a3bd043a1b6861ab3",
         "vendor/base/agent-door/types.ts": "c7bda0e72cefbec1e8f066ebfe5980e60762e30b68a5f33a4d07df7144a5a13e",
         "vendor/base/agent-door/wire.ts": "6458a2bfdd76cc79942a394abc47e22b6dad6b4e2710d73deee3abe133042a20"
@@ -879,6 +880,7 @@
         "vendor/base/agent-door/tests/runtime.mjs": "100644",
         "vendor/base/agent-door/tests/schema.test.ts": "100644",
         "vendor/base/agent-door/tests/seed.ts": "100644",
+        "vendor/base/agent-door/tests/sponsor-tools.ts": "100644",
         "vendor/base/agent-door/transport.ts": "100644",
         "vendor/base/agent-door/types.ts": "100644",
         "vendor/base/agent-door/wire.ts": "100644"
