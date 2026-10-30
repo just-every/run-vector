@@ -364,3 +364,22 @@ installation has no working OAuth credential and requires fresh application
 registration and member consent. Excluding the entire registration avoids
 implying that a restored client secret or old redirect relationship remains
 trusted at a new installation.
+
+### Document checklist ticks
+
+The document page uses the native session door
+`POST /api/documents/ID/checklist` with `{expectedVersion, index, text, checked}`.
+The current document role and parent visibility apply to each request and its
+transaction. Viewers cannot tick; Guests can tick documents under issues and
+projects in their invited teams. Personal API tokens do not grant document
+access.
+
+A tick reads its base document revision, merges only an unchanged item and
+atomically saves one new document revision and one audit event. Repeating an
+already-applied tick creates neither. The revision history shows the member,
+time and checked or unchecked item. Independent stale ticks retain both
+changes; a changed target returns 409 with the current authorized document in
+`document`. A session revoked while the request is pending receives no current
+text. The document, GFM body and revision metadata remain portable domain data.
+Migration `0108_document_checklists.sql` adds nullable metadata to retained
+revisions without rewriting their bodies or attribution.
