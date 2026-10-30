@@ -55,6 +55,11 @@ export async function parentUndoScenario(f: Fixture) {
     const kept = await storage();
     await body(await undo(receipt.actionId), 409); expect(await storage()).toEqual(kept);
   }
+  const simultaneous = action(await link(child.identifier, other.identifier));
+  const competing = await Promise.all([undo(simultaneous.actionId), undo(simultaneous.actionId)]);
+  expect(competing.map(response => response.status).sort()).toEqual([200, 409]);
+  expect(await edge()).toEqual(original);
+  expect((await read(child.identifier)).activity.filter((row: any) => row.nextValue?.undoOf === simultaneous.actionId)).toHaveLength(1);
   await link(child.identifier, null);
   const set = await link(child.identifier, other.identifier);
   await body(await undo(action(set).actionId)); expect(await edge()).toBeNull();
@@ -148,4 +153,21 @@ export async function parentUndoScenario(f: Fixture) {
   kept = await storage(); const withdrawn = await undo(receipt.actionId, f.bobCookie);
   expect([404, 409]).toContain(withdrawn.status); expect(await withdrawn.text()).not.toContain(child.identifier); expect(await storage()).toEqual(kept);
   await body(await f.call('/settings/operators/' + f.bob + '/role', 'PATCH', { role: 'member' }));
+  // Erasure cannot be reversed by retaining a parent receipt. The currently
+  // supported deletion door is Owner-only permanent deletion until recovery.
+  for (const erase of ['parent', 'child']) {
+    const root = await f.create({ title: 'synthetic-vector-2010' });
+    const leaf = await f.create({ title: 'synthetic-vector-2011' });
+    changed = await link(leaf.identifier, root.identifier); receipt = action(changed);
+    const erased = erase === 'parent' ? root : leaf;
+    await body(await f.call('/issues/' + erased.identifier, 'DELETE', { expectedVersion: (await read(erased.identifier)).version, confirmed: true }));
+    kept = await storage(); const refused = await undo(receipt.actionId);
+    expect(refused.status).toBe(409); expect(await refused.text()).not.toContain(erased.identifier);
+    expect(await storage()).toEqual(kept);
+    await body(await f.call('/issues/' + erased.identifier), 404);
+  }
+  const active = await f.create({ title: 'synthetic-vector-2012' });
+  changed = await link(active.identifier, parent.identifier, f.bobCookie); receipt = action(changed);
+  expect((await request('/auth/signout', 'POST', {}, f.bobCookie)).status).toBe(204);
+  kept = await storage(); await body(await undo(receipt.actionId, f.bobCookie), 401); expect(await storage()).toEqual(kept);
 }

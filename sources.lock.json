@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9ba3c0be3ffcc6aa118ac577c755713058082406ec6bc53118f8aca73137d0d0",
+      "sha256": "463871cf995ef024a65975f126dd48ed2fbb3a9a6e816119741f19ab527aeec6",
       "executable": false
     },
     "DEMO.md": {
@@ -7049,7 +7049,7 @@
       "executable": false
     },
     "tests/e2e/core-undo-parent.mjs": {
-      "sha256": "4eabca14ee5162b1b6a0e16defae7048b77b205c4ab20df57db3ff90ba5ff328",
+      "sha256": "bc77c3ac1f58eca5ddee46fee3b512373372f974f20012ffdd4a520d3ad7868f",
       "executable": false
     },
     "tests/e2e/core-undo-properties.mjs": {
@@ -8049,7 +8049,7 @@
       "executable": false
     },
     "tests/worker/parent-undo-scenario.ts": {
-      "sha256": "a58b68068739ae854605bdb31e6c7dc80192d04cc186a29c0ee6d780d8613d48",
+      "sha256": "2787dafbc255871d5b1983c0ceb7dd812e29dfdc1444a491892dd7255ce0e355",
       "executable": false
     },
     "tests/worker/personal-time.test.ts": {

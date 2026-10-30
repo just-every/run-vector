@@ -61,6 +61,8 @@ export async function undoParentJourney(page, context, base, record) {
     else assert.equal(await hierarchy.getByRole('link').count(), 0);
   }
   let receipt = await save(parent.identifier);
+  await reverse(receipt, null);
+  receipt = await save(parent.identifier);
   const evidence = verificationDirectory + '/issue-undo';
   await mkdir(evidence, { recursive: true });
   const axe = await readFile(require.resolve('axe-core/axe.min.js'), 'utf8');
@@ -70,11 +72,10 @@ export async function undoParentJourney(page, context, base, record) {
     assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), 'Parent and Undo controls fit the viewport');
     assert.deepEqual(await page.evaluate(async () => (await window.axe.run(document.querySelector('main'))).violations.filter(row => ['serious', 'critical'].includes(row.impact)).map(row => row.id)), []);
     for (const controls of [hierarchy, notice]) assert(await controls.locator('button').evaluateAll(nodes => nodes.every(node => Number.parseFloat(getComputedStyle(node).fontSize) >= 13)), 'Reused controls retain readable text');
-    await page.screenshot({ path: `${evidence}/parent-offer-${width}.png`, fullPage: true });
+    await hierarchy.evaluate(node => window.scrollTo(0, Math.max(0, node.getBoundingClientRect().top + window.scrollY - 150)));
+    await page.screenshot({ path: `${evidence}/parent-offer-${width}.png` });
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
-  await reverse(receipt, null);
-  receipt = await save(parent.identifier);
   await settleReads(page);
   let ordered = await children(parent.identifier);
   await api('/issues/' + parent.identifier + '/subissues', 'PATCH', { expectedVersion: ordered.version, identifiers: [child.identifier, sibling.identifier] });
