@@ -5577,7 +5577,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/integrations.css": {
-      "sha256": "21ab1f50a17a1ad8193f1df144a033d32807b4e209fbe0c50666744f4580a13a",
+      "sha256": "a035d275dc99692c51a328c95bb2532fbd2fd1c30c096439597c2853431e8d1a",
       "executable": false
     },
     "src/core/features/integrations/ui/one-time-secret.tsx": {
