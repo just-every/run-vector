@@ -6,7 +6,7 @@ import { favoriteInput, useFavorites } from "./context";
 import "./favorites.css";
 
 export function FavoriteNavigation() {
-  const { data, error, busy, save } = useFavorites();
+  const { data, error, errorRole, busy, save } = useFavorites();
   const [organizing, setOrganizing] = useState(false),
     [name, setName] = useState("");
   const path = useLocation({ select: (location) => location.pathname });
@@ -139,7 +139,7 @@ export function FavoriteNavigation() {
       {current && (
         <CurrentFavorite key={current.kind + current.subjectKey} {...current} />
       )}
-      {error && <p role="alert">{error}</p>}
+      {error && <p role={errorRole}>{error}</p>}
       {data && entries.length === 0 && (
         <p className="favorite-empty">
           Pin an issue, project or saved view from its page.

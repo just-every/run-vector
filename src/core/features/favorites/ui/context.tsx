@@ -13,6 +13,7 @@ type FavoriteContext = {
   data: Favorites | null;
   busy: boolean;
   error: string;
+  errorRole: "alert" | "status";
   save: (next: Omit<FavoriteWrite, "expectedVersion">) => Promise<void>;
 };
 const context = createContext<FavoriteContext | null>(null);
@@ -62,7 +63,10 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
       value={{
         data: resource.error ? null : resource.data,
         busy,
-        error: error || resource.error?.message || "",
+        error: resource.error?.message || error,
+        // A background navigation read reports its own availability politely.
+        // A failed member action still needs an immediate alert.
+        errorRole: resource.error ? "status" : "alert",
         save,
       }}
     >

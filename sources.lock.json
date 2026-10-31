@@ -5057,7 +5057,7 @@
       "executable": false
     },
     "src/core/features/favorites/ui/context.tsx": {
-      "sha256": "e0503459a5b09fb0a4bc7748968a8508390eca042a07c6ae23267749ed767e45",
+      "sha256": "5e50f8510b125d74cdd47aa3f434b70c9f27b9ae15d83ec30903d26cacd5d131",
       "executable": false
     },
     "src/core/features/favorites/ui/favorites.css": {
@@ -5065,7 +5065,7 @@
       "executable": false
     },
     "src/core/features/favorites/ui/navigation.tsx": {
-      "sha256": "8da0d9fd2b186719252d7007692de55677527a23b30cbd51776d05611d1a98b2",
+      "sha256": "7b596584adc7a3fef2957e48e585c4b93ee96d70cafbaf808d5a608273763a03",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {
@@ -8109,7 +8109,7 @@
       "executable": false
     },
     "tests/e2e/personal-time-surfaces.mjs": {
-      "sha256": "a58433de0391656a862eaa3083242145bc70c2dcfc424c84e76f94b076a845ec",
+      "sha256": "9db9f5087b5f06063ab06b81c797fb61493c60ddb5521babeccad85f9c95b16f",
       "executable": false
     },
     "tests/e2e/private-team-journey.mjs": {
