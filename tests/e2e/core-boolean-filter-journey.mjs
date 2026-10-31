@@ -1,3 +1,4 @@
+import { nativeFilterControls } from './core-native-filter-controls.mjs';
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { navigate, settleReads, trackRequests, beforePrivateNavigation } from './collaboration-navigation.mjs';
@@ -116,6 +117,7 @@ export async function booleanFilterJourney({ page, context, base, state, sql, ev
     await rows(member, issues.slice(0, 2));
     assert.deepEqual(await member.api('/views/' + view.id), view, 'Membership withdrawal never rewrites the expression');
     await inspect(current, current.locator('.issues-browser'), 'boolean-saved-reopened');
+    await nativeFilterControls({ current, member, target, team, issue: issues[0], inspect, rows, base, marker });
     await navigate(current, base + '/');
     const guest = await invite('guest', [team.id]);
     await navigate(guest.page, target + '&expression=' + encodeURIComponent(canonical));

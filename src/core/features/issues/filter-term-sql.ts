@@ -1,3 +1,4 @@
+import { isLinkField, filterLinkSql } from './filter-link-sql';
 import { localTimeToInstant } from '../administration/calendar';
 import { dateFields, type FilterTerm } from './filter-operands';
 const columns = {
@@ -24,6 +25,7 @@ function calendarValue(value: string, today: string) {
 }
 /** A term always returns a Boolean, including missing values, before negation. */
 export function filterTermSql(term: FilterTerm, actor: string, today: string, timezone: string) {
+  if (isLinkField(term.field)) return filterLinkSql(term, actor);
   const values: (string | number)[] = [];
   const bind = (value: string | number) => { values.push(value); return '?'; };
   const { field, value, operator } = term;
@@ -33,7 +35,7 @@ export function filterTermSql(term: FilterTerm, actor: string, today: string, ti
     sql = `EXISTS(SELECT 1 FROM issue_labels expression_label JOIN labels expression_definition ON expression_definition.id=expression_label.label_id AND expression_definition.workspace_id=t.workspace_id WHERE expression_label.issue_id=i.id${value === 'none' ? '' : ' AND expression_label.label_id=' + bind(value)})`;
     if (value === 'none') sql = `(NOT ${sql})`;
   } else {
-    const column = columns[field];
+    const column = columns[field as keyof typeof columns];
     if (value === 'none' && !['title', 'identifier', 'description'].includes(field)) sql = `${column} IS NULL`;
     else if (dateFields.includes(field)) {
       let from: string, to: string;

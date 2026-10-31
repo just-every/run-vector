@@ -2,6 +2,7 @@
 export const operandLabels = {
   category: 'Status category', status: 'Status', assignee: 'Assignee', team: 'Team',
   project: 'Project', cycle: 'Cycle', label: 'Label', parent: 'Parent issue', milestone: 'Milestone',
+  related: 'Related issue', blocks: 'Blocks issue', blockedby: 'Blocked by issue', release: 'Release', git: 'Pull request state', creator: 'Creator', follower: 'Follower',
   title: 'Title', identifier: 'Identifier', description: 'Description',
   outcome: 'Expected outcome', impact: 'Customer impact', estimate: 'Estimate',
   due: 'Due date', start: 'Start date', created: 'Created date', updated: 'Updated date',
@@ -12,7 +13,7 @@ export type FilterTerm = { kind: 'term'; field: Operand; operator: Operator; val
 export const categories = ['intake', 'backlog', 'unstarted', 'started', 'completed', 'canceled', 'duplicate'];
 export const dateFields = ['due', 'start', 'created', 'updated'];
 const textFields = ['title', 'identifier', 'description', 'outcome', 'impact'];
-const nullable = ['assignee', 'project', 'cycle', 'label', 'parent', 'milestone', 'estimate', 'due', 'start', 'outcome', 'impact'];
+const nullable = ['related', 'blocks', 'blockedby', 'release', 'git', 'creator', 'follower', 'assignee', 'project', 'cycle', 'label', 'parent', 'milestone', 'estimate', 'due', 'start', 'outcome', 'impact'];
 export function operatorsFor(field: Operand): Operator[] {
   if (dateFields.includes(field)) return ['=', '!=', '<', '<=', '>', '>=', 'within'];
   if (field === 'estimate') return ['=', '!=', '<', '<=', '>', '>='];
@@ -25,6 +26,8 @@ export function validateTerm(field: string, operator: string, value: string): Fi
   if (!value || value.length > 200) throw new Error('Enter a filter value of at most 200 characters.');
   if (value === 'none' && nullable.includes(field)) {
     if (!['=', '!='].includes(operator)) throw new Error('Use = or != with none.');
+  } else if (field === 'git') {
+    if (!['open', 'closed', 'merged'].includes(value)) throw new Error('Choose open, closed, merged or none for pull request state.');
   } else if (field === 'category') {
     if (!categories.includes(value)) throw new Error('Choose a supported status category.');
   } else if (field === 'estimate') {
@@ -35,8 +38,8 @@ export function validateTerm(field: string, operator: string, value: string): Fi
     const days = /^last ([1-9]\d{0,2}) days$/.test(value);
     if (operator === 'within' ? !days : !(validDate || relative)) throw new Error('Use a calendar date, today, tomorrow, yesterday, next weekday, or within "last 7 days".');
   } else if (!textFields.includes(field)) {
-    const valid = field === 'parent' ? /^[A-Z][A-Z0-9_]{1,99}-[1-9][0-9]*$/.test(value)
-      : /^[0-9A-HJKMNP-TV-Z]{26}$/.test(value) || (field === 'assignee' && value === 'me');
+    const valid = ['parent', 'related', 'blocks', 'blockedby'].includes(field) ? /^[A-Z][A-Z0-9_]{1,99}-[1-9][0-9]*$/.test(value)
+      : /^[0-9A-HJKMNP-TV-Z]{26}$/.test(value) || (['assignee', 'creator', 'follower'].includes(field) && value === 'me');
     if (!valid) throw new Error('Choose a current record from the filter suggestions, or use its identifier.');
   }
   return { kind: 'term', field: operand, operator: operator as Operator, value };

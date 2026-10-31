@@ -7,7 +7,11 @@ export function operandChoices(field: Operand, options: WorkspaceOptions | null)
     case 'category': return categories.map(id => ({ id, name: id[0].toUpperCase() + id.slice(1) }));
     case 'status': return options?.statuses ?? [];
     case 'team': return options?.teams ?? [];
+    case 'git': return ['none', 'open', 'closed', 'merged'].map(id => ({ id, name: id === 'none' ? 'No linked pull request' : id[0].toUpperCase() + id.slice(1) }));
+    case 'creator':
+    case 'follower':
     case 'assignee': return [{ id: 'me', name: 'Me' }, none, ...(options?.operators ?? [])];
+    case 'release': return [none, ...(options?.releases ?? [])];
     case 'project': return [none, ...(options?.projects ?? [])];
     case 'cycle': return [none, ...(options?.cycles ?? [])];
     case 'label': return [none, ...(options?.labels ?? [])];
@@ -16,7 +20,7 @@ export function operandChoices(field: Operand, options: WorkspaceOptions | null)
   }
 }
 function initialValue(field: Operand, options: WorkspaceOptions | null) {
-  return operandChoices(field, options)?.[0]?.id ?? (dateFields.includes(field) ? 'today' : field === 'estimate' ? '1' : field === 'parent' ? 'none' : '');
+  return operandChoices(field, options)?.[0]?.id ?? (dateFields.includes(field) ? 'today' : field === 'estimate' ? '1' : ['parent', 'related', 'blocks', 'blockedby', 'release'].includes(field) ? 'none' : '');
 }
 export function TermControls({ value, onChange, path, options }: {
   value: FilterTerm; onChange: (term: FilterTerm) => void; path: string; options: WorkspaceOptions | null;
@@ -28,12 +32,12 @@ export function TermControls({ value, onChange, path, options }: {
       onChange({ kind: 'term', field, operator: '=', value: initialValue(field, options) });
     }}>{Object.entries(operandLabels).map(([field, label]) => <option key={field} value={field}>{label}</option>)}</select></label>
     <label>Operator<select aria-label={`Operator ${path}`} value={value.operator} onChange={event => onChange({ ...value, operator: event.target.value as Operator })}>
-      {operatorsFor(value.field).map(operator => <option key={operator} value={operator}>{({ '=': 'Is', '!=': 'Is not', '~': 'Contains', '<': 'Before or less than', '<=': 'On or before; at most', '>': 'After or greater than', '>=': 'On or after; at least', within: 'Within calendar days' })[operator]}</option>)}
+      {operatorsFor(value.field).map(operator => <option key={operator} value={operator}>{({ '=': 'Is', '!=': 'Is not', '~': 'Contains', '<': dateFields.includes(value.field) ? 'Before' : 'Less than', '<=': dateFields.includes(value.field) ? 'On or before' : 'At most', '>': dateFields.includes(value.field) ? 'After' : 'Greater than', '>=': dateFields.includes(value.field) ? 'On or after' : 'At least', within: 'Within calendar days' })[operator]}</option>)}
     </select></label>
     <label>Value{choices ? <select aria-label={`Value ${path}`} value={value.value} onChange={event => onChange({ ...value, value: event.target.value })}>
       {choices.map(choice => <option key={choice.id} value={choice.id}>{choice.name}</option>)}
       {!choices.some(choice => choice.id === value.value) && <option value={value.value}>Selected value unavailable</option>}
-    </select> : <input aria-label={`Value ${path}`} maxLength={200} value={value.value} onChange={event => onChange({ ...value, value: event.target.value })} placeholder={value.operator === 'within' ? 'last 7 days' : dateFields.includes(value.field) ? '2027-01-15 or next Friday' : value.field === 'parent' ? 'ENG-123 or none' : undefined}/>}</label>
+    </select> : <input aria-label={`Value ${path}`} maxLength={200} value={value.value} onChange={event => onChange({ ...value, value: event.target.value })} placeholder={value.operator === 'within' ? 'last 7 days' : dateFields.includes(value.field) ? '2027-01-15 or next Friday' : ['parent', 'related', 'blocks', 'blockedby'].includes(value.field) ? 'ENG-123 or none' : value.field === 'release' ? 'Release ID or none' : undefined}/>}</label>
   </>;
 }
 /** Suggestions complete the current operand without discarding earlier groups. */

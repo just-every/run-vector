@@ -1,3 +1,4 @@
+// Native linked-filter revision triggers add no portable columns or tables; retained linked facts keep their existing archive policy.
 // 0100 changes only the subscription capture trigger; inventory columns and portable event history stay unchanged.
 import { policy } from '@runeditrun/rer/modules/portability/catalogue';
 import inventory from './archive-inventory.json' with {type:'json'};

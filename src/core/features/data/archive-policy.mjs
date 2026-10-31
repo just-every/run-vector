@@ -1,3 +1,4 @@
+// Native linked-filter revision triggers add no portable columns or tables; retained linked facts keep their existing archive policy.
 // Document issue references retain live and removed backlinks as portable domain data.
 // Webhook event selections and team filters are portable configuration. Restored
 // event history remains held and destination secrets still require re-entry.

@@ -1,3 +1,4 @@
+import { linkedBooleanJourney } from './boolean-linked-journey';
 import { nativeBooleanJourney } from './boolean-native-journey';
 import { env } from 'cloudflare:workers';
 import { expect, it } from 'vitest';
@@ -95,4 +96,5 @@ it('Boolean list and saved-view doors retain exact paged results, reject invalid
   await request('/auth/signout', 'POST', {}, viewerCookie);
   expect((await viewer.call('/issues?expression=NOT+blocked')).status).toBe(401);
   await nativeBooleanJourney();
+  await linkedBooleanJourney(f, high, urgent, low, privateTeam, hidden);
 }, 120_000);

@@ -1,0 +1,57 @@
+import assert from 'node:assert/strict';
+import { navigate, settleReads, beforePrivateNavigation } from './collaboration-navigation.mjs';
+
+/** Extend the Boolean sanity journey through the existing bar and menu. */
+export async function nativeFilterControls({ current, member, target, team, issue, inspect, rows, base, marker }) {
+  await current.setViewportSize({ width: 1440, height: 1000 });
+  await navigate(current, target);
+  const disclosure = current.locator('.boolean-filters');
+  if (!await disclosure.evaluate(node => node.open)) await disclosure.locator(':scope > summary').click();
+  const bar = current.getByRole('combobox', { name: 'Filter expression', exact: true });
+  await bar.fill('team=');
+  const option = current.locator('datalist option').filter({ hasText: 'Team: ' + team.name }).first();
+  await option.waitFor({ state: 'attached' });
+  const term = await option.getAttribute('value');
+  assert.equal(term, 'team=' + team.id, 'Visible record suggestions insert stable identity');
+  const source = `(${term} AND (priority=high AND NOT blocked))`;
+  await bar.fill(source); await bar.press('Enter');
+  await current.waitForURL(url => url.searchParams.get('expression') === source);
+  await rows(member, [issue]);
+  const typed = await member.api('/issues?' + new URLSearchParams({ q: marker, expression: source }));
+  assert.equal(typed.total, 1); assert.deepEqual(typed.issues.map(row => row.identifier), [issue.identifier]);
+  await current.getByRole('button', { name: 'Clear expression', exact: true }).click();
+  await current.waitForURL(url => !url.searchParams.has('expression'));
+  const builder = current.locator('.boolean-filters details');
+  if (!await builder.evaluate(node => node.open)) await builder.locator(':scope > summary').click();
+  await current.getByRole('combobox', { name: 'Condition 1', exact: true }).selectOption('and');
+  await current.getByRole('combobox', { name: 'Condition 1.1', exact: true }).selectOption('term');
+  await current.getByRole('combobox', { name: 'Field 1.1', exact: true }).selectOption('team');
+  await current.getByRole('combobox', { name: 'Value 1.1', exact: true }).selectOption(team.id);
+  await current.getByRole('combobox', { name: 'Condition 1.2', exact: true }).selectOption('and');
+  await current.getByRole('combobox', { name: 'Priority 1.2.1', exact: true }).selectOption('high');
+  await current.getByRole('combobox', { name: 'Condition 1.2.2', exact: true }).selectOption('not');
+  assert.equal(await current.getByLabel('Menu expression', { exact: true }).innerText(), source);
+  await current.getByRole('button', { name: 'Apply menu filter', exact: true }).focus();
+  await current.keyboard.press('Enter');
+  await current.waitForURL(url => url.searchParams.get('expression') === source);
+  await rows(member, [issue]);
+  const menu = await member.api('/issues?' + new URLSearchParams({ q: marker, expression: source }));
+  assert.deepEqual(menu.issues.map(row => row.identifier), typed.issues.map(row => row.identifier));
+  assert.equal(menu.total, typed.total);
+  await inspect(current, disclosure, 'boolean-native-menu');
+  await current.setViewportSize({ width: 1440, height: 1000 });
+  await current.getByRole('button', { name: 'Save view', exact: true }).click();
+  await current.getByRole('textbox', { name: 'View name', exact: true }).fill(marker + ' Native fields');
+  const receipt = current.waitForResponse(response => response.url() === base + '/api/views' && response.request().method() === 'POST');
+  await current.getByRole('button', { name: 'Create view', exact: true }).click();
+  const response = await receipt; assert.equal(response.status(), 201);
+  const view = await response.json(); assert.equal(view.query.expression, source);
+  await current.waitForURL(base + '/app/views/' + view.id);
+  await beforePrivateNavigation(current, current.url()); await current.reload();
+  await rows(member, [issue]);
+  assert.equal(await current.getByRole('combobox', { name: 'Filter expression', exact: true }).inputValue(), source);
+  assert.equal((await member.api('/views/' + view.id)).query.expression, source);
+  await inspect(current, current.locator('.issues-browser'), 'boolean-native-reopened');
+  await settleReads(current);
+  console.log('PROBE SEARCH-004 native-menu: visible team suggestion and nested menu -> identical one-issue set and total; saved native expression unchanged after reload');
+}
