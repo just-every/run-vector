@@ -23,6 +23,11 @@ export async function favoritesJourney({ page, context, base, state, sql, eviden
   let secondBrowser, secondContext, secondPage;
   const errors = [];
   member.page.on('pageerror', error => errors.push(error.message));
+  const subjectReads = [];
+  member.page.on('request', request => {
+    if (new URL(request.url()).pathname.startsWith('/api/favorites/subjects/'))
+      subjectReads.push(new URL(request.url()).pathname);
+  });
   trackRequests(member.page);
   const nav = target => target.locator('nav[aria-label="Favorites"]:visible');
   const ready = async target => { await nav(target).locator(':scope[data-favorites-state="ready"]').waitFor(); await settleReads(target); };
@@ -36,6 +41,12 @@ export async function favoritesJourney({ page, context, base, state, sql, eviden
     await nav(member.page).locator(`[data-favorite-id="${id}"]`).waitFor();
   };
   try {
+    for (const path of ['/app/issues/backlog', '/app/projects/new']) {
+      await navigate(member.page, base + path);
+      await ready(member.page);
+      assert.equal(await nav(member.page).locator('.favorite-pin').count(), 0, 'A list or creation form is not a favorite subject');
+    }
+    assert.deepEqual(subjectReads, [], 'Non-subject routes never start a favorite subject lookup');
     await pin('/app/issues/' + issue.identifier, 'issue', issue.id);
     await pin('/app/projects/' + project.id, 'project', project.id);
     await pin('/app/views/' + view.id, 'view', view.id);
@@ -91,13 +102,15 @@ export async function favoritesJourney({ page, context, base, state, sql, eviden
     // Assertions run at 1440; the same changed navigation is inspected once at
     // desktop and phone widths, including keyboard focus and hydration.
     const inspect = roleScreens(evidence);
-    await inspect(secondPage, secondPage.locator('main:visible').first(), 'favorites-view');
     await secondPage.setViewportSize({ width: 390, height: 844 });
     await secondPage.locator('.app-mobile-favorites > summary').click();
     await nav(secondPage).getByRole('button', { name: 'Organize', exact: true }).click();
     await nav(secondPage).getByRole('combobox', { name: 'Folder for ' + view.name, exact: true }).focus();
     assert.ok(await nav(secondPage).getByRole('combobox', { name: 'Folder for ' + view.name, exact: true }).evaluate(el => el === document.activeElement));
     assert.ok(await secondPage.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    // Inspect the open phone navigation as well as the desktop sidebar. The
+    // shared audit still checks the entire page at both widths.
+    await inspect(secondPage, nav(secondPage), 'favorites-navigation');
     await secondPage.screenshot({ path: evidence + '/favorites-navigation-390.png' });
     await secondPage.setViewportSize({ width: 1440, height: 1000 });
     await secondPage.screenshot({ path: evidence + '/favorites-navigation-1440.png' });
@@ -122,6 +135,7 @@ export async function favoritesJourney({ page, context, base, state, sql, eviden
     record('VIEW-010', 'A Member pins issue, project and saved view by keyboard, folders the view and reorders the project; a separate Chromium and independent native sign-in reload the same exact order and folder. Saved definitions are unchanged, another member is isolated, private-project withdrawal and view deletion remove titles from HTTP and navigation. Both widths pass accessibility, keyboard, overflow and hydration proof.');
     console.log('PROBE VIEW-010 pins-and-sync: native Member pages and second independently authenticated Chromium -> issue, project, view, Delivery work folder and exact project then issue then view order retained');
     console.log('PROBE VIEW-010 current-visibility: private-project membership withdrawal and view deletion -> subject and former title absent in HTTP and rendered Favorites');
+    console.log('PROBE VIEW-010 subject-admission: Backlog and New project -> no pin control and no favorite subject lookup; actual issue, project and view pages remain pinnable');
   } finally {
     await member.context.close();
     if (secondBrowser) await secondBrowser.close();
