@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "afe859603e734b671fe338a83e2294f25f1a2354660e7ae911d70ff9d012f649",
+      "sha256": "e1d391279060945535eeafb82cf6136a4dd6e95d0e66fc24f8e30538a6adbc13",
       "executable": false
     },
     "DEMO.md": {
@@ -4305,7 +4305,7 @@
       "executable": false
     },
     "src/core/features/bulk-edit/validation.ts": {
-      "sha256": "6e5e8e3732915dbf83f894ca93f8c3707d1affb6e55a304b3db0452d78f4a661",
+      "sha256": "3c2891a34a506d5a21c7edb3b6dedff7799b1683a7fe9541676e858b1e791654",
       "executable": false
     },
     "src/core/features/calendar-feeds/document.server.ts": {
@@ -4473,7 +4473,7 @@
       "executable": false
     },
     "src/core/features/cycles/ui/cycle-detail.tsx": {
-      "sha256": "d36b4047d1050f1cdc9532ae97ccb5d3090087d45fea92550106d4260476fa16",
+      "sha256": "7d70f9215dd2057b09227af059a668f8d9462637ff1a2ff4f2fa7b8f711d374a",
       "executable": false
     },
     "src/core/features/cycles/ui/cycles-panel.tsx": {
@@ -5689,7 +5689,7 @@
       "executable": false
     },
     "src/core/features/issue-edit/plan.ts": {
-      "sha256": "da1d6f34434ced632966e545dd37af3e1792c443d8104d96fb52d607faa970ed",
+      "sha256": "93af1be35e5836da9502ca767fdac15402d4168db211b24e6cfb32bab6dc252a",
       "executable": false
     },
     "src/core/features/issue-edit/repository.ts": {
@@ -5933,7 +5933,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-bulk.tsx": {
-      "sha256": "f029c12f819d0512b0f0c02804c0477b7605a5ee1e5fbf273101af3cc83c4345",
+      "sha256": "b72a9f77d8768bf9e4145139de83c3ae7077d34932da21a2023a905fd2a4b7ae",
       "executable": false
     },
     "src/core/features/issues/ui/issue-command-session.tsx": {
@@ -8141,7 +8141,7 @@
       "executable": false
     },
     "tests/e2e/team-cycles-journey.mjs": {
-      "sha256": "e1207a43a542abf77656394bc1e066a5c3d564241491d8f6a752d46f33ed081e",
+      "sha256": "3e472d419e357f5d196c2f3c7606d0f25429b156a5ff0b83c7468196b63397b0",
       "executable": false
     },
     "tests/e2e/team-reader-cells.mjs": {
@@ -8425,7 +8425,7 @@
       "executable": false
     },
     "tests/worker/cycle-membership.test.ts": {
-      "sha256": "2c5785616ceb8a1e4cbcf0d255df8afe914afd757c8a3ec9c8e3e7aed8f638c5",
+      "sha256": "ebd4d91f12e433ef49b2df826c9e89d68faa1b7acdaa77fddf44599d4ec97915",
       "executable": false
     },
     "tests/worker/cycle-report.test.ts": {
@@ -8989,7 +8989,7 @@
       "executable": false
     },
     "tests/worker/team-cycles-journey.ts": {
-      "sha256": "c7d17d70c42022c43fb2c5c4dcf8acfb6d30d3f01aa852cbf5ac74352c96b624",
+      "sha256": "a201803615f8502d25234208cbd50443a32dffbb1acfcb7b569154e4a11630ba",
       "executable": false
     },
     "tests/worker/video-preview-journey.ts": {

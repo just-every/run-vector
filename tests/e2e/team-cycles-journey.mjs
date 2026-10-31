@@ -1,3 +1,4 @@
+import { inviteReader } from './role-reader-support.mjs';
 import assert from 'node:assert/strict';
 import { expect } from '@playwright/test';
 import { navigate } from './collaboration-navigation.mjs';
@@ -46,10 +47,12 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     await expect(form.getByRole('checkbox',{name:'Enable cycles',exact:true})).toBeChecked({checked:enabled});
     return form;
   };
+  const probe=await inviteReader({owner:page,browser:page.context().browser(),runtime,email:'synthetic-vector-2506'+'@'+'vector.test',name:'synthetic-vector-2506',role:'member',width:390});
+  try {
   await clause('TEAM-005','team Settings disables cycles across editor and Current without discarding commitments; re-enable and current permissions',async()=>{
     await navigate(page,base+'/app');
-    await expect(page.getByRole('link',{name:committed.title,exact:true})).toBeVisible();
-    await expect(page.getByRole('link',{name:unrelated.title,exact:true})).toBeVisible();
+    await expect(page.locator('.stream-list [data-issue-identifier="'+committed.identifier+'"]')).toBeVisible();
+    await expect(page.locator('.stream-list [data-issue-identifier="'+unrelated.identifier+'"]')).toBeVisible();
     const form=await saveSwitch(page,false);
     await inspect(page,form,'team-cycles-disabled-settings');
     await page.reload();
@@ -57,8 +60,11 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     await expect(reloaded.getByRole('checkbox',{name:'Enable cycles',exact:true})).not.toBeChecked();
     await navigate(page,base+'/app/issues/'+committed.identifier);
     await expect(page.getByRole('heading',{name:committed.title,exact:true})).toBeVisible();
-    await expect(page.getByRole('combobox',{name:'Cycle',exact:true})).toHaveCount(0);
+    await expect(page.getByRole('combobox',{name:'Issue cycle',exact:true})).toHaveCount(0);
     await inspect(page,page.locator('main'),'team-cycles-disabled-editor');
+    await page.getByRole('button',{name:'Add 👍 reaction',exact:true}).focus();
+    await expect(page.getByRole('tooltip',{name:'Add 👍 reaction',exact:true})).toBeVisible();
+    await page.keyboard.press('Tab');
     await navigate(page,base+'/app/new-issue');
     await page.getByLabel(/^Team/).selectOption(team.id);
     await openDisclosures(page);
@@ -66,18 +72,24 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     await page.getByLabel(/^Team/).selectOption(other.id);
     await expect(page.getByRole('combobox',{name:'Cycle',exact:true})).toBeVisible();
     await expect(page.getByRole('combobox',{name:'Cycle',exact:true}).locator('option[value="'+independent.id+'"]')).toHaveCount(1);
+    await navigate(page,base+'/app/cycles/'+cycle.id);
+    await expect(page.getByRole('heading',{name:cycle.name,exact:true})).toBeVisible();
+    await expect(page.getByRole('form',{name:'Commit issue to cycle',exact:true})).toHaveCount(0);
     await navigate(page,base+'/app');
     await expect(page.getByRole('heading',{name:'Current',exact:true})).toBeVisible();
-    await expect(page.getByRole('link',{name:committed.title,exact:true})).toHaveCount(0);
-    await expect(page.getByRole('link',{name:unrelated.title,exact:true})).toBeVisible();
+    await expect(page.locator('.stream-list [data-issue-identifier="'+committed.identifier+'"]')).toHaveCount(0);
+    await expect(page.locator('.stream-list [data-issue-identifier="'+unrelated.identifier+'"]')).toBeVisible();
     await inspect(page,page.locator('main'),'team-cycles-disabled-current');
+    await navigate(page,base+'/app/issues');
+    await page.getByRole('checkbox',{name:'Select '+committed.identifier,exact:true}).check();
+    await expect(page.getByRole('combobox',{name:'Change',exact:true}).locator('option[value="cycleId"]')).toHaveCount(0);
     assert.deepEqual(retained(),before,'disabling and reload retain all stored cycle state');
     await saveSwitch(page,true);
     await navigate(page,base+'/app/issues/'+committed.identifier);
-    await expect(page.getByRole('combobox',{name:'Cycle',exact:true})).toHaveValue(cycle.id);
+    await expect(page.getByRole('combobox',{name:'Issue cycle',exact:true})).toHaveValue(cycle.id);
     await inspect(page,page.locator('main'),'team-cycles-enabled-editor');
     await navigate(page,base+'/app');
-    await expect(page.getByRole('link',{name:committed.title,exact:true})).toBeVisible();
+    await expect(page.locator('.stream-list [data-issue-identifier="'+committed.identifier+'"]')).toBeVisible();
     await inspect(page,page.locator('main'),'team-cycles-enabled-current');
     assert.deepEqual(retained(),before,'re-enabling retains original cycle identities and commitments');
     // The same Member session sees each current grant, with refused storage unchanged.
@@ -93,9 +105,10 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     for(const permission of ['team_owners','all_members']) {
       await send(page,path+'/permissions','PUT',{settings:permission,planning:'all_members'});
       for(const role of ['admin','guest','viewer','member']) {
-        await send(page,'/settings/operators/'+memberId+'/role','PATCH',{role,teamIds:role==='guest'?[team.id]:[]});
+        await send(page,'/settings/operators/'+probe.id+'/role','PATCH',{role,teamIds:role==='guest'?[team.id]:[]});
+        if(role==='member')await send(page,path+'/members/'+probe.id,'PUT',{role:'member'});
         const before=unchanged(),allowed=role==='admin'||role==='member'&&permission==='all_members';
-        await send(peer,path,'PATCH',{cyclesEnabled:false},allowed?200:403);
+        await send(probe.page,path,'PATCH',{cyclesEnabled:false},allowed?200:403);
         if(allowed)await send(page,path,'PATCH',{cyclesEnabled:true});
         else assert.deepEqual(unchanged(),before,role+' refusal leaves storage unchanged');
       }
@@ -103,4 +116,6 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     await send(page,path+'/permissions','PUT',{settings:'team_owners',planning:'all_members'});
     assert.deepEqual(retained(),before,'authority probes retain history');
   });
+  assert.deepEqual(probe.errors,[],'role probe has no browser errors');
+  } finally {await probe.context.close();}
 }

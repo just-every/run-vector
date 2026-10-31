@@ -234,6 +234,11 @@ export async function planIssueUpdate(
       "EXISTS(SELECT 1 FROM workflow_statuses WHERE id=issues.status_id AND category NOT IN ('intake','duplicate'))",
     );
   }
+  if ("cycleId" in values) {
+    const enabled = await binding.prepare("SELECT cycles_enabled FROM teams WHERE id=?").bind(issue.teamId).first<number>("cycles_enabled");
+    if (enabled !== 1) throw new IssueMutationError("invalid_option", "Enable cycles in team Settings before changing commitments.");
+    guard("EXISTS(SELECT 1 FROM teams WHERE id=? AND cycles_enabled=1)", issue.teamId);
+  }
   if ("cycleId" in values && values.cycleId !== null) {
     await validateCycle(db, String(values.cycleId), issue.teamId);
     const status = await requireStatus(

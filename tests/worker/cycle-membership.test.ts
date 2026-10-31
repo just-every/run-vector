@@ -66,9 +66,12 @@ check('bulk changes undo as one action including automatic membership, and expir
   expect((await f.change(await f.create(),'started')).cycle).toBeNull();
 });
 check('a rule or cycle changing before commit refuses the whole mutation without orphan automation',async()=>{
-  const f=await fixture(); await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleStarted:true}); const issue=await f.create();
-  const DB=beforeCommit(sql=>sql.includes('INSERT INTO issue_activity'),async()=>{await env.DB.prepare('UPDATE teams SET auto_cycle_started=0 WHERE id=?').bind(f.team.id).run()});
-  const r=await request('/api/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:f.team.statuses.find(s=>s.category==='started')!.id},f.cookie,{...bindings,DB});
-  expect(r.status).toBe(400);
-  expect((await env.DB.prepare("SELECT id FROM issue_activity WHERE issue_id=? AND kind='issue.cycle_automatically_added'").bind(issue.id).all()).results).toHaveLength(0);
+  for (const setting of ['auto_cycle_started','cycles_enabled']) {
+    const f=await fixture(); await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleStarted:true}); const issue=await f.create();
+    const DB=beforeCommit(sql=>sql.includes('INSERT INTO issue_activity'),async()=>{await env.DB.prepare('UPDATE teams SET '+setting+'=0 WHERE id=?').bind(f.team.id).run()});
+    const r=await request('/api/issues/'+issue.identifier,'PATCH',{expectedVersion:issue.version,statusId:f.team.statuses.find(s=>s.category==='started')!.id},f.cookie,{...bindings,DB});
+    expect(r.status).toBe(400);
+    expect((await env.DB.prepare("SELECT id FROM issue_activity WHERE issue_id=? AND kind='issue.cycle_automatically_added'").bind(issue.id).all()).results).toHaveLength(0);
+    expect(await env.DB.prepare('SELECT version FROM issues WHERE id=?').bind(issue.id).first('version')).toBe(issue.version);
+  }
 });
