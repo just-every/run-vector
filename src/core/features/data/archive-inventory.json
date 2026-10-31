@@ -1179,7 +1179,9 @@
     "revoked_at",
     "created_at",
     "updated_at",
-    "kind"
+    "kind",
+    "event_kinds",
+    "team_ids"
   ],
   "vector_webhook_events": [
     "id",

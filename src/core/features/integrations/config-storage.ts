@@ -1,5 +1,6 @@
 import { auditStatement } from '../audit/producer';
 import { deliveryConfigured } from './outbound';
+import { legacyWebhookEvents, subscriptionGuard } from './subscriptions';
 import type { WorkerBindings } from '../../app/bindings';
 import { createUlid } from '../../shared/ids';
 import { validateDestination } from '../../../../vendor/base/integrations';
@@ -39,8 +40,9 @@ export async function registerDestination(env:WorkerBindings,owner:IntegrationOw
  let url;try{url=validateDestination(input.url);if(url.search)throw Error();}catch{throw new IntegrationError(400,'invalid_destination','Use a public HTTPS address without a username, password, ? parameters or # section.');}
  const now=new Date(),id=createUlid(now),at=now.toISOString(),identity='destination:'+id,secret=newSigningSecret(),encrypted=await sealSecret(env,identity,secret);
  await guardedSql(env.DB,ownerPredicate(owner)).batch([
+  subscriptionGuard(owner,{events:input.events??[...legacyWebhookEvents],teamIds:input.teamIds??[]}),
   {sql:"SELECT CASE WHEN (SELECT count(*) FROM vector_webhook_destinations WHERE workspace_id=? AND revoked_at IS NULL)<50 THEN 1 ELSE json('destination limit') END",params:[owner.workspace]},
-  {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,created_at,updated_at) VALUES(?,?,?,?,?,?)',params:[id,owner.workspace,input.name,url.href,at,at]},
+  {sql:'INSERT INTO vector_webhook_destinations(id,workspace_id,name,url,created_at,updated_at,event_kinds,team_ids) VALUES(?,?,?,?,?,?,?,?)',params:[id,owner.workspace,input.name,url.href,at,at,JSON.stringify(input.events??legacyWebhookEvents),JSON.stringify(input.teamIds??[])]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.destination_registered',subject:id,at}),
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
  ]);return {id,secret,dispatchConfigured:await deliveryConfigured(env,owner.workspace)};
