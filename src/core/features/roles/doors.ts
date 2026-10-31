@@ -260,7 +260,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/views/:id/duplicate', row: async request => (await view(request))?.shared ? 'views.open-shared' : 'views.private', teams: viewTeams },
   // Integrations and API
   ...([['GET', '/settings/integrations/errors'], ['POST', '/settings/integrations/errors'], ['DELETE', '/settings/integrations/errors/:id'], ['POST', '/settings/integrations/errors/:id/link'], ['POST', '/settings/integrations/errors/:id/resolve'], ['GET', '/settings/integrations'], ['GET', '/settings/integrations/channels'], ['POST', '/settings/integrations/delivery'], ['POST', '/settings/integrations/destinations'],
-    ['POST', '/settings/integrations/destinations/:id/test'], ['POST', '/settings/integrations/destinations/:id/reenter'], ['DELETE', '/settings/integrations/destinations/:id'],
+    ['PUT', '/settings/integrations/destinations/:id/subscriptions'], ['POST', '/settings/integrations/destinations/:id/test'], ['POST', '/settings/integrations/destinations/:id/reenter'], ['DELETE', '/settings/integrations/destinations/:id'],
     ['POST', '/settings/integrations/github'], ['POST', '/settings/integrations/github/:id/reenter'], ['DELETE', '/settings/integrations/github/:id'],
     ['POST', '/settings/integrations/deliveries/:id/resolve'], ['POST', '/settings/integrations/slack'], ['DELETE', '/settings/integrations/slack'],
     ['POST', '/settings/integrations/slack/signing-secret'], ['POST', '/settings/integrations/channels'], ['DELETE', '/settings/integrations/channels/:id']] as const)

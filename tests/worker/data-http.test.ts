@@ -13,6 +13,17 @@ import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
 it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
+ const commentSubscriptions={events:['comment.created','comment.updated','comment.deleted'],teamIds:[f.team.id]};
+ expect((await f.call('/settings/integrations/destinations/'+f.webhook+'/subscriptions','PUT',commentSubscriptions)).status).toBe(200);
+ const commentDoor='/issues/'+f.issue.identifier+'/comments';
+ const rootResponse=await f.call(commentDoor,'POST',{body:'synthetic-vector-9060'});expect(rootResponse.status).toBe(201);
+ const rootComment=(await rootResponse.json() as {id:string}).id;
+ const replyResponse=await f.call(commentDoor,'POST',{body:'synthetic-vector-9061',parentId:rootComment});expect(replyResponse.status).toBe(201);
+ const replyComment=(await replyResponse.json() as {id:string}).id;
+ expect((await f.call(commentDoor+'/'+replyComment,'PATCH',{body:'synthetic-vector-9062'})).status).toBe(200);
+ expect((await f.call(commentDoor+'/'+replyComment,'DELETE')).status).toBe(200);
+ const commentHistory=(await env.DB.prepare("SELECT * FROM vector_webhook_events WHERE destination_id=? AND event LIKE 'comment.%' AND json_extract(body,'$.issueId')=? ORDER BY id").bind(f.webhook,f.issue.id).all()).results;
+ expect(commentHistory).toHaveLength(4);
  const {seedIntakeForTeam,recordedReply,mailBindings}=await import('./email-intake-fixture'),{eventSigner}=await import('../sendgrid-event-fixture');
  const mail=await seedIntakeForTeam(f.team.id,f.cookie),reply=await recordedReply(f.cookie,mail.identifier,'synthetic-vector-2401');expect(reply.response.status).toBe(201);
  const signer=await eventSigner();expect((await f.call(`/settings/teams/${f.team.id}/email-intake/event-key`,'PUT',{key:signer.publicKey})).status).toBe(200);
@@ -123,6 +134,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
+ expect(await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json()).toMatchObject({destinations:expect.arrayContaining([expect.objectContaining({id:f.webhook,...commentSubscriptions,requiresReentry:1})])});
+ expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT * FROM vector_webhook_events WHERE destination_id=? AND event LIKE 'comment.%' AND json_extract(body,'$.issueId')=? ORDER BY id").bind(f.webhook,f.issue.id).all()).results).toEqual(commentHistory);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT parent_comment_id,body,deleted_at FROM issue_comments WHERE id=?').bind(replyComment).first()).toMatchObject({parent_comment_id:rootComment,body:null,deleted_at:expect.any(String)});
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
  const restoredDashboard=await targetCall('/api/dashboards/'+portableDashboard.id,'GET',undefined,historical);expect(restoredDashboard.status).toBe(200);expect((await restoredDashboard.json() as {dashboard:{widgets:unknown[]}}).dashboard.widgets).toEqual(portableDashboard.widgets);
  expect((await targetCall(new URL(calendarFeed.url).pathname)).status).toBe(404);

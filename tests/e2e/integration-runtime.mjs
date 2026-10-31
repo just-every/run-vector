@@ -1,5 +1,6 @@
 import {exerciseVideoPlayers} from "./video-players-journey.mjs";
 import {exerciseErrorProviders} from './integrations/error-providers.mjs';
+import {exerciseWebhookComments} from './integrations/webhook-comments.mjs';
 import {exerciseImportAliases} from './import-alias-journey.mjs';
 import {exerciseOAuthApps} from './integrations/oauth-apps.mjs';
 import {exerciseGithubChain} from './integrations/github-chain.mjs';
@@ -18,6 +19,7 @@ try{
  await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const admin=await(await runtime.req('/api/settings/administration',{headers:{Cookie:cookie}})).json(),team=admin.teams.find(row=>!row.archivedAt);
  await exerciseVideoPlayers({page,runtime,cookie,team,evidence});
+ await exerciseWebhookComments({page,runtime,cookie,team,evidence});
  await exerciseErrorProviders({page,runtime,cookie,team,evidence});
  await exerciseOAuthApps({page,runtime,cookie,evidence});
  for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});await exerciseGithubChain({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
