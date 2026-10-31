@@ -24,7 +24,16 @@ try{
  await exerciseWebhookComments({page,runtime,cookie,team,evidence});
  await exerciseErrorProviders({page,runtime,cookie,team,evidence});
  await exerciseOAuthApps({page,runtime,cookie,evidence});
- for(const width of [1440,390]){await exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence});await exerciseGithubChain({page,runtime,cookie,team,width,evidence});proof.widths.push(width);}
+ // Each viewport exercises native administration with a recent real sign-in;
+ // earlier provider journeys must not consume its step-up freshness window.
+ for(const width of [1440,390]){
+  const widthSession=await signIn(runtime),widthPage=await openAuthenticatedPage(browser,widthSession.cookie,runtime.base);
+  try{
+   await exerciseIntegrationSettings({page:widthPage,runtime,cookie:widthSession.cookie,team,width,evidence});
+   await exerciseGithubChain({page:widthPage,runtime,cookie:widthSession.cookie,team,width,evidence});
+   proof.widths.push(width);
+  }finally{await widthPage.context().close();}
+ }
  const aliasSession=await signIn(runtime),aliasPage=await openAuthenticatedPage(browser,aliasSession.cookie,runtime.base);
  try{await exerciseImportAliases({page:aliasPage,runtime,cookie:aliasSession.cookie,evidence});}finally{await aliasPage.context().close();}
  proof.passed=true;
