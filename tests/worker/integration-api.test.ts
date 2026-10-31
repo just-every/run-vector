@@ -105,8 +105,9 @@ it('[API-003] the versioned schema is published through the real app',async()=>{
  console.log('API-003 schema coverage: route inventory valid; OPEN remainder: '+remainder.join(', '));
 });
 
-it('[API-003 PROJ-011 ISSUE-008] public tokens page a native planning journey and enforce comment scopes, authorship, erasure and cursor invalidation',async()=>{
+it('[API-003 PROJ-011 ISSUE-008] public tokens page native planning and workspace labels with current scopes, roles, erasure and cursor invalidation',async()=>{
  const f=await setupIntegrations(),token=(await f.issueToken([...tokenScopes],'Planning journey')).token;
+ await labelReadJourney(f);
  const old=(await f.issueToken(['comments:write','projects:write'],'Existing scopes')).token;
  const call=async(path:string,method='GET',body?:unknown,status=200)=>{
   const response=await f.api(token,path,method,body);expect(response.status,await response.clone().text()).toBe(status);return await response.json() as any;
@@ -280,4 +281,119 @@ async function oauthAuthorizationJourney(f:Awaited<ReturnType<typeof setupIntegr
  const replay=await grantFor(member);expect((await exchange(replay.code)).status).toBe(400);expect((await f.api(replay.access_token,'/issues')).status).toBe(401);
  const current=await grantFor(member);
  expect((await f.call('/settings/operators/'+memberId,'DELETE')).status).toBe(200);expect((await f.api(current.access_token,'/issues')).status).toBe(401);
+}
+
+/** The mounted API proves the two label reads without qualifying the held writes. */
+async function labelReadJourney(f:Awaited<ReturnType<typeof setupIntegrations>>){
+ const read=await f.issueToken(['labels:read'],'synthetic-vector-1130');
+ const legacy=await f.issueToken(['metadata:read','labels:write'],'synthetic-vector-1131');
+ const call=async(token:string,path:string,method='GET',body?:unknown,status=200)=>{
+  const response=await f.api(token,path,method,body);
+  expect(response.status,await response.clone().text()).toBe(status);
+  return await response.json() as any;
+ };
+ const labels=[];
+ for(const [suffix,projectsEnabled,color] of [
+  ['A',true,'#ffffff'],['B',true,'#000000'],['C',true,'#ffffff'],['D',false,'#000000'],
+ ] as const){
+  const input={name:'synthetic-vector-1132 '+suffix,projectsEnabled,color};
+  const created=await call(legacy.token,'/labels','POST',input,201);
+  expect(created).toEqual({id:expect.any(String),...input});
+  labels.push({...created,textColor:color==='#ffffff'?'#000000':'#ffffff'});
+ }
+ await call(legacy.token,'/labels','POST',{name:'synthetic-vector-1133',color:'#ffffff'},201);
+ expect((await f.state()).labels.filter(row=>row.name.startsWith('synthetic-vector-1132'))).toEqual(labels);
+ const filtered='/labels?name=SYNTHETIC-vector-1132&projectsEnabled=true';
+ const ids:string[]=[];let cursor:string|null=null;
+ do{
+  const page=await call(read.token,filtered+'&limit=1'+(cursor?'&cursor='+encodeURIComponent(cursor):''));
+  expect(page.total).toBe(3);expect(page.labels).toEqual([labels[ids.length]]);
+  ids.push(page.labels[0].id);expect(ids.length).toBeLessThanOrEqual(3);cursor=page.nextCursor;
+ }while(cursor);
+ expect(ids).toEqual(labels.slice(0,3).map(label=>label.id));
+ expect(new Set(ids).size).toBe(3);
+ expect(await call(read.token,'/labels?name=synthetic-vector-1132&projectsEnabled=false')).toEqual({labels:[labels[3]],total:1,nextCursor:null});
+ expect(await call(read.token,'/labels?name=synthetic-vector-1134')).toEqual({labels:[],total:0,nextCursor:null});
+ const page=await call(read.token,filtered+'&limit=1'),next=encodeURIComponent(page.nextCursor);
+ f.restart();
+ for(const label of labels)expect(await call(read.token,'/labels/'+label.id)).toEqual(label);
+ const native=(await f.state()).labels;
+ expect(await call(read.token,'/labels')).toEqual({labels:native,total:native.length,nextCursor:null});
+ for(const query of [
+  'limit=0','limit=101','limit=1.5','limit=no','cursor=','cursor=not-a-cursor',
+  'name=','name='+encodeURIComponent('x'.repeat(121)),'projectsEnabled=yes','workspaceId=synthetic-vector-1135','unknown=true',
+ ])await call(read.token,'/labels?'+query,'GET',undefined,400);
+ await call(read.token,'/labels/'+labels[0].id+'?name=A','GET',undefined,400);
+ await call(read.token,'/labels/00000000000000000000000000','GET',undefined,404);
+ await call(read.token,'/labels/invalid-id','GET',undefined,404);
+ for(const query of [
+  'name=synthetic-vector-1133&projectsEnabled=true&limit=1',
+  'name=SYNTHETIC-vector-1132&projectsEnabled=false&limit=1',
+  'name=SYNTHETIC-vector-1132&projectsEnabled=true&limit=2',
+ ])await call(read.token,'/labels?'+query+'&cursor='+next,'GET',undefined,409);
+ // A member receives an explicit new read grant; old arrays never acquire it.
+ const peerCookie=await invite(['synthetic-vector-1136','vector.test'].join('@'),f.cookie),peer=await actor(peerCookie);
+ const minted=await request('/api/settings/integrations/tokens','POST',{name:'synthetic-vector-1137',scopes:['labels:read','labels:write']},peerCookie);
+ expect(minted.status).toBe(201);const peerToken=(await minted.json() as any).token;
+ await call(peerToken,filtered+'&limit=1&cursor='+next,'GET',undefined,409);
+ for(const path of ['/labels','/labels/'+labels[0].id])await call(legacy.token,path,'GET',undefined,401);
+ const retained=await env.DB.prepare('SELECT scopes FROM integration_tokens WHERE id=?').bind(legacy.credential.id).first<string>('scopes');
+ expect(JSON.parse(retained!)).toEqual(['labels:write','metadata:read']);
+ for(const role of ['admin','member','viewer','guest'] as const){
+  expect((await f.call('/settings/operators/'+peer+'/role','PATCH',{role,teamIds:[f.initial.teams[0].id]})).status).toBe(200);
+  const status=role==='guest'?403:200;
+  await call(peerToken,'/labels','GET',undefined,status);
+  await call(peerToken,'/labels/'+labels[0].id,'GET',undefined,status);
+ }
+ expect((await f.call('/settings/operators/'+peer+'/role','PATCH',{role:'member',teamIds:[f.initial.teams[0].id]})).status).toBe(200);
+ await call(peerToken,'/labels/'+labels[0].id);
+ // Current native edits invalidate an already-issued ordered snapshot, even
+ // when the label's stable identity and membership in the result stay intact.
+ expect((await f.call('/settings/labels/'+labels[0].id,'PATCH',{color:'#000000'})).status).toBe(200);
+ await call(read.token,filtered+'&limit=1&cursor='+next,'GET',undefined,409);
+ expect(await call(read.token,'/labels/'+labels[0].id)).toEqual({...labels[0],color:'#000000',textColor:'#ffffff'});
+ const fresh=await call(read.token,filtered+'&limit=1');
+ expect((await f.call('/settings/labels/'+labels[1].id,'PATCH',{name:'synthetic-vector-1133 B'})).status).toBe(200);
+ await call(read.token,filtered+'&limit=1&cursor='+encodeURIComponent(fresh.nextCursor),'GET',undefined,409);
+ expect((await call(read.token,filtered)).labels.map((row:any)=>row.id)).toEqual([labels[0].id,labels[2].id]);
+ // A foreign label is seeded only to exercise the installed API mount. The
+ // installation itself supports one workspace, so bypass only its bootstrap.
+ const workspace='01K00000000000000000000113',foreignId='01K00000000000000000000114';
+ await env.DB.batch([
+  env.DB.prepare("INSERT INTO workspace_settings(id,name,timezone,created_at,updated_at) SELECT ?,'synthetic-vector-1138',timezone,created_at,updated_at FROM workspace_settings LIMIT 1").bind(workspace),
+  env.DB.prepare("INSERT INTO labels(id,workspace_id,name,color,projects_enabled,created_at,updated_at) SELECT ?,?,'synthetic-vector-1132 foreign','#ffffff',1,created_at,updated_at FROM workspace_settings WHERE id=?").bind(foreignId,workspace,workspace),
+ ]);
+ const mounted=createIntegrationApi();
+ const {Hono}=await import('hono');const app=new Hono();app.route('/api/v1',mounted);
+ const foreign=async(path:string)=>app.request(origin+'/api/v1'+path,{headers:{Authorization:'Bearer '+read.token}},bindings);
+ const foreignRead=await foreign('/labels/'+foreignId);expect(foreignRead.status).toBe(404);expect(await foreignRead.json()).toMatchObject({error:'not_found'});
+ const foreignList=await foreign('/labels?name=synthetic-vector-1132');expect(foreignList.status).toBe(200);
+ expect((await foreignList.json() as any).labels.map((row:any)=>row.id)).toEqual([labels[0].id,labels[2].id,labels[3].id]);
+ expect((await foreign('/labels?workspaceId='+workspace)).status).toBe(400);
+ await env.DB.batch([env.DB.prepare('DELETE FROM labels WHERE id=?').bind(foreignId),env.DB.prepare('DELETE FROM workspace_settings WHERE id=?').bind(workspace)]);
+ // Exercise a real read-only OAuth grant, including insufficient scope and
+ // revocation, without releasing API-004's independent consent and UI gate.
+ const redirect='https://synthetic-vector-1139.example.test/callback';
+ const registered=await f.call('/settings/oauth-apps','POST',{name:'synthetic-vector-1140',redirectUris:[redirect],scopes:['labels:read','labels:write']});
+ expect(registered.status).toBe(201);const client=await registered.json() as any;
+ const approved=await request('/api/oauth/consent','POST',{request:{response_type:'code',client_id:client.id,redirect_uri:redirect,scope:'labels:read',state:'synthetic-vector-1141'},decision:'approve'},peerCookie);
+ expect(approved.status).toBe(200);const code=new URL((await approved.json() as any).redirect).searchParams.get('code');
+ const exchanged=await f.app.request(origin+'/api/oauth/token',{method:'POST',headers:{'Content-Type':jsonMediaType},body:JSON.stringify({grant_type:'authorization_code',client_id:client.id,client_secret:client.secret,redirect_uri:redirect,code})},bindings);
+ expect(exchanged.status).toBe(200);const grant=await exchanged.json() as any;
+ for(const path of ['/labels','/labels/'+labels[0].id])await call(grant.access_token,path);
+ // Read-only credentials must change no product state when used as writers.
+ const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' AND name NOT IN ('integration_token_usage','access_rate_limits') ORDER BY name").all<{name:string}>()).results;
+ const storage=async()=>Object.fromEntries(await Promise.all(tables.map(async({name})=>[name,(await env.DB.prepare('SELECT * FROM "'+name.replaceAll('"','""')+'"').all()).results.map(row=>JSON.stringify(row)).sort()])));
+ const before=await storage();
+ await call(grant.access_token,'/labels','POST',{name:'synthetic-vector-1142',color:'#ffffff'},403);
+ await call(read.token,'/labels','POST',{name:'synthetic-vector-1143',color:'#ffffff'},401);
+ expect(await storage()).toEqual(before);
+ expect((await f.call('/settings/oauth-apps/grants/'+grant.grant_id,'DELETE')).status).toBe(200);
+ for(const path of ['/labels','/labels/'+labels[0].id])await call(grant.access_token,path,'GET',undefined,401);
+ expect((await f.call('/settings/integrations/tokens/'+read.credential.id,'DELETE')).status).toBe(200);
+ for(const path of ['/labels','/labels/'+labels[0].id])await call(read.token,path,'GET',undefined,401);
+ expect((await f.call('/settings/operators/'+peer,'DELETE')).status).toBe(200);
+ for(const path of ['/labels','/labels/'+labels[0].id])await call(peerToken,path,'GET',undefined,401);
+ console.log('PROBE API-003 label-list: GET /api/v1/labels with name, projectsEnabled and limit=1 -> three native labels once each; changed actor, filters, limit or projection -> 409; invalid query -> 400.');
+ console.log('PROBE API-003 label-detail: GET /api/v1/labels/:id -> stable native projection; foreign workspace -> 404; Guest -> 403; revoked grant -> 401; read-only mutation -> 403 with unchanged storage.');
 }

@@ -293,6 +293,8 @@ export const apiDoors: Door[] = [
 
   { method: 'POST', path: '/teams', row: teamCreation },
   { method: 'PUT', path: '/teams/:id/privacy', row: 'teams.privacy' },
+  { method: 'GET', path: '/labels', row: null, page: 'labels' },
+  { method: 'GET', path: '/labels/:id', row: null, page: 'labels' },
   { method: 'POST', path: '/labels', row: 'labels.create' },
   { method: 'POST', path: '/issues', row: 'issues.write', teams: bodyTeam },
   { method: 'PATCH', path: '/issues/:identifier', row: async request => (await request.body() as { cycleId?: unknown } | undefined)?.cycleId !== undefined ? 'cycles.commit' : 'issues.write', teams: issue },
