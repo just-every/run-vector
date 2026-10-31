@@ -14,7 +14,7 @@ NOT (project=none OR assignee=none)
 ```
 
 NOT binds first, then AND, then OR. Parentheses select other grouping. The bar
-suggests current visible records. Parent, related, blocks and blockedby values can
+suggests current visible records. Parent, related, blocks, blockedby, duplicateof and duplicates values can
 be found by title; choose a suggestion to insert its stable issue identifier.
 Unsupported fields, operators, malformed groups and expressions beyond the
 bounded grammar are refused visibly. An invalid draft leaves the applied query
@@ -26,7 +26,7 @@ and saved definition intact.
 | category and status | Workflow category or current status identity. Explicit status and completed-date expressions include completed work. |
 | team, assignee, project, cycle, label, milestone and release | Current record identity from a suggestion or menu. Assignee also accepts me. Nullable fields accept none. |
 | creator and follower | Current person identity, me or none. Removed people are not current operands. |
-| parent, related, blocks and blockedby | Visible issue identifier or none. Blocking links differ from the computed blocked state, which ignores completed blockers. |
+| parent, related, blocks, blockedby, duplicateof and duplicates | Visible issue identifier or none. Blocking links differ from the computed blocked state, which ignores completed blockers. |
 | git | Recorded linked pull-request state: open, closed, merged or none. Review and required-check states are not inferred. |
 | title, identifier, description, outcome and impact | Equality, inequality or literal case-insensitive substring matching with ~. Quote text containing spaces or punctuation. |
 | estimate | Integer comparisons with =, !=, <, <=, > and >=; none means unestimated. |
@@ -89,6 +89,22 @@ operator, ordering clause or expression exceeding native bounds returns HTTP
 422 with `error: unmapped_jql` and an omissions list. The whole selected filter
 is refused and no partial view is created. Malformed request envelopes return
 400. Existing view creation permissions, personal ownership, Guest scope,
-Viewer refusals and per-person limits still apply. Bulk saved-filter file intake,
-complete Jira syntax, typed custom fields and customer-request filters remain
+Viewer refusals and per-person limits still apply. Complete Jira syntax, typed custom fields and customer-request filters remain
 outside this supported subset.
+
+### An exported page of saved filters
+
+To import a JSON page produced by Jira's filter-search export, place the page
+under `jiraImport.export` and the reviewed mappings beside it. Its `values`
+array contains records with `id`, `name` and `jql`; additional Jira response
+metadata is ignored. Up to 50 selected records can be submitted per request.
+The usual per-person view limit still applies.
+
+The response names every created view and every omitted source record with its
+reason. Each filter is independent: an unmappable record creates no partial
+view, while fully mapped records are imported. Existing names are never
+replaced. Repeating the page reports name conflicts instead of duplicating or
+overwriting views. `sourceContinues: true` means the submitted Jira page has
+`isLast: false`; supply further owner-produced pages explicitly. This door makes
+no automatic provider request. A request with no imported records returns 422
+with the same per-record report.

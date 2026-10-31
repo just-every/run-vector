@@ -4,7 +4,7 @@ import { useApiResource } from '../../../app/api-client';
 import { workspaceSearchSchema } from '../../search/ui/data';
 import { expressionSuggestions } from './filter-suggestions';
 
-const issueFields = ['parent', 'related', 'blocks', 'blockedby'];
+const issueFields = ['parent', 'related', 'blocks', 'blockedby', 'duplicateof', 'duplicates'];
 export const isIssueOperand = (field: string) => issueFields.includes(field);
 /** Find the current term outside quoted text; never reinterpret a prior group. */
 function issueFragment(source: string) {
@@ -20,7 +20,7 @@ function issueFragment(source: string) {
     if (connector && (n === 0 || /[\s(]/.test(source[n - 1]))) { start = n + connector[0].length; n = start - 1; }
   }
   const term = source.slice(start), leading = term.length - term.trimStart().length;
-  const match = term.trimStart().match(/^(parent|related|blocks|blockedby)(=|!=)(.*)$/i);
+  const match = term.trimStart().match(/^(parent|related|blocks|blockedby|duplicateof|duplicates)(=|!=)(.*)$/i);
   if (!match) return null;
   const query = match[3].replace(/^"|"$/g, '').trim();
   if (!query || query === 'none' || query.length > 200) return null;

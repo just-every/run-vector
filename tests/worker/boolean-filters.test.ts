@@ -1,3 +1,4 @@
+import { duplicateBooleanJourney } from './boolean-duplicate-journey';
 import { jiraBooleanJourney } from './boolean-jira-journey';
 import { linkedBooleanJourney } from './boolean-linked-journey';
 import { nativeBooleanJourney } from './boolean-native-journey';
@@ -99,4 +100,5 @@ it('Boolean list and saved-view doors retain exact paged results, reject invalid
   await nativeBooleanJourney();
   await linkedBooleanJourney(f, high, urgent, low, privateTeam, hidden);
   await jiraBooleanJourney(f, high, urgent, low, blockedHigh, blockedUrgent, privateTeam);
+  await duplicateBooleanJourney(f, privateTeam);
 }, 120_000);

@@ -51,6 +51,22 @@ export async function jiraBooleanJourney(f: Fixture, high: any[], urgent: any, l
   expect(ownerQuery.total).toBe(0);
   const guest = await json(await importFilter('priority = High AND labels = Review', f.guest), 201);
   expect(await identifiers(guest, f.guest)).toEqual([high[0].identifier, completed.identifier].sort());
+  const exported = { startAt: 0, maxResults: 50, total: 3, isLast: true, values: [
+    { id: 'synthetic-vector-133-source-1', name: 'synthetic-vector-133-page-1', jql: 'priority IN (High, Highest) AND labels = Review', description: 'Owner-produced filter record' },
+    { id: 'synthetic-vector-133-source-2', name: 'synthetic-vector-133-page-2', jql: 'priority NOT IN (High)' },
+    { id: 'synthetic-vector-133-source-3', name: 'synthetic-vector-133-page-3', jql: 'unsupported = value' },
+  ] };
+  const pageInput = { query: { q: marker }, jiraImport: { export: exported, mappings } };
+  const page = await json(await f.member.call('/views', 'POST', pageInput), 201);
+  expect(page.views.map((view: any) => view.name)).toEqual(exported.values.slice(0, 2).map(row => row.name));
+  expect(page.omissions).toEqual([{ id: exported.values[2].id, name: exported.values[2].name, terms: [{ term: 'unsupported', reason: expect.any(String) }] }]);
+  expect(page.sourceContinues).toBe(false);
+  expect(await identifiers(page.views[0])).toEqual([high[0].identifier, completed.identifier].sort());
+  expect(await identifiers(page.views[1])).toEqual([urgent, low, blockedUrgent].map(i => i.identifier).sort());
+  const afterPage = await snapshot(['saved_views', 'issues', 'issue_activity']);
+  const replay = await json(await f.member.call('/views', 'POST', pageInput), 422);
+  expect(replay.views).toEqual([]); expect(replay.omissions).toHaveLength(3);
+  expect(await snapshot(['saved_views', 'issues', 'issue_activity'])).toEqual(afterPage);
   const before = await snapshot(['saved_views', 'issues', 'issue_activity']);
   for (const jql of ['unknown = value', 'priority = Unmapped', 'labels ~ Review', 'priority = High ORDER BY created DESC', '(priority=High', 'priority IN ()', 'priority=High;SELECT 1', 'assignee = membersOf(admins)', 'NOT '.repeat(12) + 'priority=High']) {
     const response = await importFilter(jql);
@@ -68,5 +84,20 @@ export async function jiraBooleanJourney(f: Fixture, high: any[], urgent: any, l
   const readonlyBefore = await snapshot(['saved_views', 'issues', 'issue_activity']);
   expect((await importFilter(source.jql, readonly)).status).toBe(403);
   expect(await snapshot(['saved_views', 'issues', 'issue_activity'])).toEqual(readonlyBefore);
+  const removed = await f.fresh('member'), erasedMarker = 'synthetic-vector-133-removed-filter';
+  const authored = await json(await removed.call('/issues', 'POST', { teamId: f.team.id, title: erasedMarker, assigneeOperatorId: removed.id }), 201);
+  const personExpression = `creator=${removed.id} AND follower=${removed.id} AND assignee=${removed.id}`;
+  const savedPerson = await json(await f.member.call('/views', 'POST', { name: erasedMarker, query: { q: erasedMarker, expression: personExpression } }), 201);
+  const personQuery = '/issues?' + new URLSearchParams({ q: erasedMarker, expression: personExpression });
+  expect((await json(await f.member.call(personQuery))).issues.map((i: any) => i.identifier)).toEqual([authored.identifier]);
+  await json(await owner.call('/settings/operators/' + removed.id, 'DELETE'));
+  expect((await json(await f.member.call(personQuery))).total).toBe(0);
+  expect((await json(await f.member.call('/views/' + savedPerson.id))).query.expression).toBe(personExpression);
+  expect(JSON.stringify((await json(await f.member.call('/options'))).operators)).not.toContain(removed.id);
+  const afterRemoval = await snapshot(['issues', 'issue_activity', 'saved_views']);
+  expect((await removed.call(personQuery)).status).toBe(401);
+  expect((await removed.api('/issues')).status).toBe(401);
+  expect((await removed.call('/issues', 'POST', { teamId: f.team.id, title: erasedMarker })).status).toBe(401);
+  expect(await snapshot(['issues', 'issue_activity', 'saved_views'])).toEqual(afterRemoval);
   console.log('PROBE SEARCH-004 jql-import: explicitly mapped Jira Boolean and IN filters -> exact persisted native view sets; EMPTY, NOT and precedence preserved; unsupported or hidden mappings return omission reports with no partial view; Guest scoped and Viewer refused');
 }

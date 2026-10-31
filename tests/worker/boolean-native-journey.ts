@@ -54,6 +54,7 @@ export async function nativeBooleanJourney() {
       `identifier=${chosen.identifier}`, 'description~"%"',
       'NOT (assignee=none OR project=none OR cycle=none)',
     ]) expect(await read(expression), expression).toEqual(only);
+    expect(await read('description=""')).toEqual([blank.identifier, older.identifier].sort());
     expect(await read('assignee=me', f.member)).toEqual(only);
     expect(await read('assignee=me', owner)).toEqual([]);
     expect(await read('NOT estimate>=8')).toEqual([blank.identifier, older.identifier].sort());

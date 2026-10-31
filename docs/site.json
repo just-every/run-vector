@@ -61,6 +61,12 @@
           "title": "Notifications and email",
           "source": "docs/guide/notifications.md",
           "summary": "What reaches your Inbox, what is also emailed, and how follows, mutes and preferences work."
+        },
+        {
+          "slug": "advanced-filters",
+          "title": "Advanced issue filters",
+          "source": "docs/ADVANCED-FILTERS.md",
+          "summary": "Build native Boolean issue filters, save expressions, and import explicitly mapped Jira saved filters with omission reports."
         }
       ]
     },

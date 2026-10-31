@@ -8,7 +8,7 @@ export class JiraFilterError extends Error {
 type Truth = { yes: FilterExpression; no: FilterExpression };
 const not = (child: FilterExpression): FilterExpression => ({ kind: 'not', child });
 const group = (kind: 'and' | 'or', left: FilterExpression, right: FilterExpression): FilterExpression => ({ kind, left, right });
-const nullable = ['priority', 'assignee', 'project', 'cycle', 'label', 'parent', 'milestone', 'release', 'git', 'creator', 'follower', 'estimate', 'due', 'start', 'completed', 'canceled', 'deferred'];
+const nullable = ['duplicateof', 'duplicates', 'priority', 'assignee', 'project', 'cycle', 'label', 'parent', 'milestone', 'release', 'git', 'creator', 'follower', 'estimate', 'due', 'start', 'completed', 'canceled', 'deferred'];
 const unavailable = (term: string, reason: string): never => { throw new JiraFilterError([{ term, reason }]); };
 
 /** JQL uses three-valued comparisons. Both truth projections retain EMPTY

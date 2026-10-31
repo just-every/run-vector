@@ -1,3 +1,4 @@
+import { importJiraFilterPage, isJiraBatch } from './jira-filter-batch';
 import { parseViewCreate } from './jira-filter-import';
 import type { Hono, Context } from "hono";
 import type { AppEnvironment } from "../../app/bindings";
@@ -25,16 +26,14 @@ export function addViewRoutes(app: Hono<AppEnvironment>) {
   );
   app.post(
     "/views",
-    handle(async (c) =>
-      c.json(
-        await createView(
-          c.env.DB,
-          c.get("operatorId"),
-          await parseViewCreate(c.env.DB, c.get("operatorId"), await readRequestJson(c.req.raw)),
-        ),
-        201,
-      ),
-    ),
+    handle(async (c) => {
+      const body = await readRequestJson(c.req.raw);
+      if (isJiraBatch(body)) {
+        const imported = await importJiraFilterPage(c.env.DB, c.get('operatorId'), body);
+        return c.json(imported, imported.views.length ? 201 : 422);
+      }
+      return c.json(await createView(c.env.DB, c.get('operatorId'), await parseViewCreate(c.env.DB, c.get('operatorId'), body)), 201);
+    }),
   );
   app.get(
     "/views/:id",

@@ -3,7 +3,7 @@ import type { WorkspaceOptions } from '../../../shared/workspace-options';
 import { operandChoices } from './filter-suggestions';
 import { dateFields, operandLabels, operatorsFor, type FilterTerm, type Operand, type Operator } from '../filter-operands';
 function initialValue(field: Operand, options: WorkspaceOptions | null) {
-  return operandChoices(field, options)?.[0]?.id ?? (dateFields.includes(field) ? 'today' : field === 'estimate' ? '1' : ['parent', 'related', 'blocks', 'blockedby', 'release'].includes(field) ? 'none' : '');
+  return operandChoices(field, options)?.[0]?.id ?? (dateFields.includes(field) ? 'today' : field === 'estimate' ? '1' : (isIssueOperand(field) || field === 'release') ? 'none' : '');
 }
 export function TermControls({ value, onChange, path, options }: {
   value: FilterTerm; onChange: (term: FilterTerm) => void; path: string; options: WorkspaceOptions | null;

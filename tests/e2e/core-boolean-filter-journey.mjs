@@ -117,7 +117,7 @@ export async function booleanFilterJourney({ page, context, base, state, sql, ev
     await rows(member, issues.slice(0, 2));
     assert.deepEqual(await member.api('/views/' + view.id), view, 'Membership withdrawal never rewrites the expression');
     await inspect(current, current.locator('.issues-browser'), 'boolean-saved-reopened');
-    await nativeFilterControls({ current, member, target, team, issue: issues[0], endpoint: issues[2], hidden: issues[5], privateTeam, owner, inspect, rows, base, marker });
+    const native = await nativeFilterControls({ current, member, target, team, issue: issues[0], endpoint: issues[2], hidden: issues[5], privateTeam, owner, jiraExpected: [issues[0], issues[3]], inspect, rows, base, marker });
     await navigate(current, base + '/');
     const guest = await invite('guest', [team.id]);
     await navigate(guest.page, target + '&expression=' + encodeURIComponent(canonical));
@@ -129,6 +129,9 @@ export async function booleanFilterJourney({ page, context, base, state, sql, ev
     await rows(viewer, issues.slice(0, 2));
     assert.equal(await viewer.page.getByRole('button', { name: 'Save view', exact: true }).count(), 0);
     assert.equal(await viewer.page.getByRole('button', { name: 'Save changes', exact: true }).count(), 0);
+    await navigate(viewer.page, base + '/app/views/' + native.jqlView.id);
+    await rows(viewer, [issues[0], issues[3]]);
+    assert.equal(await viewer.page.getByRole('button', { name: 'Save view', exact: true }).count(), 0);
     const before = sql('SELECT * FROM saved_views ORDER BY id');
     for (const [path, method, data] of [
       ['/views', 'POST', { name: marker, query: view.query }], ['/views/' + view.id, 'PATCH', { query: { expression: 'blocked' } }],
