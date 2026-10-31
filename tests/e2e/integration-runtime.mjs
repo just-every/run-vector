@@ -1,3 +1,4 @@
+import {exerciseGithubReviews} from './integrations/github-reviews.mjs';
 import {exerciseVideoPlayers} from "./video-players-journey.mjs";
 import {exerciseErrorProviders} from './integrations/error-providers.mjs';
 import {exerciseImportAliases} from './import-alias-journey.mjs';
@@ -17,6 +18,7 @@ try{
  await mkdir(resolve('.artifacts/verification'),{recursive:true});
  await mkdir(evidence,{recursive:true});runtime.initialize();runtime.start();await runtime.ready();const {cookie}=await signIn(runtime);browser=await chromium.launch({headless:true,args:["--use-mock-keychain","--password-store=basic"]});const page=await openAuthenticatedPage(browser,cookie,runtime.base);
  const admin=await(await runtime.req('/api/settings/administration',{headers:{Cookie:cookie}})).json(),team=admin.teams.find(row=>!row.archivedAt);
+ await exerciseGithubReviews({page,runtime,cookie,team,evidence});
  await exerciseVideoPlayers({page,runtime,cookie,team,evidence});
  await exerciseErrorProviders({page,runtime,cookie,team,evidence});
  await exerciseOAuthApps({page,runtime,cookie,evidence});

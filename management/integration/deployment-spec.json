@@ -718,6 +718,12 @@
       "name": "0118_dependency_key_sealing.sql",
       "sha256": "9c8fa5f94c48a230f326cd4d666cbc2bd1e7d5a18327b89e65b339ac6a533d9a",
       "sql": "ALTER TABLE rer_dependency_installation ADD COLUMN keys_sealed INTEGER NOT NULL DEFAULT 0 CHECK(keys_sealed IN (0,1));\n-- Nonsecret version history lets restored rows name an unavailable retired key\n-- without confusing ciphertext tampering or a wrong current secret with restore.\nALTER TABLE rer_dependency_installation ADD COLUMN key_ids TEXT NOT NULL DEFAULT '[]' CHECK(json_valid(key_ids) AND json_type(key_ids)='array');\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0119_github_reviews.sql",
+      "sha256": "320f3aed2fb565c71112adb6e452890592a79b9d6262b36d65fec437d026f6d8",
+      "sql": "-- Reviews are signed provider domain history. Credentials remain excluded on restore.\nALTER TABLE vector_github_pull_requests ADD COLUMN head_sha TEXT;\nALTER TABLE vector_github_pull_requests ADD COLUMN head_version INTEGER NOT NULL DEFAULT 0;\nALTER TABLE vector_github_pull_requests ADD COLUMN head_changed_at TEXT;\nALTER TABLE vector_github_pull_requests ADD COLUMN head_conflicted INTEGER NOT NULL DEFAULT 0;\nALTER TABLE vector_github_pull_requests ADD COLUMN head_observed_at TEXT;\nCREATE TABLE github_reviews (\n repository_id TEXT NOT NULL,\n number INTEGER NOT NULL,\n review_id INTEGER NOT NULL,\n reviewer_id INTEGER NOT NULL,\n reviewer_login TEXT NOT NULL,\n commit_sha TEXT NOT NULL,\n head_version INTEGER NOT NULL,\n state TEXT NOT NULL CHECK(state IN ('approved','changes_requested','commented','dismissed','conflicted')),\n submitted_at TEXT NOT NULL,\n received_at TEXT NOT NULL,\n PRIMARY KEY(repository_id,number,review_id),\n FOREIGN KEY(repository_id,number) REFERENCES vector_github_pull_requests(repository_id,number) ON DELETE CASCADE\n);\nCREATE INDEX github_reviews_current ON github_reviews(repository_id,number,head_version,reviewer_id,submitted_at);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
