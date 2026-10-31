@@ -7629,7 +7629,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-events.mjs": {
-      "sha256": "4ce1d575602855b2ea380f078f747c1f3e60df2627041a82008288956dca512e",
+      "sha256": "119b3153f1859addb20f21ab3e57e37ce85d471506c17a3cf21f0395968e00c7",
       "executable": false
     },
     "tests/e2e/collaboration-issue.mjs": {
