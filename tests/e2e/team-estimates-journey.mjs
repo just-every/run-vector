@@ -7,7 +7,7 @@ import {roleScreens} from './role-ui-support.mjs';
 
 /** Reuse native Settings and issue editors, with Current's real projection. */
 export async function teamEstimatesSettings({page,runtime,evidence,team,other,send}) {
-  const {base,sql}=runtime,inspect=roleScreens(evidence),path='/settings/teams/'+team.id;
+  const {base,sql}=runtime,capture=roleScreens(evidence),inspect=async(actor,region,name)=>{await capture(actor,region,name);await actor.setViewportSize({width:1440,height:1000});},path='/settings/teams/'+team.id;
   await page.setViewportSize({width:1440,height:1000});
   const started=team.statuses.find(status=>status.category==='started').id;
   const issue=await send(page,'/issues','POST',{teamId:team.id,title:'synthetic-vector-2605',statusId:started,estimate:34},201);
@@ -60,6 +60,13 @@ export async function teamEstimatesSettings({page,runtime,evidence,team,other,se
   await expect(page.locator('.stream-list [data-issue-identifier="'+issue.identifier+'"]').getByLabel('Estimate',{exact:true})).toHaveCount(0);
   await expect(page.locator('.stream-list [data-issue-identifier="'+independent.identifier+'"]').getByLabel('Estimate',{exact:true})).toHaveText('7 points');
   await inspect(page,page.locator('main'),'team-estimates-disabled-current');
+  await navigate(page,base+'/app/issues');
+  await page.locator('#issue-row-'+independent.identifier).focus();await page.keyboard.press('e');
+  const keyboard=page.getByRole('dialog',{name:'Change estimate',exact:true});
+  await expect(keyboard.getByLabel('Estimate',{exact:true})).toBeFocused();
+  await expect(keyboard.getByLabel('Estimate',{exact:true})).toHaveValue('7');
+  await page.keyboard.press('Escape');
+
   assert.equal(sql(`SELECT estimate FROM issues WHERE id='${issue.id}'`)[0].estimate,32);
   await save('tshirt');await navigate(page,base+'/app/issues/'+issue.identifier);
   await expect(page.getByText('Estimate: 32 points (retained)',{exact:true})).toBeVisible();

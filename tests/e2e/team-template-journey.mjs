@@ -6,7 +6,7 @@ import {openDisclosures} from './ui-controls-checks.mjs';
 import {roleScreens} from './role-ui-support.mjs';
 
 export async function teamTemplateSettings({page,runtime,evidence,team,other,send}) {
- const {base,sql}=runtime,inspect=roleScreens(evidence);
+ const {base,sql}=runtime,capture=roleScreens(evidence),inspect=async(actor,region,name)=>{await capture(actor,region,name);await actor.setViewportSize({width:1440,height:1000});};
  await page.setViewportSize({width:1440,height:1000});
  await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
  const form=page.getByRole('form',{name:'Default issue template for '+team.name,exact:true});
@@ -17,9 +17,9 @@ export async function teamTemplateSettings({page,runtime,evidence,team,other,sen
  await form.getByLabel('Default issue estimate',{exact:true}).selectOption('3');
  const receipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/settings/teams/'+team.id&&response.request().method()==='PATCH');
  await form.getByRole('button',{name:'Save default issue template',exact:true}).click();assert.equal((await receipt).status(),200);
- await inspect(page,form,'team-default-template-settings');
  await page.reload();await openAdministrationForm(page,'Edit '+team.name);
  await expect(page.getByRole('form',{name:'Default issue template for '+team.name,exact:true}).getByLabel('Template name',{exact:true})).toHaveValue('synthetic-vector-2641');
+ await inspect(page,page.getByRole('form',{name:'Default issue template for '+team.name,exact:true}),'team-default-template-settings');
  await navigate(page,base+'/app/new-issue');
  await page.getByLabel(/^Team/).selectOption(team.id);await openDisclosures(page);
  await expect(page.getByLabel(/^Title/)).toHaveValue('synthetic-vector-2642');

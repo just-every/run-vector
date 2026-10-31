@@ -31,7 +31,7 @@ export function IssueKeyboardFields({ field, rows, options, value, setValue, lab
   if (field === "estimate") {
     const teams=rows.map(row=>options.teams.find(team=>team.id===row.team.id));
     if (teams.some(team=>!team?.estimatesEnabled)) return <p role="status">Estimates are disabled for a selected team.</p>;
-    if (teams.every(team=>team!.estimateScale === "points")) return <EstimateChoice scale="points" value={value} onChange={setValue} disabled={disabled}/>;
+    if (teams.every(team=>team!.estimateScale === "points")) return <EstimateChoice autoFocus scale="points" value={value} onChange={setValue} disabled={disabled}/>;
     const choices=estimateChoices(teams[0]!.estimateScale).filter(choice=>teams.every(team=>estimateChoices(team!.estimateScale).some(other=>other.value===choice.value)));
     return <label>Estimate<select autoFocus aria-label="Estimate" value={value} disabled={disabled} onChange={event=>setValue(event.target.value)}>
       <option value="">Not set</option>

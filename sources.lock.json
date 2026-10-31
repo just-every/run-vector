@@ -5981,7 +5981,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/estimate-choice.tsx": {
-      "sha256": "67bd645ad23ad5cf33fa0b1a022fbaf36d2ae31dd5a240638d24b37e041789d0",
+      "sha256": "5db4b6d6b2aa01f4d56639e94656fc28155d4a3bd1ae29af09ceb7619ee0b52a",
       "executable": false
     },
     "src/core/features/issues/ui/intake-recommendation.ts": {
@@ -6041,7 +6041,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-fields.tsx": {
-      "sha256": "bac292b8506af0340968a2bdfccc42a5d70753c83777ff4cb641e8c1ecf7580c",
+      "sha256": "e8821390ed44490435dc438da89c7da579091ab6a9760bd4ef005e8b0f31912a",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-focus.ts": {
@@ -8229,7 +8229,7 @@
       "executable": false
     },
     "tests/e2e/team-estimates-journey.mjs": {
-      "sha256": "fa6d4599ad175024d0d5632403cd69f4c653c4eccca60b5ac45b1b3cfd0ad56c",
+      "sha256": "9f4771ec7078532d07a04f8c338d6a4a9088c86dff631e9bfbd1b399c165dab8",
       "executable": false
     },
     "tests/e2e/team-reader-cells.mjs": {
@@ -8237,15 +8237,15 @@
       "executable": false
     },
     "tests/e2e/team-template-journey.mjs": {
-      "sha256": "3a50fafccfe863b5de3a37eb9396e2fef099e5c762ce3d80542bc01c5e662209",
+      "sha256": "a84586ebd72c5db22f4581f43e51c679601b2e7c04f6fc40f50340fa4e51ef30",
       "executable": false
     },
     "tests/e2e/team-triage-journey.mjs": {
-      "sha256": "c4360705ca35b27b1349756596edd41db03cb3c54c2954230ac39ba5fd4f3764",
+      "sha256": "1c46e14d9731da72198157b8eca28130bd2577c7e009c251d18b9fda02bc613d",
       "executable": false
     },
     "tests/e2e/team-triage-responsibility-journey.mjs": {
-      "sha256": "b6a0fd39bd09ab414a2819bb0b2c2f56013ab1a7bd5b0a18d4a9bcca2d551fda",
+      "sha256": "39d0d5429feef751372578a8703615273cc3c4cdaeb6ddbec1a3dcc9c5f0125a",
       "executable": false
     },
     "tests/e2e/template-access-cells.mjs": {

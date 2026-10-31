@@ -5,14 +5,14 @@ import {openAdministrationForm} from './ui-administration-form.mjs';
 import {roleScreens} from './role-ui-support.mjs';
 
 export async function teamTriageResponsibilitySettings({page,peer,memberId,runtime,evidence,team,send}) {
- const {base,sql}=runtime,inspect=roleScreens(evidence);
+ const {base,sql}=runtime,capture=roleScreens(evidence),inspect=async(actor,region,name)=>{await capture(actor,region,name);await actor.setViewportSize({width:1440,height:1000});};
  const owner=sql('SELECT setup_operator_id id FROM workspace_installation')[0].id;
  const path='/settings/teams/'+team.id;
  await page.setViewportSize({width:1440,height:1000});await peer.setViewportSize({width:1440,height:1000});
  await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
  let form=page.getByRole('form',{name:'Triage responsibility for '+team.name,exact:true});
  await form.getByLabel('Responsible person',{exact:true}).selectOption(memberId);
- const save=async()=>{const receipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api'+path&&response.request().method()==='PATCH');await form.getByRole('button',{name:'Save triage responsibility',exact:true}).click();assert.equal((await receipt).status(),200);};
+ const save=async()=>{const receipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api'+path&&response.request().method()==='PATCH');await form.getByRole('button',{name:'Save triage responsibility',exact:true}).click();assert.equal((await receipt).status(),200);await page.reload();await openAdministrationForm(page,'Edit '+team.name);form=page.getByRole('form',{name:'Triage responsibility for '+team.name,exact:true});};
  await save();
  const issue=await send(page,'/intake','POST',{teamId:team.id,title:'synthetic-vector-2670'},201);
  await navigate(peer,base+'/app/inbox');

@@ -5,7 +5,7 @@ import {openAdministrationForm} from './ui-administration-form.mjs';
 import {roleScreens} from './role-ui-support.mjs';
 
 export async function teamTriageSettings({page,runtime,evidence,team,other,send}) {
-  const {base,sql}=runtime,inspect=roleScreens(evidence),path='/settings/teams/'+team.id;
+  const {base,sql}=runtime,capture=roleScreens(evidence),inspect=async(actor,region,name)=>{await capture(actor,region,name);await actor.setViewportSize({width:1440,height:1000});},path='/settings/teams/'+team.id;
   await page.setViewportSize({width:1440,height:1000});
   const pending=await send(page,'/intake','POST',{teamId:team.id,title:'synthetic-vector-2620',summary:'synthetic-vector-2621'},201);
   const independent=await send(page,'/intake','POST',{teamId:other.id,title:'synthetic-vector-2622'},201);
