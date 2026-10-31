@@ -7629,7 +7629,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-events.mjs": {
-      "sha256": "1c81f25e3c6f20d98889a81189811d7d6136dad1438c8f1b3a8de584c783a90c",
+      "sha256": "4ce1d575602855b2ea380f078f747c1f3e60df2627041a82008288956dca512e",
       "executable": false
     },
     "tests/e2e/collaboration-issue.mjs": {
@@ -7649,7 +7649,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-pagination.mjs": {
-      "sha256": "b124eb387dd254f25a8a1e98703ce604e608055ce4f518fed57eca093748089c",
+      "sha256": "ed796577e2ae7bb472aec666f599a210a7c07c80d42dc1200ee1c9209c53e5e8",
       "executable": false
     },
     "tests/e2e/collaboration-preferences.mjs": {
@@ -7665,7 +7665,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-runtime.mjs": {
-      "sha256": "d88c0578631bb4940a78d368b2c2006837b6b97f2f2c58012c2f668e9d8e7cd9",
+      "sha256": "f5c1952a36281bff3cdadcbed42e491d149c11966f3ed206744a8ec19cebf215",
       "executable": false
     },
     "tests/e2e/collaboration-support.mjs": {
