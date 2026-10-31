@@ -35,7 +35,7 @@ export const nativeTargets: D1TargetAdapter = {
     if (kind !== 'issue') throw Error('unsupported_import_target');
     if (!row) return {sql:'NOT EXISTS(SELECT 1 FROM issues WHERE id=?) AND NOT EXISTS(SELECT 1 FROM vector_import_revisions WHERE issue_id=?)',params:[id,id]};
     const value=canonicalJson(row.value);
-    return {sql:`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE i.id=? AND t.workspace_id=? AND v.revision=? AND ${legacySnapshotExpression}=json_remove(json_set(json(?),'$.dependencies',${kept('dependencies')},'$.parent',${kept('parent')}),'$.manualOrder','$.related')
+    return {sql:`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE i.id=? AND t.workspace_id=? AND v.revision=? AND NOT EXISTS(SELECT 1 FROM comment_drafts WHERE issue_id=i.id AND state='open') AND ${legacySnapshotExpression}=json_remove(json_set(json(?),'$.dependencies',${kept('dependencies')},'$.parent',${kept('parent')}),'$.manualOrder','$.related')
       AND (SELECT count(*) FROM issue_relations r WHERE r.first_issue_id=i.id)=json_array_length(COALESCE(json_extract(json(?),'$.related'),json('[]')))
       AND NOT EXISTS(SELECT 1 FROM json_each(json(?),'$.related') e WHERE NOT EXISTS(SELECT 1 FROM issue_relations r WHERE r.first_issue_id=i.id AND r.second_issue_id=json_extract(e.value,'$.second_issue_id') AND r.created_at=json_extract(e.value,'$.created_at')))
       AND (SELECT count(*) FROM manual_order_entries e WHERE e.issue_id=i.id)=json_array_length(COALESCE(json_extract(json(?),'$.manualOrder'),json('[]')))
@@ -83,7 +83,7 @@ export const nativeTargets: D1TargetAdapter = {
     if (kind !== 'issue') throw Error('unsupported_import_target');
     // Deleting an import must not cascade away relationships another native
     // operation added to a parent or blocker after the reviewed import.
-    return [guard(`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=?)
+    return [guard(`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=? AND NOT EXISTS(SELECT 1 FROM comment_drafts WHERE issue_id=i.id AND state='open'))
       AND NOT EXISTS(SELECT 1 FROM issue_parents WHERE parent_issue_id=?)
       AND NOT EXISTS(SELECT 1 FROM issue_dependencies WHERE blocking_issue_id=?)
       AND NOT EXISTS(SELECT 1 FROM issue_relations WHERE second_issue_id=?)

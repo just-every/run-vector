@@ -1,3 +1,4 @@
+import { commentDraftJourney } from './comment-drafts-journey.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
@@ -122,6 +123,7 @@ export async function accountDraftJourney(page, context, base, record, { state, 
     await second.getByRole('button', { name: 'Discard draft ' + discarded, exact: true }).click();
     await until(() => get(other.request), rows => rows.length === 0, 'Discard consumes account draft');
     await until(() => page.getByRole('textbox', { name: /^Title/ }).inputValue(), value => value === '', 'Discard clears other browser');
+    await commentDraftJourney(page,context,second,other,base,issue,evidence,record,expectedAccountDraftConflicts);
     assert.deepEqual(errors, []);
     record('ISSUE-028', 'Independent native sessions restore title and two labels, show newer text, refuse a delayed save, atomically submit, and discard across browsers; keyboard, accessibility and both screen widths verified.');
   } finally { expectedAccountDraftConflicts.clear(); await other.close(); }

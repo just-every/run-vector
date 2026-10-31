@@ -1,3 +1,4 @@
+import { readCommentDraft, consumeCommentDraftStatements } from '../drafts/comment-repository';
 import { descriptionAnchorSchema } from "./anchors";
 import { DescriptionAnchorError } from "./anchor-error";
 import { addReactionRoutes } from "../reactions/routes";
@@ -92,15 +93,32 @@ export function addDiscussionRoutes(app: Hono<AppEnvironment>) {
       );
     try {
       const issue = await requireIssueAccess(c.env.DB, c.req.param("identifier"), c.get("operatorId"));
-      const id = await addComment(
+      const draftId = c.req.header('x-vector-comment-draft-id');
+      const revision = Number(c.req.header('x-vector-comment-draft-revision'));
+      const reference = draftId ? { id:draftId,revision } : undefined;
+      let savedBody = input.data.body;
+      const matchesDraft = async () => {
+        if (!reference) return true;
+        const draft = await readCommentDraft(c.env.DB,c.get('operatorId'),reference.id);
+        if (draft) savedBody = draft.body;
+        return Number.isSafeInteger(revision) && draft?.revision === revision && draft.identifier === issue.identifier &&
+          draft.parentId === (input.data.parentId ?? null) && draft.body.trim() === input.data.body;
+      };
+      const changed = () => c.json({ error:'draft_changed',message:'This comment draft changed or was removed. Review it before posting.' },409);
+      if (!await matchesDraft()) return changed();
+      let id: string;
+      try { id = await addComment(
         c.env.DB,
         issue.id,
         c.get("operatorId"),
         input.data.body,
         input.data.parentId,
-        undefined,
+        reference ? db => consumeCommentDraftStatements(db,c.get('operatorId'),issue.id,input.data.parentId,savedBody,reference) : undefined,
         input.data.anchor,
-      );
+      ); } catch (error) {
+        if (reference && !await matchesDraft()) return changed();
+        throw error;
+      }
       if (c.req.header('x-vector-projection') === 'discussion') {
         // Return the committed state through the same final native admission
         // used by document projections, rather than a second browser request.

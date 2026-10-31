@@ -21,6 +21,8 @@ export async function rollbackPreview(db:D1Database,workspace:string,id:string):
     const recorded=JSON.parse(row.record_json) as {valueHash:string;appliedRevision:string},current=natives.get(row.target_id);
     if(!current || current.revision!==recorded.appliedRevision || sha256(canonicalJson(current.value))!==recorded.valueHash)changed.add(row.target_id);
   }
+  // Private drafts block removal without projecting their bodies or identities.
+  for (const row of (await db.prepare("SELECT DISTINCT issue_id FROM comment_drafts WHERE state='open' AND issue_id IN (SELECT value FROM json_each(?))").bind(inRun).all<{issue_id:string}>()).results) changed.add(row.issue_id);
   // Relationships from issues outside the run also keep an imported issue in place.
   const incoming=(await db.prepare(`WITH incoming(id,other,relation) AS (
     SELECT parent_issue_id,issue_id,'parent' FROM issue_parents WHERE parent_issue_id IN (SELECT value FROM json_each(?1)) AND issue_id NOT IN (SELECT value FROM json_each(?1))

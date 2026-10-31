@@ -1,3 +1,5 @@
+import { resetLimits } from './role-fixture';
+import { commentDraftScenario } from './comment-draft-scenario';
 import { Hono } from 'hono';
 import { createApiApp } from '../../src/core/app/api';
 import type { AppEnvironment } from '../../src/core/app/bindings';
@@ -40,6 +42,8 @@ function pausedDraftProjection() {
 }
 
 it('[ISSUE-028] private account drafts survive independent sessions, reconcile competing saves and are consumed atomically without resurrection', async () => {
+  await commentDraftScenario();
+  await resetLimits();
   const f = await collaborationFixture(), team = f.initial.teams[0];
   for (const name of ['synthetic-vector-2801', 'synthetic-vector-2802'])
     await f.mutate('/settings/labels', 'POST', { name, color: '#405080' });

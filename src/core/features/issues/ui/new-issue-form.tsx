@@ -1,5 +1,5 @@
 import { useAccountDrafts } from '../../drafts/use-drafts';
-import { DraftList } from '../../drafts/list';
+import { DraftList, CommentDraftList } from '../../drafts/list';
 import { preferenceSchema } from "../../views/schema";
 import { lastCreatedTeamKey, preferredTeam } from "./preferred-team";
 import { administrationSchema } from "../../administration/schema";
@@ -259,6 +259,7 @@ export function NewIssueForm() {
             open={draft => { void account.open(draft).catch(account.report); }}
             discard={draft => { void account.discard(draft).catch(account.report); }}
             create={() => { void account.newDraft().catch(account.report); }} />
+          <CommentDraftList />
           {account.message ? <p className="new-issue-message" aria-live="polite">{account.message}</p> : null}
           {notice ? (
             <p className="new-issue-message" aria-live="polite">

@@ -2170,5 +2170,17 @@
     "state",
     "created_at",
     "updated_at"
+  ],
+  "comment_drafts": [
+    "id",
+    "workspace_id",
+    "author_operator_id",
+    "issue_id",
+    "parent_comment_id",
+    "body",
+    "revision",
+    "state",
+    "created_at",
+    "updated_at"
   ]
 }

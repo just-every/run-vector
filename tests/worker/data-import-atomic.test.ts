@@ -1,3 +1,4 @@
+import { createUlid } from '../../src/core/shared/ids';
 import { env } from 'cloudflare:workers';
 import { expect,it } from 'vitest';
 import { setupImport } from './data-import-fixture';
@@ -13,6 +14,15 @@ it('[DATA-003 DATA-004] late native SQL failure and commit-time session loss pub
  const restarted=await f.call('/data/import/runs/'+run!.id+'/resume','POST',{});expect(restarted.status).toBe(200);expect((await restarted.json() as {state:string}).state).toBe('completed');
  const counter=await env.DB.prepare('SELECT last_sequence FROM issue_prefix_sequences LIMIT 1').first<number>('last_sequence');
  expect((await f.call('/data/import/runs/'+run!.id+'/rollback','POST',{})).status).toBe(400);
+
+ const imported=await env.DB.prepare('SELECT identifier FROM issues ORDER BY identifier LIMIT 1').first<{identifier:string}>();
+ const privateBody='synthetic-vector-2875',draftId=createUlid(new Date());
+ expect((await f.call('/issues/'+imported!.identifier+'/comment-drafts','POST',{id:draftId,body:privateBody})).status).toBe(201);
+ const draftsBefore=(await env.DB.prepare('SELECT * FROM comment_drafts ORDER BY id').all()).results;
+ const refused=await f.call('/data/import/runs/'+run!.id+'/rollback','POST',{confirmed:true});
+ expect(refused.status).toBe(409);expect(await refused.text()).not.toContain(privateBody);
+ expect((await env.DB.prepare('SELECT * FROM comment_drafts ORDER BY id').all()).results).toEqual(draftsBefore);
+ expect((await f.call('/comment-drafts/'+draftId,'DELETE',{revision:1})).status).toBe(200);
  const reversed=await f.call('/data/import/runs/'+run!.id+'/rollback','POST',{confirmed:true});expect(reversed.status).toBe(200);expect((await reversed.json() as {state:string}).state).toBe('rolled_back');
  expect((await env.DB.prepare('SELECT count(*) n FROM issues').first())?.n).toBe(0);expect(await env.DB.prepare('SELECT last_sequence FROM issue_prefix_sequences LIMIT 1').first<number>('last_sequence')).toBe(counter);
  const authority=f.input([f.row('authority')],'authority-race'),authorityReview=await f.preview(authority);

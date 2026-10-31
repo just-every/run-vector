@@ -22,6 +22,13 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const discardedDraft=(await discardedResponse.json() as {draft:{id:string}}).draft;
  expect((await f.call('/drafts/'+discardedDraft.id,'DELETE',{revision:1})).status).toBe(200);
  const draftRows=(await env.DB.prepare('SELECT * FROM issue_drafts ORDER BY id').all()).results;
+ const commentDraftBody='synthetic-vector-2865', commentDraftId=createUlid(new Date());
+ expect((await f.call('/issues/'+f.issue.identifier+'/comment-drafts','POST',{id:commentDraftId,body:commentDraftBody})).status).toBe(201);
+ const discardedCommentId=createUlid(new Date());
+ expect((await f.call('/issues/'+f.canonical.identifier+'/comment-drafts','POST',{id:discardedCommentId,body:'synthetic-vector-2866'})).status).toBe(201);
+ expect((await f.call('/comment-drafts/'+discardedCommentId,'DELETE',{revision:1})).status).toBe(200);
+ const commentDraftRows=(await env.DB.prepare('SELECT * FROM comment_drafts ORDER BY id').all()).results;
+
 
  const migrationDigests=inject('migrationDigests') as Record<string,string>;
  const commentSubscriptions={events:['comment.created','comment.updated','comment.deleted'],teamIds:[f.team.id]};
@@ -207,6 +214,10 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect(await (await targetCall('/api/issues/'+f.erased.identifier+'/deletion','GET',undefined,historical)).json()).toEqual(f.deletionReceipt);
  expect((await targetCall('/api/issues/'+f.erased.identifier,'GET',undefined,historical)).status).toBe(404);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM issue_drafts ORDER BY id').all()).results).toEqual(draftRows);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM comment_drafts ORDER BY id').all()).results).toEqual(commentDraftRows);
+ expect((await (await targetCall('/api/comment-drafts','GET',undefined,historical)).json() as {drafts:unknown[]}).drafts).toEqual([expect.objectContaining({id:commentDraftId,body:commentDraftBody})]);
+ expect((await targetCall('/api/comment-drafts/'+discardedCommentId,'PATCH',{revision:1,body:commentDraftBody},historical)).status).toBe(409);
+
  const restoredDrafts=await targetCall('/api/drafts','GET',undefined,historical);expect(restoredDrafts.status).toBe(200);
  expect((await restoredDrafts.json() as {drafts:{id:string;values:unknown}[]}).drafts).toEqual([expect.objectContaining({id:portableDraft.id,values:draftValues})]);
  expect((await targetCall('/api/drafts/'+discardedDraft.id,'PATCH',{revision:1,values:draftValues},historical)).status).toBe(409);

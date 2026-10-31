@@ -1,5 +1,5 @@
+import { CommentComposer } from '../../drafts/comment-composer';
 import { Reactions, ReactionProvider } from "../../reactions/ui";
-import { MentionTextarea } from "../../notifications/ui/mention-textarea";
 import { useRef, useState } from "react";
 import { useApiResource } from "../../../app/api-client";
 import { useHydrated } from '../../../app/initial-resources';
@@ -37,13 +37,8 @@ function DiscussionContents({
     onRefresh();
   }
   const { resource, busy, error, mutate } = useDiscussion(identifier, onRefresh);
-  const [filesOpen, setFilesOpen] = useState(false), [body, setBody] = useState("");
+  const [filesOpen, setFilesOpen] = useState(false);
   const [uploadError, setUploadError] = useState("");
-  const json = (method: string, body: unknown) => ({
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
   return (
     <section className="detail-section">
       <Reactions identifier={identifier} writable={writable} />
@@ -75,29 +70,7 @@ function DiscussionContents({
             />
           ))
         : null}
-      {writable && <form
-        className="issue-mutation-form comment-composer"
-        onSubmit={(e) => {
-          e.preventDefault();
-          void mutate("comments", json("POST", { body }), () => setBody(""));
-        }}
-      >
-        <label>
-          <span className="visually-hidden">Add a comment</span>
-          <MentionTextarea
-            aria-label="Add a comment"
-            placeholder="Write a comment…"
-            required
-            maxLength={100000}
-            disabled={busy || !hydrated}
-            value={body}
-            onValueChange={setBody}
-          />
-        </label>
-        <button disabled={busy || !hydrated} type="submit">
-          Add comment
-        </button>
-      </form>}
+      {writable && <CommentComposer key={identifier} identifier={identifier} busy={busy || !hydrated} mutate={mutate}/>}
       {writable && email.data?.canReply && email.data.thread && <EmailReply identifier={identifier} requester={email.data.thread.requester} cc={email.data.thread.cc} onSent={emailSent} />}
       <NamedLinks writable={writable}
         identifier={identifier}

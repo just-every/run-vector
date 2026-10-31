@@ -1605,7 +1605,7 @@ try {
     "No horizontal overflow on mobile",
   );
   assert.equal(classifiedDraftConsole.length, journeyGroup === 'current' ? 0 : 1, 'Exactly the injected metadata failure is classified');
-  assert.equal(classifiedAccountDraftConsole.length, journeyGroup === 'current' ? 0 : 1, 'Exactly the deliberately delayed draft save is classified');
+  assert.equal(classifiedAccountDraftConsole.length, journeyGroup === 'current' ? 0 : 2, 'Exactly the deliberately delayed issue and comment draft saves are classified');
   assert.deepEqual(errors, []);
   assert.deepEqual(failed, []);
   assert.deepEqual(externalRequests, []);

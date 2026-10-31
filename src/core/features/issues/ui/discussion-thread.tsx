@@ -1,6 +1,7 @@
+import { CommentComposer } from '../../drafts/comment-composer';
 import type { DescriptionAnchor } from "../../discussion/anchors";
 import { Reactions } from "../../reactions/ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useHydrated } from "../../../app/initial-resources";
 import type { z } from "zod";
 import { MentionTextarea } from "../../notifications/ui/mention-textarea";
@@ -54,8 +55,12 @@ type Shared = { onLocateQuote?: (anchor: DescriptionAnchor) => void; writable?:b
 
 export function CommentThread({ root, replies, ...shared }: Shared & { root: Comment; replies: Comment[] }) {
   const [expanded, setExpanded] = useState(false),
-    [replying, setReplying] = useState(false),
-    [reply, setReply] = useState("");
+    [replying, setReplying] = useState(false);
+  useEffect(() => {
+    const openDraft = () => { if (window.location.hash === '#reply-' + root.id) {setExpanded(true);setReplying(true);} };
+    openDraft(); window.addEventListener('hashchange',openDraft);
+    return () => window.removeEventListener('hashchange',openDraft);
+  }, [root.id]);
   const hydrated = useHydrated();
   const { mutate } = shared;
   const busy = shared.busy || !hydrated;
@@ -95,21 +100,8 @@ export function CommentThread({ root, replies, ...shared }: Shared & { root: Com
         </ol>
       ) : null}
       {replying ? (
-        <form
-          className="comment-reply"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void mutate("comments", json("POST", { body: reply, parentId: root.id }), () => {
-              setReply("");
-              setReplying(false);
-            });
-          }}
-        >
-          <MentionTextarea aria-label="Reply to thread" placeholder="Write a reply…" required maxLength={100000}
-            disabled={shared.writable === false || busy} value={reply} onValueChange={setReply} />
-          <button disabled={shared.writable === false || busy}>Post reply</button>
-          <button type="button" disabled={shared.writable === false || busy} onClick={() => setReplying(false)}>Cancel</button>
-        </form>
+        <CommentComposer identifier={shared.identifier} parentId={root.id} busy={shared.writable === false || busy}
+          mutate={mutate} onCancel={() => setReplying(false)} onPosted={() => setReplying(false)}/>
       ) : null}
       <div className="comment-thread-actions">
         {writable && shared.email?.canReply && shared.email.thread && shared.onEmailSent && <EmailReply identifier={shared.identifier} requester={shared.email.thread.requester} cc={shared.email.thread.cc} parentId={root.id} onSent={shared.onEmailSent} />}

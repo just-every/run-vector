@@ -1,3 +1,4 @@
+import { addCommentDraftRoutes } from '../features/drafts/comment-routes';
 import { addDraftRoutes } from '../features/drafts/routes';
 import {addAliasRoutes} from '../features/data/aliases/routes';
 import {addOAuthRoutes} from '../features/oauth-apps/routes';
@@ -393,6 +394,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addNotificationRoutes(app);
   addViewRoutes(app);
   addDraftRoutes(app);
+  addCommentDraftRoutes(app);
   addPreferenceRoutes(app);
   addAdministrationRoutes(app);
   addTeamMembershipRoutes(app);

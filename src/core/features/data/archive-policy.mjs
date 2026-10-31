@@ -1,3 +1,4 @@
+// Comment drafts and content-free consumption tombstones are portable private domain data.
 // Private account drafts and content-free consumption tombstones remain portable domain data.
 // Document issue references retain live and removed backlinks as portable domain data.
 // Webhook event selections and team filters are portable configuration. Restored

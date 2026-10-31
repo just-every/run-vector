@@ -104,7 +104,15 @@ const draftTeam: Resolve<string[] | null> = async request => {
     .bind(request.params.id,request.actor).first<{team:string}>() : null;
   return teamsOf(request.db,request.actor,[...new Set([target,stored?.team].filter((id): id is string => !!id))]);
 };
+const commentDraftTeam: Resolve<string[] | null> = async request => {
+  const stored = await request.db.prepare(`SELECT i.team_id team FROM comment_drafts d JOIN issues i ON i.id=d.issue_id
+    WHERE d.id=? AND d.author_operator_id=? AND d.state='open'`).bind(request.params.id,request.actor).first<{team:string}>();
+  return teamsOf(request.db,request.actor,stored ? [stored.team] : []);
+};
 export const doors: Door[] = [
+  { method: 'POST', path: '/issues/:identifier/comment-drafts', row: 'issues.write', teams: issue },
+  { method: 'PATCH', path: '/comment-drafts/:id', row: 'issues.write', teams: commentDraftTeam },
+  { method: 'DELETE', path: '/comment-drafts/:id', row: 'issues.write', teams: commentDraftTeam },
   { method: 'POST', path: '/drafts', row: 'issues.write', teams: draftTeam },
   { method: 'PATCH', path: '/drafts/:id', row: 'issues.write', teams: draftTeam },
   { method: 'DELETE', path: '/drafts/:id', row: 'issues.write', teams: draftTeam },
