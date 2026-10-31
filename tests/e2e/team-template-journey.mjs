@@ -36,7 +36,7 @@ export async function teamTemplateSettings({page,runtime,evidence,team,other,sen
  await navigate(page,base+'/app/new-issue');await page.getByLabel(/^Team/).selectOption(team.id);await openDisclosures(page);
  await page.getByLabel(/^Title/).fill('synthetic-vector-2653');await page.getByLabel('Description',{exact:true}).fill('synthetic-vector-2654');
  await page.getByRole('combobox',{name:/^Priority/}).selectOption('none');await page.getByLabel('Estimate',{exact:true}).selectOption('');
- await page.reload();await openDisclosures(page);
+ await page.reload();await expect(page.getByLabel(/^Title/, {disabled:false})).toHaveValue('synthetic-vector-2653');await openDisclosures(page);
  await page.getByLabel(/^Team/).selectOption(other.id);await page.getByLabel(/^Team/).selectOption(team.id);
  await expect(page.getByLabel(/^Title/)).toHaveValue('synthetic-vector-2653');await expect(page.getByLabel('Description',{exact:true})).toHaveValue('synthetic-vector-2654');
  await expect(page.getByRole('combobox',{name:/^Priority/})).toHaveValue('none');await expect(page.getByLabel('Estimate',{exact:true})).toHaveValue('');

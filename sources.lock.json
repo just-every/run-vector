@@ -8241,7 +8241,7 @@
       "executable": false
     },
     "tests/e2e/team-template-journey.mjs": {
-      "sha256": "66e5cc77dec7a8736f3f326e3ac5169d0c160637f6a4493efc906a19493a6648",
+      "sha256": "687929a1846dd96e2d7ca1691b581f37597d7a538e8ace679fae649a280449c8",
       "executable": false
     },
     "tests/e2e/team-triage-journey.mjs": {
