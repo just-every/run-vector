@@ -101,6 +101,7 @@ export async function listIssues(
     `${access.workspace_id}:${actor}:${access.teamScope}`,
     today,
     (identity.results[0] as { revision: string }).revision,
+    groups.results as IssueListData["groups"],
   );
   if (query.offset > 0 && query.revision !== revision)
     throw new PaginationInvalidated();

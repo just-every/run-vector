@@ -18,7 +18,7 @@ export async function groupingFixture(owner) {
   }
   const parents = [];
   for (const team of [teams[0], teams[0], teams[1]]) parents.push(await owner('/issues', 'POST', {
-    teamId: team.id, title: 'Same parent title', priority: 'low',
+    teamId: team.id, title: team.id === teams[1].id ? 'Private parent title ' + marker : 'Same parent title', priority: 'low',
   }, 201));
   const issues = [];
   for (let n = 0; n < 55; n++) {
