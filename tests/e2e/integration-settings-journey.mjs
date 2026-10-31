@@ -6,6 +6,7 @@ import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs
 import assert from 'node:assert/strict';
 import {createWebhookProtocol} from '../../vendor/base/integrations/core/webhook.ts';
 import {sendSignedPullRequest,pullRequestRepository} from './integration-signed-pr.mjs';
+import {githubReceipts} from './integrations/github-receipts.mjs';
 export async function exerciseIntegrationSettings({page,runtime,cookie,team,width,evidence}){
  await page.setViewportSize({width,height:900});await page.goto(runtime.base+'/app/settings');const panel=page.locator('#integrations');await panel.getByRole('heading',{name:'Integrations',exact:true}).waitFor();
  const receipt=async(path,action,status=201)=>{const pending=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/settings/integrations'+path&&r.request().method()==='POST');await action();const response=await pending;assert.equal(response.status(),status);return response.json();};
@@ -35,11 +36,19 @@ export async function exerciseIntegrationSettings({page,runtime,cookie,team,widt
  await panel.getByLabel('Destination name',{exact:true}).fill('Browser receiver '+width);await panel.getByLabel('Public HTTPS destination',{exact:true}).fill('https://receiver.example.com/events');const destination=await receipt('/destinations',()=>panel.getByRole('button',{name:'Register destination',exact:true}).click());await reveal(destination.secret);
  const config=await(await runtime.req('/api/settings/integrations',{headers:{Cookie:cookie}})).json();assert.equal(config.outboundConfigured,false);assert(!JSON.stringify(config).includes(token.token));assert(!JSON.stringify(config).includes(source.secret));assert(!JSON.stringify(config).includes(source.webhookUrl));assert(!JSON.stringify(config).includes(replaced.webhookUrl));assert(!JSON.stringify(config).includes(destination.secret));
  await panel.getByLabel('Repository name',{exact:true}).fill('Browser repository '+width);await panel.getByLabel('GitHub owner/repository',{exact:true}).fill(pullRequestRepository(width));const github=await receipt('/github',()=>panel.getByRole('button',{name:'Register repository',exact:true}).click());await reveal(github.secret);
- await sendSignedPullRequest(github,issue.identifier,width);
+ const githubHealth=async()=>{const response=await runtime.req('/api/settings/integrations',{headers:{Cookie:cookie}});assert.equal(response.status,200);return (await response.json()).github.find(row=>row.id===github.id);};
+ if(width===1440)assert.equal((await githubHealth()).lastReceivedEventAt,null);
+ const receipts=githubReceipts({page,panel,runtime,cookie,width,evidence}),repositoryName='Browser repository '+width,unreceived=await receipts.none(repositoryName);
+ const [,merged]=await sendSignedPullRequest(github,issue.identifier,width);
+ const lastReceivedEventAt=width===1440?(await githubHealth()).lastReceivedEventAt:null;
+ if(width===1440){assert.ok(lastReceivedEventAt);assert.equal(lastReceivedEventAt,runtime.sql(`SELECT received_at FROM vector_github_deliveries WHERE repository_id='${github.id}' ORDER BY received_at DESC LIMIT 1`)[0].received_at);}
  await page.reload();assert.equal(await panel.getByLabel('New credential',{exact:true}).count(),0);
+ if(width===1440)assert.equal((await githubHealth()).lastReceivedEventAt,lastReceivedEventAt);
+ const shownReceipt=await receipts.received(github,repositoryName,merged,unreceived);
  await panel.getByRole('button',{name:'Revoke '+name,exact:true}).waitFor();
  await page.goto(runtime.base+'/app/issues/'+issue.identifier);const pr=page.getByRole('link',{name:'Fix '+issue.identifier+' · '+pullRequestRepository(width)+' #42',exact:true});await pr.waitFor();assert.equal(await pr.getAttribute('href'),'https://github.com/'+pullRequestRepository(width)+'/pull/42');await page.getByText('· merged',{exact:true}).waitFor();await pr.scrollIntoViewIfNeeded();
  await page.goto(runtime.base+'/app/settings');const revoked=page.waitForResponse(r=>r.request().method()==='DELETE'&&new URL(r.url()).pathname.startsWith('/api/settings/integrations/tokens/'));await panel.getByRole('button',{name:'Revoke '+name,exact:true}).click();assert.equal((await revoked).status(),200);assert.equal((await runtime.req('/api/v1/issues',{headers:{Authorization:'Bearer '+token.token}})).status,401);
+ await receipts.revoked(github,repositoryName,merged,shownReceipt);
 }
 
 /** The existing integrations journey also proves the team's mail conversation, on a page of its
