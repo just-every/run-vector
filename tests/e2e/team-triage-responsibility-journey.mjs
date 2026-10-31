@@ -36,7 +36,7 @@ export async function teamTriageResponsibilitySettings({page,peer,memberId,runti
  await expect(page.getByRole('form',{name:'Triage responsibility for '+team.name,exact:true}).getByLabel('Responsibility mode',{exact:true})).toHaveValue('weekly');
  const report=await send(peer,'/intake','POST',{teamId:team.id,title:'synthetic-vector-2671'},201);
  const notifications=sql(`SELECT recipient_id,causes_json FROM notifications WHERE issue_id='${report.id}'`);
- assert.deepEqual(notifications,[{recipient_id:owner,causes_json:'["new_triage"]'}]);
+ assert.deepEqual(notifications.map(row=>({...row})),[{recipient_id:owner,causes_json:'["new_triage"]'}]);
  await navigate(page,base+'/app');
  await expect(page.getByRole('navigation',{name:'Your triage',exact:true})).toBeVisible();
  await expect(page.locator('.stream-list [data-issue-identifier="'+issue.identifier+'"]')).toBeVisible();
