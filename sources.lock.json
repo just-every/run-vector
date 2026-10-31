@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "37aa6ebaedba8f04d4a4436f04ed35ad012656e85cbde48d3f7bbdafcfcb3cb7",
+      "sha256": "0aa9357b425721551f2572f9b2bc7aab9d20740e404da68f73ec90f6fa97e74b",
       "executable": false
     },
     "DEMO.md": {
@@ -553,7 +553,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "32314fe13e8782f47e54703002b4a82314b2447d4677e18288639ef8e3adae08",
+      "sha256": "f89797be815690a93d0dfd653a22aa328fa68a24e3eb071c5cc5940233c43840",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -2605,7 +2605,7 @@
       "executable": false
     },
     "schema/api-v1.json": {
-      "sha256": "f73fbb311e7dbb0484414762175d0855a4b698745986b3d0f7503396abbde746",
+      "sha256": "57e80d8f4706dbd1bcf6162d4d1630a37709e36f3cbe8f9cb6808ecb93705805",
       "executable": false
     },
     "schema/importers.schema.json": {
@@ -5197,7 +5197,7 @@
       "executable": false
     },
     "src/core/features/integrations/api.ts": {
-      "sha256": "636075f5bd10bb13a0fe39cdc005cb5d9d0fd560cd616a343557ab4ca5809ec6",
+      "sha256": "a1135dadd58d31fbc55f780b4f957aa1575c6d2482451a444811710b6aeb0da7",
       "executable": false
     },
     "src/core/features/integrations/authority.ts": {
@@ -5313,7 +5313,7 @@
       "executable": false
     },
     "src/core/features/integrations/feature-scopes.ts": {
-      "sha256": "b6eb4f5193aca8b06c40a3b17fd9d558f98a131863acad9bc77d5afb2f406b6d",
+      "sha256": "849f9e8e7081316c5198da1a804b0dcda35e50fdf83f0aa473f1216dbdd7bc00",
       "executable": false
     },
     "src/core/features/integrations/github-read.ts": {
@@ -5405,7 +5405,7 @@
       "executable": false
     },
     "src/core/features/integrations/scope-labels.ts": {
-      "sha256": "924fa4b5e48a9b526c7307d1e1cac578e6be073741551abe443390d71687cf13",
+      "sha256": "5c5f1a69aa1afdb2e1837562125dcb5fd74620abacae5fd706f7718d9dca9789",
       "executable": false
     },
     "src/core/features/integrations/scopes.ts": {
@@ -6700,12 +6700,28 @@
       "sha256": "12d15c4bc266430e6c0017e5608798a005e004d941569ab3cd127bbfa5d86a10",
       "executable": false
     },
+    "src/core/features/report-exports/cursor.ts": {
+      "sha256": "cbfbc286134f8c3d49bb5c5cad65b5893a6a163e5242739430ec51d049051a00",
+      "executable": false
+    },
+    "src/core/features/report-exports/read.ts": {
+      "sha256": "d1debe6cf8f97baa5d7ef756a11460d8fe6ad939f3b943fb8e5ce305f50df02f",
+      "executable": false
+    },
+    "src/core/features/report-exports/routes.ts": {
+      "sha256": "6422811dedf55b306e5ca76c75ac1bd0502c03efcdbfc6a6669f9fd2945f2dca",
+      "executable": false
+    },
+    "src/core/features/report-exports/schema.ts": {
+      "sha256": "03037a246e2139c3503d786691af29e45b678e1b6f9bd2edd56f5e387ac14f4e",
+      "executable": false
+    },
     "src/core/features/roles/authority.ts": {
       "sha256": "879ac7455ae55c0400f746e09d93044f0388958156be5b3e8920d26f27f24d93",
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "1a453bbcff9ebe1bdba53d40b1283d9795d6c5ddf066431755fbb2c5fcf81062",
+      "sha256": "2d5deb6ff59b85dd42e239cda574fba5eeaf67e186375619c4588cc3e6acda7f",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6713,7 +6729,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "73772ff6fe0d294e7fdaf40adb01343cf278ebdd25449c846120885170c36197",
+      "sha256": "8aedd3a2169d456b99aed4945a4063c950e7459a6fdb812e9aa41b22127766d0",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -7921,7 +7937,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "bc4a3e5698f8f5f44dfb2d99d8012687ae80d930a89076f643eeace0969bc812",
+      "sha256": "bbe7c124c00326cfc59d8931644831613433792165b8261d3ea76b368dfec905",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -8222,6 +8238,10 @@
     },
     "tests/e2e/viewer-role-journey.mjs": {
       "sha256": "71b3d3437ccdd049270a84aac01b90f68b5359e4bbbf94f410ff0a66025e5724",
+      "executable": false
+    },
+    "tests/e2e/warehouse-export-client.mjs": {
+      "sha256": "1967d92eca458a4a58ab8d28dbf5e22f1998dcfaa70528c5881691a237d4479b",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
@@ -8669,7 +8689,7 @@
       "executable": false
     },
     "tests/worker/integration-api.test.ts": {
-      "sha256": "5a2c863fcbf9ca2389d887770726cd3f9ba3e62f8930dda0abca07654e11007d",
+      "sha256": "f12c11d30810bf2a0f9d1e6feb42f0cce13ff8e3053f290e265c9bf97ca76463",
       "executable": false
     },
     "tests/worker/integration-authority.test.ts": {
@@ -8937,7 +8957,7 @@
       "executable": false
     },
     "tests/worker/role-fixture.ts": {
-      "sha256": "fb16aac9f80dc0dc83dafaef2372579c1a3c0a3fc663fa9c894276f9cb041a76",
+      "sha256": "1520582db3e84bd6a20063dc1f3e280df375e56e8d1e640b25bd27540638894f",
       "executable": false
     },
     "tests/worker/role-guest-journey.ts": {
@@ -8953,7 +8973,7 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "c0dfd03838a14e6d6e84423a882fa8ab224f3e934b719cc35b50bfed47ca5f9d",
+      "sha256": "81b5d02270034166e8da603181b144264c16880888a0d056746a0b2d5700c0b8",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
@@ -9042,6 +9062,10 @@
     },
     "tests/worker/views-removal.test.ts": {
       "sha256": "4ef4c5ed93bf9fee688900fc9a8d4b0b46589e6184c49a8884e3682d442da299",
+      "executable": false
+    },
+    "tests/worker/warehouse-export-journey.ts": {
+      "sha256": "7c26b6188410e04ef59e1e3b55796ab9a9e3c14cfa55ccd15158ec37d68f9d83",
       "executable": false
     },
     "tests/worker/workload.test.ts": {

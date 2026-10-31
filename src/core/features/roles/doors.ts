@@ -284,6 +284,7 @@ export const doors: Door[] = [
 
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
+  ...(['issues','history','cycles','projects'] as const).map(resource => ({method:'GET' as const,path:'/report-exports/'+resource,row:'reports.export' as const})),
   {method:'POST',path:'/initiatives',row:'initiatives.write'},
   {method:'PATCH',path:'/initiatives/:id',row:'initiatives.write'},
   {method:'PUT',path:'/initiatives/:id/projects',row:'initiatives.write'},
