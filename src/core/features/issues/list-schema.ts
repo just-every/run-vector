@@ -1,4 +1,9 @@
 import { z } from "zod";
+import { parseFilterExpression, expressionLimit } from './filter-expression';
+const expression = z.string().max(expressionLimit).default('').superRefine((value, ctx) => {
+  try { parseFilterExpression(value); }
+  catch (error) { ctx.addIssue({ code: 'custom', message: (error as Error).message }); }
+});
 
 const id = z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/);
 const target = z.union([z.literal("all"), id]).default("all");
@@ -7,6 +12,7 @@ const date = z.union([z.literal(""), z.iso.date()]).default("");
 export const issueListQuerySchema = z
   .object({
     q: z.string().trim().max(200).default(""),
+    expression,
     // WORK-004: issues the signed-in member created or follows, for whoever views.
     scope: z.enum(["all", "created", "subscribed"]).default("all"),
     category: z
