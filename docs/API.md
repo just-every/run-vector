@@ -513,7 +513,9 @@ visible in Settings receipts and can be retried on the next hour. Disabling or
 revoking a schedule stops later sends, including an in-flight collection before
 its final admission check.
 
-Safe configuration and run receipts survive native archives. Credentials,
+Historical run counts are withheld as `null` when the current reader cannot
+see every team in the workspace; a retained aggregate cannot be divided into
+currently visible rows. Safe configuration and run receipts survive native archives. Credentials,
 claim tokens and row checkpoints do not. Restore holds all background effects;
 even after review, a historical schedule remains inert without its excluded
 credential. Create and explicitly enable a replacement schedule after reviewing

@@ -96,6 +96,10 @@ export async function warehouseScheduleJourney(f:Awaited<ReturnType<typeof setup
     expect(objects[4].records).toHaveLength(objects[3].records.length);
     expect(objects[4].records.every(row=>row.operation==='delete'&&row.row===null)).toBe(true);
     for(const issue of issues)expect(JSON.stringify(objects[4].records)).not.toContain(issue.identifier);
+    const hiddenReceipts=await read(await admin('/settings/report-exports'));
+    expect(hiddenReceipts.runs.filter((row:any)=>row.exportId===own.id).map((row:any)=>row.rowCount)).toEqual([null,null]);
+    const ownerReceipts=await read(await f.call('/settings/report-exports'));
+    expect(ownerReceipts.runs.filter((row:any)=>row.exportId===own.id).every((row:any)=>row.rowCount>0)).toBe(true);
     await read(await f.call('/settings/teams/'+team.id+'/privacy','PUT',{isPrivate:false}));
     let version=1;
     for(const [index,role] of ['member','guest','viewer'].entries()) {

@@ -6,6 +6,7 @@ import { IntegrationError } from '../integrations/errors';
 import { sealSecret } from '../integrations/secrets';
 import { bucketEndpoint, type createSchedule, type changeSchedule } from './schedule-schema';
 import { getView } from '../views/service';
+import { visibleTeam } from '../roles/visibility-sql';
 import type { z } from 'zod';
 
 export const scheduleIdentity = (id:string) => 'report-export:'+id;
@@ -16,8 +17,9 @@ export async function listSchedules(env:WorkerBindings,owner:IntegrationOwner) {
     {sql:`SELECT id,name,kind,configuration,enabled,version,next_at AS nextAt,state,last_error AS lastError,
       NOT EXISTS(SELECT 1 FROM vector_integration_secret_keys k WHERE k.identity='report-export:'||vector_report_exports.id AND k.slot='current') AS requiresReentry
       FROM vector_report_exports WHERE workspace_id=? ORDER BY created_at,id`,params:[owner.workspace]},
-    {sql:`SELECT r.id,r.export_id AS exportId,r.started_at AS startedAt,r.finished_at AS finishedAt,r.state,r.row_count AS rowCount,r.error
-      FROM vector_report_export_runs r JOIN vector_report_exports e ON e.id=r.export_id WHERE e.workspace_id=? ORDER BY r.started_at DESC,r.id DESC LIMIT 100`,params:[owner.workspace]},
+    {sql:`SELECT r.id,r.export_id AS exportId,r.started_at AS startedAt,r.finished_at AS finishedAt,r.state,
+      CASE WHEN NOT EXISTS(SELECT 1 FROM main.teams hidden JOIN main.operators reader ON reader.id=? AND reader.workspace_id=hidden.workspace_id WHERE hidden.workspace_id=? AND NOT (${visibleTeam('reader','hidden.id')})) THEN r.row_count ELSE NULL END AS rowCount,r.error
+      FROM vector_report_export_runs r JOIN vector_report_exports e ON e.id=r.export_id WHERE e.workspace_id=? ORDER BY r.started_at DESC,r.id DESC LIMIT 100`,params:[owner.id,owner.workspace,owner.workspace]},
   ]);
   return {schedules:result[0].map(row=>({...row,configuration:JSON.parse(String(row.configuration)),enabled:Boolean(row.enabled),requiresReentry:Boolean(row.requiresReentry)})),runs:result[1]};
 }
