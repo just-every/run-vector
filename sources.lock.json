@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "37aa6ebaedba8f04d4a4436f04ed35ad012656e85cbde48d3f7bbdafcfcb3cb7",
+      "sha256": "7bd6d5a791879bf1b19417896b77a58c3e6548b56fa2abbddfc3b93957214915",
       "executable": false
     },
     "DEMO.md": {
@@ -7644,6 +7644,10 @@
       "sha256": "8d36210c129ac7ca11e44b6dd562491ffae7ba4ac8015aab3d7b10aa4eea9fea",
       "executable": false
     },
+    "tests/e2e/core-agent-approval-journey.mjs": {
+      "sha256": "94f93ac75eecb41082fc2e12e054722a64ccbf4abbed36ba081ce27c69961bd7",
+      "executable": false
+    },
     "tests/e2e/core-board-journey.mjs": {
       "sha256": "5def8bd706f060669622150700e853aa43a6314228c7b632bcd7e2dfd6cc3a66",
       "executable": false
@@ -7749,7 +7753,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "769533876586cd2002c8c21bed6589fbd544de787afb8b74bab7f47d824dabb1",
+      "sha256": "c70a7d13ff66932e8e2736b3806ab101549e965c0e702fe8e085f842ea2a3b36",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8354,6 +8358,10 @@
     },
     "tests/worker/admission-final.test.ts": {
       "sha256": "81129a0a5f47652105f36bd9d3ad9f84444b29a228329c32c48c1a6778406472",
+      "executable": false
+    },
+    "tests/worker/agent-approval-lifecycle.test.ts": {
+      "sha256": "ed0e24f655f51d4e3de7766b674b3789edfa121f84480524e201f8f70ec02579",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
