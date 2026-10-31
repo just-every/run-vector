@@ -2025,7 +2025,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "362359bffe3f48ceb75cfa8d6db187550474e5afbe25e999b068d8e3f9f87ac2",
+      "sha256": "8f51e40c28071c7be4a844d558c2a58a047be7335ea31218d8878ab9fb5f9afa",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -7701,7 +7701,7 @@
       "executable": false
     },
     "tests/e2e/comment-drafts-journey.mjs": {
-      "sha256": "2f62d2a89866e0940510538ca8b2e05ee087005f8dcac591023a563710078147",
+      "sha256": "1732d94f014bf03557a9111f4603c113b468c3f6eeb6920d163148d32892020f",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {

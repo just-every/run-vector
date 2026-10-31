@@ -41,6 +41,18 @@ export async function commentDraftJourney(page,context,second,other,base,issue,e
   await second.getByRole('textbox',{name:'Add a comment',exact:true,disabled:false}).fill(newer);
   await until(()=>get(other.request),rows=>rows.some(row=>row.body===newer),'Newer comment save commits');
   await until(()=>page.getByRole('textbox',{name:'Add a comment',exact:true}).inputValue(),value=>value===newer,'Other browser shows newer comment before saving');
+  const navigating=newer+'-navigation';
+  await page.getByRole('textbox',{name:'Add a comment',exact:true}).fill(navigating);
+  await page.getByRole('link',{name:'Drafts',exact:true}).click();
+  await page.waitForURL(base+'/app/new-issue#drafts');
+  await until(()=>get(context.request),rows=>rows.some(row=>row.body===navigating),'Leaving the composer flushes its typed text');
+  await until(()=>second.getByRole('textbox',{name:'Add a comment',exact:true}).inputValue(),value=>value===navigating,'Other browser receives text saved during navigation');
+  await page.getByRole('region',{name:'Comment drafts',exact:true}).getByRole('button',{name:'Open comment draft '+issue.identifier,exact:true}).click();
+  await until(()=>page.getByRole('textbox',{name:'Add a comment',exact:true}).inputValue(),value=>value===navigating,'Reopening after navigation retains the unsent comment');
+  // Keep the subsequent competing-save proof on this exact latest body.
+  await second.getByRole('textbox',{name:'Add a comment',exact:true}).fill(newer);
+  await until(()=>get(other.request),rows=>rows.some(row=>row.body===newer),'The next intentional edit reaches the account');
+  await until(()=>page.getByRole('textbox',{name:'Add a comment',exact:true}).inputValue(),value=>value===newer,'The reopened browser shows the latest text');
   for (const width of [1440,390]) {
     await second.setViewportSize({width,height:1000});
     await second.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
