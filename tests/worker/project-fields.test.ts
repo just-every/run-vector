@@ -1,3 +1,4 @@
+import { issueGroupingJourney } from "./issue-grouping-journey";
 import {exerciseProjectTemplates} from './project-template-proof';
 import { expect,it } from 'vitest';
 import { exerciseMilestones } from './project-milestone-flow';
@@ -148,3 +149,8 @@ it("[PROJ-001] a project's color and icon save, appear on list and page and are 
   expect(created.status,await created.clone().text()).toBe(201);
   expect(await created.json()).toMatchObject({color:identity.color.toLowerCase(),icon:identity.icon});
 });
+
+
+it("milestone and parent grouping count complete filtered results and saved views obey current reader authority", async () => {
+  await issueGroupingJourney();
+}, 120_000);
