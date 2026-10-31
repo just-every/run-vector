@@ -66,7 +66,8 @@ export const statusRemoveSchema = z
   .strict();
 export const labelMergeSchema = z.object({destinationLabelId: administrationId}).strict();
 export const labelCreationPermissionSchema = z.object({membersMayCreate: z.boolean()}).strict();
-export const labelCreateSchema = z.object({ name, color: labelColor, projectsEnabled: z.boolean().default(false) }).strict();
+export const labelCreateSchema = z.object({ name, color: labelColor, projectsEnabled: z.boolean().default(false), groupId: administrationId.nullable().optional() }).strict();
+export const labelGroupSchema = z.object({ name }).strict();
 export const labelUpdateSchema = labelCreateSchema
   .partial()
   .extend({ projectsEnabled: z.boolean().optional() })
@@ -191,8 +192,10 @@ export const administrationSchema = z.object({
       color: z.string(),
       textColor: z.string(),
       projectsEnabled: z.boolean(),
+      groupId: z.string().nullable(),
     }),
   ),
+  labelGroups: z.array(z.object({ id: z.string(), name: z.string() })),
   projects: z.array(
     z.object({
       id: z.string(),

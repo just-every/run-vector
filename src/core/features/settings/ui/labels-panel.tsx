@@ -4,13 +4,16 @@ import type { Administration } from "../../administration/schema";
 import { LabelChip } from "../../../app/ui/label-chip";
 import { useAdministrationAction } from "./administration-action";
 import { AdministrationFeedback } from "./administration-feedback";
+import { LabelGroupsPanel } from "./label-groups-panel";
 export function LabelsPanel({
   labels,
+  labelGroups,
   onChanged,
   readOnly = false,
   memberLabelCreation,
 }: {
   labels: Administration["labels"];
+  labelGroups: Administration["labelGroups"];
   onChanged: () => void;
   readOnly?: boolean;
   memberLabelCreation: boolean;
@@ -26,6 +29,7 @@ export function LabelsPanel({
         name: fields.get("name"),
         color: fields.get("color"),
         projectsEnabled: fields.get("projectsEnabled") === "on",
+        groupId: fields.get("groupId") || null,
       })
     )
       form.reset();
@@ -61,26 +65,41 @@ export function LabelsPanel({
             Label colour
             <input name="color" type="color" defaultValue="#8fa3f0" />
           </label>
+          <GroupSelect groups={labelGroups} />
           <label><input type="checkbox" name="projectsEnabled" />Use for projects</label>
           <button>Create label</button>
         </fieldset>
       </form>}
       <AdministrationFeedback action={action} />
+      {!readOnly && <LabelGroupsPanel groups={labelGroups} labels={labels} onChanged={onChanged} />}
       {labels.map((label) => (
         readOnly
-          ? <p key={label.id}><LabelChip name={label.name} color={label.color} /></p>
-          : <LabelEditor key={label.id} label={label} labels={labels} onChanged={onChanged} />
+          ? <p key={label.id}><LabelChip name={label.name} color={label.color} />{label.groupId && <> {labelGroups.find(group => group.id === label.groupId)?.name}</>}</p>
+          : <LabelEditor key={label.id} label={label} labels={labels} groups={labelGroups} onChanged={onChanged} />
       ))}
     </section>
+  );
+}
+function GroupSelect({ groups, value = "" }: { groups: Administration["labelGroups"]; value?: string }) {
+  return (
+    <label>
+      Label group
+      <select name="groupId" defaultValue={value}>
+        <option value="">No group</option>
+        {groups.map((group) => <option key={group.id} value={group.id}>{group.name}</option>)}
+      </select>
+    </label>
   );
 }
 function LabelEditor({
   label,
   labels,
+  groups,
   onChanged,
 }: {
   label: Administration["labels"][number];
   labels: Administration["labels"];
+  groups: Administration["labelGroups"];
   onChanged: () => void;
 }) {
   const action = useAdministrationAction(onChanged);
@@ -94,6 +113,7 @@ function LabelEditor({
       name: new FormData(event.currentTarget).get("name"),
       color,
       projectsEnabled: new FormData(event.currentTarget).get("projectsEnabled") === "on",
+      groupId: new FormData(event.currentTarget).get("groupId") || null,
     });
   }
   return (
@@ -120,6 +140,7 @@ function LabelEditor({
               onChange={(event) => setColor(event.target.value)}
             />
           </label>
+          <GroupSelect groups={groups} value={label.groupId ?? ""} />
           <label><input type="checkbox" name="projectsEnabled" defaultChecked={label.projectsEnabled} />Use for projects</label>
           <LabelChip name={label.name} color={color} />
           <button>Save label</button>

@@ -19,6 +19,7 @@ import {
   validateMilestone,
   validateCycle,
   validateLabels,
+  validateLabelGroups,
 } from "../issues/repository";
 import { IssueMutationError } from "../issues/errors";
 import type { UpdateIssueInput } from "./routes";
@@ -261,6 +262,7 @@ export async function planIssueUpdate(
     // Retained historical selections need not pass today's workspace rules.
     const added = nextLabels.filter((id) => !oldLabels.includes(id));
     await validateLabels(db, added, team.workspace_id);
+    if (added.length > 0) await validateLabelGroups(db, nextLabels);
     for (const label of added)
       guard(
         "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=?)",

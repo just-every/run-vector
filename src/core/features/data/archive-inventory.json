@@ -627,7 +627,15 @@
     "color",
     "created_at",
     "updated_at",
-    "projects_enabled"
+    "projects_enabled",
+    "group_id"
+  ],
+  "label_groups": [
+    "id",
+    "workspace_id",
+    "name",
+    "created_at",
+    "updated_at"
   ],
   "list_preferences": [
     "id",

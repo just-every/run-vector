@@ -55,6 +55,7 @@ export const nativeTargets: D1TargetAdapter = {
     if (issue.cycle_id) statements.push(guard(`EXISTS(SELECT 1 FROM cycles WHERE id=? AND team_id=? AND closed_at IS NULL)
       AND EXISTS(SELECT 1 FROM workflow_statuses WHERE id=? AND category NOT IN ('completed','canceled','duplicate'))`,issue.cycle_id,issue.team_id,issue.status_id));
     for (const label of value.labels) statements.push(guard('EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=?)',label.label_id,row.destination));
+    if (value.labels.length>1) statements.push(guard('NOT EXISTS(SELECT 1 FROM json_each(?) chosen JOIN labels grouped ON grouped.id=chosen.value WHERE grouped.group_id IS NOT NULL GROUP BY grouped.group_id HAVING count(*)>1)',JSON.stringify(value.labels.map(label=>label.label_id))));
     statements.push(insertNative('issues',issue),{sql:'INSERT INTO vector_import_revisions(issue_id,revision) VALUES(?,?)',params:[row.targetId,row.revision]});
     for(const dependency of value.dependencies)statements.push(guard(`(EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=?)
       AND NOT EXISTS(SELECT 1 FROM issue_dependencies WHERE blocked_issue_id=? AND blocking_issue_id=?)

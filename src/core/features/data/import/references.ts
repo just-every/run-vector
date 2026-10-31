@@ -11,7 +11,7 @@ export async function loadImportReferences(db:D1Database,workspace:string): Prom
     operators:`SELECT o.*,EXISTS(SELECT 1 FROM vector_auth_operators m JOIN oa_operators a ON a.id=m.auth_id WHERE m.operator_id=o.id AND a.status='active') AS identity_active FROM operators o WHERE workspace_id=? ORDER BY name,id`,
     projects:'SELECT * FROM projects WHERE workspace_id=? ORDER BY name,id',
     cycles:'SELECT c.* FROM cycles c JOIN teams t ON t.id=c.team_id WHERE t.workspace_id=? ORDER BY c.name,c.id',
-    labels:'SELECT * FROM labels WHERE workspace_id=? ORDER BY name,id',
+    labels:'SELECT l.*,g.name AS group_name FROM labels l LEFT JOIN label_groups g ON g.id=l.group_id WHERE l.workspace_id=? ORDER BY l.name,l.id',
   };
   const entries=await Promise.all(Object.entries(queries).map(async([name,query])=>{
     const rows=(await db.prepare(query+' LIMIT 5001').bind(workspace).all<ReferenceRow>()).results;

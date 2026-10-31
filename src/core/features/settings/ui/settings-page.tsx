@@ -193,6 +193,7 @@ export function SettingsPage() {
           {administration.data && (
             <LabelsPanel
               labels={administration.data.labels}
+              labelGroups={administration.data.labelGroups}
               onChanged={administration.reload}
               readOnly={!workspace}
               memberLabelCreation={administration.data.workspace.memberLabelCreation}

@@ -1,3 +1,4 @@
+// Label groups and each label's group are portable workspace configuration; restore keeps stable group identity.
 // Document issue references retain live and removed backlinks as portable domain data.
 // Webhook event selections and team filters are portable configuration. Restored
 // event history remains held and destination secrets still require re-entry.

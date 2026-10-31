@@ -212,3 +212,70 @@ export async function memberLabelCreation({page, peer, runtime, clause, evidence
   await inspect(peer,peer.getByRole("form",{name:"Create label inline",exact:true}),"member-labels-inline-create");
   assert.equal(sql("SELECT count(*) n FROM audit_records WHERE action='workspace.label_creation_changed'")[0].n,4);
 }
+
+/** ISSUE-014: an Owner groups two labels in Settings, the issue picker applies one
+ * and offers no second, the server refuses both, and a Member only reads groups. */
+export async function labelGroups({page, peer, runtime, clause, evidence}) {
+  const {navigate} = await import("./collaboration-navigation.mjs");
+  const {roleScreens} = await import("./role-ui-support.mjs");
+  const inspect = roleScreens(evidence), {base, sql} = runtime, headers = {Origin: base};
+  const group = "synthetic-vector-area", names = ["synthetic-vector-area-web", "synthetic-vector-area-api"];
+  const team = sql("SELECT id FROM teams WHERE identifier_prefix='" + runtime.config.DEFAULT_TEAM_PREFIX + "'")[0];
+  await page.setViewportSize({width: 1440, height: 1000});
+  for (const name of names) assert.equal((await page.request.post(base + "/api/settings/labels", {headers, data: {name, color: "#224466"}})).status(), 200);
+  await clause("ISSUE-014", "an Owner creates a label group and places two labels in it, persisting across reload", async () => {
+    await navigate(page, base + "/app/settings");
+    const create = page.getByRole("form", {name: "Create label group", exact: true});
+    await create.getByLabel("Group name", {exact: true}).fill(group);
+    await create.getByRole("button", {name: "Create group", exact: true}).click();
+    await poll(() => sql("SELECT id FROM label_groups WHERE name='" + group + "'"), rows => rows.length === 1, "created label group");
+    const id = sql("SELECT id FROM label_groups WHERE name='" + group + "'")[0].id;
+    for (const name of names) {
+      await openAdministrationForm(page, "Edit label " + name);
+      const edit = page.getByRole("form", {name: "Edit label " + name, exact: true});
+      await edit.getByLabel("Label group", {exact: true}).selectOption({label: group});
+      await edit.getByRole("button", {name: "Save label", exact: true}).click();
+      await poll(() => sql("SELECT group_id FROM labels WHERE name='" + name + "'"), rows => rows[0]?.group_id === id, "label placed in group");
+    }
+    await navigate(page, base + "/app/settings");
+    await openAdministrationForm(page, "Edit label " + names[1]);
+    assert.equal(await page.getByRole("form", {name: "Edit label " + names[1], exact: true}).getByLabel("Label group", {exact: true}).inputValue(), id);
+    await inspect(page, page.locator("#labels"), "label-groups-settings");
+  });
+  await clause("ISSUE-014", "the issue picker applies one grouped label by keyboard, offers no second, and the server refuses both", async () => {
+    const made = await page.request.post(base + "/api/issues", {headers, data: {title: "synthetic-vector-label-group", teamId: team.id}});
+    assert.equal(made.status(), 201);
+    const issue = await made.json(), [web, api] = names.map(name => sql("SELECT id FROM labels WHERE name='" + name + "'")[0].id);
+    await navigate(page, base + "/app/issues/" + issue.identifier);
+    await page.getByRole("button", {name: /^Labels(?: · \d+)?$/}).click();
+    const form = page.getByRole("form", {name: "Apply issue labels", exact: true});
+    await form.getByRole("group", {name: group + " · one label"}).waitFor();
+    const first = form.getByLabel(names[0], {exact: true}), second = form.getByLabel(names[1], {exact: true});
+    await first.focus();
+    await page.keyboard.press("Space");
+    assert.equal(await first.isChecked(), true);
+    assert.equal(await second.isDisabled(), true, "the group's other label is not offered once one is chosen");
+    await inspect(page, form, "label-groups-picker");
+    await page.setViewportSize({width: 1440, height: 1000});
+    const saved = page.waitForResponse(r => new URL(r.url()).pathname === "/api/issues/" + issue.identifier && r.request().method() === "PATCH");
+    await form.getByRole("button", {name: "Save labels", exact: true}).click();
+    assert.equal((await saved).status(), 200);
+    assert.deepEqual(sql("SELECT label_id FROM issue_labels WHERE issue_id='" + issue.id + "'").map(row => row.label_id), [web]);
+    const stored = JSON.stringify(sql("SELECT i.version,(SELECT count(*) FROM issue_activity a WHERE a.issue_id=i.id) n FROM issues i WHERE i.id='" + issue.id + "'"));
+    const current = sql("SELECT version FROM issues WHERE id='" + issue.id + "'")[0].version;
+    const both = await page.request.patch(base + "/api/issues/" + issue.identifier, {headers, data: {expectedVersion: current, labelIds: [web, api]}});
+    assert.equal(both.status(), 400);
+    assert.deepEqual(sql("SELECT label_id FROM issue_labels WHERE issue_id='" + issue.id + "'").map(row => row.label_id), [web]);
+    assert.equal(JSON.stringify(sql("SELECT i.version,(SELECT count(*) FROM issue_activity a WHERE a.issue_id=i.id) n FROM issues i WHERE i.id='" + issue.id + "'")), stored);
+  });
+  await clause("ISSUE-014", "a Member sees groups read-only in Settings and cannot manage them", async () => {
+    await navigate(peer, base + "/app/settings");
+    await peer.locator("#labels").waitFor();
+    assert.equal(await peer.getByRole("form", {name: "Create label group", exact: true}).count(), 0);
+    assert.ok(await peer.locator("#labels").getByText(group).first().isVisible());
+    const refused = await peer.request.post(base + "/api/settings/label-groups", {headers, data: {name: "synthetic-vector-member-group"}});
+    assert.equal(refused.status(), 403);
+    assert.equal(sql("SELECT count(*) n FROM label_groups WHERE name='synthetic-vector-member-group'")[0].n, 0);
+    await inspect(peer, peer.locator("#labels"), "label-groups-member");
+  });
+}

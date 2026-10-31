@@ -20,8 +20,8 @@ export async function getSearchOptions(
     (SELECT json_group_array(json_object('id',id,'name',name,'role',role)) FROM (
       SELECT directory.id,directory.name,directory.role FROM operators directory WHERE directory.workspace_id=actor.workspace_id AND directory.removed_at IS NULL AND ${visibleDirectoryPerson('directory','actor.id')} ORDER BY name,id LIMIT ${seed.limits.operators}
     )) AS operators,
-    (SELECT json_group_array(json_object('id',id,'name',name,'color',color)) FROM (
-      SELECT id,name,color FROM labels WHERE workspace_id=actor.workspace_id ORDER BY name,id LIMIT ${seed.limits.labels}
+    (SELECT json_group_array(json_object('id',id,'name',name,'color',color,'groupId',group_id,'groupName',group_name)) FROM (
+      SELECT l.id,l.name,l.color,l.group_id,g.name AS group_name FROM labels l LEFT JOIN label_groups g ON g.id=l.group_id WHERE l.workspace_id=actor.workspace_id ORDER BY l.name,l.id LIMIT ${seed.limits.labels}
     )) AS labels,
     (SELECT json_group_array(json_object('id',id,'name',name,'lifecycle',lifecycle)) FROM (
       SELECT id,name,lifecycle FROM projects WHERE workspace_id=actor.workspace_id AND archived_at IS NULL ORDER BY name,id LIMIT ${seed.limits.projects}

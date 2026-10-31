@@ -19,6 +19,9 @@ export function IssueLabels({
   const [labelName, setLabelName] = useState("");
   const [labelColor, setLabelColor] = useState("#8fa3f0");
   const availableLabels = [...(options?.labels ?? []), ...createdLabels.filter(label => !options?.labels.some(existing => existing.id === label.id))];
+  const groups = [...new Map(availableLabels.filter(label => label.groupId).map(label => [label.groupId!, label.groupName ?? "Group"])).entries()]
+    .map(([id, name]) => ({ id, name, labels: availableLabels.filter(label => label.groupId === id) }))
+    .sort((a, b) => a.name.localeCompare(b.name));
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(
     issue.labels.map((label) => label.id),
@@ -66,7 +69,7 @@ export function IssueLabels({
       });
       const label = data.labels.find(label => label.name === labelName.trim());
       if (!label) throw new Error("The created label could not be read. Refresh labels.");
-      setCreatedLabels(labels => [...labels, label]);
+      setCreatedLabels(labels => [...labels, { ...label, groupName: data.labelGroups.find(group => group.id === label.groupId)?.name ?? null }]);
       if (selected.length < options.labelsPerIssue) setSelected(labels => [...labels, label.id]);
       setLabelName("");
       onRefresh();
@@ -92,6 +95,26 @@ export function IssueLabels({
       setPending(false);
     }
   }
+  const choice = (label: (typeof availableLabels)[number], groupHeld = false) => (
+    <label key={label.id}>
+      <input
+        type="checkbox"
+        checked={selected.includes(label.id)}
+        disabled={!writable || groupHeld ||
+          !selected.includes(label.id) &&
+          (!options || selected.length >= options.labelsPerIssue)
+        }
+        onChange={(event) =>
+          setSelected(
+            event.target.checked
+              ? [...selected, label.id]
+              : selected.filter((id) => id !== label.id),
+          )
+        }
+      />
+      <LabelChip name={label.name} color={label.color} />
+    </label>
+  );
   return (
     <div className="issue-label-control">
       <div className="issue-label-summary">
@@ -122,27 +145,18 @@ export function IssueLabels({
           <fieldset disabled={!writable || pending || !options}>
             <legend>Issue labels{options && selected.length >= options.labelsPerIssue - 1 ? ` · ${selected.length} of ${options.labelsPerIssue}` : ""}</legend>
             <div className="issue-label-choices">
-              {availableLabels.map((label) => (
-                <label key={label.id}>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(label.id)}
-                    disabled={!writable ||
-                      !selected.includes(label.id) &&
-                      (!options || selected.length >= options.labelsPerIssue)
-                    }
-                    onChange={(event) =>
-                      setSelected(
-                        event.target.checked
-                          ? [...selected, label.id]
-                          : selected.filter((id) => id !== label.id),
-                      )
-                    }
-                  />
-                  <LabelChip name={label.name} color={label.color} />
-                </label>
-              ))}
+              {availableLabels.filter(label => !label.groupId).map(label => choice(label))}
             </div>
+            {groups.map(group => {
+              const held = group.labels.find(label => selected.includes(label.id));
+              return (
+                <fieldset className="issue-label-group" key={group.id}>
+                  <legend>{group.name} · one label</legend>
+                  <div className="issue-label-choices">{group.labels.map(label => choice(label, held !== undefined && held.id !== label.id))}</div>
+                  {held && <p className="issue-label-group-note">Clear {held.name} to choose another {group.name} label.</p>}
+                </fieldset>
+              );
+            })}
             <div className="issue-editor-actions">
               <button disabled={!writable || pending || stale || conflict}>
                 {pending ? "Saving labels…" : "Save labels"}

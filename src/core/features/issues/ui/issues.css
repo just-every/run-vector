@@ -960,6 +960,20 @@
   gap: 0.3rem;
   min-height: 44px;
 }
+.issue-label-group {
+  border: 1px solid var(--app-line-strong);
+  border-radius: 0.5rem;
+  margin-block: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  min-width: 0;
+}
+.issue-label-group legend,
+.issue-label-group-note {
+  font-size: var(--app-text-small);
+}
+.issue-label-group-note {
+  margin: 0;
+}
 
 .decision-tabs:has(button:nth-child(4)) {
   grid-template-columns: repeat(3, minmax(0, 1fr));

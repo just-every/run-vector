@@ -17,6 +17,7 @@ import {
   issueLabels,
   issues,
   labels,
+  labelGroups,
   operators,
   projects,
   projectMilestones,
@@ -24,6 +25,7 @@ import {
   workflowStatuses,
 } from '../../platform/db/schema'
 import { IssueMutationError } from './errors'
+import { crowdedGroupName, labelGroupConflictMessage } from '../administration/label-group-admission'
 import type { AcceptIssueInput, CreateIssueInput, DeclineIssueInput, DeferIssueInput } from './input'
 
 type Database = ReturnType<typeof drizzle>
@@ -323,6 +325,7 @@ async function validateIssueOptions(db: Database, workspaceId: string, teamId: s
     validateMilestone(db, input.milestoneId, input.projectId, workspaceId),
     validateCycle(db, input.cycleId, teamId),
     validateLabels(db, input.labelIds, workspaceId),
+    validateLabelGroups(db, input.labelIds),
   ])
 }
 
@@ -363,6 +366,16 @@ export async function validateLabels(db: Database, labelIds: string[], workspace
   if (found.length !== labelIds.length || found.some((label) => label.workspaceId !== workspaceId)) {
     throw new IssueMutationError('invalid_option', 'Every label must exist in this workspace.')
   }
+}
+
+/** Exclusive label groups apply to the whole resulting selection. */
+export async function validateLabelGroups(db: Database, labelIds: string[]) {
+  if (labelIds.length < 2) return
+  const held = await db.select({ id: labels.id, groupId: labels.groupId }).from(labels).where(inArray(labels.id, labelIds))
+  const groupIds = [...new Set(held.flatMap((label) => (label.groupId ? [label.groupId] : [])))]
+  if (groupIds.length === 0) return
+  const crowded = crowdedGroupName(held, await db.select({ id: labelGroups.id, name: labelGroups.name }).from(labelGroups).where(inArray(labelGroups.id, groupIds)))
+  if (crowded) throw new IssueMutationError('invalid_option', labelGroupConflictMessage(crowded))
 }
 
 export function activityRow(entry: {

@@ -1,6 +1,7 @@
 import type { CreateIssueInput } from "./input";
 import { IssueMutationError } from "./errors";
 import { isMutationAccessError } from "../auth/mutation-database";
+import { isLabelGroupConflict, labelGroupRaceMessage } from "../administration/label-group-admission";
 
 export function creationGuard(
   db: D1Database,
@@ -75,6 +76,8 @@ export async function creationError(
       archiveConflict ? "invalid_transition" : "invalid_option",
       "This team is archived and no longer available. Unarchive it before adding work.",
     );
+  if (isLabelGroupConflict(error))
+    throw new IssueMutationError("invalid_option", labelGroupRaceMessage);
   if (/malformed JSON|creation option unavailable/.test(String(error)))
     throw new IssueMutationError(
       "invalid_option",

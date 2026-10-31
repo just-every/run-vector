@@ -29,6 +29,8 @@ export const settingsFormDoors: Record<string, readonly string[]> = {
   'email-intake/ui/event-key.tsx#EventWebhookKey': ['PUT /settings/teams/:teamId/email-intake/event-key'],
   'housekeeping/panel.tsx#HousekeepingPanel': ['PUT /settings/teams/:id/housekeeping'],
   'settings/ui/labels-panel.tsx#LabelsPanel': ['PUT /settings/labels/creation', 'POST /settings/labels'],
+  'settings/ui/label-groups-panel.tsx#LabelGroupsPanel': ['POST /settings/label-groups'],
+  'settings/ui/label-groups-panel.tsx#LabelGroupEditor': ['PATCH /settings/label-groups/:id'],
   'settings/ui/labels-panel.tsx#LabelEditor': ['PATCH /settings/labels/:id', 'POST /settings/labels/:id/merge'],
   'cycles/ui/cycles-panel.tsx#CyclesPanel': ['POST /settings/cycles'],
   'cycle-schedule/panel.tsx#CycleSchedulePanel': ['PUT /settings/teams/:id/cycle-schedule'],

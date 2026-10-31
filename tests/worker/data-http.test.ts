@@ -171,6 +171,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const restoredProjectBody=await restoredProject.json();
  expect(restoredProjectBody).toMatchObject({milestones:[expect.objectContaining({id:milestone.id,name:'Archive delivery',description:'Preserved project milestone',targetDate:'2027-04-01'})]});
  expect(await (await targetCall('/api/issues/'+f.issue.identifier,'GET',undefined,historical)).json()).toMatchObject({milestoneId:milestone.id,milestone:{name:'Archive delivery'},startDate:'2026-09-01',dueDate:'2026-09-07'});
+ const restoredAdministration=await (await targetCall('/api/settings/administration','GET',undefined,historical)).json() as {labelGroups:{id:string;name:string}[];labels:{id:string;groupId:string|null}[]};
+ expect(restoredAdministration.labelGroups).toEqual([{id:f.labelGroup.id,name:'HTTP area'}]);
+ expect(restoredAdministration.labels.find(row=>row.id===f.projectLabel.id)?.groupId).toBe(f.labelGroup.id);
  expect(restoredProjectBody).toMatchObject({startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labels:[expect.objectContaining({name:'HTTP planning'})]});
  expect(restoredProjectBody).toMatchObject({report:expect.objectContaining({days:(projectReportBefore.report as {days:unknown}).days})});
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM project_membership_events WHERE project_id=? ORDER BY id').bind(f.project.id).all()).results).toEqual(projectHistoryBefore.results);

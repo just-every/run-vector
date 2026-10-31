@@ -13,6 +13,8 @@ export async function populatedHttpSource() {
  const webhook=(await configured.json() as {id:string}).id;
  const labelState=await f.mutate('/settings/labels','POST',{name:'HTTP planning',color:'#405080',projectsEnabled:true});
  const projectLabel=labelState.labels.find(label=>label.name==='HTTP planning')!;
+ const labelGroup=(await f.mutate('/settings/label-groups','POST',{name:'HTTP area'})).labelGroups[0];
+ await f.mutate('/settings/labels/'+projectLabel.id,'PATCH',{groupId:labelGroup.id});
  const project=(await f.mutate('/settings/projects','POST',{name:'HTTP preserved project',leadOperatorId:f.owner,startDate:'2026-08-01',targetDate:'2027-04-20',priority:'high',labelIds:[projectLabel.id]})).projects[0];
  const issue=await f.create({title:'HTTP preserved history',description:'Searchable issue',statusId:f.team.statuses.find(s=>s.category==='unstarted')!.id,cycleId:f.closing.id,projectId:project.id,estimate:5,assigneeOperatorId:f.owner,dueDate:'2026-09-07'});
  const at='2026-09-02T00:00:00.000Z',closedAt='2026-09-08T00:01:00.000Z';
@@ -37,5 +39,5 @@ export async function populatedHttpSource() {
  await env.DB.prepare("UPDATE issue_files SET removal_requested_at=? WHERE id='http-file'").bind(at).run();
  await env.FILES.put('http-archive-file',new Uint8Array([0,1,2,255]),{httpMetadata:{contentType:'application/octet-stream'},customMetadata:{evidence:'http-roundtrip'}});
  const deletion=await archiveDeletionHistory(f);
- return {...f,peerCookie,peer,issue,closed,project,webhook,...deletion};
+ return {...f,peerCookie,peer,issue,closed,project,webhook,labelGroup,projectLabel,...deletion};
 }

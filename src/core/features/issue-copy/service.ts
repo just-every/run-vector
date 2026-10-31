@@ -209,7 +209,7 @@ export async function copyIssue(
       ).encoded !== snapshot.encoded
     )
       throw new CopyConflict();
-    if (/malformed JSON|copy .* changed/.test(String(error)))
+    if (/malformed JSON|copy .* changed|label_group_conflict/.test(String(error)))
       throw new CopyConflict();
     throw error;
   }

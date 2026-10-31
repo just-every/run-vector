@@ -15,6 +15,7 @@ const reasons = {
   milestone: "The original milestone is unavailable for its project in this workspace.",
   cycle: "The original cycle is closed or unavailable for this team.",
   labels: "An original label is unavailable in this workspace.",
+  labelGroup: "Restoring the original labels would give the issue two labels of one label group.",
   origin: "The original deferral decision is unavailable.",
   canonical: "The original canonical issue is unavailable or is now a duplicate.",
 };
@@ -68,6 +69,8 @@ export function undoAdmission(db: D1Database, actor: string, sessionHash: string
       (${changed("labelIds")}) AND EXISTS(SELECT 1 FROM json_each(m.before,'$.labelIds') selected
         WHERE NOT EXISTS(SELECT 1 FROM labels original JOIN actor ON actor.workspace_id=original.workspace_id
           WHERE original.id=selected.value)) labels,
+      (${changed("labelIds")}) AND EXISTS(SELECT 1 FROM json_each(m.before,'$.labelIds') chosen JOIN labels grouped ON grouped.id=chosen.value
+        WHERE grouped.group_id IS NOT NULL GROUP BY grouped.group_id HAVING count(*)>1) labelGroup,
       (${changed("deferralOrigin")}) AND ${before("deferralOrigin")} IS NOT NULL AND (
         NOT EXISTS(SELECT 1 FROM intake_decisions original WHERE original.id=${before("deferralOrigin")} AND original.issue_id=i.id)
         OR EXISTS(SELECT 1 FROM issue_deferral_origins occupied WHERE occupied.decision_id=${before("deferralOrigin")} AND occupied.issue_id<>i.id)) origin,

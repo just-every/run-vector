@@ -17,7 +17,7 @@ export const workspaceOptionsSchema = z.object({
   ),
   operators: z.array(z.object({ id: z.string(), name: z.string() })),
   labels: z.array(
-    z.object({ id: z.string(), name: z.string(), color: z.string() }),
+    z.object({ id: z.string(), name: z.string(), color: z.string(), groupId: z.string().nullable(), groupName: z.string().nullable() }),
   ),
   projects: z.array(
     z.object({ id: z.string(), name: z.string(), lifecycle: z.string() }),

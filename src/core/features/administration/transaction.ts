@@ -53,6 +53,10 @@ export async function commit(
       throw new SettingsError("invalid_project_label", "Choose workspace labels marked for projects.", 400);
     if (/project_label_in_use/.test(message))
       throw new SettingsError("project_label_in_use", "Remove this label from its projects before turning off project use.", 409);
+    if (/label_group_conflict/.test(message))
+      throw new SettingsError("label_group_conflict", "An issue would carry two labels of one label group. Remove one of them from those issues first.", 409);
+    if (/invalid_label_group/.test(message))
+      throw new SettingsError("invalid_label_group", "Choose a label group in this workspace.", 400);
     if (/last_owner/.test(message))
       throw new SettingsError("last_owner", "The last Owner cannot be demoted or removed. Make another member an Owner first.", 409);
     if (/installation_owner/.test(message))
@@ -98,7 +102,7 @@ export function audit(
 }
 export async function ownedRow<T>(
   ctx: AdministrationContext,
-  table: "teams" | "projects" | "labels",
+  table: "teams" | "projects" | "labels" | "label_groups",
   id: string,
 ) {
   const row = await ctx.db

@@ -32,7 +32,9 @@ export function bulkValidation(
         (CASE WHEN json_type(c.body,'$.dueDate') IS NULL THEN i.due_date ELSE json_extract(c.body,'$.dueDate') END) AS dateOrder,
       json_type(c.body,'$.labelIds') IS NOT NULL AND (json_array_length(c.body,'$.labelIds')>${seed.limits.labelsPerIssue} OR json_array_length(c.body,'$.labelIds')<>(SELECT count(DISTINCT value) FROM json_each(c.body,'$.labelIds'))) AS labelLimit,
       json_type(c.body,'$.labelIds') IS NOT NULL AND EXISTS(SELECT 1 FROM json_each(c.body,'$.labelIds') selected
-        WHERE NOT EXISTS(SELECT 1 FROM labels l WHERE l.id=selected.value AND (l.workspace_id=t.workspace_id OR EXISTS(SELECT 1 FROM issue_labels il WHERE il.issue_id=i.id AND il.label_id=l.id)))) AS labels
+        WHERE NOT EXISTS(SELECT 1 FROM labels l WHERE l.id=selected.value AND (l.workspace_id=t.workspace_id OR EXISTS(SELECT 1 FROM issue_labels il WHERE il.issue_id=i.id AND il.label_id=l.id)))) AS labels,
+      json_type(c.body,'$.labelIds') IS NOT NULL AND EXISTS(SELECT 1 FROM json_each(c.body,'$.labelIds') chosen JOIN labels grouped ON grouped.id=chosen.value
+        WHERE grouped.group_id IS NOT NULL GROUP BY grouped.group_id HAVING count(*)>1) AS labelGroup
     FROM requested r CROSS JOIN change c LEFT JOIN issues i ON i.identifier=r.identifier AND EXISTS(
       SELECT 1 FROM teams scope JOIN operators actor ON actor.workspace_id=scope.workspace_id WHERE scope.id=i.team_id AND actor.id=? AND actor.removed_at IS NULL)
     LEFT JOIN teams t ON t.id=i.team_id LEFT JOIN workflow_statuses s ON s.id=i.status_id)
@@ -42,7 +44,7 @@ export function bulkValidation(
     statement: db.prepare(sql).bind(...values),
     admission: db
       .prepare(
-        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit OR dateOrder) THEN 1 ELSE json('bulk edit admission denied') END`,
+        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit OR labelGroup OR dateOrder) THEN 1 ELSE json('bulk edit admission denied') END`,
       )
       .bind(...values),
   };
@@ -57,6 +59,7 @@ const reasons = {
   milestone: "Milestone is unavailable for this project in this workspace.",
   cycle: "Cycle is unavailable for this team or terminal work.",
   labels: "Every added label must exist in this workspace.",
+  labelGroup: "Choose at most one label from each label group.",
   labelLimit: `Choose at most ${seed.limits.labelsPerIssue} distinct labels.`,
 };
 export async function bulkFailures(

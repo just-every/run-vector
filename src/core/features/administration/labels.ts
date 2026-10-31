@@ -10,7 +10,8 @@ import {
   SettingsError,
 } from "./transaction";
 
-type Label = { id: string; name: string; color: string; projects_enabled: number };
+type Label = { id: string; name: string; color: string; projects_enabled: number; group_id: string | null };
+const manager = "EXISTS(SELECT 1 FROM operators WHERE id=? AND role IN ('owner','admin') AND removed_at IS NULL)";
 export async function createLabel(
   db: D1Database,
   actor: string,
@@ -18,17 +19,17 @@ export async function createLabel(
 ) {
   const ctx = await administrationContext(db, actor),
     id = createUlid(new Date(ctx.at));
-  const allowed = `EXISTS(SELECT 1 FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id
+  const allowed = input.groupId ? manager : `EXISTS(SELECT 1 FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id
     WHERE o.id=? AND o.removed_at IS NULL AND (o.role IN ('owner','admin') OR o.role='member' AND w.member_label_creation=1))`;
   if (!await ctx.db.prepare(`SELECT 1 WHERE ${allowed}`).bind(actor).first())
-    throw new SettingsError("label_creation_forbidden", "Only Owners and Admins may create labels with the current workspace permission.", 403);
+    throw new SettingsError("label_creation_forbidden", input.groupId ? "Only Owners and Admins may place a label in a group." : "Only Owners and Admins may create labels with the current workspace permission.", 403);
   await commit(ctx, [
     guard(ctx.db, allowed, actor),
     ctx.db
       .prepare(
-        "INSERT INTO labels(id,workspace_id,name,color,projects_enabled,created_at,updated_at) VALUES(?,?,?,?,?,?,?)",
+        "INSERT INTO labels(id,workspace_id,name,color,projects_enabled,group_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)",
       )
-      .bind(id, ctx.workspace, input.name, input.color, Number(input.projectsEnabled), ctx.at, ctx.at),
+      .bind(id, ctx.workspace, input.name, input.color, Number(input.projectsEnabled), input.groupId ?? null, ctx.at, ctx.at),
     ...audit(ctx, "label.created", id, input.name, null, input),
   ]);
   return id;
@@ -52,26 +53,28 @@ export async function updateLabel(
 ) {
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Label>(ctx, "labels", id),
-    next = { name: input.name ?? old.name, color: input.color ?? old.color, projectsEnabled: input.projectsEnabled ?? Boolean(old.projects_enabled) };
+    next = { name: input.name ?? old.name, color: input.color ?? old.color, projectsEnabled: input.projectsEnabled ?? Boolean(old.projects_enabled), groupId: input.groupId === undefined ? old.group_id : input.groupId };
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=?)",
+      "EXISTS(SELECT 1 FROM labels WHERE id=? AND workspace_id=? AND name=? AND color=? AND projects_enabled=? AND group_id IS ?)",
       id,
       ctx.workspace,
       old.name,
       old.color,
       old.projects_enabled,
+      old.group_id,
     ),
+    ...(next.groupId ? [guard(ctx.db, "EXISTS(SELECT 1 FROM label_groups WHERE id=? AND workspace_id=?)", next.groupId, ctx.workspace)] : []),
     ctx.db
-      .prepare("UPDATE labels SET name=?,color=?,projects_enabled=?,updated_at=? WHERE id=?")
-      .bind(next.name, next.color, Number(next.projectsEnabled), ctx.at, id),
+      .prepare("UPDATE labels SET name=?,color=?,projects_enabled=?,group_id=?,updated_at=? WHERE id=?")
+      .bind(next.name, next.color, Number(next.projectsEnabled), next.groupId, ctx.at, id),
     ...audit(
       ctx,
       "label.updated",
       id,
       next.name,
-      { name: old.name, color: old.color, projectsEnabled: Boolean(old.projects_enabled) },
+      { name: old.name, color: old.color, projectsEnabled: Boolean(old.projects_enabled), groupId: old.group_id },
       next,
     ),
   ]);
@@ -222,7 +225,9 @@ export async function mergeLabel(db: D1Database, actor: string, source: string, 
       SELECT lower(hex(randomblob(16))),id,?,'label.merged',json_object('labelIds',json(${previous})),json_object('labelIds',json(${next})),?,? FROM issues
       WHERE EXISTS(SELECT 1 FROM issue_labels WHERE issue_id=issues.id AND label_id=?)`).bind(actor,source,destination,ctx.at,ctx.at,source),
     ctx.db.prepare("UPDATE issues SET version=version+1,updated_at=? WHERE id IN(SELECT issue_id FROM issue_labels WHERE label_id=?)").bind(ctx.at,source),
-    ctx.db.prepare("INSERT OR IGNORE INTO issue_labels(issue_id,label_id,created_at) SELECT issue_id,?,? FROM issue_labels WHERE label_id=?").bind(destination,ctx.at,source),
+    // Rows move rather than copy, so merging inside one group never meets its own sibling; an
+    // issue already holding the destination keeps it and loses the source with the label.
+    ctx.db.prepare("UPDATE OR IGNORE issue_labels SET label_id=? WHERE label_id=?").bind(destination,source),
     ctx.db.prepare(`INSERT INTO project_activity(id,project_id,actor_operator_id,kind,previous_value_json,next_value_json,created_at,updated_at)
       SELECT lower(hex(randomblob(16))),p.id,?,'project.labelIds_changed',
       (SELECT json_group_array(label_id) FROM (SELECT label_id FROM project_labels WHERE project_id=p.id ORDER BY label_id)),

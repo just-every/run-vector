@@ -15,7 +15,7 @@ const cycleColumns =
   "c.id,c.team_id AS teamId,c.name,c.starts_at AS startsAt,c.ends_at AS endsAt,c.capacity,c.closed_at AS closedAt";
 export async function readAdministration(db: D1Database, actor: string) {
   const { workspace_id: workspaceId, role } = await settingsActor(db, actor);
-  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests] =
+  const [workspace, teams, statuses, labels, projects, operators, cycles, projectLabels, schedules, housekeeping, members, departed, joinRequests, labelGroups] =
     await Promise.all([
       db
         .prepare("SELECT id,name,timezone,member_label_creation AS memberLabelCreation,member_team_creation AS memberTeamCreation FROM workspace_settings WHERE id=?")
@@ -39,10 +39,10 @@ export async function readAdministration(db: D1Database, actor: string) {
         .all(),
       db
         .prepare(
-          "SELECT id,name,color,projects_enabled AS projectsEnabled FROM labels WHERE workspace_id=? ORDER BY name,id",
+          "SELECT id,name,color,projects_enabled AS projectsEnabled,group_id AS groupId FROM labels WHERE workspace_id=? ORDER BY name,id",
         )
         .bind(workspaceId)
-        .all<{ id: string; name: string; color: string; projectsEnabled: number }>(),
+        .all<{ id: string; name: string; color: string; projectsEnabled: number; groupId: string | null }>(),
       db
         .prepare(
           "SELECT id,name,description,lead_operator_id AS leadOperatorId,start_date AS startDate,target_date AS targetDate,color,icon,priority,lifecycle,archived_at AS archivedAt FROM projects WHERE workspace_id=? ORDER BY name,id",
@@ -77,6 +77,7 @@ export async function readAdministration(db: D1Database, actor: string) {
         WHERE t.workspace_id=? AND (r.requester_id=? OR EXISTS(SELECT 1 FROM operators actor WHERE actor.id=? AND actor.role IN('owner','admin'))
           OR EXISTS(SELECT 1 FROM team_members own WHERE own.team_id=t.id AND own.operator_id=? AND own.role='owner')) ORDER BY r.created_at,r.requester_id`)
         .bind(workspaceId,actor,actor,actor).all<{teamId:string;requesterId:string;name:string;state:string}>(),
+      db.prepare("SELECT id,name FROM label_groups WHERE workspace_id=? ORDER BY name,id").bind(workspaceId).all<{id:string;name:string}>(),
     ]);
   if ((await settingsActor(db, actor)).workspace_id !== workspaceId)
     throw new SettingsError(
@@ -108,6 +109,7 @@ export async function readAdministration(db: D1Database, actor: string) {
       textColor: labelTextColor(l.color),
       projectsEnabled: Boolean(l.projectsEnabled),
     })),
+    labelGroups: labelGroups.results,
     projects: projects.results.map(p => ({...p, labelIds: projectLabels.results.filter(l => l.projectId === p.id).map(l => l.labelId)})),
     operators: operators.results,
     cycles: cycles.results,

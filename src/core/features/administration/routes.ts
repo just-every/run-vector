@@ -20,6 +20,7 @@ import {
   reorderStatuses,
   removeStatus,
 } from "./teams";
+import { createLabelGroup, renameLabelGroup, removeLabelGroup } from "./label-groups";
 import { createLabel, updateLabel, removeLabel, setLabelCreation, mergeLabel } from "./labels";
 import { createProject, updateProject, removeProject } from "./projects";
 import { createCycle } from "./cycles";
@@ -134,6 +135,9 @@ export function addAdministrationRoutes(app: Hono<AppEnvironment>) {
       ),
     ),
   );
+  app.post("/settings/label-groups", mutation(schema.labelGroupSchema, (c,b) => createLabelGroup(c.env.DB,c.get("operatorId"),b)));
+  app.patch("/settings/label-groups/:id", mutation(schema.labelGroupSchema, (c,b) => renameLabelGroup(c.env.DB,c.get("operatorId"),c.req.param("id")!,b)));
+  app.delete("/settings/label-groups/:id", handle(async (c) => { await removeLabelGroup(c.env.DB,c.get("operatorId"),c.req.param("id")!); return read(c); }));
   app.post("/settings/labels/:id/merge", mutation(schema.labelMergeSchema, (c,b) => mergeLabel(c.env.DB,c.get("operatorId"),c.req.param("id")!,b.destinationLabelId)));
   app.put("/settings/labels/creation", mutation(schema.labelCreationPermissionSchema, (c,b) => setLabelCreation(c.env.DB,c.get("operatorId"),b.membersMayCreate)));
   app.post(

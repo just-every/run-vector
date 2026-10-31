@@ -11,6 +11,7 @@ export { stableImportId };
 import { createIssueInputSchema } from '../../issues/input';
 import { importValidationErrors } from './validation';
 import { importFieldLabel } from './field-labels';
+import { crowdedGroupInRows,labelGroupConflictMessage } from '../../administration/label-group-admission';
 import { emptyIssueValue,type NativeIssueValue } from './native-snapshot';
 import { importField,resolveReference,stringField,listField,type ImportReferences } from './references';
 import { linearPriority,isLinear } from './linear';
@@ -59,6 +60,7 @@ export function mapImportRow(record:SourceRecord,input:ImportInput,refs:ImportRe
     catch(error){if(input.format==='jira-csv'&&error instanceof Error&&error.message.startsWith('Reference was not found')){omissions.push({row,field:'cycle',code:'unresolved_sprint',message:'No explicit sprint mapping. The issue is imported without a cycle; the sprint stays in the original.'});return null;}throw error;}
   }):undefined;
   const labelIds=take('labels',()=>listField(importField(input,payload,'labels'),'labels').map(name=>resolveReference(refs.labels,name,'labels',input).id));
+  take('labels',()=>{const crowded=crowdedGroupInRows(refs.labels,labelIds??[]);if(crowded)throw Error(labelGroupConflictMessage(crowded));});
   const title=take('title',()=>text('title',500).trim());
   const description=take('description',()=>text('description',100000));
   const priority=take('priority',()=>{

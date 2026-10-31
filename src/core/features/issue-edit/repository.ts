@@ -4,6 +4,7 @@ import { drizzle } from "drizzle-orm/d1";
 import { mutationDatabase } from "../auth/mutation-database";
 import { requireIssue } from "../issues/repository";
 import { IssueMutationError } from "../issues/errors";
+import { isLabelGroupConflict, labelGroupRaceMessage } from "../administration/label-group-admission";
 import { planIssueUpdate, type IssueUpdateMetadata } from "./plan";
 import type { UpdateIssueInput } from "./routes";
 
@@ -32,6 +33,7 @@ export async function updateIssueRecord(
   try { results = await commitUndoable(db, actor, capture, plan.writes, [{ identifier, version: plan.version }]); }
   catch (error) {
     if (isMutationAccessError(error)) throw error;
+    if (isLabelGroupConflict(error)) throw new IssueMutationError("invalid_option", labelGroupRaceMessage);
     if (!(error instanceof UndoCaptureConflict)) throw error;
     const current = await requireIssue(drizzle(db), identifier);
     if (current.version !== input.expectedVersion) return "stale" as const;

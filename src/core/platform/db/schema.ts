@@ -113,8 +113,16 @@ export const labels = sqliteTable('labels', {
   name: text('name').notNull(),
   color: text('color').notNull(),
   projectsEnabled: integer('projects_enabled', { mode: 'boolean' }).notNull().default(false),
+  groupId: text('group_id'),
   ...timestamps,
 }, (table) => [uniqueIndex('labels_workspace_name_idx').on(table.workspaceId, table.name)])
+
+export const labelGroups = sqliteTable('label_groups', {
+  id: text('id').primaryKey(),
+  workspaceId: text('workspace_id').notNull(),
+  name: text('name').notNull(),
+  ...timestamps,
+}, (table) => [uniqueIndex('label_groups_workspace_name_idx').on(table.workspaceId, table.name)])
 
 export const issues = sqliteTable('issues', {
   id: text('id').primaryKey(),
