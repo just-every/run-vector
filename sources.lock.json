@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "26e5f654eb850bc7242a6c2e85f019aa855081e0b195d447cbb7dbfc26e3d9d9",
+      "sha256": "bdfb75d972a4c7db292981d70d6b29d7c1cac24c882d430240664d8f93a3ab4b",
       "executable": false
     },
     "DEMO.md": {
@@ -553,7 +553,7 @@
       "executable": false
     },
     "docs/API.md": {
-      "sha256": "bf7a78aceab60fb8ebe8c9f184aa27120f72c4592d0b54492366be3f9bdcc749",
+      "sha256": "d3a1181958c3d10cda5792ecbaf30071a731aa02c4ed38d63f8ecc1425e3e4d0",
       "executable": false
     },
     "docs/ARCHIVES.md": {
@@ -5857,7 +5857,7 @@
       "executable": false
     },
     "src/core/features/issues/browse-sql.ts": {
-      "sha256": "81a7cba6c3d3577079a92a7dc80b7049ee112739efca5c57cc9effb0bdd76fb2",
+      "sha256": "02d02838ccaf23b5d79390733ca81904c70bc45b4f3cfbca7faa0360addc4f4f",
       "executable": false
     },
     "src/core/features/issues/create-guard.ts": {
@@ -5866,6 +5866,14 @@
     },
     "src/core/features/issues/errors.ts": {
       "sha256": "17145ba5d6b0146a6f6e13ef24be98f85e8a6088c41522bec405c0389fe98b9b",
+      "executable": false
+    },
+    "src/core/features/issues/filter-expression-sql.ts": {
+      "sha256": "ef4e6eccb91a63b06cdb2c431d0f91857705bf5a841db23a4557c00eec251a68",
+      "executable": false
+    },
+    "src/core/features/issues/filter-expression.ts": {
+      "sha256": "65ea81c999bbc9e88a2dc2eaacac84617e270c043b11f67ab7fb6e72187fdd0c",
       "executable": false
     },
     "src/core/features/issues/index.ts": {
@@ -5881,7 +5889,7 @@
       "executable": false
     },
     "src/core/features/issues/list-schema.ts": {
-      "sha256": "6e6f52ee3d60e4916b92cdf14f6a713feb759c950ef524197ba99aca5e5780a2",
+      "sha256": "67205e00e05038b167031ade428312d5212655b3e954adb5b596a87585d3af90",
       "executable": false
     },
     "src/core/features/issues/list.ts": {
@@ -5914,6 +5922,10 @@
     },
     "src/core/features/issues/ui/board-actions.css": {
       "sha256": "98ecd4a4f50701017d9fe6c76fcf5c606b6c7dbd532efe81c939d4f30e63a5ff",
+      "executable": false
+    },
+    "src/core/features/issues/ui/boolean-filters.tsx": {
+      "sha256": "1e1297f1543cc47517fa522a17f213b53c4d9481390f88712f20d155bd9eb70e",
       "executable": false
     },
     "src/core/features/issues/ui/data.ts": {
@@ -6009,7 +6021,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-filters.tsx": {
-      "sha256": "9d4c68d5f5c14e2f108a307e6e16360fad43073f01b56598696664efd7b24c77",
+      "sha256": "b587ab792a8a93bb7cfe3aed8187561670b8223694862057138fa71eaeeedca2",
       "executable": false
     },
     "src/core/features/issues/ui/issue-keyboard-actions.ts": {
@@ -6097,7 +6109,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.css": {
-      "sha256": "b6a8b0af438ef964b821d1c6321042d11a9127dd01e20a322d33eb3830c71718",
+      "sha256": "4b2c87734b55a291665c9d6a97091208c2f68507a4507dbb9ae2b598a3e193fd",
       "executable": false
     },
     "src/core/features/issues/ui/issues-browser.tsx": {
@@ -7688,6 +7700,10 @@
       "sha256": "3c1cf6e2a4531c40d3f55ede755ee85b8f043d9f816a1cf3680828d57a62e38a",
       "executable": false
     },
+    "tests/e2e/core-boolean-filter-journey.mjs": {
+      "sha256": "75ee3c620abd0e840d1a8e11679e3c385aff6b9c9bb7c93430235a50f4db5d8b",
+      "executable": false
+    },
     "tests/e2e/core-cross-team-view-journey.mjs": {
       "sha256": "66757efe988cc7766fda93736f8aac494eccc5d1d5588c1f1aeb42fbeb043ec1",
       "executable": false
@@ -7733,7 +7749,7 @@
       "executable": false
     },
     "tests/e2e/core-keyboard-journey.mjs": {
-      "sha256": "e4e54a756f6c68fedf9812fe7de7a1be74f5519ae1a506c6035cbf4bf5d02c18",
+      "sha256": "9b25369ef0e7aa1de401a7bc14a89e194f5af7cbc4a408bfca9d347af2963ec6",
       "executable": false
     },
     "tests/e2e/core-manual-order-journey.mjs": {
@@ -8434,6 +8450,10 @@
     },
     "tests/worker/base-refresh-upgrade.test.ts": {
       "sha256": "c670d3c200d15007f0f6cce031854e6e27842e19d4743a5aa65545018c73aace",
+      "executable": false
+    },
+    "tests/worker/boolean-filters.test.ts": {
+      "sha256": "43ee721e2db4250bc69500d92fb87c4310104161c7cc58f9861513342498cae4",
       "executable": false
     },
     "tests/worker/bootstrap-owner.test.ts": {
