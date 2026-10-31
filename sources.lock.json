@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "4bc8dd2be91c9f889c6f57807cd164f432a2865908e4238f03144465f85bbb86",
+      "sha256": "00ad7333be7ddefbcf8547a8581b9d4fa77cffd19a5b692619ca15c17ad148a8",
       "executable": false
     },
     "DEMO.md": {
@@ -649,7 +649,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "7f31f5f0c45259fa9588a1fa6c97dcc59fb9d45475ec45efc904b17d4c83e7e0",
+      "sha256": "c76647768ff55aef0248db2eba42814a284b968b2889e23114d7d18c913bf774",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -7293,7 +7293,7 @@
       "executable": false
     },
     "tests/e2e/integrations/webhook-comments.mjs": {
-      "sha256": "efeec552fc5ee0df2d6a14361d7197bb104110b40b9497d81bdd495757b29f0d",
+      "sha256": "6459c4355657862f885c0f8e00a6930b6ba1fb0075c9049ab31fbb5464f3c99c",
       "executable": false
     },
     "tests/e2e/issue-copy-runtime.mjs": {
@@ -8073,7 +8073,7 @@
       "executable": false
     },
     "tests/worker/outbound-comment-journey.ts": {
-      "sha256": "6f63949900c2f70f587729032a8557113eaf61fed206b10a12d20e18483e67b9",
+      "sha256": "e602a03e0970b8dc996aac801fb64788c66d08c3d6a634d59ac889bfed1d9f1b",
       "executable": false
     },
     "tests/worker/outbound-subscription-upgrade.ts": {
@@ -8229,7 +8229,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "5e31f7b60ae01a2c76bff041996a590360cab6fdd55dfe5717bbd494ad263dcd",
+      "sha256": "e95803bd36a2a73ea2160b8b0814405b0c110627cebeabd7f3eff3028fc482f4",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
