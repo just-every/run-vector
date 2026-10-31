@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
 import { navigate, settleReads, trackRequests, beforePrivateNavigation } from './collaboration-navigation.mjs';
 import { inviteReader, readerApi } from './role-reader-support.mjs';
 import { roleScreens } from './role-ui-support.mjs';
@@ -77,6 +78,8 @@ export async function booleanFilterJourney({ page, context, base, state, sql, ev
     await current.locator('.boolean-filters details > summary').click();
     await current.getByRole('combobox', { name: 'Condition 1', exact: true }).selectOption('and');
     await current.getByRole('combobox', { name: 'Condition 1.1', exact: true }).selectOption('or');
+    await settleReads(current);
+    assert.equal(await current.getByRole('combobox', { name: 'Condition 1.1', exact: true }).inputValue(), 'or', 'Late URL acknowledgement preserves the next menu draft');
     await current.getByRole('combobox', { name: 'Priority 1.1.1', exact: true }).selectOption('high');
     await current.getByRole('combobox', { name: 'Priority 1.1.2', exact: true }).selectOption('urgent');
     await current.getByRole('combobox', { name: 'Condition 1.2', exact: true }).selectOption('not');
@@ -135,5 +138,12 @@ export async function booleanFilterJourney({ page, context, base, state, sql, ev
     record('SEARCH-004', 'Typed and menu Boolean filters yield the same exact rows and totals, reject unsupported terms visibly, preserve keyboard input and reopen a saved expression unchanged. Current private-team withdrawal, invited Guest scope and Viewer read-only admission remain enforced. Changed screens captured at 1440 and 390 with accessibility and overflow checks.');
     console.log('PROBE SEARCH-004 bar-menu: typed and menu expression -> identical 2 public issues, private issue omitted, exact totals');
     console.log('PROBE SEARCH-004 saved-reload: save and reopen -> expression unchanged, 2 issues; private membership 3 then withdrawal 2, Guest 1, Viewer writes 403 unchanged');
+  } catch (error) {
+    for (const [index, reader] of readers.entries()) {
+      await reader.page.screenshot({ path: evidence + '/boolean-failure-' + index + '.png', fullPage: true }).catch(() => {});
+      await writeFile(evidence + '/boolean-failure-' + index + '.json', JSON.stringify({ url: reader.page.url(), errors: reader.errors,
+        filter: await reader.page.locator('.boolean-filters').evaluate(node => node.outerHTML).catch(() => null) }, null, 2));
+    }
+    throw error;
   } finally { for (const reader of readers) await reader.context.close(); }
 }

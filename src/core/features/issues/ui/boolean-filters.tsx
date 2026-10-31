@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { expressionDepth, expressionLimit, formatFilterExpression, parseFilterExpression, priorities, type FilterExpression, type Priority } from '../filter-expression';
 
 const initial = (): FilterExpression => ({ kind: 'priority', value: 'high' });
@@ -38,13 +38,20 @@ export function BooleanFilters({ value, onChange }: { value: string; onChange: (
   const [open, setOpen] = useState(!!value);
   const [tree, setTree] = useState(() => parseFilterExpression(value) ?? initial());
   const hints = useId(), help = useId(), errorId = useId();
+  // URL navigation can acknowledge a local apply after the person has already
+  // started their next menu draft. That acknowledgement must not reset it.
+  const applied = useRef(value);
   useEffect(() => {
+    if (value === applied.current) return;
+    applied.current = value;
     if (value) setOpen(true);
     setDraft(value); setError(''); setTree(parseFilterExpression(value) ?? initial());
   }, [value]);
   function apply(source: string) {
     try {
       const parsed = parseFilterExpression(source);
+      applied.current = source.trim();
+      setDraft(source.trim());
       onChange(source.trim());
       if (parsed) setTree(parsed);
       setError('');
@@ -59,7 +66,7 @@ export function BooleanFilters({ value, onChange }: { value: string; onChange: (
       </label>
       <datalist id={hints}>{['priority=high', 'priority=urgent', 'blocked', 'NOT blocked', '(priority=high OR priority=urgent) AND NOT blocked'].map(term => <option key={term} value={term}/>)}</datalist>
       <button type="submit">Apply expression</button>
-      <button type="button" onClick={() => { setDraft(''); onChange(''); setError(''); }}>Clear expression</button>
+      <button type="button" onClick={() => { applied.current = ''; setDraft(''); setTree(initial()); onChange(''); setError(''); }}>Clear expression</button>
     </form>
     <details><summary>Build expression</summary>
       <Condition value={tree} onChange={setTree}/>
