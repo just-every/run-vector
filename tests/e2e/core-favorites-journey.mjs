@@ -36,6 +36,23 @@ export async function favoritesJourney({ page, context, base, state, sql, eviden
     await nav(member.page).locator(`[data-favorite-id="${id}"]`).waitFor();
   };
   try {
+    const subjectReads = [];
+    const observeSubject = request => {
+      const path = new URL(request.url()).pathname;
+      if (path.startsWith('/api/favorites/subjects/')) subjectReads.push(path);
+    };
+    member.page.on('request', observeSubject);
+    try {
+      for (const path of ['/app/issues/backlog', '/app/projects/new']) {
+        await navigate(member.page, base + path);
+        await ready(member.page);
+        assert.equal(await nav(member.page).getByRole('button', { name: /^(?:Pin|Unpin) this / }).count(), 0,
+          'Collection and creation pages have no pinnable subject');
+      }
+      assert.deepEqual(subjectReads, [], 'Static routes never request a favorite subject');
+    } finally {
+      member.page.off('request', observeSubject);
+    }
     await pin('/app/issues/' + issue.identifier, 'issue', issue.id);
     await pin('/app/projects/' + project.id, 'project', project.id);
     await pin('/app/views/' + view.id, 'view', view.id);
@@ -120,6 +137,7 @@ export async function favoritesJourney({ page, context, base, state, sql, eviden
     assert.deepEqual(errors, []);
     assert.deepEqual(member.errors, []);
     record('VIEW-010', 'A Member pins issue, project and saved view by keyboard, folders the view and reorders the project; a separate Chromium and independent native sign-in reload the same exact order and folder. Saved definitions are unchanged, another member is isolated, private-project withdrawal and view deletion remove titles from HTTP and navigation. Both widths pass accessibility, keyboard, overflow and hydration proof.');
+    console.log('PROBE VIEW-010 subject-admission: Backlog and New project pages -> no pin control and no favorite-subject request');
     console.log('PROBE VIEW-010 pins-and-sync: native Member pages and second independently authenticated Chromium -> issue, project, view, Delivery work folder and exact project then issue then view order retained');
     console.log('PROBE VIEW-010 current-visibility: private-project membership withdrawal and view deletion -> subject and former title absent in HTTP and rendered Favorites');
   } finally {

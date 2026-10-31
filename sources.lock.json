@@ -5065,7 +5065,7 @@
       "executable": false
     },
     "src/core/features/favorites/ui/navigation.tsx": {
-      "sha256": "8a31cf40a7fbbcf2bf56c3e9d4a269b63f6c2574c43e65724063359b2501c8d8",
+      "sha256": "49e6bb1143639716cf42e8f22415c48cd689cbb63ecc4b5839b58e1d6cd33962",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {
@@ -7725,7 +7725,7 @@
       "executable": false
     },
     "tests/e2e/core-favorites-journey.mjs": {
-      "sha256": "2791f9d314dc11ec12e709eec6faf54aaf9bbae68681751baf6e5d9522d60800",
+      "sha256": "305dbca1581d5f9e8c46d1caad535bb0c4dbd0312258c2930561ba7b2cbd6d81",
       "executable": false
     },
     "tests/e2e/core-follower-journey.mjs": {
