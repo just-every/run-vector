@@ -47,6 +47,9 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
     await page.reload();
     await page.getByRole('heading', { name: 'Discussion', exact: true }).waitFor();
     await settleReads(page);
+    assert.equal(await thread.getByText('Comment deleted', { exact: true }).count(), 2);
+    assert.equal(await thread.getByText(rootText, { exact: true }).count(), 0);
+    assert.equal(await thread.getByText(replyText, { exact: true }).count(), 0);
     const captured = runtime.sql('SELECT event,body FROM vector_webhook_events WHERE destination_id=\'' + destination.id + '\' ORDER BY id');
     assert.equal(captured.length, 6);
     assert.deepEqual(captured.map(e => e.event).sort(), [...events, ...events].sort());
@@ -61,6 +64,7 @@ export async function exerciseWebhookComments({ page, runtime, cookie, team, evi
     // Assertions run at desktop width; phone is the candidate's additional visual proof.
     for (const width of [1440, 390]) {
       await page.setViewportSize({ width, height: width === 390 ? 844 : 1000 });
+      await thread.scrollIntoViewIfNeeded();
       await page.screenshot({ path: join(evidence, 'webhook-comment-history-' + width + '.png') });
     }
     await page.setViewportSize({ width: 1440, height: 1000 });

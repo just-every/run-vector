@@ -164,5 +164,11 @@ export async function outboundCommentJourney(f: Awaited<ReturnType<typeof setupI
   const beforeRevoke = sent.length; mode = 'accepted';
   expect((await outboundService(current, workspace, () => revokedPending!.next_at + 1).dispatch(revokedPending!.id))?.state).toBe('rejected');
   expect(sent).toHaveLength(beforeRevoke);
+  const tokenId = (await env.DB.prepare('SELECT token_id FROM vector_integration_tokens WHERE operator_id=? AND name=?').bind(f.owner, 'Native API').first<string>('token_id'))!;
+  expect(tokenId).toBeTruthy();
+  expect((await f.call('/settings/integrations/tokens/' + tokenId, 'DELETE')).status).toBe(200);
+  const beforeRevokedToken = await snapshot();
+  expect((await f.api(scoped.token, commentPath, 'POST', { body: 'synthetic-vector-9029' })).status).toBe(401);
+  expect(await snapshot()).toEqual(beforeRevokedToken);
   expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 }
