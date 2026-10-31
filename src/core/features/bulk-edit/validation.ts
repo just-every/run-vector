@@ -26,7 +26,7 @@ export function bulkValidation(
           WHERE m.id=json_extract(c.body,'$.milestoneId') AND p.workspace_id=t.workspace_id
             AND m.project_id=CASE WHEN json_type(c.body,'$.projectId') IS NULL THEN i.project_id ELSE json_extract(c.body,'$.projectId') END) AS milestone,
       json_extract(c.body,'$.cycleId') IS NOT NULL AND json_extract(c.body,'$.cycleId') IS NOT i.cycle_id AND
-        (NOT EXISTS(SELECT 1 FROM cycles cy WHERE cy.id=json_extract(c.body,'$.cycleId') AND cy.team_id=i.team_id AND cy.closed_at IS NULL) OR
+        (t.cycles_enabled=0 OR NOT EXISTS(SELECT 1 FROM cycles cy WHERE cy.id=json_extract(c.body,'$.cycleId') AND cy.team_id=i.team_id AND cy.closed_at IS NULL) OR
          NOT EXISTS(SELECT 1 FROM workflow_statuses n WHERE n.id=COALESCE(json_extract(c.body,'$.statusId'),i.status_id) AND n.team_id=i.team_id AND n.category NOT IN ('completed','canceled','duplicate'))) AS cycle,
       (CASE WHEN json_type(c.body,'$.startDate') IS NULL THEN i.start_date ELSE json_extract(c.body,'$.startDate') END) >
         (CASE WHEN json_type(c.body,'$.dueDate') IS NULL THEN i.due_date ELSE json_extract(c.body,'$.dueDate') END) AS dateOrder,
