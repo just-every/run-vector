@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "93d1ee5153ff1b418ff27752e89442e0c49de5960bc88d2a63a9c0b5c392879b",
+      "sha256": "27ac373e862e270beead9c884d34dcadf4a8927394848b5758e76e171e64a499",
       "executable": false
     },
     "DEMO.md": {
@@ -4944,8 +4944,12 @@
       "sha256": "c587c0242222a885ca43ed08dc092d893006e9f8f64c2bfea535400dac3fe493",
       "executable": false
     },
+    "src/core/features/drafts/comment-composer.css": {
+      "sha256": "7af249a4b028297dbe9ae11ab25187865443650c395ff50d7fb552de143926d0",
+      "executable": false
+    },
     "src/core/features/drafts/comment-composer.tsx": {
-      "sha256": "02e5dce4576098e45c6729e6a1fa1ad0c361e03a7b3080315b6d703a3637a4df",
+      "sha256": "a8cfad5ff5f0a957b8159e1551a990a8188b59b429203b6d7d63bd1f738ca63b",
       "executable": false
     },
     "src/core/features/drafts/comment-repository.ts": {
@@ -4977,7 +4981,7 @@
       "executable": false
     },
     "src/core/features/drafts/use-comment-draft.ts": {
-      "sha256": "e121e1da7919e0b442de122ecef66806c1ce0e9c717bee8f824aa9f67ea9faf0",
+      "sha256": "060a4904eced85c199e4e8ebf2e5d3edd79f6abbbd4f94dc57faf719a810f703",
       "executable": false
     },
     "src/core/features/drafts/use-drafts.ts": {
@@ -7697,7 +7701,7 @@
       "executable": false
     },
     "tests/e2e/comment-drafts-journey.mjs": {
-      "sha256": "79aeaa3311e2be19b56d5377ad05bf72ab1a7cb2e2bd40c5d1556af950cfe233",
+      "sha256": "2f62d2a89866e0940510538ca8b2e05ee087005f8dcac591023a563710078147",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {

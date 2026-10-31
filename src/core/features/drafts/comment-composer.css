@@ -1,0 +1,25 @@
+.comment-composer.account-comment-composer {
+  grid-template-columns: minmax(0, 1fr);
+}
+.account-comment-composer > label {
+  display: grid;
+  min-width: 0;
+}
+.account-comment-composer textarea {
+  min-height: 4.5rem;
+  height: auto;
+}
+.comment-draft-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.comment-draft-actions button {
+  min-height: 2.75rem;
+  padding: 0.4rem 0.7rem;
+  font-size: var(--app-text-small);
+}
+.account-comment-composer > p {
+  margin: 0;
+  font-size: var(--app-text-small);
+}

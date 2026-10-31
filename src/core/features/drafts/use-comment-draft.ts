@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouteContext } from '@tanstack/react-router';
-import { ApiError, fetchJson } from '../../app/api-client';
+import { workspaceOptionsSchema } from '../../shared/workspace-options';
+import { ApiError, fetchJson, useApiResource } from '../../app/api-client';
 import { createUlid } from '../../shared/ids';
 import { commentDraftReceiptSchema, commentDraftsSchema, type CommentDraft } from './comment-schema';
 import type { DraftReference } from './schema';
 
 export function useCommentDraft(identifier: string, parentId?: string) {
   const { operator } = useRouteContext({ from:'/app' });
-  const key = `vector:comment-draft:${operator.id}:${identifier}:${parentId ?? ''}`;
+  const options = useApiResource('/api/options',workspaceOptionsSchema);
+  const workspace = options.data?.workspace.id;
+  const key = `vector:comment-draft:${workspace}:${operator.id}:${identifier}:${parentId ?? ''}`;
   const [body,setBody] = useState(''), [ready,setReady] = useState(false), [message,setMessage] = useState('');
   const selected = useRef<DraftReference | null>(null), synced = useRef(''), latest = useRef('');
   const alive = useRef(true), posting = useRef(false), queue = useRef<Promise<unknown>>(Promise.resolve());
@@ -53,6 +56,7 @@ export function useCommentDraft(identifier: string, parentId?: string) {
     return () => { void flush().catch(() => undefined); alive.current = false; };
   }, [ready]);
   useEffect(() => {
+    if (!workspace) return;
     let canceled = false;
     void fetchJson('/api/comment-drafts',commentDraftsSchema).then(result => {
       if (canceled) return;
@@ -113,5 +117,5 @@ export function useCommentDraft(identifier: string, parentId?: string) {
       apply(null,'Comment draft discarded.');
     } catch { if (alive.current) setMessage('Unable to discard this draft. Review the current comment and try again.'); }
   }
-  return {body,setBody:changed,ready,message,submit,discard};
+  return {body,setBody:changed,ready,message,submit,discard,loadError:options.error,retry:options.reload};
 }

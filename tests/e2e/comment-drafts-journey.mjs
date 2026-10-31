@@ -26,6 +26,12 @@ export async function commentDraftJourney(page,context,second,other,base,issue,e
   await list.getByRole('button',{name:'Open comment draft '+issue.identifier,exact:true}).waitFor();
   assert.ok((await list.innerText()).includes(draft.team));
   assert.ok(await list.locator('time').getAttribute('datetime'));
+  for(const width of [1440,390]) {
+    await second.setViewportSize({width,height:1000});
+    await second.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+    await second.screenshot({path:evidence+'/comment-draft-list-'+width+'.png',fullPage:true});
+  }
+  await second.setViewportSize({width:1440,height:1000});
   await list.getByRole('button',{name:'Open comment draft '+issue.identifier,exact:true}).focus();
   await second.keyboard.press('Enter'); await second.waitForURL(target+'#comment-draft');
   await until(()=>second.getByRole('textbox',{name:'Add a comment',exact:true}).inputValue(),value=>value===text,'Independent browser recovers comment body');
@@ -37,6 +43,7 @@ export async function commentDraftJourney(page,context,second,other,base,issue,e
   await until(()=>page.getByRole('textbox',{name:'Add a comment',exact:true}).inputValue(),value=>value===newer,'Other browser shows newer comment before saving');
   for (const width of [1440,390]) {
     await second.setViewportSize({width,height:1000});
+    await second.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
     assert.equal(await second.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
     await second.screenshot({path:evidence+'/comment-drafts-'+width+'.png',fullPage:true});
   }
