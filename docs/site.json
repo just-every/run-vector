@@ -475,6 +475,54 @@
     {
       "source": "src/core/features/insights/README.md",
       "reason": "Metric definitions, nearest-rank percentiles and recorded-history limits for Insights maintainers."
+    },
+    {
+      "source": "docs/AGENT-DOOR.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/ADOPTING.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/CLAUSES.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/README.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/agent-door/policy/PROVENANCE.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/business-settings/ADOPTING.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/business-settings/README.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "vendor/base/operator-auth/SCHEDULED-POLICY.md",
+      "reason": "Contributor reference for the declared agent door and its recorded Base runtime"
+    },
+    {
+      "source": "scripts/edition-authoring/ADOPTING.md",
+      "reason": "Base source-authoring adoption instructions for contributors; not an installed application guide."
+    },
+    {
+      "source": "scripts/edition-authoring/vendor/babel-parser/README.md",
+      "reason": "Upstream parser reference shipped with the Base authoring tool; not Vector owner documentation."
+    },
+    {
+      "source": "scripts/edition-authoring/vendor/yaml/README.md",
+      "reason": "Upstream YAML reference shipped with the Base authoring tool; not Vector owner documentation."
+    },
+    {
+      "source": "ADOPTING.md",
+      "reason": "Contributor instructions for dependency-key schema and private installation custody; not an installed application guide."
     }
   ]
 }

@@ -36,11 +36,16 @@ const columns = (table: string) => {
 // New nullable columns join an issue's value only once set, preserving the
 // exact shape of retained pre-feature snapshots. Build keys in canonical order
 // before removing absent fields so a set date matches the publication guard.
-const optional: Record<string,string[]> = { issues:['archived_at','milestone_id','start_date'], issue_comments:['description_anchor'] };
+const optional: Record<string,string[]> = {
+  issues:['archived_at','milestone_id','start_date'], issue_comments:['description_anchor'],
+  issue_activity:['agent_id','agent_operation_id','agent_approvers_json'],
+};
 const object = (table: string,alias: string) => {
   const extra=optional[table]??[];
   const base='json_object('+columns(table).flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')+')';
-  return extra.reduce((value,name)=>`CASE WHEN ${alias}.${quote(name)} IS NULL THEN json_remove(${value},'$.${name}') ELSE ${value} END`,base);
+  // Merge-patch removes null-valued keys and retains existing non-null keys in
+  // place. Keep the full snapshot once rather than doubling its SQL per column.
+  return extra.length ? `json_patch(${base},json_object(${extra.flatMap(name=>["'"+name+"'",alias+'.'+quote(name)]).join(',')}))` : base;
 };
 const relation = (table: string,key: string,order: string) => `(SELECT json_group_array(json(value)) FROM (SELECT ${object(table,'r')} AS value FROM ${quote(table)} r WHERE r.${quote(key)}=i.id ORDER BY r.${quote(order)}))`;
 export const legacySnapshotExpression = 'json_object('+[
