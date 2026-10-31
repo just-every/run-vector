@@ -4949,7 +4949,7 @@
       "executable": false
     },
     "src/core/features/drafts/routes.ts": {
-      "sha256": "d599356978376b2fbbe596303465803c4dc8829b774911dd0ae77b83ba2a5ec1",
+      "sha256": "b46528cdd494e3c0ffe78d43a13645c1c28baba649cc11da86aae389f608f5df",
       "executable": false
     },
     "src/core/features/drafts/schema.ts": {
@@ -8365,7 +8365,7 @@
       "executable": false
     },
     "tests/worker/account-drafts.test.ts": {
-      "sha256": "7e050f1b80fae8bb9e40164296c8bcd936019a40303423887f7b4120cb8708c9",
+      "sha256": "dd1171bd57d7f812e436e082f3263ef571b8e692f279ac2e34e76eb6ebca56a7",
       "executable": false
     },
     "tests/worker/administration-fixture.ts": {
