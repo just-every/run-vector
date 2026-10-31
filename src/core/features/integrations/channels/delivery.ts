@@ -10,13 +10,15 @@ import {issueListQuerySchema} from '../../issues/list-schema';
 import {browseWhere} from '../../issues/browse-sql';
 import {workspaceDate} from '../../issues/browse-access';
 import {restoredEffectsHeld} from '../../data/restore-authority';
+import {visibilityDatabase} from '../../roles/visibility-database';
 type Channel={id:string;kind:'slack'|'discord';scope:string;object_id:string;created_by:string;channel_id:string;channel_name:string};
 async function currentChannel(env:WorkerBindings,workspace:string,id:string){
  const row=await env.DB.prepare(`SELECT d.id,d.kind,b.scope,b.object_id,b.created_by,b.channel_id,b.channel_name FROM vector_webhook_destinations d JOIN ${channelBindingSource} b ON b.destination_id=d.id JOIN operators o ON o.id=b.created_by AND o.removed_at IS NULL JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id AND a.status='active' WHERE d.id=? AND d.workspace_id=? AND d.enabled=1 AND d.revoked_at IS NULL`).bind(id,workspace).first<Channel>();
  if(!row||await restoredEffectsHeld(env.DB))throw new IntegrationError(409,'channel_disabled');
  return row;
 }
-/** Saved views use the same browse predicates as the member's list, at dispatch. */
+/** Saved views use the same browse predicates as the member's list, at dispatch,
+ * over the binder's current visibility: a hidden endpoint never decides a match. */
 export async function channelMatches(env:WorkerBindings,workspace:string,id:string,body:string){
  const channel=await currentChannel(env,workspace,id),event=JSON.parse(body);
  if(channel.scope==='initiative'){
@@ -37,7 +39,7 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
  const timezone=await env.DB.prepare('SELECT timezone FROM workspace_settings WHERE id=?').bind(workspace).first<string>('timezone');
  const query=issueListQuerySchema.parse({...JSON.parse(view.filters_json),sort:view.sort,grouping:view.grouping});
  const {relation,values}=browseWhere(query,workspace,workspaceDate(new Date(),timezone!),channel.created_by,timezone!);
- return Boolean(await env.DB.prepare('SELECT 1 '+relation+' AND i.id=?').bind(...values,issue.id).first());
+ return Boolean(await visibilityDatabase(env.DB,channel.created_by).prepare('SELECT 1 '+relation+' AND i.id=?').bind(...values,issue.id).first());
 }
 const escapeSlack=(text:string)=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 export async function channelMessage(env:WorkerBindings,kind:string,channelId:string,body:string){

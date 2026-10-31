@@ -52,5 +52,24 @@ export async function privateChannelRouting(f:Awaited<ReturnType<typeof setupInt
   const version=await env.DB.prepare('SELECT version FROM issues WHERE id=?').bind(assigned.id).first<number>('version');
   expect((await f.call(`/issues/${assigned.identifier}`,'PATCH',{expectedVersion:version,assigneeOperatorId:person})).status).toBe(200);
   expect(posts().slice(prior).filter(p=>String(p.body.channel).startsWith('D'))).toEqual([]);
+  // A bound view is evaluated at dispatch over its binder's current visibility: a nonmember Admin's
+  // NOT related=none never matches through a relation to hidden private work, and withdrawal removes it again.
+  const adminCookie=await invite('synthetic-vector-985@vector.test',f.cookie,'admin'),admin=await actor(adminCookie),asAdmin=(path:string,method='GET',body?:unknown)=>request('/api'+path,method,body,adminCookie);
+  const secret=(await f.mutate('/settings/teams','POST',{name:'synthetic-vector-986',identifierPrefix:'SYNREL',isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-986')!;
+  const publicIssue=await f.create({title:'synthetic-vector-987'}),hiddenIssue=await f.create({teamId:secret.id,title:'synthetic-vector-988'});
+  expect((await f.call(`/issues/${publicIssue.identifier}/dependencies`,'POST',{direction:'related',relatedIdentifier:hiddenIssue.identifier,expectedVersion:publicIssue.version,relatedVersion:hiddenIssue.version})).status).toBe(200);
+  const query={q:'synthetic-vector-987',expression:'NOT related=none'},linked=await asAdmin('/views','POST',{name:'synthetic-vector-989',query});expect(linked.status).toBe(201);
+  expect((await asAdmin('/settings/integrations/channels','POST',{scope:'view',objectId:(await linked.json() as {id:string}).id,provider:'slack',channelId:'CLINKED',channelName:'synthetic-vector-989',events:['issue.status_changed']})).status).toBe(201);
+  const statuses=['started','unstarted','started'].map(c=>f.initial.teams[0].statuses.find(s=>s.category===c)!),linkedPosts:number[]=[];
+  const move=async(n:number)=>{
+   const version=await env.DB.prepare('SELECT version FROM issues WHERE id=?').bind(publicIssue.id).first<number>('version');
+   expect((await f.call(`/issues/${publicIssue.identifier}`,'PATCH',{expectedVersion:version,statusId:statuses[n].id})).status).toBe(200);
+   await dispatchWebhooks(current);linkedPosts.push(posts().filter(p=>p.body.channel==='CLINKED').length);
+  };
+  expect((await asAdmin(`/issues?${new URLSearchParams(query)}`).then(r=>r.json()) as {total:number}).total).toBe(0);
+  await move(0);
+  expect((await f.call(`/settings/teams/${secret.id}/members/${admin}`,'PUT',{role:'member'})).status).toBe(200);await move(1);
+  expect((await f.call(`/settings/teams/${secret.id}/members/${admin}`,'DELETE')).status).toBe(200);await move(2);
+  expect(linkedPosts).toEqual([0,1,1]);
  }finally{if(destination)expect((await f.call('/settings/integrations/destinations/'+destination,'DELETE')).status).toBe(200);edge.restore();}
 }
