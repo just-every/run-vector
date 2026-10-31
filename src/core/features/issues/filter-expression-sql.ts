@@ -12,7 +12,7 @@ export function filterExpressionSql(source: string, blockedSql: string, actor: s
     return `(${compile(node.left)} ${node.kind === 'and' ? 'AND' : 'OR'} ${compile(node.right)})`;
   }
   function usesStatus(node: FilterExpression): boolean {
-    if (node.kind === 'term') return node.field === 'category' || node.field === 'status';
+    if (node.kind === 'term') return node.field === 'category' || node.field === 'status' || node.field === 'completed';
     if (node.kind === 'not') return usesStatus(node.child);
     return (node.kind === 'and' || node.kind === 'or') && (usesStatus(node.left) || usesStatus(node.right));
   }

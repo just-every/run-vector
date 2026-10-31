@@ -1,3 +1,5 @@
+import { SearchAccessError } from '../search/access';
+import { JiraFilterError } from './jira-filter-parser';
 import type { Context } from "hono";
 import { z } from "zod";
 import type { AppEnvironment } from "../../app/bindings";
@@ -56,6 +58,8 @@ export const handle =
         return c.json({ error: "not_found" }, 404);
       return response;
     } catch (error) {
+      if (error instanceof SearchAccessError) return c.json({ error: 'unauthenticated', message: error.message }, 401);
+      if (error instanceof JiraFilterError) return c.json({ error: 'unmapped_jql', message: error.message, omissions: error.omissions }, 422);
       if (error instanceof ViewError || error instanceof IssueAccessError)
         return c.json(
           { error: error.code, message: error.message },

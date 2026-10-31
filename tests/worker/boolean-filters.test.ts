@@ -1,3 +1,4 @@
+import { jiraBooleanJourney } from './boolean-jira-journey';
 import { linkedBooleanJourney } from './boolean-linked-journey';
 import { nativeBooleanJourney } from './boolean-native-journey';
 import { env } from 'cloudflare:workers';
@@ -97,4 +98,5 @@ it('Boolean list and saved-view doors retain exact paged results, reject invalid
   expect((await viewer.call('/issues?expression=NOT+blocked')).status).toBe(401);
   await nativeBooleanJourney();
   await linkedBooleanJourney(f, high, urgent, low, privateTeam, hidden);
+  await jiraBooleanJourney(f, high, urgent, low, blockedHigh, blockedUrgent, privateTeam);
 }, 120_000);

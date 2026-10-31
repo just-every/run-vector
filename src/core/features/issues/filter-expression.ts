@@ -48,10 +48,12 @@ export function parseFilterExpression(source: string): FilterExpression | null {
     }
     let operator = peek() ?? '';
     position++;
+    let quotedValue = false;
     const readValue = () => {
       const token = tokens[position++];
       if (!token || ['(', ')'].includes(token)) throw new Error('Enter a value for the filter.');
-      if (token.startsWith('"')) {
+      quotedValue = token.startsWith('"');
+      if (quotedValue) {
         try { return JSON.parse(token) as string; }
         catch { throw new Error('Close quoted filter values and escape embedded quotes.'); }
       }
@@ -68,9 +70,10 @@ export function parseFilterExpression(source: string): FilterExpression | null {
       let value = readValue().toLowerCase();
       if (value === 'next') value += ' ' + readValue().toLowerCase();
       if (value === 'last') value += ' ' + readValue() + ' ' + readValue().toLowerCase();
-      return node(validateTerm(field!, operator, value));
+      return node(validateTerm(field!, operator, value, quotedValue));
     }
-    return node(validateTerm(field ?? '', operator, readValue()));
+    const value = readValue();
+    return node(validateTerm(field ?? '', operator, value, quotedValue));
   }
   function both(depth: number): FilterExpression {
     let left = atom(depth);

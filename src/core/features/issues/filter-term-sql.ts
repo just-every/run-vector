@@ -5,7 +5,7 @@ const columns = {
   category: 's.category', status: 's.id', assignee: 'a.id', team: 't.id', project: 'p.id', cycle: 'c.id',
   parent: 'parent.identifier', milestone: 'i.milestone_id', title: 'i.title', identifier: 'i.identifier',
   description: 'i.description', outcome: 'i.expected_outcome', impact: 'i.customer_impact', estimate: 'i.estimate',
-  due: 'i.due_date', start: 'i.start_date', created: 'i.created_at', updated: 'i.updated_at',
+  due: 'i.due_date', start: 'i.start_date', created: 'i.created_at', updated: 'i.updated_at', completed: 'i.completed_at', canceled: 'i.canceled_at', deferred: 'i.deferred_until',
 } as const;
 const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 function addDays(day: string, days: number) {
@@ -36,14 +36,14 @@ export function filterTermSql(term: FilterTerm, actor: string, today: string, ti
     if (value === 'none') sql = `(NOT ${sql})`;
   } else {
     const column = columns[field as keyof typeof columns];
-    if (value === 'none' && !['title', 'identifier', 'description'].includes(field)) sql = `${column} IS NULL`;
+    if (value === 'none' && !term.literal && !['title', 'identifier', 'description'].includes(field)) sql = `${column} IS NULL`;
     else if (dateFields.includes(field)) {
       let from: string, to: string;
       if (operator === 'within') {
         // Calendar days include today; the saved expression stays relative.
         from = addDays(today, 1 - Number(value.split(' ')[1])); to = addDays(today, 1);
       } else { from = calendarValue(value, today); to = addDays(from, 1); }
-      if (field === 'created' || field === 'updated') {
+      if (!['due', 'start'].includes(field)) {
         from = localTimeToInstant(from + 'T00:00', timezone);
         to = localTimeToInstant(to + 'T00:00', timezone);
       }

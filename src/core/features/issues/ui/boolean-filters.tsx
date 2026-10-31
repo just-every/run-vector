@@ -1,5 +1,6 @@
 import type { WorkspaceOptions } from '../../../shared/workspace-options';
-import { TermControls, expressionSuggestions } from './filter-term-controls';
+import { FilterExpressionSuggestions } from './filter-issue-suggestions';
+import { TermControls } from './filter-term-controls';
 import { useEffect, useId, useRef, useState } from 'react';
 import { expressionDepth, expressionLimit, formatFilterExpression, parseFilterExpression, priorities, type FilterExpression, type Priority } from '../filter-expression';
 
@@ -68,7 +69,7 @@ export function BooleanFilters({ value, onChange, options }: { value: string; on
       <label>Filter expression
         <input value={draft} maxLength={expressionLimit} list={hints} aria-describedby={error ? `${help} ${errorId}` : help} aria-invalid={!!error} onChange={event => setDraft(event.target.value)} placeholder="(priority=high OR priority=urgent) AND NOT blocked"/>
       </label>
-      <datalist id={hints}>{expressionSuggestions(draft, options).map(term => <option key={term.value} value={term.value}>{term.label}</option>)}</datalist>
+      <FilterExpressionSuggestions id={hints} draft={draft} options={options}/>
       <button type="submit">Apply expression</button>
       <button type="button" onClick={() => { applied.current = ''; setDraft(''); setTree(initial()); onChange(''); setError(''); }}>Clear expression</button>
     </form>

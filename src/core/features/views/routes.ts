@@ -1,8 +1,8 @@
+import { parseViewCreate } from './jira-filter-import';
 import type { Hono, Context } from "hono";
 import type { AppEnvironment } from "../../app/bindings";
 import { readRequestJson } from "../../app/input";
 import {
-  createViewSchema,
   updateViewSchema,
   duplicateViewSchema,
   viewIdSchema,
@@ -30,7 +30,7 @@ export function addViewRoutes(app: Hono<AppEnvironment>) {
         await createView(
           c.env.DB,
           c.get("operatorId"),
-          createViewSchema.parse(await readRequestJson(c.req.raw)),
+          await parseViewCreate(c.env.DB, c.get("operatorId"), await readRequestJson(c.req.raw)),
         ),
         201,
       ),

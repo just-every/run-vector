@@ -72,6 +72,17 @@ export async function nativeBooleanJourney() {
     await import('cloudflare:workers').then(({ env }) => env.DB.prepare('UPDATE issues SET created_at=?,updated_at=? WHERE id=?').bind('2026-11-01T03:59:59.000Z', '2026-11-02T04:59:59.000Z', atMidnight.id).run());
     expect(await read(`identifier=${atMidnight.identifier} AND created=2026-10-31 AND updated=2026-11-01`)).toEqual([atMidnight.identifier]);
     expect(await read(`identifier=${atMidnight.identifier} AND (created=2026-11-01 OR updated=2026-11-02)`)).toEqual([]);
+    expect(await read('completed on today')).toEqual([done.identifier]);
+    expect(await read('NOT (completed=none OR completed<today)')).toEqual([done.identifier]);
+    const canceled = await create(' canceled', { statusId: options.statuses.find((s: any) => s.teamId === f.team.id && s.category === 'canceled').id });
+    expect(await read('canceled on today')).toEqual([canceled.identifier]);
+    const intake = await send('/intake', 'POST', { teamId: f.team.id, title: marker + ' deferred' }, 201);
+    await send('/issues/' + intake.identifier + '/defer', 'POST', { expectedVersion: intake.version, returnAt: '2026-11-01T18:00:00.000Z' });
+    expect(await read('deferred=tomorrow')).toEqual([intake.identifier]);
+    expect(await read('deferred within "last 7 days"')).toEqual([]);
+    const literal = await create(' literal none', { expectedOutcome: 'none' });
+    expect(await read('outcome="none"')).toEqual([literal.identifier]);
+    expect(await read('outcome=none')).not.toContain(literal.identifier);
     const before = await snapshot(['issues', 'issue_activity', 'saved_views', 'list_preferences']);
     for (const invalid of ['estimate>none', 'estimate=0', 'estimate=101', 'estimate=2.5', 'category=unknown', 'due=2026-02-30', 'due before next Funday', 'updated in the last 0 days', 'updated in the last 1000 days', 'team=all', 'label~"anything"', 'title="unterminated', 'title="x";SELECT 1']) {
       const response = await f.member.call('/issues?' + new URLSearchParams({ expression: invalid }));

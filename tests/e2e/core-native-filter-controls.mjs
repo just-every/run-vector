@@ -1,8 +1,9 @@
+import { filterReferenceSuggestions } from './core-filter-reference-suggestions.mjs';
 import assert from 'node:assert/strict';
 import { navigate, settleReads, beforePrivateNavigation } from './collaboration-navigation.mjs';
 
 /** Extend the Boolean sanity journey through the existing bar and menu. */
-export async function nativeFilterControls({ current, member, target, team, issue, inspect, rows, base, marker }) {
+export async function nativeFilterControls({ current, member, target, team, issue, inspect, rows, base, marker, owner, endpoint, hidden, privateTeam }) {
   await current.setViewportSize({ width: 1440, height: 1000 });
   await navigate(current, target);
   const disclosure = current.locator('.boolean-filters');
@@ -52,6 +53,10 @@ export async function nativeFilterControls({ current, member, target, team, issu
   assert.equal(await current.getByRole('combobox', { name: 'Filter expression', exact: true }).inputValue(), source);
   assert.equal((await member.api('/views/' + view.id)).query.expression, source);
   await inspect(current, current.locator('.issues-browser'), 'boolean-native-reopened');
+  await current.setViewportSize({ width: 1440, height: 1000 });
+  await navigate(current, target);
+  if (!await current.locator('.boolean-filters').evaluate(node => node.open)) await current.locator('.boolean-filters > summary').click();
+  await filterReferenceSuggestions({ current, member, owner, issue, endpoint, hidden, privateTeam, bar: current.getByRole('combobox', { name: 'Filter expression', exact: true }), rows });
   await settleReads(current);
   console.log('PROBE SEARCH-004 native-menu: visible team suggestion and nested menu -> identical one-issue set and total; saved native expression unchanged after reload');
 }

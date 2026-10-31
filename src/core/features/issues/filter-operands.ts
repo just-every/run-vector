@@ -5,26 +5,26 @@ export const operandLabels = {
   related: 'Related issue', blocks: 'Blocks issue', blockedby: 'Blocked by issue', release: 'Release', git: 'Pull request state', creator: 'Creator', follower: 'Follower',
   title: 'Title', identifier: 'Identifier', description: 'Description',
   outcome: 'Expected outcome', impact: 'Customer impact', estimate: 'Estimate',
-  due: 'Due date', start: 'Start date', created: 'Created date', updated: 'Updated date',
+  due: 'Due date', start: 'Start date', created: 'Created date', updated: 'Updated date', completed: 'Completed date', canceled: 'Canceled date', deferred: 'Deferred until',
 } as const;
 export type Operand = keyof typeof operandLabels;
 export type Operator = '=' | '!=' | '~' | '<' | '<=' | '>' | '>=' | 'within';
-export type FilterTerm = { kind: 'term'; field: Operand; operator: Operator; value: string };
+export type FilterTerm = { kind: 'term'; field: Operand; operator: Operator; value: string; literal?: true };
 export const categories = ['intake', 'backlog', 'unstarted', 'started', 'completed', 'canceled', 'duplicate'];
-export const dateFields = ['due', 'start', 'created', 'updated'];
+export const dateFields = ['due', 'start', 'created', 'updated', 'completed', 'canceled', 'deferred'];
 const textFields = ['title', 'identifier', 'description', 'outcome', 'impact'];
-const nullable = ['related', 'blocks', 'blockedby', 'release', 'git', 'creator', 'follower', 'assignee', 'project', 'cycle', 'label', 'parent', 'milestone', 'estimate', 'due', 'start', 'outcome', 'impact'];
+const nullable = ['related', 'blocks', 'blockedby', 'release', 'git', 'creator', 'follower', 'assignee', 'project', 'cycle', 'label', 'parent', 'milestone', 'estimate', 'due', 'start', 'completed', 'canceled', 'deferred', 'outcome', 'impact'];
 export function operatorsFor(field: Operand): Operator[] {
   if (dateFields.includes(field)) return ['=', '!=', '<', '<=', '>', '>=', 'within'];
   if (field === 'estimate') return ['=', '!=', '<', '<=', '>', '>='];
   return textFields.includes(field) ? ['=', '!=', '~'] : ['=', '!='];
 }
-export function validateTerm(field: string, operator: string, value: string): FilterTerm {
+export function validateTerm(field: string, operator: string, value: string, literal = false): FilterTerm {
   if (!Object.hasOwn(operandLabels, field)) throw new Error('Unsupported filter field. Choose a field from the menu.');
   const operand = field as Operand;
   if (!operatorsFor(operand).includes(operator as Operator)) throw new Error('That operator is not supported for this field.');
   if (!value || value.length > 200) throw new Error('Enter a filter value of at most 200 characters.');
-  if (value === 'none' && nullable.includes(field)) {
+  if (value === 'none' && !literal && nullable.includes(field)) {
     if (!['=', '!='].includes(operator)) throw new Error('Use = or != with none.');
   } else if (field === 'git') {
     if (!['open', 'closed', 'merged'].includes(value)) throw new Error('Choose open, closed, merged or none for pull request state.');
@@ -42,9 +42,9 @@ export function validateTerm(field: string, operator: string, value: string): Fi
       : /^[0-9A-HJKMNP-TV-Z]{26}$/.test(value) || (['assignee', 'creator', 'follower'].includes(field) && value === 'me');
     if (!valid) throw new Error('Choose a current record from the filter suggestions, or use its identifier.');
   }
-  return { kind: 'term', field: operand, operator: operator as Operator, value };
+  return { kind: 'term', field: operand, operator: operator as Operator, value, ...(literal && textFields.includes(field) ? { literal: true as const } : {}) };
 }
 export function formatTerm(term: FilterTerm) {
-  const value = /^[A-Za-z0-9_-]+$/.test(term.value) ? term.value : JSON.stringify(term.value);
+  const value = !term.literal && /^[A-Za-z0-9_-]+$/.test(term.value) ? term.value : JSON.stringify(term.value);
   return `${term.field}${term.operator === 'within' ? ' within ' : term.operator}${value}`;
 }
