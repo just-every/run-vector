@@ -513,7 +513,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "225d7a447bc394cfd7dfa5ec53871a578cb191b0ac0c74e368f755f246759e86",
+      "sha256": "40e3784d0e24d5d56757ec520db2b7de26ae89ac25e99bc126baccd21744114f",
       "executable": false
     },
     "DEMO.md": {
@@ -649,7 +649,7 @@
       "executable": false
     },
     "docs/INTEGRATIONS.md": {
-      "sha256": "7f31f5f0c45259fa9588a1fa6c97dcc59fb9d45475ec45efc904b17d4c83e7e0",
+      "sha256": "76f2e2bb726be6d980e786f7e88c0ba271665dc626b986e1ca00cae9fbf8fcf8",
       "executable": false
     },
     "docs/ISSUE-WRITING.md": {
@@ -4593,7 +4593,7 @@
       "executable": false
     },
     "src/core/features/integrations/config-routes.ts": {
-      "sha256": "8257618e7977a32679b6abe2821c818b4aed25d8521d328c5c0aae9fc1f8e486",
+      "sha256": "09e954c42feadc76479d00b5895787c874c184624c6cf8d18b6106685e7118a9",
       "executable": false
     },
     "src/core/features/integrations/config-storage.ts": {
@@ -4857,7 +4857,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
-      "sha256": "73b1a36b7cca1bdd6b60ece4445e590cdaf78adfbe597e7fbef0e6414c4c2498",
+      "sha256": "fb42eaeee2aff53fcb596a2210d4e4a76f89442faafa0654cef5b37986e86650",
       "executable": false
     },
     "src/core/features/integrations/ui/copy-field.tsx": {
@@ -4884,6 +4884,10 @@
       "sha256": "4902fa3258b50db181fe632bb6c3ef015963251d98ed0cee9625185cd34a2ed1",
       "executable": false
     },
+    "src/core/features/integrations/ui/github-receipt.tsx": {
+      "sha256": "5458817d7fff68d7e694b846dae2808b0678691c8c934636c7feb34ec4ecea4a",
+      "executable": false
+    },
     "src/core/features/integrations/ui/github-rules.css": {
       "sha256": "228873bdf8ac34c38f4861b8301a8df23cfd45133e490af32515c96ec32ddca1",
       "executable": false
@@ -4893,7 +4897,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-settings.tsx": {
-      "sha256": "d5bdf1007a536ac062a06c354cbd85b9466f0d385191e8d77c3b2a8d7ecf4ecc",
+      "sha256": "3a1716a6e2b8d2a956ba5014ffdb7ef20b622064a701935492c8792903b3bbd2",
       "executable": false
     },
     "src/core/features/integrations/ui/github-setup.tsx": {
@@ -7209,11 +7213,11 @@
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
-      "sha256": "c61d75d9d85cdd6f16e3d9b55e762b4a659b2a238e88927007d9acc1e7ea0ea7",
+      "sha256": "3acef120d29314513b5af22db9228d0bac28fde5a8682f9c71481e595005efc2",
       "executable": false
     },
     "tests/e2e/integration-signed-pr.mjs": {
-      "sha256": "f0842dc32dedf673fc3a7bd8af37d1b96a35e4d9219d1bbfbd09cf3baa9af3fd",
+      "sha256": "a8be14e69c248a083a4af26807d62a1527580451b8bb1f1cf700a47bb78874b3",
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
@@ -7232,8 +7236,12 @@
       "sha256": "159473bf8721099db146bdc0911c0f1a333dd37ec7f08d30a73c5666c9fc8db1",
       "executable": false
     },
+    "tests/e2e/integrations/github-receipts.mjs": {
+      "sha256": "51834c512bd918dd150ae2538a9634f6c04bd2331f573c71cd11f7040281414c",
+      "executable": false
+    },
     "tests/e2e/integrations/github-team-permissions.mjs": {
-      "sha256": "9f9959d31df80b9c195a7fdce0182db69da2e2de1ba2f4f1807afcba0ca9d705",
+      "sha256": "0d721235e0586737e257d3e4048cfef9bfca66727cf2558056e4c443fe8a934a",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
@@ -7868,8 +7876,12 @@
       "sha256": "4e1f07cca41ac02e8db2627ef8f4e6805f77f0d0d3ff77868c08e6202dab2488",
       "executable": false
     },
+    "tests/worker/github-health-scenario.ts": {
+      "sha256": "17b3f7a829f835141862475da84d68c671b625dd6df5bea919493a0dfb95c8ab",
+      "executable": false
+    },
     "tests/worker/github-links.test.ts": {
-      "sha256": "69897180ba16e7a54d542ff54b440b91367e1c23414dfc382abf1d698e378e67",
+      "sha256": "cae604a23c20f48972af2efc4fcbf0677ac539be4086616c7e64a3638e158081",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {
