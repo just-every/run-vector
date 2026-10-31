@@ -14,7 +14,9 @@ export async function exerciseWarehouseExports({runtime,cookie}) {
   const owner=runtime.sql("SELECT id FROM operators WHERE role='owner' AND removed_at IS NULL ORDER BY id LIMIT 1")[0].id;
   const projects=[],cycles=[],issues=[];
   for(let i=0;i<2;i++) {
-    projects.push(await native('/projects','POST',{name:'synthetic-vector-'+(51602+i),leadOperatorId:owner},201));
+    const projectName='synthetic-vector-'+(51602+i);
+    const projectData=await native('/settings/projects','POST',{name:projectName,leadOperatorId:owner});
+    const project=projectData.projects.find(row=>row.name===projectName);assert.ok(project);projects.push(project);
     const month=String(i+1).padStart(2,'0'),name='synthetic-vector-'+(51604+i);
     const data=await native('/settings/cycles','POST',{teamId:team.id,name,startsLocal:'2038-'+month+'-01T09:00',endsLocal:'2038-'+month+'-08T09:00'});
     cycles.push(data.cycles.find(row=>row.name===name));

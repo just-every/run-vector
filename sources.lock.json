@@ -8225,7 +8225,7 @@
       "executable": false
     },
     "tests/e2e/warehouse-export-client.mjs": {
-      "sha256": "1967d92eca458a4a58ab8d28dbf5e22f1998dcfaa70528c5881691a237d4479b",
+      "sha256": "b73b568c7e5dc9b37bf383002999a04a288bc9d43ef9ae366d608537b89f0436",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
@@ -9045,7 +9045,7 @@
       "executable": false
     },
     "tests/worker/warehouse-export-journey.ts": {
-      "sha256": "7c26b6188410e04ef59e1e3b55796ab9a9e3c14cfa55ccd15158ec37d68f9d83",
+      "sha256": "5ef53443ff6efd8d23857b56ecb13ba442894b9730f40e6dcaa6d244064dbbf1",
       "executable": false
     },
     "tests/worker/workload.test.ts": {
