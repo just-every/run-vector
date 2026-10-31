@@ -4141,7 +4141,7 @@
       "executable": false
     },
     "src/core/features/administration/labels.ts": {
-      "sha256": "b3f769703302c92e071812ffb823f58b4ef98e93afb544b48e0d04e2ab30493f",
+      "sha256": "dcc2cd77c5d63a85fad9badefcb4afb964a58dbb382701635ba8a73e3b5dc65e",
       "executable": false
     },
     "src/core/features/administration/project-fields.ts": {
@@ -4168,8 +4168,12 @@
       "sha256": "37dbc28c3a7e1d112ae2148ffdfd1a3940c8b95e9ad626c7d356406cbfb0b625",
       "executable": false
     },
+    "src/core/features/administration/team-template-labels.ts": {
+      "sha256": "992c2449edfa347bf7d62af81ec7788c97610e575a90aa953651eee4c6b2094c",
+      "executable": false
+    },
     "src/core/features/administration/teams.ts": {
-      "sha256": "03aed9ae6b894dfec54d80e7311f420ffdf66675aee53f373bc118d7cae73c9c",
+      "sha256": "c1dbf727cf0bd83d1b090fd61b7b85f3cd6d545cbeeefe1348d0ae348cb3326f",
       "executable": false
     },
     "src/core/features/administration/transaction.ts": {
@@ -9101,7 +9105,7 @@
       "executable": false
     },
     "tests/worker/team-cycles-journey.ts": {
-      "sha256": "ea73e2f7a5f626aa28150fc7677c5974d78c433b864b5ee0dff11e4088b5a11f",
+      "sha256": "f656ac30f4872125ead2daff7ac9ef1a39ead0f95c5f94156df7fd4d171f61ea",
       "executable": false
     },
     "tests/worker/team-estimates-journey.ts": {
@@ -9109,7 +9113,7 @@
       "executable": false
     },
     "tests/worker/team-template-journey.ts": {
-      "sha256": "5710261da95942f1f93224ba16217f80159341fb8c3b278a1328cfbd1c930fd6",
+      "sha256": "747df9a2921063e12ffb52f3dda70895f3fc600f18b65582a0adf2a6d0db2208",
       "executable": false
     },
     "tests/worker/team-triage-journey.ts": {

@@ -121,6 +121,14 @@ export async function proveTeamCyclesUpgrade() {
   const db=env.ARCHIVE_TARGET_DB;
   await applyD1Migrations(db,migrations.slice(0,boundary));
   await insertHistoricalSample(db,new Date('2026-10-01T00:00:00Z'));
+  const person=await db.prepare('SELECT id,workspace_id FROM operators ORDER BY id LIMIT 1').first<{id:string;workspace_id:string}>();
+  const issue=await db.prepare('SELECT id FROM issues ORDER BY id LIMIT 1').first<{id:string}>();
+  await db.prepare("INSERT INTO notification_type_mutes(operator_id,kind) VALUES(?,'comment')").bind(person!.id).run();
+  await db.prepare("INSERT INTO notification_candidates(event_id,issue_id,recipient_id,kind,actor_id,actor_name,created_at) VALUES('synthetic-vector-2680',?,?,'comment',?,'synthetic-vector-2681','2026-10-01T00:00:00Z')").bind(issue!.id,person!.id,person!.id).run();
+  await db.prepare("INSERT OR REPLACE INTO notification_channel_defaults(workspace_id,kind,email_mode,slack_enabled) VALUES(?,'comment','hourly',0)").bind(person!.workspace_id).run();
+  await db.prepare("INSERT INTO notification_channel_overrides(operator_id,kind,email_mode,slack_enabled) VALUES(?,'comment','daily',0)").bind(person!.id).run();
+  const preferences=async()=>Promise.all(['notification_type_mutes','notification_candidates','notification_channel_defaults','notification_channel_overrides'].map(async table=>(await db.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results));
+  const retainedPreferences=await preferences();
   const before=(await db.prepare('SELECT * FROM teams ORDER BY id').all()).results;
   const cycles=(await db.prepare('SELECT * FROM cycles ORDER BY id').all()).results;
   const commitments=(await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results;
@@ -130,5 +138,6 @@ export async function proveTeamCyclesUpgrade() {
   expect(after.every(t=>t.cycles_enabled===1 && t.estimates_enabled===1 && t.estimate_scale==='points' && t.triage_enabled===1 && t.default_issue_template_json===null && t.triage_responsibility_json===null)).toBe(true);
   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).results).toEqual(cycles);
   expect((await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results).toEqual(commitments);
+  expect(await preferences()).toEqual(retainedPreferences);
   expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
 }

@@ -107,7 +107,9 @@ export async function updateTeam(
   if (input.defaultIssueTemplate) {
     try {
     await validateLabels(drizzle(ctx.db), input.defaultIssueTemplate.labelIds, ctx.workspace);
-    if (input.defaultIssueTemplate.estimate !== null) await admitEstimate(ctx.db,id,input.defaultIssueTemplate.estimate);
+    const retainedEstimate=old.default_issue_template_json ? JSON.parse(old.default_issue_template_json).estimate : null;
+    if (input.defaultIssueTemplate.estimate !== null && input.defaultIssueTemplate.estimate !== retainedEstimate)
+      await admitEstimate(ctx.db,id,input.defaultIssueTemplate.estimate);
     } catch(error) {if(error instanceof IssueMutationError) throw new SettingsError(error.code,error.message,400);throw error;}
   }
   if (input.triageResponsibility) {

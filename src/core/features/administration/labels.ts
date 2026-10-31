@@ -1,3 +1,4 @@
+import {teamTemplateLabelStatements} from "./team-template-labels";
 import { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import { labelCreateSchema, labelUpdateSchema } from "./schema";
@@ -135,6 +136,7 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
         after: JSON.stringify(cleaned),
       });
   }
+  const templateWrites=await teamTemplateLabelStatements(ctx,id,null);
   const oldLabels = `(SELECT json_group_array(label_id) FROM (SELECT label_id FROM issue_labels WHERE issue_id=issues.id ORDER BY label_id))`;
   const nextLabels = `(SELECT json_group_array(label_id) FROM (SELECT label_id FROM issue_labels WHERE issue_id=issues.id AND label_id<>? ORDER BY label_id))`;
   await commit(ctx, [
@@ -178,6 +180,7 @@ export async function removeLabel(db: D1Database, actor: string, id: string) {
     ctx.db.prepare("UPDATE projects SET updated_at=? WHERE id IN (SELECT project_id FROM project_labels WHERE label_id=?)").bind(ctx.at,id),
     ctx.db.prepare(`UPDATE list_preferences SET filters_json=json_set(filters_json,'$.label','all'),updated_at=?
       WHERE surface='projects' AND operator_id IN (SELECT id FROM operators WHERE workspace_id=?) AND json_extract(filters_json,'$.label')=?`).bind(ctx.at,ctx.workspace,id),
+    ...templateWrites,
     ctx.db.prepare("DELETE FROM labels WHERE id=?").bind(id),
     ...audit(
       ctx,
@@ -212,6 +215,7 @@ export async function mergeLabel(db: D1Database, actor: string, source: string, 
     catch { throw new SettingsError("invalid_saved_view", "Repair corrupt saved-view filters before merging labels.", 409); }
     return {...view, next: JSON.stringify(mergeLabelFilter(filters,source,destination))};
   }).filter(view=>view.next!==view.filters_json);
+  const templateWrites=await teamTemplateLabelStatements(ctx,source,destination);
   const previous = `(SELECT json_group_array(label_id) FROM (SELECT label_id FROM issue_labels WHERE issue_id=issues.id ORDER BY label_id))`;
   const next = `(SELECT json_group_array(label_id) FROM (SELECT DISTINCT CASE WHEN label_id=? THEN ? ELSE label_id END AS label_id FROM issue_labels WHERE issue_id=issues.id ORDER BY label_id))`;
   await commit(ctx, [
@@ -232,6 +236,7 @@ export async function mergeLabel(db: D1Database, actor: string, source: string, 
     ctx.db.prepare("INSERT OR IGNORE INTO project_labels(project_id,label_id,created_at) SELECT project_id,?,? FROM project_labels WHERE label_id=?").bind(destination,ctx.at,source),
     ...changed.map(view=>ctx.db.prepare("UPDATE saved_views SET filters_json=?,updated_at=? WHERE id=?").bind(view.next,ctx.at,view.id)),
     ctx.db.prepare("UPDATE list_preferences SET filters_json=json_set(filters_json,'$.label',?),updated_at=? WHERE surface='projects' AND operator_id IN(SELECT id FROM operators WHERE workspace_id=?) AND json_extract(filters_json,'$.label')=?").bind(destination,ctx.at,ctx.workspace,source),
+    ...templateWrites,
     ctx.db.prepare("DELETE FROM labels WHERE id=?").bind(source),
     ...audit(ctx,"label.merged",source,old.name,{id:source,name:old.name},{id:destination,name:target.name}),
   ]);

@@ -22,6 +22,8 @@ export async function teamTemplateJourney(f:Awaited<ReturnType<typeof setupAdmin
   await f.mutate(path,'PATCH',{defaultIssueTemplate:{...template,description:'synthetic-vector-2635'}});
   expect(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first()).toEqual(preserved);
   await f.mutate(path,'PATCH',{estimatesEnabled:false});
+  await f.mutate(path,'PATCH',{defaultIssueTemplate:{...template,name:'synthetic-vector-2655',description:'synthetic-vector-2635'}});
+  expect((await f.state()).teams.find(team=>team.id===teamId)?.defaultIssueTemplate?.estimate).toBe(3);
   const estimatesOff=await f.create({teamId,title:'synthetic-vector-2652'});
   expect(await (await f.call('/issues/'+estimatesOff.identifier)).json()).toMatchObject({description:'synthetic-vector-2635',estimate:null});
   await f.mutate(path,'PATCH',{estimatesEnabled:true});
@@ -29,4 +31,18 @@ export async function teamTemplateJourney(f:Awaited<ReturnType<typeof setupAdmin
   expect(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first()).toEqual(preserved);
   const without=await f.create({teamId,title:'synthetic-vector-2636'});
   expect(await (await f.call('/issues/'+without.identifier)).json()).toMatchObject({description:'',priority:'none',estimate:null});
+  await f.mutate(path,'PATCH',{defaultIssueTemplate:template});
+  const mergedState=await f.mutate('/settings/labels','POST',{name:'synthetic-vector-2682',color:'#663399'});
+  const destination=mergedState.labels.find(item=>item.name==='synthetic-vector-2682')!;
+  await f.mutate('/settings/labels/'+label.id+'/merge','POST',{destinationLabelId:destination.id});
+  expect((await f.state()).teams.find(team=>team.id===teamId)?.defaultIssueTemplate?.labelIds).toEqual([destination.id]);
+  const merged=await f.create({teamId,title:'synthetic-vector-2683'});
+  expect((await (await f.call('/issues/'+merged.identifier)).json() as any).labels.map((item:any)=>item.id)).toEqual([destination.id]);
+  await f.mutate('/settings/labels/'+destination.id,'DELETE');
+  expect((await f.state()).teams.find(team=>team.id===teamId)?.defaultIssueTemplate?.labelIds).toEqual([]);
+  const deleted=await f.create({teamId,title:'synthetic-vector-2684'});
+  expect((await (await f.call('/issues/'+deleted.identifier)).json() as any).labels).toEqual([]);
+  expect(await env.DB.prepare("SELECT count(*) n FROM audit_records WHERE subject_id=? AND action='team.default_template_labels_changed'").bind(teamId).first('n')).toBe(2);
+  await f.mutate(path,'PATCH',{defaultIssueTemplate:null});
+
 }
