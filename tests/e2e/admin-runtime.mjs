@@ -1,3 +1,4 @@
+import {dueRulesJourney,dueRuleConfigurationRefusals} from './admin-due-rules-journey.mjs';
 import {assertRoleDoorCoverage} from './role-door-coverage.mjs';
 import { exerciseAuditView, exerciseAuditAccess } from './admin-audit-journey.mjs';
 import { projectFieldsJourney } from './core-project-fields-journey.mjs';
@@ -140,6 +141,7 @@ await contract(
           await teamCreationPermission({ ...shared, ...roles, evidence });
           await teamJoinPermissions({ ...shared, ...roles, evidence });
           await exerciseAuditAccess({ ...shared, ...roles });
+          await dueRuleConfigurationRefusals({...shared,...roles});
         } finally {
           await roles.context.close();
         }
@@ -191,6 +193,7 @@ await contract(
             };
           },
         });
+        await dueRulesJourney({...shared,proofDirectory:evidence});
         requestDiagnostics.phase("ordinary sign-out");
         await assertSignOut(shared);
         await assertSignOutReadLifecycle({

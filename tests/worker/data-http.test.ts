@@ -11,7 +11,7 @@ import {request,bindings,invite} from './base-auth-fixture';
 import {readArchive} from '@runeditrun/rer/modules/portability';
 import {createServerApp} from '../../src/core/app/server';
 import {freshTarget,targetCall,targetSignIn,httpExport,finalHash,finalBody,destination,targetBindings} from './http-archive-fixture';
-it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
+it('[AUTO-006 ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA-001 VIEW-006 REPORT-004 REPORT-002 PROJ-001] native archive HTTP requires current owner, origin and job identity; authenticated pristine bootstrap restores atomically and requires fresh historical owner authority',async()=>{
  const f=await populatedHttpSource();const peer=f.peerCookie;
  const migrationDigests=inject('migrationDigests') as Record<string,string>;
  const commentSubscriptions={events:['comment.created','comment.updated','comment.deleted'],teamIds:[f.team.id]};
@@ -80,6 +80,14 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const pendingSubscriptionIssue=await pendingSubscriptionResponse.json() as {identifier:string};
  const subscriptionPreferences=(await env.DB.prepare('SELECT * FROM subject_subscriptions ORDER BY id').all()).results;
  const subscriptionRevision=await env.DB.prepare('SELECT revision FROM subscription_clock WHERE id=1').first<number>('revision');
+ // Due-soon configuration and successful once receipts are retained domain data.
+ expect((await f.call('/settings/automation/due-soon','PUT',{name:'synthetic-vector-due-archive',enabled:true,expectedVersion:0})).status).toBe(200);
+ await env.DB.prepare(`INSERT INTO workspace_due_rule_runs(id,rule_id,issue_id,due_date,recipient_id,cycle_id,outcome,reason,notified,created_at,updated_at)
+   SELECT 'synthetic-vector-due-archive-run',r.id,i.id,i.due_date,i.assignee_operator_id,i.cycle_id,'succeeded',NULL,0,i.created_at,i.updated_at
+   FROM workspace_due_rules r JOIN issues i ON i.id=?`).bind(f.issue.id).run();
+ const dueConfiguration=(await env.DB.prepare('SELECT * FROM workspace_due_rules ORDER BY id').all()).results;
+ const dueReceipts=(await env.DB.prepare('SELECT * FROM workspace_due_rule_runs ORDER BY id').all()).results;
+ expect(dueReceipts).toHaveLength(1);
  const planningOrder=(await (await f.call('/issues?team='+f.team.id+'&sort=manual')).json() as {issues:{identifier:string}[]}).issues.map(row=>row.identifier);
  // Export the prior deploy-kit ledger format; restore into the package's current
  // state-bearing D1 ledger. Neither ledger is application data in the archive.
@@ -127,6 +135,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const finalized=await targetCall('/api/portability/imports/'+job+'/finalize','POST',finalBody(records),cookie);
  expect(finalized.status,await finalized.clone().text()).toBe(200);
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM d1_migrations ORDER BY id').all()).results).toEqual(ledgerBefore);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM workspace_due_rules ORDER BY id').all()).results).toEqual(dueConfiguration);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM workspace_due_rule_runs ORDER BY id').all()).results).toEqual(dueReceipts);
  expect(finalized.headers.get('set-cookie')).toContain('Max-Age=0');
  expect((await targetCall('/api/session','GET',undefined,cookie)).status).toBe(401);
  expect((await targetCall('/api/session','GET',undefined,f.cookie)).status).toBe(401);

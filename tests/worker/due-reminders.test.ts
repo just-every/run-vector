@@ -14,7 +14,7 @@ import { createUlid } from "../../src/core/shared/ids";
 const check = (clauses: string, name: string, run: () => Promise<void>) =>
   contractWith(it, clauses, name, run);
 check(
-  "NOTIFY-001 NOTIFY-005 NOTIFY-006 OPS-003 BASE-OPS-005",
+  "AUTO-006 ROLE-001 CYCLE-008 NOTIFY-001 NOTIFY-005 NOTIFY-006 OPS-003 BASE-OPS-005",
   "due and first-overdue Cron reminders are Inbox-only, timely, concurrent-safe and late-tick eligible",
   async () => {
     const f = await reminderFixture();
@@ -118,6 +118,7 @@ check(
         ).all()
       ).results,
     ).toEqual(audits);
+    await (await import('./due-rule-proof')).proveDueRuleCalendar();
   },
 );
 check(
@@ -353,7 +354,7 @@ check(
   },
 );
 check(
-  "NOTIFY-005 BASE-DATA-001",
+  "AUTO-006 ROLE-001 NOTIFY-005 BASE-DATA-001",
   "restored effects hold new reminders until reviewed while preserving historical claims",
   async () => {
     const f = await reminderFixture();
@@ -379,5 +380,7 @@ check(
     );
     await tick("2026-10-11T10:00:00Z");
     expect(await f.notifications()).toHaveLength(1);
+    await (await import('./due-rule-upgrade')).proveDueRuleUpgrade();
+    await (await import('./due-rule-proof')).proveDueRuleAuthority();
   },
 );

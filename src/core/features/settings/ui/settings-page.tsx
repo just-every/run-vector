@@ -1,3 +1,4 @@
+import { DueRulesPanel } from '../../automation-rules/panel';
 import { useViewerTime } from '../../../app/viewer-time';
 import { PersonalTimePanel } from './personal-time-panel';
 import { AppearancePanel } from './appearance-panel';
@@ -82,7 +83,7 @@ export function SettingsPage() {
         <nav className="settings-sections" aria-label="Settings sections">
           <a href="#appearance">Appearance</a>
           <a href="#personal-time">Your time</a>
-          {workspace && <a href="#workspace-time">Workspace time</a>}
+          {workspace && <><a href="#workspace-time">Workspace time</a><a href="#automation">Automation</a></>}
           <a href="#members">Members</a>
           {resource.data && opensSettingsPage(resource.data.role,'teams') && <a href="#teams">Teams</a>}
           <a href="#labels">Labels</a>
@@ -223,6 +224,7 @@ export function SettingsPage() {
               />
             </>
           )}
+          {workspace && <DueRulesPanel />}
           {workspace && <OAuthAppsPanel />}
           {workspace && <DataPanel />}
           {/* Restore review has no role-matrix row, so it is the Owners' (ROLE-008). */}

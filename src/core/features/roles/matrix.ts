@@ -22,6 +22,7 @@ type Row = { action: string; cells: Record<Role, Cell> }
 const row = (action: string, owner: Cell, admin: Cell, member: Cell, guest: Cell, viewer: Cell = 'no'): Row => ({ action, cells: { owner, admin, member, guest, viewer } })
 
 export const matrix = {
+  'automation.workspace': row('Build or change workspace automation rules (AUTO-002, AUTO-006)', 'yes', 'yes', 'no', 'no'),
   'work.read': row('Read visible work (OPS-001, ROLE-002, ROLE-003, ROLE-013)', 'yes', 'yes', 'yes', 'invited-teams', 'yes'),
   'viewers.manage': row('Invite or suspend Viewers; change between Member, Guest and Viewer (ROLE-013)', 'yes', 'yes', 'no', 'no'),
   'reports.read': row('Open Insights and shared dashboards (REPORT-001)', 'yes', 'yes', 'yes', 'no', 'yes'),

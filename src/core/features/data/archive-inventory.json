@@ -2159,5 +2159,30 @@
   ],
   "bs_assert": [
     "value"
+  ],
+  "workspace_due_rules": [
+    "id",
+    "workspace_id",
+    "name",
+    "owner_operator_id",
+    "enabled",
+    "version",
+    "created_at",
+    "updated_at"
+  ],
+  "workspace_due_rule_runs": [
+    "id",
+    "rule_id",
+    "issue_id",
+    "due_date",
+    "recipient_id",
+    "cycle_id",
+    "outcome",
+    "reason",
+    "notified",
+    "last_failure",
+    "failed_at",
+    "created_at",
+    "updated_at"
   ]
 }

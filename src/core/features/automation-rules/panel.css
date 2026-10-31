@@ -1,0 +1,7 @@
+.settings-page .due-rule-runs li {
+  display: block;
+  border: 0;
+  padding-block: 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}

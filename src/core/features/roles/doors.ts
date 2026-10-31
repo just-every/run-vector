@@ -98,6 +98,8 @@ async function memberRole(db: D1Database, id: string) {
 }
 
 export const doors: Door[] = [
+  { method:'GET', path:'/settings/automation', row:'automation.workspace' },
+  { method:'PUT', path:'/settings/automation/due-soon', row:'automation.workspace' },
   ...([
     ['POST','/documents'],['PATCH','/documents/:documentId'],['POST','/documents/:documentId/comments'],
     ['PUT','/issues/:identifier/specification'],['DELETE','/issues/:identifier/specification'],

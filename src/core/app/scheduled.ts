@@ -1,3 +1,4 @@
+import { runDueRules } from '../features/automation-rules/service';
 import {processSubscriptionQueue} from '../features/subscriptions/process';
 import { captureDailyReports } from "../features/project-report/capture";
 import { maintainCycleSchedules } from "../features/cycle-schedule/service";
@@ -25,6 +26,7 @@ export async function scheduled(
   await Promise.all([
     closeEndedCycles(env, now),
     sendDueReminders(env, now),
+    runDueRules(env, now),
     deliverFollowups(env, now),
     processFileRemovals(env),
     returnDueIntake(env, now),

@@ -1,3 +1,4 @@
+import { addDueRuleRoutes } from '../features/automation-rules/routes';
 import {addAliasRoutes} from '../features/data/aliases/routes';
 import {addOAuthRoutes} from '../features/oauth-apps/routes';
 import {addMonthCalendarRoutes} from '../features/calendar-view/routes';
@@ -399,6 +400,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addMonthCalendarRoutes(app);
   addProjectTemplateRoutes(app);
   addSettingsRoutes(app);
+  addDueRuleRoutes(app);
   addAuditRoutes(app);
   addIntegrationConfigRoutes(app);
   addRestoreRoutes(app);
