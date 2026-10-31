@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "2de4557ee15e5f37ddf93ca37ba4f2fcc2fe121bc3cab8b74bab81fa23826ecb",
+      "sha256": "569ef420c67b6148c53d81d20d439fcdab7363a33d22da8874f8f2649156ff2e",
       "executable": false
     },
     "DEMO.md": {
@@ -4549,7 +4549,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "7d9149710f997a7c7224afdcb3c6b06230319bd1477f202cd8b3e1f5433f44bd",
+      "sha256": "032cd2a05a2d52a56015e1a0a187dad9a0fd79549d5a6b70b515c037c69f9875",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -6725,11 +6725,11 @@
       "executable": false
     },
     "src/core/features/report-exports/scheduled.ts": {
-      "sha256": "343817b590698f4da924a569b7b94c67724785f95d4eeea0e0bdf38ea4e1dd58",
+      "sha256": "9f7279e96b447e74a01b7208164c9e1bfb229eaa481a06516a9084b99efcff21",
       "executable": false
     },
     "src/core/features/report-exports/schedules.ts": {
-      "sha256": "556ed91e44e01ec87b8e36cbac71765e71adb27b345c3cc2a08a5eb571c01b3a",
+      "sha256": "afcbca8e0a8ab0c6a46a08f95701ee9dc923e1934404bbfa6ea34a75f750e069",
       "executable": false
     },
     "src/core/features/report-exports/schema.ts": {
@@ -7981,7 +7981,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "d6112f0c101247c5ecd2252235d68b45c534b914fe95e6063def033337b2841d",
+      "sha256": "a570df0e741c15034534f64b4c565968be05254d4313d9ecf4190247a53633a7",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -8030,6 +8030,10 @@
     },
     "tests/e2e/integrations/register-loader.mjs": {
       "sha256": "e15233703812d69de83d774e1bfe37f3e1cd954378535ce428c9295254c8ea12",
+      "executable": false
+    },
+    "tests/e2e/integrations/report-provider-edge.mjs": {
+      "sha256": "7e7f34025d5df5f8e8444bc676a8da549598c607ac47941b587d34d82d5f7873",
       "executable": false
     },
     "tests/e2e/integrations/slack-app-archive.mjs": {
@@ -8273,7 +8277,11 @@
       "executable": false
     },
     "tests/e2e/warehouse-export-client.mjs": {
-      "sha256": "b73b568c7e5dc9b37bf383002999a04a288bc9d43ef9ae366d608537b89f0436",
+      "sha256": "3b359e9fc07abfbb155128405f41efc5327e73555f0f5b9b7a861e28efcd8492",
+      "executable": false
+    },
+    "tests/e2e/warehouse-schedule-client.mjs": {
+      "sha256": "c131f3636bba90721caffe5be39fd8bb7c7b320b14ab7baa0003feb004ea8785",
       "executable": false
     },
     "tests/e2e/wave-b-provider.mjs": {
@@ -9101,7 +9109,7 @@
       "executable": false
     },
     "tests/worker/warehouse-schedule-journey.ts": {
-      "sha256": "1d582e7d6300b2abd39ed9f820e372bed3601b21b4bc4f0ac056d17c416b299f",
+      "sha256": "086a74361bdd14115231fbdc651900d8827c1ee2837bdcfa84d951af77395557",
       "executable": false
     },
     "tests/worker/warehouse-sheets-journey.ts": {

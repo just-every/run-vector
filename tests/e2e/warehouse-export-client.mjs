@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { exerciseWarehouseSchedules } from './warehouse-schedule-client.mjs';
 
 /** A real warehouse consumer of the published HTTP operations. This helper is
  * reached by the existing integration runtime, without a fake transport. */
@@ -54,4 +55,5 @@ export async function exerciseWarehouseExports({runtime,cookie}) {
   }
   assert.equal((await api('/report-exports/issues')).status,401);
   console.log('REPORT-005 local warehouse consumer passed; revoked access refused.');
+  await exerciseWarehouseSchedules({runtime,cookie,team,issues});
 }

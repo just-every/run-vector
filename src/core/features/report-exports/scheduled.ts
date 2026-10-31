@@ -66,6 +66,16 @@ export async function runReportExports(env:WorkerBindings,now:Date) {
     env.DB.prepare(`UPDATE vector_report_exports SET state='uncertain',last_error='export_interrupted',updated_at=?
       WHERE state='running' AND updated_at<?`).bind(at,new Date(now.getTime()-20*60000).toISOString()),
   ]);
+  // A withdrawn sponsor is a visible hold, rather than a silently overdue job.
+  const withdrawn=(await env.DB.prepare(`SELECT id FROM vector_report_exports WHERE enabled=1 AND state IN('idle','failed') AND next_at<=? AND NOT (${activeOwner}) LIMIT 20`).bind(now.getTime()).all<{id:string}>()).results;
+  for(const {id} of withdrawn) {
+    const run=createUlid(now);
+    await env.DB.batch([
+      env.DB.prepare(`UPDATE vector_report_exports SET state='held',last_error='export_authority_changed',updated_at=? WHERE id=? AND state IN('idle','failed') AND NOT (${activeOwner})`).bind(at,id),
+      env.DB.prepare(`INSERT INTO vector_report_export_runs(id,export_id,started_at,finished_at,state,error)
+        SELECT ?,id,?,?,'held','export_authority_changed' FROM vector_report_exports WHERE id=? AND state='held' AND last_error='export_authority_changed' AND updated_at=? AND changes()=1`).bind(run,at,at,id,at),
+    ]);
+  }
   const due=(await env.DB.prepare(`SELECT id FROM vector_report_exports WHERE enabled=1 AND state IN('idle','failed') AND next_at<=? ORDER BY next_at,id LIMIT 5`).bind(now.getTime()).all<{id:string}>()).results;
   for(const {id} of due) {
     const run=createUlid(now);

@@ -24,7 +24,10 @@ export async function listSchedules(env:WorkerBindings,owner:IntegrationOwner) {
 export async function createScheduledExport(env:WorkerBindings,owner:IntegrationOwner,input:z.output<typeof createSchedule>) {
   const now=new Date(),at=now.toISOString(),id=createUlid(now);
   const configuration=input.kind==='bucket'?{...input.configuration,endpoint:bucketEndpoint(input.configuration.endpoint)}:input.configuration;
-  if(input.kind==='sheets')await getView(env.DB,owner.id,input.configuration.viewId);
+  if(input.kind==='sheets') {
+    try{await getView(env.DB,owner.id,input.configuration.viewId);}
+    catch{throw new IntegrationError(404,'export_view_unavailable');}
+  }
   const encrypted=await sealSecret(env,scheduleIdentity(id),JSON.stringify(input.credentials));
   await guardedSql(env.DB,allowed(owner)).batch([
     {sql:`SELECT CASE WHEN (SELECT count(*) FROM vector_report_exports WHERE workspace_id=?)<20 AND (? IS NULL OR EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=?)) THEN 1 ELSE json('export configuration refused') END`,params:[owner.workspace,'team' in configuration?configuration.team??null:null,'team' in configuration?configuration.team??null:null,owner.workspace]},
@@ -40,7 +43,7 @@ export async function setScheduleEnabled(env:WorkerBindings,owner:IntegrationOwn
   const rows=await guardedSql(env.DB,allowed(owner)).batch([
     {sql:`UPDATE vector_report_exports SET enabled=?,owner_id=?,version=version+1,state='idle',last_error=NULL,next_at=?,updated_at=?
       WHERE id=? AND workspace_id=? AND version=? AND (state<>'running' OR ?=0) RETURNING id`,params:[Number(input.enabled),owner.id,Date.now(),new Date().toISOString(),id,owner.workspace,input.expectedVersion,Number(input.enabled)]},
-    auditStatement({workspace:owner.workspace,actor:owner.id,action:'report.export_consent_changed',subject:id,condition:{sql:'EXISTS(SELECT 1 FROM vector_report_exports WHERE id=? AND workspace_id=? AND version=?)',params:[id,owner.workspace,input.expectedVersion+1]}}),
+    auditStatement({workspace:owner.workspace,actor:owner.id,action:'report.export_consent_changed',subject:id,condition:{sql:'changes()=1 AND EXISTS(SELECT 1 FROM vector_report_exports WHERE id=? AND workspace_id=? AND version=?)',params:[id,owner.workspace,input.expectedVersion+1]}}),
   ]);
   if(!rows[0].length)throw new IntegrationError(409,'export_version_changed');
   return {id,version:input.expectedVersion+1,enabled:input.enabled};
