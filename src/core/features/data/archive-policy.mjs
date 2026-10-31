@@ -1,5 +1,7 @@
 // Signed GitHub reviews and head generations are portable domain history; restored receivers require credential re-entry.
 // Document issue references retain live and removed backlinks as portable domain data.
+// Webhook event selections and team filters are portable configuration. Restored
+// event history remains held and destination secrets still require re-entry.
 // Comment description anchors are portable domain data; deletion clears their retained quotes.
 // Initiative channel bindings are portable domain configuration, like vector_channel_bindings.
 // Initiative destination approvals and scoped binding custody are portable domain configuration; approvals name

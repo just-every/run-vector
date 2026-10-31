@@ -102,6 +102,32 @@ archive restore do not. Stable native business identities prevent duplicate
 enqueue. Payloads contain the issue identifier/version/title/status/time,
 without private attachments or credential values.
 
+Owners and Admins can select implemented event kinds and teams when registering
+a destination through `POST /api/settings/integrations/destinations`, or replace
+those choices through `PUT /api/settings/integrations/destinations/:id/subscriptions`.
+The JSON selection is `{events, teamIds}`. Supported kinds are `issue.created`,
+`issue.updated`, `issue.completed`, `comment.created`, `comment.updated` and
+`comment.deleted`. The existing Settings form retains the issue-event defaults;
+subscription controls remain outstanding. Omitting selections at registration,
+and upgrading an existing destination, preserves its three issue-event kinds.
+An empty `teamIds` selects all public teams. A selected private team never
+authorizes export. Current selections, destination revocation, issue visibility,
+erasure and restore holds are checked again before signing and transport.
+
+Native issue-comment creation, editing and deletion publish transactionally with
+their activity. Root comments and replies retain stable `commentId`,
+`parentCommentId`, `rootCommentId`, `issueId`, `identifier`, `teamId` and
+`occurredAt` metadata. Comment events contain no body, quote or author data.
+Their durable event IDs survive retries and restart; deleting a root retains
+the identity of its replies. Subscriptions are portable configuration; signing
+credentials are excluded and restored historical events never replay.
+
+Apply `0120_comment_webhook_author_labels.sql` after 0119. Native
+comment events remain eligible when the comment has an external author label,
+including email-intake replies deleted by an Owner. The migration replaces only
+the event trigger and preserves queued events, delivery history and restore holds.
+Retain the forward migration on compatible-source rollback.
+
 Enable delivery in Settings → Integrations → Outbound webhooks. The page asks
 for the Cloudflare account ID and a token with Account / Workers Scripts / Read
 and Zone / Zone / Read for the hosting account and all its zones. Vector reads
