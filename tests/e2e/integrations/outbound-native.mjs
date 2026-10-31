@@ -1,4 +1,5 @@
 import {outboundPrivacyJourney} from './outbound-privacy-journey.mjs';
+import {outboundCommentsJourney} from './outbound-comments.mjs';
 import assert from 'node:assert/strict';
 import {mkdtemp,readFile,rm,writeFile,mkdir} from 'node:fs/promises';
 import {join,resolve} from 'node:path';
@@ -33,7 +34,7 @@ try{
  const confirmed=await call('/auth/confirm','POST',{token});assert.equal(confirmed.status,303);const cookie=confirmed.headers.get('set-cookie').split(';')[0];
  assert.equal((await call('/api/setup/complete','POST',{confirmed:true},cookie)).status,200);
  const registered=await call('/api/settings/integrations/destinations','POST',{name:'Loopback receiver',url:'https://receiver.example.com/events'},cookie);assert.equal(registered.status,201);const destination=await registered.json();
- const key=Buffer.from(destination.secret,'hex'),cert=await readFile(join(work,'cert.pem')),seen=new Map(),hosts=[];let received=0,mode='accepted',receiverNow=Date.now();
+ const key=Buffer.from(destination.secret,'hex'),cert=await readFile(join(work,'cert.pem')),seen=new Map(),eventKinds=new Map(),hosts=[];let received=0,mode='accepted',receiverNow=Date.now();
  receiver=createServer({key:await readFile(join(work,'key.pem')),cert},async(request,response)=>{
   const chunks=[];for await(const chunk of request)chunks.push(chunk);hosts.push(request.headers.host);
   if(request.headers.host==='redirect.example.com'){response.writeHead(302,{location:'https://receiver.example.com/events'}).end();return;}const body=Buffer.concat(chunks).toString('utf8'),headers=request.headers;
@@ -41,7 +42,7 @@ try{
   if(provided.length!==expected.length||!timingSafeEqual(provided,expected)||!Number.isFinite(Number(headers['webhook-timestamp']))||Math.abs(receiverNow-Number(headers['webhook-timestamp'])*1000)>300000){response.writeHead(401).end();return;}
   proof.hmacVerified=true;const previous=seen.get(headers['webhook-id']);if(previous&&previous!==body){response.writeHead(409).end();return;}
   if(mode==='retry'){response.writeHead(429,{'retry-after':'1'}).end();return;}
-  if(!previous){seen.set(headers['webhook-id'],body);received++;}
+  if(!previous){seen.set(headers['webhook-id'],body);eventKinds.set(headers['webhook-id'],headers['webhook-event']);received++;}
   if(mode==='uncertain'){request.socket.destroy();return;}response.writeHead(204).end();
  });
  await new Promise(resolve=>receiver.listen(0,'127.0.0.1',resolve));const port=receiver.address().port;
@@ -54,6 +55,7 @@ try{
  await dispatchWebhooks(env);const delivery=await db.prepare('SELECT id,envelope,state FROM integration_deliveries ORDER BY created_at LIMIT 1').first();assert.equal(delivery.state,'accepted');assert.equal(received,1);
  const service=outboundService(env,admin.workspace.id),envelope=JSON.parse(delivery.envelope),protocol=(await import('../../../vendor/base/integrations/core/webhook.ts')).createWebhookProtocol({resolveDestination:async()=>retainedDestination.url,signingKey:async()=>new Uint8Array(key)}),wire=await protocol.prepare(envelope,Date.now());
  assert.equal((await transport.send(wire)).status,204);assert.equal(received,1);assert.equal((await transport.send({...wire,body:wire.body+' '})).status,401);proof.replaySafe=true;
+ await outboundCommentsJourney({call,cookie,db,env,destination,team,received:seen,eventKinds});
  await outboundPrivacyJourney({call,cookie,db,env,workspace:admin.workspace.id,transport,setMode:value=>{mode=value;}});
  mode='uncertain';await call('/api/issues','POST',{teamId:team.id,title:'Lost receiver acknowledgement'},cookie);await dispatchWebhooks(env);const unknown=await db.prepare("SELECT id FROM integration_deliveries WHERE state='uncertain'").first();assert(unknown);const attempts=transport.connects.length;await dispatchWebhooks(env);assert.equal(transport.connects.length,attempts);proof.uncertain=true;
  mode='retry';await call('/api/issues','POST',{teamId:team.id,title:'Rate-limited receiver'},cookie);await dispatchWebhooks(env);let pending=await db.prepare("SELECT id,next_at,max_attempts,attempts FROM integration_deliveries WHERE state='queued'").first();assert(pending);
