@@ -1,3 +1,4 @@
+import {prefillTeamTemplate} from "./issue-template-draft";
 import { EstimateChoice } from "./estimate-choice";
 import { preferenceSchema } from "../../views/schema";
 import { lastCreatedTeamKey, preferredTeam } from "./preferred-team";
@@ -18,6 +19,7 @@ import {
   hasUnsavedDraft,
   newIssueDraftKey,
   parseNewIssueDraft,
+  templateDraftFields,
   type NewIssueDraft,
 } from "./new-issue-draft";
 
@@ -43,7 +45,7 @@ export function NewIssueForm() {
   const boardPreference = useApiResource("/api/preferences/board", preferenceSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
   const openingDefaults = useRef(emptyNewIssueDraft);
-  const templateEdits = useRef(new Set<string>());
+  const templateEdits = useRef(new Set<typeof templateDraftFields[number]>());
   const [draftReady, setDraftReady] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
@@ -66,21 +68,19 @@ export function NewIssueForm() {
         window.localStorage.getItem(lastCreatedTeamKey(options.data.workspace.id, options.data.operator.id)),
         boardPreference.data.filters.team,
       ]);
-    const teamDefault=options.data.teams.find(team=>team.id===defaults.teamId);
-    if (teamDefault?.defaultIssueTemplate) {
-      const template=teamDefault.defaultIssueTemplate;
-      Object.assign(defaults,{title:template.title,description:template.description,priority:template.priority,labelIds:template.labelIds,estimate:teamDefault.estimatesEnabled && template.estimate !== null ? String(template.estimate) : ''});
-    }
+      Object.assign(defaults,prefillTeamTemplate(defaults,options.data.teams.find(team=>team.id===defaults.teamId),new Set()));
       const stored = window.localStorage.getItem(storageKey);
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
       // Choosing Issue or Intake alone is not unsent content.
       if (restored) {
         const candidate = { ...restored, teamId: restored.teamId || defaults.teamId };
+        const edited=new Set(restored.templateEditedFields ?? []);
+        Object.assign(candidate,prefillTeamTemplate(candidate,options.data.teams.find(team=>team.id===candidate.teamId),edited));
         if (defaults.projectId) { candidate.projectId = defaults.projectId; candidate.mode = "issue"; }
         if (hasUnsavedDraft(candidate, { ...defaults, mode: candidate.mode })) {
           draft = candidate;
-          templateEdits.current = new Set(["title","description","priority","estimate","labelIds"]);
+          templateEdits.current = edited;
           setNotice("Restored your unsent draft from this browser.");
         }
       }
@@ -94,8 +94,9 @@ export function NewIssueForm() {
   useEffect(() => {
     if (!draftReady || !storageKey) return;
     try {
-      if (hasUnsavedDraft(values, { ...openingDefaults.current, mode: values.mode }))
-        window.localStorage.setItem(storageKey, JSON.stringify(values));
+      const persisted={...values,templateEditedFields:[...templateEdits.current]};
+      if (hasUnsavedDraft(persisted, { ...openingDefaults.current, mode: values.mode }))
+        window.localStorage.setItem(storageKey, JSON.stringify(persisted));
       else window.localStorage.removeItem(storageKey);
     } catch {
       setStorageError("This browser could not save the unsent draft.");
@@ -123,16 +124,7 @@ export function NewIssueForm() {
     setValues((current) => ({
       ...current,
       teamId,
-      ...(() => {
-        const template=options.data?.teams.find(team=>team.id===teamId)?.defaultIssueTemplate;
-        return template ? {
-          title: templateEdits.current.has("title") ? current.title : template.title,
-          description: templateEdits.current.has("description") ? current.description : template.description,
-          priority: templateEdits.current.has("priority") ? current.priority : template.priority,
-          estimate: templateEdits.current.has("estimate") ? current.estimate : (options.data?.teams.find(team=>team.id===teamId)?.estimatesEnabled && template.estimate !== null ? String(template.estimate) : ''),
-          labelIds: templateEdits.current.has("labelIds") ? current.labelIds : template.labelIds,
-        } : {};
-      })(),
+      ...prefillTeamTemplate(current,options.data?.teams.find(team=>team.id===teamId),templateEdits.current),
       statusId:
         current.statusId &&
         options.data?.statuses.some(

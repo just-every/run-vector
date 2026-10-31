@@ -12,7 +12,10 @@ export type IntakeCustomerReportDraft = {
   link: string
 }
 
+export const templateDraftFields = ['title','description','priority','estimate','labelIds'] as const
+
 export type NewIssueDraft = {
+  templateEditedFields?: (typeof templateDraftFields)[number][]
   mode: 'issue' | 'intake'
   intakeObservedAt: string
   intakeSummary: string
@@ -37,6 +40,7 @@ export type NewIssueDraft = {
 }
 
 export const emptyNewIssueDraft: NewIssueDraft = {
+  templateEditedFields: [],
   mode: 'issue',
   intakeObservedAt: '',
   intakeSummary: '',
@@ -66,6 +70,7 @@ export function newIssueDraftKey(workspaceId: string, operatorId: string) {
 
 export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
   if (!isRecord(value)) return null
+  if (value.templateEditedFields !== undefined && (!Array.isArray(value.templateEditedFields) || value.templateEditedFields.some(field=>typeof field !== 'string' || !templateDraftFields.includes(field as typeof templateDraftFields[number])))) return null
   const mode = value.mode === undefined ? 'issue' : value.mode
   if (mode !== 'issue' && mode !== 'intake') return null
   const intakeFields = [
@@ -131,7 +136,7 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
     value.labelIds.some((label) => typeof label !== 'string')
   )
     return null
-  return {
+  const parsed: NewIssueDraft = {
     mode,
     intakeObservedAt: (value.intakeObservedAt as string | undefined) ?? '',
     intakeSummary: (value.intakeSummary as string | undefined) ?? '',
@@ -162,6 +167,12 @@ export function parseNewIssueDraft(value: unknown): NewIssueDraft | null {
     expectedOutcome: value.expectedOutcome as string,
     customerImpact: value.customerImpact as string,
   }
+  // Older drafts did not distinguish untouched blanks from deliberate edits.
+  // Preserve every field in a content-bearing legacy draft; a team choice alone
+  // can still receive its team's newly configured default.
+  const legacyContent=Object.keys(emptyNewIssueDraft).filter(key=>!['teamId','mode','templateEditedFields'].includes(key)).some(key=>JSON.stringify(parsed[key as keyof NewIssueDraft])!==JSON.stringify(emptyNewIssueDraft[key as keyof NewIssueDraft]));
+  parsed.templateEditedFields=value.templateEditedFields === undefined ? (legacyContent ? [...templateDraftFields] : []) : [...new Set(value.templateEditedFields as typeof templateDraftFields[number][])];
+  return parsed
 }
 
 export function hasUnsavedDraft(values: NewIssueDraft, defaults: NewIssueDraft = emptyNewIssueDraft) {

@@ -25,6 +25,7 @@ export async function teamTemplateSettings({page,runtime,evidence,team,other,sen
  await expect(page.getByLabel(/^Title/)).toHaveValue('synthetic-vector-2642');
  await expect(page.getByLabel('Description',{exact:true})).toHaveValue('## synthetic-vector-2643');
  await expect(page.getByLabel('Estimate',{exact:true})).toHaveValue('3');
+ await inspect(page,page.locator('.new-issue-form'),'team-default-template-new-issue');
  await page.getByLabel(/^Title/).fill('synthetic-vector-2644');
  const created=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/issues'&&response.request().method()==='POST');
  await page.getByRole('button',{name:'Create issue',exact:true}).click();
@@ -35,6 +36,7 @@ export async function teamTemplateSettings({page,runtime,evidence,team,other,sen
  await navigate(page,base+'/app/new-issue');await page.getByLabel(/^Team/).selectOption(team.id);await openDisclosures(page);
  await page.getByLabel(/^Title/).fill('synthetic-vector-2653');await page.getByLabel('Description',{exact:true}).fill('synthetic-vector-2654');
  await page.getByRole('combobox',{name:/^Priority/}).selectOption('none');await page.getByLabel('Estimate',{exact:true}).selectOption('');
+ await page.reload();await openDisclosures(page);
  await page.getByLabel(/^Team/).selectOption(other.id);await page.getByLabel(/^Team/).selectOption(team.id);
  await expect(page.getByLabel(/^Title/)).toHaveValue('synthetic-vector-2653');await expect(page.getByLabel('Description',{exact:true})).toHaveValue('synthetic-vector-2654');
  await expect(page.getByRole('combobox',{name:/^Priority/})).toHaveValue('none');await expect(page.getByLabel('Estimate',{exact:true})).toHaveValue('');
