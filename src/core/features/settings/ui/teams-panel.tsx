@@ -1,3 +1,4 @@
+import {TeamTriageResponsibility} from "./team-triage-responsibility";
 import {TeamDefaultTemplate} from "./team-default-template";
 import '../../documents/ui/documents.css';
 import { CreateSlackChannel } from "../../projects/ui/project-slack-choice";
@@ -227,7 +228,7 @@ function TeamEditor({
           <p>With triage off, new intake goes to Backlog with its evidence. Pending triage and deferred items stay stored and reappear when triage is enabled.</p>
           <label className="admin-checkbox"><input type="checkbox" name="estimatesEnabled" key={String(team.estimatesEnabled)} defaultChecked={team.estimatesEnabled} />Enable estimates</label>
           <label>Estimate scale
-            <select name="estimateScale" key={team.estimateScale} defaultValue={team.estimateScale}>
+            <select aria-label="Estimate scale" name="estimateScale" key={team.estimateScale} defaultValue={team.estimateScale}>
               <option value="points">Points (1–100)</option><option value="fibonacci">Fibonacci</option>
               <option value="exponential">Exponential</option><option value="tshirt">T-shirt sizes</option>
             </select>
@@ -258,6 +259,7 @@ function TeamEditor({
           </button>
         </fieldset>
       </form>
+      <TeamTriageResponsibility key={JSON.stringify(team.triageResponsibility)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
       <TeamDefaultTemplate key={JSON.stringify(team.defaultIssueTemplate)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
       <TeamJoinRules data={data} team={team} onChanged={onChanged}/>

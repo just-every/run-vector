@@ -1,6 +1,7 @@
 /** Client-safe collaboration DTOs. */
 import type { SlackDirectPreferences } from "../integrations/slack-dm/schema";
 export const notificationKinds = [
+  "new_triage",
   "assignment",
   "mention",
   "comment",

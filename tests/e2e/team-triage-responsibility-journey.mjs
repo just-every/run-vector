@@ -1,0 +1,44 @@
+import assert from 'node:assert/strict';
+import {expect} from '@playwright/test';
+import {navigate} from './collaboration-navigation.mjs';
+import {openAdministrationForm} from './ui-administration-form.mjs';
+import {roleScreens} from './role-ui-support.mjs';
+
+export async function teamTriageResponsibilitySettings({page,peer,memberId,runtime,evidence,team,send}) {
+ const {base,sql}=runtime,inspect=roleScreens(evidence);
+ const owner=sql('SELECT setup_operator_id id FROM workspace_installation')[0].id;
+ const path='/settings/teams/'+team.id;
+ await page.setViewportSize({width:1440,height:1000});await peer.setViewportSize({width:1440,height:1000});
+ await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
+ let form=page.getByRole('form',{name:'Triage responsibility for '+team.name,exact:true});
+ await form.getByLabel('Responsible person',{exact:true}).selectOption(memberId);
+ const save=async()=>{const receipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api'+path&&response.request().method()==='PATCH');await form.getByRole('button',{name:'Save triage responsibility',exact:true}).click();assert.equal((await receipt).status(),200);};
+ await save();
+ const issue=await send(page,'/intake','POST',{teamId:team.id,title:'synthetic-vector-2670'},201);
+ await navigate(peer,base+'/app/inbox');
+ await expect(peer.getByText(issue.identifier,{exact:true}).first()).toBeVisible();
+ await expect(peer.getByText(/asked you to triage/).first()).toBeVisible();
+ await inspect(peer,peer.locator('main'),'team-triage-responsible-inbox');
+ await navigate(peer,base+'/app');
+ const assignment=(await send(peer,'/current')).triageAssignments.find(item=>item.teamId===team.id);
+ assert.equal(assignment.responsibleId,memberId);assert.ok(assignment.pending.includes(issue.identifier));
+ await expect(peer.getByRole('navigation',{name:'Your triage',exact:true}).getByRole('link',{name:team.name+': '+assignment.pending.length+' pending',exact:true})).toBeVisible();
+ await inspect(peer,peer.locator('main'),'team-triage-responsible-current');
+ await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
+ form=page.getByRole('form',{name:'Triage responsibility for '+team.name,exact:true});
+ await form.getByLabel('Responsibility mode',{exact:true}).selectOption('weekly');
+ const people=sql(`SELECT id,name FROM operators WHERE id IN('${owner}','${memberId}')`);
+ for(const id of [owner,memberId])await form.getByRole('checkbox',{name:people.find(person=>person.id===id).name,exact:true}).check();
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:runtime.config.WORKSPACE_TIMEZONE,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ await form.getByLabel('Rotation starts on',{exact:true}).fill(today);await save();
+ await inspect(page,form,'team-triage-weekly-settings');
+ await page.reload();await openAdministrationForm(page,'Edit '+team.name);
+ await expect(page.getByRole('form',{name:'Triage responsibility for '+team.name,exact:true}).getByLabel('Responsibility mode',{exact:true})).toHaveValue('weekly');
+ const report=await send(peer,'/intake','POST',{teamId:team.id,title:'synthetic-vector-2671'},201);
+ const notifications=sql(`SELECT recipient_id,causes_json FROM notifications WHERE issue_id='${report.id}'`);
+ assert.deepEqual(notifications,[{recipient_id:owner,causes_json:'["new_triage"]'}]);
+ await navigate(page,base+'/app');
+ await expect(page.getByRole('navigation',{name:'Your triage',exact:true})).toBeVisible();
+ await expect(page.locator('.stream-list [data-issue-identifier="'+issue.identifier+'"]')).toBeVisible();
+ await expect(page.locator('.stream-list [data-issue-identifier="'+report.identifier+'"]')).toBeVisible();
+}

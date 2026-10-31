@@ -3,13 +3,16 @@ import {expect} from 'vitest';
 import {snapshot} from './role-fixture';
 import type {setupAdministration} from './administration-fixture';
 export async function teamTemplateJourney(f:Awaited<ReturnType<typeof setupAdministration>>,teamId:string) {
-  const path='/settings/teams/'+teamId,template={name:'synthetic-vector-2630',title:'synthetic-vector-2631',description:'## synthetic-vector-2632',priority:'high',estimate:3,labelIds:[]};
+  const labelState=await f.mutate('/settings/labels','POST',{name:'synthetic-vector-2651',color:'#336699'});
+ const label=labelState.labels.find(item=>item.name==='synthetic-vector-2651')!;
+ const path='/settings/teams/'+teamId,template={name:'synthetic-vector-2630',title:'synthetic-vector-2631',description:'## synthetic-vector-2632',priority:'high',estimate:3,labelIds:[label.id]};
   await f.mutate(path,'PATCH',{defaultIssueTemplate:template});
   expect((await f.state()).teams.find(team=>team.id===teamId)?.defaultIssueTemplate).toEqual(template);
   expect(((await (await f.call('/options')).json()) as any).teams.find((team:any)=>team.id===teamId).defaultIssueTemplate).toEqual(template);
   const issue=await f.create({teamId,title:'synthetic-vector-2633'});
   const read=async()=>await (await f.call('/issues/'+issue.identifier)).json() as any;
   expect(await read()).toMatchObject({description:template.description,priority:'high',estimate:3});
+  expect((await read()).labels.map((item:any)=>item.id)).toEqual([label.id]);
   const explicit=await f.create({teamId,title:'synthetic-vector-2634',description:'',priority:'none',estimate:null,labelIds:[]});
   expect(await (await f.call('/issues/'+explicit.identifier)).json()).toMatchObject({description:'',priority:'none',estimate:null,labels:[]});
   const before=await snapshot(['teams','audit_records','administration_audit_details']);
@@ -18,6 +21,10 @@ export async function teamTemplateJourney(f:Awaited<ReturnType<typeof setupAdmin
   const preserved=await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first();
   await f.mutate(path,'PATCH',{defaultIssueTemplate:{...template,description:'synthetic-vector-2635'}});
   expect(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first()).toEqual(preserved);
+  await f.mutate(path,'PATCH',{estimatesEnabled:false});
+  const estimatesOff=await f.create({teamId,title:'synthetic-vector-2652'});
+  expect(await (await f.call('/issues/'+estimatesOff.identifier)).json()).toMatchObject({description:'synthetic-vector-2635',estimate:null});
+  await f.mutate(path,'PATCH',{estimatesEnabled:true});
   await f.mutate(path,'PATCH',{defaultIssueTemplate:null});
   expect(await env.DB.prepare('SELECT * FROM issues WHERE id=?').bind(issue.id).first()).toEqual(preserved);
   const without=await f.create({teamId,title:'synthetic-vector-2636'});

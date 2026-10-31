@@ -78,6 +78,7 @@ function CurrentWorkspace({
           items: stream.data.sections["recently-done"],
         },
       ]}
+      triageAssignments={stream.data.triageAssignments}
       onRefresh={stream.refreshAfterMutation}
       refreshError={stream.error}
     />
@@ -129,6 +130,7 @@ function WorkspaceContent({
   subtitle,
   cycles,
   refreshError,
+  triageAssignments,
 }: {
   surface: "current" | "my-work";
   selectedIdentifier?: string;
@@ -137,6 +139,7 @@ function WorkspaceContent({
   refreshError?: Error | null;
   subtitle?: string;
   cycles?: CycleContextData[];
+  triageAssignments?: Array<{teamId:string;teamName:string;responsibleId:string|null;pending:string[]}>;
 }) {
   const navigate = useNavigate();
   const root = useRef<HTMLDivElement>(null);
@@ -216,6 +219,9 @@ function WorkspaceContent({
       ) : null}
       <div className="stream-layout">
         <div ref={root} className="stream-master">
+          {triageAssignments?.some(team=>team.responsibleId===options.data?.operator.id) && <nav aria-label="Your triage">
+            {triageAssignments.filter(team=>team.responsibleId===options.data?.operator.id).map(team=><a key={team.teamId} href="#section-needs-decision">{team.teamName}: {team.pending.length} pending</a>)}
+          </nav>}
           <FilterBar
             personal={surface === "my-work"}
             filters={filters}

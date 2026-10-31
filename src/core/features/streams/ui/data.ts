@@ -33,6 +33,7 @@ export const streamItemSchema = z.object({
 })
 
 export const currentStreamSchema = z.object({
+  triageAssignments: z.array(z.object({teamId:z.string(),teamName:z.string(),responsibleId:z.string().nullable(),pending:z.array(z.string())})),
   generatedAt: z.string(),
   sections: z.object({
     'needs-decision': z.array(streamItemSchema),

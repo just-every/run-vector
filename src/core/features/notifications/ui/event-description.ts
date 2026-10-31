@@ -1,6 +1,7 @@
 import type { InboxItem, NotificationKind } from "../schema";
 
 const actions: Record<NotificationKind, string> = {
+  new_triage: "asked you to triage",
   assignment: "assigned you",
   mention: "mentioned you on",
   comment: "commented on",

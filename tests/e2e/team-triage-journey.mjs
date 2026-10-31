@@ -17,6 +17,17 @@ export async function teamTriageSettings({page,runtime,evidence,team,other,send}
     const receipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api'+path&&response.request().method()==='PATCH');
     await form.getByRole('button',{name:'Save team',exact:true}).click();assert.equal((await receipt).status(),200);return form;
   };
+  await navigate(page,base+'/app/new-issue');await page.getByLabel(/^Team/).selectOption(team.id);
+  await page.getByRole('radio',{name:/Intake/}).check();
+  await page.getByLabel(/^Title/).fill('synthetic-vector-2628');
+  await page.getByLabel(/^Evidence summary/).fill('synthetic-vector-2629');
+  await page.waitForFunction(()=>Object.values(localStorage).some(value=>value.includes('synthetic-vector-2629')));
+  await send(page,path,'PATCH',{triageEnabled:false});await page.reload();
+  await expect(page.getByLabel(/^Evidence summary/)).toHaveValue('synthetic-vector-2629');
+  const reportReceipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/intake' && response.request().method()==='POST');
+  await page.getByRole('button',{name:'Create report',exact:true}).click();
+  const reported=await reportReceipt;assert.equal(reported.status(),201);const report=await reported.json();
+  assert.equal(report.status.category,'backlog');assert.equal(report.evidence[0].summary,'synthetic-vector-2629');
   const form=await save(false);await inspect(page,form,'team-triage-disabled-settings');
   await page.reload();await openAdministrationForm(page,'Edit '+team.name);
   await expect(page.getByRole('form',{name:'Edit '+team.name,exact:true}).getByLabel('Enable triage',{exact:true})).not.toBeChecked();

@@ -1034,7 +1034,8 @@
     "estimates_enabled",
     "estimate_scale",
     "triage_enabled",
-    "default_issue_template_json"
+    "default_issue_template_json",
+    "triage_responsibility_json"
   ],
   "vector_auth_operators": [
     "auth_id",

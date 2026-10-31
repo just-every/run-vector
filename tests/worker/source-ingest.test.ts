@@ -56,8 +56,11 @@ it('[ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source
  const retained=await env.DB.prepare('SELECT * FROM issues WHERE identifier=?').bind(off.identifier).first();
  f.restart();expect((await f.signed(triageSource,offInput)).status).toBe(200);
  expect(await env.DB.prepare('SELECT * FROM issues WHERE identifier=?').bind(off.identifier).first()).toEqual(retained);
+ expect((await f.call('/settings/teams/'+input.teamId,'PATCH',{triageResponsibility:{mode:'fixed',operatorIds:[f.owner],startsOn:'2038-03-07'}})).status).toBe(200);
  const onResponse=await f.signed(triageSource,{...input,sourceRecordId:'synthetic-vector-2627'});expect(onResponse.status).toBe(200);
- expect((await (await f.call('/issues/'+(await onResponse.json() as any).identifier)).json() as any).status.category).toBe('intake');
+ const onIssue=await (await f.call('/issues/'+(await onResponse.json() as any).identifier)).json() as any;expect(onIssue.status.category).toBe('intake');
+ expect((await env.DB.prepare("SELECT recipient_id,causes_json FROM notifications WHERE issue_id=?").bind(onIssue.id).all()).results).toEqual([{recipient_id:f.owner,causes_json:'["new_triage"]'}]);
+ f.restart();expect((await f.signed(triageSource,{...input,sourceRecordId:'synthetic-vector-2627'})).status).toBe(200);expect(await env.DB.prepare('SELECT count(*) n FROM notifications WHERE issue_id=?').bind(onIssue.id).first('n')).toBe(1);
 },180000);
 it('[INTAKE-002 ISSUE-010] deletion winning a new source revision returns gone and cannot allocate a replacement',async()=>{
  const {beforeCommit}=await import('./removal-interleaving');

@@ -1,3 +1,4 @@
+import {teamTriageResponsibilitySettings} from "./team-triage-responsibility-journey.mjs";
 import {teamTemplateSettings} from "./team-template-journey.mjs";
 import {teamTriageSettings} from "./team-triage-journey.mjs";
 import {teamEstimatesSettings} from "./team-estimates-journey.mjs";
@@ -101,7 +102,7 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     await saveSwitch(peer,false);
     await send(page,path+'/permissions','PUT',{settings:'team_owners',planning:'all_members'});
     const protectedState=sql('SELECT * FROM teams ORDER BY id');
-    await send(peer,path,'PATCH',{cyclesEnabled:true,estimatesEnabled:false,estimateScale:'tshirt',triageEnabled:false,defaultIssueTemplate:{name:'synthetic-vector-2637',description:'synthetic-vector-2638'}},403);
+    await send(peer,path,'PATCH',{cyclesEnabled:true,estimatesEnabled:false,estimateScale:'tshirt',triageEnabled:false,defaultIssueTemplate:{name:'synthetic-vector-2637',description:'synthetic-vector-2638'},triageResponsibility:{mode:'fixed',operatorIds:[memberId],startsOn:'2038-03-07'}},403);
     assert.deepEqual(sql('SELECT * FROM teams ORDER BY id'),protectedState);
     await send(page,path,'PATCH',{cyclesEnabled:true});
     const unchanged=()=>({teams:sql('SELECT * FROM teams ORDER BY id'),audit:sql('SELECT * FROM audit_records ORDER BY id'),history:retained()});
@@ -111,8 +112,8 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
         await send(page,'/settings/operators/'+probe.id+'/role','PATCH',{role,teamIds:role==='guest'?[team.id]:[]});
         if(role==='member')await send(page,path+'/members/'+probe.id,'PUT',{role:'member'});
         const before=unchanged(),allowed=role==='admin'||role==='member'&&permission==='all_members';
-        await send(probe.page,path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt',triageEnabled:false,defaultIssueTemplate:{name:'synthetic-vector-2637',description:'synthetic-vector-2638'}},allowed?200:403);
-        if(allowed)await send(page,path,'PATCH',{cyclesEnabled:true,estimatesEnabled:true,estimateScale:'points',triageEnabled:true,defaultIssueTemplate:null});
+        await send(probe.page,path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt',triageEnabled:false,defaultIssueTemplate:{name:'synthetic-vector-2637',description:'synthetic-vector-2638'},triageResponsibility:{mode:'fixed',operatorIds:[memberId],startsOn:'2038-03-07'}},allowed?200:403);
+        if(allowed)await send(page,path,'PATCH',{cyclesEnabled:true,estimatesEnabled:true,estimateScale:'points',triageEnabled:true,defaultIssueTemplate:null,triageResponsibility:null});
         else assert.deepEqual(unchanged(),before,role+' refusal leaves storage unchanged');
       }
     }
@@ -120,7 +121,8 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     assert.deepEqual(retained(),before,'authority probes retain history');
     await teamEstimatesSettings({page,runtime,evidence,team,other,send});
     await teamTriageSettings({page,runtime,evidence,team,other,send});
-    await teamTemplateSettings({page,runtime,evidence,team,send});
+    await teamTemplateSettings({page,runtime,evidence,team,other,send});
+    await teamTriageResponsibilitySettings({page,peer,memberId,runtime,evidence,team,send});
   });
   assert.deepEqual(probe.errors,[],'role probe has no browser errors');
   } finally {await probe.context.close();}

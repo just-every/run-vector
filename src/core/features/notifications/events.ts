@@ -1,3 +1,4 @@
+import { triageRecipient } from "../administration/triage-responsibility";
 import { visibleTeam } from '../roles/visibility-sql';
 import { mentionedOperators } from "./mentions.server";
 import { notificationContext } from "./context";
@@ -296,4 +297,15 @@ export function finalizeEvent(db: D1Database, event: CollaborationEvent) {
       .bind(event.id),
   );
   return statements;
+}
+
+/** Only newly created intake calls this path. Replayed source receipts never do. */
+export async function triageStatements(db:D1Database,event:CollaborationEvent,teamId:string) {
+  const recipient=await triageRecipient(db,teamId,new Date(event.at));
+  if(!recipient)return [];
+  return [db.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM teams t JOIN workspace_settings w ON w.id=t.workspace_id WHERE t.id=? AND t.triage_responsibility_json=? AND w.timezone=?) THEN 1 ELSE json('triage responsibility changed') END").bind(teamId,recipient.json,recipient.timezone),
+    candidate(db,event,'new_triage',`i.id=? AND o.id=? AND t.triage_enabled=1 AND t.triage_responsibility_json=? AND o.role IN('owner','admin','member')
+      AND EXISTS(SELECT 1 FROM team_members m WHERE m.team_id=t.id AND m.operator_id=o.id)
+      AND EXISTS(SELECT 1 FROM workflow_statuses s WHERE s.id=i.status_id AND s.category='intake')
+      AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)`,[event.issueId,recipient.id,recipient.json])];
 }

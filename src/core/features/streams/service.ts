@@ -1,3 +1,4 @@
+import { responsibleOperator, triageResponsibilitySchema } from "../administration/triage-responsibility";
 import { returnIntakeCandidates } from "../intake-return/service";
 import { loadCurrentWorkspaceSnapshot, loadWorkspaceSnapshot } from "./repository";
 import { projectCurrent, projectMyWork } from "./projection";
@@ -34,7 +35,14 @@ export async function getCurrentStream(binding: D1Database, now: Date, workspace
   projection.sections["needs-decision"] = projection.sections[
     "needs-decision"
   ].filter((issue) => !pending.has(issue.id));
-  return projection;
+  const memberships=await binding.prepare("SELECT team_id,operator_id FROM team_members WHERE team_id IN(SELECT value FROM json_each(?))").bind(JSON.stringify(snapshot.teams.map(team=>team.id))).all<{team_id:string;operator_id:string}>();
+  const triageAssignments=snapshot.teams.filter(team=>team.triageEnabled && team.triageResponsibilityJson).map(team=>{
+    const config=triageResponsibilitySchema.parse(JSON.parse(team.triageResponsibilityJson!));
+    const responsibleId=responsibleOperator(config,snapshot.workspace?.timezone ?? 'UTC',now);
+    const person=snapshot.operators.find(person=>person.id===responsibleId && person.removedAt===null && ['owner','admin','member'].includes(person.role));
+    return {teamId:team.id,teamName:team.name,responsibleId:person && memberships.results.some(member=>member.team_id===team.id && member.operator_id===responsibleId) ? responsibleId : null,pending:projection.sections['needs-decision'].filter(issue=>issue.team.id===team.id).map(issue=>issue.identifier)};
+  });
+  return {...projection,triageAssignments};
 }
 
 export async function getMyWorkStream(

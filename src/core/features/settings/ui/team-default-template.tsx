@@ -15,7 +15,7 @@ export function TeamDefaultTemplate({team,data,editable,onChanged}:{team:Adminis
       <label>Template name<input required maxLength={120} value={draft.name} onChange={event=>setDraft({...draft,name:event.target.value})}/></label>
       <label>Default issue title<input maxLength={500} value={draft.title} onChange={event=>setDraft({...draft,title:event.target.value})}/></label>
       <label>Default issue description<MentionTextarea aria-label="Default issue description" value={draft.description} maxLength={100000} disabled={!editable || action.pending} onValueChange={description=>setDraft({...draft,description})}/></label>
-      <label>Default issue priority<select value={draft.priority} onChange={event=>setDraft({...draft,priority:event.target.value as typeof draft.priority})}>
+      <label>Default issue priority<select aria-label="Default issue priority" value={draft.priority} onChange={event=>setDraft({...draft,priority:event.target.value as typeof draft.priority})}>
         {(['none','low','medium','high','urgent'] as const).map(value=><option key={value} value={value}>{value==='none'?'No priority':value[0].toUpperCase()+value.slice(1)}</option>)}
       </select></label>
       {team.estimatesEnabled && <EstimateChoice label="Default issue estimate" scale={team.estimateScale} value={draft.estimate === null ? '' : String(draft.estimate)} onChange={value=>setDraft({...draft,estimate:value ? Number(value) : null})}/>}

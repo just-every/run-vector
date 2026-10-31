@@ -19,6 +19,7 @@ export const channelPreferencesSchema = z.object({
 });
 
 export const channelLabels = {
+  new_triage: "New triage items",
   assignment: "Assignments",
   mention: "Mentions",
   comment: "Followed comments",

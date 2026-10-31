@@ -14,6 +14,7 @@
 // issue_reactions retains description/comment targets, emoji, actor and creation time as portable domain data.
 // operators.role retains the Viewer grant; invitation grants remain excluded credentials.
 // issue_deletions.team_id is retained receipt access state; older unscoped receipts remain Owner-only.
+// Triage rotations retain operator identities and a calendar anchor, never provider credentials.
 // Team default issue templates are portable content; created issues retain their own copies.
 // Team triage configuration and retained pending items are portable; feature changes do not erase history.
 // Team estimate configuration is portable; numeric history and frozen snapshots are retained.

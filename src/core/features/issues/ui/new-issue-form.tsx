@@ -43,6 +43,7 @@ export function NewIssueForm() {
   const boardPreference = useApiResource("/api/preferences/board", preferenceSchema);
   const [values, setValues] = useState<NewIssueDraft>(emptyNewIssueDraft);
   const openingDefaults = useRef(emptyNewIssueDraft);
+  const templateEdits = useRef(new Set<string>());
   const [draftReady, setDraftReady] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [storageError, setStorageError] = useState<string | null>(null);
@@ -79,6 +80,7 @@ export function NewIssueForm() {
         if (defaults.projectId) { candidate.projectId = defaults.projectId; candidate.mode = "issue"; }
         if (hasUnsavedDraft(candidate, { ...defaults, mode: candidate.mode })) {
           draft = candidate;
+          templateEdits.current = new Set(["title","description","priority","estimate","labelIds"]);
           setNotice("Restored your unsent draft from this browser.");
         }
       }
@@ -124,11 +126,11 @@ export function NewIssueForm() {
       ...(() => {
         const template=options.data?.teams.find(team=>team.id===teamId)?.defaultIssueTemplate;
         return template ? {
-          title: current.title || template.title,
-          description: current.description || template.description,
-          priority: current.priority === 'none' ? template.priority : current.priority,
-          estimate: current.estimate || (options.data?.teams.find(team=>team.id===teamId)?.estimatesEnabled && template.estimate !== null ? String(template.estimate) : ''),
-          labelIds: current.labelIds.length ? current.labelIds : template.labelIds,
+          title: templateEdits.current.has("title") ? current.title : template.title,
+          description: templateEdits.current.has("description") ? current.description : template.description,
+          priority: templateEdits.current.has("priority") ? current.priority : template.priority,
+          estimate: templateEdits.current.has("estimate") ? current.estimate : (options.data?.teams.find(team=>team.id===teamId)?.estimatesEnabled && template.estimate !== null ? String(template.estimate) : ''),
+          labelIds: templateEdits.current.has("labelIds") ? current.labelIds : template.labelIds,
         } : {};
       })(),
       statusId:
@@ -150,20 +152,22 @@ export function NewIssueForm() {
           : "",
     }));
 
-  const toggleLabel = (labelId: string) =>
+  const toggleLabel = (labelId: string) => {
+    templateEdits.current.add("labelIds");
     setValues((current) => ({
       ...current,
       labelIds: current.labelIds.includes(labelId)
         ? current.labelIds.filter((id) => id !== labelId)
         : [...current.labelIds, labelId],
     }));
+  };
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmissionError(null);
     setSubmitting(true);
     try {
-      const isIntake = values.mode === "intake" && triageEnabled;
+      const isIntake = values.mode === "intake";
       const issue = await fetchJson(
         isIntake ? "/api/intake" : "/api/issues",
         createdIssueSchema,
@@ -250,7 +254,7 @@ export function NewIssueForm() {
             <div>
               {back}
               <h1 id="new-issue-title">
-                {values.mode === "intake" && triageEnabled ? "New intake" : "New issue"}
+                {values.mode === "intake" ? (triageEnabled ? "New intake" : "New report") : "New issue"}
               </h1>
             </div>
             <button
@@ -261,7 +265,7 @@ export function NewIssueForm() {
               {submitting
                 ? "Creating…"
                 : values.mode === "intake"
-                  ? "Create intake"
+                  ? (triageEnabled ? "Create intake" : "Create report")
                   : "Create issue"}
             </button>
           </header>
@@ -311,14 +315,15 @@ export function NewIssueForm() {
               Intake<span>Needs a decision</span>
             </label>}
           </fieldset>
+          {values.mode === "intake" && !triageEnabled && <p role="status">Triage is off for this team. This report will go to Backlog with its evidence.</p>}
           <section className="new-issue-section">
             <label className="new-issue-title-field">
               Title<span>Required</span>
               <input
                 value={values.title}
-                onChange={(event) =>
-                  setValues({ ...values, title: event.target.value })
-                }
+                onChange={(event) => {templateEdits.current.add("title");
+                  setValues({ ...values, title: event.target.value });
+                }}
                 required
                 maxLength={500}
                 autoFocus
@@ -344,14 +349,14 @@ export function NewIssueForm() {
               <MentionTextarea
                 aria-label="Description"
                 value={values.description}
-                onValueChange={(description) =>
-                  setValues({ ...values, description })
-                }
+                onValueChange={(description) => {templateEdits.current.add("description");
+                  setValues({ ...values, description });
+                }}
                 maxLength={100_000}
               />
             </label>
           </section>
-          {values.mode === "intake" && triageEnabled ? (
+          {values.mode === "intake" ? (
             <>
               <section
                 className="new-issue-fields new-issue-fields--single"
@@ -498,13 +503,13 @@ export function NewIssueForm() {
                     Priority
                     <select
                       value={values.priority}
-                      onChange={(event) =>
+                      onChange={(event) => {templateEdits.current.add("priority");
                         setValues({
                           ...values,
                           priority: event.target
                             .value as NewIssueDraft["priority"],
-                        })
-                      }
+                        });
+                      }}
                     >
                       <option value="urgent">Urgent</option>
                       <option value="high">High</option>
@@ -513,7 +518,7 @@ export function NewIssueForm() {
                       <option value="none">No priority</option>
                     </select>
                   </label>
-                  {options.data.teams.find(team=>team.id===values.teamId)?.estimatesEnabled && <EstimateChoice scale={options.data.teams.find(team=>team.id===values.teamId)!.estimateScale} value={values.estimate} onChange={estimate=>setValues({...values,estimate})} />}
+                  {options.data.teams.find(team=>team.id===values.teamId)?.estimatesEnabled && <EstimateChoice scale={options.data.teams.find(team=>team.id===values.teamId)!.estimateScale} value={values.estimate} onChange={estimate=>{templateEdits.current.add("estimate");setValues({...values,estimate});}} />}
                   <label>
                     Start date
                     <input type="date" value={values.startDate}

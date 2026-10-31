@@ -6,7 +6,8 @@ import { assert } from '@runeditrun/rer/internal/modules/deploy-kit/validation.m
  * https://developers.cloudflare.com/api/resources/r2/subresources/buckets/methods/list/
  */
 export function cloudflare(options) {
-  const api = baseCloudflare(options);
+  // Reserve the pinned deploy-kit’s bounded protocol allowance for validated pending migrations.
+  const api = baseCloudflare({ budgetMigrations: true, ...options });
   return { ...api, async list(path, settings = {}) {
     if (path !== '/r2/buckets' || settings.pagination === 'r2-bounded') return api.list(path, settings);
     assert(settings.field === 'buckets' && settings.pagination === 'cursor', 'invalid-r2-list-selection');

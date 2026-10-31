@@ -26,6 +26,7 @@ type Team = {
   identifier_prefix: string;
   archived_at: string | null;
   cycles_enabled: number;
+  triage_responsibility_json: string | null;
   default_issue_template_json: string | null;
   triage_enabled: number;
   estimates_enabled: number;
@@ -109,8 +110,13 @@ export async function updateTeam(
     if (input.defaultIssueTemplate.estimate !== null) await admitEstimate(ctx.db,id,input.defaultIssueTemplate.estimate);
     } catch(error) {if(error instanceof IssueMutationError) throw new SettingsError(error.code,error.message,400);throw error;}
   }
+  if (input.triageResponsibility) {
+    const people=await ctx.db.prepare("SELECT o.id FROM operators o JOIN team_members m ON m.operator_id=o.id WHERE m.team_id=? AND o.removed_at IS NULL AND o.role IN('owner','admin','member') AND o.id IN(SELECT value FROM json_each(?))").bind(id,JSON.stringify(input.triageResponsibility.operatorIds)).all();
+    if(people.results.length!==input.triageResponsibility.operatorIds.length)throw new SettingsError('invalid_option','Choose current team members for triage responsibility.',400);
+  }
   const next = {
     cyclesEnabled: input.cyclesEnabled ?? Boolean(old.cycles_enabled),
+    triageResponsibility: input.triageResponsibility === undefined ? (old.triage_responsibility_json ? JSON.parse(old.triage_responsibility_json) : null) : input.triageResponsibility,
     defaultIssueTemplate: input.defaultIssueTemplate === undefined ? (old.default_issue_template_json ? JSON.parse(old.default_issue_template_json) : null) : input.defaultIssueTemplate,
     triageEnabled: input.triageEnabled ?? Boolean(old.triage_enabled),
     estimatesEnabled: input.estimatesEnabled ?? Boolean(old.estimates_enabled),
@@ -129,19 +135,19 @@ export async function updateTeam(
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=? AND cycles_enabled=? AND estimates_enabled=? AND estimate_scale=? AND triage_enabled=? AND default_issue_template_json IS ?)",
+      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=? AND cycles_enabled=? AND estimates_enabled=? AND estimate_scale=? AND triage_enabled=? AND default_issue_template_json IS ? AND triage_responsibility_json IS ?)",
       id,
       ctx.workspace,
       old.name,
       old.identifier_prefix,
       old.archived_at,
-      old.auto_cycle_started, old.auto_cycle_completed, old.cycles_enabled, old.estimates_enabled, old.estimate_scale, old.triage_enabled, old.default_issue_template_json,
+      old.auto_cycle_started, old.auto_cycle_completed, old.cycles_enabled, old.estimates_enabled, old.estimate_scale, old.triage_enabled, old.default_issue_template_json, old.triage_responsibility_json,
     ),
     ctx.db
       .prepare(
-        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,cycles_enabled=?,estimates_enabled=?,estimate_scale=?,triage_enabled=?,default_issue_template_json=?,updated_at=? WHERE id=?",
+        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,cycles_enabled=?,estimates_enabled=?,estimate_scale=?,triage_enabled=?,default_issue_template_json=?,triage_responsibility_json=?,updated_at=? WHERE id=?",
       )
-      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), Number(next.cyclesEnabled), Number(next.estimatesEnabled), next.estimateScale, Number(next.triageEnabled), next.defaultIssueTemplate ? JSON.stringify(next.defaultIssueTemplate) : null, ctx.at, id),
+      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), Number(next.cyclesEnabled), Number(next.estimatesEnabled), next.estimateScale, Number(next.triageEnabled), next.defaultIssueTemplate ? JSON.stringify(next.defaultIssueTemplate) : null, next.triageResponsibility ? JSON.stringify(next.triageResponsibility) : null, ctx.at, id),
     ...audit(
       ctx,
       "team.updated",
@@ -154,6 +160,7 @@ export async function updateTeam(
         cyclesEnabled: Boolean(old.cycles_enabled),
         estimatesEnabled: Boolean(old.estimates_enabled),
         triageEnabled: Boolean(old.triage_enabled),
+        triageResponsibility: old.triage_responsibility_json ? JSON.parse(old.triage_responsibility_json) : null,
         defaultIssueTemplate: old.default_issue_template_json ? JSON.parse(old.default_issue_template_json) : null,
         estimateScale: old.estimate_scale,
         autoCycleStarted: Boolean(old.auto_cycle_started),

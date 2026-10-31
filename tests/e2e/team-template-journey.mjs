@@ -5,7 +5,7 @@ import {openAdministrationForm} from './ui-administration-form.mjs';
 import {openDisclosures} from './ui-controls-checks.mjs';
 import {roleScreens} from './role-ui-support.mjs';
 
-export async function teamTemplateSettings({page,runtime,evidence,team,send}) {
+export async function teamTemplateSettings({page,runtime,evidence,team,other,send}) {
  const {base,sql}=runtime,inspect=roleScreens(evidence);
  await page.setViewportSize({width:1440,height:1000});
  await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
@@ -32,6 +32,14 @@ export async function teamTemplateSettings({page,runtime,evidence,team,send}) {
  await expect(page.getByRole('heading',{name:'synthetic-vector-2644',exact:true})).toBeVisible();
  await expect(page.locator('main').getByRole('heading',{name:'synthetic-vector-2643',exact:true})).toBeVisible();
  await inspect(page,page.locator('main'),'team-default-template-created-issue');
+ await navigate(page,base+'/app/new-issue');await page.getByLabel(/^Team/).selectOption(team.id);await openDisclosures(page);
+ await page.getByLabel(/^Title/).fill('synthetic-vector-2653');await page.getByLabel('Description',{exact:true}).fill('synthetic-vector-2654');
+ await page.getByRole('combobox',{name:/^Priority/}).selectOption('none');await page.getByLabel('Estimate',{exact:true}).selectOption('');
+ await page.getByLabel(/^Team/).selectOption(other.id);await page.getByLabel(/^Team/).selectOption(team.id);
+ await expect(page.getByLabel(/^Title/)).toHaveValue('synthetic-vector-2653');await expect(page.getByLabel('Description',{exact:true})).toHaveValue('synthetic-vector-2654');
+ await expect(page.getByRole('combobox',{name:/^Priority/})).toHaveValue('none');await expect(page.getByLabel('Estimate',{exact:true})).toHaveValue('');
+ const explicitReceipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/issues'&&response.request().method()==='POST');
+ await page.getByRole('button',{name:'Create issue',exact:true}).click();assert.equal((await explicitReceipt).status(),201);
  const retained=sql(`SELECT * FROM issues WHERE id='${issue.id}'`);
  await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
  const remove=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/settings/teams/'+team.id&&response.request().method()==='PATCH');

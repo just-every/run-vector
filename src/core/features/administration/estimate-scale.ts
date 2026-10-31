@@ -11,6 +11,7 @@ export function estimateChoices(scale: EstimateScale) {
   return points.map((value,i)=>({value, label: scale === "tshirt" ? `${sizes[i]} (${value} points)` : `${value} points`}));
 }
 export function estimateLabel(value: number, scale: EstimateScale) {
+  if (scale === "points") return `${value} points`;
   // Switching scales never rewrites existing estimates or frozen snapshots.
   return estimateChoices(scale).find(choice=>choice.value===value)?.label ?? `${value} points (retained)`;
 }

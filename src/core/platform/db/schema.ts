@@ -46,6 +46,7 @@ export const teams = sqliteTable('teams', {
   isPrivate: integer('is_private', { mode: 'boolean' }).notNull().default(false),
   archivedAt: text('archived_at'),
   cyclesEnabled: integer('cycles_enabled', { mode: 'boolean' }).notNull().default(true),
+  triageResponsibilityJson: text('triage_responsibility_json'),
   defaultIssueTemplateJson: text('default_issue_template_json'),
   triageEnabled: integer('triage_enabled', { mode: 'boolean' }).notNull().default(true),
   estimatesEnabled: integer('estimates_enabled', { mode: 'boolean' }).notNull().default(true),

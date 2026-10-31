@@ -1,3 +1,4 @@
+import { teamTriageResponsibility } from "./team-triage-responsibility";
 import { teamTemplateJourney } from "./team-template-journey";
 import { teamTriageJourney } from "./team-triage-journey";
 import { teamEstimatesJourney } from "./team-estimates-journey";
@@ -58,6 +59,7 @@ check('native start and completion opt in independently, keep commitments, and r
   await teamEstimatesJourney(f,f.team);
   await teamTriageJourney(f,f.team.id);
   await teamTemplateJourney(f,f.team.id);
+  await teamTriageResponsibility(f,f.team.id);
 });
 check('bulk changes undo as one action including automatic membership, and expired cycles are never chosen', async()=>{
   const f=await fixture(); await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleStarted:true});

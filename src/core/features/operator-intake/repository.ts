@@ -1,5 +1,5 @@
 import { issueReferenceStatements } from "../issue-references/repository";
-import { followStatements, mentionStatements, finalizeEvent } from '../notifications/events';
+import { followStatements, mentionStatements, finalizeEvent, triageStatements } from '../notifications/events';
 import { mutationDatabase, isMutationAccessError } from '../auth/mutation-database'
 import { creationGuard, creationError, allocateIssueSequence } from '../issues/create-guard'
 import { drizzle } from "drizzle-orm/d1";
@@ -117,8 +117,9 @@ export async function createOperatorIntake(
       issueId,
     );
   const event = { id: activityId, issueId, actor, at };
+  const triage=await triageStatements(db,event,team.id);
   let result;
-  try { result = await db.batch<{ id: string }>([db.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM teams WHERE id=? AND triage_enabled=?) THEN 1 ELSE json('triage option unavailable') END").bind(team.id,Number(team.triageEnabled)),creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[],estimate:null},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...issueReferenceStatements(db,event,input.description),...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
+  try { result = await db.batch<{ id: string }>([db.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM teams WHERE id=? AND triage_enabled=?) THEN 1 ELSE json('triage option unavailable') END").bind(team.id,Number(team.triageEnabled)),creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[],estimate:null},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...issueReferenceStatements(db,event,input.description),...triage,...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
   catch (error) { return creationError(db,team.id,error,true); }
   // The indexed issue insert returns its own identity independently of trigger writes.
   if (result[2].results.length !== 1 || result[2].results[0].id !== issueId)

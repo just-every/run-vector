@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readdir, readFile } from 'node:fs/promises';
 import { validateMigrations, migrate } from '@runeditrun/rer/internal/modules/deploy-kit/migrations.mjs';
 import { hash } from '@runeditrun/rer/internal/modules/deploy-kit/validation.mjs';
-import { cloudflare } from '@runeditrun/rer/internal/modules/deploy-kit/provider.mjs';
+import { cloudflare } from '../provider.mjs';
 import { providerFixture } from './cloudflare-edge/index.mjs';
 
 const dir = new URL('../../../migrations/core/', import.meta.url);
