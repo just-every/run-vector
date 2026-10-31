@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { useLocation } from "@tanstack/react-router";
-import { fetchJson, useApiResource } from "../../../app/api-client";
+import { fetchJson, isUnavailableResourceError, useApiResource } from "../../../app/api-client";
 import { favoritesSchema, type Favorites, type FavoriteWrite } from "../schema";
 
 type FavoriteContext = {
@@ -57,12 +57,15 @@ export function FavoriteProvider({ children }: { children: ReactNode }) {
       setBusy(false);
     }
   }
+  // The active page reports access loss while personal navigation clears.
   return (
     <context.Provider
       value={{
         data: resource.error ? null : resource.data,
         busy,
-        error: error || resource.error?.message || "",
+        error: isUnavailableResourceError(resource.error)
+          ? ""
+          : error || resource.error?.message || "",
         save,
       }}
     >
