@@ -1,3 +1,4 @@
+import {dueRuleInput} from '../../src/core/features/automation-rules/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import {subscriptionInput} from '../../src/core/features/integrations/subscriptions';
 import {exchangeInput} from '../../src/core/features/oauth-apps/schema';
@@ -217,11 +218,16 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/settings/oauth-apps',{name:'synthetic-vector-4533',redirectUris:[oauthRequest.redirect_uri],scopes:['issues:read']});
   native('DELETE','/settings/oauth-apps/grants/:id',undefined,{id:oauthGrant.grant_id});
   native('POST','/oauth/consent',{request:oauthRequest,decision:'approve'});
+  const existingDueRule=await call(owner,'/settings/automation');
+  const dueRuleBody={name:'synthetic-vector-43890',enabled:false,expectedVersion:existingDueRule.rule?.version??0};
+  const savedDueRule=await call(owner,'/settings/automation/due-soon','PUT',dueRuleBody);
+  native('PUT','/settings/automation/due-soon',{...dueRuleBody,expectedVersion:savedDueRule.rule.version});
   native('POST','/settings/integrations/tokens',{name:'synthetic-vector-31074',scopes:['issues:read']});native('DELETE','/settings/integrations/tokens/:id',undefined,{id:personalToken.credential.id});native('ALL','/portability/*',{}, {},'/portability/exports');
   native('POST','/data/import/preview',importInput);native('POST','/data/import/apply',applyBody);native('POST','/data/import/runs/:id/resume',{}, {id:run.id});native('POST','/data/import/runs/:id/rollback',{confirmed:true},{id:run.id});native('POST','/data/erasure/preview',subject);native('POST','/data/erasure',{subject,confirmation:erasure.confirmation});
   // Validate the administration/resource family bodies with the same schemas
   // their handlers use, independently of the role gate's early refusal.
   const schemas:Record<string,{parse(input:unknown):unknown}>={
+   'PUT /settings/automation/due-soon':dueRuleInput,
    'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,
    'POST /settings/teams':administrationInput.teamCreateSchema,
    'PUT /settings/teams/:id/privacy':administrationInput.teamPrivacySchema,
