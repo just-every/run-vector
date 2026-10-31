@@ -1,6 +1,6 @@
 import { issueGroupingJourney } from "./issue-grouping-journey";
 import {exerciseProjectTemplates} from './project-template-proof';
-import { expect,it } from 'vitest';
+import { expect,it,vi } from 'vitest';
 import { exerciseMilestones } from './project-milestone-flow';
 import { env } from 'cloudflare:workers';
 import { setupIntegrations } from './integration-fixture';
@@ -152,5 +152,7 @@ it("[PROJ-001] a project's color and icon save, appear on list and page and are 
 
 
 it("milestone and parent grouping count complete filtered results and saved views obey current reader authority", async () => {
-  await issueGroupingJourney();
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date());
+  try { await issueGroupingJourney(); } finally { vi.useRealTimers(); }
 }, 120_000);

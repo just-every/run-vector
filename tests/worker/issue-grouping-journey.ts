@@ -19,7 +19,7 @@ export async function issueGroupingJourney() {
   };
   const parents: Issue[] = [];
   for (const teamId of [team.id, team.id, other.id]) parents.push(await json(await f.call("/issues", "POST", {
-    teamId, title: "synthetic-vector-parent", priority: "low",
+    teamId, title: teamId === other.id ? "synthetic-vector-private-parent" : "synthetic-vector-parent", priority: "low",
   }), 201));
   const milestones: { id: string; projectId: string }[] = [];
   const project = (await f.mutate("/settings/projects", "POST", {
@@ -67,7 +67,7 @@ export async function issueGroupingJourney() {
     expect(new Set(rows.map(i => i.id)).size).toBe(54);
     for (const group of first.allGroups!) expect(rows.filter(i => i.groupKey === group.key)).toHaveLength(group.count);
     const hidden = JSON.stringify([first, second]);
-    for (const value of [parents[2].id, parents[2].identifier, issues[53].identifier]) expect(hidden).not.toContain(value);
+    for (const value of [parents[2].id, parents[2].identifier, "synthetic-vector-private-parent", issues[53].identifier]) expect(hidden).not.toContain(value);
     expect(rows.find(i => i.id === issues[52].id)?.parent).toBeNull();
     expect((await f.any(f.bobCookie, "/issues?" + new URLSearchParams({ q: marker, priority: "high", sort: "oldest", grouping: grouping === "parent" ? "milestone" : "parent", offset: "50", revision: first.revision }))).status).toBe(409);
     const view = savedViewSchema.parse(await json(await f.any(f.bobCookie, "/views", "POST", {
@@ -79,6 +79,12 @@ export async function issueGroupingJourney() {
     expect((await f.any(f.bobCookie, "/preferences/issues", "PUT", { filters: { q: marker }, sort: "oldest", grouping })).status).toBe(200);
     expect(await f.data(f.bobCookie, "/preferences/issues")).toMatchObject({ grouping, sort: "oldest", filters: { q: marker } });
   }
+  const beforeRename = await list(f.bobCookie, "milestone");
+  await json(await f.call(`/settings/projects/${project.id}/milestones/${milestones[0].id}`, "PATCH", { name: "Renamed milestone" }));
+  expect((await f.any(f.bobCookie, "/issues?" + new URLSearchParams({ q: marker, priority: "high", sort: "oldest", grouping: "milestone", offset: "50", revision: beforeRename.revision }))).status).toBe(409);
+  const renamed = await list(f.bobCookie, "milestone");
+  expect(renamed.allGroups!.find(g => g.key === milestones[0].id)).toEqual({ key: milestones[0].id, name: "Renamed milestone", count: 51 });
+  await json(await f.call(`/settings/projects/${project.id}/milestones/${milestones[0].id}`, "PATCH", { name: "Same milestone" }));
   await f.mutate(`/settings/teams/${other.id}/members/${f.bob}`, "PUT", { role: "member" });
   const admitted = await list(f.bobCookie, "parent");
   expect(counts(admitted)).toEqual({ [parents[0].id]: 51, [parents[1].id]: 1, [parents[2].id]: 2, none: 1 });
