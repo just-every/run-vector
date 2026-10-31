@@ -530,3 +530,13 @@
     min-height: 2.75rem;
   }
 }
+
+.boolean-filters { margin-block: 1rem; font-size: 13px; }
+.boolean-filters summary { cursor: pointer; font-weight: 600; padding-block: .5rem; }
+.boolean-filters p { max-width: 70ch; }
+.boolean-filters form { display: flex; gap: .5rem; align-items: end; flex-wrap: wrap; }
+.boolean-filters label { display: grid; gap: .35rem; min-width: 0; }
+.boolean-filters form label { flex: 1 1 20rem; }
+.boolean-filters input, .boolean-filters select { font: inherit; width: 100%; min-width: 0; padding: .5rem; border: 1px solid var(--control-border); border-radius: .375rem; background: var(--app-field); color: inherit; }
+.boolean-condition { min-width: 0; border: 1px solid var(--control-border); border-radius: .5rem; padding: .5rem; margin-block: .5rem; display: grid; gap: .5rem; }
+.boolean-filters output { display: block; overflow-wrap: anywhere; margin-block: .5rem; }

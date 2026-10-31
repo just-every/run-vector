@@ -1,3 +1,4 @@
+import { filterExpressionSql } from "./filter-expression-sql";
 import type { IssueListQuery } from "./list-schema";
 
 // Every optional record projection is constrained to the issue's workspace.
@@ -84,6 +85,8 @@ export function browseWhere(
     conditions.push(`${column}=?`);
     values.push(value);
   };
+  const expression = filterExpressionSql(query.expression, blockedSql);
+  if (expression.sql) { conditions.push(expression.sql); values.push(...expression.values); }
   if (query.scope !== "all") {
     conditions.push(scopeSql[query.scope]);
     values.push(actor);
