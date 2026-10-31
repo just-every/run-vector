@@ -13,7 +13,7 @@ export function GithubLinks({identifier}:{identifier:string}){
 }
 
 function GithubReviewState({reviews}:{reviews:z.infer<typeof schema>['pullRequests'][number]['reviews']}){
- const state=reviews.some(r=>r.state==='changes_requested')?'Changes requested':reviews.some(r=>r.state==='approved')?'Approved':'Review needed';
+ const state=reviews.some(r=>r.state==='changes_requested')?'Changes requested':reviews.some(r=>r.state==='conflicted')?'Review uncertain':reviews.some(r=>r.state==='approved')?'Approved':'Review needed';
  const labels={approved:'Approved',changes_requested:'Changes requested',dismissed:'Review dismissed',conflicted:'Review uncertain'};
  return <div aria-label="Pull request reviews"><strong>{state}</strong>{reviews.length>0&&<ul>{reviews.map(review=><li key={review.reviewerId}>{review.reviewer} · {labels[review.state]} · {review.commitSha.slice(0,7)}</li>)}</ul>}</div>;
 }

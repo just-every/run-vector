@@ -34,6 +34,16 @@ export async function exerciseGithubReviews({page,runtime,cookie,team,evidence})
   await reviews.getByText('Changes requested',{exact:true}).waitFor();
   await reviews.getByText('synthetic-vector-21 · Approved · bbbbbbb',{exact:true}).waitFor();
   await reviews.getByText('synthetic-vector-22 · Changes requested · bbbbbbb',{exact:true}).waitFor();
+  // Contradictory same-second submissions cannot support an Approved badge.
+  await send(review(207,'approved',7,b));await send(review(208,'changes_requested',7,b));
+  await send(review(209,'approved',7,b));await send(review(206,'dismissed',6,b,22));await reload();
+  await reviews.getByText('Review uncertain',{exact:true}).waitFor();
+  await reviews.getByText('synthetic-vector-21 · Review uncertain · bbbbbbb',{exact:true}).waitFor();
+  assert.equal(await reviews.getByText('Approved',{exact:true}).count(),0);
+  await reload();await reviews.getByText('Review uncertain',{exact:true}).waitFor();
+  await send(review(211,'approved',8,b));await reload();
+  await reviews.getByText('Approved',{exact:true}).waitFor();
+  await reviews.getByText('synthetic-vector-21 · Approved · bbbbbbb',{exact:true}).waitFor();
   const link=region.getByRole('link',{name:'Fix '+issue.identifier+' · '+repository+' #83',exact:true});
   await link.focus();assert.equal(await link.evaluate(e=>e===document.activeElement),true);
   assert.equal(await link.getAttribute('href'),'https://github.com/'+repository+'/pull/83');

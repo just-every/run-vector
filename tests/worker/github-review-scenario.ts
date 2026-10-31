@@ -80,6 +80,18 @@ export async function exerciseGithubReviews(f:Awaited<ReturnType<typeof setupInt
  expect((await send(pr(a,20,'synchronize'),'pull_request')).status).toBe(200);expect((await read()).reviews).toEqual([]);
  expect((await send(review(101))).status).toBe(200);expect((await read()).reviews).toEqual([]);
  expect((await send(review(117,'approved',21,a))).status).toBe(200);expect(await states()).toEqual([[11,'approved']]);
+ // Second-resolution timestamps do not prove an order between distinct contradictory reviews.
+ expect((await send(review(119,'changes_requested',22,a))).status).toBe(200);
+ expect((await send(review(120,'approved',22,a))).status).toBe(200);
+ expect(await states()).toEqual([[11,'conflicted']]);
+ const tied=await snapshot();f.restart();
+ expect((await send(review(120,'approved',22,a))).status).toBe(200);
+ expect((await snapshot())[0]).toEqual(tied[0]);expect(await states()).toEqual([[11,'conflicted']]);
+ expect((await send(review(119,'dismissed',22,a))).status).toBe(200);
+ expect(await states()).toEqual([[11,'conflicted']]);
+ // Only a later signed submission can establish a supported decision again.
+ expect((await send(review(121,'approved',23,a))).status).toBe(200);
+ expect(await states()).toEqual([[11,'approved']]);
  const outsider=await invite('synthetic-vector-5304'+bindings.FIRST_OWNER_EMAIL!.slice(bindings.FIRST_OWNER_EMAIL!.indexOf('@')),f.cookie);
  expect((await request('/api/issues/'+issue.identifier+'/github','GET',undefined,outsider)).status).toBe(200);
  expect((await f.call('/settings/teams/'+f.initial.teams[0]!.id+'/privacy','PUT',{isPrivate:true})).status).toBe(200);
@@ -87,8 +99,8 @@ export async function exerciseGithubReviews(f:Awaited<ReturnType<typeof setupInt
  expect(refused.status).toBe(404);expect(await refused.text()).not.toContain('synthetic-vector-11');expect(await snapshot()).toEqual(privateSnapshot);
  expect((await request('/api/issues/'+issue.identifier+'/github')).status).toBe(401);
  // A review and a merge may share GitHub's second-resolution timestamp.
- expect((await send(review(118,'approved',22,a))).status).toBe(200);
- const merged={...pr(a,22,'closed'),pull_request:{...pr(a,22).pull_request,state:'closed',merged:true,merge_commit_sha:'d'.repeat(40)}};
+ expect((await send(review(118,'approved',24,a))).status).toBe(200);
+ const merged={...pr(a,24,'closed'),pull_request:{...pr(a,24).pull_request,state:'closed',merged:true,merge_commit_sha:'d'.repeat(40)}};
  expect((await send(merged,'pull_request')).status).toBe(200);expect((await read()).state).toBe('merged');
  await proveGithubReviewArchive(f,config,approval,issue.identifier);
  const beforeRevoke=await snapshot();expect((await f.call('/settings/integrations/github/'+config.id,'DELETE')).status).toBe(200);

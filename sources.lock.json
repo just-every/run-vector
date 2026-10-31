@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "698a46422d496b53b96f249baf301c4941b56f51c32b4d9a88c12c9695b6d391",
+      "sha256": "f2dbdc34e7b4008afa849a0363982e342e925c4d72bfeb07937e15d0fe6c182d",
       "executable": false
     },
     "DEMO.md": {
@@ -5321,7 +5321,7 @@
       "executable": false
     },
     "src/core/features/integrations/github-read.ts": {
-      "sha256": "9d8fdb488838194232b0b1a37deb10e97d10fd1bccc9b54fe85a58d6008ab5b6",
+      "sha256": "b27e3c0e72fabf10cd574cd1cebb366fb6cb55960c7d8778d026761521127d9a",
       "executable": false
     },
     "src/core/features/integrations/github/branch-name.ts": {
@@ -5557,7 +5557,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/github-links.tsx": {
-      "sha256": "c7a7bb8f86ce5c9ca5156974a5d79e56398881f0f0eaaa60168ad2bb72a3d852",
+      "sha256": "f765bc677b4dbb2cd86acc6a6ce318e518bdbdc4b04c1c8e918aa56ac5e33b22",
       "executable": false
     },
     "src/core/features/integrations/ui/github-receipt.tsx": {
@@ -7949,7 +7949,7 @@
       "executable": false
     },
     "tests/e2e/integrations/github-reviews.mjs": {
-      "sha256": "ce15f7801791273898cbdd44324792ccbe8a91793a6fe7d43f6a33abf1d79e0f",
+      "sha256": "e368d9028638de7d299d060394fcd3f54b5dec6a7fc5aad51b9429fc0acf4d86",
       "executable": false
     },
     "tests/e2e/integrations/github-team-permissions.mjs": {
@@ -8613,7 +8613,7 @@
       "executable": false
     },
     "tests/worker/github-review-scenario.ts": {
-      "sha256": "9b759bafd620cc56dc93975d90d3b5451a2f961f777101736b97d84dfac99496",
+      "sha256": "d690601eb0ff99f39cee342ccfcbf47951dbd16e2be963ee184ce574f45bf6e2",
       "executable": false
     },
     "tests/worker/github-review-upgrade.ts": {
