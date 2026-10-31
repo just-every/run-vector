@@ -51,6 +51,22 @@ const issueAndDestination: Resolve<string[] | null> = async request => {
   const destination = text(await field(request, 'teamId'))
   return teamsOf(request.db, request.actor, destination ? [destination] : [], request.params.identifier ? [request.params.identifier] : [])
 }
+/** Undo rechecks every retained and current subject team against today's role.
+ * An action ID conveys no team authority of its own. */
+const undoTeams: Resolve<string[] | null> = async request => {
+  const actionId = text(await field(request, 'actionId'));
+  const rows = (await request.db.prepare(`WITH action AS (
+    SELECT json_extract(next_value_json,'$.undo') body FROM issue_activity WHERE id=? AND actor_operator_id=?
+  ), subjects AS (
+    SELECT value body FROM action,json_each(action.body,'$.before')
+    UNION ALL SELECT value FROM action,json_each(action.body,'$.after')
+    UNION ALL SELECT value FROM action,json_each(action.body,'$.parents.before')
+    UNION ALL SELECT value FROM action,json_each(action.body,'$.parents.after')
+  ) SELECT DISTINCT json_extract(body,'$.teamId') teamId FROM subjects
+    UNION SELECT i.team_id FROM issues i JOIN subjects s ON i.id=json_extract(s.body,'$.id')`)
+    .bind(actionId ?? '', request.actor).all<{ teamId: string }>()).results;
+  return teamsOf(request.db, request.actor, rows.map(row => row.teamId));
+}
 const selected: Resolve<string[] | null> = async request => {
   const rows = await field(request, 'issues'), destination = text(await field(request, 'teamId'))
   const identifiers = Array.isArray(rows) ? rows.map(row => text((row as { identifier?: unknown })?.identifier)).filter((id): id is string => !!id) : []
@@ -192,6 +208,7 @@ export const doors: Door[] = [
   ...(['/issues/:identifier/dependencies', '/issues/:identifier/links', '/issues/:identifier/subissues', '/issues/:identifier/duplicate', '/issues/:identifier/description-restore'] as const)
     .map((path): Door => ({ method: 'POST', path, row: 'issues.write', teams: issue })),
   { method: 'DELETE', path: '/issues/:identifier/dependencies', row: 'issues.write', teams: issue },
+  { method: 'GET', path: '/issues/:identifier/links/:linkId/preview', row: 'work.read', teams: issue },
   { method: 'DELETE', path: '/issues/:identifier/links/:linkId', row: 'issues.write', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/parent', row: 'issues.write', teams: issue },
   { method: 'PATCH', path: '/issues/:identifier/subissues', row: 'issues.write', teams: issue },
@@ -200,7 +217,7 @@ export const doors: Door[] = [
   { method: 'POST', path: '/issues/bulk/team', row: 'issues.write', teams: selected },
   { method: 'POST', path: '/issues/bulk/duplicate', row: 'issues.write', teams: selected },
   { method: 'POST', path: '/issues/order', row: 'issues.write', teams: bodyTeam },
-  { method: 'POST', path: '/issues/undo', row: 'issues.write' },
+  { method: 'POST', path: '/issues/undo', row: 'issues.write', teams: undoTeams },
   { method: 'POST', path: '/issues/:identifier/comments', row: 'issues.write', teams: issue },
   ...(['PUT','DELETE'] as const).map((method): Door => ({method,path:'/issues/:identifier/reactions',row:'reactions.write',teams:issue})),
   { method: 'GET', path: '/issues/:identifier/references', row: 'work.read', teams: issue },

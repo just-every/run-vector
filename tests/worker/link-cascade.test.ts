@@ -1,3 +1,4 @@
+import { exerciseVideoPreviews } from "./video-preview-journey";
 import { env } from 'cloudflare:workers'
 import { applyD1Migrations } from 'cloudflare:test'
 import assert from 'node:assert/strict'
@@ -7,7 +8,7 @@ import { ensureSampleData } from '../../src/core/features/sample-data/service'
 import { vectorSampleIds as ids } from '../../sample-data/vector'
 import { testCookie } from './native-fixture'
 
-it('[ISSUE-008][ISSUE-009] the actual comment DELETE erases its named links atomically, preserves the tombstone and leaves issue version unchanged', async () => {
+it('[ISSUE-008][ISSUE-009] named video links load only authorized oEmbed players and comment deletion erases their sources atomically', async () => {
   await applyD1Migrations(env.DB, inject('migrations'))
   await ensureSampleData(env.DB, new Date())
   const app = createServerApp(), origin = 'https://vector.test'
@@ -34,4 +35,5 @@ it('[ISSUE-008][ISSUE-009] the actual comment DELETE erases its named links atom
   assert.equal((await (await request(path)).json() as any).version, 1)
   assert.equal((await env.DB.prepare("SELECT COUNT(*) n FROM audit_records WHERE subject_id=? AND action='link.deleted'").bind(linkId).first<{ n: number }>())!.n, 1)
   assert.equal((await request(path + '/links', 'POST', { name: 'Cannot resurrect', url: 'https://vector-link.invalid/new', commentId: comment.id })).status, 404)
+  await exerciseVideoPreviews()
 })

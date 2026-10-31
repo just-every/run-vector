@@ -35,6 +35,7 @@ export function editorDocument(response:Response,env:WorkerBindings) {
   }
   for(const name of ['frame-src','frame-ancestors']) {
     const values=new Set(["'self'"]);if(origin)values.add(origin);
+    if(name==='frame-src') { values.add('https://www.loom.com'); values.add('https://www.youtube-nocookie.com'); }
     directives.set(name,[...values]);
   }
   if(!directives.has('object-src'))directives.set('object-src',["'none'"]);
