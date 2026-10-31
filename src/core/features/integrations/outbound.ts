@@ -1,5 +1,6 @@
 import {channelBindingSource} from './channels/subjects';
 import {publicWebhookEvent} from './private-events';
+import {subscribedWebhookEvent} from './subscriptions';
 import {channelProtocols,channelMessage,channelMatches,sendChannel} from './channels/delivery';
 import {credentialProblem} from './channels/settings';
 import {directProtocol,sendDirect,enqueueDirectMessages} from './slack-dm/delivery';
@@ -24,12 +25,13 @@ export function outboundService(env:WorkerBindings,workspace:string,now:()=>numb
   return {...row,key:keyBytes(await openSecret(env,'destination:'+id,row.encrypted))};
  };
  const signedProtocol=createWebhookProtocol({resolveDestination:async id=>(await configuration(id)).url,signingKey:async envelope=>(await configuration(envelope.destinationId)).key});
- const protocol={...signedProtocol,async prepare(envelope:Parameters<typeof signedProtocol.prepare>[0],at:number){if(!await publicWebhookEvent(env,workspace,envelope.body))throw new IntegrationError(403,'private_webhook_event');return signedProtocol.prepare(envelope,at);}};
+ const protocol={...signedProtocol,async prepare(envelope:Parameters<typeof signedProtocol.prepare>[0],at:number){if(!await publicWebhookEvent(env,workspace,envelope.body)||!await subscribedWebhookEvent(env,workspace,envelope.destinationId,envelope.event,envelope.body))throw new IntegrationError(403,'webhook_event_unavailable');return signedProtocol.prepare(envelope,at);}};
  const transport:TrustedTransport={async send(wire){
   if(wire.headers['vector-dm-event'])return sendDirect(env,workspace,wire);
   if(wire.headers['vector-channel-destination'])return sendChannel(env,workspace,wire);
   const destination=wire.headers['webhook-destination'],eventId=wire.headers['webhook-id'],current=await configuration(destination);
   if(!await publicWebhookEvent(env,workspace,wire.body))throw new IntegrationError(403,'private_webhook_event');
+  if(!await subscribedWebhookEvent(env,workspace,destination,wire.headers['webhook-event'],wire.body))throw new IntegrationError(403,'webhook_subscription_changed');
   if(wire.url!==current.url||(await env.DB.prepare('SELECT 1 FROM vector_webhook_restore_holds WHERE namespace=? AND id=?').bind(workspace,eventId).first()))throw new IntegrationError(503,'outbound_delivery_held');
   await verifyWebhook({body:wire.body,headers:wire.headers,key:current.key,tenant:workspace,destinationId:destination,now:now()});
   if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,eventId).first())throw new IntegrationError(410,'outbound_issue_deleted');
@@ -69,7 +71,7 @@ export async function dispatchWebhooks(env:WorkerBindings){
   held+=blocked.length?(await env.DB.prepare(`SELECT count(*) AS n FROM vector_webhook_events e WHERE e.workspace_id=? AND e.enqueued_at IS NULL AND e.destination_id IN (${blocked.map(()=>'?').join(',')}) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id)`).bind(workspace,...blocked).first<{n:number}>())!.n:0;
   const events=(await env.DB.prepare(`SELECT e.*,d.kind,b.channel_id FROM vector_webhook_events e JOIN vector_webhook_destinations d ON d.id=e.destination_id LEFT JOIN ${channelBindingSource} b ON b.destination_id=d.id WHERE e.workspace_id=? AND e.enqueued_at IS NULL AND d.enabled=1 AND d.revoked_at IS NULL${unsendable} AND NOT EXISTS(SELECT 1 FROM vector_webhook_restore_holds h WHERE h.namespace=e.workspace_id AND h.id=e.id) AND NOT EXISTS(SELECT 1 FROM vector_webhook_erasures h WHERE h.namespace=e.workspace_id AND h.id=e.id) ORDER BY e.created_at,e.id LIMIT 20`).bind(workspace,...blocked).all<{id:string;destination_id:string;event:string;body:string;kind:string;channel_id:string}>()).results;
   for(const event of events){
-   if(event.kind==='webhook'&&!await publicWebhookEvent(env,workspace,event.body)){await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=? WHERE id=?').bind(new Date().toISOString(),event.id).run();continue;}
+   if(event.kind==='webhook'&&(!await publicWebhookEvent(env,workspace,event.body)||!await subscribedWebhookEvent(env,workspace,event.destination_id,event.event,event.body))){await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=? WHERE id=?').bind(new Date().toISOString(),event.id).run();continue;}
    if(event.kind!=='webhook'&&!await channelMatches(env,workspace,event.destination_id,event.body)){await env.DB.prepare('UPDATE vector_webhook_events SET enqueued_at=? WHERE id=?').bind(new Date().toISOString(),event.id).run();continue;}
    try {await service.enqueue({id:event.id,tenant:workspace,destinationId:event.destination_id,event:event.event,protocol:event.kind,body:event.kind==='webhook'?event.body:await channelMessage(env,event.kind,event.channel_id,event.body)});}
    catch(error){if(await env.DB.prepare('SELECT 1 FROM vector_webhook_erasures WHERE namespace=? AND id=?').bind(workspace,event.id).first())continue;if(event.kind!=='webhook'&&error instanceof IntegrationError){held++;continue;}throw error;}

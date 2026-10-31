@@ -93,6 +93,14 @@
     {
       "id": "0118_dependency_key_sealing.sql",
       "buyerSteps": "Apply after all earlier migrations, including unchanged 0113_description_thread_anchors.sql, without rewriting applied SQL. Adds sealed dependency key custody; restore excludes credentials and requires re-entry. Preserve additive schema and durable ledgers on compatible-source rollback."
+    },
+    {
+      "id": "0119_webhook_subscriptions.sql",
+      "buyerSteps": "Apply after all earlier migrations through unchanged 0118_dependency_key_sealing.sql. Existing destinations retain their issue-event subscriptions; adds explicit event and public-team filters and durable native issue-comment events. Retain queues and delivery ledgers on compatible-source rollback."
+    },
+    {
+      "id": "0120_comment_webhook_author_labels.sql",
+      "buyerSteps": "Apply after 0119_webhook_subscriptions.sql without rewriting applied SQL. Retains identifier-only comment deletion events for external author labels. Preserve additive schema and terminal delivery ledgers on compatible-source rollback."
     }
   ],
   "breaking": false,
