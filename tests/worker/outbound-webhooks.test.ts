@@ -6,6 +6,7 @@ import {dispatchWebhooks,outboundService} from '../../src/core/features/integrat
 import {verifyWebhook} from '../../vendor/base/integrations';
 import {outboundCommentJourney} from './outbound-comment-journey';
 import {outboundSubscriptionUpgrade} from './outbound-subscription-upgrade';
+import {outboundEmailCommentJourney} from './outbound-email-comment-journey';
 it('[WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; explicit RPC dispatch retains retries, uncertainty and restore holds',async()=>{
  const f=await setupIntegrations(),response=await f.call('/settings/integrations/destinations','POST',{name:'Native destination',url:'https://receiver.example.com/events'});expect(response.status).toBe(201);const destination=await response.json() as {id:string;secret:string;dispatchConfigured:boolean};expect(destination.dispatchConfigured).toBe(false);
  const key=new Uint8Array(destination.secret.match(/../g)!.map(pair=>parseInt(pair,16))),workspace=await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(f.owner).first<string>('workspace_id');
@@ -30,6 +31,7 @@ it('[WEBHOOK-001 WEBHOOK-002] native mutations queue stable minimal events; expl
  await f.create({title:'Held native event'});const held=await env.DB.prepare('SELECT id FROM vector_webhook_events WHERE enqueued_at IS NULL').first<{id:string}>();await env.DB.prepare('INSERT INTO vector_webhook_restore_holds(namespace,id) VALUES(?,?)').bind(workspace,held!.id).run();await dispatchWebhooks(current);expect(sends).toBe(before);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
  await outboundCommentJourney(f);
+ await outboundEmailCommentJourney(f);
  await outboundSubscriptionUpgrade();
 },180000);
 
