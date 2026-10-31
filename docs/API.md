@@ -435,6 +435,89 @@ History uses the native visibility projection: retained references to currently
 hidden issues, teams, projects or source documents cannot reveal history rows.
 Undo custody is stripped from activity values. No member email, credential
 record, signing material, attachment object key or attachment bytes is exported.
-This adapter does not commission Fivetran or Airbyte connectors. Scheduled
-incremental bucket exports, customer links and scheduled Google Sheets sync
-remain unimplemented REPORT-005 obligations.
+This adapter does not commission Fivetran or Airbyte connectors. Customer-link
+export still requires the actual customer model.
+
+## Scheduled warehouse exports
+
+Current Owners and Admins configure hourly exports through the native,
+same-origin Settings API. These operations require a native session; a
+`reports:read` bearer cannot configure or enable outbound transfers.
+
+| Native route | Operation |
+| --- | --- |
+| `GET /api/settings/report-exports` | Safe configuration, current version, next due time, credential re-entry state and the last 100 run receipts |
+| `POST /api/settings/report-exports` | Create a bucket or spreadsheet schedule with explicit `consent: true`; `enabled` defaults to false |
+| `PATCH /api/settings/report-exports/ID` | Set `enabled` with the current `expectedVersion` and `consent: true`; stale versions return 409 |
+| `DELETE /api/settings/report-exports/ID` | Stop the schedule and destroy its installation credential, retaining safe receipts |
+
+For a bucket schedule, send `kind: "bucket"`, a name, and this configuration:
+
+```json
+{
+  "endpoint": "https://ACCOUNT.r2.cloudflarestorage.com",
+  "region": "auto",
+  "bucket": "warehouse",
+  "prefix": "vector",
+  "format": "json",
+  "team": "OPTIONAL_TEAM_ID"
+}
+```
+
+Replace ACCOUNT with the 32-character R2 account identifier, or use the AWS S3
+regional endpoint `https://s3.REGION.amazonaws.com` and its region. This adapter
+uses S3 path-style PutObject with AWS Signature Version 4. Other S3-compatible
+hosts are refused until their destination boundary is qualified. Supply
+`credentials: {accessKeyId, secretAccessKey}` separately. Use a bucket-scoped
+write credential. Credentials are encrypted and never returned by the read API.
+
+Each successful hourly run writes one object at
+the configured prefix, schedule ID and run ID, ending in `.json` or `.csv`.
+The first object contains all current
+visible issues, visible issue history, cycles and projects in the selected team,
+or the current visible workspace when `team` is omitted. Subsequent objects
+contain only changed rows. JSON contains `version: 1` and a `records` array; CSV
+has `resource`, `id`, `operation` and JSON-encoded `row` columns. Apply `upsert`
+by resource and stable ID. Apply `delete` to remove a previously exported ID
+that is now deleted or no longer visible; its row is null and carries no former
+title or identifier. Empty deltas have no records. No credentials or attachment
+bytes are exported. Remote objects already delivered belong to the configured
+bucket owner; Vector cannot promise their retention or erasure.
+
+For a spreadsheet schedule, send `kind: "sheets"`, a name,
+`configuration: {viewId, spreadsheetId, sheet}` and
+`credentials: {clientId, clientSecret, refreshToken}`. The Google OAuth refresh
+grant must already have spreadsheet write access. Reserve a dedicated sheet
+with enough rows for the view: consent authorizes replacing its managed
+rectangle and clearing rows that leave the view. This is the documented native
+configuration door; a provider account connection screen is not yet supplied.
+
+Every due run refreshes the grant at Google's fixed token endpoint and calls
+`spreadsheets.values.batchUpdate` on that spreadsheet. It writes one header row
+and one row per issue in the current saved list view, retaining its filters and
+ordering. Columns cover the properties the current native list displays:
+identifier, title, status, priority, team, assignee, start date, due date, labels,
+parent, blocked state and checklist progress. RAW input preserves literal text
+without evaluating formulas. A smaller result pads the previously managed
+rectangle with empty strings, clearing departed rows. Board-specific and future
+property-choice integrations remain unqualified receiving duties.
+
+The installed Worker cron checks due schedules and refreshes successful ones
+hourly. Atomic claims prevent overlapping runs. Current administrator authority,
+view access and row visibility are rechecked before outbound data is sent;
+removing or demoting the accountable administrator stops their schedule. A
+failed provider response leaves checkpoints unchanged. An interrupted or
+ambiguous transfer is marked uncertain and receives no automatic retry: review
+the destination before explicitly enabling a fresh run. A definite refusal is
+visible in Settings receipts and can be retried on the next hour. Disabling or
+revoking a schedule stops later sends, including an in-flight collection before
+its final admission check.
+
+Safe configuration and run receipts survive native archives. Credentials,
+claim tokens and row checkpoints do not. Restore holds all background effects;
+even after review, a historical schedule remains inert without its excluded
+credential. Create and explicitly enable a replacement schedule after reviewing
+the destination. This adapter bounds each snapshot at 20,000 rows and each
+outbound body at 1 MiB; exceeding either fails visibly without advancing it.
+Provider-edge fixture proof establishes these protocols, not hosted provider
+commissioning, connector certification or customer-link model coverage.
