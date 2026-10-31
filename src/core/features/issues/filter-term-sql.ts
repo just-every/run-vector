@@ -1,5 +1,5 @@
 import { isLinkField, filterLinkSql } from './filter-link-sql';
-import { localTimeToInstant } from '../administration/calendar';
+import { calendarBoundary } from './filter-calendar';
 import { dateFields, type FilterTerm } from './filter-operands';
 const columns = {
   category: 's.category', status: 's.id', assignee: 'a.id', team: 't.id', project: 'p.id', cycle: 'c.id',
@@ -11,7 +11,7 @@ const weekdays = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'frida
 function addDays(day: string, days: number) {
   const date = new Date(day + 'T12:00:00Z');
   date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
+  return date.toISOString().split('T')[0];
 }
 function calendarValue(value: string, today: string) {
   if (value === 'today') return today;
@@ -44,8 +44,8 @@ export function filterTermSql(term: FilterTerm, actor: string, today: string, ti
         from = addDays(today, 1 - Number(value.split(' ')[1])); to = addDays(today, 1);
       } else { from = calendarValue(value, today); to = addDays(from, 1); }
       if (!['due', 'start'].includes(field)) {
-        from = localTimeToInstant(from + 'T00:00', timezone);
-        to = localTimeToInstant(to + 'T00:00', timezone);
+        from = calendarBoundary(from, timezone);
+        to = calendarBoundary(to, timezone);
       }
       const start = () => bind(from), end = () => bind(to);
       sql = operator === '<' ? `${column}<${start()}` : operator === '<=' ? `${column}<${end()}`

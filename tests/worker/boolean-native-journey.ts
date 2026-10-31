@@ -84,6 +84,21 @@ export async function nativeBooleanJourney() {
     const literal = await create(' literal none', { expectedOutcome: 'none' });
     expect(await read('outcome="none"')).toEqual([literal.identifier]);
     expect(await read('outcome=none')).not.toContain(literal.identifier);
+    await send('/settings', 'PATCH', { timezone: 'America/Havana', reminderTime: '09:00' });
+    const firstMidnight = await create(' repeated midnight first'), secondMidnight = await create(' repeated midnight second');
+    const { env } = await import('cloudflare:workers');
+    await env.DB.batch([
+      env.DB.prepare('UPDATE issues SET created_at=? WHERE id=?').bind('2026-11-01T04:30:00.000Z', firstMidnight.id),
+      env.DB.prepare('UPDATE issues SET created_at=? WHERE id=?').bind('2026-11-01T05:30:00.000Z', secondMidnight.id),
+    ]);
+    expect(await read('created=2026-11-01 AND title~"repeated midnight"')).toEqual([firstMidnight.identifier, secondMidnight.identifier].sort());
+    const beforeGap = await create(' midnight gap before'), afterGap = await create(' midnight gap after');
+    await env.DB.batch([
+      env.DB.prepare('UPDATE issues SET created_at=? WHERE id=?').bind('2026-03-08T04:59:59.000Z', beforeGap.id),
+      env.DB.prepare('UPDATE issues SET created_at=? WHERE id=?').bind('2026-03-08T05:00:00.000Z', afterGap.id),
+    ]);
+    expect(await read('created=2026-03-08 AND title~"midnight gap"')).toEqual([afterGap.identifier]);
+    expect(await read('created<2026-03-08 AND title~"midnight gap"')).toEqual([beforeGap.identifier]);
     const before = await snapshot(['issues', 'issue_activity', 'saved_views', 'list_preferences']);
     for (const invalid of ['estimate>none', 'estimate=0', 'estimate=101', 'estimate=2.5', 'category=unknown', 'due=2026-02-30', 'due before next Funday', 'updated in the last 0 days', 'updated in the last 1000 days', 'team=all', 'label~"anything"', 'title="unterminated', 'title="x";SELECT 1']) {
       const response = await f.member.call('/issues?' + new URLSearchParams({ expression: invalid }));
