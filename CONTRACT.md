@@ -773,7 +773,7 @@ Signed source ingestion implements INTAKE-001/002/003/008/009 and the source reg
 
 Judged from the code and tests at commit `aef5848e3b91997652d2e4fdf21d5af80ebe4086` (29 October 2026). CT judged GITHUB-003 at `bdcd9599eb64411a48657fc8394a438a3675f5a8` on 27 October 2026 and accepted it as done. Status inventory agrees ID for ID with ACCEPTANCE.md. INIT-001 was judged STAYS PARTIAL by ct at af171d2d782a3787e43cd339867cc06dec89677f (27 October 2026) under DONE-RIDERS rows 1, 6, 8 and 11. The current candidate adds creation delivery, Planned readback and full private-notice assertions; a fresh ct judgment and landing gates remain pending. SLACK-005 is PARTIAL pending ct's re-judge; PROJ-013 is PARTIAL. Accepted DONE is 137 of 272.
 
-AUTO-006 local implementation proof is at `de6fd773a65ea51aa6242d5559bedc0f76ae7dc5` (31 October 2026); its final cloud candidate changes only contract metadata and the source lock. Independent judgment and guarded landing remain pending.
+AUTO-006 local implementation proof began at `de6fd773a65ea51aa6242d5559bedc0f76ae7dc5` (31 October 2026); the final cloud candidate also prevents rule audit history from retaining a removed owner’s display name, with public archive proof. Independent judgment and guarded landing remain pending.
 
 API-004 provenance: ct reviewed `93ab66269b4f8fc4109d91504ccfe5233b563c5c` on 27 October 2026 and kept it PARTIAL. The archive policy rider is adopted from that ct review; exact-head ct re-judgment and guarded landing remain outstanding.
 

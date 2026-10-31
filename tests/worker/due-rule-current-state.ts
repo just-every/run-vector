@@ -177,6 +177,28 @@ export async function proveCurrentDueRuleState(
   expect((await f.call("/settings/operators/" + member, "DELETE")).status).toBe(
     200,
   );
+  const auditHistory = await f.call(
+    "/settings/audit?action=automation.due_rule_saved",
+  );
+  expect(auditHistory.status).toBe(200);
+  const auditIds = new Set(
+    ((await auditHistory.json()) as { entries: { id: string }[] }).entries.map(
+      (row) => row.id,
+    ),
+  );
+  const archive = await (
+    await import("./http-archive-fixture")
+  ).httpExport(f.call);
+  const details = archive
+    .flatMap((record) => (record.kind === "part" ? record.items : []))
+    .filter(
+      (item) =>
+        item.kind === "row" &&
+        item.table === "administration_audit_details" &&
+        auditIds.has(String(item.row.audit_id)),
+    );
+  expect(details.length).toBeGreaterThan(0);
+  expect(JSON.stringify(details)).not.toContain("synthetic-vector-member");
   await tick(at);
   expect(await runCount(removed.id)).toBe(0);
   expect(

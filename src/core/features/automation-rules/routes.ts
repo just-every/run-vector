@@ -91,7 +91,13 @@ export function addDueRuleRoutes(app: Hono<AppEnvironment>) {
           "automation.due_rule_saved",
           id,
           input.name,
-          prior.rule,
+          prior.rule && {
+            id: prior.rule.id,
+            name: prior.rule.name,
+            ownerId: prior.rule.ownerId,
+            enabled: prior.rule.enabled,
+            version: prior.rule.version,
+          },
           input,
         ),
       ]);

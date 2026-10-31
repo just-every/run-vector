@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "e37e6856fbebb58b47ef8658852395128520b4cb8fe1b4b4bb1697f5f95b27b3",
+      "sha256": "e809a03e38cbe63280aa8a38dab18d2ad98d6ab419bd837461a3896ab02835bd",
       "executable": false
     },
     "DEMO.md": {
@@ -4285,7 +4285,7 @@
       "executable": false
     },
     "src/core/features/automation-rules/routes.ts": {
-      "sha256": "a6c935374b0049e0b9e087ec8b72826fa5cfd582142d2977aa1068c6cc5b600a",
+      "sha256": "cc0e05a8db5ed0ba31d291d5fa4163ff0051fd73707bfe964caeaf2ef6df9a4e",
       "executable": false
     },
     "src/core/features/automation-rules/schema.ts": {
@@ -8581,7 +8581,7 @@
       "executable": false
     },
     "tests/worker/due-rule-current-state.ts": {
-      "sha256": "2ecd2f4db68d1c0e612b3eed1da1e3045348b160a5841c3da5418b83f70a7029",
+      "sha256": "5cbcd56b90d05209c624d2faac57fea7243544c3858b52d2cd0a99f93406b186",
       "executable": false
     },
     "tests/worker/due-rule-proof.ts": {
