@@ -2029,7 +2029,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "a36f98e7b7f46441cd7e5ff69c9d24999c5e61f09c9dd2a6e1b7b7d9084368a3",
+      "sha256": "055e0aa7c7400bf0ebc263df3ecf3286a590ddc0bda780627ad8e80a58543b09",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -5065,7 +5065,7 @@
       "executable": false
     },
     "src/core/features/favorites/ui/navigation.tsx": {
-      "sha256": "8a31cf40a7fbbcf2bf56c3e9d4a269b63f6c2574c43e65724063359b2501c8d8",
+      "sha256": "8da0d9fd2b186719252d7007692de55677527a23b30cbd51776d05611d1a98b2",
       "executable": false
     },
     "src/core/features/file-removal/detached.ts": {

@@ -1,4 +1,4 @@
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useLocation, useMatches } from "@tanstack/react-router";
 import { useState } from "react";
 import { useApiResource } from "../../../app/api-client";
 import { favoriteSubjectSchema } from "../schema";
@@ -10,7 +10,16 @@ export function FavoriteNavigation() {
   const [organizing, setOrganizing] = useState(false),
     [name, setName] = useState("");
   const path = useLocation({ select: (location) => location.pathname });
-  const match = path.match(/^\/app\/(issues|projects|views)\/([^/]+)$/);
+  const route = useMatches({ select: (matches) => matches.at(-1)?.routeId });
+  // Static list and creation routes can share the subject URL prefix.
+  // Only a matched subject route may start the current-subject read.
+  const match = [
+    "/app/issues/$identifier",
+    "/app/projects/$projectId",
+    "/app/views/$viewId",
+  ].includes(route ?? "")
+    ? path.match(/^\/app\/(issues|projects|views)\/([^/]+)\/?$/)
+    : null;
   const current = match
     ? {
         kind:
