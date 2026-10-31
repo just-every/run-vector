@@ -742,6 +742,18 @@
       "name": "0121_team_estimate_settings.sql",
       "sha256": "403bfe471520aab86a822d36faf1d7cff63188e009d86dc5d5ab1a84b80a9e4b",
       "sql": "-- Feature configuration never changes retained estimates or closed cycle snapshots.\nALTER TABLE teams ADD COLUMN estimates_enabled INTEGER NOT NULL DEFAULT 1 CHECK(estimates_enabled IN (0,1));\nALTER TABLE teams ADD COLUMN estimate_scale TEXT NOT NULL DEFAULT 'points' CHECK(estimate_scale IN ('points','fibonacci','exponential','tshirt'));\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0122_team_triage_enabled.sql",
+      "sha256": "bcced1a4d5cb8853297e69d7f369986476b2472ee1b4fb756509ecf73964c086",
+      "sql": "-- Turning triage off keeps pending work, decisions, evidence and deferrals.\nALTER TABLE teams ADD COLUMN triage_enabled INTEGER NOT NULL DEFAULT 1 CHECK(triage_enabled IN(0,1));\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0123_team_default_issue_template.sql",
+      "sha256": "cf5c785ab6b79689ee599700fbb9e022729d55b1b69f3805a5be5e45444c1b16",
+      "sql": "-- Portable team defaults; deleting a default never changes created issues.\nALTER TABLE teams ADD COLUMN default_issue_template_json TEXT CHECK(default_issue_template_json IS NULL OR (json_valid(default_issue_template_json) AND json_type(default_issue_template_json)='object'));\n"
     }
   ],
   "compatibilityDate": "2026-09-08",

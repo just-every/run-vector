@@ -1,3 +1,4 @@
+import { defaultIssueTemplateSchema } from "../administration/default-issue-template";
 import { admitEstimate } from "../administration/estimate-admission";
 import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
@@ -67,6 +68,11 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
   if (teamResult.status === 'rejected') throw teamResult.reason
   if (statusResult.status === 'rejected') throw statusResult.reason
   const team = teamResult.value, status = statusResult.value
+  if (team.defaultIssueTemplateJson) {
+    const template=defaultIssueTemplateSchema.parse(JSON.parse(team.defaultIssueTemplateJson));
+    const provided=request.input.templateProvided ?? Object.keys(request.input);
+    request.input={...request.input,...Object.fromEntries(Object.entries(template).filter(([key])=>['description','priority','estimate','labelIds'].includes(key) && !provided.includes(key) && (key!=='estimate' || team.estimatesEnabled)))};
+  }
   if (!['backlog', 'unstarted', 'started', 'completed', 'canceled'].includes(status.category)) {
     throw new IssueMutationError('invalid_option', 'New issues must use a non-Intake, non-Duplicate status.')
   }
@@ -136,7 +142,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
     ? []
     : [db.insert(issueLabels).values(request.input.labelIds.map((labelId) => ({ issueId, labelId, createdAt: now })))]
   try { await commitWithAssignee(binding, request.input.assigneeOperatorId, team.workspaceId,
-    [creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
+    [...(team.defaultIssueTemplateJson ? [binding.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM teams WHERE id=? AND default_issue_template_json=?) THEN 1 ELSE json('default template changed') END").bind(team.id,team.defaultIssueTemplateJson)] : []),creationGuard(binding, request.actorOperatorId, team.workspaceId, team.id, status.id, request.input, status.category, allocation.prefix), ...[issueWrite, ...labelWrites, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
     }), ...followStatements(binding,event,[request.actorOperatorId]), ...assignmentStatements(binding,event,request.input.assigneeOperatorId), ...mentionStatements(binding,event,request.input.description), ...issueReferenceStatements(binding,event,request.input.description), ...finalizeEvent(binding,event), ...(request.commitStatements?.(binding,identifier) ?? [])]) } catch (error) { return creationError(binding, team.id, error) }
@@ -153,6 +159,7 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
 
   const team = await requireActiveTeam(db, issue.teamId)
   const currentStatus = await requireStatus(db, issue.statusId, team.id)
+  if (!(await db.select({enabled:teams.triageEnabled}).from(teams).where(eq(teams.id,issue.teamId)))[0]?.enabled) throw new IssueMutationError('invalid_transition','Enable triage in team Settings before deciding this item.');
   if (currentStatus.category !== 'intake') {
     throw new IssueMutationError('invalid_transition', `Issue ${issue.identifier} is not awaiting an intake decision.`)
   }
@@ -169,7 +176,7 @@ export async function writeIntakeDecision(binding: D1Database, request: IntakeDe
   const issueWrite = db.update(issues).set({ ...next.issueValues, version: issue.version + (automaticCycle ? 2 : 1), updatedAt: now })
     .where(and(eq(issues.identifier, issue.identifier), eq(issues.version, request.expectedVersion)))
     .returning({ id: issues.id })
-  const statements = [binding.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL) THEN 1 ELSE json('intake access denied') END`).bind(issue.id,request.actorOperatorId), ...[decisionWrite, activityWrite].map(query => {
+  const statements = [binding.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN operators o ON o.workspace_id=t.workspace_id WHERE i.id=? AND o.id=? AND o.removed_at IS NULL AND t.triage_enabled=1) THEN 1 ELSE json('intake access denied') END`).bind(issue.id,request.actorOperatorId), ...[decisionWrite, activityWrite].map(query => {
       const { sql, params } = query.toSQL()
       return binding.prepare(sql).bind(...params)
     })].concat([

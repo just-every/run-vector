@@ -191,6 +191,7 @@ export function classifyCurrentIssue(
     return null;
   }
   if (category === "intake") {
+    if (!snapshot.teams.find(team=>team.id===issue.teamId)?.triageEnabled) return null;
     const latestDecision = latestIntakeDecision(snapshot, issue.id);
     if (
       latestDecision?.kind === "accepted" ||

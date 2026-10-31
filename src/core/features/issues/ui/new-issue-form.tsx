@@ -65,6 +65,11 @@ export function NewIssueForm() {
         window.localStorage.getItem(lastCreatedTeamKey(options.data.workspace.id, options.data.operator.id)),
         boardPreference.data.filters.team,
       ]);
+    const teamDefault=options.data.teams.find(team=>team.id===defaults.teamId);
+    if (teamDefault?.defaultIssueTemplate) {
+      const template=teamDefault.defaultIssueTemplate;
+      Object.assign(defaults,{title:template.title,description:template.description,priority:template.priority,labelIds:template.labelIds,estimate:teamDefault.estimatesEnabled && template.estimate !== null ? String(template.estimate) : ''});
+    }
       const stored = window.localStorage.getItem(storageKey);
       const restored =
         stored === null ? null : parseNewIssueDraft(JSON.parse(stored));
@@ -111,10 +116,21 @@ export function NewIssueForm() {
     [options.data, values.teamId],
   );
 
+  const triageEnabled=Boolean(options.data?.teams.find(team=>team.id===values.teamId)?.triageEnabled);
   const changeTeam = (teamId: string) =>
     setValues((current) => ({
       ...current,
       teamId,
+      ...(() => {
+        const template=options.data?.teams.find(team=>team.id===teamId)?.defaultIssueTemplate;
+        return template ? {
+          title: current.title || template.title,
+          description: current.description || template.description,
+          priority: current.priority === 'none' ? template.priority : current.priority,
+          estimate: current.estimate || (options.data?.teams.find(team=>team.id===teamId)?.estimatesEnabled && template.estimate !== null ? String(template.estimate) : ''),
+          labelIds: current.labelIds.length ? current.labelIds : template.labelIds,
+        } : {};
+      })(),
       statusId:
         current.statusId &&
         options.data?.statuses.some(
@@ -147,7 +163,7 @@ export function NewIssueForm() {
     setSubmissionError(null);
     setSubmitting(true);
     try {
-      const isIntake = values.mode === "intake";
+      const isIntake = values.mode === "intake" && triageEnabled;
       const issue = await fetchJson(
         isIntake ? "/api/intake" : "/api/issues",
         createdIssueSchema,
@@ -234,7 +250,7 @@ export function NewIssueForm() {
             <div>
               {back}
               <h1 id="new-issue-title">
-                {values.mode === "intake" ? "New intake" : "New issue"}
+                {values.mode === "intake" && triageEnabled ? "New intake" : "New issue"}
               </h1>
             </div>
             <button
@@ -283,7 +299,7 @@ export function NewIssueForm() {
               />
               Issue<span>Ready for work</span>
             </label>
-            <label>
+            {triageEnabled && <label>
               <input
                 type="radio"
                 name="creation-mode"
@@ -293,7 +309,7 @@ export function NewIssueForm() {
                 onChange={() => setValues({ ...values, mode: "intake" })}
               />
               Intake<span>Needs a decision</span>
-            </label>
+            </label>}
           </fieldset>
           <section className="new-issue-section">
             <label className="new-issue-title-field">
@@ -335,7 +351,7 @@ export function NewIssueForm() {
               />
             </label>
           </section>
-          {values.mode === "intake" ? (
+          {values.mode === "intake" && triageEnabled ? (
             <>
               <section
                 className="new-issue-fields new-issue-fields--single"

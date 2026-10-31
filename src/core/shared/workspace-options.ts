@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { defaultIssueTemplateSchema } from '../features/administration/default-issue-template'
 import { estimateScaleSchema } from '../features/administration/estimate-scale'
 import { roles } from '../features/roles/matrix'
 
@@ -16,6 +17,8 @@ export const workspaceOptionsSchema = z.object({
       identifierPrefix: z.string(),
       cyclesEnabled: z.boolean(),
       estimatesEnabled: z.boolean(),
+      triageEnabled: z.boolean(),
+      defaultIssueTemplate: defaultIssueTemplateSchema.nullable(),
       estimateScale: estimateScaleSchema,
     }),
   ),

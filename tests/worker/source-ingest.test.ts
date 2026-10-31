@@ -44,6 +44,20 @@ it('[ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source
  expect((await f.call('/settings/integrations/sources/'+config.id,'DELETE')).status).toBe(200);expect((await f.signed(config,input)).status).toBe(401);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
  await exerciseErrorProviders(f);
+ // A disabled feature changes admission for new records, never replayed history.
+ const triageSource=await f.source('synthetic-vector-2625');
+ expect((await f.call('/settings/teams/'+input.teamId,'PATCH',{triageEnabled:false})).status).toBe(200);
+ const offInput={...input,sourceRecordId:'synthetic-vector-2626'};
+ const offResponse=await f.signed(triageSource,offInput);expect(offResponse.status).toBe(200);
+ const off=await offResponse.json() as {identifier:string};
+ const readOff=await (await f.call('/issues/'+off.identifier)).json() as any;
+ expect(readOff.status.category).toBe('backlog');expect(readOff.evidence).toHaveLength(1);
+ expect((await f.call('/settings/teams/'+input.teamId,'PATCH',{triageEnabled:true})).status).toBe(200);
+ const retained=await env.DB.prepare('SELECT * FROM issues WHERE identifier=?').bind(off.identifier).first();
+ f.restart();expect((await f.signed(triageSource,offInput)).status).toBe(200);
+ expect(await env.DB.prepare('SELECT * FROM issues WHERE identifier=?').bind(off.identifier).first()).toEqual(retained);
+ const onResponse=await f.signed(triageSource,{...input,sourceRecordId:'synthetic-vector-2627'});expect(onResponse.status).toBe(200);
+ expect((await (await f.call('/issues/'+(await onResponse.json() as any).identifier)).json() as any).status.category).toBe('intake');
 },180000);
 it('[INTAKE-002 ISSUE-010] deletion winning a new source revision returns gone and cannot allocate a replacement',async()=>{
  const {beforeCommit}=await import('./removal-interleaving');

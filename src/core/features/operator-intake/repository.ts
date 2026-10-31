@@ -25,7 +25,7 @@ export async function createOperatorIntake(
   const orm = drizzle(db);
   let team;
   try { team = await requireActiveTeam(orm, input.teamId); } catch(error) { return creationError(db,input.teamId,error,true); }
-  const status = await defaultStatus(orm, team.id, "intake");
+  const status = await defaultStatus(orm, team.id, team.triageEnabled ? "intake" : "backlog");
   const at = now.toISOString();
   let allocation:{sequence:number;prefix:string};
   try { allocation = await allocateIssueSequence(db,actor,team.workspaceId,team.id,at); } catch(error) {
@@ -49,7 +49,7 @@ export async function createOperatorIntake(
     SELECT ?,?,?,?,?,?,?,?,'none',?,?,'{}',1,?,?
     FROM teams t JOIN workflow_statuses s ON s.team_id=t.id
     JOIN operators o ON o.workspace_id=t.workspace_id
-    WHERE t.id=? AND t.archived_at IS NULL AND s.id=? AND s.category='intake'
+    WHERE t.id=? AND t.archived_at IS NULL AND s.id=? AND s.category=? AND t.triage_enabled=?
     AND o.id=? AND o.removed_at IS NULL RETURNING id`,
     )
     .bind(
@@ -67,6 +67,8 @@ export async function createOperatorIntake(
       at,
       team.id,
       status.id,
+      status.category,
+      Number(team.triageEnabled),
       actor,
     );
   const evidence = db
@@ -116,10 +118,10 @@ export async function createOperatorIntake(
     );
   const event = { id: activityId, issueId, actor, at };
   let result;
-  try { result = await db.batch<{ id: string }>([creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[],estimate:null},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...issueReferenceStatements(db,event,input.description),...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
+  try { result = await db.batch<{ id: string }>([db.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM teams WHERE id=? AND triage_enabled=?) THEN 1 ELSE json('triage option unavailable') END").bind(team.id,Number(team.triageEnabled)),creationGuard(db,actor,team.workspaceId,team.id,status.id,{projectId:null,cycleId:null,labelIds:[],estimate:null},status.category,allocation.prefix),issue,evidence,activity,...followStatements(db,event,[actor]),...mentionStatements(db,event,input.description),...issueReferenceStatements(db,event,input.description),...finalizeEvent(db,event),...(onCommit?.(db,{id:issueId,identifier}) ?? [])]); }
   catch (error) { return creationError(db,team.id,error,true); }
   // The indexed issue insert returns its own identity independently of trigger writes.
-  if (result[1].results.length !== 1 || result[1].results[0].id !== issueId)
+  if (result[2].results.length !== 1 || result[2].results[0].id !== issueId)
     throw new IssueMutationError(
       "invalid_option",
       "The team or operator is no longer available for intake.",

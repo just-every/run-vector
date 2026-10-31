@@ -1,3 +1,4 @@
+import {TeamDefaultTemplate} from "./team-default-template";
 import '../../documents/ui/documents.css';
 import { CreateSlackChannel } from "../../projects/ui/project-slack-choice";
 import {TeamJoinRules} from "./team-join-rules";
@@ -158,6 +159,7 @@ function TeamEditor({
       name: fields.get("name"),
       cyclesEnabled: fields.has("cyclesEnabled"),
       estimatesEnabled: fields.has("estimatesEnabled"),
+      triageEnabled: fields.has("triageEnabled"),
       estimateScale: fields.get("estimateScale"),
       autoCycleStarted: fields.has("autoCycleStarted"),
       autoCycleCompleted: fields.has("autoCycleCompleted"),
@@ -221,6 +223,8 @@ function TeamEditor({
               team has issued an identifier.
             </p>
           )}
+          <label className="admin-checkbox"><input type="checkbox" name="triageEnabled" key={String(team.triageEnabled)} defaultChecked={team.triageEnabled} />Enable triage</label>
+          <p>With triage off, new intake goes to Backlog with its evidence. Pending triage and deferred items stay stored and reappear when triage is enabled.</p>
           <label className="admin-checkbox"><input type="checkbox" name="estimatesEnabled" key={String(team.estimatesEnabled)} defaultChecked={team.estimatesEnabled} />Enable estimates</label>
           <label>Estimate scale
             <select name="estimateScale" key={team.estimateScale} defaultValue={team.estimateScale}>
@@ -254,6 +258,7 @@ function TeamEditor({
           </button>
         </fieldset>
       </form>
+      <TeamDefaultTemplate key={JSON.stringify(team.defaultIssueTemplate)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
       <TeamJoinRules data={data} team={team} onChanged={onChanged}/>
       <TeamPermissions data={data} team={team} onChanged={onChanged} />

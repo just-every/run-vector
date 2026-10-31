@@ -70,6 +70,15 @@ it('[API-001 API-002 API-004 ISSUE-022] Base scoped token authority drives nativ
  expect((await f.call('/settings/integrations/tokens/'+profile!.id,'DELETE')).status).toBe(200);expect((await f.api(read.token,'/issues')).status).toBe(401);
  await env.DB.prepare('UPDATE integration_tokens SET expires_at=1 WHERE token_hash IS NOT NULL').run();expect((await f.api(write.token,'/issues')).status).toBe(401);
  expect((await env.DB.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
+ const defaultTeam=f.initial.teams[0];
+ expect((await f.call('/settings/teams/'+defaultTeam.id,'PATCH',{defaultIssueTemplate:{name:'synthetic-vector-2646',description:'synthetic-vector-2647',priority:'high'}})).status).toBe(200);
+ const defaultToken=await f.issueToken(['issues:read','issues:write']);
+ const defaultCreated=await f.api(defaultToken.token,'/issues','POST',{teamId:defaultTeam.id,title:'synthetic-vector-2648'});
+ expect(defaultCreated.status).toBe(201);const defaultIssue=await defaultCreated.json() as any;
+ expect(defaultIssue).toMatchObject({description:'synthetic-vector-2647',priority:'high'});
+ const explicitDefault=await f.api(defaultToken.token,'/issues','POST',{teamId:defaultTeam.id,title:'synthetic-vector-2649',description:'',priority:'none'});
+ expect(explicitDefault.status).toBe(201);expect(await explicitDefault.json()).toMatchObject({description:'',priority:'none'});
+ expect((await f.call('/settings/teams/'+defaultTeam.id,'PATCH',{defaultIssueTemplate:null})).status).toBe(200);
 },180000);
 
 it('[API-003] the versioned schema is published through the real app',async()=>{

@@ -389,3 +389,5 @@ installation has no working OAuth credential and requires fresh application
 registration and member consent. Excluding the entire registration avoids
 implying that a restored client secret or old redirect relationship remains
 trusted at a new installation.
+
+A team's default issue template can supply omitted description, priority, estimate and labels during issue creation. Explicit values, including an empty description, no priority, no estimate and no labels, take precedence. New issue also prefills the default title without replacing typed content. Disabling estimates retains the configured template estimate and stored issue history; new issues omit that default estimate while the feature is off. Disabling triage sends new intake to Backlog with its evidence and retains pending triage and deferrals for re-enable.

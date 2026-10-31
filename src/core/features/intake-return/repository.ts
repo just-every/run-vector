@@ -32,7 +32,7 @@ export function dueIntakeQuery(db: ReturnType<typeof drizzle>, now: string) {
     category: sql<string>`s.category`,
     decision_id: sql<string | null>`(SELECT decision_id FROM issue_deferral_origins WHERE issue_id=i.id)`,
   }).from(sql`issues i JOIN workflow_statuses s ON s.id=i.status_id`)
-    .where(sql`s.category='intake' AND i.deferred_until IS NOT NULL
+    .where(sql`EXISTS(SELECT 1 FROM teams t WHERE t.id=i.team_id AND t.triage_enabled=1) AND s.category='intake' AND i.deferred_until IS NOT NULL
       AND julianday(i.deferred_until)<=julianday(${now})
       AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1)
       AND NOT EXISTS(SELECT 1 FROM vector_http_restore)`)
@@ -53,6 +53,7 @@ export async function clearDeferral(
 ) {
   const eligibility =
     `id=? AND version=? AND deferred_until=?
+    AND EXISTS(SELECT 1 FROM teams t WHERE t.id=issues.team_id AND t.triage_enabled=1)
     AND status_id IN (SELECT id FROM workflow_statuses WHERE category='intake')
     AND COALESCE((SELECT decision_id FROM issue_deferral_origins WHERE issue_id=issues.id),'')=?` +
     (onlyWhenDue ? " AND julianday(deferred_until)<=julianday(?) AND NOT EXISTS(SELECT 1 FROM vector_restore_status WHERE effects_held=1) AND NOT EXISTS(SELECT 1 FROM vector_http_restore)" : "") +
@@ -100,7 +101,8 @@ export async function guardReturnedNoop(db: D1Database, issue: DeferredIntake, a
     .prepare(
       `UPDATE issues SET version=version
     WHERE id=? AND version=? AND deferred_until IS NULL
-      AND status_id IN (SELECT id FROM workflow_statuses WHERE category='intake')
+      AND EXISTS(SELECT 1 FROM teams t WHERE t.id=issues.team_id AND t.triage_enabled=1)
+    AND status_id IN (SELECT id FROM workflow_statuses WHERE category='intake')
       AND EXISTS(SELECT 1 FROM teams t JOIN operators o ON o.workspace_id=t.workspace_id WHERE t.id=issues.team_id AND o.id=? AND o.removed_at IS NULL)
       RETURNING id`,
     )

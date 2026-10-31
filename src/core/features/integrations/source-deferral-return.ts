@@ -22,7 +22,7 @@ export function sourceDeferralReturnStatements(
       SELECT ?,i.id,NULL,?,'intake.returned',json_object('deferredUntil',i.deferred_until),
         json_object('deferredUntil',NULL),?,?
       FROM issues i JOIN workflow_statuses s ON s.id=i.status_id
-      WHERE i.id=? AND i.deferred_until IS NOT NULL AND s.category='intake'`)
+      WHERE i.id=? AND i.deferred_until IS NOT NULL AND s.category='intake' AND EXISTS(SELECT 1 FROM teams t WHERE t.id=i.team_id AND t.triage_enabled=1)`)
       .bind(event.id, sourceName, at, at, issueId),
     ...returnStatements(db, event),
     db.prepare(`UPDATE issues SET deferred_until=NULL,version=version+1,updated_at=?

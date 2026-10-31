@@ -1,3 +1,7 @@
+import { IssueMutationError } from "../issues/errors";
+import { admitEstimate } from "./estimate-admission";
+import { validateLabels } from "../issues/repository";
+import { drizzle } from "drizzle-orm/d1";
 import { z } from "zod";
 import { createUlid } from "../../shared/ids";
 import { statusRemovalNotifications } from "../notifications/status-removal";
@@ -22,6 +26,8 @@ type Team = {
   identifier_prefix: string;
   archived_at: string | null;
   cycles_enabled: number;
+  default_issue_template_json: string | null;
+  triage_enabled: number;
   estimates_enabled: number;
   estimate_scale: "points" | "fibonacci" | "exponential" | "tshirt";
   auto_cycle_started: number;
@@ -97,8 +103,16 @@ export async function updateTeam(
 ) {
   const ctx = await administrationContext(db, actor),
     old = await ownedRow<Team>(ctx, "teams", id);
+  if (input.defaultIssueTemplate) {
+    try {
+    await validateLabels(drizzle(ctx.db), input.defaultIssueTemplate.labelIds, ctx.workspace);
+    if (input.defaultIssueTemplate.estimate !== null) await admitEstimate(ctx.db,id,input.defaultIssueTemplate.estimate);
+    } catch(error) {if(error instanceof IssueMutationError) throw new SettingsError(error.code,error.message,400);throw error;}
+  }
   const next = {
     cyclesEnabled: input.cyclesEnabled ?? Boolean(old.cycles_enabled),
+    defaultIssueTemplate: input.defaultIssueTemplate === undefined ? (old.default_issue_template_json ? JSON.parse(old.default_issue_template_json) : null) : input.defaultIssueTemplate,
+    triageEnabled: input.triageEnabled ?? Boolean(old.triage_enabled),
     estimatesEnabled: input.estimatesEnabled ?? Boolean(old.estimates_enabled),
     estimateScale: input.estimateScale ?? old.estimate_scale,
     autoCycleStarted: input.autoCycleStarted ?? Boolean(old.auto_cycle_started),
@@ -115,19 +129,19 @@ export async function updateTeam(
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=? AND cycles_enabled=? AND estimates_enabled=? AND estimate_scale=?)",
+      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=? AND cycles_enabled=? AND estimates_enabled=? AND estimate_scale=? AND triage_enabled=? AND default_issue_template_json IS ?)",
       id,
       ctx.workspace,
       old.name,
       old.identifier_prefix,
       old.archived_at,
-      old.auto_cycle_started, old.auto_cycle_completed, old.cycles_enabled, old.estimates_enabled, old.estimate_scale,
+      old.auto_cycle_started, old.auto_cycle_completed, old.cycles_enabled, old.estimates_enabled, old.estimate_scale, old.triage_enabled, old.default_issue_template_json,
     ),
     ctx.db
       .prepare(
-        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,cycles_enabled=?,estimates_enabled=?,estimate_scale=?,updated_at=? WHERE id=?",
+        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,cycles_enabled=?,estimates_enabled=?,estimate_scale=?,triage_enabled=?,default_issue_template_json=?,updated_at=? WHERE id=?",
       )
-      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), Number(next.cyclesEnabled), Number(next.estimatesEnabled), next.estimateScale, ctx.at, id),
+      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), Number(next.cyclesEnabled), Number(next.estimatesEnabled), next.estimateScale, Number(next.triageEnabled), next.defaultIssueTemplate ? JSON.stringify(next.defaultIssueTemplate) : null, ctx.at, id),
     ...audit(
       ctx,
       "team.updated",
@@ -139,6 +153,8 @@ export async function updateTeam(
         archivedAt: old.archived_at,
         cyclesEnabled: Boolean(old.cycles_enabled),
         estimatesEnabled: Boolean(old.estimates_enabled),
+        triageEnabled: Boolean(old.triage_enabled),
+        defaultIssueTemplate: old.default_issue_template_json ? JSON.parse(old.default_issue_template_json) : null,
         estimateScale: old.estimate_scale,
         autoCycleStarted: Boolean(old.auto_cycle_started),
         autoCycleCompleted: Boolean(old.auto_cycle_completed),

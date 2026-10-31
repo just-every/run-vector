@@ -385,7 +385,7 @@ function IssueInspector({
           </details>
         ) : null}
       </div>
-      {writable && issue.status.category === "intake" ? (
+      {writable && issue.status.category === "intake" && options?.teams.find(team=>team.id===issue.team.id)?.triageEnabled ? (
         <DecisionPanel
           key={issue.identifier + ":decision"}
           issue={issue}

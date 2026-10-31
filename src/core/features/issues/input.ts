@@ -8,21 +8,21 @@ const optionalText = z.string().trim().max(20_000).nullable().transform((value) 
 export const createIssueInputSchema = z.object({
   title: z.string().trim().min(1).max(500),
   teamId: id,
-  description: z.string().max(100_000).optional().default(''),
+  description: z.string().max(100_000).optional(),
   statusId: id.optional(),
   assigneeOperatorId: nullableId.optional().default(null),
   projectId: nullableId.optional().default(null),
   milestoneId: nullableId.optional().default(null),
   cycleId: nullableId.optional().default(null),
-  priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']).optional().default('none'),
-  labelIds: z.array(id).max(seed.limits.labelsPerIssue).default([]).refine((values) => new Set(values).size === values.length, 'Label IDs must be unique.'),
-  estimate: z.number().int().min(1).max(100).nullable().optional().default(null),
+  priority: z.enum(['urgent', 'high', 'medium', 'low', 'none']).optional(),
+  labelIds: z.array(id).max(seed.limits.labelsPerIssue).optional().refine((values) => !values || new Set(values).size === values.length, 'Label IDs must be unique.'),
+  estimate: z.number().int().min(1).max(100).nullable().optional(),
   startDate: z.string().date().nullable().optional().default(null),
   dueDate: z.string().date().nullable().optional().default(null),
   expectedOutcome: optionalText.default(null),
   customerImpact: optionalText.default(null),
   customFields: z.record(z.string(), z.unknown()).default({}),
-}).strict().refine((value) => !value.startDate || !value.dueDate || value.startDate <= value.dueDate, {
+}).strict().transform(input=>({...input,templateProvided:Object.keys(input).filter(key=>input[key as keyof typeof input]!==undefined),description:input.description ?? '',priority:input.priority ?? 'none' as const,labelIds:input.labelIds ?? [],estimate:input.estimate ?? null})).refine((value) => !value.startDate || !value.dueDate || value.startDate <= value.dueDate, {
   message: 'Start date must be on or before due date.', path: ['startDate'],
 })
 
@@ -47,7 +47,7 @@ export const declineIssueInputSchema = decisionBase.extend({
   reason: z.string().trim().min(1).max(20_000),
 }).strict()
 
-export type CreateIssueInput = z.infer<typeof createIssueInputSchema>
+export type CreateIssueInput = Omit<z.infer<typeof createIssueInputSchema>,'templateProvided'> & {templateProvided?:string[]}
 export type AcceptIssueInput = z.infer<typeof acceptIssueInputSchema>
 export type DeferIssueInput = z.infer<typeof deferIssueInputSchema>
 export type DeclineIssueInput = z.infer<typeof declineIssueInputSchema>

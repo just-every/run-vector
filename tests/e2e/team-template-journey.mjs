@@ -1,0 +1,41 @@
+import assert from 'node:assert/strict';
+import {expect} from '@playwright/test';
+import {navigate} from './collaboration-navigation.mjs';
+import {openAdministrationForm} from './ui-administration-form.mjs';
+import {openDisclosures} from './ui-controls-checks.mjs';
+import {roleScreens} from './role-ui-support.mjs';
+
+export async function teamTemplateSettings({page,runtime,evidence,team,send}) {
+ const {base,sql}=runtime,inspect=roleScreens(evidence);
+ await page.setViewportSize({width:1440,height:1000});
+ await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
+ const form=page.getByRole('form',{name:'Default issue template for '+team.name,exact:true});
+ await form.getByLabel('Template name',{exact:true}).fill('synthetic-vector-2641');
+ await form.getByLabel('Default issue title',{exact:true}).fill('synthetic-vector-2642');
+ await form.getByLabel('Default issue description',{exact:true}).fill('## synthetic-vector-2643');
+ await form.getByLabel('Default issue priority',{exact:true}).selectOption('high');
+ await form.getByLabel('Default issue estimate',{exact:true}).selectOption('3');
+ const receipt=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/settings/teams/'+team.id&&response.request().method()==='PATCH');
+ await form.getByRole('button',{name:'Save default issue template',exact:true}).click();assert.equal((await receipt).status(),200);
+ await inspect(page,form,'team-default-template-settings');
+ await page.reload();await openAdministrationForm(page,'Edit '+team.name);
+ await expect(page.getByRole('form',{name:'Default issue template for '+team.name,exact:true}).getByLabel('Template name',{exact:true})).toHaveValue('synthetic-vector-2641');
+ await navigate(page,base+'/app/new-issue');
+ await page.getByLabel(/^Team/).selectOption(team.id);await openDisclosures(page);
+ await expect(page.getByLabel(/^Title/)).toHaveValue('synthetic-vector-2642');
+ await expect(page.getByLabel('Description',{exact:true})).toHaveValue('## synthetic-vector-2643');
+ await expect(page.getByLabel('Estimate',{exact:true})).toHaveValue('3');
+ await page.getByLabel(/^Title/).fill('synthetic-vector-2644');
+ const created=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/issues'&&response.request().method()==='POST');
+ await page.getByRole('button',{name:'Create issue',exact:true}).click();
+ const response=await created;assert.equal(response.status(),201);const issue=await response.json();
+ await expect(page.getByRole('heading',{name:'synthetic-vector-2644',exact:true})).toBeVisible();
+ await expect(page.locator('main').getByRole('heading',{name:'synthetic-vector-2643',exact:true})).toBeVisible();
+ await inspect(page,page.locator('main'),'team-default-template-created-issue');
+ const retained=sql(`SELECT * FROM issues WHERE id='${issue.id}'`);
+ await navigate(page,base+'/app/settings');await openAdministrationForm(page,'Edit '+team.name);
+ const remove=page.waitForResponse(response=>new URL(response.url()).pathname==='/api/settings/teams/'+team.id&&response.request().method()==='PATCH');
+ await page.getByRole('button',{name:'Remove default issue template',exact:true}).click();assert.equal((await remove).status(),200);
+ assert.deepEqual(sql(`SELECT * FROM issues WHERE id='${issue.id}'`),retained);
+ const fresh=await send(page,'/issues','POST',{teamId:team.id,title:'synthetic-vector-2645'},201);assert.equal(fresh.description,'');
+}

@@ -63,18 +63,18 @@ export async function teamCyclesPermissions(w: Awaited<ReturnType<typeof roleWor
     for(const actor of [w.people.owner,w.admin,w.lead,w.member,w.guest,viewer]) {
       const before=await snapshot(['teams','cycles','team_cycle_schedules','cycle_snapshots','issues','audit_records','administration_audit_details']);
       const allowed=actor!==w.guest&&actor!==viewer&&(actor!==w.member||permission==='all_members');
-      const response=await actor.call(path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt'});
+      const response=await actor.call(path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt',triageEnabled:false,defaultIssueTemplate:{name:'synthetic-vector-2637',description:'synthetic-vector-2638'}});
       expect(response.status,await response.clone().text()).toBe(allowed?200:403);
       if(!allowed)expect(await snapshot(['teams','cycles','team_cycle_schedules','cycle_snapshots','issues','audit_records','administration_audit_details'])).toEqual(before);
       else {
         expect((await response.json() as Fixture['initial']).teams.find(t=>t.id===w.team.id)?.cyclesEnabled).toBe(false);
-        expect((await w.call(path,'PATCH',{cyclesEnabled:true,estimatesEnabled:true,estimateScale:'points'})).status).toBe(200);
+        expect((await w.call(path,'PATCH',{cyclesEnabled:true,estimatesEnabled:true,estimateScale:'points',triageEnabled:true,defaultIssueTemplate:null})).status).toBe(200);
       }
     }
   }
   expect((await w.call(path+'/permissions','PUT',{settings:'team_owners',planning:'all_members'})).status).toBe(200);
   const before=await snapshot(['teams','audit_records','administration_audit_details']);
-  expect((await w.member.call(path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt'})).status).toBe(403);
+  expect((await w.member.call(path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt',triageEnabled:false,defaultIssueTemplate:{name:'synthetic-vector-2637',description:'synthetic-vector-2638'}})).status).toBe(403);
   expect(await snapshot(['teams','audit_records','administration_audit_details'])).toEqual(before);
 }
 
@@ -126,8 +126,8 @@ export async function proveTeamCyclesUpgrade() {
   const commitments=(await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results;
   await applyD1Migrations(db,migrations.slice(boundary));
   const after=(await db.prepare('SELECT * FROM teams ORDER BY id').all()).results;
-  expect(after.map(({cycles_enabled,estimates_enabled,estimate_scale,...team})=>team)).toEqual(before);
-  expect(after.every(t=>t.cycles_enabled===1 && t.estimates_enabled===1 && t.estimate_scale==='points')).toBe(true);
+  expect(after.map(({cycles_enabled,estimates_enabled,estimate_scale,triage_enabled,default_issue_template_json,...team})=>team)).toEqual(before);
+  expect(after.every(t=>t.cycles_enabled===1 && t.estimates_enabled===1 && t.estimate_scale==='points' && t.triage_enabled===1 && t.default_issue_template_json===null)).toBe(true);
   expect((await db.prepare('SELECT * FROM cycles ORDER BY id').all()).results).toEqual(cycles);
   expect((await db.prepare('SELECT id,cycle_id FROM issues ORDER BY id').all()).results).toEqual(commitments);
   expect((await db.prepare('PRAGMA foreign_key_check').all()).results).toEqual([]);
