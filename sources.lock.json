@@ -5353,11 +5353,11 @@
       "executable": false
     },
     "src/core/features/integrations/github/review-head.ts": {
-      "sha256": "728ba8d1344944fb8f031a54d5660be7c44050e949d5661a6721ca226330fed6",
+      "sha256": "a1c6246c6c010fa1392c101d56610538fb0e898cecce165b87e0282cf3588a1c",
       "executable": false
     },
     "src/core/features/integrations/github/reviews.ts": {
-      "sha256": "739bfbe163d883c644d86417c54030f17c75c852a7958dca1d53b5fe06099a47",
+      "sha256": "4381b376a14c0356281c0d0dd58b6af41cad074d90c47935cc6a098a8c70c1b6",
       "executable": false
     },
     "src/core/features/integrations/github/rule-routes.ts": {
@@ -8633,7 +8633,7 @@
       "executable": false
     },
     "tests/worker/github-review-scenario.ts": {
-      "sha256": "9b759bafd620cc56dc93975d90d3b5451a2f961f777101736b97d84dfac99496",
+      "sha256": "920b645d0c9200e1241dbfe8c6b273535f6438fc78a5bfe9816689bd5f67702c",
       "executable": false
     },
     "tests/worker/github-review-upgrade.ts": {
