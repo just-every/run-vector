@@ -153,6 +153,8 @@ not expand an old token. New routes are:
 | PATCH /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:write | Native fields and `completed`, including reopen |
 | PUT /api/v1/projects/ID/milestones/order | milestones:write | `{milestoneIds}` containing every project milestone once |
 | DELETE /api/v1/projects/ID/milestones/MILESTONE_ID | milestones:delete | Preserves issues, clears assignment and records native activity |
+| GET /api/v1/labels | labels:read | Workspace labels, cursor list with optional `name` substring and `projectsEnabled=true` or `false` filters |
+| GET /api/v1/labels/ID | labels:read | One native workspace label, fenced to the current workspace |
 | GET /api/v1/cycles | cycles:read | Cursor list with optional `team` and `closed=true` or `false` filters |
 | GET /api/v1/cycles/ID | cycles:read | Native cycle detail, progress, report and closure snapshot |
 | POST /api/v1/cycles | cycles:write | `teamId`, `name`, `startsLocal`, `endsLocal`, optional `capacity`; native timezone and overlap guards |
@@ -215,9 +217,32 @@ activity entry atomically; repeating an already-applied tick adds no receipt.
 The containing issue's status and version stay unchanged. Full-body comment
 edits retain their stricter revision check described above.
 
+### Workspace label reads
+
+Both label read operations require the explicit `labels:read` scope. Neither
+`metadata:read` nor `labels:write` grants it. Existing personal tokens, registered
+OAuth applications and issued grants retain their saved scopes; request this
+scope explicitly when issuing new access. Native label creation still requires
+`labels:write` and its existing workspace creation permission.
+
+The list accepts a case-insensitive substring in `name` (1 to 120 characters
+after trimming) and an optional `projectsEnabled=true` or `false`. Unknown query
+fields and invalid values return 400. Results retain native name-then-ID ordering.
+Each label has `{id, name, color, projectsEnabled, textColor}`; the detail response
+uses the identical stable ID and projection. A missing or foreign-workspace ID
+returns 404. Owners, Admins, Members and Viewers with a current personal token
+and this scope may read labels under the native Labels Settings permission;
+Guests receive 403. OAuth grants retain their existing eligible-role checks.
+Expired or revoked access and removed issuers cannot read either operation.
+
+A read grant cannot create a label. Label update and deletion remain owed;
+these two reads qualify no other object operation. Pagination uses the same
+actor-bound snapshot protocol below, including invalidation after a native
+rename, recolor or change to project availability in the filtered result.
+
 ### Pagination and limits
 
-Comments, projects, milestones and cycles accept `limit` and `cursor`; responses
+Comments, projects, milestones, cycles and labels accept `limit` and `cursor`; responses
 include their named array, `total` and nullable `nextCursor`. Treat cursors as
 opaque and keep all filters and the limit unchanged. They are bound to the actor
 and filters, and a changed ordered projection returns 409. Restart from the
@@ -237,9 +262,9 @@ tokens remain refused before resource admission.
 
 API-003 remains partial. Idempotency keys (including replay, concurrency,
 expiry, erasure and archive exclusion) are not implemented. Complete API
-operations for attachments, relations, labels, teams, workflow states, saved
-views, notifications and members, cycle update/delete and issue deletion remain
-owed. Attachment bytes stay behind the same-origin cookie file door: API-001
+operations for attachments, relations, teams, workflow states, saved
+views, notifications and members, label update and deletion, cycle update/delete
+and issue deletion remain owed. Attachment bytes stay behind the same-origin cookie file door: API-001
 still forbids private-file access by bearer. The remaining not-built objects and a
 real private-team refusal under ROLE-002 remain owed. Native cookie issue
 deletion, import erasure and its receipts are unchanged.
