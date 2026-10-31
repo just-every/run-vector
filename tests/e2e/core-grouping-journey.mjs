@@ -38,7 +38,7 @@ export async function groupingJourney({ page, context, base, state, sql, evidenc
   };
   const expectedGroups = (grouping, privateAccess = false) => grouping === 'milestone'
     ? [{ key: milestones[0].id, name: 'Same milestone', count: 51 }, { key: milestones[1].id, name: 'Same milestone', count: 1 }, { key: 'none', name: 'No milestone', count: privateAccess ? 3 : 2 }]
-    : [...parents.slice(0, privateAccess ? 3 : 2).map((parent, n) => ({ key: parent.id, name: parent.identifier + ': Same parent title', count: n === 0 ? 51 : n === 1 ? 1 : 2 })), { key: 'none', name: 'No parent', count: privateAccess ? 1 : 2 }];
+    : [...parents.slice(0, privateAccess ? 3 : 2).map((parent, n) => ({ key: parent.id, name: parent.identifier + ': ' + parent.title, count: n === 0 ? 51 : n === 1 ? 1 : 2 })), { key: 'none', name: 'No parent', count: privateAccess ? 1 : 2 }];
   const sorted = groups => [...groups].sort((a, b) => a.key.localeCompare(b.key));
   const assertPage = async (reader, grouping, expected, privateAccess = false) => {
     await ready(reader.page);
@@ -56,9 +56,9 @@ export async function groupingJourney({ page, context, base, state, sql, evidenc
       const count = result.issues.filter(i => i.groupKey === group.key).length;
       assert.equal(await section.getByRole('heading').innerText(), group.name + ' ' + (count < group.count ? `Showing ${count} of ${group.count}` : group.count));
     }
-    if (!privateAccess) for (const secret of [parents[2].id, parents[2].identifier, issues[53].identifier]) {
+    if (!privateAccess) for (const secret of [parents[2].id, parents[2].identifier, parents[2].title, issues[53].identifier]) {
       assert.ok(!JSON.stringify(result).includes(secret));
-      assert.ok(!(await reader.page.locator('main:visible').innerText()).includes(secret));
+      assert.ok(!(await reader.page.locator('main:visible').first().innerText()).includes(secret));
     }
     return result;
   };
