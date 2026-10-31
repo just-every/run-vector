@@ -389,3 +389,52 @@ installation has no working OAuth credential and requires fresh application
 registration and member consent. Excluding the entire registration avoids
 implying that a restored client secret or old redirect relationship remains
 trusted at a new installation.
+
+## Warehouse export reads (REPORT-005)
+
+Request the new `reports:read` scope explicitly when creating a token or OAuth
+grant. Existing grants keep their saved scopes. Only a current Owner or Admin
+may use these operations, and an Admin sees only currently readable teams.
+The scope grants no native writes, attachments, credentials or portable archive
+access. The safe Admin archive refusal under ROLE-002(c) is unchanged.
+
+| GET route | Rows |
+| --- | --- |
+| `/api/v1/report-exports/issues` | Issues with stable identifier, title, description, visible status, project and cycle IDs, priority, assignee ID, dates, estimate and version |
+| `/api/v1/report-exports/history` | Visible issue activity with stable ID, issue identifier, kind, actor ID and display name, previous and next values, and timestamps |
+| `/api/v1/report-exports/cycles` | Visible cycles with team ID, name, start, end, capacity, closure and timestamps |
+| `/api/v1/report-exports/projects` | Visible projects with name, description, lead ID, dates, priority, lifecycle, archive state and timestamps |
+
+Every endpoint returns `{resource, rows, total, nextCursor}`. Rows use ascending
+stable IDs; timestamps are ISO strings and optional fields are explicit nulls.
+`total` counts the complete currently visible filtered result, before paging.
+Pass `limit` (1–100, default 50), optional `team` (a native team ID), and the
+previous response's opaque `cursor` until `nextCursor` is null. A team filter
+on projects selects projects with currently visible issues in that team; without
+a team filter, native visibility also permits empty workspace projects.
+Hidden and foreign teams yield empty results without revealing whether they
+exist. Unknown query fields and invalid values return 400.
+
+Cursors are signed and bound to the actor, resource, team, limit and current
+role and team authority. Keep the query unchanged between pages. A malformed
+or tampered cursor returns 400; a foreign cursor or changed authority returns
+409 `pagination_invalidated`. Restart from page one after 409. Every request
+also rechecks current token scope, expiry, revocation, active identity and role;
+revoked access receives 401 and a disallowed current role receives 403.
+
+These are live read pages, not a frozen snapshot or incremental change feed.
+Each page and its total share a database snapshot; edits between requests may
+change totals and values. Consumers should upsert by stable ID and reconcile
+with a later full traversal. Use the bearer header and the same installation
+origin rules as the other API operations. Follow `Retry-After` on 429.
+For example, fetch `/api/v1/report-exports/issues?limit=50`, then the same URL
+with `&cursor=` and the URL-encoded returned cursor. The published schema at
+`/api/v1/schema` describes all four response projections.
+
+History uses the native visibility projection: retained references to currently
+hidden issues, teams, projects or source documents cannot reveal history rows.
+Undo custody is stripped from activity values. No member email, credential
+record, signing material, attachment object key or attachment bytes is exported.
+This adapter does not commission Fivetran or Airbyte connectors. Scheduled
+incremental bucket exports, customer links and scheduled Google Sheets sync
+remain unimplemented REPORT-005 obligations.
