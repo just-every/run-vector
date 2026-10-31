@@ -1,3 +1,4 @@
+import { BooleanFilters } from "./boolean-filters";
 import { useState, useEffect } from "react";
 import type { IssueListQuery } from "../list-schema";
 import type { WorkspaceOptions } from "../../../shared/workspace-options";
@@ -81,6 +82,7 @@ export function IssueFilters({
     ) ?? [];
   return (
     <>
+      <BooleanFilters value={query.expression} onChange={expression => onChange({ expression })}/>
       <div className="issues-filters">
         <label>
           Title or identifier
