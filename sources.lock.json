@@ -6977,7 +6977,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams-panel.tsx": {
-      "sha256": "9fa67e86bfc3c55d141b89a63fdb29fd2c69924495135ffe44e4b4c7ca143aee",
+      "sha256": "294b048a3a1d8a4e0ff12da24b684abd689dd8517dc949efe1b9d851c94506ee",
       "executable": false
     },
     "src/core/features/streams/index.ts": {

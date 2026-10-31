@@ -259,8 +259,8 @@ function TeamEditor({
           </button>
         </fieldset>
       </form>
-      <TeamTriageResponsibility key={JSON.stringify(team.triageResponsibility)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
-      <TeamDefaultTemplate key={JSON.stringify(team.defaultIssueTemplate)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
+      <TeamTriageResponsibility key={"triage:"+JSON.stringify(team.triageResponsibility)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
+      <TeamDefaultTemplate key={"template:"+JSON.stringify(team.defaultIssueTemplate)} team={team} data={data} editable={access.settings} onChanged={onChanged}/>
       <TeamMembers data={data} team={team} onChanged={onChanged} />
       <TeamJoinRules data={data} team={team} onChanged={onChanged}/>
       <TeamPermissions data={data} team={team} onChanged={onChanged} />
