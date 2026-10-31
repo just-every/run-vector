@@ -1,21 +1,24 @@
+import type { WorkspaceOptions } from '../../../shared/workspace-options';
+import { TermControls, expressionSuggestions } from './filter-term-controls';
 import { useEffect, useId, useRef, useState } from 'react';
 import { expressionDepth, expressionLimit, formatFilterExpression, parseFilterExpression, priorities, type FilterExpression, type Priority } from '../filter-expression';
 
 const initial = (): FilterExpression => ({ kind: 'priority', value: 'high' });
 function condition(kind: FilterExpression['kind']): FilterExpression {
   if (kind === 'priority') return initial();
+  if (kind === 'term') return { kind, field: 'category', operator: '=', value: 'backlog' };
   if (kind === 'blocked') return { kind };
   if (kind === 'not') return { kind, child: { kind: 'blocked' } };
   return { kind, left: initial(), right: initial() };
 }
-function Condition({ value, onChange, path = '1', depth = 0 }: {
-  value: FilterExpression; onChange: (value: FilterExpression) => void; path?: string; depth?: number;
+function Condition({ value, onChange, path = '1', depth = 0, options }: {
+  value: FilterExpression; onChange: (value: FilterExpression) => void; path?: string; depth?: number; options: WorkspaceOptions | null;
 }) {
   return <fieldset className="boolean-condition">
     <legend>Condition {path}</legend>
     <label>Match
       <select aria-label={`Condition ${path}`} value={value.kind} onChange={event => onChange(condition(event.target.value as FilterExpression['kind']))}>
-        <option value="priority">Priority</option><option value="blocked">Blocked</option>
+        <option value="priority">Priority</option><option value="blocked">Blocked</option><option value="term">Field comparison</option>
         {(depth < expressionDepth || ['and', 'or', 'not'].includes(value.kind)) && <>
           <option value="and">All (AND)</option><option value="or">Any (OR)</option><option value="not">Not (NOT)</option>
         </>}
@@ -26,14 +29,15 @@ function Condition({ value, onChange, path = '1', depth = 0 }: {
         {priorities.map(priority => <option key={priority} value={priority}>{priority === 'none' ? 'No priority' : priority[0].toUpperCase() + priority.slice(1)}</option>)}
       </select>
     </label>}
-    {value.kind === 'not' && <Condition value={value.child} depth={depth + 1} path={path + '.1'} onChange={child => onChange({ ...value, child })}/>}
+    {value.kind === 'term' && <TermControls value={value} onChange={onChange} path={path} options={options}/>}
+    {value.kind === 'not' && <Condition options={options} value={value.child} depth={depth + 1} path={path + '.1'} onChange={child => onChange({ ...value, child })}/>}
     {(value.kind === 'and' || value.kind === 'or') && <>
-      <Condition value={value.left} depth={depth + 1} path={path + '.1'} onChange={left => onChange({ ...value, left })}/>
-      <Condition value={value.right} depth={depth + 1} path={path + '.2'} onChange={right => onChange({ ...value, right })}/>
+      <Condition options={options} value={value.left} depth={depth + 1} path={path + '.1'} onChange={left => onChange({ ...value, left })}/>
+      <Condition options={options} value={value.right} depth={depth + 1} path={path + '.2'} onChange={right => onChange({ ...value, right })}/>
     </>}
   </fieldset>;
 }
-export function BooleanFilters({ value, onChange }: { value: string; onChange: (expression: string) => void }) {
+export function BooleanFilters({ value, onChange, options }: { value: string; onChange: (expression: string) => void; options: WorkspaceOptions | null }) {
   const [draft, setDraft] = useState(value), [error, setError] = useState('');
   const [open, setOpen] = useState(!!value);
   const [tree, setTree] = useState(() => parseFilterExpression(value) ?? initial());
@@ -59,17 +63,17 @@ export function BooleanFilters({ value, onChange }: { value: string; onChange: (
   }
   return <details className="boolean-filters" open={open} onToggle={event => setOpen(event.currentTarget.open)}>
     <summary>Advanced filter</summary>
-    <p id={help}>Combine priority and blocked conditions with AND, OR, NOT and parentheses. NOT applies first, then AND, then OR. Other filters still apply.</p>
+    <p id={help}>Combine issue fields with AND, OR, NOT and parentheses. Suggestions use current visible records; dates use the workspace calendar. NOT applies first, then AND, then OR. Other filters still apply.</p>
     <form onSubmit={event => { event.preventDefault(); apply(draft); }}>
       <label>Filter expression
         <input value={draft} maxLength={expressionLimit} list={hints} aria-describedby={error ? `${help} ${errorId}` : help} aria-invalid={!!error} onChange={event => setDraft(event.target.value)} placeholder="(priority=high OR priority=urgent) AND NOT blocked"/>
       </label>
-      <datalist id={hints}>{['priority=high', 'priority=urgent', 'blocked', 'NOT blocked', '(priority=high OR priority=urgent) AND NOT blocked'].map(term => <option key={term} value={term}/>)}</datalist>
+      <datalist id={hints}>{expressionSuggestions(draft, options).map(term => <option key={term.value} value={term.value}>{term.label}</option>)}</datalist>
       <button type="submit">Apply expression</button>
       <button type="button" onClick={() => { applied.current = ''; setDraft(''); setTree(initial()); onChange(''); setError(''); }}>Clear expression</button>
     </form>
     <details><summary>Build expression</summary>
-      <Condition value={tree} onChange={setTree}/>
+      <Condition options={options} value={tree} onChange={setTree}/>
       <output aria-label="Menu expression">{formatFilterExpression(tree)}</output>
       <button type="button" onClick={() => { const source = formatFilterExpression(tree); setDraft(source); apply(source); }}>Apply menu filter</button>
     </details>

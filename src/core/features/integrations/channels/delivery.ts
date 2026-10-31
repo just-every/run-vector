@@ -36,7 +36,7 @@ export async function channelMatches(env:WorkerBindings,workspace:string,id:stri
  if(!view)return false;
  const timezone=await env.DB.prepare('SELECT timezone FROM workspace_settings WHERE id=?').bind(workspace).first<string>('timezone');
  const query=issueListQuerySchema.parse({...JSON.parse(view.filters_json),sort:view.sort,grouping:view.grouping});
- const {relation,values}=browseWhere(query,workspace,workspaceDate(new Date(),timezone!),channel.created_by);
+ const {relation,values}=browseWhere(query,workspace,workspaceDate(new Date(),timezone!),channel.created_by,timezone!);
  return Boolean(await env.DB.prepare('SELECT 1 '+relation+' AND i.id=?').bind(...values,issue.id).first());
 }
 const escapeSlack=(text:string)=>text.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');

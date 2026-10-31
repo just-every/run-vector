@@ -29,7 +29,7 @@ export async function processMemberSubscriptions(env:WorkerBindings,actor:string
    const view=await db.prepare('SELECT filters_json,sort,grouping FROM saved_views WHERE id=? AND workspace_id=? AND (owner_operator_id=? OR is_shared=1)').bind(sub.subjectId,access.workspace_id,actor).first<{filters_json:string;sort:string;grouping:string}>();
    if(!view)continue;
    const query=issueListQuerySchema.parse({...JSON.parse(view.filters_json),sort:view.sort,grouping:view.grouping});
-   const {relation,values}=browseWhere(query,access.workspace_id,workspaceDate(new Date(),timezone!),actor);
+   const {relation,values}=browseWhere(query,access.workspace_id,workspaceDate(new Date(),timezone!),actor,timezone!);
    test={sql:'EXISTS(SELECT 1 '+relation+' AND i.id=e.issue_id)',values};
    guards.push(gitGuard(db,'EXISTS(SELECT 1 FROM saved_views WHERE id=? AND filters_json=? AND sort=? AND grouping=? AND (owner_operator_id=? OR is_shared=1))',sub.subjectId,view.filters_json,view.sort,view.grouping,actor));
   }

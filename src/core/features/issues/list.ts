@@ -53,7 +53,7 @@ export async function listIssues(
 ): Promise<IssueListData> {
   const access = await browseActor(db, actor);
   const today = workspaceDate(now, access.timezone);
-  const { relation, values } = browseWhere(query, access.workspace_id, today, actor);
+  const { relation, values } = browseWhere(query, access.workspace_id, today, actor, access.timezone);
   const group = browseGroup[query.grouping];
   const manual = await manualBrowseOrder(db, actor, access.workspace_id, query);
   const order = [group.rowOrder, manual?.sql ?? browseSort[query.sort], "i.identifier ASC"]

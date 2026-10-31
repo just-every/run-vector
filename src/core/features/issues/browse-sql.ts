@@ -77,15 +77,16 @@ export function browseWhere(
   workspace: string,
   today: string,
   actor: string,
+  timezone: string,
 ) {
   // Archived issues (AUTO-003) leave every list; search with archived records and their own pages still find them.
   const conditions = ["t.workspace_id=?", "i.archived_at IS NULL"],
-    values: string[] = [workspace];
+    values: (string | number)[] = [workspace];
   const equal = (column: string, value: string) => {
     conditions.push(`${column}=?`);
     values.push(value);
   };
-  const expression = filterExpressionSql(query.expression, blockedSql);
+  const expression = filterExpressionSql(query.expression, blockedSql, actor, today, timezone);
   if (expression.sql) { conditions.push(expression.sql); values.push(...expression.values); }
   if (query.scope !== "all") {
     conditions.push(scopeSql[query.scope]);
@@ -93,7 +94,7 @@ export function browseWhere(
   }
   if (query.category !== "all") equal("s.category", query.category);
   // A personal scope lists every such issue; the general list hides completed.
-  else if (query.status === "all" && query.scope === "all") conditions.push("s.category<>'completed'");
+  else if (query.status === "all" && query.scope === "all" && !expression.includesStatus) conditions.push("s.category<>'completed'");
   if (query.status !== "all") equal("s.id", query.status);
   if (query.priority !== "all") equal("i.priority", query.priority);
   if (query.q) {

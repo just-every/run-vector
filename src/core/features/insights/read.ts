@@ -14,12 +14,12 @@ export async function insightAuthority(db: D1Database, actor: string) {
 export async function readInsights(source: D1Database, actor: string, filters: IssueListQuery, chart: InsightQuery, now = new Date()) {
   const db = visibilityDatabase(source, actor);
   const access = await insightAuthority(db, actor);
-  const where = browseWhere(filters, access.workspace_id, workspaceDate(now, access.timezone), actor);
+  const where = browseWhere(filters, access.workspace_id, workspaceDate(now, access.timezone), actor, access.timezone);
   const relations = [where];
   // The list deliberately hides completed issues by default. An explicit report
   // option unions that exact list with its Completed filter; no second filter model.
   if (chart.includeCompleted === "true" && filters.scope === "all" && filters.category === "all" && filters.status === "all")
-    relations.push(browseWhere({ ...filters, category: "completed" }, access.workspace_id, workspaceDate(now, access.timezone), actor));
+    relations.push(browseWhere({ ...filters, category: "completed" }, access.workspace_id, workspaceDate(now, access.timezone), actor, access.timezone));
   const selection = relations.map(r => "SELECT i.id " + r.relation).join(" UNION ");
   const rows = (await db.prepare(`WITH selected AS (${selection})
     SELECT i.identifier,i.title,i.estimate,i.created_at createdAt,i.completed_at completedAt,

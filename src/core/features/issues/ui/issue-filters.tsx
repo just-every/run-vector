@@ -82,7 +82,7 @@ export function IssueFilters({
     ) ?? [];
   return (
     <>
-      <BooleanFilters value={query.expression} onChange={expression => onChange({ expression })}/>
+      <BooleanFilters options={options} value={query.expression} onChange={expression => onChange({ expression })}/>
       <div className="issues-filters">
         <label>
           Title or identifier

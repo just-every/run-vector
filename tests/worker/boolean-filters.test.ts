@@ -1,3 +1,4 @@
+import { nativeBooleanJourney } from './boolean-native-journey';
 import { env } from 'cloudflare:workers';
 import { expect, it } from 'vitest';
 import { roleWorkspace, resetLimits, snapshot } from './role-fixture';
@@ -93,4 +94,5 @@ it('Boolean list and saved-view doors retain exact paged results, reject invalid
   expect(await snapshot(['saved_views', 'issues', 'issue_activity'])).toEqual(definitions);
   await request('/auth/signout', 'POST', {}, viewerCookie);
   expect((await viewer.call('/issues?expression=NOT+blocked')).status).toBe(401);
+  await nativeBooleanJourney();
 }, 120_000);
