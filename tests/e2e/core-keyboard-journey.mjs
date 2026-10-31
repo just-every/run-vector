@@ -5,6 +5,7 @@ import { streamPlanningJourney } from './core-stream-planning-journey.mjs';
 import { undoJourney } from './core-undo-journey.mjs';
 import { paletteJourney } from './core-palette-journey.mjs';
 import { favoritesJourney } from './core-favorites-journey.mjs';
+import { booleanFilterJourney } from './core-boolean-filter-journey.mjs';
 import { crossTeamViewJourney } from './core-cross-team-view-journey.mjs';
 
 export async function keyboardJourney(page, context, base, record, independent = journey => journey(), runtime) {
@@ -53,6 +54,7 @@ export async function keyboardJourney(page, context, base, record, independent =
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   record('CMD-002', 'Control+k and Meta+k each open a palette that navigates with Enter and closes with Escape; c and g m/c/p navigate, while title/description typing remains editable.');
   await independent(() => favoritesJourney({ page, context, base, record, ...runtime }));
+  await independent(() => booleanFilterJourney({ page, context, base, record, ...runtime }));
   await independent(() => crossTeamViewJourney({ page, context, base, record, ...runtime }));
   await independent(() => issueEditingJourney(page, context, base, record));
   await independent(() => streamPlanningJourney(page, context, base, record));
