@@ -521,7 +521,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "c48f8b29142b8bc510de8bf3c56595e91b0962830e095097c20b1b49f182e9f3",
+      "sha256": "13ef92485303fac2e5d1392819dee91efb3f6edfadfc2446b33540ba4e3205b1",
       "executable": false
     },
     "DEMO.md": {
@@ -5877,7 +5877,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/boolean-filters.tsx": {
-      "sha256": "fb7d216bd06bad0f33869b98926d328e9c863610f48d781e14647416e0d2220c",
+      "sha256": "1e1297f1543cc47517fa522a17f213b53c4d9481390f88712f20d155bd9eb70e",
       "executable": false
     },
     "src/core/features/issues/ui/data.ts": {
@@ -7641,7 +7641,7 @@
       "executable": false
     },
     "tests/e2e/core-boolean-filter-journey.mjs": {
-      "sha256": "21df5438ffe00a45ade3fca7f98623881f0b5bd35bd8386880d27a27fac5589f",
+      "sha256": "75ee3c620abd0e840d1a8e11679e3c385aff6b9c9bb7c93430235a50f4db5d8b",
       "executable": false
     },
     "tests/e2e/core-cross-team-view-journey.mjs": {
