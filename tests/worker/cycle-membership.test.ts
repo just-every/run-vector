@@ -1,3 +1,4 @@
+import { cyclesOffJourney } from "./team-cycles-journey";
 import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
@@ -5,7 +6,7 @@ import { setupAdministration } from "./administration-fixture";
 import { beforeCommit } from "./removal-interleaving";
 import { bindings, request } from "./base-auth-fixture";
 
-const check = (name: string, run: () => Promise<void>) => contractWith(it, "CYCLE-008 ISSUE-006 ISSUE-007 BASE-OPS-005", name, run);
+const check = (name: string, run: () => Promise<void>) => contractWith(it, "TEAM-005 CYCLE-008 ISSUE-006 ISSUE-007 BASE-OPS-005", name, run);
 let serial = 0;
 async function fixture() {
   const f = await setupAdministration(), prefix = 'AC' + String.fromCharCode(65 + serial++);
@@ -50,6 +51,7 @@ check('native start and completion opt in independently, keep commitments, and r
   const stale=await f.call('/issues/'+started.identifier,'PATCH',{expectedVersion:1,statusId:f.team.statuses.find(s=>s.category==='started')!.id}); expect(stale.status).toBe(409);
   await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleCompleted:false});
   expect((await f.change(await f.create(),'completed')).cycle).toBeNull();
+  await cyclesOffJourney(f);
 });
 check('bulk changes undo as one action including automatic membership, and expired cycles are never chosen', async()=>{
   const f=await fixture(); await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleStarted:true});

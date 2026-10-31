@@ -247,7 +247,7 @@ export async function planIssueUpdate(
         "Terminal work cannot be assigned to a cycle.",
       );
     guard(
-      "EXISTS(SELECT 1 FROM cycles WHERE id=? AND team_id=? AND closed_at IS NULL)",
+      "EXISTS(SELECT 1 FROM cycles c JOIN teams t ON t.id=c.team_id WHERE c.id=? AND c.team_id=? AND t.cycles_enabled=1 AND c.closed_at IS NULL)",
       String(values.cycleId),
       issue.teamId,
     );

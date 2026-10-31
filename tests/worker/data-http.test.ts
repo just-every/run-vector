@@ -86,6 +86,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const roles=(db:D1Database)=>db.prepare('SELECT id,email,role FROM operators ORDER BY id').all().then(rows=>rows.results);
  const archivedRoles=await roles(env.DB);
  expect(new Set(archivedRoles.map(row=>row.role))).toEqual(new Set(['owner','admin','member','viewer']));
+ expect((await f.call('/settings/teams/'+f.team.id,'PATCH',{cyclesEnabled:false})).status).toBe(200);
+ const cycleConfiguration=(await env.DB.prepare('SELECT * FROM team_cycle_schedules WHERE team_id=?').bind(f.team.id).all()).results;
  const created=await f.call('/portability/exports','POST',{});expect(created.status).toBe(201);const id=(await created.json() as {id:string}).id;
  expect((await request('/api/portability/exports/'+id,'GET',undefined,peer)).status).toBe(404);
  let state={phase:'building'};while(state.phase==='building'){const response=await f.call('/portability/exports/'+id+'/advance','POST',{maxParts:16});expect(response.status).toBe(200);state=await response.json() as {phase:string};}
@@ -125,6 +127,8 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT count(*) AS n FROM oa_tokens').first())?.n).toBe(0);
  // ROLE-001: every member's role restores with them; no session or link comes along.
  expect(await roles(destination.ARCHIVE_TARGET_DB)).toEqual(archivedRoles);
+ expect(await destination.ARCHIVE_TARGET_DB.prepare('SELECT cycles_enabled FROM teams WHERE id=?').bind(f.team.id).first('cycles_enabled')).toBe(0);
+ expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM team_cycle_schedules WHERE team_id=?').bind(f.team.id).all()).results).toEqual(cycleConfiguration);
  expect((await targetCall('/auth/request','POST',{email:'peer@http-archive.test'})).status).toBe(409);
  const historical=await targetSignIn();
  const restoredTemplate=await targetCall('/api/project-templates/'+portableTemplate.id,'GET',undefined,historical);expect(restoredTemplate.status).toBe(200);expect(await restoredTemplate.json()).toEqual(portableTemplate);
