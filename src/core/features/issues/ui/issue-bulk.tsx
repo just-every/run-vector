@@ -17,7 +17,8 @@ export function IssueBulk({ selection, options, onRefresh, onClear, onRemove, on
   const rows = [...selection.values()];
   if (!rows.length || options?.operator.role === 'viewer') return null;
   const cyclesEnabled = rows.every(row => options?.teams.some(team => team.id === row.team.id && team.cyclesEnabled));
-  const activeField = field === "cycleId" && !cyclesEnabled ? "priority" : field;
+  const estimatesEnabled = rows.every(row => options?.teams.some(team => team.id === row.team.id && team.estimatesEnabled));
+  const activeField = (field === "cycleId" && !cyclesEnabled || field === "estimate" && !estimatesEnabled) ? "priority" : field;
   return (
     <section className="issues-bulk" aria-label="Bulk edit">
       <strong>{rows.length} selected</strong>
@@ -30,7 +31,7 @@ export function IssueBulk({ selection, options, onRefresh, onClear, onRemove, on
       </details>
       <label>Change
         <select aria-label="Change" value={activeField} onChange={(event) => setField(event.target.value as IssueEditField)}>
-          {Object.entries(issueEditFields).filter(([id]) => id !== "cycleId" || cyclesEnabled).map(([id, name]) => <option key={id} value={id}>{name}</option>)}
+          {Object.entries(issueEditFields).filter(([id]) => (id !== "cycleId" || cyclesEnabled) && (id !== "estimate" || estimatesEnabled)).map(([id, name]) => <option key={id} value={id}>{name}</option>)}
         </select>
       </label>
       <button disabled={!options || rows.length > options.bulkEditIssuesPerOperation}

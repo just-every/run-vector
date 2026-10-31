@@ -1,3 +1,4 @@
+import { admitEstimate } from "../administration/estimate-admission";
 import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import { requireIssueAccess } from './access'
@@ -69,6 +70,7 @@ export async function createIssueRecord(binding: D1Database, request: CreateIssu
   if (!['backlog', 'unstarted', 'started', 'completed', 'canceled'].includes(status.category)) {
     throw new IssueMutationError('invalid_option', 'New issues must use a non-Intake, non-Duplicate status.')
   }
+  if (request.input.estimate !== null) await admitEstimate(binding,team.id,request.input.estimate)
   await validateIssueOptions(db, team.workspaceId, team.id, request.input)
 
   const allocation = await allocateIssueSequence(binding,request.actorOperatorId,team.workspaceId,team.id,now)

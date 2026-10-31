@@ -22,6 +22,8 @@ type Team = {
   identifier_prefix: string;
   archived_at: string | null;
   cycles_enabled: number;
+  estimates_enabled: number;
+  estimate_scale: "points" | "fibonacci" | "exponential" | "tshirt";
   auto_cycle_started: number;
   auto_cycle_completed: number;
 };
@@ -97,6 +99,8 @@ export async function updateTeam(
     old = await ownedRow<Team>(ctx, "teams", id);
   const next = {
     cyclesEnabled: input.cyclesEnabled ?? Boolean(old.cycles_enabled),
+    estimatesEnabled: input.estimatesEnabled ?? Boolean(old.estimates_enabled),
+    estimateScale: input.estimateScale ?? old.estimate_scale,
     autoCycleStarted: input.autoCycleStarted ?? Boolean(old.auto_cycle_started),
     autoCycleCompleted: input.autoCycleCompleted ?? Boolean(old.auto_cycle_completed),
     name: input.name ?? old.name,
@@ -111,19 +115,19 @@ export async function updateTeam(
   await commit(ctx, [
     guard(
       ctx.db,
-      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=? AND cycles_enabled=?)",
+      "EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND name=? AND identifier_prefix=? AND archived_at IS ? AND auto_cycle_started=? AND auto_cycle_completed=? AND cycles_enabled=? AND estimates_enabled=? AND estimate_scale=?)",
       id,
       ctx.workspace,
       old.name,
       old.identifier_prefix,
       old.archived_at,
-      old.auto_cycle_started, old.auto_cycle_completed, old.cycles_enabled,
+      old.auto_cycle_started, old.auto_cycle_completed, old.cycles_enabled, old.estimates_enabled, old.estimate_scale,
     ),
     ctx.db
       .prepare(
-        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,cycles_enabled=?,updated_at=? WHERE id=?",
+        "UPDATE teams SET name=?,identifier_prefix=?,archived_at=?,auto_cycle_started=?,auto_cycle_completed=?,cycles_enabled=?,estimates_enabled=?,estimate_scale=?,updated_at=? WHERE id=?",
       )
-      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), Number(next.cyclesEnabled), ctx.at, id),
+      .bind(next.name, next.identifierPrefix, next.archivedAt, Number(next.autoCycleStarted), Number(next.autoCycleCompleted), Number(next.cyclesEnabled), Number(next.estimatesEnabled), next.estimateScale, ctx.at, id),
     ...audit(
       ctx,
       "team.updated",
@@ -134,6 +138,8 @@ export async function updateTeam(
         identifierPrefix: old.identifier_prefix,
         archivedAt: old.archived_at,
         cyclesEnabled: Boolean(old.cycles_enabled),
+        estimatesEnabled: Boolean(old.estimates_enabled),
+        estimateScale: old.estimate_scale,
         autoCycleStarted: Boolean(old.auto_cycle_started),
         autoCycleCompleted: Boolean(old.auto_cycle_completed),
       },

@@ -1,3 +1,4 @@
+import { estimateChoices, estimateLabel, type EstimateScale } from "../../administration/estimate-scale";
 import { useState } from "react";
 import { ApiError, fetchJson } from "../../../app/api-client";
 import { useDateFormat } from "../../../shared/date-format";
@@ -21,8 +22,10 @@ export function IssueFieldEditor({
   field,
   onRefresh,
   writable = true,
+  estimateScale = "points",
 }: {
   writable?: boolean;
+  estimateScale?: EstimateScale;
   issue: IssueDetailData;
   field: EditableIssueField;
   onRefresh: (receipt?: IssueDetailData) => void;
@@ -52,7 +55,7 @@ export function IssueFieldEditor({
     value === null
       ? "Not set"
       : field === "estimate"
-        ? `${value} points`
+        ? estimateLabel(Number(value),estimateScale)
         : field === "dueDate" || field === "startDate"
           ? date(String(value))
           : value;
@@ -166,6 +169,12 @@ export function IssueFieldEditor({
                     setSnapshot({ ...snapshot, draft: event.target.value })
                   }
                 />
+              ) : field === "estimate" && estimateScale !== "points" ? (
+                <select aria-label="Issue estimate" value={snapshot.draft} onChange={event=>setSnapshot({...snapshot,draft:event.target.value})}>
+                  <option value="">Not set</option>
+                  {snapshot.draft && !estimateChoices(estimateScale).some(choice=>String(choice.value)===snapshot.draft) && <option value={snapshot.draft}>{estimateLabel(Number(snapshot.draft),estimateScale)}</option>}
+                  {estimateChoices(estimateScale).map(choice=><option key={choice.value} value={choice.value}>{choice.label}</option>)}
+                </select>
               ) : (
                 <input
                   aria-label={`Issue ${name}`}

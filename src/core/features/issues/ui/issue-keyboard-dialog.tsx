@@ -44,7 +44,8 @@ export function IssueKeyboardDialog({ field, targets, options, onClose, onSucces
     return () => { active = false; };
   }, [field, targets]);
   const choices = options ? issueEditChoices(field, rows, options) : [];
-  const unavailable = ["statusId", "priority"].includes(field)
+  const estimatesDisabled=field === "estimate" && !!options && rows.some(row=>!options.teams.find(team=>team.id===row.team.id)?.estimatesEnabled);
+  const unavailable = estimatesDisabled || ["statusId", "priority"].includes(field)
     ? !choices.some((choice) => choice.id === value)
     : ["assigneeOperatorId", "projectId", "milestoneId", "cycleId"].includes(field) && !!value && !choices.some((choice) => choice.id === value);
   const overLimit = !!options && rows.length > options.bulkEditIssuesPerOperation;

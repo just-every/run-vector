@@ -1030,7 +1030,9 @@
     "membership_mode",
     "requests_enabled",
     "is_private",
-    "cycles_enabled"
+    "cycles_enabled",
+    "estimates_enabled",
+    "estimate_scale"
   ],
   "vector_auth_operators": [
     "auth_id",

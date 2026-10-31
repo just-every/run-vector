@@ -1,3 +1,4 @@
+import { estimateLabel } from "../administration/estimate-scale";
 import {
   categoryByStatus,
   dateInTimezone,
@@ -33,6 +34,7 @@ export type StreamItem = {
   title: string;
   version: number;
   estimate: number | null;
+  estimateLabel: string | null;
   cycle: { id: string; name: string } | null;
   labels: Array<{ id: string; name: string; color: string }>;
   status: { id: string; name: string; category: string };
@@ -286,7 +288,8 @@ function toStreamItem(
     identifier: issue.identifier,
     title: issue.title,
     version: issue.version,
-    estimate: issue.estimate,
+    estimate: team.estimatesEnabled ? issue.estimate : null,
+    estimateLabel: team.estimatesEnabled && issue.estimate !== null ? estimateLabel(issue.estimate,team.estimateScale) : null,
     cycle: !team.cyclesEnabled || issue.cycleId === null ? null : (() => {
       const cycle = snapshot.cycles.find(row => row.id === issue.cycleId);
       if (!cycle) throw new Error(`Issue ${issue.identifier} references a missing cycle`);

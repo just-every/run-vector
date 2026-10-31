@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { estimateScaleSchema } from '../features/administration/estimate-scale'
 import { roles } from '../features/roles/matrix'
 
 export const workspaceOptionsSchema = z.object({
@@ -14,6 +15,8 @@ export const workspaceOptionsSchema = z.object({
       name: z.string(),
       identifierPrefix: z.string(),
       cyclesEnabled: z.boolean(),
+      estimatesEnabled: z.boolean(),
+      estimateScale: estimateScaleSchema,
     }),
   ),
   operators: z.array(z.object({ id: z.string(), name: z.string() })),

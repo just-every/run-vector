@@ -1,3 +1,4 @@
+import { EstimateChoice } from "./estimate-choice";
 import { preferenceSchema } from "../../views/schema";
 import { lastCreatedTeamKey, preferredTeam } from "./preferred-team";
 import { administrationSchema } from "../../administration/schema";
@@ -154,7 +155,7 @@ export function NewIssueForm() {
           method: "POST",
           headers: { "content-type": "application/json", ...(!isIntake ? { 'x-vector-page': 'issue' } : {}) },
           body: JSON.stringify(
-            isIntake ? createIntakePayload(values, effectiveTimezone) : createIssuePayload({ ...values, cycleId: options.data?.teams.find(team => team.id === values.teamId)?.cyclesEnabled ? values.cycleId : "" }),
+            isIntake ? createIntakePayload(values, effectiveTimezone) : createIssuePayload({ ...values, estimate: options.data?.teams.find(team=>team.id===values.teamId)?.estimatesEnabled ? values.estimate : "", cycleId: options.data?.teams.find(team => team.id === values.teamId)?.cyclesEnabled ? values.cycleId : "" }),
           ),
         },
       );
@@ -496,19 +497,7 @@ export function NewIssueForm() {
                       <option value="none">No priority</option>
                     </select>
                   </label>
-                  <label>
-                    Estimate <span>Points</span>
-                    <input
-                      type="number"
-                      min="1"
-                      max="100"
-                      step="1"
-                      value={values.estimate}
-                      onChange={(event) =>
-                        setValues({ ...values, estimate: event.target.value })
-                      }
-                    />
-                  </label>
+                  {options.data.teams.find(team=>team.id===values.teamId)?.estimatesEnabled && <EstimateChoice scale={options.data.teams.find(team=>team.id===values.teamId)!.estimateScale} value={values.estimate} onChange={estimate=>setValues({...values,estimate})} />}
                   <label>
                     Start date
                     <input type="date" value={values.startDate}

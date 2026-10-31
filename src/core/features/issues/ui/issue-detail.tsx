@@ -254,12 +254,13 @@ function IssueInspector({
       <IssueReleases identifier={issue.identifier}/>
       <div className="issue-body">
         <div className="issue-planning-fields">
-          <IssueFieldEditor writable={writable}
+          {options?.teams.find(team=>team.id===issue.team.id)?.estimatesEnabled && <IssueFieldEditor writable={writable}
+            estimateScale={options.teams.find(team=>team.id===issue.team.id)!.estimateScale}
             key={issue.identifier + ":estimate"}
             issue={issue}
             field="estimate"
             onRefresh={onRefresh}
-          />
+          />}
           <IssueFieldEditor writable={writable}
             key={issue.identifier + ":start-date"}
             issue={issue}

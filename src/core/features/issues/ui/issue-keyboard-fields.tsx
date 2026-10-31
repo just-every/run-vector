@@ -1,3 +1,5 @@
+import { EstimateChoice } from "./estimate-choice";
+import { estimateChoices } from "../../administration/estimate-scale";
 import type { WorkspaceOptions } from "../../../shared/workspace-options";
 import { issueEditChoices, issueEditFields, type IssueEditField, type IssueEditTarget } from "./issue-keyboard-actions";
 
@@ -26,11 +28,21 @@ export function IssueKeyboardFields({ field, rows, options, value, setValue, lab
       <small>No labels selected clears labels.</small>
     </fieldset>
   );
-  if (field === "estimate" || field === "dueDate" || field === "startDate") return (
+  if (field === "estimate") {
+    const teams=rows.map(row=>options.teams.find(team=>team.id===row.team.id));
+    if (teams.some(team=>!team?.estimatesEnabled)) return <p role="status">Estimates are disabled for a selected team.</p>;
+    if (teams.every(team=>team!.estimateScale === "points")) return <EstimateChoice scale="points" value={value} onChange={setValue} disabled={disabled}/>;
+    const choices=estimateChoices(teams[0]!.estimateScale).filter(choice=>teams.every(team=>estimateChoices(team!.estimateScale).some(other=>other.value===choice.value)));
+    return <label>Estimate<select autoFocus aria-label="Estimate" value={value} disabled={disabled} onChange={event=>setValue(event.target.value)}>
+      <option value="">Not set</option>
+      {value && !choices.some(choice=>String(choice.value)===value) && <option value={value}>{value} points (retained)</option>}
+      {choices.map(choice=><option key={choice.value} value={choice.value}>{choice.label}</option>)}
+    </select><small>Only values supported by every selected team's scale are available.</small></label>;
+  }
+  if (field === "dueDate" || field === "startDate") return (
     <label>{issueEditFields[field]}
-      <input autoFocus aria-label={issueEditFields[field]} type={field === "estimate" ? "number" : "date"}
-        min={field === "estimate" ? 1 : undefined} max={field === "estimate" ? 100 : undefined}
-        step={field === "estimate" ? 1 : undefined} value={value} disabled={disabled}
+      <input autoFocus aria-label={issueEditFields[field]} type="date"
+        value={value} disabled={disabled}
         onChange={(event) => setValue(event.target.value)} />
       <small>Leave empty to clear {issueEditFields[field].toLowerCase()} on every target issue.</small>
     </label>

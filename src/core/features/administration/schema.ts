@@ -1,3 +1,4 @@
+import { estimateScaleSchema } from "./estimate-scale";
 import { roles } from "../roles/matrix";
 import { projectColor, projectIcon } from "../projects/appearance";
 import {
@@ -46,7 +47,7 @@ export const teamCreateSchema = z
   .strict();
 export const teamUpdateSchema = teamCreateSchema.omit({createSlackChannel:true,isPrivate:true})
   .partial()
-  .extend({ archived: z.boolean().optional(), cyclesEnabled: z.boolean().optional(), autoCycleStarted: z.boolean().optional(), autoCycleCompleted: z.boolean().optional() })
+  .extend({ archived: z.boolean().optional(), cyclesEnabled: z.boolean().optional(), estimatesEnabled: z.boolean().optional(), estimateScale: estimateScaleSchema.optional(), autoCycleStarted: z.boolean().optional(), autoCycleCompleted: z.boolean().optional() })
   .strict()
   .refine((v) => Object.keys(v).length > 0);
 export const statusCreateSchema = z
@@ -173,6 +174,8 @@ export const administrationSchema = z.object({
       archivedAt: z.string().nullable(),
       prefixEditable: z.boolean(),
       cyclesEnabled: z.boolean(),
+      estimatesEnabled: z.boolean(),
+      estimateScale: estimateScaleSchema,
       autoCycleStarted: z.boolean(),
       autoCycleCompleted: z.boolean(),
       statuses: z.array(administrationStatusSchema),

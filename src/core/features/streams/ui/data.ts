@@ -10,6 +10,7 @@ export const streamItemSchema = z.object({
   title: z.string(),
   version: z.number().int().positive(),
   estimate: z.number().nullable(),
+  estimateLabel: z.string().nullable(),
   cycle: z.object({ id: z.string(), name: z.string() }).nullable(),
   milestoneId: z.string().nullable(),
   milestone: z.object({ id: z.string(), name: z.string(), projectId: z.string() }).nullable(),

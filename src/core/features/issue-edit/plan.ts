@@ -1,3 +1,4 @@
+import { admitEstimate } from "../administration/estimate-admission";
 import { issueReferenceStatements } from "../issue-references/repository";
 import { planAutomaticCycle, automaticCycleStatements } from "../cycle-membership/plan";
 import {
@@ -164,6 +165,10 @@ export async function planIssueUpdate(
     .bind(issue.teamId)
     .first<{ workspace_id: string }>();
   if (!team) throw new Error("Issue team is missing.");
+  if (input.estimate !== undefined) {
+    const configuration=await admitEstimate(binding,issue.teamId,input.estimate);
+    guard("EXISTS(SELECT 1 FROM teams WHERE id=? AND estimates_enabled=1 AND estimate_scale=?)",issue.teamId,configuration.estimate_scale);
+  }
   guard(
     "EXISTS(SELECT 1 FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL)",
     actor,

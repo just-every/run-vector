@@ -1,3 +1,4 @@
+import {teamEstimatesSettings} from "./team-estimates-journey.mjs";
 import { inviteReader } from './role-reader-support.mjs';
 import assert from 'node:assert/strict';
 import { expect } from '@playwright/test';
@@ -98,7 +99,7 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
     await saveSwitch(peer,false);
     await send(page,path+'/permissions','PUT',{settings:'team_owners',planning:'all_members'});
     const protectedState=sql('SELECT * FROM teams ORDER BY id');
-    await send(peer,path,'PATCH',{cyclesEnabled:true},403);
+    await send(peer,path,'PATCH',{cyclesEnabled:true,estimatesEnabled:false,estimateScale:'tshirt'},403);
     assert.deepEqual(sql('SELECT * FROM teams ORDER BY id'),protectedState);
     await send(page,path,'PATCH',{cyclesEnabled:true});
     const unchanged=()=>({teams:sql('SELECT * FROM teams ORDER BY id'),audit:sql('SELECT * FROM audit_records ORDER BY id'),history:retained()});
@@ -108,13 +109,14 @@ export async function teamCyclesSettings({page,runtime,clause,evidence,peer,memb
         await send(page,'/settings/operators/'+probe.id+'/role','PATCH',{role,teamIds:role==='guest'?[team.id]:[]});
         if(role==='member')await send(page,path+'/members/'+probe.id,'PUT',{role:'member'});
         const before=unchanged(),allowed=role==='admin'||role==='member'&&permission==='all_members';
-        await send(probe.page,path,'PATCH',{cyclesEnabled:false},allowed?200:403);
-        if(allowed)await send(page,path,'PATCH',{cyclesEnabled:true});
+        await send(probe.page,path,'PATCH',{cyclesEnabled:false,estimatesEnabled:false,estimateScale:'tshirt'},allowed?200:403);
+        if(allowed)await send(page,path,'PATCH',{cyclesEnabled:true,estimatesEnabled:true,estimateScale:'points'});
         else assert.deepEqual(unchanged(),before,role+' refusal leaves storage unchanged');
       }
     }
     await send(page,path+'/permissions','PUT',{settings:'team_owners',planning:'all_members'});
     assert.deepEqual(retained(),before,'authority probes retain history');
+    await teamEstimatesSettings({page,runtime,evidence,team,other,send});
   });
   assert.deepEqual(probe.errors,[],'role probe has no browser errors');
   } finally {await probe.context.close();}

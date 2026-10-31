@@ -46,6 +46,8 @@ export const teams = sqliteTable('teams', {
   isPrivate: integer('is_private', { mode: 'boolean' }).notNull().default(false),
   archivedAt: text('archived_at'),
   cyclesEnabled: integer('cycles_enabled', { mode: 'boolean' }).notNull().default(true),
+  estimatesEnabled: integer('estimates_enabled', { mode: 'boolean' }).notNull().default(true),
+  estimateScale: text('estimate_scale', { enum: ['points', 'fibonacci', 'exponential', 'tshirt'] }).notNull().default('points'),
   ...timestamps,
 }, (table) => [
   uniqueIndex('teams_workspace_name_idx').on(table.workspaceId, table.name),

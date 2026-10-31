@@ -14,8 +14,8 @@ export async function getSearchOptions(
   const row = await db
     .prepare(
       `SELECT w.id,w.name,actor.role,w.member_label_creation AS memberLabelCreation,
-    (SELECT json_group_array(json_object('id',id,'name',name,'identifierPrefix',identifier_prefix,'cyclesEnabled',json(CASE WHEN cycles_enabled=1 THEN 'true' ELSE 'false' END))) FROM (
-      SELECT id,name,identifier_prefix,cycles_enabled FROM teams WHERE workspace_id=actor.workspace_id AND archived_at IS NULL ORDER BY name,id LIMIT ${seed.limits.teams}
+    (SELECT json_group_array(json_object('id',id,'name',name,'identifierPrefix',identifier_prefix,'cyclesEnabled',json(CASE WHEN cycles_enabled=1 THEN 'true' ELSE 'false' END),'estimatesEnabled',json(CASE WHEN estimates_enabled=1 THEN 'true' ELSE 'false' END),'estimateScale',estimate_scale)) FROM (
+      SELECT id,name,identifier_prefix,cycles_enabled,estimates_enabled,estimate_scale FROM teams WHERE workspace_id=actor.workspace_id AND archived_at IS NULL ORDER BY name,id LIMIT ${seed.limits.teams}
     )) AS teams,
     (SELECT json_group_array(json_object('id',id,'name',name,'role',role)) FROM (
       SELECT directory.id,directory.name,directory.role FROM operators directory WHERE directory.workspace_id=actor.workspace_id AND directory.removed_at IS NULL AND ${visibleDirectoryPerson('directory','actor.id')} ORDER BY name,id LIMIT ${seed.limits.operators}

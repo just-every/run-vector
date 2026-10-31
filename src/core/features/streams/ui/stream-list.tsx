@@ -112,6 +112,7 @@ export function StreamList({
                       <strong>{item.title}</strong>
                       <span className="stream-row-meta">
                         <span className="issue-identifier">{item.identifier}</span>
+                        {item.estimateLabel && <span aria-label="Estimate">{item.estimateLabel}</span>}
                         <span className="stream-reason-summary"><span className="reason-pill reason-pill--primary">{reasonLabel(item.primaryReason)}</span>
                           {item.contextReasons.length > 0 && <span aria-label={item.contextReasons.map(reasonLabel).join(", ")}>+{item.contextReasons.length}</span>}
                         </span>

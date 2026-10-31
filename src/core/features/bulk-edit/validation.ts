@@ -29,6 +29,11 @@ export function bulkValidation(
         (t.cycles_enabled=0 OR (json_extract(c.body,'$.cycleId') IS NOT NULL AND
           (NOT EXISTS(SELECT 1 FROM cycles cy WHERE cy.id=json_extract(c.body,'$.cycleId') AND cy.team_id=i.team_id AND cy.closed_at IS NULL) OR
            NOT EXISTS(SELECT 1 FROM workflow_statuses n WHERE n.id=COALESCE(json_extract(c.body,'$.statusId'),i.status_id) AND n.team_id=i.team_id AND n.category NOT IN ('completed','canceled','duplicate'))))) AS cycle,
+      json_type(c.body,'$.estimate') IS NOT NULL AND
+        (t.estimates_enabled=0 OR (json_extract(c.body,'$.estimate') IS NOT NULL AND NOT (
+          t.estimate_scale='points' OR (t.estimate_scale='fibonacci' AND json_extract(c.body,'$.estimate') IN(1,2,3,5,8,13,21,34,55,89)) OR
+          (t.estimate_scale='exponential' AND json_extract(c.body,'$.estimate') IN(1,2,4,8,16,32,64)) OR
+          (t.estimate_scale='tshirt' AND json_extract(c.body,'$.estimate') IN(1,2,3,5,8,13))))) AS estimate,
       (CASE WHEN json_type(c.body,'$.startDate') IS NULL THEN i.start_date ELSE json_extract(c.body,'$.startDate') END) >
         (CASE WHEN json_type(c.body,'$.dueDate') IS NULL THEN i.due_date ELSE json_extract(c.body,'$.dueDate') END) AS dateOrder,
       json_type(c.body,'$.labelIds') IS NOT NULL AND (json_array_length(c.body,'$.labelIds')>${seed.limits.labelsPerIssue} OR json_array_length(c.body,'$.labelIds')<>(SELECT count(DISTINCT value) FROM json_each(c.body,'$.labelIds'))) AS labelLimit,
@@ -43,12 +48,13 @@ export function bulkValidation(
     statement: db.prepare(sql).bind(...values),
     admission: db
       .prepare(
-        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit OR dateOrder) THEN 1 ELSE json('bulk edit admission denied') END`,
+        `SELECT CASE WHEN NOT EXISTS(SELECT 1 FROM (${sql}) WHERE unavailable OR stale OR status OR assignee OR project OR milestone OR cycle OR labels OR labelLimit OR dateOrder OR estimate) THEN 1 ELSE json('bulk edit admission denied') END`,
       )
       .bind(...values),
   };
 }
 const reasons = {
+  estimate: "Estimate is disabled or outside this team’s scale.",
   dateOrder: "Start date must be on or before due date.",
   unavailable: "Issue is unavailable.",
   stale: "The issue version is stale.",

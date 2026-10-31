@@ -157,6 +157,8 @@ function TeamEditor({
     await action.run(`/api/settings/teams/${team.id}`, "PATCH", {
       name: fields.get("name"),
       cyclesEnabled: fields.has("cyclesEnabled"),
+      estimatesEnabled: fields.has("estimatesEnabled"),
+      estimateScale: fields.get("estimateScale"),
       autoCycleStarted: fields.has("autoCycleStarted"),
       autoCycleCompleted: fields.has("autoCycleCompleted"),
       ...(team.prefixEditable
@@ -219,6 +221,14 @@ function TeamEditor({
               team has issued an identifier.
             </p>
           )}
+          <label className="admin-checkbox"><input type="checkbox" name="estimatesEnabled" key={String(team.estimatesEnabled)} defaultChecked={team.estimatesEnabled} />Enable estimates</label>
+          <label>Estimate scale
+            <select name="estimateScale" key={team.estimateScale} defaultValue={team.estimateScale}>
+              <option value="points">Points (1–100)</option><option value="fibonacci">Fibonacci</option>
+              <option value="exponential">Exponential</option><option value="tshirt">T-shirt sizes</option>
+            </select>
+          </label>
+          <p>Sizes map to points: XS 1, S 2, M 3, L 5, XL 8, XXL 13. Changing the scale keeps earlier estimates and closed snapshots. Turning estimates off hides their controls without deleting them.</p>
           <label className="admin-checkbox"><input type="checkbox" name="cyclesEnabled" key={String(team.cyclesEnabled)} defaultChecked={team.cyclesEnabled} />
             Enable cycles
           </label>

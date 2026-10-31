@@ -8,7 +8,7 @@ export function creationGuard(
   workspace: string,
   teamId: string,
   statusId: string,
-  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds"> & { milestoneId?: string | null },
+  input: Pick<CreateIssueInput, "projectId" | "cycleId" | "labelIds" | "estimate"> & { milestoneId?: string | null },
   category: string,
   allocatedPrefix: string,
 ) {
@@ -28,6 +28,10 @@ export function creationGuard(
     teamId,
     category,
   ];
+  if (input.estimate !== null) {
+    conditions.push("EXISTS(SELECT 1 FROM teams WHERE id=? AND estimates_enabled=1 AND (estimate_scale='points' OR (estimate_scale='fibonacci' AND ? IN(1,2,3,5,8,13,21,34,55,89)) OR (estimate_scale='exponential' AND ? IN(1,2,4,8,16,32,64)) OR (estimate_scale='tshirt' AND ? IN(1,2,3,5,8,13))))");
+    values.push(teamId,input.estimate,input.estimate,input.estimate);
+  }
   if (input.projectId) {
     conditions.push(
       "EXISTS(SELECT 1 FROM projects WHERE id=? AND workspace_id=? AND archived_at IS NULL)",

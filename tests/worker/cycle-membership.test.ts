@@ -1,3 +1,4 @@
+import { teamEstimatesJourney } from "./team-estimates-journey";
 import { cyclesOffJourney } from "./team-cycles-journey";
 import { env } from "cloudflare:workers";
 import { expect, it } from "vitest";
@@ -52,6 +53,7 @@ check('native start and completion opt in independently, keep commitments, and r
   await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleCompleted:false});
   expect((await f.change(await f.create(),'completed')).cycle).toBeNull();
   await cyclesOffJourney(f);
+  await teamEstimatesJourney(f,f.team);
 });
 check('bulk changes undo as one action including automatic membership, and expired cycles are never chosen', async()=>{
   const f=await fixture(); await f.mutate('/settings/teams/'+f.team.id,'PATCH',{autoCycleStarted:true});
