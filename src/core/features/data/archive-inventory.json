@@ -2247,5 +2247,12 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "member_favorites": [
+    "operator_id",
+    "workspace_id",
+    "version",
+    "folders_json",
+    "entries_json"
   ]
 }

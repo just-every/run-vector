@@ -24,6 +24,8 @@ import {
 } from '../../features/notifications/ui/notification-context'
 import { SavedViewNavigation } from '../../features/views/ui/saved-views'
 import { SavedViewReceiptProvider } from '../../features/views/ui/saved-view-resource'
+import { FavoriteProvider } from '../../features/favorites/ui/context'
+import { FavoriteNavigation } from '../../features/favorites/ui/navigation'
 import { VectorMark } from './vector-mark'
 import { inSettings } from './settings-path'
 import { documentReads, privateReads } from '../read-lifecycle'
@@ -65,11 +67,11 @@ const navigation: NavigationItem[] = [
 export function AppShell({ children }: AppShellProps) {
   const { operator } = useRouteContext({ from: '/app' })
   return (
-    <SavedViewReceiptProvider key={operator.id}>
+    <FavoriteProvider key={operator.id}><SavedViewReceiptProvider key={operator.id}>
       <NotificationProvider>
         <TriageProvider><StreamPlanningProvider><AppShellContent>{children}</AppShellContent></StreamPlanningProvider></TriageProvider>
       </NotificationProvider>
-    </SavedViewReceiptProvider>
+    </SavedViewReceiptProvider></FavoriteProvider>
   )
 }
 
@@ -230,6 +232,7 @@ function AppShellContent({ children }: AppShellProps) {
             <NavLink key={item.to} item={item} pathname={location.pathname} />
           ))}
         </nav>
+        <FavoriteNavigation />
         <SavedViewNavigation />
         <div className="app-nav-actions">
           <Link
@@ -292,6 +295,11 @@ function AppShellContent({ children }: AppShellProps) {
             <summary>Saved views</summary>
             <SavedViewNavigation />
           </details>
+          <details className="app-mobile-favorites" onClick={event => {
+            if (event.target instanceof Element && event.target.closest('.favorite-list a')) event.currentTarget.open = false
+          }} onKeyDown={event => {
+            if (event.key === 'Escape') { event.preventDefault(); event.currentTarget.open = false; event.currentTarget.querySelector('summary')?.focus() }
+          }}><summary>Favorites</summary><FavoriteNavigation /></details>
           <MobileAccount name={operator.name} pathname={location.pathname} signingOut={signingOut}
             onSignOut={() => void signOut()} />
         </div>
