@@ -9166,7 +9166,7 @@
       "executable": false
     },
     "tests/worker/issue-templates.test.ts": {
-      "sha256": "c8143d01ef79f51c033d9c6f73632b5b0ef6c3cedb78fb3e22aea1db3bf92591",
+      "sha256": "b504277699fb5c185f8c05a1b65f28a0d9b71b60d63b73db55baae05000d8ae7",
       "executable": false
     },
     "tests/worker/issue-undo.test.ts": {
