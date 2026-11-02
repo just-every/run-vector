@@ -5818,7 +5818,7 @@
       "executable": false
     },
     "src/core/features/issue-templates/controls.tsx": {
-      "sha256": "35b03bb3ace209ac23ec660344f25e053be86d42ce924393eb167d3283006d8a",
+      "sha256": "4b23df20544b15d6b78c2fd6b21aac5c92994837dd3b53ba832787ae78aad8ab",
       "executable": false
     },
     "src/core/features/issue-templates/properties.ts": {
@@ -7314,7 +7314,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams/team-planning.tsx": {
-      "sha256": "616af65d7094b36cd4e5b041bcba2a9eafe9999a2ece744ac052b6c98e51b2de",
+      "sha256": "85bed5fc3ca90360ae3eb3eb4ce31ba97c2df72a640a886b707915a7ea138960",
       "executable": false
     },
     "src/core/features/settings/ui/teams/team-record.tsx": {
@@ -7346,7 +7346,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/teams/teams.css": {
-      "sha256": "114662c5199068291f14b715d4cfebbe7ebca9f1c11f5726af27146ed85bd77f",
+      "sha256": "f2de1e676e69a02e2602a752718cd644fb3281c4f373c0c68dbc8ba8997e4386",
       "executable": false
     },
     "src/core/features/settings/ui/teams/workflow-groups.ts": {
@@ -8582,7 +8582,7 @@
       "executable": false
     },
     "tests/e2e/issue-templates-journey.mjs": {
-      "sha256": "b105ccd2836d0297a75c181f163693e14793fe9d3e0789946e2a0167b8832c17",
+      "sha256": "dbb063e02f74e394ce7a81e43d0b7ce961617e9be153448f79d0c82a75965a61",
       "executable": false
     },
     "tests/e2e/jira-capture-support.mjs": {

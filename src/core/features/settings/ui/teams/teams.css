@@ -69,6 +69,22 @@
 .triage-rotation { display: grid; gap: 0.9rem; }
 .triage-rotation form, .triage-rotation fieldset { display: grid; gap: 1rem; min-width: 0; margin: 0; padding: 0; border: 0; }
 .triage-rotation .field input[type="datetime-local"] { max-width: 18rem; }
+.issue-templates { min-width: 0; }
+.template-rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--app-line); }
+.template-rows > li { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 3.5rem; padding: 0.4rem 0.25rem; border-bottom: 1px solid var(--app-line); }
+.template-rows .row-main { flex: 1; }
+.template-rows:empty { display: none; }
+.issue-template-form { min-width: 0; padding: 1.1rem 1.25rem; border-radius: 0.6rem; background: var(--app-paper); }
+.issue-template-form fieldset, .template-fields, .template-properties, .template-labels { display: grid; gap: 1rem; min-width: 0; margin: 0; padding: 0; border: 0; }
+.issue-template-form .field input[type="text"], .issue-template-form .field input[type="number"], .issue-template-form .field select, .issue-template-form .field textarea { background-color: var(--app-column); }
+.issue-template-form .field input[type="number"] { box-sizing: border-box; width: 100%; min-height: 44px; padding: 0.55rem 0.8rem; border: 1px solid var(--app-field-border); border-radius: 0.5rem; color: var(--app-ink); font: inherit; }
+.issue-template-form .field textarea { min-height: 7rem; font-size: max(13px, 1em); }
+.issue-template-form .mention-editor textarea { margin: 0; }
+.template-properties { padding: 0.25rem 0 0.75rem 1.5rem; }
+.template-subissue { display: grid; gap: 1rem; min-width: 0; padding-top: 1rem; border-top: 1px solid var(--app-line); }
+.template-subissue-title { margin: 0; font-size: 1rem; font-weight: 600; }
+.template-check { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; cursor: pointer; }
+.template-check input { flex: none; width: 1.25rem; height: 1.25rem; margin: 0; }
 .intake-form { display: grid; gap: 1rem; }
 .sendgrid-event-key { display: grid; gap: 0.75rem; }
 
