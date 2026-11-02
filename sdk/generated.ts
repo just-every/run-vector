@@ -7,12 +7,15 @@ export interface Components {
   "WarehouseHistoryRow": { "id": string; "issueId": string; "issueIdentifier": string; "teamId": string; "kind": string; "actorId": string | null; "actor": string; "previousValue": unknown; "nextValue": unknown; "createdAt": string; "updatedAt": string };
   "WarehouseCycles": { "id": string; "teamId": string; "name": string; "startsAt": string; "endsAt": string; "capacity": number | null; "closedAt": string | null; "createdAt": string; "updatedAt": string };
   "WarehouseProjects": { "id": string; "name": string; "description": string; "leadOperatorId": string; "startDate": string | null; "targetDate": string | null; "priority": string; "lifecycle": string; "archivedAt": string | null; "createdAt": string; "updatedAt": string };
+  "IssueTemplateDefaults": { "title"?: string; "description"?: string; "statusId"?: string; "priority"?: "none" | "low" | "medium" | "high" | "urgent"; "labelIds"?: (string)[]; "assigneeOperatorId"?: (string | null); "estimate"?: number | null; "projectId"?: (string | null) };
+  "IssueTemplateInput": { "name": string; "teamId"?: (string | null); "defaults"?: Components["IssueTemplateDefaults"]; "subissues"?: ({ "title": string; "description"?: string; "statusId"?: string; "priority"?: "none" | "low" | "medium" | "high" | "urgent"; "labelIds"?: (string)[]; "assigneeOperatorId"?: (string | null); "estimate"?: number | null; "projectId"?: (string | null) })[] };
+  "IssueTemplate": { "name": string; "teamId": (string | null); "defaults": Components["IssueTemplateDefaults"]; "subissues": ({ "title": string; "description"?: string; "statusId"?: string; "priority"?: "none" | "low" | "medium" | "high" | "urgent"; "labelIds"?: (string)[]; "assigneeOperatorId"?: (string | null); "estimate"?: number | null; "projectId"?: (string | null) })[]; "id": string; "version": number; "canEdit": boolean };
 }
 export interface Operations {
   "schema_get_0": { input: Record<string, never>; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "metadata_get_1": { input: Record<string, never>; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_list_2": { input: { query?: { "cursor"?: string; "limit"?: number; "q"?: string; "scope"?: string; "category"?: string; "status"?: string; "priority"?: string; "assignee"?: string; "team"?: string; "project"?: string; "cycle"?: string; "label"?: string; "due"?: string; "dueFrom"?: string; "dueTo"?: string; "blocked"?: string; "parent"?: string; "orderView"?: string; "sort"?: "newest" | "oldest" | "priority" | "status" | "start" | "due" | "updated" | "manual"; "grouping"?: string; "start"?: "all" | "overdue" | "range" | "none" | "this_week"; "startFrom"?: string; "startTo"?: string } }; output: { "issues"?: ({ "startDate": string | null; "dueDate": string | null; [key: string]: unknown })[]; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
-  "issues_create_3": { input: { body: { "startDate"?: string | null; "dueDate"?: string | null; [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issues_create_3": { input: { body: { "startDate"?: string | null; "dueDate"?: string | null; "templateId"?: string; "templateVersion"?: number; [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_get_4": { input: { path: { "identifier": string } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_update_5": { input: { path: { "identifier": string }; body: { "startDate"?: string | null; "dueDate"?: string | null; [key: string]: unknown } }; output: { "branchName"?: string; "deployments"?: ({ "repository": string; "deploymentId": number; "sha": string; "environment": string; "deployedAt": string; [key: string]: unknown })[]; "startDate": string | null; "dueDate": string | null; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issues_copy_6": { input: { path: { "identifier": string }; body: { [key: string]: unknown } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
@@ -58,6 +61,11 @@ export interface Operations {
   "warehouse_history_list": { input: { query?: { "limit"?: number; "cursor"?: string; "team"?: string } }; output: { "resource": "history"; "rows": (Components["WarehouseHistoryRow"])[]; "total": number; "nextCursor": string | null }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "warehouse_cycles_list": { input: { query?: { "limit"?: number; "cursor"?: string; "team"?: string } }; output: { "resource": "cycles"; "rows": (Components["WarehouseCycles"])[]; "total": number; "nextCursor": string | null }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "warehouse_projects_list": { input: { query?: { "limit"?: number; "cursor"?: string; "team"?: string } }; output: { "resource": "projects"; "rows": (Components["WarehouseProjects"])[]; "total": number; "nextCursor": string | null }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issue_template_list": { input: Record<string, never>; output: { "templates": (Components["IssueTemplate"])[]; "teams": ({ "id": string; "name": string; "canManage": boolean; [key: string]: unknown })[]; "workspaceAllowed": boolean; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issue_template_create": { input: { body: Components["IssueTemplateInput"] }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issue_template_get": { input: { path: { "id": string } }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issue_template_update": { input: { path: { "id": string }; body: { "name": string; "teamId"?: (string | null); "defaults"?: Components["IssueTemplateDefaults"]; "subissues"?: ({ "title": string; "description"?: string; "statusId"?: string; "priority"?: "none" | "low" | "medium" | "high" | "urgent"; "labelIds"?: (string)[]; "assigneeOperatorId"?: (string | null); "estimate"?: number | null; "projectId"?: (string | null) })[]; "expectedVersion": number } }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "issue_template_delete": { input: { path: { "id": string }; body: { "expectedVersion": number } }; output: { "deleted": boolean; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
 }
 export const operations = {
   "schema_get_0": {
@@ -461,5 +469,45 @@ export const operations = {
     ],
     "authenticated": true,
     "pagination": "cursor"
+  },
+  "issue_template_list": {
+    "method": "GET",
+    "path": "/issue-templates",
+    "scopes": [
+      "issue-templates:read"
+    ],
+    "authenticated": true
+  },
+  "issue_template_create": {
+    "method": "POST",
+    "path": "/issue-templates",
+    "scopes": [
+      "issue-templates:write"
+    ],
+    "authenticated": true
+  },
+  "issue_template_get": {
+    "method": "GET",
+    "path": "/issue-templates/{id}",
+    "scopes": [
+      "issue-templates:read"
+    ],
+    "authenticated": true
+  },
+  "issue_template_update": {
+    "method": "PUT",
+    "path": "/issue-templates/{id}",
+    "scopes": [
+      "issue-templates:write"
+    ],
+    "authenticated": true
+  },
+  "issue_template_delete": {
+    "method": "DELETE",
+    "path": "/issue-templates/{id}",
+    "scopes": [
+      "issue-templates:write"
+    ],
+    "authenticated": true
   }
 } as const;

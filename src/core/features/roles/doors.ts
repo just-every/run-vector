@@ -97,11 +97,25 @@ async function memberRole(db: D1Database, id: string) {
   return (await db.prepare('SELECT role FROM operators WHERE id=? AND removed_at IS NULL').bind(id).first<{ role: string }>())?.role
 }
 
+const templateTeam: Resolve<string[] | null> = async request => {
+  const id=request.params.id
+  if(!id)return bodyTeam(request)
+  const row=await request.db.prepare('SELECT t.team_id FROM issue_templates t JOIN operators o ON o.workspace_id=t.workspace_id AND o.id=? WHERE t.id=?').bind(request.actor,id).first<{team_id:string|null}>()
+  return row?.team_id?teamsOf(request.db,request.actor,[row.team_id]):null
+}
+const templateManagement: Resolve<RowId> = async request => await templateTeam(request) ? 'issue-templates.team' : 'issue-templates.workspace'
+const issueTemplateDoors: Door[] = [
+  {method:'GET',path:'/issue-templates',row:null,page:'account'},
+  {method:'GET',path:'/issue-templates/:id',row:null,page:'account'},
+  ...(['POST','PUT','DELETE'] as const).map((method):Door=>({method,path:method==='POST'?'/issue-templates':'/issue-templates/:id',row:templateManagement,teams:templateTeam})),
+]
+
 export const doors: Door[] = [
   {method:'GET',path:'/settings/report-exports',row:'reports.export'},
   {method:'POST',path:'/settings/report-exports',row:'reports.export'},
   {method:'PATCH',path:'/settings/report-exports/:id',row:'reports.export'},
   {method:'DELETE',path:'/settings/report-exports/:id',row:'reports.export'},
+  ...issueTemplateDoors,
   ...([
     ['POST','/documents'],['PATCH','/documents/:documentId'],['POST','/documents/:documentId/comments'],
     ['PUT','/issues/:identifier/specification'],['DELETE','/issues/:identifier/specification'],
@@ -291,6 +305,7 @@ export const doors: Door[] = [
 /** /api/v1: bearer-token doors of the same actions. */
 export const apiDoors: Door[] = [
   ...(['issues','history','cycles','projects'] as const).map(resource => ({method:'GET' as const,path:'/report-exports/'+resource,row:'reports.export' as const})),
+  ...issueTemplateDoors,
   {method:'POST',path:'/initiatives',row:'initiatives.write'},
   {method:'PATCH',path:'/initiatives/:id',row:'initiatives.write'},
   {method:'PUT',path:'/initiatives/:id/projects',row:'initiatives.write'},

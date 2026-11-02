@@ -1,4 +1,5 @@
 import {addTriageResponsibilityRoutes} from '../features/triage-responsibility/routes';
+import {addIssueTemplateRoutes} from '../features/issue-templates/routes';
 import {addAliasRoutes} from '../features/data/aliases/routes';
 import { addExportSettings } from '../features/report-exports/settings-routes';
 import {addOAuthRoutes} from '../features/oauth-apps/routes';
@@ -400,6 +401,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addIssueCopyRoutes(app);
   addWorkloadRoutes(app);
   addMonthCalendarRoutes(app);
+  addIssueTemplateRoutes(app);
   addProjectTemplateRoutes(app);
   addSettingsRoutes(app);
   addAuditRoutes(app);

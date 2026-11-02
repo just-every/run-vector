@@ -1,4 +1,5 @@
 import {TeamTriageRotation} from '../../triage-responsibility/panel';
+import {IssueTemplateSettings} from '../../issue-templates/controls';
 import '../../documents/ui/documents.css';
 import { CreateSlackChannel } from "../../projects/ui/project-slack-choice";
 import {TeamJoinRules} from "./team-join-rules";
@@ -70,6 +71,7 @@ export function TeamsPanel({
         Teams organise work. Archived teams retain their issues and history.
         Public work is visible across the workspace. Private work is for its team members and Owners.
       </p>
+      <IssueTemplateSettings />
       <h3>Team directory</h3>
       <ul className="team-directory">
         {data.teams.map((team) => {

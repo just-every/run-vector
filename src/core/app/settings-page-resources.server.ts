@@ -29,7 +29,7 @@ export async function readSettingsResources(path: string, read: Read, teamIds: (
       if (role) reads.push(administration())
       break
     case 'teams':
-      if (role) reads.push(administration().then(data => Promise.all(teamIds(data).map(id => read(`/api/settings/teams/${id}/email-intake`)))))
+      if (role) reads.push(read('/api/issue-templates'), administration().then(data => Promise.all(teamIds(data).map(id => read(`/api/settings/teams/${id}/email-intake`)))))
       break
     case 'connections':
       if (leads(role)) reads.push(administration(), read('/api/settings/integrations'))

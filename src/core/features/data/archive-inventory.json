@@ -2236,5 +2236,16 @@
     "state",
     "row_count",
     "error"
+  ],
+  "issue_templates": [
+    "id",
+    "workspace_id",
+    "team_id",
+    "name",
+    "defaults_json",
+    "subissues_json",
+    "version",
+    "created_at",
+    "updated_at"
   ]
 }

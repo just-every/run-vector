@@ -116,7 +116,7 @@ export async function readPageResources(env: WorkerBindings, request: Request, o
     // Each active team's email intake renders inside its settings at first paint, like the panels above.
     await readSettingsResources(path.replace(/\/$/, ''), read, administration => ((administration as { teams?: Array<{ id: string, archivedAt: string | null }> } | null)?.teams ?? []).filter(team => team.archivedAt === null).map(team => team.id))
   }
-  else if (path === '/app/new' || path === '/app/new-issue') await read('/api/options')
+  else if (path === '/app/new' || path === '/app/new-issue') await Promise.all([read('/api/options'),read('/api/issue-templates')])
   await Promise.all(shared)
   return values
 }

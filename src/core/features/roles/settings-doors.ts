@@ -4,6 +4,7 @@
  * Controls that save as they change (Profile, Workspace) are not forms: they call their PATCH/PUT door directly. */
 export const settingsFormDoors: Record<string, readonly string[]> = {
   'triage-responsibility/panel.tsx#TeamTriageRotation': ['PUT /settings/teams/:id/triage-rotation'],
+  'issue-templates/controls.tsx#IssueTemplateSettings': ['POST /issue-templates'],
   'integrations/ui/channel-settings.tsx#ChannelSettings': [
     'POST /settings/integrations/slack', 'POST /settings/integrations/slack/signing-secret',
     'POST /settings/integrations/channels/allowed', 'POST /settings/integrations/channels',
