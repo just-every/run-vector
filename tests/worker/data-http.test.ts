@@ -31,6 +31,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const reportRuns=(await env.DB.prepare('SELECT * FROM vector_report_export_runs WHERE export_id=? ORDER BY id').bind(reportProfile.id).all()).results;
  expect(reportRuns).toHaveLength(1);expect(reportRuns[0].state).toBe('succeeded');
  expect(await env.DB.prepare('SELECT count(*) n FROM vector_report_export_rows WHERE export_id=?').bind(reportProfile.id).first<number>('n')).toBeGreaterThan(0);
+ const favoriteViewResponse=await f.call('/views','POST',{name:'synthetic-vector-archive-favorite',query:{}});expect(favoriteViewResponse.status).toBe(201);const favoriteView=await favoriteViewResponse.json() as {id:string};
+ const favoriteInput={expectedVersion:0,folders:[{id:'delivery',name:'Delivery work'}],entries:[{kind:'project',subjectId:f.project.id,folderId:null},{kind:'issue',subjectId:f.issue.id,folderId:null},{kind:'view',subjectId:favoriteView.id,folderId:'delivery'}]};
+ const favoriteWrite=await f.call('/favorites','PUT',favoriteInput);expect(favoriteWrite.status).toBe(200);const favoriteBefore=await favoriteWrite.json();
  const migrationDigests=inject('migrationDigests') as Record<string,string>;
  const documentResponse=await f.call('/documents','POST',{parentKind:'issue',parentId:f.issue.id,title:'synthetic-vector-portable-mention',body:mentionToken({id:f.peer,name:'synthetic-vector-peer'})});
  expect(documentResponse.status).toBe(201);const portableDocument=await documentResponse.json() as {id:string;version:number;body:string};
@@ -173,6 +176,7 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const historical=await targetSignIn();
  expect(await Promise.all(documentTables.map(async table=>(await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY 1,2').all()).results))).toEqual(documentHistory);
  const restoredDocument=await targetCall('/api/documents/'+portableDocument.id,'GET',undefined,historical);expect(restoredDocument.status).toBe(200);expect(await restoredDocument.json()).toMatchObject(portableDocument);
+ const favoriteRestored=await targetCall('/api/favorites','GET',undefined,historical);expect(favoriteRestored.status).toBe(200);expect(await favoriteRestored.json()).toEqual(favoriteBefore);
 
  expect(await (await targetCall('/api/settings/integrations','GET',undefined,historical)).json()).toMatchObject({destinations:expect.arrayContaining([expect.objectContaining({id:f.webhook,...commentSubscriptions,requiresReentry:1})])});
  expect((await destination.ARCHIVE_TARGET_DB.prepare("SELECT * FROM vector_webhook_events WHERE destination_id=? AND event LIKE 'comment.%' AND json_extract(body,'$.issueId')=? ORDER BY id").bind(f.webhook,f.issue.id).all()).results).toEqual(commentHistory);

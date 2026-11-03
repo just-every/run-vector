@@ -3,6 +3,7 @@
 // Report schedules and safe receipts are portable; credentials, active claims
 // and digest checkpoints remain installation state, so restore never replays exports.
 // Issue templates are portable content; created issues survive template deletion.
+// Member favorites are portable personal navigation; only stable subject identities and folder names are stored.
 // Document issue references retain live and removed backlinks as portable domain data.
 // Webhook event selections and team filters are portable configuration. Restored
 // event history remains held and destination secrets still require re-entry.

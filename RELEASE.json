@@ -109,6 +109,10 @@
     {
       "buyerSteps": "Apply after all earlier migrations through unchanged 0124_team_cycles_enabled.sql. Adds portable native issue template definitions; applying a template creates independent issues. Retain additive schema and created issues on compatible-source rollback.",
       "id": "0125_issue_templates.sql"
+    },
+    {
+      "buyerSteps": "Apply after all earlier migrations through unchanged 0125_issue_templates.sql without rewriting applied SQL. Adds personal sidebar Favorites stored as stable identities; titles are projected live and removing a member clears their favorites. Retain additive schema and personal collections on compatible-source rollback.",
+      "id": "0126_member_favorites.sql"
     }
   ],
   "breaking": false,

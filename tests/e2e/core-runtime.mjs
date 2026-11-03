@@ -1,4 +1,5 @@
 import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
+import { favoritesJourney } from './core-favorites-journey.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
 import { requestLedger } from './core-request-ledger.mjs';
@@ -745,6 +746,9 @@ try {
   if (journeyGroup !== 'current') {
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
+  // Favorites run in this partition: the current partition's invited-owner sign-ins already spend Base's 30-per-15-minute confirmation budget.
+  await withInvitedOperator(page, context, base, state, () =>
+    favoritesJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3413');
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await threadsJourney(page, context, base, state, ids.flow, evidence, record);
   const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
