@@ -771,8 +771,14 @@ try {
       () => followerJourney(followerPage, followerContext, page, context, base, record), 'Payment follow-up teammate');
   } finally { await followerContext.close(); }
   await myWorkTabsJourney(page, context, base, state, ids.flow, evidence, record);
+  }
+  // Ordered views and workload use independent invited operators; balance them
+  // beside Current while Planning retains every agent authority assertion.
+  if (journeyGroup !== 'planning') {
   await withInvitedOperator(page, context, base, state, () => manualOrderJourney(page, context, base, record), 'synthetic-vector-1930');
   await withInvitedOperator(page, context, base, state, () => workloadJourney(page, context, base, record), 'synthetic-vector-1931');
+  }
+  if (journeyGroup !== 'current') {
   await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');
   await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');
   }
