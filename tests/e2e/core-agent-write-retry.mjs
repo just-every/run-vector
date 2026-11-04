@@ -16,7 +16,7 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
     name:marker+'-sponsor',email:[marker,'vector.test'].join(String.fromCharCode(64)),role:'member'});
   trackRequests(member.page);
   const consoleErrors=[],failed=[],external=[];
-  member.page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
+  member.page.on('console',message=>{if(message.type()==='error')consoleErrors.push({message:message.text(),url:message.location().url.split('?')[0]});});
   member.page.on('requestfailed',request=>failed.push(request.failure()?.errorText));
   await member.context.route('**/*',async route=>{
     if(new URL(route.request().url()).origin===base)await route.continue();
@@ -76,7 +76,12 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
       assert.deepEqual(stale.body.result._meta['com.runeditrun/error'],{code:'revision_conflict',current_revision:3});
       assert.equal(stale.body.result.isError,true);assert.deepEqual(await member.api(path),later);
       await navigate(page,base+'/');await navigate(member.page,base+'/');
+      await page.waitForLoadState('networkidle');await member.page.waitForLoadState('networkidle');
+      // Leave no live document requesting assets while its owned Worker is down.
+      await page.goto('about:blank');await member.page.goto('about:blank');
       await restart();
+      // Resume the private app: the public lobby deliberately forbids API fetches.
+      await navigate(page,base+'/');await navigate(member.page,base+'/app');
       const replay=await rpc(args);
       assert.equal(replay.status,200);assert.equal(replay.body.result.isError,false);
       assert.deepEqual(replay.body.result.structuredContent,original.result);
@@ -102,7 +107,7 @@ export async function agentWriteRetryJourney({page,context,base,state,sql,eviden
       const timeOrigin=await member.page.evaluate(()=>performance.timeOrigin);
       await inspect(member.page,member.page.locator('main:visible').first(),'agent-write-retry-'+disposition);
       assert.equal(await member.page.evaluate(()=>performance.timeOrigin),timeOrigin,'Viewport inspection retains the hydrated document');
-      await navigate(member.page,base+'/');
+      await navigate(member.page,base+'/app');
       await owner('/agents/api/pause','POST',{paused:true});
       const paused=await rpc(args);assert.equal(paused.body.result._meta['com.runeditrun/error'].code,'agents_paused');
       assert.equal(paused.body.result.structuredContent,undefined);assert.deepEqual(await member.api(path),later);

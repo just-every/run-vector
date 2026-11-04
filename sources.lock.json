@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "222382cfd8e51307837ea75f0fcf40d76cf8a861a52ff2407b31d85b50d2b810",
+      "sha256": "fd54584919fd1de78cf2394a0a66cc2dea3c430cc2f36911a4493fbcf1e73714",
       "executable": false
     },
     "DEMO.md": {
@@ -7978,7 +7978,7 @@
       "executable": false
     },
     "src/routeTree.gen.ts": {
-      "sha256": "21e498dbd600892ae64780bdb5e0940ece6a7a0c44fa0bcda72a8b68d81e30fb",
+      "sha256": "99765456940fcf8438e56c2da774b0ff92aa3e61e5ef114ef31bcfb46a4570e2",
       "executable": false
     },
     "src/site/document.tsx": {
@@ -8198,7 +8198,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-write-retry.mjs": {
-      "sha256": "f4dc92eb910ef078b747806ffda1e84da02cb0b953d5c8695456f3c1a2a266d4",
+      "sha256": "e199a889fc9d490f99cc4fac148793fb928c61f0c3b98c65d883a2473845c58b",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
