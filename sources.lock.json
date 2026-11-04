@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d7aba2f2cbd431f1a49180409e63927dd76049c9f331b9865b092911d8b8ec9b",
+      "sha256": "60dbe5086b7a652673807900afec2ef831c04052ebdc0cb3b9d6c11e922e0bdb",
       "executable": false
     },
     "DEMO.md": {
@@ -8198,7 +8198,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-role-parity.mjs": {
-      "sha256": "9519ec9ceb75ad277b13e26af3e8c1eabf49351e66cd26f40e588b15ab9d2572",
+      "sha256": "52fcdeee4b1846aa44b76540f4aa9a0711b803f75b7dbd8167e4c9804d1baa4a",
       "executable": false
     },
     "tests/e2e/core-agent-write-retry.mjs": {
@@ -8978,7 +8978,7 @@
       "executable": false
     },
     "tests/worker/agent-role-parity.test.ts": {
-      "sha256": "e8226af1482ec869fe56955a0aa5fc5419db226011117324da0c906405b21848",
+      "sha256": "1e2a92a37390364ca3682492e667dbf4959dc73e655af46196f9ad90801dc09c",
       "executable": false
     },
     "tests/worker/agent-write-retry.test.ts": {
