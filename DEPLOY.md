@@ -1,6 +1,14 @@
 # Deploying Vector
 
-You need Git and the published `rer` command (Node 22 or later to install it); `rer` provides the exact Node and pnpm this source pins. The CLI and deploy kit come from pinned `@runeditrun/rer` 0.2.62; see [Base adoption](docs/BASE-ADOPTION.md).
+You need Git. Install the published `rer` command, clone Vector and start it with:
+
+```sh
+curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector
+```
+
+Have Node 22 or later? `npx -y @runeditrun/rer dev just-every/run-vector` is an alternative. The installer brings Node and pnpm and links `rer` at `$HOME/.local/bin/rer`. In a new terminal, run `export PATH="$HOME/.local/bin:$PATH"` before the `rer` commands below, or use `"$HOME/.local/bin/rer"` directly. See [the README](README.md#run-it-on-your-computer) to keep that PATH setting.
+
+The CLI and deploy kit use the version pinned in `package.json`; see [Base adoption](docs/BASE-ADOPTION.md).
 
 ## Managed mail
 
