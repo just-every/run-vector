@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "222382cfd8e51307837ea75f0fcf40d76cf8a861a52ff2407b31d85b50d2b810",
+      "sha256": "c1d76943884836531ac5b39535c7c1749e1f55253a0545693da354a24d32afa4",
       "executable": false
     },
     "DEMO.md": {
@@ -8193,6 +8193,10 @@
       "sha256": "1024faf7c0e792785f91948d8c1b4dbbbfd63e3036ced9d45b3227ecf2ffabf9",
       "executable": false
     },
+    "tests/e2e/core-agent-audit-retention.mjs": {
+      "sha256": "b56ca28633b0155442fe83325c37b0c4a27efcf18b6c7820fa03ee2b112bff87",
+      "executable": false
+    },
     "tests/e2e/core-agent-resource-parity.mjs": {
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
@@ -8310,7 +8314,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "deb2fddb3da13a54e43f7e088a94cad9bddde600ec88b6854696542436e97580",
+      "sha256": "ca9e7ea68e602acbcab4028a1313b7016486d6181e764af4d0adf63601a38823",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8957,12 +8961,16 @@
       "sha256": "81129a0a5f47652105f36bd9d3ad9f84444b29a228329c32c48c1a6778406472",
       "executable": false
     },
+    "tests/worker/agent-audit-retention.test.ts": {
+      "sha256": "c2c611887b68676ae63fe676baf47b33445062b03ee1b1702616ff8a3a4aa154",
+      "executable": false
+    },
     "tests/worker/agent-native-attribution.test.ts": {
       "sha256": "8584b6eba9b13d7a4b2e3e7ebc16e49afcf6b2be1cd25fe73f5276bcaa85b56c",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
-      "sha256": "69d1c23904d5e0ad7795900b303f987038baa64ee6dee109dad02491ba72e9b3",
+      "sha256": "4dbd703475fe7f94fa2a110cf5452f2d6e511a39d0da30d27c416798672d0df6",
       "executable": false
     },
     "tests/worker/agent-resource-parity.ts": {
