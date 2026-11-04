@@ -3698,7 +3698,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "006b2e65b3c80a8781287cc46c5c692f3fefbd8b3ecb6272549383c46a85ad16",
+      "sha256": "7a5493c7c79f8ea5fcc164892a16c30275b40a49892dd5beca5e972b89395627",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -6670,7 +6670,7 @@
       "executable": false
     },
     "src/core/features/projects/read.ts": {
-      "sha256": "686d6a96c81976535fe592dee5cc5e43dc05a58e7f0f62cedd5e5fee3d01ab77",
+      "sha256": "8ca74d1d2affc08419a78b480d4bef15b66f28c6123f3292b988179b43410451",
       "executable": false
     },
     "src/core/features/projects/service.ts": {
@@ -8962,7 +8962,7 @@
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
-      "sha256": "a253767056b3405b66be643565d596312f42622bf19d04d6d7a20584d789f0f5",
+      "sha256": "93346c2653e2eca3e398e9071f0719f58aa326c5b2bab75518ff25ad5a30ba63",
       "executable": false
     },
     "tests/worker/agent-resource-parity.ts": {

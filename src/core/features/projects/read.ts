@@ -7,9 +7,10 @@ import { getProjectDetail } from './service';
 import { readPortfolio, type ProjectPortfolioQuery } from './portfolio';
 
 export const projectParamSchema = z.object({ projectId: z.string().length(26) });
-export const projectReadInputSchema = projectParamSchema.extend({
+export const projectReadQuerySchema = z.object({
   at: z.string().datetime({ offset: true }).optional(),
 });
+export const projectReadInputSchema = projectParamSchema.extend(projectReadQuerySchema.shape);
 
 export async function projectPortfolio(db:D1Database, actor:string, query:ProjectPortfolioQuery) {
   const access=await settingsActor(db,actor);

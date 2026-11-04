@@ -22,7 +22,7 @@ import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
 import { addIssueCopyRoutes } from "../features/issue-copy/routes";
 import { projectPortfolioQuery } from "../features/projects/portfolio";
-import { projectPortfolio,projectDetail,projectParamSchema } from "../features/projects/read";
+import { projectPortfolio,projectDetail,projectParamSchema,projectReadQuerySchema } from "../features/projects/read";
 import { addManualOrderRoutes } from '../features/manual-order/routes';
 import { addWorkloadRoutes } from '../features/workload/routes';
 import { addIssueDeletionRoutes } from '../features/issue-deletion/routes';
@@ -380,7 +380,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   });
   app.get("/projects/:projectId", async (context) => {
     const parameters=projectParamSchema.safeParse(context.req.param());
-    const query=parseQuery(context,timeQuerySchema);
+    const query=parseQuery(context,projectReadQuerySchema);
     if(!parameters.success)return context.json({error:"invalid_request"},400);
     if(!query.success)return query.response;
     const project=await projectDetail(context.env.DB,context.get("operatorId"),parameters.data.projectId,toNow(query.data.at));

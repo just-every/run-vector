@@ -110,6 +110,7 @@ export async function projectReadJourney(w:Awaited<ReturnType<typeof import('./r
   const team=(await w.mutate('/settings/teams','POST',{name:'synthetic-vector-3508',identifierPrefix:'SYNPREAD',isPrivate:true})).teams.find(t=>t.name==='synthetic-vector-3508')!;
   const hidden=(await w.mutate('/settings/projects','POST',{name:'synthetic-vector-3509',leadOperatorId:owner.id})).projects.find(p=>p.name==='synthetic-vector-3509')!;
   await w.create({teamId:team.id,projectId:hidden.id,title:'synthetic-vector-3510'});
+  const secret=await w.create({teamId:team.id,projectId:project.id,title:'synthetic-vector-3515'});
   // A real second installation owns this identity; the first installation has no authority over it.
   const {applyD1Migrations}=await import('cloudflare:test');
   const {inject}=await import('vitest');
@@ -152,7 +153,10 @@ export async function projectReadJourney(w:Awaited<ReturnType<typeof import('./r
       expect(read.body.result._meta['com.runeditrun/untrusted']).toBe(true);
       expect(read.body.result._meta['com.runeditrun/decision'].disposition).toBe(disposition);
       if(disposition==='review')expect(read.body.result._meta['com.runeditrun/review']).toBeTruthy();
-      expect(native.progress).toEqual({completed:1,total:2,percentage:50});
+      expect(native.progress).toEqual({completed:1,total:index===0?3:2,percentage:index===0?33:50});
+      expect(native.issues.some((issue:any)=>issue.id===secret.id)).toBe(index===0);
+      const broken={...read.body.result.structuredContent};delete broken.health;
+      expect(validateSchema(tool.outputSchema,broken)).toBe(false);
       expect(native.health).toBe('on-track');
       expect(native.milestones).toEqual([expect.objectContaining({name:'synthetic-vector-3504'})]);
       expect(native.cycleHistory[0].snapshot.completed).toContain(first.identifier);
@@ -185,7 +189,9 @@ export async function projectReadJourney(w:Awaited<ReturnType<typeof import('./r
     const revoked=await mint(member);
     expect((await revoked.read(project.id)).body.result.isError).toBe(false);
     await json(await member.call('/settings/integrations/tokens/'+revoked.id,'DELETE'));
+    const afterRevocation=await snapshot(tables);
     expect((await revoked.read(project.id)).status).toBe(401);
+    expect(await snapshot(tables)).toEqual(afterRevocation);
     const rows=(await env.DB.prepare("SELECT row FROM agent_door_audit WHERE json_extract(row,'$.tool')='vector.project.read' ORDER BY sequence").all<{row:string}>()).results.map(r=>JSON.parse(r.row));
     expect(rows).toEqual(expect.arrayContaining([expect.objectContaining({outcome:'done',resource:{kind:'project',id:project.id},sponsor:expect.objectContaining({id:member.id})}),expect.objectContaining({outcome:'refused',code:'not_found'})]));
   }
