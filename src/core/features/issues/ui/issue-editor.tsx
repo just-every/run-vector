@@ -30,10 +30,13 @@ function IssueWritingEditor({
 }) {
   const [snapshot, setSnapshot] = useState<{
       issue: IssueDetailData;
+      base: IssueDetailData;
       revision: number;
     } | null>(null),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+  const [draftKept, setDraftKept] = useState(false);
   const [receipt, setReceipt] = useState<IssueDetailData | null>(null);
   const current =
     receipt?.identifier === issue.identifier && receipt.version > issue.version
@@ -46,6 +49,11 @@ function IssueWritingEditor({
 
   async function reloadCurrent() {
     if (!snapshot || busy) return;
+    const form = formRef.current;
+    if (!form) return;
+    const fields = new FormData(form);
+    const title = String(fields.get("title") ?? "");
+    const description = form.querySelector<HTMLTextAreaElement>('textarea[name="description"]')?.dataset.canonicalBody ?? String(fields.get("description") ?? "");
     setBusy(true);
     setError("");
     try {
@@ -60,12 +68,16 @@ function IssueWritingEditor({
           ? latestCurrent.current
           : loaded;
       setReceipt(refreshed);
-      // Replace defaults only after the operator explicitly reloads and the
-      // current record passes validation. A failed reload preserves their draft.
+      const keptTitle = title !== snapshot.base.title;
+      const keptDescription = description !== snapshot.base.description;
       setSnapshot({
-        issue: structuredClone(refreshed),
+        issue: { ...structuredClone(refreshed),
+          title: keptTitle ? title : refreshed.title,
+          description: keptDescription ? description : refreshed.description },
+        base: structuredClone(refreshed),
         revision: snapshot.revision + 1,
       });
+      setDraftKept(keptTitle || keptDescription);
       onRefresh(refreshed);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Reload failed.");
@@ -123,9 +135,10 @@ function IssueWritingEditor({
         disabled={busy}
         onClick={() => {
           setSnapshot(
-            snapshot ? null : { issue: structuredClone(current), revision: 0 },
+            snapshot ? null : { issue: structuredClone(current), base: structuredClone(current), revision: 0 },
           );
           setError("");
+          setDraftKept(false);
         }}
       >
         {snapshot ? "Cancel edit" : "Edit issue"}
@@ -133,6 +146,7 @@ function IssueWritingEditor({
       {snapshot && editing ? (
         <form
           className="issue-mutation-form"
+          ref={formRef}
           key={`${editing.identifier}:${snapshot.revision}`}
           onSubmit={submit}
         >
@@ -141,6 +155,10 @@ function IssueWritingEditor({
             disabled={busy}
             aria-label="Issue edit fields"
           >
+            {draftKept && <div role="status">
+              <p>Current version loaded. Your unsaved text is kept below; review it before saving.</p>
+              <details><summary>Current server text</summary><strong>{current.title}</strong><p style={{ whiteSpace: "pre-wrap" }}>{current.description}</p></details>
+            </div>}
             <IssueEditFields issue={editing} />
             <button type="submit" disabled={busy}>
               {busy ? "Saving…" : "Save changes"}

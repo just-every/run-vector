@@ -10,6 +10,7 @@
 .audit-panel th,.audit-panel td { border-bottom:1px solid var(--app-line-strong); padding:.75rem; vertical-align:top; }
 .audit-panel code { font-size: var(--app-text-small); overflow-wrap:anywhere; }
 .audit-panel time { white-space:nowrap; }
+.audit-subject { display:grid; gap:.4rem; overflow-wrap:anywhere; }
 @media(max-width:700px) {
  .settings-page form.audit-filters { grid-template-columns:minmax(0,1fr); }
  .audit-panel table,.audit-panel tbody { display:block; }

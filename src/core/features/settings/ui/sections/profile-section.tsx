@@ -11,6 +11,7 @@ import { SectionPage } from '../shell/section-page';
 import { WorkingDays } from './working-days';
 import { checkZone, timeOptions, timeZones } from './clock-options';
 import { currentTheme } from './theme';
+import { DisplayNameField } from './display-name-field';
 import './profile.css';
 
 const themes = [{ value: 'system', label: 'System' }, { value: 'light', label: 'Light' }, { value: 'dark', label: 'Dark' }] as const;
@@ -51,6 +52,7 @@ export function ProfileSection() {
   const { clock, save } = usePersonalTime();
   return <SectionPage title="Profile">
     <div className="profile-body">
+      <DisplayNameField />
       <Look />
       <section className="profile-hours" aria-labelledby="profile-hours-title">
         <h2 id="profile-hours-title">Your hours</h2>

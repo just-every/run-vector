@@ -2,6 +2,7 @@ import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
 import { withInvitedOperator } from './core-operator-journey.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 /** WORK-004: a member's Created, Subscribed (with Unfollow) and Activity tabs. */
 export async function myWorkTabsJourney(page, context, base, state, teamId, evidence, record) {
@@ -70,6 +71,7 @@ export async function myWorkTabsJourney(page, context, base, state, teamId, evid
     await page.waitForURL(base + '/app/issues/' + others[1].identifier);
     await open('/app/my-work/created?q=second');
     await page.waitForFunction(() => document.querySelectorAll('.issues-row').length === 1);
+    await openIssueControls(page);
     await page.getByRole('button', { name: 'Save view', exact: true }).click();
     await page.getByRole('textbox', { name: 'View name', exact: true }).fill(`My created ${stamp}`);
     await settleReads(page);

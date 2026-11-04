@@ -24,7 +24,7 @@ function WorkspaceFields() {
   const workspace = shell.data!.workspace;
   // `PATCH /api/settings` always needs the zone: a change to anything else sends the stored one.
   const serial = useSerialSaves(workspace);
-  const patch = (change: { timezone?: string; reminderTime?: string; memberInvites?: boolean }) => serial(async base => {
+  const patch = (change: { name?: string; timezone?: string; reminderTime?: string; memberInvites?: boolean }) => serial(async base => {
     const updated = await fetchJson('/api/settings', settingsSchema, {
       method: 'PATCH', headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ timezone: base.timezone, ...change }),
@@ -36,6 +36,8 @@ function WorkspaceFields() {
   });
   const admin = administration.data;
   return <div className="profile-body">
+    {shell.role === 'owner' && <TextField label="Workspace name" value={workspace.name} className="field-wide"
+      save={next => patch({ name: next.trim() })} />}
     <TextField label="Time zone" value={workspace.timezone} suggestions={timeZones()} className="field-wide"
       hint="Calendar days and cycle boundaries follow this zone."
       save={async next => { checkZone(next.trim(), false); await patch({ timezone: next.trim() }); }} />

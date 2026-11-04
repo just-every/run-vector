@@ -21,6 +21,9 @@ export const settingsSchema = z.object({
       teamIds: z.array(z.string()).default([]),
     }),
   ),
+  pendingInvitations: z.array(z.object({
+    name: z.string(), email: z.string(), role: z.enum(roles), expiresAt: z.number(),
+  })),
   teams: z.array(z.object({id:z.string(),name:z.string()})).default([]),
   operatorId: z.string(),
   role: z.enum(roles),

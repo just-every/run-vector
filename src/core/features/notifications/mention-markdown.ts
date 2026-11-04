@@ -108,13 +108,11 @@ export function markdownMentions(
 }
 /** remark plugin: mutate text nodes only after the CommonMark parse. */
 export function remarkMentions(
-  options: { operatorIds?: readonly string[] } = {},
+  options: { operatorIds?: readonly string[]; removedOperatorIds?: readonly string[] } = {},
 ) {
   return (tree: MentionNode, file: { value: unknown }) => {
     const source = String(file.value),
-      spans = markdownMentions(tree, source).filter((span) =>
-        options.operatorIds?.includes(span.id),
-      );
+      spans = markdownMentions(tree, source).filter(span => options.operatorIds?.includes(span.id) || options.removedOperatorIds?.includes(span.id));
     function visit(node: MentionNode) {
       if (node.type === "text" && node.value !== undefined) {
         const start = node.position?.start.offset,
@@ -134,7 +132,7 @@ export function remarkMentions(
               let at = -1;
               for (let n = 0; n <= preceding; n++)
                 at = original.indexOf(token, at + 1);
-              return { at, token, label: "@" + span.name, start: span.start, end: span.end };
+              return { at, token, label: "@" + span.name, active: options.operatorIds?.includes(span.id), start: span.start, end: span.end };
             })
             .filter((replacement) => replacement.at >= 0)
             .sort((a, b) => a.at - b.at);
@@ -146,13 +144,13 @@ export function remarkMentions(
               const before = original.slice(cursor, replacement.at);
               children.push(
                 { type: "text", value: before, position: { start: { offset: rawCursor }, end: { offset: replacement.start } } },
-                {
+                replacement.active ? {
                   type: "element",
                   tagName: "span",
                   properties: { className: ["mention-chip"] },
                   position: { start: { offset: replacement.start }, end: { offset: replacement.end } },
                   children: [{ type: "text", value: replacement.label }],
-                },
+                } : { type: "text", value: replacement.label },
               );
               node.value += before + replacement.label;
               cursor = replacement.at + replacement.token.length;

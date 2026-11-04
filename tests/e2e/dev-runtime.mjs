@@ -1,4 +1,4 @@
-import { openAccountMenu } from './ui-controls-checks.mjs';
+import { openAccountMenu, openIssueControls } from './ui-controls-checks.mjs';
 import { reviewDevelopmentImport } from './data-development-journey.mjs';
 import { finishFirstRun } from './first-run-fixture.mjs';
 import { openGate, readCheckoutKey } from './dev-gate.mjs';
@@ -118,11 +118,13 @@ try {
   await settleReads(page);
   await page.getByRole("link", { name: "Issues", exact: true }).filter({ visible: true }).first().click();
   await page.getByRole("heading", { name: "Issues", exact: true }).waitFor();
+  await openIssueControls(page);
   await page.getByLabel("Title or identifier").waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   await settleReads(page);
   await page.getByRole("link", { name: "Board", exact: true }).filter({ visible: true }).first().click();
   await page.getByRole("heading", { name: "Board", exact: true }).waitFor();
+  await openIssueControls(page);
   await page.getByLabel("Team", { exact: true }).waitFor();
   assert.equal(await page.evaluate(() => performance.timeOrigin), origin);
   await page.getByRole("button", { name: "Save view", exact: true }).click();

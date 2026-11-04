@@ -1,5 +1,5 @@
 import {viewerAccessCensus} from './role-access-census.mjs';
-import { openAccountMenu } from './ui-controls-checks.mjs';
+import { openAccountMenu, openIssueControls } from './ui-controls-checks.mjs';
 import {readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import assert from 'node:assert/strict';
@@ -58,7 +58,7 @@ export async function viewerRoleJourney({page,peer,memberId,browser,runtime,clau
     await inspect(reader,reader.locator('main:visible').first(),'viewer-issue-read-'+width);
     await navigate(reader,base+'/app/projects/'+project.id);await reader.getByRole('heading',{name:project.name,exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Add milestone',exact:true}).count(),0);
     if(width===1440)await inspect(reader,reader.locator('main:visible').first(),'viewer-project-read');
-    await navigate(reader,base+'/app/views/'+view.id);await reader.getByRole('heading',{name:view.name,exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Duplicate view',exact:true}).count(),0);
+    await navigate(reader,base+'/app/views/'+view.id);await reader.getByRole('heading',{name:view.name,exact:true}).waitFor();await openIssueControls(reader);assert.equal(await reader.getByRole('button',{name:'Duplicate view',exact:true}).count(),0);
     if(width===1440)await inspect(reader,reader.locator('main:visible').first(),'viewer-shared-view');
     await navigate(reader,base+'/app/settings');await reader.getByRole('navigation',{name:'Settings sections'}).locator('.settings-nav-name',{hasText:'Labels'}).waitFor();assert.deepEqual(await reader.getByRole('navigation',{name:'Settings sections'}).locator('.settings-nav-name').allTextContents(),['Profile','Notifications','People','Labels']);
     await navigate(reader,base+'/app/settings/people');await reader.getByText('synthetic-vector-1809 (you)',{exact:true}).waitFor();assert.equal(await reader.getByRole('button',{name:'Change role',exact:true}).count(),0);

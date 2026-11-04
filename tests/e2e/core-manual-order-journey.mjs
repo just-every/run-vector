@@ -1,6 +1,7 @@
 import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { beforePrivateNavigation } from './collaboration-navigation.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 export async function manualOrderJourney(page, context, base, record=async()=>{}) {
   async function api(path,method='GET',data) {
     return withOperatorClient(context, async client => {
@@ -42,6 +43,7 @@ export async function manualOrderJourney(page, context, base, record=async()=>{}
     const view=await api('/views','POST',{name:'Payment backlog '+width+' '+suffix.slice(-4),isShared:true,query:{team:team.id,category:'backlog',sort:'manual'}});
     await beforePrivateNavigation(page,base+'/app/views/'+view.id);await page.goto(base+'/app/views/'+view.id);
     const natural=issues.map(i=>i.identifier);await check(natural);
+    await openIssueControls(page);
     await page.getByRole('button',{name:'Move '+natural[2]+' to top',exact:true}).click();const saved=[natural[2],natural[0],natural[1]];await check(saved);
     await page.getByLabel('View layout',{exact:true}).selectOption('board');
     await page.getByRole('region',{name:'Workflow columns'}).waitFor();
@@ -52,6 +54,7 @@ export async function manualOrderJourney(page, context, base, record=async()=>{}
     await page.getByRole('button',{name:'Move '+saved[2]+' up',exact:true}).click();const boardOrder=[saved[0],saved[2],saved[1]];
     await page.waitForFunction(order=>JSON.stringify([...document.querySelectorAll('.board-card-open small')].map(n=>n.textContent))===JSON.stringify(order),boardOrder);
     await column.scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await record('VIEW-006',`board-${width}`,page);
+    await openIssueControls(page);
     await page.getByLabel('View layout',{exact:true}).selectOption('list');await check(boardOrder);await page.locator('#issue-row-'+boardOrder[0]).scrollIntoViewIfNeeded();await record('VIEW-006',`saved-view-${width}`,page);
     await beforePrivateNavigation(page,base+backlog);await page.goto(base+backlog);await check(expected);
     assert.deepEqual(await currentOrder(),current);

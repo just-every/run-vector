@@ -4,6 +4,7 @@ import { contractWith } from "../contract-tags";
 import { collaborationFixture } from "./collaboration-fixture";
 import { bindings, origin, request } from "./base-auth-fixture";
 import { heldBody, retainedData } from "./removal-fixture";
+import { createServerApp } from "../../src/core/app/server";
 import { createApiApp } from "../../src/core/app/api";
 import {
   addComment,
@@ -47,9 +48,34 @@ contractWith(
     const f = await collaborationFixture(),
       issue = await f.create(),
       id = await addComment(env.DB, issue.id, f.owner, "Retained comment");
+    const comment = await f.any(f.bobCookie, `/issues/${issue.identifier}/comments`, "POST", { body: "A teammate contribution" });
+    expect(comment.status).toBe(201);
+    const commentId = (await comment.json() as { id: string }).id;
+    const app = createServerApp();
+    const filePath = `/api/issues/${issue.identifier}/files`;
+    const fileName = "synthetic-vector-duplicates.csv";
+    const upload = await app.request(origin + filePath, { method: "POST", headers: {
+      origin, cookie: f.cookie, "content-type": "text/csv", "x-file-name": fileName,
+    }, body: "order,duplicate\n1,2" }, bindings);
+    expect(upload.status).toBe(201);
+    const file = await upload.json() as { id: string };
+    const privateLink = filePath + "/" + file.id;
+    const document = await app.request(origin + privateLink, { headers: { accept: "text/html" } }, bindings);
+    expect(document.status).toBe(302);
+    expect(document.headers.get("location")).toBe("/signin?returnTo=" + encodeURIComponent(privateLink));
+    const client = await app.request(origin + privateLink, { headers: { accept: "application/json" } }, bindings);
+    expect(client.status).toBe(401);
+    expect(await client.json()).toMatchObject({ error: "unauthenticated" });
     expect(
       (await f.call(`/settings/operators/${f.bob}`, "DELETE")).status,
     ).toBe(200);
+    const detail = await f.data(f.cookie, `/issues/${issue.identifier}`);
+    const discussion = await f.data(f.cookie, `/issues/${issue.identifier}/discussion`);
+    const removedComment = discussion.comments.find((item: { id: string }) => item.id === commentId);
+    const commentActivity = detail.activity.find((item: { kind: string; nextValue: { id?: string } }) => item.kind === "comment.created" && item.nextValue?.id === commentId);
+    expect(commentActivity.actor).toBe(removedComment.actor);
+    expect(commentActivity.actor).not.toBeNull();
+    expect(detail.activity.find((item: { kind: string; nextValue: { id?: string } }) => item.kind === "file.created" && item.nextValue?.id === file.id).nextValue.name).toBe(fileName);
     const before = await discussionState();
     for (const mutate of [
       () => addComment(env.DB, issue.id, f.bob, "Rejected comment"),

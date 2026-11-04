@@ -1,4 +1,6 @@
+import { priorityLabel } from "./labels";
 import "./board-actions.css";
+import { useViewerTime } from "../../../app/viewer-time";
 import { ManualOrderControls } from '../../manual-order/ui/controls';
 import { useHydrated } from "../../../app/initial-resources";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -108,7 +110,7 @@ export function IssueBoard({
   const selectedColumn = reconciled?.status.id ?? move?.status ?? column;
   const active = statuses.some((s) => s.id === selectedColumn)
     ? selectedColumn
-    : statuses[0]?.id;
+    : statuses.find(s => rows.some(row => row.status.id === s.id))?.id ?? statuses[0]?.id;
   const count = (statusId: string) =>
     statusCounts.find((status) => status.key === statusId)?.count ?? 0;
   const columnRows = (statusId: string) =>
@@ -208,6 +210,7 @@ function BoardCard({
   const hydrated = useHydrated();
   const [receipt, setReceipt] = useState<IssueDetailData | null>(null),
     [busy, setBusy] = useState(false);
+  const { formatInstant } = useViewerTime();
   const current = receipt && receipt.version > row.version ? receipt : row;
   async function change(statusId: string) {
     setBusy(true);
@@ -273,7 +276,7 @@ function BoardCard({
         {row.checklist && row.checklist.total > 0 && <small aria-label="Checklist progress">{row.checklist.completed}/{row.checklist.total}</small>}
       </button>
       <p>
-        {current.priority === "none" ? "No priority" : current.priority} ·{" "}
+        {priorityLabel(current.priority)} ·{" "}
         {current.assignee?.name ?? "Unassigned"}
       </p>
       {(current.startDate||current.dueDate)&&<p>{current.startDate?`Starts ${current.startDate}`:""}{current.startDate&&current.dueDate?" · ":""}{current.dueDate?`Due ${current.dueDate}`:""}</p>}
@@ -304,7 +307,9 @@ function BoardCard({
         </label></details>
       ) : (
         <>
-          <p>{current.status.name} requires a decision.</p>
+          <p>{current.status.category === "intake" && row.deferredUntil
+            ? `Deferred · Returns for decision ${formatInstant(row.deferredUntil)}`
+            : `${current.status.name} requires a decision.`}</p>
           <button
             disabled={!hydrated}
             data-decision-identifier={row.identifier}

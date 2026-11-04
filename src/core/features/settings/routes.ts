@@ -16,7 +16,8 @@ import { changeRole, guestTeams } from "./roles";
 import { readPersonalTime, updatePersonalTime } from "./personal-time";
 import { personalTimeInputSchema } from "./personal-time-schema";
 import { readAppearance, updateAppearance } from "./appearance";
-import { appearanceSchema } from "./appearance-schema";
+import { appearanceInputSchema, displayNameSchema } from "./appearance-schema";
+import { updateDisplayName } from "./identity";
 
 export function addSettingsRoutes(app: Hono<AppEnvironment>) {
   app.get("/settings/appearance", async (c) => {
@@ -29,11 +30,14 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
     }
   });
   app.patch("/settings/appearance", async (c) => {
-    const parsed = appearanceSchema.safeParse(await readRequestJson(c.req.raw));
+    const parsed = appearanceInputSchema.safeParse(await readRequestJson(c.req.raw));
     if (!parsed.success)
       return c.json({ error: "invalid_request", issues: parsed.error.issues }, 400);
     try {
-      return c.json(await updateAppearance(c.env.DB, c.get("operatorId"), parsed.data.theme));
+      const actor = c.get("operatorId");
+      if (parsed.data.displayName !== undefined) await updateDisplayName(c.env.DB, actor, parsed.data.displayName);
+      if (parsed.data.theme !== undefined) await updateAppearance(c.env.DB, actor, parsed.data.theme);
+      return c.json(await readAppearance(c.env.DB, actor));
     } catch (error) {
       if (error instanceof SettingsError)
         return c.json({ error: error.code, message: error.message }, error.status);
@@ -164,6 +168,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
     const parsed = z
       .object({
         timezone: timezoneSchema,
+        name: displayNameSchema.optional(),
         reminderTime: reminderTimeSchema.optional(),
         memberInvites: z.boolean().optional(),
       })
@@ -181,6 +186,7 @@ export function addSettingsRoutes(app: Hono<AppEnvironment>) {
         parsed.data.timezone,
         parsed.data.reminderTime,
         parsed.data.memberInvites,
+        parsed.data.name,
       );
       return c.json({
         ...(await readSettings(c.env.DB, c.get("operatorId"))),

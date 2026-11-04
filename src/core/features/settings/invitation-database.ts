@@ -17,12 +17,21 @@ export function invitationDatabase(db: D1Database, actor: string, email: string,
   }
   return new Proxy(db, { get(target, key) {
     if (key === 'prepare') return (sql: string) => {
-      const statement = target.prepare(sql)
+      // Removed local personas retain their reserved address to suppress the
+      // dev declaration. A new invitation creates a new identity and membership;
+      // it never revives the anonymised product record or its historical authors.
+      const lookup = /FROM oa_operators WHERE email=\?$/.test(sql)
+        ? sql + ` AND NOT EXISTS(SELECT 1 FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id WHERE m.auth_id=oa_operators.id AND o.removed_at IS NOT NULL)`
+        : sql
+      const statement = target.prepare(lookup)
       return /INSERT INTO oa_tokens[\s\S]*'invite'/.test(sql) ? mark(statement) : statement
     }
     if (key === 'batch') return async (statements: D1PreparedStatement[]) => {
       if (!statements.some(statement => issuance.has(statement))) return target.batch(statements)
       const result = await target.batch([
+        target.prepare(`UPDATE oa_operators SET email=(SELECT o.email FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id WHERE m.auth_id=oa_operators.id AND o.removed_at IS NOT NULL)
+          WHERE email=? AND status='inactive' AND EXISTS(SELECT 1 FROM vector_auth_operators m JOIN operators o ON o.id=m.operator_id WHERE m.auth_id=oa_operators.id AND o.removed_at IS NOT NULL)`)
+          .bind(email),
         ...statements.map(statement => issuance.get(statement) ?? statement),
         target.prepare(`SELECT CASE WHEN EXISTS(SELECT 1 FROM operators o JOIN workspace_settings w ON w.id=o.workspace_id
           WHERE o.id=? AND o.removed_at IS NULL AND (o.role='owner' OR o.role='admin' AND ? IN('member','guest','viewer') OR o.role='member' AND ?='member' AND w.member_invites=1)
@@ -35,7 +44,7 @@ export function invitationDatabase(db: D1Database, actor: string, email: string,
           ORDER BY t.created_at DESC LIMIT 1`)
           .bind(role, actor, new Date().toISOString(), JSON.stringify(teams), email, actor),
       ])
-      return result.slice(0, statements.length)
+      return result.slice(1, statements.length + 1)
     }
     const value = Reflect.get(target, key, target)
     return typeof value === 'function' ? value.bind(target) : value

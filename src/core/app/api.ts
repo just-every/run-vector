@@ -163,6 +163,13 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
     }
     const operator = await requireOperator(context.env, context.req.raw);
     if (!operator) {
+      if (["GET", "HEAD"].includes(context.req.method) &&
+          /^\/api\/issues\/[^/]+\/files\/[^/]+$/.test(context.req.path) &&
+          context.req.header("accept")?.split(",").some(type => /^text\/html(?:\s*;|$)/i.test(type.trim()))) {
+        const requested = new URL(context.req.url);
+        context.header("Cache-Control", "no-store");
+        return context.redirect("/signin?returnTo=" + encodeURIComponent(requested.pathname + requested.search), 302);
+      }
       return context.json(
         {
           error: "unauthenticated",

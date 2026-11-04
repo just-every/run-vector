@@ -1,3 +1,4 @@
+import { priorityLabel } from "./labels";
 import type { StreamOptions } from "../../streams/ui/data";
 
 // History rows say what changed: each stored before/after pair becomes
@@ -9,7 +10,7 @@ type Change = { field: string; from?: string; to?: string };
 const name = (list: Named[] | undefined, id: unknown, none: string, gone: string) =>
   id === null || id === undefined || id === "" ? none : list?.find((item) => item.id === id)?.name ?? gone;
 const priority = (value: unknown) =>
-  typeof value !== "string" || value === "none" ? "No priority" : value[0]!.toUpperCase() + value.slice(1);
+  priorityLabel(typeof value === "string" ? value : "none");
 
 const FIELDS: Record<string, { label: string; show?: (value: unknown, options: StreamOptions | null) => string }> = {
   statusId: { label: "Status", show: (v, o) => name(o?.statuses, v, "None", "a status in another team") },
@@ -53,6 +54,10 @@ export function activityChanges(kind: string, previousValue: unknown, nextValue:
 }
 
 export function activityTitle(kind: string, nextValue?: unknown) {
+  if (kind === "file.created") {
+    const name = record(nextValue).name;
+    return typeof name === "string" && name ? `Attached ${name}` : "Attached a file";
+  }
   if (kind === "release.published") return "Released in " + String(record(nextValue).releaseName);
   if (kind === "issue.copied_from") return `Copied from ${String(record(nextValue).identifier ?? "an issue")}`;
   if (kind === "issue.copied_to") return `Copied to ${String(record(nextValue).identifier ?? "an issue")}`;

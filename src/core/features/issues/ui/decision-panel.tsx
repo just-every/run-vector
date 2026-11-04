@@ -1,3 +1,4 @@
+import { priorityLabel } from "./labels";
 import { useViewerTime } from '../../../app/viewer-time';
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useHydrated } from "../../../app/initial-resources";
@@ -225,9 +226,7 @@ export function DecisionPanel({
                 (operator) => operator.id === routing.assigneeOperatorId,
               )?.name ?? "unassigned"}
               ,{" "}
-              {routing.priority === "none"
-                ? "no priority"
-                : `${routing.priority} priority`}
+              {priorityLabel(routing.priority)}
               , start{" "}
               {options.statuses.find((status) => status.id === routing.statusId)
                 ?.name ?? "Unstarted"}

@@ -285,13 +285,14 @@ export async function finalizeFile(
   const result = await db.batch([
     db
       .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at) SELECT ?,?,?,'file.created',?,?,? WHERE EXISTS(SELECT 1 FROM issue_files WHERE id=? AND state='pending' AND deleted_at IS NULL AND removal_requested_at IS NULL)`,
+        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at) SELECT ?,?,?,'file.created',json_object('id',?,'name',(SELECT name FROM issue_files WHERE id=?)),?,? WHERE EXISTS(SELECT 1 FROM issue_files WHERE id=? AND state='pending' AND deleted_at IS NULL AND removal_requested_at IS NULL)`,
       )
       .bind(
         createUlid(new Date()),
         issueId,
         actor,
-        JSON.stringify({ id }),
+        id,
+        id,
         now,
         now,
         id,

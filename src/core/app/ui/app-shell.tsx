@@ -38,6 +38,7 @@ type NavigationItem = {
     | '/app'
     | '/app/my-work'
     | '/app/projects'
+    | '/app/cycles'
     | '/app/releases'
     | '/app/initiatives'
     | '/app/issues'
@@ -60,6 +61,7 @@ const navigation: NavigationItem[] = [
   { to: '/app/inbox', label: 'Inbox', icon: '▣' },
   { to: '/app/insights', label: 'Insights', icon: '▧' },
   { to: '/app/calendar', label: 'Calendar', icon: '▦' },
+  { to: '/app/cycles', label: 'Cycles', icon: '◷' },
 ]
 
 export function AppShell({ children }: AppShellProps) {
@@ -225,12 +227,14 @@ function AppShellContent({ children }: AppShellProps) {
         >
           <VectorMark label={productConfig.productName} />
         </Link>
+        <div className="app-sidebar-scroll">
         <nav className="app-nav" aria-label="Workspace">
           {navigation.map((item) => (
             <NavLink key={item.to} item={item} pathname={location.pathname} />
           ))}
         </nav>
         <SavedViewNavigation />
+        </div>
         <div className="app-nav-actions">
           <Link
             className={`app-nav-link${inSettings(location.pathname) ? ' is-active' : ''}`}
@@ -320,14 +324,11 @@ function AppShellContent({ children }: AppShellProps) {
         {children}
       </div>
       <nav className="app-mobile-nav" aria-label="Workspace">
-        <div className="app-mobile-places-row">
-          <NavLink item={navigation[0]!} pathname={location.pathname} />
           <div ref={mobileNavigation} className="app-mobile-places">
-            {navigation.filter(item => item.to !== '/app' && item.to !== '/app/inbox').map(item => (
+            {navigation.map(item => (
               <NavLink key={item.to} item={item} pathname={location.pathname} />
             ))}
           </div>
-        </div>
         <div className="app-mobile-daily">
         <button
           type="button"
@@ -340,7 +341,6 @@ function AppShellContent({ children }: AppShellProps) {
           <span aria-hidden="true">⌕</span>
           <span>Search</span>
         </button>
-        <NavLink item={navigation.find(item => item.to === '/app/inbox')!} pathname={location.pathname} />
         <Link
           className={`app-nav-link${location.pathname.startsWith('/app/new-issue') ? ' is-active' : ''}`}
           to="/app/new-issue"

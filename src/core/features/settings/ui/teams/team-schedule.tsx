@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import type { Administration } from '../../../administration/schema';
 import { useAdministrationCall } from '../admin/administration';
 import { SelectField, type Option } from '../fields/select-field';
@@ -30,7 +31,12 @@ export function TeamSchedule({ data, team, editable }: { data: Administration; t
   });
   return <section className="team-block" aria-label="Automatic cycle schedule">
     <h2 className="group-heading">Automatic cycle schedule</h2>
-    <p className="field-hint">Cycles start at midnight in {data.workspace.timezone}.</p>
+    <p className="field-hint">Cycles start at midnight in {data.workspace.timezone}. <Link to="/app/cycles">Manage cycles</Link></p>
+    {!data.cycles.some(cycle => cycle.teamId === team.id) && <p>
+      {data.cycleSchedules.some(item => item.teamId === team.id)
+        ? "No cycles have been generated yet. Saving a schedule creates upcoming cycles; automatic maintenance keeps them current. Create a cycle now to plan work."
+        : "No cycles exist yet. The choices below are defaults; changing a choice saves and starts the schedule. You can also create a cycle now."}
+    </p>}
     {editable
       ? <div className="schedule-grid">
         <SelectField label="Cycle length" value={String(schedule.weeks)} options={lengths} save={next => store({ weeks: Number(next) })} />

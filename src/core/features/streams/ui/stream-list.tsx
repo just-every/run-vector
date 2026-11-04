@@ -1,3 +1,4 @@
+import { priorityLabel } from "../../issues/ui/labels";
 import { useDateFormat } from "../../../shared/date-format";
 import "./condensed-rows.css";
 import { useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
@@ -115,7 +116,7 @@ export function StreamList({
                         <span className="stream-reason-summary"><span className="reason-pill reason-pill--primary">{reasonLabel(item.primaryReason)}</span>
                           {item.contextReasons.length > 0 && <span aria-label={item.contextReasons.map(reasonLabel).join(", ")}>+{item.contextReasons.length}</span>}
                         </span>
-                        <span className="stream-meta-details">{[item.status.name, item.priority !== "none" ? item.priority : null, !hideAssignee ? item.assignee?.name : null, item.dueDate ? date(item.dueDate) : relativeTime(item.updatedAt)].filter(Boolean).join(" · ")}</span>
+                        <span className="stream-meta-details">{[item.status.name, item.priority !== "none" ? priorityLabel(item.priority) : null, !hideAssignee ? item.assignee?.name : null, item.dueDate ? date(item.dueDate) : relativeTime(item.updatedAt)].filter(Boolean).join(" · ")}</span>
                       </span>
                     </button>
                     </div>

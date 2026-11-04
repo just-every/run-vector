@@ -2,6 +2,7 @@ import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { beforePrivateNavigation, settleReads } from './collaboration-navigation.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 // Exact live PATCH URLs, present only while a deliberate stale request runs.
 export const expectedBoardConflicts = new Set();
@@ -75,6 +76,7 @@ export async function openBoard(page, base, query) {
   await beforePrivateNavigation(page, target);
   await page.goto(target);
   await readyBoard(page, { ...query, pageSize: 100, grouping: 'status' });
+  await openIssueControls(page);
 }
 
 export function boardColumn(page, status) {

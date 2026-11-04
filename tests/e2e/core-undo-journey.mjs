@@ -3,6 +3,7 @@ import { withOperatorClient } from './operator-request.mjs';
 import assert from 'node:assert/strict';
 import {beforePrivateNavigation,settleReads} from './collaboration-navigation.mjs';
 import {undoPropertiesJourney} from './core-undo-properties.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 export async function undoJourney(page,context,base,record,independent=journey=>journey(),runtime){
  const originalViewport=page.viewportSize();
@@ -29,6 +30,7 @@ async function bulkUndoJourney(page,context,base,record){
  const issues=[];for(const [index,priority]of['low','medium'].entries())issues.push(await api('/issues','POST',{teamId:team.id,title:marker+' '+index,priority}));
  await beforePrivateNavigation(page,base+'/app/issues');await page.goto(base+'/app/issues?'+new URLSearchParams({q:marker,grouping:'none'}));
  await page.waitForFunction(()=>document.querySelectorAll('.issues-row:not(:disabled)').length===2);
+ await openIssueControls(page);
  for(const issue of issues){await page.locator('#issue-row-'+issue.identifier).focus();await page.keyboard.press('x')}
  async function changePriority(value){
   await page.locator('#issue-row-'+issues[0].identifier).focus();await page.keyboard.press('p');

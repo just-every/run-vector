@@ -1,3 +1,4 @@
+import { priorityLabel } from "./labels";
 import { useViewerTime } from '../../../app/viewer-time';
 import { useApiResource } from "../../../app/api-client";
 import { currentStreamSchema, myWorkSchema } from "../../streams/ui/data";
@@ -56,7 +57,7 @@ export function DecisionConfirmation({
             ? `Returns for decision ${latest.returnAt ? formatInstant(latest.returnAt) : "when the deferral ends"}.`
             : "This issue is ready for a new decision. Its earlier deferral remains in history."
           : accepted
-            ? `${issue.assignee?.name ?? "Unassigned"} · ${issue.status.name} · ${issue.priority === "none" ? "No priority" : issue.priority}.`
+            ? `${issue.assignee?.name ?? "Unassigned"} · ${issue.status.name} · ${priorityLabel(issue.priority)}.`
             : "The issue remains available with its evidence and history."}
       </p>
       <div>
