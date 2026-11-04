@@ -8197,6 +8197,10 @@
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
     },
+    "tests/e2e/core-agent-write-retry.mjs": {
+      "sha256": "f4dc92eb910ef078b747806ffda1e84da02cb0b953d5c8695456f3c1a2a266d4",
+      "executable": false
+    },
     "tests/e2e/core-board-journey.mjs": {
       "sha256": "5def8bd706f060669622150700e853aa43a6314228c7b632bcd7e2dfd6cc3a66",
       "executable": false
@@ -8310,7 +8314,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "deb2fddb3da13a54e43f7e088a94cad9bddde600ec88b6854696542436e97580",
+      "sha256": "939005804e613b16b3ac14dadade3e28463bc21047e6d66b0596a7ee189b1755",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8967,6 +8971,10 @@
     },
     "tests/worker/agent-resource-parity.ts": {
       "sha256": "b05cd9e0da02e5d2ffab94d119a754af664f9489c4f7889f54badd43db65ea1e",
+      "executable": false
+    },
+    "tests/worker/agent-write-retry.test.ts": {
+      "sha256": "d96b2cc91f82b36be968e80ced0b1414b6c021ceeadf6d655b529f6eedf4b432",
       "executable": false
     },
     "tests/worker/api-rate-limit.test.ts": {
