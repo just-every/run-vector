@@ -486,7 +486,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "f7b85551ff6d4fdfe16b0236fb5b1415d6bf3b607c5f80854fa9c2062a717bf2",
+      "sha256": "401406f43b9dfe7eba707559b9d623401fed36d2e11ad3bd7d922b5722a58310",
       "executable": false
     },
     "ADOPTING.md": {
@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "0782a5f34da39c88c017d6f6155428f63c97dc33437e16a024f1c78dfec37107",
+      "sha256": "59fcc8bbb340769feb62e80b61a485a235efc0cd390c2785ecc37d7a5a2a6934",
       "executable": false
     },
     "DEMO.md": {
@@ -578,7 +578,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "5e3a3d3ef2445a39afa675b747abdf5677a66ba71e70a2beec5cb4762cff9d81",
+      "sha256": "273fa5e4ed6663209185e5b8dbb332cdc420284e39592d28a2226a30f1369edd",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -4930,7 +4930,7 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "69c5997efc90929915549b4fd8df94496b6ee71c6c311c8aa48295889eb6b1d0",
+      "sha256": "86e099f00ad528302496f60fee92c3695fe9339d646c39e642ed3c8699352c41",
       "executable": false
     },
     "src/core/features/discussion/revision.ts": {
@@ -8190,7 +8190,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-attribution-journey.mjs": {
-      "sha256": "1024faf7c0e792785f91948d8c1b4dbbbfd63e3036ced9d45b3227ecf2ffabf9",
+      "sha256": "aa644b378e8d6518ba9a1b591ec2e9fe3c415ee90d53552f48235f729f323d7b",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {
@@ -8962,7 +8962,7 @@
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
-      "sha256": "8584b6eba9b13d7a4b2e3e7ebc16e49afcf6b2be1cd25fe73f5276bcaa85b56c",
+      "sha256": "c17987cf2e4b42fd036240f14b6ed24ad3a1f82d2b4b251b76574b6b849e516a",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
