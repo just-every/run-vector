@@ -1,3 +1,4 @@
+import { agentLocalPauseJourney } from './core-agent-local-pause.mjs';
 import { agentAttributionJourney } from './core-agent-attribution-journey.mjs';
 import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
@@ -744,6 +745,9 @@ try {
       streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
   }
   if (journeyGroup !== 'current') {
+  await withInvitedOperator(page, context, base, state, () =>
+    agentLocalPauseJourney({page, context, base, state, sql, evidence, record,
+      restart: async () => { await stop(); start(); await ready(); }}), 'synthetic-vector-3613');
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
   await withInvitedOperator(page, context, base, state, () =>

@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "222382cfd8e51307837ea75f0fcf40d76cf8a861a52ff2407b31d85b50d2b810",
+      "sha256": "25fa8da9a4a78fb53bc083374fcfd3aab5f920f82d65fd57902bc015c334c182",
       "executable": false
     },
     "DEMO.md": {
@@ -8193,6 +8193,10 @@
       "sha256": "1024faf7c0e792785f91948d8c1b4dbbbfd63e3036ced9d45b3227ecf2ffabf9",
       "executable": false
     },
+    "tests/e2e/core-agent-local-pause.mjs": {
+      "sha256": "e7198179ed3b14571450ce71cd6acf4002c547af75187e2d8b5a55d59bc355e6",
+      "executable": false
+    },
     "tests/e2e/core-agent-resource-parity.mjs": {
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
@@ -8310,7 +8314,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "deb2fddb3da13a54e43f7e088a94cad9bddde600ec88b6854696542436e97580",
+      "sha256": "97f0438501e2ad08c45c4a6e56c23b6ec0fa5464e38d5c3f7e7a32592e2b7772",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8955,6 +8959,10 @@
     },
     "tests/worker/admission-final.test.ts": {
       "sha256": "81129a0a5f47652105f36bd9d3ad9f84444b29a228329c32c48c1a6778406472",
+      "executable": false
+    },
+    "tests/worker/agent-local-pause.test.ts": {
+      "sha256": "60136fc3bf12b6d5d5bbc8e8545a32a99fb5ab017d4f495fb2bb3237ed4881f1",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
