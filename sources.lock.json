@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "55031400a626961d66fcd5efcf6a96cceb8d156c4319e804beb9ba6a755139d1",
+      "sha256": "edf38aefa55f91b46d56a36387e2de72b4946d90fb038c102f2eae80f19d458d",
       "executable": false
     },
     "DEMO.md": {
@@ -4234,7 +4234,7 @@
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
-      "sha256": "38564727ca0c01d8404495878c2f2d4977856b04b95999a54ec50a1a7e8646ed",
+      "sha256": "25206e6dc04982d19e72e9cc413c43d7c2506243bf046e3c0813744b7d46ba31",
       "executable": false
     },
     "src/core/features/agent-door/schemas.ts": {
@@ -8966,7 +8966,7 @@
       "executable": false
     },
     "tests/worker/agent-docs.test.ts": {
-      "sha256": "4381c59dc33b598fe62b918b121b7e6ff64279a7b5a29608a59c18ae3aa14284",
+      "sha256": "e0312c0536ff97891236a7cef88fe06fa3aefa773dd5a5fcd01c4dc82254380f",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
