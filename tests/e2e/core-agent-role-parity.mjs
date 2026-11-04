@@ -24,7 +24,15 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
   };
   const session=await owner('/api/session');
   const tables=['issues','issue_comments','issue_activity','issue_followers','notifications','notification_events','notification_deliveries','audit_records'];
-  const stored=()=>Object.fromEntries(tables.map(table=>{mark('snapshot await wrangler D1 '+table);const rows=sql(`SELECT * FROM ${table} ORDER BY rowid`);mark('snapshot complete '+table);return [table,rows];}));
+  // One Wrangler process owns the complete snapshot. Keep every table and row
+  // comparison: launching a fresh local runtime for each table dominated this journey.
+  const stored=()=>{
+    mark('snapshot await wrangler D1 batch ('+tables.length+' tables)');
+    const snapshots=sql(tables.map(table=>`SELECT * FROM ${table} ORDER BY rowid`).join(';'),{all:true});
+    assert.equal(snapshots.length,tables.length,'Every watched table has its own result set');
+    mark('snapshot complete');
+    return Object.fromEntries(tables.map((table,index)=>[table,snapshots[index]]));
+  };
   const receipts=[],errors=[],external=[],expectedDenials=new Set();
   let id=0,activePage=page,step='setup';
   const completed=new Map();

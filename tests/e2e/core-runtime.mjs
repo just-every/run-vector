@@ -82,7 +82,7 @@ function command(args) {
     maxBuffer: 16 * 1024 * 1024,
   });
 }
-function sql(query) {
+function sql(query, { all = false } = {}) {
   const text = command([
     "d1",
     "execute",
@@ -96,7 +96,8 @@ function sql(query) {
     query,
     "--json",
   ]);
-  return JSON.parse(text)[0].results;
+  const statements = JSON.parse(text);
+  return all ? statements.map(statement => statement.results) : statements[0].results;
 }
 command([
   "d1",
