@@ -4,6 +4,7 @@ import {inviteReader} from './role-reader-support.mjs';
 import {withOperatorClient,publicRequest} from './operator-request.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
 import {roleScreens} from './role-ui-support.mjs';
+import {openPerson} from './settings-pane-support.mjs';
 
 /** Independent native sessions retain only grants minted while their roles permit it. */
 export async function agentRoleParityJourney({page,context,base,state,sql,evidence,record}) {
@@ -17,10 +18,11 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
     assert.equal(response.status,status,method+' '+path);return response.body;
   };
   const session=await owner('/api/session');
-  const tables=['issues','issue_comments','issue_activity','issue_followers','notifications','notification_events','notification_deliveries'];
+  const tables=['issues','issue_comments','issue_activity','issue_followers','notifications','notification_events','notification_deliveries','audit_records'];
   const stored=()=>Object.fromEntries(tables.map(table=>[table,sql(`SELECT * FROM ${table} ORDER BY rowid`)]));
   const receipts=[],errors=[],external=[],expectedDenials=new Set();
   let id=0;
+  const completed=new Map();
   const mint=async(current)=>{
     const response=await raw(current,'/api/settings/integrations/tokens','POST',{
       name:marker,scopes:['issues:read','issues:write','comments:write'],
@@ -30,7 +32,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
   const rpc=async(person,name,args)=>{
     const response=await publicRequest(base+'/mcp',{method:'POST',headers:{Origin:base,Authorization:'Bearer '+person.token,
       'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-11-25','Mcp-Method':'tools/call'},
-      data:{jsonrpc:'2.0',id:++id,method:'tools/call',params:{name,arguments:{...args,idempotency_key:crypto.randomUUID()}}}});
+      data:{jsonrpc:'2.0',id:++id,method:'tools/call',params:{name,arguments:{idempotency_key:crypto.randomUUID(),...args}}}});
     assert.equal(response.status,200);const body=await response.json();assert.equal(body.error,undefined);return body.result;
   };
   const current=issue=>owner('/api/issues/'+issue.identifier);
@@ -46,7 +48,25 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
       assert.equal(result.structuredContent,undefined);assert.deepEqual(stored(),before);
     }
   };
+  const replayRefused=async(person,issue,code)=>{
+    const calls=completed.get(person.id+issue.id);
+    assert.equal(calls?.length,2,'Both completed writes must be replayed');
+    const before=stored();
+    for(const {name,args} of calls){
+      const result=await rpc(person,name,args);
+      assert.equal(result.isError,true);assert.equal(result._meta['com.runeditrun/error'].code,code);
+      assert.equal(result.structuredContent,undefined);
+      assert.ok(!JSON.stringify(result).includes(args.change?.title??args.body));
+      assert.deepEqual(stored(),before);
+    }
+  };
   const show=async(person,issue,writable,capture)=>{
+    if(person.kind==='guest'){
+      const path='/api/issues/'+issue.identifier+'/releases';
+      const denied=await raw(person.context,path);
+      assert.equal(denied.status,403);assert.equal(denied.body.error,'forbidden');
+      expectedDenials.add(base+path+':403');
+    }
     await person.page.setViewportSize({width:1440,height:1000});
     await navigate(person.page,base+'/app/issues/'+issue.identifier);
     await person.page.getByRole('heading',{name:(await current(issue)).title,exact:true}).waitFor();await settleReads(person.page);
@@ -98,67 +118,107 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
         rules:[{id:'standard',class:'standard',do:disposition},{id:'rest',class:'*',do:'blocked'}],spend:{none:true}}});
       for(const p of callers){
         assert.equal((await raw(p.context,'/api/session')).body.role,p.kind==='lead'?'member':p.kind);
-        if(p.kind==='guest'){
-          const path='/api/issues/'+issue.identifier+'/releases';
-          const denied=await raw(p.context,path);
-          assert.equal(denied.status,403);assert.equal(denied.body.error,'forbidden');
-          expectedDenials.add(base+path+':403');
+        for(const subject of [issue,secret]){
+          const label=subject===secret?'private':'public';
+          await show(p,subject,p.kind!=='viewer',disposition==='autonomous'?'agent-role-'+label+'-'+p.kind:null);
+          if(p.kind==='viewer'){await refuse(p,subject,'forbidden');continue;}
+          const title=marker+'-'+p.kind+'-'+disposition+'-'+label;
+          await p.page.getByRole('button',{name:'Edit issue',exact:true}).click();
+          await p.page.getByLabel('Title',{exact:true}).fill(title);
+          const saved=p.page.waitForResponse(r=>new URL(r.url()).pathname==='/api/issues/'+subject.identifier&&r.request().method()==='PATCH');
+          await p.page.getByRole('button',{name:'Save changes',exact:true}).click();assert.equal((await saved).status(),200);
+          await p.page.getByRole('heading',{name:title,exact:true}).waitFor();assert.equal((await current(subject)).title,title);
+          const comment=title+'-comment';
+          await p.page.getByLabel('Add a comment',{exact:true}).fill(comment);
+          const posted=p.page.waitForResponse(r=>new URL(r.url()).pathname===`/api/issues/${subject.identifier}/comments`&&r.request().method()==='POST');
+          await p.page.getByRole('button',{name:'Add comment',exact:true}).click();assert.equal((await posted).status(),201);
+          await p.page.locator('.comment-entry').filter({hasText:comment}).waitFor();
+          const calls=[
+            {name:'vector.issue.concurrent_edits',args:{identifier:subject.identifier,change:{expectedVersion:(await current(subject)).version,title:title+'-agent'},idempotency_key:crypto.randomUUID()}},
+            {name:'vector.issue.comment',args:{identifier:subject.identifier,body:comment+'-agent',idempotency_key:crypto.randomUUID()}},
+          ];
+          const edited=await rpc(p,calls[0].name,calls[0].args),added=await rpc(p,calls[1].name,calls[1].args);
+          for(const result of [edited,added]){
+            assert.equal(result.isError,false);assert.equal(result._meta['com.runeditrun/decision'].disposition,disposition);
+          }
+          completed.set(p.id+subject.id,calls);
+          assert.equal((await current(subject)).title,title+'-agent');
+          const discussion=await owner(`/api/issues/${subject.identifier}/discussion`);
+          assert.ok(discussion.comments.some(c=>c.id===added.structuredContent.commentId&&c.body===comment+'-agent'));
+          await show(p,subject,true);
+          await p.page.locator('.comment-entry').filter({hasText:comment+'-agent'}).waitFor();
+          receipts.push({role:p.kind,disposition,team:label,nativeEdit:true,nativeComment:true,mcpEdit:true,mcpComment:true});
+          await navigate(p.page,base+'/');
         }
-        await show(p,issue,p.kind!=='viewer',disposition==='autonomous'?'agent-role-'+p.kind:null);
-        if(p.kind==='viewer'){await refuse(p,issue,'forbidden');continue;}
-        const title=marker+'-'+p.kind+'-'+disposition;
-        await p.page.getByRole('button',{name:'Edit issue',exact:true}).click();
-        await p.page.getByLabel('Title',{exact:true}).fill(title);
-        const saved=p.page.waitForResponse(r=>new URL(r.url()).pathname==='/api/issues/'+issue.identifier&&r.request().method()==='PATCH');
-        await p.page.getByRole('button',{name:'Save changes',exact:true}).click();assert.equal((await saved).status(),200);
-        await p.page.getByRole('heading',{name:title,exact:true}).waitFor();assert.equal((await current(issue)).title,title);
-        const comment=title+'-comment';
-        await p.page.getByLabel('Add a comment',{exact:true}).fill(comment);
-        const posted=p.page.waitForResponse(r=>new URL(r.url()).pathname===`/api/issues/${issue.identifier}/comments`&&r.request().method()==='POST');
-        await p.page.getByRole('button',{name:'Add comment',exact:true}).click();assert.equal((await posted).status(),201);
-        await p.page.locator('.comment-entry').filter({hasText:comment}).waitFor();
-        const edited=await rpc(p,'vector.issue.concurrent_edits',{identifier:issue.identifier,change:{expectedVersion:(await current(issue)).version,title:title+'-agent'}});
-        const added=await rpc(p,'vector.issue.comment',{identifier:issue.identifier,body:comment+'-agent'});
-        for(const result of [edited,added]){
-          assert.equal(result.isError,false);assert.equal(result._meta['com.runeditrun/decision'].disposition,disposition);
-        }
-        assert.equal((await current(issue)).title,title+'-agent');
-        const discussion=await owner(`/api/issues/${issue.identifier}/discussion`);
-        assert.ok(discussion.comments.some(c=>c.id===added.structuredContent.commentId&&c.body===comment+'-agent'));
-        await show(p,issue,true);
-        await p.page.locator('.comment-entry').filter({hasText:comment+'-agent'}).waitFor();
-        receipts.push({role:p.kind,disposition,nativeEdit:true,nativeComment:true,mcpEdit:true,mcpComment:true});
       }
       const sponsor=callers.find(p=>p.kind==='member');
-      await owner(`/api/settings/operators/${sponsor.id}/role`,'PATCH',{role:'viewer',teamIds:[privateTeam.id]});
+      // Store the downgrade through the rendered Settings role control.
+      await openPerson(page,base,sponsor.id);
+      const changed=page.waitForResponse(r=>new URL(r.url()).pathname===`/api/settings/operators/${sponsor.id}/role`&&r.request().method()==='PATCH');
+      await page.getByLabel('Role',{exact:true}).selectOption('viewer');
+      assert.equal((await changed).status(),200);
       await refuse(sponsor,issue,'forbidden');
+      await replayRefused(sponsor,issue,'forbidden');
       const read=await rpc(sponsor,'vector.issue.activity_history',{identifier:issue.identifier});
       assert.equal(read.isError,false);assert.equal(read.structuredContent.title,(await current(issue)).title);
       await show(sponsor,issue,false,disposition==='autonomous'?'agent-role-downgraded':null);
+      const privateRead=await rpc(sponsor,'vector.issue.activity_history',{identifier:secret.identifier});
+      assert.equal(privateRead.isError,false);assert.equal(privateRead.structuredContent.title,(await current(secret)).title);
+      await show(sponsor,secret,false);
       receipts.push({role:'downgraded-sponsor',disposition,retainedGrantRefused:true,readsContinue:true});
       await owner(`/api/settings/operators/${sponsor.id}/role`,'PATCH',{role:'member'});
       const guest=callers.find(p=>p.kind==='guest');
       await refuse(guest,await owner('/api/issues','POST',{teamId:(await owner('/api/options')).teams.find(t=>t.id!==team.id&&t.id!==privateTeam.id).id,title:marker+'-uninvited'},201),'not_found');
-      await show(sponsor,secret,true);
-      await navigate(sponsor.page,base+'/');
-      await owner(`/api/settings/teams/${privateTeam.id}/members/${sponsor.id}`,'DELETE');
-      await refuse(sponsor,secret,'not_found');
-      const hidden=await rpc(sponsor,'vector.issue.activity_history',{identifier:secret.identifier});
-      assert.equal(hidden.isError,true);assert.equal(hidden._meta['com.runeditrun/error'].code,'not_found');
-      assert.ok(!JSON.stringify(hidden).includes(secret.title));
-      // Navigate with the same session after access withdrawal; no private screen remains.
-      expectedDenials.add(base+'/api/issues/'+secret.identifier+':404');
-      await navigate(sponsor.page,base+'/app/issues/'+secret.identifier);await sponsor.page.locator('.resource-state').waitFor();
-      assert.equal(await sponsor.page.getByRole('button',{name:'Edit issue',exact:true}).count(),0);
-      assert.equal(await sponsor.page.getByLabel('Add a comment',{exact:true}).count(),0);
-      assert.ok(!(await sponsor.page.locator('main').first().innerText()).includes(secret.title));
-      if(disposition==='autonomous')await inspect(sponsor.page,sponsor.page.locator('main:visible').first(),'agent-role-withdrawn');
-      await navigate(sponsor.page,base+'/');
-      await owner(`/api/settings/teams/${privateTeam.id}/members/${sponsor.id}`,'PUT',{role:'member'});
+      for(const person of callers.filter(p=>p.kind!=='owner')){
+        await navigate(person.page,base+'/');
+        await owner(`/api/settings/teams/${privateTeam.id}/members/${person.id}`,'DELETE');
+        await refuse(person,secret,person.kind==='viewer'?'forbidden':'not_found');
+        if(person.kind!=='viewer')await replayRefused(person,secret,'not_found');
+        const hidden=await rpc(person,'vector.issue.activity_history',{identifier:secret.identifier});
+        assert.equal(hidden.isError,true);assert.equal(hidden._meta['com.runeditrun/error'].code,'not_found');
+        const title=(await current(secret)).title;
+        assert.ok(!JSON.stringify(hidden).includes(title));assert.ok(!JSON.stringify(hidden).includes(secret.identifier));
+        // The same independent session loses private work and its write controls.
+        expectedDenials.add(base+'/api/issues/'+secret.identifier+':404');
+        await navigate(person.page,base+'/app/issues/'+secret.identifier);await person.page.locator('.resource-state').waitFor();
+        assert.equal(await person.page.getByRole('button',{name:'Edit issue',exact:true}).count(),0);
+        assert.equal(await person.page.getByLabel('Add a comment',{exact:true}).count(),0);
+        assert.ok(!(await person.page.locator('main').first().innerText()).includes(title));
+        if(disposition==='autonomous')await inspect(person.page,person.page.locator('main:visible').first(),'agent-role-withdrawn-'+person.kind);
+        await navigate(person.page,base+'/');
+        if(['guest','viewer'].includes(person.kind))await owner(`/api/settings/operators/${person.id}/role`,'PATCH',{role:person.kind,teamIds:[team.id,privateTeam.id]});
+        else await owner(`/api/settings/teams/${privateTeam.id}/members/${person.id}`,'PUT',{role:person.kind==='lead'?'owner':'member'});
+      }
+      const outside=await owner('/api/issues','POST',{teamId:(await owner('/api/options')).teams.find(t=>t.id!==team.id&&t.id!==privateTeam.id).id,title:marker+'-reassigned'},201);
+      const outsideTeam=(await current(outside)).team.id;
+      await owner(`/api/settings/operators/${guest.id}/role`,'PATCH',{role:'guest',teamIds:[outsideTeam]});
+      await refuse(guest,issue,'not_found');await replayRefused(guest,issue,'not_found');
+      await show(guest,outside,true,disposition==='autonomous'?'agent-role-guest-reassigned':null);
+      const title=marker+'-reassigned-'+disposition;
+      const nativeEdit=await raw(guest.context,'/api/issues/'+outside.identifier,'PATCH',{expectedVersion:outside.version,title:title+'-native'});
+      assert.equal(nativeEdit.status,200);assert.equal((await current(outside)).title,title+'-native');
+      const nativeComment=await raw(guest.context,`/api/issues/${outside.identifier}/comments`,'POST',{body:title+'-native-comment'});
+      assert.equal(nativeComment.status,201);
+      assert.ok((await owner(`/api/issues/${outside.identifier}/discussion`)).comments.some(c=>c.id===nativeComment.body.id&&c.body===title+'-native-comment'));
+      const calls=[
+        {name:'vector.issue.concurrent_edits',args:{identifier:outside.identifier,change:{expectedVersion:nativeEdit.body.version,title},idempotency_key:crypto.randomUUID()}},
+        {name:'vector.issue.comment',args:{identifier:outside.identifier,body:title+'-comment',idempotency_key:crypto.randomUUID()}},
+      ];
+      const edited=await rpc(guest,calls[0].name,calls[0].args),added=await rpc(guest,calls[1].name,calls[1].args);
+      completed.set(guest.id+outside.id,calls);
+      assert.equal(edited.isError,false);assert.equal(added.isError,false);
+      assert.equal((await current(outside)).title,title);
+      assert.ok((await owner(`/api/issues/${outside.identifier}/discussion`)).comments.some(c=>c.id===added.structuredContent.commentId&&c.body===title+'-comment'));
+      await show(guest,outside,true);await guest.page.locator('.comment-entry').filter({hasText:title+'-comment'}).waitFor();
+      await navigate(guest.page,base+'/');
+      await owner(`/api/settings/operators/${guest.id}/role`,'PATCH',{role:'guest',teamIds:[team.id,privateTeam.id]});
+      await refuse(guest,outside,'not_found');await replayRefused(guest,outside,'not_found');await show(guest,issue,true);
+      await navigate(guest.page,base+'/');
+      receipts.push({role:'reassigned-guest',disposition,currentNamedTeams:true,retainedGrant:true});
     }
     assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
     for(const p of callers)if(p.errors)assert.deepEqual(p.errors,[]);
-    await writeFile(evidence+'/agent-role-parity.json',JSON.stringify({passed:true,receipts,widths:[1440,390],privateWithdrawal:true,independentSessions:6},null,2));
-    record('BASE-AGENT-005','Six native roles share MCP edit and comment authority under autonomous and standard review; retained grants follow Viewer downgrade and current private-team withdrawal while authorized reads continue.');
+    await writeFile(evidence+'/agent-role-parity.json',JSON.stringify({passed:true,receipts,widths:[1440,390],privateWithdrawal:true,replayedWritesRefused:true,namedTeamReassignment:true,independentSessions:6},null,2));
+    record('BASE-AGENT-005','Six native roles share native UI and MCP edit and comment authority in public and private teams under autonomous and standard review; retained grants and completed write replays follow Viewer downgrade, named-team reassignment and private-team withdrawal while authorized reads continue.');
   } finally {for(const p of callers)if(p.context!==context)await p.context.close();}
 }
