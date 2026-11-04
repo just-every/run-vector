@@ -103,6 +103,7 @@ export const preferencesSchema = z.object({
   slack: slackDirectPreferences,
 });
 export const mentionOptionsSchema = z.object({
+  removedOperatorIds: z.array(z.string()),
   operators: z.array(
     z.object({
       id: z.string().regex(/^[0-9A-HJKMNP-TV-Z]{26}$/),

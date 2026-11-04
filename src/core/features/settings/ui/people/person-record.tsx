@@ -1,3 +1,4 @@
+import { DisplayNameField } from '../sections/display-name-field';
 import { RemovePerson } from './remove-person';
 import { PersonRole } from './person-role';
 import { RolesFold } from './roles-fold';
@@ -10,6 +11,7 @@ export function PersonRecord({ data, person }: { data: Settings; person: Person 
   const lastOwner = isLastOwner(data, person);
   const own = person.id === data.operatorId;
   return <div className="person-record">
+    {own && <DisplayNameField />}
     {roles.length
       ? <PersonRole person={person} roles={roles} teams={data.teams} lastOwner={lastOwner} />
       : <p className="record-line"><span>Role</span><strong>{roleLabels[person.role]}{person.id === data.workspace.setupOperatorId ? ' · Installation owner' : ''}</strong></p>}

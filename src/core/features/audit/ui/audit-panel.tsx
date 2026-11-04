@@ -1,4 +1,4 @@
-import { auditAction, auditActor, actorLabels } from "./audit-labels";
+import { auditAction, auditActor, auditSubject, actorLabels } from "./audit-labels";
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ApiError, useApiResource } from '../../../app/api-client';
@@ -23,7 +23,7 @@ export function AuditPanel() {
   useEffect(() => {
     if (!entries || Object.values(filters).some(Boolean)) return;
     setChoices({
-      actors: [...new Map(entries.map(entry => [entry.actorRef, { value: entry.actorRef, label: auditActor(entry) }])).values()],
+      actors: [...new Map(entries.map(entry => [entry.actorFilterRef, { value: entry.actorFilterRef, label: auditActor(entry) }])).values()],
       actions: [...new Set(entries.map(entry => entry.action))],
     });
   }, [entries, filters]);
@@ -48,7 +48,7 @@ export function AuditPanel() {
     {entries && <><p role="status">{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</p>
       {entries.length ? <div className="audit-table-scroll"><table><thead><tr><th scope="col">Time</th><th scope="col">Person or service</th><th scope="col">Activity</th><th scope="col">Item</th></tr></thead>
         <tbody>{entries.map(entry => <tr key={entry.id}><td data-label="Time"><time dateTime={entry.at}>{formatInstant(entry.at)}</time></td>
-          <td data-label="Person or service">{auditActor(entry)}</td><td data-label="Activity"><span>{auditAction(entry.action)}</span></td><td data-label="Item"><details><summary>Record details</summary><code>{entry.subjectRef}</code></details></td></tr>)}</tbody></table></div> : <p>No audit entries match these filters.</p>}
+          <td data-label="Person or service">{auditActor(entry)}</td><td data-label="Activity"><span>{auditAction(entry.action)}</span></td><td data-label="Item"><div className="audit-subject"><span>{auditSubject(entry)}</span><details><summary>Record details</summary><code>{entry.subjectRef}</code></details></div></td></tr>)}</tbody></table></div> : <p>No audit entries match these filters.</p>}
     </>}
   </section>;
 }

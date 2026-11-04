@@ -3,6 +3,7 @@ import { writeFile } from 'node:fs/promises';
 import { navigate, settleReads, trackRequests, beforePrivateNavigation } from './collaboration-navigation.mjs';
 import { inviteReader, readerApi } from './role-reader-support.mjs';
 import { roleScreens } from './role-ui-support.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 export async function booleanFilterJourney({ page, context, base, state, sql, evidence, record }) {
   const owner = readerApi(page, base), browser = context.browser();
@@ -45,6 +46,7 @@ export async function booleanFilterJourney({ page, context, base, state, sql, ev
   async function rows(reader, expected) {
     await reader.page.locator('.issues-browser[data-list-state="ready"]').waitFor();
     await settleReads(reader.page);
+    await openIssueControls(reader.page);
     const actual = await reader.page.locator('.issues-row').evaluateAll(nodes => nodes.map(node => node.dataset.issueIdentifier));
     assert.deepEqual(actual.sort(), expected.map(i => i.identifier).sort());
     assert.equal(await reader.page.locator('.issues-count').innerText(), `${expected.length} ${expected.length === 1 ? 'issue' : 'issues'}`);

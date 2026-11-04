@@ -540,3 +540,8 @@
 .boolean-filters input, .boolean-filters select { font: inherit; width: 100%; min-width: 0; padding: .5rem; border: 1px solid var(--control-border); border-radius: .375rem; background: var(--app-field); color: inherit; }
 .boolean-condition { min-width: 0; border: 1px solid var(--control-border); border-radius: .5rem; padding: .5rem; margin-block: .5rem; display: grid; gap: .5rem; }
 .boolean-filters output { display: block; overflow-wrap: anywhere; margin-block: .5rem; }
+
+.issue-controls { margin-block: .5rem; }
+.issue-controls > summary { cursor: pointer; min-height: 44px; padding-block: .65rem; font-size: .875rem; font-weight: 600; }
+.issue-applied-filters { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
+.issue-applied-filters button { font-size: .8125rem; max-width: 100%; overflow-wrap: anywhere; padding: .35rem .6rem; }

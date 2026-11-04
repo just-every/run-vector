@@ -12,8 +12,8 @@ export const auditQuerySchema = z.object({
 }).strict().refine(q => !q.from || !q.to || Date.parse(q.from) <= Date.parse(q.to), 'End time must be after start time.');
 export type AuditQuery = z.infer<typeof auditQuerySchema>;
 export const auditEntrySchema = z.object({
-  id: z.string(), actorRef: z.string(), actorKind: z.enum(actorKinds),
-  actorName: z.string().nullable(), action: z.string(), subjectRef: z.string(), at: z.string(),
+  id: z.string(), actorRef: z.string(), actorFilterRef: z.string(), actorKind: z.enum(actorKinds),
+  actorName: z.string().nullable(), action: z.string(), subjectRef: z.string(), subjectName: z.string().nullable(), at: z.string(),
 });
 export type AuditEntry = z.infer<typeof auditEntrySchema>;
 export const auditSchema = z.object({ entries: z.array(auditEntrySchema), through: z.number().int().nonnegative() });

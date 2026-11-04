@@ -6,7 +6,12 @@
 }
 .app-sidebar {
   display: flex;
-  min-height: 100%;
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 0;
+  align-self: start;
+  overflow: hidden;
   flex-direction: column;
   border-right: 1px solid rgb(var(--app-ink-rgb) / 11%);
   padding: 1.15rem 0.7rem;
@@ -33,6 +38,8 @@
   height: 0.73em;
   flex: none;
 }
+.app-sidebar-scroll { flex: 1; min-height: 0; overflow-y: auto; }
+.app-brand, .app-nav-actions, .app-sidebar-foot { flex-shrink: 0; }
 .app-nav {
   display: grid;
   gap: 0.25rem;
@@ -166,7 +173,7 @@
   background: var(--app-field);
 }
 @media (max-width: 46rem) {
-  :root { --mobile-navigation-height: calc(6.5rem + env(safe-area-inset-bottom)); }
+  :root { --mobile-navigation-height: calc(4rem + env(safe-area-inset-bottom)); }
   .app-shell { display: block; padding-bottom: var(--mobile-navigation-height); }
   .app-sidebar { display: none; }
   .app-stage { min-height: calc(100svh - var(--mobile-navigation-height)); }
@@ -176,8 +183,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    display: grid;
-    grid-template-rows: repeat(2, minmax(44px, 1fr));
+    display: flex;
     height: var(--mobile-navigation-height);
     gap: 0.25rem;
     border-top: 1px solid rgb(var(--app-ink-rgb) / 15%);
@@ -186,6 +192,8 @@
     backdrop-filter: blur(18px);
   }
   .app-sidebar-foot button { min-height: 44px; }
+  .app-mobile-daily { flex: 0 0 auto; }
+  .app-mobile-daily > .app-nav-link { min-width: 4.75rem; }
   .app-mobile-places-row, .app-mobile-daily {
     display: flex;
     min-width: 0;
@@ -201,7 +209,7 @@
     overflow-y: hidden;
     scrollbar-width: none;
   }
-  .app-mobile-places .app-nav-link { flex: 0 0 calc((100% - 0.5rem) / 2.5); min-width: 5.5rem; }
+  .app-mobile-places .app-nav-link { flex: 0 0 auto; min-width: 5.5rem; }
   .app-mobile-daily > .app-nav-link { flex: 1 1 0; }
   .app-mobile-nav .app-nav-link {
     min-width: 44px;

@@ -14,3 +14,8 @@
 .person-record .field select { max-width: 22rem; }
 .person-role { display: grid; gap: 1rem; }
 .person-remove { display: grid; gap: 0.75rem; }
+
+.pending-invitations { margin-bottom: 1.5rem; }
+.pending-invitations h2 { margin: 0 0 0.5rem; font-size: 1.1rem; }
+.pending-invitations p { max-width: 42rem; line-height: 1.55; }
+.pending-person { padding: 0.85rem 0; overflow-wrap: anywhere; }

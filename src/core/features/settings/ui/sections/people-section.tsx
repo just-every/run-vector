@@ -3,6 +3,7 @@ import type { AssignableRole } from '../../../roles/matrix';
 import { InviteForm } from '../people/invite-form';
 import { readInviteDraft } from '../people/invite-draft';
 import { memberControls, roleLabels } from '../people/people-access';
+import { PendingInvitations } from '../people/pending-invitations';
 import { PeopleList } from '../people/people-list';
 import { PersonRecord } from '../people/person-record';
 import { SectionGate } from '../shell/section-gate';
@@ -38,8 +39,9 @@ function Directory() {
   const opener = roles.length && !inviting
     ? <button type="button" className="button-quiet" onClick={() => { setSent(null); setInviting(true); }}>Invite</button> : undefined;
   return <SectionPage title="People" action={opener}>
-    {sent && <p className="people-notice" role="status">Invitation submitted for delivery. The new {roleLabels[sent]} appears here after accepting it.</p>}
-    {inviting && <InviteForm roles={roles} teams={data.teams} onClose={() => setInviting(false)} onSent={setSent} />}
+    {sent && <p className="people-notice" role="status">{data.invitationDelivery === 'local' ? 'Local invitation ready.' : 'Invitation emailed.'} The new {roleLabels[sent]} appears here after accepting it.</p>}
+    {inviting && <InviteForm roles={roles} teams={data.teams} onClose={() => setInviting(false)} onSent={role => { setSent(role); shell.reload(); }} />}
+    <PendingInvitations data={data} />
     <PeopleList data={data} />
   </SectionPage>;
 }

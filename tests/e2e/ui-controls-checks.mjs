@@ -1,6 +1,13 @@
 import { expect } from '@playwright/test';
 import assert from "node:assert/strict";
 
+export async function openIssueControls(page) {
+  const controls = page.locator('main:visible details.issue-controls');
+  await controls.waitFor({ state: 'visible' });
+  if (await controls.getAttribute('open') === null)
+    await controls.locator(':scope > summary').click();
+}
+
 export async function openDisclosures(page) {
   // Page disclosures may be nested; opening a parent reveals children. Shell menus stay user-controlled.
   await page.locator("main:visible").waitFor({ state: "visible" });

@@ -1168,21 +1168,26 @@ try {
       ),
   );
   expectedConflictUrl = null;
-  await page.getByRole("button", { name: "Reload issue", exact: true }).click();
-  await page.waitForFunction(
-    (title) => document.querySelector('input[name="title"]')?.value === title,
-    concurrentIssue.title,
-    { timeout: 15_000 },
+  const reloadResponsePromise = page.waitForResponse(
+    (response) =>
+      response.url() === `${base}/api/issues/${issue.identifier}` &&
+      response.request().method() === "GET",
   );
+  await page.getByRole("button", { name: "Reload issue", exact: true }).click();
+  const reloadResponse = await reloadResponsePromise;
+  assert.equal(reloadResponse.status(), 200);
+  await reloadResponse.finished();
+  await page.getByRole("button", { name: "Save changes", exact: true, disabled: false }).waitFor();
+  assert.equal(await titleInput.inputValue(), "Unsaved local operator draft");
   assert.equal(
     await descriptionInput.inputValue(),
-    concurrentIssue.description,
+    "Unsaved local description draft",
   );
   await page.getByRole("button", { name: "Cancel edit", exact: true }).click();
   await removeBrowserLink(issueLinks, refreshLink);
   record(
     "ISSUE-006",
-    "Open editor keeps its draft and original expectedVersion through a parent refresh; concurrent API write causes PATCH409 without overwrite, and explicit validated reload replaces the draft.",
+    "Open editor keeps its draft and original expectedVersion through a parent refresh; concurrent API write causes PATCH409 without overwrite, and explicit validated reload retains the changed title and description.",
   );
 
   await beforePrivateNavigation(page, base + "/app/new-issue");

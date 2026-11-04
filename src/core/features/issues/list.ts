@@ -17,6 +17,7 @@ type Row = {
   updatedAt: string;
   startDate: string | null;
   dueDate: string | null;
+  deferredUntil: string | null;
   statusId: string;
   statusName: string;
   category: string;
@@ -67,7 +68,7 @@ export async function listIssues(
       db.prepare(`SELECT COUNT(*) total ${relation}`).bind(...values),
       db
         .prepare(
-          `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.start_date startDate,i.due_date dueDate,
+          `SELECT i.id,i.identifier,i.title,i.description,i.version,i.priority,c.id cycleId,i.created_at createdAt,i.updated_at updatedAt,i.start_date startDate,i.due_date dueDate,i.deferred_until deferredUntil,
  s.id statusId,s.name statusName,s.category,t.id teamId,t.name teamName,a.id assigneeId,a.name assigneeName,p.id projectId,p.name projectName,c.name cycleName,
  m.id milestoneId,m.name milestoneName,
  parent.identifier parentIdentifier,parent.title parentTitle,${blockedSql} blocked,${group.key} groupKey,
@@ -131,6 +132,7 @@ export async function listIssues(
       updatedAt: row.updatedAt,
       startDate: row.startDate,
       dueDate: row.dueDate,
+      deferredUntil: row.deferredUntil,
       milestoneId: row.milestoneId,
       milestone: row.milestoneId ? { id: row.milestoneId, name: row.milestoneName!, projectId: row.projectId! } : null,
       status: {

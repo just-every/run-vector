@@ -4,6 +4,7 @@ import { inviteReader, readerApi } from './role-reader-support.mjs';
 import { roleScreens } from './role-ui-support.mjs';
 import { openSavedViewFromPalette } from './core-palette-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 // The saved definition is shared; issue rows and aggregates always belong to
 // the current reader. All fixtures and authority changes use native HTTP doors.
@@ -68,6 +69,7 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
     const target = base + '/app/issues?' + new URLSearchParams({ q: marker, priority: 'urgent', team: 'all', sort: 'oldest', grouping: 'team' });
     await navigate(author.page, target);
     await author.page.locator('.issues-browser[data-list-state="ready"]').waitFor();
+    await openIssueControls(author.page);
     await author.page.getByRole('button', { name: 'Save view', exact: true }).click();
     const viewName = marker + ' shared work';
     await author.page.getByRole('textbox', { name: 'View name', exact: true }).fill(viewName);
@@ -95,6 +97,7 @@ export async function crossTeamViewJourney({ page, context, base, state, sql, ev
       await current.getByRole('heading', { name: saved ? viewName : 'Issues', exact: true }).waitFor();
       await current.locator('.issues-browser[data-list-state="ready"]').waitFor();
       await settleReads(current);
+      await openIssueControls(current);
       const rows = await current.locator('.issues-row').evaluateAll(nodes => nodes.map(node => node.dataset.issueIdentifier));
       assert.deepEqual([...rows].sort(), expected.map(issue => issue.identifier).sort(), 'Only matching issues in currently visible teams appear');
       assert.equal(await current.locator('.issues-count').innerText(), `${expected.length} ${expected.length === 1 ? 'issue' : 'issues'}`);

@@ -4,9 +4,26 @@ import { beforePrivateNavigation } from './collaboration-navigation.mjs';
 
 export async function exerciseAuditView({ page, runtime, capture, clause, evidence }) {
   await clause('ROLE-005', 'Owners browse and filter retained audit entries and download exactly the visible filtered set', async () => {
+    const labelNames = ['synthetic-vector-5101', 'synthetic-vector-5102', 'synthetic-vector-5103'];
+    for (const name of labelNames) {
+      const created = await page.request.post(runtime.base + '/api/settings/labels', {
+        headers: { Origin: runtime.base }, data: { name, color: '#224466' },
+      });
+      assert.equal(created.status(), 200);
+    }
     const all = await (await page.request.get(runtime.base + '/api/settings/audit')).json();
     const entry = all.entries.find(item => item.action === 'operator.role_changed');
     assert.ok(entry, 'the preceding native role journey produced an audit event');
+    const settings = await (await page.request.get(runtime.base + '/api/settings')).json();
+    const invitee = settings.operators.find(person => person.id === entry.subjectRef);
+    assert.ok(invitee);
+    const invitation = all.entries.find(item => item.action === 'operator.invited' && item.subjectName === invitee.name);
+    assert.ok(invitation, 'the invitation resolves to the invited person rather than an auth ID');
+    const { cycles } = await (await page.request.get(runtime.base + '/api/settings/cycles')).json();
+    const cycle = cycles.find(cycle => all.entries.some(item => item.action === 'cycle.created' && item.subjectRef === cycle.id));
+    assert.ok(cycle, 'the preceding cycle journey produced an audit event');
+    for (const name of labelNames) assert.ok(all.entries.some(item => item.action === 'label.created' && item.subjectName === name));
+    assert.equal(all.entries.find(item => item.action === 'cycle.created' && item.subjectRef === cycle.id).subjectName, cycle.name);
     await beforePrivateNavigation(page, runtime.base + '/app/settings');
     await page.goto(runtime.base + '/app/settings');
     // Following the link leaves Settings; its reads finish first, as before any private navigation.
@@ -14,9 +31,27 @@ export async function exerciseAuditView({ page, runtime, capture, clause, eviden
     await page.getByRole('link', { name: 'Audit log', exact: true }).click();
     const panel = page.locator('#audit');
     await panel.getByRole('heading', { name: 'Audit log', exact: true }).waitFor();
+    await panel.locator('tbody tr').first().waitFor();
+    for (const name of [...labelNames, invitee.name, cycle.name]) {
+      const subject = panel.locator('.audit-subject').getByText(name, { exact: true }).first();
+      await subject.waitFor();
+      assert.equal(await subject.isVisible(), true, 'item names are readable without opening record details');
+    }
+    const actorOptions = panel.locator('select[name="actor"] option');
+    const expectedActors = new Set(all.entries.map(item => item.actorFilterRef));
+    assert.equal(await actorOptions.count(), expectedActors.size + 1, 'each identity has one filter option');
+    const personEntries = all.entries.filter(item => item.actorFilterRef === entry.actorFilterRef);
+    assert.ok(personEntries.some(item => item.actorRef.startsWith('auth:')) && personEntries.some(item => item.actorRef.startsWith('person:')), 'the person has native-auth and product activity');
+    await panel.locator('select[name="actor"]').selectOption(entry.actorFilterRef);
+    const personResponse = page.waitForResponse(r => r.url().includes('/api/settings/audit?') && new URL(r.url()).searchParams.get('actor') === entry.actorFilterRef);
+    await panel.getByRole('button', { name: 'Apply filters', exact: true }).click();
+    const personSelected = await (await personResponse).json();
+    assert.deepEqual(personSelected.entries.map(item => item.id), personEntries.map(item => item.id), 'one person filter includes both native-auth and product events');
+    await panel.locator('tbody tr').first().waitFor();
+    assert.equal(await panel.locator('tbody tr').count(), personSelected.entries.length);
     const inspect = roleScreens(evidence);
     await inspect(page, panel, 'workspace-audit');
-    await panel.locator('select[name="actor"]').selectOption(entry.actorRef);
+    await panel.locator('select[name="actor"]').selectOption(entry.actorFilterRef);
     await panel.locator('select[name="kind"]').selectOption(entry.actorKind);
     await panel.locator('select[name="action"]').selectOption(entry.action);
     await panel.getByLabel('Item reference', {exact:true}).fill(entry.subjectRef);
@@ -27,7 +62,7 @@ export async function exerciseAuditView({ page, runtime, capture, clause, eviden
     await panel.getByRole('button', {name:'Apply filters',exact:true}).click();
     const selected = await (await response).json();
     assert.ok(selected.entries.some(item=>item.id===entry.id),'the selected event remains inside the chosen time range');
-    assert.ok(selected.entries.every(item => item.actorRef === entry.actorRef && item.action === entry.action && item.subjectRef === entry.subjectRef));
+    assert.ok(selected.entries.every(item => item.actorFilterRef === entry.actorFilterRef && item.action === entry.action && item.subjectRef === entry.subjectRef));
     await panel.locator('tbody tr').first().waitFor();
     assert.equal(await panel.locator('tbody tr').count(), selected.entries.length);
     const csvUrl = await panel.getByRole('link',{name:'Export filtered CSV'}).getAttribute('href');
