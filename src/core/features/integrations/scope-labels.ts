@@ -26,6 +26,7 @@ export const scopeLabels:Record<(typeof tokenScopes)[number],string>={
  'releases:write':'Create and update releases',
  'initiatives:read':'Read initiatives you can access',
  'initiatives:write':'Create and update initiatives',
+ 'search:read':'Search visible workspace records',
  'evidence:read':'Read agent evidence you can access',
 };
 export function scopeDescription(serialized:string){

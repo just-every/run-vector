@@ -1,4 +1,5 @@
 import { agentAttributionJourney } from './core-agent-attribution-journey.mjs';
+import { agentDocumentationJourney } from './core-agent-docs.mjs';
 import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
@@ -744,6 +745,7 @@ try {
       streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
   }
   if (journeyGroup !== 'current') {
+  await agentDocumentationJourney({page, context, base, state, sql, evidence, record});
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
   await withInvitedOperator(page, context, base, state, () =>
