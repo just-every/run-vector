@@ -8,9 +8,14 @@ import {openPerson} from './settings-pane-support.mjs';
 
 /** Independent native sessions retain only grants minted while their roles permit it. */
 export async function agentRoleParityJourney({page,context,base,state,sql,evidence,record}) {
+  const started=performance.now();
+  const mark=label=>console.info(`[Agent role parity +${((performance.now()-started)/1000).toFixed(3)}s] ${label}`);
+  mark('start');
   const marker='synthetic-vector-'+Date.now(),inspect=roleScreens(evidence),callers=[];
   const raw=async(current,path,method='GET',data)=>withOperatorClient(current,async client=>{
+    mark('await native '+method+' '+path);
     const response=await client.fetch(base+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
+    mark('native response '+method+' '+path);
     return {status:response.status(),body:await response.json()};
   });
   const owner=async(path,method='GET',data,status=200)=>{
@@ -19,7 +24,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
   };
   const session=await owner('/api/session');
   const tables=['issues','issue_comments','issue_activity','issue_followers','notifications','notification_events','notification_deliveries','audit_records'];
-  const stored=()=>Object.fromEntries(tables.map(table=>[table,sql(`SELECT * FROM ${table} ORDER BY rowid`)]));
+  const stored=()=>Object.fromEntries(tables.map(table=>{mark('snapshot await wrangler D1 '+table);const rows=sql(`SELECT * FROM ${table} ORDER BY rowid`);mark('snapshot complete '+table);return [table,rows];}));
   const receipts=[],errors=[],external=[],expectedDenials=new Set();
   let id=0,activePage=page,step='setup';
   const completed=new Map();
@@ -30,9 +35,11 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
     assert.equal(response.status,201);return response.body.token;
   };
   const rpc=async(person,name,args)=>{
+    mark('await MCP '+person.kind+' '+name);
     const response=await publicRequest(base+'/mcp',{method:'POST',headers:{Origin:base,Authorization:'Bearer '+person.token,
       'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-11-25','Mcp-Method':'tools/call'},
       data:{jsonrpc:'2.0',id:++id,method:'tools/call',params:{name,arguments:{idempotency_key:crypto.randomUUID(),...args}}}});
+    mark('MCP response '+person.kind+' '+name);
     assert.equal(response.status,200);const body=await response.json();assert.equal(body.error,undefined);return body.result;
   };
   const current=issue=>owner('/api/issues/'+issue.identifier);
@@ -61,6 +68,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
     }
   };
   const show=async(person,issue,writable,capture)=>{
+    mark('await show '+person.kind+' '+(capture??'readback'));
     if(person.kind==='guest'){
       const path='/api/issues/'+issue.identifier+'/releases';
       const denied=await raw(person.context,path);
@@ -68,10 +76,13 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
       expectedDenials.add(base+path+':403');
     }
     await person.page.setViewportSize({width:1440,height:1000});
+    mark('await issue navigation '+person.kind);
     const target=base+'/app/issues/'+issue.identifier;
     if(person.page.url()!==target)await navigate(person.page,target);
     else await settleReads(person.page);
+    mark('await issue reload '+person.kind);
     assert.equal((await person.page.reload()).status(),200);
+    mark('await issue heading '+person.kind);
     await person.page.getByRole('heading',{name:(await current(issue)).title,exact:true}).waitFor();await settleReads(person.page);
     const edit=person.page.getByRole('button',{name:'Edit issue',exact:true});
     const composer=person.page.getByRole('textbox',{name:'Add a comment',exact:true});
@@ -83,14 +94,17 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
     }
     if(capture){
       const timeOrigin=await person.page.evaluate(()=>performance.timeOrigin);
+      mark('await axe/screenshots '+capture);
       await inspect(person.page,person.page.locator('main:visible').first(),capture);
       assert.equal(await person.page.evaluate(()=>performance.timeOrigin),timeOrigin);
+      mark('capture complete '+capture);
       await person.page.setViewportSize({width:1440,height:1000});
     }
   };
   try {
     callers.push({kind:'owner',id:session.operatorId,page,context,token:await mint(context)});
     for(const kind of ['admin','lead','member','guest','viewer']){
+      mark('await invitation '+kind);
       const person=await inviteReader({owner:page,browser:context.browser(),runtime:{base,state,sql},name:marker+'-'+kind,
         email:[marker+'-'+kind,'vector.test'].join(String.fromCharCode(64)),role:kind==='admin'?'admin':'member'});
       callers.push({...person,kind,token:await mint(person.context)});
@@ -126,7 +140,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
         assert.equal((await raw(p.context,'/api/session')).body.role,p.kind==='lead'?'member':p.kind);
         for(const subject of [issue,secret]){
           const label=subject===secret?'private':'public';
-          activePage=p.page;step=p.kind+' '+disposition+' '+label;
+          activePage=p.page;step=p.kind+' '+disposition+' '+label;mark(step);
           await show(p,subject,p.kind!=='viewer',disposition==='autonomous'?'agent-role-'+label+'-'+p.kind:null);
           if(p.kind==='viewer'){await refuse(p,subject,'forbidden');continue;}
           const title=marker+'-'+p.kind+'-'+disposition+'-'+label;
@@ -158,6 +172,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
           await navigate(p.page,base+'/');
         }
       }
+      mark('await sponsor downgrade '+disposition);
       const sponsor=callers.find(p=>p.kind==='member');
       // Store the downgrade through the rendered Settings role control.
       await openPerson(page,base,sponsor.id);
@@ -176,6 +191,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
       await owner(`/api/settings/operators/${sponsor.id}/role`,'PATCH',{role:'member'});
       const guest=callers.find(p=>p.kind==='guest');
       await refuse(guest,await owner('/api/issues','POST',{teamId:(await owner('/api/options')).teams.find(t=>t.id!==team.id&&t.id!==privateTeam.id).id,title:marker+'-uninvited'},201),'not_found');
+      mark('await private withdrawal '+disposition);
       for(const person of callers.filter(p=>p.kind!=='owner')){
         await navigate(person.page,base+'/');
         await owner(`/api/settings/teams/${privateTeam.id}/members/${person.id}`,'DELETE');
@@ -196,6 +212,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
         if(['guest','viewer'].includes(person.kind))await owner(`/api/settings/operators/${person.id}/role`,'PATCH',{role:person.kind,teamIds:[team.id,privateTeam.id]});
         else await owner(`/api/settings/teams/${privateTeam.id}/members/${person.id}`,'PUT',{role:person.kind==='lead'?'owner':'member'});
       }
+      mark('await named-team reassignment '+disposition);
       const outside=await owner('/api/issues','POST',{teamId:(await owner('/api/options')).teams.find(t=>t.id!==team.id&&t.id!==privateTeam.id).id,title:marker+'-reassigned'},201);
       const outsideTeam=(await current(outside)).team.id;
       await owner(`/api/settings/operators/${guest.id}/role`,'PATCH',{role:'guest',teamIds:[outsideTeam]});
@@ -226,6 +243,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
     assert.deepEqual(errors,[]);assert.deepEqual(external,[]);
     for(const p of callers)if(p.errors)assert.deepEqual(p.errors,[]);
     await writeFile(evidence+'/agent-role-parity.json',JSON.stringify({passed:true,receipts,widths:[1440,390],privateWithdrawal:true,replayedWritesRefused:true,namedTeamReassignment:true,independentSessions:6},null,2));
+    mark('complete');
     record('BASE-AGENT-005','Six native roles share native UI and MCP edit and comment authority in public and private teams under autonomous and standard review; retained grants and completed write replays follow Viewer downgrade, named-team reassignment and private-team withdrawal while authorized reads continue.');
   } catch(error){
     await activePage.screenshot({path:evidence+'/agent-role-failure.png',timeout:5000}).catch(()=>{});
