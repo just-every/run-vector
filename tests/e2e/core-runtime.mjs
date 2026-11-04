@@ -60,11 +60,11 @@ const port = await freePort();
 const root = process.cwd(),
   base = `http://127.0.0.1:${port}`,
   state = `.wrangler/vector-e2e/runs/${new Date().toISOString().replace(/[:.]/g, "-")}-${process.pid}`,
-  evidence = resolve(verificationDirectory);
+  evidence = resolve(verificationDirectory, process.argv[2] === 'projects' ? 'project-runtime' : '');
 // CI partitions the independent invited-operator journeys; the public command
 // keeps the complete serial proof. Both partitions retain the shared doors.
 const journeyGroup = process.argv[2] ?? 'all';
-assert.ok(['all', 'current', 'planning', 'agent-role-parity'].includes(journeyGroup), 'Unknown runtime journey partition');
+assert.ok(['all', 'current', 'planning', 'projects', 'agent-role-parity'].includes(journeyGroup), 'Unknown runtime journey partition');
 const ids = {
   sarah: "01J00000000000000000000002",
   flow: "01J00000000000000000000010",
@@ -717,7 +717,7 @@ try {
     await withInvitedOperator(page, context, base, state, () =>
       agentRoleParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3610');
   } else {
-  if (journeyGroup !== 'planning') {
+  if (['all', 'current'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => currentDisjointJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
@@ -749,7 +749,7 @@ try {
     await withInvitedOperator(page, context, base, state, () =>
       streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
   }
-  if (journeyGroup !== 'current') {
+  if (['all', 'planning'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () =>
     agentWriteRetryJourney({page, context, base, state, sql, evidence, record,
       restart: async () => { await stop(); start(); await ready(); }}), 'synthetic-vector-3613');
@@ -774,23 +774,23 @@ try {
   }
   // Ordered views and workload use independent invited operators; balance them
   // beside Current while Planning retains every agent authority assertion.
-  if (journeyGroup !== 'planning') {
+  if (['all', 'projects'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => manualOrderJourney(page, context, base, record), 'synthetic-vector-1930');
   await withInvitedOperator(page, context, base, state, () => workloadJourney(page, context, base, record), 'synthetic-vector-1931');
   }
-  if (journeyGroup !== 'current') {
+  if (['all', 'planning'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');
   await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');
   }
   // Balance the independent project, initiative and release proof with Current;
   // Planning keeps the complete agent-role matrix without increasing its timeout.
-  if (journeyGroup !== 'planning') {
+  if (['all', 'projects'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
   }, state), 'Project maintenance teammate');
   }
-  if (journeyGroup !== 'current') {
+  if (['all', 'planning'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
@@ -798,6 +798,7 @@ try {
   await withInvitedOperator(page, context, base, state, () => cycleMembershipJourney(page, context, base, record), 'synthetic-vector-1934');
   await withInvitedOperator(page, context, base, state, () => subissuesJourney(page, context, base, record), 'synthetic-vector-1935');
   }
+  if (journeyGroup !== 'projects') {
   await pageAudit(page, base, issue.identifier, evidence, record);
   await beforePrivateNavigation(page, base + '/app');
   await page.goto(base + '/app');
@@ -1673,6 +1674,7 @@ try {
     "Native allow-listed single-use sign-in and persisted session revoke work through emitted Worker and browser. Local outbox only; external delivery remains unverified.",
   );
   sql(`UPDATE operators SET name='Sarah Chen' WHERE id='${ids.sarah}'`);
+  }
   await writeFile(
     evidence + "/runtime-results.json",
     JSON.stringify({ passed: true, results, documents, requestLedger: requestLedger(sql) }, null, 2),
@@ -1715,4 +1717,13 @@ try {
     if (testError) testError.cleanupErrors = cleanupErrors;
     else throw new AggregateError(cleanupErrors, "Core runtime cleanup failed");
   }
+}
+
+// Independent project proofs own a fresh installation and its real native auth
+// admission budget. Start only after Current's browser and Worker are closed.
+if (journeyGroup === 'current') {
+  console.info('[Vector runtime] Starting independent project installation');
+  execFileSync(process.execPath, [resolve('tests/e2e/core-runtime.mjs'), 'projects'], {
+    cwd: root, env: process.env, stdio: 'inherit',
+  });
 }
