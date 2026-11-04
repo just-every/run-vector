@@ -8194,7 +8194,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-project-read.mjs": {
-      "sha256": "9f693dc7515ed5c06630cd42d60cfac6c70bc582d1ffc4189aa68c806ecdb219",
+      "sha256": "02e2c1de12948eaa3326dcc6bd441de4d25376d0ae4f1197fe718ec8ad213abd",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {

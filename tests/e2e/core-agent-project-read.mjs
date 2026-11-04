@@ -41,13 +41,13 @@ export async function agentProjectReadJourney({page,context,base,state,sql,evide
     const privateTeam=(await owner('/settings/teams','POST',{name:marker+'-private',identifierPrefix:prefix+'P',isPrivate:true})).teams.find(t=>t.identifierPrefix===prefix+'P');
     const project=(await owner('/settings/projects','POST',{name:marker+'-project',description:marker+'-description',leadOperatorId:session.operatorId,targetDate:'2099-01-01'})).projects.find(p=>p.name===marker+'-project');
     await owner('/settings/projects/'+project.id,'PATCH',{lifecycle:'active'});
-    const cycle=(await owner('/settings/cycles','POST',{name:marker+'-cycle',teamId:team.id,startsLocal:'2030-09-01T00:00',endsLocal:'2030-09-08T00:00',capacity:8})).cycles.find(c=>c.name===marker+'-cycle');
+    const cycle=(await owner('/settings/cycles','POST',{name:marker+'-cycle',teamId:team.id,startsLocal:'2000-09-01T00:00',endsLocal:'2000-09-08T00:00',capacity:8})).cycles.find(c=>c.name===marker+'-cycle');
     await owner(`/settings/projects/${project.id}/milestones`,'POST',{name:marker+'-milestone',description:marker+'-milestone-description'});
     const first=await owner('/issues','POST',{title:marker+'-completed',teamId:team.id,projectId:project.id,cycleId:cycle.id},201);
     await owner('/issues/'+first.identifier,'PATCH',{expectedVersion:first.version,statusId:team.statuses.find(s=>s.category==='completed').id});
     const second=await owner('/issues','POST',{title:marker+'-open',teamId:team.id,projectId:project.id},201);
     const secret=await owner('/issues','POST',{title:marker+'-secret',teamId:privateTeam.id,projectId:project.id},201);
-    const tick=await context.request.get(base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *')+'&time='+Date.parse('2030-09-09T00:00:00Z'));
+    const tick=await context.request.get(base+'/cdn-cgi/local/scheduled?cron='+encodeURIComponent('* * * * *')+'&time='+Date.now());
     assert.equal(tick.status(),200);await tick.body();
     const readers=[await mint(owner),await mint(member.api)];
     for(const disposition of ['autonomous','review']){
