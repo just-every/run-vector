@@ -25,6 +25,10 @@ it('signed-in agent documentation matches offered actions and their computed cla
     Authorization: 'Bearer ' + token, Accept: 'application/json, text/event-stream',
     'MCP-Protocol-Version': '2025-11-25', 'Mcp-Method': method,
   }));
+  const unset = await send('/docs/agents');
+  expect(unset.status).toBe(200);
+  expect(await unset.text()).not.toContain('data-tool=');
+  expect((await rpc('tools/list')).result.tools).toEqual([]);
   for (const disposition of ['autonomous', 'review']) {
     await json(await send('/agents/api/policy', 'PUT', { document: {
       schema: 'rer-agent-policy/1', catalogue: 'rer-agent-classes/1',
@@ -84,6 +88,12 @@ it('signed-in agent documentation matches offered actions and their computed cla
     for (const privateValue of [owner.cookie, token, outputs.create.title, outputs.comment.commentId, owner.owner])
       expect(html).not.toContain(privateValue);
   }
+  await json(await send('/agents/api/pause', 'POST', { paused: true }));
+  const paused = await send('/docs/agents');
+  expect(paused.status).toBe(200);
+  expect(await paused.text()).not.toContain('data-tool=');
+  expect((await rpc('tools/list')).result.tools).toEqual([]);
+  await json(await send('/agents/api/pause', 'POST', { paused: false }));
   const tables = ['issues', 'issue_comments', 'issue_activity', 'agent_door_state', 'agent_door_audit'];
   const before = await snapshot(tables);
   for (const response of [await send('/docs/agents', 'GET', undefined, ''),

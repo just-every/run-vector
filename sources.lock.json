@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "be852830e2c3773c4816d813ccfb212a9834c99b069966a02e500ce0c113e048",
+      "sha256": "59862190be9218a06bc273d20f64335303d86d4458e6eafbb4e95da7109dba70",
       "executable": false
     },
     "DEMO.md": {
@@ -4234,7 +4234,7 @@
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
-      "sha256": "38564727ca0c01d8404495878c2f2d4977856b04b95999a54ec50a1a7e8646ed",
+      "sha256": "25206e6dc04982d19e72e9cc413c43d7c2506243bf046e3c0813744b7d46ba31",
       "executable": false
     },
     "src/core/features/agent-door/schemas.ts": {
@@ -8982,7 +8982,7 @@
       "executable": false
     },
     "tests/worker/agent-docs.test.ts": {
-      "sha256": "4381c59dc33b598fe62b918b121b7e6ff64279a7b5a29608a59c18ae3aa14284",
+      "sha256": "e0312c0536ff97891236a7cef88fe06fa3aefa773dd5a5fcd01c4dc82254380f",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
