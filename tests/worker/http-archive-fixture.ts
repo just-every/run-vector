@@ -67,3 +67,9 @@ export const targetSnapshot=async()=>{
   return {table:name,count:rows.length,content:Array.from(new Uint8Array(digest),byte=>byte.toString(16).padStart(2,'0')).join('')};
  }));
 };
+
+/** Decode native rows from the downloaded, integrity-checked HTTP archive. */
+export function archiveRows(records:ArchiveRecords,table:string) {
+ return records.filter((record):record is Part=>record.kind==='part')
+  .flatMap(part=>part.items).flatMap(item=>item.kind==='row'&&item.table===table?[item.row]:[]);
+}

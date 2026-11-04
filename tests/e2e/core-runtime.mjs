@@ -1,3 +1,4 @@
+import { agentAttributionJourney } from './core-agent-attribution-journey.mjs';
 import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
@@ -745,6 +746,8 @@ try {
   if (journeyGroup !== 'current') {
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
+  await withInvitedOperator(page, context, base, state, () =>
+    agentAttributionJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3513');
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);
   await threadsJourney(page, context, base, state, ids.flow, evidence, record);
   const followerContext = await browser.newContext({ storageState: await context.storageState(), viewport: page.viewportSize() });
