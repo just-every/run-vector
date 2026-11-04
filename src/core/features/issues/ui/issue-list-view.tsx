@@ -9,6 +9,7 @@ import { useHydrated } from '../../../app/initial-resources';
 import { workspaceOptionsSchema } from "../../../shared/workspace-options";
 import type { IssueListData, IssueListQuery } from "../list-schema";
 import { defaultIssueListQuery, issueListSearch } from "./issue-list-controls";
+import { AppliedIssueFilters } from "./applied-filters";
 import { IssueFilters } from "./issue-filters";
 import { IssueTimeline } from "../../calendar-view/timeline";
 import { IssueBoard } from "./issue-board";
@@ -179,6 +180,8 @@ export function IssueListView({
       {tabState === 'error' && <p role="alert">This tab could not be opened. Choose it again to retry.</p>}
       {!denied && (
         <>
+          <AppliedIssueFilters query={query} options={options} onChange={onChange} />
+          <details className="issue-controls"><summary>Filters and views</summary>
           {options ? (
             <IssueFilters
               fixedGrouping={layout === "board"}
@@ -203,6 +206,7 @@ export function IssueListView({
                 onCreated={onCreateView}
               />
             ))}
+          </details>
         </>
       )}
       <ManualOrderNotice query={query} />

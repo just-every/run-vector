@@ -125,6 +125,13 @@ export async function removeOperator(
       WHERE id=? AND ${receipt}`,
       )
       .bind(at, at, target, id),
+    // The dev layer treats a missing declared address as a never-created persona.
+    // Keep its reserved, non-personal address on the inactive native identity so
+    // that declaration cannot reappear after removal. Real emails stay erased.
+    db.prepare(`UPDATE oa_operators SET email=? WHERE status='inactive'
+      AND id=(SELECT auth_id FROM vector_auth_operators WHERE operator_id=?)
+      AND ?=1 AND ${receipt}`)
+      .bind(access.targetEmail, target, Number(/^[a-z][a-z0-9-]{0,39}@dev\.localhost$/.test(access.targetEmail)), id),
     db
       .prepare(
         `INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at,workspace_id,actor_kind,actor_reference)

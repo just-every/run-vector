@@ -55,6 +55,16 @@ export async function readSettings(db: D1Database, actor: string) {
   const current = await settingsActor(db, actor);
   return {
     workspace: workspace && { ...workspace, memberInvites: workspace.memberInvites === 1 },
+    pendingInvitations: (await db.prepare(`SELECT a.display_name AS name,a.email,r.role,MAX(t.expires_at) AS expiresAt
+      FROM oa_tokens t JOIN oa_operators a ON a.id=t.operator_id
+      JOIN oa_operators issuer ON issuer.id=t.issuer_id AND issuer.status='active' AND issuer.version=t.issuer_version
+      JOIN vector_invitation_roles r ON r.token_id=t.id JOIN operators inviter ON inviter.id=r.inviter_operator_id
+      WHERE inviter.workspace_id=? AND inviter.removed_at IS NULL AND a.status='invited'
+      AND t.kind='invite' AND t.consumed_at IS NULL AND t.revoked_at IS NULL AND t.expires_at>?
+      AND t.operator_version=a.version
+      AND (? IN ('owner','admin') OR (?='member' AND ?=1 AND r.role='member'))
+      GROUP BY a.id,a.display_name,a.email,r.role ORDER BY a.display_name,a.email`)
+      .bind(access.workspace_id, Date.now(), access.role, access.role, workspace?.memberInvites ?? 0).all()).results,
     operators: operators.results.map(({ teamIdsJson,...member }) => ({...member,teamIds:JSON.parse(String(teamIdsJson))})),
     teams: (await db.prepare('SELECT id,name FROM teams WHERE workspace_id=? AND archived_at IS NULL ORDER BY name,id').bind(access.workspace_id).all()).results,
     operatorId: actor,
@@ -69,6 +79,7 @@ export async function updateWorkspaceTime(
   timezone: string,
   reminderTime?: string,
   memberInvites?: boolean,
+  name?: string,
 ) {
   if (!timezoneSchema.safeParse(timezone).success)
     throw new SettingsError(
@@ -85,14 +96,17 @@ export async function updateWorkspaceTime(
       "Choose a 24-hour reminder time.",
       400,
     );
+  const access = await settingsActor(db, actor);
+  if (name !== undefined && access.role !== 'owner')
+    throw new SettingsError('forbidden', 'Only an Owner can rename the workspace.', 403);
   const at = new Date().toISOString();
   const invites = memberInvites === undefined ? null : Number(memberInvites);
   const [result] = await db.batch<{ id: string }>([
     db.prepare(
-      `UPDATE workspace_settings SET timezone=?,reminder_time=COALESCE(?,reminder_time),member_invites=COALESCE(?,member_invites),updated_at=?
-    WHERE id=(SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL)
+      `UPDATE workspace_settings SET name=COALESCE(?,name),timezone=?,reminder_time=COALESCE(?,reminder_time),member_invites=COALESCE(?,member_invites),updated_at=?
+    WHERE id=(SELECT workspace_id FROM operators WHERE id=? AND removed_at IS NULL AND (? IS NULL OR role='owner'))
     RETURNING id`,
-    ).bind(timezone, reminderTime ?? null, invites, at, actor),
+    ).bind(name ?? null, timezone, reminderTime ?? null, invites, at, actor, name ?? null),
     // Turning Member invitations off stops the links Members already sent.
     db.prepare(
       `UPDATE oa_tokens SET revoked_at=? WHERE ?=0 AND kind='invite' AND consumed_at IS NULL AND revoked_at IS NULL
@@ -123,10 +137,10 @@ export async function assertRemovalAllowed(
     );
   const found = await db
     .prepare(
-      "SELECT id FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL",
+      "SELECT id,email FROM operators WHERE id=? AND workspace_id=? AND removed_at IS NULL",
     )
     .bind(target, access.workspace_id)
-    .first();
+    .first<{ id: string; email: string }>();
   if (!found)
     throw new SettingsError("not_found", "Operator is unavailable.", 404);
   if (target === access.setup_operator_id && actor !== target)
@@ -165,7 +179,7 @@ export async function assertRemovalAllowed(
       "An upload or file removal is still settling. Finish file recovery and retry operator removal.",
       409,
     );
-  return access;
+  return { ...access, targetEmail: found.email };
 }
 
 export function removalId() {

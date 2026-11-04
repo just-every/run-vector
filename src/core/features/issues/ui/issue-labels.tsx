@@ -9,8 +9,10 @@ export function IssueLabels({
   options,
   onRefresh,
   writable = true,
+  onLabelsCreated,
 }: {
   writable?: boolean;
+  onLabelsCreated: () => void;
   issue: IssueDetailData;
   options: StreamOptions | null;
   onRefresh: () => void;
@@ -69,6 +71,7 @@ export function IssueLabels({
       setCreatedLabels(labels => [...labels, label]);
       if (selected.length < options.labelsPerIssue) setSelected(labels => [...labels, label.id]);
       setLabelName("");
+      onLabelsCreated();
       onRefresh();
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Label could not be created.");

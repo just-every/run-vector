@@ -106,6 +106,7 @@ export const issueListRowSchema = z.object({
   blocked: z.boolean(),
   startDate: z.string().nullable(),
   dueDate: z.string().nullable(),
+  deferredUntil: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
   groupKey: z.string(),

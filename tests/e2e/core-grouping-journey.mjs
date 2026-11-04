@@ -3,6 +3,7 @@ import { navigate, settleReads, trackRequests, beforePrivateNavigation } from '.
 import { inviteReader, readerApi } from './role-reader-support.mjs';
 import { roleScreens } from './role-ui-support.mjs';
 import { groupingFixture } from './core-grouping-fixture.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 export async function groupingJourney({ page, context, base, state, sql, evidence, record }) {
   const owner = readerApi(page, base);
@@ -42,6 +43,7 @@ export async function groupingJourney({ page, context, base, state, sql, evidenc
   const sorted = groups => [...groups].sort((a, b) => a.key.localeCompare(b.key));
   const assertPage = async (reader, grouping, expected, privateAccess = false) => {
     await ready(reader.page);
+    await openIssueControls(reader.page);
     assert.equal(await reader.page.getByRole('combobox', { name: 'Group by', exact: true }).inputValue(), grouping);
     const actual = await reader.page.locator('.issues-row').evaluateAll(rows => rows.map(row => row.dataset.issueIdentifier));
     assert.deepEqual([...actual].sort(), expected.map(i => i.identifier).sort());

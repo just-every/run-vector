@@ -167,7 +167,7 @@ export function SafeMarkdown({
   return (
     <MarkdownTasks.Provider value={{ tasks, busy: taskBusy, onChange: onTaskChange }}><div className="safe-markdown">
       <Markdown
-        remarkPlugins={[remarkGfm, remarkDetails, [remarkIssueReferences, { references }], [remarkMentions, { operatorIds }], [remarkDescriptionAnchors, { enabled: descriptionAnchors }]]}
+        remarkPlugins={[remarkGfm, remarkDetails, [remarkIssueReferences, { references }], [remarkMentions, { operatorIds, removedOperatorIds: operators?.data?.removedOperatorIds }], [remarkDescriptionAnchors, { enabled: descriptionAnchors }]]}
         rehypePlugins={[rehypeTaskIndices]}
         skipHtml
         components={rendered}

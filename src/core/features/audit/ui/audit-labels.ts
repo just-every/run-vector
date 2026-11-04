@@ -36,3 +36,7 @@ export function auditAction(action: string) {
 export function auditActor(entry: { actorName: string | null; actorKind: string }) {
   return entry.actorName ?? (entry.actorKind === 'person' ? 'Deleted person' : actorLabels[entry.actorKind]);
 }
+export function auditSubject(entry: { subjectName: string | null; action: string }) {
+  if (entry.subjectName) return entry.subjectName;
+  return entry.action.startsWith('operator.') || entry.action === 'auth.signed_in' ? 'Deleted person' : 'Unavailable item';
+}

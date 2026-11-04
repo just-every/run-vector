@@ -13,7 +13,7 @@ import { roleScreens, exerciseGuestRoles } from "./role-ui-support.mjs";
 import assert from "node:assert/strict";
 import { poll } from "./admin-runtime-support.mjs";
 import { saveWorkspaceTime } from "./admin-workspace-time-journey.mjs";
-import { invitePerson, openPerson, teamList } from "./settings-pane-support.mjs";
+import { invitePerson, openPerson, storeText, teamList } from "./settings-pane-support.mjs";
 import {
   openAdministrationForm,
   assertSettingsSections,
@@ -245,7 +245,13 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
     const invited = page.waitForResponse((r) => new URL(r.url()).pathname === "/api/settings/operators/invite");
     await page.getByRole("button", { name: "Confirm and send", exact: true }).click();
     assert.equal((await invited).status(), 202);
-    await page.getByText("Invitation submitted for delivery.").waitFor();
+    const pending = page.getByRole("list", { name: "Pending invitations", exact: true });
+    await pending.getByText("Role member", { exact: true }).waitFor();
+    const waiting = await page.request.get(base + "/api/settings");
+    assert.equal(waiting.status(), 200);
+    const invitation = (await waiting.json()).pendingInvitations.find(person => person.email === "role-member@admin-runtime.test");
+    assert.equal(invitation?.role, "member", "the submitted grant is visible while it awaits acceptance");
+    assert(invitation.expiresAt > Date.now(), "the pending invitation is still usable");
     const link = sql("SELECT json_extract(message,'$.text') AS text FROM rer_mail_development_outbox WHERE json_extract(message,'$.to[0]')='role-member@admin-runtime.test' ORDER BY created_at DESC,sequence DESC LIMIT 1")[0].text.match(/https?:\/\/[^\s]+/)[0];
     context = await browser.newContext({ viewport: page.viewportSize() });
     peer = await context.newPage();
@@ -258,6 +264,31 @@ export async function exerciseWorkspaceRoles({ page, browser, runtime, clause, e
   // The accepted member joins the directory on the Owner's next Settings visit.
   await navigate(page, base + "/app/settings/people");
   await page.getByRole("link", { name: /Role member/ }).waitFor();
+  assert.equal(await page.getByRole("list", { name: "Pending invitations", exact: true }).getByText("Role member", { exact: true }).count(), 0, "accepted invitations leave the pending list");
+  await clause("OPS-003", "a Member saves their own display name and an Owner renames the workspace", async () => {
+    await navigate(peer, base + "/app/settings/profile");
+    const renamed = "Role colleague";
+    assert.equal((await storeText(peer, peer.getByLabel("Display name", { exact: true }), renamed, "/api/settings/appearance")).status(), 200);
+    await navigate(peer, base + "/app/settings/people");
+    await peer.getByRole("link", { name: new RegExp(renamed + " \\(you\\)") }).waitFor();
+    await navigate(page, base + "/app/settings/people");
+    await page.getByRole("link", { name: new RegExp(renamed) }).waitFor();
+    const identity = await peer.request.get(base + "/api/settings/appearance");
+    assert.equal((await identity.json()).displayName, renamed);
+    // Restoring from the person's own record exercises that entry to the same field.
+    await openPerson(peer, base, memberId);
+    assert.equal((await storeText(peer, peer.getByLabel("Display name", { exact: true }), "Role member", "/api/settings/appearance")).status(), 200);
+    const workspace = (await (await page.request.get(base + "/api/settings")).json()).workspace;
+    await navigate(page, base + "/app/settings/workspace");
+    assert.equal((await storeText(page, page.getByLabel("Workspace name", { exact: true }), "Renamed workspace", "/api/settings")).status(), 200);
+    await navigate(page, base + "/app/settings/people");
+    await navigate(page, base + "/app/settings/workspace");
+    assert.equal(await page.getByLabel("Workspace name", { exact: true }).inputValue(), "Renamed workspace");
+    const denied = await peer.request.patch(base + "/api/settings", { headers: { Origin: base }, data: { timezone: workspace.timezone, name: "Member rename" } });
+    assert.equal(denied.status(), 403, "a Member cannot rename the workspace");
+    assert.equal((await storeText(page, page.getByLabel("Workspace name", { exact: true }), workspace.name, "/api/settings")).status(), 200);
+    await navigate(peer, base + "/app/settings/people");
+  });
   // A workspace settings write that saves the current timezone: only the role decides its answer.
   const settingsRequest = async () => withOperatorClient(peer.context(), async client => {
     const response = await client.patch(base + "/api/settings", {

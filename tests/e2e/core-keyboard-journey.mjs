@@ -7,6 +7,7 @@ import { undoJourney } from './core-undo-journey.mjs';
 import { paletteJourney } from './core-palette-journey.mjs';
 import { booleanFilterJourney } from './core-boolean-filter-journey.mjs';
 import { crossTeamViewJourney } from './core-cross-team-view-journey.mjs';
+import { openIssueControls } from './ui-controls-checks.mjs';
 
 export async function keyboardJourney(page, context, base, record, independent = journey => journey(), runtime) {
   const origin = await page.evaluate(() => performance.timeOrigin);
@@ -99,6 +100,7 @@ export async function issueEditingJourney(page, context, base, record) {
     await page.waitForFunction(() => [...document.querySelectorAll('.issues-row')].every(row => !row.disabled));
   };
   await ready();
+  await openIssueControls(page);
   const rows = page.locator('.issues-row');
   await rows.first().waitFor();
   assert.equal(await rows.count(), 3);

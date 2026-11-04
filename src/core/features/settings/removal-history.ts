@@ -23,12 +23,13 @@ export function anonymizeActivityStatements(
     return db
       .prepare(
         `UPDATE ${table} SET
+      ${table === 'issue_activity' ? "actor_name=CASE WHEN actor_operator_id=? THEN 'Removed operator' ELSE actor_name END," : ''}
       actor_operator_id=CASE WHEN actor_operator_id=? THEN NULL ELSE actor_operator_id END,
       previous_value_json=${redact("previous_value_json")},next_value_json=${redact("next_value_json")}
       WHERE EXISTS(SELECT 1 FROM operator_removals WHERE id=?)
         AND (actor_operator_id=? OR (${matches("previous_value_json")}) OR (${matches("next_value_json")}))`,
       )
-      .bind(target, target, target, receipt, target, target, target);
+      .bind(...(table === 'issue_activity' ? [target] : []), target, target, target, receipt, target, target, target);
   }),
   ];
 }

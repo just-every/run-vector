@@ -9,11 +9,11 @@ const signInAgain = () =>
 export async function readAppearance(db: D1Database, actor: string) {
   const row = await db
     .prepare(
-      `SELECT COALESCE(a.theme,'system') theme FROM operators o
+      `SELECT COALESCE(a.theme,'system') theme,o.name AS displayName FROM main.operators o
     LEFT JOIN operator_appearance a ON a.operator_id=o.id WHERE o.id=? AND ${activeRecipient}`,
     )
     .bind(actor)
-    .first<{ theme: ThemeChoice }>();
+    .first<{ theme: ThemeChoice; displayName: string }>();
   if (!row) throw signInAgain();
   return row;
 }

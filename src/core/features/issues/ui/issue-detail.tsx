@@ -32,6 +32,7 @@ import { MissingResource, FailedResource } from '../../../app/ui/resource-state'
 import { optionsSchema, type StreamOptions } from "../../streams/ui/data";
 import { relativeTime } from "../../streams/ui/helpers";
 import { DecisionPanel } from "./decision-panel";
+import { decisionLabel } from "./labels";
 import { activityChanges } from "./activity-changes";
 import { type IssueDetailData } from "./data";
 import { useViewerTime } from "../../../app/viewer-time";
@@ -124,6 +125,7 @@ export function IssueDetail({
         options={options.data}
         onDeleted={receipt=>{onChanged?.();window.dispatchEvent(new Event("vector:issues-changed"));window.dispatchEvent(new CustomEvent("vector:issue-deleted",{detail:receipt}));if(onBack)onBack();else void navigate({to:"/app/issues"});}}
         optionsError={options.error}
+        onLabelsCreated={options.refreshAfterMutation}
       /></IssueReferencesProvider>
     </>
   );
@@ -135,6 +137,7 @@ function IssueInspector({
   onRefresh,
   options,
   optionsError,
+  onLabelsCreated,
   onDeleted,
 }: {
   issue: IssueDetailData;
@@ -143,6 +146,7 @@ function IssueInspector({
   onRefresh: (receipt?: IssueDetailData) => void;
   options: StreamOptions | null;
   optionsError: Error | null;
+  onLabelsCreated: () => void;
 }) {
   const writable = !!options && options.operator.role !== 'viewer';
   const { formatInstant } = useViewerTime();
@@ -277,6 +281,7 @@ function IssueInspector({
         <div className="issue-relations">
           <IssueLabels writable={writable}
             key={issue.identifier + ":labels"}
+            onLabelsCreated={onLabelsCreated}
             issue={issue}
             options={options}
             onRefresh={onRefresh}
@@ -370,7 +375,7 @@ function IssueInspector({
                 <ol className="activity-list">
                   {issue.decisions.map((decision) => (
                     <li key={decision.id}>
-                      <strong>{decision.kind}</strong>
+                      <strong>{decisionLabel(decision.kind)}</strong>
                       <span>
                         {decision.actor ?? "System"} ·{" "}
                         {relativeTime(decision.at)}
