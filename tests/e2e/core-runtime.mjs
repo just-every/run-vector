@@ -1,5 +1,6 @@
 import { agentWriteRetryJourney } from './core-agent-write-retry.mjs';
 import { agentAttributionJourney } from './core-agent-attribution-journey.mjs';
+import { agentAuditRetentionJourney } from './core-agent-audit-retention.mjs';
 import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
@@ -748,6 +749,8 @@ try {
   await withInvitedOperator(page, context, base, state, () =>
     agentWriteRetryJourney({page, context, base, state, sql, evidence, record,
       restart: async () => { await stop(); start(); await ready(); }}), 'synthetic-vector-3613');
+  await withInvitedOperator(page, context, base, state, () =>
+    agentAuditRetentionJourney({page, context, base, evidence, record, restart:async()=>{await stop();start();await ready();}}), 'synthetic-vector-3500');
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
   await withInvitedOperator(page, context, base, state, () =>
