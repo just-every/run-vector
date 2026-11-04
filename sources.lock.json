@@ -8194,7 +8194,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-local-pause.mjs": {
-      "sha256": "e7198179ed3b14571450ce71cd6acf4002c547af75187e2d8b5a55d59bc355e6",
+      "sha256": "b3abfd76b9fabe93c726b2a81bdce9faafc0be352b23b4059992363ea42668e1",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {

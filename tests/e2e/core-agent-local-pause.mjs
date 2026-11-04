@@ -1,13 +1,31 @@
 import assert from 'node:assert/strict';
-import {writeFile} from 'node:fs/promises';
+import {readFile,writeFile} from 'node:fs/promises';
+import {createRequire} from 'node:module';
 import {inviteReader} from './role-reader-support.mjs';
 import {withOperatorClient,publicRequest} from './operator-request.mjs';
 import {navigate,settleReads} from './collaboration-navigation.mjs';
-import {roleScreens} from './role-ui-support.mjs';
+const require=createRequire(import.meta.url);
 
 /** Existing person controls fence native scoped clients without interrupting human work. */
 export async function agentLocalPauseJourney({page,context,base,state,sql,evidence,record,restart}) {
-  const marker='synthetic-vector-'+Date.now(),inspect=roleScreens(evidence);
+  const marker='synthetic-vector-'+Date.now();
+  const axe=await readFile(require.resolve('axe-core/axe.min.js'),'utf8');
+  const inspect=async(current,region,name)=>{
+    for(const width of [1440,390]){
+      await current.setViewportSize({width,height:width===390?844:1000});
+      assert.ok(await current.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
+      await current.evaluate(source=>{
+        if(window.axe)return;
+        const script=document.createElement('script');script.nonce=document.querySelector('script[nonce]')?.nonce;
+        script.textContent=source;document.head.append(script);
+      },axe);
+      const findings=await current.evaluate(async()=>(await window.axe.run()).violations
+        .filter(v=>['serious','critical'].includes(v.impact)).map(v=>({id:v.id,targets:v.nodes.map(n=>n.target)})));
+      assert.deepEqual(findings,[],'No serious or critical accessibility findings');
+      // This server-rendered page has no fixed navigation to hide for the capture.
+      await region.screenshot({path:evidence+'/'+name+'-'+width+'.png'});
+    }
+  };
   const owner=async(path,method='GET',data,status=200)=>withOperatorClient(context,async client=>{
     const response=await client.fetch(base+path,{method,headers:{Origin:base},...(data===undefined?{}:{data})});
     assert.equal(response.status(),status,method+' '+path+' '+await response.text());return response.json();
@@ -17,8 +35,9 @@ export async function agentLocalPauseJourney({page,context,base,state,sql,eviden
   const domain=['issues','issue_comments','issue_activity','issue_followers','notifications','audit_records',
     'agent_door_calls','agent_door_approvals','agent_door_reviews','agent_door_usage'];
   const snapshot=(tables=domain)=>Object.fromEntries(tables.map(table=>[table,sql(`SELECT * FROM ${table} ORDER BY rowid`)]));
-  const errors=[],receipts=[];
+  const errors=[],consoleErrors=[],receipts=[];
   page.on('pageerror',error=>errors.push(error.message));
+  for(const current of [page,member.page])current.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
   let id=0;
   const policy=async(disposition,ownerId)=>owner('/agents/api/policy','PUT',{document:{
     schema:'rer-agent-policy/1',catalogue:'rer-agent-classes/1',reviewers:['person:'+ownerId],
@@ -35,7 +54,9 @@ export async function agentLocalPauseJourney({page,context,base,state,sql,eviden
   try {
     const ownerSession=await owner('/api/session'),memberSession=await member.api('/session');
     assert.notEqual(ownerSession.operatorId,memberSession.operatorId);
-    const team=(await owner('/api/settings/administration')).teams[0];
+    const prefix='PAUSE'+String(Date.now()).slice(-5).replaceAll(/\d/g,d=>String.fromCharCode(65+Number(d)));
+    const team=(await owner('/api/settings/teams','POST',{name:marker+'-team',identifierPrefix:prefix,isPrivate:true})).teams.find(t=>t.name===marker+'-team');
+    await owner(`/api/settings/teams/${team.id}/members/${member.id}`,'PUT',{role:'member'});
     for(const disposition of ['autonomous','review']){
       await policy(disposition,ownerSession.operatorId);
       const issue=await owner('/api/issues','POST',{teamId:team.id,title:marker+'-'+disposition},201);
@@ -112,7 +133,7 @@ export async function agentLocalPauseJourney({page,context,base,state,sql,eviden
       }
       receipts.push({disposition,sponsors:2,refusalMs,restartPersistent:true,humanActions:true,personOnlyResume:true,currentPolicy:true});
     }
-    assert.deepEqual(member.errors,[]);assert.deepEqual(errors,[]);
+    assert.deepEqual(member.errors,[]);assert.deepEqual(errors,[]);assert.deepEqual(consoleErrors,[]);
     await writeFile(evidence+'/agent-local-pause.json',JSON.stringify({passed:true,receipts},null,2));
     record('BASE-AGENT-011','Owner keyboard Pause and Resume fence two native sponsors under autonomous and standard review policy; human issue work continues, pause survives Worker restart, refused calls change no domain data and only the Owner person session resumes under current policy.');
   } finally {await member.context.close();}
