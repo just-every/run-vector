@@ -21,7 +21,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
   const tables=['issues','issue_comments','issue_activity','issue_followers','notifications','notification_events','notification_deliveries','audit_records'];
   const stored=()=>Object.fromEntries(tables.map(table=>[table,sql(`SELECT * FROM ${table} ORDER BY rowid`)]));
   const receipts=[],errors=[],external=[],expectedDenials=new Set();
-  let id=0;
+  let id=0,activePage=page,step='setup';
   const completed=new Map();
   const mint=async(current)=>{
     const response=await raw(current,'/api/settings/integrations/tokens','POST',{
@@ -68,13 +68,19 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
       expectedDenials.add(base+path+':403');
     }
     await person.page.setViewportSize({width:1440,height:1000});
-    await navigate(person.page,base+'/app/issues/'+issue.identifier);
+    const target=base+'/app/issues/'+issue.identifier;
+    if(person.page.url()!==target)await navigate(person.page,target);
+    else await settleReads(person.page);
+    assert.equal((await person.page.reload()).status(),200);
     await person.page.getByRole('heading',{name:(await current(issue)).title,exact:true}).waitFor();await settleReads(person.page);
-    assert.equal((await person.page.reload()).status(),200);await settleReads(person.page);
     const edit=person.page.getByRole('button',{name:'Edit issue',exact:true});
     const composer=person.page.getByRole('textbox',{name:'Add a comment',exact:true});
     assert.equal(await edit.count(),writable?1:0);assert.equal(await composer.count(),writable?1:0);
-    if(writable){await edit.focus();assert.ok(await edit.evaluate(e=>e===document.activeElement));}
+    if(writable){
+      // The composer exposes the same document's hydration readiness.
+      await person.page.waitForFunction(()=>document.querySelector('textarea[aria-label="Add a comment"]')?.matches(':enabled'));
+      await edit.focus();assert.ok(await edit.evaluate(e=>e===document.activeElement));
+    }
     if(capture){
       const timeOrigin=await person.page.evaluate(()=>performance.timeOrigin);
       await inspect(person.page,person.page.locator('main:visible').first(),capture);
@@ -120,6 +126,7 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
         assert.equal((await raw(p.context,'/api/session')).body.role,p.kind==='lead'?'member':p.kind);
         for(const subject of [issue,secret]){
           const label=subject===secret?'private':'public';
+          activePage=p.page;step=p.kind+' '+disposition+' '+label;
           await show(p,subject,p.kind!=='viewer',disposition==='autonomous'?'agent-role-'+label+'-'+p.kind:null);
           if(p.kind==='viewer'){await refuse(p,subject,'forbidden');continue;}
           const title=marker+'-'+p.kind+'-'+disposition+'-'+label;
@@ -220,5 +227,11 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
     for(const p of callers)if(p.errors)assert.deepEqual(p.errors,[]);
     await writeFile(evidence+'/agent-role-parity.json',JSON.stringify({passed:true,receipts,widths:[1440,390],privateWithdrawal:true,replayedWritesRefused:true,namedTeamReassignment:true,independentSessions:6},null,2));
     record('BASE-AGENT-005','Six native roles share native UI and MCP edit and comment authority in public and private teams under autonomous and standard review; retained grants and completed write replays follow Viewer downgrade, named-team reassignment and private-team withdrawal while authorized reads continue.');
+  } catch(error){
+    await activePage.screenshot({path:evidence+'/agent-role-failure.png',timeout:5000}).catch(()=>{});
+    await writeFile(evidence+'/agent-role-failure.json',JSON.stringify({step,pathname:new URL(activePage.url()).pathname,
+      titleInputs:await activePage.getByLabel('Title',{exact:true}).count(),
+      editors:await activePage.locator('.issue-writing-editor').count()},null,2)).catch(()=>{});
+    throw error;
   } finally {for(const p of callers)if(p.context!==context)await p.context.close();}
 }

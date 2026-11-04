@@ -8198,7 +8198,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-role-parity.mjs": {
-      "sha256": "52fcdeee4b1846aa44b76540f4aa9a0711b803f75b7dbd8167e4c9804d1baa4a",
+      "sha256": "9c371bb11a0134052941cdf77a0c92843f415f99da74c98a8b3c9906f520ccb8",
       "executable": false
     },
     "tests/e2e/core-board-journey.mjs": {
