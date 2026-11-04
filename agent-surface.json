@@ -143,6 +143,24 @@
       "clauses": [
         "INTAKE-007"
       ]
+    },
+    {
+      "name": "vector.project.read",
+      "scope": "projects:read",
+      "readOnly": true,
+      "classes": [
+        "standard"
+      ],
+      "clauses": [
+        "PROJ-001",
+        "PROJ-004",
+        "PROJ-005",
+        "PROJ-006",
+        "PROJ-008",
+        "PROJ-011",
+        "PROJ-014",
+        "REPORT-002"
+      ]
     }
   ],
   "resources": [
@@ -555,6 +573,31 @@
         "expected_revision": {
           "$from": "intake_decline_read",
           "pointer": "/version"
+        }
+      },
+      "expect": [
+        {
+          "class": "standard",
+          "facts": {
+            "measure": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "project_read",
+      "tool": "vector.project.read",
+      "args": {
+        "projectId": {
+          "$fixture": "project",
+          "pointer": "/id"
+        }
+      },
+      "target": {
+        "kind": "project",
+        "id": {
+          "$fixture": "project",
+          "pointer": "/id"
         }
       },
       "expect": [

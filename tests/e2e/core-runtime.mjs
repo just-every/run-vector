@@ -1,3 +1,4 @@
+import { agentProjectReadJourney } from './core-agent-project-read.mjs';
 import { agentResourceParityJourney } from './core-agent-resource-parity.mjs';
 import { openAccountMenu } from './ui-controls-checks.mjs';
 import { streamControlsReady } from './core-stream-controls-browser.mjs';
@@ -743,6 +744,8 @@ try {
       streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
   }
   if (journeyGroup !== 'current') {
+  await withInvitedOperator(page, context, base, state, () =>
+    agentProjectReadJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3514');
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);

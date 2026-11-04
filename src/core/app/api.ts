@@ -22,7 +22,7 @@ import { addEmailIntakeRoutes } from '../features/email-intake/routes';
 import { readAdministration } from '../features/administration/read';
 import { addIssueCopyRoutes } from "../features/issue-copy/routes";
 import { projectPortfolioQuery } from "../features/projects/portfolio";
-import { projectPortfolio,projectDetail } from "../features/projects/read";
+import { projectPortfolio,projectDetail,projectParamSchema } from "../features/projects/read";
 import { addManualOrderRoutes } from '../features/manual-order/routes';
 import { addWorkloadRoutes } from '../features/workload/routes';
 import { addIssueDeletionRoutes } from '../features/issue-deletion/routes';
@@ -104,7 +104,6 @@ const timeQuerySchema = z.object({
 const issueParamSchema = z.object({
   identifier: z.string().max(128).regex(/^(?:[A-Z][A-Z0-9_]{0,99}-[1-9][0-9]*|[0-9]+)$/i),
 });
-const projectParamSchema = z.object({ projectId: z.string().length(26) });
 
 export function createApiApp(document?: { operator: AppEnvironment['Variables']['operator']; workspace?: WorkspaceProjection }) {
   const app = new Hono<AppEnvironment>();

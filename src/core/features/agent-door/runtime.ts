@@ -2,6 +2,7 @@ import { createAgentDoor, type Trust } from '../../../../vendor/base/agent-door/
 import { createBusinessSettings } from '../../../../vendor/base/business-settings/index.ts';
 import { nativePeople } from './people';
 import { readTools, issueResource, commentResource } from './read-tools';
+import { projectTools } from './project-tools';
 import { issueTools } from './issue-tools';
 import { nativeCredentials } from './local-credentials';
 import type { WorkerBindings } from '../../app/bindings';
@@ -30,7 +31,7 @@ export async function businessSettings(env:WorkerBindings) {
   return createBusinessSettings({db:env.DB,trust:config,business:{settings:1,values:['display_name']}});
 }
 export function vectorAgentDoor(env:WorkerBindings) {
-  return createAgentDoor({seed:'vector',name:'Vector',specialist:'software delivery coordinator',db:env.DB,origin:env.APP_ORIGIN,trust:trust(env),capabilities,people:nativePeople(env),tools:[...readTools,...issueTools],resources:[issueResource,commentResource],notTools,...nativeCredentials(env.DB)});
+  return createAgentDoor({seed:'vector',name:'Vector',specialist:'software delivery coordinator',db:env.DB,origin:env.APP_ORIGIN,trust:trust(env),capabilities,people:nativePeople(env),tools:[...readTools,...issueTools,...projectTools],resources:[issueResource,commentResource],notTools,...nativeCredentials(env.DB)});
 }
 /** Recognized requests run before cookie-only app admission and SPA routing. */
 export async function agentResponse(env:WorkerBindings,request:Request):Promise<Response|null> {

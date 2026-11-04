@@ -494,7 +494,7 @@
       "executable": false
     },
     "agent-surface.json": {
-      "sha256": "a765b18d548f2dd7c0cc1a7ef63fcd36525c79e68685d6e55eeff4611f1f305c",
+      "sha256": "0a5e929f5811f75e2a3814a21a8d0dafba699738f81f062eaf893cf7597359dd",
       "executable": false
     },
     "AGENTS.consumer.md": {
@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b1f542b74d19e4398ade122a0b267ae6486892fe0b212a9ab6786d613b844f2b",
+      "sha256": "b0364bf67c4336ab372533986486051b76ef46072c91f9a67d678edda439a5e8",
       "executable": false
     },
     "DEMO.md": {
@@ -3698,7 +3698,7 @@
       "executable": false
     },
     "src/core/app/api.ts": {
-      "sha256": "befcac95e0f49f395493fcb39daa8f545f4d7ea32f6234cc9be04c87fa202850",
+      "sha256": "006b2e65b3c80a8781287cc46c5c692f3fefbd8b3ecb6272549383c46a85ad16",
       "executable": false
     },
     "src/core/app/app.css": {
@@ -4221,12 +4221,16 @@
       "sha256": "fd19954a47ddb9c3d85c5e0a9be2649c153a9e88b36bc7e16cd99dde4e81d5a6",
       "executable": false
     },
+    "src/core/features/agent-door/project-tools.ts": {
+      "sha256": "e1c983a5dcb0eb44975a948bfddd7d05e4dfee649ba303f7b58f2416af16c52a",
+      "executable": false
+    },
     "src/core/features/agent-door/read-tools.ts": {
       "sha256": "0348f4896a2112b065753b578810986731a7097f7ff830f6a80526223271ed1c",
       "executable": false
     },
     "src/core/features/agent-door/runtime.ts": {
-      "sha256": "22ea4fc8cb216decc4279fca91184089d5a8bcfbd13b5544c9ebf4f3ef60baaf",
+      "sha256": "f4dde73e9c02334ab62eb46770f9b97ad2350cfafcef8043b7c45f526f75fa4f",
       "executable": false
     },
     "src/core/features/agent-door/schemas.ts": {
@@ -6666,7 +6670,7 @@
       "executable": false
     },
     "src/core/features/projects/read.ts": {
-      "sha256": "ff7122d47a9d685ae5f507a0cedc8d703528efdfeefb7fede25b36db847413b3",
+      "sha256": "686d6a96c81976535fe592dee5cc5e43dc05a58e7f0f62cedd5e5fee3d01ab77",
       "executable": false
     },
     "src/core/features/projects/service.ts": {
@@ -6678,7 +6682,7 @@
       "executable": false
     },
     "src/core/features/projects/ui/data.ts": {
-      "sha256": "fc1ceb603ff5c323b9d01d4a8888e6e5f90e278e294e37a4d6e7e8dea2c776e1",
+      "sha256": "0a5c25033764325c6ce5d3c0d7876e31f7bfa07a40059b909874089e97ca8051",
       "executable": false
     },
     "src/core/features/projects/ui/helpers.ts": {
@@ -8006,7 +8010,7 @@
       "executable": false
     },
     "tests/agent-door/clients.mjs": {
-      "sha256": "79ed9867286cca34db06f5394d285a990667a5207f88c79ba21263e51b44c892",
+      "sha256": "6a28d74d7aa9ab4ba2fe34f8e034c9ee776b54ffcc1312bc78af430a72d8a58a",
       "executable": false
     },
     "tests/agent-door/installation-key.mjs": {
@@ -8189,6 +8193,10 @@
       "sha256": "8d36210c129ac7ca11e44b6dd562491ffae7ba4ac8015aab3d7b10aa4eea9fea",
       "executable": false
     },
+    "tests/e2e/core-agent-project-read.mjs": {
+      "sha256": "9f693dc7515ed5c06630cd42d60cfac6c70bc582d1ffc4189aa68c806ecdb219",
+      "executable": false
+    },
     "tests/e2e/core-agent-resource-parity.mjs": {
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
@@ -8306,7 +8314,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "87f36cf5cbcbff2c4aba22cbf5bc6a21af9a8b75ae1eb2c3f88aa1ae58e3b228",
+      "sha256": "d5313112b95eb7fe9df911d53bfb4039a83e5615c65f1436a03b7883095ed94b",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8954,7 +8962,7 @@
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
-      "sha256": "69d1c23904d5e0ad7795900b303f987038baa64ee6dee109dad02491ba72e9b3",
+      "sha256": "a253767056b3405b66be643565d596312f42622bf19d04d6d7a20584d789f0f5",
       "executable": false
     },
     "tests/worker/agent-resource-parity.ts": {
@@ -9482,7 +9490,7 @@
       "executable": false
     },
     "tests/worker/project-membership.test.ts": {
-      "sha256": "883f63fc51c10cf187ecbe001ea22b948ae1b4eea2e365c402b299e9705673c7",
+      "sha256": "5ac794c11ecac7ea7ad39428244a5ea4a57a8333ba8447e37444f33240a23c0b",
       "executable": false
     },
     "tests/worker/project-milestone-flow.ts": {

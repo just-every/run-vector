@@ -2,7 +2,7 @@ import { createServerApp } from '../../src/core/app/server';
 import { bindings } from './base-auth-fixture';
 import {exerciseInitiatives} from './initiatives-scenario';
 import {exerciseReleases} from './releases-scenario';
-import { expect, it } from 'vitest';
+import { expect, it, vi } from 'vitest';
 import { roleWorkspace, snapshot } from './role-fixture';
 
 it('[PROJ-003 ROLE-001 RELEASE-001 INIT-001 NOTIFY-009] only Owners and Admins delete a project; removal, archive and deletion preserve its issues', async () => {
@@ -120,4 +120,11 @@ it('[PROJ-014 ROLE-002 ROLE-003] spanning projects appear in each contributing t
   expect((await f.call('/issues/'+privateIssue.identifier, 'PATCH', {expectedVersion:current.version, projectId:null})).status).toBe(200);
   expect((await read(f.people.owner, 'call', '/projects?team='+privateTeam.id)).projects.map((p:any)=>p.id)).not.toContain(project.id);
   expect((await read(f.people.owner, 'call', '/projects/'+project.id)).teams).toEqual([{id:f.team.id,name:f.team.name}]);
+});
+
+it('[BASE-AGENT-002] native project reads retain caller projections, scoped authority and audit under autonomous and review policies', async () => {
+  const {projectReadJourney}=await import('./agent-resource-journey');
+  vi.useFakeTimers({toFake:['Date']});
+  vi.setSystemTime(new Date('2030-09-04T12:00:00Z'));
+  try { await projectReadJourney(await roleWorkspace()); } finally { vi.useRealTimers(); }
 });

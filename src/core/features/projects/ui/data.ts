@@ -130,6 +130,7 @@ export const projectDetailSchema = projectSummarySchema.extend({
         })
         .nullable(),
       estimate: z.number().nullable(),
+      startDate: z.string().nullable(),
       dueDate: z.string().nullable(),
       blockedBy: z.array(
         z.object({

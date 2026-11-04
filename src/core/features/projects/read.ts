@@ -1,9 +1,15 @@
+import { z } from "zod";
 import { readProjectReport } from "../project-report/read";
 import { settingsActor } from '../settings/repository';
 import { loadWorkspaceSnapshot } from '../streams';
 import { readProjectCycleHistory } from '../cycle-closure/read';
 import { getProjectDetail } from './service';
 import { readPortfolio, type ProjectPortfolioQuery } from './portfolio';
+
+export const projectParamSchema = z.object({ projectId: z.string().length(26) });
+export const projectReadInputSchema = projectParamSchema.extend({
+  at: z.string().datetime({ offset: true }).optional(),
+});
 
 export async function projectPortfolio(db:D1Database, actor:string, query:ProjectPortfolioQuery) {
   const access=await settingsActor(db,actor);
