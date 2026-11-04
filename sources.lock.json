@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "222382cfd8e51307837ea75f0fcf40d76cf8a861a52ff2407b31d85b50d2b810",
+      "sha256": "ddd17380b78c6dc05dbdc4a1c5635b5d959ef04d9792f98c6007ef154d6e1d3f",
       "executable": false
     },
     "DEMO.md": {
@@ -4930,7 +4930,7 @@
       "executable": false
     },
     "src/core/features/discussion/repository.ts": {
-      "sha256": "69c5997efc90929915549b4fd8df94496b6ee71c6c311c8aa48295889eb6b1d0",
+      "sha256": "86e099f00ad528302496f60fee92c3695fe9339d646c39e642ed3c8699352c41",
       "executable": false
     },
     "src/core/features/discussion/revision.ts": {
@@ -8190,7 +8190,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-attribution-journey.mjs": {
-      "sha256": "1024faf7c0e792785f91948d8c1b4dbbbfd63e3036ced9d45b3227ecf2ffabf9",
+      "sha256": "aa644b378e8d6518ba9a1b591ec2e9fe3c415ee90d53552f48235f729f323d7b",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {
@@ -8958,7 +8958,7 @@
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
-      "sha256": "8584b6eba9b13d7a4b2e3e7ebc16e49afcf6b2be1cd25fe73f5276bcaa85b56c",
+      "sha256": "c17987cf2e4b42fd036240f14b6ed24ad3a1f82d2b4b251b76574b6b849e516a",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {

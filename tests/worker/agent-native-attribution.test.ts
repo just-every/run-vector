@@ -68,6 +68,11 @@ it('native issue creation, edits and comments retain agent attribution in curren
     expect(audit.filter((r:any)=>r.outcome==='done').map((r:any)=>r.tool)).toEqual(expect.arrayContaining(['vector.issue.creation','vector.issue.concurrent_edits','vector.issue.comment']));
     const agent=await env.DB.prepare('SELECT agent_id FROM issue_activity WHERE issue_id=? AND kind=?').bind(issue.id,'issue.created').first<string>('agent_id');
     expect(agent).toBeTruthy();
+    // A later human edit must not turn the saved agent author into the sponsor.
+    await json(await member.call('/issues/'+issue.identifier+'/comments/'+commentId,'PATCH',{body:'synthetic-vector-3514-'+disposition}));
+    const editedDiscussion=await json(await member.call('/issues/'+issue.identifier+'/discussion'));
+    expect(editedDiscussion.comments[0]).toMatchObject({id:commentId,actor:label,body:'synthetic-vector-3514-'+disposition});
+    expect((await json(await member.call('/issues/'+issue.identifier))).activity.map((a:any)=>a.actor)).toEqual([label,label,label,person]);
     receipts.push({issue,commentId,label,grant:grant.credential.id,agent:agent!,rpc});
   }
   const human=await json(await member.call('/issues','POST',{teamId:team.id,title:'synthetic-vector-3506'}),201);
@@ -80,8 +85,9 @@ it('native issue creation, edits and comments retain agent attribution in curren
   for(const {issue,commentId,label,agent} of receipts){
     const events=history.filter(row=>row.issue_id===issue.id);
     expect(events.map(row=>row.kind)).toEqual(expect.arrayContaining(['issue.created','issue.updated','comment.created']));
-    expect(events).toHaveLength(3);
-    for(const event of events)expect(event).toMatchObject({actor_operator_id:member.id,actor_name:label,agent_id:agent,agent_operation_id:expect.any(String)});
+    expect(events).toHaveLength(4);
+    for(const event of events.filter(row=>row.kind!=='comment.edited'))expect(event).toMatchObject({actor_operator_id:member.id,actor_name:label,agent_id:agent,agent_operation_id:expect.any(String)});
+    expect(events.find(row=>row.kind==='comment.edited')).toMatchObject({actor_operator_id:member.id,actor_name:null,agent_id:null,agent_operation_id:null});
     expect(archiveRows(records,'issue_comments')).toContainEqual(expect.objectContaining({id:commentId,issue_id:issue.id,body:expect.any(String)}));
   }
   const humanEvents=history.filter(row=>row.issue_id===human.id);
@@ -113,5 +119,5 @@ it('native issue creation, edits and comments retain agent attribution in curren
   const revoked=await receipts[0].rpc('vector.issue.comment',{identifier:receipts[0].issue.identifier,body:'synthetic-vector-3512',idempotency_key:crypto.randomUUID()});
   expect(revoked.status).toBe(401);
   expect(await snapshot(tables)).toEqual(revokedBaseline);
-  expect((await json(await member.call('/issues/'+receipts[0].issue.identifier))).activity.map((a:any)=>a.actor)).toEqual([receipts[0].label,receipts[0].label,receipts[0].label]);
+  expect((await json(await member.call('/issues/'+receipts[0].issue.identifier))).activity.map((a:any)=>a.actor)).toEqual([receipts[0].label,receipts[0].label,receipts[0].label,person]);
 });
