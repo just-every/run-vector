@@ -44,9 +44,9 @@ export function vectorAgentDoor(env:WorkerBindings) {
 /** Recognized requests run before cookie-only app admission and SPA routing. */
 export async function agentResponse(env:WorkerBindings,request:Request):Promise<Response|null> {
   const path=new URL(request.url).pathname;
-  if(path==='/docs/agents')return agentDocumentation(vectorAgentOptions(env),request);
-  if(!['/mcp','/agents','/agent.json','/llms.txt','/rer-business-logo','/rer-business.css'].includes(path) && !path.startsWith('/.well-known/') && !path.startsWith('/api/rer/') && !path.startsWith('/agents/'))return null;
+  if(!['/docs/agents','/mcp','/agents','/agent.json','/llms.txt','/rer-business-logo','/rer-business.css'].includes(path) && !path.startsWith('/.well-known/') && !path.startsWith('/api/rer/') && !path.startsWith('/agents/'))return null;
   try {
+    if(path==='/docs/agents')return await agentDocumentation(vectorAgentOptions(env),request);
     if(path==='/api/rer/business-settings' && !await env.DB.prepare(`SELECT 1 FROM workspace_installation i JOIN operators o ON o.id=i.setup_operator_id
       JOIN vector_auth_operators m ON m.operator_id=o.id JOIN oa_operators a ON a.id=m.auth_id WHERE o.removed_at IS NULL AND a.status='active'`).first())return Response.json({code:'native_owner_required'},{status:403});
     return await (await businessSettings(env)).handle(request) ?? await vectorAgentDoor(env).handle(request);}
