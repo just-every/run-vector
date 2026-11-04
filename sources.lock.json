@@ -8194,7 +8194,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-audit-retention.mjs": {
-      "sha256": "b56ca28633b0155442fe83325c37b0c4a27efcf18b6c7820fa03ee2b112bff87",
+      "sha256": "41d797cde965cec59a66e98300058305ab67e594bd7e7e5c195512a80051291e",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {
@@ -8966,7 +8966,7 @@
       "executable": false
     },
     "tests/worker/agent-audit-retention.test.ts": {
-      "sha256": "c2c611887b68676ae63fe676baf47b33445062b03ee1b1702616ff8a3a4aa154",
+      "sha256": "e7009a5cd127d8cab6018ff6fb645059479652d0593e93bf41f38fae0793a6f4",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {
