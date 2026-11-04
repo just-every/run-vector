@@ -775,10 +775,16 @@ try {
   await withInvitedOperator(page, context, base, state, () => workloadJourney(page, context, base, record), 'synthetic-vector-1931');
   await withInvitedOperator(page, context, base, state, () => projectHealthJourney(page, context, base, record), 'synthetic-vector-1932');
   await withInvitedOperator(page, context, base, state, () => projectRiskJourney(page, context, base, record), 'synthetic-vector-1933');
+  }
+  // Balance the independent project, initiative and release proof with Current;
+  // Planning keeps the complete agent-role matrix without increasing its timeout.
+  if (journeyGroup !== 'planning') {
   await withInvitedOperator(page, context, base, state, () => projectMembershipJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
   }, state), 'Project maintenance teammate');
+  }
+  if (journeyGroup !== 'current') {
   await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);
