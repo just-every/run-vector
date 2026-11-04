@@ -745,7 +745,7 @@ try {
   }
   if (journeyGroup !== 'current') {
   await withInvitedOperator(page, context, base, state, () =>
-    agentAuditRetentionJourney({page, context, base, evidence, record, restart:async()=>{await stop();start();await ready();}}), 'synthetic-vector-3500');
+    agentAuditRetentionJourney({page, context, base, state, sql, evidence, record, restart:async()=>{await stop();start();await ready();}}), 'synthetic-vector-3500');
   await withInvitedOperator(page, context, base, state, () =>
     agentResourceParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3412');
   await draftJourney(page, context, base, ids.flow, ids.sarah, record);

@@ -41,11 +41,12 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     const alreadyActive=await other.call('vector.issue.comment',{identifier:issue.identifier,body:'synthetic-vector-3525',idempotency_key:crypto.randomUUID()});
     expect(alreadyActive.status).toBe(200);expect(alreadyActive.body.result.isError).toBe(false);
     const editKey=crypto.randomUUID(),commentKey=crypto.randomUUID();
+    const trace='00-'+crypto.randomUUID().replaceAll('-','')+'-'+crypto.randomUUID().replaceAll('-','').slice(0,16)+'-01';
     for(const [tool,args] of [
       ['vector.issue.concurrent_edits',{identifier:issue.identifier,change:{expectedVersion:1,title:'synthetic-vector-'+(3530+index)},idempotency_key:editKey}],
       ['vector.issue.comment',{identifier:issue.identifier,body:'synthetic-vector-'+(3540+index),idempotency_key:commentKey}],
     ] as const){
-      const result=await agent.call(tool,args);
+      const result=await agent.call(tool,args,{traceparent:trace});
       expect(result.status).toBe(200);expect(result.body.result?.isError).toBe(false);
     }
     const rows=(await allRows()).rows.filter((r:any)=>r.agent.id===agent.id);
@@ -54,6 +55,8 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     expect(new Set(rows.map((r:any)=>r.id)).size).toBe(2);
     for(const row of rows){
       expect(row.agent).toEqual({id:agent.id,name:agent.name,specialist:'software delivery coordinator'});
+      expect(row.trace).toBe(trace);expect(row.door).toBe('mcp');
+      expect([...row.scopes].sort()).toEqual(['comments:write','issues:write']);
       expect(row.client_id).toBe(agent.id);expect(row.sponsor).toEqual({id:w.member.id,name:sponsorName});
       expect(row.label).toContain(agent.name);expect(row.label).toContain(sponsorName);
       expect(row.classes).toEqual([{class:'standard',facts:{measure:1}}]);
@@ -68,7 +71,7 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     const native=await json(await w.call('/issues/'+issue.identifier));
     const discussion=await json(await w.call('/issues/'+issue.identifier+'/discussion'));
     expect(native.title).toBe('synthetic-vector-'+(3530+index));
-    expect(discussion.comments[1]).toMatchObject({body:'synthetic-vector-'+(3540+index)});
+    expect(discussion.comments[1]).toMatchObject({body:'synthetic-vector-'+(3540+index),actor:rows[1].label});
     for(const row of rows)expect(native.activity).toEqual(expect.arrayContaining([
       expect.objectContaining({actor:row.label}),
     ]));
