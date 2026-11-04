@@ -2,7 +2,7 @@ import { expect, it } from 'vitest';
 import { env } from 'cloudflare:workers';
 import { setupAdministration } from './administration-fixture';
 import { agentRequest } from './agent-resource-journey';
-import { origin } from './base-auth-fixture';
+import { actor, invite, origin, request } from './base-auth-fixture';
 import { snapshot } from './role-fixture';
 
 const method = (family: string, verb: string) => [family, verb].join('/');
@@ -33,7 +33,7 @@ it('native issue-triage guidance is discoverable, inert and governed by current 
         ...params, ...(modern ? { _meta: { 'io.modelcontextprotocol/protocolVersion': version } } : {}),
       } }),
     });
-    return { status: response.status, body: await response.json() as any };
+    return { status: response.status, cache: response.headers.get('cache-control'), body: await response.json() as any };
   };
   const ownerDoor = async (path: string, method: string, body: unknown) => {
     const response = await agentRequest('/agents/api/' + path, {
@@ -51,10 +51,12 @@ it('native issue-triage guidance is discoverable, inert and governed by current 
     'agent_door_audit', 'agent_door_approvals', 'agent_door_reviews', 'agent_door_calls', 'agent_door_events', 'agent_door_usage'];
   const before = await snapshot(domain);
   const get = (params: Record<string, unknown> = { name: 'vector.issue.triage' }) => rpc(promptGet, params);
-  const unset = await get();
-  expect(unset.body.error.data.code).toBe('policy_unset');
-  expect(unset.body.result).toBeUndefined();
-  expect((await rpc(promptList)).body.result.prompts).toEqual([]);
+  for (const version of ['2026-07-28', '2025-11-25']) {
+    const unset = await rpc(promptGet, { name: 'vector.issue.triage' }, version);
+    expect(unset.body.error.data.code).toBe('policy_unset');
+    expect(unset.body.result).toBeUndefined();
+    expect((await rpc(promptList, {}, version)).body.result.prompts).toEqual([]);
+  }
 
   let modernListing: unknown;
   for (const disposition of ['autonomous', 'review'] as const) {
@@ -75,6 +77,7 @@ it('native issue-triage guidance is discoverable, inert and governed by current 
       }
       const first = await rpc(promptList, {}, version), second = await rpc(promptList, {}, version);
       expect(first.status).toBe(200);
+      expect(first.cache).toBe('no-store');
       expect(first.body.result).toEqual(second.body.result);
       expect(first.body.result).toMatchObject({ cacheScope: 'private', ttlMs: expect.any(Number) });
       expect(first.body.result.ttlMs).toBeGreaterThanOrEqual(0);
@@ -85,6 +88,7 @@ it('native issue-triage guidance is discoverable, inert and governed by current 
       expect(prompt.messages).toBeUndefined();
       const retrieved = await rpc(promptGet, { name: prompt.name }, version);
       expect(retrieved.status).toBe(200);
+      expect(retrieved.cache).toBe('no-store');
       expect(retrieved.body.error).toBeUndefined();
       expect(retrieved.body.result).toMatchObject({ cacheScope: 'private', ttlMs: expect.any(Number) });
       expect(retrieved.body.result.messages.length).toBeGreaterThan(0);
@@ -104,40 +108,89 @@ it('native issue-triage guidance is discoverable, inert and governed by current 
       expect(supplied.body.result).toEqual(retrieved.body.result);
     }
   }
-  for (const params of [{ name: 'synthetic-vector-3507' }, ...[null, [], 'synthetic-vector-3508', { issue: 1 }, { issue: {} }].map(arguments_ => ({ name: 'vector.issue.triage', arguments: arguments_ }))]) {
-    const invalid = await get(params);
-    expect(invalid.body.error.code).toBe(-32602);
-    expect(invalid.body.result).toBeUndefined();
-  }
-  const mismatch = await rpc(promptGet, { name: 'vector.issue.triage' }, '2026-07-28', credential.token, { 'Mcp-Name': 'synthetic-vector-3509' });
-  expect(mismatch.status).toBe(400);
-  expect(mismatch.body.error.message).toBe('HeaderMismatch');
-  for (const token of [null, 'synthetic-vector-3510']) {
-    for (const method of [promptList, promptGet]) {
-      const absent = await rpc(method, { name: 'vector.issue.triage' }, '2026-07-28', token);
-      expect(absent.status).toBe(401);
-      expect(absent.body.result).toBeUndefined();
+  for (const version of ['2026-07-28', '2025-11-25']) {
+    for (const params of [{ name: 'synthetic-vector-3507' }, ...[null, [], 'synthetic-vector-3508', { issue: 1 }, { issue: {} }].map(arguments_ => ({ name: 'vector.issue.triage', arguments: arguments_ }))]) {
+      const invalid = await rpc(promptGet, params, version);
+      expect(invalid.body.error.code).toBe(-32602);
+      expect(invalid.body.result).toBeUndefined();
+    }
+    const mismatch = await rpc(promptGet, { name: 'vector.issue.triage' }, version, credential.token, { 'Mcp-Name': 'synthetic-vector-3509' });
+    expect(mismatch.status).toBe(400);
+    expect(mismatch.body.error.message).toBe('HeaderMismatch');
+    for (const token of [null, 'synthetic-vector-3510']) {
+      for (const method of [promptList, promptGet]) {
+        const absent = await rpc(method, { name: 'vector.issue.triage' }, version, token, { Cookie: f.cookie });
+        expect(absent.status).toBe(401);
+        expect(absent.body.result).toBeUndefined();
+      }
     }
   }
   await policy('blocked');
-  const blocked = await get();
-  expect(blocked.body.error.data.code).toBe('policy_blocked');
-  expect(blocked.body.result).toBeUndefined();
+  for (const version of ['2026-07-28', '2025-11-25']) {
+    const blocked = await rpc(promptGet, { name: 'vector.issue.triage' }, version);
+    expect(blocked.body.error.data.code).toBe('policy_blocked');
+    expect(blocked.body.result).toBeUndefined();
+  }
   await policy('autonomous');
   await ownerDoor('pause', 'POST', { paused: true });
-  const paused = await get();
-  expect(paused.body.error.data.code).toBe('agents_paused');
-  expect(paused.body.result).toBeUndefined();
-  expect((await rpc(promptList)).body.result.prompts).toEqual([]);
+  for (const version of ['2026-07-28', '2025-11-25']) {
+    const paused = await rpc(promptGet, { name: 'vector.issue.triage' }, version);
+    expect(paused.body.error.data.code).toBe('agents_paused');
+    expect(paused.body.result).toBeUndefined();
+    expect((await rpc(promptList, {}, version)).body.result.prompts).toEqual([]);
+  }
   await ownerDoor('pause', 'POST', { paused: false });
   expect((await get()).body.result.messages.length).toBeGreaterThan(0);
   expect(await snapshot(domain)).toEqual(before);
+
+  // Guidance grants no scope. A limited credential can read it but cannot act.
+  const limited = await f.call('/settings/integrations/tokens', 'POST', { name: 'synthetic-vector-3511', scopes: ['metadata:read'] });
+  expect(limited.status).toBe(201);
+  const limitedToken = (await limited.json() as { token: string }).token;
+  const limitedBefore = await snapshot(domain);
+  const limitedPrompt = await rpc(promptGet, { name: 'vector.issue.triage' }, '2026-07-28', limitedToken);
+  expect(limitedPrompt.body.result.messages.length).toBeGreaterThan(0);
+  const limitedTools = await rpc(toolsList, {}, '2026-07-28', limitedToken);
+  const readName = limitedPrompt.body.result.messages[0].content.text.match(/vector\.issue\.activity_history/)![0];
+  expect(limitedTools.body.result.tools.map((tool: { name: string }) => tool.name)).toContain(readName);
+  expect(await snapshot(domain)).toEqual(limitedBefore);
+  const forbidden = await rpc(method('tools', 'call'), { name: readName, arguments: { identifier: issue.identifier } }, '2025-11-25', limitedToken);
+  expect(forbidden.status).toBe(403);
+  expect(forbidden.body.error.data.code).toBe('insufficient_scope');
+  expect(forbidden.body.result).toBeUndefined();
+  const limitedAfter = await snapshot(domain);
+  expect(limitedAfter).toEqual({ ...limitedBefore, agent_door_audit: [
+    ...limitedBefore.agent_door_audit, expect.objectContaining({ row: expect.any(String) }),
+  ] });
+  expect(JSON.parse(String(limitedAfter.agent_door_audit.at(-1)!.row))).toMatchObject({
+    tool: readName, outcome: 'refused', code: 'insufficient_scope',
+  });
+
+  // A previously successful prompt request cannot outlive its sponsoring person.
+  const memberCookie = await invite(['synthetic-vector-3512', 'vector.test'].join('@'), f.cookie);
+  const memberId = await actor(memberCookie);
+  const memberCredential = await request('/api/settings/integrations/tokens', 'POST', { name: 'synthetic-vector-3513', scopes: ['metadata:read'] }, memberCookie);
+  expect(memberCredential.status).toBe(201);
+  const memberToken = (await memberCredential.json() as { token: string }).token;
+  expect((await rpc(promptGet, { name: 'vector.issue.triage' }, '2026-07-28', memberToken)).body.result.messages.length).toBeGreaterThan(0);
+  expect((await f.call('/settings/operators/' + memberId, 'DELETE')).status).toBe(200);
+  const removedBefore = await snapshot(domain);
+  for (const version of ['2026-07-28', '2025-11-25']) {
+    for (const method of [promptList, promptGet]) {
+      const removed = await rpc(method, { name: 'vector.issue.triage' }, version, memberToken);
+      expect(removed.status).toBe(401);
+      expect(removed.body.result).toBeUndefined();
+    }
+  }
+  expect(await snapshot(domain)).toEqual(removedBefore);
   expect((await f.call('/settings/integrations/tokens/' + credential.credential.id, 'DELETE')).status).toBe(200);
   const afterRevocation = await snapshot(domain);
-  for (const method of [promptList, promptGet]) {
-    const revoked = await rpc(method, { name: 'vector.issue.triage' });
-    expect(revoked.status).toBe(401);
-    expect(revoked.body.result).toBeUndefined();
+  for (const version of ['2026-07-28', '2025-11-25']) {
+    for (const method of [promptList, promptGet]) {
+      const revoked = await rpc(method, { name: 'vector.issue.triage' }, version);
+      expect(revoked.status).toBe(401);
+      expect(revoked.body.result).toBeUndefined();
+    }
   }
   expect(await snapshot(domain)).toEqual(afterRevocation);
   expect((await env.DB.prepare('SELECT count(*) n FROM issues').first<number>('n'))).toBeGreaterThan(0);

@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a54a10d5c709cef481358ade71deea1c1f63ece51e5a3dbb683cea379623b323",
+      "sha256": "e8cb2d33b460da9588cca62c4a7e242cabb52522e56710ec51471cdaed78f91d",
       "executable": false
     },
     "DEMO.md": {
@@ -4222,7 +4222,7 @@
       "executable": false
     },
     "src/core/features/agent-door/prompts.ts": {
-      "sha256": "4b43e6114bb7daa97d0276c72cc95be13fcc06a51a25c86b2317bd25cc23599f",
+      "sha256": "4d63f800990b6933b26c73f7b639d11493d4e3e7c91b5dba200f4eab69d5be74",
       "executable": false
     },
     "src/core/features/agent-door/read-tools.ts": {
@@ -8958,7 +8958,7 @@
       "executable": false
     },
     "tests/worker/agent-prompts.test.ts": {
-      "sha256": "106dfe432ca12d387e723abb00b51815cd4def22e840684a6905bf28517649c6",
+      "sha256": "7c7c887f628abcfaf141ac641c938b82d146ffa2f892b21fa6f64be8993e48d2",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
