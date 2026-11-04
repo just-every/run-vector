@@ -8198,7 +8198,7 @@
       "executable": false
     },
     "tests/e2e/core-agent-role-parity.mjs": {
-      "sha256": "876ff036951267938394b093b3c9bd33897a72d87e0562fe3e4595aaca325563",
+      "sha256": "d1909a6651b714668c113b6690e156f8bc8f26ede54ac9954bcdc3b797bb8440",
       "executable": false
     },
     "tests/e2e/core-agent-write-retry.mjs": {
@@ -8318,7 +8318,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "95d83d51508f2a60b0dbd242a62149d6002bd81a87123c3c1daddc7d4cacf300",
+      "sha256": "e3e376cadeaa33b1b982486fbcf5c8d45bbfefa230df536d680ab0c6a9c45349",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {

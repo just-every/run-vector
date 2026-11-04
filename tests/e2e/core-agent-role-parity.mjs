@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import {writeFile} from 'node:fs/promises';
+import {readdir,writeFile} from 'node:fs/promises';
+import {join} from 'node:path';
+import {DatabaseSync} from 'node:sqlite';
 import {inviteReader} from './role-reader-support.mjs';
 import {withOperatorClient,publicRequest} from './operator-request.mjs';
 import {navigate,settleReads,trackRequests} from './collaboration-navigation.mjs';
@@ -24,14 +26,30 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
   };
   const session=await owner('/api/session');
   const tables=['issues','issue_comments','issue_activity','issue_followers','notifications','notification_events','notification_deliveries','audit_records'];
-  // One Wrangler process owns the complete snapshot. Keep every table and row
-  // comparison: launching a fresh local runtime for each table dominated this journey.
+  // Inspect the real local D1 store without starting another Wrangler/Workerd
+  // process for every refusal. A read-only handle cannot mutate the fixture.
+  const directory=join(state,'v3','d1'),stores=[];
+  try {
+    for(const name of await readdir(directory,{recursive:true})){
+      if(!name.endsWith('.sqlite'))continue;
+      const database=new DatabaseSync(join(directory,name),{readOnly:true});
+      try {
+        database.exec('PRAGMA busy_timeout=5000');
+        const names=new Set(database.prepare("SELECT name FROM sqlite_schema WHERE type='table'").all().map(row=>row.name));
+        if(tables.every(table=>names.has(table)))stores.push(database);
+        else database.close();
+      } catch(error){database.close();throw error;}
+    }
+    assert.equal(stores.length,1,'Exactly one local D1 store contains the complete watched domain');
+  } catch(error){for(const database of stores)database.close();throw error;}
+  const database=stores[0];
+  const statements=tables.map(table=>database.prepare(`SELECT * FROM ${table} ORDER BY rowid`));
   const stored=()=>{
-    mark('snapshot await wrangler D1 batch ('+tables.length+' tables)');
-    const snapshots=sql(tables.map(table=>`SELECT * FROM ${table} ORDER BY rowid`).join(';'),{all:true});
-    assert.equal(snapshots.length,tables.length,'Every watched table has its own result set');
-    mark('snapshot complete');
-    return Object.fromEntries(tables.map((table,index)=>[table,snapshots[index]]));
+    mark('snapshot read-only D1 ('+tables.length+' tables)');
+    database.exec('BEGIN');
+    try {
+      return Object.fromEntries(tables.map((table,index)=>[table,statements[index].all().map(row=>({...row}))]));
+    } finally {database.exec('ROLLBACK');mark('snapshot complete');}
   };
   const receipts=[],errors=[],external=[],expectedDenials=new Set();
   let id=0,activePage=page,step='setup';
@@ -259,5 +277,8 @@ export async function agentRoleParityJourney({page,context,base,state,sql,eviden
       titleInputs:await activePage.getByLabel('Title',{exact:true}).count(),
       editors:await activePage.locator('.issue-writing-editor').count()},null,2)).catch(()=>{});
     throw error;
-  } finally {for(const p of callers)if(p.context!==context)await p.context.close();}
+  } finally {
+    database.close();
+    for(const p of callers)if(p.context!==context)await p.context.close();
+  }
 }
