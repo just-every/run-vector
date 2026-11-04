@@ -38,6 +38,8 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     const issue=await w.create({title:'synthetic-vector-'+(3500+index),teamId:w.team.id});
     const agent=await mint('synthetic-vector-'+(3510+index));
     const other=await mint('synthetic-vector-'+(3520+index));
+    const alreadyActive=await other.call('vector.issue.comment',{identifier:issue.identifier,body:'synthetic-vector-3525',idempotency_key:crypto.randomUUID()});
+    expect(alreadyActive.status).toBe(200);expect(alreadyActive.body.result.isError).toBe(false);
     const editKey=crypto.randomUUID(),commentKey=crypto.randomUUID();
     for(const [tool,args] of [
       ['vector.issue.concurrent_edits',{identifier:issue.identifier,change:{expectedVersion:1,title:'synthetic-vector-'+(3530+index)},idempotency_key:editKey}],
@@ -66,10 +68,13 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     const native=await json(await w.call('/issues/'+issue.identifier));
     const discussion=await json(await w.call('/issues/'+issue.identifier+'/discussion'));
     expect(native.title).toBe('synthetic-vector-'+(3530+index));
-    expect(discussion.comments[0]).toMatchObject({body:'synthetic-vector-'+(3540+index)});
+    expect(discussion.comments[1]).toMatchObject({body:'synthetic-vector-'+(3540+index)});
     for(const row of rows)expect(native.activity).toEqual(expect.arrayContaining([
       expect.objectContaining({actor:row.label}),
     ]));
+    const activity=(await env.DB.prepare('SELECT agent_id,agent_operation_id,actor_operator_id,actor_name FROM issue_activity WHERE issue_id=? AND agent_id=? ORDER BY created_at,id').bind(issue.id,agent.id).all()).results;
+    expect(activity).toHaveLength(2);
+    for(const row of rows)expect(activity).toEqual(expect.arrayContaining([expect.objectContaining({agent_id:agent.id,agent_operation_id:row.operation_id,actor_operator_id:w.member.id,actor_name:row.label})]));
     const history=await snapshot(['agent_door_audit','agent_door_reviews','issues','issue_comments','issue_activity','audit_records']);
     const revoke='/agents/api/agents/'+encodeURIComponent(agent.id)+'/revoke';
     const unchanged=await snapshot(['agent_door_agents']);
@@ -87,6 +92,7 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     await json(await person(owner.cookie,revoke,'POST',{}));
     const agents=(await json(await person(owner.cookie,'/agents/api/agents'))).agents;
     expect(agents.find((a:any)=>a.id===agent.id)).toMatchObject({name:agent.name,revoked:true,sponsor:{id:w.member.id,name:sponsorName}});
+    expect(agents.find((a:any)=>a.id===other.id)).toMatchObject({name:other.name,revoked:false});
     expect(await snapshot(Object.keys(history))).toEqual(history);
     expect((await allRows()).rows.filter((r:any)=>r.agent.id===agent.id)).toEqual(rows);
     // The helper constructs a fresh server and door for every request. Read persisted
@@ -112,7 +118,7 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
     const kept=await other.call('vector.issue.comment',{identifier:issue.identifier,body:'synthetic-vector-3560',idempotency_key:crypto.randomUUID()});
     expect(kept.status).toBe(200);expect(kept.body.result.isError).toBe(false);
     const readback=await json(await w.call('/issues/'+issue.identifier+'/discussion'));
-    expect(readback.comments.map((c:any)=>c.body)).toEqual(['synthetic-vector-'+(3540+index),'synthetic-vector-3560']);
+    expect(readback.comments.map((c:any)=>c.body)).toEqual(['synthetic-vector-3525','synthetic-vector-'+(3540+index),'synthetic-vector-3560']);
     const reviews=await json(await person(owner.cookie,'/agents/api/reviews'));
     for(const row of rows.filter((r:any)=>r.review))expect(reviews.reviews).toEqual(expect.arrayContaining([
       expect.objectContaining({id:row.review.id,prepared_by:{agent:agent.name,for:sponsorName},state:'open'}),

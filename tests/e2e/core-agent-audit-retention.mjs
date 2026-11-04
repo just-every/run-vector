@@ -64,6 +64,8 @@ export async function agentAuditRetentionJourney({page,context,base,evidence,res
     const issue=await native('/issues','POST',{teamId:team.id,title:marker+'-'+decision},201);
     const agent=await mint(marker+'-'+decision+'-removed');
     const other=await mint(marker+'-'+decision+'-retained');
+    const active=await call(other.token,'vector.issue.comment',{identifier:issue.identifier,body:marker+'-other-before',idempotency_key:crypto.randomUUID()});
+    assert.equal(active.status,200);assert.equal(active.body.result.isError,false);
     const key=crypto.randomUUID(),commentKey=crypto.randomUUID();
     const edited=await call(agent.token,'vector.issue.concurrent_edits',{identifier:issue.identifier,
       change:{expectedVersion:issue.version,title:marker+'-'+decision+'-edited'},idempotency_key:key});
@@ -87,8 +89,8 @@ export async function agentAuditRetentionJourney({page,context,base,evidence,res
     const nativeBefore=await native('/issues/'+issue.identifier);
     const discussionBefore=await native('/issues/'+issue.identifier+'/discussion');
     assert.equal(nativeBefore.title,marker+'-'+decision+'-edited');
-    assert.equal(discussionBefore.comments[0].body,marker+'-'+decision+'-comment');
-    assert.equal(discussionBefore.comments[0].actor,history[1].label);
+    assert.equal(discussionBefore.comments[1].body,marker+'-'+decision+'-comment');
+    assert.equal(discussionBefore.comments[1].actor,history[1].label);
     for(const row of history)assert.ok(nativeBefore.activity.some(a=>a.actor===row.label));
     const agentsBefore=await person('/agents/api/agents');
     const revoke='/agents/api/agents/'+encodeURIComponent(agent.id)+'/revoke';
@@ -107,6 +109,7 @@ export async function agentAuditRetentionJourney({page,context,base,evidence,res
     const agents=(await person('/agents/api/agents')).agents;
     assert.deepEqual(agents.find(a=>a.id===agent.id),{id:agent.id,name:agent.name,specialist:'software delivery coordinator',
       sponsor:{id:session.operatorId,name:sponsor.name},revoked:true});
+    assert.equal(agents.find(a=>a.id===other.id).revoked,false,'A previously active second agent stays active');
     for(const [tool,args] of [
       ['vector.issue.concurrent_edits',{identifier:issue.identifier,change:{expectedVersion:issue.version,title:marker+'-'+decision+'-edited'},idempotency_key:key}],
       ['vector.issue.comment',{identifier:issue.identifier,body:marker+'-'+decision+'-comment',idempotency_key:commentKey}],
@@ -120,7 +123,7 @@ export async function agentAuditRetentionJourney({page,context,base,evidence,res
     const kept=await call(other.token,'vector.issue.comment',{identifier:issue.identifier,body:marker+'-other',idempotency_key:crypto.randomUUID()});
     assert.equal(kept.status,200);assert.equal(kept.body.result.isError,false);
     const discussion=await native('/issues/'+issue.identifier+'/discussion');
-    assert.deepEqual(discussion.comments.map(c=>c.body),[marker+'-'+decision+'-comment',marker+'-other']);
+    assert.deepEqual(discussion.comments.map(c=>c.body),[marker+'-other-before',marker+'-'+decision+'-comment',marker+'-other']);
     const reviews=(await person('/agents/api/reviews')).reviews;
     for(const row of history.filter(r=>r.review))assert.ok(reviews.some(review=>review.id===row.review.id&&review.prepared_by.agent===agent.name&&review.prepared_by.for===sponsor.name));
     await navigate(page,base+'/agents');
