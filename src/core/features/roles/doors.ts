@@ -120,6 +120,7 @@ export const doors: Door[] = [
     ['POST','/documents'],['PATCH','/documents/:documentId'],['POST','/documents/:documentId/comments'],
     ['PUT','/issues/:identifier/specification'],['DELETE','/issues/:identifier/specification'],
   ] as const).map(([method,path])=>({method,path,row:documentDoorRow,teams:documentDoorTeams,workMutation:true as const})),
+  ...([['GET','/settings/integrations/gitlab'],['POST','/settings/integrations/gitlab'],['POST','/settings/integrations/gitlab/:id/hooks'],['DELETE','/settings/integrations/gitlab/:id']] as const).map(([method,path]):Door=>({method,path,row:'integrations.manage'})),
   {method:'GET',path:'/settings/oauth-apps',row:'integrations.manage'},
   {method:'POST',path:'/settings/oauth-apps',row:'integrations.manage'},
   {method:'DELETE',path:'/settings/oauth-apps/grants/:id',row:'integrations.manage'},

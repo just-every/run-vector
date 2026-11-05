@@ -2247,5 +2247,30 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "vector_gitlab_connections": [
+    "id",
+    "workspace_id",
+    "origin",
+    "generation",
+    "revoked_at",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_gitlab_projects": [
+    "connection_id",
+    "project_id",
+    "path",
+    "name",
+    "generation"
+  ],
+  "vector_gitlab_hooks": [
+    "connection_id",
+    "project_id",
+    "state",
+    "hook_id",
+    "callback_url",
+    "generation",
+    "updated_at"
   ]
 }

@@ -310,6 +310,19 @@
       "adapters": [
         "vector.google-sheets.v1"
       ]
+    },
+    {
+      "id": "gitlab-project-hooks",
+      "required": false,
+      "why": "GITLAB-001: an Owner or Admin registers hooks on selected GitLab projects using a group or project token with only api scope.",
+      "data": [
+        "selected project identity",
+        "installation callback URL",
+        "generated webhook secret"
+      ],
+      "adapters": [
+        "vector.gitlab-api.v1"
+      ]
     }
   ],
   "env": [

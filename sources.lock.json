@@ -2529,6 +2529,10 @@
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "executable": false
     },
+    "migrations/core/0126_gitlab_setup.sql": {
+      "sha256": "f183d18883c67ccc2023a798a3166ca26d6207b82991f2ea99052df7309725e5",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -3566,7 +3570,7 @@
       "executable": false
     },
     "seed.json": {
-      "sha256": "29bdca1b5e58aad6acd74dd1520e9e29425d8c33b2e056fd7697ead751e3e164",
+      "sha256": "efc52112b3de6adf523109072ce9f5f1bb512b26c81b0081a84957e348dbe028",
       "executable": false
     },
     "src/base/contract-filter.ts": {
@@ -4586,7 +4590,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "867be97b8c6b91d1b80c5bd07aae090d4e0b05f2b82d3dd388bfe49653783666",
+      "sha256": "664b5022e2d94310109afbc55e912511bd02dba1aa8ade0e46160259daf45a39",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4598,7 +4602,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "7702b91aa47735176b25e4bb30c857f080258a0e359c1d3ad9da2cd699d19f32",
+      "sha256": "45bc8bf59afeb0aa872b4e94b7011c3b9a83835035ef968fad1245f045a302fc",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -5314,7 +5318,7 @@
       "executable": false
     },
     "src/core/features/integrations/config-routes.ts": {
-      "sha256": "ccd806a79611ede4d158babd83e6f19e51802febe7f2934c83b6a538c500c12a",
+      "sha256": "918de40f791ec3a0d7b2fce3d90db988861064070ebe097d6e4128d025d18675",
       "executable": false
     },
     "src/core/features/integrations/config-storage.ts": {
@@ -5421,6 +5425,30 @@
       "sha256": "6cf9f51075ab79ac9eecad9c38be2f6d9b5d5ded50f824b6a7182e8307389179",
       "executable": false
     },
+    "src/core/features/integrations/gitlab/configuration.ts": {
+      "sha256": "1e53c93c37cb2fbf163c47353215a9377ac6e7a8e882be0c19262d955b3a8f0e",
+      "executable": false
+    },
+    "src/core/features/integrations/gitlab/connection.ts": {
+      "sha256": "070b4787788ec4c56c8972400ad38ab4cdc047545c11a65f20423efbc6db8422",
+      "executable": false
+    },
+    "src/core/features/integrations/gitlab/hook-registration.ts": {
+      "sha256": "ebec86e3c7e720a6190b72b2fb1a1eec3497e749586ee43427403591ae30f699",
+      "executable": false
+    },
+    "src/core/features/integrations/gitlab/project-list.ts": {
+      "sha256": "9f1e9af56af761cb13deea91478a47e4a6a9040ec6c640f965516b943350684c",
+      "executable": false
+    },
+    "src/core/features/integrations/gitlab/provider.ts": {
+      "sha256": "b93abde3f4c4159b9cef60a7cda0fe0bbe5bd06d0e7f5e6895eff3210e07fba6",
+      "executable": false
+    },
+    "src/core/features/integrations/gitlab/receiver.ts": {
+      "sha256": "481444001868a88092ff3d05dfe3d4bb45d9c11738c4905c7406c0619b44f13e",
+      "executable": false
+    },
     "src/core/features/integrations/label-api.ts": {
       "sha256": "f1ba621aaa9116481928b431b9e919df574b98a648444a09b435e9f688c8ef0e",
       "executable": false
@@ -5458,7 +5486,7 @@
       "executable": false
     },
     "src/core/features/integrations/receiver-routes.ts": {
-      "sha256": "448549d9b9c1405458428a3a4678d05659a601d58425e36f00ff01cd383953c1",
+      "sha256": "45707f73a8b695c5c7457e3559c55625c342ace0c7684a9c3b0a705f8e5b80d6",
       "executable": false
     },
     "src/core/features/integrations/reenter.ts": {
@@ -5633,8 +5661,12 @@
       "sha256": "91f7b44aacb23326bdefc39f17218b787aec4ee33f699b3d96c7bb812565f500",
       "executable": false
     },
+    "src/core/features/integrations/ui/gitlab-settings.tsx": {
+      "sha256": "8ae0ac1dca78aef9d16076bece96587af97aa55a8b3e69746ecf60a213a805f5",
+      "executable": false
+    },
     "src/core/features/integrations/ui/integrations-panel.tsx": {
-      "sha256": "6b469a2797eaaf12f9e88f40555c1cddce0d10763801b0404a11f19f2f3f2cdc",
+      "sha256": "a09c7826a5bf0f498f7fec21a8df376e94e00d1484d672e33bf3c2be2bfee6d7",
       "executable": false
     },
     "src/core/features/integrations/ui/integrations.css": {
@@ -6842,7 +6874,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "185f56e84b3a0e31d1830cedd7109f6ef4741bc5a0445ce946f783a20b8a077f",
+      "sha256": "3484da35ec5c92a6d95e5ed8ac47235aa323748b2c3e41e1f196f8aec6750bfb",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6850,7 +6882,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "9c84a29fe628f3e8aca8eb2994200a50693089887db0999d65e30b7a74161464",
+      "sha256": "8204b627eac73167a67598d2d2459ae9a2af7b52d27e3f0f94b8815a32611775",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -8481,6 +8513,10 @@
       "sha256": "356ef09d18faed5df7021c4452d8504f92eab6133b2e4709d9fc7f1382144ecb",
       "executable": false
     },
+    "tests/e2e/gitlab-setup-journey.mjs": {
+      "sha256": "134cbe5ca77f1c3399beeb03dfeaf8bed7d1af81d2277fdc66025c2814164e70",
+      "executable": false
+    },
     "tests/e2e/housekeeping-runtime.mjs": {
       "sha256": "e89d399a7e39ed1c385b231bd7729b1137928d0fab5bc4312cb9f8fd6bf84887",
       "executable": false
@@ -8498,7 +8534,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "ba5621ffee97f775159c3a9209867e99a7af540916035dc42f65b07ec27a0d56",
+      "sha256": "eccab8158a2d1c22de6c96c5ed98bad459d9e42264ba6433945765622013d034",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -8510,7 +8546,7 @@
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
-      "sha256": "a570df0e741c15034534f64b4c565968be05254d4313d9ecf4190247a53633a7",
+      "sha256": "e12b923d7d69040032ce671c4dbd8cd80a2a559f9fc7dcc3f2f23993e0ce03da",
       "executable": false
     },
     "tests/e2e/integrations/channel-settings.mjs": {
@@ -8531,6 +8567,10 @@
     },
     "tests/e2e/integrations/github-team-permissions.mjs": {
       "sha256": "d28d8e4c567f9c69db4010ad57dccd2603112b6d7694c2554746b32cd10e7386",
+      "executable": false
+    },
+    "tests/e2e/integrations/gitlab-provider-edge.mjs": {
+      "sha256": "5744ee8ee6e395b6a884dc969ec93417bc529ec632df716fb4821b3fe58e57ba",
       "executable": false
     },
     "tests/e2e/integrations/notification-channel-controls.mjs": {
@@ -9038,7 +9078,7 @@
       "executable": false
     },
     "tests/worker/channel-edge-fixture.ts": {
-      "sha256": "ba8abf2ef2b4123e145d41ad1e6e9a45f75cf57a3bf6b9fa53bc58c6c4f8b33a",
+      "sha256": "8fc11cadece2c0c18e0724d63cec964c73b4ba910507f26adc18268da2ee7857",
       "executable": false
     },
     "tests/worker/channel-notifications-scenario.ts": {
@@ -9247,6 +9287,14 @@
     },
     "tests/worker/github-links.test.ts": {
       "sha256": "cae604a23c20f48972af2efc4fcbf0677ac539be4086616c7e64a3638e158081",
+      "executable": false
+    },
+    "tests/worker/gitlab-setup.test.ts": {
+      "sha256": "57fc67c40e6054bbbbecd347ad4aefcc59520ae257f31db2504776dbbd68ed7d",
+      "executable": false
+    },
+    "tests/worker/gitlab-upgrade.test.ts": {
+      "sha256": "e55b7f8a4093c73c70f3c6ef7c98f6d6b4d9074a846894feaa21bf009ed460a0",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {
@@ -9602,7 +9650,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "eea8933a9ca7b1711d8b9af987e42f9ae8692bc6d92bac85bfe6f626250ea5b6",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

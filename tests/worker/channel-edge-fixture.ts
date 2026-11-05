@@ -9,6 +9,11 @@ export function channelEdge(installationTeam?:string){
  const network=vi.spyOn(globalThis,'fetch').mockImplementation(async(input,init)=>{
   const url=new URL(String(input));const body=init?.method==='GET'?Object.fromEntries(url.searchParams):new Headers(init?.headers).get('content-type')?.startsWith('application/x-www-form-urlencoded')?Object.fromEntries(new URLSearchParams(String(init?.body))):JSON.parse(String(init?.body??'{}'));
   expect(init?.redirect).toBe('manual');
+  if(url.hostname==='gitlab.com'){
+   if(url.pathname==='/api/v4/personal_access_tokens/self')return Response.json({active:true,revoked:false,scopes:['api']});
+   if(url.pathname==='/api/v4/projects')return Response.json([{id:18911,name:'synthetic-vector-18911',path_with_namespace:'synthetic-vector/project-18911',permissions:{project_access:{access_level:40},group_access:null}}]);
+   throw Error('Unexpected GitLab census endpoint');
+  }
   const method=url.host==='slack.com'?url.pathname.slice(5):'discord';
   calls.push({method,body,redirect:init?.redirect,workspace:installationTeam});
   if(app&&method==='apps.manifest.create')return Response.json({ok:true,app_id:app.appId,credentials:{client_id:app.clientId,client_secret:app.clientSecret,signing_secret:app.signingSecret}});
