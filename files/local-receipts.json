@@ -1,0 +1,82 @@
+{
+  "head": "e4e7ec012e2ea6184f7b7919ce880547579860ff",
+  "base": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "main": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "checks": [
+    {
+      "command": "pnpm integration:check",
+      "exit": 0,
+      "file": "integration-after.txt",
+      "exactHead": true
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "file": "typecheck.txt",
+      "sourceAndTestsUnchangedSince": "dc2688516daa1c31503a405c9327277d056d4ab0"
+    },
+    {
+      "command": "pnpm test:worker tests/worker/gitlab-setup.test.ts tests/worker/gitlab-upgrade.test.ts",
+      "exit": 0,
+      "tests": 2,
+      "file": "gitlab-tests.txt",
+      "sourceAndTestsUnchangedSince": "dc2688516daa1c31503a405c9327277d056d4ab0"
+    },
+    {
+      "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+      "exit": 0,
+      "tests": 1,
+      "file": "migration-head-test.txt",
+      "sourceAndTestsUnchangedSince": "dc2688516daa1c31503a405c9327277d056d4ab0"
+    },
+    {
+      "command": "node ../deployment-probe.mjs",
+      "exit": 0,
+      "file": "deployment-probe.json",
+      "exactHead": true
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "file": "first-party-check.txt"
+    },
+    {
+      "command": "pnpm sources:check",
+      "exit": 0,
+      "exactHead": true
+    },
+    {
+      "command": "node --input-type=module -e import assertRoleDoorCoverage; await assertRoleDoorCoverage()",
+      "exit": 1,
+      "file": "role-door-candidate.txt",
+      "exactHead": true,
+      "failure": "integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined"
+    }
+  ],
+  "countsBefore": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66,
+    "total": 272
+  },
+  "countsAfter": {
+    "done": 136,
+    "partial": 70,
+    "missing": 66,
+    "total": 272
+  },
+  "clauseStatus": {
+    "GITLAB-001": {
+      "before": "partial",
+      "after": "partial"
+    }
+  },
+  "newPermanentTests": 0,
+  "assertionsRemovedOrWeakened": 0,
+  "publicationScan": "Not run in cloud; fleet gate required",
+  "runSite": "Not run; branch only",
+  "registryRepair": "proposed, not applied; outside explicit FIX list and awaiting scope clarification",
+  "productSave": "skip ci; not READY"
+}

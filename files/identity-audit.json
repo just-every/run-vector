@@ -1,0 +1,29 @@
+{
+  "head": "e4e7ec012e2ea6184f7b7919ce880547579860ff",
+  "allCandidateCommitsIncludingSideParents": true,
+  "count": 3,
+  "commits": [
+    {
+      "head": "e4e7ec012e2ea6184f7b7919ce880547579860ff",
+      "author": "Run Edit Run fleet",
+      "committer": "Run Edit Run fleet",
+      "trailers": "",
+      "pass": true
+    },
+    {
+      "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+      "author": "Run Edit Run fleet",
+      "committer": "Run Edit Run fleet",
+      "trailers": "",
+      "pass": true
+    },
+    {
+      "head": "6de99b93e44d6e5a508f5ca83ed66bca12e37e5e",
+      "author": "Run Edit Run fleet",
+      "committer": "Run Edit Run fleet",
+      "trailers": "",
+      "pass": true
+    }
+  ],
+  "pass": true
+}

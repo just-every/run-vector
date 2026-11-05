@@ -1,0 +1,27 @@
+{
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "run": 42125559127,
+  "job": 127589212069,
+  "shard": "hosted-artifact",
+  "command": "pnpm verify:ci --shard hosted-artifact",
+  "test": "integration:check",
+  "exit": 1,
+  "failure": "Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+  "node": "22.20.0",
+  "pnpm": "10.12.4",
+  "fullShardAttempt": {
+    "command": "pnpm verify:ci --shard hosted-artifact",
+    "exit": 1,
+    "failure": "Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+    "reproduced": true,
+    "browserExecutable": "/usr/bin/chromium"
+  },
+  "additionalFailure": {
+    "job": 127589212030,
+    "command": "TZ=UTC pnpm test:admin",
+    "test": "[OPS-003] empty workspace administration through real mobile browser",
+    "exit": 1,
+    "failure": "integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined",
+    "isolatedAssertionMainExit": 0
+  }
+}

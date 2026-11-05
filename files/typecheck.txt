@@ -1,0 +1,4 @@
+
+> vector@0.4.1 typecheck /home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector
+> tsc -b
+

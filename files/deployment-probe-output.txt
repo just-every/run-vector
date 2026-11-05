@@ -1,0 +1,23 @@
+(node:5280) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "head": "e4e7ec012e2ea6184f7b7919ce880547579860ff",
+  "dirty": false,
+  "command": "node ../deployment-probe.mjs",
+  "migrationCount": 126,
+  "appliedCount": 126,
+  "gitlabTables": [
+    "vector_gitlab_connections",
+    "vector_gitlab_hooks",
+    "vector_gitlab_projects"
+  ],
+  "migration": {
+    "name": "0126_gitlab_setup.sql",
+    "sha256": "f183d18883c67ccc2023a798a3166ca26d6207b82991f2ea99052df7309725e5",
+    "state": "applied"
+  },
+  "repeatApplied": [],
+  "repeatProviderWrites": 0,
+  "foreignKeyViolations": 0,
+  "exit": 0
+}

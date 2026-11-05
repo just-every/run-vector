@@ -1,0 +1,1 @@
+PROBE GITLAB-001 FIX deployment: pnpm integration:check and the generated recipe through the deployment migration API -> 126 migrations applied, all three GitLab setup tables present, exact source SQL and digest retained, reapply produces zero provider writes.

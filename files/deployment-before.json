@@ -1,0 +1,13 @@
+{
+  "head": "dc2688516daa1c31503a405c9327277d056d4ab0",
+  "recordedMigrations": 125,
+  "expectedMigrations": 126,
+  "missing": [
+    {
+      "binding": "DB",
+      "name": "0126_gitlab_setup.sql",
+      "sha256": "f183d18883c67ccc2023a798a3166ca26d6207b82991f2ea99052df7309725e5"
+    }
+  ],
+  "changed": []
+}

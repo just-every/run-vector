@@ -1,0 +1,24 @@
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined
+    at assertDoor (file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:48:45)
+    at walk (file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:57:5)
+    at file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:59:32
+    at visitNode2 (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    at forEachChildInJsxElement (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32816:12)
+    at Object.forEachChild (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32970:35)
+    at walk (file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:59:7)
+    at file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:59:32
+    at visitNodes (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32457:22)
+    at forEachChildInJsxElement (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32816:55) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.20.0

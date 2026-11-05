@@ -1,0 +1,42 @@
+
+> vector@0.4.1 test:admin /home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector
+> node --experimental-strip-types tests/e2e/admin-runtime.mjs
+
+(node:2513) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+# Subtest: [OPS-003] empty workspace administration through real mobile browser
+not ok 1 - [OPS-003] empty workspace administration through real mobile browser
+  ---
+  duration_ms: 4727.16312
+  type: 'test'
+  location: '/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/contract.ts:4:10'
+  failureType: 'testCodeFailure'
+  error: 'integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    assertDoor (file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:48:45)
+    walk (file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:57:5)
+    file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:59:32
+    visitNode2 (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32449:18)
+    forEachChildInJsxElement (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32816:12)
+    Object.forEachChild (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32970:35)
+    walk (file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:59:7)
+    file:///home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/tests/e2e/role-door-coverage.mjs:59:32
+    visitNodes (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32457:22)
+    forEachChildInJsxElement (/home/agent/rer-consolidation/work/sd-vector-c-f190/run-vector/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/lib/typescript.js:32816:55)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4732.007477
+ ELIFECYCLE  Command failed with exit code 1.

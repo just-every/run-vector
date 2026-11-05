@@ -1,0 +1,19 @@
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0104577Z   type: 'test'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0105067Z   location: '/home/runner/work/run-vector/run-vector/tests/contract.ts:4:10'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0105647Z   failureType: 'testCodeFailure'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0106379Z   error: 'integrations/ui/gitlab-settings.tsx#GitlabSettings form 1 names an unregistered door undefined'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0107067Z   code: 'ERR_ASSERTION'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0107379Z   name: 'AssertionError'
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0107714Z   expected: true
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0107970Z   actual: false
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0108242Z   operator: '=='
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0108534Z   stack: |-
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0109152Z     assertDoor (file:///home/runner/work/run-vector/run-vector/tests/e2e/role-door-coverage.mjs:48:45)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0110408Z     walk (file:///home/runner/work/run-vector/run-vector/tests/e2e/role-door-coverage.mjs:57:5)
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0111274Z     file:///home/runner/work/run-vector/run-vector/tests/e2e/role-door-coverage.mjs:59:32
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0122871Z # skipped 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0123130Z # todo 0
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0123420Z # duration_ms 5301.685751
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.0949852Z  ELIFECYCLE  Command failed with exit code 1.
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.6106913Z  ELIFECYCLE  Command failed with exit code 1.
+shards (administration, true, true, true)	Verify the independent shard	2026-11-05T22:57:36.6279297Z ##[error]Process completed with exit code 1.

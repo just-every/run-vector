@@ -1,0 +1,30 @@
+{
+  "lock": {
+    "write": "pnpm sources:lock",
+    "writeExit": 0,
+    "check": "pnpm sources:check",
+    "checkExit": 0
+  },
+  "views": {
+    "write": "node scripts/contract-docs.mjs write GITLAB-001",
+    "writeExit": 0,
+    "check": "node scripts/contract-docs.mjs check GITLAB-001",
+    "checkExit": 0,
+    "restoredFrom": "origin/main",
+    "committed": false
+  },
+  "ledger": {
+    "command": "node --test scripts/deployment/tests/migration-head.test.mjs",
+    "exit": 0,
+    "migrationBytesChanged": false
+  },
+  "statusRows": {
+    "parent": 272,
+    "candidate": 272,
+    "lost": []
+  },
+  "addedText": {
+    "emailShaped": 0,
+    "credentialShaped": 0
+  }
+}

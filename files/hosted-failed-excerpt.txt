@@ -1,0 +1,44 @@
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.3636387Z Your application is built
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.4329603Z build: complete (exit 0)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.6828026Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.6828963Z > vector@0.4.1 integration:check [REDACTED]
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7763695Z > node scripts/sync-integration.mjs --check
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7764100Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7764388Z file://[REDACTED]/scripts/sync-integration.mjs:26
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7765037Z       throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7765487Z             ^
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7765595Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7766077Z Error: Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7767111Z     at integrationRecipe (file://[REDACTED]/scripts/sync-integration.mjs:26:13)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7767560Z     at async file://[REDACTED]/scripts/sync-integration.mjs:34:3
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7767782Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7767867Z Node.js v22.20.0
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.7903363Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.8232445Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9145188Z Verifying application: exit 1, signal none.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9145727Z Command: pnpm
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9146002Z Last output (up to 40 lines):
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9146758Z dist/server/assets/app.new-issue-BTFptOnj.js                             43.04 kB │ gzip:   8.14 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9147655Z dist/server/assets/app.projects._projectId-DZ05gfW1.js                   43.94 kB │ gzip:   9.07 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9148605Z dist/server/assets/app.insights-DsbxNiPA.js                              49.77 kB │ gzip:   8.38 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9149721Z dist/server/assets/router-CSsYu98j.js                                    51.31 kB │ gzip:  11.60 kB
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9162295Z Your application is built
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9162542Z build: complete (exit 0)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9162681Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9162841Z > vector@0.4.1 integration:check [REDACTED]
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9163172Z > node scripts/sync-integration.mjs --check
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9163357Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9163519Z file://[REDACTED]/scripts/sync-integration.mjs:26
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9164060Z       throw Error(`Stale integration ${name}; build the application and regenerate with pnpm integration:sync`);
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9164511Z             ^
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9164819Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9165270Z Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9165705Z 
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9165793Z Node.js v22.20.0
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9166137Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9166538Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9166869Z Log: [REDACTED]/.seed/installer/install.log
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9167574Z verify: failed (exit 1)
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9373014Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9693942Z  ELIFECYCLE  Command failed with exit code 1.
+shards (hosted-artifact, true, true, false)	Verify the independent shard	2026-11-05T22:58:12.9882840Z ##[error]Process completed with exit code 1.
