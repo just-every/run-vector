@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a6cbe19263bc3e02f532013b411927181c5cadf9b9517f158b412da823824260",
+      "sha256": "6d82c35804b82cad3e24e50b8257c9e3ef7392db1730e183e95107c4eb93d2c4",
       "executable": false
     },
     "DEMO.md": {
@@ -5606,7 +5606,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/bitbucket-settings.tsx": {
-      "sha256": "09649962466247719811350c2442e0319bd7c39d3f04eb00934f55db78286b91",
+      "sha256": "52aa69371c4326ea9857d8adbcbdfdacc77c4e6254e6de11173e8de11c33df2e",
       "executable": false
     },
     "src/core/features/integrations/ui/channel-settings.tsx": {
@@ -8530,7 +8530,7 @@
       "executable": false
     },
     "tests/e2e/integration-runtime.mjs": {
-      "sha256": "ba5621ffee97f775159c3a9209867e99a7af540916035dc42f65b07ec27a0d56",
+      "sha256": "4d017e6e25c3f7aaafc8f2f15f08018df489485c89d613332f9fb1d05a5f8cec",
       "executable": false
     },
     "tests/e2e/integration-settings-journey.mjs": {
@@ -8539,6 +8539,10 @@
     },
     "tests/e2e/integration-signed-pr.mjs": {
       "sha256": "a8be14e69c248a083a4af26807d62a1527580451b8bb1f1cf700a47bb78874b3",
+      "executable": false
+    },
+    "tests/e2e/integrations/bitbucket-chain.mjs": {
+      "sha256": "fb3a0dd9a7cd1f3e13c3994e83852386b6446dbd572e8586da6f4adfe9c23ec7",
       "executable": false
     },
     "tests/e2e/integrations/channel-provider-edge.mjs": {
@@ -9054,11 +9058,11 @@
       "executable": false
     },
     "tests/worker/bitbucket-fixture.ts": {
-      "sha256": "9402469bcfff2bfbebef61419b16b97fff03edb67daf2907c27738f2a70ae09d",
+      "sha256": "16c0e7723f50f22a4d8b39d96c01274b26fff1891576a94d1967b0992165fd6f",
       "executable": false
     },
     "tests/worker/bitbucket-links.test.ts": {
-      "sha256": "e380d3cfff9bc133482e70b1cedce203f286a4ab5e9da75ca19643f9ab5e79a2",
+      "sha256": "9b68d2192ca5669298b0f9220b708fbabbf733a353656ead8c8e8affbc73b355",
       "executable": false
     },
     "tests/worker/bitbucket-upgrade.test.ts": {

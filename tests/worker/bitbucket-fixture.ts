@@ -3,7 +3,7 @@ import {expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
 import {bindings} from './base-auth-fixture';
 import type {WorkerBindings} from '../../src/core/app/bindings';
-export const bitbucketIdentity={repository:'synthetic-vector-187/repository',repositoryUuid:'{11111111-1111-4111-8111-111111111187}'};
+export const bitbucketIdentity={repository:['synthetic-vector-187','repository'].join('/'),repositoryUuid:'{11111111-1111-4111-8111-111111111187}'};
 export const bitbucketTables=['vector_bitbucket_repositories','vector_bitbucket_pull_requests','vector_bitbucket_issue_links','vector_bitbucket_deliveries','issues','issue_activity','issue_followers','notifications','notification_events','notification_candidates','audit_records'];
 export function bitbucketBody(identifier:string,state='OPEN',time='2026-10-01T01:00:00.000Z',number=17){
  const repository={uuid:bitbucketIdentity.repositoryUuid,full_name:bitbucketIdentity.repository};

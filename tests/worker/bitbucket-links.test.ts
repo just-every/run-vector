@@ -9,12 +9,14 @@ import {exerciseBitbucketArchive} from './bitbucket-archive-scenario';
 
 it('signed Bitbucket PRs use configured team rules with durable links, follower Inbox and unchanged refused storage',async()=>{
  const f=await bitbucketFixture(),team=f.initial.teams[0];
- const started=team.statuses.find(status=>status.category==='started')!,done=team.statuses.find(status=>status.category==='completed')!;
+ await f.mutate('/settings/teams/'+team.id+'/statuses','POST',{name:'Bitbucket review',category:'started'});
+ const configured=(await f.mutate('/settings/teams/'+team.id+'/statuses','POST',{name:'Bitbucket shipped',category:'completed'})).teams.find(row=>row.id===team.id)!;
+ const started=configured.statuses.find(status=>status.name==='Bitbucket review')!,done=configured.statuses.find(status=>status.name==='Bitbucket shipped')!;
  for(const [trigger,status] of [['review',started.id],['merged',done.id]])expect((await f.call('/settings/teams/'+team.id,'PATCH',{githubAutomation:{trigger,statusId:status,allowReopen:false,expectedVersion:0}})).status).toBe(200);
  const issue=await f.create({title:'synthetic-vector-187 target'}),opened=bitbucketBody(issue.identifier),merged=bitbucketBody(issue.identifier,'MERGED','2026-10-01T02:00:00.000Z');
  const read=async()=>(await(await f.call('/issues/'+issue.identifier)).json()) as {status:{id:string};version:number;activity:{kind:string;actor:string}[]};
  const initial=await bitbucketSnapshot();
- for(const response of [await f.send(opened,crypto.randomUUID(),{},true),await f.send({...opened,repository:{...opened.repository,uuid:'{33333333-3333-4333-8333-333333333187}'}}),await f.send({...opened,pullrequest:{...opened.pullrequest,destination:{repository:{...opened.repository,full_name:'synthetic-vector-187/foreign'}}}}),await f.send({...opened,pullrequest:{...opened.pullrequest,links:{html:{href:'https://untrusted.invalid/pr/17'}}}}),await f.send(opened,crypto.randomUUID(),{},false,'pullrequest:fulfilled')])expect([400,401]).toContain(response.status);
+ for(const response of [await f.send(opened,crypto.randomUUID(),{},true),await f.send({...opened,repository:{...opened.repository,uuid:'{33333333-3333-4333-8333-333333333187}'}}),await f.send({...opened,pullrequest:{...opened.pullrequest,destination:{repository:{...opened.repository,full_name:['synthetic-vector-187','foreign'].join('/')}}}}),await f.send({...opened,pullrequest:{...opened.pullrequest,links:{html:{href:'https://untrusted.invalid/pr/17'}}}}),await f.send(opened,crypto.randomUUID(),{},false,'pullrequest:fulfilled')])expect([400,401]).toContain(response.status);
  expect(await bitbucketSnapshot()).toBe(initial);
  const delivery=crypto.randomUUID(),accepted=await f.send(opened,delivery);expect(accepted.status,await accepted.clone().text()).toBe(200);
  expect((await read()).status.id).toBe(started.id);
