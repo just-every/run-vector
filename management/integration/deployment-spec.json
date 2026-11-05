@@ -760,6 +760,12 @@
       "name": "0125_issue_templates.sql",
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "sql": "-- Native templates are portable content. Applying one creates independent issues.\nCREATE TABLE issue_templates (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL,\n  defaults_json TEXT NOT NULL CHECK(json_valid(defaults_json)),\n  subissues_json TEXT NOT NULL CHECK(json_valid(subissues_json)),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE INDEX issue_templates_workspace_idx ON issue_templates(workspace_id,team_id,name,id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0126_gitlab_setup.sql",
+      "sha256": "f183d18883c67ccc2023a798a3166ca26d6207b82991f2ea99052df7309725e5",
+      "sql": "-- GitLab project identity and registration outcomes are portable; credentials are not.\nCREATE TABLE vector_gitlab_connections (\n id TEXT PRIMARY KEY,\n workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n origin TEXT NOT NULL,\n generation INTEGER NOT NULL DEFAULT 1,\n revoked_at TEXT,\n created_at TEXT NOT NULL,\n updated_at TEXT NOT NULL,\n UNIQUE(workspace_id,origin)\n);\nCREATE TABLE vector_gitlab_projects (\n connection_id TEXT NOT NULL REFERENCES vector_gitlab_connections(id),\n project_id INTEGER NOT NULL CHECK(project_id>0),\n path TEXT NOT NULL,\n name TEXT NOT NULL,\n generation INTEGER NOT NULL,\n PRIMARY KEY(connection_id,project_id)\n);\nCREATE TABLE vector_gitlab_hooks (\n connection_id TEXT NOT NULL REFERENCES vector_gitlab_connections(id),\n project_id INTEGER NOT NULL,\n state TEXT NOT NULL CHECK(state IN ('registering','registered','rejected','unknown')),\n hook_id INTEGER,\n callback_url TEXT NOT NULL,\n generation INTEGER NOT NULL,\n updated_at TEXT NOT NULL,\n PRIMARY KEY(connection_id,project_id),\n FOREIGN KEY(connection_id,project_id) REFERENCES vector_gitlab_projects(connection_id,project_id)\n);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
