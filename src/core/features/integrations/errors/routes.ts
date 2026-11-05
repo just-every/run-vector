@@ -23,7 +23,7 @@ export function addErrorRoutes(app:Hono<AppEnvironment>){
   const input=parsed.data,access=await requireIssueAccess(c.env.DB,input.identifier,owner.id);
   const source=await c.env.DB.prepare('SELECT s.team_id,e.provider FROM vector_integration_sources s JOIN vector_error_connections e ON e.source_id=s.id WHERE s.id=? AND s.workspace_id=? AND s.enabled=1 AND s.revoked_at IS NULL').bind(id,owner.workspace).first<{team_id:string;provider:string}>();
   const issue=await c.env.DB.prepare('SELECT i.id,i.team_id,s.category FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE i.identifier=?').bind(input.identifier).first<{id:string;team_id:string;category:string}>();
-  if(!access||!source||!issue||issue.team_id!==source.team_id)throw new IntegrationError(404,'error_link_unavailable');
+  if(!access||!source||!issue||(action==='link'&&issue.team_id!==source.team_id))throw new IntegrationError(404,'error_link_unavailable');
   const at=new Date().toISOString();
   if(action==='link'){
    await managed(c.env,owner).batch([{sql:'INSERT INTO vector_source_records(source_id,record_id,issue_id,created_at) VALUES(?,?,?,?)',params:[id,input.recordId,issue.id,at]},auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.error_linked',subject:issue.id,at})]);

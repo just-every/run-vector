@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { routingProvenanceSchema } from "../../triage-routing/ui/data";
 
 const personSchema = z.object({ id: z.string(), name: z.string() });
 const issueBriefSchema = z.object({
@@ -78,6 +79,8 @@ export const issueDetailSchema = z.object({
   canonical: z.object({identifier:z.string(),title:z.string()}).nullable(),
   duplicates: z.array(z.object({identifier:z.string(),title:z.string()})),
   importedFrom: z.object({source:z.string(),sourceId:z.string(),sourceKey:z.string().optional(),runId:z.string(),unfinished:z.boolean()}).nullable().optional(),
+  // TRIAGE-002: the routing rule and saved revision that placed this item, when one did.
+  routing: routingProvenanceSchema.nullish(),
   evidence: z.array(evidenceSchema),
   decisions: z.array(
     z.object({

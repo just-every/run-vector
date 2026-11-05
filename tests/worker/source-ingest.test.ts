@@ -4,7 +4,7 @@ import {exerciseErrorProviders} from './error-provider-journey';
 import {env} from 'cloudflare:workers';
 import {it,expect} from 'vitest';
 import {setupIntegrations} from './integration-fixture';
-it('[ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe',async()=>{
+it('[TRIAGE-002 ERROR-001 INTAKE-001 INTAKE-002 INTAKE-003 INTAKE-011] signed native source publication and replay are atomic, source-attributed and restart-safe',async()=>{
  const f=await setupIntegrations(),config=await f.source(),input={teamId:f.initial.teams[0].id,title:'Source signal',sourceRecordId:'record-a',sourceRevisionId:'rev-1',observedAt:'2026-10-01T02:00:00.000Z',measurements:{errors:5},assertions:{cause:{value:'Source hypothesis',attribution:'source'}}};
  expect((await f.signed(config,input,{},true)).status).toBe(401);expect((await f.signed(config,{...input,title:''})).status).toBe(400);
  expect((await f.app.request(config.receiver,{method:'POST',body:'untrusted'},(await import('./base-auth-fixture')).bindings)).status).toBe(401);

@@ -24,7 +24,7 @@ import {
   assertSignOut,
   exerciseWorkspaceRoles,
 } from "./admin-access-journey.mjs";
-import { triageResponsibilityJourney, createTeamWorkflow, removeUsedStatus, exerciseTeamRoles, teamCreationPermission, teamJoinPermissions, teamCyclesSettings } from "./admin-team-journey.mjs";
+import { triageResponsibilityJourney, triageRoutingJourney, createTeamWorkflow, removeUsedStatus, exerciseTeamRoles, teamCreationPermission, teamJoinPermissions, teamCyclesSettings } from "./admin-team-journey.mjs";
 import { authorLabel, deleteAppliedLabel, memberLabelCreation } from "./admin-label-journey.mjs";
 import {
   authorProject,
@@ -46,6 +46,9 @@ await mkdir(evidence, { recursive: true });
 await rm(resolve(evidence, "admin-failure-safe.json"), { force: true });
 const temporary = await mkdtemp(resolve(tmpdir(), "vector-admin-"));
 process.env.TMPDIR = temporary;
+// The routing journey's signed Sentry issues read their latest event from sentry.io,
+// which this Worker reaches only through the synthetic network edge.
+process.env.VECTOR_CHANNEL_EDGE ??= resolve(temporary, "provider-edge.jsonl");
 const requestDiagnostics = createAdminRequestDiagnostics();
 const results = [],
   checks = [],
@@ -143,6 +146,7 @@ await contract(
           await teamJoinPermissions({ ...shared, ...roles, evidence });
           await exerciseAuditAccess({ ...shared, ...roles });
           await teamCyclesSettings({ ...shared, ...roles, evidence });
+          await triageRoutingJourney({ ...shared, ...roles, evidence });
         } finally {
           await roles.context.close();
         }

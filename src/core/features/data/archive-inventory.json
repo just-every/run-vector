@@ -618,7 +618,8 @@
     "updated_at",
     "archived_at",
     "milestone_id",
-    "start_date"
+    "start_date",
+    "triage_route_json"
   ],
   "labels": [
     "id",
@@ -2245,6 +2246,16 @@
     "defaults_json",
     "subissues_json",
     "version",
+    "created_at",
+    "updated_at"
+  ],
+  "triage_routing_configs": [
+    "workspace_id",
+    "scope_key",
+    "team_id",
+    "version",
+    "configured_by",
+    "rules_json",
     "created_at",
     "updated_at"
   ]

@@ -1,3 +1,4 @@
+import {sourceIssueCustody} from '../../triage-routing/custody';
 import seed from '../../../../../seed.json';
 import {erasedSourceIdentity} from '../source-identity';
 import {requireSourceAdmission} from '../source-admission';
@@ -39,8 +40,8 @@ export async function receiveError(env:WorkerBindings,request:Request,provider:s
  await requireSourceAdmission(env.DB,admission);
  const prior=await storedSourceResult(env.DB,source,input,hash);if(prior){await requireSourceAdmission(env.DB,admission);return prior;}
  // Sentry signs the body, not Request-ID: captured bodies remain replays even with a changed header.
- const repeated=await env.DB.prepare('SELECT r.evidence_id,i.identifier FROM vector_source_receipts r LEFT JOIN issues i ON i.id=r.issue_id WHERE r.source_id=? AND r.payload_hash=? LIMIT 1').bind(source.id,hash).first<{evidence_id:string;identifier:string|null}>();
- if(repeated){await requireSourceAdmission(env.DB,admission);if(!repeated.identifier)throw new IntegrationError(410,'source_issue_deleted');return {identifier:repeated.identifier,evidenceRevisionId:repeated.evidence_id,reused:true};}
+ const repeated=await env.DB.prepare('SELECT r.issue_id,r.evidence_id,i.identifier FROM vector_source_receipts r LEFT JOIN issues i ON i.id=r.issue_id WHERE r.source_id=? AND r.payload_hash=? LIMIT 1').bind(source.id,hash).first<{issue_id:string;evidence_id:string;identifier:string|null}>();
+ if(repeated){await requireSourceAdmission(env.DB,admission);if(!repeated.identifier)throw new IntegrationError(410,'source_issue_deleted');await sourceIssueCustody(env.DB,source,repeated.issue_id);return {identifier:repeated.identifier,evidenceRevisionId:repeated.evidence_id,reused:true};}
 
  const removed=await env.DB.prepare('SELECT 1 FROM vector_source_records r WHERE r.source_id=? AND ((r.erased=0 AND r.record_id=?) OR (r.erased=1 AND r.record_id=?)) AND NOT EXISTS(SELECT 1 FROM issues i WHERE i.id=r.issue_id)').bind(source.id,input.sourceRecordId,await erasedSourceIdentity(input.sourceRecordId)).first();if(removed)throw new IntegrationError(410,'source_issue_deleted');
  if(provider==='sentry'){

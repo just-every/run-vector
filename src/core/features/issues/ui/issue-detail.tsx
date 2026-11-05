@@ -4,6 +4,7 @@ import { useDateFormat } from "../../../shared/date-format";
 import "./detail-context.css";
 import { IssueReferencesProvider } from '../../issue-references/ui/context';
 import { IssueActivityTitle } from '../../issue-references/ui/activity';
+import { RoutedBy } from '../../triage-routing/ui/routed-by';
 import {IssueReleases} from '../../releases/ui/releases';
 import { IssueCopyAction } from "../../issue-copy/ui";
 import { Subissues } from "../../subissues/ui/subissues";
@@ -207,6 +208,7 @@ function IssueInspector({
             ) : null}
           </div>
           <h1 id="issue-title">{issue.title}</h1>
+          {issue.routing ? <RoutedBy routing={issue.routing} /> : null}
           {issue.archivedAt && (
             <p className="issue-archived-notice" role="note">
               Archived {formatInstant(issue.archivedAt)}. It is left out of lists and default search; choosing another status brings it back.

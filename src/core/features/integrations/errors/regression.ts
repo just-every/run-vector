@@ -3,8 +3,8 @@ import {followerChangeStatements,blockerStatements,finalizeEvent} from '../../no
 import {IntegrationError} from '../errors';
 export async function regressionStatements(db:D1Database,issueId:string,source:{name:string;team_id:string},rule:string,actor:string,regression:boolean,at:string){
  if(!regression||rule==='ignore')return [];
- const issue=await db.prepare('SELECT i.version,i.status_id AS statusId,i.team_id AS teamId,s.category FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE i.id=?').bind(issueId).first<{version:number;statusId:string;teamId:string;category:string}>();
- if(!issue||issue.teamId!==source.team_id||['canceled','duplicate'].includes(issue.category))return [];
+ const issue=await db.prepare('SELECT i.version,i.status_id AS statusId,i.team_id AS teamId,i.triage_route_json AS routing,s.category FROM issues i JOIN workflow_statuses s ON s.id=i.status_id WHERE i.id=?').bind(issueId).first<{version:number;statusId:string;teamId:string;routing:string|null;category:string}>();
+ if(!issue||(issue.teamId!==source.team_id&&!issue.routing)||['canceled','duplicate'].includes(issue.category))return [];
  const guard=db.prepare("SELECT CASE WHEN EXISTS(SELECT 1 FROM issues WHERE id=? AND version=?) THEN 1 ELSE json('error issue changed') END").bind(issueId,issue.version);
  const id=createUlid(new Date(at)),event={id,issueId,actor:null,actorName:source.name,at};
  if(rule==='comment'){

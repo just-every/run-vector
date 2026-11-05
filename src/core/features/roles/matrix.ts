@@ -60,6 +60,8 @@ export const matrix = {
   'labels.manage': row('Rename, recolor, merge or delete a workspace label (ISSUE-014)', 'yes', 'yes', 'no', 'no'),
   'intake.create': row('Create an intake item by hand or submit a request form (INTAKE-001, TRIAGE-004)', 'yes', 'yes', 'yes', 'invited-teams'),
   'intake.decide': row('Accept, defer, end a deferral or decline an intake item (INTAKE-005, INTAKE-006, INTAKE-007)', 'yes', 'yes', 'teams', 'no'),
+  'triage-routing.workspace': row('Create or change workspace-wide routing rules (TRIAGE-002)', 'yes', 'yes', 'no', 'no'),
+  'triage-routing.team': row('Set a team\'s triage responsibility, routing rules, request forms and email intake (TRIAGE-001, TRIAGE-002, TRIAGE-004, TRIAGE-005)', 'yes', 'yes', 'team-setting', 'no'),
   'sources.manage': row('Register, rotate or revoke a signal source and its signing secret (INTAKE-011)', 'yes', 'yes', 'no', 'no'),
   'issue-templates.workspace': row('Create, edit or delete workspace issue and project templates (ISSUE-016, PROJ-012)', 'yes', 'yes', 'no', 'no'),
   'issue-templates.team': row('Create, edit or delete a team\'s issue and project templates (ISSUE-016, PROJ-012)', 'yes', 'yes', 'planning-setting', 'no'),

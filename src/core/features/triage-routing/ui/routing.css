@@ -1,0 +1,12 @@
+/* Intake routing reuses the team workflow rows; only its order number and inline team choice are its own. */
+.routing-heading { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.75rem; }
+.routing-rules .row-main { flex: 1; min-width: 0; }
+.routing-position { flex: none; min-width: 1.25rem; color: var(--app-body); font-variant-numeric: tabular-nums; }
+.routing-retarget { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.5rem 1rem; margin: 0 0 0.75rem 2.75rem; }
+.routing-retarget .field { flex: 1; min-width: 11rem; max-width: 22rem; }
+.issue-routed-by { margin: 0.35rem 0 0; font-size: var(--app-text-small); line-height: 1.45; color: var(--app-body); overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .routing-retarget { margin-left: 0; }
+}
+/* On Settings → Workspace the rules are their own section below the workspace fields. */
+.profile-body > .routing-rules { padding: 1.5rem 0 0; border-top: 1px solid var(--app-line); border-bottom: 0; }

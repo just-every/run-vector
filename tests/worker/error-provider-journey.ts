@@ -1,3 +1,5 @@
+import {triageRoutingJourney} from './triage-routing-journey';
+import type {WorkerBindings} from '../../src/core/app/bindings';
 import {env} from 'cloudflare:workers';
 import {expect,vi} from 'vitest';
 import {bindings,request,invite} from './base-auth-fixture';
@@ -10,16 +12,16 @@ export async function exerciseErrorProviders(f:Awaited<ReturnType<typeof setupIn
  network.mockImplementation(async(input,init)=>{
   const url=String(input),body=JSON.parse(String(init?.body??'{}')),headers=new Headers(init?.headers);expect(init?.redirect).toBe('manual');calls.push({url,body,headers});
   if(/^https:\/\/sentry\.io\/api\/0\/issues\/[0-9]+\/events\/latest\/$/.test(url)){expect(init?.method).toBe('GET');expect(headers.get('Authorization')).toBe('Bearer '+token);return Response.json({release:{version:'synthetic-vector-8103'}});}
-  if(url==='https://sentry.io/api/0/issues/8101/'){expect(init?.method).toBe('PUT');expect(headers.get('Authorization')).toBe('Bearer '+token);expect(body).toEqual({status:'resolved'});return Response.json({status:'resolved'});}
+  if(/^https:\/\/sentry\.io\/api\/0\/issues\/[0-9]+\/$/.test(url)){expect(init?.method).toBe('PUT');expect(headers.get('Authorization')).toBe('Bearer '+token);expect(body).toEqual({status:'resolved'});return Response.json({status:'resolved'});}
   if(url.startsWith('https://api.datadoghq.com/api/v1/integration/webhooks/configuration/webhooks')){expect(headers.get('DD-API-KEY')).toBe(token);expect(headers.get('DD-APPLICATION-KEY')).toBe(secret);registered=body;return Response.json({});}
   throw Error('Unexpected error-provider request');
  });
  try{
  const connection=await read(await f.call('/settings/integrations/errors','POST',{provider:'sentry',teamId:team.id,regressionRule:'reopen',token,secret}),201);
  const payload=(action='created',substatus='ongoing')=>({action,data:{issue:{id:'8101',title:'Checkout error',permalink:'https://sentry.io/organizations/synthetic-vector/issues/8101/',count:'17',userCount:4,lastSeen:'2026-10-28T00:00:00Z',substatus,metadata:{value:'Checkout stack trace'}}}});
- const send=async(value:unknown,delivery:string,tamper=false)=>{
+ const send=async(value:unknown,delivery:string,tamper=false,overrides:Partial<WorkerBindings>={})=>{
   const body=JSON.stringify(value),key=await crypto.subtle.importKey('raw',new TextEncoder().encode(secret),{name:'HMAC',hash:'SHA-256'},false,['sign']),signature=Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',key,new TextEncoder().encode(body))),byte=>byte.toString(16).padStart(2,'0')).join('');
-  return f.app.request(connection.receiver,{method:'POST',headers:{'Content-Type':'application/json','Sentry-Hook-Signature':signature,'Sentry-Hook-Resource':'issue','Request-ID':delivery},body:tamper?body+' ':body},bindings);
+  return f.app.request(connection.receiver,{method:'POST',headers:{'Content-Type':'application/json','Sentry-Hook-Signature':signature,'Sentry-Hook-Resource':'issue','Request-ID':delivery},body:tamper?body+' ':body},{...bindings,...overrides});
  };
  const beforeForged=(await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results;
  expect((await send(payload(),'synthetic-vector-8104',true)).status).toBe(401);expect((await env.DB.prepare('SELECT * FROM issues ORDER BY id').all()).results).toEqual(beforeForged);
@@ -73,5 +75,6 @@ export async function exerciseErrorProviders(f:Awaited<ReturnType<typeof setupIn
  expect((await read(await f.call('/issues/'+ddIssue.identifier+'/discussion'))).comments).toHaveLength(1);
 
  expect(calls.filter(row=>row.url==='https://sentry.io/api/0/issues/8101/')).toHaveLength(1);
+ await triageRoutingJourney(f,{connection,token,secret,payload,send:(value,delivery,overrides)=>send(value,delivery,false,overrides)});
  }finally{network.mockRestore();}
 }

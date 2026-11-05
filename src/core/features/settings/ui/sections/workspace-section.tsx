@@ -10,6 +10,7 @@ import { SectionPage, Skeleton } from '../shell/section-page';
 import { useSettingsShell } from '../shell/settings-context';
 import { settingsSchema } from '../../schema';
 import { checkZone, timeOptions, timeZones } from './clock-options';
+import { WorkspaceIntakeRouting } from '../../../triage-routing/ui/workspace-routing';
 import './profile.css';
 
 const creators = [{ value: 'admins', label: 'Owners and Admins only' }, { value: 'members', label: 'Members too' }] as const;
@@ -48,6 +49,7 @@ function WorkspaceFields() {
       <SelectField label="Who may create labels" value={admin.workspace.memberLabelCreation ? 'members' : 'admins'} options={creators}
         save={next => put('/api/settings/labels/creation', next === 'members').then(result => administration.publishReceipt(() => result))} />
     </> : <Skeleton />}
+    <WorkspaceIntakeRouting />
   </div>;
 }
 
