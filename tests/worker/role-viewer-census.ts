@@ -1,3 +1,4 @@
+import {bitbucketConfiguration} from '../../src/core/features/integrations/bitbucket/input';
 import {templateInputSchema as issueTemplateInputSchema} from '../../src/core/features/issue-templates/schema';
 import {jsonMediaType} from '../../src/core/features/oauth-apps/media-types';
 import { bucketScheduleInput } from './warehouse-schedule-journey';
@@ -131,6 +132,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
  const order=await call(member,'/issues/order?teamId='+w.team.id);
  const destination=await call(owner,'/settings/integrations/destinations','POST',{name:'synthetic-vector-31031',url:'https://synthetic-vector-31031.example.com/events'});
  const fixtureRepository='synthetic-vector-31032/synthetic-vector-31033',github=await call(owner,'/settings/integrations/github','POST',{name:'synthetic-vector-31032',repository:fixtureRepository});
+ const bitbucketInput=bitbucketConfiguration.parse({name:'synthetic-vector-31083',repository:['synthetic-vector-31083','native'].join('/'),repositoryUuid:'{'+crypto.randomUUID()+'}'});
+ const bitbucket=await call(owner,'/settings/integrations/bitbucket','POST',bitbucketInput);
  const workspace=await env.DB.prepare('SELECT workspace_id FROM operators WHERE id=?').bind(owner.id).first<string>('workspace_id');
  const deliveryId='synthetic-vector-31034',envelope=JSON.stringify({id:deliveryId,tenant:workspace,destinationId:destination.id,event:'issue.created',protocol:'webhook',body:'{}'});
  const digest=async(value:string)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(value))),n=>n.toString(16).padStart(2,'0')).join('');
@@ -215,6 +218,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   native('POST','/views',{name:'synthetic-vector-31066',isShared:true,query:{team:w.team.id}});native('PATCH','/views/:id',{name:'synthetic-vector-31067'},{id:ownView.id});native('DELETE','/views/:id',undefined,{id:ownView.id});native('POST','/views/:id/duplicate',{name:'synthetic-vector-31068'},{id:ownView.id});
   native('POST','/settings/integrations/delivery',{accountId:Array.from(crypto.getRandomValues(new Uint8Array(16)),n=>n.toString(16).padStart(2,'0')).join(''),apiToken:'synthetic-vector-31069-token'});native('POST','/settings/integrations/destinations',{name:'synthetic-vector-31070',url:'https://synthetic-vector-31070.example.com/events'});for(const action of ['test','reenter'])native('POST','/settings/integrations/destinations/:id/'+action,undefined,{id:destination.id});native('DELETE','/settings/integrations/destinations/:id',undefined,{id:destination.id});
   native('PUT','/settings/integrations/destinations/:id/subscriptions',subscriptionInput.parse({events:['comment.created'],teamIds:[w.team.id]}),{id:destination.id});
+  native('POST','/settings/integrations/bitbucket',{...bitbucketInput,repositoryUuid:'{'+crypto.randomUUID()+'}'});native('POST','/settings/integrations/bitbucket/:id/reenter',undefined,{id:bitbucket.id});native('DELETE','/settings/integrations/bitbucket/:id',undefined,{id:bitbucket.id});
   const requestRepository='synthetic-vector-31071/synthetic-vector-31072';native('POST','/settings/integrations/github',{name:'synthetic-vector-31071',repository:requestRepository});native('POST','/settings/integrations/github/:id/reenter',undefined,{id:github.id});native('DELETE','/settings/integrations/github/:id',undefined,{id:github.id});native('POST','/settings/integrations/deliveries/:id/resolve',{kind:'accepted',evidenceCode:'synthetic-vector-31073'},{id:deliveryId});native('POST','/settings/integrations/slack',{botToken:edge.token});native('DELETE','/settings/integrations/slack',undefined);native('POST','/settings/integrations/slack/signing-secret',{signingSecret});native('POST','/settings/integrations/channels',{scope:'project',objectId:project.id,provider:'slack',channelId,channelName:'synthetic-vector-31035',events:['issue.created']});native('DELETE','/settings/integrations/channels/:id',undefined,{id:binding.id});
   const oauthApp=await call(owner,'/settings/oauth-apps','POST',{name:'synthetic-vector-4531',redirectUris:['https://synthetic-vector-4531.example.test/callback'],scopes:['issues:read']});
   const oauthRequest={response_type:'code',client_id:oauthApp.id,redirect_uri:'https://synthetic-vector-4531.example.test/callback',scope:'issues:read',state:'synthetic-vector-4532'};
@@ -234,6 +238,7 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   // Validate the administration/resource family bodies with the same schemas
   // their handlers use, independently of the role gate's early refusal.
   const schemas:Record<string,{parse(input:unknown):unknown}>={
+   'POST /settings/integrations/bitbucket':bitbucketConfiguration,
    'POST /settings/report-exports':createSchedule,
    'PATCH /settings/report-exports/:id':changeSchedule,
    'PUT /settings/teams/creation':administrationInput.teamCreationPermissionSchema,

@@ -2026,7 +2026,7 @@
       "executable": false
     },
     "management/integration/deployment-spec.json": {
-      "sha256": "4f4239cf6ab52b2ae63b0a018d919f074d7641c7d67ac3311a77f90e6537bbf1",
+      "sha256": "97687b108b7eebe7174b84d217c214bcfdba32ee651b1d3fd6ebd4b45f47b74f",
       "executable": false
     },
     "migrations/core/0001_data_spine.sql": {
@@ -6890,7 +6890,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "72f9e8323d0b6ce6f28af9ac7f5a86cc0f6ca18d8a9ee2c0397da56ca1690831",
+      "sha256": "23d9e20df65179960acc8e7316d136be2d7ab0fddf4b43e864ea5c8fd6443f5d",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
@@ -9654,7 +9654,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "9a9985e66183a493e24635f0dc7a3898b4b47501c0bacd28d23b3bf2f0afe608",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
