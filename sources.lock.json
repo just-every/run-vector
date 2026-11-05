@@ -8197,6 +8197,10 @@
       "sha256": "41d797cde965cec59a66e98300058305ab67e594bd7e7e5c195512a80051291e",
       "executable": false
     },
+    "tests/e2e/core-agent-local-pause.mjs": {
+      "sha256": "b3abfd76b9fabe93c726b2a81bdce9faafc0be352b23b4059992363ea42668e1",
+      "executable": false
+    },
     "tests/e2e/core-agent-resource-parity.mjs": {
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
@@ -8322,7 +8326,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "484dbf89c7ff2ce1522bfb1fb06245bae7cbc0b2e7609c3122bf5087ef646d1b",
+      "sha256": "a550eb51618a485d33155b2bf822c4df4c31d61bddaae76231c3de764972036c",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8971,6 +8975,10 @@
     },
     "tests/worker/agent-audit-retention.test.ts": {
       "sha256": "e7009a5cd127d8cab6018ff6fb645059479652d0593e93bf41f38fae0793a6f4",
+      "executable": false
+    },
+    "tests/worker/agent-local-pause.test.ts": {
+      "sha256": "60136fc3bf12b6d5d5bbc8e8545a32a99fb5ab017d4f495fb2bb3237ed4881f1",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {

@@ -1,3 +1,4 @@
+import { agentLocalPauseJourney } from './core-agent-local-pause.mjs';
 import { agentWriteRetryJourney } from './core-agent-write-retry.mjs';
 import { agentRoleParityJourney } from './core-agent-role-parity.mjs';
 import { agentAttributionJourney } from './core-agent-attribution-journey.mjs';
@@ -65,7 +66,7 @@ const root = process.cwd(),
 // CI partitions the independent invited-operator journeys; the public command
 // keeps the complete serial proof. Both partitions retain the shared doors.
 const journeyGroup = process.argv[2] ?? 'all';
-assert.ok(['all', 'current', 'planning', 'projects', 'agent-role-parity'].includes(journeyGroup), 'Unknown runtime journey partition');
+assert.ok(['all', 'current', 'planning', 'projects', 'agent-role-parity', 'agent-local-pause'].includes(journeyGroup), 'Unknown runtime journey partition');
 const ids = {
   sarah: "01J00000000000000000000002",
   flow: "01J00000000000000000000010",
@@ -717,6 +718,10 @@ try {
   if (journeyGroup === 'agent-role-parity') {
     await withInvitedOperator(page, context, base, state, () =>
       agentRoleParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3610');
+  } else if (journeyGroup === 'agent-local-pause') {
+    await withInvitedOperator(page, context, base, state, () =>
+      agentLocalPauseJourney({page, context, base, state, sql, evidence, record,
+        restart: async () => { await stop(); start(); await ready(); }}), 'synthetic-vector-3600');
   } else {
   if (['all', 'current'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => currentDisjointJourney(page, context, base, async (id, name, currentPage) => {
@@ -751,6 +756,9 @@ try {
       streamControlsJourney(page, context, base, record, undefined, [width]), `synthetic-vector-${1921 + Number(width === 390)}`);
   }
   if (['all', 'planning'].includes(journeyGroup)) {
+  await withInvitedOperator(page, context, base, state, () =>
+    agentLocalPauseJourney({page, context, base, state, sql, evidence, record,
+      restart: async () => { await stop(); start(); await ready(); }}), 'synthetic-vector-3600');
   await withInvitedOperator(page, context, base, state, () =>
     agentWriteRetryJourney({page, context, base, state, sql, evidence, record,
       restart: async () => { await stop(); start(); await ready(); }}), 'synthetic-vector-3613');
