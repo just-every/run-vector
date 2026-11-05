@@ -38,12 +38,30 @@ export async function readProjectForecast(db: D1Database, snapshot: WorkspaceSna
     const capacity = capacityByPerson.get(issue.assigneeOperatorId);
     if (capacity != null) capacityByPerson.set(issue.assigneeOperatorId, capacity - (issue.estimate ?? 0));
   }
-  let unknownCapacity = 0, serialDays = 0;
-  for (const issue of work) {
+  const dependents = new Map<string, string[]>(), waiting = new Map<string, number>();
+  for (const id of required) {
+    const before = prerequisites.get(id) ?? [];
+    waiting.set(id, before.length);
+    for (const parent of before) dependents.set(parent, [...(dependents.get(parent) ?? []), id]);
+  }
+  const ready = [...required].filter(id => waiting.get(id) === 0).sort();
+  const ordered: typeof work = [];
+  while (ready.length) {
+    const id = ready.shift()!;
+    ordered.push(byId.get(id)!);
+    for (const child of dependents.get(id) ?? []) {
+      waiting.set(child, waiting.get(child)! - 1);
+      if (waiting.get(child) === 0) ready.push(child);
+    }
+    ready.sort();
+  }
+  const offset = (date: string | null) => date ? Math.max(0, (Date.parse(date) - Date.parse(today)) / 86400000) : 0;
+  let unknownCapacity = 0, serialDays = offset(project.startDate);
+  for (const issue of ordered) {
     const person = snapshot.operators.find(p => p.id === issue.assigneeOperatorId && p.removedAt === null);
     const capacity = person ? capacityByPerson.get(person.id) : null;
     if (capacity == null || capacity <= 0) unknownCapacity++;
-    else serialDays += (issue.estimate ?? 0) * 28 / capacity;
+    else serialDays = Math.max(serialDays, offset(issue.startDate)) + Math.max(1e-6, (issue.estimate ?? 0) * 28 / capacity);
   }
   const daily = Array.from({ length: 28 }, () => 0);
   for (const issue of issues) {
@@ -61,6 +79,7 @@ export async function readProjectForecast(db: D1Database, snapshot: WorkspaceSna
   if (unestimated) reasons.push("unestimated-work");
   if (unknownCapacity) reasons.push("unknown-or-zero-capacity");
   if (unestimatedCompeting) reasons.push("unestimated-competing-work");
+  if (ordered.length !== work.length) reasons.push("inconsistent-dependencies");
   let status: ProjectForecast["status"] = "insufficient-evidence";
   let dates: ProjectForecast["dates"] = { p50: null, p85: null };
   if (project.archivedAt || ["completed", "canceled"].includes(project.lifecycle)) status = "inactive";
@@ -85,7 +104,7 @@ export async function readProjectForecast(db: D1Database, snapshot: WorkspaceSna
       "Each of the last 28 closed workspace days is equally likely on each future day, independently. Zero days are retained. Currently Completed issues use their latest completion, as in Insights; reopening withdraws delivery. Today is excluded.",
       "Exact convolution gives the first calendar day with at least 50% or 85% modeled completion probability. These are conditional model quantiles, not calibrated guarantees.",
       "Known estimates and positive, active-assignee capacity for the exact upcoming 28-day Workload date range are required. Visible Workload commitments outside this scope consume capacity; unestimated commitments withhold dates. Work outside that date range and future scope changes are not assumed.",
-      "Remaining capacity is spread uniformly. All required work is conservatively serialized, including prerequisites before dependents; shared prerequisites count once. No additional start-date or scheduling commitments are proposed.",
+      "Remaining capacity is spread uniformly. All required work is conservatively serialized, prerequisites before dependents and ready work by stable identity; shared prerequisites count once. Existing project and issue start dates are respected. Zero-point work still requires a completion slot.",
       "The result is the slower of modeled throughput and serial capacity time. No dates beyond that capacity interval, no individual ranking, no chosen plan, and no agent or provider production are claimed.",
     ],
   });

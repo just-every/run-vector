@@ -102,6 +102,14 @@ export async function projectForecastJourney() {
   await capacity(14);
   expect((await detail()).forecast.dates).toEqual(reference(3, 13 / 28, 12));
   await capacity(28);
+  await patch(work[1].identifier, { assigneeOperatorId: f.bob });
+  expect((await detail()).forecast.scope.unknownCapacity).toBe(1);
+  expect((await f.any(f.bobCookie, "/workload" + query, "PUT", { capacity: 7, expectedVersion: 0 })).status).toBe(200);
+  expect((await detail()).forecast.dates).toEqual(reference(3, 13 / 28, 12));
+  await patch(work[1].identifier, { assigneeOperatorId: f.owner });
+  await f.mutate("/settings/projects/" + project.id, "PATCH", { startDate: "2026-09-20" });
+  expect((await detail()).forecast.dates).toEqual({ p50: "2026-09-25", p85: "2026-09-25" });
+  await f.mutate("/settings/projects/" + project.id, "PATCH", { startDate: null });
   const competing = await create({ projectId: null, dueDate: "2026-09-14", estimate: 14 });
   forecast = (await detail()).forecast;
   expect(forecast.capacityWindow).toMatchObject({ competingPoints: 14, serialDays: 12 });

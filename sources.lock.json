@@ -713,6 +713,10 @@
       "sha256": "d775b7d37759513414737ba7e825b277968a2492483f881e7f1514307df20e7a",
       "executable": false
     },
+    "docs/PROJECT-FORECASTS.md": {
+      "sha256": "ec306f9c09289ebbef30d2df880f72a226190cf2dc1f13bdf8c516c74742bb56",
+      "executable": false
+    },
     "docs/retained-verification/ui/1440-app.png": {
       "sha256": "2ed915f0e7da154d5af588cbf763abca616fec96ab5944ebbb68e06de85e6159",
       "executable": false
@@ -6578,7 +6582,7 @@
       "executable": false
     },
     "src/core/features/project-forecasts/read.ts": {
-      "sha256": "804dea08bf9e291eb24a88f8b817adef2c65159ea1ee286801e2d692953d2bf5",
+      "sha256": "473b8025b4a77cf71842e44b82bc344302ae905c8d8af271cae9bc1a8dfac1c2",
       "executable": false
     },
     "src/core/features/project-forecasts/schema.ts": {
@@ -9522,7 +9526,7 @@
       "executable": false
     },
     "tests/worker/project-forecast-scenario.ts": {
-      "sha256": "af0997b2cee692106f9bdd622a99b56a9b6b853614202dd9b87caaef89a4f448",
+      "sha256": "dcb0a07b148f3d8a73813f25abf82e11a335a2a4ec9a2b04d7c076ca85aaee3f",
       "executable": false
     },
     "tests/worker/project-health.test.ts": {
