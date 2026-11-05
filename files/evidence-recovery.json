@@ -1,0 +1,25 @@
+{
+  "repository": "just-every/run-vector",
+  "ref": "refs/heads/evidence/sd-vector-c-f186",
+  "productHead": "2371bdcf722a50ac9148bd5c18c3f98ebf2affcf",
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "rejected",
+      "http": "unknown",
+      "message": "Git push failed exit=1"
+    },
+    {
+      "attempt": 2,
+      "result": "rejected",
+      "http": "unknown",
+      "message": "fatal error in commit_refs_rules"
+    },
+    {
+      "attempt": 3,
+      "result": "published",
+      "head": "28b0d6f61a68f92f0e33f30678be6a58f97a472b"
+    }
+  ],
+  "bundleRefreshAndFleetGitSetupRepeated": true
+}
