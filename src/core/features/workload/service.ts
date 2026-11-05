@@ -8,6 +8,11 @@ import {
 } from "../administration/transaction";
 import { workloadSchema, type WorkloadQuery } from "./schema";
 
+export async function readWorkloadCapacities(db: D1Database, workspace: string, scope: string) {
+  return (await db.prepare("SELECT operator_id,capacity,version FROM workload_capacities WHERE workspace_id=? AND scope_key=?")
+    .bind(workspace, scope).all<{ operator_id: string; capacity: number | null; version: number }>()).results;
+}
+
 async function scopeFor(db: D1Database, actor: string, query: WorkloadQuery) {
   const { workspace_id: workspace } = await settingsActor(db, actor);
   const timezone = await db
@@ -54,12 +59,7 @@ export async function readWorkload(
       )
       .bind(scope.workspace,actor)
       .all<{ id: string; name: string }>(),
-    db
-      .prepare(
-        "SELECT operator_id,capacity,version FROM workload_capacities WHERE workspace_id=? AND scope_key=?",
-      )
-      .bind(scope.workspace, scope.key)
-      .all<{ operator_id: string; capacity: number | null; version: number }>(),
+    readWorkloadCapacities(db, scope.workspace, scope.key),
     db
       .prepare(
         `SELECT i.identifier,i.title,i.estimate,i.assignee_operator_id FROM issues i JOIN workflow_statuses s ON s.id=i.status_id JOIN teams t ON t.id=i.team_id WHERE t.workspace_id=? AND ${scope.where} AND s.category NOT IN ('canceled','duplicate') ORDER BY i.identifier`,
@@ -82,7 +82,7 @@ export async function readWorkload(
     const assigned = issues.results.filter(
       (issue) => issue.assignee_operator_id === person.operatorId,
     );
-    const saved = capacities.results.find(
+    const saved = capacities.find(
       (row) => row.operator_id === person.operatorId,
     );
     const points = assigned.reduce((n, issue) => n + (issue.estimate ?? 0), 0);
