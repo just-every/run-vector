@@ -1,3 +1,4 @@
+import {releaseNotesHttpJourney} from './release-notes-http-journey.mjs';
 import { withOperatorClient } from './operator-request.mjs';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import assert from 'node:assert/strict';
@@ -14,6 +15,7 @@ const res=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data
 });};
  try{
  const settings=await call('/settings/administration'),team=settings.teams.find(t=>!t.archivedAt),done=team.statuses.find(s=>s.category==='completed'),owner=(await call('/session')).operatorId;
+ await releaseNotesHttpJourney({call,team,done,owner});
  let memberFixture;
  // Viewports share one real Member; restore its role through the public Owner door.
  for(const width of [1440,390]){

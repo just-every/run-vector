@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a6cbe19263bc3e02f532013b411927181c5cadf9b9517f158b412da823824260",
+      "sha256": "37bf3fe526037153c79c1a6930e307dd67519b164bedcf5a2fedb9da5c2db6d7",
       "executable": false
     },
     "DEMO.md": {
@@ -8733,8 +8733,12 @@
       "sha256": "9a16e031320c8ed1dcda95d13187527b43ff84908aab116ecfdfafe3e3551d00",
       "executable": false
     },
+    "tests/e2e/release-notes-http-journey.mjs": {
+      "sha256": "692fe983fa9f8154d6b589926a993e0d192d7572ba59d991a276bd57254880e1",
+      "executable": false
+    },
     "tests/e2e/releases-journey.mjs": {
-      "sha256": "971299e1b491b9d8e2d4ef95e6a44a066c9163a49fcae80052312a0cce93be23",
+      "sha256": "b3ea63aa9aa457d05ae85c53c5292286ed45427c8505ff0257fcced91da62b14",
       "executable": false
     },
     "tests/e2e/removal-runtime-support.mjs": {
