@@ -157,6 +157,9 @@ export function probes(w: Workspace): Record<RowId, Probe> {
     "cycles.commit": { outside: true,
       session: async (_who, actor, id) => { const target = await issue(id), cycleId = await openCycle(id); return () => actor.call(`/issues/${target.identifier}`, "PATCH", { expectedVersion: target.version, cycleId }); },
       api: async (_who, actor, id) => { const target = await issue(id), cycleId = await openCycle(id); return () => actor.api(`/issues/${target.identifier}`, "PATCH", { expectedVersion: target.version, cycleId }); } },
+    "projects.dependencies": {
+      session: async (_who, actor) => { const blocked=await project(),blocking=await project(); return () => actor.call(`/projects/${blocked}/dependencies/${blocking}`, "PUT"); },
+      api: async (_who, actor) => { const blocked=await project(),blocking=await project(); return () => actor.api(`/projects/${blocked}/dependencies/${blocking}`, "PUT"); } },
     "projects.write": {
       session: async (_who, actor) => () => actor.call("/settings/projects", "POST", { name: `Created project ${unique()}`, leadOperatorId: actor.id }),
       api: async (_who, actor) => () => actor.api("/projects", "POST", { name: `Created project ${unique()}`, leadOperatorId: actor.id }) },

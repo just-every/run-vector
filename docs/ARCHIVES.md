@@ -125,3 +125,10 @@ Keep the additive columns, tables and validation guards on a compatible-source
 rollback; never reverse an applied migration. `tests/worker/data-http.test.ts`
 restores populated planning fields through the authenticated HTTP archive door;
 `tests/worker/project-fields-upgrade.test.ts` covers populated upgrades.
+
+
+Migration `0126_project_dependencies.sql` adds direct project edges and native
+project Inbox receipts without changing applied migrations or issue snapshots.
+These are portable domain records with the same project and activity identities.
+Restore retains them without deriving links from issue dependencies or replaying
+lead notices. Keep the additive tables on a compatible application rollback.

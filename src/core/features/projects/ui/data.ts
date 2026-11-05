@@ -70,6 +70,10 @@ export const projectPortfolioSchema = z.object({
 });
 
 export const projectDetailSchema = projectSummarySchema.extend({
+  directDependencies: z.object({
+    blockedBy:z.array(z.object({id:z.string(),project:personSchema})),
+    blocking:z.array(z.object({id:z.string(),project:personSchema})),
+  }),
   milestones: z.array(z.object({
     id: z.string(), projectId: z.string(), name: z.string(), description: z.string(),
     targetDate: z.string().nullable(), position: z.number(), completed: z.boolean(),

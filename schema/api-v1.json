@@ -4969,6 +4969,138 @@
           }
         }
       }
+    },
+    "/projects/{id}/dependencies/{blockingId}": {
+      "put": {
+        "operationId": "project_dependency_set",
+        "summary": "set a direct project blocker",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "projects:write"
+        ],
+        "x-object": "projects",
+        "x-operation": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          },
+          {
+            "name": "blockingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "project_dependency_remove",
+        "summary": "remove a direct project blocker",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "x-scopes": [
+          "projects:write"
+        ],
+        "x-object": "projects",
+        "x-operation": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          },
+          {
+            "name": "blockingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9A-HJKMNP-TV-Z]{26}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Native result; see docs/API.md"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "401": {
+            "description": "Token authority refused"
+          },
+          "403": {
+            "description": "Origin or native permission refused"
+          },
+          "404": {
+            "description": "Resource unavailable"
+          },
+          "409": {
+            "description": "Stale state or invalidated cursor"
+          },
+          "429": {
+            "description": "Token rate limit",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until the next minute"
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
