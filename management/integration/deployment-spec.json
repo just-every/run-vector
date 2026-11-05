@@ -760,6 +760,12 @@
       "name": "0125_issue_templates.sql",
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "sql": "-- Native templates are portable content. Applying one creates independent issues.\nCREATE TABLE issue_templates (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL,\n  defaults_json TEXT NOT NULL CHECK(json_valid(defaults_json)),\n  subissues_json TEXT NOT NULL CHECK(json_valid(subissues_json)),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE INDEX issue_templates_workspace_idx ON issue_templates(workspace_id,team_id,name,id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0126_custom_field_definitions.sql",
+      "sha256": "a35d44097182cdf275ef9c77f8bc4d2b43a50fa400b062831dc6bd1b8c2fc393",
+      "sql": "-- FIELD-001: typed custom-field definitions and their single-select options.\n-- Issue values stay in issues.custom_fields_json, keyed by definition ID with the\n-- option ID as the value. Legacy untyped keys and historical values are retained\n-- unchanged; nothing here rewrites an existing issue.\nCREATE TABLE custom_field_definitions (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),\n  description TEXT NOT NULL DEFAULT '' CHECK(length(description) <= 2000),\n  type TEXT NOT NULL CHECK(type IN ('text','number','single_select','multi_select','date','person','url','checkbox')),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\n-- A name is unique within its team, whatever its letter case.\nCREATE UNIQUE INDEX custom_field_definitions_team_name ON custom_field_definitions(team_id,name COLLATE NOCASE) WHERE team_id IS NOT NULL;\nCREATE TABLE custom_field_options (\n  id TEXT PRIMARY KEY,\n  field_id TEXT NOT NULL REFERENCES custom_field_definitions(id),\n  name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 120),\n  position INTEGER NOT NULL CHECK(position>=0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE UNIQUE INDEX custom_field_options_name ON custom_field_options(field_id,name COLLATE NOCASE);\nCREATE UNIQUE INDEX custom_field_options_position ON custom_field_options(field_id,position);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
