@@ -1,3 +1,4 @@
+import { googleResponse } from '../auth/google-provider.server'
 import { readGoogleSettings, saveGoogleSettings, enableGoogle } from '../auth/google-settings'
 import { AuthError } from "../../../../vendor/base/operator-auth/index.mjs";
 import { invitationDatabase } from "./invitation-database";
@@ -20,6 +21,7 @@ import { readAppearance, updateAppearance } from "./appearance";
 import { appearanceSchema } from "./appearance-schema";
 
 export function addSettingsRoutes(app: Hono<AppEnvironment>) {
+  app.post('/settings/sign-in/google/test', async c => await googleResponse(c.env,new Request(c.env.APP_ORIGIN+'/auth/oidc/google/test',c.req.raw)) ?? c.notFound())
   app.get('/settings/sign-in/google', async c => c.json(await readGoogleSettings(c.env,c.req.raw)))
   app.put('/settings/sign-in/google', async c => c.json(await saveGoogleSettings(c.env,c.req.raw,await readRequestJson(c.req.raw))))
   app.post('/settings/sign-in/google/enabled', async c => c.json(await enableGoogle(c.env,c.req.raw,await readRequestJson(c.req.raw))))

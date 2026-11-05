@@ -30,7 +30,7 @@ function GoogleFields() {
       <div className="field"><label htmlFor={id+'-secret'}>Google client secret</label><input id={id+'-secret'} type="password" value={secret} onChange={e=>setSecret(e.target.value)} required maxLength={4096} autoComplete="new-password" disabled={!hydrated||busy} /></div>
       <div><button className="button-quiet" type="submit" disabled={!hydrated||busy}>{busy?'Saving…':'Save Google client'}</button></div>
     </form>
-    {data.configured&&!data.enabled&&<form method="post" action="/auth/oidc/google/test"><button className="button-quiet" type="submit">Test Google sign-in</button></form>}
+    {data.configured&&!data.enabled&&<form method="post" action="/api/settings/sign-in/google/test"><button className="button-quiet" type="submit">Test Google sign-in</button></form>}
     {data.tested&&<p role="status">Google test sign-in passed.</p>}
     {data.configured&&<SwitchField label="Offer Google sign-in" value={data.enabled} hint={data.tested?undefined:'Complete a test sign-in first.'} save={async enabled=>{
       const next=await fetchJson('/api/settings/sign-in/google/enabled',googleSettingsSchema,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({enabled})})

@@ -33,7 +33,7 @@ export async function googleSignInJourney(ownerCookie:string) {
     expect(JSON.stringify(settings)).not.toContain(edge.clientSecret)
     expect((await call(configPath+'/enabled','POST',ownerCookie,{enabled:true})).status).toBe(409)
     const begin=async(test=false,cookie='')=>{
-      const response=await call('/auth/oidc/google/'+(test?'test':'start'),'POST',cookie,{returnTo:'/app'})
+      const response=await call((test?'/api/settings/sign-in/google/test':'/auth/oidc/google/start'),'POST',cookie,{returnTo:'/app'})
       expect(response.status).toBe(303)
       return {location:response.headers.get('location')!,cookie:[cookie,response.headers.get('set-cookie')!.split(';')[0]].filter(Boolean).join('; ')}
     }

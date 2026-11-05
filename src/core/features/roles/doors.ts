@@ -142,6 +142,7 @@ export const doors: Door[] = [
   {method:'DELETE',path:'/subscriptions/:id',row:null,page:'account',workMutation:true},
   { method: 'GET', path: '/settings/sign-in/google', row: 'signin.manage' },
   { method: 'PUT', path: '/settings/sign-in/google', row: 'signin.manage' },
+  { method: 'POST', path: '/settings/sign-in/google/test', row: 'signin.manage' },
   { method: 'POST', path: '/settings/sign-in/google/enabled', row: 'signin.manage' },
   { method: 'GET', path: '/project-templates', row: 'work.read' },
   { method: 'GET', path: '/project-templates/:id', row: 'work.read' },

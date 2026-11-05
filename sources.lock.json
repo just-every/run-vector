@@ -6862,7 +6862,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "8ac7ccb858f598125b684c9e84010d97c7f3469ca3c1a8f3d15ba0de1ea65216",
+      "sha256": "30615593d7a7edd0b56d8a4016204b42f54cccec33929809e51f6aa8579074ac",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -6878,7 +6878,7 @@
       "executable": false
     },
     "src/core/features/roles/settings-doors.ts": {
-      "sha256": "72f9e8323d0b6ce6f28af9ac7f5a86cc0f6ca18d8a9ee2c0397da56ca1690831",
+      "sha256": "5ed0f3d987bbf358605f3da19244c04a9412c3a967ae93fc5da382c269375b09",
       "executable": false
     },
     "src/core/features/roles/visibility-database.ts": {
@@ -6990,7 +6990,7 @@
       "executable": false
     },
     "src/core/features/settings/routes.ts": {
-      "sha256": "e27cd92f1be101ba11b1cdb3f8933fddff36075616fdbe2fb13809ad3d7fc74c",
+      "sha256": "0060a128948589cb3dfd6e438359d3ab07e46e93ec04952d9b8431e0cc1ef8e4",
       "executable": false
     },
     "src/core/features/settings/schema.ts": {
@@ -7186,7 +7186,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/sections/sign-in-section.tsx": {
-      "sha256": "cc027f058df9162deaba6b97d059daa04f56ec224e2e268286c6dcc607f0ff0a",
+      "sha256": "660a87edc57a0de16e3f0c3a875b608c9f921060aff9ea95471d35eccace7a70",
       "executable": false
     },
     "src/core/features/settings/ui/sections/teams-section.tsx": {
@@ -9286,7 +9286,7 @@
       "executable": false
     },
     "tests/worker/google-signin-journey.ts": {
-      "sha256": "02caf14a80b2c1178696b1caa0e29796a9e809b007d11ced5596507c7e1c93b9",
+      "sha256": "f0d167e2aa0072fd66daf38c7d1ec170fe980bb9e8745093101021b6bb85153b",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {
@@ -9642,7 +9642,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "a388f31dbc6efb9c2217d995e92ab27d1d4592887af88c4edb72eb1c32b7780a",
+      "sha256": "b65402ad64485a48c3230b6d9a38c0d31a8976963b05eecbcf174d1a19247adb",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {
