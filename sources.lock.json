@@ -8977,10 +8977,6 @@
       "sha256": "e7009a5cd127d8cab6018ff6fb645059479652d0593e93bf41f38fae0793a6f4",
       "executable": false
     },
-    "tests/worker/agent-local-pause.test.ts": {
-      "sha256": "60136fc3bf12b6d5d5bbc8e8545a32a99fb5ab017d4f495fb2bb3237ed4881f1",
-      "executable": false
-    },
     "tests/worker/agent-native-attribution.test.ts": {
       "sha256": "c17987cf2e4b42fd036240f14b6ed24ad3a1f82d2b4b251b76574b6b849e516a",
       "executable": false
@@ -8998,7 +8994,7 @@
       "executable": false
     },
     "tests/worker/agent-write-retry.test.ts": {
-      "sha256": "d96b2cc91f82b36be968e80ced0b1414b6c021ceeadf6d655b529f6eedf4b432",
+      "sha256": "7ef08601778847dfe43c76224b7a9894a22df9470181d0ce934064b53c987da7",
       "executable": false
     },
     "tests/worker/api-rate-limit.test.ts": {
