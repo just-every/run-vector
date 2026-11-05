@@ -1,6 +1,6 @@
 /* A team's custom fields, laid out like its workflow statuses. */
 .team-fields { display: grid; gap: 1.5rem; }
-.custom-field { display: grid; gap: 0.25rem; padding-bottom: 1rem; border-bottom: 1px solid var(--app-line); }
+.custom-field { display: grid; gap: 0.25rem; }
 .custom-field-name { flex: 1; overflow-wrap: anywhere; }
 .custom-field .status-rows { margin-left: 1rem; }
 .add-field-options { display: grid; gap: 0.5rem; }
