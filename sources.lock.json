@@ -8818,7 +8818,7 @@
       "executable": false
     },
     "tests/e2e/subscriptions-journey.mjs": {
-      "sha256": "aa57a8c9f06fe8542473e9083c954b21cbb0dc3c6d913f2a2eed7b021f028ddd",
+      "sha256": "f96c0458aef279e4f6e1bdb405878303383a135a5e6862ae5b12ed023f62451c",
       "executable": false
     },
     "tests/e2e/team-cycles-journey.mjs": {
