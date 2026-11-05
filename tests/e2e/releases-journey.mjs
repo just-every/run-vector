@@ -1,4 +1,5 @@
 import { withOperatorClient } from './operator-request.mjs';
+import {releaseNotesJourney} from './release-notes-journey.mjs';
 import {openAuthenticatedPage} from './ui-runtime-auth.mjs';
 import assert from 'node:assert/strict';
 import {createHmac,randomUUID} from 'node:crypto';
@@ -19,6 +20,8 @@ const res=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data
  for(const width of [1440,390]){
   await page.setViewportSize({width,height:1000});
   const inspect=async(region,name)=>{await capture(page,region,name+'-'+width);await page.setViewportSize({width,height:1000});};
+  // RELEASE-003: the owner's internal notes on a new release, then a Member's read-only view below.
+  const notes=await releaseNotesJourney({page,base,call,team,done,owner,width,inspect});
   await navigate(page,base+'/app/settings/developers');
   const panel=page.locator('#integrations');
   await panel.getByLabel('Token name',{exact:true}).fill('synthetic-vector-1750-'+width);
@@ -79,7 +82,10 @@ const res=await client.fetch(base+'/api'+path,{method,headers:{Origin:base},data
   const memberShare=await runtime.req('/app/releases/'+release.id+'?readOnly=1',{redirect:'follow',headers:guestHeaders});assert.equal(memberShare.status,200);await memberShare.body.cancel();
   const memberPage=await openAuthenticatedPage(page.context().browser(),cookie,base);
   memberPage.on('pageerror',e=>errors.push(e.message));
-  try{await memberPage.goto(share);await memberPage.getByText('Read-only workspace view',{exact:true}).waitFor();await memberPage.getByRole('heading',{name:'2.4',exact:true}).waitFor();assert.equal(await memberPage.getByText('Edit release',{exact:true}).count(),0);await settleReads(memberPage);}finally{await memberPage.context().close();}
+  try{await memberPage.goto(share);await memberPage.getByText('Read-only workspace view',{exact:true}).waitFor();await memberPage.getByRole('heading',{name:'2.4',exact:true}).waitFor();assert.equal(await memberPage.getByText('Edit release',{exact:true}).count(),0);await settleReads(memberPage);
+   await navigate(memberPage,base+'/app/releases/'+notes.release.id);const memberNotes=memberPage.getByRole('region',{name:'Release notes',exact:true});
+   await memberNotes.getByRole('listitem').filter({hasText:notes.replacement}).waitFor();
+   assert.equal(await memberNotes.getByText('Edit release notes',{exact:true}).count(),0);assert.equal(await memberNotes.getByRole('button',{name:'Draft release notes',exact:true}).count(),0);await settleReads(memberPage);}finally{await memberPage.context().close();}
   await call('/settings/operators/'+session.operatorId+'/role','PATCH',{role:'guest',teamIds:[team.id]});
   const refusal=await runtime.req('/api/releases',{method:'POST',headers:guestHeaders,body:JSON.stringify({name:'Guest release'})});assert.equal(refusal.status,403);await refusal.body.cancel();
   const deniedApi=await runtime.req('/api/v1/releases',{method:'POST',headers:{Origin:base,Authorization:'Bearer '+guestToken,'Content-Type':'application/json'},body:JSON.stringify({name:'Guest release'})});assert.equal(deniedApi.status,403);await deniedApi.body.cancel();

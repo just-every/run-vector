@@ -1,0 +1,5 @@
+.release-notes-meta { color:var(--app-muted); font-size:var(--app-text-small); }
+.release-notes-editor { margin-top:18px; }
+.release-notes-editor[open] summary { margin-bottom:14px; }
+.release-notes-editor label { font-weight:600; }
+.release-page .release-notes-editor textarea { min-height:240px; }

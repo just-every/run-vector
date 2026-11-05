@@ -2,6 +2,7 @@ import { createServerApp } from '../../src/core/app/server';
 import { bindings } from './base-auth-fixture';
 import {exerciseInitiatives} from './initiatives-scenario';
 import {exerciseReleases} from './releases-scenario';
+import {exerciseReleaseNotes} from './release-notes-scenario';
 import { expect, it } from 'vitest';
 import { roleWorkspace, snapshot } from './role-fixture';
 
@@ -49,7 +50,9 @@ it('[PROJ-003 ROLE-001 RELEASE-001 INIT-001 NOTIFY-009] only Owners and Admins d
   }
   await exerciseReleases(f);
   await exerciseInitiatives(f);
-});
+  await exerciseReleaseNotes(f);
+  // Release notes add an import, an erasure and a second installation; this time limit is not a product assertion.
+}, 120000);
 
 it('[PROJ-014 ROLE-002 ROLE-003] spanning projects appear in each contributing team list without exposing a private contribution after access is withdrawn', async () => {
   const f = await roleWorkspace();

@@ -4,6 +4,9 @@ import type { Json, D1Sql } from '../../../../../vendor/base/import-kit/src/d1/i
 // Each owned relation participates in the same full-value predicate. Incoming
 // relationships are guarded separately on reversal, since later entries in the
 // accepted batch may legitimately point at an earlier imported issue.
+// Release notes belong to the release, not to one issue. Import rollback never
+// rewrites their edited text; a retained source is incoming native work.
+export const releaseNoteReferences=(issue:string)=>`EXISTS(SELECT 1 FROM release_note_drafts d,json_each(d.sources_json) source WHERE json_extract(source.value,'$.id')=${issue})`;
 export const nativeRelations = {
   labels:['issue_labels','issue_id','label_id'],
   // Write recorded history before activity, whose trigger creates a revision

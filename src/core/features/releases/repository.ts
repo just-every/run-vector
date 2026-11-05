@@ -5,7 +5,7 @@ import {audit} from '../administration/transaction';
 import {gitGuard} from '../integrations/github/rules';
 import {releaseInput,releaseEdit,releaseScope,type Release} from './schema';
 import type {z} from 'zod';
-const projection='r.id,r.workspace_id AS workspaceId,r.team_id AS teamId,t.name AS teamName,r.name,r.target_date AS targetDate,r.status,r.description,r.version';
+const projection='r.id,r.workspace_id AS workspaceId,r.team_id AS teamId,t.name AS teamName,r.name,r.target_date AS targetDate,r.status,r.description,r.version,r.owner_operator_id AS ownerOperatorId';
 const visible="(r.team_id IS NULL OR EXISTS(SELECT 1 FROM teams visible_team WHERE visible_team.id=r.team_id))";
 export async function releaseAccess(db:D1Database,actor:string){
  const access=await settingsActor(db,actor);if(access.role==='guest')throw new IntegrationError(403,'forbidden');return access;
@@ -36,7 +36,7 @@ export async function createRelease(db:D1Database,actor:string,input:z.infer<typ
  const access=await releaseAccess(db,actor),id=createUlid(new Date()),at=new Date().toISOString();
  if(input.teamId&&!await db.prepare('SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND archived_at IS NULL').bind(input.teamId,access.workspace_id).first())throw new IntegrationError(404,'team_not_found');
  await db.batch([gitGuard(db,'? IS NULL OR EXISTS(SELECT 1 FROM teams WHERE id=? AND workspace_id=? AND archived_at IS NULL)',input.teamId,input.teamId,access.workspace_id),
- db.prepare('INSERT INTO releases(id,workspace_id,team_id,name,target_date,status,description,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,access.workspace_id,input.teamId,input.name,input.targetDate,input.status,input.description,at,at),
+ db.prepare('INSERT INTO releases(id,workspace_id,team_id,name,target_date,status,description,created_at,updated_at,owner_operator_id) VALUES(?,?,?,?,?,?,?,?,?,?)').bind(id,access.workspace_id,input.teamId,input.name,input.targetDate,input.status,input.description,at,at,actor),
  ...audit({db,actor,workspace:access.workspace_id,at},'release.created',id,input.name,null,input)]);
  return readRelease(db,actor,id);
 }
