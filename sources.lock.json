@@ -4590,7 +4590,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "fd08ac62ee3740d00f2d705a8584ac6cca94ca4a185df8244218493c6e1e82e6",
+      "sha256": "dc329112a533493fbb678c30a86f0d4f98d24049a4c8e53029dede6978b5b0ab",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
