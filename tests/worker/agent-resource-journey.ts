@@ -84,3 +84,16 @@ export async function agentResourceClient(member:Person,owner:Person) {
     },
   };
 }
+
+/** A scoped native client crosses the same mounted MCP door as an external caller. */
+export function agentToolClient(token:string) {
+  let id=0;
+  return async(name:string,args:Record<string,unknown>)=>{
+    const response=await agentRequest('/mcp',{
+      method:'POST',headers:{Origin:origin,Authorization:'Bearer '+token,'Content-Type':'application/json',
+        Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2025-11-25','Mcp-Method':'tools/call'},
+      body:JSON.stringify({jsonrpc:'2.0',id:++id,method:'tools/call',params:{name,arguments:args}}),
+    });
+    return {status:response.status,body:await response.json() as any};
+  };
+}

@@ -486,7 +486,7 @@
       "executable": false
     },
     "ACCEPTANCE.md": {
-      "sha256": "d6d80e3cec8b2c66efae119888bebff46d172a4047ddd0e98e741a9aa56a1e92",
+      "sha256": "0891dd21ac76a60617a5f668001c0ab2db77d78e18d669bec1b55ff9aaaf5f91",
       "executable": false
     },
     "ADOPTING.md": {
@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "60dbe5086b7a652673807900afec2ef831c04052ebdc0cb3b9d6c11e922e0bdb",
+      "sha256": "32bba2153704d0fcb44a1227816e9143a5e498fa04285ec798781ad13a92d92b",
       "executable": false
     },
     "DEMO.md": {
@@ -578,7 +578,7 @@
       "executable": false
     },
     "docs/CLAIMS.md": {
-      "sha256": "ef57d9db9360bfb7cb6f1ada173d41e089762b7ba18b554c2e9b6c84e5e88747",
+      "sha256": "31ad1120e5de483d5d37d64148a4fa2b76011b530ef52bc3d6be1ee65cc21ca0",
       "executable": false
     },
     "docs/DATA-OWNERSHIP.md": {
@@ -8193,6 +8193,10 @@
       "sha256": "aa644b378e8d6518ba9a1b591ec2e9fe3c415ee90d53552f48235f729f323d7b",
       "executable": false
     },
+    "tests/e2e/core-agent-audit-retention.mjs": {
+      "sha256": "41d797cde965cec59a66e98300058305ab67e594bd7e7e5c195512a80051291e",
+      "executable": false
+    },
     "tests/e2e/core-agent-resource-parity.mjs": {
       "sha256": "27913afd10108f5a3fcb0db252bff40b7fa6793b455cc98cd6d1533ed472f7eb",
       "executable": false
@@ -8318,7 +8322,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "e19d3959b0ba6bc690262232b03e6efaa2ef8187ec087e17fd30e186b6f5101f",
+      "sha256": "484dbf89c7ff2ce1522bfb1fb06245bae7cbc0b2e7609c3122bf5087ef646d1b",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8965,12 +8969,16 @@
       "sha256": "81129a0a5f47652105f36bd9d3ad9f84444b29a228329c32c48c1a6778406472",
       "executable": false
     },
+    "tests/worker/agent-audit-retention.test.ts": {
+      "sha256": "e7009a5cd127d8cab6018ff6fb645059479652d0593e93bf41f38fae0793a6f4",
+      "executable": false
+    },
     "tests/worker/agent-native-attribution.test.ts": {
       "sha256": "c17987cf2e4b42fd036240f14b6ed24ad3a1f82d2b4b251b76574b6b849e516a",
       "executable": false
     },
     "tests/worker/agent-resource-journey.ts": {
-      "sha256": "69d1c23904d5e0ad7795900b303f987038baa64ee6dee109dad02491ba72e9b3",
+      "sha256": "4dbd703475fe7f94fa2a110cf5452f2d6e511a39d0da30d27c416798672d0df6",
       "executable": false
     },
     "tests/worker/agent-resource-parity.ts": {
