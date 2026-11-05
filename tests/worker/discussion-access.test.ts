@@ -55,15 +55,15 @@ contractWith(
     const filePath = `/api/issues/${issue.identifier}/files`;
     const fileName = "synthetic-vector-duplicates.csv";
     const upload = await app.request(origin + filePath, { method: "POST", headers: {
-      origin, cookie: f.cookie, "content-type": "text/csv", "x-file-name": fileName,
+      origin, host: new URL(origin).host, cookie: f.cookie, "content-type": "text/csv", "x-file-name": fileName,
     }, body: "order,duplicate\n1,2" }, bindings);
-    expect(upload.status).toBe(201);
+    expect(upload.status, await upload.clone().text()).toBe(201);
     const file = await upload.json() as { id: string };
     const privateLink = filePath + "/" + file.id;
-    const document = await app.request(origin + privateLink, { headers: { accept: "text/html" } }, bindings);
+    const document = await app.request(origin + privateLink, { headers: { host: new URL(origin).host, accept: "text/html" } }, bindings);
     expect(document.status).toBe(302);
     expect(document.headers.get("location")).toBe("/signin?returnTo=" + encodeURIComponent(privateLink));
-    const client = await app.request(origin + privateLink, { headers: { accept: "application/json" } }, bindings);
+    const client = await app.request(origin + privateLink, { headers: { host: new URL(origin).host, accept: "application/json" } }, bindings);
     expect(client.status).toBe(401);
     expect(await client.json()).toMatchObject({ error: "unauthenticated" });
     expect(
