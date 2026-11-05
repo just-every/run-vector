@@ -7,6 +7,7 @@ const require = createRequire(import.meta.url);
 
 export async function attachmentImagesJourney({ page, runtime, output, returnIssue }) {
   await mkdir(output, {recursive: true});
+  await page.setViewportSize({width: 1440, height: 1000});
   const base = runtime.base, errors = [], outbound = [];
   const error = value => errors.push(String(value));
   const request = value => { if (value.url().startsWith('https://remote.example.test/')) outbound.push(value.url()); };

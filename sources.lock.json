@@ -8134,7 +8134,7 @@
       "executable": false
     },
     "tests/e2e/attachment-images-journey.mjs": {
-      "sha256": "7c2253c1e030ec4f28264b5785d0031af0da7bf9e4ffd116cf90002527df6f61",
+      "sha256": "aeebc3c543126ff0543ce1da8801d36728521d0101e056f43af9c8f2f13d52d9",
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
@@ -8206,7 +8206,7 @@
       "executable": false
     },
     "tests/e2e/collaboration-runtime.mjs": {
-      "sha256": "6b8cff4f727fb36656cef89ba09f481b052f47d7c6bec09d9ceab82466325539",
+      "sha256": "c1f92a08fcf34d918647440c158534b155b31d39500ca332df5b8c0cc2233d76",
       "executable": false
     },
     "tests/e2e/collaboration-support.mjs": {

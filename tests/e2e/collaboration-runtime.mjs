@@ -166,6 +166,9 @@ await contract(
               );
           },
         );
+        if (viewport.width === 1440) await clause("ISSUE-024", "existing issue PNG display and viewer", async () => {
+          await attachmentImagesJourney({page, runtime, output: resolve(evidence, 'attachment-images'), returnIssue: issue});
+        });
         const peerCapture = createStateRecorder(peer, evidence, results);
         await collaborationEvents({
           ...shared,
@@ -176,9 +179,6 @@ await contract(
             peerCapture(`${viewport.width}-recipient-${name}`),
           timings,
           fixtures,
-        });
-        if (viewport.width === 1440) await clause("ISSUE-024", "existing issue PNG display and viewer", async () => {
-          await attachmentImagesJourney({page, runtime, output: resolve(evidence, 'attachment-images'), returnIssue: issue});
         });
         assert.deepEqual(errors, [], "no browser page errors");
         assert.deepEqual(failed, [], "no browser request failures");
