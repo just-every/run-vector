@@ -193,6 +193,9 @@ it('[ISSUE-022 ISSUE-027 SLACK-003 SLACK-004 PROJ-011 SEC-001 BASE-DATA-001 DATA
  const restoredErrors=await (await targetCall('/api/settings/integrations/errors','GET',undefined,historical)).json() as any;expect(restoredErrors.connections).toContainEqual(expect.objectContaining({id:errorConnection.id,regressionRule:'reopen',requiresReentry:1}));
  expect((await createServerApp().request(targetBindings.APP_ORIGIN+new URL(errorConnection.receiver).pathname,{method:'POST',body:'{}'},targetBindings)).status).toBe(401);
  for(let index=0;index<triageTables.length;index++)expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+triageTables[index]+' ORDER BY rowid').all()).results).toEqual(triageRows[index]);
+ for(const table of ['request_forms','request_form_revisions','request_form_submissions'])expect((await destination.ARCHIVE_TARGET_DB.prepare('SELECT * FROM '+table+' ORDER BY rowid').all()).results).toEqual((await env.DB.prepare('SELECT * FROM '+table+' ORDER BY rowid').all()).results);
+ const restoredFormIssue=await targetCall('/api/issues/'+f.formIssue.identifier,'GET',undefined,historical);expect(restoredFormIssue.status).toBe(200);expect((await restoredFormIssue.json() as any).requestForm).toEqual(f.formIssue.requestForm);
+ const restoredForms=await targetCall('/api/teams/'+f.team.id+'/request-forms','GET',undefined,historical);expect(restoredForms.status).toBe(200);expect((await restoredForms.json() as any).forms.find((form:any)=>form.id===f.form.id)).toMatchObject({revision:2,name:'synthetic-vector-1891'});
  const restoredTriage=await targetCall('/api/triage-responsibility','GET',undefined,historical);expect(restoredTriage.status).toBe(200);
  expect((await restoredTriage.json() as {teams:unknown[]}).teams).toHaveLength(1);
  const restoredCredentials=await credentialState();

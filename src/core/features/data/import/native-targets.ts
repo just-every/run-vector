@@ -1,7 +1,7 @@
 import {importAlias} from '../aliases/import';
 import type { D1TargetAdapter, TargetRow, D1Sql, Json } from '../../../../../vendor/base/import-kit/src/d1/index';
 import { canonicalJson } from '../../../../../vendor/base/import-kit/src/d1/index';
-import { nativeRelations,snapshotExpression,legacySnapshotExpression,insertNative,type NativeIssueValue } from './native-snapshot';
+import { nativeRelations,snapshotExpression,legacySnapshotExpression,requestFormsExpression,insertNative,type NativeIssueValue } from './native-snapshot';
 
 const guard = (sql:string,...params:Json[]): D1Sql => ({sql:`SELECT CASE WHEN (${sql}) THEN 1 ELSE json('import native option changed') END`,params});
 /** One set read of complete native snapshots, for preview of a re-imported file. */
@@ -35,11 +35,12 @@ export const nativeTargets: D1TargetAdapter = {
     if (kind !== 'issue') throw Error('unsupported_import_target');
     if (!row) return {sql:'NOT EXISTS(SELECT 1 FROM issues WHERE id=?) AND NOT EXISTS(SELECT 1 FROM vector_import_revisions WHERE issue_id=?)',params:[id,id]};
     const value=canonicalJson(row.value);
-    return {sql:`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE i.id=? AND t.workspace_id=? AND v.revision=? AND ${legacySnapshotExpression}=json_remove(json_set(json(?),'$.dependencies',${kept('dependencies')},'$.parent',${kept('parent')}),'$.manualOrder','$.related')
+    return {sql:`EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id JOIN vector_import_revisions v ON v.issue_id=i.id WHERE i.id=? AND t.workspace_id=? AND v.revision=? AND ${legacySnapshotExpression}=json_remove(json_set(json(?),'$.dependencies',${kept('dependencies')},'$.parent',${kept('parent')}),'$.manualOrder','$.related','$.requestForms')
+      AND ${requestFormsExpression}=COALESCE(json_extract(json(?),'$.requestForms'),json('[]'))
       AND (SELECT count(*) FROM issue_relations r WHERE r.first_issue_id=i.id)=json_array_length(COALESCE(json_extract(json(?),'$.related'),json('[]')))
       AND NOT EXISTS(SELECT 1 FROM json_each(json(?),'$.related') e WHERE NOT EXISTS(SELECT 1 FROM issue_relations r WHERE r.first_issue_id=i.id AND r.second_issue_id=json_extract(e.value,'$.second_issue_id') AND r.created_at=json_extract(e.value,'$.created_at')))
       AND (SELECT count(*) FROM manual_order_entries e WHERE e.issue_id=i.id)=json_array_length(COALESCE(json_extract(json(?),'$.manualOrder'),json('[]')))
-      AND NOT EXISTS(SELECT 1 FROM json_each(json(?),'$.manualOrder') expected WHERE NOT EXISTS(SELECT 1 FROM manual_order_entries e WHERE e.issue_id=i.id AND e.workspace_id=json_extract(expected.value,'$.workspace_id') AND e.scope_key=json_extract(expected.value,'$.scope_key') AND e.issue_id=json_extract(expected.value,'$.issue_id') AND e.position IS json_extract(expected.value,'$.position'))))`,params:[id,destination,row.revision,value,value,value,value,value,value,value]};
+      AND NOT EXISTS(SELECT 1 FROM json_each(json(?),'$.manualOrder') expected WHERE NOT EXISTS(SELECT 1 FROM manual_order_entries e WHERE e.issue_id=i.id AND e.workspace_id=json_extract(expected.value,'$.workspace_id') AND e.scope_key=json_extract(expected.value,'$.scope_key') AND e.issue_id=json_extract(expected.value,'$.issue_id') AND e.position IS json_extract(expected.value,'$.position'))))`,params:[id,destination,row.revision,value,value,value,value,value,value,value,value]};
   },
   write(row:TargetRow) {
     if (row.targetKind !== 'issue') throw Error('unsupported_import_target');
@@ -64,6 +65,7 @@ export const nativeTargets: D1TargetAdapter = {
       const target=severable[name as keyof typeof severable];
       for (const record of value[name as keyof typeof nativeRelations]) statements.push(insertNative(table,record,target?{sql:'EXISTS(SELECT 1 FROM issues WHERE id=?)',params:[record[target]]}:undefined));
     }
+    for (const submission of value.requestForms ?? []) statements.push(insertNative('request_form_submissions', submission));
     for (const related of value.related ?? []) {
       statements.push(guard('EXISTS(SELECT 1 FROM issues i JOIN teams t ON t.id=i.team_id WHERE i.id=? AND t.workspace_id=?)',related.second_issue_id,row.destination),insertNative('issue_relations',related));
     }
@@ -89,6 +91,7 @@ export const nativeTargets: D1TargetAdapter = {
       AND NOT EXISTS(SELECT 1 FROM issue_relations WHERE second_issue_id=?)
       AND NOT EXISTS(SELECT 1 FROM issue_duplicates WHERE canonical_issue_id=?)`,id,destination,id,id,id,id),
       ...Object.values(nativeRelations).map(([table,key])=>({sql:`DELETE FROM "${table}" WHERE "${key}"=?`,params:[id]})),
+      {sql:'DELETE FROM request_form_submissions WHERE issue_id=?',params:[id]},
       {sql:'DELETE FROM issue_relations WHERE first_issue_id=?',params:[id]},
       {sql:'DELETE FROM manual_order_entries WHERE issue_id=?',params:[id]},
       {sql:'DELETE FROM issues WHERE id=?',params:[id]},

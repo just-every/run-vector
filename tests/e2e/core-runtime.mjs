@@ -1,3 +1,4 @@
+import { requestFormsJourney } from './core-request-forms-journey.mjs';
 import { agentWriteRetryJourney } from './core-agent-write-retry.mjs';
 import { agentRoleParityJourney } from './core-agent-role-parity.mjs';
 import { agentAttributionJourney } from './core-agent-attribution-journey.mjs';
@@ -65,7 +66,7 @@ const root = process.cwd(),
 // CI partitions the independent invited-operator journeys; the public command
 // keeps the complete serial proof. Both partitions retain the shared doors.
 const journeyGroup = process.argv[2] ?? 'all';
-assert.ok(['all', 'current', 'planning', 'projects', 'agent-role-parity'].includes(journeyGroup), 'Unknown runtime journey partition');
+assert.ok(['all', 'current', 'planning', 'projects', 'agent-role-parity', 'request-forms'].includes(journeyGroup), 'Unknown runtime journey partition');
 const ids = {
   sarah: "01J00000000000000000000002",
   flow: "01J00000000000000000000010",
@@ -714,7 +715,13 @@ try {
     .waitFor();
   // Leaving Current unmounts the inspector; let its reads finish first.
   await settleReads(page);
-  if (journeyGroup === 'agent-role-parity') {
+  if (journeyGroup === 'request-forms') {
+    await withInvitedOperator(page, context, base, state, () => requestFormsJourney(page, context, base, async (id, name, currentPage) => {
+      await currentPage.screenshot({path:evidence+'/'+name+'.png',fullPage:true});record(id,name);
+    }), 'synthetic-vector-1894');
+    assert.deepEqual(errors, []); assert.deepEqual(failed, []);
+    await writeFile(evidence+'/request-forms-results.json',JSON.stringify({passed:true,results},null,2));
+  } else if (journeyGroup === 'agent-role-parity') {
     await withInvitedOperator(page, context, base, state, () =>
       agentRoleParityJourney({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3610');
   } else {
@@ -794,6 +801,9 @@ try {
   }, state), 'Project maintenance teammate');
   }
   if (['all', 'planning'].includes(journeyGroup)) {
+  await withInvitedOperator(page, context, base, state, () => requestFormsJourney(page, context, base, async (id, name, currentPage) => {
+    await currentPage.screenshot({path:evidence+'/'+name+'.png',fullPage:true});record(id,name);
+  }), 'synthetic-vector-1894');
   await withInvitedOperator(page, context, base, state, () => intakePolicyJourney(page, context, base, async (id, name, currentPage) => {
     await currentPage.screenshot({ path: evidence + '/' + name + '.png', fullPage: true });
     record(id, name);

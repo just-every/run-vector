@@ -19,6 +19,10 @@ export async function prepareFormSubmission(db: D1Database, actor: string, teamI
     if (!valid) throw new SettingsError('invalid_answers', 'Choose a valid answer for ' + field.label + '.', 400)
   }
   return {
+    onFailure: async () => {
+      const current = await db.prepare('SELECT revision,published FROM request_forms WHERE id=? AND team_id=?').bind(form.id, teamId).first<{revision: number; published: number}>()
+      if (!current || !current.published || current.revision !== form.revision) throw new SettingsError('stale_form', 'The form changed. Reload and review its current fields.', 409)
+    },
     guard: (transaction: D1Database) => guard(transaction, 'EXISTS(SELECT 1 FROM request_forms WHERE id=? AND team_id=? AND revision=? AND published=1)', form.id, teamId, form.revision),
     statements: (transaction: D1Database, issueId: string, at: string) => [transaction.prepare('INSERT INTO request_form_submissions(issue_id,form_id,revision,form_name,fields_json,answers_json,created_at) VALUES(?,?,?,?,?,?,?)').bind(issueId, form.id, form.revision, form.name, JSON.stringify(form.fields), JSON.stringify(input.answers), at)],
   }

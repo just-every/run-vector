@@ -26,7 +26,7 @@ export const nativeRelations = {
   personalReminders:['issue_reminders','issue_id','id'],
   notificationCandidates:['notification_candidates','issue_id','event_id'],
 } as const;
-export type NativeIssueValue = { issue: Record<string,Json>; manualOrder?: Record<string,Json>[]; related?: Record<string,Json>[] } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
+export type NativeIssueValue = { issue: Record<string,Json>; manualOrder?: Record<string,Json>[]; related?: Record<string,Json>[]; requestForms?: Record<string,Json>[] } & Record<keyof typeof nativeRelations,Record<string,Json>[]>;
 const quote = (value: string) => '"'+value.replaceAll('"','""')+'"';
 const columns = (table: string) => {
   const value=(inventory as Record<string,string[]>)[table];
@@ -61,9 +61,13 @@ function extendedSnapshot(manual:boolean,related:boolean) {
     ...(related?[['related',relation('issue_relations','first_issue_id','second_issue_id')]]:[]),
   ].sort(([a],[b])=>a<b?-1:a>b?1:0).flatMap(([name,expression])=>["'"+name+"'",'json('+expression+')']).join(',')+')';
 }
-export const snapshotExpression = `CASE WHEN EXISTS(SELECT 1 FROM issue_relations WHERE first_issue_id=i.id)
+const previousSnapshotExpression = `CASE WHEN EXISTS(SELECT 1 FROM issue_relations WHERE first_issue_id=i.id)
   THEN CASE WHEN EXISTS(SELECT 1 FROM manual_order_entries WHERE issue_id=i.id) THEN ${extendedSnapshot(true,true)} ELSE ${extendedSnapshot(false,true)} END
   ELSE CASE WHEN EXISTS(SELECT 1 FROM manual_order_entries WHERE issue_id=i.id) THEN ${extendedSnapshot(true,false)} ELSE ${legacySnapshotExpression} END END`;
+
+// Optional provenance preserves retained pre-form import snapshots byte for byte.
+export const requestFormsExpression = relation('request_form_submissions','issue_id','issue_id');
+export const snapshotExpression = `json_patch(json(${previousSnapshotExpression}),CASE WHEN EXISTS(SELECT 1 FROM request_form_submissions WHERE issue_id=i.id) THEN json_object('requestForms',json(${requestFormsExpression})) ELSE json('{}') END)`;
 
 export function emptyIssueValue(issue: Record<string,Json>): NativeIssueValue {
   return { issue,...Object.fromEntries(Object.keys(nativeRelations).map(name=>[name,[]])) } as NativeIssueValue;

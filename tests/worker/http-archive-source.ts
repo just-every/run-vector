@@ -36,6 +36,10 @@ export async function populatedHttpSource() {
  await env.DB.prepare("INSERT INTO integration_deliveries(namespace,id,fingerprint,destination_hash,envelope,state,attempts,created_at,next_at,max_attempts,retry_delays) VALUES(?,'http-webhook','http-fingerprint','http-destination',?,'queued',0,0,0,3,'[1000,2000]')").bind(workspace,envelope).run();
  await env.DB.prepare("UPDATE issue_files SET removal_requested_at=? WHERE id='http-file'").bind(at).run();
  await env.FILES.put('http-archive-file',new Uint8Array([0,1,2,255]),{httpMetadata:{contentType:'application/octet-stream'},customMetadata:{evidence:'http-roundtrip'}});
+ const formInput={name:'synthetic-vector-1889',published:true,fields:[{key:'severity',label:'Severity',help:'Impact',required:true,type:'text',choices:[]}]};
+ const formResponse=await f.call('/teams/'+f.team.id+'/request-forms','POST',formInput);expect(formResponse.status).toBe(201);const form=await formResponse.json() as any;
+ const formIntake=await f.call('/intake','POST',{teamId:f.team.id,title:'synthetic-vector-1890',requestForm:{id:form.id,revision:form.revision,answers:{severity:'High λ'}}});expect(formIntake.status).toBe(201);const formIssue=await formIntake.json() as any;
+ expect((await f.call('/teams/'+f.team.id+'/request-forms/'+form.id,'PUT',{...formInput,name:'synthetic-vector-1891',expectedRevision:1})).status).toBe(200);
  const deletion=await archiveDeletionHistory(f);
- return {...f,peerCookie,peer,issue,closed,project,webhook,...deletion};
+ return {...f,peerCookie,peer,issue,closed,project,webhook,form,formIssue,...deletion};
 }
