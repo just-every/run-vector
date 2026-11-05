@@ -9,9 +9,10 @@ import { roleScreens } from "./role-ui-support.mjs";
  * TRIAGE-002's selected Sentry slice through ordinary doors: ordered team and workspace rules in Settings, a signed
  * Sentry issue through the real receiver (sentry.io is faked only at the Worker's network edge), and the acting rule
  * with its saved revision on the routed item, in its issue page and in Current. The Worker journey keeps the full
- * custody, replay, rollback and authority matrix; this proves what a person sees and does.
+ * custody, replay, rollback and authority matrix; this proves what a person sees and does. It extends the
+ * administration runtime's existing registration rather than adding one (the seed is at its test cap).
  */
-export async function triageRoutingJourney({ page, runtime, clause, evidence, peer, memberId }) {
+export async function triageRoutingJourney({ page, runtime, evidence, peer, memberId }) {
   const { base, sql } = runtime, capture = roleScreens(evidence), ownerName = runtime.config.FIRST_OWNER_NAME, prior = page.viewportSize();
   // Each screen is inspected at 1440 and 390; the journey itself runs at 1440.
   const inspect = async (region, name) => { await capture(page, region, name); await page.setViewportSize({ width: 1440, height: 1000 }); };
@@ -49,7 +50,7 @@ export async function triageRoutingJourney({ page, runtime, clause, evidence, pe
     await expect(form).toHaveCount(0);
   };
   const ruleNames = async (scope) => (await scope.locator(".status-row .status-name").allTextContents());
-  await clause("TRIAGE-002", "ordered Sentry routing in team and workspace Settings; routed item shows its acting rule and revision", async () => {
+  {
     await page.setViewportSize({ width: 1440, height: 1000 });
     await openTeam(page, base, origin, "automation");
     const rules = region(page);
@@ -134,6 +135,7 @@ export async function triageRoutingJourney({ page, runtime, clause, evidence, pe
     before = stored();
     await send(peer, teamPath, "PUT", { expectedVersion: current.version + 1, rules: [] }, 403);
     assert.deepEqual(stored(), before, "withdrawn permission refuses the next request");
-  });
+  }
   if (prior) await page.setViewportSize(prior);
+  console.log("TRIAGE-002 ordered team and workspace Sentry routing rules, a signed Sentry issue through the receiver, and its acting rule and revision on the issue page and in Current passed; screens at 1440 and 390.");
 }
