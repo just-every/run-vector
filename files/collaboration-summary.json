@@ -1,0 +1,361 @@
+{
+  "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "command": [
+    "node",
+    "--experimental-strip-types",
+    "tests/e2e/collaboration-runtime.mjs"
+  ],
+  "exit": 0,
+  "passed": true,
+  "clauseJourneys": 53,
+  "functionalCheckpoints": 122,
+  "liveTimings": 10,
+  "testRegistrationsPassed": 54,
+  "failures": 0,
+  "skipped": 0,
+  "durationSeconds": 802.40326979,
+  "selectedChecks": [
+    {
+      "id": "ISSUE-024",
+      "name": "existing issue PNG display and viewer",
+      "width": 1440,
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "id": "TEAM-001",
+      "name": "create team with uppercase prefix and seven categories",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "TEAM-002",
+      "name": "rename team; add rename and reorder workflow status",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-014",
+      "name": "create rename recolour readable workspace label",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "PROJ-001",
+      "name": "create project with lead Markdown optional target and Planned lifecycle",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "PROJ-002",
+      "name": "operator explicitly changes project lifecycle",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "PROJ-012",
+      "name": "save project structure, launch native issue teams and retain projects after template deletion",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "CYCLE-001",
+      "name": "manual nonoverlap cycles use workspace timezone and reject invalid end",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-014",
+      "name": "label applied to an authored issue",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-014",
+      "name": "separate labelled section applies label without adding an inline property picker",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-008",
+      "name": "mobile issue retains open description and outcome",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-024",
+      "name": "existing issue PNG display and viewer",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-001",
+      "name": "live assignment and self suppression",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-013",
+      "name": "keyboard selected stable description mention",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-002",
+      "name": "followed comment mention overlap produces one row and one mail",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-002",
+      "name": "followers receive plain comments without email and commenter self suppression",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-013",
+      "name": "description edit mentions only newly added recipients and leaves unknown tokens literal",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-013",
+      "name": "remove and re-add selected mention creates a new edit event once",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "name": "recipient comments suppress self and preserve issue version",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "name": "row opening and mark all are private version-neutral reads",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-017",
+      "name": "native description and comment reactions synchronize without notifications",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-006",
+      "name": "own unfollow and follow preserve issue version",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-004",
+      "name": "issue and event mutes suppress future inbox and actual mail; unmute never backfills",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "email optout retains inbox and Base development captures contain only disclosed fields",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "operator re-enables email through native Settings and next real mention is captured once",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "name": "native Inbox pagination ordering and cached rows clear after actual operator removal",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "installation email disabled retains native authentication and Inbox with no delivery intent",
+      "width": 1440,
+      "passed": true
+    },
+    {
+      "id": "TEAM-001",
+      "name": "create team with uppercase prefix and seven categories",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "TEAM-002",
+      "name": "rename team; add rename and reorder workflow status",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-014",
+      "name": "create rename recolour readable workspace label",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "PROJ-001",
+      "name": "create project with lead Markdown optional target and Planned lifecycle",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "PROJ-002",
+      "name": "operator explicitly changes project lifecycle",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "PROJ-012",
+      "name": "save project structure, launch native issue teams and retain projects after template deletion",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "CYCLE-001",
+      "name": "manual nonoverlap cycles use workspace timezone and reject invalid end",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-014",
+      "name": "label applied to an authored issue",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-014",
+      "name": "separate labelled section applies label without adding an inline property picker",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-008",
+      "name": "mobile issue retains open description and outcome",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-001",
+      "name": "live assignment and self suppression",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-013",
+      "name": "keyboard selected stable description mention",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-002",
+      "name": "followed comment mention overlap produces one row and one mail",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-002",
+      "name": "followers receive plain comments without email and commenter self suppression",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-013",
+      "name": "description edit mentions only newly added recipients and leaves unknown tokens literal",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-013",
+      "name": "remove and re-add selected mention creates a new edit event once",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "name": "recipient comments suppress self and preserve issue version",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "name": "row opening and mark all are private version-neutral reads",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-017",
+      "name": "native description and comment reactions synchronize without notifications",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "ISSUE-006",
+      "name": "own unfollow and follow preserve issue version",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-004",
+      "name": "issue and event mutes suppress future inbox and actual mail; unmute never backfills",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "email optout retains inbox and Base development captures contain only disclosed fields",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "operator re-enables email through native Settings and next real mention is captured once",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-003",
+      "name": "native Inbox pagination ordering and cached rows clear after actual operator removal",
+      "width": 390,
+      "passed": true
+    },
+    {
+      "id": "NOTIFY-006",
+      "name": "installation email disabled retains native authentication and Inbox with no delivery intent",
+      "width": 390,
+      "passed": true
+    }
+  ],
+  "diagnostics": [
+    {
+      "width": 1440,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "moduleFailures": 0,
+      "unexpectedConsoleErrors": 0
+    },
+    {
+      "width": 390,
+      "pageErrors": 0,
+      "requestFailures": 0,
+      "moduleFailures": 0,
+      "unexpectedConsoleErrors": 0
+    }
+  ]
+}

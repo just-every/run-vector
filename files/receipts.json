@@ -1,0 +1,496 @@
+{
+  "branch": "cloud/sd-vector-c-f184",
+  "candidateRegistrationsAdded": 0,
+  "candidateRegistrationsRemoved": 0,
+  "collaborationRuntime": {
+    "checks": [
+      {
+        "id": "TEAM-001",
+        "name": "create team with uppercase prefix and seven categories",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "TEAM-002",
+        "name": "rename team; add rename and reorder workflow status",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-014",
+        "name": "create rename recolour readable workspace label",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "PROJ-001",
+        "name": "create project with lead Markdown optional target and Planned lifecycle",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "PROJ-002",
+        "name": "operator explicitly changes project lifecycle",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "PROJ-012",
+        "name": "save project structure, launch native issue teams and retain projects after template deletion",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "CYCLE-001",
+        "name": "manual nonoverlap cycles use workspace timezone and reject invalid end",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-014",
+        "name": "label applied to an authored issue",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-014",
+        "name": "separate labelled section applies label without adding an inline property picker",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-008",
+        "name": "mobile issue retains open description and outcome",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-024",
+        "name": "existing issue PNG display and viewer",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-001",
+        "name": "live assignment and self suppression",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-013",
+        "name": "keyboard selected stable description mention",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-002",
+        "name": "followed comment mention overlap produces one row and one mail",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-002",
+        "name": "followers receive plain comments without email and commenter self suppression",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-013",
+        "name": "description edit mentions only newly added recipients and leaves unknown tokens literal",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-013",
+        "name": "remove and re-add selected mention creates a new edit event once",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-003",
+        "name": "recipient comments suppress self and preserve issue version",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-003",
+        "name": "row opening and mark all are private version-neutral reads",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-017",
+        "name": "native description and comment reactions synchronize without notifications",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "ISSUE-006",
+        "name": "own unfollow and follow preserve issue version",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-004",
+        "name": "issue and event mutes suppress future inbox and actual mail; unmute never backfills",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "email optout retains inbox and Base development captures contain only disclosed fields",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "operator re-enables email through native Settings and next real mention is captured once",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-003",
+        "name": "native Inbox pagination ordering and cached rows clear after actual operator removal",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "installation email disabled retains native authentication and Inbox with no delivery intent",
+        "passed": true,
+        "width": 1440
+      },
+      {
+        "id": "TEAM-001",
+        "name": "create team with uppercase prefix and seven categories",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "TEAM-002",
+        "name": "rename team; add rename and reorder workflow status",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-014",
+        "name": "create rename recolour readable workspace label",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "PROJ-001",
+        "name": "create project with lead Markdown optional target and Planned lifecycle",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "PROJ-002",
+        "name": "operator explicitly changes project lifecycle",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "PROJ-012",
+        "name": "save project structure, launch native issue teams and retain projects after template deletion",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "CYCLE-001",
+        "name": "manual nonoverlap cycles use workspace timezone and reject invalid end",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-014",
+        "name": "label applied to an authored issue",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-014",
+        "name": "separate labelled section applies label without adding an inline property picker",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-008",
+        "name": "mobile issue retains open description and outcome",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-001",
+        "name": "live assignment and self suppression",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-013",
+        "name": "keyboard selected stable description mention",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-002",
+        "name": "followed comment mention overlap produces one row and one mail",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-002",
+        "name": "followers receive plain comments without email and commenter self suppression",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-013",
+        "name": "description edit mentions only newly added recipients and leaves unknown tokens literal",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-013",
+        "name": "remove and re-add selected mention creates a new edit event once",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-003",
+        "name": "recipient comments suppress self and preserve issue version",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-003",
+        "name": "row opening and mark all are private version-neutral reads",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-017",
+        "name": "native description and comment reactions synchronize without notifications",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "ISSUE-006",
+        "name": "own unfollow and follow preserve issue version",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-004",
+        "name": "issue and event mutes suppress future inbox and actual mail; unmute never backfills",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "email optout retains inbox and Base development captures contain only disclosed fields",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "operator re-enables email through native Settings and next real mention is captured once",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-003",
+        "name": "native Inbox pagination ordering and cached rows clear after actual operator removal",
+        "passed": true,
+        "width": 390
+      },
+      {
+        "id": "NOTIFY-006",
+        "name": "installation email disabled retains native authentication and Inbox with no delivery intent",
+        "passed": true,
+        "width": 390
+      }
+    ],
+    "clauseJourneys": 53,
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "tests/e2e/collaboration-runtime.mjs"
+    ],
+    "diagnostics": [
+      {
+        "moduleFailures": 0,
+        "pageErrors": 0,
+        "requestFailures": 0,
+        "unexpectedConsoleErrors": 0,
+        "width": 1440
+      },
+      {
+        "moduleFailures": 0,
+        "pageErrors": 0,
+        "requestFailures": 0,
+        "unexpectedConsoleErrors": 0,
+        "width": 390
+      }
+    ],
+    "durationSeconds": 802.40326979,
+    "exit": 0,
+    "failures": 0,
+    "functionalCheckpoints": 122,
+    "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+    "liveTimings": 10,
+    "passed": true,
+    "selectedChecks": [
+      {
+        "id": "ISSUE-024",
+        "name": "existing issue PNG display and viewer",
+        "passed": true,
+        "width": 1440
+      }
+    ],
+    "skipped": 0,
+    "testRegistrationsPassed": 54
+  },
+  "countsAfter": {
+    "done": 136,
+    "missing": 67,
+    "partial": 69,
+    "total": 272
+  },
+  "countsBefore": {
+    "done": 136,
+    "missing": 67,
+    "partial": 69,
+    "total": 272
+  },
+  "diagnosticCustody": {
+    "owningRuntimeStopped": true,
+    "processOutputExcludedFromPacket": true,
+    "temporaryLocalTestKeyInProcessListing": true
+  },
+  "files": {
+    "CONTRACT.md": "3e18d73cb8d838975c3cdd53790e1fc46b3e06e69b928066e067988440794cef",
+    "sources.lock.json": "802d090f0a14b4137fc39f1ae36a2f76be8cf3624499fc83276fa1b67b34f1f1",
+    "src/core/features/discussion/routes.ts": "4f02af71d3cce0edd43b118df80d9841cc62da66062e18937e17aaf86838b909",
+    "src/core/features/markdown/attachments/attachments.css": "d56ea894308fc9cafa1956b52620ba90665b3b3baab1c3d149aef86dfe71c880",
+    "src/core/features/markdown/attachments/context.tsx": "624f3dc3d37f2a5c597a6b69e12911fbce7f325fec40760f53d760b7c3213229",
+    "src/core/features/markdown/attachments/viewer.tsx": "16aabe59e76a1c79f6d376f9abb635a32e47ac98cc68d340defcd0e8107472a9",
+    "tests/e2e/attachment-images-journey.mjs": "93d9d5ca3b25fc10c97b1359ed64804aa1495ac60fa048d99364fddbefef6729",
+    "tests/worker/attachment-png-journey.ts": "faa44269228589db2d83797648ab3b1d5c02217eb354c3af191c1c4b19bc79a3",
+    "tests/worker/data-http.test.ts": "0296cb55b8dfd2f94579ff6facb8363c64dfe50aee5574ebae4dd43ddc5bfd0d",
+    "tests/worker/discussion-access.test.ts": "0eddf20f10abb6c9068b677c6b98fa32e15db2f95ea3cd3ee033ef7a71f3c94b",
+    "tests/worker/discussion-file-admission.test.ts": "ab9bd6fa4197c8f6dc8ec9658fe389551549dcda902aae6510587ea8782ea13e"
+  },
+  "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "landing": "fleet gate",
+  "postRuntimeLockCheck": {
+    "command": [
+      "pnpm",
+      "sources:check"
+    ],
+    "exit": 0
+  },
+  "publicationScan": "fleet gate, not run in cloud",
+  "remoteProductHead": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "repository": "just-every/run-vector",
+  "rows": [
+    {
+      "command": [
+        "pnpm",
+        "exec",
+        "vitest",
+        "run",
+        "--config",
+        "vitest.config.ts",
+        "tests/worker/discussion-file-admission.test.ts",
+        "tests/worker/discussion-access.test.ts",
+        "tests/worker/data-http.test.ts"
+      ],
+      "durationSeconds": 115.16,
+      "exit": 0,
+      "filesPassed": 3,
+      "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+      "registrationsPassed": 10
+    },
+    {
+      "command": [
+        "pnpm",
+        "test:markdown"
+      ],
+      "exit": 0,
+      "registrationsPassed": 2,
+      "relevantBytesUnchangedSinceRun": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "exit": 0,
+      "relevantBytesUnchangedSinceRun": true
+    },
+    {
+      "command": [
+        "npx",
+        "-y",
+        "@runeditrun/rer",
+        "check",
+        "--profile",
+        "first-party"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "write",
+        "ISSUE-024"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "scripts/contract-docs.mjs",
+        "check",
+        "ISSUE-024"
+      ],
+      "exit": 0,
+      "viewsRestoredFromMain": true
+    },
+    {
+      "command": [
+        "pnpm",
+        "sources:lock"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "sources:check"
+      ],
+      "exit": 0
+    }
+  ],
+  "schema": 1,
+  "screenshots": {
+    "inline-1440.png": "5efa39fe39b6679cfcc9ae7120bff3537dcdde26e0e9c05ca96c83f3c359f4af",
+    "inline-390.png": "4243d3889aeeb0e3770b1b6ab01f8b11486adefac8edba104d5db56ec0881b7a",
+    "viewer-1440.png": "c658f6889d5b86acfa60240abe3e459ebce47e2912add299b40119cddd884826",
+    "viewer-390.png": "7bc35641408f6e8e24e3505e803defd71596e22c38e52519d25b2ce998a97afd"
+  }
+}

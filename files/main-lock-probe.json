@@ -1,0 +1,12 @@
+{
+  "head": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "command": "node scripts\u002fedition-authoring\u002fcli.mjs check",
+  "beforeBuildExit": 0,
+  "buildCommand": "npx -y @runeditrun\u002frer build",
+  "buildExit": 0,
+  "afterBuildExit": 1,
+  "failure": "Stale lock or source\u002ftool integrity mismatch; run changes to inspect intentional edits before lock",
+  "changedFile": "src\u002frouteTree.gen.ts",
+  "addedLines": 9,
+  "classification": "also fails on main after generated route registration"
+}

@@ -1,0 +1,379 @@
+(node:8458) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+TAP version 13
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+# Subtest: [OPS-004] real first-owner collaboration at mobile
+    # Subtest: [TEAM-001] 1440: create team with uppercase prefix and seven categories
+    ok 1 - [TEAM-001] 1440: create team with uppercase prefix and seven categories
+      ---
+      duration_ms: 105.053004
+      type: 'test'
+      ...
+    # Subtest: [TEAM-002] 1440: rename team; add rename and reorder workflow status
+    ok 2 - [TEAM-002] 1440: rename team; add rename and reorder workflow status
+      ---
+      duration_ms: 7183.11592
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 1440: create rename recolour readable workspace label
+    ok 3 - [ISSUE-014] 1440: create rename recolour readable workspace label
+      ---
+      duration_ms: 3015.897858
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 1440: create project with lead Markdown optional target and Planned lifecycle
+    ok 4 - [PROJ-001] 1440: create project with lead Markdown optional target and Planned lifecycle
+      ---
+      duration_ms: 234.21305
+      type: 'test'
+      ...
+    # Subtest: [PROJ-002] 1440: operator explicitly changes project lifecycle
+    ok 5 - [PROJ-002] 1440: operator explicitly changes project lifecycle
+      ---
+      duration_ms: 195.82813
+      type: 'test'
+      ...
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 private team-template reads and Viewer creation, edit and application refusals passed at 1440 and 390
+    # Subtest: [PROJ-012] 1440: save project structure, launch native issue teams and retain projects after template deletion
+    ok 6 - [PROJ-012] 1440: save project structure, launch native issue teams and retain projects after template deletion
+      ---
+      duration_ms: 152373.309894
+      type: 'test'
+      ...
+    # Subtest: [CYCLE-001] 1440: manual nonoverlap cycles use workspace timezone and reject invalid end
+    ok 7 - [CYCLE-001] 1440: manual nonoverlap cycles use workspace timezone and reject invalid end
+      ---
+      duration_ms: 501.747237
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 1440: label applied to an authored issue
+    ok 8 - [ISSUE-014] 1440: label applied to an authored issue
+      ---
+      duration_ms: 260.669433
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 1440: separate labelled section applies label without adding an inline property picker
+    ok 9 - [ISSUE-014] 1440: separate labelled section applies label without adding an inline property picker
+      ---
+      duration_ms: 309.617336
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-008] 1440: mobile issue retains open description and outcome
+    ok 10 - [ISSUE-008] 1440: mobile issue retains open description and outcome
+      ---
+      duration_ms: 4.698599
+      type: 'test'
+      ...
+PROBE ISSUE-024 PNG: rendered upload, exact bytes and ID, reload, dimensions, editable alt, viewer zoom and two-image keyboard navigation, download, retained attachment, removed-file revision marker and foreign-reference refusal PASS
+    # Subtest: [ISSUE-024] 1440: existing issue PNG display and viewer
+    ok 11 - [ISSUE-024] 1440: existing issue PNG display and viewer
+      ---
+      duration_ms: 10386.859732
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-001] 1440: live assignment and self suppression
+    ok 12 - [NOTIFY-001] 1440: live assignment and self suppression
+      ---
+      duration_ms: 3008.39461
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 1440: keyboard selected stable description mention
+    ok 13 - [ISSUE-013] 1440: keyboard selected stable description mention
+      ---
+      duration_ms: 3186.408318
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-002] 1440: followed comment mention overlap produces one row and one mail
+    ok 14 - [NOTIFY-002] 1440: followed comment mention overlap produces one row and one mail
+      ---
+      duration_ms: 2561.044336
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-002] 1440: followers receive plain comments without email and commenter self suppression
+    ok 15 - [NOTIFY-002] 1440: followers receive plain comments without email and commenter self suppression
+      ---
+      duration_ms: 2973.855113
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 1440: description edit mentions only newly added recipients and leaves unknown tokens literal
+    ok 16 - [ISSUE-013] 1440: description edit mentions only newly added recipients and leaves unknown tokens literal
+      ---
+      duration_ms: 413.141252
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 1440: remove and re-add selected mention creates a new edit event once
+    ok 17 - [ISSUE-013] 1440: remove and re-add selected mention creates a new edit event once
+      ---
+      duration_ms: 2273.932892
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 1440: recipient comments suppress self and preserve issue version
+    ok 18 - [NOTIFY-003] 1440: recipient comments suppress self and preserve issue version
+      ---
+      duration_ms: 6462.106169
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 1440: row opening and mark all are private version-neutral reads
+    ok 19 - [NOTIFY-003] 1440: row opening and mark all are private version-neutral reads
+      ---
+      duration_ms: 3417.39506
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-017] 1440: native description and comment reactions synchronize without notifications
+    ok 20 - [ISSUE-017] 1440: native description and comment reactions synchronize without notifications
+      ---
+      duration_ms: 12898.387862
+      type: 'test'
+      ...
+ISSUE-027 private-source backlinks follow current Member and Viewer membership at 1440 and 390
+ISSUE-027 description and comment links, title and status hover and focus, one retained backlink and removed state passed at1440 and390
+    # Subtest: [ISSUE-006] 1440: own unfollow and follow preserve issue version
+    ok 21 - [ISSUE-006] 1440: own unfollow and follow preserve issue version
+      ---
+      duration_ms: 687.562729
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-004] 1440: issue and event mutes suppress future inbox and actual mail; unmute never backfills
+    ok 22 - [NOTIFY-004] 1440: issue and event mutes suppress future inbox and actual mail; unmute never backfills
+      ---
+      duration_ms: 6144.957826
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 1440: email optout retains inbox and Base development captures contain only disclosed fields
+    ok 23 - [NOTIFY-006] 1440: email optout retains inbox and Base development captures contain only disclosed fields
+      ---
+      duration_ms: 3055.070793
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 1440: native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures
+    ok 24 - [NOTIFY-006] 1440: native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures
+      ---
+      duration_ms: 4166.47435
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 1440: operator re-enables email through native Settings and next real mention is captured once
+    ok 25 - [NOTIFY-006] 1440: operator re-enables email through native Settings and next real mention is captured once
+      ---
+      duration_ms: 3159.972624
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 1440: native Inbox pagination ordering and cached rows clear after actual operator removal
+    ok 26 - [NOTIFY-003] 1440: native Inbox pagination ordering and cached rows clear after actual operator removal
+      ---
+      duration_ms: 9255.395395
+      type: 'test'
+      ...
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+    # Subtest: [NOTIFY-006] 1440: installation email disabled retains native authentication and Inbox with no delivery intent
+    ok 27 - [NOTIFY-006] 1440: installation email disabled retains native authentication and Inbox with no delivery intent
+      ---
+      duration_ms: 7437.079047
+      type: 'test'
+      ...
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+    # Subtest: [TEAM-001] 390: create team with uppercase prefix and seven categories
+    ok 28 - [TEAM-001] 390: create team with uppercase prefix and seven categories
+      ---
+      duration_ms: 90.380686
+      type: 'test'
+      ...
+    # Subtest: [TEAM-002] 390: rename team; add rename and reorder workflow status
+    ok 29 - [TEAM-002] 390: rename team; add rename and reorder workflow status
+      ---
+      duration_ms: 7075.091842
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: create rename recolour readable workspace label
+    ok 30 - [ISSUE-014] 390: create rename recolour readable workspace label
+      ---
+      duration_ms: 2943.326899
+      type: 'test'
+      ...
+    # Subtest: [PROJ-001] 390: create project with lead Markdown optional target and Planned lifecycle
+    ok 31 - [PROJ-001] 390: create project with lead Markdown optional target and Planned lifecycle
+      ---
+      duration_ms: 207.552408
+      type: 'test'
+      ...
+    # Subtest: [PROJ-002] 390: operator explicitly changes project lifecycle
+    ok 32 - [PROJ-002] 390: operator explicitly changes project lifecycle
+      ---
+      duration_ms: 179.762745
+      type: 'test'
+      ...
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PROBE ISSUE-026 authoring: template slash controls, rich HTML paste, save and reopen -> three stored GFM drafts, pasted tables and code, safe previews and tooltips; limits and cancellation preserve drafts and stored content
+PROBE ISSUE-026 application: create project from saved template, delete template -> rendered project, milestone and issue GFM with highlighting, relative dates retained, project survives
+PROJ-012 1440: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 390: save structure, edit cadence, launch two milestones and four issues with offsets, delete keeps projects, axe and overflow PASS
+PROJ-012 private team-template reads and Viewer creation, edit and application refusals passed at 1440 and 390
+    # Subtest: [PROJ-012] 390: save project structure, launch native issue teams and retain projects after template deletion
+    ok 33 - [PROJ-012] 390: save project structure, launch native issue teams and retain projects after template deletion
+      ---
+      duration_ms: 148648.935876
+      type: 'test'
+      ...
+    # Subtest: [CYCLE-001] 390: manual nonoverlap cycles use workspace timezone and reject invalid end
+    ok 34 - [CYCLE-001] 390: manual nonoverlap cycles use workspace timezone and reject invalid end
+      ---
+      duration_ms: 543.285089
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: label applied to an authored issue
+    ok 35 - [ISSUE-014] 390: label applied to an authored issue
+      ---
+      duration_ms: 264.624998
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-014] 390: separate labelled section applies label without adding an inline property picker
+    ok 36 - [ISSUE-014] 390: separate labelled section applies label without adding an inline property picker
+      ---
+      duration_ms: 266.639251
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-008] 390: mobile issue retains open description and outcome
+    ok 37 - [ISSUE-008] 390: mobile issue retains open description and outcome
+      ---
+      duration_ms: 5.274661
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-001] 390: live assignment and self suppression
+    ok 38 - [NOTIFY-001] 390: live assignment and self suppression
+      ---
+      duration_ms: 3480.256954
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 390: keyboard selected stable description mention
+    ok 39 - [ISSUE-013] 390: keyboard selected stable description mention
+      ---
+      duration_ms: 2635.385869
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-002] 390: followed comment mention overlap produces one row and one mail
+    ok 40 - [NOTIFY-002] 390: followed comment mention overlap produces one row and one mail
+      ---
+      duration_ms: 3066.44367
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-002] 390: followers receive plain comments without email and commenter self suppression
+    ok 41 - [NOTIFY-002] 390: followers receive plain comments without email and commenter self suppression
+      ---
+      duration_ms: 2533.307902
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 390: description edit mentions only newly added recipients and leaves unknown tokens literal
+    ok 42 - [ISSUE-013] 390: description edit mentions only newly added recipients and leaves unknown tokens literal
+      ---
+      duration_ms: 455.645783
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-013] 390: remove and re-add selected mention creates a new edit event once
+    ok 43 - [ISSUE-013] 390: remove and re-add selected mention creates a new edit event once
+      ---
+      duration_ms: 2272.950827
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 390: recipient comments suppress self and preserve issue version
+    ok 44 - [NOTIFY-003] 390: recipient comments suppress self and preserve issue version
+      ---
+      duration_ms: 6454.988277
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 390: row opening and mark all are private version-neutral reads
+    ok 45 - [NOTIFY-003] 390: row opening and mark all are private version-neutral reads
+      ---
+      duration_ms: 3397.616389
+      type: 'test'
+      ...
+    # Subtest: [ISSUE-017] 390: native description and comment reactions synchronize without notifications
+    ok 46 - [ISSUE-017] 390: native description and comment reactions synchronize without notifications
+      ---
+      duration_ms: 9512.003976
+      type: 'test'
+      ...
+ISSUE-027 private-source backlinks follow current Member and Viewer membership at 1440 and 390
+ISSUE-027 description and comment links, title and status hover and focus, one retained backlink and removed state passed at1440 and390
+    # Subtest: [ISSUE-006] 390: own unfollow and follow preserve issue version
+    ok 47 - [ISSUE-006] 390: own unfollow and follow preserve issue version
+      ---
+      duration_ms: 3063.775738
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-004] 390: issue and event mutes suppress future inbox and actual mail; unmute never backfills
+    ok 48 - [NOTIFY-004] 390: issue and event mutes suppress future inbox and actual mail; unmute never backfills
+      ---
+      duration_ms: 9063.265757
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 390: email optout retains inbox and Base development captures contain only disclosed fields
+    ok 49 - [NOTIFY-006] 390: email optout retains inbox and Base development captures contain only disclosed fields
+      ---
+      duration_ms: 3032.854684
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 390: native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures
+    ok 50 - [NOTIFY-006] 390: native failed and uncertain delivery surfaces with explicitly labelled fresh D1 presentation fixtures
+      ---
+      duration_ms: 4099.863149
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-006] 390: operator re-enables email through native Settings and next real mention is captured once
+    ok 51 - [NOTIFY-006] 390: operator re-enables email through native Settings and next real mention is captured once
+      ---
+      duration_ms: 3135.290269
+      type: 'test'
+      ...
+    # Subtest: [NOTIFY-003] 390: native Inbox pagination ordering and cached rows clear after actual operator removal
+    ok 52 - [NOTIFY-003] 390: native Inbox pagination ordering and cached rows clear after actual operator removal
+      ---
+      duration_ms: 9283.202791
+      type: 'test'
+      ...
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+    # Subtest: [NOTIFY-006] 390: installation email disabled retains native authentication and Inbox with no delivery intent
+    ok 53 - [NOTIFY-006] 390: installation email disabled retains native authentication and Inbox with no delivery intent
+      ---
+      duration_ms: 7505.358931
+      type: 'test'
+      ...
+Collaboration browser: 53 clause journeys, 122 functional checkpoints, 10 live timings passed.
+    1..53
+ok 1 - [OPS-004] real first-owner collaboration at mobile
+  ---
+  duration_ms: 802399.461681
+  type: 'test'
+  ...
+1..1
+# tests 54
+# suites 0
+# pass 54
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 802403.26979

@@ -1,0 +1,5 @@
+{
+  "passed": false,
+  "message": "expect(locator).toHaveAttribute(expected) failed\n\nLocator:  getByRole('dialog', { name: 'Image viewer' }).getByRole('img')\nExpected: \"Screenshot 2\"\nReceived: \"synthetic-vector-2414.png\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveAttribute\" getByRole('dialog', { name: 'Image viewer' }).getByRole('img') with timeout 5000ms\n  - waiting for getByRole('dialog', { name: 'Image viewer' }).getByRole('img')\n    14 × locator resolved to <img width=\"64\" height=\"48\" alt=\"synthetic-vector-2414.png\" src=\"/api/issues/BOOT-2/files/01M6PVHARW35ZV3QNMZPT9DN22\"/>\n       - unexpected value \"synthetic-vector-2414.png\"\n",
+  "sourceCommit": "870137fb22ca8492e460cd1834c3cf87c31abeb9"
+}
