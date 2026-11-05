@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b5ea697558674e1f6275635164d27b842d85b721c02a9f05de920c5460c356cd",
+      "sha256": "acf6ae318b6decfd148f6f2a2d03f8ba9260049c1015169be488c7db7baccb02",
       "executable": false
     },
     "DEMO.md": {
@@ -8754,7 +8754,7 @@
       "executable": false
     },
     "tests/e2e/recurring-issues-journey.mjs": {
-      "sha256": "a6b49d8fb0dcabcb2403f6ae38ea91a1ef34be0a9382617ae33ecfac8e435513",
+      "sha256": "eff2cb3d6cf6766dc67848bdd25e4357a413ac0571014b3864403bae929ba69a",
       "executable": false
     },
     "tests/e2e/reference-access-cells.mjs": {
