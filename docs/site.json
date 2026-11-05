@@ -526,7 +526,7 @@
     },
     {
       "source": "docs/RECURRING-ISSUES.md",
-      "reason": "Native weekly recurrence commands, archive holds and implementation boundaries for maintainers"
+      "reason": "Weekly recurrence Settings controls, native commands, archive holds and implementation boundaries for maintainers"
     }
   ]
 }

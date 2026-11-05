@@ -1,4 +1,5 @@
 import {issueTemplatesJourney} from './issue-templates-journey.mjs';
+import {recurringIssuesJourney} from './recurring-issues-journey.mjs';
 import {assertRoleDoorCoverage} from './role-door-coverage.mjs';
 import { exerciseAuditView, exerciseAuditAccess } from './admin-audit-journey.mjs';
 import { projectFieldsJourney } from './core-project-fields-journey.mjs';
@@ -194,7 +195,11 @@ await contract(
             };
           },
         });
-        await clause("ISSUE-016", "native and scoped issue templates", () => issueTemplatesJourney(shared));
+        // Weekly recurrence consumes the same native templates; it extends this registration within the suite cap.
+        await clause("ISSUE-016 AUTO-001", "native and scoped issue templates and weekly recurrence", async () => {
+          await issueTemplatesJourney(shared);
+          await recurringIssuesJourney(shared);
+        });
         requestDiagnostics.phase("ordinary sign-out");
         await assertSignOut(shared);
         await assertSignOutReadLifecycle({

@@ -17,6 +17,21 @@ export const stopInputSchema=z.object({
   state:z.enum(['paused','ended']),
 }).strict()
 export type SeriesInput=z.infer<typeof seriesInputSchema>
+const issueReference=z.object({id:z.string(),identifier:z.string(),title:z.string()})
+export const occurrenceSchema=z.object({
+  dueOn:z.string(),scheduledAt:z.string(),outcome:z.enum(['created','skipped','failed']),
+  issue:issueReference.nullable(),children:z.array(issueReference),error:z.string().nullable(),at:z.string(),
+})
+export const seriesSchema=z.object({
+  id:z.string(),name:z.string(),teamId:z.string(),configuringPersonId:z.string(),
+  templateId:z.string(),templateVersion:z.number().int(),cadence:z.literal('weekly'),
+  timezone:z.string(),startsOn:z.string(),nextOn:z.string(),dueOffsetDays:z.number().int().nullable(),
+  skipWhileOpen:z.boolean(),overrides:defaultsSchema,state:z.enum(['enabled','paused','ended']),
+  version:z.number().int(),lastError:z.string().nullable(),restoreHeld:z.boolean(),history:z.array(occurrenceSchema),
+})
+export const seriesListSchema=z.object({series:z.array(seriesSchema)})
+export type Series=z.infer<typeof seriesSchema>
+export type Occurrence=z.infer<typeof occurrenceSchema>
 export type SeriesRow={
   id:string;workspace_id:string;configuring_operator_id:string;team_id:string;
   template_id:string;template_version:number;name:string;timezone:string;

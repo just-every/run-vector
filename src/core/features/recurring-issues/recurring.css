@@ -1,0 +1,26 @@
+/* Weekly series in a team's Planning tab: condensed ruled rows with configuration and history on demand. */
+.recurring-issues { min-width: 0; }
+.recurring-rows { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--app-line); }
+.recurring-rows:empty { display: none; }
+.recurring-row { display: grid; gap: 0.35rem; min-width: 0; padding: 0.5rem 0.25rem; border-bottom: 1px solid var(--app-line); }
+.recurring-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 0.75rem; min-width: 0; }
+.recurring-head .row-main { flex: 1 1 14rem; }
+.recurring-actions { display: flex; flex-wrap: wrap; gap: 0.25rem; }
+.recurring-failure { color: var(--app-danger); }
+.recurring-confirm { display: grid; gap: 0.35rem; padding: 0.75rem 1rem; border-radius: 0.5rem; background: var(--app-paper); }
+.recurring-details > summary { font-size: var(--app-text-small); }
+.recurring-configuration { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 0.3rem 1rem; margin: 0 0 0.75rem 1.5rem; font-size: var(--app-text-small); line-height: 1.5; }
+.recurring-configuration dt { color: var(--app-body); }
+.recurring-configuration dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.recurring-history { display: grid; gap: 0.5rem; margin: 0 0 0.5rem 1.5rem; padding: 0; list-style: none; font-size: var(--app-text-small); line-height: 1.5; }
+.recurring-history li { display: grid; gap: 0.1rem; min-width: 0; overflow-wrap: anywhere; }
+.recurring-week { color: var(--app-body); }
+.recurring-history a { color: var(--app-cobalt-ink); }
+.recurring-history .key { font-family: var(--app-mono); }
+.recurring-issues > .field-hint { max-width: 40rem; }
+.recurring-form .field input[type="date"] { box-sizing: border-box; width: 100%; min-height: 44px; padding: 0.55rem 0.8rem; border: 1px solid var(--app-field-border); border-radius: 0.5rem; background-color: var(--app-column); color: var(--app-ink); font: inherit; }
+
+@container settings (max-width: 30rem) {
+  .recurring-configuration { grid-template-columns: minmax(0, 1fr); gap: 0 0; }
+  .recurring-configuration dd + dt { margin-top: 0.35rem; }
+}

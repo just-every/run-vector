@@ -1,8 +1,10 @@
 # Weekly recurring issues
 
-The native commands can create a weekly series from an existing issue template, inspect its configuration and occurrence history, and pause or end it. Settings controls are not implemented yet. Other cadences, editing, rescheduling and resuming remain unavailable.
+A weekly series creates an issue, with its template's subissues, from an existing issue template. Other cadences, editing, rescheduling and resuming remain unavailable.
 
-Use the installation's signed-in native session and same-origin request protection. These commands have no scoped API grant. Owners and Admins may configure series for visible teams; Members must currently belong to the selected team. Guests and Viewers cannot configure, pause or end a series.
+In Settings, open Teams, choose a team and open Planning. Under Recurring issues, choose New recurring issue, then name the series and choose its template, first occurrence date, optional due offset, assignee, project and whether to skip a week while the previous issue is open. Each row shows the series state, its next week and its last failure. Open Configuration and history to see who configured it, the template version and timezone it captured, and each week's created, skipped or failed occurrence with links to the created issues. Pause or End stops future weeks after a confirmation; created issues are retained.
+
+The same native commands are available to scripts. Use the installation's signed-in native session and same-origin request protection. These commands have no scoped API grant. Owners and Admins may configure series for visible teams; Members must currently belong to the selected team. Guests and Viewers cannot configure, pause or end a series.
 
 Create a series with `POST /api/recurring-issues`:
 

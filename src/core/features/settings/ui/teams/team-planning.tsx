@@ -1,5 +1,6 @@
 import type { Administration } from '../../../administration/schema';
 import { IssueTemplateSettings } from '../../../issue-templates/controls';
+import { RecurringIssueSettings } from '../../../recurring-issues/controls';
 import { teamAccess } from '../team-access';
 import { TeamAutoAdd } from './team-auto-add';
 import { TeamCyclesSwitch } from './team-cycles-switch';
@@ -7,7 +8,7 @@ import { TeamSchedule } from './team-schedule';
 import { TeamWhoManages } from './team-who-manages';
 
 /**
- * Planning: whether the team uses cycles, the automatic schedule, the two auto-add rules, the issue templates and who manages them. The schedule follows who may plan
+ * Planning: whether the team uses cycles, the automatic schedule, the two auto-add rules, the issue templates, the weekly recurring issues and who manages them. The schedule follows who may plan
  * (`cycles.schedule`); the auto-add rules are saved through the team-settings door, so they are controls for whoever
  * that door admits.
  */
@@ -19,6 +20,7 @@ export function TeamPlanning({ data, team }: { data: Administration; team: Admin
     {team.cyclesEnabled && <TeamSchedule data={data} team={team} editable={access.planning && open} />}
     <TeamAutoAdd team={team} editable={access.settings && open} />
     {!team.archivedAt && <IssueTemplateSettings teamId={team.id} />}
+    {open && access.recurring && <RecurringIssueSettings teamId={team.id} />}
     <TeamWhoManages data={data} team={team} />
   </div>;
 }

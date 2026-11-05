@@ -26,5 +26,6 @@ export function teamAccess(data: Administration, team: Team) {
     members: may("teams.members"),
     permissions: may("teams.permissions"),
     planning: may("cycles.manage"),
+    recurring: may("recurring.manage"),
   };
 }
