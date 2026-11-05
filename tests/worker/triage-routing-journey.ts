@@ -124,8 +124,31 @@ export async function triageRoutingJourney(f: Awaited<ReturnType<typeof setupInt
   expect(unmatched.team.id).toBe(origin.id); expect(unmatched.routing).toBeNull();
   await read(await f.call(workspacePath, 'PUT', { expectedVersion: workspace.version + 2, rules: [] }));
   // Generic signed labels cannot masquerade as the registered Sentry source.
-  const genericItem = await read(await f.signed(generic, { teamId: origin.id, title: 'Sentry', sourceRecordId: 'synthetic-vector-9315', sourceRevisionId: 'synthetic-vector-9316', observedAt: '2026-10-28T00:00:00Z' }));
-  expect((await detail(genericItem.identifier)).routing).toBeNull();
+  const genericInput = { teamId: origin.id, title: 'Sentry', sourceRecordId: 'synthetic-vector-9315', sourceRevisionId: 'synthetic-vector-9316', observedAt: '2026-10-28T00:00:00Z' };
+  const genericItem = await read(await f.signed(generic, genericInput));
+  const genericBeforeMove = await detail(genericItem.identifier);
+  expect(genericBeforeMove.routing).toBeNull();
+  const manuallyMoved = await read(await f.call('/issues/' + genericItem.identifier + '/team', 'POST', {
+    expectedVersion: genericBeforeMove.version, teamId: other.id, statusId: other.statuses.find((s: any) => s.category === 'intake').id,
+  }));
+  expect(await read(await f.signed(generic, genericInput))).toMatchObject({identifier:manuallyMoved.identifier,reused:true});
+  await read(await f.signed(generic, {...genericInput,sourceRevisionId:'synthetic-vector-9330'}));
+  const legacy = await detail(manuallyMoved.identifier);
+  expect(legacy.team.id).toBe(other.id); expect(legacy.routing).toBeNull(); expect(legacy.evidence).toHaveLength(2);
+  const legacyError = await read(await send('9331'));
+  let legacyErrorItem = await detail(legacyError.identifier);
+  legacyErrorItem = await read(await f.call('/issues/' + legacyError.identifier + '/accept', 'POST', {
+    expectedVersion: legacyErrorItem.version, statusId: origin.statuses.find((s: any) => s.category === 'unstarted')!.id,
+  }));
+  legacyErrorItem = await read(await f.call('/issues/' + legacyError.identifier + '/team', 'POST', {
+    expectedVersion: legacyErrorItem.version, teamId: other.id, statusId: other.statuses.find((s: any) => s.category === 'unstarted').id,
+  }));
+  legacyErrorItem = await read(await f.call('/issues/' + legacyError.identifier, 'PATCH', {
+    expectedVersion: legacyErrorItem.version, statusId: other.statuses.find((s: any) => s.category === 'completed').id,
+  }));
+  await read(await sentry.send(payload('9331', 'unresolved', 'regressed'), 'synthetic-vector-9332'));
+  legacyErrorItem = await detail(legacyError.identifier);
+  expect(legacyErrorItem.status.category).toBe('completed'); expect(legacyErrorItem.routing).toBeNull(); expect(legacyErrorItem.evidence).toHaveLength(2);
   await save([rule], member);
   // Native acceptance, resolve and signed regression still use the destination's workflow.
   item = await detail();
