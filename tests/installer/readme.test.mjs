@@ -31,7 +31,7 @@ test('README literal clone, own frozen install, optional setup and dev automatic
   const path=join(prefix,'bin')+':'+process.env.PATH;
   const environment=extra=>commandEnvironment({PATH:path,npm_config_prefix:prefix,...extra});
   await store.run('README install rer','/bin/sh',['-eu','-c','npm install --global @runeditrun/rer@'+pin],{cwd:work,env:environment({CI:'true'})});
-  assert.deepEqual(start,['npx -y @runeditrun/rer dev just-every/run-vector'],'README starts Vector with the one line');
+  assert.deepEqual(start,['curl -fsSL https://runeditrun.com/install.sh | sh -s -- dev just-every/run-vector'],'README starts Vector with the one line');
   // The one line clones the public repository into its repo-name folder; the journey clones this checkout in its place.
   await store.run('README clone','/bin/sh',['-eu','-c','git clone '+process.cwd()+' vector'],{cwd:work,env:commandEnvironment({})});
   const root=join(work,'vector');
