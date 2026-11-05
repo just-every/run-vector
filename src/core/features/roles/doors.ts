@@ -270,6 +270,10 @@ export const doors: Door[] = [
   { method: 'DELETE', path: '/settings/projects/:id/milestones/:milestoneId', row: 'milestones.write' },
   // Cycles
   { method: 'POST', path: '/settings/cycles', row: 'cycles.manage', teams: bodyTeam },
+  { method: 'GET', path: '/settings/triage-routing', row: 'triage-routing.workspace' },
+  { method: 'PUT', path: '/settings/triage-routing', row: 'triage-routing.workspace' },
+  { method: 'GET', path: '/settings/teams/:id/triage-routing', row: 'triage-routing.team', teams: team('id') },
+  { method: 'PUT', path: '/settings/teams/:id/triage-routing', row: 'triage-routing.team', teams: team('id') },
   { method: 'GET', path: '/settings/teams/:id/triage-rotation', row: 'teams.settings', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/triage-rotation', row: 'teams.settings', teams: team('id') },
   { method: 'PUT', path: '/settings/teams/:id/cycle-schedule', row: 'cycles.schedule', teams: team('id') },

@@ -8,6 +8,7 @@ import { insertHistoricalSample } from "./historical-sample-fixture";
  */
 const addedAfterBoundary: Record<string, Record<string, unknown>> = {
   teams: { cycles_enabled: 1 },
+  issues: { triage_route_json: null },
 };
 /** A populated prior head retains every value, including queued candidates and mutes. */
 export async function triageUpgrade() {
