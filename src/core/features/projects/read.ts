@@ -1,3 +1,4 @@
+import { readProjectUpdates } from "../project-updates/repository";
 import { readProjectReport } from "../project-report/read";
 import { settingsActor } from '../settings/repository';
 import { loadWorkspaceSnapshot } from '../streams';
@@ -17,10 +18,12 @@ export async function projectDetail(db:D1Database,actor:string,id:string,at=new 
   if(!snapshot.projects.some(project=>project.id===id&&project.workspaceId===access.workspace_id))return null;
   const project=getProjectDetail(snapshot,id,at);
   if(!project)return null;
-  const [cycleHistory,activity,report]=await Promise.all([
+  const [cycleHistory,activity,report,updates]=await Promise.all([
     readProjectCycleHistory(db,id),
     db.prepare(`SELECT a.id,a.kind,a.previous_value_json AS previousValue,a.next_value_json AS nextValue,a.created_at AS createdAt,o.name AS actorName FROM project_activity a LEFT JOIN operators o ON o.id=a.actor_operator_id WHERE a.project_id=? ORDER BY a.created_at DESC,a.id DESC`).bind(id).all<{id:string;kind:string;previousValue:string;nextValue:string;createdAt:string;actorName:string|null}>(),
     readProjectReport(db,id,at),
+    readProjectUpdates(db,id),
   ]);
-  return {...project,cycleHistory,report,activity:activity.results.map(a=>({...a,previousValue:JSON.parse(a.previousValue),nextValue:JSON.parse(a.nextValue)}))};
+  if(!await db.prepare('SELECT id FROM projects WHERE id=? AND workspace_id=?').bind(id,access.workspace_id).first())return null;
+  return {...project,cycleHistory,report,updates,canPostUpdate:access.role==='owner'||access.role==='admin'||(access.role==='member'&&project.lead.id===actor),activity:activity.results.map(a=>({...a,previousValue:JSON.parse(a.previousValue),nextValue:JSON.parse(a.nextValue)}))};
 }

@@ -10,6 +10,7 @@ export function notificationRemovalStatements(
       "issue_reminders",
       "notifications",
       "document_notifications",
+      "project_update_notifications",
       "notification_candidates",
       "notification_deliveries",
     ].map((table) =>

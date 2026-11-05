@@ -66,6 +66,7 @@ export const matrix = {
   'cycles.manage': row('Create, edit, complete or delete a cycle (CYCLE-001)', 'yes', 'yes', 'planning-setting', 'no'),
   'cycles.schedule': row('Set a team\'s cycle schedule (ROLE-007/ROLE-009; CYCLE-007 action)', 'yes', 'yes', 'planning-setting', 'no'),
   'cycles.commit': row('Commit, move or uncommit an issue in a cycle (CYCLE-002)', 'yes', 'yes', 'teams', 'invited-teams'),
+  'project-updates.write': row('Post a project update (PROJ-010)', 'yes', 'yes', 'lead', 'no'),
   'projects.write': row('Create a project and edit its fields, members and contributing teams (PROJ-001, PROJ-014)', 'yes', 'yes', 'yes', 'no'),
   'projects.status': row('Change a project\'s status; archive or unarchive it (PROJ-002, PROJ-009, PROJ-016)', 'yes', 'yes', 'yes', 'no'),
   'projects.delete': row('Delete a project after its confirmation, keeping its issues (PROJ-003, PROJ-017)', 'yes', 'yes', 'no', 'no'),

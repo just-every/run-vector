@@ -1,3 +1,4 @@
+import {projectUpdatesJourney,projectUpdateUpgrade} from "./project-updates-journey";
 import {documentJourney,documentRoles} from './documents-scenario';
 import { env } from "cloudflare:workers";
 import { afterEach, expect, it, vi } from "vitest";
@@ -101,3 +102,5 @@ it("[REPORT-002] a project's scope and completion by day follow adds, moves, del
 
 it('[PROJ-013 OPS-001 ROLE-002] documents retain project specs, ordered edits, initiative and team lists, search visibility and native parent archives',async()=>{await documentJourney();});
 it('[PROJ-013 ROLE-001 ROLE-013] document creation, edits, comments and specification writes follow each current role and invited parent',async()=>{await documentRoles();});
+
+it('[PROJ-010] native dated project updates and follower Inbox receipts retain current authority and atomic custody',async()=>{await projectUpdateUpgrade();await projectUpdatesJourney();});

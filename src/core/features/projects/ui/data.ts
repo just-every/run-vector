@@ -1,3 +1,4 @@
+import { projectUpdateSchema } from "../../project-updates/schema";
 import { projectReportSchema } from "../../project-report/schema";
 import { historicalCycleSchema } from "../../cycle-closure/schema";
 import { z } from "zod";
@@ -70,6 +71,8 @@ export const projectPortfolioSchema = z.object({
 });
 
 export const projectDetailSchema = projectSummarySchema.extend({
+  updates: z.array(projectUpdateSchema),
+  canPostUpdate: z.boolean(),
   milestones: z.array(z.object({
     id: z.string(), projectId: z.string(), name: z.string(), description: z.string(),
     targetDate: z.string().nullable(), position: z.number(), completed: z.boolean(),

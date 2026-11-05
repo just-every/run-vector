@@ -1,6 +1,7 @@
 /** Client-safe collaboration DTOs. */
 import type { SlackDirectPreferences } from "../integrations/slack-dm/schema";
 export const notificationKinds = [
+  "project_update",
   "assignment",
   "mention",
   "comment",
@@ -26,6 +27,8 @@ export type InboxItem = {
   eventId: string;
   identifier: string;
   documentId?: string | null;
+  projectId?: string | null;
+  projectUpdateId?: string | null;
   title: string;
   actor: string | null;
   causes: NotificationKind[];

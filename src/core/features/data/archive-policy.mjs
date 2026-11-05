@@ -1,3 +1,5 @@
+// Project updates and their native Inbox receipts are portable domain history.
+// Restoring them never reconstructs recipients or sends external effects.
 // Document mentions, followers, Inbox history and consumed revision receipts are portable domain data.
 // Restore retains history without scanning text, scheduling channels or replaying deliveries.
 // Report schedules and safe receipts are portable; credentials, active claims

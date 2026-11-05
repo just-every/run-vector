@@ -62,6 +62,8 @@ export function visibilityCtes(actor: string) {
       WHEN COALESCE(json_extract(r.filters_json,'$.team'),'all')='all' THEN NOT (${guest}) OR (r.is_shared=0 AND r.owner_operator_id=${literal}) OR NOT EXISTS(SELECT 1 FROM main.teams t JOIN __vector_reader reader ON reader.workspace_id=t.workspace_id WHERE t.id NOT IN(SELECT id FROM teams))
       ELSE json_extract(r.filters_json,'$.team') IN(SELECT id FROM teams) END
       AND (json_extract(r.filters_json,'$.project') IS NULL OR json_extract(r.filters_json,'$.project') IN('all','none') OR json_extract(r.filters_json,'$.project') IN(SELECT id FROM projects))`),
+    scoped('project_updates', project()),
+    scoped('project_update_notifications', project()),
     scoped('project_templates', 'r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (r.team_id IS NULL OR r.team_id IN(SELECT id FROM teams))'),
     ...['project_template_milestones','project_template_labels','project_template_issues'].map(t=>scoped(t,'r.template_id IN(SELECT id FROM project_templates)')),
     scoped('dashboards', 'r.workspace_id=(SELECT workspace_id FROM __vector_reader) AND (r.team_id IS NULL OR r.team_id IN(SELECT id FROM teams))'),

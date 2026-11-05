@@ -19,6 +19,7 @@ export const channelPreferencesSchema = z.object({
 });
 
 export const channelLabels = {
+  project_update: "Project updates",
   assignment: "Assignments",
   mention: "Mentions",
   comment: "Followed comments",

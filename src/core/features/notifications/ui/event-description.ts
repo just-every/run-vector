@@ -1,6 +1,7 @@
 import type { InboxItem, NotificationKind } from "../schema";
 
 const actions: Record<NotificationKind, string> = {
+  project_update: "posted an update on",
   assignment: "assigned you",
   mention: "mentioned you on",
   comment: "commented on",

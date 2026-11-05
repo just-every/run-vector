@@ -1,7 +1,7 @@
 import {z} from 'zod';
-import {notificationKinds} from '../../notifications/schema';
-/** Every implemented Inbox event can be routed to a confirmed Slack account. */
-export const directKinds=notificationKinds;
+import {channelKinds} from '../../notifications/channel-schema';
+/** Qualified issue Inbox events can be routed to a confirmed Slack account. */
+export const directKinds=channelKinds;
 export type DirectKind=typeof directKinds[number];
 export const slackDirectPreferences=z.object({
  available:z.boolean(),

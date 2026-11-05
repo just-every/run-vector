@@ -1,3 +1,4 @@
+import { updateDoorProject } from "../project-updates/authority";
 import {documentDoorRow,documentDoorTeams} from '../documents/authority'
 import type { RowId, SettingsPage } from './matrix'
 
@@ -111,6 +112,7 @@ const issueTemplateDoors: Door[] = [
 ]
 
 export const doors: Door[] = [
+  {method:'POST',path:'/projects/:projectId/updates',row:'project-updates.write',project:updateDoorProject,workMutation:true},
   {method:'GET',path:'/settings/report-exports',row:'reports.export'},
   {method:'POST',path:'/settings/report-exports',row:'reports.export'},
   {method:'PATCH',path:'/settings/report-exports/:id',row:'reports.export'},

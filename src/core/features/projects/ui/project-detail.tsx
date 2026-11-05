@@ -1,3 +1,4 @@
+import { ProjectUpdates } from "../../project-updates/panel";
 import {DocumentsSection} from '../../documents/ui/list';
 import { useDateFormat } from "../../../shared/date-format";
 import {SubjectSubscribe} from '../../subscriptions/ui/subscriptions';
@@ -48,6 +49,7 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   return (
     <ProjectDetailContent
       project={project.data}
+      updates={<ProjectUpdates project={project.data} onChanged={project.reload}/>}
       milestones={<ProjectMilestones writable={!!administration.data && !["guest","viewer"].includes(administration.data.viewer.role)} project={project.data} onChanged={(receipt) => {
         project.publishReceipt(() => receipt);
         project.refreshAfterMutation();
@@ -92,10 +94,12 @@ function ProjectDetailContent({
   project,
   management,
   milestones,
+  updates,
 }: {
   project: ProjectDetailData;
   management: ReactNode;
   milestones: ReactNode;
+  updates: ReactNode;
 }) {
   const health = activeHealthLabel(project.health);
   const { date } = useDateFormat();
@@ -150,6 +154,7 @@ function ProjectDetailContent({
         />
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
+      {updates}
       {milestones}
       <DocumentsSection parentKind="project" parentId={project.id}/>
       {project.healthExplanation ? (

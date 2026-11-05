@@ -1,6 +1,6 @@
 import { mutationDatabase } from '../auth/mutation-database';
 import { SettingsError, settingsActor } from '../settings/repository';
-import { notificationKinds } from './schema';
+import { channelKinds } from './channel-schema';
 import { channelDefaultsInputSchema, channelPreferencesInputSchema, type ChannelChoice, type ChannelPreferences } from './channel-schema';
 import { effectiveEmailSql, effectiveSlackSql } from './channel-sql';
 
@@ -10,7 +10,7 @@ export async function channelDefaults(db: D1Database, actor: string) {
   const access = await settingsActor(db, actor);
   const rows = (await db.prepare(`SELECT kind,email_mode emailMode,slack_enabled slack
     FROM notification_channel_defaults WHERE workspace_id=?`).bind(access.workspace_id).all<ChannelChoice>()).results;
-  return {channels: notificationKinds.map(kind => {
+  return {channels: channelKinds.map(kind => {
     const saved = rows.find(row => row.kind === kind);
     return saved ? {...saved, slack: Boolean(saved.slack)} : builtIn(kind);
   })};
@@ -20,7 +20,7 @@ export async function channelPreferences(db: D1Database, actor: string): Promise
   const rows = (await db.prepare(`SELECT cause.value kind,${effectiveEmailSql("cause.value", "o.id", "o.workspace_id")} emailMode,${effectiveSlackSql("cause.value", "o.id", "o.workspace_id")} slack,
     NOT EXISTS(SELECT 1 FROM notification_channel_overrides p WHERE p.operator_id=o.id AND p.kind=cause.value) inherited
     FROM operators o JOIN workspace_settings t ON t.id=o.workspace_id,
-    json_each(?) cause WHERE o.id=?`).bind(JSON.stringify(notificationKinds), actor)
+    json_each(?) cause WHERE o.id=?`).bind(JSON.stringify(channelKinds), actor)
     .all<ChannelChoice & {inherited: number}>()).results;
   const digestDeliveries = (await db.prepare(`SELECT id,status,attempts,updated_at updatedAt,reason
     FROM notification_digest_batches WHERE recipient_id=? AND status IN ('failed','uncertain')

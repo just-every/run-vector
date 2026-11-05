@@ -14,7 +14,7 @@ export async function unreadCount(db: D1Database, actor: string) {
     .prepare(
       `SELECT count(*) n FROM (${inboxSubjects}) WHERE readAt IS NULL AND snoozed=0`,
     )
-    .bind(actor,actor)
+    .bind(actor,actor,actor)
     .first<number>("n"))!;
 }
 export async function inbox(
@@ -28,13 +28,13 @@ export async function inbox(
   const rows = (
     await db
       .prepare(
-        `SELECT id,eventId,identifier,title,documentId,actor,sourceEventKind,causesJson,createdAt,readAt,snoozedUntil,snoozeOnChange,visibleAt
+        `SELECT id,eventId,identifier,title,documentId,projectId,projectUpdateId,actor,sourceEventKind,causesJson,createdAt,readAt,snoozedUntil,snoozeOnChange,visibleAt
      FROM (${inboxSubjects}) WHERE snoozed=${snoozed ? 1 : 0}
      ${cursor ? "AND (visibleAt<? OR (visibleAt=? AND id<?))" : ""}
      ORDER BY visibleAt DESC,id DESC LIMIT ?`,
       )
       .bind(
-        actor,actor,
+        actor,actor,actor,
         ...(cursor ? [cursor.at, cursor.at, cursor.id] : []),
         limit + 1,
       )
@@ -44,9 +44,10 @@ export async function inbox(
     page = rows.slice(0, limit),
     last = page.at(-1);
   const result = {
-    items: page.map(({ causesJson, sourceEventKind, ...row }) => ({
+    items: page.map(({ causesJson, sourceEventKind, projectId, projectUpdateId, ...row }) => ({
       ...(sourceEventKind==="issue.created"&&(JSON.parse(causesJson) as string[]).includes("status")?{sourceEventKind}:{}),
       ...row,
+      ...(projectId?{projectId,projectUpdateId}:{}),
       snoozeOnChange: !!row.snoozeOnChange,
       causes: JSON.parse(causesJson) as NotificationKind[],
     })),

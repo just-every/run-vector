@@ -1,3 +1,4 @@
+import { addProjectUpdateRoutes } from "../features/project-updates/routes";
 import {addTriageResponsibilityRoutes} from '../features/triage-responsibility/routes';
 import {addIssueTemplateRoutes} from '../features/issue-templates/routes';
 import {addAliasRoutes} from '../features/data/aliases/routes';
@@ -251,6 +252,7 @@ export function createApiApp(document?: { operator: AppEnvironment['Variables'][
   addSubscriptionRoutes(app);
   addInitiativeRoutes(app);
   addDocumentRoutes(app);
+  addProjectUpdateRoutes(app);
   addReleaseRoutes(app);
   addGithubIssueProjection(app);
   addGithubRuleRoutes(app);

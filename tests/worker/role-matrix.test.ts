@@ -225,6 +225,8 @@ function promised(cell: string, who: Kind, c: Context) {
   // The probe gives every Member an editable initiative and an Owner-approved destination (INIT-001).
   if (text === "editable initiative and approved destination only") return "allow";
   if (text.startsWith("no") || text === "apply only") return "forbidden";
+  // This fixture assigns only a project lead; explicit project membership remains PROJ-014.
+  if (text === "the project's lead and members") return who === "lead" ? "allow" : "forbidden";
   if (text.startsWith("team owner only") || text === "the project's lead only") return who === "lead" ? "allow" : "forbidden";
   if (text === "team setting") return who === "lead" || c.settings === "all_members" ? "allow" : "forbidden";
   if (text === "planning setting") return who === "lead" || c.planning === "all_members" ? "allow" : "forbidden";
@@ -233,7 +235,7 @@ function promised(cell: string, who: Kind, c: Context) {
   throw new Error("The journey cannot read this cell yet: " + cell);
 }
 const outcome = (status: number) => status >= 200 && status < 300 ? "allow" : status === 403 ? "forbidden" : status === 404 ? "hidden" : `status ${status}`;
-const watched = ["issue_templates","documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
+const watched = ["project_updates","project_update_notifications","issue_templates","documents","document_revisions","document_comments","issue_specifications","operators", "oa_operators", "oa_tokens", "vector_invitation_roles", "workspace_settings", "teams", "team_members", "team_departures", "team_join_requests",
   "workflow_statuses", "team_cycle_schedules", "issues", "issue_comments", "issue_files", "intake_decisions", "cycles", "labels", "projects",
   "project_milestones", "saved_views", "issue_reactions", "issue_aliases", "issue_alias_prefixes", "audit_records", "vector_integration_sources", "vector_integration_tokens", "rer_portability_jobs",
   "initiative_graph", "initiatives", "initiative_projects", "releases", "release_issues", "release_projects", "github_automation_rules", "vector_slack_allowed_channels", "vector_channel_bindings", "vector_initiative_destination_approvals", "vector_initiative_scoped_bindings", "vector_initiative_channel_bindings", "vector_webhook_destinations", "vector_restore_operator_grants"];

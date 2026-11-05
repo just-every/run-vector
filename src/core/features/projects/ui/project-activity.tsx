@@ -20,7 +20,7 @@ export function ProjectActivity({activity}:{activity:ProjectDetailData['activity
   return <section className="project-detail__section"><h2>Project activity</h2>
     {activity.length===0?<p>No project activity recorded.</p>:<ul className="project-fact-list">{activity.map(entry=>{
       const field=fields[entry.kind.replace(/^project\./,'').replace(/_changed$/,'')];
-      return <li key={entry.id}><strong>{field ? `${field} changed` : entry.kind === 'project.created' ? 'Project created' : 'Project updated'}</strong>
+      return <li key={entry.id}><strong>{field ? `${field} changed` : entry.kind === 'project.created' ? 'Project created' : entry.kind === 'project.update_posted' ? 'Project update posted' : 'Project updated'}</strong>
         {field&&<span>{value(entry.previousValue,field,formatInstant,date)} → {value(entry.nextValue,field,formatInstant,date)}</span>}
         <small>{entry.actorName ?? 'Removed operator'} · <time dateTime={entry.createdAt}>{formatInstant(entry.createdAt)}</time></small></li>;
     })}</ul>}

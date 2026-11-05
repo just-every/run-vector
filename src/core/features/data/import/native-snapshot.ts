@@ -1,3 +1,5 @@
+// Project updates belong to projects, outside the imported issue snapshot.
+// Moving or reversing an imported issue never removes its project update history.
 import inventory from '../archive-inventory.json';
 import type { Json, D1Sql } from '../../../../../vendor/base/import-kit/src/d1/index';
 
