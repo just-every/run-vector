@@ -48,6 +48,14 @@ export async function googleSignInRuntime(browser,{state,config,evidence}) {
         }
         assert.equal(url.origin,origin)
         const response=await mf.dispatchFetch(request.url(),{method:request.method(),headers:{...request.headers(),Host:new URL(origin).host},body:request.postDataBuffer()??undefined,redirect:'manual'})
+        const location=response.headers.get('location')
+        if(response.status===303&&location?.startsWith('https://accounts.google.com/')) {
+          // Follow the verified Google redirect at the network edge. Playwright
+          // does not route the first cross-origin hop of a fulfilled redirect.
+          const path=edge.code(location,providerEmail),headers=Object.fromEntries(response.headers)
+          delete headers.location;headers['content-type']='text/html'
+          return route.fulfill({status:200,headers,body:'<!doctype html><html lang="en"><title>Google protocol fixture</title><a href="'+origin+path.replaceAll('&','&amp;')+'">Complete Google sign-in</a></html>'})
+        }
         await route.fulfill({status:response.status,headers:Object.fromEntries(response.headers),body:Buffer.from(await response.arrayBuffer())})
       })
       const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));return {context,page}
@@ -67,14 +75,15 @@ export async function googleSignInRuntime(browser,{state,config,evidence}) {
     await owner.page.waitForURL(origin+'/app/settings/sign-in')
     await owner.page.getByText('Google test sign-in passed.',{exact:true}).waitFor()
     const enabled=owner.page.waitForResponse(r=>r.url()===origin+'/api/settings/sign-in/google/enabled')
-    await owner.page.getByRole('switch',{name:'Offer Google sign-in',exact:true}).check()
+    await owner.page.getByRole('switch',{name:'Offer Google sign-in',exact:true}).focus()
+    await owner.page.getByRole('switch',{name:'Offer Google sign-in',exact:true}).press('Space')
     assert.equal((await enabled).status(),200)
     await owner.page.reload();await owner.page.getByRole('switch',{name:'Offer Google sign-in',exact:true}).waitFor()
     assert.equal(await owner.page.getByRole('switch',{name:'Offer Google sign-in',exact:true}).isChecked(),true)
     const axe=require.resolve('axe-core/axe.min.js')
     async function proof(page,name) {
       for(const width of [1440,390]) {
-        await page.setViewportSize({width,height:width===1440?1000:844})
+        await page.setViewportSize({width,height:1000})
         assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true)
         if(width===1440) {
           await page.addScriptTag({path:axe})

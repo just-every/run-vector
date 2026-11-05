@@ -6,7 +6,7 @@ CREATE TABLE vector_google_configuration (
  test_session_id TEXT NOT NULL
 );
 CREATE TABLE vector_google_sessions (
- session_id TEXT PRIMARY KEY REFERENCES oa_sessions(id), generation INTEGER NOT NULL
+ session_id TEXT PRIMARY KEY REFERENCES oa_sessions(id) ON DELETE CASCADE, generation INTEGER NOT NULL
 );
 -- Withdrawal or replacement revokes only Google sessions; linked Auth and email stay independent.
 CREATE TRIGGER vector_google_configuration_change AFTER UPDATE OF generation ON vector_google_configuration

@@ -10,8 +10,9 @@ export async function googleEdge() {
   const jwk={...await crypto.subtle.exportKey('jwk',key.publicKey),kid:'synthetic-vector-1',alg:'RS256',use:'sig'}
   const clientId='synthetic-vector-'+crypto.randomUUID(),clientSecret='synthetic-vector-'+crypto.randomUUID()
   const transactions=new Map<string,{url:URL;claims:Record<string,unknown>}>(),calls:string[]=[]
+  let discovery:Record<string,unknown>={}
   let edgeHook:(()=>Promise<void>)|undefined
-  return {clientId,clientSecret,calls,setHook:(hook?:()=>Promise<void>)=>{edgeHook=hook},
+  return {clientId,clientSecret,calls,setDiscovery:(value:Record<string,unknown>={})=>{discovery=value},setHook:(hook?:()=>Promise<void>)=>{edgeHook=hook},
     code(location:string,email:string,claims:Record<string,unknown>={}) {
       const url=new URL(location),code='synthetic-vector-'+crypto.randomUUID()
       assert.equal(url.origin+url.pathname,'https://accounts.google.com/o/oauth2/v2/auth')
@@ -23,18 +24,21 @@ export async function googleEdge() {
     async fetch(input:RequestInfo|URL,init?:RequestInit) {
       const url=String(input);calls.push(url)
       assert.equal(init?.redirect,'manual')
-      if(url==='https://accounts.google.com/.well-known/openid-configuration') return Response.json({issuer:'https://accounts.google.com',authorization_endpoint:'https://accounts.google.com/o/oauth2/v2/auth',token_endpoint:'https://oauth2.googleapis.com/token',jwks_uri:'https://www.googleapis.com/oauth2/v3/certs',response_types_supported:['code'],id_token_signing_alg_values_supported:['RS256'],token_endpoint_auth_methods_supported:['client_secret_post']})
+      if(url==='https://accounts.google.com/.well-known/openid-configuration') return Response.json({issuer:'https://accounts.google.com',authorization_endpoint:'https://accounts.google.com/o/oauth2/v2/auth',token_endpoint:'https://oauth2.googleapis.com/token',jwks_uri:'https://www.googleapis.com/oauth2/v3/certs',response_types_supported:['code'],id_token_signing_alg_values_supported:['RS256'],token_endpoint_auth_methods_supported:['client_secret_post'],...discovery})
       if(url==='https://www.googleapis.com/oauth2/v3/certs') return Response.json({keys:[jwk]})
       assert.equal(url,'https://oauth2.googleapis.com/token')
+      assert.equal(init?.method,'POST')
       const form=new URLSearchParams(String(init?.body)),transaction=transactions.get(form.get('code')!)!
       assert.ok(transaction)
+      assert.equal(form.get('grant_type'),'authorization_code')
       transactions.delete(form.get('code')!)
       assert.equal(form.get('client_id'),clientId);assert.equal(form.get('client_secret'),clientSecret)
       assert.equal(form.get('redirect_uri'),transaction.url.searchParams.get('redirect_uri'))
       assert.equal(b64(new Uint8Array(await crypto.subtle.digest('SHA-256',text.encode(form.get('code_verifier')!)))),transaction.url.searchParams.get('code_challenge'))
       const now=Math.floor(Date.now()/1000)
       const data=encode({alg:'RS256',kid:jwk.kid,typ:'JWT'})+'.'+encode({iss:'https://accounts.google.com',sub:transaction.claims.email,aud:clientId,iat:now,exp:now+300,nonce:transaction.url.searchParams.get('nonce'),...transaction.claims})
-      const signature=b64(new Uint8Array(await crypto.subtle.sign({name:'RSASSA-PKCS1-v1_5'},key.privateKey,text.encode(data))))
+      let signature=b64(new Uint8Array(await crypto.subtle.sign({name:'RSASSA-PKCS1-v1_5'},key.privateKey,text.encode(data))))
+      if(transaction.claims.invalidSignature) signature=(signature[0]==='A'?'B':'A')+signature.slice(1)
       await edgeHook?.()
       return Response.json({id_token:data+'.'+signature})
     },

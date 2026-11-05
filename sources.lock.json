@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a6cbe19263bc3e02f532013b411927181c5cadf9b9517f158b412da823824260",
+      "sha256": "e41e7b019bbae2aa00c47697f87506c9872dec0b991ed7dbedb5f61aa351379d",
       "executable": false
     },
     "DEMO.md": {
@@ -2530,7 +2530,7 @@
       "executable": false
     },
     "migrations/core/0126_google_signin.sql": {
-      "sha256": "9bc0d9b8f6c71d69b0f71c4b77bff04625ddee45db44eab43c3b12c6e24ccbda",
+      "sha256": "a630e42ab6fc80658a727941ad228dc61b74dfa18882a252b59d666ccd43d077",
       "executable": false
     },
     "OPERATIONS.json": {
@@ -4298,7 +4298,7 @@
       "executable": false
     },
     "src/core/features/auth/google-provider.server.ts": {
-      "sha256": "0a50a9b00df579a4ca1eefbbb729aef3ea4a5ea114803f4688e0b5da2bc26ada",
+      "sha256": "21640cb273840feb605645d64cc7692fb5d22d4fe125ba43377c7e4fc25ee433",
       "executable": false
     },
     "src/core/features/auth/google-schema.ts": {
@@ -4306,7 +4306,7 @@
       "executable": false
     },
     "src/core/features/auth/google-settings.ts": {
-      "sha256": "92db72d355a399c593c7ffc3e7ccf16e28d28a074df869a4ededb8f132a4cd05",
+      "sha256": "fa6787e3a5a865d63e1e701c9e0c572fa735f39f29dfbd745f9aef1ee5523c50",
       "executable": false
     },
     "src/core/features/auth/mutation-database.ts": {
@@ -6870,7 +6870,7 @@
       "executable": false
     },
     "src/core/features/roles/matrix.ts": {
-      "sha256": "4672b6502f40f96db85dacba6734c84016d84cbc60fdccdd12b0637fc25dbde9",
+      "sha256": "3b67e675f61f90d7c1c388859aff874e96149a1487a539af51e202c887398ed2",
       "executable": false
     },
     "src/core/features/roles/policy.ts": {
@@ -7186,7 +7186,7 @@
       "executable": false
     },
     "src/core/features/settings/ui/sections/sign-in-section.tsx": {
-      "sha256": "82f27e0eba921228b0fb1d970345fe1aeb0f72184f1cbc117e39db358ffe6944",
+      "sha256": "cc027f058df9162deaba6b97d059daa04f56ec224e2e268286c6dcc607f0ff0a",
       "executable": false
     },
     "src/core/features/settings/ui/sections/teams-section.tsx": {
@@ -8510,11 +8510,11 @@
       "executable": false
     },
     "tests/e2e/google-oidc-edge.ts": {
-      "sha256": "994b9828f1725afbbf062e09c058ac791a2e5ff98e1ba3139c59cd17945a904e",
+      "sha256": "3e2dc8fbae702196aee5b16c4cdfa9ef6d853324e242fdb0a5887622496e1b81",
       "executable": false
     },
     "tests/e2e/google-signin-journey.mjs": {
-      "sha256": "65411917c3563e26d8a28208e6c373d3f2fd4a8c8eb039ecfd89bd39ed953409",
+      "sha256": "643854f3d42cc26b4b80c091fc74060ed2014a03bf6d81beedda1579ee770c6f",
       "executable": false
     },
     "tests/e2e/housekeeping-runtime.mjs": {
@@ -9286,7 +9286,7 @@
       "executable": false
     },
     "tests/worker/google-signin-journey.ts": {
-      "sha256": "30947a64e52c641ceedcb0801bd82167447f46515510a282deb1348d0d9118fe",
+      "sha256": "02caf14a80b2c1178696b1caa0e29796a9e809b007d11ced5596507c7e1c93b9",
       "executable": false
     },
     "tests/worker/historical-auth-fixture.ts": {
@@ -9630,7 +9630,7 @@
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
-      "sha256": "466b836ecdc87284b1686090df1ed51919ffef3dd46e4b230d211e70f1607d9f",
+      "sha256": "2eee845e19fb99056e7482f3d95db7176c1e933b047493222b30c540f4836027",
       "executable": false
     },
     "tests/worker/role-private-journey.ts": {
@@ -9638,11 +9638,11 @@
       "executable": false
     },
     "tests/worker/role-probes.ts": {
-      "sha256": "2c54c5a51c6f01b3b82a27f9f590ba2963c32184e168bcc1f6a7ace611314138",
+      "sha256": "c5eb87f57be97b5874a5553286512d6636cf1b8583959c8ef206eb2fba5e0ed3",
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "a388f31dbc6efb9c2217d995e92ab27d1d4592887af88c4edb72eb1c32b7780a",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

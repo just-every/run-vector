@@ -157,6 +157,8 @@ export async function prepareViewerCensus(w:Workspace,seed:{issue:any;comment:an
   const add=(surface:Surface,method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>{const id=method+' '+route;expect(plans[surface].has(id),id+' duplicate fixture').toBe(false);plans[surface].set(id,{path:path??bind(route,params),body});};
   const native=(method:Door['method'],route:string,body:unknown,params:Record<string,string>={},path?:string)=>add('native',method,route,body,params,path);
   const reportExport=await call(owner,'/settings/report-exports','POST',bucketScheduleInput);
+  native('PUT','/settings/sign-in/google',{clientId:'synthetic-vector-31200',clientSecret:'synthetic-vector-31201'});
+  native('POST','/settings/sign-in/google/enabled',{enabled:true});
   native('POST','/settings/report-exports',bucketScheduleInput);
   native('PATCH','/settings/report-exports/:id',{expectedVersion:1,enabled:true,consent:true},{id:reportExport.id});
   native('DELETE','/settings/report-exports/:id',undefined,{id:reportExport.id});

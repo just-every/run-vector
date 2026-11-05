@@ -11,7 +11,12 @@ export async function googleSignInJourney(ownerCookie:string) {
   const edge=await googleEdge(),app=createServerApp()
   const configPath='/api/settings/sign-in/google'
   const call=(path:string,method='GET',cookie='',body?:unknown,headers:Record<string,string>={})=>app.request(origin+path,{method,headers:{host:new URL(origin).host,origin,cookie,'content-type':'application/json','CF-Connecting-IP':'192.0.2.19',...headers},body:body===undefined?undefined:JSON.stringify(body)},bindings)
-  const snapshot=async()=>JSON.stringify((await env.DB.batch(['operators','oa_operators','oa_sessions','oa_external_identities','oa_tokens','vector_google_configuration','audit_records'].map(t=>env.DB.prepare('SELECT * FROM '+t+' ORDER BY rowid')))).map(r=>r.results))
+  // Protocol correlation, rate counters and provider health are consumed or
+  // observed by Base. Every other table must remain unchanged on a refusal.
+  const protocolTables=['access_rate_limits','oa_limits','oa_oidc_transactions','oa_oidc_limits','oa_identity_provider_health','oa_identity_providers']
+  const tables=(await env.DB.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%' ORDER BY name").all<{name:string}>()).results.map(r=>r.name).filter(name=>!protocolTables.includes(name))
+  const snapshot=async()=>JSON.stringify((await env.DB.batch(tables.map(name=>env.DB.prepare('SELECT * FROM "'+name+'"')))).map(r=>r.results.map(row=>JSON.stringify(row)).sort()))
+
   const save=()=>call(configPath,'PUT',ownerCookie,{clientId:edge.clientId,clientSecret:edge.clientSecret})
   const spy=vi.spyOn(globalThis,'fetch').mockImplementation(edge.fetch)
   try {
@@ -21,7 +26,7 @@ export async function googleSignInJourney(ownerCookie:string) {
     expect((await call(configPath,'PUT','',{clientId:edge.clientId,clientSecret:edge.clientSecret})).status).toBe(401)
     expect((await call(configPath,'PUT','operator_session_local_15920=synthetic-vector-foreign',{clientId:edge.clientId,clientSecret:edge.clientSecret})).status).toBe(401)
     expect((await call(configPath,'PUT',ownerCookie,{clientId:edge.clientId,clientSecret:edge.clientSecret},{origin:'https://foreign.example.test'})).status).toBe(403)
-    expect(await snapshot()).toBe(initial)
+    expect(await snapshot()===initial,'configuration refusal changes no native storage').toBe(true)
     expect((await save()).status).toBe(200)
     const settings=await (await call(configPath,'GET',ownerCookie)).json() as {redirectUri:string;javascriptOrigin:string}
     expect(settings.redirectUri).toBe(origin+'/auth/oidc/google/callback');expect(settings.javascriptOrigin).toBe(origin)
@@ -33,6 +38,17 @@ export async function googleSignInJourney(ownerCookie:string) {
       return {location:response.headers.get('location')!,cookie:[cookie,response.headers.get('set-cookie')!.split(';')[0]].filter(Boolean).join('; ')}
     }
     const ownerEmail=(await env.DB.prepare('SELECT email FROM operators WHERE id=?').bind(await actor(ownerCookie)).first<{email:string}>())!.email
+    // A genuine session minted for a different application origin cannot
+    // configure this installation, even when it names the same person.
+    const foreign={APP_ORIGIN:'http://127.0.0.1:15921'}
+    await env.DB.prepare('DELETE FROM access_rate_limits').run()
+    expect((await request('/auth/request','POST',{email:ownerEmail},'',foreign)).status).toBe(202)
+    const foreignSigned=await request('/auth/confirm','POST',{token:await mailToken(ownerEmail)},'',foreign)
+    expect(foreignSigned.status).toBe(303)
+    const foreignCookie=foreignSigned.headers.get('set-cookie')!.split(';')[0],foreignBefore=await snapshot()
+    expect((await call(configPath,'PUT',foreignCookie,{clientId:edge.clientId,clientSecret:edge.clientSecret})).status).toBe(401)
+    expect(await snapshot()===foreignBefore,'foreign session changes no native storage').toBe(true)
+
     let start=await begin(true,ownerCookie)
     let callback=edge.code(start.location,ownerEmail)
     expect((await call(callback,'GET',start.cookie)).status).toBe(303)
@@ -62,25 +78,54 @@ export async function googleSignInJourney(ownerCookie:string) {
       const before=await snapshot(),result=await call(path,'GET',cookie)
       expect(result.status).toBeGreaterThanOrEqual(400)
       expect(result.headers.get('set-cookie')??'').not.toContain('operator_session_')
-      expect(await snapshot()).toBe(before)
+      expect(await snapshot()===before,'provider refusal changes no native storage').toBe(true)
     }
-    for(const claims of [{email_verified:false},{iss:'https://wrong.example.test'},{aud:'synthetic-vector-other'},{nonce:'synthetic-vector-other'}]) await refuse(claims)
+    for(const claims of [{email_verified:false},{invalidSignature:true},{nonce:undefined},{iss:'https://wrong.example.test'},{aud:'synthetic-vector-other'},{nonce:'synthetic-vector-other'}]) await refuse(claims)
     await refuse({},googleAddress(99))
     for(const corrupt of ['state','binding','missing-state','missing-binding'] as const) await refuse({},memberEmail,corrupt)
     const beforeReplay=await snapshot()
     expect((await call(callback,'GET',start.cookie)).status).toBe(400)
-    expect(await snapshot()).toBe(beforeReplay)
+    expect(await snapshot()===beforeReplay,'replay changes no native storage').toBe(true)
+    for(const metadata of [
+      {issuer:'https://wrong.example.test'},
+      {authorization_endpoint:'https://accounts.google.com/other'},
+      {token_endpoint:'https://oauth2.googleapis.com/other'},
+      {jwks_uri:'https://www.googleapis.com/other'},
+    ]) {
+      edge.setDiscovery(metadata)
+      const before=await snapshot(),calls=edge.calls.length
+      expect((await call('/auth/oidc/google/start','POST','',{})).status).toBe(502)
+      expect(edge.calls.slice(calls)).toEqual(['https://accounts.google.com/.well-known/openid-configuration'])
+      expect(await snapshot()===before,'provider refusal changes no native storage').toBe(true)
+    }
+    edge.setDiscovery()
+    // Restored membership requires destination approval even for a valid,
+    // previously bound Google subject. No session or binding is resurrected.
+    start=await begin();callback=edge.code(start.location,memberEmail)
+    await env.DB.prepare("INSERT INTO vector_restore_status(id,import_id,effects_held) VALUES(1,'synthetic-vector-google',1)").run()
+    const restoredBefore=await snapshot()
+    expect((await call(callback,'GET',start.cookie)).status).toBe(403)
+    expect(await snapshot()===restoredBefore,'restore refusal changes no native storage').toBe(true)
+    await env.DB.prepare('DELETE FROM vector_restore_status').run()
     // Current authority is checked after the external code exchange too.
     start=await begin();callback=edge.code(start.location,memberEmail)
-    edge.setHook(async()=>{await env.DB.prepare('UPDATE operators SET removed_at=? WHERE id=?').bind(new Date().toISOString(),memberId).run()})
+    let withdrawn=''
+    edge.setHook(async()=>{expect((await call('/api/settings/operators/'+memberId,'DELETE',ownerCookie)).status).toBe(200);withdrawn=await snapshot()})
     expect((await call(callback,'GET',start.cookie)).status).toBe(403)
     edge.setHook()
+    expect(await snapshot()===withdrawn,'withdrawal permits no admission writes').toBe(true)
     expect((await request('/api/session','GET',undefined,memberCookie)).status).toBe(401)
     const second=await invite(googleAddress(13),ownerCookie)
+    start=await begin();callback=edge.code(start.location,googleAddress(13))
+    const secondSigned=await call(callback,'GET',start.cookie)
+    expect(secondSigned.status).toBe(303)
+    const secondGoogle=secondSigned.headers.get('set-cookie')!.split(', ').at(-1)!.split(';')[0]
+    expect(await actor(secondGoogle)).toBe(await actor(second))
     start=await begin();callback=edge.code(start.location,googleAddress(13))
     edge.setHook(async()=>{expect((await call(configPath+'/enabled','POST',ownerCookie,{enabled:false})).status).toBe(200)})
     expect((await call(callback,'GET',start.cookie)).status).toBe(403)
     edge.setHook()
+    expect((await request('/api/session','GET',undefined,secondGoogle)).status).toBe(401)
     expect((await request('/api/session','GET',undefined,second)).status).toBe(200)
     expect((await request('/api/session','GET',undefined,ownerCookie)).status).toBe(200)
     const archive=await createVectorArchive({db:env.DB,files:env.FILES}),exported=await archive.exports.create()
@@ -102,6 +147,11 @@ export async function googleSignInJourney(ownerCookie:string) {
     expect((await target.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM vector_google_configuration').first())?.n).toBe(0)
     expect((await target.ARCHIVE_TARGET_DB.prepare('SELECT count(*) n FROM oa_sessions').first())?.n).toBe(0)
     expect((await target.ARCHIVE_TARGET_DB.prepare('SELECT id FROM operators WHERE id=?').bind(memberId).first())?.id).toBe(memberId)
+    const restoredBindings={...bindings,DB:target.ARCHIVE_TARGET_DB,FILES:target.ARCHIVE_TARGET_FILES,FIRST_OWNER_EMAIL:ownerEmail}
+    const restoredCall=(path:string,cookie='')=>app.request(origin+path,{headers:{host:new URL(origin).host,origin,cookie}},restoredBindings)
+    expect((await restoredCall('/api/session',secondGoogle)).status).toBe(401)
+    expect((await restoredCall('/auth/oidc/google/start')).status).toBe(403)
+
     for(const email of [googleAddress(11),googleAddress(13)]) {
       const person=await env.DB.prepare('SELECT id FROM operators WHERE email=?').bind(email).first<{id:string}>()
       expect((await request('/api/settings/operators/'+person!.id,'DELETE',undefined,ownerCookie)).status).toBe(200)

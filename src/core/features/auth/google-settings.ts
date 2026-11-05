@@ -7,7 +7,7 @@ import { administrationContext, audit } from '../administration/transaction'
 import type { WorkerBindings } from '../../app/bindings'
 
 import { googleSettingsSchema } from './google-schema'
-const input = z.object({ clientId:z.string().trim().min(1).max(512), clientSecret:z.string().min(1).max(4096) }).strict()
+const input = z.object({ clientId:z.string().trim().min(1).max(512).regex(/^[^\x00-\x1f\x7f]+$/), clientSecret:z.string().min(1).max(4096) }).strict()
 export type GoogleConfiguration = { singleton:number; client_id:string; secret:string; transaction_secret:string; generation:number; enabled:number; tested:number; test_session_id:string }
 export const googleConfiguration = (db:D1Database) => db.prepare('SELECT * FROM vector_google_configuration WHERE singleton=1').first<GoogleConfiguration>()
 export async function googleOwner(env:WorkerBindings, request:Request) {

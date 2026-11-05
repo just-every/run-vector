@@ -1,3 +1,5 @@
+// @ts-expect-error Base's bounded server-only network reader has no declarations.
+import { readJson } from '../../../../vendor/base/operator-auth/identity/oidc/network.mjs'
 import { createOidcProviders, createOidcHandler } from '../../../../vendor/base/operator-auth/identity/oidc/index.mjs'
 import { AuthError } from '../../../../vendor/base/operator-auth/index.mjs'
 import { authConfig } from './base.server'
@@ -31,14 +33,14 @@ export async function googleProviders(env:WorkerBindings,request?:Request) {
     fetch:async(url,init)=>{
       const href=String(url),kind=endpoints.get(href)
       if(!kind) throw new Error('google_endpoint_refused')
-      const response=await fetch(url,init)
-      if(kind==='discovery' && response.ok) {
-        const data=await response.clone().json() as Record<string,unknown>
+      if(kind==='discovery') {
+        const data=await readJson(globalThis.fetch,href,{timeoutMs:5000},init,65536) as Record<string,unknown>
         if(data.issuer!=='https://accounts.google.com' || data.authorization_endpoint!=='https://accounts.google.com/o/oauth2/v2/auth'
           || data.token_endpoint!=='https://oauth2.googleapis.com/token' || data.jwks_uri!=='https://www.googleapis.com/oauth2/v3/certs')
           throw new Error('google_endpoint_refused')
+        return Response.json(data)
       }
-      return response
+      return fetch(url,init)
     },
   })
   return providers
