@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "d3183e717aa1da8cd1eaf842fbfd330f913f4912718171782b9d55a9cf2869d9",
+      "sha256": "3e18d73cb8d838975c3cdd53790e1fc46b3e06e69b928066e067988440794cef",
       "executable": false
     },
     "DEMO.md": {
@@ -8134,7 +8134,7 @@
       "executable": false
     },
     "tests/e2e/attachment-images-journey.mjs": {
-      "sha256": "4e4d6ed95dda20ef43500fe17b923e73bbb25c3ab52c050f3bf455d7aa06f133",
+      "sha256": "93d9d5ca3b25fc10c97b1359ed64804aa1495ac60fa048d99364fddbefef6729",
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
@@ -9026,7 +9026,7 @@
       "executable": false
     },
     "tests/worker/attachment-png-journey.ts": {
-      "sha256": "5558a7d1122d90c762eea7cfddd12ab1993ab65ca5ca49d8204f24bc18626f81",
+      "sha256": "faa44269228589db2d83797648ab3b1d5c02217eb354c3af191c1c4b19bc79a3",
       "executable": false
     },
     "tests/worker/audit-archive.ts": {

@@ -51,16 +51,34 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     }
     const inserted = await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());
     for (const file of files) assert.ok(inserted.description.includes('(attachment:' + file.id + ')'));
-    await page.reload();
     const description = page.locator('.issue-description'), first = description.getByRole('img', {name: 'Screenshot 1', exact: true});
-    await expect(first).toBeVisible();
+    // Hold the real response to inspect reserved space before any PNG bytes arrive.
+    const imageUrl = base + '/api/issues/' + identifier + '/files/' + files[0].id;
+    let releaseImage, requestedImage;
+    const imageGate = new Promise(resolve => { releaseImage = resolve; });
+    const imageRequested = new Promise(resolve => { requestedImage = resolve; });
+    const holdImage = async route => { requestedImage(); await imageGate; await route.continue(); };
+    await page.route(imageUrl, holdImage);
+    let reserved;
+    try {
+      await page.reload({waitUntil: 'domcontentloaded'});
+      await imageRequested;
+      await expect(first).toBeVisible();
+      reserved = await first.evaluate(image => ({width: image.getBoundingClientRect().width, height: image.getBoundingClientRect().height, complete: image.complete}));
+      assert.equal(reserved.complete, false);
+      assert.ok(reserved.width > 0 && Math.abs(reserved.height / reserved.width - 900 / 1600) < 0.002);
+    } finally { releaseImage(); }
     await expect.poll(() => first.evaluate(image => image.complete && image.naturalWidth)).toBe(1600);
+    await page.unroute(imageUrl, holdImage);
+    assert.deepEqual(await first.evaluate(image => ({width: image.getBoundingClientRect().width, height: image.getBoundingClientRect().height})), {width: reserved.width, height: reserved.height});
     assert.equal(await first.getAttribute('width'), '1600'); assert.equal(await first.getAttribute('height'), '900');
     assert.equal(await first.getAttribute('src'), '/api/issues/' + identifier + '/files/' + files[0].id);
     assert.equal(await description.getByRole('button', {name: /^Load image/}).count(), 1);
     assert.equal(await description.getByRole('img').count(), 2);
     assert.equal(await first.evaluate(image => image.getBoundingClientRect().width <= image.closest('.safe-markdown').getBoundingClientRect().width), true);
-    await page.getByRole('button', {name: 'Open image: Screenshot 1', exact: true}).focus(); await page.keyboard.press('Enter');
+    await page.getByRole('button', {name: 'Open image: Screenshot 1', exact: true}).focus();
+    await expect(page.getByRole('tooltip', {name: 'Open image', exact: true})).toBeVisible();
+    await page.keyboard.press('Enter');
     const viewer = page.getByRole('dialog', {name: 'Image viewer', exact: true});
     await expect(viewer).toBeVisible();
     await page.getByRole('button', {name: 'Zoom in', exact: true}).click();
@@ -106,7 +124,11 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     await page.getByRole('button', {name: 'Edit issue', exact: true}).click();
     await page.getByLabel('Description', {exact: true}).fill('synthetic-vector-2415');
     await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());
-    assert.equal((await page.request.get(base + '/api/issues/' + identifier + '/files/' + files[0].id)).status(), 200);
+    const retainedFile = await page.request.get(base + '/api/issues/' + identifier + '/files/' + files[0].id);
+    assert.equal(retainedFile.status(), 200); assert.deepEqual(await retainedFile.body(), buffers[0]);
+    await page.locator('.issue-files summary').click();
+    await expect(page.locator('.issue-files').getByRole('link', {name: files[0].name, exact: true})).toBeVisible();
+    await page.locator('.issue-files summary').click();
     // Reinsert it before deleting the file, retaining a live embed and older revisions.
     await page.getByRole('button', {name: 'Edit issue', exact: true}).click();
     await page.getByLabel('Description', {exact: true}).fill(updated.description);
