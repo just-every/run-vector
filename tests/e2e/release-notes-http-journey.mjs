@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 
-// This exercises native HTTP persistence in the emitted Worker. The notes
-// interface and its independent visual gate remain separate, unproved work.
+// Exercise native persistence in the emitted Worker before its browser journey.
 export async function releaseNotesHttpJourney({call,team,done,owner}){
  const projects=[];
  for(const name of ['synthetic-vector-9241','synthetic-vector-9242']){
@@ -48,4 +47,5 @@ export async function releaseNotesHttpJourney({call,team,done,owner}){
   assert.equal(detail.activity.filter(event=>event.kind==='release.published'&&event.nextValue.releaseId===release.id).length,0);
  }
  console.log('PROBE RELEASE-003 native HTTP: six exact completed sources, current titles and project groups; edited draft retained after fresh read and scope change; stale saves refused; no release publication');
+ return {release,issues,projects,expected,edited};
 }

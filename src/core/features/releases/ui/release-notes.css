@@ -1,0 +1,19 @@
+.release-notes { display:grid; gap:14px; }
+.release-notes > * { margin:0; min-width:0; }
+.release-notes-title { display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px; }
+.release-section .release-notes-title h2 { margin:0; }
+.release-notes-badge { border:1px solid var(--app-line-strong,var(--border)); border-radius:5px; padding:3px 8px; font-size:var(--app-text-small); font-weight:600; }
+.release-notes-context,.release-notes-meta { font-size:var(--app-text-small); color:var(--app-muted,inherit); }
+.release-notes-callout { border:1px solid var(--app-warn,var(--border)); border-radius:6px; padding:10px 12px; }
+.release-notes-sources summary { font-weight:600; }
+.release-notes-sources section { margin-top:12px; min-width:0; }
+.release-notes-sources h3,.release-notes-preview h3 { font-size:1rem; margin:0 0 6px; }
+.release-notes-panes { display:grid; grid-template-columns:minmax(0,1fr); gap:16px; }
+.release-notes-field { display:grid; gap:6px; align-content:start; min-width:0; }
+.release-page .release-notes-panes textarea { min-height:320px; }
+.release-notes-preview { border:1px solid var(--border); border-radius:6px; padding:14px; min-width:0; overflow-wrap:anywhere; }
+.release-notes .release-actions p { margin:0; font-size:var(--app-text-small); }
+.release-notes .release-notes-unsaved { color:var(--app-warn,inherit); font-weight:600; }
+.release-notes-error { display:grid; gap:10px; }
+.release-notes-error p { margin:0; }
+@media(min-width:900px) { .release-notes-panes { grid-template-columns:repeat(2,minmax(0,1fr)); } }
