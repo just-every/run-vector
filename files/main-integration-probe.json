@@ -1,0 +1,16 @@
+{
+  "head": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "buildCommand": [
+    "npx",
+    "-y",
+    "@runeditrun/rer",
+    "build"
+  ],
+  "buildExit": 0,
+  "command": [
+    "pnpm",
+    "integration:check"
+  ],
+  "exit": 0,
+  "comparison": "main passes the integration check after a normal build; the old PNG candidate fails with missing deployment migration metadata"
+}

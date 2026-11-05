@@ -1,10 +1,16 @@
 {
   "files": [
     {
-      "blob": "9365b3f3a10905d79c9d685118ed6e424100a8ca",
-      "bytes": 16417,
+      "blob": "bf8fcb7ac281dd9dc26784e77919bfd28a4011f0",
+      "bytes": 21501,
       "path": "REPORT.md",
-      "sha256": "2fc1e70e66e46566862e99de99b588c8f70fa29e06d86f3b394f0e385cc50e03"
+      "sha256": "5e9774ad9a0fde973e8dde63e100ec3a61f3af5b7bd7da08196ae240502ed74f"
+    },
+    {
+      "blob": "316383313023c4c1af3ee260d6ff67e1d5fa6847",
+      "bytes": 298,
+      "path": "archive-upgrade-summary.json",
+      "sha256": "29cb9b04b6eb4bb87883dff556b0dc7a2db51eb85ee1e00fc74b192bc95b9e74"
     },
     {
       "blob": "e3bc8420f330d026bb29a3d74d291814c8af789f",
@@ -13,10 +19,16 @@
       "sha256": "c4a8e4b18225812fa31580014f6eaaabd11b0d0047b0befe8ae061918cff0d1f"
     },
     {
-      "blob": "a15ff02682add7b82a6a95d555b4e17bc14f5604",
-      "bytes": 298,
+      "blob": "f7a45bd4f232acab7d275f32a4a72251c9dea969",
+      "bytes": 945,
       "path": "ci.json",
-      "sha256": "575753cbc2fd4bbebd586b3bcc42daac77008bf29701d8ee49119a63012c0111"
+      "sha256": "b9e7d9725fd8c69a3b075ee3ac3291222b82f7bf5400eb9677c17c9ee49cf584"
+    },
+    {
+      "blob": "e29be8d92407b80764a3e9bb058e6a89b72eefc2",
+      "bytes": 658,
+      "path": "cloud-browser-preload.cjs",
+      "sha256": "c6fbb4e9104c44bd1e6cc89e1fab0a14a64a4e016fefb12d43a908b78212c147"
     },
     {
       "blob": "bd0f061af50d78da796ba901e040f43c3928fc95",
@@ -31,10 +43,16 @@
       "sha256": "44a9242997354c66bd288e41e7e3c965145ce3c91eeeeeb0364631b2e250c5a7"
     },
     {
-      "blob": "c7976dea9a060656a0c1eeae679417fdef68af4b",
-      "bytes": 915,
+      "blob": "ae46dfeadad0d255973c19c794ee1ca0b111e72a",
+      "bytes": 1090,
       "path": "history-audit.json",
-      "sha256": "cbd85c34f1f4b8d7951453bdf749410f6e8d6ac5291e2f49c8728e94ff8276a5"
+      "sha256": "48af5fa208dd915d1871b7bc73eb47ce08a9a56fc9fbe8ba52f84662cebaca54"
+    },
+    {
+      "blob": "74fbb198b16543795f953631e5b0e3502c13bd13",
+      "bytes": 1366,
+      "path": "hosted-shard.json",
+      "sha256": "926c8c93cf3c9b8f96cf22cb863b3fb1eccdc6581238799c70bcb77c6226fdfe"
     },
     {
       "blob": "282a88d80c3e79006da344b22f4f6ad84dc88d8b",
@@ -49,10 +67,40 @@
       "sha256": "4243d3889aeeb0e3770b1b6ab01f8b11486adefac8edba104d5db56ec0881b7a"
     },
     {
+      "blob": "f94dbe0ce90609fecacc4d2e60c488f180701466",
+      "bytes": 115,
+      "path": "integration-browser-proof.json",
+      "sha256": "ba8d715efc630b0fd4f91f6bced929ae29f0a0292bad2c8d8128317425c97b23"
+    },
+    {
+      "blob": "3fb6f39f91fec659c4535ce982ebc894aa4d8383",
+      "bytes": 490,
+      "path": "integration-reproduction.json",
+      "sha256": "9d575894a7f618f34e8d2c8aeccdaa8bc2f621290d2488eb0844366037dd3b52"
+    },
+    {
+      "blob": "06a93c7d5f5534e720f102524aa8dd4a8ccd3d52",
+      "bytes": 418,
+      "path": "integration-rerun.json",
+      "sha256": "380776a9a6d42c4cf7d1b45ec4d36ede44b320e532f5b14628dcb4e10cf8e1aa"
+    },
+    {
+      "blob": "c1079165b6493ce13281dbeb055915d7d798b513",
+      "bytes": 371,
+      "path": "main-integration-probe.json",
+      "sha256": "95c6c3f4bdc2a0e56de8c8fb2f96c21fc004ef161405db2699ecff7ffbbf5629"
+    },
+    {
       "blob": "be8aa6b153b549da87ba788a46fbbafc191f6f83",
       "bytes": 510,
       "path": "main-lock-probe.json",
       "sha256": "11fa7758b40c6fb8382c42ea724cd85b549e44243dc2669893a4b818241d6da1"
+    },
+    {
+      "blob": "b11697090f83a00373830481b528a4df88fe9fc9",
+      "bytes": 582,
+      "path": "migration-ledger.log",
+      "sha256": "3840d6a54a78b66f3b3a07f0b1f511766cda03424c32097bdb790fd5113006a0"
     },
     {
       "blob": "ea8b18dcce22c49ebb61388256a61021ecd2b7e8",
@@ -61,10 +109,52 @@
       "sha256": "85f60f24e8f603378eb0dd1002524101a164936234a73cc53bb0953aa6b169da"
     },
     {
-      "blob": "409dabb3d1ad5bb95de3edd12711c840dd109b97",
-      "bytes": 14274,
+      "blob": "5f91632f304586df45ec70be0c19ecfdfeb6eab5",
+      "bytes": 16204,
       "path": "receipts.json",
-      "sha256": "8e24cf25da7b73860198166a4a656a06f279dc94b0855c23ce418a106cbdbb0a"
+      "sha256": "abbac3e895bb05278c12b335387b6c12d3f7d5fee4922179c18b8ffaded756f9"
+    },
+    {
+      "blob": "10e320892ea68e6d4565a0b4f3b8e3d9f5812381",
+      "bytes": 427,
+      "path": "sdk-candidate-probe.json",
+      "sha256": "84bed4a8f70ff324f636def288af0b2d4c3c8417b337ad66cb7b2445d0637f2f"
+    },
+    {
+      "blob": "6c5d7976ee2a543c36a7086b037f7154498ad92c",
+      "bytes": 425,
+      "path": "sdk-candidate-transport.json",
+      "sha256": "098bebaa166bab23787ad9462ff94e2018c231babf396fdd10be5d1a1a016c5b"
+    },
+    {
+      "blob": "b34fa6a554e42abf9b503cdf4703fafee7a5183a",
+      "bytes": 322,
+      "path": "sdk-main-probe.json",
+      "sha256": "71307f286bc70748420f2fd2df3376afecbe9dee9fc410d786d1da33299707a9"
+    },
+    {
+      "blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "bytes": 0,
+      "path": "sdk-network-errors.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "blob": "51a6283067bb49c65a5b3eee297848db844a5315",
+      "bytes": 3634,
+      "path": "sdk-probe-runner.mjs",
+      "sha256": "8f6f997c790aec43003a7152f456afe717290d662bb4af16c930fba5481743f3"
+    },
+    {
+      "blob": "180c82c295584913ef4ac4d30c751b878360d876",
+      "bytes": 793,
+      "path": "sdk-transport-diagnostics.cjs",
+      "sha256": "deee648846233c1f2614f6fee9e770ba9b58edea2aaf6ebf3493e5d13e2a6c1b"
+    },
+    {
+      "blob": "4cb4d01414067805c9bf0d23149410ec2c4c60b1",
+      "bytes": 2953,
+      "path": "transfer-receipt.json",
+      "sha256": "926582f854276bdcbb19ff56726918ee4f7299c41679ef5ccf96acf446d6b417"
     },
     {
       "blob": "3bd4d334a98fc65f29dd302cc8c941cb51d06259",
@@ -86,7 +176,7 @@
     }
   ],
   "product_branch": "cloud/sd-vector-c-f184",
-  "product_head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "product_head": "26e574ffb400304559929195d0db4f80b50a2619",
   "ref": "refs/heads/evidence/sd-vector-c-f184",
   "repository": "just-every/run-vector",
   "schema": 1,

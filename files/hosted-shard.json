@@ -1,0 +1,51 @@
+{
+  "startedAt": "2026-11-05T22:49:46.447Z",
+  "sourceCommit": "26e574ffb400304559929195d0db4f80b50a2619",
+  "note": "Vector CI test suites and build checks.",
+  "passed": false,
+  "checks": [
+    {
+      "command": "test:public-site",
+      "startedAt": "2026-11-05T22:49:46.451Z",
+      "completedAt": "2026-11-05T22:50:04.661Z",
+      "passed": true
+    },
+    {
+      "command": "verify",
+      "startedAt": "2026-11-05T22:50:04.662Z",
+      "completedAt": "2026-11-05T22:51:54.927Z",
+      "passed": true
+    },
+    {
+      "command": "build",
+      "startedAt": "2026-11-05T22:51:54.927Z",
+      "completedAt": "2026-11-05T22:52:22.575Z",
+      "passed": true
+    },
+    {
+      "command": "test:access",
+      "startedAt": "2026-11-05T22:52:22.576Z",
+      "completedAt": "2026-11-05T22:53:18.408Z",
+      "passed": true
+    },
+    {
+      "command": "test:mutation-refresh",
+      "startedAt": "2026-11-05T22:53:18.409Z",
+      "completedAt": "2026-11-05T22:53:59.072Z",
+      "passed": true
+    },
+    {
+      "command": "build",
+      "startedAt": "2026-11-05T22:53:59.072Z",
+      "completedAt": "2026-11-05T22:54:26.652Z",
+      "passed": true
+    },
+    {
+      "command": "test:integrations",
+      "startedAt": "2026-11-05T22:54:26.652Z",
+      "completedAt": "2026-11-05T22:55:03.391Z",
+      "passed": false
+    }
+  ],
+  "shard": "hosted-artifact"
+}

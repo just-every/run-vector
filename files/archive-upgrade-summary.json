@@ -1,0 +1,11 @@
+{
+  "head": "26e574ffb400304559929195d0db4f80b50a2619",
+  "command": [
+    "pnpm",
+    "test:archive-upgrade"
+  ],
+  "exit": 0,
+  "registrationsPassed": 1,
+  "durationSeconds": 301.016417098,
+  "outcome": "listed historical backup restores through rer import with both migration-ledger variants"
+}

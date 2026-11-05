@@ -1,11 +1,30 @@
 {
-  "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
   "repository": "just-every/run-vector",
-  "runId": 42118910672,
+  "branch": "cloud/sd-vector-c-f184",
+  "head": "26e574ffb400304559929195d0db4f80b50a2619",
+  "runId": null,
   "event": "push",
-  "status": "in_progress",
+  "status": "unobserved",
   "conclusion": null,
-  "observedAt": "2026-11-05T22:25:18Z",
-  "apiCallsUsed": 8,
-  "nextPollNotBefore": "2026-11-05T22:30:18Z"
+  "reason": "ten-call budget exhausted before repair push",
+  "apiCallsUsed": 10,
+  "budgetExhausted": true,
+  "previousCandidate": {
+    "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+    "repository": "just-every/run-vector",
+    "runId": 42118910672,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "failure",
+    "observedAt": "2026-11-05T22:35:49Z",
+    "apiCallsUsed": 10,
+    "lostResponse": {
+      "requestAt": "2026-11-05T22:30:20Z",
+      "reason": "tool session unavailable after environment reconnect",
+      "result": "unobserved; counted against budget"
+    },
+    "budgetExhausted": true,
+    "remainingCalls": 0,
+    "failedJobDetails": "not retrieved; ten-call budget exhausted"
+  }
 }

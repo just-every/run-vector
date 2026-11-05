@@ -1,0 +1,12 @@
+{
+  "head": "26e574ffb400304559929195d0db4f80b50a2619",
+  "command": [
+    "pnpm",
+    "test:integrations"
+  ],
+  "exit": 0,
+  "assertionsUnchanged": true,
+  "sdkRequestErrorsRecorded": 0,
+  "priorFailure": "assert.ok(error instanceof ApiError) in the SDK stale-version refusal",
+  "classification": "transient, cause unclassified; main and repeated candidate case pass; exact command passes without a product edit"
+}

@@ -1,0 +1,19 @@
+{
+  "head": "26e574ffb400304559929195d0db4f80b50a2619",
+  "passed": false,
+  "exit": 1,
+  "test": "exerciseSdkIntake stale-version refusal",
+  "failure": "assert.ok(error instanceof ApiError)",
+  "observations": [
+    {
+      "operation": "issues_get_4",
+      "versionType": "number"
+    },
+    {
+      "operation": "issues_update_5",
+      "outcome": "rejected",
+      "errorClass": "Error",
+      "status": null
+    }
+  ]
+}

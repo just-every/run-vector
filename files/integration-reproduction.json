@@ -1,0 +1,11 @@
+{
+  "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "ciRunId": 42118910672,
+  "ciJobId": null,
+  "job": "hosted-artifact local probe",
+  "command": "pnpm verify:ci --shard hosted-artifact",
+  "test": "integration:check during rer verify",
+  "exit": 1,
+  "failure": "Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync",
+  "scope": "local reproduction; CI failed-job details not retrieved within the budget"
+}

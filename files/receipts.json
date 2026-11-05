@@ -382,7 +382,8 @@
   },
   "files": {
     "CONTRACT.md": "3e18d73cb8d838975c3cdd53790e1fc46b3e06e69b928066e067988440794cef",
-    "sources.lock.json": "802d090f0a14b4137fc39f1ae36a2f76be8cf3624499fc83276fa1b67b34f1f1",
+    "management/integration/deployment-spec.json": "e11c87eb601ce3e4426765a82775ac323a91e76c3456856157abdadfc9212b0c",
+    "sources.lock.json": "c5ff47ac5566f4e1f1ac5d5ea47c930c2ca3c49a3336f2d68b1076c707cba908",
     "src/core/features/discussion/routes.ts": "4f02af71d3cce0edd43b118df80d9841cc62da66062e18937e17aaf86838b909",
     "src/core/features/markdown/attachments/attachments.css": "d56ea894308fc9cafa1956b52620ba90665b3b3baab1c3d149aef86dfe71c880",
     "src/core/features/markdown/attachments/context.tsx": "624f3dc3d37f2a5c597a6b69e12911fbce7f325fec40760f53d760b7c3213229",
@@ -393,8 +394,42 @@
     "tests/worker/discussion-access.test.ts": "0eddf20f10abb6c9068b677c6b98fa32e15db2f95ea3cd3ee033ef7a71f3c94b",
     "tests/worker/discussion-file-admission.test.ts": "ab9bd6fa4197c8f6dc8ec9658fe389551549dcda902aae6510587ea8782ea13e"
   },
-  "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "finalMechanical": {
+    "cleanCheckout": true,
+    "firstPartyExit": 0,
+    "integrationExit": 0,
+    "sourceLockExit": 0
+  },
+  "head": "26e574ffb400304559929195d0db4f80b50a2619",
+  "hostedRepair": {
+    "actualShardReceipt": "hosted-shard.json",
+    "allIndividualCommandsPassed": true,
+    "fullShardGreenClaim": false,
+    "head": "26e574ffb400304559929195d0db4f80b50a2619",
+    "individualCommandRerun": {
+      "command": [
+        "pnpm",
+        "test:integrations"
+      ],
+      "exit": 0
+    },
+    "initialExit": 1,
+    "initialFailure": "SDK stale-version refusal expected ApiError but received plain Error",
+    "remainingArchiveUpgrade": {
+      "command": [
+        "pnpm",
+        "test:archive-upgrade"
+      ],
+      "durationSeconds": 301.016417098,
+      "exit": 0,
+      "head": "26e574ffb400304559929195d0db4f80b50a2619",
+      "outcome": "listed historical backup restores through rer import with both migration-ledger variants",
+      "registrationsPassed": 1
+    }
+  },
   "landing": "fleet gate",
+  "pngCodeAndTestsUnchangedSinceProof": true,
+  "pngProofHead": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
   "postRuntimeLockCheck": {
     "command": [
       "pnpm",
@@ -403,7 +438,7 @@
     "exit": 0
   },
   "publicationScan": "fleet gate, not run in cloud",
-  "remoteProductHead": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
+  "remoteProductHead": "26e574ffb400304559929195d0db4f80b50a2619",
   "repository": "just-every/run-vector",
   "rows": [
     {
@@ -484,6 +519,41 @@
         "sources:check"
       ],
       "exit": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "integration:sync"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "integration:check"
+      ],
+      "exit": 0
+    },
+    {
+      "command": [
+        "node",
+        "--test",
+        "--test-concurrency=1",
+        "scripts/deployment/tests/migration-head.test.mjs"
+      ],
+      "exit": 0,
+      "registrationsPassed": 1
+    },
+    {
+      "command": [
+        "pnpm",
+        "test:archive-upgrade"
+      ],
+      "durationSeconds": 301.016417098,
+      "exit": 0,
+      "head": "26e574ffb400304559929195d0db4f80b50a2619",
+      "outcome": "listed historical backup restores through rer import with both migration-ledger variants",
+      "registrationsPassed": 1
     }
   ],
   "schema": 1,

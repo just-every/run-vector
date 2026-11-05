@@ -2,7 +2,7 @@
 
 Repository: just-every/run-vector.
 Branch: cloud/sd-vector-c-f184.
-Candidate: 6b01b64230733634aa7d71e1333dc4a3e8f64ce3.
+Candidate: 26e574ffb400304559929195d0db4f80b50a2619.
 Requested base: 870137fb22ca8492e460cd1834c3cf87c31abeb9.
 Main integrated before the candidate: 7c811313e446ae19630f387f2ac927dafba3dbe5.
 PR: none required; the existing push workflow accepts the named cloud branch.
@@ -11,7 +11,7 @@ PR: none required; the existing push workflow accepts the named cloud branch.
 
 ISSUE-024 remains PARTIAL → PARTIAL. The selected existing-issue PNG slice is implemented and its focused local journey passed. This round corrects authored alt text being replaced by filenames during viewer navigation, adds the shared keyboard-focus tooltip to the image trigger, strengthens reserved-layout proof while the real PNG response is delayed, and extends exact-byte and current-authority checks. The original layout, attachment and viewer implementation is retained.
 
-Counts before and after: 136 DONE, 69 PARTIAL, 67 MISSING, 272 total. Every parent Status ID remains; both round commits retain all 272 rows. No acceptance text or held requirement was removed. The only campaign row updated is ISSUE-024's proof description; no other campaign row or hold changes.
+Counts before and after: 136 DONE, 69 PARTIAL, 67 MISSING, 272 total. Every parent Status ID remains; all three round commits retain all 272 rows. No acceptance text or held requirement was removed. The only campaign row updated is ISSUE-024's proof description; no other campaign row or hold changes.
 
 The whole clause is not proposed DONE. Its unchanged Gap retains clipboard staging before new-issue creation; paste, drop, slash and upload shortcut; multiple files and progress; comments, templates and documents; JPEG, WebP and animated GIF qualification; video, player, codec, Range and resumable 250 MB work; draft ownership and Unattached uploads; copied and template byte ownership; remaining archive and API integration; native mobile and metadata choices; Slack, Teams and notification email; historical PNG metadata; and independent interface qualification. ISSUE-028, ISSUE-016, ISSUE-025, ISSUE-027 and existing threads keep their supplied holds. No account-dependent provider proof or native-device qualification is claimed.
 
@@ -28,13 +28,14 @@ The whole clause is not proposed DONE. Its unchanged Gap retains clipboard stagi
 ## Product commits
 
 - ddae2c37db6057beb1ae9b615db369349bee92e5 — authored PNG alt text retained during navigation; shared tooltip; the normal generated route registration and fresh source lock; pushed as a skip-ci save.
-- 6b01b64230733634aa7d71e1333dc4a3e8f64ce3 — reserved-response layout and retained-file browser checks, current-authority Worker proof, updated ISSUE-024 evidence and final source lock; pushed as the candidate.
+- 6b01b64230733634aa7d71e1333dc4a3e8f64ce3 — reserved-response layout and retained-file browser checks, current-authority Worker proof, updated ISSUE-024 evidence and source lock; its Verify 42118910672 failed.
+- 26e574ffb400304559929195d0db4f80b50a2619 — repository-generated deployment integration includes the existing 0126 PNG metadata migration, with a fresh source lock; pushed as the repaired candidate.
 
-The three supplied base commits remain intact. Product pushes succeeded on their first attempts. All five candidate commits have fleet authors and committers and no trailers. Hooks stayed enabled. No force push or default-branch push occurred.
+The three supplied base commits remain intact. Product pushes succeeded on their first attempts. All six candidate commits have fleet authors and committers and no trailers. Hooks stayed enabled. No force push or default-branch push occurred.
 
 ## Selected POINT proof map
 
-All paths and line numbers below name the candidate.
+All paths and line numbers below name the candidate. PNG code, migrations and tests are byte-identical to the passing proof on 6b01b64230733634aa7d71e1333dc4a3e8f64ce3; the repair changes generated deployment integration and the source lock.
 
 | Selected outcome | Public door and proof |
 | --- | --- |
@@ -78,9 +79,9 @@ PROBE ISSUE-024 portability: populated additive upgrade and authenticated native
 
 ## Mechanical checks and test scope
 
-The focused 10 Worker registrations passed again on the exact candidate. The full collaboration entrypoint passed 53 clause journeys, 122 functional checkpoints and all 54 existing test registrations, with zero failures or skips, on the exact candidate. The two existing Markdown registrations, typecheck and first-party check passed; their relevant bytes did not change afterward. The standalone rendered PNG helper also passed. Actual commands, exits and file hashes are in receipts.json.
+The focused 10 Worker registrations passed again on 6b01b64230733634aa7d71e1333dc4a3e8f64ce3. The full collaboration entrypoint passed 53 clause journeys, 122 functional checkpoints and all 54 existing test registrations, with zero failures or skips, on that SHA. The final metadata-only repair changes none of their relevant code, migrations or test bytes. The two existing Markdown registrations, typecheck and first-party check passed; their relevant bytes did not change afterward. The standalone rendered PNG helper also passed. Actual commands, exits and file hashes are in receipts.json.
 
-MECHANICAL lock=pnpm sources:lock then pnpm sources:check exit=0; views=node scripts/contract-docs.mjs write ISSUE-024 then node scripts/contract-docs.mjs check ISSUE-024 exit=0; ledger=none exit=0.
+MECHANICAL lock=pnpm sources:lock then pnpm sources:check exit=0; views=node scripts/contract-docs.mjs write ISSUE-024 then node scripts/contract-docs.mjs check ISSUE-024 exit=0; ledger=node --test --test-concurrency=1 scripts/deployment/tests/migration-head.test.mjs exit=0.
 
 The documented generator ran and checked successfully; ACCEPTANCE.md and docs/CLAIMS.md were restored whole from main and were not committed. Their eventual synchronization belongs to the lander. No new migration was added in this continuation; the supplied additive metadata migration is exercised by the populated-upgrade and archive journeys. The first-party command `npx -y @runeditrun/rer check --profile first-party` passed. Final source lock generation happened after all source, test and contract edits and the main integration.
 
@@ -102,7 +103,7 @@ No DONE flip or ct judgment is requested. This is the selected PNG continuation 
 | --- | --- |
 | 1 | Selected PNG outcomes have named public-door journeys; whole-clause outcomes in the unchanged Gap remain unproved. |
 | 2 | Seeded real bytes are checked; admitted and unsafe authority paths both execute, with unchanged refused storage. |
-| 3 | The existing collaboration and Worker entrypoints include the added assertions. Exact-head Verify 42118910672 is being observed; ci.json records the latest actual conclusion. |
+| 3 | The existing collaboration and Worker entrypoints include the added assertions. Verify 42118910672 failed on the earlier head. The repaired head was pushed after the API budget was exhausted; its run ID and conclusion remain unobserved. ci.json records both states. |
 | 4 | Exact-head local execution and relevant file hashes are recorded in receipts.json. |
 | 5 | The existing clause explicitly retains its Base input, upload-header, session and team duties. No inheritance changed. |
 | 6 | Evidence updated; Gap scope retained; generator write and check pass. Main's generated views remain for the lander. Existing judgment provenance is not replaced with an invented DONE judgment. |
@@ -116,10 +117,30 @@ The publication scanner is not available for this cloud branch push and was not 
 
 ## CI and custody
 
-Exact-head Verify: 42118910672, event push, candidate 6b01b64230733634aa7d71e1333dc4a3e8f64ce3. Current observed status and conclusion are in ci.json. A single watcher uses no call more frequently than once per five minutes for this run, with a ten-call total budget. No workflow was dispatched or rerun.
+Earlier-head Verify 42118910672, event push, completed failure at 6b01b64230733634aa7d71e1333dc4a3e8f64ce3. Its failed-job details could not be retrieved within the exhausted ten-call budget. The repaired candidate 26e574ffb400304559929195d0db4f80b50a2619 was pushed through the same existing workflow entrypoint; no call budget remains to retrieve its run ID or conclusion. Current and previous custody are in ci.json. A single watcher uses no call more frequently than once per five minutes for this run, with a ten-call total budget. No workflow was dispatched or rerun.
 
 The complete explicitly selected packet is returned only on evidence/sd-vector-c-f184. Product, report transfer and landing custody remain separate. No lane inbox or state file was read or written.
 
 Diagnostic custody: a process-status listing included a temporary local test key. That output is excluded from this packet; the associated test runtime has stopped. No raw runtime database, settings, session, outbox or environment dump is selected.
 
 The returned stdout logs normalize terminal escapes, fixture addresses and prose separators; the structured receipts retain the actual commands, outcomes, candidate and file hashes.
+
+The environment reconnected after the ninth GitHub request. The checkout and packet persisted, but that request's tool response was unavailable. It is counted against the ten-call budget and its result is unobserved; ci.json retains the last actual observation.
+
+## Reproduced integration repair
+
+After the earlier head's red Verify, the previously failing hosted-artifact command was run locally on that head. It passed source freshness and failed during integration:check: the generated deployment spec omitted 0126_attachment_png_dimensions.sql. Main passes that same integration check after a normal build. The repository's integration:sync command adds exactly the six-line migration record, using the existing migration bytes and digest; the generated setup descriptor and producer workflow stay byte-identical. integration:check, typecheck and the migration-ledger journey pass afterward. The source lock was regenerated last after a fresh main merge and contract generation.
+
+VERIFY_REPRODUCED {"head":"6b01b64230733634aa7d71e1333dc4a3e8f64ce3","job":"hosted-artifact local probe; CI job ID unobserved","command":"pnpm verify:ci --shard hosted-artifact","test":"integration:check during rer verify","exit":1,"failure":"Stale integration management/integration/deployment-spec.json; build the application and regenerate with pnpm integration:sync"}
+
+The repaired hosted shard passed public-site checks, rer verify, fresh builds, access and mutation-refresh checks, then failed at the existing SDK stale-version refusal: assert.ok(error instanceof ApiError). The actual partial shard receipt is returned unchanged in hosted-shard.json. Main passes the SDK case. A focused candidate recheck first failed with a plain Error and later passed with an ApiError and native 409; the exact pnpm test:integrations command then passed, including both viewport fixtures and the native loopback proof, with no application or assertion edit. The underlying transient cause is unclassified. Separate receipts retain every observation. The remaining archive-upgrade command also passed separately on the repaired head: the listed historical backup restores through rer import with both migration-ledger variants. No full-shard green result is fabricated; the actual failed shard receipt and separate passing command receipts are retained. Cloud browser launch configuration is supplied by the separate cloud-browser-preload.cjs file, which selects the prescribed system Chromium and sandbox argument for older harnesses that ignore the executable-path setting. It changes no application code or assertion. No further GitHub request, dispatch or rerun was made after the budget was exhausted.
+
+The returned transfer-receipt.json verifies the first fourteen-file evidence snapshot at 3a831bb222188e1d2a62401269f65266447f5bda. The final expanded packet is published again on the same report-only ref; its exact head is supplied in the terminal EVIDENCE line.
+
+## Final handoff
+
+Final product head: 26e574ffb400304559929195d0db4f80b50a2619. The product checkout is clean. Final source freshness, integration parity and first-party checks pass. The migration-ledger journey and historical archive-upgrade journey pass. Every command in the hosted-artifact plan has now passed individually, with its one initial SDK failure and later successful exact-command rerun preserved separately. The original full-shard receipt remains failed and is not relabeled green.
+
+The newest head's branch Verify ID and conclusion are unobserved because all ten permitted GitHub calls were spent before its push. The old head's failure is retained in ci.json. Product custody is PUSHED, with exact-SHA Verify, publication scan, independent interface qualification, guarded landing and Run site left to the fleet. No new deterministic acceptance failure remains after the recorded rerun; the intermittent SDK cause remains unclassified and is reported to fv.
+
+ISSUE-024 remains PARTIAL with all supplied holds intact. Counts remain 136 DONE, 69 PARTIAL, 67 MISSING, 272 total. Only its proof description changes in the campaign. No PR is required and no default branch was pushed.

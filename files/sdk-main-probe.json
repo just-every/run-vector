@@ -1,0 +1,17 @@
+{
+  "head": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "passed": true,
+  "exit": 0,
+  "observations": [
+    {
+      "operation": "issues_get_4",
+      "versionType": "number"
+    },
+    {
+      "operation": "issues_update_5",
+      "outcome": "rejected",
+      "errorClass": "ApiError",
+      "status": 409
+    }
+  ]
+}

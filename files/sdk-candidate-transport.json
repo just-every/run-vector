@@ -1,0 +1,22 @@
+{
+  "head": "26e574ffb400304559929195d0db4f80b50a2619",
+  "passed": true,
+  "exit": 0,
+  "observations": [
+    {
+      "operation": "issues_get_4",
+      "versionType": "number"
+    },
+    {
+      "transport": "response",
+      "status": 409
+    },
+    {
+      "operation": "issues_update_5",
+      "outcome": "rejected",
+      "errorClass": "ApiError",
+      "status": 409,
+      "sdkMessage": "other SDK error"
+    }
+  ]
+}

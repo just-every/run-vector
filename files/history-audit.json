@@ -2,6 +2,13 @@
   "passed": true,
   "commits": [
     {
+      "head": "26e574ffb400304559929195d0db4f80b50a2619",
+      "statusRows": 272,
+      "parentsRetained": true,
+      "identity": "fleet",
+      "trailers": []
+    },
+    {
       "head": "6b01b64230733634aa7d71e1333dc4a3e8f64ce3",
       "statusRows": 272,
       "parentsRetained": true,
