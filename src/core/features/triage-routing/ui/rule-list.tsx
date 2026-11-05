@@ -47,7 +47,7 @@ export function RoutingRules({ routing, label, intro, empty, children }: {
       {rules.map((rule, index) => <RuleRow key={rule.id} rule={rule} position={index} count={rules.length} view={view} save={save} drag={drag} />)}
     </ol>}
     <FailureLine failed={order.failed} reason={order.reason} onRetry={order.retry} />
-    {view && (view.sources.length === 0 && view.rules.length === 0 ? <p className="field-hint">{empty}</p> : children)}
+    {view && (view.sources.length === 0 ? <p className="field-hint">{empty}</p> : children)}
     <Disclosure title="How this works">
       <p>Workspace rules run before a team’s own rules. Within each list the first rule for the delivering Sentry connection places a new issue in its team’s Intake, and the issue shows that rule and its revision.</p>
       <p>Issues that already exist stay where they are, and no rule declines or deletes. If a rule’s team is archived or no longer open to the person who saved it, the delivery is refused rather than sent elsewhere.</p>
