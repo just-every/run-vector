@@ -12,6 +12,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { DeleteIssue,type DeletionReceipt } from '../../issue-deletion/ui';
 import { IssueDuplicates } from '../../duplicates/ui';
 import { GithubBranch } from '../../integrations/ui/github-branch';
+import {BitbucketLinks} from '../../integrations/ui/bitbucket-links';
 import { GithubLinks } from '../../integrations/ui/github-links';
 import { isEditableTarget } from "../../search/ui/command-helpers";
 import { IssueSubscriptionControls } from "../../notifications/ui/issue-subscription";
@@ -335,7 +336,7 @@ function IssueInspector({
           onRefresh={onRefresh}
         />}
         {writable && <DeleteIssue issue={issue} onDeleted={onDeleted} onRefresh={onRefresh}/>}
-        <div className="document-inspector-pair"><IssueSpecification scope={options?{workspaceId:options.workspace.id,operatorId:options.operator.id}:null} key={issue.identifier} identifier={issue.identifier} writable={writable} current={documentIssueDetailSchema.parse(issue).specification}/><DocumentsSection inspector parentKind="issue" parentId={issue.id}/></div><GithubLinks identifier={issue.identifier}/><Discussion writable={writable}
+        <div className="document-inspector-pair"><IssueSpecification scope={options?{workspaceId:options.workspace.id,operatorId:options.operator.id}:null} key={issue.identifier} identifier={issue.identifier} writable={writable} current={documentIssueDetailSchema.parse(issue).specification}/><DocumentsSection inspector parentKind="issue" parentId={issue.id}/></div><GithubLinks identifier={issue.identifier}/><BitbucketLinks identifier={issue.identifier}/><Discussion writable={writable}
           key={issue.identifier + ":discussion"}
           identifier={issue.identifier}
           onRefresh={onRefresh}

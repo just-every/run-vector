@@ -2247,5 +2247,39 @@
     "version",
     "created_at",
     "updated_at"
+  ],
+  "vector_bitbucket_repositories": [
+    "id",
+    "workspace_id",
+    "repository",
+    "repository_uuid",
+    "name",
+    "enabled",
+    "revoked_at",
+    "created_at",
+    "updated_at"
+  ],
+  "vector_bitbucket_pull_requests": [
+    "repository_id",
+    "number",
+    "title",
+    "url",
+    "state",
+    "updated_at",
+    "received_at"
+  ],
+  "vector_bitbucket_issue_links": [
+    "repository_id",
+    "number",
+    "issue_id",
+    "created_at"
+  ],
+  "vector_bitbucket_deliveries": [
+    "repository_id",
+    "delivery_id",
+    "payload_hash",
+    "event_key",
+    "received_at",
+    "diagnostic"
   ]
 }

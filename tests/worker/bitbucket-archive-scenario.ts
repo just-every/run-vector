@@ -1,0 +1,31 @@
+import {env} from 'cloudflare:workers';
+import {expect,inject} from 'vitest';
+import {createServerApp} from '../../src/core/app/server';
+import {bitbucketWire,bitbucketSnapshot,bitbucketTables,type bitbucketFixture} from './bitbucket-fixture';
+import {freshTarget,httpExport,stageArchive,finalBody,targetCall,targetSignIn,targetBindings,destination,archiveRows} from './http-archive-fixture';
+export async function exerciseBitbucketArchive(f:Awaited<ReturnType<typeof bitbucketFixture>>,opened:unknown,delivery:string){
+ const records=await httpExport(f.call),text=JSON.stringify(records);
+ const ciphertext=await env.DB.prepare("SELECT encrypted FROM vector_integration_secret_keys WHERE identity=?").bind('bitbucket:'+f.config.id).first<string>('encrypted');
+ expect(text.includes(f.config.secret)||text.includes(ciphertext!)).toBe(false);
+ const portable=['vector_bitbucket_repositories','vector_bitbucket_pull_requests','vector_bitbucket_issue_links','vector_bitbucket_deliveries'];
+ const ordered=(rows:unknown[])=>rows.map(row=>JSON.stringify(Object.fromEntries(Object.entries(row as Record<string,unknown>).sort(([a],[b])=>a.localeCompare(b))))).sort();
+ const source=await Promise.all(portable.map(async table=>(await env.DB.prepare('SELECT * FROM '+table+' ORDER BY rowid').all()).results));
+ for(let index=0;index<portable.length;index++)expect(ordered(archiveRows(records,portable[index]))).toEqual(ordered(source[index]));
+ const cookie=await freshTarget(),db=destination.ARCHIVE_TARGET_DB;
+ await db.exec('ALTER TABLE d1_migrations ADD COLUMN sha256 TEXT; ALTER TABLE d1_migrations ADD COLUMN state TEXT;');
+ await db.batch(Object.entries(inject('migrationDigests')).map(([name,digest])=>db.prepare("UPDATE d1_migrations SET sha256=?,state='applied' WHERE name=?").bind(digest,name)));
+ const job=await stageArchive(records,cookie),final=await targetCall('/api/portability/imports/'+job+'/finalize','POST',finalBody(records),cookie);
+ expect(final.status,await final.clone().text()).toBe(200);
+ const historical=await targetSignIn();
+ for(let index=0;index<portable.length;index++)expect(ordered((await db.prepare('SELECT * FROM '+portable[index]+' ORDER BY rowid').all()).results)).toEqual(ordered(source[index]));
+ expect(await db.prepare('SELECT count(*) n FROM vector_integration_secret_keys').first<number>('n')).toBe(0);
+ const config=await targetCall('/api/settings/integrations/bitbucket','GET',undefined,historical);expect(config.status).toBe(200);expect(await config.json()).toMatchObject({repositories:[expect.objectContaining({id:f.config.id,requiresReentry:1})]});
+ const app=createServerApp(),receive=async(secret:string)=>app.request(f.config.receiver,await bitbucketWire(secret,opened,delivery),targetBindings);
+ const before=await bitbucketSnapshot(db);expect((await receive(f.config.secret)).status).toBe(401);expect(await bitbucketSnapshot(db)).toBe(before);
+ const reenter=await targetCall('/api/settings/integrations/bitbucket/'+f.config.id+'/reenter','POST',{},historical);expect(reenter.status,await reenter.clone().text()).toBe(201);const renewed=await reenter.json() as {secret:string};
+ const held=await bitbucketSnapshot(db);expect((await receive(renewed.secret)).status).toBe(401);expect(await bitbucketSnapshot(db)).toBe(held);
+ expect((await targetCall('/api/data/restore/review-effects','POST',{},historical)).status).toBe(200);
+ const released=await bitbucketSnapshot(db);const replay=await receive(renewed.secret);expect(replay.status).toBe(200);expect(await replay.json()).toMatchObject({reused:true});expect(await bitbucketSnapshot(db)).toBe(released);
+ expect((await receive(f.config.secret)).status).toBe(401);
+ console.log('PROBE BITBUCKET-001 custody: native HTTP archive -> all repository, PR, link and receipt rows retained; secrets excluded, re-entry and release required; historical replay stays inert');
+}

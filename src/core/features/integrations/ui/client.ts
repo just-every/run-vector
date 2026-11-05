@@ -5,6 +5,6 @@ export const configSchema=z.object({sources:z.array(configured.extend({sourceId:
 export type Configuration=z.infer<typeof configSchema>;
 export const personalTokensSchema=configSchema.pick({tokens:true});
 export const secretSchema=z.object({id:z.string().optional(),token:z.string().optional(),secret:z.string().optional(),webhookUrl:z.string().optional(),receiver:z.string().optional(),workspaceId:z.string().optional(),sourceId:z.string().optional(),teamId:z.string().optional()});
-export type Secret=z.infer<typeof secretSchema>&{kind?:'source'|'destination'|'github';repository?:string;destinationUrl?:string};
+export type Secret=z.infer<typeof secretSchema>&{kind?:'source'|'destination'|'github'|'bitbucket';repository?:string;destinationUrl?:string};
 export const send=<S extends z.ZodType>(path:string,schema:S,body:unknown,method='POST')=>fetchJson('/api/settings/integrations'+path,schema,{method,headers:{'Content-Type':'application/json'},...(body===undefined?{}:{body:JSON.stringify(body)})});
 export const acknowledged=z.object({}).passthrough();

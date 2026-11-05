@@ -56,8 +56,8 @@ export async function registerGithub(env:WorkerBindings,owner:IntegrationOwner,i
   {sql:"INSERT INTO vector_integration_secret_keys(identity,slot,encrypted) VALUES(?,'current',?)",params:[identity,encrypted]},
  ]);}catch{throw safeError();}return {id,secret,receiver:env.APP_ORIGIN+'/api/integrations/github/'+id};
 }
-export async function revokeConfiguration(env:WorkerBindings,owner:IntegrationOwner,kind:'source'|'destination'|'github',id:string){
- const table={source:'vector_integration_sources',destination:'vector_webhook_destinations',github:'vector_github_repositories'}[kind],at=new Date().toISOString();
+export async function revokeConfiguration(env:WorkerBindings,owner:IntegrationOwner,kind:'source'|'destination'|'github'|'bitbucket',id:string){
+ const table={source:'vector_integration_sources',destination:'vector_webhook_destinations',github:'vector_github_repositories',bitbucket:'vector_bitbucket_repositories'}[kind],at=new Date().toISOString();
  const rows=await guardedSql(env.DB,ownerPredicate(owner)).batch([
   {sql:`UPDATE ${table} SET enabled=0,revoked_at=COALESCE(revoked_at,?),updated_at=? WHERE id=? AND workspace_id=? RETURNING id`,params:[at,at,id,owner.workspace]},
   auditStatement({workspace:owner.workspace,actor:owner.id,action:'integration.'+kind+'_revoked',subject:id,at,condition:{sql:`EXISTS(SELECT 1 FROM ${table} WHERE id=? AND workspace_id=? AND revoked_at=?)`,params:[id,owner.workspace,at]}}),

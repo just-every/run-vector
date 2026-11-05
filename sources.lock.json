@@ -2529,6 +2529,10 @@
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "executable": false
     },
+    "migrations/core/0126_bitbucket_pull_requests.sql": {
+      "sha256": "b9e362d01aeb7ec0a23b5b5256c83bc11cf582e043bf2b9412492e422acdb103",
+      "executable": false
+    },
     "OPERATIONS.json": {
       "sha256": "205c69bba11ed08ccfe98cf2cfa74d621cc5631015d3dc8176a5bb60dc51161e",
       "executable": false
@@ -4586,7 +4590,7 @@
       "executable": false
     },
     "src/core/features/data/archive-inventory.json": {
-      "sha256": "867be97b8c6b91d1b80c5bd07aae090d4e0b05f2b82d3dd388bfe49653783666",
+      "sha256": "2fb07bc56f375ff46f0496456d8c6cb04e2808a80a2696d3b9b962c15463d2d7",
       "executable": false
     },
     "src/core/features/data/archive-inventory.mjs": {
@@ -4598,7 +4602,7 @@
       "executable": false
     },
     "src/core/features/data/archive-policy.mjs": {
-      "sha256": "7702b91aa47735176b25e4bb30c857f080258a0e359c1d3ad9da2cd699d19f32",
+      "sha256": "3b654080888a67efc377b1d5e8988b164e014ba9e51601e69c86f4300b26c845",
       "executable": false
     },
     "src/core/features/data/archive-routes.ts": {
@@ -5265,6 +5269,22 @@
       "sha256": "435e9be542f925280a3d208f6a4738ed3eee1af4ae976a9b2af41ae5078407ee",
       "executable": false
     },
+    "src/core/features/integrations/bitbucket/input.ts": {
+      "sha256": "723eb394bdc800f18d6bcb3db20922d5a1b6d756042fb548083b7edaa792cfb1",
+      "executable": false
+    },
+    "src/core/features/integrations/bitbucket/receiver.ts": {
+      "sha256": "0f0da0047699f4f09d595fedb9ba35896ded7c7e34b3d8ba3b84cc66537016bc",
+      "executable": false
+    },
+    "src/core/features/integrations/bitbucket/routes.ts": {
+      "sha256": "8fa81b69237abd7f1939b5de670bbd45b25d2b458bc803b5a992fde5f07ce16d",
+      "executable": false
+    },
+    "src/core/features/integrations/bitbucket/settings.ts": {
+      "sha256": "1e94a11cbc9b482460fcdc11e532849becdabb11a4bcd231e8985f2c91d49323",
+      "executable": false
+    },
     "src/core/features/integrations/channels/channel-safety.ts": {
       "sha256": "be71c7fdc00100b1a1d8b7cb9392f249d1b56dabcf2ca3ba100bfde474249293",
       "executable": false
@@ -5314,11 +5334,11 @@
       "executable": false
     },
     "src/core/features/integrations/config-routes.ts": {
-      "sha256": "ccd806a79611ede4d158babd83e6f19e51802febe7f2934c83b6a538c500c12a",
+      "sha256": "b5d9a64a5408fc6c936d5cc7d3c1e5506726cc17d25a98d3a6a826468d9a3f84",
       "executable": false
     },
     "src/core/features/integrations/config-storage.ts": {
-      "sha256": "a45be3113a2d6261e1c4aa4722343924225890e57e62cbdfa523e768acff25ad",
+      "sha256": "23c55c0f2c6abd66acfc1f48a179b4a190dde95eb9a60ab5fe12ecf35e6f4af6",
       "executable": false
     },
     "src/core/features/integrations/cycle-api.ts": {
@@ -5377,6 +5397,10 @@
       "sha256": "c635e3893429463831210e0c818f925a1a9411e0146fef8b10d54f71a9959e4f",
       "executable": false
     },
+    "src/core/features/integrations/git-rules.ts": {
+      "sha256": "bddeaec43b712fa9217876440a203383531f6ca7446cef102212790587edea4d",
+      "executable": false
+    },
     "src/core/features/integrations/github-read.ts": {
       "sha256": "2d5953908201bc472010e9dc19f05ce159e6593651cf1673ac8cd0cbfab39537",
       "executable": false
@@ -5418,7 +5442,7 @@
       "executable": false
     },
     "src/core/features/integrations/github/rules.ts": {
-      "sha256": "6cf9f51075ab79ac9eecad9c38be2f6d9b5d5ded50f824b6a7182e8307389179",
+      "sha256": "ce1d8a572306a5c64873b89f4d7af83d1478b61d809cdc47fdcf0e0f0eb254be",
       "executable": false
     },
     "src/core/features/integrations/label-api.ts": {
@@ -5458,11 +5482,11 @@
       "executable": false
     },
     "src/core/features/integrations/receiver-routes.ts": {
-      "sha256": "448549d9b9c1405458428a3a4678d05659a601d58425e36f00ff01cd383953c1",
+      "sha256": "02bbc2699de7e1afac5b4363759e96efc36fdbc9a641ebda93c98c3c9b753dfe",
       "executable": false
     },
     "src/core/features/integrations/reenter.ts": {
-      "sha256": "44f21e0ba6f6a5c189771fed7e12f7ae7162b51d9765e1bde13b514391132c70",
+      "sha256": "5ed8fbbe064b27404ca2fb05fd92207a84bef57d02bcd1b54522d461fecd8ba6",
       "executable": false
     },
     "src/core/features/integrations/scope-labels.ts": {
@@ -5577,12 +5601,20 @@
       "sha256": "c142f3638f9de405dc46fe4ef9b7865fb8d53620d810d39686a55ae536e5e98e",
       "executable": false
     },
+    "src/core/features/integrations/ui/bitbucket-links.tsx": {
+      "sha256": "e4704a8735cd83fee0e38b05191b792f917c4c4ff86dbbcc69933852ec386e75",
+      "executable": false
+    },
+    "src/core/features/integrations/ui/bitbucket-settings.tsx": {
+      "sha256": "09649962466247719811350c2442e0319bd7c39d3f04eb00934f55db78286b91",
+      "executable": false
+    },
     "src/core/features/integrations/ui/channel-settings.tsx": {
       "sha256": "d7218f3f2a345ccf21be381e231a6e0b7f21ccd2d926318b6f23f9d031f0f1a7",
       "executable": false
     },
     "src/core/features/integrations/ui/client.ts": {
-      "sha256": "35895130db01514b7f0ee0b387f3863613273f6e8aeaa3d2a1fe521e2dd7db54",
+      "sha256": "35d30281be99f3d93564fd979fd2ca1a1dffe01dade943212b26f4edc18cd428",
       "executable": false
     },
     "src/core/features/integrations/ui/copy-field.tsx": {
@@ -5634,7 +5666,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/integrations-panel.tsx": {
-      "sha256": "6b469a2797eaaf12f9e88f40555c1cddce0d10763801b0404a11f19f2f3f2cdc",
+      "sha256": "1b72823487e86e59341a2604793f1381c957796994cf22616b9bf2acfc29138a",
       "executable": false
     },
     "src/core/features/integrations/ui/integrations.css": {
@@ -5642,7 +5674,7 @@
       "executable": false
     },
     "src/core/features/integrations/ui/one-time-secret.tsx": {
-      "sha256": "e512ad48f217cb11b34954245c35c1b82f929da07e8221f0122626a1fa07e187",
+      "sha256": "4def19235fdfdfbbc62ec46a8182fbf124010c81d8d3af042cd1bec524189e37",
       "executable": false
     },
     "src/core/features/integrations/ui/project-channel.tsx": {
@@ -6050,7 +6082,7 @@
       "executable": false
     },
     "src/core/features/issues/ui/issue-detail.tsx": {
-      "sha256": "bc62e6077fe3ac617b5038b3d7e92c5fbf773b9e7a75e4ab75a708011c1c03bf",
+      "sha256": "b8ab76d392ac928df3d31b12eac2b1837297f7ddc7c84debaa8a251b34d30b75",
       "executable": false
     },
     "src/core/features/issues/ui/issue-editor.css": {
@@ -6842,7 +6874,7 @@
       "executable": false
     },
     "src/core/features/roles/doors.ts": {
-      "sha256": "185f56e84b3a0e31d1830cedd7109f6ef4741bc5a0445ce946f783a20b8a077f",
+      "sha256": "a7e576772171c75ba2ae927e39bf09042c1c38cfee859eb87b64a11a3a388cba",
       "executable": false
     },
     "src/core/features/roles/enforcement.ts": {
@@ -9015,6 +9047,22 @@
     },
     "tests/worker/base-refresh-upgrade.test.ts": {
       "sha256": "c670d3c200d15007f0f6cce031854e6e27842e19d4743a5aa65545018c73aace",
+      "executable": false
+    },
+    "tests/worker/bitbucket-archive-scenario.ts": {
+      "sha256": "8aaefd5dffe11ac872e9c8e3e56b9571f28fae412fce17377876a8d7e58726f3",
+      "executable": false
+    },
+    "tests/worker/bitbucket-fixture.ts": {
+      "sha256": "9402469bcfff2bfbebef61419b16b97fff03edb67daf2907c27738f2a70ae09d",
+      "executable": false
+    },
+    "tests/worker/bitbucket-links.test.ts": {
+      "sha256": "e380d3cfff9bc133482e70b1cedce203f286a4ab5e9da75ca19643f9ab5e79a2",
+      "executable": false
+    },
+    "tests/worker/bitbucket-upgrade.test.ts": {
+      "sha256": "af3b8a0a6676c4ec923b3880a9f521dc77c10b06b3c37789816cfe20c7be44a5",
       "executable": false
     },
     "tests/worker/boolean-filters.test.ts": {
