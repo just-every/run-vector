@@ -108,6 +108,22 @@ it('native title events commit atomically and replay through mounted MCP with cu
   const insufficient = await agentToolClient(noEvents.token)('vector.events.list', {});
   expect(insufficient.status).toBe(403); expect(insufficient.body.error.data.code).toBe('insufficient_scope');
   expect((await list({}, noEvidence.token)).events).toEqual([]);
+  const scopeBaseline = await snapshot(tables);
+  const readCannotWrite = await agentToolClient(reader.token)('vector.issue.concurrent_edits', {
+    identifier: issue.identifier, change: { expectedVersion: 4, title: 'synthetic-vector-3718' }, idempotency_key: crypto.randomUUID(),
+  });
+  expect(readCannotWrite.status).toBe(403);
+  expect(readCannotWrite.body.error.data.code).toBe('insufficient_scope');
+  // Settings has no narrowing form; change only the persisted grant, then use
+  // the mounted door to verify that a previously usable reader loses admission.
+  await env.DB.prepare('UPDATE integration_tokens SET scopes=? WHERE id=?')
+    .bind(JSON.stringify(['evidence:read']), reader.credential.id).run();
+  const narrowed = await agentToolClient(reader.token)('vector.events.list', { after: first.id });
+  expect(narrowed.status).toBe(403); expect(narrowed.body.error.data.code).toBe('insufficient_scope');
+  expect(await snapshot(tables)).toEqual(scopeBaseline);
+  await env.DB.prepare('UPDATE integration_tokens SET scopes=? WHERE id=?')
+    .bind(JSON.stringify(['events:read', 'evidence:read']), reader.credential.id).run();
+  expect((await list({ after: first.id })).events).toEqual(expected.slice(1));
   await json(await owner.call(`/settings/teams/${team.id}/members/${member.id}`, 'DELETE'));
   const withdrawn = await snapshot(tables);
   const hidden = await list({ after: first.id }); expect(hidden.events).toEqual([]);
