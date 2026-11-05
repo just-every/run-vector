@@ -66,5 +66,14 @@
   "landing": "Not attempted",
   "runSite": "Candidate fleet gate pending",
   "independentInterfaceQualification": "Not claimed",
-  "providerReceipts": "None claimed"
+  "providerReceipts": "None claimed",
+  "ci": {
+    "id": 42125063262,
+    "event": "push",
+    "conclusion": null,
+    "head_sha": "054db03cc1b5e61e0d7616e51a8bf8a7d31ff863",
+    "html_url": "https://github.com/just-every/run-vector/actions/runs/42125063262",
+    "status": "in_progress"
+  },
+  "custody": "READY under the explicit cloud handoff contract; Verify remains in progress and landing is a fleet gate"
 }

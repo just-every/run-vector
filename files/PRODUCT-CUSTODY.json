@@ -22,5 +22,7 @@
   ],
   "publicationScan": "Fleet gate, not run in cloud",
   "landing": "Not attempted",
-  "runSite": "Fleet gate, not run for candidate"
+  "runSite": "Fleet gate, not run for candidate",
+  "fullHistory": true,
+  "publishedHeadVerified": "054db03cc1b5e61e0d7616e51a8bf8a7d31ff863"
 }
