@@ -1,0 +1,30 @@
+{
+  "round": 1,
+  "reproduced": {
+    "head": "b318a69487e0a533729276b95f9c1b7edecf2198",
+    "job": "127585195397",
+    "command": "pnpm build",
+    "test": "Build the shared production output",
+    "exit": 1,
+    "failure": "docs/AGENT-EVENTS.md is neither a page nor in githubOnly; add it to one with a reason"
+  },
+  "mainComparison": {
+    "head": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+    "command": "pnpm build",
+    "node": "22.20.0",
+    "pnpm": "10.12.4",
+    "exit": 0,
+    "runner": "same cloud VM"
+  },
+  "repair": {
+    "head": "32d5f86f00483f3a2616c2cb95ddbfde6d19673f",
+    "command": "pnpm build",
+    "node": "22.20.0",
+    "pnpm": "10.12.4",
+    "exit": 0,
+    "change": "Move the retained-event reference into the existing registered docs/AGENT-DOOR.md and correct its capability declaration."
+  },
+  "applicationAndProofSourcesUnchanged": true,
+  "outerTerminalSessionReportedExit": 1,
+  "outerSessionNote": "Both build command statuses printed 0 and both build logs end build: complete (exit 0); terminal session completion reported 1. Subsequent source and first-party checks passed."
+}

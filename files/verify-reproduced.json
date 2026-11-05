@@ -1,0 +1,8 @@
+{
+  "head": "b318a69487e0a533729276b95f9c1b7edecf2198",
+  "job": "127585195397",
+  "command": "pnpm build",
+  "test": "Build the shared production output",
+  "exit": 1,
+  "failure": "docs/AGENT-EVENTS.md is neither a page nor in githubOnly; add it to one with a reason"
+}

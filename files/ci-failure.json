@@ -1,0 +1,12 @@
+{
+  "run": 42124501904,
+  "job": 127585195397,
+  "head": "b318a69487e0a533729276b95f9c1b7edecf2198",
+  "conclusion": "failure",
+  "command": "pnpm build",
+  "failure": "docs/AGENT-EVENTS.md is neither a page nor in githubOnly; add it to one with a reason",
+  "archiveLogReadCommand": "gh run view 42124501904 --repo just-every/run-vector --job 127585195397 --log-failed",
+  "archiveLogReadExit": 0,
+  "githubApiCallsUsed": 5,
+  "repairRound": 1
+}

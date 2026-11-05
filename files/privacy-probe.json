@@ -1,0 +1,15 @@
+{
+  "observedHead": "32d5f86f00483f3a2616c2cb95ddbfde6d19673f",
+  "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/agent-events.test.ts",
+  "initialProbeExit": 1,
+  "initialFailure": "Expected actor.person.name Removed operator after native removal; observed original synthetic lead-a1 name.",
+  "correction": "Anonymize only native human title-event actor names inside the existing operator-removal transaction, preserving IDs and actor identity.",
+  "focusedCorrectedProbeExit": 0,
+  "beforeAgentAdmissionErasure": true,
+  "newPolicyHold": false,
+  "newSchema": false,
+  "finalHead": "2371bdcf722a50ac9148bd5c18c3f98ebf2affcf",
+  "exactHeadProbeExit": 0,
+  "removalFailureRollback": true,
+  "postErasureMountedRead": true
+}

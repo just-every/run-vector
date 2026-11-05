@@ -1,0 +1,31 @@
+{
+  "workflow_runs": [
+    {
+      "conclusion": null,
+      "event": "push",
+      "head_sha": "32d5f86f00483f3a2616c2cb95ddbfde6d19673f",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42125942768",
+      "id": 42125942768,
+      "name": "Verify",
+      "status": "in_progress"
+    }
+  ],
+  "observedAt": "2026-11-05T23:03:50.929655+00:00",
+  "githubApiCallsUsed": 7,
+  "priorObservation": {
+    "workflow_runs": [
+      {
+        "conclusion": null,
+        "created_at": "2026-11-05T22:58:40Z",
+        "event": "push",
+        "head_sha": "32d5f86f00483f3a2616c2cb95ddbfde6d19673f",
+        "html_url": "https://github.com/just-every/run-vector/actions/runs/42125942768",
+        "id": 42125942768,
+        "name": "Verify",
+        "status": "queued"
+      }
+    ],
+    "observedAt": "2026-11-05T22:58:50.342574+00:00",
+    "githubApiCallsUsed": 6
+  }
+}

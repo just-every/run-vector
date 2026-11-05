@@ -1,68 +1,74 @@
 # sd-vector-c-f186 results
 
-BASE-AGENT-010 moves from MISSING to PARTIAL. The selected native title-event work is implemented and locally proved. No DONE claim is made.
+BASE-AGENT-010: MISSING → PARTIAL. The selected native title-event points are implemented and locally proved. The held remainder is unchanged; no DONE claim is made.
 
-Repository: just-every/run-vector. Branch: cloud/sd-vector-c-f186.
-Candidate: b318a69487e0a533729276b95f9c1b7edecf2198.
+Repository: just-every/run-vector.
+Branch: cloud/sd-vector-c-f186.
+Final pushed head: 2371bdcf722a50ac9148bd5c18c3f98ebf2affcf.
 Base: 7c811313e446ae19630f387f2ac927dafba3dbe5.
-Save: 4e65b7969d1dd91e72357a4a2e45efd84e863a52, pushed with CI skipped.
-No PR is required: this repository runs branch-push Verify directly.
-Counts change from 136 DONE, 69 PARTIAL, 67 MISSING to 136 DONE, 70 PARTIAL, 66 MISSING. All 272 parent Status IDs remain in every candidate commit. The sole plan row changed is BASE-AGENT-010; no campaign was rebuilt.
+PR: none; this repository runs Verify on branch pushes.
+Counts: 136 DONE, 69 PARTIAL, 67 MISSING → 136 DONE, 70 PARTIAL, 66 MISSING. All 272 parent Status IDs and all 409 table rows remain. Only the BASE-AGENT-010 campaign row changed; the supplied campaign was not rebuilt.
 
-## Implementation and selected outcomes
+## Product result
 
-The native title planner inserts a minimal typed event before its version-changing statement, inside the existing guarded D1 batch. Its identity and time match the native activity. The payload contains exactly the stable ID, issue.updated type, issue resource URI, trusted human or agent-for-person actor and time. It carries no title or description. No-op and stale edits produce no event. Failure to store the event aborts the title, activity and related effects.
+An actual native title mutation inserts one minimal issue.updated event inside the existing guarded D1 transaction, before the version changes. Its stable ID and time match the activity; its remaining fields are the issue URI and a trusted human or agent-for-person actor. It carries no title, description or credential. No-op, stale and refused mutations create no title event. A failed event INSERT rolls back the title, activity and associated effects.
 
-The current pinned Base event capability, retained table and events.list tool are enabled. New read credentials explicitly need events:read and evidence:read; existing grants widen by no automatic migration. Base reuses current issue-resource admission at delivery. No vendor source, pin, identity issuer, subscription transport, acceptance point, applied migration or archive policy changed. The existing event table remains excluded from archives.
+The current pinned Base retained-event capability and built-in events.list tool are enabled. Settings credentials explicitly need events:read and evidence:read. Existing grants gain no new scopes automatically; read grants cannot mutate issues. The existing issue resource checks current access for each event delivery. Paginated replay returns the same IDs in order from the same cursor after a real Worker restart.
 
-The focused Worker journey crosses Settings issuance, the mounted native HTTP mutation and mounted MCP. It covers human and agent attribution under autonomous and standard-review policy, cursor pagination and replay in fresh runtime instances, no-op and stale writes, Guest refusal, native and agent rollback on event persistence failure, missing and narrowed scopes, read-only grant write refusal, current private-team withdrawal, Pause, revoked credentials, deletion and refused replay without storage changes.
+A final privacy probe found that the newly retained human actor name survived native operator removal. The fix joins the existing removal transaction and anonymizes only native human title-event actor names. Event ID, type, URI, time and actor ID remain stable. The journey proves rollback if anonymization fails, successful removal, confirmed person erasure before the first agent admission, and a later mounted Owner event read that contains Removed operator rather than the old name. Existing agent attribution and the separate agent-custody erasure hold remain unchanged.
 
-The browser journey uses the rendered Settings token form and title editor, followed by mounted MCP edits under both policies. It restarts the actual emitted Worker against the same persisted installation and replays one-item pages from the same cursor. All IDs and ordering are identical. Native history remains correctly attributed after reload. The 1440 and 390 captures passed accessibility and overflow inspection. The screenshots were visually inspected and contain synthetic work only.
+No vendor source or pin, identity issuer, subscription transport, acceptance sentence, schema, migration or archive policy changed. The existing event table remains excluded from native archives. The operator-removal integration is required to protect the new native event copy, and does not release a held Base duty.
 
-## Frozen selected rubric and proof map
+## Selected rubric and public-door evidence
 
-- R1: One minimal, trusted and stable event for each real title mutation. MET by ./tests/worker/agent-events.test.ts, journey at line 12, human assertions at lines 48–60 and agent assertions at lines 62–84; native transaction integration is ./src/core/features/issue-edit/plan.ts at line 352 and ./src/core/features/agent-door/title-event.ts at lines 18–27.
-- R2: Same cursor returns the same IDs in order through paginated mounted MCP, including restart. MET by ./tests/worker/agent-events.test.ts at lines 85–92 and ./tests/e2e/core-agent-events.mjs at lines 62–81. The browser receipt contains the actual three event IDs.
-- R3: Current access withdrawal withholds record events; no read credential grants mutation authority. MET by ./tests/worker/agent-events.test.ts at lines 105–149, including narrowed scopes, private-team removal, Pause and revocation.
-- R4: No-op, stale, refused and failed persistence leave no false event or partial mutation. MET by ./tests/worker/agent-events.test.ts at lines 56–60, 76–83, 93–104 and 127–158.
-- R5: Existing policies, native attribution, replay, custody, vendor sources and archive boundaries remain intact. MET locally by the three touched Worker journeys, unchanged vendor and migration trees, and the browser history assertions. Full existing Verify remains the independent CI wall.
+- R1 — Minimal trusted events, stable identity and atomic native title writes: MET by ./tests/worker/agent-events.test.ts, journey “native title events commit atomically and replay through mounted MCP with current authority”, lines 83–119. Integration: ./src/core/features/issue-edit/plan.ts line 352 and ./src/core/features/agent-door/title-event.ts lines 18–27.
+- R2 — Cursor pagination and ordered replay after restart: MET by the same Worker journey at lines 120–127 and ./tests/e2e/core-agent-events.mjs agentEventsJourney at lines 62–81. The browser receipt records the actual three IDs and exact candidate SHA provenance.
+- R3 — Current record access, grant scope, Pause and revocation: MET by the Worker journey at lines 140–193. Actual Settings grants are issued, a previously usable scope is narrowed, a read grant attempts a mutation, private membership is removed, Pause is exercised and the credential is revoked. Refused domain storage remains unchanged.
+- R4 — No false event or partial mutation on no-op, stale, refused and failed persistence: MET by the Worker journey at lines 91–119 and 128–139. Both native HTTP and mounted MCP attempt the failing transaction.
+- R5 — NEW privacy check for the new retained human copy: MET by the Worker journey at lines 20–62. Native Settings removal and confirmed person erasure precede first agent admission; the Owner later reads the nonempty retained event through MCP. A failed anonymization leaves operator, removal receipt, native auth and events unchanged. Integration: ./src/core/features/settings/removal.ts line 120 and ./src/core/features/agent-door/title-event.ts lines 30–40.
+- R6 — Existing attribution, replay, removal and erasure boundaries: MET locally by five Worker files and eight passing journeys, including the existing populated imported-person erasure and archive-restore journey. No assertion was removed, weakened, skipped or moved behind a new width condition.
 
-The browser helper is reached by the existing push Verify planning runtime at ./tests/e2e/core-runtime.mjs lines 757–759; its focused local partition is at lines 718–720. Worker discovery uses the existing test glob. One focused Worker registration was added, with a helper inside an existing browser runtime. No existing assertion was removed, narrowed, moved behind a width condition or skipped. No test deletion was needed.
+The new Worker file is reached by the existing Verify test glob. The browser helper is reached by the existing push planning runtime at ./tests/e2e/core-runtime.mjs lines 757–759; its focused local partition is at lines 718–720. One focused Worker registration and a helper in an existing browser runtime were added. No test deletion or new standalone browser suite was needed.
 
 ## Runtime probes
 
-PROBE BASE-AGENT-010 3: Settings-issued credentials, native and MCP title edits, then events.list with a one-item limit -> three distinct minimal event IDs, identical ordered replay from the same cursor after a real Worker restart.
-PROBE BASE-AGENT-010 4: private-team membership withdrawal, narrowed read scope, Pause and credential revocation through their native doors -> empty event projection, insufficient_scope, agents_paused or HTTP 401 as applicable; refused storage unchanged.
-PROBE BASE-AGENT-010 atomicity: fail event INSERT in the actual D1 transaction, then attempt native and MCP title edits -> HTTP 500 or execution_failed, unchanged issue, activity, followers, notifications and events.
+PROBE BASE-AGENT-010 3: Settings-issued credentials, rendered native title mutation and mounted agent edits under autonomous and standard-review policy; events.list with a one-item limit -> three distinct event IDs and identical ordered replay from the same cursor after a real Worker restart.
+PROBE BASE-AGENT-010 4: current private-team withdrawal, scope narrowing, Pause and credential revocation -> empty record-event projection, insufficient_scope, agents_paused or HTTP 401; refused storage unchanged.
+PROBE BASE-AGENT-010 atomicity: fail event INSERT, then native and MCP title writes -> HTTP 500 or execution_failed and unchanged issue, activity, followers, notifications and events.
+PROBE BASE-AGENT-010 erasure: fail native event anonymization, then remove the author successfully, confirm person erasure before first agent admission and read the retained event through Owner MCP -> rollback on failure; stable event ID and anonymized human actor after successful removal and erasure. Existing agent-custody hold remains active after admission.
 
 MECHANICAL lock=node scripts/edition-authoring/cli.mjs check exit=0; views=node scripts/contract-docs.mjs write BASE-AGENT-010 and node scripts/contract-docs.mjs check BASE-AGENT-010 exit=0; ledger=none exit=0.
 
-## Verification and provenance
+## Checks and receipts
 
-Three touched Worker files and three journeys pass on b318a69487e0a533729276b95f9c1b7edecf2198. Typecheck, first-party check and edition-lock freshness pass on that exact SHA. The contract generator write and check pass; its two generated views were restored from main and are absent from both product commits. The lock was generated after staging all final source, test and doc edits.
+Five touched or dependent Worker files passed eight journeys on the final matching source tree before its commit (540.62 seconds). The focused event journey was then run again on the exact final head and passed. The application build, including typecheck, passed. First-party and edition-lock freshness checks passed on the exact final head. The browser journey passed again on that exact final head with a real Worker restart, persisted data, fresh mounted reads, native history and captures at 1440 and 390. Both widths passed accessibility and overflow checks; screenshots were inspected.
 
-The browser and build ran on save 4e65b7969d1dd91e72357a4a2e45efd84e863a52. No byte of the relevant runtime or browser source changed afterward; browser-provenance.json records the comparison and SHA-256 values. The candidate adds only grant-admission assertions, product documentation and the finalized partial Gap.
+The contract generator write and check pass. Its two generated views were restored from main and are absent from every product commit. The source lock was regenerated after staging the final edits and its check passes. All four candidate commits retain all parent Status IDs. Each product push succeeded on the first guarded attempt; the final remote full SHA was verified. All authors and committers use the fleet identity and no co-author trailer is present. Fleet evidence and credentials are absent from product commits. Added source and proof lines contain no email-shaped fixture values; existing fixture addresses were preserved.
 
-Main at the initial read has successful Verify 42014502098 and Run site 42014502043. Candidate push Verify 42124501904 was discovered on the exact candidate SHA with event push and status in_progress. See ci-receipt.json for the latest observed status. No dispatch, rerun or PR was created. GitHub API calls used so far: two, including the baseline read. No CI failure or repair round has occurred.
+The full plan is PLAN.md. Actual local check receipts are local-receipts.json; browser-receipt.json and browser-provenance.json bind the fresh screenshots and source hashes to the final head. privacy-probe.json records the reproduced name-retention defect and its passing correction. Historical CI and repair receipts are retained separately from the final CI observation.
 
-The candidate branch was pushed successfully on its first guarded attempt and its remote full SHA was verified. Every author and committer is the fleet identity; no co-author trailers are present. No generated acceptance view, evidence packet, credential, environment dump or private gate material is in the product commits. Added lines contain no email-shaped fixture values. Existing fixture addresses in the reused runtime file were preserved.
+## CI repair and final CI state
 
-## DONE-RIDERS and held work
+Initial candidate b318a69487e0a533729276b95f9c1b7edecf2198 failed Verify 42124501904 in build job 127585195397. The exact command pnpm build reproduced exit 1 on the failed SHA with Node 22.20.0 and pnpm 10.12.4: docs/AGENT-EVENTS.md is neither a page nor in githubOnly; add it to one with a reason. The same command passed on main in this cloud VM. Repair round 1 moved the documentation into the existing registered ./docs/AGENT-DOOR.md and corrected its capability declaration. The repaired build passed. No test or guard was weakened.
 
-1. NOT MET for the full clause: selected outcomes pass locally; the explicitly held channels and producers remain unproved. No DONE claimed.
-2. MET for the selected work: real populated public-door assertions cover allowed behavior and unchanged-storage refusals, including dangerous transaction failure.
-3. PENDING independent exact-SHA Verify. Both journeys are registered in existing push paths.
-4. MET locally: exact-head Worker checks and unchanged relevant browser bytes are recorded.
+Intermediate Verify 42125942768 was observed in progress on 32d5f86f00483f3a2616c2cb95ddbfde6d19673f before the native retention follow-up. Final push Verify 42128426622 was discovered on exact head 2371bdcf722a50ac9148bd5c18c3f98ebf2affcf with event push and status pending. See ci-current.json for the final observation. Eight GitHub API calls have been used, including one failed-job archive read. No dispatch, rerun or PR was created. No green CI conclusion is claimed for a pending run.
+
+Initial main at 7c811313e446ae19630f387f2ac927dafba3dbe5 had successful Verify 42014502098 and Run site 42014502043. The final candidate's publication scan, independent acceptance, guarded landing and Run site remain fleet gates. Main was never pushed or fast-forwarded by this cloud.
+
+## DONE-RIDERS
+
+1. NOT MET for the full clause: selected outcomes pass locally; all explicitly held channels and producers remain unproved. No DONE claimed.
+2. MET for the selected work: populated public-door journeys check allowed behavior and unchanged-storage refusals, including failing title and removal transactions.
+3. PENDING exact-SHA Verify. Both journeys are registered in existing push paths.
+4. MET locally: exact-head event and browser proofs, full matching-source regression checks and source hashes are recorded.
 5. UNCHANGED: no receiving-clause inheritance or new acceptance obligation was introduced.
-6. MET for this partial update: the Gap names every held category, Evidence resolves, source generation checks pass and all rows are retained. Generated view and global judgment provenance belong to the lander; no fresh ct judgment is claimed.
+6. MET for this partial update: honest Gap, resolving Evidence, successful source generation and all retained rows. Generated views and global judgment provenance remain lander work; no fresh ct judgment is claimed.
 7. MET: acceptance sentences are unchanged; no rewrite or coverage remapping occurred.
-8. MET for the selected authority paths: allowed edits, insufficient and narrowed scopes, current private access, Pause and revocation are exercised through mounted doors with refusal snapshots.
-9. MET as an honest boundary: no provider, legal or hosted proof is claimed; webhook and latency qualification remain held.
-10. UNCHANGED: existing policy decisions and the standing authority floor are reused. No new policy default or scope release is counted.
-11. PENDING fleet landing: publication scan, guarded landing and candidate Run site are independent fleet gates.
+8. MET for selected authority paths: allowed edits, insufficient and narrowed scopes, current private access, Pause, revocation, safe native removal and post-erasure event projection are exercised.
+9. MET as an honest boundary: no provider, legal, timing or hosted proof is claimed.
+10. UNCHANGED: existing policy, native anonymization and agent-custody boundaries are reused. No new default, authority expansion or hold release is counted.
+11. PENDING fleet landing: exact-SHA green Verify, publication scan, guarded main equality and candidate Run site remain independent gates.
 
-Held remainder: point 1 subscription and listen latency; point 2 webhook ID parity; point 5 failed-webhook visibility and replay; point 6 approval, review and policy qualification; all other record producers and other delivery channels of point 4. Existing Base qualification and candidate custody, API-004 independent consent and interface gate, and AGENT-005, AGENT-006 and CONNECT-001 prerequisites remain unchanged. No new identity issuer or agent subscription transport is authorized or adopted. These are scope holds, not a new account blocker.
+Held remainder: point 1 subscription and listen latency; point 2 webhook ID parity; point 5 failed-webhook visibility and replay; point 6 approval, review and policy qualification; all other record producers and other delivery channels of point 4. Existing Base qualification and candidate custody, API-004 independent consent and interface gate, and AGENT-005, AGENT-006 and CONNECT-001 prerequisites remain unchanged. No new identity issuer or agent subscription transport is adopted. These scope holds are not a new account blocker.
 
-## Handoff
-
-The full plan is PLAN.md. Actual non-secret receipts are local-receipts.json, browser-receipt.json, browser-provenance.json and ci-receipt.json. The two inspected screenshots are title-events-1440.png and title-events-390.png. Product custody and evidence publication are separate. Main was never pushed or fast-forwarded by this cloud. Publication scanning, independent acceptance, landing and Run site remain fleet work.
+VERIFY_REPRODUCED {"command": "pnpm build", "exit": 1, "failure": "docs/AGENT-EVENTS.md is neither a page nor in githubOnly; add it to one with a reason", "head": "b318a69487e0a533729276b95f9c1b7edecf2198", "job": "127585195397", "test": "Build the shared production output"}
