@@ -3558,7 +3558,7 @@
       "executable": false
     },
     "sdk/generated.ts": {
-      "sha256": "dc1ed967c6b378587be8a1b7cfea1313c1f172cd04e25b8b0426cf350e5b0a2a",
+      "sha256": "b65a76d5c579551b9be5f7ca599969c7f25ef7c36f29343756567aa44bc3c5d4",
       "executable": false
     },
     "sdk/tsconfig.json": {
@@ -6578,7 +6578,7 @@
       "executable": false
     },
     "src/core/features/project-dependencies/notifications.ts": {
-      "sha256": "21f04f4534ac32100105d764818bd983d23032e79e8b2fd33f74648b600107a9",
+      "sha256": "b2574a515f23c469bb353bd583defa4a9f62bbdc2782a598e80084c708a19558",
       "executable": false
     },
     "src/core/features/project-dependencies/repository.ts": {
@@ -9530,7 +9530,7 @@
       "executable": false
     },
     "tests/worker/project-dependencies.test.ts": {
-      "sha256": "75dba8bcf7557d5c2800003dbbe191f6d5f7904eca90b57ec43ba75d41d947fd",
+      "sha256": "4198f8853334924a2884706d8e3bf51cf967600e4a998221254308c93d78fe80",
       "executable": false
     },
     "tests/worker/project-fields-upgrade.test.ts": {
@@ -9634,7 +9634,7 @@
       "executable": false
     },
     "tests/worker/role-viewer-census.ts": {
-      "sha256": "fc9d45624ef26409e14d22213fe6bab0973297e469dee874fe49d65f97cabf5f",
+      "sha256": "ba245e06e7c02a63e17c70e90a5f28bb3238b153e189e305499965a6aa67ceea",
       "executable": false
     },
     "tests/worker/role-viewer-journey.ts": {

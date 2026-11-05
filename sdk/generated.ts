@@ -66,6 +66,8 @@ export interface Operations {
   "issue_template_get": { input: { path: { "id": string } }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issue_template_update": { input: { path: { "id": string }; body: { "name": string; "teamId"?: (string | null); "defaults"?: Components["IssueTemplateDefaults"]; "subissues"?: ({ "title": string; "description"?: string; "statusId"?: string; "priority"?: "none" | "low" | "medium" | "high" | "urgent"; "labelIds"?: (string)[]; "assigneeOperatorId"?: (string | null); "estimate"?: number | null; "projectId"?: (string | null) })[]; "expectedVersion": number } }; output: Components["IssueTemplate"]; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
   "issue_template_delete": { input: { path: { "id": string }; body: { "expectedVersion": number } }; output: { "deleted": boolean; [key: string]: unknown }; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "project_dependency_set": { input: { path: { "id": string; "blockingId": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
+  "project_dependency_remove": { input: { path: { "id": string; "blockingId": string } }; output: unknown; errors: { "400": unknown; "401": unknown; "403": unknown; "404": unknown; "409": unknown; "429": unknown } };
 }
 export const operations = {
   "schema_get_0": {
@@ -507,6 +509,22 @@ export const operations = {
     "path": "/issue-templates/{id}",
     "scopes": [
       "issue-templates:write"
+    ],
+    "authenticated": true
+  },
+  "project_dependency_set": {
+    "method": "PUT",
+    "path": "/projects/{id}/dependencies/{blockingId}",
+    "scopes": [
+      "projects:write"
+    ],
+    "authenticated": true
+  },
+  "project_dependency_remove": {
+    "method": "DELETE",
+    "path": "/projects/{id}/dependencies/{blockingId}",
+    "scopes": [
+      "projects:write"
     ],
     "authenticated": true
   }

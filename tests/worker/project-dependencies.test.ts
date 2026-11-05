@@ -157,12 +157,28 @@ it('project graph refuses unsafe authority and concealed endpoints unchanged, ro
   expect(JSON.stringify(await notices(f.member))).not.toContain(hidden.id);
   expect(await snapshot(watched)).toEqual(before);
   await body(await f.call(path(hidden.id,a.id),'DELETE'));
-  // An unavailable lead notification must roll back both endpoint activities.
-  await env.DB.exec("CREATE TRIGGER synthetic_project_notification_failure BEFORE INSERT ON project_notifications BEGIN SELECT RAISE(ABORT,'synthetic-vector-1521'); END;");
-  before=await snapshot(watched);
-  try { expect((await f.call(path(b.id,a.id),'PUT')).status).toBe(500); }
-  finally { await env.DB.exec('DROP TRIGGER synthetic_project_notification_failure;'); }
-  expect(await snapshot(watched)).toEqual(before);
+  // A failed notice rolls back addition and removal through either door.
+  for(const verb of ['PUT','DELETE']) {
+    if(verb==='DELETE')await body(await f.call(path(b.id,a.id),'PUT'));
+    await env.DB.exec("CREATE TRIGGER synthetic_project_notification_failure BEFORE INSERT ON project_notifications BEGIN SELECT RAISE(ABORT,'synthetic-vector-1521'); END;");
+    before=await snapshot(watched);
+    try {
+      expect((await f.call(path(b.id,a.id),verb)).status).toBe(500);
+      expect(await snapshot(watched)).toEqual(before);
+      expect((await f.admin.api(path(b.id,a.id),verb)).status).toBe(503);
+      expect(await snapshot(watched)).toEqual(before);
+    } finally { await env.DB.exec('DROP TRIGGER synthetic_project_notification_failure;'); }
+    if(verb==='DELETE')await body(await f.call(path(b.id,a.id),'DELETE'));
+  }
+
+  const duplicateBase=await snapshot(watched);
+  const duplicates=await Promise.all([f.call(path(b.id,a.id),'PUT'),f.admin.api(path(b.id,a.id),'PUT')]);
+  expect(duplicates.map(r=>r.status)).toEqual([200,200]);
+  const duplicateAfter=await snapshot(watched);
+  expect(duplicateAfter.project_activity.length-duplicateBase.project_activity.length).toBe(2);
+  const repeatedRemovals=await Promise.all([f.call(path(b.id,a.id),'DELETE'),f.admin.api(path(b.id,a.id),'DELETE')]);
+  expect(repeatedRemovals.map(r=>r.status)).toEqual([200,200]);
+  expect((await snapshot(watched)).project_activity.length-duplicateAfter.project_activity.length).toBe(2);
   // Public calls genuinely overlap; a committed graph can never contain both.
   await resetLimits();
   const pair=await Promise.all([f.call(path(b.id,a.id),'PUT'),f.admin.api(path(a.id,b.id),'PUT')]);

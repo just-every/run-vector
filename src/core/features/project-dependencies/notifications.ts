@@ -14,7 +14,7 @@ export const visibleProject = (person: string, project: string) => `EXISTS(
 
 /** Inbox-only native subjects; never manufacture an issue to carry an event.
  * The activity receipt and both current lead selections are in the graph batch.
- * DISTINCT and the event recipient key coalesce a person leading both ends.
+ * The lead set and event recipient key coalesce a person leading both ends.
  */
 export function projectDependencyNotices(db: D1Database, event: string, blocked: string, blocking: string, actor: string, at: string) {
   return db.prepare(`INSERT INTO project_notifications(id,event_id,project_id,related_project_id,recipient_id,actor_id,actor_name,created_at)
