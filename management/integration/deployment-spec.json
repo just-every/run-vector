@@ -760,6 +760,12 @@
       "name": "0125_issue_templates.sql",
       "sha256": "c6b14960f21ed91c83a75f26673558d8f7e290237004b99b68b26d6e78361b54",
       "sql": "-- Native templates are portable content. Applying one creates independent issues.\nCREATE TABLE issue_templates (\n  id TEXT PRIMARY KEY,\n  workspace_id TEXT NOT NULL REFERENCES workspace_settings(id),\n  team_id TEXT REFERENCES teams(id),\n  name TEXT NOT NULL,\n  defaults_json TEXT NOT NULL CHECK(json_valid(defaults_json)),\n  subissues_json TEXT NOT NULL CHECK(json_valid(subissues_json)),\n  version INTEGER NOT NULL DEFAULT 1 CHECK(version>0),\n  created_at TEXT NOT NULL,\n  updated_at TEXT NOT NULL\n);\nCREATE INDEX issue_templates_workspace_idx ON issue_templates(workspace_id,team_id,name,id);\n"
+    },
+    {
+      "binding": "DB",
+      "name": "0126_workers_deployments.sql",
+      "sha256": "f4ae12a8f86499809bcbe6621fdb3375276483dd06606604924df0db4f9b4361",
+      "sql": "-- Authenticated deployment assertions and content-bound receipts survive rollback.\n-- Credentials are never stored here; restored effects require explicit review.\nCREATE TABLE vector_deployment_reports (\n id TEXT PRIMARY KEY,\n repository_id TEXT NOT NULL REFERENCES vector_github_repositories(id),\n provider TEXT NOT NULL CHECK(provider='cloudflare-workers'),\n account_id TEXT NOT NULL,\n worker_id TEXT NOT NULL,\n deployment_id TEXT NOT NULL,\n sha TEXT NOT NULL,\n environment TEXT NOT NULL,\n deployed_at TEXT NOT NULL,\n payload_hash TEXT NOT NULL,\n reported_by TEXT REFERENCES operators(id) ON DELETE SET NULL,\n received_at TEXT NOT NULL,\n UNIQUE(repository_id,provider,account_id,worker_id,deployment_id)\n);\nCREATE TABLE vector_issue_deployments (\n report_id TEXT NOT NULL REFERENCES vector_deployment_reports(id),\n issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,\n PRIMARY KEY(report_id,issue_id)\n);\nCREATE INDEX vector_deployment_issue ON vector_issue_deployments(issue_id);\n"
     }
   ],
   "compatibilityDate": "2026-09-08",
