@@ -33,7 +33,7 @@ it('removing a scoped agent retains native edit and comment audits, attribution 
   for(const [index,decision] of ['autonomous','review'].entries()){
     await json(await person(owner.cookie,'/agents/api/policy','PUT',{document:{
       schema:'rer-agent-policy/1',catalogue:'rer-agent-classes/1',
-      rules:[{id:'standard',class:'standard',do:decision}],reviewers:['role:owner'],spend:{none:true},
+      rules:[{id:'standard',class:'standard',do:decision},{id:'destructive',class:'destructive',do:'blocked'}],reviewers:['role:owner'],spend:{none:true},
     }}));
     const issue=await w.create({title:'synthetic-vector-'+(3500+index),teamId:w.team.id});
     const agent=await mint('synthetic-vector-'+(3510+index));

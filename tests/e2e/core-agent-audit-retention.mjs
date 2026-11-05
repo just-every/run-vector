@@ -60,7 +60,7 @@ export async function agentAuditRetentionJourney({page,context,base,evidence,res
   for(const decision of ['autonomous','review']){
     await page.setViewportSize({width:1440,height:1000});
     await person('/agents/api/policy','PUT',{document:{schema:'rer-agent-policy/1',catalogue:'rer-agent-classes/1',
-      rules:[{id:'standard',class:'standard',do:decision}],reviewers:['role:owner'],spend:{none:true}}});
+      rules:[{id:'standard',class:'standard',do:decision},{id:'destructive',class:'destructive',do:'blocked'}],reviewers:['role:owner'],spend:{none:true}}});
     const issue=await native('/issues','POST',{teamId:team.id,title:marker+'-'+decision},201);
     const agent=await mint(marker+'-'+decision+'-removed');
     const other=await mint(marker+'-'+decision+'-retained');

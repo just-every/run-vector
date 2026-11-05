@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "a6cbe19263bc3e02f532013b411927181c5cadf9b9517f158b412da823824260",
+      "sha256": "d8e1d456940192f1a7a54b9f24653fbfe39f1399ca87a846e498bab0b9c43c13",
       "executable": false
     },
     "DEMO.md": {
@@ -6206,7 +6206,7 @@
       "executable": false
     },
     "src/core/features/links/repository.ts": {
-      "sha256": "7a221a1fdbe1eba1bcfa1a44d023e355287c853eabd65cfe8ec8f961737060aa",
+      "sha256": "c79ed0cc84f8ad7139bdbbd61e257e70ca29bc590401ffb9ad5a016309d9f94b",
       "executable": false
     },
     "src/core/features/links/routes.ts": {
@@ -8198,11 +8198,11 @@
       "executable": false
     },
     "tests/e2e/core-agent-audit-retention.mjs": {
-      "sha256": "41d797cde965cec59a66e98300058305ab67e594bd7e7e5c195512a80051291e",
+      "sha256": "d022b463517bae6e0ae0cbbe9f39fc986c96e781104d632223a557f0b0d7428b",
       "executable": false
     },
     "tests/e2e/core-agent-destructive-journey.mjs": {
-      "sha256": "a20ca0a1e0ebd6adcc66a09a1c76934dca4307fa393be4c6827b23e25e1df9eb",
+      "sha256": "7f25d81d4f8490e0b198d3bfc74bc03bce936f883fcbbd4626b189f78ec1febe",
       "executable": false
     },
     "tests/e2e/core-agent-resource-parity.mjs": {
@@ -8330,7 +8330,7 @@
       "executable": false
     },
     "tests/e2e/core-runtime.mjs": {
-      "sha256": "4878b9c3d3c5b0cc63ff783c980f4cb39ce9a7ec4eb96ff4445c5b2b1389cbfb",
+      "sha256": "81deef4d48db28f3e670fbfd8b7974724a39f06a4d048dd2aa25acc502d7564c",
       "executable": false
     },
     "tests/e2e/core-stream-controls-browser.mjs": {
@@ -8978,11 +8978,11 @@
       "executable": false
     },
     "tests/worker/agent-audit-retention.test.ts": {
-      "sha256": "e7009a5cd127d8cab6018ff6fb645059479652d0593e93bf41f38fae0793a6f4",
+      "sha256": "feac4088aed70361dc287543e40d484d6eb6cfb96069771947f9df1a03dd3d80",
       "executable": false
     },
     "tests/worker/agent-destructive-class.test.ts": {
-      "sha256": "2a598f63045585cd215a66f13056407e0207dbc0806aa3d79eb1404d001f2f59",
+      "sha256": "e4925dfdec937bdef47ecdc2fdc2d586567e0993a2443e7f10c1c6e20187fcbf",
       "executable": false
     },
     "tests/worker/agent-native-attribution.test.ts": {

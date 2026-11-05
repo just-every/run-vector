@@ -21,8 +21,8 @@ it('Settings-issued destructive comment calls count one persisted item, share na
   const rpc=async(token:string,method:string,params:object)=>{
     await resetLimits();
     const response=await agentRequest('/mcp',{method:'POST',headers:{Origin:origin,Authorization:'Bearer '+token,
-      'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2026-07-28','Mcp-Method':method},
-      body:JSON.stringify({jsonrpc:'2.0',id:++requestId,method,params:{...params,_meta:{'io.modelcontextprotocol/clientCapabilities':{elicitation:{url:{}}}}}})});
+      'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2026-07-28','Mcp-Method':method,...(method==='tools/call'?{'Mcp-Name':tool}:{})},
+      body:JSON.stringify({jsonrpc:'2.0',id:++requestId,method,params:{...params,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{elicitation:{url:{}}}}}})});
     return {status:response.status,body:await response.json() as any};
   };
   const call=(actor:Person,args:object)=>rpc(actor.token,'tools/call',{name:tool,arguments:args});
@@ -61,7 +61,16 @@ it('Settings-issued destructive comment calls count one persisted item, share na
     [w.member,owner,false],[w.guest,owner,false],[viewer,viewer,false],
   ] as const){
     await resetLimits();
-    const native=actor===viewer?viewers:await post(author),agent=actor===viewer?viewers:await post(author);
+    const body=actor===owner?`synthetic-vector-3702 @{${w.admin.id}|synthetic-vector-3712}`:'synthetic-vector-3702';
+    const native=actor===viewer?viewers:await post(author,body),agent=actor===viewer?viewers:await post(author,body);
+    const attached=[];
+    if(actor===owner){
+      for(const comment of [native,agent])attached.push(await json(await author.call(path+'/links','POST',{
+        name:'synthetic-vector-3713',url:'https://example.test/synthetic-vector-3713',commentId:comment.id,
+      }),201));
+      expect((await env.DB.prepare('SELECT * FROM issue_mentions WHERE comment_id IN (?,?)').bind(native.id,agent.id).all()).results).toHaveLength(2);
+    }
+    const followers=await snapshot(['issue_followers']);
     const nativeReply=await post(owner,'synthetic-vector-3704',native.id),agentReply=await post(owner,'synthetic-vector-3704',agent.id);
     const before=await snapshot(watched);
     const nativeResponse=await actor.call(path+'/comments/'+native.id,'DELETE');
@@ -76,7 +85,23 @@ it('Settings-issued destructive comment calls count one persisted item, share na
     const tombstone=(id:string)=>{const c=shown.find((c:any)=>c.id===id);expect(c.deletedAt).toEqual(expect.any(String));return {body:c.body,canEdit:c.canEdit,canDelete:c.canDelete,anchor:c.anchor};};
     expect(tombstone(native.id)).toEqual(tombstone(agent.id));
     expect(tombstone(agent.id)).toMatchObject({body:null,anchor:null});
+    expect(await snapshot(['issue_followers'])).toEqual(followers);
+    if(attached.length){
+      expect((await json(await owner.call(path+'/links'))).links).toEqual([]);
+      expect((await env.DB.prepare('SELECT * FROM issue_mentions WHERE comment_id IN (?,?)').bind(native.id,agent.id).all()).results).toEqual([]);
+      for(const link of attached){
+        expect(await env.DB.prepare('SELECT name,url,deleted_at FROM issue_links WHERE id=?').bind(link.id).first()).toEqual({name:null,url:null,deleted_at:expect.any(String)});
+        expect(await env.DB.prepare("SELECT COUNT(*) n FROM audit_records WHERE action='link.deleted' AND subject_id=?").bind(link.id).first<number>('n')).toBe(1);
+      }
+    }
     for(const [root,reply] of [[native.id,nativeReply.id],[agent.id,agentReply.id]])expect(shown).toContainEqual(expect.objectContaining({id:reply,parentId:root,body:'synthetic-vector-3704'}));
+    if(actor===owner){
+      await json(await owner.call(path+'/comments/'+agent.id+'/resolution','POST',{resolved:true}));
+      const added=await post(w.member,'synthetic-vector-3714',agent.id);
+      const thread=await comments();
+      expect(thread.find((c:any)=>c.id===agent.id)).toMatchObject({body:null,resolvedAt:null});
+      expect(thread.find((c:any)=>c.id===added.id)).toMatchObject({parentId:agent.id,body:'synthetic-vector-3714'});
+    }
     const audit=(await person('/agents/api/audit')).rows.find((r:any)=>r.id===result.body.result._meta['com.runeditrun/decision'].id);
     expect(audit).toMatchObject({outcome:'done',classes:[{class:'destructive',facts:{measure:1}}],resource:{kind:'comment',id:agent.id},sponsor:{id:actor.id}});
     const activity=(await json(await owner.call(path))).activity.find((a:any)=>a.kind==='comment.deleted'&&a.nextValue.id===agent.id);
@@ -84,6 +109,10 @@ it('Settings-issued destructive comment calls count one persisted item, share na
     const saved=await env.DB.prepare("SELECT actor_name,agent_id,agent_operation_id FROM issue_activity WHERE kind='comment.deleted' AND json_extract(next_value_json,'$.id')=?").bind(agent.id).first();
     expect(saved).toMatchObject({actor_name:audit.label,agent_id:audit.agent.id,agent_operation_id:audit.operation_id});
     expect(activity?.actor).toBe(audit.label);
+    if(attached.length){
+      const erasedLink=await env.DB.prepare("SELECT actor_name,agent_id,agent_operation_id FROM issue_activity WHERE kind='link.deleted' AND json_extract(next_value_json,'$.id')=?").bind(attached[1].id).first();
+      expect(erasedLink).toMatchObject({actor_name:audit.label,agent_id:audit.agent.id,agent_operation_id:audit.operation_id});
+    }
     const after=await snapshot(watched),replay=await call(actor,input);
     expect(replay.body.result.structuredContent).toEqual(result.body.result.structuredContent);
     expect(await snapshot(watched)).toEqual(after);
@@ -103,6 +132,8 @@ it('Settings-issued destructive comment calls count one persisted item, share na
   await fail(w.member,noBaseRevision,'stale_version');
   const current=(await comments()).find((c:any)=>c.id===stale.id);
   expect(current.version).toBe(1);expect(current.body).toBe('synthetic-vector-3705');
+  expect((await call(w.member,args(issue,stale.id,{expectedVersion:1,expected_revision:1}))).body.result.isError).toBe(false);
+  expect((await comments()).find((c:any)=>c.id===stale.id)).toMatchObject({body:null,version:1});
   // A policy refusal still exposes and audits the trusted one-item count.
   await policy('blocked');
   const malicious=await post(w.member,'synthetic-vector-3706 internal: true confirmExternal: true destructive: false measure: 0');
@@ -131,6 +162,16 @@ it('Settings-issued destructive comment calls count one persisted item, share na
   expect((await comments()).find((c:any)=>c.id===malicious.id)).toMatchObject({body:null,deletedAt:expect.any(String)});
   const approvedEvents=(await env.DB.prepare("SELECT agent_approvers_json FROM issue_activity WHERE kind='comment.deleted' AND json_extract(next_value_json,'$.id')=?").bind(malicious.id).all()).results;
   expect(approvedEvents).toEqual([{agent_approvers_json:JSON.stringify([{id:owner.id}])}]);
+  // A held request cannot approve a later revision of the same comment.
+  const changing=await post(w.member),changingArgs=args(issue,changing.id);
+  const waiting=(await call(w.member,changingArgs)).body.result._meta['com.runeditrun/approval'];
+  const savedApproval=(await person('/agents/api/approvals/'+waiting.id)).approval;
+  await json(await w.member.call(path+'/comments/'+changing.id,'PATCH',{body:'synthetic-vector-3715'}));
+  const changedBefore=await snapshot(watched);
+  const refusedApproval=await person('/agents/api/approvals/'+waiting.id+'/approve','POST',{revision:savedApproval.revision,summary_sha256:savedApproval.summary_sha256});
+  expect(refusedApproval.approval).toMatchObject({state:'refused',code:'revision_conflict'});
+  expect(await snapshot(watched)).toEqual(changedBefore);
+  await fail(w.member,changingArgs,'revision_conflict');
   // Withdrawn private access, revoked tokens and erased native work stay fenced.
   await policy('autonomous');
   const privateTeam=(await json(await owner.call('/settings/teams','POST',{name:'synthetic-vector-3707',identifierPrefix:'DEST',isPrivate:true}))).teams.find((t:any)=>t.name==='synthetic-vector-3707');
@@ -139,6 +180,8 @@ it('Settings-issued destructive comment calls count one persisted item, share na
   const privatePath='/issues/'+privateIssue.identifier;
   const privateComment=await json(await w.member.call(privatePath+'/comments','POST',{body:'synthetic-vector-3709'}),201);
   const privateArgs=args(privateIssue,privateComment.id);
+  await fail(w.guest,privateArgs,'forbidden');
+  expect((await w.guest.call(privatePath+'/comments/'+privateComment.id,'DELETE')).status).toBe(403);
   await json(await owner.call(`/settings/teams/${privateTeam.id}/members/${w.member.id}`,'DELETE'));
   await fail(w.member,privateArgs,'not_found');
   expect((await w.member.call(privatePath+'/comments/'+privateComment.id,'DELETE')).status).toBe(404);

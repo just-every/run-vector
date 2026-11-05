@@ -1,3 +1,4 @@
+import { currentAgentActor, agentActivity } from '../agent-door/attribution';
 import { mutationDatabase } from "../auth/mutation-database";
 import { createUlid } from "../../shared/ids";
 import type { z } from "zod";
@@ -161,10 +162,11 @@ export function commentLinkErasureStatements(
   return [
     db
       .prepare(
-        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at)
-      SELECT ? || upper(hex(randomblob(8))),?,?,'link.deleted',json_object('id',l.id,'commentId',l.comment_id),?,? ${active}`,
+        `INSERT INTO issue_activity(id,issue_id,actor_operator_id,kind,next_value_json,created_at,updated_at,actor_name,agent_id,agent_operation_id,agent_approvers_json)
+      SELECT ? || upper(hex(randomblob(8))),?,?,'link.deleted',json_object('id',l.id,'commentId',l.comment_id),?,?,?,?,?,? ${active}`,
       )
-      .bind(prefix, issue.id, actor, now, now, commentId, issue.id),
+      .bind(prefix, issue.id, actor, now, now, currentAgentActor()?.actor.label ?? null,
+        agentActivity().agentId, agentActivity().agentOperationId, agentActivity().agentApproversJson, commentId, issue.id),
     db
       .prepare(
         `INSERT INTO audit_records(id,actor_operator_id,action,subject_identifier,subject_id,created_at,updated_at)

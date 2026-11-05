@@ -717,7 +717,7 @@ try {
   await settleReads(page);
   if (['agent-role-parity','agent-destructive'].includes(journeyGroup)) {
     await withInvitedOperator(page, context, base, state, () =>
-      (journeyGroup === 'agent-destructive' ? agentDestructiveJourney : agentRoleParityJourney)({page, context, base, state, sql, evidence, record}), 'synthetic-vector-3711');
+      (journeyGroup === 'agent-destructive' ? agentDestructiveJourney : agentRoleParityJourney)({page, context, base, state, sql, evidence, record}), journeyGroup === 'agent-destructive' ? 'synthetic-vector-3711' : 'synthetic-vector-3610');
   } else {
   if (['all', 'current'].includes(journeyGroup)) {
   await withInvitedOperator(page, context, base, state, () => currentDisjointJourney(page, context, base, async (id, name, currentPage) => {

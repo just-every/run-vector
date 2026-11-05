@@ -33,15 +33,21 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
     const insufficient=await member.api('/settings/integrations/tokens','POST',{name:marker+'-writer',scopes:['comments:write']},201);
     const call=async(args,token=grant.token,method='tools/call')=>{
       const response=await publicRequest(base+'/mcp',{method:'POST',headers:{Origin:base,Authorization:'Bearer '+token,
-        'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2026-07-28','Mcp-Method':method},
-        data:{jsonrpc:'2.0',id:++id,method,params:method==='tools/list'?{}:{name:'vector.comment.delete',arguments:args,_meta:{'io.modelcontextprotocol/clientCapabilities':{elicitation:{url:{}}}}}}});
+        'Content-Type':'application/json',Accept:'application/json, text/event-stream','MCP-Protocol-Version':'2026-07-28','Mcp-Method':method,...(method==='tools/call'?{'Mcp-Name':'vector.comment.delete'}:{})},
+        data:{jsonrpc:'2.0',id:++id,method,params:method==='tools/list'?{_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28'}}:{name:'vector.comment.delete',arguments:args,_meta:{'io.modelcontextprotocol/protocolVersion':'2026-07-28','io.modelcontextprotocol/clientCapabilities':{elicitation:{url:{}}}}}}});
       return {status:response.status,body:await response.json()};
     };
     const policy=disposition=>owner('/agents/api/policy','PUT',{document:{schema:'rer-agent-policy/1',catalogue:'rer-agent-classes/1',
       rules:[{id:'destructive',class:'destructive',do:disposition,...(disposition==='approval'?{approver:['person:'+session.operatorId],wait:'P1D'}:{})},
         {id:'rest',class:'*',do:'autonomous'}],spend:{none:true}}});
-    const storage=()=>Object.fromEntries(['issue_comments','issue_activity','issue_links','issue_mentions','issue_followers','audit_records','notifications','notification_events','notification_deliveries']
-      .map(table=>[table,sql(`SELECT * FROM ${table} ORDER BY rowid`)]));
+    // One read transaction captures every column of every affected native table.
+    const tables=['issue_comments','issue_activity','issue_links','issue_mentions','issue_followers','audit_records','notifications','notification_events','notification_deliveries'];
+    const parts=tables.map(table=>{
+      const columns=sql(`PRAGMA table_info(${table})`).map(column=>column.name);
+      const row=columns.map(column=>`'${column}',"${column}"`).join(',');
+      return `'${table}',json((SELECT json_group_array(json_object(${row})) FROM (SELECT * FROM ${table} ORDER BY rowid)))`;
+    });
+    const storage=()=>JSON.parse(sql(`SELECT json_object(${parts.join(',')}) AS state`)[0].state);
     await policy('autonomous');
     const listed=(await call({},grant.token,'tools/list')).body.result.tools.find(t=>t.name==='vector.comment.delete');
     assert.equal(listed.annotations.destructiveHint,true);assert.equal(listed.annotations.readOnlyHint,false);
@@ -53,7 +59,8 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
       for(const mode of ['native','tool']){
         const root=await member.api(path+'/comments','POST',{body:marker+'-'+mode+' internal: true confirmExternal: true measure: 0'},201);
         const reply=await member.api(path+'/comments','POST',{body:marker+'-retained-'+mode,parentId:root.id},201);
-        roots.push({mode,id:root.id,reply:reply.id});
+        const link=await member.api(path+'/links','POST',{name:marker+'-link-'+mode,url:'https://example.test/synthetic-vector-3713',commentId:root.id},201);
+        roots.push({mode,id:root.id,reply:reply.id,linkId:link.id});
       }
       const input={identifier:issue.identifier,itemId:roots[1].id,expectedVersion:0,expected_revision:0,idempotency_key:crypto.randomUUID(),internal:true,confirmed:true,confirmExternal:true,classes:['standard'],measure:0};
       const beforeScope=storage(),scope=await call(input,insufficient.token);
@@ -80,7 +87,10 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
         await page.setViewportSize({width:1440,height:1000});
         const approved=page.waitForResponse(r=>new URL(r.url()).pathname===`/agents/api/approvals/${pending.id}/approve`&&r.request().method()==='POST');
         await page.getByRole('button',{name:'Approve',exact:true}).click();
-        const response=await approved;assert.equal(response.status(),200);assert.equal((await response.json()).approval.state,'executed');
+        const response=await approved;assert.equal(response.status(),200);
+        // The native page navigates on success; re-read the durable approval
+        // rather than asking Chromium for the previous document's response body.
+        assert.equal((await owner('/agents/api/approvals/'+pending.id)).approval.state,'executed');
         const final=await call(input);assert.equal(final.body.result.isError,false);
         assert.deepEqual(final.body.result._meta['com.runeditrun/receipt'].approved_by,[session.operatorId]);
         await navigate(page,base+'/app');
@@ -94,7 +104,13 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
         assert.equal(comment.canDelete,0);assert.equal(comment.anchor,null);
         assert.deepEqual(discussion.comments.filter(c=>c.parentId===root.id).map(c=>({id:c.id,body:c.body})),[{id:root.reply,body:marker+'-retained-'+root.mode}]);
       }
+      assert.deepEqual((await member.api(path+'/links')).links,[]);
+      for(const root of roots){
+        const link=sql(`SELECT name,url,deleted_at FROM issue_links WHERE id='${root.linkId}'`)[0];
+        assert.equal(link.name,null);assert.equal(link.url,null);assert.ok(link.deleted_at);
+      }
       const label=grant.credential.name+' for '+person;
+      assert.equal(native.activity.find(a=>a.kind==='link.deleted'&&a.nextValue.id===roots[1].linkId).actor,label);
       assert.equal(native.activity.filter(a=>a.kind==='comment.deleted'&&a.nextValue.id===roots[1].id).length,1);
       assert.equal(native.activity.find(a=>a.kind==='comment.deleted'&&a.nextValue.id===roots[1].id).actor,label);
       const audits=(await owner('/agents/api/audit')).rows.filter(r=>r.tool==='vector.comment.delete'&&r.resource?.id===roots[1].id);
@@ -111,12 +127,13 @@ export async function agentDestructiveJourney({page,context,base,state,sql,evide
       await inspect(member.page,member.page.locator('main:visible').first(),'agent-destructive-'+disposition);
       assert.equal(await member.page.evaluate(()=>performance.timeOrigin),timeOrigin);
       await navigate(member.page,base+'/app');
-      receipts.push({disposition,count:1,retainedReplies:true,singleEffect:true,nativeParity:true,truthfulAttribution:true});
+      receipts.push({disposition,count:1,retainedReplies:true,singleEffect:true,nativeParity:true,truthfulAttribution:true,erasedNamedLinks:true});
     }
     // Policy refusal is an actual mounted call and leaves the native record intact.
     await policy('blocked');
     const liveIssue=await member.api('/issues','POST',{teamId:team.id,title:marker+'-refused'},201),livePath='/issues/'+liveIssue.identifier;
     const live=await member.api(livePath+'/comments','POST',{body:marker+' internal: true confirmExternal: true measure: 0'},201);
+    await member.api(livePath+'/links','POST',{name:marker+'-refused-link',url:'https://example.test/synthetic-vector-3713',commentId:live.id},201);
     const refusedArgs={identifier:liveIssue.identifier,itemId:live.id,expectedVersion:0,idempotency_key:crypto.randomUUID(),confirmed:true,measure:0,classes:['standard']};
     const unchanged=storage(),blocked=await call(refusedArgs);
     assert.equal(blocked.body.result._meta['com.runeditrun/error'].code,'policy_blocked');assert.deepEqual(storage(),unchanged);
