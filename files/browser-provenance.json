@@ -1,0 +1,21 @@
+{
+  "browserHead": "4e65b7969d1dd91e72357a4a2e45efd84e863a52",
+  "candidateHead": "b318a69487e0a533729276b95f9c1b7edecf2198",
+  "command": "cloud_run perl -e 'alarm 1200; exec @ARGV' -- node tests/e2e/core-runtime.mjs agent-events",
+  "exit": 0,
+  "runtimeAndBrowserBytesUnchanged": true,
+  "files": {
+    "src/core/features/agent-door/runtime.ts": "4663c428604fa942af56baa6406650bbe02ee9e13ca55c2df44884d93a5161a8",
+    "src/core/features/agent-door/scopes.ts": "58cb16e922215407285753bb7db2b8a48d9e2984e4aec1a53ae9e86c38a6ed51",
+    "src/core/features/agent-door/title-event.ts": "bca978be5e7edd2c9bf95193525d6e488406bb567b9f1289ef696ed6411fc97d",
+    "src/core/features/issue-edit/plan.ts": "68dc905e640020c9da539301c5b94d4fce0bc0fc6ef71e4f4144c35311f8c60f",
+    "src/core/features/integrations/scope-labels.ts": "b465dfdd1c96c715706f1f160d4e8412f8d2c62c9346dc21324ef3ba6358d03d",
+    "agent-surface.json": "0ed8f0633fc251fa887a750bf17cdab6c312addc3b6398962e86d1cce38204c8",
+    "tests/e2e/core-agent-events.mjs": "99b9080d24e8b016529acf0499e32281f567312b4cf973b091289079114a53ab",
+    "tests/e2e/core-runtime.mjs": "5c5ee245d25dfa1a106a29452e780990b1489d0a88cde684b7128c075bb5a754"
+  },
+  "screens": {
+    "title-events-1440.png": "c4a24bfd6bde7feb729d715c2f49371c5bf660a98320a03d4ba68f633d2c76e5",
+    "title-events-390.png": "b05bfdbe2a7aef80629b3aa0c675eb6130d5deb43f9d5adeaaa5f0aadea7a82d"
+  }
+}

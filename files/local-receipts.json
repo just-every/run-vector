@@ -1,0 +1,114 @@
+{
+  "schema": 1,
+  "tag": "sd-vector-c-f186",
+  "repository": "just-every/run-vector",
+  "branch": "cloud/sd-vector-c-f186",
+  "head": "b318a69487e0a533729276b95f9c1b7edecf2198",
+  "base": "7c811313e446ae19630f387f2ac927dafba3dbe5",
+  "observedAt": "2026-11-05T22:49:27.766778+00:00",
+  "checks": [
+    {
+      "command": "pnpm exec vitest run --config vitest.config.ts tests/worker/agent-events.test.ts tests/worker/agent-native-attribution.test.ts tests/worker/agent-write-retry.test.ts",
+      "exit": 0,
+      "head": "b318a69487e0a533729276b95f9c1b7edecf2198",
+      "testFiles": 3,
+      "tests": 3,
+      "durationSeconds": 61.4
+    },
+    {
+      "command": "pnpm typecheck",
+      "exit": 0,
+      "head": "b318a69487e0a533729276b95f9c1b7edecf2198"
+    },
+    {
+      "command": "pnpm exec rer check --profile first-party",
+      "exit": 0,
+      "head": "b318a69487e0a533729276b95f9c1b7edecf2198"
+    },
+    {
+      "command": "node scripts/contract-docs.mjs write BASE-AGENT-010",
+      "exit": 0,
+      "note": "Generated views checked, then restored from origin main; no generated view committed."
+    },
+    {
+      "command": "node scripts/contract-docs.mjs check BASE-AGENT-010",
+      "exit": 0,
+      "note": "Before restoring generated views; CONTRACT source identical to the candidate."
+    },
+    {
+      "command": "pnpm sources:lock",
+      "exit": 0,
+      "note": "After the final source, test and doc changes, staged before lock generation."
+    },
+    {
+      "command": "node scripts/edition-authoring/cli.mjs check",
+      "exit": 0,
+      "head": "b318a69487e0a533729276b95f9c1b7edecf2198"
+    },
+    {
+      "command": "npx -y @runeditrun/rer build",
+      "exit": 0,
+      "head": "4e65b7969d1dd91e72357a4a2e45efd84e863a52",
+      "note": "Runtime and browser bytes unchanged at the candidate; see browser-provenance.json."
+    },
+    {
+      "command": "cloud_run perl -e 'alarm 1200; exec @ARGV' -- node tests/e2e/core-runtime.mjs agent-events",
+      "exit": 0,
+      "head": "4e65b7969d1dd91e72357a4a2e45efd84e863a52",
+      "note": "Real emitted Worker restart, Settings UI issuance, rendered title editing and two viewport captures."
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    },
+    {
+      "command": "Candidate identity and trailer audit across origin/main..HEAD",
+      "exit": 0,
+      "commits": 2
+    },
+    {
+      "command": "Candidate and parent Status ID census",
+      "exit": 0,
+      "before": 272,
+      "after": 272
+    },
+    {
+      "command": "Migration ledger check",
+      "exit": null,
+      "reason": "No schema or migration change."
+    }
+  ],
+  "mechanical": {
+    "lock": "node scripts/edition-authoring/cli.mjs check",
+    "lockExit": 0,
+    "views": "node scripts/contract-docs.mjs write BASE-AGENT-010; node scripts/contract-docs.mjs check BASE-AGENT-010",
+    "viewsExit": 0,
+    "ledger": "none",
+    "ledgerExit": 0
+  },
+  "productPush": {
+    "exit": 0,
+    "guard": "cloud-push.py",
+    "attempts": 1,
+    "confirmedRemoteHead": "b318a69487e0a533729276b95f9c1b7edecf2198"
+  },
+  "counts": {
+    "before": {
+      "done": 136,
+      "partial": 69,
+      "missing": 67,
+      "total": 272
+    },
+    "after": {
+      "done": 136,
+      "partial": 70,
+      "missing": 66,
+      "total": 272
+    }
+  },
+  "publicationScan": {
+    "status": "fleet gate pending",
+    "cloudScanRequired": false
+  },
+  "hostedCommissioningClaimed": false
+}

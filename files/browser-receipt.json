@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "eventIds": [
+    "01M6PY41GT2JR37ZBQK7D3CCMB",
+    "01M6PY425113K1NPNM9JP7A4EZ",
+    "01M6PY42GKRMTJX5FY4M70H72D"
+  ],
+  "nativeTitleEdit": true,
+  "policies": [
+    "autonomous",
+    "review"
+  ],
+  "pagination": true,
+  "workerRestart": true,
+  "widths": [
+    1440,
+    390
+  ]
+}
