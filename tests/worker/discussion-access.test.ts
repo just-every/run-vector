@@ -1,3 +1,5 @@
+import { uploadPng } from './attachment-png-journey';
+import { callPrivate, observedBucket } from './discussion-projection-fixture';
 import { env } from "cloudflare:workers";
 import { afterEach, expect, it } from "vitest";
 import { contractWith } from "../contract-tags";
@@ -75,6 +77,9 @@ for (const method of ["POST", "PATCH"] as const)
             // Bob edits his own comment: another's is refused before its body is read.
             id = await addComment(env.DB, issue.id, method === "PATCH" ? f.bob : f.owner, "Private comment"),
             held = heldBody();
+          const uploadedPng = await uploadPng(issue.identifier, f.cookie);
+          expect(uploadedPng.status).toBe(201);
+          const png = await uploadedPng.json() as {id: string};
           const path = `/issues/${issue.identifier}/comments${method === "PATCH" ? `/${id}` : ""}`;
           const pending = createApiApp().request(
             origin + path,
@@ -123,6 +128,11 @@ for (const method of ["POST", "PATCH"] as const)
                 }
               : { error: "unauthenticated" },
           );
+          expect(await discussionState()).toEqual(before);
+          const observed = observedBucket();
+          const pngRead = await callPrivate(`/issues/${issue.identifier}/files/${png.id}`, f.bobCookie, {}, {FILES: observed.bucket});
+          expect(pngRead.status).toBe(401);
+          expect(observed.calls).toEqual({get: 0, put: 0, delete: 0});
           expect(await discussionState()).toEqual(before);
           expect(
             (await env.DB.prepare("PRAGMA foreign_key_check").all()).results,

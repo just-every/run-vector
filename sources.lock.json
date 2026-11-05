@@ -6278,7 +6278,7 @@
       "executable": false
     },
     "src/core/features/markdown/attachments/insert.tsx": {
-      "sha256": "84106ee7c1613664be350fe335eb133993b25343b0c997379b817b6266d07365",
+      "sha256": "227eaeef6916872a41e32a4e0a593f7450a8d5262d018489ae2cf54af91b76de",
       "executable": false
     },
     "src/core/features/markdown/attachments/viewer.tsx": {
@@ -8134,7 +8134,7 @@
       "executable": false
     },
     "tests/e2e/attachment-images-journey.mjs": {
-      "sha256": "9296954218d6b295a1fd35a7d61cfcbc691bfcef56aa73b1193e56d0aae1926b",
+      "sha256": "7c2253c1e030ec4f28264b5785d0031af0da7bf9e4ffd116cf90002527df6f61",
       "executable": false
     },
     "tests/e2e/base-auth-runtime.mjs": {
@@ -9198,7 +9198,7 @@
       "executable": false
     },
     "tests/worker/discussion-access.test.ts": {
-      "sha256": "fde5d811f773d634e5ebc5b5b3a10086f1869ccea8236123f832c229a204db94",
+      "sha256": "0eddf20f10abb6c9068b677c6b98fa32e15db2f95ea3cd3ee033ef7a71f3c94b",
       "executable": false
     },
     "tests/worker/discussion-file-admission.test.ts": {

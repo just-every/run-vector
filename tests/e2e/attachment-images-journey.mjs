@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { expect } from '@playwright/test';
 import { createRequire } from 'node:module';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { navigate } from './collaboration-navigation.mjs';
 const require = createRequire(import.meta.url);
 
@@ -23,7 +23,7 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
   let identifier;
   try {
     await navigate(page, base + '/app/new-issue');
-    await page.getByLabel('Title', {exact: true}).fill('synthetic-vector-2412');
+    await page.getByLabel(/^Title/).fill('synthetic-vector-2412');
     await page.getByLabel('Description', {exact: true}).fill('![Remote screenshot](https://remote.example.test/synthetic-vector-2411.png)');
     const created = page.waitForResponse(response => new URL(response.url()).pathname === '/api/issues' && response.request().method() === 'POST');
     await page.getByRole('button', {name: 'Create issue', exact: true}).click();
@@ -64,6 +64,10 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     await expect(viewer).toBeVisible();
     await page.getByRole('button', {name: 'Zoom in', exact: true}).click();
     await expect(viewer.getByLabel('Image zoom', {exact: true})).toHaveText('125%');
+    assert.equal(await viewer.getByRole('img').evaluate(image => image.getBoundingClientRect().width), 2000);
+    await viewer.getByRole('button', {name: 'Zoom out', exact: true}).click();
+    await expect(viewer.getByLabel('Image zoom', {exact: true})).toHaveText('100%');
+    assert.equal(await viewer.getByRole('img').evaluate(image => image.getBoundingClientRect().width), 1600);
     await page.keyboard.press('ArrowRight');
     await expect(viewer.getByRole('img')).toHaveAttribute('src', '/api/issues/' + identifier + '/files/' + files[1].id);
     await expect(viewer.getByLabel('Image zoom', {exact: true})).toHaveText('100%');
@@ -71,7 +75,9 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     await expect(viewer.getByRole('img')).toHaveAttribute('src', '/api/issues/' + identifier + '/files/' + files[0].id);
     const download = page.waitForEvent('download');
     await viewer.getByRole('link', {name: 'Download image', exact: true}).click();
-    assert.equal((await download).suggestedFilename(), files[0].name);
+    const savedDownload = await download;
+    assert.equal(savedDownload.suggestedFilename(), files[0].name);
+    assert.deepEqual(await readFile(await savedDownload.path()), buffers[0]);
     await page.addScriptTag({path: require.resolve('axe-core/axe.min.js')});
     const audit = () => page.evaluate(async () => (await window.axe.run(document)).violations.filter(value => ['serious', 'critical'].includes(value.impact)).map(value => ({id: value.id, targets: value.nodes.map(node => node.target)})));
     assert.deepEqual(await audit(), []);
@@ -94,12 +100,21 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     await page.getByLabel('Description', {exact: true}).fill('synthetic-vector-2415');
     await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());
     assert.equal((await page.request.get(base + '/api/issues/' + identifier + '/files/' + files[0].id)).status(), 200);
+    // Reinsert it before deleting the file, retaining a live embed and older revisions.
+    await page.getByRole('button', {name: 'Edit issue', exact: true}).click();
+    await page.getByLabel('Description', {exact: true}).fill(updated.description);
+    await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());
+    await expect(description.getByRole('img', {name: 'Updated screenshot', exact: true})).toBeVisible();
     // Delete using Files; restoring its older text must not resurrect its bytes.
     const fileList = page.locator('.issue-files'); await fileList.locator('summary').click();
     const entry = fileList.locator('.file-entry').filter({has: page.getByRole('link', {name: files[0].name, exact: true})});
     const removed = page.waitForResponse(response => response.request().method() === 'DELETE' && response.url().endsWith('/files/' + files[0].id));
     await entry.getByRole('button', {name: 'Remove file', exact: true}).click(); assert.equal((await removed).status(), 200);
     await expect(fileList.getByRole('link', {name: files[0].name, exact: true})).toHaveCount(0);
+    await expect(description.getByText('File removed', {exact: true})).toBeVisible();
+    await page.getByRole('button', {name: 'Edit issue', exact: true}).click();
+    await page.getByLabel('Description', {exact: true}).fill('synthetic-vector-2418');
+    await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());
     const history = page.locator('.description-history'); await history.locator('summary').click();
     const historyResponse = await page.request.get(base + '/api/issues/' + identifier + '/description-history');
     const revisions = (await historyResponse.json()).revisions;
