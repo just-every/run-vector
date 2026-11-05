@@ -1,0 +1,4 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+PROBE BITBUCKET-001 browser: rendered Settings registration -> signed opened and merged PR, exact configured statuses, retained provider link and attributed follower Inbox; changed screens at 1440 and 390

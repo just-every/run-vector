@@ -1,0 +1,11 @@
+{
+  "head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+  "passed": true,
+  "assertionWidth": 1440,
+  "screenWidths": [
+    1440,
+    390
+  ],
+  "liveProvider": false,
+  "credentialsCaptured": false
+}

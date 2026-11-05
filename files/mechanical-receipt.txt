@@ -1,0 +1,6 @@
+MECHANICAL head=cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7
+views: node scripts/contract-docs.mjs write BITBUCKET-001; node scripts/contract-docs.mjs check BITBUCKET-001; both exit=0; generated files restored from origin main
+lock: pnpm sources:lock; pnpm sources:check; both exit=0; committed lock verified immediately before candidate push
+ledger: node $HOME/rer-consolidation/work/sd-vector-c-f187/packet/migration-ledger-check.mjs; exit=0
+applied ledger: populated upgrade and tracked-ledger HTTP archive restore in the exact-head Worker journey; exit=0
+history: all 272 parent Status rows retained in each candidate commit and all side parents checked

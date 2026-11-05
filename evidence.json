@@ -1,0 +1,142 @@
+{
+  "files": [
+    {
+      "blob": "4f08b24a873dc805423f359a92472d61285ee2f4",
+      "bytes": 2493,
+      "path": "PLAN.md",
+      "sha256": "461f8d13c4c7a61f4aee6aa6c379fe2f430667476eb841d1b864cec2201d399d"
+    },
+    {
+      "blob": "4b0160e1673b29f33de91e825d33393eb6fada03",
+      "bytes": 11393,
+      "path": "REPORT.md",
+      "sha256": "e7df5e71fbf6cdd43514cf86f4878851cd7dfb9f457cb2edc5830eb6a52ac601"
+    },
+    {
+      "blob": "c030ea14be9e19b6775ac8a5df02c68a7b900192",
+      "bytes": 300,
+      "path": "browser-results.txt",
+      "sha256": "b7af25ab0e426b7edc446acb6e5f0f86debf706ba59dd49caf0a2f56264e1bbe"
+    },
+    {
+      "blob": "bc1193923ad9342cd6ef60ae33dd6a21c9050a50",
+      "bytes": 201,
+      "path": "browser/bitbucket-browser.json",
+      "sha256": "0892ef2a71b3438a33baf63575b675d13f5988878aec5c7f8b2fd8513d36fbc6"
+    },
+    {
+      "blob": "a8f7e0118cb11ec8916b55b104ad9f45ca6d0318",
+      "bytes": 111212,
+      "path": "browser/roles/bitbucket-merged-1440.png",
+      "sha256": "bd0070a83ec954bbd18cdb6e6b76d20441ac799699bc123ff1704467d66d84a2"
+    },
+    {
+      "blob": "7523b58556de93d71d17caaa73f65f91ad39def0",
+      "bytes": 102797,
+      "path": "browser/roles/bitbucket-merged-390.png",
+      "sha256": "1222c6abc9ea48cef7abf8b4ed5174b14a73b2f3a9a41efb0678d00ce5a19cbc"
+    },
+    {
+      "blob": "85cad48cfab9da00c8a3257e0746f47e9383bf37",
+      "bytes": 7819,
+      "path": "browser/roles/bitbucket-opened-1440.png",
+      "sha256": "a1e6c1513d8b6daa3a17a3e1aa5b01eda817d8ee6af380244f6680844811faab"
+    },
+    {
+      "blob": "ad29d26ce316a3863b3682b5e8b473a3305d9641",
+      "bytes": 7329,
+      "path": "browser/roles/bitbucket-opened-390.png",
+      "sha256": "4fc7e9f2ab874760a3defff07b0533654731d2605dcb223b64aff8159f09dbe2"
+    },
+    {
+      "blob": "cdf088ad9c8033b5263b64b6635664c8034d8fc1",
+      "bytes": 99120,
+      "path": "browser/roles/bitbucket-settings-1440.png",
+      "sha256": "34155e3886908e20c079eb9b0cdae95bc9b55ffeb493916ecd4d4cc8807a435d"
+    },
+    {
+      "blob": "480c977671e7dd3c82ec8458fd4f16896172cd9b",
+      "bytes": 94846,
+      "path": "browser/roles/bitbucket-settings-390.png",
+      "sha256": "501de2954fd742a72ddfa00d817ed85af2cacbccd6ee505a264949f537a88bc4"
+    },
+    {
+      "blob": "f485c1e2460fea5838c14f18352e7ffde19dd7d9",
+      "bytes": 293,
+      "path": "candidate-ci.json",
+      "sha256": "1b524025f397060381009d5c532a380d120f1c97f7e3fa0da9110a10e1fea820"
+    },
+    {
+      "blob": "366cfe3d1a746cb051fb7e78460d71e7e3ab8c78",
+      "bytes": 720,
+      "path": "candidate-push.txt",
+      "sha256": "a60f4576a92f9da0c4c03f61b30d28612f50f01cca914e69b551123dff443cdb"
+    },
+    {
+      "blob": "1224291d76937e7ad313679f6aded69f1aa28452",
+      "bytes": 262,
+      "path": "candidate-runs.json",
+      "sha256": "0059f340481351cd403f185ccf5099411b8adc41f79e698a97dad75e2ffae10d"
+    },
+    {
+      "blob": "716491ac1e8bda773087953f2c86a54542ceaaa8",
+      "bytes": 276,
+      "path": "ci-observations.jsonl",
+      "sha256": "5b86d4fa6c96d228650df4e1e97cf888c9169c90e3b2785d733f436202458f4e"
+    },
+    {
+      "blob": "aee1ad9690838f22f647c8a99446ad27009146a8",
+      "bytes": 290,
+      "path": "identity-receipt.txt",
+      "sha256": "41b7f8c0b1bacce4ab355a33f646b6e2d095c656191d7f7d33e181197b075031"
+    },
+    {
+      "blob": "2e378a40b60a47af4b1e3fe923c64a975fac16c6",
+      "bytes": 1070,
+      "path": "main-ci.jsonl",
+      "sha256": "e6a5cc9eb5898d39cd27d7909742d423a27307c649887e3aa2dabd4bce4e465d"
+    },
+    {
+      "blob": "2bf325928f580a205f686febf794850758eb1427",
+      "bytes": 654,
+      "path": "mechanical-receipt.txt",
+      "sha256": "f8e5dabc9ed1f0f1abdb07a0b35b55b8d45f08aad374378f21b6a9f2d3194553"
+    },
+    {
+      "blob": "d5337cc211ee247a4615512d30134bb4b232e60f",
+      "bytes": 840,
+      "path": "migration-ledger-check.mjs",
+      "sha256": "d375f8910eb7ef2c3654d5d2cf79f657232cd1c47a66a070a84ccf3d4fa3b273"
+    },
+    {
+      "blob": "77e0718f62ed00d150f5c40b2ec258a127efcdbb",
+      "bytes": 225,
+      "path": "migration-ledger-receipt.json",
+      "sha256": "acdfd6e1cd4a793fd0f4a7373cbf4f396877562e5bc0fbd8b6db8e1c373c22d4"
+    },
+    {
+      "blob": "5b92ac84e37511244ab9d8e5f22a9d8580a8fa4f",
+      "bytes": 2876,
+      "path": "receipts.json",
+      "sha256": "d03c6332ffcac00901c49362879e489bfa564e8bfcaaf8e7d333a30cad58e006"
+    },
+    {
+      "blob": "a32521e6b595556df88b253493f4c3258fa3e56a",
+      "bytes": 906,
+      "path": "save-push.txt",
+      "sha256": "c80fbf1263f8538df48d074bc568803009d4025177a62b44b6303468b3faea5e"
+    },
+    {
+      "blob": "bae74aa51bf5e71ea836bb2d6107f76a2e9e1e6d",
+      "bytes": 444,
+      "path": "worker-results.txt",
+      "sha256": "6b59956e3e72b719d6f346120ca60bdd12aee949407e4ba8dd88f0fa32729fd9"
+    }
+  ],
+  "product_branch": "cloud/sd-vector-c-f187",
+  "product_head": "cd75596d78fe0400bcbcbbc2bc0de50b1441e2f7",
+  "ref": "refs/heads/evidence/sd-vector-c-f187",
+  "repository": "just-every/run-vector",
+  "schema": 1,
+  "tag": "sd-vector-c-f187"
+}
