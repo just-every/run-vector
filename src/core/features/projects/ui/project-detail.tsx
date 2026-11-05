@@ -5,6 +5,7 @@ import { ProjectChannel } from "../../integrations/ui/project-channel";
 import { ProjectReportPanel } from "../../project-report/panel";
 import { ProjectAppearance } from "./project-appearance";
 import { ProjectMilestones } from "./project-milestones";
+import { ProjectDependencies } from "./project-dependencies";
 import { ProjectActivity } from "./project-activity";
 import { RiskEvidence } from "./risk-evidence";
 import { ProjectCycleHistory } from "./cycle-history";
@@ -48,6 +49,13 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   return (
     <ProjectDetailContent
       project={project.data}
+      dependencies={<ProjectDependencies key={projectId} project={project.data}
+        projects={administration.data?.projects ?? []}
+        writable={!!administration.data && !["guest", "viewer"].includes(administration.data.viewer.role)}
+        onChanged={receipt => {
+          project.publishReceipt(() => receipt);
+          project.refreshAfterMutation();
+        }} />}
       milestones={<ProjectMilestones writable={!!administration.data && !["guest","viewer"].includes(administration.data.viewer.role)} project={project.data} onChanged={(receipt) => {
         project.publishReceipt(() => receipt);
         project.refreshAfterMutation();
@@ -92,10 +100,12 @@ function ProjectDetailContent({
   project,
   management,
   milestones,
+  dependencies,
 }: {
   project: ProjectDetailData;
   management: ReactNode;
   milestones: ReactNode;
+  dependencies: ReactNode;
 }) {
   const health = activeHealthLabel(project.health);
   const { date } = useDateFormat();
@@ -150,6 +160,7 @@ function ProjectDetailContent({
         />
         <Fact label="Progress" value={projectProgressLabel(project)} />
       </dl>
+      {dependencies}
       {milestones}
       <DocumentsSection parentKind="project" parentId={project.id}/>
       {project.healthExplanation ? (

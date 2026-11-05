@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "b2079b67ba011610760e9598e0bb787b65748a9bdea154481bcd171a431ff466",
+      "sha256": "ea8cadf1c6489482b79011dfa157f63ecbb5305f9c9b77b8f19f9c1d6dc00b5b",
       "executable": false
     },
     "DEMO.md": {
@@ -6717,8 +6717,16 @@
       "sha256": "cbc0a4c2e8c82f082aa167a16c0e41806b465a4f322dc967541d1cf146a36d3d",
       "executable": false
     },
+    "src/core/features/projects/ui/project-dependencies.css": {
+      "sha256": "d0f27ec7096d1e961a006670f044c69d9cd7883ed166fb69ec480af90ee07ebf",
+      "executable": false
+    },
+    "src/core/features/projects/ui/project-dependencies.tsx": {
+      "sha256": "fc6b7b73ae1179380b74092fb7b414d7e09e752a21bc9e366ae1151fb0c39205",
+      "executable": false
+    },
     "src/core/features/projects/ui/project-detail.tsx": {
-      "sha256": "1681c9ed48b95e1b37a204a6748835a769b283aba56920d2df16c2f34081720c",
+      "sha256": "124bc9ae6d7accafe48e4e57e4b792a459174d557f539b8fab066ec435edcd8f",
       "executable": false
     },
     "src/core/features/projects/ui/project-list.tsx": {
@@ -8318,7 +8326,7 @@
       "executable": false
     },
     "tests/e2e/core-project-dependencies-journey.mjs": {
-      "sha256": "388e134e0349a6562285da8342a6bb1f4896db477cf561edbc6003e7d6ef9266",
+      "sha256": "ec4f3daf245496d77b62c8a9497a1df7b3e7f7a95321ba361540be7550a4ece1",
       "executable": false
     },
     "tests/e2e/core-project-fields-journey.mjs": {
