@@ -1,7 +1,7 @@
 {
   "head": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
-  "calls": 7,
-  "last_discovery_not_before": 1793919868.5657053,
+  "calls": 8,
+  "last_discovery_not_before": 1793920169.8684747,
   "run_id": 42125138769,
   "old_candidate_discovery": {
     "runs": [
@@ -41,6 +41,14 @@
       "html_url": "https://github.com/just-every/run-vector/actions/runs/42125138769",
       "status": "in_progress",
       "id": 42125138769
+    },
+    {
+      "conclusion": null,
+      "head_sha": "e6010126cf33eeb7e70368b741bf89ba9dae2672",
+      "html_url": "https://github.com/just-every/run-vector/actions/runs/42125138769",
+      "status": "in_progress",
+      "id": 42125138769
     }
-  ]
+  ],
+  "watcher_stopped": "8 of 10 GitHub calls used; two calls reserved for failure analysis; final exact-SHA Verify observation remains in progress."
 }
