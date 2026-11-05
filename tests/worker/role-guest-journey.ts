@@ -1,3 +1,4 @@
+import { mentionToken } from "../../src/core/features/notifications/mention-token";
 import { env } from 'cloudflare:workers'
 import { expect } from 'vitest'
 import { actor, bindings, confirm, mailToken, request } from './base-auth-fixture'
@@ -146,5 +147,18 @@ export async function guestVisibilityJourney(w:Workspace) {
     expect(JSON.stringify(scoped.activity)).not.toContain(hidden.identifier)
     expect((await who.call(`/issues/${hidden.identifier}/references`)).status).toBe(404)
   }
+
+  // Removed-name rendering must not turn the mention directory into a list of
+  // people from uninvited teams. A visible token supplies its own disclosure.
+  const former = await w.fresh('member', false)
+  const directory = await json<{operators:{id:string;name:string}[]}>(await owner.call('/settings'))
+  const name = directory.operators.find(person => person.id === former.id)!.name
+  const body = mentionToken({id:former.id,name}) + ' left reconciliation notes.'
+  expect((await owner.call(`/issues/${hidden.identifier}/comments`,'POST',{body})).status).toBe(201)
+  expect((await owner.call(`/settings/operators/${former.id}`,'DELETE')).status).toBe(200)
+  const removedNames = () => invited('/mentions/options').then(response => json<{removedOperatorIds:string[]}>(response))
+  expect((await removedNames()).removedOperatorIds).not.toContain(former.id)
+  expect((await owner.call(`/issues/${visible.identifier}/comments`,'POST',{body})).status).toBe(201)
+  expect((await removedNames()).removedOperatorIds).toContain(former.id)
 
 }

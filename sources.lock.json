@@ -9654,7 +9654,7 @@
       "executable": false
     },
     "tests/worker/role-guest-journey.ts": {
-      "sha256": "edcd4a8c1233fe162f7387c6c8b4575b9516242426d088c29bd61b5721d34452",
+      "sha256": "a9600fd1c2f1bd5179a72d41ca3e05ebd529c0958170631638d6a50c2a5590ae",
       "executable": false
     },
     "tests/worker/role-matrix.test.ts": {
