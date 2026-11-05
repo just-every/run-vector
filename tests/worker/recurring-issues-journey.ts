@@ -1,11 +1,11 @@
-import { it,expect } from 'vitest'
+import { expect } from 'vitest'
 import { env } from 'cloudflare:workers'
 import { setupIntegrations } from './integration-fixture'
 import { bindings,request,invite,actor } from './base-auth-fixture'
 import { scheduled } from '../../src/core/app/scheduled'
 import { beforeCommit } from './removal-interleaving'
 
-it('[AUTO-001] weekly native series atomically commit one template graph, skip open work and stop under current authority',async()=>{
+export async function recurringIssuesJourney() {
   const f=await setupIntegrations(),team=f.initial.teams[0]
   expect((await f.call('/settings','PATCH',{timezone:'America/New_York'})).status).toBe(200)
   const templateInput={name:'synthetic-vector-1710',teamId:team.id,defaults:{title:'synthetic-vector-1711',description:'## Weekly review',priority:'high',estimate:5},subissues:[{title:'synthetic-vector-1712'},{title:'synthetic-vector-1713'}]}
@@ -114,4 +114,4 @@ it('[AUTO-001] weekly native series atomically commit one template graph, skip o
   const response=await request('/api/recurring-issues','POST',{...config,templateId:freshTemplate.id,overrides:{title:'synthetic-vector-1730'}},f.cookie,{DB:racing})
   expect(response.status).toBe(401)
   expect((await env.DB.prepare('SELECT * FROM recurring_issue_series ORDER BY id').all()).results).toEqual(beforeRace)
-},120000)
+}

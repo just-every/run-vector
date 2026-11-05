@@ -522,7 +522,7 @@
       "executable": false
     },
     "CONTRACT.md": {
-      "sha256": "9c8a61cecdbe906578d886c802a8ade4ef0d4800bba4fa7fcf3e4df1fe5a20da",
+      "sha256": "eacff26a5fd2cfd5650f16a5532899d11ac7abdb42eec378ea528e3ac0d9896c",
       "executable": false
     },
     "DEMO.md": {
@@ -9394,7 +9394,7 @@
       "executable": false
     },
     "tests/worker/issue-templates.test.ts": {
-      "sha256": "b504277699fb5c185f8c05a1b65f28a0d9b71b60d63b73db55baae05000d8ae7",
+      "sha256": "9d1616021b3723ddbf4ec7036d44b5035aef94e54b0d42447c48ece046d030b4",
       "executable": false
     },
     "tests/worker/issue-undo.test.ts": {
@@ -9569,12 +9569,12 @@
       "sha256": "12a76a2790d3d9aa3e526bdb83edf8176cea5b5cf1b82ad71e695bfb72834d30",
       "executable": false
     },
-    "tests/worker/recurring-issues-role.ts": {
-      "sha256": "da072c436cfb14cd9f95826696acc2593a51c2caa7f540bd35c5c25abe5f317f",
+    "tests/worker/recurring-issues-journey.ts": {
+      "sha256": "cfd7aede017c3d51c5d8ef1372e38c89c50b0aed55186ab8b54c2a96b5d7d1cd",
       "executable": false
     },
-    "tests/worker/recurring-issues.test.ts": {
-      "sha256": "a55c0988ab74f8295e31c391be666213361b282528ef1d8e72f6f3e5ef8c8ab7",
+    "tests/worker/recurring-issues-role.ts": {
+      "sha256": "da072c436cfb14cd9f95826696acc2593a51c2caa7f540bd35c5c25abe5f317f",
       "executable": false
     },
     "tests/worker/reference-scenario.ts": {
