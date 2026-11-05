@@ -71,9 +71,11 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     assert.equal(await viewer.getByRole('img').evaluate(image => image.getBoundingClientRect().width), 1600);
     await page.keyboard.press('ArrowRight');
     await expect(viewer.getByRole('img')).toHaveAttribute('src', '/api/issues/' + identifier + '/files/' + files[1].id);
+    await expect(viewer.getByRole('img')).toHaveAttribute('alt', 'Screenshot 2');
     await expect(viewer.getByLabel('Image zoom', {exact: true})).toHaveText('100%');
     await page.keyboard.press('ArrowLeft');
     await expect(viewer.getByRole('img')).toHaveAttribute('src', '/api/issues/' + identifier + '/files/' + files[0].id);
+    await expect(viewer.getByRole('img')).toHaveAttribute('alt', 'Screenshot 1');
     const download = page.waitForEvent('download');
     await viewer.getByRole('link', {name: 'Download image', exact: true}).click();
     const savedDownload = await download;
@@ -97,6 +99,10 @@ export async function attachmentImagesJourney({ page, runtime, output, returnIss
     await page.getByLabel('Description', {exact: true}).fill(inserted.description.replace('Screenshot 1', 'Updated screenshot'));
     const updated = await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());
     await expect(description.getByRole('img', {name: 'Updated screenshot', exact: true})).toBeVisible();
+    await page.getByRole('button', {name: 'Open image: Updated screenshot', exact: true}).click();
+    await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowLeft');
+    await expect(viewer.getByRole('img')).toHaveAttribute('alt', 'Updated screenshot');
+    await page.keyboard.press('Escape');
     await page.getByRole('button', {name: 'Edit issue', exact: true}).click();
     await page.getByLabel('Description', {exact: true}).fill('synthetic-vector-2415');
     await save(() => page.getByRole('button', {name: 'Save changes', exact: true}).click());

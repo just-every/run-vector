@@ -1,4 +1,5 @@
 .attachment-image { display: inline-block; max-width: 100%; vertical-align: middle; }
+.attachment-image > .tooltip-anchor { max-width: 100%; }
 .attachment-image-open { display: block; padding: 0; max-width: 100%; border: 1px solid var(--app-line-strong); border-radius: 8px; overflow: hidden; background: transparent; cursor: zoom-in; }
 .safe-markdown .attachment-image img { display: block; max-width: 100%; height: auto; margin: 0; }
 .attachment-removed { display: inline-block; padding: 8px 12px; border: 1px solid var(--app-line-strong); border-radius: 6px; font-size: 13px; }
